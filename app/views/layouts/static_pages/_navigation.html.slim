@@ -1,0 +1,19 @@
+.container-fluid
+  .title-bar data-hide-for="medium" data-responsive-toggle="animated-nav-menu"
+    button.menu-icon data-toggle="" type="button" 
+    .title-bar-title Menu
+  #animated-nav-menu.top-bar data-animate=("hinge-in-from-top spin-out")
+    .top-bar-left
+      .menu-text SRDR Plus
+    .top-bar-right
+      ul.dropdown.menu data-dropdown-menu=""
+        li
+          a href="#"
+          ul.menu.vertical
+            li= link_to('About', about_path)
+            li= link_to('Help', help_path)
+        - if user_signed_in?
+          li= link_to('Logout', destroy_user_session_path, :method => :delete)
+        - else
+          li= link_to('Register', new_user_registration_path)
+          li= link_to('Login', new_user_session_path)
