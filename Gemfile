@@ -64,6 +64,8 @@ gem 'slim-rails'
 # Authentication.
 gem 'devise'
 gem 'omniauth'
+gem 'remotipart', github: 'mshibuya/remotipart'
+gem 'rails_admin', '>= 1.0.0.rc'
 
 # Flash messages.
 gem 'toastr-rails'

@@ -5,7 +5,5 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :trackable, :validatable,
          :confirmable, :lockable, :timeoutable, :omniauthable
 
-  has_one :user_detail
-
-  has_paper_trail
+  has_one :user_detail, dependent: :destroy
 end

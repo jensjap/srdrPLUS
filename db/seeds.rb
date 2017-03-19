@@ -6,20 +6,24 @@
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 
+## Turn off paper_trail.
+PaperTrail.enabled = false
+
 ## Initialize first account:
 test_user = User.create! do |u|
-  u.email    = 'test@test.com'
-  u.password = 'password'
+  u.email        = 'test@test.com'
+  u.password     = 'password'
+  u.confirmed_at = Time.now()
 end
 
-organizations = Organization.create([
+organizations = Organization.create!([
   { name: '-- Unspecified --' },
   { name: 'Brown University' },
   { name: 'Johns Hopkins University' },
   { name: 'Cochrane' }
 ])
 
-titles = Title.create([
+titles = Title.create!([
   { name: '-- Unspecified --' },
   { name: 'Mr.' },
   { name: 'Ms.' },
@@ -29,7 +33,7 @@ titles = Title.create([
   { name: 'Dr.' }
 ])
 
-UserDetail.create(
+UserDetail.create!(
   user: test_user,
   organization: organizations.first,
   username: 'tester',
@@ -38,3 +42,6 @@ UserDetail.create(
   middle_name: 'D',
   last_name: 'Luffy'
 )
+
+## Turn on paper_trail.
+PaperTrail.enabled = true
