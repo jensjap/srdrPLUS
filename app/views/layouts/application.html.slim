@@ -13,9 +13,9 @@ html lang="en"
     = csrf_meta_tag
 
   body
-    = render "layouts/noscript"
-    div id="content" class="row"
-      = render "layouts/toastr"
+    = render "shared/noscript"
+    #content.row
+      = render "shared/toastr"
       == yield
-    = render "layouts/scroll_top_wrapper"
-    = render "layouts/debug"
+    = render "shared/scroll_top_wrapper"
+    = render "shared/debug"

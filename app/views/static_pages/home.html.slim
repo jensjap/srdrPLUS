@@ -1,2 +1,93 @@
-h1 StaticPages#home
-p Find me in app/views/static_pages/home.html.slim
+- provide(:no_overlay_nav, true)
+.row
+  section.small-12.columns
+    h2 Welcome to the Systematic Review Data Repository
+    p The Systematic Review Data Repository (SRDR) is a powerful and easy-to-use tool for
+      the extraction and management of data for systematic review or meta-analysis. It is
+      also an open and searchable archive of systematic reviews and its corresponding data.
+  section.small-12.columns
+    h4 Are you new to SRDR?
+    p Become acquainted with the SRDR system by using the #{ link_to("SRDR Training Site", "http://srdr.training.ahrq.gov", class: "button", target: "_blank") }
+  section.small-12.columns
+    #completed-projects
+      h3 Recently Completed Projects
+      .callout.secondary
+        span.float-right.success.label Published
+        h4 Diet-Related Fibers and Human Health Outcomes, Version 3
+        br
+        b> Statistics:
+        | 983 Studies, 1 Key Question, 1 Extraction Form
+        br
+        b> Date Created:
+        | Dec 31, 2016 04:32AM
+        br
+        b> Description:
+        | The objectives of this database are to: 1. Systematically compile
+          and provide access to primary, English-language, peer-reviewed
+          science linking dietary fiber intake in humans to one or more of 9
+          potential health benefits 2. Provide researchers with a tool to
+          understand how different fibers are characterized in studies 3.
+          Facilitate researchers in identifying gaps in the current research
+          4. Create a database to serve as a starting foundation of primary
+          human literature for conducting evidence-based reviews and
+          meta-analyses 5. Efficiently assist researchers in identifying
+          fibers of interest This database should serve as a foundation for
+          future work. Specific inclusion and exclusion criteria, detailed in
+          the user manual, were applied in determining database eligibility;
+          thus, this database is not intended to serve as a sole source for
+          identifying all possible fiber literature for the purposes of
+          conducting a meta-analysis or systematic review. This database
+          contains Population, Intervention, Comparator, and Outcome (PICO)
+          data to help users formulate and narrow the focus of their research
+          question. It is expected that secondary searches will be conducted
+          to augment this database.
+      .callout.secondary
+        .float-right.success.label Published
+        h4 Acupuncture for glaucoma (2013)
+        br
+        b> Statistics:
+        | 1 Study, 1 Key Question, 1 Extraction Form
+        br
+        b> Date Created:
+        Jul 01, 2016 02:07PM
+        br
+        b> Description:
+        | The objective of this review was to assess the effectiveness and
+          safety of acupuncture in people with glaucoma.
+      .callout.secondary
+        span.float-right.success.label Published
+        h4 Aflibercept for neovascular age-related macular degeneration 2016
+        br
+        b> Statistics:
+        | 2 Studies, 1 Key Question, 1 Extraction Form
+        br
+        b> Date Created:
+        | Aug 06, 2016 03:51PM
+        br
+        b> Description:
+        | OBJECTIVES: To assess and compare the effectiveness and safety of
+          intravitreal injections of aflibercept versus ranibizumab,
+          bevacizumab, or sham for treatment of patients with neovascular AMD.
+  section.small-12.columns
+    h3 Contributors to SRDR+
+  section.small-12.columns
+    = image_tag("", alt: "SRDR Users on Global Map",
+                    class: "small-12 small-centered columns",
+                    data: { interchange: "[#{ image_path('global_map') }, small],
+                                          [#{ image_path('global_map-lg') }, medium]" })
+  section.small-12.columns
+    .callout.secondary
+      h4 Statistics
+      pre System Wide
+        Number of projects: 1204
+        Number of project contributors: 4233
+        Number of public commentators: 1200
+        Number of published projects: 392
+        Number of articles: 23840
+      br
+      pre Project Level
+        Average number of articles per project: 63
+        Average number of extractions per project: 182
+        Average number of collaborators per project: 8
+        Average number of key questions per project: 2
+        Average duration of a project: 3 months, 28 days
