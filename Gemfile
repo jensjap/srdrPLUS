@@ -66,3 +66,6 @@ gem 'devise'
 
 # Flash messages.
 gem 'toastr-rails'
+
+# Versioning of models.
+gem 'paper_trail'
