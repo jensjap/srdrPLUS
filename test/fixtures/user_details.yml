@@ -3,7 +3,7 @@
 one:
   user: one
   organization: one
-  login: MyString
+  username: MyString
   title: one
   first_name: MyString
   middle_name: MyString
@@ -12,7 +12,7 @@ one:
 two:
   user: two
   organization: two
-  login: MyString
+  username: MyString
   title: two
   first_name: MyString
   middle_name: MyString

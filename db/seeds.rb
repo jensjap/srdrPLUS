@@ -32,7 +32,7 @@ titles = Title.create([
 UserDetail.create(
   user: test_user,
   organization: organizations.first,
-  login: 'tester',
+  username: 'tester',
   title: titles.first,
   first_name: 'Monkey',
   middle_name: 'D',
