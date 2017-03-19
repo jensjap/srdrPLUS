@@ -9,39 +9,58 @@
 ## Turn off paper_trail.
 PaperTrail.enabled = false
 
-## Initialize first account:
-test_user = User.create! do |u|
-  u.email        = 'test@test.com'
+## Initialize first accounts:
+test_superadmin = User.create! do |u|
+  u.email        = 'test_superadmin@test.com'
+  u.password     = 'password'
+  u.confirmed_at = Time.now()
+end
+
+test_contributor = User.create! do |u|
+  u.email        = 'test_contributor@test.com'
+  u.password     = 'password'
+  u.confirmed_at = Time.now()
+end
+
+test_auditor = User.create! do |u|
+  u.email        = 'test_auditor@test.com'
+  u.password     = 'password'
+  u.confirmed_at = Time.now()
+end
+
+test_guest = User.create! do |u|
+  u.email        = 'test_guest@test.com'
   u.password     = 'password'
   u.confirmed_at = Time.now()
 end
 
 organizations = Organization.create!([
-  { name: '-- Unspecified --' },
-  { name: 'Brown University' },
-  { name: 'Johns Hopkins University' },
-  { name: 'Cochrane' }
+  { name: '-- Unspecified --' }, { name: 'Brown University' },
+  { name: 'Johns Hopkins University' }, { name: 'Cochrane' },
+  { name: 'Red Hair Pirates' }, { name: 'Straw Hat Pirates' },
+  { name: 'Roger Pirates' }
 ])
 
 titles = Title.create!([
-  { name: '-- Unspecified --' },
-  { name: 'Mr.' },
-  { name: 'Ms.' },
-  { name: 'Mrs.' },
-  { name: 'Sir' },
-  { name: 'Lady' },
-  { name: 'Dr.' }
+  { name: '-- Unspecified --' }, { name: 'Mr.' },
+  { name: 'Ms.' }, { name: 'Mrs.' }, { name: 'Sir' },
+  { name: 'Lady' }, { name: 'Dr.' }
 ])
 
-UserDetail.create!(
-  user: test_user,
-  organization: organizations.first,
-  username: 'tester',
-  title: titles.first,
-  first_name: 'Monkey',
-  middle_name: 'D',
-  last_name: 'Luffy'
-)
+UserDetail.create!([
+  { user: test_superadmin, organization: Organization.find_by(name: 'Red Hair Pirates'),
+    username: 'test_superadmin', title: Title.find_by(name: 'Mr.'), first_name: 'Red',
+    middle_name: 'Haired', last_name: 'Shanks' },
+  { user: test_contributor, organization: Organization.find_by(name: 'Straw Hat Pirates'),
+    username: 'test_contributor', title: Title.find_by(name: 'Mr.'), first_name: 'Monkey',
+    middle_name: 'D', last_name: 'Luffy' },
+  { user: test_auditor, organization: Organization.find_by(name: 'Straw Hat Pirates'),
+    username: 'test_auditor', title: Title.find_by(name: 'Lady'), first_name: 'Nico',
+    middle_name: '', last_name: 'Robin' },
+  { user: test_guest, organization: Organization.find_by(name: 'Roger Pirates'),
+    username: 'test_guest', title: Title.find_by(name: 'Mr.'), first_name: 'Gol',
+    middle_name: 'D', last_name: 'Roger' },
+])
 
 ## Turn on paper_trail.
 PaperTrail.enabled = true
