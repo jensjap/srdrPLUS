@@ -63,6 +63,7 @@ gem 'slim-rails'
 
 # Authentication.
 gem 'devise'
+gem 'omniauth'
 
 # Flash messages.
 gem 'toastr-rails'
