@@ -6,4 +6,6 @@ class User < ApplicationRecord
          :confirmable, :lockable, :timeoutable, :omniauthable
 
   has_one :user_detail
+
+  has_paper_trail
 end

@@ -3,7 +3,7 @@ class CreateUserDetails < ActiveRecord::Migration[5.0]
     create_table :user_details do |t|
       t.references :user, foreign_key: true
       t.references :organization, foreign_key: true
-      t.string :login
+      t.string :username
       t.references :title, foreign_key: true
       t.string :first_name
       t.string :middle_name

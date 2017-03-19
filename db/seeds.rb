@@ -6,13 +6,21 @@
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 
+## Initialize first account:
+test_user = User.create! do |u|
+  u.email    = 'test@test.com'
+  u.password = 'password'
+end
+
 organizations = Organization.create([
+  { name: '-- Unspecified --' },
   { name: 'Brown University' },
   { name: 'Johns Hopkins University' },
   { name: 'Cochrane' }
 ])
 
 titles = Title.create([
+  { name: '-- Unspecified --' },
   { name: 'Mr.' },
   { name: 'Ms.' },
   { name: 'Mrs.' },
@@ -20,12 +28,6 @@ titles = Title.create([
   { name: 'Lady' },
   { name: 'Dr.' }
 ])
-
-## Initialize first account:
-test_user = User.create! do |u|
-  u.email    = 'test@test.com'
-  u.password = 'password'
-end
 
 UserDetail.create(
   user: test_user,
