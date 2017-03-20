@@ -1,3 +1,3 @@
 class Title < ApplicationRecord
-  has_many :user_details, dependent: :nullify
+  has_many :profiles, dependent: :nullify
 end

@@ -47,7 +47,7 @@ titles = Title.create!([
   { name: 'Lady' }, { name: 'Dr.' }
 ])
 
-UserDetail.create!([
+Profile.create!([
   { user: test_superadmin, organization: Organization.find_by(name: 'Red Hair Pirates'),
     username: 'test_superadmin', title: Title.find_by(name: 'Mr.'), first_name: 'Red',
     middle_name: 'Haired', last_name: 'Shanks' },

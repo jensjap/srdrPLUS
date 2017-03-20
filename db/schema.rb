@@ -18,13 +18,7 @@ ActiveRecord::Schema.define(version: 20170319021600) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "titles", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.string   "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "user_details", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "profiles", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "user_id"
     t.integer  "organization_id"
     t.string   "username"
@@ -34,9 +28,15 @@ ActiveRecord::Schema.define(version: 20170319021600) do
     t.string   "last_name"
     t.datetime "created_at",      null: false
     t.datetime "updated_at",      null: false
-    t.index ["organization_id"], name: "index_user_details_on_organization_id", using: :btree
-    t.index ["title_id"], name: "index_user_details_on_title_id", using: :btree
-    t.index ["user_id"], name: "index_user_details_on_user_id", using: :btree
+    t.index ["organization_id"], name: "index_profiles_on_organization_id", using: :btree
+    t.index ["title_id"], name: "index_profiles_on_title_id", using: :btree
+    t.index ["user_id"], name: "index_profiles_on_user_id", using: :btree
+  end
+
+  create_table "titles", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string   "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "users", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -75,7 +75,7 @@ ActiveRecord::Schema.define(version: 20170319021600) do
     t.index ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id", using: :btree
   end
 
-  add_foreign_key "user_details", "organizations"
-  add_foreign_key "user_details", "titles"
-  add_foreign_key "user_details", "users"
+  add_foreign_key "profiles", "organizations"
+  add_foreign_key "profiles", "titles"
+  add_foreign_key "profiles", "users"
 end
