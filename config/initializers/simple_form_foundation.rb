@@ -103,7 +103,7 @@ SimpleForm.setup do |config|
   config.item_wrapper_tag = :div
 
   # CSS class to add for error notification helper.
-  config.error_notification_class = 'alert-box alert'
+  config.error_notification_class = 'callout alert-box alert'
 
   # The default wrapper to be used by the FormBuilder.
   config.default_wrapper = :vertical_form
