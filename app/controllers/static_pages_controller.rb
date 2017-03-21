@@ -1,8 +1,6 @@
 class StaticPagesController < ApplicationController
   skip_before_action :authenticate_user!, only: [:home]
 
-  layout "static_pages/layout"
-
   def home
   end
 
