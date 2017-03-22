@@ -10,24 +10,28 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170319021600) do
+ActiveRecord::Schema.define(version: 20170322165710) do
 
   create_table "organizations", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "deleted_at"
+    t.index ["deleted_at"], name: "index_organizations_on_deleted_at", using: :btree
   end
 
   create_table "profiles", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "user_id"
     t.integer  "organization_id"
-    t.string   "username"
     t.integer  "title_id"
+    t.string   "username"
     t.string   "first_name"
     t.string   "middle_name"
     t.string   "last_name"
     t.datetime "created_at",      null: false
     t.datetime "updated_at",      null: false
+    t.datetime "deleted_at"
+    t.index ["deleted_at"], name: "index_profiles_on_deleted_at", using: :btree
     t.index ["organization_id"], name: "index_profiles_on_organization_id", using: :btree
     t.index ["title_id"], name: "index_profiles_on_title_id", using: :btree
     t.index ["user_id"], name: "index_profiles_on_user_id", using: :btree
@@ -59,7 +63,9 @@ ActiveRecord::Schema.define(version: 20170319021600) do
     t.integer  "failed_attempts",        default: 0,  null: false
     t.string   "unlock_token"
     t.datetime "locked_at"
+    t.datetime "deleted_at"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true, using: :btree
+    t.index ["deleted_at"], name: "index_users_on_deleted_at", using: :btree
     t.index ["email"], name: "index_users_on_email", unique: true, using: :btree
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
     t.index ["unlock_token"], name: "index_users_on_unlock_token", unique: true, using: :btree

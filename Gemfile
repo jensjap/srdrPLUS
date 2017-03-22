@@ -72,5 +72,6 @@ gem 'rails_admin', '>= 1.0.0.rc'
 # Flash messages.
 gem 'toastr-rails'
 
-# Versioning of models.
+# Versioning of models + soft-delete.
 gem 'paper_trail'
+gem 'acts_as_paranoid', '~> 0.5.0'
