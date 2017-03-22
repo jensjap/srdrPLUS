@@ -21,3 +21,9 @@
 
 en:
   hello: "Hello world"
+  confirm: "Are you sure?"
+  users:
+    registrations:
+      edit:
+        cancel_account:
+          plead: "Are you sure you want to end it this way?"
