@@ -19,10 +19,6 @@
 
 body {
   margin: 0;
-  .content {
-    margin-top: 20px;
-    padding: 0 5px;
-  }
 }
 
 .top-bar {
@@ -30,6 +26,10 @@ body {
 }
 
 .top-bar, .top-bar ul {
+  background-color: #f8f8f8;
+}
+
+.side-bar {
   background-color: #f8f8f8;
 }
 

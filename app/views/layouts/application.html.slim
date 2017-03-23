@@ -1,23 +1,29 @@
 doctype html
-html lang="en"
+html lang='en'
   head
-    meta charset="utf-8"
-    meta name="viewport" content="width=device-width, initial-scale=1.0"
+    meta charset='utf-8'
+    meta name='viewport' content='width=device-width, initial-scale=1.0'
 
-    title == content_for?(:title) ? yield(:title) : "srdrPLUS"
+    title == content_for?(:title) ? yield(:title) : 'srdrPLUS'
 
-    = stylesheet_link_tag    "application"
-    = javascript_include_tag "application", "data-turbolinks-track" => true
-    /= stylesheet_link_tag    params[:controller], media: "all", "data-turbolinks-track": "reload"
-    /= javascript_include_tag params[:controller], "data-turbolinks-track": "reload"
+    = stylesheet_link_tag    'application'
+    = javascript_include_tag 'application', 'data-turbolinks-track' => true
+    /= stylesheet_link_tag    params[:controller], media: 'all', 'data-turbolinks-track': 'reload'
+    /= javascript_include_tag params[:controller], 'data-turbolinks-track': 'reload'
     = csrf_meta_tag
-    = render "toastr_rails/flash"
+    = render 'toastr_rails/flash'
 
   body
-    = render "shared/noscript"
-    nav.navbar.navbar-default.navbar-fixed-top
-      = render "shared/navigation"
-    .content.row.col
+    = render 'shared/noscript'
+    = render 'shared/topbar_nav'
+    - if content_for?(:sidebar_nav)
+      .expanded.row
+        .small-9.medium-10.small-push-3.medium-push-2.columns
+          == yield(:content)
+        .small-3.medium-2.small-pull-9.medium-pull.10.columns
+          .vertical.dropdown.menu.side-bar data-dropdown-menu=''
+            == yield(:sidebar_nav)
+    - else
       == yield
-    = render "shared/scroll_top_wrapper"
-    = render "shared/debug"
+    = render 'shared/scroll_top_wrapper'
+    = render 'shared/debug'
