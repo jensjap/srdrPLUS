@@ -14,7 +14,9 @@ html lang="en"
 
   body
     = render "shared/noscript"
-    #content.row
+    nav.navbar.navbar-default.navbar-fixed-top
+      = render "shared/navigation"
+    .content.row.col
       = render "shared/toastr"
       == yield
     = render "shared/scroll_top_wrapper"

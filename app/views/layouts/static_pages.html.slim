@@ -10,14 +10,12 @@ html lang="en"
     = javascript_include_tag "application", "data-turbolinks-track" => true
     = csrf_meta_tag
 
-  body.static_pages
+  body
     = render "shared/noscript"
-    = render "shared/toastr"
     nav.navbar.navbar-default.navbar-fixed-top
-      = render "navigation"
-    .container-fluid
-      .row
-        .col
-          .content== yield
+      = render "shared/navigation"
+    .content.row.col
+      = render "shared/toastr"
+      == yield
     = render "shared/scroll_top_wrapper"
     = render "shared/debug"

@@ -17,6 +17,22 @@
 
  */
 
+body {
+  margin: 0;
+  .content {
+    margin-top: 20px;
+    padding: 0 5px;
+  }
+}
+
+.top-bar {
+  border-bottom: 1px solid #e7e7e7;
+}
+
+.top-bar, .top-bar ul {
+  background-color: #f8f8f8;
+}
+
 // Debug window.
 pre.debug_dump {
   border: 1px solid grey;
@@ -24,6 +40,7 @@ pre.debug_dump {
   padding: 5px;
   overflow-x: scroll;
 }
+// END Debug window.
 
 // Scroll top-of-the-page button.
 .scroll-top-wrapper {
@@ -63,6 +80,8 @@ pre.debug_dump {
   line-height: 0;
   font-size: 2em;
 }
+// END Scroll top-of-the-page button.
+
 .error {
   color: red;
 }
