@@ -70,7 +70,7 @@ gem 'remotipart', github: 'mshibuya/remotipart'
 gem 'rails_admin', '>= 1.0.0.rc'
 
 # Flash messages.
-gem 'toastr-rails'
+gem 'toastr_rails'
 
 # Versioning of models + soft-delete.
 gem 'paper_trail'
