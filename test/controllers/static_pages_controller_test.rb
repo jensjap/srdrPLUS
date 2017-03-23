@@ -13,21 +13,25 @@ class StaticPagesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "confirmed user should get help" do
-    sign_in(user: @confirmed_user, password: @password)
+  test "should get help" do
     get help_url
     assert_response :success
   end
 
-  test "confirmed user should get about" do
-    sign_in(user: @confirmed_user, password: @password)
+  test "should get about" do
     get about_url
     assert_response :success
   end
 
+  test "confirmed user should get edit" do
+    sign_in(user: @confirmed_user, password: @password)
+    get edit_user_registration_url
+    assert_response :success
+  end
+
   test "unconfirmed user should redirect to login" do
-      sign_in(user: @unconfirmed_user, password: @password)
-    get help_url
+    sign_in(user: @unconfirmed_user, password: @password)
+    get edit_user_registration_url
     assert_redirected_to new_user_session_url
   end
 end
