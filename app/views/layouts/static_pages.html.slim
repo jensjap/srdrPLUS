@@ -9,13 +9,13 @@ html lang="en"
     = stylesheet_link_tag    "application"
     = javascript_include_tag "application", "data-turbolinks-track" => true
     = csrf_meta_tag
+    = render "toastr_rails/flash"
 
   body
     = render "shared/noscript"
     nav.navbar.navbar-default.navbar-fixed-top
       = render "shared/navigation"
     .content.row.col
-      = render "toastr_rails/flash"
       == yield
     = render "shared/scroll_top_wrapper"
     = render "shared/debug"
