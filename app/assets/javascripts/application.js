@@ -14,10 +14,18 @@
 //= require jquery_ujs
 //= require foundation
 //= require turbolinks
-//= require toastr
+//= require toastr_rails
 //= require_tree .
 
 //$(function(){ $(document).foundation(); });
+
+// Set toastr.js options
+toastr.options = {
+  'closeButton': false,
+  'showMethod': 'slideDown',
+  'hideMethod': 'slideUp',
+  'closeMethod': 'slideUp'
+};
 
 document.addEventListener( 'turbolinks:load', function() {
   $( document ).foundation();

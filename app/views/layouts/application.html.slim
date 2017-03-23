@@ -17,7 +17,7 @@ html lang="en"
     nav.navbar.navbar-default.navbar-fixed-top
       = render "shared/navigation"
     .content.row.col
-      = render "shared/toastr"
+      = render "toastr_rails/flash"
       == yield
     = render "shared/scroll_top_wrapper"
     = render "shared/debug"
