@@ -1,6 +1,21 @@
-- content_for :sidebar_nav do
-  = render 'shared/sidebar_nav'
-- content_for :content do
-  .content
-    = content_for?(:static_pages_content) ? yield(:static_pages_content) : yield
-= render template: 'layouts/application'
+doctype html
+html lang='en'
+  head
+    meta charset='utf-8'
+    meta name='viewport' content='width=device-width, initial-scale=1.0'
+
+    title == content_for?(:title) ? yield(:title) : 'srdrPLUS'
+
+    = stylesheet_link_tag    'application'
+    = javascript_include_tag 'application', 'data-turbolinks-track' => true
+    /= stylesheet_link_tag    params[:controller], media: 'all', 'data-turbolinks-track': 'reload'
+    /= javascript_include_tag params[:controller], 'data-turbolinks-track': 'reload'
+    = csrf_meta_tag
+    = render 'toastr_rails/flash'
+
+  body
+    = render 'shared/noscript'
+    = render 'shared/topbar_nav'
+    == yield
+    = render 'shared/scroll_top_wrapper'
+    = render 'shared/debug'

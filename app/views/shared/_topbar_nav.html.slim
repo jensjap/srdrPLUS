@@ -1,22 +1,23 @@
-nav.nav-topbar
-  .title-bar.hide-for-medium data-responsive-toggle="animated-nav-menu"
-    button.menu-icon data-toggle="" type="button"
-    .title-bar-title
-      |  SRDR
-  #animated-nav-menu.top-bar data-animate=("hinge-in-from-top spin-out")
-    .top-bar-left.show-for-medium
-      .menu-text SRDR Plus
-    .top-bar-right
-      ul.dropdown.menu data-dropdown-menu=""
-        li= link_to('Home', root_path)
-        li= link_to('Help', help_path)
-        li= link_to('About', about_path)
-        - if user_signed_in?
-          li
-            a href="#"
-            ul.menu.vertical
-              li= link_to('Settings', edit_user_registration_path)
-          li= link_to('Logout', destroy_user_session_path, :method => :delete)
-        - else
-          li= link_to('Register', new_user_registration_path)
-          li= link_to('Login', new_user_session_path)
+.expanded.column.row data-sticky-container=''
+  nav.nav-topbar data-sticky='' data-options='marginTop:0;'
+    .title-bar.hide-for-medium data-responsive-toggle='animated-nav-menu'
+      button.menu-icon data-toggle='' type='button'
+      .title-bar-title
+        |  SRDR
+    #animated-nav-menu.top-bar data-animate=('hinge-in-from-top spin-out')
+      .top-bar-left.show-for-medium
+        .menu-text SRDR Plus
+      .top-bar-right
+        ul.dropdown.menu data-dropdown-menu=''
+          li= link_to('Home', root_path)
+          li= link_to('Help', help_path)
+          li= link_to('About', about_path)
+          - if user_signed_in?
+            li
+              a href='#'
+              ul.menu.vertical
+                li= link_to('Settings', edit_user_registration_path)
+            li= link_to('Logout', destroy_user_session_path, :method => :delete)
+          - else
+            li= link_to('Register', new_user_registration_path)
+            li= link_to('Login', new_user_session_path)

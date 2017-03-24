@@ -1,14 +1,14 @@
 - provide(:no_overlay_nav, true)
 .row
-  section.small-12.columns
+  section.column
     h2 Welcome to the Systematic Review Data Repository
     p The Systematic Review Data Repository (SRDR) is a powerful and easy-to-use tool for
       the extraction and management of data for systematic review or meta-analysis. It is
       also an open and searchable archive of systematic reviews and its corresponding data.
-  section.small-12.columns
+  section.column
     h4 Are you new to SRDR?
     p Become acquainted with the SRDR system by using the #{ link_to("SRDR Training Site", "http://srdr.training.ahrq.gov", class: "button", target: "_blank") }
-  section.small-12.columns
+  section.column
     #completed-projects
       h3 Recently Completed Projects
       .callout.secondary
@@ -68,14 +68,14 @@
         | OBJECTIVES: To assess and compare the effectiveness and safety of
           intravitreal injections of aflibercept versus ranibizumab,
           bevacizumab, or sham for treatment of patients with neovascular AMD.
-  section.small-12.columns
+  section.column
     h3 Contributors to SRDR+
-  section.small-12.columns
+  section.column
     = image_tag("", alt: "SRDR Users on Global Map",
                     class: "small-12 small-centered columns",
                     data: { interchange: "[#{ image_path('global_map') }, small],
                                           [#{ image_path('global_map-lg') }, medium]" })
-  section.small-12.columns
+  section.column
     .callout.secondary
       h4 Statistics
       pre System Wide
