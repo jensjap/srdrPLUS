@@ -16,14 +16,9 @@ html lang='en'
   body
     = render 'shared/noscript'
     = render 'shared/topbar_nav'
-    - if content_for?(:sidebar_nav)
-      .expanded.row
-        .small-9.medium-10.small-push-3.medium-push-2.columns
-          == yield(:content)
-        .small-3.medium-2.small-pull-9.medium-pull.10.columns
-          .vertical.dropdown.menu.side-bar data-dropdown-menu=''
-            == yield(:sidebar_nav)
-    - else
-      == yield
-    = render 'shared/scroll_top_wrapper'
-    = render 'shared/debug'
+    .off-canvas-wrapper
+      .off-canvas.position-left#offCanvasNav data-off-canvas=''
+      .off-canvas-content data-off-canvas-content=''
+        == yield
+        = render 'shared/scroll_top_wrapper'
+        = render 'shared/debug'

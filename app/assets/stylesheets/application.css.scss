@@ -16,14 +16,27 @@
  *= require toastr_rails
 
  */
+@import 'settings';
 
 body {
-  margin: 0;
+  margin-top: 0;
 }
 
-.side-bar {
-  background-color: #f8f8f8;
+// Preventing FOUC (http://foundation.zurb.com/sites/docs/responsive-navigation.html)
+.no-js {
+  @include breakpoint(small only) {
+    .top-bar {
+      display: none;
+    }
+  }
+
+  @include breakpoint(medium) {
+    .title-bar {
+      display: none;
+    }
+  }
 }
+// END Preventing FOUC (http://foundation.zurb.com/sites/docs/responsive-navigation.html)
 
 // Debug window.
 pre.debug_dump {
@@ -74,6 +87,13 @@ pre.debug_dump {
 }
 // END Scroll top-of-the-page button.
 
+// Miscellaneous stuff.
 .error {
   color: red;
+}
+.top-bar-left {
+  padding-top: 2px;
+}
+ul hr {
+  width: 80%;
 }

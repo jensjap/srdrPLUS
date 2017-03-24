@@ -11,6 +11,7 @@
 // about supported directives.
 //
 //= require jquery
+//= require jquery.turbolinks
 //= require jquery_ujs
 //= require foundation
 //= require turbolinks
@@ -29,4 +30,4 @@ toastr.options = {
 
 document.addEventListener( 'turbolinks:load', function() {
   $( document ).foundation();
-});
+} );

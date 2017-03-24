@@ -1,9 +1,9 @@
-h2
-  | Edit 
-  = resource_name.to_s.humanize
-.row.collapse
+.row
+  h2
+    | Edit
+    =< resource_name.to_s.humanize
   .medium-3.columns
     = render 'users/registrations/edit/tab_links'
   .medium-9.columns
     = render 'users/registrations/edit/tab_content'
-= link_to "Back", :back
+  = link_to "Back", :back
