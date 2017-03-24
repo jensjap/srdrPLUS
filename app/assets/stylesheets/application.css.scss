@@ -18,9 +18,27 @@
  */
 @import 'settings';
 
+// Miscellaneous stuff.
 body {
   margin-top: 0;
 }
+.error {
+  color: red;
+}
+.top-bar-left {
+  padding-top: 2px;
+}
+ul hr {
+  width: 80%;
+  margin: 0;
+}
+li.title {
+  color: gray;
+}
+hr.top-bar-ruler {
+  margin-top: 0;
+}
+// END Miscellaneous stuff.
 
 // Preventing FOUC (http://foundation.zurb.com/sites/docs/responsive-navigation.html)
 .no-js {
@@ -86,14 +104,3 @@ pre.debug_dump {
   font-size: 2em;
 }
 // END Scroll top-of-the-page button.
-
-// Miscellaneous stuff.
-.error {
-  color: red;
-}
-.top-bar-left {
-  padding-top: 2px;
-}
-ul hr {
-  width: 80%;
-}
