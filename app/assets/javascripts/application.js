@@ -25,7 +25,8 @@ toastr.options = {
   'closeButton': false,
   'showMethod': 'slideDown',
   'hideMethod': 'slideUp',
-  'closeMethod': 'slideUp'
+  'closeMethod': 'slideUp',
+  'closeDuration': 200
 };
 
 document.addEventListener( 'turbolinks:load', function() {
