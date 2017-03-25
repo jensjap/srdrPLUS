@@ -57,7 +57,7 @@ hr.top-bar-ruler {
 // END Preventing FOUC (http://foundation.zurb.com/sites/docs/responsive-navigation.html)
 
 // Debug window.
-pre.debug_dump {
+pre, pre.debug_dump {
   border: 1px solid grey;
   margin: 10px;
   padding: 5px;
