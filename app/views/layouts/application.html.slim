@@ -19,9 +19,10 @@ html lang='en'
       == content_for(:content)
     - else
       .off-canvas-wrapper
-        .off-canvas.position-right#offCanvasNav data-off-canvas=''
+        .off-canvas.position-right#offCanvasNav.reveal-for-large data-off-canvas=''
+          = render 'shared/sidebar_nav'
         .off-canvas-content data-off-canvas-content=''
-          = render partial: 'shared/topbar_nav'
+          = render 'shared/topbar_nav'
           == yield
           = render 'shared/scroll_top_wrapper'
           = render 'shared/debug'
