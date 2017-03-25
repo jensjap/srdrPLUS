@@ -6,14 +6,14 @@
 
 .top-bar#animated-menu data-animate='hinge-in-from-top hinge-out-from-top'
   .top-bar-left
-    ul.dropdown.menu data-dropdown-menu=''
+    ul.vertical.dropdown.menu.medium-horizontal data-dropdown-menu='' data-close-on-click-inside='false'
       li.menu-text: button type='button' data-toggle='offCanvasNav' SRDR Plus
       li = link_to('Home', root_path)
       li = link_to('Help', help_path)
       li = link_to('About', about_path)
       - if user_signed_in?
         li
-          a href='#'
+          a href='#' More
           ul.menu.vertical
             li.title User
             li = link_to('Settings', edit_user_registration_path)

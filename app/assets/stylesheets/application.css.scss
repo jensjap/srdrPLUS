@@ -35,6 +35,9 @@ ul hr {
 li.title {
   color: gray;
 }
+li:last-child {
+  margin-bottom: 15px;
+}
 hr.top-bar-ruler {
   margin-top: 0;
 }
