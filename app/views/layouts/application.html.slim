@@ -15,10 +15,13 @@ html lang='en'
 
   body
     = render 'shared/noscript'
-    = render 'shared/topbar_nav'
-    .off-canvas-wrapper
-      .off-canvas.position-left#offCanvasNav data-off-canvas=''
-      .off-canvas-content data-off-canvas-content=''
-        == yield
-        = render 'shared/scroll_top_wrapper'
-        = render 'shared/debug'
+    - if content_for?(:content)
+      == content_for(:content)
+    - else
+      .off-canvas-wrapper
+        .off-canvas.position-right#offCanvasNav data-off-canvas=''
+        .off-canvas-content data-off-canvas-content=''
+          = render partial: 'shared/topbar_nav'
+          == yield
+          = render 'shared/scroll_top_wrapper'
+          = render 'shared/debug'
