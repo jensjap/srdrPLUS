@@ -19,27 +19,25 @@
 @import 'settings';
 
 // Miscellaneous stuff.
-body {
-  margin-top: 0;
+.content {
+  margin: 33px;
+}
+.top-bar {
+  margin: 0;
+  padding: 3px;
+  a {
+    color: $white;
+  }
 }
 .error {
   color: red;
 }
-//.top-bar {
-//  border-radius: 10px;
-//  .top-bar-left {
-//    padding-top: 2px;
-//  }
-//  .top-bar-right {
-//    padding-top: 2px;
-//  }
-//}
 ul hr {
   width: 80%;
   margin: 0;
 }
 li.title {
-  color: gray;
+  color: $primary-color;
 }
 li:last-child {
   margin-bottom: 15px;
@@ -47,9 +45,10 @@ li:last-child {
 hr.top-bar-ruler {
   margin-top: 0;
 }
-a.button {
-  &:visited {
-    color: #fff;
+.is-dropdown-submenu {
+  border-color: $secondary-color;
+  li.title {
+    padding: 4px 0 0 4px;
   }
 }
 // END Miscellaneous stuff.
@@ -71,9 +70,9 @@ a.button {
 // END Preventing FOUC (http://foundation.zurb.com/sites/docs/responsive-navigation.html)
 
 // Debug window.
-pre, pre.debug_dump {
-  background-color: #fffdfd;
-  border: 1px solid grey;
+pre.debug_dump {
+  background-color: $color-complement-0;
+  border: 1px solid gray;
   margin: 10px;
   padding: 5px;
   overflow-x: scroll;
