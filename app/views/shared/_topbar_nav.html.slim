@@ -1,31 +1,33 @@
-.title-bar data-responsive-toggle='animated-menu' data-hide-for='medium'
-  button.menu-icon.dark.title-bar-left type='button' data-toggle='animated-menu'
-  - unless defined? no_off_canvas
-    button.menu-icon.dark.title-bar-right type='button' data-open='offCanvasNav'
-    .title-bar-title
+.top-bar
+  .title-bar data-responsive-toggle='animated-menu' data-hide-for='medium'
+    button.menu-icon.dark.title-bar-left type='button' data-toggle='animated-menu'
+    - unless defined? no_off_canvas
+      button.menu-icon.dark.title-bar-right type='button' data-open='offCanvasNav'
+      .title-bar-title
 
-.top-bar#animated-menu data-animate='hinge-in-from-top hinge-out-from-top'
-  .top-bar-left
-    ul.vertical.dropdown.menu.medium-horizontal data-dropdown-menu='' data-close-on-click-inside='false'
-      li.menu-text: button type='button' data-toggle='offCanvasNav'
-        = image_tag('brand-sm', size: '80x16')
-      li = link_to('Home', root_path)
-      li = link_to('Help', help_path)
-      li = link_to('About', about_path)
-      - if user_signed_in?
-        li
-          a href='#' More
-          ul.menu.vertical
-            li.title User
-            li = link_to('Settings', edit_user_registration_path)
-            li = link_to('Profile', profile_path)
-            hr
-            li.title Actions
-            li = link_to('Logout', destroy_user_session_path, :method => :delete)
-      - else
-        li = link_to('Register', new_user_registration_path)
-        li = link_to('Login', new_user_session_path)
-  .top-bar-right
-    ul.menu
-      li : input type='search' placeholder='Search'
-      li : button.button Search
+  .top-bar#animated-menu data-animate='hinge-in-from-top hinge-out-from-top'
+    .top-bar-left
+      ul.vertical.dropdown.menu.medium-horizontal data-dropdown-menu='' data-close-on-click-inside='false'
+        li.menu-text: button type='button' data-toggle='offCanvasNav'
+          = image_tag('brand-sm', size: '70x16')
+        li = link_to('Home', root_path)
+        li = link_to('Help', help_path)
+        li = link_to('About', about_path)
+        - if user_signed_in?
+          li
+            a href='#' More
+            ul.menu.vertical
+              hr
+              li.title User
+              li = link_to('Settings', edit_user_registration_path)
+              li = link_to('Profile', profile_path)
+              hr
+              li.title Actions
+              li = link_to('Logout', destroy_user_session_path, :method => :delete)
+        - else
+          li = link_to('Register', new_user_registration_path)
+          li = link_to('Login', new_user_session_path)
+    .top-bar-right
+      ul.menu
+        li : input type='search' placeholder='Search'
+        li : button.button Search
