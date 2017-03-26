@@ -2,8 +2,8 @@
   h2
     | Edit
     =< resource_name.to_s.humanize
-  .medium-3.columns
+  .column.medium-3
     = render 'users/registrations/edit/tab_links'
-  .medium-9.columns
+  .column.medium-9
     = render 'users/registrations/edit/tab_content'
   = link_to "Back", :back
