@@ -56,17 +56,6 @@ $foundation-palette: (
   warning: #ffae00,
   alert: #cc4b37,
 );
-$color-primary-0: #0FA1FF;  // Main Primary color */
-$color-primary-1: #A9DDFF;
-$color-primary-2: #78CAFF;
-$color-primary-3: #00548B;
-$color-primary-4: #00416B;
-
-$color-complement-0: #FF8E00;   // Main Complement color */
-$color-complement-1: #FFD7A4;
-$color-complement-2: #FFC070;
-$color-complement-3: #D97900;
-$color-complement-4: #A75D00;
 $light-gray: #e6e6e6;
 $medium-gray: #cacaca;
 $dark-gray: #8a8a8a;
@@ -86,6 +75,20 @@ $global-flexbox: false;
 $print-transparent-backgrounds: true;
 
 @include add-foundation-colors;
+
+$color-primary-0: #219BE3;  // Main Primary color */
+$color-primary-1: #73BFEC;
+$color-primary-2: #48ACE7;
+$color-primary-3: #088DDC;
+$color-primary-4: #04639C;
+$priary-color: $color-primary-0;
+
+$color-complement-0: #FF9718;   // Main Complement color */
+$color-complement-1: #FFC174;
+$color-complement-2: #FFAB45;
+$color-complement-3: #FF8C00;
+$color-complement-4: #F58700;
+$secondary-color: $color-complement-0;
 
 // 2. Breakpoints
 // --------------
@@ -255,7 +258,8 @@ $button-padding: 0.85em 1em;
 $button-margin: 0 0 $global-margin 0;
 $button-fill: solid;
 $button-background: $primary-color;
-$button-background-hover: scale-color($button-background, $lightness: -15%);
+//$button-background-hover: scale-color($button-background, $lightness: -15%);
+$button-background-hover: $secondary-color;
 $button-color: $white;
 $button-color-alt: $black;
 $button-radius: $global-radius;
@@ -353,7 +357,8 @@ $dropdown-sizes: (
 // -----------------
 
 $dropdownmenu-arrows: true;
-$dropdownmenu-arrow-color: $anchor-color;
+//$dropdownmenu-arrow-color: $anchor-color;
+$dropdownmenu-arrow-color: $secondary-color;
 $dropdownmenu-arrow-size: 6px;
 $dropdownmenu-min-width: 200px;
 $dropdownmenu-background: $white;
@@ -404,7 +409,7 @@ $form-button-radius: $global-radius;
 
 $label-background: $primary-color;
 $label-color: $white;
-$label-color-alt: $black;
+$label-color-alt: $white;
 $label-palette: $foundation-palette;
 $label-font-size: 0.6rem;
 $label-padding: 0.33333rem 0.5rem;
@@ -624,7 +629,7 @@ $tooltip-radius: $global-radius;
 // -----------
 
 $topbar-padding: 0.5rem;
-$topbar-background: $color-primary-3;
+$topbar-background: $primary-color;
 $topbar-submenu-background: $topbar-background;
 $topbar-title-spacing: 0.5rem 1rem 0.5rem 0;
 $topbar-input-width: 200px;

@@ -19,14 +19,31 @@
 @import 'settings';
 
 // Miscellaneous stuff.
+body {
+  margin: 0;
+}
 .content {
   margin: 33px;
+}
+a {
+  color: $primary-color;
+  &:visited {
+    color: $secondary-color;
+  }
+  &:hover {
+    color: $primary-color;
+    background-color: $light-gray;
+  }
 }
 .top-bar {
   margin: 0;
   padding: 3px;
   a {
     color: $white;
+    &:hover {
+      color: $secondary-color;
+      background-color: $primary-color;
+    }
   }
 }
 .error {

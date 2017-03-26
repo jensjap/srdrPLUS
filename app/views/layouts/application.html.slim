@@ -23,7 +23,7 @@ html lang='en'
           = render 'shared/sidebar_nav'
         .off-canvas-content data-off-canvas-content=''
           = render 'shared/topbar_nav'
-          .content
+          .column.row.content
             == yield
             = render 'shared/scroll_top_wrapper'
             = render 'shared/debug'

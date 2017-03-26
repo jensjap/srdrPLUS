@@ -1,7 +1,5 @@
 #vertical-tabs.ul.tabs.vertical data-tabs=''
   li.tabs-title.is-active
-    a href='#panel-user' aria-selected='true'
-      | Edit #{ resource_name.to_s.humanize }
+    = link_to "Edit #{ resource_name.to_s.humanize }", '#panel-user'
   li.tabs-title
-    a href='#panel-unhappy'
-      | Unhappy?
+    = link_to 'Unhappy?', '#panel-unhappy'
