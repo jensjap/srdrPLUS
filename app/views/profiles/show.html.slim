@@ -1,0 +1,28 @@
+- provide(:title, 'User Profile')
+h2 User Profile
+.row
+  .column.medium-4
+    dl
+      dt.label.primary Organization
+      dd.callout.secondary = @profile.organization.name
+  .column.medium-4
+    dl
+      dt.label.primary Username
+      dd.callout.secondary = @profile.username
+  .column.medium-4
+    dl
+      dt.label.primary Title
+      dd.callout.secondary = @profile.title.name
+.row
+  .column.medium-4
+    dl
+      dt.label.primary First Name
+      dd.callout.secondary = @profile.first_name
+  .column.medium-4
+    dl
+      dt.label.primary Middle Name
+      dd.callout.secondary = @profile.middle_name
+  .column.medium-4
+    dl
+      dt.label.primary Last Name
+      dd.callout.secondary = @profile.last_name
