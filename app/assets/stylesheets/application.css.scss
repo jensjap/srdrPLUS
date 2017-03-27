@@ -38,8 +38,8 @@ a {
   a {
     color: $white;
     &:hover {
-      color: $secondary-color;
-      background-color: $primary-color;
+      color: $white;
+      background-color: $secondary-color;
     }
   }
 }
@@ -51,7 +51,7 @@ ul hr {
   margin: 0;
 }
 li.title {
-  color: $primary-color;
+  color: $secondary-color;
 }
 li:last-child {
   margin-bottom: 15px;
@@ -60,7 +60,7 @@ hr.top-bar-ruler {
   margin-top: 0;
 }
 .is-dropdown-submenu {
-  border-color: $secondary-color;
+  border-color: $primary-color;
   li.title {
     padding: 4px 0 0 4px;
   }
