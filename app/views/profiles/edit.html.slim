@@ -1,0 +1,23 @@
+- provide(:title, 'Edit User Profile')
+
+h2 Edit User Profile
+
+= simple_form_for(@profile, url: profile_path, html: { data: { 'abide': '' } }) do |f|
+  = f.error_notification
+
+  fieldset.fieldset
+    legend Organization Information
+    = f.association :organization
+
+  fieldset.fieldset
+    legend Title Information
+    = f.association :title
+
+  fieldset.fieldset
+    legend Profile Information
+    = f.input :username
+    = f.input :first_name
+    = f.input :middle_name
+    = f.input :last_name
+
+  = f.button :submit
