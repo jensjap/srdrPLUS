@@ -75,4 +75,4 @@ gem 'toastr_rails'
 
 # Versioning of models + soft-delete.
 gem 'paper_trail'
-gem 'acts_as_paranoid', '~> 0.5.0'
+gem 'paranoia', '~>2.2'

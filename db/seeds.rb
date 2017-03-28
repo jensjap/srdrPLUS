@@ -49,18 +49,23 @@ titles = Title.create!([
 
 Profile.create!([
   { user: test_superadmin, organization: Organization.find_by(name: 'Red Hair Pirates'),
-    username: 'test_superadmin', title: Title.find_by(name: 'Mr.'), first_name: 'Red',
-    middle_name: 'Haired', last_name: 'Shanks' },
+    username: 'test_superadmin', first_name: 'Red', middle_name: 'Haired', last_name: 'Shanks' },
   { user: test_contributor, organization: Organization.find_by(name: 'Straw Hat Pirates'),
-    username: 'test_contributor', title: Title.find_by(name: 'Mr.'), first_name: 'Monkey',
-    middle_name: 'D', last_name: 'Luffy' },
+    username: 'test_contributor', first_name: 'Monkey', middle_name: 'D', last_name: 'Luffy' },
   { user: test_auditor, organization: Organization.find_by(name: 'Straw Hat Pirates'),
-    username: 'test_auditor', title: Title.find_by(name: 'Lady'), first_name: 'Nico',
-    middle_name: '', last_name: 'Robin' },
+    username: 'test_auditor', first_name: 'Nico', middle_name: '', last_name: 'Robin' },
   { user: test_guest, organization: Organization.find_by(name: 'Roger Pirates'),
-    username: 'test_guest', title: Title.find_by(name: 'Mr.'), first_name: 'Gol',
-    middle_name: 'D', last_name: 'Roger' },
+    username: 'test_guest', first_name: 'Gol', middle_name: 'D', last_name: 'Roger' }
 ])
+
+Profile.find(1).titles << Title.find(2)
+Profile.find(1).titles << Title.find(5)
+Profile.find(2).titles << Title.find(2)
+Profile.find(3).titles << Title.find(3)
+Profile.find(3).titles << Title.find(6)
+Profile.find(4).titles << Title.find(2)
+Profile.find(4).titles << Title.find(5)
+Profile.find(4).titles << Title.find(7)
 
 ## Turn on paper_trail.
 PaperTrail.enabled = true
