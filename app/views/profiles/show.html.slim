@@ -15,9 +15,9 @@
       dd.callout.secondary = @profile.username
   .column.medium-4
     dl
-      dt.label.primary Title(s)
+      dt.label.primary Degrees
       dd.callout.secondary
-        - @profile.titles.map { |title| title.name }.each do |name|
+        - @profile.degrees.map { |degree| degree.name }.each do |name|
           span.label.secondary style='margin-right: 3px; padding-top: 2px; padding-bottom: 2px;' #{ name }
 .row
   .column.medium-4

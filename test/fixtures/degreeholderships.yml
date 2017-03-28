@@ -2,10 +2,10 @@
 
 one:
   profile: one
-  title: one
+  degree: one
   deleted_at: 2017-03-27 20:57:39
 
 two:
   profile: two
-  title: two
+  degree: two
   deleted_at: 2017-03-27 20:57:39

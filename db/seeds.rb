@@ -35,16 +35,21 @@ test_guest = User.create! do |u|
 end
 
 organizations = Organization.create!([
-  { name: '-- Unspecified --' }, { name: 'Brown University' },
-  { name: 'Johns Hopkins University' }, { name: 'Cochrane' },
-  { name: 'Red Hair Pirates' }, { name: 'Straw Hat Pirates' },
+  { name: '-- Unspecified --' },
+  { name: 'Brown University' },
+  { name: 'Johns Hopkins University' },
+  { name: 'Cochrane' },
+  { name: 'Red Hair Pirates' },
+  { name: 'Straw Hat Pirates' },
   { name: 'Roger Pirates' }
 ])
 
-titles = Title.create!([
-  { name: '-- Unspecified --' }, { name: 'Mr.' },
-  { name: 'Ms.' }, { name: 'Mrs.' }, { name: 'Sir' },
-  { name: 'Lady' }, { name: 'Dr.' }
+degrees = Degree.create!([
+  { name: '-- Unspecified --' },
+  { name: 'BA.' }, { name: 'BS.' },
+  { name: 'MA.' }, { name: 'MS.' },
+  { name: 'MPH.' }, { name: 'J.D.' },
+  { name: 'M.D.' }, { name: 'Ph.D.' }
 ])
 
 Profile.create!([
@@ -58,14 +63,14 @@ Profile.create!([
     username: 'test_guest', first_name: 'Gol', middle_name: 'D', last_name: 'Roger' }
 ])
 
-Profile.find(1).titles << Title.find(2)
-Profile.find(1).titles << Title.find(5)
-Profile.find(2).titles << Title.find(2)
-Profile.find(3).titles << Title.find(3)
-Profile.find(3).titles << Title.find(6)
-Profile.find(4).titles << Title.find(2)
-Profile.find(4).titles << Title.find(5)
-Profile.find(4).titles << Title.find(7)
+Profile.find(1).degrees << Degree.find(2)
+Profile.find(1).degrees << Degree.find(5)
+Profile.find(2).degrees << Degree.find(2)
+Profile.find(3).degrees << Degree.find(3)
+Profile.find(3).degrees << Degree.find(6)
+Profile.find(4).degrees << Degree.find(2)
+Profile.find(4).degrees << Degree.find(5)
+Profile.find(4).degrees << Degree.find(7)
 
 ## Turn on paper_trail.
 PaperTrail.enabled = true

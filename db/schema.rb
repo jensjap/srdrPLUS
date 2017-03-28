@@ -10,7 +10,27 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170328005739) do
+ActiveRecord::Schema.define(version: 20170328025630) do
+
+  create_table "degreeholderships", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "degree_id"
+    t.integer  "profile_id"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.boolean  "active"
+    t.index ["degree_id", "profile_id", "active"], name: "index_degreeholderships_on_degree_id_and_profile_id_and_active", unique: true, using: :btree
+    t.index ["degree_id", "profile_id"], name: "index_degreeholderships_on_degree_id_and_profile_id", using: :btree
+    t.index ["degree_id"], name: "index_degreeholderships_on_degree_id", using: :btree
+    t.index ["deleted_at"], name: "index_degreeholderships_on_deleted_at", using: :btree
+    t.index ["profile_id"], name: "index_degreeholderships_on_profile_id", using: :btree
+  end
+
+  create_table "degrees", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string   "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "organizations", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "name"
@@ -33,24 +53,6 @@ ActiveRecord::Schema.define(version: 20170328005739) do
     t.index ["deleted_at"], name: "index_profiles_on_deleted_at", using: :btree
     t.index ["organization_id"], name: "index_profiles_on_organization_id", using: :btree
     t.index ["user_id"], name: "index_profiles_on_user_id", using: :btree
-  end
-
-  create_table "titles", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.string   "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "titleships", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer  "profile_id"
-    t.integer  "title_id"
-    t.datetime "deleted_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["deleted_at"], name: "index_titleships_on_deleted_at", using: :btree
-    t.index ["profile_id", "title_id"], name: "index_titleships_on_profile_id_and_title_id", using: :btree
-    t.index ["profile_id"], name: "index_titleships_on_profile_id", using: :btree
-    t.index ["title_id"], name: "index_titleships_on_title_id", using: :btree
   end
 
   create_table "users", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -91,8 +93,8 @@ ActiveRecord::Schema.define(version: 20170328005739) do
     t.index ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id", using: :btree
   end
 
+  add_foreign_key "degreeholderships", "degrees"
+  add_foreign_key "degreeholderships", "profiles"
   add_foreign_key "profiles", "organizations"
   add_foreign_key "profiles", "users"
-  add_foreign_key "titleships", "profiles"
-  add_foreign_key "titleships", "titles"
 end
