@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170322165710) do
+ActiveRecord::Schema.define(version: 20170328005739) do
 
   create_table "organizations", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "name"
@@ -23,7 +23,6 @@ ActiveRecord::Schema.define(version: 20170322165710) do
   create_table "profiles", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "user_id"
     t.integer  "organization_id"
-    t.integer  "title_id"
     t.string   "username"
     t.string   "first_name"
     t.string   "middle_name"
@@ -33,7 +32,6 @@ ActiveRecord::Schema.define(version: 20170322165710) do
     t.datetime "deleted_at"
     t.index ["deleted_at"], name: "index_profiles_on_deleted_at", using: :btree
     t.index ["organization_id"], name: "index_profiles_on_organization_id", using: :btree
-    t.index ["title_id"], name: "index_profiles_on_title_id", using: :btree
     t.index ["user_id"], name: "index_profiles_on_user_id", using: :btree
   end
 
@@ -41,6 +39,18 @@ ActiveRecord::Schema.define(version: 20170322165710) do
     t.string   "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "titleships", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "profile_id"
+    t.integer  "title_id"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["deleted_at"], name: "index_titleships_on_deleted_at", using: :btree
+    t.index ["profile_id", "title_id"], name: "index_titleships_on_profile_id_and_title_id", using: :btree
+    t.index ["profile_id"], name: "index_titleships_on_profile_id", using: :btree
+    t.index ["title_id"], name: "index_titleships_on_title_id", using: :btree
   end
 
   create_table "users", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -82,6 +92,7 @@ ActiveRecord::Schema.define(version: 20170322165710) do
   end
 
   add_foreign_key "profiles", "organizations"
-  add_foreign_key "profiles", "titles"
   add_foreign_key "profiles", "users"
+  add_foreign_key "titleships", "profiles"
+  add_foreign_key "titleships", "titles"
 end

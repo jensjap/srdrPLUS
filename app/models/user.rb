@@ -8,6 +8,5 @@ class User < ApplicationRecord
   has_one :profile, dependent: :destroy
 
   has_paper_trail only: [:email, :encrypted_password]
-
   acts_as_paranoid
 end

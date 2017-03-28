@@ -4,7 +4,6 @@ one:
   user: one
   organization: one
   username: MyString
-  title: one
   first_name: MyString
   middle_name: MyString
   last_name: MyString
@@ -13,7 +12,6 @@ two:
   user: two
   organization: two
   username: MyString
-  title: two
   first_name: MyString
   middle_name: MyString
   last_name: MyString

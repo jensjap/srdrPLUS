@@ -1,3 +1,4 @@
 class Title < ApplicationRecord
-  has_many :profiles, dependent: :nullify
+  has_many :titleships
+  has_many :profiles, through: :titleships, dependent: :destroy
 end
