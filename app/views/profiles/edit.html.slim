@@ -14,7 +14,7 @@ h2 Edit User Profile
     .column.medium-6
       fieldset.fieldset
         legend Degree Information
-        = f.association :degrees, as: :check_boxes
+        = f.association :degrees, label: 'Degrees (select all that apply)',  as: :check_boxes
 
   .row
     .column
