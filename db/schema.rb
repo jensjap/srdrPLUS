@@ -10,19 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170329052049) do
+ActiveRecord::Schema.define(version: 20170328005739) do
 
   create_table "degreeholderships", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "degree_id"
     t.integer  "profile_id"
-    t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.boolean  "active"
-    t.index ["degree_id", "profile_id", "active"], name: "index_degreeholderships_on_degree_id_and_profile_id_and_active", unique: true, using: :btree
-    t.index ["degree_id", "profile_id"], name: "index_degreeholderships_on_degree_id_and_profile_id", using: :btree
     t.index ["degree_id"], name: "index_degreeholderships_on_degree_id", using: :btree
-    t.index ["deleted_at"], name: "index_degreeholderships_on_deleted_at", using: :btree
     t.index ["profile_id"], name: "index_degreeholderships_on_profile_id", using: :btree
   end
 
@@ -30,8 +25,6 @@ ActiveRecord::Schema.define(version: 20170329052049) do
     t.string   "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.datetime "deleted_at"
-    t.index ["deleted_at"], name: "index_degrees_on_deleted_at", using: :btree
   end
 
   create_table "organizations", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|

@@ -7,11 +7,4 @@ class Profile < ApplicationRecord
 
   has_many :degreeholderships, inverse_of: :profile
   has_many :degrees, through: :degreeholderships, dependent: :destroy
-
-  after_restore :restore_dependents
-
-  private
-
-  def restore_dependents
-  end
 end
