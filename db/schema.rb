@@ -17,6 +17,7 @@ ActiveRecord::Schema.define(version: 20170328005739) do
     t.integer  "profile_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["degree_id", "profile_id"], name: "index_degreeholderships_on_degree_id_and_profile_id", unique: true, using: :btree
     t.index ["degree_id"], name: "index_degreeholderships_on_degree_id", using: :btree
     t.index ["profile_id"], name: "index_degreeholderships_on_profile_id", using: :btree
   end

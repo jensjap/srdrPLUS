@@ -6,5 +6,7 @@ class CreateDegreeholderships < ActiveRecord::Migration[5.0]
 
       t.timestamps
     end
+
+    add_index :degreeholderships, [:degree_id, :profile_id], unique: true
   end
 end
