@@ -10,14 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170328005739) do
+ActiveRecord::Schema.define(version: 20170331015154) do
 
   create_table "degreeholderships", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "degree_id"
     t.integer  "profile_id"
+    t.datetime "deleted_at"
+    t.boolean  "active"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["degree_id", "profile_id"], name: "index_degreeholderships_on_degree_id_and_profile_id", unique: true, using: :btree
+    t.index ["degree_id", "profile_id", "active"], name: "index_degreeholderships_on_degree_id_and_profile_id_and_active", unique: true, using: :btree
+    t.index ["degree_id", "profile_id"], name: "index_degreeholderships_on_degree_id_and_profile_id", using: :btree
     t.index ["degree_id"], name: "index_degreeholderships_on_degree_id", using: :btree
     t.index ["profile_id"], name: "index_degreeholderships_on_profile_id", using: :btree
   end
@@ -79,14 +82,25 @@ ActiveRecord::Schema.define(version: 20170328005739) do
     t.index ["unlock_token"], name: "index_users_on_unlock_token", unique: true, using: :btree
   end
 
+  create_table "version_associations", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer "version_id"
+    t.string  "foreign_key_name", null: false
+    t.integer "foreign_key_id"
+    t.index ["foreign_key_name", "foreign_key_id"], name: "index_version_associations_on_foreign_key", using: :btree
+    t.index ["version_id"], name: "index_version_associations_on_version_id", using: :btree
+  end
+
   create_table "versions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4" do |t|
-    t.string   "item_type",  limit: 191,        null: false
-    t.integer  "item_id",                       null: false
-    t.string   "event",                         null: false
+    t.string   "item_type",      limit: 191,        null: false
+    t.integer  "item_id",                           null: false
+    t.string   "event",                             null: false
     t.string   "whodunnit"
-    t.text     "object",     limit: 4294967295
+    t.text     "object",         limit: 4294967295
     t.datetime "created_at"
+    t.text     "object_changes", limit: 4294967295
+    t.integer  "transaction_id"
     t.index ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id", using: :btree
+    t.index ["transaction_id"], name: "index_versions_on_transaction_id", using: :btree
   end
 
   add_foreign_key "degreeholderships", "degrees"
