@@ -10,6 +10,9 @@ class Degreeholdership < ApplicationRecord
   validates :profile_id, presence: true
   validates :degree_id, presence: true
 
+  accepts_nested_attributes_for :degree, :allow_destroy => true, :reject_if => :all_blank
+  accepts_nested_attributes_for :profile, :allow_destroy => true, :reject_if => :all_blank
+
   def paranoia_restore_attributes
     {
       deleted_at: nil,
