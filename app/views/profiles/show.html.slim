@@ -8,7 +8,7 @@
   .column.medium-4
     dl
       dt.label.primary Organization
-      dd.callout.secondary = @profile.organization.name
+      dd.callout.secondary = @profile.organization.present? ? @profile.organization.name : ''
   .column.medium-4
     dl
       dt.label.primary Username
