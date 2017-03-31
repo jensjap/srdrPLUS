@@ -25,11 +25,11 @@ body {
 a {
   color: $primary-color;
   &:visited {
-    color: $secondary-color;
+    color: $primary-color;
   }
   &:hover {
     color: $primary-color;
-    background-color: $light-gray;
+    background-color: $white;
   }
 }
 .top-bar {
@@ -38,7 +38,7 @@ a {
   a {
     color: $white;
     &:hover {
-      color: $white;
+      color: $primary-color;
       background-color: $secondary-color;
     }
   }
