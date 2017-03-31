@@ -29,10 +29,7 @@ class ProfilesController < ApplicationController
   # Use callbacks to share common setup or constraints between actions.
   def set_profile
     # Every user should have a profile, create it if it is a new user.
-    @profile = current_user.profile || current_user.create_profile(username: '',
-                                                                   first_name: '',
-                                                                   middle_name: '',
-                                                                   last_name: '')
+    @profile = current_user.profile || current_user.create_profile
   end
 
   def profile_params
