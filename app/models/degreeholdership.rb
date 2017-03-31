@@ -27,7 +27,6 @@ class Degreeholdership < ApplicationRecord
   private
 
   def halp
-    byebug
   end
 end
 

@@ -5,7 +5,9 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :trackable, :validatable,
          :confirmable, :lockable, :timeoutable, :omniauthable
 
-  has_one :profile, dependent: :destroy
+  has_one :profile, dependent: :destroy, inverse_of: :user
+  has_many :degrees, through: :profile
+  has_many :degreeholderships, through: :profile
 
   has_paper_trail only: [:email, :encrypted_password]
   acts_as_paranoid

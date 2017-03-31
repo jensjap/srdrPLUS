@@ -4,8 +4,8 @@ class Profile < ApplicationRecord
 
 #  after_restore :restore_relationships
 
-  belongs_to :user
   belongs_to :organization
+  belongs_to :user, inverse_of: :profile
 
   has_many :degreeholderships, dependent: :destroy, inverse_of: :profile
   has_many :degrees, through: :degreeholderships
