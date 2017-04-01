@@ -1,4 +1,4 @@
-require Rails.root.join 'spec/seed_data_helper'
+require Rails.root.join 'test/seed_data_helper'
 extend SeedData
 
 # This file should contain all the record creation needed to seed the database with its default values.

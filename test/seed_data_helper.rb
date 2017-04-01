@@ -4,13 +4,6 @@ module SeedData
       ## Turn off paper_trail.
       PaperTrail.enabled = false
 
-      ## Clean house.
-      Degreeholdership.delete_all
-      Profile.delete_all
-      Degree.delete_all
-      Organization.delete_all
-      User.delete_all
-
       ## Initialize first accounts:
       @test_superadmin = User.create do |u|
         u.email        = 'test_superadmin@test.com'
