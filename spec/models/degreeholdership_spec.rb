@@ -7,8 +7,7 @@ RSpec.describe Degreeholdership, type: :model do
   end
 
   it 'should properly cache Degreeholdership objects referenced directly and also through Profile' do
-    degreeholdership = @test_superadmin.degreeholderships.find_by(degree: Degree.find_by(name: 'MPH.'))
-    user = degreeholdership.profile.user
-    expect(degreeholdership.object_id).to eq(user.degreeholderships.last.object_id)
+    degreeholdership = @superadmin_profile.degreeholderships.first
+    expect(degreeholdership.profile.object_id).to eq(@superadmin_profile.object_id)
   end
 end
