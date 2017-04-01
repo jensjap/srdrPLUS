@@ -5,6 +5,9 @@ require 'minitest/rails/capybara'
 require 'seed_data_helper'
 
 class ActiveSupport::TestCase
+  # Makes available #sign_in and #sign_out
+  include Devise::Test::IntegrationHelpers
+
   # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
   fixtures :all
 
@@ -13,9 +16,4 @@ class ActiveSupport::TestCase
   end
 
   # Add more helper methods to be used by all tests here...
-  def sign_in(user:, password:)
-    post user_session_path \
-      "user[email]"    => user.email,
-      "user[password]" => password
-  end
 end

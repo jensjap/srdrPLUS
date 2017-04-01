@@ -11,6 +11,6 @@ Rails.application.routes.draw do
     sessions: 'users/sessions',
     unlocks: 'users/unlocks'
   }
-  resource :profile, only: [:show, :edit, :create, :update]
+  resource :profile, only: [:show, :edit, :update]
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end
