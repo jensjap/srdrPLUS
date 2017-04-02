@@ -5,7 +5,7 @@ class Degreeholdership < ApplicationRecord
   before_destroy :halp
 
   belongs_to :degree, inverse_of: :degreeholderships
-  belongs_to :profile, inverse_of: :degreeholderships
+  belongs_to :profile
 
   validates :profile_id, presence: true
   validates :degree_id, presence: true
