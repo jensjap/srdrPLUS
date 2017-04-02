@@ -10,10 +10,10 @@ scrollToTop = ->
   return
 
 document.addEventListener 'turbolinks:load', ->
-  # On document load scroll the AHRQ header out of sight ;)
-  element = $( 'body' )
-  offset = element.offset()
-  $( 'html, body' ).animate({ scrollTop: offset.top }, 1000, 'swing');
+#  # On document load scroll the AHRQ header out of sight ;)
+#  element = $( 'body' )
+#  offset = element.offset()
+#  $( 'html, body' ).animate({ scrollTop: offset.top }, 1000, 'swing');
 
   # Make scroll-to-top button visible after scrolling down 100 pixels.
   $( document ).on 'scroll', ->
