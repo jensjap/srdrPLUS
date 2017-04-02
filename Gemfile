@@ -65,8 +65,11 @@ gem 'foundation-icons-sass-rails'
 
 # Prettier templates.
 gem 'slim-rails'
+
+# Simplified forms.
 gem 'simple_form'
 gem 'country_select'
+gem 'cocoon'
 
 # Authentication.
 gem 'devise'
