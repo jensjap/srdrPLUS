@@ -3,9 +3,11 @@
 one:
   profile: one
   degree: one
-  deleted_at: 2017-03-27 20:57:39
+  deleted_at: NULL
+  active: true
 
 two:
   profile: two
   degree: two
   deleted_at: 2017-03-27 20:57:39
+  active: NULL
