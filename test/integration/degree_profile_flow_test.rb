@@ -2,13 +2,13 @@ require 'test_helper'
 
 class DegreeProfileFlowTest < Capybara::Rails::TestCase
   def setup
+    sign_in(@test_superadmin)
+    visit edit_profile_path
   end
 
   test 'de-associating a degree should delete degreeholderships' do
-    sign_in(@test_superadmin)
+    assert page.has_content? 'Degree Information'
 
-    visit edit_profile_path
-    assert page.has_content?('Degree Information')
     # Find degrees that have a check marked.
     checked = page.all(:css, 'div.check_boxes.profile_degrees input[checked]')
     checked.map { |c| c.set(false) }
@@ -21,10 +21,8 @@ class DegreeProfileFlowTest < Capybara::Rails::TestCase
   end
 
   test 'de-associating a degree should really delete degreeholderships' do
-    sign_in(@test_superadmin)
+    assert page.has_content? 'Degree Information'
 
-    visit edit_profile_path
-    assert page.has_content?('Degree Information')
     # Find degrees that have a check marked.
     checked = page.all(:css, 'div.check_boxes.profile_degrees input[checked]')
     checked.map { |c| c.set(false) }

@@ -8,12 +8,12 @@ class LoginFlowTest < Capybara::Rails::TestCase
   end
 
   test 'should get login page' do
-    assert page.has_content?('Log in')
-    assert page.has_content?('Sign up')
+    assert page.has_content? 'Log in'
+    assert page.has_content? 'Sign up'
   end
 
   test 'visiting login should not get sign up page' do
-    refute page.has_content?('Password confirmation')
+    refute page.has_content? 'Password confirmation'
   end
 
   test 'should login with valid username/password' do
@@ -23,6 +23,6 @@ class LoginFlowTest < Capybara::Rails::TestCase
     click_on 'Log in'
 
     assert_current_path root_path
-    assert page.has_content?('Welcome')
+    assert page.has_content? 'Welcome'
   end
 end
