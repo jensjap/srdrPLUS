@@ -30,18 +30,18 @@ module SeedData
       end
 
       @organizations = Organization.create([
-        { name: '-- Unspecified --' },
-        { name: 'Brown University' },
-        { name: 'Johns Hopkins University' },
-        { name: 'Cochrane' }
+        { name: '-- Other (suggest new) --', suggested: false },
+        { name: 'Brown University', suggested: false },
+        { name: 'Johns Hopkins University', suggested: false },
+        { name: 'Cochrane', suggested: false }
       ])
 
-      @red_hair_pirates = Organization.create(name: 'Red Hair Pirates')
-      @straw_hat_pirates = Organization.create(name: 'Straw Hat Pirates')
-      @roger_pirates = Organization.create(name: 'Roger Pirates')
+      @red_hair_pirates = Organization.create(name: 'Red Hair Pirates', suggested: false)
+      @straw_hat_pirates = Organization.create(name: 'Straw Hat Pirates', suggested: false)
+      @roger_pirates = Organization.create(name: 'Roger Pirates', suggested: false)
 
       @degrees = Degree.create([
-        { name: '-- Unspecified --' },
+        { name: '-- Other (suggest new) --' },
         { name: 'BA.' }, { name: 'BS.' },
         { name: 'MA.' }, { name: 'MS.' },
         { name: 'MPH.' }, { name: 'J.D.' },
