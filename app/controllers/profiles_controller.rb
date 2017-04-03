@@ -9,21 +9,6 @@ class ProfilesController < ApplicationController
   # GET /profile/edit
   def edit
   end
-  #
-  # POST /profiles
-  # POST /profiles.json
-  def create
-    @profile = current_user.build_profile
-    respond_to do |format|
-      if @profile.update(profile_params)
-        format.html { redirect_to @profile, notice: 'Profile was successfully updated.' }
-        format.json { render :show, status: :created, location: @profile }
-      else
-        format.html { render :new }
-        format.json { render json: @profile.errors, status: :unprocessable_entity }
-      end
-    end
-  end
 
   # PATCH/PUT /profile
   # PATCH/PUT /profile.json
