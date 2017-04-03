@@ -10,6 +10,9 @@ h2 Edit User Profile
       fieldset.fieldset
         legend Organization Information
         = f.association :organization
+        .suggested-organization#suggested-organization-fields.hide
+          = f.simple_fields_for :suggested, as: :fake do |s_f|
+            = s_f.input :organization, label: 'Suggest a new organization'
 
     .column.medium-6
       fieldset.fieldset
@@ -29,3 +32,4 @@ h2 Edit User Profile
             = f.input :last_name
 
       = f.button :submit
+
