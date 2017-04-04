@@ -3,7 +3,7 @@ class Degree < ApplicationRecord
 
   before_destroy :raise_error
 
-  has_many :degreeholderships, inverse_of: :degree
+  has_many :degreeholderships, dependent: :destroy, inverse_of: :degree
   has_many :profiles, through: :degreeholderships
 
   private
