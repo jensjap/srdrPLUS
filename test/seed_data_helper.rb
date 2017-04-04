@@ -42,18 +42,22 @@ module SeedData
 
       @degrees = Degree.create([
         { name: '-- Other (suggest new) --' },
-        { name: 'BA.' }, { name: 'BS.' },
-        { name: 'MA.' }, { name: 'MS.' },
-        { name: 'MPH.' }, { name: 'J.D.' },
-        { name: 'M.D.' }, { name: 'Ph.D.' }
+        { name: 'Bachelor of Arts - BA' },
+        { name: 'Bachelor of Science - BS' },
+        { name: 'Master of Arts - MA' },
+        { name: 'Master of Science - MS' },
+        { name: 'Master of Science in Public Health - MSPH' },
+        { name: 'Juris Doctor - JD' },
+        { name: 'Medical Doctor - MD' },
+        { name: 'Doctor of Philosophy - PhD' }
       ])
 
-      @bachelor = Degree.find_by(name: 'BA.')
-      @master = Degree.find_by(name: 'MS.')
-      @mph = Degree.find_by(name: 'MPH.')
-      @jd = Degree.find_by(name: 'J.D.')
-      @md = Degree.find_by(name: 'M.D.')
-      @phd = Degree.find_by(name: 'Ph.D.')
+      @bachelor = Degree.find_by(name: 'Bachelor of Arts - BA')
+      @master = Degree.find_by(name: 'Bachelor of Science - BS')
+      @msph = Degree.find_by(name: 'Master of Science in Public Health - MSPH')
+      @jd = Degree.find_by(name: 'Juris Doctor - JD')
+      @md = Degree.find_by(name: 'Medical Doctor - MD')
+      @phd = Degree.find_by(name: 'Doctor of Philosophy - PhD')
 
       Profile.create([
       ])
@@ -88,10 +92,10 @@ module SeedData
       @bachelor.profiles << @auditor_profile
       @master.profiles << @superadmin_profile
       @master.profiles << @auditor_profile
-      @mph.profiles << @superadmin_profile
-      @mph.profiles << @contributor_profile
+      @msph.profiles << @superadmin_profile
+      @msph.profiles << @contributor_profile
       @jd.profiles << @auditor_profile
-      @mph.profiles << @auditor_profile
+      @msph.profiles << @auditor_profile
 
       ## Turn on paper_trail.
       PaperTrail.enabled = true
