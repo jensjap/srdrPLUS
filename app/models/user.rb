@@ -6,6 +6,7 @@ class User < ApplicationRecord
          :confirmable, :lockable, :timeoutable, :omniauthable
 
   has_one :profile, dependent: :destroy, inverse_of: :user
+
   has_many :degrees, through: :profile
   has_many :degreeholderships, through: :profile
 

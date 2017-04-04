@@ -30,7 +30,6 @@ module SeedData
       end
 
       @organizations = Organization.create([
-        { name: '-- Other (suggest new) --', suggested: false },
         { name: 'Brown University', suggested: false },
         { name: 'Johns Hopkins University', suggested: false },
         { name: 'Cochrane', suggested: false }
@@ -41,7 +40,6 @@ module SeedData
       @roger_pirates = Organization.create(name: 'Roger Pirates', suggested: false)
 
       @degrees = Degree.create([
-        { name: '-- Other (suggest new) --' },
         { name: 'Bachelor of Arts - BA' },
         { name: 'Bachelor of Science - BS' },
         { name: 'Master of Arts - MA' },

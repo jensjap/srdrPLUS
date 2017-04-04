@@ -16,6 +16,7 @@
 //= require foundation
 //= require turbolinks
 //= require toastr_rails
+//= require select2
 //= require cocoon
 //= require_tree .
 

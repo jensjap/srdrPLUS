@@ -2,13 +2,12 @@
 # All this logic will automatically be available in application.js.
 # You can use CoffeeScript in this file: http://coffeescript.org/
 document.addEventListener 'turbolinks:load', ->
-  $('#profile_organization_id').change ->
-    value = $(this).children(':selected').attr 'value'
-    console.log value
-    if value == '1'
-      $('#suggested-organization-fields').removeClass 'hide'
-    else
-      $('#suggested-organization-fields').addClass 'hide'
-    return
-  return
+
+  $('#profile_degree_ids').select2({
+    closeOnSelect: false
+    })
+
+  $('#profile_organization_id').select2()
+
+  return # END document.addEventListener 'turbolinks:load', ->
 

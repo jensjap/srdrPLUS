@@ -70,6 +70,7 @@ gem 'slim-rails'
 gem 'simple_form'
 gem 'country_select'
 gem 'cocoon'
+gem "select2-rails"
 
 # Authentication.
 gem 'devise'

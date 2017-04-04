@@ -7,13 +7,6 @@ class OrganizationProfileFlowText < Capybara::Rails::TestCase
     assert page.has_content? 'Organization Information'
   end
 
-  test 'selecting "-- Other (new suggestion) --" should unhide New Organization Name' do
-    assert page.find('#suggested-organization-fields')[:class].include? 'hide'
-    within_fieldset('Organization Information') do
-      select '-- Other (suggest new) --'
-    end
-  end
-
   test 'submitting all of the same fields should not create version entry' do
     versions_cnt = PaperTrail::Version.count
     click_on 'Update Profile'
