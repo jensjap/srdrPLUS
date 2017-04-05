@@ -10,12 +10,15 @@ document.addEventListener 'turbolinks:load', ->
   formatOrganization = (result) ->
     if result.loading
       return result.text
-    markup = ''
+    markup = '<span>'
     if ~result.text.indexOf 'Pirate'
-      markup += '<span><img src=\'https://s-media-cache-ak0.pinimg.com/originals/01/ee/fe/01eefe3662a40757d082404a19bce33b.png\' alt=\'pirate flag\' height=\'32\' width=\'32\'> '
+      markup += '<img src=\'https://s-media-cache-ak0.pinimg.com/originals/01/ee/fe/01eefe3662a40757d082404a19bce33b.png\' alt=\'pirate flag\' height=\'32\' width=\'32\'> '
+    if ~result.text.indexOf 'New item: '
+      #!!! Maybe add some styling.
+      markup += ''
     markup += result.text
     if result.suggestion
-      markup += ' (suggested by user id: ' + result.suggestion.user_id + ')'
+      markup += ' (suggested by ' + result.suggestion.first_name + ')'
     markup += '</span>'
     markup
 
