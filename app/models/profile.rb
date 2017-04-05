@@ -13,13 +13,13 @@ class Profile < ApplicationRecord
   accepts_nested_attributes_for :degrees, :allow_destroy => true, :reject_if => :all_blank
   accepts_nested_attributes_for :degreeholderships, :allow_destroy => true, :reject_if => :all_blank
 
-  validate :organization_cannot_have_id_1
+#  validate :organization_cannot_have_id_1
 
-  def organization_cannot_have_id_1
-    if organization_id == 1
-      errors.add(:organization_id, 'You must specify a name for your suggestion')
-    end
-  end
+#  def organization_cannot_have_id_1
+#    if organization_id == 1
+#      errors.add(:organization_id, 'You must specify a name for your suggestion')
+#    end
+#  end
 
   private
 

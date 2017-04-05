@@ -9,12 +9,12 @@ h2 Edit User Profile
     .column.medium-6
       fieldset.fieldset
         legend Organization Information
-        = f.association :organization
+        = f.association :organization, include_blank: false
 
     .column.medium-6
       fieldset.fieldset
         legend Degree Information
-        = f.association :degrees, label: 'Degrees (select all that apply)'
+        = f.association :degrees, label: 'Degrees (select all that apply)', include_blank: false
 
   .row
     .column
