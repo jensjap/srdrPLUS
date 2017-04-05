@@ -3,6 +3,8 @@ class Degree < ApplicationRecord
 
   before_destroy :raise_error
 
+  has_one :suggestion, as: :suggestable, dependent: :destroy
+
   has_many :degreeholderships, dependent: :destroy, inverse_of: :degree
   has_many :profiles, through: :degreeholderships
 

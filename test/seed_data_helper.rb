@@ -30,35 +30,29 @@ module SeedData
       end
 
       @organizations = Organization.create([
-        { name: 'Brown University', suggested: false },
-        { name: 'Johns Hopkins University', suggested: false },
-        { name: 'Cochrane', suggested: true }
+        { name: 'Brown University' },
+        { name: 'Johns Hopkins University' }
       ])
 
-      @red_hair_pirates = Organization.create(name: 'Red Hair Pirates', suggested: false)
-      @straw_hat_pirates = Organization.create(name: 'Straw Hat Pirates', suggested: true)
-      @roger_pirates = Organization.create(name: 'Roger Pirates', suggested: true)
+      @cochrane = Organization.create(name: 'Cochrane')
+      @red_hair_pirates = Organization.create(name: 'Red Hair Pirates')
+      @straw_hat_pirates = Organization.create(name: 'Straw Hat Pirates')
+      @roger_pirates = Organization.create(name: 'Roger Pirates')
 
-      @degrees = Degree.create([
-        { name: 'Bachelor of Arts - BA' },
-        { name: 'Bachelor of Science - BS' },
-        { name: 'Master of Arts - MA' },
-        { name: 'Master of Science - MS' },
-        { name: 'Master of Science in Public Health - MSPH' },
-        { name: 'Juris Doctor - JD' },
-        { name: 'Medical Doctor - MD' },
-        { name: 'Doctor of Philosophy - PhD' }
-      ])
+      @bachelor_arts = Degree.create(name: 'Bachelor of Arts - BA')
+      @bachelor_science = Degree.create(name: 'Bachelor of Science - BS')
+      @master_arts = Degree.create(name: 'Master of Arts - MA')
+      @master_science = Degree.create(name: 'Master of Science - MS')
+      @msph = Degree.create(name: 'Master of Science in Public Health - MSPH')
+      @jd = Degree.create(name: 'Juris Doctor - JD')
+      @md = Degree.create(name: 'Medical Doctor - MD')
+      @phd = Degree.create(name: 'Doctor of Philosophy - PhD')
 
-      @bachelor = Degree.find_by(name: 'Bachelor of Arts - BA')
-      @master = Degree.find_by(name: 'Bachelor of Science - BS')
-      @msph = Degree.find_by(name: 'Master of Science in Public Health - MSPH')
-      @jd = Degree.find_by(name: 'Juris Doctor - JD')
-      @md = Degree.find_by(name: 'Medical Doctor - MD')
-      @phd = Degree.find_by(name: 'Doctor of Philosophy - PhD')
-
-      Profile.create([
-      ])
+      @cochrane.create_suggestion(user: @test_contributor)
+      @red_hair_pirates.create_suggestion(user: @test_superadmin)
+      @roger_pirates.create_suggestion(user: @test_superadmin)
+      @msph.create_suggestion(user: @test_auditor)
+      @jd.create_suggestion(user: @test_contributor)
 
       @superadmin_profile = Profile.create(user: @test_superadmin,
                                            organization: @red_hair_pirates,
@@ -85,11 +79,11 @@ module SeedData
                                        middle_name: 'D',
                                        last_name: 'Roger')
 
-      @bachelor.profiles << @superadmin_profile
-      @bachelor.profiles << @contributor_profile
-      @bachelor.profiles << @auditor_profile
-      @master.profiles << @superadmin_profile
-      @master.profiles << @auditor_profile
+      @bachelor_arts.profiles << @superadmin_profile
+      @bachelor_arts.profiles << @contributor_profile
+      @bachelor_science.profiles << @auditor_profile
+      @master_arts.profiles << @superadmin_profile
+      @master_science.profiles << @auditor_profile
       @msph.profiles << @superadmin_profile
       @msph.profiles << @contributor_profile
       @jd.profiles << @auditor_profile
