@@ -2,7 +2,7 @@ require 'test_helper'
 
 class DegreeProfileFlowTest < Capybara::Rails::TestCase
   def setup
-    sign_in(@test_superadmin)
+    sign_in(users(:one))
     visit edit_profile_path
   end
 

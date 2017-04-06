@@ -20,10 +20,10 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
-  hello: "Hello world"
-  confirm: "Are you sure?"
+  hello: 'Hello world'
+  confirm: 'Are you sure?'
   users:
     registrations:
       edit:
         cancel_account:
-          plead: "Are you sure you want to cancel your account?"
+          plead: 'Are you sure you want to end it this way?'

@@ -1,17 +1,15 @@
 h1 Listing projects
 
 .column.row
-  table.my-stack
+  table.stack
     thead
       tr
         th Name
         th Description
         th Attribution
         th Methodology description
-        th Prospero
-        th Doi
-        th Notes
-        th Funding source
+        th Date Created
+        th Date Updated
         th
         th
         th
@@ -23,10 +21,8 @@ h1 Listing projects
           td = project.description
           td = project.attribution
           td = project.methodology_description
-          td = project.prospero
-          td = project.doi
-          td = project.notes
-          td = project.funding_source
+          td = project.created_at
+          td = project.updated_at
           td = link_to 'Show', project
           td = link_to 'Edit', edit_project_path(project)
           td = link_to 'Destroy', project, data: { confirm: 'Are you sure?' }, method: :delete

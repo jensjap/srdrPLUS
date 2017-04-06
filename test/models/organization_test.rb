@@ -5,8 +5,8 @@ class OrganizationTest < ActiveSupport::TestCase
   end
 
   test '#by_query should return correct organizations in the right order' do
-    results = Organization.by_query('pirate')
-    assert_equal results, Organization.where('name like ?', "%pirate%").order(:name)
+    results = Organization.by_query('orga')
+    assert_equal results, Organization.where('name like ?', "%orga%").order(:name)
   end
 
   test '#process_token should create resource and suggestion by user' do

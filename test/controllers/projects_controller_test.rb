@@ -2,7 +2,7 @@ require 'test_helper'
 
 class ProjectsControllerTest < ActionDispatch::IntegrationTest
   setup do
-    sign_in(@test_superadmin)
+    sign_in(users(:one))
     @project = projects(:one)
   end
 
