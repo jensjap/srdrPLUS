@@ -1,0 +1,35 @@
+h1 Listing projects
+
+table
+  thead
+    tr
+      th Name
+      th Description
+      th Attribution
+      th Methodology description
+      th Prospero
+      th Doi
+      th Notes
+      th Funding source
+      th
+      th
+      th
+
+  tbody
+    - @projects.each do |project|
+      tr
+        td = project.name
+        td = project.description
+        td = project.attribution
+        td = project.methodology_description
+        td = project.prospero
+        td = project.doi
+        td = project.notes
+        td = project.funding_source
+        td = link_to 'Show', project
+        td = link_to 'Edit', edit_project_path(project)
+        td = link_to 'Destroy', project, data: { confirm: 'Are you sure?' }, method: :delete
+
+br
+
+= link_to 'New Project', new_project_path

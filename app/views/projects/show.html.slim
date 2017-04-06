@@ -1,0 +1,30 @@
+p#notice = notice
+
+p
+  strong Name:
+  = @project.name
+p
+  strong Description:
+  = @project.description
+p
+  strong Attribution:
+  = @project.attribution
+p
+  strong Methodology description:
+  = @project.methodology_description
+p
+  strong Prospero:
+  = @project.prospero
+p
+  strong Doi:
+  = @project.doi
+p
+  strong Notes:
+  = @project.notes
+p
+  strong Funding source:
+  = @project.funding_source
+
+= link_to 'Edit', edit_project_path(@project)
+'  |
+= link_to 'Back', projects_path

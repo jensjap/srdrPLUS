@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170406014028) do
+ActiveRecord::Schema.define(version: 20170406043101) do
 
   create_table "degreeholderships", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "degree_id"
@@ -56,6 +56,22 @@ ActiveRecord::Schema.define(version: 20170406014028) do
     t.index ["deleted_at"], name: "index_profiles_on_deleted_at", using: :btree
     t.index ["organization_id"], name: "index_profiles_on_organization_id", using: :btree
     t.index ["user_id"], name: "index_profiles_on_user_id", using: :btree
+  end
+
+  create_table "projects", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string   "name"
+    t.text     "description",             limit: 65535
+    t.text     "attribution",             limit: 65535
+    t.text     "methodology_description", limit: 65535
+    t.string   "prospero"
+    t.string   "doi"
+    t.text     "notes",                   limit: 65535
+    t.string   "funding_source"
+    t.datetime "created_at",                            null: false
+    t.datetime "updated_at",                            null: false
+    t.datetime "deleted_at"
+    t.index ["deleted_at"], name: "index_projects_on_deleted_at", using: :btree
+    t.index ["name", "description"], name: "index_projects_on_name_and_description", unique: true, length: { name: 10, description: 100 }, using: :btree
   end
 
   create_table "suggestions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
