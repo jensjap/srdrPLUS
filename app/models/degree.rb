@@ -13,11 +13,9 @@ class Degree < ApplicationRecord
   has_many :degreeholderships, dependent: :destroy, inverse_of: :degree
   has_many :profiles, through: :degreeholderships
 
-  private
+  validates :name, uniqueness: true
 
-  def record_suggestor
-    self.create_suggestion(user: User.current) if User.current
-  end
+  private
 
   # You should NEVER delete a Degree.
   def raise_error
