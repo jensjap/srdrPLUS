@@ -2,6 +2,11 @@ require 'test_helper'
 
 class OrganizationTest < ActiveSupport::TestCase
   def setup
+    # We need to set this because in model tests before_action in
+    # ApplicationController is not called. So if model tests run before
+    # controller tests, then the User.current may not be set to the
+    # correct/current user.
+    User.current = User.first
   end
 
   test '#by_query should return correct organizations in the right order' do
