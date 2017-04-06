@@ -7,9 +7,11 @@ class Users::SessionsController < Devise::SessionsController
   # end
 
   # POST /resource/sign_in
-  # def create
-  #   super
-  # end
+  def create
+    #flash[:info] = Faker::RickAndMorty.quote
+    flash[:info] = Faker::ChuckNorris.fact
+    super
+  end
 
   # DELETE /resource/sign_out
   # def destroy
