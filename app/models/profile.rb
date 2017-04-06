@@ -13,6 +13,12 @@ class Profile < ApplicationRecord
   accepts_nested_attributes_for :degrees, :allow_destroy => true, :reject_if => :all_blank
   accepts_nested_attributes_for :degreeholderships, :allow_destroy => true, :reject_if => :all_blank
 
+  def organization_id=(tokens)
+    ActiveRecord::Base.transaction do
+      self.write_attribute(:organization_id, Organization.id_from_tokens(tokens))
+    end
+  end
+
 #  validate :organization_cannot_have_id_1
 
 #  def organization_cannot_have_id_1

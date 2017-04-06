@@ -2,12 +2,7 @@ class OrganizationsController < ApplicationController
   before_action :set_organization, only: [:show]
 
   def index
-    @organizations = Organization.where('name like ?', "%#{ params[:q] }%").order(:name)
-    if @organizations.empty?
-      @organizations = [ OpenStruct.new(id: "<<<#{ params[:q] }>>>", name: "New: '#{ params[:q] }'", suggestion: false) ]
-    else
-      @organizations
-    end
+    @organizations = Organization.by_query(params[:q])
   end
 
   def show
