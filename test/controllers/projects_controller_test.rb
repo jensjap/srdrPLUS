@@ -2,6 +2,7 @@ require 'test_helper'
 
 class ProjectsControllerTest < ActionDispatch::IntegrationTest
   setup do
+    sign_in(@test_superadmin)
     @project = projects(:one)
   end
 
@@ -17,7 +18,7 @@ class ProjectsControllerTest < ActionDispatch::IntegrationTest
 
   test "should create project" do
     assert_difference('Project.count') do
-      post projects_url, params: { project: { attribution: @project.attribution, description: @project.description, doi: @project.doi, funding_source: @project.funding_source, methodology_description: @project.methodology_description, name: @project.name, notes: @project.notes, prospero: @project.prospero } }
+      post projects_url, params: { project: { attribution: @project.attribution, description: @project.description, doi: @project.doi, funding_source: @project.funding_source, methodology_description: @project.methodology_description, name: 'new project', notes: @project.notes, prospero: @project.prospero } }
     end
 
     assert_redirected_to project_url(Project.last)

@@ -1,6 +1,8 @@
 class Degree < ApplicationRecord
   include SharedMethods
 
+  after_create :record_suggestor
+
   acts_as_paranoid
   has_paper_trail
 
@@ -12,6 +14,10 @@ class Degree < ApplicationRecord
   has_many :profiles, through: :degreeholderships
 
   private
+
+  def record_suggestor
+    self.create_suggestion(user: User.current) if User.current
+  end
 
   # You should NEVER delete a Degree.
   def raise_error

@@ -25,12 +25,9 @@ class Profile < ApplicationRecord
 
   private
 
-  def process_token(token, resource)
-    token.gsub!(/<<<(.+?)>>>/) do
-      ActiveRecord::Base.transaction do
-        resource = resource.to_s.capitalize.constantize.create!(name: $1)
-        resource.create_suggestion(user: User.current).suggestable.id
-      end
+  def process_token(token, resource_type)
+    ActiveRecord::Base.transaction do
+      token.gsub!(/<<<(.+?)>>>/) { resource_type.to_s.capitalize.constantize.create!(name: $1).id }
     end
   end
 

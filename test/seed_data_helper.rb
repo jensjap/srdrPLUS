@@ -1,6 +1,9 @@
 module SeedData
   def self.extended(object)
     object.instance_exec do
+      # Set current_user for suggestable after_create callback.
+      User.current = users(:one)
+
       ## Turn off paper_trail.
       PaperTrail.enabled = false
 
@@ -48,11 +51,11 @@ module SeedData
       @md = Degree.create(name: 'Medical Doctor - MD')
       @phd = Degree.create(name: 'Doctor of Philosophy - PhD')
 
-      @cochrane.create_suggestion(user: @test_contributor)
-      @red_hair_pirates.create_suggestion(user: @test_superadmin)
-      @roger_pirates.create_suggestion(user: @test_superadmin)
-      @msph.create_suggestion(user: @test_auditor)
-      @jd.create_suggestion(user: @test_contributor)
+#      @cochrane.create_suggestion(user: @test_contributor)
+#      @red_hair_pirates.create_suggestion(user: @test_superadmin)
+#      @roger_pirates.create_suggestion(user: @test_superadmin)
+#      @msph.create_suggestion(user: @test_auditor)
+#      @jd.create_suggestion(user: @test_contributor)
 
       @superadmin_profile = Profile.create(user: @test_superadmin,
                                            organization: @red_hair_pirates,
@@ -89,16 +92,16 @@ module SeedData
       @jd.profiles << @auditor_profile
       @msph.profiles << @auditor_profile
 
-      99.times do |n|
-        Project.create!(name:        Faker::Book.unique.title,
-                        description: Faker::ChuckNorris.fact,
-                        attribution: Faker::Cat.registry,
-                        methodology_description: Faker::RuPaul.quote,
-                        prospero:                Faker::Number.hexadecimal(12),
-                        doi:                     Faker::Number.hexadecimal(6),
-                        notes:                   Faker::Lorem.sentences(1),
-                        funding_source:          Faker::Book.publisher)
-      end
+#      10.times do |n|
+#        Project.create!(name:        Faker::Book.unique.title,
+#                        description: Faker::ChuckNorris.fact,
+#                        attribution: Faker::Cat.registry,
+#                        methodology_description: Faker::RuPaul.quote,
+#                        prospero:                Faker::Number.hexadecimal(12),
+#                        doi:                     Faker::Number.hexadecimal(6),
+#                        notes:                   Faker::Lorem.sentences(1),
+#                        funding_source:          Faker::Book.publisher)
+#      end
 
       ## Turn on paper_trail.
       PaperTrail.enabled = true

@@ -9,7 +9,7 @@ class LoginFlowTest < Capybara::Rails::TestCase
 
   test 'should get login page' do
     assert page.has_content? 'Log in'
-    assert page.has_content? 'Sign up'
+    assert page.has_content? 'Register'
   end
 
   test 'visiting login should not get sign up page' do
