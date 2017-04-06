@@ -75,6 +75,13 @@ GIT
       debug_inspector
       railties (>= 5.0)
 
+GIT
+  remote: https://github.com/stympy/faker.git
+  revision: 29c77ac8cc9ab22c49966e1ad361263fb13e5f7a
+  specs:
+    faker (1.8.0)
+      i18n (~> 0.5)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -300,6 +307,7 @@ DEPENDENCIES
   coffee-rails (~> 4.2)
   country_select
   devise
+  faker!
   foundation-icons-sass-rails
   foundation-rails
   jbuilder (~> 2.5)

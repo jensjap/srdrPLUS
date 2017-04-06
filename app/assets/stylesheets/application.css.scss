@@ -134,4 +134,32 @@ pre.debug_dump {
   font-size: 2em;
 }
 // END Scroll top-of-the-page button.
+// Foundation's table.stack only shows the first th, but I want all of them.
+@mixin my-table-stack {
+  thead {
+    th {
+      display: block;
+    }
+  }
 
+  tfoot {
+    display: none;
+  }
+
+  tr,
+  th,
+  td {
+    display: block;
+  }
+
+  td {
+    border-top: 0;
+  }
+}
+
+table.my-stack {
+  @include breakpoint(medium down) {
+    @include my-table-stack;
+  }
+}
+// END Foundation's table.stack only shows the first th, but I want all of them.

@@ -571,7 +571,7 @@ $table-foot-background: smart-scale($table-background, $table-color-scale);
 $table-foot-row-hover: darken($table-foot-background, $table-hover-scale);
 $table-head-font-color: $body-font-color;
 $table-foot-font-color: $body-font-color;
-$show-header-for-stacked: false;
+$show-header-for-stacked: true;
 
 // 33. Tabs
 // --------

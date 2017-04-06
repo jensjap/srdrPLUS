@@ -89,6 +89,17 @@ module SeedData
       @jd.profiles << @auditor_profile
       @msph.profiles << @auditor_profile
 
+      99.times do |n|
+        Project.create!(name:        Faker::Book.unique.title,
+                        description: Faker::ChuckNorris.fact,
+                        attribution: Faker::Cat.registry,
+                        methodology_description: Faker::RuPaul.quote,
+                        prospero:                Faker::Number.hexadecimal(12),
+                        doi:                     Faker::Number.hexadecimal(6),
+                        notes:                   Faker::Lorem.sentences(1),
+                        funding_source:          Faker::Book.publisher)
+      end
+
       ## Turn on paper_trail.
       PaperTrail.enabled = true
 
