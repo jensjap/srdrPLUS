@@ -8,7 +8,6 @@ json.items do
         json.extract! organization.suggestion.user.profile, :id, :first_name
       end
     end
-    #json.url organization_url(organization, format: :json)
   end
 end
 

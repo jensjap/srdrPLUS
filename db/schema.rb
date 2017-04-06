@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170405054406) do
+ActiveRecord::Schema.define(version: 20170406014028) do
 
   create_table "degreeholderships", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "degree_id"
@@ -31,6 +31,8 @@ ActiveRecord::Schema.define(version: 20170405054406) do
     t.string   "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "deleted_at"
+    t.index ["deleted_at"], name: "index_degrees_on_deleted_at", using: :btree
   end
 
   create_table "organizations", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|

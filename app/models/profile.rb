@@ -13,21 +13,26 @@ class Profile < ApplicationRecord
   accepts_nested_attributes_for :degrees, :allow_destroy => true, :reject_if => :all_blank
   accepts_nested_attributes_for :degreeholderships, :allow_destroy => true, :reject_if => :all_blank
 
-  def organization_id=(tokens)
-    ActiveRecord::Base.transaction do
-      self.write_attribute(:organization_id, Organization.id_from_tokens(tokens))
-    end
+  def degree_ids=(tokens)
+    tokens.map { |token| process_token(token, :degree) }
+    super
   end
 
-#  validate :organization_cannot_have_id_1
-
-#  def organization_cannot_have_id_1
-#    if organization_id == 1
-#      errors.add(:organization_id, 'You must specify a name for your suggestion')
-#    end
-#  end
+  def organization_id=(token)
+    process_token(token, :organization)
+    super
+  end
 
   private
+
+  def process_token(token, resource)
+    token.gsub!(/<<<(.+?)>>>/) do
+      ActiveRecord::Base.transaction do
+        resource = resource.to_s.capitalize.constantize.create!(name: $1)
+        resource.create_suggestion(user: User.current).suggestable.id
+      end
+    end
+  end
 
 #  def restore_relationships
 #    # Iterate through all associated relationship records that were deleted when we called #destroy

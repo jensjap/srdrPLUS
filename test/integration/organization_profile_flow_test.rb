@@ -29,6 +29,16 @@ class OrganizationProfileFlowText < Capybara::Rails::TestCase
     assert_equal @superadmin_profile.organization, Organization.second
   end
 
+  test 'submitting properly formed organization_id tokens (\'0\') should associate profile with newly created organization' do
+    params = { organization_id: '<<<0>>>' }
+    previous_organization = @superadmin_profile.organization
+    assert_not_nil previous_organization
+    @superadmin_profile.update(params)
+    current_organization = Organization.last
+    assert_equal @superadmin_profile.organization, current_organization
+    assert_not_equal previous_organization, current_organization
+  end
+
   test 'submitting properly formed organization_id tokens should associate profile with newly created organization' do
     params = { organization_id: '<<<loyloyloy>>>' }
     previous_organization = @superadmin_profile.organization
@@ -46,17 +56,15 @@ class OrganizationProfileFlowText < Capybara::Rails::TestCase
     assert_equal @superadmin_profile.organization, Organization.last
   end
 
-  test 'submitting malformed organization_id tokens should de-associate profile from organization' do
+  test 'submitting malformed organization_id tokens should raise' do
     params = { organization_id: 'loyloyloy' }
     assert_not_nil @superadmin_profile.organization
-    @superadmin_profile.update(params)
-    assert_nil @superadmin_profile.organization
+    proc { @superadmin_profile.update(params) }.must_raise ActiveRecord::InvalidForeignKey
   end
 
-  test 'submitting malformed organization_id tokens (0 string) should de-associate profile from organization' do
+  test 'submitting malformed organization_id tokens (0 string) should raise' do
     params = { organization_id: '0' }
     assert_not_nil @superadmin_profile.organization
-    @superadmin_profile.update(params)
-    assert_nil @superadmin_profile.organization
+    proc { @superadmin_profile.update(params) }.must_raise ActiveRecord::InvalidForeignKey
   end
 end
