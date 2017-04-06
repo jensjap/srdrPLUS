@@ -1,4 +1,5 @@
 class Degree < ApplicationRecord
+  acts_as_paranoid
   has_paper_trail
 
   before_destroy :raise_error
