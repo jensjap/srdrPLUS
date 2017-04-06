@@ -23,7 +23,26 @@ document.addEventListener 'turbolinks:load', ->
     markup
 
   $('#profile_degree_ids').select2
-    closeOnSelect: false
+    minimumInputLength: 0
+    ajax:
+      url: '/degrees.json'
+      dataType: 'json'
+      delay: 250
+      data: (params) ->
+        q: params.term
+        page: params.page
+      processResults: (data, params) ->
+        # The server may respond with params.page, set it to 1 if not.
+        params.page = params.page || 1
+        results: $.map(data.items, (i) ->
+          id: i.id
+          text: i.name
+          suggestion: i.suggestion
+        )
+    escapeMarkup: (markup) ->
+      markup
+    templateResult: formatOrganization
+    templateSelection: formatOrganizationSelection
 
   $('#profile_organization_id').select2
     minimumInputLength: 0
