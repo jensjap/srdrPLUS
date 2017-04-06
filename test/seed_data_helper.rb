@@ -2,7 +2,12 @@ module SeedData
   def self.extended(object)
     object.instance_exec do
       # Set current_user for suggestable after_create callback.
-      User.current = users(:one)
+      # We do this via User.current=()
+      # We need to set this because in model tests before_action in
+      # ApplicationController is not called. So if model tests run before
+      # controller tests, then the User.current may not be set to the
+      # correct/current user.
+      User.current = User.first
 
       ## Turn off paper_trail.
       PaperTrail.enabled = false

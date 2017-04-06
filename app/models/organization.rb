@@ -10,6 +10,8 @@ class Organization < ApplicationRecord
 
   has_many :profiles, dependent: :nullify, inverse_of: :profile
 
+  validates :name, uniqueness: true
+
   private
 
   def record_suggestor

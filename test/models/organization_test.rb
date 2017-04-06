@@ -2,11 +2,6 @@ require 'test_helper'
 
 class OrganizationTest < ActiveSupport::TestCase
   def setup
-    # We need to set this because in model tests before_action in
-    # ApplicationController is not called. So if model tests run before
-    # controller tests, then the User.current may not be set to the
-    # correct/current user.
-    User.current = User.first
   end
 
   test '#by_query should return correct organizations in the right order' do
@@ -37,6 +32,16 @@ class OrganizationTest < ActiveSupport::TestCase
     Profile.first.send(:process_token,'aaa', :organization)
     assert_equal Organization.count, previous_organization_cnt
     assert_equal Suggestion.count, previous_suggestion_cnt
+  end
+
+  test 'no new organization should be added when creating with same name' do
+    previous_organization_cnt = Organization.count
+    Organization.create(name: Organization.first.name)
+    assert_equal Organization.count, previous_organization_cnt
+  end
+
+  test 'organization with same name should be invalid' do
+    refute Organization.new(name: Organization.first.name).valid?
   end
 
 #  test '#id_from_tokens should return a number for valid tokens (proper format)' do
