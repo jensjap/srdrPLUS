@@ -26,6 +26,7 @@ body {
 }
 a {
   color: $primary-color;
+
   &:visited {
     color: $primary-color;
   }
@@ -39,8 +40,9 @@ a {
   padding: 3px;
   a {
     color: $white;
+
     &:hover {
-      color: $primary-color;
+      color: $white;
       background-color: $secondary-color;
     }
   }

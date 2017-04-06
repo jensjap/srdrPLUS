@@ -1,5 +1,5 @@
 #vertical-tabs.ul.tabs.vertical data-tabs=''
   li.tabs-title.is-active
-    = link_to "Edit #{ resource_name.to_s.humanize }", '#panel-user'
+    = link_to "Edit #{ resource_name.to_s.humanize }", '#panel-user', title: 'Change email / password'
   li.tabs-title
-    = link_to 'Unhappy?', '#panel-unhappy'
+    = link_to 'Cancel my account', '#panel-unhappy', title: 'Unregister'

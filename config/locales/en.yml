@@ -26,4 +26,4 @@ en:
     registrations:
       edit:
         cancel_account:
-          plead: "Are you sure you want to end it this way?"
+          plead: "Are you sure you want to cancel your account?"
