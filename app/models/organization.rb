@@ -6,6 +6,11 @@ class Organization < ApplicationRecord
 
   has_many :profiles, dependent: :nullify, inverse_of: :profile
 
+  # Params:
+  #   [String] Query string to search for Organization name
+  #
+  # Returns:
+  #   [Array] An array of Organization found that match the query string
   def self.by_query(query)
     @organizations = Organization.where('name like ?', "%#{ query }%").order(:name)
     return @organizations.empty? ?
@@ -30,8 +35,7 @@ class Organization < ApplicationRecord
   def self.create_record_with_tokens(tokens)
     tokens.gsub!(/<<<(.+?)>>>/) do
       organization = create!(name: $1)
-      #!!! Need to fetch proper user.
-      organization.create_suggestion(user: User.first).suggestable.id
+      organization.create_suggestion(user: User.current).suggestable.id
     end
   end
 end
