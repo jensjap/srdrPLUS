@@ -16,8 +16,19 @@ class LoginFlowTest < Capybara::Rails::TestCase
     refute page.has_content? 'Password confirmation'
   end
 
-  test 'should login with valid login/password' do
+  test 'should login with valid email/password' do
     fill_in 'Login', with: @user_one.email
+    fill_in 'Password', with: 'password'
+
+    click_on 'Log in'
+
+    assert_current_path root_path
+    refute page.has_content? 'Log in'
+    assert page.has_content? 'Welcome'
+  end
+
+  test 'should login with valid username/password' do
+    fill_in 'Login', with: @user_one.profile.username
     fill_in 'Password', with: 'password'
 
     click_on 'Log in'

@@ -15,7 +15,6 @@ class Profile < ApplicationRecord
 
   validates :user_id, uniqueness: true
   validates :username,
-    :presence => true,
     :uniqueness => {
       :case_sensitive => false
     }
@@ -36,7 +35,6 @@ class Profile < ApplicationRecord
   end
 
   def organization_id=(token)
-    byebug
     process_token(token, :organization)
     super
   end

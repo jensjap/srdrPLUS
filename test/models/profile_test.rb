@@ -19,13 +19,12 @@ class ProfileTest < ActiveSupport::TestCase
     assert_equal profiles(:one).object_id, degreeholdership.profile.object_id
   end
 
-  test 'submitting properly formed organization_id tokens (\'0\') should associate profile with newly created organization' do
+  test 'submitting properly formed organization_id tokens (\'<<<0>>>\') should associate profile with newly created organization' do
     params = { organization_id: '<<<0>>>' }
     assert_equal = @profile.organization, @organization_one
-    byebug
     @profile.update(params)
     assert_not_equal @profile.organization, @organization_one
-    assert_equal @profile.organization, @organization_two
+    assert_equal @profile.organization.name, '0'
   end
 
   test 'submitting properly formed organization_id tokens should associate profile with newly created organization' do
@@ -55,5 +54,10 @@ class ProfileTest < ActiveSupport::TestCase
     params = { organization_id: '0' }
     assert_not_nil @profile.organization
     proc { @profile.update(params) }.must_raise ActiveRecord::InvalidForeignKey
+  end
+
+  test 'username should not have spaces' do
+    @profile.username = 'super cool username'
+    refute @profile.valid?
   end
 end

@@ -18,11 +18,11 @@ class RegistrationFlowTest < Capybara::Rails::TestCase
   test 'Submitting a registration form should create a profile' do
     sign_up_user
 
-    new_user = User.last
-    new_profile = Profile.last
+    user = User.last
+    profile = Profile.last
 
-    assert_equal 'user@brand.new.com', new_user.email
-    assert_equal new_profile.user.id, new_user.id
+    assert_equal 'user@brand.new.com', user.email
+    assert_equal user.profile, profile
   end
 
   test 'new user should have confirmed_at set to nil, profile present' do
@@ -31,7 +31,6 @@ class RegistrationFlowTest < Capybara::Rails::TestCase
     last_user = User.last
 
     assert_nil last_user.confirmed_at
-    assert last_user.profile
   end
 
   test 'confirm new user should make user confirmed' do
