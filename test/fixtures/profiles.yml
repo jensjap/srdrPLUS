@@ -3,7 +3,7 @@
 one:
   user: one
   organization: one
-  username: MyString
+  username: profile one
   first_name: MyString
   middle_name: MyString
   last_name: MyString
@@ -11,7 +11,7 @@ one:
 two:
   user: two
   organization: two
-  username: MyString
+  username: profile two
   first_name: MyString
   middle_name: MyString
   last_name: MyString

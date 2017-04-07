@@ -57,7 +57,8 @@ ActiveRecord::Schema.define(version: 20170406163516) do
     t.datetime "deleted_at"
     t.index ["deleted_at"], name: "index_profiles_on_deleted_at", using: :btree
     t.index ["organization_id"], name: "index_profiles_on_organization_id", using: :btree
-    t.index ["user_id"], name: "index_profiles_on_user_id", using: :btree
+    t.index ["user_id"], name: "index_profiles_on_user_id", unique: true, using: :btree
+    t.index ["username"], name: "index_profiles_on_username", unique: true, using: :btree
   end
 
   create_table "projects", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|

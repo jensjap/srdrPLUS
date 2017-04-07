@@ -10,5 +10,11 @@ class CreateProfiles < ActiveRecord::Migration[5.0]
 
       t.timestamps
     end
+
+    add_index :profiles, :username, unique: true
+    remove_foreign_key :profiles, :users
+    remove_index :profiles, :user_id
+    add_index :profiles, :user_id, unique: true
+    add_foreign_key :profiles, :users
   end
 end
