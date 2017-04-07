@@ -36,6 +36,7 @@ class Profile < ApplicationRecord
   end
 
   def organization_id=(token)
+    byebug
     process_token(token, :organization)
     super
   end
