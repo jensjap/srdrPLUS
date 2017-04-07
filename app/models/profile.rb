@@ -14,7 +14,21 @@ class Profile < ApplicationRecord
   accepts_nested_attributes_for :degreeholderships, :allow_destroy => true, :reject_if => :all_blank
 
   validates :user_id, uniqueness: true
-  validates :username, uniqueness: true
+  validates :username,
+    :presence => true,
+    :uniqueness => {
+      :case_sensitive => false
+    }
+  # Only allow letter, number, underscore and punctuation.
+  validates_format_of :username, with: /^[a-zA-Z0-9_\.]*$/, :multiline => true
+
+  validate :validate_username
+
+  def validate_username
+    if User.where(email: username).exists?
+      errors.add(:username, :invalid)
+    end
+  end
 
   def degree_ids=(tokens)
     tokens.map { |token| process_token(token, :degree) }
