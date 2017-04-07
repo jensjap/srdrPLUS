@@ -25,7 +25,7 @@ class Profile < ApplicationRecord
 
   def validate_username
     if User.where(email: username).exists?
-      errors.add(:username, :invalid)
+      errors.add(:username, 'Username already taken!')
     end
   end
 

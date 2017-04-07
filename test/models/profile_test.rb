@@ -3,6 +3,7 @@ require 'test_helper'
 class ProfileTest < ActiveSupport::TestCase
   def setup
     @profile = profiles(:one)
+    @user_two = users(:two)
     @organization_one = organizations(:one)
     @organization_two = organizations(:two)
   end
@@ -59,5 +60,11 @@ class ProfileTest < ActiveSupport::TestCase
   test 'username should not have spaces' do
     @profile.username = 'super cool username'
     refute @profile.valid?
+  end
+
+  test 'username cannot be another person\'s email' do
+    @profile.username = @user_two.email
+    refute @profile.valid?
+    assert_equal @profile.errors.messages[:username], ['is invalid', 'Username already taken!']
   end
 end
