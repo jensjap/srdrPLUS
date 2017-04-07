@@ -1,5 +1,6 @@
 require Rails.root.join 'test/seed_data_helper'
 extend SeedData
+extend SeedDataExtended
 
 # This file should contain all the record creation needed to seed the database with its default values.
 # The data can then be loaded with the rails db:seed command (or created alongside the database with db:setup).

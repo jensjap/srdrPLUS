@@ -20,7 +20,7 @@ class ActiveSupport::TestCase
     # correct/current user.
     User.current = User.first
 
-    #extend SeedData
+    extend SeedData
   end
 
   # Add more helper methods to be used by all tests here...

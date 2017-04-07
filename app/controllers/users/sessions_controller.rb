@@ -8,7 +8,6 @@ class Users::SessionsController < Devise::SessionsController
 
   # POST /resource/sign_in
   def create
-    #flash[:info] = Faker::RickAndMorty.quote
     flash[:info] = Faker::ChuckNorris.fact
     super
   end

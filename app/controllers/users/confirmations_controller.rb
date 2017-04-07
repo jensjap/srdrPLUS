@@ -10,10 +10,9 @@ class Users::ConfirmationsController < Devise::ConfirmationsController
   # end
 
   # GET /resource/confirmation?confirmation_token=abcdef
-  def show
-    super
-    @user.create_profile
-  end
+  # def show
+  #   super
+  # end
 
   # protected
 

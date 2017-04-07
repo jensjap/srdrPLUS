@@ -13,6 +13,8 @@ class Profile < ApplicationRecord
   accepts_nested_attributes_for :degrees, :allow_destroy => true, :reject_if => :all_blank
   accepts_nested_attributes_for :degreeholderships, :allow_destroy => true, :reject_if => :all_blank
 
+  validates :user_id, uniqueness: true
+
   def degree_ids=(tokens)
     tokens.map { |token| process_token(token, :degree) }
     super
