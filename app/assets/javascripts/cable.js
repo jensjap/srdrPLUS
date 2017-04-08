@@ -5,6 +5,8 @@
 //= require_self
 //= require_tree ./channels
 
+'use strict';
+
 (function() {
   this.App || (this.App = {});
 

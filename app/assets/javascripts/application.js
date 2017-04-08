@@ -22,6 +22,8 @@
 
 //$(function(){ $(document).foundation(); });
 
+'use strict';
+
 // Set toastr.js options
 toastr.options = {
   'closeButton': false,
