@@ -92,3 +92,7 @@ gem 'faker', github: 'stympy/faker'
 
 # Access ruby data in JavaScript.
 gem 'gon'
+
+# Pagination.
+gem 'kaminari'
+

@@ -1,5 +1,10 @@
 Rails.application.routes.draw do
-  resources :projects
+  concern :paginatable do
+    get '(page/:page)', action: :index, on: :collection, as: ''
+  end
+
+  resources :projects, concerns: :paginatable
+
   mount RailsAdmin::Engine => '/admin', as: 'rails_admin'
 
   root to: 'static_pages#home'
