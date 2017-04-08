@@ -4,6 +4,7 @@ class ProjectsController < ApplicationController
   # GET /projects
   # GET /projects.json
   def index
+    gon.push({ tip_of_the_day: Faker::ChuckNorris.fact })
     @projects = Project.all
   end
 

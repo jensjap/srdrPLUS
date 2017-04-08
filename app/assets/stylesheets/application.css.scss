@@ -35,7 +35,7 @@ a {
     background-color: $white;
   }
 }
-.top-bar {
+body div.top-bar {
   margin: 0;
   padding: 3px;
 
@@ -69,7 +69,7 @@ li:last-child {
 hr.top-bar-ruler {
   margin-top: 0;
 }
-.is-dropdown-submenu {
+ul.menu.vertical.submenu.is-dropdown-submenu {
   border-color: $primary-color;
   li.title {
     padding: 4px 0 0 4px;

@@ -7,10 +7,9 @@ class Users::SessionsController < Devise::SessionsController
   # end
 
   # POST /resource/sign_in
-  def create
-    flash[:info] = Faker::ChuckNorris.fact
-    super
-  end
+  # def create
+  #   super
+  # end
 
   # DELETE /resource/sign_out
   # def destroy

@@ -87,4 +87,8 @@ gem 'toastr_rails'
 gem 'paper_trail'
 gem 'paranoia', '~>2.2'
 
+# Create lots of data.
 gem 'faker', github: 'stympy/faker'
+
+# Access ruby data in JavaScript.
+gem 'gon'

@@ -6,14 +6,15 @@ html lang='en'
 
     title == content_for?(:title) ? yield(:title) : 'srdrPLUS'
 
-    = stylesheet_link_tag    'application'
-    = javascript_include_tag 'application', 'data-turbolinks-track' => true
+    = stylesheet_link_tag    'application', 'data-turbolinks-track' => 'reload'
+    = javascript_include_tag 'application', 'data-turbolinks-track' => 'reload'
     /= stylesheet_link_tag    params[:controller], media: 'all', 'data-turbolinks-track': 'reload'
     /= javascript_include_tag params[:controller], 'data-turbolinks-track': 'reload'
     = csrf_meta_tag
     = render 'toastr_rails/flash'
 
   body
+    = Gon::Base.render_data
     = render 'shared/noscript'
     - if content_for?(:content)
       == content_for(:content)
