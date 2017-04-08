@@ -28,6 +28,7 @@ toastr.options = {
   'showMethod': 'slideDown',
   'hideMethod': 'slideUp',
   'closeMethod': 'slideUp',
+  'positionClass': 'toast-bottom-right',
   'closeDuration': 200
 };
 

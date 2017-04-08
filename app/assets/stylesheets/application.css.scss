@@ -93,6 +93,22 @@ hr.top-bar-ruler {
 }
 // END Preventing FOUC (http://foundation.zurb.com/sites/docs/responsive-navigation.html)
 
+// Toastr
+#toast-container {
+  div.toast {
+    opacity: 1;
+  }
+
+  &.toast-bottom-right,
+  &.toast-bottom-left,
+  &.toast-bottom-center,
+  &.toast-bottom-full-width {
+    top: auto;
+  }
+
+}
+// END Toastr
+
 // Debug window.
 pre.debug_dump {
   background-color: $color-complement-1;
