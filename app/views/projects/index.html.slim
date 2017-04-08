@@ -1,4 +1,4 @@
-h1 Listing projects
+h1 My Projects
 
 .column.row
   table.stack
@@ -14,22 +14,13 @@ h1 Listing projects
         th
         th
 
-    tbody
-      - @projects.each do |project|
-        tr
-          td = project.name
-          td = project.description
-          td = project.attribution
-          td = project.methodology_description
-          td = project.created_at
-          td = project.updated_at
-          td = link_to 'Show', project
-          td = link_to 'Edit', edit_project_path(project)
-          td = link_to 'Destroy', project, data: { confirm: 'Are you sure?' }, method: :delete
+    tbody#projects-table-body
+      = render 'index_table_body'
 
-.column.row
-  = paginate @projects
+.column.row.pagination
+  = paginate @projects, remote: true
 
 br
 
 = link_to 'New Project', new_project_path
+

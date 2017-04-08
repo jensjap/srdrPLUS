@@ -1,0 +1,2 @@
+$('#projects-table-body').html("<%= escape_javascript(render partial: 'index_table_body', locals: { projects: @projects }) %>");
+$('div.pagination').html("<%= escape_javascript(paginate @projects, remote: true) %>");

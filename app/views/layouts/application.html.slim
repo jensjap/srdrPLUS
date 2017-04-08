@@ -17,7 +17,7 @@ html lang='en'
     = Gon::Base.render_data
     = render 'shared/noscript'
     - if content_for?(:content)
-      == content_for(:content)
+      == yield(:content)
     - else
       .off-canvas-wrapper
         .off-canvas.position-right#offCanvasNav data-off-canvas=''

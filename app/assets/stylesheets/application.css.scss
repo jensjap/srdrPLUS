@@ -77,6 +77,28 @@ ul.menu.vertical.submenu.is-dropdown-submenu {
 }
 // END Miscellaneous stuff.
 
+// Pagination.
+.column.row.pagination {
+  li {
+    a,
+    a:visited {
+      color: $primary-color;
+
+      &:hover {
+        background: none;
+      }
+    }
+
+    &.current {
+      a,
+      a:visited {
+        color: $white;
+      }
+    }
+  }
+}
+// END Pagination.
+
 // Preventing FOUC (http://foundation.zurb.com/sites/docs/responsive-navigation.html)
 .no-js {
   @include breakpoint(small only) {

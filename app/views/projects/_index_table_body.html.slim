@@ -1,0 +1,12 @@
+- @projects.each do |project|
+  tr
+    td = project.name
+    td = project.description
+    td = project.attribution
+    td = project.methodology_description
+    td = project.created_at
+    td = project.updated_at
+    td = link_to 'Show', project
+    td = link_to 'Edit', edit_project_path(project)
+    td = link_to 'Destroy', project, data: { confirm: 'Are you sure?' }, method: :delete
+
