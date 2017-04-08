@@ -62,6 +62,15 @@ class ProjectsController < ApplicationController
     end
   end
 
+  # GET /projects/search
+  # GET /projects/search.json
+  def search
+    @by_field = params[:field] || 'name'
+    @query = params[:q]
+    @projects = Project.by_field_and_query(@by_field, @query).page(params[:page]).per(15)
+    render 'index'
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_project

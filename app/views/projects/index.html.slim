@@ -1,4 +1,10 @@
-h1 My Projects
+.row
+  .column.medium-8
+    h1 My Projects
+  .column.medium-4
+    = search_field_tag 'project-search', nil, placeholder: '&#128270; '.html_safe
+
+/placeholder: ('&#128270;').html_safe
 
 .column.row
   table.stack

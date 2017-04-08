@@ -3,7 +3,11 @@ Rails.application.routes.draw do
     get '(page/:page)', action: :index, on: :collection, as: ''
   end
 
-  resources :projects, concerns: :paginatable
+  resources :projects, concerns: :paginatable do
+    collection do
+      get 'search'
+    end
+  end
 
   mount RailsAdmin::Engine => '/admin', as: 'rails_admin'
 

@@ -11,6 +11,24 @@ document.addEventListener 'turbolinks:load', ->
           'timeOut': '10000',
           'progressBar': true })
 
+    delay = do ->
+      timer = 0
+      (callback, ms) ->
+        clearTimeout timer
+        timer = setTimeout(callback, ms)
+        return
+
+    searchProjectsList = ->
+      $.get {
+          url: '/projects/search?q=' + $('#project-search').val(),
+          dataType: 'script'
+        }
+      return
+
+    $('#project-search').keyup ->
+      delay searchProjectsList, 250
+      return
+
     return
 
   return
