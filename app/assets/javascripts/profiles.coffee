@@ -4,67 +4,70 @@
 
 document.addEventListener 'turbolinks:load', ->
 
-  formatOrganizationSelection = (result, container) ->
-    result.text
+  do ->
 
-  formatOrganization = (result) ->
-    if result.loading
-      return result.text
-    markup = '<span>'
-    if ~result.text.indexOf 'Pirate'
-      markup += '<img src=\'https://s-media-cache-ak0.pinimg.com/originals/01/ee/fe/01eefe3662a40757d082404a19bce33b.png\' alt=\'pirate flag\' height=\'32\' width=\'32\'> '
-    if ~result.text.indexOf 'New item: '
-      #!!! Maybe add some styling.
-      markup += ''
-    markup += result.text
-    if result.suggestion
-      markup += ' (suggested by ' + result.suggestion.first_name + ')'
-    markup += '</span>'
-    markup
+    formatOrganizationSelection = (result, container) ->
+      result.text
 
-  $('#profile_degree_ids').select2
-    minimumInputLength: 0
-    ajax:
-      url: '/degrees.json'
-      dataType: 'json'
-      delay: 250
-      data: (params) ->
-        q: params.term
-        page: params.page
-      processResults: (data, params) ->
-        # The server may respond with params.page, set it to 1 if not.
-        params.page = params.page || 1
-        results: $.map(data.items, (i) ->
-          id: i.id
-          text: i.name
-          suggestion: i.suggestion
-        )
-    escapeMarkup: (markup) ->
+    formatOrganization = (result) ->
+      if result.loading
+        return result.text
+      markup = '<span>'
+      if ~result.text.indexOf 'Pirate'
+        markup += '<img src=\'https://s-media-cache-ak0.pinimg.com/originals/01/ee/fe/01eefe3662a40757d082404a19bce33b.png\' alt=\'pirate flag\' height=\'32\' width=\'32\'> '
+      if ~result.text.indexOf 'New item: '
+        #!!! Maybe add some styling.
+        markup += ''
+      markup += result.text
+      if result.suggestion
+        markup += ' (suggested by ' + result.suggestion.first_name + ')'
+      markup += '</span>'
       markup
-    templateResult: formatOrganization
-    templateSelection: formatOrganizationSelection
 
-  $('#profile_organization_id').select2
-    minimumInputLength: 0
-    ajax:
-      url: '/organizations.json'
-      dataType: 'json'
-      delay: 250
-      data: (params) ->
-        q: params.term
-        page: params.page
-      processResults: (data, params) ->
-        # The server may respond with params.page, set it to 1 if not.
-        params.page = params.page || 1
-        results: $.map(data.items, (i) ->
-          id: i.id
-          text: i.name
-          suggestion: i.suggestion
-        )
-    escapeMarkup: (markup) ->
-      markup
-    templateResult: formatOrganization
-    templateSelection: formatOrganizationSelection
+    $('#profile_degree_ids').select2
+      minimumInputLength: 0
+      ajax:
+        url: '/degrees.json'
+        dataType: 'json'
+        delay: 250
+        data: (params) ->
+          q: params.term
+          page: params.page
+        processResults: (data, params) ->
+          # The server may respond with params.page, set it to 1 if not.
+          params.page = params.page || 1
+          results: $.map(data.items, (i) ->
+            id: i.id
+            text: i.name
+            suggestion: i.suggestion
+          )
+      escapeMarkup: (markup) ->
+        markup
+      templateResult: formatOrganization
+      templateSelection: formatOrganizationSelection
 
-  return # END document.addEventListener 'turbolinks:load', ->
+    $('#profile_organization_id').select2
+      minimumInputLength: 0
+      ajax:
+        url: '/organizations.json'
+        dataType: 'json'
+        delay: 250
+        data: (params) ->
+          q: params.term
+          page: params.page
+        processResults: (data, params) ->
+          # The server may respond with params.page, set it to 1 if not.
+          params.page = params.page || 1
+          results: $.map(data.items, (i) ->
+            id: i.id
+            text: i.name
+            suggestion: i.suggestion
+          )
+      escapeMarkup: (markup) ->
+        markup
+      templateResult: formatOrganization
+      templateSelection: formatOrganizationSelection
 
+    return # END document.addEventListener 'turbolinks:load', ->
+
+  return
