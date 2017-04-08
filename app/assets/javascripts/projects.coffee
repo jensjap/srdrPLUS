@@ -9,8 +9,7 @@ document.addEventListener 'turbolinks:load', ->
     if gon.tip_of_the_day
       toastr.info(gon.tip_of_the_day, 'Tip Of The Day', {
           'timeOut': '10000',
-          'progressBar': true,
-          'positionClass': 'toast-bottom-left' })
+          'progressBar': true })
 
     return
 
