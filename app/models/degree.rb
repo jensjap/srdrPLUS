@@ -11,7 +11,7 @@ class Degree < ApplicationRecord
   has_one :suggestion, as: :suggestable, dependent: :destroy
 
   has_many :degreeholderships, dependent: :destroy, inverse_of: :degree
-  has_many :profiles, through: :degreeholderships
+  has_many :profiles, through: :degreeholderships, dependent: :destroy
 
   validates :name, uniqueness: true
 
