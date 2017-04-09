@@ -3,7 +3,9 @@
 one:
   suggestable: one (Degree)
   user: one
+  active: true
 
 two:
   suggestable: one (Organization)
   user: one
+  active: true

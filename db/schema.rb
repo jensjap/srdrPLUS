@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170409023235) do
+ActiveRecord::Schema.define(version: 20170409144945) do
 
   create_table "degreeholderships", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "degree_id"
@@ -102,7 +102,10 @@ ActiveRecord::Schema.define(version: 20170409023235) do
     t.datetime "created_at",       null: false
     t.datetime "updated_at",       null: false
     t.datetime "deleted_at"
+    t.boolean  "active"
+    t.index ["active"], name: "index_suggestions_on_active", using: :btree
     t.index ["deleted_at"], name: "index_suggestions_on_deleted_at", using: :btree
+    t.index ["suggestable_type", "suggestable_id", "user_id", "active"], name: "index_suggestions_on_type_id_user_id_active_uniq", unique: true, using: :btree
     t.index ["suggestable_type", "suggestable_id"], name: "index_suggestions_on_suggestable_type_and_suggestable_id", using: :btree
     t.index ["user_id"], name: "index_suggestions_on_user_id", using: :btree
   end
