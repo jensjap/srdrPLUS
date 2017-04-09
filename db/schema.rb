@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170406163516) do
+ActiveRecord::Schema.define(version: 20170409023235) do
 
   create_table "degreeholderships", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "degree_id"
@@ -77,10 +77,25 @@ ActiveRecord::Schema.define(version: 20170406163516) do
     t.index ["name", "description"], name: "index_projects_on_name_and_description", unique: true, length: { name: 10, description: 100 }, using: :btree
   end
 
+  create_table "publishings", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string   "publishable_type"
+    t.integer  "publishable_id"
+    t.integer  "requested_by_id"
+    t.integer  "approved_by_id"
+    t.datetime "approved_at"
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
+    t.datetime "deleted_at"
+    t.index ["approved_by_id"], name: "index_publishings_on_approved_by_id", using: :btree
+    t.index ["deleted_at"], name: "index_publishings_on_deleted_at", using: :btree
+    t.index ["publishable_type", "publishable_id"], name: "index_publishings_on_publishable_type_and_publishable_id", using: :btree
+    t.index ["requested_by_id"], name: "index_publishings_on_requested_by_id", using: :btree
+  end
+
   create_table "suggestions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer  "user_id"
     t.string   "suggestable_type"
     t.integer  "suggestable_id"
+    t.integer  "user_id"
     t.datetime "created_at",       null: false
     t.datetime "updated_at",       null: false
     t.datetime "deleted_at"
