@@ -1,10 +1,10 @@
 class Degree < ApplicationRecord
   include SharedMethods
 
-  after_create :record_suggestor
-
   acts_as_paranoid
   has_paper_trail
+
+  after_create :record_suggestor
 
   before_destroy :raise_error
 
