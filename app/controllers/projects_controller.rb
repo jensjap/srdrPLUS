@@ -5,7 +5,7 @@ class ProjectsController < ApplicationController
   # GET /projects.json
   def index
     gon.push({ tip_of_the_day: Faker::ChuckNorris.fact })
-    @projects = Project.by_query(params[:q]).page(params[:page]).per(8)
+    @projects = Project.by_query(params[:q]).page(params[:page])
   end
 
   # GET /projects/1
@@ -67,7 +67,7 @@ class ProjectsController < ApplicationController
   def search
     @by_field = params[:field] || 'name'
     @query = params[:q]
-    @projects = Project.by_field_and_query(@by_field, @query).page(params[:page]).per(8)
+    @projects = Project.by_field_and_query(@by_field, @query).page(params[:page])
     render 'index'
   end
 

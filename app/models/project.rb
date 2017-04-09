@@ -3,4 +3,6 @@ class Project < ApplicationRecord
 
   acts_as_paranoid
   has_paper_trail
+
+  paginates_per 8
 end
