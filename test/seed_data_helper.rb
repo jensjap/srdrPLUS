@@ -109,13 +109,13 @@ module SeedDataExtended
       PaperTrail.enabled = false
 
       1000.times do |n|
-        Project.create!(name:        '(' + ((1..1000).to_a).sample.to_s + ') ' + Faker::Book.unique.title,
-                        description: '(' + ((1..1000).to_a).sample.to_s + ') ' + Faker::ChuckNorris.fact,
+        Project.create!(name:        Faker::Book.unique.title,
+                        description: '(' + n.to_s + ') - ' + Faker::ChuckNorris.fact,
                         attribution: Faker::Cat.registry,
-                        methodology_description: Faker::RuPaul.quote,
+                        methodology_description: Faker::HarryPotter.quote,
                         prospero:                Faker::Number.hexadecimal(12),
                         doi:                     Faker::Number.hexadecimal(6),
-                        notes:                   Faker::Lorem.sentences(1),
+                        notes:                   Faker::HarryPotter.book,
                         funding_source:          Faker::Book.publisher)
         Faker::UniqueGenerator.clear
       end
