@@ -12,7 +12,5 @@ class CreateProjects < ActiveRecord::Migration[5.0]
 
       t.timestamps
     end
-
-    add_index :projects, [:name, :description], length: { name: 10, description: 100 }, unique: true
   end
 end

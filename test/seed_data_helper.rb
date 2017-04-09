@@ -120,6 +120,20 @@ module SeedDataExtended
         Faker::UniqueGenerator.clear
       end
 
+      # Let's create Publishings.
+      prng = Random.new
+      Project.all.each do |p|
+        requested_by = User.offset(rand(User.count)).first
+        approved_by = User.offset(rand(User.count)).first
+        case prng.rand(10)
+        when 0  # Create Publishing object.
+          Publishing.create(publishable: p, requested_by: requested_by)
+        when 1  # Create Publishing object and approve it.
+          Publishing.create(publishable: p, requested_by: requested_by).approve_now(approved_by)
+        else    # Don't do anything.
+        end
+      end
+
       # Turn on paper_trail.
       PaperTrail.enabled = true
     end

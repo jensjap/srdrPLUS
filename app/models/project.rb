@@ -6,5 +6,5 @@ class Project < ApplicationRecord
 
   paginates_per 8
 
-  has_one :publishing, as: :publishable, dependent: :destroy
+  has_many :publishings, as: :publishable, dependent: :destroy
 end

@@ -14,7 +14,6 @@ module SharedMethods
   end
 
   class_methods do
-
     # Params:
     #   [String] Query string to search for Resource name
     #

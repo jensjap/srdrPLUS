@@ -9,7 +9,7 @@ class CreatePublishings < ActiveRecord::Migration[5.0]
       t.timestamps
     end
 
-    add_index :publishings, :requested_by_id
     add_index :publishings, :approved_by_id
+    add_index :publishings, :requested_by_id
   end
 end

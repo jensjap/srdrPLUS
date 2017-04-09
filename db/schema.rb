@@ -74,7 +74,6 @@ ActiveRecord::Schema.define(version: 20170409023235) do
     t.datetime "updated_at",                            null: false
     t.datetime "deleted_at"
     t.index ["deleted_at"], name: "index_projects_on_deleted_at", using: :btree
-    t.index ["name", "description"], name: "index_projects_on_name_and_description", unique: true, length: { name: 10, description: 100 }, using: :btree
   end
 
   create_table "publishings", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -86,8 +85,12 @@ ActiveRecord::Schema.define(version: 20170409023235) do
     t.datetime "created_at",       null: false
     t.datetime "updated_at",       null: false
     t.datetime "deleted_at"
+    t.boolean  "active"
+    t.index ["active"], name: "index_publishings_on_active", using: :btree
     t.index ["approved_by_id"], name: "index_publishings_on_approved_by_id", using: :btree
     t.index ["deleted_at"], name: "index_publishings_on_deleted_at", using: :btree
+    t.index ["publishable_type", "publishable_id", "requested_by_id", "active"], name: "index_publishings_on_type_id_requested_by_id_uniq", unique: true, using: :btree
+    t.index ["publishable_type", "publishable_id", "requested_by_id"], name: "index_publishings_on_type_id_requested_by_id", using: :btree
     t.index ["publishable_type", "publishable_id"], name: "index_publishings_on_publishable_type_and_publishable_id", using: :btree
     t.index ["requested_by_id"], name: "index_publishings_on_requested_by_id", using: :btree
   end
