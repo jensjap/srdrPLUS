@@ -5,6 +5,6 @@ class AddDeletedAtToPublishing < ActiveRecord::Migration[5.0]
     add_index :publishings, :deleted_at
     add_index :publishings, :active
     add_index :publishings, [:publishable_type, :publishable_id, :requested_by_id],          name: 'index_publishings_on_type_id_requested_by_id', where: 'deleted_at IS NULL'
-    add_index :publishings, [:publishable_type, :publishable_id, :requested_by_id, :active], name: 'index_publishings_on_type_id_requested_by_id_uniq', unique: true
+    add_index :publishings, [:publishable_type, :publishable_id, :requested_by_id, :active], name: 'index_publishings_on_type_id_requested_by_id_active_uniq', unique: true
   end
 end

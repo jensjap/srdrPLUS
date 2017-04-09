@@ -89,7 +89,7 @@ ActiveRecord::Schema.define(version: 20170409144945) do
     t.index ["active"], name: "index_publishings_on_active", using: :btree
     t.index ["approved_by_id"], name: "index_publishings_on_approved_by_id", using: :btree
     t.index ["deleted_at"], name: "index_publishings_on_deleted_at", using: :btree
-    t.index ["publishable_type", "publishable_id", "requested_by_id", "active"], name: "index_publishings_on_type_id_requested_by_id_uniq", unique: true, using: :btree
+    t.index ["publishable_type", "publishable_id", "requested_by_id", "active"], name: "index_publishings_on_type_id_requested_by_id_active_uniq", unique: true, using: :btree
     t.index ["publishable_type", "publishable_id", "requested_by_id"], name: "index_publishings_on_type_id_requested_by_id", using: :btree
     t.index ["publishable_type", "publishable_id"], name: "index_publishings_on_publishable_type_and_publishable_id", using: :btree
     t.index ["requested_by_id"], name: "index_publishings_on_requested_by_id", using: :btree
@@ -106,6 +106,7 @@ ActiveRecord::Schema.define(version: 20170409144945) do
     t.index ["active"], name: "index_suggestions_on_active", using: :btree
     t.index ["deleted_at"], name: "index_suggestions_on_deleted_at", using: :btree
     t.index ["suggestable_type", "suggestable_id", "user_id", "active"], name: "index_suggestions_on_type_id_user_id_active_uniq", unique: true, using: :btree
+    t.index ["suggestable_type", "suggestable_id", "user_id"], name: "index_suggestions_on_type_id_user_id", unique: true, using: :btree
     t.index ["suggestable_type", "suggestable_id"], name: "index_suggestions_on_suggestable_type_and_suggestable_id", using: :btree
     t.index ["user_id"], name: "index_suggestions_on_user_id", using: :btree
   end

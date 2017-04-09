@@ -3,8 +3,13 @@ require 'test_helper'
 class PublishingTest < ActiveSupport::TestCase
   def setup
     @user = users(:one)
+    @project = projects(:one)
     @publishing_approved = publishings(:one)
     @publishing_requested = publishings(:two)
+  end
+
+  test 'ensure project has publishing requests ' do
+    assert_not_equal @project.publishings.count, 0
   end
 
   test 'requested publishing request is not approved' do
