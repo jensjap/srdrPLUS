@@ -1,6 +1,12 @@
 - @projects.each do |project|
   tr
-    td = project.name
+    - if project.publishings.present?
+      - if project.publishings.find(&:approved?)
+        td.publishing-approved data-project-id=project.id = project.name
+      - else
+        td.publishing-pending data-project-id=project.id = project.name
+    - else
+      td data-project-id=project.id = project.name
     td = project.description
     td = project.attribution
     td = project.methodology_description

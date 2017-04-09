@@ -1,3 +1,29 @@
 // Place all the styles related to the Projects controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+@import 'settings';
+
+#projects-table-body tr td {
+  position: relative;
+
+  &.publishing-approved:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-width: 16px 16px 0 0;
+    border-style: solid;
+    border-color: $success-color transparent;
+  }
+
+  &.publishing-pending:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-width: 16px 16px 0 0;
+    border-style: solid;
+    border-color: $warning-color transparent;
+  }
+}

@@ -110,7 +110,7 @@ module SeedDataExtended
 
       1000.times do |n|
         Project.create!(name:        Faker::Book.unique.title,
-                        description: '(' + n.to_s + ') - ' + Faker::ChuckNorris.fact,
+                        description: '(' + (n+1).to_s + ') - ' + Faker::ChuckNorris.fact,
                         attribution: Faker::Cat.registry,
                         methodology_description: Faker::HarryPotter.quote,
                         prospero:                Faker::Number.hexadecimal(12),
