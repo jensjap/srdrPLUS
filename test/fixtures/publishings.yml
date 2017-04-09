@@ -1,11 +1,22 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
+  publishable: one (Project)
   requested_by: one
-  approved_by: one
-  approved_at: 2017-04-08 22:20:08
-
-two:
-  requested_by: two
   approved_by: two
   approved_at: 2017-04-08 22:20:08
+  active: true
+
+two:
+  publishable: one (Project)
+  requested_by: two
+  approved_by:
+  approved_at:
+  active: true
+
+three:
+  publishable: two (Project)
+  requested_by: one
+  approved_by:
+  approved_at:
+  active: true

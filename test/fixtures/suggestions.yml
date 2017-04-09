@@ -1,9 +1,9 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  suggestable: one
+  suggestable: one (Degree)
   user: one
 
 two:
-  suggestable: two
-  user: two
+  suggestable: one (Organization)
+  user: one
