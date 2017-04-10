@@ -2,11 +2,11 @@
   tr
     - if project.publishings.present?
       - if project.publishings.find(&:approved?)
-        td.publishing-approved data-project-id=project.id = project.name
+        td.publishing-approved = render partial: 'projects/index/project_name', locals: { project: project }
       - else
-        td.publishing-pending data-project-id=project.id = project.name
+        td.publishing-pending = render partial: 'projects/index/project_name', locals: { project: project }
     - else
-      td data-project-id=project.id = project.name
+      td = render partial: 'projects/index/project_name', locals: { project: project }
     td = project.description
     td = project.attribution
     td = project.methodology_description
