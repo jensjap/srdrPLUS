@@ -16,4 +16,14 @@ class ProjectTest < ActiveSupport::TestCase
     @project.publishings << Publishing.create(publishable: @project, requested_by: @user)
     assert @project.publishings, previous_publishings_cnt + 1
   end
+
+  test 'requesting publishing should create it with correct requested_by' do
+    project_without_publishings = Project.where.not(id: Project.includes(:publishings).\
+                                                    joins(:publishings).\
+                                                    where('publishings.requested_by_id IS NOT NULL').\
+                                                    pluck(:id)).first
+    assert project_without_publishings.publishings.blank?
+    project_without_publishings.request_publishing
+    refute project_without_publishings.publishings.blank?
+  end
 end
