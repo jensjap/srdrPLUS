@@ -18,6 +18,7 @@
 //= require toastr_rails
 //= require select2
 //= require cocoon
+//= require jquery_mark_es6
 //= require_tree .
 
 //$(function(){ $(document).foundation(); });

@@ -8,7 +8,7 @@ document.addEventListener 'turbolinks:load', ->
 
     if gon.tip_of_the_day
       toastr.info(gon.tip_of_the_day, 'Tip Of The Day', {
-          'timeOut': '10000',
+          'timeOut': '15000',
           'progressBar': true })
 
     delay = do ->
