@@ -8,7 +8,15 @@ class ProfileTest < ActiveSupport::TestCase
     @organization_two = organizations(:two)
   end
 
-  test 'submitting properly formed organization_id tokens should associate profile with organization' do
+  test 'submitting properly formatted degree_ids should update correctly' do
+    degree_ids = Degree.first(5).pluck(:id).map(&:to_s) << "<<<aaa>>>"
+    params = { degree_ids: degree_ids }
+    @profile.update(params)
+    assert_equal @profile.degrees.count, 6
+    assert_equal @profile.degrees.where(name: 'aaa').first, Degree.last
+  end
+
+  test 'submitting properly formatted organization_id tokens should associate profile with organization' do
     params = { organization_id: @organization_two.id.to_s }
     assert_not_nil @profile.organization
     @profile.update(params)
@@ -20,7 +28,7 @@ class ProfileTest < ActiveSupport::TestCase
     assert_equal profiles(:one).object_id, degreeholdership.profile.object_id
   end
 
-  test 'submitting properly formed organization_id tokens (\'<<<0>>>\') should associate profile with newly created organization' do
+  test 'submitting properly formatted organization_id tokens (\'<<<0>>>\') should associate profile with newly created organization' do
     params = { organization_id: '<<<0>>>' }
     assert_equal = @profile.organization, @organization_one
     @profile.update(params)
@@ -28,7 +36,7 @@ class ProfileTest < ActiveSupport::TestCase
     assert_equal @profile.organization.name, '0'
   end
 
-  test 'submitting properly formed organization_id tokens should associate profile with newly created organization' do
+  test 'submitting properly formatted organization_id tokens should associate profile with newly created organization' do
     params = { organization_id: '<<<loyloyloy>>>' }
     previous_organization = @profile.organization
     assert_not_nil previous_organization
@@ -38,7 +46,7 @@ class ProfileTest < ActiveSupport::TestCase
     assert_not_equal previous_organization, current_organization
   end
 
-  test 'submitting properly formed organization_id tokens should de-associate profile from organization' do
+  test 'submitting properly formatted organization_id tokens should de-associate profile from organization' do
     params = { organization_id: '<<<loyloyloy>>>' }
     assert_not_nil @profile.organization
     @profile.update(params)
@@ -66,5 +74,11 @@ class ProfileTest < ActiveSupport::TestCase
     @profile.username = @user_two.email
     refute @profile.valid?
     assert_equal @profile.errors.messages[:username], ['is invalid', 'Username already taken!']
+  end
+
+  test 'username with \'@\' symbol should be invalid' do
+    @profile.username = 'something@something'
+    refute @profile.valid?
+    assert_equal @profile.errors.messages[:username], ['is invalid']
   end
 end

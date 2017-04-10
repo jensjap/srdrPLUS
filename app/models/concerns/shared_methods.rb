@@ -9,7 +9,7 @@ module SharedMethods
     #
     # This creates a Suggestion record for Suggestables during their after_create callback.
     def record_suggestor
-      self.create_suggestion(user: User.current) if User.current
+      create_suggestion(user: User.current) if User.current
     end
   end
 
@@ -22,7 +22,7 @@ module SharedMethods
     #           it returns an array with a single object element. This will assist in creating
     #           a new Resource later.
     def by_query(query)
-      @resources = self.name.constantize.where('name like ?', "%#{ query }%").order(:name)
+      @resources = name.constantize.where('name like ?', "%#{ query }%").order(:name)
       return @resources.empty? ?
         [ OpenStruct.new(id: "<<<#{ query }>>>", name: "New: '#{ query }'", suggestion: false) ] : @resources
     end
@@ -36,7 +36,7 @@ module SharedMethods
     def by_field_and_query(field, query)
       #!!! Doesn't work with specifying column.
       #self.name.constantize.where('? like ?', "#{ field }", "%#{ query }%").order(:name)
-      self.name.constantize.where('name like ?', "%#{ query }%").order(:name)
+      name.constantize.where('name like ?', "%#{ query }%").order(:name)
     end
   end
 

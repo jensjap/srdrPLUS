@@ -1,5 +1,4 @@
 class Degreeholdership < ApplicationRecord
-  include SharedMethods
   include SharedParanoiaMethods
 
   acts_as_paranoid column: :active, sentinel_value: true

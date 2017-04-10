@@ -41,7 +41,7 @@ class User < ApplicationRecord
   end
 
   def login
-    @login || self.email
+    @login || email
   end
 
 #  def self.find_for_database_authentication(warden_conditions)

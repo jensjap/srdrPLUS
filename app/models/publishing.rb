@@ -1,5 +1,4 @@
 class Publishing < ApplicationRecord
-  include SharedMethods
   include SharedParanoiaMethods
 
   acts_as_paranoid column: :active, sentinel_value: true
@@ -12,10 +11,10 @@ class Publishing < ApplicationRecord
   validates :requested_by_id, presence: true
 
   def approve_now(user)
-    self.update(approved_by: user, approved_at: Time.current)
+    update(approved_by: user, approved_at: Time.current)
   end
 
   def approved?
-    !self.approved_at.nil?
+    !approved_at.nil?
   end
 end
