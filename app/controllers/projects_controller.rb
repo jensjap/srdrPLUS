@@ -65,9 +65,8 @@ class ProjectsController < ApplicationController
   # GET /projects/search
   # GET /projects/search.json
   def search
-    @by_field = params[:field] || 'name'
     @query = params[:q]
-    @projects = Project.by_field_and_query(@by_field, @query).page(params[:page])
+    @projects = Project.includes(:publishings).by_name_description_and_query(@query).page(params[:page])
     render 'index'
   end
 

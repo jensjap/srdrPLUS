@@ -33,10 +33,8 @@ module SharedMethods
     #
     # Returns:
     #   [Array] An array of the Resource found that matched the field and query string
-    def by_field_and_query(field, query)
-      #!!! Doesn't work with specifying column.
-      #self.name.constantize.where('? like ?', "#{ field }", "%#{ query }%").order(:name)
-      name.constantize.where('name like ?', "%#{ query }%").order(:name)
+    def by_name_description_and_query(query)
+      name.constantize.where('name LIKE ? OR description LIKE ?', "%#{ query }%", "%#{ query }%").order(:name)
     end
   end
 

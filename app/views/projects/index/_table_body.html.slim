@@ -8,8 +8,8 @@
     - else
       td data-project-id=project.id = project.name
     td = project.description
-    td nowrap='' = project.created_at.to_date
-    td nowrap='' = project.updated_at.to_date
+    td = project.created_at.to_date
+    td = project.updated_at.to_date
     td = link_to 'Show', project
     td = link_to 'Edit', edit_project_path(project)
     td = link_to 'Destroy', project, data: { confirm: 'Are you sure?' }, method: :delete
