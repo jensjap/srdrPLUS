@@ -26,4 +26,15 @@ class ProjectTest < ActiveSupport::TestCase
     project_without_publishings.request_publishing
     refute project_without_publishings.publishings.blank?
   end
+
+  test 'attempting to request publishing by the same user should not work' do
+    project_without_publishings = Project.where.not(id: Project.includes(:publishings).\
+                                                    joins(:publishings).\
+                                                    where('publishings.requested_by_id IS NOT NULL').\
+                                                    pluck(:id)).first
+    assert project_without_publishings.publishings.blank?
+    project_without_publishings.request_publishing
+    refute project_without_publishings.publishings.blank?
+    assert_raises(ActiveRecord::RecordNotUnique) { project_without_publishings.request_publishing }
+  end
 end
