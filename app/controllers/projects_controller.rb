@@ -5,7 +5,7 @@ class ProjectsController < ApplicationController
   # GET /projects.json
   def index
     gon.push({ tip_of_the_day: Faker::ChuckNorris.fact })
-    @projects = Project.by_query(params[:q]).page(params[:page])
+    @projects = Project.includes(:publishings).by_query(params[:q]).page(params[:page])
   end
 
   # GET /projects/1
