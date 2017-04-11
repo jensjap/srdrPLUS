@@ -20,12 +20,3 @@ two:
   notes: MyText
   funding_source: MyString
 
-three:
-  name: Project Three
-  description: MyText
-  attribution: MyText
-  methodology_description: MyText
-  prospero: MyString
-  doi: MyString
-  notes: MyText
-  funding_source: MyString

@@ -13,3 +13,4 @@ two:
   email: test_two@test.com
   encrypted_password: <%= User.new.send(:password_digest, 'password') %>
   confirmed_at:
+

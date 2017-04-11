@@ -10,7 +10,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170409144945) do
+ActiveRecord::Schema.define(version: 20170411182225) do
+
+  create_table "approvals", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string   "approvable_type"
+    t.integer  "approvable_id"
+    t.integer  "user_id"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+    t.datetime "deleted_at"
+    t.boolean  "active"
+    t.index ["active"], name: "index_approvals_on_active", using: :btree
+    t.index ["approvable_type", "approvable_id", "user_id", "active"], name: "index_approvals_on_type_id_user_id_active_uniq", unique: true, using: :btree
+    t.index ["approvable_type", "approvable_id", "user_id"], name: "index_approvals_on_type_id_user_id", unique: true, using: :btree
+    t.index ["approvable_type", "approvable_id"], name: "index_approvals_on_approvable_type_and_approvable_id", using: :btree
+    t.index ["deleted_at"], name: "index_approvals_on_deleted_at", using: :btree
+    t.index ["user_id"], name: "index_approvals_on_user_id", using: :btree
+  end
 
   create_table "degreeholderships", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "degree_id"
@@ -34,6 +50,40 @@ ActiveRecord::Schema.define(version: 20170409144945) do
     t.datetime "deleted_at"
     t.index ["deleted_at"], name: "index_degrees_on_deleted_at", using: :btree
     t.index ["name"], name: "index_degrees_on_name", unique: true, using: :btree
+  end
+
+  create_table "dispatches", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string   "dispatchable_type"
+    t.integer  "dispatchable_id"
+    t.integer  "user_id"
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
+    t.datetime "deleted_at"
+    t.boolean  "active"
+    t.index ["active"], name: "index_dispatches_on_active", using: :btree
+    t.index ["deleted_at"], name: "index_dispatches_on_deleted_at", using: :btree
+    t.index ["dispatchable_type", "dispatchable_id", "user_id", "active"], name: "index_dispatches_on_type_id_user_id_active_uniq", unique: true, using: :btree
+    t.index ["dispatchable_type", "dispatchable_id", "user_id"], name: "index_dispatches_on_type_id_user_id", unique: true, using: :btree
+    t.index ["dispatchable_type", "dispatchable_id"], name: "index_dispatches_on_dispatchable_type_and_dispatchable_id", using: :btree
+    t.index ["user_id"], name: "index_dispatches_on_user_id", using: :btree
+  end
+
+  create_table "message_types", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string   "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.datetime "deleted_at"
+    t.index ["deleted_at"], name: "index_message_types_on_deleted_at", using: :btree
+  end
+
+  create_table "messages", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "message_type_id"
+    t.text     "content",         limit: 65535
+    t.datetime "created_at",                    null: false
+    t.datetime "updated_at",                    null: false
+    t.datetime "deleted_at"
+    t.index ["deleted_at"], name: "index_messages_on_deleted_at", using: :btree
+    t.index ["message_type_id"], name: "index_messages_on_message_type_id", using: :btree
   end
 
   create_table "organizations", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -79,20 +129,17 @@ ActiveRecord::Schema.define(version: 20170409144945) do
   create_table "publishings", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "publishable_type"
     t.integer  "publishable_id"
-    t.integer  "requested_by_id"
-    t.integer  "approved_by_id"
-    t.datetime "approved_at"
+    t.integer  "user_id"
     t.datetime "created_at",       null: false
     t.datetime "updated_at",       null: false
     t.datetime "deleted_at"
     t.boolean  "active"
     t.index ["active"], name: "index_publishings_on_active", using: :btree
-    t.index ["approved_by_id"], name: "index_publishings_on_approved_by_id", using: :btree
     t.index ["deleted_at"], name: "index_publishings_on_deleted_at", using: :btree
-    t.index ["publishable_type", "publishable_id", "requested_by_id", "active"], name: "index_publishings_on_type_id_requested_by_id_active_uniq", unique: true, using: :btree
-    t.index ["publishable_type", "publishable_id", "requested_by_id"], name: "index_publishings_on_type_id_requested_by_id", using: :btree
+    t.index ["publishable_type", "publishable_id", "user_id", "active"], name: "index_publishings_on_type_id_user_id_active_uniq", unique: true, using: :btree
+    t.index ["publishable_type", "publishable_id", "user_id"], name: "index_publishings_on_type_id_user_id", using: :btree
     t.index ["publishable_type", "publishable_id"], name: "index_publishings_on_publishable_type_and_publishable_id", using: :btree
-    t.index ["requested_by_id"], name: "index_publishings_on_requested_by_id", using: :btree
+    t.index ["user_id"], name: "index_publishings_on_user_id", using: :btree
   end
 
   create_table "suggestions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -160,9 +207,13 @@ ActiveRecord::Schema.define(version: 20170409144945) do
     t.index ["transaction_id"], name: "index_versions_on_transaction_id", using: :btree
   end
 
+  add_foreign_key "approvals", "users"
   add_foreign_key "degreeholderships", "degrees"
   add_foreign_key "degreeholderships", "profiles"
+  add_foreign_key "dispatches", "users"
+  add_foreign_key "messages", "message_types"
   add_foreign_key "profiles", "organizations"
   add_foreign_key "profiles", "users"
+  add_foreign_key "publishings", "users"
   add_foreign_key "suggestions", "users"
 end

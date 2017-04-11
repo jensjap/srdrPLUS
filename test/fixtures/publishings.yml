@@ -2,21 +2,11 @@
 
 one:
   publishable: one (Project)
-  requested_by: one
-  approved_by: two
-  approved_at: 2017-04-08 22:20:08
+  user: one
   active: true
 
 two:
-  publishable: one (Project)
-  requested_by: two
-  approved_by:
-  approved_at:
+  publishable: two (Project)
+  user: one
   active: true
 
-three:
-  publishable: two (Project)
-  requested_by: one
-  approved_by:
-  approved_at:
-  active: true

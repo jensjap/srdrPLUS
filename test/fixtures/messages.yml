@@ -1,11 +1,10 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  name: Degree One
+  message_type: one
+  content: MyText
 
 two:
-  name: Degree Two
-
-three:
-  name: Degree Three
+  message_type: two
+  content: MyText
 

@@ -1,0 +1,22 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  approvable: one (Publishing)
+  user: one
+  active: true
+
+two:
+  approvable: two (Publishing)
+  user: two
+  active: true
+
+three:
+  approvable: one (Suggestion)
+  user: one
+  active: true
+
+two:
+  approvable: two (Suggestion)
+  user: two
+  active: true
+

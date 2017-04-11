@@ -6,4 +6,6 @@ class Suggestion < ApplicationRecord
 
   belongs_to :suggestable, polymorphic: true
   belongs_to :user, inverse_of: :suggestions
+
+  has_one :approval, as: :approvable, dependent: :destroy
 end
