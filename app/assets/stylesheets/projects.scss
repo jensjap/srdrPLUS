@@ -4,10 +4,6 @@
 
 @import 'settings';
 
-.accordion-content a.button.expanded{
-  margin-top: 30px;
-}
-
 mark{
   background: #FF9718;
 }
@@ -24,6 +20,7 @@ li.accordion-item {
     color: gray;
   }
 
+  // Colored triangles on the project index page.
   &.publishing-approved:before {
     content: '';
     position: absolute;
@@ -43,4 +40,5 @@ li.accordion-item {
     border-style: solid;
     border-color: $warning-color transparent;
   }
+  // END Colored triangles on the project index page.
 }

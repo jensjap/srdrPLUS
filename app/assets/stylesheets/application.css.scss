@@ -32,8 +32,7 @@ a {
   }
 
   &:hover {
-    color: $primary-color;
-    background-color: $white;
+    background-color: transparent;
   }
 
   &.button {
@@ -53,7 +52,7 @@ body div.top-bar {
     color: $white;
 
     &:hover {
-      color: $white;
+      border-radius: 2px;
       background-color: $secondary-color;
     }
   }
@@ -65,21 +64,24 @@ ul hr {
   width: 80%;
   margin: 0;
 }
-li.title {
-  color: $secondary-color;
-}
-li:last-child {
-  margin-bottom: 15px;
-}
-hr.top-bar-ruler {
-  margin-top: 0;
-}
 ul.menu.vertical.submenu.is-dropdown-submenu {
   border-color: $primary-color;
-  li.title {
-    padding: 4px 0 0 4px;
+
+  li {
+
+    &.title {
+      color: $secondary-color;
+      padding: 4px 0 0 4px;
+    }
+
+    &:last-child {
+      margin-bottom: 15px;
+    }
   }
 }
+//hr.top-bar-ruler {
+//  margin-top: 0;
+//}
 // END Miscellaneous stuff.
 
 // Pagination.
