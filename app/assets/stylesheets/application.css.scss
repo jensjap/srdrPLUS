@@ -30,9 +30,14 @@ a {
   &:visited {
     color: $primary-color;
   }
+
   &:hover {
     color: $primary-color;
     background-color: $white;
+  }
+
+  &.button {
+    color: $white !important;
   }
 }
 body div.top-bar {

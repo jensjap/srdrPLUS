@@ -4,8 +4,16 @@
 
 @import 'settings';
 
+.accordion-content a.button.expanded{
+  margin-top: 30px;
+}
+
 mark{
   background: #FF9718;
+}
+
+li.accordion-item.is-active a {
+  color: $primary-color;
 }
 
 li.accordion-item {
@@ -13,6 +21,7 @@ li.accordion-item {
 
   a {
     text-decoration: none;
+    color: gray;
   }
 
   &.publishing-approved:before {

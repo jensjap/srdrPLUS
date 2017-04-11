@@ -1,3 +1,32 @@
 = link_to project.name, '#', class: 'accordion-title'
 .accordion-content data-tab-content=''
-  = project.description
+  .column.row
+    span.label Description:
+    .callout.secondary = project.description
+  .row
+    .column.medium-4
+      span.label Date Created:
+      .callout.secondary = project.created_at.to_date
+    .column.medium-4
+      span.label Date Updated:
+      .callout.secondary = project.updated_at.to_date
+    .column.medium-4
+      - if project.publishings.present?
+        - if project.publishings.find(&:approved?)
+          span.label.success Date Published:
+          .callout.secondary = project.publishings.order(:updated_at).last.approved_at
+        - else
+          span.label.warning Publishing Requested:
+          .callout.secondary = project.publishings.order(:created_at).last.created_at
+  .row
+    .column.medium-4
+      span.label Number of Key Questions:
+      .callout.secondary = Random.rand(5) + 1
+    .column.medium-4
+      span.label Number of Studies:
+      .callout.secondary = Random.rand(1000) + 1
+    .column.medium-4
+      span.label Number of Extraction Forms:
+      .callout.secondary = Random.rand(10) + 1
+  .column.row
+    = link_to 'Edit', edit_project_path(project), class: 'button expanded'
