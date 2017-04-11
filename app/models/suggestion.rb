@@ -1,4 +1,5 @@
 class Suggestion < ApplicationRecord
+  include SharedApprovableMethods
   include SharedParanoiaMethods
 
   acts_as_paranoid column: :active, sentinel_value: true

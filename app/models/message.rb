@@ -1,5 +1,6 @@
 class Message < ApplicationRecord
-  include SharedMethods
+  include SharedDispatchableMethods
+  include SharedQueryableMethods
 
   acts_as_paranoid
   has_paper_trail

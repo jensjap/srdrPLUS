@@ -2,6 +2,7 @@ module SharedParanoiaMethods
   extend ActiveSupport::Concern
 
   included do
+
     # Used by Paranoia gem.
     def paranoia_restore_attributes
       {

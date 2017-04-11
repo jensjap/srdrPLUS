@@ -78,7 +78,8 @@ ActiveRecord::Schema.define(version: 20170411182225) do
 
   create_table "messages", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "message_type_id"
-    t.text     "content",         limit: 65535
+    t.string   "name"
+    t.text     "description",     limit: 65535
     t.datetime "created_at",                    null: false
     t.datetime "updated_at",                    null: false
     t.datetime "deleted_at"

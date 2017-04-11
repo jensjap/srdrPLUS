@@ -2,9 +2,11 @@
 
 one:
   message_type: one
-  content: MyText
+  name: Message One
+  description: MyText
 
 two:
-  message_type: two
-  content: MyText
+  message_type: one
+  name: Message Two
+  description: MyText
 

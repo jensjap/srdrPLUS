@@ -6,12 +6,4 @@ class Approval < ApplicationRecord
 
   belongs_to :approvable, polymorphic: true
   belongs_to :user, inverse_of: :approvals
-
-  def approve_now(user)
-    update(user: user, approved_at: Time.current)
-  end
-
-  def approved?
-    !approved_at.nil?
-  end
 end

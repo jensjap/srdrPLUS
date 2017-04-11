@@ -95,6 +95,13 @@ module SeedData
       @jd.profiles << @auditor.profile
       @msph.profiles << @auditor.profile
 
+      # MessageTypes.
+      @totd = MessageType.create(name: 'Tip Of The Day')
+      MessageType.create([
+        { name: 'General Announcement' },
+        { name: 'Maintenance Announcement' }
+      ])
+
       # Turn on paper_trail.
       PaperTrail.enabled = true
 
@@ -108,30 +115,37 @@ module SeedDataExtended
       # Turn off paper_trail.
       PaperTrail.enabled = false
 
+      # Projects.
       1000.times do |n|
-        Project.create!(name:        Faker::Book.unique.title,
-                        description: '(' + (n+1).to_s + ') - ' + Faker::ChuckNorris.fact,
-                        attribution: Faker::Cat.registry,
-                        methodology_description: Faker::HarryPotter.quote,
-                        prospero:                Faker::Number.hexadecimal(12),
-                        doi:                     Faker::Number.hexadecimal(6),
-                        notes:                   Faker::HarryPotter.book,
-                        funding_source:          Faker::Book.publisher)
+        Project.create(name:        Faker::Book.unique.title,
+                       description: '(' + (n+1).to_s + ') - ' + Faker::ChuckNorris.fact,
+                       attribution: Faker::Cat.registry,
+                       methodology_description: Faker::HarryPotter.quote,
+                       prospero:                Faker::Number.hexadecimal(12),
+                       doi:                     Faker::Number.hexadecimal(6),
+                       notes:                   Faker::HarryPotter.book,
+                       funding_source:          Faker::Book.publisher)
         Faker::UniqueGenerator.clear
       end
 
-      # Let's create Publishings.
+      # Publishings.
       prng = Random.new
       Project.all.each do |p|
         requested_by = User.offset(rand(User.count)).first
         approved_by = User.offset(rand(User.count)).first
         case prng.rand(10)
         when 0  # Create Publishing object.
-          Publishing.create(publishable: p, requested_by: requested_by)
+          p.request_publishing_by(requested_by)
         when 1  # Create Publishing object and approve it.
-          Publishing.create(publishable: p, requested_by: requested_by).approve_now(approved_by)
+          Publishing.create(publishable: p, user: requested_by).approve_by(approved_by)
         else    # Don't do anything.
         end
+      end
+
+      # Messages.
+      100.times do |m|
+        @totd.messages.create(name: Faker::HarryPotter.unique.book, description: Faker::ChuckNorris.unique.fact)
+        Faker::UniqueGenerator.clear
       end
 
       # Turn on paper_trail.
