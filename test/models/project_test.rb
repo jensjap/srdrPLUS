@@ -7,20 +7,24 @@ class ProjectTest < ActiveSupport::TestCase
     @user = users(:two)
   end
 
+  test 'ensure project has publishing requests ' do
+    refute_equal @project.publishings.count, 0
+  end
+
   test 'project responds to publishings' do
     assert @project.respond_to?(:publishings)
   end
 
   test 'publishings can created for project' do
     previous_publishings_cnt = @project.publishings.count
-    @project.publishings << Publishing.create(publishable: @project, requested_by: @user)
+    @project.publishings << Publishing.create(publishable: @project, user: @user)
     assert @project.publishings, previous_publishings_cnt + 1
   end
 
   test 'requesting publishing should create it with correct requested_by' do
     project_without_publishings = Project.where.not(id: Project.includes(:publishings).\
                                                     joins(:publishings).\
-                                                    where('publishings.requested_by_id IS NOT NULL').\
+                                                    where('publishings.user_id IS NOT NULL').\
                                                     pluck(:id)).first
     assert project_without_publishings.publishings.blank?
     project_without_publishings.request_publishing
@@ -30,7 +34,7 @@ class ProjectTest < ActiveSupport::TestCase
   test 'attempting to request publishing by the same user should not work' do
     project_without_publishings = Project.where.not(id: Project.includes(:publishings).\
                                                     joins(:publishings).\
-                                                    where('publishings.requested_by_id IS NOT NULL').\
+                                                    where('publishings.user_id IS NOT NULL').\
                                                     pluck(:id)).first
     assert project_without_publishings.publishings.blank?
     project_without_publishings.request_publishing

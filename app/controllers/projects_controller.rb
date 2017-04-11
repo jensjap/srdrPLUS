@@ -5,7 +5,7 @@ class ProjectsController < ApplicationController
   # GET /projects.json
   def index
     gon.push({ tip_of_the_day: Faker::ChuckNorris.fact })
-    @projects = Project.includes(:publishings).by_query(params[:q]).page(params[:page])
+    @projects = Project.includes(:publishings).order(:created_at).by_query(params[:q]).page(params[:page])
   end
 
   # GET /projects/1
@@ -66,7 +66,7 @@ class ProjectsController < ApplicationController
   # GET /projects/search.json
   def search
     @query = params[:q]
-    @projects = Project.includes(:publishings).by_name_description_and_query(@query).page(params[:page])
+    @projects = Project.includes(:publishings).order(:created_at).by_name_description_and_query(@query).page(params[:page])
     render 'index'
   end
 

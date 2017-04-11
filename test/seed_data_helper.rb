@@ -129,14 +129,17 @@ module SeedDataExtended
       end
 
       # Publishings.
-      prng = Random.new
       Project.all.each do |p|
         requested_by = User.offset(rand(User.count)).first
         approved_by = User.offset(rand(User.count)).first
-        case prng.rand(10)
+        case rand(10)
         when 0  # Create Publishing object.
-          p.request_publishing_by(requested_by)
-        when 1  # Create Publishing object and approve it.
+          p.request_publishing_by(User.first)
+          p.request_publishing_by(User.second)
+        when 1  # Create Publishing object.
+          p.request_publishing_by(User.first)
+          p.request_publishing_by(User.third)
+        when 2  # Create Publishing object and approve it.
           Publishing.create(publishable: p, user: requested_by).approve_by(approved_by)
         else    # Don't do anything.
         end

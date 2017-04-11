@@ -3,33 +3,19 @@ require 'test_helper'
 class PublishingTest < ActiveSupport::TestCase
   def setup
     @user = users(:one)
-    @project = projects(:one)
-    @publishing_approved = publishings(:one)
-    @publishing_requested = publishings(:two)
-  end
-
-  test 'ensure project has publishing requests ' do
-    assert_not_equal @project.publishings.count, 0
+    @publishing_one = publishings(:one)
+    # publishings(:two) has no approval set in fixtures.
+    @publishing_two = publishings(:two)
   end
 
   test 'requested publishing request is not approved' do
-    assert @publishing_requested.approved_by.blank?
-    assert @publishing_requested.approved_at.blank?
-    refute @publishing_requested.approved?
+    assert @publishing_two.approval.blank?
+    refute @publishing_two.approved?
   end
 
-  test 'approved publishing request is approved' do
-    assert @publishing_approved.approved_by.present?
-    assert @publishing_approved.approved_at.present?
-    assert @publishing_approved.approved?
-  end
-
-  test 'publishing can be approved' do
-    refute @publishing_requested.approved?
-    @publishing_requested.approve_now(@user)
-    assert @publishing_requested.approved_by.present?
-    assert @publishing_requested.approved_at.present?
-    assert @publishing_requested.approved?
-    assert_equal @publishing_requested.approved_by, @user
+  test 'approving publishing request is approved' do
+    refute @publishing_two.approved?
+    @publishing_two.approve_by(@user)
+    assert @publishing_two.approved?
   end
 end
