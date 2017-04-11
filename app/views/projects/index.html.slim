@@ -4,22 +4,8 @@
   .column.medium-4
     = search_field_tag 'project-search', nil, autofocus: '', placeholder: '&#128270; '.html_safe
 
-/placeholder: ('&#128270;').html_safe
-
-.column.row
-  table.stack
-    thead
-      tr
-        th Name
-        th Description
-        th style='white-space: nowrap;' Date Created
-        th style='white-space: nowrap;' Date Updated
-        th
-        th
-        th
-
-    tbody#projects-table-body
-      = render 'projects/index/table_body'
+.column.row#project-list
+  = render 'projects/index/project_list'
 
 .column.row.pagination
   = paginate @projects, remote: true

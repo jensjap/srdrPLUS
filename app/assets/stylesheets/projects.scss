@@ -8,8 +8,12 @@ mark{
   background: #FF9718;
 }
 
-#projects-table-body tr td {
+li.accordion-item {
   position: relative;
+
+  a {
+    text-decoration: none;
+  }
 
   &.publishing-approved:before {
     content: '';
@@ -21,7 +25,7 @@ mark{
     border-color: $success-color transparent;
   }
 
-  &.publishing-pending:before {
+  &.publishing-requested:before {
     content: '';
     position: absolute;
     top: 0;

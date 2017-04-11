@@ -1,0 +1,13 @@
+ul.accordion data-accordion='' data-multi-expand='false' data-allow-all-closed='true'
+  - @projects.each do |project|
+    - if project.publishings.present?
+      - if project.publishings.find(&:approved?)
+        li.publishing-approved.accordion-item data-accordion-item=''
+          = render partial: 'projects/index/project_list_item', locals: { project: project }
+      - else
+        li.publishing-requested.accordion-item data-accordion-item=''
+          = render partial: 'projects/index/project_list_item', locals: { project: project }
+    - else
+      li.accordion-item data-accordion-item=''
+        = render partial: 'projects/index/project_list_item', locals: { project: project }
+

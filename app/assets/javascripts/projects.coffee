@@ -26,7 +26,7 @@ document.addEventListener 'turbolinks:load', ->
       return
 
     $('#project-search').keyup ->
-      delay searchProjectsList, 250
+      delay searchProjectsList, 500
       return
 
     return

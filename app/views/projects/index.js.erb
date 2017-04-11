@@ -1,3 +1,12 @@
-$( '#projects-table-body' ).html( "<%= escape_javascript(render partial: 'projects/index/table_body', locals: { projects: @projects }) %>" );
-$( 'div.pagination' ).html( "<%= escape_javascript(paginate @projects, remote: true) %>" );
-$( '#projects-table-body td:nth-child(-n+2)' ).mark( "<%= (@query).html_safe %>", {  } );
+( function(){
+  var projectList = $( '#project-list' );
+  var options = {
+    'separateWordSearch': false,
+    'wildcards': 'enabled'
+  };
+
+  projectList.html( "<%= escape_javascript( render partial: 'projects/index/project_list', locals: { projects: @projects } ) %>" ).foundation();
+
+  $( 'div.pagination' ).html( "<%= escape_javascript( paginate @projects, remote: true ) %>" );
+  $( '.accordion-title, .accordion-content' ).mark( "<%= raw(@query) %>", options );
+} )();
