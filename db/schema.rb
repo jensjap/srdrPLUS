@@ -59,27 +59,36 @@ ActiveRecord::Schema.define(version: 20170411182225) do
     t.datetime "created_at",        null: false
     t.datetime "updated_at",        null: false
     t.datetime "deleted_at"
-    t.boolean  "active"
-    t.index ["active"], name: "index_dispatches_on_active", using: :btree
     t.index ["deleted_at"], name: "index_dispatches_on_deleted_at", using: :btree
-    t.index ["dispatchable_type", "dispatchable_id", "user_id", "active"], name: "index_dispatches_on_type_id_user_id_active_uniq", unique: true, using: :btree
-    t.index ["dispatchable_type", "dispatchable_id", "user_id"], name: "index_dispatches_on_type_id_user_id", unique: true, using: :btree
+    t.index ["dispatchable_type", "dispatchable_id", "user_id"], name: "index_dispatches_on_type_id_user_id", using: :btree
     t.index ["dispatchable_type", "dispatchable_id"], name: "index_dispatches_on_dispatchable_type_and_dispatchable_id", using: :btree
     t.index ["user_id"], name: "index_dispatches_on_user_id", using: :btree
   end
 
-  create_table "message_types", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "frequencies", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "deleted_at"
+    t.index ["deleted_at"], name: "index_frequencies_on_deleted_at", using: :btree
+  end
+
+  create_table "message_types", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string   "name"
+    t.integer  "frequency_id"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+    t.datetime "deleted_at"
     t.index ["deleted_at"], name: "index_message_types_on_deleted_at", using: :btree
+    t.index ["frequency_id"], name: "index_message_types_on_frequency_id", using: :btree
   end
 
   create_table "messages", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "message_type_id"
     t.string   "name"
     t.text     "description",     limit: 65535
+    t.datetime "start_at"
+    t.datetime "end_at"
     t.datetime "created_at",                    null: false
     t.datetime "updated_at",                    null: false
     t.datetime "deleted_at"
@@ -212,6 +221,7 @@ ActiveRecord::Schema.define(version: 20170411182225) do
   add_foreign_key "degreeholderships", "degrees"
   add_foreign_key "degreeholderships", "profiles"
   add_foreign_key "dispatches", "users"
+  add_foreign_key "message_types", "frequencies"
   add_foreign_key "messages", "message_types"
   add_foreign_key "profiles", "organizations"
   add_foreign_key "profiles", "users"

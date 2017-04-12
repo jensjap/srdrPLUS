@@ -4,7 +4,8 @@ class ProjectsController < ApplicationController
   # GET /projects
   # GET /projects.json
   def index
-    gon.push({ tip_of_the_day: Faker::ChuckNorris.fact })
+    totd = Message.get_totd.dispatch_to(current_user)
+    gon.push( totd ) if totd
     @projects = Project.includes(:publishings).order(:created_at).by_query(params[:q]).page(params[:page])
   end
 

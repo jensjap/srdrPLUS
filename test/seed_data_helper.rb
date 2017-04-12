@@ -95,11 +95,19 @@ module SeedData
       @jd.profiles << @auditor.profile
       @msph.profiles << @auditor.profile
 
+      # Frequency.
+      Frequency.create([
+        { name: 'Daily' },
+        { name: 'Weekly' },
+        { name: 'Monthly' },
+        { name: 'Annually' }
+      ])
+
       # MessageTypes.
-      @totd = MessageType.create(name: 'Tip Of The Day')
+      @totd = MessageType.create(name: 'Tip Of The Day', frequency: Frequency.first)
       MessageType.create([
-        { name: 'General Announcement' },
-        { name: 'Maintenance Announcement' }
+        { name: 'General Announcement', frequency: Frequency.first },
+        { name: 'Maintenance Announcement', frequency: Frequency.first }
       ])
 
       # Turn on paper_trail.
@@ -146,8 +154,9 @@ module SeedDataExtended
       end
 
       # Messages.
+      @totd = MessageType.first
       100.times do |m|
-        @totd.messages.create(name: Faker::HarryPotter.unique.book, description: Faker::ChuckNorris.unique.fact)
+        @totd.messages.create(name: Faker::HarryPotter.unique.book, description: Faker::ChuckNorris.unique.fact, start_at: 10.minute.ago, end_at: Time.current)
         Faker::UniqueGenerator.clear
       end
 

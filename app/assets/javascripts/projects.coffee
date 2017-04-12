@@ -6,8 +6,8 @@ document.addEventListener 'turbolinks:load', ->
 
   do ->
 
-    if gon.tip_of_the_day
-      toastr.info(gon.tip_of_the_day, 'Tip Of The Day', {
+    if gon.message_name
+      toastr.info(gon.message_content, gon.message_name, {
           'timeOut': '15000',
           'progressBar': true })
 

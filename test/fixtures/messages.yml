@@ -4,9 +4,13 @@ one:
   message_type: one
   name: Message One
   description: MyText
+  start_at: <%= 1.day.ago.to_s(:db) %>
+  end_at: <%= Time.current.to_formatted_s(:db) %>
 
 two:
-  message_type: one
+  message_type: two
   name: Message Two
   description: MyText
+  start_at: <%= 1.day.ago.to_s(:db) %>
+  end_at: <%= Time.current.to_formatted_s(:db) %>
 

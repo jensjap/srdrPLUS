@@ -6,4 +6,8 @@ class Dispatch < ApplicationRecord
 
   belongs_to :dispatchable, polymorphic: true
   belongs_to :user, inverse_of: :dispatches
+
+  def is_stale?
+    created_at > Time.current - (dispatchable.end_at - dispatchable.start_at)
+  end
 end

@@ -6,5 +6,7 @@ class CreateDispatches < ActiveRecord::Migration[5.0]
 
       t.timestamps
     end
+
+    add_index :dispatches, [:dispatchable_type, :dispatchable_id, :user_id], name: 'index_dispatches_on_type_id_user_id', where: 'deleted_at IS NULL'
   end
 end
