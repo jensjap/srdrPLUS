@@ -4,8 +4,8 @@ class ProjectsController < ApplicationController
   # GET /projects
   # GET /projects.json
   def index
-    totd = Message.get_totd.dispatch_to(current_user)
-    gon.push( totd ) if totd
+    msg = Message.get_totd.check_message
+    flash.now[:info] = msg if msg
     @projects = Project.includes(:publishings).order(:created_at).by_query(params[:q]).page(params[:page])
   end
 

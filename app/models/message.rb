@@ -7,5 +7,7 @@ class Message < ApplicationRecord
 
   belongs_to :message_type, inverse_of: :messages
 
+  has_one :frequency, through: :message_type
+
   has_many :dispatches, as: :dispatchable, dependent: :destroy
 end

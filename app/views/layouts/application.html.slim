@@ -14,7 +14,7 @@ html lang='en'
     = render 'toastr_rails/flash'
 
   body
-    = Gon::Base.render_data
+    = Gon::Base.render_data(camelCase: true)
     = render 'shared/noscript'
     - if content_for?(:content)
       == yield(:content)

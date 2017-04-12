@@ -6,11 +6,6 @@ document.addEventListener 'turbolinks:load', ->
 
   do ->
 
-    if gon.message_name
-      toastr.info(gon.message_content, gon.message_name, {
-          'timeOut': '15000',
-          'progressBar': true })
-
     delay = do ->
       timer = 0
       (callback, ms) ->
