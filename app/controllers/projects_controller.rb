@@ -6,7 +6,9 @@ class ProjectsController < ApplicationController
   def index
     msg = Message.get_totd.check_message
     flash.now[:info] = msg if msg
-    @projects = Project.includes(:publishings).order(:created_at).by_query(params[:q]).page(params[:page])
+    @projects = Project.includes(publishings: [:publishable, { user: :profile }]).
+                        includes(approvals: [{ user: :profile }]).
+                        by_query(params[:q]).page(params[:page])
   end
 
   # GET /projects/1
@@ -66,8 +68,11 @@ class ProjectsController < ApplicationController
   # GET /projects/search
   # GET /projects/search.json
   def search
+    # Need @query for index partial.
     @query = params[:q]
-    @projects = Project.includes(:publishings).order(:created_at).by_name_description_and_query(@query).page(params[:page])
+    @projects = Project.includes(publishings: [:publishable, { user: :profile }]).
+                        includes(approvals: [{ user: :profile }]).
+                        by_name_description_and_query(@query).page(params[:page])
     render 'index'
   end
 

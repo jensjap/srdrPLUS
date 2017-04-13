@@ -6,10 +6,10 @@
   .row
     .column.medium-4
       span.label Date Created:
-      .callout.secondary = project.created_at.to_date
+      .callout.secondary = project.created_at
     .column.medium-4
       span.label Date Updated:
-      .callout.secondary = project.updated_at.to_date
+      .callout.secondary = project.updated_at
     .column.medium-4
       - if project.publishings.present?
         - if project.approvals.present?
