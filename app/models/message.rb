@@ -10,4 +10,6 @@ class Message < ApplicationRecord
   has_one :frequency, through: :message_type
 
   has_many :dispatches, as: :dispatchable, dependent: :destroy
+
+  validates :message_type, presence: true
 end

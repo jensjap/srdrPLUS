@@ -18,7 +18,6 @@ class User < ApplicationRecord
 
   has_many :approvals, dependent: :destroy, inverse_of: :user
   has_many :degrees, through: :profile
-  #has_many :degreeholderships, through: :profile
   has_many :dispatches, dependent: :destroy, inverse_of: :user
   has_many :publishings, dependent: :destroy, inverse_of: :user
   has_many :suggestions, dependent: :destroy, inverse_of: :user
@@ -38,16 +37,6 @@ class User < ApplicationRecord
   def login
     @login || email
   end
-
-#  def self.find_for_database_authentication(warden_conditions)
-#    conditions = warden_conditions.dup
-#    if login = conditions.delete(:login)
-#      where(conditions.to_hash).joins(:profile).where(["`profiles`.username = :value OR email = :value", { :value => login.downcase }]).first
-#    elsif conditions.has_key?(:username) || conditions.has_key?(:email)
-#      conditions[:email].downcase! if conditions[:email]
-#      where(conditions.to_hash).first
-#    end
-#  end
 
   def self.find_first_by_auth_conditions(warden_conditions)
     conditions = warden_conditions.dup

@@ -6,4 +6,6 @@ class Approval < ApplicationRecord
 
   belongs_to :approvable, polymorphic: true
   belongs_to :user, inverse_of: :approvals
+
+  validates :approvable, :user, presence: true
 end

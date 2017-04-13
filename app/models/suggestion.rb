@@ -9,4 +9,6 @@ class Suggestion < ApplicationRecord
   belongs_to :user, inverse_of: :suggestions
 
   has_one :approval, as: :approvable, dependent: :destroy
+
+  validates :suggestable, :user, presence: true
 end

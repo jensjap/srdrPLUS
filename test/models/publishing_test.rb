@@ -4,8 +4,7 @@ class PublishingTest < ActiveSupport::TestCase
   def setup
     @user = users(:one)
     @publishing_one = publishings(:one)
-    # publishings(:two) has no approval set in fixtures.
-    @publishing_two = publishings(:two)
+    @publishing_two = publishings(:two)  # publishings(:two) has no approval set in fixtures.
   end
 
   test 'requested publishing request is not approved' do

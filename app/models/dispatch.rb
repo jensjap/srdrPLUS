@@ -5,6 +5,8 @@ class Dispatch < ApplicationRecord
   belongs_to :dispatchable, polymorphic: true
   belongs_to :user, inverse_of: :dispatches
 
+  validates :dispatchable, :user, presence: true
+
   # Checks if this Dispatch is older than Dispatchable's frequency allows.
   def is_stale?
     frequency = dispatchable.frequency.name
