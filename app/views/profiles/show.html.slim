@@ -4,6 +4,7 @@
   .title-heading
     h2 style="float: left;" User Profile
     = link_to('Edit', edit_profile_path, class: 'button small warning', style: 'padding: 4px; margin-left: 6px;')
+
 .row
   .column.medium-4
     dl
@@ -15,10 +16,9 @@
       dd.callout.secondary = @profile.username
   .column.medium-4
     dl
-      dt.label.primary Degrees
-      dd.callout.secondary
-        - @profile.degrees.map { |degree| degree.name }.each do |name|
-          span.label.secondary style='margin-right: 3px; padding-top: 2px; padding-bottom: 2px;' #{ name }
+      dt.label.primary Timezone
+      dd.callout.secondary = @profile.time_zone
+
 .row
   .column.medium-4
     dl
@@ -32,3 +32,14 @@
     dl
       dt.label.primary Last Name
       dd.callout.secondary = @profile.last_name
+
+.row
+  .column.medium-4
+    dl
+      dt.label.primary Degrees
+      dd.callout.secondary
+        - @profile.degrees.map { |degree| degree.name }.each do |name|
+          span.label.secondary style='margin-right: 3px; padding-top: 2px; padding-bottom: 2px;' #{ name }
+  .column.medium-4
+  .column.medium-4
+

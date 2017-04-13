@@ -108,12 +108,13 @@ ActiveRecord::Schema.define(version: 20170411182225) do
   create_table "profiles", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "user_id"
     t.integer  "organization_id"
+    t.string   "time_zone",       default: "UTC"
     t.string   "username"
     t.string   "first_name"
     t.string   "middle_name"
     t.string   "last_name"
-    t.datetime "created_at",      null: false
-    t.datetime "updated_at",      null: false
+    t.datetime "created_at",                      null: false
+    t.datetime "updated_at",                      null: false
     t.datetime "deleted_at"
     t.index ["deleted_at"], name: "index_profiles_on_deleted_at", using: :btree
     t.index ["organization_id"], name: "index_profiles_on_organization_id", using: :btree

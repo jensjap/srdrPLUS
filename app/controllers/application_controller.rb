@@ -1,6 +1,8 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
+  around_action :set_time_zone, if: :current_user
+
   before_action :authenticate_user!
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :set_current_user
@@ -8,6 +10,12 @@ class ApplicationController < ActionController::Base
 
   def set_current_user
     User.current = current_user
+  end
+
+  private
+
+  def set_time_zone(&block)
+      Time.use_zone(current_user.profile.time_zone, &block)
   end
 
   protected
