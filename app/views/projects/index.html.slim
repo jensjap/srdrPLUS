@@ -3,10 +3,10 @@
     h1 My Projects
   .column.medium-4
     .row.project-search
-      .column.medium-1.search-icon
+      .column.medium-2.search-icon
         i.fi-page-search
-      .column.medium-11
-        = search_field_tag 'project-search', nil, placeholder: 'Name or Description'
+      .column.medium-10
+        = search_field_tag 'project-search', nil, placeholder: 'Search'
 
 .column.row#project-list
   = render 'projects/index/project_list'

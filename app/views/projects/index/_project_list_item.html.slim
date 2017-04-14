@@ -1,8 +1,11 @@
 = link_to project.name, '#', class: 'accordion-title'
+
 .accordion-content data-tab-content=''
+
   .column.row
     span.label Description:
     .callout.secondary = project.description
+
   .row
     .column.medium-4
       span.label Date Created:
@@ -22,6 +25,7 @@
               - project.publishings.each do |publishing|
                 li = publishing.created_at.in_time_zone(current_user.profile.time_zone).strftime('%c')
                 | (by: #{ publishing.user.profile.first_name })
+
   .row
     .column.medium-4
       span.label Number of Key Questions:
@@ -34,3 +38,4 @@
       .callout.secondary = Random.rand(10) + 1
   .column.row
     = link_to 'Edit', edit_project_path(project), class: 'button expanded'
+

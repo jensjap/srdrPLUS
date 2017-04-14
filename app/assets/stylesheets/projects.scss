@@ -13,14 +13,19 @@ mark{
 
   .column {
 
+    &.medium-10 {
+      padding-left: 0;
+    }
+
     &.search-icon {
-      margin-top: 8px;
+      margin-top: 10px;
       padding-left: 15px;
     }
 
     i.fi-page-search {
       font-size: 20px;
       color: $secondary-color;
+      float: right;
     }
   }
 }
