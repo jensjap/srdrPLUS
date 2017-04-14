@@ -1,7 +1,7 @@
 .row
   h2
-    | Edit
-    =< resource_name.to_s.humanize
+    => resource_name.to_s.humanize
+    | Settings
   .column.medium-3
     = render 'users/registrations/edit/tab_links'
   .column.medium-9
