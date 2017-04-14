@@ -8,37 +8,57 @@ mark{
   background: #FF9718;
 }
 
-li.accordion-item.is-active a {
-  color: $primary-color;
+input#project-search {
+  margin-top: 15px;
 }
 
-li.accordion-item {
-  position: relative;
-
-  a {
-    text-decoration: none;
-    color: gray;
-  }
-
-  // Colored triangles on the project index page.
-  &.publishing-approved:before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    border-width: 16px 16px 0 0;
-    border-style: solid;
-    border-color: $success-color transparent;
-  }
-
-  &.publishing-requested:before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    border-width: 16px 16px 0 0;
-    border-style: solid;
-    border-color: $warning-color transparent;
-  }
-  // END Colored triangles on the project index page.
+ul.legend {
+  margin: 0;
+  list-style-type: none;
 }
+
+ul.accordion,
+ul.legend {
+  margin-top: 5px;
+
+  li.accordion-item.is-active a {
+    font-weight: bold;
+    color: $primary-color;
+
+    &.button {
+      font-weight: normal;
+    }
+  }
+
+  li {
+    position: relative;
+
+    a {
+      text-decoration: none;
+      color: gray;
+    }
+
+    // Colored triangles on the project index page.
+    &.publishing-approved:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      border-width: 16px 16px 0 0;
+      border-style: solid;
+      border-color: $success-color transparent;
+    }
+
+    &.publishing-requested:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      border-width: 16px 16px 0 0;
+      border-style: solid;
+      border-color: $warning-color transparent;
+    }
+    // END Colored triangles on the project index page.
+  }
+}
+
