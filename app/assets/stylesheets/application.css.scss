@@ -24,6 +24,9 @@
 body {
   margin: 0;
 }
+.content {
+  margin-top: 40px;
+}
 a {
   color: $primary-color;
 
@@ -40,7 +43,6 @@ a {
   }
 }
 body div.top-bar {
-  margin: 0;
   padding: 3px;
 
   .top-bar-right {
@@ -79,13 +81,10 @@ ul.menu.vertical.submenu.is-dropdown-submenu {
     }
   }
 }
-//hr.top-bar-ruler {
-//  margin-top: 0;
-//}
 // END Miscellaneous stuff.
 
 // Pagination.
-.column.row.pagination {
+.column.row .pagination {
   li {
     a,
     a:visited {

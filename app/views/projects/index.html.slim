@@ -2,16 +2,20 @@
   .column.medium-8
     h1 My Projects
   .column.medium-4
-    = search_field_tag 'project-search', nil, placeholder: '&#128270; Project Name or Description'.html_safe
-
-.column.row
-  = render 'projects/index/legend'
+    .row.project-search
+      .column.medium-1.search-icon
+        i.fi-page-search
+      .column.medium-11
+        = search_field_tag 'project-search', nil, placeholder: 'Name or Description'
 
 .column.row#project-list
   = render 'projects/index/project_list'
 
-.column.row.pagination
-  = paginate @projects, remote: true
+.row
+  .column.medium-8.pagination
+    = paginate @projects, remote: true
+  .column.medium-4
+    = render 'projects/index/legend'
 
 br
 
