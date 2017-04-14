@@ -45,12 +45,23 @@ ul.legend {
     font-style: italic;
   }
 
-  li.accordion-item.is-active a {
-    font-weight: bold;
-    color: $primary-color;
+  li.accordion-item.is-active {
+    a.accordion-title {
+      font-weight: bold;
+      color: $primary-color;
+    }
 
-    &.button {
-      font-weight: normal;
+    div.accordion-content {
+      border-top: none;
+
+      a.button {
+        font-weight: normal;
+        margin-top: 31px;
+      }
+
+      .callout.description {
+        min-height: 140px;
+      }
     }
   }
 

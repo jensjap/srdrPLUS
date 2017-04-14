@@ -1,41 +1,46 @@
-= link_to project.name, '#', class: 'accordion-title'
+/= link_to project.name, '#', class: 'accordion-title'
+a href='#' class='accordion-title'
+  .row
+    .column.medium-8
+      = project.name
+    .column.medium-4
+      = time_ago_in_words(project.updated_at.in_time_zone(current_user.profile.time_zone)) + " ago"
 
 .accordion-content data-tab-content=''
 
-  .column.row
-    span.label Description:
-    .callout.secondary = project.description
+  .row
+    .column.medium-7
+      span.label Description:
+      .callout.secondary.description = project.description
+    .column.medium-5
+      .column.row
+        span.label Date Created:
+        .callout.secondary = project.created_at.in_time_zone(current_user.profile.time_zone).strftime('%c')
+      .column.row
+        - if project.publishings.present?
+          - if project.approvals.present?
+            span.label.success Date Published:
+            .callout.secondary = project.approvals.first.created_at.in_time_zone(current_user.profile.time_zone).strftime('%c')
+          - else
+            span.label.warning Publishing Requested:
+            .callout.secondary
+              ol
+                - project.publishings.each do |publishing|
+                  li = publishing.created_at.in_time_zone(current_user.profile.time_zone).strftime('%c') + \
+                       " (by: #{ publishing.user.profile.first_name })"
 
   .row
-    .column.medium-4
-      span.label Date Created:
-      .callout.secondary = project.created_at.in_time_zone(current_user.profile.time_zone).strftime('%c')
-    .column.medium-4
-      span.label Date Updated:
-      .callout.secondary = project.updated_at.in_time_zone(current_user.profile.time_zone).strftime('%c')
-    .column.medium-4
-      - if project.publishings.present?
-        - if project.approvals.present?
-          span.label.success Date Published:
-          .callout.secondary = project.approvals.first.created_at.in_time_zone(current_user.profile.time_zone).strftime('%c')
-        - else
-          span.label.warning Publishing Requested:
-          .callout.secondary
-            ol
-              - project.publishings.each do |publishing|
-                li = publishing.created_at.in_time_zone(current_user.profile.time_zone).strftime('%c')
-                | (by: #{ publishing.user.profile.first_name })
-
-  .row
-    .column.medium-4
-      span.label Number of Key Questions:
-      .callout.secondary = Random.rand(5) + 1
-    .column.medium-4
-      span.label Number of Studies:
-      .callout.secondary = Random.rand(1000) + 1
-    .column.medium-4
-      span.label Number of Extraction Forms:
-      .callout.secondary = Random.rand(10) + 1
-  .column.row
-    = link_to 'Edit', edit_project_path(project), class: 'button expanded'
+    .column.medium-7
+      .row
+        .column.medium-4
+          span.label Key Questions:
+          .callout.secondary = Random.rand(5) + 1
+        .column.medium-4
+          span.label Studies:
+          .callout.secondary = Random.rand(1000) + 1
+        .column.medium-4
+          span.label Extraction Forms:
+          .callout.secondary = Random.rand(10) + 1
+    .column.medium-5
+      = link_to 'Edit', edit_project_path(project), class: 'button expanded'
 

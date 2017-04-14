@@ -126,13 +126,14 @@ module SeedDataExtended
       # Projects.
       1000.times do |n|
         Project.create(name:        Faker::Book.unique.title,
-                       description: '(' + (n+1).to_s + ') - ' + Faker::ChuckNorris.fact,
+                       description: '(' + (n+1).to_s + ') - ' + Faker::Lorem.paragraph(20, true),
                        attribution: Faker::Cat.registry,
                        methodology_description: Faker::HarryPotter.quote,
                        prospero:                Faker::Number.hexadecimal(12),
                        doi:                     Faker::Number.hexadecimal(6),
                        notes:                   Faker::HarryPotter.book,
-                       funding_source:          Faker::Book.publisher)
+                       funding_source:          Faker::Book.publisher,
+                       updated_at:              Faker::Time.between(DateTime.now - 1000, DateTime.now))
         Faker::UniqueGenerator.clear
       end
 

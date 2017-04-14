@@ -2,11 +2,14 @@ require 'test_helper'
 
 class OrganizationTest < ActiveSupport::TestCase
   def setup
+    @organization_one = organizations(:one)
+    @organization_two = organizations(:two)
   end
 
   test '#by_query should return correct organizations in the right order' do
-    results = Organization.by_query('orga')
-    assert_equal results, Organization.where('name like ?', "%orga%").order(:updated_at)
+    @organization_one.update(updated_at: 1.year.ago(@organization_one.updated_at))
+    results = Organization.by_query('org')
+    assert results.first.updated_at > results.last.updated_at
   end
 
   test '#process_token should create resource and suggestion by user' do
