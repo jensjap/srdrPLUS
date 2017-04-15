@@ -26,10 +26,19 @@ document.addEventListener 'turbolinks:load', ->
       delay filterProjectList( currentOrder ), 250
       return
 
-    $( '.toggle-sort-order button' ).click ( e ) ->
+    # There's a short flicker when the button gains focus which is ugly.
+    # We prevent it by calling e.preventDefault(). However, this must happen
+    # on mousedown because that's when an item gains focus.
+    $( '.toggle-sort-order button' ).mousedown ( e ) ->
       e.preventDefault()
       nextOrder = $( '.toggle-sort-order button.button.disabled' ).data( 'sortOrder' )
       delay filterProjectList( nextOrder ), 250
+      return
+
+    $( 'button.search' ).mousedown ( e ) ->
+      e.preventDefault()
+      $( '.search-field' ).toggleClass 'expand-search'
+      $( '#project-filter' ).focus()
       return
 
     return

@@ -8,25 +8,45 @@ mark {
   background: $secondary-color;
 }
 
-//.project-filter {
-//
-//  .filter-icon {
-//    position: relative;
-//    right: 46px;
-//    height: 39px;
-//    border: 1px solid lightgray;
-//    padding: 0;
-//    width: 36px;
-//
-//    i {
-//      position: relative;
-//      font-size: 30px;
-//      color: gray;
-//      top: 4px;
-//      left: 6px;
-//    }
-//  }
-//}
+// .project-filter
+.project-filter {
+  .searchbar {
+  }
+
+  input#project-filter {
+    float: right;
+    position: relative;
+    top: -16px;
+    right: 10px;
+  }
+
+  .search-field {
+    width: 0;
+    height: 40px;
+    margin-top: 1rem;
+    padding: 0;
+    border-radius: 50px;
+    border: none;
+    transition: all 0.5s ease;
+  }
+
+  .expand-search {
+    width: 80%;
+    max-width: calc(80% - 3rem);
+    border: 1px solid #c9c9c9;
+    padding: .5rem;
+  }
+
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .button {
+    border-radius: 50px;
+  }
+}
+// END .project-filter
 
 .project-controls {
   position: relative;
@@ -50,7 +70,6 @@ mark {
 }
 
 #project-list {
-
   ul.accordion,
   ul.legend {
 
