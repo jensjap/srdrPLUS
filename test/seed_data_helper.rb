@@ -125,6 +125,7 @@ module SeedDataExtended
 
       # Projects.
       1000.times do |n|
+        updated_at = Faker::Time.between(DateTime.now - 1000, DateTime.now)
         Project.create(name:        Faker::Book.unique.title,
                        description: '(' + (n+1).to_s + ') - ' + Faker::Lorem.paragraph(20, true),
                        attribution: Faker::Cat.registry,
@@ -133,7 +134,8 @@ module SeedDataExtended
                        doi:                     Faker::Number.hexadecimal(6),
                        notes:                   Faker::HarryPotter.book,
                        funding_source:          Faker::Book.publisher,
-                       updated_at:              Faker::Time.between(DateTime.now - 1000, DateTime.now))
+                       created_at:              updated_at - rand(1000).hours,
+                       updated_at:              updated_at)
         Faker::UniqueGenerator.clear
       end
 

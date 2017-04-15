@@ -13,9 +13,9 @@ module SharedQueryableMethods
     #           it returns an array with a single object element. This will assist in creating
     #           a new Resource later.
     def by_query(query)
-      @resources = where('name like ?', "%#{ query }%").order(updated_at: :desc)
+      @resources = where('name like ?', "%#{ query }%")
       return @resources.empty? ?
-        [ OpenStruct.new(id: "<<<#{ query }>>>", name: "New: '#{ query }'", suggestion: false) ] : @resources
+        [ OpenStruct.new(id: "<<<#{ query }>>>", name: "New: '#{ query }'") ] : @resources
     end
 
     # Params:
@@ -25,7 +25,7 @@ module SharedQueryableMethods
     # Returns:
     #   [Array] An array of the Resource found that matched the field and query string
     def by_name_description_and_query(query)
-      where('name LIKE ? OR description LIKE ?', "%#{ query }%", "%#{ query }%").order(updated_at: :desc)
+      where('name LIKE ? OR description LIKE ?', "%#{ query }%", "%#{ query }%")
     end
   end
 

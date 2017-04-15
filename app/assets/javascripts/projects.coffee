@@ -8,20 +8,28 @@ document.addEventListener 'turbolinks:load', ->
 
     delay = do ->
       timer = 0
-      (callback, ms) ->
+      ( callback, ms ) ->
         clearTimeout timer
-        timer = setTimeout(callback, ms)
+        timer = setTimeout( callback, ms )
         return
 
-    searchProjectsList = ->
+    filterProjectList = ( order ) ->
       $.get {
-          url: '/projects/search?q=' + $('#project-search').val(),
+          url: '/projects/filter?q=' + $( '#project-filter' ).val() + '&o=' + order,
           dataType: 'script'
         }
       return
 
-    $('#project-search').keyup ->
-      delay searchProjectsList, 500
+    $( '#project-filter' ).keyup ( e ) ->
+      e.preventDefault()
+      currentOrder = $( '.toggle-sort-order button.button.active' ).data( 'sortOrder' )
+      delay filterProjectList( currentOrder ), 250
+      return
+
+    $( '.toggle-sort-order button' ).click ( e ) ->
+      e.preventDefault()
+      nextOrder = $( '.toggle-sort-order button.button.disabled' ).data( 'sortOrder' )
+      delay filterProjectList( nextOrder ), 250
       return
 
     return

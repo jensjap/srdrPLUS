@@ -1,14 +1,19 @@
 class ProjectsController < ApplicationController
   before_action :set_project, only: [:show, :edit, :update, :destroy]
 
+  SORT = {  'updated-at': { updated_at: :desc },
+            'created-at': { created_at: :desc }
+  }.stringify_keys
+
   # GET /projects
   # GET /projects.json
   def index
     msg = Message.get_totd.check_message
     flash.now[:info] = msg if msg
-    @projects = Project.includes(publishings: [:publishable, { user: :profile }]).
-                        includes(approvals: [{ user: :profile }]).
-                        by_query(params[:q]).page(params[:page])
+    @query = params[:q]
+    @order = params[:o] || 'updated-at'
+    @projects = Project.includes(publishings: [:publishable, { user: :profile }]).includes(approvals: [{ user: :profile }]).
+                        by_query(@query).order(SORT[@order]).page(params[:page])
   end
 
   # GET /projects/1
@@ -65,14 +70,13 @@ class ProjectsController < ApplicationController
     end
   end
 
-  # GET /projects/search
-  # GET /projects/search.json
-  def search
-    # Need @query for index partial.
-    @query = params[:q]
-    @projects = Project.includes(publishings: [:publishable, { user: :profile }]).
-                        includes(approvals: [{ user: :profile }]).
-                        by_name_description_and_query(@query).page(params[:page])
+  # GET /projects/filter
+  # GET /projects/filter.json
+  def filter
+    @query = params[:q]  # Need @query for index partial.
+    @order = params[:o]
+    @projects = Project.includes(publishings: [:publishable, { user: :profile }]).includes(approvals: [{ user: :profile }]).
+                        by_name_description_and_query(@query).order(SORT[@order]).page(params[:page])
     render 'index'
   end
 

@@ -4,7 +4,7 @@ a href='#' class='accordion-title'
     .column.medium-8
       = project.name
     .column.medium-4
-      = time_ago_in_words(project.updated_at.in_time_zone(current_user.profile.time_zone)) + " ago"
+      = 'updated ' + time_ago_in_words(project.updated_at.in_time_zone(current_user.profile.time_zone)) + " ago"
 
 .accordion-content data-tab-content=''
 
@@ -22,7 +22,7 @@ a href='#' class='accordion-title'
             span.label.success Date Published:
             .callout.secondary = project.approvals.first.created_at.in_time_zone(current_user.profile.time_zone).strftime('%c')
           - else
-            span.label.warning Publishing Requested:
+            span.label.warning Date Publishing Requested:
             .callout.secondary
               ol
                 - project.publishings.each do |publishing|

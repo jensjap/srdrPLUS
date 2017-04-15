@@ -4,76 +4,101 @@
 
 @import 'settings';
 
-mark{
-  background: #FF9718;
+mark {
+  background: $secondary-color;
 }
 
-.project-search {
-  margin-top: 15px;
+//.project-filter {
+//
+//  .filter-icon {
+//    position: relative;
+//    right: 46px;
+//    height: 39px;
+//    border: 1px solid lightgray;
+//    padding: 0;
+//    width: 36px;
+//
+//    i {
+//      position: relative;
+//      font-size: 30px;
+//      color: gray;
+//      top: 4px;
+//      left: 6px;
+//    }
+//  }
+//}
 
-  .column {
+.project-controls {
+  position: relative;
+  top: 30px;
 
-    &.medium-10 {
-      padding-left: 0;
-    }
-
-    &.search-icon {
-      margin-top: 10px;
-      padding-left: 15px;
-    }
-
-    i.fi-page-search {
-      font-size: 20px;
-      color: $secondary-color;
-      float: right;
-    }
-  }
-}
-
-ul.legend {
-  list-style-type: none;
-
-  @include breakpoint(medium) {
+  .toggle-sort-order {
     float: right;
+
+    button {
+      margin: 10px 0 0 2px;
+
+      &.active {
+        background-color: $secondary-color;
+      }
+
+      &.disabled {
+        cursor: pointer;
+      }
+    }
   }
 }
 
-ul.accordion,
-ul.legend {
+#project-list {
 
-  h4 {
-    font-style: italic;
+  ul.accordion,
+  ul.legend {
+
+    h4 {
+      font-style: italic;
+    }
+
+    li.accordion-item.is-active {
+      a.accordion-title {
+        font-weight: bold;
+        color: $primary-color;
+      }
+
+      div.accordion-content {
+        border-top: none;
+
+        a.button {
+          font-weight: normal;
+          margin-top: 31px;
+        }
+
+        .callout.description {
+          min-height: 140px;
+        }
+      }
+    }
   }
 
-  li.accordion-item.is-active {
-    a.accordion-title {
-      font-weight: bold;
-      color: $primary-color;
-    }
+  span.label.warning {
+    background-color: #56017b;
+  }
+}
 
-    div.accordion-content {
-      border-top: none;
+// Colored triangles on the project index page.
+ul {
 
-      a.button {
-        font-weight: normal;
-        margin-top: 31px;
-      }
-
-      .callout.description {
-        min-height: 140px;
-      }
-    }
+  &.legend {
+    list-style-type: none;
+    float: right;
   }
 
   li {
     position: relative;
 
-    a {
-      text-decoration: none;
+    a:visited {
       color: gray;
     }
 
-    // Colored triangles on the project index page.
     &.publishing-approved:before {
       content: '';
       position: absolute;
@@ -91,9 +116,9 @@ ul.legend {
       left: 0;
       border-width: 16px 16px 0 0;
       border-style: solid;
-      border-color: $warning-color transparent;
+      border-color: #56017b transparent;
     }
-    // END Colored triangles on the project index page.
   }
 }
+// END Colored triangles on the project index page.
 

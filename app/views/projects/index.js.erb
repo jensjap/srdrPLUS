@@ -1,12 +1,17 @@
 ( function(){
-  var projectList = $( '#project-list' );
-  var options = {
+  let order = "<%= @order %>";
+  let options = {
     'separateWordSearch': false,
     'wildcards': 'enabled'
   };
 
-  projectList.html( "<%= escape_javascript( render partial: 'projects/index/project_list', locals: { projects: @projects } ) %>" ).foundation();
+  let notOrder = order === 'updated-at' ? 'created-at' : 'updated-at';
 
+  $( '#project-list' ).html( "<%= escape_javascript( render partial: 'projects/index/project_list', locals: { projects: @projects } ) %>" ).foundation();
   $( 'div.pagination' ).html( "<%= escape_javascript( paginate @projects, remote: true ) %>" );
   $( '.accordion-title, .accordion-content' ).mark( "<%= raw(@query) %>", options );
+
+  $( '.toggle-sort-order button.button.' + order ).removeClass( 'disabled' ).addClass( 'active' ).blur();
+  $( '.toggle-sort-order button.button.' + notOrder ).removeClass( 'active' ).addClass( 'disabled' ).blur();
+
 } )();

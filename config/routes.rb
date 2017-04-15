@@ -5,7 +5,7 @@ Rails.application.routes.draw do
 
   resources :projects, concerns: :paginatable do
     collection do
-      get 'search'
+      get 'filter'
     end
   end
 

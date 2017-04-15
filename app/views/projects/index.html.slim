@@ -1,16 +1,29 @@
+/! Row with content header and filter input field.
 .row
   .column.medium-8
     h1 My Projects
-  .column.medium-4
-    .row.project-search
-      .column.medium-2.search-icon
-        i.fi-page-search
-      .column.medium-10
-        = search_field_tag 'project-search', nil, placeholder: 'Search'
+  .column.medium-4.project-filter
+    .row
+      .column.medium-8
+        = search_field_tag 'project-filter', nil, placeholder: 'Filter'
+      .column.medium-4
+        button.button.small
+          i.fi-magnifying-glass
 
+/! Row for toggler => sort by updated at or created at.
+.row.project-controls
+  .column.medium-8
+    = link_to 'Create New Project', new_project_path, class: 'button'
+  .column.medium-4
+    .toggle-sort-order
+      button.button.small.updated-at.active   type='button' data-sort-order='updated-at' Updated at
+      button.button.small.created-at.disabled type='button' data-sort-order='created-at' Created at
+
+/! Project list.
 .column.row#project-list
   = render 'projects/index/project_list'
 
+/! Row with pagination and legend.
 .row
   .column.medium-8.pagination
     = paginate @projects, remote: true
@@ -18,6 +31,4 @@
     = render 'projects/index/legend'
 
 br
-
-= link_to 'New Project', new_project_path
 
