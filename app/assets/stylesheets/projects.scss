@@ -45,8 +45,19 @@ mark {
     button {
       margin: 18px 0 0 2px;
 
+      &.active {
+        background-color: $primary-color;
+        cursor: not-allowed;
+      }
+
       &.disabled {
+        background-color: $primary-color;
         cursor: pointer;
+
+        &:hover {
+          background-color: $secondary-color;
+          opacity: 1;
+        }
       }
     }
   }
