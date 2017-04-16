@@ -26,7 +26,7 @@ body {
 }
 
 .content {
-  margin-top: 40px;
+  margin-top: 10px;
 }
 
 a {
@@ -43,6 +43,17 @@ a {
   &.button {
     color: $white !important;
     text-decoration: none;
+  }
+}
+
+.title-heading {
+  h2 {
+    float: left;
+  }
+
+  a.button.small {
+    padding: 4px;
+    margin-left: 6px;
   }
 }
 

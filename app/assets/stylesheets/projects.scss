@@ -8,16 +8,9 @@ mark {
   background: $secondary-color;
 }
 
-// .project-filter
 .project-filter {
-  .searchbar {
-  }
-
-  input#project-filter {
-    float: right;
-    position: relative;
-    top: -16px;
-    right: 10px;
+  .input-group-button button {
+    margin-right: 5px
   }
 
   .search-field {
@@ -32,35 +25,25 @@ mark {
 
   .expand-search {
     width: 80%;
-    max-width: calc(80% - 3rem);
+    //max-width: calc(80% - 3rem);
+    max-width: 80%;
     border: 1px solid #c9c9c9;
-    padding: .5rem;
-  }
-
-  svg {
-    width: 20px;
-    height: 20px;
+    padding-left: 1rem;
   }
 
   .button {
     border-radius: 50px;
   }
 }
-// END .project-filter
 
 .project-controls {
-  position: relative;
-  top: 30px;
+  height: 30px;
 
   .toggle-sort-order {
     float: right;
 
     button {
-      margin: 10px 0 0 2px;
-
-      &.active {
-        background-color: $secondary-color;
-      }
+      margin: 18px 0 0 2px;
 
       &.disabled {
         cursor: pointer;

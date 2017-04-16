@@ -23,7 +23,7 @@ document.addEventListener 'turbolinks:load', ->
     $( '#project-filter' ).keyup ( e ) ->
       e.preventDefault()
       currentOrder = $( '.toggle-sort-order button.button.active' ).data( 'sortOrder' )
-      delay filterProjectList( currentOrder ), 250
+      delay filterProjectList( currentOrder ), 500
       return
 
     # There's a short flicker when the button gains focus which is ugly.
@@ -32,7 +32,7 @@ document.addEventListener 'turbolinks:load', ->
     $( '.toggle-sort-order button' ).mousedown ( e ) ->
       e.preventDefault()
       nextOrder = $( '.toggle-sort-order button.button.disabled' ).data( 'sortOrder' )
-      delay filterProjectList( nextOrder ), 250
+      delay filterProjectList( nextOrder ), 500
       return
 
     $( 'button.search' ).mousedown ( e ) ->
