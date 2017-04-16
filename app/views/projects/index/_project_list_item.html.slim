@@ -4,7 +4,7 @@ a href='#' class='accordion-title'
     .column.medium-8
       = project.name
     .column.medium-4
-      = 'updated ' + time_ago_in_words(project.updated_at.in_time_zone(current_user.profile.time_zone)) + " ago"
+      small = 'updated ' + time_ago_in_words(project.updated_at.in_time_zone(current_user.profile.time_zone)) + " ago"
 
 .accordion-content data-tab-content=''
 

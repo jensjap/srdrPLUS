@@ -64,30 +64,34 @@ mark {
 }
 
 #project-list {
-  ul.accordion,
-  ul.legend {
 
-    h4 {
-      font-style: italic;
+  h4 {
+    font-style: italic;
+  }
+
+  li.accordion-item {
+    a,
+    a:visited {
+      color: gray;
+    }
+  }
+
+  li.accordion-item.is-active {
+    a.accordion-title {
+      font-weight: bold;
+      color: $primary-color;
     }
 
-    li.accordion-item.is-active {
-      a.accordion-title {
-        font-weight: bold;
-        color: $primary-color;
+    div.accordion-content {
+      border-top: none;
+
+      a.button {
+        font-weight: normal;
+        margin-top: 31px;
       }
 
-      div.accordion-content {
-        border-top: none;
-
-        a.button {
-          font-weight: normal;
-          margin-top: 31px;
-        }
-
-        .callout.description {
-          min-height: 140px;
-        }
+      .callout.description {
+        min-height: 140px;
       }
     }
   }
@@ -107,10 +111,6 @@ ul {
 
   li {
     position: relative;
-
-    a:visited {
-      color: gray;
-    }
 
     &.publishing-approved:before {
       content: '';
