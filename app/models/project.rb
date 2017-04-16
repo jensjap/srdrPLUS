@@ -7,6 +7,8 @@ class Project < ApplicationRecord
 
   paginates_per 8
 
+  has_many :key_questions_projects, dependent: :destroy, inverse_of: :project
+  has_many :key_questions, through: :key_questions_projects, dependent: :destroy
   has_many :publishings, as: :publishable, dependent: :destroy
   has_many :approvals, through: :publishings, dependent: :destroy
 end

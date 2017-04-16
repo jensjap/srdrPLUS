@@ -1,10 +1,10 @@
 Rails.application.routes.draw do
-  resources :key_questions
   concern :paginatable do
     get '(page/:page)', action: :index, on: :collection, as: ''
   end
 
-  resources :projects, concerns: :paginatable do
+  resources :projects, concerns: :paginatable, shallow: true do
+    resources :key_questions
     collection do
       get 'filter'
     end
