@@ -20,6 +20,19 @@ class DegreeProfileFlowTest < Capybara::Rails::TestCase
     assert_equal degrees_profiles_before-degrees_profiles_after, checked.count
   end
 
+  test 'de-associating a degree should delete degrees_profiles (redux)' do
+    assert page.has_content? 'Degree Information'
+
+    # Find degrees that have a check marked.
+    checked = page.all(:css, 'div.check_boxes.profile_degrees input[checked]')
+    checked.map { |c| c.set(false) }
+
+    # Compare number of degrees_profiles.
+    assert_difference('DegreesProfile.count', -checked.count) do
+      click_on 'Update Profile'
+    end
+  end
+
   test 'de-associating a degree should really delete degrees_profiles' do
     assert page.has_content? 'Degree Information'
 

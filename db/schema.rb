@@ -73,6 +73,29 @@ ActiveRecord::Schema.define(version: 20170416041041) do
     t.index ["deleted_at"], name: "index_frequencies_on_deleted_at", using: :btree
   end
 
+  create_table "key_questions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.text     "name",       limit: 65535
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+    t.datetime "deleted_at"
+    t.index ["deleted_at"], name: "index_key_questions_on_deleted_at", using: :btree
+  end
+
+  create_table "key_questions_projects", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "key_question_id"
+    t.integer  "project_id"
+    t.integer  "position"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+    t.datetime "deleted_at"
+    t.boolean  "active"
+    t.index ["active"], name: "index_key_questions_projects_on_active", using: :btree
+    t.index ["deleted_at"], name: "index_key_questions_projects_on_deleted_at", using: :btree
+    t.index ["key_question_id", "project_id", "position", "active"], name: "index_kqp_on_kq_id_p_id_position_active_uniq", unique: true, using: :btree
+    t.index ["key_question_id"], name: "index_key_questions_projects_on_key_question_id", using: :btree
+    t.index ["project_id"], name: "index_key_questions_projects_on_project_id", using: :btree
+  end
+
   create_table "message_types", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "name"
     t.integer  "frequency_id"
@@ -222,6 +245,8 @@ ActiveRecord::Schema.define(version: 20170416041041) do
   add_foreign_key "degrees_profiles", "degrees"
   add_foreign_key "degrees_profiles", "profiles"
   add_foreign_key "dispatches", "users"
+  add_foreign_key "key_questions_projects", "key_questions"
+  add_foreign_key "key_questions_projects", "projects"
   add_foreign_key "message_types", "frequencies"
   add_foreign_key "messages", "message_types"
   add_foreign_key "profiles", "organizations"

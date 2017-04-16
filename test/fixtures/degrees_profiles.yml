@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  degree: one
+  profile: one
+  active: true
+
+two:
+  degree: two
+  profile: one
+  active: true
+
+three:
+  degree: three
+  profile: two
+  active: true
+

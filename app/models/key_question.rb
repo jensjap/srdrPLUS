@@ -1,0 +1,2 @@
+class KeyQuestion < ApplicationRecord
+end
