@@ -1,9 +1,9 @@
 require 'test_helper'
 
 class DegreeTest < ActiveSupport::TestCase
-  test 'should properly cache Degree objects referenced directly, and also through degreeholderships' do
-    degreeholdership = degrees(:one).degreeholderships.first
-    assert_equal degrees(:one).object_id, degreeholdership.degree.object_id
+  test 'should properly cache Degree objects referenced directly, and also through degrees_profiles' do
+    degrees_profile = degrees(:one).degrees_profiles.first
+    assert_equal degrees(:one).object_id, degrees_profile.degree.object_id
   end
 
   test 'no new degree should be added when creating with same name' do

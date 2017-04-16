@@ -25,9 +25,9 @@ class ProfileTest < ActiveSupport::TestCase
     assert_equal @profile_one.organization, @organization_two
   end
 
-  test 'should properly cache Profile objects referenced directly, and also through degreeholderships' do
-    degreeholdership = profiles(:one).degreeholderships.first
-    assert_equal profiles(:one).object_id, degreeholdership.profile.object_id
+  test 'should properly cache Profile objects referenced directly, and also through degrees_profiles' do
+    degrees_profile = profiles(:one).degrees_profiles.first
+    assert_equal profiles(:one).object_id, degrees_profile.profile.object_id
   end
 
   test 'submitting properly formatted organization_id tokens (\'<<<0>>>\') should associate profile with newly created organization' do

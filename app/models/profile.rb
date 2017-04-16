@@ -7,11 +7,11 @@ class Profile < ApplicationRecord
   belongs_to :organization, inverse_of: :profiles, optional: true
   belongs_to :user, inverse_of: :profile
 
-  has_many :degreeholderships, dependent: :destroy, inverse_of: :profile
-  has_many :degrees, through: :degreeholderships, dependent: :destroy
+  has_many :degrees_profiles, dependent: :destroy, inverse_of: :profile
+  has_many :degrees, through: :degrees_profiles, dependent: :destroy
 
   accepts_nested_attributes_for :degrees, :allow_destroy => true, :reject_if => :all_blank
-  accepts_nested_attributes_for :degreeholderships, :allow_destroy => true, :reject_if => :all_blank
+  accepts_nested_attributes_for :degrees_profiles, :allow_destroy => true, :reject_if => :all_blank
 
   validates :user, uniqueness: true
   validates :username,

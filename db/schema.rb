@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170411182225) do
+ActiveRecord::Schema.define(version: 20170416041041) do
 
   create_table "approvals", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "approvable_type"
@@ -28,21 +28,6 @@ ActiveRecord::Schema.define(version: 20170411182225) do
     t.index ["user_id"], name: "index_approvals_on_user_id", using: :btree
   end
 
-  create_table "degreeholderships", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer  "degree_id"
-    t.integer  "profile_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.datetime "deleted_at"
-    t.boolean  "active"
-    t.index ["active"], name: "index_degreeholderships_on_active", using: :btree
-    t.index ["degree_id", "profile_id", "active"], name: "index_degreeholderships_on_degree_id_and_profile_id_and_active", unique: true, using: :btree
-    t.index ["degree_id", "profile_id"], name: "index_degreeholderships_on_degree_id_and_profile_id", using: :btree
-    t.index ["degree_id"], name: "index_degreeholderships_on_degree_id", using: :btree
-    t.index ["deleted_at"], name: "index_degreeholderships_on_deleted_at", using: :btree
-    t.index ["profile_id"], name: "index_degreeholderships_on_profile_id", using: :btree
-  end
-
   create_table "degrees", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "name"
     t.datetime "created_at", null: false
@@ -50,6 +35,21 @@ ActiveRecord::Schema.define(version: 20170411182225) do
     t.datetime "deleted_at"
     t.index ["deleted_at"], name: "index_degrees_on_deleted_at", using: :btree
     t.index ["name"], name: "index_degrees_on_name", unique: true, using: :btree
+  end
+
+  create_table "degrees_profiles", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "degree_id"
+    t.integer  "profile_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.datetime "deleted_at"
+    t.boolean  "active"
+    t.index ["active"], name: "index_degrees_profiles_on_active", using: :btree
+    t.index ["degree_id", "profile_id", "active"], name: "index_degrees_profiles_on_degree_id_and_profile_id_and_active", unique: true, using: :btree
+    t.index ["degree_id", "profile_id"], name: "index_degrees_profiles_on_degree_id_and_profile_id", using: :btree
+    t.index ["degree_id"], name: "index_degrees_profiles_on_degree_id", using: :btree
+    t.index ["deleted_at"], name: "index_degrees_profiles_on_deleted_at", using: :btree
+    t.index ["profile_id"], name: "index_degrees_profiles_on_profile_id", using: :btree
   end
 
   create_table "dispatches", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -219,8 +219,8 @@ ActiveRecord::Schema.define(version: 20170411182225) do
   end
 
   add_foreign_key "approvals", "users"
-  add_foreign_key "degreeholderships", "degrees"
-  add_foreign_key "degreeholderships", "profiles"
+  add_foreign_key "degrees_profiles", "degrees"
+  add_foreign_key "degrees_profiles", "profiles"
   add_foreign_key "dispatches", "users"
   add_foreign_key "message_types", "frequencies"
   add_foreign_key "messages", "message_types"
