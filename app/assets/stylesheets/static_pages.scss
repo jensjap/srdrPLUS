@@ -1,3 +1,14 @@
 // Place all the styles related to the StaticPages controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+@import 'settings';
+
+.elicit-registration {
+  @include breakpoint(small only) {
+    a.button {
+      position: relative;
+      top: -8px;
+    }
+  }
+}

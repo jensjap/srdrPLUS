@@ -1,10 +1,15 @@
-h2
-  | Log in
-= simple_form_for(resource, as: resource_name, url: session_path(resource_name)) do |f|
-  .form-inputs
-    = f.input :login, placeholder: 'email or username', required: false, autofocus: true
-    = f.input :password, placeholder: 'password', required: false
-    = f.input :remember_me, as: :boolean if devise_mapping.rememberable?
-  .form-actions
-    = f.button :submit, "Log in"
-= render "users/shared/links"
+- provide(:title, 'Log in')
+
+.column.row
+  = simple_form_for(resource, as: resource_name, url: session_path(resource_name)) do |f|
+
+    .form-inputs
+      = f.input :login, placeholder: 'email or username', required: false, autofocus: true
+      = f.input :password, placeholder: 'password', required: false
+      = f.input :remember_me, as: :boolean if devise_mapping.rememberable?
+
+    .form-actions
+      = f.button :submit, "Log in"
+
+  = render "users/shared/links"
+

@@ -20,6 +20,8 @@
         li = link_to('Home', root_path)
         li = link_to('About', about_path)
         li = link_to('Help', help_path)
+        li = link_to('Published Projects', '#')
+        li = link_to('Registries', '#')
         - if user_signed_in?
           li
             a href='#' More
