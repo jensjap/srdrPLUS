@@ -21,7 +21,7 @@ class ProjectsControllerTest < ActionDispatch::IntegrationTest
       post projects_url, params: { project: { attribution: @project.attribution, description: @project.description, doi: @project.doi, funding_source: @project.funding_source, methodology_description: @project.methodology_description, name: 'new project', notes: @project.notes, prospero: @project.prospero } }
     end
 
-    assert_redirected_to project_url(Project.last)
+    assert_redirected_to edit_project_url(Project.last)
   end
 
   test "should show project" do
