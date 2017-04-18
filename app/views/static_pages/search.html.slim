@@ -1,1 +1,17 @@
-h2 Search here.
+- provide(:title, 'Search')
+
+.row
+  .column.medium-6.small-centered
+    = simple_form_for(:search, url: search_path) do |f|
+      = f.error_notification
+
+      .form-inputs
+        = f.input :search, required: false, as: :fake, autofocus: true
+
+      .form-actions
+        = f.button :submit, 'Go'
+
+.column.row
+  - @results.each do |r|
+    ul
+      li = link_to(r.name, project_path(r))
