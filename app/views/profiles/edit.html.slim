@@ -1,33 +1,36 @@
 - provide(:title, 'Edit User Profile')
 
-h2 User Profile
+.column.row
+  h2 User Profile
 
-= simple_form_for(@profile, url: profile_path, html: { data: { 'abide': '' } }) do |f|
-  = f.error_notification
+.column.row
+  = simple_form_for(@profile, url: profile_path, html: { data: { 'abide': '' } }) do |f|
+    = f.error_notification
 
-  .row
-    .column.medium-6
-      fieldset.fieldset
-        legend Organization Information
-        = f.association :organization, include_blank: false
+    .row
+      .column.medium-6
+        fieldset.fieldset
+          legend Organization Information
+          = f.association :organization, include_blank: false
 
-    .column.medium-6
-      fieldset.fieldset
-        legend Degree Information
-        = f.association :degrees, label: 'Degrees (select all that apply)', include_blank: false
+      .column.medium-6
+        fieldset.fieldset
+          legend Degree Information
+          = f.association :degrees, label: 'Degrees (select all that apply)', include_blank: false
 
-  .row
-    .column
-      fieldset.fieldset
-        legend Profile Information
-        .row
-          .column.medium-6
-            = f.input :username
-            = f.input :time_zone
-          .column.medium-6
-            = f.input :first_name
-            = f.input :middle_name
-            = f.input :last_name
+    .row
+      .column
+        fieldset.fieldset
+          legend Profile Information
+          .row
+            .column.medium-6
+              = f.input :username
+              = f.input :time_zone
+            .column.medium-6
+              = f.input :first_name
+              = f.input :middle_name
+              = f.input :last_name
 
+    .column.row
       = f.button :submit
 

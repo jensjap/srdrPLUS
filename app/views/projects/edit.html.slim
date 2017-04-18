@@ -1,8 +1,14 @@
-h1 Editing project
+.column.row
+  h2 Project Name: #{ @project.name }
 
-== render 'form'
+.row
+  .column.medium-3
+    == render 'projects/edit/tab_links'
+  .column.medium-9
+    == render 'projects/edit/tab_content'
 
-= link_to 'Show', @project
-'  |
-= link_to 'Back', projects_path
+.column.row
+  = link_to 'Show', @project
+  '  |
+  = link_to 'Back', projects_path
 

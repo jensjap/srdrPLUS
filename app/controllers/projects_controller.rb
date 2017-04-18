@@ -28,6 +28,7 @@ class ProjectsController < ApplicationController
 
   # GET /projects/1/edit
   def edit
+    @key_question = @project.key_questions.new
   end
 
   # POST /projects

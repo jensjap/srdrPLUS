@@ -1,0 +1,8 @@
+.column.row
+  = simple_form_for(@project.key_questions.new, url: project_key_questions_path(@project), html: { data: { 'abide': '' } }) do |f|
+    = f.error_notification
+
+    .column.row
+      fieldset.fieldset
+        legend Key Question Information
+        = f.input :key_question, include_blank: false

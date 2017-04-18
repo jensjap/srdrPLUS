@@ -1,10 +1,11 @@
 class KeyQuestionsController < ApplicationController
+  before_action :set_project, only: [:index, :new, :create]
   before_action :set_key_question, only: [:show, :edit, :update, :destroy]
 
   # GET /key_questions
   # GET /key_questions.json
   def index
-    @key_questions = KeyQuestion.all
+    @key_questions = @project.key_questions
   end
 
   # GET /key_questions/1
@@ -14,7 +15,7 @@ class KeyQuestionsController < ApplicationController
 
   # GET /key_questions/new
   def new
-    @key_question = KeyQuestion.new
+    @key_question = @project.key_questions.new
   end
 
   # GET /key_questions/1/edit
@@ -24,7 +25,7 @@ class KeyQuestionsController < ApplicationController
   # POST /key_questions
   # POST /key_questions.json
   def create
-    @key_question = KeyQuestion.new(key_question_params)
+    @key_question = @project.key_questions.new(key_question_params)
 
     respond_to do |format|
       if @key_question.save
@@ -63,6 +64,10 @@ class KeyQuestionsController < ApplicationController
 
   private
     # Use callbacks to share common setup or constraints between actions.
+    def set_project
+      @project = Project.find(params[:project_id])
+    end
+
     def set_key_question
       @key_question = KeyQuestion.find(params[:id])
     end
