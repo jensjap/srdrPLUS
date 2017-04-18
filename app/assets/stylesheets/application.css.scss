@@ -21,8 +21,13 @@
 @import 'settings';
 
 // Miscellaneous stuff.
+
 body {
   margin: 0;
+}
+
+.top-bar .menu-text a:hover {
+  background-color: transparent;
 }
 
 .content {
@@ -62,6 +67,16 @@ body div.top-bar {
 
   .top-bar-right {
     margin-top: 6px;
+
+    a.button {
+      border: 1px solid white;
+      border-radius: 20px;
+      margin-left: 5px;
+
+      @include breakpoint(small only) {
+        margin-top: 10px;
+      }
+    }
   }
 
   a {

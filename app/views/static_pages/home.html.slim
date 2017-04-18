@@ -20,12 +20,16 @@
           li style='list-style-type: circle;' Collaborate with your team and extract data into extraction forms, in-parallel and online
           li style='list-style-type: circle;' Customize exports of your dataset
 
-  section.column.elicit-registration
-    h3 style='float:left;margin-right: 10px;' Are you new to SRDR?
-    = link_to 'Register here!', new_user_registration_path, class: 'button'
-    /a href='https://srdr.training.ahrq.gov/' target='_blank'
-      /button.button Try me!
-    p style='margin: 0 0 33px 33px' Register an account and become acquainted with the SRDR system.
+  section.column.elicit-registration style='text-align: center;'
+    .row
+      .column.small-centered
+        h3 Are you new to SRDR?
+    .row
+      .column.small-centered
+        = link_to 'Get Started', new_user_registration_path, class: 'button'
+    .row
+      .column.small-centered
+        p style='margin: 0 0 33px 33px' Register an account and become acquainted with the SRDR system.
 
   section.column
     #completed-projects

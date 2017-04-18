@@ -2,8 +2,9 @@
   .title-bar data-responsive-toggle='animated-menu' data-hide-for='medium'
     button.menu-icon.dark.title-bar-left type='button' data-toggle='animated-menu'
     .menu-text style='float: left !important; padding: 0 !important; margin-left: 5px !important;'
-      button type='button' data-toggle='offCanvasNav'
-        = image_tag('brand-sm', size: '60x10')
+      = link_to root_path do
+        button type='button' data-toggle='offCanvasNav'
+          = image_tag('brand-sm', size: '60x10')
     ul.menu.title-bar-right
       - unless user_signed_in?
         li.hide-for-medium = link_to('Login', new_user_session_path, style: 'padding: 2px;')
@@ -13,27 +14,26 @@
 
   .top-bar#animated-menu data-animate='hinge-in-from-top hinge-out-from-top'
     .top-bar-left
-      .menu-text.hide-for-small-only: button type='button' data-toggle='offCanvasNav'
-        = image_tag('brand', size: '200x50')
+      .menu-text.hide-for-small-only
+        = link_to root_path do
+          button type='button' data-toggle='offCanvasNav'
+            = image_tag('brand', size: '200x50')
     .top-bar-right
       ul.vertical.dropdown.menu.medium-horizontal data-dropdown-menu='' data-close-on-click-inside='false'
-        li = link_to('Home', root_path)
-        li = link_to('About', about_path)
-        li = link_to('Help', help_path)
-        li = link_to('Published Projects', '#')
-        li = link_to('Registries', '#')
         - if user_signed_in?
+          li = link_to('Projects', projects_path)
           li
-            a href='#' More
+            a href='#' Menu
             ul.menu.vertical
               li.title User
-              li = link_to('Projects', projects_path)
               li = link_to('Settings', edit_user_registration_path)
               li = link_to('Profile', edit_profile_path)
+              li = link_to('About', about_path)
               hr
               li.title Actions
               li = link_to('Logout', destroy_user_session_path, :method => :delete)
         - else
           li.show-for-medium = link_to('Login', new_user_session_path)
-          li = link_to('Register', new_user_registration_path)
+          li
+            = link_to('Sign Up', new_user_registration_path, { class: 'button' })
 
