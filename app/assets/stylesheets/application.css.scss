@@ -20,14 +20,34 @@
 
 @import 'settings';
 
-// Miscellaneous stuff.
+// Navigation.
+#navigation {
+  padding: 0;
+
+  a:hover {
+    text-decoration: none;
+  }
+
+  .title-bar .title-bar-left {
+    float: left;
+    padding: 0;
+    margin-left: 5px;
+  }
+
+  .top-bar .top-bar-left {
+    a:hover {
+      background-color: transparent;
+    }
+
+    img {
+      cursor: pointer;
+    }
+  }
+}
+// END Navigation.
 
 body {
   margin: 0;
-}
-
-.top-bar .menu-text a:hover {
-  background-color: transparent;
 }
 
 .content {
@@ -47,9 +67,9 @@ a {
 
   &.button {
     color: $white !important;
-    text-decoration: none;
   }
 }
+
 
 .title-heading {
   h2 {
