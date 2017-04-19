@@ -159,9 +159,13 @@ module SeedDataExtended
       # Messages.
       @totd = MessageType.first
       100.times do |m|
-        @totd.messages.create(name: Faker::HarryPotter.unique.book, description: Faker::ChuckNorris.unique.fact, start_at: 10.minute.ago, end_at: Time.current)
+        @totd.messages.create(name: Faker::HarryPotter.unique.book, description: Faker::ChuckNorris.unique.fact, start_at: 10.minute.ago)
         Faker::UniqueGenerator.clear
       end
+
+      # Key Questions.
+      @kq1 = KeyQuestion.create(name: 'kq1')
+      @kq2 = KeyQuestion.create(name: 'kq2')
 
       # Turn on paper_trail.
       PaperTrail.enabled = true
