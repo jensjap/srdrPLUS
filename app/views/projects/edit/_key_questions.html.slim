@@ -1,8 +1,26 @@
 .column.row
-  = simple_form_for(@project.key_questions.new, url: project_key_questions_path(@project), html: { data: { 'abide': '' } }) do |f|
-    = f.error_notification
+  = simple_form_for(@project, html: { data: { 'abide': '' } }) do |f|
+    .alert.callout data-abide-error='' style='display: none;'
+      p
+        i.fi-alert
+          '  Please correct the errors below.
+    /= f.error_notification
 
-    .column.row
+    .form-inputs
       fieldset.fieldset
         legend Key Question Information
-        = f.input :key_question, include_blank: false
+        #key_questions
+          - if @project.key_questions.blank?
+            p.error You have not added any key questions to this project, Please use the link below to add Key Questions.
+          - @project.key_questions_projects.each do |key_questions_project|
+            | Position:
+            = key_questions_project.key_question.position.to_s
+            = key_questions_project.key_question.name
+          .links
+            br
+            br
+            = link_to_add_association 'Add Key Question', f, :key_questions, partial: 'projects/edit/key_question_fields'
+        /= f.association :key_questions, lable: 'Key Questions (select all that apply)', include_blank: false
+
+    .form-actions
+      = f.button :submit

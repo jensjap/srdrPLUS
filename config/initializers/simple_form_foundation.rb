@@ -7,6 +7,21 @@ SimpleForm.setup do |config|
   # does't provide styles for hints. You will need to provide your own CSS styles for hints.
   # Uncomment them to enable hints.
 
+  # Customized version of :vertical_form
+  config.wrappers :srdr_vertical_form, class: :input, hint_class: :field_with_hint, error_class: :error do |b|
+    b.use :html5
+    b.use :placeholder
+    b.optional :maxlength
+    b.optional :minlength
+    b.optional :pattern
+    b.optional :min_max
+    b.optional :readonly
+    b.use :label_input
+    b.use :error, wrap_with: { tag: :small, class: :error }
+
+    b.use :hint,  wrap_with: { tag: :span, class: [:hint, 'form-error'] }
+  end
+
   config.wrappers :vertical_form, class: :input, hint_class: :field_with_hint, error_class: :error do |b|
     b.use :html5
     b.use :placeholder
@@ -103,8 +118,8 @@ SimpleForm.setup do |config|
   config.item_wrapper_tag = :div
 
   # CSS class to add for error notification helper.
-  config.error_notification_class = 'callout alert-box alert'
+  config.error_notification_class = 'alert-box alert'
 
   # The default wrapper to be used by the FormBuilder.
-  config.default_wrapper = :vertical_form
+  config.default_wrapper = :srdr_vertical_form
 end

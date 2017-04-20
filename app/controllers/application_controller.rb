@@ -12,9 +12,9 @@ class ApplicationController < ActionController::Base
     User.current = current_user
   end
 
-  def after_sign_in_path_for(resource)
-    projects_path
-  end
+#  def after_sign_in_path_for(resource)
+#    projects_path
+#  end
 
   private
 

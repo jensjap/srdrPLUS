@@ -28,7 +28,6 @@ class ProjectsController < ApplicationController
 
   # GET /projects/1/edit
   def edit
-    @key_question = @project.key_questions.new
   end
 
   # POST /projects
@@ -81,6 +80,12 @@ class ProjectsController < ApplicationController
     render 'index'
   end
 
+  # GET /projects/:id/key_questions
+  # GET /projects/:id/key_questions.json
+#  def key_questions
+#    @key_questions = @project.key_questions.by_query(params[:q])
+#  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_project
@@ -89,6 +94,8 @@ class ProjectsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def project_params
-      params.require(:project).permit(:name, :description, :attribution, :methodology_description, :prospero, :doi, :notes, :funding_source)
+      params.require(:project).permit(:name, :description, :attribution, :methodology_description,
+                                      :prospero, :doi, :notes, :funding_source,
+                                      key_questions_attributes: [:id, :name, :_destroy])
     end
 end

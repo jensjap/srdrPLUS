@@ -6,10 +6,12 @@ document.addEventListener 'turbolinks:load', ->
 
   do ->
 
-    formatOrganizationSelection = (result, container) ->
+    # Set the field to display from the result set.
+    formatResultSelection = (result, container) ->
       result.text
 
-    formatOrganization = (result) ->
+    # Markup result.
+    formatResult = (result) ->
       if result.loading
         return result.text
       markup = '<span>'
@@ -24,6 +26,7 @@ document.addEventListener 'turbolinks:load', ->
       markup += '</span>'
       markup
 
+    # Bind select2 to degree selection.
     $('#profile_degree_ids').select2
       minimumInputLength: 0
       ajax:
@@ -43,9 +46,10 @@ document.addEventListener 'turbolinks:load', ->
           )
       escapeMarkup: (markup) ->
         markup
-      templateResult: formatOrganization
-      templateSelection: formatOrganizationSelection
+      templateResult: formatResult
+      templateSelection: formatResultSelection
 
+    # Bind select2 to organization selection.
     $('#profile_organization_id').select2
       minimumInputLength: 0
       ajax:
@@ -65,9 +69,9 @@ document.addEventListener 'turbolinks:load', ->
           )
       escapeMarkup: (markup) ->
         markup
-      templateResult: formatOrganization
-      templateSelection: formatOrganizationSelection
+      templateResult: formatResult
+      templateSelection: formatResultSelection
 
-    return # END document.addEventListener 'turbolinks:load', ->
+    return  # END do ->
 
-  return
+  return  # END document.addEventListener 'turbolinks:load', ->

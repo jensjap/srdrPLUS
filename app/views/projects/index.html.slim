@@ -8,15 +8,14 @@
 
 /! Row for toggler => sort by updated at or created at.
 .row.project-controls
-  .column.medium-6
+  .column.medium-8
     .project-filter.input-group.searchbar
       .input-group-button
         button.button.search
           i.fi-magnifying-glass
       = search_field_tag 'project-filter', nil, class: 'search-field', placeholder: 'Filter by Name or Description'
-  .column.medium-6
+  .column.medium-4
     .toggle-sort-order.hide-for-small-only
-      | Sort by: 
       button.button.small.updated-at.active   type='button' data-sort-order='updated-at' Updated at
       button.button.small.created-at.disabled type='button' data-sort-order='created-at' Created at
 

@@ -1,5 +1,5 @@
 .column.row
-  = simple_form_for(@project) do |f|
+  = simple_form_for(@project, html: { data: { 'abide': '' } }) do |f|
     = f.error_notification
 
     .form-inputs

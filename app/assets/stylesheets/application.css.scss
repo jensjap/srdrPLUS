@@ -46,6 +46,12 @@
 }
 // END Navigation.
 
+// Select2
+span.select2-container {
+  //width: 100% !important;
+}
+// END Select2
+
 body {
   margin: 0;
 }
@@ -62,6 +68,7 @@ a {
   }
 
   &:hover {
+    color: $primary-color;
     background-color: transparent;
   }
 
