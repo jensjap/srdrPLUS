@@ -1,0 +1,13 @@
+.column.row
+  = simple_form_for(@project, url: project_path, html: { data: { 'abide': '' } }) do |f|
+    .alert.callout data-abide-error='' style='display: none;'
+      p
+        i.fi-alert
+          '  Please correct the errors below.
+    /= f.error_notification
+
+    .column.medium-3
+      == render 'tab_links'
+    .column.medium-9
+      == render partial: 'tab_content', locals: { f: f }
+

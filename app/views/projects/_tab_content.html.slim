@@ -1,0 +1,10 @@
+.tabs-content.vertical data-tabs-content='vertical-tabs'
+  #panel-key-question.tabs-panel.is-active
+    == render partial: 'key_questions', locals: { f: f }
+  #panel-information.tabs-panel
+    == render partial: 'project_information', locals: { f: f }
+  #panel-extraction-form.tabs-panel
+    == render 'extraction_forms'
+
+  .form-actions
+    = f.button :submit

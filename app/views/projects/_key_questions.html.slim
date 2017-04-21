@@ -1,0 +1,17 @@
+.form-inputs
+  fieldset.fieldset
+    legend Key Question Information
+    #key_questions
+      - if @project.key_questions.blank?
+        p.error You have no key questions defined. Please use the link below to add Key Questions.
+      = f.simple_fields_for(:key_questions, @project.key_questions.order('key_questions_projects.position ASC')) do |key_question|
+        == render 'key_question', f: key_question
+
+      .links
+        br
+        br
+        = link_to_add_association f, :key_questions_projects, html_options = { class: 'button tiny' } do
+          i.fi-plus
+          '  Add a Key Question
+    /= f.association :key_questions, lable: 'Key Questions (select all that apply)', include_blank: false
+

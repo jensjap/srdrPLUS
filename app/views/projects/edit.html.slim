@@ -2,10 +2,7 @@
   h2 Project Name: #{ @project.name }
 
 .row
-  .column.medium-3
-    == render 'projects/edit/tab_links'
-  .column.medium-9
-    == render 'projects/edit/tab_content'
+  == render 'form'
 
 .column.row
   = link_to 'Show', @project

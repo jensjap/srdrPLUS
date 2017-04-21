@@ -91,7 +91,7 @@ ActiveRecord::Schema.define(version: 20170416041041) do
     t.boolean  "active"
     t.index ["active"], name: "index_key_questions_projects_on_active", using: :btree
     t.index ["deleted_at"], name: "index_key_questions_projects_on_deleted_at", using: :btree
-    t.index ["key_question_id", "project_id", "position", "active"], name: "index_kqp_on_kq_id_p_id_position_active_uniq", unique: true, using: :btree
+    t.index ["key_question_id", "project_id", "active"], name: "index_kqp_on_kq_id_p_id_active_uniq", unique: true, using: :btree
     t.index ["key_question_id", "project_id", "position"], name: "index_kqp_on_kq_id_p_id_position", using: :btree
     t.index ["key_question_id"], name: "index_key_questions_projects_on_key_question_id", using: :btree
     t.index ["project_id"], name: "index_key_questions_projects_on_project_id", using: :btree

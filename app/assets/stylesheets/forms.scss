@@ -1,3 +1,14 @@
+@import 'settings';
+
+i.fi-plus {
+  color: $secondary-color;
+}
+
+a.button:hover i.fi-plus,
+a.button:focus i.fi-plus {
+  color: white;
+}
+
 .alert.callout p {
   margin: 0;
 }

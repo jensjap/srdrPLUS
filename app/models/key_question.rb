@@ -1,9 +1,11 @@
 class KeyQuestion < ApplicationRecord
+  include SharedSuggestableMethods
+
   acts_as_paranoid
   has_paper_trail
 
   has_many :key_questions_projects, dependent: :destroy, inverse_of: :key_question
   has_many :projects, through: :key_questions_projects, dependent: :destroy
 
-  validates :name, presence: true
+  validates :name, presence: true, uniqueness: { case_sensitive: false }
 end

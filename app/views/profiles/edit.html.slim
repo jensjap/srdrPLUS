@@ -4,7 +4,7 @@
   h2 User Profile
 
 .column.row
-  = simple_form_for(@profile, html: { data: { 'abide': '' } }) do |f|
+  = simple_form_for(@profile, url: profile_path, html: { data: { 'abide': '' } }) do |f|
     = f.error_notification
 
     .row

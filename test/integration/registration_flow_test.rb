@@ -51,7 +51,7 @@ class RegistrationFlowTest < Capybara::Rails::TestCase
 
       fill_in 'Email', with: 'user@brand.new.com'
       fill_in 'Password', with: 'passw0rd', match: :prefer_exact
-      fill_in 'Password confirmation', with: 'passw0rd', match: :prefer_exact
+      #fill_in 'Password confirmation', with: 'passw0rd', match: :prefer_exact
 
       click_on 'Sign up'
     end

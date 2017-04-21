@@ -1,0 +1,10 @@
+.nested-fields.key-question-fields
+
+  .links
+    = link_to_remove_association "remove", f, html_options = { class: 'button alert tiny float-right' }
+
+  .form-inline
+    dl
+      dt.label.primary Position: #{ @project.key_questions_projects.where(key_question: f.object).first.position.to_s }
+      dd.callout.secondary #{ f.object.name }
+
