@@ -10,16 +10,15 @@ class KeyQuestionsProject < ApplicationRecord
         1 : key_questions_projects.order(position: :desc).first.position + 1
   end
 
-  belongs_to :key_question, inverse_of: :key_questions_projects
+  belongs_to :key_question, inverse_of: :key_questions_projects, optional: true
   belongs_to :project, inverse_of: :key_questions_projects
 
-  accepts_nested_attributes_for :key_question, reject_if: :all_blank
-  #accepts_nested_attributes_for :key_question, reject_if: :check_key_question
+  accepts_nested_attributes_for :key_question, reject_if: :key_question_exists
 
   private
 
-  def check_key_question(key_question_attributes)
-    if _key_question = KeyQuestion.find_by(name: key_question_attributes[:name])
+  def key_question_exists(key_question_attributes)
+    if _key_question = KeyQuestion.where(name: key_question_attributes[:name]).first_or_initialize
       self.key_question = _key_question
       return true
     else

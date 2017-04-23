@@ -7,7 +7,7 @@
     /= f.error_notification
 
     .column.medium-3
-      == render 'tab_links'
+      == render 'projects/edit/tab_links'
     .column.medium-9
-      == render partial: 'tab_content', locals: { f: f }
+      == render 'projects/edit/tab_content', f: f
 

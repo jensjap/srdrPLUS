@@ -1,9 +1,0 @@
-.nested-fields.key-question-fields
-
-  .links
-    = link_to_remove_association "remove", f, html_options = { class: 'button alert tiny float-right' }
-
-  /= f.simple_fields_for(:key_questions_projects, @project.key_questions_projects.build) do |kqp|
-  = f.simple_fields_for(:key_question, @project.key_questions.build) do |kq|
-    = kq.input :name, required: true
-
