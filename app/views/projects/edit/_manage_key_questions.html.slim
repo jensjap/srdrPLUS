@@ -1,25 +1,16 @@
 .form-inputs
   fieldset.fieldset
     legend Key Question Information
-    /!!! Validation by Abide doesn't work in tables?!
-    table
-      thead
-        tr
-          th width='100' Position
-          th Name
-          th width='80'
-      tbody#key-question
-        - @project.key_questions_projects.order(position: :asc).each do |kqp|
-          = f.simple_fields_for(:key_questions_projects, kqp) do |kqp_f|
-            == render 'projects/edit/key_questions_project_fields', f: kqp_f
+    - @project.key_questions_projects.order(position: :asc).each do |kqp|
+      = f.simple_fields_for(:key_questions_projects, kqp) do |kqp_f|
+        == render 'projects/edit/key_questions_project_fields', f: kqp_f
 
     .links
       br
       br
       = link_to_add_association f, :key_questions_projects,
             html_options = { class: 'button tiny',
-                             partial: 'projects/edit/key_questions_project_fields',
-                             data: { association_insertion_node: '#key-question', association_insertion_method: 'append' } } do
+                             partial: 'projects/edit/key_questions_project_fields' } do
         i.fi-plus
         '  Define a new Key Question
 

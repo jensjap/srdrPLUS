@@ -1,7 +1,8 @@
 = f.simple_fields_for(:key_question, f.object.key_question || f.object.build_key_question) do |kq_f|
-
-    tr.nested-fields.key-questions-project-fields
-      td.position.draggable draggable='true' = f.object.position.to_s
-      td = kq_f.input :name, required: true, label: false
-      td.links = link_to_remove_association "remove", f, html_options = { class: 'button alert tiny float-right' }
+  .nested-fields.key-questions-project-fields
+    .draggable draggable='true'
+      .links = link_to_remove_association "remove", f, html_options = { class: 'button tiny warning float-right' }
+      | Position: 
+      = f.object.position.to_s
+      = kq_f.input :name, required: true, label: false
 

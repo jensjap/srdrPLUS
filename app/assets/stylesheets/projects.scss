@@ -6,7 +6,7 @@
 
 // Drag key questions.
 // Prevent the text contents of draggable elements from being selectable.
-[draggable] {
+#panel-key-question [draggable] {
   -moz-user-select: none;
   -khtml-user-select: none;
   -webkit-user-select: none;
@@ -19,6 +19,10 @@
 
 .draggable {
   cursor: move;
+  border: 1px solid lightskyblue;
+  border-radius: 10px;
+  padding: 10px;
+  margin: 25px;
 }
 // END Drag key questions.
 

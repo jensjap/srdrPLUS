@@ -29,6 +29,7 @@ document.addEventListener 'turbolinks:load', ->
     # Bind select2 to degree selection.
     $('#profile_degree_ids').select2
       minimumInputLength: 0
+      #closeOnSelect: false
       ajax:
         url: '/degrees.json'
         dataType: 'json'
