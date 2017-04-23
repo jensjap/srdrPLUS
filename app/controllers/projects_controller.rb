@@ -80,12 +80,6 @@ class ProjectsController < ApplicationController
     render 'index'
   end
 
-  # GET /projects/:id/key_questions
-  # GET /projects/:id/key_questions.json
-#  def key_questions
-#    @key_questions = @project.key_questions.by_query(params[:q])
-#  end
-
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_project
@@ -96,8 +90,8 @@ class ProjectsController < ApplicationController
     def project_params
       params.require(:project).permit(:name, :description, :attribution, :methodology_description,
                                       :prospero, :doi, :notes, :funding_source,
-                                      key_questions_attributes: [:id, :_destroy, :name],
-                                      key_questions_projects_attributes: [:id, :_destroy, :key_question_id, key_question_attributes: [:id, :_destroy, :name]]
+                                      #key_questions_attributes: [:id, :_destroy, :name],
+                                      key_questions_projects_attributes: [:id, :_destroy, :key_question_id, :position, key_question_attributes: [:id, :_destroy, :name]]
       )
     end
 end
