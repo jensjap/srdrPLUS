@@ -15,6 +15,8 @@ class KeyQuestionsProject < ApplicationRecord
 
   accepts_nested_attributes_for :key_question, reject_if: :key_question_name_exists
 
+  validates_uniqueness_of :key_question, scope: :project
+
   private
 
   def key_question_name_exists(key_question_attributes)
