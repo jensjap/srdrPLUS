@@ -1,8 +1,9 @@
 = f.simple_fields_for(:key_question, f.object.key_question || f.object.build_key_question) do |kq_f|
   .nested-fields.key-questions-project-fields
-    .draggable draggable='true'
-      .links = link_to_remove_association "remove", f, html_options = { class: 'button tiny warning float-right' }
-      | Position: 
-      = f.object.position.to_s
-      = kq_f.input :name, required: true, label: false
+    .links = link_to_remove_association 'remove', f, html_options = { class: 'button warning tiny float-right' }
+    - if kq_f.object.new_record?
+      ' New Key Question
+    - else
+      = f.input :position, collection: 1.."#{ @project.key_questions_projects.count }".to_i, include_blank: false
+    = kq_f.input :name, required: true, hint: 'Name can\'t be blank'
 

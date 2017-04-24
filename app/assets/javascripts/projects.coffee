@@ -41,7 +41,7 @@ document.addEventListener 'turbolinks:load', ->
       delay filterProjectList( nextOrder ), 500
       return
 
-    # Activates the slider.
+    # Activates the search slider on the project index page.
     $( 'button.search' ).mousedown ( e ) ->
       e.preventDefault()
       $( '.search-field' ).toggleClass 'expand-search'
