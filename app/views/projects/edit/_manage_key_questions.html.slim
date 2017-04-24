@@ -1,9 +1,8 @@
 .form-inputs
   fieldset.fieldset
     legend Key Question Information
-    - @project.key_questions_projects.order(position: :asc).each do |kqp|
-      = f.simple_fields_for(:key_questions_projects, kqp) do |kqp_f|
-        == render 'projects/edit/key_questions_project_fields', f: kqp_f
+    = f.simple_fields_for(:key_questions_projects) do |kqp_f|
+      == render 'projects/edit/key_questions_project_fields', f: kqp_f
 
     .links
       br
