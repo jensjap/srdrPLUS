@@ -60,6 +60,10 @@ body {
   margin-top: 10px;
 }
 
+div {
+  border-radius: $global-radius;
+}
+
 a {
   color: $primary-color;
 

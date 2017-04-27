@@ -1,5 +1,5 @@
 .column.row
-  = simple_form_for(@project, url: project_path, html: { data: { 'abide': '' } }) do |f|
+  = simple_form_for(@project, url: project_path, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
     .alert.callout data-abide-error='' style='display: none;'
       p
         i.fi-alert
