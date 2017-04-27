@@ -127,7 +127,8 @@ module SeedDataExtended
       1000.times do |n|
         updated_at = Faker::Time.between(DateTime.now - 1000, DateTime.now)
         Project.create(name:        Faker::Book.unique.title,
-                       description: '(' + (n+1).to_s + ') - ' + Faker::Lorem.paragraph(20, true),
+                       description: '(' + (n+1).to_s + ') - ' + \
+                                    Faker::Lorem.paragraph(20, true),
                        attribution: Faker::Cat.registry,
                        methodology_description: Faker::HarryPotter.quote,
                        prospero:                Faker::Number.hexadecimal(12),
@@ -151,15 +152,17 @@ module SeedDataExtended
           p.request_publishing_by(User.first)
           p.request_publishing_by(User.third)
         when 2  # Create Publishing object and approve it.
-          Publishing.create(publishable: p, user: requested_by).approve_by(approved_by)
-        else    # Don't do anything.
+          Publishing.create(publishable: p, user: requested_by)
+                    .approve_by(approved_by)
         end
       end
 
       # Messages.
       @totd = MessageType.first
-      100.times do |m|
-        @totd.messages.create(name: Faker::HarryPotter.unique.book, description: Faker::ChuckNorris.unique.fact, start_at: 10.minute.ago)
+      100.times do
+        @totd.messages.create(name: Faker::HarryPotter.unique.book,
+                              description: Faker::ChuckNorris.unique.fact,
+                              start_at: 10.minute.ago)
         Faker::UniqueGenerator.clear
       end
 
