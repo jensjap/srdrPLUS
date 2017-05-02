@@ -4,12 +4,6 @@ class KeyQuestionsProject < ApplicationRecord
   acts_as_paranoid column: :active, sentinel_value: true
   has_paper_trail
 
-  before_create do |key_questions_project|
-    key_questions_project.assign_attributes(
-      { position: KeyQuestionsProject.where(project: project).count + 1 }
-    )
-  end
-
   belongs_to :key_question, inverse_of: :key_questions_projects, optional: true
   belongs_to :project, inverse_of: :key_questions_projects
 

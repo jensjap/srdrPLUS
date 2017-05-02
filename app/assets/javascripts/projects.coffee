@@ -54,7 +54,7 @@ document.addEventListener 'turbolinks:load', ->
       return
 
     #!!! This isnt' working. Form is left invalid.
-    $( document ).on 'cocoon:after-remove', ( e, insertedItem ) ->
+    $( '.form-inputs' ).on 'cocoon:after-remove', ( e, insertedItem ) ->
       Foundation.reInit('abide');
       return
 

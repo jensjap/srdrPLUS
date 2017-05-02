@@ -3,9 +3,7 @@
 one:
   key_question: one
   project: one
-  position: 1
 
 two:
   key_question: two
   project: two
-  position: 1

@@ -92,7 +92,7 @@ class ProjectsController < ApplicationController
       params.require(:project).permit(:name, :description, :attribution, :methodology_description,
                                       :prospero, :doi, :notes, :funding_source,
                                       #key_questions_attributes: [:id, :_destroy, :name],
-                                      key_questions_projects_attributes: [:id, :_destroy, :key_question_id, :position, key_question_attributes: [:id, :_destroy, :name]]
+                                      key_questions_projects_attributes: [:id, :_destroy, :key_question_id, key_question_attributes: [:id, :_destroy, :name]]
       )
     end
 end
