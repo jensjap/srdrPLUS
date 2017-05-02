@@ -48,15 +48,27 @@ document.addEventListener 'turbolinks:load', ->
       $( '#project-filter' ).focus()
       return
 
-    # Re-initialize form listeners.
-    $( '.form-inputs' ).on 'cocoon:after-insert', ( e, insertedItem ) ->
-      Foundation.reInit('abide');
-      return
+    # Cocoon listeners.
+    $( '.form-inputs' )
 
-    #!!! This isnt' working. Form is left invalid.
-    $( '.form-inputs' ).on 'cocoon:after-remove', ( e, insertedItem ) ->
-      Foundation.reInit('abide');
-      return
+      .on 'cocoon:before-insert', ( e, insertedItem ) ->
+        insertedItem.fadeIn 'slow'
+        return
+
+      .on 'cocoon:after-insert', ( e, insertedItem ) ->
+        Foundation.reInit 'abide'
+        return
+
+      .on 'cocoon:before-remove', ( e, insertedItem ) ->
+        #$( this ).data 'remove-timeout', 1000
+        #insertedItem.fadeOut 'slow'
+        #$( insertedItem ).addClass 'fade-out'
+        return
+
+      .on 'cocoon:after-remove', ( e, insertedItem ) ->
+        #!!! This isnt' working. Form is left invalid.
+        Foundation.reInit 'abide'
+        return
 
     # Make form errors visible on the tab links.
     $( document )
