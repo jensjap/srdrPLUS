@@ -4,17 +4,9 @@
 
 @import 'settings';
 
-.key-questions-project-fields {
-  border: 1px solid lightskyblue;
-  //border-radius: $global-radius;
-  padding: 10px;
-  margin: 25px;
-
-  select {
-    width: 10%;
-  }
+fieldset a.add_fields {
+  float: right;
 }
-
 
 mark {
   background: $secondary-color;

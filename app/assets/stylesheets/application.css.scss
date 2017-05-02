@@ -60,10 +60,6 @@ body {
   margin-top: 10px;
 }
 
-div {
-  border-radius: $global-radius;
-}
-
 a {
   color: $primary-color;
 
@@ -82,16 +78,15 @@ a {
 }
 
 a.button.remove-link {
-  color: $secondary-color !important;
+  color: red !important;
   background-color: transparent;
-  border: 2px solid $secondary-color;
   opacity: 0.6;
   transition: all 0.35s ease-in-out;
 
   &:hover {
     color: red !important;
     background-color: transparent;
-    border: 2px solid red;
+    border: 1px solid red;
     opacity: 1;
   }
 }
