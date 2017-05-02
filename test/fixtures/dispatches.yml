@@ -3,8 +3,10 @@
 one:
   dispatchable: one (Message)
   user: one
+  active: true
 
 two:
   dispatchable: two (Message)
   user: two
+  active: true
 
