@@ -1,10 +1,11 @@
 .form-inputs
-  = f.input :name
-  = f.input :description
-  = f.input :attribution
-  = f.input :methodology_description
-  = f.input :prospero
-  = f.input :doi
-  = f.input :notes
-  = f.input :funding_source
-
+  fieldset.project-information-fieldset
+    legend Project Information
+    = f.input :name, required: true, hint: 'Name can\'t be blank'
+    = f.input :description
+    = f.input :attribution
+    = f.input :methodology_description
+    = f.input :prospero
+    = f.input :doi
+    = f.input :notes
+    = f.input :funding_source

@@ -57,6 +57,21 @@ document.addEventListener 'turbolinks:load', ->
       Foundation.reInit('abide');
       return
 
+    # Make form errors visible on the tab links.
+    $( document )
+
+      .on 'invalid.zf.abide', ( e, el ) ->
+        if $( el ).closest( 'fieldset' ).attr( 'class' ) == 'key-question-fieldset'
+          $( '#panel-key-question-label' ).html( '<span style="color: red;">(*) Key Question(s)</span>' )
+        if $( el ).closest( 'fieldset' ).attr( 'class' ) == 'project-information-fieldset'
+          $( '#panel-information-label' ).html( '<span style="color: red;">(*) Project Information</span>' )
+
+      .on 'valid.zf.abide', ( e, el ) ->
+        if $( el ).closest( 'fieldset' ).attr( 'class' ) == 'key-question-fieldset'
+          $( '#panel-key-question-label' ).html( 'Key Question(s)' )
+        if $( el ).closest( 'fieldset' ).attr( 'class' ) == 'project-information-fieldset'
+          $( '#panel-information-label' ).html( 'Project Information' )
+
 #    # Set the field to display from the result set.
 #    formatResultSelection = (result, container) ->
 #      result.text
