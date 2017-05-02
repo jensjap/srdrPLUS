@@ -20,7 +20,7 @@ class KeyQuestionsProject < ApplicationRecord
   private
 
   def key_question_name_exists(key_question_attributes)
-    if _key_question = KeyQuestion.where(name: key_question_attributes[:name]).first_or_initialize
+    if _key_question = KeyQuestion.where(name: key_question_attributes[:name]).first_or_create
       # Associate this KeyQuestionsProject with the existing KeyQuestion.
       self.key_question = _key_question
       return true

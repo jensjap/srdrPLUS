@@ -48,11 +48,9 @@ document.addEventListener 'turbolinks:load', ->
       $( '#project-filter' ).focus()
       return
 
-#!!!
-    # Attach listener for new form elmements so that Foundation Abide can work.
-    $( 'key-questions-project-fields' ).on 'cocoon:after-insert', ( e, insertedItem ) ->
-      console.log insertedItem
-      alert 1
+    # Re-initialize form listeners.
+    $( '.form-inputs' ).on 'cocoon:after-insert', ( e, insertedItem ) ->
+      Foundation.reInit('abide');
       return
 
 #    # Set the field to display from the result set.
