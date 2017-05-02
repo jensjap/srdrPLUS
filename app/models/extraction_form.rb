@@ -1,0 +1,2 @@
+class ExtractionForm < ApplicationRecord
+end
