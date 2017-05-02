@@ -1,5 +1,5 @@
 .form-inputs
-  fieldset.fieldset
+  fieldset.key-question-fieldset
     legend Key Question Information
     = f.simple_fields_for(:key_questions_projects) do |kqp_f|
       == render 'projects/edit/key_questions_project_fields', f: kqp_f
@@ -11,5 +11,5 @@
           html_options = { class: 'button tiny',
                            partial: 'projects/edit/key_questions_project_fields' } do
         i.fi-plus
-        '  Define a new Key Question
+        '  Add Key Question
 
