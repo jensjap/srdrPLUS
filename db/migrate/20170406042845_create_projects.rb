@@ -9,8 +9,11 @@ class CreateProjects < ActiveRecord::Migration[5.0]
       t.string :doi
       t.text :notes
       t.string :funding_source
+      t.datetime :deleted_at
 
       t.timestamps
     end
+
+    add_index :projects, :deleted_at
   end
 end

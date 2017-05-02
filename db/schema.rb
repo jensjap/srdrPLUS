@@ -10,16 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170416041041) do
+ActiveRecord::Schema.define(version: 20170502154252) do
 
   create_table "approvals", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "approvable_type"
     t.integer  "approvable_id"
     t.integer  "user_id"
-    t.datetime "created_at",      null: false
-    t.datetime "updated_at",      null: false
     t.datetime "deleted_at"
     t.boolean  "active"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
     t.index ["active"], name: "index_approvals_on_active", using: :btree
     t.index ["approvable_type", "approvable_id", "user_id", "active"], name: "index_approvals_on_type_id_user_id_active_uniq", unique: true, using: :btree
     t.index ["approvable_type", "approvable_id", "user_id"], name: "index_approvals_on_type_id_user_id", unique: true, using: :btree
@@ -30,9 +30,9 @@ ActiveRecord::Schema.define(version: 20170416041041) do
 
   create_table "degrees", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "name"
+    t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.datetime "deleted_at"
     t.index ["deleted_at"], name: "index_degrees_on_deleted_at", using: :btree
     t.index ["name"], name: "index_degrees_on_name", unique: true, using: :btree
   end
@@ -40,13 +40,13 @@ ActiveRecord::Schema.define(version: 20170416041041) do
   create_table "degrees_profiles", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "degree_id"
     t.integer  "profile_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
     t.datetime "deleted_at"
     t.boolean  "active"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["active"], name: "index_degrees_profiles_on_active", using: :btree
     t.index ["degree_id", "profile_id", "active"], name: "index_degrees_profiles_on_degree_id_and_profile_id_and_active", unique: true, using: :btree
-    t.index ["degree_id", "profile_id"], name: "index_degrees_profiles_on_degree_id_and_profile_id", using: :btree
+    t.index ["degree_id", "profile_id"], name: "index_degrees_profiles_on_degree_id_and_profile_id", unique: true, using: :btree
     t.index ["degree_id"], name: "index_degrees_profiles_on_degree_id", using: :btree
     t.index ["deleted_at"], name: "index_degrees_profiles_on_deleted_at", using: :btree
     t.index ["profile_id"], name: "index_degrees_profiles_on_profile_id", using: :btree
@@ -56,38 +56,49 @@ ActiveRecord::Schema.define(version: 20170416041041) do
     t.string   "dispatchable_type"
     t.integer  "dispatchable_id"
     t.integer  "user_id"
+    t.datetime "deleted_at"
+    t.boolean  "active"
     t.datetime "created_at",        null: false
     t.datetime "updated_at",        null: false
-    t.datetime "deleted_at"
+    t.index ["active"], name: "index_dispatches_on_active", using: :btree
     t.index ["deleted_at"], name: "index_dispatches_on_deleted_at", using: :btree
-    t.index ["dispatchable_type", "dispatchable_id", "user_id"], name: "index_dispatches_on_type_id_user_id", using: :btree
+    t.index ["dispatchable_type", "dispatchable_id", "user_id", "active"], name: "index_dispatches_on_type_id_user_id_active", unique: true, using: :btree
+    t.index ["dispatchable_type", "dispatchable_id", "user_id"], name: "index_dispatches_on_type_id_user_id", unique: true, using: :btree
     t.index ["dispatchable_type", "dispatchable_id"], name: "index_dispatches_on_dispatchable_type_and_dispatchable_id", using: :btree
     t.index ["user_id"], name: "index_dispatches_on_user_id", using: :btree
   end
 
-  create_table "frequencies", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "extraction_forms", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "name"
+    t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["deleted_at"], name: "index_extraction_forms_on_deleted_at", using: :btree
+  end
+
+  create_table "frequencies", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string   "name"
     t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["deleted_at"], name: "index_frequencies_on_deleted_at", using: :btree
   end
 
   create_table "key_questions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.text     "name",       limit: 65535
+    t.datetime "deleted_at"
     t.datetime "created_at",               null: false
     t.datetime "updated_at",               null: false
-    t.datetime "deleted_at"
     t.index ["deleted_at"], name: "index_key_questions_on_deleted_at", using: :btree
   end
 
   create_table "key_questions_projects", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "key_question_id"
     t.integer  "project_id"
-    t.datetime "created_at",      null: false
-    t.datetime "updated_at",      null: false
     t.datetime "deleted_at"
     t.boolean  "active"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
     t.index ["active"], name: "index_key_questions_projects_on_active", using: :btree
     t.index ["deleted_at"], name: "index_key_questions_projects_on_deleted_at", using: :btree
     t.index ["key_question_id", "project_id", "active"], name: "index_kqp_on_kq_id_p_id_active", using: :btree
@@ -99,9 +110,9 @@ ActiveRecord::Schema.define(version: 20170416041041) do
   create_table "message_types", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "name"
     t.integer  "frequency_id"
+    t.datetime "deleted_at"
     t.datetime "created_at",   null: false
     t.datetime "updated_at",   null: false
-    t.datetime "deleted_at"
     t.index ["deleted_at"], name: "index_message_types_on_deleted_at", using: :btree
     t.index ["frequency_id"], name: "index_message_types_on_frequency_id", using: :btree
   end
@@ -112,18 +123,18 @@ ActiveRecord::Schema.define(version: 20170416041041) do
     t.text     "description",     limit: 65535
     t.datetime "start_at"
     t.datetime "end_at"
+    t.datetime "deleted_at"
     t.datetime "created_at",                    null: false
     t.datetime "updated_at",                    null: false
-    t.datetime "deleted_at"
     t.index ["deleted_at"], name: "index_messages_on_deleted_at", using: :btree
     t.index ["message_type_id"], name: "index_messages_on_message_type_id", using: :btree
   end
 
   create_table "organizations", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "name"
+    t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.datetime "deleted_at"
     t.index ["deleted_at"], name: "index_organizations_on_deleted_at", using: :btree
     t.index ["name"], name: "index_organizations_on_name", unique: true, using: :btree
   end
@@ -136,9 +147,9 @@ ActiveRecord::Schema.define(version: 20170416041041) do
     t.string   "first_name"
     t.string   "middle_name"
     t.string   "last_name"
+    t.datetime "deleted_at"
     t.datetime "created_at",                      null: false
     t.datetime "updated_at",                      null: false
-    t.datetime "deleted_at"
     t.index ["deleted_at"], name: "index_profiles_on_deleted_at", using: :btree
     t.index ["organization_id"], name: "index_profiles_on_organization_id", using: :btree
     t.index ["user_id"], name: "index_profiles_on_user_id", unique: true, using: :btree
@@ -154,9 +165,9 @@ ActiveRecord::Schema.define(version: 20170416041041) do
     t.string   "doi"
     t.text     "notes",                   limit: 65535
     t.string   "funding_source"
+    t.datetime "deleted_at"
     t.datetime "created_at",                            null: false
     t.datetime "updated_at",                            null: false
-    t.datetime "deleted_at"
     t.index ["deleted_at"], name: "index_projects_on_deleted_at", using: :btree
   end
 
@@ -164,14 +175,14 @@ ActiveRecord::Schema.define(version: 20170416041041) do
     t.string   "publishable_type"
     t.integer  "publishable_id"
     t.integer  "user_id"
-    t.datetime "created_at",       null: false
-    t.datetime "updated_at",       null: false
     t.datetime "deleted_at"
     t.boolean  "active"
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
     t.index ["active"], name: "index_publishings_on_active", using: :btree
     t.index ["deleted_at"], name: "index_publishings_on_deleted_at", using: :btree
     t.index ["publishable_type", "publishable_id", "user_id", "active"], name: "index_publishings_on_type_id_user_id_active_uniq", unique: true, using: :btree
-    t.index ["publishable_type", "publishable_id", "user_id"], name: "index_publishings_on_type_id_user_id", using: :btree
+    t.index ["publishable_type", "publishable_id", "user_id"], name: "index_publishings_on_type_id_user_id", unique: true, using: :btree
     t.index ["publishable_type", "publishable_id"], name: "index_publishings_on_publishable_type_and_publishable_id", using: :btree
     t.index ["user_id"], name: "index_publishings_on_user_id", using: :btree
   end
@@ -180,10 +191,10 @@ ActiveRecord::Schema.define(version: 20170416041041) do
     t.string   "suggestable_type"
     t.integer  "suggestable_id"
     t.integer  "user_id"
-    t.datetime "created_at",       null: false
-    t.datetime "updated_at",       null: false
     t.datetime "deleted_at"
     t.boolean  "active"
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
     t.index ["active"], name: "index_suggestions_on_active", using: :btree
     t.index ["deleted_at"], name: "index_suggestions_on_deleted_at", using: :btree
     t.index ["suggestable_type", "suggestable_id", "user_id", "active"], name: "index_suggestions_on_type_id_user_id_active_uniq", unique: true, using: :btree
@@ -205,6 +216,7 @@ ActiveRecord::Schema.define(version: 20170416041041) do
     t.string   "last_sign_in_ip"
     t.datetime "created_at",                          null: false
     t.datetime "updated_at",                          null: false
+    t.datetime "deleted_at"
     t.string   "confirmation_token"
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
@@ -212,7 +224,6 @@ ActiveRecord::Schema.define(version: 20170416041041) do
     t.integer  "failed_attempts",        default: 0,  null: false
     t.string   "unlock_token"
     t.datetime "locked_at"
-    t.datetime "deleted_at"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true, using: :btree
     t.index ["deleted_at"], name: "index_users_on_deleted_at", using: :btree
     t.index ["email"], name: "index_users_on_email", unique: true, using: :btree

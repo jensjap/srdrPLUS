@@ -8,6 +8,7 @@ class CreateProfiles < ActiveRecord::Migration[5.0]
       t.string :first_name
       t.string :middle_name
       t.string :last_name
+      t.datetime :deleted_at
 
       t.timestamps
     end
@@ -17,5 +18,6 @@ class CreateProfiles < ActiveRecord::Migration[5.0]
     remove_index :profiles, :user_id
     add_index :profiles, :user_id, unique: true
     add_foreign_key :profiles, :users
+    add_index :profiles, :deleted_at
   end
 end

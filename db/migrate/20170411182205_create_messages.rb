@@ -6,8 +6,11 @@ class CreateMessages < ActiveRecord::Migration[5.0]
       t.text :description
       t.datetime :start_at
       t.datetime :end_at
+      t.datetime :deleted_at
 
       t.timestamps
     end
+
+    add_index :messages, :deleted_at
   end
 end
