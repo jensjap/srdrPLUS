@@ -53,6 +53,10 @@ document.addEventListener 'turbolinks:load', ->
       Foundation.reInit('abide');
       return
 
+    $( '.form-inputs' ).on 'cocoon:after-remove', ( e, insertedItem ) ->
+      Foundation.reInit('abide');
+      return
+
 #    # Set the field to display from the result set.
 #    formatResultSelection = (result, container) ->
 #      result.text
