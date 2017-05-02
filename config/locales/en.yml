@@ -27,3 +27,12 @@ en:
       edit:
         cancel_account:
           plead: 'Are you sure you want to end it this way?'
+  projects:
+    edit:
+      manage_key_questions:
+        object_name: 'Key Question'
+        key_question_information: 'Key Question Information'
+      key_questions_project_fields:
+        remove: 'Remove'
+        new: 'New Key Question'
+        confirm: 'Are you sure you want to remove this key questions?'
