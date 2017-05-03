@@ -3,7 +3,9 @@
 one:
   key_question: one
   project: one
+  active: true
 
 two:
   key_question: two
   project: two
+  active: true
