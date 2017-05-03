@@ -14,6 +14,5 @@ class Project < ApplicationRecord
 
   validates :name, presence: true
 
-  #accepts_nested_attributes_for :key_questions, reject_if: :all_blank
   accepts_nested_attributes_for :key_questions_projects, reject_if: :all_blank, allow_destroy: true
 end

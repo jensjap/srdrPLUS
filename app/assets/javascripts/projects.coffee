@@ -60,9 +60,9 @@ document.addEventListener 'turbolinks:load', ->
         return
 
       .on 'cocoon:before-remove', ( e, insertedItem ) ->
-        #$( this ).data 'remove-timeout', 1000
-        #insertedItem.fadeOut 'slow'
-        #$( insertedItem ).addClass 'fade-out'
+        #!!! This isnt' working. Form is left invalid.
+        $( this ).data 'remove-timeout', 1000
+        insertedItem.fadeOut 'slow'
         return
 
       .on 'cocoon:after-remove', ( e, insertedItem ) ->
@@ -76,14 +76,18 @@ document.addEventListener 'turbolinks:load', ->
       .on 'invalid.zf.abide', ( e, el ) ->
         if $( el ).closest( 'fieldset' ).attr( 'class' ) == 'key-question-fieldset'
           $( '#panel-key-question-label' ).html( '<span style="color: red;">(*) Key Question(s)</span>' )
+          return
         if $( el ).closest( 'fieldset' ).attr( 'class' ) == 'project-information-fieldset'
           $( '#panel-information-label' ).html( '<span style="color: red;">(*) Project Information</span>' )
+          return
 
       .on 'valid.zf.abide', ( e, el ) ->
         if $( el ).closest( 'fieldset' ).attr( 'class' ) == 'key-question-fieldset'
           $( '#panel-key-question-label' ).html( 'Key Question(s)' )
+          return
         if $( el ).closest( 'fieldset' ).attr( 'class' ) == 'project-information-fieldset'
           $( '#panel-information-label' ).html( 'Project Information' )
+          return
 
 #    # Set the field to display from the result set.
 #    formatResultSelection = (result, container) ->

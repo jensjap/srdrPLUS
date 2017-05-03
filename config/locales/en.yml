@@ -36,3 +36,6 @@ en:
         remove: 'Remove'
         new: 'New Key Question'
         confirm: 'Are you sure you want to remove this key questions?'
+  errors:
+    messages:
+      taken: 'We are sorry, but the value you are attempting to use is allowed only once and has already been used'
