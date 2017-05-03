@@ -4,17 +4,17 @@ a href='#' class='accordion-title'
     .column.medium-8
       = project.name
     .column.medium-4
-      small = 'updated ' + time_ago_in_words(project.updated_at.in_time_zone(current_user.profile.time_zone)) + " ago"
+      small = "#{ @order.slice(0, 7) } " + time_ago_in_words(project.send(@order.underscore).in_time_zone(current_user.profile.time_zone)) + " ago"
 
 .accordion-content data-tab-content=''
 
   .row
     .column.medium-7
-      span.label Description:
+      span.label.secondary Description:
       .callout.secondary.description = project.description
     .column.medium-5
       .column.row
-        span.label Date Created:
+        span.label.secondary Date Created:
         .callout.secondary = project.created_at.in_time_zone(current_user.profile.time_zone).strftime('%c')
       .column.row
         - if project.publishings.present?
@@ -33,13 +33,13 @@ a href='#' class='accordion-title'
     .column.medium-7
       .row
         .column.medium-4
-          span.label Key Questions:
+          span.label.secondary Key Questions:
           .callout.secondary = Random.rand(5) + 1
         .column.medium-4
-          span.label Studies:
+          span.label.secondary Studies:
           .callout.secondary = Random.rand(1000) + 1
         .column.medium-4
-          span.label Extraction Forms:
+          span.label.secondary Extraction Forms:
           .callout.secondary = Random.rand(10) + 1
     .column.medium-5
       = link_to 'Edit', edit_project_path(project), class: 'button expanded'
