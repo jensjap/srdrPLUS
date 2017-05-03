@@ -83,7 +83,7 @@ a.button.remove-link {
   opacity: 0.6;
   transition: all 0.35s ease-in-out;
 
-  &:hover {
+  &:hover, &:focus {
     color: red !important;
     background-color: transparent;
     border: 1px solid red;

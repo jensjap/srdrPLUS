@@ -46,7 +46,7 @@
 // 1. Global
 // ---------
 
-$global-font-size: 120%;
+$global-font-size: 100%;
 $global-width: rem-calc(1200);
 $global-lineheight: 1.5;
 $foundation-palette: (
@@ -261,7 +261,6 @@ $breadcrumbs-item-slash: true;
 // ----------
 
 $button-padding: 0.85em 1em;
-//$button-padding: 0.3em 0.45em;
 $button-margin: 0 0 $global-margin 0;
 $button-fill: solid;
 $button-background: $primary-color;
@@ -270,17 +269,11 @@ $button-background-hover: $secondary-color;
 $button-color: $white;
 $button-color-alt: $black;
 $button-radius: $global-radius;
-//$button-sizes: (
-//  tiny: 0.6rem,
-//  small: 0.75rem,
-//  default: 0.9rem,
-//  large: 1.25rem,
-//);
 $button-sizes: (
-  tiny: 0.7rem,
-  small: 0.85rem,
-  default: 1.0rem,
-  large: 1.35rem,
+  tiny: 0.6rem,
+  small: 0.75rem,
+  default: 0.9rem,
+  large: 1.25rem,
 );
 $button-palette: $foundation-palette;
 $button-opacity-disabled: 0.25;
@@ -594,7 +587,6 @@ $tab-background: $white;
 $tab-color: $primary-color;
 $tab-background-active: $light-gray;
 $tab-active-color: $primary-color;
-//$tab-item-font-size: rem-calc(12);
 $tab-item-font-size: rem-calc(14);
 $tab-item-background-hover: $white;
 $tab-item-padding: 1.25rem 1.5rem;
