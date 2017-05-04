@@ -28,7 +28,7 @@ class ProjectsController < ApplicationController
 
   # GET /projects/1/edit
   def edit
-    @project.key_questions.build if @project.key_questions.blank?
+    #@project.key_questions.build if @project.key_questions.blank?
     #@project.extraction_forms.build if @project.extraction_forms.blank?
   end
 

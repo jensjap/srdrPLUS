@@ -35,7 +35,7 @@ a href='#' class='accordion-title'
       .row
         .column.medium-4
           span.label.secondary Key Questions:
-          .callout.secondary = Random.rand(5) + 1
+          .callout.secondary = project.key_questions.count.to_s
         .column.medium-4
           span.label.secondary Studies:
           .callout.secondary = Random.rand(1000) + 1
@@ -44,4 +44,3 @@ a href='#' class='accordion-title'
           .callout.secondary = Random.rand(10) + 1
     .column.medium-5
       = link_to 'Edit', edit_project_path(project), class: 'button expanded'
-
