@@ -1,15 +1,16 @@
+- if @project.duplicate_key_question?
+  p#warning.callout.warning
+    ' Notice: Duplicate Key Questions detected. This is likely a mistake. Please correct below.
+
 .form-inputs
   fieldset.key-question-fieldset
-    legend
-      = t('.key_question_information')
+    legend = t('.key_question_information')
     = f.simple_fields_for(:key_questions_projects) do |kqp_f|
       == render 'projects/edit/key_questions_project_fields', f: kqp_f
 
     .links
-      br
-      br
       = link_to_add_association f, :key_questions_projects,
-            html_options = { class: 'button',
+            html_options = { class: 'button warning float-right',
                              partial: 'projects/edit/key_questions_project_fields' } do
         i.fi-plus
         =< t('.object_name')
