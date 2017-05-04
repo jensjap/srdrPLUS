@@ -127,6 +127,7 @@ GEM
       railties (>= 4.1.0, < 5.1)
       responders
       warden (~> 1.2.3)
+    docile (1.1.5)
     erubis (2.7.0)
     execjs (2.7.0)
     ffi (1.9.18)
@@ -281,6 +282,11 @@ GEM
     simple_form (3.4.0)
       actionpack (> 4, < 5.1)
       activemodel (> 4, < 5.1)
+    simplecov (0.14.1)
+      docile (~> 1.1.0)
+      json (>= 1.8, < 3)
+      simplecov-html (~> 0.10.0)
+    simplecov-html (0.10.0)
     sixarm_ruby_unaccent (1.1.1)
     slim (3.0.7)
       temple (~> 0.7.6)
@@ -362,6 +368,7 @@ DEPENDENCIES
   sass-rails (~> 5.0)
   select2-rails
   simple_form
+  simplecov
   slim-rails
   spring
   spring-watcher-listen (~> 2.0.0)
