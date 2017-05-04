@@ -1,7 +1,11 @@
 @import 'settings';
 
+a.add_fields {
+  margin-top: 1rem;
+}
+
 i.fi-plus {
-  color: $secondary-color;
+  //color: $secondary-color;
 }
 
 a.button:hover i.fi-plus,
@@ -15,5 +19,10 @@ a.button:focus i.fi-plus {
 
 .hint {
   display: none;
-  float: right;
+  position: absolute;
+  margin-bottom: 1em;
+}
+
+div.input {
+  margin-bottom: 2rem;
 }
