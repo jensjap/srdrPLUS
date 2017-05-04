@@ -17,7 +17,7 @@ module SharedDispatchableMethods
       msg_time_range = start_at.to_i..end_at.to_i
       # Use start_at and end_at of Dispatchable to ensure we are in range to deliver.
       if end_at == nil || msg_time_range === current_time.to_i
-        _dispatches = current_user.dispatches.where(dispatchable_type: self.class)
+        _dispatches = current_user.dispatches.where(dispatchable_type: self.class.to_s)
         if _dispatches.present?
           # Also ensure that the last dispatch is older than dispatchable.frequency allows.
           if _dispatches.last.is_stale?
