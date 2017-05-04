@@ -3,7 +3,7 @@ ul.accordion data-accordion='' data-multi-expand='false' data-allow-all-closed='
     h4 Your search returned no results. Please try a different query.
   - @projects.each do |project|
     - if project.publishings.present?
-      - if project.approvals.present?
+      - if project.publishings.any?(&:approved?)
         li.publishing-approved.accordion-item data-accordion-item=''
           = render partial: 'projects/index/project_list_item', locals: { project: project }
       - else

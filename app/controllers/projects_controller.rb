@@ -12,8 +12,8 @@ class ProjectsController < ApplicationController
     flash.now[:info] = msg if msg
     @query = params[:q]
     @order = params[:o] || 'updated-at'
-    @projects = Project.includes(publishings: [:publishable, { user: :profile }]).includes(approvals: [{ user: :profile }]).
-                        by_query(@query).order(SORT[@order]).page(params[:page])
+    @projects = Project.includes(publishings: [{ user: :profile }, approval: [{ user: :profile }]])
+                       .by_query(@query).order(SORT[@order]).page(params[:page])
   end
 
   # GET /projects/1
@@ -77,8 +77,8 @@ class ProjectsController < ApplicationController
   def filter
     @query = params[:q]  # Need @query for index partial.
     @order = params[:o]
-    @projects = Project.includes(publishings: [:publishable, { user: :profile }]).includes(approvals: [{ user: :profile }]).
-                        by_name_description_and_query(@query).order(SORT[@order]).page(params[:page])
+    @projects = Project.includes(publishings: [{ user: :profile }, approval: [{ user: :profile }]])
+                       .by_name_description_and_query(@query).order(SORT[@order]).page(params[:page])
     render 'index'
   end
 

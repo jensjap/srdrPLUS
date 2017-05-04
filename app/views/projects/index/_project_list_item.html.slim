@@ -19,9 +19,9 @@ a href='#' class='accordion-title'
         .callout.secondary = project.created_at.in_time_zone(current_user.profile.time_zone).strftime('%c')
       .column.row
         - if project.publishings.present?
-          - if project.approvals.present?
+          - if project.publishings.any?(&:approved?)
             span.label.success Date Published:
-            .callout.secondary = project.approvals.first.created_at.in_time_zone(current_user.profile.time_zone).strftime('%c')
+            .callout.secondary = project.publishings.find(&:approved?).created_at.in_time_zone(current_user.profile.time_zone).strftime('%c')
           - else
             span.label.warning Date Publishing Requested:
             .callout.secondary

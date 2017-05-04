@@ -17,7 +17,7 @@ class StaticPagesController < ApplicationController
   def search
     @query = params[:search]
     @order = params[:o] || 'updated-at'
-    @results = Project.includes(publishings: [:publishable, { user: :profile }]).includes(approvals: [{ user: :profile }]).
-                       by_name_description_and_query(@query).order(SORT[@order]).page(params[:page])
+    @results = Project.includes(publishings: [{ user: :profile }, approval: [{ user: :profile }]])
+                      .by_name_description_and_query(@query).order(SORT[@order]).page(params[:page])
   end
 end
