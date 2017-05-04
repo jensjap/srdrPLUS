@@ -48,46 +48,39 @@ document.addEventListener 'turbolinks:load', ->
       $( '#project-filter' ).focus()
       return
 
-    # Cocoon listeners.
-    $( '.form-inputs' )
+    $( document )
 
+      # Cocoon listeners.
       .on 'cocoon:before-insert', ( e, insertedItem ) ->
         insertedItem.fadeIn 'slow'
-        return
 
       .on 'cocoon:after-insert', ( e, insertedItem ) ->
         Foundation.reInit 'abide'
-        return
 
       .on 'cocoon:before-remove', ( e, insertedItem ) ->
-        #!!! This isnt' working. Form is left invalid.
+        #!!! This isnt' working. Immediately disappears.
         $( this ).data 'remove-timeout', 1000
         insertedItem.fadeOut 'slow'
-        return
 
       .on 'cocoon:after-remove', ( e, insertedItem ) ->
         #!!! This isnt' working. Form is left invalid.
         Foundation.reInit 'abide'
-        return
 
-    # Make form errors visible on the tab links.
-    $( document )
-
+      # Abide listeners.
+      # Make form errors visible on the tab links.
       .on 'invalid.zf.abide', ( e, el ) ->
         if $( el ).closest( 'fieldset' ).attr( 'class' ) == 'key-question-fieldset'
           $( '#panel-key-question-label' ).html( '<span style="color: red;">(*) Key Question(s)</span>' )
-          return
+
         if $( el ).closest( 'fieldset' ).attr( 'class' ) == 'project-information-fieldset'
           $( '#panel-information-label' ).html( '<span style="color: red;">(*) Project Information</span>' )
-          return
 
       .on 'valid.zf.abide', ( e, el ) ->
         if $( el ).closest( 'fieldset' ).attr( 'class' ) == 'key-question-fieldset'
           $( '#panel-key-question-label' ).html( 'Key Question(s)' )
-          return
+
         if $( el ).closest( 'fieldset' ).attr( 'class' ) == 'project-information-fieldset'
           $( '#panel-information-label' ).html( 'Project Information' )
-          return
 
 #    # Set the field to display from the result set.
 #    formatResultSelection = (result, container) ->

@@ -28,7 +28,7 @@ class ProjectsController < ApplicationController
 
   # GET /projects/1/edit
   def edit
-    @project.key_questions.build if @project.key_questions.blank?
+    #@project.key_questions.build if @project.key_questions.blank?
     #@project.extraction_forms.build if @project.extraction_forms.blank?
   end
 
@@ -92,7 +92,6 @@ class ProjectsController < ApplicationController
     def project_params
       params.require(:project).permit(:name, :description, :attribution, :methodology_description,
                                       :prospero, :doi, :notes, :funding_source,
-                                      key_questions_projects_attributes: [:id, :_destroy, key_question_attributes: [:name]]
-      )
+                                      key_questions_projects_attributes: [:id, :_destroy, key_question_attributes: [:name]])
     end
 end
