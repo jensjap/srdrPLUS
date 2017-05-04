@@ -63,7 +63,6 @@ document.addEventListener 'turbolinks:load', ->
         insertedItem.fadeOut 'slow'
 
       .on 'cocoon:after-remove', ( e, insertedItem ) ->
-        #!!! This isnt' working. Form is left invalid.
         Foundation.reInit 'abide'
 
       # Abide listeners.

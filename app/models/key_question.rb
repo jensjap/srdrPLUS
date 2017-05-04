@@ -4,6 +4,8 @@ class KeyQuestion < ApplicationRecord
   acts_as_paranoid
   has_paper_trail
 
+  belongs_to :extraction_form, inverse_of: :key_questions, optional: true
+
   has_many :key_questions_projects, dependent: :destroy, inverse_of: :key_question
   has_many :projects, through: :key_questions_projects, dependent: :destroy
 

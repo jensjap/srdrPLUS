@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170502154252) do
+ActiveRecord::Schema.define(version: 20170416040832) do
 
   create_table "approvals", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "approvable_type"
@@ -85,11 +85,13 @@ ActiveRecord::Schema.define(version: 20170502154252) do
   end
 
   create_table "key_questions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.text     "name",       limit: 65535
+    t.integer  "extraction_form_id"
+    t.text     "name",               limit: 65535
     t.datetime "deleted_at"
-    t.datetime "created_at",               null: false
-    t.datetime "updated_at",               null: false
+    t.datetime "created_at",                       null: false
+    t.datetime "updated_at",                       null: false
     t.index ["deleted_at"], name: "index_key_questions_on_deleted_at", using: :btree
+    t.index ["extraction_form_id"], name: "index_key_questions_on_extraction_form_id", using: :btree
   end
 
   create_table "key_questions_projects", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -256,6 +258,7 @@ ActiveRecord::Schema.define(version: 20170502154252) do
   add_foreign_key "degrees_profiles", "degrees"
   add_foreign_key "degrees_profiles", "profiles"
   add_foreign_key "dispatches", "users"
+  add_foreign_key "key_questions", "extraction_forms"
   add_foreign_key "key_questions_projects", "key_questions"
   add_foreign_key "key_questions_projects", "projects"
   add_foreign_key "message_types", "frequencies"
