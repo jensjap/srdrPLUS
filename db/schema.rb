@@ -62,8 +62,6 @@ ActiveRecord::Schema.define(version: 20170416040832) do
     t.datetime "updated_at",        null: false
     t.index ["active"], name: "index_dispatches_on_active", using: :btree
     t.index ["deleted_at"], name: "index_dispatches_on_deleted_at", using: :btree
-    t.index ["dispatchable_type", "dispatchable_id", "user_id", "active"], name: "index_dispatches_on_type_id_user_id_active", unique: true, using: :btree
-    t.index ["dispatchable_type", "dispatchable_id", "user_id"], name: "index_dispatches_on_type_id_user_id", unique: true, using: :btree
     t.index ["dispatchable_type", "dispatchable_id"], name: "index_dispatches_on_dispatchable_type_and_dispatchable_id", using: :btree
     t.index ["user_id"], name: "index_dispatches_on_user_id", using: :btree
   end
