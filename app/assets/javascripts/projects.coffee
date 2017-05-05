@@ -14,13 +14,16 @@ document.addEventListener 'turbolinks:load', ->
         timer = setTimeout( callback, ms )
         return
 
-    # Ajax call to filter the project list.
+    # Ajax call to filter the project list. We want to return a function here
+    # to prevent it from being called immediately. Wrapper is to allow passing
+    # param without immediate function invocation.
     filterProjectList = ( order ) ->
-      $.get {
-          url: '/projects/filter?q=' + $( '#project-filter' ).val() + '&o=' + order,
-          dataType: 'script'
+      ->
+        $.get {
+            url: '/projects/filter?q=' + $( '#project-filter' ).val() + '&o=' + order,
+            dataType: 'script'
         }
-      return
+        return
 
     # Everytime a user types into the search field we send an ajax request to
     # filter the list. Use delay to delay the call.
@@ -38,7 +41,8 @@ document.addEventListener 'turbolinks:load', ->
       if $( this ).hasClass( 'active' )
         return
       nextOrder = $( '.toggle-sort-order button.button.disabled' ).data( 'sortOrder' )
-      delay filterProjectList( nextOrder ), 500
+      # Since filterProjectList returns a function, we to call it immediately.
+      filterProjectList( nextOrder )()
       return
 
     # Activates the search slider on the project index page.
