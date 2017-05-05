@@ -79,6 +79,7 @@ class ProjectsController < ApplicationController
     @query = params[:q]  # Need @query for index partial.
     @order = params[:o]
     @projects = Project.includes(publishings: [{ user: :profile }, approval: [{ user: :profile }]])
+                       .includes(:key_questions)
                        .by_name_description_and_query(@query).order(SORT[@order]).page(params[:page])
     render 'index'
   end
