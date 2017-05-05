@@ -1,8 +1,12 @@
 # frozen_string_literal: true
 
 # Needs to be at the top.
-require 'simplecov'
-SimpleCov.start
+if ENV['RAILS_ENV'] == 'test'
+  require 'simplecov'
+  SimpleCov.start do
+    add_filter '/.bundle/'  # We don't want to include bundled gems.
+  end
+end
 
 ENV['RAILS_ENV'] ||= 'test'
 require File.expand_path('../../config/environment', __FILE__)
