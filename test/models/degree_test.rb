@@ -15,4 +15,10 @@ class DegreeTest < ActiveSupport::TestCase
   test 'degree with same name should be invalid' do
     refute Degree.new(name: Degree.first.name).valid?
   end
+
+  test 'deleting degree should raise' do
+    assert_raises do
+      Degree.first.destroy
+    end
+  end
 end

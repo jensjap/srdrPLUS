@@ -12,5 +12,5 @@ two:
   name: Message Two
   description: MyText
   start_at: <%= 1.day.ago.to_s(:db) %>
-  end_at: <%= Time.current.to_formatted_s(:db) %>
+  end_at:
 
