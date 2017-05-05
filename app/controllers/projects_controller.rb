@@ -13,6 +13,7 @@ class ProjectsController < ApplicationController
     @query = params[:q]
     @order = params[:o] || 'updated-at'
     @projects = Project.includes(publishings: [{ user: :profile }, approval: [{ user: :profile }]])
+                       .includes(:key_questions)
                        .by_query(@query).order(SORT[@order]).page(params[:page])
   end
 
