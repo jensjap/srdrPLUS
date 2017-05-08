@@ -4,7 +4,7 @@ Rails.application.routes.draw do
   end
 
   resources :projects, concerns: :paginatable, shallow: true do
-    resources :extraction_forms, only: [:edit]
+    resources :extraction_forms_projects, only: [:edit]
     collection do
       get 'filter'
     end
