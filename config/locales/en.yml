@@ -29,9 +29,16 @@ en:
           plead: 'Are you sure you want to end it this way?'
   projects:
     edit:
+      information:
+        field_set: 'Project Information'
       manage_key_questions:
         object_name: 'Key Question'
-        key_question_information: 'Key Question Information'
+        field_set: 'Key Question Information'
+      manage_extraction_forms:
+        object_name: 'Extraction Form'
+        field_set: 'Extraction Form Information'
+      extraction_forms_project_fields:
+        object_name: 'Extraction Form'
       key_questions_project_fields:
         remove: 'Remove'
         new: 'New Key Question'

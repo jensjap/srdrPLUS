@@ -74,6 +74,21 @@ ActiveRecord::Schema.define(version: 20170416040832) do
     t.index ["deleted_at"], name: "index_extraction_forms_on_deleted_at", using: :btree
   end
 
+  create_table "extraction_forms_projects", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "extraction_form_id"
+    t.integer  "project_id"
+    t.datetime "deleted_at"
+    t.boolean  "active"
+    t.datetime "created_at",         null: false
+    t.datetime "updated_at",         null: false
+    t.index ["active"], name: "index_extraction_forms_projects_on_active", using: :btree
+    t.index ["deleted_at"], name: "index_extraction_forms_projects_on_deleted_at", using: :btree
+    t.index ["extraction_form_id", "project_id", "active"], name: "index_efp_on_ef_id_p_id_active", using: :btree
+    t.index ["extraction_form_id", "project_id"], name: "index_efp_on_ef_id_p_id", using: :btree
+    t.index ["extraction_form_id"], name: "index_extraction_forms_projects_on_extraction_form_id", using: :btree
+    t.index ["project_id"], name: "index_extraction_forms_projects_on_project_id", using: :btree
+  end
+
   create_table "frequencies", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "name"
     t.datetime "deleted_at"
@@ -83,24 +98,26 @@ ActiveRecord::Schema.define(version: 20170416040832) do
   end
 
   create_table "key_questions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer  "extraction_form_id"
-    t.text     "name",               limit: 65535
+    t.text     "name",       limit: 65535
     t.datetime "deleted_at"
-    t.datetime "created_at",                       null: false
-    t.datetime "updated_at",                       null: false
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
     t.index ["deleted_at"], name: "index_key_questions_on_deleted_at", using: :btree
-    t.index ["extraction_form_id"], name: "index_key_questions_on_extraction_form_id", using: :btree
   end
 
   create_table "key_questions_projects", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "extraction_form_id"
     t.integer  "key_question_id"
     t.integer  "project_id"
     t.datetime "deleted_at"
     t.boolean  "active"
-    t.datetime "created_at",      null: false
-    t.datetime "updated_at",      null: false
+    t.datetime "created_at",         null: false
+    t.datetime "updated_at",         null: false
     t.index ["active"], name: "index_key_questions_projects_on_active", using: :btree
     t.index ["deleted_at"], name: "index_key_questions_projects_on_deleted_at", using: :btree
+    t.index ["extraction_form_id", "key_question_id", "project_id", "active"], name: "index_kqp_on_ef_id_kq_id_p_id_active", using: :btree
+    t.index ["extraction_form_id", "key_question_id", "project_id"], name: "index_kqp_on_ef_id_kq_id_p_id", using: :btree
+    t.index ["extraction_form_id"], name: "index_key_questions_projects_on_extraction_form_id", using: :btree
     t.index ["key_question_id", "project_id", "active"], name: "index_kqp_on_kq_id_p_id_active", using: :btree
     t.index ["key_question_id", "project_id"], name: "index_kqp_on_kq_id_p_id", using: :btree
     t.index ["key_question_id"], name: "index_key_questions_projects_on_key_question_id", using: :btree
@@ -256,7 +273,9 @@ ActiveRecord::Schema.define(version: 20170416040832) do
   add_foreign_key "degrees_profiles", "degrees"
   add_foreign_key "degrees_profiles", "profiles"
   add_foreign_key "dispatches", "users"
-  add_foreign_key "key_questions", "extraction_forms"
+  add_foreign_key "extraction_forms_projects", "extraction_forms"
+  add_foreign_key "extraction_forms_projects", "projects"
+  add_foreign_key "key_questions_projects", "extraction_forms"
   add_foreign_key "key_questions_projects", "key_questions"
   add_foreign_key "key_questions_projects", "projects"
   add_foreign_key "message_types", "frequencies"

@@ -1,1 +1,12 @@
-| EFs
+.form-inputs
+  fieldset.extraction-form-fieldset
+    legend = t('.field_set')
+    = f.simple_fields_for(:extraction_forms_projects) do |efp_f|
+      == render 'projects/edit/extraction_forms_project_fields', f: efp_f
+
+    .links
+      = link_to_add_association f, :extraction_forms_projects,
+            html_options = { class: 'button warning float-right',
+                             partial: 'projects/edit/extraction_forms_project_fields' } do
+        i.fi-plus
+        =< t('.object_name')

@@ -170,6 +170,9 @@ module SeedDataExtended
       @kq1 = KeyQuestion.create(name: 'kq1')
       @kq2 = KeyQuestion.create(name: 'kq2')
 
+      # Associate with first project.
+      Project.first.key_questions << [@kq1, @kq2]
+
       # Turn on paper_trail.
       PaperTrail.enabled = true
     end

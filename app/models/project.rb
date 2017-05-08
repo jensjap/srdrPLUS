@@ -7,8 +7,9 @@ class Project < ApplicationRecord
 
   paginates_per 8
 
-  has_many :extraction_forms, inverse_of: :project
 
+  has_many :extraction_forms_projects, dependent: :destroy, inverse_of: :project
+  has_many :extraction_forms, through: :extraction_forms_projects, dependent: :destroy
   has_many :key_questions_projects, dependent: :destroy, inverse_of: :project
   has_many :key_questions, through: :key_questions_projects, dependent: :destroy
 
@@ -16,6 +17,7 @@ class Project < ApplicationRecord
 
   validates :name, presence: true
 
+  accepts_nested_attributes_for :extraction_forms_projects, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :key_questions_projects, reject_if: :all_blank, allow_destroy: true
 
   def duplicate_key_question?

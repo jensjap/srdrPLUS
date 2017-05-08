@@ -4,7 +4,7 @@
 
 .form-inputs
   fieldset.key-question-fieldset
-    legend = t('.key_question_information')
+    legend = t('.field_set')
     = f.simple_fields_for(:key_questions_projects) do |kqp_f|
       == render 'projects/edit/key_questions_project_fields', f: kqp_f
 
