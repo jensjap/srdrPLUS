@@ -14,8 +14,8 @@ class KeyQuestionsProject < ApplicationRecord
 
   private
 
-  def key_question_name_exists?(key_question_attributes)
-    if _key_question = KeyQuestion.find_by(name: key_question_attributes[:name])
+  def key_question_name_exists?(attributes)
+    if _key_question = KeyQuestion.find_by(name: attributes[:name])
       # Associate this KeyQuestionsProject with the existing KeyQuestion.
       self.key_question = _key_question
       return true
