@@ -1,12 +1,11 @@
 .column.row
-  = simple_form_for(@project, url: project_path, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
+  = simple_form_for(@project, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
     .alert.callout data-abide-error='' style='display: none;'
       p
         i.fi-alert
-          '  Please correct the errors below.
+        |  There are some errors in your form.
 
     .column.medium-3
       == render 'projects/edit/tab_links'
     .column.medium-9
       == render 'projects/edit/tab_content', f: f
-

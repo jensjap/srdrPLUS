@@ -4,8 +4,8 @@ class ProjectsControllerTest < ActionDispatch::IntegrationTest
   setup do
     sign_in(users(:one))
     @project = projects(:one)
-    @key_questions_projects1 = key_questions_projects(:one)
-    @key_questions_projects2 = key_questions_projects(:two)
+    @key_questions_project1 = key_questions_projects(:one)
+    @key_questions_project2 = key_questions_projects(:two)
     @kq1 = key_questions(:one)
     @kq2 = key_questions(:two)
   end
@@ -40,7 +40,7 @@ class ProjectsControllerTest < ActionDispatch::IntegrationTest
 
   test 'should update project' do
     patch project_url(@project), params: { project: { attribution: @project.attribution, description: @project.description, doi: @project.doi, funding_source: @project.funding_source, methodology_description: @project.methodology_description, name: @project.name, notes: @project.notes, prospero: @project.prospero } }
-    assert_redirected_to project_url(@project)
+    assert_redirected_to edit_project_url(@project)
   end
 
   test 'should destroy project' do
@@ -68,7 +68,7 @@ class ProjectsControllerTest < ActionDispatch::IntegrationTest
   test 'should not create new key_questions_project' do
     assert_difference('KeyQuestionsProject.count', 0) do
       patch project_url(@project), params: { project: { attribution: @project.attribution, description: @project.description, doi: @project.doi, funding_source: @project.funding_source, methodology_description: @project.methodology_description, name: @project.name, notes: @project.notes, prospero: @project.prospero,
-                                                        key_questions_projects_attributes: { '0': { key_question_attributes: { name: @kq2.name } }, id: @key_questions_projects1.id } } }
+                                                        key_questions_projects_attributes: { '0': { key_question_attributes: { name: @kq2.name } }, id: @key_questions_project1.id } } }
     end
   end
 end

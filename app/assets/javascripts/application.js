@@ -38,4 +38,3 @@ toastr.options = {
 document.addEventListener( 'turbolinks:load', function() {
   $( document ).foundation();
 } );
-

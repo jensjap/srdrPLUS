@@ -1,0 +1,9 @@
+.tabs-content.vertical data-tabs-content='vertical-tabs'
+  #panel-tab-1.tabs-panel.is-active
+    | 1
+  - (2..10).each do |n|
+    .tabs-panel id="panel-tab-#{ n }"
+      = n
+
+  .form-actions
+    = f.button :submit, 'Save changes'

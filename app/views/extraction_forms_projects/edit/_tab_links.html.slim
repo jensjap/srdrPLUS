@@ -1,0 +1,10 @@
+ul#vertical-tabs.tabs.vertical data-deep-link='true' data-deep-link-smudge='true' data-deep-link-smudge-delay='600' data-tabs=''
+  li.tabs-title.is-active
+    = link_to 'Section 1', '#panel-tab-1', title: 'Section 1'
+  - (2..10).each do |n|
+    li.tabs-title
+      = link_to "Section #{ n }", "#panel-tab-#{ n }", title: "Section #{ n }"
+  li.tabs-title
+    = link_to '#add-section' do
+      i.fi-plus
+      |  Add Section

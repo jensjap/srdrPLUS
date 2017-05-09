@@ -14,7 +14,7 @@ class Degree < ApplicationRecord
   has_many :degrees_profiles, dependent: :destroy, inverse_of: :degree
   has_many :profiles, through: :degrees_profiles, dependent: :destroy
 
-  validates :name, uniqueness: true
+  validates :name, presence: true, uniqueness: { case_sensitive: false }
 
   private
 

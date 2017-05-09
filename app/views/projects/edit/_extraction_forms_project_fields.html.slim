@@ -2,12 +2,12 @@
   .nested-fields.extraction_forms-project-fields
     .links
       = link_to_remove_association f, html_options = { class: 'button warning float-right remove-link',
-                                                       data: { confirm: t('.confirm') } } do
+                                                       data: { confirm: t('confirm') } } do
         i.fi-minus-circle
         =< t('.remove')
     - if ef_f.object.new_record?
       = t('.new')
     - else
-      = link_to 'Build ' + t('.object_name'), edit_extraction_forms_project_path(f.object)
+      = link_to 'Modify ' + t('.object_name'), edit_extraction_forms_project_path(f.object)
     = ef_f.input :name, required: true, hint: 'Name can\'t be blank'
 

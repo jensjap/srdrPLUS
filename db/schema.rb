@@ -66,12 +66,23 @@ ActiveRecord::Schema.define(version: 20170416040832) do
     t.index ["user_id"], name: "index_dispatches_on_user_id", using: :btree
   end
 
-  create_table "extraction_forms", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "extraction_form_types", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "name"
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["deleted_at"], name: "index_extraction_form_types_on_deleted_at", using: :btree
+  end
+
+  create_table "extraction_forms", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "extraction_form_type_id"
+    t.string   "name"
+    t.boolean  "private"
+    t.datetime "deleted_at"
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
     t.index ["deleted_at"], name: "index_extraction_forms_on_deleted_at", using: :btree
+    t.index ["extraction_form_type_id"], name: "index_extraction_forms_on_extraction_form_type_id", using: :btree
   end
 
   create_table "extraction_forms_projects", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -273,6 +284,7 @@ ActiveRecord::Schema.define(version: 20170416040832) do
   add_foreign_key "degrees_profiles", "degrees"
   add_foreign_key "degrees_profiles", "profiles"
   add_foreign_key "dispatches", "users"
+  add_foreign_key "extraction_forms", "extraction_form_types"
   add_foreign_key "extraction_forms_projects", "extraction_forms"
   add_foreign_key "extraction_forms_projects", "projects"
   add_foreign_key "key_questions_projects", "extraction_forms"

@@ -1,0 +1,10 @@
+.column.row
+  h2 #{ @extraction_forms_project.extraction_form.name }
+
+.row
+  == render 'form'
+
+.column.row
+  = link_to 'Show', @extraction_forms_project
+  '  |
+  = link_to 'Back', edit_project_path(@extraction_forms_project.project)

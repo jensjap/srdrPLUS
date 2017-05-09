@@ -5,7 +5,7 @@ class Project < ApplicationRecord
   acts_as_paranoid
   has_paper_trail
 
-  paginates_per 8
+  paginates_per 1000
 
 
   has_many :extraction_forms_projects, dependent: :destroy, inverse_of: :project

@@ -11,6 +11,6 @@ class Organization < ApplicationRecord
 
   has_many :profiles, dependent: :nullify, inverse_of: :profile
 
-  validates :name, uniqueness: true
+  validates :name, presence: true, uniqueness: { case_sensitive: false }
 end
 
