@@ -4,7 +4,7 @@ class KeyQuestionsProject < ApplicationRecord
   acts_as_paranoid column: :active, sentinel_value: true
   has_paper_trail
 
-  belongs_to :extraction_form, inverse_of: :key_questions_projects, optional: true
+  belongs_to :extraction_forms_project, inverse_of: :key_questions_projects, optional: true
   belongs_to :key_question, inverse_of: :key_questions_projects
   belongs_to :project, inverse_of: :key_questions_projects, touch: true
 
