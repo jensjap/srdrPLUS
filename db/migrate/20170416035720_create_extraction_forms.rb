@@ -9,6 +9,7 @@ class CreateExtractionForms < ActiveRecord::Migration[5.0]
       t.timestamps
     end
 
+    add_index :extraction_forms, :name, unique: true
     add_index :extraction_forms, :deleted_at
   end
 end

@@ -5,9 +5,7 @@
                                                        data: { confirm: t('confirm') } } do
         i.fi-minus-circle
         =< t('.remove')
-    - if ef_f.object.new_record?
-      = t('.new')
-    - else
+    - unless ef_f.object.new_record?
       = link_to 'Modify ' + t('.object_name'), edit_extraction_forms_project_path(f.object)
-    = ef_f.input :name, required: true, hint: 'Name can\'t be blank'
+    = ef_f.input :name, required: true, hint: 'Name can\'t be blank', placeholder: 'Extraction Form Name'
 

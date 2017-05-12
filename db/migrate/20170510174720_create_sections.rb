@@ -8,6 +8,7 @@ class CreateSections < ActiveRecord::Migration[5.0]
       t.timestamps
     end
 
+    add_index :sections, :name, unique: true
     add_index :sections, :deleted_at
   end
 end

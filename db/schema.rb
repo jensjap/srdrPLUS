@@ -83,6 +83,7 @@ ActiveRecord::Schema.define(version: 20170510182614) do
     t.datetime "updated_at",              null: false
     t.index ["deleted_at"], name: "index_extraction_forms_on_deleted_at", using: :btree
     t.index ["extraction_form_type_id"], name: "index_extraction_forms_on_extraction_form_type_id", using: :btree
+    t.index ["name"], name: "index_extraction_forms_on_name", unique: true, using: :btree
   end
 
   create_table "extraction_forms_projects", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -124,11 +125,12 @@ ActiveRecord::Schema.define(version: 20170510182614) do
   end
 
   create_table "key_questions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.text     "name",       limit: 65535
+    t.string   "name"
     t.datetime "deleted_at"
-    t.datetime "created_at",               null: false
-    t.datetime "updated_at",               null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["deleted_at"], name: "index_key_questions_on_deleted_at", using: :btree
+    t.index ["name"], name: "index_key_questions_on_name", unique: true, using: :btree
   end
 
   create_table "key_questions_projects", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -237,6 +239,7 @@ ActiveRecord::Schema.define(version: 20170510182614) do
     t.datetime "created_at",                 null: false
     t.datetime "updated_at",                 null: false
     t.index ["deleted_at"], name: "index_sections_on_deleted_at", using: :btree
+    t.index ["name"], name: "index_sections_on_name", unique: true, using: :btree
   end
 
   create_table "suggestions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|

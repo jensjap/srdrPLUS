@@ -6,4 +6,6 @@ class Section < ApplicationRecord
 
   has_many :extraction_forms_projects_sections, dependent: :destroy, inverse_of: :section
   has_many :extraction_forms_projects, through: :extraction_forms_projects_sections, dependent: :destroy
+
+  validates :name, presence: true, uniqueness: { case_sensitive: false }
 end
