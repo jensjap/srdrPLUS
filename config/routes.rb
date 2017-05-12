@@ -4,7 +4,9 @@ Rails.application.routes.draw do
   end
 
   resources :projects, concerns: :paginatable, shallow: true do
-    resources :extraction_forms_projects
+    resources :extraction_forms_projects, only: [:edit, :update] do
+      resources :extraction_forms_projects_sections, only: [:destroy]
+    end
     collection do
       get 'filter'
     end
