@@ -55,11 +55,16 @@ mark {
       }
 
       &.disabled {
-        background-color: $primary-color;
+        opacity: 0.9;
+        border: solid 1px $primary-color;
+        background-color: transparent;
+        color: $primary-color;
         cursor: pointer;
 
         &:hover {
           background-color: $secondary-color;
+          border-color: $secondary-color;
+          color: white;
           opacity: 1;
         }
       }
