@@ -13,7 +13,7 @@ class ExtractionFormsProjectsSection < ApplicationRecord
 
   def section_name_exists?(attributes)
     begin
-      self.section = Section.find_or_create_by!(name: attributes[:name])
+      self.section = Section.where(name: attributes[:name]).first_or_create!
     rescue ActiveRecord::RecordNotUnique
       retry
     end

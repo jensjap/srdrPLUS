@@ -17,7 +17,7 @@ class KeyQuestionsProject < ApplicationRecord
 
   def key_question_name_exists?(attributes)
     begin
-      self.key_question = KeyQuestion.find_or_create_by!(name: attributes[:name])
+      self.key_question = KeyQuestion.where(name: attributes[:name]).first_or_create!
     rescue ActiveRecord::RecordNotUnique
       retry
     end

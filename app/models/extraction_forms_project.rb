@@ -19,7 +19,7 @@ class ExtractionFormsProject < ApplicationRecord
 
   def extraction_form_name_exists?(attributes)
     begin
-      self.extraction_form = ExtractionForm.find_or_create_by!(name: attributes[:name])
+      self.extraction_form = ExtractionForm.where(name: attributes[:name]).first_or_create!
     rescue ActiveRecord::RecordNotUnique
       retry
     end
