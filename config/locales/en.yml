@@ -28,6 +28,9 @@ en:
       edit:
         cancel_account:
           plead: 'Are you sure you want to end it this way?'
+  profiles:
+    show:
+      edit: 'Edit Profile'
   projects:
     edit:
       information:
@@ -45,6 +48,8 @@ en:
         remove: 'Remove'
         new: 'New Key Question'
         confirm: 'Are you sure you want to remove this key questions?'
+    index:
+      create: 'Create Project'
   errors:
     messages:
       taken: 'We are sorry, but the value you are attempting to use is allowed only once and has already been used'
