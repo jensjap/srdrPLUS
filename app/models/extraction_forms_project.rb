@@ -13,17 +13,22 @@ class ExtractionFormsProject < ApplicationRecord
   has_many :key_questions, through: :key_questions_projects, dependent: :destroy
 
   accepts_nested_attributes_for :extraction_form, reject_if: :extraction_form_name_exists?
-  accepts_nested_attributes_for :extraction_forms_projects_sections, reject_if: :all_blank, allow_destroy: true
+  accepts_nested_attributes_for :extraction_forms_projects_sections, allow_destroy: true, reject_if: :all_blank
 
   private
 
   def extraction_form_name_exists?(attributes)
-    if _extraction_form = ExtractionForm.find_by(name: attributes[:name])
-      # Associate this ExtractionFormsProject with the existing ExtractionForm.
-      self.extraction_form = _extraction_form
-      return true
-    else
-      return false
+    begin
+      self.extraction_form = ExtractionForm.find_or_create_by!(name: attributes[:name])
+    rescue ActiveRecord::RecordNotUnique
+      retry
     end
+#    if _extraction_form = ExtractionForm.find_by(name: attributes[:name])
+#      # Associate this ExtractionFormsProject with the existing ExtractionForm.
+#      self.extraction_form = _extraction_form
+#      return true
+#    else
+#      return false
+#    end
   end
 end

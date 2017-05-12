@@ -12,12 +12,17 @@ class ExtractionFormsProjectsSection < ApplicationRecord
   private
 
   def section_name_exists?(attributes)
-    if _section = Section.find_by(name: attributes[:name])
-      # Associate this ExtractionFormsProject with the existing ExtractionForm.
-      self.section = _section
-      return true
-    else
-      return false
+    begin
+      self.section = Section.find_or_create_by!(name: attributes[:name])
+    rescue ActiveRecord::RecordNotUnique
+      retry
     end
+#    if _section = Section.find_by(name: attributes[:name])
+#      # Associate this ExtractionFormsProject with the existing ExtractionForm.
+#      self.section = _section
+#      return true
+#    else
+#      return false
+#    end
   end
 end

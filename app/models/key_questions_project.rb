@@ -16,12 +16,17 @@ class KeyQuestionsProject < ApplicationRecord
   private
 
   def key_question_name_exists?(attributes)
-    if _key_question = KeyQuestion.find_by(name: attributes[:name])
-      # Associate this KeyQuestionsProject with the existing KeyQuestion.
-      self.key_question = _key_question
-      return true
-    else
-      return false
+    begin
+      self.key_question = KeyQuestion.find_or_create_by!(name: attributes[:name])
+    rescue ActiveRecord::RecordNotUnique
+      retry
     end
+#    if _key_question = KeyQuestion.find_by(name: attributes[:name])
+#      # Associate this KeyQuestionsProject with the existing KeyQuestion.
+#      self.key_question = _key_question
+#      return true
+#    else
+#      return false
+#    end
   end
 end
