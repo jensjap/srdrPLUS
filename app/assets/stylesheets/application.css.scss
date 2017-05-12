@@ -20,6 +20,12 @@
 
 @import 'settings';
 
+// Turbolinks.
+.turbolinks-progress-bar {
+  height: 10px;
+  background-color: purple;
+}
+
 // Navigation.
 #navigation {
   padding: 0;
