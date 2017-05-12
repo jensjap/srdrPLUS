@@ -5,7 +5,7 @@ class ExtractionFormsProjectsSectionsController < ApplicationController
     @extraction_forms_projects_section.destroy
     respond_to do |format|
       format.html { redirect_to edit_extraction_forms_project_path(@extraction_forms_projects_section.extraction_forms_project),
-                    notice: 'Section was successfully removed.' }
+                    notice: t('removed') }
       format.json { head :no_content }
     end
   end

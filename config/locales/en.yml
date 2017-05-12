@@ -20,8 +20,9 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
-  hello: 'Hello world'
   confirm: 'Are you sure?'
+  removed: 'Successfully removed.'
+  success: 'Success!'
   users:
     registrations:
       edit:
