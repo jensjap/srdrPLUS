@@ -1,9 +1,7 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  name: MyString
-  deleted_at: 2017-05-10 13:47:20
+  name: Section One
 
 two:
-  name: MyString
-  deleted_at: 2017-05-10 13:47:20
+  name: Section Two

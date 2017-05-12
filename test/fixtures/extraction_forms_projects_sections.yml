@@ -3,11 +3,9 @@
 one:
   extraction_forms_project: one
   section: one
-  deleted_at: 2017-05-10 14:26:14
-  active: false
+  active: true
 
 two:
   extraction_forms_project: two
   section: two
-  deleted_at: 2017-05-10 14:26:14
-  active: false
+  active: true
