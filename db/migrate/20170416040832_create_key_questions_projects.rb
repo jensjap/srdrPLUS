@@ -12,9 +12,9 @@ class CreateKeyQuestionsProjects < ActiveRecord::Migration[5.0]
 
     add_index :key_questions_projects, :deleted_at
     add_index :key_questions_projects, :active
-    add_index :key_questions_projects, [:key_question_id, :project_id],          name: 'index_kqp_on_kq_id_p_id', where: 'deleted_at IS NULL'
-    add_index :key_questions_projects, [:key_question_id, :project_id, :active], name: 'index_kqp_on_kq_id_p_id_active'
-    add_index :key_questions_projects, [:extraction_forms_project_id, :key_question_id, :project_id],          name: 'index_kqp_on_ef_id_kq_id_p_id', where: 'deleted_at IS NULL'
-    add_index :key_questions_projects, [:extraction_forms_project_id, :key_question_id, :project_id, :active], name: 'index_kqp_on_ef_id_kq_id_p_id_active'
+    add_index :key_questions_projects, [:key_question_id, :project_id, :deleted_at], name: 'index_kqp_on_kq_id_p_id_deleted_at', where: 'deleted_at IS NULL'
+    add_index :key_questions_projects, [:key_question_id, :project_id, :active],     name: 'index_kqp_on_kq_id_p_id_active'
+    add_index :key_questions_projects, [:extraction_forms_project_id, :key_question_id, :project_id, :deleted_at], name: 'index_kqp_on_ef_id_kq_id_p_id_deleted_at', where: 'deleted_at IS NULL'
+    add_index :key_questions_projects, [:extraction_forms_project_id, :key_question_id, :project_id, :active],     name: 'index_kqp_on_ef_id_kq_id_p_id_active'
   end
 end

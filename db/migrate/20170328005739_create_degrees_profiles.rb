@@ -11,8 +11,8 @@ class CreateDegreesProfiles < ActiveRecord::Migration[5.0]
 
     add_index :degrees_profiles, :deleted_at
     add_index :degrees_profiles, :active
-    add_index :degrees_profiles, [:degree_id, :profile_id],          unique: true, where: 'deleted_at IS NULL'
-    add_index :degrees_profiles, [:degree_id, :profile_id, :active], unique: true
+    add_index :degrees_profiles, [:degree_id, :profile_id, :deleted_at], name: 'index_dp_on_d_id_p_id_deleted_at_uniq', unique: true, where: 'deleted_at IS NULL'
+    add_index :degrees_profiles, [:degree_id, :profile_id, :active],     name: 'index_dp_on_d_id_p_id_active_uniq',     unique: true
   end
 end
 

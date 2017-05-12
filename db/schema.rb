@@ -22,7 +22,7 @@ ActiveRecord::Schema.define(version: 20170510182614) do
     t.datetime "updated_at",      null: false
     t.index ["active"], name: "index_approvals_on_active", using: :btree
     t.index ["approvable_type", "approvable_id", "user_id", "active"], name: "index_approvals_on_type_id_user_id_active_uniq", unique: true, using: :btree
-    t.index ["approvable_type", "approvable_id", "user_id"], name: "index_approvals_on_type_id_user_id", unique: true, using: :btree
+    t.index ["approvable_type", "approvable_id", "user_id", "deleted_at"], name: "index_approvals_on_type_id_user_id_deleted_at_uniq", unique: true, using: :btree
     t.index ["approvable_type", "approvable_id"], name: "index_approvals_on_approvable_type_and_approvable_id", using: :btree
     t.index ["deleted_at"], name: "index_approvals_on_deleted_at", using: :btree
     t.index ["user_id"], name: "index_approvals_on_user_id", using: :btree
@@ -45,8 +45,8 @@ ActiveRecord::Schema.define(version: 20170510182614) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["active"], name: "index_degrees_profiles_on_active", using: :btree
-    t.index ["degree_id", "profile_id", "active"], name: "index_degrees_profiles_on_degree_id_and_profile_id_and_active", unique: true, using: :btree
-    t.index ["degree_id", "profile_id"], name: "index_degrees_profiles_on_degree_id_and_profile_id", unique: true, using: :btree
+    t.index ["degree_id", "profile_id", "active"], name: "index_dp_on_d_id_p_id_active_uniq", unique: true, using: :btree
+    t.index ["degree_id", "profile_id", "deleted_at"], name: "index_dp_on_d_id_p_id_deleted_at_uniq", unique: true, using: :btree
     t.index ["degree_id"], name: "index_degrees_profiles_on_degree_id", using: :btree
     t.index ["deleted_at"], name: "index_degrees_profiles_on_deleted_at", using: :btree
     t.index ["profile_id"], name: "index_degrees_profiles_on_profile_id", using: :btree
@@ -96,7 +96,7 @@ ActiveRecord::Schema.define(version: 20170510182614) do
     t.index ["active"], name: "index_extraction_forms_projects_on_active", using: :btree
     t.index ["deleted_at"], name: "index_extraction_forms_projects_on_deleted_at", using: :btree
     t.index ["extraction_form_id", "project_id", "active"], name: "index_efp_on_ef_id_p_id_active", using: :btree
-    t.index ["extraction_form_id", "project_id"], name: "index_efp_on_ef_id_p_id", using: :btree
+    t.index ["extraction_form_id", "project_id", "deleted_at"], name: "index_efp_on_ef_id_p_id_deleted_at", using: :btree
     t.index ["extraction_form_id"], name: "index_extraction_forms_projects_on_extraction_form_id", using: :btree
     t.index ["project_id"], name: "index_extraction_forms_projects_on_project_id", using: :btree
   end
@@ -111,7 +111,7 @@ ActiveRecord::Schema.define(version: 20170510182614) do
     t.index ["active"], name: "index_extraction_forms_projects_sections_on_active", using: :btree
     t.index ["deleted_at"], name: "index_extraction_forms_projects_sections_on_deleted_at", using: :btree
     t.index ["extraction_forms_project_id", "section_id", "active"], name: "index_efps_on_ef_id_s_id_active", using: :btree
-    t.index ["extraction_forms_project_id", "section_id"], name: "index_efps_on_ef_id_s_id", using: :btree
+    t.index ["extraction_forms_project_id", "section_id", "deleted_at"], name: "index_efps_on_ef_id_s_id_deleted_at", using: :btree
     t.index ["extraction_forms_project_id"], name: "index_efps_on_efp_id", using: :btree
     t.index ["section_id"], name: "index_efps_on_s_id", using: :btree
   end
@@ -144,10 +144,10 @@ ActiveRecord::Schema.define(version: 20170510182614) do
     t.index ["active"], name: "index_key_questions_projects_on_active", using: :btree
     t.index ["deleted_at"], name: "index_key_questions_projects_on_deleted_at", using: :btree
     t.index ["extraction_forms_project_id", "key_question_id", "project_id", "active"], name: "index_kqp_on_ef_id_kq_id_p_id_active", using: :btree
-    t.index ["extraction_forms_project_id", "key_question_id", "project_id"], name: "index_kqp_on_ef_id_kq_id_p_id", using: :btree
+    t.index ["extraction_forms_project_id", "key_question_id", "project_id", "deleted_at"], name: "index_kqp_on_ef_id_kq_id_p_id_deleted_at", using: :btree
     t.index ["extraction_forms_project_id"], name: "index_key_questions_projects_on_extraction_forms_project_id", using: :btree
     t.index ["key_question_id", "project_id", "active"], name: "index_kqp_on_kq_id_p_id_active", using: :btree
-    t.index ["key_question_id", "project_id"], name: "index_kqp_on_kq_id_p_id", using: :btree
+    t.index ["key_question_id", "project_id", "deleted_at"], name: "index_kqp_on_kq_id_p_id_deleted_at", using: :btree
     t.index ["key_question_id"], name: "index_key_questions_projects_on_key_question_id", using: :btree
     t.index ["project_id"], name: "index_key_questions_projects_on_project_id", using: :btree
   end
@@ -227,7 +227,7 @@ ActiveRecord::Schema.define(version: 20170510182614) do
     t.index ["active"], name: "index_publishings_on_active", using: :btree
     t.index ["deleted_at"], name: "index_publishings_on_deleted_at", using: :btree
     t.index ["publishable_type", "publishable_id", "user_id", "active"], name: "index_publishings_on_type_id_user_id_active_uniq", unique: true, using: :btree
-    t.index ["publishable_type", "publishable_id", "user_id"], name: "index_publishings_on_type_id_user_id", unique: true, using: :btree
+    t.index ["publishable_type", "publishable_id", "user_id", "deleted_at"], name: "index_publishings_on_type_id_user_id_deleted_at_uniq", unique: true, using: :btree
     t.index ["publishable_type", "publishable_id"], name: "index_publishings_on_publishable_type_and_publishable_id", using: :btree
     t.index ["user_id"], name: "index_publishings_on_user_id", using: :btree
   end
@@ -253,7 +253,7 @@ ActiveRecord::Schema.define(version: 20170510182614) do
     t.index ["active"], name: "index_suggestions_on_active", using: :btree
     t.index ["deleted_at"], name: "index_suggestions_on_deleted_at", using: :btree
     t.index ["suggestable_type", "suggestable_id", "user_id", "active"], name: "index_suggestions_on_type_id_user_id_active_uniq", unique: true, using: :btree
-    t.index ["suggestable_type", "suggestable_id", "user_id"], name: "index_suggestions_on_type_id_user_id", unique: true, using: :btree
+    t.index ["suggestable_type", "suggestable_id", "user_id", "deleted_at"], name: "index_suggestions_on_type_id_user_id_deleted_at_uniq", unique: true, using: :btree
     t.index ["suggestable_type", "suggestable_id"], name: "index_suggestions_on_suggestable_type_and_suggestable_id", using: :btree
     t.index ["user_id"], name: "index_suggestions_on_user_id", using: :btree
   end

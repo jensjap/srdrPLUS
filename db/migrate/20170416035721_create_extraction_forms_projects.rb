@@ -11,7 +11,7 @@ class CreateExtractionFormsProjects < ActiveRecord::Migration[5.0]
 
     add_index :extraction_forms_projects, :deleted_at
     add_index :extraction_forms_projects, :active
-    add_index :extraction_forms_projects, [:extraction_form_id, :project_id],          name: 'index_efp_on_ef_id_p_id', where: 'deleted_at IS NULL'
-    add_index :extraction_forms_projects, [:extraction_form_id, :project_id, :active], name: 'index_efp_on_ef_id_p_id_active'
+    add_index :extraction_forms_projects, [:extraction_form_id, :project_id, :deleted_at], name: 'index_efp_on_ef_id_p_id_deleted_at', where: 'deleted_at IS NULL'
+    add_index :extraction_forms_projects, [:extraction_form_id, :project_id, :active],     name: 'index_efp_on_ef_id_p_id_active'
   end
 end
