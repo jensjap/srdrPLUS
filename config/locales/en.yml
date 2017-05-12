@@ -31,7 +31,8 @@ en:
   projects:
     edit:
       information:
-        field_set: 'Project Information'
+        project_information_field_set: 'Project Information'
+        project_control_field_set: 'Project Control'
       manage_key_questions:
         object_name: 'Key Question'
         field_set: 'Key Question Information'

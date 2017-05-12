@@ -1,6 +1,7 @@
 .form-inputs
+
   fieldset.project-information-fieldset
-    legend = t('.field_set')
+    legend = t('.project_information_field_set')
     = f.input :name, required: true, hint: 'Name can\'t be blank'
     = f.input :description
     = f.input :attribution
@@ -9,3 +10,7 @@
     = f.input :doi
     = f.input :notes
     = f.input :funding_source
+
+  fieldset.project-control
+    legend = t('.project_control_field_set')
+    = link_to 'Destroy', @project, method: :delete, class: 'button alert', data: { confirm: t('confirm') }
