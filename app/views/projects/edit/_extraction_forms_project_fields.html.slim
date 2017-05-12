@@ -6,6 +6,6 @@
         i.fi-minus-circle
         =< t('.remove')
     - unless ef_f.object.new_record?
-      = link_to 'Modify ' + t('.object_name'), edit_extraction_forms_project_path(f.object)
+      = link_to 'Build ' + t('.object_name'), edit_extraction_forms_project_path(f.object)
     = ef_f.input :name, required: true, hint: 'Name can\'t be blank', placeholder: 'Extraction Form Name'
 
