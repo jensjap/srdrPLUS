@@ -1,9 +1,9 @@
-ul#vertical-tabs.tabs.vertical data-deep-link='true' data-deep-link-smudge='true' data-deep-link-smudge-delay='600' data-tabs=''
-  li.tabs-title.is-active
-    = link_to 'Section 1', '#panel-tab-1', title: 'Section 1'
-  - (2..5).each do |n|
+ul#vertical-tabs.tabs.vertical data-deep-link='true' data-deep-link-smudge='true' data-deep-link-smudge-delay='600' data-update-history='true' data-tabs=''
+
+  = f.simple_fields_for(:extraction_forms_projects_sections) do |efps_f|
     li.tabs-title
-      = link_to "Section #{ n }", "#panel-tab-#{ n }", title: "Section #{ n }"
+      - section_name = efps_f.object.section.name
+      = link_to section_name, '#panel-tab-' + efps_f.object.id.to_s, title: 'Section ' + section_name
 
 .float-right
   = link_to_add_association f, :extraction_forms_projects_sections,

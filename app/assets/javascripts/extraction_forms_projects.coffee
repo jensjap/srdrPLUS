@@ -5,9 +5,13 @@ document.addEventListener 'turbolinks:load', ->
 
   do ->
 
-    $( 'ul#vertical-tabs' )
-      .on 'cocoon:after-insert', ( e, new_section ) ->
-        alert new_section
+
+
+#    $( 'ul#vertical-tabs' )
+#      .on 'cocoon:after-insert', ( e, new_section ) ->
+#        console.log 'New section added'
+#        Foundation.reInit 'tabs'
+
 
 #    $( '.add-section a.add_fields' ).
 #      data 'association-insertion-node', ( link ) ->

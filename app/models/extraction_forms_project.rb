@@ -13,6 +13,7 @@ class ExtractionFormsProject < ApplicationRecord
   has_many :key_questions, through: :key_questions_projects, dependent: :destroy
 
   accepts_nested_attributes_for :extraction_form, reject_if: :extraction_form_name_exists?
+  accepts_nested_attributes_for :extraction_forms_projects_sections, reject_if: :all_blank, allow_destroy: true
 
   private
 

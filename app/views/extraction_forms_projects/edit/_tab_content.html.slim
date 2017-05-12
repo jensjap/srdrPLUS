@@ -1,9 +1,8 @@
 .tabs-content.vertical data-tabs-content='vertical-tabs'
-  #panel-tab-1.tabs-panel.is-active
-    | 1
-  - (2..10).each do |n|
-    .tabs-panel id="panel-tab-#{ n }"
-      = n
 
-  .form-actions
-    = f.button :submit, 'Save changes'
+  = f.simple_fields_for(:extraction_forms_projects_sections) do |efps_f|
+    .tabs-panel id="panel-tab-#{ efps_f.object.id.to_s }"
+      == render 'extraction_forms_projects_sections/form', f: efps_f
+
+  #panel-tab-new-section.tabs-panel
+    h2 You must save changes before this area becomes available.
