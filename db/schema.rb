@@ -75,29 +75,29 @@ ActiveRecord::Schema.define(version: 20170510182614) do
   end
 
   create_table "extraction_forms", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer  "extraction_form_type_id"
     t.string   "name"
-    t.boolean  "private"
     t.datetime "deleted_at"
-    t.datetime "created_at",              null: false
-    t.datetime "updated_at",              null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["deleted_at"], name: "index_extraction_forms_on_deleted_at", using: :btree
-    t.index ["extraction_form_type_id"], name: "index_extraction_forms_on_extraction_form_type_id", using: :btree
     t.index ["name"], name: "index_extraction_forms_on_name", unique: true, using: :btree
   end
 
   create_table "extraction_forms_projects", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "extraction_form_id"
+    t.integer  "extraction_form_type_id"
     t.integer  "project_id"
+    t.boolean  "public",                  default: false
     t.datetime "deleted_at"
     t.boolean  "active"
-    t.datetime "created_at",         null: false
-    t.datetime "updated_at",         null: false
+    t.datetime "created_at",                              null: false
+    t.datetime "updated_at",                              null: false
     t.index ["active"], name: "index_extraction_forms_projects_on_active", using: :btree
     t.index ["deleted_at"], name: "index_extraction_forms_projects_on_deleted_at", using: :btree
     t.index ["extraction_form_id", "project_id", "active"], name: "index_efp_on_ef_id_p_id_active", using: :btree
     t.index ["extraction_form_id", "project_id", "deleted_at"], name: "index_efp_on_ef_id_p_id_deleted_at", using: :btree
     t.index ["extraction_form_id"], name: "index_extraction_forms_projects_on_extraction_form_id", using: :btree
+    t.index ["extraction_form_type_id"], name: "index_extraction_forms_projects_on_extraction_form_type_id", using: :btree
     t.index ["project_id"], name: "index_extraction_forms_projects_on_project_id", using: :btree
   end
 
@@ -311,7 +311,7 @@ ActiveRecord::Schema.define(version: 20170510182614) do
   add_foreign_key "degrees_profiles", "degrees"
   add_foreign_key "degrees_profiles", "profiles"
   add_foreign_key "dispatches", "users"
-  add_foreign_key "extraction_forms", "extraction_form_types"
+  add_foreign_key "extraction_forms_projects", "extraction_form_types"
   add_foreign_key "extraction_forms_projects", "extraction_forms"
   add_foreign_key "extraction_forms_projects", "projects"
   add_foreign_key "extraction_forms_projects_sections", "extraction_forms_projects"

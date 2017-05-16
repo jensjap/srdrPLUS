@@ -3,9 +3,11 @@
 one:
   extraction_form: one
   project: one
+  public: false
   active: true
 
 two:
   extraction_form: two
   project: two
+  public: false
   active: true

@@ -170,8 +170,22 @@ module SeedDataExtended
       @kq1 = KeyQuestion.create(name: 'kq1')
       @kq2 = KeyQuestion.create(name: 'kq2')
 
-      # Associate with first project.
-      Project.first.key_questions << [@kq1, @kq2]
+      # Extraction Form Types.
+      @ef_type1 = ExtractionFormType.create(name: 'Standard')
+      @ef_type2 = ExtractionFormType.create(name: 'Diagnostic Test')
+
+      # Extraction Forms.
+      @ef1 = ExtractionForm.create(name: 'ef1')
+      @ef2 = ExtractionForm.create(name: 'ef2')
+
+      # Associate KQ's and EF's with first project.
+      @project = Project.order(updated_at: :desc).first
+      @project.key_questions << [@kq1, @kq2]
+      @project.extraction_forms << [@ef1, @ef2]
+
+      # Set extraction form types.
+      @project.extraction_forms_projects.where(extraction_form: @ef1).first.extraction_form_type = @ef_type1
+      @project.extraction_forms_projects.where(extraction_form: @ef2).first.extraction_form_type = @ef_type2
 
       # Turn on paper_trail.
       PaperTrail.enabled = true

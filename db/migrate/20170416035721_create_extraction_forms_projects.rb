@@ -2,7 +2,9 @@ class CreateExtractionFormsProjects < ActiveRecord::Migration[5.0]
   def change
     create_table :extraction_forms_projects do |t|
       t.references :extraction_form, foreign_key: true
+      t.references :extraction_form_type, foreign_key: true
       t.references :project, foreign_key: true
+      t.boolean :public, default: false
       t.datetime :deleted_at
       t.boolean :active
 
