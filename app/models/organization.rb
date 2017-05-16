@@ -1,6 +1,6 @@
 class Organization < ApplicationRecord
-  include SharedSuggestableMethods
   include SharedQueryableMethods
+  include SharedSuggestableMethods
 
   acts_as_paranoid
   has_paper_trail
@@ -13,4 +13,3 @@ class Organization < ApplicationRecord
 
   validates :name, presence: true, uniqueness: { case_sensitive: false }
 end
-

@@ -25,12 +25,5 @@ class ExtractionFormsProject < ApplicationRecord
     rescue ActiveRecord::RecordNotUnique
       retry
     end
-#    if _extraction_form = ExtractionForm.find_by(name: attributes[:name])
-#      # Associate this ExtractionFormsProject with the existing ExtractionForm.
-#      self.extraction_form = _extraction_form
-#      return true
-#    else
-#      return false
-#    end
   end
 end

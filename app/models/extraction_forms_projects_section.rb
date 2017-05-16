@@ -1,4 +1,5 @@
 class ExtractionFormsProjectsSection < ApplicationRecord
+  include SharedProcessTokenMethods
   include SharedParanoiaMethods
 
   acts_as_paranoid column: :active, sentinel_value: true
@@ -12,6 +13,11 @@ class ExtractionFormsProjectsSection < ApplicationRecord
 
   accepts_nested_attributes_for :section, reject_if: :section_name_exists?
 
+  def section_id=(token)
+    process_token(token, :section)
+    super
+  end
+
   private
 
   def section_name_exists?(attributes)
@@ -20,12 +26,5 @@ class ExtractionFormsProjectsSection < ApplicationRecord
     rescue ActiveRecord::RecordNotUnique
       retry
     end
-#    if _section = Section.find_by(name: attributes[:name])
-#      # Associate this ExtractionFormsProject with the existing ExtractionForm.
-#      self.section = _section
-#      return true
-#    else
-#      return false
-#    end
   end
 end

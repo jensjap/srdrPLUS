@@ -1,4 +1,6 @@
 class Profile < ApplicationRecord
+  include SharedProcessTokenMethods
+
   acts_as_paranoid
   has_paper_trail on: [:update, :destroy]
 
@@ -40,12 +42,6 @@ class Profile < ApplicationRecord
   end
 
   private
-
-  def process_token(token, resource_type)
-    ActiveRecord::Base.transaction do
-      token.gsub!(/<<<(.+?)>>>/) { resource_type.to_s.capitalize.constantize.create!(name: $1).id }
-    end
-  end
 
 #  def restore_relationships
 #    # Iterate through all associated relationship records that were deleted when we called #destroy

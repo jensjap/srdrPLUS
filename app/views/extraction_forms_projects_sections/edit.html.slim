@@ -1,0 +1,8 @@
+.column.row
+  h2 Edit Section: #{ @extraction_forms_projects_section.section.name }
+
+.row
+  == render 'form'
+
+.column.row
+  = link_to 'Back', edit_extraction_forms_project_path(@extraction_forms_projects_section.extraction_forms_project)

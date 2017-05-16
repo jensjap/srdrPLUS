@@ -5,7 +5,7 @@ Rails.application.routes.draw do
 
   resources :projects, concerns: :paginatable, shallow: true do
     resources :extraction_forms_projects, only: [:edit, :update] do
-      resources :extraction_forms_projects_sections, only: [:destroy]
+      resources :extraction_forms_projects_sections, only: [:edit, :update, :destroy]
     end
     collection do
       get 'filter'
@@ -33,6 +33,7 @@ Rails.application.routes.draw do
   resource  :profile, only: [:show, :edit, :update]
   resources :degrees, only: [:index]
   resources :organizations, only: [:index]
+  resources :sections, only: [:index]
 
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end

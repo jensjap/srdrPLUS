@@ -21,7 +21,8 @@
 
 en:
   confirm: 'Are you sure?'
-  removed: 'Successfully removed.'
+  removed: 'Successfully removed'
+  save: 'Save changes'
   success: 'Success!'
   users:
     registrations:

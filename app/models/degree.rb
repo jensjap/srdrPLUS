@@ -1,6 +1,6 @@
 class Degree < ApplicationRecord
-  include SharedSuggestableMethods
   include SharedQueryableMethods
+  include SharedSuggestableMethods
 
   acts_as_paranoid
   has_paper_trail

@@ -1,4 +1,17 @@
-h1 hello world
-= f.object
-= f.object.id
-= link_to 'Destroy', f.object, method: :delete, data: { confirm: t('confirm') }
+.column.row
+
+  = simple_form_for(@extraction_forms_projects_section, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
+
+    .alert.callout data-abide-error='' style='display: none;'
+      p
+        i.fi-alert
+        |  There are some errors in your form.
+
+    .column.row
+      fieldset.fieldset
+        legend Section Information
+        .column.row
+          = f.association :section, include_blank: false
+
+    .form-actions
+      = f.button :submit, t('save')
