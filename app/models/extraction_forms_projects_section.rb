@@ -7,6 +7,9 @@ class ExtractionFormsProjectsSection < ApplicationRecord
   belongs_to :extraction_forms_project, inverse_of: :extraction_forms_projects_sections
   belongs_to :section, inverse_of: :extraction_forms_projects_sections
 
+  has_many :extraction_forms_projects_sections_questions, dependent: :destroy, inverse_of: :extraction_forms_projects_section
+  has_many :questions, through: :extraction_forms_projects_sections_questions, dependent: :destroy
+
   accepts_nested_attributes_for :section, reject_if: :section_name_exists?
 
   private
