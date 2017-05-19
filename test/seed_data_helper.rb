@@ -187,6 +187,19 @@ module SeedDataExtended
       @project.extraction_forms_projects.where(extraction_form: @ef1).first.extraction_form_type = @ef_type1
       @project.extraction_forms_projects.where(extraction_form: @ef2).first.extraction_form_type = @ef_type2
 
+      # Seed QuestionType.
+      QuestionType.create(
+        [
+          { name: 'Text' },
+          { name: 'Checkbox' },
+          { name: 'Dropdown' },
+          { name: 'Radio' },
+          { name: 'Matrix Checkbox' },
+          { name: 'Matrix Dropdown' },
+          { name: 'Matrix Radio' }
+        ]
+      )
+
       # Turn on paper_trail.
       PaperTrail.enabled = true
     end

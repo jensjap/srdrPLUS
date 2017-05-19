@@ -1,17 +1,23 @@
-ul#vertical-tabs.tabs.vertical data-deep-link='true' data-deep-link-smudge='true' data-deep-link-smudge-delay='600' data-update-history='true' data-tabs=''
+= simple_form_for(@extraction_forms_project, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
 
-  = f.simple_fields_for(:extraction_forms_projects_sections) do |efps_f|
-    li.tabs-title
-      - section_name = efps_f.object.section.name
-      = link_to section_name, '#panel-tab-' + efps_f.object.id.to_s, title: 'Section ' + section_name
+  ul#vertical-tabs.tabs.vertical data-deep-link='true' data-deep-link-smudge='true' data-deep-link-smudge-delay='600' data-update-history='true' data-tabs=''
 
-.float-right
-  = link_to_add_association f, :extraction_forms_projects_sections,
-        html_options = { partial: 'extraction_forms_projects/edit/extraction_forms_projects_section_fields',
-                         data: { \
-                             association_insertion_node: 'ul#vertical-tabs',
-                             association_insertion_method: 'append' \
-                         } \
-        } do
-    i.fi-plus
-    |  Add Section
+    = f.simple_fields_for(:extraction_forms_projects_sections) do |efps_f|
+
+      li.tabs-title
+        - section_name = efps_f.object.section.name
+        = link_to section_name, '#panel-tab-' + efps_f.object.id.to_s, title: 'Section ' + section_name
+
+  .float-right
+    = link_to_add_association f, :extraction_forms_projects_sections,
+          html_options = { partial: 'extraction_forms_projects/edit/extraction_forms_projects_section_fields',
+                           data: { \
+                               association_insertion_node: 'ul#vertical-tabs',
+                               association_insertion_method: 'append' \
+                           } \
+          } do
+      i.fi-plus
+      |  Add Section
+
+  .form-actions.hide
+    = f.button :submit, t('save')

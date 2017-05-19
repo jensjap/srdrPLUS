@@ -7,6 +7,31 @@ document.addEventListener 'turbolinks:load', ->
 
 
 
+
+    $( '#questions' ).on 'cocoon:after-insert', ( e ) ->
+      e.preventDefault()
+      $( this ).find( 'form' ).find( 'input[type=submit]' ).removeClass( 'hide' )
+      return
+
+    $( '#questions' ).on 'cocoon:after-remove', ( e, item ) ->
+      e.preventDefault()
+      if $( '.nested-fields.add-question' ).length == 0
+        $( this ).find( 'form' ).find( 'input[type=submit]' ).addClass( 'hide' )
+      return
+
+#
+#    $( 'document' )
+#      .on 'cocoon:after-insert', ( e, item ) ->
+#        if newQuestion
+#          $('.submit-new-question').removeClass('hide')
+#
+#      .on 'cocoon:after-remove', ( e, item ) ->
+#        if newQuestion
+#          $('.form-actions').removeClass('hide')
+#        else
+#          $('.form-actions').addClass('hide')
+
+
 #    $( 'ul#vertical-tabs' )
 #      .on 'cocoon:after-insert', ( e, new_section ) ->
 #        console.log 'New section added'

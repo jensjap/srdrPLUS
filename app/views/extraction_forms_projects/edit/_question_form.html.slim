@@ -1,0 +1,8 @@
+= simple_form_for(efps, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
+
+  .column.row
+    = link_to_add_association 'Add Question', f, :questions,
+          html_options = { partial: 'extraction_forms_projects/edit/question_fields', class: 'float-right' }
+
+  .form-actions
+    = f.button :submit, t('save'), class: 'hide'

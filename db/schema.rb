@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170516172220) do
+ActiveRecord::Schema.define(version: 20170516162109) do
 
   create_table "approvals", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "approvable_type"
@@ -114,21 +114,6 @@ ActiveRecord::Schema.define(version: 20170516172220) do
     t.index ["extraction_forms_project_id", "section_id", "deleted_at"], name: "index_efps_on_ef_id_s_id_deleted_at", using: :btree
     t.index ["extraction_forms_project_id"], name: "index_efps_on_efp_id", using: :btree
     t.index ["section_id"], name: "index_efps_on_s_id", using: :btree
-  end
-
-  create_table "extraction_forms_projects_sections_questions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer  "extraction_forms_projects_section_id"
-    t.integer  "question_id"
-    t.datetime "deleted_at"
-    t.boolean  "active"
-    t.datetime "created_at",                           null: false
-    t.datetime "updated_at",                           null: false
-    t.index ["active"], name: "index_extraction_forms_projects_sections_questions_on_active", using: :btree
-    t.index ["deleted_at"], name: "index_extraction_forms_projects_sections_questions_on_deleted_at", using: :btree
-    t.index ["extraction_forms_projects_section_id", "question_id", "active"], name: "index_efpsq_on_efps_id_q_id_active", using: :btree
-    t.index ["extraction_forms_projects_section_id", "question_id", "deleted_at"], name: "index_efpsq_on_efps_id_q_id_deleted_at", using: :btree
-    t.index ["extraction_forms_projects_section_id"], name: "index_efpsq_on_efps_id", using: :btree
-    t.index ["question_id"], name: "index_efpsq_on_q_id", using: :btree
   end
 
   create_table "frequencies", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -247,13 +232,25 @@ ActiveRecord::Schema.define(version: 20170516172220) do
     t.index ["user_id"], name: "index_publishings_on_user_id", using: :btree
   end
 
-  create_table "questions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "question_types", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "name"
-    t.text     "description", limit: 65535
     t.datetime "deleted_at"
-    t.datetime "created_at",                null: false
-    t.datetime "updated_at",                null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["deleted_at"], name: "index_question_types_on_deleted_at", using: :btree
+  end
+
+  create_table "questions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "question_type_id"
+    t.integer  "extraction_forms_projects_section_id"
+    t.string   "name"
+    t.text     "description",                          limit: 65535
+    t.datetime "deleted_at"
+    t.datetime "created_at",                                         null: false
+    t.datetime "updated_at",                                         null: false
     t.index ["deleted_at"], name: "index_questions_on_deleted_at", using: :btree
+    t.index ["extraction_forms_projects_section_id"], name: "index_questions_on_extraction_forms_projects_section_id", using: :btree
+    t.index ["question_type_id"], name: "index_questions_on_question_type_id", using: :btree
   end
 
   create_table "sections", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -340,8 +337,6 @@ ActiveRecord::Schema.define(version: 20170516172220) do
   add_foreign_key "extraction_forms_projects", "projects"
   add_foreign_key "extraction_forms_projects_sections", "extraction_forms_projects"
   add_foreign_key "extraction_forms_projects_sections", "sections"
-  add_foreign_key "extraction_forms_projects_sections_questions", "extraction_forms_projects_sections"
-  add_foreign_key "extraction_forms_projects_sections_questions", "questions"
   add_foreign_key "key_questions_projects", "extraction_forms_projects"
   add_foreign_key "key_questions_projects", "key_questions"
   add_foreign_key "key_questions_projects", "projects"
@@ -350,5 +345,7 @@ ActiveRecord::Schema.define(version: 20170516172220) do
   add_foreign_key "profiles", "organizations"
   add_foreign_key "profiles", "users"
   add_foreign_key "publishings", "users"
+  add_foreign_key "questions", "extraction_forms_projects_sections"
+  add_foreign_key "questions", "question_types"
   add_foreign_key "suggestions", "users"
 end

@@ -4,8 +4,8 @@ class Question < ApplicationRecord
   acts_as_paranoid
   has_paper_trail
 
-  has_many :extraction_forms_projects_sections_questions, dependent: :destroy, inverse_of: :question
-  has_many :extraction_forms_projects_sections, through: :extraction_forms_projects_sections_questions, dependent: :destroy
+  belongs_to :extraction_forms_projects_section, inverse_of: :questions
+  belongs_to :question_type, inverse_of: :questions
 
-  validates :name, presence: true, uniqueness: { case_sensitive: false }
+  validates :name, presence: true
 end

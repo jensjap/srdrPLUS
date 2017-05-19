@@ -1,6 +1,6 @@
 .tabs-content.vertical data-tabs-content='vertical-tabs'
 
-  = f.simple_fields_for(:extraction_forms_projects_sections) do |efps_f|
+  - @extraction_forms_project.extraction_forms_projects_sections.each do |efps|
 
-    .tabs-panel id="panel-tab-#{ efps_f.object.id.to_s }"
-      == render 'extraction_forms_projects/edit/extraction_forms_projects_section_form', f: efps_f
+    .tabs-panel id="panel-tab-#{ efps.id.to_s }"
+      == render 'extraction_forms_projects/edit/extraction_forms_projects_section', efps: efps

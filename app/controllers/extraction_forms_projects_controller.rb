@@ -27,7 +27,7 @@ class ExtractionFormsProjectsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def extraction_forms_project_params
-      params.require(:extraction_forms_project).permit(extraction_forms_projects_sections_attributes: [:id, :_destroy, section_attributes: [:name]]
-                                                      )
+      params.require(:extraction_forms_project).permit(extraction_forms_projects_sections_attributes: [:id, :_destroy,
+                                                                                                       section_attributes: [:name]])
     end
 end

@@ -1,0 +1,39 @@
+.column.row
+  fieldset.fieldset
+    legend Section Control
+
+    ul.extraction-form-controls
+      li
+        = link_to 'Change Section Name', edit_extraction_forms_projects_section_path(efps), class: 'small button'
+      li
+        = link_to 'Remove Section', efps, method: :delete, data: { confirm: t('confirm') }, class: 'small alert button'
+
+.column.row
+  fieldset.fieldset
+    legend Extraction Form Questions
+
+    table
+
+      thead
+        tr
+          th Position
+          th Dependency
+          th Name
+          th Description
+          th Type
+          th
+          th
+
+      tbody
+        - efps.questions.each do |q|
+          tr
+            td #
+            td 1
+            td = q.name
+            td = q.description
+            td = q.question_type.name
+            td = link_to 'Edit', edit_question_path(q)
+            td = link_to 'Remove', q, method: :delete, data: { confirm: t('confirm') }
+
+.column.row#questions
+  == render 'extraction_forms_projects/edit/question_form', efps: efps

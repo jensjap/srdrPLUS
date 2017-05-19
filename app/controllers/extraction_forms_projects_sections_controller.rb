@@ -10,7 +10,9 @@ class ExtractionFormsProjectsSectionsController < ApplicationController
   def update
     respond_to do |format|
       if @extraction_forms_projects_section.update(extraction_forms_projects_section_params)
-        format.html { redirect_to edit_extraction_forms_project_path(@extraction_forms_projects_section.extraction_forms_project), notice: t('success') }
+        format.html { redirect_to edit_extraction_forms_project_path(@extraction_forms_projects_section.extraction_forms_project,
+                                                                     anchor: "panel-tab-#{ @extraction_forms_projects_section.id }"),
+                      notice: t('success') }
         format.json { render :show, status: :ok, location: @extraction_forms_projects_section }
       else
         format.html { render :edit }
@@ -35,6 +37,8 @@ class ExtractionFormsProjectsSectionsController < ApplicationController
   end
 
   def extraction_forms_projects_section_params
-    params.require(:extraction_forms_projects_section).permit(:section_id)
+    params.require(:extraction_forms_projects_section).permit(:section_id,
+                                                              questions_attributes: [:id, :_destroy, :name, :description, :question_type_id]
+                                                       )
   end
 end

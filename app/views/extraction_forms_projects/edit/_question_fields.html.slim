@@ -1,0 +1,15 @@
+.nested-fields.add-question
+
+  .form-inputs
+
+    .row
+      .column.small-4
+        = f.association :question_type, include_blank: false
+      .column.small-8
+        = f.input :name, required: true, hint: 'Name can\'t be blank'
+
+    .row
+      .column.small-12
+        = f.input :description, placeholder: 'Optional instructions'
+
+  = link_to_remove_association 'remove question', f
