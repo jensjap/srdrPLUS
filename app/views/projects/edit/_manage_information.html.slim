@@ -10,7 +10,3 @@
     = f.input :doi, label: 'Document Object ID'
     = f.input :notes
     = f.input :funding_source
-
-  fieldset.project-control
-    legend = t('.project_control_field_set')
-    = link_to 'Destroy', @project, method: :delete, class: 'button alert', data: { confirm: t('confirm') }
