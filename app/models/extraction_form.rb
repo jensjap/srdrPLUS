@@ -7,6 +7,8 @@ class ExtractionForm < ApplicationRecord
 
   after_create :record_suggestor
 
+  has_one :suggestion, as: :suggestable, dependent: :destroy
+
   has_many :extraction_forms_projects, inverse_of: :extraction_form, dependent: :destroy
   has_many :projects, through: :extraction_forms_projects, dependent: :destroy
 
