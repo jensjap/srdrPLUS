@@ -6,6 +6,25 @@
 
   fieldset.key-question-fieldset
     legend = t('.field_set')
+
+    table
+
+      thead
+        tr
+          th Name
+          th
+          th
+
+      tbody
+        - @project.key_questions_projects.each do |kqp|
+          tr
+            td = kqp.key_question.name
+            td = link_to 'Edit', edit_key_questions_project_path(kqp)
+            td = link_to 'Remove', kqp, method: :delete, data: { confirm: t('confirm') }
+
+.column.row#key_questions
+  == render 'projects/edit/key_question_form', f: f
+
     = f.simple_fields_for(:key_questions_projects) do |kqp_f|
       == render 'projects/edit/key_questions_project_fields', f: kqp_f
 

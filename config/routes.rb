@@ -9,6 +9,8 @@ Rails.application.routes.draw do
         resources :questions, only: [:edit, :destroy]
       end
     end
+    resources :key_questions_projects, only: [:edit, :update, :destroy]
+
     collection do
       get 'filter'
     end
