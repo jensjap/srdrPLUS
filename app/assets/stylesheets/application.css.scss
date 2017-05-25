@@ -151,6 +151,7 @@ ul.menu.vertical.submenu.is-dropdown-submenu {
 
   li {
     &.title {
+      font-weight: bold;
       color: $secondary-color;
       padding: 4px 0 0 4px;
     }
