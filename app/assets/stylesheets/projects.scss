@@ -43,8 +43,8 @@ mark {
   height: 30px;
 
   .toggle-sort-order {
-    float: left;
-    margin-left: -8px;
+    margin-top: -10px;
+    margin-left: -10px;
 
     button {
       margin: 18px 0 0 2px;
@@ -105,18 +105,23 @@ mark {
     }
   }
 
-  span.label.warning {
-    background-color: #56017b;
+  span.label {
+    background-color: #777;
   }
+}
+
+ul.legend {
+  list-style-type: none;
+  margin-left: 0;
+  //float: right;
+}
+
+div.pagination-centered {
+  float: right;
 }
 
 // Colored triangles on the project index page.
 ul {
-
-  &.legend {
-    list-style-type: none;
-    float: right;
-  }
 
   li {
     position: relative;
@@ -143,4 +148,3 @@ ul {
   }
 }
 // END Colored triangles on the project index page.
-

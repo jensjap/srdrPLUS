@@ -46,14 +46,14 @@
 // 1. Global
 // ---------
 
-$global-font-size: 100%;
+$global-font-size: 120%;
 $global-width: rem-calc(1200);
 $global-lineheight: 1.5;
 $foundation-palette: (
-  primary: #2199e8,
-  secondary: #777,
+  primary: #219be3, //#2199e8,
+  secondary: #ff9718, //#777,
   success: #3adb76,
-  warning: #ffae00,
+  warning: #f58700, //#ffae00,
   alert: #cc4b37,
 );
 $light-gray: #e6e6e6;
@@ -81,7 +81,7 @@ $color-primary-1: #73BFEC;
 $color-primary-2: #48ACE7;
 $color-primary-3: #088DDC;
 $color-primary-4: #04639C;
-$primary-color: $color-primary-0;
+//$primary-color: $color-primary-0;
 
 $color-secondary-0: #140124;  // Secondary Primary color */
 $color-secondary-1: #10021C;
@@ -94,7 +94,7 @@ $color-complement-1: #FFC174;
 $color-complement-2: #FFAB45;
 $color-complement-3: #FF8C00;
 $color-complement-4: #F58700;
-$secondary-color: $color-complement-0;
+//$secondary-color: $color-complement-0;
 
 // 2. Breakpoints
 // --------------

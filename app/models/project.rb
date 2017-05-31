@@ -5,7 +5,7 @@ class Project < ApplicationRecord
   acts_as_paranoid
   has_paper_trail
 
-  paginates_per 1000
+  paginates_per 8
 
 
   has_many :extraction_forms_projects, dependent: :destroy, inverse_of: :project
@@ -22,5 +22,9 @@ class Project < ApplicationRecord
 
   def duplicate_key_question?
     self.key_questions.having('count(*) > 1').group('name').count.present?
+  end
+
+  def duplicate_extraction_form?
+    self.extraction_forms.having('count(*) > 1').group('name').count.present?
   end
 end

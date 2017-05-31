@@ -12,5 +12,5 @@
     - unless ef_f.object.new_record?
       = link_to 'Build ' + t('.object_name'), edit_extraction_forms_project_path(f.object), class: 'small button'
 
-    = ef_f.input :name, required: true, hint: 'Name can\'t be blank', placeholder: 'Extraction Form Name'
+    = ef_f.input :name, label: 'Title', required: true, hint: 'Name can\'t be blank', placeholder: 'Extraction Form Name'
 

@@ -103,7 +103,7 @@ a.button.remove-link {
     float: left;
   }
 
-  a.button.warning {
+  a.button.secondary {
     float: right;
     margin-top: 1.1em;
   }
@@ -267,3 +267,10 @@ pre.debug_dump {
 }
 // END Scroll top-of-the-page button.
 
+.form-inputs label {
+  color: $color-primary-4;
+
+  &.required abbr {
+    color: $alert-color;
+  }
+}

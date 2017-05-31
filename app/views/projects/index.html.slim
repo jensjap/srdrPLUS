@@ -4,16 +4,20 @@
 .column.row
   .title-heading
     h2 My Projects
-    = link_to t('.create'), new_project_path, class: 'button warning'
+    = link_to new_project_path, class: 'button secondary' do
+      i.fi-plus
+      =< t('.create')
 
 /! Row for toggler => sort by updated at or created at.
 .row.project-controls
+
   .column.medium-8
     .project-filter.input-group.searchbar
       .input-group-button
         button.button.search
           i.fi-magnifying-glass
       = search_field_tag 'project-filter', nil, class: 'search-field', placeholder: 'Filter by Name or Description'
+
   .column.medium-4
     .toggle-sort-order.show-for-large
       button.button.updated-at.active   type='button' data-sort-order='updated-at' Updated at
@@ -25,10 +29,12 @@
 
 /! Row with pagination and legend.
 .row
-  .column.medium-7.pagination
-    = paginate @projects, remote: true
+
   .column.medium-5
     = render 'projects/index/legend'
+
+  .column.medium-7.pagination
+    = paginate @projects, remote: true
 
 br
 

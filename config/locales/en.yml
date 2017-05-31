@@ -34,20 +34,18 @@ en:
       edit: 'Edit Profile'
   projects:
     edit:
-      information:
-        project_information_field_set: 'Project Information'
-        project_control_field_set: 'Project Control'
+      manage_information:
+        legend: 'Project Information'
       manage_key_questions:
         object_name: 'Key Question'
-        field_set: 'Key Question Information'
+        legend: 'Key Question Information'
       manage_extraction_forms:
         object_name: 'Extraction Form'
-        field_set: 'Extraction Form Information'
+        legend: 'Extraction Form Information'
       extraction_forms_project_fields:
         object_name: 'Extraction Form'
       key_questions_project_fields:
         remove: 'Remove'
-        new: 'New Key Question'
         confirm: 'Are you sure you want to remove this key questions?'
     index:
       create: 'Create Project'
