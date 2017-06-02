@@ -6,5 +6,9 @@ ul#vertical-tabs.tabs.vertical data-deep-link='true' data-deep-link-smudge='true
   li.tabs-title
     = link_to 'Key Question(s)', '#panel-key-question', title: 'Manage Key Question(s)'
 
-  li.tabs-title
-    = link_to 'Extraction Form(s)', '#panel-extraction-form', title: 'Manage Extraction Form(s)'
+  - if @project.key_questions_projects.blank?
+    li.tabs-title
+      = link_to 'Extraction Form(s)', '#panel-extraction-form', title: 'Create Key Questions first', disabled: true, class: 'disabled'
+  - else
+    li.tabs-title
+      = link_to 'Extraction Form(s)', '#panel-extraction-form', title: 'Manage Extraction Form(s)'

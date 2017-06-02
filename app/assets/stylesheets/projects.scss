@@ -4,6 +4,11 @@
 
 @import 'settings';
 
+#vertical-tabs li a.disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
 fieldset a.add_fields {
   float: right;
 }
