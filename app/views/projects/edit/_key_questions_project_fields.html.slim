@@ -1,8 +1,0 @@
-= f.simple_fields_for(:key_question, f.object.build_key_question) do |kq_f|
-  .nested-fields.key-questions-project-fields
-    .links
-      = link_to_remove_association f, html_options = { class: 'button warning float-right remove-link',
-                                                       data: { confirm: t('.confirm') } } do
-        i.fi-minus-circle
-        =< t('.remove')
-    = kq_f.input :name, label: 'Question Text', required: true, hint: 'Name can\'t be blank'

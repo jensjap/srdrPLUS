@@ -1,0 +1,9 @@
+.column.row
+  h2 Edit Key Question: #{ @key_questions_project.key_question.name }
+
+.column.row
+  = simple_form_for(@key_questions_project, html: { 'abide': '', 'live-validate': true }) do |f|
+    == render 'form', f: f
+
+.column.row
+  = link_to 'Back', edit_project_path(@key_questions_project.project, anchor: 'panel-key-question')

@@ -20,7 +20,14 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
+  blank: 'Cannot be blank'
   confirm: 'Are you sure?'
+  extraction_forms_projects:
+    form:
+      save: 'Save Extraction Form'
+  key_questions_projects:
+    form:
+      save: 'Save Key Question'
   removed: 'Successfully removed'
   save: 'Save changes'
   success: 'Success!'

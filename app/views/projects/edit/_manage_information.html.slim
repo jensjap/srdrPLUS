@@ -1,8 +1,12 @@
-.form-inputs
+= simple_form_for(@project, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
+  = f.error_notification
 
-  fieldset.project-information-fieldset
-    legend = t('.legend')
+  .alert.callout data-abide-error='' style='display: none;'
+    p
+      i.fi-alert
+      '  Please correct the errors below.
 
+  .form-inputs
     = f.input :name, required: true, hint: 'Name can\'t be blank'
     = f.input :description, label: 'Topic Description'
     = f.input :attribution
@@ -12,5 +16,5 @@
     = f.input :notes
     = f.input :funding_source
 
-.form-actions
-  = f.button :submit, 'Save changes'
+  .form-actions
+    = f.button :submit, 'Save changes'

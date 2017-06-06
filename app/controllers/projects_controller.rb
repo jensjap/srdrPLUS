@@ -29,8 +29,6 @@ class ProjectsController < ApplicationController
 
   # GET /projects/1/edit
   def edit
-    #@project.key_questions.build if @project.key_questions.blank?
-    #@project.extraction_forms.build if @project.extraction_forms.blank?
   end
 
   # POST /projects
@@ -54,7 +52,8 @@ class ProjectsController < ApplicationController
   def update
     respond_to do |format|
       if @project.update(project_params)
-        format.html { redirect_to edit_project_path(@project), notice: t('success') }
+        format.html { redirect_to edit_project_path(@project, anchor: 'panel-information'),
+                      notice: t('success') }
         format.json { render :show, status: :ok, location: @project }
       else
         format.html { render :edit }
@@ -93,9 +92,9 @@ class ProjectsController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def project_params
       params.require(:project).permit(:name, :description, :attribution, :methodology_description,
-                                      :prospero, :doi, :notes, :funding_source,
-                                      extraction_forms_projects_attributes: [:id, :_destroy, extraction_form_attributes: [:name]],
-                                      key_questions_projects_attributes: [:id, :_destroy, key_question_attributes: [:name]]
+                                      :prospero, :doi, :notes, :funding_source
+                                      #extraction_forms_projects_attributes: [:id, :_destroy, extraction_form_attributes: [:name]]
+                                      #key_questions_projects_attributes: [:id, :_destroy, key_question_attributes: [:name]]
                                       )
     end
 end

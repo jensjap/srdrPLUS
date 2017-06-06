@@ -1,39 +1,34 @@
 - if @project.key_questions_projects.blank?
   p#warning.callout.alert
     ' You must create Key Questions before adding Extraction Forms.
-- else
-  - if @project.duplicate_extraction_form?
-    p#warning.callout.alert
-      ' Notice: Duplicate Extraction Form title detected. This is likely a mistake. Please correct below.
 
-  .form-inputs
+- if @project.duplicate_extraction_form?
+  p#warning.callout.alert
+    ' Notice: Duplicate Extraction Form title detected. This is likely a mistake. Please correct below.
 
-    fieldset.extraction-form-fieldset
-      legend = t('.legend')
+.form-inputs
 
-      table
+  table
 
-        thead
-          tr
-            th Extraction Form Title
-            th Date Created
-            th Date Updated
+    thead
+      tr
+        th Extraction Form Title
+        th Date Created
+        th Date Updated
 
-        tbody
-          - @project.extraction_forms_projects.each do |efp|
-            tr
-              td = efp.extraction_form.name
-              td = efp.created_at.in_time_zone(current_user.profile.time_zone).strftime('%b %-d, %Y - %l:%M %P')
-              td = efp.updated_at.in_time_zone(current_user.profile.time_zone).strftime('%b %-d, %Y - %l:%M %P')
-              td = link_to 'Build', edit_extraction_forms_project_path(efp)
-              td = link_to 'Rename', edit_extraction_forms_project_path(efp)
-              td = link_to 'Remove', efp, method: :delete, data: { confirm: t('confirm') }
-  .links
-    = link_to_add_association f, :extraction_forms_projects,
-          html_options = { class: 'button secondary float-right',
-                           partial: 'projects/edit/extraction_forms_project_fields' } do
-      i.fi-plus
-      =< t('.object_name')
+    tbody
+      - @project.extraction_forms_projects.each do |efp|
+        tr
+          td = efp.extraction_form.name
+          td = efp.created_at.in_time_zone(current_user.profile.time_zone).strftime('%b %-d, %Y - %l:%M %P')
+          td = efp.updated_at.in_time_zone(current_user.profile.time_zone).strftime('%b %-d, %Y - %l:%M %P')
+          td = link_to 'Build', build_extraction_forms_project_path(efp)
+          td = link_to 'Rename', edit_extraction_forms_project_path(efp)
+          td = link_to 'Remove', efp, method: :delete, data: { confirm: t('confirm') }
 
-  .form-actions
-    = f.button :submit, 'Save changes'
+fieldset.fieldset
+  legend Add Extraction Forms
+  = simple_form_for(@project.extraction_forms_projects.build,
+                    url: project_extraction_forms_projects_path(@project),
+                    html: { 'abide': '', 'live-validate': true }) do |f|
+    = render 'extraction_forms_projects/form', f: f

@@ -1,15 +1,7 @@
-= simple_form_for(@project, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
-  = f.error_notification
+.row
 
-  .alert.callout data-abide-error='' style='display: none;'
-    p
-      i.fi-alert
-      '  Please correct the errors below.
+  .column.medium-3
+    == render 'projects/edit/tab_links'
 
-  .row
-
-    .column.medium-3
-      == render 'projects/edit/tab_links'
-
-    .column.medium-9
-      == render 'projects/edit/tab_content', f: f
+  .column.medium-9
+    == render 'projects/edit/tab_content'

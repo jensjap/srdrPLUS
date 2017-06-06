@@ -85,17 +85,17 @@ document.addEventListener 'turbolinks:load', ->
         if $( el ).closest( 'fieldset' ).attr( 'class' ) == 'project-information-fieldset'
           $( '#panel-information-label' ).html( 'Project Information' )
 
-    change = ->
-      $("form input, form textarea").change( ->
-        $('a').click( ->
-          confirm('Unsaved changes. Are you sure?')
-        )
-      )
-
-    $(document).ready(change)
-
-    # the page has been parsed and changed to the new version and on DOMContentLoaded
-    $(document).on('page:change', change)
+#    change = ->
+#      $("form input, form textarea").change( ->
+#        $('a').click( ->
+#          confirm('Unsaved changes. Are you sure?')
+#        )
+#      )
+#
+#    $(document).ready(change)
+#
+#    # the page has been parsed and changed to the new version and on DOMContentLoaded
+#    $(document).on('page:change', change)
 
 #    # Set the field to display from the result set.
 #    formatResultSelection = (result, container) ->
