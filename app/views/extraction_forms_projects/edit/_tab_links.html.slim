@@ -1,23 +1,87 @@
-= simple_form_for(@extraction_forms_project, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
+ul#vertical-tabs.tabs.vertical data-deep-link='true' data-deep-link-smudge='true' data-deep-link-smudge-delay='600' data-update-history='true' data-tabs=''
 
-  ul#vertical-tabs.tabs.vertical data-deep-link='true' data-deep-link-smudge='true' data-deep-link-smudge-delay='600' data-update-history='true' data-tabs=''
+  - @extraction_forms_project.extraction_forms_projects_sections.each do |efps|
 
-    = f.simple_fields_for(:extraction_forms_projects_sections) do |efps_f|
+    li.tabs-title
+      - section = efps.section.name
+      = link_to section, "#panel-tab-#{ efps.id.to_s }", title: "Section #{ section }"
 
-      li.tabs-title
-        - section_name = efps_f.object.section.name
-        = link_to section_name, '#panel-tab-' + efps_f.object.id.to_s, title: 'Section ' + section_name
+= link_to new_extraction_forms_project_extraction_forms_projects_section_path(@extraction_forms_project), { class: 'float-right' } do
+  i.fi-plus
+  |  Add Section
 
-  .form-actions
-    = f.button :submit, t('save')
+/  = simple_form_for(@extraction_forms_project.extraction_forms_projects_sections.build,
+/                    url: extraction_forms_project_extraction_forms_projects_sections_path(@extraction_forms_project),
+/                    html: { 'abide': '', 'live-validate': true }) do |f|
+/
+/    = f.simple_fields_for(:section, f.object.build_section) do |s_f|
+/
+/      = s_f.input :name, label: false, required: true, placeholder: 'Enter new section name', hint: 'Name can\'t be blank'
+/
+/    = f.button :submit, t('save')
 
-  .float-right
-    = link_to_add_association f, :extraction_forms_projects_sections,
-          html_options = { partial: 'extraction_forms_projects/edit/extraction_forms_projects_section_fields',
-                           data: { \
-                               association_insertion_node: 'ul#vertical-tabs',
-                               association_insertion_method: 'append' \
-                           } \
-          } do
-      i.fi-plus
-      |  Add Section
+/+++++++++++++++++++++++++++++++++++++++
+
+//  = simple_form_for(@extraction_forms_project.extraction_forms_projects_sections.build,
+//                    url: extraction_forms_project_extraction_forms_projects_sections_path(@extraction_forms_project),
+//                    html: { 'abide': '', 'live-validate': true }) do |f|
+//
+//    == render 'extraction_forms_projects/edit/test', f: f
+
+//++++++++++++++++++++++++++++++++++++++
+
+/  = simple_form_for(@extraction_forms_project, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
+/
+/    = f.simple_fields_for(:extraction_forms_projects_section, f.object.extraction_forms_projects_sections.build) do |efps_f|
+/
+/      = efps_f.simple_fields_for(:section, efps_f.object.build_section) do |s_f|
+/
+/        = s_f.input :name, label: false, required: true, placeholder: 'Enter new section name', hint: 'Name can\'t be blank'
+/
+/    = f.button :submit, t('save')
+
+/++++++++++++++++++++++++++++++++++++++
+
+/  = simple_form_for(ExtractionFormsProjectsSection.new(extraction_forms_project: @extraction_forms_project),
+/                    url: extraction_forms_project_extraction_forms_projects_sections_path(@extraction_forms_project),
+/                    html: { 'abide': '', 'live-validate': true }) do |f|
+/
+/    = f.simple_fields_for(:section, f.object.build_section) do |s_f|
+/
+/      = s_f.input :name, label: false, required: true, placeholder: 'Enter new section name', hint: 'Name can\'t be blank'
+/
+/    = f.button :submit, t('save')
+/
+/.column.row
+/  = link_to 'Back', edit_project_path(@extraction_forms_project.project,
+/                                      anchor: 'panel-extraction-form')
+
+/++++++++++++++++++++++++++++++++++++++
+
+
+
+/============================================================
+
+/= simple_form_for(@extraction_forms_project, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
+/
+/  ul#vertical-tabs.tabs.vertical data-deep-link='true' data-deep-link-smudge='true' data-deep-link-smudge-delay='600' data-update-history='true' data-tabs=''
+/
+/    = f.simple_fields_for(:extraction_forms_projects_sections) do |efps_f|
+/
+/      li.tabs-title
+/        - section_name = efps_f.object.section.name
+/        = link_to section_name, '#panel-tab-' + efps_f.object.id.to_s, title: 'Section ' + section_name
+/
+/  .form-actions
+/    = f.button :submit, t('save')
+/
+/  .float-right
+/    = link_to_add_association f, :extraction_forms_projects_sections,
+/          html_options = { partial: 'extraction_forms_projects/edit/extraction_forms_projects_section_fields',
+/                           data: { \
+/                               association_insertion_node: 'ul#vertical-tabs',
+/                               association_insertion_method: 'append' \
+/                           } \
+/          } do
+/      i.fi-plus
+/      |  Add Section

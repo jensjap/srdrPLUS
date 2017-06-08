@@ -26,8 +26,10 @@ document.addEventListener 'turbolinks:load', ->
       markup += '</span>'
       markup
 
-    # Bind select2 to organization selection.
+    # Bind select2 to section selection.
     $('#extraction_forms_projects_section_section_id').select2
+      placeholder: 'Select Section'
+      allowClear: true
       minimumInputLength: 0
       ajax:
         url: '/sections.json'

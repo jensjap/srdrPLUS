@@ -3,4 +3,5 @@
   - @extraction_forms_project.extraction_forms_projects_sections.each do |efps|
 
     .tabs-panel id="panel-tab-#{ efps.id.to_s }"
+
       == render 'extraction_forms_projects/edit/extraction_forms_projects_section', efps: efps

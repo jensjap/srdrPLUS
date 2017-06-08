@@ -31,4 +31,5 @@ fieldset.fieldset
   = simple_form_for(@project.extraction_forms_projects.build,
                     url: project_extraction_forms_projects_path(@project),
                     html: { 'abide': '', 'live-validate': true }) do |f|
-    = render 'extraction_forms_projects/form', f: f
+
+    == render 'extraction_forms_projects/form', f: f

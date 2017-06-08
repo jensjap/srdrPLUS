@@ -62,7 +62,7 @@ class ExtractionFormsProjectsController < ApplicationController
     end
 
     def set_extraction_forms_project
-      @extraction_forms_project = ExtractionFormsProject.includes(extraction_forms_projects_sections: [:section])
+      @extraction_forms_project = ExtractionFormsProject.includes(extraction_forms_projects_sections: [:section, { questions: :question_type }])
                                                         .find(params[:id])
     end
 
