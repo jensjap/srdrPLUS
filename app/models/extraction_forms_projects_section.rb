@@ -12,20 +12,9 @@ class ExtractionFormsProjectsSection < ApplicationRecord
   has_many :questions, dependent: :destroy, inverse_of: :extraction_forms_projects_section
 
   accepts_nested_attributes_for :questions, reject_if: :all_blank
-  accepts_nested_attributes_for :section, reject_if: :section_name_exists?
 
   def section_id=(token)
     process_token(token, :section)
     super
-  end
-
-  private
-
-  def section_name_exists?(attributes)
-    begin
-      self.section = Section.where(name: attributes[:name]).first_or_create!
-    rescue ActiveRecord::RecordNotUnique
-      retry
-    end
   end
 end

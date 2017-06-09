@@ -46,9 +46,13 @@ class ExtractionFormsProjectsSectionsController < ApplicationController
   end
 
   def destroy
+    @extraction_forms_project = @extraction_forms_projects_section.extraction_forms_project
     @extraction_forms_projects_section.destroy
     respond_to do |format|
-      format.html { redirect_to build_extraction_forms_project_path(@extraction_forms_projects_section.extraction_forms_project),
+      format.html { redirect_to build_extraction_forms_project_path(
+                                  @extraction_forms_project,
+                                  anchor: @extraction_forms_project.extraction_forms_projects_sections.blank? ?
+                                          nil : "panel-tab-#{ @extraction_forms_project.extraction_forms_projects_sections.first.id }"),
                     notice: t('removed') }
       format.json { head :no_content }
     end
