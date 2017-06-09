@@ -40,7 +40,7 @@ class ProjectsControllerTest < ActionDispatch::IntegrationTest
 
   test 'should update project' do
     patch project_url(@project), params: { project: { attribution: @project.attribution, description: @project.description, doi: @project.doi, funding_source: @project.funding_source, methodology_description: @project.methodology_description, name: @project.name, notes: @project.notes, prospero: @project.prospero } }
-    assert_redirected_to edit_project_url(@project)
+    assert_redirected_to edit_project_url(@project, anchor: 'panel-information')
   end
 
   test 'should destroy project' do
@@ -49,26 +49,5 @@ class ProjectsControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_redirected_to projects_url
-  end
-
-  test 'should create key question association' do
-    assert_difference('KeyQuestionsProject.count', 1) do
-      patch project_url(@project), params: { project: { attribution: @project.attribution, description: @project.description, doi: @project.doi, funding_source: @project.funding_source, methodology_description: @project.methodology_description, name: @project.name, notes: @project.notes, prospero: @project.prospero,
-                                                        key_questions_projects_attributes: { '0': { key_question_attributes: { name: @kq1.name } } } } }
-    end
-  end
-
-  test 'should not create new key question' do
-    assert_difference('KeyQuestion.count', 0) do
-      patch project_url(@project), params: { project: { attribution: @project.attribution, description: @project.description, doi: @project.doi, funding_source: @project.funding_source, methodology_description: @project.methodology_description, name: @project.name, notes: @project.notes, prospero: @project.prospero,
-                                                        key_questions_projects_attributes: { '0': { key_question_attributes: { name: @kq2.name } } } } }
-    end
-  end
-
-  test 'should not create new key_questions_project' do
-    assert_difference('KeyQuestionsProject.count', 0) do
-      patch project_url(@project), params: { project: { attribution: @project.attribution, description: @project.description, doi: @project.doi, funding_source: @project.funding_source, methodology_description: @project.methodology_description, name: @project.name, notes: @project.notes, prospero: @project.prospero,
-                                                        key_questions_projects_attributes: { '0': { key_question_attributes: { name: @kq2.name } }, id: @key_questions_project1.id } } }
-    end
   end
 end

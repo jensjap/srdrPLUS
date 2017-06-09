@@ -1,7 +1,13 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  name: MyString
+  name: Type 1
 
 two:
-  name: MyString
+  name: Type 2
+
+two:
+  name: Type 3
+
+two:
+  name: Key Questions

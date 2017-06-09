@@ -5,7 +5,6 @@ class ExtractionFormsProject < ApplicationRecord
   has_paper_trail
 
   belongs_to :extraction_form, inverse_of: :extraction_forms_projects
-  belongs_to :extraction_form_type, inverse_of: :extraction_forms_projects, optional: true
   belongs_to :project, inverse_of: :extraction_forms_projects
 
   has_many :extraction_forms_projects_sections, dependent: :destroy, inverse_of: :extraction_forms_project
@@ -15,7 +14,6 @@ class ExtractionFormsProject < ApplicationRecord
   has_many :key_questions, through: :key_questions_projects, dependent: :destroy
 
   accepts_nested_attributes_for :extraction_form, reject_if: :extraction_form_name_exists?
-  accepts_nested_attributes_for :extraction_forms_projects_sections, allow_destroy: true, reject_if: :all_blank
 
   private
 
