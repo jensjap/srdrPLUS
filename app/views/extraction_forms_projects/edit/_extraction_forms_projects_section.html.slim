@@ -1,39 +1,50 @@
 .column.row
+
   fieldset.fieldset
     legend Section Control
 
     ul.extraction-form-controls
       li
-        = link_to 'Change Section Name', edit_extraction_forms_projects_section_path(efps), class: 'small button'
+        = link_to 'Edit Section Details', edit_extraction_forms_projects_section_path(efps), class: 'small button'
       li
         = link_to 'Remove Section', efps, method: :delete, data: { confirm: t('confirm') }, class: 'small alert button'
 
-.column.row
-  fieldset.fieldset
-    legend #{ efps.section.name } Questions (<em>#{ efps.extraction_forms_projects_section_type.name }</em>)
+- if efps.extraction_forms_projects_section_type.name == 'Key Questions'
 
-    table
+  h6 Key Questions
 
-      thead
-        tr
-          th Position
-          th Dependency
-          th Name
-          th Description
-          th Type
-          th
-          th
+- elsif efps.extraction_forms_projects_section_type.name == 'Type 1'
 
-      tbody
-        - efps.questions.each do |q|
+  h6 Arms or Outcomes Type
+
+- elsif efps.extraction_forms_projects_section_type.name == 'Type 2'
+
+  .column.row
+    fieldset.fieldset
+      legend #{ efps.section.name } Questions (<em>#{ efps.extraction_forms_projects_section_type.name }</em>)
+
+      table
+
+        thead
           tr
-            td #
-            td 1
-            td = q.name
-            td = q.description
-            td = q.question_type.name
-            td = link_to 'Edit', edit_question_path(q)
-            td = link_to 'Remove', q, method: :delete, data: { confirm: t('confirm') }
+            th Position
+            th Dependency
+            th Name
+            th Description
+            th Type
+            th
+            th
 
-.column.row#questions
-  == render 'extraction_forms_projects/edit/question_form', efps: efps
+        tbody
+          - efps.questions.each do |q|
+            tr
+              td #
+              td 1
+              td = q.name
+              td = q.description
+              td = q.question_type.name
+              td = link_to 'Edit', edit_question_path(q)
+              td = link_to 'Remove', q, method: :delete, data: { confirm: t('confirm') }
+
+  .column.row#questions
+    == render 'extraction_forms_projects/edit/question_form', efps: efps

@@ -9,7 +9,7 @@ class ExtractionFormsProjectsSectionsController < ApplicationController
 
   # GET /extraction_forms_projects_sections/1/edit
   def edit
-    @extraction_forms_project = @extraction_forms_projects_section.extraction_forms_project
+    #@extraction_forms_project = @extraction_forms_projects_section.extraction_forms_project
   end
 
   # POST /extraction_forms_projects/1/extraction_forms_projects_sections
@@ -35,8 +35,8 @@ class ExtractionFormsProjectsSectionsController < ApplicationController
   def update
     respond_to do |format|
       if @extraction_forms_projects_section.update(extraction_forms_projects_section_params)
-        format.html { redirect_to edit_extraction_forms_project_path(@extraction_forms_projects_section.extraction_forms_project,
-                                                                     anchor: "panel-tab-#{ @extraction_forms_projects_section.id }"),
+        format.html { redirect_to build_extraction_forms_project_path(@extraction_forms_projects_section.extraction_forms_project,
+                                                                      anchor: "panel-tab-#{ @extraction_forms_projects_section.id }"),
                       notice: t('success') }
         format.json { render :show, status: :ok, location: @extraction_forms_projects_section }
       else

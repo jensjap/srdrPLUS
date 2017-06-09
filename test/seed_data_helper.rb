@@ -179,7 +179,8 @@ module SeedDataExtended
         [
           { name: 'Type 1' },
           { name: 'Type 2' },
-          { name: 'Type 3' }
+          { name: 'Type 3' },
+          { name: 'Key Questions' }
         ]
       )
 

@@ -1,20 +1,17 @@
-.column.row
+= simple_form_for([@extraction_forms_project, @extraction_forms_projects_section],
+                  html: { data: { 'abide': '', 'live-validate': true } }) do |f|
 
-  = simple_form_for(@extraction_forms_projects_section,
-                    url: extraction_forms_project_extraction_forms_projects_sections_path(@extraction_forms_project),
-                    html: { data: { 'abide': '', 'live-validate': true } }) do |f|
+  .alert.callout data-abide-error='' style='display: none;'
+    p
+      i.fi-alert
+      |  There are some errors in your form.
 
-    .alert.callout data-abide-error='' style='display: none;'
-      p
-        i.fi-alert
-        |  There are some errors in your form.
+  .column.row
+    fieldset.fieldset
+      legend Section Information
+      .column.row
+        = f.association :extraction_forms_projects_section_type, label: 'Section Type', include_blank: false
+        = f.association :section, label: 'Section Name', include_blank: true
 
-    .column.row
-      fieldset.fieldset
-        legend Section Information
-        .column.row
-          = f.association :extraction_forms_projects_section_type, label: 'Section Type', include_blank: false
-          = f.association :section, label: 'Section Name', include_blank: true
-
-    .form-actions
-      = f.button :submit, t('save')
+  .form-actions
+    = f.button :submit, t('save')
