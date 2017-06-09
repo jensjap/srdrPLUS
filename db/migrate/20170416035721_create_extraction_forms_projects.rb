@@ -1,9 +1,9 @@
 class CreateExtractionFormsProjects < ActiveRecord::Migration[5.0]
   def change
     create_table :extraction_forms_projects do |t|
-      t.references :extraction_form, foreign_key: true
-      t.references :extraction_form_type, foreign_key: true
-      t.references :project, foreign_key: true
+      t.references :extraction_form,               foreign_key: true, index: { name: 'index_efp_on_ef_id' }
+      t.references :extraction_forms_project_type, foreign_key: true, index: { name: 'index_efp_on_efpt_id' }
+      t.references :project,                       foreign_key: true, index: { name: 'index_efp_on_p_id' }
       t.boolean :public, default: false
       t.datetime :deleted_at
       t.boolean :active

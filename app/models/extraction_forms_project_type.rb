@@ -1,4 +1,4 @@
-class ExtractionFormType < ApplicationRecord
+class ExtractionFormsProjectType < ApplicationRecord
   acts_as_paranoid
   has_paper_trail
 

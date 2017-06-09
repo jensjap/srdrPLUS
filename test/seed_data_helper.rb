@@ -171,8 +171,17 @@ module SeedDataExtended
       @kq2 = KeyQuestion.create(name: 'kq2')
 
       # Extraction Form Types.
-      @ef_type1 = ExtractionFormType.create(name: 'Standard')
-      @ef_type2 = ExtractionFormType.create(name: 'Diagnostic Test')
+      @efs_project_type1 = ExtractionFormsProjectType.create(name: 'Standard')
+      @efs_project_type2 = ExtractionFormsProjectType.create(name: 'Diagnostic Test')
+
+      # Extraction Forms Projects Section Types.
+      ExtractionFormsProjectsSectionType.create(
+        [
+          { name: 'Type 1' },
+          { name: 'Type 2' },
+          { name: 'Type 3' }
+        ]
+      )
 
       # Extraction Forms.
       @ef1 = ExtractionForm.create(name: 'ef1')
@@ -182,10 +191,6 @@ module SeedDataExtended
       @project = Project.order(updated_at: :desc).first
       @project.key_questions << [@kq1, @kq2]
       @project.extraction_forms << [@ef1, @ef2]
-
-      # Set extraction form types.
-      @project.extraction_forms_projects.where(extraction_form: @ef1).first.extraction_form_type = @ef_type1
-      @project.extraction_forms_projects.where(extraction_form: @ef2).first.extraction_form_type = @ef_type2
 
       # Seed QuestionType.
       QuestionType.create(

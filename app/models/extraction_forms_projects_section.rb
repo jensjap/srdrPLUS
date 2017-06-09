@@ -6,6 +6,7 @@ class ExtractionFormsProjectsSection < ApplicationRecord
   has_paper_trail
 
   belongs_to :extraction_forms_project, inverse_of: :extraction_forms_projects_sections
+  belongs_to :extraction_forms_projects_section_type, inverse_of: :extraction_forms_projects_sections
   belongs_to :section, inverse_of: :extraction_forms_projects_sections
 
   has_many :questions, dependent: :destroy, inverse_of: :extraction_forms_projects_section

@@ -1,8 +1,9 @@
 class CreateExtractionFormsProjectsSections < ActiveRecord::Migration[5.0]
   def change
     create_table :extraction_forms_projects_sections do |t|
-      t.references :extraction_forms_project, foreign_key: true, index: { name: 'index_efps_on_efp_id' }
-      t.references :section, foreign_key: true, index: { name: 'index_efps_on_s_id' }
+      t.references :extraction_forms_project,               foreign_key: true, index: { name: 'index_efps_on_efp_id' }
+      t.references :extraction_forms_projects_section_type, foreign_key: true, index: { name: 'index_efps_on_efpst_id' }
+      t.references :section,                                foreign_key: true, index: { name: 'index_efps_on_s_id' }
       t.datetime :deleted_at
       t.boolean :active
 
