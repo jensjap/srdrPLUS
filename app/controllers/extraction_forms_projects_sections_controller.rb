@@ -9,7 +9,6 @@ class ExtractionFormsProjectsSectionsController < ApplicationController
 
   # GET /extraction_forms_projects_sections/1/edit
   def edit
-    #@extraction_forms_project = @extraction_forms_projects_section.extraction_forms_project
   end
 
   # POST /extraction_forms_projects/1/extraction_forms_projects_sections
