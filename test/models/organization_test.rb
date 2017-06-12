@@ -9,7 +9,7 @@ class OrganizationTest < ActiveSupport::TestCase
   test '#by_query should return correct organizations in the right order' do
     @organization_one.update(updated_at: 1.year.ago(@organization_one.updated_at))
     results = Organization.by_query('org')
-    assert results.first.updated_at > results.last.updated_at
+    assert results.first.updated_at > results.second.updated_at
   end
 
   test '#process_token should create resource and suggestion by user' do
