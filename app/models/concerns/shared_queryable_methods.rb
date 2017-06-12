@@ -11,7 +11,10 @@ module SharedQueryableMethods
     # Returns:
     #   [Array] An array of Resource found that match the query string, if none was found
     #           it returns an array with a single object element. This will assist in creating
-    #           a new Resource later.
+    #           a new Resource later. We also add a container object in case no exact match
+    #           was found. This is for the case where user wishes to create a new resource but
+    #           the resource's name is a substring of an existing one.
+    #           Please note that you cannot chain AR methods after calling by_query.
     def by_query(query)
       # Try exact match first.
       exact_match = where('name=?', query)
