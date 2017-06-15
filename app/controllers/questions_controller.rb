@@ -9,7 +9,6 @@ class QuestionsController < ApplicationController
   # POST /extraction_forms_projects_section/1/questions
   # POST /extraction_forms_projects_section/1/questions.json
   def create
-    byebug
     @question = @extraction_forms_projects_section.questions.new(question_params)
 
     respond_to do |format|

@@ -1,28 +1,29 @@
 - if @project.duplicate_key_question?
+
   p#warning.callout.alert
     ' Notice: Duplicate Key Question text detected. This is likely a mistake. Please correct below.
 
-.form-inputs
+table
 
-  table
+  thead
+    tr
+      th Key Question Text
+      th Date Created
+      th Date Updated
 
-    thead
+  tbody
+    - @project.key_questions_projects.each do |kqp|
       tr
-        th Key Question Text
-        th Date Created
-        th Date Updated
+        td = kqp.key_question.name
+        td = kqp.created_at.in_time_zone(current_user.profile.time_zone).strftime('%b %-d, %Y - %l:%M %P')
+        td = kqp.updated_at.in_time_zone(current_user.profile.time_zone).strftime('%b %-d, %Y - %l:%M %P')
+        td = link_to 'Rename', edit_key_questions_project_path(kqp)
+        td = link_to 'Remove', kqp, method: :delete, data: { confirm: t('confirm') }
 
-    tbody
-      - @project.key_questions_projects.each do |kqp|
-        tr
-          td = kqp.key_question.name
-          td = kqp.created_at.in_time_zone(current_user.profile.time_zone).strftime('%b %-d, %Y - %l:%M %P')
-          td = kqp.updated_at.in_time_zone(current_user.profile.time_zone).strftime('%b %-d, %Y - %l:%M %P')
-          td = link_to 'Rename', edit_key_questions_project_path(kqp)
-          td = link_to 'Remove', kqp, method: :delete, data: { confirm: t('confirm') }
+hr
 
-fieldset.fieldset
-  legend Add Key Questions
-  = simple_form_for(@project.key_questions_projects.build, url: project_key_questions_projects_path(@project),
-                                                           html: { 'abide': '', 'live-validate': true }) do |f|
-    == render 'key_questions_projects/form', f: f
+h6 Create Key Question
+
+= simple_form_for(@project.key_questions_projects.build, url: project_key_questions_projects_path(@project),
+                                                         html: { 'abide': '', 'live-validate': true }) do |f|
+  == render 'key_questions_projects/form', f: f
