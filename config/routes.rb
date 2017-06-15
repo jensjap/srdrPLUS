@@ -7,7 +7,7 @@ Rails.application.routes.draw do
     resources :extraction_forms_projects, only: [:create, :edit, :update, :destroy] do
       get 'build', on: :member
       resources :extraction_forms_projects_sections, only: [:new, :create, :edit, :update, :destroy] do
-        resources :questions, only: [:edit, :destroy]
+        resources :questions, only: [:new, :create, :edit, :destroy]
       end
     end
     resources :key_questions_projects, only: [:create, :edit, :update, :destroy]

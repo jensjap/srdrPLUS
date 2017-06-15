@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170516162109) do
+ActiveRecord::Schema.define(version: 20170612195211) do
 
   create_table "approvals", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "approvable_type"
@@ -185,6 +185,21 @@ ActiveRecord::Schema.define(version: 20170516162109) do
     t.datetime "updated_at",                    null: false
     t.index ["deleted_at"], name: "index_messages_on_deleted_at", using: :btree
     t.index ["message_type_id"], name: "index_messages_on_message_type_id", using: :btree
+  end
+
+  create_table "orderings", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string   "orderable_type"
+    t.integer  "orderable_id"
+    t.integer  "position"
+    t.datetime "deleted_at"
+    t.boolean  "active"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
+    t.index ["active"], name: "index_orderings_on_active", using: :btree
+    t.index ["deleted_at"], name: "index_orderings_on_deleted_at", using: :btree
+    t.index ["orderable_type", "orderable_id", "active"], name: "index_orderings_on_type_id_active_uniq", unique: true, using: :btree
+    t.index ["orderable_type", "orderable_id", "deleted_at"], name: "index_orderings_on_type_id_deleted_at_uniq", unique: true, using: :btree
+    t.index ["orderable_type", "orderable_id"], name: "index_orderings_on_orderable_type_and_orderable_id", using: :btree
   end
 
   create_table "organizations", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|

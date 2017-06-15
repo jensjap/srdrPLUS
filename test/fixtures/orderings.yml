@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  orderable: one
+  orderable_type: Orderable
+  deleted_at: 2017-06-12 15:52:11
+  active: false
+
+two:
+  orderable: two
+  orderable_type: Orderable
+  deleted_at: 2017-06-12 15:52:11
+  active: false

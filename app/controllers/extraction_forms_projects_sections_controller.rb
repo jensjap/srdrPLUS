@@ -59,6 +59,7 @@ class ExtractionFormsProjectsSectionsController < ApplicationController
   end
 
   private
+
     # Use callbacks to share common setup or constraints between actions.
     def set_extraction_forms_project
       @extraction_forms_project = ExtractionFormsProject.find(params[:extraction_forms_project_id])

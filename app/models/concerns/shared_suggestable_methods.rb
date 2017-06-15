@@ -16,6 +16,4 @@ module SharedSuggestableMethods
 
   class_methods do
   end
-
 end
-

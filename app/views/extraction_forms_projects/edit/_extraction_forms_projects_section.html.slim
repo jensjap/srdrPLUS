@@ -1,29 +1,32 @@
 .column.row
 
-  fieldset.fieldset
-    legend Section Control
+  h4 Section Controls
 
-    ul.extraction-form-controls
-      li
-        = link_to 'Edit Section Details', edit_extraction_forms_projects_section_path(efps), class: 'small button'
-      li
-        = link_to 'Remove Section', efps, method: :delete, data: { confirm: t('confirm') }, class: 'small alert button'
+  ul.extraction-form-controls
+    li
+      = link_to 'Edit Section Details', edit_extraction_forms_projects_section_path(efps), class: 'small button'
+    li
+      = link_to 'Remove Section', efps, method: :delete, data: { confirm: t('confirm') }, class: 'small alert button'
+
+hr
 
 - if efps.extraction_forms_projects_section_type.name == 'Key Questions'
 
-  h6 Key Questions
+  h4 Key Questions
 
 - elsif efps.extraction_forms_projects_section_type.name == 'Type 1'
 
-  h6 Arms or Outcomes Type
+  h4 Arms or Outcomes Type
 
 - elsif efps.extraction_forms_projects_section_type.name == 'Type 2'
 
-  .column.row
-    fieldset.fieldset
-      legend #{ efps.section.name } Questions (<em>#{ efps.extraction_forms_projects_section_type.name }</em>)
+  h4 Question List
 
-      table
+  .column.row
+
+    .table-scroll
+
+      table.hover
 
         thead
           tr
@@ -36,15 +39,20 @@
             th
 
         tbody
-          - efps.questions.each do |q|
+          /- efps.questions.each do |q|
+          - efps.questions.includes(:ordering).includes(:question_type).sort_by { |q| q.ordering.position }.each do |q|
             tr
-              td #
-              td 1
+              td = q.ordering.position
+              td
+                | -
               td = q.name
               td = q.description
               td = q.question_type.name
               td = link_to 'Edit', edit_question_path(q)
               td = link_to 'Remove', q, method: :delete, data: { confirm: t('confirm') }
 
-  .column.row#questions
-    == render 'extraction_forms_projects/edit/question_form', efps: efps
+      = link_to new_extraction_forms_projects_section_question_path(efps), { class: 'float-right' } do
+        i.fi-plus
+        |  Add Question
+/  .column.row#questions
+/    == render 'extraction_forms_projects/edit/question_form', efps: efps
