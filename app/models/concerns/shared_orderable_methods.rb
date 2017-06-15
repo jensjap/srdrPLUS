@@ -18,4 +18,3 @@ module SharedOrderableMethods
   class_methods do
   end
 end
-
