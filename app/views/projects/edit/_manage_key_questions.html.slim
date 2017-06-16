@@ -3,22 +3,28 @@
   p#warning.callout.alert
     ' Notice: Duplicate Key Question text detected. This is likely a mistake. Please correct below.
 
-table
+.table-scroll
 
-  thead
-    tr
-      th Key Question Text
-      th Date Created
-      th Date Updated
+  table.hover
 
-  tbody
-    - @project.key_questions_projects.each do |kqp|
+    thead
       tr
-        td = kqp.key_question.name
-        td = kqp.created_at.in_time_zone(current_user.profile.time_zone).strftime('%b %-d, %Y - %l:%M %P')
-        td = kqp.updated_at.in_time_zone(current_user.profile.time_zone).strftime('%b %-d, %Y - %l:%M %P')
-        td = link_to 'Rename', edit_key_questions_project_path(kqp)
-        td = link_to 'Remove', kqp, method: :delete, data: { confirm: t('confirm') }
+        th Key Question Text
+        th Assigned
+        th Date Created
+        th Date Updated
+
+    tbody
+      - @project.key_questions_projects.each do |kqp|
+        tr
+          td = kqp.key_question.name
+          td
+            - if kqp.extraction_forms_project.present?
+              i.fi-check style='color: green;'
+          td = kqp.created_at.in_time_zone(current_user.profile.time_zone).strftime('%b %-d, %Y - %l:%M %P')
+          td = kqp.updated_at.in_time_zone(current_user.profile.time_zone).strftime('%b %-d, %Y - %l:%M %P')
+          td = link_to 'Rename', edit_key_questions_project_path(kqp)
+          td = link_to 'Remove', kqp, method: :delete, data: { confirm: t('confirm') }
 
 hr
 

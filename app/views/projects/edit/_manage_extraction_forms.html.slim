@@ -10,23 +10,28 @@
 
 - else
 
-  table
+  .table-scroll
 
-    thead
-      tr
-        th Extraction Form Title
-        th Date Created
-        th Date Updated
+    table.hover
 
-    tbody
-      - @project.extraction_forms_projects.each do |efp|
+      thead
         tr
-          td = efp.extraction_form.name
-          td = efp.created_at.in_time_zone(current_user.profile.time_zone).strftime('%b %-d, %Y - %l:%M %P')
-          td = efp.updated_at.in_time_zone(current_user.profile.time_zone).strftime('%b %-d, %Y - %l:%M %P')
-          td = link_to 'Build', build_extraction_forms_project_path(efp)
-          td = link_to 'Rename', edit_extraction_forms_project_path(efp)
-          td = link_to 'Remove', efp, method: :delete, data: { confirm: t('confirm') }
+          th Extraction Form Title
+          th Key Question Assignment
+          th Date Created
+          th Date Updated
+
+      tbody
+        - @project.extraction_forms_projects.each do |efp|
+          tr
+            td = efp.extraction_form.name
+            td = list_of_key_questions(efp)
+            td = efp.created_at.in_time_zone(current_user.profile.time_zone).strftime('%b %-d, %Y - %l:%M %P')
+            td = efp.updated_at.in_time_zone(current_user.profile.time_zone).strftime('%b %-d, %Y - %l:%M %P')
+            td = link_to 'Build', build_extraction_forms_project_path(efp,
+                   anchor: efp.extraction_forms_projects_sections.present? ? "panel-tab-#{ efp.extraction_forms_projects_sections.first.id }" : '')
+            td = link_to 'Rename', edit_extraction_forms_project_path(efp)
+            td = link_to 'Remove', efp, method: :delete, data: { confirm: t('confirm') }
 
   hr
 
