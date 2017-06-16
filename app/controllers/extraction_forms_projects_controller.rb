@@ -4,6 +4,10 @@ class ExtractionFormsProjectsController < ApplicationController
 
   # GET /extraction_forms_projects/1/build
   def build
+    @key_questions_projects = @extraction_forms_project.project.key_questions_projects
+    @assigned_key_questions_projects = KeyQuestionsProject.where(project: @extraction_forms_project.project). \
+                                                           where.not(extraction_forms_project_id: @extraction_forms_project.id). \
+                                                           map(&:id)
   end
 
   # GET /extraction_forms_projects/1/edit
@@ -33,7 +37,8 @@ class ExtractionFormsProjectsController < ApplicationController
   def update
     respond_to do |format|
       if @extraction_forms_project.update(extraction_forms_project_params)
-        format.html { redirect_to edit_project_path(@extraction_forms_project.project, anchor: 'panel-extraction-form'),
+        format.html { redirect_to build_extraction_forms_project_path(@extraction_forms_project,
+                                                                      anchor: "panel-tab-#{ @extraction_forms_project.extraction_forms_projects_sections.first.id }"),
                       notice: t('success') }
         format.json { render :show, status: :ok, location: @extraction_forms_project }
       else
@@ -68,6 +73,7 @@ class ExtractionFormsProjectsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def extraction_forms_project_params
-      params.require(:extraction_forms_project).permit(extraction_form_attributes: [:name])
+      params.require(:extraction_forms_project).permit(key_questions_project_ids: [],
+                                                       extraction_form_attributes: [:name])
     end
 end

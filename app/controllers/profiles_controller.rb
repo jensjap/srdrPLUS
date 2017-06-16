@@ -40,4 +40,3 @@ class ProfilesController < ApplicationController
     )
   end
 end
-

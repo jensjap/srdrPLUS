@@ -14,6 +14,19 @@ hr
 
   h4 Key Questions
 
+  = simple_form_for(@extraction_forms_project, html: { data: { 'abide': '' } }) do |f|
+    = f.error_notification
+
+    .form-inputs
+      = f.association :key_questions_projects, collection: @key_questions_projects,
+                                               disabled: @assigned_key_questions_projects,
+                                               as: :check_boxes,
+                                               label: false,
+                                               label_method: :name_and_assignment
+
+    .form-actions
+      = f.button :submit, t('save')
+
 - elsif efps.extraction_forms_projects_section_type.name == 'Type 1'
 
   h4 Arms or Outcomes Type
@@ -39,7 +52,6 @@ hr
             th
 
         tbody
-          /- efps.questions.each do |q|
           - efps.questions.includes(:ordering).includes(:question_type).sort_by { |q| q.ordering.position }.each do |q|
             tr
               td = q.ordering.position

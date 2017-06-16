@@ -10,6 +10,10 @@ class KeyQuestionsProject < ApplicationRecord
 
   accepts_nested_attributes_for :key_question, reject_if: :key_question_name_exists?
 
+  def name_and_assignment
+    "#{ self.key_question.name }" + (self.extraction_forms_project.blank? ? ' (unassigned)' : " (assigned to: #{ self.extraction_forms_project.extraction_form.name })")
+  end
+
   private
 
   def key_question_name_exists?(attributes)
