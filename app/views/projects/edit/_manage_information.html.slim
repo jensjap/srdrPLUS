@@ -8,12 +8,12 @@
 
   .form-inputs
     = f.input :name, required: true, hint: 'Name can\'t be blank'
-    = f.input :description, label: 'Topic Description'
-    = f.input :attribution
-    = f.input :methodology_description
+    = f.input :description, label: 'Topic Description', input_html: { rows: 8 }
+    = f.input :attribution, input_html: { rows: 4 }
+    = f.input :methodology_description, input_html: { rows: 4 }
     = f.input :prospero, label: 'Prospero Registration ID'
     = f.input :doi, label: 'Document Object ID'
-    = f.input :notes
+    = f.input :notes, input_html: { rows: 8 }
     = f.input :funding_source
 
   .form-actions
