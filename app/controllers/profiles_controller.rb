@@ -31,12 +31,12 @@ class ProfilesController < ApplicationController
     @profile = current_user.profile
   end
 
+  # Never trust parameters from the scary internet, only allow the white list through.
   def profile_params
-    # Never trust parameters from the scary internet, only allow the white list through.
-    params.require(:profile).permit(:username, :time_zone,
-                                    :first_name, :middle_name, :last_name,
-                                    :organization_id,
-                                    degree_ids: []
-    )
+    params.require(:profile)
+      .permit(:username, :time_zone,
+              :first_name, :middle_name, :last_name,
+              :organization_id,
+              degree_ids: [])
   end
 end

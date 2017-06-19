@@ -14,6 +14,9 @@ class ExtractionFormsProjectsSection < ApplicationRecord
 
   has_one :ordering, as: :orderable, dependent: :destroy
 
+  has_many :key_questions_projects, dependent: :nullify, inverse_of: :extraction_forms_projects_section
+  has_many :key_questions, through: :key_questions_projects, dependent: :destroy
+
   has_many :questions, dependent: :destroy, inverse_of: :extraction_forms_projects_section
 
   accepts_nested_attributes_for :questions, reject_if: :all_blank

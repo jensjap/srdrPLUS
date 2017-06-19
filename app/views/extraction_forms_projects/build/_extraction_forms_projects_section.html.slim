@@ -2,6 +2,8 @@
 
   h4 Section Controls
 
+  h6 Position #{ efps.ordering.position }
+
   ul.extraction-form-controls
     li
       = link_to 'Edit Section Details', edit_extraction_forms_projects_section_path(efps), class: 'small button'
@@ -10,16 +12,16 @@
 
 hr
 
-- if efps.extraction_forms_projects_section_type.name == 'Key Questions'
+- if efps.extraction_forms_projects_section_type.id == 4
 
   h4 Key Questions
 
-  = simple_form_for(@extraction_forms_project, html: { data: { 'abide': '' } }) do |f|
+  = simple_form_for(efps, html: { data: { 'abide': '' } }) do |f|
     = f.error_notification
 
     .form-inputs
       = f.association :key_questions_projects, collection: @key_questions_projects,
-                                               disabled: @assigned_key_questions_projects,
+                                               disabled: @key_questions_projects.where.not(extraction_forms_projects_section: efps).map(&:id),
                                                as: :check_boxes,
                                                label: false,
                                                label_method: :name_and_assignment
@@ -66,5 +68,3 @@ hr
       = link_to new_extraction_forms_projects_section_question_path(efps), { class: 'float-right' } do
         i.fi-plus
         |  Add Question
-/  .column.row#questions
-/    == render 'extraction_forms_projects/edit/question_form', efps: efps

@@ -35,12 +35,12 @@ a href='#' class='accordion-title'
       .row
         .column.medium-4
           span.label Key Questions:
-          .callout = project.key_questions.length.to_s
+          .callout = project.key_questions.length
         .column.medium-4
           span.label Studies:
           .callout = Random.rand(1000) + 1
         .column.medium-4
           span.label Extraction Forms:
-          .callout = Random.rand(10) + 1
+          .callout = project.extraction_forms.length
     .column.medium-5
       = link_to 'Edit', edit_project_path(project), class: 'button expanded'

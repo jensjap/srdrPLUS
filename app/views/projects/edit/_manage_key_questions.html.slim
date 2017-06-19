@@ -19,7 +19,7 @@
         tr
           td = kqp.key_question.name
           td
-            - if kqp.extraction_forms_project.present?
+            - if kqp.extraction_forms_projects_section.present?
               i.fi-check style='color: green;'
           td = kqp.created_at.in_time_zone(current_user.profile.time_zone).strftime('%b %-d, %Y - %l:%M %P')
           td = kqp.updated_at.in_time_zone(current_user.profile.time_zone).strftime('%b %-d, %Y - %l:%M %P')

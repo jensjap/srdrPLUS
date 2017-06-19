@@ -12,8 +12,9 @@ class ProjectsController < ApplicationController
     flash.now[:info] = msg if msg
     @query = params[:q]
     @order = params[:o] || 'updated-at'
-    @projects = Project.includes(publishings: [{ user: :profile }, approval: [{ user: :profile }]])
+    @projects = Project.includes(:extraction_forms)
                        .includes(:key_questions)
+                       .includes(publishings: [{ user: :profile }, approval: [{ user: :profile }]])
                        .by_query(@query).order(SORT[@order]).page(params[:page])
   end
 
@@ -88,14 +89,14 @@ class ProjectsController < ApplicationController
     def set_project
       @project = Project.includes(:extraction_forms)
                         .includes(:key_questions)
+                        .includes(publishings: [{ user: :profile }, approval: [{ user: :profile }]])
                         .find(params[:id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def project_params
-      params.require(:project).permit(:name, :description, :attribution, :methodology_description,
-                                      :prospero, :doi, :notes, :funding_source)
-                                      #extraction_forms_projects_attributes: [:id, :_destroy, extraction_form_attributes: [:name]]
-                                      #key_questions_projects_attributes: [:id, :_destroy, key_question_attributes: [:name]]
+      params.require(:project)
+        .permit(:name, :description, :attribution, :methodology_description,
+                :prospero, :doi, :notes, :funding_source)
     end
 end

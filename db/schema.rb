@@ -146,22 +146,22 @@ ActiveRecord::Schema.define(version: 20170612195211) do
   end
 
   create_table "key_questions_projects", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer  "extraction_forms_project_id"
+    t.integer  "extraction_forms_projects_section_id"
     t.integer  "key_question_id"
     t.integer  "project_id"
     t.datetime "deleted_at"
     t.boolean  "active"
-    t.datetime "created_at",                  null: false
-    t.datetime "updated_at",                  null: false
+    t.datetime "created_at",                           null: false
+    t.datetime "updated_at",                           null: false
     t.index ["active"], name: "index_key_questions_projects_on_active", using: :btree
     t.index ["deleted_at"], name: "index_key_questions_projects_on_deleted_at", using: :btree
-    t.index ["extraction_forms_project_id", "key_question_id", "project_id", "active"], name: "index_kqp_on_ef_id_kq_id_p_id_active", using: :btree
-    t.index ["extraction_forms_project_id", "key_question_id", "project_id", "deleted_at"], name: "index_kqp_on_ef_id_kq_id_p_id_deleted_at", using: :btree
-    t.index ["extraction_forms_project_id"], name: "index_key_questions_projects_on_extraction_forms_project_id", using: :btree
+    t.index ["extraction_forms_projects_section_id", "key_question_id", "project_id", "active"], name: "index_kqp_on_efps_id_kq_id_p_id_active", using: :btree
+    t.index ["extraction_forms_projects_section_id", "key_question_id", "project_id", "deleted_at"], name: "index_kqp_on_efps_id_kq_id_p_id_deleted_at", using: :btree
+    t.index ["extraction_forms_projects_section_id"], name: "index_kqp_on_efps_id", using: :btree
     t.index ["key_question_id", "project_id", "active"], name: "index_kqp_on_kq_id_p_id_active", using: :btree
     t.index ["key_question_id", "project_id", "deleted_at"], name: "index_kqp_on_kq_id_p_id_deleted_at", using: :btree
-    t.index ["key_question_id"], name: "index_key_questions_projects_on_key_question_id", using: :btree
-    t.index ["project_id"], name: "index_key_questions_projects_on_project_id", using: :btree
+    t.index ["key_question_id"], name: "index_kqp_on_kq_id", using: :btree
+    t.index ["project_id"], name: "index_kqp_on_p_id", using: :btree
   end
 
   create_table "message_types", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -365,7 +365,7 @@ ActiveRecord::Schema.define(version: 20170612195211) do
   add_foreign_key "extraction_forms_projects_sections", "extraction_forms_projects"
   add_foreign_key "extraction_forms_projects_sections", "extraction_forms_projects_section_types"
   add_foreign_key "extraction_forms_projects_sections", "sections"
-  add_foreign_key "key_questions_projects", "extraction_forms_projects"
+  add_foreign_key "key_questions_projects", "extraction_forms_projects_sections"
   add_foreign_key "key_questions_projects", "key_questions"
   add_foreign_key "key_questions_projects", "projects"
   add_foreign_key "message_types", "frequencies"

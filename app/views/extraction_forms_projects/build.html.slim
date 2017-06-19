@@ -2,10 +2,10 @@
   h2 Form Builder: #{ @extraction_forms_project.extraction_form.name }
 
   .column.medium-3
-    == render 'extraction_forms_projects/edit/tab_links'
+    == render 'extraction_forms_projects/build/tab_links'
 
   .column.medium-9
-    == render 'extraction_forms_projects/edit/tab_content'
+    == render 'extraction_forms_projects/build/tab_content'
 
 .column.row
   = link_to 'Back', edit_project_path(@extraction_forms_project.project, anchor: 'panel-extraction-form')

@@ -5,9 +5,6 @@ class ExtractionFormsProjectsController < ApplicationController
   # GET /extraction_forms_projects/1/build
   def build
     @key_questions_projects = @extraction_forms_project.project.key_questions_projects
-    @assigned_key_questions_projects = KeyQuestionsProject.where(project: @extraction_forms_project.project). \
-                                                           where.not(extraction_forms_project_id: @extraction_forms_project.id). \
-                                                           map(&:id)
   end
 
   # GET /extraction_forms_projects/1/edit
@@ -77,7 +74,7 @@ class ExtractionFormsProjectsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def extraction_forms_project_params
-      params.require(:extraction_forms_project).permit(key_questions_project_ids: [],
-                                                       extraction_form_attributes: [:name])
+      params.require(:extraction_forms_project)
+        .permit(extraction_form_attributes: [:name])
     end
 end
