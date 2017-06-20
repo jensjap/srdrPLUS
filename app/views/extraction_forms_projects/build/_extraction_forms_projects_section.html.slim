@@ -12,28 +12,11 @@
 
 hr
 
-- if efps.extraction_forms_projects_section_type.id == 4
-
-  h4 Key Questions
-
-  = simple_form_for(efps, html: { data: { 'abide': '' } }) do |f|
-    = f.error_notification
-
-    .form-inputs
-      = f.association :key_questions_projects, collection: @key_questions_projects,
-                                               disabled: @key_questions_projects.where.not(extraction_forms_projects_section: efps).map(&:id),
-                                               as: :check_boxes,
-                                               label: false,
-                                               label_method: :name_and_assignment
-
-    .form-actions
-      = f.button :submit, t('save')
-
-- elsif efps.extraction_forms_projects_section_type.name == 'Type 1'
+- if efps.extraction_forms_projects_section_type.id == 1
 
   h4 Arms or Outcomes Type
 
-- elsif efps.extraction_forms_projects_section_type.name == 'Type 2'
+- elsif efps.extraction_forms_projects_section_type.id == 2
 
   h4 Question List
 
@@ -68,3 +51,24 @@ hr
       = link_to new_extraction_forms_projects_section_question_path(efps), { class: 'float-right' } do
         i.fi-plus
         |  Add Question
+
+- elsif efps.extraction_forms_projects_section_type.id == 3
+
+  h4 Results
+
+- elsif efps.extraction_forms_projects_section_type.id == 4
+
+  h4 Key Questions
+
+  = simple_form_for(efps, html: { data: { 'abide': '' } }) do |f|
+    = f.error_notification
+
+    .form-inputs
+      = f.association :key_questions_projects, collection: @key_questions_projects,
+                      disabled: @key_questions_projects.where.not(extraction_forms_projects_section: efps).map(&:id),
+                      as: :check_boxes,
+                      label: false,
+                      label_method: :name_and_assignment
+
+    .form-actions
+      = f.button :submit, t('save')
