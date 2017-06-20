@@ -125,7 +125,7 @@ module SeedDataExtended
 
       # Projects.
       1000.times do |n|
-        updated_at = Faker::Time.between(DateTime.now - 1000, DateTime.now)
+        updated_at = Faker::Time.between(DateTime.now - 1000, DateTime.now - 10)
         Project.create(name:        Faker::Book.unique.title,
                        description: '(' + (n+1).to_s + ') - ' + \
                                     Faker::Lorem.paragraph(20, true),

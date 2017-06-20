@@ -18,6 +18,9 @@ a href='#' class='accordion-title'
         span.label Date Created:
         .callout = project.created_at.in_time_zone(current_user.profile.time_zone).strftime('%b %-d, %Y - %l:%M %P')
       .column.row
+        span.label Date Updated:
+        .callout = project.updated_at.in_time_zone(current_user.profile.time_zone).strftime('%b %-d, %Y - %l:%M %P')
+      .column.row
         - if project.publishings.present?
           - if project.publishings.any?(&:approved?)
             span.label.success Date Published:
