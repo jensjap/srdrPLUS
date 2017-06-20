@@ -1,7 +1,13 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  name: Section One
+  name: Arms
 
 two:
-  name: Section Two
+  name: Arm Details
+
+three:
+  name: Results
+
+four:
+  name: Key Questions
