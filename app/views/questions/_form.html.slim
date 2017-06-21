@@ -1,0 +1,11 @@
+.column.row
+  = simple_form_for([@extraction_forms_projects_section, @question], html: { data: { 'abide': '' } }) do |f|
+    = f.error_notification
+
+    .form-inputs
+      = f.association :question_type, include_blank: false
+      = f.input :name, required: true, autofocus: true
+      = f.input :description, input_html: { rows: 4 }
+
+    .form-actions
+      = f.button :submit

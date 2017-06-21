@@ -1,17 +1,7 @@
 .column.row
   h2 Add Question
 
-.column.row
-  = simple_form_for([@extraction_forms_projects_section, @question], html: { data: { 'abide': '' } }) do |f|
-    = f.error_notification
-
-    .form-inputs
-      = f.association :question_type
-      = f.input :name, required: true, autofocus: true
-      = f.input :description
-
-    .form-actions
-      = f.button :submit
+== render 'form'
 
 .column.row
   = link_to 'Back', build_extraction_forms_project_path(@extraction_forms_projects_section.extraction_forms_project,

@@ -12,6 +12,8 @@ class Question < ApplicationRecord
 
   has_one :ordering, as: :orderable, dependent: :destroy
 
+  delegate :extraction_forms_project, to: :extraction_forms_projects_section
+
   validates :name, presence: true
   validates :ordering, presence: true
 end
