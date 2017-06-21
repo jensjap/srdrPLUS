@@ -11,5 +11,6 @@ class CreateQuestions < ActiveRecord::Migration[5.0]
     end
 
     add_index :questions, :deleted_at
+    add_index :questions, [:question_type_id, :extraction_forms_projects_section_id, :deleted_at], name: 'index_q_on_qt_id_efps_id_deleted_at', where: 'deleted_at IS NULL'
   end
 end

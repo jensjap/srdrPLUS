@@ -4,8 +4,8 @@
 
     .form-inputs
       = f.association :question_type, include_blank: false
-      = f.input :name, required: true, autofocus: true
-      = f.input :description, input_html: { rows: 4 }
+      = f.input :name, autofocus: true
+      = f.input :description, input_html: { rows: 8 }
 
     .form-actions
       = f.button :submit

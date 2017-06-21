@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170612195211) do
+ActiveRecord::Schema.define(version: 20170621184411) do
 
   create_table "approvals", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "approvable_type"
@@ -259,6 +259,61 @@ ActiveRecord::Schema.define(version: 20170612195211) do
     t.index ["user_id"], name: "index_publishings_on_user_id", using: :btree
   end
 
+  create_table "question_row_column_field_options", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "question_row_column_field_id"
+    t.string   "key"
+    t.string   "value"
+    t.datetime "deleted_at"
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
+    t.index ["deleted_at"], name: "index_question_row_column_field_options_on_deleted_at", using: :btree
+    t.index ["question_row_column_field_id", "deleted_at"], name: "index_qrcfo_on_qrcf_id_deleted_at", using: :btree
+    t.index ["question_row_column_field_id"], name: "index_qrcfo_on_qrcf_id", using: :btree
+  end
+
+  create_table "question_row_column_field_types", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string   "name"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["deleted_at"], name: "index_question_row_column_field_types_on_deleted_at", using: :btree
+  end
+
+  create_table "question_row_column_fields", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "question_row_column_field_type_id"
+    t.integer  "question_row_column_id"
+    t.string   "name"
+    t.datetime "deleted_at"
+    t.datetime "created_at",                        null: false
+    t.datetime "updated_at",                        null: false
+    t.index ["deleted_at"], name: "index_question_row_column_fields_on_deleted_at", using: :btree
+    t.index ["question_row_column_field_type_id", "question_row_column_id", "deleted_at"], name: "index_qrcf_on_qrcft_id_qrc_id_deleted_at", using: :btree
+    t.index ["question_row_column_field_type_id"], name: "index_qrcf_on_qrcft_id", using: :btree
+    t.index ["question_row_column_id"], name: "index_qrcf_on_qrc_id", using: :btree
+  end
+
+  create_table "question_row_columns", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "question_row_id"
+    t.string   "name"
+    t.datetime "deleted_at"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+    t.index ["deleted_at"], name: "index_question_row_columns_on_deleted_at", using: :btree
+    t.index ["question_row_id", "deleted_at"], name: "index_qrc_on_qr_id_deleted_at", using: :btree
+    t.index ["question_row_id"], name: "index_question_row_columns_on_question_row_id", using: :btree
+  end
+
+  create_table "question_rows", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "question_id"
+    t.string   "name"
+    t.datetime "deleted_at"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+    t.index ["deleted_at"], name: "index_question_rows_on_deleted_at", using: :btree
+    t.index ["question_id", "deleted_at"], name: "index_qr_on_q_id_deleted_at", using: :btree
+    t.index ["question_id"], name: "index_question_rows_on_question_id", using: :btree
+  end
+
   create_table "question_types", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "name"
     t.datetime "deleted_at"
@@ -277,6 +332,7 @@ ActiveRecord::Schema.define(version: 20170612195211) do
     t.datetime "updated_at",                                         null: false
     t.index ["deleted_at"], name: "index_questions_on_deleted_at", using: :btree
     t.index ["extraction_forms_projects_section_id"], name: "index_questions_on_extraction_forms_projects_section_id", using: :btree
+    t.index ["question_type_id", "extraction_forms_projects_section_id", "deleted_at"], name: "index_q_on_qt_id_efps_id_deleted_at", using: :btree
     t.index ["question_type_id"], name: "index_questions_on_question_type_id", using: :btree
   end
 
@@ -374,6 +430,11 @@ ActiveRecord::Schema.define(version: 20170612195211) do
   add_foreign_key "profiles", "organizations"
   add_foreign_key "profiles", "users"
   add_foreign_key "publishings", "users"
+  add_foreign_key "question_row_column_field_options", "question_row_column_fields"
+  add_foreign_key "question_row_column_fields", "question_row_column_field_types"
+  add_foreign_key "question_row_column_fields", "question_row_columns"
+  add_foreign_key "question_row_columns", "question_rows"
+  add_foreign_key "question_rows", "questions"
   add_foreign_key "questions", "extraction_forms_projects_sections"
   add_foreign_key "questions", "question_types"
   add_foreign_key "suggestions", "users"
