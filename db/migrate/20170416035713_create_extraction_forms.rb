@@ -1,6 +1,6 @@
 class CreateExtractionForms < ActiveRecord::Migration[5.0]
   def change
-    create_table :extraction_forms do |t|
+    create_table :extraction_forms, options: 'COLLATE=utf8_bin' do |t|
       t.string :name
       t.datetime :deleted_at
 

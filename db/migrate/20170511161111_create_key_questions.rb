@@ -1,6 +1,6 @@
 class CreateKeyQuestions < ActiveRecord::Migration[5.0]
   def change
-    create_table :key_questions do |t|
+    create_table :key_questions, options: 'COLLATE=utf8_bin' do |t|
       t.string :name
       t.datetime :deleted_at
 

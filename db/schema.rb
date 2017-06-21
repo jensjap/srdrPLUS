@@ -66,7 +66,7 @@ ActiveRecord::Schema.define(version: 20170612195211) do
     t.index ["user_id"], name: "index_dispatches_on_user_id", using: :btree
   end
 
-  create_table "extraction_forms", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "extraction_forms", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
     t.string   "name"
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
@@ -136,7 +136,7 @@ ActiveRecord::Schema.define(version: 20170612195211) do
     t.index ["deleted_at"], name: "index_frequencies_on_deleted_at", using: :btree
   end
 
-  create_table "key_questions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "key_questions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
     t.string   "name"
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
