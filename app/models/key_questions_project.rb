@@ -19,6 +19,7 @@ class KeyQuestionsProject < ApplicationRecord
     self.extraction_forms_projects_section.present?
   end
 
+  # Key Question should belong to ExtractionFormsProjectsSection that is of type 'Key Questions' only.
   def extraction_forms_projects_section_is_key_question_type
     unless self.extraction_forms_projects_section.extraction_forms_projects_section_type == ExtractionFormsProjectsSectionType.find_by(name: 'Key Questions')
       errors.add(:extraction_forms_projects_section_type, 'Is not of \'Key Questions\' type')

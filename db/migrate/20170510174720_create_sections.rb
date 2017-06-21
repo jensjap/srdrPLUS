@@ -9,6 +9,7 @@ class CreateSections < ActiveRecord::Migration[5.0]
     end
 
     add_index :sections, :name, unique: true
+    add_index :sections, :default
     add_index :sections, :deleted_at
   end
 end

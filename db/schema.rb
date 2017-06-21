@@ -286,6 +286,7 @@ ActiveRecord::Schema.define(version: 20170612195211) do
     t.datetime "deleted_at"
     t.datetime "created_at",                 null: false
     t.datetime "updated_at",                 null: false
+    t.index ["default"], name: "index_sections_on_default", using: :btree
     t.index ["deleted_at"], name: "index_sections_on_deleted_at", using: :btree
     t.index ["name"], name: "index_sections_on_name", unique: true, using: :btree
   end
