@@ -14,7 +14,7 @@ class KeyQuestion < ApplicationRecord
 
   validates :name, presence: true, uniqueness: { case_sensitive: true }
 
-  def as_a_resource(project)
-    self.key_questions_projects.find_by(project: project)
-  end
+#  def as_a_resource(project)
+#    self.key_questions_projects.find_by(project: project)
+#  end
 end

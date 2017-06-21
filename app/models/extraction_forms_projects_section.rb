@@ -19,8 +19,6 @@ class ExtractionFormsProjectsSection < ApplicationRecord
 
   has_many :questions, dependent: :destroy, inverse_of: :extraction_forms_projects_section
 
-  accepts_nested_attributes_for :questions, reject_if: :all_blank
-
   validates :ordering, presence: true
 
   def section_id=(token)

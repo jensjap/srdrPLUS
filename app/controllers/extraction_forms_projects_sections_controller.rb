@@ -74,7 +74,6 @@ class ExtractionFormsProjectsSectionsController < ApplicationController
       params.require(:extraction_forms_projects_section)
         .permit(:extraction_forms_projects_section_type_id,
                 :section_id,
-                key_questions_project_ids: [],
-                questions_attributes: [:id, :_destroy, :name, :description, :question_type_id])
+                key_questions_project_ids: [])
     end
 end

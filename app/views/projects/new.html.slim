@@ -7,7 +7,7 @@
 
     .form-inputs
       = f.input :name, required: true, autofocus: true
-      = f.input :description
+      = f.input :description, input_html: { rows: 4 }
 
     .form-actions
       = f.button :submit
