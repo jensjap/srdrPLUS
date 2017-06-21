@@ -1,0 +1,14 @@
+h4 Key Questions
+
+= simple_form_for(efps, html: { data: { 'abide': '' } }) do |f|
+  = f.error_notification
+
+  .form-inputs
+    = f.association :key_questions_projects, collection: @key_questions_projects,
+                    disabled: @key_questions_projects.where.not(extraction_forms_projects_section: efps).map(&:id),
+                    as: :check_boxes,
+                    label: false,
+                    label_method: :name_and_assignment
+
+  .form-actions
+    = f.button :submit, t('save')

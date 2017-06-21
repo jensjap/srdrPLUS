@@ -66,6 +66,7 @@ class ExtractionFormsProjectsController < ApplicationController
     def set_extraction_forms_project
       @extraction_forms_project = ExtractionFormsProject.includes(:extraction_form)
                                                         .includes(extraction_forms_projects_sections: [:extraction_forms_projects_section_type,
+                                                                                                       :ordering,
                                                                                                        :section,
                                                                                                        { questions: :question_type }])
                                                         .includes(key_questions_projects: [:key_question])
