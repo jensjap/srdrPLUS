@@ -14,6 +14,8 @@ class Question < ApplicationRecord
 
   has_many :question_rows, dependent: :destroy, inverse_of: :question
 
+  accepts_nested_attributes_for :question_rows
+
   delegate :extraction_forms_project, to: :extraction_forms_projects_section
 
   validates :ordering, presence: true

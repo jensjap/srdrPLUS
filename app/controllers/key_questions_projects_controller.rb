@@ -64,6 +64,7 @@ class KeyQuestionsProjectsController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def key_questions_project_params
-    params.require(:key_questions_project).permit(key_question_attributes: [:name])
+    params.require(:key_questions_project)
+      .permit(key_question_attributes: [:name])
   end
 end

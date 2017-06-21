@@ -73,6 +73,7 @@ class QuestionsController < ApplicationController
       params.require(:question)
         .permit(:question_type_id,
                 :name,
-                :description)
+                :description,
+                question_rows_attributes: [:name])
     end
 end
