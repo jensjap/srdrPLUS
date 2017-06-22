@@ -6,7 +6,7 @@ class QuestionRowColumnField < ApplicationRecord
 
   belongs_to :question_row_column, inverse_of: :question_row_column_field
 
-  has_many :question_row_column_field_options, inverse_of: :question_row_column_field
+  has_many :question_row_column_field_options, dependent: :destroy, inverse_of: :question_row_column_field
 
   delegate :question_type, to: :question_row_column
 

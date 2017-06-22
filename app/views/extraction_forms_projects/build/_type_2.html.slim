@@ -25,7 +25,7 @@ h4 Question List
             td = q.name
             td = q.description
             td = q.question_type.name
-            td = link_to 'Edit', edit_question_path(q)
+            td = link_to 'Edit', build_question_path(q)
             td = link_to 'Remove', q, method: :delete, data: { confirm: t('confirm') }
 
     = link_to new_extraction_forms_projects_section_question_path(efps), { class: 'float-right' } do

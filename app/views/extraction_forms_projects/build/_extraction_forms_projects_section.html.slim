@@ -12,18 +12,22 @@
 
 hr
 
+/ Arms | Outcomes
 - if efps.extraction_forms_projects_section_type.id == 1
 
   == render 'extraction_forms_projects/build/type_1', efps: efps
 
+/ Arm Details | Sample Characteristics | Outcome Details | Quality
 - elsif efps.extraction_forms_projects_section_type.id == 2
 
   == render 'extraction_forms_projects/build/type_2', efps: efps
 
+/ Results
 - elsif efps.extraction_forms_projects_section_type.id == 3
 
   == render 'extraction_forms_projects/build/type_3', efps: efps
 
+/ Key Questions
 - elsif efps.extraction_forms_projects_section_type.id == 4
 
   == render 'extraction_forms_projects/build/type_4', efps: efps

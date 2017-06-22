@@ -11,6 +11,8 @@ class QuestionsController < ApplicationController
                                                                       anchor: "panel-tab-#{ @question.extraction_forms_projects_section.id }"),
                                                                       notice: t('success') }
         format.json { render :show, status: :created, location: @question }
+#        format.html { render 'questions/question_types/text' }
+#        format.json { render :show, status: :created, location: @question }
       when QuestionType.find(2)  # Checkbox
         format.html { render 'questions/question_types/checkbox' }
         format.json { render :show, status: :created, location: @question }

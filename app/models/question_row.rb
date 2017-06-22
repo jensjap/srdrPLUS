@@ -6,7 +6,7 @@ class QuestionRow < ApplicationRecord
 
   belongs_to :question, inverse_of: :question_rows
 
-  has_many :question_row_columns, inverse_of: :question_row
+  has_many :question_row_columns, dependent: :destroy, inverse_of: :question_row
 
   delegate :question_type, to: :question
 
