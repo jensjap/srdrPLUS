@@ -1,6 +1,39 @@
 class QuestionsController < ApplicationController
   before_action :set_extraction_forms_projects_section, only: [:new, :create]
-  before_action :set_question, only: [:edit, :update, :destroy]
+  before_action :set_question, only: [:build, :edit, :update, :destroy]
+
+  # GET /questions/1/build
+  def build
+    respond_to do |format|
+      case @question.question_type
+      when QuestionType.find(1)  # Text
+        format.html { redirect_to build_extraction_forms_project_path(@question.extraction_forms_project,
+                                                                      anchor: "panel-tab-#{ @question.extraction_forms_projects_section.id }"),
+                                                                      notice: t('success') }
+        format.json { render :show, status: :created, location: @question }
+      when QuestionType.find(2)  # Checkbox
+        format.html { render 'questions/question_types/checkbox' }
+        format.json { render :show, status: :created, location: @question }
+      when QuestionType.find(3)  # Dropdown
+        format.html { render 'questions/question_types/dropdown' }
+        format.json { render :show, status: :created, location: @question }
+      when QuestionType.find(4)  # Radio
+        format.html { render 'questions/question_types/radio' }
+        format.json { render :show, status: :created, location: @question }
+      when QuestionType.find(5)  # Matrix Checkbox
+        format.html { render 'questions/question_types/matrix_checkbox' }
+        format.json { render :show, status: :created, location: @question }
+      when QuestionType.find(6)  # Matrix Dropdown
+        format.html { render 'questions/question_types/matrix_dropdown' }
+        format.json { render :show, status: :created, location: @question }
+      when QuestionType.find(7)  # Matrix Radio
+        format.html { render 'questions/question_types/matrix_radio' }
+        format.json { render :show, status: :created, location: @question }
+      else
+        raise 'Unknown QuestionType'
+      end
+    end
+  end
 
   # GET /extraction_forms_projects_sections/1/questions/new
   def new
@@ -18,15 +51,26 @@ class QuestionsController < ApplicationController
 
     respond_to do |format|
       if @question.save
-        format.html { redirect_to build_extraction_forms_project_path(@extraction_forms_projects_section.extraction_forms_project,
-                                                                      anchor: "panel-tab-#{ @extraction_forms_projects_section.id }"),
-                                                                      notice: t('success') }
+        format.html { redirect_to build_question_path(@question),
+                                                      notice: t('success') }
         format.json { render :show, status: :created, location: @question }
       else
         format.html { render :new }
         format.json { render json: @question.errors, status: :unprocessable_entity }
       end
     end
+
+#    respond_to do |format|
+#      if @question.save
+#        format.html { redirect_to build_extraction_forms_project_path(@extraction_forms_projects_section.extraction_forms_project,
+#                                                                      anchor: "panel-tab-#{ @extraction_forms_projects_section.id }"),
+#                                                                      notice: t('success') }
+#        format.json { render :show, status: :created, location: @question }
+#      else
+#        format.html { render :new }
+#        format.json { render json: @question.errors, status: :unprocessable_entity }
+#      end
+#    end
   end
 
   # PATCH/PUT /questions/1
@@ -73,7 +117,6 @@ class QuestionsController < ApplicationController
       params.require(:question)
         .permit(:question_type_id,
                 :name,
-                :description,
-                question_rows_attributes: [:name])
+                :description)
     end
 end

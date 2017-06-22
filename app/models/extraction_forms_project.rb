@@ -4,7 +4,7 @@ class ExtractionFormsProject < ApplicationRecord
   acts_as_paranoid column: :active, sentinel_value: true
   has_paper_trail
 
-  after_create :build_default_sections
+  after_create :create_default_sections
 
   belongs_to :extraction_form, inverse_of: :extraction_forms_projects
   belongs_to :project, inverse_of: :extraction_forms_projects
@@ -17,7 +17,7 @@ class ExtractionFormsProject < ApplicationRecord
 
   private
 
-    def build_default_sections
+    def create_default_sections
       Section.where(default: true).each do |section|
         ExtractionFormsProjectsSection.create(
           {
