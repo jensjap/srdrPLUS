@@ -1,8 +1,9 @@
 .column.row
-  h2 Edit Question
+  h2 Edit Question Details: #{ @question.name }
 
-== render 'form'
+.column.row
+  == render 'questions/question_types/' + @question.question_type.name.parameterize.underscore
 
 .column.row
   = link_to 'Back', build_extraction_forms_project_path(@question.extraction_forms_project,
-                                                        anchor: "panel-tab-#{ @question.extraction_forms_projects_section.id }")
+                      anchor: "panel-tab-#{ @question.extraction_forms_projects_section.id }")

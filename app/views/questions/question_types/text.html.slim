@@ -1,8 +1,0 @@
-.column.row
-  h2 "#{ @question.name }" Details
-
-== render 'form'
-
-.column.row
-  = link_to 'Back', build_extraction_forms_project_path(@question.extraction_forms_project,
-                                                        anchor: "panel-tab-#{ @question.extraction_forms_projects_section.id }")

@@ -3,9 +3,9 @@
     = f.error_notification
 
     .form-inputs
+      = f.input :name, label: 'Question Text', autofocus: true
+      = f.input :description, label: 'Instructions for Extractor (optional)', input_html: { rows: 8 }
       = f.association :question_type, include_blank: false
-      = f.input :name, autofocus: true
-      = f.input :description, input_html: { rows: 8 }
 
     .form-actions
       = f.button :submit

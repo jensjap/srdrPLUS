@@ -214,6 +214,7 @@ module SeedDataExtended
           { name: 'Checkbox' },
           { name: 'Dropdown' },
           { name: 'Radio' },
+          { name: 'Matrix Text' },
           { name: 'Matrix Checkbox' },
           { name: 'Matrix Dropdown' },
           { name: 'Matrix Radio' }
