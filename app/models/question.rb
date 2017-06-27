@@ -7,6 +7,8 @@ class Question < ApplicationRecord
 
   after_create :create_default_question_rows
 
+  after_commit :ensure_matrix_column_headers
+
   before_validation -> { set_ordering_scoped_by(:extraction_forms_projects_section_id) }
 
   belongs_to :extraction_forms_projects_section, inverse_of: :questions
@@ -35,6 +37,27 @@ class Question < ApplicationRecord
         self.question_rows.create
       else
         raise 'Unknown QuestionType'
+      end
+    end
+
+    # May need to rethink this.
+    def ensure_matrix_column_headers
+      if self.question_type.name.include? 'Matrix'
+        first_row = self.question_rows.first
+        rest_rows = self.question_rows[1..-1]
+
+        column_headers = []
+
+        first_row.question_row_columns.each do |c|
+          column_headers << c.name
+        end
+
+        rest_rows.each do |r|
+          r.question_row_columns.each_with_index do |rc, idx|
+            rc.name = column_headers[idx]
+            rc.save
+          end
+        end
       end
     end
 end
