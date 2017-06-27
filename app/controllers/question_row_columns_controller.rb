@@ -18,6 +18,7 @@ class QuestionRowColumnsController < ApplicationController
 
     def destroy_all_question_row_columns
       column_idx_to_nuke = 0
+
       @question.question_rows.first.question_row_columns.each do |qrc|
         break if qrc == @question_row_column
         column_idx_to_nuke += 1
