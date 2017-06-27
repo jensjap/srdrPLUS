@@ -7,7 +7,7 @@ class Question < ApplicationRecord
 
   after_create :create_default_question_rows
 
-  after_commit :ensure_matrix_column_headers
+  after_save :ensure_matrix_column_headers
 
   before_validation -> { set_ordering_scoped_by(:extraction_forms_projects_section_id) }
 
