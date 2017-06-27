@@ -29,7 +29,8 @@ en:
     form:
       save: 'Save Key Question'
   removed: 'Successfully removed'
-  save: 'Save changes'
+  save: 'Save'
+  save_changes: 'Save changes'
   success: 'Success!'
   users:
     registrations:

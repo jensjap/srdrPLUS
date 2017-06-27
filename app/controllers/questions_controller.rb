@@ -76,7 +76,7 @@ class QuestionsController < ApplicationController
   # PATCH/PUT /questions/1.json
   def update
     respond_to do |format|
-      if @question.update(question_params)
+      if @question.update(question_patch_params)
         format.html { redirect_to build_extraction_forms_project_path(@question.extraction_forms_project,
                                                                       anchor: "panel-tab-#{ @question.extraction_forms_projects_section.id }"),
                                                                       notice: t('success') }
@@ -108,7 +108,10 @@ class QuestionsController < ApplicationController
     end
 
     def set_question
-      @question = Question.find(params[:id])
+      @question = Question.includes(question_rows: [
+                                    { question_row_columns: [
+                                      { question_row_column_field: [:question_row_column_field_options] }] }])
+                          .find(params[:id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
@@ -117,5 +120,15 @@ class QuestionsController < ApplicationController
         .permit(:question_type_id,
                 :name,
                 :description)
+    end
+
+    def question_patch_params
+      params.require(:question)
+        .permit(:name,
+                :description, question_rows_attributes:
+                                [:id, :name, question_row_columns_attributes:
+                                               [:id, :name, question_row_column_field_attributes:
+                                                              [:id, question_row_column_field_options_attributes:
+                                                                      [:id, :value]]]])
     end
 end

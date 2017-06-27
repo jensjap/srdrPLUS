@@ -261,8 +261,9 @@ ActiveRecord::Schema.define(version: 20170621184411) do
 
   create_table "question_row_column_field_options", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "question_row_column_field_id"
-    t.string   "key"
-    t.string   "value"
+    t.string   "key",                          null: false
+    t.string   "value",                        null: false
+    t.string   "value_type"
     t.datetime "deleted_at"
     t.datetime "created_at",                   null: false
     t.datetime "updated_at",                   null: false

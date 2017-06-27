@@ -8,6 +8,8 @@ class QuestionRowColumn < ApplicationRecord
 
   has_one :question_row_column_field, dependent: :destroy, inverse_of: :question_row_column
 
+  accepts_nested_attributes_for :question_row_column_field
+
   delegate :question_type, to: :question_row
 
   private

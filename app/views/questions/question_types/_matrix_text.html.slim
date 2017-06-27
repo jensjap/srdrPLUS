@@ -1,1 +1,39 @@
-p matrix text
+.column.row
+  = simple_form_for(@question, html: { 'abide': '', 'live-validate': true }) do |f|
+    = f.error_notification
+
+    .alert.callout data-abide-error='' style='display: none;'
+      p
+        i.fi-alert
+        '  Please correct the errors below.
+
+    .form-inputs
+      = f.input :name, label: 'Question Text', autofocus: true
+      = f.input :description, label: 'Instructions for Extractor (optional)', input_html: { rows: 8 }
+
+      .table-scroll
+
+        table.hover
+
+          thead
+            tr
+              = f.simple_fields_for(:question_rows, @question.question_rows.first) do |qr_f|
+                th
+                = qr_f.simple_fields_for(:question_row_columns) do |qrc_f|
+                  th = qrc_f.input :name, label: 'Column Header'
+
+          tbody
+            = f.simple_fields_for(:question_rows) do |qr_f|
+              tr
+                td = qr_f.input :name, label: 'Row Header'
+                = qr_f.simple_fields_for(:question_row_columns) do |qrc_f|
+                  td
+                    fieldset.fieldset
+                      legend Field Options
+                      = qrc_f.simple_fields_for(:question_row_column_field) do |qrcf_f|
+                        = qrcf_f.simple_fields_for(:question_row_column_field_options) do |qrcfo_f|
+                          - option = qrcfo_f.object
+                          = qrcfo_f.input :value, label: option.key.titleize, as: option.value_type, wrapper_html: { style: 'margin-bottom: 0;' }
+
+    .form-actions
+      = f.button :submit, t('save')
