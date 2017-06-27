@@ -1,6 +1,6 @@
 .column.row
   h3 #{ @question.section.name }
-  h4 Edit Question Details "#{ @question.name }"
+  h4 Question Details
 
 .column.row
   == render 'questions/question_types/' + @question.question_type.name.parameterize.underscore

@@ -36,26 +36,5 @@ class Question < ApplicationRecord
       else
         raise 'Unknown QuestionType'
       end
-#      case self.question_type
-#      when QuestionType.find(1)  # Text
-#        self.question_rows.create
-#      when QuestionType.find(2)  # Checkbox
-#        self.question_rows.create
-#      when QuestionType.find(3)  # Dropdown
-#        self.question_rows.create
-#      when QuestionType.find(4)  # Radio
-#        self.question_rows.create
-#      when QuestionType.find(5)  # Matrix Checkbox
-#        self.question_rows.create
-#        self.question_rows.create
-#      when QuestionType.find(6)  # Matrix Dropdown
-#        self.question_rows.create
-#        self.question_rows.create
-#      when QuestionType.find(7)  # Matrix Radio
-#        self.question_rows.create
-#        self.question_rows.create
-#      else
-#        raise 'Unknown QuestionType'
-#      end
     end
 end
