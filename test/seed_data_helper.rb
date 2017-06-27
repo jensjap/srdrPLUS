@@ -221,6 +221,16 @@ module SeedDataExtended
         ]
       )
 
+      # Seed QuestionRowColumnFieldType.
+      QuestionRowColumnFieldType.create(
+        [
+          { name: 'alphanumeric' },
+          { name: 'integer' },
+          { name: 'decimal' },
+          { name: 'option' }
+        ]
+      )
+
       # Turn on paper_trail.
       PaperTrail.enabled = true
     end

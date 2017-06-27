@@ -18,9 +18,9 @@ class Degree < ApplicationRecord
 
   private
 
-  # You should NEVER delete a Degree.
-  def raise_error
-    raise 'You should NEVER delete a Degree.'
-  end
+    # You should NEVER delete a Degree.
+    def raise_error
+      raise 'You should NEVER delete a Degree.'
+    end
 end
 

@@ -20,6 +20,8 @@
 
             = qrc_f.simple_fields_for(:question_row_column_field) do |qrcf_f|
 
+              = qrcf_f.association :question_row_column_field_type, collection: QuestionRowColumnFieldType.where.not(name: 'option'), label: 'Field Type', include_blank: false
+
               = qrcf_f.simple_fields_for(:question_row_column_field_options) do |qrcfo_f|
 
                 - option = qrcfo_f.object

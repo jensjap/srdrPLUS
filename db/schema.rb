@@ -272,13 +272,23 @@ ActiveRecord::Schema.define(version: 20170621184411) do
     t.index ["question_row_column_field_id"], name: "index_qrcfo_on_qrcf_id", using: :btree
   end
 
-  create_table "question_row_column_fields", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer  "question_row_column_id"
+  create_table "question_row_column_field_types", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "name"
     t.datetime "deleted_at"
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["deleted_at"], name: "index_question_row_column_field_types_on_deleted_at", using: :btree
+  end
+
+  create_table "question_row_column_fields", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "question_row_column_id"
+    t.integer  "question_row_column_field_type_id"
+    t.string   "name"
+    t.datetime "deleted_at"
+    t.datetime "created_at",                        null: false
+    t.datetime "updated_at",                        null: false
     t.index ["deleted_at"], name: "index_question_row_column_fields_on_deleted_at", using: :btree
+    t.index ["question_row_column_field_type_id"], name: "index_qrcf_on_qrcft_id", using: :btree
     t.index ["question_row_column_id"], name: "index_qrcf_on_qrc_id", using: :btree
   end
 
@@ -421,6 +431,7 @@ ActiveRecord::Schema.define(version: 20170621184411) do
   add_foreign_key "profiles", "users"
   add_foreign_key "publishings", "users"
   add_foreign_key "question_row_column_field_options", "question_row_column_fields"
+  add_foreign_key "question_row_column_fields", "question_row_column_field_types"
   add_foreign_key "question_row_column_fields", "question_row_columns"
   add_foreign_key "question_row_columns", "question_rows"
   add_foreign_key "question_rows", "questions"
