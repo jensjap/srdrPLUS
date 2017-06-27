@@ -10,6 +10,7 @@ class QuestionRowColumn < ApplicationRecord
 
   accepts_nested_attributes_for :question_row_column_field
 
+  delegate :question, to: :question_row
   delegate :question_type, to: :question_row
 
   private

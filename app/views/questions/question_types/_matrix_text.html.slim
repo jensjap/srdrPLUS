@@ -20,12 +20,16 @@
               = f.simple_fields_for(:question_rows, @question.question_rows.first) do |qr_f|
                 th
                 = qr_f.simple_fields_for(:question_row_columns) do |qrc_f|
-                  th = qrc_f.input :name, label: 'Column Header'
+                  th
+                    = qrc_f.input :name, label: 'Column Header', wrapper_html: { style: 'margin-bottom: 0;' }
+                    = link_to 'Remove', qrc_f.object, method: :delete, data: { confirm: t('confirm') }, class: 'float-right'
 
           tbody
             = f.simple_fields_for(:question_rows) do |qr_f|
               tr
-                td = qr_f.input :name, label: 'Row Header'
+                td
+                  = qr_f.input :name, label: 'Row Header', wrapper_html: { style: 'margin-bottom: 0;' }
+                  = link_to 'Remove', qr_f.object, method: :delete, data: { confirm: t('confirm') }, class: 'float-right'
 
                 = qr_f.simple_fields_for(:question_row_columns) do |qrc_f|
 
