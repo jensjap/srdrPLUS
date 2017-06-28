@@ -1,6 +1,7 @@
 class QuestionsController < ApplicationController
   before_action :set_extraction_forms_projects_section, only: [:new, :create]
-  before_action :set_question, only: [:edit, :update, :destroy]
+  before_action :set_question, only: [:edit, :update, :destroy, :add_column, :add_row]
+  before_action :ensure_matrix_type, only: [:add_column, :add_row]
 
   # GET /extraction_forms_projects_sections/1/questions/new
   def new
@@ -56,6 +57,24 @@ class QuestionsController < ApplicationController
     end
   end
 
+  # POST /questions/1/add_column
+  # POST /questions/1/add_column.json
+  def add_column
+    @question.question_rows.each do |qr|
+      qr.question_row_columns.create
+    end
+
+    redirect_to edit_question_path(@question), notice: t('success')
+  end
+
+  # POST /questions/1/add_row
+  # POST /questions/1/add_row.json
+  def add_row
+    @question.question_rows.create
+
+    redirect_to edit_question_path(@question), notice: t('success')
+  end
+
   private
 
     # Use callbacks to share common setup or constraints between actions.
@@ -86,5 +105,9 @@ class QuestionsController < ApplicationController
                                                [:id, :name, question_row_column_field_attributes:
                                                               [:id, :question_row_column_field_type_id, question_row_column_field_options_attributes:
                                                                       [:id, :value]]]])
+    end
+
+    def ensure_matrix_type
+      redirect_to root_url, notice: 'Your action is not allowed' unless @question.question_type.name.include?('Matrix')
     end
 end

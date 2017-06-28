@@ -16,15 +16,43 @@ class QuestionRow < ApplicationRecord
 
     def create_default_question_row_columns
       if %w(Text Checkbox Dropdown Radio).include? self.question_type.name
-      #if [1, 2, 3, 4].include? self.question_type.id
+
+        # For text, checkbox, dropdown, radio type questions we just need 1 row.
         self.question_row_columns.create
+
       elsif %w(Matrix\ Text Matrix\ Checkbox Matrix\ Dropdown Matrix\ Radio).include? self.question_type.name
-      #elsif [5, 6, 7, 8].include? self.question_type.id
-        self.question_row_columns.create
-        self.question_row_columns.create
-        self.question_row_columns.create
+
+        # For matrix type questions, the number of columns to create depends on
+        # how many columns this matrix/the other rows have.
+        create_appropriate_number_of_question_row_columns
+
       else
+
         raise 'Unknown QuestionType'
+
+      end
+    end
+
+    def create_appropriate_number_of_question_row_columns
+      # Need to reload self.question here because it is being cached and its CollectionProxy
+      # doesn't have the newly created question_row yet.
+      self.question.reload
+
+      if self.question.question_rows.first == self
+
+        # If this is the first/only row in the matrix then we default to creating
+        # (arbitrarily) 3 columns.
+        self.question_row_columns.create
+        self.question_row_columns.create
+        self.question_row_columns.create
+
+      else
+
+        # Create the same number of columns as other rows have.
+        self.question.question_rows.first.question_row_columns.count.times do |c|
+          self.question_row_columns.create
+        end
+
       end
     end
 end

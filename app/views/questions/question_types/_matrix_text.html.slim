@@ -11,6 +11,9 @@
       = f.input :name, label: 'Question Text', autofocus: true
       = f.input :description, label: 'Instructions for Extractor (optional)', input_html: { rows: 8 }
 
+      = link_to 'Add Column', add_column_question_path(@question), method: :post, class: 'float-right'
+      = link_to 'Add Row', add_row_question_path(@question), method: :post
+
       .table-scroll
 
         table.hover
@@ -22,9 +25,10 @@
                 = qr_f.simple_fields_for(:question_row_columns) do |qrc_f|
                   th
                     = qrc_f.input :name, label: 'Column Header', wrapper_html: { style: 'margin-bottom: 0;' }
-                    = link_to 'Remove', qrc_f.object, method: :delete, data: { confirm: t('confirm') },
-                                                                       class: 'float-right',
-                                                                       style: 'font-weight: normal;'
+                    = link_to 'Remove', destroy_entire_column_question_row_column_path(qrc_f.object),
+                                        method: :delete, data: { confirm: t('confirm') },
+                                        class: 'float-right',
+                                        style: 'font-weight: normal;'
 
           tbody
             = f.simple_fields_for(:question_rows) do |qr_f|

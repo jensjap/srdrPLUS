@@ -8,8 +8,12 @@ Rails.application.routes.draw do
       get 'build', on: :member
       resources :extraction_forms_projects_sections, only: [:new, :create, :edit, :update, :destroy] do
         resources :questions, only: [:new, :create, :edit, :update, :destroy] do
+          post 'add_column', on: :member
+          post 'add_row', on: :member
           resources :question_rows, only: [:destroy] do
-            resources :question_row_columns, only: [:destroy]
+            resources :question_row_columns, only: [] do
+              delete 'destroy_entire_column', on: :member
+            end
           end
         end
       end
