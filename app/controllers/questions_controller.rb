@@ -72,6 +72,11 @@ class QuestionsController < ApplicationController
   def add_row
     @question.question_rows.create
 
+    # Newly created question_row_columns do not have their name field set.
+    # This triggers after_save :ensure_matrix_column_headers callback in
+    # question model to set the name field.
+    @question.save
+
     redirect_to edit_question_path(@question), notice: t('success')
   end
 

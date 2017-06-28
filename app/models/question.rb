@@ -40,7 +40,7 @@ class Question < ApplicationRecord
       end
     end
 
-    # May need to rethink this.
+    #!!! May need to rethink this.
     def ensure_matrix_column_headers
       if self.question_type.name.include? 'Matrix'
         first_row = self.question_rows.first
