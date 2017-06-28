@@ -4,6 +4,7 @@ module SharedOrderableMethods
   included do
 
     # Params:
+    #   symbol - Scope of the ordering. Each orderable is grouped by some parameter.
     #
     # Returns:
     #   nil
@@ -13,6 +14,7 @@ module SharedOrderableMethods
       position = self.class.where("#{ object_scope }": self.send(object_scope)).count + 1
       create_ordering(position: position) unless self.ordering.present?
     end
+
   end
 
   class_methods do
