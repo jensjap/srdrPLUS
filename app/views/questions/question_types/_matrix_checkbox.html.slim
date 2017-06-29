@@ -1,1 +1,69 @@
-p matrix checkbox
+.column.row
+  = simple_form_for(@question, html: { 'abide': '', 'live-validate': true }) do |f|
+    = f.error_notification
+
+
+
+    .alert.callout data-abide-error='' style='display: none;'
+      p
+        i.fi-alert
+        '  Please correct the errors below.
+
+    .form-inputs
+      = f.input :name, label: 'Question Text', autofocus: true
+      = f.input :description, label: 'Instructions for Extractor (optional)', input_html: { rows: 8 }
+
+      = link_to 'Add Column', add_column_question_path(@question), method: :post, class: 'float-right'
+      = link_to 'Add Row', add_row_question_path(@question), method: :post
+
+      .table-scroll
+
+        table.hover
+
+          thead
+            tr
+              = f.simple_fields_for(:question_rows, @question.question_rows.first) do |qr_f|
+                th
+                = qr_f.simple_fields_for(:question_row_columns) do |qrc_f|
+                  th
+                    = qrc_f.input :name, label: 'Column Header', wrapper_html: { style: 'margin-bottom: 0;' }
+                    = link_to 'Remove', destroy_entire_column_question_row_column_path(qrc_f.object),
+                                        method: :delete, data: { confirm: t('confirm') },
+                                        class: 'float-right',
+                                        style: 'font-weight: normal;'
+
+          tbody
+            = f.simple_fields_for(:question_rows) do |qr_f|
+              tr
+                td
+                  = qr_f.input :name, label: 'Row Header', wrapper_html: { style: 'margin-bottom: 0;' }
+                  = link_to 'Remove', qr_f.object, method: :delete, data: { confirm: t('confirm') }, class: 'float-right'
+
+                = qr_f.simple_fields_for(:question_row_columns) do |qrc_f|
+
+                  td
+
+                    fieldset.fieldset
+                      legend Field Options
+
+                      = qrc_f.simple_fields_for(:question_row_column_field) do |qrcf_f|
+
+
+
+
+
+                        #question-row-column-field-options
+                          = qrcf_f.simple_fields_for(:question_row_column_field_options) do |qrcfo_f|
+
+                            == render 'questions/question_types/question_row_column_field_option_fields', f: qrcfo_f
+
+                          .links
+                            = link_to_add_association 'add option', qrcf_f,
+                                                      :question_row_column_field_options,
+                                                      partial: 'questions/question_types/question_row_column_field_option_fields'
+
+
+
+
+    .form-actions
+      = f.button :submit, t('save')

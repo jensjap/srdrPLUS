@@ -2,6 +2,8 @@
   = simple_form_for(@question, html: { 'abide': '', 'live-validate': true }) do |f|
     = f.error_notification
 
+
+
     .alert.callout data-abide-error='' style='display: none;'
       p
         i.fi-alert
@@ -20,10 +22,20 @@
 
             = qrc_f.simple_fields_for(:question_row_column_field) do |qrcf_f|
 
-              = qrcf_f.simple_fields_for(:question_row_column_field_options) do |qrcfo_f|
 
-                - option = qrcfo_f.object
-                = qrcfo_f.input :value, label: option.key.titleize, as: option.value_type
+
+
+
+              #question-row-column-field-options
+                = qrcf_f.simple_fields_for(:question_row_column_field_options) do |qrcfo_f|
+
+                  == render 'questions/question_types/question_row_column_field_option_fields', f: qrcfo_f
+
+                .links
+                  = link_to_add_association 'add option', qrcf_f,
+                                            :question_row_column_field_options,
+                                            partial: 'questions/question_types/question_row_column_field_option_fields'
 
     .form-actions
       = f.button :submit, t('save')
+
