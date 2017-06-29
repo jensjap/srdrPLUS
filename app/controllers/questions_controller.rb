@@ -109,7 +109,7 @@ class QuestionsController < ApplicationController
                                 [:id, :name, question_row_columns_attributes:
                                                [:id, :name, question_row_column_field_attributes:
                                                               [:id, :question_row_column_field_type_id, question_row_column_field_options_attributes:
-                                                                      [:id, :value]]]])
+                                                                      [:id, :_destroy, :value]]]])
     end
 
     def ensure_matrix_type

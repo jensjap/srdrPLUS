@@ -227,7 +227,7 @@ module SeedDataExtended
           { name: 'alphanumeric' },
           { name: 'integer' },
           { name: 'decimal' },
-          { name: 'option' }
+          { name: 'multi' }
         ]
       )
 

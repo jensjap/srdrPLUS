@@ -2,6 +2,8 @@
   = simple_form_for(@question, html: { 'abide': '', 'live-validate': true }) do |f|
     = f.error_notification
 
+    - question_row_column_field_type_collection = QuestionRowColumnFieldType.where.not(name: 'multi')
+
     .alert.callout data-abide-error='' style='display: none;'
       p
         i.fi-alert
@@ -20,12 +22,15 @@
 
             = qrc_f.simple_fields_for(:question_row_column_field) do |qrcf_f|
 
-              = qrcf_f.association :question_row_column_field_type, collection: QuestionRowColumnFieldType.where.not(name: 'option'), label: 'Field Type', include_blank: false
+              = qrcf_f.association :question_row_column_field_type, collection: question_row_column_field_type_collection,
+                                                                    label: 'Field Type',
+                                                                    include_blank: false
 
               = qrcf_f.simple_fields_for(:question_row_column_field_options) do |qrcfo_f|
 
                 - option = qrcfo_f.object
-                = qrcfo_f.input :value, label: option.key.titleize, as: option.value_type
+                = qrcfo_f.input :value, label: option.key.titleize,
+                                        as: option.value_type
 
     .form-actions
       = f.button :submit, t('save')

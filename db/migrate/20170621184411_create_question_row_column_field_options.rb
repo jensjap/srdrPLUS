@@ -2,7 +2,7 @@ class CreateQuestionRowColumnFieldOptions < ActiveRecord::Migration[5.0]
   def change
     create_table :question_row_column_field_options do |t|
       t.references :question_row_column_field, foreign_key: true, index: { name: 'index_qrcfo_on_qrcf_id' }
-      t.string :key, null: false
+      t.string :key, default: 'option'
       t.string :value, null: false
       t.string :value_type
       t.datetime :deleted_at

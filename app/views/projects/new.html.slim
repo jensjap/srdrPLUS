@@ -2,11 +2,11 @@
   h2 Start a new Project
 
 .column.row
-  = simple_form_for(@project, html: { data: { 'abide': '' } }) do |f|
+  = simple_form_for(@project, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
     = f.error_notification
 
     .form-inputs
-      = f.input :name, required: true, autofocus: true
+      = f.input :name, required: true, hint: 'Project name cannot be blank', autofocus: true
       = f.input :description, input_html: { rows: 4 }
 
     .form-actions

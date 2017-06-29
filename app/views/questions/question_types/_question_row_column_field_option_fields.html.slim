@@ -1,0 +1,9 @@
+.nested-fields
+
+  - option = f.object
+
+  .field
+    = f.input :value, label: option.key.blank? ? 'Option' : option.key.titleize,
+                      as: option.value_type
+
+  = link_to_remove_association 'remove option', f

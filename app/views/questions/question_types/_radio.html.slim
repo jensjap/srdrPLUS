@@ -1,1 +1,29 @@
-p radio
+.column.row
+  = simple_form_for(@question, html: { 'abide': '', 'live-validate': true }) do |f|
+    = f.error_notification
+
+    .alert.callout data-abide-error='' style='display: none;'
+      p
+        i.fi-alert
+        '  Please correct the errors below.
+
+    .form-inputs
+      = f.input :name, label: 'Question Text', autofocus: true
+      = f.input :description, label: 'Instructions for Extractor (optional)', input_html: { rows: 8 }
+
+      = f.simple_fields_for(:question_rows) do |qr_f|
+
+        = qr_f.simple_fields_for(:question_row_columns) do |qrc_f|
+
+          fieldset.fieldset
+            legend Field Options
+
+            = qrc_f.simple_fields_for(:question_row_column_field) do |qrcf_f|
+
+              = qrcf_f.simple_fields_for(:question_row_column_field_options) do |qrcfo_f|
+
+                - option = qrcfo_f.object
+                = qrcfo_f.input :value, label: option.key.titleize, as: option.value_type
+
+    .form-actions
+      = f.button :submit, t('save')
