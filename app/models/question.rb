@@ -59,8 +59,7 @@ class Question < ApplicationRecord
 
         rest_rows.each do |r|
           r.question_row_columns.each_with_index do |rc, idx|
-            rc.name = column_headers[idx]
-            rc.save
+            rc.update(name: column_headers[idx])
           end
         end
 
