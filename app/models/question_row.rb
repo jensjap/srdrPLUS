@@ -36,9 +36,9 @@ class QuestionRow < ApplicationRecord
     def create_appropriate_number_of_question_row_columns
       # Need to reload self.question here because it is being cached and its CollectionProxy
       # doesn't have the newly created question_row yet.
-      self.question.reload
+      self.question.reload if self.question.question_rows.blank?
 
-      if self.question.question_rows.first == self
+      if self.question.question_rows.first.question_row_columns.count == 0
 
         # If this is the first/only row in the matrix then we default to creating
         # (arbitrarily) 3 columns.
@@ -48,11 +48,12 @@ class QuestionRow < ApplicationRecord
 
       else
 
-        # Create the same number of columns as other rows have.
+        # Otherwise, create the same number of columns as other rows have.
         self.question.question_rows.first.question_row_columns.count.times do |c|
           self.question_row_columns.create
         end
 
       end
+
     end
 end

@@ -9,7 +9,7 @@ class Question < ApplicationRecord
 
   after_save :ensure_matrix_column_headers
 
-  before_validation -> { set_ordering_scoped_by(:extraction_forms_projects_section_id) }
+  before_validation -> { set_ordering_scoped_by(:extraction_forms_projects_section_id) }, on: :create
 
   belongs_to :extraction_forms_projects_section, inverse_of: :questions
   belongs_to :question_type, inverse_of: :questions
