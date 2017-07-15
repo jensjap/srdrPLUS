@@ -5,19 +5,16 @@ document.addEventListener 'turbolinks:load', ->
 
   do ->
 
-
-
-
-    $( '#questions' ).on 'cocoon:after-insert', ( e ) ->
-      e.preventDefault()
-      $( this ).find( 'form' ).find( 'input[type=submit]' ).removeClass( 'hide' )
-      return
-
-    $( '#questions' ).on 'cocoon:after-remove', ( e, item ) ->
-      e.preventDefault()
-      if $( '.nested-fields.add-question' ).length == 0
-        $( this ).find( 'form' ).find( 'input[type=submit]' ).addClass( 'hide' )
-      return
+#    $( '#questions' ).on 'cocoon:after-insert', ( e ) ->
+#      e.preventDefault()
+#      $( this ).find( 'form' ).find( 'input[type=submit]' ).removeClass( 'hide' )
+#      return
+#
+#    $( '#questions' ).on 'cocoon:after-remove', ( e, item ) ->
+#      e.preventDefault()
+#      if $( '.nested-fields.add-question' ).length == 0
+#        $( this ).find( 'form' ).find( 'input[type=submit]' ).addClass( 'hide' )
+#      return
 
 #
 #    $( 'document' )

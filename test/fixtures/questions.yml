@@ -1,13 +1,11 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  question_type: one
   extraction_forms_projects_section: one
   name: MyString
   description: MyText
 
 two:
-  question_type: two
   extraction_forms_projects_section: one
   name: MyString
   description: MyText

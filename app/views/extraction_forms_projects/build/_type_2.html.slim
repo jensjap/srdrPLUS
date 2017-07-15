@@ -26,7 +26,7 @@ h4 Question List
               | -
             td = q.name
             td = q.description
-            td = q.question_type.name
+            td = q.question_type
             td = link_to 'Edit', edit_question_path(q)
             td = link_to 'Remove', q, method: :delete, data: { confirm: t('confirm') }
 

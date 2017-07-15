@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170621184411) do
+ActiveRecord::Schema.define(version: 20170712185019) do
 
   create_table "approvals", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "approvable_type"
@@ -260,16 +260,11 @@ ActiveRecord::Schema.define(version: 20170621184411) do
   end
 
   create_table "question_row_column_field_options", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer  "question_row_column_field_id"
-    t.string   "key",                          default: "option"
-    t.string   "value",                                           null: false
-    t.string   "value_type"
+    t.string   "name"
     t.datetime "deleted_at"
-    t.datetime "created_at",                                      null: false
-    t.datetime "updated_at",                                      null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["deleted_at"], name: "index_question_row_column_field_options_on_deleted_at", using: :btree
-    t.index ["question_row_column_field_id", "deleted_at"], name: "index_qrcfo_on_qrcf_id_deleted_at", using: :btree
-    t.index ["question_row_column_field_id"], name: "index_qrcfo_on_qrcf_id", using: :btree
   end
 
   create_table "question_row_column_field_types", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -290,6 +285,23 @@ ActiveRecord::Schema.define(version: 20170621184411) do
     t.index ["deleted_at"], name: "index_question_row_column_fields_on_deleted_at", using: :btree
     t.index ["question_row_column_field_type_id"], name: "index_qrcf_on_qrcft_id", using: :btree
     t.index ["question_row_column_id"], name: "index_qrcf_on_qrc_id", using: :btree
+  end
+
+  create_table "question_row_column_fields_question_row_column_field_options", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "question_row_column_field_id"
+    t.integer  "question_row_column_field_option_id"
+    t.string   "value"
+    t.string   "value_type"
+    t.datetime "deleted_at"
+    t.boolean  "active"
+    t.datetime "created_at",                          null: false
+    t.datetime "updated_at",                          null: false
+    t.index ["active"], name: "index_qrcfqrcfo_on_active", using: :btree
+    t.index ["deleted_at"], name: "index_qrcfqrcfo_on_deleted_at", using: :btree
+    t.index ["question_row_column_field_id", "question_row_column_field_option_id", "active"], name: "index_qrcfqrcfo_on_qrcf_id_qrcfo_id_active", using: :btree
+    t.index ["question_row_column_field_id", "question_row_column_field_option_id", "deleted_at"], name: "index_qrcfqrcfo_on_qrcf_id_qrcfo_id_deleted_at", using: :btree
+    t.index ["question_row_column_field_id"], name: "index_qrcfqrcfo_on_qrcf_id", using: :btree
+    t.index ["question_row_column_field_option_id"], name: "index_qrcfqrcfo_on_qrcfo_id", using: :btree
   end
 
   create_table "question_row_columns", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -314,16 +326,7 @@ ActiveRecord::Schema.define(version: 20170621184411) do
     t.index ["question_id"], name: "index_question_rows_on_question_id", using: :btree
   end
 
-  create_table "question_types", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.string   "name"
-    t.datetime "deleted_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["deleted_at"], name: "index_question_types_on_deleted_at", using: :btree
-  end
-
   create_table "questions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer  "question_type_id"
     t.integer  "extraction_forms_projects_section_id"
     t.string   "name"
     t.text     "description",                          limit: 65535
@@ -331,9 +334,8 @@ ActiveRecord::Schema.define(version: 20170621184411) do
     t.datetime "created_at",                                         null: false
     t.datetime "updated_at",                                         null: false
     t.index ["deleted_at"], name: "index_questions_on_deleted_at", using: :btree
+    t.index ["extraction_forms_projects_section_id", "deleted_at"], name: "index_q_on_efps_id_deleted_at", using: :btree
     t.index ["extraction_forms_projects_section_id"], name: "index_questions_on_extraction_forms_projects_section_id", using: :btree
-    t.index ["question_type_id", "extraction_forms_projects_section_id", "deleted_at"], name: "index_q_on_qt_id_efps_id_deleted_at", using: :btree
-    t.index ["question_type_id"], name: "index_questions_on_question_type_id", using: :btree
   end
 
   create_table "sections", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -430,12 +432,12 @@ ActiveRecord::Schema.define(version: 20170621184411) do
   add_foreign_key "profiles", "organizations"
   add_foreign_key "profiles", "users"
   add_foreign_key "publishings", "users"
-  add_foreign_key "question_row_column_field_options", "question_row_column_fields"
   add_foreign_key "question_row_column_fields", "question_row_column_field_types"
   add_foreign_key "question_row_column_fields", "question_row_columns"
+  add_foreign_key "question_row_column_fields_question_row_column_field_options", "question_row_column_field_options"
+  add_foreign_key "question_row_column_fields_question_row_column_field_options", "question_row_column_fields"
   add_foreign_key "question_row_columns", "question_rows"
   add_foreign_key "question_rows", "questions"
   add_foreign_key "questions", "extraction_forms_projects_sections"
-  add_foreign_key "questions", "question_types"
   add_foreign_key "suggestions", "users"
 end

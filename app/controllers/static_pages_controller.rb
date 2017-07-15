@@ -1,5 +1,6 @@
 class StaticPagesController < ApplicationController
   skip_before_action :authenticate_user!, only: [:home, :help, :about, :search]
+  skip_before_filter :verify_authenticity_token, only: [:search]
 
   SORT = {  'updated-at': { updated_at: :desc },
             'created-at': { created_at: :desc }
@@ -19,5 +20,6 @@ class StaticPagesController < ApplicationController
     @order = params[:o] || 'updated-at'
     @results = Project.includes(publishings: [{ user: :profile }, approval: [{ user: :profile }]])
                       .by_name_description_and_query(@query).order(SORT[@order]).page(params[:page])
+    @projects = @results
   end
 end

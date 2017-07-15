@@ -68,7 +68,7 @@ class ExtractionFormsProjectsController < ApplicationController
                                                         .includes(extraction_forms_projects_sections: [:extraction_forms_projects_section_type,
                                                                                                        :ordering,
                                                                                                        :section,
-                                                                                                       { questions: [:ordering, :question_type] }])
+                                                                                                       { questions: [:ordering] }])
                                                         .includes(key_questions_projects: [:key_question])
                                                         .find(params[:id])
     end

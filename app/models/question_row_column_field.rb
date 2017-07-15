@@ -2,32 +2,34 @@ class QuestionRowColumnField < ApplicationRecord
   acts_as_paranoid
   has_paper_trail
 
-  after_create :create_default_question_row_column_field_options
+  after_create :associate_default_question_row_column_field_type
+  after_create :create_default_question_row_column_fields_question_row_column_field_options
 
   belongs_to :question_row_column, inverse_of: :question_row_column_field
   belongs_to :question_row_column_field_type, inverse_of: :question_row_column_fields
 
-  has_many :question_row_column_field_options, dependent: :destroy, inverse_of: :question_row_column_field
+  has_many :question_row_column_fields_question_row_column_field_options, dependent: :destroy, inverse_of: :question_row_column_field
+  has_many :question_row_column_field_options, through: :question_row_column_fields_question_row_column_field_options, dependent: :destroy
 
   accepts_nested_attributes_for :question_row_column_field_options, allow_destroy: true
+  accepts_nested_attributes_for :question_row_column_fields_question_row_column_field_options, allow_destroy: true
 
   delegate :question_type, to: :question_row_column
 
   private
 
-    def create_default_question_row_column_field_options
-      if %w(Text Matrix\ Text).include? self.question_type.name
-        self.question_row_column_field_type = QuestionRowColumnFieldType.find_by(name: 'alphanumeric')
-        self.question_row_column_field_options.create(key: 'min_length', value: 0,   value_type: 'decimal')
-        self.question_row_column_field_options.create(key: 'max_length', value: 255, value_type: 'decimal')
-        self.save
-      elsif %w(Checkbox Dropdown Radio Matrix\ Checkbox Matrix\ Dropdown Matrix\ Radio).include? self.question_type.name
-        self.question_row_column_field_type = QuestionRowColumnFieldType.find_by(name: 'multi')
-        self.question_row_column_field_options.create(key: 'option', value: 'option a')
-        self.question_row_column_field_options.create(key: 'option', value: 'option b')
-        self.question_row_column_field_options.create(key: 'option', value: 'option c')
-        self.question_row_column_field_options.create(key: 'option', value: 'option d')
-        self.save
-      end
-    end
+  def associate_default_question_row_column_field_type
+    self.question_row_column_field_type = QuestionRowColumnFieldType.find_by(name: 'string')
+    self.save
+  end
+
+  def create_default_question_row_column_fields_question_row_column_field_options
+    self.question_row_column_field_options << QuestionRowColumnFieldOption.find_by(name: 'choice')
+    self.question_row_column_field_options << QuestionRowColumnFieldOption.find_by(name: 'min_length')
+    self.question_row_column_field_options << QuestionRowColumnFieldOption.find_by(name: 'max_length')
+    self.question_row_column_field_options << QuestionRowColumnFieldOption.find_by(name: 'min_value')
+    self.question_row_column_field_options << QuestionRowColumnFieldOption.find_by(name: 'max_value')
+    self.question_row_column_field_options << QuestionRowColumnFieldOption.find_by(name: 'precision')
+    self.question_row_column_field_options << QuestionRowColumnFieldOption.find_by(name: 'scale')
+  end
 end

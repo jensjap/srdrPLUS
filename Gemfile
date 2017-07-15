@@ -96,3 +96,6 @@ gem 'gon'
 
 # Pagination.
 gem 'kaminari'
+
+# CORS
+gem 'rack-cors'

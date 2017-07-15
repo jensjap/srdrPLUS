@@ -54,36 +54,36 @@ document.addEventListener 'turbolinks:load', ->
 
     $( document )
 
-      # Cocoon listeners.
-      .on 'cocoon:before-insert', ( e, insertedItem ) ->
-        insertedItem.fadeIn 'slow'
-
-      .on 'cocoon:after-insert', ( e, insertedItem ) ->
-        Foundation.reInit 'abide'
-
-      .on 'cocoon:before-remove', ( e, insertedItem ) ->
-        #!!! This isnt' working. Immediately disappears.
-        $( this ).data 'remove-timeout', 1000
-        insertedItem.fadeOut 'slow'
-
-      .on 'cocoon:after-remove', ( e, insertedItem ) ->
-        Foundation.reInit 'abide'
-
-      # Abide listeners.
-      # Make form errors visible on the tab links.
-      .on 'invalid.zf.abide', ( e, el ) ->
-        if $( el ).closest( 'fieldset' ).attr( 'class' ) == 'key-question-fieldset'
-          $( '#panel-key-question-label' ).html( '<span style="color: red;">(*) Key Question(s)</span>' )
-
-        if $( el ).closest( 'fieldset' ).attr( 'class' ) == 'project-information-fieldset'
-          $( '#panel-information-label' ).html( '<span style="color: red;">(*) Project Information</span>' )
-
-      .on 'valid.zf.abide', ( e, el ) ->
-        if $( el ).closest( 'fieldset' ).attr( 'class' ) == 'key-question-fieldset'
-          $( '#panel-key-question-label' ).html( 'Key Question(s)' )
-
-        if $( el ).closest( 'fieldset' ).attr( 'class' ) == 'project-information-fieldset'
-          $( '#panel-information-label' ).html( 'Project Information' )
+#      # Cocoon listeners.
+#      .on 'cocoon:before-insert', ( e, insertedItem ) ->
+#        insertedItem.fadeIn 'slow'
+#
+#      .on 'cocoon:after-insert', ( e, insertedItem ) ->
+#        Foundation.reInit 'abide'
+#
+#      .on 'cocoon:before-remove', ( e, insertedItem ) ->
+#        #!!! This isnt' working. Immediately disappears.
+#        $( this ).data 'remove-timeout', 1000
+#        insertedItem.fadeOut 'slow'
+#
+#      .on 'cocoon:after-remove', ( e, insertedItem ) ->
+#        Foundation.reInit 'abide'
+#
+#      # Abide listeners.
+#      # Make form errors visible on the tab links.
+#      .on 'invalid.zf.abide', ( e, el ) ->
+#        if $( el ).closest( 'fieldset' ).attr( 'class' ) == 'key-question-fieldset'
+#          $( '#panel-key-question-label' ).html( '<span style="color: red;">(*) Key Question(s)</span>' )
+#
+#        if $( el ).closest( 'fieldset' ).attr( 'class' ) == 'project-information-fieldset'
+#          $( '#panel-information-label' ).html( '<span style="color: red;">(*) Project Information</span>' )
+#
+#      .on 'valid.zf.abide', ( e, el ) ->
+#        if $( el ).closest( 'fieldset' ).attr( 'class' ) == 'key-question-fieldset'
+#          $( '#panel-key-question-label' ).html( 'Key Question(s)' )
+#
+#        if $( el ).closest( 'fieldset' ).attr( 'class' ) == 'project-information-fieldset'
+#          $( '#panel-information-label' ).html( 'Project Information' )
 
 #    change = ->
 #      $("form input, form textarea").change( ->

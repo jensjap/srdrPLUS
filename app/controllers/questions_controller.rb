@@ -17,6 +17,8 @@ class QuestionsController < ApplicationController
   def create
     @question = @extraction_forms_projects_section.questions.new(question_params)
 
+    # !!! Check for params 'q_type' and build values based on the type.
+
     respond_to do |format|
       if @question.save
         format.html { redirect_to edit_question_path(@question),
@@ -108,8 +110,8 @@ class QuestionsController < ApplicationController
                 :description, question_rows_attributes:
                                 [:id, :name, question_row_columns_attributes:
                                                [:id, :name, question_row_column_field_attributes:
-                                                              [:id, :question_row_column_field_type_id, question_row_column_field_options_attributes:
-                                                                      [:id, :_destroy, :value]]]])
+                                                              [:id, :question_row_column_field_type_id, question_row_column_fields_question_row_column_field_options_attributes:
+                                                                      [:id, :_destroy, :question_row_column_field_option_id, :value]]]])
     end
 
     def ensure_matrix_type

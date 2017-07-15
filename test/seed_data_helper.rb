@@ -207,27 +207,26 @@ module SeedDataExtended
       @project.key_questions << [@kq1, @kq2]
       @project.extraction_forms << [@ef1, @ef2]
 
-      # Seed QuestionType.
-      QuestionType.create(
-        [
-          { name: 'Text' },
-          { name: 'Checkbox' },
-          { name: 'Dropdown' },
-          { name: 'Radio' },
-          { name: 'Matrix Text' },
-          { name: 'Matrix Checkbox' },
-          { name: 'Matrix Dropdown' },
-          { name: 'Matrix Radio' }
-        ]
-      )
-
       # Seed QuestionRowColumnFieldType.
       QuestionRowColumnFieldType.create(
         [
-          { name: 'alphanumeric' },
-          { name: 'integer' },
-          { name: 'decimal' },
-          { name: 'multi' }
+          { name: 'multi' },
+          { name: 'numeric' },
+          { name: 'scientific' },
+          { name: 'string' }
+        ]
+      )
+
+      # Seed QuestionRowColumnFieldOption.
+      QuestionRowColumnFieldOption.create(
+        [
+          { name: 'choice' },      # For multiple-choice: checkbox, radio, dropdown
+          { name: 'min_length' },  # For text
+          { name: 'max_length' },  # For text
+          { name: 'min_value' },   # For numeric and scientific
+          { name: 'max_value' },   # For numeric and scientific
+          { name: 'precision' },   # For scientific
+          { name: 'scale' }        # For scientific
         ]
       )
 

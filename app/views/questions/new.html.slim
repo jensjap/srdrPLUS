@@ -2,7 +2,8 @@
   h3 #{ @extraction_forms_projects_section.section.name }
   h4 New Question (Step 1 of 2)
 
-== render 'form'
+.column.row
+  == render 'form'
 
 .column.row
   = link_to 'Back', build_extraction_forms_project_path(@extraction_forms_projects_section.extraction_forms_project,
