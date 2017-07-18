@@ -14,7 +14,7 @@ class QuestionRowColumnFieldsQuestionRowColumnFieldOption < ApplicationRecord
   def set_default_values
     case self.question_row_column_field_option.name
     when 'choice'
-      self.value      = ''
+      #self.value      = ''
       self.value_type = 'string'
     when 'min_length'
       self.value      = 0

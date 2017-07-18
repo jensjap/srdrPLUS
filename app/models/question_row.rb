@@ -16,7 +16,6 @@ class QuestionRow < ApplicationRecord
 
     def create_default_question_row_columns
       self.question_row_columns.create
-      self.question_row_columns.create
     end
 
 #    def create_default_question_row_columns

@@ -210,17 +210,18 @@ module SeedDataExtended
       # Seed QuestionRowColumnFieldType.
       QuestionRowColumnFieldType.create(
         [
-          { name: 'multi' },
-          { name: 'numeric' },
+          { name: 'checkbox'},
+          { name: 'dropdown' },
+          { name: 'radio' },
           { name: 'scientific' },
-          { name: 'string' }
+          { name: 'text' }
         ]
       )
 
       # Seed QuestionRowColumnFieldOption.
       QuestionRowColumnFieldOption.create(
         [
-          { name: 'choice' },      # For multiple-choice: checkbox, radio, dropdown
+          { name: 'option' },      # For multiple-choice: checkbox, radio, dropdown
           { name: 'min_length' },  # For text
           { name: 'max_length' },  # For text
           { name: 'min_value' },   # For numeric and scientific

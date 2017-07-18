@@ -1,7 +1,7 @@
 class QuestionsController < ApplicationController
   before_action :set_extraction_forms_projects_section, only: [:new, :create]
   before_action :set_question, only: [:edit, :update, :destroy, :add_column, :add_row]
-  before_action :ensure_matrix_type, only: [:add_column, :add_row]
+  #before_action :ensure_matrix_type, only: [:add_column, :add_row]
 
   # GET /extraction_forms_projects_sections/1/questions/new
   def new
@@ -114,7 +114,7 @@ class QuestionsController < ApplicationController
                                                                       [:id, :_destroy, :question_row_column_field_option_id, :value]]]])
     end
 
-    def ensure_matrix_type
-      redirect_to root_url, notice: 'Your action is not allowed' unless @question.question_type.name.include?('Matrix')
-    end
+#    def ensure_matrix_type
+#      redirect_to root_url, notice: 'Your action is not allowed' unless @question.question_type.name.include?('Matrix')
+#    end
 end
