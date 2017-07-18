@@ -221,13 +221,13 @@ module SeedDataExtended
       # Seed QuestionRowColumnFieldOption.
       QuestionRowColumnFieldOption.create(
         [
-          { name: 'option' },      # For multiple-choice: checkbox, radio, dropdown
-          { name: 'min_length' },  # For text
-          { name: 'max_length' },  # For text
-          { name: 'min_value' },   # For numeric and scientific
-          { name: 'max_value' },   # For numeric and scientific
-          { name: 'precision' },   # For scientific
-          { name: 'scale' }        # For scientific
+          { name: 'answer_choice' }, # For multiple-choice: checkbox, radio, dropdown
+          { name: 'min_length' },    # For text
+          { name: 'max_length' },    # For text
+          { name: 'min_value' },     # For scientific
+          { name: 'max_value' },     # For scientific
+          { name: 'coefficient' },   # For scientific
+          { name: 'exponent' }       # For scientific
         ]
       )
 

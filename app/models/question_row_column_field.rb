@@ -15,21 +15,22 @@ class QuestionRowColumnField < ApplicationRecord
   accepts_nested_attributes_for :question_row_column_fields_question_row_column_field_options, allow_destroy: true
 
   delegate :question_type, to: :question_row_column
+  delegate :question, to: :question_row_column
 
   private
 
   def associate_default_question_row_column_field_type
-    self.question_row_column_field_type = QuestionRowColumnFieldType.find_by(name: 'string')
+    self.question_row_column_field_type = QuestionRowColumnFieldType.find_by(name: 'text')
     self.save
   end
 
   def create_default_question_row_column_fields_question_row_column_field_options
-    self.question_row_column_field_options << QuestionRowColumnFieldOption.find_by(name: 'choice')
+    self.question_row_column_field_options << QuestionRowColumnFieldOption.find_by(name: 'answer_choice')
     self.question_row_column_field_options << QuestionRowColumnFieldOption.find_by(name: 'min_length')
     self.question_row_column_field_options << QuestionRowColumnFieldOption.find_by(name: 'max_length')
     self.question_row_column_field_options << QuestionRowColumnFieldOption.find_by(name: 'min_value')
     self.question_row_column_field_options << QuestionRowColumnFieldOption.find_by(name: 'max_value')
-    self.question_row_column_field_options << QuestionRowColumnFieldOption.find_by(name: 'precision')
-    self.question_row_column_field_options << QuestionRowColumnFieldOption.find_by(name: 'scale')
+    self.question_row_column_field_options << QuestionRowColumnFieldOption.find_by(name: 'coefficient')
+    self.question_row_column_field_options << QuestionRowColumnFieldOption.find_by(name: 'exponent')
   end
 end

@@ -4,13 +4,21 @@ class QuestionRowColumnsController < ApplicationController
   def destroy_entire_column
     @question = @question_row_column.question
 
-    QuestionRowColumn.transaction do
-      destroy_all_question_row_columns_on_column_index
-    end
+    # Ensure that at least 1 column stays behind after deletion.
+    if @question.question_rows.first.question_row_columns.length > 1
+      QuestionRowColumn.transaction do
+        destroy_all_question_row_columns_on_column_index
+      end
 
-    respond_to do |format|
-      format.html { redirect_to edit_question_path(@question), notice: t('removed') }
-      format.json { head :no_content }
+      respond_to do |format|
+        format.html { redirect_to edit_question_path(@question), notice: t('removed') }
+        format.json { head :no_content }
+      end
+    else
+      respond_to do |format|
+        format.html { redirect_to edit_question_path(@question), alert: t('requires_one') }
+        format.json { head :no_content }
+      end
     end
   end
 

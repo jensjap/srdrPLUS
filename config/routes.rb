@@ -13,6 +13,9 @@ Rails.application.routes.draw do
           resources :question_rows, only: [:destroy] do
             resources :question_row_columns, only: [] do
               delete 'destroy_entire_column', on: :member
+              resources :question_row_column_fields, only: [] do
+                resources :question_row_column_fields_question_row_column_field_options, only: [:destroy]
+              end
             end
           end
         end

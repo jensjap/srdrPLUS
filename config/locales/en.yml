@@ -29,6 +29,7 @@ en:
     form:
       save: 'Save Key Question'
   removed: 'Successfully removed'
+  requires_one: 'You must have at least one of this resource.'
   save: 'Save'
   save_changes: 'Save changes'
   success: 'Success!'

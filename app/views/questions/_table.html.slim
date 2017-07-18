@@ -1,0 +1,67 @@
+.table-scroll
+
+  table.hover
+
+    thead
+      tr
+        = f.simple_fields_for(:question_rows, @question.question_rows.first) do |qr_f|
+          th
+          = qr_f.simple_fields_for(:question_row_columns) do |qrc_f|
+            th
+              = qrc_f.input :name, label: 'Column Header', wrapper_html: { style: 'margin-bottom: 0;' }
+              = link_to 'Remove', destroy_entire_column_question_row_column_path(qrc_f.object),
+                                  method: :delete, data: { confirm: t('confirm') },
+                                  class: 'float-right',
+                                  style: 'font-weight: normal;'
+
+    tbody
+      = f.simple_fields_for(:question_rows) do |qr_f|
+        tr
+          td
+            = qr_f.input :name, label: 'Row Header', wrapper_html: { style: 'margin-bottom: 0;' }
+            = link_to 'Remove', qr_f.object, method: :delete, data: { confirm: t('confirm') }, class: 'float-right'
+
+          = qr_f.simple_fields_for(:question_row_columns) do |qrc_f|
+
+            td
+
+              fieldset.fieldset
+                legend Field Options
+
+                = qrc_f.simple_fields_for(:question_row_column_field) do |qrcf_f|
+
+                  = qrcf_f.association :question_row_column_field_type, label: 'Field Type',
+                                                                        include_blank: false,
+                                                                        wrapper: 'horizontal_form'
+
+                  = qrcf_f.simple_fields_for(:question_row_column_fields_question_row_column_field_options) do |qrcfqrcfo_f|
+
+                    - option = qrcfqrcfo_f.object
+                    - type = { 'answer_choice': 1,
+                               'min_value':     4,
+                               'max_value':     4,
+                               'coefficient':   4,
+                               'exponent':      4,
+                               'min_length':    5,
+                               'max_length':    5 }
+
+                    div class="field-options field-option-type-#{ type[option.question_row_column_field_option.name.to_sym] }"
+
+                      / Provide remove link for deletion of answer choices.
+                      - if (option.question_row_column_field_option_id == 1) &&\
+                           (option.question_row_column_field.question_row_column_fields_question_row_column_field_options\
+                                                            .where(question_row_column_field_option: QuestionRowColumnFieldOption.find_by(name: 'answer_choice')).length > 1)
+
+                        = link_to 'Remove', option, method: :delete, data: { confirm: t('confirm') },
+                                                    class: 'float-right'
+
+                      = qrcfqrcfo_f.input :value,
+                                          label: option.question_row_column_field_option.name.titleize,
+                                          as: option.value_type,
+                                          wrapper: 'horizontal_form'
+
+                    .links
+                      = link_to_add_association 'add answer choice', qrcf_f,
+                                                :question_row_column_fields_question_row_column_field_options,
+                                                partial: 'questions/question_types/question_row_column_fields_question_row_column_field_option_fields'
+

@@ -28,17 +28,10 @@ class Question < ApplicationRecord
   def question_type
     if self.question_rows.length == 1
       if self.question_rows.first.question_row_columns.length == 1
-        if self.question_rows.first.question_row_columns.first.question_row_column_field.question_row_column_field_type == QuestionRowColumnFieldType.find_by(name: 'text')
-          return 'Text'
-        else
-          return 'Custom'
-        end
-      else
-        return 'Custom'
+        return 'Single'
       end
-    else
-      return 'Matrix'
     end
+    return "Matrix"
   end
 
   private

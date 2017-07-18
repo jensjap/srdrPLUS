@@ -1,7 +1,6 @@
 = simple_form_for([@extraction_forms_projects_section, @question], html: { data: { 'abide': '', 'live-validate': true } }) do |f|
   = f.error_notification
 
-  - question_row_column_field_type_collection = QuestionRowColumnFieldType.where.not(name: 'multi')
   - first_time = @question.question_rows.blank?
 
   .alert.callout data-abide-error='' style='display: none;'
@@ -25,57 +24,10 @@
       #step-two
 
         = link_to 'Add Column', add_column_question_path(@question), method: :post, class: 'float-right'
+
+        == render 'questions/table', f: f
+
         = link_to 'Add Row', add_row_question_path(@question), method: :post
-
-        .table-scroll
-
-          table.hover
-
-            thead
-              tr
-                = f.simple_fields_for(:question_rows, @question.question_rows.first) do |qr_f|
-                  th
-                  = qr_f.simple_fields_for(:question_row_columns) do |qrc_f|
-                    th
-                      = qrc_f.input :name, label: 'Column Header', wrapper_html: { style: 'margin-bottom: 0;' }
-                      = link_to 'Remove', destroy_entire_column_question_row_column_path(qrc_f.object),
-                                          method: :delete, data: { confirm: t('confirm') },
-                                          class: 'float-right',
-                                          style: 'font-weight: normal;'
-
-            tbody
-              = f.simple_fields_for(:question_rows) do |qr_f|
-                tr
-                  td
-                    = qr_f.input :name, label: 'Row Header', wrapper_html: { style: 'margin-bottom: 0;' }
-                    = link_to 'Remove', qr_f.object, method: :delete, data: { confirm: t('confirm') }, class: 'float-right'
-
-                  = qr_f.simple_fields_for(:question_row_columns) do |qrc_f|
-
-                    td
-
-                      fieldset.fieldset
-                        legend Field Options
-
-                        = qrc_f.simple_fields_for(:question_row_column_field) do |qrcf_f|
-
-                          = qrcf_f.association :question_row_column_field_type, collection: question_row_column_field_type_collection,
-                                                                                label: 'Field Type',
-                                                                                include_blank: false,
-                                                                                wrapper: 'horizontal_form'
-
-                          = qrcf_f.simple_fields_for(:question_row_column_fields_question_row_column_field_options) do |qrcfqrcfo_f|
-
-                            - option = qrcfqrcfo_f.object
-                            = qrcfqrcfo_f.input :value,
-                                                label: option.question_row_column_field_option.name.titleize,
-                                                as: option.value_type,
-                                                wrapper: 'horizontal_form'
-
-                          .links
-                            = link_to_add_association 'add choice', qrcf_f,
-                                                      :question_row_column_fields_question_row_column_field_options,
-                                                      partial: 'questions/question_types/question_row_column_fields_question_row_column_field_option_fields'
 
   .form-actions
     = f.button :submit, @question.question_rows.any? ? 'Save and Finalize' : 'Next'

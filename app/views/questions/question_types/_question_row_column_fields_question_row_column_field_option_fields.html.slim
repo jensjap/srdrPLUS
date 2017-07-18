@@ -3,7 +3,7 @@
   - option = f.object
 
   .field
-    = f.input :value, label: 'Choice', as: option.value_type
+    = f.input :value, label: 'Answer Choice', as: option.value_type
     = f.hidden_field :question_row_column_field_option_id, value: 1
 
-  = link_to_remove_association 'remove option', f
+  = link_to_remove_association 'remove answer choice', f

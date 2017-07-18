@@ -15,7 +15,7 @@ class QuestionRow < ApplicationRecord
   private
 
     def create_default_question_row_columns
-      self.question_row_columns.create
+      create_appropriate_number_of_question_row_columns
     end
 
 #    def create_default_question_row_columns
@@ -45,9 +45,7 @@ class QuestionRow < ApplicationRecord
       if self.question.question_rows.first.question_row_columns.count == 0
 
         # If this is the first/only row in the matrix then we default to creating
-        # (arbitrarily) 3 columns.
-        self.question_row_columns.create
-        self.question_row_columns.create
+        # (arbitrarily) 1 columns.
         self.question_row_columns.create
 
       else
@@ -58,6 +56,5 @@ class QuestionRow < ApplicationRecord
         end
 
       end
-
     end
 end

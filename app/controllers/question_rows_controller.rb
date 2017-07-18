@@ -3,10 +3,19 @@ class QuestionRowsController < ApplicationController
 
   def destroy
     @question = @question_row.question
-    @question_row.destroy
-    respond_to do |format|
-      format.html { redirect_to edit_question_path(@question), notice: t('removed') }
-      format.json { head :no_content }
+
+    # Ensure that at least 1 row stays behind after deletion.
+    if @question.question_rows.length > 1
+      @question_row.destroy
+      respond_to do |format|
+        format.html { redirect_to edit_question_path(@question), notice: t('removed') }
+        format.json { head :no_content }
+      end
+    else
+      respond_to do |format|
+        format.html { redirect_to edit_question_path(@question), alert: t('requires_one') }
+        format.json { head :no_content }
+      end
     end
   end
 
