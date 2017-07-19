@@ -2,10 +2,12 @@
 
 one:
   question_row_column: one
+  question_row_column_field_type: one
   name: MyString
-  deleted_at: 2017-06-21 14:43:36
+  deleted_at:
 
 two:
   question_row_column: two
+  question_row_column_field_type: two
   name: MyString
-  deleted_at: 2017-06-21 14:43:36
+  deleted_at:

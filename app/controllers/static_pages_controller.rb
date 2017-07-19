@@ -1,6 +1,6 @@
 class StaticPagesController < ApplicationController
   skip_before_action :authenticate_user!, only: [:home, :help, :about, :search]
-  skip_before_filter :verify_authenticity_token, only: [:search]
+  skip_before_action :verify_authenticity_token, only: [:search]
 
   SORT = {  'updated-at': { updated_at: :desc },
             'created-at': { created_at: :desc }
