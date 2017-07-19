@@ -1,6 +1,6 @@
 .table-scroll
 
-  table.hover
+  table#question.hover
 
     thead
       tr
@@ -60,8 +60,7 @@
                                           as: option.value_type,
                                           wrapper: 'horizontal_form'
 
-                    .links
-                      = link_to_add_association 'add answer choice', qrcf_f,
-                                                :question_row_column_fields_question_row_column_field_options,
-                                                partial: 'questions/question_types/question_row_column_fields_question_row_column_field_option_fields'
-
+                  .links
+                    = link_to_add_association 'add answer choice', qrcf_f,
+                                              :question_row_column_fields_question_row_column_field_options,
+                                              partial: 'questions/question_types/question_row_column_fields_question_row_column_field_option_fields'

@@ -1,0 +1,83 @@
+h1 Preview
+
+- for q in @extraction_forms_projects_section.questions
+
+  .card
+
+    .card-divider
+
+      h5 #{ q.name }
+      h6 Description: #{ q.description }
+
+    .card-section
+
+      .table-scroll
+
+        #step-two
+
+          table.hover
+
+            thead
+
+              tr
+                th
+                - for qrc in q.question_rows.first.question_row_columns
+                  th style='font-weight: normal;' = qrc.name
+
+            tbody
+
+              - for qr in q.question_rows
+
+                tr
+                  td = qr.name
+                  - for qrc in qr.question_row_columns
+                    td
+                      - if qrc.question_row_column_field.question_row_column_field_type == QuestionRowColumnFieldType.find_by(name: 'checkbox')
+
+                        - for qrcfqrcfo in qrc.question_row_column_field.question_row_column_fields_question_row_column_field_options.where(question_row_column_field_option: QuestionRowColumnFieldOption.find_by(name: 'answer_choice'))
+                          = check_box_tag(:text, nil)
+                          =< qrcfqrcfo.value
+                          br
+
+                      - elsif qrc.question_row_column_field.question_row_column_field_type == QuestionRowColumnFieldType.find_by(name: 'dropdown')
+
+                        - select_options = qrc.question_row_column_field.question_row_column_fields_question_row_column_field_options.where(question_row_column_field_option: QuestionRowColumnFieldOption.find_by(name: 'answer_choice'))
+                        = select_tag(:text, options_from_collection_for_select(select_options, 'id', 'value'), include_blank: '-- Select --')
+
+                      - elsif qrc.question_row_column_field.question_row_column_field_type == QuestionRowColumnFieldType.find_by(name: 'radio')
+
+                        - for qrcfqrcfo in qrc.question_row_column_field.question_row_column_fields_question_row_column_field_options.where(question_row_column_field_option: QuestionRowColumnFieldOption.find_by(name: 'answer_choice'))
+                          = radio_button_tag(:text, nil)
+                          =< qrcfqrcfo.value
+                          br
+
+                      - elsif qrc.question_row_column_field.question_row_column_field_type == QuestionRowColumnFieldType.find_by(name: 'scientific')
+
+                        ' Scientific
+                        table
+                          thead
+                          tbody
+                            tr
+                              td
+                                = number_field_tag(:before_decimal_point,
+                                  nil,
+                                  in: 1..9,
+                                  step: 1,
+                                  maxlength: 1)
+                              td .
+                              td
+                                = number_field_tag(:after_decimal_point,
+                                  nil,
+                                  min: 0)
+                              td
+                                ' X 10 ^
+                              td
+                                /in: qrc.question_row_column_field.question_row_column_fields_question_row_column_field_options.find_by(question_row_column_field_option: QuestionRowColumnFieldOption.find_by(name: 'min_value')).value..\
+                                /    qrc.question_row_column_field.question_row_column_fields_question_row_column_field_options.find_by(question_row_column_field_option: QuestionRowColumnFieldOption.find_by(name: 'max_value')).value,
+                                /maxlength: qrc.question_row_column_field.question_row_column_fields_question_row_column_field_options.find_by(question_row_column_field_option: QuestionRowColumnFieldOption.find_by(name: 'max_length')).value)
+                                = number_field_tag(:exponent,
+                                  nil)
+
+                      - elsif qrc.question_row_column_field.question_row_column_field_type == QuestionRowColumnFieldType.find_by(name: 'text')
+
+                        = text_field_tag(:text, nil, maxlength: qrc.question_row_column_field.question_row_column_fields_question_row_column_field_options.find_by(question_row_column_field_option: QuestionRowColumnFieldOption.find_by(name: 'max_length')).value)
