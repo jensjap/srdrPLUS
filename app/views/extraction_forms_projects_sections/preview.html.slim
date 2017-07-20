@@ -34,50 +34,64 @@ h1 Preview
                     td
                       - if qrc.question_row_column_field.question_row_column_field_type == QuestionRowColumnFieldType.find_by(name: 'checkbox')
 
-                        - for qrcfqrcfo in qrc.question_row_column_field.question_row_column_fields_question_row_column_field_options.where(question_row_column_field_option: QuestionRowColumnFieldOption.find_by(name: 'answer_choice'))
-                          = check_box_tag(:text, nil)
+                        - for qrcfqrcfo in qrc.question_row_column_field\
+                                              .question_row_column_fields_question_row_column_field_options\
+                                              .where(question_row_column_field_option: QuestionRowColumnFieldOption.find_by(name: 'answer_choice'))
+                          = check_box_tag('checkbox-' + qrc.question_row_column_field.id.to_s, nil)
                           =< qrcfqrcfo.value
                           br
 
                       - elsif qrc.question_row_column_field.question_row_column_field_type == QuestionRowColumnFieldType.find_by(name: 'dropdown')
 
-                        - select_options = qrc.question_row_column_field.question_row_column_fields_question_row_column_field_options.where(question_row_column_field_option: QuestionRowColumnFieldOption.find_by(name: 'answer_choice'))
-                        = select_tag(:text, options_from_collection_for_select(select_options, 'id', 'value'), include_blank: '-- Select --')
+                        - select_options = qrc.question_row_column_field\
+                                              .question_row_column_fields_question_row_column_field_options\
+                                              .where(question_row_column_field_option: QuestionRowColumnFieldOption.find_by(name: 'answer_choice'))
+                        = select_tag('dropdown-' + qrc.question_row_column_field.id.to_s, options_from_collection_for_select(select_options, 'id', 'value'), include_blank: '-- Select --')
 
                       - elsif qrc.question_row_column_field.question_row_column_field_type == QuestionRowColumnFieldType.find_by(name: 'radio')
 
-                        - for qrcfqrcfo in qrc.question_row_column_field.question_row_column_fields_question_row_column_field_options.where(question_row_column_field_option: QuestionRowColumnFieldOption.find_by(name: 'answer_choice'))
-                          = radio_button_tag(:text, nil)
+                        - for qrcfqrcfo in qrc.question_row_column_field\
+                                              .question_row_column_fields_question_row_column_field_options\
+                                              .where(question_row_column_field_option: QuestionRowColumnFieldOption.find_by(name: 'answer_choice'))
+                          = radio_button_tag('radio-' + qrc.question_row_column_field.id.to_s, nil)
                           =< qrcfqrcfo.value
                           br
 
                       - elsif qrc.question_row_column_field.question_row_column_field_type == QuestionRowColumnFieldType.find_by(name: 'scientific')
 
-                        ' Scientific
-                        table
+                        table style='margin: 0;'
                           thead
                           tbody
                             tr
                               td
-                                = number_field_tag(:before_decimal_point,
+                                = number_field_tag('before_decimal_point-' + qrc.question_row_column_field.id.to_s,
                                   nil,
                                   in: 1..9,
                                   step: 1,
                                   maxlength: 1)
                               td .
                               td
-                                = number_field_tag(:after_decimal_point,
+                                = number_field_tag('after_decimal_point-' + qrc.question_row_column_field.id.to_s,
                                   nil,
-                                  min: 0)
+                                  min: 0,
+                                  max: 9999999)
                               td
                                 ' X 10 ^
                               td
                                 /in: qrc.question_row_column_field.question_row_column_fields_question_row_column_field_options.find_by(question_row_column_field_option: QuestionRowColumnFieldOption.find_by(name: 'min_value')).value..\
                                 /    qrc.question_row_column_field.question_row_column_fields_question_row_column_field_options.find_by(question_row_column_field_option: QuestionRowColumnFieldOption.find_by(name: 'max_value')).value,
                                 /maxlength: qrc.question_row_column_field.question_row_column_fields_question_row_column_field_options.find_by(question_row_column_field_option: QuestionRowColumnFieldOption.find_by(name: 'max_length')).value)
-                                = number_field_tag(:exponent,
-                                  nil)
+                                = number_field_tag('exponent-' + qrc.question_row_column_field.id.to_s,
+                                  nil,
+                                  min: -999,
+                                  max: 999)
 
                       - elsif qrc.question_row_column_field.question_row_column_field_type == QuestionRowColumnFieldType.find_by(name: 'text')
 
-                        = text_field_tag(:text, nil, maxlength: qrc.question_row_column_field.question_row_column_fields_question_row_column_field_options.find_by(question_row_column_field_option: QuestionRowColumnFieldOption.find_by(name: 'max_length')).value)
+                        = text_field_tag('text-' + qrc.question_row_column_field.id.to_s,
+                          nil,
+                          maxlength: qrc.question_row_column_field.question_row_column_fields_question_row_column_field_options.find_by(question_row_column_field_option: QuestionRowColumnFieldOption.find_by(name: 'max_length')).value)
+
+.column.row
+  = link_to 'Back', build_extraction_forms_project_path(@extraction_forms_projects_section.extraction_forms_project,
+                    anchor: "panel-tab-#{ @extraction_forms_projects_section.id }")
