@@ -51,6 +51,12 @@ document.addEventListener 'turbolinks:load', ->
       templateResult: formatResult
       templateSelection: formatResultSelection
 
+    # Find and remove prereq- classes when input field has value in preview block.
+    $('.card input,select').change ->
+      prereqFulfilled = $(this).data('prereq')
+      $("." + prereqFulfilled).removeClass(prereqFulfilled)
+      return
+
     return  # END do ->
 
   return  # END document.addEventListener 'turbolinks:load', ->

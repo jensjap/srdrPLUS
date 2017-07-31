@@ -2,8 +2,6 @@
 
   h4 Section Controls
 
-  h6 Position #{ efps.ordering.position }
-
   ul.extraction-form-controls
     li
       = link_to 'Edit Section Details', edit_extraction_forms_projects_section_path(efps), class: 'small button'
@@ -17,7 +15,7 @@ hr
 
   == render 'extraction_forms_projects/build/type_1', efps: efps
 
-/ Arm Details | Sample Characteristics | Outcome Details | Quality
+/ Design Details | Arm Details | Sample Characteristics | Outcome Details | Quality
 - elsif efps.extraction_forms_projects_section_type.id == 2
 
   == render 'extraction_forms_projects/build/type_2', efps: efps

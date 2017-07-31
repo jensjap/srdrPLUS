@@ -4,7 +4,7 @@ class ExtractionFormsProjectsController < ApplicationController
 
   # GET /extraction_forms_projects/1/build
   def build
-    @key_questions_projects = @extraction_forms_project.project.key_questions_projects
+    @key_questions_projects = @extraction_forms_project.project.key_questions_projects.includes(:key_question)
   end
 
   # GET /extraction_forms_projects/1/edit
@@ -64,13 +64,16 @@ class ExtractionFormsProjectsController < ApplicationController
     end
 
     def set_extraction_forms_project
-      @extraction_forms_project = ExtractionFormsProject.includes(:extraction_form)
-                                                        .includes(extraction_forms_projects_sections: [:extraction_forms_projects_section_type,
-                                                                                                       :ordering,
-                                                                                                       :section,
-                                                                                                       { questions: [:ordering] }])
-                                                        .includes(key_questions_projects: [:key_question])
-                                                        .find(params[:id])
+      @extraction_forms_project = ExtractionFormsProject
+        .includes(:extraction_form)
+        .includes(extraction_forms_projects_sections: [:extraction_forms_projects_section_type,
+                                                       :ordering,
+                                                       :section,
+                                                       { questions: [:ordering,
+                                                                     :dependencies,
+                                                                     { question_rows: [:question_row_columns] }] }])
+        .includes(key_questions_projects: [:key_question])
+        .find(params[:id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

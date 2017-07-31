@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170712185019) do
+ActiveRecord::Schema.define(version: 20170720182649) do
 
   create_table "approvals", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "approvable_type"
@@ -50,6 +50,23 @@ ActiveRecord::Schema.define(version: 20170712185019) do
     t.index ["degree_id"], name: "index_degrees_profiles_on_degree_id", using: :btree
     t.index ["deleted_at"], name: "index_degrees_profiles_on_deleted_at", using: :btree
     t.index ["profile_id"], name: "index_degrees_profiles_on_profile_id", using: :btree
+  end
+
+  create_table "dependencies", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string   "dependable_type"
+    t.integer  "dependable_id"
+    t.string   "prerequisitable_type"
+    t.integer  "prerequisitable_id"
+    t.datetime "deleted_at"
+    t.boolean  "active"
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
+    t.index ["active"], name: "index_dependencies_on_active", using: :btree
+    t.index ["deleted_at"], name: "index_dependencies_on_deleted_at", using: :btree
+    t.index ["dependable_type", "dependable_id", "prerequisitable_type", "prerequisitable_id", "active"], name: "index_dependencies_on_dtype_did_ptype_pid_active_uniq", unique: true, using: :btree
+    t.index ["dependable_type", "dependable_id", "prerequisitable_type", "prerequisitable_id", "deleted_at"], name: "index_dependencies_on_dtype_did_ptype_pid_deleted_at_uniq", unique: true, using: :btree
+    t.index ["dependable_type", "dependable_id"], name: "index_dependencies_on_dtype_did", using: :btree
+    t.index ["prerequisitable_type", "prerequisitable_id"], name: "index_dependencies_on_ptype_pid", using: :btree
   end
 
   create_table "dispatches", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|

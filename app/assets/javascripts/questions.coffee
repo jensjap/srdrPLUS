@@ -34,9 +34,6 @@ document.addEventListener 'turbolinks:load', ->
       _rowCnt = _tableRows.length
       _colCnt = _tableRows[0].cells.length
 
-      console.log _rowCnt
-      console.log _colCnt
-
       if _rowCnt == 2 and _colCnt == 2
         _tableRows.find('th:nth-child(-n+3)').hide()
         _tableRows.find('td:first-child').hide()

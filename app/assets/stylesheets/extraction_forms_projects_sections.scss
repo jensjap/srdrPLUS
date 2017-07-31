@@ -1,0 +1,17 @@
+// Place all the styles related to the ExtractionFormsProjects controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+div[class*=' prereq-'] {
+  opacity: 0.5;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+  cursor: not-allowed;
+
+  input, select {
+    pointer-events: none;
+  }
+}

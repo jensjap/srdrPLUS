@@ -15,6 +15,7 @@ class Question < ApplicationRecord
 
   has_one :ordering, as: :orderable, dependent: :destroy
 
+  has_many :dependencies, as: :dependable, dependent: :destroy
   has_many :question_rows, dependent: :destroy, inverse_of: :question
 
   accepts_nested_attributes_for :question_rows
@@ -26,12 +27,31 @@ class Question < ApplicationRecord
 
   # Returns the question type based on how many how many rows/columns/answer choices the question has.
   def question_type
-    if self.question_rows.length == 1
-      if self.question_rows.first.question_row_columns.length == 1
-        return 'Single'
-      end
+    if self.question_rows.length == 1 && self.question_rows.first.question_row_columns.length == 1
+      return 'Single'
     end
+
     return "Matrix"
+  end
+
+  # Checks whether this is dependent on argument.
+  #
+  # (prerequisitable) -> Boolean
+  def depends_on?(prerequisitable)
+    return self.dependencies.any? { |d| d.prerequisitable == prerequisitable }
+  end
+
+  # Toggle dependency.
+  #
+  # (prerequisitable) -> nil
+  def toggle_dependency(prerequisitable)
+    # Capture the deleted dependency.
+    dependency = self.dependencies.delete(self.dependencies.where(prerequisitable: prerequisitable))
+
+    # If no dependency was deleted then we add it.
+    self.dependencies << Dependency.create(prerequisitable: prerequisitable) if dependency.blank?
+
+    return nil
   end
 
   private

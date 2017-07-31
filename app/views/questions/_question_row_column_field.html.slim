@@ -1,0 +1,4 @@
+= simple_form_for(@question, url: toggle_dependency_question_path(@question), method: :patch, remote: true) do |f|
+
+  = f.hidden_field :question_row_column_id, value: qrc.id
+  = f.button :submit, 'Prerequisite', class: "tiny #{ @question.depends_on?(qrc.question_row_column_field) ? 'green' : 'grey' }"

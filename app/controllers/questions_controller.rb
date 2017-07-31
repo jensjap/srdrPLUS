@@ -1,6 +1,7 @@
 class QuestionsController < ApplicationController
   before_action :set_extraction_forms_projects_section, only: [:new, :create]
-  before_action :set_question, only: [:edit, :update, :destroy, :add_column, :add_row]
+  before_action :set_question, only: [:edit, :update, :destroy, :add_column, :add_row,
+                                      :dependencies, :toggle_dependency]
   #before_action :ensure_matrix_type, only: [:add_column, :add_row]
 
   # GET /extraction_forms_projects_sections/1/questions/new
@@ -80,6 +81,19 @@ class QuestionsController < ApplicationController
     @question.save
 
     redirect_to edit_question_path(@question), notice: t('success')
+  end
+
+  def dependencies
+    @extraction_forms_projects_section = @question.extraction_forms_projects_section
+  end
+
+  def toggle_dependency
+    @question_row_column_field = QuestionRowColumn.find(params[:question][:question_row_column_id].to_i).question_row_column_field
+    @question.toggle_dependency(@question_row_column_field)
+
+    respond_to do |format|
+      format.js
+    end
   end
 
   private

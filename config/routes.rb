@@ -9,8 +9,10 @@ Rails.application.routes.draw do
       resources :extraction_forms_projects_sections, only: [:new, :create, :edit, :update, :destroy] do
         get 'preview', on: :member
         resources :questions, only: [:new, :create, :edit, :update, :destroy] do
-          post 'add_column', on: :member
-          post 'add_row', on: :member
+          patch 'toggle_dependency', on: :member
+          post  'add_column', on: :member
+          post  'add_row', on: :member
+          get   'dependencies', on: :member
           resources :question_rows, only: [:destroy] do
             resources :question_row_columns, only: [] do
               delete 'destroy_entire_column', on: :member
