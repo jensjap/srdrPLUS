@@ -12,7 +12,7 @@ h4 Question List
       thead
         tr
           th Position
-          th Dependency
+          th Dependency Count
           th Name
           th Description
           th Dimension
@@ -25,15 +25,10 @@ h4 Question List
           tr
             td = q.ordering.position
             td
-              ul#dependencies
-                - if q.ordering.position == 1
-                  li -
-                - q.dependencies.each do |d|
-                  li = '(Question: ' + d.prerequisitable.question.ordering.position.to_s + ')'
-                  - if d.prerequisitable.question.question_rows.length > 1 || d.prerequisitable.question.question_rows.first.question_row_columns.length > 1
-                    li = '(Field: ' + d.prerequisitable.question_row_column.name.to_s + ')'
-                  - else
-                    li = '(Field: ' + d.prerequisitable.question.name + ')'
+              - if q.ordering.position == 1
+                | N/A
+              - else
+                = q.dependencies.length
             td = q.name
             td = q.description
             td = "#{ q.question_rows.length }x#{ q.question_rows.first.question_row_columns.length }"

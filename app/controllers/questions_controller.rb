@@ -88,8 +88,8 @@ class QuestionsController < ApplicationController
   end
 
   def toggle_dependency
-    @question_row_column_field = QuestionRowColumn.find(params[:question][:question_row_column_id].to_i).question_row_column_field
-    @question.toggle_dependency(@question_row_column_field)
+    @prerequisitable = params[:question][:prerequisitable_type].constantize.find(params[:question][:prerequisitable_id].to_i)
+    @question.toggle_dependency(@prerequisitable)
 
     respond_to do |format|
       format.js

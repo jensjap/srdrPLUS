@@ -34,8 +34,8 @@ h2 #{ @question.ordering.position }. #{ @question.name }
                   tr
                     td = qr.name
                     - for qrc in qr.question_row_columns
-                      td id='question-row-column-field-#{ qrc.question_row_column_field.id }'
-                        = render 'question_row_column_field', qrc: qrc
+                      td id='QuestionRowColumn-#{ qrc.id }'
+                        = render 'question_row_column_fields', qrc: qrc
 
 .column.row
   = link_to 'Back', build_extraction_forms_project_path(@extraction_forms_projects_section.extraction_forms_project,
