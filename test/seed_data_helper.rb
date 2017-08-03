@@ -214,7 +214,9 @@ module SeedDataExtended
           { name: 'dropdown' },
           { name: 'radio' },
           { name: 'scientific' },
-          { name: 'text' }
+          { name: 'text' },
+          { name: 'select2-single' },
+          { name: 'select2-multi' }
         ]
       )
 
