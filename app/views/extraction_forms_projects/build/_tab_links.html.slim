@@ -6,6 +6,6 @@ ul#vertical-tabs.tabs.vertical data-deep-link='true' data-deep-link-smudge='true
       - section = efps.section.name
       = link_to section, "#panel-tab-#{ efps.id.to_s }", title: section
 
-= link_to new_extraction_forms_project_extraction_forms_projects_section_path(@extraction_forms_project), { class: 'float-right' } do
+= link_to new_extraction_forms_project_extraction_forms_projects_section_path(@extraction_forms_project), { class: 'button secondary float-right' } do
   i.fi-plus
   |  Add Section

@@ -34,13 +34,28 @@ h2 #{ @question.ordering.position }. #{ @question.name }
                   tr
                     td = qr.name
                     - for qrc in qr.question_row_columns
-                      td id='QuestionRowColumn-#{ qrc.id }'
-                        = render 'question_row_column_fields', qrc: qrc
+                      td
+                        - if qrc.question_row_column_field.question_row_column_field_type == QuestionRowColumnFieldType.find_by(name: 'text') ||\
+                          qrc.question_row_column_field.question_row_column_field_type == QuestionRowColumnFieldType.find_by(name: 'scientific')
+
+                          = render 'question_row_column_fields', prerequisitable: qrc
+
+                        - elsif qrc.question_row_column_field.question_row_column_field_type == QuestionRowColumnFieldType.find_by(name: 'checkbox') ||\
+                          qrc.question_row_column_field.question_row_column_field_type == QuestionRowColumnFieldType.find_by(name: 'dropdown') ||\
+                          qrc.question_row_column_field.question_row_column_field_type == QuestionRowColumnFieldType.find_by(name: 'radio')
+
+                          - for qrcfqrcfo in qrc.question_row_column_field\
+                                                .question_row_column_fields_question_row_column_field_options\
+                                                .where(question_row_column_field_option: QuestionRowColumnFieldOption.find_by(name: 'answer_choice'))
+
+                            = qrcfqrcfo.value
+
+                            = render 'question_row_column_fields', prerequisitable: qrcfqrcfo
 
 .column.row
-  = link_to 'Save', build_extraction_forms_project_path(@extraction_forms_projects_section.extraction_forms_project,
+  = link_to 'Save and Finalize', build_extraction_forms_project_path(@extraction_forms_projects_section.extraction_forms_project,
                                                         anchor: "panel-tab-#{ @extraction_forms_projects_section.id }"),
-                    class: 'button'
+                                 class: 'button'
 
 .column.row
   = link_to 'Back', build_extraction_forms_project_path(@extraction_forms_projects_section.extraction_forms_project,

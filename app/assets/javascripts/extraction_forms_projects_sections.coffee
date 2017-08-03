@@ -56,6 +56,8 @@ document.addEventListener 'turbolinks:load', ->
     # Find and remove prereq- classes when input field has value in preview block.
     $('.card input,select').change ->
       prereqFulfilled = $(this).data('prereq')
+      if not prereqFulfilled
+        prereqFulfilled = $(this).find(':selected').data('prereq')
       $("." + prereqFulfilled).removeClass(prereqFulfilled)
       return
 

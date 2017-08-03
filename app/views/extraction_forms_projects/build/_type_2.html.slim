@@ -1,5 +1,5 @@
 = link_to 'Preview', preview_extraction_forms_projects_section_path(efps),
-                     class: 'button small float-right', style: 'margin-bottom: 0;'
+                     class: 'button tiny float-right', style: 'margin-bottom: 0;'
 
 h4 Question List
 
@@ -12,10 +12,9 @@ h4 Question List
       thead
         tr
           th Position
-          th Dependency Count
+          th Dependency
           th Name
           th Description
-          th Dimension
           th
           th
           th
@@ -25,19 +24,38 @@ h4 Question List
           tr
             td = q.ordering.position
             td
-              - if q.ordering.position == 1
-                | N/A
-              - else
-                = q.dependencies.length
+              ul#dependencies
+
+                - if q.ordering.position == 1
+
+                  li
+                    | -
+
+                - for d in q.dependencies
+
+                  li = 'Question: ' + d.prerequisitable.question.ordering.position.to_s
+
+                  - if d.prerequisitable.question.question_type == 'Matrix'
+
+                    - if d.prerequisitable.question_row_column_field_type == QuestionRowColumnFieldType.find_by(name: 'checkbox') ||\
+                      d.prerequisitable.question_row_column_field_type == QuestionRowColumnFieldType.find_by(name: 'dropdown') ||\
+                      d.prerequisitable.question_row_column_field_type == QuestionRowColumnFieldType.find_by(name: 'radio')
+
+                      li = '- Cell: (' + d.prerequisitable.question_row_column_field.question_row_column.question_row.name.to_s + ' x ' + d.prerequisitable.question_row_column_field.question_row_column.name.to_s + ')'
+                      li = '- Option: ' + d.prerequisitable.value
+
+                    - else
+
+                      li = '- Cell: (' + d.prerequisitable.question_row_column_field.question_row_column.question_row.name.to_s + ' x ' + d.prerequisitable.question_row_column_field.question_row_column.name.to_s + ')'
+
             td = q.name
             td = q.description
-            td = "#{ q.question_rows.length }x#{ q.question_rows.first.question_row_columns.length }"
             td = link_to 'Edit', edit_question_path(q)
             td = link_to 'Remove', q, method: :delete, data: { confirm: t('confirm') }
             td
               - unless q.ordering.position == 1
                 = link_to 'Dependencies', dependencies_question_path(q)
 
-    = link_to new_extraction_forms_projects_section_question_path(efps), { class: 'float-right' } do
-      i.fi-plus
-      |  Add Question
+= link_to new_extraction_forms_projects_section_question_path(efps), { class: 'button secondary' } do
+  i.fi-plus
+  |  Add Question

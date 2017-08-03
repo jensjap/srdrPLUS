@@ -1,1 +1,1 @@
-$('#<%= @prerequisitable.class.name %>-<%= @prerequisitable.id %>').html("<%= escape_javascript(render 'question_row_column_fields', qrc: @prerequisitable) %>")
+$('#<%= @prerequisitable.class.name %>-<%= @prerequisitable.id %>').html("<%= escape_javascript(render 'question_row_column_fields', prerequisitable: @prerequisitable) %>")

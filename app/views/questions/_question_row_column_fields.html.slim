@@ -1,24 +1,6 @@
-- if qrc.question_row_column_field.question_row_column_field_type == QuestionRowColumnFieldType.find_by(name: 'text') ||\
-  qrc.question_row_column_field.question_row_column_field_type == QuestionRowColumnFieldType.find_by(name: 'scientific')
+div id='#{ prerequisitable.class }-#{ prerequisitable.id }'
 
   = simple_form_for(@question, url: toggle_dependency_question_path(@question), method: :patch, remote: true) do |f|
-    = f.input :specificity, as: :fake_select, collection: [:wholesale, :specfic], selected: false
-    = f.hidden_field :prerequisitable_type, value: qrc.class
-    = f.hidden_field :prerequisitable_id, value: qrc.id
-    = f.button :submit, 'Prerequisite', class: "tiny #{ @question.depends_on?(qrc) ? 'success' : 'grey' }"
-
-- elsif qrc.question_row_column_field.question_row_column_field_type == QuestionRowColumnFieldType.find_by(name: 'checkbox') ||\
-  qrc.question_row_column_field.question_row_column_field_type == QuestionRowColumnFieldType.find_by(name: 'dropdown') ||\
-  qrc.question_row_column_field.question_row_column_field_type == QuestionRowColumnFieldType.find_by(name: 'radio')
-
-  - for qrcfqrcfo in qrc.question_row_column_field\
-                         .question_row_column_fields_question_row_column_field_options\
-                         .where(question_row_column_field_option: QuestionRowColumnFieldOption.find_by(name: 'answer_choice'))
-
-    = qrcfqrcfo.value
-
-    = simple_form_for(@question, url: toggle_dependency_question_path(@question), method: :patch, remote: true) do |f|
-      = f.input :specificity, as: :fake_select, collection: [:wholesale, :specfic], selected: false
-      = f.hidden_field :prerequisitable_type, value: qrcfqrcfo.class
-      = f.hidden_field :prerequisitable_id, value: qrcfqrcfo.id
-      = f.button :submit, 'Prerequisite', class: "tiny #{ @question.depends_on?(qrcfqrcfo) ? 'success' : 'grey' }"
+    = f.hidden_field :prerequisitable_type, value: prerequisitable.class
+    = f.hidden_field :prerequisitable_id, value: prerequisitable.id
+    = f.button :submit, 'Prerequisite', class: "#{ @question.depends_on?(prerequisitable) ? 'success' : 'grey' }"

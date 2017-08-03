@@ -34,7 +34,8 @@ h1 Preview
                   td = qr.name
                   - for qrc in qr.question_row_columns
                     td
-                      - if qrc.question_row_column_field.question_row_column_field_type == QuestionRowColumnFieldType.find_by(name: 'checkbox')
+                      - if qrc.question_row_column_field.question_row_column_field_type == QuestionRowColumnFieldType.find_by(name: 'checkbox') ||\
+                           qrc.question_row_column_field.question_row_column_field_type == QuestionRowColumnFieldType.find_by(name: 'radio')
 
                         - for qrcfqrcfo in qrc.question_row_column_field\
                                               .question_row_column_fields_question_row_column_field_options\
@@ -42,7 +43,7 @@ h1 Preview
                           = check_box_tag('checkbox-' + qrc.question_row_column_field.id.to_s,
                             nil,
                             false,
-                            data: { prereq: "prereq-#{ qrc.class }-#{ qrc.id }" })
+                            data: { prereq: "prereq-#{ qrcfqrcfo.class }-#{ qrcfqrcfo.id }" })
                           =< qrcfqrcfo.value
                           br
 
@@ -51,21 +52,8 @@ h1 Preview
                         - select_options = qrc.question_row_column_field\
                                               .question_row_column_fields_question_row_column_field_options\
                                               .where(question_row_column_field_option: QuestionRowColumnFieldOption.find_by(name: 'answer_choice'))
-                        = select_tag('dropdown-' + qrc.question_row_column_field.id.to_s, options_from_collection_for_select(select_options, 'id', 'value'),
-                          data: { prereq: "prereq-#{ qrc.class }-#{ qrc.id }" },
+                        = select_tag('dropdown-' + qrc.question_row_column_field.id.to_s, options_for_select(select_options.map { |qrcfqrcfo| [qrcfqrcfo.value, qrcfqrcfo.id, { 'data-prereq': "prereq-#{ qrcfqrcfo.class }-#{ qrcfqrcfo.id }" }] }),
                           include_blank: '-- Select --')
-
-                      - elsif qrc.question_row_column_field.question_row_column_field_type == QuestionRowColumnFieldType.find_by(name: 'radio')
-
-                        - for qrcfqrcfo in qrc.question_row_column_field\
-                                              .question_row_column_fields_question_row_column_field_options\
-                                              .where(question_row_column_field_option: QuestionRowColumnFieldOption.find_by(name: 'answer_choice'))
-                          = radio_button_tag('radio-' + qrc.question_row_column_field.id.to_s,
-                            nil,
-                            false,
-                            data: { prereq: "prereq-#{ qrc.class }-#{ qrc.id }" })
-                          =< qrcfqrcfo.value
-                          br
 
                       - elsif qrc.question_row_column_field.question_row_column_field_type == QuestionRowColumnFieldType.find_by(name: 'scientific')
 
@@ -90,9 +78,6 @@ h1 Preview
                               td
                                 ' X 10 ^
                               td
-                                /in: qrc.question_row_column_field.question_row_column_fields_question_row_column_field_options.find_by(question_row_column_field_option: QuestionRowColumnFieldOption.find_by(name: 'min_value')).value..\
-                                /    qrc.question_row_column_field.question_row_column_fields_question_row_column_field_options.find_by(question_row_column_field_option: QuestionRowColumnFieldOption.find_by(name: 'max_value')).value,
-                                /maxlength: qrc.question_row_column_field.question_row_column_fields_question_row_column_field_options.find_by(question_row_column_field_option: QuestionRowColumnFieldOption.find_by(name: 'max_length')).value)
                                 = number_field_tag("exponent-#{ qrc.question_row_column_field.id }",
                                   nil,
                                   data: { prereq: "prereq-#{ qrc.class }-#{ qrc.id }" },

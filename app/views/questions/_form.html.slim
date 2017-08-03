@@ -17,7 +17,7 @@
 
     #step-one data-toggler='' data-animate='scale-in-up scale-out-down' style="display: #{ first_time ? 'block' : 'none' };"
       = f.input :name, label: 'Question Text', autofocus: true
-      = f.input :description, label: 'Instructions for Extractor (optional)', input_html: { rows: 8 }
+      = f.input :description, label: 'Description (Optional Instructions for Extractor)', input_html: { rows: 8 }
 
     - unless first_time
 

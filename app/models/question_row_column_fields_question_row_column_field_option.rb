@@ -10,6 +10,7 @@ class QuestionRowColumnFieldsQuestionRowColumnFieldOption < ApplicationRecord
   belongs_to :question_row_column_field_option, inverse_of: :question_row_column_fields_question_row_column_field_options
 
   delegate :question, to: :question_row_column_field
+  delegate :question_row_column_field_type, to: :question_row_column_field
 
   private
 

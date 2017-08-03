@@ -12,6 +12,7 @@ class QuestionRowColumn < ApplicationRecord
 
   delegate :question, to: :question_row
   delegate :question_type, to: :question_row
+  delegate :question_row_column_field_type, to: :question_row_column_field
 
   private
 
