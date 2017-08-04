@@ -16,6 +16,8 @@ class QuestionRowColumnFieldsQuestionRowColumnFieldOption < ApplicationRecord
 
   has_one :suggestion, as: :suggestable, dependent: :destroy
 
+  has_many :dependencies, as: :prerequisitable, dependent: :destroy
+
   private
 
   def set_default_values
