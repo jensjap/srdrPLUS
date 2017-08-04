@@ -54,7 +54,7 @@ h4 Question List
             td = link_to 'Remove', q, method: :delete, data: { confirm: t('confirm') }
             td
               - unless q.ordering.position == 1
-                = link_to 'Dependencies', dependencies_question_path(q)
+                = link_to 'Set Dependencies', dependencies_question_path(q)
 
 = link_to new_extraction_forms_projects_section_question_path(efps), { class: 'button secondary' } do
   i.fi-plus

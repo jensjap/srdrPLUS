@@ -3,8 +3,8 @@ class CreateQuestionRowColumnFieldsQuestionRowColumnFieldOptions < ActiveRecord:
     create_table :question_row_column_fields_question_row_column_field_options do |t|
       t.references :question_row_column_field,        foreign_key: true, index: { name: 'index_qrcfqrcfo_on_qrcf_id' }
       t.references :question_row_column_field_option, foreign_key: true, index: { name: 'index_qrcfqrcfo_on_qrcfo_id' }
-      t.string :value
-      t.string :value_type
+      t.string :name
+      t.string :name_type
       t.datetime :deleted_at
       t.boolean :active
 

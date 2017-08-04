@@ -15,6 +15,7 @@ Rails.application.routes.draw do
           get   'dependencies', on: :member
           resources :question_rows, only: [:destroy] do
             resources :question_row_columns, only: [] do
+              get 'answer_choices', on: :member
               delete 'destroy_entire_column', on: :member
               resources :question_row_column_fields, only: [] do
                 resources :question_row_column_fields_question_row_column_field_options, only: [:destroy]

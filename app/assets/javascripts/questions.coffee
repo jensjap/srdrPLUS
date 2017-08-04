@@ -8,7 +8,7 @@ document.addEventListener 'turbolinks:load', ->
 
     ###########################
     # Hide unnecessary options.
-    multiSelect = ['1','2','3']
+    multiSelect = ['1','2','3','6','7']
 
     $('.fieldset').on 'change', ->
       that = $(this)

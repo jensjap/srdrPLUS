@@ -55,9 +55,9 @@
                         = link_to 'Remove', option, method: :delete, data: { confirm: t('confirm') },
                                                     class: 'float-right'
 
-                      = qrcfqrcfo_f.input :value,
+                      = qrcfqrcfo_f.input :name,
                                           label: option.question_row_column_field_option.name.titleize,
-                                          as: option.value_type,
+                                          as: option.name_type,
                                           wrapper: 'horizontal_form'
 
                   .links

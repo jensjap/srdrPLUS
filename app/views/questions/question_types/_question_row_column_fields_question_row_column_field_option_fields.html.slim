@@ -4,8 +4,8 @@
 
   .field
     = link_to_remove_association 'Remove', f, class: 'float-right'
-    = f.input :value, label: 'Answer Choice',
-              as: option.value_type,
+    = f.input :name, label: 'Answer Choice',
+              as: option.name_type,
               wrapper: 'horizontal_form'
     = f.hidden_field :question_row_column_field_option_id, value: 1
 

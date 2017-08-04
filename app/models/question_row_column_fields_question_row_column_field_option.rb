@@ -1,5 +1,7 @@
 class QuestionRowColumnFieldsQuestionRowColumnFieldOption < ApplicationRecord
   include SharedParanoiaMethods
+  include SharedQueryableMethods
+  include SharedSuggestableMethods
 
   acts_as_paranoid column: :active, sentinel_value: true
   has_paper_trail
@@ -12,30 +14,32 @@ class QuestionRowColumnFieldsQuestionRowColumnFieldOption < ApplicationRecord
   delegate :question, to: :question_row_column_field
   delegate :question_row_column_field_type, to: :question_row_column_field
 
+  has_one :suggestion, as: :suggestable, dependent: :destroy
+
   private
 
   def set_default_values
     case self.question_row_column_field_option.name
     when 'answer_choice'
-      self.value_type = 'string'
+      self.name_type = 'string'
     when 'min_length'
-      self.value      = 0
-      self.value_type = 'integer'
+      self.name      = 0
+      self.name_type = 'integer'
     when 'max_length'
-      self.value      = 255
-      self.value_type = 'integer'
+      self.name      = 255
+      self.name_type = 'integer'
     when 'min_value'
-      self.value      = 0
-      self.value_type = 'integer'
+      self.name      = 0
+      self.name_type = 'integer'
     when 'max_value'
-      self.value      = 255
-      self.value_type = 'integer'
+      self.name      = 255
+      self.name_type = 'integer'
     when 'coefficient'
-      self.value      = 5
-      self.value_type = 'integer'
+      self.name      = 5
+      self.name_type = 'integer'
     when 'exponent'
-      self.value      = 0
-      self.value_type = 'integer'
+      self.name      = 0
+      self.name_type = 'integer'
     else
       raise 'Unknown QuestionRowColumnFieldOption'
     end

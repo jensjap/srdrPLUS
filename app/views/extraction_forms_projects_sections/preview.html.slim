@@ -36,8 +36,8 @@ h1 Preview
                 tr
                   td = qr.name
                   - for qrc in qr.question_row_columns
-                    td
-                      / Checkbox, Radio
+                    td data-question-row-column-id='#{ qrc.id }'
+                      / Checkbox, Radio.
                       - if [1, 3].include? qrc.question_row_column_field.question_row_column_field_type_id
 
                         / Iterate through all QuestionRowColumnFieldsQuestionRowColumnFieldOptions with QuestionRowColumnFieldOption 'answer_choice'
@@ -48,10 +48,10 @@ h1 Preview
                             nil,
                             false,
                             data: { prereq: "prereq-#{ qrcfqrcfo.class }-#{ qrcfqrcfo.id }" })
-                          =< qrcfqrcfo.value
+                          =< qrcfqrcfo.name
                           br
 
-                      / Dropdown
+                      / Dropdown.
                       - elsif [2].include? qrc.question_row_column_field.question_row_column_field_type_id
 
                         / Find QuestionRowColumnFieldsQuestionRowColumnFieldOptions with QuestionRowColumnFieldOption 'answer_choice'
@@ -60,10 +60,10 @@ h1 Preview
                                               .where(question_row_column_field_option_id: 1)
 
                         = select_tag('dropdown-' + qrc.question_row_column_field.id.to_s,
-                                     options_for_select(select_options.map { |qrcfqrcfo| [qrcfqrcfo.value, qrcfqrcfo.id, { 'data-prereq': "prereq-#{ qrcfqrcfo.class }-#{ qrcfqrcfo.id }" }] }),
+                                     options_for_select(select_options.map { |qrcfqrcfo| [qrcfqrcfo.name, qrcfqrcfo.id, { 'data-prereq': "prereq-#{ qrcfqrcfo.class }-#{ qrcfqrcfo.id }" }] }),
                                      include_blank: '-- Select --')
 
-                      / Scientific
+                      / Scientific.
                       - elsif [4].include? qrc.question_row_column_field.question_row_column_field_type_id
 
                         table style='margin: 0;'
@@ -93,12 +93,40 @@ h1 Preview
                                   min: -999,
                                   max: 999)
 
+                      / Text.
                       - elsif [5].include? qrc.question_row_column_field.question_row_column_field_type_id
 
                         = text_field_tag("text-#{ qrc.question_row_column_field.id }",
                           nil,
                           data: { prereq: "prereq-#{ qrc.class }-#{ qrc.id }" },
-                          maxlength: qrc.question_row_column_field.question_row_column_fields_question_row_column_field_options.find_by(question_row_column_field_option_id: 5).value)
+                          maxlength: qrc.question_row_column_field.question_row_column_fields_question_row_column_field_options.find_by(question_row_column_field_option_id: 5).name)
+
+                      / Select2 Single.
+                      - elsif [6].include? qrc.question_row_column_field.question_row_column_field_type_id
+
+                        / Find QuestionRowColumnFieldsQuestionRowColumnFieldOptions with QuestionRowColumnFieldOption 'answer_choice'
+                        - select_options = qrc.question_row_column_field\
+                                              .question_row_column_fields_question_row_column_field_options\
+                                              .where(question_row_column_field_option_id: 1)
+
+                        = select_tag('dropdown-' + qrc.question_row_column_field.id.to_s,
+                                     options_for_select(select_options.map { |qrcfqrcfo| [qrcfqrcfo.name, qrcfqrcfo.id, { 'data-prereq': "prereq-#{ qrcfqrcfo.class }-#{ qrcfqrcfo.id }" }] }),
+                                     class: 'select2',
+                                     include_blank: '-- Select --')
+
+                      / Select2 Multi.
+                      - elsif [7].include? qrc.question_row_column_field.question_row_column_field_type_id
+
+                        / Find QuestionRowColumnFieldsQuestionRowColumnFieldOptions with QuestionRowColumnFieldOption 'answer_choice'
+                        - select_options = qrc.question_row_column_field\
+                                              .question_row_column_fields_question_row_column_field_options\
+                                              .where(question_row_column_field_option_id: 1)
+
+                        = select_tag('dropdown-' + qrc.question_row_column_field.id.to_s,
+                                     options_for_select(select_options.map { |qrcfqrcfo| [qrcfqrcfo.name, qrcfqrcfo.id, { 'data-prereq': "prereq-#{ qrcfqrcfo.class }-#{ qrcfqrcfo.id }" }] }),
+                                     class: 'select2',
+                                     multiple: true,
+                                     include_blank: '-- Select --')
 
 .column.row
   = link_to 'Back', build_extraction_forms_project_path(@extraction_forms_projects_section.extraction_forms_project,

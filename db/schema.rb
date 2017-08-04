@@ -307,8 +307,8 @@ ActiveRecord::Schema.define(version: 20170720182649) do
   create_table "question_row_column_fields_question_row_column_field_options", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "question_row_column_field_id"
     t.integer  "question_row_column_field_option_id"
-    t.string   "value"
-    t.string   "value_type"
+    t.string   "name"
+    t.string   "name_type"
     t.datetime "deleted_at"
     t.boolean  "active"
     t.datetime "created_at",                          null: false
