@@ -38,7 +38,7 @@ h4 Question List
                   - if d.prerequisitable.question.question_type == 'Matrix'
 
                     / Checkbox, Dropdown, Radio.
-                    - if [1, 2, 3, 6, 7].include? d.prerequisitable.question_row_column_field_type_id
+                    - if [1, 2, 3, 6, 7].include? d.prerequisitable.question_row_column_field.question_row_column_field_type_id
 
                       li = '- Cell: (' + d.prerequisitable.question_row_column_field.question_row_column.question_row.name.to_s + ' x ' + d.prerequisitable.question_row_column_field.question_row_column.name.to_s + ')'
                       li = '- Option: ' + d.prerequisitable.name
