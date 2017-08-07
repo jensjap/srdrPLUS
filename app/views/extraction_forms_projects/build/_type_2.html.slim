@@ -64,7 +64,7 @@ h4 Question List
                  i.fi-pencil
                  |  Edit
             td = link_to q, method: :delete, data: { confirm: t('confirm') } do
-                 i.fi-x
+                 i.fi-trash
                  |  Remove
             td
               - unless q.ordering.position == 1
