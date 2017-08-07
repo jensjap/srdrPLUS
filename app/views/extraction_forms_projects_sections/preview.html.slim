@@ -44,10 +44,21 @@ h1 Preview
                         - for qrcfqrcfo in qrc.question_row_column_field\
                                               .question_row_column_fields_question_row_column_field_options\
                                               .where(question_row_column_field_option_id: 1)
-                          = check_box_tag('checkbox-' + qrc.question_row_column_field.id.to_s,
-                            nil,
-                            false,
-                            data: { prereq: "prereq-#{ qrcfqrcfo.class }-#{ qrcfqrcfo.id }" })
+
+                          - if [1].include? qrc.question_row_column_field.question_row_column_field_type_id
+
+                            = check_box_tag('checkbox-' + qrc.question_row_column_field.id.to_s,
+                              nil,
+                              false,
+                              data: { prereq: "prereq-#{ qrcfqrcfo.class }-#{ qrcfqrcfo.id }" })
+
+                          - elsif [3].include? qrc.question_row_column_field.question_row_column_field_type_id
+
+                            = radio_button_tag('radio-' + qrc.question_row_column_field.id.to_s,
+                              nil,
+                              false,
+                              data: { prereq: "prereq-#{ qrcfqrcfo.class }-#{ qrcfqrcfo.id }" })
+
                           =< qrcfqrcfo.name
                           br
 
