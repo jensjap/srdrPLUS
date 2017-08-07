@@ -36,7 +36,7 @@ h1 Preview
                 tr
                   td = qr.name
                   - for qrc in qr.question_row_columns
-                    td data-question-row-column-id='#{ qrc.id }'
+                    td class='question-row-column' data-question-row-column-id='#{ qrc.id }'
                       / Checkbox, Radio.
                       - if [1, 3].include? qrc.question_row_column_field.question_row_column_field_type_id
 
