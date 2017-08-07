@@ -23,11 +23,15 @@
 
       #step-two
 
-        = link_to 'Add Column', add_column_question_path(@question), method: :post, class: 'float-right'
+        = link_to add_column_question_path(@question), method: :post, class: 'float-right button secondary tiny' do
+          i.fi-arrow-right
+          |  Add Column
 
         == render 'questions/table', f: f
 
-        = link_to 'Add Row', add_row_question_path(@question), method: :post
+        = link_to add_row_question_path(@question), method: :post, class: 'button secondary tiny' do
+          i.fi-arrow-down
+          |  Add Row
 
   .form-actions
     = f.button :submit, @question.question_rows.any? ? 'Save and Finalize' : 'Next'

@@ -61,6 +61,9 @@
                                           wrapper: 'horizontal_form'
 
                   .links
-                    = link_to_add_association 'add answer choice', qrcf_f,
+                    = link_to_add_association qrcf_f,
                                               :question_row_column_fields_question_row_column_field_options,
-                                              partial: 'questions/question_types/question_row_column_fields_question_row_column_field_option_fields'
+                                              partial: 'questions/question_types/question_row_column_fields_question_row_column_field_option_fields',
+                                              class: 'button secondary tiny' do
+                      i.fi-plus
+                      |  Add answer choice

@@ -60,11 +60,17 @@ h4 Question List
 
             td = q.name
             td = q.description
-            td = link_to 'Edit', edit_question_path(q)
-            td = link_to 'Remove', q, method: :delete, data: { confirm: t('confirm') }
+            td = link_to edit_question_path(q) do
+                 i.fi-pencil
+                 |  Edit
+            td = link_to q, method: :delete, data: { confirm: t('confirm') } do
+                 i.fi-x
+                 |  Remove
             td
               - unless q.ordering.position == 1
-                = link_to 'Set Dependencies', dependencies_question_path(q)
+                = link_to dependencies_question_path(q) do
+                  i.fi-link
+                  |  Dependencies
 
 = link_to new_extraction_forms_projects_section_question_path(efps), { class: 'button secondary' } do
   i.fi-plus
