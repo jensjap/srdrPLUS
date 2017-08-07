@@ -37,16 +37,26 @@ h4 Question List
 
                   - if d.prerequisitable.question.question_type == 'Matrix'
 
-                    - if d.prerequisitable.question_row_column_field_type == QuestionRowColumnFieldType.find_by(name: 'checkbox') ||\
-                      d.prerequisitable.question_row_column_field_type == QuestionRowColumnFieldType.find_by(name: 'dropdown') ||\
-                      d.prerequisitable.question_row_column_field_type == QuestionRowColumnFieldType.find_by(name: 'radio')
+                    / Checkbox, Dropdown, Radio.
+                    - if [1, 2, 3, 6, 7].include? d.prerequisitable.question_row_column_field_type_id
 
                       li = '- Cell: (' + d.prerequisitable.question_row_column_field.question_row_column.question_row.name.to_s + ' x ' + d.prerequisitable.question_row_column_field.question_row_column.name.to_s + ')'
-                      li = '- Option: ' + d.prerequisitable.value
+                      li = '- Option: ' + d.prerequisitable.name
 
+                    / Scientific, Text
                     - else
 
                       li = '- Cell: (' + d.prerequisitable.question_row_column_field.question_row_column.question_row.name.to_s + ' x ' + d.prerequisitable.question_row_column_field.question_row_column.name.to_s + ')'
+
+                  - else
+
+                    / Checkbox, Dropdown, Radio.
+                    - if [1, 2, 3, 6, 7].include? d.prerequisitable.question_row_column_field.question_row_column_field_type_id
+
+                      li = '- Option: ' + d.prerequisitable.name
+
+                    / Scientific, Text
+                    - else
 
             td = q.name
             td = q.description
