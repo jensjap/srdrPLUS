@@ -8,20 +8,32 @@ document.addEventListener 'turbolinks:load', ->
 
     ###########################
     # Hide unnecessary options.
-    multiSelect = ['1','2','3','6','7']
+    multiSelect = ['checkbox', 'dropdown', 'radio', 'select2-single', 'select2-multi']
 
     $('.fieldset').on 'change', ->
       that = $(this)
-      _value = that.find('select')[0].value
+      that.find('.field-options').hide()
+      _value = that.find('select').children(':selected').text()
 
       if _value in multiSelect
-        that.find('.field-options').hide()
-        that.find('.field-options.field-option-type-1').show()
+        that.find('.field-options.field-option-type-answer_choice').show()
         that.find('.links').show()
 
-      else
-        that.find('.field-options').hide()
-        that.find('.field-options.field-option-type-' + _value).show()
+      else if _value == 'text'  # Text.
+        that.find('.field-options.field-option-type-min_length').show()
+        that.find('.field-options.field-option-type-max_length').show()
+        that.find('.links').hide()
+
+      else if _value == 'numeric'  # Numeric.
+        that.find('.field-options.field-option-type-min_value').show()
+        that.find('.field-options.field-option-type-max_value').show()
+        that.find('.links').hide()
+
+      else if _value == 'scientific'  # Scientific.
+        that.find('.field-options.field-option-type-min_value').show()
+        that.find('.field-options.field-option-type-max_value').show()
+        that.find('.field-options.field-option-type-coefficient').show()
+        that.find('.field-options.field-option-type-exponent').show()
         that.find('.links').hide()
 
     $('.fieldset').trigger 'change'
