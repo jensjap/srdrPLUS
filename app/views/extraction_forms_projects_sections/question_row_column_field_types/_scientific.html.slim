@@ -1,0 +1,26 @@
+table style='margin: 0;'
+  thead
+  tbody
+    tr
+      td
+        = number_field_tag('before_decimal_point-' + qrc.question_row_column_field.id.to_s,
+          nil,
+          data: { prereq: "prereq-#{ qrc.class }-#{ qrc.id }" },
+          in: 1..9,
+          step: 1,
+          maxlength: 1)
+      td .
+      td
+        = number_field_tag('after_decimal_point-' + qrc.question_row_column_field.id.to_s,
+          nil,
+          data: { prereq: "prereq-#{ qrc.class }-#{ qrc.id }" },
+          min: 0,
+          max: 9999999)
+      td
+        ' X 10 ^
+      td
+        = number_field_tag("exponent-#{ qrc.question_row_column_field.id }",
+          nil,
+          data: { prereq: "prereq-#{ qrc.class }-#{ qrc.id }" },
+          min: -999,
+          max: 999)

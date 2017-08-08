@@ -8,11 +8,12 @@ document.addEventListener 'turbolinks:load', ->
 
     ###########################
     # Hide unnecessary options.
-    multiSelect = ['checkbox', 'dropdown', 'radio', 'select2-single', 'select2-multi']
+    multiSelect = ['checkbox', 'dropdown', 'radio', 'select2_single', 'select2_multi']
 
     $('.fieldset').on 'change', ->
       that = $(this)
       that.find('.field-options').hide()
+      that.find('.links').hide()
       _value = that.find('select').children(':selected').text()
 
       if _value in multiSelect
@@ -22,19 +23,16 @@ document.addEventListener 'turbolinks:load', ->
       else if _value == 'text'  # Text.
         that.find('.field-options.field-option-type-min_length').show()
         that.find('.field-options.field-option-type-max_length').show()
-        that.find('.links').hide()
 
       else if _value == 'numeric'  # Numeric.
         that.find('.field-options.field-option-type-min_value').show()
         that.find('.field-options.field-option-type-max_value').show()
-        that.find('.links').hide()
 
       else if _value == 'scientific'  # Scientific.
         that.find('.field-options.field-option-type-min_value').show()
         that.find('.field-options.field-option-type-max_value').show()
         that.find('.field-options.field-option-type-coefficient').show()
         that.find('.field-options.field-option-type-exponent').show()
-        that.find('.links').hide()
 
     $('.fieldset').trigger 'change'
 

@@ -1,0 +1,10 @@
+/ Find QuestionRowColumnFieldsQuestionRowColumnFieldOptions with QuestionRowColumnFieldOption 'answer_choice'
+- select_options = qrc.question_row_column_field\
+                      .question_row_column_fields_question_row_column_field_options\
+                      .where(question_row_column_field_option_id: 1)
+
+= select_tag('dropdown-' + qrc.question_row_column_field.id.to_s,
+  options_for_select(select_options.map { |qrcfqrcfo| [qrcfqrcfo.name, qrcfqrcfo.id, { 'data-prereq': "prereq-#{ qrcfqrcfo.class }-#{ qrcfqrcfo.id }" }] }),
+  class: 'select2',
+  multiple: true,
+  include_blank: '-- Select --')

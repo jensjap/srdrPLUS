@@ -212,12 +212,13 @@ module SeedDataExtended
         [
           { name: 'text' },
           { name: 'numeric' },
+          { name: 'numeric_range' },
           { name: 'scientific' },
           { name: 'checkbox'},
           { name: 'dropdown' },
           { name: 'radio' },
-          { name: 'select2-single' },
-          { name: 'select2-multi' }
+          { name: 'select2_single' },
+          { name: 'select2_multi' }
         ]
       )
 
