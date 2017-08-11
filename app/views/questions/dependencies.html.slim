@@ -36,13 +36,8 @@ h2 #{ @question.ordering.position }. #{ @question.name }
                     - for qrc in qr.question_row_columns
                       td
 
-                        / Text, Scientific.
-                        - if [1, 4].include? qrc.question_row_column_field.question_row_column_field_type_id
-
-                          = render 'question_row_column_fields', prerequisitable: qrc
-
-                        / Checkbox, Dropdown, Radio.
-                        - elsif [2, 3, 5, 6, 7, 8, 9].include? qrc.question_row_column_field.question_row_column_field_type_id
+                        / Checkbox, Dropdown, Radio, Select2_Single, Select2_Multi.
+                        - if [5, 6, 7, 8, 9].include? qrc.question_row_column_field.question_row_column_field_type_id
 
                           - for qrcfqrcfo in qrc.question_row_column_field\
                                                 .question_row_column_fields_question_row_column_field_options\
@@ -51,6 +46,12 @@ h2 #{ @question.ordering.position }. #{ @question.name }
                             = qrcfqrcfo.name
 
                             = render 'question_row_column_fields', prerequisitable: qrcfqrcfo
+
+                        / Text, Numeric, Numeric_Range, Scientific.
+                        - else
+
+                          = render 'question_row_column_fields', prerequisitable: qrc
+
 
 .column.row
   = link_to 'Save and Finalize', build_extraction_forms_project_path(@extraction_forms_projects_section.extraction_forms_project,
