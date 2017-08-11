@@ -99,17 +99,17 @@ document.addEventListener 'turbolinks:load', ->
       if _off.length
         _off.removeClass('off-' + prereq).addClass(prereq)
 
-    findAndToggle = (prereq) ->
-      _on  = $('.' + prereq)
-      _off = $('.off-' + prereq)
-
-      if _on.length
-        prereqOff(prereq)
-
-      else if _off.length
-        prereqOn(prereq)
-
-      return
+#    findAndToggle = (prereq) ->
+#      _on  = $('.' + prereq)
+#      _off = $('.off-' + prereq)
+#
+#      if _on.length
+#        prereqOff(prereq)
+#
+#      else if _off.length
+#        prereqOn(prereq)
+#
+#      return
 
     $('.card input,select').change ->
       that = $(this)
@@ -164,14 +164,11 @@ document.addEventListener 'turbolinks:load', ->
             that.siblings('input[type="checkbox"]').each (index) ->
               sibling = $(this)
               siblingPrereq1 = sibling.data('prereq')
-              return
 
-              # Ensure that this sibling is a dependency before doing anything else.
+              # Ensure that checked sibling is a dependency before doing anything else.
               if sibling[0].checked && $('.off-' + siblingPrereq1).length
-                # Turn off prereq of this sibling first.
-                prereqOff(siblingPrereq1)
 
-                # Turn off prereq of siblings.
+                # Turn off prereq of siblings including the guy that triggered all this.
                 sibling.siblings('input[type="checkbox"]').each (index) ->
                   nestedSibling = $(this)
                   siblingPrereq2 = nestedSibling.data('prereq')
@@ -181,6 +178,8 @@ document.addEventListener 'turbolinks:load', ->
               # Otherwise, turn the dependency on.
               else
                 prereqOn(siblingPrereq1)
+
+              return
 
       # Dropdown, Select2_Single, Select2_Multi.
       else if that.is('select')
