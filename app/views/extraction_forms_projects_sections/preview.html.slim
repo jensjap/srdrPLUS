@@ -1,26 +1,28 @@
-h1 Preview
+#preview.column.row
 
-- @extraction_forms_projects_section.questions.each_with_index do |q, idx|
+  h1 Preview
 
-  / Questions that have prerequisites get classes of the form 'prereq-<type>-<id>' which are disabled while these classes are present.
-  / Listeners are attached on form fields which trigger on change and remove class from any element that has the 'prereq-<type>-<id>'.
-  / Once all 'prereq-<type>-<id>' classes are removed the question is enabled.
-  - prereq = q.dependencies.collect { |d| d.prerequisitable_type + '-' + d.prerequisitable_id.to_s }.collect { |h| "prereq-#{h}" }.join(' ')
+  - @extraction_forms_projects_section.questions.each_with_index do |q, idx|
 
-  .card class='#{ prereq }'
+    / Questions that have prerequisites get classes of the form 'prereq-<type>-<id>' which are disabled while these classes are present.
+    / Listeners are attached on form fields which trigger on change and remove class from any element that has the 'prereq-<type>-<id>'.
+    / Once all 'prereq-<type>-<id>' classes are removed the question is enabled.
+    - prereq = q.dependencies.collect { |d| d.prerequisitable_type + '-' + d.prerequisitable_id.to_s }.collect { |h| "prereq-#{h}" }.join(' ')
 
-    .card-divider
+    .card class='#{ prereq }'
 
-      h5 #{ (idx + 1).to_s }. #{ q.name }
-      h6 Description: #{ q.description }
+      .card-divider
 
-    .card-section
+        h5 #{ (idx + 1).to_s }. #{ q.name }
+        h6 Description: #{ q.description }
 
-      .table-scroll
+      .card-section
 
-        #step-two
+        .table-scroll
 
-          == render 'extraction_forms_projects_sections/question_fields', q: q
+          #step-two
+
+            == render 'extraction_forms_projects_sections/question_fields', q: q
 
 .column.row
   = link_to 'Back', build_extraction_forms_project_path(@extraction_forms_projects_section.extraction_forms_project,

@@ -27,8 +27,8 @@ document.addEventListener 'turbolinks:load', ->
       markup += '</span>'
       markup
 
-    # Note that allowClear doesn't work without placeholder.
-    $( '.question-row-column .select2' ).select2
+    # /extraction_forms_projects_sections/3/preview
+    $( '#preview .question-row-column .select2' ).select2
       placeholder: '--Select--'
       minimumInputLength: 0
       ajax:
@@ -57,7 +57,7 @@ document.addEventListener 'turbolinks:load', ->
       templateResult: formatResult
       templateSelection: formatResultSelection
 
-    # Bind select2 to section selection.
+    # /extraction_forms_projects/1/extraction_forms_projects_sections/new
     $( '#extraction_forms_projects_section_section_id' ).select2
       placeholder: '--Select--'
       minimumInputLength: 0
@@ -111,7 +111,7 @@ document.addEventListener 'turbolinks:load', ->
 #
 #      return
 
-    $( '.card input,select' ).keyup ( e ) ->
+    $( '#preview .card input,select' ).keyup ( e ) ->
       e.preventDefault()
       that = $( this )
       prereq = that.data( 'prereq' )
