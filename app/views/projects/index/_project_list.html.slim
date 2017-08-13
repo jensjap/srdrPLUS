@@ -5,11 +5,11 @@ ul.accordion data-accordion='' data-multi-expand='false' data-allow-all-closed='
     - if project.publishings.present?
       - if project.publishings.any?(&:approved?)
         li.publishing-approved.accordion-item data-accordion-item=''
-          = render partial: 'projects/index/project_list_item', locals: { project: project }
+          = render 'projects/index/project_list_item', project: project
       - else
         li.publishing-requested.accordion-item data-accordion-item=''
-          = render partial: 'projects/index/project_list_item', locals: { project: project }
+          = render 'projects/index/project_list_item', project: project
     - else
       li.accordion-item data-accordion-item=''
-        = render partial: 'projects/index/project_list_item', locals: { project: project }
+        = render 'projects/index/project_list_item', project: project
 
