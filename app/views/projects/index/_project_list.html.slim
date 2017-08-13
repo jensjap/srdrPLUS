@@ -1,15 +1,24 @@
 ul.accordion data-accordion='' data-multi-expand='false' data-allow-all-closed='true'
+
   - if @projects.blank?
+
     h4 Your search returned no results. Please try a different query.
+
   - @projects.each do |project|
+
     - if project.publishings.present?
+
       - if project.publishings.any?(&:approved?)
+
         li.publishing-approved.accordion-item data-accordion-item=''
           = render 'projects/index/project_list_item', project: project
+
       - else
+
         li.publishing-requested.accordion-item data-accordion-item=''
           = render 'projects/index/project_list_item', project: project
+
     - else
+
       li.accordion-item data-accordion-item=''
         = render 'projects/index/project_list_item', project: project
-
