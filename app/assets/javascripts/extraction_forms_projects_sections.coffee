@@ -111,7 +111,8 @@ document.addEventListener 'turbolinks:load', ->
 #
 #      return
 
-    $('.card input,select').change ->
+    $('.card input,select').keyup (e) ->
+      e.preventDefault()
       that = $(this)
       prereq = that.data('prereq')
 
