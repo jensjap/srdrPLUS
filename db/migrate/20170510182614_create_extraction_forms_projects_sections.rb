@@ -4,6 +4,7 @@ class CreateExtractionFormsProjectsSections < ActiveRecord::Migration[5.0]
       t.references :extraction_forms_project,               foreign_key: true, index: { name: 'index_efps_on_efp_id' }
       t.references :extraction_forms_projects_section_type, foreign_key: true, index: { name: 'index_efps_on_efpst_id' }
       t.references :section,                                foreign_key: true, index: { name: 'index_efps_on_s_id' }
+      t.references :extraction_forms_projects_section,      foreign_key: true, index: { name: 'index_efps_on_efps_id' }
       t.datetime :deleted_at
       t.boolean :active
 
@@ -12,7 +13,7 @@ class CreateExtractionFormsProjectsSections < ActiveRecord::Migration[5.0]
 
     add_index :extraction_forms_projects_sections, :deleted_at
     add_index :extraction_forms_projects_sections, :active
-    add_index :extraction_forms_projects_sections, [:extraction_forms_project_id, :section_id, :deleted_at], name: 'index_efps_on_ef_id_s_id_deleted_at', where: 'deleted_at IS NULL'
-    add_index :extraction_forms_projects_sections, [:extraction_forms_project_id, :section_id, :active],     name: 'index_efps_on_ef_id_s_id_active'
+    add_index :extraction_forms_projects_sections, [:extraction_forms_project_id, :extraction_forms_projects_section_type_id, :extraction_forms_projects_section_id, :section_id, :deleted_at], name: 'index_efps_on_efp_id_efpst_id_efps_id_s_id_deleted_at', where: 'deleted_at IS NULL'
+    add_index :extraction_forms_projects_sections, [:extraction_forms_project_id, :extraction_forms_projects_section_type_id, :extraction_forms_projects_section_id, :section_id, :active],     name: 'index_efps_on_efp_id_efpst_id_efps_id_s_id_active'
   end
 end

@@ -132,15 +132,17 @@ ActiveRecord::Schema.define(version: 20170720182649) do
     t.integer  "extraction_forms_project_id"
     t.integer  "extraction_forms_projects_section_type_id"
     t.integer  "section_id"
+    t.integer  "extraction_forms_projects_section_id"
     t.datetime "deleted_at"
     t.boolean  "active"
     t.datetime "created_at",                                null: false
     t.datetime "updated_at",                                null: false
     t.index ["active"], name: "index_extraction_forms_projects_sections_on_active", using: :btree
     t.index ["deleted_at"], name: "index_extraction_forms_projects_sections_on_deleted_at", using: :btree
-    t.index ["extraction_forms_project_id", "section_id", "active"], name: "index_efps_on_ef_id_s_id_active", using: :btree
-    t.index ["extraction_forms_project_id", "section_id", "deleted_at"], name: "index_efps_on_ef_id_s_id_deleted_at", using: :btree
+    t.index ["extraction_forms_project_id", "extraction_forms_projects_section_type_id", "extraction_forms_projects_section_id", "section_id", "active"], name: "index_efps_on_efp_id_efpst_id_efps_id_s_id_active", using: :btree
+    t.index ["extraction_forms_project_id", "extraction_forms_projects_section_type_id", "extraction_forms_projects_section_id", "section_id", "deleted_at"], name: "index_efps_on_efp_id_efpst_id_efps_id_s_id_deleted_at", using: :btree
     t.index ["extraction_forms_project_id"], name: "index_efps_on_efp_id", using: :btree
+    t.index ["extraction_forms_projects_section_id"], name: "index_efps_on_efps_id", using: :btree
     t.index ["extraction_forms_projects_section_type_id"], name: "index_efps_on_efpst_id", using: :btree
     t.index ["section_id"], name: "index_efps_on_s_id", using: :btree
   end
@@ -440,6 +442,7 @@ ActiveRecord::Schema.define(version: 20170720182649) do
   add_foreign_key "extraction_forms_projects", "projects"
   add_foreign_key "extraction_forms_projects_sections", "extraction_forms_projects"
   add_foreign_key "extraction_forms_projects_sections", "extraction_forms_projects_section_types"
+  add_foreign_key "extraction_forms_projects_sections", "extraction_forms_projects_sections"
   add_foreign_key "extraction_forms_projects_sections", "sections"
   add_foreign_key "key_questions_projects", "extraction_forms_projects_sections"
   add_foreign_key "key_questions_projects", "key_questions"
