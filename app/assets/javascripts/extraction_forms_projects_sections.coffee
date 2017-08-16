@@ -85,6 +85,7 @@ document.addEventListener 'turbolinks:load', ->
       templateResult: formatResult
       templateSelection: formatResultSelection
 
+
     ##############################################################################
     # Find and remove prereq- classes when input field has value in preview block.
     prereqOff = ( prereq ) ->
@@ -93,138 +94,97 @@ document.addEventListener 'turbolinks:load', ->
       if _on.length
         _on.removeClass( prereq ).addClass( 'off-' + prereq )
 
+      return  # END prereqOff = ( prereq ) ->
+
+
     prereqOn = ( prereq ) ->
       _off = $( '.off-' + prereq )
 
       if _off.length
         _off.removeClass( 'off-' + prereq ).addClass( prereq )
 
-#    findAndToggle = ( prereq ) ->
-#      _on  = $( '.' + prereq )
-#      _off = $( '.off-' + prereq )
-#
-#      if _on.length
-#        prereqOff( prereq )
-#
-#      else if _off.length
-#        prereqOn( prereq )
-#
-#      return
+      return  # END prereqOn = ( prereq ) ->
 
-    $( '#preview .card input,select' ).keyup ( e ) ->
-      e.preventDefault()
-      that = $( this )
+
+    subroutine = ( that ) ->
+      # Find whether or not what triggered this is active or inactive,
+      # meaning whether they have value or not.
+      # For checkbox and radio we determine active based on :checked status.
+      active = that.is( ':checked' )
+
+      # Anything else we get the value to determine whether it's active.
+      if not active && not that.is( 'input[type="checkbox"]' ) && not that.is( 'input[type="radio"]' )
+        active = that.val()
+
+      # Find the data-prereq value.
       prereq = that.data( 'prereq' )
 
-      # Text.
-      if that.is( 'input[type="text"]' ) && that[0].value
+      # For dropdown and select2 data-prereq value is on :selected.
+      if not prereq
+        # Small problem with multiselect dropdown. The order of :selected can change
+        # so we need to check all.
+        if $.isArray( active )
+          that.find( ':selected' ).each ->
+            temp = $( this ).data( 'prereq' )
+            # If we find even one that is a prereq for someone we use it.
+            if $( '.' + temp ).length || $( '.off-' + temp ).length
+              prereq = temp
+            return
+        else
+          prereq = that.find( ':selected' ).data( 'prereq' )
+
+      return {
+        active: active
+        prereq: prereq
+        }  # END subroutine = ( that ) ->
+
+
+    turnPrereqOffSelfAndDescendants = ( prereq, that ) ->
+      # Turn off dependencies on itself...
+      prereqOff( prereq )
+      # ...and those surrounding it but within the closest table.
+      that.closest( 'table' ).find( 'input[data-prereq],option[data-prereq]' ).each ( idx ) ->
+        prereq = $( this ).data( 'prereq' )
         prereqOff( prereq )
+        return  # END that.closest( 'table' ).find( 'input[data-prereq],option[data-prereq]' ).each ( idx ) ->
+      return  # END turnPrereqOffSelfAndDescendants = () ->
 
-      else if that.is( 'input[type="text"]' ) && that[0].value == ''
+
+    ##########################################################################
+    # Check whether dependencies are fulfilled and change classes accordingly.
+    $( '#preview .card input,select' ).on 'change keyup', ( e ) ->
+      e.preventDefault()
+
+      that   = $( this )
+      result = subroutine( that )
+      active = result.active
+      prereq = result.prereq
+
+      # Test if this was a prereq somewhere...if it was we need to look around within the
+      # table to find all the others, leave it alone otherwise.
+      if active && $( '.' + prereq ).length
+        turnPrereqOffSelfAndDescendants( prereq, that )
+
+      else
         prereqOn( prereq )
-
-      # Numeric, Numeric_Range, Scientific.
-      else if that.is( 'input[type="number"]' ) && that[0].value
-        prereqOff( prereq )
-
-      else if that.is( 'input[type="number"]' ) && that[0].value == ''
-        prereqOn( prereq )
-
-      # Checkbox.
-      # This is quite complicated. Not only do we need to ensure that we are correctly turning
-      # dependencies on and off based on the checked status of this checkbox, we also need to check
-      # if there are any dependencies that rely on this particular checkbox and also if there are
-      # siblings that are checked or unchecked and have corresponding dependencies that may be
-      # fulfilled still.
-      else if that.is( 'input[type="checkbox"]' )
-
-        # Ensure this checkbox is a dependency for something on this page before turning off all
-        # of this and its siblings' dependencies.
-        if that[0].checked && $( '.' + prereq ).length
-
-          # Turn off prereq of this checkbox first.
-          prereqOff( prereq )
-
-          # Turn off prereq of siblings.
-          that.siblings( 'input[type="checkbox"]' ).each ( index ) ->
-            siblingPrereq = $( this ).data( 'prereq' )
-            prereqOff( siblingPrereq )
-            return
-
-        # In this case we turn dependencies on, but we also need to check siblings and ensure they
-        # don't fulfill dependencies.
-        else
-
-          # Ensure this checkbox is a dependency for something first.
-          if $( '.off-' + prereq ).length
-
-            # Since it is, we turn on dependency.
-            prereqOn( prereq )
-
-            # Now check siblings.
-            that.siblings( 'input[type="checkbox"]' ).each ( index ) ->
-              sibling = $( this )
-              siblingPrereq1 = sibling.data( 'prereq' )
-
-              # Ensure that checked sibling is a dependency before doing anything else.
-              if sibling[0].checked && $( '.off-' + siblingPrereq1 ).length
-
-                # Turn off prereq of siblings including the guy that triggered all this.
-                sibling.siblings( 'input[type="checkbox"]' ).each ( index ) ->
-                  nestedSibling = $( this )
-                  siblingPrereq2 = nestedSibling.data( 'prereq' )
-                  prereqOff( siblingPrereq2 )
-                  return
-
-              # Otherwise, turn the dependency on.
-              else
-                prereqOn( siblingPrereq1 )
-
-              return
-
-      # Dropdown, Select2_Single, Select2_Multi.
-      else if that.is( 'select' )
-
-        # Ensure this dropdown choice is a dependency for something first.
-        selected = that.find( ':selected' )
-        prereq = selected.data( 'prereq' )
-
-        if $( '.' + prereq ).length || $( '.off-' + prereq ).length
-          prereqOff( prereq )
-
-          selected.siblings( 'option' ).each ( index ) ->
-            siblingPrereq = $( this ).data( 'prereq' )
-            prereqOff( siblingPrereq )
-            return
-
-        else
+        that.closest( 'table' ).find( 'input[data-prereq],option[data-prereq]' ).each ( idx ) ->
+          prereq = $( this ).data( 'prereq' )
           prereqOn( prereq )
+          return  # END that.closest( 'table' ).find( 'input[data-prereq],option[data-prereq]' ).each ( idx ) ->
 
-          $( this ).children( 'option' ).each ( index ) ->
-            siblingPrereq = $( this ).data( 'prereq' )
-            prereqOn( siblingPrereq )
-            return
+        that.closest( 'table' ).find( 'input,select' ).each ( idx ) ->
+          that   = $( this )
+          result = subroutine( that )
+          active = result.active
+          prereq = result.prereq
 
-      # Radio.
-      else if that.is( 'input[type="radio"]' )
+          # Turn off dependencies if the field is active and it is someone's prereq.
+          if active && $( '.' + prereq ).length
+            turnPrereqOffSelfAndDescendants( prereq, that )
 
-        if $( '.' + prereq ).length || $( '.off-' + prereq ).length
-          prereqOff( prereq )
+          return  # END that.closest( 'table' ).find( 'input,select' ).each ( idx ) ->
 
-          that.siblings( 'input[type="radio"]' ).each ( index ) ->
-            siblingPrereq = $( this ).data( 'prereq' )
-            prereqOff( siblingPrereq )
-            return
-
-        else
-          prereqOn( prereq )
-
-          that.siblings( 'input[type="radio"]' ).each ( index ) ->
-            siblingPrereq = $( this ).data( 'prereq' )
-            prereqOn( siblingPrereq )
-            return
-
-      return # $( '.card input,select' ).change ->
+      return  # END $( '#preview .card input,select' ).on 'change keyup', ( e ) ->
 
     return  # END do ->
 
