@@ -191,7 +191,8 @@ document.addEventListener 'turbolinks:load', ->
     # Do the same for Dropdown.
     # #!!! This doesnt quite work. The keyup and mouseup events trigger
     # before the actual change so we get the value too early.
-    $( '#preview .card select' ).on 'change', ( e ) ->
+    # 'blur' to the rescue!
+    $( '#preview .card select' ).on 'blur', ( e ) ->
       e.preventDefault()
       that = $( this )
 
@@ -200,13 +201,26 @@ document.addEventListener 'turbolinks:load', ->
 
       return  # END $( '#preview .card select' ).on 'mouseup', ( e ) ->
 
+    ##########################
+    # Do the same for Select2.
+    $( '#preview .card select.select2' ).on 'select2:close', ( e ) ->
+      #e.preventDefault()
+      that = $( this )
+
+      isSelected = that.val()
+      that.data( 'previous-value', isSelected )
+
+      return  # END $( '#preview .card select.select2' ). 'change', ( e ) ->
+
     ########################
     # Do the same for Radio.
     # #!!! This doesnt quite work. The keyup and mouseup events trigger
     # before the actual change so we get the value too early.
-    $( '#preview .card input[type="radio"]' ).on 'change', ( e ) ->
+    # 'blur' to the rescue!
+    $( '#preview .card input[type="radio"]' ).on 'blur', ( e ) ->
       e.preventDefault()
       that = $( this )
+
       that.data( 'previous-value', that.is( ':checked' ) )
       that.siblings( 'input[type="radio"]' ).each ->
         $( this ).data( 'previous-value', $( this ).is( ':checked' ) )
