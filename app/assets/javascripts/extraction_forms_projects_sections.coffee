@@ -93,6 +93,14 @@ document.addEventListener 'turbolinks:load', ->
 
       if _on.length
         _on.removeClass( prereq ).addClass( 'off-' + prereq )
+        _on.find( 'input' ).each ->
+          $( this ).val( $( this ).data( 'previous-value' ) ).trigger( 'change' )
+        _on.find( 'input[type="checkbox"]' ).each ->
+          $( this ).prop( 'checked', $( this ).data( 'previous-value' ) ).trigger( 'change' )
+        _on.find( 'select' ).each ->
+          $( this ).val( $( this ).data( 'previous-value' ) ).trigger( 'change' )
+        _on.find( 'input[type="radio"]' ).each ->
+          $( this ).prop( 'checked', $( this ).data( 'previous-value' ) ).trigger( 'change' )
 
       return  # END prereqOff = ( prereq ) ->
 
@@ -102,6 +110,14 @@ document.addEventListener 'turbolinks:load', ->
 
       if _off.length
         _off.removeClass( 'off-' + prereq ).addClass( prereq )
+        _off.find( 'input' ).each ->
+          $( this ).val( '' ).trigger( 'change' )
+        _off.find( 'input[type="checkbox"]' ).each ->
+          $( this ).prop( 'checked', false ).trigger( 'change' )
+        _off.find( 'select' ).each ->
+          $( this ).val( '' ).trigger( 'change' )
+        _off.find( 'input[type="radio"]' ).each ->
+          $( this ).prop( 'checked', false ).trigger( 'change' )
 
       return  # END prereqOn = ( prereq ) ->
 
@@ -149,6 +165,53 @@ document.addEventListener 'turbolinks:load', ->
         return  # END that.closest( 'table' ).find( 'input[data-prereq],option[data-prereq]' ).each ( idx ) ->
       return  # END turnPrereqOffSelfAndDescendants = () ->
 
+    ##########################################################
+    # On keyup we want to save the current value of the input.
+    $( '#preview .card input' ).on 'keyup', ( e ) ->
+      e.preventDefault()
+      that = $( this )
+
+      currentValue = that.val()
+      that.data( 'previous-value', currentValue )
+
+      return  # END $( '#preview .card input' ).on 'change keyup', ( e ) ->
+
+    #############################
+    # Do the same for checkboxes.
+    $( '#preview .card input[type="checkbox"]' ).on 'mouseup', ( e ) ->
+      e.preventDefault()
+      that = $( this )
+
+      isChecked = that.prop( 'checked' )
+      that.data( 'previous-value', !isChecked )
+
+      return  # END $( '#preview .card input[type="checkbox"]' ).on 'mouseup', ( e ) ->
+
+    ###########################
+    # Do the same for Dropdown.
+    # #!!! This doesnt quite work. The keyup and mouseup events trigger
+    # before the actual change so we get the value too early.
+    $( '#preview .card select' ).on 'change', ( e ) ->
+      e.preventDefault()
+      that = $( this )
+
+      isSelected = that.val()
+      that.data( 'previous-value', isSelected )
+
+      return  # END $( '#preview .card select' ).on 'mouseup', ( e ) ->
+
+    ########################
+    # Do the same for Radio.
+    # #!!! This doesnt quite work. The keyup and mouseup events trigger
+    # before the actual change so we get the value too early.
+    $( '#preview .card input[type="radio"]' ).on 'change', ( e ) ->
+      e.preventDefault()
+      that = $( this )
+      that.data( 'previous-value', that.is( ':checked' ) )
+      that.siblings( 'input[type="radio"]' ).each ->
+        $( this ).data( 'previous-value', $( this ).is( ':checked' ) )
+
+      return  # END $( 'preview .card input[type="radio"]' ).on 'mouseup', ( e ) ->
 
     ##########################################################################
     # Check whether dependencies are fulfilled and change classes accordingly.
