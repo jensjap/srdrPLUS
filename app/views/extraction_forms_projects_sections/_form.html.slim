@@ -19,12 +19,12 @@
         - if f.object.extraction_forms_projects_section_type_id == 2
 
           = f.association :type_i, label: 'Associate to a Type I section',
-                                                              collection: f.object.extraction_forms_project\
-                                                                           .extraction_forms_projects_sections\
-                                                                           .where(extraction_forms_projects_section_type_id: 1),
-                                                              prompt: 'Pick a Type I Section',
-                                                              include_blank: true,
-                                                              label_method: :section_label
+                                   collection: f.object.extraction_forms_project\
+                                                .extraction_forms_projects_sections\
+                                                .where(extraction_forms_projects_section_type_id: 1),
+                                   prompt: 'Pick a Type I Section',
+                                   include_blank: true,
+                                   label_method: :section_label
 
         = f.association :section, label: 'Section Name', include_blank: true
 
