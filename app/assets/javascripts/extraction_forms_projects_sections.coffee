@@ -154,7 +154,6 @@ document.addEventListener 'turbolinks:load', ->
         prereq: prereq
         }  # END subroutine = ( that ) ->
 
-
     turnPrereqOffSelfAndDescendants = ( prereq, that ) ->
       # Turn off dependencies on itself...
       prereqOff( prereq )
@@ -165,19 +164,29 @@ document.addEventListener 'turbolinks:load', ->
         return  # END that.closest( 'table' ).find( 'input[data-prereq],option[data-prereq]' ).each ( idx ) ->
       return  # END turnPrereqOffSelfAndDescendants = () ->
 
-    ##########################################################
-    # On keyup we want to save the current value of the input.
-    $( '#preview .card input' ).on 'keyup', ( e ) ->
+    ##############################################################
+    # Save the value of the current input for each question field.
+    # Text.
+    $( '#preview .card input[type="text"]' ).on 'input', ( e ) ->
       e.preventDefault()
       that = $( this )
 
       currentValue = that.val()
       that.data( 'previous-value', currentValue )
 
-      return  # END $( '#preview .card input' ).on 'change keyup', ( e ) ->
+      return  # END $( '#preview .card input[type="text"]' ).on 'input', ( e ) ->
 
-    #############################
-    # Do the same for checkboxes.
+    # Numeric.
+    $( '#preview .card input[type="number"]' ).on 'input', ( e ) ->
+      e.preventDefault()
+      that = $( this )
+
+      currentValue = that.val()
+      that.data( 'previous-value', currentValue )
+
+      return  # END $( '#preview .card input[type="number"]' ).on 'input', ( e ) ->
+
+    # Checkbox.
     $( '#preview .card input[type="checkbox"]' ).on 'mouseup', ( e ) ->
       e.preventDefault()
       that = $( this )
@@ -187,11 +196,9 @@ document.addEventListener 'turbolinks:load', ->
 
       return  # END $( '#preview .card input[type="checkbox"]' ).on 'mouseup', ( e ) ->
 
-    ###########################
-    # Do the same for Dropdown.
-    # #!!! This doesnt quite work. The keyup and mouseup events trigger
-    # before the actual change so we get the value too early.
-    # 'blur' to the rescue!
+    # Dropdown.
+    # The keyup and mouseup events trigger before the actual change
+    # so we get the value too early. 'blur' to the rescue!
     $( '#preview .card select' ).on 'blur', ( e ) ->
       e.preventDefault()
       that = $( this )
@@ -199,24 +206,22 @@ document.addEventListener 'turbolinks:load', ->
       isSelected = that.val()
       that.data( 'previous-value', isSelected )
 
-      return  # END $( '#preview .card select' ).on 'mouseup', ( e ) ->
+      return  # END $( '#preview .card select' ).on 'blur', ( e ) ->
 
-    ##########################
     # Do the same for Select2.
+    #!!! Multi select value of '' means that the '--select--' is chosen. This
+    # creates problems when trying to restore the value.
     $( '#preview .card select.select2' ).on 'select2:close', ( e ) ->
-      #e.preventDefault()
       that = $( this )
 
       isSelected = that.val()
       that.data( 'previous-value', isSelected )
 
-      return  # END $( '#preview .card select.select2' ). 'change', ( e ) ->
+      return  # END $( '#preview .card select.select2' ).on 'select2:close', ( e ) ->
 
-    ########################
-    # Do the same for Radio.
-    # #!!! This doesnt quite work. The keyup and mouseup events trigger
-    # before the actual change so we get the value too early.
-    # 'blur' to the rescue!
+    # Radio.
+    # The keyup and mouseup events trigger before the actual change
+    # so we get the value too early. 'blur' to the rescue!
     $( '#preview .card input[type="radio"]' ).on 'blur', ( e ) ->
       e.preventDefault()
       that = $( this )
@@ -225,7 +230,7 @@ document.addEventListener 'turbolinks:load', ->
       that.siblings( 'input[type="radio"]' ).each ->
         $( this ).data( 'previous-value', $( this ).is( ':checked' ) )
 
-      return  # END $( 'preview .card input[type="radio"]' ).on 'mouseup', ( e ) ->
+      return  # END $( 'preview .card input[type="radio"]' ).on 'blur', ( e ) ->
 
     ##########################################################################
     # Check whether dependencies are fulfilled and change classes accordingly.
