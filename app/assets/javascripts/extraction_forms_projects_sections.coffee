@@ -97,8 +97,11 @@ document.addEventListener 'turbolinks:load', ->
           $( this ).val( $( this ).data( 'previous-value' ) ).trigger( 'change' )
         _on.find( 'input[type="checkbox"]' ).each ->
           $( this ).prop( 'checked', $( this ).data( 'previous-value' ) ).trigger( 'change' )
-        _on.find( 'select' ).each ->
+        _on.find( 'select' ).not( '.select2' ).each ->
           $( this ).val( $( this ).data( 'previous-value' ) ).trigger( 'change' )
+        _on.find( 'select.select2' ).each ->
+          if $( this ).data( 'previous-value' )
+            $( this ).val( $( this ).data( 'previous-value' ) ).trigger( 'change' )
         _on.find( 'input[type="radio"]' ).each ->
           $( this ).prop( 'checked', $( this ).data( 'previous-value' ) ).trigger( 'change' )
 
@@ -115,7 +118,7 @@ document.addEventListener 'turbolinks:load', ->
         _off.find( 'input[type="checkbox"]' ).each ->
           $( this ).prop( 'checked', false ).trigger( 'change' )
         _off.find( 'select' ).each ->
-          $( this ).val( '' ).trigger( 'change' )
+          $( this ).val( null ).trigger( 'change' )
         _off.find( 'input[type="radio"]' ).each ->
           $( this ).prop( 'checked', false ).trigger( 'change' )
 
