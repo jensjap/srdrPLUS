@@ -155,14 +155,24 @@ document.addEventListener 'turbolinks:load', ->
         }  # END subroutine = ( that ) ->
 
     turnPrereqOffSelfAndDescendants = ( prereq, that ) ->
-      # Turn off dependencies on itself...
+      # Turn off dependencies on itself..
       prereqOff( prereq )
-      # ...and those surrounding it but within the closest table.
+      # ..and those surrounding it but within the closest table.
       that.closest( 'table' ).find( 'input[data-prereq],option[data-prereq]' ).each ( idx ) ->
         prereq = $( this ).data( 'prereq' )
         prereqOff( prereq )
         return  # END that.closest( 'table' ).find( 'input[data-prereq],option[data-prereq]' ).each ( idx ) ->
-      return  # END turnPrereqOffSelfAndDescendants = () ->
+      return  # END turnPrereqOffSelfAndDescendants = ( prereq, that ) ->
+
+    turnPrereqOnSelfAndDescendants = ( prereq, that ) ->
+      # Turn on dependencies on itself...
+      prereqOn( prereq )
+      # ..and those surrounding it but within the closest table.
+      that.closest( 'table' ).find( 'input[data-prereq],option[data-prereq]' ).each ( idx ) ->
+        prereq = $( this ).data( 'prereq' )
+        prereqOn( prereq )
+        return  # END that.closest( 'table' ).find( 'input[data-prereq],option[data-prereq]' ).each ( idx ) ->
+      return  # END turnPrereqOnSelfAndDescendants = ( prereq, that ) ->
 
     ##############################################################
     # Save the value of the current input for each question field.
@@ -248,12 +258,7 @@ document.addEventListener 'turbolinks:load', ->
         turnPrereqOffSelfAndDescendants( prereq, that )
 
       else
-        prereqOn( prereq )
-        that.closest( 'table' ).find( 'input[data-prereq],option[data-prereq]' ).each ( idx ) ->
-          prereq = $( this ).data( 'prereq' )
-          prereqOn( prereq )
-          return  # END that.closest( 'table' ).find( 'input[data-prereq],option[data-prereq]' ).each ( idx ) ->
-
+        noneActiveAndPrereq = true
         that.closest( 'table' ).find( 'input,select' ).each ( idx ) ->
           that   = $( this )
           result = subroutine( that )
@@ -261,10 +266,15 @@ document.addEventListener 'turbolinks:load', ->
           prereq = result.prereq
 
           # Turn off dependencies if the field is active and it is someone's prereq.
-          if active && $( '.' + prereq ).length
+          if active && $( '.off-' + prereq ).length
             turnPrereqOffSelfAndDescendants( prereq, that )
+            noneActiveAndPrereq = false
+            return false
 
           return  # END that.closest( 'table' ).find( 'input,select' ).each ( idx ) ->
+
+        if noneActiveAndPrereq
+          turnPrereqOnSelfAndDescendants( prereq, that )
 
       return  # END $( '#preview .card input,select' ).on 'change keyup', ( e ) ->
 
