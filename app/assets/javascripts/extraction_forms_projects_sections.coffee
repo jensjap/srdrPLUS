@@ -267,7 +267,6 @@ document.addEventListener 'turbolinks:load', ->
 
           # Turn off dependencies if the field is active and it is someone's prereq.
           if active && $( '.off-' + prereq ).length
-            turnPrereqOffSelfAndDescendants( prereq, that )
             noneActiveAndPrereq = false
             return false
 
