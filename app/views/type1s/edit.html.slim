@@ -1,0 +1,9 @@
+.column.row
+  h3 Edit new #{ @type1.extraction_forms_projects_section.section.name.titleize } Title
+
+.column.row
+  == render 'form'
+
+.column.row
+  = link_to 'Back', build_extraction_forms_project_path(@type1.extraction_forms_projects_section.extraction_forms_project,
+                    anchor: "panel-tab-#{ @type1.extraction_forms_projects_section.id }")

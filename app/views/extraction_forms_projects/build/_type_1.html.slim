@@ -1,1 +1,30 @@
-h4 Arms or Outcomes Type
+h4 Suggest #{ efps.section.name.titleize } Titles
+
+.column.row
+
+  .table-scroll
+
+    table.hover style='width: 100%;'
+
+      thead
+        tr
+          th Title
+          th Description
+          th
+          th
+
+      tbody
+        - efps.type1s.each do |t1|
+          tr
+            td = t1.name
+            td style='white-space: pre-wrap' = t1.description
+            td = link_to edit_type1_path(t1) do
+                 i.fi-pencil
+                 |  Edit
+            td = link_to t1, method: :delete, data: { confirm: t('confirm') } do
+                 i.fi-trash
+                 |  Remove
+
+= link_to new_extraction_forms_projects_section_type1_path(efps), { class: 'button secondary' } do
+  i.fi-plus
+  |  Add #{ efps.section.name.titleize }

@@ -1,13 +1,13 @@
 = link_to 'Preview', preview_extraction_forms_projects_section_path(efps),
                      class: 'button tiny float-right', style: 'margin-bottom: 0;'
 
-h4 Question List
+h4 #{ efps.section.name.titleize } Question List
 
 .column.row
 
   .table-scroll
 
-    table.hover
+    table.hover style='width: 100%;'
 
       thead
         tr
@@ -59,7 +59,7 @@ h4 Question List
                     - else
 
             td = q.name
-            td = q.description
+            td style='white-space: pre-wrap;' = q.description
             td = link_to edit_question_path(q) do
                  i.fi-pencil
                  |  Edit

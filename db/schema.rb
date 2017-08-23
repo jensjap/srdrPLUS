@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170720182649) do
+ActiveRecord::Schema.define(version: 20170821201857) do
 
   create_table "approvals", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "approvable_type"
@@ -384,6 +384,18 @@ ActiveRecord::Schema.define(version: 20170720182649) do
     t.index ["user_id"], name: "index_suggestions_on_user_id", using: :btree
   end
 
+  create_table "type1s", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "extraction_forms_projects_section_id"
+    t.string   "name"
+    t.text     "description",                          limit: 65535
+    t.datetime "deleted_at"
+    t.datetime "created_at",                                         null: false
+    t.datetime "updated_at",                                         null: false
+    t.index ["deleted_at"], name: "index_type1s_on_deleted_at", using: :btree
+    t.index ["extraction_forms_projects_section_id", "deleted_at"], name: "index_t1_on_efps_id_deleted_at", using: :btree
+    t.index ["extraction_forms_projects_section_id"], name: "index_type1s_on_extraction_forms_projects_section_id", using: :btree
+  end
+
   create_table "users", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "email",                  default: "", null: false
     t.string   "encrypted_password",     default: "", null: false
@@ -460,4 +472,5 @@ ActiveRecord::Schema.define(version: 20170720182649) do
   add_foreign_key "question_rows", "questions"
   add_foreign_key "questions", "extraction_forms_projects_sections"
   add_foreign_key "suggestions", "users"
+  add_foreign_key "type1s", "extraction_forms_projects_sections"
 end
