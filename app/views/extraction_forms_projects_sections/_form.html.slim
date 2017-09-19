@@ -17,11 +17,11 @@
         = f.association :extraction_forms_projects_section_type, label: 'Section Type', include_blank: false
 
         - if f.object.extraction_forms_projects_section_type_id == 2
-          = f.association :extraction_forms_projects_section_type1, label: 'Associate to a Type I section',
+          = f.association :extraction_forms_projects_section_type1, label: 'Associate to a Type 1 section',
                                                                     collection: f.object.extraction_forms_project\
                                                                                  .extraction_forms_projects_sections\
                                                                                  .where(extraction_forms_projects_section_type_id: 1),
-                                                                    prompt: 'Pick a Type I Section',
+                                                                    prompt: '--Optional--',
                                                                     include_blank: true,
                                                                     label_method: :section_label
 
