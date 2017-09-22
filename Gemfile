@@ -105,3 +105,6 @@ gem 'responders'
 
 # React Js.
 gem 'react-rails'
+
+# Helps with logins.
+gem 'doorkeeper'

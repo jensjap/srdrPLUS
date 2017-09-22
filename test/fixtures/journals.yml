@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  citation: one
+  year: 2017-09-20
+  volume: 1
+  issue: 1
+  name: MyString
+
+two:
+  citation: two
+  year: 2017-09-20
+  volume: 1
+  issue: 1
+  name: MyString

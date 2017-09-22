@@ -22,6 +22,10 @@ class Project < ApplicationRecord
 
   has_many :publishings, as: :publishable, dependent: :destroy
 
+  has_many :citaitons_projects
+  has_many :citations, through: :citations_projects
+  has_many :assignments
+  
   validates :name, presence: true
 
   #accepts_nested_attributes_for :extraction_forms_projects, reject_if: :all_blank, allow_destroy: true

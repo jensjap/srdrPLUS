@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  citations_project: one
+  value: 1
+  num_yes_votes: 1
+  predicted_probability: 1.5
+
+two:
+  citations_project: two
+  value: 1
+  num_yes_votes: 1
+  predicted_probability: 1.5

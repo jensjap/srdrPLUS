@@ -1,0 +1,9 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  task_type: one
+  num_assigned: 1
+
+two:
+  task_type: two
+  num_assigned: 1
