@@ -110,6 +110,38 @@ module SeedData
         { name: 'Maintenance Announcement', frequency: Frequency.first }
       ])
 
+      # CitationTypes.
+      CitationType.create([
+        { name: 'Primary' }, 
+        { name: 'Secondary' }
+      ])
+
+      # ActionTypes.
+      ActionType.create([
+        { name: 'Create' },
+        { name: 'Destroy' },
+        { name: 'Update' }, 
+        { name: 'New' },
+        { name: 'Index' },
+        { name: 'Show' },
+        { name: 'Edit' }
+      ])
+
+      # TaskTypes.
+      TaskType.create([
+        { name: 'Perpetual' },
+        { name: 'Pilot' },
+        { name: 'Advanced' }
+      ])
+      
+      # ConsensusTypes.
+      ConsensusType.create([
+        { name: 'Yes' },
+        { name: 'No' },
+        { name: 'Maybe' },
+        { name: 'Conflict' }
+      ])
+
       # Turn on paper_trail.
       PaperTrail.enabled = true
 
@@ -214,7 +246,7 @@ module SeedDataExtended
           { name: 'numeric' },
           { name: 'numeric_range' },
           { name: 'scientific' },
-          { name: 'checkbox'},
+          { name: 'checkbox' },
           { name: 'dropdown' },
           { name: 'radio' },
           { name: 'select2_single' },

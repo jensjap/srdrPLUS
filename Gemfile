@@ -99,3 +99,4 @@ gem 'kaminari'
 
 # CORS
 gem 'rack-cors'
+gem 'doorkeeper'

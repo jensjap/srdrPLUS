@@ -128,6 +128,8 @@ GEM
       responders
       warden (~> 1.2.3)
     docile (1.1.5)
+    doorkeeper (4.2.6)
+      railties (>= 4.2)
     erubis (2.7.0)
     execjs (2.7.0)
     ffi (1.9.18)
@@ -347,6 +349,7 @@ DEPENDENCIES
   coffee-rails (~> 4.2)
   country_select
   devise
+  doorkeeper
   faker!
   foundation-icons-sass-rails
   foundation-rails
@@ -382,4 +385,4 @@ DEPENDENCIES
   web-console!
 
 BUNDLED WITH
-   1.14.6
+   1.15.4

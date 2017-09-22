@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  use_doorkeeper
   concern :paginatable do
     get '(page/:page)', action: :index, on: :collection, as: ''
   end

@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user: one
+  notable: one
+  notable_type: Notable
+  value: MyText
+
+two:
+  user: two
+  notable: two
+  notable_type: Notable
+  value: MyText

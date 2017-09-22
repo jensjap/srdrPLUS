@@ -10,7 +10,26 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170720182649) do
+ActiveRecord::Schema.define(version: 20170921203443) do
+
+  create_table "action_types", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string   "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "actions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "user_id"
+    t.integer  "action_type_id"
+    t.string   "actionable_type"
+    t.integer  "actionable_id"
+    t.integer  "action_count"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+    t.index ["action_type_id"], name: "index_actions_on_action_type_id", using: :btree
+    t.index ["actionable_type", "actionable_id"], name: "index_actions_on_actionable_type_and_actionable_id", using: :btree
+    t.index ["user_id"], name: "index_actions_on_user_id", using: :btree
+  end
 
   create_table "approvals", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "approvable_type"
@@ -26,6 +45,61 @@ ActiveRecord::Schema.define(version: 20170720182649) do
     t.index ["approvable_type", "approvable_id"], name: "index_approvals_on_approvable_type_and_approvable_id", using: :btree
     t.index ["deleted_at"], name: "index_approvals_on_deleted_at", using: :btree
     t.index ["user_id"], name: "index_approvals_on_user_id", using: :btree
+  end
+
+  create_table "assignments", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "user_id"
+    t.integer  "task_id"
+    t.integer  "project_id"
+    t.integer  "done_so_far"
+    t.datetime "date_assigned"
+    t.datetime "date_due"
+    t.integer  "done"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+    t.index ["project_id"], name: "index_assignments_on_project_id", using: :btree
+    t.index ["task_id"], name: "index_assignments_on_task_id", using: :btree
+    t.index ["user_id"], name: "index_assignments_on_user_id", using: :btree
+  end
+
+  create_table "authors", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "citation_id"
+    t.string   "name"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+    t.index ["citation_id"], name: "index_authors_on_citation_id", using: :btree
+  end
+
+  create_table "citation_types", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string   "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "citations", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "citation_type_id"
+    t.string   "name"
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
+    t.index ["citation_type_id"], name: "index_citations_on_citation_type_id", using: :btree
+  end
+
+  create_table "citations_projects", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "citation_id"
+    t.integer  "project_id"
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
+    t.integer  "consensus_type_id"
+    t.boolean  "pilot_flag"
+    t.index ["citation_id"], name: "index_citations_projects_on_citation_id", using: :btree
+    t.index ["consensus_type_id"], name: "index_citations_projects_on_consensus_type_id", using: :btree
+    t.index ["project_id"], name: "index_citations_projects_on_project_id", using: :btree
+  end
+
+  create_table "consensus_types", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string   "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "degrees", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -155,6 +229,17 @@ ActiveRecord::Schema.define(version: 20170720182649) do
     t.index ["deleted_at"], name: "index_frequencies_on_deleted_at", using: :btree
   end
 
+  create_table "journals", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "citation_id"
+    t.date     "year"
+    t.integer  "volume"
+    t.integer  "issue"
+    t.string   "name"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+    t.index ["citation_id"], name: "index_journals_on_citation_id", using: :btree
+  end
+
   create_table "key_questions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
     t.string   "name"
     t.datetime "deleted_at"
@@ -183,6 +268,24 @@ ActiveRecord::Schema.define(version: 20170720182649) do
     t.index ["project_id"], name: "index_kqp_on_p_id", using: :btree
   end
 
+  create_table "keywords", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "citation_id"
+    t.string   "name"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+    t.index ["citation_id"], name: "index_keywords_on_citation_id", using: :btree
+  end
+
+  create_table "labels", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "citations_project_id"
+    t.integer  "user_id"
+    t.integer  "value"
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
+    t.index ["citations_project_id"], name: "index_labels_on_citations_project_id", using: :btree
+    t.index ["user_id"], name: "index_labels_on_user_id", using: :btree
+  end
+
   create_table "message_types", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "name"
     t.integer  "frequency_id"
@@ -204,6 +307,57 @@ ActiveRecord::Schema.define(version: 20170720182649) do
     t.datetime "updated_at",                    null: false
     t.index ["deleted_at"], name: "index_messages_on_deleted_at", using: :btree
     t.index ["message_type_id"], name: "index_messages_on_message_type_id", using: :btree
+  end
+
+  create_table "notes", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "user_id"
+    t.string   "notable_type"
+    t.integer  "notable_id"
+    t.text     "value",        limit: 65535
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+    t.index ["notable_type", "notable_id"], name: "index_notes_on_notable_type_and_notable_id", using: :btree
+    t.index ["user_id"], name: "index_notes_on_user_id", using: :btree
+  end
+
+  create_table "oauth_access_grants", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "resource_owner_id",               null: false
+    t.integer  "application_id",                  null: false
+    t.string   "token",                           null: false
+    t.integer  "expires_in",                      null: false
+    t.text     "redirect_uri",      limit: 65535, null: false
+    t.datetime "created_at",                      null: false
+    t.datetime "revoked_at"
+    t.string   "scopes"
+    t.index ["application_id"], name: "fk_rails_b4b53e07b8", using: :btree
+    t.index ["token"], name: "index_oauth_access_grants_on_token", unique: true, using: :btree
+  end
+
+  create_table "oauth_access_tokens", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "resource_owner_id"
+    t.integer  "application_id"
+    t.string   "token",                               null: false
+    t.string   "refresh_token"
+    t.integer  "expires_in"
+    t.datetime "revoked_at"
+    t.datetime "created_at",                          null: false
+    t.string   "scopes"
+    t.string   "previous_refresh_token", default: "", null: false
+    t.index ["application_id"], name: "fk_rails_732cb83ab7", using: :btree
+    t.index ["refresh_token"], name: "index_oauth_access_tokens_on_refresh_token", unique: true, using: :btree
+    t.index ["resource_owner_id"], name: "index_oauth_access_tokens_on_resource_owner_id", using: :btree
+    t.index ["token"], name: "index_oauth_access_tokens_on_token", unique: true, using: :btree
+  end
+
+  create_table "oauth_applications", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string   "name",                                    null: false
+    t.string   "uid",                                     null: false
+    t.string   "secret",                                  null: false
+    t.text     "redirect_uri", limit: 65535,              null: false
+    t.string   "scopes",                     default: "", null: false
+    t.datetime "created_at",                              null: false
+    t.datetime "updated_at",                              null: false
+    t.index ["uid"], name: "index_oauth_applications_on_uid", unique: true, using: :btree
   end
 
   create_table "orderings", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -228,6 +382,25 @@ ActiveRecord::Schema.define(version: 20170720182649) do
     t.datetime "updated_at", null: false
     t.index ["deleted_at"], name: "index_organizations_on_deleted_at", using: :btree
     t.index ["name"], name: "index_organizations_on_name", unique: true, using: :btree
+  end
+
+  create_table "predictions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "citations_project_id"
+    t.integer  "value"
+    t.integer  "num_yes_votes"
+    t.float    "predicted_probability", limit: 24
+    t.datetime "created_at",                       null: false
+    t.datetime "updated_at",                       null: false
+    t.index ["citations_project_id"], name: "index_predictions_on_citations_project_id", using: :btree
+  end
+
+  create_table "priorities", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "citations_project_id"
+    t.integer  "value"
+    t.integer  "num_times_labeled"
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
+    t.index ["citations_project_id"], name: "index_priorities_on_citations_project_id", using: :btree
   end
 
   create_table "profiles", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -384,6 +557,38 @@ ActiveRecord::Schema.define(version: 20170720182649) do
     t.index ["user_id"], name: "index_suggestions_on_user_id", using: :btree
   end
 
+  create_table "taggings", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "user_id"
+    t.integer  "tag_id"
+    t.string   "taggable_type"
+    t.integer  "taggable_id"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+    t.index ["tag_id"], name: "index_taggings_on_tag_id", using: :btree
+    t.index ["taggable_type", "taggable_id"], name: "index_taggings_on_taggable_type_and_taggable_id", using: :btree
+    t.index ["user_id"], name: "index_taggings_on_user_id", using: :btree
+  end
+
+  create_table "tags", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string   "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "task_types", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string   "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "tasks", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "task_type_id"
+    t.integer  "num_assigned"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+    t.index ["task_type_id"], name: "index_tasks_on_task_type_id", using: :btree
+  end
+
   create_table "users", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "email",                  default: "", null: false
     t.string   "encrypted_password",     default: "", null: false
@@ -433,7 +638,17 @@ ActiveRecord::Schema.define(version: 20170720182649) do
     t.index ["transaction_id"], name: "index_versions_on_transaction_id", using: :btree
   end
 
+  add_foreign_key "actions", "action_types"
+  add_foreign_key "actions", "users"
   add_foreign_key "approvals", "users"
+  add_foreign_key "assignments", "projects"
+  add_foreign_key "assignments", "tasks"
+  add_foreign_key "assignments", "users"
+  add_foreign_key "authors", "citations"
+  add_foreign_key "citations", "citation_types"
+  add_foreign_key "citations_projects", "citations"
+  add_foreign_key "citations_projects", "consensus_types"
+  add_foreign_key "citations_projects", "projects"
   add_foreign_key "degrees_profiles", "degrees"
   add_foreign_key "degrees_profiles", "profiles"
   add_foreign_key "dispatches", "users"
@@ -444,11 +659,20 @@ ActiveRecord::Schema.define(version: 20170720182649) do
   add_foreign_key "extraction_forms_projects_sections", "extraction_forms_projects_section_types"
   add_foreign_key "extraction_forms_projects_sections", "extraction_forms_projects_sections"
   add_foreign_key "extraction_forms_projects_sections", "sections"
+  add_foreign_key "journals", "citations"
   add_foreign_key "key_questions_projects", "extraction_forms_projects_sections"
   add_foreign_key "key_questions_projects", "key_questions"
   add_foreign_key "key_questions_projects", "projects"
+  add_foreign_key "keywords", "citations"
+  add_foreign_key "labels", "citations_projects"
+  add_foreign_key "labels", "users"
   add_foreign_key "message_types", "frequencies"
   add_foreign_key "messages", "message_types"
+  add_foreign_key "notes", "users"
+  add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
+  add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
+  add_foreign_key "predictions", "citations_projects"
+  add_foreign_key "priorities", "citations_projects"
   add_foreign_key "profiles", "organizations"
   add_foreign_key "profiles", "users"
   add_foreign_key "publishings", "users"
@@ -460,4 +684,7 @@ ActiveRecord::Schema.define(version: 20170720182649) do
   add_foreign_key "question_rows", "questions"
   add_foreign_key "questions", "extraction_forms_projects_sections"
   add_foreign_key "suggestions", "users"
+  add_foreign_key "taggings", "tags"
+  add_foreign_key "taggings", "users"
+  add_foreign_key "tasks", "task_types"
 end

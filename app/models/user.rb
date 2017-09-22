@@ -22,6 +22,12 @@ class User < ApplicationRecord
   has_many :publishings, dependent: :destroy, inverse_of: :user
   has_many :suggestions, dependent: :destroy, inverse_of: :user
 
+  has_many :assignments
+  has_many :notes
+  has_many :taggings
+  has_many :tags, through: :tags
+  has_many :actions
+
   def self.current
     Thread.current[:user]
   end
