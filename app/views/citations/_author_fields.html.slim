@@ -1,0 +1,6 @@
+.nested-fields
+
+  .field
+    = f.input :name, label: 'Author', wrapper_html: { id: "buttoned-input" }
+
+  = link_to_remove_association 'Remove Author', f, class: "float-right"

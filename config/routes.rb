@@ -1,4 +1,54 @@
 Rails.application.routes.draw do
+  get 'keywords/new'
+
+  get 'keywords/create'
+
+  get 'keywords/destroy'
+
+  get 'keywords/edit'
+
+  get 'keywords/update'
+
+  get 'keywords/show'
+
+  get 'keywords/index'
+
+  get 'journal/new'
+
+  get 'journal/create'
+
+  get 'journal/edit'
+
+  get 'journal/update'
+
+  get 'journal/show'
+
+  get 'journal/index'
+
+  get 'journal/destroy'
+
+  get 'author/new'
+
+  get 'author/create'
+
+  get 'author/index'
+
+  get 'author/show'
+
+  get 'author/edit'
+
+  get 'author/destroy'
+
+  get 'citations/new'
+
+  get 'citations/create'
+
+  get 'citations/update'
+
+  get 'citations/edit'
+
+  get 'citations/destroy'
+
   use_doorkeeper
   concern :paginatable do
     get '(page/:page)', action: :index, on: :collection, as: ''
@@ -56,6 +106,7 @@ Rails.application.routes.draw do
   resources :organizations, only: [:index]
   resources :sections, only: [:index]
 
+  resources :citations
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end
 
