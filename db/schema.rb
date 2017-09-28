@@ -79,8 +79,11 @@ ActiveRecord::Schema.define(version: 20171031043418) do
   create_table "citations", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "citation_type_id"
     t.string   "name"
-    t.datetime "created_at",       null: false
-    t.datetime "updated_at",       null: false
+    t.datetime "created_at",                     null: false
+    t.datetime "updated_at",                     null: false
+    t.integer  "refman"
+    t.integer  "pmid"
+    t.binary   "abstract",         limit: 65535
     t.index ["citation_type_id"], name: "index_citations_on_citation_type_id", using: :btree
   end
 
@@ -335,12 +338,12 @@ ActiveRecord::Schema.define(version: 20171031043418) do
 
   create_table "journals", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "citation_id"
-    t.date     "year"
     t.integer  "volume"
     t.integer  "issue"
     t.string   "name"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
+    t.date     "publication_date"
     t.index ["citation_id"], name: "index_journals_on_citation_id", using: :btree
   end
 

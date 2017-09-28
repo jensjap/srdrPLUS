@@ -16,23 +16,27 @@ class User < ApplicationRecord
   has_one :profile, dependent: :destroy, inverse_of: :user
   has_one :organization, through: :profile
 
+  has_many :actions, dependent: :destroy, inverse_of: :user
+
   has_many :approvals, dependent: :destroy, inverse_of: :user
+
+  has_many :assignments, dependent: :destroy, inverse_of: :user
 
   has_many :degrees, through: :profile
 
   has_many :dispatches, dependent: :destroy, inverse_of: :user
 
+  has_many :projects_users, dependent: :destroy, inverse_of: :user
+  has_many :projects, through: :projects_users, dependent: :destroy
+
   has_many :publishings, dependent: :destroy, inverse_of: :user
 
   has_many :suggestions, dependent: :destroy, inverse_of: :user
 
-  has_many :projects_users, dependent: :destroy, inverse_of: :user
-  has_many :projects, through: :projects_users, dependent: :destroy
-  has_many :assignments, dependent: :destroy, inverse_of: :user
   has_many :notes, dependent: :destroy, inverse_of: :user
+
   has_many :taggings, dependent: :destroy, inverse_of: :user
   has_many :tags, through: :taggings, dependent: :destroy
-  has_many :actions, dependent: :destroy, inverse_of: :user
 
   def self.current
     Thread.current[:user]

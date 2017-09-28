@@ -12,6 +12,11 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :keywords
+  resources :journals
+  resources :authors
+  resources :citations
+
   concern :paginatable do
     get '(page/:page)', action: :index, on: :collection, as: ''
   end
@@ -74,6 +79,7 @@ Rails.application.routes.draw do
   resources :organizations, only: [:index]
   resources :sections, only: [:index]
 
+  resources :citations
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end
 
