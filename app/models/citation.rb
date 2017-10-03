@@ -1,4 +1,6 @@
 class Citation < ApplicationRecord
+  include SharedQueryableMethods
+
   belongs_to :citation_type
 
   has_one :journal, dependent: :destroy

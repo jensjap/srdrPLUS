@@ -25,7 +25,7 @@ class CitationsController < ApplicationController
   def update
     respond_to do |format|
       if @citation.update(citation_params)
-        format.html { redirect_to @citation, notice: 'Citation was successfully updated.' }
+        format.html { redirect_to edit_citation_path(@citation), notice: 'Citation was successfully updated.' }
         format.json { render :show, status: :ok, location: @citation }
       else
         format.html { render :edit }
@@ -48,12 +48,14 @@ class CitationsController < ApplicationController
   def show
   end
 
+  def index
+    @citations = Citation.by_query(params[:q]).all.order(:name).page(params[:page])
+  end
+
   private
     #a helper method that sets the current citation from id to be used with callbacks
     def set_citation
-      @citation = Citation.includes(:projects)
-                          .includes(:journals)
-                          .includes(:keywords)
+      @citation = Citation.includes(:journal)
                           .find(params[:id])
     end
 
