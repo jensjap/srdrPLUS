@@ -32,6 +32,7 @@ class ProjectsController < ApplicationController
 
   # GET /projects/1/edit
   def edit
+    @citations = Citation.order(:name).page(params[:page]).per(10)
   end
 
   # POST /projects
@@ -100,6 +101,8 @@ class ProjectsController < ApplicationController
       params.require(:project)
         .permit(:name, :description, :attribution, :methodology_description,
                 :prospero, :doi, :notes, :funding_source,
+                { tasks_attributes: [:id, :name, :num_assigned, :task_type_id, assignments_attributes: [:id, :user_id]]},
+                { assignments_attributes: [:id, :done_so_far, :date_assigned, :date_due, :done, :user_id]},
                 { citations_attributes: [:id, :name, :_destroy] },
                 citations_projects_attributes: [:id, :_destroy, :citation_id, :project_id, 
                                                 citation_attributes: [:id, :_destroy, :name]])

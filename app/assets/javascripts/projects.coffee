@@ -52,7 +52,18 @@ document.addEventListener 'turbolinks:load', ->
       $( '#project-filter' ).focus()
       return
 
-    $( document )
+    $( document ).ready ->
+      $( 'select' ).select2
+        ajax:
+          url: '/citations',
+          dataType: 'json'
+          delay: 250
+          data: (params) ->
+            q: params.term
+            page: params.page || 1
+        width: 'auto'
+
+
 
 #      # Cocoon listeners.
 #      .on 'cocoon:before-insert', ( e, insertedItem ) ->

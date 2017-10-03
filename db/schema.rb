@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171003152003) do
+ActiveRecord::Schema.define(version: 20171016170027) do
 
   create_table "action_types", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "name"
@@ -50,14 +50,12 @@ ActiveRecord::Schema.define(version: 20171003152003) do
   create_table "assignments", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "user_id"
     t.integer  "task_id"
-    t.integer  "project_id"
     t.integer  "done_so_far"
     t.datetime "date_assigned"
     t.datetime "date_due"
     t.integer  "done"
     t.datetime "created_at",    null: false
     t.datetime "updated_at",    null: false
-    t.index ["project_id"], name: "index_assignments_on_project_id", using: :btree
     t.index ["task_id"], name: "index_assignments_on_task_id", using: :btree
     t.index ["user_id"], name: "index_assignments_on_user_id", using: :btree
   end
@@ -81,8 +79,8 @@ ActiveRecord::Schema.define(version: 20171003152003) do
     t.string   "name"
     t.datetime "created_at",                     null: false
     t.datetime "updated_at",                     null: false
-    t.integer  "refman"
-    t.integer  "pmid"
+    t.string   "refman"
+    t.string   "pmid"
     t.binary   "abstract",         limit: 65535
     t.index ["citation_type_id"], name: "index_citations_on_citation_type_id", using: :btree
   end
@@ -646,7 +644,6 @@ ActiveRecord::Schema.define(version: 20171003152003) do
   add_foreign_key "actions", "action_types"
   add_foreign_key "actions", "users"
   add_foreign_key "approvals", "users"
-  add_foreign_key "assignments", "projects"
   add_foreign_key "assignments", "tasks"
   add_foreign_key "assignments", "users"
   add_foreign_key "authors", "citations"

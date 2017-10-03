@@ -1,0 +1,9 @@
+.nested-fields
+  h3 New Task
+  = f.association :task_type
+  = f.input :num_assigned
+  = f.simple_fields_for :assignments do |a_f|
+    = a_f.input :done
+    = a_f.association :user, label_method: ->(user){ user.profile.username }
+  = link_to_add_association 'add assignment', f, :assignments, partial: 'projects/edit/assignment_fields', data: {'association-insertion-method' => 'after'}
+

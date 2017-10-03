@@ -11,17 +11,24 @@
       = j_f.input :volume
       = j_f.input :issue
       = j_f.input :publication_date, as: :date
+
     = f.simple_fields_for :authors do |a_f|
       = a_f.input :name, label: 'Author', wrapper_html: { id: "buttoned-input" }
       .float-right
-        = link_to_add_association 'Add Author', f, :authors, partial: 'citations/author_fields'
+        = link_to_remove_association 'remove author', a_f
+    .column.row
+      = link_to_add_association 'Add Author', f, :authors, partial: 'citations/author_fields'
+
     = f.simple_fields_for :keywords do |k_f|
       = k_f.input :name, label: 'Keyword', wrapper_html: { id: "buttoned-input" }
       .float-right
-        = link_to_add_association 'Add Keyword', f, :keywords, partial: 'citations/keyword_fields'
+        = link_to_remove_association 'remove keyword', k_f
+    .column.row
+      = link_to_add_association 'Add Keyword', f, :keywords, partial: 'citations/keyword_fields'
 
     .form-actions
       = f.button :submit
+      = link_to 'Delete Citation', citations_path, method: :delete, class: "alert button"
 
 .column.row
   = link_to 'Back', citations_path
