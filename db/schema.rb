@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170821201857) do
+ActiveRecord::Schema.define(version: 20170920153127) do
 
   create_table "approvals", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "approvable_type"
@@ -117,6 +117,18 @@ ActiveRecord::Schema.define(version: 20170821201857) do
     t.index ["extraction_form_id"], name: "index_efp_on_ef_id", using: :btree
     t.index ["extraction_forms_project_type_id"], name: "index_efp_on_efpt_id", using: :btree
     t.index ["project_id"], name: "index_efp_on_p_id", using: :btree
+  end
+
+  create_table "extraction_forms_projects_section_options", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "extraction_forms_projects_section_id"
+    t.boolean  "by_type1"
+    t.boolean  "include_total"
+    t.datetime "deleted_at"
+    t.datetime "created_at",                           null: false
+    t.datetime "updated_at",                           null: false
+    t.index ["deleted_at"], name: "index_efpso_on_deleted_at", using: :btree
+    t.index ["extraction_forms_projects_section_id", "deleted_at"], name: "index_efpso_on_efps_id_deleted_at", using: :btree
+    t.index ["extraction_forms_projects_section_id"], name: "index_efpso_on_efps_id", using: :btree
   end
 
   create_table "extraction_forms_projects_section_types", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -452,6 +464,7 @@ ActiveRecord::Schema.define(version: 20170821201857) do
   add_foreign_key "extraction_forms_projects", "extraction_forms"
   add_foreign_key "extraction_forms_projects", "extraction_forms_project_types"
   add_foreign_key "extraction_forms_projects", "projects"
+  add_foreign_key "extraction_forms_projects_section_options", "extraction_forms_projects_sections"
   add_foreign_key "extraction_forms_projects_sections", "extraction_forms_projects"
   add_foreign_key "extraction_forms_projects_sections", "extraction_forms_projects_section_types"
   add_foreign_key "extraction_forms_projects_sections", "extraction_forms_projects_sections"
