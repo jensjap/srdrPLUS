@@ -31,6 +31,8 @@ class Project < ApplicationRecord
 
   #accepts_nested_attributes_for :extraction_forms_projects, reject_if: :all_blank, allow_destroy: true
   #accepts_nested_attributes_for :key_questions_projects, reject_if: :all_blank, allow_destroy: true
+  accepts_nested_attributes_for :citations
+  accepts_nested_attributes_for :citations_projects, allow_destroy: true
 
   def duplicate_key_question?
     self.key_questions.having('count(*) > 1').group('name').count.present?

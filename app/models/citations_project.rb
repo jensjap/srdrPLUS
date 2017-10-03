@@ -6,6 +6,9 @@ class CitationsProject < ApplicationRecord
   has_one :priority, dependent: :destroy
 
   has_many :labels, dependent: :destroy
-  has_many :notes as: :notable, dependent: :destroy
-  has_many :tags as: :taggable, dependent: :destroy
+  has_many :notes, as: :notable, dependent: :destroy
+  has_many :taggings, as: :taggable, dependent: :destroy
+  has_many :tags, through: :taggings
+
+  accepts_nested_attributes_for :citation, reject_if: :all_blank
 end

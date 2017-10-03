@@ -1,0 +1,12 @@
+.column.row
+  = simple_form_for(@task, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
+    = f.error_notification
+    = f.association :project, label: 'Project'
+    = f.association :task_type, label: 'Task type'
+    = f.input :num_assigned, label: 'Number of citations to be labeled'
+
+    .form-actions
+    = f.button :submit
+
+.column.row
+  = link_to 'Back', tasks_path
