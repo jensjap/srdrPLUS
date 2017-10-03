@@ -99,6 +99,9 @@ class ProjectsController < ApplicationController
     def project_params
       params.require(:project)
         .permit(:name, :description, :attribution, :methodology_description,
-                :prospero, :doi, :notes, :funding_source)
+                :prospero, :doi, :notes, :funding_source,
+                { citations_attributes: [:id, :name, :_destroy] },
+                citations_projects_attributes: [:id, :_destroy, :citation_id, :project_id, 
+                                                citation_attributes: [:id, :_destroy, :name]])
     end
 end

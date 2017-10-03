@@ -1,0 +1,3 @@
+.nested-fields
+  = f.association :citation, collection: Citation.order(:name), prompt: 'Choose a citation'
+  = link_to_remove_association 'remove citation', f, class: 'float-right'

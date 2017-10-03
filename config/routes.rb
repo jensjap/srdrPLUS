@@ -1,4 +1,32 @@
 Rails.application.routes.draw do
+  get 'assignments/new'
+
+  get 'assignments/create'
+
+  get 'assignments/edit'
+
+  get 'assignments/update'
+
+  get 'assignments/destroy'
+
+  get 'assignments/index'
+
+  get 'assignments/show'
+
+  get 'tasks/new'
+
+  get 'tasks/create'
+
+  get 'tasks/edit'
+
+  get 'tasks/update'
+
+  get 'tasks/destroy'
+
+  get 'tasks/index'
+
+  get 'tasks/show'
+
   get 'keywords/new'
 
   get 'keywords/create'
@@ -107,6 +135,7 @@ Rails.application.routes.draw do
   resources :sections, only: [:index]
 
   resources :citations
+  resources :tasks
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end
 

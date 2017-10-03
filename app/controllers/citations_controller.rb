@@ -17,7 +17,7 @@ class CitationsController < ApplicationController
         format.json { render :show, status: :created, location: @citation }
       else
         format.html { render :new }
-        format.json { render json: @citation. errors, status: :unprocessable_entity }
+        format.json { render json: @citation.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -26,9 +26,10 @@ class CitationsController < ApplicationController
     respond_to do |format|
       if @citation.update(citation_params)
         format.html { redirect_to @citation, notice: 'Citation was successfully updated.' }
-      else 
+        format.json { render :show, status: :ok, location: @citation }
+      else
         format.html { render :edit }
-        format.json { render json: @citation.errors, status: unprocessable_entity }
+        format.json { render json: @citation.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -37,18 +38,18 @@ class CitationsController < ApplicationController
   end
 
   def destroy
-      @citation.destroy
-      respond_to do |format|
-        format.html { redirect_to citations_url, notice: t('removed') }
-        format.json { head :no_content }
-  end
+    @citation.destroy
+    respond_to do |format|
+      format.html { redirect_to citations_url, notice: t('removed') }
+      format.json { head :no_content }
+     end
   end
 
   def show
-    @citation = Citation.find(params[:id])
   end
 
   private
+    #a helper method that sets the current citation from id to be used with callbacks
     def set_citation
       @citation = Citation.includes(:projects)
                           .includes(:journals)
@@ -59,8 +60,8 @@ class CitationsController < ApplicationController
     def citation_params
       params.require(:citation)
           .permit(:name, :citation_type_id, :pmid, :refman, :abstract, 
-      {journal_attributes: [:id, :name, :publication_date, :issue, :volume, :_destroy]},
-      {authors_attributes: [:id, :name, :_destroy]},
-      keywords_attributes: [:id, :name, :_destroy])
+          { journal_attributes: [:id, :name, :publication_date, :issue, :volume, :_destroy] },
+          { authors_attributes: [:id, :name, :_destroy] },
+            keywords_attributes: [:id, :name, :_destroy])
     end
 end

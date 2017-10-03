@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170927182625) do
+ActiveRecord::Schema.define(version: 20171003152003) do
 
   create_table "action_types", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "name"
@@ -589,6 +589,8 @@ ActiveRecord::Schema.define(version: 20170927182625) do
     t.integer  "num_assigned"
     t.datetime "created_at",   null: false
     t.datetime "updated_at",   null: false
+    t.integer  "project_id"
+    t.index ["project_id"], name: "index_tasks_on_project_id", using: :btree
     t.index ["task_type_id"], name: "index_tasks_on_task_type_id", using: :btree
   end
 
@@ -689,5 +691,6 @@ ActiveRecord::Schema.define(version: 20170927182625) do
   add_foreign_key "suggestions", "users"
   add_foreign_key "taggings", "tags"
   add_foreign_key "taggings", "users"
+  add_foreign_key "tasks", "projects"
   add_foreign_key "tasks", "task_types"
 end

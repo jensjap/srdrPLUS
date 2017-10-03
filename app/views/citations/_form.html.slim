@@ -1,5 +1,5 @@
 .column.row
-  = simple_form_for(@citation, html: { data: {'abide': '', 'live-validate': true } }) do |f|
+  = simple_form_for(@citation, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
     = f.error_notification
     = f.input :name, label: 'Citation Title', autofocus: true
     = f.input :abstract, as: :text
