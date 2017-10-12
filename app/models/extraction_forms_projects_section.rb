@@ -32,7 +32,6 @@ class ExtractionFormsProjectsSection < ApplicationRecord
   validates :ordering, presence: true
 
   validate :child_type
-  validate :only_one_kq_section_type
   validate :parent_type
 
   def section_id=(token)
@@ -62,11 +61,5 @@ class ExtractionFormsProjectsSection < ApplicationRecord
     else
       option.delete
     end
-  end
-
-  def only_one_kq_section_type
-    errors[:messages] << 'You should not have multiple Key Questions sections' if extraction_forms_project.extraction_forms_projects_sections.any? { |efps|
-      efps.extraction_forms_projects_section_type_id == 4
-    }
   end
 end
