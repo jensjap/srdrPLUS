@@ -205,7 +205,8 @@ module SeedDataExtended
       # Associate KQ's and EF's with first project.
       @project = Project.order(updated_at: :desc).first
       @project.key_questions << [@kq1, @kq2]
-      @project.extraction_forms << [@ef1, @ef2]
+      @project.extraction_forms_projects.create!(extraction_form: @ef1, extraction_forms_project_type: @efs_project_type1)
+      @project.extraction_forms_projects.create!(extraction_form: @ef2, extraction_forms_project_type: @efs_project_type1)
 
       # Seed QuestionRowColumnFieldType.
       QuestionRowColumnFieldType.create(
