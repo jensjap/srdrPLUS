@@ -7,11 +7,14 @@ class Project < ApplicationRecord
 
   paginates_per 8
 
-
   has_many :extraction_forms_projects, dependent: :destroy, inverse_of: :project
   has_many :extraction_forms, through: :extraction_forms_projects, dependent: :destroy
+
   has_many :key_questions_projects, dependent: :destroy, inverse_of: :project
   has_many :key_questions, through: :key_questions_projects, dependent: :destroy
+
+  has_many :projects_studies, dependent: :destroy, inverse_of: :project
+  has_many :studies, through: :projects_studies, dependent: :destroy
 
   has_many :publishings, as: :publishable, dependent: :destroy
 

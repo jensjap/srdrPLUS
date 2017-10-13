@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170920153127) do
+ActiveRecord::Schema.define(version: 20171013045324) do
 
   create_table "approvals", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "approvable_type"
@@ -274,6 +274,17 @@ ActiveRecord::Schema.define(version: 20170920153127) do
     t.index ["deleted_at"], name: "index_projects_on_deleted_at", using: :btree
   end
 
+  create_table "projects_studies", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "project_id"
+    t.integer  "study_id"
+    t.datetime "deleted_at"
+    t.boolean  "active"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["project_id"], name: "index_projects_studies_on_project_id", using: :btree
+    t.index ["study_id"], name: "index_projects_studies_on_study_id", using: :btree
+  end
+
   create_table "publishings", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "publishable_type"
     t.integer  "publishable_id"
@@ -380,6 +391,12 @@ ActiveRecord::Schema.define(version: 20170920153127) do
     t.index ["name"], name: "index_sections_on_name", unique: true, using: :btree
   end
 
+  create_table "studies", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "suggestions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "suggestable_type"
     t.integer  "suggestable_id"
@@ -476,6 +493,8 @@ ActiveRecord::Schema.define(version: 20170920153127) do
   add_foreign_key "messages", "message_types"
   add_foreign_key "profiles", "organizations"
   add_foreign_key "profiles", "users"
+  add_foreign_key "projects_studies", "projects"
+  add_foreign_key "projects_studies", "studies"
   add_foreign_key "publishings", "users"
   add_foreign_key "question_row_column_fields", "question_row_column_field_types"
   add_foreign_key "question_row_column_fields", "question_row_columns"
