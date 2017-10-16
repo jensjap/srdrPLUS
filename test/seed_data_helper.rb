@@ -4,6 +4,13 @@ module SeedData
       # Turn off paper_trail.
       PaperTrail.enabled = false
 
+      # Roles.
+      Role.create([
+        { name: 'leader'},
+        { name: 'contributor'},
+        { name: 'auditor'}
+      ])
+
       # Users.
       @superadmin = User.create do |u|
         u.email        = 'superadmin@test.com'
@@ -235,6 +242,12 @@ module SeedDataExtended
           { name: 'exponent' }       # For scientific
         ]
       )
+
+      # Seed ProjectsUser.
+      @project.users << @contributor
+
+      # Seed ProjectsUsersRole.
+      ProjectsUser.find_by(project: @project, user: @contributor).roles << Role.where(name: 'leader')
 
       # Turn on paper_trail.
       PaperTrail.enabled = true

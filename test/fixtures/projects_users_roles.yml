@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  projects_user: one
+  role: one
+  deleted_at: 2017-10-16 13:03:18
+  active: false
+
+two:
+  projects_user: two
+  role: two
+  deleted_at: 2017-10-16 13:03:18
+  active: false

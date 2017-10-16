@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171013045324) do
+ActiveRecord::Schema.define(version: 20171016050318) do
 
   create_table "approvals", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "approvable_type"
@@ -285,6 +285,36 @@ ActiveRecord::Schema.define(version: 20171013045324) do
     t.index ["study_id"], name: "index_projects_studies_on_study_id", using: :btree
   end
 
+  create_table "projects_users", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "project_id"
+    t.integer  "user_id"
+    t.datetime "deleted_at"
+    t.boolean  "active"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["active"], name: "index_projects_users_on_active", using: :btree
+    t.index ["deleted_at"], name: "index_projects_users_on_deleted_at", using: :btree
+    t.index ["project_id", "user_id", "active"], name: "index_pu_on_p_id_u_id_active_uniq", unique: true, using: :btree
+    t.index ["project_id", "user_id", "deleted_at"], name: "index_pu_on_p_id_u_id_deleted_at_uniq", unique: true, using: :btree
+    t.index ["project_id"], name: "index_projects_users_on_project_id", using: :btree
+    t.index ["user_id"], name: "index_projects_users_on_user_id", using: :btree
+  end
+
+  create_table "projects_users_roles", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "projects_user_id"
+    t.integer  "role_id"
+    t.datetime "deleted_at"
+    t.boolean  "active"
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
+    t.index ["active"], name: "index_projects_users_roles_on_active", using: :btree
+    t.index ["deleted_at"], name: "index_projects_users_roles_on_deleted_at", using: :btree
+    t.index ["projects_user_id", "role_id", "active"], name: "index_pur_on_pu_id_r_id_active_uniq", unique: true, using: :btree
+    t.index ["projects_user_id", "role_id", "deleted_at"], name: "index_pur_on_pu_id_r_id_deleted_at_uniq", unique: true, using: :btree
+    t.index ["projects_user_id"], name: "index_projects_users_roles_on_projects_user_id", using: :btree
+    t.index ["role_id"], name: "index_projects_users_roles_on_role_id", using: :btree
+  end
+
   create_table "publishings", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "publishable_type"
     t.integer  "publishable_id"
@@ -378,6 +408,15 @@ ActiveRecord::Schema.define(version: 20171013045324) do
     t.index ["deleted_at"], name: "index_questions_on_deleted_at", using: :btree
     t.index ["extraction_forms_projects_section_id", "deleted_at"], name: "index_q_on_efps_id_deleted_at", using: :btree
     t.index ["extraction_forms_projects_section_id"], name: "index_questions_on_extraction_forms_projects_section_id", using: :btree
+  end
+
+  create_table "roles", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string   "name"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["deleted_at"], name: "index_roles_on_deleted_at", using: :btree
+    t.index ["name"], name: "index_roles_on_name", unique: true, using: :btree
   end
 
   create_table "sections", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -495,6 +534,10 @@ ActiveRecord::Schema.define(version: 20171013045324) do
   add_foreign_key "profiles", "users"
   add_foreign_key "projects_studies", "projects"
   add_foreign_key "projects_studies", "studies"
+  add_foreign_key "projects_users", "projects"
+  add_foreign_key "projects_users", "users"
+  add_foreign_key "projects_users_roles", "projects_users"
+  add_foreign_key "projects_users_roles", "roles"
   add_foreign_key "publishings", "users"
   add_foreign_key "question_row_column_fields", "question_row_column_field_types"
   add_foreign_key "question_row_column_fields", "question_row_columns"
