@@ -4,7 +4,9 @@ Rails.application.routes.draw do
   end
 
   resources :projects, concerns: :paginatable, shallow: true do
-    resources :extractions
+    resources :extractions do
+      get 'work', on: :member
+    end
     resources :extraction_forms_projects, only: [:create, :edit, :update, :destroy] do
       get 'build', on: :member
       resources :extraction_forms_projects_sections, only: [:new, :create, :edit, :update, :destroy] do

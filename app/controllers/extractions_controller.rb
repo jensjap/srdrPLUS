@@ -1,6 +1,6 @@
 class ExtractionsController < ApplicationController
   before_action :set_project, only: [:new, :create]
-  before_action :set_extraction, only: [:show, :edit, :update, :destroy]
+  before_action :set_extraction, only: [:show, :edit, :update, :destroy, :work]
 
   # GET /extractions
   # GET /extractions.json
@@ -60,6 +60,10 @@ class ExtractionsController < ApplicationController
       format.html { redirect_to project_extractions_url(@extraction.extraction_forms_project.project), notice: 'Extraction was successfully destroyed.' }
       format.json { head :no_content }
     end
+  end
+
+  # GET /extractions/1/work
+  def work
   end
 
   private
