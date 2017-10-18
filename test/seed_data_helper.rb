@@ -6,9 +6,9 @@ module SeedData
 
       # Roles.
       Role.create([
-        { name: 'leader'},
-        { name: 'contributor'},
-        { name: 'auditor'}
+        { name: 'Leader'},
+        { name: 'Contributor'},
+        { name: 'Auditor'}
       ])
 
       # Users.
@@ -247,7 +247,7 @@ module SeedDataExtended
       @project.users << @contributor
 
       # Seed ProjectsUsersRole.
-      ProjectsUser.find_by(project: @project, user: @contributor).roles << Role.where(name: 'leader')
+      ProjectsUser.find_by(project: @project, user: @contributor).roles << Role.where(name: 'Leader')
 
       # Turn on paper_trail.
       PaperTrail.enabled = true
