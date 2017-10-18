@@ -1,0 +1,10 @@
+= simple_form_for([@project, @extraction], html: { data: { 'abide': '', 'live-validate': true } }) do |f|
+  = f.error_notification
+
+  .form-inputs
+    = f.association :projects_study
+    = f.association :projects_users_role, label_method: :get_projects_users_role_user_information_markup, as: :radio_buttons
+    = f.association :extraction_forms_project, label_method: :get_extraction_forms_project_extraction_form_information_markup, as: :radio_buttons
+
+  .form-actions
+    = f.button :submit

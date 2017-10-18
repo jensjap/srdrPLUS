@@ -1,0 +1,27 @@
+h1 Extractions
+
+table
+  thead
+    tr
+      th Extraction Form
+      th Study
+      th Assigned User
+      th Extraction Form
+      th
+      th
+      th
+
+  tbody
+    - @extractions.each do |extraction|
+      tr
+        td = extraction.extraction_forms_project.extraction_form.name
+        td = extraction.projects_study.id if extraction.projects_study
+        td = extraction.projects_users_role.projects_user.user.profile.username
+        td = extraction.extraction_forms_project.extraction_form.name
+        td = link_to 'Show', extraction
+        td = link_to 'Edit', edit_extraction_path(extraction)
+        td = link_to 'Destroy', extraction, data: { confirm: 'Are you sure?' }, method: :delete
+
+br
+
+= link_to 'New Extraction', new_project_extraction_path
