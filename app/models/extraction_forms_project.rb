@@ -6,9 +6,9 @@ class ExtractionFormsProject < ApplicationRecord
 
   after_create :create_default_sections
 
+  belongs_to :extraction_forms_project_type, inverse_of: :extraction_forms_projects, optional: true
   belongs_to :extraction_form, inverse_of: :extraction_forms_projects
-  belongs_to :extraction_forms_project_type, inverse_of: :extraction_forms_projects
-  belongs_to :project, inverse_of: :extraction_forms_projects
+  belongs_to :project, inverse_of: :extraction_forms_projects, touch: true
 
   has_many :extractions, dependent: :destroy, inverse_of: :extraction_forms_project
   has_many :extraction_forms_projects_sections, dependent: :destroy, inverse_of: :extraction_forms_project

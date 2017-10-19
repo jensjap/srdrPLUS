@@ -14,7 +14,7 @@ class ExtractionFormsProjectsController < ApplicationController
   # POST /projects/1/extraction_forms_projects
   # POST /projects/1/extraction_forms_projects.json
   def create
-    @extraction_forms_project = @project.extraction_forms_projects.new(extraction_forms_project_params)
+    @extraction_forms_project = @project.extraction_forms_projects.build(extraction_forms_project_params)
 
     respond_to do |format|
       if @extraction_forms_project.save
