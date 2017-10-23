@@ -14,7 +14,7 @@
       .card-divider
 
         h5 #{ (idx + 1).to_s }. #{ q.name }
-        h6 Description: #{ q.description }
+        .description style='white-space: pre-wrap;' #{ q.description }
 
       .card-section
 
@@ -22,7 +22,14 @@
 
           #step-two
 
-            == render 'extraction_forms_projects_sections/question_fields', q: q
+            - if @extraction_forms_projects_section.extraction_forms_projects_section_type1.present?
+              - @extraction_forms_projects_section.extraction_forms_projects_section_type1.type1s.each do |t1|
+
+                = t1.name + ':'
+                == render 'extraction_forms_projects_sections/question_fields', q: q
+
+            - else
+              == render 'extraction_forms_projects_sections/question_fields', q: q
 
 .column.row
   = link_to 'Back', build_extraction_forms_project_path(@extraction_forms_projects_section.extraction_forms_project,

@@ -4,6 +4,13 @@ module SeedData
       # Turn off paper_trail.
       PaperTrail.enabled = false
 
+      # Roles.
+      Role.create([
+        { name: 'leader'},
+        { name: 'contributor'},
+        { name: 'auditor'}
+      ])
+
       # Users.
       @superadmin = User.create do |u|
         u.email        = 'superadmin@test.com'
@@ -365,7 +372,8 @@ module SeedDataExtended
       # Associate KQ's and EF's with first project.
       @project = Project.order(updated_at: :desc).first
       @project.key_questions << [@kq1, @kq2]
-      @project.extraction_forms << [@ef1, @ef2]
+      @project.extraction_forms_projects.create!(extraction_form: @ef1, extraction_forms_project_type: @efs_project_type1)
+      @project.extraction_forms_projects.create!(extraction_form: @ef2, extraction_forms_project_type: @efs_project_type1)
 
       # Seed QuestionRowColumnFieldType.
       QuestionRowColumnFieldType.create(
@@ -394,6 +402,12 @@ module SeedDataExtended
           { name: 'exponent' }       # For scientific
         ]
       )
+
+      # Seed ProjectsUser.
+      @project.users << @contributor
+
+      # Seed ProjectsUsersRole.
+      ProjectsUser.find_by(project: @project, user: @contributor).roles << Role.where(name: 'leader')
 
       # Turn on paper_trail.
       PaperTrail.enabled = true

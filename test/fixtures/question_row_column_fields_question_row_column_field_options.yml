@@ -3,11 +3,15 @@
 one:
   question_row_column_field: one
   question_row_column_field_option: one
+  name: MyValue
+  name_type: MyValue
   deleted_at:
   active: true
 
 two:
   question_row_column_field: two
   question_row_column_field_option: two
+  name: MyValue
+  name_type: MyValue
   deleted_at:
   active: true

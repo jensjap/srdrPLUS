@@ -1,0 +1,16 @@
+= simple_form_for([@extraction_forms_projects_section, @type1], html: { data: { 'abide': '', 'live-validate': true } }) do |f|
+  = f.error_notification
+
+  .alert.callout data-abide-error='' style='display: none;'
+    p
+      i.fi-alert
+      '  Please correct the errors below.'
+
+  .form-inputs
+
+    = f.input :name, label: "#{ @type1.extraction_forms_projects_section.section.name.titleize }" + ' Title', autofocus: true
+    = f.input :description, input_html: { rows: 8 }
+
+  .form-actions
+
+    = f.button :submit, 'Save Title'

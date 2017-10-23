@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  extraction_forms_projects_section: one
+  by_type1: false
+  include_total: false
+
+two:
+  extraction_forms_projects_section: two
+  by_type1: false
+  include_total: false

@@ -194,6 +194,18 @@ ActiveRecord::Schema.define(version: 20171016170027) do
     t.index ["project_id"], name: "index_efp_on_p_id", using: :btree
   end
 
+  create_table "extraction_forms_projects_section_options", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "extraction_forms_projects_section_id"
+    t.boolean  "by_type1"
+    t.boolean  "include_total"
+    t.datetime "deleted_at"
+    t.datetime "created_at",                           null: false
+    t.datetime "updated_at",                           null: false
+    t.index ["deleted_at"], name: "index_efpso_on_deleted_at", using: :btree
+    t.index ["extraction_forms_projects_section_id", "deleted_at"], name: "index_efpso_on_efps_id_deleted_at", using: :btree
+    t.index ["extraction_forms_projects_section_id"], name: "index_efpso_on_efps_id", using: :btree
+  end
+
   create_table "extraction_forms_projects_section_types", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "name"
     t.datetime "deleted_at"
@@ -436,6 +448,47 @@ ActiveRecord::Schema.define(version: 20171016170027) do
     t.index ["deleted_at"], name: "index_projects_on_deleted_at", using: :btree
   end
 
+  create_table "projects_studies", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "project_id"
+    t.integer  "study_id"
+    t.datetime "deleted_at"
+    t.boolean  "active"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["project_id"], name: "index_projects_studies_on_project_id", using: :btree
+    t.index ["study_id"], name: "index_projects_studies_on_study_id", using: :btree
+  end
+
+  create_table "projects_users", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "project_id"
+    t.integer  "user_id"
+    t.datetime "deleted_at"
+    t.boolean  "active"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["active"], name: "index_projects_users_on_active", using: :btree
+    t.index ["deleted_at"], name: "index_projects_users_on_deleted_at", using: :btree
+    t.index ["project_id", "user_id", "active"], name: "index_pu_on_p_id_u_id_active_uniq", unique: true, using: :btree
+    t.index ["project_id", "user_id", "deleted_at"], name: "index_pu_on_p_id_u_id_deleted_at_uniq", unique: true, using: :btree
+    t.index ["project_id"], name: "index_projects_users_on_project_id", using: :btree
+    t.index ["user_id"], name: "index_projects_users_on_user_id", using: :btree
+  end
+
+  create_table "projects_users_roles", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "projects_user_id"
+    t.integer  "role_id"
+    t.datetime "deleted_at"
+    t.boolean  "active"
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
+    t.index ["active"], name: "index_projects_users_roles_on_active", using: :btree
+    t.index ["deleted_at"], name: "index_projects_users_roles_on_deleted_at", using: :btree
+    t.index ["projects_user_id", "role_id", "active"], name: "index_pur_on_pu_id_r_id_active_uniq", unique: true, using: :btree
+    t.index ["projects_user_id", "role_id", "deleted_at"], name: "index_pur_on_pu_id_r_id_deleted_at_uniq", unique: true, using: :btree
+    t.index ["projects_user_id"], name: "index_projects_users_roles_on_projects_user_id", using: :btree
+    t.index ["role_id"], name: "index_projects_users_roles_on_role_id", using: :btree
+  end
+
   create_table "publishings", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "publishable_type"
     t.integer  "publishable_id"
@@ -531,6 +584,15 @@ ActiveRecord::Schema.define(version: 20171016170027) do
     t.index ["extraction_forms_projects_section_id"], name: "index_questions_on_extraction_forms_projects_section_id", using: :btree
   end
 
+  create_table "roles", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string   "name"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["deleted_at"], name: "index_roles_on_deleted_at", using: :btree
+    t.index ["name"], name: "index_roles_on_name", unique: true, using: :btree
+  end
+
   create_table "sections", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "name"
     t.boolean  "default",    default: false
@@ -540,6 +602,12 @@ ActiveRecord::Schema.define(version: 20171016170027) do
     t.index ["default"], name: "index_sections_on_default", using: :btree
     t.index ["deleted_at"], name: "index_sections_on_deleted_at", using: :btree
     t.index ["name"], name: "index_sections_on_name", unique: true, using: :btree
+  end
+
+  create_table "studies", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "suggestions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -590,6 +658,18 @@ ActiveRecord::Schema.define(version: 20171016170027) do
     t.integer  "project_id"
     t.index ["project_id"], name: "index_tasks_on_project_id", using: :btree
     t.index ["task_type_id"], name: "index_tasks_on_task_type_id", using: :btree
+  end
+
+  create_table "type1s", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "extraction_forms_projects_section_id"
+    t.string   "name"
+    t.text     "description",                          limit: 65535
+    t.datetime "deleted_at"
+    t.datetime "created_at",                                         null: false
+    t.datetime "updated_at",                                         null: false
+    t.index ["deleted_at"], name: "index_type1s_on_deleted_at", using: :btree
+    t.index ["extraction_forms_projects_section_id", "deleted_at"], name: "index_t1_on_efps_id_deleted_at", using: :btree
+    t.index ["extraction_forms_projects_section_id"], name: "index_type1s_on_extraction_forms_projects_section_id", using: :btree
   end
 
   create_table "users", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -657,6 +737,7 @@ ActiveRecord::Schema.define(version: 20171016170027) do
   add_foreign_key "extraction_forms_projects", "extraction_forms"
   add_foreign_key "extraction_forms_projects", "extraction_forms_project_types"
   add_foreign_key "extraction_forms_projects", "projects"
+  add_foreign_key "extraction_forms_projects_section_options", "extraction_forms_projects_sections"
   add_foreign_key "extraction_forms_projects_sections", "extraction_forms_projects"
   add_foreign_key "extraction_forms_projects_sections", "extraction_forms_projects_section_types"
   add_foreign_key "extraction_forms_projects_sections", "extraction_forms_projects_sections"
@@ -677,6 +758,12 @@ ActiveRecord::Schema.define(version: 20171016170027) do
   add_foreign_key "priorities", "citations_projects"
   add_foreign_key "profiles", "organizations"
   add_foreign_key "profiles", "users"
+  add_foreign_key "projects_studies", "projects"
+  add_foreign_key "projects_studies", "studies"
+  add_foreign_key "projects_users", "projects"
+  add_foreign_key "projects_users", "users"
+  add_foreign_key "projects_users_roles", "projects_users"
+  add_foreign_key "projects_users_roles", "roles"
   add_foreign_key "publishings", "users"
   add_foreign_key "question_row_column_fields", "question_row_column_field_types"
   add_foreign_key "question_row_column_fields", "question_row_columns"
@@ -690,4 +777,5 @@ ActiveRecord::Schema.define(version: 20171016170027) do
   add_foreign_key "taggings", "users"
   add_foreign_key "tasks", "projects"
   add_foreign_key "tasks", "task_types"
+  add_foreign_key "type1s", "extraction_forms_projects_sections"
 end
