@@ -4,4 +4,6 @@ class Extraction < ApplicationRecord
   belongs_to :extraction_forms_project, inverse_of: :extractions
 
   has_many :extractions_projects_users_roles, dependent: :destroy, inverse_of: :extraction
+
+  delegate :extraction_form, to: :extraction_forms_project
 end

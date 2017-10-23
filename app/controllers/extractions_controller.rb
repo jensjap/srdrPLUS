@@ -64,6 +64,9 @@ class ExtractionsController < ApplicationController
 
   # GET /extractions/1/work
   def work
+    @extraction_forms_project = @extraction.extraction_forms_project
+    @key_questions_projects = @extraction_forms_project.key_questions_projects
+    @sections = @extraction_forms_project.sections
   end
 
   private

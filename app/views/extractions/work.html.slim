@@ -1,1 +1,41 @@
-= react_component 'Main'
+/= react_component 'Main'
+
+.row.work
+  .column.medium-3
+    ul#vertical-tabs.tabs.vertical data-deep-link='true' data-deep-link-smudge='true' data-deep-link-smudge-delay='600' data-update-history='true' data-tabs=''
+
+      - @extraction_forms_project.extraction_forms_projects_sections.each do |efps|
+
+        li.tabs-title
+          - section = efps.section.name
+          = link_to section, "#panel-tab-#{ efps.id.to_s }", title: section
+
+  .column.medium-9
+    .tabs-content.vertical data-tabs-content='vertical-tabs'
+
+      - @extraction_forms_project.extraction_forms_projects_sections.each do |efps|
+
+        .tabs-panel id="panel-tab-#{ efps.id.to_s }"
+
+          .column.row
+
+            / Arms | Outcomes
+            - if efps.extraction_forms_projects_section_type.name == 'Type 1'
+
+              // Put a form for capturing the data for this extraction for this section
+
+            / Design Details | Arm Details | Sample Characteristics | Outcome Details | Quality
+            - elsif efps.extraction_forms_projects_section_type.name == 'Type 2'
+
+              // Put a form for capturing the data for this extraction for this section
+
+            / Results
+            - elsif efps.extraction_forms_projects_section_type.name == 'Type 3'
+
+              // Put a form for capturing the data for this extraction for this section
+
+            / Key Questions
+            - elsif efps.extraction_forms_projects_section_type.name == 'Key Questions'
+
+              - byebug
+              // Put a form for capturing the data for this extraction for this section
