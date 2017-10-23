@@ -33,12 +33,12 @@ class KeyQuestionsProject < ApplicationRecord
 
   private
 
-  def key_question_name_exists?(attributes)
-    return true if attributes[:name].blank?
-    begin
-      self.key_question = KeyQuestion.where(name: attributes[:name]).first_or_create!
-    rescue ActiveRecord::RecordNotUnique
-      retry
+    def key_question_name_exists?(attributes)
+      return true if attributes[:name].blank?
+      begin
+        self.key_question = KeyQuestion.where(name: attributes[:name]).first_or_create!
+      rescue ActiveRecord::RecordNotUnique
+        retry
+      end
     end
-  end
 end

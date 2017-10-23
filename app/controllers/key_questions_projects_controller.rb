@@ -17,7 +17,6 @@ class KeyQuestionsProjectsController < ApplicationController
                       notice: t('success') }
         format.json { render :show, status: :created, location: @project }
       else
-        #format.html { render :new }
         format.html { redirect_to edit_project_path(@project, anchor: 'panel-key-question'),
                       alert: t('blank') }
         format.json { render json: @project.errors, status: :unprocessable_entity }
@@ -53,18 +52,18 @@ class KeyQuestionsProjectsController < ApplicationController
   end
 
   private
-  # Use callbacks to share common setup or constraints between actions.
-  def set_project
-    @project = Project.find(params[:project_id])
-  end
+    # Use callbacks to share common setup or constraints between actions.
+    def set_project
+      @project = Project.find(params[:project_id])
+    end
 
-  def set_key_questions_project
-    @key_questions_project = KeyQuestionsProject.find(params[:id])
-  end
+    def set_key_questions_project
+      @key_questions_project = KeyQuestionsProject.find(params[:id])
+    end
 
-  # Never trust parameters from the scary internet, only allow the white list through.
-  def key_questions_project_params
-    params.require(:key_questions_project)
-      .permit(key_question_attributes: [:name])
-  end
+    # Never trust parameters from the scary internet, only allow the white list through.
+    def key_questions_project_params
+      params.require(:key_questions_project)
+        .permit(key_question_attributes: [:name])
+    end
 end

@@ -1,4 +1,15 @@
 Rails.application.routes.draw do
+  namespace :api do
+    namespace :v1 do
+      resources :projects, shallow: true do
+        resources :extractions, only: [:index]
+        resources :extraction_forms_projects do
+          resources :extraction_forms_projects_sections, only: [:index, :show]
+        end
+      end
+    end
+  end
+
   concern :paginatable do
     get '(page/:page)', action: :index, on: :collection, as: ''
   end

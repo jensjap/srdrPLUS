@@ -102,8 +102,8 @@ ActiveRecord::Schema.define(version: 20171017041045) do
   end
 
   create_table "extraction_forms_projects", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer  "extraction_form_id"
     t.integer  "extraction_forms_project_type_id"
+    t.integer  "extraction_form_id"
     t.integer  "project_id"
     t.boolean  "public",                           default: false
     t.datetime "deleted_at"
@@ -115,6 +115,8 @@ ActiveRecord::Schema.define(version: 20171017041045) do
     t.index ["extraction_form_id", "project_id", "active"], name: "index_efp_on_ef_id_p_id_active", using: :btree
     t.index ["extraction_form_id", "project_id", "deleted_at"], name: "index_efp_on_ef_id_p_id_deleted_at", using: :btree
     t.index ["extraction_form_id"], name: "index_efp_on_ef_id", using: :btree
+    t.index ["extraction_forms_project_type_id", "extraction_form_id", "project_id", "active"], name: "index_efp_on_efpt_id_ef_id_p_id_active", using: :btree
+    t.index ["extraction_forms_project_type_id", "extraction_form_id", "project_id", "deleted_at"], name: "index_efp_on_efpt_id_ef_id_p_id_deleted_at", using: :btree
     t.index ["extraction_forms_project_type_id"], name: "index_efp_on_efpt_id", using: :btree
     t.index ["project_id"], name: "index_efp_on_p_id", using: :btree
   end
