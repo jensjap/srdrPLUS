@@ -78,9 +78,9 @@ class ExtractionsController < ApplicationController
     end
 
     def set_extraction
-      @extraction = Extraction.includes(extraction_forms_project: [:key_questions_projects,
-                                                                   :sections,
-                                                                   extraction_forms_projects_sections: [:extraction_forms_projects_section_type]])
+      @extraction = Extraction.includes(extraction_forms_project: [:sections,
+                                                                   extraction_forms_projects_sections: [:extraction_forms_projects_section_type],
+                                                                   key_questions_projects: [:key_question]])
                               .find(params[:id])
     end
 
