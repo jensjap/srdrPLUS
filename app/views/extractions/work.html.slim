@@ -37,10 +37,18 @@
             / Key Questions
             - elsif efps.extraction_forms_projects_section_type.name == 'Key Questions'
 
-              = simple_form_for(@extraction) do |f|
+              h4 Key Questions
+              blockquote
+                | Assign Key Questions to this Extraction.
+                cite Friendly Helper
+
+              = simple_form_for(@extraction, html: { data: { 'abide': '' } }) do |f|
 
                 = f.hidden_field :extraction_forms_projects_section_id, value: efps.id.to_s
 
-                = f.association :key_questions_projects, as: :check_boxes
+                = f.association :key_questions_projects,
+                                collection: efps.key_questions_projects,
+                                as: :check_boxes,
+                                label: false,
+                                label_method: :kq_name
                 = f.submit
-              // Put a form for capturing the data for this extraction for this section

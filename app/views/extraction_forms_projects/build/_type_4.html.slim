@@ -7,11 +7,12 @@ blockquote
   = f.error_notification
 
   .form-inputs
-    = f.association :key_questions_projects, collection: @key_questions_projects,
+    = f.association :key_questions_projects,
+                    collection: @key_questions_projects,
                     disabled: @key_questions_projects.where.not(extraction_forms_projects_section: efps).map(&:id),
                     as: :check_boxes,
                     label: false,
-                    label_method: :name_and_assignment
+                    label_method: :kq_name_and_assignment
 
   .form-actions
     = f.button :submit, t('save')

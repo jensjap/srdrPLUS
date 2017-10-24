@@ -29,7 +29,11 @@ class KeyQuestionsProject < ApplicationRecord
     end
   end
 
-  def name_and_assignment
+  def kq_name
+    "#{ self.key_question.name }"
+  end
+
+  def kq_name_and_assignment
     "#{ self.key_question.name }" + (self.extraction_forms_projects_section.blank? ?
                                      ' (unassigned)' : " (assigned to: #{ self.extraction_form.name })")
   end
