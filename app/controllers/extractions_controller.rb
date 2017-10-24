@@ -43,7 +43,9 @@ class ExtractionsController < ApplicationController
   def update
     respond_to do |format|
       if @extraction.update(extraction_params)
-        format.html { redirect_to @extraction, notice: 'Extraction was successfully updated.' }
+        format.html { redirect_to work_extraction_path(@extraction,
+                                                       anchor: "panel-tab-#{ params[:extraction][:extraction_forms_projects_section_id] }"),
+                                  notice: t('success') }
         format.json { render :show, status: :ok, location: @extraction }
       else
         format.html { render :edit }
@@ -65,8 +67,8 @@ class ExtractionsController < ApplicationController
   # GET /extractions/1/work
   def work
     @extraction_forms_project = @extraction.extraction_forms_project
-    @key_questions_projects = @extraction_forms_project.key_questions_projects
-    @sections = @extraction_forms_project.sections
+    @key_questions_projects   = @extraction_forms_project.key_questions_projects
+    @sections                 = @extraction_forms_project.sections
   end
 
   private
@@ -83,6 +85,7 @@ class ExtractionsController < ApplicationController
     def extraction_params
       params.require(:extraction).permit(:projects_study_id,
                                          :projects_users_role_id,
-                                         :extraction_forms_project_id)
+                                         :extraction_forms_project_id,
+                                         key_questions_project_ids: [])
     end
 end

@@ -39,7 +39,7 @@ class QuestionsController < ApplicationController
       if @question.update(question_patch_params)
         format.html { redirect_to build_extraction_forms_project_path(@question.extraction_forms_project,
                                                                       anchor: "panel-tab-#{ @question.extraction_forms_projects_section.id }"),
-                                                                      notice: t('success') }
+                                  notice: t('success') }
         format.json { render :show, status: :ok, location: @question }
       else
         format.html { render :edit }

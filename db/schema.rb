@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171017041045) do
+ActiveRecord::Schema.define(version: 20171023143652) do
 
   create_table "approvals", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "approvable_type"
@@ -175,6 +175,21 @@ ActiveRecord::Schema.define(version: 20171017041045) do
     t.index ["projects_users_role_id"], name: "index_extractions_on_projects_users_role_id", using: :btree
   end
 
+  create_table "extractions_key_questions_projects", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "extraction_id"
+    t.integer  "key_questions_project_id"
+    t.datetime "deleted_at"
+    t.boolean  "active"
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+    t.index ["active"], name: "index_ekqp_on_active", using: :btree
+    t.index ["deleted_at"], name: "index_ekqp_on_deleted_at", using: :btree
+    t.index ["extraction_id", "key_questions_project_id", "active"], name: "index_ekqp_on_e_id_kqp_id_active", using: :btree
+    t.index ["extraction_id", "key_questions_project_id", "deleted_at"], name: "index_ekqp_on_e_id_kqp_id_deleted_at", using: :btree
+    t.index ["extraction_id"], name: "index_ekqp_on_e_id", using: :btree
+    t.index ["key_questions_project_id"], name: "index_ekqp_on_kqp_id", using: :btree
+  end
+
   create_table "extractions_projects_users_roles", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "extraction_id"
     t.integer  "projects_users_role_id"
@@ -182,12 +197,12 @@ ActiveRecord::Schema.define(version: 20171017041045) do
     t.boolean  "active"
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
-    t.index ["active"], name: "index_extractions_projects_users_roles_on_active", using: :btree
-    t.index ["deleted_at"], name: "index_extractions_projects_users_roles_on_deleted_at", using: :btree
+    t.index ["active"], name: "index_epur_on_active", using: :btree
+    t.index ["deleted_at"], name: "index_epur_on_deleted_at", using: :btree
     t.index ["extraction_id", "projects_users_role_id", "active"], name: "index_epur_on_e_id_pur_id_active_uniq", unique: true, using: :btree
     t.index ["extraction_id", "projects_users_role_id", "deleted_at"], name: "index_epur_on_e_id_pur_id_deleted_at_uniq", unique: true, using: :btree
-    t.index ["extraction_id"], name: "index_extractions_projects_users_roles_on_extraction_id", using: :btree
-    t.index ["projects_users_role_id"], name: "index_extractions_projects_users_roles_on_projects_users_role_id", using: :btree
+    t.index ["extraction_id"], name: "index_epur_on_e_id", using: :btree
+    t.index ["projects_users_role_id"], name: "index_epur_on_pur_id", using: :btree
   end
 
   create_table "frequencies", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -559,6 +574,8 @@ ActiveRecord::Schema.define(version: 20171017041045) do
   add_foreign_key "extractions", "extraction_forms_projects"
   add_foreign_key "extractions", "projects_studies"
   add_foreign_key "extractions", "projects_users_roles"
+  add_foreign_key "extractions_key_questions_projects", "extractions"
+  add_foreign_key "extractions_key_questions_projects", "key_questions_projects"
   add_foreign_key "extractions_projects_users_roles", "extractions"
   add_foreign_key "extractions_projects_users_roles", "projects_users_roles"
   add_foreign_key "key_questions_projects", "extraction_forms_projects_sections"

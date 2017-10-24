@@ -37,5 +37,10 @@
             / Key Questions
             - elsif efps.extraction_forms_projects_section_type.name == 'Key Questions'
 
-              - byebug
+              = simple_form_for(@extraction) do |f|
+
+                = f.hidden_field :extraction_forms_projects_section_id, value: efps.id.to_s
+
+                = f.association :key_questions_projects, as: :check_boxes
+                = f.submit
               // Put a form for capturing the data for this extraction for this section
