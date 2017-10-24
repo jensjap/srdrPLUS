@@ -78,7 +78,10 @@ class ExtractionsController < ApplicationController
     end
 
     def set_extraction
-      @extraction = Extraction.find(params[:id])
+      @extraction = Extraction.includes(extraction_forms_project: [:key_questions_projects,
+                                                                   :sections,
+                                                                   extraction_forms_projects_sections: [:extraction_forms_projects_section_type]])
+                              .find(params[:id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
