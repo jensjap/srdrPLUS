@@ -1,67 +1,78 @@
 /= react_component 'Main'
 
-.row.work
-  .column.medium-3
-    ul#vertical-tabs.tabs.vertical data-deep-link='true' data-deep-link-smudge='true' data-deep-link-smudge-delay='600' data-update-history='true' data-tabs=''
+.column.row.work
 
-      - @extraction_forms_project.extraction_forms_projects_sections.each do |efps|
+  ul#extraction-forms-projects-tabs.tabs data-deep-link='true' data-deep-link-smudge='true' data-deep-link-smudge-delay='600' data-update-history='true' data-tabs=''
 
-        li.tabs-title
-          - section = efps.section.name
-          = link_to section, "#panel-tab-#{ efps.id.to_s }", title: section
+    - @extraction_forms_projects.each do |efp|
 
-  .column.medium-9
-    .tabs-content.vertical data-tabs-content='vertical-tabs'
+      li.tabs-title
+        = link_to efp.extraction_form.name, "#panel-extraction-forms-project-#{ efp.id.to_s }", title: "Extraction Form: #{ efp.extraction_form.name }"
 
-      - @extraction_forms_project.extraction_forms_projects_sections.each do |efps|
+  .tabs-content data-tabs-content='extraction-forms-projects-tabs'
 
-        .tabs-panel id="panel-tab-#{ efps.id.to_s }"
+    - @extraction_forms_projects.each do |efp|
 
-          .column.row
+      .tabs-panel id="panel-extraction-forms-project-#{ efp.id.to_s }"
 
-            / Arms | Outcomes
-            - if efps.extraction_forms_projects_section_type.name == 'Type 1'
+        .row
+          .column.medium-3
+            ul.tabs.vertical id="extraction-forms-projects-#{ efp.id.to_s }-vertical-tabs" data-deep-link='true' data-deep-link-smudge='true' data-deep-link-smudge-delay='600' data-update-history='true' data-tabs=''
 
-              - section_name = efps.section.name
-              h4 = section_name
-              blockquote
-                | Assign #{ section_name } to this Extraction.
-                cite Friendly Helper
+              - efp.extraction_forms_projects_sections.includes(:section).each do |efps|
 
-              = simple_form_for(@extraction, html: { data: { 'abide': '' } }) do |f|
+                li.tabs-title
+                  - section = efps.section.name
+                  = link_to section, "#panel-tab-#{ efps.id.to_s }", title: section
 
-                = f.hidden_field :extraction_forms_projects_section_id, value: efps.id.to_s
+          .column.medium-9
+            .tabs-content.vertical data-tabs-content="extraction-forms-projects-#{ efp.id.to_s }-vertical-tabs"
 
-                = f.association :type1s,
-                                collection: efps.type1s,
-                                label: false
-                = f.submit
+              - efp.extraction_forms_projects_sections.includes(:extraction_forms_projects_section_type, :section, :type1s).each do |efps|
 
-            / Design Details | Arm Details | Sample Characteristics | Outcome Details | Quality
-            - elsif efps.extraction_forms_projects_section_type.name == 'Type 2'
+                .tabs-panel id="panel-tab-#{ efps.id.to_s }"
 
-              // Put a form for capturing the data for this extraction for this section
+                  .column.row
 
-            / Results
-            - elsif efps.extraction_forms_projects_section_type.name == 'Type 3'
+                    / Arms | Outcomes
+                    - if efps.extraction_forms_projects_section_type.name == 'Type 1'
 
-              // Put a form for capturing the data for this extraction for this section
+                      - section_name = efps.section.name
+                      h4 = section_name
+                      blockquote
+                        | Assign #{ section_name } to this Extraction.
+                        cite Friendly Helper
 
-            / Key Questions
-            - elsif efps.extraction_forms_projects_section_type.name == 'Key Questions'
+                      = simple_form_for(@extraction, html: { data: { 'abide': '' } }) do |f|
+                        = f.error_notification
 
-              h4 Key Questions
-              blockquote
-                | Assign Key Questions to this Extraction.
-                cite Friendly Helper
+                        .form-inputs
+                          = f.hidden_field :extraction_forms_projects_section_id, value: efps.id.to_s
+                          = f.association :type1s,
+                                          collection: efps.type1s,
+                                          label: false
 
-              = simple_form_for(@extraction, html: { data: { 'abide': '' } }) do |f|
+                        .form-actions
+                          = f.button :submit
 
-                = f.hidden_field :extraction_forms_projects_section_id, value: efps.id.to_s
+                    / Design Details | Arm Details | Sample Characteristics | Outcome Details | Quality
+                    - elsif efps.extraction_forms_projects_section_type.name == 'Type 2'
 
-                = f.association :key_questions_projects,
-                                collection: efps.key_questions_projects,
-                                as: :check_boxes,
-                                label: false,
-                                label_method: :kq_name
-                = f.submit
+                      // Put a form for capturing the data for this extraction for this section
+
+                    / Results
+                    - elsif efps.extraction_forms_projects_section_type.name == 'Type 3'
+
+                      // Put a form for capturing the data for this extraction for this section
+
+                    / Key Questions
+                    - elsif efps.extraction_forms_projects_section_type.name == 'Key Questions'
+
+                      h4 Key Questions
+
+                      ul
+
+                        - @extraction.key_questions_projects.where(extraction_forms_projects_section: efps).includes(:key_question).each do |kqp|
+                          li = kqp.key_question.name
+
+= link_to 'Back', project_extractions_path(@extraction.projects_users_role.projects_user.project)

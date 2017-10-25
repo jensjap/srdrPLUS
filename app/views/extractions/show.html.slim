@@ -15,15 +15,10 @@
 
 .column.row
   dl
-    dt.label.primary Extraction Form
-    dd.callout.secondary = @extraction.extraction_forms_project.get_extraction_forms_project_extraction_form_information_markup
-
-.column.row
-  dl
     dt.label.primary Key Questions
     dd.callout.secondary
       ul
         - @extraction.extractions_key_questions_projects.each do |ekqp|
           li = ekqp.key_questions_project.key_question.name
 
-= link_to 'Back', project_extractions_path(@extraction.extraction_forms_project.project)
+= link_to 'Back', project_extractions_path(@extraction.projects_users_role.projects_user.project)

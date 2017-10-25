@@ -5,7 +5,9 @@ class ExtractionsController < ApplicationController
   # GET /extractions
   # GET /extractions.json
   def index
-    @extractions = Extraction.all
+    @extractions = Extraction.includes(:projects_study,
+                                       projects_users_role: [projects_user: [user: [:profile]]],
+                                       extractions_key_questions_projects: [key_questions_project: [:key_question, extraction_forms_projects_section: [extraction_forms_project: [:extraction_form]]]]).all
   end
 
   # GET /extractions/1
@@ -29,7 +31,7 @@ class ExtractionsController < ApplicationController
 
     respond_to do |format|
       if @extraction.save
-        format.html { redirect_to project_extractions_url(@extraction.extraction_forms_project.project), notice: 'Extraction was successfully created.' }
+        format.html { redirect_to project_extractions_url(@extraction.projects_users_role.projects_user.project), notice: 'Extraction was successfully created.' }
         format.json { render :show, status: :created, location: @extraction }
       else
         format.html { render :new }
@@ -66,9 +68,12 @@ class ExtractionsController < ApplicationController
 
   # GET /extractions/1/work
   def work
-    @extraction_forms_project = @extraction.extraction_forms_project
-    @key_questions_projects   = @extraction_forms_project.key_questions_projects
-    @sections                 = @extraction_forms_project.sections
+    @extraction_forms_projects = Set.new
+    @extraction.extractions_key_questions_projects.includes(key_questions_project: [extraction_forms_projects_section: [extraction_forms_project: [:extraction_form]]]).order(key_questions_project_id: :asc).each do |ekqp|
+      if ekqp.key_questions_project.extraction_forms_projects_section
+        @extraction_forms_projects << ekqp.key_questions_project.extraction_forms_projects_section.extraction_forms_project
+      end
+    end
   end
 
   private
@@ -78,9 +83,8 @@ class ExtractionsController < ApplicationController
     end
 
     def set_extraction
-      @extraction = Extraction.includes(extraction_forms_project: [:sections,
-                                                                   extraction_forms_projects_sections: [:extraction_forms_projects_section_type],
-                                                                   key_questions_projects: [:key_question]])
+      @extraction = Extraction.includes(key_questions_projects: [:key_question,
+                                                                 extraction_forms_projects_section: [:extraction_forms_projects_section_type]])
                               .find(params[:id])
     end
 
@@ -88,7 +92,7 @@ class ExtractionsController < ApplicationController
     def extraction_params
       params.require(:extraction).permit(:projects_study_id,
                                          :projects_users_role_id,
-                                         :extraction_forms_project_id,
+                                         extractions_key_questions_project_ids: [],
                                          key_questions_project_ids: [],
                                          type1_ids: [])
     end
