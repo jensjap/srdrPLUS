@@ -11,5 +11,8 @@ class Type1 < ApplicationRecord
 
   belongs_to :extraction_forms_projects_section, inverse_of: :type1s
 
+  has_many :extractions_type1s, dependent: :destroy, inverse_of: :type1
+  has_many :extractions, through: :extractions_type1s, dependent: :destroy
+
   delegate :project, to: :extraction_forms_projects_section
 end

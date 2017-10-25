@@ -22,7 +22,20 @@
             / Arms | Outcomes
             - if efps.extraction_forms_projects_section_type.name == 'Type 1'
 
-              // Put a form for capturing the data for this extraction for this section
+              - section_name = efps.section.name
+              h4 = section_name
+              blockquote
+                | Assign #{ section_name } to this Extraction.
+                cite Friendly Helper
+
+              = simple_form_for(@extraction, html: { data: { 'abide': '' } }) do |f|
+
+                = f.hidden_field :extraction_forms_projects_section_id, value: efps.id.to_s
+
+                = f.association :type1s,
+                                collection: efps.type1s,
+                                label: false
+                = f.submit
 
             / Design Details | Arm Details | Sample Characteristics | Outcome Details | Quality
             - elsif efps.extraction_forms_projects_section_type.name == 'Type 2'
