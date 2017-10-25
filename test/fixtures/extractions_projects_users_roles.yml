@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  extraction: one
+  projects_users_role: one
+  deleted_at: 2017-10-17 12:10:45
+  active: false
+
+two:
+  extraction: two
+  projects_users_role: two
+  deleted_at: 2017-10-17 12:10:45
+  active: false
