@@ -43,11 +43,10 @@
                         | Assign #{ section_name } to this Extraction.
                         cite Friendly Helper
 
-                      = simple_form_for(@extraction, html: { data: { 'abide': '' } }) do |f|
+                      = simple_form_for(ExtractionsExtractionFormsProjectsSection.find_or_create_by(extraction: @extraction, extraction_forms_projects_section: efps), html: { data: { 'abide': '' } }) do |f|
                         = f.error_notification
 
                         .form-inputs
-                          = f.hidden_field :extraction_forms_projects_section_id, value: efps.id.to_s
                           = f.association :type1s,
                                           collection: efps.type1s,
                                           label: false

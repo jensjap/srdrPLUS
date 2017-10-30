@@ -93,7 +93,6 @@ class ExtractionsController < ApplicationController
       params.require(:extraction).permit(:projects_study_id,
                                          :projects_users_role_id,
                                          extractions_key_questions_project_ids: [],
-                                         key_questions_project_ids: [],
-                                         type1_ids: [])
+                                         key_questions_project_ids: [])
     end
 end
