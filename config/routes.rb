@@ -4,7 +4,9 @@ Rails.application.routes.draw do
       resources :projects, shallow: true do
         resources :extractions, only: [:index]
         resources :extraction_forms_projects do
-          resources :extraction_forms_projects_sections, only: [:index, :show]
+          resources :extraction_forms_projects_sections, only: [:index, :show] do
+            resources :type1s, only: [:index]
+          end
         end
       end
     end

@@ -48,6 +48,9 @@
 
                         .form-inputs
                           = f.association :type1s,
+                            input_html: { class: 'hook-up-select2-to-type1-selections',
+                                          style: 'width: 75%;',
+                                          data: { 'extraction-forms-projects-section-id': efps.id.to_s } },
                                           collection: efps.type1s,
                                           label: false
 

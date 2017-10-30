@@ -10,4 +10,3 @@ json.items do
     end
   end
 end
-
