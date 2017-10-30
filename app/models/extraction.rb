@@ -8,8 +8,6 @@ class Extraction < ApplicationRecord
   has_many :extractions_projects_users_roles, dependent: :destroy, inverse_of: :extraction
   has_many :extractions_key_questions_projects, dependent: :destroy, inverse_of: :extraction
   has_many :key_questions_projects, through: :extractions_key_questions_projects, dependent: :destroy
-  has_many :extractions_type1s, dependent: :destroy, inverse_of: :extraction
-  has_many :type1s, through: :extractions_type1s, dependent: :destroy
 
   validates :key_questions_projects, presence: true
 
