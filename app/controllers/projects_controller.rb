@@ -1,7 +1,6 @@
 class ProjectsController < ApplicationController
   skip_before_action :authenticate_user!, only: [:index, :show]
   before_action :set_project, only: [:show, :edit, :update, :destroy]
-  before_action -> { doorkeeper_authorize! :public }, only: [:index, :show]
 
   SORT = {  'updated-at': { updated_at: :desc },
             'created-at': { created_at: :desc }
@@ -32,7 +31,8 @@ class ProjectsController < ApplicationController
 
   # GET /projects/1/edit
   def edit
-    @citations = Citation.order(:name).page(params[:page]).per(10)
+    @citations = @project.citations
+    @citations_projects = @project.citations_projects.page(params[:page])
   end
 
   # POST /projects
@@ -60,6 +60,7 @@ class ProjectsController < ApplicationController
                       notice: t('success') }
         format.json { render :show, status: :ok, location: @project }
       else
+        byebug
         format.html { render :edit }
         format.json { render json: @project.errors, status: :unprocessable_entity }
       end
