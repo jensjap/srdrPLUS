@@ -5,10 +5,11 @@ class QuestionRowColumnField < ApplicationRecord
   after_create :associate_default_question_row_column_field_type
   after_create :create_default_question_row_column_fields_question_row_column_field_options
 
-  belongs_to :question_row_column, inverse_of: :question_row_column_field
+  belongs_to :question_row_column,            inverse_of: :question_row_column_field
   belongs_to :question_row_column_field_type, inverse_of: :question_row_column_fields
 
   has_many :dependencies, as: :prerequisitable, dependent: :destroy
+
   has_many :question_row_column_fields_question_row_column_field_options, dependent: :destroy, inverse_of: :question_row_column_field
   has_many :question_row_column_field_options, through: :question_row_column_fields_question_row_column_field_options, dependent: :destroy
 

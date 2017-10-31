@@ -30,6 +30,8 @@
 
               - efp.extraction_forms_projects_sections.includes(:extraction_forms_projects_section_type, :section, :type1s).each do |efps|
 
+                - section_name = efps.section.name
+
                 .tabs-panel id="panel-tab-#{ efps.id.to_s }"
 
                   .column.row
@@ -37,7 +39,6 @@
                     / Arms | Outcomes
                     - if efps.extraction_forms_projects_section_type.name == 'Type 1'
 
-                      - section_name = efps.section.name
                       h4 = section_name
                       blockquote
                         | Assign #{ section_name } to this Extraction.
@@ -60,7 +61,11 @@
                     / Design Details | Arm Details | Sample Characteristics | Outcome Details | Quality
                     - elsif efps.extraction_forms_projects_section_type.name == 'Type 2'
 
-                      // Put a form for capturing the data for this extraction for this section
+                      h4 = section_name
+                      blockquote
+                        | Please answer the questions to the best of your ability. If you require clarification, please consult the project lead.
+                        cite Friendly Helper
+
 
                     / Results
                     - elsif efps.extraction_forms_projects_section_type.name == 'Type 3'
@@ -70,7 +75,10 @@
                     / Key Questions
                     - elsif efps.extraction_forms_projects_section_type.name == 'Key Questions'
 
-                      h4 Key Questions
+                      h4 = section_name
+                      blockquote
+                        | Below is the list of Key Questions this extraction is associated with.
+                        cite Friendly Helper
 
                       ul
 

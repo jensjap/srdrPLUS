@@ -17,10 +17,15 @@ class User < ApplicationRecord
   has_one :organization, through: :profile
 
   has_many :approvals, dependent: :destroy, inverse_of: :user
+
   has_many :degrees, through: :profile
+
   has_many :dispatches, dependent: :destroy, inverse_of: :user
+
   has_many :publishings, dependent: :destroy, inverse_of: :user
+
   has_many :suggestions, dependent: :destroy, inverse_of: :user
+
   has_many :projects_users, dependent: :destroy, inverse_of: :user
   has_many :projects, through: :projects_users, dependent: :destroy
 

@@ -9,13 +9,17 @@ class Project < ApplicationRecord
 
   has_many :extraction_forms_projects, dependent: :destroy, inverse_of: :project
   has_many :extraction_forms, through: :extraction_forms_projects, dependent: :destroy
-  has_many :extractions, through: :extraction_forms_projects, dependent: :destroy
+  has_many :extractions,      through: :extraction_forms_projects, dependent: :destroy
+
   has_many :key_questions_projects, dependent: :destroy, inverse_of: :project
   has_many :key_questions, through: :key_questions_projects, dependent: :destroy
+
   has_many :projects_studies, dependent: :destroy, inverse_of: :project
   has_many :studies, through: :projects_studies, dependent: :destroy
+
   has_many :projects_users, dependent: :destroy, inverse_of: :project
   has_many :users, through: :projects_users, dependent: :destroy
+
   has_many :publishings, as: :publishable, dependent: :destroy
 
   validates :name, presence: true

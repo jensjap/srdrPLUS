@@ -9,6 +9,8 @@ class CreateExtractionsExtractionFormsProjectsSections < ActiveRecord::Migration
       t.timestamps
     end
 
+    add_index :extractions_extraction_forms_projects_sections, :deleted_at, name: 'index_eefps_on_deleted_at'
+    add_index :extractions_extraction_forms_projects_sections, :active,     name: 'index_eefps_on_active'
     add_index :extractions_extraction_forms_projects_sections, [:extraction_id, :extraction_forms_projects_section_id, :deleted_at], name: 'index_eefps_on_e_id_efps_id_deleted_at', where: 'deleted_at IS NULL'
     add_index :extractions_extraction_forms_projects_sections, [:extraction_id, :extraction_forms_projects_section_id, :active],     name: 'index_eefps_on_e_id_efps_id_active'
   end

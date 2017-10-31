@@ -10,11 +10,11 @@ class ExtractionFormsProjectsSection < ApplicationRecord
 
   before_validation -> { set_ordering_scoped_by(:extraction_forms_project_id) }
 
-  belongs_to :extraction_forms_project, inverse_of: :extraction_forms_projects_sections
-  belongs_to :extraction_forms_projects_section_type, inverse_of: :extraction_forms_projects_sections
+  belongs_to :extraction_forms_project,                inverse_of: :extraction_forms_projects_sections
+  belongs_to :extraction_forms_projects_section_type,  inverse_of: :extraction_forms_projects_sections
   belongs_to :extraction_forms_projects_section_type1, class_name: 'ExtractionFormsProjectsSection',
-                                                       foreign_key: 'extraction_forms_projects_section_id',
-                                                       optional: true
+    foreign_key: 'extraction_forms_projects_section_id',
+    optional: true
   belongs_to :section, inverse_of: :extraction_forms_projects_sections
 
   delegate :project, to: :extraction_forms_project
@@ -24,11 +24,15 @@ class ExtractionFormsProjectsSection < ApplicationRecord
 
   has_many :extractions_extraction_forms_projects_sections, dependent: :destroy, inverse_of: :extraction_forms_projects_section
   has_many :extractions, through: :extractions_extraction_forms_projects_sections, dependent: :destroy
+
   has_many :extraction_forms_projects_section_type2s, class_name:  'ExtractionFormsProjectsSection',
                                                       foreign_key: 'extraction_forms_projects_section_id'
+
   has_many :key_questions_projects, dependent: :nullify, inverse_of: :extraction_forms_projects_section
   has_many :key_questions, through: :key_questions_projects, dependent: :destroy
+
   has_many :questions, dependent: :destroy, inverse_of: :extraction_forms_projects_section
+
   has_many :type1s, dependent: :destroy, inverse_of: :extraction_forms_projects_section
 
   validates :ordering, presence: true

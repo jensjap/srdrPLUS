@@ -5,7 +5,7 @@ class ProjectsUsersRole < ApplicationRecord
   has_paper_trail
 
   belongs_to :projects_user, inverse_of: :projects_users_roles
-  belongs_to :role, inverse_of: :projects_users_roles
+  belongs_to :role,          inverse_of: :projects_users_roles
 
   has_many :extractions, dependent: :destroy, inverse_of: :projects_users_role
 

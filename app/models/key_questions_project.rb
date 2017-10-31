@@ -5,8 +5,8 @@ class KeyQuestionsProject < ApplicationRecord
   has_paper_trail
 
   belongs_to :extraction_forms_projects_section, inverse_of: :key_questions_projects, optional: true
-  belongs_to :key_question, inverse_of: :key_questions_projects
-  belongs_to :project, inverse_of: :key_questions_projects, touch: true
+  belongs_to :key_question,                      inverse_of: :key_questions_projects
+  belongs_to :project,                           inverse_of: :key_questions_projects, touch: true
 
   has_many :extractions_key_questions_projects, dependent: :destroy, inverse_of: :key_questions_project
   has_many :extractions, through: :extractions_key_questions_projects, dependent: :destroy

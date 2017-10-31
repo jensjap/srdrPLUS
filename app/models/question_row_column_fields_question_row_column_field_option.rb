@@ -8,15 +8,15 @@ class QuestionRowColumnFieldsQuestionRowColumnFieldOption < ApplicationRecord
 
   after_create :set_default_values
 
-  belongs_to :question_row_column_field, inverse_of: :question_row_column_fields_question_row_column_field_options
+  belongs_to :question_row_column_field,        inverse_of: :question_row_column_fields_question_row_column_field_options
   belongs_to :question_row_column_field_option, inverse_of: :question_row_column_fields_question_row_column_field_options
-
-  delegate :question, to: :question_row_column_field
-  delegate :question_row_column_field_type, to: :question_row_column_field
 
   has_one :suggestion, as: :suggestable, dependent: :destroy
 
   has_many :dependencies, as: :prerequisitable, dependent: :destroy
+
+  delegate :question,                       to: :question_row_column_field
+  delegate :question_row_column_field_type, to: :question_row_column_field
 
   private
 
