@@ -1,11 +1,26 @@
 Rails.application.routes.draw do
-  use_doorkeeper
+  namespace :api do
+    namespace :v1 do
+      resources :projects, shallow: true do
+        resources :extractions, only: [:index]
+        resources :extraction_forms_projects do
+          resources :extraction_forms_projects_sections, only: [:index, :show] do
+            resources :type1s, only: [:index]
+          end
+        end
+      end
+    end
+  end
+
   concern :paginatable do
     get '(page/:page)', action: :index, on: :collection, as: ''
   end
 
   resources :projects, concerns: :paginatable, shallow: true do
-    resources :extractions
+    resources :extractions do
+      resources :extractions_extraction_forms_projects_sections
+      get 'work', on: :member
+    end
     resources :extraction_forms_projects, only: [:create, :edit, :update, :destroy] do
       get 'build', on: :member
       resources :extraction_forms_projects_sections, only: [:new, :create, :edit, :update, :destroy] do

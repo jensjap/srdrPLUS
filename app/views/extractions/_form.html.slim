@@ -3,8 +3,12 @@
 
   .form-inputs
     = f.association :projects_study
-    = f.association :projects_users_role, label_method: :get_projects_users_role_user_information_markup, as: :radio_buttons
-    = f.association :extraction_forms_project, label_method: :get_extraction_forms_project_extraction_form_information_markup, as: :radio_buttons
+    = f.association :projects_users_role, label: 'Assign to', label_method: :get_projects_users_role_user_information_markup, as: :radio_buttons
+    = f.association :key_questions_projects,
+                    collection: @project ? @project.key_questions_projects : @extraction.project.key_questions_projects,
+                    as: :check_boxes,
+                    label: 'Which Key Question(s) does this extraction answer?',
+                    label_method: :kq_name
 
   .form-actions
     = f.button :submit

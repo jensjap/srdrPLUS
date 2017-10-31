@@ -3,10 +3,10 @@ h1 Extractions
 table
   thead
     tr
-      th Extraction Form
       th Study
       th Assigned User
-      th Extraction Form
+      th Key Questions
+      th
       th
       th
       th
@@ -14,10 +14,16 @@ table
   tbody
     - @extractions.each do |extraction|
       tr
-        td = extraction.extraction_forms_project.extraction_form.name
         td = extraction.projects_study.id if extraction.projects_study
         td = extraction.projects_users_role.projects_user.user.profile.username
-        td = extraction.extraction_forms_project.extraction_form.name
+        td
+          ul
+            - extraction.extractions_key_questions_projects.each do |ekqp|
+              - if ekqp.key_questions_project.extraction_forms_projects_section
+                li Key Question: "#{  ekqp.key_questions_project.key_question.name }"
+                ul style='margin-top: 0px; margin-bottom: 33px;'
+                  li Extraction Form: "#{ ekqp.key_questions_project.extraction_forms_projects_section.extraction_forms_project.extraction_form.name }"
+        td = link_to 'Work', work_extraction_path(extraction)
         td = link_to 'Show', extraction
         td = link_to 'Edit', edit_extraction_path(extraction)
         td = link_to 'Destroy', extraction, data: { confirm: 'Are you sure?' }, method: :delete

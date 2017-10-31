@@ -16,4 +16,6 @@ class ProjectsUsersRole < ApplicationRecord
       profile.last_name   + ' (' +
       self.role.name      + ')'
   end
+
+  delegate :project, to: :projects_user
 end

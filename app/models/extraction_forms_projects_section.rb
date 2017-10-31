@@ -22,6 +22,8 @@ class ExtractionFormsProjectsSection < ApplicationRecord
   has_one :extraction_forms_projects_section_option, dependent: :destroy
   has_one :ordering, as: :orderable, dependent: :destroy
 
+  has_many :extractions_extraction_forms_projects_sections, dependent: :destroy, inverse_of: :extraction_forms_projects_section
+  has_many :extractions, through: :extractions_extraction_forms_projects_sections, dependent: :destroy
   has_many :extraction_forms_projects_section_type2s, class_name:  'ExtractionFormsProjectsSection',
                                                       foreign_key: 'extraction_forms_projects_section_id'
   has_many :key_questions_projects, dependent: :nullify, inverse_of: :extraction_forms_projects_section

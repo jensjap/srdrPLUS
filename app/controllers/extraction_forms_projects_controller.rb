@@ -2,11 +2,6 @@ class ExtractionFormsProjectsController < ApplicationController
   before_action :set_project, only: [:create]
   before_action :set_extraction_forms_project, only: [:build, :edit, :update, :destroy]
 
-  # GET /extraction_forms_projects/1/build
-  def build
-    @key_questions_projects = @extraction_forms_project.project.key_questions_projects.includes(:key_question)
-  end
-
   # GET /extraction_forms_projects/1/edit
   def edit
   end
@@ -14,7 +9,7 @@ class ExtractionFormsProjectsController < ApplicationController
   # POST /projects/1/extraction_forms_projects
   # POST /projects/1/extraction_forms_projects.json
   def create
-    @extraction_forms_project = @project.extraction_forms_projects.new(extraction_forms_project_params)
+    @extraction_forms_project = @project.extraction_forms_projects.build(extraction_forms_project_params)
 
     respond_to do |format|
       if @extraction_forms_project.save
@@ -57,6 +52,11 @@ class ExtractionFormsProjectsController < ApplicationController
     end
   end
 
+  # GET /extraction_forms_projects/1/build
+  def build
+    @key_questions_projects = @extraction_forms_project.project.key_questions_projects.includes(:key_question)
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_project
@@ -69,6 +69,7 @@ class ExtractionFormsProjectsController < ApplicationController
         .includes(extraction_forms_projects_sections: [:extraction_forms_projects_section_type,
                                                        :ordering,
                                                        :section,
+                                                       :type1s,
                                                        { questions: [:ordering,
                                                                      :dependencies,
                                                                      { question_rows: [:question_row_columns] }] }])

@@ -19,6 +19,9 @@
 //= require select2
 //= require cocoon
 //= require jquery_mark_es6
+//= require react
+//= require react_ujs
+//= require components
 //= require_tree .
 
 //$(function(){ $(document).foundation(); });

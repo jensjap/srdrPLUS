@@ -97,6 +97,11 @@ gem 'gon'
 # Pagination.
 gem 'kaminari'
 
-# CORS
+# CORS.
 gem 'rack-cors'
-gem 'doorkeeper'
+
+# Help DRY up code.
+gem 'responders'
+
+# React Js.
+gem 'react-rails'
