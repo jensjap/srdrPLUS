@@ -52,8 +52,20 @@ document.addEventListener 'turbolinks:load', ->
       $( '#project-filter' ).focus()
       return
 
-    $( document ).ready ->
-      $( 'select' ).select2
+    $( '.citation_select' ).select2
+      ajax:
+        url: '/citations',
+        dataType: 'json'
+        delay: 250
+        data: (params) ->
+          console.log params
+          q: params.term
+          page: params.page || 1
+      width: '75%'
+
+      # Cocoon listeners.
+    $( document ).on 'cocoon:after-insert', ( e, insertedItem ) ->
+      $( '.citation_select' ).select2
         ajax:
           url: '/citations',
           dataType: 'json'
@@ -61,10 +73,8 @@ document.addEventListener 'turbolinks:load', ->
           data: (params) ->
             q: params.term
             page: params.page || 1
-        width: 'auto'
-
-
-
+        width: '75%'
+    return
 #      # Cocoon listeners.
 #      .on 'cocoon:before-insert', ( e, insertedItem ) ->
 #        insertedItem.fadeIn 'slow'
