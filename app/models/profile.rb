@@ -26,12 +26,16 @@ class Profile < ApplicationRecord
   validate :validate_username
 
   def degree_ids=(tokens)
-    tokens.map { |token| process_token(token, :degree) }
+    tokens.map { |token|
+      resource = Degree.new
+      save_resource_name_with_token(resource, token)
+    }
     super
   end
 
   def organization_id=(token)
-    process_token(token, :organization)
+    resource = Organization.new
+    save_resource_name_with_token(resource, token)
     super
   end
 

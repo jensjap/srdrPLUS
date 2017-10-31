@@ -14,7 +14,7 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
   def type1_ids=(tokens)
     tokens.map { |token|
       resource = self.extraction_forms_projects_section.type1s.build
-      create_with_token(resource, token)
+      save_resource_name_with_token(resource, token)
     }
     super
   end

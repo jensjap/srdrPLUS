@@ -9,9 +9,7 @@ module SharedProcessTokenMethods
       end
     end
 
-    # Similar to above...but here we have more complicated resource state so we receive it instead of
-    # using constantize.
-    def create_with_token(resource, token)
+    def save_resource_name_with_token(resource, token)
       ActiveRecord::Base.transaction do
         token.gsub!(/<<<(.+?)>>>/) { |new_id|
           resource.name = $1
