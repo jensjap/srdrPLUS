@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171030060213) do
+ActiveRecord::Schema.define(version: 20171031043418) do
 
   create_table "approvals", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "approvable_type"
@@ -81,6 +81,22 @@ ActiveRecord::Schema.define(version: 20171030060213) do
     t.index ["deleted_at"], name: "index_dispatches_on_deleted_at", using: :btree
     t.index ["dispatchable_type", "dispatchable_id"], name: "index_dispatches_on_dispatchable_type_and_dispatchable_id", using: :btree
     t.index ["user_id"], name: "index_dispatches_on_user_id", using: :btree
+  end
+
+  create_table "eefps_qrcf", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "extractions_extraction_forms_projects_section_id"
+    t.integer  "question_row_column_field_id"
+    t.text     "name",                                             limit: 65535
+    t.datetime "deleted_at"
+    t.boolean  "active"
+    t.datetime "created_at",                                                     null: false
+    t.datetime "updated_at",                                                     null: false
+    t.index ["active"], name: "index_eefps_qrcf_on_active", using: :btree
+    t.index ["deleted_at"], name: "index_eefps_qrcf_on_deleted_at", using: :btree
+    t.index ["extractions_extraction_forms_projects_section_id", "question_row_column_field_id", "active"], name: "index_eefpsqrcf_on_eefps_id_qrcf_id_active", using: :btree
+    t.index ["extractions_extraction_forms_projects_section_id", "question_row_column_field_id", "deleted_at"], name: "index_eefpsqrcf_on_eefps_id_qrcf_id_deleted_at", using: :btree
+    t.index ["extractions_extraction_forms_projects_section_id"], name: "index_eefpsqrcf_on_eefps_id", using: :btree
+    t.index ["question_row_column_field_id"], name: "index_eefpsqrcf_on_qrcf_id", using: :btree
   end
 
   create_table "extraction_forms", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
@@ -180,6 +196,8 @@ ActiveRecord::Schema.define(version: 20171030060213) do
     t.boolean  "active"
     t.datetime "created_at",                           null: false
     t.datetime "updated_at",                           null: false
+    t.index ["active"], name: "index_eefps_on_active", using: :btree
+    t.index ["deleted_at"], name: "index_eefps_on_deleted_at", using: :btree
     t.index ["extraction_forms_projects_section_id"], name: "index_eefps_on_efps_id", using: :btree
     t.index ["extraction_id", "extraction_forms_projects_section_id", "active"], name: "index_eefps_on_e_id_efps_id_active", using: :btree
     t.index ["extraction_id", "extraction_forms_projects_section_id", "deleted_at"], name: "index_eefps_on_e_id_efps_id_deleted_at", using: :btree
@@ -193,6 +211,8 @@ ActiveRecord::Schema.define(version: 20171030060213) do
     t.boolean  "active"
     t.datetime "created_at",                                       null: false
     t.datetime "updated_at",                                       null: false
+    t.index ["active"], name: "index_eefpst1_on_active", using: :btree
+    t.index ["deleted_at"], name: "index_eefpst1_on_deleted_at", using: :btree
     t.index ["extractions_extraction_forms_projects_section_id", "type1_id", "active"], name: "index_eefpst1_on_eefps_id_t1_id_active", using: :btree
     t.index ["extractions_extraction_forms_projects_section_id", "type1_id", "deleted_at"], name: "index_eefpst1_on_eefps_id_t1_id_deleted_at", using: :btree
     t.index ["extractions_extraction_forms_projects_section_id"], name: "index_eefpst1_on_eefps_id", using: :btree
@@ -351,6 +371,10 @@ ActiveRecord::Schema.define(version: 20171030060213) do
     t.boolean  "active"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["active"], name: "index_ps_on_active", using: :btree
+    t.index ["deleted_at"], name: "index_ps_on_deleted_at", using: :btree
+    t.index ["project_id", "study_id", "active"], name: "index_ps_on_p_id_s_id_active", using: :btree
+    t.index ["project_id", "study_id", "deleted_at"], name: "index_ps_on_p_id_s_id_deleted_at", using: :btree
     t.index ["project_id"], name: "index_projects_studies_on_project_id", using: :btree
     t.index ["study_id"], name: "index_projects_studies_on_study_id", using: :btree
   end
@@ -587,6 +611,8 @@ ActiveRecord::Schema.define(version: 20171030060213) do
   add_foreign_key "degrees_profiles", "degrees"
   add_foreign_key "degrees_profiles", "profiles"
   add_foreign_key "dispatches", "users"
+  add_foreign_key "eefps_qrcf", "extractions_extraction_forms_projects_sections"
+  add_foreign_key "eefps_qrcf", "question_row_column_fields"
   add_foreign_key "extraction_forms_projects", "extraction_forms"
   add_foreign_key "extraction_forms_projects", "extraction_forms_project_types"
   add_foreign_key "extraction_forms_projects", "projects"
