@@ -186,7 +186,7 @@ module SeedDataExtended
         [
           { name: 'Type 1' },
           { name: 'Type 2' },
-          { name: 'Type 3' },
+          { name: 'Results' },
           { name: 'Key Questions' }
         ]
       )
@@ -195,13 +195,13 @@ module SeedDataExtended
       Section.create(
         [
           { name: 'Key Questions', default: true },
-          { name: 'Arms' },
-          { name: 'Arm Details' },
-          { name: 'Sample Characteristics' },
-          { name: 'Outcomes' },
-          { name: 'Outcome Details' },
-          { name: 'Quality' },
-          { name: 'Results' }
+          { name: 'Arms', default: true },
+          { name: 'Arm Details', default: true },
+          { name: 'Sample Characteristics', default: true },
+          { name: 'Outcomes', default: true },
+          { name: 'Outcome Details', default: true },
+          { name: 'Quality', default: true },
+          { name: 'Results', default: true }
         ]
       )
 

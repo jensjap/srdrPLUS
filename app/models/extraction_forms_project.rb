@@ -23,15 +23,14 @@ class ExtractionFormsProject < ApplicationRecord
   private
 
     def create_default_sections
-      Section.where(default: true).each do |section|
+      Section.default_sections.each do |section|
         ExtractionFormsProjectsSection.create(
           {
             extraction_forms_project: self,
-            extraction_forms_projects_section_type: ['Key Questions'].include?(section.name) ?
+            extraction_forms_projects_section_type: ['Key Questions', 'Results'].include?(section.name) ?
             ExtractionFormsProjectsSectionType.find_by(name: section.name) : ['Arms', 'Outcomes'].include?(section.name) ?
-            ExtractionFormsProjectsSectionType.find_by(name: 'Type 1') : ['Arm Details', 'Outcome Details', 'Quality'].include?(section.name) ?
-            ExtractionFormsProjectsSectionType.find_by(name: 'Type 2') : ['Results'].include?(section.name) ?
-            ExtractionFormsProjectsSectionType.find_by(name: 'Type 3') : raise('Unexpected default section'),
+            ExtractionFormsProjectsSectionType.find_by(name: 'Type 1') : ['Arm Details', 'Sample Characteristics', 'Outcome Details', 'Quality'].include?(section.name) ?
+            ExtractionFormsProjectsSectionType.find_by(name: 'Type 2') : raise('Unexpected default section'),
             section: section
           }
         )

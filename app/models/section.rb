@@ -5,6 +5,8 @@ class Section < ApplicationRecord
   acts_as_paranoid
   has_paper_trail
 
+  scope :default_sections, -> { where(default: true) }
+
   after_create :record_suggestor
 
   has_one :suggestion, as: :suggestable, dependent: :destroy
