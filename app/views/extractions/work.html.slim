@@ -21,20 +21,25 @@
 
               - efp.extraction_forms_projects_sections.includes(:section).each do |efps|
 
+                / Ensure that this section is added to the extraction.
+                - eefps = ExtractionsExtractionFormsProjectsSection.find_or_create_by(extraction: @extraction, extraction_forms_projects_section: efps)
+                - section_name = efps.section.name
+
                 li.tabs-title
-                  - section = efps.section.name
-                  = link_to section, "#panel-tab-#{ efps.id.to_s }", title: section
+                  = link_to section_name, "#panel-tab-#{ eefps.id.to_s }", title: section_name
 
           .column.medium-9
             .tabs-content.vertical data-tabs-content="extraction-forms-projects-#{ efp.id.to_s }-vertical-tabs"
 
               - efp.extraction_forms_projects_sections.includes(:extraction_forms_projects_section_type, :section, :type1s).each do |efps|
 
+                / Ensure that this section is added to the extraction.
+                - eefps = ExtractionsExtractionFormsProjectsSection.find_or_create_by(extraction: @extraction, extraction_forms_projects_section: efps)
                 - section_name = efps.section.name
 
-                .tabs-panel id="panel-tab-#{ efps.id.to_s }"
+                .tabs-panel id="panel-tab-#{ eefps.id.to_s }"
 
-                  .column.row
+                  #preview.column.row
 
                     / Arms | Outcomes
                     - if efps.extraction_forms_projects_section_type.name == 'Type 1'
@@ -44,7 +49,7 @@
                         | Assign #{ section_name } to this Extraction.
                         cite Friendly Helper
 
-                      = simple_form_for(ExtractionsExtractionFormsProjectsSection.find_or_create_by(extraction: @extraction, extraction_forms_projects_section: efps), html: { data: { 'abide': '' } }) do |f|
+                      = simple_form_for(eefps, html: { data: { 'abide': '' } }) do |f|
                         = f.error_notification
 
                         .form-inputs
@@ -61,39 +66,48 @@
                     / Design Details | Arm Details | Sample Characteristics | Outcome Details | Quality
                     - elsif efps.extraction_forms_projects_section_type.name == 'Type 2'
 
-                      h4 = section_name
-                      blockquote
-                        | Please answer the questions to the best of your ability. If you require clarification, please consult the project lead.
-                        cite Friendly Helper
+                      - linked_section = efps.extraction_forms_projects_section_type1
+                      - is_type2_linked_to_type1 = linked_section.present?
+                      - if is_type2_linked_to_type1 && efps.extraction_forms_projects_section_type1.type1s.blank?
 
-                      - efps.questions.each_with_index do |q, idx|
+                        h4 style='color: red;' You must add #{ linked_section.section.name } before extracting into this section.
 
-                        / Questions that have prerequisites get classes of the form 'prereq-<type>-<id>' which are disabled while these classes are present.
-                        / Listeners are attached on form fields which trigger on change and remove class from any element that has the 'prereq-<type>-<id>'.
-                        / Once all 'prereq-<type>-<id>' classes are removed the question is enabled.
-                        - prereq = q.dependencies.collect { |d| d.prerequisitable_type + '-' + d.prerequisitable_id.to_s }.collect { |h| "prereq-#{h}" }.join(' ')
+                      - else
 
-                        .card class='#{ prereq }'
+                        h4 = section_name
+                        blockquote
+                          | Please answer the questions to the best of your ability. If you require clarification, please consult the project lead.
+                          cite Friendly Helper
 
-                          .card-divider
+                        - efps.questions.each_with_index do |q, idx|
 
-                            h5 #{ (idx + 1).to_s }. #{ q.name }
-                            .description style='white-space: pre-wrap;' #{ q.description }
+                          / Questions that have prerequisites get classes of the form 'prereq-<type>-<id>' which are disabled while these classes are present.
+                          / Listeners are attached on form fields which trigger on change and remove class from any element that has the 'prereq-<type>-<id>'.
+                          / Once all 'prereq-<type>-<id>' classes are removed the question is enabled.
+                          - prereq = q.dependencies.collect { |d| d.prerequisitable_type + '-' + d.prerequisitable_id.to_s }.collect { |h| "prereq-#{h}" }.join(' ')
 
-                          .card-section
+                          .card class='#{ prereq }'
 
-                            .table-scroll
+                            .card-divider
 
-                              #step-two
+                              h5 #{ (idx + 1).to_s }. #{ q.name }
+                              .description style='white-space: pre-wrap;' #{ q.description }
 
-                                - if efps.extraction_forms_projects_section_type1.present?
+                            .card-section
 
-                                  - efps.extraction_forms_projects_section_type1.type1s.each do |t1|
-                                    = t1.name + ':'
-                                    == render 'extraction_forms_projects_sections/question_fields', q: q
+                              .table-scroll
 
-                                - else
-                                  == render 'extraction_forms_projects_sections/question_fields', q: q
+                                #step-two
+
+                                  - if is_type2_linked_to_type1
+
+                                      - efps.extraction_forms_projects_section_type1.type1s.each do |t1|
+                                        = t1.name + ':'
+                                        == render 'extraction_forms_projects_sections/question_fields', q: q, t1: t1
+
+                                  - else
+
+                                    == render 'extraction_forms_projects_sections/question_fields', q: q, t1: nil
 
                     / Results
                     - elsif efps.extraction_forms_projects_section_type.name == 'Type 3'
