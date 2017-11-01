@@ -7,6 +7,9 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
 
   belongs_to :extraction,                        inverse_of: :extractions_extraction_forms_projects_sections
   belongs_to :extraction_forms_projects_section, inverse_of: :extractions_extraction_forms_projects_sections
+  belongs_to :link_to_type1, class_name: 'ExtractionsExtractionFormsProjectsSection',
+    foreign_key: 'extractions_extraction_forms_projects_section_id',
+    optional: true
 
   has_many :extractions_extraction_forms_projects_sections_type1s, dependent: :destroy, inverse_of: :extractions_extraction_forms_projects_section
   has_many :type1s, through: :extractions_extraction_forms_projects_sections_type1s, dependent: :destroy

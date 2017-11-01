@@ -1,7 +1,7 @@
-- linked_section = efps.extraction_forms_projects_section_type1
-- if linked_section && efps.extraction_forms_projects_section_type1.type1s.blank?
+- linked_section = eefps.link_to_type1
+- if linked_section && eefps.link_to_type1.type1s.blank?
 
-  h4 style='color: red;' You must add #{ linked_section.section.name } before extracting into this section.
+  h4 style='color: red;' You must add #{ linked_section.extraction_forms_projects_section.section.name } before extracting into this section.
 
 - else
 
@@ -32,7 +32,7 @@
 
             - if linked_section
 
-              - efps.extraction_forms_projects_section_type1.type1s.each do |t1|
+              - eefps.link_to_type1.type1s.each do |t1|
                 = t1.name + ':'
                 == render 'extraction_forms_projects_sections/question_fields', q: q, t1: t1
 

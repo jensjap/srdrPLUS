@@ -12,7 +12,7 @@ class ExtractionFormsProjectsSection < ApplicationRecord
 
   belongs_to :extraction_forms_project,                inverse_of: :extraction_forms_projects_sections
   belongs_to :extraction_forms_projects_section_type,  inverse_of: :extraction_forms_projects_sections
-  belongs_to :extraction_forms_projects_section_type1, class_name: 'ExtractionFormsProjectsSection',
+  belongs_to :link_to_type1, class_name: 'ExtractionFormsProjectsSection',
     foreign_key: 'extraction_forms_projects_section_id',
     optional: true
   belongs_to :section, inverse_of: :extraction_forms_projects_sections
@@ -51,13 +51,13 @@ class ExtractionFormsProjectsSection < ApplicationRecord
 
   #!!! this isn't working.
   def child_type
-#    errors[:base] << 'Child Type must be of Type 2' unless self.extraction_forms_projects_section_type1.present? &&
+#    errors[:base] << 'Child Type must be of Type 2' unless self.link_to_type1.present? &&
 #      self.extraction_forms_projects_section_type_id != 2
   end
 
   def parent_type
-    errors[:base] << 'Parent Type must be of Type 1' unless extraction_forms_projects_section_type1.nil? ||
-      extraction_forms_projects_section_type1.extraction_forms_projects_section_type_id == 1
+    errors[:base] << 'Parent Type must be of Type 1' unless link_to_type1.nil? ||
+      link_to_type1.extraction_forms_projects_section_type_id == 1
   end
 
   def mark_as_deleted_or_restore_extraction_forms_projects_section_option

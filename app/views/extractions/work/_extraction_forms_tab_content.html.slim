@@ -11,7 +11,9 @@
             - efp.extraction_forms_projects_sections.includes(:section).each do |efps|
 
               / Ensure that this section is added to the extraction.
-              - eefps = ExtractionsExtractionFormsProjectsSection.find_or_create_by(extraction: @extraction, extraction_forms_projects_section: efps)
+              - eefps = ExtractionsExtractionFormsProjectsSection.find_or_create_by(extraction: @extraction,
+                extraction_forms_projects_section: efps,
+                link_to_type1: efps.link_to_type1.nil? ? nil : ExtractionsExtractionFormsProjectsSection.find_by(extraction: @extraction, extraction_forms_projects_section: efps.link_to_type1))
               - section_name = efps.section.name
 
               li.tabs-title
@@ -23,7 +25,7 @@
             - efp.extraction_forms_projects_sections.includes(:extraction_forms_projects_section_type, :section, :type1s).each do |efps|
 
               / Ensure that this section is added to the extraction.
-              - eefps = ExtractionsExtractionFormsProjectsSection.find_or_create_by(extraction: @extraction, extraction_forms_projects_section: efps)
+              - eefps = ExtractionsExtractionFormsProjectsSection.find_or_create_by(extraction: @extraction, extraction_forms_projects_section: efps, link_to_type1: efps.link_to_type1.nil? ? nil : ExtractionsExtractionFormsProjectsSection.find_by(extraction: @extraction, extraction_forms_projects_section: efps.link_to_type1))
               - section_name = efps.section.name
 
               .tabs-panel id="panel-tab-#{ eefps.id.to_s }"
