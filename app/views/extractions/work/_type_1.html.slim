@@ -1,0 +1,17 @@
+h4 = section_name
+blockquote
+  | Assign #{ section_name } to this Extraction.
+  cite Friendly Helper
+
+= simple_form_for(eefps, html: { data: { 'abide': '' } }) do |f|
+  = f.error_notification
+
+  .form-inputs
+    = f.association :type1s, input_html: { class: 'hook-up-select2-to-type1-selections',
+                                           style: 'width: 75%;',
+                                           data: { 'extraction-forms-projects-section-id': efps.id.to_s } },
+                             collection: efps.type1s,
+                             label: false
+
+  .form-actions
+    = f.button :submit

@@ -1,0 +1,56 @@
+.tabs-content data-tabs-content='extraction-forms-projects-tabs'
+
+  - @extraction_forms_projects.each do |efp|
+
+    .tabs-panel id="panel-extraction-forms-project-#{ efp.id.to_s }"
+
+      .row
+        .column.medium-3
+          ul.tabs.vertical id="extraction-forms-projects-#{ efp.id.to_s }-vertical-tabs" data-deep-link='true' data-deep-link-smudge='true' data-deep-link-smudge-delay='600' data-update-history='true' data-tabs=''
+
+            - efp.extraction_forms_projects_sections.includes(:section).each do |efps|
+
+              / Ensure that this section is added to the extraction.
+              - eefps = ExtractionsExtractionFormsProjectsSection.find_or_create_by(extraction: @extraction, extraction_forms_projects_section: efps)
+              - section_name = efps.section.name
+
+              li.tabs-title
+                = link_to section_name, "#panel-tab-#{ eefps.id.to_s }", title: section_name
+
+        .column.medium-9
+          .tabs-content.vertical data-tabs-content="extraction-forms-projects-#{ efp.id.to_s }-vertical-tabs"
+
+            - efp.extraction_forms_projects_sections.includes(:extraction_forms_projects_section_type, :section, :type1s).each do |efps|
+
+              / Ensure that this section is added to the extraction.
+              - eefps = ExtractionsExtractionFormsProjectsSection.find_or_create_by(extraction: @extraction, extraction_forms_projects_section: efps)
+              - section_name = efps.section.name
+
+              .tabs-panel id="panel-tab-#{ eefps.id.to_s }"
+
+                .column.row
+
+                  == render 'extractions/work/' + efps.extraction_forms_projects_section_type.name.parameterize.underscore,
+                    section_name: section_name,
+                    efps: efps,
+                    eefps: eefps
+
+/                  / Arms | Outcomes
+/                  - if efps.extraction_forms_projects_section_type.name == 'Type 1'
+/
+/                    == render 'extractions/work/type1', section_name: section_name, efps: efps, eefps: eefps
+/
+/                  / Design Details | Arm Details | Sample Characteristics | Outcome Details | Quality
+/                  - elsif efps.extraction_forms_projects_section_type.name == 'Type 2'
+/
+/                    == render 'extractions/work/type2', section_name: section_name, efps: efps
+/
+/                  / Results
+/                  - elsif efps.extraction_forms_projects_section_type.name == 'Type 3'
+/
+/                    // Put a form for capturing the data for this extraction for this section
+/
+/                  / Key Questions
+/                  - elsif efps.extraction_forms_projects_section_type.name == 'Key Questions'
+/
+/                    == render 'extractions/work/key_questions', section_name: section_name, efps: efps
