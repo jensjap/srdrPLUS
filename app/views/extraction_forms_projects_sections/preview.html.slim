@@ -23,8 +23,8 @@
           #step-two
 
             - if @extraction_forms_projects_section.extraction_forms_projects_section_type1.present?
-              - @extraction_forms_projects_section.extraction_forms_projects_section_type1.type1s.each do |t1|
 
+              - @extraction_forms_projects_section.extraction_forms_projects_section_type1.type1s.each do |t1|
                 = t1.name + ':'
                 == render 'extraction_forms_projects_sections/question_fields', q: q
 
