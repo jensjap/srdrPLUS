@@ -1,4 +1,14 @@
 Rails.application.routes.draw do
+  get 'labels/new'
+
+  get 'labels/create'
+
+  get 'labels/edit'
+
+  get 'labels/destroy'
+
+  get 'labels/show'
+
   namespace :api do
     namespace :v1 do
       resources :projects, shallow: true do
