@@ -1,0 +1,3 @@
+.nested-fields
+  = f.association :citation, as: :select, collection: @citations, prompt: 'Choose a citation', input_html: { class: 'citation_select' }
+  = link_to_remove_association 'remove citation', f, class: 'float-right'

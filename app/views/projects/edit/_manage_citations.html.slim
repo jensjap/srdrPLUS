@@ -1,0 +1,13 @@
+= simple_form_for(@project, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
+  = f.error_notification
+
+  .form-inputs
+    = f.simple_fields_for :citations_projects, @citations_projects do |c_p_f|
+      = render 'projects/edit/citations_project_fields', f: c_p_f
+    = link_to_add_association 'add citation', f, :citations_projects, partial: 'projects/edit/citations_project_fields'
+    = link_to_add_association ' or create new citation', f, :citations, partial: 'projects/edit/citation_fields'
+  - if !@citations_projects.nil?
+    = paginate @citations_projects, params: { anchor: 'panel-citations' }
+
+  .form-actions
+    = f.button :submit, 'Save changes'

@@ -22,10 +22,19 @@ class Project < ApplicationRecord
 
   has_many :publishings, as: :publishable, dependent: :destroy
 
+  has_many :citations_projects, dependent: :destroy
+  has_many :citations, through: :citations_projects
+  has_many :tasks, dependent: :destroy
+  has_many :assignments, through: :tasks, dependent: :destroy
+
   validates :name, presence: true
 
   #accepts_nested_attributes_for :extraction_forms_projects, reject_if: :all_blank, allow_destroy: true
   #accepts_nested_attributes_for :key_questions_projects, reject_if: :all_blank, allow_destroy: true
+  accepts_nested_attributes_for :citations
+  accepts_nested_attributes_for :citations_projects, allow_destroy: true
+  accepts_nested_attributes_for :tasks, allow_destroy: true
+  accepts_nested_attributes_for :assignments, allow_destroy: true
 
   def duplicate_key_question?
     self.key_questions.having('count(*) > 1').group('name').count.present?

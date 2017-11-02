@@ -1,4 +1,14 @@
 Rails.application.routes.draw do
+  get 'labels/new'
+
+  get 'labels/create'
+
+  get 'labels/edit'
+
+  get 'labels/destroy'
+
+  get 'labels/show'
+
   namespace :api do
     namespace :v1 do
       resources :projects, shallow: true do
@@ -74,6 +84,8 @@ Rails.application.routes.draw do
   resources :organizations, only: [:index]
   resources :sections, only: [:index]
 
+  resources :citations
+  resources :tasks
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end
 
