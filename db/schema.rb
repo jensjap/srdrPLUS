@@ -748,9 +748,11 @@ ActiveRecord::Schema.define(version: 20171031043418) do
 
   create_table "tasks", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "task_type_id"
+    t.integer  "project_id"
     t.integer  "num_assigned"
     t.datetime "created_at",   null: false
     t.datetime "updated_at",   null: false
+    t.index ["project_id"], name: "index_tasks_on_project_id", using: :btree
     t.index ["task_type_id"], name: "index_tasks_on_task_type_id", using: :btree
   end
 
@@ -882,6 +884,7 @@ ActiveRecord::Schema.define(version: 20171031043418) do
   add_foreign_key "suggestions", "users"
   add_foreign_key "taggings", "tags"
   add_foreign_key "taggings", "users"
+  add_foreign_key "tasks", "projects"
   add_foreign_key "tasks", "task_types"
   add_foreign_key "type1s", "extraction_forms_projects_sections"
 end

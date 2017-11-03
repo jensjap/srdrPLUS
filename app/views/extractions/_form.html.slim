@@ -6,9 +6,10 @@
     = f.association :projects_users_role, label: 'Assign to', label_method: :get_projects_users_role_user_information_markup, as: :radio_buttons
     = f.association :key_questions_projects,
                     collection: @project ? @project.key_questions_projects : @extraction.project.key_questions_projects,
+                    disabled: @project.key_questions_projects.where(extraction_forms_projects_section: nil).map(&:id),
                     as: :check_boxes,
                     label: 'Which Key Question(s) does this extraction answer?',
-                    label_method: :kq_name
+                    label_method: :kq_name_and_unassigned
 
   .form-actions
     = f.button :submit

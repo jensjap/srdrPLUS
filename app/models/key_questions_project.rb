@@ -38,6 +38,14 @@ class KeyQuestionsProject < ApplicationRecord
                                      ' (unassigned)' : " (assigned to: #{ self.extraction_form.name })")
   end
 
+  def kq_name_and_unassigned
+    if self.extraction_forms_projects_section.blank?
+      "#{ self.key_question.name } (not assigned to any extraction form)"
+    else
+      self.key_question.name
+    end
+  end
+
   private
 
     def key_question_name_exists?(attributes)
