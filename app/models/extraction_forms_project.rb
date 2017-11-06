@@ -29,7 +29,7 @@ class ExtractionFormsProject < ApplicationRecord
             extraction_forms_project: self,
             extraction_forms_projects_section_type: ['Key Questions', 'Results'].include?(section.name) ?
             ExtractionFormsProjectsSectionType.find_by(name: section.name) : ['Arms', 'Outcomes'].include?(section.name) ?
-            ExtractionFormsProjectsSectionType.find_by(name: 'Type 1') : ['Arm Details', 'Sample Characteristics', 'Outcome Details', 'Quality'].include?(section.name) ?
+            ExtractionFormsProjectsSectionType.find_by(name: 'Type 1') : ['Design Details', 'Arm Details', 'Sample Characteristics', 'Outcome Details', 'Quality'].include?(section.name) ?
             ExtractionFormsProjectsSectionType.find_by(name: 'Type 2') : raise('Unexpected default section'),
             section: section
           }

@@ -355,6 +355,7 @@ module SeedDataExtended
       Section.create(
         [
           { name: 'Key Questions', default: true },
+          { name: 'Design Details', default: true },
           { name: 'Arms', default: true },
           { name: 'Arm Details', default: true },
           { name: 'Sample Characteristics', default: true },
