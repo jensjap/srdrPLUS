@@ -1,0 +1,18 @@
+- cnt_arms     = nil
+- cnt_outcomes = nil
+- efp.extraction_forms_projects_sections.each do |_efps|
+  - case _efps.section.name
+  - when 'Arms'
+    - cnt_arms = ExtractionsExtractionFormsProjectsSection.find_by(extraction: @extraction, extraction_forms_projects_section: _efps).type1s.length
+  - when 'Outcomes'
+    - cnt_outcomes = ExtractionsExtractionFormsProjectsSection.find_by(extraction: @extraction, extraction_forms_projects_section: _efps).type1s.length
+
+- if cnt_arms.zero? || cnt_outcomes.zero?
+
+  h4 style='color: red;' You must add Arms and Outcomes before extracting into this section.
+
+- else
+
+  h4 = section_name
+  blockquote
+    | The results section is where you enter numerical data, comparisons, etc.
