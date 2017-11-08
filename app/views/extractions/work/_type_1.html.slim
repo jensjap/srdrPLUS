@@ -15,3 +15,24 @@ blockquote
 
   .form-actions
     = f.button :submit
+
+hr
+
+h4 #{ section_name } that are included in this Extraction
+
+table
+
+  tr
+    th Name
+    th Description
+    th
+    th
+    th
+  - eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
+    tr
+      td = eefpst1.type1.name
+      td = eefpst1.type1.description
+      td = link_to 'Show', extractions_extraction_forms_projects_sections_type1_path
+      td = link_to 'Edit', edit_extractions_extraction_forms_projects_sections_type1_path
+      td = link_to 'Remove', eefpst1, data: { confirm: 'Are you sure?' }, method: :delete
+

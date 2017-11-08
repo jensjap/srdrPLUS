@@ -26,8 +26,10 @@ Rails.application.routes.draw do
 
   resources :projects, concerns: :paginatable, shallow: true do
     resources :extractions do
-      resources :extractions_extraction_forms_projects_sections
       get 'work', on: :member
+      resources :extractions_extraction_forms_projects_sections do
+        resources :extractions_extraction_forms_projects_sections_type1s, only: [:show, :edit, :destroy]
+      end
     end
     resources :extraction_forms_projects, only: [:create, :edit, :update, :destroy] do
       get 'build', on: :member

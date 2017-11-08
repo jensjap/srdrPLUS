@@ -186,6 +186,13 @@ module SeedData
         { name: 'Conflict' }
       ])
 
+      # Type1Types.
+      Type1Type.create([
+        { name: 'Categorical' },
+        { name: 'Continuous' },
+        { name: 'Time to Event' }
+      ])
+
       # Turn on paper_trail.
       PaperTrail.enabled = true
 
