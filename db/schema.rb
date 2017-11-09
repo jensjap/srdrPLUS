@@ -285,6 +285,8 @@ ActiveRecord::Schema.define(version: 20171031043418) do
     t.integer  "type1_type_id"
     t.integer  "extractions_extraction_forms_projects_section_id"
     t.integer  "type1_id"
+    t.string   "name"
+    t.text     "description",                                      limit: 65535
     t.string   "units"
     t.text     "notes",                                            limit: 65535
     t.datetime "deleted_at"
