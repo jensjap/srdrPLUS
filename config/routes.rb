@@ -28,7 +28,7 @@ Rails.application.routes.draw do
     resources :extractions do
       get 'work', on: :member
       resources :extractions_extraction_forms_projects_sections do
-        resources :extractions_extraction_forms_projects_sections_type1s, only: [:show, :edit, :destroy]
+        resources :extractions_extraction_forms_projects_sections_type1s, only: [:edit, :destroy]
       end
     end
     resources :extraction_forms_projects, only: [:create, :edit, :update, :destroy] do

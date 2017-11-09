@@ -69,7 +69,10 @@ class ExtractionsController < ApplicationController
   # GET /extractions/1/work
   def work
     @extraction_forms_projects = Set.new
-    @extraction.extractions_key_questions_projects.includes(key_questions_project: [extraction_forms_projects_section: [:extraction_forms_projects_section_type, :section, extraction_forms_project: [:extraction_form]]]).order(key_questions_project_id: :asc).each do |ekqp|
+    @extraction.extractions_key_questions_projects
+      .includes(key_questions_project: [extraction_forms_projects_section: [:extraction_forms_projects_section_type, :section, extraction_forms_project: [:extraction_form]]])
+      .order(key_questions_project_id: :asc)
+      .each do |ekqp|
       if ekqp.key_questions_project.extraction_forms_projects_section
         @extraction_forms_projects << ekqp.key_questions_project.extraction_forms_projects_section.extraction_forms_project
       end
