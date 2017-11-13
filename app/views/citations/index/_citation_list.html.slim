@@ -1,0 +1,11 @@
+ul.accordion data-accordion='' data-multi-expand='false' data-allow-all-closed='true'
+  
+  h3 Citations:
+
+  - if @citations.blank?
+    
+    h4 There are no citations in this project.
+
+  - @citations.each do |citation|
+    li.accordion-item data-accordion-item=''
+      = render 'citations/index/citation_list_item', citation: citation
