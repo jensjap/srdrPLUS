@@ -49,7 +49,8 @@ class CitationsController < ApplicationController
   end
 
   def index
-    @citations = Citation.by_query(params[:q]).all.order(:name).page(params[:page])
+    @project = Project.find(params[:project_id])
+    @citations = Citation.joins(:projects).where(:projects => { :id => [params[:project_id]] }).all
   end
 
   private

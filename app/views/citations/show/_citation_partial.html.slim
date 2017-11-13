@@ -1,0 +1,41 @@
+.row
+  .column.medium-6
+    dl
+      dt.label.primary Name
+      dd.callout.secondary = citation.name
+  .column.medium-6
+    dl
+      dt.label.primary Publication Date
+      dd.callout.secondary = citation.journal.publication_date
+.row
+  .column.medium-6
+    dl
+      dt.label.primary Journal Name
+      dd.callout.secondary = citation.journal.name
+  .column.medium-3
+    dl
+      dt.label.primary Volume
+      dd.callout.secondary = citation.journal.volume
+  .column.medium-3
+    dl
+      dt.label.primary Issue
+      dd.callout.secondary = citation.journal.issue
+.row
+  .column.medium-12
+    dl
+      dt.label.primary Abstract
+      dd.callout.secondary = citation.abstract
+.row
+  .column.medium-6
+    dl
+      dt.label.primary Authors
+      dd.callout.secondary
+        - citation.authors.map { |author| author.name }.each do |name|
+          li #{ name }
+  .column.medium-6
+    dl
+      dt.label.primary Keywords
+      dd.callout.secondary
+        - citation.keywords.map { |keyword| keyword.name }.each do |name|
+          li #{ name }
+

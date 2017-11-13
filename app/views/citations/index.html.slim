@@ -1,0 +1,9 @@
+.column.row
+  .title-heading
+    h2 = "Project Name: " + @project.name
+
+.column.row
+  = render 'citations/index/citation_list'
+
+  .column.medium-7.pagination
+/    = paginate @projects, remote: true

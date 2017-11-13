@@ -14,7 +14,7 @@ Rails.application.routes.draw do
 
   resources :assignments
   resources :authors
-  resources :citations
+  resources :citations, only: [:new, :create, :edit, :update, :destroy, :show]
   resources :journals
   resources :keywords
   resources :labels
@@ -25,6 +25,7 @@ Rails.application.routes.draw do
   end
 
   resources :projects, concerns: :paginatable, shallow: true do
+    resources :citations, only: [:index]
     resources :extractions do
       resources :extractions_extraction_forms_projects_sections
       get 'work', on: :member
@@ -82,8 +83,6 @@ Rails.application.routes.draw do
   resources :organizations, only: [:index]
   resources :sections, only: [:index]
 
-  resources :citations
-  resources :tasks
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end
 
