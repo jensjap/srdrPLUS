@@ -18,7 +18,7 @@ class Type1 < ApplicationRecord
 
   def name_and_description
     text = name
-    text.concat " (#{ description })" if description
+    text.concat " (#{ description })" if description.present?
     return text
   end
 end

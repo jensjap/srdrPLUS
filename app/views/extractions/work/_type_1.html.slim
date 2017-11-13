@@ -24,7 +24,7 @@ h4 #{ section_name } that are included in this Extraction
 table
 
   tr
-    - unless section_name == 'Arms'
+    - if section_name == 'Outcomes'
       th Type
     th Name
     th Description
@@ -34,7 +34,7 @@ table
     th
   - eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
     tr
-      - unless section_name == 'Arms'
+      - if section_name == 'Outcomes'
         td = eefpst1.type1_type.present? ? eefpst1.type1_type.name : ''
       td = eefpst1.name
       td = eefpst1.description
