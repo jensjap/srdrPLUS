@@ -16,18 +16,4 @@ class Extraction < ApplicationRecord
   validates :key_questions_projects, presence: true
 
   delegate :project, to: :projects_users_role
-
-  def extraction_forms_projects
-    #!!! Make this a proper query.
-    @extraction_forms_projects = Set.new
-    self.extractions_key_questions_projects
-      .includes(key_questions_project: [extraction_forms_projects_section: [:extraction_forms_projects_section_type, :section, extraction_forms_project: [:extraction_form]]])
-      .order(key_questions_project_id: :asc)
-      .each do |ekqp|
-      if ekqp.key_questions_project.extraction_forms_projects_section
-        @extraction_forms_projects << ekqp.key_questions_project.extraction_forms_projects_section.extraction_forms_project
-      end
-    end
-    return @extraction_forms_projects
-  end
 end
