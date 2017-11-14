@@ -10,6 +10,7 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
       .where(extraction_forms_projects: { id: extraction_forms_project_id })
       .where(sections: { name: 'Outcomes' })
   }
+
   scope :arms,     -> (extraction_id, extraction_forms_project_id) {
     joins(extractions_extraction_forms_projects_section: [:extraction, { extraction_forms_projects_section: [:extraction_forms_project, :section] }])
       .where(extractions: { id: extraction_id })
