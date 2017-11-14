@@ -4,6 +4,19 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
   acts_as_paranoid column: :active, sentinel_value: true
   has_paper_trail
 
+  scope :outcomes, -> (extraction_id, extraction_forms_project_id) {
+    joins(extractions_extraction_forms_projects_section: [:extraction, { extraction_forms_projects_section: [:extraction_forms_project, :section] }])
+      .where(extractions: { id: extraction_id })
+      .where(extraction_forms_projects: { id: extraction_forms_project_id })
+      .where(sections: { name: 'Outcomes' })
+  }
+  scope :arms,     -> (extraction_id, extraction_forms_project_id) {
+    joins(extractions_extraction_forms_projects_section: [:extraction, { extraction_forms_projects_section: [:extraction_forms_project, :section] }])
+      .where(extractions: { id: extraction_id })
+      .where(extraction_forms_projects: { id: extraction_forms_project_id })
+      .where(sections: { name: 'Arms' })
+  }
+
   # Temporarily calling it ExtractionsExtractionFormsProjectsSectionsType1Row. This is meant to be Outcome Population.
   after_create :create_default_rows_for_outcomes
 
