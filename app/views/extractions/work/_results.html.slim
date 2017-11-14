@@ -13,18 +13,4 @@
 
 - else
 
-  h4 = section_name
-  blockquote
-    | The results section is where you enter numerical data, comparisons, etc.
-
-  h6 Arms
-  table
-    - arms.each do |arm|
-      tr
-        td = arm.name
-
-  h6 Outcomes
-  table
-    - outcomes.each do |outcome|
-      tr
-        td = outcome.name
+  == render 'extractions/work/results_table', eefps: eefps, section_name: section_name, arms: arms, outcomes: outcomes
