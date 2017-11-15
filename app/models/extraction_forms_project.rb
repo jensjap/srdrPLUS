@@ -8,6 +8,7 @@ class ExtractionFormsProject < ApplicationRecord
   scope :by_extraction, -> (extraction_id) {
     joins(extraction_forms_projects_sections: { key_questions_projects: :extractions })
       .where(extractions: { id: extraction_id })
+      .distinct
   }
 
   after_create :create_default_sections
