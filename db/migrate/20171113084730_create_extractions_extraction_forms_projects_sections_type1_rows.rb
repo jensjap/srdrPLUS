@@ -3,7 +3,8 @@ class CreateExtractionsExtractionFormsProjectsSectionsType1Rows < ActiveRecord::
     create_table :extractions_extraction_forms_projects_sections_type1_rows do |t|
       t.references :extractions_extraction_forms_projects_sections_type1, foreign_key: true, index: { name: 'index_eefpst1r_on_eefpst1_id' }
       t.string :name
-      t.text :description
+      t.string :unit
+      t.boolean :is_baseline, default: false
       t.datetime :deleted_at
 
       t.timestamps

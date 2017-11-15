@@ -1,8 +1,9 @@
 class ExtractionsExtractionFormsProjectsSectionsType1sController < ApplicationController
-  before_action :set_extractions_extraction_forms_projects_sections_type1, only: [:edit, :update, :destroy]
+  before_action :set_extractions_extraction_forms_projects_sections_type1, only: [:edit, :update, :destroy, :edit_timepoints, :edit_populations]
 
   # GET /extractions_extraction_forms_projects_sections_type1/1/edit
   def edit
+    @extractions_extraction_forms_projects_sections_type1_row = @extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_sections_type1_rows.build
   end
 
   # PATCH/PUT /extractions_extraction_forms_projects_sections_type1/1
@@ -37,6 +38,24 @@ class ExtractionsExtractionFormsProjectsSectionsType1sController < ApplicationCo
                                                      notice: t('removed') }
       format.json { head :no_content }
     end
+  end
+
+  # GET /extractions_extraction_forms_projects_sections_type1s/1/edit_timepoints
+  def edit_timepoints
+  end
+
+  # GET /extractions_extraction_forms_projects_sections_type1s/1/edit_populations
+  def edit_populations
+  end
+
+  # POST /extractions_extraction_forms_projects_sections_type1s/1/add_population
+  # POST /extractions_extraction_forms_projects_sections_type1s/1/add_population.json
+  def add_population
+    @extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_sections_type1_rows.each do |eefpst1r|
+      eefpst1r.extractions_extraction_forms_projects_sections_type1_row_columns.create
+    end
+
+    redirect_to edit_populations_extractions_extraction_forms_projects_sections_type1(@extractions_extraction_forms_projects_sections_type1), notice: t('success')
   end
 
   private

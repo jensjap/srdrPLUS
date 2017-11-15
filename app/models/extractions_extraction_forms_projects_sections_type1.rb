@@ -18,8 +18,8 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
       .where(sections: { name: 'Arms' })
   }
 
-  # Temporarily calling it ExtractionsExtractionFormsProjectsSectionsType1Row. This is meant to be Outcome Population.
-  after_create :create_default_rows_for_outcomes
+  # Temporarily calling it ExtractionsExtractionFormsProjectsSectionsType1Row. This is meant to be Outcome Timepoint.
+  after_create :create_default_type1_rows
 
   belongs_to :type1_type,                                    inverse_of: :extractions_extraction_forms_projects_sections_type1s, optional: true
   belongs_to :extractions_extraction_forms_projects_section, inverse_of: :extractions_extraction_forms_projects_sections_type1s
@@ -29,9 +29,10 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
 
   private
 
-    def create_default_rows_for_outcomes
+    # Only create these for Outcomes.
+    def create_default_type1_rows
       if self.extractions_extraction_forms_projects_section.extraction_forms_projects_section.section.name == 'Outcomes'
-        self.extractions_extraction_forms_projects_sections_type1_rows.create(name: 'All Participants')
+        self.extractions_extraction_forms_projects_sections_type1_rows.create(name: 'Baseline', is_baseline: true)
       end
     end
 end

@@ -299,10 +299,10 @@ ActiveRecord::Schema.define(version: 20171113091517) do
   create_table "extractions_extraction_forms_projects_sections_type1_row_columns", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "extractions_extraction_forms_projects_sections_type1_row_id"
     t.string   "name"
-    t.boolean  "is_baseline",                                                 default: false
+    t.text     "description",                                                 limit: 65535
     t.datetime "deleted_at"
-    t.datetime "created_at",                                                                  null: false
-    t.datetime "updated_at",                                                                  null: false
+    t.datetime "created_at",                                                                null: false
+    t.datetime "updated_at",                                                                null: false
     t.index ["deleted_at"], name: "index_eefpst1rc_on_deleted_at", using: :btree
     t.index ["extractions_extraction_forms_projects_sections_type1_row_id", "deleted_at"], name: "index_eefpst1rc_on_eefpst1r_id_deleted_at", using: :btree
     t.index ["extractions_extraction_forms_projects_sections_type1_row_id"], name: "index_eefpst1rc_on_eefpst1r_id", using: :btree
@@ -311,9 +311,11 @@ ActiveRecord::Schema.define(version: 20171113091517) do
   create_table "extractions_extraction_forms_projects_sections_type1_rows", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "extractions_extraction_forms_projects_sections_type1_id"
     t.string   "name"
+    t.string   "unit"
+    t.boolean  "is_baseline",                                             default: false
     t.datetime "deleted_at"
-    t.datetime "created_at",                                              null: false
-    t.datetime "updated_at",                                              null: false
+    t.datetime "created_at",                                                              null: false
+    t.datetime "updated_at",                                                              null: false
     t.index ["deleted_at"], name: "index_eefpst1r_on_deleted_at", using: :btree
     t.index ["extractions_extraction_forms_projects_sections_type1_id", "deleted_at"], name: "index_eefpst1r_on_eefpst1_id_deleted_at", using: :btree
     t.index ["extractions_extraction_forms_projects_sections_type1_id"], name: "index_eefpst1r_on_eefpst1_id", using: :btree

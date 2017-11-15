@@ -60,16 +60,6 @@ class QuestionsController < ApplicationController
     end
   end
 
-  # POST /questions/1/add_column
-  # POST /questions/1/add_column.json
-  def add_column
-    @question.question_rows.each do |qr|
-      qr.question_row_columns.create
-    end
-
-    redirect_to edit_question_path(@question), notice: t('success')
-  end
-
   # POST /questions/1/add_row
   # POST /questions/1/add_row.json
   def add_row
@@ -79,6 +69,16 @@ class QuestionsController < ApplicationController
     # This triggers after_save :ensure_matrix_column_headers callback in
     # question model to set the name field.
     @question.save
+
+    redirect_to edit_question_path(@question), notice: t('success')
+  end
+
+  # POST /questions/1/add_column
+  # POST /questions/1/add_column.json
+  def add_column
+    @question.question_rows.each do |qr|
+      qr.question_row_columns.create
+    end
 
     redirect_to edit_question_path(@question), notice: t('success')
   end

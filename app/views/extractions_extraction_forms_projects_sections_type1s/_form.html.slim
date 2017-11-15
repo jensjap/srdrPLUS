@@ -10,23 +10,4 @@
     = f.input :notes
 
   .form-actions
-    = f.button :submit
-
-hr
-
-- if @extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_section.extraction_forms_projects_section.section.name == 'Outcomes'
-
-  h4 Define Patient Populations (Subgroups)
-
-  ul
-    - @extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_sections_type1_rows.each do |p|
-      li = p.name
-
-
-  hr
-
-  h4 Define Outcome Timepoints
-
-  ul
-    - @extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_sections_type1_rows.first.extractions_extraction_forms_projects_sections_type1_row_columns.each do |t|
-      li = t.name
+    = f.button :submit, 'Update Outcome Info'
