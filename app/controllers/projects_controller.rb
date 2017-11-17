@@ -1,5 +1,6 @@
 class ProjectsController < ApplicationController
-  skip_before_action :authenticate_user!, only: [:index, :show]
+  #!!! BIROL: Please start using the /api/v1 namespace for API calls. I will remove this line soon.
+  #skip_before_action :authenticate_user!, only: [:index, :show]
   before_action :set_project, only: [:show, :edit, :update, :destroy]
 
   SORT = {  'updated-at': { updated_at: :desc },
