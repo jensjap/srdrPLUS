@@ -21,6 +21,8 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
   # Temporarily calling it ExtractionsExtractionFormsProjectsSectionsType1Row. This is meant to be Outcome Timepoint.
   after_create :create_default_type1_rows
 
+  after_save :ensure_matrix_column_headers
+
   belongs_to :type1_type,                                    inverse_of: :extractions_extraction_forms_projects_sections_type1s, optional: true
   belongs_to :extractions_extraction_forms_projects_section, inverse_of: :extractions_extraction_forms_projects_sections_type1s
   belongs_to :type1,                                         inverse_of: :extractions_extraction_forms_projects_sections_type1s
@@ -33,6 +35,25 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
     def create_default_type1_rows
       if self.extractions_extraction_forms_projects_section.extraction_forms_projects_section.section.name == 'Outcomes'
         self.extractions_extraction_forms_projects_sections_type1_rows.create(name: 'Baseline', is_baseline: true)
+      end
+    end
+
+    def ensure_matrix_column_headers
+      if self.extractions_extraction_forms_projects_section.extraction_forms_projects_section.section.name == 'Outcomes'
+        first_row = self.extractions_extraction_forms_projects_sections_type1_rows.first
+        rest_rows = self.extractions_extraction_forms_projects_sections_type1_rows[1..-1]
+
+        column_headers = []
+
+        first_row.extractions_extraction_forms_projects_sections_type1_row_columns.each do |c|
+          column_headers << c.name
+        end
+
+        rest_rows.each do |r|
+          r.extractions_extraction_forms_projects_sections_type1_row_columns.each_with_index do |rc, idx|
+            rc.update(name: column_headers[idx])
+          end
+        end
       end
     end
 end
