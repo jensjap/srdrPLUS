@@ -3,15 +3,18 @@
 one:
   degree: one
   profile: one
+  deleted_at:
   active: true
 
 two:
   degree: two
   profile: one
+  deleted_at:
   active: true
 
 three:
   degree: three
   profile: two
+  deleted_at:
   active: true
 

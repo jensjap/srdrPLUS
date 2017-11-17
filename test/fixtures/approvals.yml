@@ -3,10 +3,12 @@
 one:
   approvable: one (Publishing)
   user: one
+  deleted_at:
   active: true
 
 two:
   approvable: one (Suggestion)
   user: one
+  deleted_at:
   active: true
 
