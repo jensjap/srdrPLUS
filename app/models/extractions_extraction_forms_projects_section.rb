@@ -26,7 +26,7 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
         type1 = Type1.find(type1_id)
         eefpst1 = ExtractionsExtractionFormsProjectsSectionsType1.find_by(extractions_extraction_forms_projects_section: self, type1: type1)
         eefpst1.update(name: type1.name)
-        eefpst1.update(description: type1.description) if eefpst1.blank?
+        eefpst1.update(description: type1.description) if eefpst1.description.blank?
       end
     end
   end
