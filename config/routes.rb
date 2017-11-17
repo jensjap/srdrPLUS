@@ -27,22 +27,36 @@ Rails.application.routes.draw do
   resources :projects, concerns: :paginatable, shallow: true do
     resources :citations, only: [:index]
     resources :extractions do
-      resources :extractions_extraction_forms_projects_sections
       get 'work', on: :member
+      resources :extractions_extraction_forms_projects_sections do
+        resources :extractions_extraction_forms_projects_sections_type1s, only: [:edit, :update, :destroy] do
+          member do
+            get 'edit_timepoints'
+            get 'edit_populations'
+          end
+          resources :extractions_extraction_forms_projects_sections_type1_rows, only: [:create] do
+            resources :extractions_extraction_forms_projects_sections_type1_row_columns, only: [:create]
+          end
+        end
+      end
     end
     resources :extraction_forms_projects, only: [:create, :edit, :update, :destroy] do
       get 'build', on: :member
       resources :extraction_forms_projects_sections, only: [:new, :create, :edit, :update, :destroy] do
         get 'preview', on: :member
         resources :questions, only: [:new, :create, :edit, :update, :destroy] do
-          patch 'toggle_dependency', on: :member
-          post  'add_column', on: :member
-          post  'add_row', on: :member
-          get   'dependencies', on: :member
+          member do
+            patch 'toggle_dependency'
+            post  'add_column'
+            post  'add_row'
+            get   'dependencies'
+          end
           resources :question_rows, only: [:destroy] do
             resources :question_row_columns, only: [] do
-              get 'answer_choices', on: :member
-              delete 'destroy_entire_column', on: :member
+              member do
+                get 'answer_choices'
+                delete 'destroy_entire_column'
+              end
               resources :question_row_column_fields, only: [] do
                 resources :question_row_column_fields_question_row_column_field_options, only: [:destroy]
               end

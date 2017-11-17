@@ -1,0 +1,13 @@
+= simple_form_for([@extractions_extraction_forms_projects_section, @extractions_extraction_forms_projects_sections_type1], html: { data: { 'abide': '' } }) do |f|
+  = f.error_notification
+
+  .form-inputs
+    - if @extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_section.extraction_forms_projects_section.section.name == 'Outcomes'
+      = f.association :type1_type
+    = f.input :name
+    = f.input :description
+    = f.input :units
+    = f.input :notes
+
+  .form-actions
+    = f.button :submit, 'Update Outcome Info'

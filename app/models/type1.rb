@@ -15,4 +15,10 @@ class Type1 < ApplicationRecord
   has_many :extractions_extraction_forms_projects_section, through: :extractions_extraction_forms_projects_sections_type1s, dependent: :destroy
 
   delegate :project, to: :extraction_forms_projects_section
+
+  def name_and_description
+    text = name
+    text.concat " (#{ description })" if description.present?
+    return text
+  end
 end

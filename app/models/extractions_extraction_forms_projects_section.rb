@@ -20,5 +20,14 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
       save_resource_name_with_token(resource, token)
     }
     super
+    tokens.each do |token|
+      type1_id = token.to_i
+      unless type1_id.zero?
+        type1 = Type1.find(type1_id)
+        eefpst1 = ExtractionsExtractionFormsProjectsSectionsType1.find_by(extractions_extraction_forms_projects_section: self, type1: type1)
+        eefpst1.update(name: type1.name)
+        eefpst1.update(description: type1.description) if eefpst1.blank?
+      end
+    end
   end
 end

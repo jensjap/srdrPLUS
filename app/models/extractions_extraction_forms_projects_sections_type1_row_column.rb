@@ -1,0 +1,6 @@
+class ExtractionsExtractionFormsProjectsSectionsType1RowColumn < ApplicationRecord
+  acts_as_paranoid
+  has_paper_trail
+
+  belongs_to :extractions_extraction_forms_projects_sections_type1_row
+end

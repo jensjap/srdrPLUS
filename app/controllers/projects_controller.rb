@@ -60,7 +60,6 @@ class ProjectsController < ApplicationController
                       notice: t('success') }
         format.json { render :show, status: :ok, location: @project }
       else
-        byebug
         format.html { render :edit }
         format.json { render json: @project.errors, status: :unprocessable_entity }
       end

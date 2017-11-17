@@ -1,0 +1,22 @@
+h4 Define Patient Populations (Subgroups)
+
+ul
+  - @extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_sections_type1_rows.first.extractions_extraction_forms_projects_sections_type1_row_columns.each do |pop|
+    li = pop.name
+
+= simple_form_for([@extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_sections_type1_rows.first,
+                   @extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_sections_type1_rows.first.extractions_extraction_forms_projects_sections_type1_row_columns.new]) do |f|
+  = f.error_notification
+
+  .form-inputs
+    = f.input :name
+    = f.input :description, input_html: { rows: 4 }
+
+  .form-actions
+    = f.button :submit, 'Create Population'
+
+= link_to 'Back', work_extraction_path(@extractions_extraction_forms_projects_sections_type1.\
+                                         extractions_extraction_forms_projects_section.\
+                                         extraction,
+                                       anchor: "panel-tab-#{ @extractions_extraction_forms_projects_sections_type1\
+                                                             .extractions_extraction_forms_projects_section.id }")

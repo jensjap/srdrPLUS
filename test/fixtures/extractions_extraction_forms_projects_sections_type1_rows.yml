@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  extractions_extraction_forms_projects_sections_type1: one
+  name: MyString
+  deleted_at: 2017-11-13 16:47:30
+
+two:
+  extractions_extraction_forms_projects_sections_type1: two
+  name: MyString
+  deleted_at: 2017-11-13 16:47:30

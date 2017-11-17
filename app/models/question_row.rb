@@ -45,7 +45,7 @@ class QuestionRow < ApplicationRecord
       if self.question.question_rows.first.question_row_columns.count == 0
 
         # If this is the first/only row in the matrix then we default to creating
-        # (arbitrarily) 1 columns.
+        # (arbitrarily) 1 column.
         self.question_row_columns.create
 
       else

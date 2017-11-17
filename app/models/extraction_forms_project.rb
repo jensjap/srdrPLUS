@@ -4,6 +4,13 @@ class ExtractionFormsProject < ApplicationRecord
   acts_as_paranoid column: :active, sentinel_value: true
   has_paper_trail
 
+  # Get all ExtractionFormsProject items that are linked to a particular Extraction.
+  scope :by_extraction, -> (extraction_id) {
+    joins(extraction_forms_projects_sections: { key_questions_projects: :extractions })
+      .where(extractions: { id: extraction_id })
+      .distinct
+  }
+
   after_create :create_default_sections
 
   belongs_to :extraction_forms_project_type, inverse_of: :extraction_forms_projects, optional: true

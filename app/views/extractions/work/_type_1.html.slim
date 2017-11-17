@@ -11,7 +11,49 @@ blockquote
                                            style: 'width: 75%;',
                                            data: { 'extraction-forms-projects-section-id': efps.id.to_s } },
                              collection: efps.type1s,
-                             label: false
+                             label: false,
+                             label_method: :name_and_description
 
   .form-actions
     = f.button :submit
+
+hr
+
+h4 #{ section_name } that are included in this Extraction
+
+table
+
+  tr
+    - if section_name == 'Outcomes'
+      th Type
+    th Name
+    th Description
+    th Units
+    th Notes
+    - if section_name == 'Outcomes'
+      th Populations
+      th Timepoints
+    th
+    th
+
+  - eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
+    tr
+      - if section_name == 'Outcomes'
+        td = eefpst1.type1_type.present? ? eefpst1.type1_type.name : ''
+      td = eefpst1.name
+      td = eefpst1.description
+      td = eefpst1.units
+      td = eefpst1.notes
+      - if section_name == 'Outcomes'
+        td
+          = link_to 'Edit Populations', edit_populations_extractions_extraction_forms_projects_sections_type1_path(eefpst1)
+          ul
+            - eefpst1.extractions_extraction_forms_projects_sections_type1_rows.first.extractions_extraction_forms_projects_sections_type1_row_columns.each do |sg|
+              li = sg.name
+        td
+          = link_to 'Edit Timepoints', edit_timepoints_extractions_extraction_forms_projects_sections_type1_path(eefpst1)
+          ul
+            - eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |tp|
+              li = tp.name + (tp.unit.present? ? " (#{ tp.unit })" : '') + (tp.is_baseline? ? ' (Baseline)' : '')
+      td = link_to 'Edit', edit_extractions_extraction_forms_projects_sections_type1_path(eefpst1)
+      td = link_to 'Remove', eefpst1, data: { confirm: 'Are you sure?' }, method: :delete

@@ -1,0 +1,16 @@
+- arms     = nil
+- outcomes = nil
+- efp.extraction_forms_projects_sections.each do |_efps|
+  - case _efps.section.name
+  - when 'Arms'
+    - arms = ExtractionsExtractionFormsProjectsSection.find_by(extraction: @extraction, extraction_forms_projects_section: _efps).type1s
+  - when 'Outcomes'
+    - outcomes = ExtractionsExtractionFormsProjectsSection.find_by(extraction: @extraction, extraction_forms_projects_section: _efps).type1s
+
+- if arms.blank? || outcomes.blank?
+
+  h4 style='color: red;' You must add Arms and Outcomes before extracting into this section.
+
+- else
+
+  == render 'extractions/work/results_table', efp: efp, section_name: section_name, arms: arms, outcomes: outcomes
