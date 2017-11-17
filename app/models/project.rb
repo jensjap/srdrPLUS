@@ -9,7 +9,6 @@ class Project < ApplicationRecord
 
   has_many :extraction_forms_projects, dependent: :destroy, inverse_of: :project
   has_many :extraction_forms, through: :extraction_forms_projects, dependent: :destroy
-  has_many :extractions,      through: :extraction_forms_projects, dependent: :destroy
 
   has_many :key_questions_projects, dependent: :destroy, inverse_of: :project
   has_many :key_questions, through: :key_questions_projects, dependent: :destroy
