@@ -61,23 +61,6 @@ class Question < ApplicationRecord
       self.question_rows.create
     end
 
-#    def create_default_question_rows
-#      if %w(Text Checkbox Dropdown Radio).include? self.question_type.name
-#
-#        self.question_rows.create
-#
-#      elsif %w(Matrix\ Text Matrix\ Checkbox Matrix\ Dropdown Matrix\ Radio).include? self.question_type.name
-#
-#        self.question_rows.create
-#        self.question_rows.create
-#
-#      else
-#
-#        raise 'Unknown QuestionType'
-#
-#      end
-#    end
-#
     #!!! May need to rethink this.
     def ensure_matrix_column_headers
       if ['Custom', 'Matrix'].include? self.question_type
