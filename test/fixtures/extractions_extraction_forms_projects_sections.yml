@@ -3,11 +3,10 @@
 one:
   extraction: one
   extraction_forms_projects_section: one
-  deleted_at: 2017-10-30 13:26:41
-  active: false
+  active: true
 
 two:
   extraction: two
   extraction_forms_projects_section: two
-  deleted_at: 2017-10-30 13:26:41
-  active: false
+  active: true
+

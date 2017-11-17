@@ -4,10 +4,13 @@ one:
   extraction_form: one
   project: one
   public: false
+  deleted_at:
   active: true
 
 two:
   extraction_form: two
   project: two
   public: false
+  deleted_at:
   active: true
+

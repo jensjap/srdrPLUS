@@ -4,12 +4,11 @@ one:
   extractions_extraction_forms_projects_section: one
   question_row_column_field: one
   name: MyText
-  deleted_at: 2017-10-31 12:34:19
-  active: false
+  active: true
 
 two:
   extractions_extraction_forms_projects_section: two
   question_row_column_field: two
   name: MyText
-  deleted_at: 2017-10-31 12:34:19
-  active: false
+  active: true
+
