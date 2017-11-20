@@ -4,14 +4,27 @@ class CitationsControllerTest < ActionDispatch::IntegrationTest
   setup do
     sign_in(users(:one))
     @citation = citations(:one)
+    @journal = journals(:one)
+    @keyword_1 = keywords(:one)
+    @keyword_2 = keywords(:two)
+    @author_1 = authors(:one)
+    @author_2 = authors(:two)
   end
 
   test 'should create citation' do
-    #!!! BIROL: This test is failing. Doesn't seem like POST to citations_url is creating a new citation.
-    #assert_difference('Citation.count') do
-    #  post citations_url, params: { citation: { name: @citation.name, citation_type: @citation.citation_type, pmid: @citation.pmid, refman: @citation.refman, journal: @citation.journal, keywords: @citation.keywords, authors: @citation.authors } }
-    #end
-    #assert_redirected_to edit_citation_url(Citation.last)
+    assert_difference('Citation.count') do
+      post citations_url, params:
+        { citation: { name: @citation.name,
+                      citation_type_id: @citation.citation_type_id,
+                      pmid: @citation.pmid,
+                      refman: @citation.refman,
+                      journal_attributes: { name: @journal.name },
+                      authors_attributes: { '0': { name: @author_1.name },
+                                            '1': { name: @author_2.name } },
+                      keywords_attributes: { '0': { name: @keyword_1.name },
+                                             '1': { name: @keyword_2.name } } } }
+    end
+    assert_redirected_to edit_citation_url(Citation.last)
   end
 
   test "should get new" do
@@ -20,7 +33,16 @@ class CitationsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should get update" do
-    patch citation_url(@citation), params: { citation: { name: @citation.name, citation_type: @citation.citation_type, pmid: @citation.pmid, refman: @citation.refman, journal: @citation.journal, keywords: @citation.keywords, authors: @citation.authors } }
+    patch citation_url(@citation), params:
+        { citation: { name: @citation.name,
+                      citation_type_id: @citation.citation_type_id,
+                      pmid: @citation.pmid,
+                      refman: @citation.refman,
+                      journal_attributes: { name: @journal.name },
+                      authors_attributes: { '0': { name: @author_1.name },
+                                            '1': { name: @author_2.name } },
+                      keywords_attributes: { '0': { name: @keyword_1.name },
+                                             '1': { name: @keyword_2.name } } } }
     assert_redirected_to edit_citation_url(@citation)
   end
 

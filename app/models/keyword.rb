@@ -1,3 +1,3 @@
 class Keyword < ApplicationRecord
-  belongs_to :citation
+  belongs_to :citation, optional: true
 end

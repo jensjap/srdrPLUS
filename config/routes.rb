@@ -33,6 +33,8 @@ Rails.application.routes.draw do
   post '/projects/:id/undo', to: 'projects#undo', as: :undo
   resources :projects, concerns: :paginatable, shallow: true do
     resources :citations, only: [:index]
+    get 'labeled' => 'citations#labeled'
+    get 'unlabeled' => 'citations#unlabeled'
     resources :extractions do
       get 'work', on: :member
       resources :extractions_extraction_forms_projects_sections do
