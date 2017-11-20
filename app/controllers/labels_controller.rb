@@ -8,11 +8,15 @@ class LabelsController < ApplicationController
 
   def create
     @label = Label.new(label_params)
+    @label.user = current_user
     respond_to do |format|
       if @label.save
+        format.html { redirect_to edit_label_path(@label), notice: t('success') }
         format.json { render :show, status: :created, location: @label }
       else
+        format.html { render 'new' }
         format.json { render json: @label.errors, status: :unprocessable_entity }
+      end
     end
   end
 

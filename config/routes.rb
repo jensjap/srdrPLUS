@@ -26,6 +26,8 @@ Rails.application.routes.draw do
 
   resources :projects, concerns: :paginatable, shallow: true do
     resources :citations, only: [:index]
+    get 'labeled' => 'citations#labeled'
+    get 'unlabeled' => 'citations#unlabeled'
     resources :extractions do
       get 'work', on: :member
       resources :extractions_extraction_forms_projects_sections do

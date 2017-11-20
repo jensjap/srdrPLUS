@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171113091517) do
+ActiveRecord::Schema.define(version: 20171119025508) do
 
   create_table "action_types", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "name"
@@ -433,7 +433,7 @@ ActiveRecord::Schema.define(version: 20171113091517) do
   create_table "labels", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "citations_project_id"
     t.integer  "user_id"
-    t.integer  "value"
+    t.string   "value"
     t.datetime "created_at",           null: false
     t.datetime "updated_at",           null: false
     t.index ["citations_project_id"], name: "index_labels_on_citations_project_id", using: :btree

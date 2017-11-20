@@ -1,0 +1,3 @@
+.row
+  = simple_fields_for label do |l_f|
+    = l_f.input :value, as: :radio_buttons, collection: [ 'yes', 'no', 'maybe' ]
