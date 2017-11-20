@@ -10,6 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+<<<<<<< HEAD
 ActiveRecord::Schema.define(version: 20180423000507) do
 
   create_table "abstrackr_settings", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -20,6 +21,9 @@ ActiveRecord::Schema.define(version: 20180423000507) do
     t.datetime "updated_at",                     null: false
     t.index ["profile_id"], name: "index_abstrackr_settings_on_profile_id", using: :btree
   end
+=======
+ActiveRecord::Schema.define(version: 20171119025508) do
+>>>>>>> updating labels & labeled/unlabeled filters
 
   create_table "action_types", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "name"
