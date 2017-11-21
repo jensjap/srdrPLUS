@@ -1,5 +1,8 @@
+- provide(:title, 'Edit')
+
 .column.row
-  h3 #{ @extractions_extraction_forms_projects_sections_type1.type1.name.titleize } Details
+  h3 Title: #{ @extractions_extraction_forms_projects_sections_type1.type1.name.titleize }
+  h4 Description: #{ @extractions_extraction_forms_projects_sections_type1.type1.description }
 
 .column.row
   == render 'form'
