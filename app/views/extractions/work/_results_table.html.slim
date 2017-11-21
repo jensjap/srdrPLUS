@@ -17,7 +17,7 @@ blockquote
 /
 /hr
 
-= collection_select(:outcome_selector, :extractions_extraction_forms_projects_sections_type1_id, ExtractionsExtractionFormsProjectsSectionsType1.outcomes(@extraction.id, efp.id), :id, :name)
+= collection_select(:outcome_selector, :type1_id, Type1.by_section_name_and_extraction_id_and_extraction_forms_project_id('Outcomes', @extraction.id, efp.id), :id, :name)
 
 ul#results-table-tabs.tabs data-deep-link='true' data-deep-link-smudge='true' data-deep-link-smudge-delay='600' data-update-history='true' data-tabs=''
 
