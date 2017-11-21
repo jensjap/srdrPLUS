@@ -190,7 +190,8 @@ module SeedData
       Type1Type.create([
         { name: 'Categorical' },
         { name: 'Continuous' },
-        { name: 'Time to Event' }
+        { name: 'Time to Event' },
+        { name: 'Adverse Event' }
       ])
 
       # Turn on paper_trail.
