@@ -4,10 +4,7 @@ class CreateExtractionsExtractionFormsProjectsSectionsType1s < ActiveRecord::Mig
       t.references :type1_type,                                    foreign_key: true, index: { name: 'index_eefpst1_on_t1t_id' }
       t.references :extractions_extraction_forms_projects_section, foreign_key: true, index: { name: 'index_eefpst1_on_eefps_id' }
       t.references :type1,                                         foreign_key: true, index: { name: 'index_eefpst1_on_t1_id' }
-      t.string     :name
-      t.text       :description
       t.string     :units
-      t.text       :notes
       t.datetime :deleted_at
       t.boolean :active
 
