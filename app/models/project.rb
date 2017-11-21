@@ -36,10 +36,10 @@ class Project < ApplicationRecord
   accepts_nested_attributes_for :assignments, allow_destroy: true
 
   def duplicate_key_question?
-    self.key_questions.having('count(*) > 1').group('name').count.present?
+    self.key_questions.having('count(*) > 1').group('name').length.nonzero?
   end
 
   def duplicate_extraction_form?
-    self.extraction_forms.having('count(*) > 1').group('name').count.present?
+    self.extraction_forms.having('count(*) > 1').group('name').length.nonzero?
   end
 end
