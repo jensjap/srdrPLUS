@@ -34,7 +34,7 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
     # Only create these for Outcomes.
     def create_default_type1_rows
       if self.extractions_extraction_forms_projects_section.extraction_forms_projects_section.section.name == 'Outcomes'
-        self.extractions_extraction_forms_projects_sections_type1_rows.create(name: 'Baseline', is_baseline: true)
+        self.extractions_extraction_forms_projects_sections_type1_rows.create(name: 'Timepoint 1', is_baseline: true)
       end
     end
 
