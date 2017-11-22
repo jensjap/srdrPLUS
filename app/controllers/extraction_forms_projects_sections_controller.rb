@@ -61,6 +61,14 @@ class ExtractionFormsProjectsSectionsController < ApplicationController
   def preview
   end
 
+  def dissociate_type1
+    @extraction_forms_projects_section = ExtractionFormsProjectsSection.find(dissociate_type1_params[0])
+    @extraction_forms_projects_section.type1s.destroy(Type1.find(dissociate_type1_params[1]))
+    redirect_to build_extraction_forms_project_path(@extraction_forms_projects_section.extraction_forms_project,
+                                                    anchor: "panel-tab-#{ @extraction_forms_projects_section.id }"),
+                                                    notice: t('success')
+  end
+
   private
 
     # Use callbacks to share common setup or constraints between actions.
@@ -78,6 +86,11 @@ class ExtractionFormsProjectsSectionsController < ApplicationController
         .permit(:extraction_forms_projects_section_type_id,
                 :section_id,
                 :extraction_forms_projects_section_id,
+                extraction_forms_projects_sections_type1s_attributes: [:id, :_destroy],
                 key_questions_project_ids: [])
+    end
+
+    def dissociate_type1_params
+      params.require([:extraction_forms_projects_section_id, :type1_id])
     end
 end

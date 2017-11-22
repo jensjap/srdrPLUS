@@ -326,11 +326,10 @@ ActiveRecord::Schema.define(version: 20171113091517) do
     t.integer  "extractions_extraction_forms_projects_section_id"
     t.integer  "type1_id"
     t.string   "units"
-    t.text     "notes",                                            limit: 65535
     t.datetime "deleted_at"
     t.boolean  "active"
-    t.datetime "created_at",                                                     null: false
-    t.datetime "updated_at",                                                     null: false
+    t.datetime "created_at",                                       null: false
+    t.datetime "updated_at",                                       null: false
     t.index ["active"], name: "index_eefpst1_on_active", using: :btree
     t.index ["deleted_at"], name: "index_eefpst1_on_deleted_at", using: :btree
     t.index ["extractions_extraction_forms_projects_section_id"], name: "index_eefpst1_on_eefps_id", using: :btree
@@ -810,15 +809,13 @@ ActiveRecord::Schema.define(version: 20171113091517) do
   end
 
   create_table "type1s", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer  "extraction_forms_projects_section_id"
     t.string   "name"
-    t.text     "description",                          limit: 65535
+    t.text     "description", limit: 65535
     t.datetime "deleted_at"
-    t.datetime "created_at",                                         null: false
-    t.datetime "updated_at",                                         null: false
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
     t.index ["deleted_at"], name: "index_type1s_on_deleted_at", using: :btree
-    t.index ["extraction_forms_projects_section_id", "deleted_at"], name: "index_t1_on_efps_id_deleted_at", using: :btree
-    t.index ["extraction_forms_projects_section_id"], name: "index_type1s_on_extraction_forms_projects_section_id", using: :btree
+    t.index ["name", "description"], name: "index_type1s_on_name_and_description", unique: true, length: { description: 255 }, using: :btree
   end
 
   create_table "users", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -944,5 +941,4 @@ ActiveRecord::Schema.define(version: 20171113091517) do
   add_foreign_key "taggings", "users"
   add_foreign_key "tasks", "projects"
   add_foreign_key "tasks", "task_types"
-  add_foreign_key "type1s", "extraction_forms_projects_sections"
 end

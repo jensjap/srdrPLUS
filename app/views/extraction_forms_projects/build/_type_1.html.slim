@@ -1,4 +1,4 @@
-h4 Suggest #{ efps.section.name.titleize } Titles
+h4 List of Suggested #{ efps.section.name.titleize.singularize } Titles
 
 .column.row
 
@@ -11,20 +11,31 @@ h4 Suggest #{ efps.section.name.titleize } Titles
           th Title
           th Description
           th
-          th
 
       tbody
         - efps.type1s.each do |t1|
           tr
             td = t1.name
             td style='white-space: pre-wrap' = t1.description
-            td = link_to edit_type1_path(t1) do
-                 i.fi-pencil
-                 |  Edit
-            td = link_to t1, method: :delete, data: { confirm: t('confirm') } do
+            td = link_to extraction_forms_projects_section_dissociate_type1_path(efps, type1_id: t1.id), method: :delete, data: { confirm: t('confirm') } do
                  i.fi-trash
                  |  Remove
 
-= link_to new_extraction_forms_projects_section_type1_path(efps), { class: 'button secondary' } do
-  i.fi-plus
-  |  Add #{ efps.section.name.titleize }
+= simple_form_for([efps, Type1.new], html: { data: { 'abide': '', 'live-validate': true } }) do |f|
+  = f.error_notification
+
+  .alert.callout data-abide-error='' style='display: none;'
+    p
+      i.fi-alert
+      '  Please correct the errors below.
+
+  .form-inputs
+    = f.input :name, required: true, hint: 'Name can\'t be blank', autofocus: true
+    = f.input :description, input_html: { rows: 4 }
+
+  .form-actions
+    = f.button :submit, "Add #{ efps.section.name.titleize.singularize }"
+/
+/= link_to new_extraction_forms_projects_section_type1_path(efps), { class: 'button secondary' } do
+/  i.fi-plus
+/  |  Add #{ efps.section.name.titleize }

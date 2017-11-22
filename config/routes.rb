@@ -62,8 +62,8 @@ Rails.application.routes.draw do
             end
           end
         end
-        resources :type1s, only: [:new, :create, :edit, :update, :destroy] do
-        end
+        resources :type1s, only: [:new, :create, :edit, :update, :destroy]
+        delete 'dissociate_type1'
       end
     end
     resources :key_questions_projects, only: [:create, :edit, :update, :destroy]

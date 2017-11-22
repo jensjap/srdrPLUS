@@ -25,11 +25,12 @@ en:
   extraction_forms_projects:
     form:
       save: 'Save Extraction Form'
+  failure: 'Could not create resource'
   key_questions_projects:
     form:
       save: 'Save Key Question'
   removed: 'Successfully removed'
-  requires_one: 'You must have at least one of this resource.'
+  requires_one: 'You must have at least one of this resource'
   save: 'Save'
   save_changes: 'Save changes'
   success: 'Success!'

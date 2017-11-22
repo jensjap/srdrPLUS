@@ -1,21 +1,21 @@
 h4 = section_name
-blockquote
-  | Assign #{ section_name } to this Extraction.
-  cite Friendly Helper
+/blockquote
+/  | Assign #{ section_name } to this Extraction.
+/  cite Friendly Helper
 
 = simple_form_for(eefps, html: { data: { 'abide': '' } }) do |f|
   = f.error_notification
 
   .form-inputs
-    = f.association :type1s, input_html: { class: 'hook-up-select2-to-type1-selections',
-                                           style: 'width: 75%;',
+    = f.association :type1s, input_html: { class: '',
                                            data: { 'extraction-forms-projects-section-id': efps.id.to_s } },
+                             as: :check_boxes,
                              collection: efps.type1s,
-                             label: false,
+                             label: 'The following titles were suggested by the lead, please mark all that apply:',
                              label_method: :name_and_description
 
   .form-actions
-    = f.button :submit
+    = f.button :submit, t('save')
 
 hr
 
@@ -46,8 +46,6 @@ table
               = eefpst1.type1.name
             li style='margin-left: 7px;'
               | Units: #{ eefpst1.units }
-            li style='margin-left: 7px;'
-              | Notes: #{  eefpst1.notes }
 
       - else
         td = eefpst1.type1.name
