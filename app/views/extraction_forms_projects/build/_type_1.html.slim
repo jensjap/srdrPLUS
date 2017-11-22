@@ -1,3 +1,22 @@
+h4 Please Enter Suggestions for #{ efps.section.name.titleize.singularize } Titles
+
+.column.row
+
+  = simple_form_for([efps, Type1.new], html: { data: { 'abide': '', 'live-validate': true } }) do |f|
+    = f.error_notification
+
+    .alert.callout data-abide-error='' style='display: none;'
+      p
+        i.fi-alert
+        '  Please correct the errors below.
+
+    .form-inputs
+      = f.input :name, required: true, hint: 'Name can\'t be blank', autofocus: true
+      = f.input :description, input_html: { rows: 4 }
+
+    .form-actions
+      = f.button :submit, "Add #{ efps.section.name.titleize.singularize }"
+
 h4 List of Suggested #{ efps.section.name.titleize.singularize } Titles
 
 .column.row
@@ -21,20 +40,6 @@ h4 List of Suggested #{ efps.section.name.titleize.singularize } Titles
                  i.fi-trash
                  |  Remove
 
-= simple_form_for([efps, Type1.new], html: { data: { 'abide': '', 'live-validate': true } }) do |f|
-  = f.error_notification
-
-  .alert.callout data-abide-error='' style='display: none;'
-    p
-      i.fi-alert
-      '  Please correct the errors below.
-
-  .form-inputs
-    = f.input :name, required: true, hint: 'Name can\'t be blank', autofocus: true
-    = f.input :description, input_html: { rows: 4 }
-
-  .form-actions
-    = f.button :submit, "Add #{ efps.section.name.titleize.singularize }"
 /
 /= link_to new_extraction_forms_projects_section_type1_path(efps), { class: 'button secondary' } do
 /  i.fi-plus
