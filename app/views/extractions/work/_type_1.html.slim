@@ -1,4 +1,4 @@
-h4 = section_name
+h4 Suggested #{ section_name }
 /blockquote
 /  | Assign #{ section_name } to this Extraction.
 /  cite Friendly Helper
@@ -11,7 +11,7 @@ h4 = section_name
                                            data: { 'extraction-forms-projects-section-id': efps.id.to_s } },
                              as: :check_boxes,
                              collection: efps.type1s,
-                             label: 'The following titles were suggested by the lead, please mark all that apply:',
+                             label: "The following list of #{ section_name } were suggested. Please mark the ones to include and save",
                              label_method: :name_and_description
 
   .form-actions
@@ -19,7 +19,7 @@ h4 = section_name
 
 hr
 
-h4 Please Enter Suggestions for #{ efps.section.name.titleize.singularize } Titles
+h4 Add a Custom #{ efps.section.name.titleize.singularize }
 
 .column.row
 
