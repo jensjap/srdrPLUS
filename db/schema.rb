@@ -261,8 +261,8 @@ ActiveRecord::Schema.define(version: 20171113091517) do
     t.datetime "updated_at",                           null: false
     t.index ["active"], name: "index_extraction_forms_projects_sections_type1s_on_active", using: :btree
     t.index ["deleted_at"], name: "index_extraction_forms_projects_sections_type1s_on_deleted_at", using: :btree
-    t.index ["extraction_forms_projects_section_id", "type1_id", "active"], name: "index_efpst1_on_efps_id_t1_id_active", using: :btree
-    t.index ["extraction_forms_projects_section_id", "type1_id", "deleted_at"], name: "index_efpst1_on_efps_id_t1_id_deleted_at", using: :btree
+    t.index ["extraction_forms_projects_section_id", "type1_id", "active"], name: "index_efpst1_on_efps_id_t1_id_active_uniq", unique: true, using: :btree
+    t.index ["extraction_forms_projects_section_id", "type1_id", "deleted_at"], name: "index_efpst1_on_efps_id_t1_id_deleted_at_uniq", unique: true, using: :btree
     t.index ["extraction_forms_projects_section_id"], name: "index_efpst1_on_efps_id", using: :btree
     t.index ["type1_id"], name: "index_efpst1_on_t1_id", using: :btree
   end
