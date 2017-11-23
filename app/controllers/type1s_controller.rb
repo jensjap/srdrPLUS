@@ -14,34 +14,27 @@ class Type1sController < ApplicationController
   # POST /extraction_forms_projects_section/1/type1s
   # POST /extraction_forms_projects_section/1/type1s.json
   def create
-    @type1 = @extraction_forms_projects_section.type1s << Type1.find_or_create_by(name: type1_params[:name],
-                                                                                  description: type1_params[:description])
-
+    @type1 = Type1.find_or_initialize_by(name: type1_params[:name], description: type1_params[:description])
     respond_to do |format|
-      format.html { redirect_to build_extraction_forms_project_path(@extraction_forms_projects_section.extraction_forms_project,
-                                                                    anchor: "panel-tab-#{ @extraction_forms_projects_section.id }"),
-      notice: t('success') }
-      format.json { render :show, status: :created, location: @type1 }
+      if @type1.save
+        begin
+          @extraction_forms_projects_section.type1s << @type1
+        rescue ActiveRecord::RecordInvalid => e
+          format.html { redirect_to build_extraction_forms_project_path(@extraction_forms_projects_section.extraction_forms_project,
+                                                                        anchor: "panel-tab-#{ @extraction_forms_projects_section.id }"),
+                                                                        alert: e }
+        end
+        format.html { redirect_to build_extraction_forms_project_path(@extraction_forms_projects_section.extraction_forms_project,
+                                                                      anchor: "panel-tab-#{ @extraction_forms_projects_section.id }"),
+                                                                      notice: t('success') }
+        format.json { render :show, status: :created, location: @type1 }
+      else
+        format.html { redirect_to build_extraction_forms_project_path(@extraction_forms_projects_section.extraction_forms_project,
+                                                                      anchor: "panel-tab-#{ @extraction_forms_projects_section.id }"),
+                                                                      alert: t('failure') }
+        format.json { render json: @type1.errors, status: :unprocessable_entity }
+      end
     end
-
-#    #@type1 = @extraction_forms_projects_section.type1s.new(type1_params)
-#
-#    # !!! Check for params 'q_type' and build values based on the type.
-#
-#    respond_to do |format|
-#      if @type1.save
-#        format.html { redirect_to build_extraction_forms_project_path(@extraction_forms_projects_section.extraction_forms_project,
-#                                                                      anchor: "panel-tab-#{ @extraction_forms_projects_section.id }"),
-#                                                                      notice: t('success') }
-#        format.json { render :show, status: :created, location: @type1 }
-#      else
-#        format.html { redirect_to build_extraction_forms_project_path(@extraction_forms_projects_section.extraction_forms_project,
-#                                                                      anchor: "panel-tab-#{ @extraction_forms_projects_section.id }"),
-#                                                                      alert: t('failure') }
-#        #format.html { render :new }
-#        format.json { render json: @type1.errors, status: :unprocessable_entity }
-#      end
-#    end
   end
 
   # PATCH/PUT /type1s/1

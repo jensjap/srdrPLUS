@@ -4,6 +4,13 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
   acts_as_paranoid column: :active, sentinel_value: true
   has_paper_trail
 
+  scope :by_section_name_and_extraction_id_and_extraction_forms_project_id, -> (section_name, extraction_id, extraction_forms_project_id) {
+    joins([:type1, extractions_extraction_forms_projects_section: [:extraction, { extraction_forms_projects_section: [:extraction_forms_project, :section] }]])
+      .where(sections: { name: section_name })
+      .where(extractions: { id: extraction_id })
+      .where(extraction_forms_projects: { id: extraction_forms_project_id })
+  }
+
   scope :outcomes, -> (extraction_id, extraction_forms_project_id) {
     joins(extractions_extraction_forms_projects_section: [:extraction, { extraction_forms_projects_section: [:extraction_forms_project, :section] }])
       .where(extractions: { id: extraction_id })
@@ -28,6 +35,12 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
   belongs_to :type1,                                         inverse_of: :extractions_extraction_forms_projects_sections_type1s
 
   has_many :extractions_extraction_forms_projects_sections_type1_rows, dependent: :destroy, inverse_of: :extractions_extraction_forms_projects_sections_type1
+
+  accepts_nested_attributes_for :type1, reject_if: :all_blank
+
+  def type1_name_and_description
+    "#{ self.type1.name } (#{ self.type1.description })"
+  end
 
   private
 

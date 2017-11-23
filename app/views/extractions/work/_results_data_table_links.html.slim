@@ -1,0 +1,22 @@
+ul#results-table-tabs.tabs data-deep-link='true' data-deep-link-smudge='true' data-deep-link-smudge-delay='600' data-update-history='true' data-tabs=''
+
+  li.tabs-title.is-active
+    = link_to 'All Participants', '#all-participants'
+  li.tabs-title
+    = link_to 'Subgroup 1', '#subgroup-1'
+  li.tabs-title
+    = link_to 'Subgroup 2', '#subgroup-2'
+  li.tabs-title
+    = link_to 'Subgroup 3', '#subgroup-3'
+
+.tabs-content data-tabs-content='results-table-tabs'
+
+  .tabs-panel id='all-participants'
+    'All Participants
+  .tabs-panel id='subgroup-1'
+    'Subgroup 1
+  .tabs-panel id='subgroup-2'
+    'Subgroup 2
+  .tabs-panel id='subgroup-3'
+    'Subgroup 3
+

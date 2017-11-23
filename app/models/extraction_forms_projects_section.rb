@@ -36,7 +36,7 @@ class ExtractionFormsProjectsSection < ApplicationRecord
 
   has_many :questions, dependent: :destroy, inverse_of: :extraction_forms_projects_section
 
-  accepts_nested_attributes_for :extraction_forms_projects_sections_type1s, reject_if: :all_blank, allow_destroy: true
+  #accepts_nested_attributes_for :extraction_forms_projects_sections_type1s, reject_if: :all_blank, allow_destroy: true
 
   validates :ordering, presence: true
 

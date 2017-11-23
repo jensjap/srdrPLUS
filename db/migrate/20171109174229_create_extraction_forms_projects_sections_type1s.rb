@@ -11,7 +11,7 @@ class CreateExtractionFormsProjectsSectionsType1s < ActiveRecord::Migration[5.0]
 
     add_index :extraction_forms_projects_sections_type1s, :deleted_at
     add_index :extraction_forms_projects_sections_type1s, :active
-    add_index :extraction_forms_projects_sections_type1s, [:extraction_forms_projects_section_id, :type1_id, :deleted_at], name: 'index_efpst1_on_efps_id_t1_id_deleted_at', where: 'deleted_at IS NULL'
-    add_index :extraction_forms_projects_sections_type1s, [:extraction_forms_projects_section_id, :type1_id, :active],     name: 'index_efpst1_on_efps_id_t1_id_active'
+    add_index :extraction_forms_projects_sections_type1s, [:extraction_forms_projects_section_id, :type1_id, :deleted_at], name: 'index_efpst1_on_efps_id_t1_id_deleted_at_uniq', where: 'deleted_at IS NULL', unique: true
+    add_index :extraction_forms_projects_sections_type1s, [:extraction_forms_projects_section_id, :type1_id, :active],     name: 'index_efpst1_on_efps_id_t1_id_active_uniq',                                  unique: true
   end
 end

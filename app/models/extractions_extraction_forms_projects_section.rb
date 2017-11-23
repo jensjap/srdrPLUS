@@ -14,6 +14,8 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
   has_many :extractions_extraction_forms_projects_sections_type1s, dependent: :destroy, inverse_of: :extractions_extraction_forms_projects_section
   has_many :type1s, through: :extractions_extraction_forms_projects_sections_type1s, dependent: :destroy
 
+  accepts_nested_attributes_for :extractions_extraction_forms_projects_sections_type1s, reject_if: :all_blank, allow_destroy: true
+
   def type1_ids=(tokens)
     tokens.map { |token|
       resource = self.extraction_forms_projects_section.type1s.build

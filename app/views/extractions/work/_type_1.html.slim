@@ -19,27 +19,6 @@ h4 Suggested #{ section_name }
 
 hr
 
-h4 Add a Custom #{ efps.section.name.titleize.singularize }
-
-.column.row
-
-  = simple_form_for([efps, Type1.new], html: { data: { 'abide': '', 'live-validate': true } }) do |f|
-    = f.error_notification
-
-    .alert.callout data-abide-error='' style='display: none;'
-      p
-        i.fi-alert
-        '  Please correct the errors below.
-
-    .form-inputs
-      = f.input :name, required: true, hint: 'Name can\'t be blank', autofocus: true
-      = f.input :description, input_html: { rows: 4 }
-
-    .form-actions
-      = f.button :submit, "Add #{ efps.section.name.titleize.singularize }"
-
-hr
-
 h4 #{ section_name } that are included in this Extraction
 
 table
@@ -86,3 +65,29 @@ table
               li = tp.name + (tp.unit.present? ? " (#{ tp.unit })" : '') + (tp.is_baseline? ? ' (Baseline)' : '')
 
       td = link_to 'Remove', eefpst1, data: { confirm: 'Are you sure?' }, method: :delete
+
+hr
+
+h4 Add a Custom #{ efps.section.name.titleize.singularize }
+
+.column.row
+
+  = simple_form_for(eefps, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
+    = f.error_notification
+
+    .alert.callout data-abide-error='' style='display: none;'
+      p
+        i.fi-alert
+        '  Please correct the errors below.
+
+    .form-inputs
+      = f.simple_fields_for :extractions_extraction_forms_projects_sections_type1s, f.object.extractions_extraction_forms_projects_sections_type1s.build do |sf_eefpst1|
+
+        = sf_eefpst1.simple_fields_for :type1, sf_eefpst1.object.build_type1 do |sf_t1|
+
+          = sf_t1.input :name, required: true, hint: 'Name can\'t be blank', autofocus: true
+          = sf_t1.input :description, input_html: { rows: 4 }
+
+    .form-actions
+      = f.button :submit, "Add Custom #{ efps.section.name.titleize.singularize }"
+

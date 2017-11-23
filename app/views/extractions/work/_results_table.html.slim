@@ -17,26 +17,11 @@ blockquote
 /
 /hr
 
-= collection_select(:outcome_selector, :type1_id, Type1.by_section_name_and_extraction_id_and_extraction_forms_project_id('Outcomes', @extraction.id, efp.id), :id, :name)
+= collection_select(:outcome_selector, :type1_id, ExtractionsExtractionFormsProjectsSectionsType1.by_section_name_and_extraction_id_and_extraction_forms_project_id('Outcomes', @extraction.id, efp.id), :id, :type1_name_and_description)
 
-ul#results-table-tabs.tabs data-deep-link='true' data-deep-link-smudge='true' data-deep-link-smudge-delay='600' data-update-history='true' data-tabs=''
+.columns.row
 
-  li.tabs-title.is-active
-    = link_to 'All Participants', '#all-participants'
-  li.tabs-title
-    = link_to 'Subgroup 1', '#subgroup-1'
-  li.tabs-title
-    = link_to 'Subgroup 2', '#subgroup-2'
-  li.tabs-title
-    = link_to 'Subgroup 3', '#subgroup-3'
+  #results-data-table-links
 
-.tabs-content data-tabs-content='results-table-tabs'
+    = render 'extractions/work/results_data_table_links'
 
-  .tabs-panel id='all-participants'
-    'All Participants
-  .tabs-panel id='subgroup-1'
-    'Subgroup 1
-  .tabs-panel id='subgroup-2'
-    'Subgroup 2
-  .tabs-panel id='subgroup-3'
-    'Subgroup 3

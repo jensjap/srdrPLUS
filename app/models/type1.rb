@@ -5,12 +5,12 @@ class Type1 < ApplicationRecord
   acts_as_paranoid
   has_paper_trail
 
-  scope :by_section_name_and_extraction_id_and_extraction_forms_project_id, -> (section_name, extraction_id, extraction_forms_project_id) {
-    joins(extractions_extraction_forms_projects_sections_type1s: { extractions_extraction_forms_projects_section: [:extraction, { extraction_forms_projects_section: [:extraction_forms_project, :section] }] })
-      .where(sections: { name: section_name })
-      .where(extractions: { id: extraction_id })
-      .where(extraction_forms_projects: { id: extraction_forms_project_id })
-  }
+#  scope :by_section_name_and_extraction_id_and_extraction_forms_project_id, -> (section_name, extraction_id, extraction_forms_project_id) {
+#    joins(extractions_extraction_forms_projects_sections_type1s: { extractions_extraction_forms_projects_section: [:extraction, { extraction_forms_projects_section: [:extraction_forms_project, :section] }] })
+#      .where(sections: { name: section_name })
+#      .where(extractions: { id: extraction_id })
+#      .where(extraction_forms_projects: { id: extraction_forms_project_id })
+#  }
 
   after_create :record_suggestor
 
@@ -25,7 +25,6 @@ class Type1 < ApplicationRecord
 
   delegate :project, to: :extraction_forms_projects_section
 
-  #validates_uniqueness_of :description, scope: :name
   validates :description, uniqueness: { scope: :name }
 
   def name_and_description
