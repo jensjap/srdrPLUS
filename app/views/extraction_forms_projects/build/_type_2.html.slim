@@ -3,6 +3,7 @@
   = f.association :link_to_type1, label: 'Associate to a Type 1 section',
                                                             collection: f.object.extraction_forms_project\
                                                                          .extraction_forms_projects_sections\
+                                                                         .includes(:section)\
                                                                          .where(extraction_forms_projects_section_type_id: 1),
                                                             prompt: '--Optional--',
                                                             include_blank: true,
