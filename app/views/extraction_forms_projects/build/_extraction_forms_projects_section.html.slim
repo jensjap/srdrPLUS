@@ -1,41 +1,12 @@
 .column.row
 
-/  - unless efps.extraction_forms_projects_section_type.name == 'Key Questions'
-/
-/    h4 #{ efps.section.name }
-/    blockquote
-/      | Change the name and the type of this section. If you no longer need the section you may also remove it here.
-/      cite Friendly Helper
-/
 /    ul.extraction-form-controls
 /      li
 /        = link_to 'Edit Section', edit_extraction_forms_projects_section_path(efps), class: 'button tiny'
 /      li
 /        = link_to 'Remove Section', efps, method: :delete, data: { confirm: t('confirm') }, class: 'button tiny alert'
-/
-/    hr
 
 .column.row
 
   == render 'extraction_forms_projects/build/' + efps.extraction_forms_projects_section_type.name.parameterize.underscore,
     efps: efps
-
-/  / Arms | Outcomes
-/  - if efps.extraction_forms_projects_section_type.name == 'Type 1'
-/
-/    == render 'extraction_forms_projects/build/type_1', efps: efps
-/
-/  / Design Details | Arm Details | Sample Characteristics | Outcome Details | Quality
-/  - elsif efps.extraction_forms_projects_section_type.name == 'Type 2'
-/
-/    == render 'extraction_forms_projects/build/type_2', efps: efps
-/
-/  / Results
-/  - elsif efps.extraction_forms_projects_section_type.name == 'Results'
-/
-/    == render 'extraction_forms_projects/build/results', efps: efps
-/
-/  / Key Questions
-/  - elsif efps.extraction_forms_projects_section_type.name == 'Key Questions'
-/
-/    == render 'extraction_forms_projects/build/key_questions', efps: efps

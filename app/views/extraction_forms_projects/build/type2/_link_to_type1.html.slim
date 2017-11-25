@@ -1,0 +1,15 @@
+a data-toggle='link-to-type1'
+  ' Optionally associate with another tab
+
+#link-to-type1 data-toggler='' data-animate='scale-in-up scale-out-down' style='display: none;'
+  = simple_form_for(efps, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
+
+    = f.association :link_to_type1, label: 'Associate with another section',
+      collection: f.object.extraction_forms_project\
+                   .extraction_forms_projects_sections\
+                   .includes(:section)\
+                   .where(extraction_forms_projects_section_type_id: 1),
+      prompt: '--Optional--',
+      include_blank: true,
+      label_method: :section_label,
+      input_html: { onchange: 'this.form.submit();' }

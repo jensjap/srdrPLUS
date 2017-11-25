@@ -1,90 +1,11 @@
-= simple_form_for(efps, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
-
-  = f.association :link_to_type1, label: 'Associate to a Type 1 section',
-                                                            collection: f.object.extraction_forms_project\
-                                                                         .extraction_forms_projects_sections\
-                                                                         .includes(:section)\
-                                                                         .where(extraction_forms_projects_section_type_id: 1),
-                                                            prompt: '--Optional--',
-                                                            include_blank: true,
-                                                            label_method: :section_label,
-                                                            input_html: { onchange: 'this.form.submit();' }
-
-hr
-
-= link_to 'Preview', preview_extraction_forms_projects_section_path(efps),
-                     class: 'button tiny float-right', style: 'margin-bottom: 0;'
-
-h4 #{ efps.section.name.titleize } Question List
+.column.row
+  = render 'extraction_forms_projects/build/type2/friendly_helper_message', efps: efps
 
 .column.row
+  = render 'extraction_forms_projects/build/type2/link_to_type1', efps: efps
 
-  .table-scroll
-
-    table.hover style='width: 100%;'
-
-      thead
-        tr
-          th Position
-          th Dependency
-          th Name
-          th Description
-          th
-          th
-          th
-
-      tbody
-        - efps.questions.sort_by { |q| q.ordering.position }.each do |q|
-          tr
-            td = q.ordering.position
-            td
-              ul#dependencies
-
-                - if q.ordering.position == 1
-
-                  li
-                    | -
-
-                - for d in q.dependencies
-
-                  li = 'Question: ' + d.prerequisitable.question.ordering.position.to_s
-
-                  - if d.prerequisitable.question.question_type == 'Matrix'
-
-                    / Checkbox, Dropdown, Radio, Select2_Single, Select2_Multi.
-                    - if [5, 6, 7, 8, 9].include? d.prerequisitable.question_row_column_field.question_row_column_field_type_id
-
-                      li = '- Cell: (' + d.prerequisitable.question_row_column_field.question_row_column.question_row.name.to_s + ' x ' + d.prerequisitable.question_row_column_field.question_row_column.name.to_s + ')'
-                      li = '- Option: ' + d.prerequisitable.name
-
-                    / Text, Numeric, Numeric_Range, Scientific.
-                    - else
-
-                      li = '- Cell: (' + d.prerequisitable.question_row_column_field.question_row_column.question_row.name.to_s + ' x ' + d.prerequisitable.question_row_column_field.question_row_column.name.to_s + ')'
-
-                  - else
-
-                    / Checkbox, Dropdown, Radio, Select2_Single, Select2_Multi.
-                    - if [5, 6, 7, 8, 9].include? d.prerequisitable.question_row_column_field.question_row_column_field_type_id
-
-                      li = '- Option: ' + d.prerequisitable.name
-
-                    / Text, Numeric, Numeric_Range, Scientific.
-                    - else
-
-            td = q.name
-            td style='white-space: pre-wrap;' = q.description
-            td = link_to edit_question_path(q) do
-                 i.fi-pencil
-                 |  Edit
-            td = link_to q, method: :delete, data: { confirm: t('confirm') } do
-                 i.fi-trash
-                 |  Remove
-            td
-              - unless q.ordering.position == 1
-                = link_to dependencies_question_path(q) do
-                  i.fi-link
-                  |  Dependencies
+.column.row
+  = render 'extraction_forms_projects/build/type2/question_list', efps: efps
 
 = link_to new_extraction_forms_projects_section_question_path(efps), { class: 'button secondary' } do
   i.fi-plus
