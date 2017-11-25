@@ -86,8 +86,8 @@ class ExtractionFormsProjectsSectionsController < ApplicationController
         .permit(:extraction_forms_projects_section_type_id,
                 :section_id,
                 :extraction_forms_projects_section_id,
-                extraction_forms_projects_sections_type1s_attributes: [:id, :_destroy],
-                key_questions_project_ids: [])
+                key_questions_project_ids: [],
+                type1s_attributes: [:id, :name, :description])
     end
 
     def dissociate_type1_params
