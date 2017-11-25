@@ -1,16 +1,14 @@
-div class="#{ efps.section.name }-new-suggestion-form"
+= simple_form_for(efps, html: { data: { 'abide': '', 'live-validate': true } }) do |form|
+  .alert.callout data-abide-error='' style='display: none;'
+    p
+      i.fi-alert
+      '  Please correct the errors below.
 
-  = simple_form_for(efps, html: { data: { 'abide': '', 'live-validate': true } }) do |form|
-    .alert.callout data-abide-error='' style='display: none;'
-      p
-        i.fi-alert
-        '  Please correct the errors below.
+  = form.simple_fields_for(:type1s, efps.type1s.build) do |type1_form|
 
-    = form.simple_fields_for(:type1s, efps.type1s.build) do |type1_form|
+    .form-inputs
+      = type1_form.input :name, required: true, hint: 'Name can\'t be blank', autofocus: true
+      = type1_form.input :description, input_html: { rows: 4 }
 
-      .form-inputs
-        = type1_form.input :name, required: true, hint: 'Name can\'t be blank', autofocus: true
-        = type1_form.input :description, input_html: { rows: 4 }
-
-    .form-actions
-      = form.button :submit, "Add Suggestion for #{ efps.section.name.titleize.singularize } Title"
+  .form-actions
+    = form.button :submit, "Add Suggestion for #{ efps.section.name.titleize.singularize } Title"
