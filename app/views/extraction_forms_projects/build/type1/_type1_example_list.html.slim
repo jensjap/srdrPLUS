@@ -1,0 +1,24 @@
+.reveal id="modal-#{ efps.id.to_s }" data-reveal=''
+  h1 Example #{ efps.section.name.titleize.singularize } Names and Descriptions
+
+  .table-scroll
+
+    table.hover.fill-suggestion style='width: 100%;' data-efps-id="#{ efps.id.to_s }"
+      thead
+        tr
+          th Name
+          th Description
+      tbody
+        - Type1.joins(extraction_forms_projects_sections_type1s: { extraction_forms_projects_section: :section })\
+                .where(sections: { name: efps.section.name })\
+                .where.not(extraction_forms_projects_sections_type1s: { extraction_forms_projects_section: efps }).each do |t1|
+          tr
+            td = t1.name
+            td = t1.description
+
+  button.close-button data-close='' aria-label='Close modal' type='button'
+    span aria-hidden='true'
+      '&times;
+
+button.button data-open="modal-#{ efps.id.to_s }"
+  'Click for a list of sample names and descriptions

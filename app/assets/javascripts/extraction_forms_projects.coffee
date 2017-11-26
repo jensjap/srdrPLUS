@@ -5,47 +5,20 @@ document.addEventListener 'turbolinks:load', ->
 
   do ->
 
-#    $( '#questions' ).on 'cocoon:after-insert', ( e ) ->
-#      e.preventDefault()
-#      $( this ).find( 'form' ).find( 'input[type=submit]' ).removeClass( 'hide' )
-#      return
-#
-#    $( '#questions' ).on 'cocoon:after-remove', ( e, item ) ->
-#      e.preventDefault()
-#      if $( '.nested-fields.add-question' ).length == 0
-#        $( this ).find( 'form' ).find( 'input[type=submit]' ).addClass( 'hide' )
-#      return
+    $( '.fill-suggestion' ).click ( event ) ->
+      if ( $( event.target ).is( 'td' ) )
+        row = $( event.target ).parent 'tr'
+        name = row.children( 'td' )[0].textContent
+        description = row.children( 'td' )[1].textContent
 
-#
-#    $( 'document' )
-#      .on 'cocoon:after-insert', ( e, item ) ->
-#        if newQuestion
-#          $('.submit-new-question').removeClass('hide')
-#
-#      .on 'cocoon:after-remove', ( e, item ) ->
-#        if newQuestion
-#          $('.form-actions').removeClass('hide')
-#        else
-#          $('.form-actions').addClass('hide')
+        # Find and fill the last input pair
+        efpsId = $( this ).data('efpsId')
+        input_fields = $( $( '.new-suggestion-fields-' + efpsId ) ).last()
 
-
-#    $( 'ul#vertical-tabs' )
-#      .on 'cocoon:after-insert', ( e, new_section ) ->
-#        console.log 'New section added'
-#        Foundation.reInit 'tabs'
-
-
-#    $( '.add-section a.add_fields' ).
-#      data 'association-insertion-node', ( link ) ->
-#        console.log link
-#        console.log link.closest( 'ul#vertical-tabs' )
-#        return link.closest( 'ul#vertical-tabs' ).find('li')
-
-
+        $( input_fields.children( 'div.input' )[0] ).children( 'input' ).val( name )
+        $( input_fields.children( 'div.input' )[1] ).children( 'textarea' ).val( description )
+        $( this ).closest('.reveal').foundation( 'close' )
 
     return  # END do ->
-
-
-
 
   return  # END document.addEventListener 'turbolinks:load', ->

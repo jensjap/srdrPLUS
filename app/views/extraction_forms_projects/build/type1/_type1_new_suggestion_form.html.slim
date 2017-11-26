@@ -6,7 +6,7 @@
 
   = f.simple_fields_for(:type1s, efps.type1s.build) do |type1_f|
 
-    .form-inputs
+    .form-inputs class="new-suggestion-fields-#{ efps.id.to_s }"
       = type1_f.input :name, required: true, hint: 'Name can\'t be blank', autofocus: true
       = type1_f.input :description, input_html: { rows: 4 }
 
