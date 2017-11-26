@@ -17,7 +17,7 @@ blockquote
 /
 /hr
 
-= collection_select(:outcome_selector, :type1_id, ExtractionsExtractionFormsProjectsSectionsType1.by_section_name_and_extraction_id_and_extraction_forms_project_id('Outcomes', @extraction.id, efp.id), :id, :type1_name_and_description)
+= collection_select(:outcome_selector, :type1_id, ExtractionsExtractionFormsProjectsSectionsType1.by_section_name_and_extraction_id('Outcomes', @extraction.id), :id, :type1_name_and_description)
 
 .columns.row
 
