@@ -11,7 +11,8 @@
       tbody
         - Type1.joins(extraction_forms_projects_sections_type1s: { extraction_forms_projects_section: :section })\
                 .where(sections: { name: efps.section.name })\
-                .where.not(extraction_forms_projects_sections_type1s: { extraction_forms_projects_section: efps }).each do |t1|
+                .where.not(extraction_forms_projects_sections_type1s: { type1: efps.type1s })\
+                .distinct.each do |t1|
           tr
             td = t1.name
             td = t1.description
