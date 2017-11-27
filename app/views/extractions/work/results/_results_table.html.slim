@@ -3,25 +3,10 @@ h4 = section_name
 blockquote
   | The results section is where you enter numerical data, comparisons, etc.
 
-/h6 Arms
-/table
-/  - arms.each do |arm|
-/    tr
-/      td = arm.name
-/
-/h6 Outcomes
-/table
-/  - outcomes.each do |outcome|
-/    tr
-/      td = outcome.name
-/
-/hr
-
 = collection_select(:outcome_selector, :type1_id, ExtractionsExtractionFormsProjectsSectionsType1.by_section_name_and_extraction_id('Outcomes', @extraction.id), :id, :type1_name_and_description)
 
 .columns.row
 
   #results-data-table-links
 
-    = render 'extractions/work/results_data_table_links'
-
+    = render 'extractions/work/results/results_data_table_links'
