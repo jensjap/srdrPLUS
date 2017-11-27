@@ -38,7 +38,9 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
   accepts_nested_attributes_for :type1, reject_if: :all_blank
 
   def type1_name_and_description
-    "#{ self.type1.name } (#{ self.type1.description })"
+    text =  "#{ type1.name }"
+    text += " (#{ type1.description })" if type1.description.present?
+    return text
   end
 
   private
