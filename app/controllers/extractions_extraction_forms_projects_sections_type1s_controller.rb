@@ -58,6 +58,10 @@ class ExtractionsExtractionFormsProjectsSectionsType1sController < ApplicationCo
     redirect_to edit_populations_extractions_extraction_forms_projects_sections_type1(@extractions_extraction_forms_projects_sections_type1), notice: t('success')
   end
 
+  def get_results_subgroups
+    @next_eefpst1 = ExtractionsExtractionFormsProjectsSectionsType1.find(params[:id])
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_extractions_extraction_forms_projects_sections_type1

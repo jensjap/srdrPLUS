@@ -3,11 +3,11 @@ h4 = section_name
 blockquote
   | The results section is where you enter numerical data, comparisons, etc.
 
-= collection_select(:outcome_selector, :type1_id, ExtractionsExtractionFormsProjectsSectionsType1.by_section_name_and_extraction_id('Outcomes', @extraction.id), :id, :type1_name_and_description, {}, { onchange: 'alert(1);' })
+= collection_select(:outcome_subgroups_selector, :eefpst1_id, ExtractionsExtractionFormsProjectsSectionsType1.by_section_name_and_extraction_id('Outcomes', @extraction.id), :id, :type1_name_and_description)
 
 .columns.row
 
-  #results-data-table-links
+  - eefpst1 = ExtractionsExtractionFormsProjectsSectionsType1.by_section_name_and_extraction_id('Outcomes', @extraction.id).first
 
-    - eefpst1 = ExtractionsExtractionFormsProjectsSectionsType1.by_section_name_and_extraction_id('Outcomes', @extraction.id).first
+  #results-data-table-links
     = render 'extractions/work/results/results_subgroups_tabs', eefpst1: eefpst1
