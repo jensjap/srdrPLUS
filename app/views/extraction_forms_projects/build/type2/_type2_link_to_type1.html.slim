@@ -1,7 +1,7 @@
-a data-toggle='link-to-type1'
+a data-toggle="link-to-type1-#{ efps.id }"
   ' Optionally associate with another tab
 
-#link-to-type1 data-toggler='' data-animate='scale-in-up scale-out-down' style='display: none;'
+div id="link-to-type1-#{ efps.id }" data-toggler='' data-animate='scale-in-up scale-out-down' style='display: none;'
   = simple_form_for(efps, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
 
     = f.association :link_to_type1, label: 'Associate with another section',
