@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171113091517) do
+ActiveRecord::Schema.define(version: 20171128085305) do
 
   create_table "action_types", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "name"
@@ -723,6 +723,26 @@ ActiveRecord::Schema.define(version: 20171113091517) do
     t.index ["extraction_forms_projects_section_id"], name: "index_questions_on_extraction_forms_projects_section_id", using: :btree
   end
 
+  create_table "result_statistic_section_types", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string   "name"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["deleted_at"], name: "index_result_statistic_section_types_on_deleted_at", using: :btree
+  end
+
+  create_table "result_statistic_sections", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "result_statistic_section_type_id"
+    t.integer  "subgroup_id"
+    t.datetime "deleted_at"
+    t.datetime "created_at",                       null: false
+    t.datetime "updated_at",                       null: false
+    t.index ["deleted_at"], name: "index_result_statistic_sections_on_deleted_at", using: :btree
+    t.index ["result_statistic_section_type_id", "subgroup_id", "deleted_at"], name: "index_rss_on_rsst_id_eefpst1rc_id_uniq", unique: true, using: :btree
+    t.index ["result_statistic_section_type_id"], name: "index_rss_on_rsst_id", using: :btree
+    t.index ["subgroup_id"], name: "index_result_statistic_sections_on_subgroup_id", using: :btree
+  end
+
   create_table "roles", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "name"
     t.datetime "deleted_at"
@@ -936,6 +956,8 @@ ActiveRecord::Schema.define(version: 20171113091517) do
   add_foreign_key "question_row_columns", "question_rows"
   add_foreign_key "question_rows", "questions"
   add_foreign_key "questions", "extraction_forms_projects_sections"
+  add_foreign_key "result_statistic_sections", "extractions_extraction_forms_projects_sections_type1_row_columns", column: "subgroup_id"
+  add_foreign_key "result_statistic_sections", "result_statistic_section_types"
   add_foreign_key "suggestions", "users"
   add_foreign_key "taggings", "tags"
   add_foreign_key "taggings", "users"

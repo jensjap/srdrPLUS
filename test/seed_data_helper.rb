@@ -194,6 +194,14 @@ module SeedData
         { name: 'Adverse Event' }
       ])
 
+      # ResultStatisticTypes.
+      ResultStatisticSectionType.create([
+        { name: 'Descriptive Statistics' },
+        { name: 'Between Arm Comparisons' },
+        { name: 'Within Arm Comparisons' },
+        { name: 'NET Change' }
+      ])
+
       # Turn on paper_trail.
       PaperTrail.enabled = true
 
