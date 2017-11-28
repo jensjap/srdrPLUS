@@ -32,7 +32,7 @@ ul#results-table-tabs.tabs data-deep-link='true' data-deep-link-smudge='true' da
       .tabs-panel.is-active id="panel-subgroup-#{ eefpst1rc.id }"
 
         table.unstriped
-          = render 'extractions/work/results/results_subgroups_data_links'
+          = render 'extractions/work/results/results_subgroups_data_links', eefpst1rc: eefpst1rc
 
       - is_first = false
 
@@ -41,4 +41,5 @@ ul#results-table-tabs.tabs data-deep-link='true' data-deep-link-smudge='true' da
       .tabs-panel id="panel-subgroup-#{ eefpst1rc.id }"
 
         table.unstriped
-          = render 'extractions/work/results/results_subgroups_data_links'
+          = render 'extractions/work/results/results_subgroups_data_links', eefpst1rc: eefpst1rc
+

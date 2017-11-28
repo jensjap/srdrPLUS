@@ -4,24 +4,11 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
   acts_as_paranoid column: :active, sentinel_value: true
   has_paper_trail
 
-  scope :by_section_name_and_extraction_id, -> (section_name, extraction_id) {
+  scope :by_section_name_and_extraction_id_and_extraction_forms_project_id, -> (section_name, extraction_id, extraction_forms_project_id) {
     joins([:type1, extractions_extraction_forms_projects_section: [:extraction, { extraction_forms_projects_section: [:extraction_forms_project, :section] }]])
       .where(sections: { name: section_name })
       .where(extractions: { id: extraction_id })
-  }
-
-  scope :outcomes, -> (extraction_id, extraction_forms_project_id) {
-    joins(extractions_extraction_forms_projects_section: [:extraction, { extraction_forms_projects_section: [:extraction_forms_project, :section] }])
-      .where(extractions: { id: extraction_id })
       .where(extraction_forms_projects: { id: extraction_forms_project_id })
-      .where(sections: { name: 'Outcomes' })
-  }
-
-  scope :arms,     -> (extraction_id, extraction_forms_project_id) {
-    joins(extractions_extraction_forms_projects_section: [:extraction, { extraction_forms_projects_section: [:extraction_forms_project, :section] }])
-      .where(extractions: { id: extraction_id })
-      .where(extraction_forms_projects: { id: extraction_forms_project_id })
-      .where(sections: { name: 'Arms' })
   }
 
   # Temporarily calling it ExtractionsExtractionFormsProjectsSectionsType1Row. This is meant to be Outcome Timepoint.

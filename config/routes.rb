@@ -24,7 +24,9 @@ Rails.application.routes.draw do
     get '(page/:page)', action: :index, on: :collection, as: ''
   end
 
-  get 'extractions_extraction_forms_projects_sections_type1s/:id/get_results_subgroups' => 'extractions_extraction_forms_projects_sections_type1s#get_results_subgroups'
+  resources :extractions_extraction_forms_projects_sections_type1s, only: [] do
+    get 'get_results_subgroups', on: :member
+  end
   resources :projects, concerns: :paginatable, shallow: true do
     resources :extractions do
       get 'work', on: :member

@@ -1,4 +1,4 @@
-- if is_results_section_ready?
+- if make_results_section_available?(@extraction.id, efp.id)
 
   == render 'extractions/work/results/results_section_content', efp: efp, section_name: section_name
 
