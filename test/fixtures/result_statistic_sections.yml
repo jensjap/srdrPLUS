@@ -2,10 +2,10 @@
 
 one:
   result_statistic_section_type: one
-  extractions_extraction_forms_projects_sections_type1_row_columns: one
-  deleted_at: 2017-11-28 16:53:05
+  subgroup: one
+  deleted_at:
 
 two:
   result_statistic_section_type: two
-  extractions_extraction_forms_projects_sections_type1_row_columns: two
-  deleted_at: 2017-11-28 16:53:05
+  subgroup: two
+  deleted_at:
