@@ -37,7 +37,9 @@ Rails.application.routes.draw do
             get 'edit_populations'
           end
           resources :extractions_extraction_forms_projects_sections_type1_rows, only: [:create] do
-            resources :extractions_extraction_forms_projects_sections_type1_row_columns, only: [:create]
+            resources :extractions_extraction_forms_projects_sections_type1_row_columns, only: [:create] do
+              resources :result_statistic_sections, only: [:edit, :update]
+            end
           end
         end
       end
