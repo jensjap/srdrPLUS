@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171128085305) do
+ActiveRecord::Schema.define(version: 20171129103131) do
 
   create_table "action_types", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "name"
@@ -434,6 +434,15 @@ ActiveRecord::Schema.define(version: 20171128085305) do
     t.index ["user_id"], name: "index_labels_on_user_id", using: :btree
   end
 
+  create_table "measures", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string   "name"
+    t.boolean  "default",    default: false
+    t.datetime "deleted_at"
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+    t.index ["deleted_at"], name: "index_measures_on_deleted_at", using: :btree
+  end
+
   create_table "message_types", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "name"
     t.integer  "frequency_id"
@@ -743,6 +752,21 @@ ActiveRecord::Schema.define(version: 20171128085305) do
     t.index ["subgroup_id"], name: "index_result_statistic_sections_on_subgroup_id", using: :btree
   end
 
+  create_table "result_statistic_sections_measures", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "measure_id"
+    t.integer  "result_statistic_section_id"
+    t.datetime "deleted_at"
+    t.boolean  "active"
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
+    t.index ["active"], name: "index_result_statistic_sections_measures_on_active", using: :btree
+    t.index ["deleted_at"], name: "index_result_statistic_sections_measures_on_deleted_at", using: :btree
+    t.index ["measure_id", "result_statistic_section_id", "active"], name: "index_rssm_on_m_id_rss_id_active", using: :btree
+    t.index ["measure_id", "result_statistic_section_id", "deleted_at"], name: "index_rssm_on_m_id_rss_id_deleted_at", using: :btree
+    t.index ["measure_id"], name: "index_result_statistic_sections_measures_on_measure_id", using: :btree
+    t.index ["result_statistic_section_id"], name: "index_rssm_on_rss_id", using: :btree
+  end
+
   create_table "roles", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "name"
     t.datetime "deleted_at"
@@ -835,7 +859,7 @@ ActiveRecord::Schema.define(version: 20171128085305) do
     t.datetime "created_at",                null: false
     t.datetime "updated_at",                null: false
     t.index ["deleted_at"], name: "index_type1s_on_deleted_at", using: :btree
-    t.index ["name", "description"], name: "index_type1s_on_name_and_description", unique: true, length: { description: 255 }, using: :btree
+    t.index ["name", "description", "deleted_at"], name: "index_type1s_on_name_and_description_and_deleted_at", unique: true, length: { description: 255 }, using: :btree
   end
 
   create_table "users", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -958,6 +982,8 @@ ActiveRecord::Schema.define(version: 20171128085305) do
   add_foreign_key "questions", "extraction_forms_projects_sections"
   add_foreign_key "result_statistic_sections", "extractions_extraction_forms_projects_sections_type1_row_columns", column: "subgroup_id"
   add_foreign_key "result_statistic_sections", "result_statistic_section_types"
+  add_foreign_key "result_statistic_sections_measures", "measures"
+  add_foreign_key "result_statistic_sections_measures", "result_statistic_sections"
   add_foreign_key "suggestions", "users"
   add_foreign_key "taggings", "tags"
   add_foreign_key "taggings", "users"

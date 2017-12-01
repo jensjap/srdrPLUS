@@ -10,3 +10,7 @@ two:
   extraction_forms_projects_section: two
   active: true
 
+three:
+  extraction: three
+  extraction_forms_projects_section: five
+  active: true

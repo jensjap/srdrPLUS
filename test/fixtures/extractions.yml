@@ -10,3 +10,7 @@ two:
   projects_users_role: two
   deleted_at:
 
+three:
+  projects_study: one
+  projects_users_role: one
+  deleted_at:
