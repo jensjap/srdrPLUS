@@ -1,13 +1,14 @@
 class ExtractionsController < ApplicationController
-  before_action :set_project, only: [:new, :create]
+  before_action :set_project, only: [:index, :new, :create]
   before_action :set_extraction, only: [:show, :edit, :update, :destroy, :work]
 
-  # GET /extractions
-  # GET /extractions.json
+  # GET /projects/1/extractions
+  # GET /projects/1/extractions.json
   def index
     @extractions = Extraction.includes(:projects_study,
-                                       projects_users_role: [projects_user: [user: [:profile]]],
-                                       extractions_key_questions_projects: [key_questions_project: [:key_question, extraction_forms_projects_section: [extraction_forms_project: [:extraction_form]]]]).all
+                                       projects_users_role: [projects_user: [:project, user: [:profile]]],
+                                       extractions_key_questions_projects: [key_questions_project: [:key_question, extraction_forms_projects_section: [extraction_forms_project: [:extraction_form]]]])
+                             .where(extractions_key_questions_projects: { key_questions_projects: { project: @project } }).all
   end
 
   # GET /extractions/1
@@ -31,7 +32,7 @@ class ExtractionsController < ApplicationController
 
     respond_to do |format|
       if @extraction.save
-        format.html { redirect_to project_extractions_url(@extraction.projects_users_role.projects_user.project), notice: 'Extraction was successfully created.' }
+        format.html { redirect_to project_extractions_url(@extraction.extractions_key_questions_projects.first.key_questions_project.project), notice: 'Extraction was successfully created.' }
         format.json { render :show, status: :created, location: @extraction }
       else
         format.html { render :new }
@@ -78,8 +79,8 @@ class ExtractionsController < ApplicationController
     end
 
     def set_extraction
-      @extraction = Extraction.includes(key_questions_projects: [:key_question,
-                                                                 extraction_forms_projects_section: [:extraction_forms_projects_section_type]])
+      @extraction = Extraction.includes(projects_users_role: { projects_user: :project })
+                              .includes(key_questions_projects: [:key_question, extraction_forms_projects_section: [:extractions_extraction_forms_projects_sections, :extraction_forms_projects_section_type]])
                               .find(params[:id])
     end
 
