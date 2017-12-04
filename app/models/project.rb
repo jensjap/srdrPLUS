@@ -5,6 +5,8 @@ class Project < ApplicationRecord
   acts_as_paranoid
   has_paper_trail
 
+  #scope :is_public, -> { where( public: true ) }
+
   paginates_per 8
 
   after_create :create_default_extraction_form

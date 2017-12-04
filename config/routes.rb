@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       resources :projects, shallow: true do
+        resources :citations
         resources :extractions, only: [:index]
         resources :extraction_forms_projects do
           resources :extraction_forms_projects_sections, only: [:index, :show] do
@@ -32,9 +33,12 @@ Rails.application.routes.draw do
   end
   post '/projects/:id/undo', to: 'projects#undo', as: :undo
   resources :projects, concerns: :paginatable, shallow: true do
-    resources :citations, only: [:index]
-    get 'labeled' => 'citations#labeled'
-    get 'unlabeled' => 'citations#unlabeled'
+    resources :citations, only: [:index] do 
+      collection do
+        get 'labeled'
+        get 'unlabeled'
+      end
+    end
     resources :extractions do
       get 'work', on: :member
       resources :extractions_extraction_forms_projects_sections do
