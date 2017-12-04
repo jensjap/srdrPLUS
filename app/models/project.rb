@@ -5,6 +5,8 @@ class Project < ApplicationRecord
   acts_as_paranoid
   has_paper_trail
 
+  #scope :is_public, -> { where( public: true ) }
+
   paginates_per 8
 
   has_many :extraction_forms_projects, dependent: :destroy, inverse_of: :project
