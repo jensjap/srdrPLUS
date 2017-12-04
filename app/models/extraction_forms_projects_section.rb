@@ -22,26 +22,53 @@ class ExtractionFormsProjectsSection < ApplicationRecord
   has_one :extraction_forms_projects_section_option, dependent: :destroy
   has_one :ordering, as: :orderable, dependent: :destroy
 
-  has_many :extractions_extraction_forms_projects_sections, dependent: :destroy, inverse_of: :extraction_forms_projects_section
-  has_many :extractions, through: :extractions_extraction_forms_projects_sections, dependent: :destroy
+  has_many :extraction_forms_projects_sections_type1s, dependent: :destroy, inverse_of: :extraction_forms_projects_section
+  has_many :type1s, through: :extraction_forms_projects_sections_type1s, dependent: :destroy
 
   has_many :extraction_forms_projects_section_type2s, class_name:  'ExtractionFormsProjectsSection',
                                                       foreign_key: 'extraction_forms_projects_section_id'
+
+  has_many :extractions_extraction_forms_projects_sections, dependent: :destroy, inverse_of: :extraction_forms_projects_section
+  has_many :extractions, through: :extractions_extraction_forms_projects_sections, dependent: :destroy
 
   has_many :key_questions_projects, dependent: :nullify, inverse_of: :extraction_forms_projects_section
   has_many :key_questions, through: :key_questions_projects, dependent: :destroy
 
   has_many :questions, dependent: :destroy, inverse_of: :extraction_forms_projects_section
 
-  has_many :type1s, dependent: :destroy, inverse_of: :extraction_forms_projects_section
+  accepts_nested_attributes_for :type1s, reject_if: :all_blank
 
   validates :ordering, presence: true
 
   validate :child_type
   validate :parent_type
 
+  # Do not create duplicate Type1 entries.
+  #
+  # In nested forms the type1s_attributes hash will have IDs for entries that
+  # are being modified (i.e. are tied to an existing record). We want to skip
+  # over them. The ones that are lacking an ID entry are entries that are not
+  # yet tied to an existing record. For these we check if they already exist
+  # (by name and description) and then add to
+  # extraction_forms_projects_section.type1s collection. Then call super to
+  # update all the attributes of all submitted records.
+  def type1s_attributes=(attributes)
+    attributes.each do |key, attribute_collection|
+      unless attribute_collection.has_key? 'id'
+        Type1.transaction do
+          type1 = Type1.find_or_create_by!(attribute_collection)
+          self.type1s << type1
+          attributes[key]['id'] = type1.id.to_s
+        end
+      end
+    end
+    super
+  end
+
   def section_id=(token)
-    process_token(token, :section)
+    resource = Section.new
+    save_resource_name_with_token(resource, token)
+    #process_token(token, :section)
     super
   end
 

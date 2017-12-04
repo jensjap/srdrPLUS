@@ -1,0 +1,19 @@
+h4 List of Suggested #{ efps.section.name.titleize.singularize } Titles
+.table-scroll
+
+  table.hover style='width: 100%;'
+
+    thead
+      tr
+        th Title
+        th Description
+        th
+
+    tbody
+      - efps.type1s.each do |t1|
+        tr
+          td = t1.name
+          td style='white-space: pre-wrap' = t1.description
+          td = link_to extraction_forms_projects_section_dissociate_type1_path(efps, type1_id: t1.id), method: :delete, data: { confirm: t('confirm') } do
+            i.fi-trash
+            |  Remove

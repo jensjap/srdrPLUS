@@ -1,16 +1,7 @@
-- arms     = nil
-- outcomes = nil
-- efp.extraction_forms_projects_sections.each do |_efps|
-  - case _efps.section.name
-  - when 'Arms'
-    - arms = ExtractionsExtractionFormsProjectsSection.find_by(extraction: @extraction, extraction_forms_projects_section: _efps).type1s
-  - when 'Outcomes'
-    - outcomes = ExtractionsExtractionFormsProjectsSection.find_by(extraction: @extraction, extraction_forms_projects_section: _efps).type1s
+- if make_results_section_available?(@extraction.id, efp.id)
 
-- if arms.blank? || outcomes.blank?
-
-  h4 style='color: red;' You must add Arms and Outcomes before extracting into this section.
+  == render 'extractions/work/results/results_section_content', efp: efp, section_name: section_name
 
 - else
 
-  == render 'extractions/work/results_table', efp: efp, section_name: section_name, arms: arms, outcomes: outcomes
+  h4 style='color: red;' You must add Arms and Outcomes before extracting into this section.

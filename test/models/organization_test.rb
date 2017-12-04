@@ -15,7 +15,7 @@ class OrganizationTest < ActiveSupport::TestCase
   test '#process_token should create resource and suggestion by user' do
     previous_suggestion_cnt = Suggestion.count
     previous_organization_cnt = Organization.count
-    Profile.first.send(:process_token,'<<<aaa>>>', :organization)
+    Profile.first.send(:save_resource_name_with_token, Organization.new, '<<<aaa>>>')
     assert_equal Organization.count, previous_organization_cnt + 1
     assert_equal Suggestion.count, previous_suggestion_cnt + 1
     Suggestion.last.user = User.current
@@ -24,7 +24,7 @@ class OrganizationTest < ActiveSupport::TestCase
   test '#process_token should not create resource and suggestion by user with invalid token (\'0\')' do
     previous_suggestion_cnt = Suggestion.count
     previous_organization_cnt = Organization.count
-    Profile.first.send(:process_token,'0', :organization)
+    Profile.first.send(:save_resource_name_with_token, Organization.new, '0')
     assert_equal Organization.count, previous_organization_cnt
     assert_equal Suggestion.count, previous_suggestion_cnt
   end
@@ -32,7 +32,7 @@ class OrganizationTest < ActiveSupport::TestCase
   test '#process_token should not create resource and suggestion by user with invalid token (\'aaa\')' do
     previous_suggestion_cnt = Suggestion.count
     previous_organization_cnt = Organization.count
-    Profile.first.send(:process_token,'aaa', :organization)
+    Profile.first.send(:save_resource_name_with_token, Organization.new, 'aaa')
     assert_equal Organization.count, previous_organization_cnt
     assert_equal Suggestion.count, previous_suggestion_cnt
   end

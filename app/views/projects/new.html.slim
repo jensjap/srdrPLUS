@@ -5,6 +5,11 @@
   = simple_form_for(@project, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
     = f.error_notification
 
+    .alert.callout data-abide-error='' style='display: none;'
+      p
+        i.fi-alert
+        '  Please correct the errors below.
+
     .form-inputs
       = f.input :name, required: true, hint: 'Project name cannot be blank', autofocus: true
       = f.input :description, input_html: { rows: 4 }

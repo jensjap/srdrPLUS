@@ -1,0 +1,18 @@
+= simple_form_for(efps, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
+  .alert.callout data-abide-error='' style='display: none;'
+    p
+      i.fi-alert
+      '  Please correct the errors below.
+
+  = f.simple_fields_for(:type1s, efps.type1s.build) do |type1_f|
+
+    .form-inputs class="new-suggestion-fields-#{ efps.id.to_s }"
+      = type1_f.input :name, required: true, hint: 'Name can\'t be blank', autofocus: true
+      = type1_f.input :description, input_html: { rows: 4 }
+
+    .links
+      = link_to_add_association "Add another custom #{ efps.section.name.titleize.singularize }",
+        f, :type1s, partial: 'extraction_forms_projects/build/type1/type1_fields', render_options: { locals: { efps: efps } }
+
+  .form-actions
+    = f.button :submit, "Save Suggestion for #{ efps.section.name.titleize.singularize } Title"

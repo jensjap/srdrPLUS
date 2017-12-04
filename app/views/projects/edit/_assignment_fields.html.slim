@@ -1,4 +1,4 @@
 .nested-fields
-  = f.association :user, label_method: ->(user){ user.profile.username }
+  = f.association :user, label_method: :titleize_username
   = link_to_remove_association 'remove assignment', f
-  
+

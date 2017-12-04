@@ -23,7 +23,7 @@ table
                 li Key Question: "#{  ekqp.key_questions_project.key_question.name }"
                 ul style='margin-top: 0px; margin-bottom: 33px;'
                   li Extraction Form: "#{ ekqp.key_questions_project.extraction_forms_projects_section.extraction_forms_project.extraction_form.name }"
-        td = link_to 'Work', work_extraction_path(extraction)
+        td = link_to 'Work', work_extraction_path(extraction, anchor: extraction.extractions_extraction_forms_projects_sections.present? ? "panel-tab-#{ extraction.extractions_extraction_forms_projects_sections.first.id }" : '')
         td = link_to 'Show', extraction
         td = link_to 'Edit', edit_extraction_path(extraction)
         td = link_to 'Destroy', extraction, data: { confirm: 'Are you sure?' }, method: :delete

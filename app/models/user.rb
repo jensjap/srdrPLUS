@@ -38,6 +38,10 @@ class User < ApplicationRecord
   has_many :taggings, dependent: :destroy, inverse_of: :user
   has_many :tags, through: :taggings, dependent: :destroy
 
+  def titleize_username
+    profile.username.titleize
+  end
+
   def self.current
     Thread.current[:user]
   end

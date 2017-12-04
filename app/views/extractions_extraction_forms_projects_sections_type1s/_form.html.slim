@@ -4,8 +4,6 @@
   .form-inputs
     - if @extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_section.extraction_forms_projects_section.section.name == 'Outcomes'
       = f.association :type1_type
-    = f.input :name
-    = f.input :description
     = f.input :units
     = f.input :notes
 
