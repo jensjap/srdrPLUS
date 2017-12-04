@@ -69,7 +69,8 @@ class ExtractionsController < ApplicationController
 
   # GET /extractions/1/work
   def work
-    @extraction_forms_projects = ExtractionFormsProject.by_extraction(@extraction.id)
+    @extraction_forms_projects = ExtractionFormsProject.includes(:extraction_forms_projects_sections)
+                                                       .by_extraction(@extraction.id)
   end
 
   private
