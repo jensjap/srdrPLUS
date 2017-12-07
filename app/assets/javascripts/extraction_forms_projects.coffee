@@ -18,8 +18,8 @@ document.addEventListener 'turbolinks:load', ->
         type1Desc = tableRow.children( 'td:nth-child(2)' ).text()
 
         # Find and fill the last input pair.
-        efpsId = $( this ).data( 'efpsId' )
-        inputFields = $( '.new-suggestion-fields-' + efpsId ).last()
+        efpsId = $( this ).data( 'sectionId' )
+        inputFields = $( '.new-type1-fields-' + efpsId ).last()
 
         # Can't use .text() on form input/textarea -_-.
         inputFields.find( 'input' ).val( type1Name )

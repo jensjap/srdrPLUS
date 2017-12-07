@@ -1,5 +1,5 @@
-.nested-fields class="new-suggestion-fields-#{ efps.id.to_s }"
+.nested-fields class="new-type1-fields-#{ efps.id.to_s }"
   = f.input :name, required: true, hint: 'Name can\'t be blank', autofocus: true
   = f.input :description, input_html: { rows: 4 }
 
-  = link_to_remove_association "Remove #{ efps.section.name.titleize.singularize } Suggestion", f
+  = link_to_remove_association "Remove #{ efps.section.name.titleize.singularize } fields", f

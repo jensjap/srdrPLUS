@@ -1,93 +1,11 @@
-h4 Suggested #{ section_name }
-/blockquote
-/  | Assign #{ section_name } to this Extraction.
-/  cite Friendly Helper
-
-= simple_form_for(eefps, html: { data: { 'abide': '' } }) do |f|
-  = f.error_notification
-
-  .form-inputs
-    = f.association :type1s, input_html: { class: '',
-                                           data: { 'extraction-forms-projects-section-id': efps.id.to_s } },
-                             as: :check_boxes,
-                             collection: efps.type1s,
-                             label: "The following list of #{ section_name } were suggested. Please mark the ones to include and save",
-                             label_method: :name_and_description
-
-  .form-actions
-    = f.button :submit, t('save')
-
-hr
-
-h4 #{ section_name } that are included in this Extraction
-
-table
-
-  tr
-    - if section_name == 'Outcomes'
-      th Type
-    th Name
-    th Description
-    - if section_name == 'Outcomes'
-      th Populations
-      th Timepoints
-    th
-
-  - eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
-    tr
-
-      - if section_name == 'Outcomes'
-        td
-          = eefpst1.type1_type.present? ? eefpst1.type1_type.name : ''
-        td
-          = link_to 'Edit ' + section_name.singularize, edit_extractions_extraction_forms_projects_sections_type1_path(eefpst1)
-          ul style='list-style: none; margin: 0px;'
-            li style='margin-top: 3px;'
-              = eefpst1.type1.name
-            li style='margin-left: 7px;'
-              | Units: #{ eefpst1.units }
-
-      - else
-        td = eefpst1.type1.name
-
-      td = eefpst1.type1.description
-
-      - if section_name == 'Outcomes'
-        td
-          = link_to 'Edit Populations', edit_populations_extractions_extraction_forms_projects_sections_type1_path(eefpst1)
-          ul
-            - eefpst1.extractions_extraction_forms_projects_sections_type1_rows.first.extractions_extraction_forms_projects_sections_type1_row_columns.each do |sg|
-              li = sg.name
-        td
-          = link_to 'Edit Timepoints', edit_timepoints_extractions_extraction_forms_projects_sections_type1_path(eefpst1)
-          ul
-            - eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |tp|
-              li = tp.name + (tp.unit.present? ? " (#{ tp.unit })" : '') + (tp.is_baseline? ? ' (Baseline)' : '')
-
-      td = link_to 'Remove', eefpst1, data: { confirm: 'Are you sure?' }, method: :delete
-
-hr
-
-h4 Add a Custom #{ efps.section.name.titleize.singularize }
+.column.row
+  = render 'extractions/work/type1/type1_friendly_helper_message', eefps: eefps
 
 .column.row
+  = render 'extractions/work/type1/type1_included_list', eefps: eefps
 
-  = simple_form_for(eefps, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
-    = f.error_notification
+.column.row
+  = render 'extractions/work/type1/type1_example_list', eefps: eefps
 
-    .alert.callout data-abide-error='' style='display: none;'
-      p
-        i.fi-alert
-        '  Please correct the errors below.
-
-    .form-inputs
-      = f.simple_fields_for :extractions_extraction_forms_projects_sections_type1s, f.object.extractions_extraction_forms_projects_sections_type1s.build do |sf_eefpst1|
-
-        = sf_eefpst1.simple_fields_for :type1, sf_eefpst1.object.build_type1 do |sf_t1|
-
-          = sf_t1.input :name, required: true, hint: 'Name can\'t be blank', autofocus: true
-          = sf_t1.input :description, input_html: { rows: 4 }
-
-    .form-actions
-      = f.button :submit, "Add Custom #{ efps.section.name.titleize.singularize }"
-
+.column.row
+  = render 'extractions/work/type1/type1_new_custom_form', eefps: eefps
