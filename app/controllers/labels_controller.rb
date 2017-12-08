@@ -1,5 +1,4 @@
 class LabelsController < ApplicationController
-  skip_before_action :authenticate_user!, only: [:show]
   before_action :set_label, only: [:show, :edit, :update, :destroy]
 
   def new
@@ -12,7 +11,7 @@ class LabelsController < ApplicationController
     respond_to do |format|
       if @label.save
         format.html { redirect_to edit_label_path(@label), notice: t('success') }
-        format.json { render :show, status: :created, location: @label }
+        #format.json { render :show, status: :created, location: @label }
       else
         format.html { render 'new' }
         format.json { render json: @label.errors, status: :unprocessable_entity }

@@ -1,0 +1,20 @@
+.column.row
+  h2 Let's label stuff
+  = simple_form_for(@label, html: { id: 'label-form', data: { 'remote': true, 'type': :json,  'abide': '', 'live-validate': true } }) do |f|
+    = f.error_notification
+    #hide-me
+      = f.input :value, as: :radio_buttons, collection: [ 'yes', 'no', 'maybe' ], input_html: { id: 'label-input' }
+      = f.association :citations_project, as: :text, input_html: { value: @citations_projects.first.id }
+      #screen-assignment-json-url
+        | #{ screen_assignment_url(@assignment.id) + '.json' }
+      #citations-url
+        | #{ citations_url }
+
+  .column.row.button-group
+      .button id='yes-button'
+       | Yes
+      .button id='maybe-button'
+       | Maybe
+      .button id='no-button'
+       | No
+

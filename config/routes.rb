@@ -65,6 +65,7 @@ Rails.application.routes.draw do
           get 'preview'
           post 'add_quality_dimension'
         end
+        get 'preview', on: :member
         resources :questions, only: [:new, :create, :edit, :update, :destroy] do
           member do
             patch 'toggle_dependency'
@@ -78,6 +79,9 @@ Rails.application.routes.draw do
               member do
                 get 'answer_choices'
                 delete 'destroy_entire_column'
+              end
+              resources :question_row_column_fields, only: [] do
+                resources :question_row_column_fields_question_row_column_field_options, only: [:destroy]
               end
             end
           end
