@@ -13,7 +13,9 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :assignments
+  resources :assignments do
+    get 'screen', on: :member
+  end
   resources :authors
   resources :citations, only: [:new, :create, :edit, :update, :destroy, :show]
   resources :journals
@@ -29,7 +31,7 @@ Rails.application.routes.draw do
     get 'get_results_subgroups', on: :member
   end
   resources :projects, concerns: :paginatable, shallow: true do
-    resources :citations, only: [:index] do 
+    resources :citations, only: [:index] do
       collection do
         get 'labeled'
         get 'unlabeled'
