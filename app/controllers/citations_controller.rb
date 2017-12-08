@@ -1,5 +1,4 @@
 class CitationsController < ApplicationController
-  skip_before_action :authenticate_user!, only: [:index, :show]
   before_action :set_citation, only: [:show, :edit, :update, :destroy]
 
   def new
@@ -59,18 +58,13 @@ class CitationsController < ApplicationController
 
   def labeled
     @project = Project.find(params[:project_id])
-    @citations = Citation.joins(:labels)
-                         .joins(:projects)
-                         .group('citations.id')
-                         .where(:projects => { :id => @project.id }).all
+    @citations = Citation.labeled(@project)
     render 'index'
   end
 
   def unlabeled
-    @project = Project.find(params[:project_id])
-    @citations = Citation.left_outer_joins(:labels)
-                         .where( :labels => { :id => nil }, :citations_projects => { :project_id => @project.id } )
-                         .distinct
+    @project = project.find(params[:project_id])
+    @citations = citation.unlabeled(@project)
     render 'index'
   end
 

@@ -1,6 +1,4 @@
 class ProjectsController < ApplicationController
-  #!!! BIROL: Please start using the /api/v1 namespace for API calls. I will remove this line soon.
-  #skip_before_action :authenticate_user!, only: [:index, :show]
   before_action :set_project, only: [:show, :edit, :update, :destroy]
 
   SORT = {  'updated-at': { updated_at: :desc },
@@ -104,7 +102,7 @@ class ProjectsController < ApplicationController
                 :prospero, :doi, :notes, :funding_source,
                 { tasks_attributes: [:id, :name, :num_assigned, :task_type_id, assignments_attributes: [:id, :user_id]]},
                 { assignments_attributes: [:id, :done_so_far, :date_assigned, :date_due, :done, :user_id]},
-                { citations_attributes: [:id, :name, :_destroy] },
+                { citations_attributes: [:id, :name, :citation_type_id, :_destroy] },
                 citations_projects_attributes: [:id, :_destroy, :citation_id, :project_id, 
                                                 citation_attributes: [:id, :_destroy, :name]])
     end

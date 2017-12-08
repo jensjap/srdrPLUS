@@ -1,6 +1,15 @@
 class Citation < ApplicationRecord
   include SharedQueryableMethods
 
+  scope :unlabeled, ->(project) { left_outer_joins(:labels)
+                                  .where( :labels => { :id => nil }, 
+                                          :citations_projects => { :project_id => project.id } )
+                                  .distinct }
+
+  scope :labeled, ->(project) { joins(:labels, :projects)
+                                .where(:projects => { :id => project.id })
+                                .distinct }
+
   belongs_to :citation_type
 
   has_one :journal, dependent: :destroy
