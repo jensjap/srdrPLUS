@@ -6,6 +6,8 @@ class ExtractionFormsProjectsSection < ApplicationRecord
   acts_as_paranoid column: :active, sentinel_value: true
   has_paper_trail
 
+  default_scope { order(id: :asc) }
+
   after_save :mark_as_deleted_or_restore_extraction_forms_projects_section_option
 
   before_validation -> { set_ordering_scoped_by(:extraction_forms_project_id) }

@@ -5,7 +5,7 @@ class Type1 < ApplicationRecord
   acts_as_paranoid
   has_paper_trail
 
-  scope :uniq_by_section_name_and_not_included, -> (efps_id) {
+  scope :uniq_by_section_name_and_not_included_in_efps, -> (efps_id) {
     efps = ExtractionFormsProjectsSection.find(efps_id)
     joins(extraction_forms_projects_sections_type1s: { extraction_forms_projects_section: :section })
       .where(sections: { name: efps.section.name })

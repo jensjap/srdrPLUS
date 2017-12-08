@@ -55,6 +55,14 @@ class ExtractionFormsProjectsController < ApplicationController
   # GET /extraction_forms_projects/1/build
   def build
     @key_questions_projects = @extraction_forms_project.project.key_questions_projects.includes(:key_question)
+    @extraction_forms_projects_sections = @extraction_forms_project.extraction_forms_projects_sections
+      .includes([:extraction_forms_projects_section_type,
+                 :ordering,
+                 :section,
+                 :type1s,
+                 { questions: [:ordering,
+                               :dependencies,
+                               { question_rows: [:question_row_columns] }] }])
   end
 
   private
@@ -66,14 +74,8 @@ class ExtractionFormsProjectsController < ApplicationController
     def set_extraction_forms_project
       @extraction_forms_project = ExtractionFormsProject
         .includes(:extraction_form)
-        .includes(extraction_forms_projects_sections: [:extraction_forms_projects_section_type,
-                                                       :ordering,
-                                                       :section,
-                                                       :type1s,
-                                                       { questions: [:ordering,
-                                                                     :dependencies,
-                                                                     { question_rows: [:question_row_columns] }] }])
         .includes(key_questions_projects: [:key_question])
+        .includes(:project)
         .find(params[:id])
     end
 

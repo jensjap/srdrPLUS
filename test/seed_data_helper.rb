@@ -194,6 +194,22 @@ module SeedData
         { name: 'Adverse Event' }
       ])
 
+      # ResultStatisticSectionTypes.
+      ResultStatisticSectionType.create([
+        { name: 'Descriptive Statistics' },
+        { name: 'Between Arm Comparisons' },
+        { name: 'Within Arm Comparisons' },
+        { name: 'NET Change' }
+      ])
+
+      # ResultStatisticSectionMeasures.
+      Measure.create([
+        { name: 'N Analyzed', default: true },
+        { name: 'Counts', default: true },
+        { name: 'Proportion' },
+        { name: 'Percentage' },
+      ])
+
       # Turn on paper_trail.
       PaperTrail.enabled = true
 

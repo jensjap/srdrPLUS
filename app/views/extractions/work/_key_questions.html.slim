@@ -6,5 +6,4 @@ blockquote
 ul
 
   - @extraction.key_questions_projects.where(extraction_forms_projects_section: efps).includes(:key_question).each do |kqp|
-
     li = kqp.key_question.name

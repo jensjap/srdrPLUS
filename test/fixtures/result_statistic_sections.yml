@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  result_statistic_section_type: one
+  subgroup: one
+  deleted_at:
+
+two:
+  result_statistic_section_type: two
+  subgroup: two
+  deleted_at:

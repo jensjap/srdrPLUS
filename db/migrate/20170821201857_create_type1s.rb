@@ -8,7 +8,7 @@ class CreateType1s < ActiveRecord::Migration[5.0]
       t.timestamps
     end
 
-    add_index :type1s, [:name, :description], length: { description: 255 }, unique: true
     add_index :type1s, :deleted_at
+    add_index :type1s, [:name, :description, :deleted_at], length: { description: 255 }, unique: true
   end
 end

@@ -24,3 +24,8 @@ four:
   section: four
   active: true
 
+five:
+  extraction_forms_project: one
+  extraction_forms_projects_section_type: one
+  section: five
+  active: true
