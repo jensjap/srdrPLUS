@@ -8,7 +8,9 @@
       #screen-assignment-json-url
         | #{ screen_assignment_url(@assignment.id) + '.json' }
       #citations-url
-        | #{ citations_url }
+        | #{ labels_url }
+      #authenticity-token
+        | #{ form_authenticity_token }
 
   .column.row.button-group
       .button id='yes-button'

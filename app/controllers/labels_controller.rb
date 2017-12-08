@@ -11,7 +11,7 @@ class LabelsController < ApplicationController
     respond_to do |format|
       if @label.save
         format.html { redirect_to edit_label_path(@label), notice: t('success') }
-        #format.json { render :show, status: :created, location: @label }
+        format.json { render json: { status: :created } }
       else
         format.html { render 'new' }
         format.json { render json: @label.errors, status: :unprocessable_entity }
