@@ -11,7 +11,9 @@ class ExtractionsExtractionFormsProjectsSectionsController < ApplicationControll
                                   notice: t('success') }
         format.json { render :show, status: :ok, location: @extractions_extraction_forms_projects_section }
       else
-        format.html { render :edit }
+        format.html { redirect_to work_extraction_path(@extractions_extraction_forms_projects_section.extraction,
+                                                       anchor: "panel-tab-#{ @extractions_extraction_forms_projects_section.id.to_s }"),
+                                  alert: t('failure') }
         format.json { render json: @extractions_extraction_forms_projects_section.errors, status: :unprocessable_entity }
       end
     end
@@ -26,10 +28,8 @@ class ExtractionsExtractionFormsProjectsSectionsController < ApplicationControll
     # Never trust parameters from the scary internet, only allow the white list through.
     def extractions_extraction_forms_projects_section_params
       params.require(:extractions_extraction_forms_projects_section)
-             .permit(:extraction_id,
-                     :extraction_forms_projects_section_id,
-                     extractions_extraction_forms_projects_sections_type1s_attributes: [:id, :_destroy,
-                       type1_attributes: [:id, :name, :description]],
-                     type1_ids: [])
+        .permit(:extraction_id,
+                :extraction_forms_projects_section_id,
+                type1s_attributes: [:id, :name, :description])
     end
 end

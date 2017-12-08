@@ -59,7 +59,7 @@ class ExtractionFormsProjectsSection < ApplicationRecord
       unless attribute_collection.has_key? 'id'
         Type1.transaction do
           type1 = Type1.find_or_create_by!(attribute_collection)
-          self.type1s << type1
+          type1s << type1 unless type1s.include? type1
           attributes[key]['id'] = type1.id.to_s
         end
       end
@@ -70,7 +70,6 @@ class ExtractionFormsProjectsSection < ApplicationRecord
   def section_id=(token)
     resource = Section.new
     save_resource_name_with_token(resource, token)
-    #process_token(token, :section)
     super
   end
 

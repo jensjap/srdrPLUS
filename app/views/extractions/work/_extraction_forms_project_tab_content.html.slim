@@ -11,7 +11,7 @@
           .column.medium-3
             ul.tabs.vertical id="extraction-forms-projects-#{ efp.id.to_s }-vertical-tabs" data-deep-link='true' data-deep-link-smudge='true' data-deep-link-smudge-delay='600' data-update-history='true' data-tabs=''
 
-              - efp.extraction_forms_projects_sections.each do |efps|
+              - efp.extraction_forms_projects_sections.includes(:section).each do |efps|
 
                 / Ensure that this section is added to the extraction.
                 - eefps = ExtractionsExtractionFormsProjectsSection.find_or_create_by(extraction: @extraction,
@@ -28,7 +28,9 @@
               - efp.extraction_forms_projects_sections.includes(:extraction_forms_projects_section_type, :section, :type1s).each do |efps|
 
                 / Ensure that this section is added to the extraction.
-                - eefps = ExtractionsExtractionFormsProjectsSection.find_or_create_by(extraction: @extraction, extraction_forms_projects_section: efps, link_to_type1: efps.link_to_type1.nil? ? nil : ExtractionsExtractionFormsProjectsSection.find_by(extraction: @extraction, extraction_forms_projects_section: efps.link_to_type1))
+                - eefps = ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_or_create_by(extraction: @extraction,
+                  extraction_forms_projects_section: efps,
+                  link_to_type1: efps.link_to_type1.nil? ? nil : ExtractionsExtractionFormsProjectsSection.find_by(extraction: @extraction, extraction_forms_projects_section: efps.link_to_type1))
                 - section_name = efps.section.name
 
                 .tabs-panel id="panel-tab-#{ eefps.id.to_s }"
@@ -51,7 +53,7 @@
           .column.medium-3
             ul.tabs.vertical id="extraction-forms-projects-#{ efp.id.to_s }-vertical-tabs" data-deep-link='true' data-deep-link-smudge='true' data-deep-link-smudge-delay='600' data-update-history='true' data-tabs=''
 
-              - efp.extraction_forms_projects_sections.each do |efps|
+              - efp.extraction_forms_projects_sections.includes(:section).each do |efps|
 
                 / Ensure that this section is added to the extraction.
                 - eefps = ExtractionsExtractionFormsProjectsSection.find_or_create_by(extraction: @extraction,
