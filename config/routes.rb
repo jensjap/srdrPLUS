@@ -1,5 +1,4 @@
 Rails.application.routes.draw do
-
   apipie
   namespace :api do
     namespace :v1 do
@@ -25,7 +24,6 @@ Rails.application.routes.draw do
   resources :labels
   resources :tasks
   resources :records, only: [:update]
-
   concern :paginatable do
     get '(page/:page)', action: :index, on: :collection, as: ''
   end
