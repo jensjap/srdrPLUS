@@ -8,17 +8,15 @@ h4 Add a Custom #{ section_name }
       i.fi-alert
       '  Please correct the errors below.
 
-  = f.simple_fields_for :extractions_extraction_forms_projects_sections_type1s, f.object.extractions_extraction_forms_projects_sections_type1s.build do |sf_eefpst1|
+  = f.simple_fields_for(:type1s, eefps.type1s.build) do |sf_t1|
 
-    = sf_eefpst1.simple_fields_for :type1, sf_eefpst1.object.build_type1 do |sf_t1|
+    .form-inputs class="new-type1-fields-#{ eefps.id.to_s }"
+      = sf_t1.input :name, required: true, hint: 'Name can\'t be blank', autofocus: true
+      = sf_t1.input :description, input_html: { rows: 4 }
 
-      .form-inputs class="new-type1-fields-#{ eefps.id.to_s }"
-        = sf_t1.input :name, required: true, hint: 'Name can\'t be blank', autofocus: true
-        = sf_t1.input :description, input_html: { rows: 4 }
-
-      .links
-        = link_to_add_association "Add #{ section_name } fields",
-          f, :type1s, partial: 'extractions/work/type1/type1_fields', render_options: { locals: { eefps: eefps } }
+    .links
+      = link_to_add_association "Add #{ section_name } fields",
+        f, :type1s, partial: 'extractions/work/type1/type1_fields', render_options: { locals: { eefps: eefps } }
 
   .form-actions
-    = f.button :submit, "Add Custom #{ section_name }"
+    = f.button :submit, 'Save'

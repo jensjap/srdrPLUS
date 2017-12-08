@@ -22,7 +22,7 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
 
   has_many :extractions_extraction_forms_projects_sections_type1_rows, dependent: :destroy, inverse_of: :extractions_extraction_forms_projects_sections_type1
 
-  accepts_nested_attributes_for :type1, reject_if: :all_blank
+  validates :type1_id, uniqueness: { scope: :extractions_extraction_forms_projects_section_id }
 
   def type1_name_and_description
     text =  "#{ type1.name }"

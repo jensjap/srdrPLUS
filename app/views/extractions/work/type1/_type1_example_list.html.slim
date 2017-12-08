@@ -12,7 +12,11 @@
           th Suggested by
 
       tbody
-        - eefps.extraction_forms_projects_section.type1s.each do |t1|
+        - eefps.extraction_forms_projects_section.type1s.includes(suggestion: { user: :profile })\
+          .joins(:extraction_forms_projects_sections_type1s)\
+            .where.not(extraction_forms_projects_sections_type1s: { type1: eefps.type1s })\
+              .distinct\
+                .each do |t1|
           tr
             td = t1.name
             td = t1.description
