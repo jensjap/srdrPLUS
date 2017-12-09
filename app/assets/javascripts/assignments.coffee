@@ -5,16 +5,39 @@ loyloy = ->
   console.log('loyloy')
   return
 
+#get a list of unlabeled_citations from server
 get_c_p = ( obj, async ) ->
-  if obj.data.citations_projects.length < 5
+  if obj.citations_projects.length < 5
     c_p_json = { }
     c_p_json[ 'async' ]   = async
     c_p_json[ 'type' ]    = 'GET'
     c_p_json[ 'url' ]     = $( '#screen-assignment-json-url' ).text()
-    c_p_json[ 'success' ] = ( data ) -> ( obj.data = data )
+    c_p_json[ 'success' ] = ( data ) -> ( obj.citations_projects = data.citations_projects )
 
     $.ajax( c_p_json )
+  return
 
+#gets the first citation from citations_projects and updates current_citation with it
+next_citation = ( obj ) ->
+  if obj.current_citation.length == 0
+    return
+  obj.current_citation = obj.citations_projects.shift()
+  $( '#citation-name' ).text( obj.current_citation.name )
+  $( '#citation-abstract' ).text( obj.current_citation.abstract )
+  $( '#citation-pmid' ).text( obj.current_citation.pmid )
+  $( '#citation-refman' ).text( obj.current_citation.refman )
+
+  $( '#citation-authors' ).empty()
+  for a in obj.current_citation.authors
+    author = document.createElement('li')
+    author.innerHTML = a.name
+    $( '#citation-authors' ).append(author)
+
+  $( '#citation-keywords' ).empty()
+  for k in obj.current_citation.keywords
+    keyword = document.createElement('li')
+    keyword.innerHTML = k.name
+    $( '#citation-keywords' ).append(keyword)
   return
 
 send_label = ( c_p_id, label_value ) ->
@@ -31,33 +54,36 @@ send_label = ( c_p_id, label_value ) ->
   data_json[ 'success' ]              = loyloy()
 
   $.ajax( data_json )
-
   return
 
 document.addEventListener 'turbolinks:load', ->
   do ->
-    #$( '#hide-me' ).hide()
+    $( '#hide-me' ).hide()
 
     # get citations_project data from server
-    c_p_obj = { data: { citations_projects: [] } }
-    get_c_p( c_p_obj, true )
-
-    console.log( c_p_obj )
+    screen_obj = { citations_projects: [ ], current_citation: {} }
+    get_c_p( screen_obj, false )
+    console.log( screen_obj )
+    next_citation( screen_obj )
 
     $( '#yes-button' ).click ->
       $( "#label-input[value='yes']" ).prop( 'checked', true )
-      send_label( c_p_obj.data.citations_projects.shift().id,'yes' )
-      get_c_p( c_p_obj, false )
+      send_label( screen_obj.current_citation.id,'yes' )
+      get_c_p( screen_obj, true )
+      next_citation( screen_obj )
+
 
     $( '#maybe-button' ).click ->
       $( "#label-input[value='maybe']" ).prop( 'checked', true )
-      send_label( c_p_obj.data.citations_projects.shift().id,'maybe' )
-      get_c_p( c_p_obj, false )
+      send_label( screen_obj.current_citation.id,'maybe' )
+      get_c_p( screen_obj, true )
+      next_citation( screen_obj )
 
     $( '#no-button' ).click ->
       $( "#label-input[value='no']" ).prop( 'checked', true )
-      send_label( c_p_obj.data.citations_projects.shift().id,'no' )
-      get_c_p( c_p_obj, false )
+      send_label( screen_obj.current_citation.id,'no' )
+      get_c_p( screen_obj, true )
+      next_citation( screen_obj )
 
   return # END do ->
 return # END document.addEventListener 'turbolinks:load', ->
