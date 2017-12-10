@@ -22,16 +22,21 @@ h4 Keywords
 #hide-me
   #screen-assignment-json-url
     | #{ screen_assignment_url(@assignment.id) + '.json' }
-  #citations-url
+  #labels-url
     | #{ labels_url }
   #authenticity-token
     | #{ form_authenticity_token }
 
 .column.row.button-group
-    .button id='yes-button'
-     | Yes
-    .button id='maybe-button'
-     | Maybe
-    .button id='no-button'
-     | No
+  .button id='yes-button'
+   | Yes
+  .button id='maybe-button'
+   | Maybe
+  .button id='no-button'
+   | No
 
+.column.row.button-group
+  .button id='previous-button'
+   | ◄
+  .button id='next-button'
+   | ►
