@@ -1,89 +1,134 @@
-# Place all the behaviors and hooks related to the matching controller here.
-# All this logic will automatically be available in application.js.
-# You can use CoffeeScript in this file: http://coffeescript.org/
-loyloy = ->
+loyloy = ( obj, data ) ->
   console.log('loyloy')
   return
 
 #get a list of unlabeled_citations from server
 get_c_p = ( obj, async ) ->
-  if obj.citations_projects.length < 5
-    c_p_json = { }
-    c_p_json[ 'async' ]   = async
-    c_p_json[ 'type' ]    = 'GET'
-    c_p_json[ 'url' ]     = $( '#screen-assignment-json-url' ).text()
-    c_p_json[ 'success' ] = ( data ) -> ( obj.citations_projects = data.citations_projects )
+  if obj.citations.length < 5
+    c_p_json          = { }
+    c_p_json.async    = async
+    c_p_json.type     = 'GET'
+    c_p_json.url      = $( '#screen-assignment-json-url' ).text()
+    c_p_json.success  = ( data ) -> ( obj.citations = data.citations_projects; console.log( data ) )
 
     $.ajax( c_p_json )
   return
 
-#gets the first citation from citations_projects and updates current_citation with it
+#gets the first citation from citations and updates indes with it
 next_citation = ( obj ) ->
-  if obj.current_citation.length == 0
+  if obj.citations.length == 0
     return
-  obj.current_citation = obj.citations_projects.shift()
-  $( '#citation-name' ).text( obj.current_citation.name )
-  $( '#citation-abstract' ).text( obj.current_citation.abstract )
-  $( '#citation-pmid' ).text( obj.current_citation.pmid )
-  $( '#citation-refman' ).text( obj.current_citation.refman )
 
-  $( '#citation-authors' ).empty()
-  for a in obj.current_citation.authors
-    author = document.createElement('li')
-    author.innerHTML = a.name
-    $( '#citation-authors' ).append(author)
-
-  $( '#citation-keywords' ).empty()
-  for k in obj.current_citation.keywords
-    keyword = document.createElement('li')
-    keyword.innerHTML = k.name
-    $( '#citation-keywords' ).append(keyword)
+  obj.history.unshift( obj.citations.shift() )
   return
 
-send_label = ( c_p_id, label_value ) ->
+update_info = ( obj ) ->
+  console.log (obj.index) 
+  current_citation = obj.history[ obj.index ]
+
+  $( '#citation-name' ).text( current_citation.name )
+  $( '#citation-abstract' ).text( current_citation.abstract )
+  $( '#citation-pmid' ).text( current_citation.pmid )
+  $( '#citation-refman' ).text( current_citation.refman )
+
+  $( '#citation-authors' ).empty()
+  for a in current_citation.authors
+    author = document.createElement( 'li' )
+    author.innerHTML = a.name
+    $( '#citation-authors' ).append( author )
+
+  $( '#citation-keywords' ).empty()
+  for k in current_citation.keywords
+    keyword = document.createElement( 'li' )
+    keyword.innerHTML = k.name
+    $( '#citation-keywords' ).append( keyword )
+  return
+
+send_label = ( obj, label_value ) ->
+  this.current_citation = obj.history[ obj.index ]
+  # check if 'create' label or 'update'
+  # if 'update', append label id
+  label_url = $( '#labels-url' ).text()
+  if obj.index > 0
+    label_url = label_url + '/' + obj.history[ obj.index ].label_id
+    console.log label_url
+
   label_json = { }
-  label_json[ 'utf8' ]                = '✓'
-  label_json[ 'authenticity_token' ]  = $( '#authenticity-token' ).text()
-  label_json[ 'label' ]               = { value: label_value, citations_project_id: c_p_id }
+  label_json.utf8                 = '✓'
+  label_json.authenticity_token   = $( '#authenticity-token' ).text()
+  label_json.label                = { value: label_value, citations_project_id: current_citation.id }
 
   data_json = { }
-  data_json[ 'type' ]                 = 'POST'
-  data_json[ 'url' ]                  = $( '#citations-url' ).text()
-  data_json[ 'dataType' ]             = 'json'
-  data_json[ 'data' ]                 = label_json
-  data_json[ 'success' ]              = loyloy()
+  # if 'update', use 'PATCH' request
+  if obj.index > 0
+    data_json.type                  = 'PATCH'
+  else
+    data_json.type                  = 'POST'
+  data_json.url                   = label_url
+  data_json.dataType              = 'json'
+  data_json.data                  = label_json
+  data_json.success               = ( data ) -> ( parent.current_citation.label_id = data.id )
 
   $.ajax( data_json )
   return
 
+label_action = ( obj, label_value ) -> 
+  send_label( obj, label_value )
+  get_c_p( obj, true )
+  if obj.index > 0
+    obj.index = 0
+  else
+    next_citation( obj )
+  update_info( obj )
+  update_arrows( obj )
+  return
+  
+update_arrows = ( obj ) ->
+
+  if obj.index < obj.history.length - 1
+    $( '#previous-button' ).show()
+  else
+    $( '#previous-button' ).hide()
+
+  if obj.index > 0
+    $( '#next-button' ).show()
+  else
+    $( '#next-button' ).hide()
+
+  return
+
 document.addEventListener 'turbolinks:load', ->
   do ->
-    $( '#hide-me' ).hide()
+    #$( '#hide-me' ).hide()
 
-    # get citations_project data from server
-    screen_obj = { citations_projects: [ ], current_citation: {} }
-    get_c_p( screen_obj, false )
-    console.log( screen_obj )
-    next_citation( screen_obj )
+    # session state is stored in state_obj, and this object is passed in methods that modify the state
+    state_obj = { citations: [ ], history: [ ], index: 0 }
+    get_c_p( state_obj, false )
+    next_citation( state_obj )
+    update_info( state_obj )
+    update_arrows( state_obj )
 
     $( '#yes-button' ).click ->
       $( "#label-input[value='yes']" ).prop( 'checked', true )
-      send_label( screen_obj.current_citation.id,'yes' )
-      get_c_p( screen_obj, true )
-      next_citation( screen_obj )
-
+      label_action( state_obj, 'yes' ) 
 
     $( '#maybe-button' ).click ->
       $( "#label-input[value='maybe']" ).prop( 'checked', true )
-      send_label( screen_obj.current_citation.id,'maybe' )
-      get_c_p( screen_obj, true )
-      next_citation( screen_obj )
+      label_action( state_obj, 'maybe' ) 
 
     $( '#no-button' ).click ->
       $( "#label-input[value='no']" ).prop( 'checked', true )
-      send_label( screen_obj.current_citation.id,'no' )
-      get_c_p( screen_obj, true )
-      next_citation( screen_obj )
+      label_action( state_obj, 'no' ) 
+
+    $( '#next-button' ).click ->
+      state_obj.index--
+      update_arrows( state_obj )
+      update_info( state_obj )
+
+    $( '#previous-button' ).click ->
+      state_obj.index++
+      update_arrows( state_obj )
+      update_info( state_obj )
 
   return # END do ->
 return # END document.addEventListener 'turbolinks:load', ->
