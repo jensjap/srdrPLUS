@@ -3,15 +3,14 @@ loyloy = ( obj, data ) ->
   return
 
 #get a list of unlabeled_citations from server
-get_c_p = ( obj, async ) ->
+get_c_p = ( obj ) ->
   if obj.citations.length < 5
-    c_p_json          = { }
-    c_p_json.async    = async
-    c_p_json.type     = 'GET'
-    c_p_json.url      = $( '#screen-assignment-json-url' ).text()
-    c_p_json.success  = ( data ) -> ( obj.citations = data.citations_projects; console.log( data ) )
+    request_json          = { }
+    request_json.type     = 'GET'
+    request_json.url      = $( '#screen-assignment-json-url' ).text()
+    request_json.success  = ( data ) -> ( obj.citations = data.citations_projects; console.log( data ) )
 
-    $.ajax( c_p_json )
+    $.ajax( request_json )
   return
 
 #gets the first citation from citations and updates indes with it
@@ -23,7 +22,7 @@ next_citation = ( obj ) ->
   return
 
 update_info = ( obj ) ->
-  console.log (obj.index) 
+  console.log ( obj.index ) 
   current_citation = obj.history[ obj.index ]
 
   $( '#citation-name' ).text( current_citation.name )
@@ -74,7 +73,7 @@ send_label = ( obj, label_value ) ->
 
 label_action = ( obj, label_value ) -> 
   send_label( obj, label_value )
-  get_c_p( obj, true )
+  get_c_p( obj )
   if obj.index > 0
     obj.index = 0
   else
@@ -84,7 +83,6 @@ label_action = ( obj, label_value ) ->
   return
   
 update_arrows = ( obj ) ->
-
   if obj.index < obj.history.length - 1
     $( '#previous-button' ).show()
   else
@@ -94,42 +92,47 @@ update_arrows = ( obj ) ->
     $( '#next-button' ).show()
   else
     $( '#next-button' ).hide()
+  return
 
+start_screening = ( citations ) ->
+  # session state is stored in state_obj, and this object is passed in methods that modify the state
+  state_obj = { citations: citations, history: [ ], index: 0 }
+  next_citation( state_obj )
+  update_info( state_obj )
+  update_arrows( state_obj )
+
+  $( '#yes-button' ).click ->
+    $( "#label-input[value='yes']" ).prop( 'checked', true )
+    label_action( state_obj, 'yes' ) 
+
+  $( '#maybe-button' ).click ->
+    $( "#label-input[value='maybe']" ).prop( 'checked', true )
+    label_action( state_obj, 'maybe' ) 
+
+  $( '#no-button' ).click ->
+    $( "#label-input[value='no']" ).prop( 'checked', true )
+    label_action( state_obj, 'no' ) 
+
+  $( '#next-button' ).click ->
+    state_obj.index--
+    update_arrows( state_obj )
+    update_info( state_obj )
+
+  $( '#previous-button' ).click ->
+    state_obj.index++
+    update_arrows( state_obj )
+    update_info( state_obj )
   return
 
 document.addEventListener 'turbolinks:load', ->
   do ->
-    #$( '#hide-me' ).hide()
+    $( '#hide-me' ).hide()
 
-    # session state is stored in state_obj, and this object is passed in methods that modify the state
-    state_obj = { citations: [ ], history: [ ], index: 0 }
-    get_c_p( state_obj, false )
-    next_citation( state_obj )
-    update_info( state_obj )
-    update_arrows( state_obj )
-
-    $( '#yes-button' ).click ->
-      $( "#label-input[value='yes']" ).prop( 'checked', true )
-      label_action( state_obj, 'yes' ) 
-
-    $( '#maybe-button' ).click ->
-      $( "#label-input[value='maybe']" ).prop( 'checked', true )
-      label_action( state_obj, 'maybe' ) 
-
-    $( '#no-button' ).click ->
-      $( "#label-input[value='no']" ).prop( 'checked', true )
-      label_action( state_obj, 'no' ) 
-
-    $( '#next-button' ).click ->
-      state_obj.index--
-      update_arrows( state_obj )
-      update_info( state_obj )
-
-    $( '#previous-button' ).click ->
-      state_obj.index++
-      update_arrows( state_obj )
-      update_info( state_obj )
-
+    request_json          = { }
+    request_json.type     = 'GET'
+    request_json.url      = $( '#screen-assignment-json-url' ).text()
+    request_json.success  = ( data ) -> ( start_screening( data.citations_projects ) )
+    $.ajax( request_json )
   return # END do ->
 return # END document.addEventListener 'turbolinks:load', ->
 
