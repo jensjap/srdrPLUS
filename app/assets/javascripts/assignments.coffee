@@ -29,6 +29,8 @@ update_info = ( obj ) ->
   $( '#citation-abstract' ).text( current_citation.abstract )
   $( '#citation-pmid' ).text( current_citation.pmid )
   $( '#citation-refman' ).text( current_citation.refman )
+  $( '#journal-name' ).text( current_citation.journal.name )
+  $( '#journal-date' ).text( current_citation.journal.publication_date )
 
   $( '#citation-authors' ).empty()
   for a in current_citation.authors
