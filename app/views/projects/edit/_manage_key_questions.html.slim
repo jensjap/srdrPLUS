@@ -33,3 +33,6 @@ h6 Create Key Question
 = simple_form_for(KeyQuestionsProject.new(project: @project), url: project_key_questions_projects_path(@project),
                                                               html: { 'abide': '', 'live-validate': true }) do |f|
   == render 'key_questions_projects/form', f: f
+
+- if @project.key_questions.present?
+  = link_to 'Build Extraction Form', '#', class: 'button', style: 'float: right'

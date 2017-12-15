@@ -1,4 +1,12 @@
 li = link_to('Projects', projects_path)
+
+- if controller_name.eql?('projects') && action_name.eql?('edit')
+  li
+    a href='#' Actions
+    ul.menu.vertical
+      li = link_to 'Citations', '#panel-citations', title: 'Manage Citations'
+      li = link_to 'Tasks', '#panel-tasks', title: 'Manage Tasks'
+
 li
   a href='#' Menu
   ul.menu.vertical
