@@ -105,9 +105,9 @@ class QuestionsController < ApplicationController
 
     def set_question
       @question = Question.includes(question_rows: [
-                                    { question_row_columns: [
-                                      { question_row_column_field: [:question_row_column_field_type, :question_row_column_field_options] }] }])
-                          .find(params[:id])
+        { question_row_columns: [
+          { question_row_column_field: [:question_row_column_field_type, :question_row_column_field_options] }] }])
+          .find(params[:id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
@@ -122,10 +122,10 @@ class QuestionsController < ApplicationController
       params.require(:question)
         .permit(:name,
                 :description, question_rows_attributes:
-                                [:id, :name, question_row_columns_attributes:
-                                               [:id, :name, question_row_column_field_attributes:
-                                                              [:id, :question_row_column_field_type_id, question_row_column_fields_question_row_column_field_options_attributes:
-                                                                      [:id, :_destroy, :question_row_column_field_option_id, :name]]]])
+                [:id, :name, question_row_columns_attributes:
+                 [:id, :name, question_row_column_field_attributes:
+                  [:id, :question_row_column_field_type_id, question_row_column_fields_question_row_column_field_options_attributes:
+                   [:id, :_destroy, :question_row_column_field_option_id, :name]]]])
     end
 
 #    def ensure_matrix_type
