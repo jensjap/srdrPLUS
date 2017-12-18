@@ -121,7 +121,8 @@ class QuestionsController < ApplicationController
     def question_patch_params
       params.require(:question)
         .permit(:name,
-                :description, question_rows_attributes:
+                :description,
+                key_questions_project_ids: [], question_rows_attributes:
                 [:id, :name, question_row_columns_attributes:
                  [:id, :name, question_row_column_field_attributes:
                   [:id, :question_row_column_field_type_id, question_row_column_fields_question_row_column_field_options_attributes:

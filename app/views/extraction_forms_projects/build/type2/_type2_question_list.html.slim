@@ -13,6 +13,7 @@ h4 #{ efps.section.name.titleize } Question List
         tr
           th Position
           th Dependency
+          th Key Questions
           th Name
           th Description
           th
@@ -57,6 +58,13 @@ h4 #{ efps.section.name.titleize } Question List
 
                     / Text, Numeric, Numeric_Range, Scientific.
                     - else
+
+            td
+              ul#key_questions
+
+                - q.key_questions_projects.each do |kqp|
+
+                  li = kqp.key_question.name
 
             td = q.name
             td style='white-space: pre-wrap;' = q.description
