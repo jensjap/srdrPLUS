@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171129103131) do
+ActiveRecord::Schema.define(version: 20171215102150) do
 
   create_table "action_types", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "name"
@@ -414,6 +414,19 @@ ActiveRecord::Schema.define(version: 20171129103131) do
     t.index ["key_question_id", "project_id", "deleted_at"], name: "index_kqp_on_kq_id_p_id_deleted_at", using: :btree
     t.index ["key_question_id"], name: "index_kqp_on_kq_id", using: :btree
     t.index ["project_id"], name: "index_kqp_on_p_id", using: :btree
+  end
+
+  create_table "key_questions_projects_questions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "key_questions_project_id"
+    t.integer  "question_id"
+    t.datetime "deleted_at"
+    t.boolean  "active"
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+    t.index ["key_questions_project_id", "question_id", "active"], name: "index_kqpq_on_kqp_id_q_id_active_uniq", unique: true, using: :btree
+    t.index ["key_questions_project_id", "question_id", "deleted_at"], name: "index_kqpq_on_kqp_id_q_id_deleted_at_uniq", unique: true, using: :btree
+    t.index ["key_questions_project_id"], name: "index_kqpq_on_kqp_id", using: :btree
+    t.index ["question_id"], name: "index_kqpq_on_q_id", using: :btree
   end
 
   create_table "keywords", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -954,6 +967,8 @@ ActiveRecord::Schema.define(version: 20171129103131) do
   add_foreign_key "key_questions_projects", "extraction_forms_projects_sections"
   add_foreign_key "key_questions_projects", "key_questions"
   add_foreign_key "key_questions_projects", "projects"
+  add_foreign_key "key_questions_projects_questions", "key_questions_projects"
+  add_foreign_key "key_questions_projects_questions", "questions"
   add_foreign_key "keywords", "citations"
   add_foreign_key "labels", "citations_projects"
   add_foreign_key "labels", "users"

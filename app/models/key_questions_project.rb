@@ -11,6 +11,9 @@ class KeyQuestionsProject < ApplicationRecord
   has_many :extractions_key_questions_projects, dependent: :destroy, inverse_of: :key_questions_project
   has_many :extractions, through: :extractions_key_questions_projects, dependent: :destroy
 
+  has_many :key_questions_projects_questions, dependent: :destroy, inverse_of: :key_questions_project
+  has_many :questions, through: :key_questions_projects_questions, dependent: :destroy
+
   delegate :extraction_forms_project, to: :extraction_forms_projects_section
   delegate :extraction_form, to: :extraction_forms_project
 

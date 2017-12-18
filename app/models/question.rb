@@ -17,11 +17,15 @@ class Question < ApplicationRecord
 
   has_many :dependencies, as: :dependable, dependent: :destroy
 
+  has_many :key_questions_projects_questions, dependent: :destroy, inverse_of: :question
+  has_many :key_questions_projects, through: :key_questions_projects_questions, dependent: :destroy
+
   has_many :question_rows, dependent: :destroy, inverse_of: :question
 
   accepts_nested_attributes_for :question_rows
 
   delegate :extraction_forms_project, to: :extraction_forms_projects_section
+  delegate :project,                  to: :extraction_forms_project
   delegate :section,                  to: :extraction_forms_projects_section
 
   validates :ordering, presence: true

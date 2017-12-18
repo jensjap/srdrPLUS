@@ -16,6 +16,7 @@
         | Change name or description
 
     #step-one data-toggler='' data-animate='scale-in-up scale-out-down' style="display: #{ first_time ? 'block' : 'none' };"
+      = f.association :key_questions_projects, collection: @question.project.key_questions_projects, label: 'Select Key Questions addressed', as: :check_boxes, label_method: :kq_name
       = f.input :name, label: 'Question Text', autofocus: true
       = f.input :description, label: 'Description (Optional Instructions for Extractor)', input_html: { rows: 8 }
 

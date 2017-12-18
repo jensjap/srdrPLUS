@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  key_questions_project: one
+  question: one
+  deleted_at: 2017-12-15 18:21:50
+  active: false
+
+two:
+  key_questions_project: two
+  question: two
+  deleted_at: 2017-12-15 18:21:50
+  active: false
