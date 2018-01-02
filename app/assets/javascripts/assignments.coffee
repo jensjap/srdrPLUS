@@ -89,7 +89,7 @@ document.addEventListener 'turbolinks:load', ->
       get_c_p( obj )
 # see trello card
       if obj.index > 0
-        obj.index = 0
+        obj.index--
       else
         next_citation( obj )
       update_info( obj )
