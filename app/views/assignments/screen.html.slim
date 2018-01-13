@@ -1,53 +1,34 @@
-.column.row
-  h2 Let's label stuff
+#end-message
+  h3 NOTHING TO LABEL
 
-.row
-  .column.medium-6
-    dl
-      dt.label.primary Name
-      #citation-name.dd.callout.secondary
-  .column.medium-3
-    dl
-      dt.label.primary Pubmed ID
-      #citation-pmid.dd.callout.secondary
-  .column.medium-3
-    dl
-      dt.label.primary Refman ID
-      #citation-refman.dd.callout.secondary
-.row
-  .column.medium-6
-    dl
-      dt.label.primary Journal Name
-      #journal-name.dd.callout.secondary
-  .column.medium-6
-    dl
-      dt.label.primary Publication Date
-      #journal-date.dd.callout.secondary
-.row
-  .column.medium-12
-    dl
-      dt.label.primary Abstract
-      #citation-abstract.dd.callout.secondary
-.row
-  .column.medium-6
-    dl
-      dt.label.primary Authors
-      #citation-authors.ul.dd.callout.secondary
-  .column.medium-6
-    dl
-      dt.label.primary Keywords
-      #citation-keywords.ul.dd.callout.secondary
+#citation-row.row
+  .medium-12.medium-centered
+    #citation-column.column.medium-8
+      dl
+        dt Abstract
+        .dd.callout.secondary
+          h5 
+            #citation-name
+          h6
+            #journal-name
+          h6
+            #journal-date
+          #citation-abstract
 
-#hide-me
-  // look at 'gone' gem and embedding ruby into js
-  #screen-assignment-json-url
-    | #{ screen_assignment_url(@assignment.id) + '.json' }
-  #labels-url
-    | #{ labels_url }
-  #authenticity-token
-    | #{ form_authenticity_token }
+    .column.medium-2
+      dl 
+        dt Pubmed ID
+        #citation-pmid.callout.dd
+        dt.primary Authors
+        #citation-authors.ul.dd.callout
+    .column.medium-2
+      dl 
+        dt Refman ID
+        #citation-refman.dd.callout
+        dt Keywords
+        #citation-keywords.ul.dd.callout
 
-.column.row.button-group
+#labeling-group.row.button-group
   .button id='yes-button'
    | Yes
   .button id='maybe-button'
@@ -55,8 +36,19 @@
   .button id='no-button'
    | No
 
-.column.row.button-group
+#arrow-group.row.button-group
   .button id='previous-button'
    | ◄
   .button id='next-button'
    | ►
+
+#breadcrumb-group.row.button-group
+
+#hide-me
+  #screen-assignment-json-url
+    | #{ screen_assignment_url(@assignment.id) + '.json' }
+  #labels-url
+    | #{ labels_url }
+  #authenticity-token
+    | #{ form_authenticity_token }
+
