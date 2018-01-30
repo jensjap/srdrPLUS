@@ -5,7 +5,7 @@ a.accordion-title href='#'
       = project.name
     .column.medium-4
       / This dynamically switches between created_at and updated_at.
-      small = "#{ @order.slice(0, 7) } " + time_ago_in_words(project.send(@order.underscore).in_time_zone(current_user.profile.time_zone)) + " ago"
+      small = "#{ @order.split('-').first } " + t('time_prefix') + time_ago_in_words(project.send(@order.underscore).in_time_zone(current_user.profile.time_zone)) + t('ago')
 
 .accordion-content data-tab-content=''
 

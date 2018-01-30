@@ -1,0 +1,90 @@
+de:
+  updated: Actualisiert vor
+  ago: ''
+  time_prefix: 'vor '
+  greet: 'Guten Tag'
+  blank: 'Kann nicht leer sein'
+  confirm: 'Sind Sie sicher?'
+  extraction_forms_projects:
+    form:
+      save: 'Extraktionsformular speichern'
+  failure: 'Konnte keine Ressource erstellen'
+  key_questions_projects:
+    form:
+      save: 'Schüsselfrage speichern'
+  removed: 'Erfolgreich entfernt'
+  requires_one: 'Sie müssen mindestens eine dieser Ressourcen haben'
+  save: 'Speichern'
+  save_changes: 'Änderungen speichern'
+  success: 'Erfolg!'
+  users:
+    registrations:
+      edit:
+        cancel_account:
+          plead: 'Bist du sicher, dass du es auf diese Weise beenden willst?'
+  profiles:
+    show:
+      edit: 'Profil bearbeiten'
+  projects:
+    edit:
+      manage_information:
+        legend: 'Projekt Information'
+      manage_key_questions:
+        object_name: 'Schlüsselfrage'
+        legend: 'Schlüsselfrage information'
+      manage_extraction_forms:
+        object_name: 'Extraktionsform'
+        legend: 'Extraktionsformular information'
+      extraction_forms_project_fields:
+        object_name: 'Extraktionsform'
+      key_questions_project_fields:
+        remove: 'Löschen'
+        confirm: 'Möchten Sie diese wichtigen Fragen wirklich entfernen?'
+    index:
+      create: 'Projekt erstellen'
+  errors:
+    messages:
+      taken: 'Es tut uns leid, aber der Wert, den Sie verwenden möchten, ist nur einmal zulässig und wurde bereits verwendet'
+  datetime:
+    distance_in_words:
+      about_x_hours:
+        one: etwa eine Stunde
+        other: etwa %{count} Stunden
+      about_x_months:
+        one: etwa ein Monat
+        other: etwa %{count} Monate
+      about_x_years:
+        one: etwa ein Jahr
+        other: etwa %{count} Jahre
+      almost_x_years:
+        one: fast ein Jahr
+        other: fast %{count} Jahre
+      half_a_minute: eine halbe Minute
+      less_than_x_minutes:
+        one: weniger als eine Minute
+        other: weniger als %{count} Minuten
+      less_than_x_seconds:
+        one: weniger als eine Sekunde
+        other: weniger als %{count} Sekunden
+      over_x_years:
+        one: mehr als ein Jahr
+        other: mehr als %{count} Jahre
+      x_days:
+        one: ein Tag
+        other: "%{count} Tage"
+      x_minutes:
+        one: eine Minute
+        other: "%{count} Minuten"
+      x_months:
+        one: ein Monat
+        other: "%{count} Monate"
+      x_seconds:
+        one: eine Sekunde
+        other: "%{count} Sekunden"
+    prompts:
+      day: Tag
+      hour: Stunden
+      minute: Minute
+      month: Monat
+      second: Sekunde
+      year: Jahr

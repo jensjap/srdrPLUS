@@ -20,6 +20,10 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
+  time_prefix: ''
+  updated: Updated
+  ago: ' ago'
+  greet: 'Greetings'
   blank: 'Cannot be blank'
   confirm: 'Are you sure?'
   extraction_forms_projects:

@@ -104,15 +104,15 @@
     .callout
       h4 Statistics
       pre System Wide
-        Number of projects: 1204
-        Number of project contributors: 4233
-        Number of public commentators: 1200
-        Number of published projects: 392
-        Number of articles: 23840
+        Number of projects: #{ Project.count }
+        Number of project contributors: #{ User.count }
+        Number of public commentators: 50
+        Number of published projects: 15
+        Number of articles: 1000
       br
       pre Project Level
-        Average number of articles per project: 63
-        Average number of extractions per project: 182
+        Average number of articles per project: 50
+        Average number of extractions per project: 30
         Average number of collaborators per project: 8
         Average number of key questions per project: 2
         Average duration of a project: 3 months, 28 days

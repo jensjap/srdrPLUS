@@ -8,7 +8,7 @@ li = link_to('Projects', projects_path)
       li = link_to 'Tasks', '#panel-tasks', title: 'Manage Tasks'
 
 li
-  a href='#' Menu
+  a href='#' = current_user.profile.last_name.present? ? t('greet') + ', ' + current_user.profile.last_name : 'Menu'
   ul.menu.vertical
     li.title User
     li = link_to('Settings', edit_user_registration_path)
