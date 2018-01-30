@@ -9,10 +9,10 @@
 
     thead
       tr
-        th Key Question Text
-        th Assigned
-        th Date Created
-        th Date Updated
+        th = t('key_question_text')
+        th = t('assigned')
+        th = t('date_created')
+        th = t('date_updated')
 
     tbody
       - @project.key_questions_projects.each do |kqp|
@@ -23,12 +23,12 @@
               i.fi-check style='color: green;'
           td = kqp.created_at.in_time_zone(current_user.profile.time_zone).strftime('%b %-d, %Y - %l:%M %P')
           td = kqp.updated_at.in_time_zone(current_user.profile.time_zone).strftime('%b %-d, %Y - %l:%M %P')
-          td = link_to 'Rename', edit_key_questions_project_path(kqp)
-          td = link_to 'Remove', kqp, method: :delete, data: { confirm: t('confirm') }
+          td = link_to t('rename'), edit_key_questions_project_path(kqp)
+          td = link_to t('remove'), kqp, method: :delete, data: { confirm: t('confirm') }
 
 hr
 
-h6 Create Key Question
+h6 = t('create_key_question')
 
 = simple_form_for(KeyQuestionsProject.new(project: @project), url: project_key_questions_projects_path(@project),
                                                               html: { 'abide': '', 'live-validate': true }) do |f|

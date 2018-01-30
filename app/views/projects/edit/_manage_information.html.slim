@@ -7,14 +7,14 @@
       '  Please correct the errors below.
 
   .form-inputs
-    = f.input :name, required: true, hint: 'Name can\'t be blank'
-    = f.input :description, label: 'Topic Description', input_html: { rows: 8 }
-    = f.input :attribution, input_html: { rows: 4 }
-    = f.input :methodology_description, input_html: { rows: 4 }
-    = f.input :prospero, label: 'Prospero Registration ID'
-    = f.input :doi, label: 'Document Object ID'
-    = f.input :notes, input_html: { rows: 8 }
-    = f.input :funding_source
+    = f.input :name, label: t('name'), required: true, hint: 'Name can\'t be blank'
+    = f.input :description, label: t('topic_description'), input_html: { rows: 8 }
+    = f.input :attribution, label: t('attribution'), input_html: { rows: 4 }
+    = f.input :methodology_description, label: t('methodology_description'), input_html: { rows: 4 }
+    = f.input :prospero, label: t('prospero_id')
+    = f.input :doi, label: t('doi')
+    = f.input :notes, label: t('notes'), input_html: { rows: 8 }
+    = f.input :funding_source, label: t('funding_source')
 
   .form-actions
-    = f.button :submit, 'Save changes'
+    = f.button :submit, t('save_changes')

@@ -1,20 +1,20 @@
 ul#project-tabs.tabs data-deep-link='true' data-deep-link-smudge='true' data-deep-link-smudge-delay='600' data-update-history='true' data-tabs=''
 
   li.tabs-title.is-active
-    = link_to 'Project Information', '#panel-information', title: 'Project Information Details'
+    = link_to t('project_information'), '#panel-information', title: 'Project Information Details'
 
   li.tabs-title
-    = link_to 'Key Question(s)', '#panel-key-question', title: 'Manage Key Question(s)'
+    = link_to t('key_questions'), '#panel-key-question', title: 'Manage Key Question(s)'
 
-/  - if @project.key_questions_projects.blank?
-/    li.tabs-title
-/      = link_to 'Extraction Form(s)', '#panel-extraction-form', title: 'Create Key Questions first', disabled: true, class: 'disabled'
-/  - else
-/    li.tabs-title
-/      = link_to 'Extraction Form(s)', '#panel-extraction-form', title: 'Manage Extraction Form(s)'
-/
-/  li.tabs-title
-/    = link_to 'Citations', '#panel-citations', title: 'Manage Citations'
-/
-/  li.tabs-title
-/    = link_to 'Tasks', '#panel-tasks', title: 'Manage Tasks'
+  - if @project.key_questions_projects.blank?
+    li.tabs-title
+      = link_to t('extraction_forms'), '#panel-extraction-form', title: 'Create Key Questions first', disabled: true, class: 'disabled'
+  - else
+    li.tabs-title
+      = link_to t('extraction_forms'), '#panel-extraction-form', title: 'Manage Extraction Form(s)'
+
+  li.tabs-title
+    = link_to t('citations'), '#panel-citations', title: 'Manage Citations'
+
+  li.tabs-title
+    = link_to t('tasks'), '#panel-tasks', title: 'Manage Tasks'

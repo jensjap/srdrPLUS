@@ -20,49 +20,79 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
+  create_extraction_form: Create Extraction Form
+  build: Build
+  key_question_assignment: Key Question Assignment
+  extraction_form_title: Extraction Form Title
+  destroy: Delete
+  edit: Edit
+  work: Work
+  show: Show
+  back: Back
+  question_text: Question Text
+  key_question_text: Key Question Text
+  assigned: Assigned
+  date_created: Date Created
+  date_updated: Date Updated
+  rename: Rename
+  remove: Remove
+  create_key_question: Create Key Question
+  name: Name
+  topic_description: Topic Description
+  attribution: Attribution
+  methodology_description: Methodology Description
+  prospero_id: Prospero Registration ID
+  doi: Document Object ID
+  notes: Notes
+  funding_source: Funding Source
+  project_information: Project Information
+  key_questions: Key Question(s)
+  extraction_forms: Extraction Form(s)
+  citations: Citation(s)
+  tasks: Task(s)
   time_prefix: ''
   updated: Updated
   ago: ' ago'
-  greet: 'Greetings'
-  blank: 'Cannot be blank'
-  confirm: 'Are you sure?'
+  greet: Greetings
+  blank: Cannot be blank
+  confirm: Are you sure?
   extraction_forms_projects:
     form:
-      save: 'Save Extraction Form'
-  failure: 'Could not create resource'
+      save: Save Extraction Form
+  failure: Could not create resource
   key_questions_projects:
     form:
-      save: 'Save Key Question'
-  removed: 'Successfully removed'
-  requires_one: 'You must have at least one of this resource'
-  save: 'Save'
-  save_changes: 'Save changes'
-  success: 'Success!'
+      save: Save Key Question
+  removed: Successfully removed
+  requires_one: You must have at least one of this resource
+  save: Save
+  save_changes: Save changes
+  success: Success!
   users:
     registrations:
       edit:
         cancel_account:
-          plead: 'Are you sure you want to end it this way?'
+          plead: Are you sure you want to end it this way?
   profiles:
     show:
-      edit: 'Edit Profile'
+      edit: Edit Profile
   projects:
     edit:
       manage_information:
-        legend: 'Project Information'
+        legend: Project Information
       manage_key_questions:
-        object_name: 'Key Question'
-        legend: 'Key Question Information'
+        object_name: Key Question
+        legend: Key Question Information
       manage_extraction_forms:
-        object_name: 'Extraction Form'
-        legend: 'Extraction Form Information'
+        object_name: Extraction Form
+        legend: Extraction Form Information
       extraction_forms_project_fields:
-        object_name: 'Extraction Form'
+        object_name: Extraction Form
       key_questions_project_fields:
-        remove: 'Remove'
-        confirm: 'Are you sure you want to remove this key questions?'
+        remove: Remove
+        confirm: Are you sure you want to remove this key questions?
     index:
-      create: 'Create Project'
+      create: Create Project
   errors:
     messages:
-      taken: 'We are sorry, but the value you are attempting to use is allowed only once and has already been used'
+      taken: We are sorry, but the value you are attempting to use is allowed only once and has already been used

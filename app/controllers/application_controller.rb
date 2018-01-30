@@ -8,6 +8,7 @@ class ApplicationController < ActionController::Base
 
   around_action :set_time_zone, if: :current_user
 
+  before_action :set_locale
   before_action :authenticate_user!
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :set_current_user
@@ -28,6 +29,10 @@ class ApplicationController < ActionController::Base
   end
 
   protected
+
+    def set_locale
+        I18n.locale = params[:locale] || I18n.default_locale
+    end
 
     def configure_permitted_parameters
       added_attrs = [:username, :email, :password, :password_confirmation, :remember_me]

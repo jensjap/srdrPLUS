@@ -16,10 +16,10 @@
 
       thead
         tr
-          th Extraction Form Title
-          th Key Question Assignment
-          th Date Created
-          th Date Updated
+          th = t('extraction_form_title')
+          th = t('key_question_assignment')
+          th = t('date_created')
+          th = t('date_updated')
 
       tbody
         - @project.extraction_forms_projects.each do |efp|
@@ -28,14 +28,14 @@
             td = list_of_key_questions(efp)
             td = efp.created_at.in_time_zone(current_user.profile.time_zone).strftime('%b %-d, %Y - %l:%M %P')
             td = efp.updated_at.in_time_zone(current_user.profile.time_zone).strftime('%b %-d, %Y - %l:%M %P')
-            td = link_to 'Build', build_extraction_forms_project_path(efp,
+            td = link_to t('build'), build_extraction_forms_project_path(efp,
                    anchor: efp.extraction_forms_projects_sections.present? ? "panel-tab-#{ efp.extraction_forms_projects_sections.first.id }" : '')
-            td = link_to 'Rename', edit_extraction_forms_project_path(efp)
-            td = link_to 'Remove', efp, method: :delete, data: { confirm: t('confirm') }
+            td = link_to t('rename'), edit_extraction_forms_project_path(efp)
+            td = link_to t('remove'), efp, method: :delete, data: { confirm: t('confirm') }
 
   hr
 
-  h6 Create Extraction Form
+  h6 = t('create_extraction_form')
 
   = simple_form_for(ExtractionFormsProject.new(project: @project), url: project_extraction_forms_projects_path(@project),
                                                                    html: { 'abide': '', 'live-validate': true }) do |f|

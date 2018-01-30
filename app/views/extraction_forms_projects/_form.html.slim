@@ -8,7 +8,7 @@
 .form-inputs
   = f.simple_fields_for(:extraction_form, f.object.extraction_form || f.object.build_extraction_form) do |kq_f|
 
-    = kq_f.input :name, label: 'Extraction Form Name', required: true, hint: 'Name can\'t be blank'
+    = kq_f.input :name, label: t('extraction_form_title'), required: true, hint: 'Name can\'t be blank'
 
 .form-actions
   = f.button :submit, t('.save')
