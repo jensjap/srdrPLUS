@@ -41,5 +41,8 @@
         - @profile.degrees.map { |degree| degree.name }.each do |name|
           span.label.secondary style='margin-right: 3px; padding-top: 2px; padding-bottom: 2px;' #{ name }
   .column.medium-4
+    dl
+      dt.label.primary Mode
+      dd.callout.secondary = @profile.advanced_mode ? 'Advanced' : 'Basic'
   .column.medium-4
 

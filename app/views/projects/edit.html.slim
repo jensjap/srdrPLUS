@@ -1,5 +1,5 @@
 .column.row
-  h2 Project Name: #{ @project.name }
+  h2 = t('project_name') + ': ' + @project.name
 
 .column.row
   == render 'form'

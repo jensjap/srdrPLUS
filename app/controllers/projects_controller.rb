@@ -14,7 +14,7 @@ class ProjectsController < ApplicationController
     flash.now[:info] = msg if msg
     @query = params[:q]
     @order = params[:o] || 'updated-at'
-    @projects = Project.includes(:extraction_forms)
+    @projects = current_user.projects.includes(:extraction_forms)
                        .includes(:key_questions)
                        .includes(publishings: [{ user: :profile }, approval: [{ user: :profile }]])
                        .by_query(@query).order(SORT[@order]).page(params[:page])
@@ -43,7 +43,8 @@ class ProjectsController < ApplicationController
 
     respond_to do |format|
       if @project.save
-        format.html { redirect_to edit_project_path(@project), notice: t('success') }
+        format.html { redirect_to edit_project_path(@project),
+                      notice: t('success') + " #{ make_undo_link }" }
         format.json { render :show, status: :created, location: @project }
       else
         format.html { render :new }
@@ -58,7 +59,7 @@ class ProjectsController < ApplicationController
     respond_to do |format|
       if @project.update(project_params)
         format.html { redirect_to edit_project_path(@project, anchor: 'panel-information'),
-                      notice: t('success') }
+                      notice: t('success') + " #{ make_undo_link }" }
         format.json { render :show, status: :ok, location: @project }
       else
         format.html { render :edit }
@@ -72,7 +73,8 @@ class ProjectsController < ApplicationController
   def destroy
     @project.destroy
     respond_to do |format|
-      format.html { redirect_to projects_url, notice: t('removed') }
+      format.html { redirect_to projects_url,
+                    notice: t('removed') + " #{ make_undo_link }" }
       format.json { head :no_content }
     end
   end
@@ -86,6 +88,27 @@ class ProjectsController < ApplicationController
                        .includes(:key_questions)
                        .by_name_description_and_query(@query).order(SORT[@order]).page(params[:page])
     render 'index'
+  end
+
+  def undo
+    @project_version = PaperTrail::Version.find_by_id(params[:id])
+    begin
+      if @project_version.reify
+        @project_version.reify.save
+      else
+        # For undoing the create action
+        @project_version.item.destroy
+      end
+      flash[:success] = "Undid that! #{ make_redo_link }"
+    rescue
+      flash[:alert] = "Failed undoing the action..."
+    ensure
+      if Project.where(id: @project_version.item.id).present?
+        redirect_to edit_project_path(@project_version.item, anchor: 'panel-information')
+      else
+        redirect_to projects_path
+      end
+    end
   end
 
   private
@@ -107,5 +130,14 @@ class ProjectsController < ApplicationController
                 { citations_attributes: [:id, :name, :_destroy] },
                 citations_projects_attributes: [:id, :_destroy, :citation_id, :project_id, 
                                                 citation_attributes: [:id, :_destroy, :name]])
+    end
+
+    def make_undo_link
+      view_context.link_to '<u><strong>Undo that please!</strong></u>'.html_safe, undo_path(@project.versions.last), method: :post
+    end
+
+    def make_redo_link
+      params[:redo] == 'true' ? link = '<u><strong>Undo that please!</strong></u>'.html_safe : link = '<u><strong>Redo that please!</strong></u>'.html_safe
+      view_context.link_to link, undo_path(@project_version.next, redo: !params[:redo]), method: :post
     end
 end

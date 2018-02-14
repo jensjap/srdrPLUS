@@ -27,6 +27,7 @@ Rails.application.routes.draw do
   resources :extractions_extraction_forms_projects_sections_type1s, only: [] do
     get 'get_results_subgroups', on: :member
   end
+  post '/projects/:id/undo', to: 'projects#undo', as: :undo
   resources :projects, concerns: :paginatable, shallow: true do
     resources :extractions do
       get 'work', on: :member

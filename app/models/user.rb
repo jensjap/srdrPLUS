@@ -4,7 +4,7 @@ class User < ApplicationRecord
       :last_sign_in_at, :current_sign_in_ip, :last_sign_in_ip]
 
 
-  after_create { create_profile }
+  after_create { create_profile(username: '') }
 
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
@@ -38,8 +38,8 @@ class User < ApplicationRecord
   has_many :taggings, dependent: :destroy, inverse_of: :user
   has_many :tags, through: :taggings, dependent: :destroy
 
-  def titleize_username
-    profile.username.titleize
+  def handle
+    profile.username || email
   end
 
   def self.current

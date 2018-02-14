@@ -35,7 +35,9 @@ toastr.options = {
   'hideMethod': 'slideUp',
   'closeMethod': 'slideUp',
   'positionClass': 'toast-bottom-right',
-  'closeDuration': 200
+  'closeDuration': 400,
+  'timeOut': 10000,
+  'extendedTimeOut': 10000,
 };
 
 document.addEventListener( 'turbolinks:load', function() {

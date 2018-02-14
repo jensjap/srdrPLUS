@@ -581,6 +581,7 @@ ActiveRecord::Schema.define(version: 20171215102150) do
     t.string   "first_name"
     t.string   "middle_name"
     t.string   "last_name"
+    t.boolean  "advanced_mode",   default: false
     t.datetime "deleted_at"
     t.datetime "created_at",                      null: false
     t.datetime "updated_at",                      null: false

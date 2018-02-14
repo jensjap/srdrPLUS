@@ -8,6 +8,7 @@ class CreateProfiles < ActiveRecord::Migration[5.0]
       t.string :first_name
       t.string :middle_name
       t.string :last_name
+      t.boolean :advanced_mode, default: false
       t.datetime :deleted_at
 
       t.timestamps

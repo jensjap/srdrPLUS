@@ -1,7 +1,7 @@
 .row
   h2
     Extraction Form Builder: #{ @extraction_forms_project.extraction_form.name }
-    = link_to 'go to extractions', project_extractions_path(@extraction_forms_project.project), { style: 'float: right; font-size: 0.4em;' }
+    = link_to 'go to extractions ->', project_extractions_path(@extraction_forms_project.project), { style: 'float: right; font-size: 0.4em;' }
 
   .column.medium-3
     == render 'extraction_forms_projects/build/tab_links'
@@ -10,4 +10,4 @@
     == render 'extraction_forms_projects/build/tab_content'
 
 .column.row
-  = link_to 'Back', edit_project_path(@extraction_forms_project.project, anchor: 'panel-extraction-form')
+  = link_to t('back'), edit_project_path(@extraction_forms_project.project, anchor: 'panel-extraction-form')

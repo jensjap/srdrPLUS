@@ -7,7 +7,7 @@
       = t_f.association :task_type
       = t_f.input :num_assigned
       = t_f.simple_fields_for :assignments do |a_f|
-        = a_f.association :user, label_method: :titleize_username
+        = a_f.association :user, label_method: :handle
       = link_to_add_association 'add assignment', t_f, :assignments, partial: 'projects/edit/assignment_fields', data: { 'association-insertion-method' => 'after' }
 
   .row.column

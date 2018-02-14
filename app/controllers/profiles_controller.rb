@@ -36,7 +36,7 @@ class ProfilesController < ApplicationController
     params.require(:profile)
       .permit(:username, :time_zone,
               :first_name, :middle_name, :last_name,
-              :organization_id,
+              :organization_id, :advanced_mode,
               degree_ids: [])
   end
 end
