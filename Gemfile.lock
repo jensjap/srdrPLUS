@@ -87,6 +87,8 @@ GEM
   specs:
     addressable (2.5.1)
       public_suffix (~> 2.0, >= 2.0.2)
+    apipie-rails (0.5.6)
+      rails (>= 4.1)
     arel (7.1.4)
     babel-source (5.8.35)
     babel-transpiler (0.7.0)
@@ -352,6 +354,7 @@ PLATFORMS
   x86_64-darwin-16
 
 DEPENDENCIES
+  apipie-rails
   bcrypt (~> 3.1.7)
   byebug
   cocoon
@@ -396,4 +399,4 @@ DEPENDENCIES
   web-console!
 
 BUNDLED WITH
-   1.16.0.pre.3
+   1.16.0

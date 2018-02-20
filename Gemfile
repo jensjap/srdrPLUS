@@ -108,3 +108,6 @@ gem 'react-rails'
 
 # Helps with logins.
 gem 'doorkeeper'
+
+# Api documentation.
+gem 'apipie-rails'
