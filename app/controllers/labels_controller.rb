@@ -13,6 +13,7 @@ class LabelsController < ApplicationController
         format.json { render :show, status: :created, location: @label }
       else
         format.json { render json: @label.errors, status: :unprocessable_entity }
+      end
     end
   end
 
@@ -37,12 +38,13 @@ class LabelsController < ApplicationController
   end
 
   private
-  def set_label
-    @label = Label.find(params[:id])
-  end
 
-  def label_params
-    params.require(:label)
-          .permit(:name, :citations_project_id, :value, :user_id)
-  end
+    def set_label
+      @label = Label.find(params[:id])
+    end
+
+    def label_params
+      params.require(:label)
+            .permit(:name, :citations_project_id, :value, :user_id)
+    end
 end
