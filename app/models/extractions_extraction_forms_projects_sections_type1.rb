@@ -25,6 +25,8 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
 
   delegate :extraction, to: :extractions_extraction_forms_projects_section
 
+  has_many :comparable_elements, as: :comparable
+
   validates :type1_id, uniqueness: { scope: :extractions_extraction_forms_projects_section_id }
 
   def type1_name_and_description

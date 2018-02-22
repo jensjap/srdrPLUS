@@ -1,0 +1,30 @@
+- provide(:title, 'Results')
+
+h4 Outcome: #{ @result_statistic_section.subgroup.extractions_extraction_forms_projects_sections_type1_row.extractions_extraction_forms_projects_sections_type1.type1.name }
+  Description: #{ @result_statistic_section.subgroup.extractions_extraction_forms_projects_sections_type1_row.extractions_extraction_forms_projects_sections_type1.type1.description }
+h4 Subgroup: #{ @result_statistic_section.subgroup.name }
+  Description: #{ @result_statistic_section.subgroup.description }
+br
+h3 #{ @result_statistic_section.result_statistic_section_type.name }
+
+table
+  thead
+    tr
+      th Timepoint
+
+      - arms = ExtractionsExtractionFormsProjectsSectionsType1.by_section_name_and_extraction_id_and_extraction_forms_project_id('Arms',
+        @result_statistic_section.subgroup.extractions_extraction_forms_projects_sections_type1_row.extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_section.extraction.id,
+        @result_statistic_section.subgroup.extractions_extraction_forms_projects_sections_type1_row.extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_section.extraction_forms_projects_section.extraction_forms_project.id,
+        ).each do |arm|
+        th #{ arm.type1.name }
+
+  tbody
+    - @result_statistic_section.subgroup.extractions_extraction_forms_projects_sections_type1_row.extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_sections_type1_rows.each do |tp|
+      tr
+        td = tp.name + (tp.unit.present? ? " (#{ tp.unit })" : '')
+        - arms.each do |a|
+          td
+            ul
+              - @result_statistic_section.measures.each do |m|
+                = label_tag m.name
+                = text_field_tag 'name'

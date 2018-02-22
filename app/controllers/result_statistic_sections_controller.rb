@@ -31,6 +31,6 @@ class ResultStatisticSectionsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def result_statistic_section_params
-      params.require(:result_statistic_section).permit()
+      params.require(:result_statistic_section).permit( comparison_attributes: [ :id, :_destroy, :deleted_at, comparate_attributes: [ :id, :_destroy, :comparable ] ] )
     end
 end
