@@ -9,24 +9,28 @@
         .dd.callout.secondary
           h5 
             #citation-name
-          h6
+          /h6
             #journal-name
-          h6
+          /h6
             #journal-date
           #citation-abstract
+          br Keywords: 
+          #citation-keywords
 
-    .column.medium-2
-      dl 
-        dt Pubmed ID
-        #citation-pmid.callout.dd
-        dt.primary Authors
-        #citation-authors.ul.dd.callout
-    .column.medium-2
-      dl 
-        dt Refman ID
-        #citation-refman.dd.callout
-        dt Keywords
-        #citation-keywords.ul.dd.callout
+    .column.medium-4
+      .row 
+        .column.medium-6
+          dl 
+            dt Pubmed ID
+            #citation-pmid.callout.dd
+        .column.medium-6
+          dl 
+            dt Refman ID
+            #citation-refman.dd.callout
+      .row.column.medium-12
+        dl
+          dt.primary Authors
+          #citation-authors.ul.dd.callout
 
 #labeling-group.row.button-group
   .button id='yes-button'
