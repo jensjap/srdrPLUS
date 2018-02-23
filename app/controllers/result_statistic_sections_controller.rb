@@ -3,6 +3,10 @@ class ResultStatisticSectionsController < ApplicationController
 
   # GET /result_statistic_sections/1/edit
   def edit
+    @arms = ExtractionsExtractionFormsProjectsSectionsType1.by_section_name_and_extraction_id_and_extraction_forms_project_id('Arms',
+    @result_statistic_section.subgroup.extractions_extraction_forms_projects_sections_type1_row.extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_section.extraction.id,
+    @result_statistic_section.subgroup.extractions_extraction_forms_projects_sections_type1_row.extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_section.extraction_forms_projects_section.extraction_forms_project.id,
+    )
   end
 
   # PATCH/PUT /result_statistic_sections/1
@@ -31,6 +35,6 @@ class ResultStatisticSectionsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def result_statistic_section_params
-      params.require(:result_statistic_section).permit( comparison_attributes: [ :id, :_destroy, :deleted_at, comparate_attributes: [ :id, :_destroy, :comparable ] ] )
+      params.require(:result_statistic_section).permit( comparison_attributes: [ :id, :_destroy, :deleted_at, :result_statistic_section, comparate_group_attributes: [ :id, :_destroy, :comparable, comparate_attributes: [ :id, :_destroy, comparable_element_attributes: [ :id, :_destroy, :comparable ] ] ] ] )
     end
 end

@@ -1,2 +1,4 @@
 .nested_fields
+ = f.simple_fields_for Comparate.new do |c|
+  = render 'comparate_fields', f: c
  = link_to_add_association 'add comparate', f, :comparates

@@ -10,8 +10,9 @@ class ResultStatisticSection < ApplicationRecord
   has_many :result_statistic_sections_measures, dependent: :destroy, inverse_of: :result_statistic_section
   has_many :measures, through: :result_statistic_sections_measures, dependent: :destroy
   has_many :comparisons, dependent: :destroy
-  has_many :comparates, through: :comparisons, dependent: :destroy
-  has_many :extractions_extraction_forms_projects_sections_type1s, through: :comparates, :source => :comparable, :source_type => 'ExtractionsExtractionFormsProjectsSectionsType1'
+  has_many :comparate_groups, through: :comparisons, dependent: :destroy
+  has_many :comparates, through: :comparate_groups, dependent: :destroy
+  has_many :comparable_elements, through: :comparates, :source => :comparable, :source_type => 'ExtractionsExtractionFormsProjectsSectionsType1'
 
   accepts_nested_attributes_for :comparisons, allow_destroy: true
   accepts_nested_attributes_for :comparates, allow_destroy: true

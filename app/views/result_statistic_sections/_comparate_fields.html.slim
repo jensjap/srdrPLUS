@@ -1,2 +1,2 @@
 .nested_fields
-  = f.association :comparable_element
+  = f.association :comparable_element, collection: @arms, label_method: lambda { |arm| "#{arm.type1.name}" }

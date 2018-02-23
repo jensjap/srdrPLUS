@@ -1,2 +1,4 @@
 .nested_fields
+ = f.simple_fields_for ComparateGroup.new do |c_g|
+  = render 'comparate_group_fields', f: c_g
  = link_to_add_association 'add comparate group', f, :comparate_groups
