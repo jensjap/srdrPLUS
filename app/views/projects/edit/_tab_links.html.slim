@@ -6,15 +6,15 @@ ul#project-tabs.tabs data-deep-link='true' data-deep-link-smudge='true' data-dee
   li.tabs-title
     = link_to t('key_questions'), '#panel-key-question', title: 'Manage Key Question(s)'
 
-  - if @project.key_questions_projects.blank?
-    li.tabs-title
-      = link_to t('extraction_forms'), '#panel-extraction-form', title: 'Create Key Questions first', disabled: true, class: 'disabled'
-  - else
-    li.tabs-title
-      = link_to t('extraction_forms'), '#panel-extraction-form', title: 'Manage Extraction Form(s)'
-
   li.tabs-title
     = link_to t('citations'), '#panel-citations', title: 'Manage Citations'
 
   li.tabs-title
     = link_to t('tasks'), '#panel-tasks', title: 'Manage Tasks'
+
+/  - if @project.key_questions_projects.blank?
+    li.tabs-title
+      = link_to t('extraction_forms'), '#panel-extraction-form', title: 'Create Key Questions first', disabled: true, class: 'disabled'
+  - else
+    li.tabs-title
+      = link_to t('extraction_forms'), '#panel-extraction-form', title: 'Manage Extraction Form(s)'

@@ -393,14 +393,12 @@ module SeedDataExtended
           { name: 'Type 1' },
           { name: 'Type 2' },
           { name: 'Results' },
-          { name: 'Key Questions' }
         ]
       )
 
       # Sections.
       Section.create(
         [
-          { name: 'Key Questions', default: true },
           { name: 'Design Details', default: true },
           { name: 'Arms', default: true },
           { name: 'Arm Details', default: true },
@@ -414,13 +412,11 @@ module SeedDataExtended
 
       # Extraction Forms.
       @ef1 = ExtractionForm.create(name: 'ef1')
-      @ef2 = ExtractionForm.create(name: 'ef2')
 
       # Associate KQ's and EF's with first project.
       @project = Project.order(updated_at: :desc).first
       @project.key_questions << [@kq1, @kq2]
       @project.extraction_forms_projects.create!(extraction_form: @ef1, extraction_forms_project_type: @efs_project_type1)
-      @project.extraction_forms_projects.create!(extraction_form: @ef2, extraction_forms_project_type: @efs_project_type1)
 
       # Seed QuestionRowColumnFieldType.
       QuestionRowColumnFieldType.create(

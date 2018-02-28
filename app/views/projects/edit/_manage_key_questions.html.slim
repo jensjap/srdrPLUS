@@ -35,4 +35,4 @@ h6 = t('create_key_question')
   == render 'key_questions_projects/form', f: f
 
 - if @project.key_questions.present?
-  = link_to 'Build Extraction Form', '#', class: 'button', style: 'float: right'
+  = link_to 'Build Extraction Form', build_extraction_forms_project_path(@project.extraction_forms_projects.first.id), class: 'button', style: 'float: right'
