@@ -1,7 +1,6 @@
 ul#vertical-tabs.tabs.vertical data-deep-link='true' data-deep-link-smudge='true' data-deep-link-smudge-delay='600' data-update-history='true' data-tabs=''
 
   - @extraction_forms_projects_sections.each do |efps|
-
     li.tabs-title
       - section = efps.section.name
       = link_to section, "#panel-tab-#{ efps.id.to_s }", title: section

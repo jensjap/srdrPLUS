@@ -28,6 +28,10 @@ document.addEventListener 'turbolinks:load', ->
         # Close the modal.
         $( this ).closest('.reveal').foundation( 'close' )
 
+    tabs = $( '#vertical-tabs' ).foundation()
+    firstTab = tabs.children( 'li' ).first()
+    tabs.foundation( '_openTab', firstTab )
+
     return  # END do ->
 
   return  # END document.addEventListener 'turbolinks:load', ->
