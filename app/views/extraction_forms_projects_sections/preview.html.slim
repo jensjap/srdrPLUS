@@ -2,14 +2,25 @@
 
   h1 Preview
 
+  /= select_tag(:key_question_id, options_for_select(@extraction_forms_projects_section.key_questions_projects_array))
+  .key-question-selector
+    h3 Select Key Question
+    - @extraction_forms_projects_section.key_questions_projects_array.each do |kqp|
+      = check_box_tag kqp[1]
+      = label_tag kqp[1], kqp[0]
+
   - @extraction_forms_projects_section.questions.each_with_index do |q, idx|
 
     / Questions that have prerequisites get classes of the form 'prereq-<type>-<id>' which are disabled while these classes are present.
-    / Listeners are attached on form fields which trigger on change and remove class from any element that has the 'prereq-<type>-<id>'.
-    / Once all 'prereq-<type>-<id>' classes are removed the question is enabled.
-    - prereq = q.dependencies.collect { |d| d.prerequisitable_type + '-' + d.prerequisitable_id.to_s }.collect { |h| "prereq-#{h}" }.join(' ')
+      Listeners are attached on form fields which trigger on change and remove class from any element that has the 'prereq-<type>-<id>'.
+      Once all 'prereq-<type>-<id>' classes are removed, the question is enabled.
+    - prereq = q.dependencies.collect { |d| d.prerequisitable_type + '-' + d.prerequisitable_id.to_s }.collect { |p| "prereq-#{ p }" }.join(' ')
 
-    .card class='#{ prereq }'
+    / Questions are only visible when the key question for which the question was designed is selected. We therefore assign classes to the
+      card so that we can filter it, similar to the prerequisite method
+    - kqreq = q.key_questions_projects.collect { |kqp| "kqreq-#{ kqp.id }" }.join(' ')
+
+    .card class='#{ prereq } #{ kqreq } hide'
 
       .card-divider
 
@@ -34,3 +45,7 @@
 .column.row
   = link_to 'Back', build_extraction_forms_project_path(@extraction_forms_projects_section.extraction_forms_project,
                     anchor: "panel-tab-#{ @extraction_forms_projects_section.id }")
+
+#update-form-modal.reveal data-reveal=''
+  h1 Please wait while we update your form
+  p.lead Still working...thank you for your patience...
