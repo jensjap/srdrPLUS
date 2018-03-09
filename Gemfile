@@ -79,7 +79,7 @@ gem "select2-rails"
 gem 'devise'
 gem 'omniauth'
 gem 'remotipart', github: 'mshibuya/remotipart'
-gem 'rails_admin', '>= 1.0.0.rc'
+gem 'rails_admin', '~> 1.3.0'
 
 # Flash messages.
 gem 'toastr_rails'
