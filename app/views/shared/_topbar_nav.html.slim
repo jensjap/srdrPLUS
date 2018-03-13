@@ -1,25 +1,28 @@
-.title-bar data-responsive-toggle='animated-menu' data-hide-for='medium'
-  .menu-text.title-bar-left
-    = link_to root_path
-      button type='button' data-toggle='offCanvasNav'
-        = image_tag('brand-sm', size: '60x10', style: 'cursor: pointer;')
-  ul.menu.title-bar-right
-    - unless user_signed_in?
-      li.hide-for-medium = link_to('Login', new_user_session_path, style: 'padding: 2px; color: white;')
-    li
-      button.menu-icon.title-bar-left type='button' data-toggle='animated-menu'
+.column.row.expanded#navigation
 
-.top-bar#animated-menu data-animate='hinge-in-from-top hinge-out-from-top'
-  .top-bar-left
-    .menu-text.hide-for-small-only
+  .title-bar data-responsive-toggle='animated-menu' data-hide-for='medium'
+    .menu-text.title-bar-left
       = link_to root_path
         button type='button' data-toggle='offCanvasNav'
-          = image_tag('brand', size: '200x50')
-  .top-bar-right
-    ul.vertical.dropdown.menu.medium-horizontal data-dropdown-menu='' data-close-on-click-inside='false'
-      li = link_to(search_path) do
-        i.fi-magnifying-glass  Search
-      - if user_signed_in?
-        = render 'shared/signed_in_links'
-      - else
-        = render 'shared/not_signed_in_links'
+          = image_tag('brand-sm', size: '60x10', style: 'cursor: pointer;')
+    ul.menu.title-bar-right
+      - unless user_signed_in?
+        li.hide-for-medium = link_to('Login', new_user_session_path, style: 'padding: 2px; color: white;')
+      li
+        button.menu-icon.title-bar-left type='button' data-toggle='animated-menu'
+
+  .top-bar#animated-menu data-animate='hinge-in-from-top hinge-out-from-top'
+    .top-bar-left
+      .menu-text.hide-for-small-only
+        = link_to root_path
+          button type='button' data-toggle='offCanvasNav'
+            = image_tag('brand', size: '200x50')
+    .top-bar-right
+      ul.vertical.dropdown.menu.medium-horizontal data-dropdown-menu='' data-close-on-click-inside='false'
+        li = link_to(search_path) do
+          i.fi-magnifying-glass  Search
+        - if user_signed_in?
+          = render 'shared/signed_in_links'
+        - else
+          = render 'shared/not_signed_in_links'
+
