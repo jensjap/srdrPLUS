@@ -10,7 +10,6 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-
 ActiveRecord::Schema.define(version: 20180423000507) do
 
   create_table "abstrackr_settings", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -21,8 +20,6 @@ ActiveRecord::Schema.define(version: 20180423000507) do
     t.datetime "updated_at",                     null: false
     t.index ["profile_id"], name: "index_abstrackr_settings_on_profile_id", using: :btree
   end
-
-ActiveRecord::Schema.define(version: 20180213030317) do
 
   create_table "action_types", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "name"
@@ -116,14 +113,18 @@ ActiveRecord::Schema.define(version: 20180213030317) do
     t.datetime "updated_at",      null: false
     t.string   "comparable_type"
     t.integer  "comparable_id"
+    t.datetime "deleted_at"
     t.index ["comparable_type", "comparable_id"], name: "index_comparable_elements_on_comparable_type_and_comparable_id", using: :btree
+    t.index ["deleted_at"], name: "index_comparable_elements_on_deleted_at", using: :btree
   end
 
   create_table "comparate_groups", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.datetime "created_at",    null: false
     t.datetime "updated_at",    null: false
     t.integer  "comparison_id"
+    t.datetime "deleted_at"
     t.index ["comparison_id"], name: "index_comparate_groups_on_comparison_id", using: :btree
+    t.index ["deleted_at"], name: "index_comparate_groups_on_deleted_at", using: :btree
   end
 
   create_table "comparates", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -131,8 +132,10 @@ ActiveRecord::Schema.define(version: 20180213030317) do
     t.datetime "updated_at",            null: false
     t.integer  "comparate_group_id"
     t.integer  "comparable_element_id"
+    t.datetime "deleted_at"
     t.index ["comparable_element_id"], name: "index_comparates_on_comparable_element_id", using: :btree
     t.index ["comparate_group_id"], name: "index_comparates_on_comparate_group_id", using: :btree
+    t.index ["deleted_at"], name: "index_comparates_on_deleted_at", using: :btree
   end
 
   create_table "comparisons", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -913,6 +916,15 @@ ActiveRecord::Schema.define(version: 20180213030317) do
     t.index ["result_statistic_section_id"], name: "index_rssm_on_rss_id", using: :btree
   end
 
+  create_table "result_statistic_sections_measures_comparisons", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "result_statistic_section_id"
+    t.integer  "comparison_id"
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
+    t.index ["comparison_id"], name: "index_rssmc_on_comparison_id", using: :btree
+    t.index ["result_statistic_section_id"], name: "index_rssmc_on_rss_id", using: :btree
+  end
+
   create_table "roles", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "name"
     t.datetime "deleted_at"
@@ -1160,6 +1172,8 @@ ActiveRecord::Schema.define(version: 20180213030317) do
   add_foreign_key "result_statistic_sections", "result_statistic_section_types"
   add_foreign_key "result_statistic_sections_measures", "measures"
   add_foreign_key "result_statistic_sections_measures", "result_statistic_sections"
+  add_foreign_key "result_statistic_sections_measures_comparisons", "comparisons"
+  add_foreign_key "result_statistic_sections_measures_comparisons", "result_statistic_sections"
   add_foreign_key "suggestions", "users"
   add_foreign_key "taggings", "tags"
   add_foreign_key "taggings", "users"

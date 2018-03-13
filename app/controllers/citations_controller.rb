@@ -15,7 +15,6 @@ class CitationsController < ApplicationController
         format.html { redirect_to edit_citation_path(@citation), notice: t('success') }
         format.json { render :show, status: :created, location: @citation }
       else
-        byebug
         format.html { render :new }
         format.json { render json: @citation.errors, status: :unprocessable_entity }
       end

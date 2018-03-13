@@ -1,4 +1,25 @@
-.nested_fields
- = f.simple_fields_for ComparateGroup.new do |c_g|
-  = render 'comparate_group_fields', f: c_g
- = link_to_add_association 'add comparate group', f, :comparate_groups
+td.nested-fields
+  = f.input :result_statistic_section_id, 
+    as: :hidden, 
+    input_html: { value: @result_statistic_section.id }
+
+  - while f.object.comparate_groups.length < 2
+    - f.object.comparate_groups.build 
+  - _first = true
+  = f.simple_fields_for :comparate_groups do |comparate_group|
+    = render 'comparate_group_fields', f: comparate_group, _first: _first
+    - if _first
+      - _first = false
+
+  .links
+    .links
+      = link_to_remove_association 'remove comparison', f
+    /.to-hide
+      = link_to_add_association 'add comparate group', 
+        f, :comparate_groups, 
+        render_options: { locals: { _first: _first } }
+
+  ul
+    - @result_statistic_section.measures.each do |m|
+      = label_tag m.name
+      = text_field_tag 'name'

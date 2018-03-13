@@ -5,15 +5,18 @@ h4 Outcome: #{ @result_statistic_section.subgroup.extractions_extraction_forms_p
 h5 Subgroup: #{ @result_statistic_section.subgroup.name }
   Description: #{ @result_statistic_section.subgroup.description }
 br
-h4 #{ @result_statistic_section.result_statistic_section_type.name }
 
-- arms = ExtractionsExtractionFormsProjectsSectionsType1.by_section_name_and_extraction_id_and_extraction_forms_project_id('Arms',
-  @result_statistic_section.subgroup.extractions_extraction_forms_projects_sections_type1_row.extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_section.extraction.id,
-  @result_statistic_section.subgroup.extractions_extraction_forms_projects_sections_type1_row.extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_section.extraction_forms_projects_section.extraction_forms_project.id)
+h3 #{ @result_statistic_section.result_statistic_section_type.name }
 
-== render 'result_statistic_sections/' + @result_statistic_section.result_statistic_section_type.name.parameterize.underscore, arms: arms
 
-/.hide
+- if  @result_statistic_section.result_statistic_section_type.name == 'Between Arm Comparisons'
+  = render 'between_arm_comparisons'
+
+- else
+  table
+    thead
+      tr
+        th Timepoint
         - @arms.each do |arm|
           th #{ arm.type1.name }
 

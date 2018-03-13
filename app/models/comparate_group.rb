@@ -1,6 +1,11 @@
 class ComparateGroup < ApplicationRecord
-  belongs_to :comparison
-  has_many :comparates
-  has_many :comparable_elements, through: :comparates
-  has_many :extractions_extraction_forms_projects_sections_type1s, :through => :comparable_elements
+  acts_as_paranoid
+  has_paper_trail
+
+  belongs_to :comparison, required: false
+
+  has_many :comparates, dependent: :destroy
+  has_many :comparable_elements, through: :comparates, dependent: :destroy
+
+  accepts_nested_attributes_for :comparates, allow_destroy: true
 end

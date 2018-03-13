@@ -24,6 +24,7 @@ Rails.application.routes.draw do
   resources :labels
   resources :tasks
   resources :records, only: [:update]
+  resources :comparisons
   concern :paginatable do
     get '(page/:page)', action: :index, on: :collection, as: ''
   end
