@@ -112,8 +112,12 @@ a.button.remove-link {
 body div.top-bar {
   padding: 3px;
 
+  .top-bar-left {
+    margin-top: 10px;
+  }
+
   .top-bar-right {
-    margin-top: 6px;
+    margin-top: 4px;
 
     a.button {
       border: 1px solid white;

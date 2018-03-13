@@ -30,7 +30,6 @@ document.addEventListener 'turbolinks:load', ->
 
     tabs = $( '#vertical-tabs' )
     if tabs.length
-      console.log tabs
       tabs = $( '#vertical-tabs' ).foundation()
       firstTab = tabs.children( 'li' ).first()
       tabs.foundation( '_openTab', firstTab )

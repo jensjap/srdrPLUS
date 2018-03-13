@@ -4,7 +4,7 @@
 
   /= select_tag(:key_question_id, options_for_select(@extraction_forms_projects_section.key_questions_projects_array))
   .key-question-selector
-    h3 Select Key Question
+    h3 Select Key Question to work on
     - @extraction_forms_projects_section.key_questions_projects_array.each do |kqp|
       = check_box_tag kqp[1]
       = label_tag kqp[1], kqp[0]
