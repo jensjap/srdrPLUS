@@ -56,18 +56,34 @@ document.addEventListener 'turbolinks:load', ->
       $( '#citation-abstract' ).text( current_citation.abstract )
       $( '#citation-pmid' ).text( current_citation.pmid )
       $( '#citation-refman' ).text( current_citation.refman )
-      #$( '#journal-name' ).text( current_citation.journal.name )
-      #$( '#journal-date' ).text( current_citation.journal.publication_date )
+      if $( '#journal-visible' ).text() != 'false'
+        $( '#journal-name' ).text( current_citation.journal.name )
+        $( '#journal-date' ).text( current_citation.journal.publication_date )
+      else
+        $( '#journal-name' ).hide()
+        $( '#journal-date' ).hide()
 
-      $( '#citation-authors' ).empty()
-      for a in current_citation.authors
-        author = document.createElement( 'li' )
-        author.innerHTML = a.name
-        $( '#citation-authors' ).append( author )
+      if $( '#authors-visible' ).text() != 'false'
+        $( '#citation-authors' ).empty()
+        s = true
+        for k in current_citation.authors
+          if s
+            s = false
+            $( '#citation-authors' ).append( k.name )
+          else
+            $( '#citation-authors' ).append( ', ' + k.name)
+      else
+        $( '#citation-authors' ).hide()
+        $( '#citation-authors-title' ).hide()
 
       $( '#citation-keywords' ).empty()
+      s = true
       for k in current_citation.keywords
-        $( '#citation-keywords' ).append( k.name + ', ' )
+        if s
+          s = false
+          $( '#citation-keywords' ).append( k.name )
+        else
+          $( '#citation-keywords' ).append( ', ' + k.name)
 
       $( '#yes-button' ).removeClass( 'secondary' )
       $( '#no-button' ).removeClass( 'secondary' )

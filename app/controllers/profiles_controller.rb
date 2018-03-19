@@ -37,6 +37,8 @@ class ProfilesController < ApplicationController
       .permit(:username, :time_zone,
               :first_name, :middle_name, :last_name,
               :organization_id, :advanced_mode,
+              :abstrackr_setting_id,
+              :organization_id,
               degree_ids: [])
   end
 end
