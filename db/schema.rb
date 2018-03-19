@@ -147,6 +147,15 @@ ActiveRecord::Schema.define(version: 20180423000507) do
     t.index ["result_statistic_section_id"], name: "result_statistic_section_id", using: :btree
   end
 
+  create_table "comparisons_measures", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "measure_id"
+    t.integer  "comparison_id"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+    t.index ["comparison_id"], name: "index_comparisons_measures_on_comparison_id", using: :btree
+    t.index ["measure_id"], name: "index_comparisons_measures_on_measure_id", using: :btree
+  end
+
   create_table "consensus_types", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "name"
     t.datetime "created_at", null: false
@@ -527,6 +536,14 @@ ActiveRecord::Schema.define(version: 20180423000507) do
     t.datetime "updated_at",           null: false
     t.index ["citations_project_id"], name: "index_labels_on_citations_project_id", using: :btree
     t.index ["user_id"], name: "index_labels_on_user_id", using: :btree
+  end
+
+  create_table "measurements", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+    t.string   "value"
+    t.integer  "comparisons_measure_id"
+    t.index ["comparisons_measure_id"], name: "index_measurements_on_comparisons_measure_id", using: :btree
   end
 
   create_table "measures", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -1102,6 +1119,8 @@ ActiveRecord::Schema.define(version: 20180423000507) do
   add_foreign_key "comparates", "comparable_elements"
   add_foreign_key "comparates", "comparate_groups"
   add_foreign_key "comparisons", "result_statistic_sections"
+  add_foreign_key "comparisons_measures", "comparisons"
+  add_foreign_key "comparisons_measures", "measures"
   add_foreign_key "degrees_profiles", "degrees"
   add_foreign_key "degrees_profiles", "profiles"
   add_foreign_key "dispatches", "users"
@@ -1142,6 +1161,7 @@ ActiveRecord::Schema.define(version: 20180423000507) do
   add_foreign_key "keywords", "citations"
   add_foreign_key "labels", "citations_projects"
   add_foreign_key "labels", "users"
+  add_foreign_key "measurements", "comparisons_measures"
   add_foreign_key "message_types", "frequencies"
   add_foreign_key "messages", "message_types"
   add_foreign_key "notes", "users"

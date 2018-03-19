@@ -15,7 +15,6 @@ class ResultStatisticSectionsController < ApplicationController
                       notice: t('success') }
         format.json { render :show, status: :ok, location: @result_statistic_section }
       else
-        byebug
         format.html { render :edit }
         format.json { render json: @result_statistic_section.errors, status: :unprocessable_entity }
       end
@@ -41,7 +40,9 @@ class ResultStatisticSectionsController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def result_statistic_section_params
       params.require(:result_statistic_section).permit( 
-        comparisons_attributes: [ :id, :_destroy, :result_statistic_section_id, 
+        comparisons_attributes: [ :id, :_destroy, :result_statistic_section_id,
+          comparisons_measures_attributes: [ :id, :_destroy, :comparison_id, :measure_id ],
+          measurements_attributes: [ :id, :_destroy, :comparisons_measure_id, :value ],
         comparate_groups_attributes: [ :id, :_destroy, :comparison_id, 
         comparates_attributes: [ :id, :_destroy, :comparate_group_id, :comparable_element_id, 
         comparable_element_attributes: [ :id, :_destroy, :comparable_type, :comparable_id, :_destroy ] ] ] ] )

@@ -11,6 +11,15 @@ td.nested-fields
     - if _first
       - _first = false
 
+  ul
+    - @result_statistic_section.measures.each do |measure|
+      - if !f.object.comparisons_measures.exists?( measure: measure )
+        - f.object.comparisons_measures.build( measure: measure )
+
+    = f.simple_fields_for :comparisons_measures do |comparisons_measure|
+      = render 'comparisons_measures_fields', f: comparisons_measure 
+
+ 
   .links
     .links
       = link_to_remove_association 'remove comparison', f
@@ -19,7 +28,3 @@ td.nested-fields
         f, :comparate_groups, 
         render_options: { locals: { _first: _first } }
 
-  ul
-    - @result_statistic_section.measures.each do |m|
-      = label_tag m.name
-      = text_field_tag 'name'
