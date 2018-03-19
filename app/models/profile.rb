@@ -9,6 +9,8 @@ class Profile < ApplicationRecord
   belongs_to :organization, inverse_of: :profiles, optional: true
   belongs_to :user, inverse_of: :profile
 
+  has_one :abstrackr_setting, dependent: :destroy
+
   has_many :degrees_profiles, dependent: :destroy, inverse_of: :profile
   has_many :degrees, through: :degrees_profiles, dependent: :destroy
 

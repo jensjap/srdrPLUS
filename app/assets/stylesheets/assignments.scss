@@ -6,11 +6,12 @@
   height: 100%;
 }
 
-dl {
-  height: 100%;
+#citation-abstract {
+  height: 30vh;
+  overflow-y: scroll;
 }
 
-#citation-abstract {
-  max-height: 50vh;
-  overflow-y: scroll;
+#breadcrumb-group {
+  overflow-x: scroll;
+  white-space: nowrap;
 }

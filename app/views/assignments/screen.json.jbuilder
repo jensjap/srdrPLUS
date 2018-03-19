@@ -8,7 +8,7 @@ json.citations_projects do
     json.pmid citation.pmid
     json.refman citation.refman
     json.journal do
-      json.publication_date citation.journal.publication_date
+      json.publication_date citation.journal.publication_date.year
       json.name citation.journal.name
       json.volume citation.journal.volume
       json.issue citation.journal.issue
