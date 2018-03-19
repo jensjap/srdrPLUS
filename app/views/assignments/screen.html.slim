@@ -7,20 +7,22 @@
       .dd.callout
         h5 
           #citation-name
-        b style="display: inline;"
-          | Journal: 
-        i style="display: inline;"
-          #journal-name style="display: inline;"
-          '
-          | (
-          #journal-date style="display: inline;"
-          | )
-        br
-        b style="display: inline;"
-          | Authors: 
-        i style="display: inline;"
-          #citation-authors style="display: inline;"
-        br
+        #journal-div
+          b style="display: inline;"
+            | Journal: 
+          i style="display: inline;"
+            #journal-name style="display: inline;"
+            '
+            | (
+            #journal-date style="display: inline;"
+            | )
+          br
+        #authors-div
+          b style="display: inline;"
+            | Authors: 
+          i style="display: inline;"
+            #citation-authors style="display: inline;"
+          br
         br
         #citation-abstract
         br
