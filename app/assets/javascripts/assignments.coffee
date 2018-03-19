@@ -60,8 +60,7 @@ document.addEventListener 'turbolinks:load', ->
         $( '#journal-name' ).text( current_citation.journal.name )
         $( '#journal-date' ).text( current_citation.journal.publication_date )
       else
-        $( '#journal-name' ).hide()
-        $( '#journal-date' ).hide()
+        $( '#journal-div' ).hide()
 
       if $( '#authors-visible' ).text() != 'false'
         $( '#citation-authors' ).empty()
@@ -73,8 +72,7 @@ document.addEventListener 'turbolinks:load', ->
           else
             $( '#citation-authors' ).append( ', ' + k.name)
       else
-        $( '#citation-authors' ).hide()
-        $( '#citation-authors-title' ).hide()
+        $( '#authors-div' ).hide()
 
       $( '#citation-keywords' ).empty()
       s = true
