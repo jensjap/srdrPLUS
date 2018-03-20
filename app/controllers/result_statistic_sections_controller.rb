@@ -1,6 +1,7 @@
 class ResultStatisticSectionsController < ApplicationController
   before_action :set_result_statistic_section, only: [:edit, :update]
   before_action :set_arms, only: [:edit, :update]
+  before_action :set_comparisons_measures, only: [:edit]
 
   # GET /result_statistic_sections/1/edit
   def edit
@@ -23,6 +24,17 @@ class ResultStatisticSectionsController < ApplicationController
   end
 
   private
+    # check if all the join table entries are in place, create if needed
+    def set_comparisons_measures
+      @result_statistic_section.measures.each do |measure|
+        @result_statistic_section.comparisons.each do |comparison|
+          unless @result_statistic_section.comparisons_measures.exists?( measure: measure, comparison: comparison)
+            @result_statistic_section.comparisons_measures.build( measure: measure, comparison: comparison )
+          end
+        end
+      end
+    end
+
     # Use callbacks to share common setup or constraints between actions.
     def set_arms
       @arms = ExtractionsExtractionFormsProjectsSectionsType1.by_section_name_and_extraction_id_and_extraction_forms_project_id('Arms',
