@@ -1,17 +1,39 @@
 #citation-row {
-  height: 60vh;
+  height: 70vh;
 }
 
 #citation-column {
   height: 100%;
 }
 
-#citation-abstract {
-  height: 30vh;
+#citation-container {
   overflow-y: scroll;
+  max-height: 70vh;
 }
 
 #breadcrumb-group {
   overflow-x: scroll;
   white-space: nowrap;
 }
+
+.display-inline {
+  display: inline; 
+}
+
+#control-group {
+  margin: 20px;
+  display: inline-block;
+}
+
+#previous-button {
+  margin-right: 10px;
+}
+
+#next-button {
+  margin-left: 10px;
+}
+
+.full-height {
+  height: 100%;
+}
+
