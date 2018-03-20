@@ -1,6 +1,7 @@
 
 document.addEventListener 'turbolinks:load', ->
   do ->
+    $( '#citation-row' ).show
 ##### loyloy #####
     loyloy = ( obj, data ) ->
       console.log('loyloy')
@@ -26,15 +27,9 @@ document.addEventListener 'turbolinks:load', ->
           get_c_p( obj )
           if obj.citations.length == 0
             $( '#citation-row' ).hide()
-            #$( '#labeling-group' ).hide()
-            #$( '#arrow-group' ).hide()
-            #$( '#breadcrumb-group' ).hide()
             $( '#end-message' ).show()
           else
             $( '#citation-row' ).show()
-            #$( '#labeling-group' ).show()
-            #$( '#arrow-group' ).show()
-            #$( '#breadcrumb-group' ).show()
             $( '#end-message' ).hide()
             clearInterval( interval_id )
       , 1000 )
@@ -199,7 +194,7 @@ document.addEventListener 'turbolinks:load', ->
     add_breadcrumb = ( obj ) ->
       next_index = obj.history.length
       breadcrumb_id = 'breadcrumb_' + next_index
-      button = $( '<input/>' ).attr( { type: 'button', id: breadcrumb_id, value: next_index, class: 'button' } ) 
+      button = $( '<input/>' ).attr( { type: 'button', id: breadcrumb_id, class: 'button' } ) 
       button.click -> 
         update_index( obj, obj.history.length - next_index )
         update_info( obj )

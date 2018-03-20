@@ -1,48 +1,62 @@
-#end-message
+#end-message.hidden
   h3 NOTHING TO LABEL
 
-#citation-row.row
-  #citation-column.medium-12.medium-centered
-    dl
-      .dd.callout
+#citation-row.row.hidden
+  .full-height.medium-12.medium-centered
+    .full-height.dl 
+      #citation-container.dd.callout
         h5 
           #citation-name
+ 
         #journal-div
-          b style="display: inline;"
-            | Journal: 
-          i style="display: inline;"
-            #journal-name style="display: inline;"
-            '
-            | (
-            #journal-date style="display: inline;"
-            | )
+          .display-inline
+            b
+              | Journal: 
+          .display-inline
+            i
+              #journal-name.display-inline
+              '
+              | (
+              #journal-date.display-inline
+              | )
           br
+ 
         #authors-div
-          b style="display: inline;"
-            | Authors: 
-          i style="display: inline;"
-            #citation-authors style="display: inline;"
+          .display-inline
+            b
+              | Authors: 
+          .display-inline
+            i
+              #citation-authors.display-inline
           br
+
         br
         #citation-abstract
         br
-        b style="display: inline;"
-          | Keywords: 
-        i
-          #citation-keywords style="display: inline;"
-        br
-        b style="display: inline;"
-          | Pubmed ID: 
-        i
-          #citation-pmid style="display: inline;"
-        br
-        b style="display: inline;"
-          | Refman ID: 
-        i
-          #citation-refman style="display: inline;"
 
-.row
-  #labeling-group.button-group
+        .display-inline
+          b
+            | Keywords: 
+        i
+          #citation-keywords.display-inline
+        br
+        .display-inline
+          b
+            | Pubmed ID: 
+        i
+          #citation-pmid.display-inline
+        br
+        .display-inline
+          b
+            | Refman ID: 
+        i
+          #citation-refman.display-inline
+
+.row style="text-align: center;"
+  #control-group.button-group
+    .button id='previous-button'
+     | ◄
+
     .button id='yes-button'
      | Yes
     .button id='maybe-button'
@@ -50,13 +64,12 @@
     .button id='no-button'
      | No
 
-  #arrow-group.button-group 
-    .button id='previous-button'
-     | ◄
     .button id='next-button'
      | ►
 
-#breadcrumb-group.row.button-group
+#breadcrumb-group.row.button-group.small
+
+#switch-button.button
 
 #hide-me
   #screen-assignment-json-url
