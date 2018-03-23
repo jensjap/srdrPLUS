@@ -5,6 +5,7 @@ class CitationsProject < ApplicationRecord
   has_one :prediction, dependent: :destroy
   has_one :priority, dependent: :destroy
 
+  has_many :extractions, dependent: :destroy
   has_many :labels, dependent: :destroy
   has_many :notes, as: :notable, dependent: :destroy
   has_many :taggings, as: :taggable, dependent: :destroy

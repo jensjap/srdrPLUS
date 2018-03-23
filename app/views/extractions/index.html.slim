@@ -5,7 +5,7 @@
     table
       thead
         tr
-          th Study
+          th Citation
           th Assigned User
           th Key Questions
           th
@@ -16,7 +16,7 @@
       tbody
         - @extractions.each do |extraction|
           tr
-            td = extraction.projects_study.id if extraction.projects_study
+            td = extraction.citations_project.citation.name if extraction.citations_project
             td = extraction.projects_users_role.projects_user.user.profile.username
             td
               ul

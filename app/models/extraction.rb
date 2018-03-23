@@ -2,7 +2,7 @@ class Extraction < ApplicationRecord
   acts_as_paranoid
   has_paper_trail
 
-  belongs_to :projects_study,      inverse_of: :extractions, optional: true
+  belongs_to :citations_project,   inverse_of: :extractions
   belongs_to :projects_users_role, inverse_of: :extractions
 
   delegate :project, to: :projects_users_role

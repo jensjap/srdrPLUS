@@ -268,14 +268,14 @@ ActiveRecord::Schema.define(version: 20171215102150) do
   end
 
   create_table "extractions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer  "projects_study_id"
+    t.integer  "citations_project_id"
     t.integer  "projects_users_role_id"
     t.datetime "deleted_at"
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
+    t.index ["citations_project_id", "projects_users_role_id", "deleted_at"], name: "index_e_on_cp_id_pur_id_deleted_at_uniq", unique: true, using: :btree
+    t.index ["citations_project_id"], name: "index_extractions_on_citations_project_id", using: :btree
     t.index ["deleted_at"], name: "index_extractions_on_deleted_at", using: :btree
-    t.index ["projects_study_id", "projects_users_role_id", "deleted_at"], name: "index_e_on_ps_id_pur_id_deleted_at_uniq", unique: true, using: :btree
-    t.index ["projects_study_id"], name: "index_extractions_on_projects_study_id", using: :btree
     t.index ["projects_users_role_id"], name: "index_extractions_on_projects_users_role_id", using: :btree
   end
 
@@ -950,7 +950,7 @@ ActiveRecord::Schema.define(version: 20171215102150) do
   add_foreign_key "extraction_forms_projects_sections", "sections"
   add_foreign_key "extraction_forms_projects_sections_type1s", "extraction_forms_projects_sections"
   add_foreign_key "extraction_forms_projects_sections_type1s", "type1s"
-  add_foreign_key "extractions", "projects_studies"
+  add_foreign_key "extractions", "citations_projects"
   add_foreign_key "extractions", "projects_users_roles"
   add_foreign_key "extractions_extraction_forms_projects_sections", "extraction_forms_projects_sections"
   add_foreign_key "extractions_extraction_forms_projects_sections", "extractions"

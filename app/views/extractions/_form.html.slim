@@ -2,11 +2,10 @@
   = f.error_notification
 
   .form-inputs
-    = f.association :projects_study
+    = f.association :citations_project, label_method: lambda { |cp| cp.citation.name }
     = f.association :projects_users_role, label: 'Assign to', label_method: :get_projects_users_role_user_information_markup, as: :radio_buttons
     = f.association :key_questions_projects,
                     collection: @project ? @project.key_questions_projects : @extraction.project.key_questions_projects,
-                    disabled: @project ? @project.key_questions_projects.where(extraction_forms_projects_section: nil).map(&:id) : @extraction.project.key_questions_projects.where(extraction_forms_projects_section: nil).map(&:id),
                     as: :check_boxes,
                     label: 'Which Key Question(s) does this extraction answer?',
                     label_method: :kq_name_and_unassigned

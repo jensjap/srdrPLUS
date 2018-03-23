@@ -5,7 +5,7 @@ class ExtractionsController < ApplicationController
   # GET /projects/1/extractions
   # GET /projects/1/extractions.json
   def index
-    @extractions = Extraction.includes(:projects_study,
+    @extractions = Extraction.includes(:citations_project,
                                        projects_users_role: [projects_user: [:project, user: [:profile]]],
                                        extractions_key_questions_projects: [key_questions_project: [:key_question, extraction_forms_projects_section: [extraction_forms_project: [:extraction_form]]]])
                              .where(extractions_key_questions_projects: { key_questions_projects: { project: @project } }).all
@@ -87,7 +87,7 @@ class ExtractionsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def extraction_params
-      params.require(:extraction).permit(:projects_study_id,
+      params.require(:extraction).permit(:citations_project_id,
                                          :projects_users_role_id,
                                          extractions_key_questions_project_ids: [],
                                          key_questions_project_ids: [])
