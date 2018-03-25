@@ -1,26 +1,26 @@
-#end-message.hidden
-  h3 NOTHING TO LABEL
-
-#citation-row.row.hidden
-  .full-height.medium-12.medium-centered
-    .full-height.dl 
-      #citation-container.dd.callout
+#screen-div
+  #end-message
+    h3 NOTHING TO LABEL
+  
+  #citation-row.row
+    .full-height.medium-12.medium-centered
+      #citation-container.callout
         h5 
           #citation-name
- 
+
         #journal-div
           .display-inline
             b
               | Journal: 
           .display-inline
-            i
+              i
               #journal-name.display-inline
               '
               | (
               #journal-date.display-inline
               | )
           br
- 
+
         #authors-div
           .display-inline
             b
@@ -31,7 +31,7 @@
           br
 
         br
-        #citation-abstract
+        #citation-abstract.full-height
         br
 
         .display-inline
@@ -52,26 +52,26 @@
         i
           #citation-refman.display-inline
 
-.row style="text-align: center;"
-  #control-group.button-group
-    .button id='previous-button'
-     | ◄
+  .row style="text-align: center;"
+    #control-group.button-group
+      .button id='previous-button'
+       | ◄
 
-    .button id='yes-button'
-     | Yes
-    .button id='maybe-button'
-     | Maybe
-    .button id='no-button'
-     | No
+      .button id='yes-button'
+       | Yes
+      .button id='maybe-button'
+       | Maybe
+      .button id='no-button'
+       | No
 
-    .button id='next-button'
-     | ►
+      .button id='next-button'
+       | ►
 
-#breadcrumb-group.row.button-group.small
+  #breadcrumb-group.row.button-group.small
 
 #switch-button.button
 
-#hide-me
+#hide-me.hide
   #screen-assignment-json-url
     | #{ screen_assignment_url(@assignment.id) + '.json' }
   #labels-url
@@ -82,3 +82,7 @@
     | #{ @current_user.profile.abstrackr_setting.authors_visible }
   #journal-visible
     | #{ @current_user.profile.abstrackr_setting.journal_visible }
+
+#citations-list
+      
+    

@@ -1,9 +1,9 @@
 
 document.addEventListener 'turbolinks:load', ->
   do ->
-    $( '#citation-row' ).show
+    $( '#end-message' ).hide()
 ##### loyloy #####
-    loyloy = ( obj, data ) ->
+    loyloy = () ->
       console.log('loyloy')
       return
 
@@ -176,6 +176,7 @@ document.addEventListener 'turbolinks:load', ->
 
       next_button = $( '#next-button' ) 
       previous_button = $( '#previous-button' ) 
+      switch_button = $( '#switch-button' )
 
       next_button.click ->
         if !next_button.hasClass( 'disabled' )
@@ -188,12 +189,22 @@ document.addEventListener 'turbolinks:load', ->
           update_index( state_obj, state_obj.index + 1 )
           update_arrows( state_obj )
           update_info( state_obj )
+
+      switch_button.click ->
+        if switch_button.val() == 'OFF'
+          console.log( 'loyloy' )
+          switch_to_list( state_obj )  
+          switch_button.val( 'ON' )
+        else
+          switch_to_screening( state_obj )  
+          switch_button.val( 'OFF' )
       return
 
 ##### add_breadcrumb #####
     add_breadcrumb = ( obj ) ->
       next_index = obj.history.length
       breadcrumb_id = 'breadcrumb_' + next_index
+      id = next_index
       button = $( '<input/>' ).attr( { type: 'button', id: breadcrumb_id, class: 'button' } ) 
       button.click -> 
         update_index( obj, obj.history.length - next_index )
@@ -202,6 +213,7 @@ document.addEventListener 'turbolinks:load', ->
 
       $( '#breadcrumb-group' ).append( button );  
       obj.history[ obj.index ].breadcrumb_id = breadcrumb_id
+      obj.history[ obj.index ].id = id
       return
 
 ##### update_breadcrumb #####
@@ -224,14 +236,39 @@ document.addEventListener 'turbolinks:load', ->
       $( '#' + new_breadcrumb_id ).addClass( 'hollow' )
       return
 
-    $( '#hide-me' ).hide()
-    $( '#end-message' ).hide()
+##### switch_to_list #####
+    switch_to_list = ( obj ) ->
+      $( '#citations-list' ).empty()
+      for c in obj.history
+        console.log( "LEYLEY" )
+        citation_element = $( '<div></div>' ).attr( { id: 'citation-element-' + c.id, class: 'callout' } )
+        citation_title = $( '<div>' + c.name + '<div/>' ).attr( { id: '#citation-element-title-' + c.breadcrumb_id } )
+        citation_element.append( citation_title )
+        $( '#citations-list' ).append( citation_element )
+        #set up buttons
+        citation_buttons = $( '<div><div/>' ).attr( { id: 'citation-buttons-' + c.id, class: 'button-group' } )
+        citation_button_yes = $( '<div>Yes</div>' ).attr( { id: 'citation-button-yes-' + c.id, class: 'button' } )
+        citation_button_maybe = $( '<div>Maybe</div>' ).attr( { id: 'citation-button-maybe-' + c.id, class: 'button' } )
+        citation_button_no = $( '<div>No</div>' ).attr( { id: 'citation-button-no-' + c.id, class: 'button' } )
+        citation_buttons.append( citation_button_yes )
+        citation_buttons.append( citation_button_maybe )
+        citation_buttons.append( citation_button_no )
+        citation_element.append( citation_buttons )
+      $( '#citations-list' ).show()
+      $( '#screen-div' ).hide()
+      
+##### switch_to_screening #####
+    switch_to_screening = ( obj ) ->
+      $( '#citations-list' ).empty()
+      $( '#citations-list' ).hide()
+      $( '#screen-div' ).show()
 
     $.ajax {
       type: 'GET'
       url: $( '#screen-assignment-json-url' ).text()
       success:
         ( data ) ->
+          $( '#screen-div' ).show()
           start_screening( data.citations_projects ) 
     }
   return # END do ->
