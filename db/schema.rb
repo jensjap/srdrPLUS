@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171215102150) do
+ActiveRecord::Schema.define(version: 20180403032632) do
 
   create_table "action_types", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "name"
@@ -667,6 +667,46 @@ ActiveRecord::Schema.define(version: 20171215102150) do
     t.index ["user_id"], name: "index_publishings_on_user_id", using: :btree
   end
 
+  create_table "quality_dimension_options", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.text     "name",       limit: 65535
+    t.datetime "deleted_at"
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+    t.index ["deleted_at"], name: "index_quality_dimension_options_on_deleted_at", using: :btree
+  end
+
+  create_table "quality_dimension_questions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "quality_dimension_section_id"
+    t.string   "name"
+    t.text     "description",                  limit: 65535
+    t.datetime "deleted_at"
+    t.datetime "created_at",                                 null: false
+    t.datetime "updated_at",                                 null: false
+    t.index ["deleted_at"], name: "index_quality_dimension_questions_on_deleted_at", using: :btree
+    t.index ["quality_dimension_section_id"], name: "index_qdq_on_qds_id", using: :btree
+  end
+
+  create_table "quality_dimension_questions_quality_dimension_options", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "quality_dimension_question_id"
+    t.integer  "quality_dimension_option_id"
+    t.datetime "deleted_at"
+    t.boolean  "active"
+    t.datetime "created_at",                    null: false
+    t.datetime "updated_at",                    null: false
+    t.index ["quality_dimension_option_id"], name: "index_qdqqdo_on_qdo_id", using: :btree
+    t.index ["quality_dimension_question_id", "quality_dimension_option_id", "active"], name: "index_qdq_id_qdo_id_active_uniq", unique: true, using: :btree
+    t.index ["quality_dimension_question_id"], name: "index_qdqqdo_on_qdq_id", using: :btree
+  end
+
+  create_table "quality_dimension_sections", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string   "name"
+    t.text     "description", limit: 65535
+    t.datetime "deleted_at"
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
+    t.index ["deleted_at"], name: "index_quality_dimension_sections_on_deleted_at", using: :btree
+  end
+
   create_table "question_row_column_field_options", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "name"
     t.datetime "deleted_at"
@@ -744,6 +784,15 @@ ActiveRecord::Schema.define(version: 20171215102150) do
     t.index ["deleted_at"], name: "index_questions_on_deleted_at", using: :btree
     t.index ["extraction_forms_projects_section_id", "deleted_at"], name: "index_q_on_efps_id_deleted_at", using: :btree
     t.index ["extraction_forms_projects_section_id"], name: "index_questions_on_extraction_forms_projects_section_id", using: :btree
+  end
+
+  create_table "records", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string   "value"
+    t.string   "recordable_type"
+    t.integer  "recordable_id"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+    t.index ["recordable_type", "recordable_id"], name: "index_records_on_recordable_type_and_recordable_id", using: :btree
   end
 
   create_table "result_statistic_section_types", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -989,6 +1038,9 @@ ActiveRecord::Schema.define(version: 20171215102150) do
   add_foreign_key "projects_users_roles", "projects_users"
   add_foreign_key "projects_users_roles", "roles"
   add_foreign_key "publishings", "users"
+  add_foreign_key "quality_dimension_questions", "quality_dimension_sections"
+  add_foreign_key "quality_dimension_questions_quality_dimension_options", "quality_dimension_options"
+  add_foreign_key "quality_dimension_questions_quality_dimension_options", "quality_dimension_questions"
   add_foreign_key "question_row_column_fields", "question_row_column_field_types"
   add_foreign_key "question_row_column_fields", "question_row_columns"
   add_foreign_key "question_row_column_fields_question_row_column_field_options", "question_row_column_field_options"
