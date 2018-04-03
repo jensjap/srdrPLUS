@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  value: MyString
+  recordable: one
+  recordable_type: Recordable
+
+two:
+  value: MyString
+  recordable: two
+  recordable_type: Recordable
