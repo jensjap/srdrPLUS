@@ -94,3 +94,8 @@
     }
 
   ```
+
+* Generate Quality Dimension default questions
+  ```
+  bundle exec rails add_quality_dimensions
+  ```
