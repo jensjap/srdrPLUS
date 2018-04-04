@@ -49,7 +49,10 @@ Rails.application.routes.draw do
     resources :extraction_forms_projects, only: [:create, :edit, :update, :destroy] do
       get 'build', on: :member
       resources :extraction_forms_projects_sections, only: [:new, :create, :edit, :update, :destroy] do
-        get 'preview', on: :member
+        member do
+          get 'preview'
+          post 'add_quality_dimension'
+        end
         resources :questions, only: [:new, :create, :edit, :update, :destroy] do
           member do
             patch 'toggle_dependency'

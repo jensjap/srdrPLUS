@@ -1,6 +1,6 @@
 class ExtractionFormsProjectsSectionsController < ApplicationController
   before_action :set_extraction_forms_project, only: [:new, :create]
-  before_action :set_extraction_forms_projects_section, only: [:edit, :update, :destroy, :preview]
+  before_action :set_extraction_forms_projects_section, only: [:edit, :update, :destroy, :preview, :add_quality_dimension]
 
   # GET /extraction_forms_projects/1/extraction_forms_projects_sections/new
   def new
@@ -67,6 +67,21 @@ class ExtractionFormsProjectsSectionsController < ApplicationController
     redirect_to build_extraction_forms_project_path(@extraction_forms_projects_section.extraction_forms_project,
                                                     anchor: "panel-tab-#{ @extraction_forms_projects_section.id }"),
                                                     notice: t('success')
+  end
+
+  def add_quality_dimension
+    #!!! Make sure this user has permission to add questions to this extraction form
+
+    if @extraction_forms_projects_section.section.name == 'Quality'
+      ExtractionFormsProjectsSection.add_quality_dimension_by_questions_or_section(params.require([:id, :a_qdqId]))
+      redirect_to build_extraction_forms_project_path(@extraction_forms_projects_section.extraction_forms_project,
+                                                      anchor: "panel-tab-#{ @extraction_forms_projects_section.id }"),
+                                                      notice: t('success')
+    else
+      redirect_to build_extraction_forms_project_path(@extraction_forms_projects_section.extraction_forms_project,
+                                                      anchor: "panel-tab-#{ @extraction_forms_projects_section.id }"),
+                                                      alert: t('failure')
+    end
   end
 
   private

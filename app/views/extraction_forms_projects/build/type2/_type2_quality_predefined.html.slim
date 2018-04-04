@@ -1,0 +1,31 @@
+.reveal.large id='modal-#{ efps.id.to_s }' data-reveal=''
+
+  .columns.row
+    button.button id='submit-quality-dimensions' data-close='' aria-label='Close modal' type='button' style='position: fixed; right: 20%;' Submit
+
+  .columns.row
+    - QualityDimensionSection.includes(quality_dimension_questions: :quality_dimension_options).all.each do |qds|
+      table.unstriped.hover
+        caption style='text-align: left; font-weight: bold; font-size: 1.4em;'
+          a.add-quality-dimension-section id=qds.id style='cursor: copy;' = qds.name
+
+        col
+        col
+        colgroup span='5'
+
+        thead
+          tr
+            th scope='col'
+              input.select-all id='select-all-section-id-#{ qds.id }' type='checkbox'
+            th scope='col' Question Text
+            th colspan='5' scope='colgroup' Options
+
+          tbody
+            - qds.quality_dimension_questions.each do |qdq|
+              tr
+                td
+
+                  input.quality-dimension-select id=qdq.id data-extraction-forms-projects-section-id=efps.id type='checkbox'
+                th id=qdq.id scope='row' style='text-align: left; cursor: copy;' = qdq.name
+                - qdq.quality_dimension_options.each do |qdo|
+                  td = qdo.name

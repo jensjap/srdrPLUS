@@ -106,4 +106,47 @@ class ExtractionFormsProjectsSection < ApplicationRecord
       option.destroy if option
     end
   end
+
+  def self.add_quality_dimension_by_questions_or_section(params)
+    efps_id = params[0].to_i
+    lsof_qdq_ids = params[1].split(',').map(&:to_i)
+
+    #wrap in transaction
+    ExtractionFormsProjectsSection.transaction do
+
+      efps = ExtractionFormsProjectsSection.find(efps_id)
+
+      # Iterate through the array of question ids and add the question to the section.
+      lsof_qdq_ids.each do |qdq_id|
+        qdq = QualityDimensionQuestion.find(qdq_id)
+        q = efps.questions.create(name: qdq.name, description: qdq.description)
+
+        # Associate all key questions.
+        p = q.project
+        p.key_questions_projects.each do |kqp|
+          q.key_questions_projects << kqp
+        end
+
+        # Set field type.
+        qrcf = q.question_rows.first.question_row_columns.first.question_row_column_field
+        qrcf.update(question_row_column_field_type: QuestionRowColumnFieldType.find_by(name: 'dropdown'))
+
+        # Iterate through options and add them.
+        first = true
+        qdq.quality_dimension_options.each do |qdo|
+          if first
+            qrcfqrcfo = qrcf.question_row_column_fields_question_row_column_field_options.where(question_row_column_field_option_id: 1).first
+            qrcfqrcfo.update(name: qdo.name)
+            first = false
+          else
+            qrcf.question_row_column_fields_question_row_column_field_options.create(
+              question_row_column_field_option: QuestionRowColumnFieldOption.find_by(name: 'answer_choice'),
+              name: qdo.name,
+              name_type: 'string'
+            )
+          end
+        end  # qdq.quality_dimension_options.each do |qdo|
+      end  # lsof_qdq_ids.each do |qdq_id|
+    end  # ExtractionFormsProjectsSection.transaction do
+  end
 end
