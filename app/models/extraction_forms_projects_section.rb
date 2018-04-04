@@ -111,6 +111,8 @@ class ExtractionFormsProjectsSection < ApplicationRecord
     efps_id = params[0].to_i
     lsof_qdq_ids = params[1].split(',').map(&:to_i)
 
+    return if lsof_qdq_ids.blank?
+
     #wrap in transaction
     ExtractionFormsProjectsSection.transaction do
 

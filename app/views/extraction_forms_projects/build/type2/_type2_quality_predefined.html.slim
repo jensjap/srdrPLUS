@@ -1,7 +1,7 @@
 .reveal.large id='modal-#{ efps.id.to_s }' data-reveal=''
 
   .columns.row
-    button.button id='submit-quality-dimensions' data-close='' aria-label='Close modal' type='button' style='position: fixed; right: 20%;' Submit
+    button.button id='submit-quality-dimensions' type='button' data-extraction-forms-projects-section-id=efps.id.to_s style='position: fixed; right: 20%;' Submit
 
   .columns.row
     - QualityDimensionSection.includes(quality_dimension_questions: :quality_dimension_options).all.each do |qds|
@@ -31,7 +31,7 @@
                 tr
                   td
 
-                    input.quality-dimension-select id=qdq.id data-extraction-forms-projects-section-id=efps.id type='checkbox'
+                    input.quality-dimension-select id=qdq.id type='checkbox'
                   th id=qdq.id scope='row' style='text-align: left; cursor: copy;' = qdq.name
                   - qdq.quality_dimension_options.each do |qdo|
                     td = qdo.name

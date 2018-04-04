@@ -62,28 +62,22 @@ document.addEventListener 'turbolinks:load', ->
     # Attach listeners to quality-dimension-* links.
     $( '#submit-quality-dimensions' ).click ( e ) ->
       a_qdqId   = []
-      efpsId    = undefined
+      efpsId    = $( this ).data( 'extraction-forms-projects-section-id' )
       csrfToken = $( 'meta[name="csrf-token"]' ).attr('content')
 
       $( 'input.quality-dimension-select:checkbox:checked' ).each ->
         that   = $( this )
-        efpsId = that.data( 'extraction-forms-projects-section-id' )
         qdqId  = that.attr( 'id' )
         a_qdqId.push( qdqId )
 
-      post('/extraction_forms_projects_sections/' + efpsId + '/add_quality_dimension', { a_qdqId: a_qdqId, authenticity_token: csrfToken })
-      console.log efpsId
-      console.log a_qdqId
-      console.log 'hurray!'
-
-#    $( '[class^=add-quality-dimension-]' ).click ( e ) ->
-#      e.preventDefault()
-#      that      = $( this )
-#      efpsId    = that.data( 'extraction-forms-projects-section-id' )
-#      qdType    = that.data( 'quality-dimension-type' )
-#      qdId      = that.data( 'quality-dimension-id' )
-#      csrfToken = $( 'meta[name="csrf-token"]' ).attr('content')
-#      post('/extraction_forms_projects_sections/' + efpsId + '/add_quality_dimension', { type: qdType, id: qdId, authenticity_token: csrfToken })
+      if !Array.isArray(a_qdqId) or !a_qdqId.length
+        # array does not exist, is not an array, or is empty
+        # Close the modal.
+        $( '#modal-' + efpsId ).foundation( 'close' )
+      else
+        # Spinner.
+        $( '#modal-' + efpsId ).html( 'Submitting..' )
+        post('/extraction_forms_projects_sections/' + efpsId + '/add_quality_dimension', { a_qdqId: a_qdqId, authenticity_token: csrfToken })
 
     return  # END do ->
 
