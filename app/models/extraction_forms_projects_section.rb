@@ -116,7 +116,7 @@ class ExtractionFormsProjectsSection < ApplicationRecord
 
       efps = ExtractionFormsProjectsSection.find(efps_id)
 
-      # Iterate through the array of question ids and add the question to the section.
+      # Iterate through the array of quality dimension question ids and add the question to the section.
       lsof_qdq_ids.each do |qdq_id|
         qdq = QualityDimensionQuestion.find(qdq_id)
         q = efps.questions.create(name: qdq.name, description: qdq.description)

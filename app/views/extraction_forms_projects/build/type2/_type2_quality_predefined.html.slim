@@ -22,10 +22,16 @@
 
           tbody
             - qds.quality_dimension_questions.each do |qdq|
-              tr
-                td
+              - is_present = false
+              - efps.questions.each do |q|
+                - if q.name == qdq.name && q.description == qdq.description
+                  - is_present = true
 
-                  input.quality-dimension-select id=qdq.id data-extraction-forms-projects-section-id=efps.id type='checkbox'
-                th id=qdq.id scope='row' style='text-align: left; cursor: copy;' = qdq.name
-                - qdq.quality_dimension_options.each do |qdo|
-                  td = qdo.name
+              - unless is_present
+                tr
+                  td
+
+                    input.quality-dimension-select id=qdq.id data-extraction-forms-projects-section-id=efps.id type='checkbox'
+                  th id=qdq.id scope='row' style='text-align: left; cursor: copy;' = qdq.name
+                  - qdq.quality_dimension_options.each do |qdo|
+                    td = qdo.name
