@@ -4,9 +4,9 @@
 
   /= select_tag(:key_question_id, options_for_select(@extraction_forms_projects_section.key_questions_projects_array))
   .key-question-selector
-    h3 Select Key Question to work on
-    - @extraction_forms_projects_section.key_questions_projects_array.each do |kqp|
-      = check_box_tag kqp[1]
+    h4 Select Key Question to work on
+    - @key_questions_projects_array_for_select.each do |kqp|
+      = check_box_tag kqp[1], 1, true
       = label_tag kqp[1], kqp[0]
 
   - @extraction_forms_projects_section.questions.each_with_index do |q, idx|
@@ -20,7 +20,7 @@
       card so that we can filter it, similar to the prerequisite method
     - kqreq = q.key_questions_projects.collect { |kqp| "kqreq-#{ kqp.id }" }.join(' ')
 
-    .card class='#{ prereq } #{ kqreq } hide'
+    .card class='#{ prereq } #{ kqreq }'
 
       .card-divider
 

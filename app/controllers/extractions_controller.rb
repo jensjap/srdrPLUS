@@ -70,7 +70,8 @@ class ExtractionsController < ApplicationController
   # GET /extractions/1/work
   def work
     @extraction_forms_projects = ExtractionFormsProject.includes(:extraction_forms_projects_sections)
-                                                       .by_extraction(@extraction.id)
+                                                       .where(project: @extraction.project).all
+    @key_questions_projects_array_for_select = @extraction.extraction_forms_projects_sections.first.extraction_forms_project.key_questions_projects_array_for_select
   end
 
   private

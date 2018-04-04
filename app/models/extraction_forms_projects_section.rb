@@ -45,15 +45,6 @@ class ExtractionFormsProjectsSection < ApplicationRecord
   validate :child_type
   validate :parent_type
 
-  def key_questions_projects_array
-    key_questions_projects = Array.new
-    self.questions.each do |q|
-      key_questions_projects = key_questions_projects | q.key_questions_projects
-    end
-
-    return key_questions_projects.map { |kqp| [kqp.key_question.name, kqp.id] }
-  end
-
   # Do not create duplicate Type1 entries.
   #
   # In nested forms the type1s_attributes hash will have IDs for entries that

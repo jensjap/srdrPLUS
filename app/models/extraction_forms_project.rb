@@ -5,11 +5,11 @@ class ExtractionFormsProject < ApplicationRecord
   has_paper_trail
 
   # Get all ExtractionFormsProject items that are linked to a particular Extraction.
-  scope :by_extraction, -> (extraction_id) {
-    joins(extraction_forms_projects_sections: { key_questions_projects: :extractions })
-      .where(extractions: { id: extraction_id })
-      .distinct
-  }
+  #scope :by_extraction, -> (extraction_id) {
+  #  joins(extraction_forms_projects_sections: { key_questions_projects: :extractions })
+  #    .where(extractions: { id: extraction_id })
+  #    .distinct
+  #}
 
   after_create :create_default_sections
 
@@ -25,6 +25,17 @@ class ExtractionFormsProject < ApplicationRecord
 
   def get_extraction_forms_project_extraction_form_information_markup
     self.extraction_form.name
+  end
+
+  def key_questions_projects_array_for_select
+    key_questions_projects = Array.new
+    self.extraction_forms_projects_sections.each do |efps|
+      efps.questions.each do |q|
+        key_questions_projects = key_questions_projects | q.key_questions_projects
+      end
+
+      return key_questions_projects.map { |kqp| [kqp.key_question.name, kqp.id] }
+    end
   end
 
   private
