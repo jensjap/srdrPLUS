@@ -5,10 +5,11 @@ class ExtractionsController < ApplicationController
   # GET /projects/1/extractions
   # GET /projects/1/extractions.json
   def index
-    @extractions = Extraction.includes(:citations_project,
-                                       projects_users_role: [projects_user: [:project, user: [:profile]]],
-                                       extractions_key_questions_projects: [key_questions_project: [:key_question, extraction_forms_projects_section: [extraction_forms_project: [:extraction_form]]]])
-                             .where(extractions_key_questions_projects: { key_questions_projects: { project: @project } }).all
+    @extractions = @project.extractions
+#    @extractions = Extraction.includes(:citations_project,
+#                                       projects_users_role: [projects_user: [:project, user: [:profile]]],
+#                                       extractions_key_questions_projects: [key_questions_project: [:key_question, extraction_forms_projects_section: [extraction_forms_project: [:extraction_form]]]])
+#                             .where(extractions_key_questions_projects: { key_questions_projects: { project: @project } }).all
   end
 
   # GET /extractions/1
@@ -28,11 +29,11 @@ class ExtractionsController < ApplicationController
   # POST /extractions
   # POST /extractions.json
   def create
-    @extraction = Extraction.new(extraction_params)
+    @extraction = @project.extractions.build(extraction_params)
 
     respond_to do |format|
       if @extraction.save
-        format.html { redirect_to project_extractions_url(@extraction.extractions_key_questions_projects.first.key_questions_project.project), notice: 'Extraction was successfully created.' }
+        format.html { redirect_to project_extractions_url(@extraction.project), notice: 'Extraction was successfully created.' }
         format.json { render :show, status: :created, location: @extraction }
       else
         format.html { render :new }
@@ -71,7 +72,7 @@ class ExtractionsController < ApplicationController
   def work
     @extraction_forms_projects = ExtractionFormsProject.includes(:extraction_forms_projects_sections)
                                                        .where(project: @extraction.project).all
-    @key_questions_projects_array_for_select = @extraction.extraction_forms_projects_sections.first.extraction_forms_project.key_questions_projects_array_for_select
+    @key_questions_projects_array_for_select = @extraction.project.key_questions_projects_array_for_select
   end
 
   private
@@ -82,8 +83,8 @@ class ExtractionsController < ApplicationController
 
     def set_extraction
       @extraction = Extraction.includes(projects_users_role: { projects_user: :project })
-                              .includes(key_questions_projects: [:key_question, extraction_forms_projects_section: [:extractions_extraction_forms_projects_sections, :extraction_forms_projects_section_type]])
                               .find(params[:id])
+                              #.includes(key_questions_projects: [:key_question, extraction_forms_projects_section: [:extractions_extraction_forms_projects_sections, :extraction_forms_projects_section_type]])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

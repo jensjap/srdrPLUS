@@ -7,6 +7,8 @@ class Project < ApplicationRecord
 
   paginates_per 8
 
+  has_many :extractions, dependent: :destroy, inverse_of: :project
+
   has_many :extraction_forms_projects, dependent: :destroy, inverse_of: :project
   has_many :extraction_forms, through: :extraction_forms_projects, dependent: :destroy
 
@@ -41,5 +43,9 @@ class Project < ApplicationRecord
 
   def duplicate_extraction_form?
     self.extraction_forms.having('count(*) > 1').group('name').length.nonzero?
+  end
+
+  def key_questions_projects_array_for_select
+    self.key_questions_projects.map { |kqp| [kqp.key_question.name, kqp.id] }
   end
 end

@@ -7,7 +7,6 @@
         tr
           th Citation
           th Assigned User
-          th Key Questions
           th
           th
           th
@@ -18,13 +17,6 @@
           tr
             td = extraction.citations_project.citation.name if extraction.citations_project
             td = extraction.projects_users_role.projects_user.user.profile.username
-            td
-              ul
-                - extraction.extractions_key_questions_projects.each do |ekqp|
-                  - if ekqp.key_questions_project.extraction_forms_projects_section
-                    li Key Question: "#{  ekqp.key_questions_project.key_question.name }"
-                    ul style='margin-top: 0px; margin-bottom: 33px;'
-                      li Extraction Form: "#{ ekqp.key_questions_project.extraction_forms_projects_section.extraction_forms_project.extraction_form.name }"
             td = link_to t('work'), work_extraction_path(extraction, anchor: extraction.extractions_extraction_forms_projects_sections.present? ? "panel-tab-#{ extraction.extractions_extraction_forms_projects_sections.first.id }" : '')
             td = link_to t('show'), extraction
             td = link_to t('edit'), edit_extraction_path(extraction)

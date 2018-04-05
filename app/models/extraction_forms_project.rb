@@ -27,17 +27,6 @@ class ExtractionFormsProject < ApplicationRecord
     self.extraction_form.name
   end
 
-  def key_questions_projects_array_for_select
-    key_questions_projects = Array.new
-    self.extraction_forms_projects_sections.each do |efps|
-      efps.questions.each do |q|
-        key_questions_projects = key_questions_projects | q.key_questions_projects
-      end
-
-      return key_questions_projects.map { |kqp| [kqp.key_question.name, kqp.id] }
-    end
-  end
-
   private
 
     def create_default_sections

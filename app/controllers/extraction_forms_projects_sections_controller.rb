@@ -59,7 +59,7 @@ class ExtractionFormsProjectsSectionsController < ApplicationController
   end
 
   def preview
-    @key_questions_projects_array_for_select = @extraction_forms_projects_section.extraction_forms_project.key_questions_projects_array_for_select
+    @key_questions_projects_array_for_select = @extraction_forms_projects_section.project.key_questions_projects_array_for_select
   end
 
   def dissociate_type1
