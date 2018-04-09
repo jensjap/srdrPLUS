@@ -8,6 +8,9 @@ class QuestionRowColumnField < ApplicationRecord
   belongs_to :question_row_column,            inverse_of: :question_row_column_field
   belongs_to :question_row_column_field_type, inverse_of: :question_row_column_fields
 
+  has_many :extractions_extraction_forms_projects_sections_question_row_column_fields, dependent: :destroy, inverse_of: :question_row_column_field
+  has_many :extractions_extraction_forms_projects_sections, through: :extractions_extraction_forms_projects_sections_question_row_column_fields, dependent: :destroy
+
   has_many :dependencies, as: :prerequisitable, dependent: :destroy
   has_many :records, as: :recordable
 

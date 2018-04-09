@@ -20,7 +20,8 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
   belongs_to :extractions_extraction_forms_projects_section, inverse_of: :extractions_extraction_forms_projects_sections_type1s
   belongs_to :type1,                                         inverse_of: :extractions_extraction_forms_projects_sections_type1s
 
-  has_many :extractions_extraction_forms_projects_sections_type1_rows, dependent: :destroy, inverse_of: :extractions_extraction_forms_projects_sections_type1
+  has_many :extractions_extraction_forms_projects_sections_type1_rows,                 dependent: :destroy, inverse_of: :extractions_extraction_forms_projects_sections_type1
+  has_many :extractions_extraction_forms_projects_sections_question_row_column_fields, dependent: :destroy, inverse_of: :extractions_extraction_forms_projects_sections_type1
 
   validates :type1_id, uniqueness: { scope: :extractions_extraction_forms_projects_section_id }
 
