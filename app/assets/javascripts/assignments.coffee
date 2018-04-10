@@ -239,21 +239,59 @@ document.addEventListener 'turbolinks:load', ->
 ##### switch_to_list #####
     switch_to_list = ( obj ) ->
       $( '#citations-list' ).empty()
+      next_index = 0
       for c in obj.history
-        console.log( "LEYLEY" )
-        citation_element = $( '<div></div>' ).attr( { id: 'citation-element-' + c.id, class: 'callout' } )
-        citation_title = $( '<div>' + c.name + '<div/>' ).attr( { id: '#citation-element-title-' + c.breadcrumb_id } )
-        citation_element.append( citation_title )
-        $( '#citations-list' ).append( citation_element )
+        citation_element = 
+          $( '<div></div>' ).attr( { id: 'citation-element-' + c.id, class: 'callout', index: next_index } )
+        next_index++
+        citation_title = 
+          $( '<div>' + c.name + '<div/>' ).attr( { id: '#citation-element-title-' + c.breadcrumb_id } )
+        
         #set up buttons
-        citation_buttons = $( '<div><div/>' ).attr( { id: 'citation-buttons-' + c.id, class: 'button-group' } )
-        citation_button_yes = $( '<div>Yes</div>' ).attr( { id: 'citation-button-yes-' + c.id, class: 'button' } )
-        citation_button_maybe = $( '<div>Maybe</div>' ).attr( { id: 'citation-button-maybe-' + c.id, class: 'button' } )
-        citation_button_no = $( '<div>No</div>' ).attr( { id: 'citation-button-no-' + c.id, class: 'button' } )
-        citation_buttons.append( citation_button_yes )
-        citation_buttons.append( citation_button_maybe )
-        citation_buttons.append( citation_button_no )
+        buttons_wrapper =  $( '<div><div/>' ).attr( { id: 'buttons-wrapper' + c.id } )
+        citation_buttons = 
+          $( '<div><div/>' ).attr( { id: 'citation-buttons-' + c.id, class: 'button-group' } )
+        citation_button_yes =
+          $( '<div>Yes</div>' ).attr( { id: 'citation-button-yes-' + c.id, class: 'button' } )
+        citation_button_maybe = 
+          $( '<div>Maybe</div>' ).attr( { id: 'citation-button-maybe-' + c.id, class: 'button' } )
+        citation_button_no = 
+          $( '<div>No</div>' ).attr( { id: 'citation-button-no-' + c.id, class: 'button' } )
+
+        
+
+        # set click behavior
+        citation_element.click ->
+          update_index( obj, $(this).attr("index") )
+          update_info( obj )
+          update_arrows( obj )
+          switch_to_screening( obj )
+        
+
+        # for layout
+        buttons_wrapper.css('float','right')
+        citation_element.addClass('row')
+        citation_title.addClass('columns medium-9')
+        citation_buttons.addClass('columns medium-4')
+
+        # highlight button based on label value
+        if c.label_value == 'yes'
+          citation_button_yes.addClass( 'secondary' )
+        else if c.label_value == 'no'
+          citation_button_no.addClass( 'secondary' )
+        else if c.label_value == 'maybe'
+          citation_button_maybe.addClass( 'secondary' )
+        
+        # place divs
+        citation_element.append( citation_title )
+        buttons_wrapper.append( citation_button_yes )
+        buttons_wrapper.append( citation_button_maybe )
+        buttons_wrapper.append( citation_button_no )
+        citation_buttons.append( buttons_wrapper )
         citation_element.append( citation_buttons )
+        $( '#citations-list' ).append( citation_element )
+
+      #hide regular view, show list view
       $( '#citations-list' ).show()
       $( '#screen-div' ).hide()
       
