@@ -20,6 +20,7 @@ Rails.application.routes.draw do
   resources :keywords
   resources :labels
   resources :tasks
+  resources :records, only: [:update]
 
   concern :paginatable do
     get '(page/:page)', action: :index, on: :collection, as: ''

@@ -9,4 +9,6 @@ class ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField < Applica
   belongs_to :extractions_extraction_forms_projects_sections_type1, inverse_of: :extractions_extraction_forms_projects_sections_question_row_column_fields, optional: true
   belongs_to :extractions_extraction_forms_projects_section,        inverse_of: :extractions_extraction_forms_projects_sections_question_row_column_fields
   belongs_to :question_row_column_field,                            inverse_of: :extractions_extraction_forms_projects_sections_question_row_column_fields
+
+  delegate :extraction, to: :extractions_extraction_forms_projects_section
 end

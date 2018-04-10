@@ -38,8 +38,20 @@
 
               - eefps.link_to_type1.type1s.each do |t1|
                 = t1.name + ':'
-                == render 'extraction_forms_projects_sections/question_fields', q: q, t1: t1
+                == render 'extractions/work/question_fields',
+                  q: q,
+                  t1: t1,
+                  section_name: section_name,
+                  efp: efp,
+                  efps: efps,
+                  eefps: eefps
 
             - else
 
-              == render 'extraction_forms_projects_sections/question_fields', q: q, t1: nil
+              == render 'extractions/work/question_fields',
+                q: q,
+                t1: nil,
+                section_name: section_name,
+                efp: efp,
+                efps: efps,
+                eefps: eefps

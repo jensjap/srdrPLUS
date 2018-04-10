@@ -1,0 +1,26 @@
+table.hover
+
+  thead
+
+    tr
+      th
+      - for qrc in q.question_rows.first.question_row_columns
+        th style='font-weight: normal;' = qrc.name
+
+  tbody
+
+    - for qr in q.question_rows
+
+      tr
+        td = qr.name
+        - for qrc in qr.question_row_columns
+          td class='question-row-column' data-question-row-column-id='#{ qrc.id }'
+
+            == render 'extractions/work/question_row_column_field_types/' + qrc.question_row_column_field.question_row_column_field_type.name,
+              q: q,
+              t1: t1,
+              qrc: qrc,
+              efp: efp,
+              efps: efps,
+              eefps: eefps,
+              section_name: section_name
