@@ -8,7 +8,7 @@ class RecordsController < ApplicationController
       if @record.update(record_params)
         format.html { redirect_to work_extraction_path(@record.recordable.extraction,
                                                        anchor: "panel-tab-#{ @record.recordable.extractions_extraction_forms_projects_section.id.to_s }"),
-                      notice: t('success') }
+                                  notice: t('success') }
         format.json { render :show, status: :ok, location: @record }
       else
         format.html { redirect_to work_extraction_path(@record.recordable.extraction,
@@ -27,6 +27,6 @@ class RecordsController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def record_params
-    params.require(:record).permit(:value)
+    params.require(:record).permit(:name, :select2)
   end
 end

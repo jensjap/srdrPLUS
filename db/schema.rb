@@ -776,11 +776,13 @@ ActiveRecord::Schema.define(version: 20180403032632) do
   end
 
   create_table "records", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.string   "value"
+    t.string   "name"
     t.string   "recordable_type"
     t.integer  "recordable_id"
+    t.datetime "deleted_at"
     t.datetime "created_at",      null: false
     t.datetime "updated_at",      null: false
+    t.index ["deleted_at"], name: "index_records_on_deleted_at", using: :btree
     t.index ["recordable_type", "recordable_id"], name: "index_records_on_recordable_type_and_recordable_id", using: :btree
   end
 

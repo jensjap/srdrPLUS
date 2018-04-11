@@ -7,6 +7,7 @@ class QuestionRowColumnFieldsQuestionRowColumnFieldOption < ApplicationRecord
   has_paper_trail
 
   after_create :set_default_values
+  after_create :record_suggestor
 
   belongs_to :question_row_column_field,        inverse_of: :question_row_column_fields_question_row_column_field_options
   belongs_to :question_row_column_field_option, inverse_of: :question_row_column_fields_question_row_column_field_options

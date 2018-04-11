@@ -13,7 +13,7 @@
   = simple_form_for(record, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
     = f.error_notification
 
-    = f.input :value, label: false,
+    = f.input :name, label: false,
       class: 'form-control',
       input_html: { data: { prereq: "prereq-#{ qrc.class }-#{ qrc.id }" } }
 
