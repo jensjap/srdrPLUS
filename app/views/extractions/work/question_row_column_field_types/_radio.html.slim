@@ -13,9 +13,14 @@
   = simple_form_for(record, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
     = f.error_notification
 
-    = f.input :value, label: false,
+    - options = qrc.question_row_column_field.\
+      question_row_column_fields_question_row_column_field_options.\
+      where(question_row_column_field_option_id: 1).\
+      collect { |opt| [opt.name, opt.id, { 'data-prereq': "prereq-#{ opt.class }-#{ opt.id }" }] }
+    = f.input :value, label: false, as: :radio_buttons,
+      collection: options,
       class: 'form-control',
-      input_html: { data: { prereq: "prereq-#{ qrc.class }-#{ qrc.id }" } }
+      include_blank: '-- Select response --'
 
     .form-actions
       = f.button :submit, 'Save'

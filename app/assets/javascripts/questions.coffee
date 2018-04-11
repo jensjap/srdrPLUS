@@ -28,6 +28,10 @@ document.addEventListener 'turbolinks:load', ->
         that.find('.field-options.field-option-type-min_value').show()
         that.find('.field-options.field-option-type-max_value').show()
 
+      else if _value == 'numeric_range'  # Numeric range.
+        that.find('.field-options.field-option-type-min_value').show()
+        that.find('.field-options.field-option-type-max_value').show()
+
       else if _value == 'scientific'  # Scientific.
         that.find('.field-options.field-option-type-min_value').show()
         that.find('.field-options.field-option-type-max_value').show()

@@ -10,12 +10,23 @@
     question_row_column_field: qrc.question_row_column_field\
   )
   - record = Record.find_or_create_by(recordable: eefps_qrcf)
+
   = simple_form_for(record, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
     = f.error_notification
 
     = f.input :value, label: false,
-      class: 'form-control',
-      input_html: { data: { prereq: "prereq-#{ qrc.class }-#{ qrc.id }" } }
+      input_html: {\
+        type: 'number',
+        data: { prereq: "prereq-#{ qrc.class }-#{ qrc.id }" },
+        min: qrc.question_row_column_field\
+                .question_row_column_fields_question_row_column_field_options\
+                .find_by(question_row_column_field_option_id: 4)\
+                .name,
+        max: qrc.question_row_column_field\
+                .question_row_column_fields_question_row_column_field_options\
+                .find_by(question_row_column_field_option_id: 5)\
+                .name\
+      }
 
     .form-actions
       = f.button :submit, 'Save'

@@ -33,7 +33,7 @@ document.addEventListener 'turbolinks:load', ->
       minimumInputLength: 0
       ajax:
         url: ->
-          id = $( this ).parent().data( 'question-row-column-id' )
+          id = $( this ).closest( '.question-row-column' ).data( 'question-row-column-id' )
           return '/question_row_columns/' + id + '/answer_choices'
         dataType: 'json'
         delay: 250
