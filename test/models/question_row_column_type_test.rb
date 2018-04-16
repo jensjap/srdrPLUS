@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class QuestionRowColumnFieldTypeTest < ActiveSupport::TestCase
+class QuestionRowColumnTypeTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end

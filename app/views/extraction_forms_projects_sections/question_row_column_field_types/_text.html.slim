@@ -1,10 +1,10 @@
-= text_field_tag("text-#{ qrc.question_row_column_field.id }",
+= text_field_tag("text-#{ qrc.question_row_column_fields.first.id }",
   nil,
   data: { \
     prereq: "prereq-#{ qrc.class }-#{ qrc.id }",
     recordableParams: { \
       extractionId: "#{ @extraction.nil? ? nil : @extraction.id }",
-      type: "#{ qrc.question_row_column_field.class }",
-      id: "#{ qrc.question_row_column_field.id }" },
+      type: "#{ qrc.question_row_column_fields.first.class }",
+      id: "#{ qrc.question_row_column_fields.first.id }" },
     },
-  maxlength: qrc.question_row_column_field.question_row_column_fields_question_row_column_field_options.find_by(question_row_column_field_option_id: 5).name)
+  maxlength: qrc.question_row_columns_question_row_column_options.find_by(question_row_column_option_id: 5).name)

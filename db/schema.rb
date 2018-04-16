@@ -696,60 +696,62 @@ ActiveRecord::Schema.define(version: 20180403032632) do
     t.index ["deleted_at"], name: "index_quality_dimension_sections_on_deleted_at", using: :btree
   end
 
-  create_table "question_row_column_field_options", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.string   "name"
-    t.datetime "deleted_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["deleted_at"], name: "index_question_row_column_field_options_on_deleted_at", using: :btree
-  end
-
-  create_table "question_row_column_field_types", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.string   "name"
-    t.datetime "deleted_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["deleted_at"], name: "index_question_row_column_field_types_on_deleted_at", using: :btree
-  end
-
   create_table "question_row_column_fields", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "question_row_column_id"
-    t.integer  "question_row_column_field_type_id"
     t.string   "name"
     t.datetime "deleted_at"
-    t.datetime "created_at",                        null: false
-    t.datetime "updated_at",                        null: false
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
     t.index ["deleted_at"], name: "index_question_row_column_fields_on_deleted_at", using: :btree
-    t.index ["question_row_column_field_type_id"], name: "index_qrcf_on_qrcft_id", using: :btree
+    t.index ["question_row_column_id", "deleted_at"], name: "index_qrcf_on_qrc_id_deleted_at", using: :btree
     t.index ["question_row_column_id"], name: "index_qrcf_on_qrc_id", using: :btree
   end
 
-  create_table "question_row_column_fields_question_row_column_field_options", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer  "question_row_column_field_id"
-    t.integer  "question_row_column_field_option_id"
+  create_table "question_row_column_options", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "name"
-    t.string   "name_type"
     t.datetime "deleted_at"
-    t.boolean  "active"
-    t.datetime "created_at",                          null: false
-    t.datetime "updated_at",                          null: false
-    t.index ["active"], name: "index_qrcfqrcfo_on_active", using: :btree
-    t.index ["deleted_at"], name: "index_qrcfqrcfo_on_deleted_at", using: :btree
-    t.index ["question_row_column_field_id", "question_row_column_field_option_id", "active"], name: "index_qrcfqrcfo_on_qrcf_id_qrcfo_id_active", using: :btree
-    t.index ["question_row_column_field_id", "question_row_column_field_option_id", "deleted_at"], name: "index_qrcfqrcfo_on_qrcf_id_qrcfo_id_deleted_at", using: :btree
-    t.index ["question_row_column_field_id"], name: "index_qrcfqrcfo_on_qrcf_id", using: :btree
-    t.index ["question_row_column_field_option_id"], name: "index_qrcfqrcfo_on_qrcfo_id", using: :btree
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["deleted_at"], name: "index_question_row_column_options_on_deleted_at", using: :btree
+  end
+
+  create_table "question_row_column_types", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string   "name"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["deleted_at"], name: "index_question_row_column_types_on_deleted_at", using: :btree
   end
 
   create_table "question_row_columns", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "question_row_id"
+    t.integer  "question_row_column_type_id"
     t.string   "name"
     t.datetime "deleted_at"
-    t.datetime "created_at",      null: false
-    t.datetime "updated_at",      null: false
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
     t.index ["deleted_at"], name: "index_question_row_columns_on_deleted_at", using: :btree
+    t.index ["question_row_column_type_id"], name: "index_qrc_on_qrct_id", using: :btree
     t.index ["question_row_id", "deleted_at"], name: "index_qrc_on_qr_id_deleted_at", using: :btree
+    t.index ["question_row_id", "question_row_column_type_id", "deleted_at"], name: "index_qrc_on_qr_id_qrct_id_deleted_at", using: :btree
     t.index ["question_row_id"], name: "index_question_row_columns_on_question_row_id", using: :btree
+  end
+
+  create_table "question_row_columns_question_row_column_options", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "question_row_column_id"
+    t.integer  "question_row_column_option_id"
+    t.string   "name"
+    t.string   "name_type"
+    t.datetime "deleted_at"
+    t.boolean  "active"
+    t.datetime "created_at",                    null: false
+    t.datetime "updated_at",                    null: false
+    t.index ["active"], name: "index_qrcqrco_on_active", using: :btree
+    t.index ["deleted_at"], name: "index_qrcqrco_on_deleted_at", using: :btree
+    t.index ["question_row_column_id", "question_row_column_option_id", "active"], name: "index_qrcqrco_on_qrc_id_qrco_id_active", using: :btree
+    t.index ["question_row_column_id", "question_row_column_option_id", "deleted_at"], name: "index_qrcqrco_on_qrc_id_qrco_id_deleted_at", using: :btree
+    t.index ["question_row_column_id"], name: "index_qrcqrco_on_qrc_id", using: :btree
+    t.index ["question_row_column_option_id"], name: "index_qrcqrco_on_qrco_id", using: :btree
   end
 
   create_table "question_rows", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -1032,11 +1034,11 @@ ActiveRecord::Schema.define(version: 20180403032632) do
   add_foreign_key "quality_dimension_questions", "quality_dimension_sections"
   add_foreign_key "quality_dimension_questions_quality_dimension_options", "quality_dimension_options"
   add_foreign_key "quality_dimension_questions_quality_dimension_options", "quality_dimension_questions"
-  add_foreign_key "question_row_column_fields", "question_row_column_field_types"
   add_foreign_key "question_row_column_fields", "question_row_columns"
-  add_foreign_key "question_row_column_fields_question_row_column_field_options", "question_row_column_field_options"
-  add_foreign_key "question_row_column_fields_question_row_column_field_options", "question_row_column_fields"
+  add_foreign_key "question_row_columns", "question_row_column_types"
   add_foreign_key "question_row_columns", "question_rows"
+  add_foreign_key "question_row_columns_question_row_column_options", "question_row_column_options"
+  add_foreign_key "question_row_columns_question_row_column_options", "question_row_columns"
   add_foreign_key "question_rows", "questions"
   add_foreign_key "questions", "extraction_forms_projects_sections"
   add_foreign_key "result_statistic_sections", "extractions_extraction_forms_projects_sections_type1_row_columns", column: "subgroup_id"

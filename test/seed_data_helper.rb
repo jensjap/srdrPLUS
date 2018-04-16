@@ -418,8 +418,8 @@ module SeedDataExtended
       @project.key_questions << [@kq1, @kq2]
       @project.extraction_forms_projects.create!(extraction_form: @ef1, extraction_forms_project_type: @efs_project_type1)
 
-      # Seed QuestionRowColumnFieldType.
-      QuestionRowColumnFieldType.create(
+      # Seed QuestionRowColumnType.
+      QuestionRowColumnType.create(
         [
           { name: 'text' },
           { name: 'numeric' },
@@ -434,7 +434,7 @@ module SeedDataExtended
       )
 
       # Seed QuestionRowColumnFieldOption.
-      QuestionRowColumnFieldOption.create(
+      QuestionRowColumnOption.create(
         [
           { name: 'answer_choice' }, # For multiple-choice: checkbox, radio, dropdown
           { name: 'min_length' },    # For text

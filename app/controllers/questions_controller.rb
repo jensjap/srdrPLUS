@@ -105,8 +105,7 @@ class QuestionsController < ApplicationController
 
     def set_question
       @question = Question.includes(question_rows: [
-        { question_row_columns: [
-          { question_row_column_field: [:question_row_column_field_type, :question_row_column_field_options] }] }])
+        { question_row_columns: [ :question_row_column_options, :question_row_column_fields] }])
           .find(params[:id])
     end
 
@@ -126,9 +125,9 @@ class QuestionsController < ApplicationController
                 :description,
                 key_questions_project_ids: [],
                 question_rows_attributes: [:id, :name, question_row_columns_attributes:
-                                           [:id, :name, question_row_column_field_attributes:
-                                            [:id, :question_row_column_field_type_id, question_row_column_fields_question_row_column_field_options_attributes:
-                                             [:id, :_destroy, :question_row_column_field_option_id, :name]]]]
+                                           [:id, :question_row_column_type_id, :name, question_row_column_field_attributes:
+                                            [:id, question_row_columns_question_row_column_options_attributes:
+                                             [:id, :_destroy, :question_row_column_option_id, :name]]]]
                )
     end
 
