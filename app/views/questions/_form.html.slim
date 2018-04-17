@@ -17,7 +17,10 @@
 
     #step-one data-toggler='' data-animate='scale-in-up scale-out-down' style="display: #{ first_time ? 'block' : 'none' };"
       - kqps = @question.project.key_questions_projects
-      = f.association :key_questions_projects, collection: kqps, label: 'Select Key Questions addressed', as: :check_boxes, label_method: :kq_name, checked: kqps.map(&:id)
+      - if @extraction_forms_projects_section.present? && current_page?(new_extraction_forms_projects_section_question_path(@extraction_forms_projects_section))
+        = f.association :key_questions_projects, collection: kqps, label: 'Select Key Questions addressed', as: :check_boxes, label_method: :kq_name, checked: kqps.map(&:id)
+      - elsif current_page?(edit_question_path(@question))
+        = f.association :key_questions_projects, collection: kqps, label: 'Select Key Questions addressed', as: :check_boxes, label_method: :kq_name
       = f.input :name, label: 'Question Text', autofocus: true
       = f.input :description, label: 'Description (Optional Instructions for Extractor)', input_html: { rows: 8 }
 

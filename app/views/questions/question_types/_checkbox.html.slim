@@ -20,21 +20,15 @@
           fieldset.fieldset
             legend Field Options
 
-            = qrc_f.simple_fields_for(:question_row_column_field) do |qrcf_f|
+            #question-row-column-field-options
+              = qrc_f.simple_fields_for(:question_row_column_options) do |qrco_f|
 
+                == render 'questions/question_types/question_row_column_field_option_fields', f: qrco_f
 
-
-
-
-              #question-row-column-field-options
-                = qrcf_f.simple_fields_for(:question_row_column_field_options) do |qrcfo_f|
-
-                  == render 'questions/question_types/question_row_column_field_option_fields', f: qrcfo_f
-
-                .links
-                  = link_to_add_association 'add option', qrcf_f,
-                                            :question_row_column_field_options,
-                                            partial: 'questions/question_types/question_row_column_field_option_fields'
+              .links
+                = link_to_add_association 'add option', qrc_f,
+                                          :question_row_column_options,
+                                          partial: 'questions/question_types/question_row_column_field_option_fields'
 
     .form-actions
       = f.button :submit, t('save')

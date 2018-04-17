@@ -3,6 +3,7 @@ class QuestionRowColumn < ApplicationRecord
   has_paper_trail
 
   after_create :associate_default_question_row_column_type
+  after_create :create_default_question_row_column_options
   after_create :create_default_question_row_column_field
 
   belongs_to :question_row,             inverse_of: :question_row_columns
@@ -19,8 +20,8 @@ class QuestionRowColumn < ApplicationRecord
   accepts_nested_attributes_for :question_row_columns_question_row_column_options, allow_destroy: true
 
 
-  delegate :question,                       to: :question_row
-  delegate :question_type,                  to: :question_row
+  delegate :question,      to: :question_row
+  delegate :question_type, to: :question_row
 
   private
 
@@ -29,12 +30,13 @@ class QuestionRowColumn < ApplicationRecord
       self.save
     end
 
-
-    def create_default_question_row_column_field
+    def create_default_question_row_column_options
       QuestionRowColumnOption.all.each do |opt|
         self.question_row_column_options << opt
       end
+    end
 
+    def create_default_question_row_column_field
       self.question_row_column_fields.create
     end
 end

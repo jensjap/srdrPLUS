@@ -1,9 +1,8 @@
 / Iterate through all QuestionRowColumnFieldsQuestionRowColumnFieldOptions with QuestionRowColumnFieldOption 'answer_choice'
-- for qrcfqrcfo in qrc.question_row_column_field\
-                      .question_row_column_fields_question_row_column_field_options\
-                      .where(question_row_column_field_option_id: 1)
+- for qrcfqrcfo in qrc.question_row_columns_question_row_column_options\
+                      .where(question_row_column_option_id: 1)
 
-  = check_box_tag('checkbox-' + qrc.question_row_column_field.id.to_s,
+  = check_box_tag('checkbox-' + qrc.id.to_s,
     nil,
     false,
     data: { prereq: "prereq-#{ qrcfqrcfo.class }-#{ qrcfqrcfo.id }" })

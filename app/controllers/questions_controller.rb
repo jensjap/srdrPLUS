@@ -112,8 +112,7 @@ class QuestionsController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def question_params
       params.require(:question)
-        .permit(:question_type_id,
-                :name,
+        .permit(:name,
                 :description,
                 key_questions_project_ids: []
                )
@@ -125,9 +124,8 @@ class QuestionsController < ApplicationController
                 :description,
                 key_questions_project_ids: [],
                 question_rows_attributes: [:id, :name, question_row_columns_attributes:
-                                           [:id, :question_row_column_type_id, :name, question_row_column_field_attributes:
-                                            [:id, question_row_columns_question_row_column_options_attributes:
-                                             [:id, :_destroy, :question_row_column_option_id, :name]]]]
+                                           [:id, :question_row_column_type_id, :name, question_row_columns_question_row_column_options_attributes:
+                                            [:id, :_destroy, :question_row_column_option_id, :name]]]
                )
     end
 

@@ -37,10 +37,10 @@
 
               - @extraction_forms_projects_section.link_to_type1.type1s.each do |t1|
                 = t1.name + ':'
-                == render 'extraction_forms_projects_sections/question_fields', q: q
+                == render 'extraction_forms_projects_sections/question_fields', q: q, t1: t1
 
             - else
-              == render 'extraction_forms_projects_sections/question_fields', q: q
+              == render 'extraction_forms_projects_sections/question_fields', q: q, t1: nil
 
 .column.row
   = link_to 'Back', build_extraction_forms_project_path(@extraction_forms_projects_section.extraction_forms_project,

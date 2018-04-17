@@ -63,12 +63,10 @@ Rails.application.routes.draw do
           end
           resources :question_rows, only: [:destroy] do
             resources :question_row_columns, only: [] do
+              resources :question_row_columns_question_row_column_options, only: [:destroy]
               member do
                 get 'answer_choices'
                 delete 'destroy_entire_column'
-              end
-              resources :question_row_column_fields, only: [] do
-                resources :question_row_column_fields_question_row_column_field_options, only: [:destroy]
               end
             end
           end
