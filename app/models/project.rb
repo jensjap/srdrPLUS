@@ -7,6 +7,8 @@ class Project < ApplicationRecord
 
   paginates_per 8
 
+  after_create :create_default_extraction_form
+
   has_many :extractions, dependent: :destroy, inverse_of: :project
 
   has_many :extraction_forms_projects, dependent: :destroy, inverse_of: :project
@@ -48,4 +50,10 @@ class Project < ApplicationRecord
   def key_questions_projects_array_for_select
     self.key_questions_projects.map { |kqp| [kqp.key_question.name, kqp.id] }
   end
+
+  private
+
+    def create_default_extraction_form
+      self.extraction_forms_projects.create!(extraction_forms_project_type: ExtractionFormsProjectType.first, extraction_form: ExtractionForm.first)
+    end
 end

@@ -210,6 +210,57 @@ module SeedData
         { name: 'Percentage' },
       ])
 
+      # Extraction Forms Projects Section Types.
+      ExtractionFormsProjectsSectionType.create(
+        [
+          { name: 'Type 1' },
+          { name: 'Type 2' },
+          { name: 'Results' },
+        ]
+      )
+
+      # Sections.
+      Section.create(
+        [
+          { name: 'Design Details', default: true },
+          { name: 'Arms', default: true },
+          { name: 'Arm Details', default: true },
+          { name: 'Sample Characteristics', default: true },
+          { name: 'Outcomes', default: true },
+          { name: 'Outcome Details', default: true },
+          { name: 'Quality', default: true },
+          { name: 'Results', default: true }
+        ]
+      )
+
+      # Seed QuestionRowColumnType.
+      QuestionRowColumnType.create(
+        [
+          { name: 'text' },
+          { name: 'numeric' },
+          { name: 'numeric_range' },
+          { name: 'scientific' },
+          { name: 'checkbox' },
+          { name: 'dropdown' },
+          { name: 'radio' },
+          { name: 'select2_single' },
+          { name: 'select2_multi' }
+        ]
+      )
+
+      # Seed QuestionRowColumnFieldOption.
+      QuestionRowColumnOption.create(
+        [
+          { name: 'answer_choice' }, # For multiple-choice: checkbox, radio, dropdown
+          { name: 'min_length' },    # For text
+          { name: 'max_length' },    # For text
+          { name: 'min_value' },     # For scientific, numerical
+          { name: 'max_value' },     # For scientific, numerical
+          { name: 'coefficient' },   # For scientific
+          { name: 'exponent' }       # For scientific
+        ]
+      )
+
       # Turn on paper_trail.
       PaperTrail.enabled = true
 
@@ -245,6 +296,10 @@ module SeedDataExtended
     object.instance_exec do
       # Turn off paper_trail.
       PaperTrail.enabled = false
+
+      # Key Questions.
+      @kq1 = KeyQuestion.create(name: 'kq1')
+      @kq2 = KeyQuestion.create(name: 'kq2')
 
       # Projects.
       project_titles.each do |n|
@@ -379,72 +434,9 @@ module SeedDataExtended
         Faker::UniqueGenerator.clear
       end
 
-      # Key Questions.
-      @kq1 = KeyQuestion.create(name: 'kq1')
-      @kq2 = KeyQuestion.create(name: 'kq2')
-
-      # Extraction Form Types.
-      @efs_project_type1 = ExtractionFormsProjectType.create(name: 'Standard')
-      @efs_project_type2 = ExtractionFormsProjectType.create(name: 'Diagnostic Test')
-
-      # Extraction Forms Projects Section Types.
-      ExtractionFormsProjectsSectionType.create(
-        [
-          { name: 'Type 1' },
-          { name: 'Type 2' },
-          { name: 'Results' },
-        ]
-      )
-
-      # Sections.
-      Section.create(
-        [
-          { name: 'Design Details', default: true },
-          { name: 'Arms', default: true },
-          { name: 'Arm Details', default: true },
-          { name: 'Sample Characteristics', default: true },
-          { name: 'Outcomes', default: true },
-          { name: 'Outcome Details', default: true },
-          { name: 'Quality', default: true },
-          { name: 'Results', default: true }
-        ]
-      )
-
-      # Extraction Forms.
-      @ef1 = ExtractionForm.create(name: 'ef1')
-
       # Associate KQ's and EF's with first project.
       @project = Project.order(updated_at: :desc).first
       @project.key_questions << [@kq1, @kq2]
-      @project.extraction_forms_projects.create!(extraction_form: @ef1, extraction_forms_project_type: @efs_project_type1)
-
-      # Seed QuestionRowColumnType.
-      QuestionRowColumnType.create(
-        [
-          { name: 'text' },
-          { name: 'numeric' },
-          { name: 'numeric_range' },
-          { name: 'scientific' },
-          { name: 'checkbox' },
-          { name: 'dropdown' },
-          { name: 'radio' },
-          { name: 'select2_single' },
-          { name: 'select2_multi' }
-        ]
-      )
-
-      # Seed QuestionRowColumnFieldOption.
-      QuestionRowColumnOption.create(
-        [
-          { name: 'answer_choice' }, # For multiple-choice: checkbox, radio, dropdown
-          { name: 'min_length' },    # For text
-          { name: 'max_length' },    # For text
-          { name: 'min_value' },     # For scientific, numerical
-          { name: 'max_value' },     # For scientific, numerical
-          { name: 'coefficient' },   # For scientific
-          { name: 'exponent' }       # For scientific
-        ]
-      )
 
       # Seed ProjectsUser.
       Project.all.each do |p|
