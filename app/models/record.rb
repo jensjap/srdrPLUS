@@ -22,8 +22,14 @@ class Record < ApplicationRecord
   end
 
   def check_constraints
-    min_length = self.recordable.question_row_column_field.question_row_column.question_row_columns_question_row_column_options.find_by(question_row_column_option_id: 2).name.to_i
-    max_length = self.recordable.question_row_column_field.question_row_column.question_row_columns_question_row_column_options.find_by(question_row_column_option_id: 3).name.to_i
-    errors.add(:length, "must be between #{ min_length.to_s } and #{ max_length.to_s }") if self.name.length < min_length || self.name.length > max_length
+    case self.recordable
+    when ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField
+      if self.recordable.question_row_column_field.question_row_column.question_row_column_type == QuestionRowColumnType.find(1)  # Text
+        min_length = self.recordable.question_row_column_field.question_row_column.question_row_columns_question_row_column_options.find_by(question_row_column_option_id: 2).name.to_i
+        max_length = self.recordable.question_row_column_field.question_row_column.question_row_columns_question_row_column_options.find_by(question_row_column_option_id: 3).name.to_i
+        errors.add(:length, "must be between #{ min_length.to_s } and #{ max_length.to_s }") if self.name.length < min_length || self.name.length > max_length
+      end
+    else
+    end
   end
 end
