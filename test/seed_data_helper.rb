@@ -261,6 +261,17 @@ module SeedData
         ]
       )
 
+      # Seed Key Questions.
+      @kq1 = KeyQuestion.create(name: 'kq1')
+      @kq2 = KeyQuestion.create(name: 'kq2')
+
+      # Seed Extraction Form Types.
+      @efs_project_type1 = ExtractionFormsProjectType.create(name: 'Standard')
+      @efs_project_type2 = ExtractionFormsProjectType.create(name: 'Diagnostic Test')
+
+      # Seed Extraction Forms.
+      @ef1 = ExtractionForm.create(name: 'ef1')
+
       # Turn on paper_trail.
       PaperTrail.enabled = true
 
@@ -297,25 +308,33 @@ module SeedDataExtended
       # Turn off paper_trail.
       PaperTrail.enabled = false
 
-      # Key Questions.
-      @kq1 = KeyQuestion.create(name: 'kq1')
-      @kq2 = KeyQuestion.create(name: 'kq2')
-
       # Projects.
       project_titles.each do |n|
         updated_at = Faker::Time.between(DateTime.now - 1000, DateTime.now - 1)
-        Project.create(name:        n[0],
-                       description: n[1],
-                       attribution: Faker::Cat.registry,
-                       methodology_description: Faker::HarryPotter.quote,
-                       prospero:                Faker::Number.hexadecimal(12),
-                       doi:                     Faker::Number.hexadecimal(6),
-                       notes:                   Faker::HarryPotter.book,
-                       funding_source:          Faker::Book.publisher,
-                       created_at:              updated_at - rand(1000).hours,
-                       updated_at:              updated_at)
+        Project.create!(name:        n[0],
+                        description: n[1],
+                        attribution: Faker::Cat.registry,
+                        methodology_description: Faker::HarryPotter.quote,
+                        prospero:                Faker::Number.hexadecimal(12),
+                        doi:                     Faker::Number.hexadecimal(6),
+                        notes:                   Faker::HarryPotter.book,
+                        funding_source:          Faker::Book.publisher,
+                        created_at:              updated_at - rand(1000).hours,
+                        updated_at:              updated_at)
         Faker::UniqueGenerator.clear
       end
+
+      # Associate KQ's and EF's with first project.
+      @project = Project.order(updated_at: :desc).first
+      @project.key_questions << [@kq1, @kq2]
+
+      # Seed ProjectsUser.
+      Project.all.each do |p|
+        p.users << @contributor
+      end
+
+      # Seed ProjectsUsersRole.
+      ProjectsUser.find_by(project: @project, user: @contributor).roles << Role.where(name: 'Leader')
 
       # Publishings.
       Project.all.each do |p|
@@ -433,19 +452,6 @@ module SeedDataExtended
                               start_at: 10.minute.ago)
         Faker::UniqueGenerator.clear
       end
-
-      # Associate KQ's and EF's with first project.
-      @project = Project.order(updated_at: :desc).first
-      @project.key_questions << [@kq1, @kq2]
-
-      # Seed ProjectsUser.
-      Project.all.each do |p|
-        p.users << @contributor
-      end
-      #@project.users << @contributor
-
-      # Seed ProjectsUsersRole.
-      ProjectsUser.find_by(project: @project, user: @contributor).roles << Role.where(name: 'Leader')
 
       # Turn on paper_trail.
       PaperTrail.enabled = true

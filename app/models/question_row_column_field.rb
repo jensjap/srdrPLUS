@@ -10,7 +10,6 @@ class QuestionRowColumnField < ApplicationRecord
   has_many :extractions_extraction_forms_projects_sections, through: :extractions_extraction_forms_projects_sections_question_row_column_fields, dependent: :destroy
 
   has_many :dependencies, as: :prerequisitable, dependent: :destroy
-  has_many :records, as: :recordable
 
   #has_many :question_row_column_fields_question_row_column_field_options, dependent: :destroy, inverse_of: :question_row_column_field
   #has_many :question_row_column_field_options, through: :question_row_column_fields_question_row_column_field_options, dependent: :destroy

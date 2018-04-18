@@ -1,5 +1,6 @@
 .row
-  h2 = link_to 'go to extraction form builder ->', build_extraction_forms_project_path(@project.extraction_forms_projects.first), { style: 'float: right; font-size: 0.4em;' }
+  - efp = @project.extraction_forms_projects.first
+  h2 = link_to 'go to extraction form builder ->', build_extraction_forms_project_path(efp, anchor: "panel-tab-#{ efp.extraction_forms_projects_sections.first.id }"), { style: 'float: right; font-size: 0.4em;' }
 
   .column
     table

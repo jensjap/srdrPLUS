@@ -56,6 +56,11 @@ en:
   greet: Greetings
   blank: Cannot be blank
   confirm: Are you sure?
+  extractions:
+    work:
+      question_row_column_field_types:
+        text:
+          save: 'Update value'
   extraction_forms_projects:
     form:
       save: Save Extraction Form

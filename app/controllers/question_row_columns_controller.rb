@@ -23,9 +23,8 @@ class QuestionRowColumnsController < ApplicationController
   end
 
   def answer_choices
-    @answer_choices = @question_row_column.question_row_column_field
-                                          .question_row_column_fields_question_row_column_field_options
-                                          .where(question_row_column_field_option_id: 1)
+    @answer_choices = @question_row_column.question_row_columns_question_row_column_options
+                                          .where(question_row_column_option_id: 1)
                                           .by_query(params[:q])
   end
 
