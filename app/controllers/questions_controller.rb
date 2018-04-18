@@ -77,7 +77,7 @@ class QuestionsController < ApplicationController
   # POST /questions/1/add_column.json
   def add_column
     @question.question_rows.each do |qr|
-      qr.question_row_columns.create
+      qr.question_row_columns.create!(question_row_column_type: QuestionRowColumnType.first)
     end
 
     redirect_to edit_question_path(@question), notice: t('success')
