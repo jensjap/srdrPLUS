@@ -8,6 +8,14 @@ class Record < ApplicationRecord
 
   validate :check_constraints
 
+# So close, but doesn't work. This is nice because SimpleForm would automatically read the min and max constraints
+#  validates_length_of :name,
+#    minimum: self.recordable.question_row_column_field.question_row_column.question_row_columns_question_row_column_options.find_by(question_row_column_option_id: 2).name.to_i,
+#    maximum: self.recordable.question_row_column_field.question_row_column.question_row_columns_question_row_column_options.find_by(question_row_column_option_id: 3).name.to_i,
+#    allow_blank: true,
+#    on: :update,
+#    if: -> { self.recordable.question_row_column_field.question_row_column.question_row_column_type == QuestionRowColumnType.find_by(name: 'text') }
+
   def update(params)
     token    = params[:name]
     select2 = params[:select2].eql?('true') ? true : false
@@ -24,10 +32,12 @@ class Record < ApplicationRecord
   def check_constraints
     case self.recordable
     when ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField
-      if self.recordable.question_row_column_field.question_row_column.question_row_column_type == QuestionRowColumnType.find(1)  # Text
+      if self.recordable.question_row_column_field.question_row_column.question_row_column_type == QuestionRowColumnType.find_by(name: 'text')  # Text
         min_length = self.recordable.question_row_column_field.question_row_column.question_row_columns_question_row_column_options.find_by(question_row_column_option_id: 2).name.to_i
         max_length = self.recordable.question_row_column_field.question_row_column.question_row_columns_question_row_column_options.find_by(question_row_column_option_id: 3).name.to_i
-        errors.add(:length, "must be between #{ min_length.to_s } and #{ max_length.to_s }") if self.name.length < min_length || self.name.length > max_length
+        if self.persisted? && self.name.length > 0 && (self.name.length < min_length || self.name.length > max_length)
+          errors.add(:length, "must be between #{ min_length.to_s } and #{ max_length.to_s }")
+        end
       end
     else
     end
