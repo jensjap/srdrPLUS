@@ -3,7 +3,7 @@
 
   .form-inputs
     = f.association :citations_project, label_method: lambda { |cp| cp.citation.name }
-    = f.association :projects_users_role, label: 'Assign to', label_method: :get_projects_users_role_user_information_markup, as: :radio_buttons
+    = f.association :projects_users_role, collection: ProjectsUsersRole.joins(:projects_user).where(projects_users: { project: @project || @extraction.project }), label: 'Assign to', label_method: :get_projects_users_role_user_information_markup, as: :radio_buttons
 
   .form-actions
     = f.button :submit
