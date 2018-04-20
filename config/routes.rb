@@ -3,6 +3,7 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       resources :projects, shallow: true do
+        resources :citations
         resources :extractions, only: [:index]
         resources :extraction_forms_projects do
           resources :extraction_forms_projects_sections, only: [:index, :show] do
@@ -13,9 +14,11 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :assignments
+  resources :assignments do
+    get 'screen', on: :member
+  end
   resources :authors
-  resources :citations
+  resources :citations, only: [:new, :create, :edit, :update, :destroy, :show]
   resources :journals
   resources :keywords
   resources :labels
@@ -31,6 +34,12 @@ Rails.application.routes.draw do
   end
   post '/projects/:id/undo', to: 'projects#undo', as: :undo
   resources :projects, concerns: :paginatable, shallow: true do
+    resources :citations, only: [:index] do
+      collection do
+        get 'labeled'
+        get 'unlabeled'
+      end
+    end
     resources :extractions do
       get 'work', on: :member
       resources :extractions_extraction_forms_projects_sections do
@@ -105,8 +114,6 @@ Rails.application.routes.draw do
   resources :organizations, only: [:index]
   resources :sections, only: [:index]
 
-  resources :citations
-  resources :tasks
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end
 

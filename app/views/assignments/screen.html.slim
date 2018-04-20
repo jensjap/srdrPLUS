@@ -1,0 +1,54 @@
+#end-message
+  h3 NOTHING TO LABEL
+
+#citation-row.row
+  .medium-12.medium-centered
+    #citation-column.column.medium-8
+      dl
+        dt Abstract
+        .dd.callout.secondary
+          h5 
+            #citation-name
+          h6
+            #journal-name
+          h6
+            #journal-date
+          #citation-abstract
+
+    .column.medium-2
+      dl 
+        dt Pubmed ID
+        #citation-pmid.callout.dd
+        dt.primary Authors
+        #citation-authors.ul.dd.callout
+    .column.medium-2
+      dl 
+        dt Refman ID
+        #citation-refman.dd.callout
+        dt Keywords
+        #citation-keywords.ul.dd.callout
+
+#labeling-group.row.button-group
+  .button id='yes-button'
+   | Yes
+  .button id='maybe-button'
+   | Maybe
+  .button id='no-button'
+   | No
+
+#arrow-group.row.button-group
+  .button id='previous-button'
+   | ◄
+  .button id='next-button'
+   | ►
+
+#breadcrumb-group.row.button-group
+
+#hide-me
+  #screen-assignment-json-url
+    | #{ screen_assignment_url(@assignment.id) + '.json' }
+  #labels-url
+    | #{ labels_url }
+  #authenticity-token
+    | #{ form_authenticity_token }
+

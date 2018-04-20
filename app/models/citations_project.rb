@@ -1,4 +1,15 @@
 class CitationsProject < ApplicationRecord
+  scope :unlabeled, -> ( project ) { includes( :citation => [ :authors, :keywords, :journal ] )
+                                     .left_outer_joins(:labels)
+                                     .where( :labels => { :id => nil },
+                                          :project_id => project.id )
+                                     .distinct }
+
+  scope :labeled, -> ( project ) { includes( :citation => [ :authors, :keywords, :journal ] )
+                                   .joins(:labels)
+                                   .where(:project_id => project.id )
+                                   .distinct }
+
   belongs_to :citation
   belongs_to :project
 

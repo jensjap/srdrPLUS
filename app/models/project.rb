@@ -5,6 +5,8 @@ class Project < ApplicationRecord
   acts_as_paranoid
   has_paper_trail
 
+  #scope :is_public, -> { where( public: true ) }
+
   paginates_per 8
 
   after_create :create_default_extraction_form
@@ -27,6 +29,8 @@ class Project < ApplicationRecord
 
   has_many :citations_projects, dependent: :destroy
   has_many :citations, through: :citations_projects
+  has_many :labels, through: :citations_projects
+  has_many :unlabeled_citations, ->{ where( :labels => { :id => nil } ) }, through: :citations_projects, source: :citations
   has_many :tasks, dependent: :destroy
   has_many :assignments, through: :tasks, dependent: :destroy
 

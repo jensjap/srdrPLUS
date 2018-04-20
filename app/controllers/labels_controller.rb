@@ -1,5 +1,4 @@
 class LabelsController < ApplicationController
-  skip_before_action :authenticate_user!, only: [:show]
   before_action :set_label, only: [:show, :edit, :update, :destroy]
 
   def new
@@ -7,11 +6,14 @@ class LabelsController < ApplicationController
   end
 
   def create
-    @label = Label.new(label_params)
+    @label = Label.new( label_params )
+    @label.user = current_user
     respond_to do |format|
       if @label.save
-        format.json { render :show, status: :created, location: @label }
+        format.html { redirect_to edit_label_path(@label), notice: t('success') }
+        format.json { render json: { id: @label.id, status: :created } }
       else
+        format.html { render 'new' }
         format.json { render json: @label.errors, status: :unprocessable_entity }
       end
     end
@@ -19,10 +21,10 @@ class LabelsController < ApplicationController
 
   def update
     respond_to do |format|
-      if @label.update(label_params)
-        format.json { render :show, status: :ok, location: @label }
+      if @label.update( label_params )
+        format.json { render json: { id: @label.id, status: :updated } }
       else
-        format.json {render json: @label.errors, status: :unprocessable_entity }
+        format.json { render json: @label.errors, status: :unprocessable_entity }
       end
     end
   end

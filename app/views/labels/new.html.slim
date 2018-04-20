@@ -1,2 +1,6 @@
-h1 Labels#new
-p Find me in app/views/labels/new.html.slim
+
+.column.row
+  = simple_form_for(@label) do |f|
+    = f.input :citations_project_id
+    = f.input :value
+    = f.button :submit
