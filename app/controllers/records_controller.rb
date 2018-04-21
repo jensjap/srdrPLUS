@@ -27,6 +27,7 @@ class RecordsController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def record_params
-    params.require(:record).permit(:name, :select2)
+    # We need to permit both the string :name and array :name.
+    params.require(:record).permit(:name, :select2, :select2Multi, name: [])
   end
 end

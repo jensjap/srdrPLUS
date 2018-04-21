@@ -16,19 +16,44 @@ class Record < ApplicationRecord
 #    on: :update,
 #    if: -> { self.recordable.question_row_column_field.question_row_column.question_row_column_type == QuestionRowColumnType.find_by(name: 'text') }
 
-  def update(params)
-    token    = params[:name]
-    select2 = params[:select2].eql?('true') ? true : false
+#  def update(params)
+#    token        = params[:name]
+#    select2      = params[:select2].eql?('true') ? true : false
+#    select2Multi = params[:select2Multi].eql?('true') ? true : false
+#
+#    if select2
+#      #resource = self.recordable.question_row_column_field.question_row_column_fields_question_row_column_field_options.build(question_row_column_field_option_id: 1)
+#      resource = self.recordable.question_row_column_field.question_row_column.question_row_columns_question_row_column_options.build(question_row_column_option_id: 1)
+#      save_resource_name_with_token(resource, token)
+#    elsif select2Multi
+#      token.each do |t|
+#        resource = self.recordable.question_row_column_field.question_row_column.question_row_columns_question_row_column_options.build(question_row_column_option_id: 1)
+#        save_resource_name_with_token(resource, t)
+#      end
+#    end
+#
+#    params.delete(:select2)
+#    params.delete(:select2Multi)
+#    super
+#  end
 
-    if select2
-      #resource = self.recordable.question_row_column_field.question_row_column_fields_question_row_column_field_options.build(question_row_column_field_option_id: 1)
+  def name=(token)
+    unless token.instance_of? Array
       resource = self.recordable.question_row_column_field.question_row_column.question_row_columns_question_row_column_options.build(question_row_column_option_id: 1)
       save_resource_name_with_token(resource, token)
+      super
+    else
+      byebug
     end
-
-    params.delete(:select2)
-    super
   end
+
+#  def name1=(tokens)
+#    tokens.each do |token|
+#      resource = self.recordable.question_row_column_field.question_row_column.question_row_columns_question_row_column_options.build(question_row_column_option_id: 1)
+#      save_resource_name_with_token(resource, token)
+#    end
+#    super
+#  end
 
   def check_constraints
     case self.recordable
