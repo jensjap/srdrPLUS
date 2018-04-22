@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+
   apipie
   namespace :api do
     namespace :v1 do
@@ -34,6 +35,7 @@ Rails.application.routes.draw do
     resources :extractions do
       get 'work', on: :member
       resources :extractions_extraction_forms_projects_sections do
+        resources :extractions_extraction_forms_projects_sections_question_row_column_fields, only: [:update]
         resources :extractions_extraction_forms_projects_sections_type1s, only: [:edit, :update, :destroy] do
           member do
             get 'edit_timepoints'

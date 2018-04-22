@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180403032632) do
+ActiveRecord::Schema.define(version: 20180422051454) do
 
   create_table "action_types", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "name"
@@ -158,7 +158,7 @@ ActiveRecord::Schema.define(version: 20180403032632) do
     t.index ["user_id"], name: "index_dispatches_on_user_id", using: :btree
   end
 
-  create_table "eefps_qrcf", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "eefps_qrcfs", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "extractions_extraction_forms_projects_sections_type1_id"
     t.integer  "extractions_extraction_forms_projects_section_id"
     t.integer  "question_row_column_field_id"
@@ -167,13 +167,28 @@ ActiveRecord::Schema.define(version: 20180403032632) do
     t.boolean  "active"
     t.datetime "created_at",                                                            null: false
     t.datetime "updated_at",                                                            null: false
-    t.index ["active"], name: "index_eefps_qrcf_on_active", using: :btree
-    t.index ["deleted_at"], name: "index_eefps_qrcf_on_deleted_at", using: :btree
+    t.index ["active"], name: "index_eefps_qrcfs_on_active", using: :btree
+    t.index ["deleted_at"], name: "index_eefps_qrcfs_on_deleted_at", using: :btree
     t.index ["extractions_extraction_forms_projects_section_id"], name: "index_eefpsqrcf_on_eefps_id", using: :btree
     t.index ["extractions_extraction_forms_projects_sections_type1_id", "extractions_extraction_forms_projects_section_id", "question_row_column_field_id", "active"], name: "index_eefpsqrcf_on_eefpst1_id_eefps_id_qrcf_id_active", using: :btree
     t.index ["extractions_extraction_forms_projects_sections_type1_id", "extractions_extraction_forms_projects_section_id", "question_row_column_field_id", "deleted_at"], name: "index_eefpsqrcf_on_eefpst1_id_eefps_id_qrcf_id_deleted_at", using: :btree
     t.index ["extractions_extraction_forms_projects_sections_type1_id"], name: "index_eefpsqrcf_on_eefpst1_id", using: :btree
     t.index ["question_row_column_field_id"], name: "index_eefpsqrcf_on_qrcf_id", using: :btree
+  end
+
+  create_table "eefpsqrcf_qrcqrcos", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "eefps_qrcf_id"
+    t.integer  "question_row_columns_question_row_column_option_id"
+    t.datetime "deleted_at"
+    t.boolean  "active"
+    t.datetime "created_at",                                         null: false
+    t.datetime "updated_at",                                         null: false
+    t.index ["active"], name: "index_eefpsqrcf_qrcqrcos_on_active", using: :btree
+    t.index ["deleted_at"], name: "index_eefpsqrcf_qrcqrcos_on_deleted_at", using: :btree
+    t.index ["eefps_qrcf_id", "question_row_columns_question_row_column_option_id", "active"], name: "index_eefpsqrcfqrcqrco_on_eefps_qrcf_id_qrcqrco_id_active", using: :btree
+    t.index ["eefps_qrcf_id", "question_row_columns_question_row_column_option_id", "deleted_at"], name: "index_eefpsqrcfqrcqrco_on_eefps_qrcf_id_qrcqrco_id_deleted_at", using: :btree
+    t.index ["eefps_qrcf_id"], name: "index_eefpsqrcfqrcqrco_on_eefps_qrcf_id", using: :btree
+    t.index ["question_row_columns_question_row_column_option_id"], name: "index_eefpsqrcfqrcqrco_on_qrcqrco_id", using: :btree
   end
 
   create_table "extraction_forms", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
@@ -980,9 +995,11 @@ ActiveRecord::Schema.define(version: 20180403032632) do
   add_foreign_key "degrees_profiles", "degrees"
   add_foreign_key "degrees_profiles", "profiles"
   add_foreign_key "dispatches", "users"
-  add_foreign_key "eefps_qrcf", "extractions_extraction_forms_projects_sections"
-  add_foreign_key "eefps_qrcf", "extractions_extraction_forms_projects_sections_type1s"
-  add_foreign_key "eefps_qrcf", "question_row_column_fields"
+  add_foreign_key "eefps_qrcfs", "extractions_extraction_forms_projects_sections"
+  add_foreign_key "eefps_qrcfs", "extractions_extraction_forms_projects_sections_type1s"
+  add_foreign_key "eefps_qrcfs", "question_row_column_fields"
+  add_foreign_key "eefpsqrcf_qrcqrcos", "eefps_qrcfs"
+  add_foreign_key "eefpsqrcf_qrcqrcos", "question_row_columns_question_row_column_options"
   add_foreign_key "extraction_forms_projects", "extraction_forms"
   add_foreign_key "extraction_forms_projects", "extraction_forms_project_types"
   add_foreign_key "extraction_forms_projects", "projects"

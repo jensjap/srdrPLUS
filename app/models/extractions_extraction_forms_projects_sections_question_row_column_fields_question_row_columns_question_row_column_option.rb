@@ -1,0 +1,11 @@
+class ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnFieldsQuestionRowColumnsQuestionRowColumnOption < ApplicationRecord
+  include SharedParanoiaMethods
+
+  self.table_name = 'eefpsqrcf_qrcqrcos'
+
+  belongs_to :extractions_extraction_forms_projects_sections_question_row_column_field,
+    inverse_of: :extractions_extraction_forms_projects_sections_question_row_column_fields_question_row_columns_question_row_column_options,
+    foreign_key: 'eefps_qrcf_id'
+  belongs_to :question_row_columns_question_row_column_option,
+    inverse_of: :extractions_extraction_forms_projects_sections_question_row_column_fields_question_row_columns_question_row_column_options
+end

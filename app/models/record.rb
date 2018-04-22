@@ -44,6 +44,11 @@ class Record < ApplicationRecord
       super
     else
       byebug
+      token.each do |t|
+        resource = self.recordable.question_row_column_field.question_row_column.question_row_columns_question_row_column_options.build(question_row_column_option_id: 1)
+        name = save_resource_name_with_token(resource, t).to_i
+        super
+      end
     end
   end
 

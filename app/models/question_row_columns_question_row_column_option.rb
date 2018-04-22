@@ -16,6 +16,13 @@ class QuestionRowColumnsQuestionRowColumnOption < ApplicationRecord
 
   has_many :dependencies, as: :prerequisitable, dependent: :destroy
 
+  has_many :extractions_extraction_forms_projects_sections_question_row_column_fields_question_row_columns_question_row_column_options,
+    dependent: :destroy,
+    inverse_of: :question_row_columns_question_row_column_option
+  has_many :extractions_extraction_forms_projects_sections_question_row_column_fields,
+    through: :extractions_extraction_forms_projects_sections_question_row_column_fields_question_row_columns_question_row_column_options,
+    dependent: :destroy
+
   accepts_nested_attributes_for :question_row_column_option, allow_destroy: false
 
   delegate :question,                 to: :question_row_column

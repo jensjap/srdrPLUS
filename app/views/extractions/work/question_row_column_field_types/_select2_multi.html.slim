@@ -11,16 +11,15 @@
   )
   - record = Record.find_or_create_by(recordable: eefps_qrcf)
 
-  = simple_form_for(record, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
+  = simple_form_for(eefps_qrcf, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
     = f.error_notification
 
     - options = qrc.question_row_columns_question_row_column_options.\
       where(question_row_column_option_id: 1).\
       collect { |opt| [opt.name, opt.id, { 'data-prereq': "prereq-#{ opt.class }-#{ opt.id }" }] }
-    = f.input :name, label: false,
+    = f.association :question_row_columns_question_row_column_options, include_blank: false,
       collection: options,
-      input_html: { class: 'select2 form-control', multiple: true },
-      include_blank: '-- Select response --'
+      input_html: { class: 'select2 form-control' }
 
     .form-actions
       = f.button :submit, 'Save'
