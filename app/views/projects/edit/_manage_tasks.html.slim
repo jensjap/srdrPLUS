@@ -1,16 +1,17 @@
 = simple_form_for(@project, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
   = f.error_notification
-
   .form-inputs
     = f.simple_fields_for :tasks do |t_f|
       h3 Existing Task
-      = t_f.association :task_type
-      = t_f.input :num_assigned
-      = t_f.simple_fields_for :assignments do |a_f|
-        = a_f.association :user, label_method: :handle
-      = link_to_add_association 'add assignment', t_f, :assignments, partial: 'projects/edit/assignment_fields', data: { 'association-insertion-method' => 'after' }
+      .existing-task
+        = t_f.association :task_type
+        = t_f.input :num_assigned
+        = t_f.simple_fields_for :assignments do |a_f|
+          = a_f.association :user, label_method: :handle
+        = link_to_add_association 'add assignment', t_f, :assignments, partial: 'projects/edit/assignment_fields', data: { 'association-insertion-method' => 'before', 'association-insertion-node' => 'this' }
+
 
   .row.column
-    = link_to_add_association 'add task', f, :tasks, partial: 'projects/edit/task_fields', data: { 'association-insertion-method' => 'before' }
+    = link_to_add_association 'add task', f, :tasks, partial: 'projects/edit/task_fields', data: { 'association-insertion-method' => 'before', 'association-insertion-node' => 'this' }
   .form-actions
     = f.button :submit, 'Save changes'
