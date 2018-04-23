@@ -5,6 +5,7 @@ class Profile < ApplicationRecord
   has_paper_trail on: [:update, :destroy]
 
 #  after_restore :restore_relationships
+  after_create :create_default_abstrackr_setting
 
   belongs_to :organization, inverse_of: :profiles, optional: true
   belongs_to :user, inverse_of: :profile
@@ -47,6 +48,10 @@ class Profile < ApplicationRecord
       if User.where(email: username).exists?
         errors.add(:username, 'Username already taken!')
       end
+    end
+
+    def create_default_abstrackr_setting
+      self.create_abstrackr_setting( { authors_visible: true, journal_visible: true } )
     end
 
 #    def restore_relationships
