@@ -131,6 +131,8 @@ class ProjectsController < ApplicationController
     end
 
     def make_undo_link
+      #!!! This is wrong. Just because there's an older version doesn't mean we should be able to revert to it.
+      #    This could have been called when Assignment was created.
       if @project.versions.present?
         view_context.link_to '<u><strong>Undo that please!</strong></u>'.html_safe, undo_path(@project.versions.last), method: :post
       end
