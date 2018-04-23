@@ -410,8 +410,8 @@ ActiveRecord::Schema.define(version: 20180423000507) do
     t.index ["extractions_extraction_forms_projects_section_id", "type1_id", "deleted_at"], name: "index_eefpst1_on_eefps_id_t1_id_deleted_at", using: :btree
     t.string   "comparable_type"
     t.integer  "comparable_id"
-    t.index ["active"], name: "index_eefpst1_on_active", using: :btree
     t.index ["comparable_type", "comparable_id"], name: "index_efpst1_on_comparable", using: :btree
+    t.index ["active"], name: "index_eefpst1_on_active", using: :btree
     t.index ["deleted_at"], name: "index_eefpst1_on_deleted_at", using: :btree
     t.index ["extractions_extraction_forms_projects_section_id"], name: "index_eefpst1_on_eefps_id", using: :btree
     t.index ["type1_id"], name: "index_eefpst1_on_t1_id", using: :btree
