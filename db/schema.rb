@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180422051454) do
+ActiveRecord::Schema.define(version: 20180423000507) do
 
   create_table "action_types", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "name"
@@ -915,6 +915,21 @@ ActiveRecord::Schema.define(version: 20180422051454) do
     t.index ["task_type_id"], name: "index_tasks_on_task_type_id", using: :btree
   end
 
+  create_table "tps_arms_rssms", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "extractions_extraction_forms_projects_sections_type1_row_id"
+    t.integer  "extractions_extraction_forms_projects_sections_type1_id"
+    t.integer  "result_statistic_sections_measure_id"
+    t.datetime "deleted_at"
+    t.boolean  "active"
+    t.datetime "created_at",                                                  null: false
+    t.datetime "updated_at",                                                  null: false
+    t.index ["active"], name: "index_tps_arms_rssms_on_active", using: :btree
+    t.index ["deleted_at"], name: "index_tps_arms_rssms_on_deleted_at", using: :btree
+    t.index ["extractions_extraction_forms_projects_sections_type1_id"], name: "index_tps_arms_rssms_on_eefpst_id", using: :btree
+    t.index ["extractions_extraction_forms_projects_sections_type1_row_id"], name: "index_tps_arms_rssms_on_eefpstr_id", using: :btree
+    t.index ["result_statistic_sections_measure_id"], name: "index_tps_arms_rssms_on_rssm_id", using: :btree
+  end
+
   create_table "type1_types", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "name"
     t.datetime "deleted_at"
@@ -1067,4 +1082,7 @@ ActiveRecord::Schema.define(version: 20180422051454) do
   add_foreign_key "taggings", "users"
   add_foreign_key "tasks", "projects"
   add_foreign_key "tasks", "task_types"
+  add_foreign_key "tps_arms_rssms", "extractions_extraction_forms_projects_sections_type1_rows"
+  add_foreign_key "tps_arms_rssms", "extractions_extraction_forms_projects_sections_type1s"
+  add_foreign_key "tps_arms_rssms", "result_statistic_sections_measures"
 end

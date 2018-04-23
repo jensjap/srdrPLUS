@@ -39,17 +39,18 @@ class Record < ApplicationRecord
 
   def name=(token)
     unless token.instance_of? Array
-      resource = self.recordable.question_row_column_field.question_row_column.question_row_columns_question_row_column_options.build(question_row_column_option_id: 1)
-      save_resource_name_with_token(resource, token)
-      super
-    else
-      byebug
-      token.each do |t|
+      if self.recordable.instance_of? ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField
         resource = self.recordable.question_row_column_field.question_row_column.question_row_columns_question_row_column_options.build(question_row_column_option_id: 1)
-        name = save_resource_name_with_token(resource, t).to_i
-        super
+        save_resource_name_with_token(resource, token)
       end
+#      else
+#        byebug
+#        token.each do |t|
+#          resource = self.recordable.question_row_column_field.question_row_column.question_row_columns_question_row_column_options.build(question_row_column_option_id: 1)
+#          name = save_resource_name_with_token(resource, t).to_i
+#        end
     end
+    super
   end
 
 #  def name1=(tokens)

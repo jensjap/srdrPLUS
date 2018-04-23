@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  extractions_extraction_forms_projects_sections_type1_row: one
+  extractions_extraction_forms_projects_sections_type1: one
+  result_statistic_sections_measure: one
+  deleted_at: 2018-04-22 20:05:07
+  active: false
+
+two:
+  extractions_extraction_forms_projects_sections_type1_row: two
+  extractions_extraction_forms_projects_sections_type1: two
+  result_statistic_sections_measure: two
+  deleted_at: 2018-04-22 20:05:07
+  active: false

@@ -28,7 +28,9 @@ class ExtractionsExtractionFormsProjectsSectionsType1Row < ApplicationRecord
       else
 
         # Otherwise, create the same number of columns as other rows have.
-        (self.extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_sections_type1_rows.first.extractions_extraction_forms_projects_sections_type1_row_columns.count - 1).times do |c|
+        # I don't remember why we did -1 here.
+        #(self.extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_sections_type1_rows.first.extractions_extraction_forms_projects_sections_type1_row_columns.count - 1).times do |c|
+        self.extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_sections_type1_rows.first.extractions_extraction_forms_projects_sections_type1_row_columns.count.times do |c|
           self.extractions_extraction_forms_projects_sections_type1_row_columns.create
         end
 
