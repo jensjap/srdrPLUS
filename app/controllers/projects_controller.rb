@@ -131,7 +131,9 @@ class ProjectsController < ApplicationController
     end
 
     def make_undo_link
-      view_context.link_to '<u><strong>Undo that please!</strong></u>'.html_safe, undo_path(@project.versions.last), method: :post
+      if @project.versions.present?
+        view_context.link_to '<u><strong>Undo that please!</strong></u>'.html_safe, undo_path(@project.versions.last), method: :post
+      end
     end
 
     def make_redo_link
