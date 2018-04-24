@@ -1,0 +1,4 @@
+.nested-fields
+  = f.simple_fields_for :comparable_element do |comparable_element|
+    = comparable_element.input :comparable_type, input_html: { value: "ExtractionsExtractionFormsProjectsSectionsType1" }
+    = comparable_element.input :comparable_id, as: :select, collection: @arms, label_method: lambda { |arm| "#{arm.type1.name}" }
