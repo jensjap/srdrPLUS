@@ -1,4 +1,4 @@
-td.nested-fields
+.nested-fields
   = f.input :result_statistic_section_id, 
     as: :hidden, 
     input_html: { value: @result_statistic_section.id }
@@ -21,8 +21,7 @@ td.nested-fields
 
  
   .links
-    .links
-      = link_to_remove_association 'remove comparison', f
+    = link_to_remove_association 'remove comparison', f
     /.to-hide
       = link_to_add_association 'add comparate group', 
         f, :comparate_groups, 

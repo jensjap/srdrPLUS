@@ -16,7 +16,6 @@ class ResultStatisticSectionsController < ApplicationController
                       notice: t('success') }
         format.json { render :show, status: :ok, location: @result_statistic_section }
       else
-        byebug
         format.html { render :edit }
         format.json { render json: @result_statistic_section.errors, status: :unprocessable_entity }
       end
