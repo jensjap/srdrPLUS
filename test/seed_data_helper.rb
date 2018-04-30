@@ -280,41 +280,6 @@ module SeedDataExtended
         middle_name: 'Noel',
         last_name:   'Adams')
 
-      # Assignments.
-      Task.all.each do |t|
-        case t.task_type.name
-        when 'Perpetual', 'Pilot'
-          Assignment.create([
-            {
-              date_assigned: DateTime.now,
-              date_due: Date.today + 7,
-              user: @screener_1,
-              task: t
-            },
-            {
-              date_assigned: DateTime.now,
-              date_due: Date.today + 7,
-              user: @screener_2,
-              task: t
-            },
-            {
-              date_assigned: DateTime.now,
-              date_due: Date.today + 7,
-              user: @screener_3,
-              task: t
-            }
-          ])
-        when 'Advanced'
-          for s in @screeners.sample(rand(3))
-            Assignment.create(
-              date_assigned: DateTime.now,
-              date_due: Date.today + 7,
-              user: s,
-              task: t
-            )
-          end
-        end
-      end
 
       # Degrees.
       @bachelor_arts    = Degree.create(name: 'Bachelor of Arts - BA')
@@ -475,6 +440,42 @@ module SeedDataExtended
             task_type:    @advanced,
             project:      p
           )
+        end
+      end
+
+      # Assignments.
+      Task.all.each do |t|
+        case t.task_type.name
+        when 'Perpetual', 'Pilot'
+          Assignment.create([
+            {
+              date_assigned: DateTime.now,
+              date_due: Date.today + 7,
+              user: @screener_1,
+              task: t
+            },
+            {
+              date_assigned: DateTime.now,
+              date_due: Date.today + 7,
+              user: @screener_2,
+              task: t
+            },
+            {
+              date_assigned: DateTime.now,
+              date_due: Date.today + 7,
+              user: @screener_3,
+              task: t
+            }
+          ])
+        when 'Advanced'
+          for s in @screeners.sample(rand(3))
+            Assignment.create(
+              date_assigned: DateTime.now,
+              date_due: Date.today + 7,
+              user: s,
+              task: t
+            )
+          end
         end
       end
 
