@@ -4,7 +4,15 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       resources :projects, shallow: true do
-        resources :citations
+        resources :assignments do
+          get 'screen', on: :member
+        end
+        resources :citations, only: [:index] do
+          collection do
+            get 'labeled'
+            get 'unlabeled'
+          end
+        end
         resources :extractions, only: [:index]
         resources :extraction_forms_projects do
           resources :extraction_forms_projects_sections, only: [:index, :show] do

@@ -3,7 +3,6 @@ class AssignmentsController < ApplicationController
 
   def screen
     @citations_projects = CitationsProject.unlabeled( @assignment.project ).limit(10)
-    @label = Label.new
     render 'screen'
   end
 

@@ -25,13 +25,13 @@ class ApplicationController < ActionController::Base
   private
 
   def set_time_zone(&block)
-      Time.use_zone(current_user.profile.time_zone, &block)
+    Time.use_zone(current_user.profile.time_zone, &block)
   end
 
   protected
 
     def set_locale
-        I18n.locale = params[:locale] || I18n.default_locale
+      I18n.locale = params[:locale] || I18n.default_locale
     end
 
     def configure_permitted_parameters
