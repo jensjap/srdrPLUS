@@ -35,3 +35,5 @@ table
 /                p Measure ID: #{ tps_arms_rssm.result_statistic_sections_measure.id } -- Measure name: #{ tps_arms_rssm.result_statistic_sections_measure.measure.name }
 /                hr
 
+= link_to 'Back', work_extraction_path(@result_statistic_section.subgroup.extractions_extraction_forms_projects_sections_type1_row.extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_section.extraction,
+  anchor: "panel-tab-#{ @result_statistic_section.subgroup.extractions_extraction_forms_projects_sections_type1_row.extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_section.extraction.extractions_extraction_forms_projects_sections.last.id }")

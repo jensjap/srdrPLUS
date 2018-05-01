@@ -30,3 +30,6 @@ table
       .links
         = link_to_add_association 'add comparison', f, :comparisons, data: { 'association-insertion-method' => 'after', 'association-insertion-node' => 'this' }
       = f.button :submit, 'Save'
+
+= link_to 'Back', work_extraction_path(@result_statistic_section.subgroup.extractions_extraction_forms_projects_sections_type1_row.extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_section.extraction,
+  anchor: "panel-tab-#{ @result_statistic_section.subgroup.extractions_extraction_forms_projects_sections_type1_row.extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_section.extraction.extractions_extraction_forms_projects_sections.last.id }")
