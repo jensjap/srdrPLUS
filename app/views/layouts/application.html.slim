@@ -13,7 +13,7 @@ html class='no-js' lang='en'
     = csrf_meta_tag
     = render 'toastr_rails/flash'
 
-  body
+  body class="#{controller_name} #{action_name}"
     = Gon::Base.render_data(camelCase: true)
     = render 'shared/noscript'
     - if content_for?(:content)

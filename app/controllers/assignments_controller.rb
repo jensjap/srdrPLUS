@@ -2,7 +2,8 @@ class AssignmentsController < ApplicationController
   before_action :set_assignment, only: [:screen]
 
   def screen
-    @citations_projects = CitationsProject.unlabeled( @assignment.project ).limit(10)
+    @citations_projects = CitationsProject.unlabeled( @assignment.project, params[:count] )
+    @past_labels = Label.last_updated( current_user, @assignment.project, params[:count] )
     render 'screen'
   end
 
