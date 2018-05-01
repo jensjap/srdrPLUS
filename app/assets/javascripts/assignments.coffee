@@ -1,10 +1,7 @@
 document.addEventListener 'turbolinks:load', ->
   do ->
-    $( '#end-message' ).hide()
-##### loyloy #####
-    loyloy = () ->
-      console.log('loyloy')
-      return
+    return unless $(".assignments.screen").length > 0
+    #if (window.location.pathname != '/info.php') 
 
 ##### get_c_p #####
     #get a list of unlabeled_citations from server
@@ -13,16 +10,18 @@ document.addEventListener 'turbolinks:load', ->
         $.ajax {
           type: 'GET'
           url: $( '#screen-assignment-json-url' ).text()
-          success: 
-            ( data ) -> 
-              obj.citations = data.citations_projects 
+          data: { count: '10' },
+          success:
+            ( data ) ->
+              obj.citations = data.unlabeled_citations_projects
+              obj.history = data.labeled_citations_projects
         }
       return
 
 ##### nothing_to_label #####
     nothing_to_label = ( obj ) ->
-      interval_id = setInterval( 
-        -> 
+      interval_id = setInterval(
+        ->
           get_c_p( obj )
           if obj.citations.length == 0
             $( '#citation-row' ).hide()
@@ -81,11 +80,11 @@ document.addEventListener 'turbolinks:load', ->
       $( '#no-button' ).removeClass( 'secondary' )
       $( '#maybe-button' ).removeClass( 'secondary' )
       if obj.index > 0
-        if current_citation.label_value == 'yes'
+        if current_citation.label.value == 'yes'
           $( '#yes-button' ).addClass( 'secondary' )
-        else if current_citation.label_value == 'no'
+        else if current_citation.label.value == 'no'
           $( '#no-button' ).addClass( 'secondary' )
-        else if current_citation.label_value == 'maybe'
+        else if current_citation.label.value == 'maybe'
           $( '#maybe-button' ).addClass( 'secondary' )
       return
 
@@ -95,12 +94,12 @@ document.addEventListener 'turbolinks:load', ->
       # check if 'create' label or 'update'
       # if 'update', append label id
       is_patch = false
-      if obj.index > 0 || obj.history[ obj.index ].label_value 
+      if obj.index > 0 || obj.history[ obj.index ].label
         is_patch = true
 
       label_url = $( '#labels-url' ).text()
       if is_patch
-        label_url = label_url + '/' + obj.history[ obj.index ].label_id
+        label_url = label_url + '/' + obj.history[ obj.index ].label.id
       $.ajax {
         type: if is_patch > 0 then 'PATCH' else 'POST'
         url: label_url
@@ -110,33 +109,28 @@ document.addEventListener 'turbolinks:load', ->
           authenticity_token: $( '#authenticity-token' ).text()
           label: {
             value: label_value
-            citations_project_id: current_citation.id
+            citations_project_id: current_citation.citations_project_id
           }
         }
         success:
-          ( data ) -> 
-            parent.current_citation.label_id = data.id
-            parent.current_citation.label_value = label_value
-            update_breadcrumb( current_citation )
+          ( data ) ->
+            parent.current_citation.label = { id: data.id, value: label_value }
+            #update_breadcrumb( current_citation )
             if $('#switch-button').val() == 'ON'
               switch_to_list( obj )
 
-      }  
-      return
-
-##### label_actions #####
-    label_action = ( obj, label_value ) -> 
-      send_label( obj, label_value )
+      }
       get_c_p( obj )
       # if we are updating previous label increment index
       if obj.index > 0
-        update_index( obj, obj.index - 1 )
-      # else add breadcrumb 
+        #update_index( obj, obj.index - 1 )
+        obj.index = obj.index - 1
+      # else add breadcrumb
       else if obj.citations.length > 0
         next_citation( obj )
         add_breadcrumb( obj )
-        obj.index = 1
-        update_index( obj, 0 )
+        obj.index = 0
+        #update_index( obj, 0 )
       update_info( obj )
       update_arrows( obj )
       return
@@ -145,8 +139,7 @@ document.addEventListener 'turbolinks:load', ->
     update_label = ( obj, index, label_value ) ->
       obj.index = index
       send_label( obj, label_value )
-      get_c_p( obj )
-      
+
 ##### update_arrows #####
     update_arrows = ( obj ) ->
       if obj.index < obj.history.length - 1
@@ -161,50 +154,53 @@ document.addEventListener 'turbolinks:load', ->
       return
 
 ##### start_screening #####
-    start_screening = ( citations ) ->
+    start_screening = ( citations, history ) ->
       # session state is stored in state_obj, and this object is passed in methods that modify the state
-      state_obj = { citations: citations, history: [ ], index: 0, done: 'false' }
+      state_obj = { citations: citations, history: history, index: 0, done: 'false' }
       next_citation( state_obj )
-      add_breadcrumb( state_obj )
-      update_index( state_obj, 0 )
+      #add_breadcrumb( state_obj )
+      state_obj.index = 0
+      #update_index( state_obj, 0 )
       update_info( state_obj )
       update_arrows( state_obj )
       $('#switch-button').val('OFF')
 
       $( '#yes-button' ).click ->
         $( "#label-input[value='yes']" ).prop( 'checked', true )
-        label_action( state_obj, 'yes' ) 
+        send_label( state_obj, 'yes' )
 
       $( '#maybe-button' ).click ->
         $( "#label-input[value='maybe']" ).prop( 'checked', true )
-        label_action( state_obj, 'maybe' ) 
+        send_label( state_obj, 'maybe' )
 
       $( '#no-button' ).click ->
         $( "#label-input[value='no']" ).prop( 'checked', true )
-        label_action( state_obj, 'no' ) 
+        send_label( state_obj, 'no' )
 
-      next_button = $( '#next-button' ) 
-      previous_button = $( '#previous-button' ) 
+      next_button = $( '#next-button' )
+      previous_button = $( '#previous-button' )
       switch_button = $( '#switch-button' )
 
       next_button.click ->
         if !next_button.hasClass( 'disabled' )
-          update_index( state_obj, state_obj.index - 1 )
+          state_obj.index = state_obj.index - 1
+          #update_index( state_obj, state_obj.index - 1 )
           update_arrows( state_obj )
           update_info( state_obj )
 
       previous_button.click ->
         if !previous_button.hasClass( 'disabled' )
-          update_index( state_obj, state_obj.index + 1 )
+          state_obj.index = state_obj.index + 1
+          #update_index( state_obj, state_obj.index + 1 )
           update_arrows( state_obj )
           update_info( state_obj )
 
       switch_button.click ->
         if switch_button.val() == 'OFF'
-          switch_to_list( state_obj )  
+          switch_to_list( state_obj )
           switch_button.val( 'ON' )
         else
-          switch_to_screening( state_obj )  
+          switch_to_screening( state_obj )
           switch_button.val( 'OFF' )
       return
 
@@ -213,21 +209,22 @@ document.addEventListener 'turbolinks:load', ->
       next_index = obj.history.length
       breadcrumb_id = 'breadcrumb_' + next_index
       id = next_index
-      button = $( '<input/>' ).attr( { type: 'button', id: breadcrumb_id, class: 'button' } ) 
-      button.click -> 
-        update_index( obj, obj.history.length - next_index )
+      button = $( '<input/>' ).attr( { type: 'button', id: breadcrumb_id, class: 'button' } )
+      button.click ->
+        obj.index = obj.history.length - next_index
+        #update_index( obj, obj.history.length - next_index )
         update_info( obj )
         update_arrows( obj )
 
-      $( '#breadcrumb-group' ).append( button );  
+      $( '#breadcrumb-group' ).append( button );
       obj.history[ obj.index ].breadcrumb_id = breadcrumb_id
       obj.history[ obj.index ].id = id
       return
 
 ##### update_breadcrumb #####
     update_breadcrumb = ( citation ) ->
-      button = $( '#' + citation.breadcrumb_id ) 
-      label = citation.label_value
+      button = $( '#' + citation.breadcrumb_id )
+      label = citation.label.value
       button.removeClass( 'success alert' )
       if label == 'yes'
         button.addClass( 'success' )
@@ -249,11 +246,11 @@ document.addEventListener 'turbolinks:load', ->
       $( '#citations-list' ).empty()
       next_index = 0
       for c in obj.history
-        citation_info = 
+        citation_info =
           $( '<div></div>' ).attr( { id: 'citation-info-' + c.id } )
-        citation_element = 
+        citation_element =
           $( '<div></div>' ).attr( { id: 'citation-element-' + c.id, class: 'callout', index: next_index } )
-        citation_title = 
+        citation_title =
           $( '<b>' + c.name + '<b/>' ).attr( { id: '#citation-element-title-' + c.breadcrumb_id } )
         if c.abstract.length > 400
           citation_abstract =
@@ -262,16 +259,16 @@ document.addEventListener 'turbolinks:load', ->
           citation_abstract =
             $( '<div>' + c.abstract + '<div/>' ).attr( { id: '#citation-element-abstact-' + c.breadcrumb_id } )
 
-        
+
         #set up buttons
         buttons_wrapper =  $( '<div><div/>' ).attr( { id: 'buttons-wrapper' + c.id } )
-        citation_buttons = 
+        citation_buttons =
           $( '<div><div/>' ).attr( { id: 'citation-buttons-' + c.id, class: 'button-group' } )
         citation_button_yes =
           $( '<div>Yes</div>' ).attr( { id: 'citation-button-yes-' + c.id, class: 'button', index: next_index } )
-        citation_button_maybe = 
+        citation_button_maybe =
           $( '<div>Maybe</div>' ).attr( { id: 'citation-button-maybe-' + c.id, class: 'button', index: next_index } )
-        citation_button_no = 
+        citation_button_no =
           $( '<div>No</div>' ).attr( { id: 'citation-button-no-' + c.id, class: 'button', index: next_index } )
 
         # button click events
@@ -282,18 +279,19 @@ document.addEventListener 'turbolinks:load', ->
         citation_button_no.click (e) ->
           e.stopPropagation()
           update_label( obj, $(this).attr("index"), 'no' )
-        
+
         citation_button_maybe.click (e) ->
           e.stopPropagation()
           update_label( obj, $(this).attr("index"), 'maybe' )
 
         # set click behavior
         citation_element.click ->
-          update_index( obj, $(this).attr("index") )
+          #update_index( obj, $(this).attr("index") )
+          obj.index = $(this).attr("index")
           update_info( obj )
           update_arrows( obj )
           switch_to_screening( obj )
-        
+
 
         # for layout
         buttons_wrapper.css('float','right')
@@ -302,19 +300,20 @@ document.addEventListener 'turbolinks:load', ->
         citation_buttons.addClass('columns medium-3')
 
         # highlight button based on label value
-        if c.label_value == 'yes'
-          citation_button_yes.addClass( 'success' )
-          citation_button_no.addClass( 'hollow' )
-          citation_button_maybe.addClass( 'hollow' )
-        else if c.label_value == 'no'
-          citation_button_yes.addClass( 'hollow' )
-          citation_button_no.addClass( 'alert' )
-          citation_button_maybe.addClass( 'hollow' )
-        else if c.label_value == 'maybe'
-          citation_button_yes.addClass( 'hollow' )
-          citation_button_no.addClass( 'hollow' )
-          citation_button_maybe.addClass( 'secondary' )
-        
+        if c.label?
+          if c.label.value == 'yes'
+            citation_button_yes.addClass( 'success' )
+            citation_button_no.addClass( 'hollow' )
+            citation_button_maybe.addClass( 'hollow' )
+          else if c.label.value == 'no'
+            citation_button_yes.addClass( 'hollow' )
+            citation_button_no.addClass( 'alert' )
+            citation_button_maybe.addClass( 'hollow' )
+          else if c.label.value == 'maybe'
+            citation_button_yes.addClass( 'hollow' )
+            citation_button_no.addClass( 'hollow' )
+            citation_button_maybe.addClass( 'secondary' )
+
         # place divs
         citation_info.append( citation_title )
         citation_info.append( citation_abstract )
@@ -330,12 +329,18 @@ document.addEventListener 'turbolinks:load', ->
       #hide regular view, show list view
       $( '#citations-list' ).show()
       $( '#screen-div' ).hide()
-      
+
 ##### switch_to_screening #####
     switch_to_screening = ( obj ) ->
       $( '#citations-list' ).empty()
       $( '#citations-list' ).hide()
       $( '#screen-div' ).show()
+      $( '#switch-button').val('OFF')
+
+
+###################################
+######  THIS IS THE START  ########
+###################################
 
     $.ajax {
       type: 'GET'
@@ -343,56 +348,10 @@ document.addEventListener 'turbolinks:load', ->
       success:
         ( data ) ->
           $( '#screen-div' ).show()
-          start_screening( data.citations_projects ) 
+          start_screening( data.unlabeled_citations_projects, data.labeled_citations_projects )
     }
-  return # END do ->
-return # END document.addEventListener 'turbolinks:load', ->
-# Place all the behaviors and hooks related to the matching controller here.
-# All this logic will automatically be available in application.js.
-# You can use CoffeeScript in this file: http://coffeescript.org/
-
-document.addEventListener 'turbolinks:load', ->
-
-  do ->
-    c_p_data = null
-
-    $.ajax( {
-      async: false,
-      type: 'GET',
-      url: $( '#screen-assignment-json-url' ).text(),
-      success: ( data ) ->
-        c_p_data = data
-    } ) 
-
-    console.log(c_p_data)
 
     $( '#hide-me' ).hide()
 
-    $( '#yes-button' ).click ->
-      $( "#label-input[value='yes']" ).prop( 'checked', true )
-
-      label_json = { label: { value: 'yes', citations_project_id: c_p_data.citations_projects[0].id } }
-      #label_json = "{ 'label': { 'value': 'yes' , 'citations_project_id': " + c_p_data.citations_projects[0].id + " } }"
-      
-      $.ajax( {
-        type: 'POST',
-        url: $( '#citations-url' ).text(),
-        dataType: 'json',
-        data: label_json,
-        success: ( response ) ->
-          console.log( response )
-      } )
-
-      return 
-
-    $( '#maybe-button' ).click ->
-      $( "#label-input[value='maybe']" ).prop( 'checked', true )
-      $("#label-form").submit();
-      return
-
-    $( '#no-button' ).click ->
-      $( "#label-input[value='no']" ).prop( 'checked', true )
-      $("#label-form").submit();
-      return
-
   return # END do ->
+return # END turbolinks:load

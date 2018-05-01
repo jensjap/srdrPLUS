@@ -6,7 +6,10 @@ module Api
       api :GET, '/v1/assignments/:id/screen', 'List of citations to screen and past labels from current user'
       formats [:json]
       def screen
-        @citations_projects = CitationsProject.unlabeled( @assignment.project ).limit(10)
+        @unlabeled_citations_projects = CitationsProject.unlabeled( @assignment.project, params[:count] )
+
+        @past_labels = Label.last_updated( current_user, @assignment.project, params[:count] )
+        
         render 'screen.json'
       end
 
