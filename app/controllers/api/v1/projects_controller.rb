@@ -31,9 +31,9 @@ module Api
       end
 
       api :GET, '/v1/projects/:id', 'Show project by id'
-      param_group :project
       formats [:json]
       def show
+        respond_with @project
       end
 
       api :POST, '/v1/projects', 'Create project'
@@ -45,12 +45,11 @@ module Api
         respond_with @project
       end
 
+      private
+
+        def set_project
+          @project = Project.find(params[:id])
+        end
     end
-
-    private
-
-      def set_project
-        @project = Project.find(params[:id])
-      end
   end
 end
