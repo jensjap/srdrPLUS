@@ -10,7 +10,7 @@ document.addEventListener 'turbolinks:load', ->
         $.ajax {
           type: 'GET'
           url: $( '#screen-assignment-json-url' ).text()
-          data: { count: '10' },
+          data: { count: '10' }
           success:
             ( data ) ->
               obj.citations = data.unlabeled_citations_projects
@@ -345,6 +345,7 @@ document.addEventListener 'turbolinks:load', ->
     $.ajax {
       type: 'GET'
       url: $( '#screen-assignment-json-url' ).text()
+      data: { count: '10' }
       success:
         ( data ) ->
           $( '#screen-div' ).show()
