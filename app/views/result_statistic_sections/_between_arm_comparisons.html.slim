@@ -25,40 +25,33 @@
             |  Add Comparison
 
     tbody
-      tr
-        td
-/table
-/  thead
-/    tr
-/      th Timepoint
-/
-/      - @arms.each do |arm|
-/        th #{ arm.type1.name }
-/
-/  tbody
-/    - @result_statistic_section.subgroup.extractions_extraction_forms_projects_sections_type1_row.extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_sections_type1_rows.each do |tp|
-/      tr
-/        td = tp.name + (tp.unit.present? ? " (#{ tp.unit })" : '')
-/
-/        - @arms.each do |a|
-/          td
-/            ul
-/              - @result_statistic_section.result_statistic_sections_measures.each do |rssm|
-/                // Create record form for rssm.
-/                - tps_arms_rssm = TpsArmsRssm.find_or_create_by!(\
-/                extractions_extraction_forms_projects_sections_type1_row: tp,
-/                extractions_extraction_forms_projects_sections_type1: a,
-/                result_statistic_sections_measure: rssm)
-/                - record = Record.find_or_create_by!(recordable: tps_arms_rssm)
-/
-/table
-/  tbody
-/    tr = simple_form_for @result_statistic_section do |f|
-/      = f.simple_fields_for :comparisons do |c|
-/        td = render 'comparison_fields', f: c
-/      .links
-/        = link_to_add_association 'add comparison', f, :comparisons, data: { 'association-insertion-method' => 'after', 'association-insertion-node' => 'this' }
-/      = f.button :submit, 'Save'
+      - @result_statistic_section.subgroup.extractions_extraction_forms_projects_sections_type1_row.extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_sections_type1_rows.each do |tp|
+        tr
+          td = tp.name + (tp.unit.present? ? " (#{ tp.unit })" : '')
+
+          - @result_statistic_section.comparisons.each do |bac|
+            td
+              ul
+                - @result_statistic_section.result_statistic_sections_measures.each do |rssm|
+                  // Create record form for rssm. (timepoint x comparison x rssm)
+                  - tps_comparisons_rssm = TpsComparisonsRssm.find_or_create_by!(\
+                  extractions_extraction_forms_projects_sections_type1_row: tp,
+                  comparison: bac,
+                  result_statistic_sections_measure: rssm)
+                  - record = Record.find_or_create_by!(recordable: tps_comparisons_rssm)
+
+                  = simple_form_for(record, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
+                    = f.error_notification
+
+                    = f.input :name, label: rssm.measure.name, required: false, class: 'form-control'
+
+                    .form-actions
+                      = f.button :submit, 'Save'
+        tr
+          td = simple_form_for @result_statistic_section do |f|
+            = f.association :measures
+
+            = f.submit
 
 = link_to 'Back', work_extraction_path(@result_statistic_section.subgroup.extractions_extraction_forms_projects_sections_type1_row.extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_section.extraction,
   anchor: "panel-tab-#{ @result_statistic_section.subgroup.extractions_extraction_forms_projects_sections_type1_row.extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_section.extraction.extractions_extraction_forms_projects_sections.last.id }")

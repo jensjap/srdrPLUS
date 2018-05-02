@@ -9,6 +9,9 @@ class ExtractionsExtractionFormsProjectsSectionsType1Row < ApplicationRecord
 
   has_many :extractions_extraction_forms_projects_sections_type1_row_columns, dependent: :destroy, inverse_of: :extractions_extraction_forms_projects_sections_type1_row
 
+  delegate :extraction, to: :extractions_extraction_forms_projects_sections_type1
+  delegate :extractions_extraction_forms_projects_section, to: :extractions_extraction_forms_projects_sections_type1
+
   private
 
     def create_default_type1_row_columns

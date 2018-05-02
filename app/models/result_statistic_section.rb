@@ -13,11 +13,11 @@ class ResultStatisticSection < ApplicationRecord
   has_many :comparisons, dependent: :destroy
   has_many :comparate_groups, through: :comparisons, dependent: :destroy
 
+  has_many :comparates, through: :comparate_groups, dependent: :destroy
+  has_many :comparable_elements, through: :comparates, dependent: :destroy
+  has_many :comparables, through: :comparable_elements, dependent: :destroy
   has_many :comparisons_measures, through: :comparables, dependent: :destroy
   has_many :measurements, through: :comparisons_measures, dependent: :destroy
-
-  has_many :comparates, through: :comparate_groups, dependent: :destroy
-  has_many :comparable_elements, through: :comparates
 
   accepts_nested_attributes_for :comparisons, allow_destroy: true
   accepts_nested_attributes_for :comparate_groups, allow_destroy: true

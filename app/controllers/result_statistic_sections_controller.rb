@@ -1,7 +1,8 @@
 class ResultStatisticSectionsController < ApplicationController
   before_action :set_result_statistic_section, only: [:edit, :update, :add_comparison]
   before_action :set_arms, only: [:edit, :update]
-  before_action :set_comparisons_measures, only: [:edit]
+  #!!! Birol: don't think this is working...where is comparables set?
+  #before_action :set_comparisons_measures, only: [:edit]
 
   # GET /result_statistic_sections/1/edit
   def edit
@@ -70,6 +71,7 @@ class ResultStatisticSectionsController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def result_statistic_section_params
       params.require(:result_statistic_section).permit( 
+        measure_ids: [],
         comparisons_attributes: [ :id, :_destroy, :result_statistic_section_id,
           comparisons_measures_attributes: [ :id, :_destroy, :comparison_id, :measure_id ,
           measurement_attributes: [ :id, :_destroy, :comparisons_measure_id, :value ] ],

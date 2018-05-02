@@ -15,7 +15,7 @@ table
           td
             ul
               - @result_statistic_section.result_statistic_sections_measures.each do |rssm|
-                // Create record form for rssm.
+                // Create record form for rssm. (timepoint x arm x rssm)
                 - tps_arms_rssm = TpsArmsRssm.find_or_create_by!(\
                 extractions_extraction_forms_projects_sections_type1_row: tp,
                 extractions_extraction_forms_projects_sections_type1: a,
