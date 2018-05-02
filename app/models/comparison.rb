@@ -6,6 +6,7 @@ class Comparison < ApplicationRecord
 
   has_many :comparate_groups, dependent: :destroy
   has_many :comparates, through: :comparate_groups, dependent: :destroy
+
   has_many :comparisons_measures, dependent: :destroy
   has_many :measurements, through: :comparisons_measures, dependent: :destroy
   has_many :measures, through: :comparisons_measures

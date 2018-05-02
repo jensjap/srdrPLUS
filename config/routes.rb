@@ -59,7 +59,12 @@ Rails.application.routes.draw do
           end
           resources :extractions_extraction_forms_projects_sections_type1_rows, only: [:create] do
             resources :extractions_extraction_forms_projects_sections_type1_row_columns, only: [:create] do
-              resources :result_statistic_sections, only: [:edit, :update]
+              resources :result_statistic_sections, only: [:edit, :update] do
+                member do
+                  patch 'add_comparison'
+                  delete 'destroy_comparison'
+                end
+              end
             end
           end
         end

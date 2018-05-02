@@ -1,5 +1,5 @@
 class ResultStatisticSectionsController < ApplicationController
-  before_action :set_result_statistic_section, only: [:edit, :update]
+  before_action :set_result_statistic_section, only: [:edit, :update, :add_comparison]
   before_action :set_arms, only: [:edit, :update]
   before_action :set_comparisons_measures, only: [:edit]
 
@@ -12,6 +12,24 @@ class ResultStatisticSectionsController < ApplicationController
   def update
     respond_to do |format|
       if @result_statistic_section.update(result_statistic_section_params)
+        format.html { redirect_to edit_result_statistic_section_path(@result_statistic_section),
+                      notice: t('success') }
+        format.json { render :show, status: :ok, location: @result_statistic_section }
+      else
+        format.html { render :edit }
+        format.json { render json: @result_statistic_section.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  def add_comparison
+    comparable1_id = params[:comparable1].to_i
+    comparable2_id = params[:comparable2].to_i
+
+    redirect_to edit_result_statistic_section_path(@result_statistic_section), alert: 'Missing comparate' if comparable1_id.zero? || comparable2_id.zero?
+
+    respond_to do |format|
+      if @result_statistic_section.create_comparison(comparable1_id, comparable2_id)
         format.html { redirect_to edit_result_statistic_section_path(@result_statistic_section),
                       notice: t('success') }
         format.json { render :show, status: :ok, location: @result_statistic_section }

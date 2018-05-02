@@ -1,35 +1,64 @@
-table
-  thead
-    tr
-      th Timepoint
+.column.row
 
-      - @arms.each do |arm|
-        th #{ arm.type1.name }
+  table
 
-  tbody
-    - @result_statistic_section.subgroup.extractions_extraction_forms_projects_sections_type1_row.extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_sections_type1_rows.each do |tp|
+    thead
       tr
-        td = tp.name + (tp.unit.present? ? " (#{ tp.unit })" : '')
+        th
+        - @result_statistic_section.comparisons.each do |bac|
+          th
+            = bac.comparate_groups.first.comparates.map { |c| c.comparable_element.comparable.type1.name_and_description }.join(', ')
+            p vs.
+            = bac.comparate_groups.last.comparates.map { |c| c.comparable_element.comparable.type1.name_and_description }.join(', ')
 
-        - @arms.each do |a|
-          td
-            ul
-              - @result_statistic_section.result_statistic_sections_measures.each do |rssm|
-                // Create record form for rssm.
-                - tps_arms_rssm = TpsArmsRssm.find_or_create_by!(\
-                extractions_extraction_forms_projects_sections_type1_row: tp,
-                extractions_extraction_forms_projects_sections_type1: a,
-                result_statistic_sections_measure: rssm)
-                - record = Record.find_or_create_by!(recordable: tps_arms_rssm)
+        th style='width: 40px;'
+          = simple_form_for @result_statistic_section, url: add_comparison_result_statistic_section_path(@result_statistic_section) do |f|
+            = f.input :id, as: :hidden
+            = f.input :comparable1, label: false, collection: arms, label_method: :type1_name_and_description, as: :fake_select
+            p style='margin-top: 12px;' vs.
+            = f.input :comparable2, label: false, collection: arms, label_method: :type1_name_and_description, as: :fake_select
 
-table
-  tbody
-    tr = simple_form_for @result_statistic_section do |f|
-      = f.simple_fields_for :comparisons do |c|
-        td = render 'comparison_fields', f: c
-      .links
-        = link_to_add_association 'add comparison', f, :comparisons, data: { 'association-insertion-method' => 'after', 'association-insertion-node' => 'this' }
-      = f.button :submit, 'Save'
+            = f.submit 'Add comparison', class: 'button small'
+
+          /= link_to add_comparison_result_statistic_section_path(@result_statistic_section), method: :post, class: '' do
+            i.fi-plus
+            |  Add Comparison
+
+    tbody
+      tr
+        td
+/table
+/  thead
+/    tr
+/      th Timepoint
+/
+/      - @arms.each do |arm|
+/        th #{ arm.type1.name }
+/
+/  tbody
+/    - @result_statistic_section.subgroup.extractions_extraction_forms_projects_sections_type1_row.extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_sections_type1_rows.each do |tp|
+/      tr
+/        td = tp.name + (tp.unit.present? ? " (#{ tp.unit })" : '')
+/
+/        - @arms.each do |a|
+/          td
+/            ul
+/              - @result_statistic_section.result_statistic_sections_measures.each do |rssm|
+/                // Create record form for rssm.
+/                - tps_arms_rssm = TpsArmsRssm.find_or_create_by!(\
+/                extractions_extraction_forms_projects_sections_type1_row: tp,
+/                extractions_extraction_forms_projects_sections_type1: a,
+/                result_statistic_sections_measure: rssm)
+/                - record = Record.find_or_create_by!(recordable: tps_arms_rssm)
+/
+/table
+/  tbody
+/    tr = simple_form_for @result_statistic_section do |f|
+/      = f.simple_fields_for :comparisons do |c|
+/        td = render 'comparison_fields', f: c
+/      .links
+/        = link_to_add_association 'add comparison', f, :comparisons, data: { 'association-insertion-method' => 'after', 'association-insertion-node' => 'this' }
+/      = f.button :submit, 'Save'
 
 = link_to 'Back', work_extraction_path(@result_statistic_section.subgroup.extractions_extraction_forms_projects_sections_type1_row.extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_section.extraction,
   anchor: "panel-tab-#{ @result_statistic_section.subgroup.extractions_extraction_forms_projects_sections_type1_row.extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_section.extraction.extractions_extraction_forms_projects_sections.last.id }")
