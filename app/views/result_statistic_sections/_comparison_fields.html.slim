@@ -4,32 +4,3 @@
   .links.add-comparate-group
     = link_to_add_association 'add comparate group', f, :comparate_groups
 = f.submit 'Add Comparison', class: 'button small'
-
-
-
-
-/.nested-fields
-  = f.input :result_statistic_section_id, 
-    as: :hidden, 
-    input_html: { value: @result_statistic_section.id }
-  - while f.object.comparate_groups.length < 2
-    - f.object.comparate_groups.build 
-  - _first = true
-  = f.simple_fields_for :comparate_groups do |comparate_group|
-    = render 'comparate_group_fields', f: comparate_group, _first: _first
-    - if _first
-      - _first = false
-  ul
-    - @result_statistic_section.measures.each do |measure|
-      - if !f.object.comparisons_measures.exists?( measure: measure )
-        - f.object.comparisons_measures.build( measure: measure )
-      = f.simple_fields_for :comparisons_measures do |comparisons_measure|
-        = render 'comparisons_measures_fields', f: comparisons_measure, measure: measure
-  .links
-    = link_to_remove_association 'remove comparison', f
-
-
-    /.to-hide
-      = link_to_add_association 'add comparate group', 
-        f, :comparate_groups, 
-        render_options: { locals: { _first: _first } }
