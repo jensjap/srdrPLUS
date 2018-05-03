@@ -1,7 +1,7 @@
 .nested-fields
   = f.simple_fields_for :comparates do |comparate|
     = render 'comparate_fields', f: comparate
-  .links
+  .links.add-comparate
     = link_to_add_association 'add comparate', f, :comparates
 
 /.nested-fields style="padding-bottom: 0px; margin-bottom: 0px"
