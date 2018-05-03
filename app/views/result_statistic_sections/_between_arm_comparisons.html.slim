@@ -7,9 +7,9 @@
         th
         - @result_statistic_section.comparisons.each do |bac|
           th
-            = bac.comparate_groups.first.comparates.map { |c| c.comparable_element.comparable.type1.name_and_description }.join(', ')
-            p vs.
-            = bac.comparate_groups.last.comparates.map { |c| c.comparable_element.comparable.type1.name_and_description }.join(', ')
+            div style='text-align: center;' == bac.comparate_groups.first.comparates.map { |c| c.comparable_element.comparable.type1.name_and_description }.join('<br>')
+            div style='text-align: center; font-weight: normal;' vs.
+            div style='text-align: center;' == bac.comparate_groups.second.comparates.map { |c| c.comparable_element.comparable.type1.name_and_description }.join('<br>')
 
         th
           = simple_form_for @result_statistic_section do |f|
