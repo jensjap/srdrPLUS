@@ -3,7 +3,7 @@ table
     tr
       th Timepoint
 
-      - arms.each do |arm|
+      - @arms.each do |arm|
         th #{ arm.type1.name }
 
   tbody
@@ -11,7 +11,7 @@ table
       tr
         td = tp.name + (tp.unit.present? ? " (#{ tp.unit })" : '')
 
-        - arms.each do |a|
+        - @arms.each do |a|
           td
             ul
               - @result_statistic_section.result_statistic_sections_measures.each do |rssm|
