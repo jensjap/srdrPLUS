@@ -1,6 +1,6 @@
-.column.row
+.column.row.table-scroll
 
-  table.table-scroll
+  table.scroll
 
     thead
       tr
@@ -13,7 +13,7 @@
 
         th
           = simple_form_for @result_statistic_section do |f|
-            .links
+            .links.add-comparison
               = link_to_add_association 'add comparison', f, :comparisons
 
 /            = f.simple_fields_for @comparate_group1 do |cg1|

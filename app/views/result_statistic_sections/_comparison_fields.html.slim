@@ -1,7 +1,7 @@
 .nested-fields
   = f.simple_fields_for :comparate_groups do |comparate_group|
     = render 'comparate_group_fields', f: comparate_group
-  .links
+  .links.add-comparate-group
     = link_to_add_association 'add comparate group', f, :comparate_groups
 = f.submit
 

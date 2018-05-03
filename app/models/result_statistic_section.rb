@@ -2,8 +2,6 @@ class ResultStatisticSection < ApplicationRecord
   acts_as_paranoid
   has_paper_trail
 
-  attr_accessor :comparable1, :comparable2
-
   after_create :create_default_descriptive_statistics
 
   belongs_to :result_statistic_section_type,                                                    inverse_of: :result_statistic_sections
