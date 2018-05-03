@@ -11,16 +11,28 @@
             p vs.
             = bac.comparate_groups.last.comparates.map { |c| c.comparable_element.comparable.type1.name_and_description }.join(', ')
 
-        th style='width: 40px;'
-          = simple_form_for @result_statistic_section, url: add_comparison_result_statistic_section_path(@result_statistic_section) do |f|
+        th
+          = simple_form_for @result_statistic_section, url: add_comparison_result_statistic_section_path do |f|
+            .links
+              = link_to_add_association 'add comparison', f, :comparisons
+
+/            = f.simple_fields_for @comparate_group1 do |cg1|
+              = render 'comparate_group_fields', f: cg1
+            p vs.
+            = f.simple_fields_for @comparate_group2 do |cg2|
+              = render 'comparate_group_fields', f: cg2
+
+/            = f.input :comparable1, collection: arms, label_method: :type1_name_and_description
+/            = f.input :comparable2, collection: arms, label_method: :type1_name_and_description
+
+/          = simple_form_for @result_statistic_section, url: add_comparison_result_statistic_section_path(@result_statistic_section) do |f|
             = f.input :id, as: :hidden
             = f.input :comparable1, label: false, collection: arms, label_method: :type1_name_and_description, as: :fake_select
             p style='margin-top: 12px;' vs.
             = f.input :comparable2, label: false, collection: arms, label_method: :type1_name_and_description, as: :fake_select
-
             = f.submit 'Add comparison', class: 'button small'
 
-          /= link_to add_comparison_result_statistic_section_path(@result_statistic_section), method: :post, class: '' do
+/          = link_to add_comparison_result_statistic_section_path(@result_statistic_section), method: :post, class: '' do
             i.fi-plus
             |  Add Comparison
 

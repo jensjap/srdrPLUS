@@ -2,6 +2,8 @@ class ResultStatisticSection < ApplicationRecord
   acts_as_paranoid
   has_paper_trail
 
+  attr_accessor :comparable1, :comparable2
+
   after_create :create_default_descriptive_statistics
 
   belongs_to :result_statistic_section_type,                                                    inverse_of: :result_statistic_sections
@@ -10,7 +12,7 @@ class ResultStatisticSection < ApplicationRecord
   has_many :result_statistic_sections_measures, dependent: :destroy, inverse_of: :result_statistic_section
   has_many :measures, through: :result_statistic_sections_measures, dependent: :destroy
 
-  has_many :comparisons, dependent: :destroy
+  has_many :comparisons, dependent: :destroy, inverse_of: :result_statistic_section
   has_many :comparate_groups, through: :comparisons, dependent: :destroy
 
   has_many :comparates, through: :comparate_groups, dependent: :destroy

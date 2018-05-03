@@ -1,19 +1,19 @@
 .nested-fields style="padding-bottom: 0px; margin-bottom: 0px"
-  - if f.object.comparable_element.nil? 
+  - if f.object.comparable_element.nil?
     - f.object.build_comparable_element
 
   = f.simple_fields_for :comparable_element do |comparable_element|
-    = comparable_element.input :comparable_type, 
-      as: :hidden, 
+    = comparable_element.input :comparable_type,
+      as: :hidden,
       input_html: { value: "ExtractionsExtractionFormsProjectsSectionsType1" },
       wrapper_html: { style: "padding-bottom: 0px" }
 
 
-    = comparable_element.input :comparable_id, 
-      as: :select, 
+    = comparable_element.input :comparable_id,
+      as: :select,
       collection: @arms,
-      selected: comparable_element.object.comparable_id, 
-      value_method: :id, 
+      selected: comparable_element.object.comparable_id,
+      value_method: :id,
       label_method: lambda { |arm| "#{arm.type1.name}" },
       input_html: { style: "padding-bottom: 0px; margin-bottom: 0px" },
       wrapper_html: { style: "padding-bottom: 0px" },

@@ -1,9 +1,16 @@
-.nested-fields style="padding-bottom: 0px; margin-bottom: 0px" 
+.nested-fields
+  = f.simple_fields_for :comparates do |comparate|
+    = render 'comparate_fields', f: comparate
+  .links
+    = link_to_add_association 'add comparate', f, :comparates
+
+/.nested-fields style="padding-bottom: 0px; margin-bottom: 0px"
+  -byebug
   - if local_assigns.has_key? :_first
     - if _first == false
       b vs
-  - if f.object.comparates.length < 1 
-    - f.object.comparates.build 
+  - if f.object.comparates.length < 1
+    - f.object.comparates.build
   = f.simple_fields_for :comparates do |comparate|
     = render 'comparate_fields', f: comparate
   .links

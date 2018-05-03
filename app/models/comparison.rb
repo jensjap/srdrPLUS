@@ -2,9 +2,9 @@ class Comparison < ApplicationRecord
   acts_as_paranoid
   has_paper_trail
 
-  belongs_to :result_statistic_section
+  belongs_to :result_statistic_section, inverse_of: :comparisons
 
-  has_many :comparate_groups, dependent: :destroy
+  has_many :comparate_groups, dependent: :destroy, inverse_of: :comparison
   has_many :comparates, through: :comparate_groups, dependent: :destroy
 
   has_many :comparisons_measures, dependent: :destroy

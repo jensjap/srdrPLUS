@@ -24,13 +24,8 @@ class ResultStatisticSectionsController < ApplicationController
   end
 
   def add_comparison
-    comparable1_id = params[:comparable1].to_i
-    comparable2_id = params[:comparable2].to_i
-
-    redirect_to edit_result_statistic_section_path(@result_statistic_section), alert: 'Missing comparate' if comparable1_id.zero? || comparable2_id.zero?
-
     respond_to do |format|
-      if @result_statistic_section.create_comparison(comparable1_id, comparable2_id)
+      if @result_statistic_section.update(result_statistic_section_params)
         format.html { redirect_to edit_result_statistic_section_path(@result_statistic_section),
                       notice: t('success') }
         format.json { render :show, status: :ok, location: @result_statistic_section }
@@ -39,6 +34,22 @@ class ResultStatisticSectionsController < ApplicationController
         format.json { render json: @result_statistic_section.errors, status: :unprocessable_entity }
       end
     end
+#    byebug
+#    comparable1_id = params[:comparable1].to_i
+#    comparable2_id = params[:comparable2].to_i
+#
+#    redirect_to edit_result_statistic_section_path(@result_statistic_section), alert: 'Missing comparate' if comparable1_id.zero? || comparable2_id.zero?
+#
+#    respond_to do |format|
+#      if @result_statistic_section.create_comparison(comparable1_id, comparable2_id)
+#        format.html { redirect_to edit_result_statistic_section_path(@result_statistic_section),
+#                      notice: t('success') }
+#        format.json { render :show, status: :ok, location: @result_statistic_section }
+#      else
+#        format.html { render :edit }
+#        format.json { render json: @result_statistic_section.errors, status: :unprocessable_entity }
+#      end
+#    end
   end
 
   private
@@ -57,8 +68,7 @@ class ResultStatisticSectionsController < ApplicationController
     def set_arms
       @arms = ExtractionsExtractionFormsProjectsSectionsType1.by_section_name_and_extraction_id_and_extraction_forms_project_id('Arms',
       @result_statistic_section.subgroup.extractions_extraction_forms_projects_sections_type1_row.extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_section.extraction.id,
-      @result_statistic_section.subgroup.extractions_extraction_forms_projects_sections_type1_row.extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_section.extraction_forms_projects_section.extraction_forms_project.id,
-      )
+      @result_statistic_section.subgroup.extractions_extraction_forms_projects_sections_type1_row.extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_section.extraction_forms_projects_section.extraction_forms_project.id)
     end
 
     def set_result_statistic_section
@@ -70,13 +80,18 @@ class ResultStatisticSectionsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def result_statistic_section_params
-      params.require(:result_statistic_section).permit( 
-        measure_ids: [],
-        comparisons_attributes: [ :id, :_destroy, :result_statistic_section_id,
-          comparisons_measures_attributes: [ :id, :_destroy, :comparison_id, :measure_id ,
-          measurement_attributes: [ :id, :_destroy, :comparisons_measure_id, :value ] ],
-        comparate_groups_attributes: [ :id, :_destroy, :comparison_id, 
-        comparates_attributes: [ :id, :_destroy, :comparate_group_id, :comparable_element_id, 
-        comparable_element_attributes: [ :id, :_destroy, :comparable_type, :comparable_id, :_destroy ] ] ] ] )
+      params.require(:result_statistic_section).permit(
+        comparisons_attributes: [:id,
+          comparate_groups_attributes: [:id,
+            comparates_attributes: [:id,
+              comparable_element_attributes: [:id, :comparable_type, :comparable_id]]]])
+#
+#        measure_ids: [],
+#        comparisons_attributes: [ :id, :_destroy, :result_statistic_section_id,
+#          comparisons_measures_attributes: [ :id, :_destroy, :comparison_id, :measure_id ,
+#          measurement_attributes: [ :id, :_destroy, :comparisons_measure_id, :value ] ],
+#        comparate_groups_attributes: [ :id, :_destroy, :comparison_id,
+#        comparates_attributes: [ :id, :_destroy, :comparate_group_id, :comparable_element_id,
+#        comparable_element_attributes: [ :id, :_destroy, :comparable_type, :comparable_id, :_destroy ] ] ] ] )
     end
 end
