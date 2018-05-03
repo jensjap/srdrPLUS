@@ -1,6 +1,6 @@
 .column.row
 
-  table
+  table.table-scroll
 
     thead
       tr
@@ -12,7 +12,7 @@
             = bac.comparate_groups.last.comparates.map { |c| c.comparable_element.comparable.type1.name_and_description }.join(', ')
 
         th
-          = simple_form_for @result_statistic_section, url: add_comparison_result_statistic_section_path do |f|
+          = simple_form_for @result_statistic_section do |f|
             .links
               = link_to_add_association 'add comparison', f, :comparisons
 
