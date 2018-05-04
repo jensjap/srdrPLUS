@@ -20,6 +20,7 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
+  submit: Submit
   create_extraction_form: Create Extraction Form
   build: Build
   key_question_assignment: Key Question Assignment

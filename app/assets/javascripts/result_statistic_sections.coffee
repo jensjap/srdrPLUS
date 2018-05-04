@@ -14,8 +14,14 @@ document.addEventListener 'turbolinks:load', ->
         $( insertedItem ).find( '.links.add-comparate-group a' ).click()
         $( insertedItem ).find( '.links.add-comparate-group a' ).click()
         $( '.links.add-comparate-group a' ).hide()
-        $( '.add-comparate' ).each ->
+
+        $( insertedItem ).find( '.links.add-comparate' ).each ->
           $( this ).find( 'a' ).click()
+
+        # This creates a new cell at the end of the header row and moves the 'add comparison' link into it.
+        # At the moment this isn't useful because we can't have the form span multiple row cells. Perhaps
+        # using simple html form would work, but it doesn't seem to work with slim templating engine.
+        #$( this ).closest( 'tr' ).append( $( '<th>' ).append( $( '.links.add-comparison' ) ) )
 
   return # END do ->
 return # END turbolinks:load

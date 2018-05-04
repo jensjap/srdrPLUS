@@ -10,17 +10,17 @@
             div style='text-align: center;' == bac.comparate_groups.first.comparates.map { |c| c.comparable_element.comparable.type1.name_and_description }.join('<br>')
             div style='text-align: center; font-weight: normal;' vs.
             div style='text-align: center;' == bac.comparate_groups.second.comparates.map { |c| c.comparable_element.comparable.type1.name_and_description }.join('<br>')
-
         th
           = simple_form_for @result_statistic_section do |f|
             .links.add-comparison
-              = link_to_add_association 'add comparison', f, :comparisons
+              = link_to_add_association f, :comparisons do
+                i.fi-plus
+                |  Add Comparison
 
     tbody
       - @result_statistic_section.subgroup.extractions_extraction_forms_projects_sections_type1_row.extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_sections_type1_rows.each do |tp|
         tr
           td = tp.name + (tp.unit.present? ? " (#{ tp.unit })" : '')
-
           - @result_statistic_section.comparisons.each do |bac|
             td
               ul

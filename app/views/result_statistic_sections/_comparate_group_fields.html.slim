@@ -2,4 +2,6 @@
   = f.simple_fields_for :comparates do |comparate|
     = render 'comparate_fields', f: comparate
   .links.add-comparate
-    = link_to_add_association 'add comparate', f, :comparates
+    = link_to_add_association f, :comparates do
+      i.fi-plus
+      |  Add Comparate
