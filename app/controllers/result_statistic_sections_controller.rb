@@ -52,6 +52,7 @@ class ResultStatisticSectionsController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def result_statistic_section_params
       params.require(:result_statistic_section).permit(
+        measure_ids: [],
         comparisons_attributes: [:id,
           comparate_groups_attributes: [:id,
             comparates_attributes: [:id,
