@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180502070740) do
+ActiveRecord::Schema.define(version: 20180505230138) do
 
   create_table "abstrackr_settings", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "profile_id"
@@ -145,6 +145,21 @@ ActiveRecord::Schema.define(version: 20180502070740) do
     t.datetime "deleted_at"
     t.index ["deleted_at"], name: "index_comparisons_on_deleted_at", using: :btree
     t.index ["result_statistic_section_id"], name: "result_statistic_section_id", using: :btree
+  end
+
+  create_table "comparisons_arms_rssms", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "comparison_id"
+    t.integer  "extractions_extraction_forms_projects_sections_type1_id"
+    t.integer  "result_statistic_sections_measure_id"
+    t.datetime "deleted_at"
+    t.boolean  "active"
+    t.datetime "created_at",                                              null: false
+    t.datetime "updated_at",                                              null: false
+    t.index ["active"], name: "index_comparisons_arms_rssms_on_active", using: :btree
+    t.index ["comparison_id"], name: "index_comparisons_arms_rssms_on_comparison_id", using: :btree
+    t.index ["deleted_at"], name: "index_comparisons_arms_rssms_on_deleted_at", using: :btree
+    t.index ["extractions_extraction_forms_projects_sections_type1_id"], name: "index_comparisons_arms_rssms_on_eefpst_id", using: :btree
+    t.index ["result_statistic_sections_measure_id"], name: "index_comparisons_arms_rssms_on_rssm_id", using: :btree
   end
 
   create_table "comparisons_measures", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -1108,6 +1123,9 @@ ActiveRecord::Schema.define(version: 20180502070740) do
   add_foreign_key "comparates", "comparable_elements"
   add_foreign_key "comparates", "comparate_groups"
   add_foreign_key "comparisons", "result_statistic_sections"
+  add_foreign_key "comparisons_arms_rssms", "comparisons"
+  add_foreign_key "comparisons_arms_rssms", "extractions_extraction_forms_projects_sections_type1s"
+  add_foreign_key "comparisons_arms_rssms", "result_statistic_sections_measures"
   add_foreign_key "comparisons_measures", "comparisons"
   add_foreign_key "comparisons_measures", "measures"
   add_foreign_key "degrees_profiles", "degrees"
