@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180505230138) do
+ActiveRecord::Schema.define(version: 20180507015116) do
 
   create_table "abstrackr_settings", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "profile_id"
@@ -1108,6 +1108,21 @@ ActiveRecord::Schema.define(version: 20180505230138) do
     t.index ["transaction_id"], name: "index_versions_on_transaction_id", using: :btree
   end
 
+  create_table "wacs_bacs_rssms", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "wac_id"
+    t.integer  "bac_id"
+    t.integer  "result_statistic_sections_measure_id"
+    t.datetime "deleted_at"
+    t.boolean  "active"
+    t.datetime "created_at",                           null: false
+    t.datetime "updated_at",                           null: false
+    t.index ["active"], name: "index_wacs_bacs_rssms_on_active", using: :btree
+    t.index ["bac_id"], name: "index_wacs_bacs_rssms_on_bac_id", using: :btree
+    t.index ["deleted_at"], name: "index_wacs_bacs_rssms_on_deleted_at", using: :btree
+    t.index ["result_statistic_sections_measure_id"], name: "index_wacs_bacs_rssms_on_result_statistic_sections_measure_id", using: :btree
+    t.index ["wac_id"], name: "index_wacs_bacs_rssms_on_wac_id", using: :btree
+  end
+
   add_foreign_key "abstrackr_settings", "profiles"
   add_foreign_key "actions", "action_types"
   add_foreign_key "actions", "users"
@@ -1212,4 +1227,5 @@ ActiveRecord::Schema.define(version: 20180505230138) do
   add_foreign_key "tps_comparisons_rssms", "comparisons"
   add_foreign_key "tps_comparisons_rssms", "extractions_extraction_forms_projects_sections_type1_rows"
   add_foreign_key "tps_comparisons_rssms", "result_statistic_sections_measures"
+  add_foreign_key "wacs_bacs_rssms", "result_statistic_sections_measures"
 end
