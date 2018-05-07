@@ -39,11 +39,11 @@
 
                     .form-actions
                       = f.button :submit, 'Save'
-        tr
-          td = simple_form_for @result_statistic_section do |f|
-            = f.association :measures
+      tr
+        td = simple_form_for @result_statistic_section do |f|
+          = f.association :measures
 
-            = f.submit
+          = f.submit
 
 = link_to 'Back', work_extraction_path(@result_statistic_section.subgroup.extractions_extraction_forms_projects_sections_type1_row.extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_section.extraction,
   anchor: "panel-tab-#{ @result_statistic_section.subgroup.extractions_extraction_forms_projects_sections_type1_row.extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_section.extraction.extractions_extraction_forms_projects_sections.last.id }")
