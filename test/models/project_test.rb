@@ -49,4 +49,5 @@ class ProjectTest < ActiveSupport::TestCase
     refute_nil project.publishings
     assert_equal project.publishings.first.user, @user
   end
+
 end

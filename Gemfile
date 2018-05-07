@@ -43,6 +43,7 @@ end
 group :test do
   gem 'minitest-rails-capybara'
   gem 'simplecov', require: false
+  gem 'minitest-byebug'
 end
 
 group :development do
