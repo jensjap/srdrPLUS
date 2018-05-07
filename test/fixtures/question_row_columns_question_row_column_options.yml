@@ -2,7 +2,7 @@
 
 one:
   question_row_column: one
-  questio_row_column_option: one
+  question_row_column_option: one
   name: MyString
   name_type: MyString
   deleted_at: 2018-04-16 19:59:50
@@ -10,7 +10,7 @@ one:
 
 two:
   question_row_column: two
-  questio_row_column_option: two
+  question_row_column_option: two
   name: MyString
   name_type: MyString
   deleted_at: 2018-04-16 19:59:50
