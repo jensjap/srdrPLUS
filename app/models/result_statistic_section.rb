@@ -26,20 +26,20 @@ class ResultStatisticSection < ApplicationRecord
   accepts_nested_attributes_for :comparisons_measures, allow_destroy: true
   accepts_nested_attributes_for :measurements, allow_destroy: true
 
-  def create_comparison(comparable1_id, comparable2_id)
-    ResultStatisticSection.transaction do
-      comparison = self.comparisons.create!
-
-      cg1 = comparison.comparate_groups.create!
-      cg2 = comparison.comparate_groups.create!
-
-      eefpst1 = ExtractionsExtractionFormsProjectsSectionsType1.find(comparable1_id)
-      eefpst2 = ExtractionsExtractionFormsProjectsSectionsType1.find(comparable2_id)
-
-      cg1.comparable_elements << ComparableElement.create(comparable: eefpst1)
-      cg2.comparable_elements << ComparableElement.create(comparable: eefpst2)
-    end
-  end
+#  def create_comparison(comparable1_id, comparable2_id)
+#    ResultStatisticSection.transaction do
+#      comparison = self.comparisons.create!
+#
+#      cg1 = comparison.comparate_groups.create!
+#      cg2 = comparison.comparate_groups.create!
+#
+#      eefpst1 = ExtractionsExtractionFormsProjectsSectionsType1.find(comparable1_id)
+#      eefpst2 = ExtractionsExtractionFormsProjectsSectionsType1.find(comparable2_id)
+#
+#      cg1.comparable_elements << ComparableElement.create(comparable: eefpst1)
+#      cg2.comparable_elements << ComparableElement.create(comparable: eefpst2)
+#    end
+#  end
 
   private
     def create_default_descriptive_statistics

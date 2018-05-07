@@ -13,6 +13,18 @@ class ExtractionsExtractionFormsProjectsSectionsType1RowColumn < ApplicationReco
 
   has_many :result_statistic_sections, dependent: :destroy, inverse_of: :subgroup, foreign_key: 'subgroup_id'
 
+  def descriptive_statistics_section
+    result_statistic_sections.find_by(result_statistic_section_type_id: 1)
+  end
+
+  def between_arm_comparisons_section
+    result_statistic_sections.find_by(result_statistic_section_type_id: 2)
+  end
+
+  def within_arm_comparisons_section
+    result_statistic_sections.find_by(result_statistic_section_type_id: 3)
+  end
+
   private
 
     def create_default_result_statistic_sections
