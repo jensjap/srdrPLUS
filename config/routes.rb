@@ -1,4 +1,8 @@
+require 'sidekiq/web'
+
 Rails.application.routes.draw do
+  mount Sidekiq::Web => '/sidekiq'
+
   apipie
   namespace :api do
     namespace :v1 do
@@ -42,6 +46,7 @@ Rails.application.routes.draw do
   end
   post '/projects/:id/undo', to: 'projects#undo', as: :undo
   resources :projects, concerns: :paginatable, shallow: true do
+    get 'export', on: :member
     resources :citations, only: [:index] do
       collection do
         get 'labeled'

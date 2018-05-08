@@ -112,3 +112,6 @@ gem 'doorkeeper'
 
 # Api documentation.
 gem 'apipie-rails'
+
+# Background jobs.
+gem 'sidekiq'

@@ -1,5 +1,5 @@
 class ProjectsController < ApplicationController
-  before_action :set_project, only: [:show, :edit, :update, :destroy]
+  before_action :set_project, only: [:show, :edit, :update, :destroy, :export]
 
   SORT = {  'updated-at': { updated_at: :desc },
             'created-at': { created_at: :desc }
@@ -107,6 +107,12 @@ class ProjectsController < ApplicationController
         redirect_to projects_path
       end
     end
+  end
+
+  def export
+    SimpleExportJob.perform_later
+
+    render 'show'
   end
 
   private
