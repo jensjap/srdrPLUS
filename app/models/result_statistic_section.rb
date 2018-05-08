@@ -43,14 +43,16 @@ class ResultStatisticSection < ApplicationRecord
 
   private
     def create_default_descriptive_statistics
-      if result_statistic_section_type == ResultStatisticSectionType.find_by(name: 'Descriptive Statistics') and self.measures.empty?
+      if result_statistic_section_type.id == 1
         Measure.is_default.each do |m|
-
           # This ends up adding m twice to ResultStatisticSection.
           #measures << m
-          
+
           # This one works correctly...only adds it once.
-          ResultStatisticSectionsMeasure.create(result_statistic_section: self, measure: m)
+          #self.measures << m
+
+          # ???
+          self.result_statistic_sections_measures.create(measure: m)
         end
       end
     end
