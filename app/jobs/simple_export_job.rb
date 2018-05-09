@@ -42,11 +42,6 @@ class SimpleExportJob < ApplicationJob
             @project.extractions.each do |extraction|
               eefps = section.extractions_extraction_forms_projects_sections.find_by(extraction: extraction, extraction_forms_projects_section: section)
               p.workbook.add_worksheet(name: "#{ section.section.name }") do |sheet|
-                #sheet.add_row ['Name', 'Description', 'Units'], style: highlight
-                #eefps.extractions_extraction_forms_projects_sections_type1s.each do |type1|
-                #  sheet.add_row [type1.type1.name, type1.type1.description, type1.units]
-                #end
-
                 # Some prep work:
                 new_row = []
                 last_col_idx  = 0
@@ -71,6 +66,32 @@ class SimpleExportJob < ApplicationJob
 
                 header_row.style = highlight
                 sheet.add_row new_row
+              end
+            end
+          end
+        end
+      end
+
+      # Type 2s.
+      @project.extraction_forms_projects.each do |ef|
+        ef.extraction_forms_projects_sections.each do |section|
+          if section.extraction_forms_projects_section_type_id == 2
+            @project.extractions.each do |extraction|
+              eefps = section.extractions_extraction_forms_projects_sections.find_by(extraction: extraction, extraction_forms_projects_section: section)
+              p.workbook.add_worksheet(name: "#{ section.section.name }") do |sheet|
+              end
+            end
+          end
+        end
+      end
+
+      # Results
+      @project.extraction_forms_projects.each do |ef|
+        ef.extraction_forms_projects_sections.each do |section|
+          if section.extraction_forms_projects_section_type_id == 3
+            @project.extractions.each do |extraction|
+              eefps = section.extractions_extraction_forms_projects_sections.find_by(extraction: extraction, extraction_forms_projects_section: section)
+              p.workbook.add_worksheet(name: "#{ section.section.name }") do |sheet|
               end
             end
           end
