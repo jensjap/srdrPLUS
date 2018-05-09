@@ -57,6 +57,29 @@ class Project < ApplicationRecord
     self.key_questions_projects.map { |kqp| [kqp.key_question.name, kqp.id] }
   end
 
+  def leaders
+    User.joins({ projects_users: [:project, { projects_users_roles: :role }] })
+      .where(projects_users: { project_id: id })
+      .where(projects_users: { projects_users_roles: { roles: { name: 'Leader' } } })
+  end
+
+  def contributors
+    User.joins({ projects_users: [:project, { projects_users_roles: :role }] })
+      .where(projects_users: { project_id: id })
+      .where(projects_users: { projects_users_roles: { roles: { name: 'Contributor' } } })
+  end
+
+  def auditors
+    User.joins({ projects_users: [:project, { projects_users_roles: :role }] })
+      .where(projects_users: { project_id: id })
+      .where(projects_users: { projects_users_roles: { roles: { name: 'Auditor' } } })
+  end
+
+  def members
+    User.joins({ projects_users: :project })
+      .where(projects_users: { project_id: id })
+  end
+
   private
 
     def create_default_extraction_form

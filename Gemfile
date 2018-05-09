@@ -115,3 +115,6 @@ gem 'apipie-rails'
 
 # Background jobs.
 gem 'sidekiq'
+
+# Spreadsheet generation
+gem 'axlsx_rails'

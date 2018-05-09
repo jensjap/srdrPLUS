@@ -19,6 +19,8 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
 
   accepts_nested_attributes_for :type1s, reject_if: :all_blank
 
+  delegate :section, to: :extraction_forms_projects_section
+
   # Do not create duplicate Type1 entries.
   #
   # In nested forms the type1s_attributes hash will have IDs for entries that
