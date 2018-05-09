@@ -29,3 +29,6 @@
 
 # ruby files
 /vendor/ruby/*
+
+# Redis
+dump.rdb
