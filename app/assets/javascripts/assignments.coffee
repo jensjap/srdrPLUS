@@ -121,7 +121,7 @@ document.addEventListener 'turbolinks:load', ->
             parent.current_citation.label = { id: data.id, value: label_value }
             #update_breadcrumb( current_citation )
             if $('#switch-button').val() == 'ON'
-              switch_to_list( obj )
+              get_history_page( obj, 0 )
 
       }
       get_c_p( obj )
@@ -160,7 +160,7 @@ document.addEventListener 'turbolinks:load', ->
 ##### start_screening #####
     start_screening = ( citations, history ) ->
       # session state is stored in state_obj, and this object is passed in methods that modify the state
-      state_obj = { citations: citations, history: history, index: 0, done: 'false' }
+      state_obj = { citations: citations, history: history, index: 0, done: 'false', history_page: 0 }
       next_citation( state_obj )
       #add_breadcrumb( state_obj )
       state_obj.index = 0
@@ -199,14 +199,46 @@ document.addEventListener 'turbolinks:load', ->
           update_arrows( state_obj )
           update_info( state_obj )
 
+      # button to switch to list view
       switch_button.click ->
         if switch_button.val() == 'OFF'
-          switch_to_list( state_obj )
+          get_history_page( state_obj, 0 )
           switch_button.val( 'ON' )
         else
           switch_to_screening( state_obj )
           switch_button.val( 'OFF' )
+
+      # pagination buttons
+      $( '#next-page' ).click (e) -> 
+        console.log( state_obj )
+        get_history_page( state_obj, state_obj.history_page + 1 ) 
+
+      $( '#prev-page' ).click (e) -> 
+        get_history_page( state_obj, state_obj.history_page - 1 ) 
       return
+
+##### get_history_page #####
+    get_history_page = ( obj, page_index ) -> 
+      page_size = 10
+      if obj.history.length < ( page_index + 1) * page_size
+        console.log( "loyloy" )
+        start = obj.history.length
+        count = page_index * page_size - obj.history.length
+        $.ajax {
+          type: 'GET'
+          url: $( '#history-json-url' ).text()
+          data: { count: count, start: start }
+          success:
+            ( data ) ->
+              obj.history = obj.history.concat( data.labeled_citations_projects )
+              switch_to_list( obj.history.slice( page_index * page_size, ( page_index + 1 ) * page_size ) )
+              obj.history_page = page_index
+              console.log( data )
+        }
+      else
+        switch_to_list( obj.history.slice( page_index * page_size, ( page_index + 1 ) * page_size ) )
+        obj.history_page = page_index
+
 
 ##### add_breadcrumb #####
     add_breadcrumb = ( obj ) ->
@@ -246,10 +278,10 @@ document.addEventListener 'turbolinks:load', ->
       return
 
 ##### switch_to_list #####
-    switch_to_list = ( obj ) ->
-      $( '#citations-list' ).empty()
+    switch_to_list = ( history_elements ) ->
+      $( '#citations-list-elements' ).empty()
       next_index = 0
-      for c in obj.history
+      for c in history_elements
         citation_info =
           $( '<div></div>' ).attr( { id: 'citation-info-' + c.id } )
         citation_element =
@@ -327,7 +359,7 @@ document.addEventListener 'turbolinks:load', ->
         buttons_wrapper.append( citation_button_no )
         citation_buttons.append( buttons_wrapper )
         citation_element.append( citation_buttons )
-        $( '#citations-list' ).append( citation_element )
+        $( '#citations-list-elements' ).append( citation_element )
         next_index++
 
       #hide regular view, show list view
@@ -336,7 +368,7 @@ document.addEventListener 'turbolinks:load', ->
 
 ##### switch_to_screening #####
     switch_to_screening = ( obj ) ->
-      $( '#citations-list' ).empty()
+      $( '#citations-list-elements' ).empty()
       $( '#citations-list' ).hide()
       $( '#screen-div' ).show()
       $( '#switch-button').val('OFF')

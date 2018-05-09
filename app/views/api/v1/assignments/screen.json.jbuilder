@@ -44,11 +44,11 @@ json.labeled_citations_projects do
       json.array! citation.keywords, :id, :name
     end
     json.label do
-      json.id = label.id
+      json.id label.id
       json.value label.value
-      json.user_id = label.user_id
-      json.created_at = label.created_at
-      json.updated_at = label.updated_at
+      json.user_id label.user_id
+      json.created_at label.created_at
+      json.updated_at label.updated_at
     end
   end
 end
