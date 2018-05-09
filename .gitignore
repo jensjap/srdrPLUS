@@ -32,3 +32,5 @@
 
 # Redis
 dump.rdb
+
+.env
