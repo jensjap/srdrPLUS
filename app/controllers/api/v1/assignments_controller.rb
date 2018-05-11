@@ -7,7 +7,7 @@ module Api
       formats [:json]
       def screen
         @unlabeled_citations_projects = CitationsProject.unlabeled( @assignment.project, params[:count] )
-        @past_labels = Label.last_updated( current_user, @assignment.project, params[:count] )
+        @past_labels = Label.last_updated( current_user, @assignment.project, 0, params[:count] )
         render 'screen.json'
       end
 
@@ -15,17 +15,13 @@ module Api
       formats [:json]
       def history
         count = params[:count].to_i
-        start = params[:start].to_i
-        @past_labels = Label.last_updated( current_user, @assignment.project, count + start ).all[-count..-1]
+        offset = params[:offset].to_i
+        @past_labels = Label.last_updated( current_user, @assignment.project, offset, count )
         render 'history.json'
       end
       
 
     private
-      def assignment_params
-        params.require(:assignment).permit(:screen, :count)
-      end
-
       def set_assignment
         @assignment = Assignment.find( params[:id] )
       end

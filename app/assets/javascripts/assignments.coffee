@@ -220,23 +220,23 @@ document.addEventListener 'turbolinks:load', ->
 ##### get_history_page #####
     get_history_page = ( obj, page_index ) -> 
       page_size = 10
-      if obj.history.length < ( page_index + 1) * page_size
-        console.log( "loyloy" )
-        start = obj.history.length
-        count = page_index * page_size - obj.history.length
+      if obj.history.length < ( page_index + 1 ) * page_size
+        console.log( obj )
+        offset = obj.history.length - 1
+        count = ( page_index + 1 ) * page_size - obj.history.length
         $.ajax {
           type: 'GET'
           url: $( '#history-json-url' ).text()
-          data: { count: count, start: start }
+          data: { count: count, offset: offset }
           success:
             ( data ) ->
               obj.history = obj.history.concat( data.labeled_citations_projects )
-              switch_to_list( obj.history.slice( page_index * page_size, ( page_index + 1 ) * page_size ) )
+              switch_to_list( obj, obj.history.slice( page_index * page_size, ( page_index + 1 ) * page_size ) )
               obj.history_page = page_index
               console.log( data )
         }
       else
-        switch_to_list( obj.history.slice( page_index * page_size, ( page_index + 1 ) * page_size ) )
+        switch_to_list( obj, obj.history.slice( page_index * page_size, ( page_index + 1 ) * page_size ) )
         obj.history_page = page_index
 
 
@@ -278,62 +278,57 @@ document.addEventListener 'turbolinks:load', ->
       return
 
 ##### switch_to_list #####
-    switch_to_list = ( history_elements ) ->
+    switch_to_list = ( obj, history_elements ) ->
       $( '#citations-list-elements' ).empty()
       next_index = 0
       for c in history_elements
+        info_wrapper =  
+          $( '<div><div/>' ).attr( { id: 'info-wrapper-' + c.citations_project_id, class: 'info-wrapper' } )
         citation_info =
-          $( '<div></div>' ).attr( { id: 'citation-info-' + c.id } )
+          $( '<div></div>' ).attr( { id: 'citation-info-' + c.citations_project_id, class: 'citation-info' } )
         citation_element =
-          $( '<div></div>' ).attr( { id: 'citation-element-' + c.id, class: 'callout', index: next_index } )
+          $( '<div></div>' ).attr( { id: 'citation-element-' + c.citations_project_id, class: 'callout row', index: next_index } )
         citation_title =
-          $( '<b>' + c.name + '<b/>' ).attr( { id: '#citation-element-title-' + c.breadcrumb_id } )
+          $( '<b>' + c.name + '<b/>' ).attr( { id: '#citation-element-title-' + c.citations_project_id } )
         if c.abstract.length > 400
           citation_abstract =
-            $( '<div>' + c.abstract.slice(0,400) + '...<div/>' ).attr( { id: '#citation-element-abstact-' + c.breadcrumb_id } )
+            $( '<div>' + c.abstract.slice(0,400) + '...<div/>' ).attr( { id: '#citation-element-abstact-' + c.citations_project_id } )
         else
           citation_abstract =
             $( '<div>' + c.abstract + '<div/>' ).attr( { id: '#citation-element-abstact-' + c.breadcrumb_id } )
 
 
         #set up buttons
-        buttons_wrapper =  $( '<div><div/>' ).attr( { id: 'buttons-wrapper' + c.id } )
         citation_buttons =
-          $( '<div><div/>' ).attr( { id: 'citation-buttons-' + c.id, class: 'button-group' } )
+          $( '<div><div/>' ).attr( { id: 'citation-buttons-' + c.citations_project_id, class: 'button-group citation-buttons' } )
         citation_button_yes =
-          $( '<div>Yes</div>' ).attr( { id: 'citation-button-yes-' + c.id, class: 'button', index: next_index } )
+          $( '<div>Yes</div>' ).attr( { id: 'citation-button-yes-' + c.citations_project_id, class: 'button', index: next_index } )
         citation_button_maybe =
-          $( '<div>Maybe</div>' ).attr( { id: 'citation-button-maybe-' + c.id, class: 'button', index: next_index } )
+          $( '<div>Maybe</div>' ).attr( { id: 'citation-button-maybe-' + c.citations_project_id, class: 'button', index: next_index } )
         citation_button_no =
-          $( '<div>No</div>' ).attr( { id: 'citation-button-no-' + c.id, class: 'button', index: next_index } )
+          $( '<div>No</div>' ).attr( { id: 'citation-button-no-' + c.citations_project_id, class: 'button', index: next_index } )
 
         # button click events
         citation_button_yes.click (e) ->
           e.stopPropagation()
-          update_label( obj, $(this).attr("index"), 'yes' )
+          update_label( obj, $(this).attr('index'), 'yes' )
 
         citation_button_no.click (e) ->
           e.stopPropagation()
-          update_label( obj, $(this).attr("index"), 'no' )
+          update_label( obj, $(this).attr('index'), 'no' )
 
         citation_button_maybe.click (e) ->
           e.stopPropagation()
-          update_label( obj, $(this).attr("index"), 'maybe' )
+          update_label( obj, $(this).attr('index'), 'maybe' )
 
         # set click behavior
         citation_element.click ->
-          #update_index( obj, $(this).attr("index") )
-          obj.index = $(this).attr("index")
+          #update_index( obj, $(this).attr('index') )
+          obj.index = $(this).attr('index')
           update_info( obj )
           update_arrows( obj )
           switch_to_screening( obj )
 
-
-        # for layout
-        buttons_wrapper.css('float','right')
-        citation_element.addClass('row')
-        citation_info.addClass('columns medium-9')
-        citation_buttons.addClass('columns medium-3')
 
         # highlight button based on label value
         if c.label?
@@ -353,21 +348,25 @@ document.addEventListener 'turbolinks:load', ->
         # place divs
         citation_info.append( citation_title )
         citation_info.append( citation_abstract )
-        citation_element.append( citation_info )
-        buttons_wrapper.append( citation_button_yes )
-        buttons_wrapper.append( citation_button_maybe )
-        buttons_wrapper.append( citation_button_no )
-        citation_buttons.append( buttons_wrapper )
+        info_wrapper.append( citation_info )
+
+        citation_buttons.append( citation_button_yes )
+        citation_buttons.append( citation_button_maybe )
+        citation_buttons.append( citation_button_no )
+        
         citation_element.append( citation_buttons )
+        citation_element.append( info_wrapper )
         $( '#citations-list-elements' ).append( citation_element )
         next_index++
 
       #hide regular view, show list view
+      $( '#pagination-buttons' ).show()
       $( '#citations-list' ).show()
       $( '#screen-div' ).hide()
 
 ##### switch_to_screening #####
     switch_to_screening = ( obj ) ->
+      $( '#pagination-buttons' ).hide()
       $( '#citations-list-elements' ).empty()
       $( '#citations-list' ).hide()
       $( '#screen-div' ).show()
@@ -389,6 +388,7 @@ document.addEventListener 'turbolinks:load', ->
     }
 
     $( '#hide-me' ).hide()
+    $( '#pagination-buttons' ).hide()
 
   return # END do ->
 return # END turbolinks:load
