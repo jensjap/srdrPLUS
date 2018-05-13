@@ -3,7 +3,7 @@ class AssignmentsController < ApplicationController
 
   def screen
     @citations_projects = CitationsProject.unlabeled( @assignment.project, params[:count] )
-    @past_labels = Label.last_updated( current_user, @assignment.project, params[:count] )
+    @past_labels = Label.last_updated( current_user, @assignment.project, 0, params[:count] )
     render 'screen'
   end
 

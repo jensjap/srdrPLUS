@@ -37,3 +37,21 @@
   height: 100%;
 }
 
+#pagination-buttons {
+  display: inline-block;
+  margin: auto;
+}
+
+.citation-info  {
+  margin-right: 250px;
+}
+
+.info-wrapper {
+  float: left;
+  margin-right: -250px;
+  width: 100%;
+}
+
+.citation-buttons {
+  float: right;
+}

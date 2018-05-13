@@ -68,13 +68,17 @@
        | ►
 
 
-  #switch-button.button
-    | list view
+  #switch-button
+    .button
+      | list view
+
 
 #hide-me.hide
   #breadcrumb-group.row.button-group.small
   #screen-assignment-json-url
     | #{ screen_api_v1_assignment_url(@assignment.id) }
+  #history-json-url
+    | #{ history_api_v1_assignment_url(@assignment.id) }
   #labels-url
     | #{ labels_url }
   #authenticity-token
@@ -85,3 +89,10 @@
     | #{ @current_user.profile.abstrackr_setting.journal_visible }
 
 #citations-list
+  #citations-list-elements
+  .row style="text-align: center;"
+    #pagination-buttons.button-group
+      #prev-page.button
+        | ◄
+      #next-page.button
+        | ►

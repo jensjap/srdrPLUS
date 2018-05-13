@@ -9,6 +9,7 @@ Rails.application.routes.draw do
       resources :projects, shallow: true do
         resources :assignments do
           get 'screen', on: :member
+          get 'history', on: :member
         end
         resources :citations, only: [:index] do
           collection do

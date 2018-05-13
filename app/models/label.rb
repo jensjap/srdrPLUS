@@ -1,10 +1,11 @@
 class Label < ApplicationRecord
-  scope :last_updated, -> ( user, project, count ) { joins(:citations_project)
+  scope :last_updated, -> ( user, project, offset, count ) { joins(:citations_project)
                                                 .where(citations_projects: { project_id: project.id })
                                                 .includes(:citation)
                                                 .where(user: user)
                                                 .order(updated_at: :desc)
                                                 .distinct
+                                                .offset(offset)
                                                 .limit(count) }  
   belongs_to :citations_project
   belongs_to :user
