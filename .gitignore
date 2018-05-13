@@ -19,18 +19,21 @@
 # Don't track SimpleCov results.
 /coverage/*
 
-# swap and undo files
+# swap and undo files.
 *.swp
 *.swo
 *.un~
 
-# DS_Store files
+# DS_Store files.
 .DS_Store
 
-# ruby files
+# ruby files.
 /vendor/ruby/*
 
 # Redis
 dump.rdb
 
 .env
+
+# Don't track any .xlsx files.
+*.xlsx
