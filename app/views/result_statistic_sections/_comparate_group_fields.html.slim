@@ -2,6 +2,12 @@
   = f.simple_fields_for :comparates do |comparate|
     = render @result_statistic_section.result_statistic_section_type.name.parameterize.underscore + '_comparate_fields', f: comparate
   .links.add-comparate
-    = link_to_add_association f, :comparates, partial: @result_statistic_section.result_statistic_section_type.name.parameterize.underscore + '_comparate_fields' do
-      i.fi-plus
-      |  Add Comparate
+    - if @result_statistic_section.result_statistic_section_type.name == 'Between Arm Comparisons'
+      = link_to_add_association f, :comparates, partial: @result_statistic_section.result_statistic_section_type.name.parameterize.underscore + '_comparate_fields' do
+        i.fi-plus
+        |  Add Arm
+    - else
+      / We don't want multiple comparates for WAC but we need the link to exist so JS has something to open.
+      = link_to_add_association f, :comparates, partial: @result_statistic_section.result_statistic_section_type.name.parameterize.underscore + '_comparate_fields', style: 'display: none;' do
+        i.fi-plus
+        |  Add Arm
