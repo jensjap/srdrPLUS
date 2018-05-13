@@ -6,7 +6,8 @@ class SimpleExportJob < ApplicationJob
   def perform(*args)
     # Do something later
     Rails.logger.debug "#{ self.class.name }: I'm performing my job with arguments: #{ args.inspect }"
-    @project = Project.find(args.first)
+    @project = Project.find args.first
+    @user = User.find args.second
     Rails.logger.debug "#{ self.class.name }: Working on project: #{ @project.name }"
 
     Axlsx::Package.new do |p|
@@ -107,6 +108,7 @@ class SimpleExportJob < ApplicationJob
         end
       end
       p.serialize('simple.xlsx')
+      #ExportMailer.
     end
   end
 end
