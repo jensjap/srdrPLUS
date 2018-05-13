@@ -18,6 +18,11 @@ document.addEventListener 'turbolinks:load', ->
         $( insertedItem ).find( '.links.add-comparate' ).each ->
           $( this ).find( 'a' ).click()
 
+        if $( '.wac-comparate-fields' ).length == 2
+          $( '.wac-comparate-fields:eq(1)' ).find( 'select option' ).filter( ->
+            return this.text.includes( '(Baseline)' )
+          ).attr('selected', true)
+
         # This creates a new cell at the end of the header row and moves the 'add comparison' link into it.
         # At the moment this isn't useful because we can't have the form span multiple row cells. Perhaps
         # using simple html form would work, but it doesn't seem to work with slim templating engine.

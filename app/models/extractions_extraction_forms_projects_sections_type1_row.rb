@@ -15,6 +15,12 @@ class ExtractionsExtractionFormsProjectsSectionsType1Row < ApplicationRecord
   delegate :extraction, to: :extractions_extraction_forms_projects_sections_type1
   delegate :extractions_extraction_forms_projects_section, to: :extractions_extraction_forms_projects_sections_type1
 
+  def label_with_baseline_indicator
+    text = "#{ name }"
+    text += " (Baseline)" if is_baseline
+    return text
+  end
+
   private
 
     def create_default_type1_row_columns
