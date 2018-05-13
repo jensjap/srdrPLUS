@@ -4,6 +4,7 @@ class ExtractionsExtractionFormsProjectsSectionsType1Row < ApplicationRecord
 
   # Temporarily calling it ExtractionsExtractionFormsProjectsSectionsType1RowColumn. This is meant to be Outcome Population.
   after_create :create_default_type1_row_columns
+  after_save :ensure_only_one_baseline
 
   belongs_to :extractions_extraction_forms_projects_sections_type1, inverse_of: :extractions_extraction_forms_projects_sections_type1_rows
 
@@ -39,6 +40,15 @@ class ExtractionsExtractionFormsProjectsSectionsType1Row < ApplicationRecord
           self.extractions_extraction_forms_projects_sections_type1_row_columns.create
         end
 
+      end
+    end
+
+    def ensure_only_one_baseline
+      return false unless extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_section.section.name == 'Outcomes'
+      if is_baseline
+        extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_sections_type1_rows.each do |tp|
+          tp.update_attribute(:is_baseline, false) unless tp == self
+        end
       end
     end
 end
