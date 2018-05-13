@@ -17,6 +17,7 @@ class ExtractionsExtractionFormsProjectsSectionsType1Row < ApplicationRecord
 
   def label_with_baseline_indicator
     text = "#{ name }"
+    text += " #{ unit }" if unit.present?
     text += " (Baseline)" if is_baseline
     return text
   end

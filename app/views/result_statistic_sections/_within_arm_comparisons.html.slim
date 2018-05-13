@@ -6,15 +6,15 @@
       tr
         th Timepoint Comparison(s)
         - @arms.each do |arm|
-          th #{ arm.type1.name }
+          th #{ arm.type1.name_and_description }
 
     tbody
       - @result_statistic_section.comparisons.each do |wac|
         tr
           td
-            div style='text-align: center; font-weight: bold;' == wac.comparate_groups.first.comparates.map { |c| c.comparable_element.comparable.name }.join('<br>')
+            div style='text-align: center; font-weight: bold;' == wac.comparate_groups.first.comparates.map { |c| c.comparable_element.comparable.label_with_baseline_indicator }.join('<br>')
             div style='text-align: center;' vs.
-            div style='text-align: center; font-weight: bold' == wac.comparate_groups.second.comparates.map { |c| c.comparable_element.comparable.name }.join('<br>')
+            div style='text-align: center; font-weight: bold;' == wac.comparate_groups.second.comparates.map { |c| c.comparable_element.comparable.label_with_baseline_indicator }.join('<br>')
           - @arms.each do |arm|
             td
               ul
@@ -32,12 +32,12 @@
                     = f.input :name, label: rssm.measure.name, required: false, class: 'form-control'
 
                     .form-actions
-                      = f.button :submit, 'Save'
+                      = f.button :submit, t('save')
       tr
         td
           = simple_form_for @result_statistic_section do |f|
             .links.add-comparison
-              = link_to_add_association f, :comparisons do
+              = link_to_add_association f, :comparisons, render_options: { locals: { comparison: :wac } } do
                 i.fi-plus
                 |  Add Comparison
 

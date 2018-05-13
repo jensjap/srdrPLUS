@@ -41,6 +41,10 @@ class ResultStatisticSection < ApplicationRecord
 #    end
 #  end
 
+  def timepoints
+    subgroup.extractions_extraction_forms_projects_sections_type1_row.extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_sections_type1_rows
+  end
+
   private
     def create_default_descriptive_statistics
       if result_statistic_section_type.id == 1

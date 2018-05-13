@@ -10,14 +10,22 @@
             div style='text-align: center;' == bac.comparate_groups.first.comparates.map { |c| c.comparable_element.comparable.type1.name_and_description }.join('<br>')
             div style='text-align: center; font-weight: normal;' vs.
             div style='text-align: center;' == bac.comparate_groups.second.comparates.map { |c| c.comparable_element.comparable.type1.name_and_description }.join('<br>')
+        th
+          = simple_form_for @result_statistic_section do |f|
+            = f.input :add_comparison, as: :hidden, input_html: { value: true }
+            = f.input :comparison_type, as: :hidden, input_html: { value: :bac }
+            .links.add-comparison
+              = link_to_add_association f, :comparisons, render_options: { locals: { comparison: :bac } } do
+                i.fi-plus
+                |  Add Comparison
 
     tbody
       - @result_statistic_section.subgroup.within_arm_comparisons_section.comparisons.each do |wac|
         tr
           td
-            div style='text-align: center; font-weight: bold;' == wac.comparate_groups.first.comparates.map { |c| c.comparable_element.comparable.name }.join('<br>')
+            div style='text-align: center; font-weight: bold;' == wac.comparate_groups.first.comparates.map { |c| c.comparable_element.comparable.label_with_baseline_indicator }.join('<br>')
             div style='text-align: center;' vs.
-            div style='text-align: center; font-weight: bold' == wac.comparate_groups.second.comparates.map { |c| c.comparable_element.comparable.name }.join('<br>')
+            div style='text-align: center; font-weight: bold;' == wac.comparate_groups.second.comparates.map { |c| c.comparable_element.comparable.label_with_baseline_indicator }.join('<br>')
 
           - @result_statistic_section.subgroup.between_arm_comparisons_section.comparisons.each do |bac|
             td
@@ -37,6 +45,15 @@
 
                     .form-actions
                       = f.button :submit, 'Save'
+      tr
+        td
+          = simple_form_for @result_statistic_section do |f|
+            = f.input :add_comparison, as: :hidden, input_html: { value: true }
+            = f.input :comparison_type, as: :hidden, input_html: { value: :wac }
+            .links.add-comparison
+              = link_to_add_association f, :comparisons, render_options: { locals: { comparison: :wac } } do
+                i.fi-plus
+                |  Add Comparison
       tr
         td = simple_form_for @result_statistic_section do |f|
           = f.association :measures

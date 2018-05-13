@@ -3,17 +3,8 @@
   For NET comparable_type is Comparison
 
 .nested-fields.wac-comparate-fields style='padding-bottom: 0px; margin-bottom: 0px'
-  = f.simple_fields_for :comparable_element, f.object.build_comparable_element do |comparable_element|
-    = comparable_element.input :comparable_type,
-      as: :hidden,
-      input_html: { value: 'ExtractionsExtractionFormsProjectsSectionsType1Row' },
-      wrapper_html: { style: 'padding-bottom: 0px' }
-    = comparable_element.input :comparable_id,
-      as: :select,
-      collection: @result_statistic_section.subgroup.extractions_extraction_forms_projects_sections_type1_row.extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_sections_type1_rows,
-      selected: comparable_element.object.comparable_id,
-      value_method: :id,
-      label_method: :label_with_baseline_indicator,
-      input_html: { style: 'padding-bottom: 0px; margin-bottom: 0px' },
-      wrapper_html: { style: 'padding-bottom: 0px' },
-      label: false
+  == render 'comparable_element_fields',
+    f: f,
+    comparable_element_type: 'ExtractionsExtractionFormsProjectsSectionsType1Row',
+    collection: @result_statistic_section.timepoints,
+    label_method: :label_with_baseline_indicator

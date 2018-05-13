@@ -72,6 +72,7 @@ en:
   removed: Successfully removed
   requires_one: You must have at least one of this resource
   save: Save
+  save_comparison: Save comparison
   save_changes: Save changes
   success: Success!
   users:

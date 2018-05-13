@@ -11,6 +11,23 @@ class ResultStatisticSectionsController < ApplicationController
   # PATCH/PUT /result_statistic_sections/1
   # PATCH/PUT /result_statistic_sections/1.json
   def update
+    # A bit hacky for now. The problem is that adding comparisons from the NET Change quadrant adds the
+    # comparison to the ResultStatisticSection of type 4 (NET Change), which doesn't make sense...
+    # it should add it to the type 2 or type 3.
+    if @result_statistic_section.result_statistic_section_type_id == 4 && params[:result_statistic_section]['add_comparison'] == 'true'
+      if params[:result_statistic_section]['comparison_type'] == 'bac'
+        temp_result_statistic_section = @result_statistic_section.subgroup.result_statistic_sections.find_by(result_statistic_section_type_id: 2)
+      elsif params[:result_statistic_section]['comparison_type'] == 'wac'
+        temp_result_statistic_section = @result_statistic_section.subgroup.result_statistic_sections.find_by(result_statistic_section_type_id: 3)
+      end
+
+      temp_result_statistic_section.update(result_statistic_section_params)
+      redirect_to edit_result_statistic_section_path(@result_statistic_section),
+        notice: t('success')
+
+      return
+    end
+
     respond_to do |format|
       if @result_statistic_section.update(result_statistic_section_params)
         format.html { redirect_to edit_result_statistic_section_path(@result_statistic_section),

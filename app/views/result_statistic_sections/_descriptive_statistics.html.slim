@@ -6,7 +6,7 @@
       tr
         th Timepoint
         - @arms.each do |arm|
-          th #{ arm.type1.name }
+          th #{ arm.type1.name_and_description }
 
     tbody
       - @result_statistic_section.subgroup.extractions_extraction_forms_projects_sections_type1_row.extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_sections_type1_rows.each do |tp|
