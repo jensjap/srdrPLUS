@@ -11,8 +11,7 @@
             div style='text-align: center; font-weight: normal;' vs.
             div style='text-align: center;' == bac.comparate_groups.second.comparates.map { |c| c.comparable_element.comparable.type1.name_and_description }.join('<br>')
         th
-          = simple_form_for @result_statistic_section do |f|
-            = f.input :add_comparison, as: :hidden, input_html: { value: true }
+          = simple_form_for @result_statistic_section, url: add_comparison_result_statistic_section_path, method: :post do |f|
             = f.input :comparison_type, as: :hidden, input_html: { value: :bac }
             .links.add-comparison
               = link_to_add_association f, :comparisons, class: 'button tiny', render_options: { locals: { comparison: :bac } } do
@@ -47,8 +46,7 @@
                       = f.button :submit, 'Save'
       tr
         td
-          = simple_form_for @result_statistic_section do |f|
-            = f.input :add_comparison, as: :hidden, input_html: { value: true }
+          = simple_form_for @result_statistic_section, url: add_comparison_result_statistic_section_path, method: :post do |f|
             = f.input :comparison_type, as: :hidden, input_html: { value: :wac }
             .links.add-comparison
               = link_to_add_association f, :comparisons, class: 'button tiny', render_options: { locals: { comparison: :wac } } do

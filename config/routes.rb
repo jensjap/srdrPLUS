@@ -65,7 +65,9 @@ Rails.application.routes.draw do
           end
           resources :extractions_extraction_forms_projects_sections_type1_rows, only: [:create] do
             resources :extractions_extraction_forms_projects_sections_type1_row_columns, only: [:create] do
-              resources :result_statistic_sections, only: [:edit, :update]
+              resources :result_statistic_sections, only: [:edit, :update] do
+                post 'add_comparison', on: :member
+              end
             end
           end
         end
