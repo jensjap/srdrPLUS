@@ -13,6 +13,8 @@ class ExtractionsExtractionFormsProjectsSectionsType1RowColumn < ApplicationReco
 
   has_many :result_statistic_sections, dependent: :destroy, inverse_of: :subgroup, foreign_key: 'subgroup_id'
 
+  delegate :extraction, to: :extractions_extraction_forms_projects_sections_type1_row
+
   def descriptive_statistics_section
     result_statistic_sections.find_by(result_statistic_section_type_id: 1)
   end

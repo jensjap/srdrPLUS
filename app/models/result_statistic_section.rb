@@ -26,23 +26,14 @@ class ResultStatisticSection < ApplicationRecord
   accepts_nested_attributes_for :comparisons_measures, allow_destroy: true
   accepts_nested_attributes_for :measurements, allow_destroy: true
 
-#  def create_comparison(comparable1_id, comparable2_id)
-#    ResultStatisticSection.transaction do
-#      comparison = self.comparisons.create!
-#
-#      cg1 = comparison.comparate_groups.create!
-#      cg2 = comparison.comparate_groups.create!
-#
-#      eefpst1 = ExtractionsExtractionFormsProjectsSectionsType1.find(comparable1_id)
-#      eefpst2 = ExtractionsExtractionFormsProjectsSectionsType1.find(comparable2_id)
-#
-#      cg1.comparable_elements << ComparableElement.create(comparable: eefpst1)
-#      cg2.comparable_elements << ComparableElement.create(comparable: eefpst2)
-#    end
-#  end
+  delegate :extraction, to: :subgroup
 
   def timepoints
     subgroup.extractions_extraction_forms_projects_sections_type1_row.extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_sections_type1_rows
+  end
+
+  def result_section
+    subgroup.extractions_extraction_forms_projects_sections_type1_row.extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_section.extraction.extractions_extraction_forms_projects_sections.last
   end
 
   private
@@ -50,17 +41,5 @@ class ResultStatisticSection < ApplicationRecord
       Measure.result_statistic_section_type_defaults(self.result_statistic_section_type.id).each do |m|
         self.result_statistic_sections_measures.create(measure: m)
       end
-#      if result_statistic_section_type.id == 1
-#        Measure.is_default.each do |m|
-#          # This ends up adding m twice to ResultStatisticSection.
-#          #measures << m
-#
-#          # This one works correctly...only adds it once.
-#          #self.measures << m
-#
-#          # ???
-#          self.result_statistic_sections_measures.create(measure: m)
-#        end
-#      end
     end
 end
