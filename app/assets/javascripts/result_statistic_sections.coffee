@@ -23,6 +23,8 @@ document.addEventListener 'turbolinks:load', ->
             return this.text.includes( '(Baseline)' )
           ).attr('selected', true)
 
+        $( '.links.add-comparison a' ).addClass( 'disabled' )
+
         # This creates a new cell at the end of the header row and moves the 'add comparison' link into it.
         # At the moment this isn't useful because we can't have the form span multiple row cells. Perhaps
         # using simple html form would work, but it doesn't seem to work with slim templating engine.
