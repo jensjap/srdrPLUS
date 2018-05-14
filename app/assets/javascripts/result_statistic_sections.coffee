@@ -5,6 +5,11 @@
 document.addEventListener 'turbolinks:load', ->
   do ->
 
+    $( 'form.edit_record :input' )
+      .keyup ( e ) ->
+        e.preventDefault()
+        $( this ).closest( 'form' ).submit()
+
     $( '.links.add-comparison' )
 
       .on 'cocoon:before-insert', ->

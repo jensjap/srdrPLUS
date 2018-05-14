@@ -37,12 +37,13 @@
                   result_statistic_sections_measure: rssm)
                   - record = Record.find_or_create_by!(recordable: wac_bac_rssm)
 
-                  = simple_form_for(record, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
+                  = simple_form_for(record, remote: true, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
                     = f.error_notification
 
                     = f.input :name, label: rssm.measure.name, required: false, class: 'form-control'
+                    div id="record-id-#{ record.id.to_s }" class='record-info' style='opacity: 0;' = 'Saved!'
 
-                    .form-actions
+                    /.form-actions
                       = f.button :submit, 'Save'
       tr
         td

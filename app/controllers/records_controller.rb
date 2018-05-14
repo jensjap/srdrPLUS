@@ -7,15 +7,14 @@ class RecordsController < ApplicationController
     respond_to do |format|
       if @record.update(record_params)
         format.html { redirect_to edit_result_statistic_section_path(@record.recordable.result_statistic_section), notice: t('success') }
-#        format.html { redirect_to work_extraction_path(@record.recordable.extraction,
-#                                                       anchor: "panel-tab-#{ @record.recordable.extractions_extraction_forms_projects_section.id.to_s }"),
-#                                  notice: t('success') }
         format.json { render :show, status: :ok, location: @record }
+        format.js
       else
         format.html { redirect_to work_extraction_path(@record.recordable.extraction,
                                                        anchor: "panel-tab-#{ @record.recordable.extractions_extraction_forms_projects_section.id.to_s }"),
                                   alert: t('failure') + ' ' + @record.errors.full_messages.to_s }
         format.json { render json: @record.errors, status: :unprocessable_entity }
+        format.js
       end
     end
   end

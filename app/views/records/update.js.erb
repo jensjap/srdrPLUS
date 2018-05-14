@@ -1,0 +1,6 @@
+( function() {
+  let infoDiv = $( "#record-id-<%= @record.id %>" );
+
+  infoDiv.show().animate( { opacity: 1 } );
+  infoDiv.show().delay( 2000 ).animate( { opacity: 0 } );
+} )();

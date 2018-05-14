@@ -23,12 +23,13 @@
                   result_statistic_sections_measure: rssm)
                   - record = Record.find_or_create_by!(recordable: tps_arms_rssm)
 
-                  = simple_form_for(record, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
+                  = simple_form_for(record, remote: true, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
                     = f.error_notification
 
-                    = f.input :name, label: rssm.measure.name, required: false, class: 'form-control'
+                    = f.input :name, label: rssm.measure.name, required: false, class: 'form-control', wrapper_html: { style: 'padding-bottom: 0;' },input_html: { style: 'margin-bottom: 0;' }
+                    div id="record-id-#{ record.id.to_s }" class='record-info' style='opacity: 0;' = 'Saved!'
 
-                    .form-actions
+/                    .form-actions
                       = f.button :submit, 'Save'
 
       tr
