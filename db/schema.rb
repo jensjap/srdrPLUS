@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180507015116) do
+ActiveRecord::Schema.define(version: 20180514023758) do
 
   create_table "abstrackr_settings", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "profile_id"
@@ -538,10 +538,9 @@ ActiveRecord::Schema.define(version: 20180507015116) do
 
   create_table "measures", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "name"
-    t.boolean  "default",    default: false
     t.datetime "deleted_at"
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["deleted_at"], name: "index_measures_on_deleted_at", using: :btree
   end
 
@@ -896,6 +895,19 @@ ActiveRecord::Schema.define(version: 20180507015116) do
     t.index ["deleted_at"], name: "index_result_statistic_section_types_on_deleted_at", using: :btree
   end
 
+  create_table "result_statistic_section_types_measures", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "result_statistic_section_type_id"
+    t.integer  "measure_id"
+    t.datetime "deleted_at"
+    t.boolean  "active"
+    t.datetime "created_at",                       null: false
+    t.datetime "updated_at",                       null: false
+    t.index ["active"], name: "index_result_statistic_section_types_measures_on_active", using: :btree
+    t.index ["deleted_at"], name: "index_result_statistic_section_types_measures_on_deleted_at", using: :btree
+    t.index ["measure_id"], name: "index_rsstm_on_m_id", using: :btree
+    t.index ["result_statistic_section_type_id"], name: "index_rsstm_on_rsst_id", using: :btree
+  end
+
   create_table "result_statistic_sections", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "result_statistic_section_type_id"
     t.integer  "subgroup_id"
@@ -1210,6 +1222,8 @@ ActiveRecord::Schema.define(version: 20180507015116) do
   add_foreign_key "question_row_columns_question_row_column_options", "question_row_columns"
   add_foreign_key "question_rows", "questions"
   add_foreign_key "questions", "extraction_forms_projects_sections"
+  add_foreign_key "result_statistic_section_types_measures", "measures"
+  add_foreign_key "result_statistic_section_types_measures", "result_statistic_section_types"
   add_foreign_key "result_statistic_sections", "extractions_extraction_forms_projects_sections_type1_row_columns", column: "subgroup_id"
   add_foreign_key "result_statistic_sections", "result_statistic_section_types"
   add_foreign_key "result_statistic_sections_measures", "measures"

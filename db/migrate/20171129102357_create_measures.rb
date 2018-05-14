@@ -2,7 +2,6 @@ class CreateMeasures < ActiveRecord::Migration[5.0]
   def change
     create_table :measures do |t|
       t.string :name
-      t.boolean :default, default: false
       t.datetime :deleted_at
 
       t.timestamps

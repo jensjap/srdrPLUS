@@ -64,20 +64,22 @@ module SeedData
       ])
 
       # ResultStatisticSectionTypes.
-      ResultStatisticSectionType.create([
-        { name: 'Descriptive Statistics' },
-        { name: 'Between Arm Comparisons' },
-        { name: 'Within Arm Comparisons' },
-        { name: 'NET Change' }
-      ])
+      @descriptive_statistics_result_statistic_section_type  = ResultStatisticSectionType.create(name: 'Descriptive Statistics')
+      @between_arm_comparisons_result_statistic_section_type = ResultStatisticSectionType.create(name: 'Between Arm Comparisons')
+      @within_arm_comparisons_result_statistic_section_type  = ResultStatisticSectionType.create(name: 'Within Arm Comparisons')
+      @net_change_result_statistic_section_type              = ResultStatisticSectionType.create(name: 'NET Change')
 
-      # ResultStatisticSectionMeasures.
-      Measure.create([
-        { name: 'N Analyzed', default: true },
-        { name: 'Counts', default: true },
-        { name: 'Proportion' },
-        { name: 'Percentage' },
-      ])
+      # Measures.
+      @n_analyzed = Measure.create(name: 'N Analyzed')
+      @counts     = Measure.create(name: 'Counts')
+      @proportion = Measure.create(name: 'Proportions')
+      @percentage = Measure.create(name: 'Percentage')
+
+      # Default measures for each ResultStatisticSectionType.
+      @descriptive_statistics_result_statistic_section_type.measures << @n_analyzed
+      @descriptive_statistics_result_statistic_section_type.measures << @counts
+
+      @within_arm_comparisons_result_statistic_section_type.measures << @n_analyzed
 
       # Extraction Forms Projects Section Types.
       ExtractionFormsProjectsSectionType.create(

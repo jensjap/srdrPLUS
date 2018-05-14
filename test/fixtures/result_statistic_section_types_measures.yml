@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  result_statistic_section_type: one
+  measure: one
+  deleted_at: 2018-05-14 10:37:58
+  active: false
+
+two:
+  result_statistic_section_type: two
+  measure: two
+  deleted_at: 2018-05-14 10:37:58
+  active: false
