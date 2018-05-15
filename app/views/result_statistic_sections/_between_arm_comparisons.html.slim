@@ -7,9 +7,17 @@
         th Arm Comparison(s)
         - @result_statistic_section.comparisons.each do |bac|
           th
-            div style='text-align: center;' == bac.comparate_groups.first.comparates.map { |c| c.comparable_element.comparable.type1.name_and_description }.join('<br>')
+            div style='text-align: center;'
+              - bac.comparate_groups.first.comparates.each do |c|
+                span.has-tip.tip-right data-tooltip='' aria-haspopup='true' data-options='show_on:small' title="Description: #{ c.comparable_element.comparable.type1.description }"
+                  = c.comparable_element.comparable.type1.name
+                br
             div style='text-align: center; font-weight: normal;' vs.
-            div style='text-align: center;' == bac.comparate_groups.second.comparates.map { |c| c.comparable_element.comparable.type1.name_and_description }.join('<br>')
+            div style='text-align: center;'
+              - bac.comparate_groups.second.comparates.each do |c|
+                span.has-tip.tip-right data-tooltip='' aria-haspopup='true' data-options='show_on:small' title="Description: #{ c.comparable_element.comparable.type1.description }"
+                  = c.comparable_element.comparable.type1.name
+                br
         th
           = simple_form_for @result_statistic_section, url: add_comparison_result_statistic_section_path, method: :post do |f|
             = f.input :comparison_type, as: :hidden, input_html: { value: :bac }
@@ -19,7 +27,7 @@
                 |  Add Comparison
 
     tbody
-      - @result_statistic_section.subgroup.extractions_extraction_forms_projects_sections_type1_row.extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_sections_type1_rows.each do |tp|
+      - @result_statistic_section.timepoints.each do |tp|
         tr
           td = tp.name + (tp.unit.present? ? " (#{ tp.unit })" : '')
           - @result_statistic_section.comparisons.each do |bac|
