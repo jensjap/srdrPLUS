@@ -107,8 +107,11 @@ class SimpleExportJob < ApplicationJob
           chart.add_series :data => sheet["B2:B4"], :labels => sheet["A2:A4"],  :colors => ['FF0000', '00FF00', '0000FF']
         end
       end
+
       p.serialize('simple.xlsx')
-      #ExportMailer.
+
+      # Notify the user that the export is ready for download.
+      ExportMailer.notify_simple_export_completion(@user.id, @project.id).deliver_later
     end
   end
 end
