@@ -99,12 +99,16 @@ ActiveRecord::Schema.define(version: 20180514023758) do
   create_table "citations_projects", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "citation_id"
     t.integer  "project_id"
+    t.datetime "deleted_at"
+    t.boolean  "active"
     t.datetime "created_at",        null: false
     t.datetime "updated_at",        null: false
     t.integer  "consensus_type_id"
     t.boolean  "pilot_flag"
+    t.index ["active"], name: "index_citations_projects_on_active", using: :btree
     t.index ["citation_id"], name: "index_citations_projects_on_citation_id", using: :btree
     t.index ["consensus_type_id"], name: "index_citations_projects_on_consensus_type_id", using: :btree
+    t.index ["deleted_at"], name: "index_citations_projects_on_deleted_at", using: :btree
     t.index ["project_id"], name: "index_citations_projects_on_project_id", using: :btree
   end
 

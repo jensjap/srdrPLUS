@@ -5,4 +5,8 @@ html
 
   body
     h1 Huzzah!
-    h2 The export you requested for project: "#{ @project.name }" is ready for your to download.
+    p The export you requested for project:
+    .project-name
+      h2 "#{ @project.name }"
+    p is ready for you to download.
+    p Please follow this link: 

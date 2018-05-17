@@ -188,7 +188,7 @@ module SeedDataExtended
       end
 
       @contributor = User.create do |u|
-        u.email        = 'contributor@test.com'
+        u.email        = 'jensjap@gmail.com'
         u.password     = 'password'
         u.confirmed_at = Time.now()
       end

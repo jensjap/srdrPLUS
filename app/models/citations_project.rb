@@ -1,4 +1,9 @@
 class CitationsProject < ApplicationRecord
+  include SharedParanoiaMethods
+
+  acts_as_paranoid column: :active, sentinel_value: true
+  has_paper_trail
+
   scope :unlabeled, -> ( project, count ) { includes( :citation => [ :authors, :keywords, :journal ] )
                                             .left_outer_joins(:labels)
                                             .where( :labels => { :id => nil },
