@@ -71,10 +71,4 @@ class User < ApplicationRecord
       end
     end
   end
-
-  def extractions
-    Extraction
-        .joins(projects_users_role: { projects_user: :user })
-        .where(projects_users: { user_id: self })
-  end
 end

@@ -21,7 +21,7 @@ def build_project_information_section(p, project, highlight, wrap)
         user.profile.middle_name,
         user.profile.last_name,
         user.email,
-        Extraction.by_user(user.id).collect(&:id)
+        Extraction.by_project_and_user(project.id, user.id).collect(&:id)
       ]
     end
   end
