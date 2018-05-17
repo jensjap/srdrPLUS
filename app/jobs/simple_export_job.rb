@@ -13,14 +13,14 @@ class SimpleExportJob < ApplicationJob
   def perform(*args)
     # Do something later
     Rails.logger.debug "#{ self.class.name }: I'm performing my job with arguments: #{ args.inspect }"
-    @project = Project.find args.first
-    @user = User.find args.second
+    @project = Project.find args.second
+    @user = User.find args.first
     Rails.logger.debug "#{ self.class.name }: Working on project: #{ @project.name }"
 
     Axlsx::Package.new do |p|
       p.use_shared_strings = true
-      highlight = p.workbook.styles.add_style bg_color: 'C7EECF', fg_color: '09600B', sz: 14, font_name: 'Calibri (Body)'
-      wrap      = p.workbook.styles.add_style alignment: { wrap_text: true }
+      highlight  = p.workbook.styles.add_style bg_color: 'C7EECF', fg_color: '09600B', sz: 14, font_name: 'Calibri (Body)'
+      wrap       = p.workbook.styles.add_style alignment: { wrap_text: true }
 
       # Sheet with basic project information.
       build_project_information_section(p, @project, highlight, wrap)

@@ -1,8 +1,8 @@
+# Temporarily calling it ExtractionsExtractionFormsProjectsSectionsType1RowColumn. This is meant to be Outcome Timepoints.
 class ExtractionsExtractionFormsProjectsSectionsType1Row < ApplicationRecord
   acts_as_paranoid
   has_paper_trail
 
-  # Temporarily calling it ExtractionsExtractionFormsProjectsSectionsType1RowColumn. This is meant to be Outcome Population.
   after_create :create_default_type1_row_columns
   after_save :ensure_only_one_baseline
 

@@ -3,7 +3,7 @@
 # returns (Boolean, Idx)
 def _find_column_idx_with_value(row, value)
   row.cells.each do |cell|
-    return [true, cell.index] if cell.value.start_with?("[ID: #{ value }]")
+    return [true, cell.index] if cell.value.start_with?(value)
   end
 
   return [false, row.cells.length]
@@ -20,7 +20,7 @@ def build_type1_sections_wide(p, project, highlight, wrap)
         p.workbook.add_worksheet(name: "#{ section.section.name }" + ' - wide') do |sheet|
 
           # Some prep work:
-          header_row = sheet.add_row ['Extraction ID', 'Citation ID', 'Citation Name', 'RefMan', 'PMID']
+          header_row = sheet.add_row ['Extraction ID', 'Username', 'Citation ID', 'Citation Name', 'RefMan', 'PMID']
 
           # Every row represents an extraction.
           project.extractions.each do |extraction|
@@ -28,28 +28,51 @@ def build_type1_sections_wide(p, project, highlight, wrap)
 
             new_row = []
             new_row << extraction.id.to_s
+            new_row << extraction.projects_users_role.projects_user.user.profile.username
             new_row << extraction.citations_project.citation.id.to_s
             new_row << extraction.citations_project.citation.name
             new_row << extraction.citations_project.citation.refman.to_s
             new_row << extraction.citations_project.citation.pmid.to_s
+
+            # Add type1 and description first.
             eefps.extractions_extraction_forms_projects_sections_type1s.each do |type1|
               found, column_idx = nil
-              found, column_idx = _find_column_idx_with_value(header_row, type1.type1.id.to_s)
+              found, column_idx = _find_column_idx_with_value(header_row, "[#{ section.section.name.singularize } ID: #{ type1.type1.id.to_s }]")
 
-              # We need to append to the header.
+              # Append to the header if this is new.
               unless found
-                header_row.add_cell "[ID: #{ type1.type1.id.to_s }] #{ section.section.name.singularize } Name"
-                header_row.add_cell "[ID: #{ type1.type1.id.to_s }] #{ section.section.name.singularize } Description"
+                header_row.add_cell "[#{ section.section.name.singularize } ID: #{ type1.type1.id.to_s }] #{ section.section.name.singularize } Name"
+                header_row.add_cell "[#{ section.section.name.singularize } ID: #{ type1.type1.id.to_s }] #{ section.section.name.singularize } Description"
               end
 
               new_row[column_idx]     = type1.type1.name
               new_row[column_idx + 1] = type1.type1.description
             end
 
+            # Add population and time points if necessary.
+            eefps.extractions_extraction_forms_projects_sections_type1s.each do |type1|
+              type1.extractions_extraction_forms_projects_sections_type1_rows.each do |timepoint|
+                timepoint.extractions_extraction_forms_projects_sections_type1_row_columns.each do |population|
+                  found, column_idx = nil
+                  found, column_idx = _find_column_idx_with_value(header_row, "[Population ID: #{ population.id.to_s }]")
+
+                  # Append to the header if this is new.
+                  unless found
+                    header_row.add_cell "[Population ID: #{ population.id.to_s }] Population Name"
+                    header_row.add_cell "[Population ID: #{ population.id.to_s }] Population Description"
+                  end
+
+                  new_row[column_idx]     = population.name
+                  new_row[column_idx + 1] = population.description
+                end
+              end
+            end
+
             sheet.add_row new_row
           end  # END project.extractions.each do |extraction|
 
           # Re-apply the styling for the new cells in the header row before closing the sheet.
+          sheet.column_widths 14, 14, 13, 51, 15, 15, 24, 29, 24, 29, 24, 29, 24, 29, 24, 29, 24, 29, 24, 29
           header_row.style = highlight
         end  # END p.workbook.add_worksheet(name: "#{ section.section.name }") do |sheet|
       end  # END if section.extraction_forms_projects_section_type_id == 1

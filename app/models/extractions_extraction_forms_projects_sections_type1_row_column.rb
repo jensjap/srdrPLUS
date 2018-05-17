@@ -1,3 +1,4 @@
+# Temporarily calling it ExtractionsExtractionFormsProjectsSectionsType1RowColumn. This is meant to be Outcome Populations.
 class ExtractionsExtractionFormsProjectsSectionsType1RowColumn < ApplicationRecord
   acts_as_paranoid
   has_paper_trail

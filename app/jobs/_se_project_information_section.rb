@@ -13,7 +13,7 @@ def build_project_information_section(p, project, highlight, wrap)
 
     # Project member list.
     sheet.add_row ['Project Member List:'],                                     style: highlight
-    sheet.add_row ['Username', 'First Name', 'Middle Name', 'Last Name', 'Email', 'Extractions']
+    sheet.add_row ['Username', 'First Name', 'Middle Name', 'Last Name', 'Email', 'Extraction ID']
     project.members.each do |user|
       sheet.add_row [
         user.profile.username,
@@ -24,5 +24,8 @@ def build_project_information_section(p, project, highlight, wrap)
         Extraction.by_project_and_user(project.id, user.id).collect(&:id)
       ]
     end
+
+    # Re-apply the styling for the new cells before closing the sheet.
+    sheet.column_widths nil
   end
 end
