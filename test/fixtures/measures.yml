@@ -2,10 +2,8 @@
 
 one:
   name: MyString
-  default: false
   deleted_at:
 
 two:
   name: MyString
-  default: false
   deleted_at:
