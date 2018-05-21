@@ -1,4 +1,6 @@
 ( function() {
+  window.inputChanged = null;
+
   let infoDiv = $( "#record-id-<%= @record.id %>" );
 
   infoDiv.show().animate( { opacity: 1 } );

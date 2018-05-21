@@ -6,14 +6,6 @@ document.addEventListener 'turbolinks:load', ->
 
   do ->
 
-    # Adds a delay to calling a specific function.
-    delay = do ->
-      timer = 0
-      ( callback, ms ) ->
-        clearTimeout timer
-        timer = setTimeout( callback, ms )
-        return
-
     # Ajax call to filter the project list. We want to return a function here
     # to prevent it from being called immediately. Wrapper is to allow passing
     # param without immediate function invocation.
@@ -30,7 +22,7 @@ document.addEventListener 'turbolinks:load', ->
     $( '#project-filter' ).keyup ( e ) ->
       e.preventDefault()
       currentOrder = $( '.toggle-sort-order button.button.active' ).data( 'sortOrder' )
-      delay filterProjectList( currentOrder ), 500
+      delay filterProjectList( currentOrder ), 750
       return
 
     # There's a short flicker when the button gains focus which is ugly.

@@ -28,7 +28,22 @@
 
 'use strict';
 
-// Set toastr.js options
+var delay;
+
+// Adds a delay function for all to use.
+//
+// Call like: delay( thingToDelay( optionalParams ), timeInMs )
+delay = (function() {
+  var timer;
+  timer = 0;
+  return function(callback, ms) {
+    clearTimeout(timer);
+    timer = setTimeout(callback, ms);
+  };
+})();
+
+
+// Set toastr.js options.
 toastr.options = {
   'closeButton': false,
   'showMethod': 'slideDown',
@@ -42,6 +57,22 @@ toastr.options = {
 
 document.addEventListener( 'turbolinks:load', function() {
   $( document ).foundation();
+
+  // Check for dirty forms.
+  window.onbeforeunload = function (e) {
+    if ( window.inputChanged ) {
+      var message = "Your confirmation message goes here.",
+          e = e || window.event;
+      // For IE and Firefox
+      if (e) {
+          e.returnValue = message;
+      }
+
+      // For Safari
+      return message;
+    }
+    return;
+  };
 
 //  $( '#options' )
 //    .on('cocoon:before-insert', function(e,task_to_be_added) {

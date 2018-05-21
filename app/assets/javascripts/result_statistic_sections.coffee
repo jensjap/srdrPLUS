@@ -5,10 +5,22 @@
 document.addEventListener 'turbolinks:load', ->
   do ->
 
-    $( 'form.edit_record :input' )
-      .keyup ( e ) ->
-        e.preventDefault()
-        $( this ).closest( 'form' ).submit()
+    submitForm = ( form ) ->
+      ->
+        form.submit()
+
+    $( 'form.edit_record :input' ).keyup ( e ) ->
+      e.preventDefault()
+      window.inputChanged = true
+
+      # Ignore 'keyup' for a list of keys.
+      code = e.keyCode || e.which;
+
+      # 9: tab; 16: shift; 18: option; 224: cmd
+      if code in [9, 16, 18, 224]
+        return
+
+      delay submitForm( $( this ).closest( 'form' ) ), 750
 
     $( '.links.add-comparison' )
 
@@ -34,6 +46,8 @@ document.addEventListener 'turbolinks:load', ->
         # At the moment this isn't useful because we can't have the form span multiple row cells. Perhaps
         # using simple html form would work, but it doesn't seem to work with slim templating engine.
         #$( this ).closest( 'tr' ).append( $( '<th>' ).append( $( '.links.add-comparison' ) ) )
+
+        return
 
   return # END do ->
 return # END turbolinks:load
