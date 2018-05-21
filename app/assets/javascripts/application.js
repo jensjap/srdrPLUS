@@ -60,7 +60,7 @@ document.addEventListener( 'turbolinks:load', function() {
 
   // Check for dirty forms.
   window.onbeforeunload = function (e) {
-    if ( window.inputChanged ) {
+    if ( $( 'form[dirty*="true"' ).length !== 0 ) {
       var message = "Your confirmation message goes here.",
           e = e || window.event;
       // For IE and Firefox
