@@ -13,23 +13,24 @@ document.addEventListener 'turbolinks:load', ->
 
     $( 'form.edit_record :input' ).keyup ( e ) ->
       e.preventDefault()
-      $form = $( this ).closest( 'form' )
-      # Use this to keep track of the different timers.
-      formId = $form.attr( 'id' )
-
-      # Mark form as 'dirty'.
-      $form.attr( 'dirty', true )
 
       # Ignore 'keyup' for a list of keys.
       code = e.keyCode || e.which;
-
       # 9: tab; 16: shift; 37: left-arrow; 38: up-arrow; 39: right-arrow; 40: down-arrow; 18: option; 224: cmd
       if code in [9, 16, 18, 37, 38, 39, 40, 224]
         return
 
+      $form = $( this ).closest( 'form' )
+
+      # Use this to keep track of the different timers.
+      formId = $form.attr( 'id' )
+
+      # Mark form as 'dirty'.
+      $form.addClass( 'dirty' )
+
       if formId of timers
         clearTimeout( timers[formId] )
-      timers[formId] = setTimeout( submitForm( $form ), 1750 )
+      timers[formId] = setTimeout( submitForm( $form ), 750 )
 
     $( '.links.add-comparison' )
 

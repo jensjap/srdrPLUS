@@ -1,8 +1,8 @@
 ( function() {
   let infoDiv = $( "#record-id-<%= @record.id %>" );
 
-  // Remove 'dirty' attribute from form.
-  infoDiv.closest( 'form' ).removeAttr( 'dirty' )
+  // Remove 'dirty' class from form.
+  infoDiv.closest( 'form' ).removeClass( 'dirty' )
 
   // Animate 'Saved!' message.
   infoDiv.show().animate( { opacity: 1 } );

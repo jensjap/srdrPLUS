@@ -60,12 +60,12 @@ document.addEventListener( 'turbolinks:load', function() {
 
   // Check for dirty forms.
   window.onbeforeunload = function (e) {
-    if ( $( 'form[dirty*="true"' ).length !== 0 ) {
-      var message = "Your confirmation message goes here.",
-          e = e || window.event;
+    if ( $( '.dirty' ).length !== 0 ) {
+      var message = 'Potential loss of unsaved data.',
+      e = e || window.event;
       // For IE and Firefox
       if (e) {
-          e.returnValue = message;
+        e.returnValue = message;
       }
 
       // For Safari
