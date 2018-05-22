@@ -26,6 +26,6 @@ class ExtractionsExtractionFormsProjectsSectionsType1RowsController < Applicatio
 
     def extractions_extraction_forms_projects_sections_type1_row_params
       params.require(:extractions_extraction_forms_projects_sections_type1_row)
-        .permit(:name, :unit, :is_baseline)
+        .permit(:timepoint_name_id, :is_baseline)
     end
 end

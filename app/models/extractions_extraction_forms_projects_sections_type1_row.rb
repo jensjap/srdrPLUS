@@ -7,6 +7,7 @@ class ExtractionsExtractionFormsProjectsSectionsType1Row < ApplicationRecord
   after_save :ensure_only_one_baseline
 
   belongs_to :extractions_extraction_forms_projects_sections_type1, inverse_of: :extractions_extraction_forms_projects_sections_type1_rows
+  belongs_to :timepoint_name,                                       inverse_of: :extractions_extraction_forms_projects_sections_type1_rows
 
   has_many :comparable_elements, as: :comparable
 
@@ -16,8 +17,8 @@ class ExtractionsExtractionFormsProjectsSectionsType1Row < ApplicationRecord
   delegate :extractions_extraction_forms_projects_section, to: :extractions_extraction_forms_projects_sections_type1
 
   def label_with_baseline_indicator
-    text = "#{ name }"
-    text += " #{ unit }" if unit.present?
+    text = "#{ timepoint_name.name }"
+    text += " #{ timepoint_name.unit }" if timepoint_name.unit.present?
     text += " (Baseline)" if is_baseline
     return text
   end
@@ -36,7 +37,7 @@ class ExtractionsExtractionFormsProjectsSectionsType1Row < ApplicationRecord
       if self.extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_sections_type1_rows.first.extractions_extraction_forms_projects_sections_type1_row_columns.count == 0
 
         # If this is the first/only row then we default to creating (arbitrarily) 1 column.
-        self.extractions_extraction_forms_projects_sections_type1_row_columns.create(name: 'All Participants', description: 'All patients enrolled in this study.')
+        self.extractions_extraction_forms_projects_sections_type1_row_columns.create(population_name: PopulationName.first)
 
       else
 

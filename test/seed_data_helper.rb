@@ -136,6 +136,12 @@ module SeedData
       ExtractionFormsProjectType.create(name: 'Standard')
       ExtractionFormsProjectType.create(name: 'Diagnostic Test')
 
+      # Timepoint Names.
+      TimepointName.create(name: 'Timepoint 1')
+
+      # Population Names.
+      PopulationName.create(name: 'All Participants', description: 'All patients enrolled in this study.')
+
       # Turn on paper_trail.
       PaperTrail.enabled = true
 

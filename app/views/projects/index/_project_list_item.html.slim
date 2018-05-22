@@ -33,7 +33,7 @@ a.accordion-title href='#'
                   li = publishing.created_at.in_time_zone(current_user.profile.time_zone).strftime('%b %-d, %Y - %l:%M %P') + \
                        " (by: #{ publishing.user.profile.first_name })"
 
-  .row
+  .row.gutter-small
     .column.medium-8
       .row
         .column.medium-4
@@ -45,7 +45,9 @@ a.accordion-title href='#'
         .column.medium-4
           span.label Extraction Forms:
           .callout = project.extraction_forms.length
-    .column.medium-2
+    .column.medium-1
       = link_to 'Edit', edit_project_path(project), class: 'button expanded'
     .column.medium-2
+      = link_to 'Extractions', project_extractions_path(project), class: 'button expanded'
+    .column.medium-1
       = link_to 'Export', export_project_path(project), method: :post, class: 'button expanded'

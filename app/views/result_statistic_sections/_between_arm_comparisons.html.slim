@@ -29,7 +29,7 @@
     tbody
       - @result_statistic_section.timepoints.each do |tp|
         tr
-          td = tp.name + (tp.unit.present? ? " (#{ tp.unit })" : '')
+          td = tp.timepoint_name.name + (tp.timepoint_name.unit.present? ? " (#{ tp.timepoint_name.unit })" : '')
           - @result_statistic_section.comparisons.each do |bac|
             td
               ul

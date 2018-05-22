@@ -11,6 +11,7 @@ class ExtractionsExtractionFormsProjectsSectionsType1RowColumn < ApplicationReco
   after_create :create_default_result_statistic_sections
 
   belongs_to :extractions_extraction_forms_projects_sections_type1_row, inverse_of: :extractions_extraction_forms_projects_sections_type1_row_columns
+  belongs_to :population_name,                                          inverse_of: :extractions_extraction_forms_projects_sections_type1_row_columns
 
   has_many :result_statistic_sections, dependent: :destroy, inverse_of: :subgroup, foreign_key: 'subgroup_id'
 

@@ -40,7 +40,7 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
     # Only create these for Outcomes.
     def create_default_type1_rows
       if self.extractions_extraction_forms_projects_section.extraction_forms_projects_section.section.name == 'Outcomes'
-        self.extractions_extraction_forms_projects_sections_type1_rows.create(name: 'Timepoint 1', is_baseline: true)
+        self.extractions_extraction_forms_projects_sections_type1_rows.create(timepoint_name: TimepointName.first, is_baseline: true)
       end
     end
 
@@ -50,15 +50,18 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
         first_row = self.extractions_extraction_forms_projects_sections_type1_rows.first
         rest_rows = self.extractions_extraction_forms_projects_sections_type1_rows[1..-1]
 
-        column_headers = []
+        #column_headers = []
+        population_name_ids = []
 
         first_row.extractions_extraction_forms_projects_sections_type1_row_columns.each do |c|
-          column_headers << c.name
+          #column_headers << c.name
+          population_name_ids << c.population_name.id
         end
 
         rest_rows.each do |r|
           r.extractions_extraction_forms_projects_sections_type1_row_columns.each_with_index do |rc, idx|
-            rc.update(name: column_headers[idx])
+            #rc.update(name: column_headers[idx])
+            rc.update(population_name_id: population_name_ids[idx])
           end
         end
       end

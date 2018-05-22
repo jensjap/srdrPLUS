@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   apipie
   namespace :api do
     namespace :v1 do
+      resources :timepoint_names, only: [:index]
       resources :projects, shallow: true do
         resources :assignments do
           get 'screen', on: :member

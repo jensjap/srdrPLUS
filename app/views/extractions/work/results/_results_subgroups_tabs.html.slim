@@ -12,14 +12,14 @@ ul#results-table-tabs.tabs data-deep-link='true' data-deep-link-smudge='true' da
     - if is_first
 
       li.tabs-title.is-active
-        = link_to eefpst1rc.name.titleize, "#panel-subgroup-#{ eefpst1rc.id }", title: eefpst1rc.name.titleize
+        = link_to eefpst1rc.population_name.name.titleize, "#panel-subgroup-#{ eefpst1rc.id }", title: eefpst1rc.population_name.name.titleize
 
       - is_first = false
 
     - else
 
       li.tabs-title
-        = link_to eefpst1rc.name.titleize, "#panel-subgroup-#{ eefpst1rc.id }", title: eefpst1rc.name.titleize
+        = link_to eefpst1rc.population_name.name.titleize, "#panel-subgroup-#{ eefpst1rc.id }", title: eefpst1rc.population_name.name.titleize
 
 .tabs-content data-tabs-content='results-table-tabs'
 

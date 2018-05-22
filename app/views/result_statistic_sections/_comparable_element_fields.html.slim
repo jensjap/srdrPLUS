@@ -4,6 +4,7 @@
     input_html: { value: comparable_element_type },
     wrapper_html: { style: 'padding-bottom: 0px' }
   = comparable_element.input :comparable_id,
+    include_blank: true,
     as: :select,
     collection: collection,
     selected: comparable_element.object.comparable_id,

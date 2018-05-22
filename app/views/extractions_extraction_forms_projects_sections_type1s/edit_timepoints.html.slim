@@ -2,14 +2,15 @@ h4 Define Outcome Timepoints
 
 ul
   - @extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_sections_type1_rows.each do |tp|
-    li = (tp.is_baseline? ? '(B) ' : '(-) ') + tp.name + (tp.unit.present? ? " (#{ tp.unit })" : '')
+    li = (tp.is_baseline? ? '(B) ' : '(-) ') + tp.timepoint_name.name + (tp.timepoint_name.unit.present? ? " (#{ tp.timepoint_name.unit })" : '')
 
 = simple_form_for([@extractions_extraction_forms_projects_sections_type1, @extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_sections_type1_rows.new]) do |f|
   = f.error_notification
 
   .form-inputs
-    = f.input :name
-    = f.input :unit
+    /= f.input :name
+    /= f.input :unit
+    = f.association :timepoint_name, label_method: :select_label, include_blanks: false
     = f.input :is_baseline
 
   .form-actions
