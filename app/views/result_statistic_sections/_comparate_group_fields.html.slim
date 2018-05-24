@@ -1,4 +1,4 @@
-.nested-fields
+.nested-fields.comparates
   = f.simple_fields_for :comparates do |comparate|
     = render @result_statistic_section.result_statistic_section_type.name.parameterize.underscore + '_comparate_fields', f: comparate
   .links.add-comparate
@@ -11,3 +11,4 @@
       = link_to_add_association f, :comparates, partial: @result_statistic_section.result_statistic_section_type.name.parameterize.underscore + '_comparate_fields', style: 'display: none;', render_options: { locals: { comparison: comparison } } do
         i.fi-plus
         |  Add Timepoint
+/div style='text-align: center; font-weight: normal;' vs.
