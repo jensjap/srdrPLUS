@@ -29,7 +29,17 @@ class Type1 < ApplicationRecord
 
   def name_and_description
     text = name
-    text.concat " (#{ description })" if description.present?
+    text += " (#{ description })" if description.present?
     return text
+  end
+
+  def short_name_description
+    if description.length < 10
+      return name_and_description
+    else
+      text = name
+      text += ' (' + description.truncate(10, separator: /\s/) + ')' if description.present?
+      return text
+    end
   end
 end

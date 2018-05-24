@@ -4,11 +4,11 @@
 
     thead
       tr
-        th Timepoint
+        th
         - @arms.each do |arm|
           th
             span.has-tip.tip-right data-tooltip='' aria-haspopup='true' data-options='show_on:small' title="Description: #{ arm.type1.description }"
-              = arm.type1.name
+              = arm.type1.short_name_description
 
     tbody
       - @result_statistic_section.timepoints.each do |tp|
