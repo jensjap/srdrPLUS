@@ -1,11 +1,16 @@
 - provide(:title, 'Results')
 
-h4 Outcome: #{ @result_statistic_section.subgroup.extractions_extraction_forms_projects_sections_type1_row.extractions_extraction_forms_projects_sections_type1.type1.name }
-  Description: #{ @result_statistic_section.subgroup.extractions_extraction_forms_projects_sections_type1_row.extractions_extraction_forms_projects_sections_type1.type1.description }
-h5 Subgroup: #{ @result_statistic_section.subgroup.population_name.name }
-  Description: #{ @result_statistic_section.subgroup.population_name.description }
-br
+.column.row
+  h4 Outcome: #{ @result_statistic_section.subgroup.extractions_extraction_forms_projects_sections_type1_row.extractions_extraction_forms_projects_sections_type1.type1.name }
+    Description: #{ @result_statistic_section.subgroup.extractions_extraction_forms_projects_sections_type1_row.extractions_extraction_forms_projects_sections_type1.type1.description }
+  h5 Subgroup: #{ @result_statistic_section.subgroup.population_name.name }
+    Description: #{ @result_statistic_section.subgroup.population_name.description }
 
-h3 #{ @result_statistic_section.result_statistic_section_type.name }
+/.column.row
+  h3 #{ @result_statistic_section.result_statistic_section_type.name }
 
-== render 'result_statistic_sections/' + @result_statistic_section.result_statistic_section_type.name.parameterize.underscore
+.column.row
+  = render 'result_statistic_sections/auto_save_notification'
+
+.column.row
+  == render 'result_statistic_sections/' + @result_statistic_section.result_statistic_section_type.name.parameterize.underscore
