@@ -54,16 +54,16 @@ def build_type1_sections_wide(p, project, highlight, wrap)
               type1.extractions_extraction_forms_projects_sections_type1_rows.each do |timepoint|
                 timepoint.extractions_extraction_forms_projects_sections_type1_row_columns.each do |population|
                   found, column_idx = nil
-                  found, column_idx = _find_column_idx_with_value(header_row, "[Population ID: #{ population.id.to_s }]")
+                  found, column_idx = _find_column_idx_with_value(header_row, "[Population ID: #{ population.population_name.id.to_s }]")
 
                   # Append to the header if this is new.
                   unless found
-                    header_row.add_cell "[Population ID: #{ population.id.to_s }] Population Name"
-                    header_row.add_cell "[Population ID: #{ population.id.to_s }] Population Description"
+                    header_row.add_cell "[Population ID: #{ population.population_name.id.to_s }] Population Name"
+                    header_row.add_cell "[Population ID: #{ population.population_name.id.to_s }] Population Description"
                   end
 
-                  new_row[column_idx]     = population.name
-                  new_row[column_idx + 1] = population.description
+                  new_row[column_idx]     = population.population_name.name
+                  new_row[column_idx + 1] = population.population_name.description
                 end
               end
             end
