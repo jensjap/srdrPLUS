@@ -1,16 +1,17 @@
-h4 Define Patient Populations (Subgroups)
+h4 Define Populations
 
 ul
-  - @extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_sections_type1_rows.first.extractions_extraction_forms_projects_sections_type1_row_columns.each do |pop|
-    li = pop.name
+  - @extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_sections_type1_rows.each do |pop|
+    li = pop.population_name.name
 
-= simple_form_for([@extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_sections_type1_rows.first,
-                   @extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_sections_type1_rows.first.extractions_extraction_forms_projects_sections_type1_row_columns.new]) do |f|
+= simple_form_for([@extractions_extraction_forms_projects_sections_type1,
+                   @extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_sections_type1_rows.new]) do |f|
   = f.error_notification
 
   .form-inputs
-    = f.input :name
-    = f.input :description, input_html: { rows: 4 }
+    /= f.input :name
+    /= f.input :description, input_html: { rows: 4 }
+    = f.association :population_name, label_method: :select_label, include_blanks: false
 
   .form-actions
     = f.button :submit, 'Create Population'

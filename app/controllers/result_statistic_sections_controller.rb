@@ -25,9 +25,9 @@ class ResultStatisticSectionsController < ApplicationController
 
   def add_comparison
     if params[:result_statistic_section]['comparison_type'] == 'bac'
-      temp_result_statistic_section = @result_statistic_section.subgroup.result_statistic_sections.find_by(result_statistic_section_type_id: 2)
+      temp_result_statistic_section = @result_statistic_section.population.result_statistic_sections.find_by(result_statistic_section_type_id: 2)
     elsif params[:result_statistic_section]['comparison_type'] == 'wac'
-      temp_result_statistic_section = @result_statistic_section.subgroup.result_statistic_sections.find_by(result_statistic_section_type_id: 3)
+      temp_result_statistic_section = @result_statistic_section.population.result_statistic_sections.find_by(result_statistic_section_type_id: 3)
     end
 
     respond_to do |format|
@@ -57,13 +57,13 @@ class ResultStatisticSectionsController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_arms
       @arms = ExtractionsExtractionFormsProjectsSectionsType1.by_section_name_and_extraction_id_and_extraction_forms_project_id('Arms',
-      @result_statistic_section.subgroup.extractions_extraction_forms_projects_sections_type1_row.extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_section.extraction.id,
-      @result_statistic_section.subgroup.extractions_extraction_forms_projects_sections_type1_row.extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_section.extraction_forms_projects_section.extraction_forms_project.id)
+      @result_statistic_section.population.extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_section.extraction.id,
+      @result_statistic_section.population.extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_section.extraction_forms_projects_section.extraction_forms_project.id)
     end
 
     def set_result_statistic_section
       @result_statistic_section = ResultStatisticSection
-        .includes(subgroup: { extractions_extraction_forms_projects_sections_type1_row: { extractions_extraction_forms_projects_sections_type1: [ :type1, extractions_extraction_forms_projects_section: [ :extraction, extraction_forms_projects_section: :extraction_forms_project ] ] } })
+        .includes(population: { extractions_extraction_forms_projects_sections_type1: [ :type1, extractions_extraction_forms_projects_section: [ :extraction, extraction_forms_projects_section: :extraction_forms_project ] ] } )
         .includes(:result_statistic_section_type)
         .find(params[:id])
     end

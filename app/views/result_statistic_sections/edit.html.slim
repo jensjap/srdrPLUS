@@ -1,10 +1,10 @@
 - provide(:title, 'Results')
 
 .column.row
-  h4 Outcome: #{ @result_statistic_section.subgroup.extractions_extraction_forms_projects_sections_type1_row.extractions_extraction_forms_projects_sections_type1.type1.name }
-    Description: #{ @result_statistic_section.subgroup.extractions_extraction_forms_projects_sections_type1_row.extractions_extraction_forms_projects_sections_type1.type1.description }
-  h5 Subgroup: #{ @result_statistic_section.subgroup.population_name.name }
-    Description: #{ @result_statistic_section.subgroup.population_name.description }
+  h4 Outcome: #{ @result_statistic_section.population.extractions_extraction_forms_projects_sections_type1.type1.name }
+    Description: #{ @result_statistic_section.population.extractions_extraction_forms_projects_sections_type1.type1.description }
+  h5 Population: #{ @result_statistic_section.population.population_name.name }
+    Description: #{ @result_statistic_section.population.population_name.description }
 
 /.column.row
   h3 #{ @result_statistic_section.result_statistic_section_type.name }

@@ -14,9 +14,9 @@ document.addEventListener 'turbolinks:load', ->
         timer = setTimeout( callback, ms )
         return
 
-    $( '#outcome_subgroups_selector_eefpst1_id' ).change ( event ) ->
+    $( '#outcome_populations_selector_eefpst1_id' ).change ( event ) ->
       $.ajax
-        url: '/extractions_extraction_forms_projects_sections_type1s/' + this.value + '/get_results_subgroups'
+        url: '/extractions_extraction_forms_projects_sections_type1s/' + this.value + '/get_results_populations'
         type: 'GET'
         dataType: 'script'
         error: -> alert 'Server busy'

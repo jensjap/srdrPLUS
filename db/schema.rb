@@ -395,27 +395,27 @@ ActiveRecord::Schema.define(version: 20180514023758) do
 
   create_table "extractions_extraction_forms_projects_sections_type1_row_columns", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "extractions_extraction_forms_projects_sections_type1_row_id"
-    t.integer  "population_name_id"
+    t.integer  "timepoint_name_id"
+    t.boolean  "is_baseline",                                                 default: false
     t.datetime "deleted_at"
-    t.datetime "created_at",                                                  null: false
-    t.datetime "updated_at",                                                  null: false
+    t.datetime "created_at",                                                                  null: false
+    t.datetime "updated_at",                                                                  null: false
     t.index ["deleted_at"], name: "index_eefpst1rc_on_deleted_at", using: :btree
-    t.index ["extractions_extraction_forms_projects_sections_type1_row_id", "population_name_id", "deleted_at"], name: "index_eefpst1rc_on_eefpst1r_id_pn_id_deleted_at", using: :btree
+    t.index ["extractions_extraction_forms_projects_sections_type1_row_id", "timepoint_name_id", "deleted_at"], name: "index_eefpst1rc_on_eefpst1r_id_tn_id_deleted_at", using: :btree
     t.index ["extractions_extraction_forms_projects_sections_type1_row_id"], name: "index_eefpst1rc_on_eefpst1r_id", using: :btree
-    t.index ["population_name_id"], name: "index_eefpst1rc_on_pn_id", using: :btree
+    t.index ["timepoint_name_id"], name: "index_eefpst1rc_on_tn_id", using: :btree
   end
 
   create_table "extractions_extraction_forms_projects_sections_type1_rows", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "extractions_extraction_forms_projects_sections_type1_id"
-    t.integer  "timepoint_name_id"
-    t.boolean  "is_baseline",                                             default: false
+    t.integer  "population_name_id"
     t.datetime "deleted_at"
-    t.datetime "created_at",                                                              null: false
-    t.datetime "updated_at",                                                              null: false
+    t.datetime "created_at",                                              null: false
+    t.datetime "updated_at",                                              null: false
     t.index ["deleted_at"], name: "index_eefpst1r_on_deleted_at", using: :btree
-    t.index ["extractions_extraction_forms_projects_sections_type1_id", "timepoint_name_id", "deleted_at"], name: "index_eefpst1r_on_eefpst1_id_tn_id_deleted_at", using: :btree
+    t.index ["extractions_extraction_forms_projects_sections_type1_id", "population_name_id", "deleted_at"], name: "index_eefpst1r_on_eefpst1_id_pn_id_deleted_at", using: :btree
     t.index ["extractions_extraction_forms_projects_sections_type1_id"], name: "index_eefpst1r_on_eefpst1_id", using: :btree
-    t.index ["timepoint_name_id"], name: "index_eefpst1r_on_tn_id", using: :btree
+    t.index ["population_name_id"], name: "index_eefpst1r_on_pn_id", using: :btree
   end
 
   create_table "extractions_extraction_forms_projects_sections_type1s", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -920,14 +920,14 @@ ActiveRecord::Schema.define(version: 20180514023758) do
 
   create_table "result_statistic_sections", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "result_statistic_section_type_id"
-    t.integer  "subgroup_id"
+    t.integer  "population_id"
     t.datetime "deleted_at"
     t.datetime "created_at",                       null: false
     t.datetime "updated_at",                       null: false
     t.index ["deleted_at"], name: "index_result_statistic_sections_on_deleted_at", using: :btree
-    t.index ["result_statistic_section_type_id", "subgroup_id", "deleted_at"], name: "index_rss_on_rsst_id_eefpst1rc_id_uniq", unique: true, using: :btree
+    t.index ["population_id"], name: "index_result_statistic_sections_on_population_id", using: :btree
+    t.index ["result_statistic_section_type_id", "population_id", "deleted_at"], name: "index_rss_on_rsst_id_eefpst1rc_id_uniq", unique: true, using: :btree
     t.index ["result_statistic_section_type_id"], name: "index_rss_on_rsst_id", using: :btree
-    t.index ["subgroup_id"], name: "index_result_statistic_sections_on_subgroup_id", using: :btree
   end
 
   create_table "result_statistic_sections_measures", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -1043,33 +1043,33 @@ ActiveRecord::Schema.define(version: 20180514023758) do
   end
 
   create_table "tps_arms_rssms", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer  "extractions_extraction_forms_projects_sections_type1_row_id"
+    t.integer  "timepoint_id"
     t.integer  "extractions_extraction_forms_projects_sections_type1_id"
     t.integer  "result_statistic_sections_measure_id"
     t.datetime "deleted_at"
     t.boolean  "active"
-    t.datetime "created_at",                                                  null: false
-    t.datetime "updated_at",                                                  null: false
+    t.datetime "created_at",                                              null: false
+    t.datetime "updated_at",                                              null: false
     t.index ["active"], name: "index_tps_arms_rssms_on_active", using: :btree
     t.index ["deleted_at"], name: "index_tps_arms_rssms_on_deleted_at", using: :btree
     t.index ["extractions_extraction_forms_projects_sections_type1_id"], name: "index_tps_arms_rssms_on_eefpst_id", using: :btree
-    t.index ["extractions_extraction_forms_projects_sections_type1_row_id"], name: "index_tps_arms_rssms_on_eefpstr_id", using: :btree
     t.index ["result_statistic_sections_measure_id"], name: "index_tps_arms_rssms_on_rssm_id", using: :btree
+    t.index ["timepoint_id"], name: "index_tps_arms_rssms_on_timepoint_id", using: :btree
   end
 
   create_table "tps_comparisons_rssms", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer  "extractions_extraction_forms_projects_sections_type1_row_id"
+    t.integer  "timepoint_id"
     t.integer  "comparison_id"
     t.integer  "result_statistic_sections_measure_id"
     t.datetime "deleted_at"
     t.boolean  "active"
-    t.datetime "created_at",                                                  null: false
-    t.datetime "updated_at",                                                  null: false
+    t.datetime "created_at",                           null: false
+    t.datetime "updated_at",                           null: false
     t.index ["active"], name: "index_tps_comparisons_rssms_on_active", using: :btree
     t.index ["comparison_id"], name: "index_tps_comparisons_rssms_on_comparison_id", using: :btree
     t.index ["deleted_at"], name: "index_tps_comparisons_rssms_on_deleted_at", using: :btree
-    t.index ["extractions_extraction_forms_projects_sections_type1_row_id"], name: "index_tps_comparisons_rssms_on_eefpstr_id", using: :btree
     t.index ["result_statistic_sections_measure_id"], name: "index_tps_comparisons_rssms_on_rssm_id", using: :btree
+    t.index ["timepoint_id"], name: "index_tps_comparisons_rssms_on_timepoint_id", using: :btree
   end
 
   create_table "type1_types", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -1199,9 +1199,9 @@ ActiveRecord::Schema.define(version: 20180514023758) do
   add_foreign_key "extractions_extraction_forms_projects_sections", "extractions"
   add_foreign_key "extractions_extraction_forms_projects_sections", "extractions_extraction_forms_projects_sections"
   add_foreign_key "extractions_extraction_forms_projects_sections_type1_row_columns", "extractions_extraction_forms_projects_sections_type1_rows"
-  add_foreign_key "extractions_extraction_forms_projects_sections_type1_row_columns", "population_names"
+  add_foreign_key "extractions_extraction_forms_projects_sections_type1_row_columns", "timepoint_names"
   add_foreign_key "extractions_extraction_forms_projects_sections_type1_rows", "extractions_extraction_forms_projects_sections_type1s"
-  add_foreign_key "extractions_extraction_forms_projects_sections_type1_rows", "timepoint_names"
+  add_foreign_key "extractions_extraction_forms_projects_sections_type1_rows", "population_names"
   add_foreign_key "extractions_extraction_forms_projects_sections_type1s", "extractions_extraction_forms_projects_sections"
   add_foreign_key "extractions_extraction_forms_projects_sections_type1s", "type1_types"
   add_foreign_key "extractions_extraction_forms_projects_sections_type1s", "type1s"
@@ -1245,7 +1245,7 @@ ActiveRecord::Schema.define(version: 20180514023758) do
   add_foreign_key "questions", "extraction_forms_projects_sections"
   add_foreign_key "result_statistic_section_types_measures", "measures"
   add_foreign_key "result_statistic_section_types_measures", "result_statistic_section_types"
-  add_foreign_key "result_statistic_sections", "extractions_extraction_forms_projects_sections_type1_row_columns", column: "subgroup_id"
+  add_foreign_key "result_statistic_sections", "extractions_extraction_forms_projects_sections_type1_rows", column: "population_id"
   add_foreign_key "result_statistic_sections", "result_statistic_section_types"
   add_foreign_key "result_statistic_sections_measures", "measures"
   add_foreign_key "result_statistic_sections_measures", "result_statistic_sections"
@@ -1256,11 +1256,11 @@ ActiveRecord::Schema.define(version: 20180514023758) do
   add_foreign_key "taggings", "users"
   add_foreign_key "tasks", "projects"
   add_foreign_key "tasks", "task_types"
-  add_foreign_key "tps_arms_rssms", "extractions_extraction_forms_projects_sections_type1_rows"
+  add_foreign_key "tps_arms_rssms", "extractions_extraction_forms_projects_sections_type1_row_columns", column: "timepoint_id"
   add_foreign_key "tps_arms_rssms", "extractions_extraction_forms_projects_sections_type1s"
   add_foreign_key "tps_arms_rssms", "result_statistic_sections_measures"
   add_foreign_key "tps_comparisons_rssms", "comparisons"
-  add_foreign_key "tps_comparisons_rssms", "extractions_extraction_forms_projects_sections_type1_rows"
+  add_foreign_key "tps_comparisons_rssms", "extractions_extraction_forms_projects_sections_type1_row_columns", column: "timepoint_id"
   add_foreign_key "tps_comparisons_rssms", "result_statistic_sections_measures"
   add_foreign_key "wacs_bacs_rssms", "result_statistic_sections_measures"
 end

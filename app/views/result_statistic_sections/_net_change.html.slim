@@ -5,7 +5,7 @@
     thead
       tr
         th
-        - @result_statistic_section.subgroup.between_arm_comparisons_section.comparisons.each do |bac|
+        - @result_statistic_section.population.between_arm_comparisons_section.comparisons.each do |bac|
           th
             div style='text-align: center;'
               - bac.comparate_groups.first.comparates.each do |c|
@@ -27,14 +27,14 @@
                 |  Add Between-Arm Comparison
 
     tbody
-      - @result_statistic_section.subgroup.within_arm_comparisons_section.comparisons.each do |wac|
+      - @result_statistic_section.population.within_arm_comparisons_section.comparisons.each do |wac|
         tr
           td
             div style='text-align: center; font-weight: bold;' == wac.comparate_groups.first.comparates.map { |c| c.comparable_element.comparable.label_with_baseline_indicator }.join('<br>')
             div style='text-align: center;' vs.
             div style='text-align: center; font-weight: bold;' == wac.comparate_groups.second.comparates.map { |c| c.comparable_element.comparable.label_with_baseline_indicator }.join('<br>')
 
-          - @result_statistic_section.subgroup.between_arm_comparisons_section.comparisons.each do |bac|
+          - @result_statistic_section.population.between_arm_comparisons_section.comparisons.each do |bac|
             td
               ul
                 - @result_statistic_section.result_statistic_sections_measures.each do |rssm|
