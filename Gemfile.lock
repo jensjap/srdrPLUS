@@ -76,6 +76,16 @@ GIT
       railties (>= 5.0)
 
 GIT
+  remote: https://github.com/randym/axlsx.git
+  revision: c593a08b2a929dac7aa8dc418b55e26b4c49dc34
+  specs:
+    axlsx (3.0.0.pre)
+      htmlentities (~> 4.3, >= 4.3.4)
+      mimemagic (~> 0.3)
+      nokogiri (~> 1.8, >= 1.8.2)
+      rubyzip (~> 1.2, >= 1.2.1)
+
+GIT
   remote: https://github.com/stympy/faker.git
   revision: f8e1b81f8da82ea9eb88c4939a3a6801f97e5ac1
   specs:
@@ -90,10 +100,6 @@ GEM
     apipie-rails (0.5.8)
       rails (>= 4.1)
     arel (7.1.4)
-    axlsx (2.0.1)
-      htmlentities (~> 4.3.1)
-      nokogiri (>= 1.4.1)
-      rubyzip (~> 1.0.0)
     axlsx_rails (0.5.2)
       actionpack (>= 3.1)
       axlsx (>= 2.0.1)
@@ -216,6 +222,7 @@ GEM
     mail (2.7.0)
       mini_mime (>= 0.1.1)
     method_source (0.9.0)
+    mimemagic (0.3.2)
     mini_mime (1.0.0)
     mini_portile2 (2.3.0)
     minitest (5.11.3)
@@ -305,7 +312,7 @@ GEM
     responders (2.4.0)
       actionpack (>= 4.2.0, < 5.3)
       railties (>= 4.2.0, < 5.3)
-    rubyzip (1.0.0)
+    rubyzip (1.2.1)
     sass (3.4.25)
     sass-rails (5.0.7)
       railties (>= 4.0.0, < 6)
@@ -382,6 +389,7 @@ PLATFORMS
 
 DEPENDENCIES
   apipie-rails
+  axlsx!
   axlsx_rails
   bcrypt (~> 3.1.7)
   byebug

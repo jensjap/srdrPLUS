@@ -117,4 +117,5 @@ gem 'apipie-rails'
 gem 'sidekiq'
 
 # Spreadsheet generation
+gem 'axlsx', git: 'https://github.com/randym/axlsx.git'
 gem 'axlsx_rails'
