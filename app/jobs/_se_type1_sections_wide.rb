@@ -84,6 +84,8 @@ def build_type1_sections_wide(p, project, highlight, wrap)
 
             eefps = efps.extractions_extraction_forms_projects_sections.find_by(extraction: extraction,
                                                                                 extraction_forms_projects_section: efps)
+            # Iterate over each of the type1s that are associated with this particular extraction's extraction_forms_projects_section
+            # and collect type1, population, and timepoint information.
             eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
               sheet_info.add_type1(
                 extraction_id: extraction.id,
@@ -108,9 +110,11 @@ def build_type1_sections_wide(p, project, highlight, wrap)
             end  # eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
           end  # END project.extractions.each do |extraction|
 
+          # Start printing rows to the spreadsheet. First the basic headers:
+          #['Extraction ID', 'Username', 'Citation ID', 'Citation Name', 'RefMan', 'PMID']
           header_row = sheet.add_row sheet_info.header_info
 
-          # First build the complete header row.
+          # Next continue the header row by adding all type1s together.
           sheet_info.type1s.each do |type1|
             # Try to find the column that matches the identifier.
             found, column_idx = nil
@@ -123,6 +127,7 @@ def build_type1_sections_wide(p, project, highlight, wrap)
             end
           end  # sheet_info.type1s.each do |type1|
 
+          # Then all the populations together.
           sheet_info.populations.each do |pop|
             # Try to find the column that matches the identifier.
             found, column_idx = nil
@@ -135,6 +140,7 @@ def build_type1_sections_wide(p, project, highlight, wrap)
             end
           end  # sheet_info.populations].each do |pop|
 
+          # And finally all the timepoints together.
           sheet_info.timepoints.each do |tp|
             # Try to find the column that matches the identifier.
             found, column_idx = nil
@@ -147,7 +153,7 @@ def build_type1_sections_wide(p, project, highlight, wrap)
             end
           end  # sheet_info.timepoints.each do |tp|
 
-          # Now we add the rows.
+          # Now we add the extraction rows.
           sheet_info.extractions.each do |key, extraction|
             new_row = []
             new_row << extraction[:extraction_info][:extraction_id]
@@ -168,7 +174,7 @@ def build_type1_sections_wide(p, project, highlight, wrap)
 
               # Something is wrong if it wasn't found.
               unless found
-                byebug
+                raise RuntimeError, "Error: Could not find header row: [#{ type1[:section_name] } ID: #{ type1[:id] }]"
               end
 
               new_row[column_idx]     = type1[:name]
@@ -182,7 +188,7 @@ def build_type1_sections_wide(p, project, highlight, wrap)
 
               # Something is wrong if it wasn't found.
               unless found
-                byebug
+                raise RuntimeError, "Error: Could not find header row: [#{ type1[:section_name] } ID: #{ type1[:id] }]"
               end
 
               new_row[column_idx]     = pop[:name]
@@ -196,7 +202,7 @@ def build_type1_sections_wide(p, project, highlight, wrap)
 
               # Something is wrong if it wasn't found.
               unless found
-                byebug
+                raise RuntimeError, "Error: Could not find header row: [#{ type1[:section_name] } ID: #{ type1[:id] }]"
               end
 
               new_row[column_idx]     = tp[:name]
