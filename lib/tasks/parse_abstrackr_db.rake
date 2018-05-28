@@ -65,13 +65,11 @@ task :populate_db do
     break
   end
 
-  ###### YOU NEED TO MAKE SURE THAT 
+  ###### YOU NEED TO MAKE SURE THAT CITATION IS NOT PRESENT IN DB
   old_citations.each do |cc|
     puts cc['title']
-    citation = Citation.find_or_create_by({ name: pp['title'], abstract: cc['abstract'], refman: cc['refman'],  pmid: cc['pmid'] })
+    citations = Citation.find_or_create_by({ name: pp['title'], abstract: cc['abstract'], refman: cc['refman'],  pmid: cc['pmid'] })
     citation.create_journal({ name: pp['journal'], publication_date: pp['publication_date']})
-
-
     break
   end
 end
