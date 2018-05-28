@@ -8,12 +8,11 @@ def build_result_sections(p, project)
         # Add a new sheet.
         p.workbook.add_worksheet(name: "#{ section.section.name }") do |sheet|
 
-        # Every row represents an extraction.
-        project.extractions.each do |extraction|
-          eefps = section.extractions_extraction_forms_projects_sections.find_by(extraction: extraction, extraction_forms_projects_section: section)
-          end
-
-        end  # END project.extractions.each do |extraction|
+          # Every row represents an extraction.
+          project.extractions.each do |extraction|
+            eefps = section.extractions_extraction_forms_projects_sections.find_by(extraction: extraction, extraction_forms_projects_section: section)
+          end  # project.extractions.each do |extraction|
+        end  # END p.workbook.add_worksheet(name: "#{ section.section.name }") do |sheet|
       end  # END if section.extraction_forms_projects_section_type_id == 3
     end  # END ef.extraction_forms_projects_sections.each do |section|
   end  # END project.extraction_forms_projects.each do |ef|

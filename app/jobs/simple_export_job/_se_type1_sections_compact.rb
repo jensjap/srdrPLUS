@@ -6,7 +6,7 @@ def build_type1_sections_compact(p, project, highlight, wrap)
       if section.extraction_forms_projects_section_type_id == 1
 
         # Add a new sheet.
-        p.workbook.add_worksheet(name: "#{ section.section.name }" + ' - compact') do |sheet|
+        p.workbook.add_worksheet(name: "#{ section.section.name.truncate(21) }" + ' - compact') do |sheet|
 
           # Some prep work:
           last_col_idx  = 0
@@ -39,7 +39,7 @@ def build_type1_sections_compact(p, project, highlight, wrap)
 
           # Re-apply the styling for the new cells in the header row before closing the sheet.
           header_row.style = highlight
-        end  # END p.workbook.add_worksheet(name: "#{ section.section.name }") do |sheet|
+        end  # END p.workbook.add_worksheet(name: "#{ section.section.name.truncate(21) }" + ' - compact') do |sheet|
       end  # END if section.extraction_forms_projects_section_type_id == 1
     end  # END ef.extraction_forms_projects_sections.each do |section|
   end  # END project.extraction_forms_projects.each do |ef|

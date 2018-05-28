@@ -1,9 +1,10 @@
-require '_se_project_information_section'
-require '_se_type1_sections_compact'
-require '_se_type1_sections_wide'
-require '_se_type2_sections'
-require '_se_result_sections'
-require '_se_sample_3d_pie_chart'
+require 'simple_export_job/_se_project_information_section'
+require 'simple_export_job/_se_type1_sections_compact'
+require 'simple_export_job/_se_type1_sections_wide'
+require 'simple_export_job/_se_type2_sections_compact'
+require 'simple_export_job/_se_type2_sections_wide'
+require 'simple_export_job/_se_result_sections'
+require 'simple_export_job/_se_sample_3d_pie_chart'
 
 class SimpleExportJob < ApplicationJob
   require 'axlsx'
@@ -19,6 +20,7 @@ class SimpleExportJob < ApplicationJob
 
     Axlsx::Package.new do |p|
       p.use_shared_strings = true
+      p.use_autowidth      = true
       highlight  = p.workbook.styles.add_style bg_color: 'C7EECF', fg_color: '09600B', sz: 14, font_name: 'Calibri (Body)'
       wrap       = p.workbook.styles.add_style alignment: { wrap_text: true }
 
@@ -26,13 +28,16 @@ class SimpleExportJob < ApplicationJob
       build_project_information_section(p, @project, highlight, wrap)
 
       # Type 1s - compact format.
-      build_type1_sections_compact(p, @project, highlight, wrap)
+      #build_type1_sections_compact(p, @project, highlight, wrap)
 
       # Type 1s - wide format.
       build_type1_sections_wide(p, @project, highlight, wrap)
 
-      # Type 2s.
-      build_type2_sections(p, @project)
+      # Type 2s - compact format.
+      #build_type2_sections_compact(p, @project, highlight, wrap)
+
+      # Type 2s - wide format.
+      build_type2_sections_wide(p, @project, highlight, wrap)
 
       # Results.
       build_result_sections(p, @project)
