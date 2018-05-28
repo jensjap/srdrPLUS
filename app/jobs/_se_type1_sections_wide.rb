@@ -208,7 +208,7 @@ def build_type1_sections_wide(p, project, highlight, wrap)
           end  # sheet_info.extractions.each do |extraction|
 
           # Re-apply the styling for the new cells in the header row before closing the sheet.
-          sheet.column_widths 14, 14, 13, 51, 15, 15, 24, 29, 24, 29, 24, 29, 24, 29, 24, 29, 24, 29, 24, 29
+          sheet.column_widths nil, nil, nil, nil, 50.17
           header_row.style = highlight
         end  # END p.workbook.add_worksheet(name: "#{ efps.section.name }") do |sheet|
       end  # END if efps.extraction_forms_projects_section_type_id == 1
