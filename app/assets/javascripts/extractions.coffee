@@ -6,6 +6,14 @@ document.addEventListener 'turbolinks:load', ->
 
   do ->
 
+#!!! This is buggy. When loading the page where the anchor is set, it'll have both open.
+#    # Open first tab with JavaScript.
+#      tabs = $( '#vertical-tabs' )
+#      if tabs.length
+#        tabs = $( '#vertical-tabs' ).foundation()
+#        firstTab = tabs.children( 'li' ).first()
+#        tabs.foundation( '_openTab', firstTab )
+
     # Adds a delay to calling a specific function.
     delay = do ->
       timer = 0

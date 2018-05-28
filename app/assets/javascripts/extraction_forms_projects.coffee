@@ -47,13 +47,6 @@ document.addEventListener 'turbolinks:load', ->
         # Close the modal.
         $( this ).closest('.reveal').foundation( 'close' )
 
-#    # Open first tab with JavaScript.
-#    tabs = $( '#vertical-tabs' )
-#    if tabs.length
-#      tabs = $( '#vertical-tabs' ).foundation()
-#      firstTab = tabs.children( 'li' ).first()
-#      tabs.foundation( '_openTab', firstTab )
-
     # Attach listeners to select all within quality dimension section.
     $( 'input.select-all[type="checkbox"]' ).click ( e ) ->
       that = $( this )
