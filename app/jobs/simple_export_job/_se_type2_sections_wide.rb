@@ -3,7 +3,7 @@ require 'simple_export_job/sheet_info'
 def build_type2_sections_wide(p, project, highlight, wrap, kq_ids=[])
   # Type2 (Questions) are associated to Key Questions and we export by the KQ's selected.
   # If no KQ's array is passed in, we assume to export all.
-  kq_ids = project.key_questions.collect(&:id) if kq_ids.blank?
+  kq_ids = project.key_questions.pluck(:id) if kq_ids.blank?
 
   project.extraction_forms_projects.each do |efp|
     efp.extraction_forms_projects_sections.each do |efps|
@@ -35,29 +35,33 @@ def build_type2_sections_wide(p, project, highlight, wrap, kq_ids=[])
               extraction_forms_projects_section: efps)
             # Iterate over each of the questions that are associated with this particular # extraction's
             # extraction_forms_projects_section and collect name and description.
-            questions = efps.questions.joins(:key_questions_projects_questions).where(key_questions_projects_questions: { key_questions_project: kq_ids }).distinct.order(id: :asc)
-            questions.each do |q|
-              sheet_info.add_question(
-                extraction_id: extraction.id,
-                section_name: efps.section.name.singularize,
-                id: q.id,
-                name: q.name,
-                description: q.description)
+            questions = efps.questions.joins(:key_questions_projects_questions)
+              .where(key_questions_projects_questions: { key_questions_project: kq_ids }).distinct.order(id: :asc)
 
-              q.question_rows.each do |qr|
-                qr.question_row_columns.each do |qrc|
-                  sheet_info.add_question_row_column(
-                    question_id: q.id,
-                    question_row_id: qr.id,
-                    question_row_name: qr.name,
-                    question_row_column_id: qrc.id,
-                    question_row_column_name: qrc.name,
-                    question_
-                    ;tabne
-                  )
-                end  # qr.question_row_columns.each do |qrc|
-              end  # q.question_rows.each do |qr|
-            end  # questions.each do |q|
+            # If this section is linked we have to iterate through each occurrence of type1 via eefps.extractions_extraction_forms_projects_sections_type1s.
+            # Otherwise we proceed with eefpst1s set to a custom Struct that responds to :id, type1: [:id, :description].
+            eefpst1s = eefps.link_to_type1.present? ? eefps.extractions_extraction_forms_projects_sections_type1s : [Struct.new(:id, :type1).new(nil, Struct.new(:id).new(nil))]
+            eefpst1s.each do |eefpst1|
+              questions.each do |q|
+                q.question_rows.each do |qr|
+                  qr.question_row_columns.each do |qrc|
+                    sheet_info.add_question_row_column(
+                      extraction_id: extraction.id,
+                      section_name: efps.section.name.singularize,
+                      type1_id: eefpst1.type1.id,
+                      question_id: q.id,
+                      question_name: q.name,
+                      question_description: q.description,
+                      question_row_id: qr.id,
+                      question_row_name: qr.name,
+                      question_row_column_id: qrc.id,
+                      question_row_column_name: qrc.name,
+                      question_row_column_options: qrc.question_row_columns_question_row_column_options.where(question_row_column_option_id: 1).pluck(:name),
+                      question_row_column_values: eefps.question_row_column_values(eefpst1.id, qrc))
+                  end  # qr.question_row_columns.each do |qrc|
+                end  # q.question_rows.each do |qr|
+              end  # questions.each do |q|
+            end  # eefps.type1s.each do |eefpst1|
           end  # project.extractions.each do |extraction|
 
           # Start printing rows to the spreadsheet. First the basic headers:
@@ -65,17 +69,25 @@ def build_type2_sections_wide(p, project, highlight, wrap, kq_ids=[])
           header_row = sheet.add_row sheet_info.header_info
 
           # Next continue the header row by adding all type2s together.
-          sheet_info.questions.each do |q|
+          sheet_info.question_row_columns.each do |qrc|
             # Try to find the column that matches the identifier.
             found, column_idx = nil
-            found, column_idx = _find_column_idx_with_value(header_row, "[#{ q[:section_name] } Question ID: #{ q[:id] }]")
+            found, column_idx = _find_column_idx_with_value(header_row, "[Type1 ID: #{ qrc[:type1_id] }][Question ID: #{ qrc[:question_id] }][Field ID: #{ qrc[:question_row_id] }x#{ qrc[:question_row_column_id] }]")
 
             # Append to the header if this is new.
             unless found
-              new_cell = header_row.add_cell "[#{ q[:section_name] } Question ID: #{ q[:id] }] #{ q[:name] }"
-              sheet.add_comment ref: new_cell, author: 'Export AI', text: q[:description], visible: false if q[:description].present?
-            end
-          end  # sheet_info.questions.each do |q|
+              title  = ''
+              title += "#{ Type1.find(qrc[:type1_id]).short_name_and_description } - " unless qrc[:type1_id].nil?
+              title += "#{ qrc[:question_name] }"
+              title += " - #{ qrc[:question_row_name] }" if qrc[:question_row_name].present?
+              title += " - #{ qrc[:question_row_column_name] }" if qrc[:question_row_column_name].present?
+              comment  = '.'
+              comment += "\rDescription: \"#{ qrc[:question_description] }\"" if qrc[:question_description].present?
+              comment += "\rAnswer choices: #{ qrc[:question_row_column_options] }" if qrc[:question_row_column_options].first.present?
+              new_cell = header_row.add_cell "#{ title }\r[Type1 ID: #{ qrc[:type1_id] }][Question ID: #{ qrc[:question_id] }][Field ID: #{ qrc[:question_row_id] }x#{ qrc[:question_row_column_id] }]"
+              sheet.add_comment ref: new_cell, author: 'Export AI', text: comment, visible: false if (qrc[:question_description].present? || qrc[:question_row_column_options].first.present?)
+            end  # unless found
+          end  # sheet_info.question_row_columns.each do |qrc|
 
           # Now we add the extraction rows.
           sheet_info.extractions.each do |key, extraction|
@@ -88,17 +100,17 @@ def build_type2_sections_wide(p, project, highlight, wrap, kq_ids=[])
             new_row << extraction[:extraction_info][:pmid]
 
             # Add question information.
-            extraction[:questions].each do |q|
+            extraction[:question_row_columns].each do |qrc|
               # Try to find the column that matches the identifier.
               found, column_idx = nil
-              found, column_idx = _find_column_idx_with_value(header_row, "[#{ q[:section_name] } Question ID: #{ q[:id] }]")
+              found, column_idx = _find_column_idx_with_value(header_row, "[Type1 ID: #{ qrc[:type1_id] }][Question ID: #{ qrc[:question_id] }][Field ID: #{ qrc[:question_row_id] }x#{ qrc[:question_row_column_id] }]")
 
               # Something is wrong if it wasn't found.
               unless found
-                raise RuntimeError, "Error: Could not find header row: [#{ q[:section_name] } Question ID: #{ q[:id] }]"
+                raise RuntimeError, "Error: Could not find header row: [Type1 ID: #{ qrc[:type1_id] }][Question ID: #{ qrc[:question_id] }][Field ID: #{ qrc[:question_row_id] }x#{ qrc[:question_row_column_id] }]"
               end
 
-              new_row[column_idx] = q[:value]
+              new_row[column_idx] = qrc[:question_row_column_values]
             end  # extraction[:questions].each do |q|
 
             # Done. Let's add the new row.
@@ -106,7 +118,7 @@ def build_type2_sections_wide(p, project, highlight, wrap, kq_ids=[])
           end  # sheet_info.extractions.each do |key, extraction|
 
           # Re-apply the styling for the new cells in the header row before closing the sheet.
-          #sheet.column_widths nil
+          sheet.column_widths 16, 16, 16, 50, 16, 16
           header_row.style = highlight
         end  # END p.workbook.add_worksheet(name: "#{ efps.section.name.truncate(24) } - wide") do |sheet|
       end  # END if efps.extraction_forms_projects_section_type_id == 2

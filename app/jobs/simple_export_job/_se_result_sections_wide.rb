@@ -1,4 +1,6 @@
-def build_result_sections(p, project)
+require 'simple_export_job/sheet_info'
+
+def build_result_sections_wide(p, project)
   project.extraction_forms_projects.each do |ef|
     ef.extraction_forms_projects_sections.each do |section|
 

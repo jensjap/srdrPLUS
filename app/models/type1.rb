@@ -33,7 +33,7 @@ class Type1 < ApplicationRecord
     return text
   end
 
-  def short_name_description
+  def short_name_and_description
     if description.length < 10
       return name_and_description
     else

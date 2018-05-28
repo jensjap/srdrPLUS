@@ -3,7 +3,7 @@
 # returns (Boolean, Idx)
 def _find_column_idx_with_value(row, value)
   row.cells.each do |cell|
-    return [true, cell.index] if cell.value.start_with?(value)
+    return [true, cell.index] if cell.value.end_with?(value)
   end
 
   return [false, row.cells.length]
@@ -13,14 +13,15 @@ end
 # One list is kept as a master list. Those are on SheetInfo.type1s, SheetInfo.populations, and SheetInfo.timepoints.
 # Another is kept for each extraction.
 class SheetInfo
-  attr_reader :header_info, :extractions, :type1s, :populations, :timepoints
+  attr_reader :header_info, :extractions, :type1s, :populations, :timepoints, :question_row_columns
 
   def initialize
-    @header_info = ['Extraction ID', 'Username', 'Citation ID', 'Citation Name', 'RefMan', 'PMID']
-    @extractions = Hash.new
-    @type1s      = Set.new
-    @populations = Set.new
-    @timepoints  = Set.new
+    @header_info            = ['Extraction ID', 'Username', 'Citation ID', 'Citation Name', 'RefMan', 'PMID']
+    @extractions            = Hash.new
+    @type1s                 = Set.new
+    @populations            = Set.new
+    @timepoints             = Set.new
+    @question_row_columns   = Set.new
   end
 
   def new_extraction_info(extraction)
@@ -29,7 +30,7 @@ class SheetInfo
       type1s: [],
       populations: [],
       timepoints: [],
-      questions: {}
+      question_row_columns: []
     }
   end
 
@@ -39,23 +40,30 @@ class SheetInfo
 
   def add_type1(params)
     @extractions[params[:extraction_id]][:type1s] << params
-    @type1s << params
+    dup = params.deep_dup
+    dup.delete(:extraction_id)
+    @type1s << dup
   end
 
   def add_population(params)
     @extractions[params[:extraction_id]][:populations] << params
-    @populations << params
+    dup = params.deep_dup
+    dup.delete(:extraction_id)
+    @populations << dup
   end
 
   def add_timepoint(params)
     @extractions[params[:extraction_id]][:timepoints] << params
-    @timepoints << params
-  end
-
-  def add_question(params)
-    @extractions[params[:extraction_id]][:questions][params[:id]] = params
+    dup = params.deep_dup
+    dup.delete(:extraction_id)
+    @timepoints << dup
   end
 
   def add_question_row_column(params)
+    @extractions[params[:extraction_id]][:question_row_columns] << params
+    dup = params.deep_dup
+    dup.delete(:extraction_id)
+    dup.delete(:question_row_column_values)
+    @question_row_columns << dup
   end
 end

@@ -67,8 +67,8 @@ def build_type1_sections_wide(p, project, highlight, wrap)
 
             # Append to the header if this is new.
             unless found
-              header_row.add_cell "[#{ type1[:section_name] } ID: #{ type1[:id] }] Name"
-              header_row.add_cell "[#{ type1[:section_name] } ID: #{ type1[:id] }] Description", style: wrap
+              header_row.add_cell "Name\r[#{ type1[:section_name] } ID: #{ type1[:id] }]"
+              header_row.add_cell "Description\r[#{ type1[:section_name] } ID: #{ type1[:id] }]"
             end
           end  # sheet_info.type1s.each do |type1|
 
@@ -80,8 +80,8 @@ def build_type1_sections_wide(p, project, highlight, wrap)
 
             # Append to the header if this is new.
             unless found
-              header_row.add_cell "[Population ID: #{ pop[:id] }] Name"
-              header_row.add_cell "[Population ID: #{ pop[:id] }] Description", style: wrap
+              header_row.add_cell "Name\r[Population ID: #{ pop[:id] }]"
+              header_row.add_cell "Description\r[Population ID: #{ pop[:id] }]"
             end
           end  # sheet_info.populations].each do |pop|
 
@@ -93,8 +93,8 @@ def build_type1_sections_wide(p, project, highlight, wrap)
 
             # Append to the header if this is new.
             unless found
-              header_row.add_cell "[Timepoint ID: #{ tp[:id] }] Name"
-              header_row.add_cell "[Timepoint ID: #{ tp[:id] }] Unit"
+              header_row.add_cell "Name\r[Timepoint ID: #{ tp[:id] }]"
+              header_row.add_cell "Unit\r[Timepoint ID: #{ tp[:id] }]"
             end
           end  # sheet_info.timepoints.each do |tp|
 
@@ -159,7 +159,7 @@ def build_type1_sections_wide(p, project, highlight, wrap)
           end  # sheet_info.extractions.each do |extraction|
 
           # Re-apply the styling for the new cells in the header row before closing the sheet.
-          sheet.column_widths nil, nil, nil, nil, 50.17
+          sheet.column_widths 16, 16, 16, 50, 16, 16
           header_row.style = highlight
         end  # END p.workbook.add_worksheet(name: "#{ efps.section.name.truncate(24) }" + ' - wide') do |sheet|
       end  # END if efps.extraction_forms_projects_section_type_id == 1

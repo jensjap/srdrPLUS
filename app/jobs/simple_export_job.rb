@@ -21,7 +21,7 @@ class SimpleExportJob < ApplicationJob
     Axlsx::Package.new do |p|
       p.use_shared_strings = true
       p.use_autowidth      = true
-      highlight  = p.workbook.styles.add_style bg_color: 'C7EECF', fg_color: '09600B', sz: 14, font_name: 'Calibri (Body)'
+      highlight  = p.workbook.styles.add_style bg_color: 'C7EECF', fg_color: '09600B', sz: 14, font_name: 'Calibri (Body)', alignment: { wrap_text: true }
       wrap       = p.workbook.styles.add_style alignment: { wrap_text: true }
 
       # Sheet with basic project information.

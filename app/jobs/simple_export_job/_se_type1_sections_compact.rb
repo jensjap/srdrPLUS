@@ -1,3 +1,5 @@
+require 'simple_export_job/sheet_info'
+
 def build_type1_sections_compact(p, project, highlight, wrap)
   project.extraction_forms_projects.each do |ef|
     ef.extraction_forms_projects_sections.each do |section|
