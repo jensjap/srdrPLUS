@@ -849,12 +849,12 @@ ActiveRecord::Schema.define(version: 20180514023758) do
   create_table "question_row_columns_question_row_column_options", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "question_row_column_id"
     t.integer  "question_row_column_option_id"
-    t.string   "name"
+    t.text     "name",                          limit: 65535
     t.string   "name_type"
     t.datetime "deleted_at"
     t.boolean  "active"
-    t.datetime "created_at",                    null: false
-    t.datetime "updated_at",                    null: false
+    t.datetime "created_at",                                  null: false
+    t.datetime "updated_at",                                  null: false
     t.index ["active"], name: "index_qrcqrco_on_active", using: :btree
     t.index ["deleted_at"], name: "index_qrcqrco_on_deleted_at", using: :btree
     t.index ["question_row_column_id", "question_row_column_option_id", "active"], name: "index_qrcqrco_on_qrc_id_qrco_id_active", using: :btree

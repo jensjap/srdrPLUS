@@ -121,19 +121,20 @@ class ExtractionFormsProjectsSection < ApplicationRecord
         end
 
         # Set field type.
-        qrcf = q.question_rows.first.question_row_columns.first.question_row_column_field
-        qrcf.update(question_row_column_field_type: QuestionRowColumnFieldType.find_by(name: 'dropdown'))
+        qrc = q.question_rows.first.question_row_columns.first
+        # Make it a dropdown.
+        qrc.update(question_row_column_type_id: 6)
 
         # Iterate through options and add them.
         first = true
         qdq.quality_dimension_options.each do |qdo|
           if first
-            qrcfqrcfo = qrcf.question_row_column_fields_question_row_column_field_options.where(question_row_column_field_option_id: 1).first
-            qrcfqrcfo.update(name: qdo.name)
+            qrcqrco = qrc.question_row_columns_question_row_column_options.where(question_row_column_option_id: 1).first
+            qrcqrco.update(name: qdo.name)
             first = false
           else
-            qrcf.question_row_column_fields_question_row_column_field_options.create(
-              question_row_column_field_option: QuestionRowColumnFieldOption.find_by(name: 'answer_choice'),
+            qrc.question_row_columns_question_row_column_options.create(
+              question_row_column_option_id: 1,
               name: qdo.name,
               name_type: 'string'
             )

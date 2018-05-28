@@ -3,7 +3,7 @@ class CreateQuestionRowColumnsQuestionRowColumnOptions < ActiveRecord::Migration
     create_table :question_row_columns_question_row_column_options do |t|
       t.references :question_row_column,        foreign_key: true, index: { name: 'index_qrcqrco_on_qrc_id' }
       t.references :question_row_column_option, foreign_key: true, index: { name: 'index_qrcqrco_on_qrco_id' }
-      t.string :name
+      t.text :name
       t.string :name_type
       t.datetime :deleted_at
       t.boolean :active

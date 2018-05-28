@@ -16,7 +16,7 @@ table.hover
         - for qrc in qr.question_row_columns
           td class='question-row-column' data-question-row-column-id='#{ qrc.id }'
 
-            == render 'extractions/work/question_row_column_field_types/' + qrc.question_row_column_type.name,
+            == render 'extractions/work/question_row_column_types/' + qrc.question_row_column_type.name,
               q: q,
               t1: t1,
               qrc: qrc,

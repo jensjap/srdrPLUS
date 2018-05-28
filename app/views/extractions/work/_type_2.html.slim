@@ -37,7 +37,7 @@
             - if linked_section
 
               - eefps.link_to_type1.type1s.each do |t1|
-                = t1.name + ':'
+                = t1.name_and_description + ':'
                 == render 'extractions/work/question_fields',
                   q: q,
                   t1: t1,
