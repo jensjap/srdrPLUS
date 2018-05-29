@@ -95,12 +95,12 @@ def build_result_sections_wide(p, project, highlight, wrap)
                                 population_description: eefpst1r.population_name.description,
                                 result_statistic_section_id: result_statistic_section.result_statistic_section_type.id,
                                 result_statistic_section_type_name: result_statistic_section.result_statistic_section_type.name,
-                                timepoint_id: eefpst1rc.timepoint_name.id,
-                                timepoint_name: eefpst1rc.timepoint_name.name,
-                                timepoint_unit: eefpst1rc.timepoint_name.unit,
-                                arm_id: eefpst1_arm.type1.id,
-                                arm_name: eefpst1_arm.type1.name,
-                                arm_description: eefpst1_arm.type1.description,
+                                row_id: eefpst1rc.timepoint_name.id,             # timepoint_id       Note: Changing this to row and col so we
+                                row_name: eefpst1rc.timepoint_name.name,         # timepoint_name            can use the same names later.
+                                row_unit: eefpst1rc.timepoint_name.unit,         # timepoint_unit
+                                col_id: eefpst1_arm.type1.id,                    # arm_id
+                                col_name: eefpst1_arm.type1.name,                # arm_name
+                                col_description: eefpst1_arm.type1.description,  # arm_description
                                 measure_id: rssm.measure.id,
                                 measure_name: rssm.measure.name,
                                 rssm_values: eefpst1_arm.tps_arms_rssms_values(eefpst1rc.id, rssm))
@@ -126,10 +126,10 @@ def build_result_sections_wide(p, project, highlight, wrap)
                               population_description: eefpst1r.population_name.description,
                               result_statistic_section_id: result_statistic_section.result_statistic_section_type.id,
                               result_statistic_section_type_name: result_statistic_section.result_statistic_section_type.name,
-                              timepoint_id: eefpst1rc.timepoint_name.id,
-                              timepoint_name: eefpst1rc.timepoint_name.name,
-                              timepoint_unit: eefpst1rc.timepoint_name.unit,
-                              comparison_id: bac.id,
+                              row_id: eefpst1rc.timepoint_name.id,     # timepoint_id
+                              row_name: eefpst1rc.timepoint_name.name, # timepoint_name
+                              row_unit: eefpst1rc.timepoint_name.unit, # timepoint_unit
+                              col_id: bac.id,                          # comparison_id
                               measure_id: rssm.measure.id,
                               measure_name: rssm.measure.name,
                               rssm_values: bac.tps_comparisons_rssms_values(eefpst1rc.id, rssm))
@@ -155,10 +155,10 @@ def build_result_sections_wide(p, project, highlight, wrap)
                                 population_description: eefpst1r.population_name.description,
                                 result_statistic_section_id: result_statistic_section.result_statistic_section_type.id,
                                 result_statistic_section_type_name: result_statistic_section.result_statistic_section_type.name,
-                                wac_id: wac.id,
-                                arm_id: eefpst1_arm.type1.id,
-                                arm_name: eefpst1_arm.type1.name,
-                                arm_description: eefpst1_arm.type1.description,
+                                row_id: wac.id,                                 # wac_id
+                                col_id: eefpst1_arm.type1.id,                   # arm_id
+                                col_name: eefpst1_arm.type1.name,               # arm_name
+                                col_description: eefpst1_arm.type1.description, # arm_description
                                 measure_id: rssm.measure.id,
                                 measure_name: rssm.measure.name,
                                 rssm_values: wac.comparisons_arms_rssms_values(eefpst1_arm.id, rssm))
@@ -186,8 +186,8 @@ def build_result_sections_wide(p, project, highlight, wrap)
                               population_description: eefpst1r.population_name.description,
                               result_statistic_section_id: result_statistic_section.result_statistic_section_type.id,
                               result_statistic_section_type_name: result_statistic_section.result_statistic_section_type.name,
-                              wac_id: wac.id,
-                              bac_id: bac.id,
+                              row_id: wac.id, # wac_id
+                              col_id: bac.id, # bac_id
                               measure_id: rssm.measure.id,
                               measure_name: rssm.measure.name,
                               rssm_values: wac.wacs_bacs_rssms_values(bac.id, rssm))
@@ -201,7 +201,67 @@ def build_result_sections_wide(p, project, highlight, wrap)
               end  # eefps_outcome.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1_outcome|  # Outcome.
             end  # eefps_outcomes.each do |eefps_outcome|
           end  # project.extractions.each do |extraction|
-          byebug
+
+          # Start printing rows to the spreadsheet. First the basic headers:
+          #['Extraction ID', 'Username', 'Citation ID', 'Citation Name', 'RefMan', 'PMID']
+          header_row = sheet.add_row sheet_info.header_info
+
+          # Next continue the header row by adding all rssms together.
+          sheet_info.rssms.each do |rssm|
+            # Try to find the column that matches the identifier.
+            found, column_idx = nil
+            found, column_idx = _find_column_idx_with_value(header_row,
+              "[Outcome ID: #{ rssm[:outcome_id] }][Population ID: #{ rssm[:population_id] }][RSS Type ID: #{ rssm[:result_statistic_section_id] }][Row ID: #{ rssm[:row_id] }][Col ID: #{ rssm[:col_id] }][Measure ID: #{ rssm[:measure_id] }]")
+
+            # Append to the header if this is new.
+            unless found
+              title  = ''
+              title += "#{ Type1.find(rssm[:outcome_id]).short_name_and_description } - " unless rssm[:outcome_id].blank?
+              title += "#{ rssm[:population_name] }"
+              title += " - #{ rssm[:result_statistic_section_type_name] }"
+              title += " - #{ Comparison.find(rssm[:row_id]).pretty_print }"
+              title += " - #{ Comparison.find(rssm[:col_id]).pretty_print }"
+              title += " - #{ rssm[:measure_name] }"
+#              comment  = '.'
+#              comment += "\rDescription: \"#{ qrc[:question_description] }\"" if qrc[:question_description].present?
+#              comment += "\rAnswer choices: #{ qrc[:question_row_column_options] }" if qrc[:question_row_column_options].first.present?
+              new_cell = header_row.add_cell "#{ title }\r[Outcome ID: #{ rssm[:outcome_id] }][Population ID: #{ rssm[:population_id] }][RSS Type ID: #{ rssm[:result_statistic_section_id] }][Row ID: #{ rssm[:row_id] }][Col ID: #{ rssm[:col_id] }][Measure ID: #{ rssm[:measure_id] }]"
+#              sheet.add_comment ref: new_cell, author: 'Export AI', text: comment, visible: false if (qrc[:question_description].present? || qrc[:question_row_column_options].first.present?)
+            end  # unless found
+          end  # sheet_info.rssms.each do |rssm|
+
+          # Now we add the extraction rows.
+          sheet_info.extractions.each do |key, extraction|
+            new_row = []
+            new_row << extraction[:extraction_info][:extraction_id]
+            new_row << extraction[:extraction_info][:username]
+            new_row << extraction[:extraction_info][:citation_id]
+            new_row << extraction[:extraction_info][:citation_name]
+            new_row << extraction[:extraction_info][:refman]
+            new_row << extraction[:extraction_info][:pmid]
+
+            # Add question information.
+            extraction[:rssms].each do |rssm|
+              # Try to find the column that matches the identifier.
+              found, column_idx = nil
+              found, column_idx = _find_column_idx_with_value(header_row,
+                "[Outcome ID: #{ rssm[:outcome_id] }][Population ID: #{ rssm[:population_id] }][RSS Type ID: #{ rssm[:result_statistic_section_id] }][Row ID: #{ rssm[:row_id] }][Col ID: #{ rssm[:col_id] }][Measure ID: #{ rssm[:measure_id] }]")
+
+              # Something is wrong if it wasn't found.
+              unless found
+                raise RuntimeError, "Error: Could not find header row: [Outcome ID: #{ rssm[:outcome_id] }][Population ID: #{ rssm[:population_id] }][RSS Type ID: #{ rssm[:result_statistic_section_id] }][Row ID: #{ rssm[:row_id] }][Col ID: #{ rssm[:col_id] }][Measure ID: #{ rssm[:measure_id] }]"
+              end
+
+              new_row[column_idx] = rssm[:rssm_values]
+            end  # extraction[:questions].each do |q|
+
+            # Done. Let's add the new row.
+            sheet.add_row new_row
+          end  # sheet_info.extractions.each do |key, extraction|
+
+          # Re-apply the styling for the new cells in the header row before closing the sheet.
+          sheet.column_widths 16, 16, 16, 50, 16, 16
+          header_row.style = highlight
         end  # END p.workbook.add_worksheet(name: "#{ efps.section.name.truncate(24) } - wide") do |sheet|
       end  # END if efps.extraction_forms_projects_section_type_id == 3
     end  # END efp.extraction_forms_projects_sections.each do |efps|

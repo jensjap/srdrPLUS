@@ -81,12 +81,13 @@ def build_type2_sections_wide(p, project, highlight, wrap, kq_ids=[])
           sheet_info.question_row_columns.each do |qrc|
             # Try to find the column that matches the identifier.
             found, column_idx = nil
-            found, column_idx = _find_column_idx_with_value(header_row, "[Type1 ID: #{ qrc[:type1_id] }][Question ID: #{ qrc[:question_id] }][Field ID: #{ qrc[:question_row_id] }x#{ qrc[:question_row_column_id] }]")
+            found, column_idx = _find_column_idx_with_value(header_row,
+              "[Type1 ID: #{ qrc[:type1_id] }][Question ID: #{ qrc[:question_id] }][Field ID: #{ qrc[:question_row_id] }x#{ qrc[:question_row_column_id] }]")
 
             # Append to the header if this is new.
             unless found
               title  = ''
-              title += "#{ Type1.find(qrc[:type1_id]).short_name_and_description } - " unless qrc[:type1_id].nil?
+              title += "#{ Type1.find(qrc[:type1_id]).short_name_and_description } - " unless qrc[:type1_id].blank?
               title += "#{ qrc[:question_name] }"
               title += " - #{ qrc[:question_row_name] }" if qrc[:question_row_name].present?
               title += " - #{ qrc[:question_row_column_name] }" if qrc[:question_row_column_name].present?
