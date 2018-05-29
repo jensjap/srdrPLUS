@@ -37,7 +37,7 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
     return text
   end
 
-  def rssm_values(eefpst1rc_id, rssm)
+  def tps_arms_rssms_values(eefpst1rc_id, rssm)
     recordables = tps_arms_rssms
       .where(
         timepoint_id: eefpst1rc_id,

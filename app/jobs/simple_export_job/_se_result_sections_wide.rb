@@ -103,7 +103,7 @@ def build_result_sections_wide(p, project, highlight, wrap)
                                 arm_description: eefpst1_arm.type1.description,
                                 measure_id: rssm.measure.id,
                                 measure_name: rssm.measure.name,
-                                rssm_values: eefpst1_arm.rssm_values(eefpst1rc.id, rssm))
+                                rssm_values: eefpst1_arm.tps_arms_rssms_values(eefpst1rc.id, rssm))
 
                             end  # result_statistic_section.result_statistic_sections_measures.each do |rssm|  # q1-Measure
                           end  # eefps_arm.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1_arm|
@@ -115,7 +115,24 @@ def build_result_sections_wide(p, project, highlight, wrap)
                         result_statistic_section.comparisons.each do |bac|
                           result_statistic_section.result_statistic_sections_measures.each do |rssm|  # q2-Measure
 
-
+                            sheet_info.add_rssm(
+                              extraction_id: extraction.id,
+                              section_name: efps.section.name.singularize,
+                              outcome_id: eefpst1_outcome.type1.id,
+                              outcome_name: eefpst1_outcome.type1.name,
+                              outcome_description: eefpst1_outcome.type1.description,
+                              population_id: eefpst1r.population_name.id,
+                              population_name: eefpst1r.population_name.name,
+                              population_description: eefpst1r.population_name.description,
+                              result_statistic_section_id: result_statistic_section.result_statistic_section_type.id,
+                              result_statistic_section_type_name: result_statistic_section.result_statistic_section_type.name,
+                              timepoint_id: eefpst1rc.timepoint_name.id,
+                              timepoint_name: eefpst1rc.timepoint_name.name,
+                              timepoint_unit: eefpst1rc.timepoint_name.unit,
+                              comparison_id: bac.id,
+                              measure_id: rssm.measure.id,
+                              measure_name: rssm.measure.name,
+                              rssm_values: bac.tps_comparisons_rssms_values(eefpst1rc.id, rssm))
 
                           end  # result_statistic_section.result_statistic_sections_measures.each do |rssm|  # q2-Measure
                         end  # result_statistic_section.comparisons.each do |bac|
@@ -124,11 +141,30 @@ def build_result_sections_wide(p, project, highlight, wrap)
                     when 3  # Within Arm Comparisons - WAC x Arm x q3-Measure.
                       result_statistic_section.comparisons.each do |wac|
                         eefps_arms.each do |eefps_arm|  # Arm
-                          result_statistic_section.result_statistic_sections_measures.each do |rssm|  # q3-Measure
+                          eefps_arm.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1_arm|
+                            result_statistic_section.result_statistic_sections_measures.each do |rssm|  # q3-Measure
 
+                              sheet_info.add_rssm(
+                                extraction_id: extraction.id,
+                                section_name: efps.section.name.singularize,
+                                outcome_id: eefpst1_outcome.type1.id,
+                                outcome_name: eefpst1_outcome.type1.name,
+                                outcome_description: eefpst1_outcome.type1.description,
+                                population_id: eefpst1r.population_name.id,
+                                population_name: eefpst1r.population_name.name,
+                                population_description: eefpst1r.population_name.description,
+                                result_statistic_section_id: result_statistic_section.result_statistic_section_type.id,
+                                result_statistic_section_type_name: result_statistic_section.result_statistic_section_type.name,
+                                wac_id: wac.id,
+                                arm_id: eefpst1_arm.type1.id,
+                                arm_name: eefpst1_arm.type1.name,
+                                arm_description: eefpst1_arm.type1.description,
+                                measure_id: rssm.measure.id,
+                                measure_name: rssm.measure.name,
+                                rssm_values: wac.comparisons_arms_rssms_values(eefpst1_arm.id, rssm))
 
-
-                          end  # result_statistic_section.result_statistic_sections_measures.each do |rssm|  # q3-Measure
+                            end  # result_statistic_section.result_statistic_sections_measures.each do |rssm|  # q3-Measure
+                          end  # eefps_arm.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1_arm|
                         end  # eefps_arms.each do |eefps_arm|  # Arm
                       end  # result_statistic_section.comparisons.each do |wac|
 
@@ -139,6 +175,22 @@ def build_result_sections_wide(p, project, highlight, wrap)
                         bac_section.comparisons.each do |bac|
                           result_statistic_section.result_statistic_sections_measures.each do |rssm|  # q4-Measure
 
+                            sheet_info.add_rssm(
+                              extraction_id: extraction.id,
+                              section_name: efps.section.name.singularize,
+                              outcome_id: eefpst1_outcome.type1.id,
+                              outcome_name: eefpst1_outcome.type1.name,
+                              outcome_description: eefpst1_outcome.type1.description,
+                              population_id: eefpst1r.population_name.id,
+                              population_name: eefpst1r.population_name.name,
+                              population_description: eefpst1r.population_name.description,
+                              result_statistic_section_id: result_statistic_section.result_statistic_section_type.id,
+                              result_statistic_section_type_name: result_statistic_section.result_statistic_section_type.name,
+                              wac_id: wac.id,
+                              bac_id: bac.id,
+                              measure_id: rssm.measure.id,
+                              measure_name: rssm.measure.name,
+                              rssm_values: wac.wacs_bacs_rssms_values(bac.id, rssm))
 
                           end  # result_statistic_section.result_statistic_sections_measures.each do |rssm|  # q4-Measure
                         end  # bac_section.comparisons.each do |bac|
@@ -149,6 +201,7 @@ def build_result_sections_wide(p, project, highlight, wrap)
               end  # eefps_outcome.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1_outcome|  # Outcome.
             end  # eefps_outcomes.each do |eefps_outcome|
           end  # project.extractions.each do |extraction|
+          byebug
         end  # END p.workbook.add_worksheet(name: "#{ efps.section.name.truncate(24) } - wide") do |sheet|
       end  # END if efps.extraction_forms_projects_section_type_id == 3
     end  # END efp.extraction_forms_projects_sections.each do |efps|
