@@ -22,6 +22,8 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
 
   has_many :extractions_extraction_forms_projects_sections_type1_rows,                 dependent: :destroy, inverse_of: :extractions_extraction_forms_projects_sections_type1
   has_many :extractions_extraction_forms_projects_sections_question_row_column_fields, dependent: :destroy, inverse_of: :extractions_extraction_forms_projects_sections_type1
+  has_many :tps_arms_rssms,                                                            dependent: :destroy, inverse_of: :extractions_extraction_forms_projects_sections_type1
+  has_many :comparisons_arms_rssms,                                                    dependent: :destroy, inverse_of: :extractions_extraction_forms_projects_sections_type1
 
   delegate :extraction, to: :extractions_extraction_forms_projects_section
 
@@ -33,6 +35,14 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
     text =  "#{ type1.name }"
     text += " (#{ type1.description })" if type1.description.present?
     return text
+  end
+
+  def rssm_values(eefpst1rc_id, rssm)
+    recordables = tps_arms_rssms
+      .where(
+        timepoint_id: eefpst1rc_id,
+        result_statistic_sections_measure: rssm)
+    Record.where(recordable: recordables).pluck(:name)
   end
 
   private

@@ -1,6 +1,6 @@
 require 'simple_export_job/sheet_info'
 
-def build_result_sections_compact(p, project)
+def build_result_sections_compact(p, project, highlight, wrap)
   project.extraction_forms_projects.each do |ef|
     ef.extraction_forms_projects_sections.each do |section|
 

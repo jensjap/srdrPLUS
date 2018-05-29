@@ -36,7 +36,7 @@
                 - @result_statistic_section.result_statistic_sections_measures.each do |rssm|
                   // Create record form for rssm. (timepoint x bac x rssm)
                   - tps_comparisons_rssm = TpsComparisonsRssm.find_or_create_by!(\
-                  extractions_extraction_forms_projects_sections_type1_row: tp,
+                  timepoint: tp,
                   comparison: bac,
                   result_statistic_sections_measure: rssm)
                   - record = Record.find_or_create_by!(recordable: tps_comparisons_rssm)

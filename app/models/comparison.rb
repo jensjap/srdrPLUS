@@ -13,7 +13,9 @@ class Comparison < ApplicationRecord
   has_many :measurements, through: :comparisons_measures, dependent: :destroy
   has_many :measures, through: :comparisons_measures
 
-  has_many :wacs_bacs_rssms, dependent: :destroy, inverse_of: :comparison
+  has_many :comparisons_arms_rssms, dependent: :destroy, inverse_of: :comparison
+  has_many :tps_comparisons_rssms,  dependent: :destroy, inverse_of: :comparison
+  has_many :wacs_bacs_rssms,        dependent: :destroy, inverse_of: :comparison
 
   accepts_nested_attributes_for :comparate_groups, allow_destroy: true
   accepts_nested_attributes_for :comparisons_measures, allow_destroy: true

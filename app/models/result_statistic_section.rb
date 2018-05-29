@@ -37,6 +37,7 @@ class ResultStatisticSection < ApplicationRecord
   end
 
   private
+
     def create_default_descriptive_statistics
       Measure.result_statistic_section_type_defaults(self.result_statistic_section_type.id).each do |m|
         self.result_statistic_sections_measures.create(measure: m)

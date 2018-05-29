@@ -13,7 +13,7 @@ end
 # One list is kept as a master list. Those are on SheetInfo.type1s, SheetInfo.populations, and SheetInfo.timepoints.
 # Another is kept for each extraction.
 class SheetInfo
-  attr_reader :header_info, :extractions, :type1s, :populations, :timepoints, :question_row_columns
+  attr_reader :header_info, :extractions, :type1s, :populations, :timepoints, :question_row_columns, :rssms
 
   def initialize
     @header_info            = ['Extraction ID', 'Username', 'Citation ID', 'Citation Name', 'RefMan', 'PMID']
@@ -22,16 +22,17 @@ class SheetInfo
     @populations            = Set.new
     @timepoints             = Set.new
     @question_row_columns   = Set.new
+    @rssms                  = Set.new
   end
 
   def new_extraction_info(extraction)
     @extractions[extraction.id] = {
       extraction_id: extraction.id,
-      type1s: [],
-      populations: [],
-      timepoints: [],
-      question_row_columns: []
-    }
+      type1s:               [],
+      populations:          [],
+      timepoints:           [],
+      question_row_columns: [],
+      rssms:                [] }
   end
 
   def set_extraction_info(params)
@@ -63,7 +64,15 @@ class SheetInfo
     @extractions[params[:extraction_id]][:question_row_columns] << params
     dup = params.deep_dup
     dup.delete(:extraction_id)
-    dup.delete(:question_row_column_values)
+    dup.delete(:eefps_qrfc_values)
     @question_row_columns << dup
+  end
+
+  def add_rssm(params)
+    @extractions[params[:extraction_id]][:rssms] << params
+    dup = params.deep_dup
+    dup.delete(:extraction_id)
+    dup.delete(:rssm_values)
+    @rssms << dup
   end
 end

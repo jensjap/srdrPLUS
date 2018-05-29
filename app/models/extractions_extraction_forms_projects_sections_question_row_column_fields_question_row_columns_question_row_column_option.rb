@@ -1,4 +1,6 @@
 class ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnFieldsQuestionRowColumnsQuestionRowColumnOption < ApplicationRecord
+  #!!! Don't quite remember what this is for. My best guess is that it is going to be used when we record multiple options for a particular record.
+  # So used for select many options like checkboxes, select2-multi???
   include SharedParanoiaMethods
 
   self.table_name = 'eefpsqrcf_qrcqrcos'

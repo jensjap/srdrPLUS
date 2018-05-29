@@ -21,11 +21,11 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
 
   delegate :section, to: :extraction_forms_projects_section
 
-  def question_row_column_values(eefpst1_id, qrc)
-    eefps_qrcfs = extractions_extraction_forms_projects_sections_question_row_column_fields
+  def eefps_qrfc_values(eefpst1_id, qrc)
+    recordables = extractions_extraction_forms_projects_sections_question_row_column_fields
       .where(extractions_extraction_forms_projects_sections_type1_id: eefpst1_id,
              question_row_column_field: qrc.question_row_column_fields)
-    Record.where(recordable: eefps_qrcfs).pluck(:name)
+    Record.where(recordable: recordables).pluck(:name)
   end
 
   # Do not create duplicate Type1 entries.
