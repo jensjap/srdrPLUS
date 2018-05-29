@@ -30,17 +30,23 @@ def build_type2_sections_wide(p, project, highlight, wrap, kq_ids=[])
               citation_name: extraction.citations_project.citation.name,
               refman: extraction.citations_project.citation.refman,
               pmid: extraction.citations_project.citation.pmid)
+
             eefps = efps.extractions_extraction_forms_projects_sections.find_by(
               extraction: extraction,
               extraction_forms_projects_section: efps)
+
             # Iterate over each of the questions that are associated with this particular # extraction's
             # extraction_forms_projects_section and collect name and description.
             questions = efps.questions.joins(:key_questions_projects_questions)
               .where(key_questions_projects_questions: { key_questions_project: kq_ids }).distinct.order(id: :asc)
 
-            # If this section is linked we have to iterate through each occurrence of type1 via eefps.extractions_extraction_forms_projects_sections_type1s.
-            # Otherwise we proceed with eefpst1s set to a custom Struct that responds to :id, type1: [:id, :description].
-            eefpst1s = eefps.link_to_type1.present? ? eefps.extractions_extraction_forms_projects_sections_type1s : [Struct.new(:id, :type1).new(nil, Struct.new(:id).new(nil))]
+            # If this section is linked we have to iterate through each occurrence of
+            # type1 via eefps.extractions_extraction_forms_projects_sections_type1s.
+            # Otherwise we proceed with eefpst1s set to a custom Struct that responds
+            # to :id, type1: :id.
+            eefpst1s = eefps.link_to_type1
+              .present? ? eefps.extractions_extraction_forms_projects_sections_type1s : [Struct.new(:id, :type1).new(nil, Struct.new(:id).new(nil))]
+
             eefpst1s.each do |eefpst1|
               questions.each do |q|
                 q.question_rows.each do |qr|
@@ -56,8 +62,11 @@ def build_type2_sections_wide(p, project, highlight, wrap, kq_ids=[])
                       question_row_name: qr.name,
                       question_row_column_id: qrc.id,
                       question_row_column_name: qrc.name,
-                      question_row_column_options: qrc.question_row_columns_question_row_column_options.where(question_row_column_option_id: 1).pluck(:name),
-                      question_row_column_values: eefps.question_row_column_values(eefpst1.id, qrc))
+                      question_row_column_options: qrc
+                      .question_row_columns_question_row_column_options
+                      .where(question_row_column_option_id: 1)
+                      .pluck(:name),
+                      eefps_qrfc_values: eefps.eefps_qrfc_values(eefpst1.id, qrc))
                   end  # qr.question_row_columns.each do |qrc|
                 end  # q.question_rows.each do |qr|
               end  # questions.each do |q|
@@ -110,7 +119,7 @@ def build_type2_sections_wide(p, project, highlight, wrap, kq_ids=[])
                 raise RuntimeError, "Error: Could not find header row: [Type1 ID: #{ qrc[:type1_id] }][Question ID: #{ qrc[:question_id] }][Field ID: #{ qrc[:question_row_id] }x#{ qrc[:question_row_column_id] }]"
               end
 
-              new_row[column_idx] = qrc[:question_row_column_values]
+              new_row[column_idx] = qrc[:eefps_qrfc_values]
             end  # extraction[:questions].each do |q|
 
             # Done. Let's add the new row.

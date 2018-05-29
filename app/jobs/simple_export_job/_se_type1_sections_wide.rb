@@ -26,9 +26,11 @@ def build_type1_sections_wide(p, project, highlight, wrap)
               citation_name: extraction.citations_project.citation.name,
               refman: extraction.citations_project.citation.refman,
               pmid: extraction.citations_project.citation.pmid)
+
             eefps = efps.extractions_extraction_forms_projects_sections.find_by(
               extraction: extraction,
               extraction_forms_projects_section: efps)
+
             # Iterate over each of the type1s that are associated with this particular # extraction's
             # extraction_forms_projects_section and collect type1, population, and timepoint information.
             eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
