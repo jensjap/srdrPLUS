@@ -4,6 +4,7 @@ class Project < ApplicationRecord
 
   acts_as_paranoid
   has_paper_trail
+  searchkick
 
   #scope :is_public, -> { where( public: true ) }
 

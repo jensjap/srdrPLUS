@@ -984,6 +984,23 @@ ActiveRecord::Schema.define(version: 20180530115049) do
     t.index ["name"], name: "index_roles_on_name", unique: true, using: :btree
   end
 
+  create_table "searchjoy_searches", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "user_id"
+    t.string   "search_type"
+    t.string   "query"
+    t.string   "normalized_query"
+    t.integer  "results_count"
+    t.datetime "created_at"
+    t.string   "convertable_type"
+    t.integer  "convertable_id"
+    t.datetime "converted_at"
+    t.index ["convertable_type", "convertable_id"], name: "index_searchjoy_searches_on_convertable_type_and_convertable_id", using: :btree
+    t.index ["created_at"], name: "index_searchjoy_searches_on_created_at", using: :btree
+    t.index ["search_type", "created_at"], name: "index_searchjoy_searches_on_search_type_and_created_at", using: :btree
+    t.index ["search_type", "normalized_query", "created_at"], name: "index_searchjoy_searches_on_search_type_query", using: :btree
+    t.index ["user_id"], name: "index_searchjoy_searches_on_user_id", using: :btree
+  end
+
   create_table "sections", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "name"
     t.boolean  "default",    default: false

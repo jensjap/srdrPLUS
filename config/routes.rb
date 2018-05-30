@@ -12,6 +12,8 @@ Rails.application.routes.draw do
   }
 
   authenticate :admin do
+    mount RailsAdmin::Engine => '/admin', as: 'rails_admin'
+    mount Searchjoy::Engine, at: "searchjoy"
     mount Sidekiq::Web => '/sidekiq'
   end
 
@@ -124,8 +126,6 @@ Rails.application.routes.draw do
       get 'filter'
     end
   end
-
-  mount RailsAdmin::Engine => '/admin', as: 'rails_admin'
 
   root to: 'static_pages#home'
 

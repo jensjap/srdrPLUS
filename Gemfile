@@ -116,6 +116,10 @@ gem 'apipie-rails'
 # Background jobs.
 gem 'sidekiq'
 
-# Spreadsheet generation
+# Spreadsheet generation.
 gem 'axlsx', git: 'https://github.com/randym/axlsx.git'
 gem 'axlsx_rails'
+
+# Searching with Elasticsearch.
+gem 'searchkick'
+gem 'searchjoy'
