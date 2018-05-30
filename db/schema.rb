@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180514023758) do
+ActiveRecord::Schema.define(version: 20180530115049) do
 
   create_table "abstrackr_settings", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "profile_id"
@@ -38,6 +38,27 @@ ActiveRecord::Schema.define(version: 20180514023758) do
     t.index ["action_type_id"], name: "index_actions_on_action_type_id", using: :btree
     t.index ["actionable_type", "actionable_id"], name: "index_actions_on_actionable_type_and_actionable_id", using: :btree
     t.index ["user_id"], name: "index_actions_on_user_id", using: :btree
+  end
+
+  create_table "admins", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string   "email",                  default: "", null: false
+    t.string   "encrypted_password",     default: "", null: false
+    t.string   "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.integer  "sign_in_count",          default: 0,  null: false
+    t.datetime "current_sign_in_at"
+    t.datetime "last_sign_in_at"
+    t.string   "current_sign_in_ip"
+    t.string   "last_sign_in_ip"
+    t.integer  "failed_attempts",        default: 0,  null: false
+    t.string   "unlock_token"
+    t.datetime "locked_at"
+    t.datetime "created_at",                          null: false
+    t.datetime "updated_at",                          null: false
+    t.index ["email"], name: "index_admins_on_email", unique: true, using: :btree
+    t.index ["reset_password_token"], name: "index_admins_on_reset_password_token", unique: true, using: :btree
+    t.index ["unlock_token"], name: "index_admins_on_unlock_token", unique: true, using: :btree
   end
 
   create_table "approvals", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -961,6 +982,23 @@ ActiveRecord::Schema.define(version: 20180514023758) do
     t.datetime "updated_at", null: false
     t.index ["deleted_at"], name: "index_roles_on_deleted_at", using: :btree
     t.index ["name"], name: "index_roles_on_name", unique: true, using: :btree
+  end
+
+  create_table "searchjoy_searches", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "user_id"
+    t.string   "search_type"
+    t.string   "query"
+    t.string   "normalized_query"
+    t.integer  "results_count"
+    t.datetime "created_at"
+    t.string   "convertable_type"
+    t.integer  "convertable_id"
+    t.datetime "converted_at"
+    t.index ["convertable_type", "convertable_id"], name: "index_searchjoy_searches_on_convertable_type_and_convertable_id", using: :btree
+    t.index ["created_at"], name: "index_searchjoy_searches_on_created_at", using: :btree
+    t.index ["search_type", "created_at"], name: "index_searchjoy_searches_on_search_type_and_created_at", using: :btree
+    t.index ["search_type", "normalized_query", "created_at"], name: "index_searchjoy_searches_on_search_type_query", using: :btree
+    t.index ["user_id"], name: "index_searchjoy_searches_on_user_id", using: :btree
   end
 
   create_table "sections", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|

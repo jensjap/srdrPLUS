@@ -1,6 +1,16 @@
 require 'sidekiq/web'
 
 Rails.application.routes.draw do
+  devise_for :admins
+  devise_for :users, controllers: {
+    confirmations: 'users/confirmations',
+    omniauth_callbacks: 'users/omniauth_callbacks',
+    passwords: 'users/passwords',
+    registrations: 'users/registrations',
+    sessions: 'users/sessions',
+    unlocks: 'users/unlocks'
+  }
+
   mount Sidekiq::Web => '/sidekiq'
 
   apipie
@@ -121,15 +131,6 @@ Rails.application.routes.draw do
   get  'help'   => 'static_pages#help'
   get  'search' => 'static_pages#search'
   post 'search' => 'static_pages#search'
-
-  devise_for :users, controllers: {
-    confirmations: 'users/confirmations',
-    omniauth_callbacks: 'users/omniauth_callbacks',
-    passwords: 'users/passwords',
-    registrations: 'users/registrations',
-    sessions: 'users/sessions',
-    unlocks: 'users/unlocks'
-  }
 
   resource  :profile, only: [:show, :edit, :update]
   resources :degrees, only: [:index]
