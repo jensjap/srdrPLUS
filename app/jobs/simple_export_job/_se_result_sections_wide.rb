@@ -169,10 +169,10 @@ def build_result_sections_wide(p, project, highlight, wrap)
                       end  # result_statistic_section.comparisons.each do |wac|
 
                     when 4  # Net Change - WAC x BAC x q4-Measure.
-                      wac_section = result_statistic_section.population.within_arm_comparisons_section
                       bac_section = result_statistic_section.population.between_arm_comparisons_section
-                      wac_section.comparisons.each do |wac|
-                        bac_section.comparisons.each do |bac|
+                      wac_section = result_statistic_section.population.within_arm_comparisons_section
+                      bac_section.comparisons.each do |bac|
+                        wac_section.comparisons.each do |wac|
                           result_statistic_section.result_statistic_sections_measures.each do |rssm|  # q4-Measure
 
                             sheet_info.add_rssm(
@@ -193,8 +193,8 @@ def build_result_sections_wide(p, project, highlight, wrap)
                               rssm_values: wac.wacs_bacs_rssms_values(bac.id, rssm))
 
                           end  # result_statistic_section.result_statistic_sections_measures.each do |rssm|  # q4-Measure
-                        end  # bac_section.comparisons.each do |bac|
-                      end  # wac_section.comparisons.each do |wac|
+                        end  # wac_section.comparisons.each do |wac|
+                      end  # bac_section.comparisons.each do |bac|
                     end  # case result_statistic_section.result_statistic_section_type_id
                   end  # eefpst1r.result_statistic_sections.each do |result_statistic_section|  # Result Statistic Section Quadrant
                 end  # eefpst1_outcome.extractions_extraction_forms_projects_sections_type1_rows.each do |eefpst1r|  # Population
@@ -219,8 +219,20 @@ def build_result_sections_wide(p, project, highlight, wrap)
               title += "#{ Type1.find(rssm[:outcome_id]).short_name_and_description } - " unless rssm[:outcome_id].blank?
               title += "#{ rssm[:population_name] }"
               title += " - #{ rssm[:result_statistic_section_type_name] }"
-              title += " - #{ Comparison.find(rssm[:row_id]).pretty_print }"
-              title += " - #{ Comparison.find(rssm[:col_id]).pretty_print }"
+              case rssm[:result_statistic_section_type_name]
+              when 'Descriptive Statistics'
+                title += " - #{ TimepointName.find(rssm[:row_id]).pretty_print_export_header }"
+                title += " - #{ Type1.find(rssm[:col_id]).pretty_print_export_header }"
+              when 'Between Arm Comparisons'
+                title += " - #{ TimepointName.find(rssm[:row_id]).pretty_print_export_header }"
+                title += " - #{ Comparison.find(rssm[:col_id]).pretty_print_export_header }"
+              when 'Within Arm Comparisons'
+                title += " - #{ Comparison.find(rssm[:row_id]).pretty_print_export_header }"
+                title += " - #{ Type1.find(rssm[:col_id]).pretty_print_export_header }"
+              when 'NET Change'
+                title += " - #{ Comparison.find(rssm[:row_id]).pretty_print_export_header }"
+                title += " - #{ Comparison.find(rssm[:col_id]).pretty_print_export_header }"
+              end
               title += " - #{ rssm[:measure_name] }"
 #              comment  = '.'
 #              comment += "\rDescription: \"#{ qrc[:question_description] }\"" if qrc[:question_description].present?

@@ -28,7 +28,7 @@ class Type1 < ApplicationRecord
   validates :description, uniqueness: { scope: :name }
 
   def name_and_description
-    text = name
+    text  = name
     text += " (#{ description })" if description.present?
     return text
   end
@@ -37,9 +37,13 @@ class Type1 < ApplicationRecord
     if description.length < 10
       return name_and_description
     else
-      text = name
+      text  = name
       text += ' (' + description.truncate(10, separator: /\s/) + ')' if description.present?
       return text
     end
+  end
+
+  def pretty_print_export_header
+    short_name_and_description
   end
 end

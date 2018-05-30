@@ -49,6 +49,26 @@ class Comparison < ApplicationRecord
   # Example:
   #   [arm1] vs [arm2]
   #   [arm1, arm2] vs [arm3]
-  def pretty_print
+  def pretty_print_export_header
+    text = ''
+    comparate_groups.each do |cg|
+      text += '['
+      cg.comparates.each do |c|
+        comparable = c.comparable_element.comparable
+        if comparable.instance_of? ExtractionsExtractionFormsProjectsSectionsType1
+          t1 = comparable.type1
+          text += t1.name
+          text += " (#{ t1.description }), " if t1.description.present?
+        elsif comparable.instance_of? ExtractionsExtractionFormsProjectsSectionsType1RowColumn
+          tn = comparable.timepoint_name
+          text += tn.name
+          text += " (#{ tn.unit }), " if tn.unit.present?
+        end
+      end
+      text = text.gsub(/,\s$/, '') + ']'
+      text += ' vs. '
+    end
+
+    return text[0..-6]
   end
 end
