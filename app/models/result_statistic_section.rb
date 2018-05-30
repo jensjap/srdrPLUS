@@ -32,8 +32,14 @@ class ResultStatisticSection < ApplicationRecord
     population.extractions_extraction_forms_projects_sections_type1_row_columns
   end
 
-  def result_section
-    population.extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_section.extraction.extractions_extraction_forms_projects_sections.last
+  # Making the assumption that the result section is always last.
+  def eefps_result
+    population
+      .extractions_extraction_forms_projects_sections_type1
+      .extractions_extraction_forms_projects_section
+      .extraction
+      .extractions_extraction_forms_projects_sections
+      .result_type_sections.first
   end
 
   private
