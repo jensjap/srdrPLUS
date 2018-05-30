@@ -28,7 +28,7 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
     recordables = extractions_extraction_forms_projects_sections_question_row_column_fields
       .where(extractions_extraction_forms_projects_sections_type1_id: eefpst1_id,
              question_row_column_field: qrc.question_row_column_fields)
-    Record.where(recordable: recordables).pluck(:name)
+    Record.where(recordable: recordables).pluck(:name).join('\r')
   end
 
   # Do not create duplicate Type1 entries.

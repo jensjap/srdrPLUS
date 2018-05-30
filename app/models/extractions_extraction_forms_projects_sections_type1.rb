@@ -43,7 +43,7 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
       .where(
         timepoint_id: eefpst1rc_id,
         result_statistic_sections_measure: rssm)
-    Record.where(recordable: recordables).pluck(:name)
+    Record.where(recordable: recordables).pluck(:name).join('\r')
   end
 
   private
