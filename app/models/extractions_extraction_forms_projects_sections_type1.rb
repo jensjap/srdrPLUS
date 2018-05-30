@@ -8,8 +8,7 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
     joins([:type1, extractions_extraction_forms_projects_section: [:extraction, { extraction_forms_projects_section: [:extraction_forms_project, :section] }]])
       .where(sections: { name: section_name })
       .where(extractions: { id: extraction_id })
-      .where(extraction_forms_projects: { id: extraction_forms_project_id })
-  }
+      .where(extraction_forms_projects: { id: extraction_forms_project_id }) }
 
   # Temporarily calling it ExtractionsExtractionFormsProjectsSectionsType1Row. This is meant to be Outcome Timepoint.
   after_create :create_default_type1_rows
