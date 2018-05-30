@@ -36,6 +36,8 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
     return text
   end
 
+  # Fetch records for this particular extractions_extraction_forms_projects_sections_type1
+  # by timepoint, arm, and measure.
   def tps_arms_rssms_values(eefpst1rc_id, rssm)
     recordables = tps_arms_rssms
       .where(

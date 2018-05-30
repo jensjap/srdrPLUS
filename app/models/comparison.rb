@@ -21,6 +21,8 @@ class Comparison < ApplicationRecord
   accepts_nested_attributes_for :comparisons_measures, allow_destroy: true
   accepts_nested_attributes_for :measurements,         allow_destroy: true
 
+  # Fetch records for this particular comparison
+  # by timepoint, bac, and measure.
   def tps_comparisons_rssms_values(eefpst1rc_id, rssm)
     recordables = tps_comparisons_rssms
       .where(
@@ -29,6 +31,8 @@ class Comparison < ApplicationRecord
     Record.where(recordable: recordables).pluck(:name)
   end
 
+  # Fetch records for this particular comparison
+  # by wac, arm, and measure.
   def comparisons_arms_rssms_values(eefpst1_arm_id, rssm)
     recordables = comparisons_arms_rssms
       .where(
@@ -37,6 +41,8 @@ class Comparison < ApplicationRecord
     Record.where(recordable: recordables).pluck(:name)
   end
 
+  # Fetch records for this particular comparison
+  # by wac, bac, and measure.
   def wacs_bacs_rssms_values(bac_id, rssm)
     recordables = wacs_bacs_rssms
       .where(
