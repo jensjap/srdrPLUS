@@ -11,8 +11,7 @@ class ResultStatisticSection < ApplicationRecord
   has_many :measures, through: :result_statistic_sections_measures, dependent: :destroy
 
   has_many :comparisons, dependent: :destroy, inverse_of: :result_statistic_section
-  has_many :comparate_groups, through: :comparisons, dependent: :destroy
-
+  has_many :comparate_groups,     through: :comparisons, dependent: :destroy
   has_many :comparates,           through: :comparate_groups,     dependent: :destroy
   has_many :comparable_elements,  through: :comparates,           dependent: :destroy
   has_many :comparables,          through: :comparable_elements,  dependent: :destroy
@@ -23,6 +22,7 @@ class ResultStatisticSection < ApplicationRecord
   accepts_nested_attributes_for :comparate_groups,     allow_destroy: true
   accepts_nested_attributes_for :comparates,           allow_destroy: true
   accepts_nested_attributes_for :comparable_elements,  allow_destroy: true
+  accepts_nested_attributes_for :comparables,          allow_destroy: true  #!!! Do we need this?
   accepts_nested_attributes_for :comparisons_measures, allow_destroy: true
   accepts_nested_attributes_for :measurements,         allow_destroy: true
 

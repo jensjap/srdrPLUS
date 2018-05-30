@@ -8,7 +8,6 @@
         |  Add Arm
     - elsif comparison == :wac
       / We don't want multiple comparates for WAC but we need the link to exist so JS has something to open.
-      = link_to_add_association f, :comparates, partial: @result_statistic_section.result_statistic_section_type.name.parameterize.underscore + '_comparate_fields', style: 'display: none;', render_options: { locals: { comparison: comparison } } do
+      = link_to_add_association f, :comparates, partial: @result_statistic_section.result_statistic_section_type.name.parameterize.underscore + '_comparate_fields', render_options: { locals: { comparison: comparison } }, style: 'display: none;' do
         i.fi-plus
         |  Add Timepoint
-/div style='text-align: center; font-weight: normal;' vs.
