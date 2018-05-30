@@ -93,12 +93,23 @@ def build_type2_sections_wide(p, project, highlight, wrap, kq_ids=[])
               title += " - #{ qrc[:question_row_column_name] }" if qrc[:question_row_column_name].present?
               comment  = '.'
               comment += "\rDescription: \"#{ qrc[:question_description] }\"" if qrc[:question_description].present?
+
+              # Don't fetch question_row_column object from db unnecessarily.
               if qrc[:question_row_column_options].first.present?
-                comment += "\rAnswer choices:"
-                qrc[:question_row_column_options].each do |qrco|
-                  comment += "\r    [Option ID: #{ qrco[0] }] #{ qrco[1] }"
-                end
-              end
+                # Types with options are:
+                #   (5) checkbox
+                #   (6) dropdown
+                #   (7) radio
+                #   (8) select2-single
+                #   (9) select2-multi
+                if [5, 6, 7, 8, 9].include? QuestionRowColumn.find(qrc[:question_row_column_id]).question_row_column_type_id
+                  comment += "\rAnswer choices:"
+                  qrc[:question_row_column_options].each do |qrco|
+                    comment += "\r    [Option ID: #{ qrco[0] }] #{ qrco[1] }"
+                  end  # qrc[:question_row_column_options].each do |qrco|
+                end  # if [5, 6, 7, 8, 9].include? QuestionRowColumn.find(qrc[:question_row_column_id]).question_row_column_type_id
+              end  # if qrc[:question_row_column_options].first.present?
+
               new_cell = header_row.add_cell "#{ title }\r[Type1 ID: #{ qrc[:type1_id] }][Question ID: #{ qrc[:question_id] }][Field ID: #{ qrc[:question_row_id] }x#{ qrc[:question_row_column_id] }]"
               sheet.add_comment ref: new_cell, author: 'Export AI', text: comment, visible: false if (qrc[:question_description].present? || qrc[:question_row_column_options].first.present?)
             end  # unless found
