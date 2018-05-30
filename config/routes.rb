@@ -11,7 +11,9 @@ Rails.application.routes.draw do
     unlocks: 'users/unlocks'
   }
 
-  mount Sidekiq::Web => '/sidekiq'
+  authenticate :admin do
+    mount Sidekiq::Web => '/sidekiq'
+  end
 
   apipie
   namespace :api do
