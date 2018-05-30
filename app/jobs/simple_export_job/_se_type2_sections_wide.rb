@@ -65,7 +65,7 @@ def build_type2_sections_wide(p, project, highlight, wrap, kq_ids=[])
                       question_row_column_options: qrc
                       .question_row_columns_question_row_column_options
                       .where(question_row_column_option_id: 1)
-                      .pluck(:name),
+                      .pluck(:id, :name),
                       eefps_qrfc_values: eefps.eefps_qrfc_values(eefpst1.id, qrc))
                   end  # qr.question_row_columns.each do |qrc|
                 end  # q.question_rows.each do |qr|
@@ -93,7 +93,12 @@ def build_type2_sections_wide(p, project, highlight, wrap, kq_ids=[])
               title += " - #{ qrc[:question_row_column_name] }" if qrc[:question_row_column_name].present?
               comment  = '.'
               comment += "\rDescription: \"#{ qrc[:question_description] }\"" if qrc[:question_description].present?
-              comment += "\rAnswer choices: #{ qrc[:question_row_column_options] }" if qrc[:question_row_column_options].first.present?
+              if qrc[:question_row_column_options].first.present?
+                comment += "\rAnswer choices:"
+                qrc[:question_row_column_options].each do |qrco|
+                  comment += "\r    [Option ID: #{ qrco[0] }] #{ qrco[1] }"
+                end
+              end
               new_cell = header_row.add_cell "#{ title }\r[Type1 ID: #{ qrc[:type1_id] }][Question ID: #{ qrc[:question_id] }][Field ID: #{ qrc[:question_row_id] }x#{ qrc[:question_row_column_id] }]"
               sheet.add_comment ref: new_cell, author: 'Export AI', text: comment, visible: false if (qrc[:question_description].present? || qrc[:question_row_column_options].first.present?)
             end  # unless found
