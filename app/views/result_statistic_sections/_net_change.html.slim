@@ -20,7 +20,7 @@
                 br
         th
           = simple_form_for @result_statistic_section, url: add_comparison_result_statistic_section_path, method: :post do |f|
-            = f.input :comparison_type, as: :hidden, input_html: { value: :bac }
+            /= f.input :comparison_type, as: :hidden, input_html: { value: :bac }
             .links.add-comparison
               = link_to_add_association f, :comparisons, class: 'button tiny', render_options: { locals: { comparison: :bac } } do
                 i.fi-plus
