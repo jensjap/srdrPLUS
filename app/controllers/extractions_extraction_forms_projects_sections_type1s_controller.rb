@@ -71,6 +71,7 @@ class ExtractionsExtractionFormsProjectsSectionsType1sController < ApplicationCo
     # Never trust parameters from the scary internet, only allow the white list through.
     def extractions_extraction_forms_projects_sections_type1_params
       params.require(:extractions_extraction_forms_projects_sections_type1)
-        .permit(:type1_type_id, :extractions_extraction_forms_projects_section_id, :type1_id, :name, :description, :units, :notes)
+        .permit(:type1_type_id, :extractions_extraction_forms_projects_section_id, :type1_id, :name, :description, :units,
+               type1_attributes: [:id, :name, :description])
     end
 end

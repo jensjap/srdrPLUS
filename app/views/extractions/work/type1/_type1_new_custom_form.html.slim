@@ -11,7 +11,7 @@ h4 Add a Custom #{ section_name }
   = f.simple_fields_for(:type1s, eefps.type1s.build) do |sf_t1|
 
     .form-inputs class="new-type1-fields-#{ eefps.id.to_s }"
-      = sf_t1.input :name, required: true, hint: 'Name can\'t be blank', autofocus: true
+      = sf_t1.input :name, autofocus: true
       = sf_t1.input :description, input_html: { rows: 4 }
 
     .links

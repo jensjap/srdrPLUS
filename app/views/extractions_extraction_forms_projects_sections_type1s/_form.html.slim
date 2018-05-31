@@ -4,7 +4,12 @@
   .form-inputs
     - if @extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_section.extraction_forms_projects_section.section.name == 'Outcomes'
       = f.association :type1_type
+
+    = f.simple_fields_for(:type1, f.object.type1) do |type1_form|
+      = type1_form.input :name
+      = type1_form.input :description
+
     = f.input :units
 
   .form-actions
-    = f.button :submit, 'Update Outcome Info'
+    = f.button :submit, "Update #{ @extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_section.extraction_forms_projects_section.section.name.singularize }"

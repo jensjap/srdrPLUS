@@ -45,15 +45,23 @@ class ExtractionFormsProjectsSection < ApplicationRecord
   validate :child_type
   validate :parent_type
 
+  #!!! This code is repeated in model/ExtractionsExtractionFormsProjectsSection.
+  #    We should move it somewhere to share.
+  #
   # Do not create duplicate Type1 entries.
   #
-  # In nested forms the type1s_attributes hash will have IDs for entries that
+  # In nested forms, the type1s_attributes hash will have IDs for entries that
   # are being modified (i.e. are tied to an existing record). We want to skip
   # over them. The ones that are lacking an ID entry are entries that are not
   # yet tied to an existing record. For these we check if they already exist
   # (by name and description) and then add to
   # extraction_forms_projects_section.type1s collection. Then call super to
   # update all the attributes of all submitted records.
+  #
+  # Note: This actually breaks validation. Presumably because validations happen
+  #       later, after calling super. This is not a problem since there's
+  #       nothing inherently wrong with creating an association between eefps and
+  #       type1, where type1 has neither name or nor description.
   def type1s_attributes=(attributes)
     attributes.each do |key, attribute_collection|
       unless attribute_collection.has_key? 'id'

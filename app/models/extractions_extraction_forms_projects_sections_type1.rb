@@ -28,7 +28,36 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
 
   has_many :comparable_elements, as: :comparable
 
-  validates :type1_id, uniqueness: { scope: :extractions_extraction_forms_projects_section_id }
+  #accepts_nested_attributes_for :extractions_extraction_forms_projects_sections_type1_rows, reject_if: :all_blank
+  accepts_nested_attributes_for :type1, reject_if: :all_blank
+
+  #validates :type1_id, uniqueness: { scope: :extractions_extraction_forms_projects_section_id }
+
+  # Do not create duplicate Type1 entries.
+  #
+  # In nested forms, the type1s_attributes hash will have IDs for entries that
+  # are being modified (i.e. are tied to an existing record). We want to skip
+  # over them. The ones that are lacking an ID entry are entries that are not
+  # yet tied to an existing record. For these we check if they already exist
+  # (by name and description) and then add to
+  # extraction_forms_projects_section.type1s collection. Then call super to
+  # update all the attributes of all submitted records.
+  #
+  # Note: This actually breaks validation. Presumably because validations happen
+  #       later, after calling super. This is not a problem since there's
+  #       nothing inherently wrong with creating an association between eefps and
+  #       type1, where type1 has neither name or nor description.
+  def type1_attributes=(attributes)
+    ExtractionsExtractionFormsProjectsSectionsType1.transaction do
+      attributes.delete(:id)  # Remove ID from hash since this may carry the ID of
+                              # the type1 we are trying to change.
+      self.type1 = Type1.find_or_create_by!(attributes)
+      attributes[:id] = type1.id  # Need to put this back in, otherwise rails will
+                                  # try to create this record, since its ID is
+                                  # missing and it assumes it's a new item.
+    end
+    super
+  end
 
   def type1_name_and_description
     text =  "#{ type1.name }"
