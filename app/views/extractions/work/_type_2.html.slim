@@ -37,21 +37,27 @@
             - if linked_section
 
               - eefps.link_to_type1.type1s.each do |t1|
-                = t1.name_and_description + ':'
-                == render 'extractions/work/question_fields',
+                fieldset.fieldset
+                  legend
+                    = linked_section.extraction_forms_projects_section.section.name.singularize + ': ' + t1.name
+                    br
+                    = 'Description: ' + t1.description
+                  = render 'extractions/work/question_fields',
+                    q: q,
+                    t1: t1,
+                    section_name: section_name,
+                    efp: efp,
+                    efps: efps,
+                    eefps: eefps
+
+            - else
+
+              fieldset.fieldset
+                legend
+                = render 'extractions/work/question_fields',
                   q: q,
-                  t1: t1,
+                  t1: nil,
                   section_name: section_name,
                   efp: efp,
                   efps: efps,
                   eefps: eefps
-
-            - else
-
-              == render 'extractions/work/question_fields',
-                q: q,
-                t1: nil,
-                section_name: section_name,
-                efp: efp,
-                efps: efps,
-                eefps: eefps

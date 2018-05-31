@@ -3,46 +3,48 @@
 .column.row
   .title-heading
     h2 User Profile
-    = link_to t('.edit'), edit_profile_path, class: 'button small warning'
+    = link_to edit_profile_path, class: 'button small warning', style: 'margin-left: 1rem;' do
+      i.fi-widget
+      |  #{ t('.edit') }
 
 .row
   .column.medium-4
     dl
-      dt.label.primary Organization
+      dt.label Organization
       dd.callout.secondary = @profile.organization.present? ? @profile.organization.name : ''
   .column.medium-4
     dl
-      dt.label.primary Username
+      dt.label Username
       dd.callout.secondary = @profile.username
   .column.medium-4
     dl
-      dt.label.primary Timezone
+      dt.label Timezone
       dd.callout.secondary = @profile.time_zone
 
 .row
   .column.medium-4
     dl
-      dt.label.primary First Name
+      dt.label First Name
       dd.callout.secondary = @profile.first_name
   .column.medium-4
     dl
-      dt.label.primary Middle Name
+      dt.label Middle Name
       dd.callout.secondary = @profile.middle_name
   .column.medium-4
     dl
-      dt.label.primary Last Name
+      dt.label Last Name
       dd.callout.secondary = @profile.last_name
 
 .row
   .column.medium-4
     dl
-      dt.label.primary Degrees
+      dt.label Degrees
       dd.callout.secondary
         - @profile.degrees.map { |degree| degree.name }.each do |name|
           span.label.secondary style='margin-right: 3px; padding-top: 2px; padding-bottom: 2px;' #{ name }
   .column.medium-4
     dl
-      dt.label.primary Mode
+      dt.label Mode
       dd.callout.secondary = @profile.advanced_mode ? 'Advanced' : 'Basic'
   .column.medium-4
 
