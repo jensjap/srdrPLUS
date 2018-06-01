@@ -4,9 +4,13 @@ class PopulationName < ApplicationRecord
 
   has_many :extractions_extraction_forms_projects_sections_type1_rows, dependent: :destroy, inverse_of: :population_name
 
+  validates :description, uniqueness: { scope: :name }
+
   private
 
     def select_label
-      "#{ name } - #{ description }"
+      text  = "#{ name }"
+      text += " (#{ description })" if description.present?
+      return text
     end
 end

@@ -8,10 +8,12 @@ class ExtractionsExtractionFormsProjectsSectionsType1RowColumn < ApplicationReco
   belongs_to :extractions_extraction_forms_projects_sections_type1_row, inverse_of: :extractions_extraction_forms_projects_sections_type1_row_columns
   belongs_to :timepoint_name,                                           inverse_of: :extractions_extraction_forms_projects_sections_type1_row_columns
 
+  accepts_nested_attributes_for :timepoint_name, reject_if: :all_blank
+
   delegate :extraction, to: :extractions_extraction_forms_projects_sections_type1_row
 
   def label_with_baseline_indicator
-    text = "#{ timepoint_name.name }"
+    text  = "#{ timepoint_name.name }"
     text += " #{ timepoint_name.unit }" if timepoint_name.unit.present?
     text += " (Baseline)" if is_baseline
     return text

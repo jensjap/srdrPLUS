@@ -20,6 +20,8 @@ class ExtractionsExtractionFormsProjectsSectionsType1Row < ApplicationRecord
 
   has_many :result_statistic_sections, dependent: :destroy, inverse_of: :population, foreign_key: 'population_id'
 
+  accepts_nested_attributes_for :population_name, reject_if: :all_blank
+
   delegate :extraction, to: :extractions_extraction_forms_projects_sections_type1
   delegate :extractions_extraction_forms_projects_section, to: :extractions_extraction_forms_projects_sections_type1
 

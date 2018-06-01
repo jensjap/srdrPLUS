@@ -24,12 +24,12 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
   has_many :tps_arms_rssms,                                                            dependent: :destroy, inverse_of: :extractions_extraction_forms_projects_sections_type1
   has_many :comparisons_arms_rssms,                                                    dependent: :destroy, inverse_of: :extractions_extraction_forms_projects_sections_type1
 
-  delegate :extraction, to: :extractions_extraction_forms_projects_section
-
   has_many :comparable_elements, as: :comparable
 
-  #accepts_nested_attributes_for :extractions_extraction_forms_projects_sections_type1_rows, reject_if: :all_blank
+  accepts_nested_attributes_for :extractions_extraction_forms_projects_sections_type1_rows, allow_destroy: true
   accepts_nested_attributes_for :type1, reject_if: :all_blank
+
+  delegate :extraction, to: :extractions_extraction_forms_projects_section
 
   #validates :type1_id, uniqueness: { scope: :extractions_extraction_forms_projects_section_id }
 
