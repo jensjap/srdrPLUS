@@ -27,15 +27,11 @@ module SeedData
         { name: 'Maintenance Announcement', frequency: Frequency.first }
       ])
 
-      # CitationTypes.
-      CitationType.create(name: 'Primary') 
-      CitationType.create(name: 'Secondary') 
-
       # ActionTypes.
       ActionType.create([
         { name: 'Create' },
         { name: 'Destroy' },
-        { name: 'Update' }, 
+        { name: 'Update' },
         { name: 'New' },
         { name: 'Index' },
         { name: 'Show' },
@@ -46,6 +42,7 @@ module SeedData
       TaskType.create(name: 'Perpetual')
       TaskType.create(name: 'Pilot')
       TaskType.create(name: 'Advanced')
+      TaskType.create(name: 'Conflict')
 
       # ConsensusTypes.
       ConsensusType.create([
@@ -339,6 +336,7 @@ module SeedDataExtended
 
       @primary        = CitationType.create(name: 'Primary') 
       @secondary      = CitationType.create(name: 'Secondary') 
+      @abstrackr      = CitationType.create(name: 'Abstrackr') 
       @citation_types = [@primary, @secondary]
 
       # Citations, Journals, Authors and Keywords
