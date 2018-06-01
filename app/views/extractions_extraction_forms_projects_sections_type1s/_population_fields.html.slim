@@ -1,0 +1,13 @@
+= f.simple_fields_for(:population_name) do |pn_form|
+  .field
+    td = pn_form.input :name
+  .field
+    td = pn_form.input :description
+
+/  - if f.object.persisted?
+/    = f.association :population_name, label: false, required: false, label_method: :select_label
+/
+/  - else
+/    = f.simple_fields_for(:population_name, f.object.build_population_name) do |pn_form|
+/      = pn_form.input :name
+/      = pn_form.input :description

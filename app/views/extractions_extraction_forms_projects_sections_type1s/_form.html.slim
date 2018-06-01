@@ -1,15 +1,63 @@
-= simple_form_for([@extractions_extraction_forms_projects_section, @extractions_extraction_forms_projects_sections_type1], html: { data: { 'abide': '' } }) do |f|
+= simple_form_for([@extractions_extraction_forms_projects_section,
+  @extractions_extraction_forms_projects_sections_type1], html: { data: { 'abide': '' } }) do |f|
   = f.error_notification
 
   .form-inputs
-    - if @extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_section.extraction_forms_projects_section.section.name == 'Outcomes'
-      = f.association :type1_type
+    .row.column
+      - if @extractions_extraction_forms_projects_sections_type1\
+        .extractions_extraction_forms_projects_section.extraction_forms_projects_section.section.name == 'Outcomes'
+        = f.association :type1_type
+      = f.input :units
 
-    = f.simple_fields_for(:type1, f.object.type1) do |type1_form|
-      = type1_form.input :name
-      = type1_form.input :description
+      #type1s
+        = f.simple_fields_for(:type1, f.object.type1 || f.object.build_type1 ) do |type1_form|
+          = type1_form.input :name
+          = type1_form.input :description
 
-    = f.input :units
+    .row
+      .columns.medium-6
+        h4 Populations
+        #populations
+          table
+            thead
+              tr
+                th Delete
+                th Name
+                th Description
+
+            tbody
+              = f.simple_fields_for(:extractions_extraction_forms_projects_sections_type1_rows) do |pop_form|
+                .nested-fields
+                  tr
+                    .field
+                      td = pop_form.check_box :_destroy
+                    = render 'population_fields', f: pop_form
+          .links
+            = link_to_add_association 'Add Population', f, :extractions_extraction_forms_projects_sections_type1_rows, partial: 'population_fields'
+
+      .columns.medium-6
+        h4 Timepoints
+        #timepoints
+          = f.simple_fields_for(:extractions_extraction_forms_projects_sections_type1_rows,
+            @extractions_extraction_forms_projects_sections_type1\
+            .extractions_extraction_forms_projects_sections_type1_rows.first) do |pop_form|
+
+            table
+              thead
+                tr
+                  th Delete
+                  th Name
+                  th Unit
+
+              tbody
+                = pop_form.simple_fields_for(:extractions_extraction_forms_projects_sections_type1_row_columns) do |tp_form|
+                  .nested-fields
+                    tr
+                      .field
+                        td = tp_form.check_box :_destroy
+                      = render 'timepoint_fields', f: tp_form
+            .links
+              = link_to_add_association 'Add Timepoint', pop_form, :extractions_extraction_forms_projects_sections_type1_row_columns, partial: 'timepoint_fields'
 
   .form-actions
-    = f.button :submit, "Update #{ @extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_section.extraction_forms_projects_section.section.name.singularize }"
+    = f.button :submit, 'Update'

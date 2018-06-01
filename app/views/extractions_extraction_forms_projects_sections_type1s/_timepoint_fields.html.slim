@@ -1,0 +1,13 @@
+= f.simple_fields_for(:timepoint_name) do |tn_form|
+  .field
+    td = tn_form.input :name
+  .field
+    td = tn_form.input :unit
+
+/  - if f.object.persisted?
+/    = f.association :timepoint_name, label: false, required: false, label_method: :select_label
+/
+/  - else
+/    = f.simple_fields_for(:timepoint_name, f.object.build_timepoint_name) do |tn_form|
+/      = tn_form.input :name
+/      = tn_form.input :unit
