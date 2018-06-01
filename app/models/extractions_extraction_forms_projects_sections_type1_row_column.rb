@@ -19,6 +19,29 @@ class ExtractionsExtractionFormsProjectsSectionsType1RowColumn < ApplicationReco
     return text
   end
 
+  # Do not overwrite existing entries but associate to one that already exists or create a new one.
+  #
+  # In nested forms, the *_attributes hash will have IDs for entries that
+  # are being modified (i.e. are tied to an existing record). We do not want to
+  # change their values, but find one that already exists and then associate
+  # to that one instead. If no such object exists we create it and associate to
+  # it as well. Call super to update all the attributes of all submitted records.
+  #
+  # Note: This actually breaks validation. Presumably because validations happen
+  #       later, after calling super. This is not a problem since there's
+  #       nothing inherently wrong with creating an multiple associations.
+  def timepoint_name_attributes=(attributes)
+    ExtractionsExtractionFormsProjectsSectionsType1RowColumn.transaction do
+      attributes.delete(:id)  # Remove ID from hash since this may carry the ID of
+                              # the object we are trying to change.
+      self.timepoint_name = TimepointName.find_or_create_by!(attributes)
+      attributes[:id] = self.timepoint_name.id  # Need to put this back in, otherwise rails will
+                                                # try to create this record, since its ID is
+                                                # missing and it assumes it's a new item.
+    end
+    super
+  end
+
   private
 
     def ensure_only_one_baseline
