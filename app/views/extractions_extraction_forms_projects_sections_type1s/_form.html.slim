@@ -31,11 +31,12 @@
                 = f.simple_fields_for(:extractions_extraction_forms_projects_sections_type1_rows) do |pop_form|
                   = render 'population_fields', f: pop_form
             .links
-              = link_to_add_association 'Add Population',
-                f,
+              = link_to_add_association f,
                 :extractions_extraction_forms_projects_sections_type1_rows,
                 'data-association-insertion-method': 'append',
-                partial: 'population_fields'
+                partial: 'population_fields' do
+                i.fi-plus
+                |  Add Population
 
         .columns.medium-6
           h4 Timepoints
@@ -56,7 +57,11 @@
                   = pop_form.simple_fields_for(:extractions_extraction_forms_projects_sections_type1_row_columns) do |tp_form|
                     = render 'timepoint_fields', f: tp_form
               .links
-                = link_to_add_association 'Add Timepoint', pop_form, :extractions_extraction_forms_projects_sections_type1_row_columns, partial: 'timepoint_fields'
+                = link_to_add_association pop_form,
+                  :extractions_extraction_forms_projects_sections_type1_row_columns,
+                  partial: 'timepoint_fields' do
+                  i.fi-plus
+                  |  Add Timepoint
 
   .form-actions
     = f.button :submit, 'Update'
