@@ -74,7 +74,10 @@ class ExtractionsExtractionFormsProjectsSectionsType1sController < ApplicationCo
         .permit(:type1_type_id, :extractions_extraction_forms_projects_section_id, :type1_id, :name, :description, :units,
                 type1_attributes: [:id, :name, :description],
                 extractions_extraction_forms_projects_sections_type1_rows_attributes: [:id, :_destroy,
-                                                                                       :population_name_id,
-                                                                                       population_name_attributes: [:id, :name, :description]])
+                                                                                       #:population_name_id,
+                                                                                       population_name_attributes: [:id, :name, :description],
+      extractions_extraction_forms_projects_sections_type1_row_columns_attributes: [:id, :_destroy,
+      #:timepoint_name_id,
+      timepoint_name_attributes: [:id, :name, :unit]]])
     end
 end

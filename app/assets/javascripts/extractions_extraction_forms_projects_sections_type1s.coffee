@@ -6,6 +6,11 @@ document.addEventListener 'turbolinks:load', ->
 
   do ->
 
+    $( '.edit_extractions_extraction_forms_projects_sections_type1 .add_fields' )
+    .data( 'association-insertion-method', 'append' )
+    .data( 'association-insertion-node', ( link ) ->
+      return link.closest( '#populations, #timepoints' ).find( 'tbody' ) )
+
     formatTimepoint = ( timepoint ) ->
       if timepoint.loading
         return timepoint.text
