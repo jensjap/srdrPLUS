@@ -17,8 +17,8 @@ task :find_pmids do
   ).connection
 
   old_citations = []
-  abs_connection.exec_query('SELECT title, authors, publication_date FROM citations').rows.each do |row|
-    old_citations << row[0] + " " + row[1]
+  abs_connection.exec_query('SELECT id, title, authors, publication_date FROM citations').rows.each do |row|
+    old_citations << row[0] + " ||||| " + row[1] + " " + row[2]
   end
 
   File.open(Rails.root.join("lib", "tasks", "temp", "terms.txt"), "w+") do |f|

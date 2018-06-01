@@ -12,11 +12,12 @@ csvwriter = csv.writer(pmid_file, delimiter=',', quotechar='"')
 Entrez.email = "birol_senturk@brown.edu"
 
 for l in f:
-	query_term = re.sub('[^A-Za-z0-9 -.]+', '', l).strip()
+        ll = l.split(" ||||| ")
+	query_term = re.sub('[^A-Za-z0-9 -.]+', '', l[1]).strip()
 	cit_d = {"title" : t}
 	record = Entrez.esearch(db='pubmed', term = query_term, field='title')
 	r = Entrez.read(record)
-	csvwriter.writerow([query_term] + r['IdList'])
+	csvwriter.writerow([l[0],  r['IdList']])
 
 f.close()
 pmid_file.close()
