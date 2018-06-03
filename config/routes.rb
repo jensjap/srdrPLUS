@@ -1,6 +1,8 @@
 require 'sidekiq/web'
 
 Rails.application.routes.draw do
+  resources :searches, only: [:new, :create]
+
   devise_for :admins
   devise_for :users, controllers: {
     confirmations: 'users/confirmations',
@@ -131,8 +133,9 @@ Rails.application.routes.draw do
 
   get  'about'  => 'static_pages#about'
   get  'help'   => 'static_pages#help'
+  #!!! Remove the views for this later
   get  'search' => 'static_pages#search'
-  post 'search' => 'static_pages#search'
+  #post 'search' => 'static_pages#search'
 
   resource  :profile, only: [:show, :edit, :update]
   resources :degrees, only: [:index]

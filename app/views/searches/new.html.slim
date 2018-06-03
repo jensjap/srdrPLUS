@@ -1,0 +1,118 @@
+.column.row
+  h2 Search
+  - if @results
+    h3 Found something
+
+.column.row
+  ul#search-tabs.tabs data-deep-link='true' data-deep-link-smudge='true' data-deep-link-smudge-delay='600' data-update-history='true' data-tabs=''
+    li.tabs-title.is-active
+      = link_to 'Projects', '#panel-projects-search', title: 'Search for projects'
+
+    li.tabs-title
+      = link_to 'Citations', '#panel-citations-search', title: 'Search for citations'
+
+  .tabs-content data-tabs-content='search-tabs'
+
+    #panel-projects-search.tabs-panel.is-active
+      = simple_form_for :searches, url: searches_path, method: :post do |f|
+        .column.row
+          = f.error_notification
+          .form-inputs
+            = f.simple_fields_for :projects_search do |projects_search_form|
+              .label-group.float-left
+                = projects_search_form.check_box :public, required: false
+                = projects_search_form.label :public,     required: false
+
+              .label-group
+                = projects_search_form.check_box :owned, required: false
+                = projects_search_form.label :owned,     required: false
+
+              = projects_search_form.input :name,                    required: false
+              = projects_search_form.input :description,             required: false
+              = projects_search_form.input :attribution,             required: false
+              = projects_search_form.input :methodology_description, required: false
+              = projects_search_form.input :prospero,                required: false
+              = projects_search_form.input :doi,                     required: false, label: 'DOI'
+              = projects_search_form.input :notes,                   required: false
+              = projects_search_form.input :funding_source,          required: false
+              = projects_search_form.input :members,                 required: false, label: 'Members (Use username; separate by comma or space)'
+
+              .label-group
+                = projects_search_form.label :after,       required: false, label: 'Records after this specified date (leave blank to go all the way back)'
+                = projects_search_form.date_select :after, required: false, include_blank: true
+
+              .label-group
+                = projects_search_form.label :before,       required: false, label: 'Records before this specified date'
+                = projects_search_form.date_select :before, required: false, include_blank: true
+
+              = projects_search_form.input :arm,     required: false
+              = projects_search_form.input :outcome, required: false
+        .column.row
+          .form-actiona
+            = f.button :submit, 'Search'
+
+    #panel-citations-search.tabs-panel
+      = simple_form_for :searches, url: searches_path, method: :post do |f|
+        .column.row
+          = f.error_notification
+          .form-inputs
+            = f.simple_fields_for :citations_search do |citations_search_form|
+              .label-group
+                = citations_search_form.check_box :public, required: false
+                = citations_search_form.label :public,     required: false
+
+                = citations_search_form.check_box :owned, required: false
+                = citations_search_form.label :owned,     required: false
+
+                = citations_search_form.check_box :restrict,  required: false
+                = citations_search_form.label :restrict,      required: false, label: 'Restrict search results'
+                = citations_search_form.input :restrict_name, required: false, label: false
+
+              = citations_search_form.input :name,        required: false, label: 'Citation Title'
+              = citations_search_form.input :refman,      required: false, label: 'RefMan'
+              = citations_search_form.input :pmid,        required: false, label: 'PMID'
+              = citations_search_form.input :abstract,    required: false
+              = citations_search_form.input :members,     required: false, label: 'Members (Use username; separate by comma or space)'
+              = citations_search_form.input :answer_text, required: false, label: 'Text in answers'
+
+              .label-group
+                = citations_search_form.label :after_year,                                                        required: false, label: 'Published after'
+                = citations_search_form.select :after_year, (Time.zone.now.year - 100)..(Time.zone.now.year + 1), required: false, include_blank: true
+
+              .label-group
+                = citations_search_form.label :before_year,                                                        required: false, label: 'Published before'
+                = citations_search_form.select :before_year, (Time.zone.now.year - 100)..(Time.zone.now.year + 1), required: false, include_blank: true
+
+              = citations_search_form.input :journal, required: false
+              = citations_search_form.input :arm,     required: false
+              = citations_search_form.input :outcome, required: false
+
+              .label-group
+                = citations_search_form.check_box :complete, required: false
+                = citations_search_form.label :complete,     required: false
+
+              = citations_search_form.input :measure, required: false
+
+              .label-group
+                = citations_search_form.check_box :section_design_details,         required: false
+                = citations_search_form.label :section_design_details,             required: false
+
+              .label-group
+                = citations_search_form.check_box :section_arm_details,            required: false
+                = citations_search_form.label :section_arm_details,                required: false
+
+              .label-group
+                = citations_search_form.check_box :section_sample_characteristics, required: false
+                = citations_search_form.label :section_sample_characteristics,    required: false
+
+              .label-group
+                = citations_search_form.check_box :section_outcome_details,        required: false
+                = citations_search_form.label :section_outcome_details,            required: false
+
+              .label-group
+                = citations_search_form.check_box :section_quality,                required: false
+                = citations_search_form.label :section_quality,                    required: false
+
+        .column.row
+          .form-actiona
+            = f.button :submit, 'Search'
