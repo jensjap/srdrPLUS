@@ -133,9 +133,6 @@ Rails.application.routes.draw do
 
   get  'about'  => 'static_pages#about'
   get  'help'   => 'static_pages#help'
-  #!!! Remove the views for this later
-  get  'search' => 'static_pages#search'
-  #post 'search' => 'static_pages#search'
 
   resource  :profile, only: [:show, :edit, :update]
   resources :degrees, only: [:index]
