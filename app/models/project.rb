@@ -6,9 +6,10 @@ class Project < ApplicationRecord
   has_paper_trail
   searchkick
 
-  #scope :is_public, -> { where( public: true ) }
-
   paginates_per 8
+
+  scope :published, -> { joins(publishings: :approval) }
+  scope :lead_by_current_user, -> {}
 
   after_create :create_default_extraction_form
 
@@ -45,6 +46,10 @@ class Project < ApplicationRecord
   accepts_nested_attributes_for :citations_projects, allow_destroy: true
   accepts_nested_attributes_for :tasks, allow_destroy: true
   accepts_nested_attributes_for :assignments, allow_destroy: true
+
+  def public?
+    self.publishings.any?(&:approval)
+  end
 
   def duplicate_key_question?
     self.key_questions.having('count(*) > 1').group('name').length.nonzero?

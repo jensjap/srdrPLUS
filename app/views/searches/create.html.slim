@@ -1,0 +1,27 @@
+.column.row
+  h2 Search Results
+
+.column.row
+  - if @results[:project_ids].present?
+    h3 Projects found:
+
+    ul
+      - @results[:project_ids].each do |p_id|
+        - p = Project.find p_id
+        li = link_to p.name, p
+
+  - elsif @results[:citation_ids].present?
+    h3 Citations found:
+
+    ul
+      - @results[:citation_ids].each do |c_id|
+        - c = Citation.find c_id
+        li = link_to c.name, c
+
+  - else
+    p Nothing found. Consider loosening the search criteria.
+
+.column.row
+  = link_to (new_search_path) do
+    i.fi-magnifying-glass
+    |  New Search
