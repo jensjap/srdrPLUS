@@ -54,3 +54,9 @@ production:
   database: srdrPLUS_production
   username: srdrPLUS
   password: <%= ENV['SRDRPLUS_DATABASE_PASSWORD'] %>
+
+
+###DELETE ME AFTER DONE
+parsing-test:
+  <<: *default
+  database: srdrplus_parsing_test
