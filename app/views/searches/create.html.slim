@@ -10,13 +10,14 @@
         - p = Project.find p_id
         li = link_to p.name, p
 
-  - elsif @results[:citation_ids].present?
-    h3 Citations found:
+    - if @results[:citation_ids].present?
+      h3 Citations found:
 
-    ul
-      - @results[:citation_ids].each do |c_id|
-        - c = Citation.find c_id
-        li = link_to c.name, c
+      ul
+        - @results[:citation_ids].each do |c_id|
+          - cps = CitationsProject.where(citation_id: c_id, project_id: @results[:project_ids].to_a)
+          - cps.each do |cp|
+            li = link_to "#{ cp.citation.name } (Project: #{ cp.project.name })", cp.project
 
   - else
     p Nothing found. Consider loosening the search criteria.

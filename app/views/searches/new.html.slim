@@ -68,7 +68,7 @@
               = citations_search_form.label     :restrict,      required: false, label: 'Restrict search results to project name'
               = citations_search_form.input     :restrict_text, required: false, label: false
 
-            = citations_search_form.input :name,        required: false, label: 'Citation Title'
+            = citations_search_form.input :name,        required: false
             = citations_search_form.input :refman,      required: false, label: 'RefMan'
             = citations_search_form.input :pmid,        required: false, label: 'PMID'
             = citations_search_form.input :abstract,    required: false
@@ -76,14 +76,14 @@
             = citations_search_form.input :answer_text, required: false, label: 'Text in answers'
 
             .label-group
-              = citations_search_form.label :after_year,                                                        required: false, label: 'Published after'
-              = citations_search_form.select :after_year, (Time.zone.now.year - 100)..(Time.zone.now.year + 1), required: false, include_blank: true
+              = citations_search_form.label :after,       required: false, label: 'Records after this specified date (leave blank to go all the way back)'
+              = citations_search_form.date_select :after, required: false, include_blank: true
 
             .label-group
-              = citations_search_form.label :before_year,                                                        required: false, label: 'Published before'
-              = citations_search_form.select :before_year, (Time.zone.now.year - 100)..(Time.zone.now.year + 1), required: false, include_blank: true
+              = citations_search_form.label :before,       required: false, label: 'Records before this specified date'
+              = citations_search_form.date_select :before, required: false, include_blank: true
 
-            = citations_search_form.input :journal, required: false
+            /= citations_search_form.input :journal, required: false
             = citations_search_form.input :arm,     required: false
             = citations_search_form.input :outcome, required: false
 
@@ -94,24 +94,24 @@
             = citations_search_form.input :measure, required: false
 
             .label-group
-              = citations_search_form.check_box :section_design_details,         required: false
-              = citations_search_form.label :section_design_details,             required: false
+              = citations_search_form.check_box :section_design_details, required: false
+              = citations_search_form.label :section_design_details,     required: false
 
             .label-group
-              = citations_search_form.check_box :section_arm_details,            required: false
-              = citations_search_form.label :section_arm_details,                required: false
+              = citations_search_form.check_box :section_arm_details, required: false
+              = citations_search_form.label :section_arm_details,     required: false
 
             .label-group
               = citations_search_form.check_box :section_sample_characteristics, required: false
               = citations_search_form.label :section_sample_characteristics,     required: false
 
             .label-group
-              = citations_search_form.check_box :section_outcome_details,        required: false
-              = citations_search_form.label :section_outcome_details,            required: false
+              = citations_search_form.check_box :section_outcome_details, required: false
+              = citations_search_form.label :section_outcome_details,     required: false
 
             .label-group
-              = citations_search_form.check_box :section_quality,                required: false
-              = citations_search_form.label :section_quality,                    required: false
+              = citations_search_form.check_box :section_quality, required: false
+              = citations_search_form.label :section_quality,     required: false
 
         .form-actiona
           = f.button :submit, 'Search'

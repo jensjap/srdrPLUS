@@ -109,12 +109,15 @@ ActiveRecord::Schema.define(version: 20180530115049) do
   create_table "citations", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "citation_type_id"
     t.string   "name"
+    t.datetime "deleted_at"
     t.datetime "created_at",                     null: false
     t.datetime "updated_at",                     null: false
     t.string   "refman"
     t.string   "pmid"
     t.binary   "abstract",         limit: 65535
     t.index ["citation_type_id"], name: "index_citations_on_citation_type_id", using: :btree
+    t.index ["deleted_at"], name: "index_citations_on_deleted_at", using: :btree
+    t.index ["name"], name: "index_citations_on_name", using: :btree
   end
 
   create_table "citations_projects", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|

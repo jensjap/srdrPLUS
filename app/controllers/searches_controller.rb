@@ -13,7 +13,8 @@ class SearchesController < ApplicationController
   def create
     @results = Hash.new
     @results[:raw_search_results] = Hash.new
-    @results[:project_ids] = Set.new
+    @results[:project_ids]  = Set.new
+    @results[:citation_ids] = Set.new
     @search = search_params
 
     # Determine whether we are searching for Project or Citation.
@@ -24,12 +25,11 @@ class SearchesController < ApplicationController
 
       # Project name.
       @project_name_search_argument = @search[:projects_search][:name]
-      if @project_name_search_argument.present?
-        @project_name_search_result = Project.search(@project_name_search_argument,
-                                                     fields: [:name],
-                                                     track: { user_id: (current_user.present? ? current_user.id : 0) })
-        @results[:raw_search_results][:by_project_name] = @project_name_search_result if @project_name_search_result.present?
-      end
+      @project_name_search_argument = @project_name_search_argument.present? ? @project_name_search_argument : '*'
+      @project_name_search_result = Project.search(@project_name_search_argument,
+                                                   fields: [:name],
+                                                   track: { user_id: (current_user.present? ? current_user.id : 0) })
+      @results[:raw_search_results][:by_project_name] = @project_name_search_result if @project_name_search_result.present?
 
       # Project description.
       @project_description_search_argument = @search[:projects_search][:description]
@@ -109,6 +109,10 @@ class SearchesController < ApplicationController
         @results[:project_ids] = @results[:project_ids].present? ?
           @results[:project_ids] & leading_project_ids.map(&:id) :
           leading_project_ids.map(&:id)
+
+      # If we are not restricting to projects we own, then we must only return projects that are published.
+      else
+        @results[:project_ids] = Project.published.where(id: @results[:project_ids].to_a)
       end
 
       # Project members.
@@ -130,7 +134,11 @@ class SearchesController < ApplicationController
       end
 
       # Project after date created.
-      @project_after_search_argument = "#{ @search[:projects_search]['after(1i)'] }-#{ @search[:projects_search]['after(2i)'] }-#{ @search[:projects_search]['after(3i)'] }".to_date
+      datestring = ''
+      if @search[:projects_search]['after(1i)'].present? && @search[:projects_search]['after(1i)'].present? && @search[:projects_search]['after(1i)'].present?
+        datestring = "#{ @search[:projects_search]['after(1i)'] }-#{ @search[:projects_search]['after(2i)'] }-#{ @search[:projects_search]['after(3i)'] }"
+      end
+      @project_after_search_argument = datestring.to_date
       if @project_after_search_argument.present?
         new_project_ids = []
 
@@ -146,7 +154,11 @@ class SearchesController < ApplicationController
       end
 
       # Project before date created.
-      @project_before_search_argument = "#{ @search[:projects_search]['before(1i)'] }-#{ @search[:projects_search]['before(2i)'] }-#{ @search[:projects_search]['before(3i)'] }".to_date
+      datestring = ''
+      if @search[:projects_search]['before(1i)'].present? && @search[:projects_search]['before(1i)'].present? && @search[:projects_search]['before(1i)'].present?
+        datestring = "#{ @search[:projects_search]['before(1i)'] }-#{ @search[:projects_search]['before(2i)'] }-#{ @search[:projects_search]['before(3i)'] }"
+      end
+      @project_before_search_argument = datestring.to_date
       if @project_before_search_argument.present?
         new_project_ids = []
 
@@ -208,11 +220,170 @@ class SearchesController < ApplicationController
       is_public    = ActiveModel::Type::Boolean.new.cast(@search[:citations_search].delete :public)
       is_owned     = ActiveModel::Type::Boolean.new.cast(@search[:citations_search].delete :owned)
       is_restrict  = ActiveModel::Type::Boolean.new.cast(@search[:citations_search].delete :restrict)
-      puts 'citations'
+
+      # Citation name.
+      @citation_name_search_argument = @search[:citations_search][:name]
+      @citation_name_search_argument = @citation_name_search_argument.present? ? @citation_name_search_argument : '*'
+      @citation_name_search_result = Citation.search(@citation_name_search_argument,
+                                                     fields: [:name],
+                                                     track: { user_id: (current_user.present? ? current_user.id : 0) })
+      @results[:raw_search_results][:by_citation_name] = @citation_name_search_result if @citation_name_search_result.present?
+
+      # Citation RefMan.
+      @citation_refman_search_argument = @search[:citations_search][:refman]
+      if @citation_refman_search_argument.present?
+        @citation_refman_search_result = Citation.search(@citation_refman_search_argument,
+                                                         fields: [:refman],
+                                                         track: { user_id: (current_user.present? ? current_user.id : 0) })
+        @results[:raw_search_results][:by_citation_refman] = @citation_refman_search_result if @citation_refman_search_result.present?
+      end
+
+      # Citation PMID.
+      @citation_pmid_search_argument = @search[:citations_search][:pmid]
+      if @citation_pmid_search_argument.present?
+        @citation_pmid_search_result = Citation.search(@citation_pmid_search_argument,
+                                                       fields: [:pmid],
+                                                       track: { user_id: (current_user.present? ? current_user.id : 0) })
+        @results[:raw_search_results][:by_citation_pmid] = @citation_pmid_search_result if @citation_pmid_search_result.present?
+      end
+
+      # Citation abstract.
+      @citation_abstract_search_argument = @search[:citations_search][:abstract]
+      if @citation_abstract_search_argument.present?
+        @citation_abstract_search_result = Citation.search(@citation_abstract_search_argument,
+                                                           fields: [:abstract],
+                                                           track: { user_id: (current_user.present? ? current_user.id : 0) })
+        @results[:raw_search_results][:by_citation_abstract] = @citation_abstract_search_result if @citation_abstract_search_result.present?
+      end
+
+      # Go through each raw search result and extract the project ids. Use merge here to get the union.
+      @results[:raw_search_results].values.each do |val|
+        @results[:citation_ids].merge(val.map(&:id))
+      end
+
+      # Find all projects associated with the citations.
+      @results[:citation_ids].each do |c_id|
+        @results[:project_ids].merge(Citation.find(c_id).citations_projects.map { |cp| cp.project.id })
+      end
+
+      # Check conditions that would further reduce @results[:project_ids]
+      # Project owned.
+      if is_owned
+        leading_project_ids = Project
+          .joins(projects_users: [:user, { projects_users_roles: :role }])
+          .where(projects_users: { user: current_user })
+          .where(projects_users: { projects_users_roles: { roles: { name: 'Leader' } } })
+        @results[:project_ids] = @results[:project_ids].present? ?
+          @results[:project_ids] & leading_project_ids.map(&:id) :
+          leading_project_ids.map(&:id)
+
+        # If we are not restricting to projects we own, then we must only return projects that are published.
+      else
+        @results[:project_ids] = Project.published.where(id: @results[:project_ids].to_a)
+      end
+
+      # Project members.
+      @project_members_search_argument = @search[:citations_search][:members].downcase.split(' ')
+      if @project_members_search_argument.present?
+        new_project_ids = []
+        restrict_to_user_ids = @project_members_search_argument.map { |username| User.joins(:profile).where(users: { profiles: { username: username } }).map(&:id) }
+
+        @results[:project_ids].each do |project_id|
+          Project.find(project_id).members.each do |member|
+            if restrict_to_user_ids.flatten.include? member.id
+              new_project_ids << project_id
+              break
+            end
+          end
+        end
+
+        @results[:project_ids] = new_project_ids.to_set
+      end
+
+      # Project after date created.
+      datestring = ''
+      if @search[:citations_search]['after(1i)'].present? && @search[:citations_search]['after(1i)'].present? && @search[:citations_search]['after(1i)'].present?
+        datestring = "#{ @search[:citations_search]['after(1i)'] }-#{ @search[:citations_search]['after(2i)'] }-#{ @search[:citations_search]['after(3i)'] }"
+      end
+      @project_after_search_argument = datestring.to_date
+      if @project_after_search_argument.present?
+        new_project_ids = []
+
+        @results[:project_ids].each do |project_id|
+          project = Project.find(project_id)
+          if @project_after_search_argument < project.created_at
+            new_project_ids << project.id
+            next
+          end
+        end
+
+        @results[:project_ids] = new_project_ids.to_set
+      end
+
+      # Project before date created.
+      datestring = ''
+      if @search[:citations_search]['before(1i)'].present? && @search[:citations_search]['before(1i)'].present? && @search[:citations_search]['before(1i)'].present?
+        datestring = "#{ @search[:citations_search]['before(1i)'] }-#{ @search[:citations_search]['before(2i)'] }-#{ @search[:citations_search]['before(3i)'] }"
+      end
+      @project_before_search_argument = datestring.to_date
+      if @project_before_search_argument.present?
+        new_project_ids = []
+
+        @results[:project_ids].each do |project_id|
+          project = Project.find(project_id)
+          if project.created_at < @project_before_search_argument
+            new_project_ids << project.id
+            next
+          end
+        end
+
+        @results[:project_ids] = new_project_ids.to_set
+      end
+
+      # Project includes arm.
+      @project_arm_search_argument = @search[:citations_search][:arm].downcase.split(' ')
+      if @project_arm_search_argument.present?
+        new_project_ids = []
+
+        @project_arm_search_argument.each do |arm_name|
+          arms = Type1.where(name: arm_name)
+          arms.each do |arm|
+            arm.extractions_extraction_forms_projects_sections.each do |eefps|
+              project_id = eefps.extraction.project.id
+              if @results[:project_ids].include? project_id
+                new_project_ids << project_id
+                next
+              end
+            end
+          end
+        end
+
+        @results[:project_ids] = new_project_ids.to_set
+      end
+
+      # Project includes outcome.
+      @project_outcome_search_argument = @search[:citations_search][:outcome].downcase.split(' ')
+      if @project_outcome_search_argument.present?
+        new_project_ids = []
+
+        @project_outcome_search_argument.each do |outcome_name|
+          outcomes = Type1.where(name: arm_name)
+          outcomes.each do |outcome|
+            outcome.extractions_extraction_forms_projects_sections.each do |eefps|
+              project_id = eefps.extraction.project.id
+              if @results[:project_ids].include? project_id
+                new_project_ids << project_id
+                next
+              end
+            end
+          end
+        end
+      end
 
     else
       raise RuntimeError, 'SearchesController::create - Neither searching projects nor citations.'
-    end
+
+    end  # elsif @search[:citations_search].present?
   end
 
   private
@@ -251,8 +422,8 @@ class SearchesController < ApplicationController
                  :abstract,
                  :members,
                  :answer_text,
-                 :after_year,
-                 :before_year,
+                 :after,
+                 :before,
                  :journal,
                  :arm,
                  :outcome,
