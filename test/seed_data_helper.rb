@@ -407,9 +407,16 @@ module SeedDataExtended
 
         # Make contributor a project member.
         p.users << @contributor
+        p.users << @screener_1
+        p.users << @screener_2
+        p.users << @screener_3
 
         # Seed ProjectsUsersRole.
         ProjectsUser.find_by(project: p, user: @contributor).roles << Role.where(name: 'Leader')
+        ProjectsUser.find_by(project: p, user: @contributor).roles << Role.where(name: 'Contributor')
+        ProjectsUser.find_by(project: p, user: @screener_1).roles << Role.where(name: 'Contributor')
+        ProjectsUser.find_by(project: p, user: @screener_2).roles << Role.where(name: 'Contributor')
+        ProjectsUser.find_by(project: p, user: @screener_3).roles << Role.where(name: 'Contributor')
 
         # Assign a random sample of 50 citations to project.
         p.citations = Citation.all.sample(50)
@@ -457,19 +464,19 @@ module SeedDataExtended
             {
               date_assigned: DateTime.now,
               date_due: Date.today + 7,
-              user: @screener_1,
+              projects_users_role: ProjectsUsersRole.find_by({ projects_user: ProjectsUser.find_by({ user: @screener_1, project: p }), role: Role.where(name: 'Contributor') }),
               task: t
             },
             {
               date_assigned: DateTime.now,
               date_due: Date.today + 7,
-              user: @screener_2,
+              projects_users_role: ProjectsUsersRole.find_by({ projects_user: ProjectsUser.find_by({ user: @screener_2, project: p }), role: Role.where(name: 'Contributor') }),
               task: t
             },
             {
               date_assigned: DateTime.now,
               date_due: Date.today + 7,
-              user: @screener_3,
+              projects_users_role: ProjectsUsersRole.find_by({ projects_user: ProjectsUser.find_by({ user: @screener_3, project: p }), role: Role.where(name: 'Contributor') }),
               task: t
             }
           ])
@@ -478,7 +485,7 @@ module SeedDataExtended
             Assignment.create(
               date_assigned: DateTime.now,
               date_due: Date.today + 7,
-              user: s,
+              projects_users_role: ProjectsUsersRole.find_by({ projects_user: ProjectsUser.find_by({ user: s, project: p }), role: Role.where(name: 'Contributor') }),
               task: t
             )
           end

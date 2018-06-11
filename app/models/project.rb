@@ -10,7 +10,7 @@ class Project < ApplicationRecord
 
   paginates_per 8
 
-  after_create :create_default_extraction_form
+  #after_create :create_default_extraction_form
 
   has_many :extractions, dependent: :destroy, inverse_of: :project
 
