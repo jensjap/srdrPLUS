@@ -15,7 +15,7 @@ li = link_to('Projects', projects_path)
       li.title Project Tools
       li = link_to t('export'),      export_project_path(@project || @extraction.project), method: :post
       li = link_to t('extractions'), project_extractions_path(@project || @extraction.project)
-      li = link_to t('comparison_tool'), '#'
+      li = link_to t('comparison_tool'), comparison_tool_project_path(@project || @extraction.project)
 
 li
   a href='#' = current_user.profile.last_name.present? ? t('greet') + ', ' + current_user.profile.last_name : 'Menu'
