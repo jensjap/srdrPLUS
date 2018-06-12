@@ -62,9 +62,7 @@ Rails.application.routes.draw do
   resources :extractions_extraction_forms_projects_sections_type1s, only: [] do
     get 'get_results_populations', on: :member
   end
-  post '/projects/:id/undo', to: 'projects#undo', as: :undo
   resources :projects, concerns: :paginatable, shallow: true do
-    post 'export', on: :member
     resources :citations, only: [:index] do
       collection do
         get 'labeled'
@@ -126,6 +124,12 @@ Rails.application.routes.draw do
 
     collection do
       get 'filter'
+    end
+
+    member do
+      get  'comparison_tool'
+      post 'undo'
+      post 'export'
     end
   end
 

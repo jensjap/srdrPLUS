@@ -1,6 +1,6 @@
 li = link_to('Projects', projects_path)
 
-- if controller_name.eql?('projects') || controller_name.eql?('extractions')
+- if (controller_name.eql?('projects') && not(action_name.eql?('index'))) || controller_name.eql?('extractions')
 
   li
     a href='#' Actions
@@ -13,6 +13,7 @@ li = link_to('Projects', projects_path)
       li = link_to t('tasks'),               edit_project_path(@project || @extraction.project) + '#panel-tasks',               title: 'Manage Task(s)'
       hr
       li.title Project Tools
+      li = link_to t('export'),      export_project_path(@project || @extraction.project), method: :post
       li = link_to t('extractions'), project_extractions_path(@project || @extraction.project)
       li = link_to t('comparison_tool'), '#'
 
