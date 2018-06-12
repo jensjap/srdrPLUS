@@ -45,13 +45,26 @@
     margin-left: 5px;
   }
 
-  .top-bar .top-bar-left {
+  .top-bar > .top-bar-left {
     a:hover {
       background-color: transparent;
     }
 
     img {
       cursor: pointer;
+    }
+  }
+
+  .top-bar > .top-bar-right {
+    a:hover {
+      color: #200845;
+
+      &:after {
+        border-top-color: #200845;
+        border-right-color: transparent;
+        border-bottom-color: transparent;
+        border-left-color: transparent;
+      }
     }
   }
 }
