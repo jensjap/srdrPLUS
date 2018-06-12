@@ -53,54 +53,57 @@
 
       - is_first = false
 
-    - else
+/ Since we never have more than 1 efp this isn't needed any more for now.
+/ The reason they had to be split this way is because it isn't possible to continue nesting using slim
 
-      .tabs-panel id="panel-extraction-forms-project-#{ efp.id.to_s }"
-
-        .row
-          .column.medium-3
-            ul.tabs.vertical id="extraction-forms-projects-#{ efp.id.to_s }-vertical-tabs" data-deep-link='true' data-deep-link-smudge='true' data-deep-link-smudge-delay='100' data-update-history='true' data-tabs=''
-
-              - efp.extraction_forms_projects_sections.includes(:section).each do |efps|
-
-                / Ensure that this section is added to the extraction.
-                - eefps = ExtractionsExtractionFormsProjectsSection.find_or_create_by(\
-                  extraction: @extraction,
-                  extraction_forms_projects_section: efps,
-                  link_to_type1: efps.link_to_type1.nil?\
-                  ? nil\
-                  : ExtractionsExtractionFormsProjectsSection.find_by(\
-                      extraction: @extraction, extraction_forms_projects_section: efps.link_to_type1))
-                - section_name = efps.section.name
-
-                li.tabs-title
-                  = link_to section_name, "#panel-tab-#{ eefps.id.to_s }", title: section_name
-
-          .column.medium-9
-            .tabs-content.vertical data-tabs-content="extraction-forms-projects-#{ efp.id.to_s }-vertical-tabs"
-
-              - efp.extraction_forms_projects_sections.includes(:extraction_forms_projects_section_type, :section, :type1s).each do |efps|
-
-                / Ensure that this section is added to the extraction.
-                - eefps = ExtractionsExtractionFormsProjectsSection.find_or_create_by(\
-                  extraction: @extraction,
-                  extraction_forms_projects_section: efps,
-                  link_to_type1: efps.link_to_type1.nil?\
-                  ? nil\
-                  : ExtractionsExtractionFormsProjectsSection.find_by(\
-                      extraction: @extraction, extraction_forms_projects_section: efps.link_to_type1))
-                - section_name = efps.section.name
-
-                .tabs-panel id="panel-tab-#{ eefps.id.to_s }"
-
-                  .column.row
-
-                    == render 'extractions/work/' + efps.extraction_forms_projects_section_type.name.parameterize.underscore,
-                      section_name: section_name,
-                      efp: efp,
-                      efps: efps,
-                      eefps: eefps
-
+/    - else
+/
+/      .tabs-panel id="panel-extraction-forms-project-#{ efp.id.to_s }"
+/
+/        .row
+/          .column.medium-3
+/            ul.tabs.vertical id="extraction-forms-projects-#{ efp.id.to_s }-vertical-tabs" data-deep-link='true' data-deep-link-smudge='true' data-deep-link-smudge-delay='100' data-update-history='true' data-tabs=''
+/
+/              - efp.extraction_forms_projects_sections.includes(:section).each do |efps|
+/
+/                / Ensure that this section is added to the extraction.
+/                - eefps = ExtractionsExtractionFormsProjectsSection.find_or_create_by(\
+/                  extraction: @extraction,
+/                  extraction_forms_projects_section: efps,
+/                  link_to_type1: efps.link_to_type1.nil?\
+/                  ? nil\
+/                  : ExtractionsExtractionFormsProjectsSection.find_by(\
+/                      extraction: @extraction, extraction_forms_projects_section: efps.link_to_type1))
+/                - section_name = efps.section.name
+/
+/                li.tabs-title
+/                  = link_to section_name, "#panel-tab-#{ eefps.id.to_s }", title: section_name
+/
+/          .column.medium-9
+/            .tabs-content.vertical data-tabs-content="extraction-forms-projects-#{ efp.id.to_s }-vertical-tabs"
+/
+/              - efp.extraction_forms_projects_sections.includes(:extraction_forms_projects_section_type, :section, :type1s).each do |efps|
+/
+/                / Ensure that this section is added to the extraction.
+/                - eefps = ExtractionsExtractionFormsProjectsSection.find_or_create_by(\
+/                  extraction: @extraction,
+/                  extraction_forms_projects_section: efps,
+/                  link_to_type1: efps.link_to_type1.nil?\
+/                  ? nil\
+/                  : ExtractionsExtractionFormsProjectsSection.find_by(\
+/                      extraction: @extraction, extraction_forms_projects_section: efps.link_to_type1))
+/                - section_name = efps.section.name
+/
+/                .tabs-panel id="panel-tab-#{ eefps.id.to_s }"
+/
+/                  .column.row
+/
+/                    == render 'extractions/work/' + efps.extraction_forms_projects_section_type.name.parameterize.underscore,
+/                      section_name: section_name,
+/                      efp: efp,
+/                      efps: efps,
+/                      eefps: eefps
+/
 /                  / Arms | Outcomes
 /                  - if efps.extraction_forms_projects_section_type.name == 'Type 1'
 /
