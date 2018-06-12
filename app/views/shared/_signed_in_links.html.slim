@@ -1,20 +1,29 @@
 li = link_to('Projects', projects_path)
 
-- if controller_name.eql?('projects') && action_name.eql?('edit')
+- if controller_name.eql?('projects') || controller_name.eql?('extractions')
   li
     a href='#' Actions
     ul.menu.vertical
-      li = link_to 'Citations', '#panel-citations', title: 'Manage Citations'
-      li = link_to 'Tasks', '#panel-tasks', title: 'Manage Tasks'
+      hr
+      li.title Project Elements
+      li = link_to 'Project Information', edit_project_path(@project.present? ? @project : @extraction.project) + '#panel-project-information', title: 'Manage Project Information'
+      li = link_to 'Key Question(s)',     edit_project_path(@project.present? ? @project : @extraction.project) + '#panel-key-questions',       title: 'Manage Key Question(s)'
+      li = link_to 'Citation(s)',         edit_project_path(@project.present? ? @project : @extraction.project) + '#panel-citations',           title: 'Manage Citation(s)'
+      li = link_to 'Task(s)',             edit_project_path(@project.present? ? @project : @extraction.project) + '#panel-tasks',               title: 'Manage Task(s)'
+      hr
+      li.title Project Tools
+      li = link_to 'Extractions', project_extractions_path(@project.present? ? @project : @extraction.project)
+      li = link_to 'Comparison Tool', '#'
 
 li
   a href='#' = current_user.profile.last_name.present? ? t('greet') + ', ' + current_user.profile.last_name : 'Menu'
   ul.menu.vertical
+    hr
     li.title User
-    li = link_to('Settings', edit_user_registration_path)
-    li = link_to('Profile', profile_path)
-    li = link_to('About', about_path)
+    li = link_to 'Settings', edit_user_registration_path
+    li = link_to 'Profile', profile_path
+    li = link_to 'About', about_path
     hr
     li.title Actions
-    li = link_to('Logout', destroy_user_session_path, :method => :delete)
+    li = link_to 'Logout', destroy_user_session_path, :method => :delete
 
