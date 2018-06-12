@@ -283,3 +283,12 @@ pre.debug_dump {
 .table-scroll table {
   width: 100%;
 }
+
+.column.row.footer {
+  min-height: 300px;
+  background-color: $color-primary-0;
+}
+
+.off-canvas-content {
+  min-height: -webkit-fill-available;
+}
