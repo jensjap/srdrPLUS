@@ -103,21 +103,48 @@ class Project < ApplicationRecord
     self.extractions.each do |e|
       if citation_groups[:citations_projects].keys.include? e.citations_project_id
         citation_groups[:citations_projects][e.citations_project_id][:extraction_ids] << e.id
+        # If data_discrepancy is already true then don't bother running the discovery process.
+        citation_groups[:citations_projects][e.citations_project_id][:data_discrepancy] =
+          discover_extraction_discrepancy(citation_groups[:citations_projects][e.citations_project_id][:extraction_ids].first, e.id) unless citation_groups[:citations_projects][e.citations_project_id][:data_discrepancy]
       else
         citation_groups[:citations_project_count] += 1
         citation_groups[:citations_project_ids] << e.citations_project_id
         citation_groups[:citations_projects][e.citations_project_id] = Hash.new
         citation_groups[:citations_projects][e.citations_project_id][:citations_project_id] = e.citations_project_id
+        citation_groups[:citations_projects][e.citations_project_id][:citation_name_short]  = e.citations_project.citation.name.truncate(32)
+        citation_groups[:citations_projects][e.citations_project_id][:citation_name_long]   = e.citations_project.citation.name
         citation_groups[:citations_projects][e.citations_project_id][:data_discrepancy]     = false
         citation_groups[:citations_projects][e.citations_project_id][:extraction_ids]       = [e.id]
       end
     end
-    byebug
+
+    return citation_groups
   end
 
   private
 
     def create_default_extraction_form
       self.extraction_forms_projects.create!(extraction_forms_project_type: ExtractionFormsProjectType.first, extraction_form: ExtractionForm.first)
+    end
+
+    def discover_extraction_discrepancy(extraction1_id, extraction2_id)
+      e1 = Extraction.find(extraction1_id)
+      e1_json = ApplicationController.new.view_context.render(
+        partial: 'extractions/extraction_for_comparison_tool',
+        locals: { extraction: e1 },
+        formats: [:json],
+        handlers: [:jbuilder]
+      )
+      e2 = Extraction.find(extraction2_id)
+      e2_json = ApplicationController.new.view_context.render(
+        partial: 'extractions/extraction_for_comparison_tool',
+        locals: { extraction: e2 },
+        formats: [:json],
+        handlers: [:jbuilder]
+      )
+#      e1_json = e1.to_builder.target!
+#      e2_json = e2.to_builder.target!
+
+      return not(e1_json.eql? e2_json)
     end
 end

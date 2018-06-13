@@ -68,4 +68,15 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
     end
     super
   end
+
+#  def to_builder
+#    Jbuilder.new do |json|
+#      json.name extraction_forms_projects_section.section.name
+#      if extraction_forms_projects_section.extraction_forms_projects_section_type_id == 1
+#        json.type1s extractions_extraction_forms_projects_sections_type1s.map { |eefpst1| eefpst1.to_builder.attributes! }
+#      elsif extraction_forms_projects_section.extraction_forms_projects_section_type_id == 2
+#        json.array! extraction_forms_projects_section.questions
+#      end
+#    end
+#  end
 end

@@ -22,6 +22,12 @@ class Extraction < ApplicationRecord
 
   has_many :extractions_projects_users_roles, dependent: :destroy, inverse_of: :extraction
 
+#  def to_builder
+#    Jbuilder.new do |extraction|
+#      extraction.sections extractions_extraction_forms_projects_sections.map { |eefps| eefps.to_builder.attributes! }
+#    end
+#  end
+
   private
 
     # This may create issues if type1 to type2 links are created or broken after an extraction is created.

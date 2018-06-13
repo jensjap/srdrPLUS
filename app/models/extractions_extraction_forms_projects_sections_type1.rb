@@ -72,6 +72,13 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
     super
   end
 
+#  def to_builder
+#    Jbuilder.new do |json|
+#      json.name type1.name
+#      json.description type1.description
+#    end
+#  end
+
   private
 
     # Do not overwrite existing entries but associate to one that already exists or create a new one.
