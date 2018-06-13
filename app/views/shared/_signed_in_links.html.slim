@@ -9,13 +9,13 @@ li = link_to('Projects', projects_path)
       li.title Project Elements
       li = link_to t('project_information'), edit_project_path(@project || @extraction.project) + '#panel-project-information', title: 'Manage Project Information'
       li = link_to t('key_questions'),       edit_project_path(@project || @extraction.project) + '#panel-key-questions',       title: 'Manage Key Question(s)'
+      li = link_to t('extractions'),         project_extractions_path(@project || @extraction.project),                         title: 'Manage Extraction(s)'
       li = link_to t('citations'),           edit_project_path(@project || @extraction.project) + '#panel-citations',           title: 'Manage Citation(s)'
       li = link_to t('tasks'),               edit_project_path(@project || @extraction.project) + '#panel-tasks',               title: 'Manage Task(s)'
       hr
       li.title Project Tools
-      li = link_to t('export'),      export_project_path(@project || @extraction.project), method: :post
-      li = link_to t('extractions'), project_extractions_path(@project || @extraction.project)
-      li = link_to t('comparison_tool'), comparison_tool_project_path(@project || @extraction.project)
+      li = link_to t('export'),      export_project_path(@project || @extraction.project), method: :post, title: 'Request Export'
+      li = link_to t('comparison_tool'), comparison_tool_project_path(@project || @extraction.project),   title: 'Compare Extraction(s)'
 
 li
   a href='#' = current_user.profile.last_name.present? ? t('greet') + ', ' + current_user.profile.last_name : 'Menu'
