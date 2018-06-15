@@ -4,16 +4,16 @@ table.unstriped
 
     tr
       td style='border: 1px solid lightgrey;'
-        = link_to "#{ eefpst1r.extractions_extraction_forms_projects_sections_type1.type1.name }::#{ eefpst1r.population_name.name }: Measured Values",
+        = link_to "#{ eefpst1r.extractions_extraction_forms_projects_sections_type1.type1.short_name_and_description }::#{ eefpst1r.population_name.name }: Measured Values",
           edit_result_statistic_section_path(eefpst1r.result_statistic_sections.where(result_statistic_section_type: ResultStatisticSectionType.find_by(name: 'Descriptive Statistics')).first)
       td style='border: 1px solid lightgrey;'
-        = link_to "#{ eefpst1r.extractions_extraction_forms_projects_sections_type1.type1.name }::#{ eefpst1r.population_name.name }: Between-arm comparisons",
+        = link_to "#{ eefpst1r.extractions_extraction_forms_projects_sections_type1.type1.short_name_and_description }::#{ eefpst1r.population_name.name }: Between-arm comparisons",
           edit_result_statistic_section_path(eefpst1r.result_statistic_sections.where(result_statistic_section_type: ResultStatisticSectionType.find_by(name: 'Between Arm Comparisons')).first)
 
     tr
       td style='border: 1px solid lightgrey;'
-        = link_to "#{ eefpst1r.extractions_extraction_forms_projects_sections_type1.type1.name }::#{ eefpst1r.population_name.name }: Within-arm changes",
+        = link_to "#{ eefpst1r.extractions_extraction_forms_projects_sections_type1.type1.short_name_and_description }::#{ eefpst1r.population_name.name }: Within-arm changes",
           edit_result_statistic_section_path(eefpst1r.result_statistic_sections.where(result_statistic_section_type: ResultStatisticSectionType.find_by(name: 'Within Arm Comparisons')).first)
       td style='border: 1px solid lightgrey;'
-        = link_to "#{ eefpst1r.extractions_extraction_forms_projects_sections_type1.type1.name }::#{ eefpst1r.population_name.name }: Net Differences",
+        = link_to "#{ eefpst1r.extractions_extraction_forms_projects_sections_type1.type1.short_name_and_description }::#{ eefpst1r.population_name.name }: Net Differences",
           edit_result_statistic_section_path(eefpst1r.result_statistic_sections.where(result_statistic_section_type: ResultStatisticSectionType.find_by(name: 'NET Change')).first)
