@@ -1,5 +1,10 @@
 class Citation < ApplicationRecord
   include SharedQueryableMethods
+
+  acts_as_paranoid
+  has_paper_trail
+  searchkick
+
   belongs_to :citation_type
 
   has_one :journal, dependent: :destroy

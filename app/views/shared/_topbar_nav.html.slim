@@ -19,8 +19,9 @@
             = image_tag('brand', size: '200x50')
     .top-bar-right
       ul.vertical.dropdown.menu.medium-horizontal data-dropdown-menu='' data-close-on-click-inside='false'
-        li = link_to(search_path) do
-          i.fi-magnifying-glass  Search
+        li = link_to(new_search_path) do
+          i.fi-magnifying-glass
+          |  Search
         - if user_signed_in?
           = render 'shared/signed_in_links'
         - else

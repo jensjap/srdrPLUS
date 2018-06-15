@@ -1,5 +1,5 @@
 class ProjectsController < ApplicationController
-  before_action :set_project, only: [:show, :edit, :update, :destroy, :export]
+  before_action :set_project, only: [:show, :edit, :update, :destroy, :export, :comparison_tool]
 
   SORT = {  'updated-at': { updated_at: :desc },
             'created-at': { created_at: :desc }
@@ -113,7 +113,11 @@ class ProjectsController < ApplicationController
     SimpleExportJob.perform_later(current_user.id, @project.id)
     flash[:success] = "Export request submitted for project '#{ @project.name }'. You will be notified by email of its completion."
 
-    redirect_to projects_url
+    redirect_to edit_project_path(@project)
+  end
+
+  def comparison_tool
+    @citation_groups = @project.citation_groups
   end
 
   private
@@ -133,7 +137,7 @@ class ProjectsController < ApplicationController
                 { tasks_attributes: [:id, :name, :num_assigned, :task_type_id, assignments_attributes: [:id, :user_id]]},
                 { assignments_attributes: [:id, :done_so_far, :date_assigned, :date_due, :done, :user_id]},
                 { citations_attributes: [:id, :name, :citation_type_id, :_destroy] },
-                citations_projects_attributes: [:id, :_destroy, :citation_id, :project_id, 
+                citations_projects_attributes: [:id, :_destroy, :citation_id, :project_id,
                                                 citation_attributes: [:id, :_destroy, :name]])
     end
 
@@ -141,12 +145,12 @@ class ProjectsController < ApplicationController
       #!!! This is wrong. Just because there's an older version doesn't mean we should be able to revert to it.
       #    This could have been called when Assignment was created.
       if @project.versions.present?
-        view_context.link_to '<u><strong>Undo that please!</strong></u>'.html_safe, undo_path(@project.versions.last), method: :post
+        view_context.link_to '<u><strong>Undo that please!</strong></u>'.html_safe, undo_project_path(@project.versions.last), method: :post
       end
     end
 
     def make_redo_link
       params[:redo] == 'true' ? link = '<u><strong>Undo that please!</strong></u>'.html_safe : link = '<u><strong>Redo that please!</strong></u>'.html_safe
-      view_context.link_to link, undo_path(@project_version.next, redo: !params[:redo]), method: :post
+      view_context.link_to link, undo_project_path(@project_version.next, redo: !params[:redo]), method: :post
     end
 end

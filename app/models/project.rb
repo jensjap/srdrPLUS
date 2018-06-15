@@ -6,11 +6,12 @@ class Project < ApplicationRecord
   has_paper_trail
   searchkick
 
-  #scope :is_public, -> { where( public: true ) }
-
   paginates_per 8
 
-  #after_create :create_default_extraction_form
+  scope :published, -> { joins(publishings: :approval) }
+  scope :lead_by_current_user, -> {}
+
+  after_create :create_default_extraction_form
 
   has_many :extractions, dependent: :destroy, inverse_of: :project
 
@@ -46,6 +47,10 @@ class Project < ApplicationRecord
   accepts_nested_attributes_for :tasks, allow_destroy: true
   accepts_nested_attributes_for :assignments, allow_destroy: true
 
+  def public?
+    self.publishings.any?(&:approval)
+  end
+
   def duplicate_key_question?
     self.key_questions.having('count(*) > 1').group('name').length.nonzero?
   end
@@ -79,6 +84,35 @@ class Project < ApplicationRecord
   def members
     User.joins({ projects_users: :project })
       .where(projects_users: { project_id: id })
+  end
+
+  # returns nested hash:
+  # {
+  #   key: citations_project_id
+  #   value: {
+  #     data_discrepancy: Bool,
+  #     extraction_ids: Array,
+  #   },
+  #   ...
+  # }
+  def citation_groups
+    citation_groups = Hash.new
+    citation_groups[:citations_projects] = Hash.new
+    citation_groups[:citations_project_ids] = Array.new
+    citation_groups[:citations_project_count] = 0
+    self.extractions.each do |e|
+      if citation_groups[:citations_projects].keys.include? e.citations_project_id
+        citation_groups[:citations_projects][e.citations_project_id][:extraction_ids] << e.id
+      else
+        citation_groups[:citations_project_count] += 1
+        citation_groups[:citations_project_ids] << e.citations_project_id
+        citation_groups[:citations_projects][e.citations_project_id] = Hash.new
+        citation_groups[:citations_projects][e.citations_project_id][:citations_project_id] = e.citations_project_id
+        citation_groups[:citations_projects][e.citations_project_id][:data_discrepancy]     = false
+        citation_groups[:citations_projects][e.citations_project_id][:extraction_ids]       = [e.id]
+      end
+    end
+    byebug
   end
 
   private

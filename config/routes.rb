@@ -1,6 +1,8 @@
 require 'sidekiq/web'
 
 Rails.application.routes.draw do
+  resources :searches, only: [:new, :create]
+
   devise_for :admins
   devise_for :users, controllers: {
     confirmations: 'users/confirmations',
@@ -60,9 +62,7 @@ Rails.application.routes.draw do
   resources :extractions_extraction_forms_projects_sections_type1s, only: [] do
     get 'get_results_populations', on: :member
   end
-  post '/projects/:id/undo', to: 'projects#undo', as: :undo
   resources :projects, concerns: :paginatable, shallow: true do
-    post 'export', on: :member
     resources :citations, only: [:index] do
       collection do
         get 'labeled'
@@ -125,14 +125,18 @@ Rails.application.routes.draw do
     collection do
       get 'filter'
     end
+
+    member do
+      get  'comparison_tool'
+      post 'undo'
+      post 'export'
+    end
   end
 
   root to: 'static_pages#home'
 
   get  'about'  => 'static_pages#about'
   get  'help'   => 'static_pages#help'
-  get  'search' => 'static_pages#search'
-  post 'search' => 'static_pages#search'
 
   resource  :profile, only: [:show, :edit, :update]
   resources :degrees, only: [:index]
