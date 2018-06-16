@@ -69,13 +69,13 @@ h4 #{ efps.section.name.titleize } Question List
             td = q.name
             td style='white-space: pre-wrap;' = q.description
             td = link_to edit_question_path(q) do
-              i.fi-pencil
-              |  Edit
+              i.fi-pencil>
+              | Edit
             td = link_to q, method: :delete, data: { confirm: t('confirm') } do
-              i.fi-trash
-              |  Remove
+              i.fi-trash>
+              | Remove
             td
               - unless q.ordering.position == 1
                 = link_to dependencies_question_path(q) do
-                  i.fi-link
-                  |  Dependencies
+                  i.fi-link>
+                  | Dependencies

@@ -5,8 +5,8 @@ h4 Add a #{ section_name } suggestion
 = simple_form_for(efps, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
   .alert.callout data-abide-error='' style='display: none;'
     p
-      i.fi-alert
-      '  Please correct the errors below.
+      i.fi-alert>
+      ' Please correct the errors below.
 
   = f.simple_fields_for(:type1s, efps.type1s.build) do |sf_t1|
 

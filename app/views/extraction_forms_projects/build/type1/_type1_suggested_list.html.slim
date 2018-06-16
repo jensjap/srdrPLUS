@@ -15,5 +15,5 @@ h4 List of Suggested #{ efps.section.name.titleize.singularize } Titles
           td = t1.name
           td style='white-space: pre-wrap' = t1.description
           td = link_to extraction_forms_projects_section_dissociate_type1_path(efps, type1_id: t1.id), method: :delete, data: { confirm: t('confirm') } do
-            i.fi-trash
-            |  Remove
+            i.fi-trash>
+            | Remove

@@ -5,8 +5,8 @@
 
   .alert.callout data-abide-error='' style='display: none;'
     p
-      i.fi-alert
-      '  Please correct the errors below.
+      i.fi-alert>
+      ' Please correct the errors below.
 
   .form-inputs
 
@@ -29,14 +29,14 @@
       #step-two
 
         = link_to add_column_question_path(@question), method: :post, class: 'float-right button secondary tiny' do
-          i.fi-arrow-right
-          |  Add Column
+          i.fi-arrow-right>
+          | Add Column
 
         == render 'questions/table', f: f
 
         = link_to add_row_question_path(@question), method: :post, class: 'button secondary tiny' do
-          i.fi-arrow-down
-          |  Add Row
+          i.fi-arrow-down>
+          | Add Row
 
   .form-actions
 

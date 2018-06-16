@@ -41,8 +41,8 @@
             = f.input :comparison_type, as: :hidden, input_html: { value: :wac }
             .links.add-comparison
               = link_to_add_association f, :comparisons, class: 'button tiny', render_options: { locals: { comparison: :wac } } do
-                i.fi-plus
-                |  Add Comparison
+                i.fi-plus>
+                | Add Comparison
 
       tr
         td = simple_form_for @result_statistic_section do |f|

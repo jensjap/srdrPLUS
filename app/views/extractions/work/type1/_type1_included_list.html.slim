@@ -47,9 +47,9 @@ table
               li = tp.timepoint_name.name + (tp.timepoint_name.unit.present? ? " (#{ tp.timepoint_name.unit })" : '') + (tp.is_baseline? ? ' (Baseline)' : '')
 
       td = link_to edit_extractions_extraction_forms_projects_sections_type1_path(eefpst1) do
-        i.fi-pencil
-        |  Edit
+        i.fi-pencil>
+        | Edit
 
       td = link_to eefpst1, data: { confirm: 'Are you sure?' }, method: :delete do
-        i.fi-trash
-        |  Remove
+        i.fi-trash>
+        | Remove

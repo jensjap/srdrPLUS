@@ -23,8 +23,8 @@
             = f.input :comparison_type, as: :hidden, input_html: { value: :bac }
             .links.add-comparison
               = link_to_add_association f, :comparisons, class: 'button tiny', render_options: { locals: { comparison: :bac } } do
-                i.fi-plus
-                |  Add Comparison
+                i.fi-plus>
+                | Add Comparison
 
     tbody
       - @result_statistic_section.timepoints.each do |tp|
