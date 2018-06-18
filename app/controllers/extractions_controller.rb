@@ -1,6 +1,8 @@
 class ExtractionsController < ApplicationController
-  before_action :set_project, only: [:index, :new, :create]
+  before_action :set_project, only: [:index, :new, :create, :comparison_tool, :consolidate]
   before_action :set_extraction, only: [:show, :edit, :update, :destroy, :work]
+  before_action :set_extractions, only: [:consolidate]
+  before_action :ensure_extraction_form_structure, only: [:consolidate, :work]
 
   # GET /projects/1/extractions
   # GET /projects/1/extractions.json
@@ -74,6 +76,18 @@ class ExtractionsController < ApplicationController
     @key_questions_projects_array_for_select = @extraction.project.key_questions_projects_array_for_select
   end
 
+  # GET /projects/1/extractions/comparison_tool
+  def comparison_tool
+    @citation_groups = @project.citation_groups
+  end
+
+  # GET /projects/1/extractions/consolidate
+  def consolidate
+    @extractions = Extraction.where(id: extraction_ids_params)
+    @extraction_forms_projects = @extractions.first.project.extraction_forms_projects
+    @key_questions_projects_array_for_select = @extractions.first.project.key_questions_projects_array_for_select
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_project
@@ -86,11 +100,27 @@ class ExtractionsController < ApplicationController
                               #.includes(key_questions_projects: [:key_question, extraction_forms_projects_section: [:extractions_extraction_forms_projects_sections, :extraction_forms_projects_section_type]])
     end
 
+    def set_extractions
+      @extractions = Extraction.where(id: extraction_ids_params)
+    end
+
     # Never trust parameters from the scary internet, only allow the white list through.
     def extraction_params
       params.require(:extraction).permit(:citations_project_id,
                                          :projects_users_role_id,
                                          extractions_key_questions_project_ids: [],
                                          key_questions_project_ids: [])
+    end
+
+    def extraction_ids_params
+      params.require(:extraction_ids)
+    end
+
+    def ensure_extraction_form_structure
+      if @extractions
+        @extractions.each { |extraction| extraction.ensure_extraction_form_structure }
+      else
+        @extraction.ensure_extraction_form_structure
+      end
     end
 end

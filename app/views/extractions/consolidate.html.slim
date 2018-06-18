@@ -1,5 +1,4 @@
-- provide(:title, 'Extract Data')
-/= react_component 'Main'
+- provide(:title, 'Consolidate Extractions')
 
 .column.row
 
@@ -14,4 +13,4 @@
 
   = render 'extractions/shared/extraction_forms_project_tab_content'
 
-= link_to 'Back', project_extractions_path(@extraction.project)
+= link_to 'Back', comparison_tool_project_extractions_path(@extractions.first.project), title: t('compare_extractions')

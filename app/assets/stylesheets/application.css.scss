@@ -305,3 +305,10 @@ pre.debug_dump {
 .off-canvas-content {
   min-height: -webkit-fill-available;
 }
+
+// Extractions.
+// Since we only have one extraction form at the moment we can safely hide the tab links.
+#extraction-forms-projects-tabs {
+  display: none;
+}
+// END Extractions.

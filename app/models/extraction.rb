@@ -28,6 +28,9 @@ class Extraction < ApplicationRecord
 #    end
 #  end
 
+  def ensure_extraction_form_structure
+  end
+
   private
 
     # This may create issues if type1 to type2 links are created or broken after an extraction is created.

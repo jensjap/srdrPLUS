@@ -19,4 +19,13 @@
           td = val[:citations_project_id]
           td title=val[:citation_name_long] = val[:citation_name_short]
           td = val[:extraction_ids].length.to_s
-          td = (val[:data_discrepancy] ? link_to('Difference found', '#') : 'All good')
+          - if val[:data_discrepancy]
+            td
+              i.fi-alert> style="color: red;"
+              = link_to('Differences Detected',
+                consolidate_project_extractions_path(extraction_ids: val[:extraction_ids]))
+
+          - else
+            td
+              i.fi-check> style="color: green;"
+              | No Differences Detected

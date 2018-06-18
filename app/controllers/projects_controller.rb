@@ -1,5 +1,5 @@
 class ProjectsController < ApplicationController
-  before_action :set_project, only: [:show, :edit, :update, :destroy, :export, :comparison_tool]
+  before_action :set_project, only: [:show, :edit, :update, :destroy, :export]
 
   SORT = {  'updated-at': { updated_at: :desc },
             'created-at': { created_at: :desc }
@@ -114,10 +114,6 @@ class ProjectsController < ApplicationController
     flash[:success] = "Export request submitted for project '#{ @project.name }'. You will be notified by email of its completion."
 
     redirect_to edit_project_path(@project)
-  end
-
-  def comparison_tool
-    @citation_groups = @project.citation_groups
   end
 
   private
