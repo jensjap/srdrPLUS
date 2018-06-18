@@ -1,6 +1,6 @@
-- if make_results_section_available?(@extraction.id, efp.id)
+- if (@extraction.present? ? @extraction.results_section_ready_for_extraction? : @extractions.any?(&:results_section_ready_for_extraction?))
 
-  == render 'extractions/work/results/results_section_content', efp: efp, section_name: section_name
+  = render 'extractions/work/results/results_section_content', efp: efp, section_name: section_name
 
 - else
 

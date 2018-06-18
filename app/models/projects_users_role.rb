@@ -18,4 +18,5 @@ class ProjectsUsersRole < ApplicationRecord
   end
 
   delegate :project, to: :projects_user
+  delegate :user, to: :projects_user
 end

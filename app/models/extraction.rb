@@ -22,6 +22,9 @@ class Extraction < ApplicationRecord
 
   has_many :extractions_projects_users_roles, dependent: :destroy, inverse_of: :extraction
 
+  delegate :citation, to: :citations_project
+  delegate :user, to: :projects_users_role
+
 #  def to_builder
 #    Jbuilder.new do |extraction|
 #      extraction.sections extractions_extraction_forms_projects_sections.map { |eefps| eefps.to_builder.attributes! }
@@ -29,6 +32,33 @@ class Extraction < ApplicationRecord
 #  end
 
   def ensure_extraction_form_structure
+    self.project.extraction_forms_projects.each do |efp|
+      efp.extraction_forms_projects_sections.each do |efps|
+        ExtractionsExtractionFormsProjectsSection.find_or_create_by!(
+          extraction: self,
+          extraction_forms_projects_section: efps,
+          link_to_type1: efps.link_to_type1.nil? ?
+            nil :
+            ExtractionsExtractionFormsProjectsSection.find_or_create_by!(
+              extraction: self,
+              extraction_forms_projects_section: efps.link_to_type1
+            )
+        )
+      end
+    end
+  end
+
+  def results_section_ready_for_extraction?
+    ExtractionsExtractionFormsProjectsSectionsType1
+      .by_section_name_and_extraction_id_and_extraction_forms_project_id(
+        'Arms',
+        self.id,
+        self.project.extraction_forms_projects.first.id).present? &&
+    ExtractionsExtractionFormsProjectsSectionsType1
+      .by_section_name_and_extraction_id_and_extraction_forms_project_id(
+        'Outcomes',
+        self.id,
+        self.project.extraction_forms_projects.first.id).present?
   end
 
   private

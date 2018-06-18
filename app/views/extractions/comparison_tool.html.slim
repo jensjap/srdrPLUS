@@ -12,6 +12,7 @@
         th Citation Name
         th Number of Extractions
         th Status
+        th Action
 
     tbody
       - @citation_groups[:citations_projects].each do |key, val|
@@ -22,10 +23,15 @@
           - if val[:data_discrepancy]
             td
               i.fi-alert> style="color: red;"
-              = link_to('Differences Detected',
-                consolidate_project_extractions_path(extraction_ids: val[:extraction_ids]))
+              | Differences Detected
+            td
+              = link_to('Consolidate Extractions',
+                consolidate_project_extractions_path(extraction_ids: val[:extraction_ids]),
+                style: 'margin-bottom: 0;',
+                class: 'button tiny')
 
           - else
             td
               i.fi-check> style="color: green;"
               | No Differences Detected
+            td Nothing to Consolidate
