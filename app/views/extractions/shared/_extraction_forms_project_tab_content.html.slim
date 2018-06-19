@@ -1,3 +1,9 @@
+- extractions = @extractions || [@extraction]
+
+a data-toggle='foo bar'
+  i.fi-crop>
+  |Toggle Menu
+
 .tabs-content data-tabs-content='extraction-forms-projects-tabs'
 
   - is_first = true
@@ -9,11 +15,11 @@
       .tabs-panel.is-active id="panel-extraction-forms-project-#{ efp.id.to_s }"
 
         .row
-          .column.medium-2
+          #foo.column.medium-2 data-toggler='hide medium-2'
             = render 'extractions/shared/extraction_forms_projects_section_tab_links',
               efp: efp
 
-          .column.medium-10
+          #bar.column.medium-10 data-toggler='medium-10 medium-12'
             .tabs-content.vertical data-tabs-content="extraction-forms-projects-#{ efp.id.to_s }-vertical-tabs"
 
               - efp.extraction_forms_projects_sections.includes(:extraction_forms_projects_section_type, :section, :type1s).each do |efps|

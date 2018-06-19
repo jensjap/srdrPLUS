@@ -1,14 +1,14 @@
 - provide(:title, 'Extract Data')
 
 .column.row
-  .title-heading
-    h3 Extract Data
 
   .key-question-selector
-    h4 Select Key Question to work on
+    h4 Select Key Question(s)
     - @key_questions_projects_array_for_select.each do |kqp|
       = check_box_tag kqp[1], 1, true
       = label_tag kqp[1], kqp[0]
+
+  hr
 
   #preview.column.row.work
     = render 'extractions/shared/extraction_forms_project_tab_links'

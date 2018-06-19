@@ -1,14 +1,16 @@
+h5 Extraction by #{ extraction.user.profile.username } (extraction id: #{ extraction.id })
+
 .table-scroll
   table
     thead
-      tr
+      /tr
         - if section_name.eql? 'Outcomes'
           th colspan='5' = "Extraction by #{ extraction.user.profile.username } (extraction id: #{ extraction.id })"
-
         - else
           th colspan='2' = "Extraction by #{ extraction.user.profile.username } (extraction id: #{ extraction.id })"
+
       tr
-        /- if section_name == 'Outcomes'
+        - if section_name == 'Outcomes'
           th Type
         th Name
         th Description
@@ -20,14 +22,15 @@
       - eefps.extractions_extraction_forms_projects_sections_type1s.includes(:type1_type, :type1).each do |eefpst1|
         tr
           - if section_name == 'Outcomes'
-            /td
+            td
               = eefpst1.type1_type.present? ? eefpst1.type1_type.name : ''
             td
               ul style='list-style: none; margin: 0px;'
                 li style='margin-top: 3px;'
                   = eefpst1.type1.name
-                /li style='margin-left: 7px;'
-                  | Units: #{ eefpst1.units }
+                - if eefpst1.units.present?
+                  li style='margin-left: 7px;'
+                    | Units: #{ eefpst1.units }
 
           - else
             td = eefpst1.type1.name
