@@ -28,42 +28,24 @@ a data-toggle='foo bar'
 
                 .tabs-panel id="panel-tab-#{ efps.id.to_s }"
 
-                  - if action_name.eql? 'consolidate'
-                    .row
-                      - @extractions.each do |extraction|
-                        .columns class="medium-#{ 12/@extractions.length }"
-                          - eefps = ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by(\
+                  .row
+                    - extractions.each do |extraction|
+                      .columns class="medium-#{ 12/extractions.length }"
+                        - eefps = ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by(\
+                          extraction: extraction,
+                          extraction_forms_projects_section: efps,
+                          link_to_type1: efps.link_to_type1.nil?\
+                          ? nil\
+                          : ExtractionsExtractionFormsProjectsSection.find_by!(\
                             extraction: extraction,
-                            extraction_forms_projects_section: efps,
-                            link_to_type1: efps.link_to_type1.nil?\
-                            ? nil\
-                            : ExtractionsExtractionFormsProjectsSection.find_by(\
-                              extraction: extraction,
-                              extraction_forms_projects_section: efps.link_to_type1))
+                            extraction_forms_projects_section: efps.link_to_type1))
 
-                          - if ['Arms', 'Outcomes'].include? section_name
-                            = render "extractions/#{ action_name }/#{ efps.extraction_forms_projects_section_type.name.parameterize.underscore }",
-                              extraction: extraction,
-                              section_name: section_name,
-                              efp: efp,
-                              efps: efps,
-                              eefps: eefps
-
-                  - else
-                    - eefps = ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by(\
-                      extraction: @extraction,
-                      extraction_forms_projects_section: efps,
-                      link_to_type1: efps.link_to_type1.nil?\
-                      ? nil\
-                      : ExtractionsExtractionFormsProjectsSection.find_by(\
-                        extraction: @extraction,
-                        extraction_forms_projects_section: efps.link_to_type1))
-
-                    = render "extractions/#{ action_name }/#{ efps.extraction_forms_projects_section_type.name.parameterize.underscore }",
-                      section_name: section_name,
-                      efp: efp,
-                      efps: efps,
-                      eefps: eefps
+                        = render "extractions/#{ action_name }/#{ efps.extraction_forms_projects_section_type.name.parameterize.underscore }",
+                          extraction: extraction,
+                          section_name: section_name,
+                          efp: efp,
+                          efps: efps,
+                          eefps: eefps
 
       - is_first = false
 
