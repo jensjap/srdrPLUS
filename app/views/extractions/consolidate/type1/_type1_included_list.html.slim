@@ -3,12 +3,6 @@ h5 Extraction by #{ extraction.user.profile.username } (extraction id: #{ extrac
 .table-scroll
   table
     thead
-      /tr
-        - if section_name.eql? 'Outcomes'
-          th colspan='5' = "Extraction by #{ extraction.user.profile.username } (extraction id: #{ extraction.id })"
-        - else
-          th colspan='2' = "Extraction by #{ extraction.user.profile.username } (extraction id: #{ extraction.id })"
-
       tr
         - if section_name == 'Outcomes'
           th Type
