@@ -95,7 +95,7 @@ $global-font-size: 120%;
 $global-width: rem-calc(1800);
 $global-lineheight: 1.5;
 $foundation-palette: (
-  primary: #200446, //#110224, //#410093, //#125C87, //#1976ad, //#219be3, //#2199e8,
+  primary: $color-primary-0, //200446, //#110224, //#410093, //#125C87, //#1976ad, //#219be3, //#2199e8,
   secondary: #ff9718, //#D3C000, //#363100, //#FFE900, //#ff9718, //#777,
   success: #3adb76,
   warning: #f58700, //#ffae00,
@@ -609,11 +609,11 @@ $switch-paddle-transition: all 0.25s ease-out;
 $table-background: $white;
 $table-color-scale: 5%;
 $table-border: 1px solid smart-scale($table-background, $table-color-scale);
-$table-padding: rem-calc(8 10 10);
+$table-padding: rem-calc(4 5 5);
 $table-hover-scale: 2%;
 $table-row-hover: darken($table-background, $table-hover-scale);
 $table-row-stripe-hover: darken($table-background, $table-color-scale + $table-hover-scale);
-$table-is-striped: true;
+$table-is-striped: false;
 $table-striped-background: smart-scale($table-background, $table-color-scale);
 $table-stripe: even;
 $table-head-background: smart-scale($table-background, $table-color-scale / 2);
