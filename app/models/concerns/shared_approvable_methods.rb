@@ -27,6 +27,4 @@ module SharedApprovableMethods
 
   class_methods do
   end
-
 end
-

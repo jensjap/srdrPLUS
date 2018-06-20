@@ -104,8 +104,10 @@ class Project < ApplicationRecord
       if citation_groups[:citations_projects].keys.include? e.citations_project_id
         citation_groups[:citations_projects][e.citations_project_id][:extraction_ids] << e.id
         # If data_discrepancy is already true then don't bother running the discovery process.
-        citation_groups[:citations_projects][e.citations_project_id][:data_discrepancy] =
-          discover_extraction_discrepancy(citation_groups[:citations_projects][e.citations_project_id][:extraction_ids].first, e.id) unless citation_groups[:citations_projects][e.citations_project_id][:data_discrepancy]
+        unless citation_groups[:citations_projects][e.citations_project_id][:data_discrepancy]
+          citation_groups[:citations_projects][e.citations_project_id][:data_discrepancy] =
+            discover_extraction_discrepancy(citation_groups[:citations_projects][e.citations_project_id][:extraction_ids].first, e.id)
+        end
       else
         citation_groups[:citations_project_count] += 1
         citation_groups[:citations_project_ids] << e.citations_project_id

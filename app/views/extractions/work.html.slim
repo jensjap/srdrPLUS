@@ -13,8 +13,7 @@
   #preview.column.row.work
     = render 'extractions/shared/extraction_forms_project_tab_links'
 
-    = render 'extractions/shared/extraction_forms_project_tab_content',
-      extraction: @extraction
+    = render 'extractions/shared/extraction_forms_project_tab_content'
 
 = link_to 'Back to Extractions',
   project_extractions_path(@extraction.project),

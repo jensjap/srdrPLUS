@@ -21,5 +21,4 @@ module SharedParanoiaMethods
 
   class_methods do
   end
-
 end

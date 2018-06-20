@@ -8,9 +8,8 @@
   #preview.column.row.work
     = render 'extractions/shared/extraction_forms_project_tab_links'
 
-    = render 'extractions/shared/extraction_forms_project_tab_content',
-      extraction: @extractions.first
+    = render 'extractions/shared/extraction_forms_project_tab_content'
 
 = link_to 'Back to Comparison Tool',
-  comparison_tool_project_extractions_path(@extractions.first.project),
+  comparison_tool_project_extractions_path(@project),
   title: t('compare_extractions')

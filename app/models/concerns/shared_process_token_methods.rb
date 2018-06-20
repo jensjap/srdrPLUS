@@ -24,7 +24,4 @@ module SharedProcessTokenMethods
 
   class_methods do
   end
-
 end
-
-

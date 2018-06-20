@@ -29,6 +29,4 @@ module SharedPublishableMethods
 
   class_methods do
   end
-
 end
-
