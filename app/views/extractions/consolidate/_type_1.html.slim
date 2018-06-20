@@ -1,24 +1,29 @@
-= render 'extractions/consolidate/type1/type1_included_list',
-  extraction: extraction,
-  section_name: section_name,
-  eefps: eefps
-
-
-/  = render 'extractions/work/type1/type1_friendly_helper_message',
+.column.row
+  = render 'extractions/consolidate/type1/type1_included_list',
+    extraction: extraction,
     section_name: section_name,
     eefps: eefps
 
-
-/  = render 'extractions/work/type1/type1_included_list',
+/.column.row
+  = render 'extractions/work/type1/type1_friendly_helper_message',
+    extraction: extraction,
     section_name: section_name,
     eefps: eefps
 
-
-/  = render 'extractions/work/type1/type1_example_list',
+/.column.row
+  = render 'extractions/work/type1/type1_included_list',
+    extraction: extraction,
     section_name: section_name,
     eefps: eefps
 
+/.column.row
+  = render 'extractions/work/type1/type1_example_list',
+    extraction: extraction,
+    section_name: section_name,
+    eefps: eefps
 
-/  = render 'extractions/work/type1/type1_new_custom_form',
+/.column.row
+  = render 'extractions/work/type1/type1_new_custom_form',
+    extraction: extraction,
     section_name: section_name,
     eefps: eefps

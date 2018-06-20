@@ -1,5 +1,20 @@
 ul.tabs.vertical id="extraction-forms-projects-#{ efp.id.to_s }-vertical-tabs" data-deep-link='true' data-deep-link-smudge='true' data-deep-link-smudge-delay='100' data-update-history='true' data-tabs=''
+
+  - is_first = true
+
   - efp.extraction_forms_projects_sections.includes(:section).each do |efps|
     - section_name = efps.section.name
-    li.tabs-title
-      = link_to section_name, "#panel-tab-#{ efps.id.to_s }", title: section_name
+
+    - if is_first
+      li.tabs-title.is-active
+        = link_to section_name,
+          "#panel-tab-#{ efps.id.to_s }",
+          title: section_name
+
+      - is_first = false
+
+    - else
+      li.tabs-title
+        = link_to section_name,
+          "#panel-tab-#{ efps.id.to_s }",
+          title: section_name
