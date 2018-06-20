@@ -85,7 +85,7 @@ class ExtractionsController < ApplicationController
   def consolidate
     @extractions = Extraction.where(id: extraction_ids_params)
     @extraction_forms_projects = @extractions.first.project.extraction_forms_projects
-    @key_questions_projects_array_for_select = @extractions.first.project.key_questions_projects_array_for_select
+    #@key_questions_projects_array_for_select = @extractions.first.project.key_questions_projects_array_for_select
   end
 
   private

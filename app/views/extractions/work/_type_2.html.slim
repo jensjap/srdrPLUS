@@ -2,11 +2,11 @@
 
 - if linked_section && eefps.link_to_type1.type1s.blank?
 
-  h4 style='color: red;' You must add #{ linked_section.extraction_forms_projects_section.section.name } before extracting into this section.
+  h5 style='color: red;' You must add #{ linked_section.extraction_forms_projects_section.section.name } before extracting into this section.
 
 - else
 
-  h4 = section_name
+  h5 = section_name
   blockquote
     | Please answer the questions to the best of your ability. If you require clarification, please consult the project lead.
     cite Friendly Helper

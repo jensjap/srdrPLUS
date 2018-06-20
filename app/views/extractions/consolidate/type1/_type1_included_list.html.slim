@@ -12,6 +12,8 @@ h5 Extraction by #{ extraction.user.profile.username } (extraction id: #{ extrac
           th Populations
           th Timepoints
 
+
+
     tbody
       - eefps.extractions_extraction_forms_projects_sections_type1s.includes(:type1_type, :type1).each do |eefpst1|
         tr

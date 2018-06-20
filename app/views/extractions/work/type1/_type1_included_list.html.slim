@@ -1,4 +1,4 @@
-h4 #{ section_name } that are included in this Extraction
+h5 #{ section_name } that are included in this Extraction
 
 .table-scroll
   table
@@ -17,7 +17,6 @@ h4 #{ section_name } that are included in this Extraction
     tbody
       - eefps.extractions_extraction_forms_projects_sections_type1s.includes(:type1_type, :type1).each do |eefpst1|
         tr
-
           - if section_name == 'Outcomes'
             td
               = eefpst1.type1_type.present? ? eefpst1.type1_type.name : ''
@@ -36,12 +35,10 @@ h4 #{ section_name } that are included in this Extraction
 
           - if section_name == 'Outcomes'
             td
-              /= link_to 'Edit Populations', edit_populations_extractions_extraction_forms_projects_sections_type1_path(eefpst1)
               ul
                 - eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |pop|
                   li = pop.population_name.name
             td
-              /= link_to 'Edit Timepoints', edit_timepoints_extractions_extraction_forms_projects_sections_type1_path(eefpst1)
               ul
                 - eefpst1.extractions_extraction_forms_projects_sections_type1_rows.first.extractions_extraction_forms_projects_sections_type1_row_columns.each do |tp|
                   li = tp.timepoint_name.name + (tp.timepoint_name.unit.present? ? " (#{ tp.timepoint_name.unit })" : '') + (tp.is_baseline? ? ' (Baseline)' : '')
