@@ -31,7 +31,7 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
 
   delegate :extraction, to: :extractions_extraction_forms_projects_section
 
-  #validates :type1_id, uniqueness: { scope: :extractions_extraction_forms_projects_section_id }
+  validates :type1, uniqueness: { scope: :extractions_extraction_forms_projects_section }
 
   def type1_name_and_description
     text =  "#{ type1.name }"

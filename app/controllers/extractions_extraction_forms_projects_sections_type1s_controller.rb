@@ -19,6 +19,7 @@ class ExtractionsExtractionFormsProjectsSectionsType1sController < ApplicationCo
                                                        notice: t('success') }
         format.json { head :no_content }
       else
+        flash[:alert] = @extractions_extraction_forms_projects_sections_type1.errors.messages.values
         format.html { render :edit }
         format.json { render json: @extractions_extraction_forms_projects_sections_type1.errors, status: :unprocessable_entity }
       end

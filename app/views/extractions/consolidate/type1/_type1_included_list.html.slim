@@ -15,30 +15,91 @@ h5 Extraction by #{ extraction.user.profile.username } (extraction id: #{ extrac
 
 
     tbody
-      - eefps.extractions_extraction_forms_projects_sections_type1s.includes(:type1_type, :type1).each do |eefpst1|
+      - @head_to_head.dig(eefps.extraction_forms_projects_section.extraction_forms_project.id, eefps.extraction_forms_projects_section.id, :type1s).each do |type1|
+        - type1_found = false
         tr
-          - if section_name == 'Outcomes'
-            td
-              = eefpst1.type1_type.present? ? eefpst1.type1_type.name : ''
-            td
-              ul style='list-style: none; margin: 0px;'
-                li style='margin-top: 3px;'
-                  = eefpst1.type1.name
-                - if eefpst1.units.present?
-                  li style='margin-left: 7px;'
-                    | Units: #{ eefpst1.units }
+          - eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
+            - if eefpst1.type1 == type1
+              - if section_name.eql? 'Outcomes'
+                td
+                  = eefpst1.type1_type.present? ? eefpst1.type1_type.name : ''
+                td
+                  ul style='list-style: none; margin: 0px;'
+                    li style='margin-top: 3px;'
+                      = eefpst1.type1.name
+                    - if eefpst1.units.present?
+                      li style='margin-left: 7px;'
+                        | Units: #{ eefpst1.units }
 
-          - else
-            td = eefpst1.type1.name
+              - else
+                td = eefpst1.type1.name
 
-          td = eefpst1.type1.description
+              td = eefpst1.type1.description
 
-          - if section_name == 'Outcomes'
+              - if section_name.eql? 'Outcomes'
+                td
+                  - @head_to_head.dig(eefps.extraction_forms_projects_section.extraction_forms_project.id, eefps.extraction_forms_projects_section.id, :population_names).each do |pn|
+                    - population_found = false
+                    ul
+                      - eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |eefpst1r|
+                        - if eefpst1r.population_name.eql? pn
+                          li = eefpst1r.population_name.short_name_and_description
+
+                          - population_found = true
+
+                      - unless population_found
+                        li style='border: 1.2px solid red; min-height: 20px;'
+                td
+                  - @head_to_head.dig(eefps.extraction_forms_projects_section.extraction_forms_project.id, eefps.extraction_forms_projects_section.id, :timepoint_names).each do |tn|
+                    - timepoint_found = false
+                    ul
+                      - eefpst1.extractions_extraction_forms_projects_sections_type1_rows.first.extractions_extraction_forms_projects_sections_type1_row_columns.each do |eefpst1rc|
+                        - if eefpst1rc.timepoint_name.eql? tn
+                          li = eefpst1rc.timepoint_name.pretty_print_export_header
+
+                          - timepoint_found = true
+
+                      - unless timepoint_found
+                        li style='border: 1.2px solid red; min-height: 20px;'
+
+              - type1_found = true
+
+          - unless type1_found
             td
-              ul
-                - eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |pop|
-                  li = pop.population_name.name
+              div style='border: 1.2px solid red; min-height: 20px;'
             td
-              ul
-                - eefpst1.extractions_extraction_forms_projects_sections_type1_rows.first.extractions_extraction_forms_projects_sections_type1_row_columns.each do |tp|
-                  li = tp.timepoint_name.name + (tp.timepoint_name.unit.present? ? " (#{ tp.timepoint_name.unit })" : '') + (tp.is_baseline? ? ' (Baseline)' : '')
+              div style='border: 1.2px solid red; min-height: 20px;'
+
+
+
+/        - if eefps.extractions_extraction_forms_projects_sections_type1s.includes(:type1_type, :type1).map(&:type1).include? type1
+          tr
+            - if section_name == 'Outcomes'
+              td
+                = type1.type1_type.present? ? type1.type1_type.name : ''
+              td
+                ul style='list-style: none; margin: 0px;'
+                  li style='margin-top: 3px;'
+                    = type1.name
+                  - if type1.units.present?
+                    li style='margin-left: 7px;'
+                      | Units: #{ type1.units }
+            - else
+              td = type1.name
+            td = type1.description
+            - if section_name == 'Outcomes'
+              td
+                ul
+                  - @head_to_head.dig(eefps.extraction_forms_projects_section.extraction_forms_project.id, eefps.extraction_forms_projects_section.id, :populations).each do |population|
+                    - if eefps.extraction_forms_projects_sections_type1_rows.where(type1: type1).map(&:) do |pop|
+                      li = pop.population_name.name
+              td
+                ul
+                  - type1.extractions_extraction_forms_projects_sections_type1_rows.first.extractions_extraction_forms_projects_sections_type1_row_columns.each do |tp|
+                    li = tp.timepoint_name.name + (tp.timepoint_name.unit.present? ? " (#{ tp.timepoint_name.unit })" : '') + (tp.is_baseline? ? ' (Baseline)' : '')
+        - else
+          tr
+            td
+              div style='border: 1.2px solid red; min-height: 20px;'
+            td
+              div style='border: 1.2px solid red; min-height: 20px;'

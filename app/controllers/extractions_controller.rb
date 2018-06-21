@@ -1,4 +1,6 @@
 class ExtractionsController < ApplicationController
+  include ExtractionsControllerHelpers
+
   before_action :set_project, only: [:index, :new, :create, :comparison_tool, :consolidate]
   before_action :set_extraction, only: [:show, :edit, :update, :destroy, :work]
   before_action :set_extractions, only: [:consolidate]
@@ -83,8 +85,10 @@ class ExtractionsController < ApplicationController
 
   # GET /projects/1/extractions/consolidate
   def consolidate
-    @extractions = Extraction.where(id: extraction_ids_params)
-    @extraction_forms_projects = @extractions.first.project.extraction_forms_projects
+    @extraction_forms_projects = @project.extraction_forms_projects
+    @extractions               = Extraction.where(id: extraction_ids_params)
+    @head_to_head              = head_to_head(@extraction_forms_projects, @extractions)
+    #byebug
     #@key_questions_projects_array_for_select = @extractions.first.project.key_questions_projects_array_for_select
   end
 
