@@ -1,7 +1,7 @@
 h5 Extraction by #{ extraction.user.profile.username } (extraction id: #{ extraction.id })
 
 .table-scroll
-  table
+  table.consolidate
     thead
       tr
         - if section_name == 'Outcomes'
@@ -38,21 +38,21 @@ h5 Extraction by #{ extraction.user.profile.username } (extraction id: #{ extrac
 
               - if section_name.eql? 'Outcomes'
                 td
-                  - @head_to_head.dig(eefps.extraction_forms_projects_section.extraction_forms_project.id, eefps.extraction_forms_projects_section.id, :population_names).each do |pn|
-                    - population_found = false
-                    ul
+                  ul
+                    - @head_to_head.dig(eefps.extraction_forms_projects_section.extraction_forms_project.id, eefps.extraction_forms_projects_section.id, :population_names).each do |pn|
+                      - population_found = false
                       - eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |eefpst1r|
                         - if eefpst1r.population_name.eql? pn
-                          li = eefpst1r.population_name.short_name_and_description
+                          li title="Description: #{ eefpst1r.population_name.description }" = eefpst1r.population_name.name
 
                           - population_found = true
 
                       - unless population_found
-                        li style='border: 1.2px solid red; min-height: 20px;'
+                        li.missing-value
                 td
-                  - @head_to_head.dig(eefps.extraction_forms_projects_section.extraction_forms_project.id, eefps.extraction_forms_projects_section.id, :timepoint_names).each do |tn|
-                    - timepoint_found = false
-                    ul
+                  ul
+                    - @head_to_head.dig(eefps.extraction_forms_projects_section.extraction_forms_project.id, eefps.extraction_forms_projects_section.id, :timepoint_names).each do |tn|
+                      - timepoint_found = false
                       - eefpst1.extractions_extraction_forms_projects_sections_type1_rows.first.extractions_extraction_forms_projects_sections_type1_row_columns.each do |eefpst1rc|
                         - if eefpst1rc.timepoint_name.eql? tn
                           li = eefpst1rc.timepoint_name.pretty_print_export_header
@@ -60,15 +60,22 @@ h5 Extraction by #{ extraction.user.profile.username } (extraction id: #{ extrac
                           - timepoint_found = true
 
                       - unless timepoint_found
-                        li style='border: 1.2px solid red; min-height: 20px;'
+                        li.missing-value
 
               - type1_found = true
 
           - unless type1_found
-            td
-              div style='border: 1.2px solid red; min-height: 20px;'
-            td
-              div style='border: 1.2px solid red; min-height: 20px;'
+            - if section_name.eql? 'Outcomes'
+              td colspan='3'
+                div.missing-value
+              td
+                ul
+                  - @head_to_head.dig(eefps.extraction_forms_projects_section.extraction_forms_project.id, eefps.extraction_forms_projects_section.id, :population_names).each do |pn|
+                    .missing-value style='visibility: hidden;'
+
+            - else
+              td colspan='2'
+                div.missing-value
 
 
 

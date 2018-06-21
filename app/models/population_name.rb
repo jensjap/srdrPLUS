@@ -8,7 +8,7 @@ class PopulationName < ApplicationRecord
 
   def short_name_and_description
     text  = name
-    text += " (#{ description.truncate(8) })" if description.present?
+    text += " (#{ description.truncate(16) })" if description.present?
     return text
   end
 

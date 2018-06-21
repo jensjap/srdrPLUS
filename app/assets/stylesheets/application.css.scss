@@ -299,6 +299,12 @@ pre.debug_dump {
 
 .table-scroll table {
   width: 100%;
+
+  &.consolidate .missing-value {
+    margin-bottom: 3px;
+    border: 1.2px solid red;
+    min-height: 18px;
+  }
 }
 
 .column.row.footer {
