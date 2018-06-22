@@ -5,8 +5,10 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
   acts_as_paranoid column: :active, sentinel_value: true
   has_paper_trail
 
-  scope :result_type_sections, -> () {
-    joins(extraction_forms_projects_section: :section ).where(extraction_forms_projects_sections: { sections: { name: 'Results' } }) }
+  #!!! Doesn't work
+#  scope :result_type_sections, -> () {
+#    joins(extraction_forms_projects_section: :section )
+#      .where(extraction_forms_projects_sections: { sections: { name: 'Results' } }) }
 
   belongs_to :extraction,                        inverse_of: :extractions_extraction_forms_projects_sections
   belongs_to :extraction_forms_projects_section, inverse_of: :extractions_extraction_forms_projects_sections

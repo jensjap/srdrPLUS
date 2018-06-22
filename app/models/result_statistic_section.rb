@@ -37,9 +37,9 @@ class ResultStatisticSection < ApplicationRecord
     population
       .extractions_extraction_forms_projects_sections_type1
       .extractions_extraction_forms_projects_section
-      .extraction
-      .extractions_extraction_forms_projects_sections
-      .result_type_sections.first
+      .extraction_forms_projects_section
+      .extraction_forms_project
+      .extraction_forms_projects_sections.last
   end
 
   private
