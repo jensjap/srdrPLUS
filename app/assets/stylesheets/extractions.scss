@@ -14,6 +14,10 @@
 
   li.accordion-item.is-active {
     a.accordion-title {
+      th {
+        font-weight: bold !important;
+      }
+
       font-weight: bold;
       color: $primary-color;
     }

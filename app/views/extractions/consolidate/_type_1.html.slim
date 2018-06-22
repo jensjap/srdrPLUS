@@ -2,7 +2,15 @@ h4 = section_name
 ul.accordion.consolidate data-accordion='' data-multi-expand='true' data-allow-all-closed='true'
   - @head_to_head.dig(efp.id, efps.id, :all_type1s_across_extractions).each do |type1|
     li.accordion-item data-accordion-item=''
-      a.accordion-title href='#' title="Description: #{ type1.description }" = type1.name_and_description
+      a.accordion-title href='#' title="Description: #{ type1.description }"
+        table
+          thead
+            tr
+              th style='font-weight: normal;' = type1.name_and_description
+
+          tbody
+            tr
+              td found in #{ @head_to_head.dig(efp.id, efps.id, :type1s_found_in_extractions, type1.id).length } out of #{ @extractions.length } extractions
       .accordion-content data-tab-content=''
         .table-scroll
           table
@@ -19,7 +27,7 @@ ul.accordion.consolidate data-accordion='' data-multi-expand='true' data-allow-a
                     extraction_forms_projects_section: efps,
                     link_to_type1: efps.link_to_type1.nil?\
                       ? nil\
-                      : ExtractionsExtractionFormsProjectsSection.find_by!(\
+                      : ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by!(\
                         extraction: extraction,
                         extraction_forms_projects_section: efps.link_to_type1))
                   - if eefps.extractions_extraction_forms_projects_sections_type1s.map(&:type1).include? type1
@@ -52,7 +60,7 @@ ul.accordion.consolidate data-accordion='' data-multi-expand='true' data-allow-a
                             extraction_forms_projects_section: efps,
                             link_to_type1: efps.link_to_type1.nil?\
                               ? nil\
-                              : ExtractionsExtractionFormsProjectsSection.find_by!(\
+                              : ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by!(\
                                 extraction: extraction,
                                 extraction_forms_projects_section: efps.link_to_type1))
                           - eefpst1 = ExtractionsExtractionFormsProjectsSectionsType1.find_by(\
@@ -98,7 +106,7 @@ ul.accordion.consolidate data-accordion='' data-multi-expand='true' data-allow-a
                               extraction_forms_projects_section: efps,
                               link_to_type1: efps.link_to_type1.nil?\
                                 ? nil\
-                                : ExtractionsExtractionFormsProjectsSection.find_by!(\
+                                : ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by!(\
                                   extraction: extraction,
                                   extraction_forms_projects_section: efps.link_to_type1))
                             - eefpst1 = ExtractionsExtractionFormsProjectsSectionsType1.find_by(\

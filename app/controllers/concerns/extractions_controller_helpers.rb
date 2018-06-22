@@ -100,6 +100,10 @@ module ExtractionsControllerHelpers
                 return_value[efp_id][efps_id][:all_population_names_across_type1]                    = Hash.new unless return_value[efp_id][efps_id].has_key? :all_population_names_across_type1
                 return_value[efp_id][efps_id][:all_population_names_across_type1][eefpst1_type1_id]  = Set.new  unless return_value[efp_id][efps_id][:all_population_names_across_type1].has_key? eefpst1_type1_id
 
+                # Get all eefpst1s with this type1.
+                return_value[efp_id][efps_id][:type1s_found_in_extractions]                   = Hash.new unless return_value[efp_id][efps_id].has_key? :type1s_found_in_extractions
+                return_value[efp_id][efps_id][:type1s_found_in_extractions][eefpst1_type1_id] = eefpst1s.where(extractions_extraction_forms_projects_section: eefpss, type1: eefpst1.type1)
+
                 eefpst1_id = eefpst1.id
                 return_value[efp_id][efps_id][eefps_id][eefpst1_id] = Hash.new
                 return_value[efp_id][efps_id][eefps_id][eefpst1_id][:extractions_extraction_forms_projects_sections_type1_id] = eefpst1_id

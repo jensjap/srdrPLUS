@@ -86,7 +86,9 @@ class ExtractionsController < ApplicationController
   # GET /projects/1/extractions/consolidate
   def consolidate
     @extraction_forms_projects = @project.extraction_forms_projects
-    @extractions               = Extraction.where(id: extraction_ids_params)
+    @extractions               = Extraction.
+      includes(projects_users_role: { projects_user: { user: :profile } }).
+      where(id: extraction_ids_params)
     @head_to_head              = head_to_head(@extraction_forms_projects, @extractions)
     #byebug
     #@key_questions_projects_array_for_select = @extractions.first.project.key_questions_projects_array_for_select
