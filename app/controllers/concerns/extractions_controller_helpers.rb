@@ -97,8 +97,11 @@ module ExtractionsControllerHelpers
                 eefpst1_type1_id = eefpst1.type1.id
 
                 # This will collect all populations for a specific type1. Don't recreate if one already exists.
-                return_value[efp_id][efps_id][:all_population_names_across_type1]                   = Hash.new unless return_value[efp_id][efps_id].has_key? :all_population_names_across_type1
-                return_value[efp_id][efps_id][:all_population_names_across_type1][eefpst1_type1_id] = Set.new  unless return_value[efp_id][efps_id][:all_population_names_across_type1].has_key? eefpst1_type1_id
+                return_value[efp_id][efps_id][:all_population_names_across_type1]                    = Hash.new unless return_value[efp_id][efps_id].has_key? :all_population_names_across_type1
+                return_value[efp_id][efps_id][:all_population_names_across_type1][eefpst1_type1_id]  = Set.new  unless return_value[efp_id][efps_id][:all_population_names_across_type1].has_key? eefpst1_type1_id
+                #!!!
+                return_value[efp_id][efps_id][:_all_population_names_across_type1]                   = Hash.new unless return_value[efp_id][efps_id].has_key? :_all_population_names_across_type1
+                return_value[efp_id][efps_id][:_all_population_names_across_type1][eefpst1_type1_id] = Set.new  unless return_value[efp_id][efps_id][:_all_population_names_across_type1].has_key? eefpst1_type1_id
 
                 eefpst1_id = eefpst1.id
                 return_value[efp_id][efps_id][eefps_id][eefpst1_id] = Hash.new
@@ -112,18 +115,24 @@ module ExtractionsControllerHelpers
 
                 # Keep a master list of all populations across all extractions for this type1.
                 return_value[efp_id][efps_id][:all_population_names_across_type1][eefpst1_type1_id].merge eefpst1rs.map(&:population_name).to_set
+                #!!!
+                return_value[efp_id][efps_id][:_all_population_names_across_type1][eefpst1_type1_id].merge eefpst1rs.to_set
 
                 # Iterate over eefpst1rs to find master list of timepoints.
                 eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |eefpst1r|
+                  eefpst1r_id = eefpst1r.id
                   eefpst1r_population_name_id = eefpst1r.population_name.id
 
                   # This will collect all timepoints for a specific population. Don't recreate if one already exists.
-                  return_value[efp_id][efps_id][:all_timepoint_names_across_population]                              = Hash.new unless return_value[efp_id][efps_id].has_key? :all_timepoint_names_across_population
-                  return_value[efp_id][efps_id][:all_timepoint_names_across_population][eefpst1r_population_name_id] = Set.new  unless return_value[efp_id][efps_id][:all_timepoint_names_across_population].has_key? eefpst1r_population_name_id
+                  return_value[efp_id][efps_id][:all_timepoint_names_across_population]                               = Hash.new unless return_value[efp_id][efps_id].has_key? :all_timepoint_names_across_population
+                  return_value[efp_id][efps_id][:all_timepoint_names_across_population][eefpst1r_population_name_id]  = Set.new  unless return_value[efp_id][efps_id][:all_timepoint_names_across_population].has_key? eefpst1r_population_name_id
+                  #!!!
+                  return_value[efp_id][efps_id][eefpst1r_id]                                                                       = Hash.new unless return_value[efp_id][efps_id].has_key? eefpst1r_id
+                  return_value[efp_id][efps_id][eefpst1r_id][:_all_timepoint_names_across_population]                              = Hash.new unless return_value[efp_id][efps_id][eefpst1r_id].has_key? :_all_timepoint_names_across_population
+                  return_value[efp_id][efps_id][eefpst1r_id][:_all_timepoint_names_across_population][eefpst1r_population_name_id] = Set.new  unless return_value[efp_id][efps_id][eefpst1r_id][:_all_timepoint_names_across_population].has_key? eefpst1r_population_name_id
 
-                  eefpst1r_id = eefpst1r.id
-                  return_value[efp_id][efps_id][eefps_id][eefpst1_id][eefpst1r_id] = Hash.new
-                  return_value[efp_id][efps_id][eefps_id][eefpst1_id][eefpst1r_id][:extractions_extraction_forms_projects_sections_type1_row_id] = eefpst1r_id
+#                  return_value[efp_id][efps_id][eefps_id][eefpst1_id][eefpst1r_id] = Hash.new
+#                  return_value[efp_id][efps_id][eefps_id][eefpst1_id][eefpst1r_id][:extractions_extraction_forms_projects_sections_type1_row_id] = eefpst1r_id
 
                   # Find all timepoints across all extractions for this population.
                   eefpst1rcs = ExtractionsExtractionFormsProjectsSectionsType1RowColumn.
@@ -133,37 +142,32 @@ module ExtractionsControllerHelpers
 
                   # Keep a master list of all timepoints across all extractions for this population.
                   return_value[efp_id][efps_id][:all_timepoint_names_across_population][eefpst1r_population_name_id].merge eefpst1rcs.map(&:timepoint_name).to_set
+                  #!!!
+                  return_value[efp_id][efps_id][eefpst1r_id][:_all_timepoint_names_across_population][eefpst1r_population_name_id].merge eefpst1rcs.to_set
                 end
               end
             end
 
 
-
-
-
-
-
-
-
-
-
-            eefpst1s =
-              ExtractionsExtractionFormsProjectsSectionsType1.
-              where(extractions_extraction_forms_projects_section: eefpss)
-            eefpst1s.each do |eefpst1|
-              return_value[efp_id][efps_id]
-            end
-            eefpst1rs =
-              ExtractionsExtractionFormsProjectsSectionsType1Row.
-              where(extractions_extraction_forms_projects_sections_type1: eefpst1s)
-            eefpst1rcs =
-              ExtractionsExtractionFormsProjectsSectionsType1RowColumn.
-              where(extractions_extraction_forms_projects_sections_type1_row: eefpst1rs)
-
-            # Complete list of unique type1s for this citation_group.
-            return_value[efp_id][efps_id][:type1s]           = eefpst1s.map(&:type1).to_set
-            return_value[efp_id][efps_id][:population_names] = eefpst1rs.map(&:population_name).to_set
-            return_value[efp_id][efps_id][:timepoint_names]  = eefpst1rcs.map(&:timepoint_name).to_set
+#
+#
+#            eefpst1s =
+#              ExtractionsExtractionFormsProjectsSectionsType1.
+#              where(extractions_extraction_forms_projects_section: eefpss)
+#            eefpst1s.each do |eefpst1|
+#              return_value[efp_id][efps_id]
+#            end
+#            eefpst1rs =
+#              ExtractionsExtractionFormsProjectsSectionsType1Row.
+#              where(extractions_extraction_forms_projects_sections_type1: eefpst1s)
+#            eefpst1rcs =
+#              ExtractionsExtractionFormsProjectsSectionsType1RowColumn.
+#              where(extractions_extraction_forms_projects_sections_type1_row: eefpst1rs)
+#
+#            # Complete list of unique type1s for this citation_group.
+#            return_value[efp_id][efps_id][:type1s]           = eefpst1s.map(&:type1).to_set
+#            return_value[efp_id][efps_id][:population_names] = eefpst1rs.map(&:population_name).to_set
+#            return_value[efp_id][efps_id][:timepoint_names]  = eefpst1rcs.map(&:timepoint_name).to_set
           when 2
           when 3
           else

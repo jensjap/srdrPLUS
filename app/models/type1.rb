@@ -38,7 +38,7 @@ class Type1 < ApplicationRecord
       return name_and_description
     else
       text  = name
-      text += ' (' + description.truncate(10, separator: /\s/) + ')' if description.present?
+      text += " (#{ description.truncate(16, separator: /\s/) })" if description.present?
       return text
     end
   end
