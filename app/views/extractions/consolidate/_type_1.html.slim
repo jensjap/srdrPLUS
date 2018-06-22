@@ -81,7 +81,16 @@ ul.accordion data-accordion='' data-multi-expand='true' data-allow-all-closed='t
                           th style='visibility: hidden;' Extraction by #{ extraction.user.profile.username }
 
                     tbody
-                      - @head_to_head.dig(efp.id, efps.id, :all_timepoint_names_across_population, population_name.id).each do |timepoint_name|
+
+                      / We could show all timepoints across all populations using below. Otherwise, use current implementation and only show relevant to this type1.
+                      /- @head_to_head.dig(efp.id, efps.id, :all_timepoint_names_across_population, population_name.id).each do |timepoint_name|
+
+                      - eefpst1rcs = ExtractionsExtractionFormsProjectsSectionsType1RowColumn.\
+                        joins(extractions_extraction_forms_projects_sections_type1_row: [:population_name, { extractions_extraction_forms_projects_sections_type1: [:type1, { extractions_extraction_forms_projects_section: :extraction }] }]).\
+                        where(extractions_extraction_forms_projects_sections_type1_rows: { population_name: population_name }).\
+                        where(extractions_extraction_forms_projects_sections_type1_rows: { extractions_extraction_forms_projects_sections_type1s: { type1: type1 } }).\
+                        where(extractions_extraction_forms_projects_sections_type1_rows: { extractions_extraction_forms_projects_sections_type1s: { extractions_extraction_forms_projects_sections: { extraction: @extractions } } }).map(&:timepoint_name).to_set.each do |timepoint_name|
+
                         tr
                           - @extractions.each do |extraction|
                             - eefps = ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by(\
