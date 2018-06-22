@@ -1,3 +1,34 @@
 // Place all the styles related to the Extractions controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+@import 'settings';
+
+.consolidate {
+  li.accordion-item {
+    a,
+    a:visited {
+      color: gray;
+    }
+  }
+
+  li.accordion-item.is-active {
+    a.accordion-title {
+      font-weight: bold;
+      color: $primary-color;
+    }
+
+    div.accordion-content {
+      border-top: none;
+
+      a.button {
+        font-weight: normal;
+        margin-top: 31px;
+      }
+
+      .callout.description {
+        min-height: 140px;
+      }
+    }
+  }
+}

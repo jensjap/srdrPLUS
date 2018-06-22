@@ -1,5 +1,5 @@
 h4 = section_name
-ul.accordion data-accordion='' data-multi-expand='true' data-allow-all-closed='true'
+ul.accordion.consolidate data-accordion='' data-multi-expand='true' data-allow-all-closed='true'
   - @head_to_head.dig(efp.id, efps.id, :all_type1s_across_extractions).each do |type1|
     li.accordion-item data-accordion-item=''
       a.accordion-title href='#' title="Description: #{ type1.description }" = type1.name_and_description
@@ -39,10 +39,10 @@ ul.accordion data-accordion='' data-multi-expand='true' data-allow-all-closed='t
                 h6 Populations
                 .table-scroll
                   table
-                    thead
+                    thead style='display: none;'
                       tr
                         - @extractions.each do |extraction|
-                          th style='visibility: hidden;' Extraction by #{ extraction.user.profile.username }
+                          th Extracted by #{ extraction.user.profile.username } (Extraction ID: #{ extraction.id })
 
                     tbody
                       tr
@@ -75,10 +75,10 @@ ul.accordion data-accordion='' data-multi-expand='true' data-allow-all-closed='t
                 h6 Timepoints
                 .table-scroll
                   table
-                    thead
+                    thead style='display: none;'
                       tr
                         - @extractions.each do |extraction|
-                          th style='visibility: hidden;' Extraction by #{ extraction.user.profile.username }
+                          th Extracted by #{ extraction.user.profile.username } (Extraction ID: #{ extraction.id })
 
                     tbody
 
