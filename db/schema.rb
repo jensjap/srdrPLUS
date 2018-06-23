@@ -455,8 +455,8 @@ ActiveRecord::Schema.define(version: 20180530115049) do
     t.index ["deleted_at"], name: "index_eefpst1_on_deleted_at", using: :btree
     t.index ["extractions_extraction_forms_projects_section_id"], name: "index_eefpst1_on_eefps_id", using: :btree
     t.index ["type1_id"], name: "index_eefpst1_on_t1_id", using: :btree
-    t.index ["type1_type_id", "extractions_extraction_forms_projects_section_id", "type1_id", "active"], name: "index_eefpst1_on_t1t_id_eefps_id_t1_id_active", using: :btree
-    t.index ["type1_type_id", "extractions_extraction_forms_projects_section_id", "type1_id", "deleted_at"], name: "index_eefpst1_on_t1t_id_eefps_id_t1_id_deleted_at", using: :btree
+    t.index ["type1_type_id", "extractions_extraction_forms_projects_section_id", "type1_id", "active"], name: "index_eefpst1_on_t1t_id_eefps_id_t1_id_active", unique: true, using: :btree
+    t.index ["type1_type_id", "extractions_extraction_forms_projects_section_id", "type1_id", "deleted_at"], name: "index_eefpst1_on_t1t_id_eefps_id_t1_id_deleted_at", unique: true, using: :btree
     t.index ["type1_type_id"], name: "index_eefpst1_on_t1t_id", using: :btree
   end
 
@@ -669,7 +669,7 @@ ActiveRecord::Schema.define(version: 20180530115049) do
 
   create_table "population_names", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "name"
-    t.text     "description", limit: 65535
+    t.text     "description", limit: 65535, null: false
     t.datetime "deleted_at"
     t.datetime "created_at",                null: false
     t.datetime "updated_at",                null: false
@@ -1076,10 +1076,10 @@ ActiveRecord::Schema.define(version: 20180530115049) do
 
   create_table "timepoint_names", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "name"
-    t.string   "unit"
+    t.string   "unit",       default: "", null: false
     t.datetime "deleted_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
     t.index ["deleted_at"], name: "index_timepoint_names_on_deleted_at", using: :btree
   end
 

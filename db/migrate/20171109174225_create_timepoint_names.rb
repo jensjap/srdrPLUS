@@ -2,7 +2,7 @@ class CreateTimepointNames < ActiveRecord::Migration[5.0]
   def change
     create_table :timepoint_names do |t|
       t.string :name
-      t.string :unit, default: ''
+      t.string :unit, null: false, default: ''
       t.datetime :deleted_at
 
       t.timestamps

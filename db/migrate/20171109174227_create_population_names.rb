@@ -2,7 +2,7 @@ class CreatePopulationNames < ActiveRecord::Migration[5.0]
   def change
     create_table :population_names do |t|
       t.string :name
-      t.text :description, default: ''
+      t.text :description, null: false
       t.datetime :deleted_at
 
       t.timestamps
