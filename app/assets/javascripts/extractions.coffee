@@ -44,14 +44,27 @@ document.addEventListener 'turbolinks:load', ->
     $( '.consolidate .edit-type1-link' ).click ( e ) ->
       e.preventDefault()
       e.stopPropagation()
+
+      $this  = $( this )
       $modal = $( '#edit-type1-modal' )
-      $this = $( this )
+
+      # Build urlString with endpoint to show the edit form 'edit_type1_across_extractions',
+      # and query string:
+      #   - type1_id
+      #   - efps_id
+      #   - extraction_ids
       urlString = 'edit_type1_across_extractions?'
+
       urlString = urlString.concat 'type1_id='
       urlString = urlString.concat $this.data( 'type1-id' )
+
+      urlString = urlString.concat '&efps_id='
+      urlString = urlString.concat $this.data( 'efps-id' )
+
       $( $this.data( 'extraction-ids' ) ).each ( idx, elem ) ->
         urlString = urlString.concat '&extraction_ids[]='
         urlString = urlString.concat elem
+
       $.ajax( urlString ).done ( resp ) ->
         $modal.html( resp ).foundation 'open'
         return

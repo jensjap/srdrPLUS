@@ -1,7 +1,26 @@
-h1 Getting there!
-h2 Type1 ID: #{ @type1_id }
-h2 Extraction IDs: #{ @extraction_ids }
+/h2 Getting there!
+/h5 Type1: #{ @type1 }
+/h5 efps: #{ @efps }
+/ul
+  h5 Extractions:
+  - @extractions.each do |e|
+    li = e
+
+h5 Change #{ @efps.section.name.singularize }
+
+= simple_form_for @eefpst1 do |f|
+  = f.association :type1,
+    collection: ExtractionsExtractionFormsProjectsSectionsType1.extraction_collection(@efps.section.name, @efps.extraction_forms_project.id).map(&:type1).to_set,
+    label: false,
+    label_method: :name_and_description,
+    include_blank: false
+
+  = f.button :submit, 'Update'
+
+/#!!! Also need to allow user to create a new one if it doesn't exist from dropdown.
+
+
 
 button.close-button data-close='' aria-label='Close modal' type='button'
   span aria-hidden='true'
-    i.fi-x style='color: red;'
+    '&times;

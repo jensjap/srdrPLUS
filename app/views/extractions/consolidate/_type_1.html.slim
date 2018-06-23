@@ -12,7 +12,7 @@ ul.accordion.consolidate data-accordion='' data-multi-expand='true' data-allow-a
             tr
               th style='font-weight: normal;'
                 = type1.name_and_description
-                = link_to '#', class: 'edit-type1-link', data: { type1_id: type1.id, extraction_ids: @extractions.pluck(:id) } do
+                = link_to '#', class: 'edit-type1-link', data: { type1_id: type1.id, efps_id: efps.id, extraction_ids: @extractions.pluck(:id) } do
                   i.fi-pencil<>
                   | Edit
 

@@ -97,7 +97,23 @@ class ExtractionsController < ApplicationController
   # GET /projects/1/extractions/edit_type1_across_extractions
   def edit_type1_across_extractions
     @type1_id       = params[:type1_id]
+    @efps_id        = params[:efps_id]
     @extraction_ids = params[:extraction_ids]
+
+    @type1       = Type1.find(params[:type1_id])
+    @efps        = ExtractionFormsProjectsSection.find(params[:efps_id])
+    @extractions = Extraction.where(id: params[:extraction_ids])
+
+    eefpss = @efps.extractions_extraction_forms_projects_sections.
+      where(extraction: @extractions)
+
+    # Any eefpst1 returned here can serve as our eefpst1 to create the form for the user.
+    # The number of eefpst1s found here is going to be equal to the however many eefpss
+    # have this type1 attached to them, so could be anywhere from 1 to number of extractions.
+    @eefpst1 = ExtractionsExtractionFormsProjectsSectionsType1.
+      where(extractions_extraction_forms_projects_section: eefpss).
+      where(type1: @type1).
+      first
 
     render layout: false
   end
