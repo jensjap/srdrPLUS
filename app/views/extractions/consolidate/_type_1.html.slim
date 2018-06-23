@@ -2,11 +2,15 @@ h4 = section_name
 ul.accordion.consolidate data-accordion='' data-multi-expand='true' data-allow-all-closed='true'
   - @head_to_head.dig(efp.id, efps.id, :all_type1s_across_extractions).each do |type1|
     li.accordion-item data-accordion-item=''
-      a.accordion-title href='#' title="Description: #{ type1.description }"
+      a.accordion-title.inline href='#' title="Description: #{ type1.description }"
         table
           thead
             tr
-              th style='font-weight: normal;' = type1.name_and_description
+              th style='font-weight: normal;'
+                = type1.name_and_description
+                = link_to '#', onclick: 'event.preventDefault(); event.stopPropagation(); alert(1);', style: 'font-size: 0.6rem; position: absolute; margin-left: 5px;' do
+                  i.fi-pencil<>
+                  | Edit
 
           tbody
             tr
@@ -94,6 +98,7 @@ ul.accordion.consolidate data-accordion='' data-multi-expand='true' data-allow-a
                       /- @head_to_head.dig(efp.id, efps.id, :all_timepoint_names_across_population, population_name.id).each do |timepoint_name|
 
                       - eefpst1rcs = ExtractionsExtractionFormsProjectsSectionsType1RowColumn.\
+                        includes(extractions_extraction_forms_projects_sections_type1_row: [:population_name, { extractions_extraction_forms_projects_sections_type1: [:type1, { extractions_extraction_forms_projects_section: :extraction }] }]).\
                         joins(extractions_extraction_forms_projects_sections_type1_row: [:population_name, { extractions_extraction_forms_projects_sections_type1: [:type1, { extractions_extraction_forms_projects_section: :extraction }] }]).\
                         where(extractions_extraction_forms_projects_sections_type1_rows: { population_name: population_name }).\
                         where(extractions_extraction_forms_projects_sections_type1_rows: { extractions_extraction_forms_projects_sections_type1s: { type1: type1 } }).\
