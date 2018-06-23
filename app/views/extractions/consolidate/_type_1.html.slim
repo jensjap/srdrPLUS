@@ -1,3 +1,7 @@
+#edit-type1-modal.reveal data-reveal=''
+  button.close-button data-close='' aria-label='Close modal' type='button'
+    span aria-hidden='true'
+      i.fi-x style='color: red;'
 h4 = section_name
 ul.accordion.consolidate data-accordion='' data-multi-expand='true' data-allow-all-closed='true'
   - @head_to_head.dig(efp.id, efps.id, :all_type1s_across_extractions).each do |type1|
@@ -8,7 +12,7 @@ ul.accordion.consolidate data-accordion='' data-multi-expand='true' data-allow-a
             tr
               th style='font-weight: normal;'
                 = type1.name_and_description
-                = link_to '#', onclick: 'event.preventDefault(); event.stopPropagation(); alert(1);', style: 'font-size: 0.6rem; position: absolute; margin-left: 5px;' do
+                = link_to '#', class: 'edit-type1-link', data: { type1_id: type1.id, extraction_ids: @extractions.pluck(:id) } do
                   i.fi-pencil<>
                   | Edit
 
@@ -74,15 +78,15 @@ ul.accordion.consolidate data-accordion='' data-multi-expand='true' data-allow-a
                             - if eefpst1.extractions_extraction_forms_projects_sections_type1_rows.map(&:population_name).include? population_name
                               td title="#{ population_name.name_and_description } included in #{ type1.name } #{ section_name.singularize }"
                                 i.fi-check> style='color: green;'
-                                | #{ population_name.name_and_description }
+                                | #{ population_name.short_name_and_description }
                             - else
                               td title="#{ population_name.name_and_description } not included in #{ type1.name } #{ section_name.singularize }"
                                 i.fi-x> style='color: red;'
-                                | #{ population_name.name_and_description }
+                                | #{ population_name.short_name_and_description }
                           - else
                             td title="#{ population_name.name_and_description } not included in #{ type1.name } #{ section_name.singularize }"
                               i.fi-x> style='color: red;'
-                              | #{ population_name.name_and_description }
+                              | #{ population_name.short_name_and_description }
 
                 h6 Timepoints
                 .table-scroll

@@ -35,4 +35,16 @@
       }
     }
   }
+
+  .edit-type1-link {
+    position: absolute;
+    font-size: 0.6rem;
+    margin-left: 7px;
+
+    &:hover {
+      color: $primary-color;
+      font-weight: bold;
+      text-decoration: none;
+    }
+  }
 }

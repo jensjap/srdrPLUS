@@ -31,13 +31,30 @@ document.addEventListener 'turbolinks:load', ->
         timeout: 5000
       return
 
-    ######################################################
+    #############################################################
     # Attach change event listener to text field to trigger save.
     $( '.work input[type="text"]' ).on 'input', ( e ) ->
       e.preventDefault()
       that = $( this )
 
       delay((() -> return console.log that.data()), 1000)
+
+    ######################################################################
+    # Attach click event to edit type1 from within extraction:consolidate.
+    $( '.consolidate .edit-type1-link' ).click ( e ) ->
+      e.preventDefault()
+      e.stopPropagation()
+      $modal = $( '#edit-type1-modal' )
+      $this = $( this )
+      urlString = 'edit_type1_across_extractions?'
+      urlString = urlString.concat 'type1_id='
+      urlString = urlString.concat $this.data( 'type1-id' )
+      $( $this.data( 'extraction-ids' ) ).each ( idx, elem ) ->
+        urlString = urlString.concat '&extraction_ids[]='
+        urlString = urlString.concat elem
+      $.ajax( urlString ).done ( resp ) ->
+        $modal.html( resp ).foundation 'open'
+        return
 
     return  # END do ->
 

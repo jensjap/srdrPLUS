@@ -75,6 +75,7 @@ Rails.application.routes.draw do
       collection do
         get 'comparison_tool'
         get 'consolidate'
+        get 'edit_type1_across_extractions'
       end
 
       member do
