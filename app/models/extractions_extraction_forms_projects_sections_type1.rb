@@ -136,8 +136,7 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
       raise RuntimeError, 'Unknown propagation scope.'
     end
 
-    byebug
-    #eefpst1s_to_update.map { |eefpst1| eefpst1.update(params) }
+    eefpst1s_to_update.map { |eefpst1| eefpst1.update(params) }
   end
 
   # Create a hash of preview data for type1 change in 3 cases.
