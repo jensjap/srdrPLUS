@@ -1,6 +1,6 @@
 h5 Change #{ @efps.section.name.singularize }
 
-= simple_form_for @eefpst1, remote: true do |f|
+= simple_form_for @eefpst1, remote: true, html: { style: 'display: block;' } do |f|
   = f.simple_fields_for :should do |sf|
     = sf.input :propagate, as: :radio_buttons,
       checked: ['no', false],
@@ -14,20 +14,86 @@ h5 Change #{ @efps.section.name.singularize }
 
   = f.button :submit, 'Update'
 
-= simple_form_for @eefpst1, remote: true, html: { style: 'display: block;' } do |f|
+/= simple_form_for @eefpst1, remote: true, html: { style: 'display: none;' } do |f|
   = f.simple_fields_for :should do |sf|
     = sf.input :propagate, as: :radio_buttons,
       checked: ['no', false],
       collection: [['no', false], ['across extractions of this citation', :citations], ['across extractions in this project', :project]]
-
   = f.simple_fields_for(:type1) do |type1_form|
     = type1_form.input :name
     = type1_form.input :description
-
   = f.button :submit, 'Update'
 
+h4 Change Preview
+.preview
+  - @preview_type1_change_propagation.each do |propagation_type, values|
+    table class=propagation_type
+      thead
+        tr
+          th Citation
+          th Assigned User
+          th Old Value
+          th
+          th New Value
 
+      tbody
+        - values.each do |v|
+          tr
+            td = v.citation.name
+            td = v.extraction.user.profile.username
+            td = v.type1.name_and_description
+            td
+              i.fi-arrow-right
+            td.updated-value
 
+/ Close button.
 button.close-button data-close='' aria-label='Close modal' type='button'
   span aria-hidden='true'
     '&times;
+
+/ Yuck...partial inline javascript?!
+javascript:
+  /* Make visible only the preview of the selected case. */
+  /* Utility function to make preview visible or hide based on selected radio buttons. */
+  let check_preview_visibility = function() {
+    $( '.extractions_extraction_forms_projects_sections_type1_should_propagate input.radio_buttons' ).each( function() {
+      _value = $( this ).val();
+      if ( $( this ).is( ':checked' ) ) {
+        $( 'table.' + _value ).removeClass( 'hide' );
+      } else {
+        $( 'table.' + _value ).addClass( 'hide' );
+      }
+    } );
+  };
+
+  check_preview_visibility();
+  $( '.extractions_extraction_forms_projects_sections_type1_should_propagate input.radio_buttons' ).click( function() {
+    check_preview_visibility();
+  } );
+
+  /* Update the preview window when the user selects something from the dropdown. */
+  let value_from_dropdown = $( '#extractions_extraction_forms_projects_sections_type1_type1_id option:selected' ).text();
+  $( '.updated-value' ).text( value_from_dropdown );
+  $( '#extractions_extraction_forms_projects_sections_type1_type1_id' ).change( function() {
+    value_from_dropdown = $( '#extractions_extraction_forms_projects_sections_type1_type1_id option:selected' ).text();
+    $( '.updated-value' ).text( value_from_dropdown );
+  } );
+
+
+/  /* Utility function to get current values of name and description. */
+  let updated_text = function() {
+    let newType1Name      = $( '#extractions_extraction_forms_projects_sections_type1_type1_attributes_name' ),
+      newType1Description = $( '#extractions_extraction_forms_projects_sections_type1_type1_attributes_description' ),
+      updated_value_text  = '';
+    updated_value_text = newType1Name.val();
+    if ( newType1Description.val().length > 0 ) {
+      updated_value_text = updated_value_text + ' (' + newType1Description.val() + ')';
+    }
+    return updated_value_text;
+  };
+  /* Update the preview window when the user types into the name and description input fields. */
+  /* maybe for later...at the moment seems safest not to allow entry of a new name and description manually? */
+  $( '.updated-value' ).text( updated_text() );
+  $( '#extractions_extraction_forms_projects_sections_type1_type1_attributes_name, #extractions_extraction_forms_projects_sections_type1_type1_attributes_description' ).on( 'keyup', function( e ) {
+    $( '.updated-value' ).text( updated_text() );
+  } );

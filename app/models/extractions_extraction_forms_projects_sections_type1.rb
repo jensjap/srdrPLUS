@@ -19,6 +19,22 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
       .where(extractions: { id: extraction_id })
       .where(extraction_forms_projects: { id: extraction_forms_project_id }) }
 
+  # Returns eefpst1s across all extractions for a particular citation and type1.
+  scope :by_citations_project_and_type1, -> (citations_project_id, type1_id) {
+    joins(extractions_extraction_forms_projects_section: :extraction)
+      .joins(:type1)
+      .where(extractions_extraction_forms_projects_sections: { extraction_id: Extraction.where(citations_project_id: citations_project_id) })
+      .where(type1_id: type1_id)
+  }
+
+  # Returns eefpst1s across a project for a particular type1.
+  scope :by_project_and_type1, -> (project_id, type1_id) {
+    joins(extractions_extraction_forms_projects_section: { extraction_forms_projects_section: { extraction_forms_project: :project } })
+      .joins(:type1)
+      .where(extractions_extraction_forms_projects_sections: { extraction_forms_projects_sections: { extraction_forms_projects: { project_id: project_id } } })
+      .where(type1_id: type1_id)
+  }
+
   # Temporarily calling it ExtractionsExtractionFormsProjectsSectionsType1Row. This is meant to be Outcome Timepoint.
   after_create :create_default_type1_rows
 
@@ -92,22 +108,51 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
 #  end
 
   def propagate_type1_change(propagation_scope, params)
+    eefpst1s_to_update = []
+
     case propagation_scope
     when :citations
       citations_project = self.citations_project
-      project = self.project
-      project.citation_groups
       eefpst1s_to_update = ExtractionsExtractionFormsProjectsSectionsType1
-        .joins(extractions_extraction_forms_projects_section: [:extraction, :extraction_forms_projects_section])
-        .joins(:type1)
-        .where(extractions_extraction_forms_projects_sections: { extraction_id: Extraction.where(citations_project: citations_project) })
-        .where(type1: self.type1)
+        .by_citations_project_and_type1(citations_project.id, self.type1.id)
         .where.not(id: self.id)
-      eefpst1s_to_update.map { |eefpst1| eefpst1.update(params) }
+#      eefpst1s_to_update = ExtractionsExtractionFormsProjectsSectionsType1
+#        .joins(extractions_extraction_forms_projects_section: [:extraction, :extraction_forms_projects_section])
+#        .joins(:type1)
+#        .where(extractions_extraction_forms_projects_sections: { extraction_id: Extraction.where(citations_project: citations_project) })
+#        .where(type1: self.type1)
+#        .where.not(id: self.id)
     when :project
+      eefpst1s_to_update = ExtractionsExtractionFormsProjectsSectionsType1
+        .by_project_and_type1(self.project.id, self.type1.id)
+        .where.not(id: self.id)
+#      eefpst1s_to_update = ExtractionsExtractionFormsProjectsSectionsType1
+#        .joins(extractions_extraction_forms_projects_section: { extraction_forms_projects_section: { extraction_forms_project: :project } })
+#        .joins(:type1)
+#        .where(extractions_extraction_forms_projects_sections: { extraction_forms_projects_sections: { extraction_forms_projects: { project: self.project } } })
+#        .where(type1: self.type1)
+#        .where.not(id: self.id)
     else
       raise RuntimeError, 'Unknown propagation scope.'
     end
+
+    byebug
+    #eefpst1s_to_update.map { |eefpst1| eefpst1.update(params) }
+  end
+
+  # Create a hash of preview data for type1 change in 3 cases.
+  # 1. No propagation.
+  # 2. Propagation across extractions of the same citation.
+  # 3. Propagation across project.
+  def preview_type1_change_propagation
+    return_data = Hash.new
+    return_data[false] = [self]
+    return_data[:citations] = ExtractionsExtractionFormsProjectsSectionsType1
+      .by_citations_project_and_type1(citations_project.id, self.type1.id)
+    return_data[:project] = ExtractionsExtractionFormsProjectsSectionsType1
+      .by_project_and_type1(self.project.id, self.type1.id)
+
+    return return_data
   end
 
   private

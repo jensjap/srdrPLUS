@@ -1,7 +1,5 @@
-#edit-type1-modal.reveal data-reveal=''
-  button.close-button data-close='' aria-label='Close modal' type='button'
-    span aria-hidden='true'
-      i.fi-x style='color: red;'
+#edit-type1-modal.small.reveal data-reveal=''
+
 h4 = section_name
 ul.accordion.consolidate data-accordion='' data-multi-expand='true' data-allow-all-closed='true'
   - @head_to_head.dig(efp.id, efps.id, :all_type1s_across_extractions).each do |type1|
@@ -14,7 +12,7 @@ ul.accordion.consolidate data-accordion='' data-multi-expand='true' data-allow-a
                 = type1.name_and_description
                 = link_to '#', class: 'edit-type1-link', data: { type1_id: type1.id, efps_id: efps.id, extraction_ids: @extractions.pluck(:id) } do
                   i.fi-pencil<>
-                  | Edit
+                  | Change
 
           tbody
             tr

@@ -94,10 +94,6 @@ class ExtractionsController < ApplicationController
 
   # GET /projects/1/extractions/edit_type1_across_extractions
   def edit_type1_across_extractions
-    @type1_id       = params[:type1_id]
-    @efps_id        = params[:efps_id]
-    @extraction_ids = params[:extraction_ids]
-
     @type1       = Type1.find(params[:type1_id])
     @efps        = ExtractionFormsProjectsSection.find(params[:efps_id])
     @extractions = Extraction.where(id: params[:extraction_ids])
@@ -112,6 +108,8 @@ class ExtractionsController < ApplicationController
       where(extractions_extraction_forms_projects_section: eefpss).
       where(type1: @type1).
       first
+
+    @preview_type1_change_propagation = @eefpst1.preview_type1_change_propagation
 
     render layout: false
   end
