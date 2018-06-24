@@ -1,7 +1,7 @@
 class ExtractionsController < ApplicationController
   include ExtractionsControllerHelpers
 
-  before_action :set_project, only: [:index, :new, :create, :comparison_tool, :consolidate, :edit_type1_across_extractions]
+  before_action :set_project, only: [:index, :new, :create, :comparison_tool, :consolidate]
   before_action :set_extraction, only: [:show, :edit, :update, :destroy, :work]
   before_action :set_extractions, only: [:consolidate]
   before_action :ensure_extraction_form_structure, only: [:consolidate, :work]
@@ -90,8 +90,6 @@ class ExtractionsController < ApplicationController
       includes(projects_users_role: { projects_user: { user: :profile } }).
       where(id: extraction_ids_params)
     @head_to_head              = head_to_head(@extraction_forms_projects, @extractions)
-    #byebug
-    #@key_questions_projects_array_for_select = @extractions.first.project.key_questions_projects_array_for_select
   end
 
   # GET /projects/1/extractions/edit_type1_across_extractions

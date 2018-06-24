@@ -1,14 +1,11 @@
-/h2 Getting there!
-/h5 Type1: #{ @type1 }
-/h5 efps: #{ @efps }
-/ul
-  h5 Extractions:
-  - @extractions.each do |e|
-    li = e
-
 h5 Change #{ @efps.section.name.singularize }
 
-= simple_form_for @eefpst1 do |f|
+= simple_form_for @eefpst1, remote: true do |f|
+  = f.simple_fields_for :should do |sf|
+    = sf.input :propagate, as: :radio_buttons,
+      checked: ['no', false],
+      collection: [['no', false], ['across extractions of this citation', :citations], ['across extractions in this project', :project]]
+
   = f.association :type1,
     collection: ExtractionsExtractionFormsProjectsSectionsType1.extraction_collection(@efps.section.name, @efps.extraction_forms_project.id).map(&:type1).to_set,
     label: false,
@@ -17,7 +14,17 @@ h5 Change #{ @efps.section.name.singularize }
 
   = f.button :submit, 'Update'
 
-/#!!! Also need to allow user to create a new one if it doesn't exist from dropdown.
+= simple_form_for @eefpst1, remote: true, html: { style: 'display: block;' } do |f|
+  = f.simple_fields_for :should do |sf|
+    = sf.input :propagate, as: :radio_buttons,
+      checked: ['no', false],
+      collection: [['no', false], ['across extractions of this citation', :citations], ['across extractions in this project', :project]]
+
+  = f.simple_fields_for(:type1) do |type1_form|
+    = type1_form.input :name
+    = type1_form.input :description
+
+  = f.button :submit, 'Update'
 
 
 

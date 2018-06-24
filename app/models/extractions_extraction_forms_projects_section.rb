@@ -24,7 +24,10 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
 
   accepts_nested_attributes_for :type1s, reject_if: :all_blank
 
-  delegate :section, to: :extraction_forms_projects_section
+  delegate :citation,          to: :extraction
+  delegate :citations_project, to: :extraction
+  delegate :section,           to: :extraction_forms_projects_section
+  delegate :project,           to: :extraction_forms_projects_section
 
   def eefps_qrfc_values(eefpst1_id, qrc)
     recordables = extractions_extraction_forms_projects_sections_question_row_column_fields

@@ -1,9 +1,13 @@
 class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
+  # Need this to accept an attribute on the fly when making bulk changes to the eefpst1 within consolidation tool.
+  attr_writer :should
+
   include SharedParanoiaMethods
 
   acts_as_paranoid column: :active, sentinel_value: true
   has_paper_trail
 
+  #!!! Implement this for type1 selection also.
   scope :extraction_collection, -> (section_name, efp_id) {
     joins([:type1, extractions_extraction_forms_projects_section: { extraction_forms_projects_section: [:extraction_forms_project, :section] }])
       .where(sections: { name: section_name })
@@ -34,7 +38,10 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
   accepts_nested_attributes_for :extractions_extraction_forms_projects_sections_type1_rows, allow_destroy: true
   accepts_nested_attributes_for :type1, reject_if: :all_blank
 
-  delegate :extraction, to: :extractions_extraction_forms_projects_section
+  delegate :citation,          to: :extractions_extraction_forms_projects_section
+  delegate :citations_project, to: :extractions_extraction_forms_projects_section
+  delegate :extraction,        to: :extractions_extraction_forms_projects_section
+  delegate :project,           to: :extractions_extraction_forms_projects_section
 
   validates :type1, uniqueness: { scope: :extractions_extraction_forms_projects_section }
 
@@ -83,6 +90,25 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
 #      json.description type1.description
 #    end
 #  end
+
+  def propagate_type1_change(propagation_scope, params)
+    case propagation_scope
+    when :citations
+      citations_project = self.citations_project
+      project = self.project
+      project.citation_groups
+      eefpst1s_to_update = ExtractionsExtractionFormsProjectsSectionsType1
+        .joins(extractions_extraction_forms_projects_section: [:extraction, :extraction_forms_projects_section])
+        .joins(:type1)
+        .where(extractions_extraction_forms_projects_sections: { extraction_id: Extraction.where(citations_project: citations_project) })
+        .where(type1: self.type1)
+        .where.not(id: self.id)
+      eefpst1s_to_update.map { |eefpst1| eefpst1.update(params) }
+    when :project
+    else
+      raise RuntimeError, 'Unknown propagation scope.'
+    end
+  end
 
   private
 
