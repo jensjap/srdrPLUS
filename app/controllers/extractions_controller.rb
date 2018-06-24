@@ -96,18 +96,22 @@ class ExtractionsController < ApplicationController
   def edit_type1_across_extractions
     @type1       = Type1.find(params[:type1_id])
     @efps        = ExtractionFormsProjectsSection.find(params[:efps_id])
+    @eefps       = ExtractionsExtractionFormsProjectsSection.find(params[:eefps_id])
     @extractions = Extraction.where(id: params[:extraction_ids])
 
     eefpss = @efps.extractions_extraction_forms_projects_sections.
       where(extraction: @extractions)
 
-    # Any eefpst1 returned here can serve as our eefpst1 to create the form for the user.
-    # The number of eefpst1s found here is going to be equal to the however many eefpss
-    # have this type1 attached to them, so could be anywhere from 1 to number of extractions.
-    @eefpst1 = ExtractionsExtractionFormsProjectsSectionsType1.
-      where(extractions_extraction_forms_projects_section: eefpss).
-      where(type1: @type1).
-      first
+#    # Any eefpst1 returned here can serve as our eefpst1 to create the form for the user.
+#    # The number of eefpst1s found here is going to be equal to the however many eefpss
+#    # have this type1 attached to them, so could be anywhere from 1 to number of extractions.
+#    @eefpst1 = ExtractionsExtractionFormsProjectsSectionsType1.
+#      where(extractions_extraction_forms_projects_section: eefpss).
+#      where(type1: @type1).
+#      first
+    @eefpst1 = ExtractionsExtractionFormsProjectsSectionsType1.find_by(
+      extractions_extraction_forms_projects_section: @eefps,
+      type1: @type1)
 
     @preview_type1_change_propagation = @eefpst1.preview_type1_change_propagation
 

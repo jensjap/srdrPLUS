@@ -1,5 +1,3 @@
-#edit-type1-modal.small.reveal data-reveal=''
-
 h4 = section_name
 ul.accordion.consolidate data-accordion='' data-multi-expand='true' data-allow-all-closed='true'
   - @head_to_head.dig(efp.id, efps.id, :all_type1s_across_extractions).each do |type1|
@@ -10,7 +8,7 @@ ul.accordion.consolidate data-accordion='' data-multi-expand='true' data-allow-a
             tr
               th style='font-weight: normal;'
                 = type1.name_and_description
-                = link_to '#', class: 'edit-type1-link', data: { type1_id: type1.id, efps_id: efps.id, extraction_ids: @extractions.pluck(:id) } do
+                /= link_to '#', class: 'edit-type1-link', data: { type1_id: type1.id, efps_id: efps.id, extraction_ids: @extractions.pluck(:id) } do
                   i.fi-pencil<>
                   | Change
 
@@ -40,6 +38,10 @@ ul.accordion.consolidate data-accordion='' data-multi-expand='true' data-allow-a
                     td title="#{ type1.name_and_description } #{ section_name.singularize } included in extraction id #{ extraction.id }"
                       i.fi-check> style='color: green;'
                       | #{ type1.name_and_description }
+                      = link_to '#', class: 'edit-type1-link', data: { type1_id: type1.id, efps_id: efps.id, eefps_id: eefps.id, extraction_ids: @extractions.pluck(:id) } do
+                        i.fi-pencil<>
+                        | Change
+
                   - else
                     td title="#{ type1.name_and_description } #{ section_name.singularize } not included in extraction id #{ extraction.id }"
                       i.fi-x> style='color: red;'

@@ -61,6 +61,9 @@ document.addEventListener 'turbolinks:load', ->
       urlString = urlString.concat '&efps_id='
       urlString = urlString.concat $this.data( 'efps-id' )
 
+      urlString = urlString.concat '&eefps_id='
+      urlString = urlString.concat $this.data( 'eefps-id' )
+
       $( $this.data( 'extraction-ids' ) ).each ( idx, elem ) ->
         urlString = urlString.concat '&extraction_ids[]='
         urlString = urlString.concat elem

@@ -27,11 +27,14 @@ class ExtractionsExtractionFormsProjectsSectionsType1sController < ApplicationCo
                                                                .extractions_extraction_forms_projects_section.id }"),
                                                        notice: t('success') }
         format.json { head :no_content }
-        format.js {  }
+        format.js {}
       else
-        flash[:alert] = @extractions_extraction_forms_projects_sections_type1.errors.messages.values
-        format.html { render :edit }
+        format.html do
+          flash[:alert] = @extractions_extraction_forms_projects_sections_type1.errors.messages.values.dig(0, 0)
+          render :edit
+        end
         format.json { render json: @extractions_extraction_forms_projects_sections_type1.errors, status: :unprocessable_entity }
+        format.js {}
       end
     end
   end
