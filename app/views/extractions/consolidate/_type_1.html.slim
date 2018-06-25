@@ -1,5 +1,5 @@
 .row
-  .columns.medium-8
+  .columns.medium-7
     h4 = section_name
     ul.accordion.consolidate data-accordion='' data-multi-expand='true' data-allow-all-closed='true'
       - @head_to_head.dig(efp.id, efps.id, :all_type1s_across_extractions).each do |type1|
@@ -145,9 +145,22 @@
                                     i.fi-x> style='color: red;'
                                     | #{ timepoint_name.pretty_print_export_header }
 
-  .columns.medium-4 data-sticky-container=''
+  .columns.medium-5 data-sticky-container=''
     div.sticky data-sticky='' data-top-anchor='bar:top' data-btm-anchor='bar:bottom' style='border: 1px solid lightgrey;'
-      = render 'extractions/consolidate/type1/consolidated_extraction'
+      - eefps = ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by(\
+        extraction: @consolidated_extraction,
+        extraction_forms_projects_section: efps,
+        link_to_type1: efps.link_to_type1.nil?\
+          ? nil\
+          : ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by!(\
+            extraction: @consolidated_extraction,
+            extraction_forms_projects_section: efps.link_to_type1))
+      = render 'extractions/work/type_1',
+        extraction: @consolidated_extraction,
+        section_name: section_name,
+        efp: efp,
+        efps: efps,
+        eefps: eefps
 
 
 

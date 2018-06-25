@@ -3,17 +3,13 @@ class ExtractionsController < ApplicationController
 
   before_action :set_project, only: [:index, :new, :create, :comparison_tool, :consolidate]
   before_action :set_extraction, only: [:show, :edit, :update, :destroy, :work]
-  before_action :set_extractions, only: [:consolidate]
+  before_action :set_extractions, only: [:consolidate, :edit_type1_across_extractions]
   before_action :ensure_extraction_form_structure, only: [:consolidate, :work]
 
   # GET /projects/1/extractions
   # GET /projects/1/extractions.json
   def index
     @extractions = @project.extractions
-#    @extractions = Extraction.includes(:citations_project,
-#                                       projects_users_role: [projects_user: [:project, user: [:profile]]],
-#                                       extractions_key_questions_projects: [key_questions_project: [:key_question, extraction_forms_projects_section: [extraction_forms_project: [:extraction_form]]]])
-#                             .where(extractions_key_questions_projects: { key_questions_projects: { project: @project } }).all
   end
 
   # GET /extractions/1
@@ -86,11 +82,10 @@ class ExtractionsController < ApplicationController
   # GET /projects/1/extractions/consolidate
   def consolidate
     @extraction_forms_projects = @project.extraction_forms_projects
-    @extractions               = Extraction.
-      includes(projects_users_role: { projects_user: { user: :profile } }).
-      where(id: extraction_ids_params)
     @consolidated_extraction   = @project.consolidated_extraction(@extractions.first.citations_project_id, current_user.id)
     @head_to_head              = head_to_head(@extraction_forms_projects, @extractions)
+    @consolidated_extraction.ensure_extraction_form_structure
+    @consolidated_extraction.auto_consolidate(@extractions)
   end
 
   # GET /projects/1/extractions/edit_type1_across_extractions
@@ -98,18 +93,7 @@ class ExtractionsController < ApplicationController
     @type1       = Type1.find(params[:type1_id])
     @efps        = ExtractionFormsProjectsSection.find(params[:efps_id])
     @eefps       = ExtractionsExtractionFormsProjectsSection.find(params[:eefps_id])
-    @extractions = Extraction.where(id: params[:extraction_ids])
 
-    eefpss = @efps.extractions_extraction_forms_projects_sections.
-      where(extraction: @extractions)
-
-#    # Any eefpst1 returned here can serve as our eefpst1 to create the form for the user.
-#    # The number of eefpst1s found here is going to be equal to the however many eefpss
-#    # have this type1 attached to them, so could be anywhere from 1 to number of extractions.
-#    @eefpst1 = ExtractionsExtractionFormsProjectsSectionsType1.
-#      where(extractions_extraction_forms_projects_section: eefpss).
-#      where(type1: @type1).
-#      first
     @eefpst1 = ExtractionsExtractionFormsProjectsSectionsType1.find_by(
       extractions_extraction_forms_projects_section: @eefps,
       type1: @type1)
@@ -132,7 +116,9 @@ class ExtractionsController < ApplicationController
     end
 
     def set_extractions
-      @extractions = Extraction.where(id: extraction_ids_params)
+      @extractions = Extraction
+        .includes(projects_users_role: { projects_user: { user: :profile } })
+        .where(id: extraction_ids_params)
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
