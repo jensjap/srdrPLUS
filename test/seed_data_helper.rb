@@ -8,6 +8,7 @@ module SeedData
       # Roles.
       Role.create([
         { name: 'Leader'},
+        { name: 'Consolidator'},
         { name: 'Contributor'},
         { name: 'Auditor'}
       ])
