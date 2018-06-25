@@ -86,6 +86,17 @@ class Project < ApplicationRecord
       .where(projects_users: { project_id: id })
   end
 
+  def consolidated_extraction(citations_project_id, current_user_id)
+    consolidated_extraction = self.extractions.consolidated.find_by(citations_project_id: citations_project_id)
+    return consolidated_extraction if consolidated_extraction.present?
+    return self.extractions.create(
+      citations_project_id: citations_project_id,
+      projects_users_role: ProjectsUsersRole.find_or_create_by!(
+        projects_user: ProjectsUser.find_by(project: self, user_id: current_user_id),
+        role: Role.find_by(name: 'Consolidator')),
+      consolidated: true)
+  end
+
   # returns nested hash:
   # {
   #   key: citations_project_id
@@ -103,11 +114,22 @@ class Project < ApplicationRecord
     self.extractions.each do |e|
       if citation_groups[:citations_projects].keys.include? e.citations_project_id
         citation_groups[:citations_projects][e.citations_project_id][:extraction_ids] << e.id
-        # If data_discrepancy is already true then don't bother running the discovery process.
-        unless citation_groups[:citations_projects][e.citations_project_id][:data_discrepancy]
+
+        # If data_discrepancy is true then check for the existence of a consolidated
+        # extraction and skip the discovery process.
+        # Else run the discovery process.
+        if citation_groups[:citations_projects][e.citations_project_id][:data_discrepancy]
+
+          # We may skip this if we already determined that a consolidated extraction exists.
+          unless citation_groups[:citations_projects][e.citations_project_id][:consolidated_status]
+            citation_groups[:citations_projects][e.citations_project_id][:consolidated_status] = e.consolidated
+          end
+
+        else citation_groups[:citations_projects][e.citations_project_id][:data_discrepancy]
           citation_groups[:citations_projects][e.citations_project_id][:data_discrepancy] =
             discover_extraction_discrepancy(citation_groups[:citations_projects][e.citations_project_id][:extraction_ids].first, e.id)
         end
+
       else
         citation_groups[:citations_project_count] += 1
         citation_groups[:citations_project_ids] << e.citations_project_id
@@ -117,7 +139,11 @@ class Project < ApplicationRecord
         citation_groups[:citations_projects][e.citations_project_id][:citation_name_long]   = e.citations_project.citation.name
         citation_groups[:citations_projects][e.citations_project_id][:data_discrepancy]     = false
         citation_groups[:citations_projects][e.citations_project_id][:extraction_ids]       = [e.id]
+        citation_groups[:citations_projects][e.citations_project_id][:consolidated_status]  = e.consolidated
       end
+
+      # Remove the consolidated extraction from the list of extraction_ids.
+      citation_groups[:citations_projects][e.citations_project_id][:extraction_ids].delete(e.id) if e.consolidated
     end
 
     return citation_groups

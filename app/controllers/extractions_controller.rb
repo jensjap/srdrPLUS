@@ -89,6 +89,7 @@ class ExtractionsController < ApplicationController
     @extractions               = Extraction.
       includes(projects_users_role: { projects_user: { user: :profile } }).
       where(id: extraction_ids_params)
+    @consolidated_extraction   = @project.consolidated_extraction(@extractions.first.citations_project_id, current_user.id)
     @head_to_head              = head_to_head(@extraction_forms_projects, @extractions)
   end
 

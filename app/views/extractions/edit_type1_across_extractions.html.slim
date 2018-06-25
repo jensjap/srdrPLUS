@@ -14,7 +14,7 @@ h5 Change #{ @efps.section.name.singularize }
 
   = f.button :submit, 'Update'
 
-/= simple_form_for @eefpst1, remote: true, html: { style: 'display: none;' } do |f|
+/= simple_form_for @eefpst1, remote: true, html: { style: 'display: block;' } do |f|
   = f.simple_fields_for :should do |sf|
     = sf.input :propagate, as: :radio_buttons,
       checked: ['no', false],

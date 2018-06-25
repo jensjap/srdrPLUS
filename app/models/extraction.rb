@@ -13,6 +13,8 @@ class Extraction < ApplicationRecord
     .where(projects_users: { user_id: user_id })
   }
 
+  scope :consolidated, -> () { where(consolidated: true) }
+
   belongs_to :project,             inverse_of: :extractions
   belongs_to :citations_project,   inverse_of: :extractions
   belongs_to :projects_users_role, inverse_of: :extractions

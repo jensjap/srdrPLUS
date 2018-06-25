@@ -390,9 +390,10 @@ ActiveRecord::Schema.define(version: 20180530115049) do
     t.integer  "project_id"
     t.integer  "citations_project_id"
     t.integer  "projects_users_role_id"
+    t.boolean  "consolidated",           default: false
     t.datetime "deleted_at"
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
+    t.datetime "created_at",                             null: false
+    t.datetime "updated_at",                             null: false
     t.index ["citations_project_id"], name: "index_extractions_on_citations_project_id", using: :btree
     t.index ["deleted_at"], name: "index_extractions_on_deleted_at", using: :btree
     t.index ["project_id", "citations_project_id", "projects_users_role_id", "deleted_at"], name: "index_e_on_p_id_cp_id_pur_id_deleted_at_uniq", unique: true, using: :btree
