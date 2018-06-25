@@ -69,6 +69,29 @@ class Extraction < ApplicationRecord
   # The point is to go through all the extractions and find what they have in common.
   # Anything they have in common can be copied to the consolidated extraction (self).
   def auto_consolidate(extractions)
+    # make sure the citations_projects are all the same
+    if (extractions.pluck(:citations_project_id) + self.citations_project_id).uniq.length > 1
+      next
+      #return false
+    end
 
+    # what i want to do is to build a hash to store the structure/differences
+    hash_to_store_type1s= {}
+
+    extractions.each do |extraction|
+      extraction.extraction_forms_projects_sections.each do |eefps|
+        eefps.
+        #get type1s 
+        #if  there are type1s  common between extractions add these  type1s to self
+        #
+        eefps.extractions_extraction_forms_projects_sections_question_row_column_fields.each do |eefps_qrcf|
+          byebug
+          # results section
+          # check outcomes and  population that you know are shared
+          # iterate through the sections and check  if  measures  are shared among extractions
+          # make sure the data is 
+        end
+      end
+    end
   end
 end
