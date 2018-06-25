@@ -205,8 +205,8 @@ module SeedDataExtended
         u.confirmed_at = Time.now()
       end
 
-      @test_public = User.create do |u|
-        u.email        = 'test_public@test.com'
+      @tester = User.create do |u|
+        u.email        = 'tester@test.com'
         u.password     = 'password'
         u.confirmed_at = Time.now()
       end
@@ -263,9 +263,9 @@ module SeedDataExtended
         first_name:  'Roronoa',
         middle_name: '',
         last_name:   'Zoro')
-      @test_public.profile.update(
+      @tester.profile.update(
         organization: @roger_pirates,
-        username:    'test_public',
+        username:    'tester',
         first_name:  'Gol',
         middle_name: 'D',
         last_name:   'Roger')
@@ -408,10 +408,16 @@ module SeedDataExtended
         end
 
         # Make contributor a project member.
+        p.users << @superadmin
         p.users << @contributor
+        p.users << @auditor
+        p.users << @tester
 
         # Seed ProjectsUsersRole.
+        ProjectsUser.find_by(project: p, user: @superadmin).roles  << Role.where(name: 'Contributor')
         ProjectsUser.find_by(project: p, user: @contributor).roles << Role.where(name: 'Leader')
+        ProjectsUser.find_by(project: p, user: @auditor).roles     << Role.where(name: 'Auditor')
+        ProjectsUser.find_by(project: p, user: @tester).roles      << Role.where(name: 'Contributor')
 
         # Assign a random sample of 50 citations to project.
         p.citations = Citation.all.sample(50)
