@@ -1,4 +1,4 @@
-json.extract! extraction, :project_id, :citations_project_id, :projects_users_role_id
+json.extract! extraction, :project_id, :citations_project_id
 
 json.sections extraction.extractions_extraction_forms_projects_sections do |eefps|
   if eefps.extraction_forms_projects_section.extraction_forms_projects_section_type_id == 1
