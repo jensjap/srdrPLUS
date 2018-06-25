@@ -146,7 +146,8 @@
                                     | #{ timepoint_name.pretty_print_export_header }
 
   .columns.medium-4 data-sticky-container=''
-    = render 'extractions/consolidate/type1/consolidated_extraction'
+    div.sticky data-sticky='' data-top-anchor='bar:top' data-btm-anchor='bar:bottom' style='border: 1px solid lightgrey;'
+      = render 'extractions/consolidate/type1/consolidated_extraction'
 
 
 
