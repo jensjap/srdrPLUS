@@ -6,16 +6,16 @@
 
     .tabs-panel id="panel-tab-#{ efps.id.to_s }"
 
-      .column.row
-        - eefps = ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by(\
-          extraction: @extraction,
-          extraction_forms_projects_section: efps,
-          link_to_type1: efps.link_to_type1.nil?\
+      - eefps = ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by(\
+        extraction: @extraction,
+        extraction_forms_projects_section: efps,
+        link_to_type1: efps.link_to_type1.nil?\
           ? nil\
           : ExtractionsExtractionFormsProjectsSection.find_by!(\
             extraction: @extraction,
             extraction_forms_projects_section: efps.link_to_type1))
 
+      .column.row id='eefps-id-#{ eefps.id }'
         = render "extractions/#{ action_name }/#{ efps.extraction_forms_projects_section_type.name.parameterize.underscore }",
           extraction: @extraction,
           section_name: section_name,

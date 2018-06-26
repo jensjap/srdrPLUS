@@ -1,0 +1,5 @@
+if ( '<%= @extractions_extraction_forms_projects_section.errors.messages.values.dig(0, 0) %>'.length > 0 ) {
+  toastr.error( '<%= @extractions_extraction_forms_projects_section.errors.messages.values.dig(0, 0) %>' );
+} else {
+  $( '#eefps-id-<%= @extractions_extraction_forms_projects_section.id %>' ).html( "<%= escape_javascript( render partial: 'extractions/consolidate/type1/consolidated_extraction', locals: { extraction: @extractions_extraction_forms_projects_section.extraction, section_name: @extractions_extraction_forms_projects_section.extraction_forms_projects_section.section.name, efp: @extractions_extraction_forms_projects_section.extraction_forms_projects_section.extraction_forms_project, efps: @extractions_extraction_forms_projects_section.extraction_forms_projects_section, eefps: @extractions_extraction_forms_projects_section } ) %>" )
+}

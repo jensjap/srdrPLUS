@@ -146,7 +146,15 @@
                                     | #{ timepoint_name.pretty_print_export_header }
 
   .columns.medium-5 data-sticky-container=''
-    div.sticky data-sticky='' data-top-anchor='bar:top' data-btm-anchor='bar:bottom' style='border: 1px solid lightgrey;'
+    - eefps = ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by(\
+      extraction: @consolidated_extraction,
+      extraction_forms_projects_section: efps,
+      link_to_type1: efps.link_to_type1.nil?\
+        ? nil\
+        : ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by!(\
+          extraction: @consolidated_extraction,
+          extraction_forms_projects_section: efps.link_to_type1))
+    div.sticky id='eefps-id-#{ eefps.id }' data-sticky='' data-top-anchor='bar:top' data-btm-anchor='bar:bottom' style='border: 1px solid lightgrey; width: 100%;'
       - eefps = ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by(\
         extraction: @consolidated_extraction,
         extraction_forms_projects_section: efps,
@@ -155,7 +163,7 @@
           : ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by!(\
             extraction: @consolidated_extraction,
             extraction_forms_projects_section: efps.link_to_type1))
-      = render 'extractions/work/type_1',
+      = render 'extractions/consolidate/type1/consolidated_extraction',
         extraction: @consolidated_extraction,
         section_name: section_name,
         efp: efp,

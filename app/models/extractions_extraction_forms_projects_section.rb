@@ -22,7 +22,8 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
   has_many :extractions_extraction_forms_projects_sections_question_row_column_fields, dependent: :destroy, inverse_of: :extractions_extraction_forms_projects_sections_type1
   has_many :question_row_column_fields, through: :extractions_extraction_forms_projects_sections_question_row_column_fields, dependent: :destroy
 
-  accepts_nested_attributes_for :type1s, reject_if: :all_blank
+  accepts_nested_attributes_for :extractions_extraction_forms_projects_sections_type1s, reject_if: :all_blank
+  #accepts_nested_attributes_for :type1s, reject_if: :all_blank
 
   delegate :citation,          to: :extraction
   delegate :citations_project, to: :extraction
