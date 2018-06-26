@@ -1,28 +1,33 @@
 h5 Change #{ @efps.section.name.singularize }
 
-= simple_form_for @eefpst1, remote: true, html: { style: 'display: block;' } do |f|
-  = f.simple_fields_for :should do |sf|
-    = sf.input :propagate, as: :radio_buttons,
-      checked: ['no', false],
-      collection: [['no', false], ['across extractions of this citation', :citations], ['across extractions in this project', :project]]
+.change-type1-dropdown
+  = simple_form_for @eefpst1, remote: true, namespace: :dropdown, html: { style: 'display: block;' } do |f|
+    = f.simple_fields_for :should do |sf|
+      = sf.input :propagate, as: :radio_buttons,
+        checked: ['no', false],
+        collection: [['no', false], ['across extractions of this citation', :citations], ['across extractions in this project', :project]]
+    - options = ExtractionsExtractionFormsProjectsSectionsType1.\
+      extraction_collection(@efps.section.name, @efps.extraction_forms_project.id).\
+      map(&:type1).\
+      to_set
+    - options.add(Struct.new(:id, :name_and_description).new(0, 'Specify new ..'))
+    = f.association :type1,
+      collection: options,
+      label: false,
+      label_method: :name_and_description,
+      include_blank: false
+    = f.button :submit, 'Update'
 
-  = f.association :type1,
-    collection: ExtractionsExtractionFormsProjectsSectionsType1.extraction_collection(@efps.section.name, @efps.extraction_forms_project.id).map(&:type1).to_set,
-    label: false,
-    label_method: :name_and_description,
-    include_blank: false
-
-  = f.button :submit, 'Update'
-
-/= simple_form_for @eefpst1, remote: true, html: { style: 'display: block;' } do |f|
-  = f.simple_fields_for :should do |sf|
-    = sf.input :propagate, as: :radio_buttons,
-      checked: ['no', false],
-      collection: [['no', false], ['across extractions of this citation', :citations], ['across extractions in this project', :project]]
-  = f.simple_fields_for(:type1) do |type1_form|
-    = type1_form.input :name
-    = type1_form.input :description
-  = f.button :submit, 'Update'
+.change-type1-text
+  = simple_form_for @eefpst1, remote: true, namespace: :text, html: { style: 'display: none;' } do |f|
+    = f.simple_fields_for :should do |sf|
+      = sf.input :propagate, as: :radio_buttons,
+        checked: ['no', false],
+        collection: [['no', false], ['across extractions of this citation', :citations], ['across extractions in this project', :project]]
+    = f.simple_fields_for(:type1) do |type1_form|
+      = type1_form.input :name
+      = type1_form.input :description
+    = f.button :submit, 'Update'
 
 h4 Change Preview
 .preview
@@ -55,8 +60,8 @@ button.close-button data-close='' aria-label='Close modal' type='button'
 javascript:
   /* Make visible only the preview of the selected case. */
   /* Utility function to make preview visible or hide based on selected radio buttons. */
-  let check_preview_visibility = function() {
-    $( '.extractions_extraction_forms_projects_sections_type1_should_propagate input.radio_buttons' ).each( function() {
+  let check_preview_visibility = function( searchRoot ) {
+    $( searchRoot ).find( 'input.radio_buttons' ).each ( function() {
       _value = $( this ).val();
       if ( $( this ).is( ':checked' ) ) {
         $( 'table.' + _value ).removeClass( 'hide' );
@@ -66,34 +71,47 @@ javascript:
     } );
   };
 
-  check_preview_visibility();
-  $( '.extractions_extraction_forms_projects_sections_type1_should_propagate input.radio_buttons' ).click( function() {
-    check_preview_visibility();
+  check_preview_visibility( '.change-type1-dropdown' );
+  $( '.change-type1-dropdown input.radio_buttons' ).click( function() {
+    check_preview_visibility( '.change-type1-dropdown' );
+  } );
+  $( '.change-type1-text input.radio_buttons' ).click( function() {
+    check_preview_visibility( '.change-type1-text' );
   } );
 
   /* Update the preview window when the user selects something from the dropdown. */
-  let value_from_dropdown = $( '#extractions_extraction_forms_projects_sections_type1_type1_id option:selected' ).text();
+  let value_from_dropdown = $( '#dropdown_extractions_extraction_forms_projects_sections_type1_type1_id option:selected' ).text();
   $( '.updated-value' ).text( value_from_dropdown );
-  $( '#extractions_extraction_forms_projects_sections_type1_type1_id' ).change( function() {
-    value_from_dropdown = $( '#extractions_extraction_forms_projects_sections_type1_type1_id option:selected' ).text();
-    $( '.updated-value' ).text( value_from_dropdown );
+  $( '#dropdown_extractions_extraction_forms_projects_sections_type1_type1_id' ).change( function() {
+    value_from_dropdown = $( '#dropdown_extractions_extraction_forms_projects_sections_type1_type1_id option:selected' ).text();
+    console.log( value_from_dropdown );
+    if ( value_from_dropdown === 'Specify new ..' ) {
+      $( '.change-type1-dropdown form .radio_buttons.extractions_extraction_forms_projects_sections_type1_should_propagate' ).hide();
+      $( '.change-type1-dropdown form input[type=submit]' ).hide();
+      $( '.change-type1-text form' ).show()
+    } else {
+      $( '.change-type1-dropdown form .radio_buttons.extractions_extraction_forms_projects_sections_type1_should_propagate' ).show();
+      $( '.change-type1-dropdown form input[type=submit]' ).show();
+      $( '.change-type1-text form' ).hide()
+      $( '.updated-value' ).text( value_from_dropdown );
+    }
   } );
 
 
-/  /* Utility function to get current values of name and description. */
+  /* Utility function to get current values of name and description. */
   let updated_text = function() {
-    let newType1Name      = $( '#extractions_extraction_forms_projects_sections_type1_type1_attributes_name' ),
-      newType1Description = $( '#extractions_extraction_forms_projects_sections_type1_type1_attributes_description' ),
+    let newType1Name      = $( '#text_extractions_extraction_forms_projects_sections_type1_type1_attributes_name' ),
+      newType1Description = $( '#text_extractions_extraction_forms_projects_sections_type1_type1_attributes_description' ),
       updated_value_text  = '';
     updated_value_text = newType1Name.val();
-    if ( newType1Description.val().length > 0 ) {
+    if ( newType1Description.val() && newType1Description.val().length > 0 ) {
       updated_value_text = updated_value_text + ' (' + newType1Description.val() + ')';
     }
     return updated_value_text;
   };
+
   /* Update the preview window when the user types into the name and description input fields. */
-  /* maybe for later...at the moment seems safest not to allow entry of a new name and description manually? */
   $( '.updated-value' ).text( updated_text() );
-  $( '#extractions_extraction_forms_projects_sections_type1_type1_attributes_name, #extractions_extraction_forms_projects_sections_type1_type1_attributes_description' ).on( 'keyup', function( e ) {
+  $( '#text_extractions_extraction_forms_projects_sections_type1_type1_attributes_name, #text_extractions_extraction_forms_projects_sections_type1_type1_attributes_description' ).on( 'keyup', function( e ) {
     $( '.updated-value' ).text( updated_text() );
   } );
