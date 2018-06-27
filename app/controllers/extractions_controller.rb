@@ -1,10 +1,10 @@
 class ExtractionsController < ApplicationController
   include ExtractionsControllerHelpers
 
-  before_action :set_project, only: [:index, :new, :create, :comparison_tool, :consolidate]
+  before_action :set_project, only: [:index, :new, :create, :comparison_tool, :compare, :consolidate]
   before_action :set_extraction, only: [:show, :edit, :update, :destroy, :work]
-  before_action :set_extractions, only: [:consolidate, :edit_type1_across_extractions]
-  before_action :ensure_extraction_form_structure, only: [:consolidate, :work]
+  before_action :set_extractions, only: [:compare, :consolidate, :edit_type1_across_extractions]
+  before_action :ensure_extraction_form_structure, only: [:compare, :consolidate, :work]
 
   # GET /projects/1/extractions
   # GET /projects/1/extractions.json
@@ -77,6 +77,12 @@ class ExtractionsController < ApplicationController
   # GET /projects/1/extractions/comparison_tool
   def comparison_tool
     @citation_groups = @project.citation_groups
+  end
+
+  # GET /projects/1/extractions/compare
+  def compare
+    @extraction_forms_projects = @project.extraction_forms_projects
+    @head_to_head              = head_to_head(@extraction_forms_projects, @extractions)
   end
 
   # GET /projects/1/extractions/consolidate

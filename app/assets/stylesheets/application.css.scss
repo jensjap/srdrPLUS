@@ -183,6 +183,12 @@ ul.menu.vertical.submenu.is-dropdown-submenu {
     }
   }
 }
+
+.contain-in-viewport {
+  overflow: scroll;
+  max-height: 95vh;
+}
+
 // END Miscellaneous stuff.
 
 // Pagination.
