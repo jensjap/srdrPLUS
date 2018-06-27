@@ -12,7 +12,8 @@
         th Citation Name
         th Number of Extractions
         th Status
-        th Action
+        th
+        th
 
     tbody
       - @citation_groups[:citations_projects].each do |key, val|
@@ -28,7 +29,12 @@
                 i.fi-check<> style="color: green;"
                 |Consolidation in Progress..
               td
-                = link_to('Continue Consolidation',
+                = link_to('Compare',
+                  compare_project_extractions_path(extraction_ids: val[:extraction_ids]),
+                  style: 'margin-bottom: 0;',
+                  class: 'button tiny')
+              td
+                = link_to('Consolidate',
                   consolidate_project_extractions_path(extraction_ids: val[:extraction_ids]),
                   style: 'margin-bottom: 0;',
                   class: 'button tiny')
@@ -39,7 +45,12 @@
                 i.fi-alert<> style="color: red;"
                 | No Consolidation Detected
               td
-                = link_to('Start Consolidation',
+                = link_to('Compare',
+                  compare_project_extractions_path(extraction_ids: val[:extraction_ids]),
+                  style: 'margin-bottom: 0;',
+                  class: 'button tiny')
+              td
+                = link_to('Consolidate',
                   consolidate_project_extractions_path(extraction_ids: val[:extraction_ids]),
                   style: 'margin-bottom: 0;',
                   class: 'button tiny')
@@ -48,4 +59,7 @@
             td
               i.fi-check> style="color: green;"
               | No Differences Detected
-            td Nothing to Consolidate
+            td = link_to('Compare',
+                 compare_project_extractions_path(extraction_ids: val[:extraction_ids]),
+                 style: 'margin-bottom: 0;',
+                 class: 'button tiny')
