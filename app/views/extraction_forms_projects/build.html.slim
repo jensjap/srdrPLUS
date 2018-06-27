@@ -3,10 +3,10 @@
     Extraction Form Builder: #{ @extraction_forms_project.extraction_form.name }
     = link_to 'go to extractions ->', project_extractions_path(@extraction_forms_project.project), { style: 'float: right; font-size: 0.4em;' }
 
-  .column.medium-3
+  .column.medium-2
     == render 'extraction_forms_projects/build/tab_links'
 
-  .column.medium-9
+  .column.medium-10
     == render 'extraction_forms_projects/build/tab_content'
 
 .column.row
