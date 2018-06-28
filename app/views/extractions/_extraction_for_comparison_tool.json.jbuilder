@@ -1,14 +1,24 @@
 json.extract! extraction, :project_id, :citations_project_id
 
-json.sections extraction.extractions_extraction_forms_projects_sections do |eefps|
+json.sections extraction.extractions_extraction_forms_projects_sections.order(:extraction_forms_projects_section_id) do |eefps|
   # Switch on ExtractionFormsProjectsSectionType.
   case eefps.extraction_forms_projects_section.extraction_forms_projects_section_type_id
   when 1
     json.name eefps.extraction_forms_projects_section.section.name.to_s
-    json.type1s eefps.extractions_extraction_forms_projects_sections_type1s do |eefpst1|
+    json.type1s eefps.extractions_extraction_forms_projects_sections_type1s.order(:type1_id) do |eefpst1|
       json.id eefpst1.type1.id
       json.name eefpst1.type1.name.to_s
       json.description eefpst1.type1.description.to_s
+      json.populations eefpst1.extractions_extraction_forms_projects_sections_type1_rows do |eefpst1r|
+        json.id eefpst1r.population_name.id
+        json.name eefpst1r.population_name.name
+        json.description eefpst1r.population_name.description
+        json.timepoints eefpst1r.extractions_extraction_forms_projects_sections_type1_row_columns do |eefpst1rc|
+          json.id eefpst1rc.timepoint_name.id
+          json.name eefpst1rc.timepoint_name.name
+          json.unit eefpst1rc.timepoint_name.unit
+        end
+      end
     end
 
   when 2
