@@ -10,6 +10,11 @@
     a:visited {
       color: gray;
     }
+
+    a.accordion-title {
+      padding-top: 0.25rem;
+      padding-bottom: 0.25rem;
+    }
   }
 
   li.accordion-item.is-active {
@@ -46,5 +51,9 @@
       font-weight: bold;
       text-decoration: none;
     }
+  }
+
+  table {
+    margin-bottom: 0;
   }
 }
