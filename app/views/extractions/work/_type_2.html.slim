@@ -1,3 +1,12 @@
+- eefps = ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by(\
+  extraction: @extraction,
+  extraction_forms_projects_section: efps,
+  link_to_type1: efps.link_to_type1.nil?\
+    ? nil\
+    : ExtractionsExtractionFormsProjectsSection.find_by!(\
+      extraction: @extraction,
+      extraction_forms_projects_section: efps.link_to_type1))
+
 - linked_section = eefps.link_to_type1
 
 - if linked_section && eefps.link_to_type1.type1s.blank?
