@@ -95,7 +95,7 @@ document.addEventListener 'turbolinks:load', ->
 
       if _on.length
         _on.removeClass( prereq ).addClass( 'off-' + prereq )
-        _on.find( 'input' ).each ->
+        _on.find( 'input[type!="hidden"]' ).each ->
           $( this ).val( $( this ).data( 'previous-value' ) ).trigger( 'change' )
         _on.find( 'input[type="checkbox"]' ).each ->
           $( this ).prop( 'checked', $( this ).data( 'previous-value' ) ).trigger( 'change' )

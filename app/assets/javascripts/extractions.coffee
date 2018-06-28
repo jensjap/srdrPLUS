@@ -31,13 +31,13 @@ document.addEventListener 'turbolinks:load', ->
         timeout: 5000
       return
 
-    #############################################################
-    # Attach change event listener to text field to trigger save.
-    $( '.work input[type="text"]' ).on 'input', ( e ) ->
-      e.preventDefault()
-      that = $( this )
-
-      delay((() -> return console.log that.data()), 1000)
+#    #############################################################
+#    # Attach change event listener to text field to trigger save.
+#    $( '.work input[type="text"]' ).on 'input', ( e ) ->
+#      e.preventDefault()
+#      that = $( this )
+#
+#      delay((() -> return console.log that.data()), 1000)
 
     ######################################################################
     # Attach click event to edit type1 from within extraction:consolidate.
