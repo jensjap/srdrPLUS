@@ -89,37 +89,36 @@ class Extraction < ApplicationRecord
           # RESULTS
         when 2
           # TYPE2s
+          # questions live here
+          
         when 1
           # TYPE1s
           # are these the type1s we care about
           eefps_t1s = eefps.extractions_extraction_forms_projects_sections_type1s.includes(:type1)
           eefps_t1s.each do |eefps_t1|
             type1 = eefps_t1.type1
-            #the only solution i  can think of is to combine name and description into one key and use that
-            #a_hash[efps.id.to_s] ||= {}
-            #a_hash[efps.id.to_s][type1.id.to_s] ||= {}
-            #a_hash[efps.id.to_s][type1.id.to_s][type1.description] ||= []
-            #a_hash[efps.id.to_s][type1.id.to_s][type1.description] << extraction.id
 
             a_hash[efps.id.to_s] ||= {}
-            a_hash[efps.id.to_s][type1.id.to_s] ||= {}
+            a_hash[efps.id.to_s][type1.id.to_s] ||= []
             a_hash[efps.id.to_s][type1.id.to_s] << extraction.id
 
             # this is stylistically weird but it prevents the loop below to crash 
             b_hash[efps.id.to_s] ||= {}
             b_hash[efps.id.to_s][type1.id.to_s] ||= {}
 
+            c_hash[efps.id.to_s] ||= {}
+            c_hash[efps.id.to_s][type1.id.to_s] ||= {}
+
             # If there are timepoints and populations, we need to consolidate those as well using a similar hash method
             eefps_t1.extractions_extraction_forms_projects_sections_type1_rows.each do |eefps_t1_row|
               b_hash[efps.id.to_s][type1.id.to_s][eefps_t1_row.population_name_id.to_s] ||= []
               b_hash[efps.id.to_s][type1.id.to_s][eefps_t1_row.population_name_id.to_s] << extraction.id
 
-              eefps_t1_row.extractions_extraction_forms_projects_sections_type1_row_columns do |eefps_t1_row_column|
-                c_hash[efps.id.to_s] ||= {}
-                c_hash[efps.id.to_s][type1.id.to_s] ||= {}
-                c_hash[efps.id.to_s][type1.id.to_s][eefps_t1_row.population_name_id.to_s] ||= {}
-                c_hash[efps.id.to_s][type1.id.to_s][eefps_t1_row.population_name_id.to_s][eefps_t1_row_column.timepoint_id.to_s] ||= []
-                c_hash[efps.id.to_s][type1.id.to_s][eefps_t1_row.population_name_id.to_s][eefps_t1_row_column.timepoint_id.to_s] << extraction.id
+              c_hash[efps.id.to_s][type1.id.to_s][eefps_t1_row.population_name_id.to_s] ||= {}
+
+              eefps_t1_row.extractions_extraction_forms_projects_sections_type1_row_columns.each do |eefps_t1_row_column|
+                c_hash[efps.id.to_s][type1.id.to_s][eefps_t1_row.population_name_id.to_s][eefps_t1_row_column.timepoint_name_id.to_s] ||= []
+                c_hash[efps.id.to_s][type1.id.to_s][eefps_t1_row.population_name_id.to_s][eefps_t1_row_column.timepoint_name_id.to_s] << extraction.id
               end
             end
           end
@@ -156,18 +155,18 @@ class Extraction < ApplicationRecord
           # population and timepoint creation
           b_hash[efps_id][type1_id].each do |population_name_id, p_es|
             if p_es.length == extractions.length
-              population = Population.find(population_name_id)
+              population_name = PopulationName.find(population_name_id)
               eefps_t1_row = ExtractionsExtractionFormsProjectsSectionsType1Row.find_or_create_by!(
                 extractions_extraction_forms_projects_sections_type1: eefps_t1,
-                population: population )
+                population_name: population_name )
 
-              c_hash[efps_id][type1_id][population_name_id].each do |timepoint_id, t_es|
+              c_hash[efps_id][type1_id][population_name_id].each do |timepoint_name_id, t_es|
                 if t_es.length == extractions.length
-                  timepoint = Timepoint.find(timepoint_id)
+                  timepoint_name = TimepointName.find(timepoint_name_id)
                   ExtractionsExtractionFormsProjectsSectionsType1RowColumn.find_or_create_by!(
                     extractions_extraction_forms_projects_sections_type1_row: eefps_t1_row,
-                    baseline: false, #should this be true in some cases?
-                    timepoint: timepoint )
+                    is_baseline: false, #should this be true in some cases?
+                    timepoint_name: timepoint_name )
                 end
               end
             end
