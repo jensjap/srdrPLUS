@@ -70,28 +70,114 @@ class Extraction < ApplicationRecord
   # Anything they have in common can be copied to the consolidated extraction (self).
   def auto_consolidate(extractions)
     # make sure the citations_projects are all the same
-    if (extractions.pluck(:citations_project_id) + self.citations_project_id).uniq.length > 1
-      next
+    if (extractions.pluck(:citations_project_id) + [self.citations_project_id]).uniq.length > 1
       #return false
     end
 
     # what i want to do is to build a hash to store the structure/differences
-    hash_to_store_type1s= {}
+    a_hash = { }
+    # for populations
+    b_hash = { }
+    # for timepoints
+    c_hash = { }
 
     extractions.each do |extraction|
-      extraction.extraction_forms_projects_sections.each do |eefps|
-        eefps.
-        #get type1s 
-        #if  there are type1s  common between extractions add these  type1s to self
-        #
-        eefps.extractions_extraction_forms_projects_sections_question_row_column_fields.each do |eefps_qrcf|
-          byebug
-          # results section
-          # check outcomes and  population that you know are shared
-          # iterate through the sections and check  if  measures  are shared among extractions
-          # make sure the data is 
+      extraction.extractions_extraction_forms_projects_sections.each do |eefps|
+        efps = eefps.extraction_forms_projects_section
+        case efps.extraction_forms_projects_section_type_id
+        when 3
+          # RESULTS
+        when 2
+          # TYPE2s
+        when 1
+          # TYPE1s
+          # are these the type1s we care about
+          eefps_t1s = eefps.extractions_extraction_forms_projects_sections_type1s.includes(:type1)
+          eefps_t1s.each do |eefps_t1|
+            type1 = eefps_t1.type1
+            #the only solution i  can think of is to combine name and description into one key and use that
+            #a_hash[efps.id.to_s] ||= {}
+            #a_hash[efps.id.to_s][type1.id.to_s] ||= {}
+            #a_hash[efps.id.to_s][type1.id.to_s][type1.description] ||= []
+            #a_hash[efps.id.to_s][type1.id.to_s][type1.description] << extraction.id
+
+            a_hash[efps.id.to_s] ||= {}
+            a_hash[efps.id.to_s][type1.id.to_s] ||= {}
+            a_hash[efps.id.to_s][type1.id.to_s] << extraction.id
+
+            # this is stylistically weird but it prevents the loop below to crash 
+            b_hash[efps.id.to_s] ||= {}
+            b_hash[efps.id.to_s][type1.id.to_s] ||= {}
+
+            # If there are timepoints and populations, we need to consolidate those as well using a similar hash method
+            eefps_t1.extractions_extraction_forms_projects_sections_type1_rows.each do |eefps_t1_row|
+              b_hash[efps.id.to_s][type1.id.to_s][eefps_t1_row.population_name_id.to_s] ||= []
+              b_hash[efps.id.to_s][type1.id.to_s][eefps_t1_row.population_name_id.to_s] << extraction.id
+
+              eefps_t1_row.extractions_extraction_forms_projects_sections_type1_row_columns do |eefps_t1_row_column|
+                c_hash[efps.id.to_s] ||= {}
+                c_hash[efps.id.to_s][type1.id.to_s] ||= {}
+                c_hash[efps.id.to_s][type1.id.to_s][eefps_t1_row.population_name_id.to_s] ||= {}
+                c_hash[efps.id.to_s][type1.id.to_s][eefps_t1_row.population_name_id.to_s][eefps_t1_row_column.timepoint_id.to_s] ||= []
+                c_hash[efps.id.to_s][type1.id.to_s][eefps_t1_row.population_name_id.to_s][eefps_t1_row_column.timepoint_id.to_s] << extraction.id
+              end
+            end
+          end
+
+          # this shoould be under type_2
+          if not eefps.link_to_type1.nil?
+            # do linked efps things
+          end
+          #get type1s 
+          #if  there are type1s  common between extractions add these  type1s to self
+          #
+          eefps.extractions_extraction_forms_projects_sections_question_row_column_fields.each do |eefps_qrcf|
+            # results section
+            # check outcomes and  population that you know are shared
+            # iterate through the sections and check  if  measures  are shared among extractions
+            # make sure the data is 
+          end
+        else
+          raise RuntimeError, 'Unknown ExtractionFormsProjectsSectionType'
         end
       end
     end
+
+    #create the same type1 in self
+    a_hash.each do |efps_id, a_a_hash|
+      a_a_hash.each do |type1_id, t1_es|
+        if t1_es.length == extractions.length
+          eefps = self.extractions_extraction_forms_projects_sections.find_or_create_by!(extraction_forms_projects_section_id: efps_id)
+          type1 = Type1.find(type1_id)
+          eefps_t1 = ExtractionsExtractionFormsProjectsSectionsType1.find_or_create_by!(
+            extractions_extraction_forms_projects_section: eefps,
+            type1: type1 )
+
+          # population and timepoint creation
+          b_hash[efps_id][type1_id].each do |population_name_id, p_es|
+            if p_es.length == extractions.length
+              population = Population.find(population_name_id)
+              eefps_t1_row = ExtractionsExtractionFormsProjectsSectionsType1Row.find_or_create_by!(
+                extractions_extraction_forms_projects_sections_type1: eefps_t1,
+                population: population )
+
+              c_hash[efps_id][type1_id][population_name_id].each do |timepoint_id, t_es|
+                if t_es.length == extractions.length
+                  timepoint = Timepoint.find(timepoint_id)
+                  ExtractionsExtractionFormsProjectsSectionsType1RowColumn.find_or_create_by!(
+                    extractions_extraction_forms_projects_sections_type1_row: eefps_t1_row,
+                    baseline: false, #should this be true in some cases?
+                    timepoint: timepoint )
+                end
+              end
+            end
+          end
+        end
+      end
+    end
+
+    # after going through all the extractions, we need to find_or_create_by them in the consolidated one
+    # assume all eefps is there. true?
+
   end
 end
