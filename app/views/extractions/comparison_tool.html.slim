@@ -1,4 +1,4 @@
-- provide(:title, 'Comparison Tool')
+- provide(:title, t(".#{ action_name }"))
 
 .column.row
   .title-heading
@@ -21,7 +21,9 @@
           td = val[:citations_project_id]
           td title=val[:citation_name_long] = val[:citation_name_short]
           td = val[:extraction_ids].length.to_s
+
           - if val[:data_discrepancy]
+
             - if val[:consolidated_status]
               td
                 i.fi-alert> style="color: red;"
@@ -29,26 +31,17 @@
                 i.fi-check<> style="color: green;"
                 |Consolidation in Progress..
               td
-                = link_to('Compare',
-                  compare_project_extractions_path(extraction_ids: val[:extraction_ids]),
-                  style: 'margin-bottom: 0;',
-                  class: 'button tiny')
-              td
                 = link_to('Consolidate',
                   consolidate_project_extractions_path(extraction_ids: val[:extraction_ids]),
                   style: 'margin-bottom: 0;',
                   class: 'button tiny')
+
             - else
               td
                 i.fi-alert> style="color: red;"
                 | Differences Detected
                 i.fi-alert<> style="color: red;"
                 | No Consolidation Detected
-              td
-                = link_to('Compare',
-                  compare_project_extractions_path(extraction_ids: val[:extraction_ids]),
-                  style: 'margin-bottom: 0;',
-                  class: 'button tiny')
               td
                 = link_to('Consolidate',
                   consolidate_project_extractions_path(extraction_ids: val[:extraction_ids]),
@@ -59,7 +52,3 @@
             td
               i.fi-check> style="color: green;"
               | No Differences Detected
-            td = link_to('Compare',
-                 compare_project_extractions_path(extraction_ids: val[:extraction_ids]),
-                 style: 'margin-bottom: 0;',
-                 class: 'button tiny')

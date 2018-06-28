@@ -57,12 +57,14 @@ en:
   greet: Greetings
   blank: Cannot be blank
   confirm: Are you sure?
+  extractions: Extraction(s)
   extractions:
+    comparison_tool:
+      comparison_tool: Comparison Tool
     work:
       question_row_column_field_types:
         text:
           save: 'Update value'
-  extractions: Extraction(s)
   extraction_forms_projects:
     form:
       save: Save Extraction Form
@@ -104,7 +106,6 @@ en:
   errors:
     messages:
       taken: We are sorry, but the value you are attempting to use is allowed only once and has already been used
-  comparison_tool: Comparison Tool
   compare_extractions: Compare Extraction(s)
   request_export: Request Export
   manage_project_information: Manage Project Information
