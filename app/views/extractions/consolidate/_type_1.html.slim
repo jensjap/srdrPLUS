@@ -2,7 +2,7 @@
   #foz.columns.medium-8 data-toggler='medium-8 medium-12'
     h4 = section_name
     ul.accordion.consolidate data-accordion='' data-multi-expand='true' data-allow-all-closed='true'
-      - @head_to_head.dig(efp.id, efps.id, :all_type1s_across_extractions).each do |type1|
+      - @head_to_head.dig(efp.id, :efpss, efps.id, :all_type1s_across_extractions).each do |type1|
         li.accordion-item data-accordion-item=''
           a.accordion-title.inline href='#' title="Description: #{ type1.description }"
             table
@@ -13,7 +13,8 @@
 
               tbody
                 tr
-                  td found in #{ @head_to_head.dig(efp.id, efps.id, :type1s_found_in_extractions, type1.id).length } out of #{ @extractions.length } extractions
+                  td
+                  /td found in #{ @head_to_head.dig(efp.id, efps.id, :type1s_found_in_extractions, type1.id).length } out of #{ @extractions.length } extractions
 
           .accordion-content data-tab-content=''
             .table-scroll
@@ -53,7 +54,7 @@
                           | (#{ type1.description })
 
             ul.accordion data-accordion='' data-multi-expand='false' data-allow-all-closed='true'
-              - @head_to_head.dig(efp.id, efps.id, :all_population_names_across_type1, type1.id).each do |population_name|
+              - @head_to_head.dig(efp.id, :efpss, efps.id, :all_populations_across_type1s, type1.id, :population_names).each do |population_name|
                 li.accordion-item data-accordion-item=''
                   a.accordion-title.populations href='#' title="Description: #{ population_name.description }" = population_name.name_and_description
                   .accordion-content data-tab-content=''
@@ -101,14 +102,7 @@
                               th Extracted by #{ extraction.user.profile.username } (Extraction ID: #{ extraction.id })
 
                         tbody
-                          / We could show all timepoints across all populations using below. Otherwise, use current implementation and only show relevant to this type1.
-                          /- @head_to_head.dig(efp.id, efps.id, :all_timepoint_names_across_population, population_name.id).each do |timepoint_name|
-                          - eefpst1rcs = ExtractionsExtractionFormsProjectsSectionsType1RowColumn. \
-                            includes(extractions_extraction_forms_projects_sections_type1_row: [:population_name, { extractions_extraction_forms_projects_sections_type1: [:type1, { extractions_extraction_forms_projects_section: :extraction }] }]). \
-                            joins(extractions_extraction_forms_projects_sections_type1_row: [:population_name, { extractions_extraction_forms_projects_sections_type1: [:type1, { extractions_extraction_forms_projects_section: :extraction }] }]). \
-                            where(extractions_extraction_forms_projects_sections_type1_rows: { population_name: population_name }). \
-                            where(extractions_extraction_forms_projects_sections_type1_rows: { extractions_extraction_forms_projects_sections_type1s: { type1: type1 } }). \
-                            where(extractions_extraction_forms_projects_sections_type1_rows: { extractions_extraction_forms_projects_sections_type1s: { extractions_extraction_forms_projects_sections: { extraction: @extractions } } }).map(&:timepoint_name).to_set.each do |timepoint_name|
+                          - @head_to_head.dig(efp.id, :efpss, efps.id, :all_populations_across_type1s, type1.id, :all_timepoints_across_populations, population_name.id, :timepoint_names).each do |timepoint_name|
                             tr
                               - @extractions.each do |extraction|
                                 - eefps = ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by!( \

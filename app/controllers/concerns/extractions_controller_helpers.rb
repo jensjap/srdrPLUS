@@ -63,60 +63,96 @@ module ExtractionsControllerHelpers
 
       extraction_forms_projects.each do |efp|
         efp_id = efp.id
-        return_value[efp_id] = Hash.new
-        return_value[efp_id][:extraction_forms_project_id] = efp_id
+
+        unless return_value.has_key?(efp_id)
+          return_value[efp_id] = Hash.new
+          return_value[efp_id][:extraction_forms_project_id] = efp_id
+          return_value[efp_id][:efpss] = Hash.new
+        end
+
         efp.extraction_forms_projects_sections.each do |efps|
           efps_id = efps.id
-          return_value[efp_id][efps_id] = Hash.new
-          return_value[efp_id][efps_id][:extraction_forms_projects_section_id] = efps_id
+
+          unless return_value[efp_id][:efpss].has_key?(efps_id)
+            return_value[efp_id][:efpss][efps_id] = Hash.new
+            return_value[efp_id][:efpss][efps_id][:extraction_forms_projects_section_id] = efps_id
+            return_value[efp_id][:efpss][efps_id][:eefpss] = Hash.new
+            return_value[efp_id][:efpss][efps_id][:all_populations_across_type1s] = Hash.new
+          end
+
           case efps.extraction_forms_projects_section_type_id
           when 1
-            return_value[efp_id][efps_id][:section_name] = efps.section.name
+            return_value[efp_id][:efpss][efps_id][:section_name] = efps.section.name
 
-            # Find all eefpss across all extractions for this (type1) section
+            # Find all eefpss across all extractions for this section
             eefpss = ExtractionsExtractionFormsProjectsSection.where(
               extraction: extractions,
               extraction_forms_projects_section: efps)
 
-            # This finds all eefpst1s across all extractions for this (type1) section.
+            # Find all eefpst1s across all extractions for this section.
             eefpst1s = ExtractionsExtractionFormsProjectsSectionsType1.
               includes(:type1).
               where(extractions_extraction_forms_projects_section: eefpss)
 
             # Keep a master list of all type1s across all extractions for this section.
-            return_value[efp_id][efps_id][:all_type1s_across_extractions] = eefpst1s.map(&:type1).to_set
+            return_value[efp_id][:efpss][efps_id][:all_type1s_across_extractions] = eefpst1s.map(&:type1).to_set
 
             # Iterate over each eefps to find master lists for each eefpst1 separately.
             eefpss.each do |eefps|
               eefps_id = eefps.id
-              return_value[efp_id][efps_id][eefps_id] = Hash.new
-              return_value[efp_id][efps_id][eefps_id][:extraction_id] = eefps.extraction.id
-              return_value[efp_id][efps_id][eefps_id][:extractions_extraction_forms_projects_section_id] = eefps_id
+
+              unless return_value[efp_id][:efpss][efps_id][:eefpss].has_key?(eefps_id)
+                return_value[efp_id][:efpss][efps_id][:eefpss][eefps_id] = Hash.new
+                return_value[efp_id][:efpss][efps_id][:eefpss][eefps_id][:extractions_extraction_forms_projects_section_id] = eefps_id
+                return_value[efp_id][:efpss][efps_id][:eefpss][eefps_id][:eefpst1s] = Hash.new
+              end
 
               # Iterate over eefpst1s to find master lists of populations for a specific type1.
               eefps.extractions_extraction_forms_projects_sections_type1s.includes(:type1).each do |eefpst1|
-                eefpst1_type1_id = eefpst1.type1.id
-
-                # This will collect all populations for a specific type1. Don't recreate if one already exists.
-                return_value[efp_id][efps_id][:all_population_names_across_type1]                   = Hash.new unless return_value[efp_id][efps_id].has_key? :all_population_names_across_type1
-                return_value[efp_id][efps_id][:all_population_names_across_type1][eefpst1_type1_id] = Set.new  unless return_value[efp_id][efps_id][:all_population_names_across_type1].has_key? eefpst1_type1_id
-
-                # Get all eefpst1s with this type1.
-                return_value[efp_id][efps_id][:type1s_found_in_extractions]                   = Hash.new unless return_value[efp_id][efps_id].has_key? :type1s_found_in_extractions
-                return_value[efp_id][efps_id][:type1s_found_in_extractions][eefpst1_type1_id] = eefpst1s.where(extractions_extraction_forms_projects_section: eefpss, type1: eefpst1.type1)
-
                 eefpst1_id = eefpst1.id
-                return_value[efp_id][efps_id][eefps_id][eefpst1_id] = Hash.new
-                return_value[efp_id][efps_id][eefps_id][eefpst1_id][:extractions_extraction_forms_projects_sections_type1_id] = eefpst1_id
 
-                # Find all populations across extractions for this particular type1.
+                unless return_value[efp_id][:efpss][efps_id][:eefpss][eefps_id][:eefpst1s].has_key?(eefpst1_id)
+                  return_value[efp_id][:efpss][efps_id][:eefpss][eefps_id][:eefpst1s][eefpst1_id] = Hash.new
+                  return_value[efp_id][:efpss][efps_id][:eefpss][eefps_id][:eefpst1s][eefpst1_id][:extractions_extraction_forms_projects_sections_type1_id] = eefpst1_id
+                  return_value[efp_id][:efpss][efps_id][:eefpss][eefps_id][:eefpst1s][eefpst1_id][:eefpst1rs] = Hash.new
+                end
+
+                # Find all eefpst1rs across extractions for this particular type1.
                 eefpst1rs = ExtractionsExtractionFormsProjectsSectionsType1Row.
                   joins(extractions_extraction_forms_projects_sections_type1: [:type1, { extractions_extraction_forms_projects_section: :extraction }]).
                   where(extractions_extraction_forms_projects_sections_type1s: { type1: eefpst1.type1 }).
                   where(extractions_extraction_forms_projects_sections_type1s: { extractions_extraction_forms_projects_sections: { extraction: extractions } })
 
-                # Keep a master list of all populations across all extractions for this type1.
-                return_value[efp_id][efps_id][:all_population_names_across_type1][eefpst1_type1_id].merge eefpst1rs.map(&:population_name).to_set
+                # Keep a master list of all population_names across all extractions for this type1.
+                unless return_value[efp_id][:efpss][efps_id][:all_populations_across_type1s].has_key?(eefpst1.type1.id)
+                  return_value[efp_id][:efpss][efps_id][:all_populations_across_type1s][eefpst1.type1.id] = Hash.new
+                  return_value[efp_id][:efpss][efps_id][:all_populations_across_type1s][eefpst1.type1.id][:all_timepoints_across_populations] = Hash.new
+                end
+                return_value[efp_id][:efpss][efps_id][:all_populations_across_type1s][eefpst1.type1.id][:population_names] = eefpst1rs.map(&:population_name).to_set
+
+                eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |eefpst1r|
+                  eefpst1r_id = eefpst1r.id
+
+                  unless return_value[efp_id][:efpss][efps_id][:eefpss][eefps_id][:eefpst1s][eefpst1_id][:eefpst1rs].has_key?(eefpst1r_id)
+                    return_value[efp_id][:efpss][efps_id][:eefpss][eefps_id][:eefpst1s][eefpst1_id][:eefpst1rs][eefpst1r_id] = Hash.new
+                    return_value[efp_id][:efpss][efps_id][:eefpss][eefps_id][:eefpst1s][eefpst1_id][:eefpst1rs][eefpst1r_id][:extractions_extraction_forms_projects_sections_type1_row_id] = eefpst1r_id
+                    return_value[efp_id][:efpss][efps_id][:eefpss][eefps_id][:eefpst1s][eefpst1_id][:eefpst1rs][eefpst1r_id][:eefpst1rcs] = Hash.new
+                  end
+
+                  # Find all eefpst1rcs across extractions for this particular population.
+                  eefpst1rcs = ExtractionsExtractionFormsProjectsSectionsType1RowColumn.
+                    includes(extractions_extraction_forms_projects_sections_type1_row: [:population_name, { extractions_extraction_forms_projects_sections_type1: [:type1, { extractions_extraction_forms_projects_section: :extraction }] }]).
+                    joins(extractions_extraction_forms_projects_sections_type1_row: [:population_name, { extractions_extraction_forms_projects_sections_type1: [:type1, { extractions_extraction_forms_projects_section: :extraction }] }]).
+                    where(extractions_extraction_forms_projects_sections_type1_rows: { population_name: eefpst1r.population_name }).
+                    where(extractions_extraction_forms_projects_sections_type1_rows: { extractions_extraction_forms_projects_sections_type1s: { type1: eefpst1r.extractions_extraction_forms_projects_sections_type1.type1 } }).
+                    where(extractions_extraction_forms_projects_sections_type1_rows: { extractions_extraction_forms_projects_sections_type1s: { extractions_extraction_forms_projects_sections: { extraction: extractions } } })
+
+                  # Keep a master list of all timepoint_names across all extractions for this population.
+                  unless return_value[efp_id][:efpss][efps_id][:all_populations_across_type1s][eefpst1r.extractions_extraction_forms_projects_sections_type1.type1.id][:all_timepoints_across_populations].has_key?(eefpst1r.population_name.id)
+                    return_value[efp_id][:efpss][efps_id][:all_populations_across_type1s][eefpst1r.extractions_extraction_forms_projects_sections_type1.type1.id][:all_timepoints_across_populations][eefpst1r.population_name.id] = Hash.new
+                  end
+                  return_value[efp_id][:efpss][efps_id][:all_populations_across_type1s][eefpst1r.extractions_extraction_forms_projects_sections_type1.type1.id][:all_timepoints_across_populations][eefpst1r.population_name.id][:timepoint_names] = eefpst1rcs.map(&:timepoint_name).to_set
+                end
               end
             end
           when 2
