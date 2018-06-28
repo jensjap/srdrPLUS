@@ -1,32 +1,32 @@
-- eefps = ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by(\
+- eefps = ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by!( \
   extraction: @extraction,
   extraction_forms_projects_section: efps,
-  link_to_type1: efps.link_to_type1.nil?\
-    ? nil\
-    : ExtractionsExtractionFormsProjectsSection.find_by!(\
+  link_to_type1: efps.link_to_type1.nil? \
+    ? nil \
+    : ExtractionsExtractionFormsProjectsSection.find_by!( \
       extraction: @extraction,
       extraction_forms_projects_section: efps.link_to_type1))
 
 .column.row
-  = render 'extractions/work/type1/type1_friendly_helper_message',
+  = render 'extractions/shared/type1/type1_friendly_helper_message',
     extraction: @extraction,
     section_name: section_name,
     eefps: eefps
 
 .column.row
-  = render 'extractions/work/type1/type1_included_list',
+  = render 'extractions/shared/type1/type1_included_list',
     extraction: @extraction,
     section_name: section_name,
     eefps: eefps
 
 .column.row
-  = render 'extractions/work/type1/type1_example_list',
+  = render 'extractions/shared/type1/type1_example_list',
     extraction: @extraction,
     section_name: section_name,
     eefps: eefps
 
 .column.row
-  = render 'extractions/work/type1/type1_new_custom_form',
+  = render 'extractions/shared/type1/type1_new_custom_form',
     extraction: @extraction,
     section_name: section_name,
     eefps: eefps

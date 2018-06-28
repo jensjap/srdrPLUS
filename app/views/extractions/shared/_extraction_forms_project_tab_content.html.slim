@@ -20,10 +20,10 @@ a.button.tiny data-toggle='section-menu-on section-menu-off foo bar'
       .tabs-panel id="panel-extraction-forms-project-#{ efp.id.to_s }"
 
         .row
-          #foo.column.medium-4 data-toggler='hide'
+          #foo.column.medium-2 data-toggler='hide'
             = render 'extractions/shared/extraction_forms_projects_section_tab_links',
               efp: efp
 
-          #bar.column.medium-8 data-toggler='medium-8 medium-12'
+          #bar.column.medium-10 data-toggler='medium-8 medium-12'
             = render "extractions/shared/extraction_forms_projects_section_tab_content",
               efp: efp

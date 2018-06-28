@@ -1,5 +1,5 @@
 .row
-  .columns.medium-7
+  #foz.columns.medium-8 data-toggler='medium-8 medium-12'
     h4 = section_name
     ul.accordion.consolidate data-accordion='' data-multi-expand='true' data-allow-all-closed='true'
       - @head_to_head.dig(efp.id, efps.id, :all_type1s_across_extractions).each do |type1|
@@ -10,13 +10,11 @@
                 tr
                   th style='font-weight: normal;'
                     = type1.name_and_description
-                    /= link_to '#', class: 'edit-type1-link', data: { type1_id: type1.id, efps_id: efps.id, extraction_ids: @extractions.pluck(:id) } do
-                      i.fi-pencil<>
-                      | Change
 
               tbody
                 tr
                   td found in #{ @head_to_head.dig(efp.id, efps.id, :type1s_found_in_extractions, type1.id).length } out of #{ @extractions.length } extractions
+
           .accordion-content data-tab-content=''
             .table-scroll
               table
@@ -28,12 +26,12 @@
                 tbody
                   tr
                     - @extractions.each do |extraction|
-                      - eefps = ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by(\
+                      - eefps = ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by!( \
                         extraction: extraction,
                         extraction_forms_projects_section: efps,
-                        link_to_type1: efps.link_to_type1.nil?\
-                          ? nil\
-                          : ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by!(\
+                        link_to_type1: efps.link_to_type1.nil? \
+                          ? nil \
+                          : ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by!( \
                             extraction: extraction,
                             extraction_forms_projects_section: efps.link_to_type1))
                       - if eefps.extractions_extraction_forms_projects_sections_type1s.map(&:type1).include? type1
@@ -43,12 +41,10 @@
                           = link_to '#', class: 'edit-type1-link', data: { type1_id: type1.id, efps_id: efps.id, eefps_id: eefps.id, extraction_ids: @extractions.pluck(:id) } do
                             i.fi-pencil<>
                             | Change
-
                       - else
                         td title="#{ type1.name_and_description } #{ section_name.singularize } not included in extraction id #{ extraction.id }"
                           i.fi-x> style='color: red;'
                           | #{ type1.name_and_description }
-
             ul.accordion data-accordion='' data-multi-expand='false' data-allow-all-closed='true'
               - @head_to_head.dig(efp.id, efps.id, :all_population_names_across_type1, type1.id).each do |population_name|
                 li.accordion-item data-accordion-item=''
@@ -65,15 +61,15 @@
                         tbody
                           tr
                             - @extractions.each do |extraction|
-                              - eefps = ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by(\
+                              - eefps = ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by!( \
                                 extraction: extraction,
                                 extraction_forms_projects_section: efps,
-                                link_to_type1: efps.link_to_type1.nil?\
-                                  ? nil\
-                                  : ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by!(\
+                                link_to_type1: efps.link_to_type1.nil? \
+                                  ? nil \
+                                  : ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by!( \
                                     extraction: extraction,
                                     extraction_forms_projects_section: efps.link_to_type1))
-                              - eefpst1 = ExtractionsExtractionFormsProjectsSectionsType1.find_by(\
+                              - eefpst1 = ExtractionsExtractionFormsProjectsSectionsType1.find_by( \
                                 extractions_extraction_forms_projects_section: eefps,
                                 type1: type1)
                               - if eefpst1
@@ -89,7 +85,6 @@
                                 td title="#{ population_name.name_and_description } not included in #{ type1.name } #{ section_name.singularize }"
                                   i.fi-x> style='color: red;'
                                   | #{ population_name.short_name_and_description }
-
                     h6 Timepoints
                     .table-scroll
                       table
@@ -99,32 +94,29 @@
                               th Extracted by #{ extraction.user.profile.username } (Extraction ID: #{ extraction.id })
 
                         tbody
-
                           / We could show all timepoints across all populations using below. Otherwise, use current implementation and only show relevant to this type1.
                           /- @head_to_head.dig(efp.id, efps.id, :all_timepoint_names_across_population, population_name.id).each do |timepoint_name|
-
-                          - eefpst1rcs = ExtractionsExtractionFormsProjectsSectionsType1RowColumn.\
-                            includes(extractions_extraction_forms_projects_sections_type1_row: [:population_name, { extractions_extraction_forms_projects_sections_type1: [:type1, { extractions_extraction_forms_projects_section: :extraction }] }]).\
-                            joins(extractions_extraction_forms_projects_sections_type1_row: [:population_name, { extractions_extraction_forms_projects_sections_type1: [:type1, { extractions_extraction_forms_projects_section: :extraction }] }]).\
-                            where(extractions_extraction_forms_projects_sections_type1_rows: { population_name: population_name }).\
-                            where(extractions_extraction_forms_projects_sections_type1_rows: { extractions_extraction_forms_projects_sections_type1s: { type1: type1 } }).\
+                          - eefpst1rcs = ExtractionsExtractionFormsProjectsSectionsType1RowColumn. \
+                            includes(extractions_extraction_forms_projects_sections_type1_row: [:population_name, { extractions_extraction_forms_projects_sections_type1: [:type1, { extractions_extraction_forms_projects_section: :extraction }] }]). \
+                            joins(extractions_extraction_forms_projects_sections_type1_row: [:population_name, { extractions_extraction_forms_projects_sections_type1: [:type1, { extractions_extraction_forms_projects_section: :extraction }] }]). \
+                            where(extractions_extraction_forms_projects_sections_type1_rows: { population_name: population_name }). \
+                            where(extractions_extraction_forms_projects_sections_type1_rows: { extractions_extraction_forms_projects_sections_type1s: { type1: type1 } }). \
                             where(extractions_extraction_forms_projects_sections_type1_rows: { extractions_extraction_forms_projects_sections_type1s: { extractions_extraction_forms_projects_sections: { extraction: @extractions } } }).map(&:timepoint_name).to_set.each do |timepoint_name|
-
                             tr
                               - @extractions.each do |extraction|
-                                - eefps = ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by(\
+                                - eefps = ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by!( \
                                   extraction: extraction,
                                   extraction_forms_projects_section: efps,
-                                  link_to_type1: efps.link_to_type1.nil?\
-                                    ? nil\
-                                    : ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by!(\
+                                  link_to_type1: efps.link_to_type1.nil? \
+                                    ? nil \
+                                    : ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by!( \
                                       extraction: extraction,
                                       extraction_forms_projects_section: efps.link_to_type1))
-                                - eefpst1 = ExtractionsExtractionFormsProjectsSectionsType1.find_by(\
+                                - eefpst1 = ExtractionsExtractionFormsProjectsSectionsType1.find_by( \
                                   extractions_extraction_forms_projects_section: eefps,
                                   type1: type1)
                                 - if eefpst1
-                                  - eefpst1r = ExtractionsExtractionFormsProjectsSectionsType1Row.find_by(\
+                                  - eefpst1r = ExtractionsExtractionFormsProjectsSectionsType1Row.find_by( \
                                     extractions_extraction_forms_projects_sections_type1: eefpst1,
                                     population_name: population_name)
                                   - if eefpst1r
@@ -145,74 +137,30 @@
                                     i.fi-x> style='color: red;'
                                     | #{ timepoint_name.pretty_print_export_header }
 
-  .columns.medium-5 data-sticky-container=''
-    - eefps = ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by(\
+  #baz.columns.medium-4 data-toggler='hide'
+    - eefps = ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by!( \
       extraction: @consolidated_extraction,
       extraction_forms_projects_section: efps,
-      link_to_type1: efps.link_to_type1.nil?\
-        ? nil\
-        : ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by!(\
+      link_to_type1: efps.link_to_type1.nil? \
+        ? nil \
+        : ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by!( \
           extraction: @consolidated_extraction,
           extraction_forms_projects_section: efps.link_to_type1))
-    div.sticky id='eefps-id-#{ eefps.id }' data-sticky='' data-top-anchor='bar:top' data-btm-anchor='bar:bottom' style='border: 1px solid lightgrey; width: 100%;'
-      - eefps = ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by(\
-        extraction: @consolidated_extraction,
-        extraction_forms_projects_section: efps,
-        link_to_type1: efps.link_to_type1.nil?\
-          ? nil\
-          : ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by!(\
-            extraction: @consolidated_extraction,
-            extraction_forms_projects_section: efps.link_to_type1))
-      = render 'extractions/consolidate/type1/consolidated_extraction',
+
+    .column.row
+      = render 'extractions/shared/type1/type1_included_list',
         extraction: @consolidated_extraction,
         section_name: section_name,
-        efp: efp,
-        efps: efps,
         eefps: eefps
 
+    .column.row
+      = render 'extractions/shared/type1/type1_example_list',
+        extraction: @consolidated_extraction,
+        section_name: section_name,
+        eefps: eefps
 
-
-
-
-
-
-
-
-
-
-
-
-/.column.row
-  = render 'extractions/consolidate/type1/type1_included_list',
-    extraction: extraction,
-    section_name: section_name,
-    eefps: eefps
-
-
-
-
-
-
-//.column.row
-/  = render 'extractions/work/type1/type1_friendly_helper_message',
-/    extraction: extraction,
-/    section_name: section_name,
-/    eefps: eefps
-/
-//.column.row
-/  = render 'extractions/work/type1/type1_included_list',
-/    extraction: extraction,
-/    section_name: section_name,
-/    eefps: eefps
-/
-//.column.row
-/  = render 'extractions/work/type1/type1_example_list',
-/    extraction: extraction,
-/    section_name: section_name,
-/    eefps: eefps
-/
-//.column.row
-/  = render 'extractions/work/type1/type1_new_custom_form',
-/    extraction: extraction,
-/    section_name: section_name,
-/    eefps: eefps
+    .column.row
+      = render 'extractions/shared/type1/type1_new_custom_form',
+        extraction: @consolidated_extraction,
+        section_name: section_name,
+        eefps: eefps
