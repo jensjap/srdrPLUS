@@ -126,14 +126,14 @@ module ExtractionsControllerHelpers
                   end
                   return_value[efp_id][:efpss][efps_id][:all_populations_across_type1s][eefpst1r.extractions_extraction_forms_projects_sections_type1.type1.id][:all_timepoints_across_populations][eefpst1r.population_name.id][:timepoint_names] = eefpst1rcs.map(&:timepoint_name).to_set
 
-#                  eefpst1r.extractions_extraction_forms_projects_sections_type1_row_columns.each do |eefpst1rc|
-#                    eefpst1rc_id = eefpst1rc.id
+                  eefpst1r.extractions_extraction_forms_projects_sections_type1_row_columns.each do |eefpst1rc|
+                    eefpst1rc_id = eefpst1rc.id
 #
 #                    unless return_value[efp_id][:efpss][efps_id][:eefpss][eefps_id][:eefpst1s][eefpst1_id][:eefpst1rs][eefpst1r_id][:eefpst1rcs].has_key?(eefpst1rc_id)
 #                      return_value[efp_id][:efpss][efps_id][:eefpss][eefps_id][:eefpst1s][eefpst1_id][:eefpst1rs][eefpst1r_id][:eefpst1rcs][eefpst1rc_id] = Hash.new
 #                      return_value[efp_id][:efpss][efps_id][:eefpss][eefps_id][:eefpst1s][eefpst1_id][:eefpst1rs][eefpst1r_id][:eefpst1rcs][eefpst1rc_id][:extractions_extraction_forms_projects_sections_type1_row_column_id] = eefpst1rc_id
 #                    end
-#                  end
+                  end
                 end
               end
             end

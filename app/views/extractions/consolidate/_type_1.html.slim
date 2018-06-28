@@ -37,10 +37,43 @@
                       td
                         i.fi-check> style='color: green;'
                         span style='color: green;' Populations
+
                     - else
                       td
                         i.fi-x> style='color: red;'
                         span style='color: red;' Populations
+
+                  tr
+                    - populations_agree = true
+                    - timepoints_agree = true
+
+                    - @head_to_head.dig(efp.id, :efpss, efps.id, :all_populations_across_type1s, type1.id, :populations).each do |population_name_id, values|
+
+                      - if populations_agree
+                        - populations_agree = values.map(&:population_name).uniq.length.eql?(1) && values.length.eql?(@extractions.length)
+
+                    - if populations_agree
+                      - @head_to_head.dig(efp.id, :efpss, efps.id, :all_populations_across_type1s, type1.id, :populations).each do |population_name_id, values|
+                        - _val = values.first.extractions_extraction_forms_projects_sections_type1_row_columns.map(&:timepoint_name)
+                        - if timepoints_agree
+                          - values.each do |population|
+                            - timepoints_agree = population.extractions_extraction_forms_projects_sections_type1_row_columns.map(&:timepoint_name).eql? _val
+
+                      - if timepoints_agree
+                        td
+                          i.fi-check> style='color: green;'
+                          span style='color: green;' Timepoints
+
+                      - else
+                        td
+                          i.fi-x> style='color: red;'
+                          span style='color: red;' Timepoints
+
+                    - else
+                      td
+                        i.fi-x> style='color: red;'
+                        span style='color: red;' Timepoints
+
 
           .accordion-content data-tab-content=''
             .table-scroll
