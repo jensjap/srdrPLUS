@@ -52,3 +52,8 @@
             td
               i.fi-check> style="color: green;"
               | No Differences Detected
+            td
+              = link_to('Consolidate',
+                consolidate_project_extractions_path(extraction_ids: val[:extraction_ids]),
+                style: 'margin-bottom: 0;',
+                class: 'button tiny')

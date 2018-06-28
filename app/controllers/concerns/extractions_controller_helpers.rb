@@ -9,55 +9,6 @@ module ExtractionsControllerHelpers
     #
     # Creates a hash of hashes that does a head to head comparison between
     # the extractions and their data.
-    # {19=>
-    #  {:extraction_forms_project_id=>19,
-    #   145=>{:extraction_forms_projects_section_id=>145},
-    #   146=>
-    #  {:extraction_forms_projects_section_id=>146,
-    #   :section_name=>"Arms",
-    #   :type1s=>
-    #  [#<Type1:0x007ff8a3bcf798
-    #   id: 9,
-    #   name: "I can get some",
-    #   description: "Beer",
-    #   deleted_at: nil,
-    #   created_at: Thu, 14 Jun 2018 04:47:30 UTC +00:00,
-    #   updated_at: Thu, 14 Jun 2018 04:48:04 UTC +00:00>,
-    #   #<Type1:0x007ff8a3bcf658
-    #   id: 10,
-    #   name: "Or do I?",
-    #   description: "",
-    #   deleted_at: nil,
-    #   created_at: Thu, 14 Jun 2018 04:49:31 UTC +00:00,
-    #   updated_at: Thu, 14 Jun 2018 04:49:31 UTC +00:00>,
-    #   #<Type1:0x007ff8a3bcf450
-    #   id: 12,
-    #   name: "DELETE ME!",
-    #   description: "",
-    #   deleted_at: nil,
-    #   created_at: Mon, 18 Jun 2018 08:11:07 UTC +00:00,
-    #   updated_at: Mon, 18 Jun 2018 08:11:07 UTC +00:00>]},
-    #   147=>{:extraction_forms_projects_section_id=>147},
-    #   148=>{:extraction_forms_projects_section_id=>148},
-    #   149=>
-    #   {:extraction_forms_projects_section_id=>149,
-    #    :section_name=>"Outcomes",
-    #    :type1s=>
-    #   [#<Type1:0x007ff899ba8e40
-    #    id: 4,
-    #    name: "Pain",
-    #    description: "mild",
-    #    deleted_at: nil,
-    #    created_at: Tue, 12 Jun 2018 10:59:24 UTC +00:00,
-    #    updated_at: Tue, 12 Jun 2018 10:59:24 UTC +00:00>]},
-    #    150=>{:extraction_forms_projects_section_id=>150},
-    #    151=>{:extraction_forms_projects_section_id=>151},
-    #    152=>{:extraction_forms_projects_section_id=>152}}}
-    #
-    #    The point here is to discover master lists for each of the following:
-    #      1. All type1 for every extraction within this citation group.
-    #      2. All populations per type1.
-    #      3. All timetpoints per population.
     def head_to_head(extraction_forms_projects, extractions)
       return_value = Hash.new
 
@@ -77,6 +28,7 @@ module ExtractionsControllerHelpers
             return_value[efp_id][:efpss][efps_id] = Hash.new
 #            return_value[efp_id][:efpss][efps_id][:extraction_forms_projects_section_id] = efps_id
 #            return_value[efp_id][:efpss][efps_id][:eefpss] = Hash.new
+            return_value[efp_id][:efpss][efps_id][:type1s] = Hash.new
             return_value[efp_id][:efpss][efps_id][:all_populations_across_type1s] = Hash.new
           end
 
@@ -85,9 +37,11 @@ module ExtractionsControllerHelpers
             return_value[efp_id][:efpss][efps_id][:section_name] = efps.section.name
 
             # Find all eefpss across all extractions for this section
-            eefpss = ExtractionsExtractionFormsProjectsSection.where(
-              extraction: extractions,
-              extraction_forms_projects_section: efps)
+#            eefpss = ExtractionsExtractionFormsProjectsSection.where(
+#              extraction: extractions,
+#              extraction_forms_projects_section: efps)
+            eefpss = efps.extractions_extraction_forms_projects_sections.
+              where(extraction: extractions)
 
             # Find all eefpst1s across all extractions for this section.
             eefpst1s = ExtractionsExtractionFormsProjectsSectionsType1.
@@ -108,8 +62,12 @@ module ExtractionsControllerHelpers
 #              end
 
               # Iterate over eefpst1s to find master lists of populations for a specific type1.
-              eefps.extractions_extraction_forms_projects_sections_type1s.includes(:type1).each do |eefpst1|
+              eefps.extractions_extraction_forms_projects_sections_type1s.includes(:type1, :extractions_extraction_forms_projects_sections_type1_rows).each do |eefpst1|
                 eefpst1_id = eefpst1.id
+
+                # Keep track of how often a type1 is present.
+                return_value[efp_id][:efpss][efps_id][:type1s][eefpst1.type1.id] = Array.new unless return_value[efp_id][:efpss][efps_id][:type1s].has_key?(eefpst1.type1.id)
+                return_value[efp_id][:efpss][efps_id][:type1s][eefpst1.type1.id] << eefpst1
 
 #                unless return_value[efp_id][:efpss][efps_id][:eefpss][eefps_id][:eefpst1s].has_key?(eefpst1_id)
 #                  return_value[efp_id][:efpss][efps_id][:eefpss][eefps_id][:eefpst1s][eefpst1_id] = Hash.new
@@ -118,9 +76,14 @@ module ExtractionsControllerHelpers
 #                end
 
                 # Find all eefpst1rs across extractions for this particular type1.
-                eefpst1rs = ExtractionsExtractionFormsProjectsSectionsType1Row.
+#                eefpst1rs = ExtractionsExtractionFormsProjectsSectionsType1Row.
+#                  includes(:population_name).
+#                  joins(extractions_extraction_forms_projects_sections_type1: [:type1, { extractions_extraction_forms_projects_section: :extraction }]).
+#                  where(extractions_extraction_forms_projects_sections_type1s: { type1: eefpst1.type1 }).
+#                  where(extractions_extraction_forms_projects_sections_type1s: { extractions_extraction_forms_projects_sections: { extraction: extractions } })
+                eefpst1rs = eefpst1.extractions_extraction_forms_projects_sections_type1_rows.
+                  includes(:population_name).
                   joins(extractions_extraction_forms_projects_sections_type1: [:type1, { extractions_extraction_forms_projects_section: :extraction }]).
-                  where(extractions_extraction_forms_projects_sections_type1s: { type1: eefpst1.type1 }).
                   where(extractions_extraction_forms_projects_sections_type1s: { extractions_extraction_forms_projects_sections: { extraction: extractions } })
 
                 # Keep a master list of all population_names across all extractions for this type1.
@@ -133,6 +96,11 @@ module ExtractionsControllerHelpers
                 eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |eefpst1r|
                   eefpst1r_id = eefpst1r.id
 
+                  # Keep track of how often a population is present.
+                  return_value[efp_id][:efpss][efps_id][:all_populations_across_type1s][eefpst1.type1.id][:populations] = Hash.new unless return_value[efp_id][:efpss][efps_id][:all_populations_across_type1s][eefpst1.type1.id].has_key?(:populations)
+                  return_value[efp_id][:efpss][efps_id][:all_populations_across_type1s][eefpst1.type1.id][:populations][eefpst1r.population_name.id] = Array.new unless return_value[efp_id][:efpss][efps_id][:all_populations_across_type1s][eefpst1.type1.id][:populations].has_key?(eefpst1r.population_name.id)
+                  return_value[efp_id][:efpss][efps_id][:all_populations_across_type1s][eefpst1.type1.id][:populations][eefpst1r.population_name.id] << eefpst1r
+
 #                  unless return_value[efp_id][:efpss][efps_id][:eefpss][eefps_id][:eefpst1s][eefpst1_id][:eefpst1rs].has_key?(eefpst1r_id)
 #                    return_value[efp_id][:efpss][efps_id][:eefpss][eefps_id][:eefpst1s][eefpst1_id][:eefpst1rs][eefpst1r_id] = Hash.new
 #                    return_value[efp_id][:efpss][efps_id][:eefpss][eefps_id][:eefpst1s][eefpst1_id][:eefpst1rs][eefpst1r_id][:extractions_extraction_forms_projects_sections_type1_row_id] = eefpst1r_id
@@ -140,10 +108,15 @@ module ExtractionsControllerHelpers
 #                  end
 
                   # Find all eefpst1rcs across extractions for this particular population.
-                  eefpst1rcs = ExtractionsExtractionFormsProjectsSectionsType1RowColumn.
-                    includes(extractions_extraction_forms_projects_sections_type1_row: [:population_name, { extractions_extraction_forms_projects_sections_type1: [:type1, { extractions_extraction_forms_projects_section: :extraction }] }]).
+#                  eefpst1rcs = ExtractionsExtractionFormsProjectsSectionsType1RowColumn.
+#                    includes(:timepoint_name).
+#                    joins(extractions_extraction_forms_projects_sections_type1_row: [:population_name, { extractions_extraction_forms_projects_sections_type1: [:type1, { extractions_extraction_forms_projects_section: :extraction }] }]).
+#                    where(extractions_extraction_forms_projects_sections_type1_rows: { population_name: eefpst1r.population_name }).
+#                    where(extractions_extraction_forms_projects_sections_type1_rows: { extractions_extraction_forms_projects_sections_type1s: { type1: eefpst1r.extractions_extraction_forms_projects_sections_type1.type1 } }).
+#                    where(extractions_extraction_forms_projects_sections_type1_rows: { extractions_extraction_forms_projects_sections_type1s: { extractions_extraction_forms_projects_sections: { extraction: extractions } } })
+                  eefpst1rcs = eefpst1r.extractions_extraction_forms_projects_sections_type1_row_columns.
+                    includes(:timepoint_name).
                     joins(extractions_extraction_forms_projects_sections_type1_row: [:population_name, { extractions_extraction_forms_projects_sections_type1: [:type1, { extractions_extraction_forms_projects_section: :extraction }] }]).
-                    where(extractions_extraction_forms_projects_sections_type1_rows: { population_name: eefpst1r.population_name }).
                     where(extractions_extraction_forms_projects_sections_type1_rows: { extractions_extraction_forms_projects_sections_type1s: { type1: eefpst1r.extractions_extraction_forms_projects_sections_type1.type1 } }).
                     where(extractions_extraction_forms_projects_sections_type1_rows: { extractions_extraction_forms_projects_sections_type1s: { extractions_extraction_forms_projects_sections: { extraction: extractions } } })
 
@@ -153,7 +126,6 @@ module ExtractionsControllerHelpers
                   end
                   return_value[efp_id][:efpss][efps_id][:all_populations_across_type1s][eefpst1r.extractions_extraction_forms_projects_sections_type1.type1.id][:all_timepoints_across_populations][eefpst1r.population_name.id][:timepoint_names] = eefpst1rcs.map(&:timepoint_name).to_set
 
-# Don't need this atm.
 #                  eefpst1r.extractions_extraction_forms_projects_sections_type1_row_columns.each do |eefpst1rc|
 #                    eefpst1rc_id = eefpst1rc.id
 #

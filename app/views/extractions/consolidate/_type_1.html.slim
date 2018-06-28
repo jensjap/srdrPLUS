@@ -13,8 +13,14 @@
 
               tbody
                 tr
-                  td
-                  /td found in #{ @head_to_head.dig(efp.id, efps.id, :type1s_found_in_extractions, type1.id).length } out of #{ @extractions.length } extractions
+                  - if @head_to_head.dig(efp.id, :efpss, efps.id, :type1s, type1.id).map(&:type1).uniq.length.eql?(1) && @head_to_head.dig(efp.id, :efpss, efps.id, :type1s, type1.id).length.eql?(@extractions.length)
+                    td
+                      i.fi-check> style='color: green;'
+                      span style='color: green;' #{ section_name.singularize } found in All Extractions
+                  - else
+                    td
+                      i.fi-x> style='color: red;'
+                      span style='color: red;' #{ section_name.singularize } found in #{ @head_to_head.dig(efp.id, :efpss, efps.id, :type1s, type1.id).length } out of #{ @extractions.length } extractions
 
           .accordion-content data-tab-content=''
             .table-scroll
@@ -41,7 +47,8 @@
                           i.fi-check> style='color: green;'
                           | #{ type1.name }
                           br
-                          |(#{ type1.description })
+                          = type1.description.present? ? "(#{ type1.description })" : ''
+                          br
                           = link_to '#', class: 'edit-type1-link', data: { type1_id: type1.id, efps_id: efps.id, eefps_id: eefps.id, extraction_ids: @extractions.pluck(:id) } do
                             i.fi-pencil<>
                             | Change
