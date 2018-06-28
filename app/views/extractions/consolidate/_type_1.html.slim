@@ -13,14 +13,34 @@
 
               tbody
                 tr
-                  - if @head_to_head.dig(efp.id, :efpss, efps.id, :type1s, type1.id).map(&:type1).uniq.length.eql?(1) && @head_to_head.dig(efp.id, :efpss, efps.id, :type1s, type1.id).length.eql?(@extractions.length)
+                  - no_of_extractions_with_type1 = @head_to_head.dig(efp.id, :efpss, efps.id, :type1s, type1.id).length
+                  - if @head_to_head.dig(efp.id, :efpss, efps.id, :type1s, type1.id).map(&:type1).uniq.length.eql?(1) && no_of_extractions_with_type1.eql?(@extractions.length)
                     td
                       i.fi-check> style='color: green;'
                       span style='color: green;' #{ section_name.singularize } found in All Extractions
                   - else
                     td
                       i.fi-x> style='color: red;'
-                      span style='color: red;' #{ section_name.singularize } found in #{ @head_to_head.dig(efp.id, :efpss, efps.id, :type1s, type1.id).length } out of #{ @extractions.length } extractions
+                      span style='color: red;' #{ section_name.singularize } found in #{ no_of_extractions_with_type1 } out of #{ @extractions.length } extractions
+
+                / Check populations only when present. Arms won't have this.
+                - if @head_to_head.dig(efp.id, :efpss, efps.id, :all_populations_across_type1s, type1.id, :populations).present?
+                  tr
+                    - populations_agree = true
+
+                    - @head_to_head.dig(efp.id, :efpss, efps.id, :all_populations_across_type1s, type1.id, :populations).each do |population_name_id, values|
+
+                      - if populations_agree
+                        - populations_agree = values.map(&:population_name).uniq.length.eql?(1) && values.length.eql?(@extractions.length)
+
+                    - if populations_agree
+                      td
+                        i.fi-check> style='color: green;'
+                        span style='color: green;' Populations
+                    - else
+                      td
+                        i.fi-x> style='color: red;'
+                        span style='color: red;' Populations
 
           .accordion-content data-tab-content=''
             .table-scroll
