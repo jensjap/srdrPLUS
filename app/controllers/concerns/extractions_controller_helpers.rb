@@ -75,8 +75,8 @@ module ExtractionsControllerHelpers
 
           unless return_value[efp_id][:efpss].has_key?(efps_id)
             return_value[efp_id][:efpss][efps_id] = Hash.new
-            return_value[efp_id][:efpss][efps_id][:extraction_forms_projects_section_id] = efps_id
-            return_value[efp_id][:efpss][efps_id][:eefpss] = Hash.new
+#            return_value[efp_id][:efpss][efps_id][:extraction_forms_projects_section_id] = efps_id
+#            return_value[efp_id][:efpss][efps_id][:eefpss] = Hash.new
             return_value[efp_id][:efpss][efps_id][:all_populations_across_type1s] = Hash.new
           end
 
@@ -101,21 +101,21 @@ module ExtractionsControllerHelpers
             eefpss.each do |eefps|
               eefps_id = eefps.id
 
-              unless return_value[efp_id][:efpss][efps_id][:eefpss].has_key?(eefps_id)
-                return_value[efp_id][:efpss][efps_id][:eefpss][eefps_id] = Hash.new
-                return_value[efp_id][:efpss][efps_id][:eefpss][eefps_id][:extractions_extraction_forms_projects_section_id] = eefps_id
-                return_value[efp_id][:efpss][efps_id][:eefpss][eefps_id][:eefpst1s] = Hash.new
-              end
+#              unless return_value[efp_id][:efpss][efps_id][:eefpss].has_key?(eefps_id)
+#                return_value[efp_id][:efpss][efps_id][:eefpss][eefps_id] = Hash.new
+#                return_value[efp_id][:efpss][efps_id][:eefpss][eefps_id][:extractions_extraction_forms_projects_section_id] = eefps_id
+#                return_value[efp_id][:efpss][efps_id][:eefpss][eefps_id][:eefpst1s] = Hash.new
+#              end
 
               # Iterate over eefpst1s to find master lists of populations for a specific type1.
               eefps.extractions_extraction_forms_projects_sections_type1s.includes(:type1).each do |eefpst1|
                 eefpst1_id = eefpst1.id
 
-                unless return_value[efp_id][:efpss][efps_id][:eefpss][eefps_id][:eefpst1s].has_key?(eefpst1_id)
-                  return_value[efp_id][:efpss][efps_id][:eefpss][eefps_id][:eefpst1s][eefpst1_id] = Hash.new
-                  return_value[efp_id][:efpss][efps_id][:eefpss][eefps_id][:eefpst1s][eefpst1_id][:extractions_extraction_forms_projects_sections_type1_id] = eefpst1_id
-                  return_value[efp_id][:efpss][efps_id][:eefpss][eefps_id][:eefpst1s][eefpst1_id][:eefpst1rs] = Hash.new
-                end
+#                unless return_value[efp_id][:efpss][efps_id][:eefpss][eefps_id][:eefpst1s].has_key?(eefpst1_id)
+#                  return_value[efp_id][:efpss][efps_id][:eefpss][eefps_id][:eefpst1s][eefpst1_id] = Hash.new
+#                  return_value[efp_id][:efpss][efps_id][:eefpss][eefps_id][:eefpst1s][eefpst1_id][:extractions_extraction_forms_projects_sections_type1_id] = eefpst1_id
+#                  return_value[efp_id][:efpss][efps_id][:eefpss][eefps_id][:eefpst1s][eefpst1_id][:eefpst1rs] = Hash.new
+#                end
 
                 # Find all eefpst1rs across extractions for this particular type1.
                 eefpst1rs = ExtractionsExtractionFormsProjectsSectionsType1Row.
@@ -133,11 +133,11 @@ module ExtractionsControllerHelpers
                 eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |eefpst1r|
                   eefpst1r_id = eefpst1r.id
 
-                  unless return_value[efp_id][:efpss][efps_id][:eefpss][eefps_id][:eefpst1s][eefpst1_id][:eefpst1rs].has_key?(eefpst1r_id)
-                    return_value[efp_id][:efpss][efps_id][:eefpss][eefps_id][:eefpst1s][eefpst1_id][:eefpst1rs][eefpst1r_id] = Hash.new
-                    return_value[efp_id][:efpss][efps_id][:eefpss][eefps_id][:eefpst1s][eefpst1_id][:eefpst1rs][eefpst1r_id][:extractions_extraction_forms_projects_sections_type1_row_id] = eefpst1r_id
-                    return_value[efp_id][:efpss][efps_id][:eefpss][eefps_id][:eefpst1s][eefpst1_id][:eefpst1rs][eefpst1r_id][:eefpst1rcs] = Hash.new
-                  end
+#                  unless return_value[efp_id][:efpss][efps_id][:eefpss][eefps_id][:eefpst1s][eefpst1_id][:eefpst1rs].has_key?(eefpst1r_id)
+#                    return_value[efp_id][:efpss][efps_id][:eefpss][eefps_id][:eefpst1s][eefpst1_id][:eefpst1rs][eefpst1r_id] = Hash.new
+#                    return_value[efp_id][:efpss][efps_id][:eefpss][eefps_id][:eefpst1s][eefpst1_id][:eefpst1rs][eefpst1r_id][:extractions_extraction_forms_projects_sections_type1_row_id] = eefpst1r_id
+#                    return_value[efp_id][:efpss][efps_id][:eefpss][eefps_id][:eefpst1s][eefpst1_id][:eefpst1rs][eefpst1r_id][:eefpst1rcs] = Hash.new
+#                  end
 
                   # Find all eefpst1rcs across extractions for this particular population.
                   eefpst1rcs = ExtractionsExtractionFormsProjectsSectionsType1RowColumn.
@@ -152,6 +152,16 @@ module ExtractionsControllerHelpers
                     return_value[efp_id][:efpss][efps_id][:all_populations_across_type1s][eefpst1r.extractions_extraction_forms_projects_sections_type1.type1.id][:all_timepoints_across_populations][eefpst1r.population_name.id] = Hash.new
                   end
                   return_value[efp_id][:efpss][efps_id][:all_populations_across_type1s][eefpst1r.extractions_extraction_forms_projects_sections_type1.type1.id][:all_timepoints_across_populations][eefpst1r.population_name.id][:timepoint_names] = eefpst1rcs.map(&:timepoint_name).to_set
+
+# Don't need this atm.
+#                  eefpst1r.extractions_extraction_forms_projects_sections_type1_row_columns.each do |eefpst1rc|
+#                    eefpst1rc_id = eefpst1rc.id
+#
+#                    unless return_value[efp_id][:efpss][efps_id][:eefpss][eefps_id][:eefpst1s][eefpst1_id][:eefpst1rs][eefpst1r_id][:eefpst1rcs].has_key?(eefpst1rc_id)
+#                      return_value[efp_id][:efpss][efps_id][:eefpss][eefps_id][:eefpst1s][eefpst1_id][:eefpst1rs][eefpst1r_id][:eefpst1rcs][eefpst1rc_id] = Hash.new
+#                      return_value[efp_id][:efpss][efps_id][:eefpss][eefps_id][:eefpst1s][eefpst1_id][:eefpst1rs][eefpst1r_id][:eefpst1rcs][eefpst1rc_id][:extractions_extraction_forms_projects_sections_type1_row_column_id] = eefpst1rc_id
+#                    end
+#                  end
                 end
               end
             end
