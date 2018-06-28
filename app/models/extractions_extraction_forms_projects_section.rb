@@ -27,8 +27,8 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
 
   delegate :citation,          to: :extraction
   delegate :citations_project, to: :extraction
-  delegate :section,           to: :extraction_forms_projects_section
   delegate :project,           to: :extraction_forms_projects_section
+  delegate :section,           to: :extraction_forms_projects_section
 
   def eefps_qrfc_values(eefpst1_id, qrc)
     recordables = extractions_extraction_forms_projects_sections_question_row_column_fields

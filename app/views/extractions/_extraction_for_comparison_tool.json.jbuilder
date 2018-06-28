@@ -1,7 +1,9 @@
 json.extract! extraction, :project_id, :citations_project_id
 
 json.sections extraction.extractions_extraction_forms_projects_sections do |eefps|
-  if eefps.extraction_forms_projects_section.extraction_forms_projects_section_type_id == 1
+  # Switch on ExtractionFormsProjectsSectionType.
+  case eefps.extraction_forms_projects_section.extraction_forms_projects_section_type_id
+  when 1
     json.name eefps.extraction_forms_projects_section.section.name.to_s
     json.type1s eefps.extractions_extraction_forms_projects_sections_type1s do |eefpst1|
       json.id eefpst1.type1.id
@@ -9,7 +11,7 @@ json.sections extraction.extractions_extraction_forms_projects_sections do |eefp
       json.description eefpst1.type1.description.to_s
     end
 
-  elsif eefps.extraction_forms_projects_section.extraction_forms_projects_section_type_id == 2
+  when 2
     json.name eefps.extraction_forms_projects_section.section.name.to_s
     json.questions eefps.extraction_forms_projects_section.questions do |q|
       q.question_rows.each do |qr|
@@ -31,7 +33,7 @@ json.sections extraction.extractions_extraction_forms_projects_sections do |eefp
       end
     end
 
-  elsif eefps.extraction_forms_projects_section.extraction_forms_projects_section_type_id == 3
+  when 3
     json.name eefps.extraction_forms_projects_section.section.name.to_s
     json.outcomes ExtractionsExtractionFormsProjectsSectionsType1
       .by_section_name_and_extraction_id_and_extraction_forms_project_id(
@@ -111,6 +113,6 @@ json.sections extraction.extractions_extraction_forms_projects_sections do |eefp
         end
 
   else
-    raise RuntimeError, 'Undefined section type'
+    raise RuntimeError, 'Unknown ExtractionFormsProjectsSectionType'
   end
 end
