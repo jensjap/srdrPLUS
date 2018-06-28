@@ -57,7 +57,7 @@ en:
   greet: Greetings
   blank: Cannot be blank
   confirm: Are you sure?
-  extractions: Extraction(s)
+  comparison_tool: Comparison Tool
   extractions:
     comparison_tool:
       comparison_tool: Comparison Tool
@@ -65,6 +65,7 @@ en:
       question_row_column_field_types:
         text:
           save: 'Update value'
+  extractions: Extraction(s)
   extraction_forms_projects:
     form:
       save: Save Extraction Form
