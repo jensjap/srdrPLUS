@@ -119,6 +119,14 @@
               - @head_to_head.dig(efp.id, :efpss, efps.id, :all_populations_across_type1s, type1.id, :population_names).each do |population_name|
                 li.accordion-item data-accordion-item=''
 
+                  - timepoints_agree = true
+
+                  - @head_to_head.dig(efp.id, :efpss, efps.id, :all_populations_across_type1s, type1.id, :populations).each do |population_name_id, values|
+                    - _val = values.first.extractions_extraction_forms_projects_sections_type1_row_columns.map(&:timepoint_name)
+                    - if timepoints_agree
+                      - values.each do |population|
+                        - timepoints_agree = population.extractions_extraction_forms_projects_sections_type1_row_columns.map(&:timepoint_name).eql? _val
+
                   - if population_name_inclusion_list[population_name.id] && timepoints_agree
                     a.accordion-title.populations href='#' title="Description: #{ population_name.description }" style='color: green;' = population_name.name_and_description
                   - else
