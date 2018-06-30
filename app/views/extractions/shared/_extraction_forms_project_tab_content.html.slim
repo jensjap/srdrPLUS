@@ -1,16 +1,16 @@
-a.button.tiny data-toggle='section-menu-on section-menu-off foo bar'
-  #section-menu-on data-toggler='hide'
+a#toggle-sections-link.button.tiny
+  .toggle-hide
     i.fi-arrow-left>
     |Hide Menu
-  #section-menu-off.hide data-toggler='hide'
+  .toggle-hide.hide
     i.fi-arrow-right
 
 - if action_name.eql? 'consolidate'
-  a.button.tiny.float-right data-toggle='consolidated-extraction-form-on consolidated-extraction-form-off foz baz'
-    #consolidated-extraction-form-on data-toggler='hide'
+  a#toggle-consolidated-extraction-link.button.tiny.float-right
+    .toggle-hide
       i.fi-arrow-right>
       |Hide Consolidated Extraction Form
-    #consolidated-extraction-form-off.hide data-toggler='hide'
+    .toggle-hide.hide
       i.fi-arrow-left
 
 .tabs-content data-tabs-content='extraction-forms-projects-tabs'
@@ -20,10 +20,10 @@ a.button.tiny data-toggle='section-menu-on section-menu-off foo bar'
       .tabs-panel id="panel-extraction-forms-project-#{ efp.id.to_s }"
 
         .row
-          #foo.column.medium-2 data-toggler='hide'
+          .toggle-sections-link-medium-2-0-hide.column.medium-2
             = render 'extractions/shared/extraction_forms_projects_section_tab_links',
               efp: efp
 
-          #bar.column.medium-10 data-toggler='medium-8 medium-12'
+          .toggle-sections-link-medium-10-12.column.medium-10
             = render "extractions/shared/extraction_forms_projects_section_tab_content",
               efp: efp

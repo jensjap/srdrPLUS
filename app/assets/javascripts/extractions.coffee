@@ -72,6 +72,21 @@ document.addEventListener 'turbolinks:load', ->
         $modal.html( resp ).foundation 'open'
         return
 
+    ###################################################################################
+    # Attach listener to toggle section links in and out of view.
+    $( '#toggle-sections-link' ).click ( e ) ->
+      e.preventDefault
+      $( '#toggle-sections-link .toggle-hide' ).toggleClass( 'hide' )
+      $( '.toggle-sections-link-medium-2-0-hide' ).toggleClass( 'medium-2 medium-0 hide' )
+      $( '.toggle-sections-link-medium-10-12' ).toggleClass( 'medium-10 medium-12' )
+
+    # Attach listener to toggle the consolidated extraction_form in and out of view.
+    $( '#toggle-consolidated-extraction-link' ).click ( e ) ->
+      e.preventDefault
+      $( '#toggle-consolidated-extraction-link .toggle-hide' ).toggleClass( 'hide' )
+      $( '.toggle-consolidated-extraction-link-medium-8-12' ).toggleClass( 'medium-8 medium-12' )
+      $( '.toggle-consolidated-extraction-link-medium-4-0-hide' ).toggleClass( 'medium-4 medium-0 hide' )
+
     return  # END do ->
 
   return  # END document.addEventListener 'turbolinks:load', ->
