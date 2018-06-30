@@ -100,20 +100,19 @@
                       - if eefps.extractions_extraction_forms_projects_sections_type1s.map(&:type1).include? type1
                         td title="#{ type1.name_and_description } #{ section_name.singularize } included in extraction id #{ extraction.id }"
                           i.fi-check> style='color: green;'
-                          | #{ type1.name }
-                          br
-                          = type1.description.present? ? "(#{ type1.description })" : ''
-                          br
+                          = type1.name
                           = link_to '#', class: 'edit-type1-link', data: { type1_id: type1.id, efps_id: efps.id, eefps_id: eefps.id, extraction_ids: @extractions.pluck(:id) } do
                             i.fi-pencil<>
-                            | Change
+                            |Change
+                          br
+                          = type1.description.present? ? "(#{ type1.description })" : ''
 
                       - else
                         td title="#{ type1.name_and_description } #{ section_name.singularize } not included in extraction id #{ extraction.id }"
                           i.fi-x> style='color: red;'
-                          | #{ type1.name }
+                          = type1.name
                           br
-                          | (#{ type1.description })
+                          = type1.description.present? ? "(#{ type1.description })" : ''
 
             ul.accordion data-accordion='' data-multi-expand='false' data-allow-all-closed='true'
               - @head_to_head.dig(efp.id, :efpss, efps.id, :all_populations_across_type1s, type1.id, :population_names).each do |population_name|
@@ -159,15 +158,15 @@
                                 - if eefpst1.extractions_extraction_forms_projects_sections_type1_rows.map(&:population_name).include? population_name
                                   td title="#{ population_name.name_and_description } included in #{ type1.name } #{ section_name.singularize }"
                                     i.fi-check> style='color: green;'
-                                    | #{ population_name.short_name_and_description }
+                                    = population_name.short_name_and_description
                                 - else
                                   td title="#{ population_name.name_and_description } not included in #{ type1.name } #{ section_name.singularize }"
                                     i.fi-x> style='color: red;'
-                                    | #{ population_name.short_name_and_description }
+                                    = population_name.short_name_and_description
                               - else
                                 td title="#{ population_name.name_and_description } not included in #{ type1.name } #{ section_name.singularize }"
                                   i.fi-x> style='color: red;'
-                                  | #{ population_name.short_name_and_description }
+                                  = population_name.short_name_and_description
                     h6 Timepoints
                     .table-scroll
                       table
@@ -199,19 +198,19 @@
                                     - if eefpst1r.extractions_extraction_forms_projects_sections_type1_row_columns.map(&:timepoint_name).include? timepoint_name
                                       td title="#{ timepoint_name.pretty_print_export_header } included in #{ population_name.name }"
                                         i.fi-check> style='color: green;'
-                                        | #{ timepoint_name.pretty_print_export_header }
+                                        = timepoint_name.pretty_print_export_header
                                     - else
                                       td title="#{ timepoint_name.pretty_print_export_header } not included in #{ population_name.name }"
                                         i.fi-x> style='color: red;'
-                                        | #{ timepoint_name.pretty_print_export_header }
+                                        = timepoint_name.pretty_print_export_header
                                   - else
                                     td title="#{ timepoint_name.pretty_print_export_header } not included in #{ population_name.name }"
                                       i.fi-x> style='color: red;'
-                                      | #{ timepoint_name.pretty_print_export_header }
+                                      = timepoint_name.pretty_print_export_header
                                 - else
                                   td title="#{ timepoint_name.pretty_print_export_header } not included in #{ population_name.name }"
                                     i.fi-x> style='color: red;'
-                                    | #{ timepoint_name.pretty_print_export_header }
+                                    = timepoint_name.pretty_print_export_header
 
   .toggle-consolidated-extraction-link-medium-4-0-hide.columns.medium-4
     - eefps = ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by!( \
