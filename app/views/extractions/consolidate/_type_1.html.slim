@@ -1,12 +1,10 @@
 .row
   .toggle-consolidated-extraction-link-medium-8-12.columns.medium-8
 
-    h4 = section_name
+    h5 = section_name
 
     ul.accordion.consolidate data-accordion='' data-multi-expand='true' data-allow-all-closed='true'
-
       - @head_to_head.dig(efp.id, :efpss, efps.id, :all_type1s_across_extractions).each do |type1|
-
         - no_of_extractions_with_type1 = @head_to_head.dig(efp.id, :efpss, efps.id, :type1s, type1.id).length
         - extraction_contains_type1 = @head_to_head. \
           dig(efp.id, :efpss, efps.id, :type1s, type1.id).map(&:type1).uniq.length.eql?(1) && \
@@ -26,6 +24,7 @@
                     td
                       i.fi-check> style='color: green;'
                       span style='color: green;' #{ section_name.singularize } found in All Extractions
+
                   - else
                     td
                       i.fi-x> style='color: red;'
@@ -212,7 +211,7 @@
                                     i.fi-x> style='color: red;'
                                     = timepoint_name.pretty_print_export_header
 
-  .toggle-consolidated-extraction-link-medium-4-0-hide.columns.medium-4
+  .toggle-consolidated-extraction-link-medium-4-0-hide.columns.medium-4 style='background-color: yellow;'
     - eefps = ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by!( \
       extraction: @consolidated_extraction,
       extraction_forms_projects_section: efps,
@@ -223,19 +222,19 @@
           extraction_forms_projects_section: efps.link_to_type1))
 
     .column.row
-      = render 'extractions/shared/type1/type1_included_list',
+      = render 'extractions/shared/type_1/type1_included_list',
         extraction: @consolidated_extraction,
         section_name: section_name,
         eefps: eefps
 
     .column.row
-      = render 'extractions/shared/type1/type1_example_list',
+      = render 'extractions/shared/type_1/type1_example_list',
         extraction: @consolidated_extraction,
         section_name: section_name,
         eefps: eefps
 
     .column.row
-      = render 'extractions/shared/type1/type1_new_custom_form',
+      = render 'extractions/shared/type_1/type1_new_custom_form',
         extraction: @consolidated_extraction,
         section_name: section_name,
         eefps: eefps
