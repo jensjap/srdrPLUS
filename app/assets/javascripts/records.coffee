@@ -11,8 +11,23 @@ document.addEventListener 'turbolinks:load', ->
       ->
         form.submit()
 
-    $( 'form.edit_record :input' ).on 'keyup, click', ( e ) ->
-      #e.preventDefault()
+    $( 'form.edit_record select' ).change ( e ) ->
+      e.preventDefault()
+
+      $form = $( this ).closest( 'form' )
+
+      # Use this to keep track of the different timers.
+      formId = $form.attr( 'id' )
+
+      # Mark form as 'dirty'.
+      $form.addClass( 'dirty' )
+
+      if formId of timers
+        clearTimeout( timers[formId] )
+      timers[formId] = setTimeout( submitForm( $form ), 750 )
+
+    $( 'form.edit_record input' ).keyup ( e ) ->
+      e.preventDefault()
 
       # Ignore 'keyup' for a list of keys.
       code = e.keyCode || e.which;
@@ -32,7 +47,3 @@ document.addEventListener 'turbolinks:load', ->
       if formId of timers
         clearTimeout( timers[formId] )
       timers[formId] = setTimeout( submitForm( $form ), 750 )
-
-
-  return  # END do ->
-return  # document.addEventListener 'turbolinks:load', ->
