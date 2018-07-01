@@ -1,0 +1,33 @@
+/ Note: The reason we traverse back up on eefps on the line:
+  ```
+    extractions_extraction_forms_projects_section: eefps.link_to_type1,
+  ```
+  is because if we tried to ExtractionsExtractionFormsProjectsSectionsType1.find_or_create_by
+  using the current eefps (which is the type2 section, we'd be finding the wrong object. It
+  might be better to just use .find_by! since we are assured of the existence of the
+  eefps.
+
+.column.row
+  - eefps_qrcf = ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField.find_or_create_by(\
+    extractions_extraction_forms_projects_sections_type1: t1.blank?\
+    ? nil\
+    : ExtractionsExtractionFormsProjectsSectionsType1.find_by!(\
+      extractions_extraction_forms_projects_section: eefps.link_to_type1,
+      type1: t1),
+    extractions_extraction_forms_projects_section: eefps,
+    question_row_column_field: qrc.question_row_column_fields.first)
+
+  - record = Record.find_or_create_by(recordable: eefps_qrcf)
+  = simple_form_for(record, remote: true, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
+    = f.error_notification
+
+    = f.input :name, label: false, required: false, class: 'form-control',
+      pattern: ".{0}|.{#{ qrc.question_row_columns_question_row_column_options.find_by(question_row_column_option_id: 2).name },#{ qrc.question_row_columns_question_row_column_options.find_by(question_row_column_option_id: 3).name }}",
+      data: { prereq: "prereq-#{ qrc.class }-#{ qrc.id }" },
+      input_html: {\
+        title: "Constraints: Blank OR between #{ qrc.question_row_columns_question_row_column_options.find_by(question_row_column_option_id: 2).name } and #{ qrc.question_row_columns_question_row_column_options.find_by(question_row_column_option_id: 3).name } chars"\
+      }
+    div id="record-id-#{ record.id.to_s }" class='record-info' style='opacity: 0;' = 'Saved!'
+
+    /.form-actions
+      = f.button :submit, 'Save'
