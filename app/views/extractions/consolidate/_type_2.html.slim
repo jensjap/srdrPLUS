@@ -1,66 +1,99 @@
-- color_array = ['lightblue', 'lightseagreen', 'lightgrey', 'lightskyblue']
+- color_array = ['lightblue', 'lightseagreen', 'lightskyblue', 'lightgrey']
 
-.row
-  .toggle-consolidated-extraction-link-medium-8-12.columns.medium-8
-    h5 = 'Extractions by users: ' + @extractions.map { |e| e.user.profile.username }.join(', ')
-    .table-scroll
-      table
-        thead
+.row.column
+  h5 = 'Extractions by users: ' + @extractions.map { |e| e.user.profile.username }.join(', ')
+
+  .table-scroll
+    table.consolidation-table
+      thead
+        tr
+          - @extractions.each_with_index do |extraction, idx|
+            th style='border: 4px solid #{ color_array[idx] }' By #{ extraction.user.profile.username }
+          th style='border: 4px solid yellow; border-left-style: double;' By #{ @consolidated_extraction.user.profile.username }
+      - efps.questions.each_with_index do |q, idx|
+        tr style='text-align: left;'
+          th colspan='#{ @extractions.length }'
+            = q.name
+            br
+            = q.description
+
+        tbody
           tr
             - @extractions.each_with_index do |extraction, idx|
-              th style='border: 2px solid #{ color_array[idx] }' By #{ extraction.user.profile.username }
+              - eefps = ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by( \
+                extraction: extraction,
+                extraction_forms_projects_section: efps,
+                link_to_type1: efps.link_to_type1.nil? \
+                  ? nil \
+                  : ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by!( \
+                    extraction: extraction,
+                    extraction_forms_projects_section: efps.link_to_type1))
 
-    .table-scroll
-      table
-        - efps.questions.each_with_index do |q, idx|
-          thead
-            tr
-              th colspan='#{ @extractions.length }'
-                = q.name
-                br
-                = q.description
+              - linked_section = eefps.link_to_type1
 
-          tbody
-            tr
-              - @extractions.each_with_index do |extraction, idx|
-                - eefps = ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by( \
-                  extraction: extraction,
-                  extraction_forms_projects_section: efps,
-                  link_to_type1: efps.link_to_type1.nil? \
-                    ? nil \
-                    : ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by!( \
-                      extraction: extraction,
-                      extraction_forms_projects_section: efps.link_to_type1))
-
-                - linked_section = eefps.link_to_type1
-
-                - if linked_section && eefps.link_to_type1.type1s.blank?
+              - if linked_section && eefps.link_to_type1.type1s.blank?
+                td
                   h5 style='color: red;' You must add #{ linked_section.extraction_forms_projects_section.section.name } before extracting into this section.
 
+              - else
+                - if linked_section
+                  td style='border: 2px solid #{ color_array[idx] }; vertical-align: top;'
+                    ul style='list-style-type: none;'
+                      - eefps.link_to_type1.type1s.each do |t1|
+                        li title='#{ section_name }: #{ t1 }'
+                          = linked_section.extraction_forms_projects_section.section.name.singularize + ': ' + t1.name
+                          = render 'extractions/shared/type_2/question_fields',
+                            q: q,
+                            t1: t1,
+                            eefps: eefps,
+                            display_only: true
+
                 - else
-                  - if linked_section
-                    td style='border: 2px solid #{ color_array[idx] }'
-                      ul style='list-style-type: none;'
-                        - eefps.link_to_type1.type1s.each do |t1|
-                          li title='#{ section_name }: #{ t1 }'
-                            = linked_section.extraction_forms_projects_section.section.name.singularize + ': ' + t1.name
-                            = render 'extractions/shared/type_2/question_fields',
-                              q: q,
-                              t1: t1,
-                              eefps: eefps,
-                              display_only: true
+                  td style='border: 2px solid #{ color_array[idx] }; vertical-align: top;'
+                    = render 'extractions/shared/type_2/question_fields',
+                      q: q,
+                      t1: nil,
+                      eefps: eefps,
+                      display_only: true
 
-                  - else
-                    td style='border: 2px solid #{ color_array[idx] }'
-                      = render 'extractions/shared/type_2/question_fields',
-                        q: q,
-                        t1: nil,
-                        eefps: eefps,
-                        display_only: true
+            - eefps = ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by( \
+              extraction: @consolidated_extraction,
+              extraction_forms_projects_section: efps,
+              link_to_type1: efps.link_to_type1.nil? \
+                ? nil \
+                : ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by!( \
+                  extraction: @consolidated_extraction,
+                  extraction_forms_projects_section: efps.link_to_type1))
 
-  .toggle-consolidated-extraction-link-medium-4-0-hide.columns.medium-4 style='background-color: yellow;'
+            - linked_section = eefps.link_to_type1
+
+            - if linked_section && eefps.link_to_type1.type1s.blank?
+              h5 style='color: red;' You must add #{ linked_section.extraction_forms_projects_section.section.name } before extracting into this section.
+
+            - else
+              - if linked_section
+                td style='border: 2px solid yellow'
+                  ul style='list-style-type: none;'
+                    - eefps.link_to_type1.type1s.each do |t1|
+                      li title='#{ section_name }: #{ t1 }'
+                        = linked_section.extraction_forms_projects_section.section.name.singularize + ': ' + t1.name
+                        = render 'extractions/shared/type_2/question_fields',
+                          q: q,
+                          t1: t1,
+                          eefps: eefps,
+                          display_only: false
+
+              - else
+                td style='border: 2px solid yellow'
+                  = render 'extractions/shared/type_2/question_fields',
+                    q: q,
+                    t1: nil,
+                    eefps: eefps,
+                    display_only: false
+
+
+/  .toggle-consolidated-extraction-link-medium-4-0-hide.columns.medium-4 style='background-color: yellow;'
     h5 Consolidated Extraction (ID: #{ @consolidated_extraction.id })
-
     - eefps = ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by( \
       extraction: @consolidated_extraction,
       extraction_forms_projects_section: efps,
@@ -69,20 +102,15 @@
         : ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by!( \
           extraction: @consolidated_extraction,
           extraction_forms_projects_section: efps.link_to_type1))
-
     - linked_section = eefps.link_to_type1
-
     - if linked_section && eefps.link_to_type1.type1s.blank?
       h5 style='color: red;' You must add #{ linked_section.extraction_forms_projects_section.section.name } before extracting into this section.
-
     - else
-
       .table-scroll
         table
           thead
             tr
               th style='border: 2px solid yellow' By #{ @consolidated_extraction.user.profile.username }
-
       .table-scroll
         table
           - efps.questions.each_with_index do |q, idx|
@@ -92,7 +120,6 @@
                   = q.name
                   br
                   = q.description
-
             tbody
               tr
                 - if linked_section
@@ -106,7 +133,6 @@
                             t1: t1,
                             eefps: eefps,
                             display_only: false
-
                 - else
                   td style='border: 2px solid yellow'
                     = render 'extractions/shared/type_2/question_fields',
