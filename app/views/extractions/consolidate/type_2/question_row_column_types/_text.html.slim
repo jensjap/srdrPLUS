@@ -21,7 +21,7 @@
   = simple_form_for(record, remote: true, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
     = f.error_notification
 
-    = f.input :name, label: false, required: false, class: 'form-control',
+    = f.input :name, label: false, required: false, disabled: true, class: 'form-control',
       pattern: ".{0}|.{#{ qrc.question_row_columns_question_row_column_options.find_by(question_row_column_option_id: 2).name },#{ qrc.question_row_columns_question_row_column_options.find_by(question_row_column_option_id: 3).name }}",
       data: { prereq: "prereq-#{ qrc.class }-#{ qrc.id }" },
       input_html: {\

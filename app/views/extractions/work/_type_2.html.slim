@@ -46,10 +46,8 @@ blockquote
                   = render 'extractions/shared/type_2/question_fields',
                     q: q,
                     t1: t1,
-                    section_name: section_name,
-                    efp: efp,
-                    efps: efps,
-                    eefps: eefps
+                    eefps: eefps,
+                    display_only: false
 
             - else
               fieldset.fieldset
@@ -57,18 +55,10 @@ blockquote
                 = render 'extractions/shared/type_2/question_fields',
                   q: q,
                   t1: nil,
-                  section_name: section_name,
-                  efp: efp,
-                  efps: efps,
-                  eefps: eefps
+                  eefps: eefps,
+                  display_only: false
 
 
-
-/= render 'extractions/work/type_2/type_2_content',
-  section_name: section_name,
-  efp: efp,
-  efps: efps,
-  extraction: @extraction
 
 /  h5 = section_name
   blockquote

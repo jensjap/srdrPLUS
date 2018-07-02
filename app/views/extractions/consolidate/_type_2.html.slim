@@ -43,20 +43,16 @@
                         = render 'extractions/shared/type_2/question_fields',
                           q: q,
                           t1: t1,
-                          section_name: section_name,
-                          efp: efp,
-                          efps: efps,
-                          eefps: eefps
+                          eefps: eefps,
+                          display_only: true
 
                   - else
                     td style='border: 2px solid #{ color_array[idx] }'
                       = render 'extractions/shared/type_2/question_fields',
                         q: q,
                         t1: nil,
-                        section_name: section_name,
-                        efp: efp,
-                        efps: efps,
-                        eefps: eefps
+                        eefps: eefps,
+                        display_only: true
 
   .toggle-consolidated-extraction-link-medium-4-0-hide.columns.medium-4 style='background-color: yellow;'
     h5 Consolidated Extraction (ID: #{ @consolidated_extraction.id })
@@ -98,20 +94,16 @@
                       = render 'extractions/shared/type_2/question_fields',
                         q: q,
                         t1: t1,
-                        section_name: section_name,
-                        efp: efp,
-                        efps: efps,
-                        eefps: eefps
+                        eefps: eefps,
+                        display_only: false
 
                 - else
                   td style='border: 2px solid yellow'
                     = render 'extractions/shared/type_2/question_fields',
                       q: q,
                       t1: nil,
-                      section_name: section_name,
-                      efp: efp,
-                      efps: efps,
-                      eefps: eefps
+                      eefps: eefps,
+                      display_only: false
 
 
 

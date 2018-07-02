@@ -1,22 +1,29 @@
+/ This .clean-table class is used to remove the first row and column in case we are dealing with a non-matrix
+  question. This is to prevent superfluous spacing. See javascript in 'questions.coffee' for implementation.
+  Another approach might be to check the count of rows and columns and then use display: none; condition for
+  the row and column in question. If JS is fragile we should switch to this option.
 .table-scroll.clean-table
   table.hover
     thead
       tr
         th
-        - for qrc in q.question_rows.first.question_row_columns
+        - q.question_rows.first.question_row_columns.each do |qrc|
           th style='font-weight: normal;' = qrc.name
 
     tbody
-      - for qr in q.question_rows
+      - q.question_rows.each do |qr|
         tr
           td = qr.name
           - for qrc in qr.question_row_columns
             td class='question-row-column' data-question-row-column-id='#{ qrc.id }'
-              = render "extractions/#{ action_name }/type_2/question_row_column_types/" + qrc.question_row_column_type.name,
-                q: q,
-                t1: t1,
-                qrc: qrc,
-                efp: efp,
-                efps: efps,
-                eefps: eefps,
-                section_name: section_name
+              - if display_only
+                = render "extractions/consolidate/type_2/question_row_column_types/" + qrc.question_row_column_type.name,
+                  t1: t1,
+                  qrc: qrc,
+                  eefps: eefps
+
+              - else
+                = render "extractions/work/type_2/question_row_column_types/" + qrc.question_row_column_type.name,
+                  t1: t1,
+                  qrc: qrc,
+                  eefps: eefps
