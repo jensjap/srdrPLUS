@@ -11,7 +11,8 @@ document.addEventListener 'turbolinks:load', ->
       ->
         form.submit()
 
-    $( 'form.edit_record select' ).change ( e ) ->
+    # Select Drop Down and Radio
+    $( 'form.edit_record select, form.edit_record input[type="radio"]' ).change ( e ) ->
       e.preventDefault()
 
       $form = $( this ).closest( 'form' )
@@ -26,6 +27,7 @@ document.addEventListener 'turbolinks:load', ->
         clearTimeout( timers[formId] )
       timers[formId] = setTimeout( submitForm( $form ), 750 )
 
+    # Text Field.
     $( 'form.edit_record input' ).keyup ( e ) ->
       e.preventDefault()
 

@@ -8,10 +8,10 @@
   eefps.
 
 .column.row
-  - eefps_qrcf = ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField.find_or_create_by(\
-    extractions_extraction_forms_projects_sections_type1: t1.blank?\
-    ? nil\
-    : ExtractionsExtractionFormsProjectsSectionsType1.find_by!(\
+  - eefps_qrcf = ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField.find_or_create_by( \
+    extractions_extraction_forms_projects_sections_type1: t1.blank? \
+    ? nil \
+    : ExtractionsExtractionFormsProjectsSectionsType1.find_by!( \
       extractions_extraction_forms_projects_section: eefps.link_to_type1,
       type1: t1),
     extractions_extraction_forms_projects_section: eefps,
@@ -22,14 +22,14 @@
     = f.error_notification
 
     = f.input :name, label: false,
-      input_html: {\
+      input_html: { \
         type: 'number',
         data: { prereq: "prereq-#{ qrc.class }-#{ qrc.id }" },
-        min: qrc.question_row_columns_question_row_column_options\
-                .find_by(question_row_column_option_id: 4)\
+        min: qrc.question_row_columns_question_row_column_options \
+                .find_by(question_row_column_option_id: 4) \
                 .name,
-        max: qrc.question_row_columns_question_row_column_options\
-                .find_by(question_row_column_option_id: 5)\
+        max: qrc.question_row_columns_question_row_column_options \
+                .find_by(question_row_column_option_id: 5) \
                 .name }
     div id="record-id-#{ record.id.to_s }" class='record-info' style='opacity: 0;' = 'Saved!'
 

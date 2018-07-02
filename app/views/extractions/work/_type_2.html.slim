@@ -3,12 +3,12 @@ blockquote
   | Please answer the questions to the best of your ability. If you require clarification, please consult the project lead.
   cite Friendly Helper
 
-- eefps = ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by(\
+- eefps = ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by( \
   extraction: @extraction,
   extraction_forms_projects_section: efps,
-  link_to_type1: efps.link_to_type1.nil?\
-    ? nil\
-    : ExtractionsExtractionFormsProjectsSection.find_by!(\
+  link_to_type1: efps.link_to_type1.nil? \
+    ? nil \
+    : ExtractionsExtractionFormsProjectsSection.find_by!( \
       extraction: @extraction,
       extraction_forms_projects_section: efps.link_to_type1))
 
