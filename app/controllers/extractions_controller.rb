@@ -79,12 +79,6 @@ class ExtractionsController < ApplicationController
     @citation_groups = @project.citation_groups
   end
 
-  # GET /projects/1/extractions/compare
-  def compare
-    @extraction_forms_projects = @project.extraction_forms_projects
-    @head_to_head              = head_to_head(@extraction_forms_projects, @extractions)
-  end
-
   # GET /projects/1/extractions/consolidate
   def consolidate
     @extraction_forms_projects = @project.extraction_forms_projects
