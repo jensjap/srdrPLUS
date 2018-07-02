@@ -82,64 +82,132 @@ class Extraction < ApplicationRecord
     c_hash = { }
 
     extractions.each do |extraction|
-      extraction.extractions_extraction_forms_projects_sections.each do |eefps|
+      #we need to do type1 sections first
+      eefps_t1 = extraction.extractions_extraction_forms_projects_sections.
+        joins(:extraction_forms_projects_section).
+        where(extraction_forms_projects_sections:
+              {extraction_forms_projects_section_type_id: 1})
+
+      #then results sections
+      eefps_r = extraction.extractions_extraction_forms_projects_sections.
+        joins(:extraction_forms_projects_section).
+        where(extraction_forms_projects_sections:
+              {extraction_forms_projects_section_type_id: 3})
+
+      #Type 1 sections
+      eefps_t1.each do |eefps|
         efps = eefps.extraction_forms_projects_section
-        case efps.extraction_forms_projects_section_type_id
-        when 3
-          # RESULTS
-        when 2
-          # TYPE2s
-          # questions live here
-          
-        when 1
-          # TYPE1s
-          # are these the type1s we care about
-          eefps_t1s = eefps.extractions_extraction_forms_projects_sections_type1s.includes(:type1)
-          eefps_t1s.each do |eefps_t1|
-            type1 = eefps_t1.type1
+        eefps_t1s = eefps.extractions_extraction_forms_projects_sections_type1s.includes(:type1)
+        eefps_t1s.each do |eefps_t1|
+          type1 = eefps_t1.type1
 
-            a_hash[efps.id.to_s] ||= {}
-            a_hash[efps.id.to_s][type1.id.to_s] ||= []
-            a_hash[efps.id.to_s][type1.id.to_s] << extraction.id
+          a_hash[efps.id.to_s] ||= {}
+          a_hash[efps.id.to_s][type1.id.to_s] ||= []
+          a_hash[efps.id.to_s][type1.id.to_s] << extraction.id
 
-            # this is stylistically weird but it prevents the loop below to crash 
-            b_hash[efps.id.to_s] ||= {}
-            b_hash[efps.id.to_s][type1.id.to_s] ||= {}
+          # this is stylistically weird but it prevents the loop below to crash
+          b_hash[efps.id.to_s] ||= {}
+          b_hash[efps.id.to_s][type1.id.to_s] ||= {}
 
-            c_hash[efps.id.to_s] ||= {}
-            c_hash[efps.id.to_s][type1.id.to_s] ||= {}
+          c_hash[efps.id.to_s] ||= {}
+          c_hash[efps.id.to_s][type1.id.to_s] ||= {}
 
-            # If there are timepoints and populations, we need to consolidate those as well using a similar hash method
-            eefps_t1.extractions_extraction_forms_projects_sections_type1_rows.each do |eefps_t1_row|
-              b_hash[efps.id.to_s][type1.id.to_s][eefps_t1_row.population_name_id.to_s] ||= []
-              b_hash[efps.id.to_s][type1.id.to_s][eefps_t1_row.population_name_id.to_s] << extraction.id
+          # If there are timepoints and populations, we need to consolidate those as well using a similar hash method
+          eefps_t1.extractions_extraction_forms_projects_sections_type1_rows.each do |eefps_t1_row|
+            b_hash[efps.id.to_s][type1.id.to_s][eefps_t1_row.population_name_id.to_s] ||= []
+            b_hash[efps.id.to_s][type1.id.to_s][eefps_t1_row.population_name_id.to_s] << extraction.id
 
-              c_hash[efps.id.to_s][type1.id.to_s][eefps_t1_row.population_name_id.to_s] ||= {}
+            c_hash[efps.id.to_s][type1.id.to_s][eefps_t1_row.population_name_id.to_s] ||= {}
 
-              eefps_t1_row.extractions_extraction_forms_projects_sections_type1_row_columns.each do |eefps_t1_row_column|
-                c_hash[efps.id.to_s][type1.id.to_s][eefps_t1_row.population_name_id.to_s][eefps_t1_row_column.timepoint_name_id.to_s] ||= []
-                c_hash[efps.id.to_s][type1.id.to_s][eefps_t1_row.population_name_id.to_s][eefps_t1_row_column.timepoint_name_id.to_s] << extraction.id
-              end
+            eefps_t1_row.extractions_extraction_forms_projects_sections_type1_row_columns.each do |eefps_t1_row_column|
+              c_hash[efps.id.to_s][type1.id.to_s][eefps_t1_row.population_name_id.to_s][eefps_t1_row_column.timepoint_name_id.to_s] ||= []
+              c_hash[efps.id.to_s][type1.id.to_s][eefps_t1_row.population_name_id.to_s][eefps_t1_row_column.timepoint_name_id.to_s] << extraction.id
             end
           end
+        end
 
-          # this shoould be under type_2
-          if not eefps.link_to_type1.nil?
-            # do linked efps things
-          end
-          #get type1s 
-          #if  there are type1s  common between extractions add these  type1s to self
-          #
-          eefps.extractions_extraction_forms_projects_sections_question_row_column_fields.each do |eefps_qrcf|
-            # results section
-            # check outcomes and  population that you know are shared
-            # iterate through the sections and check  if  measures  are shared among extractions
-            # make sure the data is 
-          end
-        else
-          raise RuntimeError, 'Unknown ExtractionFormsProjectsSectionType'
+        #get type1s
+        #if  there are type1s  common between extractions add these  type1s to self
+        #
+        eefps.extractions_extraction_forms_projects_sections_question_row_column_fields.each do |eefps_qrcf|
+          # results section
+          # check outcomes and  population that you know are shared
+          # iterate through the sections and check  if  measures  are shared among extractions
+          # make sure the data is
         end
       end
+
+      #then type2 sections
+      eefps_t2 = extraction.extractions_extraction_forms_projects_sections.
+        joins(:extraction_forms_projects_section).
+        where(extraction_forms_projects_sections:
+              {extraction_forms_projects_section_type_id: 2})
+
+      # now Type 2
+      d_hash = {}
+
+      #iterate over type2 eefpss
+      eefps_t2.each do |eefps|
+        extraction = eefps.extraction
+        efps = eefps.extractions_extraction_forms_projects_section
+        d_hash[efps.id.to_s]  ||= {}
+
+        #do i even need  this?
+        type1s = []
+        ## ruby helper (present) <==  google this
+        #if eefps.link_to_type1.present? and (not !eefps.link_to_type1.type1s.empty?)
+        #if eefps.link_to_type1.try(:type1s).try(:present?)
+        if (not eefps.link_to_type1.nil?) and (not !eefps.link_to_type1.type1s.empty?)
+          eefps.link_to_type1.type1s.each do |t1|
+            # we only want to copy data if type1 is shared among all extractions
+            if a_hash[efps.id.to_s][t1.id.to_s].length == extractions.length
+              type1s << t1
+            end
+          end
+        end
+
+        # we don't want type1s to be empty, for iteration purposes
+        if type1s.length == 0
+          type1s << nil
+        end
+
+        # create an empty hash
+        d_hash[efps.id.to_s] ||= {}
+
+        eefps.extractions_extraction_forms_projects_sections_question_row_column_fields.each  do |eefps_qrcf|
+          # we dont want to bother with this stuff if there is no data
+          if eefps_qrcf.records.first.nil?
+            #byebug
+            next
+          end
+
+          qrcf = eefps_qrcf.question_row_column_field
+          t1 = eefps_qrcf.extractions_extraction_forms_projects_sections_type1.type1
+          t1_type = eefps_qrcf.extractions_extraction_forms_projects_sections_type1.type1_type
+          record = eefps_qrcf.records.first
+
+          d_hash[efps.id.to_s][t1.id.to_s] ||= {}
+          d_hash[efps.id.to_s][t1.id.to_s][t1_type.id.to_s] ||= {}
+          d_hash[efps.id.to_s][t1.id.to_s][t1_type.id.to_s][qrcf.id.to_s] ||= {}
+          d_hash[efps.id.to_s][t1.id.to_s][t1_type.id.to_s][qrcf.id.to_s][record.name] ||= []
+
+          d_hash[efps.id.to_s][t1.id.to_s][t1_type.id.to_s][qrcf.id.to_s][record.name] << extraction.id
+
+          #eefps_qrcf.records.each do |records|
+
+          #  qrc = qrcf.question_row_column
+          #  qrc_t = qrc.question_row_column_type
+          #  qr = qrc.question_row
+          #  q =  qr.question
+
+          #  qrc.question_row_column_options.each do ||
+
+          #  q_t =
+          #  byebug
+          #end
+        end
+      end
+
     end
 
     #create the same type1 in self
@@ -155,14 +223,14 @@ class Extraction < ApplicationRecord
           # population and timepoint creation
           b_hash[efps_id][type1_id].each do |population_name_id, p_es|
             if p_es.length == extractions.length
-              population_name = PopulationName.find(population_name_id)
+              population_name = PopulationName.find!(population_name_id)
               eefps_t1_row = ExtractionsExtractionFormsProjectsSectionsType1Row.find_or_create_by!(
                 extractions_extraction_forms_projects_sections_type1: eefps_t1,
                 population_name: population_name )
 
               c_hash[efps_id][type1_id][population_name_id].each do |timepoint_name_id, t_es|
                 if t_es.length == extractions.length
-                  timepoint_name = TimepointName.find(timepoint_name_id)
+                  timepoint_name = TimepointName.find!(timepoint_name_id)
                   ExtractionsExtractionFormsProjectsSectionsType1RowColumn.find_or_create_by!(
                     extractions_extraction_forms_projects_sections_type1_row: eefps_t1_row,
                     is_baseline: false, #should this be true in some cases?
@@ -174,6 +242,28 @@ class Extraction < ApplicationRecord
         end
       end
     end
+
+      d_hash.each do |efps_id, d_d_hash|
+        d_d_hash.each do |t1_id, d_d_d_hash|
+          d_d_d_hash.each do |t1_type_id, d_d_d_d_hash|
+            d_d_d_d_hash.each do |qrcf_id, d_d_d_d_d_hash|
+              d_d_d_d_d_hash do |record_name, r_es|
+                eefps = self.extractions_extraction_forms_projects_sections.find_or_create_by!(extraction_forms_projects_section_id: efps_id)
+                qrcf = QuestionRowColumnField.find(qrcf_id)
+                # what if type1 is nil
+                t1 = Type1.find(t1_id)
+                t1_type = Type1Type.find(t1_type_id)
+                eefps_t1 = ExtractionsExtractionFormsProjectsSectionsType1.find_or_create_by!(extractions_extraction_forms_projects_section: eefps, type1: t1, type1_type: t1_type)
+                eefps_qrcf = ExtractionsExtractionFormsProjectsSectionnsQuestionRowColumnField.find_by!(extractions_extraction_forms_projects_section: eefps, extractions_extraction_forms_projects_sections_type1: eefps_t1,  question_row_column_field: qrcf)
+                record = Record.find_or_create_by!(recordable: eefps_qrcf, recordable_type: eefps_qrcf.class.name, name: record_name)
+                #we want to create eefps_qrcf if its not there
+                #we want to
+              end
+            end
+          end
+        end
+      end
+    byebug
 
     # after going through all the extractions, we need to find_or_create_by them in the consolidated one
     # assume all eefps is there. true?
