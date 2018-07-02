@@ -9,6 +9,7 @@
           tr
             - @extractions.each_with_index do |extraction, idx|
               th style='border: 2px solid #{ color_array[idx] }' By #{ extraction.user.profile.username }
+
     .table-scroll
       table
         - efps.questions.each_with_index do |q, idx|
@@ -38,13 +39,16 @@
 
                 - else
                   - if linked_section
-                    - eefps.link_to_type1.type1s.each do |t1|
-                      td style='border: 2px solid #{ color_array[idx] }' title='#{ section_name }: #{ t1 }'
-                        = render 'extractions/shared/type_2/question_fields',
-                          q: q,
-                          t1: t1,
-                          eefps: eefps,
-                          display_only: true
+                    td style='border: 2px solid #{ color_array[idx] }'
+                      ul style='list-style-type: none;'
+                        - eefps.link_to_type1.type1s.each do |t1|
+                          li title='#{ section_name }: #{ t1 }'
+                            = linked_section.extraction_forms_projects_section.section.name.singularize + ': ' + t1.name
+                            = render 'extractions/shared/type_2/question_fields',
+                              q: q,
+                              t1: t1,
+                              eefps: eefps,
+                              display_only: true
 
                   - else
                     td style='border: 2px solid #{ color_array[idx] }'
@@ -56,46 +60,52 @@
 
   .toggle-consolidated-extraction-link-medium-4-0-hide.columns.medium-4 style='background-color: yellow;'
     h5 Consolidated Extraction (ID: #{ @consolidated_extraction.id })
-    .table-scroll
-      table
-        thead
-          tr
-            th style='border: 2px solid yellow' By #{ @consolidated_extraction.user.profile.username }
-    .table-scroll
-      table
-        - efps.questions.each_with_index do |q, idx|
+
+    - eefps = ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by( \
+      extraction: @consolidated_extraction,
+      extraction_forms_projects_section: efps,
+      link_to_type1: efps.link_to_type1.nil? \
+        ? nil \
+        : ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by!( \
+          extraction: @consolidated_extraction,
+          extraction_forms_projects_section: efps.link_to_type1))
+
+    - linked_section = eefps.link_to_type1
+
+    - if linked_section && eefps.link_to_type1.type1s.blank?
+      h5 style='color: red;' You must add #{ linked_section.extraction_forms_projects_section.section.name } before extracting into this section.
+
+    - else
+
+      .table-scroll
+        table
           thead
             tr
-              th
-                = q.name
-                br
-                = q.description
+              th style='border: 2px solid yellow' By #{ @consolidated_extraction.user.profile.username }
 
-          tbody
-            tr
-              - eefps = ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by( \
-                extraction: @consolidated_extraction,
-                extraction_forms_projects_section: efps,
-                link_to_type1: efps.link_to_type1.nil? \
-                  ? nil \
-                  : ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by!( \
-                    extraction: @consolidated_extraction,
-                    extraction_forms_projects_section: efps.link_to_type1))
+      .table-scroll
+        table
+          - efps.questions.each_with_index do |q, idx|
+            thead
+              tr
+                th
+                  = q.name
+                  br
+                  = q.description
 
-              - linked_section = eefps.link_to_type1
-
-              - if linked_section && eefps.link_to_type1.type1s.blank?
-                h5 style='color: red;' You must add #{ linked_section.extraction_forms_projects_section.section.name } before extracting into this section.
-
-              - else
+            tbody
+              tr
                 - if linked_section
-                  - eefps.link_to_type1.type1s.each do |t1|
-                    td style='border: 2px solid yellow' title='#{ section_name }: #{ t1 }'
-                      = render 'extractions/shared/type_2/question_fields',
-                        q: q,
-                        t1: t1,
-                        eefps: eefps,
-                        display_only: false
+                  td style='border: 2px solid yellow'
+                    ul style='list-style-type: none;'
+                      - eefps.link_to_type1.type1s.each do |t1|
+                        li title='#{ section_name }: #{ t1 }'
+                          = linked_section.extraction_forms_projects_section.section.name.singularize + ': ' + t1.name
+                          = render 'extractions/shared/type_2/question_fields',
+                            q: q,
+                            t1: t1,
+                            eefps: eefps,
+                            display_only: false
 
                 - else
                   td style='border: 2px solid yellow'
