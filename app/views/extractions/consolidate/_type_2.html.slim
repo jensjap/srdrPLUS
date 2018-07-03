@@ -9,7 +9,47 @@
         tr
           - @extractions.each_with_index do |extraction, idx|
             th style='border: 4px solid #{ color_array[idx] }' By #{ extraction.user.profile.username }
+
           th style='border: 4px solid yellow; border-left-style: double;' By #{ @consolidated_extraction.user.profile.username }
+
+        tr
+          - @extractions.each_with_index do |extraction, idx|
+            - eefps = ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by( \
+              extraction: extraction,
+              extraction_forms_projects_section: efps,
+              link_to_type1: efps.link_to_type1.nil? \
+                ? nil \
+                : ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by!( \
+                  extraction: extraction,
+                  extraction_forms_projects_section: efps.link_to_type1))
+
+            - linked_section = eefps.link_to_type1
+
+            - if linked_section && eefps.link_to_type1.type1s.blank?
+              th
+                h5 style='color: red;' You must add #{ linked_section.extraction_forms_projects_section.section.name } before extracting into this section.
+
+            - else
+              th
+
+          - eefps = ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by( \
+            extraction: @consolidated_extraction,
+            extraction_forms_projects_section: efps,
+            link_to_type1: efps.link_to_type1.nil? \
+              ? nil \
+              : ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by!( \
+                extraction: @consolidated_extraction,
+                extraction_forms_projects_section: efps.link_to_type1))
+
+          - linked_section = eefps.link_to_type1
+
+          - if linked_section && eefps.link_to_type1.type1s.blank?
+            th
+              h5 style='color: red;' You must add #{ linked_section.extraction_forms_projects_section.section.name } before extracting into this section.
+
+          - else
+            th
+
       - efps.questions.each_with_index do |q, idx|
         tr style='text-align: left;'
           th colspan='#{ @extractions.length }'
@@ -31,11 +71,7 @@
 
               - linked_section = eefps.link_to_type1
 
-              - if linked_section && eefps.link_to_type1.type1s.blank?
-                td
-                  h5 style='color: red;' You must add #{ linked_section.extraction_forms_projects_section.section.name } before extracting into this section.
-
-              - else
+              - unless linked_section && eefps.link_to_type1.type1s.blank?
                 - if linked_section
                   td style='border: 2px solid #{ color_array[idx] }; vertical-align: top;'
                     ul style='list-style-type: none;'
@@ -67,10 +103,7 @@
 
             - linked_section = eefps.link_to_type1
 
-            - if linked_section && eefps.link_to_type1.type1s.blank?
-              h5 style='color: red;' You must add #{ linked_section.extraction_forms_projects_section.section.name } before extracting into this section.
-
-            - else
+            - unless linked_section && eefps.link_to_type1.type1s.blank?
               - if linked_section
                 td style='border: 2px solid yellow'
                   ul style='list-style-type: none;'
