@@ -149,7 +149,7 @@ class Extraction < ApplicationRecord
       #iterate over type2 eefpss
       eefps_t2.each do |eefps|
         extraction = eefps.extraction
-        efps = eefps.extractions_extraction_forms_projects_section
+        efps = eefps.extraction_forms_projects_section
         d_hash[efps.id.to_s]  ||= {}
 
         #do i even need  this?
