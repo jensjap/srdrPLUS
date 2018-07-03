@@ -192,18 +192,16 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
         first_row = self.extractions_extraction_forms_projects_sections_type1_rows.first
         rest_rows = self.extractions_extraction_forms_projects_sections_type1_rows[1..-1]
 
-        #column_headers = []
         timepoint_name_ids = []
 
         first_row.extractions_extraction_forms_projects_sections_type1_row_columns.each do |c|
-          #column_headers << c.name
-          timepoint_name_ids << c.timepoint_name.id
+          timepoint_name_ids << [c.timepoint_name.id, c.is_baseline]
         end
 
         rest_rows.each do |r|
           r.extractions_extraction_forms_projects_sections_type1_row_columns.each_with_index do |rc, idx|
-            #rc.update(name: column_headers[idx])
-            rc.update(timepoint_name_id: timepoint_name_ids[idx])
+            rc.update(timepoint_name_id: timepoint_name_ids[idx][0])
+            rc.update(is_baseline: timepoint_name_ids[idx][1])
           end
         end
       end

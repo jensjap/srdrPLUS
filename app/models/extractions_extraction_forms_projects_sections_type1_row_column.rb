@@ -4,6 +4,9 @@ class ExtractionsExtractionFormsProjectsSectionsType1RowColumn < ApplicationReco
   has_paper_trail
 
   after_save :ensure_only_one_baseline
+  after_save :ensure_timepoints_across_populations
+
+  after_destroy :remove_timepoints_across_populations
 
   belongs_to :extractions_extraction_forms_projects_sections_type1_row, inverse_of: :extractions_extraction_forms_projects_sections_type1_row_columns
   belongs_to :timepoint_name,                                           inverse_of: :extractions_extraction_forms_projects_sections_type1_row_columns
@@ -50,6 +53,30 @@ class ExtractionsExtractionFormsProjectsSectionsType1RowColumn < ApplicationReco
         extractions_extraction_forms_projects_sections_type1_row.extractions_extraction_forms_projects_sections_type1_row_columns.each do |tp|
           tp.update_attribute(:is_baseline, false) unless tp == self
         end
+      end
+    end
+
+    def ensure_timepoints_across_populations
+      self.
+        extractions_extraction_forms_projects_sections_type1_row.
+        extractions_extraction_forms_projects_sections_type1.
+        extractions_extraction_forms_projects_sections_type1_rows.each do |eefpst1r|
+        eefpst1r.extractions_extraction_forms_projects_sections_type1_row_columns.create(
+          timepoint_name: self.timepoint_name
+        ) unless eefpst1r.extractions_extraction_forms_projects_sections_type1_row_columns.find_by(
+          timepoint_name: self.timepoint_name
+        )
+      end
+    end
+
+    def remove_timepoints_across_populations
+      self.
+        extractions_extraction_forms_projects_sections_type1_row.
+        extractions_extraction_forms_projects_sections_type1.
+        extractions_extraction_forms_projects_sections_type1_rows.each do |eefpst1r|
+        eefpst1r.extractions_extraction_forms_projects_sections_type1_row_columns.where(
+          timepoint_name: self.timepoint_name
+        ).map { |eefpst1rc| eefpst1rc.try(:destroy) }
       end
     end
 end
