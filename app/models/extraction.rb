@@ -80,6 +80,8 @@ class Extraction < ApplicationRecord
     b_hash = { }
     # for timepoints
     c_hash = { }
+    # for records
+    d_hash = {}
 
     extractions.each do |extraction|
       #we need to do type1 sections first
@@ -144,7 +146,6 @@ class Extraction < ApplicationRecord
               {extraction_forms_projects_section_type_id: 2})
 
       # now Type 2
-      d_hash = {}
 
       #iterate over type2 eefpss
       eefps_t2.each do |eefps|
@@ -181,17 +182,19 @@ class Extraction < ApplicationRecord
             next
           end
 
-          qrcf = eefps_qrcf.question_row_column_field
-          t1 = eefps_qrcf.extractions_extraction_forms_projects_sections_type1.type1
-          t1_type = eefps_qrcf.extractions_extraction_forms_projects_sections_type1.type1_type
-          record = eefps_qrcf.records.first
+          qrcf_id = eefps_qrcf.question_row_column_field.id.to_s
 
-          d_hash[efps.id.to_s][t1.id.to_s] ||= {}
-          d_hash[efps.id.to_s][t1.id.to_s][t1_type.id.to_s] ||= {}
-          d_hash[efps.id.to_s][t1.id.to_s][t1_type.id.to_s][qrcf.id.to_s] ||= {}
-          d_hash[efps.id.to_s][t1.id.to_s][t1_type.id.to_s][qrcf.id.to_s][record.name] ||= []
+          t1_id = eefps_qrcf.extractions_extraction_forms_projects_sections_type1.present? ? eefps_qrcf.extractions_extraction_forms_projects_sections_type1.type1.id.to_s : nil
 
-          d_hash[efps.id.to_s][t1.id.to_s][t1_type.id.to_s][qrcf.id.to_s][record.name] << extraction.id
+          t1_type_id = eefps_qrcf.extractions_extraction_forms_projects_sections_type1.present? ? eefps_qrcf.extractions_extraction_forms_projects_sections_type1.type1_type.id.to_s : nil
+
+          record_name = eefps_qrcf.records.first.name
+
+          d_hash[efps.id.to_s][t1_id] ||= {}
+          d_hash[efps.id.to_s][t1_id][t1_type_id] ||= {}
+          d_hash[efps.id.to_s][t1_id][t1_type_id][qrcf_id] ||= {}
+          d_hash[efps.id.to_s][t1_id][t1_type_id][qrcf_id][record_name] ||= []
+          d_hash[efps.id.to_s][t1_id][t1_type_id][qrcf_id][record_name] << extraction.id
 
           #eefps_qrcf.records.each do |records|
 
@@ -223,14 +226,14 @@ class Extraction < ApplicationRecord
           # population and timepoint creation
           b_hash[efps_id][type1_id].each do |population_name_id, p_es|
             if p_es.length == extractions.length
-              population_name = PopulationName.find!(population_name_id)
+              population_name = PopulationName.find(population_name_id)
               eefps_t1_row = ExtractionsExtractionFormsProjectsSectionsType1Row.find_or_create_by!(
                 extractions_extraction_forms_projects_sections_type1: eefps_t1,
                 population_name: population_name )
 
               c_hash[efps_id][type1_id][population_name_id].each do |timepoint_name_id, t_es|
                 if t_es.length == extractions.length
-                  timepoint_name = TimepointName.find!(timepoint_name_id)
+                  timepoint_name = TimepointName.find(timepoint_name_id)
                   ExtractionsExtractionFormsProjectsSectionsType1RowColumn.find_or_create_by!(
                     extractions_extraction_forms_projects_sections_type1_row: eefps_t1_row,
                     is_baseline: false, #should this be true in some cases?
@@ -243,30 +246,31 @@ class Extraction < ApplicationRecord
       end
     end
 
-      d_hash.each do |efps_id, d_d_hash|
-        d_d_hash.each do |t1_id, d_d_d_hash|
-          d_d_d_hash.each do |t1_type_id, d_d_d_d_hash|
-            d_d_d_d_hash.each do |qrcf_id, d_d_d_d_d_hash|
-              d_d_d_d_d_hash do |record_name, r_es|
-                eefps = self.extractions_extraction_forms_projects_sections.find_or_create_by!(extraction_forms_projects_section_id: efps_id)
-                qrcf = QuestionRowColumnField.find(qrcf_id)
-                # what if type1 is nil
-                t1 = Type1.find(t1_id)
-                t1_type = Type1Type.find(t1_type_id)
-                eefps_t1 = ExtractionsExtractionFormsProjectsSectionsType1.find_or_create_by!(extractions_extraction_forms_projects_section: eefps, type1: t1, type1_type: t1_type)
-                eefps_qrcf = ExtractionsExtractionFormsProjectsSectionnsQuestionRowColumnField.find_by!(extractions_extraction_forms_projects_section: eefps, extractions_extraction_forms_projects_sections_type1: eefps_t1,  question_row_column_field: qrcf)
-                record = Record.find_or_create_by!(recordable: eefps_qrcf, recordable_type: eefps_qrcf.class.name, name: record_name)
-                #we want to create eefps_qrcf if its not there
-                #we want to
-              end
+    d_hash.each do |efps_id, d_d_hash|
+      d_d_hash.each do |t1_id, d_d_d_hash|
+        d_d_d_hash.each do |t1_type_id, d_d_d_d_hash|
+          d_d_d_d_hash.each do |qrcf_id, d_d_d_d_d_hash|
+            d_d_d_d_d_hash.each do |record_name, r_es|
+              eefps = self.extractions_extraction_forms_projects_sections.find_or_create_by!(extraction_forms_projects_section_id: efps_id)
+              qrcf = QuestionRowColumnField.find(qrcf_id)
+              # what if type1 is nil
+              t1 = t1_id.present? ? Type1.find(t1_id) : nil
+              t1_type = t1_type_id.present? ? Type1Type.find(t1_type_id) : nil
+              eefps_t1 = t1.present? ? ExtractionsExtractionFormsProjectsSectionsType1.find_or_create_by!(extractions_extraction_forms_projects_section: eefps, type1: t1, type1_type: t1_type) : nil
+              eefps_qrcf = ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField.find_or_create_by!(extractions_extraction_forms_projects_section: eefps, extractions_extraction_forms_projects_sections_type1: eefps_t1,  question_row_column_field: qrcf)
+              record = Record.find_or_create_by!(recordable: eefps_qrcf, recordable_type: eefps_qrcf.class.name, name: record_name.dup.to_s)
+              #we want to create eefps_qrcf if its not there
+              #we want to
             end
           end
         end
       end
+    end
     byebug
 
     # after going through all the extractions, we need to find_or_create_by them in the consolidated one
     # assume all eefps is there. true?
 
+    end
   end
 end

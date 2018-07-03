@@ -61,9 +61,10 @@ class ExtractionsController < ApplicationController
   # DELETE /extractions/1
   # DELETE /extractions/1.json
   def destroy
+    project = 
     @extraction.destroy
     respond_to do |format|
-      format.html { redirect_to project_extractions_url(@extraction.extraction_forms_project.project), notice: 'Extraction was successfully destroyed.' }
+      format.html { redirect_to project_extractions_url(@extraction.project), notice: 'Extraction was successfully destroyed.' }
       format.json { head :no_content }
     end
   end
