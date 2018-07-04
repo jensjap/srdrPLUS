@@ -6,21 +6,12 @@ document.addEventListener 'turbolinks:load', ->
 
   do ->
 
-#!!! This is buggy. When loading the page where the anchor is set, it'll have both open.
-#    # Open first tab with JavaScript.
-#      tabs = $( '#vertical-tabs' )
-#      if tabs.length
-#        tabs = $( '#vertical-tabs' ).foundation()
-#        firstTab = tabs.children( 'li' ).first()
-#        tabs.foundation( '_openTab', firstTab )
-
-    # Adds a delay to calling a specific function.
-    delay = do ->
-      timer = 0
-      ( callback, ms ) ->
-        clearTimeout timer
-        timer = setTimeout( callback, ms )
-        return
+#    # Adds a delay to calling a specific function.
+#    delay = do ->
+#      timer = 0
+#      ( callback, ms ) ->
+#        clearTimeout timer
+#        timer = setTimeout( callback, ms )
 
     $( '#outcome_populations_selector_eefpst1_id' ).change ( event ) ->
       $.ajax
@@ -29,15 +20,6 @@ document.addEventListener 'turbolinks:load', ->
         dataType: 'script'
         error: -> alert 'Server busy'
         timeout: 5000
-      return
-
-#    #############################################################
-#    # Attach change event listener to text field to trigger save.
-#    $( '.work input[type="text"]' ).on 'input', ( e ) ->
-#      e.preventDefault()
-#      that = $( this )
-#
-#      delay((() -> return console.log that.data()), 1000)
 
     ######################################################################
     # Attach click event to edit type1 from within extraction:consolidate.
@@ -70,9 +52,8 @@ document.addEventListener 'turbolinks:load', ->
 
       $.ajax( urlString ).done ( resp ) ->
         $modal.html( resp ).foundation 'open'
-        return
 
-    ###################################################################################
+    #############################################################
     # Attach listener to toggle section links in and out of view.
     $( '#toggle-sections-link' ).click ( e ) ->
       e.preventDefault
@@ -86,7 +67,3 @@ document.addEventListener 'turbolinks:load', ->
       $( '#toggle-consolidated-extraction-link .toggle-hide' ).toggleClass( 'hide' )
       $( '.toggle-consolidated-extraction-link-medium-8-12' ).toggleClass( 'medium-8 medium-12' )
       $( '.toggle-consolidated-extraction-link-medium-4-0-hide' ).toggleClass( 'medium-4 medium-0 hide' )
-
-    return  # END do ->
-
-  return  # END document.addEventListener 'turbolinks:load', ->

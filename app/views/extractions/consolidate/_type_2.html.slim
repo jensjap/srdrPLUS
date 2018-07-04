@@ -74,15 +74,25 @@
               - unless linked_section && eefps.link_to_type1.type1s.blank?
                 - if linked_section
                   td style='border: 2px solid #{ color_array[0] }; vertical-align: top;'
-                    ul style='list-style-type: none;'
-                      - eefps.link_to_type1.type1s.each do |t1|
-                        li title='#{ section_name }: #{ t1 }'
-                          = linked_section.extraction_forms_projects_section.section.name.singularize + ': ' + t1.name
-                          = render 'extractions/shared/type_2/question_fields',
-                            q: q,
-                            t1: t1,
-                            eefps: eefps,
-                            display_only: true
+                    /ul style='list-style-type: none;'
+                    table
+                      thead
+                      tbody
+                        - @head_to_head.dig(efp.id, linked_section.extraction_forms_projects_section.id, :all_type1s).each do |t1|
+                          /- eefps.link_to_type1.type1s.each do |t1|
+                          - if eefps.link_to_type1.type1s.include?(t1)
+                            tr.equal-height
+                              /li title='#{ section_name }: #{ t1.name_and_description }'
+                              td title='#{ section_name }: #{ t1.name_and_description }'
+                                = linked_section.extraction_forms_projects_section.section.name.singularize + ': ' + t1.name_and_description
+                                = render 'extractions/shared/type_2/question_fields',
+                                  q: q,
+                                  t1: t1,
+                                  eefps: eefps,
+                                  display_only: true
+                          - else
+                            tr.equal-height style='visibility: hidden;'
+                              td jens
 
                 - else
                   td style='border: 2px solid #{ color_array[0] }; vertical-align: top;'
@@ -106,15 +116,26 @@
             - unless linked_section && eefps.link_to_type1.type1s.blank?
               - if linked_section
                 td style='border: 2px solid #410093'
-                  ul style='list-style-type: none;'
-                    - eefps.link_to_type1.type1s.each do |t1|
-                      li title='#{ section_name }: #{ t1 }'
-                        = linked_section.extraction_forms_projects_section.section.name.singularize + ': ' + t1.name
-                        = render 'extractions/shared/type_2/question_fields',
-                          q: q,
-                          t1: t1,
-                          eefps: eefps,
-                          display_only: false
+                  /ul style='list-style-type: none;'
+                  table
+                    thead
+                    tbody
+                      - @head_to_head.dig(efp.id, linked_section.extraction_forms_projects_section.id, :all_type1s).each do |t1|
+                        /- eefps.link_to_type1.type1s.each do |t1|
+                        - if eefps.link_to_type1.type1s.include?(t1)
+                          tr.equal-height
+                            /li title='#{ section_name }: #{ t1.name_and_description }'
+                            td
+                              = linked_section.extraction_forms_projects_section.section.name.singularize + ': ' + t1.name_and_description
+                              = render 'extractions/shared/type_2/question_fields',
+                                q: q,
+                                t1: t1,
+                                eefps: eefps,
+                                display_only: false
+
+                        - else
+                          tr.equal-height style='visibility: hidden;'
+                            td jens
 
               - else
                 td style='border: 2px solid #410093'
