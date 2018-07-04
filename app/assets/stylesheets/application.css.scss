@@ -306,6 +306,10 @@ pre.debug_dump {
 .table-scroll table {
   width: 100%;
 
+  td, th {
+    border-radius: 2px;
+  }
+
   &.consolidate .missing-value {
     margin-bottom: 3px;
     border: 1.2px solid red;

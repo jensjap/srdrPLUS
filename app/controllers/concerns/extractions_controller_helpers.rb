@@ -27,12 +27,15 @@ module ExtractionsControllerHelpers
             return_value[efp_id][efps_id] ||= {}
             return_value[efp_id][efps_id][:name] ||= :extraction_forms_projects_section
             return_value[efp_id][efps_id][:id] ||= efps_id
-            return_value[efp_id][efps_id][:all_type1s] = ExtractionsExtractionFormsProjectsSectionsType1.
-              where(extractions_extraction_forms_projects_section: efps.extractions_extraction_forms_projects_sections.where(extraction: extractions)).
-              map(&:type1).to_set
+            return_value[efp_id][efps_id][:all_type1s] = ExtractionsExtractionFormsProjectsSectionsType1
+              .where(extractions_extraction_forms_projects_section: efps.extractions_extraction_forms_projects_sections
+              .where(extraction: extractions))
+              .order(id: :asc)
+              .map(&:type1).to_set
 
             extractions.each do |extraction|
-              eefps = efps.extractions_extraction_forms_projects_sections.where(extraction: extraction)
+              eefps = efps.extractions_extraction_forms_projects_sections
+                .where(extraction: extraction)
               raise RuntimeError, 'More than one ExtractionsExtractionFormsProjectsSection found.' unless eefps.length.eql?(1)
               eefps.first.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
                 type1_id = eefpst1.type1.id
