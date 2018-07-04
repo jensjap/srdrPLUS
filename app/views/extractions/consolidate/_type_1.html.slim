@@ -189,7 +189,7 @@
                                       i.fi-x> style='color: red;'
                                       = timepoint_name.pretty_print_export_header
 
-  .toggle-consolidated-extraction-link-medium-4-0-hide.columns.medium-4 style='background-color: yellow;'
+  .toggle-consolidated-extraction-link-medium-4-0-hide.columns.medium-4 style='border: 2px solid #410093;'
     - eefps = ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by!( \
       extraction: @consolidated_extraction,
       extraction_forms_projects_section: efps,
