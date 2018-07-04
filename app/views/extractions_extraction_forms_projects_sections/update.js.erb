@@ -1,5 +1,24 @@
-if ( '<%= @extractions_extraction_forms_projects_section.errors.messages.values.dig(0, 0) %>'.length > 0 ) {
+<% if @extractions_extraction_forms_projects_section.errors.messages.values.dig(0, 0).present? %>
   toastr.error( '<%= @extractions_extraction_forms_projects_section.errors.messages.values.dig(0, 0) %>' );
-} else {
-  location.reload();
-}
+<% else %>
+  <% if @action.eql?('work') %>
+    $( '#panel-tab-<%= @extractions_extraction_forms_projects_section.extraction_forms_projects_section.id %>' )
+      .html( "<%= escape_javascript( render partial: 'extractions/' + @action + '/' + @extractions_extraction_forms_projects_section.extraction_forms_projects_section.extraction_forms_projects_section_type.name.parameterize.underscore,
+                                     locals: { section_name: @extractions_extraction_forms_projects_section.extraction_forms_projects_section.section.name,
+                                               efp: @extractions_extraction_forms_projects_section.extraction_forms_projects_section.extraction_forms_project,
+                                               efps: @extractions_extraction_forms_projects_section.extraction_forms_projects_section } ) %>" )
+    .foundation()
+    <% @linked_type2_sections.each do |eefps| %>
+      $( '#panel-tab-<%= eefps.extraction_forms_projects_section.id %>' )
+        .html( "<%= escape_javascript( render partial: 'extractions/' + @action + '/' + eefps.extraction_forms_projects_section.extraction_forms_projects_section_type.name.parameterize.underscore,
+                                       locals: { section_name: eefps.extraction_forms_projects_section.section.name,
+                                                 efp: eefps.extraction_forms_projects_section.extraction_forms_project,
+                                                 efps: eefps.extraction_forms_projects_section } ) %>" )
+      .foundation()
+    <% end %>
+    toastr.success( 'Success' );
+  <% else %>
+    toastr.success( 'Please wait for page to reload..' );
+    location.reload();
+  <% end %>
+<% end %>
