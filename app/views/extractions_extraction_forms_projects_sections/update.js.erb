@@ -18,7 +18,8 @@
     <% end %>
     toastr.success( 'Success' );
   <% else %>
-    toastr.success( 'Please wait for page to reload..' );
+    $(document.getElementById( 'spinner-modal' )).foundation( 'open' )
+    //toastr.success( 'Please wait for page to reload..' );
     location.reload();
   <% end %>
 <% end %>

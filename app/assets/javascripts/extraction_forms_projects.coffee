@@ -71,7 +71,3 @@ document.addEventListener 'turbolinks:load', ->
         # Spinner.
         $( '#modal-' + efpsId ).html( 'Submitting..' )
         post('/extraction_forms_projects_sections/' + efpsId + '/add_quality_dimension', { a_qdqId: a_qdqId, authenticity_token: csrfToken })
-
-    return  # END do ->
-
-  return  # END document.addEventListener 'turbolinks:load', ->
