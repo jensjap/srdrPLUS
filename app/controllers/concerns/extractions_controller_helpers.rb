@@ -28,6 +28,7 @@ module ExtractionsControllerHelpers
             return_value[efp_id][efps_id][:name] ||= :extraction_forms_projects_section
             return_value[efp_id][efps_id][:id] ||= efps_id
             return_value[efp_id][efps_id][:all_type1s] = ExtractionsExtractionFormsProjectsSectionsType1
+              .includes(:type1)
               .where(extractions_extraction_forms_projects_section: efps.extractions_extraction_forms_projects_sections
               .where(extraction: extractions))
               .order(id: :asc)
@@ -37,7 +38,7 @@ module ExtractionsControllerHelpers
               eefps = efps.extractions_extraction_forms_projects_sections
                 .where(extraction: extraction)
               raise RuntimeError, 'More than one ExtractionsExtractionFormsProjectsSection found.' unless eefps.length.eql?(1)
-              eefps.first.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
+              eefps.first.extractions_extraction_forms_projects_sections_type1s.includes(:type1).each do |eefpst1|
                 type1_id = eefpst1.type1.id
                 return_value[efp_id][efps_id][type1_id] ||= {}
                 return_value[efp_id][efps_id][type1_id][:name] ||= :type1
@@ -45,7 +46,7 @@ module ExtractionsControllerHelpers
                 return_value[efp_id][efps_id][type1_id][:eefpst1s] ||= []
                 return_value[efp_id][efps_id][type1_id][:eefpst1s] << eefpst1.id
 
-                eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |eefpst1r|
+                eefpst1.extractions_extraction_forms_projects_sections_type1_rows.includes(:population_name).each do |eefpst1r|
                   population_name_id = eefpst1r.population_name.id
                   return_value[efp_id][efps_id][type1_id][:unique_population_names] ||= Set.new
                   return_value[efp_id][efps_id][type1_id][:unique_population_names].add(eefpst1r.population_name)
@@ -56,7 +57,7 @@ module ExtractionsControllerHelpers
                   return_value[efp_id][efps_id][type1_id][:population_names][population_name_id][:eefpst1rs] ||= []
                   return_value[efp_id][efps_id][type1_id][:population_names][population_name_id][:eefpst1rs] << eefpst1r.id
 
-                  eefpst1r.extractions_extraction_forms_projects_sections_type1_row_columns.each do |eefpst1rc|
+                  eefpst1r.extractions_extraction_forms_projects_sections_type1_row_columns.includes(:timepoint_name).each do |eefpst1rc|
                     timepoint_name_id = eefpst1rc.timepoint_name.id
                     return_value[efp_id][efps_id][type1_id][:population_names][population_name_id][:unique_timepoint_names] ||= Set.new
                     return_value[efp_id][efps_id][type1_id][:population_names][population_name_id][:unique_timepoint_names].add(eefpst1rc.timepoint_name)
