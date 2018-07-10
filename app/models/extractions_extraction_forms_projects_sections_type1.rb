@@ -49,7 +49,7 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
   has_many :tps_arms_rssms,                                                            dependent: :destroy, inverse_of: :extractions_extraction_forms_projects_sections_type1
   has_many :comparisons_arms_rssms,                                                    dependent: :destroy, inverse_of: :extractions_extraction_forms_projects_sections_type1
 
-  has_many :comparable_elements, as: :comparable
+  has_many :comparable_elements, as: :comparable, dependent: :destroy
 
   accepts_nested_attributes_for :extractions_extraction_forms_projects_sections_type1_rows, allow_destroy: true
   accepts_nested_attributes_for :type1, reject_if: :all_blank

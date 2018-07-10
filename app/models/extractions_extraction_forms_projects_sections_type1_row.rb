@@ -14,7 +14,7 @@ class ExtractionsExtractionFormsProjectsSectionsType1Row < ApplicationRecord
   belongs_to :extractions_extraction_forms_projects_sections_type1, inverse_of: :extractions_extraction_forms_projects_sections_type1_rows
   belongs_to :population_name,                                      inverse_of: :extractions_extraction_forms_projects_sections_type1_rows
 
-  has_many :comparable_elements, as: :comparable
+  has_many :comparable_elements, as: :comparable, dependent: :destroy
 
   has_many :extractions_extraction_forms_projects_sections_type1_row_columns, dependent: :destroy, inverse_of: :extractions_extraction_forms_projects_sections_type1_row
 

@@ -4,10 +4,10 @@ class Comparison < ApplicationRecord
 
   belongs_to :result_statistic_section, inverse_of: :comparisons
 
-  has_many :comparate_groups, dependent: :destroy, inverse_of: :comparison
+  has_many :comparate_groups, inverse_of: :comparison, dependent: :destroy
   has_many :comparates, through: :comparate_groups, dependent: :destroy
 
-  has_many :comparable_elements, as: :comparable
+  has_many :comparable_elements, as: :comparable, dependent: :destroy
 
   has_many :comparisons_measures, dependent: :destroy, inverse_of: :comparison
   has_many :measurements, through: :comparisons_measures, dependent: :destroy
