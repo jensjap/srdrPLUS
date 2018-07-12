@@ -16,8 +16,10 @@ class ResultStatisticSection < ApplicationRecord
   has_many :comparable_elements,  through: :comparates,           dependent: :destroy
   has_many :comparables,          through: :comparable_elements,  dependent: :destroy, source_type: 'ComparableElement'
   has_many :comparisons_measures, through: :comparables,          dependent: :destroy, source: :comparates
+  #remove this, we use records for all data collection
   has_many :measurements,         through: :comparisons_measures, dependent: :destroy, source: :comparable_element
 
+  #remove this as well?
   accepts_nested_attributes_for :comparisons,          allow_destroy: true
   accepts_nested_attributes_for :comparate_groups,     allow_destroy: true
   accepts_nested_attributes_for :comparates,           allow_destroy: true

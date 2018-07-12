@@ -75,13 +75,24 @@ class Extraction < ApplicationRecord
     end
 
     # what i want to do is to build a hash to store the structure/differences
-    a_hash = { }
+    # for arms
+    a_hash = {}
     # for populations
-    b_hash = { }
+    b_hash = {}
     # for timepoints
-    c_hash = { }
+    c_hash = {}
     # for records
     d_hash = {}
+    # for rssms
+    e_hash = {}
+    # for comparisons, this one stores array of comparison ids instead of extraction ids
+    f_hash = {}
+    # for rssm 3-way join tables
+    g_hash = {}
+    # store cloned comparisons
+    h_hash = {}
+    # store result records
+    i_hash = {}
 
     extractions.each do |extraction|
       #we need to do type1 sections first
@@ -98,39 +109,180 @@ class Extraction < ApplicationRecord
 
       #Type 1 sections
       eefps_t1.each do |eefps|
-        efps = eefps.extraction_forms_projects_section
+        efps_id = eefps.extraction_forms_projects_section_id.to_s
         eefps_t1s = eefps.extractions_extraction_forms_projects_sections_type1s.includes(:type1)
         eefps_t1s.each do |eefps_t1|
           type1 = eefps_t1.type1
+          type1_id = type1.id.to_s
 
-          a_hash[efps.id.to_s] ||= {}
-          a_hash[efps.id.to_s][type1.id.to_s] ||= []
-          a_hash[efps.id.to_s][type1.id.to_s] << extraction.id
+          a_hash[efps_id] ||= {}
+          a_hash[efps_id][type1_id] ||= []
+          a_hash[efps_id][type1_id] << extraction.id
 
           # this is stylistically weird but it prevents the loop below to crash
-          b_hash[efps.id.to_s] ||= {}
-          b_hash[efps.id.to_s][type1.id.to_s] ||= {}
+          b_hash[efps_id] ||= {}
+          b_hash[efps_id][type1_id] ||= {}
 
-          c_hash[efps.id.to_s] ||= {}
-          c_hash[efps.id.to_s][type1.id.to_s] ||= {}
+          c_hash[efps_id] ||= {}
+          c_hash[efps_id][type1_id] ||= {}
+
+          e_hash[efps_id] ||= {}
+          e_hash[efps_id][type1_id] ||= {}
+
+          f_hash[efps_id] ||= {}
+          f_hash[efps_id][type1_id] ||= {}
+
+          g_hash[efps_id] ||= {}
+          g_hash[efps_id][type1_id] ||= {}
+
+          i_hash[efps_id] ||= {}
+          i_hash[efps_id][type1_id] ||= {}
+
 
           # If there are timepoints and populations, we need to consolidate those as well using a similar hash method
           eefps_t1.extractions_extraction_forms_projects_sections_type1_rows.each do |eefps_t1_row|
-            b_hash[efps.id.to_s][type1.id.to_s][eefps_t1_row.population_name_id.to_s] ||= []
-            b_hash[efps.id.to_s][type1.id.to_s][eefps_t1_row.population_name_id.to_s] << extraction.id
+            population_name_id = eefps_t1_row.population_name_id.to_s
 
-            c_hash[efps.id.to_s][type1.id.to_s][eefps_t1_row.population_name_id.to_s] ||= {}
+            b_hash[efps_id][type1_id][population_name_id] ||= []
+            b_hash[efps_id][type1_id][population_name_id] << extraction.id
+
+            c_hash[efps_id][type1_id][population_name_id] ||= {}
+            e_hash[efps_id][type1_id][population_name_id] ||= {}
+            f_hash[efps_id][type1_id][population_name_id] ||= {}
+            g_hash[efps_id][type1_id][population_name_id] ||= {}
+            i_hash[efps_id][type1_id][population_name_id] ||= {}
 
             eefps_t1_row.extractions_extraction_forms_projects_sections_type1_row_columns.each do |eefps_t1_row_column|
-              c_hash[efps.id.to_s][type1.id.to_s][eefps_t1_row.population_name_id.to_s][eefps_t1_row_column.timepoint_name_id.to_s] ||= []
-              c_hash[efps.id.to_s][type1.id.to_s][eefps_t1_row.population_name_id.to_s][eefps_t1_row_column.timepoint_name_id.to_s] << extraction.id
+              tp_name_id = eefps_t1_row_column.timepoint_name_id.to_s
+              c_hash[efps_id][type1_id][population_name_id][tp_name_id] ||= []
+              c_hash[efps_id][type1_id][population_name_id][tp_name_id] << extraction.id
+            end
+
+            eefps_t1_row.result_statistic_sections.each do |rss|
+              rss_type_id = rss.result_statistic_section_type_id.to_s
+
+              e_hash[efps_id][type1_id][population_name_id][rss_type_id] ||= {}
+              f_hash[efps_id][type1_id][population_name_id][rss_type_id] ||= {}
+              g_hash[efps_id][type1_id][population_name_id][rss_type_id] ||= {}
+              i_hash[efps_id][type1_id][population_name_id][rss_type_id] ||= {}
+
+              rss.comparisons.each do |comparison|
+                # thank the maker for pretty_print_export_header --Birol
+                comparison_name = comparison.tokenize
+
+                f_hash[efps_id][type1_id][population_name_id][rss_type_id][comparison_name] ||= []
+                f_hash[efps_id][type1_id][population_name_id][rss_type_id][comparison_name] << comparison.id
+
+              end
+
+              rss.result_statistic_sections_measures.each do |rssm|
+                measure_id = rssm.measure_id.to_s
+
+                e_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id] ||= []
+                e_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id] << extraction.id
+
+                g_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id] ||= {}
+                i_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id] ||= {}
+
+                rssm.wacs_bacs_rssms.each do |wacs_bacs_rssm|
+                  wac_name = wacs_bacs_rssm.wac.tokenize
+                  bac_name = wacs_bacs_rssm.bac.tokenize
+                  record_name = wacs_bacs_rssm.records.first.name
+
+#                  num_extractions_wac = f_hash[efps_id][type1_id][population_name_id][rss_type_id][wac_name].length
+#                  num_extractions_bac = f_hash[efps_id][type1_id][population_name_id][rss_type_id][bac_name].length
+#
+#                  if num_extractions_wac < extractions.length or 
+#                      num_extractions_bac < extractions.length
+#                    next
+#                  end
+
+                  g_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][wac_name] ||= {}
+                  g_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][wac_name][bac_name] ||= []
+                  g_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][wac_name][bac_name] << extraction.id
+
+                  i_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][wac_name] ||= {}
+                  i_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][wac_name][bac_name] ||= {}
+                  i_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][wac_name][bac_name][record_name] ||= []
+                  i_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][wac_name][bac_name][record_name] << extraction.id
+                end
+
+                rssm.tps_arms_rssms.each do |tps_arms_rssm|
+                  tp_name_id = tps_arms_rssm.timepoint.timepoint_name_id
+                  arm_name_id = tps_arms_rssm.extractions_extraction_forms_projects_sections_type1.type1_id
+                  record_name = tps_arms_rssm.records.first.name
+
+#                  num_extractions_tp = c_hash[efps_id][type1_id][population_name_id][eefps_t1_row_column.tp_name_id.to_s].length
+#                  num_extractions_arm = a_hash[efps_id][type1_id].length
+#
+#                  if num_extractions_tp < extractions.length or 
+#                      num_extractions_arm < extractions.length
+#                    next
+#                  end
+
+                  g_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][tp_name_id] ||= {}
+                  g_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][tp_name_id][arm_name_id] ||= []
+                  g_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][tp_name_id][arm_name_id] << extraction.id
+                  i_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][tp_name_id] ||= {}
+                  i_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][tp_name_id][arm_name_id] ||= {}
+                  i_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][tp_name_id][arm_name_id][record_name] ||= []
+                  i_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][tp_name_id][arm_name_id][record_name] << extraction.id
+                end
+
+                rssm.tps_comparisons_rssms.each do |tps_comparisons_rssm|
+                  tp_name_id = tps_comparisons_rssm.timepoint.timepoint_name_id
+                  comparison_name = tps_comparisons_rssm.comparison.tokenize
+                  record_name = tps_comparisons_rssm.records.first.name
+
+#                  num_extractions_tp = c_hash[efps_id][type1_id][population_name_id][eefps_t1_row_column.tp_name_id.to_s].length
+#                  num_extractions_comparison = f_hash[efps_id][type1_id][population_name_id][rss_type_id][comparison_name].length
+#
+#
+#                  if num_extractions_tp < extractions.length or 
+#                      num_extractions_comparison < extractions.length
+#                    next
+#                  end
+
+                  g_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][tp_name_id] ||= {}
+                  g_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][tp_name_id][comparison_name] ||= []
+                  g_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][tp_name_id][comparison_name] << extraction.id
+                  i_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][tp_name_id] ||= {}
+                  i_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][tp_name_id][comparison_name] ||= {}
+                  i_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][tp_name_id][comparison_name][record_name] ||= []
+                  i_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][tp_name_id][comparison_name][record_name] << extraction.id
+                end
+
+                rssm.comparisons_arms_rssms.each do |comparisons_arms_rssm|
+                  comparison_name = comparisons_arms_rssm.comparison.tokenize
+                  arm_name_id = comparisons_arms_rssm.extractions_extraction_forms_projects_sections_type1.type1_id
+                  record_name = comparisons_arms_rssm.records.first.name
+
+#                  num_extractions_comparison = c_hash[efps_id][type1_id][population_name_id][eefps_t1_row_column.tp_name_id.to_s].length
+#                  num_extractions_arm = a_hash[efps_id][type1_id].length
+#
+#
+#                  if num_extractions_comparison < extractions.length or 
+#                      num_extractions_arm < extractions.length
+#                    next
+#                  end
+
+                  g_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][comparison_name] ||= {}
+                  g_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][comparison_name][arm_name_id] ||= []
+                  g_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][comparison_name][arm_name_id] << extraction.id
+                  i_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][comparison_name] ||= {}
+                  i_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][comparison_name][arm_name_id] ||= {}
+                  i_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][comparison_name][arm_name_id][record_name] ||= []
+                  i_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][comparison_name][arm_name_id][record_name] << extraction.id
+                end
+
+              end
             end
           end
         end
 
         #get type1s
         #if  there are type1s  common between extractions add these  type1s to self
-        #
+        
         eefps.extractions_extraction_forms_projects_sections_question_row_column_fields.each do |eefps_qrcf|
           # results section
           # check outcomes and  population that you know are shared
@@ -151,7 +303,8 @@ class Extraction < ApplicationRecord
       eefps_t2.each do |eefps|
         extraction = eefps.extraction
         efps = eefps.extraction_forms_projects_section
-        d_hash[efps.id.to_s]  ||= {}
+        efps_id = efps.id.to_s
+        d_hash[efps_id]  ||= {}
 
         #do i even need  this?
         type1s = []
@@ -161,7 +314,7 @@ class Extraction < ApplicationRecord
         if (not eefps.link_to_type1.nil?) and (not !eefps.link_to_type1.type1s.empty?)
           eefps.link_to_type1.type1s.each do |t1|
             # we only want to copy data if type1 is shared among all extractions
-            if a_hash[efps.id.to_s][t1.id.to_s].length == extractions.length
+            if a_hash[efps_id][t1.id.to_s].length == extractions.length
               type1s << t1
             end
           end
@@ -173,9 +326,9 @@ class Extraction < ApplicationRecord
         end
 
         # create an empty hash
-        d_hash[efps.id.to_s] ||= {}
+        d_hash[efps_id] ||= {}
 
-        eefps.extractions_extraction_forms_projects_sections_question_row_column_fields.each  do |eefps_qrcf|
+        eefps.extractions_extraction_forms_projects_sections_question_row_column_fields.each do |eefps_qrcf|
           # we dont want to bother with this stuff if there is no data
           if eefps_qrcf.records.first.nil?
             #byebug
@@ -190,11 +343,11 @@ class Extraction < ApplicationRecord
 
           record_name = eefps_qrcf.records.first.name
 
-          d_hash[efps.id.to_s][t1_id] ||= {}
-          d_hash[efps.id.to_s][t1_id][t1_type_id] ||= {}
-          d_hash[efps.id.to_s][t1_id][t1_type_id][qrcf_id] ||= {}
-          d_hash[efps.id.to_s][t1_id][t1_type_id][qrcf_id][record_name] ||= []
-          d_hash[efps.id.to_s][t1_id][t1_type_id][qrcf_id][record_name] << extraction.id
+          d_hash[efps_id][t1_id] ||= {}
+          d_hash[efps_id][t1_id][t1_type_id] ||= {}
+          d_hash[efps_id][t1_id][t1_type_id][qrcf_id] ||= {}
+          d_hash[efps_id][t1_id][t1_type_id][qrcf_id][record_name] ||= []
+          d_hash[efps_id][t1_id][t1_type_id][qrcf_id][record_name] << extraction.id
 
           #eefps_qrcf.records.each do |records|
 
@@ -211,6 +364,62 @@ class Extraction < ApplicationRecord
         end
       end
 
+
+#      #then results sections
+#      eefps_res = extraction.extractions_extraction_forms_projects_sections.
+#        joins(:extraction_forms_projects_section).
+#        where(extraction_forms_projects_sections:
+#              {extraction_forms_projects_section_type_id: 3})
+#
+#      eefps_res.each do |eefps|
+#        efps = eefps.extraction_forms_projects_section
+#        e_hash[efps.id.to_s] ||= {}
+#
+#        efp
+#
+#
+#        eefps_t1 = eefps.extractions_extraction_forms_projects_sections_type1
+#        # lets see if a population is shared
+#        populations = eefps_t1.extractions_extraction_forms_projects_sections_type1_rows
+#
+#        populations.each do |population|
+#          # we also want to check if a timepoint is shared
+#          population.result_statistic_sections.each do |rss|
+#            timepoints = population.extractions_extraction_forms_projects_sections_type1_row_columns
+#          end
+#
+#          case rss.result_statistic_section_type_id
+#          # I wonder if theres a  way to do this without writing a separate case for each type
+#          when 1
+#            #Descriptive Statistics
+#            #TpsArmsRssm
+#          when 2
+#            #Between Arm Comparisons
+#            #TpsComparisonsRssm
+#          when 3
+#            #Within Arm Comparisons
+#            #ComparisonsArmsRssm
+#          when 4
+#            #NET Change
+#            #WacsBacsRssm
+#          else
+#            byebug
+#          end
+#
+#          measures = rss.measures
+#
+#          rss.comparisons.each do |comparison|
+#            comparison.comparate_groups.each do |comparate_group|
+#              comparate_group.comparates.each do |comparates|
+#
+#              end
+#            end
+#          end
+#
+#          #timepoints.each do |timepoint|
+#          #end
+#        end
+#      end
     end
 
     #create the same type1 in self
@@ -240,6 +449,111 @@ class Extraction < ApplicationRecord
                     timepoint_name: timepoint_name )
                 end
               end
+
+              eefps_t1_row.result_statistic_sections.each do |rss|
+                rss_type_id = rss.result_statistic_section_type.id.to_s
+                f_hash[efps_id][type1_id][population_name_id][rss_type_id].each do |comparison_name, comparison_arr|
+                  if comparison_arr.length == extractions.length
+                    # get one comparison to clone
+                    # is it possible that this comparable exists? what then?
+                    master_comp = Comparison.find(comparison_arr.first)
+                    clone_comp = Comparison.create!(result_statistic_section: rss)
+                    master_comp.comparate_groups.each do |old_comparate_group|
+                      new_comparate_group = ComparateGroup.create!(comparison: clone_comp)
+                      old_comparate_group.comparates.each do |old_comparate|
+                        old_comparable_element = old_comparate.comparable_element
+                        old_comparable = old_comparable_element.comparable
+                        if old_comparable.instance_of? ExtractionsExtractionFormsProjectsSectionsType1
+                          comp_t1 = old_comparable.type1
+                          comp_eefps_t1 = ExtractionsExtractionFormsProjectsSectionsType1.find_by!(extractions_extraction_forms_projects_section: eefps, type1: comp_t1)
+                          new_comparable_element = ComparableElement.create!(comparable: comp_eefps_t1, comparable_type: 'ExtractionsExtractionFormsProjectsSectionsType1')
+                          new_comparate = Comparate.create!(comparate_group: new_comparate_group, comparable_element: new_comparable_element)
+                        elsif old_comparable.instance_of? ExtractionsExtractionFormsProjectsSectionsType1RowColumn
+                          comp_tn = old_comparable.timepoint_name
+                          comp_eefps_t1_row_column = ExtractionsExtractionFormsProjectsSectionsType1RowColumn.find_by!(extractions_extraction_forms_projects_sections_type1_row: eefps_t1_row, timepoint_name: comp_tn)
+                          new_comparable_element = ComparableElement.create!(comparable: comp_eefps_t1_row_column, comparable_type: 'ExtractionsExtractionFormsProjectsSectionsType1RowColumn')
+                          new_comparate = Comparate.create!(comparate_group: new_comparate_group, comparable_element: new_comparable_element)
+                        end
+                      end
+                    end
+                    h_hash[comparison_name] = clone_comp
+                  end
+                end
+
+                e_hash[efps_id][type1_id][population_name_id][rss_type_id].each do |measure_id, extraction_arr|
+
+                  ###check if the count is equal to the count of extraction
+                  rssm = ResultStatisticSectionsMeasure.find_or_create_by!(result_statistic_section_id: rss.id, measure_id: measure_id)
+                  rssm_id = rssm.id.to_s
+                  rss.result_statistic_sections_measures << rssm
+                  case rss_type_id
+                  when "1"
+                    #Descriptive Statistics
+                    #TpsArmsRssm
+                    g_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id].each do |tp_name_id, g_g_hash|
+                      g_g_hash.each do |tp_name_id, ex_arr|
+                        if ex_arr.length == extractions.length
+                          tp_name = TimepointName.find(tp_name_id)
+                          tp = ExtractionsExtractionFormsProjectsSectionsType1RowColumn.find_by!(extractions_extraction_forms_projects_sections_type1_row: eefps_t1_row, timepoint_name: tp_name)
+                          t1_name = Type1.find(t1_id)
+                          t1 = ExtractionsExtractionFormsProjectsSectionsType1.find_by!(extractions_extraction_forms_projects_section: eefps, type_1: t1_name)
+                          tps_arms_rssm = TpsArmsRssm.create!(result_statistic_sections_measure: rssm, timepoint: tp, extractions_extraction_forms_projects_sections_type1: t1)
+
+                          i_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][tp_name_id][t1_id].each do |record_name, record_ex_arr|
+                            if record_ex_arr.length == extractions.length
+                              ###  finish this
+                              Record.create!(recordable: tps_arms)
+                            end
+                          end
+                        end
+                      end
+                    end
+                  when "2"
+                    #Between Arm Comparisons
+                    #TpsComparisonsRssm
+                    g_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id].each do |tp_name_id, g_g_hash|
+                      g_g_hash.each do |comparison_name, ex_arr|
+                        if ex_arr.length == extractions.length
+                          tp_name = TimepointName.find(tp_name_id)
+                          tp = ExtractionsExtractionFormsProjectsSectionsType1RowColumn.find_by!(extractions_extraction_forms_projects_sections_type1_row: eefps_t1_row, timepoint_name: tp_name)
+                          comparison = h_hash[comparison_name]
+                          tps_comparisons_rssm = TpsComparisonsRssm.create!(result_statistic_sections_measure: rssm, timepoint: tp, comparison: comparison)
+                        end
+                      end
+                    end
+                  when "3"
+                    #Within Arm Comparisons
+                    #ComparisonsArmsRssm
+                    g_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id].each do |comparison_name, g_g_hash|
+                      g_g_hash.each do |t1_id, ex_arr|
+                        if ex_arr.length == extractions.length
+                          comparison = h_hash[comparison_name]
+
+                          t1_name = Type1.find(t1_id)
+                          t1 = ExtractionsExtractionFormsProjectsSectionsType1.find_by!(extractions_extraction_forms_projects_section: eefps, type_1: t1_name)
+
+                          comparisons_arms_rssm = ComparisonsArmsRssm.create!(result_statistic_sections_measure: rssm, comparison: comparison, extractions_extraction_forms_projects_sections_type1: t1)
+                        end
+                      end
+                    end
+                  when "4"
+                    #NET Change
+                    #WacsBacsRssm
+                    g_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id].each do |wac_name, g_g_hash|
+                      g_g_hash.each do |bac_name, ex_arr|
+                        if ex_arr.length == extractions.length
+                          wac = h_hash[wac_name]
+                          bac = h_hash[bac_name]
+
+                          wacs_bacs_rssm = WacsBacsRssm.create!(result_statistic_sections_measure: rssm, wac: wac, bac: bac)
+                        end
+                      end
+                    end
+                  else
+                    byebug
+                  end
+                end
+              end
             end
           end
         end
@@ -251,26 +565,61 @@ class Extraction < ApplicationRecord
         d_d_d_hash.each do |t1_type_id, d_d_d_d_hash|
           d_d_d_d_hash.each do |qrcf_id, d_d_d_d_d_hash|
             d_d_d_d_d_hash.each do |record_name, r_es|
-              eefps = self.extractions_extraction_forms_projects_sections.find_or_create_by!(extraction_forms_projects_section_id: efps_id)
-              qrcf = QuestionRowColumnField.find(qrcf_id)
-              # what if type1 is nil
-              t1 = t1_id.present? ? Type1.find(t1_id) : nil
-              t1_type = t1_type_id.present? ? Type1Type.find(t1_type_id) : nil
-              eefps_t1 = t1.present? ? ExtractionsExtractionFormsProjectsSectionsType1.find_or_create_by!(extractions_extraction_forms_projects_section: eefps, type1: t1, type1_type: t1_type) : nil
-              eefps_qrcf = ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField.find_or_create_by!(extractions_extraction_forms_projects_section: eefps, extractions_extraction_forms_projects_sections_type1: eefps_t1,  question_row_column_field: qrcf)
-              record = Record.find_or_create_by!(recordable: eefps_qrcf, recordable_type: eefps_qrcf.class.name, name: record_name.dup.to_s)
-              #we want to create eefps_qrcf if its not there
-              #we want to
+              if r_es.length == extractions.length
+                eefps = self.extractions_extraction_forms_projects_sections.find_or_create_by!(extraction_forms_projects_section_id: efps_id)
+                qrcf = QuestionRowColumnField.find(qrcf_id)
+                # what if type1 is nil
+                t1 = t1_id.present? ? Type1.find(t1_id) : nil
+                t1_type = t1_type_id.present? ? Type1Type.find(t1_type_id) : nil
+                eefps_t1 = t1.present? ? ExtractionsExtractionFormsProjectsSectionsType1.find_or_create_by!(extractions_extraction_forms_projects_section: eefps, type1: t1, type1_type: t1_type) : nil
+                #we want  to change find_or_create_by into  find_by asap
+                eefps_qrcf = ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField.find_or_create_by!(extractions_extraction_forms_projects_section: eefps, extractions_extraction_forms_projects_sections_type1: eefps_t1,  question_row_column_field: qrcf)
+                record = Record.find_or_create_by!(recordable: eefps_qrcf, recordable_type: eefps_qrcf.class.name, name: record_name.dup.to_s)
+                #we want to create eefps_qrcf if its not there
+                #we want to
+              end
             end
           end
         end
       end
     end
-    byebug
 
+#    i_hash.each do |efps_id, i_i_hash|
+#      i_i_hash.each do |type1_id, i_i_i_hash|
+#        i_i_i_hash.each do |population_name_id, i_i_i_i_hash|
+#          i_i_i_i_hash.each do |rss_type_id, i_i_i_i_i_hash|
+#            i_i_i_i_i_hash.each do |measure_id, i_i_i_i_i_i_hash|
+#              i_i_i_i_i_i_hash.each do |thing_1, i_i_i_i_i_i_i_hash|
+#                i_i_i_i_i_i_i_hash.each do |thing_2, i_i_i_i_i_i_i_i_hash|
+#                  i_i_i_i_i_i_i_i_hash.each do |record_name, ex_arr|
+#                    if ex_arr.length == extractions.length
+#                      case rss_type_id
+#                      when 1
+#                        #Descriptive Statistics
+#                        #TpsArmsRssm
+#                      when 2
+#                        #Between Arm Comparisons
+#                        #TpsComparisonsRssm
+#                      when 3
+#                        #Within Arm Comparisons
+#                        #ComparisonsArmsRssm
+#                      when 4
+#                        #NET Change
+#                        #WacsBacsRssm
+#                      else
+#                        byebug
+#                      end
+#                    end
+#                  end
+#                end
+#              end
+#            end
+#          end
+#        end
+#      end
+#    end
     # after going through all the extractions, we need to find_or_create_by them in the consolidated one
     # assume all eefps is there. true?
 
-    end
   end
 end

@@ -77,4 +77,27 @@ class Comparison < ApplicationRecord
 
     return text[0..-6]
   end
+
+  def tokenize
+    text = ''
+    comparate_groups.each do |cg|
+      text += '['
+      cg.comparates.each do |c|
+        comparable = c.comparable_element.comparable
+        if comparable.instance_of? ExtractionsExtractionFormsProjectsSectionsType1
+          text += 't1-'
+          text += comparable.type1.id.to_s
+          text += ', '
+        elsif comparable.instance_of? ExtractionsExtractionFormsProjectsSectionsType1RowColumn
+          text += 'tp-'
+          text += comparable.timepoint_name.id.to_s
+          text += ', '
+        end
+      end
+      text = text.gsub(/,\s$/, '') + ']'
+      text += ' vs. '
+    end
+
+    return text[0..-6]
+  end
 end
