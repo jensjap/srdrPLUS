@@ -508,7 +508,7 @@ class Extraction < ApplicationRecord
                           new_comparate = Comparate.create!(comparate_group: new_comparate_group, comparable_element: new_comparable_element)
                         elsif old_comparable.instance_of? ExtractionsExtractionFormsProjectsSectionsType1RowColumn
                           comp_tn = old_comparable.timepoint_name
-                          comp_eefps_t1_row_column = ExtractionsExtractionFormsProjectsSectionsType1RowColumn.create!(extractions_extraction_forms_projects_sections_type1_row: eefps_t1_row, timepoint_name: comp_tn)
+                          comp_eefps_t1_row_column = ExtractionsExtractionFormsProjectsSectionsType1RowColumn.find_or_create_by!(extractions_extraction_forms_projects_sections_type1_row: eefps_t1_row, timepoint_name: comp_tn)
                           new_comparable_element = ComparableElement.create!(comparable: comp_eefps_t1_row_column, comparable_type: 'ExtractionsExtractionFormsProjectsSectionsType1RowColumn')
                           new_comparate = Comparate.create!(comparate_group: new_comparate_group, comparable_element: new_comparable_element)
                         end
