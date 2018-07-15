@@ -12,8 +12,8 @@ class TpsArmsRssm < ApplicationRecord
 
   has_many :records, as: :recordable
 
-  delegate :extraction,                                    to: :extractions_extraction_forms_projects_sections_type1_row
-  delegate :extractions_extraction_forms_projects_section, to: :extractions_extraction_forms_projects_sections_type1_row
+  delegate :extraction,                                    to: :extractions_extraction_forms_projects_sections_type1
+  delegate :extractions_extraction_forms_projects_section, to: :extractions_extraction_forms_projects_sections_type1
   delegate :result_statistic_section,                      to: :result_statistic_sections_measure
 
   def self.find_record_by_extraction(extraction, a, result_statistic_section, tp, rssm)
