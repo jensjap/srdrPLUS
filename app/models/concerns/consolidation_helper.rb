@@ -221,37 +221,51 @@ module ConsolidationHelper
 
             qrcf_id = eefps_qrcf.question_row_column_field.id.to_s
 
-            t1_id = eefps_qrcf.extractions_extraction_forms_projects_sections_type1.present? ? eefps_qrcf.extractions_extraction_forms_projects_sections_type1.type1.id.to_s : nil
+            linked_efps_id = eefps_qrcf.extractions_extraction_forms_projects_sections_type1.present? ?
+                         eefps_qrcf.extractions_extraction_forms_projects_sections_type1.
+                         extractions_extraction_forms_projects_section.
+                         extraction_forms_projects_section.id.to_s : nil
 
-            t1_type_id = eefps_qrcf.extractions_extraction_forms_projects_sections_type1.present? ? eefps_qrcf.extractions_extraction_forms_projects_sections_type1.type1_type.id.to_s : nil
+            t1_id = eefps_qrcf.extractions_extraction_forms_projects_sections_type1.present? ?
+                         eefps_qrcf.extractions_extraction_forms_projects_sections_type1.type1.id.to_s : nil
+
+            t1_type_id = ( eefps_qrcf.extractions_extraction_forms_projects_sections_type1.present? and
+                           eefps_qrcf.extractions_extraction_forms_projects_sections_type1.type1_type.present? ) ?
+                           eefps_qrcf.extractions_extraction_forms_projects_sections_type1.type1_type_id.id.to_s : nil
 
             record_name = eefps_qrcf.records.first.name
 
-            r_hash[efps_id][t1_id] ||= {}
-            r_hash[efps_id][t1_id][t1_type_id] ||= {}
-            r_hash[efps_id][t1_id][t1_type_id][qrcf_id] ||= {}
-            r_hash[efps_id][t1_id][t1_type_id][qrcf_id][record_name] ||= []
-            r_hash[efps_id][t1_id][t1_type_id][qrcf_id][record_name] << extraction.id
+            r_hash[efps_id][linked_efps_id] ||= {}
+            r_hash[efps_id][linked_efps_id][t1_id] ||= {}
+            r_hash[efps_id][linked_efps_id][t1_id][t1_type_id] ||= {}
+            r_hash[efps_id][linked_efps_id][t1_id][t1_type_id][qrcf_id] ||= {}
+            r_hash[efps_id][linked_efps_id][t1_id][t1_type_id][qrcf_id][record_name] ||= []
+            r_hash[efps_id][linked_efps_id][t1_id][t1_type_id][qrcf_id][record_name] << extraction.id
           end
         end
       end
 
       # this is where we go down records hash and create the records for questions
       r_hash.each do |efps_id, r_efps_hash|
-        r_efps_hash.each do |t1_id, r_efps_t1_hash|
-          r_efps_t1_hash.each do |t1_type_id, r_efps_t1_t1t_hash|
-            r_efps_t1_t1t_hash.each do |qrcf_id, r_efps_t1_t1t_qrcf_hash|
-              r_efps_t1_t1t_qrcf_hash.each do |record_name, r_es|
-                if r_es.length == extractions.length
-                  eefps = self.extractions_extraction_forms_projects_sections.find_or_create_by!(extraction_forms_projects_section_id: efps_id)
-                  qrcf = QuestionRowColumnField.find(qrcf_id)
-                  # what if type1 is nil
-                  t1 = t1_id.present? ? Type1.find(t1_id) : nil
-                  t1_type = t1_type_id.present? ? Type1Type.find(t1_type_id) : nil
-                  eefps_t1 = t1.present? ? ExtractionsExtractionFormsProjectsSectionsType1.find_or_create_by!(extractions_extraction_forms_projects_section: eefps, type1: t1, type1_type: t1_type) : nil
-                  #we want  to change find_or_create_by into  find_by asap
-                  eefps_qrcf = ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField.find_or_create_by!(extractions_extraction_forms_projects_section: eefps, extractions_extraction_forms_projects_sections_type1: eefps_t1,  question_row_column_field: qrcf)
-                  record = Record.find_or_create_by!(recordable: eefps_qrcf, recordable_type: eefps_qrcf.class.name, name: record_name.dup.to_s)
+        r_efps_hash.each do |linked_efps_id, r_efps_linkedefps_hash|
+          r_efps_linkedefps_hash.each do |t1_id, r_efps_linkedefps_t1_hash|
+            r_efps_linkedefps_t1_hash.each do |t1_type_id, r_efps_linkedefps_t1_t1t_hash|
+              r_efps_linkedefps_t1_t1t_hash.each do |qrcf_id, r_efps_linkedefps_t1_t1t_qrcf_hash|
+                r_efps_linkedefps_t1_t1t_qrcf_hash.each do |record_name, r_es|
+                  if r_es.length == extractions.length
+                    byebug
+                    linked_eefps = linked_efps_id.present? ? self.extractions_extraction_forms_projects_sections.find_or_create_by!(extraction_forms_projects_section_id: linked_efps_id) : nil
+                    eefps = self.extractions_extraction_forms_projects_sections.find_or_create_by!(extraction_forms_projects_section_id: efps_id,
+                                                                                                   link_to_type1: linked_eefps )
+                    qrcf = QuestionRowColumnField.find(qrcf_id)
+                    # what if type1 is nil
+                    t1 = t1_id.present? ? Type1.find(t1_id) : nil
+                    t1_type = t1_type_id.present? ? Type1Type.find(t1_type_id) : nil
+                    eefps_t1 = t1.present? ? ExtractionsExtractionFormsProjectsSectionsType1.find_or_create_by!(extractions_extraction_forms_projects_section: linked_eefps, type1: t1, type1_type: t1_type) : nil
+                    #we want  to change find_or_create_by into  find_by asap
+                    eefps_qrcf = ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField.find_or_create_by!(extractions_extraction_forms_projects_section: eefps, extractions_extraction_forms_projects_sections_type1: eefps_t1,  question_row_column_field: qrcf)
+                    record = Record.find_or_create_by!(recordable: eefps_qrcf, recordable_type: eefps_qrcf.class.name, name: record_name.dup.to_s)
+                  end
                 end
               end
             end
