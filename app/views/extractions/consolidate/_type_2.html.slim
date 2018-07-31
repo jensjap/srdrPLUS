@@ -62,7 +62,7 @@
             br
             = q.description
 
-        tbody
+        tbody class="comp-questions-row"
           - if efps.link_to_type1
             - @head_to_head.dig(efp.id, efps.link_to_type1.id, :all_type1s).each do |t1|
               tr
@@ -80,7 +80,7 @@
 
                   - unless linked_section && eefps.link_to_type1.type1s.blank?
                     - if eefps.link_to_type1.type1s.include?(t1)
-                      td style='border: 2px solid #{ color_array[0] };'
+                      td class="comp-question" style='border: 2px solid #{ color_array[0] };'
                         h6 = linked_section.extraction_forms_projects_section.section.name.singularize + ': ' + t1.name_and_description
                         = render 'extractions/shared/type_2/question_fields',
                           q: q,
@@ -105,7 +105,7 @@
 
                 - unless linked_section && eefps.link_to_type1.type1s.blank?
                   - if eefps.link_to_type1.type1s.include?(t1)
-                    td style='border: 4px solid #410093; border-left-style: double;'
+                    td class="consolidated-question" style='border: 4px solid #410093; border-left-style: double;'
                       h6 = linked_section.extraction_forms_projects_section.section.name.singularize + ': ' + t1.name_and_description
                       = render 'extractions/shared/type_2/question_fields',
                         q: q,
