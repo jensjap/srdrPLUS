@@ -21,7 +21,7 @@
               ul
                 - @result_statistic_section.result_statistic_sections_measures.each do |rssm|
                   // Create record form for rssm. (wac x arm x rssm)
-                  - comparisons_arms_rssm = ComparisonsArmsRssm.find_or_create_by!(\
+                  - comparisons_arms_rssm = ComparisonsArmsRssm.find_or_create_by!( \
                   comparison: wac,
                   extractions_extraction_forms_projects_sections_type1: arm,
                   result_statistic_sections_measure: rssm)
@@ -40,7 +40,10 @@
           = simple_form_for @result_statistic_section, url: add_comparison_result_statistic_section_path, method: :post do |f|
             = f.input :comparison_type, as: :hidden, input_html: { value: :wac }
             .links.add-comparison
-              = link_to_add_association f, :comparisons, class: 'button tiny', render_options: { locals: { comparison: :wac } } do
+              = link_to_add_association f, :comparisons,
+                class: 'button tiny',
+                partial: 'result_statistic_sections/edit/comparison_fields',
+                render_options: { locals: { comparison: :wac } } do
                 i.fi-plus>
                 | Add Comparison
 

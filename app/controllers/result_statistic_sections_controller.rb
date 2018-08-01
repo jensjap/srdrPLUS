@@ -1,6 +1,7 @@
 class ResultStatisticSectionsController < ApplicationController
-  before_action :set_result_statistic_section, only: [:edit, :update, :add_comparison]
-  before_action :set_arms, only: [:edit, :update]
+  before_action :set_result_statistic_section, only: [:edit, :update, :add_comparison, :consolidate]
+  before_action :set_arms, only: [:edit, :update, :consolidate]
+  before_action :set_extractions, only: [:consolidate]
   #!!! Birol: don't think this is working...where is comparables set?
   #before_action :set_comparisons_measures, only: [:edit]
 
@@ -42,17 +43,21 @@ class ResultStatisticSectionsController < ApplicationController
     end
   end
 
+  # GET /result_statistic_sections/1/consolidate
+  def consolidate
+  end
+
   private
-    # check if all the join table entries are in place, create if needed
-    def set_comparisons_measures
-      @result_statistic_section.measures.each do |measure|
-        @result_statistic_section.comparisons.each do |comparison|
-          unless @result_statistic_section.comparisons_measures.exists?( measure: measure, comparison: comparison)
-            @result_statistic_section.comparisons_measures.build( measure: measure, comparison: comparison )
-          end
-        end
-      end
-    end
+#    # check if all the join table entries are in place, create if needed
+#    def set_comparisons_measures
+#      @result_statistic_section.measures.each do |measure|
+#        @result_statistic_section.comparisons.each do |comparison|
+#          unless @result_statistic_section.comparisons_measures.exists?( measure: measure, comparison: comparison)
+#            @result_statistic_section.comparisons_measures.build( measure: measure, comparison: comparison )
+#          end
+#        end
+#      end
+#    end
 
     # Use callbacks to share common setup or constraints between actions.
     def set_arms
@@ -84,5 +89,15 @@ class ResultStatisticSectionsController < ApplicationController
 #        comparate_groups_attributes: [ :id, :_destroy, :comparison_id,
 #        comparates_attributes: [ :id, :_destroy, :comparate_group_id, :comparable_element_id,
 #        comparable_element_attributes: [ :id, :_destroy, :comparable_type, :comparable_id, :_destroy ] ] ] ] )
+    end
+
+    def set_extractions
+      @extractions = Extraction
+        .includes(projects_users_role: { projects_user: { user: :profile } })
+        .where(id: extraction_ids_params)
+    end
+
+    def extraction_ids_params
+      params.require(:extraction_ids)
     end
 end

@@ -4,8 +4,8 @@
 
     thead
       tr
-        th
-        - @result_statistic_section.population.between_arm_comparisons_section.comparisons.each do |bac|
+        th Arm Comparison(s)
+        - @result_statistic_section.comparisons.each do |bac|
           th
             div style='text-align: center;'
               - bac.comparate_groups.first.comparates.each do |c|
@@ -22,28 +22,27 @@
           = simple_form_for @result_statistic_section, url: add_comparison_result_statistic_section_path, method: :post do |f|
             = f.input :comparison_type, as: :hidden, input_html: { value: :bac }
             .links.add-comparison
-              = link_to_add_association f, :comparisons, class: 'button tiny', render_options: { locals: { comparison: :bac } } do
+              = link_to_add_association f, :comparisons,
+                class: 'button tiny',
+                partial: 'result_statistic_sections/edit/comparison_fields',
+                render_options: { locals: { comparison: :bac } } do
                 i.fi-plus>
-                | Add Between-Arm Comparison
+                | Add Comparison
 
     tbody
-      - @result_statistic_section.population.within_arm_comparisons_section.comparisons.each do |wac|
+      - @result_statistic_section.timepoints.each do |tp|
         tr
-          td
-            div style='text-align: center; font-weight: bold;' == wac.comparate_groups.first.comparates.map { |c| c.comparable_element.comparable.label_with_baseline_indicator }.join('<br>')
-            div style='text-align: center;' vs.
-            div style='text-align: center; font-weight: bold;' == wac.comparate_groups.second.comparates.map { |c| c.comparable_element.comparable.label_with_baseline_indicator }.join('<br>')
-
-          - @result_statistic_section.population.between_arm_comparisons_section.comparisons.each do |bac|
+          td = tp.timepoint_name.name + (tp.timepoint_name.unit.present? ? " (#{ tp.timepoint_name.unit })" : '')
+          - @result_statistic_section.comparisons.each do |bac|
             td
               ul
                 - @result_statistic_section.result_statistic_sections_measures.each do |rssm|
-                  // Create record form for rssm. (wac x bac x rssm)
-                  - wac_bac_rssm = WacsBacsRssm.find_or_create_by!(\
-                  wac: wac,
-                  bac: bac,
+                  // Create record form for rssm. (timepoint x bac x rssm)
+                  - tps_comparisons_rssm = TpsComparisonsRssm.find_or_create_by!( \
+                  timepoint: tp,
+                  comparison: bac,
                   result_statistic_sections_measure: rssm)
-                  - record = Record.find_or_create_by!(recordable: wac_bac_rssm)
+                  - record = Record.find_or_create_by!(recordable: tps_comparisons_rssm)
 
                   = simple_form_for(record, remote: true, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
                     = f.error_notification
@@ -53,14 +52,6 @@
 
                     /.form-actions
                       = f.button :submit, 'Save'
-      tr
-        td
-          = simple_form_for @result_statistic_section, url: add_comparison_result_statistic_section_path, method: :post do |f|
-            = f.input :comparison_type, as: :hidden, input_html: { value: :wac }
-            .links.add-comparison
-              = link_to_add_association f, :comparisons, class: 'button tiny', render_options: { locals: { comparison: :wac } } do
-                i.fi-plus>
-                | Add Within-Arm Comparison
       tr
         td = simple_form_for @result_statistic_section do |f|
           = f.association :measures

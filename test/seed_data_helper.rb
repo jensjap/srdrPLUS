@@ -80,7 +80,10 @@ module SeedData
       @descriptive_statistics_result_statistic_section_type.measures << @n_analyzed
       @descriptive_statistics_result_statistic_section_type.measures << @counts
 
-      @within_arm_comparisons_result_statistic_section_type.measures << @n_analyzed
+      #!!! While this was requested...it is now being added before a comparison is even present.
+      #    We need to change the code to add default measures only when the comparison is present
+      #    for the case of BAC, WAC and NET.
+      #@within_arm_comparisons_result_statistic_section_type.measures << @n_analyzed
 
       # Extraction Forms Projects Section Types.
       ExtractionFormsProjectsSectionType.create(

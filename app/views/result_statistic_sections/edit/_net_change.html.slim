@@ -1,0 +1,77 @@
+.column.row.table-scroll
+
+  table
+
+    thead
+      tr
+        th
+        - @result_statistic_section.population.between_arm_comparisons_section.comparisons.each do |bac|
+          th
+            div style='text-align: center;'
+              - bac.comparate_groups.first.comparates.each do |c|
+                span.has-tip.tip-right data-tooltip='' aria-haspopup='true' data-options='show_on:small' title="Description: #{ c.comparable_element.comparable.type1.description }"
+                  = c.comparable_element.comparable.type1.short_name_and_description
+                br
+            div style='text-align: center; font-weight: normal;' vs.
+            div style='text-align: center;'
+              - bac.comparate_groups.second.comparates.each do |c|
+                span.has-tip.tip-right data-tooltip='' aria-haspopup='true' data-options='show_on:small' title="Description: #{ c.comparable_element.comparable.type1.description }"
+                  = c.comparable_element.comparable.type1.short_name_and_description
+                br
+        th
+          = simple_form_for @result_statistic_section, url: add_comparison_result_statistic_section_path, method: :post do |f|
+            = f.input :comparison_type, as: :hidden, input_html: { value: :bac }
+            .links.add-comparison
+              = link_to_add_association f, :comparisons, \
+                class: 'button tiny', \
+                partial: 'result_statistic_sections/edit/comparison_fields', \
+                render_options: { locals: { comparison: :bac } } do
+                i.fi-plus>
+                | Add Between-Arm Comparison
+
+    tbody
+      - @result_statistic_section.population.within_arm_comparisons_section.comparisons.each do |wac|
+        tr
+          td
+            div style='text-align: center; font-weight: bold;' == wac.comparate_groups.first.comparates.map { |c| c.comparable_element.comparable.label_with_baseline_indicator }.join('<br>')
+            div style='text-align: center;' vs.
+            div style='text-align: center; font-weight: bold;' == wac.comparate_groups.second.comparates.map { |c| c.comparable_element.comparable.label_with_baseline_indicator }.join('<br>')
+
+          - @result_statistic_section.population.between_arm_comparisons_section.comparisons.each do |bac|
+            td
+              ul
+                - @result_statistic_section.result_statistic_sections_measures.each do |rssm|
+                  // Create record form for rssm. (wac x bac x rssm)
+                  - wac_bac_rssm = WacsBacsRssm.find_or_create_by!(\
+                  wac: wac,
+                  bac: bac,
+                  result_statistic_sections_measure: rssm)
+                  - record = Record.find_or_create_by!(recordable: wac_bac_rssm)
+
+                  = simple_form_for(record, remote: true, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
+                    = f.error_notification
+
+                    = f.input :name, label: rssm.measure.name, required: false, class: 'form-control'
+                    div id="record-id-#{ record.id.to_s }" class='record-info' style='opacity: 0;' = 'Saved!'
+
+                    /.form-actions
+                      = f.button :submit, 'Save'
+      tr
+        td
+          = simple_form_for @result_statistic_section, url: add_comparison_result_statistic_section_path, method: :post do |f|
+            = f.input :comparison_type, as: :hidden, input_html: { value: :wac }
+            .links.add-comparison
+              = link_to_add_association f, :comparisons, \
+                class: 'button tiny', \
+                partial: 'result_statistic_sections/edit/comparison_fields', \
+                render_options: { locals: { comparison: :wac } } do
+                i.fi-plus>
+                | Add Within-Arm Comparison
+      tr
+        td = simple_form_for @result_statistic_section do |f|
+          = f.association :measures
+
+          = f.submit
+
+= link_to 'Back', work_extraction_path(@result_statistic_section.extraction,
+  anchor: "panel-tab-#{ @result_statistic_section.eefps_result.id }")

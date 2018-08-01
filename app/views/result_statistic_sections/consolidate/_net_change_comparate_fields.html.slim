@@ -4,14 +4,14 @@
 
 - if comparison == :bac
   .nested-fields.bac-comparate-fields style='padding-bottom: 0px; margin-bottom: 0px'
-    == render 'comparable_element_fields',
+    == render 'result_statistic_sections/edit/comparable_element_fields',
       f: f,
       comparable_element_type: 'ExtractionsExtractionFormsProjectsSectionsType1',
       collection: @arms,
       label_method: :type1_name_and_description
 - elsif comparison == :wac
   .nested-fields.wac-comparate-fields style='padding-bottom: 0px; margin-bottom: 0px'
-    == render 'comparable_element_fields',
+    == render 'result_statistic_sections/edit/comparable_element_fields',
       f: f,
       comparable_element_type: 'ExtractionsExtractionFormsProjectsSectionsType1RowColumn',
       collection: @result_statistic_section.timepoints,
