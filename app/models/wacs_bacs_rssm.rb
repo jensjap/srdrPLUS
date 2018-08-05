@@ -11,4 +11,9 @@ class WacsBacsRssm < ApplicationRecord
   has_many :records, as: :recordable
 
   delegate :result_statistic_section, to: :result_statistic_sections_measure
+
+  def self.find_record_by_extraction()
+
+    return 'Mock Value'
+  end
 end

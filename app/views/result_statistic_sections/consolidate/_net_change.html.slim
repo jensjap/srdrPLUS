@@ -39,23 +39,39 @@
 
           - @result_statistic_section.population.between_arm_comparisons_section.comparisons.each do |bac|
             td
-              ul
-                - @result_statistic_section.result_statistic_sections_measures.each do |rssm|
-                  // Create record form for rssm. (wac x bac x rssm)
-                  - wac_bac_rssm = WacsBacsRssm.find_or_create_by!(\
-                  wac: wac,
-                  bac: bac,
-                  result_statistic_sections_measure: rssm)
-                  - record = Record.find_or_create_by!(recordable: wac_bac_rssm)
+              - @result_statistic_section.result_statistic_sections_measures.each do |rssm|
+                // Create record form for rssm. (wac x bac x rssm)
+                - wac_bac_rssm = WacsBacsRssm.find_or_create_by!(\
+                wac: wac,
+                bac: bac,
+                result_statistic_sections_measure: rssm)
+                - record = Record.find_or_create_by!(recordable: wac_bac_rssm)
 
-                  = simple_form_for(record, remote: true, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
-                    = f.error_notification
+                = simple_form_for(record, remote: true, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
+                  = f.error_notification
 
-                    = f.input :name, label: rssm.measure.name, required: false, class: 'form-control'
-                    div id="record-id-#{ record.id.to_s }" class='record-info' style='opacity: 0;' = 'Saved!'
+                  table
 
-                    /.form-actions
-                      = f.button :submit, 'Save'
+                    thead
+                      tr
+                        th colspan='2' = f.input :name, label: rssm.measure.name, wrapper: :label_only
+
+                    tbody
+                      - @extractions.each do |extraction|
+                        tr
+                          td = extraction.user.profile.username
+                          td Mock Value
+                          /td = WacsBacsRssm.find_record_by_extraction(extraction, a, @result_statistic_section, tp, rssm).name
+
+                      tr
+                        td Consolidated
+                        td
+                          = f.input :name, label: false, required: false, class: 'form-control', wrapper_html: { style: 'padding-bottom: 0;' }, input_html: { style: 'margin-bottom: 0;' }
+                          div id="record-id-#{ record.id.to_s }" class='record-info' style='opacity: 0;' = 'Saved!'
+
+                            /.form-actions
+                              = f.button :submit, 'Save'
+
       tr
         td
           = simple_form_for @result_statistic_section, url: add_comparison_result_statistic_section_path, method: :post do |f|
