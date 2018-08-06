@@ -33,7 +33,8 @@
 
                     thead
                       tr
-                        th colspan='2' = f.input :name, label: rssm.measure.name, wrapper: :label_only
+                        th
+                        th = f.input :name, label: rssm.measure.name, wrapper: :label_only
 
                     tbody
                       - @extractions.each do |extraction|
@@ -43,7 +44,7 @@
                           /td = ComparisonsArmsRssm.find_record_by_extraction(extraction, a, @result_statistic_section, tp, rssm).name
 
                       tr
-                        td Consolidated
+                        td style='font-weight: bold;' Consolidated
                         td
                           = f.input :name, label: false, required: false, class: 'form-control', wrapper_html: { style: 'padding-bottom: 0;' }, input_html: { style: 'margin-bottom: 0;' }
                           div id="record-id-#{ record.id.to_s }" class='record-info' style='opacity: 0;' = 'Saved!'
