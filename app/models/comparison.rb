@@ -2,7 +2,7 @@ class Comparison < ApplicationRecord
   acts_as_paranoid
   has_paper_trail
 
-  belongs_to :result_statistic_section, inverse_of: :comparisons
+  #belongs_to :result_statistic_section, inverse_of: :comparisons
 
   has_many :comparate_groups, inverse_of: :comparison, dependent: :destroy
   has_many :comparates, through: :comparate_groups, dependent: :destroy
@@ -16,6 +16,9 @@ class Comparison < ApplicationRecord
   has_many :comparisons_arms_rssms, dependent: :destroy, inverse_of: :comparison
   has_many :tps_comparisons_rssms,  dependent: :destroy, inverse_of: :comparison
   has_many :wacs_bacs_rssms,        dependent: :destroy, foreign_key: 'wac_id'
+
+  has_many :comparisons_result_statistic_sections, inverse_of: :comparison, dependent: :destroy
+  has_many :result_statistic_sections, through: :comparisons_result_statistic_sections, dependent: :destroy
 
   accepts_nested_attributes_for :comparate_groups,     allow_destroy: true
   accepts_nested_attributes_for :comparisons_measures, allow_destroy: true

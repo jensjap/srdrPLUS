@@ -1,6 +1,6 @@
 class ResultStatisticSectionsController < ApplicationController
   before_action :set_result_statistic_section, only: [:edit, :update, :add_comparison, :consolidate]
-  before_action :set_arms, only: [:edit, :update, :consolidate]
+  before_action :set_arms, only: [:edit, :update, :add_comparison, :consolidate]
   before_action :set_extractions, only: [:consolidate]
   #!!! Birol: don't think this is working...where is comparables set?
   #before_action :set_comparisons_measures, only: [:edit]
@@ -25,6 +25,8 @@ class ResultStatisticSectionsController < ApplicationController
   end
 
   def add_comparison
+    # This is required because in the NET Change section we have both types of comparisons; BAC and WAC. So in order to create the comparison
+    # in the correct section we use a hidden form input :comparison_type.
     if params[:result_statistic_section]['comparison_type'] == 'bac'
       temp_result_statistic_section = @result_statistic_section.population.result_statistic_sections.find_by(result_statistic_section_type_id: 2)
     elsif params[:result_statistic_section]['comparison_type'] == 'wac'
@@ -37,7 +39,10 @@ class ResultStatisticSectionsController < ApplicationController
                       notice: t('success') }
         format.json { render :show, status: :ok, location: @result_statistic_section }
       else
-        format.html { render :edit }
+        format.html do
+          flash[:alert] = 'Invalid comparison'
+          render :edit
+        end
         format.json { render json: @result_statistic_section.errors, status: :unprocessable_entity }
       end
     end

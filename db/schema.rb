@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180530115049) do
+ActiveRecord::Schema.define(version: 20180807073319) do
 
   create_table "abstrackr_settings", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "profile_id"
@@ -197,6 +197,21 @@ ActiveRecord::Schema.define(version: 20180530115049) do
     t.datetime "updated_at",    null: false
     t.index ["comparison_id"], name: "index_comparisons_measures_on_comparison_id", using: :btree
     t.index ["measure_id"], name: "index_comparisons_measures_on_measure_id", using: :btree
+  end
+
+  create_table "comparisons_result_statistic_sections", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "comparison_id"
+    t.integer  "result_statistic_section_id"
+    t.datetime "deleted_at"
+    t.boolean  "active"
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
+    t.index ["active"], name: "index_comparisons_result_statistic_sections_on_active", using: :btree
+    t.index ["comparison_id", "result_statistic_section_id", "active"], name: "index_crss_on_c_id_rss_id_active", using: :btree
+    t.index ["comparison_id", "result_statistic_section_id", "deleted_at"], name: "index_crss_on_c_id_rss_id_deleted_at", using: :btree
+    t.index ["comparison_id"], name: "index_crss_on_c_id", using: :btree
+    t.index ["deleted_at"], name: "index_comparisons_result_statistic_sections_on_deleted_at", using: :btree
+    t.index ["result_statistic_section_id"], name: "index_crss_on_rss_id", using: :btree
   end
 
   create_table "consensus_types", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -1216,6 +1231,8 @@ ActiveRecord::Schema.define(version: 20180530115049) do
   add_foreign_key "comparisons_arms_rssms", "result_statistic_sections_measures"
   add_foreign_key "comparisons_measures", "comparisons"
   add_foreign_key "comparisons_measures", "measures"
+  add_foreign_key "comparisons_result_statistic_sections", "comparisons"
+  add_foreign_key "comparisons_result_statistic_sections", "result_statistic_sections"
   add_foreign_key "degrees_profiles", "degrees"
   add_foreign_key "degrees_profiles", "profiles"
   add_foreign_key "dispatches", "users"
