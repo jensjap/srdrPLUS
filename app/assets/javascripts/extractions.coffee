@@ -67,3 +67,83 @@ document.addEventListener 'turbolinks:load', ->
       $( '#toggle-consolidated-extraction-link .toggle-hide' ).toggleClass( 'hide' )
       $( '.toggle-consolidated-extraction-link-medium-8-12' ).toggleClass( 'medium-8 medium-12' )
       $( '.toggle-consolidated-extraction-link-medium-4-0-hide' ).toggleClass( 'medium-4 medium-0 hide' )
+
+
+   # $( '.consolidated-question' ).each ( cq_id, cq_elem ) ->
+   #   $( cq_elem ).find( 'tbody tr' ).each ( tr_id, tr_elem ) ->
+   #     # there is only one row with id 1
+   #     $( tr_elem ).find( 'td' ). each ( td_id, td_elem ) ->
+   #       console.log 'loyloy - ' + cq_id + ' - ' + tr_id + ' - ' + td_id
+
+
+    get_question_value = ( question ) ->
+      $( question ).find( 'input[type!="hidden"]' ).each ( input_id, input_elem ) ->
+        c_dict[arm_row_id][tr_id][td_id][input_id] = input_elem.value
+
+
+
+    $( '.consolidation-data-row' ).each ( row_id, row_elem ) ->
+      a_dict = { }
+      b_dict = { }
+      c_dict = { }
+
+      number_of_extractions = 0
+
+      #arm rows
+      $arm_rows = $( row_elem ).children( 'tr' )
+      $arm_rows.each ( arm_row_id, arm_row_elem ) ->
+        c_dict[arm_row_id] ||= { }
+        b_dict[arm_row_id] ||= { }
+        $question_cells = $( arm_row_elem ).children( 'td' )
+        number_of_extractions = $question_cells.length - 1
+        $question_cells.each ( cell_id, cell_elem ) ->
+          if cell_id == number_of_extractions
+            a_dict[arm_row_id] = cell_elem
+            $( cell_elem ).find( 'tbody' ).each ( idx, cell_body ) ->
+              $( cell_body ).find( 'tr' ).each ( tr_id, tr_elem ) ->
+                c_dict[arm_row_id][tr_id] ||= { }
+                # there is only one row with id 1
+                $( tr_elem ).find( 'td' ).each ( td_id, td_elem ) ->
+                  ## is there a better way to skip the header?
+                  if td_id != 0
+                    c_dict[arm_row_id][tr_id][td_id] ||= { }
+                    $( td_elem).find( 'input[type!="hidden"]' ).each ( input_id, input_elem ) ->
+                      c_dict[arm_row_id][tr_id][td_id][input_id] = input_elem.value
+          if cell_id != number_of_extractions
+            ## there should only be one
+            $( cell_elem ).find( 'tbody' ).each ( idx, cell_body ) ->
+              $( cell_body ).find( 'tr' ).each ( tr_id, tr_elem ) ->
+                b_dict[arm_row_id][tr_id] ||= { }
+                # there is only one row with id 1
+                $( tr_elem ).find( 'td' ).each ( td_id, td_elem ) ->
+                  ## is there a better way to skip the header?
+                  if td_id != 0
+                    b_dict[arm_row_id][tr_id][td_id] ||= { }
+                    $( td_elem).find( 'input[type!="hidden"]' ).each ( input_id, input_elem ) ->
+                      b_dict[arm_row_id][tr_id][td_id][input_id] ||= { }
+                      b_dict[arm_row_id][tr_id][td_id][input_id][input_elem.value] ||= 0
+                      b_dict[arm_row_id][tr_id][td_id][input_id][input_elem.value]++
+
+      console.log( b_dict )
+      #$( '.consolidated-question' ).each ( cq_id, cq_elem ) ->
+
+      $.each b_dict, ( arm_row_id, tr_dict ) ->
+        console.log ( "arm_row_id --> " + arm_row_id )
+        red_bool = false
+        $.each tr_dict, ( tr_id, td_dict ) ->
+          console.log ( "tr_id --> " + tr_id )
+          $.each td_dict, ( td_id, input_dict ) ->
+            console.log ( "td_id --> " + td_id )
+            $.each input_dict, ( input_id, value_dict ) ->
+              console.log ( "input_id --> " + input_id )
+              $.each value_dict, ( value, value_count ) ->
+                console.log ( value + " --> " + value_count )
+                if ( value_count != number_of_extractions )
+                  red_bool = true
+                else if (value != c_dict[arm_row_id][tr_id][td_id][input_id])
+                  red_bool = true
+        if red_bool
+          $( a_dict[ arm_row_id ] ).css( 'border-color', 'red' )
+                  
+
+
