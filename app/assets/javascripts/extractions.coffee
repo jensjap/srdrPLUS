@@ -93,8 +93,10 @@ document.addEventListener 'turbolinks:load', ->
       drop_input = $( question ).find( 'select' )[0]
       if drop_input
         selected = $( drop_input ).children("option").filter(":selected")[0]
-        if selected
+        if selected.value
           return selected.text
+        else
+          return ""
 
       # radio buttons
       a = $( question ).find( 'input.radio_buttons[checked="checked"]' )
@@ -139,7 +141,7 @@ document.addEventListener 'turbolinks:load', ->
                   if td_id != 0
                     b_dict[arm_row_id][tr_id][td_id] ||= { }
                     a = get_question_value( td_elem )
-                    console.log "RETURNED: " + a
+                    #console.log "RETURNED: " + a
                     b_dict[arm_row_id][tr_id][td_id][get_question_value( td_elem )] ||= 0
                     b_dict[arm_row_id][tr_id][td_id][get_question_value( td_elem )]++
       
@@ -156,7 +158,10 @@ document.addEventListener 'turbolinks:load', ->
             $.each value_dict, ( value, value_count ) ->
               #console.log ( value + " --> " + value_count )
               if ( value_count != number_of_extractions )
-                color = "red"
+                if c_dict[arm_row_id][tr_id][td_id] != ""
+                  color = "green"
+                else
+                  color = "red"
               else if (value != c_dict[arm_row_id][tr_id][td_id])
                 color = "green"
 
