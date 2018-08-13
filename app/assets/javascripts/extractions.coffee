@@ -77,10 +77,31 @@ document.addEventListener 'turbolinks:load', ->
 
 
     get_question_value = ( question ) ->
-      $( question ).find( 'input[type!="hidden"]' ).each ( input_id, input_elem ) ->
-        c_dict[arm_row_id][tr_id][td_id][input_id] = input_elem.value
+      # this should cover both text and numeric
+      str_input = $( question ).find( 'input.string[type!="hidden"]' )[0]
+      if str_input
+        return str_input.value
 
+      # checkboxes
+      cb_arr = []
+      $( question ).find( 'input.check_boxes[checked="checked"]' ).each ( input_id, input_elem ) ->
+        cb_arr.push input_elem.value
+      if cb_arr.length > 0
+        return cb_arr.join( "&&" )
 
+      # dropdown
+      drop_input = $( question ).find( 'select' )[0]
+      if drop_input
+        selected = $( drop_input ).children("option").filter(":selected")[0]
+        if selected
+          return selected.text
+
+      # radio buttons
+      a = $( question ).find( 'input.radio_buttons[checked="checked"]' )
+      if a.length == 1
+        return a[0].value
+
+      return ""
 
     $( '.consolidation-data-row' ).each ( row_id, row_elem ) ->
       a_dict = { }
@@ -106,9 +127,7 @@ document.addEventListener 'turbolinks:load', ->
                 $( tr_elem ).find( 'td' ).each ( td_id, td_elem ) ->
                   ## is there a better way to skip the header?
                   if td_id != 0
-                    c_dict[arm_row_id][tr_id][td_id] ||= { }
-                    $( td_elem).find( 'input[type!="hidden"]' ).each ( input_id, input_elem ) ->
-                      c_dict[arm_row_id][tr_id][td_id][input_id] = input_elem.value
+                    c_dict[arm_row_id][tr_id][td_id] = get_question_value( td_elem )
           if cell_id != number_of_extractions
             ## there should only be one
             $( cell_elem ).find( 'tbody' ).each ( idx, cell_body ) ->
@@ -119,31 +138,35 @@ document.addEventListener 'turbolinks:load', ->
                   ## is there a better way to skip the header?
                   if td_id != 0
                     b_dict[arm_row_id][tr_id][td_id] ||= { }
-                    $( td_elem).find( 'input[type!="hidden"]' ).each ( input_id, input_elem ) ->
-                      b_dict[arm_row_id][tr_id][td_id][input_id] ||= { }
-                      b_dict[arm_row_id][tr_id][td_id][input_id][input_elem.value] ||= 0
-                      b_dict[arm_row_id][tr_id][td_id][input_id][input_elem.value]++
-
+                    a = get_question_value( td_elem )
+                    console.log "RETURNED: " + a
+                    b_dict[arm_row_id][tr_id][td_id][get_question_value( td_elem )] ||= 0
+                    b_dict[arm_row_id][tr_id][td_id][get_question_value( td_elem )]++
+      
       console.log( b_dict )
       #$( '.consolidated-question' ).each ( cq_id, cq_elem ) ->
 
       $.each b_dict, ( arm_row_id, tr_dict ) ->
-        console.log ( "arm_row_id --> " + arm_row_id )
-        red_bool = false
+        #console.log ( "arm_row_id --> " + arm_row_id )
+        color = ""
         $.each tr_dict, ( tr_id, td_dict ) ->
-          console.log ( "tr_id --> " + tr_id )
-          $.each td_dict, ( td_id, input_dict ) ->
-            console.log ( "td_id --> " + td_id )
-            $.each input_dict, ( input_id, value_dict ) ->
-              console.log ( "input_id --> " + input_id )
-              $.each value_dict, ( value, value_count ) ->
-                console.log ( value + " --> " + value_count )
-                if ( value_count != number_of_extractions )
-                  red_bool = true
-                else if (value != c_dict[arm_row_id][tr_id][td_id][input_id])
-                  red_bool = true
-        if red_bool
+          #console.log ( "tr_id --> " + tr_id )
+          $.each td_dict, ( td_id, value_dict ) ->
+            #console.log ( "td_id --> " + td_id )
+            $.each value_dict, ( value, value_count ) ->
+              #console.log ( value + " --> " + value_count )
+              if ( value_count != number_of_extractions )
+                color = "red"
+              else if (value != c_dict[arm_row_id][tr_id][td_id])
+                color = "green"
+
+        # what happens if i change the consolidated answer by hand to be the same as the auto_consolidate answer,
+        # how do i identify that
+        if color == "red"
           $( a_dict[ arm_row_id ] ).css( 'border-color', 'red' )
+        else if color == "green"
+          $( a_dict[ arm_row_id ] ).css( 'border-color', 'green' )
+
                   
 
 
