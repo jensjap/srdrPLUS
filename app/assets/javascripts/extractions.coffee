@@ -105,6 +105,15 @@ document.addEventListener 'turbolinks:load', ->
 
       return ""
 
+    get_consolidation_dropdown = ( values_arr ) ->
+      dd_elem = $ "<select>"
+
+      values_arr.each ( value ) ->
+        dd_elem.append $( "<option>" ).text( value )
+      
+      return dd_elem
+    
+
     $( '.consolidation-data-row' ).each ( row_id, row_elem ) ->
       a_dict = { }
       b_dict = { }
@@ -141,21 +150,20 @@ document.addEventListener 'turbolinks:load', ->
                   if td_id != 0
                     b_dict[arm_row_id][tr_id][td_id] ||= { }
                     a = get_question_value( td_elem )
-                    #console.log "RETURNED: " + a
                     b_dict[arm_row_id][tr_id][td_id][get_question_value( td_elem )] ||= 0
                     b_dict[arm_row_id][tr_id][td_id][get_question_value( td_elem )]++
       
-      console.log( b_dict )
-      #$( '.consolidated-question' ).each ( cq_id, cq_elem ) ->
-
       $.each b_dict, ( arm_row_id, tr_dict ) ->
         #console.log ( "arm_row_id --> " + arm_row_id )
         color = ""
+        value_arr = []
+        
         $.each tr_dict, ( tr_id, td_dict ) ->
           #console.log ( "tr_id --> " + tr_id )
           $.each td_dict, ( td_id, value_dict ) ->
             #console.log ( "td_id --> " + td_id )
             $.each value_dict, ( value, value_count ) ->
+              value_arr.append value
               #console.log ( value + " --> " + value_count )
               if ( value_count != number_of_extractions )
                 if c_dict[arm_row_id][tr_id][td_id] != ""
@@ -172,6 +180,4 @@ document.addEventListener 'turbolinks:load', ->
         else if color == "green"
           $( a_dict[ arm_row_id ] ).css( 'border-color', 'green' )
 
-                  
-
-
+        $( a_dict[ arm_row_id ] ).append get_consolidation_dropdown( value_arr )
