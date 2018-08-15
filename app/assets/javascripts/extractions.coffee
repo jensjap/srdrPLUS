@@ -68,50 +68,114 @@ document.addEventListener 'turbolinks:load', ->
       $( '.toggle-consolidated-extraction-link-medium-8-12' ).toggleClass( 'medium-8 medium-12' )
       $( '.toggle-consolidated-extraction-link-medium-4-0-hide' ).toggleClass( 'medium-4 medium-0 hide' )
 
+    get_question_type = ( question ) ->
+      ## We assume a question only ever has one type of input, 
+      ## which may be a problem if I accidentally place the dropdown in the wrong place
 
-   # $( '.consolidated-question' ).each ( cq_id, cq_elem ) ->
-   #   $( cq_elem ).find( 'tbody tr' ).each ( tr_id, tr_elem ) ->
-   #     # there is only one row with id 1
-   #     $( tr_elem ).find( 'td' ). each ( td_id, td_elem ) ->
-   #       console.log 'loyloy - ' + cq_id + ' - ' + tr_id + ' - ' + td_id
+      #text or numeric
+      str_input_arr = $( question ).find( 'input.string' )
+      if str_input_arr.length == 1
+        str_input = $( str_input_arr[0] )
+        if str_input.attr( "type" ) == "number"
+          return "numeric"
+        if str_input.attr( "type" ) == "text"
+          return "text"
 
+      #checkbox
+      cb_input_arr = $( question ).find( 'div.input.check_boxes' )
+      if str_input_arr.length > 0
+        return "checkbox"
+
+      #dropdown
+      drop_input_arr = $( question ).find( 'select' )
+      if drop_input_arr.length > 0
+        return "dropdown"
+
+      #radio buttons
+      rb_input_arr = $( question ).find( 'div.input.radio_buttons' )
+      if rb_input_arr.length > 0
+        return "radio_buttons"
+        
+      return "unclear"
 
     get_question_value = ( question ) ->
-      # this should cover both text and numeric
-      str_input = $( question ).find( 'input.string[type!="hidden"]' )[0]
-      if str_input
-        return str_input.value
+      switch get_question_type question
+        when "text", "numeric"
+          return $( question ).find( 'input.string' )[0].value
 
-      # checkboxes
-      cb_arr = []
-      $( question ).find( 'input.check_boxes[checked="checked"]' ).each ( input_id, input_elem ) ->
-        cb_arr.push input_elem.value
-      if cb_arr.length > 0
-        return cb_arr.join( "&&" )
+        when "checkbox"
+          cb_arr = []
+          $( question ).find( 'input.check_boxes[checked="checked"]' ).each ( input_id, input_elem ) ->
+            cb_arr.push input_elem.value
+          if cb_arr.length > 0
+            return cb_arr.join( "&&" )
 
-      # dropdown
-      drop_input = $( question ).find( 'select' )[0]
-      if drop_input
-        selected = $( drop_input ).children("option").filter(":selected")[0]
-        if selected.value
-          return selected.text
+        when "dropdown"
+          drop_input = $( question ).find( 'select' )[0]
+          if drop_input
+            selected = $( drop_input ).children("option").filter(":selected")[0]
+            return ( if selected.value then selected.value else "" )
+
+        when "radio_buttons"
+          rb_selected = $( question ).find( 'input.radio_buttons[checked="checked"]' )
+          # there should ever be one
+          return ( if rb_selected.length == 1 then rb_selected[0].value else "" )
+
         else
           return ""
+#      
+#      # this should cover both text and numeric
+#      str_input = $( question ).find( 'input.string[type!="hidden"]' )[0]
+#      if str_input
+#        return str_input.value
+#
+#      # checkboxes
+#      cb_arr = []
+#      $( question ).find( 'input.check_boxes[checked="checked"]' ).each ( input_id, input_elem ) ->
+#        cb_arr.push input_elem.value
+#      if cb_arr.length > 0
+#        return cb_arr.join( "&&" )
+#
+#      # dropdown -- this can cause problems since I'm adding dropdowns to each consolidated question div
+#      drop_input = $( question ).find( 'select' )[0]
+#      if drop_input
+#        selected = $( drop_input ).children("option").filter(":selected")[0]
+#        if selected.value
+#          return selected.text
+#        else
+#          return ""
+#
+#      # radio buttons
+#      a = $( question ).find( 'input.radio_buttons[checked="checked"]' )
+#      if a.length == 1
+#        return a[0].value
+#
+#      return ""
 
-      # radio buttons
-      a = $( question ).find( 'input.radio_buttons[checked="checked"]' )
-      if a.length == 1
-        return a[0].value
+    get_consolidation_dropdown = ( cell_elem, values_arr ) ->
+      #there should only be one
+      console.log cell_elem
+      table_elem = $( cell_elem ).children( "table" )[0]
 
-      return ""
-
-    get_consolidation_dropdown = ( values_arr ) ->
       dd_elem = $ "<select>"
 
-      values_arr.each ( value ) ->
-        dd_elem.append $( "<option>" ).text( value )
+      for value in values_arr
+        dd_elem.append $( "<option>" ).text( value ).val( value )
       
-      return dd_elem
+      dd_elem.append $( "<option>" ).text( "Other" )
+      dd_div = $( "<div>" )#.addClass "table-scroll clean-table"
+      dd_div.append dd_elem
+
+      dd_elem.change ->
+        if dd_elem.find( ':selected' ).attr( "value" )
+
+          table_elem.hide()
+          console.log "ley"
+        else
+          table_elem.unhide()
+          console.log "loy"
+
+      return dd_div
     
 
     $( '.consolidation-data-row' ).each ( row_id, row_elem ) ->
@@ -149,21 +213,22 @@ document.addEventListener 'turbolinks:load', ->
                   ## is there a better way to skip the header?
                   if td_id != 0
                     b_dict[arm_row_id][tr_id][td_id] ||= { }
-                    a = get_question_value( td_elem )
-                    b_dict[arm_row_id][tr_id][td_id][get_question_value( td_elem )] ||= 0
-                    b_dict[arm_row_id][tr_id][td_id][get_question_value( td_elem )]++
+                    question_value = get_question_value( td_elem )
+                    b_dict[arm_row_id][tr_id][td_id][question_value] ||= 0
+                    b_dict[arm_row_id][tr_id][td_id][question_value]++
       
       $.each b_dict, ( arm_row_id, tr_dict ) ->
         #console.log ( "arm_row_id --> " + arm_row_id )
         color = ""
         value_arr = []
+        cell_elem = a_dict[ arm_row_id ]
         
         $.each tr_dict, ( tr_id, td_dict ) ->
           #console.log ( "tr_id --> " + tr_id )
           $.each td_dict, ( td_id, value_dict ) ->
             #console.log ( "td_id --> " + td_id )
             $.each value_dict, ( value, value_count ) ->
-              value_arr.append value
+              value_arr.push value
               #console.log ( value + " --> " + value_count )
               if ( value_count != number_of_extractions )
                 if c_dict[arm_row_id][tr_id][td_id] != ""
@@ -176,8 +241,8 @@ document.addEventListener 'turbolinks:load', ->
         # what happens if i change the consolidated answer by hand to be the same as the auto_consolidate answer,
         # how do i identify that
         if color == "red"
-          $( a_dict[ arm_row_id ] ).css( 'border-color', 'red' )
+          $( cell_elem ).css( 'border-color', 'red' )
         else if color == "green"
-          $( a_dict[ arm_row_id ] ).css( 'border-color', 'green' )
+          $( cell_elem ).css( 'border-color', 'green' )
 
-        $( a_dict[ arm_row_id ] ).append get_consolidation_dropdown( value_arr )
+        $( cell_elem ).prepend get_consolidation_dropdown( cell_elem, value_arr )
