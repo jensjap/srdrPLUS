@@ -51,6 +51,7 @@ test:
 #
 production:
   <<: *default
-  database: srdrPLUS_production
-  username: srdrPLUS
+  host: <%= ENV['SRDRPLUS_DATABASE_HOST'] %>
+  database: <%= ENV['SRDRPLUS_DATABASE_SCHEMA'] %>
+  username: <%= ENV['SRDRPLUS_DATABASE_USERNAME'] %>
   password: <%= ENV['SRDRPLUS_DATABASE_PASSWORD'] %>
