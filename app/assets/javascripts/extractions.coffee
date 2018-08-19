@@ -107,8 +107,8 @@ document.addEventListener 'turbolinks:load', ->
           cb_arr = []
           $( question ).find( 'input.check_boxes[checked="checked"]' ).each ( input_id, input_elem ) ->
             cb_arr.push input_elem.value
-          if cb_arr.length > 0
-            return cb_arr.join( "&&" )
+           return ( if cb_arr.length > 0 then cb_arr.join( "&&" ) else "" )
+
 
         when "dropdown"
           drop_input = $( question ).find( 'select' )[ 0 ]
@@ -157,54 +157,72 @@ document.addEventListener 'turbolinks:load', ->
       consolidated_cell = cell_dict[ "cell_elem" ]
       drop_elem = $ "<select>"
 
-      $.each cell_dict ( cell_id, tr_dict ) ->
-      for cell_id in [ 1...number_of_extractions ]
+      $.each cell_dict, ( cell_id, tr_dict ) ->
+      for cell_id in [ 0..number_of_extractions ]
         #if cell_id != number_of_extractions
         tr_dict = cell_dict[ cell_id ]
         drop_option = $( "<option>" )
-        if cell_id == number_of_extractions - 1
-          drop_option.text( "auto-consolidate" )
-        else
-          drop_option.text( cell_id )
-          drop_option.val( cell_id )
+        drop_option.val( cell_id )
+        drop_option.text( tr_dict[ "extractor" ] )
+        if cell_id == number_of_extractions
+          drop_option.prop( "selected", true )
 
-        drop_option.select ->
+        drop_elem.append drop_option
+        drop_elem.change ->
           $( consolidated_cell ).find( 'tbody' ).each ( idx, cell_body ) ->
             $( cell_body ).find( 'tr' ).each ( tr_id, tr_elem ) ->
               $( tr_elem ).find( 'td' ).each ( td_id, td_elem ) ->
                 ## is there a better way to skip the header?
                 if td_id != 0
+                  cell_id = $( drop_elem ).children("option").filter(":selected")[ 0 ].value
                   new_value = cell_dict[ cell_id ][ tr_id ][ td_id ][ "question_value" ]
+                  #console.log "new_value: " + new_value
                   switch cell_dict[ cell_id ][ tr_id ][ td_id ][ "question_type" ]
                     when "text", "numeric"
                       $( tr_elem ).find( 'input.string' ).val( new_value )
+                      ## auto save expects keyup for textfield
+                      $( tr_elem ).find( 'input.string' ).trigger( 'keyup' )
 
                     when "checkbox"
-                      cb_arr = new_value.split( "&&" )
+                      cb_arr = if new_value.length > 0 then new_value.split( "&&" ) else []
                       $( tr_elem ).find( 'input.check_boxes' ).each ( input_id, input_elem ) ->
-                        input_elem.removeAttr( 'checked' )
                         if input_elem.value in cb_arr
-                          input_elem.attr( 'checked', 'checked' )
+                          $( input_elem ).prop( 'checked', true )
+                        else
+                          $( input_elem ).prop( 'checked', false )
+                        $( input_elem ).trigger( 'change' )
+
 
                     when "dropdown"
-                      drop_input = $( tr_elem ).find( 'select' ).val( new_value )
+                      select_elem = $( tr_elem ).find( 'select' )
+                      drop_input = $( select_elem ).val( new_value )
+                      $( select_elem ).trigger( 'change' )
 
                     when "radio_buttons"
-                      rb_selected = $( tr_elem ).find( 'input.radio_buttons' ).val( new_value )
+                      $( tr_elem ).find( 'input.radio_buttons' ).each ( rb_index, rb_input ) ->
+                        #console.log "current val: " + rb_input.value
+                        #console.log "equals to new_val:" + (rb_input.value == new_value )
+                        
+                        if ( rb_input.value == new_value )
+                          $( rb_input ).prop( 'checked', true )
+                          
+                        else
+                          $( rb_input ).prop( 'checked', false )
+
+                        $( rb_input ).trigger( 'change' )
                     else
-        drop_elem.append drop_option
 
       drop_div = $( "<div>" )#.addClass "table-scroll clean-table"
       drop_div.append drop_elem
 
-      drop_elem.change ->
-        if drop_elem.find( ':selected' ).attr( "value" )
-
-          table_elem.hide()
-          console.log "ley"
-        else
-          table_elem.show()
-          console.log "loy"
+#      drop_elem.change ->
+#        if drop_elem.find( ':selected' ).attr( "value" )
+#
+#          consolidated_cell.hide()
+#          console.log "ley"
+#        else
+#          consolidated_cell.show()
+#          console.log "loy"
 
       return drop_div
     
@@ -217,9 +235,18 @@ document.addEventListener 'turbolinks:load', ->
       # holds all cell_elems
       a_dict = { }
 
+      # extractor names
+      extractor_arr = []
+      #console.log  $( 'div[id^="panel-tab-"]' ).first()
+      $( 'div[id^="panel-tab-"]' ).first().find( 'th[extractor-name]' ).each ( extractor_id, extractor_elem ) ->
+        extractor_arr.push $( extractor_elem ).attr( 'extractor-name' )
+
+      #console.log extractor_arr
+
       number_of_extractions = 0
       $( row_elem ).children( 'tr' ).each ( arm_row_id, arm_row_elem ) ->
-        number_of_extractions = $( arm_row_elem ).children( 'td' ).length
+        number_of_extractions = $( arm_row_elem ).children( 'td' ).length - 1
+      console.log "#extractions = " + number_of_extractions
 
       #arm rows
       $arm_rows = $( row_elem ).children( 'tr' )
@@ -243,6 +270,7 @@ document.addEventListener 'turbolinks:load', ->
           ## there should only be one
           $( cell_elem ).find( 'tbody' ).each ( idx, cell_body ) ->
             c_dict[ arm_row_id ][ cell_id ] ||= { }
+            c_dict[ arm_row_id ][ cell_id ][ "extractor" ] = extractor_arr[ cell_id ]
             $( cell_body ).find( 'tr' ).each ( tr_id, tr_elem ) ->
               b_dict[ arm_row_id ][ tr_id ] ||= { }
               c_dict[ arm_row_id ][ cell_id ][ tr_id ] ||= { }
@@ -259,7 +287,7 @@ document.addEventListener 'turbolinks:load', ->
 
                   c_dict[ arm_row_id ][ cell_id ][ tr_id ][ td_id ] ||= { }
                   c_dict[ arm_row_id ][ cell_id ][ tr_id ][ td_id ][ "question_type" ] = get_question_type( td_elem )
-                  c_dict[ arm_row_id ][ cell_id ][ tr_id ][ td_id ][ "question_value" ] = get_question_type( td_elem )
+                  c_dict[ arm_row_id ][ cell_id ][ tr_id ][ td_id ][ "question_value" ] = get_question_value( td_elem )
 
       console.log b_dict
       
@@ -275,13 +303,14 @@ document.addEventListener 'turbolinks:load', ->
             #console.log ( "td_id --> " + td_id )
             $.each value_dict, ( value, value_count ) ->
               value_arr.push value
-              #console.log ( value + " --> " + value_count )
+              console.log ( value + " --> " + value_count )
+              console.log "consolidated value: " + c_dict[ arm_row_id ][ number_of_extractions ][ tr_id ][ td_id ][ "question_value" ]
               if ( value_count != number_of_extractions )
-                if c_dict[ arm_row_id ][ number_of_extractions - 1 ][ tr_id ][ td_id ] != ""
+                if c_dict[ arm_row_id ][ number_of_extractions ][ tr_id ][ td_id ][ "question_value" ] != ""
                   color = "green"
                 else
                   color = "red"
-              else if ( value != c_dict[ arm_row_id ][ number_of_extractions - 1 ][ tr_id ][ td_id ][ "question_value" ] )
+              else if ( value != c_dict[ arm_row_id ][ number_of_extractions ][ tr_id ][ td_id ][ "question_value" ] )
                 color = "green"
 
         # what happens if i change the consolidated answer by hand to be the same as the auto_consolidate answer,
