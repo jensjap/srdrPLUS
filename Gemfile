@@ -123,3 +123,5 @@ gem 'axlsx_rails'
 # Searching with Elasticsearch.
 gem 'searchkick'
 gem 'searchjoy'
+
+gem 'passenger'
