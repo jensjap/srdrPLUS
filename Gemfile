@@ -108,7 +108,7 @@ gem 'responders'
 gem 'react-rails'
 
 # Helps with logins.
-gem 'doorkeeper'
+#gem 'doorkeeper'
 
 # Api documentation.
 gem 'apipie-rails'
