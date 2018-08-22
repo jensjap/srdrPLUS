@@ -1,6 +1,6 @@
 li = link_to('Projects', projects_path)
 
-- if (controller_name.eql?('projects') && not(action_name.eql?('index'))) || controller_name.eql?('extractions') || controller_name.eql?('extraction_forms_projects')
+- if (controller_name.eql?('projects') && not(action_name.eql?('index')) && not(action_name.eql?('new'))) || controller_name.eql?('extractions') || controller_name.eql?('extraction_forms_projects')
 
   li
     a href='#' Actions
