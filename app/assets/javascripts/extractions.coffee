@@ -152,7 +152,36 @@ document.addEventListener 'turbolinks:load', ->
 #
 #      return ""
 
-    # what i need is a dictionary of cell_elements, since I know the last one is the consolidated one and the others are the extractions
+
+    ## what we want to do is to call apply_coloring every time the inputs are changed
+    add_change_listeners_for_color = ( cell_dict, number_of_extractions ) ->
+      consolidated_cell = cell_dict[ "cell_elem" ]
+      $( consolidated_cell ).find( 'tbody' ).each ( idx, cell_body ) ->
+        $( cell_body ).find( 'tr' ).each ( tr_id, tr_elem ) ->
+          $( tr_elem ).find( 'td' ).each ( td_id, td_elem ) ->
+            if td_id != 0
+              switch cell_dict[ number_of_extractions ][ tr_id ][ td_id ][ "question_type" ]
+                when "text", "numeric"
+                  $( td_elem ).find( 'input.string' ).keyup ->
+                    apply_coloring( false )
+
+                when "checkbox"
+                  $( td_elem ).find( 'input.check_boxes' ).each ( input_id, input_elem ) ->
+                    $( input_elem ).change ->
+                      apply_coloring( false )
+
+                when "dropdown"
+                  select_elem = $( td_elem ).find( 'select' )
+                  $( select_elem ).change ->
+                    apply_coloring( false )
+
+                when "radio_buttons"
+                  $( td_elem ).find( 'input.radio_buttons' ).each ( rb_index, rb_input ) ->
+                    $( rb_input ).change ->
+                      apply_coloring( false )
+                else
+
+
     get_consolidation_dropdown = ( cell_dict, number_of_extractions ) ->
       consolidated_cell = cell_dict[ "cell_elem" ]
       drop_elem = $ "<select>"
@@ -195,7 +224,7 @@ document.addEventListener 'turbolinks:load', ->
 
                   when "dropdown"
                     select_elem = $( td_elem ).find( 'select' )
-                    drop_input = $( select_elem ).val( new_value )
+                    $( select_elem ).val( new_value )
                     $( select_elem ).trigger( 'change' )
 
                   when "radio_buttons"
@@ -211,7 +240,7 @@ document.addEventListener 'turbolinks:load', ->
 
                       $( rb_input ).trigger( 'change' )
                   else
-        apply_coloring()
+        #apply_coloring( false )
 
       drop_div = $( "<div>" )#.addClass "table-scroll clean-table"
       drop_div.append drop_elem
@@ -228,7 +257,8 @@ document.addEventListener 'turbolinks:load', ->
       return drop_div
     
 
-    apply_coloring = ( ) ->
+    apply_coloring = ( first_time ) ->
+      console.log ( "apply_coloring called" )
       $( '.consolidation-data-row' ).each ( row_id, row_elem ) ->
         # data matching tree
         b_dict = { }
@@ -248,7 +278,7 @@ document.addEventListener 'turbolinks:load', ->
         number_of_extractions = 0
         $( row_elem ).children( 'tr' ).each ( arm_row_id, arm_row_elem ) ->
           number_of_extractions = $( arm_row_elem ).children( 'td' ).length - 1
-        console.log "#extractions = " + number_of_extractions
+        #console.log "#extractions = " + number_of_extractions
 
         #arm rows
         $arm_rows = $( row_elem ).children( 'tr' )
@@ -291,8 +321,9 @@ document.addEventListener 'turbolinks:load', ->
                     c_dict[ arm_row_id ][ cell_id ][ tr_id ][ td_id ][ "question_type" ] = get_question_type( td_elem )
                     c_dict[ arm_row_id ][ cell_id ][ tr_id ][ td_id ][ "question_value" ] = get_question_value( td_elem )
 
-        console.log b_dict
         
+        #console.log( b_dict )
+
         $.each b_dict, ( arm_row_id, tr_dict ) ->
           #console.log ( "arm_row_id --> " + arm_row_id )
           color = ""
@@ -305,15 +336,18 @@ document.addEventListener 'turbolinks:load', ->
               #console.log ( "td_id --> " + td_id )
               $.each value_dict, ( value, value_count ) ->
                 value_arr.push value
-                console.log ( value + " --> " + value_count )
-                console.log "consolidated value: " + c_dict[ arm_row_id ][ number_of_extractions ][ tr_id ][ td_id ][ "question_value" ]
+                #console.log ( value + " --> " + value_count )
+                #console.log "consolidated value: " + c_dict[ arm_row_id ][ number_of_extractions ][ tr_id ][ td_id ][ "question_value" ]
                 if ( value_count != number_of_extractions )
                   if c_dict[ arm_row_id ][ number_of_extractions ][ tr_id ][ td_id ][ "question_value" ] != ""
                     color = "green"
                   else
                     color = "red"
-                else if ( value != c_dict[ arm_row_id ][ number_of_extractions ][ tr_id ][ td_id ][ "question_value" ] )
-                  color = "green"
+                else
+                  if ( value != c_dict[ arm_row_id ][ number_of_extractions ][ tr_id ][ td_id ][ "question_value" ] )
+                    color = "green"
+                  else
+                    color = "purple"
 
           # what happens if i change the consolidated answer by hand to be the same as the auto_consolidate answer,
           # how do i identify that
@@ -321,8 +355,15 @@ document.addEventListener 'turbolinks:load', ->
             $( cell_elem ).css( 'border-color', 'red' )
           else if color == "green"
             $( cell_elem ).css( 'border-color', 'green' )
+          else
+            $( cell_elem ).css( 'border-color', '#410093' )
 
-          $( cell_elem ).find( 'div#consolidation-dropdown' ).html( get_consolidation_dropdown( c_dict[ arm_row_id ], number_of_extractions ) )
 
+          # i dont like this code structure one bit, too fragile
+          if first_time
+            add_change_listeners_for_color( c_dict[ arm_row_id ], number_of_extractions )
+            $( cell_elem ).find( 'div#consolidation-dropdown' ).html( get_consolidation_dropdown( c_dict[ arm_row_id ], number_of_extractions ) )
+
+            
     ## call coloring for the first time
-    apply_coloring()
+    apply_coloring( true )
