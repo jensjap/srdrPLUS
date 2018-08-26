@@ -11,7 +11,7 @@ jobs:
         environment:
           BUNDLE_PATH: vendor/bundle
           RAILS_ENV: test
-          MYSQL_USER: circle-ci
+          MYSQL_USER: root
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
@@ -20,9 +20,11 @@ jobs:
       # why won't you update.
       - image: circleci/mysql:5.7.21
         environment:
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
           MYSQL_DATABASE: srdrPLUS_test
           MYSQL_ROOT_HOST: 127.0.0.1
-          MYSQL_USER: circle-ci
+          MYSQL_ROOT_PASSWORD: ''
+          MYSQL_USER: root
 
     working_directory: ~/repo
 
