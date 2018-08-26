@@ -10,7 +10,7 @@
           - @extractions.each_with_index do |extraction, idx|
             th style='border: 4px solid #{ color_array[0] }' extractor-name='#{ extraction.user.profile.username }' By #{ extraction.user.profile.username }
 
-          th style='border: 4px solid #410093;' extractor-name='Consolidated' By #{ @consolidated_extraction.user.profile.username } (Consolidated Extraction)
+          th extractor-name='Consolidated' By #{ @consolidated_extraction.user.profile.username } (Consolidated Extraction)
 
         / This row represents the extraction information header. It is composed of the username of the extractors + the username
           of the consolidator.
@@ -105,7 +105,7 @@
 
                 - unless linked_section && eefps.link_to_type1.type1s.blank?
                   - if eefps.link_to_type1.type1s.include?(t1)
-                    td style='border: 4px solid #410093;'
+                    td
                       div id="consolidation-dropdown"
                       h6 = linked_section.extraction_forms_projects_section.section.name.singularize + ': ' + t1.name_and_description
                       = render 'extractions/shared/type_2/question_fields',
@@ -146,7 +146,7 @@
                     extraction: @consolidated_extraction,
                     extraction_forms_projects_section: efps.link_to_type1))
 
-              td style='border: 4px solid #410093;'
+              td
                 div id="consolidation-dropdown"
                   
                 = render 'extractions/shared/type_2/question_fields',

@@ -70,21 +70,18 @@ document.addEventListener 'turbolinks:load', ->
 
 
     get_number_of_extractions = () ->
-      $( '.consolidation-data-row' ).each ( _, row_elem ) ->
-        number_of_extractions = 0
-        $( row_elem ).children( 'tr' ).each ( arm_row_id, arm_row_elem ) ->
-          number_of_extractions = $( arm_row_elem ).children( 'td' ).length - 1
-        return number_of_extractions
-      return 0
+      $questions = $( '.consolidation-data-row' )
+      if $questions.length > 0
+        $rows = $questions.children( 'tr' )
+        return ( if $rows.length > 0 then Math.max( 0, $rows.first().children( 'td' ).length - 1 ) else 0 )
 
     get_extractor_names = () ->
-      $( '.consolidation-data-row' ).each ( _, row_elem ) ->
-        # extractor names
-        extractor_arr = []
-        #console.log  $( 'div[id^="panel-tab-"]' ).first()
-        $( 'div[id^="panel-tab-"]' ).first().find( 'th[extractor-name]' ).each ( extractor_id, extractor_elem ) ->
-          extractor_arr.push $( extractor_elem ).attr( 'extractor-name' )
-        return extractor_arr
+      $panels = $( 'div[id^="panel-tab-"]' )
+      if $panels.length > 0
+        extractor_names = []
+        $panels.first().find( 'th[extractor-name]' ).each ( extractor_id, extractor_elem ) ->
+          extractor_names.push $( extractor_elem ).attr( 'extractor-name' )
+        return extractor_names
       return []
 
     get_question_type = ( question ) ->
@@ -143,158 +140,143 @@ document.addEventListener 'turbolinks:load', ->
         else
           return ""
 
-    ## what we want to do is to call apply_coloring every time the inputs are changed
-    add_change_listeners_to_questions = ( cell_dict, number_of_extractions ) ->
-      consolidated_cell = cell_dict[ "cell_elem" ]
-      $( consolidated_cell ).find( 'tbody' ).each ( idx, cell_body ) ->
-        $( cell_body ).find( 'tr' ).each ( tr_id, tr_elem ) ->
-          $( tr_elem ).find( 'td' ).each ( td_id, td_elem ) ->
-            if td_id != 0
-              switch cell_dict[ number_of_extractions ][ tr_id ][ td_id ][ "question_type" ]
-                when "text", "numeric"
-                  $( td_elem ).find( 'input.string' ).keyup ->
-                    apply_coloring( false )
+    add_change_listeners_to_questions = (  ) ->
+      number_of_extractions = get_number_of_extractions( )
+      console.log number_of_extractions
 
-                when "checkbox"
-                  $( td_elem ).find( 'input.check_boxes' ).each ( input_id, input_elem ) ->
-                    $( input_elem ).change ->
-                      apply_coloring( false )
+      $( '.consolidation-data-row' ).each ( row_id, row_elem ) ->
+        $( row_elem ).children( 'tr' ).each ( arm_row_id, arm_row_elem ) ->
+          $( arm_row_elem ).find( 'td tbody' ).each ( cell_id, cell_elem ) ->
+            $( cell_elem ).find( 'tr' ).each ( tr_id, tr_elem ) ->
+              $( tr_elem ).find( 'td' ).each ( td_id, td_elem ) ->
+                if td_id != 0 && cell_id == number_of_extractions
+                  switch get_question_type( td_elem )
+                    when "text", "numeric"
+                      $( td_elem ).find( 'input.string' ).keyup ->
+                        apply_coloring( )
 
-                when "dropdown"
-                  select_elem = $( td_elem ).find( 'select' )
-                  $( select_elem ).change ->
-                    apply_coloring( false )
+                    when "checkbox"
+                      $( td_elem ).find( 'input.check_boxes' ).each ( input_id, input_elem ) ->
+                        $( input_elem ).change ->
+                          apply_coloring( )
 
-                when "radio_buttons"
-                  $( td_elem ).find( 'input.radio_buttons' ).each ( rb_index, rb_input ) ->
-                    $( rb_input ).change ->
-                      apply_coloring( false )
-                else
+                    when "dropdown"
+                      select_elem = $( td_elem ).find( 'select' )
+                      $( select_elem ).change ->
+                        apply_coloring( )
 
+                    when "radio_buttons"
+                      $( td_elem ).find( 'input.radio_buttons' ).each ( rb_index, rb_input ) ->
+                        $( rb_input ).change ->
+                          apply_coloring( )
+                    else
 
-    get_consolidation_dropdown = ( cell_dict, number_of_extractions ) ->
-      consolidated_cell = cell_dict[ "cell_elem" ]
-      drop_elem = $ "<select>"
+    apply_consolidation_dropdown = ( ) ->
+      number_of_extractions = get_number_of_extractions( )
+      extractor_names = get_extractor_names( )
 
-      $.each cell_dict, ( cell_id, tr_dict ) ->
-      for cell_id in [ 0..number_of_extractions ]
-        #if cell_id != number_of_extractions
-        tr_dict = cell_dict[ cell_id ]
-        drop_option = $( "<option>" )
-        drop_option.val( cell_id )
-        drop_option.text( tr_dict[ "extractor" ] )
-        if cell_id == number_of_extractions
-          drop_option.prop( "selected", true )
-        drop_elem.append drop_option
+      $( '.consolidation-data-row' ).each ( row_id, row_elem ) ->
+        # consolidated data values and cell_elem
+        c_dict = { }
 
-      drop_elem.change ->
-        $( consolidated_cell ).find( 'tbody' ).each ( idx, cell_body ) ->
-          $( cell_body ).find( 'tr' ).each ( tr_id, tr_elem ) ->
-            $( tr_elem ).find( 'td' ).each ( td_id, td_elem ) ->
-              ## is there a better way to skip the header?
-              if td_id != 0
-                cell_id = $( drop_elem ).children("option").filter(":selected")[ 0 ].value
-                new_value = cell_dict[ cell_id ][ tr_id ][ td_id ][ "question_value" ]
-                #console.log "new_value: " + new_value
-                switch cell_dict[ cell_id ][ tr_id ][ td_id ][ "question_type" ]
-                  when "text", "numeric"
-                    $( td_elem ).find( 'input.string' ).val( new_value )
-                    ## auto save expects keyup for textfield
-                    $( td_elem ).find( 'input.string' ).trigger( 'keyup' )
+        $drop_elem = $ "<select>"
 
-                  when "checkbox"
-                    cb_arr = if new_value.length > 0 then new_value.split( "&&" ) else []
-                    $( td_elem ).find( 'input.check_boxes' ).each ( input_id, input_elem ) ->
-                      if input_elem.value in cb_arr
-                        $( input_elem ).prop( 'checked', true )
-                      else
-                        $( input_elem ).prop( 'checked', false )
-                      $( input_elem ).trigger( 'change' )
+        for extraction_id in [ 0..number_of_extractions ]
+          drop_option = $ "<option>"
+          drop_option.text extractor_names[ extraction_id ]
+          drop_option.val extraction_id
+          if extraction_id == number_of_extractions
+            drop_option.prop( "selected", true )
+          $drop_elem.append drop_option
 
+        $( row_elem ).children( 'tr' ).each ( arm_row_id, arm_row_elem ) ->
+          c_dict[ arm_row_id ] ||= { }
+          $( arm_row_elem ).find( 'td tbody' ).each ( cell_id, cell_elem ) ->
+            c_dict[ arm_row_id ][ cell_id ] ||= { }
+            $( cell_elem ).find( 'tr' ).each ( tr_id, tr_elem ) ->
+              c_dict[ arm_row_id ][ cell_id ][ tr_id ] ||= { }
+              $( tr_elem ).find( 'td' ).each ( td_id, td_elem ) ->
+                if td_id != 0
+                  c_dict[ arm_row_id ][ cell_id ][ tr_id ][ td_id ] ||= { }
+                  c_dict[ arm_row_id ][ cell_id ][ tr_id ][ td_id ][ "question_type" ] = get_question_type( td_elem )
+                  c_dict[ arm_row_id ][ cell_id ][ tr_id ][ td_id ][ "question_value" ] = get_question_value( td_elem )
 
-                  when "dropdown"
-                    select_elem = $( td_elem ).find( 'select' )
-                    $( select_elem ).val( new_value )
-                    $( select_elem ).trigger( 'change' )
+        $drop_elem.change ->
+          $( row_elem ).children( 'tr' ).each ( arm_row_id, arm_row_elem ) ->
+            $( arm_row_elem ).find( 'td tbody' ).each ( cell_id, cell_elem ) ->
+              if cell_id == number_of_extractions
+                $( cell_elem ).find( 'tr' ).each ( tr_id, tr_elem ) ->
+                  $( tr_elem ).find( 'td' ).each ( td_id, td_elem ) ->
+                    ## is there a better way to skip the header?
+                    if td_id != 0
+                      cell_id = $drop_elem.children("option").filter(":selected")[ 0 ].value
+                      new_value = c_dict[ arm_row_id ][ cell_id ][ tr_id ][ td_id ][ "question_value" ]
+                      #console.log "new_value: " + new_value
+                      switch c_dict[ arm_row_id ][ cell_id ][ tr_id ][ td_id ][ "question_type" ]
+                        when "text", "numeric"
+                          $( td_elem ).find( 'input.string' ).val( new_value )
+                          ## auto save expects keyup for textfield
+                          $( td_elem ).find( 'input.string' ).trigger( 'keyup' )
 
-                  when "radio_buttons"
-                    $( td_elem ).find( 'input.radio_buttons' ).each ( rb_index, rb_input ) ->
-                      #console.log "current val: " + rb_input.value
-                      #console.log "equals to new_val:" + (rb_input.value == new_value )
-                      
-                      if ( rb_input.value == new_value )
-                        $( rb_input ).prop( 'checked', true )
-                        
-                      else
-                        $( rb_input ).prop( 'checked', false )
+                        when "checkbox"
+                          cb_arr = if new_value.length > 0 then new_value.split( "&&" ) else []
+                          $( td_elem ).find( 'input.check_boxes' ).each ( input_id, input_elem ) ->
+                            if input_elem.value in cb_arr
+                              $( input_elem ).prop( 'checked', true )
+                            else
+                              $( input_elem ).prop( 'checked', false )
+                            $( input_elem ).trigger( 'change' )
 
-                      $( rb_input ).trigger( 'change' )
-                  else
-        apply_coloring( false )
+                        when "dropdown"
+                          select_elem = $( td_elem ).find( 'select' )
+                          $( select_elem ).val( new_value )
+                          $( select_elem ).trigger( 'change' )
 
-      drop_div = $( "<div>" )
-      drop_div.append drop_elem
-      return drop_div
-    
+                        when "radio_buttons"
+                          $( td_elem ).find( 'input.radio_buttons' ).each ( rb_index, rb_input ) ->
+                            
+                            if ( rb_input.value == new_value )
+                              $( rb_input ).prop( 'checked', true )
+                              
+                            else
+                              $( rb_input ).prop( 'checked', false )
 
-    apply_coloring = ( first_time ) ->
+                            $( rb_input ).trigger( 'change' )
+                        else
+              apply_coloring( )
+      
+        $( row_elem ).find( 'div#consolidation-dropdown' ).html( $drop_elem )
 
+    apply_coloring = ( ) ->
       number_of_extractions = get_number_of_extractions( )
       extractor_arr = get_extractor_names( )
 
       $( '.consolidation-data-row' ).each ( row_id, row_elem ) ->
         # data matching tree
         b_dict = { }
-        # consolidated data values and cell_elem
-        c_dict = { }
-        # holds all cell_elems
-        a_dict = { }
+        consolidated_cell = { }
+        consolidated_value = { }
 
-        #arm rows
-        $arm_rows = $( row_elem ).children( 'tr' )
-        $arm_rows.each ( arm_row_id, arm_row_elem ) ->
-          a_dict[ arm_row_id ] ||= { }
-          c_dict[ arm_row_id ] ||= { }
+        $( row_elem ).children( 'tr' ).each ( arm_row_id, arm_row_elem ) ->
           b_dict[ arm_row_id ] ||= { }
-          $question_cells = $( arm_row_elem ).children( 'td' )
           
-          # not sure about this, we should be doing this only once
-          # number_of_extractions = $question_cells.length - 1
-
-          $question_cells.each ( cell_id, cell_elem ) ->
-            # store cell_elem for dropdown
-            a_dict[ arm_row_id ][ cell_id ] = cell_elem
-
-            # if we are at the consolidated cell, store cell_elem
-            if cell_id == number_of_extractions
-              c_dict[ arm_row_id ][ "cell_elem" ] = cell_elem
-            
-            ## there should only be one
-            $( cell_elem ).find( 'tbody' ).each ( idx, cell_body ) ->
-              c_dict[ arm_row_id ][ cell_id ] ||= { }
-              c_dict[ arm_row_id ][ cell_id ][ "extractor" ] = extractor_arr[ cell_id ]
-              $( cell_body ).find( 'tr' ).each ( tr_id, tr_elem ) ->
-                b_dict[ arm_row_id ][ tr_id ] ||= { }
-                c_dict[ arm_row_id ][ cell_id ][ tr_id ] ||= { }
-                # there is only one row with id 1
-                $( tr_elem ).find( 'td' ).each ( td_id, td_elem ) ->
-                  ## is there a better way to skip the header?
-                  if td_id != 0
-                    # if we are at an extraction's cell, populate the data matching tree
-                    if cell_id != number_of_extractions
-                      question_value = get_question_value( td_elem )
-                      b_dict[ arm_row_id ][ tr_id ][ td_id ] ||= { }
-                      b_dict[ arm_row_id ][ tr_id ][ td_id ][ question_value ] ||= 0
-                      b_dict[ arm_row_id ][ tr_id ][ td_id ][ question_value]++
-
-                    c_dict[ arm_row_id ][ cell_id ][ tr_id ][ td_id ] ||= { }
-                    c_dict[ arm_row_id ][ cell_id ][ tr_id ][ td_id ][ "question_type" ] = get_question_type( td_elem )
-                    c_dict[ arm_row_id ][ cell_id ][ tr_id ][ td_id ][ "question_value" ] = get_question_value( td_elem )
-                    c_dict[ arm_row_id ][ cell_id ][ tr_id ][ td_id ][ "cell_elem" ] = td_elem
-
-        
-        #console.log( b_dict )
-
+          $( arm_row_elem ).find( 'td tbody' ).each ( cell_id, cell_elem ) ->
+            $( cell_elem ).find( 'tr' ).each ( tr_id, tr_elem ) ->
+              b_dict[ arm_row_id ][ tr_id ] ||= { }
+              consolidated_cell[ tr_id ] ||= { }
+              consolidated_value[ tr_id ] ||= { }
+              $( tr_elem ).find( 'td' ).each ( td_id, td_elem ) ->
+                ## is there a better way to skip the header?
+                if td_id != 0
+                  # if we are at an extraction's cell, populate the data matching tree
+                  if cell_id != number_of_extractions
+                    question_value = get_question_value( td_elem )
+                    b_dict[ arm_row_id ][ tr_id ][ td_id ] ||= { }
+                    b_dict[ arm_row_id ][ tr_id ][ td_id ][ question_value ] ||= 0
+                    b_dict[ arm_row_id ][ tr_id ][ td_id ][ question_value ]++
+                  else
+                    consolidated_cell[ tr_id ][ td_id ] = $( td_elem )
+                    consolidated_value[ tr_id ][ td_id ] = get_question_value( td_elem )
 
         $.each b_dict, ( arm_row_id, tr_dict ) ->
           #console.log ( "arm_row_id --> " + arm_row_id )
@@ -307,36 +289,31 @@ document.addEventListener 'turbolinks:load', ->
             $.each td_dict, ( td_id, value_dict ) ->
               color_dict[ tr_id ][ td_id ] = ""
               #console.log ( "td_id --> " + td_id )
-              cell_elem = c_dict[ arm_row_id ][ number_of_extractions ][ tr_id ][ td_id ][ "cell_elem" ]
               $.each value_dict, ( value, value_count ) ->
                 value_arr.push value
                 #console.log ( value + " --> " + value_count )
                #console.log "consolidated value: " + c_dict[ arm_row_id ][ number_of_extractions ][ tr_id ][ td_id ][ "question_value" ]
                 if ( value_count != number_of_extractions )
-                  if c_dict[ arm_row_id ][ number_of_extractions ][ tr_id ][ td_id ][ "question_value" ] != ""
+                  if consolidated_value[ tr_id ][ td_id ] != ""
                     color_dict[ tr_id ][ td_id ] = "green"
                   else
                     color_dict[ tr_id ][ td_id ] = "red"
                 else
-                  if value != c_dict[ arm_row_id ][ number_of_extractions ][ tr_id ][ td_id ][ "question_value" ]
+                  if value != consolidated_value[ tr_id ][ td_id ]
                     color_dict[ tr_id ][ td_id ] = "green"
                   else
                     color_dict[ tr_id ][ td_id ] = "#410093"
               
           $.each color_dict, ( tr_id, color_tr_dict ) ->
             $.each color_tr_dict, ( td_id, color ) ->
-              cell_elem = c_dict[ arm_row_id ][ number_of_extractions ][ tr_id ][ td_id ][ "cell_elem" ]
-              $( cell_elem ).css( 'border', 'solid' )
-              $( cell_elem ).css( 'border-color', color )
-
-          # i dont like this code structure one bit, too fragile
-          if first_time
-            add_change_listeners_to_questions( c_dict[ arm_row_id ], number_of_extractions )
-            $( c_dict[ arm_row_id ][ "cell_elem" ] ).find( 'div#consolidation-dropdown' ).html( get_consolidation_dropdown( c_dict[ arm_row_id ], number_of_extractions ) )
+              consolidated_cell[ tr_id ][ td_id ].css( 'border', 'solid' )
+              consolidated_cell[ tr_id ][ td_id ].css( 'border-color', color )
 
             
     ## call coloring for the first time
-    apply_coloring( true )
+    add_change_listeners_to_questions( )
+    apply_coloring( )
+    apply_consolidation_dropdown( )
 
 ############### results section
 
@@ -457,5 +434,3 @@ document.addEventListener 'turbolinks:load', ->
     add_change_listeners_to_results_section()
     result_section_coloring()
     result_section_dropdowning()
-
-
