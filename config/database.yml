@@ -13,7 +13,7 @@ default: &default
   adapter: mysql2
   encoding: utf8
   pool: 5
-  username: circle-ci
+  username: root
   password:
   host: 127.0.0.1
 
