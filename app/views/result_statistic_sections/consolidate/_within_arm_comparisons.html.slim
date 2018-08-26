@@ -16,8 +16,9 @@
             div style='text-align: center; font-weight: bold;' == wac.comparate_groups.first.comparates.map { |c| c.comparable_element.comparable.label_with_baseline_indicator }.join('<br>')
             div style='text-align: center;' vs.
             div style='text-align: center; font-weight: bold;' == wac.comparate_groups.second.comparates.map { |c| c.comparable_element.comparable.label_with_baseline_indicator }.join('<br>')
-          - @arms.each do |arm|
-            td
+          - @arms.each_with_index do |arm, i|
+            td.consolidated-data-cell
+              div.consolidated-dropdown
               - @result_statistic_section.result_statistic_sections_measures.each do |rssm|
                 // Create record form for rssm. (wac x arm x rssm)
                 - comparisons_arms_rssm = ComparisonsArmsRssm.find_or_create_by!( \
@@ -33,18 +34,21 @@
 
                     thead
                       tr
-                        th
+                        - if i == 0
+                          th
                         th = f.input :name, label: rssm.measure.name, wrapper: :label_only
 
                     tbody
                       - @extractions.each do |extraction|
                         tr
-                          td = extraction.user.profile.username
+                          - if i == 0
+                            td.extractor-name = extraction.user.profile.username
                           td Mock Value
                           /td = ComparisonsArmsRssm.find_record_by_extraction(extraction, a, @result_statistic_section, tp, rssm).name
 
                       tr
-                        td style='font-weight: bold;' Consolidated
+                        - if i == 0
+                          td.extractor-name style='font-weight: bold;' Consolidated
                         td
                           = f.input :name, label: false, required: false, class: 'form-control', wrapper_html: { style: 'padding-bottom: 0;' }, input_html: { style: 'margin-bottom: 0;' }
                           div id="record-id-#{ record.id.to_s }" class='record-info' style='opacity: 0;' = 'Saved!'

@@ -33,8 +33,9 @@
       - @result_statistic_section.timepoints.each do |tp|
         tr
           td = tp.timepoint_name.name + (tp.timepoint_name.unit.present? ? " (#{ tp.timepoint_name.unit })" : '')
-          - @result_statistic_section.comparisons.each do |bac|
-            td
+          - @result_statistic_section.comparisons.each_with_index do |bac, i|
+            td.consolidated-data-cell
+              div.consolidated-dropdown
               - @result_statistic_section.result_statistic_sections_measures.each do |rssm|
                 // Create record form for rssm. (timepoint x bac x rssm)
                 - tps_comparisons_rssm = TpsComparisonsRssm.find_or_create_by!( \
@@ -50,18 +51,21 @@
 
                     thead
                       tr
-                        th
+                        - if i == 0
+                          th
                         th = f.input :name, label: rssm.measure.name, wrapper: :label_only
 
                     tbody
                       - @extractions.each do |extraction|
                         tr
-                          td = extraction.user.profile.username
+                          - if i == 0
+                            td.extractor-name = extraction.user.profile.username
                           td Mock Value
                           /td = TpsComparisonsRssm.find_record_by_extraction(extraction, a, @result_statistic_section, tp, rssm).name
 
                       tr
-                        td style='font-weight: bold;' Consolidated
+                        - if i == 0
+                          td.extractor-name style='font-weight: bold;' Consolidated
                         td
                           = f.input :name, label: false, required: false, class: 'form-control', wrapper_html: { style: 'padding-bottom: 0;' }, input_html: { style: 'margin-bottom: 0;' }
                           div id="record-id-#{ record.id.to_s }" class='record-info' style='opacity: 0;' = 'Saved!'
