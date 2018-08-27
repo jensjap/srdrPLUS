@@ -81,6 +81,7 @@
                   - unless linked_section && eefps.link_to_type1.type1s.blank?
                     - if eefps.link_to_type1.type1s.include?(t1)
                       td style='border: 2px solid #{ color_array[0] };'
+                        div style="height: 55px;"
                         h6 = linked_section.extraction_forms_projects_section.section.name.singularize + ': ' + t1.name_and_description
                         = render 'extractions/shared/type_2/question_fields',
                           q: q,
@@ -106,7 +107,7 @@
                 - unless linked_section && eefps.link_to_type1.type1s.blank?
                   - if eefps.link_to_type1.type1s.include?(t1)
                     td
-                      div id="consolidation-dropdown"
+                      div id="consolidation-dropdown" style="height: 55px;"
                       h6 = linked_section.extraction_forms_projects_section.section.name.singularize + ': ' + t1.name_and_description
                       = render 'extractions/shared/type_2/question_fields',
                         q: q,
@@ -131,6 +132,7 @@
                       extraction_forms_projects_section: efps.link_to_type1))
 
                 td style='border: 2px solid #{ color_array[0] };'
+                  div style="height: 55px;"
                   = render 'extractions/shared/type_2/question_fields',
                     q: q,
                     t1: nil,
@@ -147,7 +149,7 @@
                     extraction_forms_projects_section: efps.link_to_type1))
 
               td
-                div id="consolidation-dropdown"
+                div id="consolidation-dropdown" style="height: 55px;"
                   
                 = render 'extractions/shared/type_2/question_fields',
                   q: q,

@@ -121,7 +121,7 @@ document.addEventListener 'turbolinks:load', ->
 
         when "checkbox"
           cb_arr = []
-          $( question ).find( 'input.check_boxes[checked="checked"]' ).each ( input_id, input_elem ) ->
+          $( question ).find( 'input.check_boxes' ).filter( ':checked' ).each ( input_id, input_elem ) ->
             cb_arr.push input_elem.value
            return ( if cb_arr.length > 0 then cb_arr.join( "&&" ) else "" )
 
@@ -158,6 +158,7 @@ document.addEventListener 'turbolinks:load', ->
                     when "checkbox"
                       $( td_elem ).find( 'input.check_boxes' ).each ( input_id, input_elem ) ->
                         $( input_elem ).change ->
+                          console.log "LOYLOY"
                           apply_coloring( )
 
                     when "dropdown"
@@ -279,158 +280,31 @@ document.addEventListener 'turbolinks:load', ->
                     consolidated_value[ tr_id ][ td_id ] = get_question_value( td_elem )
 
         $.each b_dict, ( arm_row_id, tr_dict ) ->
-          #console.log ( "arm_row_id --> " + arm_row_id )
           color_dict = { }
           value_arr = [ ]
           
           $.each tr_dict, ( tr_id, td_dict ) ->
-            #console.log ( "tr_id --> " + tr_id )
             color_dict[ tr_id ] ||= { }
             $.each td_dict, ( td_id, value_dict ) ->
               color_dict[ tr_id ][ td_id ] = ""
-              #console.log ( "td_id --> " + td_id )
               $.each value_dict, ( value, value_count ) ->
                 value_arr.push value
-                #console.log ( value + " --> " + value_count )
-               #console.log "consolidated value: " + c_dict[ arm_row_id ][ number_of_extractions ][ tr_id ][ td_id ][ "question_value" ]
                 if ( value_count != number_of_extractions )
                   if consolidated_value[ tr_id ][ td_id ] != ""
-                    color_dict[ tr_id ][ td_id ] = "green"
+                    color_dict[ tr_id ][ td_id ] = "#D1F2EB"
                   else
-                    color_dict[ tr_id ][ td_id ] = "red"
+                    color_dict[ tr_id ][ td_id ] = "#FADBD8"
                 else
                   if value != consolidated_value[ tr_id ][ td_id ]
-                    color_dict[ tr_id ][ td_id ] = "green"
+                    color_dict[ tr_id ][ td_id ] = "#D1F2EB"
                   else
-                    color_dict[ tr_id ][ td_id ] = "#410093"
+                    color_dict[ tr_id ][ td_id ] = "#E8DAEF"
               
           $.each color_dict, ( tr_id, color_tr_dict ) ->
             $.each color_tr_dict, ( td_id, color ) ->
-              consolidated_cell[ tr_id ][ td_id ].css( 'border', 'solid' )
-              consolidated_cell[ tr_id ][ td_id ].css( 'border-color', color )
-
+              consolidated_cell[ tr_id ][ td_id ].css( 'background', color )
             
     ## call coloring for the first time
     add_change_listeners_to_questions( )
     apply_coloring( )
     apply_consolidation_dropdown( )
-
-############### results section
-
-    get_result_value = ( td_elem ) ->
-      inputs = $( td_elem ).find( "input.string" )
-      return ( if inputs.length > 0 then inputs[ 0 ].value else "" )
-
-    get_result_elem = ( td_elem ) ->
-      inputs = $( td_elem ).find( "input.string" )
-      return ( if inputs.length > 0 then inputs[ 0 ] else null )
-
-    get_result_number_of_extractions = ( ) ->
-      questions = $( 'table.consolidated-data-table tbody' )
-      if questions.length > 0
-        rows = $( questions[ 0 ] ).find( 'tr' )
-        return Math.max( 0, rows.length - 1 )
-      return 0
-
-    get_result_extractor_names = ( ) ->
-      questions = $( 'table.consolidated-data-table tbody' )
-      if questions.length > 0
-        extractor_names = []
-        $rows = $( questions[ 0 ] ).find( 'tr' )
-        $rows.each ( tr_id, tr_elem ) ->
-          $( tr_elem ).find( "td.extractor-name" ).each ( td_id, td_elem ) ->
-            if td_id == 0
-              extractor_names.push td_elem.innerHTML
-        return extractor_names
-      return []
-
-    add_change_listeners_to_results_section = ( ) ->
-      number_of_extractions = get_result_number_of_extractions( )
-
-      $( 'table.consolidated-data-table tbody' ).each ( row_id, row_elem ) ->
-        $( row_elem ).find( 'tr' ).each ( tr_id, tr_elem ) ->
-          $( tr_elem ).find( 'td' ).not( '.extractor-name' ).each ( td_id, td_elem ) ->
-            if tr_id == number_of_extractions
-              input_elem = get_result_elem( td_elem )
-              if input_elem
-                $( input_elem ).keyup ->
-                  result_section_coloring( )
-
-    result_section_coloring = ( ) ->
-      number_of_extractions = get_result_number_of_extractions( )
-
-      $( 'table.consolidated-data-table tbody' ).each ( row_id, row_elem ) ->
-        a_dict = { }
-        $( row_elem ).find( 'tr' ).each ( tr_id, tr_elem ) ->
-          # hold the values for matching
-          $( tr_elem ).find( 'td' ).not( '.extractor-name' ).each ( td_id, td_elem ) ->
-            if tr_id < number_of_extractions
-              a_dict[ "counts" ] ||= { }
-              a_dict[ "counts" ][ td_elem.innerHTML ] ||= 0
-              a_dict[ "counts" ][ td_elem.innerHTML ]++
-            else
-              a_dict[ "consolidated_value" ] = get_result_value( td_elem )
-              a_dict[ "consolidated_elem" ] = get_result_elem( td_elem )
-
-        console.log a_dict
-
-        color = "#410093"
-        $.each a_dict[ "counts" ], ( value, count ) ->
-          console.log count
-          if count != number_of_extractions
-            if a_dict[ "consolidated_value" ] != ""
-              color = "green"
-            else
-              color = "red"
-          else
-            if a_dict[ "consolidated_value" ] == value
-              color = "#410093"
-            else
-              color = "green"
-        
-          $( a_dict[ "consolidated_elem" ] ).css( 'border', 'solid' )
-          $( a_dict[ "consolidated_elem" ] ).css( 'border-color', color )
-    
-
-    result_section_dropdowning = ( ) ->
-      number_of_extractions = get_result_number_of_extractions( )
-      extractor_names = get_result_extractor_names( )
-
-      $( 'td.consolidated-data-cell' ).each ( cell_id, cell_elem ) ->
-        a_dict = { }
-
-        $drop_elem = $ "<select>"
-
-        for extraction_id in [ 0..number_of_extractions ]
-          drop_option = $ "<option>"
-          drop_option.text extractor_names[ extraction_id ]
-          drop_option.val extraction_id
-          if extraction_id == number_of_extractions
-            drop_option.prop( "selected", true )
-          $drop_elem.append drop_option
-
-        $( cell_elem ).find( 'table.consolidated-data-table tbody' ).each ( row_id, row_elem ) ->
-          a_dict[ row_id ] ||= { }
-          $( row_elem ).find( 'tr' ).each ( tr_id, tr_elem ) ->
-            $( tr_elem ).find( 'td' ).not( '.extractor-name' ).each ( td_id, td_elem ) ->
-              if tr_id < number_of_extractions
-                a_dict[ row_id ][ tr_id ] = td_elem.innerHTML
-              else
-                a_dict[ row_id ][ tr_id ] = get_result_value( td_elem )
-
-        $drop_elem.change ( ) ->
-          $( cell_elem ).find( 'table.consolidated-data-table tbody' ).each ( row_id, row_elem ) ->
-            $( row_elem ).find( 'tr' ).each ( tr_id, tr_elem ) ->
-              $( tr_elem ).find( 'td' ).not( '.extractor-name' ).each ( td_id, td_elem ) ->
-                if tr_id == number_of_extractions
-                  selected_id = $drop_elem.children("option").filter(":selected")[ 0 ].value
-                  input_elem = get_result_elem( td_elem )
-                  $( input_elem ).val( a_dict[ row_id ][ selected_id ] )
-                  $( input_elem ).trigger( 'keyup' )
-                  result_section_coloring
-
-        $( cell_elem ).find( "div.consolidated-dropdown" ).html( $drop_elem )
-
-    add_change_listeners_to_results_section()
-    result_section_coloring()
-    result_section_dropdowning()
