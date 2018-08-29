@@ -4,7 +4,7 @@
     .menu-text.title-bar-left
       = link_to root_path
         button type='button' data-toggle='offCanvasNav'
-          = image_tag('brand-sm', size: '60x10', style: 'cursor: pointer;')
+          = image_tag('brand-sm.png', size: '60x10', style: 'cursor: pointer;')
     ul.menu.title-bar-right
       - unless user_signed_in?
         li.hide-for-medium = link_to('Login', new_user_session_path, style: 'padding: 2px; color: white;')
@@ -16,7 +16,7 @@
       .menu-text.hide-for-small-only
         = link_to root_path
           button type='button' data-toggle='offCanvasNav'
-            = image_tag('brand', size: '200x50')
+            = image_tag('brand.png', size: '200x50')
     .top-bar-right
       ul.vertical.dropdown.menu.medium-horizontal data-dropdown-menu='' data-close-on-click-inside='false'
         li = link_to(new_search_path) do
