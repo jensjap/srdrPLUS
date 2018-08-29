@@ -2,15 +2,11 @@
 
 one:
   extractions_extraction_forms_projects_sections_type1: one
-  name: MyString
-  unit: MyString
-  is_baseline: true
+  population_name: one
   deleted_at:
 
 two:
   extractions_extraction_forms_projects_sections_type1: two
-  name: MyString
-  unit: MyString
-  is_baseline: true
+  population_name: two
   deleted_at:
 
