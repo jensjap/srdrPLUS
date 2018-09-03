@@ -38,6 +38,7 @@ class ProjectsController < ApplicationController
   # POST /projects.json
   def create
     @project = Project.new(project_params)
+    @project.add_member_and_assign_default_role(current_user, 'Leader')
 
     respond_to do |format|
       if @project.save

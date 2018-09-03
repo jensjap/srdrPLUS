@@ -149,6 +149,13 @@ class Project < ApplicationRecord
     return citation_groups
   end
 
+  # Add user as member and assign role of 'Leader'
+  def add_member_and_assign_default_role(user, role)
+    ProjectsUser
+      .create(project: self, user: user)
+      .roles << Role.where(name: role)
+  end
+
   private
 
     def create_default_extraction_form
