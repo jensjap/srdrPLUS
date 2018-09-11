@@ -62,7 +62,7 @@ class CitationsController < ApplicationController
   end
 
   def unlabeled
-    @project = project.find(params[:project_id])
+    @project = Project.find(params[:project_id])
     @citations = citation.unlabeled(@project)
     render 'index'
   end

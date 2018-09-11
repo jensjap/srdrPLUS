@@ -126,3 +126,6 @@ gem 'searchkick'
 gem 'searchjoy'
 
 gem 'passenger'
+
+# bioruby for pubmed queries
+gem 'bio'

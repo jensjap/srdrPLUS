@@ -46,26 +46,41 @@ document.addEventListener 'turbolinks:load', ->
 
     $( '.citation_select' ).select2
       ajax:
-        url: '/citations',
+        url: '/api/v1/citations',
         dataType: 'json'
         delay: 250
         data: (params) ->
           console.log params
           q: params.term
           page: params.page || 1
+        processResults: (data, params) ->
+          # The server may respond with params.page, set it to 1 if not.
+          params.page = params.page || 1
+          results: $.map(data.items, (i) ->
+            id: i.id
+            text: i.name
+          )
       width: '75%'
 
       # Cocoon listeners.
     $( document ).on 'cocoon:after-insert', ( e, insertedItem ) ->
       $( '.citation_select' ).select2
         ajax:
-          url: '/citations',
+          url: '/api/v1/citations',
           dataType: 'json'
           delay: 250
           data: (params) ->
-            q: params.term
-            page: params.page || 1
-        width: '75%'
+          console.log params
+          q: params.term
+          page: params.page || 1
+        processResults: (data, params) ->
+          # The server may respond with params.page, set it to 1 if not.
+          params.page = params.page || 1
+          results: $.map(data.items, (i) ->
+            id: i.id
+            text: i.name
+          )
+      width: '75%'
     return
 #      # Cocoon listeners.
 #      .on 'cocoon:before-insert', ( e, insertedItem ) ->

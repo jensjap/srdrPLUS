@@ -29,8 +29,10 @@ module SeedData
       ])
 
       # CitationTypes.
-      CitationType.create(name: 'Primary') 
-      CitationType.create(name: 'Secondary') 
+      @primary        = CitationType.create(name: 'Primary') 
+      @secondary      = CitationType.create(name: 'Secondary') 
+      @citation_types = [@primary, @secondary]
+
 
       # ActionTypes.
       ActionType.create([
@@ -370,10 +372,6 @@ module SeedDataExtended
       # Associate KQ's and EF's with first project.
       @project = Project.order(updated_at: :desc).first
       @project.key_questions << [@kq1, @kq2]
-
-      @primary        = CitationType.create(name: 'Primary') 
-      @secondary      = CitationType.create(name: 'Secondary') 
-      @citation_types = [@primary, @secondary]
 
       # Citations, Journals, Authors and Keywords
       1000.times do |n|

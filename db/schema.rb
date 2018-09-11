@@ -533,7 +533,7 @@ ActiveRecord::Schema.define(version: 20180926055048) do
     t.string   "name"
     t.datetime "created_at",       null: false
     t.datetime "updated_at",       null: false
-    t.date     "publication_date"
+    t.string   "publication_date"
     t.index ["citation_id"], name: "index_journals_on_citation_id", using: :btree
   end
 

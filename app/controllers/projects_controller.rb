@@ -1,5 +1,5 @@
 class ProjectsController < ApplicationController
-  before_action :set_project, only: [:show, :edit, :update, :destroy, :export]
+  before_action :set_project, only: [:show, :edit, :update, :destroy, :export, :import_csv, :import_pubmed]
 
   SORT = {  'updated-at': { updated_at: :desc },
             'created-at': { created_at: :desc }
@@ -30,7 +30,8 @@ class ProjectsController < ApplicationController
 
   # GET /projects/1/edit
   def edit
-    @citations = @project.citations
+    @citations = Citation.all
+    #@citations = @project.citations
     @citations_projects = @project.citations_projects.page(params[:page])
   end
 
@@ -117,6 +118,16 @@ class ProjectsController < ApplicationController
     redirect_to edit_project_path(@project)
   end
 
+  def import_csv
+    @project.import_citations_from_csv( params[:project][:citation_file] )
+    redirect_to edit_project_path(@project, anchor: 'panel-citations')
+  end
+
+  def import_pubmed
+    @project.import_citations_from_pubmed( params[:project][:citation_file] )
+    redirect_to edit_project_path(@project, anchor: 'panel-citations')
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_project
@@ -129,7 +140,7 @@ class ProjectsController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def project_params
       params.require(:project)
-        .permit(:name, :description, :attribution, :methodology_description,
+        .permit(:citation_file, :name, :description, :attribution, :methodology_description,
                 :prospero, :doi, :notes, :funding_source,
                 { tasks_attributes: [:id, :name, :num_assigned, :task_type_id, assignments_attributes: [:id, :user_id]]},
                 { assignments_attributes: [:id, :done_so_far, :date_assigned, :date_due, :done, :user_id]},

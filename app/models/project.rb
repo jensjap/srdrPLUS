@@ -1,4 +1,6 @@
 class Project < ApplicationRecord
+  require 'csv'
+
   include SharedPublishableMethods
   include SharedQueryableMethods
 
@@ -154,9 +156,117 @@ class Project < ApplicationRecord
     ProjectsUser
       .create(project: self, user: user)
       .roles << Role.where(name: role)
+  def import_citations_from_csv( file )
+    primary_id = CitationType.find_by( name: 'Primary' ).id
+    secondary_id = CitationType.find_by( name: 'Secondary' ).id
+    
+    row_d = { 'Primary' => primary_id, 'primary' => primary_id, 
+              'Secondary' => secondary_id, 'secondary' => secondary_id,
+              '' => nil }
+
+    h_arr = [] 
+    CSV.foreach( file.path, headers: :true ) do |row|
+      row_h = row.to_h
+
+      ### file encoding causes weird problems
+      
+      ### citation type, not sure if necessary
+      cit_type = row_h[ 'type' ]
+      if cit_type.present?
+        row_h[ 'citation_type_id' ] = row_d[ cit_type ]  
+      end
+      row_h.delete 'type'
+
+      ### keywords
+      kw_str = row_h[ 'keywords' ] 
+      if kw_str.present?
+        kw_arr = []
+        kw_str.split( '; ' ).each do |kw|
+          kw_arr << { name: kw }
+        end
+        row_h[ 'keywords_attributes' ] = kw_arr
+      end
+      row_h.delete( 'keywords' )
+
+      ### authors
+      au_str = row_h[ 'authors' ] 
+      if au_str.present?
+        au_arr = []
+        au_str.split( '; ' ).each do |au|
+          au_arr << { name: au }
+        end
+        row_h[ 'authors_attributes' ] = au_arr
+      end
+      row_h.delete( 'authors' )
+
+      ### journal
+      j_h = {}
+      j_h[ 'name' ] = row_h[ 'journal' ].strip
+      j_h[ 'publication_date' ] = row_h[ 'publication_date' ].strip
+      j_h[ 'volume' ] = row_h[ 'volume' ].strip
+      j_h[ 'issue' ] = row_h[ 'issue' ].strip
+      row_h[ 'journal_attributes' ] = j_h
+      row_h.delete( 'journal' )
+      row_h.delete( 'publication_date' )
+      row_h.delete( 'volume' )
+      row_h.delete( 'issue' )
+
+      h_arr << row_h
+    end
+
+    self.citations << Citation.create( h_arr )
+  end
+
+  def import_citations_from_pubmed( file )
+    pmid_arr = File.readlines( file.path )
+    primary_id = CitationType.find_by( name: 'Primary' ).id
+
+    h_arr = [] 
+    Bio::PubMed.efetch( pmid_arr ).each do |cit_txt|
+      row_h = {}
+      cit_h = Bio::MEDLINE.new( cit_txt ).pubmed
+      ### will add as primary citation by default, there is no way to figure that out from pubmed
+      row_h[ 'pmid' ] = cit_h[ 'PMID' ].strip
+      row_h[ 'name' ] = cit_h[ 'TI' ].strip
+      row_h[ 'abstract' ] = cit_h[ 'AB' ].strip
+      row_h[ 'citation_type_id' ] = primary_id
+      
+      #keywords
+      if cit_h[ 'OT' ].present? 
+        kw_arr = cit_h[ 'OT' ].split( "\n" )
+        row_h[ 'keywords_attributes' ] = [] 
+        kw_arr.each do |kw|
+          row_h[ 'keywords_attributes' ] << { name: kw }
+        end
+      end
+
+      #authors
+      if cit_h[ 'AU' ].present? 
+        au_arr = cit_h[ 'AU' ].split( "\n" )
+        row_h[ 'authors_attributes' ] = [] 
+        au_arr.each do |au|
+          row_h[ 'authors_attributes' ] << { name: au }
+        end
+      end
+
+      #journal
+      j_h = {}
+      j_h[ 'name' ] = cit_h[ 'TA' ].strip
+      j_h[ 'publication_date' ] = cit_h[ 'DP' ].strip
+      j_h[ 'volume' ] = cit_h[ 'VI' ].strip
+      j_h[ 'issue' ] = cit_h[ 'IP' ].strip
+      row_h[ 'journal_attributes' ] = j_h
+
+      h_arr << row_h
+    end
+    self.citations << Citation.create( h_arr )
   end
 
   private
+
+    #def separate_pubmed_keywords( kw_string )
+    #  return kw_string.split( "; " ).map { |str| str.strip }
+    #end
 
     def create_default_extraction_form
       self.extraction_forms_projects.create!(extraction_forms_project_type: ExtractionFormsProjectType.first, extraction_form: ExtractionForm.first)
