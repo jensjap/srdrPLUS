@@ -152,4 +152,63 @@ ul {
     }
   }
 }
+
+.citation-select {
+  width: 97%;
+  background-color:transparent /* This hides the background */; 
+  background-image:none; 
+  border: none; 
+  transition: background-color 0.25s;
+  box-shadow: none;
+  margin-bottom: 0px;
+}
+
+.citation-select:hover {
+  background-color: $light-gray;
+}
+
+.remove-citation {
+  font-size: 16px;
+  color: $primary-color;
+  margin-right: 5px;
+  transition: color 0.25s;
+}
+
+.remove-citation:hover {
+  text-decoration: none;
+  color: $alert-color;
+}
+
+.citation-row {
+  display: flex;
+  justify-content: center;
+  align-items: center; 
+  height: 100%;
+  width: 100%;
+  margin-bottom: 0px;
+}
+
+.citation-fields {
+  display: flex;
+  justify-content: center;
+  align-items: center; 
+}
+
+.citation-inputs {
+  display: flex;
+  justify-content: center;
+  align-items: center; 
+  width: 98%;
+}
+
+.inner-inputs {
+  width: 97%;
+}
+
+.added-item {
+  border-radius: 5px;
+  border: solid 1px $primary-color;
+  margin-bottom: 5px;
+}
+
 // END Colored triangles on the project index page.

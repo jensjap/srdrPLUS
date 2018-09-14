@@ -64,7 +64,8 @@ document.addEventListener 'turbolinks:load', ->
 
       # Cocoon listeners.
     $( document ).on 'cocoon:after-insert', ( e, insertedItem ) ->
-      $( '.citation_select' ).select2
+      $( insertedItem ).addClass( 'added-item' )
+      $( insertedItem ).find( 'citation-select' ).select2
         ajax:
           url: '/api/v1/citations',
           dataType: 'json'
