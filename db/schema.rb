@@ -1158,6 +1158,7 @@ ActiveRecord::Schema.define(version: 20180919073559) do
     t.integer  "type1_type_id"
     t.index ["deleted_at"], name: "index_type1s_on_deleted_at", using: :btree
     t.index ["name", "description", "deleted_at"], name: "index_type1s_on_name_and_description_and_deleted_at", unique: true, length: { description: 255 }, using: :btree
+    t.index ["name", "type1_type_id", "description", "deleted_at"], name: "index_t1s_on_n_t1_t_id_deleted_at", unique: true, length: { description: 255 }, using: :btree
     t.index ["type1_type_id"], name: "index_type1s_on_type1_type_id", using: :btree
   end
 

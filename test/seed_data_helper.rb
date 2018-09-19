@@ -461,41 +461,41 @@ module SeedDataExtended
         end
       end
 
-      # Assignments.
-      Task.all.each do |t|
-        case t.task_type.name
-        when 'Perpetual', 'Pilot'
-          Assignment.create([
-            {
-              date_assigned: DateTime.now,
-              date_due: Date.today + 7,
-              user: @screener_1,
-              task: t
-            },
-            {
-              date_assigned: DateTime.now,
-              date_due: Date.today + 7,
-              user: @screener_2,
-              task: t
-            },
-            {
-              date_assigned: DateTime.now,
-              date_due: Date.today + 7,
-              user: @screener_3,
-              task: t
-            }
-          ])
-        when 'Advanced'
-          for s in @screeners.sample(rand(3))
-            Assignment.create(
-              date_assigned: DateTime.now,
-              date_due: Date.today + 7,
-              user: s,
-              task: t
-            )
-          end
-        end
-      end
+#      # Assignments.
+#      Task.all.each do |t|
+#        case t.task_type.name
+#        when 'Perpetual', 'Pilot'
+#          Assignment.create([
+#            {
+#              date_assigned: DateTime.now,
+#              date_due: Date.today + 7,
+#              user: @screener_1,
+#              task: t
+#            },
+#            {
+#              date_assigned: DateTime.now,
+#              date_due: Date.today + 7,
+#              user: @screener_2,
+#              task: t
+#            },
+#            {
+#              date_assigned: DateTime.now,
+#              date_due: Date.today + 7,
+#              user: @screener_3,
+#              task: t
+#            }
+#          ])
+#        when 'Advanced'
+#          for s in @screeners.sample(rand(3))
+#            Assignment.create(
+#              date_assigned: DateTime.now,
+#              date_due: Date.today + 7,
+#              user: s,
+#              task: t
+#            )
+#          end
+#        end
+#      end
 
       # Messages.
       @totd = MessageType.first
