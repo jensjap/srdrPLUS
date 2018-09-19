@@ -1,4 +1,6 @@
-h4 List of Suggested #{ efps.section.name.titleize.singularize } Titles
+- section_name = efps.section.name.titleize.singularize
+
+h4 List of Suggested #{ section_name } Titles
 .table-scroll
 
   table.hover style='width: 100%;'
@@ -6,13 +8,17 @@ h4 List of Suggested #{ efps.section.name.titleize.singularize } Titles
     thead
       tr
         th Title
-        th Description
+        - if section_name.eql?('Outcome')
+          th Type
+        th = section_name.eql?('Outcome') ? 'Specific Measurement' : 'Description'
         th
 
     tbody
       - efps.type1s.each do |t1|
         tr
           td = t1.name
+          - if section_name.eql? 'Outcome'
+            td = t1.type1_type.try(:name)
           td style='white-space: pre-wrap' = t1.description
           td = link_to extraction_forms_projects_section_dissociate_type1_path(efps, type1_id: t1.id), method: :delete, data: { confirm: t('confirm') } do
             i.fi-trash>

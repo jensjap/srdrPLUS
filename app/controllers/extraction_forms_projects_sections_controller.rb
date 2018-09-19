@@ -103,7 +103,7 @@ class ExtractionFormsProjectsSectionsController < ApplicationController
                 :section_id,
                 :extraction_forms_projects_section_id,
                 key_questions_project_ids: [],
-                type1s_attributes: [:id, :name, :description])
+                type1s_attributes: [:id, :name, :type1_type_id, :description])
     end
 
     def dissociate_type1_params

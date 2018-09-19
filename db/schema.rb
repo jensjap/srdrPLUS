@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180917082311) do
+ActiveRecord::Schema.define(version: 20180919073559) do
 
   create_table "abstrackr_settings", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "profile_id"
@@ -1151,12 +1151,14 @@ ActiveRecord::Schema.define(version: 20180917082311) do
 
   create_table "type1s", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "name"
-    t.text     "description", limit: 65535
+    t.text     "description",   limit: 65535
     t.datetime "deleted_at"
-    t.datetime "created_at",                null: false
-    t.datetime "updated_at",                null: false
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
+    t.integer  "type1_type_id"
     t.index ["deleted_at"], name: "index_type1s_on_deleted_at", using: :btree
     t.index ["name", "description", "deleted_at"], name: "index_type1s_on_name_and_description_and_deleted_at", unique: true, length: { description: 255 }, using: :btree
+    t.index ["type1_type_id"], name: "index_type1s_on_type1_type_id", using: :btree
   end
 
   create_table "users", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -1335,5 +1337,6 @@ ActiveRecord::Schema.define(version: 20180917082311) do
   add_foreign_key "tps_comparisons_rssms", "comparisons"
   add_foreign_key "tps_comparisons_rssms", "extractions_extraction_forms_projects_sections_type1_row_columns", column: "timepoint_id"
   add_foreign_key "tps_comparisons_rssms", "result_statistic_sections_measures"
+  add_foreign_key "type1s", "type1_types"
   add_foreign_key "wacs_bacs_rssms", "result_statistic_sections_measures"
 end
