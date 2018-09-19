@@ -4,6 +4,8 @@ class ProjectsUsersRole < ApplicationRecord
   acts_as_paranoid column: :active, sentinel_value: true
   has_paper_trail
 
+  scope :by_project, -> (project) { joins(projects_user: :project).where(projects_users: { project: project.id } ) }
+
   belongs_to :projects_user, inverse_of: :projects_users_roles
   belongs_to :role,          inverse_of: :projects_users_roles
 
@@ -19,4 +21,8 @@ class ProjectsUsersRole < ApplicationRecord
 
   delegate :project, to: :projects_user
   delegate :user, to: :projects_user
+
+  def handle
+    "#{ user.profile.username || user.email } (#{ role.name })"
+  end
 end
