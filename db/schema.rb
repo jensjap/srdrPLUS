@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180807073319) do
+ActiveRecord::Schema.define(version: 20180917082311) do
 
   create_table "abstrackr_settings", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "profile_id"
@@ -78,18 +78,19 @@ ActiveRecord::Schema.define(version: 20180807073319) do
   end
 
   create_table "assignments", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer  "user_id"
     t.integer  "task_id"
     t.integer  "done_so_far"
     t.datetime "date_assigned"
     t.datetime "date_due"
     t.integer  "done"
     t.datetime "deleted_at"
-    t.datetime "created_at",    null: false
-    t.datetime "updated_at",    null: false
+    t.datetime "created_at",                            null: false
+    t.datetime "updated_at",                            null: false
+    t.boolean  "mutable",                default: true
+    t.integer  "projects_users_role_id"
     t.index ["deleted_at"], name: "index_assignments_on_deleted_at", using: :btree
+    t.index ["projects_users_role_id"], name: "index_assignments_on_projects_users_role_id", using: :btree
     t.index ["task_id"], name: "index_assignments_on_task_id", using: :btree
-    t.index ["user_id"], name: "index_assignments_on_user_id", using: :btree
   end
 
   create_table "authors", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -134,6 +135,17 @@ ActiveRecord::Schema.define(version: 20180807073319) do
     t.index ["consensus_type_id"], name: "index_citations_projects_on_consensus_type_id", using: :btree
     t.index ["deleted_at"], name: "index_citations_projects_on_deleted_at", using: :btree
     t.index ["project_id"], name: "index_citations_projects_on_project_id", using: :btree
+  end
+
+  create_table "citations_tasks", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "citation_id"
+    t.integer  "task_id"
+    t.datetime "deleted_at"
+    t.boolean  "active"
+    t.index ["active"], name: "index_citations_tasks_on_active", using: :btree
+    t.index ["citation_id"], name: "index_citations_tasks_on_citation_id", using: :btree
+    t.index ["deleted_at"], name: "index_citations_tasks_on_deleted_at", using: :btree
+    t.index ["task_id"], name: "index_citations_tasks_on_task_id", using: :btree
   end
 
   create_table "comparable_elements", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -1215,13 +1227,15 @@ ActiveRecord::Schema.define(version: 20180807073319) do
   add_foreign_key "actions", "action_types"
   add_foreign_key "actions", "users"
   add_foreign_key "approvals", "users"
+  add_foreign_key "assignments", "projects_users_roles"
   add_foreign_key "assignments", "tasks"
-  add_foreign_key "assignments", "users"
   add_foreign_key "authors", "citations"
   add_foreign_key "citations", "citation_types"
   add_foreign_key "citations_projects", "citations"
   add_foreign_key "citations_projects", "consensus_types"
   add_foreign_key "citations_projects", "projects"
+  add_foreign_key "citations_tasks", "citations"
+  add_foreign_key "citations_tasks", "tasks"
   add_foreign_key "comparate_groups", "comparisons"
   add_foreign_key "comparates", "comparable_elements"
   add_foreign_key "comparates", "comparate_groups"
