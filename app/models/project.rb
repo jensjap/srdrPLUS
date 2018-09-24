@@ -214,7 +214,7 @@ class Project < ApplicationRecord
       h_arr << row_h
     end
 
-    self.citations << Citation.create( h_arr )
+    self.citations << Citation.create!( h_arr )
   end
 
   def import_citations_from_pubmed( file )
@@ -226,9 +226,9 @@ class Project < ApplicationRecord
       row_h = {}
       cit_h = Bio::MEDLINE.new( cit_txt ).pubmed
       ### will add as primary citation by default, there is no way to figure that out from pubmed
-      row_h[ 'pmid' ] = cit_h[ 'PMID' ].strip
-      row_h[ 'name' ] = cit_h[ 'TI' ].strip
-      row_h[ 'abstract' ] = cit_h[ 'AB' ].strip
+      if cit_h[ 'PMID' ].present? then row_h[ 'pmid' ] = cit_h[ 'PMID' ].strip end
+      if cit_h[ 'TI' ].present? then row_h[ 'name' ] = cit_h[ 'TI' ].strip end
+      if cit_h[ 'AB' ].present? then row_h[ 'abstract' ] = cit_h[ 'AB' ].strip end
       row_h[ 'citation_type_id' ] = primary_id
       
       #keywords
@@ -251,15 +251,67 @@ class Project < ApplicationRecord
 
       #journal
       j_h = {}
-      j_h[ 'name' ] = cit_h[ 'TA' ].strip
-      j_h[ 'publication_date' ] = cit_h[ 'DP' ].strip
-      j_h[ 'volume' ] = cit_h[ 'VI' ].strip
-      j_h[ 'issue' ] = cit_h[ 'IP' ].strip
+      if cit_h[ 'TA' ].present? then j_h[ 'name' ] = cit_h[ 'TA' ].strip end
+      if cit_h[ 'DP' ].present? then j_h[ 'publication_date' ] = cit_h[ 'DP' ].strip end
+      if cit_h[ 'VI' ].present? then j_h[ 'volume' ] = cit_h[ 'VI' ].strip end
+      if cit_h[ 'IP' ].present? then j_h[ 'issue' ] = cit_h[ 'IP' ].strip end
       row_h[ 'journal_attributes' ] = j_h
 
       h_arr << row_h
     end
-    self.citations << Citation.create( h_arr )
+    self.citations << Citation.create!( h_arr )
+  end
+
+  def import_citations_from_ris( file )
+    primary_id = CitationType.find_by( name: 'Primary' ).id
+
+    # creates a new parser of type RIS
+    parser = RefParsers::RISParser.new
+
+    file_string = ""
+    File.readlines(file.path).each do |line|
+      file_string += line.strip_control_and_extended_characters() + "\n"
+    end
+    
+    h_arr = [] 
+    parser.parse( file_string ).each do |cit_h|
+      row_h = {}
+      ### will add as primary citation by default, there is no way to figure that out from pubmed
+      ## NOT SURE ABOUT PMID KEY
+      if cit_h[ 'AN' ].present? then row_h[ 'pmid' ] = cit_h[ 'AN' ].strip end
+      if cit_h[ 'TI' ].present? then row_h[ 'name' ] = cit_h[ 'TI' ].strip end
+      if cit_h[ 'AB' ].present? then row_h[ 'abstract' ] = cit_h[ 'AB' ].strip end
+      row_h[ 'citation_type_id' ] = primary_id
+      
+      #keywords
+      if cit_h[ 'KW' ].present? 
+        kw_arr = cit_h[ 'KW' ].split( "     " )
+        row_h[ 'keywords_attributes' ] = [] 
+        kw_arr.each do |kw|
+          row_h[ 'keywords_attributes' ] << { name: kw }
+        end
+      end
+
+      #authors
+      if cit_h[ 'AU' ].present? 
+        au_arr = cit_h[ 'AU' ]
+        row_h[ 'authors_attributes' ] = [] 
+        au_arr.each do |au|
+          row_h[ 'authors_attributes' ] << { name: au }
+        end
+      end
+
+      #journal
+      j_h = {}
+      if cit_h[ 'T2' ].present? then j_h[ 'name' ] = cit_h[ 'T2' ].strip end
+      if cit_h[ 'PY' ].present? then j_h[ 'publication_date' ] = cit_h[ 'PY' ].strip end
+      if cit_h[ 'VL' ].present? then j_h[ 'volume' ] = cit_h[ 'VL' ].strip end
+      if cit_h[ 'IS' ].present? then j_h[ 'issue' ] = cit_h[ 'IS' ].strip end
+      row_h[ 'journal_attributes' ] = j_h
+
+      h_arr << row_h
+    end
+    self.citations << Citation.create!( h_arr )
   end
 
   private

@@ -3,9 +3,8 @@
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
 document.addEventListener 'turbolinks:load', ->
-
   do ->
-
+    #$(window).trigger('load.zf.sticky')
     # Ajax call to filter the project list. We want to return a function here
     # to prevent it from being called immediately. Wrapper is to allow passing
     # param without immediate function invocation.
@@ -83,6 +82,7 @@ document.addEventListener 'turbolinks:load', ->
             )
         width: '75%'
     return
+    
 #      # Cocoon listeners.
 #      .on 'cocoon:before-insert', ( e, insertedItem ) ->
 #        insertedItem.fadeIn 'slow'

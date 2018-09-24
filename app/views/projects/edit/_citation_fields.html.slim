@@ -2,5 +2,9 @@
   .citation-inputs
     .inner-inputs
       = f.input :name, placeholder: 'New Citation'
-      = f.association :citation_type, label: 'Citation Type', selected: 1
+      = f.input :abstract, as: :text
+      .number-row
+        = f.input :pmid, as: :integer
+        = f.input :refman, as: :integer
+        = f.association :citation_type, label: 'Citation Type', selected: 1
   = link_to_remove_association '✖', f, class: 'remove-citation'

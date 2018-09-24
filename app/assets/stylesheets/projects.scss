@@ -154,8 +154,8 @@ ul {
 }
 
 .citation-select {
-  width: 97%;
-  background-color:transparent /* This hides the background */; 
+  width: 100%;
+  background-color:transparent;
   background-image:none; 
   border: none; 
   transition: background-color 0.25s;
@@ -181,9 +181,8 @@ ul {
 
 .citation-row {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center; 
-  height: 100%;
   width: 100%;
   margin-bottom: 0px;
 }
@@ -205,10 +204,29 @@ ul {
   width: 97%;
 }
 
+.number-row {
+  display: flex;
+  justify-content: space-between;
+}
+
 .added-item {
   border-radius: 5px;
   border: solid 1px $primary-color;
   margin-bottom: 5px;
+}
+
+#citations-footer {
+  padding-top: 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  background-color: $white;
+  margin-bottom: 0px;
+}
+
+abbr[title="required"] {
+  display: none;
 }
 
 // END Colored triangles on the project index page.

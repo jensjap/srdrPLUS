@@ -1,5 +1,5 @@
 class ProjectsController < ApplicationController
-  before_action :set_project, only: [:show, :edit, :update, :destroy, :export, :import_csv, :import_pubmed]
+  before_action :set_project, only: [:show, :edit, :update, :destroy, :export, :import_csv, :import_pubmed, :import_ris]
 
   SORT = {  'updated-at': { updated_at: :desc },
             'created-at': { created_at: :desc }
@@ -30,9 +30,12 @@ class ProjectsController < ApplicationController
 
   # GET /projects/1/edit
   def edit
+    #@citations = Citation.pluck(:id)
     @citations = Citation.all
+    @citation_dict = @citations.map{ |c| [c.id, c] }.to_h
     #@citations = @project.citations
-    @citations_projects = @project.citations_projects.page(params[:page])
+    #@citations_projects = @project.citations_projects.page(params[:page])
+    @citations_projects = @project.citations_projects
   end
 
   # POST /projects
@@ -119,12 +122,23 @@ class ProjectsController < ApplicationController
   end
 
   def import_csv
-    @project.import_citations_from_csv( params[:project][:citation_file] )
+    if params[:project].present? and params[:project][:citation_file].present?
+      @project.import_citations_from_csv( params[:project][:citation_file] )
+    end
     redirect_to edit_project_path(@project, anchor: 'panel-citations')
   end
 
   def import_pubmed
-    @project.import_citations_from_pubmed( params[:project][:citation_file] )
+    if params[:project].present? and params[:project][:citation_file].present?
+      @project.import_citations_from_pubmed( params[:project][:citation_file] )
+    end
+    redirect_to edit_project_path(@project, anchor: 'panel-citations')
+  end
+
+  def import_ris
+    if params[:project].present? and params[:project][:citation_file].present?
+      @project.import_citations_from_ris( params[:project][:citation_file] )
+    end
     redirect_to edit_project_path(@project, anchor: 'panel-citations')
   end
 
@@ -144,7 +158,7 @@ class ProjectsController < ApplicationController
                 :prospero, :doi, :notes, :funding_source,
                 { tasks_attributes: [:id, :name, :num_assigned, :task_type_id, assignments_attributes: [:id, :user_id]]},
                 { assignments_attributes: [:id, :done_so_far, :date_assigned, :date_due, :done, :user_id]},
-                { citations_attributes: [:id, :name, :citation_type_id, :_destroy] },
+                { citations_attributes: [:id, :name, :abstract, :pmid, :refman, :citation_type_id, :_destroy] },
                 citations_projects_attributes: [:id, :_destroy, :citation_id, :project_id,
                                                 citation_attributes: [:id, :_destroy, :name]])
     end
