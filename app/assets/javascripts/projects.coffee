@@ -81,7 +81,28 @@ document.addEventListener 'turbolinks:load', ->
               text: i.name
             )
         width: '75%'
-    return
+
+    # Bind select2 to degree selection.
+    $( "#citations-projects-list" ).on 'cocoon:after-insert', ( e, insertedItem ) ->
+      $( insertedItem ).addClass( 'added-citation-item' )
+      console.log $( insertedItem ).find( '#project_citation_authors select' )
+
+      $( insertedItem ).find( '.AUTHORS select' ).select2
+        minimumInputLength: 0
+        #closeOnSelect: false
+        ajax:
+          url: '/authors.json'
+          dataType: 'json'
+          delay: 250
+          data: (params) ->
+            q: params.term
+            page: params.page || 1
+        escapeMarkup: (markup) ->
+          markup
+        #templateResult: formatResult
+        #templateSelection: formatResultSelection
+
+
     
 #      # Cocoon listeners.
 #      .on 'cocoon:before-insert', ( e, insertedItem ) ->

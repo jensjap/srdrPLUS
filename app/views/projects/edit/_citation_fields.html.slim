@@ -3,8 +3,21 @@
     .inner-inputs
       = f.input :name, placeholder: 'New Citation'
       = f.input :abstract, as: :text
-      .number-row
-        = f.input :pmid, as: :integer
-        = f.input :refman, as: :integer
-        = f.association :citation_type, label: 'Citation Type', selected: 1
+      .bottom-row
+        .number-row
+          = f.input :pmid, as: :integer
+          = f.input :refman, as: :integer
+          = f.association :citation_type, label: 'Citation Type', selected: 1
+        .author-column
+          = f.association :authors, label: 'Authors', wrapper_html: { class: "AUTHORS" }
+        /.author-column
+          = f.simple_fields_for :authors do |a_f|
+            = render 'projects/edit/author_fields', f: a_f
+          = link_to_add_association 'Add Author', f, :authors, partial: 'projects/edit/author_fields', 'data-association-insertion-node' => '.author-column', 'data-association-insertion-method' => 'prepend'
+        .kw-column
+          = f.simple_fields_for :keywords do |kw_f|
+            = render 'projects/edit/keyword_fields', f: kw_f
+          = link_to_add_association 'Add Keyword', f, :keywords, partial: 'projects/edit/keyword_fields', 'data-association-insertion-node' => '.kw-column', 'data-association-insertion-method' => 'prepend'
+
+
   = link_to_remove_association '✖', f, class: 'remove-citation'

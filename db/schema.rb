@@ -98,7 +98,9 @@ ActiveRecord::Schema.define(version: 20180926055048) do
     t.string   "name"
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
+    t.datetime "deleted_at"
     t.index ["citation_id"], name: "index_authors_on_citation_id", using: :btree
+    t.index ["deleted_at"], name: "index_authors_on_deleted_at", using: :btree
   end
 
   create_table "citation_types", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|

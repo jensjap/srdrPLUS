@@ -193,6 +193,12 @@ ul {
   align-items: center; 
 }
 
+.author-fields {
+  display: flex;
+  justify-content: center;
+  align-items: center; 
+}
+
 .citation-inputs {
   display: flex;
   justify-content: center;
@@ -206,13 +212,24 @@ ul {
 
 .number-row {
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
 }
 
-.added-item {
+.added-citation-item {
   border-radius: 5px;
   border: solid 1px $primary-color;
   margin-bottom: 5px;
+}
+
+.bottom-row {
+  display: flex;
+}
+
+.author-fields {
+  display: flex;
+  align-items: center;
+  border: none;
 }
 
 #citations-footer {

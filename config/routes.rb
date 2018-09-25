@@ -169,6 +169,7 @@ Rails.application.routes.draw do
 
   resource  :profile, only: [:show, :edit, :update]
   resources :degrees, only: [:index]
+  resources :authors, only: [:index]
   resources :organizations, only: [:index]
   resources :sections, only: [:index]
 
