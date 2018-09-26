@@ -1,8 +1,11 @@
-json.total_count @citations.count
-json.incomplete_results false
-json.items do
+json.pagination do
+  json.more @more
+end
+
+json.results do
   json.array!(@citations) do |citation|
-    json.extract! citation, :id, :name
+    json.id citation.id
+    json.text citation.name
   end
 end
 

@@ -158,7 +158,7 @@ class ProjectsController < ApplicationController
                 :prospero, :doi, :notes, :funding_source,
                 { tasks_attributes: [:id, :name, :num_assigned, :task_type_id, assignments_attributes: [:id, :user_id]]},
                 { assignments_attributes: [:id, :done_so_far, :date_assigned, :date_due, :done, :user_id]},
-                { citations_attributes: [:id, :name, :abstract, :pmid, :refman, :citation_type_id, :_destroy] },
+                { citations_attributes: [:id, :name, :abstract, :pmid, :refman, :citation_type_id, :_destroy, author_ids: [], keyword_ids:[]] },
                 citations_projects_attributes: [:id, :_destroy, :citation_id, :project_id,
                                                 citation_attributes: [:id, :_destroy, :name]])
     end

@@ -1,6 +1,6 @@
 class Author < ApplicationRecord
   include SharedQueryableMethods
-  belongs_to :citation, optional: true
+  has_and_belongs_to_many :citations
 
   acts_as_paranoid
   has_paper_trail

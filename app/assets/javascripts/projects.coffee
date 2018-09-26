@@ -43,63 +43,80 @@ document.addEventListener 'turbolinks:load', ->
       $( '#project-filter' ).focus()
       return
 
-    $( '.citation_select' ).select2
-      ajax:
-        url: '/api/v1/citations',
-        dataType: 'json'
-        delay: 250
-        data: (params) ->
-          console.log params
-          q: params.term
-          page: params.page || 1
-        processResults: (data, params) ->
-          # The server may respond with params.page, set it to 1 if not.
-          params.page = params.page || 1
-          results: $.map(data.items, (i) ->
-            id: i.id
-            text: i.name
-          )
-      width: '75%'
+    #$( '.citation_select' ).select2
+    #  ajax:
+    #    url: '/api/v1/citations',
+    #    dataType: 'json'
+    #    delay: 250
+    #    data: (params) ->
+    #      console.log params
+    #      q: params.term
+    #      page: params.page || 1
+    #    processResults: (data, params) ->
+    #      # The server may respond with params.page, set it to 1 if not.
+    #      params.page = params.page || 1
+    #      results: $.map(data.items, (i) ->
+    #        id: i.id
+    #        text: i.name
+    #      )
+    #  width: '75%'
 
       # Cocoon listeners.
-    $( document ).on 'cocoon:after-insert', ( e, insertedItem ) ->
-      $( insertedItem ).addClass( 'added-item' )
-      $( insertedItem ).find( 'citation-select' ).select2
-        ajax:
-          url: '/api/v1/citations',
-          dataType: 'json'
-          delay: 250
-          data: (params) ->
-            console.log params
-            q: params.term
-            page: params.page || 1
-          processResults: (data, params) ->
-            # The server may respond with params.page, set it to 1 if not.
-            params.page = params.page || 1
-            results: $.map(data.items, (i) ->
-              id: i.id
-              text: i.name
-            )
-        width: '75%'
+    #$( document ).on 'cocoon:after-insert', ( e, insertedItem ) ->
+    #  $( insertedItem ).addClass( 'added-item' )
+    #  $( insertedItem ).find( 'citation-select' ).select2
+    #    ajax:
+    #      url: '/api/v1/citations',
+    #      dataType: 'json'
+    #      delay: 250
+    #      data: (params) ->
+    #        console.log params
+    #        q: params.term
+    #        page: params.page || 1
+    #      processResults: (data, params) ->
+    #        # The server may respond with params.page, set it to 1 if not.
+    #        params.page = params.page || 1
+    #        results: $.map(data.items, (i) ->
+    #          id: i.id
+    #          text: i.name
+    #        )
+    #    width: '75%'
 
     # Bind select2 to degree selection.
     $( "#citations-projects-list" ).on 'cocoon:after-insert', ( e, insertedItem ) ->
-      $( insertedItem ).addClass( 'added-citation-item' )
-      console.log $( insertedItem ).find( '#project_citation_authors select' )
+      #$( insertedItem ).addClass( 'added-citation-item' )
 
       $( insertedItem ).find( '.AUTHORS select' ).select2
         minimumInputLength: 0
         #closeOnSelect: false
         ajax:
-          url: '/authors.json'
+          url: '/api/v1/authors.json'
           dataType: 'json'
-          delay: 250
+          delay: 100
           data: (params) ->
             q: params.term
             page: params.page || 1
-        escapeMarkup: (markup) ->
-          markup
-        #templateResult: formatResult
+      $( insertedItem ).find( '.KEYWORDS select' ).select2
+        minimumInputLength: 0
+        #closeOnSelect: false
+        ajax:
+          url: '/api/v1/keywords.json'
+          dataType: 'json'
+          delay: 100
+          data: (params) ->
+            q: params.term
+            page: params.page || 1
+      $( insertedItem ).find( '.citation-select' ).select2
+        minimumInputLength: 0
+        ajax:
+          url: '/api/v1/citations.json',
+          dataType: 'json'
+          delay: 100
+          data: (params) ->
+            q: params.term
+            page: params.page || 1
+
+#templateResult: formatResult
         #templateSelection: formatResultSelection
 
 

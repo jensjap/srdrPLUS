@@ -153,18 +153,20 @@ ul {
   }
 }
 
-.citation-select {
+.citation-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center; 
   width: 100%;
-  background-color:transparent;
-  background-image:none; 
-  border: none; 
-  transition: background-color 0.25s;
-  box-shadow: none;
   margin-bottom: 0px;
 }
 
-.citation-select:hover {
+.citation-row:hover {
   background-color: $light-gray;
+}
+
+.citation-select {
+  margin-bottom: 0px;
 }
 
 .remove-citation {
@@ -179,21 +181,18 @@ ul {
   color: $alert-color;
 }
 
-.citation-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center; 
-  width: 100%;
-  margin-bottom: 0px;
+
+.added-item {
+  border-radius: 5px;
+  border: solid 1px $primary-color;
+  margin-bottom: 5px;
+
+  .select {
+    width: 100%;
+  }
 }
 
 .citation-fields {
-  display: flex;
-  justify-content: center;
-  align-items: center; 
-}
-
-.author-fields {
   display: flex;
   justify-content: center;
   align-items: center; 
@@ -210,26 +209,18 @@ ul {
   width: 97%;
 }
 
-.number-row {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.added-citation-item {
-  border-radius: 5px;
-  border: solid 1px $primary-color;
-  margin-bottom: 5px;
-}
 
 .bottom-row {
   display: flex;
-}
+  justify-content: space-between;
 
-.author-fields {
-  display: flex;
-  align-items: center;
-  border: none;
+  .bottom-column {
+    width: 30%;
+
+    .number-column {
+      display: flex;
+    }
+  }
 }
 
 #citations-footer {

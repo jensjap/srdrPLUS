@@ -398,14 +398,12 @@ module SeedDataExtended
 
         # Keywords
         5.times do |n|
-          Keyword.create(name:     Faker::Hipster.word,
-                         citation: c)
+          c.keywords << Keyword.create(name:     Faker::Hipster.word)
         end
 
         # Authors
         5.times do |n|
-          Author.create(name:     Faker::HitchhikersGuideToTheGalaxy.character,
-                        citation: c)
+          c.authors << Author.create(name:     Faker::HitchhikersGuideToTheGalaxy.character)
         end
 
       end

@@ -22,6 +22,8 @@ Rails.application.routes.draw do
   apipie
   namespace :api do
     namespace :v1 do
+      resources :keywords, only: [:index]
+      resources :authors, only: [:index]
       resources :timepoint_names, only: [:index]
       resources :citations, only: [:index]
       resources :projects, shallow: true do
@@ -169,7 +171,6 @@ Rails.application.routes.draw do
 
   resource  :profile, only: [:show, :edit, :update]
   resources :degrees, only: [:index]
-  resources :authors, only: [:index]
   resources :organizations, only: [:index]
   resources :sections, only: [:index]
 

@@ -94,13 +94,17 @@ ActiveRecord::Schema.define(version: 20180926055048) do
   end
 
   create_table "authors", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer  "citation_id"
     t.string   "name"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.datetime "deleted_at"
-    t.index ["citation_id"], name: "index_authors_on_citation_id", using: :btree
     t.index ["deleted_at"], name: "index_authors_on_deleted_at", using: :btree
+  end
+
+  create_table "authors_citations", id: false, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer "citation_id", null: false
+    t.integer "author_id",   null: false
+    t.index ["citation_id", "author_id"], name: "index_authors_citations_on_citation_id_and_author_id", using: :btree
   end
 
   create_table "citation_types", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -121,6 +125,12 @@ ActiveRecord::Schema.define(version: 20180926055048) do
     t.index ["citation_type_id"], name: "index_citations_on_citation_type_id", using: :btree
     t.index ["deleted_at"], name: "index_citations_on_deleted_at", using: :btree
     t.index ["name"], name: "index_citations_on_name", using: :btree
+  end
+
+  create_table "citations_keywords", id: false, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer "citation_id", null: false
+    t.integer "keyword_id",  null: false
+    t.index ["citation_id", "keyword_id"], name: "index_citations_keywords_on_citation_id_and_keyword_id", using: :btree
   end
 
   create_table "citations_projects", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -581,11 +591,11 @@ ActiveRecord::Schema.define(version: 20180926055048) do
   end
 
   create_table "keywords", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer  "citation_id"
     t.string   "name"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
-    t.index ["citation_id"], name: "index_keywords_on_citation_id", using: :btree
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.datetime "deleted_at"
+    t.index ["deleted_at"], name: "index_keywords_on_deleted_at", using: :btree
   end
 
   create_table "labels", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -1246,7 +1256,6 @@ ActiveRecord::Schema.define(version: 20180926055048) do
   add_foreign_key "approvals", "users"
   add_foreign_key "assignments", "projects_users_roles"
   add_foreign_key "assignments", "tasks"
-  add_foreign_key "authors", "citations"
   add_foreign_key "citations", "citation_types"
   add_foreign_key "citations_projects", "citations"
   add_foreign_key "citations_projects", "consensus_types"
@@ -1305,7 +1314,6 @@ ActiveRecord::Schema.define(version: 20180926055048) do
   add_foreign_key "key_questions_projects", "projects"
   add_foreign_key "key_questions_projects_questions", "key_questions_projects"
   add_foreign_key "key_questions_projects_questions", "questions"
-  add_foreign_key "keywords", "citations"
   add_foreign_key "labels", "citations_projects"
   add_foreign_key "labels", "users"
   add_foreign_key "measurements", "comparisons_measures"

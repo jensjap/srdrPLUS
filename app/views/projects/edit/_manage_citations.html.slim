@@ -6,7 +6,8 @@ div.row
       = simple_form_for(@project) do |f|
         = f.error_notification
 
-        #citations-projects-list.form-inputs
+        #citations-projects-list
+        .form-inputs
           = f.simple_fields_for :citations_projects, @citations_projects do |c_p_f|
             = render 'projects/edit/citations_project_fields', f: c_p_f
         #loyloyloy(data-sticky-container)
@@ -15,7 +16,7 @@ div.row
             /- if !@citations_projects.nil?
               = paginate @citations_projects, params: { anchor: 'panel-citations' }
             .teyteytey
-              = link_to_add_association 'Add Citation', f, :citations_projects, partial: 'projects/edit/citations_project_fields', 'data-association-insertion-node' => '#citations-projects-list', 'data-association-insertion-method' => 'prepend'
+              = link_to_add_association 'Add Citation', f, :citations_projects, partial: 'projects/edit/added_citations_project_fields', 'data-association-insertion-node' => '#citations-projects-list', 'data-association-insertion-method' => 'prepend'
               '
               ' or
 

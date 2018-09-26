@@ -1,0 +1,4 @@
+.nested-fields.citation-row.added-item
+  = f.association :citation, as: :select, collection: [], prompt: 'Choose a citation', label: false, input_html: { class: 'citation-select' }
+  = link_to_remove_association '✖', f, class: 'remove-citation'
+
