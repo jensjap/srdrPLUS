@@ -156,6 +156,8 @@ class Project < ApplicationRecord
     ProjectsUser
       .create(project: self, user: user)
       .roles << Role.where(name: role)
+  end
+
   def import_citations_from_csv( file )
     primary_id = CitationType.find_by( name: 'Primary' ).id
     secondary_id = CitationType.find_by( name: 'Secondary' ).id
