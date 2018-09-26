@@ -17,8 +17,6 @@ class Type1 < ApplicationRecord
 
   after_create :record_suggestor
 
-  belongs_to :type1_type, inverse_of: :type1s, optional: true
-
   has_one :suggestion, as: :suggestable, dependent: :destroy
 
   has_many :extraction_forms_projects_sections_type1s, dependent: :destroy, inverse_of: :type1
@@ -29,7 +27,7 @@ class Type1 < ApplicationRecord
 
   delegate :project, to: :extraction_forms_projects_section
 
-  validates :description, uniqueness: { scope: [:name, :type1_type_id] }
+  validates :description, uniqueness: { scope: :name }
 
   def name_and_description
     text  = name

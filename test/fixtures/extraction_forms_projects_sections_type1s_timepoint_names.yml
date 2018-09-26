@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  extraction_forms_projects_sections_type1: one
+  timepoint_names: one
+  deleted_at: 2018-09-26 13:50:48
+  active: false
+
+two:
+  extraction_forms_projects_sections_type1: two
+  timepoint_names: two
+  deleted_at: 2018-09-26 13:50:48
+  active: false
