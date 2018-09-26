@@ -9,16 +9,11 @@ h4 Add a #{ section_name } suggestion
       ' Please correct the errors below.
 
   = f.simple_fields_for(:type1s, efps.type1s.build) do |sf_t1|
-
     .form-inputs class="new-type1-fields-#{ efps.id.to_s }"
       = sf_t1.input :name, label: section_name.eql?('Outcome') ? 'Domain' : 'Name', required: true, hint: 'Name can\'t be blank', autofocus: true
       - if section_name.eql? 'Outcome'
         = sf_t1.association :type1_type, label: 'Suggested Type'
       = sf_t1.input :description, label: section_name.eql?('Outcome') ? 'Specific Measurement' : 'Description', input_html: { rows: 2 }
-
-    .links
-      = link_to_add_association "Add #{ section_name } fields",
-        f, :type1s, partial: 'extraction_forms_projects/build/type1/type1_fields', render_options: { locals: { efps: efps } }
 
   .form-actions
     = f.button :submit, 'Save'
