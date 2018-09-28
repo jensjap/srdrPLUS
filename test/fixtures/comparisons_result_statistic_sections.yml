@@ -3,11 +3,11 @@
 one:
   comparison: one
   result_statistic_section: one
-  deleted_at: 2018-08-07 15:33:19
-  active: false
+  deleted_at:
+  active: true
 
 two:
   comparison: two
   result_statistic_section: two
-  deleted_at: 2018-08-07 15:33:19
-  active: false
+  deleted_at:
+  active: true
