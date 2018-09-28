@@ -3,6 +3,13 @@
     .inner-inputs
       = f.input :name, placeholder: 'New Citation', label: 'Title'
       = f.input :abstract, as: :text, placeholder: 'Abstract goes here'
+      = f.simple_fields_for :journal_attributes do |j_f|
+        = j_f.input :name, label: "Journal Name"
+        .middle-row
+          = j_f.input :volume, label: "Volume"
+          = j_f.input :issue, label: "Issue"
+          = j_f.input :publication_date, label: "Publication Year"
+
       .bottom-row
         .number-column.bottom-column
           = f.input :pmid, as: :integer

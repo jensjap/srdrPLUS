@@ -1,16 +1,5 @@
-a.accordion-title href='#'
-  .row
-    .column.medium-8
-      h4 = citation.name
-.accordion-content data-tab-content=''
-  .row
-    = simple_form_for citation do |f|
-      = render 'citations/show/citation_partial', citation: citation
-      = f.simple_fields_for :labels do |l_f|
-        .column.medium-6
-          = l_f.input :value, as: :radio_buttons, collection: [ 'yes', 'no', 'maybe' ]
-        .column.medium-2
-          = l_f.button :submit, 'Save Label'
+h4 = citation.name
+= render 'citations/show/citation_partial', citation: citation
     /.include-button = button
     /.exclude-button = button
     /.maybe-button = button

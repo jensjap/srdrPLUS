@@ -23,11 +23,46 @@ class Citation < ApplicationRecord
 
   def author_ids=(tokens)
     tokens.map { |token|
-      byebug
       resource = Author.new
       save_resource_name_with_token(resource, token)
     }
     super
   end
 
+  def authors_attributes=(attributes)
+    byebug
+    attributes.each do |key, attribute_collection|
+      unless attribute_collection.has_key? 'id'
+        Author.transaction do
+          author = Author.find_or_create_by!(attribute_collection)
+          authors << author unless authors.include? author
+          attributes[key]['id'] = author.id.to_s
+        end
+      end
+    end
+    super
+  end
+
+
+  def keyword_ids=(tokens)
+    tokens.map { |token|
+      resource = Keyword.new
+      save_resource_name_with_token(resource, token)
+    }
+    super
+  end
+
+  def keywords_attributes=(attributes)
+    byebug
+    attributes.each do |key, attribute_collection|
+      unless attribute_collection.has_key? 'id'
+        Keyword.transaction do
+          keyword = Keyword.find_or_create_by!(attribute_collection)
+          keywords << type1 unless keywords.include? keyword
+          attributes[key]['id'] = keyword.id.to_s
+        end
+      end
+    end
+    super
+  end
 end

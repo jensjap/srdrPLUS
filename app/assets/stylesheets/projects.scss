@@ -209,6 +209,14 @@ ul {
   width: 97%;
 }
 
+.middle-row {
+  display: flex;
+  justify-content: space-between;
+
+  div {
+    width: 30%;
+  }
+}
 
 .bottom-row {
   display: flex;

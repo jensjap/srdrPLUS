@@ -45,6 +45,7 @@ class CitationsController < ApplicationController
   end
 
   def show
+    render 'show'
   end
 
   def index
@@ -77,9 +78,9 @@ class CitationsController < ApplicationController
     def citation_params
       params.require(:citation)
           .permit(:name, :citation_type_id, :pmid, :refman, :abstract,
-          { journal_attributes: [:id, :name, :publication_date, :issue, :volume, :_destroy] },
-          { authors_attributes: [:id, :name, :_destroy] },
-          { keywords_attributes: [:id, :name, :_destroy] },
+            journal_attributes: [:id, :name, :publication_date, :issue, :volume, :_destroy],
+            authors_attributes: [:id, :name, :_destroy] ,
+            keywords_attributes: [:id, :name, :_destroy],
             labels_attributes: [:id, :value, :_destroy])
     end
 end
