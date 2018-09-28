@@ -30,7 +30,6 @@ class Citation < ApplicationRecord
   end
 
   def authors_attributes=(attributes)
-    byebug
     attributes.each do |key, attribute_collection|
       unless attribute_collection.has_key? 'id'
         Author.transaction do
@@ -53,12 +52,11 @@ class Citation < ApplicationRecord
   end
 
   def keywords_attributes=(attributes)
-    byebug
     attributes.each do |key, attribute_collection|
       unless attribute_collection.has_key? 'id'
         Keyword.transaction do
           keyword = Keyword.find_or_create_by!(attribute_collection)
-          keywords << type1 unless keywords.include? keyword
+          keywords << keyword unless keywords.include? keyword
           attributes[key]['id'] = keyword.id.to_s
         end
       end

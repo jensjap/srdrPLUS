@@ -151,13 +151,6 @@ class Project < ApplicationRecord
     return citation_groups
   end
 
-  # Add user as member and assign role of 'Leader'
-  def add_member_and_assign_default_role(user, role)
-    ProjectsUser
-      .create(project: self, user: user)
-      .roles << Role.where(name: role)
-  end
-
   def import_citations_from_csv( file )
     primary_id = CitationType.find_by( name: 'Primary' ).id
     secondary_id = CitationType.find_by( name: 'Secondary' ).id
@@ -168,6 +161,7 @@ class Project < ApplicationRecord
 
     h_arr = [] 
     CSV.foreach( file.path, headers: :true ) do |row|
+      key_counter = 0
       row_h = row.to_h
 
       ### file encoding causes weird problems
@@ -182,9 +176,10 @@ class Project < ApplicationRecord
       ### keywords
       kw_str = row_h[ 'keywords' ] 
       if kw_str.present?
-        kw_arr = []
+        kw_arr = {}
         kw_str.split( '; ' ).each do |kw|
-          kw_arr << { name: kw }
+          kw_arr[Time.now.to_i + key_counter] = { name: kw }
+          key_counter+=1
         end
         row_h[ 'keywords_attributes' ] = kw_arr
       end
@@ -193,9 +188,10 @@ class Project < ApplicationRecord
       ### authors
       au_str = row_h[ 'authors' ] 
       if au_str.present?
-        au_arr = []
+        au_arr = {}
         au_str.split( '; ' ).each do |au|
-          au_arr << { name: au }
+          au_arr[Time.now.to_id + key_counter] = { name: au }
+          key_counter+=1
         end
         row_h[ 'authors_attributes' ] = au_arr
       end
@@ -203,10 +199,10 @@ class Project < ApplicationRecord
 
       ### journal
       j_h = {}
-      j_h[ 'name' ] = row_h[ 'journal' ].strip
-      j_h[ 'publication_date' ] = row_h[ 'publication_date' ].strip
-      j_h[ 'volume' ] = row_h[ 'volume' ].strip
-      j_h[ 'issue' ] = row_h[ 'issue' ].strip
+      if row_h.has_key? 'name' then j_h[ 'name' ] = row_h[ 'journal' ].strip end
+      if row_h.has_key? 'publication_date' then _h[ 'publication_date' ] = row_h[ 'publication_date' ].strip end
+      if row_h.has_key? 'volume' then _h[ 'volume' ] = row_h[ 'volume' ].strip end
+      if row_h.has_key? 'issue' then _h[ 'issue' ] = row_h[ 'issue' ].strip end
       row_h[ 'journal_attributes' ] = j_h
       row_h.delete( 'journal' )
       row_h.delete( 'publication_date' )
@@ -220,6 +216,7 @@ class Project < ApplicationRecord
   end
 
   def import_citations_from_pubmed( file )
+    key_counter = 0
     pmid_arr = File.readlines( file.path )
     primary_id = CitationType.find_by( name: 'Primary' ).id
 
@@ -236,18 +233,20 @@ class Project < ApplicationRecord
       #keywords
       if cit_h[ 'OT' ].present? 
         kw_arr = cit_h[ 'OT' ].split( "\n" )
-        row_h[ 'keywords_attributes' ] = [] 
+        row_h[ 'keywords_attributes' ] = {}
         kw_arr.each do |kw|
-          row_h[ 'keywords_attributes' ] << { name: kw }
+          row_h[ 'keywords_attributes' ][Time.now.to_i + key_counter] = { name: kw }
+          key_counter+=1
         end
       end
 
       #authors
       if cit_h[ 'AU' ].present? 
         au_arr = cit_h[ 'AU' ].split( "\n" )
-        row_h[ 'authors_attributes' ] = [] 
+        row_h[ 'authors_attributes' ] = {} 
         au_arr.each do |au|
-          row_h[ 'authors_attributes' ] << { name: au }
+          row_h[ 'authors_attributes' ][Time.now.to_i + key_counter] = { name: au }
+          key_counter+=1
         end
       end
 
@@ -265,6 +264,7 @@ class Project < ApplicationRecord
   end
 
   def import_citations_from_ris( file )
+    key_counter = 0
     primary_id = CitationType.find_by( name: 'Primary' ).id
 
     # creates a new parser of type RIS
@@ -288,18 +288,20 @@ class Project < ApplicationRecord
       #keywords
       if cit_h[ 'KW' ].present? 
         kw_arr = cit_h[ 'KW' ].split( "     " )
-        row_h[ 'keywords_attributes' ] = [] 
+        row_h[ 'keywords_attributes' ] = {}
         kw_arr.each do |kw|
-          row_h[ 'keywords_attributes' ] << { name: kw }
+          row_h[ 'keywords_attributes' ][Time.now.to_i + key_counter] = { name: kw }
+          key_counter+=1
         end
       end
 
       #authors
       if cit_h[ 'AU' ].present? 
         au_arr = cit_h[ 'AU' ]
-        row_h[ 'authors_attributes' ] = [] 
+        row_h[ 'authors_attributes' ] = {}
         au_arr.each do |au|
-          row_h[ 'authors_attributes' ] << { name: au }
+          row_h[ 'authors_attributes' ][Time.now.to_i + key_counter] = { name: au }
+          key_counter+=1
         end
       end
 
