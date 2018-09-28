@@ -3,9 +3,10 @@
 one:
   question: one
   name: MyString
-  deleted_at: 2017-06-21 14:21:23
+  deleted_at:
 
 two:
   question: two
   name: MyString
-  deleted_at: 2017-06-21 14:21:23
+  deleted_at:
+

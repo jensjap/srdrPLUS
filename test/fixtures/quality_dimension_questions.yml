@@ -4,10 +4,11 @@ one:
   quality_dimension_section: one
   name: MyString
   description: MyText
-  deleted_at: 2018-04-02 20:25:14
+  deleted_at:
 
 two:
   quality_dimension_section: two
   name: MyString
   description: MyText
-  deleted_at: 2018-04-02 20:25:14
+  deleted_at:
+

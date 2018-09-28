@@ -2,12 +2,13 @@
 
 one:
   extraction_forms_projects_sections_type1: one
-  timepoint_names: one
-  deleted_at: 2018-09-26 13:50:48
-  active: false
+  timepoint_name: one
+  deleted_at:
+  active: true
 
 two:
   extraction_forms_projects_sections_type1: two
-  timepoint_names: two
-  deleted_at: 2018-09-26 13:50:48
-  active: false
+  timepoint_name: two
+  deleted_at:
+  active: true
+

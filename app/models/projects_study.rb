@@ -7,5 +7,5 @@ class ProjectsStudy < ApplicationRecord
   belongs_to :project, inverse_of: :projects_studies
   belongs_to :study,   inverse_of: :projects_studies
 
-  has_many :extractions, dependent: :destroy, inverse_of: :projects_study
+  #has_many :extractions, dependent: :destroy, inverse_of: :projects_study
 end

@@ -179,12 +179,10 @@ ActiveRecord::Schema.define(version: 20180926055048) do
   end
 
   create_table "comparisons", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer  "result_statistic_section_id"
-    t.datetime "created_at",                  null: false
-    t.datetime "updated_at",                  null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.datetime "deleted_at"
     t.index ["deleted_at"], name: "index_comparisons_on_deleted_at", using: :btree
-    t.index ["result_statistic_section_id"], name: "result_statistic_section_id", using: :btree
   end
 
   create_table "comparisons_arms_rssms", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -1256,7 +1254,6 @@ ActiveRecord::Schema.define(version: 20180926055048) do
   add_foreign_key "comparate_groups", "comparisons"
   add_foreign_key "comparates", "comparable_elements"
   add_foreign_key "comparates", "comparate_groups"
-  add_foreign_key "comparisons", "result_statistic_sections"
   add_foreign_key "comparisons_arms_rssms", "comparisons"
   add_foreign_key "comparisons_arms_rssms", "extractions_extraction_forms_projects_sections_type1s"
   add_foreign_key "comparisons_arms_rssms", "result_statistic_sections_measures"

@@ -11,7 +11,6 @@ class ResultStatisticSection < ApplicationRecord
   has_many :measures, through: :result_statistic_sections_measures, dependent: :destroy
 
   has_many :comparisons_result_statistic_sections, dependent: :destroy, inverse_of: :result_statistic_section
-  #has_many :comparisons, dependent: :destroy, inverse_of: :result_statistic_section
   has_many :comparisons,          through: :comparisons_result_statistic_sections, dependent: :destroy
   has_many :comparate_groups,     through: :comparisons,                           dependent: :destroy
   has_many :comparates,           through: :comparate_groups,                      dependent: :destroy

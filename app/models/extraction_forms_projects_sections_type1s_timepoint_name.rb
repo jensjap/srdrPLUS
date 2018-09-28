@@ -1,4 +1,6 @@
 class ExtractionFormsProjectsSectionsType1sTimepointName < ApplicationRecord
+  include SharedParanoiaMethods
+
   acts_as_paranoid column: :active, sentinel_value: true
   has_paper_trail
 
