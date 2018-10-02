@@ -245,4 +245,51 @@ abbr[title="required"] {
   display: none;
 }
 
+.task-box {
+  width: 300px;
+  border-radius: 5px;
+  border: solid 1px $primary-color;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 20px;
+  margin-bottom: 20px;
+}
+
+.task-center {
+  width: 90%;
+}
+
+.tasks-container {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  flex-flow: row wrap;
+}
+
+.projects-users-role-select2 {
+  .select2-container--default .select2-selection--multiple {
+    height: 100px;
+    overflow-y: auto;
+  }
+  }
+
+.task-title {
+  font-size: 25px;
+  color: $primary-color;
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+  
+.task-fields {
+  margin-bottom: 20px;
+}
+
+.add-task-button {
+  color: $white;
+  a {
+    text-decoration: none !important;
+    color: $white !important;
+  }
+}
 // END Colored triangles on the project index page.
