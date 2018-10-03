@@ -18,4 +18,11 @@ class ComparisonsArmsRssm < ApplicationRecord
 
     return 'Mock Value'
   end
+
+  def self.find_record(comparison, extractions_extraction_forms_projects_sections_type1, result_statistic_sections_measure)
+    comparisons_arms_rssm = self.find_or_create_by!(comparison: comparison,
+                                                    extractions_extraction_forms_projects_sections_type1: extractions_extraction_forms_projects_sections_type1,
+                                                    result_statistic_sections_measure: result_statistic_sections_measure)
+    return Record.find_or_create_by!(recordable: comparisons_arms_rssm)
+  end
 end

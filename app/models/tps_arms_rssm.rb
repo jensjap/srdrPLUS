@@ -29,4 +29,11 @@ class TpsArmsRssm < ApplicationRecord
 
     return Record.find_by!(recordable: _tps_arms_rssm)
   end
+
+  def self.find_record(timepoint, extractions_extraction_forms_projects_sections_type1, result_statistic_sections_measure)
+    tps_arms_rssm = self.find_or_create_by!(timepoint: timepoint,
+                                            extractions_extraction_forms_projects_sections_type1: extractions_extraction_forms_projects_sections_type1,
+                                            result_statistic_sections_measure: result_statistic_sections_measure)
+    return Record.find_or_create_by!(recordable: tps_arms_rssm)
+  end
 end

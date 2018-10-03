@@ -16,4 +16,11 @@ class WacsBacsRssm < ApplicationRecord
 
     return 'Mock Value'
   end
+
+  def self.find_record(wac, bac, result_statistic_sections_measure)
+    wac_bac_rssm = WacsBacsRssm.find_or_create_by!(wac: wac,
+                                                   bac: bac,
+                                                   result_statistic_sections_measure: result_statistic_sections_measure)
+    return Record.find_or_create_by!(recordable: wac_bac_rssm)
+  end
 end
