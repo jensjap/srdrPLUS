@@ -13,8 +13,12 @@
         /= t_f.association :projects_users_roles, collection: ProjectsUsersRole.by_project(@project), labels: 'Assigned Members', label_method: :handle
         /, wrapper_html: { data_url: "/api/v1/projects/" + @project.id.to_s + "/projects_users_roles.json" }
 
-  .row.column
-    .button.secondary.add-task-button
-      = link_to_add_association 'Add task', f, :tasks, partial: 'projects/edit/task_fields', data: { 'association-insertion-method' => 'append', 'association-insertion-node' => '.tasks-container' }
+    .task-button-container
+      = link_to_add_association f, 
+        :tasks, 
+        partial: 'projects/edit/task_fields', 
+        data: { 'association-insertion-method' => 'before', 'association-insertion-node' => '.task-button-container' },
+        class: 'add-task-button' do 
+        i.fi-plus>
   .form-actions
     = f.button :submit, 'Save changes'

@@ -1,4 +1,4 @@
-.task-box
+.nested-fields.task-box
   .task-center
     - if f.object.id.present? 
       div.task-title
@@ -7,7 +7,8 @@
       div.task-title
         | New Task
 
-    .nested-fields.task-fields
+
+    .task-fields
       = f.association :task_type
       = f.input :num_assigned, label: "Number of assigned citations"
       = f.association :projects_users_roles, collection: ProjectsUsersRole.by_project(@project), label: 'Assigned project members', label_method: :handle, wrapper_class: "projects-users-role-select2"
@@ -18,3 +19,4 @@
         = a_f.association :user, label_method: ->(user){ user.profile.username }
         = link_to_add_association 'add assignment', f, :assignments, partial: 'projects/edit/assignment_fields', data: { 'association-insertion-method' => 'append', 'association-insertion-node' => 'this' }
 
+  = link_to_remove_association '✖', f, class: 'remove-button'

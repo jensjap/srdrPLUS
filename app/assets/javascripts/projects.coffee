@@ -92,11 +92,16 @@ document.addEventListener 'turbolinks:load', ->
     #        )
     #    width: '75%'
 
+    $( '.tasks-container' ).on 'cocoon:before-insert', ( e, insertedItem ) ->
+      insertedItem.fadeIn 'slow'
+      insertedItem.css('display', 'flex')
     # Bind select2 to degree selection.
-    $( document ).on 'cocoon:after-insert', ( e, insertedItem ) ->
+    $( '.tasks-container' ).on 'cocoon:after-insert', ( e, insertedItem ) ->
+      insertedItem.addClass( 'new-task' )
       $( insertedItem ).find( '.project_tasks_projects_users_roles select' ).select2()
       #$( insertedItem ).addClass( 'added-citation-item' )
 
+    $( document ).on 'cocoon:after-insert', ( e, insertedItem ) ->
       $( insertedItem ).find( '.AUTHORS select' ).select2
         minimumInputLength: 0
         #closeOnSelect: false

@@ -169,14 +169,14 @@ ul {
   margin-bottom: 0px;
 }
 
-.remove-citation {
+.remove-button {
   font-size: 16px;
   color: $primary-color;
   margin-right: 5px;
   transition: color 0.25s;
 }
 
-.remove-citation:hover {
+.remove-button:hover {
   text-decoration: none;
   color: $alert-color;
 }
@@ -247,17 +247,28 @@ abbr[title="required"] {
 
 .task-box {
   width: 300px;
+  height: 365px;
   border-radius: 5px;
   border: solid 1px $primary-color;
+  background-color: #F7F3F9;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  //align-items: center;
+  justify-content: space-between;
   margin-right: 20px;
   margin-bottom: 20px;
 }
 
+.new-task {
+  border: solid 1px #666666;
+  background-color: #F5F5F5;
+  .task-title, label, .remove-button {
+    color: #666666 !important;
+  }
+}
+
 .task-center {
-  width: 90%;
+  margin-left: 20px;
+  width: 100%;
 }
 
 .tasks-container {
@@ -272,24 +283,42 @@ abbr[title="required"] {
     height: 100px;
     overflow-y: auto;
   }
-  }
+}
 
 .task-title {
   font-size: 25px;
   color: $primary-color;
-  margin-top: 10px;
+  margin-top: 20px;
   margin-bottom: 20px;
 }
   
 .task-fields {
+  width: 98%;
   margin-bottom: 20px;
 }
 
-.add-task-button {
-  color: $white;
-  a {
-    text-decoration: none !important;
-    color: $white !important;
+a.add-task-button {
+  height: 80px;
+  width: 80px;
+  
+  font-size: 50px;
+  border-radius: 0px;
+  
+  .fi-plus {
+    color: lighten($secondary-color, 20%);
+    transition: color 0.3s;
   }
+  .fi-plus:hover {
+    color: $secondary-color;
+  }
+
+  text-decoration: none;
+}
+
+.task-button-container {
+  height: 360px;
+  width: 80px;
+  display: flex;
+  align-items: center;
 }
 // END Colored triangles on the project index page.
