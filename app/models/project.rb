@@ -14,6 +14,7 @@ class Project < ApplicationRecord
   scope :lead_by_current_user, -> {}
 
   after_create :create_default_extraction_form
+  after_create :create_default_perpetual_task
 
   has_many :extractions, dependent: :destroy, inverse_of: :project
 
@@ -27,6 +28,7 @@ class Project < ApplicationRecord
   has_many :studies, through: :projects_studies, dependent: :destroy
 
   has_many :projects_users, dependent: :destroy, inverse_of: :project
+  has_many :projects_users_roles, through: :projects_users, dependent: :destroy
   has_many :users, through: :projects_users, dependent: :destroy
 
   has_many :publishings, as: :publishable, dependent: :destroy
@@ -326,6 +328,13 @@ class Project < ApplicationRecord
 
     def create_default_extraction_form
       self.extraction_forms_projects.create!(extraction_forms_project_type: ExtractionFormsProjectType.first, extraction_form: ExtractionForm.first)
+    end
+
+    def create_default_perpetual_task
+      new_task = self.tasks.create!(task_type: TaskType.find_by(name: 'Perpetual'))
+      #ProjectsUsersRole.by_project(@project).each do |pur|
+      #  new_task.assignments << Assignment.create!(projects_users_role: pur)
+      #end
     end
 
     def discover_extraction_discrepancy(extraction1_id, extraction2_id)

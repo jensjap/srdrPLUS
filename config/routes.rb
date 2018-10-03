@@ -27,6 +27,7 @@ Rails.application.routes.draw do
       resources :timepoint_names, only: [:index]
       resources :citations, only: [:index]
       resources :projects, shallow: true do
+        resources :projects_users_roles, only: [:index]
         resources :assignments do
           get 'screen', on: :member
           get 'history', on: :member

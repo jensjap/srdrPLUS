@@ -155,15 +155,14 @@ class ProjectsController < ApplicationController
       params.require(:project)
         .permit(:citation_file, :name, :description, :attribution, :methodology_description,
                 :prospero, :doi, :notes, :funding_source,
-                { tasks_attributes: [:id, :name, :num_assigned, :task_type_id, assignments_attributes: [:id, :user_id]]},
-                { assignments_attributes: [:id, :done_so_far, :date_assigned, :date_due, :done, :user_id]},
+                { tasks_attributes: [:id, :name, :num_assigned, :task_type_id, projects_users_role_ids:[]]},
                 { citations_attributes: [:id, :name, :abstract, :pmid, :refman, :citation_type_id, :_destroy, author_ids: [], keyword_ids:[], journal_attributes: [ :id, :name, :volume, :issue, :publication_date]] },
-                citations_projects_attributes: [:id, :_destroy, :citation_id, :project_id,
+                citations_projects_attributes: [ :id, :_destroy, :citation_id, :project_id,
                                                 citation_attributes: [:id, :_destroy, :name]])
     end
 
-    def make_undo_link
-      #!!! This is wrong. Just because there's an older version doesn't mean we should be able to revert to it.
+      def make_undo_link
+        #!!! This is wrong. Just because there's an older version doesn't mean we should be able to revert to it.
       #    This could have been called when Assignment was created.
       if @project.versions.present?
         view_context.link_to '<u><strong>Undo that please!</strong></u>'.html_safe, undo_project_path(@project.versions.last), method: :post

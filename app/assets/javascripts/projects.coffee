@@ -43,6 +43,16 @@ document.addEventListener 'turbolinks:load', ->
       $( '#project-filter' ).focus()
       return
 
+    $( '.project_tasks_projects_users_roles select' ).select2()
+
+    #projects_users_roles_data_url = $( '.project_tasks_projects_users_roles' ).attr('data_url')
+    #@console.log projects_users_roles_data_url
+    #$.ajax projects_users_roles_data_url,
+    #  type: 'GET'
+    #  dataType: 'json'
+    #  success: (data) ->
+    #    $( '.project_tasks_projects_users_roles select' ).select2
+    #      data: data['results']
     #$( '.citation_select' ).select2
     #  ajax:
     #    url: '/api/v1/citations',
@@ -82,10 +92,16 @@ document.addEventListener 'turbolinks:load', ->
     #        )
     #    width: '75%'
 
+    $( '.tasks-container' ).on 'cocoon:before-insert', ( e, insertedItem ) ->
+      insertedItem.fadeIn 'slow'
+      insertedItem.css('display', 'flex')
     # Bind select2 to degree selection.
-    $( "#citations-projects-list" ).on 'cocoon:after-insert', ( e, insertedItem ) ->
+    $( '.tasks-container' ).on 'cocoon:after-insert', ( e, insertedItem ) ->
+      insertedItem.addClass( 'new-task' )
+      $( insertedItem ).find( '.project_tasks_projects_users_roles select' ).select2()
       #$( insertedItem ).addClass( 'added-citation-item' )
 
+    $( document ).on 'cocoon:after-insert', ( e, insertedItem ) ->
       $( insertedItem ).find( '.AUTHORS select' ).select2
         minimumInputLength: 0
         #closeOnSelect: false
@@ -118,8 +134,6 @@ document.addEventListener 'turbolinks:load', ->
 
 #templateResult: formatResult
         #templateSelection: formatResultSelection
-
-
     
 #      # Cocoon listeners.
 #      .on 'cocoon:before-insert', ( e, insertedItem ) ->
