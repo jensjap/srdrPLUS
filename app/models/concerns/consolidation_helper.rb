@@ -304,7 +304,9 @@ module ConsolidationHelper
                         # get one comparison to clone
                         # is it possible that this comparable exists? what then?
                         master_comp = Comparison.find(comparison_arr.first)
-                        clone_comp = Comparison.create!(result_statistic_section: rss)
+                        #clone_comp = Comparison.create!(result_statistic_section: rss)
+                        clone_comp = Comparison.create
+                        clone_comp.result_statistic_sections << rss
                         master_comp.comparate_groups.each do |old_comparate_group|
                           new_comparate_group = ComparateGroup.create!(comparison: clone_comp)
                           old_comparate_group.comparates.each do |old_comparate|
