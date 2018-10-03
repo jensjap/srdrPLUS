@@ -3,9 +3,8 @@
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
 document.addEventListener 'turbolinks:load', ->
-
   do ->
-
+    #$(window).trigger('load.zf.sticky')
     # Ajax call to filter the project list. We want to return a function here
     # to prevent it from being called immediately. Wrapper is to allow passing
     # param without immediate function invocation.
@@ -44,29 +43,84 @@ document.addEventListener 'turbolinks:load', ->
       $( '#project-filter' ).focus()
       return
 
-    $( '.citation_select' ).select2
-      ajax:
-        url: '/citations',
-        dataType: 'json'
-        delay: 250
-        data: (params) ->
-          console.log params
-          q: params.term
-          page: params.page || 1
-      width: '75%'
+    #$( '.citation_select' ).select2
+    #  ajax:
+    #    url: '/api/v1/citations',
+    #    dataType: 'json'
+    #    delay: 250
+    #    data: (params) ->
+    #      console.log params
+    #      q: params.term
+    #      page: params.page || 1
+    #    processResults: (data, params) ->
+    #      # The server may respond with params.page, set it to 1 if not.
+    #      params.page = params.page || 1
+    #      results: $.map(data.items, (i) ->
+    #        id: i.id
+    #        text: i.name
+    #      )
+    #  width: '75%'
 
       # Cocoon listeners.
-    $( document ).on 'cocoon:after-insert', ( e, insertedItem ) ->
-      $( '.citation_select' ).select2
+    #$( document ).on 'cocoon:after-insert', ( e, insertedItem ) ->
+    #  $( insertedItem ).addClass( 'added-item' )
+    #  $( insertedItem ).find( 'citation-select' ).select2
+    #    ajax:
+    #      url: '/api/v1/citations',
+    #      dataType: 'json'
+    #      delay: 250
+    #      data: (params) ->
+    #        console.log params
+    #        q: params.term
+    #        page: params.page || 1
+    #      processResults: (data, params) ->
+    #        # The server may respond with params.page, set it to 1 if not.
+    #        params.page = params.page || 1
+    #        results: $.map(data.items, (i) ->
+    #          id: i.id
+    #          text: i.name
+    #        )
+    #    width: '75%'
+
+    # Bind select2 to degree selection.
+    $( "#citations-projects-list" ).on 'cocoon:after-insert', ( e, insertedItem ) ->
+      #$( insertedItem ).addClass( 'added-citation-item' )
+
+      $( insertedItem ).find( '.AUTHORS select' ).select2
+        minimumInputLength: 0
+        #closeOnSelect: false
         ajax:
-          url: '/citations',
+          url: '/api/v1/authors.json'
           dataType: 'json'
-          delay: 250
+          delay: 100
           data: (params) ->
             q: params.term
             page: params.page || 1
-        width: '75%'
-    return
+      $( insertedItem ).find( '.KEYWORDS select' ).select2
+        minimumInputLength: 0
+        #closeOnSelect: false
+        ajax:
+          url: '/api/v1/keywords.json'
+          dataType: 'json'
+          delay: 100
+          data: (params) ->
+            q: params.term
+            page: params.page || 1
+      $( insertedItem ).find( '.citation-select' ).select2
+        minimumInputLength: 0
+        ajax:
+          url: '/api/v1/citations.json',
+          dataType: 'json'
+          delay: 100
+          data: (params) ->
+            q: params.term
+            page: params.page || 1
+
+#templateResult: formatResult
+        #templateSelection: formatResultSelection
+
+
+    
 #      # Cocoon listeners.
 #      .on 'cocoon:before-insert', ( e, insertedItem ) ->
 #        insertedItem.fadeIn 'slow'

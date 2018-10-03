@@ -64,7 +64,8 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 ## Non-default gems.
 
 # Use Zurb Foundation as Front-End Framework
-gem 'foundation-rails', '~> 6.3.1.0'
+#gem 'foundation-rails', '~> 6.3.1.0'
+gem 'foundation-rails', '~> 6.4.3.0'
 gem 'foundation-icons-sass-rails'
 
 # Prettier templates.
@@ -126,3 +127,9 @@ gem 'searchkick'
 gem 'searchjoy'
 
 gem 'passenger'
+
+# bioruby for pubmed queries
+gem 'bio'
+
+# for parsing ris files
+gem 'ref_parsers'

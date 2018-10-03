@@ -29,8 +29,10 @@ module SeedData
       ])
 
       # CitationTypes.
-      CitationType.create(name: 'Primary') 
-      CitationType.create(name: 'Secondary') 
+      @primary        = CitationType.create(name: 'Primary') 
+      @secondary      = CitationType.create(name: 'Secondary') 
+      @citation_types = [@primary, @secondary]
+
 
       # ActionTypes.
       ActionType.create([
@@ -371,10 +373,6 @@ module SeedDataExtended
       @project = Project.order(updated_at: :desc).first
       @project.key_questions << [@kq1, @kq2]
 
-      @primary        = CitationType.create(name: 'Primary') 
-      @secondary      = CitationType.create(name: 'Secondary') 
-      @citation_types = [@primary, @secondary]
-
       # Citations, Journals, Authors and Keywords
       1000.times do |n|
         updated_at = Faker::Time.between(DateTime.now - 1000, DateTime.now - 1)
@@ -400,14 +398,12 @@ module SeedDataExtended
 
         # Keywords
         5.times do |n|
-          Keyword.create(name:     Faker::Hipster.word,
-                         citation: c)
+          c.keywords << Keyword.create(name:     Faker::Hipster.word)
         end
 
         # Authors
         5.times do |n|
-          Author.create(name:     Faker::HitchhikersGuideToTheGalaxy.character,
-                        citation: c)
+          c.authors << Author.create(name:     Faker::HitchhikersGuideToTheGalaxy.character)
         end
 
       end

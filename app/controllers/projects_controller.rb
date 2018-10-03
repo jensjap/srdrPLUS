@@ -1,5 +1,5 @@
 class ProjectsController < ApplicationController
-  before_action :set_project, only: [:show, :edit, :update, :destroy, :export]
+  before_action :set_project, only: [:show, :edit, :update, :destroy, :export, :import_csv, :import_pubmed, :import_ris]
 
   SORT = {  'updated-at': { updated_at: :desc },
             'created-at': { created_at: :desc }
@@ -30,15 +30,18 @@ class ProjectsController < ApplicationController
 
   # GET /projects/1/edit
   def edit
-    @citations = @project.citations
-    @citations_projects = @project.citations_projects.page(params[:page])
+    #@citations = Citation.pluck(:id)
+    @citations = Citation.all
+    @citation_dict = @citations.map{ |c| [c.id, c] }.to_h
+    #@citations = @project.citations
+    #@citations_projects = @project.citations_projects.page(params[:page])
+    @citations_projects = @project.citations_projects
   end
 
   # POST /projects
   # POST /projects.json
   def create
     @project = Project.new(project_params)
-    @project.add_member_and_assign_default_role(current_user, 'Leader')
 
     respond_to do |format|
       if @project.save
@@ -117,6 +120,27 @@ class ProjectsController < ApplicationController
     redirect_to edit_project_path(@project)
   end
 
+  def import_csv
+    if params[:project].present? and params[:project][:citation_file].present?
+      @project.import_citations_from_csv( params[:project][:citation_file] )
+    end
+    redirect_to edit_project_path(@project, anchor: 'panel-citations')
+  end
+
+  def import_pubmed
+    if params[:project].present? and params[:project][:citation_file].present?
+      @project.import_citations_from_pubmed( params[:project][:citation_file] )
+    end
+    redirect_to edit_project_path(@project, anchor: 'panel-citations')
+  end
+
+  def import_ris
+    if params[:project].present? and params[:project][:citation_file].present?
+      @project.import_citations_from_ris( params[:project][:citation_file] )
+    end
+    redirect_to edit_project_path(@project, anchor: 'panel-citations')
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_project
@@ -129,11 +153,11 @@ class ProjectsController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def project_params
       params.require(:project)
-        .permit(:name, :description, :attribution, :methodology_description,
+        .permit(:citation_file, :name, :description, :attribution, :methodology_description,
                 :prospero, :doi, :notes, :funding_source,
                 { tasks_attributes: [:id, :name, :num_assigned, :task_type_id, assignments_attributes: [:id, :user_id]]},
                 { assignments_attributes: [:id, :done_so_far, :date_assigned, :date_due, :done, :user_id]},
-                { citations_attributes: [:id, :name, :citation_type_id, :_destroy] },
+                { citations_attributes: [:id, :name, :abstract, :pmid, :refman, :citation_type_id, :_destroy, author_ids: [], keyword_ids:[], journal_attributes: [ :id, :name, :volume, :issue, :publication_date]] },
                 citations_projects_attributes: [:id, :_destroy, :citation_id, :project_id,
                                                 citation_attributes: [:id, :_destroy, :name]])
     end

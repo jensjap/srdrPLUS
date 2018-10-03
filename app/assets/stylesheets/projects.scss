@@ -152,4 +152,97 @@ ul {
     }
   }
 }
+
+.citation-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center; 
+  width: 100%;
+  margin-bottom: 0px;
+}
+
+.citation-row:hover {
+  background-color: $light-gray;
+}
+
+.citation-select {
+  margin-bottom: 0px;
+}
+
+.remove-citation {
+  font-size: 16px;
+  color: $primary-color;
+  margin-right: 5px;
+  transition: color 0.25s;
+}
+
+.remove-citation:hover {
+  text-decoration: none;
+  color: $alert-color;
+}
+
+
+.added-item {
+  border-radius: 5px;
+  border: solid 1px $primary-color;
+  margin-bottom: 5px;
+
+  .select {
+    width: 100%;
+  }
+}
+
+.citation-fields {
+  display: flex;
+  justify-content: center;
+  align-items: center; 
+}
+
+.citation-inputs {
+  display: flex;
+  justify-content: center;
+  align-items: center; 
+  width: 98%;
+}
+
+.inner-inputs {
+  width: 97%;
+}
+
+.middle-row {
+  display: flex;
+  justify-content: space-between;
+
+  div {
+    width: 30%;
+  }
+}
+
+.bottom-row {
+  display: flex;
+  justify-content: space-between;
+
+  .bottom-column {
+    width: 30%;
+
+    .number-column {
+      display: flex;
+    }
+  }
+}
+
+#citations-footer {
+  padding-top: 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  background-color: $white;
+  margin-bottom: 0px;
+}
+
+abbr[title="required"] {
+  display: none;
+}
+
 // END Colored triangles on the project index page.

@@ -1,13 +1,57 @@
-= simple_form_for(@project, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
-  = f.error_notification
+h5 Citations in this project
 
-  .form-inputs
-    = f.simple_fields_for :citations_projects, @citations_projects do |c_p_f|
-      = render 'projects/edit/citations_project_fields', f: c_p_f
-    = link_to_add_association 'add citation', f, :citations_projects, partial: 'projects/edit/citations_project_fields'
-    = link_to_add_association ' or create new citation', f, :citations, partial: 'projects/edit/citation_fields'
-  - if !@citations_projects.nil?
-    = paginate @citations_projects, params: { anchor: 'panel-citations' }
+div.row
+  div.columns.medium-9
+    #single-citation-form
+      = simple_form_for(@project) do |f|
+        = f.error_notification
 
-  .form-actions
-    = f.button :submit, 'Save changes'
+        #citations-projects-list
+        .form-inputs
+          = f.simple_fields_for :citations_projects, @citations_projects do |c_p_f|
+            = render 'projects/edit/citations_project_fields', f: c_p_f
+        #loyloyloy(data-sticky-container)
+
+          #citations-footer.sticky(data-sticky data-stick-to="bottom"  data-btm-anchor="leyleyley:top" data-margin-bottom="0")
+            /- if !@citations_projects.nil?
+              = paginate @citations_projects, params: { anchor: 'panel-citations' }
+            .teyteytey
+              = link_to_add_association 'Add Citation', f, :citations_projects, partial: 'projects/edit/added_citations_project_fields', 'data-association-insertion-node' => '#citations-projects-list', 'data-association-insertion-method' => 'prepend'
+              '
+              ' or
+
+              = link_to_add_association 'Create New Citation', f, :citations, partial: 'projects/edit/citation_fields', 'data-association-insertion-node' => '#citations-projects-list', 'data-association-insertion-method' => 'prepend'
+
+            br
+            br
+
+            .form-actions
+              = f.button :submit, 'Save changes'
+        #leyleyley
+
+
+  div.columns.medium-3
+    div#top-anchor(data-sticky-container)
+      div.sticky(data-sticky data-top-anchor="top-anchor" data-btm-anchor="leyleyley:top" data-margin-bottom="0")
+        #import-ris-div
+          = simple_form_for @project, method: :post, url: import_ris_project_url, multipart: true do |f|
+            .form-inputs
+              = f.input :citation_file, as: :file, label: 'Import citations from a .ris file'
+            .form-actions
+              = f.button :submit, 'Upload .ris file', class:"hollow small"
+
+        br
+        #import-csv-div
+          = simple_form_for @project, method: :post, url: import_csv_project_url, multipart: true do |f|
+            .form-inputs
+              = f.input :citation_file, as: :file, label: 'Import citations from a .csv file'
+            .form-actions
+              = f.button :submit, 'Upload .csv file', class:"hollow small"
+
+        br
+        #import-pubmed-div
+          = simple_form_for @project, method: :post, url: import_pubmed_project_url, multipart: true do |f|
+            .form-inputs
+              = f.input :citation_file, as: :file, label: 'Import citations from a list of PubMed IDs'
+            .form-actions
+              = f.button :submit, 'Upload pmid list', class:"hollow small"

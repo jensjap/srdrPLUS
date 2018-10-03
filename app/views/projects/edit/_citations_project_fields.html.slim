@@ -1,3 +1,4 @@
-.nested-fields
-  = f.association :citation, as: :select, collection: @citations, prompt: 'Choose a citation', input_html: { class: 'citation_select' }
-  = link_to_remove_association 'remove citation', f, class: 'float-right'
+.nested-fields.citation-row
+  = f.label @citation_dict[f.object.citation_id].name, class: 'citation-label'
+  = f.association :citation, as: :select, collection: [ @citation_dict[f.object.citation_id] ], prompt: 'Choose a citation', input_html: { class: 'hide' }, label: false
+  = link_to_remove_association '✖', f, class: 'remove-citation'

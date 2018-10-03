@@ -22,7 +22,10 @@ Rails.application.routes.draw do
   apipie
   namespace :api do
     namespace :v1 do
+      resources :keywords, only: [:index]
+      resources :authors, only: [:index]
       resources :timepoint_names, only: [:index]
+      resources :citations, only: [:index]
       resources :projects, shallow: true do
         resources :assignments do
           get 'screen', on: :member
@@ -63,12 +66,17 @@ Rails.application.routes.draw do
     get 'get_results_populations', on: :member
   end
   resources :projects, concerns: :paginatable, shallow: true do
-    resources :citations, only: [:index] do
+    post 'import_csv', on: :member
+    post 'import_ris', on: :member
+    post 'import_pubmed', on: :member
+    
+    resources :citations do
 
       collection do
         get 'labeled'
         get 'unlabeled'
       end
+
     end
     resources :extractions do
 

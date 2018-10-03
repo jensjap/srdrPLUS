@@ -1,4 +1,22 @@
-.nested-fields
-  = f.input :name, placeholder: 'New Citation'
-  = f.association :citation_type, label: 'Citation Type', selected: 1
-  = link_to_remove_association 'remove citation', f, class: 'float-right'
+.nested-fields.citation-fields.added-item
+  .citation-inputs
+    .inner-inputs
+      = f.input :name, placeholder: 'New Citation', label: 'Title'
+      = f.input :abstract, as: :text, placeholder: 'Abstract goes here'
+      = f.simple_fields_for :journal_attributes do |j_f|
+        = j_f.input :name, label: "Journal Name"
+        .middle-row
+          = j_f.input :volume, label: "Volume"
+          = j_f.input :issue, label: "Issue"
+          = j_f.input :publication_date, label: "Publication Year"
+
+      .bottom-row
+        .number-column.bottom-column
+          = f.input :pmid, as: :integer
+          = f.input :refman, as: :integer
+          = f.association :citation_type, label: 'Citation Type', selected: 1
+        .bottom-column
+          = f.association :authors, collection: [], label: 'Authors', wrapper_html: { class: "AUTHORS" }
+        .bottom-column
+          = f.association :keywords, collection: [], label: 'Keywords', wrapper_html: { class: "KEYWORDS" }
+  = link_to_remove_association '✖', f, class: 'remove-citation'
