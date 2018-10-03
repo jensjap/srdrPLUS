@@ -14,7 +14,7 @@ class Task < ApplicationRecord
     pur_ids = pur_ids.reject(&:empty?)
     _assignment_arr = []
     pur_ids.each do |pur_id|
-      _new_assignment = Assignment.find_or_create_by!(projects_users_role_id: pur_id, task_id: self.id)
+      _new_assignment = Assignment.find_or_create_by!(projects_users_role_id: pur_id, task: self)
       _assignment_arr << _new_assignment unless _assignment_arr.include? _new_assignment
     end
     self.assignments = _assignment_arr
