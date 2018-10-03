@@ -41,11 +41,12 @@
             td
               - @result_statistic_section.result_statistic_sections_measures.each do |rssm|
                 // Create record form for rssm. (wac x bac x rssm)
-                - wac_bac_rssm = WacsBacsRssm.find_or_create_by!(\
-                wac: wac,
-                bac: bac,
-                result_statistic_sections_measure: rssm)
-                - record = Record.find_or_create_by!(recordable: wac_bac_rssm)
+                /- wac_bac_rssm = WacsBacsRssm.find_or_create_by!(\
+                /wac: wac,
+                /bac: bac,
+                /result_statistic_sections_measure: rssm)
+                /- record = Record.find_or_create_by!(recordable: wac_bac_rssm)
+                - record = WacsBacsRssm.find_record(wac=wac, bac=bac, result_statistic_sections_measure=rssm)
 
                 = simple_form_for(record, remote: true, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
                   = f.error_notification
