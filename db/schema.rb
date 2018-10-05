@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180926055048) do
+ActiveRecord::Schema.define(version: 20181005003007) do
 
   create_table "abstrackr_settings", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "profile_id"
@@ -115,7 +115,7 @@ ActiveRecord::Schema.define(version: 20180926055048) do
 
   create_table "citations", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "citation_type_id"
-    t.string   "name"
+    t.string   "name",             limit: 500
     t.datetime "deleted_at"
     t.datetime "created_at",                     null: false
     t.datetime "updated_at",                     null: false
@@ -191,12 +191,10 @@ ActiveRecord::Schema.define(version: 20180926055048) do
   end
 
   create_table "comparisons", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer  "result_statistic_section_id"
-    t.datetime "created_at",                  null: false
-    t.datetime "updated_at",                  null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.datetime "deleted_at"
     t.index ["deleted_at"], name: "index_comparisons_on_deleted_at", using: :btree
-    t.index ["result_statistic_section_id"], name: "result_statistic_section_id", using: :btree
   end
 
   create_table "comparisons_arms_rssms", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -413,16 +411,18 @@ ActiveRecord::Schema.define(version: 20180926055048) do
   create_table "extraction_forms_projects_sections_type1s", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "extraction_forms_projects_section_id"
     t.integer  "type1_id"
+    t.integer  "type1_type_id"
     t.datetime "deleted_at"
     t.boolean  "active"
     t.datetime "created_at",                           null: false
     t.datetime "updated_at",                           null: false
     t.index ["active"], name: "index_extraction_forms_projects_sections_type1s_on_active", using: :btree
     t.index ["deleted_at"], name: "index_extraction_forms_projects_sections_type1s_on_deleted_at", using: :btree
-    t.index ["extraction_forms_projects_section_id", "type1_id", "active"], name: "index_efpst1_on_efps_id_t1_id_active_uniq", unique: true, using: :btree
-    t.index ["extraction_forms_projects_section_id", "type1_id", "deleted_at"], name: "index_efpst1_on_efps_id_t1_id_deleted_at_uniq", unique: true, using: :btree
+    t.index ["extraction_forms_projects_section_id", "type1_id", "type1_type_id", "active"], name: "index_efpst1_on_efps_id_t1_id_t1_type_id_active_uniq", unique: true, using: :btree
+    t.index ["extraction_forms_projects_section_id", "type1_id", "type1_type_id", "deleted_at"], name: "index_efpst1_on_efps_id_t1_id_t1_type_id_deleted_at_uniq", unique: true, using: :btree
     t.index ["extraction_forms_projects_section_id"], name: "index_efpst1_on_efps_id", using: :btree
     t.index ["type1_id"], name: "index_efpst1_on_t1_id", using: :btree
+    t.index ["type1_type_id"], name: "index_efpst1_on_t1_type_id", using: :btree
   end
 
   create_table "extraction_forms_projects_sections_type1s_timepoint_names", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -1265,7 +1265,6 @@ ActiveRecord::Schema.define(version: 20180926055048) do
   add_foreign_key "comparate_groups", "comparisons"
   add_foreign_key "comparates", "comparable_elements"
   add_foreign_key "comparates", "comparate_groups"
-  add_foreign_key "comparisons", "result_statistic_sections"
   add_foreign_key "comparisons_arms_rssms", "comparisons"
   add_foreign_key "comparisons_arms_rssms", "extractions_extraction_forms_projects_sections_type1s"
   add_foreign_key "comparisons_arms_rssms", "result_statistic_sections_measures"
@@ -1290,6 +1289,7 @@ ActiveRecord::Schema.define(version: 20180926055048) do
   add_foreign_key "extraction_forms_projects_sections", "extraction_forms_projects_sections"
   add_foreign_key "extraction_forms_projects_sections", "sections"
   add_foreign_key "extraction_forms_projects_sections_type1s", "extraction_forms_projects_sections"
+  add_foreign_key "extraction_forms_projects_sections_type1s", "type1_types"
   add_foreign_key "extraction_forms_projects_sections_type1s", "type1s"
   add_foreign_key "extraction_forms_projects_sections_type1s_timepoint_names", "extraction_forms_projects_sections_type1s"
   add_foreign_key "extraction_forms_projects_sections_type1s_timepoint_names", "timepoint_names"

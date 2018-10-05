@@ -234,7 +234,7 @@ module ConsolidationHelper
 
             qrcf_id = eefps_qrcf.question_row_column_field.id.to_s
 
-            linked_efps_id = eefps.link_to_type1 ? eefps.link_to_type1.extraction_forms_projects_section_id.to_s : nil
+            linked_efps_id = eefps.link_to_type1 ? eefps.link_to_type1.id.to_s : nil
 
             t1_id = eefps_qrcf.extractions_extraction_forms_projects_sections_type1.present? ?
                          eefps_qrcf.extractions_extraction_forms_projects_sections_type1.type1.id.to_s : nil
@@ -465,8 +465,10 @@ module ConsolidationHelper
                 r_efps_linkedefps_t1_t1t_qrcf_hash.each do |record_name, r_es|
                   if r_es.length == extractions.length
                     linked_eefps = linked_efps_id.present? ? self.extractions_extraction_forms_projects_sections.find_by!(extraction_forms_projects_section_id: linked_efps_id) : nil
-                    eefps = self.extractions_extraction_forms_projects_sections.find_by!(extraction_forms_projects_section_id: efps_id,
-                                                                                                   link_to_type1: linked_eefps )
+                    byebug
+                    eefps = self.extractions_extraction_forms_projects_sections.
+                      find_by!(extraction_forms_projects_section_id: efps_id,
+                      link_to_type1: linked_eefps )
                     qrcf = QuestionRowColumnField.find(qrcf_id)
                     # what if type1 is nil
                     t1 = t1_id.present? ? Type1.find(t1_id) : nil
