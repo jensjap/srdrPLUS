@@ -465,7 +465,7 @@ module ConsolidationHelper
                 r_efps_linkedefps_t1_t1t_qrcf_hash.each do |record_name, r_es|
                   if r_es.length == extractions.length
                     linked_eefps = linked_efps_id.present? ? self.extractions_extraction_forms_projects_sections.find_by!(extraction_forms_projects_section_id: linked_efps_id) : nil
-                    byebug
+                    #byebug
                     eefps = self.extractions_extraction_forms_projects_sections.
                       find_by!(extraction_forms_projects_section_id: efps_id,
                       link_to_type1: linked_eefps )
