@@ -155,6 +155,7 @@ ul {
 
 ///// MANAGE CITATIONS
 
+<<<<<<< HEAD
 #citations {
   ul {
     margin-top: 0rem;
@@ -295,27 +296,6 @@ a.citation-label {
   padding-bottom: 4px;
 }
 
-//.accordion-title:before {
-//  content: none;
-//}
-
-//.is-active > .accordion-title:before {
-//  content: none;
-//}
-
-
-//.remove-button-container {
-//  position: absolute;
-//  top: 0.5rem;
-//  right: 0.6rem;  
-//  width: 2rem;
-//  height: 2rem;
-//  display: flex;
-//  justify-content: center;
-//  align-items: center;
-//}
-
-
 .remove-button {
   font-size: 1rem;
   color: $dark-gray;
@@ -343,10 +323,6 @@ a.citation-label {
   }
 
   display: flex;
-  width: 100%;
-  flex-direction: row;
-  justify-content: flex-end;
-}
 
 .added-item {
   border: solid 1px #666666;
@@ -405,6 +381,9 @@ a.citation-label {
 //abbr[title="required"] {
 //  display: none;
 //}
+
+
+///// MANAGE TASKS
 
 
 ///// MANAGE TASKS
