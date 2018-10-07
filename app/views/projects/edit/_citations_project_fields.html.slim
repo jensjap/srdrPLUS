@@ -1,7 +1,24 @@
-.nested-fields.citation-row
-  - if @citation_dict[f.object.citation_id].name.present?
-    = f.label @citation_dict[f.object.citation_id].name , class: 'citation-label'
-  - else 
-    = f.label "---Untitled Citation----" , class: 'citation-label'
-  = f.association :citation, as: :select, collection: [ @citation_dict[f.object.citation_id] ], prompt: 'Choose a citation', input_html: { class: 'hide' }, label: false
-  = link_to_remove_association '✖', f, class: 'remove-button'
+li.accordion-item.citation-row.nested-fields data-accordion-item=''
+  a.citation-label.accordion-title href='#'
+    .citation-title.row.column
+      = @citation_dict[f.object.citation_id].name || "----Untitled Citation----"
+    .citation-authors.row.column
+      /= ( @citation_dict[ f.object.citation_id ].authors.map { |a| a.initials } ).join( ", " )
+      = ( @citation_dict[ f.object.citation_id ].authors.map { |a| a.name } ).join( ", " )
+
+  .accordion-content data-tab-content=''
+    .row.column.medium-12
+      .citation-numbers
+        = @citation_dict[f.object.citation_id].pmid
+      - if @citation_dict[ f.object.citation_id ].journal.present?
+        .citation-journal
+          = @citation_dict[ f.object.citation_id ].journal.name || ""
+          span.citation-journal-date
+            = " " + (@citation_dict[ f.object.citation_id ].journal.publication_date || "")
+            /span = " (" + j_date + ")"
+    .citation-abstract.row.column.medium-12
+      = @citation_dict[f.object.citation_id].abstract
+    = link_to_remove_association '✖', f, class: 'remove-button'
+    /= f.label @citation_dict[f.object.citation_id].name , class: 'citation-label'
+
+  = f.association :citation, as: :select, collection: [ @citation_dict[ f.object.citation_id ]  ], prompt: 'Choose a citation', input_html: { class: 'hide' }, label: false

@@ -8,8 +8,9 @@ div.row
 
         #citations-projects-list
         .form-inputs
-          = f.simple_fields_for :citations_projects, @citations_projects do |c_p_f|
-            = render 'projects/edit/citations_project_fields', f: c_p_f
+          ul.accordion data-accordion='' data-multi-expand='false' data-allow-all-closed='true'
+            = f.simple_fields_for :citations_projects, @citations_projects do |c_p_f|
+              = render 'projects/edit/citations_project_fields', f: c_p_f
         #loyloyloy(data-sticky-container)
 
           #citations-footer.sticky(data-sticky data-stick-to="bottom"  data-btm-anchor="leyleyley:top" data-margin-bottom="0")

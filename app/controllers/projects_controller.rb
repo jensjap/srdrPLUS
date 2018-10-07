@@ -31,10 +31,11 @@ class ProjectsController < ApplicationController
   # GET /projects/1/edit
   def edit
     #@citations = Citation.pluck(:id)
-    @citations = Citation.all
-    @citation_dict = @citations.map{ |c| [c.id, c] }.to_h
+    #@citations = Citation.all
+    #@citation_dict = @citations.map{ c| [c.id, c] }.to_h
     #@citations = @project.citations
     #@citations_projects = @project.citations_projects.page(params[:page])
+    @citation_dict = @project.citations.eager_load(:authors, :journal, :keywords).map{ |c| [c.id, c] }.to_h
     @citations_projects = @project.citations_projects
   end
 

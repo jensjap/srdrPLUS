@@ -153,23 +153,93 @@ ul {
   }
 }
 
-.citation-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center; 
-  width: 100%;
-  margin-bottom: 0px;
-}
+///// MANAGE CITATIONS
 
-.citation-row:hover {
-  background-color: $light-gray;
+.citation-row {
+  margin-bottom: 0px;
+  &:hover {
+    background-color: $light-gray;
+  }
+  
+  &.is-active {
+    background-color: #F7F3F9;
+    a.citation-label {
+      height: auto;
+      overflow: auto;
+      white-space: normal;
+      border-bottom: 0px;
+      &:hover {
+        background-color: #E5DEE8
+      }
+    }
+    .accordion-content {
+      border-top: 0px;
+      background-color: #F7F3F9;
+    }
+  }
 }
 
 .citation-select {
   margin-bottom: 0px;
 }
 
+a.citation-label {
+  text-decoration: none;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+.accordion-title:before {
+  content: none;
+  border-bottom: none;
+}
+
+.is-active > .accordion-title:before {
+  content: none;
+}
+
+.citation-title{
+  line-height: 1.3;
+  margin-bottom: 8px;
+  overflow: hidden;
+  font-size: 15px;
+  color: #666666;
+}
+
+.citation-authors{
+  font-style: italic;
+  overflow: hidden;
+  font-size: 13px;
+  color: $dark-gray;
+}
+
+.citation-journal {
+  font-style: italic;
+  font-size: 13px;
+  color: #666666;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+
+.citation-numbers {
+  font-size: 13px;
+  color: $dark-gray;
+  font-weight: bold;
+}
+
+.citation-abstract {
+  font-size: 13px;
+  color: #303030;
+}
+
+
 .remove-button {
+  position: absolute;
+  top: 3px;
+  right: 3px;  
   font-size: 16px;
   color: $primary-color;
   margin-right: 5px;
@@ -202,11 +272,6 @@ ul {
   display: flex;
   justify-content: center;
   align-items: center; 
-  width: 98%;
-}
-
-.inner-inputs {
-  width: 97%;
 }
 
 .middle-row {
@@ -244,6 +309,9 @@ ul {
 abbr[title="required"] {
   display: none;
 }
+
+
+///// MANAGE TASKS
 
 .task-box {
   width: 300px;
