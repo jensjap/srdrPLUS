@@ -7,7 +7,6 @@ class CreateCitations < ActiveRecord::Migration[5.0]
 
       t.timestamps
     end
-    add_index :citations, :name
     add_index :citations, :deleted_at
   end
 end
