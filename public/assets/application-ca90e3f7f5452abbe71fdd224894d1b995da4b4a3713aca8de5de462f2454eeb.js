@@ -52910,8 +52910,11 @@ var NewExtractionFormsProjectsSection = (function (_React$Component) {
 
 }).call(this);
 (function() {
+  var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+
   document.addEventListener('turbolinks:load', function() {
     return (function() {
+      var add_change_listeners_to_questions, apply_coloring, apply_consolidation_dropdown, get_extractor_names, get_number_of_extractions, get_question_type, get_question_value;
       $('#outcome_populations_selector_eefpst1_id').change(function(event) {
         return $.ajax({
           url: '/extractions_extraction_forms_projects_sections_type1s/' + this.value + '/get_results_populations',
@@ -52950,12 +52953,285 @@ var NewExtractionFormsProjectsSection = (function (_React$Component) {
         $('.toggle-sections-link-medium-2-0-hide').toggleClass('medium-2 medium-0 hide');
         return $('.toggle-sections-link-medium-10-12').toggleClass('medium-10 medium-12');
       });
-      return $('#toggle-consolidated-extraction-link').click(function(e) {
+      $('#toggle-consolidated-extraction-link').click(function(e) {
         e.preventDefault;
         $('#toggle-consolidated-extraction-link .toggle-hide').toggleClass('hide');
         $('.toggle-consolidated-extraction-link-medium-8-12').toggleClass('medium-8 medium-12');
         return $('.toggle-consolidated-extraction-link-medium-4-0-hide').toggleClass('medium-4 medium-0 hide');
       });
+      get_number_of_extractions = function() {
+        var $questions, $rows;
+        $questions = $('.consolidation-data-row');
+        if ($questions.length > 0) {
+          $rows = $questions.children('tr');
+          return ($rows.length > 0 ? Math.max(0, $rows.first().children('td').length - 1) : 0);
+        }
+      };
+      get_extractor_names = function() {
+        var $panels, extractor_names;
+        $panels = $('div[id^="panel-tab-"]');
+        if ($panels.length > 0) {
+          extractor_names = [];
+          $panels.first().find('th[extractor-name]').each(function(extractor_id, extractor_elem) {
+            return extractor_names.push($(extractor_elem).attr('extractor-name'));
+          });
+          return extractor_names;
+        }
+        return [];
+      };
+      get_question_type = function(question) {
+        var cb_input_arr, drop_input_arr, rb_input_arr, str_input, str_input_arr;
+        str_input_arr = $(question).find('input.string');
+        if (str_input_arr.length === 1) {
+          str_input = $(str_input_arr[0]);
+          if (str_input.attr("type") === "number") {
+            return "numeric";
+          }
+          if (str_input.attr("type") === "text") {
+            return "text";
+          }
+        }
+        cb_input_arr = $(question).find('div.input.check_boxes');
+        if (cb_input_arr.length > 0) {
+          return "checkbox";
+        }
+        drop_input_arr = $(question).find('select');
+        if (drop_input_arr.length > 0) {
+          return "dropdown";
+        }
+        rb_input_arr = $(question).find('div.input.radio_buttons');
+        if (rb_input_arr.length > 0) {
+          return "radio_buttons";
+        }
+        return "unclear";
+      };
+      get_question_value = function(question) {
+        var cb_arr, drop_input, rb_selected, selected;
+        switch (get_question_type(question)) {
+          case "text":
+          case "numeric":
+            return $(question).find('input.string')[0].value;
+          case "checkbox":
+            cb_arr = [];
+            $(question).find('input.check_boxes').filter(':checked').each(function(input_id, input_elem) {
+              return cb_arr.push(input_elem.value);
+            });
+            return (cb_arr.length > 0 ? cb_arr.join("&&") : "");
+          case "dropdown":
+            drop_input = $(question).find('select')[0];
+            if (drop_input) {
+              selected = $(drop_input).children('option').filter(':selected')[0];
+              return (selected.value ? selected.value : "");
+            }
+            break;
+          case "radio_buttons":
+            rb_selected = $(question).find('input.radio_buttons').filter(':checked');
+            return (rb_selected.length === 1 ? rb_selected[0].value : "");
+          default:
+            return "";
+        }
+      };
+      add_change_listeners_to_questions = function() {
+        var number_of_extractions;
+        number_of_extractions = get_number_of_extractions();
+        console.log(number_of_extractions);
+        return $('.consolidation-data-row').each(function(row_id, row_elem) {
+          return $(row_elem).children('tr').each(function(arm_row_id, arm_row_elem) {
+            return $(arm_row_elem).find('td tbody').each(function(cell_id, cell_elem) {
+              return $(cell_elem).find('tr').each(function(tr_id, tr_elem) {
+                return $(tr_elem).find('td').each(function(td_id, td_elem) {
+                  var select_elem;
+                  if (td_id !== 0 && cell_id === number_of_extractions) {
+                    switch (get_question_type(td_elem)) {
+                      case "text":
+                      case "numeric":
+                        return $(td_elem).find('input.string').keyup(function() {
+                          return apply_coloring();
+                        });
+                      case "checkbox":
+                        return $(td_elem).find('input.check_boxes').each(function(input_id, input_elem) {
+                          return $(input_elem).change(function() {
+                            console.log("LOYLOY");
+                            return apply_coloring();
+                          });
+                        });
+                      case "dropdown":
+                        select_elem = $(td_elem).find('select');
+                        return $(select_elem).change(function() {
+                          return apply_coloring();
+                        });
+                      case "radio_buttons":
+                        return $(td_elem).find('input.radio_buttons').each(function(rb_index, rb_input) {
+                          return $(rb_input).change(function() {
+                            return apply_coloring();
+                          });
+                        });
+                    }
+                  }
+                });
+              });
+            });
+          });
+        });
+      };
+      apply_consolidation_dropdown = function() {
+        var extractor_names, number_of_extractions;
+        number_of_extractions = get_number_of_extractions();
+        extractor_names = get_extractor_names();
+        return $('.consolidation-data-row').each(function(row_id, row_elem) {
+          var $drop_elem, c_dict, drop_option, extraction_id, i, ref;
+          c_dict = {};
+          $drop_elem = $("<select>");
+          for (extraction_id = i = 0, ref = number_of_extractions; 0 <= ref ? i <= ref : i >= ref; extraction_id = 0 <= ref ? ++i : --i) {
+            drop_option = $("<option>");
+            drop_option.text(extractor_names[extraction_id]);
+            drop_option.val(extraction_id);
+            if (extraction_id === number_of_extractions) {
+              drop_option.prop("selected", true);
+            }
+            $drop_elem.append(drop_option);
+          }
+          $(row_elem).children('tr').each(function(arm_row_id, arm_row_elem) {
+            c_dict[arm_row_id] || (c_dict[arm_row_id] = {});
+            return $(arm_row_elem).find('td tbody').each(function(cell_id, cell_elem) {
+              var base;
+              (base = c_dict[arm_row_id])[cell_id] || (base[cell_id] = {});
+              return $(cell_elem).find('tr').each(function(tr_id, tr_elem) {
+                var base1;
+                (base1 = c_dict[arm_row_id][cell_id])[tr_id] || (base1[tr_id] = {});
+                return $(tr_elem).find('td').each(function(td_id, td_elem) {
+                  var base2;
+                  if (td_id !== 0) {
+                    (base2 = c_dict[arm_row_id][cell_id][tr_id])[td_id] || (base2[td_id] = {});
+                    c_dict[arm_row_id][cell_id][tr_id][td_id]["question_type"] = get_question_type(td_elem);
+                    return c_dict[arm_row_id][cell_id][tr_id][td_id]["question_value"] = get_question_value(td_elem);
+                  }
+                });
+              });
+            });
+          });
+          $drop_elem.change(function() {
+            return $(row_elem).children('tr').each(function(arm_row_id, arm_row_elem) {
+              return $(arm_row_elem).find('td tbody').each(function(cell_id, cell_elem) {
+                if (cell_id === number_of_extractions) {
+                  $(cell_elem).find('tr').each(function(tr_id, tr_elem) {
+                    return $(tr_elem).find('td').each(function(td_id, td_elem) {
+                      var cb_arr, new_value, select_elem;
+                      if (td_id !== 0) {
+                        cell_id = $drop_elem.children("option").filter(":selected")[0].value;
+                        new_value = c_dict[arm_row_id][cell_id][tr_id][td_id]["question_value"];
+                        switch (c_dict[arm_row_id][cell_id][tr_id][td_id]["question_type"]) {
+                          case "text":
+                          case "numeric":
+                            $(td_elem).find('input.string').val(new_value);
+                            return $(td_elem).find('input.string').trigger('keyup');
+                          case "checkbox":
+                            cb_arr = new_value.length > 0 ? new_value.split("&&") : [];
+                            return $(td_elem).find('input.check_boxes').each(function(input_id, input_elem) {
+                              var ref1;
+                              if (ref1 = input_elem.value, indexOf.call(cb_arr, ref1) >= 0) {
+                                $(input_elem).prop('checked', true);
+                              } else {
+                                $(input_elem).prop('checked', false);
+                              }
+                              return $(input_elem).trigger('change');
+                            });
+                          case "dropdown":
+                            select_elem = $(td_elem).find('select');
+                            $(select_elem).val(new_value);
+                            return $(select_elem).trigger('change');
+                          case "radio_buttons":
+                            return $(td_elem).find('input.radio_buttons').each(function(rb_index, rb_input) {
+                              if (rb_input.value === new_value) {
+                                $(rb_input).prop('checked', true);
+                              } else {
+                                $(rb_input).prop('checked', false);
+                              }
+                              return $(rb_input).trigger('change');
+                            });
+                        }
+                      }
+                    });
+                  });
+                }
+                return apply_coloring();
+              });
+            });
+          });
+          return $(row_elem).find('div#consolidation-dropdown').html($drop_elem);
+        });
+      };
+      apply_coloring = function() {
+        var extractor_arr, number_of_extractions;
+        number_of_extractions = get_number_of_extractions();
+        extractor_arr = get_extractor_names();
+        return $('.consolidation-data-row').each(function(row_id, row_elem) {
+          var b_dict, consolidated_cell, consolidated_value;
+          b_dict = {};
+          consolidated_cell = {};
+          consolidated_value = {};
+          $(row_elem).children('tr').each(function(arm_row_id, arm_row_elem) {
+            b_dict[arm_row_id] || (b_dict[arm_row_id] = {});
+            return $(arm_row_elem).find('td tbody').each(function(cell_id, cell_elem) {
+              return $(cell_elem).find('tr').each(function(tr_id, tr_elem) {
+                var base;
+                (base = b_dict[arm_row_id])[tr_id] || (base[tr_id] = {});
+                consolidated_cell[tr_id] || (consolidated_cell[tr_id] = {});
+                consolidated_value[tr_id] || (consolidated_value[tr_id] = {});
+                return $(tr_elem).find('td').each(function(td_id, td_elem) {
+                  var base1, base2, question_value;
+                  if (td_id !== 0) {
+                    if (cell_id !== number_of_extractions) {
+                      question_value = get_question_value(td_elem);
+                      (base1 = b_dict[arm_row_id][tr_id])[td_id] || (base1[td_id] = {});
+                      (base2 = b_dict[arm_row_id][tr_id][td_id])[question_value] || (base2[question_value] = 0);
+                      return b_dict[arm_row_id][tr_id][td_id][question_value]++;
+                    } else {
+                      consolidated_cell[tr_id][td_id] = $(td_elem);
+                      return consolidated_value[tr_id][td_id] = get_question_value(td_elem);
+                    }
+                  }
+                });
+              });
+            });
+          });
+          return $.each(b_dict, function(arm_row_id, tr_dict) {
+            var color_dict, value_arr;
+            color_dict = {};
+            value_arr = [];
+            $.each(tr_dict, function(tr_id, td_dict) {
+              color_dict[tr_id] || (color_dict[tr_id] = {});
+              return $.each(td_dict, function(td_id, value_dict) {
+                color_dict[tr_id][td_id] = "";
+                return $.each(value_dict, function(value, value_count) {
+                  value_arr.push(value);
+                  if (value_count !== number_of_extractions) {
+                    if (consolidated_value[tr_id][td_id] !== "") {
+                      return color_dict[tr_id][td_id] = "#D1F2EB";
+                    } else {
+                      return color_dict[tr_id][td_id] = "#FADBD8";
+                    }
+                  } else {
+                    if (value !== consolidated_value[tr_id][td_id]) {
+                      return color_dict[tr_id][td_id] = "#D1F2EB";
+                    } else {
+                      return color_dict[tr_id][td_id] = "#E8DAEF";
+                    }
+                  }
+                });
+              });
+            });
+            return $.each(color_dict, function(tr_id, color_tr_dict) {
+              return $.each(color_tr_dict, function(td_id, color) {
+                return consolidated_cell[tr_id][td_id].css('background', color);
+              });
+            });
+          });
+        });
+      };
+      add_change_listeners_to_questions();
+      apply_coloring();
+      return apply_consolidation_dropdown();
     })();
   });
 
@@ -53197,38 +53473,59 @@ var NewExtractionFormsProjectsSection = (function (_React$Component) {
         $('.search-field').toggleClass('expand-search');
         $('#project-filter').focus();
       });
-      $('.citation_select').select2({
-        ajax: {
-          url: '/citations',
-          dataType: 'json',
-          delay: 250,
-          data: function(params) {
-            console.log(params);
-            return {
-              q: params.term,
-              page: params.page || 1
-            };
-          }
-        },
-        width: '75%'
+      $('.project_tasks_projects_users_roles select').select2();
+      $('.tasks-container').on('cocoon:before-insert', function(e, insertedItem) {
+        insertedItem.fadeIn('slow');
+        return insertedItem.css('display', 'flex');
+      });
+      $('.tasks-container').on('cocoon:after-insert', function(e, insertedItem) {
+        insertedItem.addClass('new-task');
+        return $(insertedItem).find('.project_tasks_projects_users_roles select').select2();
       });
       $(document).on('cocoon:after-insert', function(e, insertedItem) {
-        return $('.citation_select').select2({
+        $(insertedItem).find('.AUTHORS select').select2({
+          minimumInputLength: 0,
           ajax: {
-            url: '/citations',
+            url: '/api/v1/authors.json',
             dataType: 'json',
-            delay: 250,
+            delay: 100,
             data: function(params) {
               return {
                 q: params.term,
                 page: params.page || 1
               };
             }
-          },
-          width: '75%'
+          }
+        });
+        $(insertedItem).find('.KEYWORDS select').select2({
+          minimumInputLength: 0,
+          ajax: {
+            url: '/api/v1/keywords.json',
+            dataType: 'json',
+            delay: 100,
+            data: function(params) {
+              return {
+                q: params.term,
+                page: params.page || 1
+              };
+            }
+          }
+        });
+        return $(insertedItem).find('.citation-select').select2({
+          minimumInputLength: 0,
+          ajax: {
+            url: '/api/v1/citations.json',
+            dataType: 'json',
+            delay: 100,
+            data: function(params) {
+              return {
+                q: params.term,
+                page: params.page || 1
+              };
+            }
+          }
         });
       });
-      return;
     })();
   });
 
@@ -53330,7 +53627,8 @@ var NewExtractionFormsProjectsSection = (function (_React$Component) {
 (function() {
   document.addEventListener('turbolinks:load', function() {
     return (function() {
-      return $('.links.add-comparison').on('cocoon:before-insert', function() {
+      var add_change_listeners_to_results_section, get_result_elem, get_result_extractor_names, get_result_number_of_extractions, get_result_value, result_section_coloring, result_section_dropdowning;
+      $('.links.add-comparison').on('cocoon:before-insert', function() {
         return $(this).hide();
       }).on('cocoon:after-insert', function(e, insertedItem) {
         $(insertedItem).find('.links.add-comparate-group a').click();
@@ -53347,6 +53645,153 @@ var NewExtractionFormsProjectsSection = (function (_React$Component) {
         }
         return $('.links.add-comparison a').addClass('disabled');
       });
+      get_result_value = function(td_elem) {
+        var inputs;
+        inputs = $(td_elem).find("input.string");
+        return (inputs.length > 0 ? inputs[0].value : "");
+      };
+      get_result_elem = function(td_elem) {
+        var inputs;
+        inputs = $(td_elem).find("input.string");
+        return (inputs.length > 0 ? inputs[0] : null);
+      };
+      get_result_number_of_extractions = function() {
+        var questions, rows;
+        questions = $('table.consolidated-data-table tbody');
+        if (questions.length > 0) {
+          rows = $(questions[0]).find('tr');
+          return Math.max(0, rows.length - 1);
+        }
+        return 0;
+      };
+      get_result_extractor_names = function() {
+        var $rows, extractor_names, questions;
+        questions = $('table.consolidated-data-table tbody');
+        if (questions.length > 0) {
+          extractor_names = [];
+          $rows = $(questions[0]).find('tr');
+          $rows.each(function(tr_id, tr_elem) {
+            return $(tr_elem).find("td.extractor-name").each(function(td_id, td_elem) {
+              if (td_id === 0) {
+                return extractor_names.push(td_elem.innerHTML);
+              }
+            });
+          });
+          return extractor_names;
+        }
+        return [];
+      };
+      add_change_listeners_to_results_section = function() {
+        var number_of_extractions;
+        number_of_extractions = get_result_number_of_extractions();
+        return $('table.consolidated-data-table tbody').each(function(row_id, row_elem) {
+          return $(row_elem).find('tr').each(function(tr_id, tr_elem) {
+            return $(tr_elem).find('td').not('.extractor-name').each(function(td_id, td_elem) {
+              var input_elem;
+              if (tr_id === number_of_extractions) {
+                input_elem = get_result_elem(td_elem);
+                if (input_elem) {
+                  return $(input_elem).keyup(function() {
+                    return result_section_coloring();
+                  });
+                }
+              }
+            });
+          });
+        });
+      };
+      result_section_coloring = function() {
+        var number_of_extractions;
+        number_of_extractions = get_result_number_of_extractions();
+        return $('table.consolidated-data-table tbody').each(function(row_id, row_elem) {
+          var a_dict, color;
+          a_dict = {};
+          $(row_elem).find('tr').each(function(tr_id, tr_elem) {
+            return $(tr_elem).find('td').not('.extractor-name').each(function(td_id, td_elem) {
+              var base, name;
+              if (tr_id < number_of_extractions) {
+                a_dict["counts"] || (a_dict["counts"] = {});
+                (base = a_dict["counts"])[name = td_elem.innerHTML] || (base[name] = 0);
+                return a_dict["counts"][td_elem.innerHTML]++;
+              } else {
+                a_dict["consolidated_value"] = get_result_value(td_elem);
+                return a_dict["consolidated_elem"] = td_elem;
+              }
+            });
+          });
+          color = "#E8DAEF";
+          return $.each(a_dict["counts"], function(value, count) {
+            console.log(value + ', ' + count);
+            console.log(a_dict["consolidated_value"]);
+            console.log(a_dict["consolidated_elem"]);
+            if (count !== number_of_extractions) {
+              if (a_dict["consolidated_value"] !== "") {
+                color = "#D1F2EB";
+              } else {
+                color = "#FADBD8";
+              }
+            } else {
+              if (a_dict["consolidated_value"] === value) {
+                color = "#E8DAEF";
+              } else {
+                color = "#D1F2EB";
+              }
+            }
+            return $(a_dict["consolidated_elem"]).css('background', color);
+          });
+        });
+      };
+      result_section_dropdowning = function() {
+        var extractor_names, number_of_extractions;
+        number_of_extractions = get_result_number_of_extractions();
+        extractor_names = get_result_extractor_names();
+        return $('td.consolidated-data-cell').each(function(cell_id, cell_elem) {
+          var $drop_elem, a_dict, drop_option, extraction_id, i, ref;
+          a_dict = {};
+          $drop_elem = $("<select>");
+          for (extraction_id = i = 0, ref = number_of_extractions; 0 <= ref ? i <= ref : i >= ref; extraction_id = 0 <= ref ? ++i : --i) {
+            drop_option = $("<option>");
+            drop_option.text(extractor_names[extraction_id]);
+            drop_option.val(extraction_id);
+            if (extraction_id === number_of_extractions) {
+              drop_option.prop("selected", true);
+            }
+            $drop_elem.append(drop_option);
+          }
+          $(cell_elem).find('table.consolidated-data-table tbody').each(function(row_id, row_elem) {
+            a_dict[row_id] || (a_dict[row_id] = {});
+            return $(row_elem).find('tr').each(function(tr_id, tr_elem) {
+              return $(tr_elem).find('td').not('.extractor-name').each(function(td_id, td_elem) {
+                if (tr_id < number_of_extractions) {
+                  return a_dict[row_id][tr_id] = td_elem.innerHTML;
+                } else {
+                  return a_dict[row_id][tr_id] = get_result_value(td_elem);
+                }
+              });
+            });
+          });
+          $drop_elem.change(function() {
+            return $(cell_elem).find('table.consolidated-data-table tbody').each(function(row_id, row_elem) {
+              return $(row_elem).find('tr').each(function(tr_id, tr_elem) {
+                return $(tr_elem).find('td').not('.extractor-name').each(function(td_id, td_elem) {
+                  var input_elem, selected_id;
+                  if (tr_id === number_of_extractions) {
+                    selected_id = $drop_elem.children("option").filter(":selected")[0].value;
+                    input_elem = get_result_elem(td_elem);
+                    $(input_elem).val(a_dict[row_id][selected_id]);
+                    result_section_coloring();
+                    return $(input_elem).trigger('keyup');
+                  }
+                });
+              });
+            });
+          });
+          return $(cell_elem).find("div.consolidated-dropdown").html($drop_elem);
+        });
+      };
+      result_section_coloring();
+      result_section_dropdowning();
+      return add_change_listeners_to_results_section();
     })();
   });
 
