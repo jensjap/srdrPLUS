@@ -215,7 +215,6 @@ ul {
       //font-style: italic;
       //color: #666666;
       //margin-bottom: 1rem;
-
     }
 
     .citation-abstract {
@@ -294,6 +293,10 @@ a.citation-label {
   white-space: nowrap;
   padding-top: 4px;
   padding-bottom: 4px;
+}
+
+#citations {
+  min-height: 800px;
 }
 
 .remove-button {
