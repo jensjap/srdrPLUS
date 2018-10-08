@@ -2,14 +2,14 @@
 
 one:
   citation: one
-  publication_date: 2017-09-20
+  publication_date: <%= 5.day.ago.to_s(:db) %>
   volume: 1
   issue: 1
   name: MyString
 
 two:
   citation: two
-  publication_date: 2017-09-20
+  publication_date: <%= 5.day.ago.to_s(:db) %>
   volume: 1
   issue: 1
   name: MyString

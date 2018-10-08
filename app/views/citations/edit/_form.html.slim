@@ -10,7 +10,7 @@
       = j_f.input :name, label: 'Journal Name'
       = j_f.input :volume
       = j_f.input :issue
-      = j_f.input :publication_date, as: :date
+      = j_f.input :publication_date
 
     = f.simple_fields_for :authors do |a_f|
       = a_f.input :name, label: 'Author', wrapper_html: { id: "buttoned-input" }
