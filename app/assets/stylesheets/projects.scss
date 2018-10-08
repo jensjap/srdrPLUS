@@ -171,6 +171,9 @@ ul {
       &:hover {
         background-color: #E5DEE8
       }
+      .citation-title {
+        font-weight: bold;
+      }
     }
     .accordion-content {
       border-top: 0px;
@@ -193,7 +196,6 @@ a.citation-label {
 
 .accordion-title:before {
   content: none;
-  border-bottom: none;
 }
 
 .is-active > .accordion-title:before {
@@ -216,11 +218,14 @@ a.citation-label {
 }
 
 .citation-journal {
-  font-style: italic;
   font-size: 13px;
   color: #666666;
-  font-weight: bold;
+  //font-weight: bold;
   margin-bottom: 10px;
+  .citation-journal-date {
+    font-style: italic;
+    color: $dark-gray;
+  }
 }
 
 
@@ -235,6 +240,10 @@ a.citation-label {
   color: #303030;
 }
 
+
+#citations {
+  min-height: 800px;
+}
 
 .remove-button {
   position: absolute;

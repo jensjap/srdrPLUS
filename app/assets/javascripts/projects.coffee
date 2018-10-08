@@ -45,6 +45,10 @@ document.addEventListener 'turbolinks:load', ->
 
     $( '.project_tasks_projects_users_roles select' ).select2()
 
+    list_options = { valueNames: ['citation-title'] }
+    citationList = new List('citations', list_options)
+
+
     #projects_users_roles_data_url = $( '.project_tasks_projects_users_roles' ).attr('data_url')
     #@console.log projects_users_roles_data_url
     #$.ajax projects_users_roles_data_url,
