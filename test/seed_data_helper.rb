@@ -105,7 +105,7 @@ module SeedData
           { name: 'Sample Characteristics', default: true },
           { name: 'Outcomes', default: true },
           { name: 'Outcome Details', default: true },
-          { name: 'Quality', default: true },
+          { name: 'Risk of Bias Assessment', default: true },
           { name: 'Results', default: true }
         ]
       )

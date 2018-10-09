@@ -1,6 +1,8 @@
 .column.row
-  h3 #{ @question.section.name }
-  h4 Question Details (Step 2 of 2)
+  h3 Question Type Details (Step 2 of 2)
+
+.column.row
+  == render 'questions/question_type_details_friendly_helper_message'
 
 .column.row
   == render 'form'

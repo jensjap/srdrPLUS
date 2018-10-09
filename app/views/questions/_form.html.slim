@@ -13,16 +13,16 @@
     - unless first_time
 
       a data-toggle='step-one'
-        | Change name or description
+        | Click here to modify Question Text, instructions or key question association
 
     #step-one data-toggler='' data-animate='scale-in-up scale-out-down' style="display: #{ first_time ? 'block' : 'none' };"
       - kqps = @question.project.key_questions_projects
       - if @extraction_forms_projects_section.present? && current_page?(new_extraction_forms_projects_section_question_path(@extraction_forms_projects_section))
-        = f.association :key_questions_projects, collection: kqps, label: 'Select Key Questions addressed', as: :check_boxes, label_method: :kq_name, checked: kqps.map(&:id)
+        = f.association :key_questions_projects, collection: kqps, label: 'Key Questions this question addresses', as: :check_boxes, label_method: :kq_name, checked: kqps.map(&:id)
       - elsif current_page?(edit_question_path(@question))
-        = f.association :key_questions_projects, collection: kqps, label: 'Select Key Questions addressed', as: :check_boxes, label_method: :kq_name
-      = f.input :name, label: 'Question Text', autofocus: true
-      = f.input :description, label: 'Description (Optional Instructions for Extractor)', input_html: { rows: 8 }
+        = f.association :key_questions_projects, collection: kqps, label: 'Key Questions this question addresses', as: :check_boxes, label_method: :kq_name
+      = f.input :name, required: true, label: 'Enter Question Text below (e.g. What is the Study Design? Were eligibility criteria reported?)', autofocus: true
+      = f.input :description, label: 'Optional (Additional Descriptions or Instructions for Extractor)', input_html: { rows: 8 }
 
     - unless first_time
 
@@ -40,4 +40,4 @@
 
   .form-actions
 
-    = f.button :submit, @question.question_rows.any? ? 'Save and Finalize' : 'Next'
+    = f.button :submit, @question.question_rows.any? ? 'Save Question Type Details and Close' : 'Next: Define the question type and answer choices'

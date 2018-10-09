@@ -1,10 +1,12 @@
 .column.row
-  h3 #{ @extraction_forms_projects_section.section.name }
-  h4 New Question (Step 1 of 2)
+  h3 Question Information (Step 1 of 2)
+
+.column.row
+  == render 'questions/question_information_friendly_helper_message'
 
 .column.row
   == render 'form'
 
 .column.row
   = link_to 'Back', build_extraction_forms_project_path(@extraction_forms_projects_section.extraction_forms_project,
-                                                        anchor: "panel-tab-#{ @extraction_forms_projects_section.id }")
+                    anchor: "panel-tab-#{ @extraction_forms_projects_section.id }")
