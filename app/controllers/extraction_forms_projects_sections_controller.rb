@@ -73,7 +73,7 @@ class ExtractionFormsProjectsSectionsController < ApplicationController
   def add_quality_dimension
     #!!! Make sure this user has permission to add questions to this extraction form
 
-    if @extraction_forms_projects_section.section.name == 'Quality'
+    if @extraction_forms_projects_section.section.name == 'Risk of Bias Assessment'
       ExtractionFormsProjectsSection.add_quality_dimension_by_questions_or_section(params.require([:id, :a_qdqId]))
       redirect_to build_extraction_forms_project_path(@extraction_forms_projects_section.extraction_forms_project,
                                                       anchor: "panel-tab-#{ @extraction_forms_projects_section.id }"),
