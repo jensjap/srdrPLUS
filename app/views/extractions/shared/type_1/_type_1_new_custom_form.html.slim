@@ -1,6 +1,6 @@
 h4 Add #{ section_name.singularize }
 
-= simple_form_for(eefps, remote: true, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
+= simple_form_for(eefps, remote: false, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
   .alert.callout data-abide-error='' style='display: none;'
     p
       i.fi-alert>
