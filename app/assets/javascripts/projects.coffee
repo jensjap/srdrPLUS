@@ -64,7 +64,6 @@ document.addEventListener 'turbolinks:load', ->
           to_add = []
           for c in data[ 'results' ]
             #console.log c
-
             citation_journal = ''
             citation_journal_date = ''
 
