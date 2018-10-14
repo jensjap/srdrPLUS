@@ -154,8 +154,6 @@ ul {
 }
 
 ///// MANAGE CITATIONS
-
-<<<<<<< HEAD
 #citations {
   ul {
     margin-top: 0rem;
@@ -299,6 +297,18 @@ a.citation-label {
   min-height: 800px;
 }
 
+//.remove-button-container {
+//  position: absolute;
+//  top: 0.5rem;
+//  right: 0.6rem;  
+//  width: 2rem;
+//  height: 2rem;
+//  display: flex;
+//  justify-content: center;
+//  align-items: center;
+//}
+
+
 .remove-button {
   font-size: 1rem;
   color: $dark-gray;
@@ -324,7 +334,6 @@ a.citation-label {
   .button {
     margin-left: 0.5rem;
   }
-
   display: flex;
 
 .added-item {

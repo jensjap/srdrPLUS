@@ -144,11 +144,6 @@ document.addEventListener 'turbolinks:load', ->
     $( '#citations' ).find( '.list' ).on 'cocoon:after-remove', ( e, citation ) ->
       $( '#citations-form' ).submit()
 
-
-
-
-
-#
 #    $( '#citations' ).find( '.list' ).on 'cocoon:before-remove', ( e, citation ) ->
 #      remove_button = $( citation ).find( '.remove-button' )
 #      if not $( remove_button ).hasClass( 'confirm' )
@@ -270,8 +265,6 @@ document.addEventListener 'turbolinks:load', ->
       append_citations( 1 )
       toastr.error('Could not save changes')
       #alert 'Save failed'
-
-      
 
 
 #templateResult: formatResult
