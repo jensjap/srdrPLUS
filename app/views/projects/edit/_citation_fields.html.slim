@@ -19,4 +19,8 @@
           = f.association :authors, collection: [], label: 'Authors', wrapper_html: { class: "AUTHORS" }
         .bottom-column
           = f.association :keywords, collection: [], label: 'Keywords', wrapper_html: { class: "KEYWORDS" }
-  = link_to_remove_association '✖', f, class: 'remove-button'
+      .buttons-row
+        #save-citation.button.success.small
+          | Save Citation
+        = link_to_remove_association 'Cancel', f, class: 'button alert small'
+        /= link_to_remove_association '✖', f, class: 'remove-button', style: 'position: relative; top: 0.2rem; right: 0.2rem;'

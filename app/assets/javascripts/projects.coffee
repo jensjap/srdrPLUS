@@ -43,11 +43,52 @@ document.addEventListener 'turbolinks:load', ->
       $( '#project-filter' ).focus()
       return
 
+    ## TASK MANAGEMENT - see if we can only run this stuff on the correct tab
     $( '.project_tasks_projects_users_roles select' ).select2()
 
-    list_options = { valueNames: ['citation-title'] }
-    citationList = new List('citations', list_options)
+    ## CITATION MANAGEMENT - see if we can only run this stuff on the correct tab
+    list_options = { valueNames: [ 'citation-title', 'citation-authors', 'citation-numbers', 'citation-journal', 'citation-journal-date', 'citation-abstract' ] }
 
+
+    ##### DYNAMICALLY LOADING CITATIONS
+    citationList = new List( 'citations', list_options )
+
+
+    citationList.add {  'citation-title': "TEST!", 'citation-authors': "TEST!", 'citation-numbers': "TEST!", 'citation-journal': "TEST!", 'citation-journal-date': "TEST!" }
+
+    $( '#sort-select' ).on "change", () ->
+      $( '#sort-button' ).attr( 'data-sort', $( this ).val() )
+      console.log $( this ).val()
+
+    $( '#citations' ).find( '.list' ).on 'cocoon:before-remove', ( e, citation ) ->
+      $(this).data('remove-timeout', 1000)
+      citation.slideUp('slow')
+    $( '#citations' ).find( '.list' ).on 'cocoon:before-insert', ( e, citation ) ->
+      citation.slideDown('slow')
+    $( '#citations' ).find( '.list' ).on 'cocoon:after-remove', ( e, citation ) ->
+      console.log $( '#citations-form' )
+      $( '#citations-form' ).submit()
+#    $( '#citations' ).find( '.list' ).on 'cocoon:before-remove', ( e, citation ) ->
+#      remove_button = $( citation ).find( '.remove-button' )
+#      if not $( remove_button ).hasClass( 'confirm' )
+#        e.preventDefault()
+#        $( remove_button ).addClass( 'confirm' )
+#        setTimeout ( ->
+#          $( remove_button ).removeClass( 'confirm' )
+#      ), 5000
+#      else
+#        $(this).data('remove-timeout', 1000)
+#        citation.slideUp('slow')
+
+#    setup_remove_button = ( remove_button ) ->
+#      remove_button.addEventListener "click", ( e ) ->
+#        if not $( remove_button ).hasClass( 'confirm' )
+#          $( remove_button ).addClass( 'confirm' )
+#          setTimeout ( ->
+#            $( remove_button ).removeClass( 'confirm' )
+#        ), 1000
+#
+#    $.map( $( '.remove-button' ), setup_remove_button )
 
     #projects_users_roles_data_url = $( '.project_tasks_projects_users_roles' ).attr('data_url')
     #@console.log projects_users_roles_data_url
@@ -135,6 +176,20 @@ document.addEventListener 'turbolinks:load', ->
           data: (params) ->
             q: params.term
             page: params.page || 1
+
+      $( insertedItem ).find( '#save-citation' ).on 'click', () ->
+        $( '#citations-form' ).submit()
+        
+    $( '#citations-form' ).bind "ajax:success", ( status ) ->
+      toastr.success('Save successful!')
+      #alert 'Save successful'
+    $( '#citations-form' ).bind "ajax:error", ( status ) ->
+      toastr.error('Save successful!')
+      #alert 'Save failed'
+
+    $( '#citations-form' ) 
+      
+
 
 #templateResult: formatResult
         #templateSelection: formatResultSelection

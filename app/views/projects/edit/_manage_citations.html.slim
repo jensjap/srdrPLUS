@@ -2,18 +2,30 @@ h5 Citations in this project
 
 div.row
   div.columns.medium-9
-    = simple_form_for(@project) do |f|
+    = simple_form_for(  @project, 
+                        remote: true, 
+                        url: api_v1_project_path(@project, format: :json), 
+                        html: { id: 'citations-form' } ) do |f|
       = f.error_notification
-
       #citations
-        form 
-          input.search type="text" placeholder='Search'
-        /.sort.button.tiny.hollow data-sort='citation-title'
-          | Sort
+        #search-div
+          #search-box.input
+              input.search type="text" placeholder='Search'
+        
+          #sort-button.sort.button.secondary.small data-sort='citation-title'
+            | Sort by
+          select id='sort-select'
+            option[value='citation-title'] Title
+            option[value='citation-authors'] Authors
+            option[value='citation-numbers'] PMID
+            option[value='citation-journal'] Journal
+            option[value='citation-journal-year'] Year
+
         #citations-projects-list
         ul.accordion.list.form-inputs data-accordion='' data-multi-expand='false' data-allow-all-closed='true'
-          = f.simple_fields_for :citations_projects, @citations_projects do |c_p_f|
-            = render 'projects/edit/citations_project_fields', f: c_p_f
+          /= f.simple_fields_for :citations_projects, @citations_projects do |c_p_f|
+          = f.simple_fields_for :citations_projects, @citations_projects.first do |c_p_f|
+            = render 'projects/edit/citations_project_fields', f: c_p_f, even_odd: cycle( "even", "odd" )
       #loyloyloy(data-sticky-container)
         #citations-footer.sticky(data-sticky data-stick-to="bottom"  data-btm-anchor="leyleyley" data-margin-bottom="0" data-check-every="0")
           /- if !@citations_projects.nil?
