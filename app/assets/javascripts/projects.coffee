@@ -53,6 +53,17 @@ document.addEventListener 'turbolinks:load', ->
     ##### DYNAMICALLY LOADING CITATIONS
     citationList = new List( 'citations', list_options )
 
+    update_citations = () ->
+      $.ajax $( '#citations-form' ).prop( 'action' ),
+        type: 'GET'
+        dataType: 'json'
+        error: (jqXHR, textStatus, errorThrown) ->
+                toaster.error( 'Could not get citations' )
+        success: (data, textStatus, jqXHR) ->
+                toaster.error( 'Could not get citations' )
+
+                $('body').append "Successful AJAX call: #{data}"
+
 
     citationList.add {  'citation-title': "TEST!", 'citation-authors': "TEST!", 'citation-numbers': "TEST!", 'citation-journal': "TEST!", 'citation-journal-date': "TEST!" }
 
