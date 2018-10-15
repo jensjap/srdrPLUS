@@ -8,6 +8,9 @@ div.row
                         html: { id: 'citations-form' } ) do |f|
       = f.error_notification
       #citations
+        #citations-url.hide
+          = api_v1_project_citations_url @project.id
+
         #search-div
           #search-box.input
               input.search type="text" placeholder='Search'
@@ -21,21 +24,21 @@ div.row
             option[value='citation-journal'] Journal
             option[value='citation-journal-year'] Year
 
-        #citations-projects-list
-        ul.accordion.list.form-inputs data-accordion='' data-multi-expand='false' data-allow-all-closed='true'
+        #cp-insertion-node
+        ul.accordion.list.form-inputs data-accordion='' data-multi-expand='false' data-allow-all-closed='true' id='citations-projects-list'
           /= f.simple_fields_for :citations_projects, @citations_projects do |c_p_f|
           = f.simple_fields_for :citations_projects, @citations_projects.first do |c_p_f|
-            = render 'projects/edit/citations_project_fields', f: c_p_f, even_odd: cycle( "even", "odd" )
+            = render 'projects/edit/citations_project_fields', f: c_p_f
       #loyloyloy(data-sticky-container)
         #citations-footer.sticky(data-sticky data-stick-to="bottom"  data-btm-anchor="leyleyley" data-margin-bottom="0" data-check-every="0")
           /- if !@citations_projects.nil?
             = paginate @citations_projects, params: { anchor: 'panel-citations' }
           .teyteytey
-            = link_to_add_association 'Add Citation', f, :citations_projects, partial: 'projects/edit/added_citations_project_fields', 'data-association-insertion-node' => '#citations-projects-list', 'data-association-insertion-method' => 'prepend'
+            = link_to_add_association 'Add Citation', f, :citations_projects, partial: 'projects/edit/added_citations_project_fields', 'data-association-insertion-node' => '#cp-insertion-node', 'data-association-insertion-method' => 'prepend'
             '
             ' or
 
-            = link_to_add_association 'Create New Citation', f, :citations, partial: 'projects/edit/citation_fields', 'data-association-insertion-node' => '#citations-projects-list', 'data-association-insertion-method' => 'prepend'
+            = link_to_add_association 'Create New Citation', f, :citations, partial: 'projects/edit/citation_fields', 'data-association-insertion-node' => '#cp-insertion-node', 'data-association-insertion-method' => 'prepend'
 
           br
           br

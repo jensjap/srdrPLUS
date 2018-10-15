@@ -1,10 +1,10 @@
-li.accordion-item.citation-row.nested-fields data-accordion-item='' 
+li.accordion-item.citation-row.nested-fields id='template' data-accordion-item='' 
   a.citation-label.accordion-title href='#'
     .citation-title.row.column
-      = @citation_dict[ f.object.citation_id ].name || "----Untitled Citation----"
+      = @citation_dict[ f.object.citation_id ].name || '----Untitled Citation----'
     .citation-authors.row.column
-      /= ( @citation_dict[ f.object.citation_id ].authors.map { |a| a.initials } ).join( ", " )
-      = ( @citation_dict[ f.object.citation_id ].authors.map { |a| a.name } ).join( ", " )
+      /= ( @citation_dict[ f.object.citation_id ].authors.map { |a| a.initials } ).join( ', ' )
+      = ( @citation_dict[ f.object.citation_id ].authors.map { |a| a.name } ).join( ', ' )
 
   .accordion-content data-tab-content=''
     .row.column.medium-12
@@ -12,10 +12,10 @@ li.accordion-item.citation-row.nested-fields data-accordion-item=''
         = @citation_dict[ f.object.citation_id ].pmid
       - if @citation_dict[ f.object.citation_id ].journal.present?
         .citation-journal
-          = @citation_dict[ f.object.citation_id ].journal.name || ""
+          = @citation_dict[ f.object.citation_id ].journal.name || ''
           .citation-journal-date
-            = " " + (@citation_dict[ f.object.citation_id ].journal.publication_date || "")
-            /span = " (" + j_date + ")"
+            = ' ' + (@citation_dict[ f.object.citation_id ].journal.publication_date || '')
+            /span = ' (' + j_date + ')'
     .citation-abstract.row.column.medium-12
       = @citation_dict[ f.object.citation_id ].abstract
     .row.edit-citation-row.column

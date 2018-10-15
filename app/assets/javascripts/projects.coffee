@@ -47,25 +47,37 @@ document.addEventListener 'turbolinks:load', ->
     $( '.project_tasks_projects_users_roles select' ).select2()
 
     ## CITATION MANAGEMENT - see if we can only run this stuff on the correct tab
-    list_options = { valueNames: [ 'citation-title', 'citation-authors', 'citation-numbers', 'citation-journal', 'citation-journal-date', 'citation-abstract' ] }
+    list_options = { item: $( '#template' ).get( 0 ).outerHTML , valueNames: [ 'citation-title', 'citation-authors', 'citation-numbers', 'citation-journal', 'citation-journal-date', 'citation-abstract' ] }
 
 
     ##### DYNAMICALLY LOADING CITATIONS
     citationList = new List( 'citations', list_options )
 
-    update_citations = () ->
-      $.ajax $( '#citations-form' ).prop( 'action' ),
+    append_citations = ( citationList, page ) ->
+      $.ajax $( '#citations-url' ).text(),
         type: 'GET'
         dataType: 'json'
+        data: { page : page }
         error: (jqXHR, textStatus, errorThrown) ->
-                toaster.error( 'Could not get citations' )
+          toaster.error( 'Could not get citations' )
         success: (data, textStatus, jqXHR) ->
-                toaster.error( 'Could not get citations' )
+          to_add = []
+          for c in data[ 'results' ]
+            #console.log c
+            to_add.push { 'citation-title': c[ 'name' ],\
+              'citation-authors': c[ 'authors' ],\
+              'citation-numbers': c[ 'pmid' ],\
+              'citation-journal': c[ 'journal' ][ 'name' ],\
+              'citation-journal-date': c[ 'journal'][ 'publication_date' ] }
+          citationList.add  to_add, ( items ) ->
+            console.log Foundation.reInit( $( '#citations-projects-list' ) )
 
-                $('body').append "Successful AJAX call: #{data}"
-
-
-    citationList.add {  'citation-title': "TEST!", 'citation-authors': "TEST!", 'citation-numbers': "TEST!", 'citation-journal': "TEST!", 'citation-journal-date': "TEST!" }
+          #citationList.add {  'citation-title': "TEST!", 'citation-authors': "TEST!", 'citation-numbers': "TEST!", 'citation-journal': "TEST!", 'citation-journal-date': "TEST!" }
+          if data[ 'pagination' ][ 'more' ] == true
+            append_citations( citationList, page + 1 )
+            
+    #citationList.clear()
+    append_citations( citationList, 1 )
 
     $( '#sort-select' ).on "change", () ->
       $( '#sort-button' ).attr( 'data-sort', $( this ).val() )
@@ -181,7 +193,7 @@ document.addEventListener 'turbolinks:load', ->
       $( insertedItem ).find( '.citation-select' ).select2
         minimumInputLength: 0
         ajax:
-          url: '/api/v1/citations.json',
+          url: '/api/v1/citations/titles.json',
           dataType: 'json'
           delay: 100
           data: (params) ->
@@ -198,7 +210,6 @@ document.addEventListener 'turbolinks:load', ->
       toastr.error('Save successful!')
       #alert 'Save failed'
 
-    $( '#citations-form' ) 
       
 
 
