@@ -265,7 +265,6 @@ document.addEventListener 'turbolinks:load', ->
       toastr.error('Could not save changes')
       #alert 'Save failed'
 
-
 #templateResult: formatResult
         #templateSelection: formatResultSelection
     
