@@ -8,7 +8,7 @@
       tr
         th
         - q.question_rows.first.question_row_columns.each do |qrc|
-          th style='font-weight: normal;' = qrc.name
+          th style='font-weight: bold;' = qrc.name
 
     tbody
       - q.question_rows.each do |qr|

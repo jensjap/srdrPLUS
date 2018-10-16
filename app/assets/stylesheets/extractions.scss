@@ -8,7 +8,8 @@
   li.accordion-item {
     a,
     a:visited {
-      color: gray;
+      //color: gray;
+      text-decoration: underline;
     }
 
     a.accordion-title {
@@ -55,5 +56,9 @@
 
   table {
     margin-bottom: 0;
+
+    tr td:first-child {
+      font-weight: bold;
+    }
   }
 }
