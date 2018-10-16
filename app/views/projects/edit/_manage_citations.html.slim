@@ -35,6 +35,16 @@ div.row
 
           = link_to_add_association 'Create New Citation', f, :citations, partial: 'projects/edit/citation_fields', 'data-association-insertion-node' => '#cp-insertion-node', 'data-association-insertion-method' => 'prepend'
 
+
+
+        #insert-citation-div[ style="margin-bottom: 1rem;" ]
+          = link_to_add_association 'Add Citation', f, :citations_projects, partial: 'projects/edit/added_citations_project_fields', 'data-association-insertion-node' => '#cp-insertion-node', 'data-association-insertion-method' => 'prepend'
+          '
+          ' or
+
+          = link_to_add_association 'Create New Citation', f, :citations, partial: 'projects/edit/citation_fields', 'data-association-insertion-node' => '#cp-insertion-node', 'data-association-insertion-method' => 'prepend'
+
+
         #cp-insertion-node
         ul.accordion.list.form-inputs data-accordion='' data-multi-expand='false' data-allow-all-closed='true' id='citations-projects-list'
           /= f.simple_fields_for :citations_projects, @citations_projects do |c_p_f|
@@ -45,7 +55,6 @@ div.row
           /       and link_to_remove_associaton javascript works properly. 
           = f.simple_fields_for :citations_projects, CitationsProject.first do |c_p_f|
             = render 'projects/edit/citations_project_fields', f: c_p_f
-
       #leyleyley
   div.columns.medium-3
     div#top-anchor(data-sticky-container)
