@@ -56,9 +56,9 @@
 
   table {
     margin-bottom: 0;
-
-    tr td:first-child {
-      font-weight: bold;
-    }
   }
+}
+
+table tr td:first-child {
+  font-weight: bold;
 }
