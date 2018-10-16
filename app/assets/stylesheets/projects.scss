@@ -167,6 +167,79 @@ ul {
       }
     }
   }
+
+  .citation-row {
+    .citation-label {
+      .citation-title, .citation-authors {
+        width: calc(100% - 35px);
+      }
+
+      .citation-title{
+        margin-bottom: 0.8rem;
+        overflow: hidden;
+        font-size: 15px;
+        color: #5b5b5b;
+      }
+
+      .citation-authors{
+        font-style: italic;
+        overflow: hidden;
+        font-size: 13px;
+        color: #666666;
+      }
+
+      .citation-journal {
+        font-size: 13px;
+        color: #5b5b5b;
+        //font-weight: bold;
+        .citation-journal-date {
+          font-style: italic;
+          color: #666666;
+        }
+      }
+
+
+      .citation-numbers {
+        margin-top: 0.8rem;
+        font-size: 13px;
+        color: #666666;
+        font-weight: bold;
+       }
+    }
+
+    .citation-abstract {
+      font-size: 13px;
+      color: #303030;
+    }
+
+    margin-bottom: 0px;
+    &:hover {
+      background-color: darken( $white, 10% );
+    }
+
+    &.is-active {
+      background-color: #F7F3F9 !important;
+      a.citation-label {
+        color: $primary-color !important;
+        height: auto;
+        overflow: auto;
+        white-space: normal;
+        border-bottom: 0px;
+        &:hover {
+          background-color: #E5DEE8 !important;
+        }
+        .citation-title {
+          font-weight: bold;
+        }
+      }
+      .accordion-content {
+        border-top: 0px;
+        background-color: #F7F3F9;
+      }
+    }
+  }
+
+  min-height: 800px;
 }
 
 #search-div {
@@ -195,42 +268,12 @@ ul {
   }
 }
 
-.citation-row {
-  margin-bottom: 0px;
-  .citation-title, .citation-authors {
-    width: calc(100% - 35px);
-  }
-
-  &:hover {
-    background-color: darken( $white, 10% );
-  }
-
-  &.is-active {
-    background-color: #F7F3F9 !important;
-    a.citation-label {
-      height: auto;
-      overflow: auto;
-      white-space: normal;
-      border-bottom: 0px;
-      &:hover {
-        background-color: #E5DEE8 !important;
-      }
-      .citation-title {
-        font-weight: bold;
-      }
-    }
-    .accordion-content {
-      border-top: 0px;
-      background-color: #F7F3F9;
-    }
-  }
-}
-
 .citation-select {
   margin-bottom: 0px;
 }
 
 a.citation-label {
+  line-height: 1.2rem;
   text-decoration: none;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -246,48 +289,6 @@ a.citation-label {
 //  content: none;
 //}
 
-.citation-title{
-  line-height: 1.3;
-  margin-bottom: 8px;
-  overflow: hidden;
-  font-size: 15px;
-  color: #5b5b5b;
-}
-
-.citation-authors{
-  font-style: italic;
-  overflow: hidden;
-  font-size: 13px;
-  color: #666666;
-}
-
-.citation-journal {
-  font-size: 13px;
-  color: #5b5b5b;
-  //font-weight: bold;
-  margin-bottom: 10px;
-  .citation-journal-date {
-    font-style: italic;
-    color: #666666;
-  }
-}
-
-
-.citation-numbers {
-  font-size: 13px;
-  color: #666666;
-  font-weight: bold;
-}
-
-.citation-abstract {
-  font-size: 13px;
-  color: #303030;
-}
-
-
-#citations {
-  min-height: 800px;
-}
 
 //.remove-button-container {
 //  position: absolute;

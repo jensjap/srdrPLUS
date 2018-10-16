@@ -47,13 +47,14 @@ document.addEventListener 'turbolinks:load', ->
     $( '.project_tasks_projects_users_roles select' ).select2()
 
     ## CITATION MANAGEMENT - see if we can only run this stuff on the correct tab
-    list_options = { item: $( '#template' ).get( 0 ).outerHTML , valueNames: [ 'citation-title', 'citation-authors', 'citation-numbers', 'citation-journal', 'citation-journal-date', 'citation-abstract' ] }
+    list_options = { valueNames: [ 'citation-title', 'citation-authors', 'citation-numbers', 'citation-journal', 'citation-journal-date', 'citation-abstract', 'citation-abstract' ] }
 
 
     ##### DYNAMICALLY LOADING CITATIONS
     citationList = new List( 'citations', list_options )
+    list_index = 0
 
-    append_citations = ( citationList, page ) ->
+    append_citations = ( page ) ->
       $.ajax $( '#citations-url' ).text(),
         type: 'GET'
         dataType: 'json'
@@ -65,31 +66,42 @@ document.addEventListener 'turbolinks:load', ->
           for c in data[ 'results' ]
             #console.log c
             to_add.push { 'citation-title': c[ 'name' ],\
-              'citation-authors': c[ 'authors' ],\
-              'citation-numbers': c[ 'pmid' ],\
+              'citation-abstract': c[ 'abstract' ],\
+              'citation-authors': ( c[ 'authors' ].map ( author ) -> author[ 'name' ] ),\
+              'citation-numbers': c[ 'pmid' ] || "NO-PMID",\
               'citation-journal': c[ 'journal' ][ 'name' ],\
-              'citation-journal-date': c[ 'journal'][ 'publication_date' ] }
-          citationList.add  to_add, ( items ) ->
-            console.log Foundation.reInit( $( '#citations-projects-list' ) )
+              'citation-journal-date': c[ 'journal'][ 'publication_date' ],\
+              'citations-project-id': c[ 'citations_project_id' ] }
+          if page == 1
+            citationList.clear()
+          citationList.add to_add, ( items ) ->
+            for item in items
+              console.log item
+              #console.log $( '<input type="hidden" value=%%%CITATION_PROJECT_ID%%% name="project[citations_projects_attributes][%%%INDEX%%%][id]" id="project_citations_projects_attributes_%%%INDEX%%%_id">'.replace( /%%%CITATION_PROJECT_ID%%%/g, c[ 'citations_project_id' ] ).replace( /%%%INDEX%%%/g, list_index.toString() ) ).insertAfter( item.elm )
+              $( '<input type="hidden" value=%%%CITATION_PROJECT_ID%%% name="project[citations_projects_attributes][%%%INDEX%%%][id]" id="project_citations_projects_attributes_%%%INDEX%%%_id">'.replace( /%%%CITATION_PROJECT_ID%%%/g, item.values()[ 'citations-project-id' ] ).replace( /%%%INDEX%%%/g, list_index.toString() ) ).insertAfter( item.elm )
+              $( item.elm ).find( '#project_citations_projects_attributes_0__destroy' )[ 0 ].outerHTML = '<input type="hidden" name="project[citations_projects_attributes][%%%INDEX%%%][_destroy]" id="project_citations_projects_attributes_%%%INDEX%%%__destroy" value="false">'.replace( /%%%INDEX%%%/g, list_index.toString() )
+                
+              list_index++
+            citationList.reIndex()
+            citationList.sort( 'citation-numbers', { order: 'desc', alphabet: undefined, insensitive: true, sortFunction: undefined } )
+            Foundation.reInit( $( '#citations-projects-list' ) )
 
           #citationList.add {  'citation-title': "TEST!", 'citation-authors': "TEST!", 'citation-numbers': "TEST!", 'citation-journal': "TEST!", 'citation-journal-date': "TEST!" }
           if data[ 'pagination' ][ 'more' ] == true
-            append_citations( citationList, page + 1 )
+            append_citations(  page + 1 )
             
-    #citationList.clear()
-    append_citations( citationList, 1 )
+    append_citations( 1 )
 
     $( '#sort-select' ).on "change", () ->
       $( '#sort-button' ).attr( 'data-sort', $( this ).val() )
-      console.log $( this ).val()
 
-    $( '#citations' ).find( '.list' ).on 'cocoon:before-remove', ( e, citation ) ->
-      $(this).data('remove-timeout', 1000)
-      citation.slideUp('slow')
-    $( '#citations' ).find( '.list' ).on 'cocoon:before-insert', ( e, citation ) ->
-      citation.slideDown('slow')
+    #$( '#cp-insertion-node' ).on 'cocoon:before-remove', ( e, citation ) ->
+      #$(this).data('remove-timeout', 1000)
+      #citation.slideUp('slow')
+    $( '#cp-insertion-node' ).on 'cocoon:before-insert', ( e, citation ) ->
+      $( '.cancel-button' ).click()
+      #citation.slideDown('slow')
     $( '#citations' ).find( '.list' ).on 'cocoon:after-remove', ( e, citation ) ->
-      console.log $( '#citations-form' )
       $( '#citations-form' ).submit()
 #    $( '#citations' ).find( '.list' ).on 'cocoon:before-remove', ( e, citation ) ->
 #      remove_button = $( citation ).find( '.remove-button' )
@@ -200,14 +212,16 @@ document.addEventListener 'turbolinks:load', ->
             q: params.term
             page: params.page || 1
 
-      $( insertedItem ).find( '#save-citation' ).on 'click', () ->
+      $( insertedItem ).find( '.save-citation' ).on 'click', () ->
         $( '#citations-form' ).submit()
         
     $( '#citations-form' ).bind "ajax:success", ( status ) ->
+      append_citations( 1 )
       toastr.success('Save successful!')
+      $( '.cancel-button' ).click()
       #alert 'Save successful'
     $( '#citations-form' ).bind "ajax:error", ( status ) ->
-      toastr.error('Save successful!')
+      toastr.error('Could not save changes')
       #alert 'Save failed'
 
       

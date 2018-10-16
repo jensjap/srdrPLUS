@@ -3,7 +3,6 @@
     .select-row[style='margin-top: 1rem; margin-bottom: 1rem;']
       = f.association :citation, as: :select, collection: [], prompt: 'Choose a citation', label: false, input_html: { class: 'citation-select' }
     .buttons-row
-      #save-citation.button.success.small
+      .save-citation.button.success.small
         | Save Citation
-      = link_to_remove_association 'Cancel', f, class: 'button alert small'
-
+      = link_to_remove_association 'Cancel', f, class: 'button alert small cancel-button'

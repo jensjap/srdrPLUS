@@ -22,9 +22,7 @@
 //= require react
 //= require react_ujs
 //= require components
-//= require list
-//= require list.pagination
-//= require list.fuzzysearch
+//= require list.min.js
 //= require_tree .
 
 //$(function(){ $(document).foundation(); });

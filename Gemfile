@@ -132,6 +132,3 @@ gem 'bio'
 
 # for parsing ris files
 gem 'ref_parsers'
-
-# jlist for pretty list searching
-gem 'listjs-rails'
