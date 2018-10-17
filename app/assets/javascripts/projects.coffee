@@ -47,7 +47,7 @@ document.addEventListener 'turbolinks:load', ->
     $( '.project_tasks_projects_users_roles select' ).select2()
 
     ## CITATION MANAGEMENT - see if we can only run this stuff on the correct tab
-    list_options = { valueNames: [ 'citation-title', 'citation-authors', 'citation-numbers', 'citation-journal', 'citation-journal-date', 'citation-abstract', 'citation-abstract' ] }
+    list_options = { valueNames: [ 'citation-numbers', 'citation-title', 'citation-authors', 'citation-journal', 'citation-journal-date', 'citation-abstract', 'citation-abstract' ] }
 
 
     ##### DYNAMICALLY LOADING CITATIONS
@@ -65,25 +65,30 @@ document.addEventListener 'turbolinks:load', ->
           to_add = []
           for c in data[ 'results' ]
             #console.log c
+
+            if 'journal' in c
+              citation_journal = 'Journal: ' +  c[ 'journal' ][ 'name' ]
+              citation_journal_date = 'Publication Date: ' + c[ 'journal'][ 'publication_date' ]
+
             to_add.push { 'citation-title': c[ 'name' ],\
               'citation-abstract': c[ 'abstract' ],\
+              'citation-journal': citation_journal || '',\
+              'citation-journal-date': citation_journal_date || '',\
               'citation-authors': ( c[ 'authors' ].map ( author ) -> author[ 'name' ] ),\
-              'citation-numbers': c[ 'pmid' ] || "NO-PMID",\
-              'citation-journal': c[ 'journal' ][ 'name' ],\
-              'citation-journal-date': c[ 'journal'][ 'publication_date' ],\
+              'citation-numbers': 'PMID: ' + ( c[ 'pmid' ] || 'N/A' ),\
               'citations-project-id': c[ 'citations_project_id' ] }
+
           if page == 1
             citationList.clear()
           citationList.add to_add, ( items ) ->
             for item in items
-              console.log item
               #console.log $( '<input type="hidden" value=%%%CITATION_PROJECT_ID%%% name="project[citations_projects_attributes][%%%INDEX%%%][id]" id="project_citations_projects_attributes_%%%INDEX%%%_id">'.replace( /%%%CITATION_PROJECT_ID%%%/g, c[ 'citations_project_id' ] ).replace( /%%%INDEX%%%/g, list_index.toString() ) ).insertAfter( item.elm )
               $( '<input type="hidden" value=%%%CITATION_PROJECT_ID%%% name="project[citations_projects_attributes][%%%INDEX%%%][id]" id="project_citations_projects_attributes_%%%INDEX%%%_id">'.replace( /%%%CITATION_PROJECT_ID%%%/g, item.values()[ 'citations-project-id' ] ).replace( /%%%INDEX%%%/g, list_index.toString() ) ).insertAfter( item.elm )
               $( item.elm ).find( '#project_citations_projects_attributes_0__destroy' )[ 0 ].outerHTML = '<input type="hidden" name="project[citations_projects_attributes][%%%INDEX%%%][_destroy]" id="project_citations_projects_attributes_%%%INDEX%%%__destroy" value="false">'.replace( /%%%INDEX%%%/g, list_index.toString() )
                 
               list_index++
             citationList.reIndex()
-            citationList.sort( 'citation-numbers', { order: 'desc', alphabet: undefined, insensitive: true, sortFunction: undefined } )
+            #citationList.sort( 'citation-numbers', { order: 'desc', alphabet: undefined, insensitive: true, sortFunction: undefined } )
             Foundation.reInit( $( '#citations-projects-list' ) )
 
           #citationList.add {  'citation-title': "TEST!", 'citation-authors': "TEST!", 'citation-numbers': "TEST!", 'citation-journal': "TEST!", 'citation-journal-date': "TEST!" }
@@ -221,6 +226,7 @@ document.addEventListener 'turbolinks:load', ->
       $( '.cancel-button' ).click()
       #alert 'Save successful'
     $( '#citations-form' ).bind "ajax:error", ( status ) ->
+      append_citations( 1 )
       toastr.error('Could not save changes')
       #alert 'Save failed'
 

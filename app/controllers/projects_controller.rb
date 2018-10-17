@@ -1,5 +1,5 @@
 class ProjectsController < ApplicationController
-  before_action :set_project, only: [:show, :edit, :update, :destroy, :export, :import_csv, :import_pubmed, :import_ris]
+  before_action :set_project, only: [:show, :edit, :update, :destroy, :export, :import_csv, :import_pubmed, :import_endnote, :import_ris]
 
   SORT = {  'updated-at': { updated_at: :desc },
             'created-at': { created_at: :desc }
@@ -142,6 +142,12 @@ class ProjectsController < ApplicationController
     redirect_to edit_project_path(@project, anchor: 'panel-citations')
   end
 
+  def import_endnote
+    if params[:project].present? and params[:project][:citation_file].present?
+      @project.import_citations_from_enl( params[:project][:citation_file] )
+    end
+    redirect_to edit_project_path(@project, anchor: 'panel-citations')
+  end
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_project

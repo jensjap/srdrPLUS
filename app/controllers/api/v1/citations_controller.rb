@@ -9,7 +9,7 @@ class Api::V1::CitationsController < Api::V1::BaseController
     _c_p_dict = { }
     if params[ :project_id ].present?
       _p_cids = Project.find( params[ :project_id ] ).citations.map { |c| c.id }
-      _total_arr = Citation.by_query( _query ).where( id: _p_cids )
+      _total_arr = Citation.by_query( _query ).where( id: _p_cids ).order( pmid: :desc )
       _c_p_dict = Hash[ *CitationsProject.where( citation: _total_arr ).map { |c_p| [ c_p.citation_id,  c_p.id ] }.flatten ]
     else
       _total_arr = Citation.by_query(_query)

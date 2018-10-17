@@ -188,23 +188,27 @@ ul {
         color: #666666;
       }
 
-      .citation-journal {
-        font-size: 13px;
-        color: #5b5b5b;
-        //font-weight: bold;
-        .citation-journal-date {
-          font-style: italic;
-          color: #666666;
-        }
-      }
-
-
       .citation-numbers {
         margin-top: 0.8rem;
         font-size: 13px;
         color: #666666;
         font-weight: bold;
        }
+    }
+
+    .citation-journal {
+      margin-top: 0rem;
+      margin-bottom: 1rem;
+      font-size: 13px;
+      color: #5b5b5b;
+      //font-weight: bold;
+    }
+
+    .citation-journal-date {
+      font-style: italic;
+      color: #666666;
+      margin-bottom: 1rem;
+
     }
 
     .citation-abstract {
@@ -252,7 +256,7 @@ ul {
   }
 
   #sort-select {
-    max-width: 4rem; 
+    max-width: 4.5rem; 
   }
 
   #search-box {

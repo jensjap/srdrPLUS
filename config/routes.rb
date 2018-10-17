@@ -73,6 +73,7 @@ Rails.application.routes.draw do
   resources :projects, concerns: :paginatable, shallow: true do
     post 'import_csv', on: :member
     post 'import_ris', on: :member
+    post 'import_endnote', on: :member
     post 'import_pubmed', on: :member
     
     resources :citations do

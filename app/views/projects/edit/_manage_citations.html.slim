@@ -15,12 +15,12 @@ div.row
           #search-box.input
               input.search type="text" placeholder='Search'
         
-          #sort-button.sort.button.secondary.small data-sort='citation-title'
+          #sort-button.sort.button.secondary.small data-sort='citation-numbers'
             | Sort by
           select id='sort-select'
+            option[value='citation-numbers'] PMID
             option[value='citation-title'] Title
             option[value='citation-authors'] Authors
-            option[value='citation-numbers'] PMID
             option[value='citation-journal'] Journal
             option[value='citation-journal-year'] Year
 
@@ -41,26 +41,7 @@ div.row
             = render 'projects/edit/citations_project_fields', f: c_p_f
 
 
-      / FOOTER IS DEPRECATED - should be hidden or deleted
-      #loyloyloy(data-sticky-container).hide
-        #citations-footer.sticky(data-sticky data-stick-to="bottom"  data-btm-anchor="leyleyley" data-margin-bottom="0" data-check-every="0")
-          /- if !@citations_projects.nil?
-            = paginate @citations_projects, params: { anchor: 'panel-citations' }
-          .teyteytey
-            = link_to_add_association 'Add Citation', f, :citations_projects, partial: 'projects/edit/added_citations_project_fields', 'data-association-insertion-node' => '#cp-insertion-node', 'data-association-insertion-method' => 'prepend'
-            '
-            ' or
-
-            = link_to_add_association 'Create New Citation', f, :citations, partial: 'projects/edit/citation_fields', 'data-association-insertion-node' => '#cp-insertion-node', 'data-association-insertion-method' => 'prepend'
-
-          br
-          br
-
-          .form-actions
-            = f.button :submit, 'Save changes'
       #leyleyley
-
-
   div.columns.medium-3
     div#top-anchor(data-sticky-container)
       div.sticky(data-sticky data-top-anchor="top-anchor" data-btm-anchor="leyleyley" data-margin-bottom="0" data-check-every="0")
@@ -86,3 +67,10 @@ div.row
               = f.input :citation_file, as: :file, label: 'Import citations from a list of PubMed IDs'
             .form-actions
               = f.button :submit, 'Upload pmid list', class:"hollow small"
+        br
+        #import-endnote-div
+          = simple_form_for @project, method: :post, url: import_endnote_project_url, multipart: true do |f|
+            .form-inputs
+              = f.input :citation_file, as: :file, label: 'Import citations from a .enl file'
+            .form-actions
+              = f.button :submit, 'Upload .enl file', class:"hollow small"
