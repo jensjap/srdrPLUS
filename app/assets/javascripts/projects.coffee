@@ -47,11 +47,7 @@ document.addEventListener 'turbolinks:load', ->
     $( '.project_tasks_projects_users_roles select' ).select2()
 
     ## CITATION MANAGEMENT - see if we can only run this stuff on the correct tab
-<<<<<<< HEAD
     list_options = { valueNames: [ 'citation-numbers', 'citation-title', 'citation-authors', 'citation-journal', 'citation-journal-date', 'citation-abstract', 'citation-abstract' ] }
-=======
-    list_options = { valueNames: [ 'citation-title', 'citation-authors', 'citation-numbers', 'citation-journal', 'citation-journal-date', 'citation-abstract', 'citation-abstract' ] }
->>>>>>> autosave works, bottom bar removed
 
 
     ##### DYNAMICALLY LOADING CITATIONS
