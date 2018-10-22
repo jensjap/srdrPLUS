@@ -170,44 +170,50 @@ ul {
 
   .citation-row {
     .citation-label {
+      font-size: 0.7rem;
+      line-height: 0.9rem;
+      color: #5b5b5b;
       .citation-title, .citation-authors {
         width: calc(100% - 35px);
       }
 
       .citation-title{
-        margin-bottom: 0.8rem;
+        //margin-bottom: 0.8rem;
         overflow: hidden;
-        font-size: 15px;
-        color: #5b5b5b;
+        //font-size: 15px;
+        font-weight: bold;
+        //color: #5b5b5b;
       }
 
       .citation-authors{
         font-style: italic;
         overflow: hidden;
-        font-size: 13px;
-        color: #666666;
+        //font-size: 13px;
+        //color: #666666;
       }
 
       .citation-numbers {
-        margin-top: 0.8rem;
-        font-size: 13px;
-        color: #666666;
-        font-weight: bold;
+        display: inline;
+        //margin-top: 0.8rem;
+        //font-size: 13px;
+        //color: #666666;
+        //font-weight: bold;
        }
     }
 
     .citation-journal {
-      margin-top: 0rem;
-      margin-bottom: 1rem;
-      font-size: 13px;
-      color: #5b5b5b;
+      //margin-top: 0rem;
+      display: inline;
+      //margin-bottom: 1rem;
+      //color: #5b5b5b;
       //font-weight: bold;
     }
 
     .citation-journal-date {
-      font-style: italic;
-      color: #666666;
-      margin-bottom: 1rem;
+      display: inline;
+      //font-style: italic;
+      //color: #666666;
+      //margin-bottom: 1rem;
 
     }
 
@@ -224,7 +230,7 @@ ul {
     &.is-active {
       background-color: #F7F3F9 !important;
       a.citation-label {
-        color: $primary-color !important;
+        color: darken( $primary-color, 10% ) !important;
         height: auto;
         overflow: auto;
         white-space: normal;
@@ -232,9 +238,13 @@ ul {
         &:hover {
           background-color: #E5DEE8 !important;
         }
-        .citation-title {
-          font-weight: bold;
+        .citation-numbers, .citation-authors {
+          margin-bottom: 0.5rem;
         }
+        .citation-authors, .citation-title {
+          margin-top: 0.5rem;
+        }
+
       }
       .accordion-content {
         border-top: 0px;
@@ -392,9 +402,9 @@ a.citation-label {
   margin-bottom: 0px;
 }
 
-abbr[title="required"] {
-  display: none;
-}
+//abbr[title="required"] {
+//  display: none;
+//}
 
 
 ///// MANAGE TASKS

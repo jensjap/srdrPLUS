@@ -52,7 +52,6 @@ document.addEventListener 'turbolinks:load', ->
 
     ##### DYNAMICALLY LOADING CITATIONS
     citationList = new List( 'citations', list_options )
-    list_index = 0
 
     append_citations = ( page ) ->
       $.ajax $( '#citations-url' ).text(),
@@ -66,39 +65,73 @@ document.addEventListener 'turbolinks:load', ->
           for c in data[ 'results' ]
             #console.log c
 
-            if 'journal' in c
-              citation_journal = 'Journal: ' +  c[ 'journal' ][ 'name' ]
-              citation_journal_date = 'Publication Date: ' + c[ 'journal'][ 'publication_date' ]
+            citation_journal = ''
+            citation_journal_date = ''
+
+            if 'journal' of c
+              citation_journal = c[ 'journal' ][ 'name' ]
+              citation_journal_date = '(' + c[ 'journal'][ 'publication_date' ] + ')'
 
             to_add.push { 'citation-title': c[ 'name' ],\
               'citation-abstract': c[ 'abstract' ],\
-              'citation-journal': citation_journal || '',\
-              'citation-journal-date': citation_journal_date || '',\
-              'citation-authors': ( c[ 'authors' ].map ( author ) -> author[ 'name' ] ),\
-              'citation-numbers': 'PMID: ' + ( c[ 'pmid' ] || 'N/A' ),\
+              'citation-journal': citation_journal,\
+              'citation-journal-date': citation_journal_date,\
+              'citation-authors': ( c[ 'authors' ].map( ( author ) -> author[ 'name' ] ) ).join( ', ' ),\
+              'citation-numbers': ( c[ 'pmid' ] || 'N/A' ),\
               'citations-project-id': c[ 'citations_project_id' ] }
 
           if page == 1
             citationList.clear()
           citationList.add to_add, ( items ) ->
+            list_index = 0
             for item in items
               #console.log $( '<input type="hidden" value=%%%CITATION_PROJECT_ID%%% name="project[citations_projects_attributes][%%%INDEX%%%][id]" id="project_citations_projects_attributes_%%%INDEX%%%_id">'.replace( /%%%CITATION_PROJECT_ID%%%/g, c[ 'citations_project_id' ] ).replace( /%%%INDEX%%%/g, list_index.toString() ) ).insertAfter( item.elm )
-              $( '<input type="hidden" value=%%%CITATION_PROJECT_ID%%% name="project[citations_projects_attributes][%%%INDEX%%%][id]" id="project_citations_projects_attributes_%%%INDEX%%%_id">'.replace( /%%%CITATION_PROJECT_ID%%%/g, item.values()[ 'citations-project-id' ] ).replace( /%%%INDEX%%%/g, list_index.toString() ) ).insertAfter( item.elm )
+              $( '<input type="hidden" value=%%%CITATION_PROJECT_ID%%% name="project[citations_projects_attributes][%%%INDEX%%%][id]" id="project_citations_projects_attributes_%%%INDEX%%%_id">'.replace( /%%%CITATION_PROJECT_ID%%%/g, item.values()[ 'citations-project-id' ] ).replace( /%%%INDEX%%%/g, list_index.toString() ) ).insertBefore( item.elm )
               $( item.elm ).find( '#project_citations_projects_attributes_0__destroy' )[ 0 ].outerHTML = '<input type="hidden" name="project[citations_projects_attributes][%%%INDEX%%%][_destroy]" id="project_citations_projects_attributes_%%%INDEX%%%__destroy" value="false">'.replace( /%%%INDEX%%%/g, list_index.toString() )
-                
+
               list_index++
             citationList.reIndex()
+            $( "#citations-count" ).html( list_index )
             #citationList.sort( 'citation-numbers', { order: 'desc', alphabet: undefined, insensitive: true, sortFunction: undefined } )
             Foundation.reInit( $( '#citations-projects-list' ) )
 
           #citationList.add {  'citation-title': "TEST!", 'citation-authors': "TEST!", 'citation-numbers': "TEST!", 'citation-journal': "TEST!", 'citation-journal-date': "TEST!" }
           if data[ 'pagination' ][ 'more' ] == true
             append_citations(  page + 1 )
-            
+
     append_citations( 1 )
 
+    $( '#import-select' ).on 'change', () ->
+      $( '#import-ris-div' ).hide()
+      $( '#import-csv-div' ).hide()
+      $( '#import-pubmed-div' ).hide()
+      $( '#import-endnote-div' ).hide()
+      switch $( this ).val()
+        when 'ris' then $( '#import-ris-div' ).show()
+        when 'csv' then $( '#import-csv-div' ).show()
+        when 'pmid-list' then $( '#import-pubmed-div' ).show()
+        when 'endnote' then $( '#import-endnote-div' ).show()
+
+    # CHECK IF A FILE IS SELECTED AND DISPLAY UPLOAD BUTTON ONLY IF A FILE IS SELECTED
+    console.log $( 'input.file' )
+    $( 'input.file' ).on 'change', () ->
+      if !!$( this ).val()
+        $( this ).closest( '.simple_form' ).find( '.form-actions' ).show()
+      else
+        $( this ).closest( '.simple_form' ).find( '.form-actions' ).hide()
+
+    $( '#sort-button' ).on 'click', () ->
+      if $( this ).attr( 'sort-order' ) == 'desc'
+        $( this ).attr( 'sort-order', 'asc' )
+        $( this ).html( 'ASCENDING' )
+      else
+        $( this ).attr( 'sort-order', 'desc' )
+        $( this ).html( 'DESC' )
+
+      citationList.sort( $( '#sort-select' ).val(), { order: $( this ).attr( 'sort-order' ), alphabet: undefined, insensitive: true, sortFunction: undefined } )
+
     $( '#sort-select' ).on "change", () ->
-      $( '#sort-button' ).attr( 'data-sort', $( this ).val() )
+      citationList.sort( $( this ).val(), { order: $( '#sort-button' ).attr( 'sort-order' ), alphabet: undefined, insensitive: true, sortFunction: undefined } )
 
     #$( '#cp-insertion-node' ).on 'cocoon:before-remove', ( e, citation ) ->
       #$(this).data('remove-timeout', 1000)
@@ -108,6 +141,12 @@ document.addEventListener 'turbolinks:load', ->
       #citation.slideDown('slow')
     $( '#citations' ).find( '.list' ).on 'cocoon:after-remove', ( e, citation ) ->
       $( '#citations-form' ).submit()
+
+
+
+
+
+#
 #    $( '#citations' ).find( '.list' ).on 'cocoon:before-remove', ( e, citation ) ->
 #      remove_button = $( citation ).find( '.remove-button' )
 #      if not $( remove_button ).hasClass( 'confirm' )

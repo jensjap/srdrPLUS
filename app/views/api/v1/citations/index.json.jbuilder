@@ -11,7 +11,6 @@ json.results do
     json.abstract citation.abstract
     json.pmid citation.pmid
     json.refman citation.refman
-
     if citation.journal.present?
       json.journal do
         json.publication_date citation.journal.publication_date
@@ -20,7 +19,6 @@ json.results do
         json.issue citation.journal.issue
       end
     end
-
     json.authors do
       json.array! citation.authors, :id, :name
     end
