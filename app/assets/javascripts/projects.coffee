@@ -52,7 +52,6 @@ document.addEventListener 'turbolinks:load', ->
 
     ##### DYNAMICALLY LOADING CITATIONS
     citationList = new List( 'citations', list_options )
-    list_index = 0
 
     append_citations = ( page ) ->
       $.ajax $( '#citations-url' ).text(),
@@ -90,7 +89,6 @@ document.addEventListener 'turbolinks:load', ->
               $( item.elm ).find( '#project_citations_projects_attributes_0__destroy' )[ 0 ].outerHTML = '<input type="hidden" name="project[citations_projects_attributes][%%%INDEX%%%][_destroy]" id="project_citations_projects_attributes_%%%INDEX%%%__destroy" value="false">'.replace( /%%%INDEX%%%/g, list_index.toString() )
 
               $( item.elm ).show()
-
               list_index++
             citationList.reIndex()
             $( "#citations-count" ).html( list_index )

@@ -224,9 +224,10 @@ ul {
     }
 
     .citation-journal-date {
-      font-style: italic;
-      color: #666666;
-      margin-bottom: 1rem;
+      display: inline;
+      //font-style: italic;
+      //color: #666666;
+      //margin-bottom: 1rem;
 
     }
 
@@ -257,6 +258,10 @@ ul {
         .citation-authors, .citation-title {
           margin-top: 0.5rem;
         }
+        .citation-authors, .citation-title {
+          margin-top: 0.5rem;
+        }
+
       }
       .accordion-content {
         border-top: 0px;
@@ -407,10 +412,6 @@ a.citation-label {
 //abbr[title="required"] {
 //  display: none;
 //}
-
-
-///// MANAGE TASKS
-
 
 ///// MANAGE TASKS
 
