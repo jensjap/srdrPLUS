@@ -26,7 +26,7 @@ div.row
             option[value='citation-title'] Title
             option[value='citation-authors'] Authors
             option[value='citation-journal'] Journal
-            option[value='citation-journal-year'] Year
+            option[value='citation-journal-date'] Year
 
         #insert-citation-div[ style="margin-bottom: 1rem;" ]
           = link_to_add_association 'Add Citation', f, :citations_projects, partial: 'projects/edit/added_citations_project_fields', 'data-association-insertion-node' => '#cp-insertion-node', 'data-association-insertion-method' => 'prepend'

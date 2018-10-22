@@ -70,7 +70,7 @@ document.addEventListener 'turbolinks:load', ->
 
             if 'journal' of c
               citation_journal = c[ 'journal' ][ 'name' ]
-              citation_journal_date = '(' + c[ 'journal'][ 'publication_date' ] + ')'
+              citation_journal_date = ' (' + c[ 'journal'][ 'publication_date' ] + ')'
 
             to_add.push { 'citation-title': c[ 'name' ],\
               'citation-abstract': c[ 'abstract' ],\
@@ -88,6 +88,8 @@ document.addEventListener 'turbolinks:load', ->
               #console.log $( '<input type="hidden" value=%%%CITATION_PROJECT_ID%%% name="project[citations_projects_attributes][%%%INDEX%%%][id]" id="project_citations_projects_attributes_%%%INDEX%%%_id">'.replace( /%%%CITATION_PROJECT_ID%%%/g, c[ 'citations_project_id' ] ).replace( /%%%INDEX%%%/g, list_index.toString() ) ).insertAfter( item.elm )
               $( '<input type="hidden" value=%%%CITATION_PROJECT_ID%%% name="project[citations_projects_attributes][%%%INDEX%%%][id]" id="project_citations_projects_attributes_%%%INDEX%%%_id">'.replace( /%%%CITATION_PROJECT_ID%%%/g, item.values()[ 'citations-project-id' ] ).replace( /%%%INDEX%%%/g, list_index.toString() ) ).insertBefore( item.elm )
               $( item.elm ).find( '#project_citations_projects_attributes_0__destroy' )[ 0 ].outerHTML = '<input type="hidden" name="project[citations_projects_attributes][%%%INDEX%%%][_destroy]" id="project_citations_projects_attributes_%%%INDEX%%%__destroy" value="false">'.replace( /%%%INDEX%%%/g, list_index.toString() )
+
+              $( item.elm ).show()
 
               list_index++
             citationList.reIndex()
@@ -126,7 +128,7 @@ document.addEventListener 'turbolinks:load', ->
         $( this ).html( 'ASCENDING' )
       else
         $( this ).attr( 'sort-order', 'desc' )
-        $( this ).html( 'DESC' )
+        $( this ).html( 'DESCENDING' )
 
       citationList.sort( $( '#sort-select' ).val(), { order: $( this ).attr( 'sort-order' ), alphabet: undefined, insensitive: true, sortFunction: undefined } )
 
