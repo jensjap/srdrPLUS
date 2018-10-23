@@ -3,11 +3,12 @@
 one:
   extraction: one
   projects_users_role: one
-  deleted_at: 2017-10-17 12:10:45
-  active: false
+  deleted_at:
+  active: true
 
 two:
   extraction: two
   projects_users_role: two
-  deleted_at: 2017-10-17 12:10:45
-  active: false
+  deleted_at:
+  active: true
+

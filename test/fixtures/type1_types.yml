@@ -2,8 +2,9 @@
 
 one:
   name: MyString
-  deleted_at: 2017-11-08 15:11:13
+  deleted_at:
 
 two:
   name: MyString
-  deleted_at: 2017-11-08 15:11:13
+  deleted_at:
+

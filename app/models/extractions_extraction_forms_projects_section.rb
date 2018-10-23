@@ -5,8 +5,10 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
   acts_as_paranoid column: :active, sentinel_value: true
   has_paper_trail
 
-  scope :result_type_sections, -> () {
-    joins(extraction_forms_projects_section: :section ).where(extraction_forms_projects_sections: { sections: { name: 'Results' } }) }
+  #!!! Doesn't work
+#  scope :result_type_sections, -> () {
+#    joins(extraction_forms_projects_section: :section )
+#      .where(extraction_forms_projects_sections: { sections: { name: 'Results' } }) }
 
   belongs_to :extraction,                        inverse_of: :extractions_extraction_forms_projects_sections
   belongs_to :extraction_forms_projects_section, inverse_of: :extractions_extraction_forms_projects_sections
@@ -14,15 +16,22 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
     foreign_key: 'extractions_extraction_forms_projects_section_id',
     optional: true
 
+  has_many :link_to_type2s, class_name: 'ExtractionsExtractionFormsProjectsSection',
+    foreign_key: 'extractions_extraction_forms_projects_section_id'
+
   has_many :extractions_extraction_forms_projects_sections_type1s, dependent: :destroy, inverse_of: :extractions_extraction_forms_projects_section
   has_many :type1s, through: :extractions_extraction_forms_projects_sections_type1s, dependent: :destroy
 
-  has_many :extractions_extraction_forms_projects_sections_question_row_column_fields, dependent: :destroy, inverse_of: :extractions_extraction_forms_projects_sections_type1
+  has_many :extractions_extraction_forms_projects_sections_question_row_column_fields, dependent: :destroy, inverse_of: :extractions_extraction_forms_projects_section
   has_many :question_row_column_fields, through: :extractions_extraction_forms_projects_sections_question_row_column_fields, dependent: :destroy
 
-  accepts_nested_attributes_for :type1s, reject_if: :all_blank
+  accepts_nested_attributes_for :extractions_extraction_forms_projects_sections_type1s, reject_if: :all_blank
+  #accepts_nested_attributes_for :type1s, reject_if: :all_blank
 
-  delegate :section, to: :extraction_forms_projects_section
+  delegate :citation,          to: :extraction
+  delegate :citations_project, to: :extraction
+  delegate :project,           to: :extraction_forms_projects_section
+  delegate :section,           to: :extraction_forms_projects_section
 
   def eefps_qrfc_values(eefpst1_id, qrc)
     recordables = extractions_extraction_forms_projects_sections_question_row_column_fields
@@ -57,6 +66,7 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
   #       nothing inherently wrong with creating an association between eefps and
   #       type1, where type1 has neither name or nor description.
   def type1s_attributes=(attributes)
+    byebug
     attributes.each do |key, attribute_collection|
       unless attribute_collection.has_key? 'id'
         Type1.transaction do
@@ -68,4 +78,15 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
     end
     super
   end
+
+#  def to_builder
+#    Jbuilder.new do |json|
+#      json.name extraction_forms_projects_section.section.name
+#      if extraction_forms_projects_section.extraction_forms_projects_section_type_id == 1
+#        json.type1s extractions_extraction_forms_projects_sections_type1s.map { |eefpst1| eefpst1.to_builder.attributes! }
+#      elsif extraction_forms_projects_section.extraction_forms_projects_section_type_id == 2
+#        json.array! extraction_forms_projects_section.questions
+#      end
+#    end
+#  end
 end

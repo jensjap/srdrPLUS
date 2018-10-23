@@ -8,4 +8,7 @@ class ResultStatisticSectionsMeasure < ApplicationRecord
   belongs_to :result_statistic_section, inverse_of: :result_statistic_sections_measures
 
   has_many :wacs_bacs_rssms, dependent: :destroy, inverse_of: :result_statistic_sections_measure
+  has_many :tps_arms_rssms, dependent: :destroy, inverse_of: :result_statistic_sections_measure
+  has_many :tps_comparisons_rssms, dependent: :destroy, inverse_of: :result_statistic_sections_measure
+  has_many :comparisons_arms_rssms, dependent: :destroy, inverse_of: :result_statistic_sections_measure
 end

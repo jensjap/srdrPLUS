@@ -22,8 +22,16 @@ Rails.application.routes.draw do
   apipie
   namespace :api do
     namespace :v1 do
+      resources :keywords, only: [:index]
+      resources :authors, only: [:index]
       resources :timepoint_names, only: [:index]
+      resources :citations, only: [:index] do 
+        collection do
+          get 'titles'
+        end
+      end
       resources :projects, shallow: true do
+        resources :projects_users_roles, only: [:index]
         resources :assignments do
           get 'screen', on: :member
           get 'history', on: :member
@@ -63,25 +71,49 @@ Rails.application.routes.draw do
     get 'get_results_populations', on: :member
   end
   resources :projects, concerns: :paginatable, shallow: true do
-    resources :citations, only: [:index] do
+    post 'import_csv', on: :member
+    post 'import_ris', on: :member
+    post 'import_endnote', on: :member
+    post 'import_pubmed', on: :member
+    
+    resources :citations do
+
       collection do
         get 'labeled'
         get 'unlabeled'
       end
+
     end
     resources :extractions do
-      get 'work', on: :member
+
+      collection do
+        get 'comparison_tool'
+        get 'consolidate'
+        get 'edit_type1_across_extractions'
+      end
+
+      member do
+        get 'work'
+      end
+
       resources :extractions_extraction_forms_projects_sections do
         resources :extractions_extraction_forms_projects_sections_question_row_column_fields, only: [:update]
         resources :extractions_extraction_forms_projects_sections_type1s, only: [:edit, :update, :destroy] do
+
           member do
             get 'edit_timepoints'
             get 'edit_populations'
           end
+
           resources :extractions_extraction_forms_projects_sections_type1_rows, only: [:create] do
             resources :extractions_extraction_forms_projects_sections_type1_row_columns, only: [:create] do
               resources :result_statistic_sections, only: [:edit, :update] do
-                post 'add_comparison', on: :member
+
+                member do
+                  post 'add_comparison'
+                  get  'consolidate'
+                end
+
               end
             end
           end
@@ -91,25 +123,31 @@ Rails.application.routes.draw do
     resources :extraction_forms_projects, only: [:create, :edit, :update, :destroy] do
       get 'build', on: :member
       resources :extraction_forms_projects_sections, only: [:new, :create, :edit, :update, :destroy] do
+
         member do
           get 'preview'
           post 'add_quality_dimension'
         end
+
         get 'preview', on: :member
         resources :questions, only: [:new, :create, :edit, :update, :destroy] do
+
           member do
             patch 'toggle_dependency'
             post  'add_column'
             post  'add_row'
             get   'dependencies'
           end
+
           resources :question_rows, only: [:destroy] do
             resources :question_row_columns, only: [] do
               resources :question_row_columns_question_row_column_options, only: [:destroy]
+
               member do
                 get 'answer_choices'
                 delete 'destroy_entire_column'
               end
+
               resources :question_row_column_fields, only: [] do
                 resources :question_row_column_fields_question_row_column_field_options, only: [:destroy]
               end
@@ -127,7 +165,6 @@ Rails.application.routes.draw do
     end
 
     member do
-      get  'comparison_tool'
       post 'undo'
       post 'export'
     end

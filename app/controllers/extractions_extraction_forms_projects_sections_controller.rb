@@ -7,14 +7,20 @@ class ExtractionsExtractionFormsProjectsSectionsController < ApplicationControll
     respond_to do |format|
       if @extractions_extraction_forms_projects_section.update(extractions_extraction_forms_projects_section_params)
         format.html { redirect_to work_extraction_path(@extractions_extraction_forms_projects_section.extraction,
-                                                       anchor: "panel-tab-#{ @extractions_extraction_forms_projects_section.id.to_s }"),
+                                                       anchor: "panel-tab-#{ @extractions_extraction_forms_projects_section.extraction_forms_projects_section.id.to_s }"),
                                   notice: t('success') }
         format.json { render :show, status: :ok, location: @extractions_extraction_forms_projects_section }
+        format.js do
+          @extraction = @extractions_extraction_forms_projects_section.extraction
+          @linked_type2_sections = @extractions_extraction_forms_projects_section.link_to_type2s
+          @action = params[:extractions_extraction_forms_projects_section][:action]
+        end
       else
         format.html { redirect_to work_extraction_path(@extractions_extraction_forms_projects_section.extraction,
                                                        anchor: "panel-tab-#{ @extractions_extraction_forms_projects_section.id.to_s }"),
                                   alert: t('failure') }
         format.json { render json: @extractions_extraction_forms_projects_section.errors, status: :unprocessable_entity }
+        format.js {}
       end
     end
   end
@@ -30,6 +36,6 @@ class ExtractionsExtractionFormsProjectsSectionsController < ApplicationControll
       params.require(:extractions_extraction_forms_projects_section)
         .permit(:extraction_id,
                 :extraction_forms_projects_section_id,
-                type1s_attributes: [:id, :name, :description])
+                extractions_extraction_forms_projects_sections_type1s_attributes: { type1_attributes: [:id, :name, :description] })
     end
 end

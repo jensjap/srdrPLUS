@@ -8,6 +8,7 @@ module SeedData
       # Roles.
       Role.create([
         { name: 'Leader'},
+        { name: 'Consolidator'},
         { name: 'Contributor'},
         { name: 'Auditor'}
       ])
@@ -76,7 +77,10 @@ module SeedData
       @descriptive_statistics_result_statistic_section_type.measures << @n_analyzed
       @descriptive_statistics_result_statistic_section_type.measures << @counts
 
-      @within_arm_comparisons_result_statistic_section_type.measures << @n_analyzed
+      #!!! While this was requested...it is now being added before a comparison is even present.
+      #    We need to change the code to add default measures only when the comparison is present
+      #    for the case of BAC, WAC and NET.
+      #@within_arm_comparisons_result_statistic_section_type.measures << @n_analyzed
 
       # Extraction Forms Projects Section Types.
       ExtractionFormsProjectsSectionType.create(
@@ -96,7 +100,7 @@ module SeedData
           { name: 'Sample Characteristics', default: true },
           { name: 'Outcomes', default: true },
           { name: 'Outcome Details', default: true },
-          { name: 'Quality', default: true },
+          { name: 'Risk of Bias Assessment', default: true },
           { name: 'Results', default: true }
         ]
       )
@@ -134,7 +138,37 @@ module SeedData
       ExtractionFormsProjectType.create(name: 'Diagnostic Test')
 
       # Timepoint Names.
-      TimepointName.create(name: 'Timepoint 1')
+      TimepointName.create(name: 'Baseline')
+      TimepointName.create(name: '1',  unit: 'week')
+      TimepointName.create(name: '2',  unit: 'weeks')
+      TimepointName.create(name: '3',  unit: 'weeks')
+      TimepointName.create(name: '4',  unit: 'weeks')
+      TimepointName.create(name: '5',  unit: 'weeks')
+      TimepointName.create(name: '6',  unit: 'weeks')
+      TimepointName.create(name: '7',  unit: 'weeks')
+      TimepointName.create(name: '8',  unit: 'weeks')
+      TimepointName.create(name: '9',  unit: 'weeks')
+      TimepointName.create(name: '10', unit: 'weeks')
+      TimepointName.create(name: '1',  unit: 'month')
+      TimepointName.create(name: '2',  unit: 'months')
+      TimepointName.create(name: '3',  unit: 'months')
+      TimepointName.create(name: '4',  unit: 'months')
+      TimepointName.create(name: '5',  unit: 'months')
+      TimepointName.create(name: '6',  unit: 'months')
+      TimepointName.create(name: '7',  unit: 'months')
+      TimepointName.create(name: '8',  unit: 'months')
+      TimepointName.create(name: '9',  unit: 'months')
+      TimepointName.create(name: '10', unit: 'months')
+      TimepointName.create(name: '1',  unit: 'year')
+      TimepointName.create(name: '2',  unit: 'years')
+      TimepointName.create(name: '3',  unit: 'years')
+      TimepointName.create(name: '4',  unit: 'years')
+      TimepointName.create(name: '5',  unit: 'years')
+      TimepointName.create(name: '6',  unit: 'years')
+      TimepointName.create(name: '7',  unit: 'years')
+      TimepointName.create(name: '8',  unit: 'years')
+      TimepointName.create(name: '9',  unit: 'years')
+      TimepointName.create(name: '10', unit: 'years')
 
       # Population Names.
       PopulationName.create(name: 'All Participants', description: 'All patients enrolled in this study.')
@@ -202,8 +236,8 @@ module SeedDataExtended
         u.confirmed_at = Time.now()
       end
 
-      @test_public = User.create do |u|
-        u.email        = 'test_public@test.com'
+      @tester = User.create do |u|
+        u.email        = 'tester@test.com'
         u.password     = 'password'
         u.confirmed_at = Time.now()
       end
@@ -260,9 +294,9 @@ module SeedDataExtended
         first_name:  'Roronoa',
         middle_name: '',
         last_name:   'Zoro')
-      @test_public.profile.update(
+      @tester.profile.update(
         organization: @roger_pirates,
-        username:    'test_public',
+        username:    'tester',
         first_name:  'Gol',
         middle_name: 'D',
         last_name:   'Roger')
@@ -364,14 +398,12 @@ module SeedDataExtended
 
         # Keywords
         5.times do |n|
-          Keyword.create(name:     Faker::Hipster.word,
-                         citation: c)
+          c.keywords << Keyword.create(name:     Faker::Hipster.word)
         end
 
         # Authors
         5.times do |n|
-          Author.create(name:     Faker::HitchhikersGuideToTheGalaxy.character,
-                        citation: c)
+          c.authors << Author.create(name:     Faker::HitchhikersGuideToTheGalaxy.character)
         end
 
       end
@@ -406,12 +438,14 @@ module SeedDataExtended
         end
 
         # Make contributor a project member.
+        p.users << @superadmin
         p.users << @contributor
         p.users << @screener_1
         p.users << @screener_2
         p.users << @screener_3
 
         # Seed ProjectsUsersRole.
+        ProjectsUser.find_by(project: p, user: @superadmin).roles  << Role.where(name: 'Contributor')
         ProjectsUser.find_by(project: p, user: @contributor).roles << Role.where(name: 'Leader')
         ProjectsUser.find_by(project: p, user: @contributor).roles << Role.where(name: 'Contributor')
         ProjectsUser.find_by(project: p, user: @screener_1).roles << Role.where(name: 'Contributor')

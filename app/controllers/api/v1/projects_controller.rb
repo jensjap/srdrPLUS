@@ -45,10 +45,29 @@ module Api
         respond_with @project
       end
 
+      api :POST, '/v1/projects/:id', 'update project'
+      param_group :project
+      formats ['json']
+      def update
+        @project.update(project_params)
+        flash[:notice] = 'Project was successfully updated.' if @project.save
+        respond_with @project
+      end
+
       private
 
         def set_project
           @project = Project.find(params[:id])
+        end
+
+        def project_params
+          params.require(:project)
+            .permit(:citation_file, :name, :description, :attribution, :methodology_description,
+                    :prospero, :doi, :notes, :funding_source,
+                    { tasks_attributes: [:id, :name, :num_assigned, :task_type_id, projects_users_role_ids:[]]},
+                    { citations_attributes: [:id, :name, :abstract, :pmid, :refman, :citation_type_id, :_destroy, author_ids: [], keyword_ids:[], journal_attributes: [ :id, :name, :volume, :issue, :publication_date]] },
+                    citations_projects_attributes: [ :id, :_destroy, :citation_id, :project_id,
+                                                    citation_attributes: [:id, :_destroy, :name]])
         end
     end
   end

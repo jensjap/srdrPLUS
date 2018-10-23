@@ -9,6 +9,15 @@ class ExtractionsExtractionFormsProjectsSectionsType1sController < ApplicationCo
   # PATCH/PUT /extractions_extraction_forms_projects_sections_type1/1
   # PATCH/PUT /extractions_extraction_forms_projects_sections_type1/1.json
   def update
+    # A bit of security here to ensure we get values we expected:
+    #   - 'false'
+    #   - 'citations'
+    #   - 'project'
+    propagation_scope = { 'false' => false, 'citations' => :citations, 'project' => :project }[extractions_extraction_forms_projects_sections_type1_params.dig(:should, :propagate)]
+
+    # If we want to propagate then do it now.
+    @extractions_extraction_forms_projects_sections_type1.propagate_type1_change(propagation_scope, extractions_extraction_forms_projects_sections_type1_params) if propagation_scope
+
     respond_to do |format|
       if @extractions_extraction_forms_projects_sections_type1.update(extractions_extraction_forms_projects_sections_type1_params)
         format.html { redirect_to work_extraction_path(@extractions_extraction_forms_projects_sections_type1
@@ -18,9 +27,14 @@ class ExtractionsExtractionFormsProjectsSectionsType1sController < ApplicationCo
                                                                .extractions_extraction_forms_projects_section.id }"),
                                                        notice: t('success') }
         format.json { head :no_content }
+        format.js {}
       else
-        format.html { render :edit }
+        format.html do
+          flash[:alert] = @extractions_extraction_forms_projects_sections_type1.errors.messages.values.dig(0, 0)
+          render :edit
+        end
         format.json { render json: @extractions_extraction_forms_projects_sections_type1.errors, status: :unprocessable_entity }
+        format.js {}
       end
     end
   end
@@ -72,6 +86,7 @@ class ExtractionsExtractionFormsProjectsSectionsType1sController < ApplicationCo
     def extractions_extraction_forms_projects_sections_type1_params
       params.require(:extractions_extraction_forms_projects_sections_type1)
         .permit(:type1_type_id, :extractions_extraction_forms_projects_section_id, :type1_id, :units,
+          should: :propagate,
           type1_attributes: [:id, :name, :description],
           extractions_extraction_forms_projects_sections_type1_rows_attributes: [:id, :_destroy,
             population_name_attributes: [:id, :name, :description],

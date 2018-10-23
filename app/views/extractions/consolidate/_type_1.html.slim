@@ -1,0 +1,218 @@
+.row
+  .toggle-consolidated-extraction-link-medium-8-12.columns.medium-8
+
+    h5 = section_name
+
+    ul.accordion.consolidate data-accordion='' data-multi-expand='true' data-allow-all-closed='true'
+      - @head_to_head.dig(efp.id, efps.id, :all_type1s).each do |type1|
+        - type1_found_cnt = @head_to_head.dig(efp.id, efps.id, type1.id, :eefpst1s).length
+        - type1_omnipresent = type1_found_cnt.eql? @extractions.length
+
+        li.accordion-item data-accordion-item=''
+          a.accordion-title.inline href='#' title="Description: #{ type1.description }"
+            table
+              thead
+                tr
+                  th style='font-weight: normal;'
+                    = type1.name_and_description
+
+              tbody
+                tr
+                  - if type1_omnipresent
+                    td
+                      i.fi-check> style='color: green;'
+                      span style='color: green;' #{ section_name.singularize } found in All Extractions
+
+                  - else
+                    td
+                      i.fi-x> style='color: red;'
+                      span style='color: red;' #{ section_name.singularize } found in #{ type1_found_cnt } out of #{ @extractions.length } extractions
+
+                / Check populations only when present. Arms won't have this.
+                - if @head_to_head.dig(efp.id, efps.id, type1.id, :population_names).present?
+                  tr
+                    - population_name_omnipresent = @head_to_head.dig(efp.id, efps.id, type1.id, :population_names).all? { |population_name_id, values| values[:eefpst1rs].length.eql?( @extractions.length) }
+                    - if population_name_omnipresent
+                      td
+                        i.fi-check> style='color: green;'
+                        span style='color: green;' Populations
+
+                    - else
+                      td
+                        i.fi-x> style='color: red;'
+                        span style='color: red;' Populations
+
+                  tr
+                    - if population_name_omnipresent
+                      - timepoint_name_omnipresent = @head_to_head.dig(efp.id, efps.id, type1.id, :population_names).all? { |population_name_id, values| values[:timepoint_names].all? { |timepoint_name_id, _values| _values[:eefpst1rcs].length.eql?(@extractions.length) } }
+                      - if timepoint_name_omnipresent
+                        td
+                          i.fi-check> style='color: green;'
+                          span style='color: green;' Timepoints
+
+                      - else
+                        td
+                          i.fi-x> style='color: red;'
+                          span style='color: red;' Timepoints
+
+                    - else
+                      td
+                        i.fi-x> style='color: red;'
+                        span style='color: red;' Timepoints
+
+          .accordion-content data-tab-content=''
+            .table-scroll
+              table
+                thead
+                  tr
+                    - @extractions.each do |extraction|
+                      th Extracted by #{ extraction.user.profile.username } (Extraction ID: #{ extraction.id })
+
+                tbody
+                  tr
+                    - @extractions.each do |extraction|
+                      - eefps = ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by!( \
+                        extraction: extraction,
+                        extraction_forms_projects_section: efps,
+                        link_to_type1: efps.link_to_type1.nil? \
+                          ? nil \
+                          : ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by!( \
+                            extraction: extraction,
+                            extraction_forms_projects_section: efps.link_to_type1))
+
+                      - if eefps.extractions_extraction_forms_projects_sections_type1s.map(&:type1).include? type1
+                        td title="#{ type1.name_and_description } #{ section_name.singularize } included in extraction id #{ extraction.id }"
+                          i.fi-check> style='color: green;'
+                          = type1.name
+                          = link_to '#', class: 'edit-type1-link', data: { type1_id: type1.id, efps_id: efps.id, eefps_id: eefps.id, extraction_ids: @extractions.pluck(:id) } do
+                            i.fi-pencil<>
+                            |Change
+                          br
+                          = type1.description.present? ? "(#{ type1.description })" : ''
+
+                      - else
+                        td title="#{ type1.name_and_description } #{ section_name.singularize } not included in extraction id #{ extraction.id }"
+                          i.fi-x> style='color: red;'
+                          = type1.name
+                          br
+                          = type1.description.present? ? "(#{ type1.description })" : ''
+
+            ul.accordion data-accordion='' data-multi-expand='false' data-allow-all-closed='true'
+              / Check populations only when present. Arms won't have this.
+              - if @head_to_head.dig(efp.id, efps.id, type1.id, :population_names).present?
+                - @head_to_head.dig(efp.id, efps.id, type1.id, :unique_population_names).each do |population_name|
+                  li.accordion-item data-accordion-item=''
+
+                    - if @head_to_head.dig(efp.id, efps.id, type1.id, :population_names, population_name.id, :timepoint_names).all? { |timepoint_name_id, values| values[:eefpst1rcs].length.eql?(@extractions.length) }
+                      a.accordion-title.populations href='#' title="Description: #{ population_name.description }" style='color: green;' = population_name.name_and_description
+                    - else
+                      a.accordion-title.populations href='#' title="Description: #{ population_name.description }" style='color: red;' = population_name.name_and_description
+
+                    .accordion-content data-tab-content=''
+                      h6 Populations
+                      .table-scroll
+                        table
+                          thead style='display: none;'
+                            tr
+                              - @extractions.each do |extraction|
+                                th Extracted by #{ extraction.user.profile.username } (Extraction ID: #{ extraction.id })
+
+                          tbody
+                            tr
+                              - @extractions.each do |extraction|
+                                - eefps = ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by!( \
+                                  extraction: extraction,
+                                  extraction_forms_projects_section: efps,
+                                  link_to_type1: efps.link_to_type1.nil? \
+                                    ? nil \
+                                    : ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by!( \
+                                      extraction: extraction,
+                                      extraction_forms_projects_section: efps.link_to_type1))
+                                - eefpst1 = ExtractionsExtractionFormsProjectsSectionsType1.find_by( \
+                                  extractions_extraction_forms_projects_section: eefps,
+                                  type1: type1)
+                                - if eefpst1
+                                  - if eefpst1.extractions_extraction_forms_projects_sections_type1_rows.map(&:population_name).include? population_name
+                                    td title="#{ population_name.name_and_description } included in #{ type1.name } #{ section_name.singularize }"
+                                      i.fi-check> style='color: green;'
+                                      = population_name.short_name_and_description
+                                  - else
+                                    td title="#{ population_name.name_and_description } not included in #{ type1.name } #{ section_name.singularize }"
+                                      i.fi-x> style='color: red;'
+                                      = population_name.short_name_and_description
+                                - else
+                                  td title="#{ population_name.name_and_description } not included in #{ type1.name } #{ section_name.singularize }"
+                                    i.fi-x> style='color: red;'
+                                    = population_name.short_name_and_description
+                      h6 Timepoints
+                      .table-scroll
+                        table
+                          thead style='display: none;'
+                            tr
+                              - @extractions.each do |extraction|
+                                th Extracted by #{ extraction.user.profile.username } (Extraction ID: #{ extraction.id })
+
+                          tbody
+                            - @head_to_head.dig(efp.id, efps.id, type1.id, :population_names, population_name.id, :unique_timepoint_names).each do |timepoint_name|
+                              tr
+                                - @extractions.each do |extraction|
+                                  - eefps = ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by!( \
+                                    extraction: extraction,
+                                    extraction_forms_projects_section: efps,
+                                    link_to_type1: efps.link_to_type1.nil? \
+                                      ? nil \
+                                      : ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by!( \
+                                        extraction: extraction,
+                                        extraction_forms_projects_section: efps.link_to_type1))
+                                  - eefpst1 = ExtractionsExtractionFormsProjectsSectionsType1.find_by( \
+                                    extractions_extraction_forms_projects_section: eefps,
+                                    type1: type1)
+                                  - if eefpst1
+                                    - eefpst1r = ExtractionsExtractionFormsProjectsSectionsType1Row.find_by( \
+                                      extractions_extraction_forms_projects_sections_type1: eefpst1,
+                                      population_name: population_name)
+                                    - if eefpst1r
+                                      - if eefpst1r.extractions_extraction_forms_projects_sections_type1_row_columns.map(&:timepoint_name).include? timepoint_name
+                                        td title="#{ timepoint_name.pretty_print_export_header } included in #{ population_name.name }"
+                                          i.fi-check> style='color: green;'
+                                          = timepoint_name.pretty_print_export_header
+                                      - else
+                                        td title="#{ timepoint_name.pretty_print_export_header } not included in #{ population_name.name }"
+                                          i.fi-x> style='color: red;'
+                                          = timepoint_name.pretty_print_export_header
+                                    - else
+                                      td title="#{ timepoint_name.pretty_print_export_header } not included in #{ population_name.name }"
+                                        i.fi-x> style='color: red;'
+                                        = timepoint_name.pretty_print_export_header
+                                  - else
+                                    td title="#{ timepoint_name.pretty_print_export_header } not included in #{ population_name.name }"
+                                      i.fi-x> style='color: red;'
+                                      = timepoint_name.pretty_print_export_header
+
+  .toggle-consolidated-extraction-link-medium-4-0-hide.columns.medium-4 style='border: 2px solid #410093;'
+    - eefps = ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by!( \
+      extraction: @consolidated_extraction,
+      extraction_forms_projects_section: efps,
+      link_to_type1: efps.link_to_type1.nil? \
+        ? nil \
+        : ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by!( \
+          extraction: @consolidated_extraction,
+          extraction_forms_projects_section: efps.link_to_type1))
+
+    .column.row
+      = render 'extractions/shared/type_1/type_1_included_list',
+        extraction: @consolidated_extraction,
+        section_name: section_name,
+        eefps: eefps
+
+    .column.row
+      = render 'extractions/shared/type_1/type_1_example_list',
+        extraction: @consolidated_extraction,
+        section_name: section_name,
+        eefps: eefps
+
+    .column.row
+      = render 'extractions/shared/type_1/type_1_new_custom_form',
+        extraction: @consolidated_extraction,
+        section_name: section_name,
+        eefps: eefps

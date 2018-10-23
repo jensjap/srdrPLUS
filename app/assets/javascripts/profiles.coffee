@@ -7,11 +7,11 @@ document.addEventListener 'turbolinks:load', ->
   do ->
 
     # Set the field to display from the result set.
-    formatResultSelection = (result, container) ->
+    formatResultSelection = ( result, container ) ->
       result.text
 
     # Markup result.
-    formatResult = (result) ->
+    formatResult = ( result ) ->
       if result.loading
         return result.text
       markup = '<span>'
@@ -27,48 +27,48 @@ document.addEventListener 'turbolinks:load', ->
       markup
 
     # Bind select2 to degree selection.
-    $('#profile_degree_ids').select2
+    $( '#profile_degree_ids' ).select2
       minimumInputLength: 0
       #closeOnSelect: false
       ajax:
         url: '/degrees.json'
         dataType: 'json'
         delay: 250
-        data: (params) ->
+        data: ( params ) ->
           q: params.term
           page: params.page
-        processResults: (data, params) ->
+        processResults: ( data, params ) ->
           # The server may respond with params.page, set it to 1 if not.
           params.page = params.page || 1
-          results: $.map(data.items, (i) ->
+          results: $.map( data.items, ( i ) ->
             id: i.id
             text: i.name
             suggestion: i.suggestion
           )
-      escapeMarkup: (markup) ->
+      escapeMarkup: ( markup ) ->
         markup
       templateResult: formatResult
       templateSelection: formatResultSelection
 
     # Bind select2 to organization selection.
-    $('#profile_organization_id').select2
+    $( '#profile_organization_id' ).select2
       minimumInputLength: 0
       ajax:
         url: '/organizations.json'
         dataType: 'json'
         delay: 250
-        data: (params) ->
+        data: ( params ) ->
           q: params.term
           page: params.page
-        processResults: (data, params) ->
+        processResults: ( data, params ) ->
           # The server may respond with params.page, set it to 1 if not.
           params.page = params.page || 1
-          results: $.map(data.items, (i) ->
+          results: $.map( data.items, ( i ) ->
             id: i.id
             text: i.name
             suggestion: i.suggestion
           )
-      escapeMarkup: (markup) ->
+      escapeMarkup: ( markup ) ->
         markup
       templateResult: formatResult
       templateSelection: formatResultSelection

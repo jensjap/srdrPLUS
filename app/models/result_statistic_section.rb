@@ -10,21 +10,25 @@ class ResultStatisticSection < ApplicationRecord
   has_many :result_statistic_sections_measures, dependent: :destroy, inverse_of: :result_statistic_section
   has_many :measures, through: :result_statistic_sections_measures, dependent: :destroy
 
-  has_many :comparisons, dependent: :destroy, inverse_of: :result_statistic_section
-  has_many :comparate_groups,     through: :comparisons, dependent: :destroy
-  has_many :comparates,           through: :comparate_groups,     dependent: :destroy
-  has_many :comparable_elements,  through: :comparates,           dependent: :destroy
-  has_many :comparables,          through: :comparable_elements,  dependent: :destroy
-  has_many :comparisons_measures, through: :comparables,          dependent: :destroy
-  has_many :measurements,         through: :comparisons_measures, dependent: :destroy
+  has_many :comparisons_result_statistic_sections, dependent: :destroy, inverse_of: :result_statistic_section
+  has_many :comparisons,          through: :comparisons_result_statistic_sections, dependent: :destroy
+  has_many :comparate_groups,     through: :comparisons,                           dependent: :destroy
+  has_many :comparates,           through: :comparate_groups,                      dependent: :destroy
+  has_many :comparable_elements,  through: :comparates,                            dependent: :destroy
+  has_many :comparables,          through: :comparable_elements,                   dependent: :destroy, source_type: 'ComparableElement'
+  has_many :comparisons_measures, through: :comparables,                           dependent: :destroy, source: :comparates
+  #remove this, we use records for all data collection
+  has_many :measurements,         through: :comparisons_measures,                  dependent: :destroy, source: :comparable_element
 
-  accepts_nested_attributes_for :comparisons,          allow_destroy: true
-  accepts_nested_attributes_for :comparate_groups,     allow_destroy: true
-  accepts_nested_attributes_for :comparates,           allow_destroy: true
-  accepts_nested_attributes_for :comparable_elements,  allow_destroy: true
-  accepts_nested_attributes_for :comparables,          allow_destroy: true  #!!! Do we need this?
-  accepts_nested_attributes_for :comparisons_measures, allow_destroy: true
-  accepts_nested_attributes_for :measurements,         allow_destroy: true
+  #remove this as well?
+  accepts_nested_attributes_for :comparisons_result_statistic_sections, allow_destroy: true
+  accepts_nested_attributes_for :comparisons,                           allow_destroy: false
+  accepts_nested_attributes_for :comparate_groups,                      allow_destroy: false
+  accepts_nested_attributes_for :comparates,                            allow_destroy: false
+  accepts_nested_attributes_for :comparable_elements,                   allow_destroy: false
+  #accepts_nested_attributes_for :comparables,                           allow_destroy: false  #!!! Do we need this?
+  accepts_nested_attributes_for :comparisons_measures,                  allow_destroy: false
+  accepts_nested_attributes_for :measurements,                          allow_destroy: false
 
   delegate :extraction, to: :population
 
@@ -37,9 +41,9 @@ class ResultStatisticSection < ApplicationRecord
     population
       .extractions_extraction_forms_projects_sections_type1
       .extractions_extraction_forms_projects_section
-      .extraction
-      .extractions_extraction_forms_projects_sections
-      .result_type_sections.first
+      .extraction_forms_projects_section
+      .extraction_forms_project
+      .extraction_forms_projects_sections.last
   end
 
   private

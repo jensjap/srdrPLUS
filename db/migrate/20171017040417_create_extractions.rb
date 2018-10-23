@@ -4,6 +4,7 @@ class CreateExtractions < ActiveRecord::Migration[5.0]
       t.references :project,             foreign_key: true
       t.references :citations_project,   foreign_key: true
       t.references :projects_users_role, foreign_key: true
+      t.boolean    :consolidated, default: false
       t.datetime :deleted_at
 
       t.timestamps

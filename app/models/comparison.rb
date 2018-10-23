@@ -2,12 +2,12 @@ class Comparison < ApplicationRecord
   acts_as_paranoid
   has_paper_trail
 
-  belongs_to :result_statistic_section, inverse_of: :comparisons
+  #belongs_to :result_statistic_section, inverse_of: :comparisons
 
-  has_many :comparate_groups, dependent: :destroy, inverse_of: :comparison
+  has_many :comparate_groups, inverse_of: :comparison, dependent: :destroy
   has_many :comparates, through: :comparate_groups, dependent: :destroy
 
-  has_many :comparable_elements, as: :comparable
+  has_many :comparable_elements, as: :comparable, dependent: :destroy
 
   has_many :comparisons_measures, dependent: :destroy, inverse_of: :comparison
   has_many :measurements, through: :comparisons_measures, dependent: :destroy
@@ -16,6 +16,9 @@ class Comparison < ApplicationRecord
   has_many :comparisons_arms_rssms, dependent: :destroy, inverse_of: :comparison
   has_many :tps_comparisons_rssms,  dependent: :destroy, inverse_of: :comparison
   has_many :wacs_bacs_rssms,        dependent: :destroy, foreign_key: 'wac_id'
+
+  has_many :comparisons_result_statistic_sections, dependent: :destroy, inverse_of: :comparison
+  has_many :result_statistic_sections, through: :comparisons_result_statistic_sections, dependent: :destroy
 
   accepts_nested_attributes_for :comparate_groups,     allow_destroy: true
   accepts_nested_attributes_for :comparisons_measures, allow_destroy: true
@@ -69,6 +72,29 @@ class Comparison < ApplicationRecord
           tn = comparable.timepoint_name
           text += tn.name
           text += " (#{ tn.unit }), " if tn.unit.present?
+        end
+      end
+      text = text.gsub(/,\s$/, '') + ']'
+      text += ' vs. '
+    end
+
+    return text[0..-6]
+  end
+
+  def tokenize
+    text = ''
+    comparate_groups.each do |cg|
+      text += '['
+      cg.comparates.each do |c|
+        comparable = c.comparable_element.comparable
+        if comparable.instance_of? ExtractionsExtractionFormsProjectsSectionsType1
+          text += 't1-'
+          text += comparable.type1.id.to_s
+          text += ', '
+        elsif comparable.instance_of? ExtractionsExtractionFormsProjectsSectionsType1RowColumn
+          text += 'tp-'
+          text += comparable.timepoint_name.id.to_s
+          text += ', '
         end
       end
       text = text.gsub(/,\s$/, '') + ']'

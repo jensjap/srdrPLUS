@@ -1,11 +1,32 @@
-.column.row
-  = render 'extractions/work/type1/type1_friendly_helper_message', eefps: eefps
+- eefps = ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by!( \
+  extraction: @extraction,
+  extraction_forms_projects_section: efps,
+  link_to_type1: efps.link_to_type1.nil? \
+    ? nil \
+    : ExtractionsExtractionFormsProjectsSection.find_by!( \
+      extraction: @extraction,
+      extraction_forms_projects_section: efps.link_to_type1))
 
 .column.row
-  = render 'extractions/work/type1/type1_included_list', eefps: eefps
+  = render 'extractions/shared/type_1/type_1_friendly_helper_message',
+    extraction: @extraction,
+    section_name: section_name,
+    eefps: eefps
 
 .column.row
-  = render 'extractions/work/type1/type1_example_list', eefps: eefps
+  = render 'extractions/shared/type_1/type_1_included_list',
+    extraction: @extraction,
+    section_name: section_name,
+    eefps: eefps
 
 .column.row
-  = render 'extractions/work/type1/type1_new_custom_form', eefps: eefps
+  = render 'extractions/shared/type_1/type_1_example_list',
+    extraction: @extraction,
+    section_name: section_name,
+    eefps: eefps
+
+.column.row
+  = render 'extractions/shared/type_1/type_1_new_custom_form',
+    extraction: @extraction,
+    section_name: section_name,
+    eefps: eefps

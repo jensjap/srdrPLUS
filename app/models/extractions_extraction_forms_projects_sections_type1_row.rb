@@ -14,14 +14,14 @@ class ExtractionsExtractionFormsProjectsSectionsType1Row < ApplicationRecord
   belongs_to :extractions_extraction_forms_projects_sections_type1, inverse_of: :extractions_extraction_forms_projects_sections_type1_rows
   belongs_to :population_name,                                      inverse_of: :extractions_extraction_forms_projects_sections_type1_rows
 
-  has_many :comparable_elements, as: :comparable
+  has_many :comparable_elements, as: :comparable, dependent: :destroy
 
   has_many :extractions_extraction_forms_projects_sections_type1_row_columns, dependent: :destroy, inverse_of: :extractions_extraction_forms_projects_sections_type1_row
 
   has_many :result_statistic_sections, dependent: :destroy, inverse_of: :population, foreign_key: 'population_id'
 
   accepts_nested_attributes_for :population_name, reject_if: :all_blank
-  accepts_nested_attributes_for :extractions_extraction_forms_projects_sections_type1_row_columns, reject_if: :all_blank
+  accepts_nested_attributes_for :extractions_extraction_forms_projects_sections_type1_row_columns, reject_if: :all_blank, allow_destroy: true
 
   delegate :extraction, to: :extractions_extraction_forms_projects_sections_type1
   delegate :extractions_extraction_forms_projects_section, to: :extractions_extraction_forms_projects_sections_type1

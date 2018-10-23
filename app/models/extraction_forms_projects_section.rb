@@ -19,8 +19,6 @@ class ExtractionFormsProjectsSection < ApplicationRecord
     optional: true
   belongs_to :section, inverse_of: :extraction_forms_projects_sections
 
-  delegate :project, to: :extraction_forms_project
-
   has_one :extraction_forms_projects_section_option, dependent: :destroy
   has_one :ordering, as: :orderable, dependent: :destroy
 
@@ -38,7 +36,10 @@ class ExtractionFormsProjectsSection < ApplicationRecord
 
   has_many :questions, dependent: :destroy, inverse_of: :extraction_forms_projects_section
 
-  accepts_nested_attributes_for :type1s, reject_if: :all_blank
+  accepts_nested_attributes_for :extraction_forms_projects_sections_type1s, reject_if: :all_blank
+  #accepts_nested_attributes_for :type1s, reject_if: :all_blank
+
+  delegate :project, to: :extraction_forms_project
 
   validates :ordering, presence: true
 

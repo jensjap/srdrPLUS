@@ -1,0 +1,5 @@
+if ( '<%= @extractions_extraction_forms_projects_sections_type1.errors.messages.values.dig(0, 0) %>'.length > 0 ) {
+  toastr.error( '<%= @extractions_extraction_forms_projects_sections_type1.errors.messages.values.dig(0, 0) %>' );
+} else {
+  location.reload();
+}

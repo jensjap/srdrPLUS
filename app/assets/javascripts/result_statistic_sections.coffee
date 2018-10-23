@@ -5,33 +5,6 @@
 document.addEventListener 'turbolinks:load', ->
   do ->
 
-    timers = {}
-
-    submitForm = ( form ) ->
-      ->
-        form.submit()
-
-    $( 'form.edit_record :input' ).keyup ( e ) ->
-      e.preventDefault()
-
-      # Ignore 'keyup' for a list of keys.
-      code = e.keyCode || e.which;
-      # 9: tab; 16: shift; 37: left-arrow; 38: up-arrow; 39: right-arrow; 40: down-arrow; 18: option; 224: cmd
-      if code in [9, 16, 18, 37, 38, 39, 40, 224]
-        return
-
-      $form = $( this ).closest( 'form' )
-
-      # Use this to keep track of the different timers.
-      formId = $form.attr( 'id' )
-
-      # Mark form as 'dirty'.
-      $form.addClass( 'dirty' )
-
-      if formId of timers
-        clearTimeout( timers[formId] )
-      timers[formId] = setTimeout( submitForm( $form ), 750 )
-
     $( '.links.add-comparison' )
 
       .on 'cocoon:before-insert', ->
@@ -41,7 +14,6 @@ document.addEventListener 'turbolinks:load', ->
         $( insertedItem ).find( '.links.add-comparate-group a' ).click()
         $( insertedItem ).find( '.links.add-comparate-group a' ).click()
         $( '.links.add-comparate-group a' ).hide()
-
         $( insertedItem ).find( '.links.add-comparate' ).each ->
           $( this ).find( 'a' ).click()
 
@@ -58,12 +30,121 @@ document.addEventListener 'turbolinks:load', ->
 
         $( '.links.add-comparison a' ).addClass( 'disabled' )
 
-        # This creates a new cell at the end of the header row and moves the 'add comparison' link into it.
-        # At the moment this isn't useful because we can't have the form span multiple row cells. Perhaps
-        # using simple html form would work, but it doesn't seem to work with slim templating engine.
-        #$( this ).closest( 'tr' ).append( $( '<th>' ).append( $( '.links.add-comparison' ) ) )
+  ######## coloring and consolidation dropdown
 
-        return
+    get_result_value = ( td_elem ) ->
+      inputs = $( td_elem ).find( "input.string" )
+      return ( if inputs.length > 0 then inputs[ 0 ].value else "" )
 
-  return # END do ->
-return # END turbolinks:load
+    get_result_elem = ( td_elem ) ->
+      inputs = $( td_elem ).find( "input.string" )
+      return ( if inputs.length > 0 then inputs[ 0 ] else null )
+
+    get_result_number_of_extractions = ( ) ->
+      questions = $( 'table.consolidated-data-table tbody' )
+      if questions.length > 0
+        rows = $( questions[ 0 ] ).find( 'tr' )
+        return Math.max( 0, rows.length - 1 )
+      return 0
+
+    get_result_extractor_names = ( ) ->
+      questions = $( 'table.consolidated-data-table tbody' )
+      if questions.length > 0
+        extractor_names = []
+        $rows = $( questions[ 0 ] ).find( 'tr' )
+        $rows.each ( tr_id, tr_elem ) ->
+          $( tr_elem ).find( "td.extractor-name" ).each ( td_id, td_elem ) ->
+            if td_id == 0
+              extractor_names.push td_elem.innerHTML
+        return extractor_names
+      return []
+
+    add_change_listeners_to_results_section = ( ) ->
+      number_of_extractions = get_result_number_of_extractions( )
+
+      $( 'table.consolidated-data-table tbody' ).each ( row_id, row_elem ) ->
+        $( row_elem ).find( 'tr' ).each ( tr_id, tr_elem ) ->
+          $( tr_elem ).find( 'td' ).not( '.extractor-name' ).each ( td_id, td_elem ) ->
+            if tr_id == number_of_extractions
+              input_elem = get_result_elem( td_elem )
+              if input_elem
+                $( input_elem ).keyup ->
+                  result_section_coloring( )
+
+    result_section_coloring = ( ) ->
+      number_of_extractions = get_result_number_of_extractions( )
+
+      $( 'table.consolidated-data-table tbody' ).each ( row_id, row_elem ) ->
+        a_dict = { }
+        $( row_elem ).find( 'tr' ).each ( tr_id, tr_elem ) ->
+          # hold the values for matching
+          $( tr_elem ).find( 'td' ).not( '.extractor-name' ).each ( td_id, td_elem ) ->
+            if tr_id < number_of_extractions
+              a_dict[ "counts" ] ||= { }
+              a_dict[ "counts" ][ td_elem.innerHTML ] ||= 0
+              a_dict[ "counts" ][ td_elem.innerHTML ]++
+            else
+              a_dict[ "consolidated_value" ] = get_result_value( td_elem )
+              a_dict[ "consolidated_elem" ] = td_elem
+
+        color = "#E8DAEF"
+        $.each a_dict[ "counts" ], ( value, count ) ->
+          console.log value + ', ' + count
+          console.log a_dict[ "consolidated_value" ]
+          console.log a_dict[ "consolidated_elem" ]
+          if count != number_of_extractions
+            if a_dict[ "consolidated_value" ] != ""
+              color = "#D1F2EB"
+            else
+              color = "#FADBD8"
+          else
+            if a_dict[ "consolidated_value" ] == value
+              color = "#E8DAEF"
+            else
+              color = "#D1F2EB"
+        
+          $( a_dict[ "consolidated_elem" ] ).css( 'background', color )
+    
+
+    result_section_dropdowning = ( ) ->
+      number_of_extractions = get_result_number_of_extractions( )
+      extractor_names = get_result_extractor_names( )
+
+      $( 'td.consolidated-data-cell' ).each ( cell_id, cell_elem ) ->
+        a_dict = { }
+
+        $drop_elem = $ "<select>"
+
+        for extraction_id in [ 0..number_of_extractions ]
+          drop_option = $ "<option>"
+          drop_option.text extractor_names[ extraction_id ]
+          drop_option.val extraction_id
+          if extraction_id == number_of_extractions
+            drop_option.prop( "selected", true )
+          $drop_elem.append drop_option
+
+        $( cell_elem ).find( 'table.consolidated-data-table tbody' ).each ( row_id, row_elem ) ->
+          a_dict[ row_id ] ||= { }
+          $( row_elem ).find( 'tr' ).each ( tr_id, tr_elem ) ->
+            $( tr_elem ).find( 'td' ).not( '.extractor-name' ).each ( td_id, td_elem ) ->
+              if tr_id < number_of_extractions
+                a_dict[ row_id ][ tr_id ] = td_elem.innerHTML
+              else
+                a_dict[ row_id ][ tr_id ] = get_result_value( td_elem )
+
+        $drop_elem.change ( ) ->
+          $( cell_elem ).find( 'table.consolidated-data-table tbody' ).each ( row_id, row_elem ) ->
+            $( row_elem ).find( 'tr' ).each ( tr_id, tr_elem ) ->
+              $( tr_elem ).find( 'td' ).not( '.extractor-name' ).each ( td_id, td_elem ) ->
+                if tr_id == number_of_extractions
+                  selected_id = $drop_elem.children("option").filter(":selected")[ 0 ].value
+                  input_elem = get_result_elem( td_elem )
+                  $( input_elem ).val( a_dict[ row_id ][ selected_id ] )
+                  result_section_coloring( )
+                  $( input_elem ).trigger( 'keyup' )
+
+        $( cell_elem ).find( "div.consolidated-dropdown" ).html( $drop_elem )
+
+    result_section_coloring()
+    result_section_dropdowning()
+    add_change_listeners_to_results_section()

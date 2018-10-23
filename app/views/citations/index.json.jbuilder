@@ -1,4 +1,4 @@
-json.total_count @citations.total_count
+#json.total_count @citations.total_count
 json.pagination do
   json.more !@citations.last_page?
 end

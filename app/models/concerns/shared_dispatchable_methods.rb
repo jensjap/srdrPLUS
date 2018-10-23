@@ -52,6 +52,4 @@ module SharedDispatchableMethods
       totd_messages.offset(rand(totd_messages.count)).first
     end
   end
-
 end
-

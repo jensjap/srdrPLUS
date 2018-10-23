@@ -41,11 +41,12 @@ def build_type2_sections_wide(p, project, highlight, wrap, kq_ids=[])
               .where(key_questions_projects_questions: { key_questions_project: kq_ids }).distinct.order(id: :asc)
 
             # If this section is linked we have to iterate through each occurrence of
-            # type1 via eefps.extractions_extraction_forms_projects_sections_type1s.
+            # type1 via eefps.link_to_type1.extractions_extraction_forms_projects_sections_type1s.
             # Otherwise we proceed with eefpst1s set to a custom Struct that responds
             # to :id, type1: :id.
-            eefpst1s = eefps.link_to_type1
-              .present? ? eefps.extractions_extraction_forms_projects_sections_type1s : [Struct.new(:id, :type1).new(nil, Struct.new(:id).new(nil))]
+            eefpst1s = eefps.link_to_type1.present? ?
+              eefps.link_to_type1.extractions_extraction_forms_projects_sections_type1s :
+              [Struct.new(:id, :type1).new(nil, Struct.new(:id).new(nil))]
 
             eefpst1s.each do |eefpst1|
               questions.each do |q|

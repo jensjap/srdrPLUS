@@ -9,8 +9,8 @@
     = simple_form_for(resource, as: resource_name, url: registration_path(resource_name), html: { data: { 'abide': '' } }) do |f|
       .alert.callout data-abide-error='' style='display: none;'
         p
-          i.fi-alert
-          '  Please correct the errors below.
+          i.fi-alert>
+          ' Please correct the errors below.
       /= f.error_notification
 
       .form-inputs

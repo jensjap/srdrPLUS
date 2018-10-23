@@ -1,15 +1,15 @@
 class ExtractionsController < ApplicationController
-  before_action :set_project, only: [:index, :new, :create]
+  include ExtractionsControllerHelpers
+
+  before_action :set_project, only: [:index, :new, :create, :comparison_tool, :compare, :consolidate]
   before_action :set_extraction, only: [:show, :edit, :update, :destroy, :work]
+  before_action :set_extractions, only: [:compare, :consolidate, :edit_type1_across_extractions]
+  before_action :ensure_extraction_form_structure, only: [:compare, :consolidate, :work]
 
   # GET /projects/1/extractions
   # GET /projects/1/extractions.json
   def index
     @extractions = @project.extractions
-#    @extractions = Extraction.includes(:citations_project,
-#                                       projects_users_role: [projects_user: [:project, user: [:profile]]],
-#                                       extractions_key_questions_projects: [key_questions_project: [:key_question, extraction_forms_projects_section: [extraction_forms_project: [:extraction_form]]]])
-#                             .where(extractions_key_questions_projects: { key_questions_projects: { project: @project } }).all
   end
 
   # GET /extractions/1
@@ -61,9 +61,10 @@ class ExtractionsController < ApplicationController
   # DELETE /extractions/1
   # DELETE /extractions/1.json
   def destroy
+    project = 
     @extraction.destroy
     respond_to do |format|
-      format.html { redirect_to project_extractions_url(@extraction.extraction_forms_project.project), notice: 'Extraction was successfully destroyed.' }
+      format.html { redirect_to project_extractions_url(@extraction.project), notice: 'Extraction was successfully destroyed.' }
       format.json { head :no_content }
     end
   end
@@ -74,10 +75,42 @@ class ExtractionsController < ApplicationController
     @key_questions_projects_array_for_select = @extraction.project.key_questions_projects_array_for_select
   end
 
+  # GET /projects/1/extractions/comparison_tool
+  def comparison_tool
+    @citation_groups = @project.citation_groups
+  end
+
+  # GET /projects/1/extractions/consolidate
+  def consolidate
+    @extraction_forms_projects = @project.extraction_forms_projects
+    @consolidated_extraction   = @project.consolidated_extraction(@extractions.first.citations_project_id, current_user.id)
+    @head_to_head              = head_to_head(@extraction_forms_projects, @extractions)
+    @consolidated_extraction.ensure_extraction_form_structure
+    @consolidated_extraction.auto_consolidate(@extractions)
+  end
+
+  # GET /projects/1/extractions/edit_type1_across_extractions
+  def edit_type1_across_extractions
+    @type1       = Type1.find(params[:type1_id])
+    @efps        = ExtractionFormsProjectsSection.find(params[:efps_id])
+    @eefps       = ExtractionsExtractionFormsProjectsSection.find(params[:eefps_id])
+
+    @eefpst1 = ExtractionsExtractionFormsProjectsSectionsType1.find_by(
+      extractions_extraction_forms_projects_section: @eefps,
+      type1: @type1)
+
+    @preview_type1_change_propagation = @eefpst1.preview_type1_change_propagation
+
+    render layout: false
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_project
-      @project = Project.find(params[:project_id])
+      @project = Project.
+        includes(extraction_forms_projects: { extraction_forms_projects_sections: { extractions_extraction_forms_projects_sections: :extraction } }).
+        includes(extractions: { extractions_extraction_forms_projects_sections: { extraction_forms_projects_section: :extraction_forms_project } }).
+        find(params[:project_id])
     end
 
     def set_extraction
@@ -86,11 +119,29 @@ class ExtractionsController < ApplicationController
                               #.includes(key_questions_projects: [:key_question, extraction_forms_projects_section: [:extractions_extraction_forms_projects_sections, :extraction_forms_projects_section_type]])
     end
 
+    def set_extractions
+      @extractions = Extraction
+        .includes(projects_users_role: { projects_user: { user: :profile } })
+        .where(id: extraction_ids_params)
+    end
+
     # Never trust parameters from the scary internet, only allow the white list through.
     def extraction_params
       params.require(:extraction).permit(:citations_project_id,
                                          :projects_users_role_id,
                                          extractions_key_questions_project_ids: [],
                                          key_questions_project_ids: [])
+    end
+
+    def extraction_ids_params
+      params.require(:extraction_ids)
+    end
+
+    def ensure_extraction_form_structure
+      if @extractions
+        @extractions.each { |extraction| extraction.ensure_extraction_form_structure }
+      else
+        @extraction.ensure_extraction_form_structure
+      end
     end
 end

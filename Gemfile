@@ -87,6 +87,7 @@ gem 'toastr_rails'
 
 # Versioning of models + soft-delete.
 gem 'paper_trail'
+gem 'paper_trail-association_tracking'
 gem 'paranoia', '~>2.2'
 
 # Create lots of data.
@@ -108,7 +109,7 @@ gem 'responders'
 gem 'react-rails'
 
 # Helps with logins.
-gem 'doorkeeper'
+#gem 'doorkeeper'
 
 # Api documentation.
 gem 'apipie-rails'
@@ -123,3 +124,11 @@ gem 'axlsx_rails'
 # Searching with Elasticsearch.
 gem 'searchkick'
 gem 'searchjoy'
+
+gem 'passenger'
+
+# bioruby for pubmed queries
+gem 'bio'
+
+# for parsing ris files
+gem 'ref_parsers'

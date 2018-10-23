@@ -1,0 +1,12 @@
+.tabs-content.vertical data-tabs-content="extraction-forms-projects-#{ efp.id.to_s }-vertical-tabs"
+
+  - efp.extraction_forms_projects_sections.includes(:extraction_forms_projects_section_type, :section, :type1s).each do |efps|
+
+    - section_name = efps.section.name
+
+    .tabs-panel id="panel-tab-#{ efps.id.to_s }"
+
+      = render "extractions/#{ action_name }/#{ efps.extraction_forms_projects_section_type.name.parameterize.underscore }",
+        section_name: section_name,
+        efp: efp,
+        efps: efps

@@ -1,15 +1,20 @@
-/= react_component 'Main'
+- provide(:title, "#{ action_name } #{ controller_name.singularize }".titleize)
 
-#preview.column.row.work
-
-  == render 'extractions/work/extraction_forms_project_tab_links'
+.column.row
 
   .key-question-selector
-    h4 Select Key Question to work on
+    h4 Select Key Question(s)
     - @key_questions_projects_array_for_select.each do |kqp|
       = check_box_tag kqp[1], 1, true
       = label_tag kqp[1], kqp[0]
 
-  == render 'extractions/work/extraction_forms_project_tab_content'
+  hr
 
-= link_to 'Back', project_extractions_path(@extraction.projects_users_role.projects_user.project)
+  #preview.column.row.work
+    = render 'extractions/shared/extraction_forms_project_tab_links'
+
+    = render 'extractions/shared/extraction_forms_project_tab_content'
+
+= link_to 'Back to Extractions',
+  project_extractions_path(@extraction.project),
+  title: t('manage_extractions')

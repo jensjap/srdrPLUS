@@ -3,7 +3,6 @@
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
 document.addEventListener 'turbolinks:load', ->
-
   do ->
 
     scrollToTop = ->
@@ -11,7 +10,6 @@ document.addEventListener 'turbolinks:load', ->
       offset = element.offset()
       offsetTop = offset.top # + 135  # 135px: height of AHRQ banner.
       $( 'html, body' ).animate { scrollTop: offsetTop }, 1000, 'swing'
-      return
 
     ## On document load scroll the AHRQ header out of sight ;)
     #element = $( 'body' )
@@ -19,15 +17,11 @@ document.addEventListener 'turbolinks:load', ->
     #$( 'html, body' ).animate({ scrollTop: offset.top }, 1000, 'swing');
 
     # Make scroll-to-top button visible after scrolling down 100 pixels.
-    $( document ).on 'scroll', ->
+    $( document ).scroll ->
       if $( window ).scrollTop() > 100
         $( '.scroll-top-wrapper' ).addClass 'show'
       else
         $( '.scroll-top-wrapper' ).removeClass 'show'
-      return
 
     # Attach click handler to .scroll-top-wrapper btn to scroll to top.
-    $( '.scroll-top-wrapper' ).on 'click', scrollToTop
-
-    return
-
+    $( '.scroll-top-wrapper' ).click scrollToTop

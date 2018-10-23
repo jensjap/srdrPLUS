@@ -1,7 +1,7 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  user: one
+  projects_users_role: one
   task: one
   done_so_far: 1
   date_assigned: 2017-09-20 16:42:49
@@ -9,7 +9,7 @@ one:
   done: 1
 
 two:
-  user: two
+  projects_users_role: two
   task: two
   done_so_far: 1
   date_assigned: 2017-09-20 16:42:49

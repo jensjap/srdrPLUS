@@ -1,16 +1,16 @@
-h4 = section_name
+h5 = section_name
 
 blockquote
   | The results section is where you enter numerical data, comparisons, etc.
 
-- outcomes = ExtractionsExtractionFormsProjectsSectionsType1.by_section_name_and_extraction_id_and_extraction_forms_project_id('Outcomes', @extraction.id, efp.id)
+- outcomes = ExtractionsExtractionFormsProjectsSectionsType1.by_section_name_and_extraction_id_and_extraction_forms_project_id('Outcomes', extraction.id, efp.id)
 - if outcomes.count > 1
   'Switch between Outcomes
-= collection_select(:outcome_populations_selector, :eefpst1_id, outcomes, :id, :type1_name_and_description)
+  = collection_select(:outcome_populations_selector, :eefpst1_id, outcomes, :id, :type1_name_and_description)
 
 .columns.row
 
-  - eefpst1 = ExtractionsExtractionFormsProjectsSectionsType1.by_section_name_and_extraction_id_and_extraction_forms_project_id('Outcomes', @extraction.id, efp.id).first
+  - eefpst1 = ExtractionsExtractionFormsProjectsSectionsType1.by_section_name_and_extraction_id_and_extraction_forms_project_id('Outcomes', extraction.id, efp.id).first
 
   #results-data-table-links
     = render 'extractions/work/results/results_populations_tabs', eefpst1: eefpst1

@@ -1,0 +1,15 @@
+= f.simple_fields_for :comparable_element, f.object.build_comparable_element do |comparable_element|
+  = comparable_element.input :comparable_type,
+    as: :hidden,
+    input_html: { value: comparable_element_type },
+    wrapper_html: { style: 'padding-bottom: 0px' }
+  = comparable_element.input :comparable_id,
+    include_blank: true,
+    as: :select,
+    collection: collection,
+    selected: comparable_element.object.comparable_id,
+    value_method: :id,
+    label_method: label_method,
+    input_html: { class: 'select-bac', style: 'padding-bottom: 0px; margin-bottom: 0px' },
+    wrapper_html: { style: 'padding-bottom: 0px' },
+    label: false

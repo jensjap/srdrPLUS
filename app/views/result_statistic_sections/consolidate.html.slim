@@ -1,0 +1,13 @@
+- provide(:title, 'Results: ' + @result_statistic_section.result_statistic_section_type.name)
+
+.column.row
+  h4 Outcome: #{ @result_statistic_section.population.extractions_extraction_forms_projects_sections_type1.type1.name }
+    Description: #{ @result_statistic_section.population.extractions_extraction_forms_projects_sections_type1.type1.description }
+  h5 Population: #{ @result_statistic_section.population.population_name.name }
+    Description: #{ @result_statistic_section.population.population_name.description }
+
+.column.row
+  = render 'result_statistic_sections/shared/auto_save_notification'
+
+.column.row
+  = render 'result_statistic_sections/consolidate/' + @result_statistic_section.result_statistic_section_type.name.parameterize.underscore

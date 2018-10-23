@@ -57,7 +57,7 @@
 
   .top-bar > .top-bar-right {
     a:hover {
-      color: #200845;
+      //color: #200845;
 
       &:after {
         border-top-color: #200845;
@@ -159,6 +159,10 @@ body div.top-bar {
   color: red;
 }
 
+table ul {
+  margin: rem-calc(10);
+}
+
 ul hr {
   width: 80%;
   margin: 0;
@@ -179,6 +183,12 @@ ul.menu.vertical.submenu.is-dropdown-submenu {
     }
   }
 }
+
+.contain-in-viewport {
+  overflow: scroll;
+  max-height: 95vh;
+}
+
 // END Miscellaneous stuff.
 
 // Pagination.
@@ -237,7 +247,7 @@ ul.menu.vertical.submenu.is-dropdown-submenu {
 
 // Debug window.
 pre.debug_dump {
-  background-color: $color-complement-1;
+  background-color: $color-complement-4;
   border: 1px solid gray;
   margin: 10px;
   padding: 5px;
@@ -295,6 +305,16 @@ pre.debug_dump {
 
 .table-scroll table {
   width: 100%;
+
+  td, th {
+    border-radius: 3px;
+  }
+
+  &.consolidate .missing-value {
+    margin-bottom: 3px;
+    border: 1.2px solid red;
+    min-height: 18px;
+  }
 }
 
 .column.row.footer {
@@ -305,3 +325,30 @@ pre.debug_dump {
 .off-canvas-content {
   min-height: -webkit-fill-available;
 }
+
+// Extractions.
+// Since we only have one extraction form at the moment we can safely hide the tab links.
+#extraction-forms-projects-tabs {
+  display: none;
+}
+
+a.accordion-title.populations {
+  font-size: 1em;
+}
+// END Extractions.
+
+// Spinner.
+.spinner {
+    border: 16px solid #f3f3f3; /* Light grey */
+    border-top: 16px solid #3498db; /* Blue */
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+// END Spinner.

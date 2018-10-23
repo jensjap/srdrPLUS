@@ -2,8 +2,8 @@
 
 .alert.callout data-abide-error='' style='display: none;'
   p
-    i.fi-alert
-    '  Please correct the errors below.
+    i.fi-alert>
+    ' Please correct the errors below.
 
 .form-inputs
   = f.simple_fields_for(:key_question, f.object.key_question || f.object.build_key_question) do |kq_f|

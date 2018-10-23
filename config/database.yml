@@ -15,7 +15,7 @@ default: &default
   pool: 5
   username: root
   password:
-  host: localhost
+  host: 127.0.0.1
 
 development:
   <<: *default
@@ -51,8 +51,9 @@ test:
 #
 production:
   <<: *default
-  database: srdrPLUS_production
-  username: srdrPLUS
+  host: <%= ENV['SRDRPLUS_DATABASE_HOST'] %>
+  database: <%= ENV['SRDRPLUS_DATABASE_SCHEMA'] %>
+  username: <%= ENV['SRDRPLUS_DATABASE_USERNAME'] %>
   password: <%= ENV['SRDRPLUS_DATABASE_PASSWORD'] %>
 
 

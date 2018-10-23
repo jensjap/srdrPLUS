@@ -1,0 +1,52 @@
+h5 #{ section_name } that are included in this Extraction
+
+.table-scroll
+  table
+    thead
+      tr
+        - if section_name == 'Outcomes'
+          th Type
+        th Name
+        th Description
+        - if section_name == 'Outcomes'
+          th Populations
+          th Timepoints
+        th
+        th
+
+    tbody
+      - eefps.extractions_extraction_forms_projects_sections_type1s.includes(:type1_type, :type1).each do |eefpst1|
+        tr
+          - if section_name == 'Outcomes'
+            td
+              = eefpst1.type1_type.present? ? eefpst1.type1_type.name : ''
+            td
+              /= link_to 'Edit ' + section_name.singularize, edit_extractions_extraction_forms_projects_sections_type1_path(eefpst1)
+              ul style='list-style: none; margin: 0px;'
+                li style='margin-top: 3px;'
+                  = eefpst1.type1.name
+                li style='margin-left: 7px;'
+                  | Units: #{ eefpst1.units }
+
+          - else
+            td = eefpst1.type1.name
+
+          td = eefpst1.type1.description
+
+          - if section_name == 'Outcomes'
+            td
+              ul
+                - eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |pop|
+                  li = pop.population_name.name
+            td
+              ul
+                - eefpst1.extractions_extraction_forms_projects_sections_type1_rows.first.extractions_extraction_forms_projects_sections_type1_row_columns.each do |tp|
+                  li = tp.timepoint_name.name + (tp.timepoint_name.unit.present? ? " (#{ tp.timepoint_name.unit })" : '') + (tp.is_baseline? ? ' (Baseline)' : '')
+
+          td = link_to edit_extractions_extraction_forms_projects_sections_type1_path(eefpst1) do
+            i.fi-pencil>
+            | Edit
+
+          td = link_to eefpst1, data: { confirm: 'Are you sure?' }, method: :delete do
+            i.fi-trash>
+            | Remove

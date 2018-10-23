@@ -4,12 +4,13 @@ one:
   wac: one
   bac: one
   result_statistic_sections_measure: one
-  deleted_at: 2018-05-07 09:51:16
-  active: false
+  deleted_at:
+  active: true
 
 two:
   wac: two
   bac: two
   result_statistic_sections_measure: two
-  deleted_at: 2018-05-07 09:51:16
-  active: false
+  deleted_at:
+  active: true
+

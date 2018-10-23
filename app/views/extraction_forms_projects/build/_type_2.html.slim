@@ -7,13 +7,13 @@
 .column.row
   = render 'extraction_forms_projects/build/type2/type2_question_list', efps: efps
 
-- if efps.section.name == 'Quality'
+- if efps.section.name == 'Risk of Bias Assessment'
   .column.row
     = render 'extraction_forms_projects/build/type2/type2_quality_predefined', efps: efps
 
 = link_to new_extraction_forms_projects_section_question_path(efps), { class: 'button secondary' } do
-  i.fi-plus
-  |  Add Question
+  i.fi-plus>
+  | Add Question
 
-- if efps.section.name == 'Quality'
+- if efps.section.name == 'Risk of Bias Assessment'
   button.button.float-right data-open='modal-#{ efps.id.to_s }' Add questions from a pre-defined list

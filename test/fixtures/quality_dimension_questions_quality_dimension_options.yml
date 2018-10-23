@@ -3,11 +3,12 @@
 one:
   quality_dimension_question: one
   quality_dimension_option: one
-  deleted_at: 2018-04-02 20:26:32
-  active: false
+  deleted_at:
+  active: true
 
 two:
   quality_dimension_question: two
   quality_dimension_option: two
-  deleted_at: 2018-04-02 20:26:32
-  active: false
+  deleted_at:
+  active: true
+

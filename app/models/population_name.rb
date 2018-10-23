@@ -6,6 +6,18 @@ class PopulationName < ApplicationRecord
 
   validates :description, uniqueness: { scope: :name }
 
+  def name_and_description
+    text  = name
+    text += " (#{ description })" if description.present?
+    return text
+  end
+
+  def short_name_and_description
+    text  = name
+    text += " (#{ description.truncate(16, separator: /\s/) })" if description.present?
+    return text
+  end
+
   private
 
     def select_label

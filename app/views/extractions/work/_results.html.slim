@@ -1,7 +1,10 @@
-- if make_results_section_available?(@extraction.id, efp.id)
+- if @extraction.results_section_ready_for_extraction?
 
-  == render 'extractions/work/results/results_section_content', efp: efp, section_name: section_name
+  = render 'extractions/work/results/results_section_content',
+    extraction: @extraction,
+    efp: efp,
+    section_name: section_name
 
 - else
 
-  h4 style='color: red;' You must add Arms and Outcomes before extracting into this section.
+  h5 style='color: red;' You must add Arms and Outcomes before extracting into this section.

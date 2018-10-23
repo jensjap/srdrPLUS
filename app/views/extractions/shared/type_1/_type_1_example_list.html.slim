@@ -1,0 +1,34 @@
+- section_name = eefps.extraction_forms_projects_section.section.name.titleize.singularize
+
+.reveal id="modal-#{ eefps.id.to_s }" data-reveal=''
+  h5 Example #{ section_name } Names and Descriptions
+
+  .table-scroll
+
+    table.hover.fill-suggestion style='width: 100%;' data-section-id="#{ eefps.id.to_s }"
+
+      thead
+        tr
+          th Name
+          th Description
+          th Suggested by
+
+      tbody
+        - eefps.extraction_forms_projects_section.type1s.includes(suggestion: { user: :profile })\
+          .joins(:extraction_forms_projects_sections_type1s)\
+            .where.not(extraction_forms_projects_sections_type1s: { type1: eefps.type1s })\
+              .distinct\
+                .each do |t1|
+          tr
+            td = t1.name
+            td = t1.description
+            - p = t1.suggestion.user.profile
+            / #!!! Add profject lead info if project lead.
+            td = p.first_name + ' ' + p.middle_name + '. ' + p.last_name
+
+  button.close-button data-close='' aria-label='Close modal' type='button'
+    span aria-hidden='true'
+      '&times;
+
+button.button data-open="modal-#{ eefps.id.to_s }"
+  'Click for a list of sample names and descriptions

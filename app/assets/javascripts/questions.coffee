@@ -40,7 +40,6 @@ document.addEventListener 'turbolinks:load', ->
 
     $('.fieldset').trigger 'change'
 
-
     ###########################################
     # Hide first row and column if only 1 cell.
 
@@ -52,18 +51,9 @@ document.addEventListener 'turbolinks:load', ->
         _tableRows.find('th:nth-child(-n+3)').hide()
         _tableRows.find('td:first-child').hide()
 
-      return
-
-
-    $('#step-two table').each ->
+    $('.clean-table table').each ->
 
       _tableRows = $(this).find('tr')
 
       if _tableRows.length > 1
         hideHeaders(_tableRows)
-
-
-
-    return  # END do ->
-
-  return  # END document.addEventListener 'turbolinks:load', ->

@@ -3,11 +3,12 @@
 one:
   extractions_extraction_forms_projects_sections_question_row_column_field: one
   question_row_columns_question_row_column_option: one
-  deleted_at: 2018-04-22 01:14:54
-  active: false
+  deleted_at:
+  active: true
 
 two:
   extractions_extraction_forms_projects_sections_question_row_column_field: two
   question_row_columns_question_row_column_option: two
-  deleted_at: 2018-04-22 01:14:54
-  active: false
+  deleted_at:
+  active: true
+

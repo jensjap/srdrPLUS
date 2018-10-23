@@ -1,0 +1,20 @@
+ul#extraction-forms-projects-tabs.tabs data-deep-link='true' data-deep-link-smudge='true' data-deep-link-smudge-delay='100' data-update-history='true' data-tabs=''
+
+  - is_first = true
+
+  - @extraction_forms_projects.each do |efp|
+    - ef_name = efp.extraction_form.name
+
+    - if is_first
+      li.tabs-title.is-active
+        = link_to ef_name,
+          "#panel-extraction-forms-project-#{ efp.id.to_s }",
+          title: "Extraction Form: #{ ef_name }"
+
+      - is_first = false
+
+    - else
+      li.tabs-title
+        = link_to ef_name,
+          "#panel-extraction-forms-project-#{ efp.id.to_s }",
+          title: "Extraction Form: #{ ef_name }"

@@ -2,13 +2,13 @@
 
 one:
   extractions_extraction_forms_projects_sections_type1_row: one
-  name: MyString
-  description: MyText
+  timepoint_name: one
+  is_baseline: true
   deleted_at:
 
 two:
   extractions_extraction_forms_projects_sections_type1_row: two
-  name: MyString
-  description: MyText
+  timepoint_name: two
+  is_baseline: false
   deleted_at:
 

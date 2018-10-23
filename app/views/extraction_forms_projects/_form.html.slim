@@ -2,8 +2,8 @@
 
 .alert.callout data-abide-error='' style='display: none;'
   p
-    i.fi-alert
-    '  Please correct the errors below.
+    i.fi-alert>
+    ' Please correct the errors below.
 
 .form-inputs
   = f.simple_fields_for(:extraction_form, f.object.extraction_form || f.object.build_extraction_form) do |kq_f|

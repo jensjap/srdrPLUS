@@ -57,7 +57,10 @@ en:
   greet: Greetings
   blank: Cannot be blank
   confirm: Are you sure?
+  comparison_tool: Comparison Tool
   extractions:
+    comparison_tool:
+      comparison_tool: Comparison Tool
     work:
       question_row_column_field_types:
         text:
@@ -104,4 +107,10 @@ en:
   errors:
     messages:
       taken: We are sorry, but the value you are attempting to use is allowed only once and has already been used
-  comparison_tool: Comparison Tool
+  compare_extractions: Compare Extraction(s)
+  request_export: Request Export
+  manage_project_information: Manage Project Information
+  manage_key_questions: Manage Key Question(s)
+  manage_extractions: Manage Extraction(s)
+  manage_citations: Manage Citation(s)
+  manage_tasks: Manage Task(s)

@@ -1,10 +1,22 @@
-.new-task
-  .nested-fields
-    h3 New Task
-    = f.association :task_type
-    = f.input :num_assigned
-    = f.simple_fields_for :assignments do |a_f|
-      = a_f.input :done
-      = a_f.association :user, label_method: ->(user){ user.profile.username }
-  = link_to_add_association 'add assignment', f, :assignments, partial: 'projects/edit/assignment_fields', data: { 'association-insertion-method' => 'append', 'association-insertion-node' => 'this' }
+.nested-fields.task-box
+  .task-center
+    - if f.object.id.present? 
+      div.task-title
+        = f.object.task_type.name + " Task"
+    - else
+      div.task-title
+        | New Task
 
+
+    .task-fields
+      = f.association :task_type
+      = f.input :num_assigned, label: "Number of assigned citations", required: true
+      = f.association :projects_users_roles, collection: ProjectsUsersRole.by_project(@project), label: 'Assigned project members', label_method: :handle, wrapper_class: "projects-users-role-select2"
+      
+      /, wrapper_html: { data_url: "/api/v1/projects/" + @project.id.to_s + "/projects_users_roles.json" }
+      /= f.simple_fields_for :assignments do |a_f|
+        = a_f.input :done
+        = a_f.association :user, label_method: ->(user){ user.profile.username }
+        = link_to_add_association 'add assignment', f, :assignments, partial: 'projects/edit/assignment_fields', data: { 'association-insertion-method' => 'append', 'association-insertion-node' => 'this' }
+
+  = link_to_remove_association '✖', f, class: 'remove-button', style: "position: relative;  top: 0.2rem; right: 0.2rem;"

@@ -1,15 +1,16 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  extractions_extraction_forms_projects_sections_type1_row: one
+  timepoint: one
   comparison: one
   result_statistic_sections_measure: one
-  deleted_at: 2018-05-02 15:07:40
+  deleted_at:
   active: false
 
 two:
-  extractions_extraction_forms_projects_sections_type1_row: two
+  timepoint: two
   comparison: two
   result_statistic_sections_measure: two
-  deleted_at: 2018-05-02 15:07:40
+  deleted_at:
   active: false
+

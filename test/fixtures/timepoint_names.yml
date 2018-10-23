@@ -1,11 +1,12 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  name: MyString
-  unit: MyString
-  deleted_at: 2018-05-21 17:03:40
+  name: Baseline
+  unit: ''
+  deleted_at:
 
 two:
-  name: MyString
-  unit: MyString
-  deleted_at: 2018-05-21 17:03:40
+  name: 1
+  unit: week
+  deleted_at:
+

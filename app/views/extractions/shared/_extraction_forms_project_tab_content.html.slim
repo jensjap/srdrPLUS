@@ -1,0 +1,29 @@
+a#toggle-sections-link.button.tiny
+  .toggle-hide
+    i.fi-arrow-left>
+    |Hide Menu
+  .toggle-hide.hide
+    i.fi-arrow-right
+
+- if action_name.eql? 'consolidate'
+  a#toggle-consolidated-extraction-link.button.tiny.float-right
+    .toggle-hide
+      |Hide Consolidated Extraction Form
+      i.fi-arrow-right<
+    .toggle-hide.hide
+      i.fi-arrow-left
+
+.tabs-content data-tabs-content='extraction-forms-projects-tabs'
+
+  - @extraction_forms_projects.each do |efp|
+
+      .tabs-panel id="panel-extraction-forms-project-#{ efp.id.to_s }"
+
+        .row
+          .toggle-sections-link-medium-2-0-hide.column.medium-2
+            = render 'extractions/shared/extraction_forms_projects_section_tab_links',
+              efp: efp
+
+          .toggle-sections-link-medium-10-12.column.medium-10
+            = render "extractions/shared/extraction_forms_projects_section_tab_content",
+              efp: efp

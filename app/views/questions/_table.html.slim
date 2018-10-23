@@ -1,4 +1,4 @@
-.table-scroll
+.table-scroll.clean-table
 
   table#question.hover
 
@@ -28,8 +28,10 @@
               fieldset.fieldset
                 legend Options
 
+                / Let's disable some question types for now...they are unstable.
                 = qrc_f.association :question_row_column_type, label: 'Field Type',
                                                                       include_blank: false,
+                                                                      disabled: QuestionRowColumnType.where(id: [3, 4, 8, 9]).pluck(:id),
                                                                       wrapper: 'horizontal_form'
 
                 = qrc_f.simple_fields_for(:question_row_columns_question_row_column_options) do |qrcqrco_f|
@@ -56,5 +58,5 @@
                                             :question_row_columns_question_row_column_options,
                                             partial: 'questions/question_types/question_row_column_fields_question_row_column_field_option_fields',
                                             class: 'button secondary tiny' do
-                    i.fi-plus
-                    |  Add answer choice
+                    i.fi-plus>
+                    | Add answer choice

@@ -94,6 +94,11 @@ SimpleForm.setup do |config|
     # b.use :hint,  wrap_with: { tag: :span, class: :hint }
   end
 
+  config.wrappers :label_only,# :class => :label,
+    :hint_class => :field_with_hint, :error_class => :field_with_errors do |b|
+    b.use :label
+  end
+
   # CSS class for buttons
   config.button_class = 'button'
 

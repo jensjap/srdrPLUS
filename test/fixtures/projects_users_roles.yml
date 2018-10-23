@@ -3,11 +3,12 @@
 one:
   projects_user: one
   role: one
-  deleted_at: 2017-10-16 13:03:18
-  active: false
+  deleted_at:
+  active: true
 
 two:
   projects_user: two
   role: two
-  deleted_at: 2017-10-16 13:03:18
-  active: false
+  deleted_at:
+  active: true
+

@@ -6,6 +6,9 @@ class TimepointName < ApplicationRecord
 
   has_many :extractions_extraction_forms_projects_sections_type1_row_columns, dependent: :destroy, inverse_of: :timepoint_name
 
+  has_many :extraction_forms_projects_sections_type1s_timepoint_names, dependent: :destroy, inverse_of: :timepoint_name
+  has_many :extraction_forms_projects_sections_type1s, through: :extraction_forms_projects_sections_type1s_timepoint_names, dependent: :destroy
+
   validates :unit, uniqueness: { scope: :name }
 
   # Written in one line.

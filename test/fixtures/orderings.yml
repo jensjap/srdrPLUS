@@ -3,11 +3,12 @@
 one:
   orderable: one
   orderable_type: Orderable
-  deleted_at: 2017-06-12 15:52:11
-  active: false
+  deleted_at:
+  active: true
 
 two:
   orderable: two
   orderable_type: Orderable
-  deleted_at: 2017-06-12 15:52:11
-  active: false
+  deleted_at:
+  active: true
+
