@@ -47,13 +47,28 @@ document.addEventListener 'turbolinks:load', ->
     $( '.project_tasks_projects_users_roles select' ).select2()
 
     ## CITATION MANAGEMENT - see if we can only run this stuff on the correct tab
-    list_options = { valueNames: [ 'citation-numbers', 'citation-title', 'citation-authors', 'citation-journal', 'citation-journal-date', 'citation-abstract', 'citation-abstract' ] }
+    list_options = { indexAsync: false, valueNames: [ 'citation-numbers', 'citation-title', 'citation-authors', 'citation-journal', 'citation-journal-date', 'citation-abstract', 'citation-abstract' ] }
 
 
-    ##### DYNAMICALLY LOADING CITATIONS
-    citationList = new List( 'citations', list_options )
+    ##### HELPERS FOR DYNAMICALLY LOADING CITATIONS
+    add_hidden_simpleform_elements = ( index, index_dif, item ) ->
+      list_index_string = ( index + index_dif ).toString()
+      $( '<input type="hidden" value="' + \
+          item.values()[ 'citations-project-id' ] + \
+          '" name="project[citations_projects_attributes][' + \
+          list_index_string + \
+          '][id]" id="project_citations_projects_attributes_' + \
+          list_index_string + '_id">' ).insertBefore( item.elm )
+      $( item.elm ).find( '#project_citations_projects_attributes_0__destroy' )[ 0 ].outerHTML = \
+          '<input type="hidden" name="project[citations_projects_attributes][' + \
+          list_index_string + \
+          '][_destroy]" id="project_citations_projects_attributes_' + \
+          list_index_string + \
+          '__destroy" value="false">'
 
-    append_citations = ( page ) ->
+
+    append_citations = ( index, page ) ->
+      console.log index
       $.ajax $( '#citations-url' ).text(),
         type: 'GET'
         dataType: 'json'
@@ -62,14 +77,14 @@ document.addEventListener 'turbolinks:load', ->
           toastr.error( 'Could not get citations' )
         success: (data, textStatus, jqXHR) ->
           to_add = []
+          $( "#citations-count" ).html( data[ 'pagination' ][ 'total_count' ] )
           for c in data[ 'results' ]
-            #console.log c
             citation_journal = ''
             citation_journal_date = ''
 
             if 'journal' of c
               citation_journal = c[ 'journal' ][ 'name' ]
-              citation_journal_date = ' (' + c[ 'journal'][ 'publication_date' ] + ')'
+              citation_journal_date = ' (' + c[ 'journal' ][ 'publication_date' ] + ')'
 
             to_add.push { 'citation-title': c[ 'name' ],\
               'citation-abstract': c[ 'abstract' ],\
@@ -81,25 +96,26 @@ document.addEventListener 'turbolinks:load', ->
 
           if page == 1
             citationList.clear()
-          citationList.add to_add, ( items ) ->
-            list_index = 0
-            for item in items
-              #console.log $( '<input type="hidden" value=%%%CITATION_PROJECT_ID%%% name="project[citations_projects_attributes][%%%INDEX%%%][id]" id="project_citations_projects_attributes_%%%INDEX%%%_id">'.replace( /%%%CITATION_PROJECT_ID%%%/g, c[ 'citations_project_id' ] ).replace( /%%%INDEX%%%/g, list_index.toString() ) ).insertAfter( item.elm )
-              $( '<input type="hidden" value=%%%CITATION_PROJECT_ID%%% name="project[citations_projects_attributes][%%%INDEX%%%][id]" id="project_citations_projects_attributes_%%%INDEX%%%_id">'.replace( /%%%CITATION_PROJECT_ID%%%/g, item.values()[ 'citations-project-id' ] ).replace( /%%%INDEX%%%/g, list_index.toString() ) ).insertBefore( item.elm )
-              $( item.elm ).find( '#project_citations_projects_attributes_0__destroy' )[ 0 ].outerHTML = '<input type="hidden" name="project[citations_projects_attributes][%%%INDEX%%%][_destroy]" id="project_citations_projects_attributes_%%%INDEX%%%__destroy" value="false">'.replace( /%%%INDEX%%%/g, list_index.toString() )
-
               $( item.elm ).show()
               list_index++
             citationList.reIndex()
             $( "#citations-count" ).html( list_index )
             #citationList.sort( 'citation-numbers', { order: 'desc', alphabet: undefined, insensitive: true, sortFunction: undefined } )
             Foundation.reInit( $( '#citations-projects-list' ) )
+            citationList.reIndex()
 
           #citationList.add {  'citation-title': "TEST!", 'citation-authors': "TEST!", 'citation-numbers': "TEST!", 'citation-journal': "TEST!", 'citation-journal-date': "TEST!" }
           if data[ 'pagination' ][ 'more' ] == true
-            append_citations(  page + 1 )
+            append_citations( index + data[ 'results' ].length , page + 1 )
+          #else
+            #citationList.sort( $( '#sort-select' ).val(), { order: $( '#sort-button' ).attr( 'sort-order' ), alphabet: undefined, insensitive: true, sortFunction: undefined } )
 
-    append_citations( 1 )
+    ##### ONLY RUN THIS CODE IF WE ARE IN EDIT PROJECT PAGE
+    if $( 'body.projects.edit' ).length == 1
+      append_citations( 0, 1 )
+      citationList = new List( 'citations', list_options )
+      #clusterize = new Clusterize( { scrollId: 'citations', contentId: 'citations-projects-list' } )
+
 
     $( '#import-select' ).on 'change', () ->
       $( '#import-ris-div' ).hide()
@@ -113,7 +129,6 @@ document.addEventListener 'turbolinks:load', ->
         when 'endnote' then $( '#import-endnote-div' ).show()
 
     # CHECK IF A FILE IS SELECTED AND DISPLAY UPLOAD BUTTON ONLY IF A FILE IS SELECTED
-    console.log $( 'input.file' )
     $( 'input.file' ).on 'change', () ->
       if !!$( this ).val()
         $( this ).closest( '.simple_form' ).find( '.form-actions' ).show()
@@ -255,12 +270,12 @@ document.addEventListener 'turbolinks:load', ->
         $( '#citations-form' ).submit()
         
     $( '#citations-form' ).bind "ajax:success", ( status ) ->
-      append_citations( 1 )
+      append_citations( 0, 1 )
       toastr.success('Save successful!')
       $( '.cancel-button' ).click()
       #alert 'Save successful'
     $( '#citations-form' ).bind "ajax:error", ( status ) ->
-      append_citations( 1 )
+      append_citations( 0, 1 )
       toastr.error('Could not save changes')
       #alert 'Save failed'
 
