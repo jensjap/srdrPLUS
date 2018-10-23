@@ -155,63 +155,88 @@ class Project < ApplicationRecord
 
   def import_citations_from_csv( file )
     primary_id = CitationType.find_by( name: 'Primary' ).id
-    secondary_id = CitationType.find_by( name: 'Secondary' ).id
-    
-    row_d = { 'Primary' => primary_id, 'primary' => primary_id, 
-              'Secondary' => secondary_id, 'secondary' => secondary_id,
-              '' => nil }
+    ### citation type, not sure if necessary
+    #secondary_id = CitationType.find_by( name: 'Secondary' ).id
+    #
+    #row_d = { 'Primary' => primary_id, 'primary' => primary_id, 
+    #          'Secondary' => secondary_id, 'secondary' => secondary_id,
+    #          '' => nil }
 
     h_arr = [] 
-    CSV.foreach( file.path, headers: :true ) do |row|
+
+    file_data = File.read( file.path ).gsub(/(\r\n|\r|\n)/, "\n")
+    file_string = ""
+    ### open file using 'rU'
+    file_data.split("\n").each do |line|
+      file_string += ( line.strip_control_and_extended_characters() + "\n" )
+    end
+
+    CSV.parse( file_string, headers: :true ) do |row|
       key_counter = 0
       row_h = row.to_h
+      cit_h = {}
 
       ### file encoding causes weird problems
       
       ### citation type, not sure if necessary
-      cit_type = row_h[ 'type' ]
-      if cit_type.present?
-        row_h[ 'citation_type_id' ] = row_d[ cit_type ]  
-      end
-      row_h.delete 'type'
+      #cit_type = row_h[ 'type' ]
+      #if cit_type.present?
+      #  row_h[ 'citation_type_id' ] = row_d[ cit_type ]  
+      #else 
+      #  row_h[ 'citation_type_id' ] = primary_id
+      #end
+      #row_h.delete 'type'
+      cit_h[ 'citation_type_id' ] = primary_id
+
 
       ### keywords
-      kw_str = row_h[ 'keywords' ] 
+      kw_str = row_h[ 'Keywords' ]
       if kw_str.present?
-        kw_arr = {}
-        kw_str.split( '; ' ).each do |kw|
-          kw_arr[Time.now.to_i + key_counter] = { name: kw }
+        kw_str.gsub! /"/, ''
+        kw_arr = kw_str.split( "     " )
+        if kw_arr.length == 1 then kw_arr = kw_str.split( /, |,/ ) end
+        if kw_arr.length == 1 then kw_arr = kw_str.split( / \/ |\// ) end
+        if kw_arr.length == 1 then kw_arr = kw_str.split( / \| |\|/ ) end
+        if kw_arr.length == 1 then kw_arr = kw_str.split( /\n/ ) end
+
+        cit_h[ 'keywords_attributes' ] = {}
+        kw_arr.each do |kw|
+          cit_h[ 'keywords_attributes' ][Time.now.to_i + key_counter] = { name: kw }
           key_counter+=1
         end
-        row_h[ 'keywords_attributes' ] = kw_arr
       end
-      row_h.delete( 'keywords' )
 
       ### authors
-      au_str = row_h[ 'authors' ] 
+      au_str = row_h[ 'Author' ]
       if au_str.present?
-        au_arr = {}
-        au_str.split( '; ' ).each do |au|
-          au_arr[Time.now.to_id + key_counter] = { name: au }
+        au_str.gsub! /"/, ''
+        au_arr = au_str.split( "     " )
+        if au_arr.length == 1 then au_arr = au_str.split( /, |,/ ) end
+        if au_arr.length == 1 then au_arr = au_str.split( / \/ |\// ) end
+        if au_arr.length == 1 then au_arr = au_str.split( / \| |\|/ ) end
+        if au_arr.length == 1 then au_arr = au_str.split( / \n/ ) end
+
+        cit_h[ 'authors_attributes' ] = {}
+        au_arr.each do |au|
+          cit_h[ 'authors_attributes' ][Time.now.to_i + key_counter] = { name: au }
           key_counter+=1
         end
-        row_h[ 'authors_attributes' ] = au_arr
       end
-      row_h.delete( 'authors' )
 
       ### journal
       j_h = {}
-      if row_h.has_key? 'name' then j_h[ 'name' ] = row_h[ 'journal' ].strip end
-      if row_h.has_key? 'publication_date' then _h[ 'publication_date' ] = row_h[ 'publication_date' ].strip end
-      if row_h.has_key? 'volume' then _h[ 'volume' ] = row_h[ 'volume' ].strip end
-      if row_h.has_key? 'issue' then _h[ 'issue' ] = row_h[ 'issue' ].strip end
-      row_h[ 'journal_attributes' ] = j_h
-      row_h.delete( 'journal' )
-      row_h.delete( 'publication_date' )
-      row_h.delete( 'volume' )
-      row_h.delete( 'issue' )
+      if row_h[ 'Journal' ].present? then j_h[ 'name' ] = row_h[ 'Journal' ].strip end
+      if row_h[ 'Year' ].present? then j_h[ 'publication_date' ] = row_h[ 'Year' ].strip end
+      if row_h[ 'Volume' ].present? then j_h[ 'volume' ] = row_h[ 'Volume' ].strip end
+      if row_h[ 'Issue' ].present? then j_h[ 'issue' ] = row_h[ 'Issue' ].strip end
+      cit_h[ 'journal_attributes' ] = j_h
 
-      h_arr << row_h
+
+      if row_h[ 'Title' ].present? then cit_h[ 'name' ] = row_h[ 'Title' ].strip end
+      if row_h[ 'Abstract' ].present? then cit_h[ 'abstract' ] = row_h[ 'Abstract' ].strip end
+      if row_h[ 'Accession Number' ].present? then cit_h[ 'pmid' ] = row_h[ 'Accession Number' ].strip end
+
+      h_arr << cit_h
     end
 
     self.citations << Citation.create!( h_arr )
@@ -222,7 +247,7 @@ class Project < ApplicationRecord
     pmid_arr = File.readlines( file.path )
     primary_id = CitationType.find_by( name: 'Primary' ).id
 
-    h_arr = [] 
+    h_arr = []
     Bio::PubMed.efetch( pmid_arr ).each do |cit_txt|
       row_h = {}
       cit_h = Bio::MEDLINE.new( cit_txt ).pubmed
@@ -351,6 +376,90 @@ class Project < ApplicationRecord
     end
     self.citations << Citation.create!( h_arr )
   end
+
+  def import_citations_from_enl( file )
+    key_counter = 0
+    primary_id = CitationType.find_by( name: 'Primary' ).id
+
+    # creates a new parser of type EndNote
+    parser = RefParsers::EndNoteParser.new
+
+    file_data = File.read( file.path ).gsub(/(\r\n|\r|\n)/, "\n")
+    file_string = ""
+    ### open file using 'rU'
+    file_data.split("\n").each do |line|
+      file_string += ( line.strip_control_and_extended_characters() + "\n" )
+    end
+    
+    h_arr = [] 
+    parser.parse( file_string ).each do |cit_h|
+      row_h = {}
+      ### will add as primary citation by default, there is no way to figure that out from pubmed
+      ## NOT SURE ABOUT PMID KEY
+      if cit_h[ 'M' ].present? then row_h[ 'pmid' ] = cit_h[ 'M' ].strip end
+      if cit_h[ 'T' ].present? then row_h[ 'name' ] = cit_h[ 'T' ].strip end
+      if cit_h[ 'X' ].present? then row_h[ 'abstract' ] = cit_h[ 'X' ].strip end
+      row_h[ 'citation_type_id' ] = primary_id
+      
+      #keywords
+      if cit_h[ 'K' ].present?
+        ### splitting kw strings still a huge pain
+        kw_arr = []
+        if cit_h[ 'K' ].is_a? Enumerable
+          kw_arr = cit_h[ 'K' ]
+        else
+          kw_arr = cit_h[ 'K' ].split( "     " )
+        end
+        if kw_arr.length == 1 then kw_arr = cit_h[ 'K' ].split( /, |,/ ) end
+        if kw_arr.length == 1 then kw_arr = cit_h[ 'K' ].split( / \/ |\// ) end
+        if kw_arr.length == 1 then kw_arr = cit_h[ 'K' ].split( / \| |\|/ ) end
+        row_h[ 'keywords_attributes' ] = {}
+        kw_arr.each do |kw|
+          row_h[ 'keywords_attributes' ] [Time.now.to_i + key_counter ] = { name: kw }
+          key_counter += 1
+        end
+      end
+
+      row_h[ 'authors_attributes' ] = {}
+      
+      ##authors
+      #if cit_h[ 'AU' ].present? 
+      #  au_arr = cit_h[ 'AU' ]
+      #  au_arr.each do |au|
+      #    row_h[ 'authors_attributes' ][Time.now.to_i + key_counter] = { name: au }
+      #    key_counter+=1
+      #  end
+      #end
+
+      #there are other tags for authors
+      [ "A" ].each do |au_key|
+        if cit_h[ au_key ].present? 
+          au_arr = []
+          if cit_h[ au_key ].is_a? Enumerable
+            au_arr = cit_h[ au_key ]
+          else
+            au_arr = cit_h[ au_key ].split( "     " )
+          end
+          au_arr.each do |au|
+            row_h[ 'authors_attributes' ][Time.now.to_i + key_counter] = { name: au }
+            key_counter += 1
+          end
+        end
+      end
+
+      #journal
+      j_h = {}
+      if cit_h[ 'B' ].present? then j_h[ 'name' ] = cit_h[ 'B' ].strip end
+      if cit_h[ 'D' ].present? then j_h[ 'publication_date' ] = cit_h[ 'D' ].strip end
+      if cit_h[ 'V' ].present? then j_h[ 'volume' ] = cit_h[ 'V' ].strip end
+      if cit_h[ 'I' ].present? then j_h[ 'issue' ] = cit_h[ 'I' ].strip end
+      row_h[ 'journal_attributes' ] = j_h
+
+      h_arr << row_h
+    end
+    self.citations << Citation.create!( h_arr )
+  end
+
 
   private
 

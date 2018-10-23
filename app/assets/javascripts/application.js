@@ -22,6 +22,7 @@
 //= require react
 //= require react_ujs
 //= require components
+//= require list.min.js
 //= require_tree .
 
 //$(function(){ $(document).foundation(); });

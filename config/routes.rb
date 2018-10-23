@@ -25,7 +25,11 @@ Rails.application.routes.draw do
       resources :keywords, only: [:index]
       resources :authors, only: [:index]
       resources :timepoint_names, only: [:index]
-      resources :citations, only: [:index]
+      resources :citations, only: [:index] do 
+        collection do
+          get 'titles'
+        end
+      end
       resources :projects, shallow: true do
         resources :projects_users_roles, only: [:index]
         resources :assignments do
@@ -69,6 +73,7 @@ Rails.application.routes.draw do
   resources :projects, concerns: :paginatable, shallow: true do
     post 'import_csv', on: :member
     post 'import_ris', on: :member
+    post 'import_endnote', on: :member
     post 'import_pubmed', on: :member
     
     resources :citations do

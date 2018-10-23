@@ -1,57 +1,88 @@
-h5 Citations in this project
+#citations-header[style="font-size: 1rem;margin-bottom:1.5rem;color:#410093;"]
+  span id="citations-count"
+    | 0
+  '
+  | citations in this project
 
 div.row
   div.columns.medium-9
-    #single-citation-form
-      = simple_form_for(@project) do |f|
-        = f.error_notification
+    = simple_form_for(  @project,
+                        remote: true,
+                        url: api_v1_project_path(@project, format: :json),
+                        html: { id: 'citations-form' } ) do |f|
+      = f.error_notification
+      #citations
+        #citations-url.hide
+          = api_v1_project_citations_url @project.id
 
-        #citations-projects-list
-        .form-inputs
-          = f.simple_fields_for :citations_projects, @citations_projects do |c_p_f|
+        #search-div
+          #search-box.input
+              input.search type="text" placeholder='Search'
+
+          #sort-button.button.secondary.small[sort-order="desc"]
+            | DESCENDING
+          select id='sort-select'
+            option[value='citation-numbers'] PMID
+            option[value='citation-title'] Title
+            option[value='citation-authors'] Authors
+            option[value='citation-journal'] Journal
+            option[value='citation-journal-date'] Year
+
+        #insert-citation-div[ style="margin-bottom: 1rem;" ]
+          = link_to_add_association 'Add Citation', f, :citations_projects, partial: 'projects/edit/added_citations_project_fields', 'data-association-insertion-node' => '#cp-insertion-node', 'data-association-insertion-method' => 'prepend'
+          '
+          ' or
+
+          = link_to_add_association 'Create New Citation', f, :citations, partial: 'projects/edit/citation_fields', 'data-association-insertion-node' => '#cp-insertion-node', 'data-association-insertion-method' => 'prepend'
+
+        #cp-insertion-node
+        ul.accordion.list.form-inputs data-accordion='' data-multi-expand='false' data-allow-all-closed='true' id='citations-projects-list'
+          /= f.simple_fields_for :citations_projects, @citations_projects do |c_p_f|
             = render 'projects/edit/citations_project_fields', f: c_p_f
-        #loyloyloy(data-sticky-container)
+          
+          / NOTE: Using CitationsProject.first as the collection looks odd, 
+          /       but it immediately gets replaced by citations fetched from server 
+          /       and link_to_remove_associaton javascript works properly. 
+          = f.simple_fields_for :citations_projects, CitationsProject.first do |c_p_f|
+            = render 'projects/edit/citations_project_fields', f: c_p_f
 
-          #citations-footer.sticky(data-sticky data-stick-to="bottom"  data-btm-anchor="leyleyley:top" data-margin-bottom="0")
-            /- if !@citations_projects.nil?
-              = paginate @citations_projects, params: { anchor: 'panel-citations' }
-            .teyteytey
-              = link_to_add_association 'Add Citation', f, :citations_projects, partial: 'projects/edit/added_citations_project_fields', 'data-association-insertion-node' => '#citations-projects-list', 'data-association-insertion-method' => 'prepend'
-              '
-              ' or
-
-              = link_to_add_association 'Create New Citation', f, :citations, partial: 'projects/edit/citation_fields', 'data-association-insertion-node' => '#citations-projects-list', 'data-association-insertion-method' => 'prepend'
-
-            br
-            br
-
-            .form-actions
-              = f.button :submit, 'Save changes'
-        #leyleyley
-
-
+      #leyleyley
   div.columns.medium-3
     div#top-anchor(data-sticky-container)
-      div.sticky(data-sticky data-top-anchor="top-anchor" data-btm-anchor="leyleyley:top" data-margin-bottom="0")
-        #import-ris-div
+      div.sticky(data-sticky data-top-anchor="top-anchor" data-btm-anchor="leyleyley" data-margin-bottom="0" data-check-every="0")
+
+
+        label[style='font-weight:bold; color:#410093;']
+          |Import citations from:
+        select id='import-select'
+          option[value='not-selected']
+            |---Select File Type---
+          option[value='ris'] RIS File
+          option[value='csv'] Comma Separated Values
+          option[value='pmid-list'] Pubmed ID List
+          option[value='endnote'] Endnote Export
+
+        #import-ris-div[style="display:none;"]
           = simple_form_for @project, method: :post, url: import_ris_project_url, multipart: true do |f|
             .form-inputs
-              = f.input :citation_file, as: :file, label: 'Import citations from a .ris file'
-            .form-actions
+              = f.input :citation_file, as: :file, label: false
+            .form-actions[style="display:none;"]
               = f.button :submit, 'Upload .ris file', class:"hollow small"
-
-        br
-        #import-csv-div
+        #import-csv-div[style="display:none;"]
           = simple_form_for @project, method: :post, url: import_csv_project_url, multipart: true do |f|
             .form-inputs
-              = f.input :citation_file, as: :file, label: 'Import citations from a .csv file'
-            .form-actions
+              = f.input :citation_file, as: :file, label: false
+            .form-actions[style="display:none;"]
               = f.button :submit, 'Upload .csv file', class:"hollow small"
-
-        br
-        #import-pubmed-div
+        #import-pubmed-div[style="display:none;"]
           = simple_form_for @project, method: :post, url: import_pubmed_project_url, multipart: true do |f|
             .form-inputs
-              = f.input :citation_file, as: :file, label: 'Import citations from a list of PubMed IDs'
-            .form-actions
-              = f.button :submit, 'Upload pmid list', class:"hollow small"
+              = f.input :citation_file, as: :file, label: false
+            .form-actions[style="display:none;"]
+              = f.button :submit, 'Upload PMID list', class:"hollow small"
+        #import-endnote-div[style="display:none;"]
+          = simple_form_for @project, method: :post, url: import_endnote_project_url, multipart: true do |f|
+            .form-inputs
+              = f.input :citation_file, as: :file, label: false
+            .form-actions[style="display:none;"]
+              = f.button :submit, 'Upload .enl file', class:"hollow small"
