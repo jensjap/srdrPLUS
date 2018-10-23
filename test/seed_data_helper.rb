@@ -28,17 +28,11 @@ module SeedData
         { name: 'Maintenance Announcement', frequency: Frequency.first }
       ])
 
-      # CitationTypes.
-      @primary        = CitationType.create(name: 'Primary') 
-      @secondary      = CitationType.create(name: 'Secondary') 
-      @citation_types = [@primary, @secondary]
-
-
       # ActionTypes.
       ActionType.create([
         { name: 'Create' },
         { name: 'Destroy' },
-        { name: 'Update' }, 
+        { name: 'Update' },
         { name: 'New' },
         { name: 'Index' },
         { name: 'Show' },
@@ -49,6 +43,7 @@ module SeedData
       TaskType.create(name: 'Perpetual')
       TaskType.create(name: 'Pilot')
       TaskType.create(name: 'Advanced')
+      TaskType.create(name: 'Conflict')
 
       # ConsensusTypes.
       ConsensusType.create([
@@ -373,6 +368,11 @@ module SeedDataExtended
       @project = Project.order(updated_at: :desc).first
       @project.key_questions << [@kq1, @kq2]
 
+      @primary        = CitationType.create(name: 'Primary') 
+      @secondary      = CitationType.create(name: 'Secondary') 
+      @abstrackr      = CitationType.create(name: 'Abstrackr') 
+      @citation_types = [@primary, @secondary]
+
       # Citations, Journals, Authors and Keywords
       1000.times do |n|
         updated_at = Faker::Time.between(DateTime.now - 1000, DateTime.now - 1)
@@ -440,14 +440,17 @@ module SeedDataExtended
         # Make contributor a project member.
         p.users << @superadmin
         p.users << @contributor
-        p.users << @auditor
-        p.users << @tester
+        p.users << @screener_1
+        p.users << @screener_2
+        p.users << @screener_3
 
         # Seed ProjectsUsersRole.
         ProjectsUser.find_by(project: p, user: @superadmin).roles  << Role.where(name: 'Contributor')
         ProjectsUser.find_by(project: p, user: @contributor).roles << Role.where(name: 'Leader')
-        ProjectsUser.find_by(project: p, user: @auditor).roles     << Role.where(name: 'Auditor')
-        ProjectsUser.find_by(project: p, user: @tester).roles      << Role.where(name: 'Contributor')
+        ProjectsUser.find_by(project: p, user: @contributor).roles << Role.where(name: 'Contributor')
+        ProjectsUser.find_by(project: p, user: @screener_1).roles << Role.where(name: 'Contributor')
+        ProjectsUser.find_by(project: p, user: @screener_2).roles << Role.where(name: 'Contributor')
+        ProjectsUser.find_by(project: p, user: @screener_3).roles << Role.where(name: 'Contributor')
 
         # Assign a random sample of 50 citations to project.
         p.citations = Citation.all.sample(50)
@@ -487,41 +490,41 @@ module SeedDataExtended
         end
       end
 
-#      # Assignments.
-#      Task.all.each do |t|
-#        case t.task_type.name
-#        when 'Perpetual', 'Pilot'
-#          Assignment.create([
-#            {
-#              date_assigned: DateTime.now,
-#              date_due: Date.today + 7,
-#              user: @screener_1,
-#              task: t
-#            },
-#            {
-#              date_assigned: DateTime.now,
-#              date_due: Date.today + 7,
-#              user: @screener_2,
-#              task: t
-#            },
-#            {
-#              date_assigned: DateTime.now,
-#              date_due: Date.today + 7,
-#              user: @screener_3,
-#              task: t
-#            }
-#          ])
-#        when 'Advanced'
-#          for s in @screeners.sample(rand(3))
-#            Assignment.create(
-#              date_assigned: DateTime.now,
-#              date_due: Date.today + 7,
-#              user: s,
-#              task: t
-#            )
-#          end
-#        end
-#      end
+      # Assignments.
+      Task.all.each do |t|
+        case t.task_type.name
+        when 'Perpetual', 'Pilot'
+          Assignment.create([
+            {
+              date_assigned: DateTime.now,
+              date_due: Date.today + 7,
+              projects_users_role: ProjectsUsersRole.find_by({ projects_user: ProjectsUser.find_by({ user: @screener_1, project: p }), role: Role.where(name: 'Contributor') }),
+              task: t
+            },
+            {
+              date_assigned: DateTime.now,
+              date_due: Date.today + 7,
+              projects_users_role: ProjectsUsersRole.find_by({ projects_user: ProjectsUser.find_by({ user: @screener_2, project: p }), role: Role.where(name: 'Contributor') }),
+              task: t
+            },
+            {
+              date_assigned: DateTime.now,
+              date_due: Date.today + 7,
+              projects_users_role: ProjectsUsersRole.find_by({ projects_user: ProjectsUser.find_by({ user: @screener_3, project: p }), role: Role.where(name: 'Contributor') }),
+              task: t
+            }
+          ])
+        when 'Advanced'
+          for s in @screeners.sample(rand(3))
+            Assignment.create(
+              date_assigned: DateTime.now,
+              date_due: Date.today + 7,
+              projects_users_role: ProjectsUsersRole.find_by({ projects_user: ProjectsUser.find_by({ user: s, project: p }), role: Role.where(name: 'Contributor') }),
+              task: t
+            )
+          end
+        end
+      end
 
       # Messages.
       @totd = MessageType.first
