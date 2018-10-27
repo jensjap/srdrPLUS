@@ -132,3 +132,5 @@ gem 'bio'
 
 # for parsing ris files
 gem 'ref_parsers'
+
+gem 'breadcrumbs_on_rails'
