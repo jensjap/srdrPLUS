@@ -1,4 +1,7 @@
 class ExtractionsController < ApplicationController
+
+  add_breadcrumb 'index', :projects_path
+
   include ExtractionsControllerHelpers
 
   before_action :set_project, only: [:index, :new, :create, :comparison_tool, :compare, :consolidate]
@@ -10,6 +13,9 @@ class ExtractionsController < ApplicationController
   # GET /projects/1/extractions.json
   def index
     @extractions = @project.extractions
+
+    add_breadcrumb 'edit',        edit_project_path(@project)
+    add_breadcrumb 'extractions', :project_extractions_path
   end
 
   # GET /extractions/1
@@ -19,7 +25,10 @@ class ExtractionsController < ApplicationController
 
   # GET /extractions/new
   def new
-    @extraction = Extraction.new
+    @extraction = @project.extractions.new
+
+    add_breadcrumb 'extractions',    :project_extractions_path
+    add_breadcrumb 'new extraction', :new_project_extraction_path
   end
 
   # GET /extractions/1/edit
@@ -73,6 +82,10 @@ class ExtractionsController < ApplicationController
   def work
     @extraction_forms_projects = @extraction.project.extraction_forms_projects
     @key_questions_projects_array_for_select = @extraction.project.key_questions_projects_array_for_select
+
+    add_breadcrumb 'edit',        edit_project_path(@extraction.project)
+    add_breadcrumb 'extractions', project_extractions_path(@extraction.project)
+    add_breadcrumb 'work',        :work_extraction_path
   end
 
   # GET /projects/1/extractions/comparison_tool

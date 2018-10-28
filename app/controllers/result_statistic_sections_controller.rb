@@ -1,4 +1,7 @@
 class ResultStatisticSectionsController < ApplicationController
+
+  add_breadcrumb 'index', :projects_path
+
   before_action :set_result_statistic_section, only: [:edit, :update, :add_comparison, :consolidate]
   before_action :set_arms, only: [:edit, :update, :add_comparison, :consolidate]
   before_action :set_extractions, only: [:consolidate]
@@ -7,6 +10,12 @@ class ResultStatisticSectionsController < ApplicationController
 
   # GET /result_statistic_sections/1/edit
   def edit
+    add_breadcrumb 'edit',        edit_project_path(@result_statistic_section.extraction.project)
+    add_breadcrumb 'extractions', project_extractions_path(@result_statistic_section.extraction.project)
+    add_breadcrumb 'work',        work_extraction_path(@result_statistic_section.extraction,
+                                                       anchor: "panel-tab-#{ @result_statistic_section.eefps_result.id }")
+    add_breadcrumb @result_statistic_section.result_statistic_section_type.name.downcase,
+      :edit_result_statistic_section_path
   end
 
   # PATCH/PUT /result_statistic_sections/1

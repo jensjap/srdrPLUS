@@ -63,8 +63,8 @@ class ExtractionFormsProjectsController < ApplicationController
                  { questions: [:ordering,
                                :dependencies,
                                { question_rows: [:question_row_columns] }] }])
-    add_breadcrumb 'index', :projects_path
-    add_breadcrumb 'edit',  :edit_project_path
+    add_breadcrumb 'index',   :projects_path
+    add_breadcrumb 'edit',    :edit_project_path
     add_breadcrumb 'builder', :build_extraction_forms_project_path
   end
 
