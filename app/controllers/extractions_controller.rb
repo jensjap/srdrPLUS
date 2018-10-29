@@ -70,7 +70,6 @@ class ExtractionsController < ApplicationController
   # DELETE /extractions/1
   # DELETE /extractions/1.json
   def destroy
-    project = 
     @extraction.destroy
     respond_to do |format|
       format.html { redirect_to project_extractions_url(@extraction.project), notice: 'Extraction was successfully destroyed.' }
@@ -82,6 +81,7 @@ class ExtractionsController < ApplicationController
   def work
     @extraction_forms_projects = @extraction.project.extraction_forms_projects
     @key_questions_projects_array_for_select = @extraction.project.key_questions_projects_array_for_select
+    @preselected_eefpst1 = params[:eefpst1_id].present? ? ExtractionsExtractionFormsProjectsSectionsType1.find(params[:eefpst1_id]) : nil
 
     add_breadcrumb 'edit',        edit_project_path(@extraction.project)
     add_breadcrumb 'extractions', project_extractions_path(@extraction.project)
