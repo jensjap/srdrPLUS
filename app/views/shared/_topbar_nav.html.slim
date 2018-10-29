@@ -3,7 +3,7 @@
   .title-bar data-responsive-toggle='animated-menu' data-hide-for='medium'
     .menu-text.title-bar-left
       = link_to root_path
-        button type='button' data-toggle='offCanvasNav'
+        button type='button'
           = image_tag('brand-sm.png', size: '60x10', style: 'cursor: pointer;')
     ul.menu.title-bar-right
       - unless user_signed_in?
@@ -26,4 +26,3 @@
           = render 'shared/signed_in_links'
         - else
           = render 'shared/not_signed_in_links'
-

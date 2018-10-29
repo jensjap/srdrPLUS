@@ -1,2 +1,15 @@
-ul.menu.vertical
-  li = link_to('Projects', '#')
+.off-canvas-nav-items
+  .column.row.item
+    = link_to t('.citations'), edit_project_path(@project || @extraction.try(:project) || @extraction_forms_project.project) + '#panel-citations', title: t('manage_citations')
+
+  .column.row.item
+    = link_to t('.tasks'), edit_project_path(@project || @extraction.try(:project) || @extraction_forms_project.project) + '#panel-tasks', title: t('manage_tasks')
+
+  .column.row.item
+    = link_to 'Excluded Citations', '#'
+
+  .column.row.item
+    = link_to 'Included Citations and Assignments', '#'
+
+  .column.row.item
+    = link_to 'Completed Extractions', '#'
