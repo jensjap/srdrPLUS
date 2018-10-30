@@ -91,6 +91,10 @@ class ExtractionsController < ApplicationController
   # GET /projects/1/extractions/comparison_tool
   def comparison_tool
     @citation_groups = @project.citation_groups
+
+    add_breadcrumb 'edit',            edit_project_path(@project)
+    add_breadcrumb 'extractions',     :project_extractions_path
+    add_breadcrumb 'comparison tool', :comparison_tool_project_extractions_path
   end
 
   # GET /projects/1/extractions/consolidate
@@ -100,6 +104,11 @@ class ExtractionsController < ApplicationController
     @head_to_head              = head_to_head(@extraction_forms_projects, @extractions)
     @consolidated_extraction.ensure_extraction_form_structure
     @consolidated_extraction.auto_consolidate(@extractions)
+
+    add_breadcrumb 'edit',            edit_project_path(@project)
+    add_breadcrumb 'extractions',     :project_extractions_path
+    add_breadcrumb 'comparison tool', :comparison_tool_project_extractions_path
+    add_breadcrumb 'consolidate',     :consolidate_project_extractions_path
   end
 
   # GET /projects/1/extractions/edit_type1_across_extractions
