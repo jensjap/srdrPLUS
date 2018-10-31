@@ -74,6 +74,13 @@ class ExtractionsExtractionFormsProjectsSectionsType1sController < ApplicationCo
 
   def get_results_populations
     @next_eefpst1 = ExtractionsExtractionFormsProjectsSectionsType1.find(params[:id])
+    @extractions = @next_eefpst1
+      .extractions_extraction_forms_projects_section
+      .extraction
+      .project
+      .extractions
+      .unconsolidated
+      .where(citations_project: @next_eefpst1.extractions_extraction_forms_projects_section.extraction.citations_project)
   end
 
   private

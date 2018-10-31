@@ -1,3 +1,7 @@
 ( function() {
-  $( '#results-data-table-links' ).html( "<%= escape_javascript( render partial: 'extractions/work/results/results_populations_tabs', locals: { eefpst1: @next_eefpst1 } )%>" ).foundation()
+  if (document.getElementsByClassName('extractions consolidate').length === 1) {
+    $( '#results-data-table-links' ).html( "<%= escape_javascript( render partial: 'extractions/consolidate/results/results_populations_tabs', locals: { eefpst1: @next_eefpst1 } )%>" ).foundation();
+  } else {
+    $( '#results-data-table-links' ).html( "<%= escape_javascript( render partial: 'extractions/work/results/results_populations_tabs', locals: { eefpst1: @next_eefpst1 } )%>" ).foundation();
+  }
 } )();

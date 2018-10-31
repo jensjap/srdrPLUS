@@ -59,7 +59,7 @@ document.addEventListener 'turbolinks:load', ->
         dataType: 'json'
         data: { page : page }
         error: (jqXHR, textStatus, errorThrown) ->
-          toaster.error( 'Could not get citations' )
+          toastr.error( 'Could not get citations' )
         success: (data, textStatus, jqXHR) ->
           to_add = []
           for c in data[ 'results' ]
