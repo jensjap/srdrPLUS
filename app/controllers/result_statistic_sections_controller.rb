@@ -1,6 +1,6 @@
 class ResultStatisticSectionsController < ApplicationController
 
-  add_breadcrumb 'index', :projects_path
+  add_breadcrumb 'my projects', :projects_path
 
   before_action :set_result_statistic_section, only: [:edit, :update, :add_comparison, :consolidate]
   before_action :set_arms, only: [:edit, :update, :add_comparison, :consolidate]
@@ -10,7 +10,7 @@ class ResultStatisticSectionsController < ApplicationController
 
   # GET /result_statistic_sections/1/edit
   def edit
-    add_breadcrumb 'edit',        edit_project_path(@result_statistic_section.extraction.project)
+    add_breadcrumb 'project',     edit_project_path(@result_statistic_section.extraction.project)
     add_breadcrumb 'extractions', project_extractions_path(@result_statistic_section.extraction.project)
     add_breadcrumb 'work',        work_extraction_path(@result_statistic_section.extraction,
                                                        params: { eefpst1_id: @result_statistic_section.population.extractions_extraction_forms_projects_sections_type1_id },
@@ -60,6 +60,19 @@ class ResultStatisticSectionsController < ApplicationController
 
   # GET /result_statistic_sections/1/consolidate
   def consolidate
+    @project      = @result_statistic_section.extraction.project
+    quadrant_name = @result_statistic_section.result_statistic_section_type.name
+
+    add_breadcrumb 'project',         edit_project_path(@project)
+    add_breadcrumb 'extractions',     project_extractions_path(@project)
+    add_breadcrumb 'comparison tool', comparison_tool_project_extractions_path(@project)
+    add_breadcrumb 'consolidate',
+      consolidate_project_extractions_path(
+        project_id: @project.id,
+        extraction_ids: @extractions.map(&:id),
+        params: { eefpst1_id: @result_statistic_section.population.extractions_extraction_forms_projects_sections_type1_id },
+        anchor: "panel-tab-#{ @result_statistic_section.eefps_result.id }")
+    add_breadcrumb quadrant_name.downcase, consolidate_result_statistic_section_path(extraction_ids: @extractions.map(&:id))
   end
 
   private

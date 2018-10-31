@@ -1,6 +1,6 @@
 class ExtractionsController < ApplicationController
 
-  add_breadcrumb 'index', :projects_path
+  add_breadcrumb 'my projects', :projects_path
 
   include ExtractionsControllerHelpers
 
@@ -14,7 +14,7 @@ class ExtractionsController < ApplicationController
   def index
     @extractions = @project.extractions
 
-    add_breadcrumb 'edit',        edit_project_path(@project)
+    add_breadcrumb 'project',     edit_project_path(@project)
     add_breadcrumb 'extractions', :project_extractions_path
   end
 
@@ -83,7 +83,7 @@ class ExtractionsController < ApplicationController
     @key_questions_projects_array_for_select = @extraction.project.key_questions_projects_array_for_select
     @preselected_eefpst1 = params[:eefpst1_id].present? ? ExtractionsExtractionFormsProjectsSectionsType1.find(params[:eefpst1_id]) : nil
 
-    add_breadcrumb 'edit',        edit_project_path(@extraction.project)
+    add_breadcrumb 'project',     edit_project_path(@extraction.project)
     add_breadcrumb 'extractions', project_extractions_path(@extraction.project)
     add_breadcrumb 'work',        :work_extraction_path
   end
@@ -92,7 +92,7 @@ class ExtractionsController < ApplicationController
   def comparison_tool
     @citation_groups = @project.citation_groups
 
-    add_breadcrumb 'edit',            edit_project_path(@project)
+    add_breadcrumb 'project',         edit_project_path(@project)
     add_breadcrumb 'extractions',     :project_extractions_path
     add_breadcrumb 'comparison tool', :comparison_tool_project_extractions_path
   end
@@ -102,10 +102,11 @@ class ExtractionsController < ApplicationController
     @extraction_forms_projects = @project.extraction_forms_projects
     @consolidated_extraction   = @project.consolidated_extraction(@extractions.first.citations_project_id, current_user.id)
     @head_to_head              = head_to_head(@extraction_forms_projects, @extractions)
+    @preselected_eefpst1       = params[:eefpst1_id].present? ? ExtractionsExtractionFormsProjectsSectionsType1.find(params[:eefpst1_id]) : nil
     @consolidated_extraction.ensure_extraction_form_structure
     @consolidated_extraction.auto_consolidate(@extractions)
 
-    add_breadcrumb 'edit',            edit_project_path(@project)
+    add_breadcrumb 'project',         edit_project_path(@project)
     add_breadcrumb 'extractions',     :project_extractions_path
     add_breadcrumb 'comparison tool', :comparison_tool_project_extractions_path
     add_breadcrumb 'consolidate',     :consolidate_project_extractions_path

@@ -7,9 +7,10 @@ class QuestionsController < ApplicationController
   # GET /extraction_forms_projects_sections/1/questions/new
   def new
     @question = @extraction_forms_projects_section.questions.new
-    add_breadcrumb 'index',        :projects_path
-    add_breadcrumb 'edit',         edit_project_path(@extraction_forms_projects_section.project)
-    add_breadcrumb 'builder',      build_extraction_forms_project_path(@extraction_forms_projects_section.extraction_forms_project,
+
+    add_breadcrumb 'my projects', :projects_path
+    add_breadcrumb 'project',     edit_project_path(@extraction_forms_projects_section.project)
+    add_breadcrumb 'builder',     build_extraction_forms_project_path(@extraction_forms_projects_section.extraction_forms_project,
                                                                        anchor: "panel-tab-#{ @extraction_forms_projects_section.id }")
     add_breadcrumb "new #{ @question.extraction_forms_projects_section.section.name.downcase } question",
       new_extraction_forms_projects_section_question_path
@@ -17,9 +18,9 @@ class QuestionsController < ApplicationController
 
   # GET /extraction_forms_projects_sections/1/questions/edit
   def edit
-    add_breadcrumb 'index',        :projects_path
-    add_breadcrumb 'edit',         edit_project_path(@question.project)
-    add_breadcrumb 'builder',      build_extraction_forms_project_path(@question.extraction_forms_project,
+    add_breadcrumb 'my projects', :projects_path
+    add_breadcrumb 'project',     edit_project_path(@question.project)
+    add_breadcrumb 'builder',     build_extraction_forms_project_path(@question.extraction_forms_project,
                                                                        anchor: "panel-tab-#{ @question.extraction_forms_projects_section.id }")
     add_breadcrumb 'question details', edit_question_path
   end

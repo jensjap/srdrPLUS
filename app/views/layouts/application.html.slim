@@ -26,7 +26,8 @@ html class='no-js' lang='en'
         .off-canvas-content data-off-canvas-content=''
           = render 'shared/topbar_nav'
           .column.row.content
-            = render_breadcrumbs
+            .breadcrumbs-bar
+              = render_breadcrumbs
             == yield
             = render 'shared/scroll_top_wrapper'
         = render 'shared/footer'
