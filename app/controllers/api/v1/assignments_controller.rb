@@ -19,7 +19,6 @@ module Api
         @past_labels = Label.last_updated( current_user, @assignment.project, offset, count )
         render 'history.json'
       end
-      
 
     private
       def set_assignment
