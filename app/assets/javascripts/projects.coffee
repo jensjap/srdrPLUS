@@ -47,28 +47,9 @@ document.addEventListener 'turbolinks:load', ->
     $( '.project_tasks_projects_users_roles select' ).select2()
 
     ## CITATION MANAGEMENT - see if we can only run this stuff on the correct tab
-    list_options = { indexAsync: false, valueNames: [ 'citation-numbers', 'citation-title', 'citation-authors', 'citation-journal', 'citation-journal-date', 'citation-abstract', 'citation-abstract' ] }
+    list_options = { valueNames: [ 'citation-numbers', 'citation-title', 'citation-authors', 'citation-journal', 'citation-journal-date', 'citation-abstract', 'citation-abstract' ] }
 
-
-    ##### HELPERS FOR DYNAMICALLY LOADING CITATIONS
-    add_hidden_simpleform_elements = ( index, index_dif, item ) ->
-      list_index_string = ( index + index_dif ).toString()
-      $( '<input type="hidden" value="' + \
-          item.values()[ 'citations-project-id' ] + \
-          '" name="project[citations_projects_attributes][' + \
-          list_index_string + \
-          '][id]" id="project_citations_projects_attributes_' + \
-          list_index_string + '_id">' ).insertBefore( item.elm )
-      $( item.elm ).find( '#project_citations_projects_attributes_0__destroy' )[ 0 ].outerHTML = \
-          '<input type="hidden" name="project[citations_projects_attributes][' + \
-          list_index_string + \
-          '][_destroy]" id="project_citations_projects_attributes_' + \
-          list_index_string + \
-          '__destroy" value="false">'
-
-
-    append_citations = ( index, page ) ->
-      console.log index
+    append_citations = ( list_index, page ) ->
       $.ajax $( '#citations-url' ).text(),
         type: 'GET'
         dataType: 'json'
@@ -96,19 +77,39 @@ document.addEventListener 'turbolinks:load', ->
 
           if page == 1
             citationList.clear()
-              $( item.elm ).show()
+            list_index = 0
+
+          citationList.add to_add, ( items ) ->
+            # items.map ( item, i ) -> add_hidden_simpleform_elements( index, i, item )
+            # #list_index++
+            # #citationList.sort( 'citation-numbers', { order: 'desc', alphabet: undefined, insensitive: true, sortFunction: undefined } )
+            # Foundation.reInit( $( '#citations-projects-list' ) )
+            # citationList.reIndex()
+
+            for item in items
+              list_index_string = list_index.toString()
+              $( '<input type="hidden" value="' + \
+                  item.values()[ 'citations-project-id' ] + \
+                  '" name="project[citations_projects_attributes][' + \
+                  list_index_string + \
+                  '][id]" id="project_citations_projects_attributes_' + \
+                  list_index_string + '_id">' ).insertBefore( item.elm )
+              $( item.elm ).find( '#project_citations_projects_attributes_0__destroy' )[ 0 ].outerHTML = \
+                  '<input type="hidden" name="project[citations_projects_attributes][' + \
+                  list_index_string + \
+                  '][_destroy]" id="project_citations_projects_attributes_' + \
+                  list_index_string + \
+                  '__destroy" value="false">'
+
               list_index++
             citationList.reIndex()
-            $( "#citations-count" ).html( list_index )
-            #citationList.sort( 'citation-numbers', { order: 'desc', alphabet: undefined, insensitive: true, sortFunction: undefined } )
             Foundation.reInit( $( '#citations-projects-list' ) )
-            citationList.reIndex()
 
           #citationList.add {  'citation-title': "TEST!", 'citation-authors': "TEST!", 'citation-numbers': "TEST!", 'citation-journal': "TEST!", 'citation-journal-date': "TEST!" }
           if data[ 'pagination' ][ 'more' ] == true
-            append_citations( index + data[ 'results' ].length , page + 1 )
-          #else
-            #citationList.sort( $( '#sort-select' ).val(), { order: $( '#sort-button' ).attr( 'sort-order' ), alphabet: undefined, insensitive: true, sortFunction: undefined } )
+            append_citations( list_index, page + 1 )
+          else
+            citationList.sort( $( '#sort-select' ).val(), { order: $( '#sort-button' ).attr( 'sort-order' ), alphabet: undefined, insensitive: true, sortFunction: undefined } )
 
     ##### ONLY RUN THIS CODE IF WE ARE IN EDIT PROJECT PAGE
     if $( 'body.projects.edit' ).length == 1
@@ -268,7 +269,7 @@ document.addEventListener 'turbolinks:load', ->
 
       $( insertedItem ).find( '.save-citation' ).on 'click', () ->
         $( '#citations-form' ).submit()
-        
+
     $( '#citations-form' ).bind "ajax:success", ( status ) ->
       append_citations( 0, 1 )
       toastr.success('Save successful!')
@@ -281,7 +282,7 @@ document.addEventListener 'turbolinks:load', ->
 
 #templateResult: formatResult
         #templateSelection: formatResultSelection
-    
+
 #      # Cocoon listeners.
 #      .on 'cocoon:before-insert', ( e, insertedItem ) ->
 #        insertedItem.fadeIn 'slow'
