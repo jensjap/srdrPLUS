@@ -23,7 +23,6 @@
 //= require react_ujs
 //= require components
 //= require list.min.js
-//= require clusterize.min.js
 //= require_tree .
 
 //$(function(){ $(document).foundation(); });
