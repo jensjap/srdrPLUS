@@ -153,6 +153,9 @@ ActiveRecord::Schema.define(version: 20180926055048) do
     t.integer  "task_id"
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
+    t.datetime "deleted_at"
+    t.boolean  "active"
+    t.index ["active"], name: "index_citations_tasks_on_active", using: :btree
     t.index ["citation_id"], name: "index_citations_tasks_on_citation_id", using: :btree
     t.index ["task_id"], name: "index_citations_tasks_on_task_id", using: :btree
   end
@@ -1219,7 +1222,7 @@ ActiveRecord::Schema.define(version: 20180926055048) do
     t.index ["version_id"], name: "index_version_associations_on_version_id", using: :btree
   end
 
-  create_table "versions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4" do |t|
+  create_table "versions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci" do |t|
     t.string   "item_type",      limit: 191,        null: false
     t.integer  "item_id",                           null: false
     t.string   "event",                             null: false
