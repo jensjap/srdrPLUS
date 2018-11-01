@@ -132,3 +132,6 @@ gem 'bio'
 
 # for parsing ris files
 gem 'ref_parsers'
+
+# authorizations
+gem "pundit"
