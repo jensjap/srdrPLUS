@@ -1,4 +1,6 @@
 class Users::ConfirmationsController < Devise::ConfirmationsController
+  before_action :skip_authorization, :skip_policy_scope
+
   # GET /resource/confirmation/new
   # def new
   #   super

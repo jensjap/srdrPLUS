@@ -1,4 +1,6 @@
 class Users::UnlocksController < Devise::UnlocksController
+  before_action :skip_authorization, :skip_policy_scope
+
   # GET /resource/unlock/new
   # def new
   #   super
