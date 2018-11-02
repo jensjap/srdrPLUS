@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180926055048) do
+ActiveRecord::Schema.define(version: 20181005003007) do
 
   create_table "abstrackr_settings", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "profile_id"
@@ -151,6 +151,8 @@ ActiveRecord::Schema.define(version: 20180926055048) do
   create_table "citations_tasks", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "citation_id"
     t.integer  "task_id"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
     t.datetime "deleted_at"
     t.boolean  "active"
     t.index ["active"], name: "index_citations_tasks_on_active", using: :btree
@@ -544,7 +546,7 @@ ActiveRecord::Schema.define(version: 20180926055048) do
     t.string   "name",             limit: 1000
     t.datetime "created_at",                    null: false
     t.datetime "updated_at",                    null: false
-    t.string   "publication_date"
+    t.date     "publication_date"
     t.index ["citation_id"], name: "index_journals_on_citation_id", using: :btree
   end
 
@@ -590,9 +592,11 @@ ActiveRecord::Schema.define(version: 20180926055048) do
   end
 
   create_table "keywords", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.string   "name",       limit: 5000
-    t.datetime "created_at",              null: false
-    t.datetime "updated_at",              null: false
+    t.integer  "citation_id"
+    t.string   "name",        limit: 5000
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+    t.index ["citation_id"], name: "index_keywords_on_citation_id", using: :btree
     t.datetime "deleted_at"
     t.index ["deleted_at"], name: "index_keywords_on_deleted_at", using: :btree
   end
@@ -1221,7 +1225,7 @@ ActiveRecord::Schema.define(version: 20180926055048) do
     t.index ["version_id"], name: "index_version_associations_on_version_id", using: :btree
   end
 
-  create_table "versions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci" do |t|
+  create_table "versions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4" do |t|
     t.string   "item_type",      limit: 191,        null: false
     t.integer  "item_id",                           null: false
     t.string   "event",                             null: false
@@ -1255,6 +1259,7 @@ ActiveRecord::Schema.define(version: 20180926055048) do
   add_foreign_key "approvals", "users"
   add_foreign_key "assignments", "projects_users_roles"
   add_foreign_key "assignments", "tasks"
+  add_foreign_key "authors", "citations"
   add_foreign_key "citations", "citation_types"
   add_foreign_key "citations_projects", "citations"
   add_foreign_key "citations_projects", "consensus_types"
