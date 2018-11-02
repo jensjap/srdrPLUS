@@ -1,4 +1,5 @@
 class SearchesController < ApplicationController
+  before_action :skip_policy_scope, :skip_authorization, only: [:new, :create]
   skip_before_action :authenticate_user!, only: [:new, :create]
   skip_before_action :verify_authenticity_token, only: [:create]
 #  before_action :set_search, only: [:show, :edit, :update, :destroy]
