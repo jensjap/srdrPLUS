@@ -134,4 +134,4 @@ gem 'bio'
 gem 'ref_parsers'
 
 # authorizations
-gem "pundit"
+gem 'pundit'
