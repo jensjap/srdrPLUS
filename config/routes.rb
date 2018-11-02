@@ -71,11 +71,15 @@ Rails.application.routes.draw do
     get 'get_results_populations', on: :member
   end
   resources :projects, concerns: :paginatable, shallow: true do
+    resources :projects_users_roles do
+      get 'next_assignment'
+    end
+
     post 'import_csv', on: :member
     post 'import_ris', on: :member
     post 'import_endnote', on: :member
     post 'import_pubmed', on: :member
-    
+
     resources :citations do
 
       collection do

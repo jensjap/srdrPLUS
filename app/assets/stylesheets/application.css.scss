@@ -364,11 +364,10 @@ a.accordion-title.populations {
 // END Spinner.
 
 // Off-Canvas-Nav-Items
-.off-canvas-nav-items .item {
-  border: 1px solid grey;
-  height: 100px;
-  font-size: 32px;
-  text-align: center;
-  padding: 5%;
+.off-canvas-nav-items {
+  ul {
+    li {
+    }
+  }
 }
 // END Off-Canvas-Nav-Items
