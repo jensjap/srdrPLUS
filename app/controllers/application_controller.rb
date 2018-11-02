@@ -1,6 +1,14 @@
 require "application_responder"
 
 class ApplicationController < ActionController::Base
+  # by default verify authorization and policy scope on all controller actions
+  # use 'sp_authorization' and 'sp_policy_scope' wherever its not needed
+  include Pundit
+  after_action :verify_authorized, :verify_policy_scoped
+
+  # rescue via custom method
+  rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
+
   self.responder = ApplicationResponder
   respond_to :html
 
@@ -23,6 +31,11 @@ class ApplicationController < ActionController::Base
 #  end
 
   private
+
+  def user_not_authorized(exception)
+    flash[:error] = 'Sorry, you are not authorized to perform this action.'
+    redirect_to(request.referrer || root_path)
+  end
 
   def set_time_zone(&block)
     Time.use_zone(current_user.profile.time_zone, &block)
