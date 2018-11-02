@@ -1,4 +1,6 @@
 class Users::PasswordsController < Devise::PasswordsController
+  before_action :skip_authorization, :skip_policy_scope
+
   # GET /resource/password/new
   # def new
   #   super

@@ -1,4 +1,5 @@
 class Users::SessionsController < Devise::SessionsController
+  before_action :skip_authorization, :skip_policy_scope
   # before_action :configure_sign_in_params, only: [:create]
 
   # GET /resource/sign_in

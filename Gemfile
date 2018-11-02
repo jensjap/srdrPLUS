@@ -127,10 +127,14 @@ gem 'searchjoy'
 
 gem 'passenger'
 
-# bioruby for pubmed queries
+# bioruby for pubmed queries.
 gem 'bio'
 
-# for parsing ris files
+# for parsing ris files.
 gem 'ref_parsers'
 
+<<<<<<< HEAD
 gem 'breadcrumbs_on_rails'
+
+# authorizations.
+gem "pundit"
