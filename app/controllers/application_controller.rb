@@ -4,7 +4,8 @@ class ApplicationController < ActionController::Base
   # by default verify authorization and policy scope on all controller actions
   # use 'sp_authorization' and 'sp_policy_scope' wherever its not needed
   include Pundit
-  after_action :verify_authorized, :verify_policy_scoped
+  # TODO: uncomment when controllers are set
+  # after_action :verify_authorized, :verify_policy_scoped
 
   # rescue via custom method
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
