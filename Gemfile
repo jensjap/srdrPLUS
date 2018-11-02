@@ -133,7 +133,7 @@ gem 'bio'
 # for parsing ris files.
 gem 'ref_parsers'
 
-<<<<<<< HEAD
+# breadcrumbs.
 gem 'breadcrumbs_on_rails'
 
 # authorizations.
