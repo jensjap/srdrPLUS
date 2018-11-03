@@ -1,9 +1,20 @@
 class ExtractionsExtractionFormsProjectsSectionsType1sController < ApplicationController
+
+  add_breadcrumb 'my projects', :projects_path
+
   before_action :set_extractions_extraction_forms_projects_sections_type1, only: [:edit, :update, :destroy, :edit_timepoints, :edit_populations]
 
   # GET /extractions_extraction_forms_projects_sections_type1/1/edit
   def edit
-    #@extractions_extraction_forms_projects_sections_type1_row = @extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_sections_type1_rows.build
+    project = @extractions_extraction_forms_projects_sections_type1.project
+
+    add_breadcrumb 'project',     edit_project_path(project)
+    add_breadcrumb 'extractions', project_extractions_path(project)
+    add_breadcrumb 'work',        work_extraction_path(@extractions_extraction_forms_projects_sections_type1.extraction,
+                                                       anchor: "panel-tab-#{ @extractions_extraction_forms_projects_sections_type1
+                                                         .extractions_extraction_forms_projects_section
+                                                         .extraction_forms_projects_section.id }")
+    add_breadcrumb @extractions_extraction_forms_projects_sections_type1.type1.name, edit_extractions_extraction_forms_projects_sections_type1_path
   end
 
   # PATCH/PUT /extractions_extraction_forms_projects_sections_type1/1
@@ -20,11 +31,10 @@ class ExtractionsExtractionFormsProjectsSectionsType1sController < ApplicationCo
 
     respond_to do |format|
       if @extractions_extraction_forms_projects_sections_type1.update(extractions_extraction_forms_projects_sections_type1_params)
-        format.html { redirect_to work_extraction_path(@extractions_extraction_forms_projects_sections_type1
-                                                         .extractions_extraction_forms_projects_section
-                                                         .extraction,
+        format.html { redirect_to work_extraction_path(@extractions_extraction_forms_projects_sections_type1.extraction,
                                                        anchor: "panel-tab-#{ @extractions_extraction_forms_projects_sections_type1
-                                                               .extractions_extraction_forms_projects_section.id }"),
+                                                               .extractions_extraction_forms_projects_section
+                                                               .extraction_forms_projects_section.id }"),
                                                        notice: t('success') }
         format.json { head :no_content }
         format.js {}
