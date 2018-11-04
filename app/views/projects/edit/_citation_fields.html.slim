@@ -3,9 +3,8 @@
     .accession-number
       = f.input :pmid, as: :integer, label: 'Accession Number', required: false
       .pmid-checkbox
-        input#is-pmid [ type='checkbox' style='display: inline-block;' ]
-        label for='is-pmid'
-          | PMID
+        a#is-pmid style='display: inline-block;'
+          | Fetch from Pubmed
     = f.input :name, placeholder: 'New Citation', label: 'Title', required: true, wrapper_html: { class: "citation-name" }
     = f.input :abstract, as: :text, placeholder: 'Abstract goes here', required: false, wrapper_html: { class: "citation-abstract" }
 

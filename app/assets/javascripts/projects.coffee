@@ -290,19 +290,19 @@ document.addEventListener 'turbolinks:load', ->
               q: params.term
               page: params.page || 1
 
-        $( insertedItem ).find( '#is-pmid' ).on 'change', () ->
-          console.log "loyloy"
-          if $( this ).is( ':checked' )
-            fetch_from_pubmed $( '.project_citations_pmid input' ).val()
-          else
-            $( insertedItem ).find('.AUTHORS select').val(null).trigger('change')
-            $( insertedItem ).find('.KEYWORDS select').val(null).trigger('change')
-            $( insertedItem ).find('.citation-name input').val(null)
-            $( insertedItem ).find('.citation-abstract textarea').val(null)
-            $( insertedItem ).find('.journal-name input').val(null)
-            $( insertedItem ).find('.journal-volume input').val(null)
-            $( insertedItem ).find('.journal-issue input').val(null)
-            $( insertedItem ).find('.journal-year input').val(null)
+        $( insertedItem ).find( '#is-pmid' ).on 'click', () ->
+          ## clean up the citation fields
+          $( insertedItem ).find('.AUTHORS select').val(null).trigger('change')
+          $( insertedItem ).find('.KEYWORDS select').val(null).trigger('change')
+          $( insertedItem ).find('.citation-name input').val(null)
+          $( insertedItem ).find('.citation-abstract textarea').val(null)
+          $( insertedItem ).find('.journal-name input').val(null)
+          $( insertedItem ).find('.journal-volume input').val(null)
+          $( insertedItem ).find('.journal-issue input').val(null)
+          $( insertedItem ).find('.journal-year input').val(null)
+
+          ## fetch citations using value in "Accession Number"
+          fetch_from_pubmed $( '.project_citations_pmid input' ).val()
 
 
         $( insertedItem ).find( '.citation-select' ).select2
