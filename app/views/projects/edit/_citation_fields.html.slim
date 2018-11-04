@@ -1,26 +1,31 @@
 .nested-fields.citation-fields.added-item
   .citation-inputs
-    .inner-inputs
-      = f.input :name, placeholder: 'New Citation', label: 'Title', required: true
-      = f.input :abstract, as: :text, placeholder: 'Abstract goes here', required: false
-      = f.simple_fields_for :journal_attributes do |j_f|
-        = j_f.input :name, label: "Journal Name", required: false
-        .middle-row
-          = j_f.input :volume, label: "Volume", required: false
-          = j_f.input :issue, label: "Issue", required: false
-          = j_f.input :publication_date, label: "Publication Year", required: false
+    .accession-number
+      = f.input :pmid, as: :integer, label: 'Accession Number', required: false
+      .pmid-checkbox
+        input#is-pmid [ type='checkbox' style='display: inline-block;' ]
+        label for='is-pmid'
+          | PMID
+    = f.input :name, placeholder: 'New Citation', label: 'Title', required: true, wrapper_html: { class: "citation-name" }
+    = f.input :abstract, as: :text, placeholder: 'Abstract goes here', required: false, wrapper_html: { class: "citation-abstract" }
 
-      .bottom-row
-        .number-column.bottom-column
-          = f.input :pmid, as: :integer, required: false
-          = f.input :refman, as: :integer, required: false
-          = f.association :citation_type, label: 'Citation Type', selected: 1
-        .bottom-column
-          = f.association :authors, collection: [], label: 'Authors', wrapper_html: { class: "AUTHORS" }
-        .bottom-column
-          = f.association :keywords, collection: [], label: 'Keywords', wrapper_html: { class: "KEYWORDS" }
-      .buttons-row
-        .save-citation.button.success.small
-          | Save Citation
-        = link_to_remove_association 'Cancel', f, class: 'button alert small cancel-button'
-        /= link_to_remove_association '✖', f, class: 'remove-button', style: 'position: relative; top: 0.2rem; right: 0.2rem;'
+    .middle-row
+      = f.simple_fields_for :journal_attributes do |j_f|
+        = j_f.input :name, label: "Journal Name", required: false, wrapper_html: { class: "journal-name" }
+        = j_f.input :volume, label: "Volume", required: false, wrapper_html: { class: "journal-volume" }
+        = j_f.input :issue, label: "Issue", required: false, wrapper_html: { class: "journal-issue" }
+        = j_f.input :publication_date, label: "Year", required: false, wrapper_html: { class: "journal-year" }
+
+    .bottom-row
+      .number-column.bottom-column
+        = f.input :refman, as: :integer, required: false
+        = f.association :citation_type, label: 'Citation Type', selected: 1
+      .bottom-column
+        = f.association :authors, collection: [], label: 'Authors', wrapper_html: { class: "AUTHORS" }
+      .bottom-column
+        = f.association :keywords, collection: [], label: 'Keywords', wrapper_html: { class: "KEYWORDS" }
+    .buttons-row
+      .save-citation.button.success.small
+        | Save Citation
+      = link_to_remove_association 'Cancel', f, class: 'button alert small cancel-button'
+      /= link_to_remove_association '✖', f, class: 'remove-button', style: 'position: relative; top: 0.2rem; right: 0.2rem;'

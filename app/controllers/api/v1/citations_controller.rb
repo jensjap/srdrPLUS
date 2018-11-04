@@ -1,35 +1,43 @@
 class Api::V1::CitationsController < Api::V1::BaseController
   def index
-    _page = ( params[ :page ] || 1 ).to_i
-    _query = params[ :q ] || ''
-    _page_size = 200
-    _offset = _page_size * (_page - 1)
+    page                      = ( params[ :page ] || 1 ).to_i
+    page_size                 = 200
+    offset                    = page_size * ( page - 1 )
+    query                     = params[ :q ] || ''
 
-    _total_arr = [ ]
-    _c_p_dict = { }
+    @citation_project_dict    = { }
+    @total_count              = 0
+    @citations                = [ ]
+    @more                     = false
+
     if params[ :project_id ].present?
-      _p_cids = Project.find( params[ :project_id ] ).citations.map { |c| c.id }
-      _total_arr = Citation.by_query( _query ).includes( :authors, :keywords, :journal ).where( id: _p_cids ).order( pmid: :desc )
-      _c_p_dict = Hash[ *CitationsProject.where( citation: _total_arr ).map { |c_p| [ c_p.citation_id,  c_p.id ] }.flatten ]
+      project                 = Project.find( params[ :project_id ] )
+      total_arr               = project.citations.by_query( query )
+                                                 .order( pmid: :desc )
+                                                 .includes( :authors, :journal, :keywords )
+      citations_projects      = project.citations_projects.where( citation: total_arr )
+      @total_count            = citations_projects.length
+      @citation_project_dict  = Hash[ *citations_projects.map { | c_p | [ c_p.citation_id,  c_p.id ] }.flatten ]
+      @citations              = total_arr[ offset .. offset + page_size - 1 ]
+      @more                   = offset + @total_count < total_arr.length
     else
-      _total_arr = Citation.by_query(_query)
+      citations               = Citation.by_query( query )
+      @total_count            = citations.length
+      @citations              = citations[ offset .. offset + page_size - 1 ]
+      @more                   = offset + @total_count < total_arr.length
     end
 
-    @total_count = _total_arr.length
-    @citations = _total_arr[ _offset .. _offset + _page_size - 1 ]
-    @citation_project_dict = _c_p_dict
-    @more = if _offset + @citations.length < _total_arr.length then true else false end
   end
 
   def titles
-    _page = (params[ :page ] || 1).to_i
-    _query = params[ :q ] || ''
-    _page_size = 30
-    _offset = _page_size * ( _page - 1 )
-    _total_arr = Citation.by_query( _query )
-    @total_count = _total_arr.length
-    @citations = _total_arr[ _offset .. _offset + _page_size-1 ]
-    @more = if _offset + @citations.length < _total_arr.length then true else false end
+    page                      = (params[ :page ] || 1).to_i
+    query                     = params[ :q ] || ''
+    page_size = 30
+    offset                    = page_size * ( page - 1 )
+    total_arr                 = Citation.by_query( query )
+    @total_count              = total_arr.length
+    @citations                = total_arr[ offset .. offset + page_size - 1 ]
+    @more                     = offset + @citations.length < total_arr.length
   end
 end
 

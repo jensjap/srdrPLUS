@@ -4,7 +4,6 @@
 
 document.addEventListener 'turbolinks:load', ->
   do ->
-    #$(window).trigger('load.zf.sticky')
     # Ajax call to filter the project list. We want to return a function here
     # to prevent it from being called immediately. Wrapper is to allow passing
     # param without immediate function invocation.
@@ -43,120 +42,296 @@ document.addEventListener 'turbolinks:load', ->
       $( '#project-filter' ).focus()
       return
 
-    ## TASK MANAGEMENT - see if we can only run this stuff on the correct tab
-    $( '.project_tasks_projects_users_roles select' ).select2()
 
-    ## CITATION MANAGEMENT - see if we can only run this stuff on the correct tab
-    list_options = { valueNames: [ 'citation-numbers', 'citation-title', 'citation-authors', 'citation-journal', 'citation-journal-date', 'citation-abstract', 'citation-abstract' ] }
 
-    append_citations = ( list_index, page ) ->
-      $.ajax $( '#citations-url' ).text(),
-        type: 'GET'
-        dataType: 'json'
-        data: { page : page }
-        error: (jqXHR, textStatus, errorThrown) ->
-          toastr.error( 'Could not get citations' )
-        success: (data, textStatus, jqXHR) ->
-          to_add = []
-          $( "#citations-count" ).html( data[ 'pagination' ][ 'total_count' ] )
-          for c in data[ 'results' ]
-            citation_journal = ''
-            citation_journal_date = ''
-
-            if 'journal' of c
-              citation_journal = c[ 'journal' ][ 'name' ]
-              citation_journal_date = ' (' + c[ 'journal' ][ 'publication_date' ] + ')'
-
-            to_add.push { 'citation-title': c[ 'name' ],\
-              'citation-abstract': c[ 'abstract' ],\
-              'citation-journal': citation_journal,\
-              'citation-journal-date': citation_journal_date,\
-              'citation-authors': ( c[ 'authors' ].map( ( author ) -> author[ 'name' ] ) ).join( ', ' ),\
-              'citation-numbers': ( c[ 'pmid' ] || 'N/A' ),\
-              'citations-project-id': c[ 'citations_project_id' ] }
-
-          if page == 1
-            citationList.clear()
-            list_index = 0
-
-          citationList.add to_add, ( items ) ->
-            # items.map ( item, i ) -> add_hidden_simpleform_elements( index, i, item )
-            # #list_index++
-            # #citationList.sort( 'citation-numbers', { order: 'desc', alphabet: undefined, insensitive: true, sortFunction: undefined } )
-            # Foundation.reInit( $( '#citations-projects-list' ) )
-            # citationList.reIndex()
-
-            for item in items
-              list_index_string = list_index.toString()
-              $( '<input type="hidden" value="' + \
-                  item.values()[ 'citations-project-id' ] + \
-                  '" name="project[citations_projects_attributes][' + \
-                  list_index_string + \
-                  '][id]" id="project_citations_projects_attributes_' + \
-                  list_index_string + '_id">' ).insertBefore( item.elm )
-              $( item.elm ).find( '#project_citations_projects_attributes_0__destroy' )[ 0 ].outerHTML = \
-                  '<input type="hidden" name="project[citations_projects_attributes][' + \
-                  list_index_string + \
-                  '][_destroy]" id="project_citations_projects_attributes_' + \
-                  list_index_string + \
-                  '__destroy" value="false">'
-
-              list_index++
-            citationList.reIndex()
-            Foundation.reInit( $( '#citations-projects-list' ) )
-
-          #citationList.add {  'citation-title': "TEST!", 'citation-authors': "TEST!", 'citation-numbers': "TEST!", 'citation-journal': "TEST!", 'citation-journal-date': "TEST!" }
-          if data[ 'pagination' ][ 'more' ] == true
-            append_citations( list_index, page + 1 )
-          else
-            citationList.sort( $( '#sort-select' ).val(), { order: $( '#sort-button' ).attr( 'sort-order' ), alphabet: undefined, insensitive: true, sortFunction: undefined } )
-
+    ##### CHECK WHICH CONTROLLER ACTION THIS PAGE CORRESPONDS TO
     ##### ONLY RUN THIS CODE IF WE ARE IN EDIT PROJECT PAGE
     if $( 'body.projects.edit' ).length == 1
-      append_citations( 0, 1 )
+
+    #### TASK MANAGEMENT - see if we can only run this stuff on the correct tab
+      $( '.project_tasks_projects_users_roles select' ).select2()
+      #### LISTENERS
+      $( '.tasks-container' ).on 'cocoon:before-insert', ( e, insertedItem ) ->
+        insertedItem.fadeIn 'slow'
+        insertedItem.css('display', 'flex')
+      # Bind select2 to degree selection.
+      $( '.tasks-container' ).on 'cocoon:after-insert', ( e, insertedItem ) ->
+        insertedItem.addClass( 'new-task' )
+        $( insertedItem ).find( '.project_tasks_projects_users_roles select' ).select2()
+        #$( insertedItem ).addClass( 'added-citation-item' )
+
+    #### CITATION MANAGEMENT - see if we can only run this stuff on the correct tab
+      list_options = { valueNames: [ 'citation-numbers', 'citation-title', 'citation-authors', 'citation-journal', 'citation-journal-date', 'citation-abstract', 'citation-abstract' ] }
+
+      ## Method to pull citation info from PUBMED as XML
+      fetch_from_pubmed = ( pmid ) ->
+        $.ajax 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi',
+          type: 'GET'
+          dataType: 'xml'
+          data: { db : 'pubmed', retmode: 'xml', id : pmid }
+          error: ( jqXHR, textStatus, errorThrown ) ->
+            console.log errorThrown
+            toastr.error( 'Could not fetch citation info from PUBMED' )
+          success: ( data, textStatus, jqXHR ) ->
+            name = data.getElementsByTagName( 'ArticleTitle' )[ 0 ].childNodes[ 0 ].nodeValue || ''
+
+            abstract = ''
+            for node in data.getElementsByTagName( 'AbstractText' )
+              abstract += node.childNodes[ 0 ].nodeValue
+              abstract += "\n"
+
+            authors = [ ]
+            for node in data.getElementsByTagName( 'Author' )
+              first_name = node.getElementsByTagName( 'ForeName' )[ 0 ].childNodes[ 0 ].nodeValue || ''
+              last_name = node.getElementsByTagName( 'LastName' )[ 0 ].childNodes[ 0 ].nodeValue || ''
+              authors.push( first_name + ' ' + last_name )
+
+            keywords = [ ]
+            for node in data.getElementsByTagName( 'Keyword' )
+              keyword = node.childNodes[ 0 ].nodeValue || ''
+              keywords.push( keyword )
+
+            journal = {  }
+            journal[ 'name' ] = data.getElementsByTagName( 'Journal' )[ 0 ]. \
+                                getElementsByTagName( 'Title' )[ 0 ].childNodes[ 0 ].nodeValue || ''
+            journal[ 'issue' ] = data.getElementsByTagName( 'JournalIssue' )[ 0 ]. \
+                                getElementsByTagName( 'Issue' )[ 0 ].childNodes[ 0 ].nodeValue || ''
+            journal[ 'volume' ] = data.getElementsByTagName( 'JournalIssue' )[ 0 ]. \
+                                getElementsByTagName( 'Volume' )[ 0 ].childNodes[ 0 ].nodeValue || ''
+            ## My philosophy is to use publication year whenever possible, as researchers seem to be most concerned about the year, and it is easier to parse and sort - Birol
+            
+            dateNode = data.getElementsByTagName( 'JournalIssue' )[ 0 ]. \
+            getElementsByTagName( 'PubDate' )[ 0 ]
+
+            console.log dateNode.getElementsByTagName( 'Year' ).length > 0
+
+            if dateNode.getElementsByTagName( 'Year' ).length > 0
+              journal[ 'year' ] = dateNode.getElementsByTagName( 'Year' )[ 0 ].childNodes[ 0 ].nodeValue
+            else if dateNode.getElementsByTagName( 'MedlineDate' ).length > 0
+              journal[ 'year' ] = dateNode.getElementsByTagName( 'MedlineDate' )[ 0 ].childNodes[ 0 ].nodeValue
+            else
+              journal[ 'year' ] = ''
+
+            citation_hash = { name: name ,     \
+                              abstract: abstract, \
+                              authors: authors,  \
+                              keywords: keywords, \
+                              journal: journal }
+            console.log citation_hash
+            populate_citation_fields citation_hash
+      
+      populate_citation_fields = ( citation ) ->
+        $( '.citation-fields' ).find( '.citation-name input' ).val citation[ 'name' ]
+        $( '.citation-fields' ).find( '.citation-abstract textarea' ).val citation[ 'abstract' ]
+        $( '.citation-fields' ).find( '.journal-name input' ).val citation[ 'journal' ][ 'name' ]
+        $( '.citation-fields' ).find( '.journal-volume input' ).val citation[ 'journal' ][ 'volume' ]
+        $( '.citation-fields' ).find( '.journal-issue input' ).val citation[ 'journal' ][ 'issue' ]
+        $( '.citation-fields' ).find( '.journal-year input' ).val citation[ 'journal' ][ 'year' ]
+
+
+        #$( '.citation-fields' ).find( '.AUTHORS input' ).val citation[ 'authors' ][ 0 ]
+        for author in citation[ 'authors' ]
+          authorselect = $('.AUTHORS select')
+          $.ajax(
+            type: 'GET'
+            data: { q: author }
+            url: '/api/v1/authors.json' ).then ( data ) ->
+            # create the option and append to Select2
+            option = new Option( data[ 'results' ][ 0 ][ 'text' ], data[ 'results' ][ 0 ][ 'id' ], true, true )
+            authorselect.append(option).trigger 'change'
+            # manually trigger the `select2:select` event
+            authorselect.trigger
+              type: 'select2:select'
+              params: data: data[ 'results' ][ 0 ]
+            return
+        for keyword in citation[ 'keywords' ]
+          keywordselect = $('.KEYWORDS select')
+          $.ajax(
+            type: 'GET'
+            data: { q: keyword }
+            url: '/api/v1/keywords.json' ).then ( data ) ->
+            # create the option and append to Select2
+            option = new Option( data[ 'results' ][ 0 ][ 'text' ], data[ 'results' ][ 0 ][ 'id' ], true, true )
+            keywordselect.append(option).trigger 'change'
+            # manually trigger the `select2:select` event
+            keywordselect.trigger
+              type: 'select2:select'
+              params: data: data[ 'results' ][ 0 ]
+            return
+
+        return
+
+      #fetch_from_pubmed '25792187'
+
+      ## Method to populate citations list dynamically using ajax calls to api/v1/projects/:id/citations.json
+      append_citations = ( page ) ->
+        $.ajax $( '#citations-url' ).text(),
+          type: 'GET'
+          dataType: 'json'
+          data: { page : page }
+          error: (jqXHR, textStatus, errorThrown) ->
+            toastr.error( 'Could not get citations' )
+          success: (data, textStatus, jqXHR) ->
+            to_add = []
+            $( "#citations-count" ).html( data[ 'pagination' ][ 'total_count' ] )
+            for c in data[ 'results' ]
+              citation_journal = ''
+              citation_journal_date = ''
+
+              if 'journal' of c
+                citation_journal = c[ 'journal' ][ 'name' ]
+                citation_journal_date = ' (' + c[ 'journal' ][ 'publication_date' ] + ')'
+
+              to_add.push { 'citation-title': c[ 'name' ],\
+                'citation-abstract': c[ 'abstract' ],\
+                'citation-journal': citation_journal,\
+                'citation-journal-date': citation_journal_date,\
+                'citation-authors': ( c[ 'authors' ].map( ( author ) -> author[ 'name' ] ) ).join( ', ' ),\
+                'citation-numbers': ( c[ 'pmid' ] || 'N/A' ),\
+                'citations-project-id': c[ 'citations_project_id' ] }
+
+            if page == 1
+              citationList.clear()
+
+            citationList.add to_add, ( items ) ->
+              list_index = ( page - 1 ) * items.length
+              for item in items
+                list_index_string = list_index.toString()
+                $( '<input type="hidden" value="' + \
+                    item.values()[ 'citations-project-id' ] + \
+                    '" name="project[citations_projects_attributes][' + \
+                    list_index_string + \
+                    '][id]" id="project_citations_projects_attributes_' + \
+                    list_index_string + '_id">' ).insertBefore( item.elm )
+                $( item.elm ).find( '#project_citations_projects_attributes_0__destroy' )[ 0 ].outerHTML = \
+                    '<input type="hidden" name="project[citations_projects_attributes][' + \
+                    list_index_string + \
+                    '][_destroy]" id="project_citations_projects_attributes_' + \
+                    list_index_string + \
+                    '__destroy" value="false">'
+
+                list_index++
+              citationList.reIndex()
+              Foundation.reInit( $( '#citations-projects-list' ) )
+
+            if data[ 'pagination' ][ 'more' ] == true
+              append_citations(  page + 1 )
+            else
+              citationList.sort( $( '#sort-select' ).val(), { order: $( '#sort-button' ).attr( 'sort-order' ), alphabet: undefined, insensitive: true, sortFunction: undefined } )
+
+      # start pulling citations
+      append_citations( 1 )
+      # initialize ListJs
       citationList = new List( 'citations', list_options )
-      #clusterize = new Clusterize( { scrollId: 'citations', contentId: 'citations-projects-list' } )
+
+      ##### LISTENERS
+
+      ## handler for selecting input type
+      $( '#import-select' ).on 'change', () ->
+        $( '#import-ris-div' ).hide()
+        $( '#import-csv-div' ).hide()
+        $( '#import-pubmed-div' ).hide()
+        $( '#import-endnote-div' ).hide()
+        switch $( this ).val()
+          when 'ris' then $( '#import-ris-div' ).show()
+          when 'csv' then $( '#import-csv-div' ).show()
+          when 'pmid-list' then $( '#import-pubmed-div' ).show()
+          when 'endnote' then $( '#import-endnote-div' ).show()
+
+      # display upload button only if a file is selected
+      $( 'input.file' ).on 'change', () ->
+        if !!$( this ).val()
+          $( this ).closest( '.simple_form' ).find( '.form-actions' ).show()
+        else
+          $( this ).closest( '.simple_form' ).find( '.form-actions' ).hide()
+        
+      # handler for sorting citations
+      $( '#sort-button' ).on 'click', () ->
+        if $( this ).attr( 'sort-order' ) == 'desc'
+          $( this ).attr( 'sort-order', 'asc' )
+          $( this ).html( 'ASCENDING' )
+        else
+          $( this ).attr( 'sort-order', 'desc' )
+          $( this ).html( 'DESCENDING' )
+        citationList.sort( $( '#sort-select' ).val(), { order: $( this ).attr( 'sort-order' ), alphabet: undefined, insensitive: true, sortFunction: undefined } )
+
+      $( '#sort-select' ).on "change", () ->
+        citationList.sort( $( this ).val(), { order: $( '#sort-button' ).attr( 'sort-order' ), alphabet: undefined, insensitive: true, sortFunction: undefined } )
+
+      # cocoon listeners
+      # Note: some of the animations don't work well together and are disabled for now 
+      $( '#cp-insertion-node' ).on 'cocoon:before-insert', ( e, citation ) ->
+        $( '.cancel-button' ).click()
+        #citation.slideDown('slow')
+      $( '#citations' ).find( '.list' ).on 'cocoon:after-remove', ( e, citation ) ->
+        $( '#citations-form' ).submit()
+      #$( '#cp-insertion-node' ).on 'cocoon:before-remove', ( e, citation ) ->
+        #$(this).data('remove-timeout', 1000)
+        #citation.slideUp('slow')
+      $( document ).on 'cocoon:after-insert', ( e, insertedItem ) ->
+        $( insertedItem ).find( '.AUTHORS select' ).select2
+          minimumInputLength: 0
+          #closeOnSelect: false
+          ajax:
+            url: '/api/v1/authors.json'
+            dataType: 'json'
+            delay: 100
+            data: (params) ->
+              q: params.term
+              page: params.page || 1
+        $( insertedItem ).find( '.KEYWORDS select' ).select2
+          minimumInputLength: 0
+          #closeOnSelect: false
+          ajax:
+            url: '/api/v1/keywords.json'
+            dataType: 'json'
+            delay: 100
+            data: (params) ->
+              q: params.term
+              page: params.page || 1
+
+        $( insertedItem ).find( '#is-pmid' ).on 'change', () ->
+          console.log "loyloy"
+          if $( this ).is( ':checked' )
+            fetch_from_pubmed $( '.project_citations_pmid input' ).val()
+          else
+            $( insertedItem ).find('.AUTHORS select').val(null).trigger('change')
+            $( insertedItem ).find('.KEYWORDS select').val(null).trigger('change')
+            $( insertedItem ).find('.citation-name input').val(null)
+            $( insertedItem ).find('.citation-abstract textarea').val(null)
+            $( insertedItem ).find('.journal-name input').val(null)
+            $( insertedItem ).find('.journal-volume input').val(null)
+            $( insertedItem ).find('.journal-issue input').val(null)
+            $( insertedItem ).find('.journal-year input').val(null)
 
 
-    $( '#import-select' ).on 'change', () ->
-      $( '#import-ris-div' ).hide()
-      $( '#import-csv-div' ).hide()
-      $( '#import-pubmed-div' ).hide()
-      $( '#import-endnote-div' ).hide()
-      switch $( this ).val()
-        when 'ris' then $( '#import-ris-div' ).show()
-        when 'csv' then $( '#import-csv-div' ).show()
-        when 'pmid-list' then $( '#import-pubmed-div' ).show()
-        when 'endnote' then $( '#import-endnote-div' ).show()
+        $( insertedItem ).find( '.citation-select' ).select2
+          minimumInputLength: 0
+          ajax:
+            url: '/api/v1/citations/titles.json',
+            dataType: 'json'
+            delay: 100
+            data: (params) ->
+              q: params.term
+              page: params.page || 1
 
-    # CHECK IF A FILE IS SELECTED AND DISPLAY UPLOAD BUTTON ONLY IF A FILE IS SELECTED
-    $( 'input.file' ).on 'change', () ->
-      if !!$( this ).val()
-        $( this ).closest( '.simple_form' ).find( '.form-actions' ).show()
-      else
-        $( this ).closest( '.simple_form' ).find( '.form-actions' ).hide()
+        # submit form when "Save Citation" button is clicked
+        $( insertedItem ).find( '.save-citation' ).on 'click', () ->
+          $( '#citations-form' ).submit()
 
-    $( '#sort-button' ).on 'click', () ->
-      if $( this ).attr( 'sort-order' ) == 'desc'
-        $( this ).attr( 'sort-order', 'asc' )
-        $( this ).html( 'ASCENDING' )
-      else
-        $( this ).attr( 'sort-order', 'desc' )
-        $( this ).html( 'DESCENDING' )
+      # reload the citations after a form submission ( probably overkill )
+      $( '#citations-form' ).bind "ajax:success", ( status ) ->
+        append_citations( 1 )
+        toastr.success('Save successful!')
+        $( '.cancel-button' ).click()
+      $( '#citations-form' ).bind "ajax:error", ( status ) ->
+        append_citations( 1 )
+        toastr.error('Could not save changes')
 
-      citationList.sort( $( '#sort-select' ).val(), { order: $( this ).attr( 'sort-order' ), alphabet: undefined, insensitive: true, sortFunction: undefined } )
 
-    $( '#sort-select' ).on "change", () ->
-      citationList.sort( $( this ).val(), { order: $( '#sort-button' ).attr( 'sort-order' ), alphabet: undefined, insensitive: true, sortFunction: undefined } )
 
-    #$( '#cp-insertion-node' ).on 'cocoon:before-remove', ( e, citation ) ->
-      #$(this).data('remove-timeout', 1000)
-      #citation.slideUp('slow')
-    $( '#cp-insertion-node' ).on 'cocoon:before-insert', ( e, citation ) ->
-      $( '.cancel-button' ).click()
-      #citation.slideDown('slow')
-    $( '#citations' ).find( '.list' ).on 'cocoon:after-remove', ( e, citation ) ->
-      $( '#citations-form' ).submit()
+
+
 
 #    $( '#citations' ).find( '.list' ).on 'cocoon:before-remove', ( e, citation ) ->
 #      remove_button = $( citation ).find( '.remove-button' )
@@ -227,58 +402,7 @@ document.addEventListener 'turbolinks:load', ->
     #        )
     #    width: '75%'
 
-    $( '.tasks-container' ).on 'cocoon:before-insert', ( e, insertedItem ) ->
-      insertedItem.fadeIn 'slow'
-      insertedItem.css('display', 'flex')
-    # Bind select2 to degree selection.
-    $( '.tasks-container' ).on 'cocoon:after-insert', ( e, insertedItem ) ->
-      insertedItem.addClass( 'new-task' )
-      $( insertedItem ).find( '.project_tasks_projects_users_roles select' ).select2()
-      #$( insertedItem ).addClass( 'added-citation-item' )
 
-    $( document ).on 'cocoon:after-insert', ( e, insertedItem ) ->
-      $( insertedItem ).find( '.AUTHORS select' ).select2
-        minimumInputLength: 0
-        #closeOnSelect: false
-        ajax:
-          url: '/api/v1/authors.json'
-          dataType: 'json'
-          delay: 100
-          data: (params) ->
-            q: params.term
-            page: params.page || 1
-      $( insertedItem ).find( '.KEYWORDS select' ).select2
-        minimumInputLength: 0
-        #closeOnSelect: false
-        ajax:
-          url: '/api/v1/keywords.json'
-          dataType: 'json'
-          delay: 100
-          data: (params) ->
-            q: params.term
-            page: params.page || 1
-      $( insertedItem ).find( '.citation-select' ).select2
-        minimumInputLength: 0
-        ajax:
-          url: '/api/v1/citations/titles.json',
-          dataType: 'json'
-          delay: 100
-          data: (params) ->
-            q: params.term
-            page: params.page || 1
-
-      $( insertedItem ).find( '.save-citation' ).on 'click', () ->
-        $( '#citations-form' ).submit()
-
-    $( '#citations-form' ).bind "ajax:success", ( status ) ->
-      append_citations( 0, 1 )
-      toastr.success('Save successful!')
-      $( '.cancel-button' ).click()
-      #alert 'Save successful'
-    $( '#citations-form' ).bind "ajax:error", ( status ) ->
-      append_citations( 0, 1 )
-      toastr.error('Could not save changes')
-      #alert 'Save failed'
 
 #templateResult: formatResult
         #templateSelection: formatResultSelection

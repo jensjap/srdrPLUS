@@ -366,35 +366,52 @@ a.citation-label {
 }
 
 .citation-fields {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center; 
-
   .citation-inputs {
     margin-top: 1rem;
     display: flex;
     width: 92%;
+    display: flex;
+    flex-direction: column;
     justify-content: center;
-    align-items: center; 
-  }
 
-  .middle-row {
-    display: flex;
-    justify-content: space-between;
-    flex-direction: row;
-    div {
-      width: 30%;
+    .accession-number {
+      input.numeric {
+        margin-bottom: 0;
+      }
+      .pmid-checkbox {
+        float: right;
+      }
     }
-  }
 
-  .bottom-row {
-    display: flex;
-    justify-content: space-between;
-    flex-direction: row;
-    .bottom-column {
-      flex-direction: column;
-      width: 30%;
+    .citation-abstract {
+      textarea {
+        height: 8rem;
+      }
+    }
+
+    .middle-row {
+      display: flex;
+      justify-content: space-between;
+      flex-direction: row;
+      div {
+        flex: 1;
+        padding-left: 0.6rem;
+
+      }
+      .journal-name {
+        flex:3;
+        padding-left: 0;
+      }
+    }
+
+    .bottom-row {
+      display: flex;
+      justify-content: space-between;
+      flex-direction: row;
+      .bottom-column {
+        flex-direction: column;
+        width: 30%;
+      }
     }
   }
 }
