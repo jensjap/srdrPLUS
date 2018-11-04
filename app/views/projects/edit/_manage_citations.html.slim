@@ -26,14 +26,7 @@ div.row
             option[value='citation-authors'] Authors
             option[value='citation-journal'] Journal
             option[value='citation-journal-date'] Year
-
-        #insert-citation-div[ style="margin-bottom: 1rem;" ]
-          = link_to_add_association 'Add Citation', f, :citations_projects, partial: 'projects/edit/added_citations_project_fields', 'data-association-insertion-node' => '#cp-insertion-node', 'data-association-insertion-method' => 'prepend'
-          '
-          ' or
-
-          = link_to_add_association 'Create New Citation', f, :citations, partial: 'projects/edit/citation_fields', 'data-association-insertion-node' => '#cp-insertion-node', 'data-association-insertion-method' => 'prepend'
-
+        
         #insert-citation-div[ style="margin-bottom: 1rem;" ]
           = link_to_add_association 'Add Citation', f, :citations_projects, partial: 'projects/edit/added_citations_project_fields', 'data-association-insertion-node' => '#cp-insertion-node', 'data-association-insertion-method' => 'prepend'
           '
