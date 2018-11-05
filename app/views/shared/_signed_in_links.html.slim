@@ -1,6 +1,6 @@
 li = link_to('Projects', projects_path)
 
-- if (controller_name.eql?('projects') && not(action_name.eql?('index')) && not(action_name.eql?('new'))) || controller_name.eql?('extractions') || controller_name.eql?('extraction_forms_projects')
+- if (controller_name.eql?('projects') && not(action_name.eql?('index')) && not(action_name.eql?('new'))) || controller_name.eql?('extractions') || controller_name.eql?('extraction_forms_projects') || (controller_name.eql?('citations') && action_name.eql?('index')) || (controller_name.eql?('tasks') && action_name.eql?('index'))
 
   li
     a href='#' Actions
@@ -29,7 +29,7 @@ li
     li.title Actions
     li = link_to 'Logout', destroy_user_session_path, :method => :delete
 
-- if (controller_name.eql?('projects') && not(action_name.eql?('index')) && not(action_name.eql?('new'))) || controller_name.eql?('extractions') || controller_name.eql?('extraction_forms_projects')
+- if (controller_name.eql?('projects') && not(action_name.eql?('index')) && not(action_name.eql?('new'))) || controller_name.eql?('extractions') || controller_name.eql?('extraction_forms_projects') || (controller_name.eql?('citations') && action_name.eql?('index')) || (controller_name.eql?('tasks') && action_name.eql?('index'))
   .column.row
     .off-canvas-link data-toggle='offCanvasNav'
       i.fi-arrow-left

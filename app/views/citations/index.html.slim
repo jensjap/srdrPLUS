@@ -3,7 +3,10 @@
     h2 = "Project Name: " + @project.name
 
 .column.row
+  = render 'projects/edit/manage_citations'
+
+/.column.row
   = render 'citations/index/citation_list'
 
-  .column.medium-7.pagination
+/  .column.medium-7.pagination
 /    = paginate @projects, remote: true

@@ -6,10 +6,10 @@
 
 div.row
   div.columns.medium-9
-    = simple_form_for(  @project,
-                        remote: true,
-                        url: api_v1_project_path(@project, format: :json),
-                        html: { id: 'citations-form' } ) do |f|
+    = simple_form_for( @project,
+                       remote: true,
+                       url: api_v1_project_path(@project, format: :json),
+                       html: { id: 'citations-form' } ) do |f|
       = f.error_notification
       #citations
         #citations-url.hide
@@ -39,7 +39,7 @@ div.row
         ul.accordion.list.form-inputs data-accordion='' data-multi-expand='false' data-allow-all-closed='true' id='citations-projects-list'
           /= f.simple_fields_for :citations_projects, @citations_projects do |c_p_f|
             = render 'projects/edit/citations_project_fields', f: c_p_f
-          
+
           / NOTE: Using CitationsProject.first as the collection looks odd, 
           /       but it immediately gets replaced by citations fetched from server 
           /       and link_to_remove_associaton javascript works properly. 
@@ -63,25 +63,25 @@ div.row
           option[value='endnote'] Endnote Export
 
         #import-ris-div[style="display:none;"]
-          = simple_form_for @project, method: :post, url: import_ris_project_url, multipart: true do |f|
+          = simple_form_for @project, method: :post, url: import_ris_project_url(@project), multipart: true do |f|
             .form-inputs
               = f.input :citation_file, as: :file, label: false
             .form-actions[style="display:none;"]
               = f.button :submit, 'Upload .ris file', class:"hollow small"
         #import-csv-div[style="display:none;"]
-          = simple_form_for @project, method: :post, url: import_csv_project_url, multipart: true do |f|
+          = simple_form_for @project, method: :post, url: import_csv_project_url(@project), multipart: true do |f|
             .form-inputs
               = f.input :citation_file, as: :file, label: false
             .form-actions[style="display:none;"]
               = f.button :submit, 'Upload .csv file', class:"hollow small"
         #import-pubmed-div[style="display:none;"]
-          = simple_form_for @project, method: :post, url: import_pubmed_project_url, multipart: true do |f|
+          = simple_form_for @project, method: :post, url: import_pubmed_project_url(@project), multipart: true do |f|
             .form-inputs
               = f.input :citation_file, as: :file, label: false
             .form-actions[style="display:none;"]
               = f.button :submit, 'Upload PMID list', class:"hollow small"
         #import-endnote-div[style="display:none;"]
-          = simple_form_for @project, method: :post, url: import_endnote_project_url, multipart: true do |f|
+          = simple_form_for @project, method: :post, url: import_endnote_project_url(@project), multipart: true do |f|
             .form-inputs
               = f.input :citation_file, as: :file, label: false
             .form-actions[style="display:none;"]

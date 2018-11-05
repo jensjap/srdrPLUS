@@ -56,11 +56,11 @@ Rails.application.routes.draw do
     get 'screen', on: :member
   end
   resources :authors
-  resources :citations, only: [:new, :create, :edit, :update, :destroy, :show]
+  #resources :citations, only: [:new, :create, :edit, :update, :destroy, :show]
   resources :journals
   resources :keywords
   resources :labels
-  resources :tasks
+  #resources :tasks
   resources :records, only: [:update]
   resources :comparisons
   concern :paginatable do
@@ -81,13 +81,13 @@ Rails.application.routes.draw do
     post 'import_pubmed', on: :member
 
     resources :citations do
-
       collection do
         get 'labeled'
         get 'unlabeled'
       end
 
     end
+    resources :tasks
     resources :extractions do
 
       collection do
