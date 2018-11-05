@@ -1,4 +1,7 @@
 class TasksController < ApplicationController
+
+  add_breadcrumb 'my projects', :projects_path
+
   before_action :set_project, only: [:index]
 #  before_action :set_task, only: [:show, :edit, :update, :destroy]
 
@@ -54,6 +57,9 @@ class TasksController < ApplicationController
                          .group('tasks.id')
                          .where(:projects => { :id => @project.id }).all
     #@labels = Label.where(:user_id => current_user.id).where(:tasks_project_id => [@project.tasks_projects]).all
+
+    add_breadcrumb 'project', edit_project_path(@project)
+    add_breadcrumb 'tasks',   :project_tasks_path
   end
 
 #  def labeled

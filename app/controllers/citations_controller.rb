@@ -1,4 +1,7 @@
 class CitationsController < ApplicationController
+
+  add_breadcrumb 'my projects', :projects_path
+
   before_action :set_project, only: [:index, :labeled, :unlabeled]
   before_action :set_citation, only: [:show, :edit, :update, :destroy]
 
@@ -54,6 +57,9 @@ class CitationsController < ApplicationController
                          .group('citations.id')
                          .where(:projects => { :id => @project.id }).all
     #@labels = Label.where(:user_id => current_user.id).where(:citations_project_id => [@project.citations_projects]).all
+
+    add_breadcrumb 'project',   edit_project_path(@project)
+    add_breadcrumb 'citations', :project_citations_path
   end
 
   def labeled
