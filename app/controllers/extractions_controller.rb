@@ -14,8 +14,8 @@ class ExtractionsController < ApplicationController
   def index
     @extractions = @project.extractions
 
-    add_breadcrumb 'project',     edit_project_path(@project)
-    add_breadcrumb 'extractions', :project_extractions_path
+    add_breadcrumb 'edit project', edit_project_path(@project)
+    add_breadcrumb 'extractions',  :project_extractions_path
   end
 
   # GET /extractions/1
@@ -83,16 +83,16 @@ class ExtractionsController < ApplicationController
     @key_questions_projects_array_for_select = @extraction.project.key_questions_projects_array_for_select
     @preselected_eefpst1 = params[:eefpst1_id].present? ? ExtractionsExtractionFormsProjectsSectionsType1.find(params[:eefpst1_id]) : nil
 
-    add_breadcrumb 'project',     edit_project_path(@extraction.project)
-    add_breadcrumb 'extractions', project_extractions_path(@extraction.project)
-    add_breadcrumb 'work',        :work_extraction_path
+    add_breadcrumb 'edit project', edit_project_path(@extraction.project)
+    add_breadcrumb 'extractions',  project_extractions_path(@extraction.project)
+    add_breadcrumb 'work',         :work_extraction_path
   end
 
   # GET /projects/1/extractions/comparison_tool
   def comparison_tool
     @citation_groups = @project.citation_groups
 
-    add_breadcrumb 'project',         edit_project_path(@project)
+    add_breadcrumb 'edit project',    edit_project_path(@project)
     add_breadcrumb 'extractions',     :project_extractions_path
     add_breadcrumb 'comparison tool', :comparison_tool_project_extractions_path
   end
@@ -106,7 +106,7 @@ class ExtractionsController < ApplicationController
     @consolidated_extraction.ensure_extraction_form_structure
     @consolidated_extraction.auto_consolidate(@extractions)
 
-    add_breadcrumb 'project',         edit_project_path(@project)
+    add_breadcrumb 'edit project',    edit_project_path(@project)
     add_breadcrumb 'extractions',     :project_extractions_path
     add_breadcrumb 'comparison tool', :comparison_tool_project_extractions_path
     add_breadcrumb 'consolidate',     :consolidate_project_extractions_path
