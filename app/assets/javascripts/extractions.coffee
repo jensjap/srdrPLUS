@@ -142,7 +142,6 @@ document.addEventListener 'turbolinks:load', ->
 
     add_change_listeners_to_questions = (  ) ->
       number_of_extractions = get_number_of_extractions( )
-      console.log number_of_extractions
 
       $( '.consolidation-data-row' ).each ( row_id, row_elem ) ->
         $( row_elem ).children( 'tr' ).each ( arm_row_id, arm_row_elem ) ->

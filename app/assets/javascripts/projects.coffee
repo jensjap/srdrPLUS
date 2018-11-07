@@ -46,9 +46,9 @@ document.addEventListener 'turbolinks:load', ->
 
     ##### CHECK WHICH CONTROLLER ACTION THIS PAGE CORRESPONDS TO
     ##### ONLY RUN THIS CODE IF WE ARE IN EDIT PROJECT PAGE
-    if $( 'body.projects.edit' ).length == 1
+    if $( 'body.citations.index' ).length == 1
 
-    #### TASK MANAGEMENT - see if we can only run this stuff on the correct tab
+      #### TASK MANAGEMENT - see if we can only run this stuff on the correct tab
       $( '.project_tasks_projects_users_roles select' ).select2()
       #### LISTENERS
       $( '.tasks-container' ).on 'cocoon:before-insert', ( e, insertedItem ) ->
@@ -60,7 +60,7 @@ document.addEventListener 'turbolinks:load', ->
         $( insertedItem ).find( '.project_tasks_projects_users_roles select' ).select2()
         #$( insertedItem ).addClass( 'added-citation-item' )
 
-    #### CITATION MANAGEMENT - see if we can only run this stuff on the correct tab
+      #### CITATION MANAGEMENT - see if we can only run this stuff on the correct tab
       list_options = { valueNames: [ 'citation-numbers', 'citation-title', 'citation-authors', 'citation-journal', 'citation-journal-date', 'citation-abstract', 'citation-abstract' ] }
 
       ## Method to pull citation info from PUBMED as XML
@@ -73,6 +73,7 @@ document.addEventListener 'turbolinks:load', ->
             console.log errorThrown
             toastr.error( 'Could not fetch citation info from PUBMED' )
           success: ( data, textStatus, jqXHR ) ->
+            return 0 unless ( data.getElementsByTagName( 'ArticleTitle' )[ 0 ]? )
             name = data.getElementsByTagName( 'ArticleTitle' )[ 0 ].childNodes[ 0 ].nodeValue || ''
 
             abstract = ''
@@ -99,7 +100,7 @@ document.addEventListener 'turbolinks:load', ->
             journal[ 'volume' ] = data.getElementsByTagName( 'JournalIssue' )[ 0 ]. \
                                 getElementsByTagName( 'Volume' )[ 0 ].childNodes[ 0 ].nodeValue || ''
             ## My philosophy is to use publication year whenever possible, as researchers seem to be most concerned about the year, and it is easier to parse and sort - Birol
-            
+
             dateNode = data.getElementsByTagName( 'JournalIssue' )[ 0 ]. \
             getElementsByTagName( 'PubDate' )[ 0 ]
 
@@ -119,7 +120,7 @@ document.addEventListener 'turbolinks:load', ->
                               journal: journal }
             console.log citation_hash
             populate_citation_fields citation_hash
-      
+
       populate_citation_fields = ( citation ) ->
         $( '.citation-fields' ).find( '.citation-name input' ).val citation[ 'name' ]
         $( '.citation-fields' ).find( '.citation-abstract textarea' ).val citation[ 'abstract' ]
@@ -244,7 +245,7 @@ document.addEventListener 'turbolinks:load', ->
           $( this ).closest( '.simple_form' ).find( '.form-actions' ).show()
         else
           $( this ).closest( '.simple_form' ).find( '.form-actions' ).hide()
-        
+
       # handler for sorting citations
       $( '#sort-button' ).on 'click', () ->
         if $( this ).attr( 'sort-order' ) == 'desc'
