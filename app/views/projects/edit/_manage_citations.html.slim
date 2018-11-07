@@ -18,7 +18,6 @@ div.row
         #search-div
           #search-box.input
               input.search type="text" placeholder='Search'
-
           #sort-button.button.secondary.small[sort-order="desc"]
             | DESCENDING
           select id='sort-select'
@@ -27,7 +26,7 @@ div.row
             option[value='citation-authors'] Authors
             option[value='citation-journal'] Journal
             option[value='citation-journal-date'] Year
-
+        
         #insert-citation-div[ style="margin-bottom: 1rem;" ]
           = link_to_add_association 'Add Citation', f, :citations_projects, partial: 'projects/edit/added_citations_project_fields', 'data-association-insertion-node' => '#cp-insertion-node', 'data-association-insertion-method' => 'prepend'
           '
@@ -45,7 +44,6 @@ div.row
           /       and link_to_remove_associaton javascript works properly. 
           = f.simple_fields_for :citations_projects, CitationsProject.first do |c_p_f|
             = render 'projects/edit/citations_project_fields', f: c_p_f
-
       #leyleyley
   div.columns.medium-3
     div#top-anchor(data-sticky-container)
@@ -67,22 +65,22 @@ div.row
             .form-inputs
               = f.input :citation_file, as: :file, label: false
             .form-actions[style="display:none;"]
-              = f.button :submit, 'Upload .ris file', class:"hollow small"
+              = f.button :submit, 'Upload .ris file', class:"small"
         #import-csv-div[style="display:none;"]
           = simple_form_for @project, method: :post, url: import_csv_project_url(@project), multipart: true do |f|
             .form-inputs
               = f.input :citation_file, as: :file, label: false
             .form-actions[style="display:none;"]
-              = f.button :submit, 'Upload .csv file', class:"hollow small"
+              = f.button :submit, 'Upload .csv file', class:"small"
         #import-pubmed-div[style="display:none;"]
           = simple_form_for @project, method: :post, url: import_pubmed_project_url(@project), multipart: true do |f|
             .form-inputs
               = f.input :citation_file, as: :file, label: false
             .form-actions[style="display:none;"]
-              = f.button :submit, 'Upload PMID list', class:"hollow small"
+              = f.button :submit, 'Upload PMID list', class:"small"
         #import-endnote-div[style="display:none;"]
           = simple_form_for @project, method: :post, url: import_endnote_project_url(@project), multipart: true do |f|
             .form-inputs
               = f.input :citation_file, as: :file, label: false
             .form-actions[style="display:none;"]
-              = f.button :submit, 'Upload .enl file', class:"hollow small"
+              = f.button :submit, 'Upload .enl file', class:"small"

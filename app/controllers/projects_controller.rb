@@ -1,5 +1,4 @@
 class ProjectsController < ApplicationController
-
   add_breadcrumb 'my projects', :projects_path
 
   before_action :set_project, only: [:show, :edit, :update, :destroy, :export, :import_csv, :import_pubmed, :import_endnote, :import_ris]

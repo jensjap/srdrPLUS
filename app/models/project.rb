@@ -197,7 +197,7 @@ class Project < ApplicationRecord
         if kw_arr.length == 1 then kw_arr = kw_str.split( /, |,/ ) end
         if kw_arr.length == 1 then kw_arr = kw_str.split( / \/ |\// ) end
         if kw_arr.length == 1 then kw_arr = kw_str.split( / \| |\|/ ) end
-        if kw_arr.length == 1 then kw_arr = kw_str.split( /\n/ ) end
+        if kw_arr.length == 1 then kw_arr = kw_str.split( /\n| \n/ ) end
 
         cit_h[ 'keywords_attributes' ] = {}
         kw_arr.each do |kw|
@@ -214,7 +214,7 @@ class Project < ApplicationRecord
         if au_arr.length == 1 then au_arr = au_str.split( /, |,/ ) end
         if au_arr.length == 1 then au_arr = au_str.split( / \/ |\// ) end
         if au_arr.length == 1 then au_arr = au_str.split( / \| |\|/ ) end
-        if au_arr.length == 1 then au_arr = au_str.split( / \n/ ) end
+        if au_arr.length == 1 then au_arr = au_str.split( /\n| \n/ ) end
 
         cit_h[ 'authors_attributes' ] = {}
         au_arr.each do |au|
@@ -259,7 +259,13 @@ class Project < ApplicationRecord
       
       #keywords
       if cit_h[ 'OT' ].present? 
-        kw_arr = cit_h[ 'OT' ].split( "\n" )
+        kw_str = cit_h[ 'OT' ]
+        kw_str.gsub! /"/, ''
+        kw_arr = kw_str.split( "     " )
+        if kw_arr.length == 1 then kw_arr = kw_str.split( /, |,/ ) end
+        if kw_arr.length == 1 then kw_arr = kw_str.split( / \/ |\// ) end
+        if kw_arr.length == 1 then kw_arr = kw_str.split( / \| |\|/ ) end
+        if kw_arr.length == 1 then kw_arr = kw_str.split( /\n| \n/ ) end
         row_h[ 'keywords_attributes' ] = {}
         kw_arr.each do |kw|
           row_h[ 'keywords_attributes' ][Time.now.to_i + key_counter] = { name: kw }
@@ -269,7 +275,13 @@ class Project < ApplicationRecord
 
       #authors
       if cit_h[ 'AU' ].present? 
-        au_arr = cit_h[ 'AU' ].split( "\n" )
+        au_str = cit_h[ 'AU' ]
+        au_str.gsub! /"/, ''
+        au_arr = au_str.split( "     " )
+        if au_arr.length == 1 then au_arr = au_str.split( /, |,/ ) end
+        if au_arr.length == 1 then au_arr = au_str.split( / \/ |\// ) end
+        if au_arr.length == 1 then au_arr = au_str.split( / \| |\|/ ) end
+        if au_arr.length == 1 then au_arr = au_str.split( /\n| \n/ ) end
         row_h[ 'authors_attributes' ] = {} 
         au_arr.each do |au|
           row_h[ 'authors_attributes' ][Time.now.to_i + key_counter] = { name: au }
@@ -413,6 +425,8 @@ class Project < ApplicationRecord
         if kw_arr.length == 1 then kw_arr = cit_h[ 'K' ].split( /, |,/ ) end
         if kw_arr.length == 1 then kw_arr = cit_h[ 'K' ].split( / \/ |\// ) end
         if kw_arr.length == 1 then kw_arr = cit_h[ 'K' ].split( / \| |\|/ ) end
+        if kw_arr.length == 1 then kw_arr = kw_str.split( /\n| \n/ ) end
+
         row_h[ 'keywords_attributes' ] = {}
         kw_arr.each do |kw|
           row_h[ 'keywords_attributes' ] [Time.now.to_i + key_counter ] = { name: kw }
