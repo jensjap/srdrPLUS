@@ -11,8 +11,20 @@ a.accordion-title href='#'
 
   .row
     .column.medium-8
-      span.label Description:
-      .callout.description = project.description
+      .column.row
+        span.label Description:
+        .callout.description = project.description
+      .row
+        .column.large-4
+          span.label Key Questions:
+          .callout = project.key_questions.length
+        .column.large-4
+          span.label Studies:
+          .callout = Random.rand(1000) + 1
+        .column.large-4
+          span.label Extraction Forms:
+          .callout = project.extraction_forms.length
+
     .column.medium-4
       .column.row
         span.label Date Created:
@@ -33,7 +45,14 @@ a.accordion-title href='#'
                   li = publishing.created_at.in_time_zone(current_user.profile.time_zone).strftime('%b %-d, %Y - %l:%M %P') + \
                        " (by: #{ publishing.user.profile.first_name })"
 
-  .row.gutter-small
+      .column.row
+        = link_to 'Edit Project', edit_project_path(project), class: 'button expanded'
+      .column.row
+        = link_to 'List of Extractions', project_extractions_path(project), class: 'button expanded'
+      .column.row
+        = link_to 'Export Project Data', export_project_path(project), method: :post, class: 'button expanded'
+
+/  .row.gutter-small
     .column.medium-8
       .row
         .column.large-4
@@ -45,11 +64,11 @@ a.accordion-title href='#'
         .column.large-4
           span.label Extraction Forms:
           .callout = project.extraction_forms.length
-    .column.medium-4
-      .row
-        .column.large-3
-          = link_to 'Edit', edit_project_path(project), class: 'button expanded'
-        .column.large-6
-          = link_to 'Extractions', project_extractions_path(project), class: 'button expanded'
-        .column.large-3
+/    .column.medium-4
+      .column.row
+        .column.row
+          = link_to 'Edit Project', edit_project_path(project), class: 'button expanded'
+        .column.row
+          = link_to 'List of Extractions', project_extractions_path(project), class: 'button expanded'
+        .column.row
           = link_to 'Export', export_project_path(project), method: :post, class: 'button expanded'
