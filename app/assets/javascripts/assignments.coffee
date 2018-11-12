@@ -382,7 +382,9 @@ document.addEventListener 'turbolinks:load', ->
         switch_to_screening( )
 
       # pagination buttons
-      $( '#next-page' ).click (e) ->
+
+      $( '#next-page' ).click (e) -> 
+        console.log( state_obj )
         get_history_page( state_obj, state_obj.history_page + 1 )
 
       $( '#prev-page' ).click (e) ->
