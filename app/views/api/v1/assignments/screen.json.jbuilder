@@ -21,6 +21,16 @@ json.unlabeled_citations_projects do
     json.keywords do
       json.array! citation.keywords, :id, :name
     end
+    json.taggings citations_project.taggings do |tagging|
+      json.tag do
+        json.name tagging.tag.name
+        json.id tagging.tag.id
+      end
+      json.user do 
+        json.username tagging.projects_users_role.user.profile.username
+        json.id tagging.projects_users_role.user.id
+      end
+    end
   end
 end
 json.labeled_citations_projects do
@@ -35,7 +45,7 @@ json.labeled_citations_projects do
     json.refman citation.refman
     if citation.journal.present?
       json.journal do
-        json.publication_date citation.journal.publication_date.year
+        json.publication_date citation.journal.publication_date
         json.name citation.journal.name
         json.volume citation.journal.volume
         json.issue citation.journal.issue
@@ -47,6 +57,18 @@ json.labeled_citations_projects do
     json.keywords do
       json.array! citation.keywords, :id, :name
     end
+
+    json.taggings citations_project.taggings do |tagging|
+      json.tag do
+        json.name tagging.tag.name
+        json.id tagging.tag.id
+      end
+      json.user do 
+        json.username tagging.projects_users_role.user.profile.username
+        json.id tagging.projects_users_role.user.id
+      end
+    end
+
     json.label do
       json.id label.id
       json.value label.value

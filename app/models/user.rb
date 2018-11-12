@@ -35,7 +35,7 @@ class User < ApplicationRecord
 
   has_many :notes, dependent: :destroy, inverse_of: :user
 
-  has_many :taggings, dependent: :destroy, inverse_of: :user
+  has_many :taggings, through: :projects_users, dependent: :destroy
   has_many :tags, through: :taggings, dependent: :destroy
 
   def handle

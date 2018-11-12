@@ -12,6 +12,10 @@ class ProjectsUsersRole < ApplicationRecord
   belongs_to :role,          inverse_of: :projects_users_roles
 
   has_many :extractions, dependent: :destroy, inverse_of: :projects_users_role
+  has_many :assignments, dependent: :destroy, inverse_of: :projects_users_role
+
+  has_many :taggings, dependent: :destroy, inverse_of: :projects_user
+  has_many :tags, through: :taggings, dependent: :destroy
 
   def get_projects_users_role_user_information_markup
     profile = self.projects_user.user.profile

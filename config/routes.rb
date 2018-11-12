@@ -49,6 +49,10 @@ Rails.application.routes.draw do
           end
         end
       end
+      resources :projects_users do
+        resources :tags, only: [ :index ]
+      end
+
     end
   end
 
@@ -71,10 +75,8 @@ Rails.application.routes.draw do
     get 'get_results_populations', on: :member
   end
   resources :projects, concerns: :paginatable, shallow: true do
-    resources :projects_users_roles do
-      get 'next_assignment'
-    end
 
+    get 'next_assignment', on: :member
     post 'import_csv', on: :member
     post 'import_ris', on: :member
     post 'import_endnote', on: :member

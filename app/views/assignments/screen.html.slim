@@ -3,7 +3,7 @@
     h3 NOTHING TO LABEL
   
   #citation-row.row
-    .full-height.medium-12.medium-centered
+    .columns.full-height.medium-10
       #citation-container.callout
         h5 
           #citation-name
@@ -52,6 +52,14 @@
         i
           #citation-refman.display-inline
 
+    #side-panel
+      .columns.full-height.medium-2
+        .callout.row.column
+          #tags-list.column
+          #tag-select.column
+            select
+        .callout.row.column
+
   .row style="text-align: center;"
     #control-group.button-group
       .button id='previous-button'
@@ -67,20 +75,26 @@
       .button id='next-button'
        | ►
 
-
-  #switch-button
-    .button
+  #feature-panel
+    #switch-button.button
       | list view
+
+    #tags-button.button
+      | tags
 
 
 #hide-me.hide
   #breadcrumb-group.row.button-group.small
+  #projects_users_role-id
+    | #{ @assignment.projects_users_role_id }
   #screen-assignment-json-url
     | #{ screen_api_v1_assignment_url(@assignment.id) }
   #history-json-url
     | #{ history_api_v1_assignment_url(@assignment.id) }
   #labels-url
     | #{ labels_url }
+  #tags-url
+    | #{ api_v1_projects_user_tags_url(@assignment.projects_users_role.projects_user_id) }
   #authenticity-token
     | #{ form_authenticity_token }
   #authors-visible
@@ -88,7 +102,7 @@
   #journal-visible
     | #{ @current_user.profile.abstrackr_setting.journal_visible }
 
-#citations-list
+#citations-list style='display: none;'
   #citations-list-elements
   .row style="text-align: center;"
     #pagination-buttons.button-group
@@ -96,3 +110,16 @@
         | ◄
       #next-page.button
         | ►
+
+#tags-modal style='display: none;'
+  #tags-list 
+  #tags-controls
+    #add-tag-button 
+      .button
+        | add tag
+
+    #close-tags-button
+      .button
+        | close
+
+

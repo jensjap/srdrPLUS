@@ -374,7 +374,7 @@ module SeedDataExtended
       @citation_types = [@primary, @secondary]
 
       # Citations, Journals, Authors and Keywords
-      1000.times do |n|
+      200.times do |n|
         updated_at = Faker::Time.between(DateTime.now - 1000, DateTime.now - 1)
         c = Citation.create(
           name:           Faker::Lorem.sentence,
@@ -534,6 +534,26 @@ module SeedDataExtended
                               start_at: 10.minute.ago)
         Faker::UniqueGenerator.clear
       end
+
+      # Tags and Notes
+      CitationsProject.all.each do |cp|
+        5.times do
+          tag = Tag.find_or_create_by( name: Faker::Lovecraft.word )
+          cp.taggings << Tagging.create( tag: tag, projects_users_role: ProjectsUsersRole.all.sample )
+          cp.notes << Note.create( value: Faker::Lovecraft.sentence, projects_users_role: ProjectsUsersRole.all.sample )
+        end
+      end
+
+      CitationsProject.first(100).each do |cp|
+        label = Label.create
+      end
+
+ #     # Notes
+ #     Label.all.each do |cp|
+ #       reason = Reason.find_or_create_by( name: Faker::RickAndMorty.quote )
+ #         cp.reasons << ReasonsLabel.create( reason: reason, projects_users_role: ProjectsUsersRole.all.sample )
+ #     end
+
 
       # Turn on paper_trail.
       PaperTrail.enabled = true

@@ -80,6 +80,24 @@ document.addEventListener 'turbolinks:load', ->
         else
           $( '#citation-keywords' ).append( ', ' + k.name)
 
+      ## TAGGINGS
+      for t in current_citation.taggings
+        tag = $( '<div class="tag" >' + t.tag.name + ' <a id="delete-tag-'+ t.tag.id + '">delete</a></div>' )
+
+        $( '#tags-list' ).append( tag )
+
+      ## CREATE A NEW TAGGING
+      $( '#tag-select select' ).select2
+        minimumInputLength: 0
+        #closeOnSelect: false
+        ajax:
+          url: $( '#tags-url' ).text()
+          dataType: 'json'
+          delay: 100
+          data: (params) ->
+            q: params.term
+            page: params.page || 1
+
       $( '#yes-button' ).removeClass( 'secondary' )
       $( '#no-button' ).removeClass( 'secondary' )
       $( '#maybe-button' ).removeClass( 'secondary' )
@@ -167,7 +185,7 @@ document.addEventListener 'turbolinks:load', ->
       #update_index( state_obj, 0 )
       update_info( state_obj )
       update_arrows( state_obj )
-      $('#switch-button').val('OFF')
+      $( '#switch-button' ).val('OFF')
 
       $( '#yes-button' ).click ->
         $( "#label-input[value='yes']" ).prop( 'checked', true )
@@ -184,6 +202,8 @@ document.addEventListener 'turbolinks:load', ->
       next_button = $( '#next-button' )
       previous_button = $( '#previous-button' )
       switch_button = $( '#switch-button' )
+      tags_button = $( '#tags-button' )
+      close_tags_button = $( '#close-tags-button' )
 
       next_button.click ->
         if !next_button.hasClass( 'disabled' )
@@ -208,10 +228,18 @@ document.addEventListener 'turbolinks:load', ->
           switch_to_screening( state_obj )
           switch_button.val( 'OFF' )
 
+      # button to get the tags modal
+      tags_button.click ->
+        switch_to_tags( )
+
+      # button to close the tags modal
+      close_tags_button.click ->
+        switch_to_screening( )
+
       # pagination buttons
       $( '#next-page' ).click (e) -> 
         console.log( state_obj )
-        get_history_page( state_obj, state_obj.history_page + 1 ) 
+        get_history_page( state_obj, state_obj.history_page + 1 )
 
       $( '#prev-page' ).click (e) -> 
         get_history_page( state_obj, state_obj.history_page - 1 ) 
@@ -221,7 +249,6 @@ document.addEventListener 'turbolinks:load', ->
     get_history_page = ( obj, page_index ) -> 
       page_size = 10
       if obj.history.length < ( page_index + 1 ) * page_size
-        console.log( obj )
         offset = obj.history.length - 1
         count = ( page_index + 1 ) * page_size - obj.history.length
         $.ajax {
@@ -233,12 +260,10 @@ document.addEventListener 'turbolinks:load', ->
               obj.history = obj.history.concat( data.labeled_citations_projects )
               switch_to_list( obj, obj.history.slice( page_index * page_size, ( page_index + 1 ) * page_size ) )
               obj.history_page = page_index
-              console.log( data )
         }
       else
         switch_to_list( obj, obj.history.slice( page_index * page_size, ( page_index + 1 ) * page_size ) )
         obj.history_page = page_index
-
 
 ##### add_breadcrumb #####
     add_breadcrumb = ( obj ) ->
@@ -252,7 +277,7 @@ document.addEventListener 'turbolinks:load', ->
         update_info( obj )
         update_arrows( obj )
 
-      $( '#breadcrumb-group' ).append( button );
+      $( '#breadcrumb-group' ).append( button )
       obj.history[ obj.index ].breadcrumb_id = breadcrumb_id
       obj.history[ obj.index ].id = id
       return
@@ -282,7 +307,7 @@ document.addEventListener 'turbolinks:load', ->
       $( '#citations-list-elements' ).empty()
       next_index = 0
       for c in history_elements
-        info_wrapper =  
+        info_wrapper =
           $( '<div><div/>' ).attr( { id: 'info-wrapper-' + c.citations_project_id, class: 'info-wrapper' } )
         citation_info =
           $( '<div></div>' ).attr( { id: 'citation-info-' + c.citations_project_id, class: 'citation-info' } )
@@ -296,7 +321,6 @@ document.addEventListener 'turbolinks:load', ->
         else
           citation_abstract =
             $( '<div>' + c.abstract + '<div/>' ).attr( { id: '#citation-element-abstact-' + c.breadcrumb_id } )
-
 
         #set up buttons
         citation_buttons =
@@ -364,11 +388,27 @@ document.addEventListener 'turbolinks:load', ->
       $( '#citations-list' ).show()
       $( '#screen-div' ).hide()
 
+##### switch_to_tags #####
+    switch_to_tags = ( ) ->
+      $( '#screen-div' ).hide()
+      $( '#tags-modal' ).show()
+    #  $( '#citations-list-elements' ).empty()
+    #  next_index = 0
+    #  for c in history_elements
+    #    info_wrapper =  
+    #      $( '<div><div/>' ).attr( { id: 'info-wrapper-' + c.citations_project_id, class: 'info-wrapper' } )
+    #    citation_info =
+    #      $( '<div></div>' ).attr( { id: 'citation-info-' + c.citations_project_id, class: 'citation-info' } )
+    #    citation_element =
+    #      $( '<div></div>' ).attr( { id: 'citation-element-' + c.citations_project_id, class: 'callout row', index: next_index } )
+      return
+
 ##### switch_to_screening #####
     switch_to_screening = ( obj ) ->
       $( '#pagination-buttons' ).hide()
       $( '#citations-list-elements' ).empty()
       $( '#citations-list' ).hide()
+      $( '#tags-modal' ).hide()
       $( '#screen-div' ).show()
       $( '#switch-button').val('OFF')
 
