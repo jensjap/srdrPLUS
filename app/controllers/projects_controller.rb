@@ -1,4 +1,6 @@
 class ProjectsController < ApplicationController
+  add_breadcrumb 'my projects', :projects_path
+
   before_action :set_project, only: [:show, :edit, :update, :destroy, :export, :import_csv, :import_pubmed, :import_endnote, :import_ris]
 
   SORT = {  'updated-at': { updated_at: :desc },
@@ -37,6 +39,8 @@ class ProjectsController < ApplicationController
     #@citations_projects = @project.citations_projects.page(params[:page])
     @citation_dict = @project.citations.eager_load(:authors, :journal, :keywords).map{ |c| [c.id, c] }.to_h
     @citations_projects = @project.citations_projects
+
+    add_breadcrumb 'project', :edit_project_path
   end
 
   # POST /projects

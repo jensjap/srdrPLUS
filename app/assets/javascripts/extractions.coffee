@@ -18,7 +18,7 @@ document.addEventListener 'turbolinks:load', ->
         url: '/extractions_extraction_forms_projects_sections_type1s/' + this.value + '/get_results_populations'
         type: 'GET'
         dataType: 'script'
-        error: -> alert 'Server busy'
+        error: -> alert 'Server busy. Please try again later.'
         timeout: 5000
 
     ######################################################################
@@ -111,7 +111,7 @@ document.addEventListener 'turbolinks:load', ->
       rb_input_arr = $( question ).find( 'div.input.radio_buttons' )
       if rb_input_arr.length > 0
         return "radio_buttons"
-        
+
       return "unclear"
 
     get_question_value = ( question ) ->
@@ -142,7 +142,6 @@ document.addEventListener 'turbolinks:load', ->
 
     add_change_listeners_to_questions = (  ) ->
       number_of_extractions = get_number_of_extractions( )
-      console.log number_of_extractions
 
       $( '.consolidation-data-row' ).each ( row_id, row_elem ) ->
         $( row_elem ).children( 'tr' ).each ( arm_row_id, arm_row_elem ) ->
@@ -235,17 +234,17 @@ document.addEventListener 'turbolinks:load', ->
 
                         when "radio_buttons"
                           $( td_elem ).find( 'input.radio_buttons' ).each ( rb_index, rb_input ) ->
-                            
+
                             if ( rb_input.value == new_value )
                               $( rb_input ).prop( 'checked', true )
-                              
+
                             else
                               $( rb_input ).prop( 'checked', false )
 
                             $( rb_input ).trigger( 'change' )
                         else
               apply_coloring( )
-      
+
         $( row_elem ).find( 'div#consolidation-dropdown' ).html( $drop_elem )
 
     apply_coloring = ( ) ->
@@ -260,7 +259,7 @@ document.addEventListener 'turbolinks:load', ->
 
         $( row_elem ).children( 'tr' ).each ( arm_row_id, arm_row_elem ) ->
           b_dict[ arm_row_id ] ||= { }
-          
+
           $( arm_row_elem ).find( 'td tbody' ).each ( cell_id, cell_elem ) ->
             $( cell_elem ).find( 'tr' ).each ( tr_id, tr_elem ) ->
               b_dict[ arm_row_id ][ tr_id ] ||= { }
@@ -282,7 +281,7 @@ document.addEventListener 'turbolinks:load', ->
         $.each b_dict, ( arm_row_id, tr_dict ) ->
           color_dict = { }
           value_arr = [ ]
-          
+
           $.each tr_dict, ( tr_id, td_dict ) ->
             color_dict[ tr_id ] ||= { }
             $.each td_dict, ( td_id, value_dict ) ->
@@ -299,11 +298,11 @@ document.addEventListener 'turbolinks:load', ->
                     color_dict[ tr_id ][ td_id ] = "#D1F2EB"
                   else
                     color_dict[ tr_id ][ td_id ] = "#E8DAEF"
-              
+
           $.each color_dict, ( tr_id, color_tr_dict ) ->
             $.each color_tr_dict, ( td_id, color ) ->
               consolidated_cell[ tr_id ][ td_id ].css( 'background', color )
-            
+
     ## call coloring for the first time
     add_change_listeners_to_questions( )
     apply_coloring( )

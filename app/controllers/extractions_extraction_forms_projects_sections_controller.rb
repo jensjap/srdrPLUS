@@ -6,9 +6,11 @@ class ExtractionsExtractionFormsProjectsSectionsController < ApplicationControll
   def update
     respond_to do |format|
       if @extractions_extraction_forms_projects_section.update(extractions_extraction_forms_projects_section_params)
-        format.html { redirect_to work_extraction_path(@extractions_extraction_forms_projects_section.extraction,
-                                                       anchor: "panel-tab-#{ @extractions_extraction_forms_projects_section.extraction_forms_projects_section.id.to_s }"),
-                                  notice: t('success') }
+        format.html do
+          redirect_to work_extraction_path(@extractions_extraction_forms_projects_section.extraction,
+                                           anchor: "panel-tab-#{ @extractions_extraction_forms_projects_section.extraction_forms_projects_section.id.to_s }"),
+                      notice: t('success')
+        end
         format.json { render :show, status: :ok, location: @extractions_extraction_forms_projects_section }
         format.js do
           @extraction = @extractions_extraction_forms_projects_section.extraction

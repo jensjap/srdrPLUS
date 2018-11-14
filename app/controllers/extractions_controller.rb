@@ -1,4 +1,7 @@
 class ExtractionsController < ApplicationController
+
+  add_breadcrumb 'my projects', :projects_path
+
   include ExtractionsControllerHelpers
 
   before_action :set_project, only: [:index, :new, :create, :comparison_tool, :compare, :consolidate]
@@ -10,6 +13,9 @@ class ExtractionsController < ApplicationController
   # GET /projects/1/extractions.json
   def index
     @extractions = @project.extractions
+
+    add_breadcrumb 'project',     edit_project_path(@project)
+    add_breadcrumb 'extractions', :project_extractions_path
   end
 
   # GET /extractions/1
@@ -19,7 +25,10 @@ class ExtractionsController < ApplicationController
 
   # GET /extractions/new
   def new
-    @extraction = Extraction.new
+    @extraction = @project.extractions.new
+
+    add_breadcrumb 'extractions',    :project_extractions_path
+    add_breadcrumb 'new extraction', :new_project_extraction_path
   end
 
   # GET /extractions/1/edit
@@ -61,7 +70,6 @@ class ExtractionsController < ApplicationController
   # DELETE /extractions/1
   # DELETE /extractions/1.json
   def destroy
-    project = 
     @extraction.destroy
     respond_to do |format|
       format.html { redirect_to project_extractions_url(@extraction.project), notice: 'Extraction was successfully destroyed.' }
@@ -73,11 +81,20 @@ class ExtractionsController < ApplicationController
   def work
     @extraction_forms_projects = @extraction.project.extraction_forms_projects
     @key_questions_projects_array_for_select = @extraction.project.key_questions_projects_array_for_select
+    @preselected_eefpst1 = params[:eefpst1_id].present? ? ExtractionsExtractionFormsProjectsSectionsType1.find(params[:eefpst1_id]) : nil
+
+    add_breadcrumb 'project',     edit_project_path(@extraction.project)
+    add_breadcrumb 'extractions', project_extractions_path(@extraction.project)
+    add_breadcrumb 'work',        :work_extraction_path
   end
 
   # GET /projects/1/extractions/comparison_tool
   def comparison_tool
     @citation_groups = @project.citation_groups
+
+    add_breadcrumb 'project',         edit_project_path(@project)
+    add_breadcrumb 'extractions',     :project_extractions_path
+    add_breadcrumb 'comparison tool', :comparison_tool_project_extractions_path
   end
 
   # GET /projects/1/extractions/consolidate
@@ -85,8 +102,14 @@ class ExtractionsController < ApplicationController
     @extraction_forms_projects = @project.extraction_forms_projects
     @consolidated_extraction   = @project.consolidated_extraction(@extractions.first.citations_project_id, current_user.id)
     @head_to_head              = head_to_head(@extraction_forms_projects, @extractions)
+    @preselected_eefpst1       = params[:eefpst1_id].present? ? ExtractionsExtractionFormsProjectsSectionsType1.find(params[:eefpst1_id]) : nil
     @consolidated_extraction.ensure_extraction_form_structure
     @consolidated_extraction.auto_consolidate(@extractions)
+
+    add_breadcrumb 'project',         edit_project_path(@project)
+    add_breadcrumb 'extractions',     :project_extractions_path
+    add_breadcrumb 'comparison tool', :comparison_tool_project_extractions_path
+    add_breadcrumb 'consolidate',     :consolidate_project_extractions_path
   end
 
   # GET /projects/1/extractions/edit_type1_across_extractions

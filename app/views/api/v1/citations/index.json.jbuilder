@@ -1,5 +1,6 @@
 json.pagination do
   json.more @more
+  json.total_count @total_count
 end
 
 json.results do

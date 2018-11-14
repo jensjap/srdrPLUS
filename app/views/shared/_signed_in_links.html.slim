@@ -1,17 +1,17 @@
 li = link_to('Projects', projects_path)
 
-- if (controller_name.eql?('projects') && not(action_name.eql?('index')) && not(action_name.eql?('new'))) || controller_name.eql?('extractions') || controller_name.eql?('extraction_forms_projects')
+- if (controller_name.eql?('projects') && not(action_name.eql?('index')) && not(action_name.eql?('new'))) || controller_name.eql?('extractions') || controller_name.eql?('extraction_forms_projects') || (controller_name.eql?('citations') && action_name.eql?('index')) || (controller_name.eql?('tasks') && action_name.eql?('index'))
 
   li
     a href='#' Actions
     ul.menu.vertical
       hr
       li.title Project Elements
-      li = link_to t('project_information'), edit_project_path(@project || @extraction.try(:project) || @extraction_forms_project.project) + '#panel-project-information', title: t('manage_project_information')
-      li = link_to t('key_questions'),       edit_project_path(@project || @extraction.try(:project) || @extraction_forms_project.project) + '#panel-key-questions',       title: t('manage_key_questions')
-      li = link_to t('extractions'),         project_extractions_path(@project || @extraction.try(:project) || @extraction_forms_project.project),                         title: t('manage_extractions')
-      li = link_to t('citations'),           edit_project_path(@project || @extraction.try(:project) || @extraction_forms_project.project) + '#panel-citations',           title: t('manage_citations')
-      li = link_to t('tasks'),               edit_project_path(@project || @extraction.try(:project) || @extraction_forms_project.project) + '#panel-tasks',               title: t('manage_tasks')
+      li = link_to t('.project_information'), edit_project_path(@project || @extraction.try(:project) || @extraction_forms_project.project) + '#panel-project-information', title: t('manage_project_information')
+      li = link_to t('.key_questions'),       edit_project_path(@project || @extraction.try(:project) || @extraction_forms_project.project) + '#panel-key-questions',       title: t('manage_key_questions')
+      li = link_to t('.extractions'),         project_extractions_path(@project || @extraction.try(:project) || @extraction_forms_project.project),                         title: t('manage_extractions')
+      li = link_to t('.citations'),           edit_project_path(@project || @extraction.try(:project) || @extraction_forms_project.project) + '#panel-citations',           title: t('manage_citations')
+      li = link_to t('.tasks'),               edit_project_path(@project || @extraction.try(:project) || @extraction_forms_project.project) + '#panel-tasks',               title: t('manage_tasks')
       hr
       li.title Project Tools
       li = link_to t('export'),          export_project_path(@project || @extraction.try(:project) || @extraction_forms_project.project), method: :post,       title: t('request_export')
@@ -29,3 +29,7 @@ li
     li.title Actions
     li = link_to 'Logout', destroy_user_session_path, :method => :delete
 
+- if (controller_name.eql?('projects') && not(action_name.eql?('index')) && not(action_name.eql?('new'))) || controller_name.eql?('extractions') || controller_name.eql?('extraction_forms_projects') || (controller_name.eql?('citations') && action_name.eql?('index')) || (controller_name.eql?('tasks') && action_name.eql?('index'))
+  .column.row
+    .off-canvas-link data-toggle='offCanvasNav'
+      i.fi-arrow-left

@@ -110,6 +110,7 @@ GEM
     bcrypt (3.1.12)
     bindex (0.5.0)
     bio (1.5.1)
+    breadcrumbs_on_rails (3.0.1)
     builder (3.2.3)
     byebug (10.0.2)
     capybara (2.18.0)
@@ -420,6 +421,7 @@ DEPENDENCIES
   axlsx_rails
   bcrypt (~> 3.1.7)
   bio
+  breadcrumbs_on_rails
   byebug
   cocoon
   coffee-rails (~> 4.2)

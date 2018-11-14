@@ -154,7 +154,6 @@ ul {
 }
 
 ///// MANAGE CITATIONS
-
 #citations {
   ul {
     margin-top: 0rem;
@@ -214,6 +213,21 @@ ul {
       //font-style: italic;
       //color: #666666;
       //margin-bottom: 1rem;
+    }
+
+    .citation-journal {
+      margin-top: 0rem;
+      margin-bottom: 1rem;
+      font-size: 13px;
+      color: #5b5b5b;
+      //font-weight: bold;
+    }
+
+    .citation-journal-date {
+      display: inline;
+      //font-style: italic;
+      //color: #666666;
+      //margin-bottom: 1rem;
 
     }
 
@@ -240,6 +254,9 @@ ul {
         }
         .citation-numbers, .citation-authors {
           margin-bottom: 0.5rem;
+        }
+        .citation-authors, .citation-title {
+          margin-top: 0.5rem;
         }
         .citation-authors, .citation-title {
           margin-top: 0.5rem;
@@ -295,14 +312,9 @@ a.citation-label {
   padding-bottom: 4px;
 }
 
-//.accordion-title:before {
-//  content: none;
-//}
-
-//.is-active > .accordion-title:before {
-//  content: none;
-//}
-
+#citations {
+  min-height: 800px;
+}
 
 //.remove-button-container {
 //  position: absolute;
@@ -341,11 +353,7 @@ a.citation-label {
   .button {
     margin-left: 0.5rem;
   }
-
   display: flex;
-  width: 100%;
-  flex-direction: row;
-  justify-content: flex-end;
 }
 
 .added-item {
@@ -359,35 +367,52 @@ a.citation-label {
 }
 
 .citation-fields {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center; 
-
   .citation-inputs {
     margin-top: 1rem;
     display: flex;
     width: 92%;
+    display: flex;
+    flex-direction: column;
     justify-content: center;
-    align-items: center; 
-  }
 
-  .middle-row {
-    display: flex;
-    justify-content: space-between;
-    flex-direction: row;
-    div {
-      width: 30%;
+    .accession-number {
+      input.numeric {
+        margin-bottom: 0;
+      }
+      .pmid-checkbox {
+        float: right;
+      }
     }
-  }
 
-  .bottom-row {
-    display: flex;
-    justify-content: space-between;
-    flex-direction: row;
-    .bottom-column {
-      flex-direction: column;
-      width: 30%;
+    .citation-abstract {
+      textarea {
+        height: 8rem;
+      }
+    }
+
+    .middle-row {
+      display: flex;
+      justify-content: space-between;
+      flex-direction: row;
+      div {
+        flex: 1;
+        padding-left: 0.6rem;
+
+      }
+      .journal-name {
+        flex:3;
+        padding-left: 0;
+      }
+    }
+
+    .bottom-row {
+      display: flex;
+      justify-content: space-between;
+      flex-direction: row;
+      .bottom-column {
+        flex-direction: column;
+        width: 30%;
+      }
     }
   }
 }
@@ -405,7 +430,6 @@ a.citation-label {
 //abbr[title="required"] {
 //  display: none;
 //}
-
 
 ///// MANAGE TASKS
 

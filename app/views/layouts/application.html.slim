@@ -20,11 +20,15 @@ html class='no-js' lang='en'
       == yield(:content)
     - else
       .off-canvas-wrapper
-        .off-canvas.position-right#offCanvasNav data-off-canvas=''
-          = render 'shared/sidebar_nav'
+        - if (controller_name.eql?('projects') && not(action_name.eql?('index')) && not(action_name.eql?('new'))) || controller_name.eql?('extractions') || controller_name.eql?('extraction_forms_projects') || (controller_name.eql?('citations') && action_name.eql?('index')) || (controller_name.eql?('tasks') && action_name.eql?('index'))
+
+          .off-canvas.position-right#offCanvasNav data-off-canvas=''
+            = render 'shared/sidebar_nav'
         .off-canvas-content data-off-canvas-content=''
           = render 'shared/topbar_nav'
           .column.row.content
+            .breadcrumbs-bar
+              = render_breadcrumbs
             == yield
             = render 'shared/scroll_top_wrapper'
         = render 'shared/footer'
