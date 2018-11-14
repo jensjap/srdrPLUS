@@ -75,6 +75,7 @@ json.labeled_citations_projects do
       json.id note.id
       json.value note.value
     end
+
     json.label do
       json.id label.id
       json.label_type_id label.label_type_id
