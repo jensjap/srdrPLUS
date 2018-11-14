@@ -56,7 +56,7 @@ class Project < ApplicationRecord
   end
 
   def duplicate_key_question?
-    self.key_questions.having('count(*) > 1').group('name').length.nonzero?
+    self.key_questions.select('name').having('count(*) > 1').group('name').length.nonzero?
   end
 
   def duplicate_extraction_form?
@@ -158,11 +158,11 @@ class Project < ApplicationRecord
     ### citation type, not sure if necessary
     #secondary_id = CitationType.find_by( name: 'Secondary' ).id
     #
-    #row_d = { 'Primary' => primary_id, 'primary' => primary_id, 
+    #row_d = { 'Primary' => primary_id, 'primary' => primary_id,
     #          'Secondary' => secondary_id, 'secondary' => secondary_id,
     #          '' => nil }
 
-    h_arr = [] 
+    h_arr = []
 
     file_data = File.read( file.path ).gsub(/(\r\n|\r|\n)/, "\n")
     file_string = ""
@@ -177,12 +177,12 @@ class Project < ApplicationRecord
       cit_h = {}
 
       ### file encoding causes weird problems
-      
+
       ### citation type, not sure if necessary
       #cit_type = row_h[ 'type' ]
       #if cit_type.present?
-      #  row_h[ 'citation_type_id' ] = row_d[ cit_type ]  
-      #else 
+      #  row_h[ 'citation_type_id' ] = row_d[ cit_type ]
+      #else
       #  row_h[ 'citation_type_id' ] = primary_id
       #end
       #row_h.delete 'type'
@@ -256,9 +256,9 @@ class Project < ApplicationRecord
       if cit_h[ 'TI' ].present? then row_h[ 'name' ] = cit_h[ 'TI' ].strip end
       if cit_h[ 'AB' ].present? then row_h[ 'abstract' ] = cit_h[ 'AB' ].strip end
       row_h[ 'citation_type_id' ] = primary_id
-      
+
       #keywords
-      if cit_h[ 'OT' ].present? 
+      if cit_h[ 'OT' ].present?
         kw_str = cit_h[ 'OT' ]
         kw_str.gsub! /"/, ''
         kw_arr = kw_str.split( "     " )
@@ -274,7 +274,7 @@ class Project < ApplicationRecord
       end
 
       #authors
-      if cit_h[ 'AU' ].present? 
+      if cit_h[ 'AU' ].present?
         au_str = cit_h[ 'AU' ]
         au_str.gsub! /"/, ''
         au_arr = au_str.split( "     " )
@@ -282,7 +282,7 @@ class Project < ApplicationRecord
         if au_arr.length == 1 then au_arr = au_str.split( / \/ |\// ) end
         if au_arr.length == 1 then au_arr = au_str.split( / \| |\|/ ) end
         if au_arr.length == 1 then au_arr = au_str.split( /\n| \n/ ) end
-        row_h[ 'authors_attributes' ] = {} 
+        row_h[ 'authors_attributes' ] = {}
         au_arr.each do |au|
           row_h[ 'authors_attributes' ][Time.now.to_i + key_counter] = { name: au }
           key_counter+=1
@@ -315,8 +315,8 @@ class Project < ApplicationRecord
     file_data.split("\n").each do |line|
       file_string += ( line.strip_control_and_extended_characters() + "\n" )
     end
-    
-    h_arr = [] 
+
+    h_arr = []
     parser.parse( file_string ).each do |cit_h|
       row_h = {}
       ### will add as primary citation by default, there is no way to figure that out from pubmed
@@ -326,7 +326,7 @@ class Project < ApplicationRecord
       if cit_h[ 'T1' ].present? then row_h[ 'name' ] = cit_h[ 'T1' ].strip end
       if cit_h[ 'AB' ].present? then row_h[ 'abstract' ] = cit_h[ 'AB' ].strip end
       row_h[ 'citation_type_id' ] = primary_id
-      
+
       #keywords
       if cit_h[ 'KW' ].present?
         ### splitting kw strings still a huge pain
@@ -347,9 +347,9 @@ class Project < ApplicationRecord
       end
 
       row_h[ 'authors_attributes' ] = {}
-      
+
       ##authors
-      #if cit_h[ 'AU' ].present? 
+      #if cit_h[ 'AU' ].present?
       #  au_arr = cit_h[ 'AU' ]
       #  au_arr.each do |au|
       #    row_h[ 'authors_attributes' ][Time.now.to_i + key_counter] = { name: au }
@@ -359,7 +359,7 @@ class Project < ApplicationRecord
 
       #there are other tags for authors
       [ "A1", "A2", "A3", "A4", "AU" ].each do |au_key|
-        if cit_h[ au_key ].present? 
+        if cit_h[ au_key ].present?
           au_arr = []
           if cit_h[ au_key ].is_a? Enumerable
             au_arr = cit_h[ au_key ]
@@ -402,8 +402,8 @@ class Project < ApplicationRecord
     file_data.split("\n").each do |line|
       file_string += ( line.strip_control_and_extended_characters() + "\n" )
     end
-    
-    h_arr = [] 
+
+    h_arr = []
     parser.parse( file_string ).each do |cit_h|
       row_h = {}
       ### will add as primary citation by default, there is no way to figure that out from pubmed
@@ -412,7 +412,7 @@ class Project < ApplicationRecord
       if cit_h[ 'T' ].present? then row_h[ 'name' ] = cit_h[ 'T' ].strip end
       if cit_h[ 'X' ].present? then row_h[ 'abstract' ] = cit_h[ 'X' ].strip end
       row_h[ 'citation_type_id' ] = primary_id
-      
+
       #keywords
       if cit_h[ 'K' ].present?
         ### splitting kw strings still a huge pain
@@ -435,9 +435,9 @@ class Project < ApplicationRecord
       end
 
       row_h[ 'authors_attributes' ] = {}
-      
+
       ##authors
-      #if cit_h[ 'AU' ].present? 
+      #if cit_h[ 'AU' ].present?
       #  au_arr = cit_h[ 'AU' ]
       #  au_arr.each do |au|
       #    row_h[ 'authors_attributes' ][Time.now.to_i + key_counter] = { name: au }
@@ -447,7 +447,7 @@ class Project < ApplicationRecord
 
       #there are other tags for authors
       [ "A" ].each do |au_key|
-        if cit_h[ au_key ].present? 
+        if cit_h[ au_key ].present?
           au_arr = []
           if cit_h[ au_key ].is_a? Enumerable
             au_arr = cit_h[ au_key ]

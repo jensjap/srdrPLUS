@@ -3,6 +3,8 @@ class CreateCitationsTasks < ActiveRecord::Migration[5.0]
     create_table :citations_tasks do |t|
       t.references :citation, foreign_key: true
       t.references :task, foreign_key: true
+
+      t.timestamps
       t.datetime :deleted_at
       t.boolean :active
     end
