@@ -39,6 +39,12 @@ module SeedData
         { name: 'Edit' }
       ])
 
+      # LabelTypes.
+      LabelType.create( name: 'Yes' )
+      LabelType.create( name: 'No' )
+      LabelType.create( name: 'Maybe' )
+
+
       # TaskTypes.
       TaskType.create(name: 'Perpetual')
       TaskType.create(name: 'Pilot')
@@ -517,10 +523,12 @@ module SeedDataExtended
         when 'Advanced'
           for s in @screeners.sample(rand(3))
             Assignment.create(
-              date_assigned: DateTime.now,
-              date_due: Date.today + 7,
-              projects_users_role: ProjectsUsersRole.find_by({ projects_user: ProjectsUser.find_by({ user: s, project: p }), role: Role.where(name: 'Contributor') }),
-              task: t
+              {
+                date_assigned: DateTime.now,
+                date_due: Date.today + 7,
+                projects_users_role: ProjectsUsersRole.find_by({ projects_user: ProjectsUser.find_by({ user: s, project: p }), role: Role.where(name: 'Contributor') }),
+                task: t
+              }
             )
           end
         end
@@ -549,7 +557,7 @@ module SeedDataExtended
         citations_project = assignment.task.project.citations_projects.sample
         projects_users_role = assignment.projects_users_role
 
-        label = Label.create( value: [ 'yes', 'no', 'maybe' ].sample, citations_project_id: citations_project.id, projects_users_role: projects_users_role )
+        label = Label.create( label_type: [ LabelType.find_by( name: 'Yes' ), LabelType.find_by( name: 'No' ), LabelType.find_by( name: 'Maybe' ) ].sample, citations_project_id: citations_project.id, projects_users_role: projects_users_role )
       end
 
       # Reasons

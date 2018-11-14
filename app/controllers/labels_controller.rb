@@ -46,6 +46,6 @@ class LabelsController < ApplicationController
 
     def label_params
       params.require(:label)
-            .permit(:name, :citations_project_id, :value, :projects_users_role_id)
+            .permit(:name, :citations_project_id, :label_type_id, :projects_users_role_id)
     end
 end

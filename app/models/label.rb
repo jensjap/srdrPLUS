@@ -12,6 +12,7 @@ class Label < ApplicationRecord
                                                 .limit(count) }  
   belongs_to :citations_project
   belongs_to :projects_users_role
+  belongs_to :label_type
 
   has_many :notes, as: :notable
   has_many :tags, as: :taggable
@@ -24,5 +25,5 @@ class Label < ApplicationRecord
   has_many :labels_reasons, dependent: :destroy
   has_many :reasons, through: :labels_reasons
 
-  validates :value, presence: true
+  validates :label_type, presence: true
 end

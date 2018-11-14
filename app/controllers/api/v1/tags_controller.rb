@@ -7,7 +7,7 @@ module Api
       formats [:json]
       def index
         page          = ( params[ :page ] || 1 ).to_i
-        page_size     = 40
+        page_size     = 100
         query         = params[ :q ] || ''
         projects_user_tags  = Tag.by_projects_user( @projects_user ).by_query( query )
         user_tags           = Tag.by_user( @projects_user.user ).by_query( query )

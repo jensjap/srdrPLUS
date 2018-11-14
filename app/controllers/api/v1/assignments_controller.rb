@@ -13,6 +13,7 @@ module Api
 
       api :GET, '/v1/assignments/:id/history', 'List of citations that the user has most recently labeled and the  labels themselves'
       formats [:json]
+
       def history
         count = params[:count].to_i
         offset = params[:offset].to_i
