@@ -13,11 +13,11 @@ class KeyQuestionsProjectsController < ApplicationController
 
     respond_to do |format|
       if @key_questions_project.save
-        format.html { redirect_to edit_project_path(@project, anchor: 'panel-key-question'),
+        format.html { redirect_to edit_project_path(@project, anchor: 'panel-key-questions'),
                       notice: t('success') }
         format.json { render :show, status: :created, location: @project }
       else
-        format.html { redirect_to edit_project_path(@project, anchor: 'panel-key-question'),
+        format.html { redirect_to edit_project_path(@project, anchor: 'panel-key-questions'),
                       alert: t('blank') }
         format.json { render json: @project.errors, status: :unprocessable_entity }
       end
@@ -29,7 +29,7 @@ class KeyQuestionsProjectsController < ApplicationController
   def update
     respond_to do |format|
       if @key_questions_project.update(key_questions_project_params)
-        format.html { redirect_to edit_project_path(@key_questions_project.project, anchor: 'panel-key-question'),
+        format.html { redirect_to edit_project_path(@key_questions_project.project, anchor: 'panel-key-questions'),
                       notice: t('success') }
         format.json { render :show, status: :created, location: @project }
       else
@@ -45,7 +45,7 @@ class KeyQuestionsProjectsController < ApplicationController
     @project = @key_questions_project.project
     @key_questions_project.destroy
     respond_to do |format|
-      format.html { redirect_to edit_project_path(@project, anchor: 'panel-key-question'),
+      format.html { redirect_to edit_project_path(@project, anchor: 'panel-key-questions'),
                     notice: t('removed') }
       format.json { head :no_content }
     end
