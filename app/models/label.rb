@@ -1,4 +1,7 @@
 class Label < ApplicationRecord
+  acts_as_paranoid
+  has_paper_trail
+
   scope :last_updated, -> ( projects_users_role, project, offset, count ) { joins(:citations_project)
                                                 .where(citations_projects: { project_id: project.id })
                                                 .includes(:citation)
@@ -18,8 +21,8 @@ class Label < ApplicationRecord
   has_one :projects_user, through: :projects_users_role
   has_one :user, through: :projects_users
 
-  has_many :reasons_labels, dependent: :destroy
-  has_many :reasons, through: :reasons_labels
+  has_many :labels_reasons, dependent: :destroy
+  has_many :reasons, through: :labels_reasons
 
   validates :value, presence: true
 end

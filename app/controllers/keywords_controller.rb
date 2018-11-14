@@ -1,6 +1,8 @@
 
 class KeywordsController < ApplicationController
   # GET /keywords.json
+  
+  ## THIS IS REDUNDANT -Birol
   def index
     _page = (params[:page] || 1).to_i
     _page_size = 30

@@ -544,16 +544,19 @@ module SeedDataExtended
         end
       end
 
-      CitationsProject.first(100).each do |cp|
-        label = Label.create
+      200.times do
+        assignment = Assignment.all.sample
+        citations_project = assignment.task.project.citations_projects.sample
+        projects_users_role = assignment.projects_users_role
+
+        label = Label.create( value: [ 'yes', 'no', 'maybe' ].sample, citations_project_id: citations_project.id, projects_users_role: projects_users_role )
       end
 
- #     # Notes
- #     Label.all.each do |cp|
- #       reason = Reason.find_or_create_by( name: Faker::RickAndMorty.quote )
- #         cp.reasons << ReasonsLabel.create( reason: reason, projects_users_role: ProjectsUsersRole.all.sample )
- #     end
-
+      # Reasons
+      Label.all.sample(100).each do |label|
+        reason = Reason.find_or_create_by!( name: Faker::RickAndMorty.quote )
+        label.reasons << reason
+      end
 
       # Turn on paper_trail.
       PaperTrail.enabled = true

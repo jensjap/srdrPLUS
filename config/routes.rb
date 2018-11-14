@@ -52,6 +52,8 @@ Rails.application.routes.draw do
       resources :projects_users do
         resources :tags, only: [ :index ]
       end
+      resources :taggings, only: [ :create, :destroy ]
+      resources :notes, only: [ :create, :destroy ]
 
     end
   end

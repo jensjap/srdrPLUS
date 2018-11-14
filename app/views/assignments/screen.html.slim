@@ -3,7 +3,7 @@
     h3 NOTHING TO LABEL
   
   #citation-row.row
-    .columns.full-height.medium-10
+    .column.full-height.medium-6
       #citation-container.callout
         h5 
           #citation-name
@@ -52,13 +52,17 @@
         i
           #citation-refman.display-inline
 
-    #side-panel
-      .columns.full-height.medium-2
-        .callout.row.column
-          #tags-list.column
-          #tag-select.column
-            select
-        .callout.row.column
+    .column.full-height.medium-3
+      .callout
+        #tags-list
+        #tag-select
+          select
+    .column.full-height.medium-3
+      .callout
+        #notes-list
+        textarea#note-textbox
+        #save-note-button.button.tiny.hollow
+          | Save Note
 
   .row style="text-align: center;"
     #control-group.button-group
@@ -85,14 +89,14 @@
 
 #hide-me.hide
   #breadcrumb-group.row.button-group.small
-  #projects_users_role-id
+  #projects-users-role-id
     | #{ @assignment.projects_users_role_id }
   #screen-assignment-json-url
     | #{ screen_api_v1_assignment_url(@assignment.id) }
   #history-json-url
     | #{ history_api_v1_assignment_url(@assignment.id) }
-  #labels-url
-    | #{ labels_url }
+  #root-url
+    | #{ root_url }
   #tags-url
     | #{ api_v1_projects_user_tags_url(@assignment.projects_users_role.projects_user_id) }
   #authenticity-token

@@ -6,7 +6,7 @@ module Api
       api :GET, '/v1/assignments/:id/screen', 'List of citations to screen'
       formats [:json]
       def screen
-        @unlabeled_citations_projects = CitationsProject.unlabeled( @assignment.project, params[:count] ).includes( citation: [ :authors, :keywords, :journal ], taggings: [ :tag, :projects_users_role ] )
+        @unlabeled_citations_projects = CitationsProject.unlabeled( @assignment.project, params[:count] ).includes( citation: [ :authors, :keywords, :journal ], taggings: [ :tag, projects_users_role: [ user: [ :profile ] ] ], notes: [ projects_users_role: [ user: [ :profile ] ] ] )
         @past_labels = Label.last_updated( current_user, @assignment.project, 0, params[:count] )
         render 'screen.json'
       end
@@ -16,7 +16,7 @@ module Api
       def history
         count = params[:count].to_i
         offset = params[:offset].to_i
-        @past_labels = Label.last_updated( current_user, @assignment.project, offset, count )
+        @past_labels = Label.last_updated( current_user, @assignment.project, offset, count ).includes( citations_project: [ citation: [ :authors, :keywords, :journal ] ], labels_reasons: [ :reason ] )
         render 'history.json'
       end
 

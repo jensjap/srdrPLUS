@@ -27,6 +27,7 @@ class User < ApplicationRecord
   has_many :dispatches, dependent: :destroy, inverse_of: :user
 
   has_many :projects_users, dependent: :destroy, inverse_of: :user
+  has_many :projects_users_roles, through: :projects_users
   has_many :projects, through: :projects_users, dependent: :destroy
 
   has_many :publishings, dependent: :destroy, inverse_of: :user

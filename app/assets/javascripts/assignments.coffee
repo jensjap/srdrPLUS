@@ -19,6 +19,8 @@ document.addEventListener 'turbolinks:load', ->
             ( data ) ->
               obj.citations = data.unlabeled_citations_projects
               obj.history = data.labeled_citations_projects
+              if data.unlabeled_citations_projects.length == 0
+                toastr.warning( 'No more citations to label' )
         }
       return
 
@@ -81,9 +83,29 @@ document.addEventListener 'turbolinks:load', ->
           $( '#citation-keywords' ).append( ', ' + k.name)
 
       ## TAGGINGS
+      root_url = $( '#root-url' ).text()
+      $( '#tags-list' ).empty()
       for t in current_citation.taggings
-        tag = $( '<div class="tag" >' + t.tag.name + ' <a id="delete-tag-'+ t.tag.id + '">delete</a></div>' )
+        tag = $( '<div class="tag" >' + t.tag.name + ' </div>' )
+        delete_tag_link = $( '<a id="delete-tag-'+ t.id + '" tagging-id="' + t.id + '">delete</a>' )
+        delete_tag_link.click ->
+          $.ajax {
+            type: 'DELETE'
+            url: root_url + '/api/v1/taggings/' + $( this ).attr( 'tagging-id' )
+            data: {
+              utf8: '✓'
+              authenticity_token: $( '#authenticity-token' ).text()
+            }
+            success:
+              () ->
+                toastr.success( 'Tag successfully deleted' )
+            error:
+              () ->
+                toastr.error( 'ERROR: Could not delete tag' )
+          }
 
+        $( tag ).append( delete_tag_link )
+        console.log tag
         $( '#tags-list' ).append( tag )
 
       ## CREATE A NEW TAGGING
@@ -97,6 +119,80 @@ document.addEventListener 'turbolinks:load', ->
           data: (params) ->
             q: params.term
             page: params.page || 1
+
+      $( '#tag-select select' ).on 'change', ->
+        $.ajax {
+          type: 'POST'
+          url: root_url + '/api/v1/taggings'
+          dataType: 'json'
+          data: {
+            utf8: '✓'
+            authenticity_token: $( '#authenticity-token' ).text()
+            tagging: {
+              tag_id: $( this ).val()
+              projects_users_role_id: obj[ 'projects_users_role_id' ]
+              taggable_id: current_citation.citations_project_id
+              taggable_type: "CitationsProject"
+            }
+          }
+          success:
+            () ->
+              toastr.success( 'Tag successfully created' )
+          error:
+            () ->
+              toastr.error( 'ERROR: Could not create tag' )
+        }
+
+      ## NOTES
+      root_url = $( '#root-url' ).text()
+      $( '#notes-list' ).empty()
+      for n in current_citation.notes
+        note = $( '<div class="note" >' + n.value + ' </div>' )
+        delete_note_link = $( '<a id="delete-note-'+ n.id + '" note-id="' + n.id + '">delete</a>' )
+        delete_note_link.click ->
+          $.ajax {
+            type: 'DELETE'
+            url: root_url + '/api/v1/notes/' + $( this ).attr( 'note-id' )
+            data: {
+              utf8: '✓'
+              authenticity_token: $( '#authenticity-token' ).text()
+            }
+            success:
+              () ->
+                toastr.success( 'Note successfully deleted' )
+            error:
+              () ->
+                toastr.error( 'ERROR: Could not delete note' )
+          }
+
+        $( note ).append( delete_note_link )
+        $( '#notes-list' ).append( note )
+
+      ## CREATE A NEW NOTE
+      $( '#save-note-button' ).on 'click', ->
+        console.log $( this ).val()
+        $.ajax {
+          type: 'POST'
+          url: root_url + '/api/v1/notes'
+          dataType: 'json'
+          data: {
+            utf8: '✓'
+            authenticity_token: $( '#authenticity-token' ).text()
+            note: {
+              value: $( '#note-textbox' ).val()
+              projects_users_role_id: obj[ 'projects_users_role_id' ]
+              notable_id: current_citation.citations_project_id
+              notable_type: "CitationsProject"
+            }
+          }
+          success:
+            () ->
+              toastr.success( 'Note successfully created' )
+          error:
+            () ->
+              toastr.error( 'ERROR: Could not create note' )
+        }
+
 
       $( '#yes-button' ).removeClass( 'secondary' )
       $( '#no-button' ).removeClass( 'secondary' )
@@ -119,7 +215,7 @@ document.addEventListener 'turbolinks:load', ->
       if obj.index > 0 || obj.history[ obj.index ].label
         is_patch = true
 
-      label_url = $( '#labels-url' ).text()
+      label_url = $( '#root-url' ).text() + '/labels'
       if is_patch
         label_url = label_url + '/' + obj.history[ obj.index ].label.id
       $.ajax {
@@ -132,6 +228,7 @@ document.addEventListener 'turbolinks:load', ->
           label: {
             value: label_value
             citations_project_id: current_citation.citations_project_id
+            projects_users_role_id: obj[ 'projects_users_role_id' ]
           }
         }
         success:
@@ -177,8 +274,11 @@ document.addEventListener 'turbolinks:load', ->
 
 ##### start_screening #####
     start_screening = ( citations, history ) ->
+      #we need the projects_users_role_id
+      projects_users_role_id = $( '#projects-users-role-id' ).text()
+
       # session state is stored in state_obj, and this object is passed in methods that modify the state
-      state_obj = { citations: citations, history: history, index: 0, done: 'false', history_page: 0 }
+      state_obj = { projects_users_role_id: projects_users_role_id, citations: citations, history: history, index: 0, done: 'false', history_page: 0 }
       next_citation( state_obj )
       #add_breadcrumb( state_obj )
       state_obj.index = 0
