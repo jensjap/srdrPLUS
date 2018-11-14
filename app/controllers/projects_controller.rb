@@ -1,7 +1,7 @@
 class ProjectsController < ApplicationController
   add_breadcrumb 'my projects', :projects_path
 
-  before_action :set_project, only: [:show, :edit, :update, :destroy, :export, :import_csv, :import_pubmed, :import_endnote, :import_ris]
+  before_action :set_project, only: [:show, :edit, :update, :destroy, :export, :import_csv, :import_pubmed, :import_endnote, :import_ris, :next_assignment]
 
   SORT = {  'updated-at': { updated_at: :desc },
             'created-at': { created_at: :desc }
@@ -152,6 +152,13 @@ class ProjectsController < ApplicationController
     end
     redirect_to edit_project_path(@project, anchor: 'panel-citations')
   end
+
+  def next_assignment 
+    projects_user = ProjectsUser.where( project: @project, user: current_user ).first
+    next_assignment = projects_user.assignments.first
+    redirect_to controller: :assignments, action: :screen, id: next_assignment.id
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_project

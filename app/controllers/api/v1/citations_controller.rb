@@ -19,12 +19,12 @@ class Api::V1::CitationsController < Api::V1::BaseController
       @total_count            = citations_projects.length
       @citation_project_dict  = Hash[ *citations_projects.map { | c_p | [ c_p.citation_id,  c_p.id ] }.flatten ]
       @citations              = total_arr[ offset .. offset + page_size - 1 ]
-      @more                   = offset + @total_count < total_arr.length
+      @more                   = offset + @citations.length < @total_count
     else
       citations               = Citation.by_query( query )
       @total_count            = citations.length
       @citations              = citations[ offset .. offset + page_size - 1 ]
-      @more                   = offset + @total_count < total_arr.length
+      @more                   = offset + @citations.length < total_arr.length
     end
 
   end
@@ -37,7 +37,7 @@ class Api::V1::CitationsController < Api::V1::BaseController
     total_arr                 = Citation.by_query( query )
     @total_count              = total_arr.length
     @citations                = total_arr[ offset .. offset + page_size - 1 ]
-    @more                     = offset + @citations.length < total_arr.length
+    @more                     = offset + @citations.length < @total_count
   end
 end
 

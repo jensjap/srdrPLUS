@@ -55,3 +55,32 @@
 .citation-buttons {
   float: right;
 }
+
+#feature-panel {
+  display: flex;
+  flex-direction: row;
+  .button {
+    margin-right: 0.5rem; 
+  }
+}
+
+#tags-modal {
+  width: 50vw;
+  height: 50vh;
+  position: relative;
+  left: 25vw;
+  top: 25vh;
+  background-color: red;
+  display: flex;
+  flex-direction: column;
+  #tags-controls {
+    display: flex;
+    flex-direction: row;
+  }
+
+  #tags-list {
+    .tag {
+
+    }
+  }
+}

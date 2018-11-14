@@ -23,6 +23,7 @@
 *.swp
 *.swo
 *.un~
+*.swn
 
 # DS_Store files.
 .DS_Store

@@ -39,6 +39,12 @@ module SeedData
         { name: 'Edit' }
       ])
 
+      # LabelTypes.
+      LabelType.create( name: 'Yes' )
+      LabelType.create( name: 'No' )
+      LabelType.create( name: 'Maybe' )
+
+
       # TaskTypes.
       TaskType.create(name: 'Perpetual')
       TaskType.create(name: 'Pilot')
@@ -374,7 +380,7 @@ module SeedDataExtended
       @citation_types = [@primary, @secondary]
 
       # Citations, Journals, Authors and Keywords
-      1000.times do |n|
+      200.times do |n|
         updated_at = Faker::Time.between(DateTime.now - 1000, DateTime.now - 1)
         c = Citation.create(
           name:           Faker::Lorem.sentence,
@@ -517,10 +523,12 @@ module SeedDataExtended
         when 'Advanced'
           for s in @screeners.sample(rand(3))
             Assignment.create(
-              date_assigned: DateTime.now,
-              date_due: Date.today + 7,
-              projects_users_role: ProjectsUsersRole.find_by({ projects_user: ProjectsUser.find_by({ user: s, project: p }), role: Role.where(name: 'Contributor') }),
-              task: t
+              {
+                date_assigned: DateTime.now,
+                date_due: Date.today + 7,
+                projects_users_role: ProjectsUsersRole.find_by({ projects_user: ProjectsUser.find_by({ user: s, project: p }), role: Role.where(name: 'Contributor') }),
+                task: t
+              }
             )
           end
         end
@@ -533,6 +541,29 @@ module SeedDataExtended
                               description: Faker::ChuckNorris.unique.fact,
                               start_at: 10.minute.ago)
         Faker::UniqueGenerator.clear
+      end
+
+      # Tags and Notes
+      CitationsProject.all.each do |cp|
+        5.times do
+          tag = Tag.find_or_create_by( name: Faker::Lovecraft.word )
+          cp.taggings << Tagging.create( tag: tag, projects_users_role: ProjectsUsersRole.all.sample )
+          cp.notes << Note.create( value: Faker::Lovecraft.sentence, projects_users_role: ProjectsUsersRole.all.sample )
+        end
+      end
+
+      200.times do
+        assignment = Assignment.all.sample
+        citations_project = assignment.task.project.citations_projects.sample
+        projects_users_role = assignment.projects_users_role
+
+        label = Label.create( label_type: [ LabelType.find_by( name: 'Yes' ), LabelType.find_by( name: 'No' ), LabelType.find_by( name: 'Maybe' ) ].sample, citations_project_id: citations_project.id, projects_users_role: projects_users_role )
+      end
+
+      # Reasons
+      Label.all.sample(100).each do |label|
+        reason = Reason.find_or_create_by!( name: Faker::RickAndMorty.quote )
+        label.reasons << reason
       end
 
       # Turn on paper_trail.

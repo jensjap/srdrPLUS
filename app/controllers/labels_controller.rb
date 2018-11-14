@@ -7,7 +7,6 @@ class LabelsController < ApplicationController
 
   def create
     @label = Label.new( label_params )
-    @label.user = current_user
     respond_to do |format|
       if @label.save
         format.html { redirect_to edit_label_path(@label), notice: t('success') }
@@ -47,6 +46,6 @@ class LabelsController < ApplicationController
 
     def label_params
       params.require(:label)
-            .permit(:name, :citations_project_id, :value, :user_id)
+            .permit(:name, :citations_project_id, :label_type_id, :projects_users_role_id)
     end
 end
