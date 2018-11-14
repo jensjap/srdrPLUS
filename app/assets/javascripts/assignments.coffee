@@ -19,6 +19,8 @@ document.addEventListener 'turbolinks:load', ->
             ( data ) ->
               obj.citations = data.unlabeled_citations_projects
               obj.history = data.labeled_citations_projects
+              if data.unlabeled_citations_projects.length == 0
+                toastr.warning( 'No more citations to label' )
         }
       return
 
@@ -80,20 +82,180 @@ document.addEventListener 'turbolinks:load', ->
         else
           $( '#citation-keywords' ).append( ', ' + k.name)
 
+      ## TAGGINGS
+      root_url = $( '#root-url' ).text()
+      $( '#tags-list' ).empty()
+      for t in current_citation.taggings
+        tag = $( '<div class="tag" >' + t.tag.name + ' </div>' )
+        delete_tag_link = $( '<a id="delete-tag-'+ t.id + '" tagging-id="' + t.id + '">delete</a>' )
+        delete_tag_link.click ->
+          $.ajax {
+            type: 'DELETE'
+            url: root_url + '/api/v1/taggings/' + $( this ).attr( 'tagging-id' )
+            data: {
+              utf8: '✓'
+              authenticity_token: $( '#authenticity-token' ).text()
+            }
+            success:
+              () ->
+                toastr.success( 'Tag successfully deleted' )
+            error:
+              () ->
+                toastr.error( 'ERROR: Could not delete tag' )
+          }
+
+        $( tag ).append( delete_tag_link )
+        $( '#tags-list' ).append( tag )
+
+      ## CREATE A NEW TAGGING
+      $( '#tag-select select' ).select2
+        minimumInputLength: 0
+        #closeOnSelect: false
+        ajax:
+          url: $( '#tags-url' ).text()
+          dataType: 'json'
+          delay: 100
+          data: (params) ->
+            q: params.term
+            page: params.page || 1
+
+      $( '#tag-select select' ).on 'change', ->
+        $.ajax {
+          type: 'POST'
+          url: root_url + '/api/v1/taggings'
+          dataType: 'json'
+          data: {
+            utf8: '✓'
+            authenticity_token: $( '#authenticity-token' ).text()
+            tagging: {
+              tag_id: $( this ).val()
+              projects_users_role_id: obj[ 'projects_users_role_id' ]
+              taggable_id: current_citation.citations_project_id
+              taggable_type: "CitationsProject"
+            }
+          }
+          success:
+            () ->
+              toastr.success( 'Tag successfully created' )
+          error:
+            () ->
+              toastr.error( 'ERROR: Could not create tag' )
+        }
+
+      ## NOTES
+      root_url = $( '#root-url' ).text()
+      $( '#notes-list' ).empty()
+      for n in current_citation.notes
+        note = $( '<div class="note" >' + n.value + ' </div>' )
+        delete_note_link = $( '<a id="delete-note-'+ n.id + '" note-id="' + n.id + '">delete</a>' )
+        delete_note_link.click ->
+          $.ajax {
+            type: 'DELETE'
+            url: root_url + '/api/v1/notes/' + $( this ).attr( 'note-id' )
+            data: {
+              utf8: '✓'
+              authenticity_token: $( '#authenticity-token' ).text()
+            }
+            success:
+              () ->
+                toastr.success( 'Note successfully deleted' )
+            error:
+              () ->
+                toastr.error( 'ERROR: Could not delete note' )
+          }
+
+        $( note ).append( delete_note_link )
+        $( '#notes-list' ).append( note )
+
+      ## CREATE A NEW NOTE
+      $( '#save-note-button' ).on 'click', ->
+        $.ajax {
+          type: 'POST'
+          url: root_url + '/api/v1/notes'
+          dataType: 'json'
+          data: {
+            utf8: '✓'
+            authenticity_token: $( '#authenticity-token' ).text()
+            note: {
+              value: $( '#note-textbox' ).val()
+              projects_users_role_id: obj[ 'projects_users_role_id' ]
+              notable_id: current_citation.citations_project_id
+              notable_type: "CitationsProject"
+            }
+          }
+          success:
+            () ->
+              toastr.success( 'Note successfully created' )
+          error:
+            () ->
+              toastr.error( 'ERROR: Could not create note' )
+        }
+
+#      ## REASONS
+#      root_url = $( '#root-url' ).text()
+#      $( '#reasons-list' ).empty()
+#      for n in obj.reasons
+#        note = $( '<div class="note" >' + n.value + ' </div>' )
+#        delete_note_link = $( '<a id="delete-note-'+ n.id + '" note-id="' + n.id + '">delete</a>' )
+#        delete_note_link.click ->
+#          $.ajax {
+#            type: 'DELETE'
+#            url: root_url + '/api/v1/notes/' + $( this ).attr( 'note-id' )
+#            data: {
+#              utf8: '✓'
+#              authenticity_token: $( '#authenticity-token' ).text()
+#            }
+#            success:
+#              () ->
+#                toastr.success( 'Note successfully deleted' )
+#            error:
+#              () ->
+#                toastr.error( 'ERROR: Could not delete note' )
+#          }
+#
+#        $( note ).append( delete_note_link )
+#        $( '#notes-list' ).append( note )
+#
+#      ## CREATE A NEW REASON
+#      $( '#save-note-button' ).on 'click', ->
+#        $.ajax {
+#          type: 'POST'
+#          url: root_url + '/api/v1/notes'
+#          dataType: 'json'
+#          data: {
+#            utf8: '✓'
+#            authenticity_token: $( '#authenticity-token' ).text()
+#            note: {
+#              value: $( '#note-textbox' ).val()
+#              projects_users_role_id: obj[ 'projects_users_role_id' ]
+#              notable_id: current_citation.citations_project_id
+#              notable_type: "CitationsProject"
+#            }
+#          }
+#          success:
+#            () ->
+#              toastr.success( 'Note successfully created' )
+#          error:
+#            () ->
+#              toastr.error( 'ERROR: Could not create note' )
+#        }
+
       $( '#yes-button' ).removeClass( 'secondary' )
       $( '#no-button' ).removeClass( 'secondary' )
       $( '#maybe-button' ).removeClass( 'secondary' )
       if obj.index > 0
-        if current_citation.label.value == 'yes'
+        if current_citation.label.label_type_id == 1
           $( '#yes-button' ).addClass( 'secondary' )
-        else if current_citation.label.value == 'no'
+        else if current_citation.label.label_type_id == 2
           $( '#no-button' ).addClass( 'secondary' )
-        else if current_citation.label.value == 'maybe'
+        else if current_citation.label.label_type_id == 3
           $( '#maybe-button' ).addClass( 'secondary' )
       return
 
 ##### send_label #####
-    send_label = ( obj, label_value ) ->
+    send_label = ( obj, label_type_id ) ->
+
+
       this.current_citation = obj.history[ obj.index ]
       # check if 'create' label or 'update'
       # if 'update', append label id
@@ -101,7 +263,7 @@ document.addEventListener 'turbolinks:load', ->
       if obj.index > 0 || obj.history[ obj.index ].label
         is_patch = true
 
-      label_url = $( '#labels-url' ).text()
+      label_url = $( '#root-url' ).text() + '/labels'
       if is_patch
         label_url = label_url + '/' + obj.history[ obj.index ].label.id
       $.ajax {
@@ -112,13 +274,14 @@ document.addEventListener 'turbolinks:load', ->
           utf8: '✓'
           authenticity_token: $( '#authenticity-token' ).text()
           label: {
-            value: label_value
+            label_type_id: label_type_id
             citations_project_id: current_citation.citations_project_id
+            projects_users_role_id: obj[ 'projects_users_role_id' ]
           }
         }
         success:
           ( data ) ->
-            parent.current_citation.label = { id: data.id, value: label_value }
+            parent.current_citation.label = { id: data.id, label_type_id: label_type_id }
             #update_breadcrumb( current_citation )
             if $('#switch-button').val() == 'ON'
               get_history_page( obj, 0 )
@@ -140,9 +303,9 @@ document.addEventListener 'turbolinks:load', ->
       return
 
 ##### update_label #####
-    update_label = ( obj, index, label_value ) ->
+    update_label = ( obj, index, label_type_id ) ->
       obj.index = index
-      send_label( obj, label_value )
+      send_label( obj, label_type_id )
 
 ##### update_arrows #####
     update_arrows = ( obj ) ->
@@ -159,31 +322,33 @@ document.addEventListener 'turbolinks:load', ->
 
 ##### start_screening #####
     start_screening = ( citations, history ) ->
+      #we need the projects_users_role_id
+      projects_users_role_id = $( '#projects-users-role-id' ).text()
+
       # session state is stored in state_obj, and this object is passed in methods that modify the state
-      state_obj = { citations: citations, history: history, index: 0, done: 'false', history_page: 0 }
+      state_obj = { projects_users_role_id: projects_users_role_id, citations: citations, history: history, index: 0, done: 'false', history_page: 0 }
       next_citation( state_obj )
       #add_breadcrumb( state_obj )
       state_obj.index = 0
       #update_index( state_obj, 0 )
       update_info( state_obj )
       update_arrows( state_obj )
-      $('#switch-button').val('OFF')
+      $( '#switch-button' ).val('OFF')
 
       $( '#yes-button' ).click ->
-        $( "#label-input[value='yes']" ).prop( 'checked', true )
-        send_label( state_obj, 'yes' )
-
-      $( '#maybe-button' ).click ->
-        $( "#label-input[value='maybe']" ).prop( 'checked', true )
-        send_label( state_obj, 'maybe' )
+        send_label( state_obj, 1 )
 
       $( '#no-button' ).click ->
-        $( "#label-input[value='no']" ).prop( 'checked', true )
-        send_label( state_obj, 'no' )
+        send_label( state_obj, 2 )
+
+      $( '#maybe-button' ).click ->
+        send_label( state_obj, 3 )
 
       next_button = $( '#next-button' )
       previous_button = $( '#previous-button' )
       switch_button = $( '#switch-button' )
+      tags_button = $( '#tags-button' )
+      close_tags_button = $( '#close-tags-button' )
 
       next_button.click ->
         if !next_button.hasClass( 'disabled' )
@@ -208,20 +373,27 @@ document.addEventListener 'turbolinks:load', ->
           switch_to_screening( state_obj )
           switch_button.val( 'OFF' )
 
-      # pagination buttons
-      $( '#next-page' ).click (e) -> 
-        console.log( state_obj )
-        get_history_page( state_obj, state_obj.history_page + 1 ) 
+      # button to get the tags modal
+      tags_button.click ->
+        switch_to_tags( )
 
-      $( '#prev-page' ).click (e) -> 
-        get_history_page( state_obj, state_obj.history_page - 1 ) 
+      # button to close the tags modal
+      close_tags_button.click ->
+        switch_to_screening( )
+
+      # pagination buttons
+      $( '#next-page' ).click (e) ->
+        get_history_page( state_obj, state_obj.history_page + 1 )
+
+      $( '#prev-page' ).click (e) ->
+        get_history_page( state_obj, state_obj.history_page - 1 )
       return
 
 ##### get_history_page #####
-    get_history_page = ( obj, page_index ) -> 
+    get_history_page = ( obj, page_index ) ->
       page_size = 10
+
       if obj.history.length < ( page_index + 1 ) * page_size
-        console.log( obj )
         offset = obj.history.length - 1
         count = ( page_index + 1 ) * page_size - obj.history.length
         $.ajax {
@@ -233,12 +405,10 @@ document.addEventListener 'turbolinks:load', ->
               obj.history = obj.history.concat( data.labeled_citations_projects )
               switch_to_list( obj, obj.history.slice( page_index * page_size, ( page_index + 1 ) * page_size ) )
               obj.history_page = page_index
-              console.log( data )
         }
       else
         switch_to_list( obj, obj.history.slice( page_index * page_size, ( page_index + 1 ) * page_size ) )
         obj.history_page = page_index
-
 
 ##### add_breadcrumb #####
     add_breadcrumb = ( obj ) ->
@@ -252,7 +422,7 @@ document.addEventListener 'turbolinks:load', ->
         update_info( obj )
         update_arrows( obj )
 
-      $( '#breadcrumb-group' ).append( button );
+      $( '#breadcrumb-group' ).append( button )
       obj.history[ obj.index ].breadcrumb_id = breadcrumb_id
       obj.history[ obj.index ].id = id
       return
@@ -260,11 +430,11 @@ document.addEventListener 'turbolinks:load', ->
 ##### update_breadcrumb #####
     update_breadcrumb = ( citation ) ->
       button = $( '#' + citation.breadcrumb_id )
-      label = citation.label.value
+      label = citation.label.label_type_id
       button.removeClass( 'success alert' )
-      if label == 'yes'
+      if label == 1
         button.addClass( 'success' )
-      else if label == 'no'
+      else if label == 2
         button.addClass( 'alert' )
       return
 
@@ -282,7 +452,7 @@ document.addEventListener 'turbolinks:load', ->
       $( '#citations-list-elements' ).empty()
       next_index = 0
       for c in history_elements
-        info_wrapper =  
+        info_wrapper =
           $( '<div><div/>' ).attr( { id: 'info-wrapper-' + c.citations_project_id, class: 'info-wrapper' } )
         citation_info =
           $( '<div></div>' ).attr( { id: 'citation-info-' + c.citations_project_id, class: 'citation-info' } )
@@ -297,7 +467,6 @@ document.addEventListener 'turbolinks:load', ->
           citation_abstract =
             $( '<div>' + c.abstract + '<div/>' ).attr( { id: '#citation-element-abstact-' + c.breadcrumb_id } )
 
-
         #set up buttons
         citation_buttons =
           $( '<div><div/>' ).attr( { id: 'citation-buttons-' + c.citations_project_id, class: 'button-group citation-buttons' } )
@@ -311,15 +480,15 @@ document.addEventListener 'turbolinks:load', ->
         # button click events
         citation_button_yes.click (e) ->
           e.stopPropagation()
-          update_label( obj, $(this).attr('index'), 'yes' )
+          update_label( obj, $(this).attr('index'), 1 )
 
         citation_button_no.click (e) ->
           e.stopPropagation()
-          update_label( obj, $(this).attr('index'), 'no' )
+          update_label( obj, $(this).attr('index'), 2 )
 
         citation_button_maybe.click (e) ->
           e.stopPropagation()
-          update_label( obj, $(this).attr('index'), 'maybe' )
+          update_label( obj, $(this).attr('index'), 3 )
 
         # set click behavior
         citation_element.click ->
@@ -330,17 +499,17 @@ document.addEventListener 'turbolinks:load', ->
           switch_to_screening( obj )
 
 
-        # highlight button based on label value
+        # highlight button based on label id
         if c.label?
-          if c.label.value == 'yes'
+          if c.label.label_type_id == 1
             citation_button_yes.addClass( 'success' )
             citation_button_no.addClass( 'hollow' )
             citation_button_maybe.addClass( 'hollow' )
-          else if c.label.value == 'no'
+          else if c.label.label_type_id == 2
             citation_button_yes.addClass( 'hollow' )
             citation_button_no.addClass( 'alert' )
             citation_button_maybe.addClass( 'hollow' )
-          else if c.label.value == 'maybe'
+          else if c.label.label_type_id == 3
             citation_button_yes.addClass( 'hollow' )
             citation_button_no.addClass( 'hollow' )
             citation_button_maybe.addClass( 'secondary' )
@@ -364,11 +533,27 @@ document.addEventListener 'turbolinks:load', ->
       $( '#citations-list' ).show()
       $( '#screen-div' ).hide()
 
+##### switch_to_tags #####
+    switch_to_tags = ( ) ->
+      $( '#screen-div' ).hide()
+      $( '#tags-modal' ).show()
+    #  $( '#citations-list-elements' ).empty()
+    #  next_index = 0
+    #  for c in history_elements
+    #    info_wrapper =  
+    #      $( '<div><div/>' ).attr( { id: 'info-wrapper-' + c.citations_project_id, class: 'info-wrapper' } )
+    #    citation_info =
+    #      $( '<div></div>' ).attr( { id: 'citation-info-' + c.citations_project_id, class: 'citation-info' } )
+    #    citation_element =
+    #      $( '<div></div>' ).attr( { id: 'citation-element-' + c.citations_project_id, class: 'callout row', index: next_index } )
+      return
+
 ##### switch_to_screening #####
     switch_to_screening = ( obj ) ->
       $( '#pagination-buttons' ).hide()
       $( '#citations-list-elements' ).empty()
       $( '#citations-list' ).hide()
+      $( '#tags-modal' ).hide()
       $( '#screen-div' ).show()
       $( '#switch-button').val('OFF')
 

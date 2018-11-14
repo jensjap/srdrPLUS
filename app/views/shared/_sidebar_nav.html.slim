@@ -7,7 +7,7 @@
     /li = link_to t('.citations'), edit_project_path(@project || @extraction.try(:project) || @extraction_forms_project.project) + '#panel-citations', title: t('manage_citations')
     li = link_to t('.tasks'), project_tasks_path(@project || @extraction.try(:project) || @extraction_forms_project.project), title: t('manage_tasks')
     /li = link_to t('.tasks'), edit_project_path(@project || @extraction.try(:project) || @extraction_forms_project.project) + '#panel-tasks', title: t('manage_tasks')
-    /li = link_to t('.screen'), projects_users_role_next_assignment_path
+    li = link_to t('.screen'), next_assignment_project_path(@project || @extraction.try(:project) || @extraction_forms_project.project)
     li = link_to 'Excluded Citations', '#'
     li = link_to 'Included Citations and Assignments', '#'
     li = link_to 'Completed Extractions', '#'

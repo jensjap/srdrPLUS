@@ -1,0 +1,2 @@
+class LabelType < ApplicationRecord
+end

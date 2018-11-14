@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180926055048) do
+ActiveRecord::Schema.define(version: 20181114034630) do
 
   create_table "abstrackr_settings", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "profile_id"
@@ -597,14 +597,34 @@ ActiveRecord::Schema.define(version: 20180926055048) do
     t.index ["deleted_at"], name: "index_keywords_on_deleted_at", using: :btree
   end
 
+  create_table "label_types", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string   "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "labels", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "citations_project_id"
-    t.integer  "user_id"
-    t.string   "value"
-    t.datetime "created_at",           null: false
-    t.datetime "updated_at",           null: false
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+    t.integer  "projects_users_role_id"
+    t.datetime "deleted_at"
+    t.integer  "label_type_id"
     t.index ["citations_project_id"], name: "index_labels_on_citations_project_id", using: :btree
-    t.index ["user_id"], name: "index_labels_on_user_id", using: :btree
+    t.index ["deleted_at"], name: "index_labels_on_deleted_at", using: :btree
+    t.index ["label_type_id"], name: "index_labels_on_label_type_id", using: :btree
+    t.index ["projects_users_role_id"], name: "index_labels_on_projects_users_role_id", using: :btree
+  end
+
+  create_table "labels_reasons", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "label_id"
+    t.integer  "reason_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.datetime "deleted_at"
+    t.index ["deleted_at"], name: "index_labels_reasons_on_deleted_at", using: :btree
+    t.index ["label_id"], name: "index_labels_reasons_on_label_id", using: :btree
+    t.index ["reason_id"], name: "index_labels_reasons_on_reason_id", using: :btree
   end
 
   create_table "measurements", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -647,14 +667,16 @@ ActiveRecord::Schema.define(version: 20180926055048) do
   end
 
   create_table "notes", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer  "user_id"
     t.string   "notable_type"
     t.integer  "notable_id"
-    t.text     "value",        limit: 65535
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
+    t.text     "value",                  limit: 65535
+    t.datetime "created_at",                           null: false
+    t.datetime "updated_at",                           null: false
+    t.integer  "projects_users_role_id"
+    t.datetime "deleted_at"
+    t.index ["deleted_at"], name: "index_notes_on_deleted_at", using: :btree
     t.index ["notable_type", "notable_id"], name: "index_notes_on_notable_type_and_notable_id", using: :btree
-    t.index ["user_id"], name: "index_notes_on_user_id", using: :btree
+    t.index ["projects_users_role_id"], name: "index_notes_on_projects_users_role_id", using: :btree
   end
 
   create_table "oauth_access_grants", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -964,6 +986,18 @@ ActiveRecord::Schema.define(version: 20180926055048) do
     t.index ["extraction_forms_projects_section_id"], name: "index_questions_on_extraction_forms_projects_section_id", using: :btree
   end
 
+  create_table "reasons", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string   "name",                   limit: 1000
+    t.datetime "created_at",                          null: false
+    t.datetime "updated_at",                          null: false
+    t.datetime "deleted_at"
+    t.integer  "projects_users_role_id"
+    t.integer  "label_type_id"
+    t.index ["deleted_at"], name: "index_reasons_on_deleted_at", using: :btree
+    t.index ["label_type_id"], name: "index_reasons_on_label_type_id", using: :btree
+    t.index ["projects_users_role_id"], name: "index_reasons_on_projects_users_role_id", using: :btree
+  end
+
   create_table "records", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "name"
     t.string   "recordable_type"
@@ -1093,21 +1127,25 @@ ActiveRecord::Schema.define(version: 20180926055048) do
   end
 
   create_table "taggings", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer  "user_id"
     t.integer  "tag_id"
     t.string   "taggable_type"
     t.integer  "taggable_id"
-    t.datetime "created_at",    null: false
-    t.datetime "updated_at",    null: false
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+    t.integer  "projects_users_role_id"
+    t.datetime "deleted_at"
+    t.index ["deleted_at"], name: "index_taggings_on_deleted_at", using: :btree
+    t.index ["projects_users_role_id"], name: "index_taggings_on_projects_users_role_id", using: :btree
     t.index ["tag_id"], name: "index_taggings_on_tag_id", using: :btree
     t.index ["taggable_type", "taggable_id"], name: "index_taggings_on_taggable_type_and_taggable_id", using: :btree
-    t.index ["user_id"], name: "index_taggings_on_user_id", using: :btree
   end
 
   create_table "tags", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "deleted_at"
+    t.index ["deleted_at"], name: "index_tags_on_deleted_at", using: :btree
   end
 
   create_table "task_types", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -1121,8 +1159,11 @@ ActiveRecord::Schema.define(version: 20180926055048) do
     t.integer  "project_id"
     t.integer  "num_assigned"
     t.datetime "deleted_at"
-    t.datetime "created_at",   null: false
-    t.datetime "updated_at",   null: false
+    t.datetime "created_at",                                null: false
+    t.datetime "updated_at",                                null: false
+    t.boolean  "required_inclusion_reason", default: false
+    t.boolean  "required_exclusion_reason", default: false
+    t.boolean  "required_maybe_reason",     default: false
     t.index ["deleted_at"], name: "index_tasks_on_deleted_at", using: :btree
     t.index ["project_id"], name: "index_tasks_on_project_id", using: :btree
     t.index ["task_type_id"], name: "index_tasks_on_task_type_id", using: :btree
@@ -1314,11 +1355,14 @@ ActiveRecord::Schema.define(version: 20180926055048) do
   add_foreign_key "key_questions_projects_questions", "key_questions_projects"
   add_foreign_key "key_questions_projects_questions", "questions"
   add_foreign_key "labels", "citations_projects"
-  add_foreign_key "labels", "users"
+  add_foreign_key "labels", "label_types"
+  add_foreign_key "labels", "projects_users_roles"
+  add_foreign_key "labels_reasons", "labels"
+  add_foreign_key "labels_reasons", "reasons"
   add_foreign_key "measurements", "comparisons_measures"
   add_foreign_key "message_types", "frequencies"
   add_foreign_key "messages", "message_types"
-  add_foreign_key "notes", "users"
+  add_foreign_key "notes", "projects_users_roles"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
   add_foreign_key "predictions", "citations_projects"
@@ -1342,6 +1386,8 @@ ActiveRecord::Schema.define(version: 20180926055048) do
   add_foreign_key "question_row_columns_question_row_column_options", "question_row_columns"
   add_foreign_key "question_rows", "questions"
   add_foreign_key "questions", "extraction_forms_projects_sections"
+  add_foreign_key "reasons", "label_types"
+  add_foreign_key "reasons", "projects_users_roles"
   add_foreign_key "result_statistic_section_types_measures", "measures"
   add_foreign_key "result_statistic_section_types_measures", "result_statistic_section_types"
   add_foreign_key "result_statistic_sections", "extractions_extraction_forms_projects_sections_type1_rows", column: "population_id"
@@ -1351,8 +1397,8 @@ ActiveRecord::Schema.define(version: 20180926055048) do
   add_foreign_key "result_statistic_sections_measures_comparisons", "comparisons"
   add_foreign_key "result_statistic_sections_measures_comparisons", "result_statistic_sections"
   add_foreign_key "suggestions", "users"
+  add_foreign_key "taggings", "projects_users_roles"
   add_foreign_key "taggings", "tags"
-  add_foreign_key "taggings", "users"
   add_foreign_key "tasks", "projects"
   add_foreign_key "tasks", "task_types"
   add_foreign_key "tps_arms_rssms", "extractions_extraction_forms_projects_sections_type1_row_columns", column: "timepoint_id"
