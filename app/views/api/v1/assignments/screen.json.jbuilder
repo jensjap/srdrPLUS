@@ -91,6 +91,7 @@ json.labeled_citations_projects do
         json.id note.projects_users_role.user.id
       end
     end
+
     json.label do
       json.id label.id
       json.value label.value

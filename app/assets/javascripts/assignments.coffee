@@ -105,6 +105,7 @@ document.addEventListener 'turbolinks:load', ->
           }
 
         $( tag ).append( delete_tag_link )
+
         $( '#tags-list' ).append( tag )
 
       ## CREATE A NEW TAGGING
@@ -169,6 +170,7 @@ document.addEventListener 'turbolinks:load', ->
 
       ## CREATE A NEW NOTE
       $( '#save-note-button' ).on 'click', ->
+
         $.ajax {
           type: 'POST'
           url: root_url + '/api/v1/notes'
