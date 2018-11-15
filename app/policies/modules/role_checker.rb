@@ -1,0 +1,43 @@
+module RoleChecker
+  LEADER = 1.freeze
+  CONSOLIDATOR = 2.freeze
+  CONTRIBUTOR = 3.freeze
+  AUDITOR = 4.freeze
+
+  def highest_role_id(user, project)
+    Role.
+      select(:id).
+      joins(:projects_users_roles).
+      joins(:projects_users).
+      where(projects_users_roles: { projects_users: { project: project, user: user } }).
+      min
+  end
+
+  def leader_by_user_and_project?(user, project)
+    highest_role_id = highest_role_id(user, project)
+    highest_role_id && highest_role_id.id == LEADER
+  end
+
+  def consolidator_by_user_and_project?(user, project)
+    highest_role_id = highest_role_id(user, project)
+    highest_role_id && highest_role_id.id == CONSOLIDATOR
+  end
+
+  def contributor_by_user_and_project?(user, project)
+    highest_role_id = highest_role_id(user, project)
+    highest_role_id && highest_role_id.id == CONTRIBUTOR
+  end
+
+  def auditor_by_user_and_project?(user, project)
+    highest_role_id = highest_role_id(user, project)
+    highest_role_id && highest_role_id.id == AUDITOR
+  end
+
+  def public_by_user_and_project?(user, project)
+    highest_role_id(user, project).nil?
+  end
+
+  def not_public_by_user_and_project?(user, project)
+    highest_role_id(user, project).nil?
+  end
+end
