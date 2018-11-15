@@ -81,11 +81,7 @@ class QuestionsController < ApplicationController
       qr.question_row_columns.create!(question_row_column_type: QuestionRowColumnType.first)
     end
 
-    respond_to do |format|
-      format.html { redirect_to edit_question_path(@question), notice: t('success') }
-      format.js   {  }
-    end
-
+    redirect_to edit_question_path(@question), notice: t('success')
   end
 
   # POST /questions/1/add_row
@@ -98,10 +94,7 @@ class QuestionsController < ApplicationController
     # question model to set the name field.
     @question.save
 
-    respond_to do |format|
-      format.html { redirect_to edit_question_path(@question), notice: t('success') }
-      format.js   {  }
-    end
+    redirect_to edit_question_path(@question), notice: t('success')
   end
 
   def dependencies
