@@ -57,3 +57,19 @@ document.addEventListener 'turbolinks:load', ->
 
       if _tableRows.length > 1
         hideHeaders(_tableRows)
+
+    $( '#add_column_link' ).click ( event ) ->
+      event.preventDefault()
+      $form = $( "form[id^='edit_question_']" )
+      $form.ajaxSubmit(
+        dataType: 'js'
+      )
+      $( '#add_column_button' ).click()
+
+    $( '#add_row_link' ).click ( event ) ->
+      event.preventDefault()
+      $form = $( "form[id^='edit_question_']" )
+      $form.ajaxSubmit(
+        dataType: 'js'
+      )
+      $( '#add_row_button' ).click()
