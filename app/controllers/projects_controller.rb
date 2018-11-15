@@ -1,10 +1,14 @@
 class ProjectsController < ApplicationController
   add_breadcrumb 'my projects', :projects_path
 
-  before_action :set_project, only: [:show, :edit, :update, :destroy, :export, :import_csv, :import_pubmed, :import_endnote, :import_ris, :next_assignment]
+  before_action :set_project, only: [
+    :show, :edit, :update, :destroy, :export, :import_csv,
+    :import_pubmed, :import_endnote, :import_ris, :next_assignment
+  ]
 
-  SORT = {  'updated-at': { updated_at: :desc },
-            'created-at': { created_at: :desc }
+  SORT = {
+    'updated-at': { updated_at: :desc },
+    'created-at': { created_at: :desc },
   }.stringify_keys
 
   # GET /projects
@@ -14,10 +18,12 @@ class ProjectsController < ApplicationController
     flash.now[:info] = msg if msg
     @query = params[:q]
     @order = params[:o] || 'updated-at'
-    @projects = current_user.projects.includes(:extraction_forms)
-                       .includes(:key_questions)
-                       .includes(publishings: [{ user: :profile }, approval: [{ user: :profile }]])
-                       .by_query(@query).order(SORT[@order]).page(params[:page])
+
+    authorize(Project)
+    @projects = policy_scope(Project).includes(:extraction_forms)
+      .includes(:key_questions)
+      .includes(publishings: [{ user: :profile }, approval: [{ user: :profile }]])
+      .by_query(@query).order(SORT[@order]).page(params[:page])
   end
 
   # GET /projects/1
@@ -27,16 +33,14 @@ class ProjectsController < ApplicationController
 
   # GET /projects/new
   def new
+    skip_authorization
+    skip_policy_scope
     @project = Project.new
   end
 
   # GET /projects/1/edit
   def edit
-    #@citations = Citation.pluck(:id)
-    #@citations = Citation.all
-    #@citation_dict = @citations.map{ c| [c.id, c] }.to_h
-    #@citations = @project.citations
-    #@citations_projects = @project.citations_projects.page(params[:page])
+    authorize(Project.find(params[:id]))
     @citation_dict = @project.citations.eager_load(:authors, :journal, :keywords).map{ |c| [c.id, c] }.to_h
     @citations_projects = @project.citations_projects
 
@@ -46,6 +50,9 @@ class ProjectsController < ApplicationController
   # POST /projects
   # POST /projects.json
   def create
+    skip_authorization
+    skip_policy_scope
+
     @project = Project.new(project_params)
 
     respond_to do |format|
@@ -63,6 +70,8 @@ class ProjectsController < ApplicationController
   # PATCH/PUT /projects/1
   # PATCH/PUT /projects/1.json
   def update
+    authorize(@project)
+
     respond_to do |format|
       if @project.update(project_params)
         format.html { redirect_to edit_project_path(@project, anchor: 'panel-information'),
@@ -78,6 +87,8 @@ class ProjectsController < ApplicationController
   # DELETE /projects/1
   # DELETE /projects/1.json
   def destroy
+    authorize(@project)
+
     @project.destroy
     respond_to do |format|
       format.html { redirect_to projects_url,
@@ -91,13 +102,18 @@ class ProjectsController < ApplicationController
   def filter
     @query = params[:q]  # Need @query for index partial.
     @order = params[:o]
-    @projects = Project.includes(publishings: [{ user: :profile }, approval: [{ user: :profile }]])
-                       .includes(:key_questions)
-                       .by_name_description_and_query(@query).order(SORT[@order]).page(params[:page])
+
+    authorize(Project)
+    @projects = policy_scope(Project).includes(publishings: [{ user: :profile }, approval: [{ user: :profile }]])
+      .includes(:key_questions)
+      .by_name_description_and_query(@query).order(SORT[@order]).page(params[:page])
     render 'index'
   end
 
   def undo
+    authorize(@project_version.item)
+    skip_policy_scope
+
     @project_version = PaperTrail::Version.find_by_id(params[:id])
     begin
       if @project_version.reify
@@ -153,7 +169,7 @@ class ProjectsController < ApplicationController
     redirect_to edit_project_path(@project, anchor: 'panel-citations')
   end
 
-  def next_assignment 
+  def next_assignment
     projects_user = ProjectsUser.where( project: @project, user: current_user ).first
     next_assignment = projects_user.assignments.first
     redirect_to controller: :assignments, action: :screen, id: next_assignment.id
@@ -162,10 +178,11 @@ class ProjectsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_project
-      @project = Project.includes(:extraction_forms)
-                        .includes(:key_questions)
-                        .includes(publishings: [{ user: :profile }, approval: [{ user: :profile }]])
-                        .find(params[:id])
+      authorize(Project.find(params[:id]))
+      @project = policy_scope(Project).includes(:extraction_forms)
+        .includes(:key_questions)
+        .includes(publishings: [{ user: :profile }, approval: [{ user: :profile }]])
+        .find(params[:id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
