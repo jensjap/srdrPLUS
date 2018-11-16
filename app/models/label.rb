@@ -25,5 +25,6 @@ class Label < ApplicationRecord
   has_many :labels_reasons, dependent: :destroy
   has_many :reasons, through: :labels_reasons
 
-  validates :label_type, presence: true
+  accepts_nested_attributes_for :labels_reasons
+  accepts_nested_attributes_for :reasons
 end

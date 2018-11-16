@@ -55,6 +55,7 @@ Rails.application.routes.draw do
       end
       resources :taggings, only: [ :create, :destroy ]
       resources :notes, only: [ :create, :destroy ]
+      resources :labels_reasons, only: [ :create, :destroy ]
 
     end
   end
