@@ -10,34 +10,36 @@ module RoleChecker
       joins(:projects_users_roles).
       joins(:projects_users).
       where(projects_users_roles: { projects_users: { project: project, user: user } }).
-      min
+      min.
+      try(:id).
+      try(:to_i)
   end
 
   def leader_by_user_and_project?(user, project)
     highest_role_id = find_highest_role_id(user, project)
-    highest_role_id && highest_role_id.id == LEADER
+    highest_role_id.id == LEADER
   end
 
   def consolidator_by_user_and_project?(user, project)
     highest_role_id = find_highest_role_id(user, project)
-    highest_role_id && highest_role_id.id == CONSOLIDATOR
+    highest_role_id.id == CONSOLIDATOR
   end
 
   def contributor_by_user_and_project?(user, project)
     highest_role_id = find_highest_role_id(user, project)
-    highest_role_id && highest_role_id.id == CONTRIBUTOR
+    highest_role_id.id == CONTRIBUTOR
   end
 
   def auditor_by_user_and_project?(user, project)
     highest_role_id = find_highest_role_id(user, project)
-    highest_role_id && highest_role_id.id == AUDITOR
+    highest_role_id.id == AUDITOR
   end
 
   def not_public_by_user_and_project?(user, project)
-    find_highest_role_id(user, project).present?
+    find_highest_role_id(user, project).nonzero?
   end
 
   def public_by_user_and_project?(user, project)
-    find_highest_role_id(user, project).nil?
+    find_highest_role_id(user, project).zero?
   end
 end
