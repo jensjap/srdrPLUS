@@ -12,6 +12,8 @@ class ExtractionsController < ApplicationController
   # GET /projects/1/extractions
   # GET /projects/1/extractions.json
   def index
+    skip_policy_scope
+    skip_authorization
     @extractions = @project.extractions
 
     add_breadcrumb 'edit project', edit_project_path(@project)
@@ -21,11 +23,16 @@ class ExtractionsController < ApplicationController
   # GET /extractions/1
   # GET /extractions/1.json
   def show
+    skip_policy_scope
+    skip_authorization
   end
 
   # GET /extractions/new
   def new
     @extraction = @project.extractions.new
+
+    skip_policy_scope
+    authorize(@extraction)
 
     add_breadcrumb 'extractions',    :project_extractions_path
     add_breadcrumb 'new extraction', :new_project_extraction_path
@@ -137,27 +144,16 @@ class ExtractionsController < ApplicationController
     end
 
     def set_extraction
-      @extraction = Extraction.includes(projects_users_role: { projects_user: :project })
-                              .find(params[:id])
-                              #.includes(key_questions_projects: [:key_question, extraction_forms_projects_section: [:extractions_extraction_forms_projects_sections, :extraction_forms_projects_section_type]])
+      @extraction = Extraction.
+        includes(projects_users_role: { projects_user: :project }).
+        find(params[:id])
+        #.includes(key_questions_projects: [:key_question, extraction_forms_projects_section: [:extractions_extraction_forms_projects_sections, :extraction_forms_projects_section_type]])
     end
 
     def set_extractions
-      @extractions = Extraction
-        .includes(projects_users_role: { projects_user: { user: :profile } })
-        .where(id: extraction_ids_params)
-    end
-
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def extraction_params
-      params.require(:extraction).permit(:citations_project_id,
-                                         :projects_users_role_id,
-                                         extractions_key_questions_project_ids: [],
-                                         key_questions_project_ids: [])
-    end
-
-    def extraction_ids_params
-      params.require(:extraction_ids)
+      @extractions = policy_scope(Extraction).
+        includes(projects_users_role: { projects_user: { user: :profile } }).
+        where(id: extraction_ids_params)
     end
 
     def ensure_extraction_form_structure
@@ -166,5 +162,19 @@ class ExtractionsController < ApplicationController
       else
         @extraction.ensure_extraction_form_structure
       end
+    end
+
+    # Never trust parameters from the scary internet, only allow the white list through.
+    def extraction_params
+      params.
+        require(:extraction).
+        permit(:citations_project_id,
+          :projects_users_role_id,
+          extractions_key_questions_project_ids: [],
+          key_questions_project_ids: [])
+    end
+
+    def extraction_ids_params
+      params.require(:extraction_ids)
     end
 end
