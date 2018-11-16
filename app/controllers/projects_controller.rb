@@ -111,10 +111,11 @@ class ProjectsController < ApplicationController
   end
 
   def undo
+    @project_version = PaperTrail::Version.find_by_id(params[:id])
+
     authorize(@project_version.item)
     skip_policy_scope
 
-    @project_version = PaperTrail::Version.find_by_id(params[:id])
     begin
       if @project_version.reify
         @project_version.reify.save
