@@ -52,9 +52,11 @@ class QuestionsController < ApplicationController
         format.html { redirect_to build_extraction_forms_project_path(@question.extraction_forms_project,
                                                                       anchor: "panel-tab-#{ @question.extraction_forms_projects_section.id }"),
                                   notice: t('success') }
+        format.js   { head :no_content }
         format.json { render :show, status: :ok, location: @question }
       else
         format.html { render :edit }
+        format.js   { head :no_content }
         format.json { render json: @question.errors, status: :unprocessable_entity }
       end
     end
@@ -72,6 +74,16 @@ class QuestionsController < ApplicationController
     end
   end
 
+  # POST /questions/1/add_column
+  # POST /questions/1/add_column.json
+  def add_column
+    @question.question_rows.each do |qr|
+      qr.question_row_columns.create!(question_row_column_type: QuestionRowColumnType.first)
+    end
+
+    redirect_to edit_question_path(@question), notice: t('success')
+  end
+
   # POST /questions/1/add_row
   # POST /questions/1/add_row.json
   def add_row
@@ -81,16 +93,6 @@ class QuestionsController < ApplicationController
     # This triggers after_save :ensure_matrix_column_headers callback in
     # question model to set the name field.
     @question.save
-
-    redirect_to edit_question_path(@question), notice: t('success')
-  end
-
-  # POST /questions/1/add_column
-  # POST /questions/1/add_column.json
-  def add_column
-    @question.question_rows.each do |qr|
-      qr.question_row_columns.create!(question_row_column_type: QuestionRowColumnType.first)
-    end
 
     redirect_to edit_question_path(@question), notice: t('success')
   end

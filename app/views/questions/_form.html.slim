@@ -1,3 +1,5 @@
+script src="http://malsup.github.com/jquery.form.js" type="text/javascript"
+
 = simple_form_for([@extraction_forms_projects_section, @question], html: { data: { 'abide': '', 'live-validate': true } }) do |f|
   = f.error_notification
 
@@ -27,16 +29,23 @@
     - unless first_time
 
       #step-two
-
-        = link_to add_column_question_path(@question), method: :post, class: 'float-right button secondary tiny' do
+        = link_to '#', id: 'add_column_link', class: 'float-right button secondary tiny' do
           i.fi-arrow-right>
           | Add Column
 
+        = link_to add_column_question_path(@question), id: 'add_column_button', method: :post, class: 'hide float-right button secondary tiny' do
+          i.fi-arrow-right>
+          | Add Column old
+
         == render 'questions/table', f: f
 
-        = link_to add_row_question_path(@question), method: :post, class: 'button secondary tiny' do
+        = link_to '#', id: 'add_row_link', class: 'button secondary tiny' do
           i.fi-arrow-down>
           | Add Row
+
+        = link_to add_row_question_path(@question), id: 'add_row_button', method: :post, class: 'hide button secondary tiny' do
+          i.fi-arrow-down>
+          | Add Row old
 
   .form-actions
 
