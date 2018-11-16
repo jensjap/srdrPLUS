@@ -13,8 +13,8 @@ class Project < ApplicationRecord
   scope :published, -> { joins(publishings: :approval) }
   scope :lead_by_current_user, -> {}
 
-  after_create :create_default_extraction_form
-  after_create :create_default_perpetual_task
+  after_create :create_default_extraction_form, :create_default_perpetual_task,
+    :associate_default_projects_users_role
 
   has_many :extractions, dependent: :destroy, inverse_of: :project
 
@@ -483,6 +483,12 @@ class Project < ApplicationRecord
 
     def create_default_extraction_form
       self.extraction_forms_projects.create!(extraction_forms_project_type: ExtractionFormsProjectType.first, extraction_form: ExtractionForm.first)
+    end
+
+    def associate_default_projects_users_role
+      self.users << User.current
+      ProjectsUser.find_by(project: self, user: User.current).roles << Role.where(name: 'Leader')
+      save!
     end
 
     def create_default_perpetual_task
