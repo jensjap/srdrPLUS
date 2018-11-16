@@ -16,23 +16,19 @@ module RoleChecker
   end
 
   def leader_by_user_and_project?(user, project)
-    highest_role_id = find_highest_role_id(user, project)
-    highest_role_id.id == LEADER
+    find_highest_role_id(user, project) == LEADER
   end
 
   def consolidator_by_user_and_project?(user, project)
-    highest_role_id = find_highest_role_id(user, project)
-    highest_role_id.id == CONSOLIDATOR
+    find_highest_role_id(user, project) == CONSOLIDATOR
   end
 
   def contributor_by_user_and_project?(user, project)
-    highest_role_id = find_highest_role_id(user, project)
-    highest_role_id.id == CONTRIBUTOR
+    find_highest_role_id(user, project) == CONTRIBUTOR
   end
 
   def auditor_by_user_and_project?(user, project)
-    highest_role_id = find_highest_role_id(user, project)
-    highest_role_id.id == AUDITOR
+    find_highest_role_id(user, project) == AUDITOR
   end
 
   def not_public_by_user_and_project?(user, project)
