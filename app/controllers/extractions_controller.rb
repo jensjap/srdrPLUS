@@ -8,12 +8,12 @@ class ExtractionsController < ApplicationController
   before_action :set_extraction, only: [:show, :edit, :update, :destroy, :work]
   before_action :set_extractions, only: [:compare, :consolidate, :edit_type1_across_extractions]
   before_action :ensure_extraction_form_structure, only: [:compare, :consolidate, :work]
+  before_action :skip_policy_scope, only: [:index, :show, :new, :edit, :create, :update, :destroy, :work, :comparison_tool, :consolidate, :edit_type1_across_extractions]
+  before_action :skip_authorization, only: [:index, :show]
 
   # GET /projects/1/extractions
   # GET /projects/1/extractions.json
   def index
-    skip_policy_scope
-    skip_authorization
     @extractions = @project.extractions
 
     add_breadcrumb 'edit project', edit_project_path(@project)
@@ -23,15 +23,12 @@ class ExtractionsController < ApplicationController
   # GET /extractions/1
   # GET /extractions/1.json
   def show
-    skip_policy_scope
-    skip_authorization
   end
 
   # GET /extractions/new
   def new
     @extraction = @project.extractions.new
 
-    skip_policy_scope
     authorize(@extraction)
 
     add_breadcrumb 'extractions',    :project_extractions_path
@@ -40,12 +37,15 @@ class ExtractionsController < ApplicationController
 
   # GET /extractions/1/edit
   def edit
+    authorize(@extraction)
   end
 
   # POST /extractions
   # POST /extractions.json
   def create
     @extraction = @project.extractions.build(extraction_params)
+
+    authorize(@extraction)
 
     respond_to do |format|
       if @extraction.save
@@ -61,6 +61,8 @@ class ExtractionsController < ApplicationController
   # PATCH/PUT /extractions/1
   # PATCH/PUT /extractions/1.json
   def update
+    authorize(@extraction)
+
     respond_to do |format|
       if @extraction.update(extraction_params)
         format.html { redirect_to work_extraction_path(@extraction,
@@ -77,6 +79,8 @@ class ExtractionsController < ApplicationController
   # DELETE /extractions/1
   # DELETE /extractions/1.json
   def destroy
+    authorize(@extraction)
+
     @extraction.destroy
     respond_to do |format|
       format.html { redirect_to project_extractions_url(@extraction.project), notice: 'Extraction was successfully destroyed.' }
@@ -86,6 +90,8 @@ class ExtractionsController < ApplicationController
 
   # GET /extractions/1/work
   def work
+    authorize(@extraction)
+
     @extraction_forms_projects = @extraction.project.extraction_forms_projects
     @key_questions_projects_array_for_select = @extraction.project.key_questions_projects_array_for_select
     @preselected_eefpst1 = params[:eefpst1_id].present? ? ExtractionsExtractionFormsProjectsSectionsType1.find(params[:eefpst1_id]) : nil
@@ -97,6 +103,8 @@ class ExtractionsController < ApplicationController
 
   # GET /projects/1/extractions/comparison_tool
   def comparison_tool
+    authorize(@extraction)
+
     @citation_groups = @project.citation_groups
 
     add_breadcrumb 'edit project',    edit_project_path(@project)
@@ -106,6 +114,8 @@ class ExtractionsController < ApplicationController
 
   # GET /projects/1/extractions/consolidate
   def consolidate
+    authorize(@extraction)
+
     @extraction_forms_projects = @project.extraction_forms_projects
     @consolidated_extraction   = @project.consolidated_extraction(@extractions.first.citations_project_id, current_user.id)
     @head_to_head              = head_to_head(@extraction_forms_projects, @extractions)
@@ -121,6 +131,8 @@ class ExtractionsController < ApplicationController
 
   # GET /projects/1/extractions/edit_type1_across_extractions
   def edit_type1_across_extractions
+    authorize(@extraction)
+
     @type1       = Type1.find(params[:type1_id])
     @efps        = ExtractionFormsProjectsSection.find(params[:efps_id])
     @eefps       = ExtractionsExtractionFormsProjectsSection.find(params[:eefps_id])
