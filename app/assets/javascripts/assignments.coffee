@@ -120,7 +120,6 @@ document.addEventListener 'turbolinks:load', ->
 
         $( '#tags-list' ).append( tag )
 
-
       ## NOTES
       root_url = $( '#root-url' ).text()
       $( '#notes-list' ).empty()
@@ -227,6 +226,7 @@ document.addEventListener 'turbolinks:load', ->
           utf8: '✓'
           authenticity_token: $( '#authenticity-token' ).text()
           label: label_params
+
         }
         success:
           ( data ) ->
@@ -254,7 +254,6 @@ document.addEventListener 'turbolinks:load', ->
           ( ) ->
             toastr.error 'ERROR: Could not create label'
       }
-
       return
 
 ##### update_label #####
@@ -507,35 +506,6 @@ document.addEventListener 'turbolinks:load', ->
           () ->
             toastr.error( 'ERROR: Could not fetch reasons' )
       }
-##### send_reasons #####
-#    get_labels_reason_params = ( label_id, label_type_id, projects_users_role_id ) ->
-#      reason_url = $( '#root-url' ).text() + '/labels/' + label_id
-#      labels_reasons_attributes = { }
-#      
-#      for reason_element in $( '#reasons-list input:checked' )
-#        labels_reasons_attributes.push( { label_id: label_id, reason_id: $( reason_element ).val() } )
-#
-#      if !!$( 'textarea#reason-textbox' ).val()
-#        label_params.reasons_attributes ?= { }
-#        label_params.reasons_attributes = { "#{Date.now()}": { name: $( 'textarea#reason-textbox' ).val(), projects_users_role_id: projects_users_role_id, label_type_id: label_type_id } }
-#
-#
-
-#      $.ajax {
-#        type: 'PATCH'
-#        url: reason_url
-#        dataType: 'json'
-#        data: {
-#          utf8: '✓'
-#          authenticity_token: $( '#authenticity-token' ).text()
-#          label: label_params
-#        }
-#        success:
-#          () ->
-#            $( 'textarea#reason-textbox' ).empty()
-#            toastr.success "Reason creation successful"
-#            update_reasons()
-#      }
       
 ##### switch_to_list #####
     switch_to_list = ( obj, history_elements ) ->
