@@ -4,7 +4,7 @@ module RoleChecker
   CONTRIBUTOR = 3.freeze
   AUDITOR = 4.freeze
 
-  def highest_role_id(user, project)
+  def find_highest_role_id(user, project)
     Role.
       select(:id).
       joins(:projects_users_roles).
@@ -14,30 +14,30 @@ module RoleChecker
   end
 
   def leader_by_user_and_project?(user, project)
-    highest_role_id = highest_role_id(user, project)
+    highest_role_id = find_highest_role_id(user, project)
     highest_role_id && highest_role_id.id == LEADER
   end
 
   def consolidator_by_user_and_project?(user, project)
-    highest_role_id = highest_role_id(user, project)
+    highest_role_id = find_highest_role_id(user, project)
     highest_role_id && highest_role_id.id == CONSOLIDATOR
   end
 
   def contributor_by_user_and_project?(user, project)
-    highest_role_id = highest_role_id(user, project)
+    highest_role_id = find_highest_role_id(user, project)
     highest_role_id && highest_role_id.id == CONTRIBUTOR
   end
 
   def auditor_by_user_and_project?(user, project)
-    highest_role_id = highest_role_id(user, project)
+    highest_role_id = find_highest_role_id(user, project)
     highest_role_id && highest_role_id.id == AUDITOR
   end
 
-  def public_by_user_and_project?(user, project)
-    highest_role_id(user, project).nil?
+  def not_public_by_user_and_project?(user, project)
+    find_highest_role_id(user, project).present?
   end
 
-  def not_public_by_user_and_project?(user, project)
-    highest_role_id(user, project).nil?
+  def public_by_user_and_project?(user, project)
+    find_highest_role_id(user, project).nil?
   end
 end
