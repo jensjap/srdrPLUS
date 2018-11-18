@@ -6,7 +6,7 @@ one:
   done_so_far: 1
   date_assigned: 2017-09-20 16:42:49
   date_due: 2017-09-20 16:42:49
-  done: 1
+  done: 0
 
 two:
   projects_users_role: two
@@ -14,5 +14,5 @@ two:
   done_so_far: 1
   date_assigned: 2017-09-20 16:42:49
   date_due: 2017-09-20 16:42:49
-  done: 1
+  done: 0
 

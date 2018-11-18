@@ -2,11 +2,11 @@
 
 one:
   citations_project: one
-  user: one
-  value: 1
+  projects_users_role: one
+  label_type: one
 
 two:
   citations_project: two
-  user: two
-  value: 1
+  projects_users_role: two
+  label_type: two
 
