@@ -94,10 +94,17 @@ json.labeled_citations_projects do
 
     json.label do
       json.id label.id
-      json.value label.value
+      json.label_type_id label.label_type_id
       json.projects_users_role_id label.projects_users_role_id
       json.created_at label.created_at
       json.updated_at label.updated_at
+      json.labels_reasons label.labels_reasons do |labels_reason|
+        json.id labels_reason.id
+        json.reason do
+          json.name labels_reason.reason.name
+          json.id labels_reason.reason.id
+        end
+      end
     end
   end
 end

@@ -574,9 +574,15 @@ module SeedDataExtended
       end
 
       # Reasons
+<<<<<<< HEAD
       Label.all.sample(100).each do |label|
         reason = Reason.find_or_create_by!( name: Faker::RickAndMorty.quote, label_type_id: 1 )
         label.reasons << reason
+=======
+      Label.all.sample(150).each do |label|
+        reason = Reason.find_or_create_by!( name: Faker::RickAndMorty.quote )
+        label.labels_reasons << LabelsReason.create( { reason: reason, projects_users_role: label.project.projects_users_roles.all.sample } )
+>>>>>>> taggings and notes and reasons work and update as expected
       end
 
       # Turn on paper_trail.
