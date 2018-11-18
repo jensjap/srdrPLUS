@@ -63,18 +63,26 @@ document.addEventListener 'turbolinks:load', ->
       if _tableRows.length > 1
         hideHeaders(_tableRows)
 
+    #########################################################################
+    # A little hacky to get the form to save before we hit the add column or
+    # add row button. This is so we don't lose any content already written to
+    # the form.
     $( '#add_column_link' ).click ( event ) ->
       event.preventDefault()
       $form = $( "form[id^='edit_question_']" )
-      $form.ajaxSubmit(
-        dataType: 'js'
-      )
-      $( '#add_column_button' ).click()
+      $form.ajaxSubmit
+        dataType: 'script'
+        success: ->
+          $( '#add_column_button' ).click()
+          return
+      return false
 
     $( '#add_row_link' ).click ( event ) ->
       event.preventDefault()
       $form = $( "form[id^='edit_question_']" )
-      $form.ajaxSubmit(
-        dataType: 'js'
-      )
-      $( '#add_row_button' ).click()
+      $form.ajaxSubmit
+        dataType: 'script'
+        success: ->
+          $( '#add_row_button' ).click()
+          return
+      return false
