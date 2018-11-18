@@ -22,7 +22,6 @@ class LabelsController < ApplicationController
   end
 
   def update
-    byebug
     respond_to do |format|
       if @label.update( label_params )
         format.json { render json: label_hash( @label ) }
