@@ -506,7 +506,7 @@ document.addEventListener 'turbolinks:load', ->
           () ->
             toastr.error( 'ERROR: Could not fetch reasons' )
       }
-      
+
 ##### switch_to_list #####
     switch_to_list = ( obj, history_elements ) ->
       $( '#citations-list-elements' ).empty()
