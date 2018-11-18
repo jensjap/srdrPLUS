@@ -51,6 +51,9 @@ document.addEventListener 'turbolinks:load', ->
     update_info = ( obj ) ->
       current_citation = obj.history[ obj.index ]
 
+      console.log obj.index
+      console.log current_citation
+
       $( '#citation-name' ).text( current_citation.name )
       $( '#citation-abstract' ).text( current_citation.abstract )
       $( '#citation-pmid' ).text( current_citation.pmid )
@@ -103,7 +106,7 @@ document.addEventListener 'turbolinks:load', ->
                 i = 0
                 for tagging in current_citation.taggings
                   if tagging.id == tagging_id
-                    current_citation.notes.splice( i, 1 )
+                    current_citation.taggings.splice( i, 1 )
                     break
                   i++
                 update_info( obj )
@@ -153,31 +156,6 @@ document.addEventListener 'turbolinks:load', ->
 
         $( note ).append( delete_note_link )
         $( '#notes-list' ).append( note )
-
-      ## CREATE A NEW NOTE
-      $( '#save-note-button' ).on 'click', ->
-
-        $.ajax {
-          type: 'POST'
-          url: root_url + '/api/v1/notes'
-          dataType: 'json'
-          data: {
-            utf8: '✓'
-            authenticity_token: $( '#authenticity-token' ).text()
-            note: {
-              value: $( '#note-textbox' ).val()
-              projects_users_role_id: obj.projects_users_role_id
-              notable_id: current_citation.citations_project_id
-              notable_type: "CitationsProject"
-            }
-          }
-          success:
-            () ->
-              toastr.success( 'Note successfully created' )
-          error:
-            () ->
-              toastr.error( 'ERROR: Could not create note' )
-        }
 
       $( '#yes-button' ).removeClass( 'secondary' )
       $( '#no-button' ).removeClass( 'secondary' )
@@ -605,7 +583,7 @@ document.addEventListener 'turbolinks:load', ->
         # set click behavior
         citation_element.click ->
           #update_index( obj, $(this).attr('index') )
-          obj.index = $(this).attr('index')
+          obj.index = +$(this).attr('index')
           update_info( obj )
           update_arrows( obj )
           switch_to_screening( obj )
