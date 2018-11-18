@@ -7,7 +7,7 @@
         = f.simple_fields_for(:question_rows, @question.question_rows.first) do |qr_f|
           th
           = qr_f.simple_fields_for(:question_row_columns) do |qrc_f|
-            th style='min-width: 250px;'
+            th style='min-width: 350px;'
               = qrc_f.input :name, label: 'Column Header', wrapper_html: { style: 'margin-bottom: 0;' }
               = link_to 'Remove', destroy_entire_column_question_row_column_path(qrc_f.object),
                                   method: :delete, data: { confirm: t('confirm') },
