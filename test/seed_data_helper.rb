@@ -129,13 +129,23 @@ module SeedData
       # Seed QuestionRowColumnFieldOption.
       QuestionRowColumnOption.create(
         [
-          { name: 'answer_choice' }, # For multiple-choice: checkbox, radio, dropdown
-          { name: 'min_length' },    # For text
-          { name: 'max_length' },    # For text
-          { name: 'min_value' },     # For scientific, numerical
-          { name: 'max_value' },     # For scientific, numerical
-          { name: 'coefficient' },   # For scientific
-          { name: 'exponent' }       # For scientific
+          { name: 'answer_choice' },    # For multiple-choice: checkbox, radio, dropdown
+          { name: 'min_length' },       # For text
+          { name: 'max_length' },       # For text
+          { name: 'min_char_value' },   # For scientific, numerical, numeric range
+          { name: 'max_char_value' },   # For scientific, numerical, numeric range
+          { name: 'white_list_tilda',   # For numerical
+            description: 'Allow user to prepend ~ sign to indicate approximate values' },
+          { name: 'white_list_lt',      # For numerical
+            description: 'Allow user to prepend < sign to indicate values less than the given value' },
+          { name: 'white_list_gt',      # For numerical
+            description: 'Allow user to prepend > sign to indicate values greater than the given value' },
+          { name: 'white_list_lte',     # For numerical
+            description: 'Allow user to prepend ≤ sign to indicate values less than or equal to the given value' },
+          { name: 'white_list_gte',     # For numerical
+            description: 'Allow user to prepend ≥ sign to indicate values greater than or equal to the given value' },
+          { name: 'coefficient' },      # For scientific
+          { name: 'exponent' }          # For scientific
         ]
       )
 
@@ -562,7 +572,7 @@ module SeedDataExtended
 
       # Reasons
       Label.all.sample(100).each do |label|
-        reason = Reason.find_or_create_by!( name: Faker::RickAndMorty.quote )
+        reason = Reason.find_or_create_by!( name: Faker::RickAndMorty.quote, label_type_id: 1 )
         label.reasons << reason
       end
 

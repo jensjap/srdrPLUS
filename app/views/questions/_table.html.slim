@@ -7,7 +7,7 @@
         = f.simple_fields_for(:question_rows, @question.question_rows.first) do |qr_f|
           th
           = qr_f.simple_fields_for(:question_row_columns) do |qrc_f|
-            th
+            th style='min-width: 250px;'
               = qrc_f.input :name, label: 'Column Header', wrapper_html: { style: 'margin-bottom: 0;' }
               = link_to 'Remove', destroy_entire_column_question_row_column_path(qrc_f.object),
                                   method: :delete, data: { confirm: t('confirm') },
@@ -48,9 +48,20 @@
                       = link_to 'Remove', option, method: :delete, data: { confirm: t('confirm') },
                                                   class: 'float-right'
 
+                    - white_list_coding = { \
+                      'white_list_tilda' => '~', \
+                      'white_list_lt'    => '<', \
+                      'white_list_gt'    => '>', \
+                      'white_list_lte'   => '≤', \
+                      'white_list_gte'   => '≥', }
+
                     = qrcqrco_f.input :name,
-                                      label: option.question_row_column_option.name.titleize,
+                                      label: white_list_coding.keys.include?(option.question_row_column_option.name) ? \
+                                        'Whitelist character: ' + white_list_coding[option.question_row_column_option.name] : \
+                                        option.question_row_column_option.name.titleize,
+                                      inline_label: white_list_coding.keys.include?(option.question_row_column_option.name),
                                       as: option.name_type,
+                                      input_html: { title: option.question_row_column_option.description },
                                       wrapper: 'horizontal_form'
 
                 .links

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181114034630) do
+ActiveRecord::Schema.define(version: 20181118001633) do
 
   create_table "abstrackr_settings", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "profile_id"
@@ -78,6 +78,7 @@ ActiveRecord::Schema.define(version: 20181114034630) do
   end
 
   create_table "assignments", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "user_id"
     t.integer  "task_id"
     t.integer  "done_so_far"
     t.datetime "date_assigned"
@@ -91,6 +92,7 @@ ActiveRecord::Schema.define(version: 20181114034630) do
     t.index ["deleted_at"], name: "index_assignments_on_deleted_at", using: :btree
     t.index ["projects_users_role_id"], name: "index_assignments_on_projects_users_role_id", using: :btree
     t.index ["task_id"], name: "index_assignments_on_task_id", using: :btree
+    t.index ["user_id"], name: "index_assignments_on_user_id", using: :btree
   end
 
   create_table "authors", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -151,6 +153,8 @@ ActiveRecord::Schema.define(version: 20181114034630) do
   create_table "citations_tasks", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "citation_id"
     t.integer  "task_id"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
     t.datetime "deleted_at"
     t.boolean  "active"
     t.index ["active"], name: "index_citations_tasks_on_active", using: :btree
@@ -919,8 +923,9 @@ ActiveRecord::Schema.define(version: 20181114034630) do
   create_table "question_row_column_options", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "name"
     t.datetime "deleted_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+    t.string   "description"
     t.index ["deleted_at"], name: "index_question_row_column_options_on_deleted_at", using: :btree
   end
 
@@ -1262,7 +1267,7 @@ ActiveRecord::Schema.define(version: 20181114034630) do
     t.index ["version_id"], name: "index_version_associations_on_version_id", using: :btree
   end
 
-  create_table "versions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci" do |t|
+  create_table "versions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4" do |t|
     t.string   "item_type",      limit: 191,        null: false
     t.integer  "item_id",                           null: false
     t.string   "event",                             null: false
@@ -1296,6 +1301,7 @@ ActiveRecord::Schema.define(version: 20181114034630) do
   add_foreign_key "approvals", "users"
   add_foreign_key "assignments", "projects_users_roles"
   add_foreign_key "assignments", "tasks"
+  add_foreign_key "assignments", "users"
   add_foreign_key "citations", "citation_types"
   add_foreign_key "citations_projects", "citations"
   add_foreign_key "citations_projects", "consensus_types"

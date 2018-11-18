@@ -41,10 +41,25 @@ class QuestionRowColumnsQuestionRowColumnOption < ApplicationRecord
     when 'max_length'
       self.name      ||= 255
       self.name_type = 'integer'
-    when 'min_value'
+    when 'white_list_tilda'
+      self.name      ||= false
+      self.name_type = 'boolean'
+    when 'white_list_lt'
+      self.name      ||= false
+      self.name_type = 'boolean'
+    when 'white_list_gt'
+      self.name      ||= false
+      self.name_type = 'boolean'
+    when 'white_list_lte'
+      self.name      ||= false
+      self.name_type = 'boolean'
+    when 'white_list_gte'
+      self.name      ||= false
+      self.name_type = 'boolean'
+    when 'min_char_value'
       self.name      ||= 0
       self.name_type = 'integer'
-    when 'max_value'
+    when 'max_char_value'
       self.name      ||= 255
       self.name_type = 'integer'
     when 'coefficient'
