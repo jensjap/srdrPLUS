@@ -69,6 +69,14 @@ class ProjectPolicy < ApplicationPolicy
     at_least?(RoleChecker::CONSOLIDATOR)
   end
 
+  def labeled?
+    at_least?(RoleChecker::CONSOLIDATOR)
+  end
+
+  def unlabled?
+    at_least?(RoleChecker::CONSOLIDATOR)
+  end
+
   private
 
   def at_least?(role)
