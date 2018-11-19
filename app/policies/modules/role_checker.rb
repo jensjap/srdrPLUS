@@ -32,10 +32,10 @@ module RoleChecker
   end
 
   def not_public_by_user_and_project?(user, project)
-    find_highest_role_id(user, project).nonzero?
+    find_highest_role_id(user, project).present?
   end
 
   def public_by_user_and_project?(user, project)
-    find_highest_role_id(user, project).zero?
+    find_highest_role_id(user, project).nil?
   end
 end
