@@ -7,14 +7,38 @@ class ExtractionFormsProjectsSectionPolicy < ApplicationPolicy
     at_least?(RoleChecker::CONSOLIDATOR)
   end
 
+  def edit?
+    at_least?(RoleChecker::CONSOLIDATOR)
+  end
+
   def create?
+    at_least?(RoleChecker::CONSOLIDATOR)
+  end
+
+  def update?
+    at_least?(RoleChecker::CONSOLIDATOR)
+  end
+
+  def destroy?
+    at_least?(RoleChecker::CONSOLIDATOR)
+  end
+
+  def preview?
+    at_least?(RoleChecker::CONSOLIDATOR)
+  end
+
+  def dissociate_type1?
+    at_least?(RoleChecker::CONSOLIDATOR)
+  end
+
+  def add_quality_dimension?
     at_least?(RoleChecker::CONSOLIDATOR)
   end
 
   private
 
   def at_least?(role)
-    highest_role = ExtractionPolicy.find_highest_role_id(user, record.project)
+    highest_role = ExtractionPolicy.find_highest_role_id(user, record)
     highest_role && highest_role <= role
   end
 end
