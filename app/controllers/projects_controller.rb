@@ -19,7 +19,7 @@ class ProjectsController < ApplicationController
     @query = params[:q]
     @order = params[:o] || 'updated-at'
 
-    authorize(Project)
+    skip_authorization
     @projects = policy_scope(Project).includes(:extraction_forms)
       .includes(:key_questions)
       .includes(publishings: [{ user: :profile }, approval: [{ user: :profile }]])

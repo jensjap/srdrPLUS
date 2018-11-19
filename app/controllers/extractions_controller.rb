@@ -103,7 +103,7 @@ class ExtractionsController < ApplicationController
 
   # GET /projects/1/extractions/comparison_tool
   def comparison_tool
-    authorize(@extraction)
+    authorize(@project)
 
     @citation_groups = @project.citation_groups
 

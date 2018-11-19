@@ -10,7 +10,7 @@ class ProjectPolicy < ApplicationPolicy
   end
 
   def index?
-    user.present?
+    ProjectsUser.where(user: user).where(project: record).exists?
   end
 
   def show?
@@ -63,5 +63,16 @@ class ProjectPolicy < ApplicationPolicy
 
   def next_assignment?
     ProjectPolicy.leader_by_user_and_project?(user, record)
+  end
+
+  def comparison_tool?
+    at_least?(RoleChecker::CONSOLIDATOR)
+  end
+
+  private
+
+  def at_least?(role)
+    highest_role = ExtractionPolicy.find_highest_role_id(user, record)
+    highest_role && highest_role <= role
   end
 end
