@@ -1,7 +1,6 @@
 class ProfilesController < ApplicationController
   before_action :set_profile, :skip_policy_scope, only: [:show, :edit, :update, :destroy]
   before_action :call_authorize
-  before_action :skip_policy_scope
 
   # GET /profile
   # GET /profile.json
