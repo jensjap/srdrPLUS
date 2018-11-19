@@ -53,7 +53,14 @@ class ExtractionPolicy < ApplicationPolicy
   private
 
   def at_least?(role)
-    highest_role = ExtractionPolicy.find_highest_role_id(user, record.project)
-    highest_role && highest_role <= role
+    if record.class == Extraction::ActiveRecord_Relation
+      record.all? do |r|
+        highest_role = ExtractionPolicy.find_highest_role_id(user, r.project)
+        highest_role && highest_role <= role
+      end
+    else
+      highest_role = ExtractionPolicy.find_highest_role_id(user, record.project)
+      highest_role && highest_role <= role
+    end
   end
 end
