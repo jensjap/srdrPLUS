@@ -21,10 +21,6 @@ class ProjectPolicy < ApplicationPolicy
     ProjectPolicy.leader_by_user_and_project?(user, record)
   end
 
-  def create?
-    user.present?
-  end
-
   def update?
     ProjectPolicy.leader_by_user_and_project?(user, record)
   end
