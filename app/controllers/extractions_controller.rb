@@ -114,7 +114,7 @@ class ExtractionsController < ApplicationController
 
   # GET /projects/1/extractions/consolidate
   def consolidate
-    authorize(@extraction)
+    authorize(@extractions)
 
     @extraction_forms_projects = @project.extraction_forms_projects
     @consolidated_extraction   = @project.consolidated_extraction(@extractions.first.citations_project_id, current_user.id)
