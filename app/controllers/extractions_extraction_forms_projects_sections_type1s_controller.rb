@@ -3,6 +3,7 @@ class ExtractionsExtractionFormsProjectsSectionsType1sController < ApplicationCo
   add_breadcrumb 'my projects', :projects_path
 
   before_action :set_extractions_extraction_forms_projects_sections_type1, only: [:edit, :update, :destroy, :edit_timepoints, :edit_populations]
+  before_action :skip_policy_scope
 
   # GET /extractions_extraction_forms_projects_sections_type1/1/edit
   def edit
