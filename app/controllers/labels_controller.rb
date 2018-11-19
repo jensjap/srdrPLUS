@@ -1,12 +1,16 @@
 class LabelsController < ApplicationController
   before_action :set_label, only: [:show, :edit, :update, :destroy]
+  before_action :skip_policy_scope
 
   def new
+    skip_authorization
+    skip_policy_scope
     @label = Label.new
   end
 
   def create
     Label.transaction do
+      authorize(ProjectsUsersRole.find(label_params[ 'projects_users_role_id']).project, policy_class: LabelPolicy)
       @label = Label.create( citations_project_id: label_params[ 'citations_project_id' ], label_type_id: label_params[ 'label_type_id' ], projects_users_role_id: label_params[ 'projects_users_role_id'] )
       @label.update( label_params )
     end
@@ -42,13 +46,14 @@ class LabelsController < ApplicationController
   end
 
   private
-  
+
     def label_hash( label )
       hash = { id: label.id, labels_reasons: label.labels_reasons.map { |lr| { id: lr.id, reason: { id: lr.reason.id, name: lr.reason.name } } } }
     end
 
     def set_label
       @label = Label.find(params[:id])
+      authorize(@label.project, policy_class: LabelPolicy)
     end
 
     def label_params
