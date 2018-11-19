@@ -1,12 +1,13 @@
 class Api::V1::KeywordsController < ApplicationController
+  PAGE_SIZE = 30
+
+  before_action :skip_policy_scope, :skip_authorization
+
   # GET /keywords.json
   def index
-    _page = (params[:page] || 1).to_i
-    _query = params[:q] || ''
-    _page_size = 30
-    _total_arr = Keyword.by_query( _query )
-    _offset = [ _page_size * ( _page - 1 ), _total_arr.length ].min
-    @keywords = _total_arr[ _offset .. _offset+_page_size - 1 ]
-    @more = if _offset + @keywords.length < _total_arr.length then true else false end 
+    page = (params[:page] || 1).to_i
+    offset = PAGE_SIZE * (page - 1)
+    @keywords = Keyword.by_query(params[:q]).offset(offset).limit(30)
+    @more = Keyword.by_query(params[:q]).count > page * PAGE_SIZE
   end
 end
