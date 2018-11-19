@@ -1,6 +1,7 @@
 class ExtractionFormsProjectsController < ApplicationController
   before_action :set_project, only: [:create]
   before_action :set_extraction_forms_project, only: [:build, :edit, :update, :destroy]
+  before_action :skip_policy_scope
 
   # GET /extraction_forms_projects/1/edit
   def edit
