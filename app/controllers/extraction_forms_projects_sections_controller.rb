@@ -1,6 +1,7 @@
 class ExtractionFormsProjectsSectionsController < ApplicationController
   before_action :set_extraction_forms_project, only: [:new, :create]
   before_action :set_extraction_forms_projects_section, only: [:edit, :update, :destroy, :preview, :add_quality_dimension]
+  before_action :skip_policy_scope
 
   # GET /extraction_forms_projects/1/extraction_forms_projects_sections/new
   def new
