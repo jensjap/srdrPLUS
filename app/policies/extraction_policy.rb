@@ -23,34 +23,37 @@ class ExtractionPolicy < ApplicationPolicy
   end
 
   def edit?
-    ExtractionPolicy.find_highest_role_id(user, record.project) <= RoleChecker::CONTRIBUTOR
+    at_least?(RoleChecker::CONTRIBUTOR)
   end
 
   def create?
-    ExtractionPolicy.find_highest_role_id(user, record.project) <= RoleChecker::CONTRIBUTOR
+    at_least?(RoleChecker::CONTRIBUTOR)
   end
 
   def update?
-    ExtractionPolicy.find_highest_role_id(user, record.project) <= RoleChecker::CONTRIBUTOR
+    at_least?(RoleChecker::CONTRIBUTOR)
   end
 
   def destroy?
-    ExtractionPolicy.find_highest_role_id(user, record.project) <= RoleChecker::CONTRIBUTOR
+    at_least?(RoleChecker::CONTRIBUTOR)
   end
 
   def work?
-    ExtractionPolicy.find_highest_role_id(user, record.project) <= RoleChecker::CONTRIBUTOR
-  end
-
-  def comparison_tool?
-    ExtractionPolicy.find_highest_role_id(user, record.project) <= RoleChecker::CONSOLIDATOR
+    at_least?(RoleChecker::CONTRIBUTOR)
   end
 
   def consolidate?
-    ExtractionPolicy.find_highest_role_id(user, record.project) <= RoleChecker::CONSOLIDATOR
+    at_least?(RoleChecker::CONSOLIDATOR)
   end
 
   def edit_type1_across_extractions?
-    ExtractionPolicy.find_highest_role_id(user, record.project) <= RoleChecker::CONSOLIDATOR
+    at_least?(RoleChecker::CONSOLIDATOR)
+  end
+
+  private
+
+  def at_least?(role)
+    highest_role = ExtractionPolicy.find_highest_role_id(user, record.project)
+    highest_role && highest_role <= role
   end
 end
