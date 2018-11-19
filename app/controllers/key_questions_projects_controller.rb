@@ -1,6 +1,7 @@
 class KeyQuestionsProjectsController < ApplicationController
   before_action :set_project, only: [:create]
   before_action :set_key_questions_project, only: [:edit, :update, :destroy]
+  before_action :skip_policy_scope
 
   # GET /key_questions_projects/1/edit
   def edit
@@ -10,6 +11,7 @@ class KeyQuestionsProjectsController < ApplicationController
   # POST /projects/1/key_questions_projects.json
   def create
     @key_questions_project = @project.key_questions_projects.build(key_questions_project_params)
+    authorize(@key_questions_project)
 
     respond_to do |format|
       if @key_questions_project.save
@@ -59,6 +61,7 @@ class KeyQuestionsProjectsController < ApplicationController
 
     def set_key_questions_project
       @key_questions_project = KeyQuestionsProject.find(params[:id])
+      authorize(@key_questions_project)
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
