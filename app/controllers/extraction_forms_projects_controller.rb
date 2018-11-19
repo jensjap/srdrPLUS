@@ -72,6 +72,7 @@ class ExtractionFormsProjectsController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_project
       @project = Project.find(params[:project_id])
+      authorize(@project, policy_class: ExtractionFormsProjectPolicy)
     end
 
     def set_extraction_forms_project
@@ -80,6 +81,7 @@ class ExtractionFormsProjectsController < ApplicationController
         .includes(key_questions_projects: [:key_question])
         .includes(:project)
         .find(params[:id])
+      authorize(@extraction_forms_project.project, policy_class: ExtractionFormsProjectPolicy)
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
