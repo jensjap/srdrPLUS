@@ -38,7 +38,7 @@ class ExtractionFormsProjectsSectionPolicy < ApplicationPolicy
   private
 
   def at_least?(role)
-    highest_role = ExtractionPolicy.find_highest_role_id(user, record)
+    highest_role = ExtractionFormsProjectsSectionPolicy.find_highest_role_id(user, record)
     highest_role && highest_role <= role
   end
 end
