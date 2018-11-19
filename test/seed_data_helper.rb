@@ -373,6 +373,7 @@ module SeedDataExtended
       # Projects.
       project_titles.each do |n|
         updated_at = Faker::Time.between(DateTime.now - 1000, DateTime.now - 1)
+        User.current = User.first
         Project.create!(name:        n[0],
                         description: n[1],
                         attribution: Faker::Cat.registry,
@@ -460,7 +461,6 @@ module SeedDataExtended
         end
 
         # Make contributor a project member.
-        p.users << @superadmin
         p.users << @contributor
         p.users << @screener_1
         p.users << @screener_2
