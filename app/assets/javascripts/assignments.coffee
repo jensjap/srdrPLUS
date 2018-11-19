@@ -51,6 +51,9 @@ document.addEventListener 'turbolinks:load', ->
     update_info = ( obj ) ->
       current_citation = obj.history[ obj.index ]
 
+      console.log obj.index
+      console.log current_citation
+
       $( '#citation-name' ).text( current_citation.name )
       $( '#citation-abstract' ).text( current_citation.abstract )
       $( '#citation-pmid' ).text( current_citation.pmid )
@@ -89,6 +92,8 @@ document.addEventListener 'turbolinks:load', ->
         tag = $( '<div class="tag" >' + t.tag.name + ' </div>' )
         delete_tag_link = $( '<a id="delete-tag-'+ t.id + '" tagging-id="' + t.id + '">delete</a>' )
         delete_tag_link.click ->
+          tagging_id = +$( this ).attr( 'tagging-id' )
+
           $.ajax {
             type: 'DELETE'
             url: root_url + '/api/v1/taggings/' + $( this ).attr( 'tagging-id' )
@@ -98,6 +103,13 @@ document.addEventListener 'turbolinks:load', ->
             }
             success:
               () ->
+                i = 0
+                for tagging in current_citation.taggings
+                  if tagging.id == tagging_id
+                    current_citation.taggings.splice( i, 1 )
+                    break
+                  i++
+                update_info( obj )
                 toastr.success( 'Tag successfully deleted' )
             error:
               () ->
@@ -105,42 +117,9 @@ document.addEventListener 'turbolinks:load', ->
           }
 
         $( tag ).append( delete_tag_link )
+
         $( '#tags-list' ).append( tag )
 
-      ## CREATE A NEW TAGGING
-      $( '#tag-select select' ).select2
-        minimumInputLength: 0
-        #closeOnSelect: false
-        ajax:
-          url: $( '#tags-url' ).text()
-          dataType: 'json'
-          delay: 100
-          data: (params) ->
-            q: params.term
-            page: params.page || 1
-
-      $( '#tag-select select' ).on 'change', ->
-        $.ajax {
-          type: 'POST'
-          url: root_url + '/api/v1/taggings'
-          dataType: 'json'
-          data: {
-            utf8: '✓'
-            authenticity_token: $( '#authenticity-token' ).text()
-            tagging: {
-              tag_id: $( this ).val()
-              projects_users_role_id: obj[ 'projects_users_role_id' ]
-              taggable_id: current_citation.citations_project_id
-              taggable_type: "CitationsProject"
-            }
-          }
-          success:
-            () ->
-              toastr.success( 'Tag successfully created' )
-          error:
-            () ->
-              toastr.error( 'ERROR: Could not create tag' )
-        }
 
       ## NOTES
       root_url = $( '#root-url' ).text()
@@ -149,6 +128,8 @@ document.addEventListener 'turbolinks:load', ->
         note = $( '<div class="note" >' + n.value + ' </div>' )
         delete_note_link = $( '<a id="delete-note-'+ n.id + '" note-id="' + n.id + '">delete</a>' )
         delete_note_link.click ->
+          note_id = +$( this ).attr( 'note-id' )
+
           $.ajax {
             type: 'DELETE'
             url: root_url + '/api/v1/notes/' + $( this ).attr( 'note-id' )
@@ -158,6 +139,15 @@ document.addEventListener 'turbolinks:load', ->
             }
             success:
               () ->
+                i = 0
+                for note in current_citation.notes
+                  if note.id == note_id
+                    current_citation.notes.splice( i, 1 )
+                    break
+                  i++
+
+
+                update_info( obj )
                 toastr.success( 'Note successfully deleted' )
             error:
               () ->
@@ -167,83 +157,27 @@ document.addEventListener 'turbolinks:load', ->
         $( note ).append( delete_note_link )
         $( '#notes-list' ).append( note )
 
-      ## CREATE A NEW NOTE
-      $( '#save-note-button' ).on 'click', ->
-        $.ajax {
-          type: 'POST'
-          url: root_url + '/api/v1/notes'
-          dataType: 'json'
-          data: {
-            utf8: '✓'
-            authenticity_token: $( '#authenticity-token' ).text()
-            note: {
-              value: $( '#note-textbox' ).val()
-              projects_users_role_id: obj[ 'projects_users_role_id' ]
-              notable_id: current_citation.citations_project_id
-              notable_type: "CitationsProject"
-            }
-          }
-          success:
-            () ->
-              toastr.success( 'Note successfully created' )
-          error:
-            () ->
-              toastr.error( 'ERROR: Could not create note' )
-        }
-
-#      ## REASONS
-#      root_url = $( '#root-url' ).text()
-#      $( '#reasons-list' ).empty()
-#      for n in obj.reasons
-#        note = $( '<div class="note" >' + n.value + ' </div>' )
-#        delete_note_link = $( '<a id="delete-note-'+ n.id + '" note-id="' + n.id + '">delete</a>' )
-#        delete_note_link.click ->
-#          $.ajax {
-#            type: 'DELETE'
-#            url: root_url + '/api/v1/notes/' + $( this ).attr( 'note-id' )
-#            data: {
-#              utf8: '✓'
-#              authenticity_token: $( '#authenticity-token' ).text()
-#            }
-#            success:
-#              () ->
-#                toastr.success( 'Note successfully deleted' )
-#            error:
-#              () ->
-#                toastr.error( 'ERROR: Could not delete note' )
-#          }
-#
-#        $( note ).append( delete_note_link )
-#        $( '#notes-list' ).append( note )
-#
-#      ## CREATE A NEW REASON
-#      $( '#save-note-button' ).on 'click', ->
-#        $.ajax {
-#          type: 'POST'
-#          url: root_url + '/api/v1/notes'
-#          dataType: 'json'
-#          data: {
-#            utf8: '✓'
-#            authenticity_token: $( '#authenticity-token' ).text()
-#            note: {
-#              value: $( '#note-textbox' ).val()
-#              projects_users_role_id: obj[ 'projects_users_role_id' ]
-#              notable_id: current_citation.citations_project_id
-#              notable_type: "CitationsProject"
-#            }
-#          }
-#          success:
-#            () ->
-#              toastr.success( 'Note successfully created' )
-#          error:
-#            () ->
-#              toastr.error( 'ERROR: Could not create note' )
-#        }
-
       $( '#yes-button' ).removeClass( 'secondary' )
       $( '#no-button' ).removeClass( 'secondary' )
       $( '#maybe-button' ).removeClass( 'secondary' )
+
+      ## uncheck reasons
+      $( '#projects-user-reasons input' ).prop( 'checked', false )
+      $( '#project-lead-reasons input' ).prop( 'checked', false )
+
+      $( 'textarea#reason-textbox' ).val( '' )
+
+      ## remove labels-reason-ids 
+      $( '#projects-user-reasons input' ).removeAttr( 'labels-reason-id' )
+      $( '#project-lead-reasons input' ).removeAttr( 'labels-reason-id' )
+
       if obj.index > 0
+        ##### REASONS #####
+        if !!current_citation.label and !!current_citation.label.labels_reasons
+          for labels_reason in current_citation.label.labels_reasons
+            $( '#reason-' + labels_reason.reason.id ).attr( 'labels-reason-id', labels_reason.id )
+            $( '#reason-' + labels_reason.reason.id ).prop( 'checked', true )
+
         if current_citation.label.label_type_id == 1
           $( '#yes-button' ).addClass( 'secondary' )
         else if current_citation.label.label_type_id == 2
@@ -252,16 +186,35 @@ document.addEventListener 'turbolinks:load', ->
           $( '#maybe-button' ).addClass( 'secondary' )
       return
 
+
 ##### send_label #####
     send_label = ( obj, label_type_id ) ->
-
-
       this.current_citation = obj.history[ obj.index ]
       # check if 'create' label or 'update'
       # if 'update', append label id
       is_patch = false
       if obj.index > 0 || obj.history[ obj.index ].label
         is_patch = true
+
+      label_params = {
+            label_type_id: label_type_id
+            citations_project_id: current_citation.citations_project_id
+            projects_users_role_id: obj.projects_users_role_id
+          }
+
+      ## labels_reasons ##
+      for reason_element in $( '#reasons-list input:checked' )
+        label_params.labels_reasons_attributes ?= [ ]
+        if !$( reason_element ).attr( 'labels-reason-id' )
+          label_params.labels_reasons_attributes.push( { projects_users_role_id: obj.projects_users_role_id, reason_id: $( reason_element ).val() } )
+      for reason_element in $( '#reasons-list input:not(:checked)' )
+        label_params.labels_reasons_attributes ?= [ ]
+        if $( reason_element ).attr( 'labels-reason-id' )
+          label_params.labels_reasons_attributes.push( { id: $( reason_element ).attr( 'labels-reason-id' ), _destroy: true } )
+
+      ## create new reason from textbox input ##
+      if !!$( 'textarea#reason-textbox' ).val()
+        label_params.labels_reasons_attributes.push( { projects_users_role_id: obj.projects_users_role_id, reason_attributes: {  name: $( 'textarea#reason-textbox' ).val() } } )
 
       label_url = $( '#root-url' ).text() + '/labels'
       if is_patch
@@ -273,33 +226,35 @@ document.addEventListener 'turbolinks:load', ->
         data: {
           utf8: '✓'
           authenticity_token: $( '#authenticity-token' ).text()
-          label: {
-            label_type_id: label_type_id
-            citations_project_id: current_citation.citations_project_id
-            projects_users_role_id: obj[ 'projects_users_role_id' ]
-          }
+          label: label_params
         }
         success:
           ( data ) ->
-            parent.current_citation.label = { id: data.id, label_type_id: label_type_id }
+            parent.current_citation.label = { id: data.id, label_type_id: label_type_id, labels_reasons: data.labels_reasons }
             #update_breadcrumb( current_citation )
             if $('#switch-button').val() == 'ON'
               get_history_page( obj, 0 )
+            toastr.success 'Label is created successfully'
 
+            get_c_p( obj )
+            update_reasons()
+            # if we are updating previous label increment index
+            if obj.index > 0
+              #update_index( obj, obj.index - 1 )
+              obj.index = obj.index - 1
+            # else add breadcrumb
+            else if obj.citations.length > 0
+              next_citation( obj )
+              add_breadcrumb( obj )
+              obj.index = 0
+              #update_index( obj, 0 )
+            update_info( obj )
+            update_arrows( obj )
+        error:
+          ( ) ->
+            toastr.error 'ERROR: Could not create label'
       }
-      get_c_p( obj )
-      # if we are updating previous label increment index
-      if obj.index > 0
-        #update_index( obj, obj.index - 1 )
-        obj.index = obj.index - 1
-      # else add breadcrumb
-      else if obj.citations.length > 0
-        next_citation( obj )
-        add_breadcrumb( obj )
-        obj.index = 0
-        #update_index( obj, 0 )
-      update_info( obj )
-      update_arrows( obj )
+
       return
 
 ##### update_label #####
@@ -349,6 +304,9 @@ document.addEventListener 'turbolinks:load', ->
       switch_button = $( '#switch-button' )
       tags_button = $( '#tags-button' )
       close_tags_button = $( '#close-tags-button' )
+  
+      ## POPULATE REASONS ##
+      update_reasons()
 
       next_button.click ->
         if !next_button.hasClass( 'disabled' )
@@ -382,11 +340,78 @@ document.addEventListener 'turbolinks:load', ->
         switch_to_screening( )
 
       # pagination buttons
-      $( '#next-page' ).click (e) ->
+
+      $( '#next-page' ).click (e) -> 
         get_history_page( state_obj, state_obj.history_page + 1 )
 
       $( '#prev-page' ).click (e) ->
         get_history_page( state_obj, state_obj.history_page - 1 )
+
+      ## NOTE CREATION HANDLING
+      $( '#save-note-button' ).on 'click', ->
+        $.ajax {
+          type: 'POST'
+          url: $( '#root-url' ).text() + '/api/v1/notes'
+          dataType: 'json'
+          data: {
+            utf8: '✓'
+            authenticity_token: $( '#authenticity-token' ).text()
+            note: {
+              value: $( '#note-textbox' ).val()
+              projects_users_role_id: state_obj.projects_users_role_id
+              notable_id: state_obj.history[ state_obj.index ].citations_project_id
+              notable_type: "CitationsProject"
+            }
+          }
+          success:
+            ( data ) ->
+              state_obj.history[ state_obj.index ].notes.push { id: data.id, value: $( '#note-textbox' ).val() }
+              update_info( state_obj )
+              toastr.success( 'Note successfully created' )
+          error:
+            () ->
+              toastr.error( 'ERROR: Could not create note' )
+        }
+
+      ## TAGGING CREATION HANDLING
+      $( '#tag-select select' ).select2
+        minimumInputLength: 0
+        #closeOnSelect: false
+        ajax:
+          url: ( ) -> $( '#root-url' ).text() + '/api/v1/projects_users/ ' + $( '#projects-user-id' ).text() + '/tags.json'
+          dataType: 'json'
+          delay: 100
+          data: (params) ->
+            q: params.term
+            page: params.page || 1
+
+      $( '#tag-select select' ).on 'select2:select', ->
+        tag_text = $( '#tag-select select option:selected' ).text()
+        tag_id = $( '#tag-select select option:selected' ).val()
+        $.ajax {
+          type: 'POST'
+          url: $( '#root-url' ).text() + '/api/v1/taggings'
+          dataType: 'json'
+          data: {
+            utf8: '✓'
+            authenticity_token: $( '#authenticity-token' ).text()
+            tagging: {
+              tag_id: $( '#tag-select select option:selected' ).val()
+              projects_users_role_id: state_obj.projects_users_role_id
+              taggable_id: state_obj.history[ state_obj.index ].citations_project_id
+              taggable_type: "CitationsProject"
+            }
+          }
+          success:
+            ( data ) ->
+              state_obj.history[ state_obj.index ].taggings.push { id: data.id, tag: { id: tag_id, name: tag_text } }
+              update_info( state_obj )
+              toastr.success( 'Tag successfully created' )
+          error:
+            () ->
+              toastr.error( 'ERROR: Could not create tag' )
+        }
+
       return
 
 ##### get_history_page #####
@@ -447,6 +472,71 @@ document.addEventListener 'turbolinks:load', ->
       $( '#' + new_breadcrumb_id ).addClass( 'hollow' )
       return
 
+##### update_reasons #####
+    update_reasons = () ->
+      ## REASONS
+      root_url = $( '#root-url' ).text()
+      projects_user_reasons = $( '#projects-user-reasons fieldset' )
+      project_lead_reasons = $( '#project-lead-reasons fieldset' )
+
+      $.ajax {
+        type: 'GET'
+        url: root_url + '/api/v1/projects_users/ ' + $( '#projects-user-id' ).text() + '/reasons.json'
+        success:
+          ( data ) ->
+            if data.results.projects_user_reasons?
+              projects_user_reasons.empty()
+              for reason in data.results.projects_user_reasons
+                reason_element = $( '<input type="checkbox" value="' + reason.id + '" id="reason-' + reason.id + '" style="display: inline; margin-bottom: 0;">' )
+                reason_label = $(  '<label for="reason-' + reason.id + '" style="display: inline;">' + reason.text + '</label><br>' )
+                projects_user_reasons.append reason_element
+                projects_user_reasons.append reason_label
+            else
+              projects_user_reasons.hide()
+
+            if data.results.project_lead_reasons?
+              project_lead_reasons.empty()
+              for reason in data.results.project_lead_reasons
+                reason_element = $( '<input type="checkbox" value="' + reason.id + '" id="reason-' + reason.id + '" style="display: inline; margin-bottom: 0;">' )
+                reason_label = $(  '<label for="reason-' + reason.id + '" style="display: inline;">' + reason.text + '</label><br>' )
+                project_lead_reasons.append reason_element
+                project_lead_reasons.append reason_label
+            else
+              project_lead_reasons.hide()
+        error:
+          () ->
+            toastr.error( 'ERROR: Could not fetch reasons' )
+      }
+##### send_reasons #####
+#    get_labels_reason_params = ( label_id, label_type_id, projects_users_role_id ) ->
+#      reason_url = $( '#root-url' ).text() + '/labels/' + label_id
+#      labels_reasons_attributes = { }
+#      
+#      for reason_element in $( '#reasons-list input:checked' )
+#        labels_reasons_attributes.push( { label_id: label_id, reason_id: $( reason_element ).val() } )
+#
+#      if !!$( 'textarea#reason-textbox' ).val()
+#        label_params.reasons_attributes ?= { }
+#        label_params.reasons_attributes = { "#{Date.now()}": { name: $( 'textarea#reason-textbox' ).val(), projects_users_role_id: projects_users_role_id, label_type_id: label_type_id } }
+#
+#
+
+#      $.ajax {
+#        type: 'PATCH'
+#        url: reason_url
+#        dataType: 'json'
+#        data: {
+#          utf8: '✓'
+#          authenticity_token: $( '#authenticity-token' ).text()
+#          label: label_params
+#        }
+#        success:
+#          () ->
+#            $( 'textarea#reason-textbox' ).empty()
+#            toastr.success "Reason creation successful"
+#            update_reasons()
+#      }
+      
 ##### switch_to_list #####
     switch_to_list = ( obj, history_elements ) ->
       $( '#citations-list-elements' ).empty()
@@ -493,7 +583,7 @@ document.addEventListener 'turbolinks:load', ->
         # set click behavior
         citation_element.click ->
           #update_index( obj, $(this).attr('index') )
-          obj.index = $(this).attr('index')
+          obj.index = +$(this).attr('index')
           update_info( obj )
           update_arrows( obj )
           switch_to_screening( obj )
@@ -523,8 +613,8 @@ document.addEventListener 'turbolinks:load', ->
         citation_buttons.append( citation_button_maybe )
         citation_buttons.append( citation_button_no )
         
-        citation_element.append( citation_buttons )
         citation_element.append( info_wrapper )
+        citation_element.append( citation_buttons )
         $( '#citations-list-elements' ).append( citation_element )
         next_index++
 

@@ -504,42 +504,42 @@ module SeedDataExtended
             project:      p
           )
         end
-      end
 
-      # Assignments.
-      Task.all.each do |t|
-        case t.task_type.name
-        when 'Perpetual', 'Pilot'
-          Assignment.create([
-            {
-              date_assigned: DateTime.now,
-              date_due: Date.today + 7,
-              projects_users_role: ProjectsUsersRole.find_by({ projects_user: ProjectsUser.find_by({ user: @screener_1, project: p }), role: Role.where(name: 'Contributor') }),
-              task: t
-            },
-            {
-              date_assigned: DateTime.now,
-              date_due: Date.today + 7,
-              projects_users_role: ProjectsUsersRole.find_by({ projects_user: ProjectsUser.find_by({ user: @screener_2, project: p }), role: Role.where(name: 'Contributor') }),
-              task: t
-            },
-            {
-              date_assigned: DateTime.now,
-              date_due: Date.today + 7,
-              projects_users_role: ProjectsUsersRole.find_by({ projects_user: ProjectsUser.find_by({ user: @screener_3, project: p }), role: Role.where(name: 'Contributor') }),
-              task: t
-            }
-          ])
-        when 'Advanced'
-          for s in @screeners.sample(rand(3))
-            Assignment.create(
+        # Assignments.
+        Task.all.each do |t|
+          case t.task_type.name
+          when 'Perpetual', 'Pilot'
+            Assignment.create([
               {
                 date_assigned: DateTime.now,
                 date_due: Date.today + 7,
-                projects_users_role: ProjectsUsersRole.find_by({ projects_user: ProjectsUser.find_by({ user: s, project: p }), role: Role.where(name: 'Contributor') }),
+                projects_users_role: ProjectsUsersRole.find_by({ projects_user: ProjectsUser.find_by({ user: @screener_1, project: p }), role: Role.where(name: 'Contributor') }),
+                task: t
+              },
+              {
+                date_assigned: DateTime.now,
+                date_due: Date.today + 7,
+                projects_users_role: ProjectsUsersRole.find_by({ projects_user: ProjectsUser.find_by({ user: @screener_2, project: p }), role: Role.where(name: 'Contributor') }),
+                task: t
+              },
+              {
+                date_assigned: DateTime.now,
+                date_due: Date.today + 7,
+                projects_users_role: ProjectsUsersRole.find_by({ projects_user: ProjectsUser.find_by({ user: @screener_3, project: p }), role: Role.where(name: 'Contributor') }),
                 task: t
               }
-            )
+            ])
+          when 'Advanced'
+            @screeners.sample(rand(3)).each do |s|
+              Assignment.create(
+                {
+                  date_assigned: DateTime.now,
+                  date_due: Date.today + 7,
+                  projects_users_role: ProjectsUsersRole.find_by({ projects_user: ProjectsUser.find_by({ user: s, project: p }), role: Role.where(name: 'Contributor') }),
+                  task: t
+                }
+              )
+            end
           end
         end
       end
@@ -562,18 +562,21 @@ module SeedDataExtended
         end
       end
 
+      label_types = [ LabelType.find_by( name: 'Yes' ), LabelType.find_by( name: 'No' ), LabelType.find_by( name: 'Maybe' ) ]
+
       200.times do
         assignment = Assignment.all.sample
         citations_project = assignment.task.project.citations_projects.sample
         projects_users_role = assignment.projects_users_role
+        label_type = label_types.sample
 
-        label = Label.create( label_type: [ LabelType.find_by( name: 'Yes' ), LabelType.find_by( name: 'No' ), LabelType.find_by( name: 'Maybe' ) ].sample, citations_project_id: citations_project.id, projects_users_role: projects_users_role )
+        label = Label.create( { label_type: label_type, citations_project: citations_project, projects_users_role: projects_users_role } )
       end
 
       # Reasons
-      Label.all.sample(100).each do |label|
-        reason = Reason.find_or_create_by!( name: Faker::RickAndMorty.quote, label_type_id: 1 )
-        label.reasons << reason
+      Label.all.sample(150).each do |label|
+        reason = Reason.find_or_create_by!( name: Faker::RickAndMorty.quote )
+        label.labels_reasons << LabelsReason.create( { reason: reason, projects_users_role: label.project.projects_users_roles.all.sample } )
       end
 
       # Turn on paper_trail.

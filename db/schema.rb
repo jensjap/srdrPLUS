@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181118001633) do
+ActiveRecord::Schema.define(version: 20181118011754) do
 
   create_table "abstrackr_settings", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "profile_id"
@@ -623,11 +623,13 @@ ActiveRecord::Schema.define(version: 20181118001633) do
   create_table "labels_reasons", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "label_id"
     t.integer  "reason_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
     t.datetime "deleted_at"
+    t.integer  "projects_users_role_id"
     t.index ["deleted_at"], name: "index_labels_reasons_on_deleted_at", using: :btree
     t.index ["label_id"], name: "index_labels_reasons_on_label_id", using: :btree
+    t.index ["projects_users_role_id"], name: "index_labels_reasons_on_projects_users_role_id", using: :btree
     t.index ["reason_id"], name: "index_labels_reasons_on_reason_id", using: :btree
   end
 
@@ -992,15 +994,13 @@ ActiveRecord::Schema.define(version: 20181118001633) do
   end
 
   create_table "reasons", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.string   "name",                   limit: 1000
-    t.datetime "created_at",                          null: false
-    t.datetime "updated_at",                          null: false
+    t.string   "name",          limit: 1000
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
     t.datetime "deleted_at"
-    t.integer  "projects_users_role_id"
     t.integer  "label_type_id"
     t.index ["deleted_at"], name: "index_reasons_on_deleted_at", using: :btree
     t.index ["label_type_id"], name: "index_reasons_on_label_type_id", using: :btree
-    t.index ["projects_users_role_id"], name: "index_reasons_on_projects_users_role_id", using: :btree
   end
 
   create_table "records", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -1364,6 +1364,7 @@ ActiveRecord::Schema.define(version: 20181118001633) do
   add_foreign_key "labels", "label_types"
   add_foreign_key "labels", "projects_users_roles"
   add_foreign_key "labels_reasons", "labels"
+  add_foreign_key "labels_reasons", "projects_users_roles"
   add_foreign_key "labels_reasons", "reasons"
   add_foreign_key "measurements", "comparisons_measures"
   add_foreign_key "message_types", "frequencies"
@@ -1393,7 +1394,6 @@ ActiveRecord::Schema.define(version: 20181118001633) do
   add_foreign_key "question_rows", "questions"
   add_foreign_key "questions", "extraction_forms_projects_sections"
   add_foreign_key "reasons", "label_types"
-  add_foreign_key "reasons", "projects_users_roles"
   add_foreign_key "result_statistic_section_types_measures", "measures"
   add_foreign_key "result_statistic_section_types_measures", "result_statistic_section_types"
   add_foreign_key "result_statistic_sections", "extractions_extraction_forms_projects_sections_type1_rows", column: "population_id"

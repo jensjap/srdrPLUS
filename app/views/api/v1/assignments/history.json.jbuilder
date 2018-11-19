@@ -8,11 +8,13 @@ json.labeled_citations_projects do
     json.abstract citation.abstract
     json.pmid citation.pmid
     json.refman citation.refman
-    json.journal do
-      json.publication_date citation.journal.publication_date.year
-      json.name citation.journal.name
-      json.volume citation.journal.volume
-      json.issue citation.journal.issue
+    if citation.journal.present?
+      json.journal do
+        json.publication_date citation.journal.publication_date
+        json.name citation.journal.name
+        json.volume citation.journal.volume
+        json.issue citation.journal.issue
+      end
     end
     json.authors do
       json.array! citation.authors, :id, :name
@@ -20,13 +22,41 @@ json.labeled_citations_projects do
     json.keywords do
       json.array! citation.keywords, :id, :name
     end
+
+    json.taggings citations_project.taggings do |tagging|
+      json.id tagging.id
+      json.tag do
+        json.name tagging.tag.name
+        json.id tagging.tag.id
+      end
+      json.user do
+        json.username tagging.projects_users_role.user.profile.username
+        json.id tagging.projects_users_role.user.id
+      end
+    end
+
+    json.notes citations_project.notes do |note|
+      json.id note.id
+      json.value note.value
+      json.user do
+        json.username note.projects_users_role.user.profile.username
+        json.id note.projects_users_role.user.id
+      end
+    end
+
     json.label do
       json.id label.id
-      json.value label.value
-      json.user_id label.user_id
+      json.label_type_id label.label_type_id
+      json.projects_users_role_id label.projects_users_role_id
       json.created_at label.created_at
       json.updated_at label.updated_at
+      json.labels_reasons label.labels_reasons do |labels_reason|
+        json.id labels_reason.id
+        json.reason do
+          json.name labels_reason.reason.name
+          json.id labels_reason.reason.id
+        end
+      end
     end
   end
 end
-

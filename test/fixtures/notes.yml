@@ -1,13 +1,13 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  user: one
+  projects_users_role: one
   notable: one
   notable_type: Notable
   value: MyText
 
 two:
-  user: two
+  projects_users_role: two
   notable: two
   notable_type: Notable
   value: MyText

@@ -13,7 +13,7 @@ class CitationsProject < ApplicationRecord
                                             .distinct
                                             .limit(count) }
 
-  scope :labeled, -> ( project, count ) { includes( :citation => [ :authors, :keywords, :journal ] )
+  scope :labeled, -> ( project, count ) { includes( { :citation => [ :authors, :keywords, :journal ] , labels => [ :reasons ] } )
                                           .joins(:labels)
                                           .where(:project_id => project.id )
                                           .distinct

@@ -53,29 +53,48 @@
           #citation-refman.display-inline
 
     .column.full-height.medium-3
-      #reasons-list.row
+      .callout
+        h5 
+          | REASON
+        #reasons-list
+          #projects-user-reasons
+            b
+              |PROJECTS_USER REASONS
+            fieldset
+          #project-lead-reasons
+            b
+              |PROJECT LEAD REASONS
+            fieldset
+          b
+            |OTHER REASON
+          textarea#reason-textbox
+
+        #label-buttons.button-group style='text-align: center; flex-direction: column;'
+          .button id='yes-button'
+           | Yes
+          .button id='maybe-button'
+           | Maybe
+          .button id='no-button'
+           | No
+
     .column.full-height.medium-3
-      .row.callout
+      .callout
+        h5
+          |TAGS
         #tags-list
         #tag-select
           select
-      .row.callout
+      .callout
+
         #notes-list
         textarea#note-textbox
         #save-note-button.button.tiny.hollow
           | Save Note
 
-  .row style="text-align: center;"
+  .row
     #control-group.button-group
       .button id='previous-button'
        | ◄
-
-      .button id='yes-button'
-       | Yes
-      .button id='maybe-button'
-       | Maybe
-      .button id='no-button'
-       | No
 
       .button id='next-button'
        | ►
@@ -84,7 +103,7 @@
     #switch-button.button
       | list view
 
-    #tags-button.button
+    /#tags-button.button
       | tags
 
 
@@ -98,8 +117,8 @@
     | #{ history_api_v1_assignment_url(@assignment.id) }
   #root-url
     | #{ root_url }
-  #tags-url
-    | #{ api_v1_projects_user_tags_url(@assignment.projects_users_role.projects_user_id) }
+  #projects-user-id
+    | #{ @assignment.projects_users_role.projects_user_id }
   #authenticity-token
     | #{ form_authenticity_token }
   #authors-visible
