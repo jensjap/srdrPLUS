@@ -8,6 +8,8 @@ class ResultStatisticSectionsController < ApplicationController
   #!!! Birol: don't think this is working...where is comparables set?
   #before_action :set_comparisons_measures, only: [:edit]
 
+  before_action :skip_policy_scope
+
   # GET /result_statistic_sections/1/edit
   def edit
     add_breadcrumb 'edit project', edit_project_path(@result_statistic_section.extraction.project)
@@ -123,6 +125,8 @@ class ResultStatisticSectionsController < ApplicationController
       @extractions = Extraction
         .includes(projects_users_role: { projects_user: { user: :profile } })
         .where(id: extraction_ids_params)
+
+      authorize(@extractions.project, policy_class: ExtractionsExtractionFormsProjectsSectionsType1Policy)
     end
 
     def extraction_ids_params
