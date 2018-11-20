@@ -49,12 +49,12 @@ Rails.application.routes.draw do
           end
         end
       end
-      resources :projects_users do
+      resources :assignments do
         resources :tags, only: [ :index ]
         resources :reasons, only: [ :index ]
       end
       resources :taggings, only: [ :create, :destroy ]
-      resources :notes, only: [ :create, :destroy ]
+      resources :notes, only: [ :create, :update, :destroy ]
       resources :labels_reasons, only: [ :create, :destroy ]
 
     end

@@ -8,17 +8,48 @@ module Api
       def screen
         @unlabeled_citations_projects = CitationsProject.
           unlabeled( @assignment.project, params[:count] ).
-          includes( citation: [ :authors, :keywords, :journal ], 
-                      taggings: [ :tag, projects_users_role: [ user: [ :profile ] ] ], 
-                      notes: [ projects_users_role: [ user: [ :profile ] ] ] )
+          includes( citation: [ :authors, :keywords, :journal ] )
+        @unlabeled_taggings = Tagging.where( taggable_type: 'CitationsProject',
+                        taggable_id: @unlabeled_citations_projects.map { |cp| cp.id }, 
+                        projects_users_role: @assignment.
+                                              projects_users_role.
+                                              projects_user.
+                                              projects_users_roles ).
+                includes( :tag ).
+                group_by { |tagging| tagging.taggable_id }
+
+        @unlabeled_notes = Note.where( notable_type: 'CitationsProject',
+                        notable: @unlabeled_citations_projects.map { |cp| cp.id }, 
+                        projects_users_role: @assignment.
+                                              projects_users_role.
+                                              projects_user.
+                                              projects_users_roles ).
+                order( created_at: :asc ).
+                group_by { |note| note.notable_id }
+
         @past_labels = Label.last_updated( @assignment.projects_users_role, 0, params[:count] ).
-                    includes( 
+                      includes( 
                       labels_reasons: [ :reason ], 
                       citations_project: [ 
-                        citation: [ :authors, :keywords, :journal ], 
-                          taggings: [ :tag, projects_users_role: [ user: [ :profile ] ] ], 
-                          notes: [ projects_users_role: [ user: [ :profile ] ] ] ] )
+                        citation: [ :authors, :keywords, :journal ] ] )
 
+        @labeled_taggings = Tagging.
+          where(  taggable: @past_labels.map { |label| label.citations_project }, 
+                        projects_users_role: @assignment.
+                                              projects_users_role.
+                                              projects_user.
+                                              projects_users_roles ).
+                includes( :tag ).
+                group_by { |tagging| tagging.taggable_id }
+
+        @labeled_notes = Note.
+                where(  notable: @past_labels.map { |label| label.citations_project }, 
+                        projects_users_role: @assignment.
+                                              projects_users_role.
+                                              projects_user.
+                                              projects_users_roles ).
+                order( created_at: :asc ).
+                group_by { |note| note.notable_id }
         render 'screen.json'
       end
 
@@ -29,12 +60,27 @@ module Api
         count = params[:count] || 100
         offset = params[:offset] || 0
         @past_labels = Label.last_updated( @assignment.projects_users_role, 0, params[:count] ).
-                    includes( 
-                      labels_reasons: [ :reason ],
-                      citations_project: [ 
-                        citation: [ :authors, :keywords, :journal ], 
-                          taggings: [ :tag, projects_users_role: [ user: [ :profile ] ] ], 
-                          notes: [ projects_users_role: [ user: [ :profile ] ] ] ] )
+              includes( labels_reasons: [ :reason ],
+                        citations_project: [
+                        citation: [ :authors, :keywords, :journal ] ] )
+
+        @labeled_taggings = Tagging.where(
+                        taggable: @past_labels.map { |label| label.citations_project },
+                        projects_users_role: @assignment.
+                                              projects_users_role.
+                                              projects_user.
+                                              projects_users_roles ).
+                        includes( :tag ).
+                        group_by { |tagging| tagging.taggable_id }
+
+        @labeled_notes = Note.where(
+                        notable: @past_labels.map { |label| label.citations_project },
+                        projects_users_role: @assignment.
+                                              projects_users_role.
+                                              projects_user.
+                                              projects_users_roles ).
+                order( created_at: :asc ).
+                group_by { |note| note.notable_id }
         render 'history.json'
       end
 

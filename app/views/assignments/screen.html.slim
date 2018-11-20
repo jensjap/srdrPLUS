@@ -81,12 +81,13 @@
       .callout
         h5
           |TAGS
-        #tags-list
         #tag-select
-          select
+          select multiple='multiple'
       .callout
+        h5
+          |NOTES
 
-        #notes-list
+        /#notes-list
         textarea#note-textbox
         #save-note-button.button.tiny.hollow
           | Save Note
@@ -117,8 +118,8 @@
     | #{ history_api_v1_assignment_url(@assignment.id) }
   #root-url
     | #{ root_url }
-  #projects-user-id
-    | #{ @assignment.projects_users_role.projects_user_id }
+  #assignment-id
+    | #{ @assignment.id }
   #authenticity-token
     | #{ form_authenticity_token }
   #authors-visible

@@ -23,25 +23,17 @@ json.labeled_citations_projects do
       json.array! citation.keywords, :id, :name
     end
 
-    json.taggings citations_project.taggings do |tagging|
+    json.taggings @labeled_taggings[ citations_project.id ] do |tagging|
       json.id tagging.id
       json.tag do
         json.name tagging.tag.name
         json.id tagging.tag.id
       end
-      json.user do
-        json.username tagging.projects_users_role.user.profile.username
-        json.id tagging.projects_users_role.user.id
-      end
     end
 
-    json.notes citations_project.notes do |note|
+    json.notes ( @labeled_notes[ citations_project.id ] || [] )[ 0 .. 0 ] do |note|
       json.id note.id
       json.value note.value
-      json.user do
-        json.username note.projects_users_role.user.profile.username
-        json.id note.projects_users_role.user.id
-      end
     end
 
     json.label do

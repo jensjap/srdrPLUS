@@ -51,9 +51,6 @@ document.addEventListener 'turbolinks:load', ->
     update_info = ( obj ) ->
       current_citation = obj.history[ obj.index ]
 
-      console.log obj.index
-      console.log current_citation
-
       $( '#citation-name' ).text( current_citation.name )
       $( '#citation-abstract' ).text( current_citation.abstract )
       $( '#citation-pmid' ).text( current_citation.pmid )
@@ -85,76 +82,51 @@ document.addEventListener 'turbolinks:load', ->
         else
           $( '#citation-keywords' ).append( ', ' + k.name)
 
+      
       ## TAGGINGS
       root_url = $( '#root-url' ).text()
-      $( '#tags-list' ).empty()
+      tag_select = $( '#tag-select select' )
+      tag_select.val( null ).trigger 'change'
       for t in current_citation.taggings
-        tag = $( '<div class="tag" >' + t.tag.name + ' </div>' )
-        delete_tag_link = $( '<a id="delete-tag-'+ t.id + '" tagging-id="' + t.id + '">delete</a>' )
-        delete_tag_link.click ->
-          tagging_id = +$( this ).attr( 'tagging-id' )
+        tag_option = new Option( t.tag.name, t.tag.id, true, true )
+        $( tag_option ).attr( 'tagging-id', t.id )
+        tag_select.append( tag_option )
+        tag_select.trigger
+          type: 'select2:select'
+          params: data: { id: t.tag.id, text: t.tag.name }
 
-          $.ajax {
-            type: 'DELETE'
-            url: root_url + '/api/v1/taggings/' + $( this ).attr( 'tagging-id' )
-            data: {
-              utf8: '✓'
-              authenticity_token: $( '#authenticity-token' ).text()
-            }
-            success:
-              () ->
-                i = 0
-                for tagging in current_citation.taggings
-                  if tagging.id == tagging_id
-                    current_citation.taggings.splice( i, 1 )
-                    break
-                  i++
-                update_info( obj )
-                toastr.success( 'Tag successfully deleted' )
-            error:
-              () ->
-                toastr.error( 'ERROR: Could not delete tag' )
-          }
-
-        $( tag ).append( delete_tag_link )
-
-        $( '#tags-list' ).append( tag )
+        #        delete_tag_link = $( '<a id="delete-tag-'+ t.id + '" tagging-id="' + t.id + '">delete</a>' )
+        #        delete_tag_link.click ->
+        #          tagging_id = +$( this ).attr( 'tagging-id' )
+        #
+        #          $.ajax {
+        #            type: 'DELETE'
+        #            url: root_url + '/api/v1/taggings/' + $( this ).attr( 'tagging-id' )
+        #            data: {
+        #              utf8: '✓'
+        #              authenticity_token: $( '#authenticity-token' ).text()
+        #            }
+        #            success:
+        #              () ->
+        #                i = 0
+        #                for tagging in current_citation.taggings
+        #                  if tagging.id == tagging_id
+        #                    current_citation.taggings.splice( i, 1 )
+        #                    break
+        #                  i++
+        #                update_info( obj )
+        #                toastr.success( 'Tag successfully deleted' )
+        #            error:
+        #              () ->
+        #                toastr.error( 'ERROR: Could not delete tag' )
+        #          }
+        #
+        #        $( tag ).append( delete_tag_link )
+        #
+        #        $( '#tags-list' ).append( tag )
 
       ## NOTES
-      root_url = $( '#root-url' ).text()
-      $( '#notes-list' ).empty()
-      for n in current_citation.notes
-        note = $( '<div class="note" >' + n.value + ' </div>' )
-        delete_note_link = $( '<a id="delete-note-'+ n.id + '" note-id="' + n.id + '">delete</a>' )
-        delete_note_link.click ->
-          note_id = +$( this ).attr( 'note-id' )
-
-          $.ajax {
-            type: 'DELETE'
-            url: root_url + '/api/v1/notes/' + $( this ).attr( 'note-id' )
-            data: {
-              utf8: '✓'
-              authenticity_token: $( '#authenticity-token' ).text()
-            }
-            success:
-              () ->
-                i = 0
-                for note in current_citation.notes
-                  if note.id == note_id
-                    current_citation.notes.splice( i, 1 )
-                    break
-                  i++
-
-
-                update_info( obj )
-                toastr.success( 'Note successfully deleted' )
-            error:
-              () ->
-                toastr.error( 'ERROR: Could not delete note' )
-          }
-
-        $( note ).append( delete_note_link )
-        $( '#notes-list' ).append( note )
+      $( 'textarea#note-textbox' ).val( if !!current_citation.notes[ 0 ] then current_citation.notes[ 0 ].value else "" )
 
       $( '#yes-button' ).removeClass( 'secondary' )
       $( '#no-button' ).removeClass( 'secondary' )
@@ -340,7 +312,7 @@ document.addEventListener 'turbolinks:load', ->
 
       # pagination buttons
 
-      $( '#next-page' ).click (e) -> 
+      $( '#next-page' ).click (e) ->
         get_history_page( state_obj, state_obj.history_page + 1 )
 
       $( '#prev-page' ).click (e) ->
@@ -348,9 +320,10 @@ document.addEventListener 'turbolinks:load', ->
 
       ## NOTE CREATION HANDLING
       $( '#save-note-button' ).on 'click', ->
+        is_patch = !!state_obj.history[ state_obj.index ].notes[ 0 ]
         $.ajax {
-          type: 'POST'
-          url: $( '#root-url' ).text() + '/api/v1/notes'
+          type: if is_patch then 'PATCH' else 'POST'
+          url: $( '#root-url' ).text() + '/api/v1/notes' + ( if is_patch then '/' + state_obj.history[ state_obj.index ].notes[ 0 ].id else '' )
           dataType: 'json'
           data: {
             utf8: '✓'
@@ -364,12 +337,12 @@ document.addEventListener 'turbolinks:load', ->
           }
           success:
             ( data ) ->
-              state_obj.history[ state_obj.index ].notes.push { id: data.id, value: $( '#note-textbox' ).val() }
+              state_obj.history[ state_obj.index ].notes[ 0 ] = { id: data.id, value: $( '#note-textbox' ).val() }
               update_info( state_obj )
-              toastr.success( 'Note successfully created' )
+              toastr.success( 'Note successfully saved' )
           error:
             () ->
-              toastr.error( 'ERROR: Could not create note' )
+              toastr.error( 'ERROR: Could not save note' )
         }
 
       ## TAGGING CREATION HANDLING
@@ -377,40 +350,69 @@ document.addEventListener 'turbolinks:load', ->
         minimumInputLength: 0
         #closeOnSelect: false
         ajax:
-          url: ( ) -> $( '#root-url' ).text() + '/api/v1/projects_users/ ' + $( '#projects-user-id' ).text() + '/tags.json'
+          url: ( ) -> $('root-url').text() + '/api/v1/assignments/' + $( '#assignment-id' ).text() + '/tags.json'
           dataType: 'json'
           delay: 100
           data: (params) ->
             q: params.term
             page: params.page || 1
 
-      $( '#tag-select select' ).on 'select2:select', ->
-        tag_text = $( '#tag-select select option:selected' ).text()
-        tag_id = $( '#tag-select select option:selected' ).val()
-        $.ajax {
-          type: 'POST'
-          url: $( '#root-url' ).text() + '/api/v1/taggings'
-          dataType: 'json'
-          data: {
-            utf8: '✓'
-            authenticity_token: $( '#authenticity-token' ).text()
-            tagging: {
-              tag_id: $( '#tag-select select option:selected' ).val()
-              projects_users_role_id: state_obj.projects_users_role_id
-              taggable_id: state_obj.history[ state_obj.index ].citations_project_id
-              taggable_type: "CitationsProject"
+      $( '#tag-select select' ).on 'select2:select', ( event ) ->
+        tag_text = event.params.data.text
+        tag_id = event.params.data.id
+        tag_option_element = $( event.target ).find( 'option[value="' + tag_id + '"]' )[ 0 ]
+        if !$( tag_option_element ).attr( 'tagging-id' )
+          $.ajax {
+            type: 'POST'
+            url: $( '#root-url' ).text() + '/api/v1/taggings'
+            dataType: 'json'
+            data: {
+              utf8: '✓'
+              authenticity_token: $( '#authenticity-token' ).text()
+              tagging: {
+                tag_id: tag_id
+                projects_users_role_id: state_obj.projects_users_role_id
+                taggable_id: state_obj.history[ state_obj.index ].citations_project_id
+                taggable_type: "CitationsProject"
+              }
             }
+            success:
+              ( data ) ->
+                state_obj.history[ state_obj.index ].taggings.push { id: data.id, tag: { id: tag_id, name: tag_text } }
+                $( tag_option_element ).attr( 'tagging-id', data.id )
+                toastr.success( 'Tag successfully created' )
+            error:
+              () ->
+                toastr.error( 'ERROR: Could not create tag' )
           }
-          success:
-            ( data ) ->
-              state_obj.history[ state_obj.index ].taggings.push { id: data.id, tag: { id: tag_id, name: tag_text } }
-              update_info( state_obj )
-              toastr.success( 'Tag successfully created' )
-          error:
-            () ->
-              toastr.error( 'ERROR: Could not create tag' )
-        }
 
+      $( '#tag-select select' ).on 'select2:unselect', ( event ) ->
+        tag_id = event.params.data.id
+        tag_option_element = $( event.target ).find( 'option[value="' + tag_id + '"]' )[ 0 ]
+        if $( tag_option_element ).attr( 'tagging-id' )
+          tagging_id = +$( tag_option_element ).attr( 'tagging-id' )
+
+          $.ajax {
+            type: 'DELETE'
+            url: $( '#root-url' ).text() + '/api/v1/taggings/' + tagging_id
+            data: {
+              utf8: '✓'
+              authenticity_token: $( '#authenticity-token' ).text()
+            }
+            success:
+              () ->
+                i = 0
+                current_citation = state_obj.history[ state_obj.index ]
+                for tagging in current_citation.taggings
+                  if tagging.id == tagging_id
+                    current_citation.taggings.splice( i, 1 )
+                    break
+                  i++
+                toastr.success( 'Tag successfully deleted' )
+            error:
+              () ->
+                toastr.error( 'ERROR: Could not delete tag' )
+          }
       return
 
 ##### get_history_page #####
@@ -480,7 +482,7 @@ document.addEventListener 'turbolinks:load', ->
 
       $.ajax {
         type: 'GET'
-        url: root_url + '/api/v1/projects_users/ ' + $( '#projects-user-id' ).text() + '/reasons.json'
+        url: $('root-url').text() + '/api/v1/assignments/' + $( '#assignment-id' ).text() + '/reasons.json'
         success:
           ( data ) ->
             if data.results.projects_user_reasons?
