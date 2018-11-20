@@ -23,6 +23,12 @@ module Api
         render json: { id: @note.id }
       end
 
+      api :UPDATE, '/v1/notes/:id', 'updates a new note with specified tag and citations_project'
+      def update
+        @note.update( note_params )
+        render json: { id: @note.id }
+      end
+
       private
         def set_note
           @note = Note.find( params[:id] )

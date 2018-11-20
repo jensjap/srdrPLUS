@@ -28,7 +28,6 @@ module Api
       end
 
       private
-
       def set_assignment
         @assignment = Assignment.find( params[ :assignment_id ] )
       end

@@ -128,7 +128,6 @@ document.addEventListener 'turbolinks:load', ->
         else
           $( '#citation-keywords' ).append( ', ' + k.name)
 
-
       ## reset button colors
       $( '#yes-button' ).removeClass( 'success' )
       $( '#no-button' ).removeClass( 'alert' )
@@ -164,7 +163,6 @@ document.addEventListener 'turbolinks:load', ->
       if $( 'textarea#note-textbox' ).val() != ''
         $( 'textarea#note-textbox' ).addClass( 'note-saved' )
       $( 'textarea#note-textbox' ).trigger 'change'
-
       ## uncheck reasons
       $( '#reason-select select' ).val( null )
       $( '#reason-select select' ).empty()
@@ -189,7 +187,6 @@ document.addEventListener 'turbolinks:load', ->
 
       $( '#reason-select select' ).trigger 'change'
       return
-
 
 ##### send_label #####
     send_label = ( obj, label_type_id ) ->
@@ -378,7 +375,6 @@ document.addEventListener 'turbolinks:load', ->
               () ->
                 toastr.error( 'ERROR: Could not save note' )
           }
-
         ) , 1200
 
       ## TAGGING CREATION HANDLING
@@ -462,6 +458,33 @@ document.addEventListener 'turbolinks:load', ->
             q: params.term
             page: params.page || 1
 
+      $( '#tag-select select' ).on 'select2:unselect', ( event ) ->
+        tag_id = event.params.data.id
+        tag_option_element = $( event.target ).find( 'option[value="' + tag_id + '"]' )[ 0 ]
+        if $( tag_option_element ).attr( 'tagging-id' )
+          tagging_id = +$( tag_option_element ).attr( 'tagging-id' )
+
+          $.ajax {
+            type: 'DELETE'
+            url: $( '#root-url' ).text() + '/api/v1/taggings/' + tagging_id
+            data: {
+              utf8: '✓'
+              authenticity_token: $( '#authenticity-token' ).text()
+            }
+            success:
+              () ->
+                i = 0
+                current_citation = state_obj.history[ state_obj.index ]
+                for tagging in current_citation.taggings
+                  if tagging.id == tagging_id
+                    current_citation.taggings.splice( i, 1 )
+                    break
+                  i++
+                toastr.success( 'Tag successfully deleted' )
+            error:
+              () ->
+                toastr.error( 'ERROR: Could not delete tag' )
+          }
       return
 
 ##### get_history_page #####

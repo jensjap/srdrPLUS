@@ -62,7 +62,6 @@ Rails.application.routes.draw do
           patch 'update_positions'
         end
       end
-
     end
   end
 
