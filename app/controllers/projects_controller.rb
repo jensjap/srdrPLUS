@@ -6,6 +6,12 @@ class ProjectsController < ApplicationController
     :import_pubmed, :import_endnote, :import_ris, :next_assignment
   ]
 
+  before_action :skip_authorization, only: [:index, :show, :filter, :export, :new, :create]
+  before_action :skip_policy_scope, except: [
+    :index, :show, :edit, :update, :destroy, :filter, :export, :import_csv,
+    :import_pubmed, :import_ris, :import_endnote, :next_assignment
+  ]
+
   SORT = {
     'updated-at': { updated_at: :desc },
     'created-at': { created_at: :desc },
@@ -19,7 +25,6 @@ class ProjectsController < ApplicationController
     @query = params[:q]
     @order = params[:o] || 'updated-at'
 
-    skip_authorization
     @projects = policy_scope(Project).includes(:extraction_forms)
       .includes(:key_questions)
       .includes(publishings: [{ user: :profile }, approval: [{ user: :profile }]])
@@ -33,14 +38,12 @@ class ProjectsController < ApplicationController
 
   # GET /projects/new
   def new
-    skip_authorization
-    skip_policy_scope
     @project = Project.new
   end
 
   # GET /projects/1/edit
   def edit
-    authorize(Project.find(params[:id]))
+    authorize(@project)
     @citation_dict = @project.citations.eager_load(:authors, :journal, :keywords).map{ |c| [c.id, c] }.to_h
     @citations_projects = @project.citations_projects
 
@@ -50,9 +53,6 @@ class ProjectsController < ApplicationController
   # POST /projects
   # POST /projects.json
   def create
-    skip_authorization
-    skip_policy_scope
-
     @project = Project.new(project_params)
 
     respond_to do |format|
@@ -103,7 +103,6 @@ class ProjectsController < ApplicationController
     @query = params[:q]  # Need @query for index partial.
     @order = params[:o]
 
-    authorize(Project)
     @projects = policy_scope(Project).includes(publishings: [{ user: :profile }, approval: [{ user: :profile }]])
       .includes(:key_questions)
       .by_name_description_and_query(@query).order(SORT[@order]).page(params[:page])
@@ -112,9 +111,7 @@ class ProjectsController < ApplicationController
 
   def undo
     @project_version = PaperTrail::Version.find_by_id(params[:id])
-
     authorize(@project_version.item)
-    skip_policy_scope
 
     begin
       if @project_version.reify
@@ -143,6 +140,7 @@ class ProjectsController < ApplicationController
   end
 
   def import_csv
+    authorize(@project)
     if params[:project].present? and params[:project][:citation_file].present?
       @project.import_citations_from_csv( params[:project][:citation_file] )
     end
@@ -150,6 +148,7 @@ class ProjectsController < ApplicationController
   end
 
   def import_pubmed
+    authorize(@project)
     if params[:project].present? and params[:project][:citation_file].present?
       @project.import_citations_from_pubmed( params[:project][:citation_file] )
     end
@@ -157,6 +156,7 @@ class ProjectsController < ApplicationController
   end
 
   def import_ris
+    authorize(@project)
     if params[:project].present? and params[:project][:citation_file].present?
       @project.import_citations_from_ris( params[:project][:citation_file] )
     end
@@ -164,6 +164,7 @@ class ProjectsController < ApplicationController
   end
 
   def import_endnote
+    authorize(@project)
     if params[:project].present? and params[:project][:citation_file].present?
       @project.import_citations_from_enl( params[:project][:citation_file] )
     end
@@ -171,6 +172,7 @@ class ProjectsController < ApplicationController
   end
 
   def next_assignment
+    authorize(@project)
     projects_user = ProjectsUser.where( project: @project, user: current_user ).first
     next_assignment = projects_user.assignments.first
     redirect_to controller: :assignments, action: :screen, id: next_assignment.id
@@ -179,7 +181,6 @@ class ProjectsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_project
-      authorize(Project.find(params[:id]))
       @project = policy_scope(Project).includes(:extraction_forms)
         .includes(:key_questions)
         .includes(publishings: [{ user: :profile }, approval: [{ user: :profile }]])
