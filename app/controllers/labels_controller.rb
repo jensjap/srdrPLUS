@@ -53,7 +53,7 @@ class LabelsController < ApplicationController
 
     def set_label
       @label = Label.find(params[:id])
-      authorize(@label.project, policy_class: LabelPolicy)
+      authorize(@label, policy_class: LabelPolicy)
     end
 
     def label_params
