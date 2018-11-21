@@ -1,6 +1,7 @@
 class Type1sController < ApplicationController
   before_action :set_extraction_forms_projects_section, only: [:new, :create]
   before_action :set_type1, only: [:edit, :update, :destroy]
+  before_action :skip_policy_scope, :skip_authorization
 
   # GET /extraction_forms_projects_sections/1/type1s/new
   def new
