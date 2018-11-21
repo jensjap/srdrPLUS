@@ -1,5 +1,5 @@
 class RecordsController < ApplicationController
-  before_action :set_record, only: [:update]
+  before_action :set_record, :skip_policy_scope, :skip_authorization, only: [:update]
 
   # PATCH/PUT /records/1
   # PATCH/PUT /records/1.json
