@@ -146,6 +146,7 @@ document.addEventListener 'turbolinks:load', ->
 
       ## TAGGINGS
       $( '#tag-select select' ).val( null )
+      $( '#tag-select select' ).empty( )
       for t in current_citation.taggings
         tag_option = new Option( t.tag.name, t.tag.id, true, true )
         $( tag_option ).attr( 'tagging-id', t.id )
@@ -370,15 +371,15 @@ document.addEventListener 'turbolinks:load', ->
               ( data ) ->
                 if $( '#note-textbox' ).val() != ''
                   $( 'textarea#note-textbox' ).addClass( 'note-saved' )
+                  $( 'textarea#note-textbox' ).trigger 'change'
                 state_obj.history[ state_obj.index ].notes[ 0 ] = { id: data.id, value: $( '#note-textbox' ).val() }
-                update_info( state_obj )
                 toastr.success( 'Note successfully saved' )
             error:
               () ->
                 toastr.error( 'ERROR: Could not save note' )
           }
 
-        ) , 2000
+        ) , 1200
 
       ## TAGGING CREATION HANDLING
       $( '#tag-select select' ).select2
