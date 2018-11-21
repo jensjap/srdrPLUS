@@ -4,7 +4,6 @@ class LabelsController < ApplicationController
 
   def new
     skip_authorization
-    skip_policy_scope
     @label = Label.new
   end
 
@@ -53,7 +52,7 @@ class LabelsController < ApplicationController
 
     def set_label
       @label = Label.find(params[:id])
-      authorize(@label, policy_class: LabelPolicy)
+      authorize(@label.project, policy_class: LabelPolicy)
     end
 
     def label_params
