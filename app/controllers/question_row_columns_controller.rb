@@ -1,5 +1,5 @@
 class QuestionRowColumnsController < ApplicationController
-  before_action :set_question_row_column, only: [:destroy_entire_column, :answer_choices]
+  before_action :set_question_row_column, :skip_policy_scope, only: [:destroy_entire_column, :answer_choices]
 
   def destroy_entire_column
     @question = @question_row_column.question
@@ -32,6 +32,7 @@ class QuestionRowColumnsController < ApplicationController
 
   def set_question_row_column
     @question_row_column = QuestionRowColumn.find(params[:id])
+    authorize(@question_row_column.question.project, policy_class: QuestionRowColumnPolicy)
   end
 
   # This method will remove question_row_columns down all the rows
@@ -61,4 +62,3 @@ class QuestionRowColumnsController < ApplicationController
     return question_row_column_index_to_nuke
   end
 end
-

@@ -1,5 +1,5 @@
 class QuestionRowsController < ApplicationController
-  before_action :set_question_row, only: [:destroy]
+  before_action :set_question_row, :skip_policy_scope, only: [:destroy]
 
   def destroy
     @question = @question_row.question
@@ -23,5 +23,6 @@ class QuestionRowsController < ApplicationController
 
     def set_question_row
       @question_row = QuestionRow.find(params[:id])
+      authorize(@question_row.question.project, policy_class: QuestionRowPolicy)
     end
 end
