@@ -1,9 +1,11 @@
 class ExtractionsExtractionFormsProjectsSectionsType1RowsController < ApplicationController
-  before_action :set_extractions_extraction_forms_projects_sections_type1, only: [:create]
+  before_action :set_extractions_extraction_forms_projects_sections_type1, :skip_policy_scope, only: [:create]
 
   # POST /extractions_extraction_forms_projects_sections_type1s/:extractions_extraction_forms_projects_sections_type1_id/extractions_extraction_forms_projects_sections_type1_rows
   # POST /extractions_extraction_forms_projects_sections_type1s/:extractions_extraction_forms_projects_sections_type1_id/extractions_extraction_forms_projects_sections_type1_rows.json
   def create
+    authorize(@extractions_extraction_forms_projects_sections_type1.project, policy_class: ExtractionsExtractionFormsProjectsSectionsType1RowPolicy)
+
     @extractions_extraction_forms_projects_sections_type1_row = @extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_sections_type1_rows.build(extractions_extraction_forms_projects_sections_type1_row_params)
 
     respond_to do |format|
