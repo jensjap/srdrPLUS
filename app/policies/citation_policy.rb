@@ -1,7 +1,7 @@
 require_dependency 'app/policies/modules/role_checker'
 
 class CitationPolicy < ApplicationPolicy
-  extend RoleChecker
+  include RoleChecker
 
   def index?
     part_of_project?
