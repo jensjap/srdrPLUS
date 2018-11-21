@@ -57,7 +57,7 @@ class TasksController < ApplicationController
       .group('tasks.id')
       .where(:projects => { :id => @project.id }).all
 
-    authorize(@project)
+    authorize(@project, policy_class: TaskPolicy)
     skip_policy_scope
 
     #@labels = Label.where(:user_id => current_user.id).where(:tasks_project_id => [@project.tasks_projects]).all
