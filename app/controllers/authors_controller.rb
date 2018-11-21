@@ -1,11 +1,10 @@
 class AuthorsController < ApplicationController
+  before_action :skip_policy_scope, :skip_authorization
+
   PAGE_SIZE = 30
 
   # GET /authors.json
   def index
-    skip_policy_scope
-    authorize(Author)
-
     page = (params[:page] || 1).to_i
     offset = PAGE_SIZE * (page - 1)
 
