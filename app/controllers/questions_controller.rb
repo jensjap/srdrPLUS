@@ -2,6 +2,8 @@ class QuestionsController < ApplicationController
   before_action :set_extraction_forms_projects_section, only: [:new, :create]
   before_action :set_question, only: [:edit, :update, :destroy, :add_column, :add_row,
                                       :dependencies, :toggle_dependency]
+  before_action :skip_policy_scope
+
   #before_action :ensure_matrix_type, only: [:add_column, :add_row]
 
   # GET /extraction_forms_projects_sections/1/questions/new
