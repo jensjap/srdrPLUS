@@ -2,6 +2,8 @@ class Api::V1::ExtractionFormsProjectsSectionsController < Api::V1::BaseControll
   before_action :set_extraction_forms_project, only: [:index]
   before_action :set_extraction_forms_projects_section, only: [:show]
 
+  before_action :skip_authorization, :skip_policy_scope
+
   def_param_group :extraction_forms_project_section do
     param :extraction_forms_projects_section, Hash, required: true, action_aware: true do
       param :extraction_forms_project_id, Integer, required: true

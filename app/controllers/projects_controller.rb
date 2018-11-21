@@ -9,7 +9,7 @@ class ProjectsController < ApplicationController
   before_action :skip_authorization, only: [:index, :show, :filter, :export, :new, :create]
   before_action :skip_policy_scope, except: [
     :index, :show, :edit, :update, :destroy, :filter, :export, :import_csv,
-    :import_pubmed, :import_ris, :import_endnote, :next_assignment
+    :import_pubmed, :import_endnote, :import_ris, :next_assignment
   ]
 
   SORT = {
