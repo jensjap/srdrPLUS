@@ -1,7 +1,7 @@
 module Api
   module V1
     class AssignmentsController < BaseController
-      before_action :set_assignment, only: [:screen, :history]
+      before_action :set_assignment, :skip_policy_scope, :skip_authorization, only: [:screen, :history]
 
       api :GET, '/v1/assignments/:id/screen', 'List of citations to screen'
       formats [:json]
@@ -10,7 +10,7 @@ module Api
           unlabeled( @assignment.project, params[:count] ).
           includes( citation: [ :authors, :keywords, :journal ] )
         @unlabeled_taggings = Tagging.where( taggable_type: 'CitationsProject',
-                        taggable_id: @unlabeled_citations_projects.map { |cp| cp.id }, 
+                        taggable_id: @unlabeled_citations_projects.map { |cp| cp.id },
                         projects_users_role: @assignment.
                                               projects_users_role.
                                               projects_user.
@@ -19,7 +19,7 @@ module Api
                 group_by { |tagging| tagging.taggable_id }
 
         @unlabeled_notes = Note.where( notable_type: 'CitationsProject',
-                        notable: @unlabeled_citations_projects.map { |cp| cp.id }, 
+                        notable: @unlabeled_citations_projects.map { |cp| cp.id },
                         projects_users_role: @assignment.
                                               projects_users_role.
                                               projects_user.
@@ -28,13 +28,13 @@ module Api
                 group_by { |note| note.notable_id }
 
         @past_labels = Label.last_updated( @assignment.projects_users_role, 0, params[:count] ).
-                      includes( 
-                      labels_reasons: [ :reason ], 
-                      citations_project: [ 
+                      includes(
+                      labels_reasons: [ :reason ],
+                      citations_project: [
                         citation: [ :authors, :keywords, :journal ] ] )
 
         @labeled_taggings = Tagging.
-          where(  taggable: @past_labels.map { |label| label.citations_project }, 
+          where(  taggable: @past_labels.map { |label| label.citations_project },
                         projects_users_role: @assignment.
                                               projects_users_role.
                                               projects_user.
@@ -43,7 +43,7 @@ module Api
                 group_by { |tagging| tagging.taggable_id }
 
         @labeled_notes = Note.
-                where(  notable: @past_labels.map { |label| label.citations_project }, 
+                where(  notable: @past_labels.map { |label| label.citations_project },
                         projects_users_role: @assignment.
                                               projects_users_role.
                                               projects_user.
