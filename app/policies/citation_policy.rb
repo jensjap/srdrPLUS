@@ -4,10 +4,10 @@ class CitationPolicy < ApplicationPolicy
   include RoleChecker
 
   def labeled?
-    at_least_project_role?(RoleChecker::CONSOLIDATOR)
+    project_consolidator?
   end
 
   def unlabled?
-    at_least_project_role?(RoleChecker::CONSOLIDATOR)
+    project_consolidator?
   end
 end

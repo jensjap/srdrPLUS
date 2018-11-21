@@ -16,19 +16,19 @@ module RoleChecker
   end
 
   def project_leader?
-    get_highest_role_id == LEADER
+    get_highest_role_id && get_highest_role_id <= LEADER
   end
 
   def project_consolidator?
-    get_highest_role_id == CONSOLIDATOR
+    get_highest_role_id && get_highest_role_id <= CONSOLIDATOR
   end
 
   def project_contributor?
-    get_highest_role_id == CONTRIBUTOR
+    get_highest_role_id && get_highest_role_id <= CONTRIBUTOR
   end
 
   def project_auditor?
-    get_highest_role_id == AUDITOR
+    get_highest_role_id && get_highest_role_id <= AUDITOR
   end
 
   def part_of_project?
@@ -37,10 +37,5 @@ module RoleChecker
 
   def not_part_of_project?
     get_highest_role_id.nil?
-  end
-
-  def at_least_project_role?(role)
-    highest_role = get_highest_role_id
-    highest_role && highest_role <= role
   end
 end
