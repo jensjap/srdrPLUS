@@ -3,7 +3,15 @@ require_dependency 'app/policies/modules/role_checker'
 class QuestionPolicy < ApplicationPolicy
   include RoleChecker
 
+  def new?
+    project_consolidator?
+  end
+
   def edit?
+    project_consolidator?
+  end
+
+  def create?
     project_consolidator?
   end
 

@@ -115,14 +115,14 @@ class QuestionsController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_extraction_forms_projects_section
       @extraction_forms_projects_section = ExtractionFormsProjectsSection.find(params[:extraction_forms_projects_section_id])
-      authorize(@extraction_forms_projects_section)
+      authorize(@extraction_forms_projects_section.project, policy_class: QuestionPolicy)
     end
 
     def set_question
       @question = Question.includes(question_rows: [
         { question_row_columns: [ :question_row_column_options, :question_row_column_fields] }])
           .find(params[:id])
-      authorize(@question)
+      authorize(@question.project, policy_class: QuestionPolicy)
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
