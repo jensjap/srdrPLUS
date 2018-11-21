@@ -5,6 +5,13 @@ module SeedData
       # Turn off paper_trail.
       PaperTrail.enabled = false
 
+      # UserTypes.
+      UserType.create([
+        { user_type: 'Admin'},
+        { user_type: 'Member'},
+        { user_type: 'Trainee'},
+      ])
+
       # Roles.
       Role.create([
         { name: 'Leader'},
