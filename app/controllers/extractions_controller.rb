@@ -7,8 +7,9 @@ class ExtractionsController < ApplicationController
   before_action :set_project, only: [:index, :new, :create, :comparison_tool, :compare, :consolidate]
   before_action :set_extraction, only: [:show, :edit, :update, :destroy, :work]
   before_action :set_extractions, only: [:compare, :consolidate, :edit_type1_across_extractions]
-  before_action :ensure_extraction_form_structure, only: [:compare, :consolidate, :work]
-  before_action :skip_policy_scope, only: [:index, :show, :new, :edit, :create, :update, :destroy, :work, :comparison_tool, :consolidate, :edit_type1_across_extractions]
+  before_action :ensure_extraction_form_structure, only: [:comparison_tool, :consolidate, :work]
+
+  before_action :skip_policy_scope, except: [:compare, :consolidate, :edit_type1_across_extractions]
   before_action :skip_authorization, only: [:index, :show]
 
   # GET /projects/1/extractions
@@ -29,7 +30,7 @@ class ExtractionsController < ApplicationController
   def new
     @extraction = @project.extractions.new
 
-    authorize(@extraction)
+    authorize(@extraction.project, policy_class: ExtractionPolicy)
 
     add_breadcrumb 'extractions',    :project_extractions_path
     add_breadcrumb 'new extraction', :new_project_extraction_path
@@ -37,7 +38,7 @@ class ExtractionsController < ApplicationController
 
   # GET /extractions/1/edit
   def edit
-    authorize(@extraction)
+    authorize(@extraction.project, policy_class: ExtractionPolicy)
   end
 
   # POST /extractions
@@ -45,7 +46,7 @@ class ExtractionsController < ApplicationController
   def create
     @extraction = @project.extractions.build(extraction_params)
 
-    authorize(@extraction)
+    authorize(@extraction.project, policy_class: ExtractionPolicy)
 
     respond_to do |format|
       if @extraction.save
@@ -61,7 +62,7 @@ class ExtractionsController < ApplicationController
   # PATCH/PUT /extractions/1
   # PATCH/PUT /extractions/1.json
   def update
-    authorize(@extraction)
+    authorize(@extraction.project, policy_class: ExtractionPolicy)
 
     respond_to do |format|
       if @extraction.update(extraction_params)
@@ -79,7 +80,7 @@ class ExtractionsController < ApplicationController
   # DELETE /extractions/1
   # DELETE /extractions/1.json
   def destroy
-    authorize(@extraction)
+    authorize(@extraction.project, policy_class: ExtractionPolicy)
 
     @extraction.destroy
     respond_to do |format|
@@ -90,7 +91,7 @@ class ExtractionsController < ApplicationController
 
   # GET /extractions/1/work
   def work
-    authorize(@extraction)
+    authorize(@extraction.project, policy_class: ExtractionPolicy)
 
     @extraction_forms_projects = @extraction.project.extraction_forms_projects
     @key_questions_projects_array_for_select = @extraction.project.key_questions_projects_array_for_select
@@ -103,7 +104,7 @@ class ExtractionsController < ApplicationController
 
   # GET /projects/1/extractions/comparison_tool
   def comparison_tool
-    authorize(@project)
+    authorize(@extraction.project, policy_class: ExtractionPolicy)
 
     @citation_groups = @project.citation_groups
 
@@ -114,7 +115,7 @@ class ExtractionsController < ApplicationController
 
   # GET /projects/1/extractions/consolidate
   def consolidate
-    authorize(@extractions)
+    authorize(@extraction.project, policy_class: ExtractionPolicy)
 
     @extraction_forms_projects = @project.extraction_forms_projects
     @consolidated_extraction   = @project.consolidated_extraction(@extractions.first.citations_project_id, current_user.id)
@@ -131,7 +132,7 @@ class ExtractionsController < ApplicationController
 
   # GET /projects/1/extractions/edit_type1_across_extractions
   def edit_type1_across_extractions
-    authorize(@extraction)
+    authorize(@extraction.project, policy_class: ExtractionPolicy)
 
     @type1       = Type1.find(params[:type1_id])
     @efps        = ExtractionFormsProjectsSection.find(params[:efps_id])
