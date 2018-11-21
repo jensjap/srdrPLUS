@@ -4,8 +4,9 @@ class CitationsController < ApplicationController
 
   before_action :set_project, only: [:index, :labeled, :unlabeled]
   before_action :set_citation, only: [:show, :edit, :update, :destroy]
+
   before_action :skip_policy_scope
-  before_action :skip_authorization, only: [:new, :create, :update, :edit, :destroy, :show]
+  before_action :skip_authorization, except: [:index, :labeled, :unlabled]
 
   def new
     @citation = Citation.new
@@ -55,7 +56,7 @@ class CitationsController < ApplicationController
   end
 
   def index
-    authorize(@project)
+    authorize(@project, policy_class: CitationPolicy)
     @citations = Citation.joins(:projects)
       .group('citations.id')
       .where(:projects => { :id => @project.id }).all
@@ -66,13 +67,13 @@ class CitationsController < ApplicationController
   end
 
   def labeled
-    authorize(@project)
+    authorize(@project, policy_class: CitationPolicy)
     @citations = Citation.labeled(@project)
     render 'index'
   end
 
   def unlabeled
-    authorize(@project)
+    authorize(@project, policy_class: CitationPolicy)
     @citations = citation.unlabeled(@project)
     render 'index'
   end
