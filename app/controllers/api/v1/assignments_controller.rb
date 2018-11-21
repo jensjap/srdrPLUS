@@ -62,6 +62,10 @@ module Api
                                               projects_users_roles ).
                 order( created_at: :asc ).
                 group_by { |note| note.notable_id }
+
+
+        @assignment_options = @assignment.assignment_options.includes( :assignment_option_type, :label_type )
+
         render 'screen.json'
       end
 
