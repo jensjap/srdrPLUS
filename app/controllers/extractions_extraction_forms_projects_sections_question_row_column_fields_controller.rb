@@ -1,7 +1,9 @@
 class ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnFieldsController < ApplicationController
-  before_action :set_eefps_qrcf, only: [:update]
+  before_action :set_eefps_qrcf, :skip_policy_scope, only: [:update]
 
   def update
+    authorize(@eefps_qrcf.project , policy_class: ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnFieldPolicy)
+
     respond_to do |format|
       if @eefps_qrcf.update(eefps_qrcf_params)
         format.html { redirect_to work_extraction_path(@eefps_qrcf.extractions_extraction_forms_projects_section.extraction,
