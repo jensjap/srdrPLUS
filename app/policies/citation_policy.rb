@@ -3,10 +3,6 @@ require_dependency 'app/policies/modules/role_checker'
 class CitationPolicy < ApplicationPolicy
   include RoleChecker
 
-  def index?
-    part_of_project?
-  end
-
   def labeled?
     at_least_project_role?(RoleChecker::CONSOLIDATOR)
   end
