@@ -1,16 +1,21 @@
 require_dependency 'app/policies/modules/role_checker'
 
 class KeyQuestionsProjectPolicy < ApplicationPolicy
-  extend RoleChecker
+  include RoleChecker
 
-  def create?
-    at_least?(RoleChecker::CONSOLIDATOR)
+  def edit?
+    project_consolidator?
   end
 
-  private
+  def create?
+    project_consolidator?
+  end
 
-  def at_least?(role)
-    highest_role = KeyQuestionsProjectPolicy.find_highest_role_id(user, record.project)
-    highest_role && highest_role <= role
+  def update?
+    project_consolidator?
+  end
+
+  def destroy?
+    project_consolidator?
   end
 end

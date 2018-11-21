@@ -57,11 +57,12 @@ class KeyQuestionsProjectsController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_project
       @project = Project.find(params[:project_id])
+      authorize(@project, policy_class: KeyQuestionsProjectPolicy)
     end
 
     def set_key_questions_project
       @key_questions_project = KeyQuestionsProject.find(params[:id])
-      authorize(@key_questions_project)
+      authorize(@key_questions_project.project, policy_class: KeyQuestionsProjectPolicy)
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
