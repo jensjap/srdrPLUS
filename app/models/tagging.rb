@@ -1,7 +1,8 @@
 class Tagging < ApplicationRecord
-  include SharedProcessTokenMethods
   acts_as_paranoid
   has_paper_trail
+
+  include SharedProcessTokenMethods
 
   belongs_to :projects_users_role
   belongs_to :tag

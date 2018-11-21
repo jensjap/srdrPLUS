@@ -3,7 +3,7 @@
     h3 NOTHING TO LABEL
   
   #citation-row.row
-    .column.full-height.medium-6
+    .column.full-height.medium-9
       #citation-container.callout
         h5 
           #citation-name
@@ -54,31 +54,6 @@
 
     .column.full-height.medium-3
       .callout
-        h5 
-          | REASON
-        #reasons-list
-          #projects-user-reasons
-            b
-              |PROJECTS_USER REASONS
-            fieldset
-          #project-lead-reasons
-            b
-              |PROJECT LEAD REASONS
-            fieldset
-          b
-            |OTHER REASON
-          textarea#reason-textbox
-
-        #label-buttons.button-group style='text-align: center; flex-direction: column;'
-          .button id='yes-button'
-           | Yes
-          .button id='maybe-button'
-           | Maybe
-          .button id='no-button'
-           | No
-
-    .column.full-height.medium-3
-      .callout
         h5
           |TAGS
         #tag-select
@@ -91,11 +66,35 @@
         textarea#note-textbox
         #save-note-button.button.tiny.hollow
           | Save Note
+      .callout
+        h5
+          | REASON
+        #reason-select
+          select multiple='multiple'
+        /#reasons-list
+          #projects-user-reasons
+            b
+              |PROJECTS_USER REASONS
+            fieldset
+          #project-lead-reasons
+            b
+              |PROJECT LEAD REASONS
+            fieldset
+          b
+            |OTHER REASON
+          textarea#reason-textbox
 
   .row
     #control-group.button-group
       .button id='previous-button'
        | ◄
+
+      .button id='yes-button'
+       | Yes
+      .button id='maybe-button'
+       | Maybe
+      .button id='no-button'
+       | No
 
       .button id='next-button'
        | ►

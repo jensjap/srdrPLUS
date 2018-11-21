@@ -82,77 +82,44 @@ document.addEventListener 'turbolinks:load', ->
         else
           $( '#citation-keywords' ).append( ', ' + k.name)
 
-      
+
+      ## reset button colors
+      $( '#yes-button' ).removeClass( 'success' )
+      $( '#no-button' ).removeClass( 'alert' )
+      $( '#maybe-button' ).removeClass( 'secondary' )
+
       ## TAGGINGS
-      root_url = $( '#root-url' ).text()
-      tag_select = $( '#tag-select select' )
-      tag_select.val( null ).trigger 'change'
+      $( '#tag-select select' ).val( null ).trigger 'change'
       for t in current_citation.taggings
         tag_option = new Option( t.tag.name, t.tag.id, true, true )
         $( tag_option ).attr( 'tagging-id', t.id )
-        tag_select.append( tag_option )
-        tag_select.trigger
+        $( '#tag-select select' ).append( tag_option )
+        $( '#tag-select select' ).trigger
           type: 'select2:select'
           params: data: { id: t.tag.id, text: t.tag.name }
-
-        #        delete_tag_link = $( '<a id="delete-tag-'+ t.id + '" tagging-id="' + t.id + '">delete</a>' )
-        #        delete_tag_link.click ->
-        #          tagging_id = +$( this ).attr( 'tagging-id' )
-        #
-        #          $.ajax {
-        #            type: 'DELETE'
-        #            url: root_url + '/api/v1/taggings/' + $( this ).attr( 'tagging-id' )
-        #            data: {
-        #              utf8: '✓'
-        #              authenticity_token: $( '#authenticity-token' ).text()
-        #            }
-        #            success:
-        #              () ->
-        #                i = 0
-        #                for tagging in current_citation.taggings
-        #                  if tagging.id == tagging_id
-        #                    current_citation.taggings.splice( i, 1 )
-        #                    break
-        #                  i++
-        #                update_info( obj )
-        #                toastr.success( 'Tag successfully deleted' )
-        #            error:
-        #              () ->
-        #                toastr.error( 'ERROR: Could not delete tag' )
-        #          }
-        #
-        #        $( tag ).append( delete_tag_link )
-        #
-        #        $( '#tags-list' ).append( tag )
 
       ## NOTES
       $( 'textarea#note-textbox' ).val( if !!current_citation.notes[ 0 ] then current_citation.notes[ 0 ].value else "" )
 
-      $( '#yes-button' ).removeClass( 'secondary' )
-      $( '#no-button' ).removeClass( 'secondary' )
-      $( '#maybe-button' ).removeClass( 'secondary' )
-
       ## uncheck reasons
-      $( '#projects-user-reasons input' ).prop( 'checked', false )
-      $( '#project-lead-reasons input' ).prop( 'checked', false )
-
-      $( 'textarea#reason-textbox' ).val( '' )
-
-      ## remove labels-reason-ids 
-      $( '#projects-user-reasons input' ).removeAttr( 'labels-reason-id' )
-      $( '#project-lead-reasons input' ).removeAttr( 'labels-reason-id' )
+      $( '#reason-select select' ).val( null )
+      $( '#reason-select select' ).empty()
 
       if obj.index > 0
-        ##### REASONS #####
+        ## create options for existing reasons
         if !!current_citation.label and !!current_citation.label.labels_reasons
           for labels_reason in current_citation.label.labels_reasons
-            $( '#reason-' + labels_reason.reason.id ).attr( 'labels-reason-id', labels_reason.id )
-            $( '#reason-' + labels_reason.reason.id ).prop( 'checked', true )
+            reason_option = new Option( labels_reason.reason.name, labels_reason.reason.id, true, true )
+            $( reason_option ).attr( 'labels-reason-id', labels_reason.id )
+            $( '#reason-select select' ).append( reason_option )
+            $( '#reason-select select' ).trigger
+              type: 'select2:select'
+              params: data: { id: labels_reason.reason.id, text: labels_reason.reason.name }
 
         if current_citation.label.label_type_id == 1
-          $( '#yes-button' ).addClass( 'secondary' )
+          $( '#yes-button' ).addClass( 'success' )
         else if current_citation.label.label_type_id == 2
-          $( '#no-button' ).addClass( 'secondary' )
+          $( '#no-button' ).addClass( 'alert' )
         else if current_citation.label.label_type_id == 3
           $( '#maybe-button' ).addClass( 'secondary' )
       return
@@ -174,18 +141,14 @@ document.addEventListener 'turbolinks:load', ->
           }
 
       ## labels_reasons ##
-      for reason_element in $( '#reasons-list input:checked' )
+      for reason_option in $( '#reason-select select option:checked' )
         label_params.labels_reasons_attributes ?= [ ]
-        if !$( reason_element ).attr( 'labels-reason-id' )
-          label_params.labels_reasons_attributes.push( { projects_users_role_id: obj.projects_users_role_id, reason_id: $( reason_element ).val() } )
-      for reason_element in $( '#reasons-list input:not(:checked)' )
+        if !$( reason_option ).attr( 'labels-reason-id' )
+          label_params.labels_reasons_attributes.push( { projects_users_role_id: obj.projects_users_role_id, reason_id: $( reason_option ).val() } )
+      for reason_option in $( '#reason-select select option:not(:checked)' )
         label_params.labels_reasons_attributes ?= [ ]
-        if $( reason_element ).attr( 'labels-reason-id' )
-          label_params.labels_reasons_attributes.push( { id: $( reason_element ).attr( 'labels-reason-id' ), _destroy: true } )
-
-      ## create new reason from textbox input ##
-      if !!$( 'textarea#reason-textbox' ).val()
-        label_params.labels_reasons_attributes.push( { projects_users_role_id: obj.projects_users_role_id, reason_attributes: {  name: $( 'textarea#reason-textbox' ).val() } } )
+        if $( reason_option ).attr( 'labels-reason-id' )
+          label_params.labels_reasons_attributes.push( { id: $( reason_option ).attr( 'labels-reason-id' ), _destroy: true } )
 
       label_url = $( '#root-url' ).text() + '/labels'
       if is_patch
@@ -209,7 +172,6 @@ document.addEventListener 'turbolinks:load', ->
             toastr.success 'Label is created successfully'
 
             get_c_p( obj )
-            update_reasons()
             # if we are updating previous label increment index
             if obj.index > 0
               #update_index( obj, obj.index - 1 )
@@ -276,9 +238,6 @@ document.addEventListener 'turbolinks:load', ->
       tags_button = $( '#tags-button' )
       close_tags_button = $( '#close-tags-button' )
   
-      ## POPULATE REASONS ##
-      update_reasons()
-
       next_button.click ->
         if !next_button.hasClass( 'disabled' )
           state_obj.index = state_obj.index - 1
@@ -413,6 +372,19 @@ document.addEventListener 'turbolinks:load', ->
               () ->
                 toastr.error( 'ERROR: Could not delete tag' )
           }
+      
+      ## REASON HANDLING
+      $( '#reason-select select' ).select2
+        minimumInputLength: 0
+        #closeOnSelect: false
+        ajax:
+          url: ( ) -> $('root-url').text() + '/api/v1/assignments/' + $( '#assignment-id' ).text() + '/reasons.json'
+          dataType: 'json'
+          delay: 100
+          data: (params) ->
+            q: params.term
+            page: params.page || 1
+
       return
 
 ##### get_history_page #####
