@@ -1,28 +1,21 @@
 require_dependency 'app/policies/modules/role_checker'
 
 class LabelPolicy < ApplicationPolicy
-  extend RoleChecker
+  include RoleChecker
 
   def create?
-    at_least?(RoleChecker::CONSOLIDATOR)
+    project_consolidator?
   end
 
   def update?
-    at_least?(RoleChecker::CONSOLIDATOR)
+    project_consolidator?
   end
 
   def destroy?
-    at_least?(RoleChecker::CONSOLIDATOR)
+    project_consolidator?
   end
 
   def show?
-    at_least?(RoleChecker::CONSOLIDATOR)
-  end
-
-  private
-
-  def at_least?(role)
-    highest_role = LabelPolicy.find_highest_role_id(user, record)
-    highest_role && highest_role <= role
+    project_consolidator?
   end
 end
