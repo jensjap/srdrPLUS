@@ -1,9 +1,10 @@
 class ExtractionsExtractionFormsProjectsSectionsController < ApplicationController
-  before_action :set_extractions_extraction_forms_projects_section, only: [:update]
+  before_action :set_extractions_extraction_forms_projects_section, :skip_policy_scope, only: [:update]
 
   # PATCH/PUT /extractions_extraction_forms_projects_sections/1
   # PATCH/PUT /extractions_extraction_forms_projects_sections/1.json
   def update
+    authorize(@extractions_extraction_forms_projects_section.project, policy_class: ExtractionsExtractionFormsProjectsSectionPolicy)
     respond_to do |format|
       if @extractions_extraction_forms_projects_section.update(extractions_extraction_forms_projects_section_params)
         format.html do
