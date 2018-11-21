@@ -1,5 +1,6 @@
 class ProjectsUsersRolesController < ApplicationController
   before_action :set_projects_users_role, :skip_policy_scope, only: [:next_assignment]
+
   def next_assignment
     authorize(@projects_users_role.project, policy_class: ProjectsUsersRolePolicy)
 
