@@ -15,34 +15,34 @@ class ExtractionPolicy < ApplicationPolicy
   end
 
   def edit?
-    at_least_project_role?(RoleChecker::CONTRIBUTOR)
+    project_contributor?
   end
 
   def create?
-    at_least_project_role?(RoleChecker::CONTRIBUTOR)
+    project_contributor?
   end
 
   def update?
-    at_least_project_role?(RoleChecker::CONTRIBUTOR)
+    project_contributor?
   end
 
   def destroy?
-    at_least_project_role?(RoleChecker::CONSOLIDATOR)
+    project_consolidator?
   end
 
   def work?
-    at_least_project_role?(RoleChecker::CONTRIBUTOR)
+    project_contributor?
   end
 
   def comparison_tool?
-    at_least_project_role?(RoleChecker::CONSOLIDATOR)
+    project_consolidator?
   end
 
   def consolidate?
-    at_least_project_role?(RoleChecker::CONSOLIDATOR)
+    project_consolidator?
   end
 
   def edit_type1_across_extractions?
-    at_least_project_role?(RoleChecker::CONSOLIDATOR)
+    project_consolidator?
   end
 end

@@ -4,22 +4,22 @@ class ExtractionFormsProjectPolicy < ApplicationPolicy
   include RoleChecker
 
   def edit?
-    at_least_project_role?(RoleChecker::CONSOLIDATOR)
+    project_consolidator?
   end
 
   def create?
-    at_least_project_role?(RoleChecker::CONSOLIDATOR)
+    project_consolidator?
   end
 
   def update?
-    at_least_project_role?(RoleChecker::CONSOLIDATOR)
+    project_consolidator?
   end
 
   def destroy?
-    at_least_project_role?(RoleChecker::CONSOLIDATOR)
+    project_consolidator?
   end
 
   def build?
-    at_least_project_role?(RoleChecker::CONSOLIDATOR)
+    project_consolidator?
   end
 end

@@ -101,6 +101,7 @@ class ResultStatisticSectionsController < ApplicationController
         .includes(population: { extractions_extraction_forms_projects_sections_type1: [ :type1, extractions_extraction_forms_projects_section: [ :extraction, extraction_forms_projects_section: :extraction_forms_project ] ] } )
         .includes(:result_statistic_section_type)
         .find(params[:id])
+      authorize(@result_statistic_section.project, policy_class: ResultStatisticSectionPolicy)
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
@@ -125,8 +126,6 @@ class ResultStatisticSectionsController < ApplicationController
       @extractions = Extraction
         .includes(projects_users_role: { projects_user: { user: :profile } })
         .where(id: extraction_ids_params)
-
-      authorize(@extractions.project, policy_class: ExtractionsExtractionFormsProjectsSectionsType1Policy)
     end
 
     def extraction_ids_params

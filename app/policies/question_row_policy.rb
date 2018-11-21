@@ -4,6 +4,6 @@ class QuestionRowPolicy < ApplicationPolicy
   include RoleChecker
 
   def destroy?
-    at_least_project_role?(RoleChecker::CONSOLIDATOR)
+    project_consolidator?
   end
 end
