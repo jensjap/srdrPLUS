@@ -135,23 +135,30 @@ module SeedData
       # Seed QuestionRowColumnFieldOption.
       QuestionRowColumnOption.create(
         [
-          { name: 'answer_choice' },    # For multiple-choice: checkbox, radio, dropdown
-          { name: 'min_length' },       # For text
-          { name: 'max_length' },       # For text
-          { name: 'min_char_value' },   # For scientific, numerical, numeric range
-          { name: 'max_char_value' },   # For scientific, numerical, numeric range
-          { name: 'white_list_tilda',   # For numerical
-            description: 'Allow user to prepend ~ sign to indicate approximate values' },
-          { name: 'white_list_lt',      # For numerical
-            description: 'Allow user to prepend < sign to indicate values less than the given value' },
-          { name: 'white_list_gt',      # For numerical
-            description: 'Allow user to prepend > sign to indicate values greater than the given value' },
-          { name: 'white_list_lte',     # For numerical
-            description: 'Allow user to prepend ≤ sign to indicate values less than or equal to the given value' },
-          { name: 'white_list_gte',     # For numerical
-            description: 'Allow user to prepend ≥ sign to indicate values greater than or equal to the given value' },
-          { name: 'coefficient' },      # For scientific
-          { name: 'exponent' }          # For scientific
+          { name: 'answer_choice',                 # For multiple-choice: checkbox, radio, dropdown
+            description: 'Provide an option for the user to pick from',
+            field_type: 'string' },
+          { name: 'min_length_allowed',            # For text
+            description: 'Provide a lower bound for the number of characters that the answer must fall under',
+            field_type: 'integer' },
+          { name: 'max_length_allowed',            # For text
+            description: 'Provide an upper bound for the number of characters that the answer must fall under',
+            field_type: 'integer' },
+          { name: 'additional_characters_allowed', # For numerical
+            description: 'Allow user to pick from a list of allowed characters',
+            field_type: 'boolean' },
+          { name: 'min_value',                     # For scientific, numerical, numeric range
+            description: 'Lower bound for numerical value',
+            field_type: 'integer' },
+          { name: 'max_value',                     # For scientific, numerical, numeric range
+            description: 'Upper bound for numerical value',
+            field_type: 'integer' },
+          { name: 'coefficient',                   # For scientific
+            description: 'Provide length of coefficient',
+            field_type: 'integer' },
+          { name: 'exponent',                      # For scientific
+            description: 'Provide length of exponent',
+            field_type: 'integer' }
         ]
       )
 

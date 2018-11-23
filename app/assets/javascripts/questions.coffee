@@ -21,25 +21,21 @@ document.addEventListener 'turbolinks:load', ->
         that.find('.links').show()
 
       else if _value == 'text'  # Text.
-        that.find('.field-options.field-option-type-min_length').show()
-        that.find('.field-options.field-option-type-max_length').show()
+        that.find('.field-options.field-option-type-min_length_allowed').show()
+        that.find('.field-options.field-option-type-max_length_allowed').show()
 
       else if _value == 'numeric'  # Numeric.
-        that.find('.field-options.field-option-type-white_list_tilda').show()
-        that.find('.field-options.field-option-type-white_list_lt').show()
-        that.find('.field-options.field-option-type-white_list_gt').show()
-        that.find('.field-options.field-option-type-white_list_lte').show()
-        that.find('.field-options.field-option-type-white_list_gte').show()
-        that.find('.field-options.field-option-type-min_char_value').show()
-        that.find('.field-options.field-option-type-max_char_value').show()
+        that.find('.field-options.field-option-type-additional_characters_allowed').show()
+        that.find('.field-options.field-option-type-min_value').show()
+        that.find('.field-options.field-option-type-max_value').show()
 
       else if _value == 'numeric_range'  # Numeric range.
-        that.find('.field-options.field-option-type-min_char_value').show()
-        that.find('.field-options.field-option-type-max_char_value').show()
+        that.find('.field-options.field-option-type-min_value').show()
+        that.find('.field-options.field-option-type-max_value').show()
 
       else if _value == 'scientific'  # Scientific.
-        that.find('.field-options.field-option-type-min_char_value').show()
-        that.find('.field-options.field-option-type-max_char_value').show()
+        that.find('.field-options.field-option-type-min_value').show()
+        that.find('.field-options.field-option-type-max_value').show()
         that.find('.field-options.field-option-type-coefficient').show()
         that.find('.field-options.field-option-type-exponent').show()
 

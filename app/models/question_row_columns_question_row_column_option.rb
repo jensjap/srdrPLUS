@@ -34,40 +34,20 @@ class QuestionRowColumnsQuestionRowColumnOption < ApplicationRecord
     case self.question_row_column_option.name
     when 'answer_choice'
       self.name      ||= ''
-      self.name_type = 'string'
-    when 'min_length'
+    when 'min_length_allowed'
       self.name      ||= 0
-      self.name_type = 'integer'
-    when 'max_length'
+    when 'max_length_allowed'
       self.name      ||= 255
-      self.name_type = 'integer'
-    when 'white_list_tilda'
+    when 'additional_characters_allowed'
       self.name      ||= false
-      self.name_type = 'boolean'
-    when 'white_list_lt'
-      self.name      ||= false
-      self.name_type = 'boolean'
-    when 'white_list_gt'
-      self.name      ||= false
-      self.name_type = 'boolean'
-    when 'white_list_lte'
-      self.name      ||= false
-      self.name_type = 'boolean'
-    when 'white_list_gte'
-      self.name      ||= false
-      self.name_type = 'boolean'
-    when 'min_char_value'
+    when 'min_value'
       self.name      ||= 0
-      self.name_type = 'integer'
-    when 'max_char_value'
+    when 'max_value'
       self.name      ||= 255
-      self.name_type = 'integer'
     when 'coefficient'
       self.name      ||= 5
-      self.name_type = 'integer'
     when 'exponent'
       self.name      ||= 0
-      self.name_type = 'integer'
     else
       raise 'Unknown QuestionRowColumnOption'
     end
