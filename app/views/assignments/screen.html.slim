@@ -3,7 +3,7 @@
     h3 NOTHING TO LABEL
   
   #citation-row.row
-    .column.full-height.medium-6
+    .column.full-height.medium-9
       #citation-container.callout
         h5 
           #citation-name
@@ -54,9 +54,24 @@
 
     .column.full-height.medium-3
       .callout
-        h5 
+        h5
+          |TAGS
+        #tag-select
+          select multiple='multiple'
+      .callout
+        h5
+          |NOTES
+
+        /#notes-list
+        textarea#note-textbox
+        /#save-note-button.button.tiny.hollow
+          | Save Note
+      .callout
+        h5
           | REASON
-        #reasons-list
+        #reason-select
+          select multiple='multiple'
+        /#reasons-list
           #projects-user-reasons
             b
               |PROJECTS_USER REASONS
@@ -69,32 +84,17 @@
             |OTHER REASON
           textarea#reason-textbox
 
-        #label-buttons.button-group style='text-align: center; flex-direction: column;'
-          .button id='yes-button'
-           | Yes
-          .button id='maybe-button'
-           | Maybe
-          .button id='no-button'
-           | No
-
-    .column.full-height.medium-3
-      .callout
-        h5
-          |TAGS
-        #tags-list
-        #tag-select
-          select
-      .callout
-
-        #notes-list
-        textarea#note-textbox
-        #save-note-button.button.tiny.hollow
-          | Save Note
-
   .row
     #control-group.button-group
       .button id='previous-button'
        | ◄
+
+      .button id='yes-button'
+       | Yes
+      .button id='maybe-button'
+       | Maybe
+      .button id='no-button'
+       | No
 
       .button id='next-button'
        | ►
@@ -117,8 +117,8 @@
     | #{ history_api_v1_assignment_url(@assignment.id) }
   #root-url
     | #{ root_url }
-  #projects-user-id
-    | #{ @assignment.projects_users_role.projects_user_id }
+  #assignment-id
+    | #{ @assignment.id }
   #authenticity-token
     | #{ form_authenticity_token }
   #authors-visible

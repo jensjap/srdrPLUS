@@ -19,6 +19,7 @@ document.addEventListener 'turbolinks:load', ->
             ( data ) ->
               obj.citations = data.unlabeled_citations_projects
               obj.history = data.labeled_citations_projects
+              obj.options = data.options
               if data.unlabeled_citations_projects.length == 0
                 toastr.warning( 'No more citations to label' )
         }
@@ -38,6 +39,57 @@ document.addEventListener 'turbolinks:load', ->
             clearInterval( interval_id )
       , 1000 )
 
+##### lock_label #####
+    lock_button = ( label, requirement ) ->
+      button_to_lock = null
+      if label == "Yes"
+        button_to_lock = $( '#yes-button' )
+      else if label == "No"
+        button_to_lock = $( '#no-button' )
+      else if label == "Maybe"
+        button_to_lock = $( '#maybe-button' )
+      else
+        return
+
+      if requirement == "REASON_REQUIRED"
+        $( '#reason-select select' ).on 'change', ( ) ->
+          if $( '#reason-select select option:checked' ).length == 0
+            $( button_to_lock ).addClass( 'reason-lock' )
+          else
+            $( button_to_lock ).removeClass( 'reason-lock' )
+            
+          $( button_to_lock ).trigger 'change'
+
+      else if requirement == "TAG_REQUIRED"
+        $( '#tag-select select' ).on 'change', ( ) ->
+          if $( '#tag-select select option:checked' ).length == 0
+            $( button_to_lock ).addClass( 'tag-lock' )
+          else
+            $( button_to_lock ).removeClass( 'tag-lock' )
+
+          $( button_to_lock ).trigger 'change'
+
+      else if requirement == "NOTE_REQUIRED"
+        $( 'textarea#note-textbox' ).on 'change', ( ) ->
+          if !$( 'textarea#note-textbox' ).hasClass( 'note-saved' )
+            $( button_to_lock ).addClass( 'note-lock' )
+          else
+            $( button_to_lock ).removeClass( 'note-lock' )
+
+          $( button_to_lock ).trigger 'change'
+
+
+      $( button_to_lock ).on 'change', ( ) ->
+        if $( button_to_lock ).hasClass( 'note-lock' ) || $( button_to_lock ).hasClass( 'tag-lock' ) || $( button_to_lock ).hasClass( 'reason-lock' )
+          $( button_to_lock ).addClass( 'disabled' )
+        else
+          $( button_to_lock ).removeClass( 'disabled' )
+      return
+
+        
+
+
+
 ##### next_citation #####
     #gets the first citation from citations and updates index with it
     next_citation = ( obj ) ->
@@ -50,9 +102,6 @@ document.addEventListener 'turbolinks:load', ->
 ##### update_info #####
     update_info = ( obj ) ->
       current_citation = obj.history[ obj.index ]
-
-      console.log obj.index
-      console.log current_citation
 
       $( '#citation-name' ).text( current_citation.name )
       $( '#citation-abstract' ).text( current_citation.abstract )
@@ -85,105 +134,60 @@ document.addEventListener 'turbolinks:load', ->
         else
           $( '#citation-keywords' ).append( ', ' + k.name)
 
-      ## TAGGINGS
-      root_url = $( '#root-url' ).text()
-      $( '#tags-list' ).empty()
-      for t in current_citation.taggings
-        tag = $( '<div class="tag" >' + t.tag.name + ' </div>' )
-        delete_tag_link = $( '<a id="delete-tag-'+ t.id + '" tagging-id="' + t.id + '">delete</a>' )
-        delete_tag_link.click ->
-          tagging_id = +$( this ).attr( 'tagging-id' )
 
-          $.ajax {
-            type: 'DELETE'
-            url: root_url + '/api/v1/taggings/' + $( this ).attr( 'tagging-id' )
-            data: {
-              utf8: '✓'
-              authenticity_token: $( '#authenticity-token' ).text()
-            }
-            success:
-              () ->
-                i = 0
-                for tagging in current_citation.taggings
-                  if tagging.id == tagging_id
-                    current_citation.taggings.splice( i, 1 )
-                    break
-                  i++
-                update_info( obj )
-                toastr.success( 'Tag successfully deleted' )
-            error:
-              () ->
-                toastr.error( 'ERROR: Could not delete tag' )
-          }
-
-        $( tag ).append( delete_tag_link )
-
-        $( '#tags-list' ).append( tag )
-
-
-      ## NOTES
-      root_url = $( '#root-url' ).text()
-      $( '#notes-list' ).empty()
-      for n in current_citation.notes
-        note = $( '<div class="note" >' + n.value + ' </div>' )
-        delete_note_link = $( '<a id="delete-note-'+ n.id + '" note-id="' + n.id + '">delete</a>' )
-        delete_note_link.click ->
-          note_id = +$( this ).attr( 'note-id' )
-
-          $.ajax {
-            type: 'DELETE'
-            url: root_url + '/api/v1/notes/' + $( this ).attr( 'note-id' )
-            data: {
-              utf8: '✓'
-              authenticity_token: $( '#authenticity-token' ).text()
-            }
-            success:
-              () ->
-                i = 0
-                for note in current_citation.notes
-                  if note.id == note_id
-                    current_citation.notes.splice( i, 1 )
-                    break
-                  i++
-
-
-                update_info( obj )
-                toastr.success( 'Note successfully deleted' )
-            error:
-              () ->
-                toastr.error( 'ERROR: Could not delete note' )
-          }
-
-        $( note ).append( delete_note_link )
-        $( '#notes-list' ).append( note )
-
-      $( '#yes-button' ).removeClass( 'secondary' )
-      $( '#no-button' ).removeClass( 'secondary' )
+      ## reset button colors
+      $( '#yes-button' ).removeClass( 'success' )
+      $( '#no-button' ).removeClass( 'alert' )
       $( '#maybe-button' ).removeClass( 'secondary' )
 
+      ## APPLY REQUIRED OPTIONS
+      for option in obj.options
+        lock_button( option.label_type, option.type )
+
+      ## TAGGINGS
+      $( '#tag-select select' ).val( null )
+      $( '#tag-select select' ).empty( )
+      for t in current_citation.taggings
+        tag_option = new Option( t.tag.name, t.tag.id, true, true )
+        $( tag_option ).attr( 'tagging-id', t.id )
+        $( '#tag-select select' ).append( tag_option )
+        $( '#tag-select select' ).trigger
+          type: 'select2:select'
+          params: data: { id: t.tag.id, text: t.tag.name }
+      $( '#tag-select select' ).trigger 'change'
+
+      ## NOTES
+      if !!current_citation.notes[ 0 ]
+        $( 'textarea#note-textbox' ).val( current_citation.notes[ 0 ].value )
+      else
+        $( 'textarea#note-textbox' ).val( '' )
+      if $( 'textarea#note-textbox' ).val() != ''
+        $( 'textarea#note-textbox' ).addClass( 'note-saved' )
+      $( 'textarea#note-textbox' ).trigger 'change'
+
       ## uncheck reasons
-      $( '#projects-user-reasons input' ).prop( 'checked', false )
-      $( '#project-lead-reasons input' ).prop( 'checked', false )
-
-      $( 'textarea#reason-textbox' ).val( '' )
-
-      ## remove labels-reason-ids 
-      $( '#projects-user-reasons input' ).removeAttr( 'labels-reason-id' )
-      $( '#project-lead-reasons input' ).removeAttr( 'labels-reason-id' )
+      $( '#reason-select select' ).val( null )
+      $( '#reason-select select' ).empty()
 
       if obj.index > 0
-        ##### REASONS #####
+        ## create options for existing reasons
         if !!current_citation.label and !!current_citation.label.labels_reasons
           for labels_reason in current_citation.label.labels_reasons
-            $( '#reason-' + labels_reason.reason.id ).attr( 'labels-reason-id', labels_reason.id )
-            $( '#reason-' + labels_reason.reason.id ).prop( 'checked', true )
+            reason_option = new Option( labels_reason.reason.name, labels_reason.reason.id, true, true )
+            $( reason_option ).attr( 'labels-reason-id', labels_reason.id )
+            $( '#reason-select select' ).append( reason_option )
+            $( '#reason-select select' ).trigger
+              type: 'select2:select'
+              params: data: { id: labels_reason.reason.id, text: labels_reason.reason.name }
 
         if current_citation.label.label_type_id == 1
-          $( '#yes-button' ).addClass( 'secondary' )
+          $( '#yes-button' ).addClass( 'success' )
         else if current_citation.label.label_type_id == 2
-          $( '#no-button' ).addClass( 'secondary' )
+          $( '#no-button' ).addClass( 'alert' )
         else if current_citation.label.label_type_id == 3
           $( '#maybe-button' ).addClass( 'secondary' )
+
+      $( '#reason-select select' ).trigger 'change'
       return
 
 
@@ -203,18 +207,14 @@ document.addEventListener 'turbolinks:load', ->
           }
 
       ## labels_reasons ##
-      for reason_element in $( '#reasons-list input:checked' )
+      for reason_option in $( '#reason-select select option:checked' )
         label_params.labels_reasons_attributes ?= [ ]
-        if !$( reason_element ).attr( 'labels-reason-id' )
-          label_params.labels_reasons_attributes.push( { projects_users_role_id: obj.projects_users_role_id, reason_id: $( reason_element ).val() } )
-      for reason_element in $( '#reasons-list input:not(:checked)' )
+        if !$( reason_option ).attr( 'labels-reason-id' )
+          label_params.labels_reasons_attributes.push( { projects_users_role_id: obj.projects_users_role_id, reason_id: $( reason_option ).val() } )
+      for reason_option in $( '#reason-select select option:not(:checked)' )
         label_params.labels_reasons_attributes ?= [ ]
-        if $( reason_element ).attr( 'labels-reason-id' )
-          label_params.labels_reasons_attributes.push( { id: $( reason_element ).attr( 'labels-reason-id' ), _destroy: true } )
-
-      ## create new reason from textbox input ##
-      if !!$( 'textarea#reason-textbox' ).val()
-        label_params.labels_reasons_attributes.push( { projects_users_role_id: obj.projects_users_role_id, reason_attributes: {  name: $( 'textarea#reason-textbox' ).val() } } )
+        if $( reason_option ).attr( 'labels-reason-id' )
+          label_params.labels_reasons_attributes.push( { id: $( reason_option ).attr( 'labels-reason-id' ), _destroy: true } )
 
       label_url = $( '#root-url' ).text() + '/labels'
       if is_patch
@@ -227,6 +227,7 @@ document.addEventListener 'turbolinks:load', ->
           utf8: '✓'
           authenticity_token: $( '#authenticity-token' ).text()
           label: label_params
+
         }
         success:
           ( data ) ->
@@ -237,7 +238,6 @@ document.addEventListener 'turbolinks:load', ->
             toastr.success 'Label is created successfully'
 
             get_c_p( obj )
-            update_reasons()
             # if we are updating previous label increment index
             if obj.index > 0
               #update_index( obj, obj.index - 1 )
@@ -254,7 +254,6 @@ document.addEventListener 'turbolinks:load', ->
           ( ) ->
             toastr.error 'ERROR: Could not create label'
       }
-
       return
 
 ##### update_label #####
@@ -276,12 +275,12 @@ document.addEventListener 'turbolinks:load', ->
       return
 
 ##### start_screening #####
-    start_screening = ( citations, history ) ->
+    start_screening = ( citations, history, options ) ->
       #we need the projects_users_role_id
       projects_users_role_id = $( '#projects-users-role-id' ).text()
 
       # session state is stored in state_obj, and this object is passed in methods that modify the state
-      state_obj = { projects_users_role_id: projects_users_role_id, citations: citations, history: history, index: 0, done: 'false', history_page: 0 }
+      state_obj = { projects_users_role_id: projects_users_role_id, citations: citations, history: history, index: 0, done: 'false', history_page: 0, options: options }
       next_citation( state_obj )
       #add_breadcrumb( state_obj )
       state_obj.index = 0
@@ -291,13 +290,16 @@ document.addEventListener 'turbolinks:load', ->
       $( '#switch-button' ).val('OFF')
 
       $( '#yes-button' ).click ->
-        send_label( state_obj, 1 )
+        if !$( this ).hasClass( 'disabled' )
+          send_label( state_obj, 1 )
 
       $( '#no-button' ).click ->
-        send_label( state_obj, 2 )
+        if !$( this ).hasClass( 'disabled' )
+          send_label( state_obj, 2 )
 
       $( '#maybe-button' ).click ->
-        send_label( state_obj, 3 )
+        if !$( this ).hasClass( 'disabled' )
+          send_label( state_obj, 3 )
 
       next_button = $( '#next-button' )
       previous_button = $( '#previous-button' )
@@ -305,9 +307,6 @@ document.addEventListener 'turbolinks:load', ->
       tags_button = $( '#tags-button' )
       close_tags_button = $( '#close-tags-button' )
   
-      ## POPULATE REASONS ##
-      update_reasons()
-
       next_button.click ->
         if !next_button.hasClass( 'disabled' )
           state_obj.index = state_obj.index - 1
@@ -341,76 +340,127 @@ document.addEventListener 'turbolinks:load', ->
 
       # pagination buttons
 
-      $( '#next-page' ).click (e) -> 
+      $( '#next-page' ).click (e) ->
         get_history_page( state_obj, state_obj.history_page + 1 )
 
       $( '#prev-page' ).click (e) ->
         get_history_page( state_obj, state_obj.history_page - 1 )
 
       ## NOTE CREATION HANDLING
-      $( '#save-note-button' ).on 'click', ->
-        $.ajax {
-          type: 'POST'
-          url: $( '#root-url' ).text() + '/api/v1/notes'
-          dataType: 'json'
-          data: {
-            utf8: '✓'
-            authenticity_token: $( '#authenticity-token' ).text()
-            note: {
-              value: $( '#note-textbox' ).val()
-              projects_users_role_id: state_obj.projects_users_role_id
-              notable_id: state_obj.history[ state_obj.index ].citations_project_id
-              notable_type: "CitationsProject"
+      timeoutId = null
+      $('textarea#note-textbox').on 'input', () ->
+        $( 'textarea#note-textbox' ).removeClass( 'note-saved' )
+        clearTimeout( timeoutId )
+        timeoutId = setTimeout ( ->
+          is_patch = !!state_obj.history[ state_obj.index ].notes[ 0 ]
+          $.ajax {
+            type: if is_patch then 'PATCH' else 'POST'
+            url: $( '#root-url' ).text() + '/api/v1/notes' + ( if is_patch then '/' + state_obj.history[ state_obj.index ].notes[ 0 ].id else '' )
+            dataType: 'json'
+            data: {
+              utf8: '✓'
+              authenticity_token: $( '#authenticity-token' ).text()
+              note: {
+                value: $( '#note-textbox' ).val()
+                projects_users_role_id: state_obj.projects_users_role_id
+                notable_id: state_obj.history[ state_obj.index ].citations_project_id
+                notable_type: "CitationsProject"
+              }
             }
+            success:
+              ( data ) ->
+                if $( '#note-textbox' ).val() != ''
+                  $( 'textarea#note-textbox' ).addClass( 'note-saved' )
+                  $( 'textarea#note-textbox' ).trigger 'change'
+                state_obj.history[ state_obj.index ].notes[ 0 ] = { id: data.id, value: $( '#note-textbox' ).val() }
+                toastr.success( 'Note successfully saved' )
+            error:
+              () ->
+                toastr.error( 'ERROR: Could not save note' )
           }
-          success:
-            ( data ) ->
-              state_obj.history[ state_obj.index ].notes.push { id: data.id, value: $( '#note-textbox' ).val() }
-              update_info( state_obj )
-              toastr.success( 'Note successfully created' )
-          error:
-            () ->
-              toastr.error( 'ERROR: Could not create note' )
-        }
+
+        ) , 1200
 
       ## TAGGING CREATION HANDLING
       $( '#tag-select select' ).select2
         minimumInputLength: 0
         #closeOnSelect: false
         ajax:
-          url: ( ) -> $( '#root-url' ).text() + '/api/v1/projects_users/ ' + $( '#projects-user-id' ).text() + '/tags.json'
+          url: ( ) -> $('root-url').text() + '/api/v1/assignments/' + $( '#assignment-id' ).text() + '/tags.json'
           dataType: 'json'
           delay: 100
           data: (params) ->
             q: params.term
             page: params.page || 1
 
-      $( '#tag-select select' ).on 'select2:select', ->
-        tag_text = $( '#tag-select select option:selected' ).text()
-        tag_id = $( '#tag-select select option:selected' ).val()
-        $.ajax {
-          type: 'POST'
-          url: $( '#root-url' ).text() + '/api/v1/taggings'
-          dataType: 'json'
-          data: {
-            utf8: '✓'
-            authenticity_token: $( '#authenticity-token' ).text()
-            tagging: {
-              tag_id: $( '#tag-select select option:selected' ).val()
-              projects_users_role_id: state_obj.projects_users_role_id
-              taggable_id: state_obj.history[ state_obj.index ].citations_project_id
-              taggable_type: "CitationsProject"
+      $( '#tag-select select' ).on 'select2:select', ( event ) ->
+        tag_text = event.params.data.text
+        tag_id = event.params.data.id
+        tag_option_element = $( event.target ).find( 'option[value="' + tag_id + '"]' )[ 0 ]
+        if !$( tag_option_element ).attr( 'tagging-id' )
+          $.ajax {
+            type: 'POST'
+            url: $( '#root-url' ).text() + '/api/v1/taggings'
+            dataType: 'json'
+            data: {
+              utf8: '✓'
+              authenticity_token: $( '#authenticity-token' ).text()
+              tagging: {
+                tag_id: tag_id
+                projects_users_role_id: state_obj.projects_users_role_id
+                taggable_id: state_obj.history[ state_obj.index ].citations_project_id
+                taggable_type: "CitationsProject"
+              }
             }
+            success:
+              ( data ) ->
+                state_obj.history[ state_obj.index ].taggings.push { id: data.id, tag: { id: tag_id, name: tag_text } }
+                $( tag_option_element ).attr( 'tagging-id', data.id )
+                toastr.success( 'Tag successfully created' )
+            error:
+              () ->
+                toastr.error( 'ERROR: Could not create tag' )
           }
-          success:
-            ( data ) ->
-              state_obj.history[ state_obj.index ].taggings.push { id: data.id, tag: { id: tag_id, name: tag_text } }
-              update_info( state_obj )
-              toastr.success( 'Tag successfully created' )
-          error:
-            () ->
-              toastr.error( 'ERROR: Could not create tag' )
-        }
+
+      $( '#tag-select select' ).on 'select2:unselect', ( event ) ->
+        tag_id = event.params.data.id
+        tag_option_element = $( event.target ).find( 'option[value="' + tag_id + '"]' )[ 0 ]
+        if $( tag_option_element ).attr( 'tagging-id' )
+          tagging_id = +$( tag_option_element ).attr( 'tagging-id' )
+
+          $.ajax {
+            type: 'DELETE'
+            url: $( '#root-url' ).text() + '/api/v1/taggings/' + tagging_id
+            data: {
+              utf8: '✓'
+              authenticity_token: $( '#authenticity-token' ).text()
+            }
+            success:
+              () ->
+                i = 0
+                current_citation = state_obj.history[ state_obj.index ]
+                for tagging in current_citation.taggings
+                  if tagging.id == tagging_id
+                    current_citation.taggings.splice( i, 1 )
+                    break
+                  i++
+                toastr.success( 'Tag successfully deleted' )
+            error:
+              () ->
+                toastr.error( 'ERROR: Could not delete tag' )
+          }
+      
+      ## REASON HANDLING
+      $( '#reason-select select' ).select2
+        minimumInputLength: 0
+        #closeOnSelect: false
+        ajax:
+          url: ( ) -> $('root-url').text() + '/api/v1/assignments/' + $( '#assignment-id' ).text() + '/reasons.json'
+          dataType: 'json'
+          delay: 100
+          data: (params) ->
+            q: params.term
+            page: params.page || 1
 
       return
 
@@ -481,7 +531,7 @@ document.addEventListener 'turbolinks:load', ->
 
       $.ajax {
         type: 'GET'
-        url: root_url + '/api/v1/projects_users/ ' + $( '#projects-user-id' ).text() + '/reasons.json'
+        url: $('root-url').text() + '/api/v1/assignments/' + $( '#assignment-id' ).text() + '/reasons.json'
         success:
           ( data ) ->
             if data.results.projects_user_reasons?
@@ -507,36 +557,7 @@ document.addEventListener 'turbolinks:load', ->
           () ->
             toastr.error( 'ERROR: Could not fetch reasons' )
       }
-##### send_reasons #####
-#    get_labels_reason_params = ( label_id, label_type_id, projects_users_role_id ) ->
-#      reason_url = $( '#root-url' ).text() + '/labels/' + label_id
-#      labels_reasons_attributes = { }
-#      
-#      for reason_element in $( '#reasons-list input:checked' )
-#        labels_reasons_attributes.push( { label_id: label_id, reason_id: $( reason_element ).val() } )
-#
-#      if !!$( 'textarea#reason-textbox' ).val()
-#        label_params.reasons_attributes ?= { }
-#        label_params.reasons_attributes = { "#{Date.now()}": { name: $( 'textarea#reason-textbox' ).val(), projects_users_role_id: projects_users_role_id, label_type_id: label_type_id } }
-#
-#
 
-#      $.ajax {
-#        type: 'PATCH'
-#        url: reason_url
-#        dataType: 'json'
-#        data: {
-#          utf8: '✓'
-#          authenticity_token: $( '#authenticity-token' ).text()
-#          label: label_params
-#        }
-#        success:
-#          () ->
-#            $( 'textarea#reason-textbox' ).empty()
-#            toastr.success "Reason creation successful"
-#            update_reasons()
-#      }
-      
 ##### switch_to_list #####
     switch_to_list = ( obj, history_elements ) ->
       $( '#citations-list-elements' ).empty()
@@ -659,7 +680,7 @@ document.addEventListener 'turbolinks:load', ->
       success:
         ( data ) ->
           $( '#screen-div' ).show()
-          start_screening( data.unlabeled_citations_projects, data.labeled_citations_projects )
+          start_screening( data.unlabeled_citations_projects, data.labeled_citations_projects, data.options )
     }
 
     $( '#hide-me' ).hide()

@@ -1,16 +1,28 @@
 module Api
   module V1
     class ReasonsController < BaseController
-      before_action :set_projects_user, only: [ :index ]
+      before_action :set_assignment, only: [ :index ]
 
       def index
-        @projects_user_reasons   = Reason.by_projects_user( @projects_user )
-        @lead_reasons            = Reason.by_project_lead( @projects_user.project )
+        page          = ( params[ :page ] || 1 ).to_i
+        page_size     = 100
+        query         = params[ :q ] || ''
+
+        all_reasons   = [ ]
+        if @assignment.assignment_option_types.where( name: "ONLY_LEAD_REASONS" ).length > 0
+          all_reasons = Reason.by_project_lead( @assignment.project ).by_query( query )
+        else
+          all_reasons = ( Reason.by_project_lead( @assignment.project ).by_query( query ) + 
+                          Reason.by_projects_user( @assignment.projects_user ).by_query( query ) ).uniq
+        end
+        offset        = [ page_size * ( page - 1 ), all_reasons.length ].min
+        @reasons      = all_reasons[ offset .. offset + page_size - 1 ]
+        @more         = if offset + @reasons.length < all_reasons.length then true else false end
       end
 
       private
-      def set_projects_user
-        @projects_user = ProjectsUser.find( params[ :projects_user_id ] )
+      def set_assignment
+        @assignment = Assignment.find( params[ :assignment_id ] )
       end
     end 
   end

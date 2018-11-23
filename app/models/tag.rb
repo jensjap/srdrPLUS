@@ -3,7 +3,6 @@ class Tag < ApplicationRecord
   has_paper_trail
 
   include SharedQueryableMethods
-  include SharedProcessTokenMethods
 
   has_many :taggings
 

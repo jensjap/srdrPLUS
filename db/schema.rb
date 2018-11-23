@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181118011754) do
+ActiveRecord::Schema.define(version: 20181119202903) do
 
   create_table "abstrackr_settings", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "profile_id"
@@ -75,6 +75,23 @@ ActiveRecord::Schema.define(version: 20181118011754) do
     t.index ["approvable_type", "approvable_id"], name: "index_approvals_on_approvable_type_and_approvable_id", using: :btree
     t.index ["deleted_at"], name: "index_approvals_on_deleted_at", using: :btree
     t.index ["user_id"], name: "index_approvals_on_user_id", using: :btree
+  end
+
+  create_table "assignment_option_types", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string   "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "assignment_options", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "label_type_id"
+    t.integer  "assignment_id"
+    t.integer  "assignment_option_type_id"
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
+    t.index ["assignment_id"], name: "index_assignment_options_on_assignment_id", using: :btree
+    t.index ["assignment_option_type_id"], name: "index_assignment_options_on_assignment_option_type_id", using: :btree
+    t.index ["label_type_id"], name: "index_assignment_options_on_label_type_id", using: :btree
   end
 
   create_table "assignments", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -1299,6 +1316,9 @@ ActiveRecord::Schema.define(version: 20181118011754) do
   add_foreign_key "actions", "action_types"
   add_foreign_key "actions", "users"
   add_foreign_key "approvals", "users"
+  add_foreign_key "assignment_options", "assignment_option_types"
+  add_foreign_key "assignment_options", "assignments"
+  add_foreign_key "assignment_options", "label_types"
   add_foreign_key "assignments", "projects_users_roles"
   add_foreign_key "assignments", "tasks"
   add_foreign_key "assignments", "users"

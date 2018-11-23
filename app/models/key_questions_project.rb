@@ -1,5 +1,6 @@
 class KeyQuestionsProject < ApplicationRecord
   include SharedParanoiaMethods
+  ## ADD ORDERABLE CONCERN
 
   acts_as_paranoid column: :active, sentinel_value: true
   has_paper_trail
@@ -7,6 +8,8 @@ class KeyQuestionsProject < ApplicationRecord
   belongs_to :extraction_forms_projects_section, inverse_of: :key_questions_projects, optional: true
   belongs_to :key_question,                      inverse_of: :key_questions_projects
   belongs_to :project,                           inverse_of: :key_questions_projects, touch: true
+
+  has_one :ordering, as: :orderable
 
   has_many :key_questions_projects_questions, dependent: :destroy, inverse_of: :key_questions_project
   has_many :questions, through: :key_questions_projects_questions, dependent: :destroy

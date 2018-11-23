@@ -23,25 +23,17 @@ json.unlabeled_citations_projects do
     end
     
     ## Not sure if we will ever display taggings that are not created by the screener, but we currently send the projects_users_role info regardless
-    json.taggings citations_project.taggings do |tagging|
+    json.taggings @unlabeled_taggings[ citations_project.id ] do |tagging|
       json.id tagging.id
       json.tag do
         json.name tagging.tag.name
         json.id tagging.tag.id
       end
-      json.user do 
-        json.username tagging.projects_users_role.user.profile.username
-        json.id tagging.projects_users_role.user.id
-      end
     end
 
-    json.notes citations_project.notes do |note|
+    json.notes ( @unlabeled_notes[ citations_project.id ] || [] )[ 0 .. 0 ] do |note|
       json.id note.id
       json.value note.value
-      json.user do
-        json.username note.projects_users_role.user.profile.username
-        json.id note.projects_users_role.user.id
-      end
     end
   end
 end
@@ -71,25 +63,17 @@ json.labeled_citations_projects do
       json.array! citation.keywords, :id, :name
     end
 
-    json.taggings citations_project.taggings do |tagging|
+    json.taggings @labeled_taggings[ citations_project.id ] do |tagging|
       json.id tagging.id
       json.tag do
         json.name tagging.tag.name
         json.id tagging.tag.id
       end
-      json.user do
-        json.username tagging.projects_users_role.user.profile.username
-        json.id tagging.projects_users_role.user.id
-      end
     end
 
-    json.notes citations_project.notes do |note|
+    json.notes ( @labeled_notes[ citations_project.id ] || [] )[ 0 .. 0 ] do |note|
       json.id note.id
       json.value note.value
-      json.user do
-        json.username note.projects_users_role.user.profile.username
-        json.id note.projects_users_role.user.id
-      end
     end
 
     json.label do
@@ -107,4 +91,9 @@ json.labeled_citations_projects do
       end
     end
   end
+end
+
+json.options @assignment_options do |option|
+  json.type option.assignment_option_type.name
+  json.label_type option.label_type.name
 end
