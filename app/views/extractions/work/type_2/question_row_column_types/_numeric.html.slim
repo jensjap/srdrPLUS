@@ -32,7 +32,6 @@
           collection: ['~', '<', '>', '≤', '≥'],
           as: :select,
           input_html: { \
-            type: 'number',
             data: { prereq: "prereq-#{ qrc.class }-#{ qrc.id }" } }
         div id="record-id-#{ record.id.to_s }" class='record-info' style='opacity: 0;' = 'Saved!'
 
@@ -41,8 +40,8 @@
 
   .column.medium-10
     / We handle the creation of the second question_row_column_fields in model/question_row_column :after_save callback.
-    - byebug if qrc.question_row_column_fields.second.blank?
-    /- qrc.question_row_column_fields.create if qrc.question_row_column_fields.second.blank?
+    - byebug if qrc.question_row_column_fields.length < 2
+    /- qrc.question_row_column_fields.create if qrc.question_row_column_fields.length < 2
     - eefps_qrcf = ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField.find_or_create_by( \
       extractions_extraction_forms_projects_sections_type1: t1.blank? \
       ? nil \
@@ -58,7 +57,6 @@
 
       = f.input :name, label: false,
         input_html: { \
-          type: 'number',
           data: { prereq: "prereq-#{ qrc.class }-#{ qrc.id }" },
           min: qrc.field_validation_value_for(:min_value),
           max: qrc.field_validation_value_for(:max_value) }

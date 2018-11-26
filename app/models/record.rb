@@ -64,14 +64,27 @@ class Record < ApplicationRecord
   def check_constraints
     case self.recordable
     when ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField
-      if self.recordable.question_row_column_field.question_row_column.question_row_column_type == QuestionRowColumnType.find_by(name: 'text')  # Text
-        min_length = self.recordable.question_row_column_field.question_row_column.question_row_columns_question_row_column_options.find_by(question_row_column_option_id: 2).name.to_i
-        max_length = self.recordable.question_row_column_field.question_row_column.question_row_columns_question_row_column_options.find_by(question_row_column_option_id: 3).name.to_i
+      case self.recordable.question_row_column_field.question_row_column.question_row_column_type.name
+      when 'text'
+        min_length = self.recordable.question_row_column_field.question_row_column.field_validation_value_for(:min_length).to_i
+        max_length = self.recordable.question_row_column_field.question_row_column.field_validation_value_for(:max_length).to_i
         if self.persisted? && self.name.length > 0 && (self.name.length < min_length || self.name.length > max_length)
           errors.add(:length, "must be between #{ min_length.to_s } and #{ max_length.to_s }")
         end
+      when 'numeric'
+        # First check that we aren't trying to validate any of the ~, <, >, ≤, ≥ special characters.
+        if self.recordable.question_row_column_field.question_row_column.question_row_column_fields.second == self.recordable.question_row_column_field
+          unless (self.name =~ /\A[-+]?[0-9]*\.?[0-9]+\z/) || self.name == ''
+            errors.add(:value, 'Must be numeric')
+          end
+
+          min_value = self.recordable.question_row_column_field.question_row_column.field_validation_value_for(:min_value).to_i
+          max_value = self.recordable.question_row_column_field.question_row_column.field_validation_value_for(:max_value).to_i
+          if self.persisted? && (self.name.to_i < min_value || self.name.to_i > max_value)
+            errors.add(:value, "must be numeric and between #{ min_value.to_s } and #{ max_value.to_s }")
+          end
+        end
       end
-    else
     end
   end
 end

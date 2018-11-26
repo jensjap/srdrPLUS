@@ -2,9 +2,17 @@
   let infoDiv = $( "#record-id-<%= @record.id %>" );
 
   // Remove 'dirty' class from form.
-  infoDiv.closest( 'form' ).removeClass( 'dirty' )
+  <% if @info[0] %>
+    infoDiv.closest( 'form' ).removeClass( 'dirty' );
+  <% end %>
 
-  // Animate 'Saved!' message.
+  // Update message. @info = [success, message, color]
+  infoDiv.html( "<%= @info[1] %>" );
+  infoDiv.css( 'color', "<%= @info[2] %>" );
+
+  // Animate @info message.
   infoDiv.show().animate( { opacity: 1 } );
-  infoDiv.show().delay( 2000 ).animate( { opacity: 0 } );
+  <% if @info[0] %>
+    infoDiv.show().delay( 2000 ).animate( { opacity: 0 } );
+  <% end %>
 } )();

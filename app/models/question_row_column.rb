@@ -51,7 +51,7 @@ class QuestionRowColumn < ApplicationRecord
 
     def ensure_question_row_column_fields
       if self.question_row_column_type_id == 2  # Numeric requires 2 fields.
-        self.question_row_column_fields.create if self.question_row_column_fields.second.blank?
+        self.question_row_column_fields.create if self.question_row_column_fields.length < 2
       end
     end
 end
