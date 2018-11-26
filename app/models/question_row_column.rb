@@ -6,6 +6,8 @@ class QuestionRowColumn < ApplicationRecord
   after_create :create_default_question_row_column_options
   after_create :create_default_question_row_column_field
 
+  after_save :ensure_question_row_column_fields
+
   belongs_to :question_row,             inverse_of: :question_row_columns
   belongs_to :question_row_column_type, inverse_of: :question_row_columns
 
@@ -23,6 +25,13 @@ class QuestionRowColumn < ApplicationRecord
   delegate :question,      to: :question_row
   delegate :question_type, to: :question_row
 
+  def field_validation_value_for(name)
+    question_row_columns_question_row_column_options
+      .joins(:question_row_column_option)
+      .find_by(question_row_column_options: { name: name })
+      .name
+  end
+
   private
 
     def associate_default_question_row_column_type
@@ -38,5 +47,11 @@ class QuestionRowColumn < ApplicationRecord
 
     def create_default_question_row_column_field
       self.question_row_column_fields.create
+    end
+
+    def ensure_question_row_column_fields
+      if self.question_row_column_type_id == 2  # Numeric requires 2 fields.
+        self.question_row_column_fields.create if self.question_row_column_fields.second.blank?
+      end
     end
 end

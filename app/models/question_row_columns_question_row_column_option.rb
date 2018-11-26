@@ -34,11 +34,11 @@ class QuestionRowColumnsQuestionRowColumnOption < ApplicationRecord
     case self.question_row_column_option.name
     when 'answer_choice'
       self.name      ||= ''
-    when 'min_length_allowed'
+    when 'min_length'
       self.name      ||= 0
-    when 'max_length_allowed'
+    when 'max_length'
       self.name      ||= 255
-    when 'additional_characters_allowed'
+    when 'additional_char'
       self.name      ||= false
     when 'min_value'
       self.name      ||= 0

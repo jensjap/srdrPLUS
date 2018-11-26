@@ -7,7 +7,7 @@
       type: "#{ qrc.question_row_column_fields.first.class }",
       id: "#{ qrc.question_row_column_fields.first.id }" },
     },
-  maxlength: qrc.question_row_columns_question_row_column_options.find_by(question_row_column_option_id: 3).name,
-  pattern: ".{0}|.{#{ qrc.question_row_columns_question_row_column_options.find_by(question_row_column_option_id: 2).name },#{ qrc.question_row_columns_question_row_column_options.find_by(question_row_column_option_id: 3).name }}",
+  maxlength: qrc.field_validation_value_for(:max_length),
+  pattern: ".{0}|.{#{ qrc.field_validation_value_for(:min_length) },#{ qrc.field_validation_value_for(:max_length) }}",
   required: '',
-  title: "Either 0 OR (#{ qrc.question_row_columns_question_row_column_options.find_by(question_row_column_option_id: 2).name } to #{ qrc.question_row_columns_question_row_column_options.find_by(question_row_column_option_id: 3).name } chars)")
+  title: "Either 0 OR (#{ qrc.field_validation_value_for(:min_length) } to #{ qrc.field_validation_value_for(:max_length) } chars)")

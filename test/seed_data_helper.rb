@@ -136,27 +136,35 @@ module SeedData
       QuestionRowColumnOption.create(
         [
           { name: 'answer_choice',                 # For multiple-choice: checkbox, radio, dropdown
+            label: 'Answer Choice',
             description: 'Provide an option for the user to pick from',
             field_type: 'string' },
-          { name: 'min_length_allowed',            # For text
+          { name: 'min_length',            # For text
+            label: 'Minimum Character Length Allowed',
             description: 'Provide a lower bound for the number of characters that the answer must fall under',
             field_type: 'integer' },
-          { name: 'max_length_allowed',            # For text
+          { name: 'max_length',            # For text
+            label: 'Maximum Character Length Allowed',
             description: 'Provide an upper bound for the number of characters that the answer must fall under',
             field_type: 'integer' },
-          { name: 'additional_characters_allowed', # For numerical
+          { name: 'additional_char', # For numerical
+            label: 'Allow ~, <, >, ≤, ≥',
             description: 'Allow user to pick from a list of allowed characters',
             field_type: 'boolean' },
           { name: 'min_value',                     # For scientific, numerical, numeric range
+            label: 'Minimum Value Allowed',
             description: 'Lower bound for numerical value',
             field_type: 'integer' },
           { name: 'max_value',                     # For scientific, numerical, numeric range
+            label: 'Maximum Value Allowed',
             description: 'Upper bound for numerical value',
             field_type: 'integer' },
           { name: 'coefficient',                   # For scientific
+            label: 'Coefficient',
             description: 'Provide length of coefficient',
             field_type: 'integer' },
           { name: 'exponent',                      # For scientific
+            label: 'Exponent',
             description: 'Provide length of exponent',
             field_type: 'integer' }
         ]

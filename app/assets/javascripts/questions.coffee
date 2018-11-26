@@ -21,11 +21,11 @@ document.addEventListener 'turbolinks:load', ->
         that.find('.links').show()
 
       else if _value == 'text'  # Text.
-        that.find('.field-options.field-option-type-min_length_allowed').show()
-        that.find('.field-options.field-option-type-max_length_allowed').show()
+        that.find('.field-options.field-option-type-min_length').show()
+        that.find('.field-options.field-option-type-max_length').show()
 
       else if _value == 'numeric'  # Numeric.
-        that.find('.field-options.field-option-type-additional_characters_allowed').show()
+        that.find('.field-options.field-option-type-additional_char').show()
         that.find('.field-options.field-option-type-min_value').show()
         that.find('.field-options.field-option-type-max_value').show()
 

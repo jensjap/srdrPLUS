@@ -22,10 +22,10 @@
     = f.error_notification
 
     = f.input :name, label: false, required: false, class: 'form-control',
-      pattern: ".{0}|.{#{ qrc.question_row_columns_question_row_column_options.find_by(question_row_column_option_id: 2).name },#{ qrc.question_row_columns_question_row_column_options.find_by(question_row_column_option_id: 3).name }}",
+      pattern: ".{0}|.{#{ qrc.field_validation_value_for(:min_length) },#{ qrc.field_validation_value_for(:max_length) }}",
       data: { prereq: "prereq-#{ qrc.class }-#{ qrc.id }" },
       input_html: { \
-        title: "Constraints: Blank OR between #{ qrc.question_row_columns_question_row_column_options.find_by(question_row_column_option_id: 2).name } and #{ qrc.question_row_columns_question_row_column_options.find_by(question_row_column_option_id: 3).name } chars" \
+        title: "Constraints: Blank OR between #{ qrc.field_validation_value_for(:min_length) } and #{ qrc.field_validation_value_for(:max_length) } chars" \
       }
     div id="record-id-#{ record.id.to_s }" class='record-info' style='opacity: 0;' = 'Saved!'
 

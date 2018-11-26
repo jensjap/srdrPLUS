@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181120000413) do
+ActiveRecord::Schema.define(version: 20181126015030) do
 
   create_table "abstrackr_settings", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "profile_id"
@@ -946,6 +946,7 @@ ActiveRecord::Schema.define(version: 20181120000413) do
     t.datetime "updated_at",  null: false
     t.string   "description"
     t.string   "field_type"
+    t.string   "label"
     t.index ["deleted_at"], name: "index_question_row_column_options_on_deleted_at", using: :btree
   end
 
