@@ -2,9 +2,13 @@
 
 one:
   name: MyString
+  field_type: MyString
+  description: MyString
   deleted_at:
 
 two:
   name: MyString
+  field_type: MyString
+  description: MyString
   deleted_at:
 
