@@ -13,7 +13,6 @@ h4 List of Suggested #{ section_name }s
         th = section_name.eql?('Outcome') ? 'Specific Measurement' : 'Description'
         - if section_name.eql?('Outcome')
           th Timepoint(s)
-        th
 
     tbody
       - efps.extraction_forms_projects_sections_type1s.each do |efpst1|
@@ -28,6 +27,9 @@ h4 List of Suggested #{ section_name }s
                 ul
                   - efpst1.timepoint_names.each do |tn|
                     li = tn.pretty_print_export_header
+          td = link_to edit_extraction_forms_projects_sections_type1_path(efpst1) do
+            i.fi-pencil>
+            = t('edit')
           td = link_to extraction_forms_projects_section_dissociate_type1_path(efps, type1_id: efpst1.id), method: :delete, data: { confirm: t('confirm') } do
             i.fi-trash>
-            | Remove
+            = t('remove')
