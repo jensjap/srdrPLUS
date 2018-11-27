@@ -47,6 +47,9 @@ a.accordion-title href='#'
 
       .column.row
         = link_to 'Edit Project', edit_project_path(project), class: 'button expanded'
+      - if project.leaders.include?(current_user) && project.key_questions.present?
+        .column.row
+          = link_to 'Customize Extraction Form', build_extraction_forms_project_path(project.extraction_forms_projects.first.id, anchor: "panel-tab-#{ project.extraction_forms_projects.first.extraction_forms_projects_sections.first.id }"), class: 'button expanded'
       .column.row
         = link_to 'List of Extractions', project_extractions_path(project), class: 'button expanded'
       .column.row
