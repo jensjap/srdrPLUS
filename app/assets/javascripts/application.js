@@ -24,6 +24,7 @@
 //= require components
 //= require list.min.js
 //= require jquery.form.min
+//= require sortable-rails-jquery
 //= require_tree .
 
 //$(function(){ $(document).foundation(); });

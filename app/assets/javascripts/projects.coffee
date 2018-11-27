@@ -330,7 +330,64 @@ document.addEventListener 'turbolinks:load', ->
         toastr.error('Could not save changes')
 
 
+## DRAG AND DROP KEY QUESTIONS
+    if $( 'body.projects.edit' ).length == 1
+      ## CHANGE THIS
+      ajax_url = "http://0.0.0.0:3000/api/v1/orderings/update_positions"
+      params = { orderings: [ ] }
+      saved_state = null
 
+      ## helper method for converting class name into camel case
+      camel2snake = ( s ) ->
+        return s.replace( /(?:^|\.?)([A-Z])/g, ( x, y ) ->
+                                                  return '_' + y.toLowerCase()
+                        ).replace /^_/, ''
+      
+      ## send updated positions to the server
+      send_positions = ( ) ->
+        #class_name = camel2snake $( '.orderable-item' ).first().attr( 'orderable-type' )
+        position = 1
+        for element in $( '.orderable-item' )
+          ordering_id = $( element ).attr( 'ordering-id' )
+          # how do we make this part generic
+          params.orderings.push { id: ordering_id, position: position }
+          position++
+
+        # save current state
+        $.ajax {
+          type: 'PATCH'
+          url: ajax_url
+          dataType: 'script'
+          data: params
+          success:
+            ( data ) ->
+              # if successful, update positions
+              position = 1
+              for element in $( '.orderable-item' )
+                $( element ).attr( 'position', position )
+                position++
+              # then save state
+              saved_state = $( '.orderable-list' ).sortable( "toArray" )
+
+              toastr.success( 'Positions successfully updated' )
+          error:
+            ( data ) ->
+              $( '.orderable-list' ).sortable( 'sort', saved_state )
+
+              toastr.error( 'ERROR: Cannot save new position' )
+        }
+        return
+
+      ## update handler for sortable list
+      on_update = ( e ) ->
+        send_positions()
+
+      ## save state when dragging starts
+      on_start = ( e ) ->
+        saved_state = $( '.orderable-list' ).sortable( 'toArray' )
+      
+      $( '.orderable-list' ).sortable( onUpdate: on_update, onStart: on_start )
+      saved_state = $( '.orderable-list' ).clone( true )
 
 
 

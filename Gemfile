@@ -137,4 +137,7 @@ gem 'ref_parsers'
 gem 'breadcrumbs_on_rails'
 
 # authorizations.
-gem "pundit"
+gem 'pundit'
+
+# List reordering, Drag & Drop
+gem 'sortable-rails'

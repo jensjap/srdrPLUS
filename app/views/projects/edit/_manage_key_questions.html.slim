@@ -14,9 +14,10 @@
         th = t('date_created')
         th = t('date_updated')
 
-    tbody
-      - @project.key_questions_projects.each do |kqp|
-        tr
+    //orderable-table class is used for drag and drop
+    tbody.orderable-list
+      - @project.key_questions_projects.ordered.each do |kqp|
+        tr.orderable-item [ position="#{ kqp.ordering.position }" ordering-id="#{ kqp.ordering.id }" ]
           td = kqp.key_question.name
           td
             - if kqp.extraction_forms_projects_section.present?
