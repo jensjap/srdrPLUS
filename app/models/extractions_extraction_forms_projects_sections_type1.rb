@@ -3,9 +3,12 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
   attr_writer :should
 
   include SharedParanoiaMethods
+  include SharedOrderableMethods
 
   acts_as_paranoid column: :active, sentinel_value: true
   has_paper_trail
+
+  before_validation -> { set_ordering_scoped_by(:extractions_extraction_forms_projects_section_id) }, on: :create
 
   #!!! Implement this for type1 selection also.
   scope :extraction_collection, -> (section_name, efp_id) {
@@ -43,6 +46,8 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
   belongs_to :type1_type,                                    inverse_of: :extractions_extraction_forms_projects_sections_type1s, optional: true
   belongs_to :extractions_extraction_forms_projects_section, inverse_of: :extractions_extraction_forms_projects_sections_type1s
   belongs_to :type1,                                         inverse_of: :extractions_extraction_forms_projects_sections_type1s
+
+  has_one :ordering, as: :orderable, dependent: :destroy
 
   has_many :extractions_extraction_forms_projects_sections_type1_rows,                 dependent: :destroy, inverse_of: :extractions_extraction_forms_projects_sections_type1
   has_many :extractions_extraction_forms_projects_sections_question_row_column_fields, dependent: :destroy, inverse_of: :extractions_extraction_forms_projects_sections_type1

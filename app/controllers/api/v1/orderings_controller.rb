@@ -2,11 +2,11 @@ module Api
   module V1
     class OrderingsController < BaseController
       def update_positions
-        ordering_ids = []
-        orderings_params['orderings'].values.each do |o|
-          ordering = Ordering.find(o['id'])
-          ordering.update(position: o['position'])
-          ordering_ids << o['id']
+        Ordering.transaction do
+          orderings_params['orderings'].values.each do |o|
+            ordering = Ordering.find(o['id'])
+            ordering.update!(position: o['position'])
+          end
         end
         respond_to do |format|
           format.json { head :ok }

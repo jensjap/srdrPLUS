@@ -1,7 +1,6 @@
 class KeyQuestionsProject < ApplicationRecord
   include SharedParanoiaMethods
   include SharedOrderableMethods
-  ## ADD ORDERABLE CONCERN
 
   acts_as_paranoid column: :active, sentinel_value: true
   has_paper_trail
@@ -12,8 +11,7 @@ class KeyQuestionsProject < ApplicationRecord
   belongs_to :key_question,                      inverse_of: :key_questions_projects
   belongs_to :project,                           inverse_of: :key_questions_projects, touch: true
 
-  has_one :ordering, as: :orderable, dependent: :destroy, autosave: true
-  #  delegate :position, :position=, to: :ordering, prefix: true
+  has_one :ordering, as: :orderable, dependent: :destroy
 
   has_many :key_questions_projects_questions, dependent: :destroy, inverse_of: :key_questions_project
   has_many :questions, through: :key_questions_projects_questions, dependent: :destroy

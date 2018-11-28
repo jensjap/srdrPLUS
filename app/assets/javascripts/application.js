@@ -91,4 +91,69 @@ document.addEventListener( 'turbolinks:load', function() {
 //      task.fadeOut('slow');
 //    });
 
+  for (let orderable_list of Array.from($( '.orderable-list' ))) {
+    console.log(orderable_list);
+    //# CHANGE THIS
+    const ajax_url = "http://0.0.0.0:3000/api/v1/orderings/update_positions";
+    let saved_state = null;
+
+    //# helper method for converting class name into camel case
+    const camel2snake =  s  =>
+      s.replace( /(?:^|\.?)([A-Z])/g, ( x, y ) => `_${y.toLowerCase()}`).replace(/^_/, '')
+    ;
+
+    //# send updated positions to the server
+    const send_positions = function( ) {
+      let positions = [];
+      for (let element of Array.from($( orderable_list ).find( '.orderable-item' ))) {
+        positions.push( $( element ).attr( 'position' ) );
+        console.log(element);
+        console.log($( element ).attr( 'position' ));
+      }
+      positions = positions.sort();
+      //class_name = camel2snake $( '.orderable-item' ).first().attr( 'orderable-type' )
+      let idx = 0;
+      let params = { orderings: [ ] };
+      for (let element of Array.from($( orderable_list ).find( '.orderable-item' ))) {
+        const ordering_id = $( element ).attr( 'ordering-id' );
+        // how do we make this part generic
+        params.orderings.push({ id: ordering_id, position: positions[ idx ] });
+        idx++;
+      }
+
+      // save current state
+      $.ajax({
+        type: 'PATCH',
+        url: ajax_url,
+        dataType: 'script',
+        data: params,
+        success( data ) {
+            // if successful, update positions
+            let idx = 0;
+            for (let element of Array.from($( orderable_list ).find( '.orderable-item' ))) {
+              $( element ).attr( 'position', positions[ idx ] );
+              idx++;
+            }
+            // then save state
+            saved_state = $( orderable_list ).sortable( "toArray" );
+
+            return toastr.success( 'Positions successfully updated' );
+          },
+        error( data ) {
+            $( orderable_list ).sortable( 'sort', saved_state );
+
+            return toastr.error( 'ERROR: Cannot save new position' );
+          }
+      });
+    };
+
+    //# update handler for sortable list
+    const on_update =  e  => send_positions( );
+
+    //# save state when dragging starts
+    const on_start =  e  => saved_state = $( orderable_list ).sortable( 'toArray' );
+
+    $( orderable_list ).sortable({ onUpdate: on_update, onStart: on_start });
+    saved_state = $( orderable_list ).sortable( 'toArray' );
+  }
 } );
