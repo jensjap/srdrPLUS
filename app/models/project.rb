@@ -15,6 +15,7 @@ class Project < ApplicationRecord
 
   after_create :create_default_extraction_form
   after_create :create_default_perpetual_task
+  after_create :create_default_member
 
   has_many :extractions, dependent: :destroy, inverse_of: :project
 
@@ -511,5 +512,13 @@ class Project < ApplicationRecord
 #      e2_json = e2.to_builder.target!
 
       return not(e1_json.eql? e2_json)
+    end
+
+    def create_default_member
+      if User.try(:current)
+        self.users << User.current
+        self.projects_users.first.roles << Role.first
+        self.save
+      end
     end
 end
