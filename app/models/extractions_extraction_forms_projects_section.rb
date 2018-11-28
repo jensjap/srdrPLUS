@@ -66,7 +66,6 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
   #       nothing inherently wrong with creating an association between eefps and
   #       type1, where type1 has neither name or nor description.
   def type1s_attributes=(attributes)
-    byebug
     attributes.each do |key, attribute_collection|
       unless attribute_collection.has_key? 'id'
         Type1.transaction do

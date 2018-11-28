@@ -15,4 +15,23 @@ class ExtractionFormsProjectsSectionsType1 < ApplicationRecord
 
   accepts_nested_attributes_for :type1, reject_if: :all_blank
   accepts_nested_attributes_for :timepoint_names, reject_if: :all_blank
+
+  delegate :project, to: :extraction_forms_projects_section
+  delegate :extraction_forms_project, to: :extraction_forms_projects_section
+
+  def section_name
+    extraction_forms_projects_section.section.name
+  end
+
+  def type1_attributes=(attributes)
+    ExtractionFormsProjectsSectionsType1.transaction do
+      attributes.delete(:id)  # Remove ID from hash since this may carry the ID of
+                              # the object we are trying to change.
+      self.type1 = Type1.find_or_create_by!(attributes)
+      attributes[:id] = self.type1.id  # Need to put this back in, otherwise rails will
+                                       # try to create this record, since its ID is
+                                       # missing and it assumes it's a new item.
+    end
+    super
+  end
 end

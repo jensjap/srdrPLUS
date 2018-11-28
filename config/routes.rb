@@ -134,7 +134,7 @@ Rails.application.routes.draw do
       get 'build', on: :member
       resources :extraction_forms_projects_sections, only: [:new, :create, :edit, :update, :destroy] do
 
-        resources :extraction_forms_projects_sections_type1s, only: [:edit]
+        resources :extraction_forms_projects_sections_type1s, only: [:edit, :update]
 
         member do
           get 'preview'

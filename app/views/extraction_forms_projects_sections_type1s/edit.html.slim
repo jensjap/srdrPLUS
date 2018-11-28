@@ -1,0 +1,12 @@
+- provide(:title, 'Edit')
+- section_name = @extraction_forms_projects_sections_type1.section_name.titleize.singularize
+
+.column.row
+  h4 Edit #{ section_name } Suggestion
+
+.column.row
+  == render 'form', section_name: section_name
+
+.column.row
+  = link_to 'Back', build_extraction_forms_project_path(@extraction_forms_projects_sections_type1.extraction_forms_project,
+    anchor: "panel-tab-#{ @extraction_forms_projects_sections_type1.extraction_forms_projects_section.id }")

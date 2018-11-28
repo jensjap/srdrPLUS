@@ -52,6 +52,7 @@ en:
   citations: Citation(s)
   tasks: Task(s)
   time_prefix: ''
+  update: Update
   updated: Updated
   ago: ' ago'
   greet: Greetings

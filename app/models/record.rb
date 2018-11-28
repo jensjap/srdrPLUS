@@ -74,7 +74,7 @@ class Record < ApplicationRecord
       when 'numeric'
         # First check that we aren't trying to validate any of the ~, <, >, ≤, ≥ special characters.
         if self.recordable.question_row_column_field.question_row_column.question_row_column_fields.second == self.recordable.question_row_column_field
-          unless (self.name =~ /\A[-+]?[0-9]*\.?[0-9]+\z/) || self.name == ''
+          unless (self.name =~ /\A[-+]?[0-9]*\.?[0-9]+\z/) || self.name != ''
             errors.add(:value, 'Must be numeric')
           end
 

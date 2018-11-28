@@ -75,6 +75,9 @@ document.addEventListener 'turbolinks:load', ->
     $( '#extraction_forms_projects_section_extraction_forms_projects_sections_type1s_attributes_0_timepoint_name_ids' ).select2
       minimumInputLength: 0
 
+    $( '#extraction_forms_projects_sections_type1_timepoint_name_ids' ).select2
+      minimumInputLength: 0
+
     return  # END do ->
 
   return  # END document.addEventListener 'turbolinks:load', ->
