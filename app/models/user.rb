@@ -4,7 +4,7 @@ class User < ApplicationRecord
       :last_sign_in_at, :current_sign_in_ip, :last_sign_in_ip]
 
 
-  after_create { create_profile(username: email) }
+  after_create { create_profile(username: email.gsub(/@/, 'at').gsub(/\+/, '_')) }
 
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
