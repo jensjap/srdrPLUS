@@ -68,6 +68,39 @@
 .citation-buttons {
   float: right;
 }
+
+/* line 59, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/assignments.scss */
+#feature-panel {
+  display: flex;
+  flex-direction: row;
+}
+/* line 62, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/assignments.scss */
+#feature-panel .button {
+  margin-right: 0.5rem;
+}
+
+/* line 67, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/assignments.scss */
+#tags-modal {
+  width: 50vw;
+  height: 50vh;
+  position: relative;
+  left: 25vw;
+  top: 25vh;
+  background-color: red;
+  display: flex;
+  flex-direction: column;
+}
+/* line 76, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/assignments.scss */
+#tags-modal #tags-controls {
+  display: flex;
+  flex-direction: row;
+}
+
+/* line 88, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/assignments.scss */
+#reasons-list {
+  height: 70vh;
+  overflow-y: scroll;
+}
 /* line 7, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/citations.scss */
 #buttoned-input {
   margin: 0;
@@ -6574,14 +6607,14 @@ select[multiple] {
 .position-left {
   top: 0;
   left: 0;
-  width: 250px;
+  width: 20vw;
   height: 100%;
-  transform: translateX(-250px);
+  transform: translateX(-20vw);
   overflow-y: auto;
 }
 /* line 159, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/components/_off-canvas.scss */
 .position-left.is-open ~ .off-canvas-content {
-  transform: translateX(250px);
+  transform: translateX(20vw);
 }
 /* line 211, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/components/_off-canvas.scss */
 .position-left.is-transition-push::after {
@@ -6602,14 +6635,14 @@ select[multiple] {
 .position-right {
   top: 0;
   right: 0;
-  width: 250px;
+  width: 20vw;
   height: 100%;
-  transform: translateX(250px);
+  transform: translateX(20vw);
   overflow-y: auto;
 }
 /* line 173, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/components/_off-canvas.scss */
 .position-right.is-open ~ .off-canvas-content {
-  transform: translateX(-250px);
+  transform: translateX(-20vw);
 }
 /* line 211, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/components/_off-canvas.scss */
 .position-right.is-transition-push::after {
@@ -6696,7 +6729,7 @@ select[multiple] {
   }
   /* line 273, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/components/_off-canvas.scss */
   .position-left.reveal-for-medium ~ .off-canvas-content {
-    margin-left: 250px;
+    margin-left: 20vw;
   }
 
   /* line 314, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/components/_off-canvas.scss */
@@ -6706,7 +6739,7 @@ select[multiple] {
   }
   /* line 273, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/components/_off-canvas.scss */
   .position-right.reveal-for-medium ~ .off-canvas-content {
-    margin-right: 250px;
+    margin-right: 20vw;
   }
 
   /* line 318, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/components/_off-canvas.scss */
@@ -6716,7 +6749,7 @@ select[multiple] {
   }
   /* line 273, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/components/_off-canvas.scss */
   .position-top.reveal-for-medium ~ .off-canvas-content {
-    margin-top: 250px;
+    margin-top: 20vw;
   }
 
   /* line 322, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/components/_off-canvas.scss */
@@ -6726,7 +6759,7 @@ select[multiple] {
   }
   /* line 273, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/components/_off-canvas.scss */
   .position-bottom.reveal-for-medium ~ .off-canvas-content {
-    margin-bottom: 250px;
+    margin-bottom: 20vw;
   }
 }
 @media print, screen and (min-width: 64em) {
@@ -6737,7 +6770,7 @@ select[multiple] {
   }
   /* line 273, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/components/_off-canvas.scss */
   .position-left.reveal-for-large ~ .off-canvas-content {
-    margin-left: 250px;
+    margin-left: 20vw;
   }
 
   /* line 314, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/components/_off-canvas.scss */
@@ -6747,7 +6780,7 @@ select[multiple] {
   }
   /* line 273, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/components/_off-canvas.scss */
   .position-right.reveal-for-large ~ .off-canvas-content {
-    margin-right: 250px;
+    margin-right: 20vw;
   }
 
   /* line 318, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/components/_off-canvas.scss */
@@ -6757,7 +6790,7 @@ select[multiple] {
   }
   /* line 273, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/components/_off-canvas.scss */
   .position-top.reveal-for-large ~ .off-canvas-content {
-    margin-top: 250px;
+    margin-top: 20vw;
   }
 
   /* line 322, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/components/_off-canvas.scss */
@@ -6767,7 +6800,7 @@ select[multiple] {
   }
   /* line 273, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/components/_off-canvas.scss */
   .position-bottom.reveal-for-large ~ .off-canvas-content {
-    margin-bottom: 250px;
+    margin-bottom: 20vw;
   }
 }
 /* line 155, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/components/_orbit.scss */
@@ -8621,95 +8654,255 @@ ul li.publishing-requested:before {
   border-color: #56017b transparent;
 }
 
-/* line 156, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
-.citation-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
+/* line 157, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+#citations {
+  min-height: 800px;
+}
+/* line 158, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+#citations ul {
+  margin-top: 0rem;
+}
+/* line 160, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+#citations ul li:nth-of-type(even) {
+  background-color: #f1f1f1;
+}
+/* line 163, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+#citations ul li:nth-of-type(even) a.citation-label:hover {
+  background-color: #d8d8d8;
+}
+/* line 170, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+#citations .citation-row {
   margin-bottom: 0px;
 }
-
-/* line 164, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
-.citation-row:hover {
-  background-color: #e6e6e6;
+/* line 171, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+#citations .citation-row .citation-label {
+  font-size: 0.7rem;
+  line-height: 0.9rem;
+  color: #5b5b5b;
+}
+/* line 175, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+#citations .citation-row .citation-label .citation-title, #citations .citation-row .citation-label .citation-authors {
+  width: calc(100% - 35px);
+}
+/* line 179, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+#citations .citation-row .citation-label .citation-title {
+  overflow: hidden;
+  font-weight: bold;
+}
+/* line 187, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+#citations .citation-row .citation-label .citation-authors {
+  font-style: italic;
+  overflow: hidden;
+}
+/* line 194, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+#citations .citation-row .citation-label .citation-numbers {
+  display: inline;
+}
+/* line 203, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+#citations .citation-row .citation-journal {
+  display: inline;
+}
+/* line 211, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+#citations .citation-row .citation-journal-date {
+  display: inline;
+}
+/* line 218, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+#citations .citation-row .citation-journal {
+  margin-top: 0rem;
+  margin-bottom: 1rem;
+  font-size: 13px;
+  color: #5b5b5b;
+}
+/* line 226, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+#citations .citation-row .citation-journal-date {
+  display: inline;
+}
+/* line 234, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+#citations .citation-row .citation-abstract {
+  font-size: 13px;
+  color: #303030;
+}
+/* line 240, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+#citations .citation-row:hover {
+  background-color: #e5e5e5;
+}
+/* line 244, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+#citations .citation-row.is-active {
+  background-color: #F7F3F9 !important;
+}
+/* line 246, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+#citations .citation-row.is-active a.citation-label {
+  color: #2a0060 !important;
+  height: auto;
+  overflow: auto;
+  white-space: normal;
+  border-bottom: 0px;
+}
+/* line 252, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+#citations .citation-row.is-active a.citation-label:hover {
+  background-color: #E5DEE8 !important;
+}
+/* line 255, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+#citations .citation-row.is-active a.citation-label .citation-numbers, #citations .citation-row.is-active a.citation-label .citation-authors {
+  margin-bottom: 0.5rem;
+}
+/* line 258, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+#citations .citation-row.is-active a.citation-label .citation-authors, #citations .citation-row.is-active a.citation-label .citation-title {
+  margin-top: 0.5rem;
+}
+/* line 261, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+#citations .citation-row.is-active a.citation-label .citation-authors, #citations .citation-row.is-active a.citation-label .citation-title {
+  margin-top: 0.5rem;
+}
+/* line 266, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+#citations .citation-row.is-active .accordion-content {
+  border-top: 0px;
+  background-color: #F7F3F9;
 }
 
-/* line 168, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+/* line 276, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+#search-div {
+  width: 100%;
+  display: flex;
+}
+/* line 280, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+#search-div #sort-button {
+  #width: 4.5rem;
+  margin-right: 0.25rem;
+}
+/* line 285, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+#search-div #sort-select {
+  max-width: 4.5rem;
+}
+/* line 289, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+#search-div #search-box {
+  flex-grow: 100;
+  margin-right: 1.5rem;
+}
+/* line 292, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+#search-div #search-box input {
+  width: 100%;
+}
+/* line 297, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+#search-div #search-box, #search-div #sort-button, #search-div #sort-select {
+  height: 2rem;
+}
+
+/* line 302, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
 .citation-select {
   margin-bottom: 0px;
 }
 
-/* line 172, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+/* line 306, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+a.citation-label {
+  line-height: 1.2rem;
+  text-decoration: none;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+/* line 315, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+#citations {
+  min-height: 800px;
+}
+
+/* line 331, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
 .remove-button {
-  font-size: 16px;
-  color: #410093;
+  font-size: 1rem;
+  color: #8a8a8a;
   margin-right: 5px;
   transition: color 0.25s;
 }
 
-/* line 179, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+/* line 338, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
 .remove-button:hover {
   text-decoration: none;
   color: #cc4b37;
 }
 
-/* line 185, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+/* line 343, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+.edit-citation-row {
+  display: flex;
+  flex-direction: row-reverse;
+}
+/* line 346, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+.edit-citation-row .button {
+  margin-top: 10px;
+  margin-bottom: 0px;
+}
+
+/* line 352, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+.buttons-row {
+  display: flex;
+}
+/* line 353, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+.buttons-row .button {
+  margin-left: 0.5rem;
+}
+
+/* line 359, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
 .added-item {
+  border: solid 1px #666666;
+  background-color: #F5F5F5;
   border-radius: 5px;
-  border: solid 1px #410093;
   margin-bottom: 5px;
-}
-/* line 190, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
-.added-item .select {
-  width: 100%;
-}
-
-/* line 195, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
-.citation-fields {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
 }
 
-/* line 201, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
-.citation-inputs {
+/* line 370, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+.citation-fields .citation-inputs {
+  margin-top: 1rem;
   display: flex;
+  width: 92%;
+  display: flex;
+  flex-direction: column;
   justify-content: center;
-  align-items: center;
-  width: 98%;
 }
-
-/* line 208, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
-.inner-inputs {
-  width: 97%;
+/* line 379, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+.citation-fields .citation-inputs .accession-number input.numeric {
+  margin-bottom: 0;
 }
-
-/* line 212, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
-.middle-row {
+/* line 382, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+.citation-fields .citation-inputs .accession-number .pmid-checkbox {
+  float: right;
+}
+/* line 388, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+.citation-fields .citation-inputs .citation-abstract textarea {
+  height: 8rem;
+}
+/* line 393, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+.citation-fields .citation-inputs .middle-row {
   display: flex;
   justify-content: space-between;
+  flex-direction: row;
 }
-/* line 216, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
-.middle-row div {
+/* line 397, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+.citation-fields .citation-inputs .middle-row div {
+  flex: 1;
+  padding-left: 0.6rem;
+}
+/* line 402, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+.citation-fields .citation-inputs .middle-row .journal-name {
+  flex: 3;
+  padding-left: 0;
+}
+/* line 408, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+.citation-fields .citation-inputs .bottom-row {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+}
+/* line 412, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+.citation-fields .citation-inputs .bottom-row .bottom-column {
+  flex-direction: column;
   width: 30%;
 }
 
-/* line 221, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
-.bottom-row {
-  display: flex;
-  justify-content: space-between;
-}
-/* line 225, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
-.bottom-row .bottom-column {
-  width: 30%;
-}
-/* line 228, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
-.bottom-row .bottom-column .number-column {
-  display: flex;
-}
-
-/* line 234, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+/* line 420, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
 #citations-footer {
   padding-top: 30px;
   display: flex;
@@ -8720,12 +8913,7 @@ ul li.publishing-requested:before {
   margin-bottom: 0px;
 }
 
-/* line 244, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
-abbr[title="required"] {
-  display: none;
-}
-
-/* line 248, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+/* line 436, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
 .task-box {
   width: 300px;
   height: 365px;
@@ -8738,23 +8926,23 @@ abbr[title="required"] {
   margin-bottom: 20px;
 }
 
-/* line 261, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+/* line 449, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
 .new-task {
   border: solid 1px #666666;
   background-color: #F5F5F5;
 }
-/* line 264, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+/* line 452, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
 .new-task .task-title, .new-task label, .new-task .remove-button {
   color: #666666 !important;
 }
 
-/* line 269, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+/* line 457, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
 .task-center {
   margin-left: 20px;
   width: 100%;
 }
 
-/* line 274, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+/* line 462, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
 .tasks-container {
   width: 100%;
   display: flex;
@@ -8762,13 +8950,13 @@ abbr[title="required"] {
   flex-flow: row wrap;
 }
 
-/* line 282, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+/* line 470, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
 .projects-users-role-select2 .select2-container--default .select2-selection--multiple {
   height: 100px;
   overflow-y: auto;
 }
 
-/* line 288, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+/* line 476, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
 .task-title {
   font-size: 25px;
   color: #410093;
@@ -8776,13 +8964,13 @@ abbr[title="required"] {
   margin-bottom: 20px;
 }
 
-/* line 295, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+/* line 483, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
 .task-fields {
   width: 98%;
   margin-bottom: 20px;
 }
 
-/* line 300, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+/* line 488, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
 a.add-task-button {
   height: 80px;
   width: 80px;
@@ -8790,17 +8978,17 @@ a.add-task-button {
   border-radius: 0px;
   text-decoration: none;
 }
-/* line 307, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+/* line 495, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
 a.add-task-button .fi-plus {
   color: #ffc57e;
   transition: color 0.3s;
 }
-/* line 311, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+/* line 499, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
 a.add-task-button .fi-plus:hover {
   color: #ff9718;
 }
 
-/* line 318, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+/* line 506, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
 .task-button-container {
   height: 360px;
   width: 80px;
@@ -8819,6 +9007,11 @@ input.button.grey {
 /* line 5, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/result_statistic_sections.scss */
 .add-comparison {
   font-weight: bold;
+}
+
+/* line 9, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/result_statistic_sections.scss */
+form.dirty input {
+  background-color: lightyellow !important;
 }
 /* line 1, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/scaffolds.scss */
 body {
@@ -9155,6 +9348,15 @@ pre.debug_dump {
 }
 
 /* line 260, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/application.css.scss */
+.off-canvas-link {
+  position: fixed;
+  z-index: 1;
+  top: 60px;
+  right: 4px;
+  cursor: pointer;
+}
+
+/* line 270, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .scroll-top-wrapper {
   position: fixed;
   opacity: 0;
@@ -9181,70 +9383,70 @@ pre.debug_dump {
   transition: all 0.5s ease-in-out;
 }
 
-/* line 285, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 295, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .scroll-top-wrapper:hover {
   background-color: #888888;
 }
 
-/* line 288, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 298, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .scroll-top-wrapper.show {
   visibility: visible;
   cursor: pointer;
   opacity: 0.8;
 }
 
-/* line 293, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 303, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .scroll-top-wrapper i.fi {
   line-height: 0;
   font-size: 2em;
 }
 
-/* line 299, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 309, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .form-inputs label {
   color: #42098F;
 }
-/* line 302, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 312, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .form-inputs label.required abbr {
   color: #cc4b37;
 }
 
-/* line 307, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 317, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .table-scroll table {
   width: 100%;
 }
-/* line 310, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 320, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .table-scroll table td, .table-scroll table th {
   border-radius: 3px;
 }
-/* line 314, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 324, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .table-scroll table.consolidate .missing-value {
   margin-bottom: 3px;
   border: 1.2px solid red;
   min-height: 18px;
 }
 
-/* line 321, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 331, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .column.row.footer {
   min-height: 300px;
-  background-color: #200446;
+  background-color: #410093;
 }
 
-/* line 326, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 336, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .off-canvas-content {
   min-height: -webkit-fill-available;
 }
 
-/* line 332, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 342, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/application.css.scss */
 #extraction-forms-projects-tabs {
   display: none;
 }
 
-/* line 336, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 346, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/application.css.scss */
 a.accordion-title.populations {
   font-size: 1em;
 }
 
-/* line 342, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 352, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .spinner {
   border: 16px solid #f3f3f3;
   /* Light grey */

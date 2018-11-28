@@ -51553,10 +51553,13 @@ var NewExtractionFormsProjectsSection = (function (_React$Component) {
 
   return NewExtractionFormsProjectsSection;
 })(React.Component);
+/*! List.js v1.5.0 (http://listjs.com) by Jonny Strömberg (http://javve.com) */
+
+var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l:!1,exports:{}};return t[n].call(i.exports,i,i.exports,e),i.l=!0,i.exports}var r={};return e.m=t,e.c=r,e.i=function(t){return t},e.d=function(t,r,n){e.o(t,r)||Object.defineProperty(t,r,{configurable:!1,enumerable:!0,get:n})},e.n=function(t){var r=t&&t.__esModule?function(){return t.default}:function(){return t};return e.d(r,"a",r),r},e.o=function(t,e){return Object.prototype.hasOwnProperty.call(t,e)},e.p="",e(e.s=11)}([function(t,e,r){function n(t){if(!t||!t.nodeType)throw new Error("A DOM element reference is required");this.el=t,this.list=t.classList}var i=r(4),s=/\s+/;Object.prototype.toString;t.exports=function(t){return new n(t)},n.prototype.add=function(t){if(this.list)return this.list.add(t),this;var e=this.array(),r=i(e,t);return~r||e.push(t),this.el.className=e.join(" "),this},n.prototype.remove=function(t){if(this.list)return this.list.remove(t),this;var e=this.array(),r=i(e,t);return~r&&e.splice(r,1),this.el.className=e.join(" "),this},n.prototype.toggle=function(t,e){return this.list?("undefined"!=typeof e?e!==this.list.toggle(t,e)&&this.list.toggle(t):this.list.toggle(t),this):("undefined"!=typeof e?e?this.add(t):this.remove(t):this.has(t)?this.remove(t):this.add(t),this)},n.prototype.array=function(){var t=this.el.getAttribute("class")||"",e=t.replace(/^\s+|\s+$/g,""),r=e.split(s);return""===r[0]&&r.shift(),r},n.prototype.has=n.prototype.contains=function(t){return this.list?this.list.contains(t):!!~i(this.array(),t)}},function(t,e,r){var n=window.addEventListener?"addEventListener":"attachEvent",i=window.removeEventListener?"removeEventListener":"detachEvent",s="addEventListener"!==n?"on":"",a=r(5);e.bind=function(t,e,r,i){t=a(t);for(var o=0;o<t.length;o++)t[o][n](s+e,r,i||!1)},e.unbind=function(t,e,r,n){t=a(t);for(var o=0;o<t.length;o++)t[o][i](s+e,r,n||!1)}},function(t,e){t.exports=function(t){return function(e,r,n){var i=this;this._values={},this.found=!1,this.filtered=!1;var s=function(e,r,n){if(void 0===r)n?i.values(e,n):i.values(e);else{i.elm=r;var s=t.templater.get(i,e);i.values(s)}};this.values=function(e,r){if(void 0===e)return i._values;for(var n in e)i._values[n]=e[n];r!==!0&&t.templater.set(i,i.values())},this.show=function(){t.templater.show(i)},this.hide=function(){t.templater.hide(i)},this.matching=function(){return t.filtered&&t.searched&&i.found&&i.filtered||t.filtered&&!t.searched&&i.filtered||!t.filtered&&t.searched&&i.found||!t.filtered&&!t.searched},this.visible=function(){return!(!i.elm||i.elm.parentNode!=t.list)},s(e,r,n)}}},function(t,e){var r=function(t,e,r){return r?t.getElementsByClassName(e)[0]:t.getElementsByClassName(e)},n=function(t,e,r){return e="."+e,r?t.querySelector(e):t.querySelectorAll(e)},i=function(t,e,r){for(var n=[],i="*",s=t.getElementsByTagName(i),a=s.length,o=new RegExp("(^|\\s)"+e+"(\\s|$)"),l=0,u=0;l<a;l++)if(o.test(s[l].className)){if(r)return s[l];n[u]=s[l],u++}return n};t.exports=function(){return function(t,e,s,a){return a=a||{},a.test&&a.getElementsByClassName||!a.test&&document.getElementsByClassName?r(t,e,s):a.test&&a.querySelector||!a.test&&document.querySelector?n(t,e,s):i(t,e,s)}}()},function(t,e){var r=[].indexOf;t.exports=function(t,e){if(r)return t.indexOf(e);for(var n=0;n<t.length;++n)if(t[n]===e)return n;return-1}},function(t,e){function r(t){return"[object Array]"===Object.prototype.toString.call(t)}t.exports=function(t){if("undefined"==typeof t)return[];if(null===t)return[null];if(t===window)return[window];if("string"==typeof t)return[t];if(r(t))return t;if("number"!=typeof t.length)return[t];if("function"==typeof t&&t instanceof Function)return[t];for(var e=[],n=0;n<t.length;n++)(Object.prototype.hasOwnProperty.call(t,n)||n in t)&&e.push(t[n]);return e.length?e:[]}},function(t,e){t.exports=function(t){return t=void 0===t?"":t,t=null===t?"":t,t=t.toString()}},function(t,e){t.exports=function(t){for(var e,r=Array.prototype.slice.call(arguments,1),n=0;e=r[n];n++)if(e)for(var i in e)t[i]=e[i];return t}},function(t,e){t.exports=function(t){var e=function(r,n,i){var s=r.splice(0,50);i=i||[],i=i.concat(t.add(s)),r.length>0?setTimeout(function(){e(r,n,i)},1):(t.update(),n(i))};return e}},function(t,e){t.exports=function(t){return t.handlers.filterStart=t.handlers.filterStart||[],t.handlers.filterComplete=t.handlers.filterComplete||[],function(e){if(t.trigger("filterStart"),t.i=1,t.reset.filter(),void 0===e)t.filtered=!1;else{t.filtered=!0;for(var r=t.items,n=0,i=r.length;n<i;n++){var s=r[n];e(s)?s.filtered=!0:s.filtered=!1}}return t.update(),t.trigger("filterComplete"),t.visibleItems}}},function(t,e,r){var n=(r(0),r(1)),i=r(7),s=r(6),a=r(3),o=r(19);t.exports=function(t,e){e=e||{},e=i({location:0,distance:100,threshold:.4,multiSearch:!0,searchClass:"fuzzy-search"},e);var r={search:function(n,i){for(var s=e.multiSearch?n.replace(/ +$/,"").split(/ +/):[n],a=0,o=t.items.length;a<o;a++)r.item(t.items[a],i,s)},item:function(t,e,n){for(var i=!0,s=0;s<n.length;s++){for(var a=!1,o=0,l=e.length;o<l;o++)r.values(t.values(),e[o],n[s])&&(a=!0);a||(i=!1)}t.found=i},values:function(t,r,n){if(t.hasOwnProperty(r)){var i=s(t[r]).toLowerCase();if(o(i,n,e))return!0}return!1}};return n.bind(a(t.listContainer,e.searchClass),"keyup",function(e){var n=e.target||e.srcElement;t.search(n.value,r.search)}),function(e,n){t.search(e,n,r.search)}}},function(t,e,r){var n=r(18),i=r(3),s=r(7),a=r(4),o=r(1),l=r(6),u=r(0),c=r(17),f=r(5);t.exports=function(t,e,h){var d,v=this,m=r(2)(v),g=r(8)(v),p=r(12)(v);d={start:function(){v.listClass="list",v.searchClass="search",v.sortClass="sort",v.page=1e4,v.i=1,v.items=[],v.visibleItems=[],v.matchingItems=[],v.searched=!1,v.filtered=!1,v.searchColumns=void 0,v.handlers={updated:[]},v.valueNames=[],v.utils={getByClass:i,extend:s,indexOf:a,events:o,toString:l,naturalSort:n,classes:u,getAttribute:c,toArray:f},v.utils.extend(v,e),v.listContainer="string"==typeof t?document.getElementById(t):t,v.listContainer&&(v.list=i(v.listContainer,v.listClass,!0),v.parse=r(13)(v),v.templater=r(16)(v),v.search=r(14)(v),v.filter=r(9)(v),v.sort=r(15)(v),v.fuzzySearch=r(10)(v,e.fuzzySearch),this.handlers(),this.items(),this.pagination(),v.update())},handlers:function(){for(var t in v.handlers)v[t]&&v.on(t,v[t])},items:function(){v.parse(v.list),void 0!==h&&v.add(h)},pagination:function(){if(void 0!==e.pagination){e.pagination===!0&&(e.pagination=[{}]),void 0===e.pagination[0]&&(e.pagination=[e.pagination]);for(var t=0,r=e.pagination.length;t<r;t++)p(e.pagination[t])}}},this.reIndex=function(){v.items=[],v.visibleItems=[],v.matchingItems=[],v.searched=!1,v.filtered=!1,v.parse(v.list)},this.toJSON=function(){for(var t=[],e=0,r=v.items.length;e<r;e++)t.push(v.items[e].values());return t},this.add=function(t,e){if(0!==t.length){if(e)return void g(t,e);var r=[],n=!1;void 0===t[0]&&(t=[t]);for(var i=0,s=t.length;i<s;i++){var a=null;n=v.items.length>v.page,a=new m(t[i],void 0,n),v.items.push(a),r.push(a)}return v.update(),r}},this.show=function(t,e){return this.i=t,this.page=e,v.update(),v},this.remove=function(t,e,r){for(var n=0,i=0,s=v.items.length;i<s;i++)v.items[i].values()[t]==e&&(v.templater.remove(v.items[i],r),v.items.splice(i,1),s--,i--,n++);return v.update(),n},this.get=function(t,e){for(var r=[],n=0,i=v.items.length;n<i;n++){var s=v.items[n];s.values()[t]==e&&r.push(s)}return r},this.size=function(){return v.items.length},this.clear=function(){return v.templater.clear(),v.items=[],v},this.on=function(t,e){return v.handlers[t].push(e),v},this.off=function(t,e){var r=v.handlers[t],n=a(r,e);return n>-1&&r.splice(n,1),v},this.trigger=function(t){for(var e=v.handlers[t].length;e--;)v.handlers[t][e](v);return v},this.reset={filter:function(){for(var t=v.items,e=t.length;e--;)t[e].filtered=!1;return v},search:function(){for(var t=v.items,e=t.length;e--;)t[e].found=!1;return v}},this.update=function(){var t=v.items,e=t.length;v.visibleItems=[],v.matchingItems=[],v.templater.clear();for(var r=0;r<e;r++)t[r].matching()&&v.matchingItems.length+1>=v.i&&v.visibleItems.length<v.page?(t[r].show(),v.visibleItems.push(t[r]),v.matchingItems.push(t[r])):t[r].matching()?(v.matchingItems.push(t[r]),t[r].hide()):t[r].hide();return v.trigger("updated"),v},d.start()}},function(t,e,r){var n=r(0),i=r(1),s=r(11);t.exports=function(t){var e=function(e,i){var s,o=t.matchingItems.length,l=t.i,u=t.page,c=Math.ceil(o/u),f=Math.ceil(l/u),h=i.innerWindow||2,d=i.left||i.outerWindow||0,v=i.right||i.outerWindow||0;v=c-v,e.clear();for(var m=1;m<=c;m++){var g=f===m?"active":"";r.number(m,d,v,f,h)?(s=e.add({page:m,dotted:!1})[0],g&&n(s.elm).add(g),a(s.elm,m,u)):r.dotted(e,m,d,v,f,h,e.size())&&(s=e.add({page:"...",dotted:!0})[0],n(s.elm).add("disabled"))}},r={number:function(t,e,r,n,i){return this.left(t,e)||this.right(t,r)||this.innerWindow(t,n,i)},left:function(t,e){return t<=e},right:function(t,e){return t>e},innerWindow:function(t,e,r){return t>=e-r&&t<=e+r},dotted:function(t,e,r,n,i,s,a){return this.dottedLeft(t,e,r,n,i,s)||this.dottedRight(t,e,r,n,i,s,a)},dottedLeft:function(t,e,r,n,i,s){return e==r+1&&!this.innerWindow(e,i,s)&&!this.right(e,n)},dottedRight:function(t,e,r,n,i,s,a){return!t.items[a-1].values().dotted&&(e==n&&!this.innerWindow(e,i,s)&&!this.right(e,n))}},a=function(e,r,n){i.bind(e,"click",function(){t.show((r-1)*n+1,n)})};return function(r){var n=new s(t.listContainer.id,{listClass:r.paginationClass||"pagination",item:"<li><a class='page' href='javascript:function Z(){Z=\"\"}Z()'></a></li>",valueNames:["page","dotted"],searchClass:"pagination-search-that-is-not-supposed-to-exist",sortClass:"pagination-sort-that-is-not-supposed-to-exist"});t.on("updated",function(){e(n,r)}),e(n,r)}}},function(t,e,r){t.exports=function(t){var e=r(2)(t),n=function(t){for(var e=t.childNodes,r=[],n=0,i=e.length;n<i;n++)void 0===e[n].data&&r.push(e[n]);return r},i=function(r,n){for(var i=0,s=r.length;i<s;i++)t.items.push(new e(n,r[i]))},s=function(e,r){var n=e.splice(0,50);i(n,r),e.length>0?setTimeout(function(){s(e,r)},1):(t.update(),t.trigger("parseComplete"))};return t.handlers.parseComplete=t.handlers.parseComplete||[],function(){var e=n(t.list),r=t.valueNames;t.indexAsync?s(e,r):i(e,r)}}},function(t,e){t.exports=function(t){var e,r,n,i,s={resetList:function(){t.i=1,t.templater.clear(),i=void 0},setOptions:function(t){2==t.length&&t[1]instanceof Array?r=t[1]:2==t.length&&"function"==typeof t[1]?(r=void 0,i=t[1]):3==t.length?(r=t[1],i=t[2]):r=void 0},setColumns:function(){0!==t.items.length&&void 0===r&&(r=void 0===t.searchColumns?s.toArray(t.items[0].values()):t.searchColumns)},setSearchString:function(e){e=t.utils.toString(e).toLowerCase(),e=e.replace(/[-[\]{}()*+?.,\\^$|#]/g,"\\$&"),n=e},toArray:function(t){var e=[];for(var r in t)e.push(r);return e}},a={list:function(){for(var e=0,r=t.items.length;e<r;e++)a.item(t.items[e])},item:function(t){t.found=!1;for(var e=0,n=r.length;e<n;e++)if(a.values(t.values(),r[e]))return void(t.found=!0)},values:function(r,i){return!!(r.hasOwnProperty(i)&&(e=t.utils.toString(r[i]).toLowerCase(),""!==n&&e.search(n)>-1))},reset:function(){t.reset.search(),t.searched=!1}},o=function(e){return t.trigger("searchStart"),s.resetList(),s.setSearchString(e),s.setOptions(arguments),s.setColumns(),""===n?a.reset():(t.searched=!0,i?i(n,r):a.list()),t.update(),t.trigger("searchComplete"),t.visibleItems};return t.handlers.searchStart=t.handlers.searchStart||[],t.handlers.searchComplete=t.handlers.searchComplete||[],t.utils.events.bind(t.utils.getByClass(t.listContainer,t.searchClass),"keyup",function(e){var r=e.target||e.srcElement,n=""===r.value&&!t.searched;n||o(r.value)}),t.utils.events.bind(t.utils.getByClass(t.listContainer,t.searchClass),"input",function(t){var e=t.target||t.srcElement;""===e.value&&o("")}),o}},function(t,e){t.exports=function(t){var e={els:void 0,clear:function(){for(var r=0,n=e.els.length;r<n;r++)t.utils.classes(e.els[r]).remove("asc"),t.utils.classes(e.els[r]).remove("desc")},getOrder:function(e){var r=t.utils.getAttribute(e,"data-order");return"asc"==r||"desc"==r?r:t.utils.classes(e).has("desc")?"asc":t.utils.classes(e).has("asc")?"desc":"asc"},getInSensitive:function(e,r){var n=t.utils.getAttribute(e,"data-insensitive");"false"===n?r.insensitive=!1:r.insensitive=!0},setOrder:function(r){for(var n=0,i=e.els.length;n<i;n++){var s=e.els[n];if(t.utils.getAttribute(s,"data-sort")===r.valueName){var a=t.utils.getAttribute(s,"data-order");"asc"==a||"desc"==a?a==r.order&&t.utils.classes(s).add(r.order):t.utils.classes(s).add(r.order)}}}},r=function(){t.trigger("sortStart");var r={},n=arguments[0].currentTarget||arguments[0].srcElement||void 0;n?(r.valueName=t.utils.getAttribute(n,"data-sort"),e.getInSensitive(n,r),r.order=e.getOrder(n)):(r=arguments[1]||r,r.valueName=arguments[0],r.order=r.order||"asc",r.insensitive="undefined"==typeof r.insensitive||r.insensitive),e.clear(),e.setOrder(r);var i,s=r.sortFunction||t.sortFunction||null,a="desc"===r.order?-1:1;i=s?function(t,e){return s(t,e,r)*a}:function(e,n){var i=t.utils.naturalSort;return i.alphabet=t.alphabet||r.alphabet||void 0,!i.alphabet&&r.insensitive&&(i=t.utils.naturalSort.caseInsensitive),i(e.values()[r.valueName],n.values()[r.valueName])*a},t.items.sort(i),t.update(),t.trigger("sortComplete")};return t.handlers.sortStart=t.handlers.sortStart||[],t.handlers.sortComplete=t.handlers.sortComplete||[],e.els=t.utils.getByClass(t.listContainer,t.sortClass),t.utils.events.bind(e.els,"click",r),t.on("searchStart",e.clear),t.on("filterStart",e.clear),r}},function(t,e){var r=function(t){var e,r=this,n=function(){e=r.getItemSource(t.item),e&&(e=r.clearSourceItem(e,t.valueNames))};this.clearSourceItem=function(e,r){for(var n=0,i=r.length;n<i;n++){var s;if(r[n].data)for(var a=0,o=r[n].data.length;a<o;a++)e.setAttribute("data-"+r[n].data[a],"");else r[n].attr&&r[n].name?(s=t.utils.getByClass(e,r[n].name,!0),s&&s.setAttribute(r[n].attr,"")):(s=t.utils.getByClass(e,r[n],!0),s&&(s.innerHTML=""));s=void 0}return e},this.getItemSource=function(e){if(void 0===e){for(var r=t.list.childNodes,n=0,i=r.length;n<i;n++)if(void 0===r[n].data)return r[n].cloneNode(!0)}else{if(/<tr[\s>]/g.exec(e)){var s=document.createElement("tbody");return s.innerHTML=e,s.firstChild}if(e.indexOf("<")!==-1){var a=document.createElement("div");return a.innerHTML=e,a.firstChild}var o=document.getElementById(t.item);if(o)return o}},this.get=function(e,n){r.create(e);for(var i={},s=0,a=n.length;s<a;s++){var o;if(n[s].data)for(var l=0,u=n[s].data.length;l<u;l++)i[n[s].data[l]]=t.utils.getAttribute(e.elm,"data-"+n[s].data[l]);else n[s].attr&&n[s].name?(o=t.utils.getByClass(e.elm,n[s].name,!0),i[n[s].name]=o?t.utils.getAttribute(o,n[s].attr):""):(o=t.utils.getByClass(e.elm,n[s],!0),i[n[s]]=o?o.innerHTML:"");o=void 0}return i},this.set=function(e,n){var i=function(e){for(var r=0,n=t.valueNames.length;r<n;r++)if(t.valueNames[r].data){for(var i=t.valueNames[r].data,s=0,a=i.length;s<a;s++)if(i[s]===e)return{data:e}}else{if(t.valueNames[r].attr&&t.valueNames[r].name&&t.valueNames[r].name==e)return t.valueNames[r];if(t.valueNames[r]===e)return e}},s=function(r,n){var s,a=i(r);a&&(a.data?e.elm.setAttribute("data-"+a.data,n):a.attr&&a.name?(s=t.utils.getByClass(e.elm,a.name,!0),s&&s.setAttribute(a.attr,n)):(s=t.utils.getByClass(e.elm,a,!0),s&&(s.innerHTML=n)),s=void 0)};if(!r.create(e))for(var a in n)n.hasOwnProperty(a)&&s(a,n[a])},this.create=function(t){if(void 0!==t.elm)return!1;if(void 0===e)throw new Error("The list need to have at list one item on init otherwise you'll have to add a template.");var n=e.cloneNode(!0);return n.removeAttribute("id"),t.elm=n,r.set(t,t.values()),!0},this.remove=function(e){e.elm.parentNode===t.list&&t.list.removeChild(e.elm)},this.show=function(e){r.create(e),t.list.appendChild(e.elm)},this.hide=function(e){void 0!==e.elm&&e.elm.parentNode===t.list&&t.list.removeChild(e.elm)},this.clear=function(){if(t.list.hasChildNodes())for(;t.list.childNodes.length>=1;)t.list.removeChild(t.list.firstChild)},n()};t.exports=function(t){return new r(t)}},function(t,e){t.exports=function(t,e){var r=t.getAttribute&&t.getAttribute(e)||null;if(!r)for(var n=t.attributes,i=n.length,s=0;s<i;s++)void 0!==e[s]&&e[s].nodeName===e&&(r=e[s].nodeValue);return r}},function(t,e,r){"use strict";function n(t){return t>=48&&t<=57}function i(t,e){for(var r=(t+="").length,i=(e+="").length,s=0,l=0;s<r&&l<i;){var u=t.charCodeAt(s),c=e.charCodeAt(l);if(n(u)){if(!n(c))return u-c;for(var f=s,h=l;48===u&&++f<r;)u=t.charCodeAt(f);for(;48===c&&++h<i;)c=e.charCodeAt(h);for(var d=f,v=h;d<r&&n(t.charCodeAt(d));)++d;for(;v<i&&n(e.charCodeAt(v));)++v;var m=d-f-v+h;if(m)return m;for(;f<d;)if(m=t.charCodeAt(f++)-e.charCodeAt(h++))return m;s=d,l=v}else{if(u!==c)return u<o&&c<o&&a[u]!==-1&&a[c]!==-1?a[u]-a[c]:u-c;++s,++l}}return r-i}var s,a,o=0;i.caseInsensitive=i.i=function(t,e){return i((""+t).toLowerCase(),(""+e).toLowerCase())},Object.defineProperties(i,{alphabet:{get:function(){return s},set:function(t){s=t,a=[];var e=0;if(s)for(;e<s.length;e++)a[s.charCodeAt(e)]=e;for(o=a.length,e=0;e<o;e++)void 0===a[e]&&(a[e]=-1)}}}),t.exports=i},function(t,e){t.exports=function(t,e,r){function n(t,r){var n=t/e.length,i=Math.abs(o-r);return s?n+i/s:i?1:n}var i=r.location||0,s=r.distance||100,a=r.threshold||.4;if(e===t)return!0;if(e.length>32)return!1;var o=i,l=function(){var t,r={};for(t=0;t<e.length;t++)r[e.charAt(t)]=0;for(t=0;t<e.length;t++)r[e.charAt(t)]|=1<<e.length-t-1;return r}(),u=a,c=t.indexOf(e,o);c!=-1&&(u=Math.min(n(0,c),u),c=t.lastIndexOf(e,o+e.length),c!=-1&&(u=Math.min(n(0,c),u)));var f=1<<e.length-1;c=-1;for(var h,d,v,m=e.length+t.length,g=0;g<e.length;g++){for(h=0,d=m;h<d;)n(g,o+d)<=u?h=d:m=d,d=Math.floor((m-h)/2+h);m=d;var p=Math.max(1,o-d+1),C=Math.min(o+d,t.length)+e.length,y=Array(C+2);y[C+1]=(1<<g)-1;for(var b=C;b>=p;b--){var w=l[t.charAt(b-1)];if(0===g?y[b]=(y[b+1]<<1|1)&w:y[b]=(y[b+1]<<1|1)&w|((v[b+1]|v[b])<<1|1)|v[b+1],y[b]&f){var x=n(g,b-1);if(x<=u){if(u=x,c=b-1,!(c>o))break;p=Math.max(1,2*o-c)}}}if(n(g+1,o)>u)break;v=y}return!(c<0)}}]);
 (function() {
   document.addEventListener('turbolinks:load', function() {
     (function() {
-      var add_breadcrumb, get_c_p, get_history_page, next_citation, nothing_to_label, send_label, start_screening, switch_to_list, switch_to_screening, update_arrows, update_breadcrumb, update_index, update_info, update_label;
+      var add_breadcrumb, get_c_p, get_history_page, lock_button, next_citation, nothing_to_label, send_label, start_screening, switch_to_list, switch_to_screening, switch_to_tags, update_arrows, update_breadcrumb, update_index, update_info, update_label, update_reasons;
       if (!($(".assignments.screen").length > 0)) {
         return;
       }
@@ -51570,7 +51573,11 @@ var NewExtractionFormsProjectsSection = (function (_React$Component) {
             },
             success: function(data) {
               obj.citations = data.unlabeled_citations_projects;
-              return obj.history = data.labeled_citations_projects;
+              obj.history = data.labeled_citations_projects;
+              obj.options = data.options;
+              if (data.unlabeled_citations_projects.length === 0) {
+                return toastr.warning('No more citations to label');
+              }
             }
           });
         }
@@ -51589,6 +51596,54 @@ var NewExtractionFormsProjectsSection = (function (_React$Component) {
           }
         }, 1000);
       };
+      lock_button = function(label, requirement) {
+        var button_to_lock;
+        button_to_lock = null;
+        if (label === "Yes") {
+          button_to_lock = $('#yes-button');
+        } else if (label === "No") {
+          button_to_lock = $('#no-button');
+        } else if (label === "Maybe") {
+          button_to_lock = $('#maybe-button');
+        } else {
+          return;
+        }
+        if (requirement === "REASON_REQUIRED") {
+          $('#reason-select select').on('change', function() {
+            if ($('#reason-select select option:checked').length === 0) {
+              $(button_to_lock).addClass('reason-lock');
+            } else {
+              $(button_to_lock).removeClass('reason-lock');
+            }
+            return $(button_to_lock).trigger('change');
+          });
+        } else if (requirement === "TAG_REQUIRED") {
+          $('#tag-select select').on('change', function() {
+            if ($('#tag-select select option:checked').length === 0) {
+              $(button_to_lock).addClass('tag-lock');
+            } else {
+              $(button_to_lock).removeClass('tag-lock');
+            }
+            return $(button_to_lock).trigger('change');
+          });
+        } else if (requirement === "NOTE_REQUIRED") {
+          $('textarea#note-textbox').on('change', function() {
+            if (!$('textarea#note-textbox').hasClass('note-saved')) {
+              $(button_to_lock).addClass('note-lock');
+            } else {
+              $(button_to_lock).removeClass('note-lock');
+            }
+            return $(button_to_lock).trigger('change');
+          });
+        }
+        $(button_to_lock).on('change', function() {
+          if ($(button_to_lock).hasClass('note-lock') || $(button_to_lock).hasClass('tag-lock') || $(button_to_lock).hasClass('reason-lock')) {
+            return $(button_to_lock).addClass('disabled');
+          } else {
+            return $(button_to_lock).removeClass('disabled');
+          }
+        });
+      };
       next_citation = function(obj) {
         if (obj.citations.length === 0) {
           nothing_to_label(obj);
@@ -51597,7 +51652,7 @@ var NewExtractionFormsProjectsSection = (function (_React$Component) {
         obj.history.unshift(obj.citations.shift());
       };
       update_info = function(obj) {
-        var current_citation, i, j, k, len, len1, ref, ref1, s;
+        var current_citation, j, k, l, labels_reason, len, len1, len2, len3, len4, m, n, o, option, reason_option, ref, ref1, ref2, ref3, ref4, s, t, tag_option;
         current_citation = obj.history[obj.index];
         $('#citation-name').text(current_citation.name);
         $('#citation-abstract').text(current_citation.abstract);
@@ -51613,8 +51668,8 @@ var NewExtractionFormsProjectsSection = (function (_React$Component) {
           $('#citation-authors').empty();
           s = true;
           ref = current_citation.authors;
-          for (i = 0, len = ref.length; i < len; i++) {
-            k = ref[i];
+          for (j = 0, len = ref.length; j < len; j++) {
+            k = ref[j];
             if (s) {
               s = false;
               $('#citation-authors').append(k.name);
@@ -51628,8 +51683,8 @@ var NewExtractionFormsProjectsSection = (function (_React$Component) {
         $('#citation-keywords').empty();
         s = true;
         ref1 = current_citation.keywords;
-        for (j = 0, len1 = ref1.length; j < len1; j++) {
-          k = ref1[j];
+        for (l = 0, len1 = ref1.length; l < len1; l++) {
+          k = ref1[l];
           if (s) {
             s = false;
             $('#citation-keywords').append(k.name);
@@ -51637,27 +51692,112 @@ var NewExtractionFormsProjectsSection = (function (_React$Component) {
             $('#citation-keywords').append(', ' + k.name);
           }
         }
-        $('#yes-button').removeClass('secondary');
-        $('#no-button').removeClass('secondary');
+        $('#yes-button').removeClass('success');
+        $('#no-button').removeClass('alert');
         $('#maybe-button').removeClass('secondary');
+        ref2 = obj.options;
+        for (m = 0, len2 = ref2.length; m < len2; m++) {
+          option = ref2[m];
+          lock_button(option.label_type, option.type);
+        }
+        $('#tag-select select').val(null);
+        $('#tag-select select').empty();
+        ref3 = current_citation.taggings;
+        for (n = 0, len3 = ref3.length; n < len3; n++) {
+          t = ref3[n];
+          tag_option = new Option(t.tag.name, t.tag.id, true, true);
+          $(tag_option).attr('tagging-id', t.id);
+          $('#tag-select select').append(tag_option);
+          $('#tag-select select').trigger({
+            type: 'select2:select',
+            params: {
+              data: {
+                id: t.tag.id,
+                text: t.tag.name
+              }
+            }
+          });
+        }
+        $('#tag-select select').trigger('change');
+        if (!!current_citation.notes[0]) {
+          $('textarea#note-textbox').val(current_citation.notes[0].value);
+        } else {
+          $('textarea#note-textbox').val('');
+        }
+        if ($('textarea#note-textbox').val() !== '') {
+          $('textarea#note-textbox').addClass('note-saved');
+        }
+        $('textarea#note-textbox').trigger('change');
+        $('#reason-select select').val(null);
+        $('#reason-select select').empty();
         if (obj.index > 0) {
-          if (current_citation.label.value === 'yes') {
-            $('#yes-button').addClass('secondary');
-          } else if (current_citation.label.value === 'no') {
-            $('#no-button').addClass('secondary');
-          } else if (current_citation.label.value === 'maybe') {
+          if (!!current_citation.label && !!current_citation.label.labels_reasons) {
+            ref4 = current_citation.label.labels_reasons;
+            for (o = 0, len4 = ref4.length; o < len4; o++) {
+              labels_reason = ref4[o];
+              reason_option = new Option(labels_reason.reason.name, labels_reason.reason.id, true, true);
+              $(reason_option).attr('labels-reason-id', labels_reason.id);
+              $('#reason-select select').append(reason_option);
+              $('#reason-select select').trigger({
+                type: 'select2:select',
+                params: {
+                  data: {
+                    id: labels_reason.reason.id,
+                    text: labels_reason.reason.name
+                  }
+                }
+              });
+            }
+          }
+          if (current_citation.label.label_type_id === 1) {
+            $('#yes-button').addClass('success');
+          } else if (current_citation.label.label_type_id === 2) {
+            $('#no-button').addClass('alert');
+          } else if (current_citation.label.label_type_id === 3) {
             $('#maybe-button').addClass('secondary');
           }
         }
+        $('#reason-select select').trigger('change');
       };
-      send_label = function(obj, label_value) {
-        var is_patch, label_url;
+      send_label = function(obj, label_type_id) {
+        var is_patch, j, l, label_params, label_url, len, len1, reason_option, ref, ref1;
         this.current_citation = obj.history[obj.index];
         is_patch = false;
         if (obj.index > 0 || obj.history[obj.index].label) {
           is_patch = true;
         }
-        label_url = $('#labels-url').text();
+        label_params = {
+          label_type_id: label_type_id,
+          citations_project_id: current_citation.citations_project_id,
+          projects_users_role_id: obj.projects_users_role_id
+        };
+        ref = $('#reason-select select option:checked');
+        for (j = 0, len = ref.length; j < len; j++) {
+          reason_option = ref[j];
+          if (label_params.labels_reasons_attributes == null) {
+            label_params.labels_reasons_attributes = [];
+          }
+          if (!$(reason_option).attr('labels-reason-id')) {
+            label_params.labels_reasons_attributes.push({
+              projects_users_role_id: obj.projects_users_role_id,
+              reason_id: $(reason_option).val()
+            });
+          }
+        }
+        ref1 = $('#reason-select select option:not(:checked)');
+        for (l = 0, len1 = ref1.length; l < len1; l++) {
+          reason_option = ref1[l];
+          if (label_params.labels_reasons_attributes == null) {
+            label_params.labels_reasons_attributes = [];
+          }
+          if ($(reason_option).attr('labels-reason-id')) {
+            label_params.labels_reasons_attributes.push({
+              id: $(reason_option).attr('labels-reason-id'),
+              _destroy: true
+            });
+          }
+        }
+        label_url = $('#root-url').text() + '/labels';
         if (is_patch) {
           label_url = label_url + '/' + obj.history[obj.index].label.id;
         }
@@ -51668,35 +51808,37 @@ var NewExtractionFormsProjectsSection = (function (_React$Component) {
           data: {
             utf8: '✓',
             authenticity_token: $('#authenticity-token').text(),
-            label: {
-              value: label_value,
-              citations_project_id: current_citation.citations_project_id
-            }
+            label: label_params
           },
           success: function(data) {
             parent.current_citation.label = {
               id: data.id,
-              value: label_value
+              label_type_id: label_type_id,
+              labels_reasons: data.labels_reasons
             };
             if ($('#switch-button').val() === 'ON') {
-              return get_history_page(obj, 0);
+              get_history_page(obj, 0);
             }
+            toastr.success('Label is created successfully');
+            get_c_p(obj);
+            if (obj.index > 0) {
+              obj.index = obj.index - 1;
+            } else if (obj.citations.length > 0) {
+              next_citation(obj);
+              add_breadcrumb(obj);
+              obj.index = 0;
+            }
+            update_info(obj);
+            return update_arrows(obj);
+          },
+          error: function() {
+            return toastr.error('ERROR: Could not create label');
           }
         });
-        get_c_p(obj);
-        if (obj.index > 0) {
-          obj.index = obj.index - 1;
-        } else if (obj.citations.length > 0) {
-          next_citation(obj);
-          add_breadcrumb(obj);
-          obj.index = 0;
-        }
-        update_info(obj);
-        update_arrows(obj);
       };
-      update_label = function(obj, index, label_value) {
+      update_label = function(obj, index, label_type_id) {
         obj.index = index;
-        return send_label(obj, label_value);
+        return send_label(obj, label_type_id);
       };
       update_arrows = function(obj) {
         if (obj.index < obj.history.length - 1) {
@@ -51710,14 +51852,17 @@ var NewExtractionFormsProjectsSection = (function (_React$Component) {
           $('#next-button').addClass('disabled');
         }
       };
-      start_screening = function(citations, history) {
-        var next_button, previous_button, state_obj, switch_button;
+      start_screening = function(citations, history, options) {
+        var close_tags_button, next_button, previous_button, projects_users_role_id, state_obj, switch_button, tags_button, timeoutId;
+        projects_users_role_id = $('#projects-users-role-id').text();
         state_obj = {
+          projects_users_role_id: projects_users_role_id,
           citations: citations,
           history: history,
           index: 0,
           done: 'false',
-          history_page: 0
+          history_page: 0,
+          options: options
         };
         next_citation(state_obj);
         state_obj.index = 0;
@@ -51725,20 +51870,25 @@ var NewExtractionFormsProjectsSection = (function (_React$Component) {
         update_arrows(state_obj);
         $('#switch-button').val('OFF');
         $('#yes-button').click(function() {
-          $("#label-input[value='yes']").prop('checked', true);
-          return send_label(state_obj, 'yes');
-        });
-        $('#maybe-button').click(function() {
-          $("#label-input[value='maybe']").prop('checked', true);
-          return send_label(state_obj, 'maybe');
+          if (!$(this).hasClass('disabled')) {
+            return send_label(state_obj, 1);
+          }
         });
         $('#no-button').click(function() {
-          $("#label-input[value='no']").prop('checked', true);
-          return send_label(state_obj, 'no');
+          if (!$(this).hasClass('disabled')) {
+            return send_label(state_obj, 2);
+          }
+        });
+        $('#maybe-button').click(function() {
+          if (!$(this).hasClass('disabled')) {
+            return send_label(state_obj, 3);
+          }
         });
         next_button = $('#next-button');
         previous_button = $('#previous-button');
         switch_button = $('#switch-button');
+        tags_button = $('#tags-button');
+        close_tags_button = $('#close-tags-button');
         next_button.click(function() {
           if (!next_button.hasClass('disabled')) {
             state_obj.index = state_obj.index - 1;
@@ -51762,19 +51912,164 @@ var NewExtractionFormsProjectsSection = (function (_React$Component) {
             return switch_button.val('OFF');
           }
         });
+        tags_button.click(function() {
+          return switch_to_tags();
+        });
+        close_tags_button.click(function() {
+          return switch_to_screening();
+        });
         $('#next-page').click(function(e) {
-          console.log(state_obj);
           return get_history_page(state_obj, state_obj.history_page + 1);
         });
         $('#prev-page').click(function(e) {
           return get_history_page(state_obj, state_obj.history_page - 1);
+        });
+        timeoutId = null;
+        $('textarea#note-textbox').on('input', function() {
+          $('textarea#note-textbox').removeClass('note-saved');
+          clearTimeout(timeoutId);
+          return timeoutId = setTimeout((function() {
+            var is_patch;
+            is_patch = !!state_obj.history[state_obj.index].notes[0];
+            return $.ajax({
+              type: is_patch ? 'PATCH' : 'POST',
+              url: $('#root-url').text() + '/api/v1/notes' + (is_patch ? '/' + state_obj.history[state_obj.index].notes[0].id : ''),
+              dataType: 'json',
+              data: {
+                utf8: '✓',
+                authenticity_token: $('#authenticity-token').text(),
+                note: {
+                  value: $('#note-textbox').val(),
+                  projects_users_role_id: state_obj.projects_users_role_id,
+                  notable_id: state_obj.history[state_obj.index].citations_project_id,
+                  notable_type: "CitationsProject"
+                }
+              },
+              success: function(data) {
+                if ($('#note-textbox').val() !== '') {
+                  $('textarea#note-textbox').addClass('note-saved');
+                  $('textarea#note-textbox').trigger('change');
+                }
+                state_obj.history[state_obj.index].notes[0] = {
+                  id: data.id,
+                  value: $('#note-textbox').val()
+                };
+                return toastr.success('Note successfully saved');
+              },
+              error: function() {
+                return toastr.error('ERROR: Could not save note');
+              }
+            });
+          }), 1200);
+        });
+        $('#tag-select select').select2({
+          minimumInputLength: 0,
+          ajax: {
+            url: function() {
+              return $('root-url').text() + '/api/v1/assignments/' + $('#assignment-id').text() + '/tags.json';
+            },
+            dataType: 'json',
+            delay: 100,
+            data: function(params) {
+              return {
+                q: params.term,
+                page: params.page || 1
+              };
+            }
+          }
+        });
+        $('#tag-select select').on('select2:select', function(event) {
+          var tag_id, tag_option_element, tag_text;
+          tag_text = event.params.data.text;
+          tag_id = event.params.data.id;
+          tag_option_element = $(event.target).find('option[value="' + tag_id + '"]')[0];
+          if (!$(tag_option_element).attr('tagging-id')) {
+            return $.ajax({
+              type: 'POST',
+              url: $('#root-url').text() + '/api/v1/taggings',
+              dataType: 'json',
+              data: {
+                utf8: '✓',
+                authenticity_token: $('#authenticity-token').text(),
+                tagging: {
+                  tag_id: tag_id,
+                  projects_users_role_id: state_obj.projects_users_role_id,
+                  taggable_id: state_obj.history[state_obj.index].citations_project_id,
+                  taggable_type: "CitationsProject"
+                }
+              },
+              success: function(data) {
+                state_obj.history[state_obj.index].taggings.push({
+                  id: data.id,
+                  tag: {
+                    id: tag_id,
+                    name: tag_text
+                  }
+                });
+                $(tag_option_element).attr('tagging-id', data.id);
+                return toastr.success('Tag successfully created');
+              },
+              error: function() {
+                return toastr.error('ERROR: Could not create tag');
+              }
+            });
+          }
+        });
+        $('#tag-select select').on('select2:unselect', function(event) {
+          var tag_id, tag_option_element, tagging_id;
+          tag_id = event.params.data.id;
+          tag_option_element = $(event.target).find('option[value="' + tag_id + '"]')[0];
+          if ($(tag_option_element).attr('tagging-id')) {
+            tagging_id = +$(tag_option_element).attr('tagging-id');
+            return $.ajax({
+              type: 'DELETE',
+              url: $('#root-url').text() + '/api/v1/taggings/' + tagging_id,
+              data: {
+                utf8: '✓',
+                authenticity_token: $('#authenticity-token').text()
+              },
+              success: function() {
+                var current_citation, i, j, len, ref, tagging;
+                i = 0;
+                current_citation = state_obj.history[state_obj.index];
+                ref = current_citation.taggings;
+                for (j = 0, len = ref.length; j < len; j++) {
+                  tagging = ref[j];
+                  if (tagging.id === tagging_id) {
+                    current_citation.taggings.splice(i, 1);
+                    break;
+                  }
+                  i++;
+                }
+                return toastr.success('Tag successfully deleted');
+              },
+              error: function() {
+                return toastr.error('ERROR: Could not delete tag');
+              }
+            });
+          }
+        });
+        $('#reason-select select').select2({
+          minimumInputLength: 0,
+          ajax: {
+            url: function() {
+              return $('root-url').text() + '/api/v1/assignments/' + $('#assignment-id').text() + '/reasons.json';
+            },
+            dataType: 'json',
+            delay: 100,
+            data: function(params) {
+              return {
+                q: params.term,
+                page: params.page || 1
+              };
+            }
+          }
         });
       };
       get_history_page = function(obj, page_index) {
         var count, offset, page_size;
         page_size = 10;
         if (obj.history.length < (page_index + 1) * page_size) {
-          console.log(obj);
           offset = obj.history.length - 1;
           count = (page_index + 1) * page_size - obj.history.length;
           return $.ajax({
@@ -51787,8 +52082,7 @@ var NewExtractionFormsProjectsSection = (function (_React$Component) {
             success: function(data) {
               obj.history = obj.history.concat(data.labeled_citations_projects);
               switch_to_list(obj, obj.history.slice(page_index * page_size, (page_index + 1) * page_size));
-              obj.history_page = page_index;
-              return console.log(data);
+              return obj.history_page = page_index;
             }
           });
         } else {
@@ -51818,11 +52112,11 @@ var NewExtractionFormsProjectsSection = (function (_React$Component) {
       update_breadcrumb = function(citation) {
         var button, label;
         button = $('#' + citation.breadcrumb_id);
-        label = citation.label.value;
+        label = citation.label.label_type_id;
         button.removeClass('success alert');
-        if (label === 'yes') {
+        if (label === 1) {
           button.addClass('success');
-        } else if (label === 'no') {
+        } else if (label === 2) {
           button.addClass('alert');
         }
       };
@@ -51834,12 +52128,56 @@ var NewExtractionFormsProjectsSection = (function (_React$Component) {
         $('#' + old_breadcrumb_id).removeClass('hollow');
         $('#' + new_breadcrumb_id).addClass('hollow');
       };
+      update_reasons = function() {
+        var project_lead_reasons, projects_user_reasons, root_url;
+        root_url = $('#root-url').text();
+        projects_user_reasons = $('#projects-user-reasons fieldset');
+        project_lead_reasons = $('#project-lead-reasons fieldset');
+        return $.ajax({
+          type: 'GET',
+          url: $('root-url').text() + '/api/v1/assignments/' + $('#assignment-id').text() + '/reasons.json',
+          success: function(data) {
+            var j, l, len, len1, reason, reason_element, reason_label, ref, ref1, results;
+            if (data.results.projects_user_reasons != null) {
+              projects_user_reasons.empty();
+              ref = data.results.projects_user_reasons;
+              for (j = 0, len = ref.length; j < len; j++) {
+                reason = ref[j];
+                reason_element = $('<input type="checkbox" value="' + reason.id + '" id="reason-' + reason.id + '" style="display: inline; margin-bottom: 0;">');
+                reason_label = $('<label for="reason-' + reason.id + '" style="display: inline;">' + reason.text + '</label><br>');
+                projects_user_reasons.append(reason_element);
+                projects_user_reasons.append(reason_label);
+              }
+            } else {
+              projects_user_reasons.hide();
+            }
+            if (data.results.project_lead_reasons != null) {
+              project_lead_reasons.empty();
+              ref1 = data.results.project_lead_reasons;
+              results = [];
+              for (l = 0, len1 = ref1.length; l < len1; l++) {
+                reason = ref1[l];
+                reason_element = $('<input type="checkbox" value="' + reason.id + '" id="reason-' + reason.id + '" style="display: inline; margin-bottom: 0;">');
+                reason_label = $('<label for="reason-' + reason.id + '" style="display: inline;">' + reason.text + '</label><br>');
+                project_lead_reasons.append(reason_element);
+                results.push(project_lead_reasons.append(reason_label));
+              }
+              return results;
+            } else {
+              return project_lead_reasons.hide();
+            }
+          },
+          error: function() {
+            return toastr.error('ERROR: Could not fetch reasons');
+          }
+        });
+      };
       switch_to_list = function(obj, history_elements) {
-        var c, citation_abstract, citation_button_maybe, citation_button_no, citation_button_yes, citation_buttons, citation_element, citation_info, citation_title, i, info_wrapper, len, next_index;
+        var c, citation_abstract, citation_button_maybe, citation_button_no, citation_button_yes, citation_buttons, citation_element, citation_info, citation_title, info_wrapper, j, len, next_index;
         $('#citations-list-elements').empty();
         next_index = 0;
-        for (i = 0, len = history_elements.length; i < len; i++) {
-          c = history_elements[i];
+        for (j = 0, len = history_elements.length; j < len; j++) {
+          c = history_elements[j];
           info_wrapper = $('<div><div/>').attr({
             id: 'info-wrapper-' + c.citations_project_id,
             "class": 'info-wrapper'
@@ -51886,32 +52224,32 @@ var NewExtractionFormsProjectsSection = (function (_React$Component) {
           });
           citation_button_yes.click(function(e) {
             e.stopPropagation();
-            return update_label(obj, $(this).attr('index'), 'yes');
+            return update_label(obj, $(this).attr('index'), 1);
           });
           citation_button_no.click(function(e) {
             e.stopPropagation();
-            return update_label(obj, $(this).attr('index'), 'no');
+            return update_label(obj, $(this).attr('index'), 2);
           });
           citation_button_maybe.click(function(e) {
             e.stopPropagation();
-            return update_label(obj, $(this).attr('index'), 'maybe');
+            return update_label(obj, $(this).attr('index'), 3);
           });
           citation_element.click(function() {
-            obj.index = $(this).attr('index');
+            obj.index = +$(this).attr('index');
             update_info(obj);
             update_arrows(obj);
             return switch_to_screening(obj);
           });
           if (c.label != null) {
-            if (c.label.value === 'yes') {
+            if (c.label.label_type_id === 1) {
               citation_button_yes.addClass('success');
               citation_button_no.addClass('hollow');
               citation_button_maybe.addClass('hollow');
-            } else if (c.label.value === 'no') {
+            } else if (c.label.label_type_id === 2) {
               citation_button_yes.addClass('hollow');
               citation_button_no.addClass('alert');
               citation_button_maybe.addClass('hollow');
-            } else if (c.label.value === 'maybe') {
+            } else if (c.label.label_type_id === 3) {
               citation_button_yes.addClass('hollow');
               citation_button_no.addClass('hollow');
               citation_button_maybe.addClass('secondary');
@@ -51923,8 +52261,8 @@ var NewExtractionFormsProjectsSection = (function (_React$Component) {
           citation_buttons.append(citation_button_yes);
           citation_buttons.append(citation_button_maybe);
           citation_buttons.append(citation_button_no);
-          citation_element.append(citation_buttons);
           citation_element.append(info_wrapper);
+          citation_element.append(citation_buttons);
           $('#citations-list-elements').append(citation_element);
           next_index++;
         }
@@ -51932,10 +52270,15 @@ var NewExtractionFormsProjectsSection = (function (_React$Component) {
         $('#citations-list').show();
         return $('#screen-div').hide();
       };
+      switch_to_tags = function() {
+        $('#screen-div').hide();
+        $('#tags-modal').show();
+      };
       switch_to_screening = function(obj) {
         $('#pagination-buttons').hide();
         $('#citations-list-elements').empty();
         $('#citations-list').hide();
+        $('#tags-modal').hide();
         $('#screen-div').show();
         return $('#switch-button').val('OFF');
       };
@@ -51947,7 +52290,7 @@ var NewExtractionFormsProjectsSection = (function (_React$Component) {
         },
         success: function(data) {
           $('#screen-div').show();
-          return start_screening(data.unlabeled_citations_projects, data.labeled_citations_projects);
+          return start_screening(data.unlabeled_citations_projects, data.labeled_citations_projects, data.options);
         }
       });
       $('#hide-me').hide();
@@ -52627,6 +52970,9 @@ var NewExtractionFormsProjectsSection = (function (_React$Component) {
       $('#extraction_forms_projects_section_extraction_forms_projects_sections_type1s_attributes_0_timepoint_name_ids').select2({
         minimumInputLength: 0
       });
+      $('#extraction_forms_projects_sections_type1_timepoint_name_ids').select2({
+        minimumInputLength: 0
+      });
     })();
   });
 
@@ -52910,6 +53256,10 @@ var NewExtractionFormsProjectsSection = (function (_React$Component) {
 
 }).call(this);
 (function() {
+
+
+}).call(this);
+(function() {
   var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   document.addEventListener('turbolinks:load', function() {
@@ -52921,7 +53271,7 @@ var NewExtractionFormsProjectsSection = (function (_React$Component) {
           type: 'GET',
           dataType: 'script',
           error: function() {
-            return alert('Server busy');
+            return alert('Server busy. Please try again later.');
           },
           timeout: 5000
         });
@@ -53034,7 +53384,6 @@ var NewExtractionFormsProjectsSection = (function (_React$Component) {
       add_change_listeners_to_questions = function() {
         var number_of_extractions;
         number_of_extractions = get_number_of_extractions();
-        console.log(number_of_extractions);
         return $('.consolidation-data-row').each(function(row_id, row_elem) {
           return $(row_elem).children('tr').each(function(arm_row_id, arm_row_elem) {
             return $(arm_row_elem).find('td tbody').each(function(cell_id, cell_elem) {
@@ -53444,7 +53793,7 @@ var NewExtractionFormsProjectsSection = (function (_React$Component) {
 (function() {
   document.addEventListener('turbolinks:load', function() {
     (function() {
-      var filterProjectList;
+      var append_citations, citationList, fetch_from_pubmed, filterProjectList, list_options, populate_citation_fields;
       filterProjectList = function(order) {
         return function() {
           $.get({
@@ -53473,61 +53822,330 @@ var NewExtractionFormsProjectsSection = (function (_React$Component) {
         $('.search-field').toggleClass('expand-search');
         $('#project-filter').focus();
       });
-      $('.project_tasks_projects_users_roles select').select2();
-      $('.tasks-container').on('cocoon:before-insert', function(e, insertedItem) {
-        insertedItem.fadeIn('slow');
-        return insertedItem.css('display', 'flex');
-      });
-      $('.tasks-container').on('cocoon:after-insert', function(e, insertedItem) {
-        insertedItem.addClass('new-task');
-        return $(insertedItem).find('.project_tasks_projects_users_roles select').select2();
-      });
-      $(document).on('cocoon:after-insert', function(e, insertedItem) {
-        $(insertedItem).find('.AUTHORS select').select2({
-          minimumInputLength: 0,
-          ajax: {
-            url: '/api/v1/authors.json',
-            dataType: 'json',
-            delay: 100,
-            data: function(params) {
-              return {
-                q: params.term,
-                page: params.page || 1
+      if ($('body.citations.index').length === 1) {
+        $('.project_tasks_projects_users_roles select').select2();
+        $('.tasks-container').on('cocoon:before-insert', function(e, insertedItem) {
+          insertedItem.fadeIn('slow');
+          return insertedItem.css('display', 'flex');
+        });
+        $('.tasks-container').on('cocoon:after-insert', function(e, insertedItem) {
+          insertedItem.addClass('new-task');
+          return $(insertedItem).find('.project_tasks_projects_users_roles select').select2();
+        });
+        list_options = {
+          valueNames: ['citation-numbers', 'citation-title', 'citation-authors', 'citation-journal', 'citation-journal-date', 'citation-abstract', 'citation-abstract']
+        };
+        fetch_from_pubmed = function(pmid) {
+          return $.ajax('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi', {
+            type: 'GET',
+            dataType: 'xml',
+            data: {
+              db: 'pubmed',
+              retmode: 'xml',
+              id: pmid
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+              console.log(errorThrown);
+              return toastr.error('Could not fetch citation info from PUBMED');
+            },
+            success: function(data, textStatus, jqXHR) {
+              var abstract, authors, citation_hash, dateNode, first_name, i, j, journal, k, keyword, keywords, last_name, len, len1, len2, name, node, ref, ref1, ref2;
+              if (!(data.getElementsByTagName('ArticleTitle')[0] != null)) {
+                return 0;
+              }
+              name = data.getElementsByTagName('ArticleTitle')[0].childNodes[0].nodeValue || '';
+              abstract = '';
+              ref = data.getElementsByTagName('AbstractText');
+              for (i = 0, len = ref.length; i < len; i++) {
+                node = ref[i];
+                abstract += node.childNodes[0].nodeValue;
+                abstract += "\n";
+              }
+              authors = [];
+              ref1 = data.getElementsByTagName('Author');
+              for (j = 0, len1 = ref1.length; j < len1; j++) {
+                node = ref1[j];
+                first_name = node.getElementsByTagName('ForeName')[0].childNodes[0].nodeValue || '';
+                last_name = node.getElementsByTagName('LastName')[0].childNodes[0].nodeValue || '';
+                authors.push(first_name + ' ' + last_name);
+              }
+              keywords = [];
+              ref2 = data.getElementsByTagName('Keyword');
+              for (k = 0, len2 = ref2.length; k < len2; k++) {
+                node = ref2[k];
+                keyword = node.childNodes[0].nodeValue || '';
+                keywords.push(keyword);
+              }
+              journal = {};
+              journal['name'] = data.getElementsByTagName('Journal')[0].getElementsByTagName('Title')[0].childNodes[0].nodeValue || '';
+              journal['issue'] = data.getElementsByTagName('JournalIssue')[0].getElementsByTagName('Issue')[0].childNodes[0].nodeValue || '';
+              journal['volume'] = data.getElementsByTagName('JournalIssue')[0].getElementsByTagName('Volume')[0].childNodes[0].nodeValue || '';
+              dateNode = data.getElementsByTagName('JournalIssue')[0].getElementsByTagName('PubDate')[0];
+              console.log(dateNode.getElementsByTagName('Year').length > 0);
+              if (dateNode.getElementsByTagName('Year').length > 0) {
+                journal['year'] = dateNode.getElementsByTagName('Year')[0].childNodes[0].nodeValue;
+              } else if (dateNode.getElementsByTagName('MedlineDate').length > 0) {
+                journal['year'] = dateNode.getElementsByTagName('MedlineDate')[0].childNodes[0].nodeValue;
+              } else {
+                journal['year'] = '';
+              }
+              citation_hash = {
+                name: name,
+                abstract: abstract,
+                authors: authors,
+                keywords: keywords,
+                journal: journal
               };
+              console.log(citation_hash);
+              return populate_citation_fields(citation_hash);
             }
+          });
+        };
+        populate_citation_fields = function(citation) {
+          var author, authorselect, i, j, keyword, keywordselect, len, len1, ref, ref1;
+          $('.citation-fields').find('.citation-name input').val(citation['name']);
+          $('.citation-fields').find('.citation-abstract textarea').val(citation['abstract']);
+          $('.citation-fields').find('.journal-name input').val(citation['journal']['name']);
+          $('.citation-fields').find('.journal-volume input').val(citation['journal']['volume']);
+          $('.citation-fields').find('.journal-issue input').val(citation['journal']['issue']);
+          $('.citation-fields').find('.journal-year input').val(citation['journal']['year']);
+          ref = citation['authors'];
+          for (i = 0, len = ref.length; i < len; i++) {
+            author = ref[i];
+            authorselect = $('.AUTHORS select');
+            $.ajax({
+              type: 'GET',
+              data: {
+                q: author
+              },
+              url: '/api/v1/authors.json'
+            }).then(function(data) {
+              var option;
+              option = new Option(data['results'][0]['text'], data['results'][0]['id'], true, true);
+              authorselect.append(option).trigger('change');
+              authorselect.trigger({
+                type: 'select2:select',
+                params: {
+                  data: data['results'][0]
+                }
+              });
+            });
+          }
+          ref1 = citation['keywords'];
+          for (j = 0, len1 = ref1.length; j < len1; j++) {
+            keyword = ref1[j];
+            keywordselect = $('.KEYWORDS select');
+            $.ajax({
+              type: 'GET',
+              data: {
+                q: keyword
+              },
+              url: '/api/v1/keywords.json'
+            }).then(function(data) {
+              var option;
+              option = new Option(data['results'][0]['text'], data['results'][0]['id'], true, true);
+              keywordselect.append(option).trigger('change');
+              keywordselect.trigger({
+                type: 'select2:select',
+                params: {
+                  data: data['results'][0]
+                }
+              });
+            });
+          }
+        };
+        append_citations = function(page) {
+          return $.ajax($('#citations-url').text(), {
+            type: 'GET',
+            dataType: 'json',
+            data: {
+              page: page
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+              return toastr.error('Could not get citations');
+            },
+            success: function(data, textStatus, jqXHR) {
+              var c, citation_journal, citation_journal_date, i, len, ref, to_add;
+              to_add = [];
+              $("#citations-count").html(data['pagination']['total_count']);
+              ref = data['results'];
+              for (i = 0, len = ref.length; i < len; i++) {
+                c = ref[i];
+                citation_journal = '';
+                citation_journal_date = '';
+                if ('journal' in c) {
+                  citation_journal = c['journal']['name'];
+                  citation_journal_date = ' (' + c['journal']['publication_date'] + ')';
+                }
+                to_add.push({
+                  'citation-title': c['name'],
+                  'citation-abstract': c['abstract'],
+                  'citation-journal': citation_journal,
+                  'citation-journal-date': citation_journal_date,
+                  'citation-authors': (c['authors'].map(function(author) {
+                    return author['name'];
+                  })).join(', '),
+                  'citation-numbers': c['pmid'] || 'N/A',
+                  'citations-project-id': c['citations_project_id']
+                });
+              }
+              if (page === 1) {
+                citationList.clear();
+              }
+              citationList.add(to_add, function(items) {
+                var item, j, len1, list_index, list_index_string;
+                list_index = (page - 1) * items.length;
+                for (j = 0, len1 = items.length; j < len1; j++) {
+                  item = items[j];
+                  list_index_string = list_index.toString();
+                  $('<input type="hidden" value="' + item.values()['citations-project-id'] + '" name="project[citations_projects_attributes][' + list_index_string + '][id]" id="project_citations_projects_attributes_' + list_index_string + '_id">').insertBefore(item.elm);
+                  $(item.elm).find('#project_citations_projects_attributes_0__destroy')[0].outerHTML = '<input type="hidden" name="project[citations_projects_attributes][' + list_index_string + '][_destroy]" id="project_citations_projects_attributes_' + list_index_string + '__destroy" value="false">';
+                  list_index++;
+                }
+                citationList.reIndex();
+                return Foundation.reInit($('#citations-projects-list'));
+              });
+              if (data['pagination']['more'] === true) {
+                return append_citations(page + 1);
+              } else {
+                return citationList.sort($('#sort-select').val(), {
+                  order: $('#sort-button').attr('sort-order'),
+                  alphabet: void 0,
+                  insensitive: true,
+                  sortFunction: void 0
+                });
+              }
+            }
+          });
+        };
+        append_citations(1);
+        citationList = new List('citations', list_options);
+        $('#import-select').on('change', function() {
+          $('#import-ris-div').hide();
+          $('#import-csv-div').hide();
+          $('#import-pubmed-div').hide();
+          $('#import-endnote-div').hide();
+          switch ($(this).val()) {
+            case 'ris':
+              return $('#import-ris-div').show();
+            case 'csv':
+              return $('#import-csv-div').show();
+            case 'pmid-list':
+              return $('#import-pubmed-div').show();
+            case 'endnote':
+              return $('#import-endnote-div').show();
           }
         });
-        $(insertedItem).find('.KEYWORDS select').select2({
-          minimumInputLength: 0,
-          ajax: {
-            url: '/api/v1/keywords.json',
-            dataType: 'json',
-            delay: 100,
-            data: function(params) {
-              return {
-                q: params.term,
-                page: params.page || 1
-              };
-            }
+        $('input.file').on('change', function() {
+          if (!!$(this).val()) {
+            return $(this).closest('.simple_form').find('.form-actions').show();
+          } else {
+            return $(this).closest('.simple_form').find('.form-actions').hide();
           }
         });
-        return $(insertedItem).find('.citation-select').select2({
-          minimumInputLength: 0,
-          ajax: {
-            url: '/api/v1/citations.json',
-            dataType: 'json',
-            delay: 100,
-            data: function(params) {
-              return {
-                q: params.term,
-                page: params.page || 1
-              };
-            }
+        $('#sort-button').on('click', function() {
+          if ($(this).attr('sort-order') === 'desc') {
+            $(this).attr('sort-order', 'asc');
+            $(this).html('ASCENDING');
+          } else {
+            $(this).attr('sort-order', 'desc');
+            $(this).html('DESCENDING');
           }
+          return citationList.sort($('#sort-select').val(), {
+            order: $(this).attr('sort-order'),
+            alphabet: void 0,
+            insensitive: true,
+            sortFunction: void 0
+          });
         });
-      });
+        $('#sort-select').on("change", function() {
+          return citationList.sort($(this).val(), {
+            order: $('#sort-button').attr('sort-order'),
+            alphabet: void 0,
+            insensitive: true,
+            sortFunction: void 0
+          });
+        });
+        $('#cp-insertion-node').on('cocoon:before-insert', function(e, citation) {
+          return $('.cancel-button').click();
+        });
+        $('#citations').find('.list').on('cocoon:after-remove', function(e, citation) {
+          return $('#citations-form').submit();
+        });
+        $(document).on('cocoon:after-insert', function(e, insertedItem) {
+          $(insertedItem).find('.AUTHORS select').select2({
+            minimumInputLength: 0,
+            ajax: {
+              url: '/api/v1/authors.json',
+              dataType: 'json',
+              delay: 100,
+              data: function(params) {
+                return {
+                  q: params.term,
+                  page: params.page || 1
+                };
+              }
+            }
+          });
+          $(insertedItem).find('.KEYWORDS select').select2({
+            minimumInputLength: 0,
+            ajax: {
+              url: '/api/v1/keywords.json',
+              dataType: 'json',
+              delay: 100,
+              data: function(params) {
+                return {
+                  q: params.term,
+                  page: params.page || 1
+                };
+              }
+            }
+          });
+          $(insertedItem).find('#is-pmid').on('click', function() {
+            $(insertedItem).find('.AUTHORS select').val(null).trigger('change');
+            $(insertedItem).find('.KEYWORDS select').val(null).trigger('change');
+            $(insertedItem).find('.citation-name input').val(null);
+            $(insertedItem).find('.citation-abstract textarea').val(null);
+            $(insertedItem).find('.journal-name input').val(null);
+            $(insertedItem).find('.journal-volume input').val(null);
+            $(insertedItem).find('.journal-issue input').val(null);
+            $(insertedItem).find('.journal-year input').val(null);
+            return fetch_from_pubmed($('.project_citations_pmid input').val());
+          });
+          $(insertedItem).find('.citation-select').select2({
+            minimumInputLength: 0,
+            ajax: {
+              url: '/api/v1/citations/titles.json',
+              dataType: 'json',
+              delay: 100,
+              data: function(params) {
+                return {
+                  q: params.term,
+                  page: params.page || 1
+                };
+              }
+            }
+          });
+          return $(insertedItem).find('.save-citation').on('click', function() {
+            return $('#citations-form').submit();
+          });
+        });
+        $('#citations-form').bind("ajax:success", function(status) {
+          append_citations(1);
+          toastr.success('Save successful!');
+          return $('.cancel-button').click();
+        });
+        $('#citations-form').bind("ajax:error", function(status) {
+          append_citations(1);
+          return toastr.error('Could not save changes');
+        });
+      }
     })();
   });
+
+}).call(this);
+(function() {
+
 
 }).call(this);
 (function() {
@@ -53550,6 +54168,7 @@ var NewExtractionFormsProjectsSection = (function (_React$Component) {
           that.find('.field-options.field-option-type-min_length').show();
           return that.find('.field-options.field-option-type-max_length').show();
         } else if (_value === 'numeric') {
+          that.find('.field-options.field-option-type-additional_char').show();
           that.find('.field-options.field-option-type-min_value').show();
           return that.find('.field-options.field-option-type-max_value').show();
         } else if (_value === 'numeric_range') {
@@ -53572,12 +54191,36 @@ var NewExtractionFormsProjectsSection = (function (_React$Component) {
           return _tableRows.find('td:first-child').hide();
         }
       };
-      return $('.clean-table table').each(function() {
+      $('.clean-table table').each(function() {
         var _tableRows;
         _tableRows = $(this).find('tr');
         if (_tableRows.length > 1) {
           return hideHeaders(_tableRows);
         }
+      });
+      $('#add_column_link').click(function(event) {
+        var $form;
+        event.preventDefault();
+        $form = $("form[id^='edit_question_']");
+        $form.ajaxSubmit({
+          dataType: 'script',
+          success: function() {
+            $('#add_column_button').click();
+          }
+        });
+        return false;
+      });
+      return $('#add_row_link').click(function(event) {
+        var $form;
+        event.preventDefault();
+        $form = $("form[id^='edit_question_']");
+        $form.ajaxSubmit({
+          dataType: 'script',
+          success: function() {
+            $('#add_row_button').click();
+          }
+        });
+        return false;
       });
     })();
   });
@@ -53861,6 +54504,7 @@ var NewExtractionFormsProjectsSection = (function (_React$Component) {
 // Read Sprockets README (https://github.com/rails/sprockets#sprockets-directives) for details
 // about supported directives.
 //
+
 
 
 
