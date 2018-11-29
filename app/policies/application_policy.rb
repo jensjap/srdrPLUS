@@ -1,3 +1,5 @@
+require_dependency 'app/policies/modules/role_checker'
+
 class ApplicationPolicy
   include RoleChecker
 
