@@ -53078,23 +53078,6 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
         _on = $('.' + prereq);
         if (_on.length) {
           _on.removeClass(prereq).addClass('off-' + prereq);
-          _on.find('input[type!="hidden"]').each(function() {
-            return $(this).val($(this).data('previous-value')).trigger('change');
-          });
-          _on.find('input[type="checkbox"]').each(function() {
-            return $(this).prop('checked', $(this).data('previous-value')).trigger('change');
-          });
-          _on.find('select').not('.select2').each(function() {
-            return $(this).val($(this).data('previous-value')).trigger('change');
-          });
-          _on.find('select.select2').each(function() {
-            if ($(this).data('previous-value')) {
-              return $(this).val($(this).data('previous-value')).trigger('change');
-            }
-          });
-          _on.find('input[type="radio"]').each(function() {
-            return $(this).prop('checked', $(this).data('previous-value')).trigger('change');
-          });
         }
       };
       prereqOn = function(prereq) {
@@ -53102,18 +53085,6 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
         _off = $('.off-' + prereq);
         if (_off.length) {
           _off.removeClass('off-' + prereq).addClass(prereq);
-          _off.find('input').each(function() {
-            return $(this).val('').trigger('change');
-          });
-          _off.find('input[type="checkbox"]').each(function() {
-            return $(this).prop('checked', false).trigger('change');
-          });
-          _off.find('select').each(function() {
-            return $(this).val(null).trigger('change');
-          });
-          _off.find('input[type="radio"]').each(function() {
-            return $(this).prop('checked', false).trigger('change');
-          });
         }
       };
       subroutine = function(that) {
@@ -53224,6 +53195,7 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
           }
         }
       });
+      $('input').trigger('change');
       $('.key-question-selector input[type="checkbox"').on('change', function(e) {
         var modal;
         e.preventDefault();
@@ -54251,7 +54223,6 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
         var $form, code, formId;
         e.preventDefault();
         code = e.keyCode || e.which;
-        console.log(code);
         if (code === 9 || code === 16 || code === 18 || code === 37 || code === 38 || code === 39 || code === 40 || code === 91) {
           return;
         }
