@@ -1,7 +1,7 @@
 module Api
   module V1
     class TagsController < BaseController
-      before_action :set_assignment, only: [ :index ]
+      before_action :set_assignment, :skip_policy_scope, :skip_authorization, only: [ :index ]
 
       api :GET, '/v1/projects_users/:id/tags', 'List of tags a user has created'
       formats [:json]
@@ -12,7 +12,7 @@ module Api
         all_tags      = []
 
         if @assignment.assignment_option_types.where( name: "ONLY_LEAD_TAGS" ).length > 0
-          all_tags    = Tag.by_project_lead( @assignment.project ).by_query( query ) 
+          all_tags    = Tag.by_project_lead( @assignment.project ).by_query( query )
         else
           projects_user_tags  = Tag.by_projects_user( @assignment.projects_user ).by_query( query )
           user_tags           = Tag.by_user( @assignment.user ).by_query( query )
@@ -20,7 +20,6 @@ module Api
 
           ## order is important, we want to show projects_users_tags first, then user_tags, then lead_tags
           all_tags = ( lead_tags + projects_user_tags + user_tags ).uniq
-
         end
 
         offset      = [ page_size * ( page - 1 ), all_tags.length ].min
@@ -29,6 +28,7 @@ module Api
       end
 
       private
+
       def set_assignment
         @assignment = Assignment.find( params[ :assignment_id ] )
       end

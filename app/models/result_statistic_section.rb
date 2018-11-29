@@ -31,6 +31,7 @@ class ResultStatisticSection < ApplicationRecord
   accepts_nested_attributes_for :measurements,                          allow_destroy: false
 
   delegate :extraction, to: :population
+  delegate :project, to: :extraction
 
   def timepoints
     population.extractions_extraction_forms_projects_sections_type1_row_columns

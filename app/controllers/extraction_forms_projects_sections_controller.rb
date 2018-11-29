@@ -1,6 +1,7 @@
 class ExtractionFormsProjectsSectionsController < ApplicationController
   before_action :set_extraction_forms_project, only: [:new, :create]
   before_action :set_extraction_forms_projects_section, only: [:edit, :update, :destroy, :preview, :add_quality_dimension]
+  before_action :skip_policy_scope
 
   # GET /extraction_forms_projects/1/extraction_forms_projects_sections/new
   def new
@@ -64,6 +65,8 @@ class ExtractionFormsProjectsSectionsController < ApplicationController
 
   def dissociate_type1
     @extraction_forms_projects_section = ExtractionFormsProjectsSection.find(dissociate_type1_params[0])
+    authorize(@extraction_forms_projects_section.project, policy_class: ExtractionFormsProjectsSectionPolicy)
+
     @extraction_forms_projects_section.type1s.destroy(Type1.find(dissociate_type1_params[1]))
     redirect_to build_extraction_forms_project_path(@extraction_forms_projects_section.extraction_forms_project,
                                                     anchor: "panel-tab-#{ @extraction_forms_projects_section.id }"),
@@ -90,10 +93,12 @@ class ExtractionFormsProjectsSectionsController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_extraction_forms_project
       @extraction_forms_project = ExtractionFormsProject.find(params[:extraction_forms_project_id])
+      authorize(@extraction_forms_project.project, policy_class: ExtractionFormsProjectsSectionPolicy)
     end
 
     def set_extraction_forms_projects_section
       @extraction_forms_projects_section = ExtractionFormsProjectsSection.find(params[:id])
+      authorize(@extraction_forms_projects_section.project, policy_class: ExtractionFormsProjectsSectionPolicy)
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

@@ -2,6 +2,8 @@ class QuestionsController < ApplicationController
   before_action :set_extraction_forms_projects_section, only: [:new, :create]
   before_action :set_question, only: [:edit, :update, :destroy, :add_column, :add_row,
                                       :dependencies, :toggle_dependency]
+  before_action :skip_policy_scope
+
   #before_action :ensure_matrix_type, only: [:add_column, :add_row]
 
   # GET /extraction_forms_projects_sections/1/questions/new
@@ -115,12 +117,14 @@ class QuestionsController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_extraction_forms_projects_section
       @extraction_forms_projects_section = ExtractionFormsProjectsSection.find(params[:extraction_forms_projects_section_id])
+      authorize(@extraction_forms_projects_section.project, policy_class: QuestionPolicy)
     end
 
     def set_question
       @question = Question.includes(question_rows: [
         { question_row_columns: [ :question_row_column_options, :question_row_column_fields] }])
           .find(params[:id])
+      authorize(@question.project, policy_class: QuestionPolicy)
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

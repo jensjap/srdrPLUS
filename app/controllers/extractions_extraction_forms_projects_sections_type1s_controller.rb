@@ -3,6 +3,7 @@ class ExtractionsExtractionFormsProjectsSectionsType1sController < ApplicationCo
   add_breadcrumb 'my projects', :projects_path
 
   before_action :set_extractions_extraction_forms_projects_sections_type1, only: [:edit, :update, :destroy, :edit_timepoints, :edit_populations]
+  before_action :skip_policy_scope
 
   # GET /extractions_extraction_forms_projects_sections_type1/1/edit
   def edit
@@ -75,6 +76,8 @@ class ExtractionsExtractionFormsProjectsSectionsType1sController < ApplicationCo
   # POST /extractions_extraction_forms_projects_sections_type1s/1/add_population
   # POST /extractions_extraction_forms_projects_sections_type1s/1/add_population.json
   def add_population
+    authorize(@extractions_extraction_forms_projects_sections_type1.project, policy_class: ExtractionsExtractionFormsProjectsSectionsType1Policy)
+
     @extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_sections_type1_rows.each do |eefpst1r|
       eefpst1r.extractions_extraction_forms_projects_sections_type1_row_columns.create
     end
@@ -84,6 +87,8 @@ class ExtractionsExtractionFormsProjectsSectionsType1sController < ApplicationCo
 
   def get_results_populations
     @next_eefpst1 = ExtractionsExtractionFormsProjectsSectionsType1.find(params[:id])
+    authorize(@next_eefpst1.project, policy_class: ExtractionsExtractionFormsProjectsSectionsType1Policy)
+
     @extractions = @next_eefpst1
       .extractions_extraction_forms_projects_section
       .extraction
@@ -97,6 +102,7 @@ class ExtractionsExtractionFormsProjectsSectionsType1sController < ApplicationCo
     # Use callbacks to share common setup or constraints between actions.
     def set_extractions_extraction_forms_projects_sections_type1
       @extractions_extraction_forms_projects_sections_type1 = ExtractionsExtractionFormsProjectsSectionsType1.find(params[:id])
+      authorize(@extractions_extraction_forms_projects_sections_type1.project, policy_class: ExtractionsExtractionFormsProjectsSectionsType1Policy)
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

@@ -1,10 +1,20 @@
 class ProjectsController < ApplicationController
   add_breadcrumb 'my projects', :projects_path
 
-  before_action :set_project, only: [:show, :edit, :update, :destroy, :export, :import_csv, :import_pubmed, :import_endnote, :import_ris, :next_assignment]
+  before_action :set_project, only: [
+    :show, :edit, :update, :destroy, :export, :import_csv,
+    :import_pubmed, :import_endnote, :import_ris, :next_assignment
+  ]
 
-  SORT = {  'updated-at': { updated_at: :desc },
-            'created-at': { created_at: :desc }
+  before_action :skip_authorization, only: [:index, :show, :filter, :export, :new, :create]
+  before_action :skip_policy_scope, except: [
+    :index, :show, :edit, :update, :destroy, :filter, :export, :import_csv,
+    :import_pubmed, :import_endnote, :import_ris, :next_assignment
+  ]
+
+  SORT = {
+    'updated-at': { updated_at: :desc },
+    'created-at': { created_at: :desc },
   }.stringify_keys
 
   # GET /projects
@@ -14,10 +24,11 @@ class ProjectsController < ApplicationController
     flash.now[:info] = msg if msg
     @query = params[:q]
     @order = params[:o] || 'updated-at'
-    @projects = current_user.projects.includes(:extraction_forms)
-                       .includes(:key_questions)
-                       .includes(publishings: [{ user: :profile }, approval: [{ user: :profile }]])
-                       .by_query(@query).order(SORT[@order]).page(params[:page])
+
+    @projects = policy_scope(Project).includes(:extraction_forms)
+      .includes(:key_questions)
+      .includes(publishings: [{ user: :profile }, approval: [{ user: :profile }]])
+      .by_query(@query).order(SORT[@order]).page(params[:page])
   end
 
   # GET /projects/1
@@ -32,11 +43,7 @@ class ProjectsController < ApplicationController
 
   # GET /projects/1/edit
   def edit
-    #@citations = Citation.pluck(:id)
-    #@citations = Citation.all
-    #@citation_dict = @citations.map{ c| [c.id, c] }.to_h
-    #@citations = @project.citations
-    #@citations_projects = @project.citations_projects.page(params[:page])
+    authorize(@project)
     @citation_dict = @project.citations.eager_load(:authors, :journal, :keywords).map{ |c| [c.id, c] }.to_h
     @citations_projects = @project.citations_projects
 
@@ -63,6 +70,8 @@ class ProjectsController < ApplicationController
   # PATCH/PUT /projects/1
   # PATCH/PUT /projects/1.json
   def update
+    authorize(@project)
+
     respond_to do |format|
       if @project.update(project_params)
         format.html { redirect_to edit_project_path(@project, anchor: 'panel-information'),
@@ -78,6 +87,8 @@ class ProjectsController < ApplicationController
   # DELETE /projects/1
   # DELETE /projects/1.json
   def destroy
+    authorize(@project)
+
     @project.destroy
     respond_to do |format|
       format.html { redirect_to projects_url,
@@ -91,14 +102,17 @@ class ProjectsController < ApplicationController
   def filter
     @query = params[:q]  # Need @query for index partial.
     @order = params[:o]
-    @projects = Project.includes(publishings: [{ user: :profile }, approval: [{ user: :profile }]])
-                       .includes(:key_questions)
-                       .by_name_description_and_query(@query).order(SORT[@order]).page(params[:page])
+
+    @projects = policy_scope(Project).includes(publishings: [{ user: :profile }, approval: [{ user: :profile }]])
+      .includes(:key_questions)
+      .by_name_description_and_query(@query).order(SORT[@order]).page(params[:page])
     render 'index'
   end
 
   def undo
     @project_version = PaperTrail::Version.find_by_id(params[:id])
+    authorize(@project_version.item)
+
     begin
       if @project_version.reify
         @project_version.reify.save
@@ -119,6 +133,7 @@ class ProjectsController < ApplicationController
   end
 
   def export
+    authorize(@project)
     SimpleExportJob.perform_later(current_user.id, @project.id)
     flash[:success] = "Export request submitted for project '#{ @project.name }'. You will be notified by email of its completion."
 
@@ -126,6 +141,7 @@ class ProjectsController < ApplicationController
   end
 
   def import_csv
+    authorize(@project)
     if params[:project].present? and params[:project][:citation_file].present?
       @project.import_citations_from_csv( params[:project][:citation_file] )
     end
@@ -133,6 +149,7 @@ class ProjectsController < ApplicationController
   end
 
   def import_pubmed
+    authorize(@project)
     if params[:project].present? and params[:project][:citation_file].present?
       @project.import_citations_from_pubmed( params[:project][:citation_file] )
     end
@@ -140,6 +157,7 @@ class ProjectsController < ApplicationController
   end
 
   def import_ris
+    authorize(@project)
     if params[:project].present? and params[:project][:citation_file].present?
       @project.import_citations_from_ris( params[:project][:citation_file] )
     end
@@ -147,13 +165,15 @@ class ProjectsController < ApplicationController
   end
 
   def import_endnote
+    authorize(@project)
     if params[:project].present? and params[:project][:citation_file].present?
       @project.import_citations_from_enl( params[:project][:citation_file] )
     end
     redirect_to edit_project_path(@project, anchor: 'panel-citations')
   end
 
-  def next_assignment 
+  def next_assignment
+    authorize(@project)
     projects_user = ProjectsUser.where( project: @project, user: current_user ).first
     next_assignment = projects_user.assignments.first
     redirect_to controller: :assignments, action: :screen, id: next_assignment.id
@@ -162,10 +182,10 @@ class ProjectsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_project
-      @project = Project.includes(:extraction_forms)
-                        .includes(:key_questions)
-                        .includes(publishings: [{ user: :profile }, approval: [{ user: :profile }]])
-                        .find(params[:id])
+      @project = policy_scope(Project).includes(:extraction_forms)
+        .includes(:key_questions)
+        .includes(publishings: [{ user: :profile }, approval: [{ user: :profile }]])
+        .find(params[:id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

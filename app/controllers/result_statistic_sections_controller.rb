@@ -8,6 +8,8 @@ class ResultStatisticSectionsController < ApplicationController
   #!!! Birol: don't think this is working...where is comparables set?
   #before_action :set_comparisons_measures, only: [:edit]
 
+  before_action :skip_policy_scope
+
   # GET /result_statistic_sections/1/edit
   def edit
     add_breadcrumb 'edit project', edit_project_path(@result_statistic_section.extraction.project)
@@ -99,6 +101,7 @@ class ResultStatisticSectionsController < ApplicationController
         .includes(population: { extractions_extraction_forms_projects_sections_type1: [ :type1, extractions_extraction_forms_projects_section: [ :extraction, extraction_forms_projects_section: :extraction_forms_project ] ] } )
         .includes(:result_statistic_section_type)
         .find(params[:id])
+      authorize(@result_statistic_section.project, policy_class: ResultStatisticSectionPolicy)
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

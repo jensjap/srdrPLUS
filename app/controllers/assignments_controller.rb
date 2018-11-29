@@ -1,5 +1,5 @@
 class AssignmentsController < ApplicationController
-  before_action :set_assignment, only: [:screen]
+  before_action :set_assignment, :skip_policy_scope, :skip_authorization, only: [:screen]
 
   def screen
     @citations_projects = CitationsProject.unlabeled( @assignment.project, params[:count] )

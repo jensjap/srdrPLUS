@@ -3,6 +3,9 @@ module Api
     class ProjectsController < BaseController
       before_action :set_project, only: [:show, :update, :destroy]
 
+      before_action :skip_authorization, only: [:index, :show, :create]
+      before_action :skip_policy_scope
+
       SORT = {  'updated-at': { updated_at: :desc },
                 'created-at': { created_at: :desc }
       }.stringify_keys
@@ -49,6 +52,8 @@ module Api
       param_group :project
       formats ['json']
       def update
+        authorize(@project, policy_class: ProjectPolicy)
+
         @project.update(project_params)
         flash[:notice] = 'Project was successfully updated.' if @project.save
         respond_with @project

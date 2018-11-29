@@ -1,9 +1,11 @@
 class ExtractionsExtractionFormsProjectsSectionsType1RowColumnsController < ApplicationController
-  before_action :set_extractions_extraction_forms_projects_sections_type1_row, only: [:create]
+  before_action :set_extractions_extraction_forms_projects_sections_type1_row, :skip_policy_scope, only: [:create]
 
   # POST /extractions_extraction_forms_projects_sections_type1_rows/:extractions_extraction_forms_projects_sections_type1_row_id/extractions_extraction_forms_projects_sections_type1_row_columns
   # POST /extractions_extraction_forms_projects_sections_type1_rows/:extractions_extraction_forms_projects_sections_type1_row_id/extractions_extraction_forms_projects_sections_type1_row_columns.json
   def create
+    authorize(@extractions_extraction_forms_projects_sections_type1_row.project, policy_class: ExtractionsExtractionFormsProjectsSectionsType1RowColumnPolicy)
+
     respond_to do |format|
       @extractions_extraction_forms_projects_sections_type1_row.extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_sections_type1_rows.each do |eefpst1r|
         extractions_extraction_forms_projects_sections_type1_row_column = eefpst1r.extractions_extraction_forms_projects_sections_type1_row_columns.build(extractions_extraction_forms_projects_sections_type1_row_column_params)

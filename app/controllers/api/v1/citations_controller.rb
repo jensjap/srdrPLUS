@@ -1,4 +1,6 @@
 class Api::V1::CitationsController < Api::V1::BaseController
+  before_action :skip_policy_scope, :skip_authorization
+
   def index
     page                      = ( params[ :page ] || 1 ).to_i
     page_size                 = 200
@@ -26,7 +28,6 @@ class Api::V1::CitationsController < Api::V1::BaseController
       @citations              = citations[ offset .. offset + page_size - 1 ]
       @more                   = offset + @citations.length < total_arr.length
     end
-
   end
 
   def titles
@@ -40,4 +41,3 @@ class Api::V1::CitationsController < Api::V1::BaseController
     @more                     = offset + @citations.length < @total_count
   end
 end
-

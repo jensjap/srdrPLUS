@@ -54,8 +54,12 @@ class TasksController < ApplicationController
 
   def index
     @tasks = Task.joins(:projects)
-                         .group('tasks.id')
-                         .where(:projects => { :id => @project.id }).all
+      .group('tasks.id')
+      .where(:projects => { :id => @project.id }).all
+
+    authorize(@project, policy_class: TaskPolicy)
+    skip_policy_scope
+
     #@labels = Label.where(:user_id => current_user.id).where(:tasks_project_id => [@project.tasks_projects]).all
 
     add_breadcrumb 'edit project', edit_project_path(@project)

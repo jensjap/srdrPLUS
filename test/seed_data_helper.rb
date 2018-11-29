@@ -5,6 +5,13 @@ module SeedData
       # Turn off paper_trail.
       PaperTrail.enabled = false
 
+      # UserTypes.
+      UserType.create([
+        { user_type: 'Admin'},
+        { user_type: 'Member'},
+        { user_type: 'Trainee'},
+      ])
+
       # Roles.
       Role.create([
         { name: 'Leader'},
@@ -388,6 +395,7 @@ module SeedDataExtended
       # Projects.
       project_titles.each do |n|
         updated_at = Faker::Time.between(DateTime.now - 1000, DateTime.now - 1)
+        User.current = User.first
         Project.create!(name:        n[0],
                         description: n[1],
                         attribution: Faker::Cat.registry,
@@ -475,7 +483,6 @@ module SeedDataExtended
         end
 
         # Make contributor a project member.
-        p.users << @superadmin
         p.users << @contributor
         p.users << @screener_1
         p.users << @screener_2

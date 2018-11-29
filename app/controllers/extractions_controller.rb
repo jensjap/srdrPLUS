@@ -7,7 +7,10 @@ class ExtractionsController < ApplicationController
   before_action :set_project, only: [:index, :new, :create, :comparison_tool, :compare, :consolidate]
   before_action :set_extraction, only: [:show, :edit, :update, :destroy, :work]
   before_action :set_extractions, only: [:compare, :consolidate, :edit_type1_across_extractions]
-  before_action :ensure_extraction_form_structure, only: [:compare, :consolidate, :work]
+  before_action :ensure_extraction_form_structure, only: [:comparison_tool, :consolidate, :work]
+
+  before_action :skip_policy_scope, except: [:compare, :consolidate, :edit_type1_across_extractions]
+  before_action :skip_authorization, only: [:index, :show]
 
   # GET /projects/1/extractions
   # GET /projects/1/extractions.json
@@ -27,18 +30,23 @@ class ExtractionsController < ApplicationController
   def new
     @extraction = @project.extractions.new
 
+    authorize(@extraction.project, policy_class: ExtractionPolicy)
+
     add_breadcrumb 'extractions',    :project_extractions_path
     add_breadcrumb 'new extraction', :new_project_extraction_path
   end
 
   # GET /extractions/1/edit
   def edit
+    authorize(@extraction.project, policy_class: ExtractionPolicy)
   end
 
   # POST /extractions
   # POST /extractions.json
   def create
     @extraction = @project.extractions.build(extraction_params)
+
+    authorize(@extraction.project, policy_class: ExtractionPolicy)
 
     respond_to do |format|
       if @extraction.save
@@ -54,6 +62,8 @@ class ExtractionsController < ApplicationController
   # PATCH/PUT /extractions/1
   # PATCH/PUT /extractions/1.json
   def update
+    authorize(@extraction.project, policy_class: ExtractionPolicy)
+
     respond_to do |format|
       if @extraction.update(extraction_params)
         format.html { redirect_to work_extraction_path(@extraction,
@@ -70,6 +80,8 @@ class ExtractionsController < ApplicationController
   # DELETE /extractions/1
   # DELETE /extractions/1.json
   def destroy
+    authorize(@extraction.project, policy_class: ExtractionPolicy)
+
     @extraction.destroy
     respond_to do |format|
       format.html { redirect_to project_extractions_url(@extraction.project), notice: 'Extraction was successfully destroyed.' }
@@ -79,6 +91,8 @@ class ExtractionsController < ApplicationController
 
   # GET /extractions/1/work
   def work
+    authorize(@extraction.project, policy_class: ExtractionPolicy)
+
     @extraction_forms_projects = @extraction.project.extraction_forms_projects
     @key_questions_projects_array_for_select = @extraction.project.key_questions_projects_array_for_select
     @preselected_eefpst1 = params[:eefpst1_id].present? ? ExtractionsExtractionFormsProjectsSectionsType1.find(params[:eefpst1_id]) : nil
@@ -90,6 +104,8 @@ class ExtractionsController < ApplicationController
 
   # GET /projects/1/extractions/comparison_tool
   def comparison_tool
+    authorize(@extraction.project, policy_class: ExtractionPolicy)
+
     @citation_groups = @project.citation_groups
 
     add_breadcrumb 'edit project',    edit_project_path(@project)
@@ -99,6 +115,8 @@ class ExtractionsController < ApplicationController
 
   # GET /projects/1/extractions/consolidate
   def consolidate
+    authorize(@extraction.project, policy_class: ExtractionPolicy)
+
     @extraction_forms_projects = @project.extraction_forms_projects
     @consolidated_extraction   = @project.consolidated_extraction(@extractions.first.citations_project_id, current_user.id)
     @head_to_head              = head_to_head(@extraction_forms_projects, @extractions)
@@ -114,6 +132,8 @@ class ExtractionsController < ApplicationController
 
   # GET /projects/1/extractions/edit_type1_across_extractions
   def edit_type1_across_extractions
+    authorize(@extraction.project, policy_class: ExtractionPolicy)
+
     @type1       = Type1.find(params[:type1_id])
     @efps        = ExtractionFormsProjectsSection.find(params[:efps_id])
     @eefps       = ExtractionsExtractionFormsProjectsSection.find(params[:eefps_id])
@@ -137,27 +157,16 @@ class ExtractionsController < ApplicationController
     end
 
     def set_extraction
-      @extraction = Extraction.includes(projects_users_role: { projects_user: :project })
-                              .find(params[:id])
-                              #.includes(key_questions_projects: [:key_question, extraction_forms_projects_section: [:extractions_extraction_forms_projects_sections, :extraction_forms_projects_section_type]])
+      @extraction = Extraction.
+        includes(projects_users_role: { projects_user: :project }).
+        find(params[:id])
+        #.includes(key_questions_projects: [:key_question, extraction_forms_projects_section: [:extractions_extraction_forms_projects_sections, :extraction_forms_projects_section_type]])
     end
 
     def set_extractions
-      @extractions = Extraction
-        .includes(projects_users_role: { projects_user: { user: :profile } })
-        .where(id: extraction_ids_params)
-    end
-
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def extraction_params
-      params.require(:extraction).permit(:citations_project_id,
-                                         :projects_users_role_id,
-                                         extractions_key_questions_project_ids: [],
-                                         key_questions_project_ids: [])
-    end
-
-    def extraction_ids_params
-      params.require(:extraction_ids)
+      @extractions = policy_scope(Extraction).
+        includes(projects_users_role: { projects_user: { user: :profile } }).
+        where(id: extraction_ids_params)
     end
 
     def ensure_extraction_form_structure
@@ -166,5 +175,19 @@ class ExtractionsController < ApplicationController
       else
         @extraction.ensure_extraction_form_structure
       end
+    end
+
+    # Never trust parameters from the scary internet, only allow the white list through.
+    def extraction_params
+      params.
+        require(:extraction).
+        permit(:citations_project_id,
+          :projects_users_role_id,
+          extractions_key_questions_project_ids: [],
+          key_questions_project_ids: [])
+    end
+
+    def extraction_ids_params
+      params.require(:extraction_ids)
     end
 end

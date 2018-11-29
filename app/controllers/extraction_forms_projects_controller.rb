@@ -1,6 +1,7 @@
 class ExtractionFormsProjectsController < ApplicationController
   before_action :set_project, only: [:create]
   before_action :set_extraction_forms_project, only: [:build, :edit, :update, :destroy]
+  before_action :skip_policy_scope
 
   # GET /extraction_forms_projects/1/edit
   def edit
@@ -72,6 +73,7 @@ class ExtractionFormsProjectsController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_project
       @project = Project.find(params[:project_id])
+      authorize(@project, policy_class: ExtractionFormsProjectPolicy)
     end
 
     def set_extraction_forms_project
@@ -80,6 +82,7 @@ class ExtractionFormsProjectsController < ApplicationController
         .includes(key_questions_projects: [:key_question])
         .includes(:project)
         .find(params[:id])
+      authorize(@extraction_forms_project.project, policy_class: ExtractionFormsProjectPolicy)
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

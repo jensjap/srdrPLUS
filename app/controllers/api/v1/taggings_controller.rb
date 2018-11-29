@@ -1,6 +1,8 @@
 module Api
   module V1
     class TaggingsController < BaseController
+      before_action :skip_policy_scope, :skip_authorization
+
       api :DESTROY, '/v1/taggings/:id', 'deletes specified tagging'
       def destroy
         @tagging = Tagging.find( params[ :id ] ).destroy
@@ -21,5 +23,3 @@ module Api
     end
   end
 end
-
-
