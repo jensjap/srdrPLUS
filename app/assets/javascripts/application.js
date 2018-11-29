@@ -23,6 +23,7 @@
 //= require react_ujs
 //= require components
 //= require list.min.js
+//= require jquery.form.min
 //= require_tree .
 
 //$(function(){ $(document).foundation(); });
