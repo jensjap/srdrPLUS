@@ -38,3 +38,6 @@ dump.rdb
 
 # Don't track any .xlsx files.
 *.xlsx
+
+# Ignore passenger files.
+passenger*
