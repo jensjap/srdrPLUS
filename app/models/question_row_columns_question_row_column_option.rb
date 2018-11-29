@@ -26,6 +26,7 @@ class QuestionRowColumnsQuestionRowColumnOption < ApplicationRecord
   accepts_nested_attributes_for :question_row_column_option, allow_destroy: false
 
   delegate :question,                 to: :question_row_column
+  delegate :question_row,             to: :question_row_column
   delegate :question_row_column_type, to: :question_row_column
 
   private
