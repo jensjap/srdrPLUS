@@ -4,7 +4,7 @@ class User < ApplicationRecord
       :last_sign_in_at, :current_sign_in_ip, :last_sign_in_ip]
 
 
-  after_create { create_profile(username: email.gsub(/@/, 'at').gsub(/\+/, '_')) }
+  after_create { create_profile(username: email.gsub(/@/, '_at_')) }
   before_validation { self.user_type = UserType.where(user_type: 'Member').first if self.user_type.nil? }
 
   # Include default devise modules. Others available are:

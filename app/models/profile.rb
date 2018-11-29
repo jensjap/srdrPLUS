@@ -24,7 +24,7 @@ class Profile < ApplicationRecord
       :case_sensitive => false
     }
   # Only allow letter, number, underscore and punctuation.
-  validates_format_of :username, with: /^[a-zA-Z0-9_\.]*$/, :multiline => true
+  validates_format_of :username, with: /^[a-zA-Z0-9_+\.]*$/, :multiline => true
 
   validate :validate_username
 
