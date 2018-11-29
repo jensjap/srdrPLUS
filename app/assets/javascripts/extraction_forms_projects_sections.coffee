@@ -95,17 +95,17 @@ document.addEventListener 'turbolinks:load', ->
 
       if _on.length
         _on.removeClass( prereq ).addClass( 'off-' + prereq )
-        _on.find( 'input[type!="hidden"]' ).each ->
-          $( this ).val( $( this ).data( 'previous-value' ) ).trigger( 'change' )
-        _on.find( 'input[type="checkbox"]' ).each ->
-          $( this ).prop( 'checked', $( this ).data( 'previous-value' ) ).trigger( 'change' )
-        _on.find( 'select' ).not( '.select2' ).each ->
-          $( this ).val( $( this ).data( 'previous-value' ) ).trigger( 'change' )
-        _on.find( 'select.select2' ).each ->
-          if $( this ).data( 'previous-value' )
-            $( this ).val( $( this ).data( 'previous-value' ) ).trigger( 'change' )
-        _on.find( 'input[type="radio"]' ).each ->
-          $( this ).prop( 'checked', $( this ).data( 'previous-value' ) ).trigger( 'change' )
+#        _on.find( 'input[type!="hidden"]' ).each ->
+#          $( this ).val( $( this ).data( 'previous-value' ) ).trigger( 'change' )
+#        _on.find( 'input[type="checkbox"]' ).each ->
+#          $( this ).prop( 'checked', $( this ).data( 'previous-value' ) ).trigger( 'change' )
+#        _on.find( 'select' ).not( '.select2' ).each ->
+#          $( this ).val( $( this ).data( 'previous-value' ) ).trigger( 'change' )
+#        _on.find( 'select.select2' ).each ->
+#          if $( this ).data( 'previous-value' )
+#            $( this ).val( $( this ).data( 'previous-value' ) ).trigger( 'change' )
+#        _on.find( 'input[type="radio"]' ).each ->
+#          $( this ).prop( 'checked', $( this ).data( 'previous-value' ) ).trigger( 'change' )
 
       return  # END prereqOff = ( prereq ) ->
 
@@ -115,14 +115,14 @@ document.addEventListener 'turbolinks:load', ->
 
       if _off.length
         _off.removeClass( 'off-' + prereq ).addClass( prereq )
-        _off.find( 'input' ).each ->
-          $( this ).val( '' ).trigger( 'change' )
-        _off.find( 'input[type="checkbox"]' ).each ->
-          $( this ).prop( 'checked', false ).trigger( 'change' )
-        _off.find( 'select' ).each ->
-          $( this ).val( null ).trigger( 'change' )
-        _off.find( 'input[type="radio"]' ).each ->
-          $( this ).prop( 'checked', false ).trigger( 'change' )
+#        _off.find( 'input' ).each ->
+#          $( this ).val( '' ).trigger( 'change' )
+#        _off.find( 'input[type="checkbox"]' ).each ->
+#          $( this ).prop( 'checked', false ).trigger( 'change' )
+#        _off.find( 'select' ).each ->
+#          $( this ).val( null ).trigger( 'change' )
+#        _off.find( 'input[type="radio"]' ).each ->
+#          $( this ).prop( 'checked', false ).trigger( 'change' )
 
       return  # END prereqOn = ( prereq ) ->
 
@@ -275,6 +275,8 @@ document.addEventListener 'turbolinks:load', ->
           turnPrereqOnSelfAndDescendants( prereq, that )
 
       return  # END $( '#preview .card input,select' ).on 'change keyup', ( e ) ->
+
+    $( 'input' ).trigger( 'change' )
 
     #################################################################################
     # Make all cards visible that require at least one of the key questions selected.
