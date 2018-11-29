@@ -5,7 +5,7 @@ module RoleChecker
   AUDITOR = 4.freeze
 
   def get_highest_role_id
-    Role.
+    @highest_role_id ||= Role.
       select(:id).
       joins(:projects_users_roles).
       joins(:projects_users).
