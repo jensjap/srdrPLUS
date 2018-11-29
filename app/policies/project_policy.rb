@@ -25,6 +25,10 @@ class ProjectPolicy < ApplicationPolicy
     project_leader?
   end
 
+  def export?
+    project_contributor?
+  end
+
   def import_csv?
     project_leader?
   end

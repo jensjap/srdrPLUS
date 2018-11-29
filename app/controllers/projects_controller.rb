@@ -133,6 +133,7 @@ class ProjectsController < ApplicationController
   end
 
   def export
+    authorize(@project)
     SimpleExportJob.perform_later(current_user.id, @project.id)
     flash[:success] = "Export request submitted for project '#{ @project.name }'. You will be notified by email of its completion."
 
