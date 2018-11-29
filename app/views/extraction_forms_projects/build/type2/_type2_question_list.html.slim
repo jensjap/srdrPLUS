@@ -25,32 +25,25 @@ h4 #{ efps.section.name.titleize } Question List
               ul#dependencies
 
                 - if q.ordering.position == 1
-
                   li
                     | -
 
                 - for d in q.dependencies
-
                   li = 'Question: ' + d.prerequisitable.question.ordering.position.to_s
 
                   - if d.prerequisitable.question.question_type == 'Matrix'
-
                     / Checkbox, Dropdown, Radio, Select2_Single, Select2_Multi.
                     - if [5, 6, 7, 8, 9].include? d.prerequisitable.question_row_column_type.id
-
                       li = '- Cell: (' + d.prerequisitable.question_row.name.to_s + ' x ' + d.prerequisitable.question_row_column.name.to_s + ')'
                       li = '- Option: ' + d.prerequisitable.name
 
                     / Text, Numeric, Numeric_Range, Scientific.
                     - else
-
-                      li = '- Cell: (' + d.prerequisitable.question_row.name.to_s + ' x ' + d.prerequisitable.question_row_column.name.to_s + ')'
+                      li = '- Cell: (' + d.prerequisitable.question_row.name.to_s + ' x ' + d.prerequisitable.name.to_s + ')'
 
                   - else
-
                     / Checkbox, Dropdown, Radio, Select2_Single, Select2_Multi.
                     - if [5, 6, 7, 8, 9].include? d.prerequisitable.question_row_column_type.id
-
                       li = '- Option: ' + d.prerequisitable.name
 
                     / Text, Numeric, Numeric_Range, Scientific.
@@ -60,7 +53,6 @@ h4 #{ efps.section.name.titleize } Question List
               ul#key_questions
 
                 - q.key_questions_projects.each do |kqp|
-
                   li = kqp.key_question.name
 
             td = q.name
@@ -68,9 +60,11 @@ h4 #{ efps.section.name.titleize } Question List
             td = link_to edit_question_path(q) do
               i.fi-pencil>
               = t('edit')
+
             td = link_to q, method: :delete, data: { confirm: t('confirm') } do
               i.fi-trash>
               = t('remove')
+
             td
               - unless q.ordering.position == 1
                 = link_to dependencies_question_path(q) do
