@@ -11,7 +11,7 @@ class KeyQuestionsProjectsController < ApplicationController
   # POST /projects/1/key_questions_projects.json
   def create
     @key_questions_project = @project.key_questions_projects.build(key_questions_project_params)
-    authorize(@key_questions_project)
+    authorize(@project, policy_class: KeyQuestionsProjectPolicy)
 
     respond_to do |format|
       if @key_questions_project.save
