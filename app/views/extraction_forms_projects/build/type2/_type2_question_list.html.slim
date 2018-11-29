@@ -44,12 +44,12 @@ h4 #{ efps.section.name.titleize } Question List
                     / Text, Numeric, Numeric_Range, Scientific.
                     - else
 
-                      li = '- Cell: (' + d.prerequisitable.question_row_column_field.question_row_column.question_row.name.to_s + ' x ' + d.prerequisitable.question_row_column_field.question_row_column.name.to_s + ')'
+                      li = '- Cell: (' + d.prerequisitable.question_row.name.to_s + ' x ' + d.prerequisitable.question_row_column.name.to_s + ')'
 
                   - else
 
                     / Checkbox, Dropdown, Radio, Select2_Single, Select2_Multi.
-                    - if [5, 6, 7, 8, 9].include? d.prerequisitable.question_row_column_type_id
+                    - if [5, 6, 7, 8, 9].include? d.prerequisitable.question_row_column_type.id
 
                       li = '- Option: ' + d.prerequisitable.name
 
