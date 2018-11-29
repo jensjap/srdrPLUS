@@ -92,7 +92,6 @@ document.addEventListener( 'turbolinks:load', function() {
 //    });
 
   for (let orderable_list of Array.from($( '.orderable-list' ))) {
-    console.log(orderable_list);
     //# CHANGE THIS
     const ajax_url = "http://0.0.0.0:3000/api/v1/orderings/update_positions";
     let saved_state = null;
@@ -107,8 +106,6 @@ document.addEventListener( 'turbolinks:load', function() {
       let positions = [];
       for (let element of Array.from($( orderable_list ).find( '.orderable-item' ))) {
         positions.push( $( element ).attr( 'position' ) );
-        console.log(element);
-        console.log($( element ).attr( 'position' ));
       }
       positions = positions.sort();
       //class_name = camel2snake $( '.orderable-item' ).first().attr( 'orderable-type' )
