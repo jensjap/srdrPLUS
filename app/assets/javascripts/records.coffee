@@ -34,7 +34,6 @@ document.addEventListener 'turbolinks:load', ->
       # Ignore 'keyup' for a list of keys.
       code = e.keyCode || e.which;
       # 9: tab; 16: shift; 37: left-arrow; 38: up-arrow; 39: right-arrow; 40: down-arrow; 18: option; 91: cmd
-      console.log code
       if code in [9, 16, 18, 37, 38, 39, 40, 91]
         return
 
