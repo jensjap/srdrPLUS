@@ -23,9 +23,9 @@
 
     = f.input :name, label: false, required: false, class: 'form-control',
       pattern: ".{0}|.{#{ qrc.field_validation_value_for(:min_length) },#{ qrc.field_validation_value_for(:max_length) }}",
-      data: { prereq: "prereq-#{ qrc.class }-#{ qrc.id }" },
       input_html: { \
-        title: "Constraints: Blank OR between #{ qrc.field_validation_value_for(:min_length) } and #{ qrc.field_validation_value_for(:max_length) } chars" \
+        title: "Constraints: Blank OR between #{ qrc.field_validation_value_for(:min_length) } and #{ qrc.field_validation_value_for(:max_length) } chars",
+        data: { prereq: "prereq-#{ qrc.class }-#{ qrc.id }" } \
       }
     div id="record-id-#{ record.id.to_s }" class='record-info' style='opacity: 0;' = 'Saved!'
 
