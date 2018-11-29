@@ -1,8 +1,6 @@
 require_dependency 'app/policies/modules/role_checker'
 
 class LabelPolicy < ApplicationPolicy
-  include RoleChecker
-
   def create?
     project_consolidator?
   end

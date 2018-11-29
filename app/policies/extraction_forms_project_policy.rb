@@ -1,8 +1,6 @@
 require_dependency 'app/policies/modules/role_checker'
 
 class ExtractionFormsProjectPolicy < ApplicationPolicy
-  include RoleChecker
-
   def edit?
     project_leader?
   end

@@ -1,8 +1,6 @@
 require_dependency 'app/policies/modules/role_checker'
 
 class ProjectPolicy < ApplicationPolicy
-  include RoleChecker
-
   class Scope < ApplicationPolicy::Scope
     def resolve
       scope.joins(:projects_users).where('projects_users.user_id = ?', user.id)

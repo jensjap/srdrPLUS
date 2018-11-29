@@ -1,8 +1,6 @@
 require_dependency 'app/policies/modules/role_checker'
 
 class ExtractionPolicy < ApplicationPolicy
-  include RoleChecker
-
   class Scope < ApplicationPolicy::Scope
     def resolve
       project_ids = ProjectsUser.select(:project_id).where(user: user)
