@@ -39,20 +39,18 @@ h4 #{ efps.section.name.titleize } Question List
                   - if d.prerequisitable.question.question_type == 'Matrix'
 
                     / Checkbox, Dropdown, Radio, Select2_Single, Select2_Multi.
-                    - if [5, 6, 7, 8, 9].include? d.prerequisitable.question_row_column_field.question_row_column_field_type_id
+                    - if [5, 6, 7, 8, 9].include? d.prerequisitable.question_row_column.question_row_column_type_id
 
-                      li = '- Cell: (' + d.prerequisitable.question_row_column_field.question_row_column.question_row.name.to_s + ' x ' + d.prerequisitable.question_row_column_field.question_row_column.name.to_s + ')'
+                      li = '- Cell: (' + d.prerequisitable.question_row_column.question_row.name.to_s + ' x ' + d.prerequisitable.question_row_column.name.to_s + ')'
                       li = '- Option: ' + d.prerequisitable.name
 
                     / Text, Numeric, Numeric_Range, Scientific.
                     - else
 
-                      li = '- Cell: (' + d.prerequisitable.question_row_column_field.question_row_column.question_row.name.to_s + ' x ' + d.prerequisitable.question_row_column_field.question_row_column.name.to_s + ')'
-
-                  - else
+                      li = '- Cell: (' + d.prerequisitable.question_row_column.question_row.name.to_s + ' x ' + d.prerequisitable.question_row_column.name.to_s + ')'
 
                     / Checkbox, Dropdown, Radio, Select2_Single, Select2_Multi.
-                    - if [5, 6, 7, 8, 9].include? d.prerequisitable.question_row_column.question_row_column_type_id
+                    - if [5, 6, 7, 8, 9].include? d.prerequisitable.question_row_column_type_id
 
                       li = '- Option: ' + d.prerequisitable.name
 
