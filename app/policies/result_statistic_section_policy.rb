@@ -1,5 +1,3 @@
-require_dependency 'app/policies/modules/role_checker'
-
 class ResultStatisticSectionPolicy < ApplicationPolicy
   def edit?
     project_consolidator?

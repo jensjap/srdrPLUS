@@ -1,5 +1,3 @@
-require_dependency 'app/policies/modules/role_checker'
-
 class ExtractionsExtractionFormsProjectsSectionsType1Policy < ApplicationPolicy
   def edit?
     project_contributor?

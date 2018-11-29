@@ -1,5 +1,3 @@
-require_dependency 'app/policies/modules/role_checker'
-
 class NotePolicy < ApplicationPolicy
   def destroy?
     project_contributor?

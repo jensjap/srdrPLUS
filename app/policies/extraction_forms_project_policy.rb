@@ -1,5 +1,3 @@
-require_dependency 'app/policies/modules/role_checker'
-
 class ExtractionFormsProjectPolicy < ApplicationPolicy
   def edit?
     project_leader?

@@ -1,5 +1,3 @@
-require_dependency 'app/policies/modules/role_checker'
-
 class QuestionPolicy < ApplicationPolicy
   def new?
     project_consolidator?

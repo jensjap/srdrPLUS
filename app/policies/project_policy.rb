@@ -1,5 +1,3 @@
-require_dependency 'app/policies/modules/role_checker'
-
 class ProjectPolicy < ApplicationPolicy
   class Scope < ApplicationPolicy::Scope
     def resolve
