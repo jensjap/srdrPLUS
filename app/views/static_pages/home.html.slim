@@ -2,34 +2,31 @@
 
 .row
   section.column
-    h2 Welcome to the <i>Systematic Review Data Repository</i> &trade;
+    h2 Welcome to the Systematic Review Data Repository PLUS &trade;
     .hide-for-medium
       p style='margin-top: 0;' The Systematic Review Data Repository (SRDR) is a powerful and easy-to-use tool for
         the extraction and management of data for systematic review or meta-analysis. It is
         also an open and searchable archive of systematic reviews and its corresponding data.
     .hide-for-small-only
-      p style='margin: 0 0 6px 0;' About this site:
-      ul style='margin-top: 0;'
-        li The systematic review data repository is an online, open access archive of searchable systematic review data
-        ul style='margin-top: 0;'
-          li style='list-style-type: circle;' Including key questions, extraction forms, and raw data extracted from included studies
-        li To encourage further contribution of Systematic review data to the repository, SRDR also features an online workspace where researchers can collabortaivley complete their systematic reviews and save their datasets and extraction forms
-        ul style='margin-top: 0;'
-          li style='list-style-type: circle;' Screen Abstracts
-          li style='list-style-type: circle;' Build electronic extraction forms
-          li style='list-style-type: circle;' Collaborate with your team and extract data into extraction forms, in-parallel and online
-          li style='list-style-type: circle;' Customize exports of your dataset
+      p style='margin: 0;' The newly updated Systematic Review Data Repository Plus (SRDR+), a free, powerful, and easy-to-use tool for data management for systematic reviews and meta-analyses.
+      p style='margin: 0;' SRDR+ is also an open and searchable archive of systematic review data.
 
   section.column.elicit-registration style='text-align: center;'
-    .row
-      .column.small-centered
-        h3 Are you new to SRDR?
-    .row
-      .column.small-centered
-        = link_to 'Sign Up', new_user_registration_path, class: 'button large', style: 'text-decoration: none;'
-    .row
-      .column.small-centered
-        p style='margin: 0 0 33px 33px' Register an account and become acquainted with the SRDR system.
+    - if user_signed_in?
+      = link_to 'My Projects', projects_path, class: 'button large'
+
+    - else
+      .row
+        .column.small-centered
+          h3 Are you new to SRDR?
+
+      .row
+        .column.small-centered
+          = link_to 'Sign Up', new_user_registration_path, class: 'button large', style: 'text-decoration: none;'
+
+      .row
+        .column.small-centered
+          p style='margin: 0 0 33px 33px' Register an account and become acquainted with the SRDR system.
 
   section.column
     #completed-projects
@@ -94,7 +91,7 @@
   section.column
     h3 Contributors to SRDR+
 
-  section.column
+  /section.column
     = image_tag("", alt: "SRDR Users on Global Map",
                     class: "small-12 small-centered column",
                     data: { interchange: "[#{ image_path('global_map.jpg') }, small],
@@ -103,14 +100,14 @@
   section.column
     .callout
       h4 Statistics
-      pre System Wide
+      pre style='font-size: 1.2em;' System Wide
         Number of projects: #{ Project.count }
         Number of project contributors: #{ User.count }
         Number of public commentators: 50
         Number of published projects: 15
         Number of articles: 1000
       br
-      pre Project Level
+      pre style='font-size: 1.2em;' Project Level
         Average number of articles per project: 50
         Average number of extractions per project: 30
         Average number of collaborators per project: 8
