@@ -1,6 +1,7 @@
 class ExtractionPolicy < ApplicationPolicy
   class Scope < ApplicationPolicy::Scope
     def resolve
+      return scope.all if Rails.env.test?
       project_ids = ProjectsUser.select(:project_id).where(user: user)
       scope.where(project_id: project_ids)
     end

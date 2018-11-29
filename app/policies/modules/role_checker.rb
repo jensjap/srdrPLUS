@@ -1,41 +1,52 @@
 module RoleChecker
-  LEADER = 1.freeze
-  CONSOLIDATOR = 2.freeze
-  CONTRIBUTOR = 3.freeze
-  AUDITOR = 4.freeze
+  LEADER = 'Leader'.freeze
+  CONSOLIDATOR = 'Consolidator'.freeze
+  CONTRIBUTOR = 'Contributor'.freeze
+  AUDITOR = 'Auditor'.freeze
 
-  def get_highest_role_id
-    @highest_role_id ||= Role.
-      select(:id).
+  def get_highest_role
+    @highest_role ||= Role.
+      select(:id, :name).
       joins(:projects_users_roles).
       joins(:projects_users).
       where(projects_users_roles: { projects_users: { project: record, user: user } }).
       min.
-      try(:id).
-      try(:to_i)
+      try(:name)
   end
 
   def project_leader?
-    get_highest_role_id && get_highest_role_id <= LEADER
+    get_highest_role && get_highest_role == LEADER
   end
 
   def project_consolidator?
-    get_highest_role_id && get_highest_role_id <= CONSOLIDATOR
+    get_highest_role && (
+      get_highest_role == LEADER ||
+      get_highest_role == CONSOLIDATOR
+    )
   end
 
   def project_contributor?
-    get_highest_role_id && get_highest_role_id <= CONTRIBUTOR
+    get_highest_role && (
+      get_highest_role == LEADER ||
+      get_highest_role == CONSOLIDATOR ||
+      get_highest_role == CONTRIBUTOR
+    )
   end
 
   def project_auditor?
-    get_highest_role_id && get_highest_role_id <= AUDITOR
+    get_highest_role && (
+      get_highest_role == LEADER ||
+      get_highest_role == CONSOLIDATOR ||
+      get_highest_role == CONTRIBUTOR ||
+      get_highest_role == AUDITOR
+    )
   end
 
   def part_of_project?
-    get_highest_role_id.present?
+    get_highest_role.present?
   end
 
   def not_part_of_project?
-    get_highest_role_id.nil?
+    get_highest_role.nil?
   end
 end
