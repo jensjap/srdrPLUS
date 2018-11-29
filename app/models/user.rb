@@ -5,6 +5,7 @@ class User < ApplicationRecord
 
 
   after_create { create_profile(username: email.gsub(/@/, 'at').gsub(/\+/, '_')) }
+  before_validation { self.user_type = UserType.where(user_type: 'Member').first if self.user_type.nil? }
 
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
@@ -12,6 +13,8 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :trackable, :validatable,
          :confirmable, :lockable, :timeoutable, :omniauthable,
          :authentication_keys => [:login]
+
+  belongs_to :user_type
 
   has_one :profile, dependent: :destroy, inverse_of: :user
   has_one :organization, through: :profile
