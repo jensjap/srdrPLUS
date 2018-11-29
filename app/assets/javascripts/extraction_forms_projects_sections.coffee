@@ -184,31 +184,29 @@ document.addEventListener 'turbolinks:load', ->
     # Text.
     $( '#preview .card input[type="text"]' ).on 'input', ( e ) ->
       e.preventDefault()
-      that = $( this )
 
+      that = $( this )
       currentValue = that.val()
       that.data( 'previous-value', currentValue )
-
       return  # END $( '#preview .card input[type="text"]' ).on 'input', ( e ) ->
 
     # Numeric.
     $( '#preview .card input[type="number"]' ).on 'input', ( e ) ->
       e.preventDefault()
-      that = $( this )
 
+      that = $( this )
       currentValue = that.val()
       that.data( 'previous-value', currentValue )
-
       return  # END $( '#preview .card input[type="number"]' ).on 'input', ( e ) ->
 
     # Checkbox.
     $( '#preview .card input[type="checkbox"]' ).on 'mouseup', ( e ) ->
       e.preventDefault()
+
       that = $( this )
 
       isChecked = that.prop( 'checked' )
       that.data( 'previous-value', !isChecked )
-
       return  # END $( '#preview .card input[type="checkbox"]' ).on 'mouseup', ( e ) ->
 
     # Dropdown.
@@ -216,11 +214,10 @@ document.addEventListener 'turbolinks:load', ->
     # so we get the value too early. 'blur' to the rescue!
     $( '#preview .card select' ).on 'blur', ( e ) ->
       e.preventDefault()
-      that = $( this )
 
+      that = $( this )
       isSelected = that.val()
       that.data( 'previous-value', isSelected )
-
       return  # END $( '#preview .card select' ).on 'blur', ( e ) ->
 
     # Do the same for Select2.
@@ -228,10 +225,8 @@ document.addEventListener 'turbolinks:load', ->
     # creates problems when trying to restore the value.
     $( '#preview .card select.select2' ).on 'select2:close', ( e ) ->
       that = $( this )
-
       isSelected = that.val()
       that.data( 'previous-value', isSelected )
-
       return  # END $( '#preview .card select.select2' ).on 'select2:close', ( e ) ->
 
     # Radio.
@@ -239,12 +234,11 @@ document.addEventListener 'turbolinks:load', ->
     # so we get the value too early. 'blur' to the rescue!
     $( '#preview .card input[type="radio"]' ).on 'blur', ( e ) ->
       e.preventDefault()
-      that = $( this )
 
+      that = $( this )
       that.data( 'previous-value', that.is( ':checked' ) )
       that.siblings( 'input[type="radio"]' ).each ->
         $( this ).data( 'previous-value', $( this ).is( ':checked' ) )
-
       return  # END $( 'preview .card input[type="radio"]' ).on 'blur', ( e ) ->
 
     ##########################################################################
@@ -286,6 +280,7 @@ document.addEventListener 'turbolinks:load', ->
     # Make all cards visible that require at least one of the key questions selected.
     $( '.key-question-selector input[type="checkbox"' ).on 'change', ( e ) ->
       e.preventDefault()
+
       modal = $( '#update-form-modal' )
       if modal.length
         modal.foundation( 'open' )
