@@ -94,7 +94,6 @@ document.addEventListener( 'turbolinks:load', function() {
   for (let orderable_list of Array.from($( '.orderable-list' ))) {
     //# CHANGE THIS
     const ajax_url = $( '.orderable-list' ).attr( 'orderable-url' );
-    console.log(ajax_url);
     let saved_state = null;
 
     //# helper method for converting class name into camel case
