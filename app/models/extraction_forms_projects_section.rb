@@ -144,8 +144,7 @@ class ExtractionFormsProjectsSection < ApplicationRecord
           else
             qrc.question_row_columns_question_row_column_options.create(
               question_row_column_option_id: 1,
-              name: qdo.name,
-              name_type: 'string'
+              name: qdo.name
             )
           end
         end  # qdq.quality_dimension_options.each do |qdo|
