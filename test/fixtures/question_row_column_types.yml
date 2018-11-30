@@ -1,10 +1,10 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  name: MyString
+  name: text
   deleted_at:
 
 two:
-  name: MyString
+  name: numeric
   deleted_at:
 
