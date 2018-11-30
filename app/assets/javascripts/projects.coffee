@@ -104,8 +104,6 @@ document.addEventListener 'turbolinks:load', ->
             dateNode = data.getElementsByTagName( 'JournalIssue' )[ 0 ]. \
             getElementsByTagName( 'PubDate' )[ 0 ]
 
-            console.log dateNode.getElementsByTagName( 'Year' ).length > 0
-
             if dateNode.getElementsByTagName( 'Year' ).length > 0
               journal[ 'year' ] = dateNode.getElementsByTagName( 'Year' )[ 0 ].childNodes[ 0 ].nodeValue
             else if dateNode.getElementsByTagName( 'MedlineDate' ).length > 0
@@ -118,7 +116,6 @@ document.addEventListener 'turbolinks:load', ->
                               authors: authors,  \
                               keywords: keywords, \
                               journal: journal }
-            console.log citation_hash
             populate_citation_fields citation_hash
 
       populate_citation_fields = ( citation ) ->
