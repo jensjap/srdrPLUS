@@ -50,12 +50,17 @@ Rails.application.routes.draw do
         end
       end
       resources :assignments do
-        resources :tags, only: [ :index ]
-        resources :reasons, only: [ :index ]
+        resources :tags, only: [:index]
+        resources :reasons, only: [:index]
       end
-      resources :taggings, only: [ :create, :destroy ]
-      resources :notes, only: [ :create, :update, :destroy ]
-      resources :labels_reasons, only: [ :create, :destroy ]
+      resources :taggings, only: [:create, :destroy]
+      resources :notes, only: [:create, :update, :destroy]
+      resources :labels_reasons, only: [:create, :destroy]
+      resources :orderings do
+        collection do
+          patch 'update_positions'
+        end
+      end
 
     end
   end

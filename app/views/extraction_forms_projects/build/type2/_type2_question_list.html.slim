@@ -17,9 +17,9 @@ h4 #{ efps.section.name.titleize } Question List
           th Name
           th Description
 
-      tbody
-        - efps.questions.sort_by { |q| q.ordering.position }.each do |q|
-          tr
+      tbody.orderable-list
+        - efps.questions.ordered.each do |q|
+          tr.orderable-item [ position="#{ q.ordering.position }" ordering-id="#{ q.ordering.id }" ]
             td = q.ordering.position
             td
               ul#dependencies

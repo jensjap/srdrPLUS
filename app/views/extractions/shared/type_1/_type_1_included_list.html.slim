@@ -14,9 +14,9 @@ h5 #{ section_name } that are included in this Extraction
         th
         th
 
-    tbody
-      - eefps.extractions_extraction_forms_projects_sections_type1s.includes(:type1_type, :type1).each do |eefpst1|
-        tr
+    tbody.orderable-list
+      - eefps.extractions_extraction_forms_projects_sections_type1s.includes(:type1_type, :type1).ordered.each do |eefpst1|
+        tr.orderable-item [ position="#{ eefpst1.ordering.position }" ordering-id="#{ eefpst1.ordering.id }" ]
           - if section_name == 'Outcomes'
             td
               = eefpst1.type1_type.present? ? eefpst1.type1_type.name : ''

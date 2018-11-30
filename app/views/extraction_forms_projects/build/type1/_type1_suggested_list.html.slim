@@ -14,9 +14,9 @@ h4 List of Suggested #{ section_name }s
         - if section_name.eql?('Outcome')
           th Timepoint(s)
 
-    tbody
-      - efps.extraction_forms_projects_sections_type1s.each do |efpst1|
-        tr
+    tbody.orderable-list
+      - efps.extraction_forms_projects_sections_type1s.ordered.each do |efpst1|
+        tr.orderable-item [ position="#{ efpst1.ordering.position }" ordering-id="#{ efpst1.ordering.id }" ]
           td = efpst1.type1.name
           - if section_name.eql? 'Outcome'
             td = efpst1.type1_type.try(:name)

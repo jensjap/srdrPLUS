@@ -24,6 +24,8 @@ class Project < ApplicationRecord
 
   has_many :key_questions_projects, dependent: :destroy, inverse_of: :project
   has_many :key_questions, through: :key_questions_projects, dependent: :destroy
+  ## this does not feel right - Birol
+  has_many :orderings, through: :key_questions_projects, dependent: :destroy
 
   has_many :projects_studies, dependent: :destroy, inverse_of: :project
   has_many :studies, through: :projects_studies, dependent: :destroy
@@ -51,6 +53,9 @@ class Project < ApplicationRecord
   accepts_nested_attributes_for :citations_projects, allow_destroy: true
   accepts_nested_attributes_for :tasks, allow_destroy: true
   accepts_nested_attributes_for :assignments, allow_destroy: true
+  accepts_nested_attributes_for :key_questions_projects, allow_destroy: true
+  accepts_nested_attributes_for :orderings
+
 
   def public?
     self.publishings.any?(&:approval)

@@ -182,10 +182,11 @@ class ProjectsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_project
-      @project = policy_scope(Project).includes(:extraction_forms)
-        .includes(:key_questions)
-        .includes(publishings: [{ user: :profile }, approval: [{ user: :profile }]])
-        .find(params[:id])
+      @project = Project.includes(:extraction_forms)
+                        .includes(:key_questions_projects)
+                        .includes(:key_questions)
+                        .includes(publishings: [{ user: :profile }, approval: [{ user: :profile }]])
+                        .find(params[:id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
@@ -193,10 +194,11 @@ class ProjectsController < ApplicationController
       params.require(:project)
         .permit(:citation_file, :name, :description, :attribution, :methodology_description,
                 :prospero, :doi, :notes, :funding_source,
-                { tasks_attributes: [:id, :name, :num_assigned, :task_type_id, projects_users_role_ids:[]]},
-                { citations_attributes: [:id, :name, :abstract, :pmid, :refman, :citation_type_id, :_destroy, author_ids: [], keyword_ids:[], journal_attributes: [ :id, :name, :volume, :issue, :publication_date]] },
-                citations_projects_attributes: [ :id, :_destroy, :citation_id, :project_id,
-                                                citation_attributes: [:id, :_destroy, :name]])
+                {tasks_attributes: [:id, :name, :num_assigned, :task_type_id, projects_users_role_ids:[]]},
+                {citations_attributes: [:id, :name, :abstract, :pmid, :refman, :citation_type_id, :_destroy, author_ids: [], keyword_ids:[], journal_attributes: [:id, :name, :volume, :issue, :publication_date]]},
+                {citations_projects_attributes: [:id, :_destroy, :citation_id, :project_id,
+                                                citation_attributes: [:id, :_destroy, :name]]},
+                key_questions_projects_attributes: [:id, :position])
     end
 
       def make_undo_link
