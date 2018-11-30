@@ -109,6 +109,7 @@ class QuestionsController < ApplicationController
 
     respond_to do |format|
       format.js
+      format.html { redirect_to dependencies_question_path(@question), notice: t('success') }
     end
   end
 
