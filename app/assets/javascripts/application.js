@@ -23,7 +23,7 @@
 //= require react_ujs
 //= require components
 //= require list.min.js
-//= require jquery.form.min
+//= require jquery.form.min.js
 //= require sortable-rails-jquery
 //= require_tree .
 
