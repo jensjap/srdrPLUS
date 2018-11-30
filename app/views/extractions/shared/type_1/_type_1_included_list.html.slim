@@ -14,7 +14,7 @@ h5 #{ section_name } that are included in this Extraction
         th
         th
 
-    tbody.orderable-list
+    tbody.orderable-list orderable-url="#{ update_positions_api_v1_orderings_url }"
       - eefps.extractions_extraction_forms_projects_sections_type1s.includes(:type1_type, :type1).ordered.each do |eefpst1|
         tr.orderable-item [ position="#{ eefpst1.ordering.position }" ordering-id="#{ eefpst1.ordering.id }" ]
           - if section_name == 'Outcomes'
