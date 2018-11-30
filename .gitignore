@@ -24,6 +24,7 @@
 *.swo
 *.un~
 *.swn
+*.swm
 
 # DS_Store files.
 .DS_Store
