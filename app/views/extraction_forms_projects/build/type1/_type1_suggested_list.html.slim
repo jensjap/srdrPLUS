@@ -14,7 +14,7 @@ h4 List of Suggested #{ section_name }s
         - if section_name.eql?('Outcome')
           th Timepoint(s)
 
-    tbody.orderable-list
+    tbody.orderable-list orderable-url="#{ update_positions_api_v1_orderings_url }"
       - efps.extraction_forms_projects_sections_type1s.ordered.each do |efpst1|
         tr.orderable-item [ position="#{ efpst1.ordering.position }" ordering-id="#{ efpst1.ordering.id }" ]
           td = efpst1.type1.name
