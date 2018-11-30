@@ -71,10 +71,10 @@ en:
   shared:
     signed_in_links:
       project_information: Project Information
-      key_questions: Key Question(s)
-      extractions: Extraction(s)
-      citations: Citation(s)
-      tasks: Task(s)
+      key_questions: Key Questions
+      extractions: Extraction List
+      citations: Citations
+      tasks: Tasks
   extraction_forms_projects:
     form:
       save: Save Extraction Form
