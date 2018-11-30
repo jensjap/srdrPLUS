@@ -8,8 +8,11 @@ h4 Add #{ section_name } Suggestion
       i.fi-alert>
       ' Please correct the errors below.
 
-  = f.simple_fields_for(:extraction_forms_projects_sections_type1s, efps.extraction_forms_projects_sections_type1s.build) do |sf_efpst1|
+  = f.simple_fields_for(:extraction_forms_projects_sections_type1s,
+    efps.extraction_forms_projects_sections_type1s.build) do |sf_efpst1|
+
     .form-inputs class="new-type1-fields-#{ efps.id.to_s }"
+
       - if section_name.eql? 'Outcome'
         = sf_efpst1.association :type1_type, label: "Suggest Type of #{ section_name }"
 

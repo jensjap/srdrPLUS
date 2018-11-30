@@ -1,15 +1,14 @@
 - section_name = efps.section.name.titleize.singularize
 
 h4 List of Suggested #{ section_name }s
+
 .table-scroll
-
   table.hover style='width: 100%;'
-
     thead
       tr
-        th = section_name.eql?('Outcome') ? 'Domain' : 'Name'
         - if section_name.eql?('Outcome')
           th Type
+        th = section_name.eql?('Outcome') ? 'Domain' : 'Name'
         th = section_name.eql?('Outcome') ? 'Specific Measurement' : 'Description'
         - if section_name.eql?('Outcome')
           th Timepoint(s)
@@ -20,6 +19,7 @@ h4 List of Suggested #{ section_name }s
           td = efpst1.type1.name
           - if section_name.eql? 'Outcome'
             td = efpst1.type1_type.try(:name)
+
           td style='white-space: pre-wrap' = efpst1.type1.description
           - if section_name.eql? 'Outcome'
             td
@@ -27,9 +27,11 @@ h4 List of Suggested #{ section_name }s
                 ul
                   - efpst1.timepoint_names.each do |tn|
                     li = tn.pretty_print_export_header
+
           td = link_to edit_extraction_forms_projects_sections_type1_path(efpst1) do
             i.fi-pencil>
             = t('edit')
+
           td = link_to extraction_forms_projects_section_dissociate_type1_path(efps, type1_id: efpst1.id), method: :delete, data: { confirm: t('confirm') } do
             i.fi-trash>
             = t('remove')

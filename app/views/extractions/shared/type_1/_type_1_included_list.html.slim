@@ -6,13 +6,11 @@ h5 #{ section_name } that are included in this Extraction
       tr
         - if section_name == 'Outcomes'
           th Type
-        th Name
-        th Description
+        th = section_name.eql?('Outcomes') ? 'Domain' : 'Name'
+        th = section_name.eql?('Outcomes') ? 'Specific Measurement' : 'Description'
         - if section_name == 'Outcomes'
           th Populations
           th Timepoints
-        th
-        th
 
     tbody.orderable-list
       - eefps.extractions_extraction_forms_projects_sections_type1s.includes(:type1_type, :type1).ordered.each do |eefpst1|
@@ -21,12 +19,7 @@ h5 #{ section_name } that are included in this Extraction
             td
               = eefpst1.type1_type.present? ? eefpst1.type1_type.name : ''
             td
-              /= link_to 'Edit ' + section_name.singularize, edit_extractions_extraction_forms_projects_sections_type1_path(eefpst1)
-              ul style='list-style: none; margin: 0px;'
-                li style='margin-top: 3px;'
-                  = eefpst1.type1.name
-                li style='margin-left: 7px;'
-                  | Units: #{ eefpst1.units }
+              = eefpst1.type1.name
 
           - else
             td = eefpst1.type1.name

@@ -95,10 +95,17 @@ class ExtractionsExtractionFormsProjectsSectionsType1Row < ApplicationRecord
         # Otherwise, create the same number of columns as other rows have.
         # I don't remember why we did -1 here.
         #(self.extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_sections_type1_rows.first.extractions_extraction_forms_projects_sections_type1_row_columns.count - 1).times do |c|
-        self.extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_sections_type1_rows.first.extractions_extraction_forms_projects_sections_type1_row_columns.count.times do |c|
-          self.extractions_extraction_forms_projects_sections_type1_row_columns.create
-        end
+        self.extractions_extraction_forms_projects_sections_type1
+          .extractions_extraction_forms_projects_sections_type1_rows
+          .first
+          .extractions_extraction_forms_projects_sections_type1_row_columns.each do |eefpst1rc|
+            self.extractions_extraction_forms_projects_sections_type1_row_columns.create(timepoint_name: eefpst1rc.timepoint_name, is_baseline: eefpst1rc.is_baseline)
+          end
 
       end
+    end
+
+    def select_label
+      self.extractions_extraction_forms_projects_sections_type1_row_columns.first.timepoint_name.name
     end
 end

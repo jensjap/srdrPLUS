@@ -1,4 +1,6 @@
-h4 Add #{ section_name.singularize }
+- section_name = section_name.singularize
+
+h4 Add #{ section_name }
 
 = simple_form_for(eefps, remote: true, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
   .alert.callout data-abide-error='' style='display: none;'
@@ -11,11 +13,24 @@ h4 Add #{ section_name.singularize }
 
   = f.simple_fields_for(:extractions_extraction_forms_projects_sections_type1s,
     f.object.extractions_extraction_forms_projects_sections_type1s.build) do |sf_eefpst1|
-    = sf_eefpst1.simple_fields_for(:type1, sf_eefpst1.object.build_type1) do |sf_t1|
 
-      .form-inputs class="new-type1-fields-#{ eefps.id.to_s }"
-        = sf_t1.input :name, autofocus: true
-        = sf_t1.input :description, input_html: { rows: 4 }
+    .form-inputs class="new-type1-fields-#{ eefps.id.to_s }"
+
+      - if section_name.eql? 'Outcome'
+        = sf_eefpst1.association :type1_type, label: "Type of #{ section_name }"
+
+      = sf_eefpst1.simple_fields_for(:type1, sf_eefpst1.object.build_type1) do |sf_t1|
+          = sf_t1.input :name,        label: section_name.eql?('Outcome') ? 'Domain'               : 'Name', required: true, hint: 'Name can\'t be blank'
+          = sf_t1.input :description, label: section_name.eql?('Outcome') ? 'Specific Measurement' : 'Description', input_html: { rows: 2 }
+
+      /= sf_eefpst1.association :extractions_extraction_forms_projects_sections_type1_rows,
+        label_method: :select_label
+
+      /- if section_name.eql? 'Outcome'
+        = sf_eefpst1.association :timepoint_names,
+          including_blank: false,
+          label: "Suggest Timepoint(s) to associate with this #{ section_name }. If you cannot find an existing Timepoint to associate, #{ link_to_add_association('click here', sf_eefpst1, :timepoint_names, partial: 'extraction_forms_projects/build/type1/timepoint_name_fields') } to create a new one.".html_safe,
+          label_method: :select_label
 
   .form-actions
     = f.button :submit, 'Save'

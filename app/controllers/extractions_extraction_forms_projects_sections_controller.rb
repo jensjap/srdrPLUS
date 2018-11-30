@@ -39,6 +39,6 @@ class ExtractionsExtractionFormsProjectsSectionsController < ApplicationControll
       params.require(:extractions_extraction_forms_projects_section)
         .permit(:extraction_id,
                 :extraction_forms_projects_section_id,
-                extractions_extraction_forms_projects_sections_type1s_attributes: { type1_attributes: [:id, :name, :description] })
+                extractions_extraction_forms_projects_sections_type1s_attributes: [:type1_type_id, type1_attributes: [:id, :name, :description]])
     end
 end
