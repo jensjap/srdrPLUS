@@ -56210,7 +56210,7 @@ document.addEventListener( 'turbolinks:load', function() {
 
   for (let orderable_list of Array.from($( '.orderable-list' ))) {
     //# CHANGE THIS
-    const ajax_url = "http://0.0.0.0:3000/api/v1/orderings/update_positions";
+    const ajax_url = $( '.orderable-list' ).attr( 'orderable-url' );
     let saved_state = null;
 
     //# helper method for converting class name into camel case
