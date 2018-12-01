@@ -1,0 +1,16 @@
+= simple_form_for(@project, html: { 'abide': '', 'live-validate': true }) do |f|
+  .form-inputs
+    table.hover
+      thead
+        th USER
+        th ROLES
+      tbody#projects-users-table
+        = f.simple_fields_for :projects_users do |pu_f|
+          .nested-fields
+            = render 'projects_users/form', f: pu_f
+  .links
+    = link_to_add_association 'add another user to project', f, :projects_users, partial: 'projects_users/form', 'data-association-insertion-node': '#projects-users-table', 'data-association-insertion-method': 'append'
+  .form-actions
+    = f.button :submit, 'Save changes'
+
+
