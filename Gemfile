@@ -40,6 +40,7 @@ group :development, :test do
   gem 'byebug', platform: :mri
   gem 'factory_bot_rails'
   gem 'rspec-rails'
+  gem "rspec_junit_formatter"
 end
 
 group :test do
