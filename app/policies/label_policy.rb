@@ -1,17 +1,17 @@
 class LabelPolicy < ApplicationPolicy
   def create?
-    project_consolidator?
+    project_contributor?
   end
 
   def update?
-    project_consolidator?
+    project_contributor?
   end
 
   def destroy?
-    project_consolidator?
+    project_contributor?
   end
 
   def show?
-    project_consolidator?
+    project_contributor?
   end
 end
