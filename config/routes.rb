@@ -23,6 +23,7 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       resources :keywords, only: [:index]
+      resources :users, only: [:index]
       resources :authors, only: [:index]
       resources :timepoint_names, only: [:index]
       resources :citations, only: [:index] do 

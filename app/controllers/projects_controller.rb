@@ -199,7 +199,7 @@ class ProjectsController < ApplicationController
                 {citations_projects_attributes: [:id, :_destroy, :citation_id, :project_id,
                                                 citation_attributes: [:id, :_destroy, :name]]},
                 key_questions_projects_attributes: [:id, :position], 
-                projects_users_attributes: [:id, :user_id, role_ids: []])
+                projects_users_attributes: [:id, :_destroy, :user_id, role_ids: []])
     end
 
       def make_undo_link
