@@ -1,5 +1,5 @@
   tr
     td
-      = f.association :user, label_method: lambda {|user| user.profile.username}
+      = f.association :user, label_method: lambda { |user| user.profile.username }
     td
-      = f.association :roles, label: 'Roles', required: true, hint: 'User must have at least one role'
+      = f.association :roles, label: 'Roles', required: true, hint: 'User must have at least one role', as: :check_boxes

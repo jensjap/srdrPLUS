@@ -48,7 +48,6 @@ en:
   funding_source: Funding Source
   project_information: Project Information
   key_questions: Key Question(s)
-  users_text: User(s)
   extraction_forms: Extraction Form(s)
   citations: Citation(s)
   tasks: Task(s)
@@ -71,6 +70,8 @@ en:
           save: 'Update value'
   shared:
     signed_in_links:
+      members_and_roles: Member(s) & Role(s)
+      compare_extractions: Compare Extractions
       project_information: Project Information
       key_questions: Key Questions
       extractions: Extraction List
@@ -99,6 +100,10 @@ en:
       edit: Edit Profile
   projects:
     edit:
+      tab_links:
+        project_information: Project Information
+        key_questions: Key Question(s)
+        members_and_roles: Member(s) & Role(s)
       manage_information:
         legend: Project Information
       manage_key_questions:
@@ -117,7 +122,6 @@ en:
   errors:
     messages:
       taken: We are sorry, but the value you are attempting to use is allowed only once and has already been used
-  compare_extractions: Compare Extraction(s)
   request_export: Request Export
   manage_project_information: Manage Project Information
   manage_key_questions: Manage Key Question(s)

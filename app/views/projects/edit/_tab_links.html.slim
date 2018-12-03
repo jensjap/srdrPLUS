@@ -1,13 +1,13 @@
 ul#project-tabs.tabs data-deep-link='true' data-deep-link-smudge='true' data-deep-link-smudge-delay='500' data-update-history='true' data-tabs=''
 
   li.tabs-title.is-active
-    = link_to t('project_information'), '#panel-project-information', title: 'Project Information Details'
+    = link_to t('.project_information'), '#panel-project-information', title: t('.project_information')
 
   li.tabs-title
-    = link_to t('key_questions'), '#panel-key-questions', title: 'Manage Key Question(s)'
+    = link_to t('.key_questions'), '#panel-key-questions', title: t('.key_questions')
 
   li.tabs-title
-    = link_to t('users_text') , '#panel-projects-users', title: 'Manage User(s)'
+    = link_to t('.members_and_roles') , '#panel-projects-users', title: t('.members_and_roles')
 
 /  li.tabs-title
     = link_to t('citations'), '#panel-citations', title: 'Manage Citation(s)'
