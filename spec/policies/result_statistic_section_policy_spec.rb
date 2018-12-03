@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe CitationPolicy, type: :controller do
+describe ResultStatisticSectionPolicy, type: :controller do
   let(:non_member) { FactoryBot.create(:user) }
   let(:leader) { FactoryBot.create(:user) }
   let(:consolidator) { FactoryBot.create(:user) }
@@ -22,30 +22,45 @@ describe CitationPolicy, type: :controller do
 
   before { sign_in user }
 
-  subject { CitationPolicy.new(user, project) }
+  subject { ResultStatisticSectionPolicy.new(user, project) }
 
   context 'for a non_member' do
     let(:user) { non_member }
-    it { should_not permit(:labeled) }
+    it { should_not permit(:edit) }
+    it { should_not permit(:update) }
+    it { should_not permit(:add_comparison) }
+    it { should_not permit(:consolidate) }
   end
 
   context 'for leader' do
     let(:user) { leader }
-    it { should permit(:labeled) }
+    it { should permit(:edit) }
+    it { should permit(:update) }
+    it { should permit(:add_comparison) }
+    it { should permit(:consolidate) }
   end
 
   context 'for consolidator' do
     let(:user) { consolidator }
-    it { should permit(:labeled) }
+    it { should permit(:edit) }
+    it { should permit(:update) }
+    it { should permit(:add_comparison) }
+    it { should permit(:consolidate) }
   end
 
   context 'for contributor' do
     let(:user) { contributor }
-    it { should permit(:labeled) }
+    it { should_not permit(:edit) }
+    it { should_not permit(:update) }
+    it { should_not permit(:add_comparison) }
+    it { should_not permit(:consolidate) }
   end
 
   context 'for auditor' do
     let(:user) { auditor }
-    it { should_not permit(:labeled) }
+    it { should_not permit(:edit) }
+    it { should_not permit(:update) }
+    it { should_not permit(:add_comparison) }
+    it { should_not permit(:consolidate) }
   end
 end
