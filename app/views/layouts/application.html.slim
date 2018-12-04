@@ -16,6 +16,9 @@ html class='no-js' lang='en'
   body class="#{controller_name} #{action_name}"
     = Gon::Base.render_data(camelCase: true)
     = render 'shared/noscript'
+    iframe src="/ahrq_header.html" text="AHRQ Header" title="AHRQ Header" height="130" width="100%" frameborder="0" scrolling="no" seemless
+      p Browser does not support iframes. Please update your browser to for a better viewing experience.
+
     - if content_for?(:content)
       == yield(:content)
     - else
@@ -25,15 +28,12 @@ html class='no-js' lang='en'
           .off-canvas.position-right#offCanvasNav data-off-canvas=''
             = render 'shared/sidebar_nav'
         .off-canvas-content data-off-canvas-content=''
-          iframe src="/ahrq_header.html" text="AHRQ Header" title="AHRQ Header" height="130" width="100%" frameborder="0" scrolling="no" seemless
-            p Browser does not support iframes. Please update your browser to for a better viewing experience.
-
           = render 'shared/topbar_nav'
           .column.row.content
             .breadcrumbs
               = render_breadcrumbs tag: :li, separator: ''
             == yield
             = render 'shared/scroll_top_wrapper'
-          iframe src="/ahrq_footer.html" text="AHRQ Footer" title="AHRQ Footer" height="350" width="100%" frameborder="0" scrolling="no" seemless
-            p Browser does not support iframes. Please update your browser to for a better viewing experience.
         /= render 'shared/footer'
+    iframe src="/ahrq_footer.html" text="AHRQ Footer" title="AHRQ Footer" height="350" width="100%" frameborder="0" scrolling="no" seemless
+      p Browser does not support iframes. Please update your browser to for a better viewing experience.
