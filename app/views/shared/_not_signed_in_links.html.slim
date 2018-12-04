@@ -1,7 +1,7 @@
-/li = link_to('About', about_path)
-li = link_to('How to Cite', citing_path)
-li = link_to('Contact Us', contact_path)
-li = link_to('Usage Policies', usage_path)
-li.show-for-medium = link_to('Login', new_user_session_path)
-li = link_to('Sign Up', new_user_registration_path, { class: 'button' })
+li = link_to(t('.about'), about_path)
+li = link_to(t('.cite'), citing_path)
+li = link_to(t('.contact'), contact_path)
+li = link_to(t('.usage'), usage_path)
+li.show-for-medium = link_to(t('.login'), new_user_session_path)
+li = link_to(t('.signup'), new_user_registration_path, { class: 'button' })
 

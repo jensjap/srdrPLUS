@@ -77,6 +77,13 @@ en:
       extractions: Extraction List
       citations: Citations
       tasks: Tasks
+    not_signed_in_links:
+      about: About Us
+      cite: How to Cite
+      contact: Contact Us
+      usage: Usage Policies
+      login: Login
+      signup: Sign Up
   extraction_forms_projects:
     form:
       save: Save Extraction Form
