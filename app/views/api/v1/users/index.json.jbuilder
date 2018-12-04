@@ -5,7 +5,7 @@ end
 json.results do
   json.array!(@users) do |user|
     json.id user.id
-    json.text user.profile.username
+    json.text user.profile.username + " (" + user.email + ")"
   end
 end
 
