@@ -16,9 +16,9 @@ h4 List of Suggested #{ section_name }s
     tbody.orderable-list orderable-url="#{ update_positions_api_v1_orderings_url }"
       - efps.extraction_forms_projects_sections_type1s.ordered.each do |efpst1|
         tr.orderable-item [ position="#{ efpst1.ordering.position }" ordering-id="#{ efpst1.ordering.id }" ]
-          td = efpst1.type1.name
           - if section_name.eql? 'Outcome'
             td = efpst1.type1_type.try(:name)
+          td = efpst1.type1.name
 
           td style='white-space: pre-wrap' = efpst1.type1.description
           - if section_name.eql? 'Outcome'
