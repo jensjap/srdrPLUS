@@ -22,6 +22,10 @@
         li = link_to(new_search_path) do
           i.fi-magnifying-glass>
           | Search
+        li = link_to(t('.about'), about_path)
+        li = link_to(t('.cite'), citing_path)
+        li = link_to(t('.contact'), contact_path)
+        li = link_to(t('.usage'), usage_path)
         - if user_signed_in?
           = render 'shared/signed_in_links'
         - else
