@@ -68,4 +68,11 @@ class Extraction < ApplicationRecord
         self.id,
         self.project.extraction_forms_projects.first.id).present?
   end
+
+  # Returns a ActiveRecord::AssociationRelation.
+  def find_eefps_by_section_type(section_name)
+    self.extractions_extraction_forms_projects_sections
+      .joins(extraction_forms_projects_section: :section)
+      .where(sections: { name: section_name })
+  end
 end

@@ -16,6 +16,12 @@
                                                  efps: eefps.extraction_forms_projects_section } ) %>" )
       .foundation()
     <% end %>
+    $( '#panel-tab-<%= @results_eefps.extraction_forms_projects_section.id %>' )
+      .html( "<%= escape_javascript( render partial: 'extractions/' + @action + '/' + @results_eefps.extraction_forms_projects_section.extraction_forms_projects_section_type.name.parameterize.underscore,
+                                     locals: { section_name: @results_eefps.extraction_forms_projects_section.section.name,
+                                               efp: @results_eefps.extraction_forms_projects_section.extraction_forms_project,
+                                               efps: @results_eefps.extraction_forms_projects_section } ) %>" )
+    .foundation()
     toastr.success( 'Success' );
   <% else %>
     $(document.getElementById( 'spinner-modal' )).foundation( 'open' )

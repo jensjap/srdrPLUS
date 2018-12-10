@@ -14,9 +14,10 @@ class ExtractionsExtractionFormsProjectsSectionsController < ApplicationControll
         end
         format.json { render :show, status: :ok, location: @extractions_extraction_forms_projects_section }
         format.js do
-          @extraction = @extractions_extraction_forms_projects_section.extraction
+          @action                = params[:extractions_extraction_forms_projects_section][:action]
+          @extraction            = @extractions_extraction_forms_projects_section.extraction
           @linked_type2_sections = @extractions_extraction_forms_projects_section.link_to_type2s
-          @action = params[:extractions_extraction_forms_projects_section][:action]
+          @results_eefps         = @extraction.find_eefps_by_section_type('Results').first
         end
       else
         format.html { redirect_to work_extraction_path(@extractions_extraction_forms_projects_section.extraction,
