@@ -24,7 +24,7 @@ class ExtractionPolicy < ApplicationPolicy
   end
 
   def destroy?
-    project_consolidator?
+    project_leader?
   end
 
   def work?

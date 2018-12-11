@@ -1,9 +1,9 @@
 class CitationPolicy < ApplicationPolicy
   def labeled?
-    project_consolidator?
+    project_contributor?
   end
 
   def unlabled?
-    project_consolidator?
+    project_contributor?
   end
 end
