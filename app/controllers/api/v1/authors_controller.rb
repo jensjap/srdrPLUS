@@ -9,7 +9,7 @@ class Api::V1::AuthorsController < ApplicationController
     query = params[:q] || ''
     offset = PAGE_SIZE * (page - 1)
 
-    @authors = Author.by_query(query).offset(offset).limit(PAGE_SIZE)
+    @authors = Author.by_query(query)[offset...offset+PAGE_SIZE]
     @more = Author.by_query(query).count > offset
   end
 end

@@ -127,8 +127,6 @@ document.addEventListener 'turbolinks:load', ->
             dateNode = data.getElementsByTagName( 'JournalIssue' )[ 0 ]. \
             getElementsByTagName( 'PubDate' )[ 0 ]
 
-            console.log dateNode.getElementsByTagName( 'Year' ).length > 0
-
             if dateNode.getElementsByTagName( 'Year' ).length > 0
               journal[ 'year' ] = dateNode.getElementsByTagName( 'Year' )[ 0 ].childNodes[ 0 ].nodeValue
             else if dateNode.getElementsByTagName( 'MedlineDate' ).length > 0
@@ -141,7 +139,6 @@ document.addEventListener 'turbolinks:load', ->
                               authors: authors,  \
                               keywords: keywords, \
                               journal: journal }
-            console.log citation_hash
             populate_citation_fields citation_hash
 
       populate_citation_fields = ( citation ) ->
@@ -247,108 +244,110 @@ document.addEventListener 'turbolinks:load', ->
       citationList = new List( 'citations', list_options )
 
       ##### LISTENERS
+      if not $( '#citations').attr( 'listeners-exist' )
+        ## handler for selecting input type
+        $( '#import-select' ).on 'change', () ->
+          $( '#import-ris-div' ).hide()
+          $( '#import-csv-div' ).hide()
+          $( '#import-pubmed-div' ).hide()
+          $( '#import-endnote-div' ).hide()
+          switch $( this ).val()
+            when 'ris' then $( '#import-ris-div' ).show()
+            when 'csv' then $( '#import-csv-div' ).show()
+            when 'pmid-list' then $( '#import-pubmed-div' ).show()
+            when 'endnote' then $( '#import-endnote-div' ).show()
 
-      ## handler for selecting input type
-      $( '#import-select' ).on 'change', () ->
-        $( '#import-ris-div' ).hide()
-        $( '#import-csv-div' ).hide()
-        $( '#import-pubmed-div' ).hide()
-        $( '#import-endnote-div' ).hide()
-        switch $( this ).val()
-          when 'ris' then $( '#import-ris-div' ).show()
-          when 'csv' then $( '#import-csv-div' ).show()
-          when 'pmid-list' then $( '#import-pubmed-div' ).show()
-          when 'endnote' then $( '#import-endnote-div' ).show()
+        # display upload button only if a file is selected
+        $( 'input.file' ).on 'change', () ->
+          if !!$( this ).val()
+            $( this ).closest( '.simple_form' ).find( '.form-actions' ).show()
+          else
+            $( this ).closest( '.simple_form' ).find( '.form-actions' ).hide()
 
-      # display upload button only if a file is selected
-      $( 'input.file' ).on 'change', () ->
-        if !!$( this ).val()
-          $( this ).closest( '.simple_form' ).find( '.form-actions' ).show()
-        else
-          $( this ).closest( '.simple_form' ).find( '.form-actions' ).hide()
+        # handler for sorting citations
+        $( '#sort-button' ).on 'click', () ->
+          if $( this ).attr( 'sort-order' ) == 'desc'
+            $( this ).attr( 'sort-order', 'asc' )
+            $( this ).html( 'ASCENDING' )
+          else
+            $( this ).attr( 'sort-order', 'desc' )
+            $( this ).html( 'DESCENDING' )
+          citationList.sort( $( '#sort-select' ).val(), { order: $( this ).attr( 'sort-order' ), alphabet: undefined, insensitive: true, sortFunction: undefined } )
 
-      # handler for sorting citations
-      $( '#sort-button' ).on 'click', () ->
-        if $( this ).attr( 'sort-order' ) == 'desc'
-          $( this ).attr( 'sort-order', 'asc' )
-          $( this ).html( 'ASCENDING' )
-        else
-          $( this ).attr( 'sort-order', 'desc' )
-          $( this ).html( 'DESCENDING' )
-        citationList.sort( $( '#sort-select' ).val(), { order: $( this ).attr( 'sort-order' ), alphabet: undefined, insensitive: true, sortFunction: undefined } )
+        $( '#sort-select' ).on "change", () ->
+          citationList.sort( $( this ).val(), { order: $( '#sort-button' ).attr( 'sort-order' ), alphabet: undefined, insensitive: true, sortFunction: undefined } )
 
-      $( '#sort-select' ).on "change", () ->
-        citationList.sort( $( this ).val(), { order: $( '#sort-button' ).attr( 'sort-order' ), alphabet: undefined, insensitive: true, sortFunction: undefined } )
-
-      # cocoon listeners
-      # Note: some of the animations don't work well together and are disabled for now 
-      $( '#cp-insertion-node' ).on 'cocoon:before-insert', ( e, citation ) ->
-        $( '.cancel-button' ).click()
-        #citation.slideDown('slow')
-      $( '#citations' ).find( '.list' ).on 'cocoon:after-remove', ( e, citation ) ->
-        $( '#citations-form' ).submit()
-      #$( '#cp-insertion-node' ).on 'cocoon:before-remove', ( e, citation ) ->
-        #$(this).data('remove-timeout', 1000)
-        #citation.slideUp('slow')
-      $( document ).on 'cocoon:after-insert', ( e, insertedItem ) ->
-        $( insertedItem ).find( '.AUTHORS select' ).select2
-          minimumInputLength: 0
-          #closeOnSelect: false
-          ajax:
-            url: '/api/v1/authors.json'
-            dataType: 'json'
-            delay: 100
-            data: (params) ->
-              q: params.term
-              page: params.page || 1
-        $( insertedItem ).find( '.KEYWORDS select' ).select2
-          minimumInputLength: 0
-          #closeOnSelect: false
-          ajax:
-            url: '/api/v1/keywords.json'
-            dataType: 'json'
-            delay: 100
-            data: (params) ->
-              q: params.term
-              page: params.page || 1
-
-        $( insertedItem ).find( '#is-pmid' ).on 'click', () ->
-          ## clean up the citation fields
-          $( insertedItem ).find('.AUTHORS select').val(null).trigger('change')
-          $( insertedItem ).find('.KEYWORDS select').val(null).trigger('change')
-          $( insertedItem ).find('.citation-name input').val(null)
-          $( insertedItem ).find('.citation-abstract textarea').val(null)
-          $( insertedItem ).find('.journal-name input').val(null)
-          $( insertedItem ).find('.journal-volume input').val(null)
-          $( insertedItem ).find('.journal-issue input').val(null)
-          $( insertedItem ).find('.journal-year input').val(null)
-
-          ## fetch citations using value in "Accession Number"
-          fetch_from_pubmed $( '.project_citations_pmid input' ).val()
-
-
-        $( insertedItem ).find( '.citation-select' ).select2
-          minimumInputLength: 0
-          ajax:
-            url: '/api/v1/citations/titles.json',
-            dataType: 'json'
-            delay: 100
-            data: (params) ->
-              q: params.term
-              page: params.page || 1
-
-        # submit form when "Save Citation" button is clicked
-        $( insertedItem ).find( '.save-citation' ).on 'click', () ->
+        # cocoon listeners
+        # Note: some of the animations don't work well together and are disabled for now 
+        $( '#cp-insertion-node' ).on 'cocoon:before-insert', ( e, citation ) ->
+          $( '.cancel-button' ).click()
+          #citation.slideDown('slow')
+        $( '#citations' ).find( '.list' ).on 'cocoon:after-remove', ( e, citation ) ->
           $( '#citations-form' ).submit()
+        #$( '#cp-insertion-node' ).on 'cocoon:before-remove', ( e, citation ) ->
+          #$(this).data('remove-timeout', 1000)
+          #citation.slideUp('slow')
+        $( document ).on 'cocoon:after-insert', ( e, insertedItem ) ->
+          $( insertedItem ).find( '.AUTHORS select' ).select2
+            minimumInputLength: 0
+            #closeOnSelect: false
+            ajax:
+              url: '/api/v1/authors.json'
+              dataType: 'json'
+              delay: 100
+              data: (params) ->
+                q: params.term
+                page: params.page || 1
+          $( insertedItem ).find( '.KEYWORDS select' ).select2
+            minimumInputLength: 0
+            #closeOnSelect: false
+            ajax:
+              url: '/api/v1/keywords.json'
+              dataType: 'json'
+              delay: 100
+              data: (params) ->
+                q: params.term
+                page: params.page || 1
 
-      # reload the citations after a form submission ( probably overkill )
-      $( '#citations-form' ).bind "ajax:success", ( status ) ->
-        append_citations( 1 )
-        toastr.success('Save successful!')
-        $( '.cancel-button' ).click()
-      $( '#citations-form' ).bind "ajax:error", ( status ) ->
-        append_citations( 1 )
-        toastr.error('Could not save changes')
+          $( insertedItem ).find( '#is-pmid' ).on 'click', () ->
+            ## clean up the citation fields
+            $( insertedItem ).find('.AUTHORS select').val(null).trigger('change')
+            $( insertedItem ).find('.KEYWORDS select').val(null).trigger('change')
+            $( insertedItem ).find('.citation-name input').val(null)
+            $( insertedItem ).find('.citation-abstract textarea').val(null)
+            $( insertedItem ).find('.journal-name input').val(null)
+            $( insertedItem ).find('.journal-volume input').val(null)
+            $( insertedItem ).find('.journal-issue input').val(null)
+            $( insertedItem ).find('.journal-year input').val(null)
+
+            ## fetch citations using value in "Accession Number"
+            fetch_from_pubmed $( '.project_citations_pmid input' ).val()
+
+
+          $( insertedItem ).find( '.citation-select' ).select2
+            minimumInputLength: 0
+            ajax:
+              url: '/api/v1/citations/titles.json',
+              dataType: 'json'
+              delay: 100
+              data: (params) ->
+                q: params.term
+                page: params.page || 1
+
+          # submit form when "Save Citation" button is clicked
+          $( insertedItem ).find( '.save-citation' ).on 'click', () ->
+            $( '#citations-form' ).submit()
+
+        # reload the citations after a form submission ( probably overkill )
+        $( '#citations-form' ).bind "ajax:success", ( status ) ->
+          append_citations( 1 )
+          toastr.success('Save successful!')
+          $( '.cancel-button' ).click()
+        $( '#citations-form' ).bind "ajax:error", ( status ) ->
+          append_citations( 1 )
+          toastr.error('Could not save changes')
+
+        $( '#citations' ).attr( 'listeners-exist', 'true' )
 
 
 #    $( '#citations' ).find( '.list' ).on 'cocoon:before-remove', ( e, citation ) ->

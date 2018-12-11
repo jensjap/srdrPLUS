@@ -7,7 +7,7 @@ class KeywordsController < ApplicationController
   def index
     page = (params[:page] || 1).to_i
     offset = PAGE_SIZE * (page - 1)
-    @keywords = Keyword.by_query(params[:q]).offset(offset).limit(30)
+    @keywords = Keyword.by_query(params[:q])[offset...offset+PAGE_SIZE]
     @more = Keyword.by_query(params[:q]).count > page * PAGE_SIZE
   end
 end
