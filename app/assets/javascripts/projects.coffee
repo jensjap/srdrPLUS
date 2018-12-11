@@ -44,23 +44,46 @@ document.addEventListener 'turbolinks:load', ->
 
 
 
-    ##### CHECK WHICH CONTROLLER ACTION THIS PAGE CORRESPONDS TO
-    ##### ONLY RUN THIS CODE IF WE ARE IN EDIT PROJECT PAGE
-    if $( 'body.citations.index' ).length == 1
-
-      #### TASK MANAGEMENT - see if we can only run this stuff on the correct tab
+########## TASK MANAGEMENT
+    if $( 'body.projects.edit' ).length == 1
       $( '.project_tasks_projects_users_roles select' ).select2()
       #### LISTENERS
       $( '.tasks-container' ).on 'cocoon:before-insert', ( e, insertedItem ) ->
         insertedItem.fadeIn 'slow'
         insertedItem.css('display', 'flex')
-      # Bind select2 to degree selection.
       $( '.tasks-container' ).on 'cocoon:after-insert', ( e, insertedItem ) ->
         insertedItem.addClass( 'new-task' )
         $( insertedItem ).find( '.project_tasks_projects_users_roles select' ).select2()
-        #$( insertedItem ).addClass( 'added-citation-item' )
 
-      #### CITATION MANAGEMENT - see if we can only run this stuff on the correct tab
+######### PROJECTS USERS
+      ## still inside projects edit view
+      $( ".project_projects_users_user select" ).select2
+        minimumInputLength: 0
+        ajax:
+          url: '/api/v1/users.json'
+          dataType: 'json'
+          delay: 100
+          data: (params) ->
+            q: params.term
+            page: params.page || 1
+
+      #### LISTENERS
+      $( '#projects-users-table' ).on 'cocoon:after-insert', ( e, insertedItem ) ->
+        $( insertedItem ).find( '.project_projects_users_user select' ).select2
+          minimumInputLength: 0
+          ajax:
+            url: '/api/v1/users.json'
+            dataType: 'json'
+            delay: 100
+            data: (params) ->
+              q: params.term
+              page: params.page || 1
+
+
+######### CITATION MANAGEMENT
+    ##### CHECK WHICH CONTROLLER ACTION THIS PAGE CORRESPONDS TO
+    ##### ONLY RUN THIS CODE IF WE ARE IN INDEX CITATIONS PAGE
+    if $( 'body.citations.index' ).length == 1
       list_options = { valueNames: [ 'citation-numbers', 'citation-title', 'citation-authors', 'citation-journal', 'citation-journal-date', 'citation-abstract', 'citation-abstract' ] }
 
       ## Method to pull citation info from PUBMED as XML
@@ -161,8 +184,6 @@ document.addEventListener 'turbolinks:load', ->
             return
 
         return
-
-      #fetch_from_pubmed '25792187'
 
       ## Method to populate citations list dynamically using ajax calls to api/v1/projects/:id/citations.json
       append_citations = ( page ) ->
@@ -328,6 +349,7 @@ document.addEventListener 'turbolinks:load', ->
       $( '#citations-form' ).bind "ajax:error", ( status ) ->
         append_citations( 1 )
         toastr.error('Could not save changes')
+
 
 #    $( '#citations' ).find( '.list' ).on 'cocoon:before-remove', ( e, citation ) ->
 #      remove_button = $( citation ).find( '.remove-button' )

@@ -1,5 +1,11 @@
-  tr
-    td
-      = f.association :user, label_method: lambda { |user| user.profile.username }
-    td
-      = f.association :roles, label: 'Roles', required: true, hint: 'User must have at least one role', as: :check_boxes
+  tr.nested-fields
+    td style="width: 50%;"
+      = f.association :user, label_method: lambda { |user| user.profile.username + " (" + user.email + ")" }
+
+    td style="width: 40%;"
+      = f.association :roles, label: false, required: false, as: :check_boxes
+
+    td style="width: 10%;"
+      div style="float: right;"
+        .links
+          = link_to_remove_association 'Remove', f
