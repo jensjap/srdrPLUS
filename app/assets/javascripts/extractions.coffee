@@ -13,6 +13,8 @@ document.addEventListener 'turbolinks:load', ->
 #        clearTimeout timer
 #        timer = setTimeout( callback, ms )
 
+    #################################################
+    # Attach listener to outcome population selector.
     $( '#outcome_populations_selector_eefpst1_id' ).change ( event ) ->
       $.ajax
         url: '/extractions_extraction_forms_projects_sections_type1s/' + this.value + '/get_results_populations'
