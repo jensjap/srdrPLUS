@@ -3,40 +3,42 @@ table.unstriped
   tbody
 
     tr
-      td style='border: 1px solid lightgrey;'
+      td style='border: 1px solid lightgrey; width: 30%; text-align: center;'
         /= link_to "#{ eefpst1r.extractions_extraction_forms_projects_sections_type1.type1.short_name_and_description }::#{ eefpst1r.population_name.name }: Measured Values",
         = link_to edit_result_statistic_section_path(eefpst1r.result_statistic_sections.where(result_statistic_section_type: ResultStatisticSectionType.find_by(name: 'Descriptive Statistics')).first),
-          style: 'font-weight: bold;' do
-          span MEASURED VALUES
+          class: 'jens',
+          style: 'font-weight: bold; text-align: center;' do
+          | MEASURED VALUES
           br
           | (at a time-point, e.g., 0 months, 6 months)
           br
-          = image_tag('results_link_measured_values')
+          = image_tag('results_link_measured_values', size: '216x216', class: 'right')
 
-      td style='border: 1px solid lightgrey;'
+      td style='border: 1px solid lightgrey; width: 30%; text-align: center;'
         = link_to edit_result_statistic_section_path(eefpst1r.result_statistic_sections.where(result_statistic_section_type: ResultStatisticSectionType.find_by(name: 'Between Arm Comparisons')).first),
           style: 'font-weight: bold;' do
-          span BETWEEN-ARM COMPARISONS
+          | BETWEEN-ARM COMPARISONS
           br
           | (of measured values at a time-point, e.g., 6 months)
           br
-          = image_tag('results_link_between_arm_comparisons')
+          = image_tag('results_link_between_arm_comparisons', size: '256x256')
 
-    tr
-      td style='border: 1px solid lightgrey;'
-        = link_to edit_result_statistic_section_path(eefpst1r.result_statistic_sections.where(result_statistic_section_type: ResultStatisticSectionType.find_by(name: 'Within Arm Comparisons')).first),
-          style: 'font-weight: bold;' do
-          span WITHIN-ARM CHANGES
-          br
-          | (in measured values between time-points, e.g., from 0 to 6 months)
-          br
-          = image_tag('results_link_within_arm_comparisons')
+    - if eefpst1r.extractions_extraction_forms_projects_sections_type1.type1_type_id == 2
+      tr
+        td style='border: 1px solid lightgrey; width: 30%; text-align: center;'
+          = link_to edit_result_statistic_section_path(eefpst1r.result_statistic_sections.where(result_statistic_section_type: ResultStatisticSectionType.find_by(name: 'Within Arm Comparisons')).first),
+            style: 'font-weight: bold;' do
+            | WITHIN-ARM CHANGES
+            br
+            | (in measured values between time-points, e.g., from 0 to 6 months)
+            br
+            = image_tag('results_link_within_arm_comparisons', size: '256x256')
 
-      td style='border: 1px solid lightgrey;'
-        = link_to edit_result_statistic_section_path(eefpst1r.result_statistic_sections.where(result_statistic_section_type: ResultStatisticSectionType.find_by(name: 'NET Change')).first),
-          style: 'font-weight: bold;' do
-          span NET COMPARISONS
-          br
-          | (of within-arm changes in measured values)
-          br
-          = image_tag('results_link_net_comparisons')
+        td style='border: 1px solid lightgrey; width: 30%; text-align: center;'
+          = link_to edit_result_statistic_section_path(eefpst1r.result_statistic_sections.where(result_statistic_section_type: ResultStatisticSectionType.find_by(name: 'NET Change')).first),
+            style: 'font-weight: bold;' do
+            | NET COMPARISONS
+            br
+            | (of within-arm changes in measured values)
+            br
+            = image_tag('results_link_net_comparisons', size: '256x256')

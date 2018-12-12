@@ -371,3 +371,13 @@ a.accordion-title.populations {
   }
 }
 // END Off-Canvas-Nav-Items
+
+// Results section nav table.
+.results-nav-table td {
+  border: 1px solid grey;
+  width: 40%;
+  &.active {
+    background: repeating-linear-gradient(45deg, #eacfff, #fff 10px, #fff 10px, #fff 20px);
+  }
+}
+// END Results section nav table.

@@ -2483,7 +2483,7 @@ template {
 /* line 120, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/_global.scss */
 html {
   box-sizing: border-box;
-  font-size: 120%;
+  font-size: 100%;
 }
 
 /* line 126, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/_global.scss */
@@ -2570,7 +2570,7 @@ pre {
 
 /* line 28, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/grid/_classes.scss */
 .row {
-  max-width: 93.75rem;
+  max-width: 112.5rem;
   margin-right: auto;
   margin-left: auto;
 }
@@ -2590,21 +2590,21 @@ pre {
 }
 /* line 39, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/grid/_classes.scss */
 .row .row {
-  margin-right: -0.52083rem;
-  margin-left: -0.52083rem;
+  margin-right: -0.625rem;
+  margin-left: -0.625rem;
 }
 @media print, screen and (min-width: 40em) {
   /* line 39, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/grid/_classes.scss */
   .row .row {
-    margin-right: -0.78125rem;
-    margin-left: -0.78125rem;
+    margin-right: -0.9375rem;
+    margin-left: -0.9375rem;
   }
 }
 @media print, screen and (min-width: 64em) {
   /* line 39, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/grid/_classes.scss */
   .row .row {
-    margin-right: -0.78125rem;
-    margin-left: -0.78125rem;
+    margin-right: -0.9375rem;
+    margin-left: -0.9375rem;
   }
 }
 /* line 42, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/grid/_classes.scss */
@@ -2627,27 +2627,27 @@ pre {
 }
 /* line 67, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/grid/_classes.scss */
 .row.gutter-small > .column, .row.gutter-small > .columns {
-  padding-right: 0.52083rem;
-  padding-left: 0.52083rem;
+  padding-right: 0.625rem;
+  padding-left: 0.625rem;
 }
 /* line 67, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/grid/_classes.scss */
 .row.gutter-medium > .column, .row.gutter-medium > .columns {
-  padding-right: 0.78125rem;
-  padding-left: 0.78125rem;
+  padding-right: 0.9375rem;
+  padding-left: 0.9375rem;
 }
 
 /* line 76, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/grid/_classes.scss */
 .column, .columns {
   width: 100%;
   float: left;
-  padding-right: 0.52083rem;
-  padding-left: 0.52083rem;
+  padding-right: 0.625rem;
+  padding-left: 0.625rem;
 }
 @media print, screen and (min-width: 40em) {
   /* line 76, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/grid/_classes.scss */
   .column, .columns {
-    padding-right: 0.78125rem;
-    padding-left: 0.78125rem;
+    padding-right: 0.9375rem;
+    padding-left: 0.9375rem;
   }
 }
 /* line 68, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/grid/_column.scss */
@@ -3087,8 +3087,8 @@ pre {
 
 /* line 149, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/grid/_classes.scss */
 .small-uncollapse > .column, .small-uncollapse > .columns {
-  padding-right: 0.52083rem;
-  padding-left: 0.52083rem;
+  padding-right: 0.625rem;
+  padding-left: 0.625rem;
 }
 
 /* line 153, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/grid/_classes.scss */
@@ -3528,8 +3528,8 @@ pre {
 
   /* line 149, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/grid/_classes.scss */
   .medium-uncollapse > .column, .medium-uncollapse > .columns {
-    padding-right: 0.78125rem;
-    padding-left: 0.78125rem;
+    padding-right: 0.9375rem;
+    padding-left: 0.9375rem;
   }
 
   /* line 153, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/grid/_classes.scss */
@@ -3969,8 +3969,8 @@ pre {
 
   /* line 149, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/grid/_classes.scss */
   .large-uncollapse > .column, .large-uncollapse > .columns {
-    padding-right: 0.78125rem;
-    padding-left: 0.78125rem;
+    padding-right: 0.9375rem;
+    padding-left: 0.9375rem;
   }
 
   /* line 153, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/grid/_classes.scss */
@@ -3996,7 +3996,7 @@ pre {
 }
 /* line 166, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/grid/_classes.scss */
 .column-block {
-  margin-bottom: 1.04167rem;
+  margin-bottom: 1.25rem;
 }
 /* line 78, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/grid/_gutter.scss */
 .column-block > :last-child {
@@ -4005,7 +4005,7 @@ pre {
 @media print, screen and (min-width: 40em) {
   /* line 166, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/grid/_classes.scss */
   .column-block {
-    margin-bottom: 1.5625rem;
+    margin-bottom: 1.875rem;
   }
   /* line 78, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/grid/_gutter.scss */
   .column-block > :last-child {
@@ -4091,7 +4091,7 @@ h6 small {
 
 /* line 332, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/typography/_base.scss */
 h1 {
-  font-size: 1.25rem;
+  font-size: 1.5rem;
   line-height: 1.4;
   margin-top: 0;
   margin-bottom: 0.5rem;
@@ -4099,7 +4099,7 @@ h1 {
 
 /* line 332, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/typography/_base.scss */
 h2 {
-  font-size: 1.04167rem;
+  font-size: 1.25rem;
   line-height: 1.4;
   margin-top: 0;
   margin-bottom: 0.5rem;
@@ -4107,7 +4107,7 @@ h2 {
 
 /* line 332, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/typography/_base.scss */
 h3 {
-  font-size: 0.98958rem;
+  font-size: 1.1875rem;
   line-height: 1.4;
   margin-top: 0;
   margin-bottom: 0.5rem;
@@ -4115,7 +4115,7 @@ h3 {
 
 /* line 332, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/typography/_base.scss */
 h4 {
-  font-size: 0.9375rem;
+  font-size: 1.125rem;
   line-height: 1.4;
   margin-top: 0;
   margin-bottom: 0.5rem;
@@ -4123,7 +4123,7 @@ h4 {
 
 /* line 332, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/typography/_base.scss */
 h5 {
-  font-size: 0.88542rem;
+  font-size: 1.0625rem;
   line-height: 1.4;
   margin-top: 0;
   margin-bottom: 0.5rem;
@@ -4131,7 +4131,7 @@ h5 {
 
 /* line 332, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/typography/_base.scss */
 h6 {
-  font-size: 0.83333rem;
+  font-size: 1rem;
   line-height: 1.4;
   margin-top: 0;
   margin-bottom: 0.5rem;
@@ -4140,32 +4140,32 @@ h6 {
 @media print, screen and (min-width: 40em) {
   /* line 332, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/typography/_base.scss */
   h1 {
-    font-size: 2.5rem;
+    font-size: 3rem;
   }
 
   /* line 332, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/typography/_base.scss */
   h2 {
-    font-size: 2.08333rem;
+    font-size: 2.5rem;
   }
 
   /* line 332, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/typography/_base.scss */
   h3 {
-    font-size: 1.61458rem;
+    font-size: 1.9375rem;
   }
 
   /* line 332, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/typography/_base.scss */
   h4 {
-    font-size: 1.30208rem;
+    font-size: 1.5625rem;
   }
 
   /* line 332, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/typography/_base.scss */
   h5 {
-    font-size: 1.04167rem;
+    font-size: 1.25rem;
   }
 
   /* line 332, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/typography/_base.scss */
   h6 {
-    font-size: 0.83333rem;
+    font-size: 1rem;
   }
 }
 /* line 371, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/typography/_base.scss */
@@ -4188,9 +4188,9 @@ a img {
 /* line 392, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/typography/_base.scss */
 hr {
   clear: both;
-  max-width: 93.75rem;
+  max-width: 112.5rem;
   height: 0;
-  margin: 1.04167rem auto;
+  margin: 1.25rem auto;
   border-top: 0;
   border-right: 0;
   border-bottom: 1px solid #cacaca;
@@ -4241,7 +4241,7 @@ dl dt {
 /* line 449, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/typography/_base.scss */
 blockquote {
   margin: 0 0 1rem;
-  padding: 0.46875rem 1.04167rem 0 0.98958rem;
+  padding: 0.5625rem 1.25rem 0 1.1875rem;
   border-left: 1px solid #cacaca;
 }
 /* line 454, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/typography/_base.scss */
@@ -4253,7 +4253,7 @@ blockquote, blockquote p {
 /* line 461, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/typography/_base.scss */
 cite {
   display: block;
-  font-size: 0.67708rem;
+  font-size: 0.8125rem;
   color: #8a8a8a;
 }
 /* line 466, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/typography/_base.scss */
@@ -4275,7 +4275,7 @@ figure {
 
 /* line 484, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/typography/_base.scss */
 code {
-  padding: 0.10417rem 0.26042rem 0.05208rem;
+  padding: 0.125rem 0.3125rem 0.0625rem;
   border: 1px solid #cacaca;
   background-color: #e6e6e6;
   font-family: Consolas, "Liberation Mono", Courier, monospace;
@@ -4286,7 +4286,7 @@ code {
 /* line 496, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/typography/_base.scss */
 kbd {
   margin: 0;
-  padding: 0.10417rem 0.20833rem 0;
+  padding: 0.125rem 0.25rem 0;
   background-color: #e6e6e6;
   font-family: Consolas, "Liberation Mono", Courier, monospace;
   color: #0a0a0a;
@@ -4304,7 +4304,7 @@ kbd {
 
 /* line 58, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/typography/_helpers.scss */
 .lead {
-  font-size: 150%;
+  font-size: 125%;
   line-height: 1.6;
 }
 
@@ -4780,15 +4780,15 @@ textarea {
   display: block;
   box-sizing: border-box;
   width: 100%;
-  height: 2.03125rem;
-  margin: 0 0 0.83333rem;
-  padding: 0.41667rem;
+  height: 2.4375rem;
+  margin: 0 0 1rem;
+  padding: 0.5rem;
   border: 1px solid #cacaca;
   border-radius: 4px;
   background-color: #fefefe;
   box-shadow: inset 0 1px 2px rgba(10, 10, 10, 0.1);
   font-family: inherit;
-  font-size: 0.83333rem;
+  font-size: 1rem;
   font-weight: normal;
   color: #0a0a0a;
   transition: box-shadow 0.5s, border-color 0.25s ease-in-out;
@@ -4842,7 +4842,7 @@ input[type='search'] {
 [type='file'],
 [type='checkbox'],
 [type='radio'] {
-  margin: 0 0 0.83333rem;
+  margin: 0 0 1rem;
 }
 
 /* line 17, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/forms/_checkbox.scss */
@@ -4850,8 +4850,8 @@ input[type='search'] {
 [type='radio'] + label {
   display: inline-block;
   vertical-align: baseline;
-  margin-left: 0.41667rem;
-  margin-right: 0.83333rem;
+  margin-left: 0.5rem;
+  margin-right: 1rem;
   margin-bottom: 0;
 }
 /* line 26, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/forms/_checkbox.scss */
@@ -4863,7 +4863,7 @@ input[type='search'] {
 /* line 32, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/forms/_checkbox.scss */
 label > [type='checkbox'],
 label > [type='radio'] {
-  margin-right: 0.41667rem;
+  margin-right: 0.5rem;
 }
 
 /* line 38, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/forms/_checkbox.scss */
@@ -4875,21 +4875,21 @@ label > [type='radio'] {
 label {
   display: block;
   margin: 0;
-  font-size: 0.72917rem;
+  font-size: 0.875rem;
   font-weight: normal;
   line-height: 1.8;
   color: #0a0a0a;
 }
 /* line 46, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/forms/_label.scss */
 label.middle {
-  margin: 0 0 0.83333rem;
-  padding: 0.46875rem 0;
+  margin: 0 0 1rem;
+  padding: 0.5625rem 0;
 }
 
 /* line 22, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/forms/_help-text.scss */
 .help-text {
-  margin-top: -0.41667rem;
-  font-size: 0.67708rem;
+  margin-top: -0.5rem;
+  font-size: 0.8125rem;
   font-style: italic;
   color: #0a0a0a;
 }
@@ -4898,7 +4898,7 @@ label.middle {
 .input-group {
   display: table;
   width: 100%;
-  margin-bottom: 0.83333rem;
+  margin-bottom: 1rem;
 }
 /* line 36, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/forms/_input-group.scss */
 .input-group > :first-child {
@@ -4943,7 +4943,7 @@ label.middle {
 /* line 88, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/forms/_input-group.scss */
 .input-group-field {
   border-radius: 0;
-  height: 2.08333rem;
+  height: 2.5rem;
 }
 
 /* line 102, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/forms/_input-group.scss */
@@ -4959,10 +4959,10 @@ label.middle {
 .input-group-button input,
 .input-group-button button,
 .input-group-button label {
-  height: 2.08333rem;
+  height: 2.5rem;
   padding-top: 0;
   padding-bottom: 0;
-  font-size: 0.83333rem;
+  font-size: 1rem;
 }
 
 /* line 131, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/forms/_input-group.scss */
@@ -4980,42 +4980,42 @@ fieldset {
 /* line 46, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/forms/_fieldset.scss */
 legend {
   max-width: 100%;
-  margin-bottom: 0.41667rem;
+  margin-bottom: 0.5rem;
 }
 
 /* line 51, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/forms/_fieldset.scss */
 .fieldset {
-  margin: 0.9375rem 0;
-  padding: 1.04167rem;
+  margin: 1.125rem 0;
+  padding: 1.25rem;
   border: 1px solid #cacaca;
 }
 /* line 30, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/forms/_fieldset.scss */
 .fieldset legend {
   margin: 0;
-  margin-left: -0.15625rem;
-  padding: 0 0.15625rem;
+  margin-left: -0.1875rem;
+  padding: 0 0.1875rem;
   background: #fefefe;
 }
 
 /* line 82, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/forms/_select.scss */
 select {
-  height: 2.03125rem;
-  margin: 0 0 0.83333rem;
-  padding: 0.41667rem;
+  height: 2.4375rem;
+  margin: 0 0 1rem;
+  padding: 0.5rem;
   appearance: none;
   border: 1px solid #cacaca;
   border-radius: 4px;
   background-color: #fefefe;
   font-family: inherit;
-  font-size: 0.83333rem;
+  font-size: 1rem;
   line-height: normal;
   color: #0a0a0a;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' width='32' height='24' viewBox='0 0 32 24'><polygon points='0,0 32,0 16,24' style='fill: rgb%28138, 138, 138%29'></polygon></svg>");
   background-origin: content-box;
-  background-position: right -0.83333rem center;
+  background-position: right -1rem center;
   background-repeat: no-repeat;
   background-size: 9px 6px;
-  padding-right: 1.25rem;
+  padding-right: 1.5rem;
   transition: box-shadow 0.5s, border-color 0.25s ease-in-out;
 }
 @media screen and (min-width: 0\0) {
@@ -5065,9 +5065,9 @@ select[multiple] {
 /* line 81, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/forms/_error.scss */
 .form-error {
   display: none;
-  margin-top: -0.41667rem;
-  margin-bottom: 0.83333rem;
-  font-size: 0.625rem;
+  margin-top: -0.5rem;
+  margin-bottom: 1rem;
+  font-size: 0.75rem;
   font-weight: bold;
   color: #cc4b37;
 }
@@ -5265,7 +5265,7 @@ select[multiple] {
   padding: 1.25rem 1rem;
   border: 1px solid #e6e6e6;
   border-bottom: 0;
-  font-size: 0.9375rem;
+  font-size: 1.125rem;
   line-height: 1;
   color: #410093;
 }
@@ -5385,7 +5385,7 @@ select[multiple] {
 /* line 52, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/components/_breadcrumbs.scss */
 .breadcrumbs li {
   float: left;
-  font-size: 0.57292rem;
+  font-size: 0.6875rem;
   color: #0a0a0a;
   cursor: default;
   text-transform: uppercase;
@@ -6147,7 +6147,7 @@ select[multiple] {
 .flex-video {
   position: relative;
   height: 0;
-  margin-bottom: 0.83333rem;
+  margin-bottom: 1rem;
   padding-bottom: 75%;
   overflow: hidden;
 }
@@ -6923,9 +6923,9 @@ select[multiple] {
 }
 /* line 83, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/components/_pagination.scss */
 .pagination li {
-  margin-right: 0.05208rem;
+  margin-right: 0.0625rem;
   border-radius: 4px;
-  font-size: 0.72917rem;
+  font-size: 0.875rem;
   display: none;
 }
 /* line 94, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/components/_pagination.scss */
@@ -6942,7 +6942,7 @@ select[multiple] {
 .pagination a,
 .pagination button {
   display: block;
-  padding: 0.15625rem 0.52083rem;
+  padding: 0.1875rem 0.625rem;
   border-radius: 4px;
   color: #0a0a0a;
 }
@@ -6953,14 +6953,14 @@ select[multiple] {
 }
 /* line 165, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/components/_pagination.scss */
 .pagination .current {
-  padding: 0.15625rem 0.52083rem;
+  padding: 0.1875rem 0.625rem;
   background: #410093;
   color: #fefefe;
   cursor: default;
 }
 /* line 169, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/components/_pagination.scss */
 .pagination .disabled {
-  padding: 0.15625rem 0.52083rem;
+  padding: 0.1875rem 0.625rem;
   color: #cacaca;
   cursor: not-allowed;
 }
@@ -6970,7 +6970,7 @@ select[multiple] {
 }
 /* line 173, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/components/_pagination.scss */
 .pagination .ellipsis::after {
-  padding: 0.15625rem 0.52083rem;
+  padding: 0.1875rem 0.625rem;
   content: '\2026';
   color: #0a0a0a;
 }
@@ -7233,7 +7233,7 @@ html.is-reveal-open body {
   /* line 136, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/components/_reveal.scss */
   .reveal {
     width: 600px;
-    max-width: 93.75rem;
+    max-width: 112.5rem;
   }
 }
 @media print, screen and (min-width: 40em) {
@@ -7252,21 +7252,21 @@ html.is-reveal-open body {
   /* line 161, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/components/_reveal.scss */
   .reveal.tiny {
     width: 30%;
-    max-width: 93.75rem;
+    max-width: 112.5rem;
   }
 }
 @media print, screen and (min-width: 40em) {
   /* line 162, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/components/_reveal.scss */
   .reveal.small {
     width: 50%;
-    max-width: 93.75rem;
+    max-width: 112.5rem;
   }
 }
 @media print, screen and (min-width: 40em) {
   /* line 163, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/components/_reveal.scss */
   .reveal.large {
     width: 90%;
-    max-width: 93.75rem;
+    max-width: 112.5rem;
   }
 }
 /* line 166, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/components/_reveal.scss */
@@ -7308,7 +7308,7 @@ html.is-reveal-open body {
   position: relative;
   margin-bottom: 1rem;
   outline: 0;
-  font-size: 0.72917rem;
+  font-size: 0.875rem;
   font-weight: bold;
   color: #fefefe;
   user-select: none;
@@ -7399,7 +7399,7 @@ input:checked + label > .switch-inactive {
 .switch.tiny .switch-paddle {
   width: 3rem;
   height: 1.5rem;
-  font-size: 0.52083rem;
+  font-size: 0.625rem;
 }
 /* line 189, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/components/_switch.scss */
 .switch.tiny .switch-paddle::after {
@@ -7421,7 +7421,7 @@ input:checked + label > .switch-inactive {
 .switch.small .switch-paddle {
   width: 3.5rem;
   height: 1.75rem;
-  font-size: 0.625rem;
+  font-size: 0.75rem;
 }
 /* line 189, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/components/_switch.scss */
 .switch.small .switch-paddle::after {
@@ -7443,7 +7443,7 @@ input:checked + label > .switch-inactive {
 .switch.large .switch-paddle {
   width: 5rem;
   height: 2.5rem;
-  font-size: 0.83333rem;
+  font-size: 1rem;
 }
 /* line 189, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/components/_switch.scss */
 .switch.large .switch-paddle::after {
@@ -7473,7 +7473,7 @@ tfoot {
 
 /* line 115, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/components/_table.scss */
 caption {
-  padding: 0.20833rem 0.26042rem 0.26042rem;
+  padding: 0.25rem 0.3125rem 0.3125rem;
   font-weight: bold;
 }
 
@@ -7499,7 +7499,7 @@ thead th,
 thead td,
 tfoot th,
 tfoot td {
-  padding: 0.20833rem 0.26042rem 0.26042rem;
+  padding: 0.25rem 0.3125rem 0.3125rem;
   font-weight: bold;
   text-align: left;
 }
@@ -7507,7 +7507,7 @@ tfoot td {
 /* line 151, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/components/_table.scss */
 tbody th,
 tbody td {
-  padding: 0.20833rem 0.26042rem 0.26042rem;
+  padding: 0.25rem 0.3125rem 0.3125rem;
 }
 
 /* line 83, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/foundation-rails-6.3.1.0/vendor/assets/scss/components/_table.scss */
@@ -7639,7 +7639,7 @@ table.hover:not(.unstriped) tr:nth-of-type(even):hover {
 .tabs-title > a {
   display: block;
   padding: 1.25rem 1.5rem;
-  font-size: 0.72917rem;
+  font-size: 0.875rem;
   line-height: 1;
   color: #410093;
 }
@@ -9018,7 +9018,7 @@ body {
   background-color: #fff;
   color: #333;
   font-family: verdana, arial, helvetica, sans-serif;
-  font-size: 13px;
+  font-size: 16px;
   line-height: 18px;
   margin: 33px;
 }
@@ -9026,7 +9026,7 @@ body {
 /* line 10, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/scaffolds.scss */
 p, ol, ul, td {
   font-family: verdana, arial, helvetica, sans-serif;
-  font-size: 13px;
+  font-size: 16px;
   line-height: 18px;
   margin: 33px;
 }
@@ -9035,7 +9035,7 @@ p, ol, ul, td {
 pre {
   background-color: #eee;
   padding: 10px;
-  font-size: 11px;
+  font-size: 13px;
 }
 
 /* line 23, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/scaffolds.scss */
@@ -9234,7 +9234,7 @@ a.button.remove-link:hover, a.button.remove-link:focus {
 
 /* line 131, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/application.css.scss */
 body div.top-bar {
-  padding: 3px;
+  padding: 3px 3px 6px 3px;
 }
 /* line 134, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/application.css.scss */
 body div.top-bar .top-bar-right {
@@ -9270,7 +9270,7 @@ body div.top-bar a:hover {
 
 /* line 163, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/application.css.scss */
 table ul {
-  margin: 0.52083rem;
+  margin: 0.625rem;
 }
 
 /* line 167, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/application.css.scss */
@@ -9351,8 +9351,8 @@ pre.debug_dump {
 .off-canvas-link {
   position: fixed;
   z-index: 1;
-  top: 60px;
-  right: 4px;
+  top: 50%;
+  right: 20px;
   cursor: pointer;
 }
 
@@ -9465,6 +9465,15 @@ a.accordion-title.populations {
   100% {
     transform: rotate(360deg);
   }
+}
+/* line 377, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/application.css.scss */
+.results-nav-table td {
+  border: 1px solid grey;
+  width: 40%;
+}
+/* line 380, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/application.css.scss */
+.results-nav-table td.active {
+  background: repeating-linear-gradient(45deg, #eacfff, #fff 10px, #fff 10px, #fff 20px);
 }
 /* line 1, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/toastr_rails-2.1.3/app/assets/styleseets/toastr.scss */
 .toast-title {
