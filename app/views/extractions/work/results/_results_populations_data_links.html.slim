@@ -6,7 +6,6 @@ table.unstriped
       td style='border: 1px solid lightgrey; width: 30%; text-align: center;'
         /= link_to "#{ eefpst1r.extractions_extraction_forms_projects_sections_type1.type1.short_name_and_description }::#{ eefpst1r.population_name.name }: Measured Values",
         = link_to edit_result_statistic_section_path(eefpst1r.result_statistic_sections.where(result_statistic_section_type: ResultStatisticSectionType.find_by(name: 'Descriptive Statistics')).first),
-          class: 'jens',
           style: 'font-weight: bold; text-align: center;' do
           | MEASURED VALUES
           br

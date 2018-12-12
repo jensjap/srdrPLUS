@@ -16,24 +16,24 @@
           td class=(@result_statistic_section.result_statistic_section_type.name.eql?('Descriptive Statistics') ? 'active' : '') = link_to edit_result_statistic_section_path(@result_statistic_section.population.result_statistic_sections.where(result_statistic_section_type: ResultStatisticSectionType.find_by(name: 'Descriptive Statistics')).first) do
             span MEASURED VALUES
             br
-            = image_tag('results_link_measured_values')
+            = image_tag('results_link_measured_values.png')
 
           td class=(@result_statistic_section.result_statistic_section_type.name.eql?('Between Arm Comparisons') ? 'active' : '') = link_to edit_result_statistic_section_path(@result_statistic_section.population.result_statistic_sections.where(result_statistic_section_type: ResultStatisticSectionType.find_by(name: 'Between Arm Comparisons')).first) do
             span BETWEEN-ARM COMPARISONS
             br
-            = image_tag('results_link_between_arm_comparisons')
+            = image_tag('results_link_between_arm_comparisons.png')
 
         - if @result_statistic_section.population.extractions_extraction_forms_projects_sections_type1.type1_type_id == 2
           tr
             td class=(@result_statistic_section.result_statistic_section_type.name.eql?('Within Arm Comparisons') ? 'active' : '') = link_to edit_result_statistic_section_path(@result_statistic_section.population.result_statistic_sections.where(result_statistic_section_type: ResultStatisticSectionType.find_by(name: 'Within Arm Comparisons')).first) do
               span WITHIN-ARM CHANGES
               br
-              = image_tag('results_link_within_arm_comparisons')
+              = image_tag('results_link_within_arm_comparisons.png')
 
             td class=(@result_statistic_section.result_statistic_section_type.name.eql?('NET Change') ? 'active' : '') = link_to edit_result_statistic_section_path(@result_statistic_section.population.result_statistic_sections.where(result_statistic_section_type: ResultStatisticSectionType.find_by(name: 'NET Change')).first) do
               span NET COMPARISONS
               br
-              = image_tag('results_link_net_comparisons')
+              = image_tag('results_link_net_comparisons.png')
 
 .column.row
   = render 'result_statistic_sections/shared/auto_save_notification'
