@@ -1,10 +1,35 @@
 - provide(:title, 'Results: ' + @result_statistic_section.result_statistic_section_type.name)
 
-.column.row
-  h4 Outcome: #{ @result_statistic_section.population.extractions_extraction_forms_projects_sections_type1.type1.name }
-    Description: #{ @result_statistic_section.population.extractions_extraction_forms_projects_sections_type1.type1.description }
-  h5 Population: #{ @result_statistic_section.population.population_name.name }
-    Description: #{ @result_statistic_section.population.population_name.description }
+.row
+  .column.medium-8
+    h4 Outcome: #{ @result_statistic_section.population.extractions_extraction_forms_projects_sections_type1.type1.name }
+      Description: #{ @result_statistic_section.population.extractions_extraction_forms_projects_sections_type1.type1.description }
+    h5 Population: #{ @result_statistic_section.population.population_name.name }
+      Description: #{ @result_statistic_section.population.population_name.description }
+
+  .column.medium-4
+    table.unstriped
+      tbody
+        tr
+          td style='border: 1px solid black;' = link_to edit_result_statistic_section_path(@result_statistic_section.population.result_statistic_sections.where(result_statistic_section_type: ResultStatisticSectionType.find_by(name: 'Descriptive Statistics')).first) do
+            span MEASURED VALUES
+            br
+            br
+            = image_tag('results_link_measured_values')
+          td style='border: 1px solid black;' = link_to edit_result_statistic_section_path(@result_statistic_section.population.result_statistic_sections.where(result_statistic_section_type: ResultStatisticSectionType.find_by(name: 'Between Arm Comparisons')).first) do
+            span BETWEEN-ARM COMPARISONS
+            br
+            = image_tag('results_link_between_arm_comparisons')
+        tr
+          td style='border: 1px solid black;' = link_to edit_result_statistic_section_path(@result_statistic_section.population.result_statistic_sections.where(result_statistic_section_type: ResultStatisticSectionType.find_by(name: 'Within Arm Comparisons')).first) do
+            span WITHIN-ARM CHANGES
+            br
+            br
+            = image_tag('results_link_within_arm_comparisons')
+          td style='border: 1px solid black;' = link_to edit_result_statistic_section_path(@result_statistic_section.population.result_statistic_sections.where(result_statistic_section_type: ResultStatisticSectionType.find_by(name: 'NET Change')).first) do
+            span NET COMPARISONS
+            br
+            = image_tag('results_link_net_comparisons')
 
 .column.row
   = render 'result_statistic_sections/shared/auto_save_notification'
