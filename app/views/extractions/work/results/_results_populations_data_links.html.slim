@@ -4,16 +4,39 @@ table.unstriped
 
     tr
       td style='border: 1px solid lightgrey;'
-        = link_to "#{ eefpst1r.extractions_extraction_forms_projects_sections_type1.type1.short_name_and_description }::#{ eefpst1r.population_name.name }: Measured Values",
-          edit_result_statistic_section_path(eefpst1r.result_statistic_sections.where(result_statistic_section_type: ResultStatisticSectionType.find_by(name: 'Descriptive Statistics')).first)
+        /= link_to "#{ eefpst1r.extractions_extraction_forms_projects_sections_type1.type1.short_name_and_description }::#{ eefpst1r.population_name.name }: Measured Values",
+        = link_to edit_result_statistic_section_path(eefpst1r.result_statistic_sections.where(result_statistic_section_type: ResultStatisticSectionType.find_by(name: 'Descriptive Statistics')).first),
+          style: 'font-weight: bold;' do
+          span MEASURED VALUES
+          br
+          | (at a time-point, e.g., 0 months, 6 months)
+          br
+          = image_tag('results_link_measured_values')
+
       td style='border: 1px solid lightgrey;'
-        = link_to "#{ eefpst1r.extractions_extraction_forms_projects_sections_type1.type1.short_name_and_description }::#{ eefpst1r.population_name.name }: Between-arm comparisons",
-          edit_result_statistic_section_path(eefpst1r.result_statistic_sections.where(result_statistic_section_type: ResultStatisticSectionType.find_by(name: 'Between Arm Comparisons')).first)
+        = link_to edit_result_statistic_section_path(eefpst1r.result_statistic_sections.where(result_statistic_section_type: ResultStatisticSectionType.find_by(name: 'Between Arm Comparisons')).first),
+          style: 'font-weight: bold;' do
+          span BETWEEN-ARM COMPARISONS
+          br
+          | (of measured values at a time-point, e.g., 6 months)
+          br
+          = image_tag('results_link_between_arm_comparisons')
 
     tr
       td style='border: 1px solid lightgrey;'
-        = link_to "#{ eefpst1r.extractions_extraction_forms_projects_sections_type1.type1.short_name_and_description }::#{ eefpst1r.population_name.name }: Within-arm changes",
-          edit_result_statistic_section_path(eefpst1r.result_statistic_sections.where(result_statistic_section_type: ResultStatisticSectionType.find_by(name: 'Within Arm Comparisons')).first)
+        = link_to edit_result_statistic_section_path(eefpst1r.result_statistic_sections.where(result_statistic_section_type: ResultStatisticSectionType.find_by(name: 'Within Arm Comparisons')).first),
+          style: 'font-weight: bold;' do
+          span WITHIN-ARM CHANGES
+          br
+          | (in measured values between time-points, e.g., from 0 to 6 months)
+          br
+          = image_tag('results_link_within_arm_comparisons')
+
       td style='border: 1px solid lightgrey;'
-        = link_to "#{ eefpst1r.extractions_extraction_forms_projects_sections_type1.type1.short_name_and_description }::#{ eefpst1r.population_name.name }: Net Differences",
-          edit_result_statistic_section_path(eefpst1r.result_statistic_sections.where(result_statistic_section_type: ResultStatisticSectionType.find_by(name: 'NET Change')).first)
+        = link_to edit_result_statistic_section_path(eefpst1r.result_statistic_sections.where(result_statistic_section_type: ResultStatisticSectionType.find_by(name: 'NET Change')).first),
+          style: 'font-weight: bold;' do
+          span NET COMPARISONS
+          br
+          | (of within-arm changes in measured values)
+          br
+          = image_tag('results_link_net_comparisons')
