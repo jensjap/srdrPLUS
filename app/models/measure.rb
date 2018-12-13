@@ -8,6 +8,7 @@ class Measure < ApplicationRecord
   scope :result_statistic_section_type_defaults, -> ( result_statistic_section_type_id ) {
     joins(:result_statistic_section_types_measures)
       .where(result_statistic_section_types_measures: { result_statistic_section_type_id: result_statistic_section_type_id })
+      .where(result_statistic_section_types_measures: { default: true })
   }
 
   has_one :suggestion, as: :suggestable, dependent: :destroy

@@ -6,7 +6,7 @@ module SeedData
       PaperTrail.enabled = false
 
       # UserTypes.
-      UserType.create([
+      UserType.create!([
         { user_type: 'Admin'},
         { user_type: 'Member'},
         { user_type: 'Trainee'},
@@ -21,7 +21,7 @@ module SeedData
       ])
 
       # Frequency.
-      Frequency.create([
+      Frequency.create!([
         { name: 'Daily' },
         { name: 'Weekly' },
         { name: 'Monthly' },
@@ -29,14 +29,14 @@ module SeedData
       ])
 
       # MessageTypes.
-      @totd = MessageType.create(name: 'Tip Of The Day', frequency: Frequency.first)
-      MessageType.create([
+      @totd = MessageType.create!(name: 'Tip Of The Day', frequency: Frequency.first)
+      MessageType.create!([
         { name: 'General Announcement', frequency: Frequency.first },
         { name: 'Maintenance Announcement', frequency: Frequency.first }
       ])
 
       # ActionTypes.
-      ActionType.create([
+      ActionType.create!([
         { name: 'Create' },
         { name: 'Destroy' },
         { name: 'Update' },
@@ -47,25 +47,25 @@ module SeedData
       ])
 
       # LabelTypes.
-      LabelType.create( name: 'Yes' )
-      LabelType.create( name: 'No' )
-      LabelType.create( name: 'Maybe' )
+      LabelType.create!( name: 'Yes' )
+      LabelType.create!( name: 'No' )
+      LabelType.create!( name: 'Maybe' )
 
       # AssignmentOptionTypes.
-      AssignmentOptionType.create( name: 'TAG_REQUIRED' )
-      AssignmentOptionType.create( name: 'NOTE_REQUIRED' )
-      AssignmentOptionType.create( name: 'REASON_REQUIRED' )
-      AssignmentOptionType.create( name: 'ONLY_LEAD_TAGS' )
-      AssignmentOptionType.create( name: 'ONLY_LEAD_REASONS' )
+      AssignmentOptionType.create!( name: 'TAG_REQUIRED' )
+      AssignmentOptionType.create!( name: 'NOTE_REQUIRED' )
+      AssignmentOptionType.create!( name: 'REASON_REQUIRED' )
+      AssignmentOptionType.create!( name: 'ONLY_LEAD_TAGS' )
+      AssignmentOptionType.create!( name: 'ONLY_LEAD_REASONS' )
 
       # TaskTypes.
-      TaskType.create(name: 'Perpetual')
-      TaskType.create(name: 'Pilot')
-      TaskType.create(name: 'Advanced')
-      TaskType.create(name: 'Conflict')
+      TaskType.create!(name: 'Perpetual')
+      TaskType.create!(name: 'Pilot')
+      TaskType.create!(name: 'Advanced')
+      TaskType.create!(name: 'Conflict')
 
       # ConsensusTypes.
-      ConsensusType.create([
+      ConsensusType.create!([
         { name: 'Yes' },
         { name: 'No' },
         { name: 'Maybe' },
@@ -73,28 +73,983 @@ module SeedData
       ])
 
       # Type1Types.
-      Type1Type.create([
+      Type1Type.create!([
         { name: 'Categorical' },
         { name: 'Continuous' },
         { name: 'Time to Event' },
         { name: 'Adverse Event' }
       ])
 
+      @type1_type_categorical = Type1Type.find_by(name: 'Categorical')
+      @type1_type_continuous = Type1Type.find_by(name: 'Continuous')
+
       # ResultStatisticSectionTypes.
-      @descriptive_statistics_result_statistic_section_type  = ResultStatisticSectionType.create(name: 'Descriptive Statistics')
-      @between_arm_comparisons_result_statistic_section_type = ResultStatisticSectionType.create(name: 'Between Arm Comparisons')
-      @within_arm_comparisons_result_statistic_section_type  = ResultStatisticSectionType.create(name: 'Within Arm Comparisons')
-      @net_change_result_statistic_section_type              = ResultStatisticSectionType.create(name: 'NET Change')
+      @descriptive_statistics_result_statistic_section_type  = ResultStatisticSectionType.create!(name: 'Descriptive Statistics')
+      @between_arm_comparisons_result_statistic_section_type = ResultStatisticSectionType.create!(name: 'Between Arm Comparisons')
+      @within_arm_comparisons_result_statistic_section_type  = ResultStatisticSectionType.create!(name: 'Within Arm Comparisons')
+      @net_change_result_statistic_section_type              = ResultStatisticSectionType.create!(name: 'NET Change')
 
       # Measures.
-      @n_analyzed = Measure.create(name: 'N Analyzed')
-      @counts     = Measure.create(name: 'Counts')
-      @proportion = Measure.create(name: 'Proportions')
-      @percentage = Measure.create(name: 'Percentage')
+      @measure_total_n_analyzed = Measure.create!(name: 'Total (N analyzed)')
+      @measure_events = Measure.create!(name: 'Events')
+      @measure_no_events = Measure.create!(name: 'No events')
+
+      @measure_percentage = Measure.create!(name: 'Percentage')
+      @measure_sd_percentage = Measure.create!(name: 'SD (percentage)')
+      @measure_se_percentage = Measure.create!(name: 'SE (percentage)')
+      @measure_95p_ci_low_percentage = Measure.create!(name: '95% CI low (percentage)')
+      @measure_95p_ci_high_percentage = Measure.create!(name: '95% CI high (percentage)')
+
+      @measure_proportion = Measure.create!(name: 'Proportion')
+      @measure_sd_proportion = Measure.create!(name: 'SD (proportion)')
+      @measure_se_proportion = Measure.create!(name: 'SE (proportion)')
+      @measure_95p_ci_low_proportion = Measure.create!(name: '95% CI low (proportion)')
+      @measure_95p_ci_high_proportion = Measure.create!(name: '95% CI high (proportion)')
+
+      @measure_incidence_rate_per_1000 = Measure.create!(name: 'Incidence rate (per 1,000)')
+      @measure_sd_incidence_rate_per_1000 = Measure.create!(name: 'SD (Incidence rate per 1000)')
+      @measure_se_incidence_rate_per_1000 = Measure.create!(name: 'SE (Incidence rate per 1000)')
+      @measure_95p_ci_low_incidence_rate_per_1000 = Measure.create!(name: '95% CI low (Incidence rate per 1000)')
+      @measure_95p_ci_high_incidence_rate_per_1000 = Measure.create!(name: '95% CI high (Incidence rate per 1000)')
+
+      @measure_incidence_rate_per_10000 = Measure.create!(name: 'Incidence rate (per 10,000)')
+      @measure_sd_incidence_rate_per_10000 = Measure.create!(name: 'SD (Incidence rate per 10,000)')
+      @measure_se_incidence_rate_per_10000 = Measure.create!(name: 'SE (Incidence rate per 10,000)')
+      @measure_95p_ci_low_incidence_rate_per_10000 = Measure.create!(name: '95% CI low (Incidence rate per 10,000)')
+      @measure_95p_ci_high_incidence_rate_per_10000 = Measure.create!(name: '95% CI high (Incidence rate per 10,000)')
+
+      @measure_incidence_rate_per_100000 = Measure.create!(name: 'Incidence rate (per 100,000)')
+      @measure_sd_incidence_rate_per_100000 = Measure.create!(name: 'SD (Incidence rate per 100,000)')
+      @measure_se_incidence_rate_per_100000 = Measure.create!(name: 'SE (Incidence rate per 100,000)')
+      @measure_95p_ci_low_incidence_rate_per_100000 = Measure.create!(name: '95% CI low (Incidence rate per 100,000)')
+      @measure_95p_ci_high_incidence_rate_per_100000 = Measure.create!(name: '95% CI high (Incidence rate per 100,000)')
+
+      @measure_note = Measure.create!(name: 'Note')
 
       # Default measures for each ResultStatisticSectionType.
-      @descriptive_statistics_result_statistic_section_type.measures << @n_analyzed
-      @descriptive_statistics_result_statistic_section_type.measures << @counts
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @descriptive_statistics_result_statistic_section_type,
+        measure: @measure_total_n_analyzed,
+        default: true,
+        type1_type: @type1_type_categorical
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @descriptive_statistics_result_statistic_section_type,
+        measure: @measure_events,
+        default: true,
+        type1_type: @type1_type_categorical
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @descriptive_statistics_result_statistic_section_type,
+        measure: @measure_no_events,
+        default: true,
+        type1_type: @type1_type_categorical
+      )
+
+      rsstm1 = ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @descriptive_statistics_result_statistic_section_type,
+        measure: @measure_percentage,
+        default: true,
+        type1_type: @type1_type_categorical
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @descriptive_statistics_result_statistic_section_type,
+        measure: @measure_sd_percentage,
+        default: false,
+        type1_type: @type1_type_categorical,
+        provider_measure: rsstm1
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @descriptive_statistics_result_statistic_section_type,
+        measure: @measure_se_percentage,
+        default: false,
+        type1_type: @type1_type_categorical,
+        provider_measure: rsstm1
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @descriptive_statistics_result_statistic_section_type,
+        measure: @measure_95p_ci_low_percentage,
+        default: false,
+        type1_type: @type1_type_categorical,
+        provider_measure: rsstm1
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @descriptive_statistics_result_statistic_section_type,
+        measure: @measure_95p_ci_high_percentage,
+        default: false,
+        type1_type: @type1_type_categorical,
+        provider_measure: rsstm1
+      )
+
+      rsstm2 = ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @descriptive_statistics_result_statistic_section_type,
+        measure: @measure_proportion,
+        default: false,
+        type1_type: @type1_type_categorical
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @descriptive_statistics_result_statistic_section_type,
+        measure: @measure_sd_proportion,
+        default: false,
+        type1_type: @type1_type_categorical,
+        provider_measure: rsstm2
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @descriptive_statistics_result_statistic_section_type,
+        measure: @measure_se_proportion,
+        default: false,
+        type1_type: @type1_type_categorical,
+        provider_measure: rsstm2
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @descriptive_statistics_result_statistic_section_type,
+        measure: @measure_95p_ci_low_proportion,
+        default: false,
+        type1_type: @type1_type_categorical,
+        provider_measure: rsstm2
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @descriptive_statistics_result_statistic_section_type,
+        measure: @measure_95p_ci_high_proportion,
+        default: false,
+        type1_type: @type1_type_categorical,
+        provider_measure: rsstm2
+      )
+
+      rsstm3 = ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @descriptive_statistics_result_statistic_section_type,
+        measure: @measure_incidence_rate_per_1000,
+        default: false,
+        type1_type: @type1_type_categorical
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @descriptive_statistics_result_statistic_section_type,
+        measure: @measure_sd_incidence_rate_per_1000,
+        default: false,
+        type1_type: @type1_type_categorical,
+        provider_measure: rsstm3
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @descriptive_statistics_result_statistic_section_type,
+        measure: @measure_se_incidence_rate_per_1000,
+        default: false,
+        type1_type: @type1_type_categorical,
+        provider_measure: rsstm3
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @descriptive_statistics_result_statistic_section_type,
+        measure: @measure_95p_ci_low_incidence_rate_per_1000,
+        default: false,
+        type1_type: @type1_type_categorical,
+        provider_measure: rsstm3
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @descriptive_statistics_result_statistic_section_type,
+        measure: @measure_95p_ci_high_incidence_rate_per_1000,
+        default: false,
+        type1_type: @type1_type_categorical,
+        provider_measure: rsstm3
+      )
+
+      rsstm4 = ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @descriptive_statistics_result_statistic_section_type,
+        measure: @measure_incidence_rate_per_10000,
+        default: false,
+        type1_type: @type1_type_categorical
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @descriptive_statistics_result_statistic_section_type,
+        measure: @measure_sd_incidence_rate_per_10000,
+        default: false,
+        type1_type: @type1_type_categorical,
+        provider_measure: rsstm4
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @descriptive_statistics_result_statistic_section_type,
+        measure: @measure_se_incidence_rate_per_10000,
+        default: false,
+        type1_type: @type1_type_categorical,
+        provider_measure: rsstm4
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @descriptive_statistics_result_statistic_section_type,
+        measure: @measure_95p_ci_low_incidence_rate_per_10000,
+        default: false,
+        type1_type: @type1_type_categorical,
+        provider_measure: rsstm4
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @descriptive_statistics_result_statistic_section_type,
+        measure: @measure_95p_ci_high_incidence_rate_per_10000,
+        default: false,
+        type1_type: @type1_type_categorical,
+        provider_measure: rsstm4
+      )
+
+      rsstm5 = ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @descriptive_statistics_result_statistic_section_type,
+        measure: @measure_incidence_rate_per_100000,
+        default: false,
+        type1_type: @type1_type_categorical
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @descriptive_statistics_result_statistic_section_type,
+        measure: @measure_sd_incidence_rate_per_100000,
+        default: false,
+        type1_type: @type1_type_categorical,
+        provider_measure: rsstm5
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @descriptive_statistics_result_statistic_section_type,
+        measure: @measure_se_incidence_rate_per_100000,
+        default: false,
+        type1_type: @type1_type_categorical,
+        provider_measure: rsstm5
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @descriptive_statistics_result_statistic_section_type,
+        measure: @measure_95p_ci_low_incidence_rate_per_100000,
+        default: false,
+        type1_type: @type1_type_categorical,
+        provider_measure: rsstm5
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @descriptive_statistics_result_statistic_section_type,
+        measure: @measure_95p_ci_high_incidence_rate_per_100000,
+        default: false,
+        type1_type: @type1_type_categorical,
+        provider_measure: rsstm5
+      )
+
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @descriptive_statistics_result_statistic_section_type,
+        measure: @measure_note,
+        default: true,
+        type1_type: @type1_type_categorical
+      )
+      #@descriptive_statistics_result_statistic_section_type.measures << @n_analyzed
+      #@descriptive_statistics_result_statistic_section_type.measures << @counts
+
+      @measure_odds_ratio = Measure.create!(name: 'Odds Ratio (OR)')
+      @measure_risk_ratio = Measure.create!(name: 'Risk Ratio (RR)')
+      @measure_hazard_ratio = Measure.create!(name: 'Hazard Ratio (HR)')
+      @measure_risk_difference = Measure.create!(name: 'Risk Difference (RD)')
+      @measure_incidence_rate_ratio = Measure.create!(name: 'Incidence Rate Ratio (IRR)')
+      @measure_adj_odds_ratio = Measure.create!(name: 'Adjusted Odds Ratio (adjOR)')
+      @measure_adj_risk_ratio = Measure.create!(name: 'Adjusted Risk Ratio (adjRR)')
+      @measure_adj_hazard_ratio = Measure.create!(name: 'Adjusted Hazard Ratio (adjHR)')
+      @measure_adj_risk_difference = Measure.create!(name: 'Adjusted Risk Difference (adjRD)')
+      @measure_adj_incidence_rate_ratio = Measure.create!(name: 'Adjusted Incidence Rate Ratio (adjIRR)')
+      @measure_events_difference = Measure.create!(name: 'Events, difference')
+      @measure_percentage_difference = Measure.create!(name: 'Percentage, difference')
+      @measure_proportion_difference = Measure.create!(name: 'Proportion, difference')
+      @measure_incidence_rate_per_1000_difference = Measure.create!(name: 'Incidence rate (per 1,000), difference')
+      @measure_incidence_rate_per_10000_difference = Measure.create!(name: 'Incidence rate (per 10,000), difference')
+      @measure_incidence_rate_per_100000_difference = Measure.create!(name: 'Incidence rate (per 100,000), difference')
+
+      @measure_p_value_of_difference_percentage = Measure.create!(name: 'P value of difference (percentage)')
+      @measure_sd_difference_percentage = Measure.create!(name: 'SD of difference (percentage)')
+      @measure_se_difference_percentage = Measure.create!(name: 'SE of difference (percentage)')
+
+      @measure_p_value_of_difference_proportion = Measure.create!(name: 'P value of difference (proportion)')
+      @measure_sd_difference_proportion = Measure.create!(name: 'SD of difference (proportion)')
+      @measure_se_difference_proportion = Measure.create!(name: 'SE of difference (proportion)')
+
+      @measure_p_value_of_difference_incidence_rate_per_1000 = Measure.create!(name: 'P value of difference (Incidence rate per 1,000)')
+      @measure_sd_difference_incidence_rate_per_1000 = Measure.create!(name: 'SD of difference (Incidence rate per 1,000)')
+      @measure_se_difference_incidence_rate_per_1000 = Measure.create!(name: 'SE of difference (Incidence rate per 1,000)')
+
+      @measure_p_value_of_difference_incidence_rate_per_10000 = Measure.create!(name: 'P value of difference (Incidence rate per 10,000)')
+      @measure_sd_difference_incidence_rate_per_10000 = Measure.create!(name: 'SD of difference (Incidence rate per 10,000)')
+      @measure_se_difference_incidence_rate_per_10000 = Measure.create!(name: 'SE of difference (Incidence rate per 10,000)')
+
+      @measure_p_value_of_difference_incidence_rate_per_100000 = Measure.create!(name: 'P value of difference (Incidence rate per 100,000)')
+      @measure_sd_difference_incidence_rate_per_100000 = Measure.create!(name: 'SD of difference (Incidence rate per 100,000)')
+      @measure_se_difference_incidence_rate_per_100000 = Measure.create!(name: 'SE of difference (Incidence rate per 100,000)')
+
+      @measure_95p_ci_low_difference_or = Measure.create!(name: '95% CI low (OR)')
+      @measure_95p_ci_low_difference_rr = Measure.create!(name: '95% CI low (RR)')
+      @measure_95p_ci_low_difference_hr = Measure.create!(name: '95% CI low (HR)')
+      @measure_95p_ci_low_difference_rd = Measure.create!(name: '95% CI low (RD)')
+      @measure_95p_ci_low_difference_irr = Measure.create!(name: '95% CI low (IRR)')
+      @measure_95p_ci_low_difference_adj_or = Measure.create!(name: '95% CI low (adjOR)')
+      @measure_95p_ci_low_difference_adj_rr = Measure.create!(name: '95% CI low (adjRR)')
+      @measure_95p_ci_low_difference_adj_hr = Measure.create!(name: '95% CI low (adjHR)')
+      @measure_95p_ci_low_difference_adj_rd = Measure.create!(name: '95% CI low (adjRD)')
+      @measure_95p_ci_low_difference_adj_irr = Measure.create!(name: '95% CI low (adjIRR)')
+
+      @measure_95p_ci_high_difference_or = Measure.create!(name: '95% CI high (OR)')
+      @measure_95p_ci_high_difference_rr = Measure.create!(name: '95% CI high (RR)')
+      @measure_95p_ci_high_difference_hr = Measure.create!(name: '95% CI high (HR)')
+      @measure_95p_ci_high_difference_rd = Measure.create!(name: '95% CI high (RD)')
+      @measure_95p_ci_high_difference_irr = Measure.create!(name: '95% CI high (IRR)')
+      @measure_95p_ci_high_difference_adj_or = Measure.create!(name: '95% CI high (adjOR)')
+      @measure_95p_ci_high_difference_adj_rr = Measure.create!(name: '95% CI high (adjRR)')
+      @measure_95p_ci_high_difference_adj_hr = Measure.create!(name: '95% CI high (adjHR)')
+      @measure_95p_ci_high_difference_adj_rd = Measure.create!(name: '95% CI high (adjRD)')
+      @measure_95p_ci_high_difference_adj_irr = Measure.create!(name: '95% CI high (adjIRR)')
+
+      rsstm11 = ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @between_arm_comparisons_result_statistic_section_type,
+        measure: @measure_odds_ratio,
+        default: true,
+        type1_type: @type1_type_categorical
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @between_arm_comparisons_result_statistic_section_type,
+        measure: @measure_95p_ci_low_difference_or,
+        default: false,
+        type1_type: @type1_type_categorical,
+        provider_measure: rsstm11
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @between_arm_comparisons_result_statistic_section_type,
+        measure: @measure_95p_ci_high_difference_or,
+        default: false,
+        type1_type: @type1_type_categorical,
+        provider_measure: rsstm11
+      )
+
+      rsstm12 = ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @between_arm_comparisons_result_statistic_section_type,
+        measure: @measure_risk_ratio,
+        default: false,
+        type1_type: @type1_type_categorical
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @between_arm_comparisons_result_statistic_section_type,
+        measure: @measure_95p_ci_low_difference_rr,
+        default: false,
+        type1_type: @type1_type_categorical,
+        provider_measure: rsstm12
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @between_arm_comparisons_result_statistic_section_type,
+        measure: @measure_95p_ci_high_difference_rr,
+        default: false,
+        type1_type: @type1_type_categorical,
+        provider_measure: rsstm12
+      )
+
+      rsstm13 = ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @between_arm_comparisons_result_statistic_section_type,
+        measure: @measure_hazard_ratio,
+        default: false,
+        type1_type: @type1_type_categorical
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @between_arm_comparisons_result_statistic_section_type,
+        measure: @measure_95p_ci_low_difference_hr,
+        default: false,
+        type1_type: @type1_type_categorical,
+        provider_measure: rsstm13
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @between_arm_comparisons_result_statistic_section_type,
+        measure: @measure_95p_ci_high_difference_hr,
+        default: false,
+        type1_type: @type1_type_categorical,
+        provider_measure: rsstm13
+      )
+
+      rsstm14 = ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @between_arm_comparisons_result_statistic_section_type,
+        measure: @measure_risk_difference,
+        default: false,
+        type1_type: @type1_type_categorical
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @between_arm_comparisons_result_statistic_section_type,
+        measure: @measure_95p_ci_low_difference_rd,
+        default: false,
+        type1_type: @type1_type_categorical,
+        provider_measure: rsstm14
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @between_arm_comparisons_result_statistic_section_type,
+        measure: @measure_95p_ci_high_difference_rd,
+        default: false,
+        type1_type: @type1_type_categorical,
+        provider_measure: rsstm14
+      )
+
+      rsstm15 = ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @between_arm_comparisons_result_statistic_section_type,
+        measure: @measure_incidence_rate_ratio,
+        default: false,
+        type1_type: @type1_type_categorical
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @between_arm_comparisons_result_statistic_section_type,
+        measure: @measure_95p_ci_low_difference_irr,
+        default: false,
+        type1_type: @type1_type_categorical,
+        provider_measure: rsstm15
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @between_arm_comparisons_result_statistic_section_type,
+        measure: @measure_95p_ci_high_difference_irr,
+        default: false,
+        type1_type: @type1_type_categorical,
+        provider_measure: rsstm15
+      )
+
+      rsstm16 = ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @between_arm_comparisons_result_statistic_section_type,
+        measure: @measure_adj_odds_ratio,
+        default: false,
+        type1_type: @type1_type_categorical
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @between_arm_comparisons_result_statistic_section_type,
+        measure: @measure_95p_ci_low_difference_adj_or,
+        default: false,
+        type1_type: @type1_type_categorical,
+        provider_measure: rsstm16
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @between_arm_comparisons_result_statistic_section_type,
+        measure: @measure_95p_ci_high_difference_adj_or,
+        default: false,
+        type1_type: @type1_type_categorical,
+        provider_measure: rsstm16
+      )
+
+      rsstm17 = ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @between_arm_comparisons_result_statistic_section_type,
+        measure: @measure_adj_risk_ratio,
+        default: false,
+        type1_type: @type1_type_categorical
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @between_arm_comparisons_result_statistic_section_type,
+        measure: @measure_95p_ci_low_difference_adj_rr,
+        default: false,
+        type1_type: @type1_type_categorical,
+        provider_measure: rsstm17
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @between_arm_comparisons_result_statistic_section_type,
+        measure: @measure_95p_ci_high_difference_adj_rr,
+        default: false,
+        type1_type: @type1_type_categorical,
+        provider_measure: rsstm17
+      )
+
+      rsstm18 = ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @between_arm_comparisons_result_statistic_section_type,
+        measure: @measure_adj_hazard_ratio,
+        default: false,
+        type1_type: @type1_type_categorical
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @between_arm_comparisons_result_statistic_section_type,
+        measure: @measure_95p_ci_low_difference_adj_hr,
+        default: false,
+        type1_type: @type1_type_categorical,
+        provider_measure: rsstm18
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @between_arm_comparisons_result_statistic_section_type,
+        measure: @measure_95p_ci_high_difference_adj_hr,
+        default: false,
+        type1_type: @type1_type_categorical,
+        provider_measure: rsstm18
+      )
+
+      rsstm19 = ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @between_arm_comparisons_result_statistic_section_type,
+        measure: @measure_adj_risk_difference,
+        default: false,
+        type1_type: @type1_type_categorical
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @between_arm_comparisons_result_statistic_section_type,
+        measure: @measure_95p_ci_low_difference_adj_rd,
+        default: false,
+        type1_type: @type1_type_categorical,
+        provider_measure: rsstm19
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @between_arm_comparisons_result_statistic_section_type,
+        measure: @measure_95p_ci_high_difference_adj_rd,
+        default: false,
+        type1_type: @type1_type_categorical,
+        provider_measure: rsstm19
+      )
+
+      rsstm20 = ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @between_arm_comparisons_result_statistic_section_type,
+        measure: @measure_adj_incidence_rate_ratio,
+        default: false,
+        type1_type: @type1_type_categorical
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @between_arm_comparisons_result_statistic_section_type,
+        measure: @measure_95p_ci_low_difference_adj_irr,
+        default: false,
+        type1_type: @type1_type_categorical,
+        provider_measure: rsstm20
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @between_arm_comparisons_result_statistic_section_type,
+        measure: @measure_95p_ci_high_difference_adj_irr,
+        default: false,
+        type1_type: @type1_type_categorical,
+        provider_measure: rsstm20
+      )
+
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @between_arm_comparisons_result_statistic_section_type,
+        measure: @measure_events_difference,
+        default: false,
+        type1_type: @type1_type_categorical
+      )
+
+      rsstm6 = ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @between_arm_comparisons_result_statistic_section_type,
+        measure: @measure_percentage_difference,
+        default: false,
+        type1_type: @type1_type_categorical
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @between_arm_comparisons_result_statistic_section_type,
+        measure: @measure_p_value_of_difference_percentage,
+        default: false,
+        type1_type: @type1_type_categorical,
+        provider_measure: rsstm6
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @between_arm_comparisons_result_statistic_section_type,
+        measure: @measure_sd_difference_percentage,
+        default: false,
+        type1_type: @type1_type_categorical,
+        provider_measure: rsstm6
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @between_arm_comparisons_result_statistic_section_type,
+        measure: @measure_se_difference_percentage,
+        default: false,
+        type1_type: @type1_type_categorical,
+        provider_measure: rsstm6
+      )
+
+      rsstm7 = ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @between_arm_comparisons_result_statistic_section_type,
+        measure: @measure_proportion_difference,
+        default: false,
+        type1_type: @type1_type_categorical
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @between_arm_comparisons_result_statistic_section_type,
+        measure: @measure_p_value_of_difference_proportion,
+        default: false,
+        type1_type: @type1_type_categorical,
+        provider_measure: rsstm7
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @between_arm_comparisons_result_statistic_section_type,
+        measure: @measure_sd_difference_proportion,
+        default: false,
+        type1_type: @type1_type_categorical,
+        provider_measure: rsstm7
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @between_arm_comparisons_result_statistic_section_type,
+        measure: @measure_se_difference_proportion,
+        default: false,
+        type1_type: @type1_type_categorical,
+        provider_measure: rsstm7
+      )
+
+      rsstm8 = ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @between_arm_comparisons_result_statistic_section_type,
+        measure: @measure_incidence_rate_per_1000_difference,
+        default: false,
+        type1_type: @type1_type_categorical
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @between_arm_comparisons_result_statistic_section_type,
+        measure: @measure_p_value_of_difference_incidence_rate_per_1000,
+        default: false,
+        type1_type: @type1_type_categorical,
+        provider_measure: rsstm8
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @between_arm_comparisons_result_statistic_section_type,
+        measure: @measure_sd_difference_incidence_rate_per_1000,
+        default: false,
+        type1_type: @type1_type_categorical,
+        provider_measure: rsstm8
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @between_arm_comparisons_result_statistic_section_type,
+        measure: @measure_se_difference_incidence_rate_per_1000,
+        default: false,
+        type1_type: @type1_type_categorical,
+        provider_measure: rsstm8
+      )
+
+      rsstm9 = ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @between_arm_comparisons_result_statistic_section_type,
+        measure: @measure_incidence_rate_per_10000_difference,
+        default: false,
+        type1_type: @type1_type_categorical
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @between_arm_comparisons_result_statistic_section_type,
+        measure: @measure_p_value_of_difference_incidence_rate_per_10000,
+        default: false,
+        type1_type: @type1_type_categorical,
+        provider_measure: rsstm9
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @between_arm_comparisons_result_statistic_section_type,
+        measure: @measure_sd_difference_incidence_rate_per_10000,
+        default: false,
+        type1_type: @type1_type_categorical,
+        provider_measure: rsstm9
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @between_arm_comparisons_result_statistic_section_type,
+        measure: @measure_se_difference_incidence_rate_per_10000,
+        default: false,
+        type1_type: @type1_type_categorical,
+        provider_measure: rsstm9
+      )
+
+      rsstm10 = ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @between_arm_comparisons_result_statistic_section_type,
+        measure: @measure_incidence_rate_per_100000_difference,
+        default: false,
+        type1_type: @type1_type_categorical
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @between_arm_comparisons_result_statistic_section_type,
+        measure: @measure_p_value_of_difference_incidence_rate_per_100000,
+        default: false,
+        type1_type: @type1_type_categorical,
+        provider_measure: rsstm10
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @between_arm_comparisons_result_statistic_section_type,
+        measure: @measure_sd_difference_incidence_rate_per_100000,
+        default: false,
+        type1_type: @type1_type_categorical,
+        provider_measure: rsstm10
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @between_arm_comparisons_result_statistic_section_type,
+        measure: @measure_se_difference_incidence_rate_per_100000,
+        default: false,
+        type1_type: @type1_type_categorical,
+        provider_measure: rsstm10
+      )
+
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @between_arm_comparisons_result_statistic_section_type,
+        measure: @measure_note,
+        default: true,
+        type1_type: @type1_type_categorical
+      )
+
+      @measure_mean = Measure.create!(name: 'Mean')
+      @measure_median = Measure.create!(name: 'Median')
+      @measure_sd = Measure.create!(name: 'SD')
+      @measure_se = Measure.create!(name: 'SE')
+      @measure_95p_ci_low = Measure.create!(name: '95% CI low')
+      @measure_95p_ci_high = Measure.create!(name: '95% CI high')
+      @measure_minimum = Measure.create!(name: 'Minimum')
+      @measure_maximum = Measure.create!(name: 'Maximum')
+      @measure_25th_pile = Measure.create!(name: '25th %ile')
+      @measure_75th_pile = Measure.create!(name: '75th %ile')
+
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @descriptive_statistics_result_statistic_section_type,
+        measure: @measure_total_n_analyzed,
+        default: true,
+        type1_type: @type1_type_continuous
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @descriptive_statistics_result_statistic_section_type,
+        measure: @measure_mean,
+        default: true,
+        type1_type: @type1_type_continuous
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @descriptive_statistics_result_statistic_section_type,
+        measure: @measure_median,
+        default: false,
+        type1_type: @type1_type_continuous
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @descriptive_statistics_result_statistic_section_type,
+        measure: @measure_sd,
+        default: true,
+        type1_type: @type1_type_continuous
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @descriptive_statistics_result_statistic_section_type,
+        measure: @measure_se,
+        default: false,
+        type1_type: @type1_type_continuous
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @descriptive_statistics_result_statistic_section_type,
+        measure: @measure_95p_ci_low,
+        default: false,
+        type1_type: @type1_type_continuous
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @descriptive_statistics_result_statistic_section_type,
+        measure: @measure_95p_ci_high,
+        default: false,
+        type1_type: @type1_type_continuous
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @descriptive_statistics_result_statistic_section_type,
+        measure: @measure_minimum,
+        default: false,
+        type1_type: @type1_type_continuous
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @descriptive_statistics_result_statistic_section_type,
+        measure: @measure_maximum,
+        default: false,
+        type1_type: @type1_type_continuous
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @descriptive_statistics_result_statistic_section_type,
+        measure: @measure_25th_pile,
+        default: false,
+        type1_type: @type1_type_continuous
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @descriptive_statistics_result_statistic_section_type,
+        measure: @measure_75th_pile,
+        default: false,
+        type1_type: @type1_type_continuous
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @descriptive_statistics_result_statistic_section_type,
+        measure: @measure_note,
+        default: true,
+        type1_type: @type1_type_continuous
+      )
+
+      @measure_mean_change = Measure.create!(name: 'Mean change')
+      @measure_median_change = Measure.create!(name: 'Median change')
+      @measure_sd_change = Measure.create!(name: 'SD, change')
+      @measure_se_change = Measure.create!(name: 'SE, change')
+      @measure_95p_ci_low_change = Measure.create!(name: '95% CI low, chagne')
+      @measure_95p_ci_high_change = Measure.create!(name: '95% CI high, chagne')
+      @measure_p_value_of_change = Measure.create!(name: 'P value of change')
+      @measure_minimum_change = Measure.create!(name: 'Minimum, change')
+      @measure_maximum_change = Measure.create!(name: 'Maximum, change')
+      @measure_25th_pile_change = Measure.create!(name: '25th %ile, change')
+      @measure_75th_pile_change = Measure.create!(name: '75th %ile, change')
+
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @within_arm_comparisons_result_statistic_section_type,
+        measure: @measure_total_n_analyzed,
+        default: true,
+        type1_type: @type1_type_continuous
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @within_arm_comparisons_result_statistic_section_type,
+        measure: @measure_mean_change,
+        default: true,
+        type1_type: @type1_type_continuous
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @within_arm_comparisons_result_statistic_section_type,
+        measure: @measure_median_change,
+        default: false,
+        type1_type: @type1_type_continuous
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @within_arm_comparisons_result_statistic_section_type,
+        measure: @measure_sd_change,
+        default: true,
+        type1_type: @type1_type_continuous
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @within_arm_comparisons_result_statistic_section_type,
+        measure: @measure_se_change,
+        default: false,
+        type1_type: @type1_type_continuous
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @within_arm_comparisons_result_statistic_section_type,
+        measure: @measure_95p_ci_low_change,
+        default: true,
+        type1_type: @type1_type_continuous
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @within_arm_comparisons_result_statistic_section_type,
+        measure: @measure_95p_ci_high_change,
+        default: true,
+        type1_type: @type1_type_continuous
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @within_arm_comparisons_result_statistic_section_type,
+        measure: @measure_p_value_of_change,
+        default: true,
+        type1_type: @type1_type_continuous
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @within_arm_comparisons_result_statistic_section_type,
+        measure: @measure_minimum_change,
+        default: false,
+        type1_type: @type1_type_continuous
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @within_arm_comparisons_result_statistic_section_type,
+        measure: @measure_maximum_change,
+        default: false,
+        type1_type: @type1_type_continuous
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @within_arm_comparisons_result_statistic_section_type,
+        measure: @measure_25th_pile_change,
+        default: false,
+        type1_type: @type1_type_continuous
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @within_arm_comparisons_result_statistic_section_type,
+        measure: @measure_75th_pile_change,
+        default: false,
+        type1_type: @type1_type_continuous
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @within_arm_comparisons_result_statistic_section_type,
+        measure: @measure_note,
+        default: true,
+        type1_type: @type1_type_continuous
+      )
+
+      @measure_mean_difference = Measure.create!(name: 'Mean, difference')
+      @measure_median_difference = Measure.create!(name: 'Median, difference')
+      @measure_p_value_of_difference = Measure.create!(name: 'P value of difference')
+
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @between_arm_comparisons_result_statistic_section_type,
+        measure: @measure_mean_difference,
+        default: true,
+        type1_type: @type1_type_continuous
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @between_arm_comparisons_result_statistic_section_type,
+        measure: @measure_median_difference,
+        default: false,
+        type1_type: @type1_type_continuous
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @between_arm_comparisons_result_statistic_section_type,
+        measure: @measure_sd,
+        default: false,
+        type1_type: @type1_type_continuous
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @between_arm_comparisons_result_statistic_section_type,
+        measure: @measure_se,
+        default: false,
+        type1_type: @type1_type_continuous
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @between_arm_comparisons_result_statistic_section_type,
+        measure: @measure_95p_ci_low,
+        default: true,
+        type1_type: @type1_type_continuous
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @between_arm_comparisons_result_statistic_section_type,
+        measure: @measure_95p_ci_high,
+        default: true,
+        type1_type: @type1_type_continuous
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @between_arm_comparisons_result_statistic_section_type,
+        measure: @measure_p_value_of_difference,
+        default: true,
+        type1_type: @type1_type_continuous
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @between_arm_comparisons_result_statistic_section_type,
+        measure: @measure_note,
+        default: true,
+        type1_type: @type1_type_continuous
+      )
+
+      @measure_mean_net_difference = Measure.create!(name: 'Mean, net difference')
+      @measure_mean_adjusted_net_difference = Measure.create!(name: 'Mean, adjusted net difference')
+      @measure_median_net_difference = Measure.create!(name: 'Median, net difference')
+      @measure_adjusted_for = Measure.create!(name: 'Adjusted for:')
+      @measure_p_value_of_net_difference = Measure.create!(name: 'P value of net difference')
+
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @net_change_result_statistic_section_type,
+        measure: @measure_mean_net_difference,
+        default: true,
+        type1_type: @type1_type_continuous
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @net_change_result_statistic_section_type,
+        measure: @measure_mean_adjusted_net_difference,
+        default: false,
+        type1_type: @type1_type_continuous
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @net_change_result_statistic_section_type,
+        measure: @measure_median_net_difference,
+        default: false,
+        type1_type: @type1_type_continuous
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @net_change_result_statistic_section_type,
+        measure: @measure_sd,
+        default: true,
+        type1_type: @type1_type_continuous
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @net_change_result_statistic_section_type,
+        measure: @measure_se,
+        default: false,
+        type1_type: @type1_type_continuous
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @net_change_result_statistic_section_type,
+        measure: @measure_95p_ci_low,
+        default: true,
+        type1_type: @type1_type_continuous
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @net_change_result_statistic_section_type,
+        measure: @measure_95p_ci_high,
+        default: true,
+        type1_type: @type1_type_continuous
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @net_change_result_statistic_section_type,
+        measure: @measure_adjusted_for,
+        default: false,
+        type1_type: @type1_type_continuous
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @net_change_result_statistic_section_type,
+        measure: @measure_p_value_of_net_difference,
+        default: true,
+        type1_type: @type1_type_continuous
+      )
+      ResultStatisticSectionTypesMeasure.create!(
+        result_statistic_section_type: @net_change_result_statistic_section_type,
+        measure: @measure_note,
+        default: true,
+        type1_type: @type1_type_continuous
+      )
+
+
+
 
       #!!! While this was requested...it is now being added before a comparison is even present.
       #    We need to change the code to add default measures only when the comparison is present
@@ -259,59 +1214,59 @@ module SeedDataExtended
         PaperTrail.enabled = false
 
         # Seed Key Questions.
-        @kq1 = KeyQuestion.create(name: 'kq1')
-        @kq2 = KeyQuestion.create(name: 'kq2')
+        @kq1 = KeyQuestion.create!(name: 'kq1')
+        @kq2 = KeyQuestion.create!(name: 'kq2')
 
         # Users.
-        @superadmin = User.create do |u|
+        @superadmin = User.create! do |u|
           u.email        = 'superadmin@test.com'
           u.password     = 'password'
           u.confirmed_at = Time.now()
         end
 
-        @contributor = User.create do |u|
+        @contributor = User.create! do |u|
           u.email        = 'jensjap@gmail.com'
           u.password     = 'password'
           u.confirmed_at = Time.now()
         end
 
-        @auditor = User.create do |u|
+        @auditor = User.create! do |u|
           u.email        = 'auditor@test.com'
           u.password     = 'password'
           u.confirmed_at = Time.now()
         end
 
-        @tester = User.create do |u|
+        @tester = User.create! do |u|
           u.email        = 'tester@test.com'
           u.password     = 'password'
           u.confirmed_at = Time.now()
         end
 
-        @organizations = Organization.create([
+        @organizations = Organization.create!([
           { name: 'Brown University' },
           { name: 'Johns Hopkins University' }
         ])
 
         # Organizations.
-        @cochrane          = Organization.create(name: 'Cochrane')
-        @red_hair_pirates  = Organization.create(name: 'Red Hair Pirates')
-        @straw_hat_pirates = Organization.create(name: 'Straw Hat Pirates')
-        @roger_pirates     = Organization.create(name: 'Roger Pirates')
+        @cochrane          = Organization.create!(name: 'Cochrane')
+        @red_hair_pirates  = Organization.create!(name: 'Red Hair Pirates')
+        @straw_hat_pirates = Organization.create!(name: 'Straw Hat Pirates')
+        @roger_pirates     = Organization.create!(name: 'Roger Pirates')
 
         # For assignments.
-        @screener_1 = User.create do |u|
+        @screener_1 = User.create! do |u|
           u.email        = 'screener_1@test.com'
           u.password     = 'password'
           u.confirmed_at = Time.now()
         end
 
-        @screener_2 = User.create do |u|
+        @screener_2 = User.create! do |u|
           u.email        = 'screener_2@test.com'
           u.password     = 'password'
           u.confirmed_at = Time.now()
         end
 
-        @screener_3 = User.create do |u|
+        @screener_3 = User.create! do |u|
           u.email        = 'screener_3@test.com'
           u.password     = 'password'
           u.confirmed_at = Time.now()
@@ -366,14 +1321,14 @@ module SeedDataExtended
 
 
         # Degrees.
-        @bachelor_arts    = Degree.create(name: 'Bachelor of Arts - BA')
-        @bachelor_science = Degree.create(name: 'Bachelor of Science - BS')
-        @master_arts      = Degree.create(name: 'Master of Arts - MA')
-        @master_science   = Degree.create(name: 'Master of Science - MS')
-        @msph             = Degree.create(name: 'Master of Science in Public Health - MSPH')
-        @jd               = Degree.create(name: 'Juris Doctor - JD')
-        @md               = Degree.create(name: 'Medical Doctor - MD')
-        @phd              = Degree.create(name: 'Doctor of Philosophy - PhD')
+        @bachelor_arts    = Degree.create!(name: 'Bachelor of Arts - BA')
+        @bachelor_science = Degree.create!(name: 'Bachelor of Science - BS')
+        @master_arts      = Degree.create!(name: 'Master of Arts - MA')
+        @master_science   = Degree.create!(name: 'Master of Science - MS')
+        @msph             = Degree.create!(name: 'Master of Science in Public Health - MSPH')
+        @jd               = Degree.create!(name: 'Juris Doctor - JD')
+        @md               = Degree.create!(name: 'Medical Doctor - MD')
+        @phd              = Degree.create!(name: 'Doctor of Philosophy - PhD')
 
         # Suggestions.
         @cochrane.create_suggestion(user: @contributor)
@@ -414,15 +1369,15 @@ module SeedDataExtended
         @project = Project.order(updated_at: :desc).first
         @project.key_questions << [@kq1, @kq2]
 
-        @primary        = CitationType.create(name: 'Primary')
-        @secondary      = CitationType.create(name: 'Secondary')
-        @abstrackr      = CitationType.create(name: 'Abstrackr')
+        @primary        = CitationType.create!(name: 'Primary')
+        @secondary      = CitationType.create!(name: 'Secondary')
+        @abstrackr      = CitationType.create!(name: 'Abstrackr')
         @citation_types = [@primary, @secondary]
 
         # Citations, Journals, Authors and Keywords
         200.times do |n|
           updated_at = Faker::Time.between(DateTime.now - 1000, DateTime.now - 1)
-          c = Citation.create(
+          c = Citation.create!(
             name:           Faker::Lorem.sentence,
             pmid:           Faker::Number.number(10),
             refman:         Faker::Number.number(9),
@@ -434,7 +1389,7 @@ module SeedDataExtended
 
 
           # Journals
-          Journal.create(
+          Journal.create!(
             name:              Faker::RockBand.name,
             publication_date:  Faker::Date.backward(10000),
             volume:            Faker::Number.number(1),
@@ -444,12 +1399,12 @@ module SeedDataExtended
 
           # Keywords
           5.times do |n|
-            c.keywords << Keyword.create(name:     Faker::Hipster.word)
+            c.keywords << Keyword.create!(name:     Faker::Hipster.word)
           end
 
           # Authors
           5.times do |n|
-            c.authors << Author.create(name:     Faker::HitchhikersGuideToTheGalaxy.character)
+            c.authors << Author.create!(name:     Faker::HitchhikersGuideToTheGalaxy.character)
           end
 
         end
@@ -502,19 +1457,19 @@ module SeedDataExtended
 
           case rand(3)
           when 0
-            Task.create(
+            Task.create!(
               num_assigned: 100,
               task_type:    @perpetual,
               project:      p
             )
           when 1
             pilot_size = rand(100)
-            Task.create(
+            Task.create!(
               num_assigned: pilot_size,
               task_type:    @pilot,
               project:      p
             )
-            Task.create(
+            Task.create!(
               num_assigned: 100 - pilot_size,
               task_type:    @perpetual,
               project:      p
@@ -522,12 +1477,12 @@ module SeedDataExtended
 
           when 2
             advanced_size = rand(100)
-            Task.create(
+            Task.create!(
               num_assigned: advanced_size,
               task_type:    @advanced,
               project:      p
             )
-            Task.create(
+            Task.create!(
               num_assigned: 100 - advanced_size,
               task_type:    @advanced,
               project:      p
@@ -538,7 +1493,7 @@ module SeedDataExtended
           Task.all.each do |t|
             case t.task_type.name
             when 'Perpetual', 'Pilot'
-              Assignment.create([
+              Assignment.create!([
                 {
                   date_assigned: DateTime.now,
                   date_due: Date.today + 7,
@@ -560,7 +1515,7 @@ module SeedDataExtended
               ])
             when 'Advanced'
               @screeners.sample(rand(3)).each do |s|
-                Assignment.create(
+                Assignment.create!(
                   {
                     date_assigned: DateTime.now,
                     date_due: Date.today + 7,
@@ -576,7 +1531,7 @@ module SeedDataExtended
         # Messages.
         @totd = MessageType.first
         100.times do
-          @totd.messages.create(name: Faker::HarryPotter.unique.book,
+          @totd.messages.create!(name: Faker::HarryPotter.unique.book,
                                 description: Faker::ChuckNorris.unique.fact,
                                 start_at: 10.minute.ago)
           Faker::UniqueGenerator.clear

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181126015030) do
+ActiveRecord::Schema.define(version: 20181213103610) do
 
   create_table "abstrackr_settings", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "profile_id"
@@ -1045,12 +1045,17 @@ ActiveRecord::Schema.define(version: 20181126015030) do
     t.integer  "measure_id"
     t.datetime "deleted_at"
     t.boolean  "active"
-    t.datetime "created_at",                       null: false
-    t.datetime "updated_at",                       null: false
+    t.datetime "created_at",                                                null: false
+    t.datetime "updated_at",                                                null: false
+    t.boolean  "default",                                   default: false
+    t.integer  "type1_type_id"
+    t.integer  "result_statistic_section_types_measure_id"
     t.index ["active"], name: "index_result_statistic_section_types_measures_on_active", using: :btree
     t.index ["deleted_at"], name: "index_result_statistic_section_types_measures_on_deleted_at", using: :btree
     t.index ["measure_id"], name: "index_rsstm_on_m_id", using: :btree
     t.index ["result_statistic_section_type_id"], name: "index_rsstm_on_rsst_id", using: :btree
+    t.index ["result_statistic_section_types_measure_id"], name: "index_rsstm_on_rsstm_id", using: :btree
+    t.index ["type1_type_id"], name: "index_result_statistic_section_types_measures_on_type1_type_id", using: :btree
   end
 
   create_table "result_statistic_sections", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -1425,6 +1430,8 @@ ActiveRecord::Schema.define(version: 20181126015030) do
   add_foreign_key "reasons", "label_types"
   add_foreign_key "result_statistic_section_types_measures", "measures"
   add_foreign_key "result_statistic_section_types_measures", "result_statistic_section_types"
+  add_foreign_key "result_statistic_section_types_measures", "result_statistic_section_types_measures"
+  add_foreign_key "result_statistic_section_types_measures", "type1_types"
   add_foreign_key "result_statistic_sections", "extractions_extraction_forms_projects_sections_type1_rows", column: "population_id"
   add_foreign_key "result_statistic_sections", "result_statistic_section_types"
   add_foreign_key "result_statistic_sections_measures", "measures"
