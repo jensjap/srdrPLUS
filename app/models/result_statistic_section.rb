@@ -50,11 +50,22 @@ class ResultStatisticSection < ApplicationRecord
   private
 
     def create_default_descriptive_statistics
-      Measure.result_statistic_section_type_defaults(self.result_statistic_section_type.id).each do |m|
-        self.result_statistic_sections_measures.create(measure: m)
-        #!!!: This might work now. Previously ResultStatisticSection was child of ExtractionsExtractionFormsProjectsSectionsType1RowColumn
-        #     instead of ExtractionsExtractionFormsProjectsSectionsType1Row.
-        #measures << m
+      #Measure.result_statistic_section_type_defaults(self.result_statistic_section_type.id).each do |m|
+      #  self.result_statistic_sections_measures.create(measure: m)
+      #  #!!!: This might work now. Previously ResultStatisticSection was child of ExtractionsExtractionFormsProjectsSectionsType1RowColumn
+      #  #     instead of ExtractionsExtractionFormsProjectsSectionsType1Row.
+      #  #measures << m
+      #end
+
+      ResultStatisticSectionTypesMeasure.where(
+        result_statistic_section_type: result_statistic_section_type,
+        type1_type: population.extractions_extraction_forms_projects_sections_type1.type1_type,
+        default: true
+      ).each do |rsstm|
+        self.result_statistic_sections_measures.create(measure: rsstm.measure)
+        rsstm.dependent_measures.each do |dm|
+          self.result_statistic_sections_measures.create(measure: dm.measure)
+        end
       end
     end
 end
