@@ -93,7 +93,7 @@ json.labeled_citations_projects do
   end
 end
 
-json.options @assignment_options do |option|
-  json.type option.assignment_option_type.name
+json.options @screening_options do |option|
+  json.type option.screening_option_type.name
   json.label_type option.label_type.name
 end

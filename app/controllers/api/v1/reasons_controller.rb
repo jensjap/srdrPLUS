@@ -9,7 +9,7 @@ module Api
         query         = params[ :q ] || ''
 
         all_reasons   = [ ]
-        if @assignment.assignment_option_types.where( name: "ONLY_LEAD_REASONS" ).length > 0
+        if @assignment.project.screening_option_types.where( name: "ONLY_LEAD_REASONS" ).length > 0
           all_reasons = Reason.by_project_lead( @assignment.project ).by_query( query )
         else
           all_reasons = ( Reason.by_project_lead( @assignment.project ).by_query( query ) +

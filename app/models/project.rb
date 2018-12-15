@@ -45,6 +45,10 @@ class Project < ApplicationRecord
   has_many :tasks, dependent: :destroy, inverse_of: :project
   has_many :assignments, through: :tasks, dependent: :destroy
 
+  has_many :screening_options
+  has_many :screening_option_types, through: :screening_options
+
+
   validates :name, presence: true
 
   #accepts_nested_attributes_for :extraction_forms_projects, reject_if: :all_blank, allow_destroy: true

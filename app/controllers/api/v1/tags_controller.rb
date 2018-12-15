@@ -11,7 +11,7 @@ module Api
         query         = params[ :q ] || ''
         all_tags      = []
 
-        if @assignment.assignment_option_types.where( name: "ONLY_LEAD_TAGS" ).length > 0
+        if @assignment.project.screening_option_types.where( name: "ONLY_LEAD_TAGS" ).length > 0
           all_tags    = Tag.by_project_lead( @assignment.project ).by_query( query )
         else
           projects_user_tags  = Tag.by_projects_user( @assignment.projects_user ).by_query( query )
