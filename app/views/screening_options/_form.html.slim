@@ -1,0 +1,6 @@
+.option-fields
+  = f.association :label_type, as: :radio_buttons, input_html: {class: 'label-type'}
+  = f.association :screening_option_type, as: :radio_buttons, input_html: {class: 'option-type'}
+
+  = link_to_remove_association 'Remove', f, class: 'remove-option', wrapper_class: 'option-fields'
+

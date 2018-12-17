@@ -77,23 +77,6 @@ ActiveRecord::Schema.define(version: 20190305125522) do
     t.index ["user_id"], name: "index_approvals_on_user_id", using: :btree
   end
 
-  create_table "assignment_option_types", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.string   "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "assignment_options", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer  "label_type_id"
-    t.integer  "assignment_id"
-    t.integer  "assignment_option_type_id"
-    t.datetime "created_at",                null: false
-    t.datetime "updated_at",                null: false
-    t.index ["assignment_id"], name: "index_assignment_options_on_assignment_id", using: :btree
-    t.index ["assignment_option_type_id"], name: "index_assignment_options_on_assignment_option_type_id", using: :btree
-    t.index ["label_type_id"], name: "index_assignment_options_on_label_type_id", using: :btree
-  end
-
   create_table "assignments", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "user_id"
     t.integer  "task_id"
@@ -1103,6 +1086,23 @@ ActiveRecord::Schema.define(version: 20190305125522) do
     t.index ["name"], name: "index_roles_on_name", unique: true, using: :btree
   end
 
+  create_table "screening_option_types", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string   "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "screening_options", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "label_type_id"
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+    t.integer  "project_id"
+    t.integer  "screening_option_type_id"
+    t.index ["label_type_id"], name: "index_screening_options_on_label_type_id", using: :btree
+    t.index ["project_id"], name: "index_screening_options_on_project_id", using: :btree
+    t.index ["screening_option_type_id"], name: "index_screening_options_on_screening_option_type_id", using: :btree
+  end
+
   create_table "searchjoy_searches", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "user_id"
     t.string   "search_type"
@@ -1331,9 +1331,6 @@ ActiveRecord::Schema.define(version: 20190305125522) do
   add_foreign_key "actions", "action_types"
   add_foreign_key "actions", "users"
   add_foreign_key "approvals", "users"
-  add_foreign_key "assignment_options", "assignment_option_types"
-  add_foreign_key "assignment_options", "assignments"
-  add_foreign_key "assignment_options", "label_types"
   add_foreign_key "assignments", "projects_users_roles"
   add_foreign_key "assignments", "tasks"
   add_foreign_key "assignments", "users"
@@ -1439,6 +1436,9 @@ ActiveRecord::Schema.define(version: 20190305125522) do
   add_foreign_key "result_statistic_sections_measures", "result_statistic_sections"
   add_foreign_key "result_statistic_sections_measures_comparisons", "comparisons"
   add_foreign_key "result_statistic_sections_measures_comparisons", "result_statistic_sections"
+  add_foreign_key "screening_options", "label_types"
+  add_foreign_key "screening_options", "projects"
+  add_foreign_key "screening_options", "screening_option_types"
   add_foreign_key "suggestions", "users"
   add_foreign_key "taggings", "projects_users_roles"
   add_foreign_key "taggings", "tags"

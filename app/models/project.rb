@@ -60,6 +60,7 @@ class Project < ApplicationRecord
   accepts_nested_attributes_for :key_questions_projects, allow_destroy: true
   accepts_nested_attributes_for :orderings
   accepts_nested_attributes_for :projects_users, allow_destroy: true
+  accepts_nested_attributes_for :screening_options, allow_destroy: true
 
 
   def public?

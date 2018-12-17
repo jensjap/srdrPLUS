@@ -77,9 +77,11 @@ class ProjectsController < ApplicationController
         format.html { redirect_to edit_project_path(@project, anchor: 'panel-information'),
                       notice: t('success') + " #{ make_undo_link }" }
         format.json { render :show, status: :ok, location: @project }
+        format.js { render :show, status: :ok, location: @project }
       else
         format.html { render :edit }
         format.json { render json: @project.errors, status: :unprocessable_entity }
+        format.js { render json: @project.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -198,8 +200,9 @@ class ProjectsController < ApplicationController
                 {citations_attributes: [:id, :name, :abstract, :pmid, :refman, :citation_type_id, :_destroy, author_ids: [], keyword_ids:[], journal_attributes: [:id, :name, :volume, :issue, :publication_date]]},
                 {citations_projects_attributes: [:id, :_destroy, :citation_id, :project_id,
                                                 citation_attributes: [:id, :_destroy, :name]]},
-                key_questions_projects_attributes: [:id, :position], 
-                projects_users_attributes: [:id, :_destroy, :user_id, role_ids: []])
+                {key_questions_projects_attributes: [:id, :position]}, 
+                {projects_users_attributes: [:id, :_destroy, :user_id, role_ids: []]},
+                {screening_options_attributes: [:id, :_destroy, :project_id, :label_type_id, :screening_option_type_id]})
     end
 
       def make_undo_link

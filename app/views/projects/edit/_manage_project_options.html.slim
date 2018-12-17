@@ -1,0 +1,82 @@
+.table-scroll
+  .column.medium-12
+    = simple_form_for(@project, html: { id: "options-form" }) do |f|
+      .form-inputs
+        .row.callout
+          h5
+            |Abstract Screening Options
+
+          /= f.association :screening_options, as: :check_boxes
+          /= f.simple_fields_for(ScreeningOption.new(project: @project, screening_option_type: ScreeningOptionType.find_by( name: 'TAG_REQUIRED' ))) do |so_f|
+            = so_f.association :label_type, as: :check_boxes
+
+          /VARIABLES
+          - yes_id = LabelType.find_by( name: 'Yes' ).id
+          - no_id = LabelType.find_by( name: 'No' ).id
+          - maybe_id = LabelType.find_by( name: 'Maybe' ).id
+          - reason_option_id = ScreeningOptionType.find_by( name: 'REASON_REQUIRED' ).id
+          - tag_option_id = ScreeningOptionType.find_by( name: 'TAG_REQUIRED' ).id
+          - note_option_id = ScreeningOptionType.find_by( name: 'NOTE_REQUIRED' ).id
+          - lead_tags_id = ScreeningOptionType.find_by( name: 'ONLY_LEAD_TAGS' ).id
+          - lead_reasons_id = ScreeningOptionType.find_by( name: 'ONLY_LEAD_REASONS' ).id
+
+          table.hover.options-table
+            tbody
+              tr
+                td
+                  | Require a reason for these labels:
+                td.button-group
+                  .button.require-button class=('secondary' if @project.screening_options.where(label_type_id: yes_id, screening_option_type_id:reason_option_id).length > 0) label-type="#{ yes_id }" option-type="#{ reason_option_id }"
+                    |Yes
+                  .button.require-button class=('secondary' if @project.screening_options.where(label_type_id: maybe_id, screening_option_type_id:reason_option_id).length > 0) label-type="#{ maybe_id }" option-type="#{ reason_option_id }"
+                    |Maybe
+                  .button.require-button class=('secondary' if @project.screening_options.where(label_type_id: no_id, screening_option_type_id:reason_option_id).length > 0) label-type="#{ no_id }" option-type="#{ reason_option_id }"
+                    |No
+              tr
+                td
+                  | Require a tag for these labels:
+                td.button-group
+                  .button.require-button class=('secondary' if @project.screening_options.where(label_type_id: yes_id, screening_option_type_id:tag_option_id).length > 0) label-type="#{ yes_id }" option-type="#{ tag_option_id }"
+                    |Yes
+                  .button.require-button class=('secondary' if @project.screening_options.where(label_type_id: maybe_id, screening_option_type_id:tag_option_id).length > 0) label-type="#{ maybe_id }" option-type="#{ tag_option_id }"
+                    |Maybe
+                  .button.require-button class=('secondary' if @project.screening_options.where(label_type_id: no_id, screening_option_type_id:tag_option_id).length > 0) label-type="#{ no_id }" option-type="#{ tag_option_id }"
+                    |No
+              tr
+                td
+                  | Require a note for these labels:
+                td.button-group
+                  .button.require-button class=('secondary' if @project.screening_options.where(label_type_id: yes_id, screening_option_type_id:note_option_id).length > 0) label-type="#{ yes_id }" option-type="#{ note_option_id }"
+                    |Yes
+                  .button.require-button class=('secondary' if @project.screening_options.where(label_type_id: maybe_id, screening_option_type_id:note_option_id).length > 0) label-type="#{ maybe_id }" option-type="#{ note_option_id }"
+                    |Maybe
+                  .button.require-button class=('secondary' if @project.screening_options.where(label_type_id: no_id, screening_option_type_id:note_option_id).length > 0) label-type="#{ no_id }" option-type="#{ note_option_id }"
+                    |No
+              tr
+                td
+                  | Only allow reasons created by project leads
+                td.button-group
+                  .button.on-button class=('secondary' if @project.screening_options.where(screening_option_type_id:lead_tags_id).length > 0) option-type="#{ lead_tags_id }"
+                    |On
+                  .button.off-button class=('secondary' if @project.screening_options.where(screening_option_type_id:lead_tags_id).length == 0) option-type="#{ lead_tags_id }"
+                    |Off
+              tr
+                td
+                  | Only allow tags created by project leads
+                td.button-group
+                  .button.on-button class=('secondary' if @project.screening_options.where(screening_option_type_id:lead_reasons_id).length > 0) option-type="#{ lead_reasons_id }"
+                    |On
+                  .button.off-button class=('secondary' if @project.screening_options.where(screening_option_type_id:lead_reasons_id).length == 0) option-type="#{ lead_reasons_id }"
+                    |Off
+
+          #option-list.hide
+            = f.simple_fields_for(:screening_options) do |so_f|
+              = render 'screening_options/form', f: so_f
+
+          = link_to_add_association 'Add Option', f, :screening_options, partial: 'screening_options/form', 'data-association-insertion-node': '#option-list', 'data-association-insertion-method': 'append', class: 'add-option hide', wrapper_class: 'option-fields'
+        .row.callout.hide
+          h5
+            |EXTRACTION OPTIONS
+      .form-actions
+        = f.button :submit, 'Save changes', class: 'send-options-button'
+

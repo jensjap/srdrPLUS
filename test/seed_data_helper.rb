@@ -51,12 +51,12 @@ module SeedData
       LabelType.create!( name: 'No' )
       LabelType.create!( name: 'Maybe' )
 
-      # AssignmentOptionTypes.
-      AssignmentOptionType.create!( name: 'TAG_REQUIRED' )
-      AssignmentOptionType.create!( name: 'NOTE_REQUIRED' )
-      AssignmentOptionType.create!( name: 'REASON_REQUIRED' )
-      AssignmentOptionType.create!( name: 'ONLY_LEAD_TAGS' )
-      AssignmentOptionType.create!( name: 'ONLY_LEAD_REASONS' )
+      # ScreeningOptionTypes.
+      ScreeningOptionType.create!( name: 'TAG_REQUIRED' )
+      ScreeningOptionType.create!( name: 'NOTE_REQUIRED' )
+      ScreeningOptionType.create!( name: 'REASON_REQUIRED' )
+      ScreeningOptionType.create!( name: 'ONLY_LEAD_TAGS' )
+      ScreeningOptionType.create!( name: 'ONLY_LEAD_REASONS' )
 
       # TaskTypes.
       TaskType.create!(name: 'Perpetual')
