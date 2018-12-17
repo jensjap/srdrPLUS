@@ -107,23 +107,17 @@ document.addEventListener 'turbolinks:load', ->
       $( '#citation-abstract' ).text( current_citation.abstract )
       $( '#citation-pmid' ).text( current_citation.pmid )
       $( '#citation-refman' ).text( current_citation.refman )
-      if $( '#journal-visible' ).text() != 'false'
-        $( '#journal-name' ).text( current_citation.journal.name )
-        $( '#journal-date' ).text( current_citation.journal.publication_date )
-      else
-        $( '#journal-div' ).hide()
+      $( '#journal-name' ).text( current_citation.journal.name )
+      $( '#journal-date' ).text( current_citation.journal.publication_date )
 
-      if $( '#authors-visible' ).text() != 'false'
-        $( '#citation-authors' ).empty()
-        s = true
-        for k in current_citation.authors
-          if s
-            s = false
-            $( '#citation-authors' ).append( k.name )
-          else
-            $( '#citation-authors' ).append( ', ' + k.name)
-      else
-        $( '#authors-div' ).hide()
+      $( '#citation-authors' ).empty()
+      s = true
+      for k in current_citation.authors
+        if s
+          s = false
+          $( '#citation-authors' ).append( k.name )
+        else
+          $( '#citation-authors' ).append( ', ' + k.name)
 
       $( '#citation-keywords' ).empty()
       s = true
@@ -142,7 +136,13 @@ document.addEventListener 'turbolinks:load', ->
 
       ## APPLY REQUIRED OPTIONS
       for option in obj.options
-        lock_button( option.label_type, option.type )
+        if option.label_type
+          lock_button( option.label_type, option.type )
+        else
+          if option.type == 'HIDE_AUTHORS'
+            $( '#authors-div' ).hide()
+          else if option.type == 'HIDE_JOURNAL'
+            $( '#journal-div' ).hide()
 
       ## TAGGINGS
       $( '#tag-select select' ).val( null )

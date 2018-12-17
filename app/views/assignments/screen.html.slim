@@ -121,10 +121,10 @@
     | #{ @assignment.id }
   #authenticity-token
     | #{ form_authenticity_token }
-  #authors-visible
-    | #{ @current_user.profile.abstrackr_setting.authors_visible }
-  #journal-visible
-    | #{ @current_user.profile.abstrackr_setting.journal_visible }
+/  #authors-visible
+/    | #{ @assignment.project.screening_options.where(screening_option_type: ScreeningOptionType.find_by(name: 'HIDE_AUTHORS')).exists? }
+/  #journal-visible
+/    | #{ @assignment.project.screening_options.where(screening_option_type: ScreeningOptionType.find_by(name: 'HIDE_JOURNAL')).exists? }
 
 #citations-list style='display: none;'
   #citations-list-elements

@@ -95,5 +95,7 @@ end
 
 json.options @screening_options do |option|
   json.type option.screening_option_type.name
-  json.label_type option.label_type.name
+  if option.label_type.present?
+    json.label_type option.label_type.name
+  end
 end

@@ -57,6 +57,8 @@ module SeedData
       ScreeningOptionType.create!( name: 'REASON_REQUIRED' )
       ScreeningOptionType.create!( name: 'ONLY_LEAD_TAGS' )
       ScreeningOptionType.create!( name: 'ONLY_LEAD_REASONS' )
+      ScreeningOptionType.create!( name: 'HIDE_AUTHORS' )
+      ScreeningOptionType.create!( name: 'HIDE_JOURNAL' )
 
       # TaskTypes.
       TaskType.create!(name: 'Perpetual')

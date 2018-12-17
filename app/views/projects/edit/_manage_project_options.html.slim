@@ -19,6 +19,8 @@
           - note_option_id = ScreeningOptionType.find_by( name: 'NOTE_REQUIRED' ).id
           - lead_tags_id = ScreeningOptionType.find_by( name: 'ONLY_LEAD_TAGS' ).id
           - lead_reasons_id = ScreeningOptionType.find_by( name: 'ONLY_LEAD_REASONS' ).id
+          - hide_authors_id = ScreeningOptionType.find_by( name: 'HIDE_AUTHORS' ).id
+          - hide_journal_id = ScreeningOptionType.find_by( name: 'HIDE_JOURNAL' ).id
 
           table.hover.options-table
             tbody
@@ -68,6 +70,25 @@
                     |On
                   .button.off-button class=('secondary' if @project.screening_options.where(screening_option_type_id:lead_reasons_id).length == 0) option-type="#{ lead_reasons_id }"
                     |Off
+
+              tr
+                td
+                  | Hide author information
+                td.button-group
+                  .button.on-button class=('secondary' if @project.screening_options.where(screening_option_type_id:hide_authors_id).length > 0) option-type="#{ hide_authors_id }"
+                    |On
+                  .button.off-button class=('secondary' if @project.screening_options.where(screening_option_type_id:hide_authors_id).length == 0) option-type="#{ hide_authors_id }"
+                    |Off
+
+              tr
+                td
+                  | Hide journal information
+                td.button-group
+                  .button.on-button class=('secondary' if @project.screening_options.where(screening_option_type_id:hide_journal_id).length > 0) option-type="#{ hide_journal_id }"
+                    |On
+                  .button.off-button class=('secondary' if @project.screening_options.where(screening_option_type_id:hide_journal_id).length == 0) option-type="#{ hide_journal_id }"
+                    |Off
+
 
           #option-list.hide
             = f.simple_fields_for(:screening_options) do |so_f|
