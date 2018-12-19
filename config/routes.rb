@@ -99,6 +99,7 @@ Rails.application.routes.draw do
       end
 
     end
+    resources :screening_options
     resources :tasks
     resources :extractions do
 

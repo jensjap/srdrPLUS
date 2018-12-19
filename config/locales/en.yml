@@ -50,6 +50,7 @@ en:
   key_questions: Key Question(s)
   extraction_forms: Extraction Form(s)
   citations: Citation(s)
+  screening_options: Screening Options
   tasks: Task(s)
   time_prefix: ''
   update: Update
@@ -146,4 +147,5 @@ en:
   manage_key_questions: Manage Key Question(s)
   manage_extractions: Manage Extraction(s)
   manage_citations: Manage Citation(s)
+  manage_screening_options: Manage Screening Options
   manage_tasks: Manage Task(s)

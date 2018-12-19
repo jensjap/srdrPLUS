@@ -1,6 +1,6 @@
 .table-scroll
   .column.medium-12
-    = simple_form_for(@project, html: { id: "options-form" }) do |f|
+    = simple_form_for(@project, remote: true, html: {id: "options-form", 'abide': '', 'live-validate': true}) do |f|
       .form-inputs
         .row.callout
           h5
@@ -26,68 +26,84 @@
             tbody
               tr
                 td
-                  | Require a reason for these labels:
+                  | Select which label types require a reason
                 td.button-group
-                  .button.require-button class=('secondary' if @project.screening_options.where(label_type_id: yes_id, screening_option_type_id:reason_option_id).length > 0) label-type="#{ yes_id }" option-type="#{ reason_option_id }"
+                  .button.require-button class=('success' if @project.screening_options.where(label_type_id: yes_id, screening_option_type_id:reason_option_id).length > 0) label-type="#{ yes_id }" option-type="#{ reason_option_id }"
                     |Yes
-                  .button.require-button class=('secondary' if @project.screening_options.where(label_type_id: maybe_id, screening_option_type_id:reason_option_id).length > 0) label-type="#{ maybe_id }" option-type="#{ reason_option_id }"
+                  .button.require-button class=('success' if @project.screening_options.where(label_type_id: maybe_id, screening_option_type_id:reason_option_id).length > 0) label-type="#{ maybe_id }" option-type="#{ reason_option_id }"
                     |Maybe
-                  .button.require-button class=('secondary' if @project.screening_options.where(label_type_id: no_id, screening_option_type_id:reason_option_id).length > 0) label-type="#{ no_id }" option-type="#{ reason_option_id }"
+                  .button.require-button class=('success' if @project.screening_options.where(label_type_id: no_id, screening_option_type_id:reason_option_id).length > 0) label-type="#{ no_id }" option-type="#{ reason_option_id }"
                     |No
               tr
                 td
-                  | Require a tag for these labels:
+                  | Select which label types require a tag
                 td.button-group
-                  .button.require-button class=('secondary' if @project.screening_options.where(label_type_id: yes_id, screening_option_type_id:tag_option_id).length > 0) label-type="#{ yes_id }" option-type="#{ tag_option_id }"
+                  .button.require-button class=('success' if @project.screening_options.where(label_type_id: yes_id, screening_option_type_id:tag_option_id).length > 0) label-type="#{ yes_id }" option-type="#{ tag_option_id }"
                     |Yes
-                  .button.require-button class=('secondary' if @project.screening_options.where(label_type_id: maybe_id, screening_option_type_id:tag_option_id).length > 0) label-type="#{ maybe_id }" option-type="#{ tag_option_id }"
+                  .button.require-button class=('success' if @project.screening_options.where(label_type_id: maybe_id, screening_option_type_id:tag_option_id).length > 0) label-type="#{ maybe_id }" option-type="#{ tag_option_id }"
                     |Maybe
-                  .button.require-button class=('secondary' if @project.screening_options.where(label_type_id: no_id, screening_option_type_id:tag_option_id).length > 0) label-type="#{ no_id }" option-type="#{ tag_option_id }"
+                  .button.require-button class=('success' if @project.screening_options.where(label_type_id: no_id, screening_option_type_id:tag_option_id).length > 0) label-type="#{ no_id }" option-type="#{ tag_option_id }"
                     |No
               tr
                 td
-                  | Require a note for these labels:
+                  | Select which label types require a note
                 td.button-group
-                  .button.require-button class=('secondary' if @project.screening_options.where(label_type_id: yes_id, screening_option_type_id:note_option_id).length > 0) label-type="#{ yes_id }" option-type="#{ note_option_id }"
+                  .button.require-button class=('success' if @project.screening_options.where(label_type_id: yes_id, screening_option_type_id:note_option_id).length > 0) label-type="#{ yes_id }" option-type="#{ note_option_id }"
                     |Yes
-                  .button.require-button class=('secondary' if @project.screening_options.where(label_type_id: maybe_id, screening_option_type_id:note_option_id).length > 0) label-type="#{ maybe_id }" option-type="#{ note_option_id }"
+                  .button.require-button class=('success' if @project.screening_options.where(label_type_id: maybe_id, screening_option_type_id:note_option_id).length > 0) label-type="#{ maybe_id }" option-type="#{ note_option_id }"
                     |Maybe
-                  .button.require-button class=('secondary' if @project.screening_options.where(label_type_id: no_id, screening_option_type_id:note_option_id).length > 0) label-type="#{ no_id }" option-type="#{ note_option_id }"
+                  .button.require-button class=('success' if @project.screening_options.where(label_type_id: no_id, screening_option_type_id:note_option_id).length > 0) label-type="#{ no_id }" option-type="#{ note_option_id }"
                     |No
-              tr
-                td
-                  | Only allow reasons created by project leads
-                td.button-group
-                  .button.on-button class=('secondary' if @project.screening_options.where(screening_option_type_id:lead_tags_id).length > 0) option-type="#{ lead_tags_id }"
-                    |On
-                  .button.off-button class=('secondary' if @project.screening_options.where(screening_option_type_id:lead_tags_id).length == 0) option-type="#{ lead_tags_id }"
-                    |Off
               tr
                 td
                   | Only allow tags created by project leads
-                td.button-group
-                  .button.on-button class=('secondary' if @project.screening_options.where(screening_option_type_id:lead_reasons_id).length > 0) option-type="#{ lead_reasons_id }"
-                    |On
-                  .button.off-button class=('secondary' if @project.screening_options.where(screening_option_type_id:lead_reasons_id).length == 0) option-type="#{ lead_reasons_id }"
-                    |Off
+                td
+                  .switch
+                    input.switch-input type='checkbox' id='tag-switch' checked=(@project.screening_options.where(screening_option_type_id: lead_tags_id).length > 0) option-type="#{ lead_tags_id }"
+
+                    label.switch-paddle for='tag-switch'
+                      span.switch-active aria-hidden='true'
+                        |On
+                      span.switch-inactive aria-hidden='true'
+                        |Off
+              tr
+                td
+                  | Only allow reasons created by project leads
+                td
+                  .switch
+                    input.switch-input type='checkbox' id='reason-switch' checked=(@project.screening_options.where(screening_option_type_id: lead_reasons_id).length > 0) option-type="#{ lead_reasons_id }"
+
+                    label.switch-paddle for='reason-switch'
+                      span.switch-active aria-hidden='true'
+                        |On
+                      span.switch-inactive aria-hidden='true'
+                        |Off
 
               tr
                 td
                   | Hide author information
-                td.button-group
-                  .button.on-button class=('secondary' if @project.screening_options.where(screening_option_type_id:hide_authors_id).length > 0) option-type="#{ hide_authors_id }"
-                    |On
-                  .button.off-button class=('secondary' if @project.screening_options.where(screening_option_type_id:hide_authors_id).length == 0) option-type="#{ hide_authors_id }"
-                    |Off
+                td
+                  .switch
+                    input.switch-input type='checkbox' id='authors-switch' checked=(@project.screening_options.where(screening_option_type_id: hide_authors_id).length > 0) option-type="#{ hide_authors_id }"
+
+                    label.switch-paddle for='authors-switch'
+                      span.switch-active aria-hidden='true'
+                        |On
+                      span.switch-inactive aria-hidden='true'
+                        |Off
 
               tr
                 td
                   | Hide journal information
-                td.button-group
-                  .button.on-button class=('secondary' if @project.screening_options.where(screening_option_type_id:hide_journal_id).length > 0) option-type="#{ hide_journal_id }"
-                    |On
-                  .button.off-button class=('secondary' if @project.screening_options.where(screening_option_type_id:hide_journal_id).length == 0) option-type="#{ hide_journal_id }"
-                    |Off
+                td
+                  .switch
+                    input.switch-input type='checkbox' id='journal-switch' checked=(@project.screening_options.where(screening_option_type_id: hide_journal_id).length > 0) option-type="#{ hide_journal_id }"
+
+                    label.switch-paddle for='journal-switch'
+                      span.switch-active aria-hidden='true'
+                        |On
+                      span.switch-inactive aria-hidden='true'
+                        |Off
 
 
           #option-list.hide

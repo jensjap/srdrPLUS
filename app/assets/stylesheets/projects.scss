@@ -509,4 +509,28 @@ a.add-task-button {
   display: flex;
   align-items: center;
 }
+///// MANAGE OPTIONS
+.options-table {
+  .require-button {
+    background: $dark-gray;
+    font-weight: bold;
+  }
+  .require-button.success {
+    background: $success-color;
+  }
+  .switch-paddle {
+    color: $white;
+    background: $dark-gray;
+  }
+  input:checked ~ .switch-paddle {
+    background: $success-color;
+    color: $black;
+  }
+  .switch {
+    margin-bottom: 0;
+  }
+}
+
+
+
 // END Colored triangles on the project index page.
