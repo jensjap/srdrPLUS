@@ -1,11 +1,11 @@
 #screen-div
   #end-message.hide
     h3 NOTHING TO LABEL
-  
+
   #citation-row.row
     .column.full-height.medium-9
       #citation-container.callout
-        h5 
+        h5
           #citation-name
 
         #journal-div
@@ -83,6 +83,22 @@
           b
             |OTHER REASON
           textarea#reason-textbox
+      .callout
+        h5
+          |TERMS
+        table
+          thead
+            th Name
+            th Color
+            th Meaning
+            th Delete
+          tbody#term-groups
+        #colors
+        #new-term-group.button
+          | ADD TERM GROUP
+        #term-select
+          select multiple='multiple'
+
 
   .row
     #control-group.button-group
@@ -136,9 +152,9 @@
         | ►
 
 #tags-modal style='display: none;'
-  #tags-list 
+  #tags-list
   #tags-controls
-    #add-tag-button 
+    #add-tag-button
       .button
         | add tag
 
