@@ -18,18 +18,22 @@ module Api
 
       api :CREATE, '/v1/projects_users_term_groups_colors', 'Creates a new projects_users_term_groups_color with specified projects_user, term_group and color'
       def create
-        term_group = TermGroup.find_or_create_by(name: putgc_params[:term_group_name])
-        term_groups_color = TermGroupsColor.find_or_create_by(term_group: term_group, color: Color.find(putgc_params[:color_id]))
-        @projects_users_term_groups_color = ProjectsUsersTermGroupsColor.create(projects_user: @projects_user, term_groups_color: term_groups_color)
-        render json: { id: @projects_users_term_groups_color.id }
+        @projects_users_term_groups_color = @projects_user.projects_users_term_groups_colors.build(putgc_params)
+        if @projects_users_term_groups_color.save
+          render json: { id: @projects_users_term_groups_color.id }
+        else
+          render json: { errors: @projects_users_term_groups_color.errors.full_messages }, :status => 422
+        end
       end
 
-      api :PATCH, '/v1/projects_users_term_groups_colors/:id', 'Updates specified projects_users_term_groups_color with a new term_groups_color'
+      api :PATCH, '/v1/projects_users_term_groups_colors/:id', 'Updates specified projects_users_term_groups_color with new terms'
       def update
-        term_group = TermGroup.find_or_create_by(name: putgc_params[:term_group_name])
-        term_groups_color = TermGroupsColor.find_or_create_by(term_group: term_group, color: Color.find(putgc_params[:color_id]))
-        @projects_users_term_groups_color.update(term_groups_color: term_groups_color)
-        render json: { id: @projects_users_term_groups_color.id }
+        @projects_users_term_groups_color.attributes = putgc_params
+        if @projects_users_term_groups_color.save
+          render json: { id: @projects_users_term_groups_color.id }
+        else
+          render json: { errors: @projects_users_term_groups_color.errors.full_messages }, :status => 422
+        end
       end
 
       private
@@ -43,7 +47,7 @@ module Api
 
         def putgc_params
           params.require(:projects_users_term_groups_color)
-                .permit(:projects_user_id, :term_group_name, :color_id)
+                .permit(:projects_user_id, {term_ids: []}, term_groups_color_attributes: [:color_id, term_group_attributes: [:name]])
         end
     end
   end

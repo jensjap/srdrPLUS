@@ -27,13 +27,14 @@ Rails.application.routes.draw do
       resources :authors, only: [:index]
       resources :colors, only: [:index]
       resources :keywords, only: [:index]
+      resources :terms, only: [:index]
       resources :timepoint_names, only: [:index]
 
       resources :labels_reasons, only: [:create, :destroy]
       resources :projects_users_term_groups_colors, only: [:create, :update, :destroy] do
-        resources :terms, only: [:create, :update]
+        resources :terms, only: [:index]
       end
-      resources :projects_users_term_groups_colors_terms, only: [:update, :destroy]
+      resources :projects_users_term_groups_colors_terms, only: [:create, :destroy]
       resources :taggings, only: [:create, :destroy]
 
       resources :notes, only: [:create, :update, :destroy]

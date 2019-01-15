@@ -1,7 +1,10 @@
 module Api
   module V1
     class AssignmentsController < BaseController
-      before_action :set_assignment, :skip_policy_scope, :skip_authorization, only: [:screen, :history]
+      before_action :set_assignment, only: [:screen, :history]
+      before_action :prepare_highlighting, only: [:screen, :history]
+
+      helper_method :highlight_terms
 
       api :GET, '/v1/assignments/:id/screen', 'List of citations to screen'
       formats [:json]
@@ -99,6 +102,22 @@ module Api
                 group_by { |note| note.notable_id }
         render 'history.json'
       end
+
+    def prepare_highlighting
+      putgcs = ProjectsUsersTermGroupsColor.where(projects_user: @assignment.projects_user).includes(:terms, term_groups_color: [:color])
+      @terms_dict = {}
+      putgcs.each do |putgc|
+        putgc.terms.each do |term|
+          @terms_dict[term.name] = putgc.term_groups_color.color.hex_code
+        end
+      end
+      term_names = @terms_dict.keys.sort! { |x,y| -x.size <=> -y.size }
+      @terms_regexp = Regexp.new term_names.join('|')
+    end
+
+    def highlight_terms(input_string)
+      input_string.gsub(@terms_regexp) {|match| '<b style="color: ' + @terms_dict[match] + ';">' + match + '</b>'}
+    end
 
     private
       def set_assignment

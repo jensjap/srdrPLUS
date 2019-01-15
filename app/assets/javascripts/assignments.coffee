@@ -7,6 +7,25 @@ document.addEventListener 'turbolinks:load', ->
     return unless $(".assignments.screen").length > 0
     #if (window.location.pathname != '/info.php') 
 
+##### force_update_c_p #####
+    force_update_c_p = ( obj ) ->
+      $.ajax {
+        type: 'GET'
+        url: $( '#screen-assignment-json-url' ).text()
+        data: { count: '10' }
+        success:
+          ( data ) ->
+            obj.citations = data.unlabeled_citations_projects
+            obj.history = data.labeled_citations_projects
+            obj.options = data.options
+            next_citation( obj )
+            obj.index = 0
+            update_info( obj )
+            if data.unlabeled_citations_projects.length == 0
+              toastr.warning( 'No more citations to label' )
+      }
+      return
+
 ##### get_c_p #####
     #get a list of unlabeled_citations from server
     get_c_p = ( obj ) ->
@@ -103,8 +122,8 @@ document.addEventListener 'turbolinks:load', ->
     update_info = ( obj ) ->
       current_citation = obj.history[ obj.index ]
 
-      $( '#citation-name' ).text( current_citation.name )
-      $( '#citation-abstract' ).text( current_citation.abstract )
+      $( '#citation-name' ).html( current_citation.name )
+      $( '#citation-abstract' ).html( current_citation.abstract )
       $( '#citation-pmid' ).text( current_citation.pmid )
       $( '#citation-refman' ).text( current_citation.refman )
       $( '#journal-name' ).text( current_citation.journal.name )
@@ -458,33 +477,13 @@ document.addEventListener 'turbolinks:load', ->
             q: params.term
             page: params.page || 1
 
-      $( '#tag-select select' ).on 'select2:unselect', ( event ) ->
-        tag_id = event.params.data.id
-        tag_option_element = $( event.target ).find( 'option[value="' + tag_id + '"]' )[ 0 ]
-        if $( tag_option_element ).attr( 'tagging-id' )
-          tagging_id = +$( tag_option_element ).attr( 'tagging-id' )
+      ## POPULATE TERM GROUPS ##
+      fetch_term_groups( state_obj )
 
-          $.ajax {
-            type: 'DELETE'
-            url: $( '#root-url' ).text() + '/api/v1/taggings/' + tagging_id
-            data: {
-              utf8: '✓'
-              authenticity_token: $( '#authenticity-token' ).text()
-            }
-            success:
-              () ->
-                i = 0
-                current_citation = state_obj.history[ state_obj.index ]
-                for tagging in current_citation.taggings
-                  if tagging.id == tagging_id
-                    current_citation.taggings.splice( i, 1 )
-                    break
-                  i++
-                toastr.success( 'Tag successfully deleted' )
-            error:
-              () ->
-                toastr.error( 'ERROR: Could not delete tag' )
-          }
+      ## NEW TERM GROUP HANDLING ##
+      $( '#new-term-group' ).click ->
+      send_new_term_group( state_obj, "NEW GROUP", 1 )
+
       return
 
 ##### get_history_page #####
@@ -667,32 +666,16 @@ document.addEventListener 'turbolinks:load', ->
       $( '#citations-list' ).show()
       $( '#screen-div' ).hide()
 
-##### switch_to_tags #####
-    switch_to_tags = ( ) ->
-      $( '#screen-div' ).hide()
-      $( '#tags-modal' ).show()
-    #  $( '#citations-list-elements' ).empty()
-    #  next_index = 0
-    #  for c in history_elements
-    #    info_wrapper =  
-    #      $( '<div><div/>' ).attr( { id: 'info-wrapper-' + c.citations_project_id, class: 'info-wrapper' } )
-    #    citation_info =
-    #      $( '<div></div>' ).attr( { id: 'citation-info-' + c.citations_project_id, class: 'citation-info' } )
-    #    citation_element =
-    #      $( '<div></div>' ).attr( { id: 'citation-element-' + c.citations_project_id, class: 'callout row', index: next_index } )
-      return
-
 ##### switch_to_screening #####
     switch_to_screening = ( obj ) ->
       $( '#pagination-buttons' ).hide()
       $( '#citations-list-elements' ).empty()
       $( '#citations-list' ).hide()
-      $( '#tags-modal' ).hide() 
       $( '#screen-div' ).show()
       $( '#switch-button').val('OFF')
 
 ##### fetch_term_groups #####
-    fetch_term_groups = ( ) ->
+    fetch_term_groups = ( obj ) ->
       $.ajax {
         type: 'GET'
         url: $('root-url').text() + '/api/v1/assignments/' + $( '#assignment-id' ).text() + '/projects_users_term_groups_colors.json'
@@ -706,10 +689,10 @@ document.addEventListener 'turbolinks:load', ->
               tg_title = $( '<td class="putgc-title"></td>' )
               tg_title_label = $( '<div>' + tg[ 'term_groups_color' ][ 'term_group' ][ 'name' ] + '</div>' )
               tg_title_input = $( '<input type="text" class="hide" value="' + tg[ 'term_groups_color' ][ 'term_group' ][ 'name' ] + '">' )
-              tg_color = $( '<td class="putgc-color" color-id="' + tg[ 'term_groups_color' ][ 'color' ][ 'id' ] + '"></td>' )
+              tg_color = $( '<td class="putgc-color" color-id="' + tg[ 'term_groups_color' ][ 'color' ][ 'id' ] + '" color-hex="' + tg[ 'term_groups_color' ][ 'color' ][ 'hex_code' ] + '"></td>' )
               tg_color_label = $( '<div style="height: 20px; width: 20px; background-color:' + tg[ 'term_groups_color' ][ 'color' ][ 'hex_code' ] + ';"></div>' )
               tg_color_palette = $( '<div class="hide" style="display: flex;"></div>' )
-              fetch_palette( tg_color_palette )
+              fetch_palette( obj, tg_color_palette )
               tg_meaning = $( '<td class="putgc-meaning">' + tg[ 'term_groups_color' ][ 'color' ][ 'name' ] + '</td>' )
               tg_delete = $( '<td class="delete_putgc"><div class="button tiny"> ✖ </td>' )
 
@@ -719,7 +702,7 @@ document.addEventListener 'turbolinks:load', ->
                   putgc_id = putgc_elem.attr( 'putgc-id' )
                   color_id = putgc_elem.find( '.putgc-color' ).attr( 'color-id' )
                   term_group_name = $( event.target ).val()
-                  update_term_group( putgc_id, term_group_name, color_id )
+                  update_term_group( obj, putgc_id, term_group_name, color_id )
 
               tg_title_label.dblclick ( event ) ->
                 for child in $( event.target ).parent().children()
@@ -731,13 +714,25 @@ document.addEventListener 'turbolinks:load', ->
                 for child in $( event.target ).parent().children()
                   $( child ).toggleClass( 'hide' )
 
-              tg_color_label.click ( event ) ->
-                console.log "colorclick"
+              tg_color_label.dblclick ( event ) ->
                 for child in $( event.target ).parent().children()
                   $( child ).toggleClass( 'hide' )
 
-              tg_delete.click ->
-                delete_term_group( tg[ 'id' ] )
+              tg_elem.click ( event ) ->
+                $( '#term-groups' ).children().removeClass( 'selected' )
+                putgc_elem = $( event.target ).closest 'tr'
+                $( putgc_elem ).addClass( 'selected' )
+                $( '#term-groups' ).attr( 'selected-putgc-id', putgc_elem.attr( 'putgc-id' ) )
+
+                $( '#term-selects .select2-container' ).addClass( 'hide' )
+                $( '#term-selects select[putgc-id=' + putgc_elem.attr( 'putgc-id' ) + ']' ).next( '.select2-container' ).removeClass( 'hide' )
+                
+
+              tg_delete.click ( event ) ->
+                event.stopPropagation()
+                putgc_elem = $( event.target ).closest 'tr'
+                putgc_id = putgc_elem.attr( 'putgc-id' )
+                delete_term_group( obj, putgc_id )
 
               tg_title.append( tg_title_label )
               tg_title.append( tg_title_input )
@@ -748,19 +743,93 @@ document.addEventListener 'turbolinks:load', ->
               tg_elem.append( tg_meaning )
               tg_elem.append( tg_delete )
               $( '#term-groups' ).append( tg_elem )
+
+            $( '#term-groups tr[putgc-id="' + $( '#term-groups' ).attr( 'selected-putgc-id' ) + '"]' ).addClass( 'selected' )
+
+            create_term_selects( obj )
         error:
           () ->
             toastr.error( 'ERROR: Could not fetch term groups' )
       }
 
+##### create_term_selects #####
+    create_term_selects = ( obj ) ->
+      send_ajax = ( inner_putgc_id ) ->
+        $.ajax {
+          type: 'GET'
+          url: $( '#root-url' ).text() + '/api/v1/projects_users_term_groups_colors/' + inner_putgc_id + '/terms.json'
+          dataType: 'json'
+          success:
+            ( data ) ->
+              for term in data[ 'results' ]
+                term_option = new Option( term[ 'text' ], term[ 'id' ], true, true )
+                $( 'select[putgc-id=' + inner_putgc_id + ']' ).append( term_option )
+              apply_select2_to_term_select( obj, $( 'select[putgc-id=' + inner_putgc_id + ']' ) )
+          error:
+            () ->
+              toastr.error( 'ERROR: Could not fetch terms' )
+        }
+
+      $( '#term-selects' ).empty()
+      for tg in $( '#term-groups tr' )
+        putgc_id = $( tg ).attr( 'putgc-id' )
+        term_select = $( '<select class="hide" putgc-id="' + putgc_id + '" multiple>' )
+        $( '#term-selects' ).append( term_select )
+
+        send_ajax( putgc_id )
+
+##### apply_select2_to_term_selects #####
+    apply_select2_to_term_select = ( obj, term_select ) ->
+      putgc_id = term_select.attr( 'putgc-id' )
+      term_select.select2
+        minimumInputLength: 0
+        #closeOnSelect: false
+        ajax:
+          url: ( ) ->
+            $('root-url').text() + '/api/v1/terms.json'
+          dataType: 'json'
+          delay: 100
+          data: (params) ->
+            q: params.term
+            page: params.page || 1
+
+      term_select.on 'select2:select select2:unselect', ( event ) ->
+        term_ids = [ '' ]
+        for term_elem in $( event.target ).find( 'option:checked' )
+          term_ids.push $( term_elem ).val()
+
+        $.ajax {
+          type: 'PATCH'
+          url: $( '#root-url' ).text() + '/api/v1/projects_users_term_groups_colors/' + putgc_id
+          dataType: 'json'
+          data: {
+            utf8: '✓'
+            authenticity_token: $( '#authenticity-token' ).text()
+            projects_users_term_groups_color: {
+              term_ids: term_ids
+            }
+          }
+          success:
+            ( data ) ->
+              console.log "LOYLOY"
+              force_update_c_p( obj )
+          error:
+            ( error ) ->
+              toastr.error( 'ERROR: Could not update terms' )
+        }
+
+      if not ($( '#term-groups' ).attr( 'selected-putgc-id' ) == putgc_id)
+        term_select.next( '.select2-container' ).addClass( 'hide' )
+
+
 ##### delete_term_group #####
-    delete_term_group = ( id ) ->
+    delete_term_group = ( obj, id ) ->
       $.ajax {
         type: 'DELETE'
         url: $('root-url').text() + '/api/v1/projects_users_term_groups_colors/' + id
         success:
           () ->
-            fetch_term_groups( )
+            fetch_term_groups( obj )
             toastr.success( 'Term group successfully deleted' )
         error:
           () ->
@@ -768,7 +837,7 @@ document.addEventListener 'turbolinks:load', ->
       }
  
 ##### fetch_palette #####
-    fetch_palette = ( palette_elem ) ->
+    fetch_palette = ( obj, palette_elem ) ->
       $.ajax {
         type: 'GET'
         url: $('root-url').text() + '/api/v1/colors.json'
@@ -783,14 +852,14 @@ document.addEventListener 'turbolinks:load', ->
                 putgc_id = putgc_elem.attr( 'putgc-id' )
                 color_id = $( event.target ).attr( 'color-id' )
                 term_group_name = putgc_elem.find( '.putgc-title input' ).val()
-                update_term_group( putgc_id, $( event.target ).val(), color_id )
+                update_term_group( obj, putgc_id, term_group_name, color_id )
               $( palette_elem ).append( color_elem )
         error:
           () ->
             toastr.error( 'ERROR: Could not fetch colors' )
       }
 ##### send_new_term_group #####
-    send_new_term_group = ( color_id, index ) ->
+    send_new_term_group = ( obj, term_group_name, color_id ) ->
       $.ajax {
         type: 'POST'
         url: $('root-url').text() + '/api/v1/assignments/' + $( '#assignment-id' ).text() + '/projects_users_term_groups_colors'
@@ -799,23 +868,22 @@ document.addEventListener 'turbolinks:load', ->
           utf8: '✓'
           authenticity_token: $( '#authenticity-token' ).text()
           projects_users_term_groups_color: {
-            term_group_name: "GROUP " + index
-            color_id: color_id
+            term_groups_color_attributes:
+              term_group_attributes:
+                name: term_group_name
+              color_id: color_id
           }
         }
         success:
           ( data ) ->
-            fetch_term_groups()
+            fetch_term_groups( obj )
         error:
           () ->
             toastr.error( 'ERROR: Could not create new term group' )
       }
 
-    $( '#new-term-group' ).click ->
-      send_new_term_group( 1, 1 )
-
 ##### update_term_group #####
-    update_term_group = ( id, new_term_group_name, new_color_id ) ->
+    update_term_group = ( obj, id, new_term_group_name, new_color_id ) ->
       $.ajax {
         type: 'PATCH'
         url: $('root-url').text() + '/api/v1/projects_users_term_groups_colors/' + id
@@ -824,19 +892,32 @@ document.addEventListener 'turbolinks:load', ->
           utf8: '✓'
           authenticity_token: $( '#authenticity-token' ).text()
           projects_users_term_groups_color: {
-            term_group_name: new_term_group_name
-            color_id: new_color_id
+            term_groups_color_attributes:
+              term_group_attributes:
+                name: new_term_group_name
+              color_id: new_color_id
           }
         }
         success:
           ( data ) ->
-            fetch_term_groups()
+            fetch_term_groups( obj )
         error:
           () ->
             toastr.error( 'ERROR: Could not update term group' )
       }
 
-##### highlight_terms #####
+##### highlight_terms ##### 
+    highlight_terms = ( input_string ) ->
+      for tg in $( '#term-groups' )
+        putgc_id = $( tg ).attr( 'putgc-id' )
+        tg_color = $( tg ).find( '.putgc-color' ).attr( 'color-hex' )
+        for term_ in $( '#term-selects select[putgc-id=' + putgc_id + '] option' )
+          "CoffeeScript is my favorite!".replace /(\w+)/g, (match) ->
+            match.toUpperCase()
+
+      return input_string
+
+    
 
 ##### send_new_term #####
     send_new_term = ( projects_users_terms_groups_color_id, term ) ->
@@ -854,7 +935,7 @@ document.addEventListener 'turbolinks:load', ->
         }
         success:
           ( data ) ->
-            fetch_term_groups()
+            fetch_term_groups( obj )
         error:
           () ->
             toastr.error( 'ERROR: Could not create new term group' )
@@ -876,82 +957,11 @@ document.addEventListener 'turbolinks:load', ->
         }
         success:
           ( data ) ->
-            fetch_term_groups()
+            fetch_term_groups( obj )
         error:
           () ->
             toastr.error( 'ERROR: Could not update term group' )
       }
-
-###############################
-      $( '#term-select select' ).select2
-        minimumInputLength: 0
-        #closeOnSelect: false
-        ajax:
-          url: ( ) -> $('root-url').text() + '/api/v1/projects_users_term_groups_colors/' + $( '#term-groups selected' ).attr( 'id' ) + '/terms.json'
-          dataType: 'json'
-          delay: 100
-          data: (params) ->
-            q: params.term
-            page: params.page || 1
-
-      $( '#term-select select' ).on 'select2:select', ( event ) ->
-        tag_text = event.params.data.text
-        tag_id = event.params.data.id
-        tag_option_element = $( event.target ).find( 'option[value="' + tag_id + '"]' )[ 0 ]
-        if !$( tag_option_element ).attr( 'tagging-id' )
-          $.ajax {
-            type: 'POST'
-            url: $( '#root-url' ).text() + '/api/v1/taggings'
-            dataType: 'json'
-            data: {
-              utf8: '✓'
-              authenticity_token: $( '#authenticity-token' ).text()
-              tagging: {
-                tag_id: tag_id
-                projects_users_role_id: state_obj.projects_users_role_id
-                taggable_id: state_obj.history[ state_obj.index ].citations_project_id
-                taggable_type: "CitationsProject"
-              }
-            }
-            success:
-              ( data ) ->
-                state_obj.history[ state_obj.index ].taggings.push { id: data.id, tag: { id: tag_id, name: tag_text } }
-                $( tag_option_element ).attr( 'tagging-id', data.id )
-                toastr.success( 'Tag successfully created' )
-            error:
-              () ->
-                toastr.error( 'ERROR: Could not create tag' )
-          }
-
-      $( '#term-select select' ).on 'select2:unselect', ( event ) ->
-        tag_id = event.params.data.id
-        tag_option_element = $( event.target ).find( 'option[value="' + tag_id + '"]' )[ 0 ]
-        if $( tag_option_element ).attr( 'tagging-id' )
-          tagging_id = +$( tag_option_element ).attr( 'tagging-id' )
-
-          $.ajax {
-            type: 'DELETE'
-            url: $( '#root-url' ).text() + '/api/v1/taggings/' + tagging_id
-            data: {
-              utf8: '✓'
-              authenticity_token: $( '#authenticity-token' ).text()
-            }
-            success:
-              () ->
-                i = 0
-                current_citation = state_obj.history[ state_obj.index ]
-                for tagging in current_citation.taggings
-                  if tagging.id == tagging_id
-                    current_citation.taggings.splice( i, 1 )
-                    break
-                  i++
-                toastr.success( 'Tag successfully deleted' )
-            error:
-              () ->
-                toastr.error( 'ERROR: Could not delete tag' )
-          }
-
-
 
 ###################################
 ######  THIS IS THE START  ########

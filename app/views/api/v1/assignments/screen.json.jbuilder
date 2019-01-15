@@ -3,8 +3,8 @@ json.unlabeled_citations_projects do
     citation = citations_project.citation
 
     json.citations_project_id citations_project.id
-    json.name citation.name
-    json.abstract citation.abstract
+    json.name highlight_terms(citation.name)
+    json.abstract highlight_terms(citation.abstract)
     json.pmid citation.pmid
     json.refman citation.refman
     if citation.journal.present?
@@ -19,7 +19,10 @@ json.unlabeled_citations_projects do
       json.array! citation.authors, :id, :name
     end
     json.keywords do
-      json.array! citation.keywords, :id, :name
+      json.array!(citation.keywords) do |kw|
+        json.id kw.id
+        json.name highlight_terms(kw.name)
+      end
     end
     
     ## Not sure if we will ever display taggings that are not created by the screener, but we currently send the projects_users_role info regardless
@@ -44,8 +47,8 @@ json.labeled_citations_projects do
     citations_project = label.citations_project
 
     json.citations_project_id citations_project.id
-    json.name citation.name
-    json.abstract citation.abstract
+    json.name highlight_terms(citation.name)
+    json.abstract highlight_terms(citation.abstract)
     json.pmid citation.pmid
     json.refman citation.refman
     if citation.journal.present?
@@ -60,7 +63,10 @@ json.labeled_citations_projects do
       json.array! citation.authors, :id, :name
     end
     json.keywords do
-      json.array! citation.keywords, :id, :name
+      json.array!(citation.keywords) do |kw|
+        json.id kw.id
+        json.name highlight_terms(kw.name)
+      end
     end
 
     json.taggings @labeled_taggings[ citations_project.id ] do |tagging|
