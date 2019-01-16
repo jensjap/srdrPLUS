@@ -61,6 +61,9 @@
             blockquote
               | Create a new term group with the desired color and add terms to be highlighted during screening.
               cite Friendly Helper
+            
+            input#term-input type='text'
+
             table#term-groups-table
               thead
                 th Name
@@ -70,7 +73,8 @@
               tbody#term-groups
             #new-term-group.button.tiny
               | Add Term Group
-            #term-selects
+            /#term-selects
+            #term-list
         div.accordion-item data-accordion-item=''
           a.accordion-title href="#" 
             | Add Tags

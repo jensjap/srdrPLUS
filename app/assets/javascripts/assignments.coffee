@@ -726,10 +726,31 @@ document.addEventListener 'turbolinks:load', ->
                   $( child ).toggleClass( 'hide' )
 
               tg_elem.click ( event ) ->
-                $( '#term-groups' ).children().removeClass( 'selected' )
+                #$( '#term-groups' ).children().removeClass( 'selected' )
                 putgc_elem = $( event.target ).closest 'tr'
-                $( putgc_elem ).addClass( 'selected' )
-                $( '#term-groups' ).attr( 'selected-putgc-id', putgc_elem.attr( 'putgc-id' ) )
+                #$( putgc_elem ).addClass( 'selected' )
+                #$( '#term-groups' ).attr( 'selected-putgc-id', putgc_elem.attr( 'putgc-id' ) )
+
+                $.ajax {
+                  type: 'POST'
+                  url: $( '#root-url' ).text() + 'api/v1/projects_users_term_groups_colors_terms/'
+                  dataType: 'json'
+                  data: {
+                    utf8: '✓'
+                    authenticity_token: $( '#authenticity-token' ).text()
+                    projects_users_term_groups_colors_term: {
+                      projects_users_term_groups_color_id: putgc_elem.attr( 'putgc-id' )
+                      term_name: $( '#term-input' ).val()
+                    }
+                  }
+                  success:
+                    ( data ) ->
+                      toastr.success( 'Term successfully added' )
+                      force_update_c_p( obj )
+                  error:
+                    ( error ) ->
+                      toastr.error( 'ERROR: Could not update terms' )
+                }
 
                 $( '#term-selects .select2-container' ).addClass( 'hide' )
                 $( '#term-selects select[putgc-id=' + putgc_elem.attr( 'putgc-id' ) + ']' ).next( '.select2-container' ).removeClass( 'hide' )
@@ -753,7 +774,7 @@ document.addEventListener 'turbolinks:load', ->
 
             $( '#term-groups tr[putgc-id="' + $( '#term-groups' ).attr( 'selected-putgc-id' ) + '"]' ).addClass( 'selected' )
 
-            create_term_selects( obj )
+            #create_term_selects( obj )
         error:
           () ->
             toastr.error( 'ERROR: Could not fetch term groups' )
