@@ -53,51 +53,54 @@
           #citation-refman.display-inline
 
     .column.full-height.medium-3
-      .callout
-        h5
-          |TAGS
-        #tag-select
-          select multiple='multiple'
-      .callout
-        h5
-          |NOTES
+      ul.accordion data-accordion=''
+        li.accordion-item data-accordion-item=''
+          h5
+            |TAGS
+          div#tag-select.accordion-content data-tab-content=''
+            select multiple='multiple'
+        li.accordion-item data-accordion-item=''
+          h5
+            |NOTES
 
-        /#notes-list
-        textarea#note-textbox
-        /#save-note-button.button.tiny.hollow
-          | Save Note
-      .callout
-        h5
-          | REASON
-        #reason-select
-          select multiple='multiple'
-        /#reasons-list
-          #projects-user-reasons
-            b
-              |PROJECTS_USER REASONS
-            fieldset
-          #project-lead-reasons
-            b
-              |PROJECT LEAD REASONS
-            fieldset
-          b
-            |OTHER REASON
-          textarea#reason-textbox
-      .callout
-        h5
-          |TERMS
-        table#term-groups-table
-          thead
-            th Name
-            th Color
-            th Meaning
-            th Delete
-          tbody#term-groups
-        #new-term-group.button
-          | ADD TERM GROUP
-        #term-selects
-          select multiple='multiple'
-
+          div#tag-select.accordion-content data-tab-content=''
+            /#notes-list
+            textarea#note-textbox
+            /#save-note-button.button.tiny.hollow
+              | Save Note
+        li.accordion-item data-accordion-item=''
+          h5
+            | REASON
+          div#tag-select.accordion-content data-tab-content=''
+            #reason-select
+              select multiple='multiple'
+            /#reasons-list
+              #projects-user-reasons
+                b
+                  |PROJECTS_USER REASONS
+                fieldset
+              #project-lead-reasons
+                b
+                  |PROJECT LEAD REASONS
+                fieldset
+              b
+                |OTHER REASON
+              textarea#reason-textbox
+        li.accordion-item data-accordion-item=''
+          h5
+            |TERMS
+          div#tag-select.accordion-content data-tab-content=''
+            table#term-groups-table
+              thead
+                th Name
+                th Color
+                th Meaning
+                th Delete
+              tbody#term-groups
+            #new-term-group.button
+              | ADD TERM GROUP
+            #term-selects
+              select multiple='multiple'
 
   .row
     #control-group.button-group
