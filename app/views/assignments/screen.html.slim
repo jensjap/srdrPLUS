@@ -53,25 +53,50 @@
           #citation-refman.display-inline
 
     .column.full-height.medium-3
-      ul.accordion data-accordion=''
-        li.accordion-item data-accordion-item=''
-          h5
-            |TAGS
+      div.accordion data-accordion='' data-allow-all-closed='true'
+        div.accordion-item data-accordion-item=''
+          a.accordion-title href="#" 
+            | Highlight Terms
           div#tag-select.accordion-content data-tab-content=''
+            blockquote
+              | Create a new term group with the desired color and add terms to be highlighted during screening.
+              cite Friendly Helper
+            table#term-groups-table
+              thead
+                th Name
+                th Color
+                th Meaning
+                th Delete
+              tbody#term-groups
+            #new-term-group.button.tiny
+              | Add Term Group
+            #term-selects
+        div.accordion-item data-accordion-item=''
+          a.accordion-title href="#" 
+            | Tags
+          div#tag-select.accordion-content data-tab-content=''
+            blockquote
+              | Type into the box below and press ENTER to add a new tag to this citation.
+              cite Friendly Helper
             select multiple='multiple'
-        li.accordion-item data-accordion-item=''
-          h5
-            |NOTES
-
+        div.accordion-item data-accordion-item=''
+          a.accordion-title href="#" 
+            | Notes
           div#tag-select.accordion-content data-tab-content=''
+            blockquote
+              | Notes are saved automatically.
+              cite Friendly Helper
             /#notes-list
             textarea#note-textbox
             /#save-note-button.button.tiny.hollow
               | Save Note
-        li.accordion-item data-accordion-item=''
-          h5
-            | REASON
+        div.accordion-item data-accordion-item=''
+          a.accordion-title href="#" 
+            | Reasons
           div#tag-select.accordion-content data-tab-content=''
+            blockquote
+              | Type into the box below and press ENTER to add a reason. Reasons are saved when the citation is labeled.
+              cite Friendly Helper
             #reason-select
               select multiple='multiple'
             /#reasons-list
@@ -86,21 +111,6 @@
               b
                 |OTHER REASON
               textarea#reason-textbox
-        li.accordion-item data-accordion-item=''
-          h5
-            |TERMS
-          div#tag-select.accordion-content data-tab-content=''
-            table#term-groups-table
-              thead
-                th Name
-                th Color
-                th Meaning
-                th Delete
-              tbody#term-groups
-            #new-term-group.button
-              | ADD TERM GROUP
-            #term-selects
-              select multiple='multiple'
 
   .row
     #control-group.button-group

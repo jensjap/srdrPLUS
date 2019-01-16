@@ -116,7 +116,11 @@ module Api
     end
 
     def highlight_terms(input_string)
-      input_string.gsub(@terms_regexp) {|match| '<b style="color: ' + @terms_dict[match] + ';">' + match + '</b>'}
+      if input_string.present? and @terms_dict.size > 0
+        input_string.gsub(@terms_regexp) {|match| '<b style="color: ' + @terms_dict[match] + ';">' + match + '</b>'}
+      else
+        return input_string
+      end
     end
 
     private
