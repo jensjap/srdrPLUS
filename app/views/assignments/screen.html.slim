@@ -53,11 +53,11 @@
           #citation-refman.display-inline
 
     .column.full-height.medium-3
-      div.accordion data-accordion='' data-allow-all-closed='true'
+      div.accordion data-accordion='' data-allow-all-closed='true' data-multi-expand='true'
         div.accordion-item data-accordion-item=''
           a.accordion-title href="#" 
             | Highlight Terms
-          div#tag-select.accordion-content data-tab-content=''
+          div.accordion-content data-tab-content=''
             blockquote
               | Create a new term group with the desired color and add terms to be highlighted during screening.
               cite Friendly Helper
@@ -73,16 +73,17 @@
             #term-selects
         div.accordion-item data-accordion-item=''
           a.accordion-title href="#" 
-            | Tags
-          div#tag-select.accordion-content data-tab-content=''
+            | Add Tags
+          div.accordion-content data-tab-content=''
             blockquote
               | Type into the box below and press ENTER to add a new tag to this citation.
               cite Friendly Helper
-            select multiple='multiple'
+            #tag-select
+              select multiple='multiple'
         div.accordion-item data-accordion-item=''
           a.accordion-title href="#" 
-            | Notes
-          div#tag-select.accordion-content data-tab-content=''
+            | Take Note
+          div.accordion-content data-tab-content=''
             blockquote
               | Notes are saved automatically.
               cite Friendly Helper
@@ -92,8 +93,8 @@
               | Save Note
         div.accordion-item data-accordion-item=''
           a.accordion-title href="#" 
-            | Reasons
-          div#tag-select.accordion-content data-tab-content=''
+            | Give Labeling Reasons
+          div.accordion-content data-tab-content=''
             blockquote
               | Type into the box below and press ENTER to add a reason. Reasons are saved when the citation is labeled.
               cite Friendly Helper
