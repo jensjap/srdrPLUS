@@ -8,15 +8,15 @@
     - if section_name.eql? 'Outcome'
       = f.association :type1_type, label: "Suggest Type of #{ section_name }"
 
-      = f.simple_fields_for(:type1) do |sf_t1|
-        = sf_t1.input :name,        label: section_name.eql?('Outcome') ? 'Suggest Domain'               : 'Name', required: true, hint: 'Name can\'t be blank'
-        = sf_t1.input :description, label: section_name.eql?('Outcome') ? 'Suggest Specific Measurement' : 'Description', input_html: { rows: 2 }
+    = f.simple_fields_for(:type1) do |sf_t1|
+      = sf_t1.input :name,        label: section_name.eql?('Outcome') ? 'Suggest Domain'               : 'Name', required: true, hint: 'Name can\'t be blank'
+      = sf_t1.input :description, label: section_name.eql?('Outcome') ? 'Suggest Specific Measurement' : 'Description', input_html: { rows: 2 }
 
-      - if section_name.eql? 'Outcome'
-        = f.association :timepoint_names,
-          including_blank: false,
-          label: "Suggest Timepoint(s) to associate with this #{ section_name }. If you cannot find an existing Timepoint to associate, #{ link_to_add_association('click here', f, :timepoint_names, partial: 'extraction_forms_projects/build/type1/timepoint_name_fields') } to create a new one.".html_safe,
-          label_method: :select_label
+    - if section_name.eql? 'Outcome'
+      = f.association :timepoint_names,
+        including_blank: false,
+        label: "Suggest Timepoint(s) to associate with this #{ section_name }. If you cannot find an existing Timepoint to associate, #{ link_to_add_association('click here', f, :timepoint_names, partial: 'extraction_forms_projects/build/type1/timepoint_name_fields') } to create a new one.".html_safe,
+        label_method: :select_label
 
   .form-actions
     = f.button :submit, t('update')

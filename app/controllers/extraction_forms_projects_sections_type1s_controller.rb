@@ -14,7 +14,10 @@ class ExtractionFormsProjectsSectionsType1sController < ApplicationController
       if @extraction_forms_projects_sections_type1.update(extraction_forms_projects_sections_type1_params)
         format.html { redirect_to build_extraction_forms_project_path(@extraction_forms_projects_sections_type1.extraction_forms_project,
                                                                       anchor: "panel-tab-#{ @extraction_forms_projects_sections_type1.extraction_forms_projects_section.id }"),
-        notice: t('success') }
+                                  notice: t('success') }
+      else
+        flash.now[:alert] = @extraction_forms_projects_sections_type1.errors.full_messages[0][6..-1]
+        format.html { render :edit }
       end
     end
   end
