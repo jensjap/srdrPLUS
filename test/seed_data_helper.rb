@@ -1513,10 +1513,10 @@ module SeedDataExtended
           end
 
           # Assignments.
-          Task.all.each do |t|
+          p.tasks.each do |t|
             case t.task_type.name
             when 'Perpetual', 'Pilot'
-              Assignment.create!([
+              Assignment.create([
                 {
                   date_assigned: DateTime.now,
                   date_due: Date.today + 7,
