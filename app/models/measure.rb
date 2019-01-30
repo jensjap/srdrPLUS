@@ -20,5 +20,5 @@ class Measure < ApplicationRecord
   has_many :result_statistic_section_types, through: :result_statistic_section_types_measures, dependent: :destroy
 
   has_many :comparisons_measures, dependent: :destroy
-  has_many :comparisons, through: :comparisons_meausures
+  has_many :comparisons, through: :comparisons_measures
 end

@@ -193,53 +193,125 @@ json.project do
     end
   end
 
-  if not @project.extractions.empty? do
+  if not @project.extractions.empty?
     json.extractions @project.extractions do |ex|
       json.set! ex.id do
         json.citation_id ex.citations_project.citation.id
         json.extractor_user_id ex.projects_users_role.user.id
         json.extractor_role_id ex.projects_users_role.role.id
         json.sections ex.extractions_extraction_forms_projects_sections do |eefps|
-          json.set! eefps.extraction_forms_projects_sections.section.id do
-            #if not eefps.extractions_extraction_forms_projects_sections_type1s.empty?
-            #  json.type1s eefps.extractions_extraction_forms_projects_sections_type1s do |eefpst1|
-            #    t1 = eefpst1.type1
-            #    json.set! t1.id do
-            #      if eefpst1.type1_type.present?
-            #        json.type1_type do
-            #          json.id eefpst1.type1_type.id
-            #          json.name eefpst1.type1_type.name
-            #        end
-            #      end
-            #      json.name t1.name
-            #      json.description t1.description
-            #      
-            #      if not eefpst1.extractions_extraction_forms_projects_sections_type1_rows.empty?
-            #        json.populations eefpst1.extractions_extraction_forms_projects_sections_type1_rows do |p|
-            #          json.set! p.population_name.id do
-            #            json.name p.population_name.name
-            #            json.timepoints p.extractions_extraction_forms_projects_sections_type1_row_columns do |tp|
-            #              json.set! tp.timepoint_name.id do
-            #                json.name tp.timepoint_name.name
-            #              end
-            #            end
-            #          end
-            #        end
-            #      end
-            #    end
-            #  end
-            #end
+          json.set! eefps.extraction_forms_projects_section.section.id do
+            if not eefps.extractions_extraction_forms_projects_sections_type1s.empty?
+              json.type1s eefps.extractions_extraction_forms_projects_sections_type1s do |eefpst1|
+                t1 = eefpst1.type1
+                json.set! t1.id do
+                  if eefpst1.type1_type.present?
+                    json.type1_type do
+                      json.id eefpst1.type1_type.id
+                      json.name eefpst1.type1_type.name
+                    end
+                  end
+                  json.name t1.name
+                  json.description t1.description
+                  
+                  if not eefpst1.extractions_extraction_forms_projects_sections_type1_rows.empty?
+                    json.populations eefpst1.extractions_extraction_forms_projects_sections_type1_rows do |p|
+                      json.set! p.population_name.id do
+                        json.name p.population_name.name
+
+                        json.result_statistic_sections p.result_statistic_sections do |rss|
+                          json.set! rss.id do
+                            json.result_statistic_section_type do
+                              json.id rss.result_statistic_section_type.id
+                              json.name rss.result_statistic_section_type.name
+                            end
+
+                            json.measures rss.result_statistic_sections_measures do |rssm|
+                              m = rssm.measure
+                              json.set! m.id do
+                                json.name m.name
+
+                                json.comparisons m.comparisons do |c|
+                                  json.set! c.id do
+                                    json.comparison_groups c.comparison_groups do |cg|
+                                      json.set! cg.id do
+                                        json.comparates cg.comparates do |ct|
+                                          json.set! ct.id do
+                                            json.comparable_elements ct.comparable_elements do |ce|
+                                              json.comparable_type ce.comparable_type
+                                              json.comparable_id ce.comparable_id
+                                            end
+                                          end
+                                        end
+                                      end
+                                    end
+                                  end
+                                end
+
+                                json.records do
+                                  rssm.tps_comparisons_rssms.each do |tcr|
+                                    tcr.records.each do |r|
+                                      json.set! r.id do
+                                        json.timepoint_id tcr.timepoint.id
+                                        json.comparison_id tcr.comparison.id
+                                        json.name r.name
+                                      end
+                                    end
+                                  end
+                                  rssm.tps_arms_rssms.each do |tar|
+                                    tar.records.each do |r|
+                                      json.set! r.id do
+                                        json.timepoint_id tar.timepoint.id
+                                        json.arm_id tar.extractions_extraction_forms_projects_sections_type1.id
+                                        json.name r.name
+                                      end
+                                    end
+                                  end
+                                  rssm.comparisons_arms_rssms.each do |car|
+                                    car.records.each do |r|
+                                      json.set! r.id do
+                                        json.comparison_id car.comparison.id
+                                        json.arm_id car.extractions_extraction_forms_projects_sections_type1.id
+                                        json.name r.name
+                                      end
+                                    end
+                                  end
+                                  rssm.wacs_bacs_rssms.each do |wbr|
+                                    wbr.records.each do |r|
+                                      json.set! r.id do
+                                        json.wac_id wbr.wac.id
+                                        json.bac_id wbr.bac.id
+                                        json.name r.name
+                                      end
+                                    end
+                                  end
+                                end
+                              end
+                            end
+                          end
+                        end
+
+                        json.timepoints p.extractions_extraction_forms_projects_sections_type1_row_columns do |tp|
+                          json.set! tp.timepoint_name.id do
+                            json.name tp.timepoint_name.name
+                          end
+                        end
+                      end
+                    end
+                  end
+                end
+              end
+            end
             
-            #json.linked_type1 eefps.link_to_type1.id
+            if eefps.link_to_type1.present?
+              json.linked_type1 eefps.link_to_type1.id
+            end
 
-            #json.records Record.where(recordable: eefps.extractions_extraction_forms_projects_sections_question_row_column_fields) do |r|
-            #  json.set! r.recordable.question_row_column_fields do 
-            #    json.name r.name
-            #  end
-            #end
-
-            #if eefps.
-          end
+            json.records Record.where(recordable: eefps.extractions_extraction_forms_projects_sections_question_row_column_fields) do |r|
+              json.set! r.recordable.question_row_column_field.id do 
+                json.name r.name
+              end
+            end
           end
         end
       end
