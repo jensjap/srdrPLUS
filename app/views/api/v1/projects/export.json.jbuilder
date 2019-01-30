@@ -2,6 +2,14 @@ json.project do
   json.id @project.id
   json.name @project.name
   json.description @project.description
+
+  json.attribution @project.attribution
+  json.methodology_description @project.methodology_description
+  json.prospero @project.prospero
+  json.doi @project.doi
+  json.notes @project.notes
+  json.funding_source @project.funding_source
+
   json.users  @project.projects_users do |pu|
     json.set! pu.id do
       json.email pu.user.email
