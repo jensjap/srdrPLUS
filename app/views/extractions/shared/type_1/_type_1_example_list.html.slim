@@ -14,17 +14,12 @@
           th Suggested by
 
       tbody
-        - eefps.extraction_forms_projects_section.type1s.includes(suggestion: { user: :profile })\
-          .joins(:extraction_forms_projects_sections_type1s)\
-            .where.not(extraction_forms_projects_sections_type1s: { type1: eefps.type1s })\
-              .distinct\
-                .each do |t1|
+        / #!!! Add profject lead info if project lead.
+        - eefps.type1s_suggested_by_project_leads.each do |t1|
           tr
             td = t1.name
             td = t1.description
-            - p = t1.suggestion.user.profile
-            / #!!! Add profject lead info if project lead.
-            td = p.first_name + ' ' + p.middle_name + '. ' + p.last_name
+            td = t1.suggestion.user.handle
 
   button.close-button data-close='' aria-label='Close modal' type='button'
     span aria-hidden='true'

@@ -10,6 +10,15 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
 #    joins(extraction_forms_projects_section: :section )
 #      .where(extraction_forms_projects_sections: { sections: { name: 'Results' } }) }
 
+  def type1s_suggested_by_project_leads
+    extraction_forms_projects_section
+      .type1s
+      .includes(suggestion: { user: :profile })
+      .joins(:extraction_forms_projects_sections_type1s)
+      .where.not(extraction_forms_projects_sections_type1s: { type1: self.type1s })
+      .distinct
+  end
+
   belongs_to :extraction,                        inverse_of: :extractions_extraction_forms_projects_sections
   belongs_to :extraction_forms_projects_section, inverse_of: :extractions_extraction_forms_projects_sections
   belongs_to :link_to_type1, class_name: 'ExtractionsExtractionFormsProjectsSection',
