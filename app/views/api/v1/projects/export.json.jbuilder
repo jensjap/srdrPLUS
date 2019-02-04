@@ -1,8 +1,6 @@
-json.project do
-  json.id @project.id
+json.set! @project.id do
   json.name @project.name
   json.description @project.description
-
   json.attribution @project.attribution
   json.methodology_description @project.methodology_description
   json.prospero @project.prospero
@@ -18,6 +16,7 @@ json.project do
         json.first_name pu.user.profile.first_name
         json.middle_name pu.user.profile.middle_name
         json.last_name pu.user.profile.last_name
+        json.time_zone pu.user.profile.time_zone
         json.organization do
           json.id pu.user.profile.organization.id
           json.name pu.user.profile.organization.name
