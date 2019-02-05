@@ -97,6 +97,8 @@
             blockquote
               | Type into the box below and press ENTER to add a new tag to this citation.
               cite Friendly Helper
+            label for="tag-select"
+              | Tags
             #tag-select
               select multiple='multiple'
         div.accordion-item data-accordion-item=''
@@ -107,6 +109,8 @@
               | Notes are saved automatically.
               cite Friendly Helper
             /#notes-list
+            label for="note-textbox"
+              | New Note
             textarea#note-textbox
             /#save-note-button.button.tiny.hollow
               | Save Note
@@ -117,6 +121,8 @@
             blockquote
               | Type into the box below and press ENTER to add a reason. Reasons are saved when the citation is labeled.
               cite Friendly Helper
+            label for="reason-select"
+              | Reasons for labeling decision
             #reason-select
               select multiple='multiple'
             /#reasons-list
