@@ -487,6 +487,11 @@ document.addEventListener 'turbolinks:load', ->
       ## POPULATE TERM GROUPS ##
       fetch_term_groups( state_obj )
 
+      ## EDIT TERM GROUP HANDLING ##
+      $( '#edit-tgs-button' ).click ->
+        $( '#edit-tgs-button' ).toggleClass( 'secondary' )
+        $( '#edit-term-groups' ).toggle()
+
       ## NEW TERM GROUP HANDLING ##
       $( '#new-term-group' ).click ->
         send_new_term_group( state_obj, "NEW GROUP", 1 )
@@ -693,6 +698,7 @@ document.addEventListener 'turbolinks:load', ->
             $( '#tg-buttons' ).empty()
             for tg in data[ 'projects_users_term_groups_colors' ]
               hex_code = tg[ 'term_groups_color' ][ 'color' ][ 'hex_code' ]
+              tg_color_id = tg[ 'term_groups_color' ][ 'color' ][ 'id' ]
               tg_name = tg[ 'term_groups_color' ][ 'term_group' ][ 'name' ]
               tg_meaning = tg[ 'term_groups_color' ][ 'color' ][ 'name' ]
               tg_id = tg[ 'id' ]
@@ -732,17 +738,19 @@ document.addEventListener 'turbolinks:load', ->
                 }
 
               ##### create element to edit term groups
-              tg_elem = $( '<tr putgc-id="' + tg[ 'id' ] + ' class="tg-elem""></tr>' )
+              tg_elem = $( '<tr putgc-id="' + tg_id + '" class="tg-elem""></tr>' )
 
               tg_title = $( '<td class="putgc-title"></td>' )
-              tg_title_label = $( '<div>' + tg[ 'term_groups_color' ][ 'term_group' ][ 'name' ] + '</div>' )
-              tg_title_input = $( '<input type="text" class="hide" value="' + tg[ 'term_groups_color' ][ 'term_group' ][ 'name' ] + '">' )
-              tg_color = $( '<td class="putgc-color" color-id="' + tg[ 'term_groups_color' ][ 'color' ][ 'id' ] + '" color-hex="' + tg[ 'term_groups_color' ][ 'color' ][ 'hex_code' ] + '"></td>' )
-              tg_color_label = $( '<div style="height: 20px; width: 20px; background-color:' + tg[ 'term_groups_color' ][ 'color' ][ 'hex_code' ] + ';"></div>' )
-              tg_color_palette = $( '<div class="hide" style="display: flex;"></div>' )
+              tg_title_label = $( '<div class="tg-title-label">' + tg_name + '</div>' )
+              tg_title_input = $( '<input type="text" class="hide" value="' + tg_name + '">' )
+              tg_color = $( '<td class="putgc-color" color-id="' + tg_color_id + '" color-hex="' + hex_code + '"></td>' )
+              tg_color_label = $( '<div class="putgc-color-label" style="background-color:' + hex_code + ';"></div>' )
+              tg_color_palette = $( '<div class="putgc-color-palette"></div>' )
+              tg_color_palette_cell = $('<td colspan="4"></td>' ).append( tg_color_palette )
+              tg_color_palette_row = $( '<tr class="putgc-color-palette-row hide"></tr>' ).append( tg_color_palette_cell )
               fetch_palette( obj, tg_color_palette )
-              tg_meaning = $( '<td class="putgc-meaning">' + tg[ 'term_groups_color' ][ 'color' ][ 'name' ] + '</td>' )
-              tg_delete = $( '<td class="delete_putgc"><a> ✖ </a></td>' )
+              tg_meaning = $( '<td class="putgc-meaning">' + tg_meaning + '</td>' )
+              tg_delete = $( '<td class="delete-putgc"><a> ✖ </a></td>' )
 
               tg_title_input.keypress ( event ) ->
                 if event.which == 13
@@ -762,29 +770,38 @@ document.addEventListener 'turbolinks:load', ->
                 for child in $( event.target ).parent().children()
                   $( child ).toggleClass( 'hide' )
 
-              tg_color_label.dblclick ( event ) ->
-                for child in $( event.target ).parent().children()
-                  $( child ).toggleClass( 'hide' )
+              $( window ).click ( event ) ->
+                $( ".putgc-color-palette-row" ).addClass( 'hide' )
+                $( ".tg-elem" ).removeClass( 'hide' )
 
-                $( '#term-selects .select2-container' ).addClass( 'hide' )
-                $( '#term-selects select[putgc-id=' + putgc_elem.attr( 'putgc-id' ) + ']' ).next( '.select2-container' ).removeClass( 'hide' )
+              tg_color_label.dblclick ( event ) ->
+                #$( event.target ).closest( 'tr' ).find( '.tg-title-label, .putgc-meaning, .delete-putgc' ).toggleClass( 'hide' )
+                $( event.target ).closest( 'tr' ).toggleClass( 'hide' )
+                $( event.target ).closest( 'tr' ).next( 'tr' ).toggleClass( 'hide' )
+                #for child in $( event.target ).parent().children()
+                #  console.log $( event.target )
+                #  $( child ).toggleClass( 'hide' )
+
+                #$( '#term-selects .select2-container' ).addClass( 'hide' )
+                #$( '#term-selects select[putgc-id=' + putgc_elem.attr( 'putgc-id' ) + ']' ).next( '.select2-container' ).removeClass( 'hide' )
                 
 
               tg_delete.click ( event ) ->
-                event.stopPropagation()
-                putgc_elem = $( event.target ).closest 'tr'
-                putgc_id = putgc_elem.attr( 'putgc-id' )
-                delete_term_group( obj, putgc_id )
+                if confirm("Are you sure?")
+                  event.stopPropagation()
+                  putgc_elem = $( event.target ).closest 'tr'
+                  putgc_id = putgc_elem.attr( 'putgc-id' )
+                  delete_term_group( obj, putgc_id )
 
               tg_title.append( tg_title_label )
               tg_title.append( tg_title_input )
               tg_color.append( tg_color_label )
-              tg_color.append( tg_color_palette )
               tg_elem.append( tg_title )
               tg_elem.append( tg_color )
               tg_elem.append( tg_meaning )
               tg_elem.append( tg_delete )
               $( '#term-groups' ).append( tg_elem )
+              $( '#term-groups' ).append( tg_color_palette_row )
 
             $( '#term-groups tr[putgc-id="' + $( '#term-groups' ).attr( 'selected-putgc-id' ) + '"]' ).addClass( 'selected' )
 
@@ -853,7 +870,6 @@ document.addEventListener 'turbolinks:load', ->
           }
           success:
             ( data ) ->
-              console.log "LOYLOY"
               force_update_c_p( obj )
           error:
             ( error ) ->
@@ -889,11 +905,12 @@ document.addEventListener 'turbolinks:load', ->
             for color in data[ 'colors' ]
               color_elem = $( '<div color-id="' + color[ 'id' ] + '"style="height: 20px; width: 20px; background-color:' + color[ 'hex_code' ] + ';"></div>' )
               color_elem.click ( event ) ->
-                putgc_elem = $( event.target ).closest 'tr'
+                putgc_elem = $( event.target ).closest( 'tr' ).prev( 'tr' )
                 putgc_id = putgc_elem.attr( 'putgc-id' )
                 color_id = $( event.target ).attr( 'color-id' )
                 term_group_name = putgc_elem.find( '.putgc-title input' ).val()
                 update_term_group( obj, putgc_id, term_group_name, color_id )
+                event.stopPropagation()
               $( palette_elem ).append( color_elem )
         error:
           () ->

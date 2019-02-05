@@ -62,18 +62,19 @@
               | Create a new term group with the desired color and add terms to be highlighted during screening.
               cite Friendly Helper
             
-            label for="term-input"
-              | New Term
-
-            input#term-input type='text'
-
-            div#term-group-buttons
+            label for="term-group-buttons"
+              | Create new term
+            div#term-group-buttons.callout
+              label for="term-input"
+                | Name
+              input#term-input type='text'
               table#term-group-buttons-table
                 thead
                   th Add to
                 tbody#tg-buttons
-              #edit-term-groups.button.tiny
-                | Edit Term Groups
+
+            #edit-tgs-button.button.tiny
+              | Edit Term Groups
 
             div#edit-term-groups style="display:none;"
               table#edit-term-groups-table
@@ -83,9 +84,9 @@
                   th Meaning
                   th 
                 tbody#term-groups
-              #new-term-group.button.secondary.tiny
+              #new-term-group.button.success.tiny
                 | New Term Group
-              #done-editing-term-groups.button.success.tiny
+              /#done-editing-term-groups.button.success.tiny
                 | Done Editing
             /#term-selects
             #term-list
