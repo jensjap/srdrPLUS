@@ -690,8 +690,49 @@ document.addEventListener 'turbolinks:load', ->
         success:
           ( data ) ->
             $( '#term-groups' ).empty()
+            $( '#tg-buttons' ).empty()
             for tg in data[ 'projects_users_term_groups_colors' ]
-              tg_elem = $( '<tr putgc-id="' + tg[ 'id' ] + '"></tr>' )
+              hex_code = tg[ 'term_groups_color' ][ 'color' ][ 'hex_code' ]
+              tg_name = tg[ 'term_groups_color' ][ 'term_group' ][ 'name' ]
+              tg_meaning = tg[ 'term_groups_color' ][ 'color' ][ 'name' ]
+              tg_id = tg[ 'id' ]
+
+              ##### create button element which is used to add a term to a term group
+              tg_button_row = $( '<tr class="tg-button-row"></tr>' )
+              tg_button = $( '<div putgc-id="' + tg_id + '" class="button tiny" style="background-color:' + hex_code + ';">' + tg_name + '</div>' )
+
+              $( tg_button_row ).append( $('<td></td>').append( tg_button ) )
+              $( '#tg-buttons' ).append( tg_button_row )
+
+              tg_button_row.click ( event ) ->
+                if $( '#term-input' ).val().length == 0
+                  toastr.error( 'ERROR: Term cannot be empty' )
+                  return
+
+                $.ajax {
+                  type: 'POST'
+                  url: $( '#root-url' ).text() + 'api/v1/projects_users_term_groups_colors_terms/'
+                  dataType: 'json'
+                  data: {
+                    utf8: '✓'
+                    authenticity_token: $( '#authenticity-token' ).text()
+                    projects_users_term_groups_colors_term: {
+                      projects_users_term_groups_color_id: $( event.target ).attr( 'putgc-id' )
+                      term_name: $( '#term-input' ).val()
+                    }
+                  }
+                  success:
+                    ( data ) ->
+                      toastr.success( 'Term successfully added' )
+                      $( '#term-input' ).val('')
+                      force_update_c_p( obj )
+                  error:
+                    ( error ) ->
+                      toastr.error( 'ERROR: Could not update terms' )
+                }
+
+              ##### create element to edit term groups
+              tg_elem = $( '<tr putgc-id="' + tg[ 'id' ] + ' class="tg-elem""></tr>' )
 
               tg_title = $( '<td class="putgc-title"></td>' )
               tg_title_label = $( '<div>' + tg[ 'term_groups_color' ][ 'term_group' ][ 'name' ] + '</div>' )
@@ -701,7 +742,7 @@ document.addEventListener 'turbolinks:load', ->
               tg_color_palette = $( '<div class="hide" style="display: flex;"></div>' )
               fetch_palette( obj, tg_color_palette )
               tg_meaning = $( '<td class="putgc-meaning">' + tg[ 'term_groups_color' ][ 'color' ][ 'name' ] + '</td>' )
-              tg_delete = $( '<td class="delete_putgc"><div class="button tiny"> ✖ </td>' )
+              tg_delete = $( '<td class="delete_putgc"><a> ✖ </a></td>' )
 
               tg_title_input.keypress ( event ) ->
                 if event.which == 13
@@ -724,33 +765,6 @@ document.addEventListener 'turbolinks:load', ->
               tg_color_label.dblclick ( event ) ->
                 for child in $( event.target ).parent().children()
                   $( child ).toggleClass( 'hide' )
-
-              tg_elem.click ( event ) ->
-                #$( '#term-groups' ).children().removeClass( 'selected' )
-                putgc_elem = $( event.target ).closest 'tr'
-                #$( putgc_elem ).addClass( 'selected' )
-                #$( '#term-groups' ).attr( 'selected-putgc-id', putgc_elem.attr( 'putgc-id' ) )
-
-                $.ajax {
-                  type: 'POST'
-                  url: $( '#root-url' ).text() + 'api/v1/projects_users_term_groups_colors_terms/'
-                  dataType: 'json'
-                  data: {
-                    utf8: '✓'
-                    authenticity_token: $( '#authenticity-token' ).text()
-                    projects_users_term_groups_colors_term: {
-                      projects_users_term_groups_color_id: putgc_elem.attr( 'putgc-id' )
-                      term_name: $( '#term-input' ).val()
-                    }
-                  }
-                  success:
-                    ( data ) ->
-                      toastr.success( 'Term successfully added' )
-                      force_update_c_p( obj )
-                  error:
-                    ( error ) ->
-                      toastr.error( 'ERROR: Could not update terms' )
-                }
 
                 $( '#term-selects .select2-container' ).addClass( 'hide' )
                 $( '#term-selects select[putgc-id=' + putgc_elem.attr( 'putgc-id' ) + ']' ).next( '.select2-container' ).removeClass( 'hide' )

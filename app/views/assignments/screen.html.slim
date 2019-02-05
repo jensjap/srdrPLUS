@@ -3,7 +3,7 @@
     h3 NOTHING TO LABEL
 
   #citation-row.row
-    .column.full-height.medium-9
+    .column.full-height.large-9.medium-8.small-6
       #citation-container.callout
         h5
           #citation-name
@@ -52,7 +52,7 @@
         i
           #citation-refman.display-inline
 
-    .column.full-height.medium-3
+    .column.full-height.large-3.medium-4.small-6
       div.accordion data-accordion='' data-allow-all-closed='true' data-multi-expand='true'
         div.accordion-item data-accordion-item=''
           a.accordion-title href="#" 
@@ -62,17 +62,31 @@
               | Create a new term group with the desired color and add terms to be highlighted during screening.
               cite Friendly Helper
             
+            label for="term-input"
+              | New Term
+
             input#term-input type='text'
 
-            table#term-groups-table
-              thead
-                th Name
-                th Color
-                th Meaning
-                th Delete
-              tbody#term-groups
-            #new-term-group.button.tiny
-              | Add Term Group
+            div#term-group-buttons
+              table#term-group-buttons-table
+                thead
+                  th Add to
+                tbody#tg-buttons
+              #edit-term-groups.button.tiny
+                | Edit Term Groups
+
+            div#edit-term-groups style="display:none;"
+              table#edit-term-groups-table
+                thead
+                  th Name
+                  th Color
+                  th Meaning
+                  th 
+                tbody#term-groups
+              #new-term-group.button.secondary.tiny
+                | New Term Group
+              #done-editing-term-groups.button.success.tiny
+                | Done Editing
             /#term-selects
             #term-list
         div.accordion-item data-accordion-item=''

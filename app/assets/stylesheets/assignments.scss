@@ -69,7 +69,7 @@
   overflow-y: scroll;
 }
 
-#term-groups-table {
+#term-group-buttons-table, #edit-term-groups-table{
   tr {
     background-color: white;
     td {
@@ -88,6 +88,10 @@
   tr.selected {
     background-color: #e8e7f0;
   }
+}
+
+#new-term-group {
+  margin-right: 0.8rem;
 }
 
 
