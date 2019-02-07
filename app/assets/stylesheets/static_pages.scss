@@ -12,3 +12,227 @@
     }
   }
 }
+
+@keyframes glowing {
+  0% { box-shadow: 0 0 -20px #c4a300; }
+  40% { box-shadow: 0 0 40px #c4a300; }
+  60% { box-shadow: 0 0 40px #c4a300; }
+  100% { box-shadow: 0 0 -20px #c4a300; }
+}
+
+.glow {
+  animation: glowing 5000ms infinite;
+  background-color: #fdd835;
+  color: $primary-color;
+  border-radius: 3px;
+  padding: 5px;
+}
+
+.The-Easy-Systematic {
+  width: 483px;
+  height: 168px;
+  font-family: Halant;
+  font-size: 48px;
+  font-weight: bold;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: 1.17;
+  letter-spacing: normal;
+  color: #ffffff;
+}
+
+.Its-100-free-powe {
+  width: 483px;
+  height: 84px;
+  font-family: NotoSans;
+  font-size: 20px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: 1.4;
+  letter-spacing: normal;
+  color: #dee1e8;
+}
+
+.Rectangle {
+  width: 482px;
+  height: 357px;
+  border-radius: 3px;
+  box-shadow: 0 20px 40px 0 rgba(0, 0, 0, 0.15);
+  background-color: #ffffff;
+}
+
+.hero {
+  padding-top: 100px;
+}
+
+.Hero-Message {
+  padding-top: 50px;
+}
+
+.Search-review-datas {
+  width: auto;
+  height: 64px;
+  font-family: Halant;
+  font-size: 24px;
+  font-weight: bold;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: 1.33;
+  letter-spacing: normal;
+  text-align: center;
+  color: #1c1819;
+  padding-top: 32px;
+}
+
+.Search-review-datas .text-style-1 {
+  color: #33124b;
+}
+
+#new_user {
+  text-align: center;
+
+  .small-centered {
+    padding-top: 50px;
+  }
+
+  label.email.required {
+    width: 80px;
+    height: 17px;
+    font-family: NotoSans;
+    font-size: 12px;
+    font-weight: normal;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    color: #1c1819;
+  }
+
+  #user_email {
+    width: 338px;
+    height: 40px;
+    border-radius: 3px;
+    box-shadow: inset 0 1px 3px 0 rgba(0, 0, 0, 0.13);
+    background-color: #ffffff;
+  }
+
+  label.password.required {
+    width: 55px;
+    height: 17px;
+    font-family: NotoSans;
+    font-size: 12px;
+    font-weight: normal;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    color: #1c1819;
+  }
+
+  #user_password {
+    width: 338px;
+    height: 40px;
+    border-radius: 3px;
+    box-shadow: inset 0 1px 3px 0 rgba(0, 0, 0, 0.13);
+    background-color: #ffffff;
+  }
+
+  .Rectangle-141 {
+    width: 278px;
+    height: 55px;
+    border-radius: 3px;
+    background-color: #fdd835;
+  }
+
+  input.button[type='submit'] {
+    width: 278px;
+    height: 55px;
+    border-radius: 3px;
+    background-color: #fdd835;
+    font-family: NotoSans;
+    font-size: 18px;
+    font-weight: bold;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: 1.44;
+    letter-spacing: normal;
+    text-align: center;
+    color: #33124b;
+  }
+}
+
+.Rectangle-2 {
+  margin: -100px auto;
+  width: 996px;
+  height: 670px;
+  border-radius: 3px;
+  box-shadow: 0 20px 40px 0 rgba(0, 0, 0, 0.15);
+  background-color: #ffffff;
+  font-family: NotoSans;
+
+  .read-more {
+    font-family: AvenirNext;
+    font-size: 14px;
+    font-weight: 600;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: 1.57;
+    letter-spacing: normal;
+    text-align: center;
+    color: #5e258a;
+  }
+
+  .See-how-you-can-work {
+    padding-top: 72px;
+    height: 56px;
+    font-family: Halant;
+    font-size: 48px;
+    font-weight: bold;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: 1.17;
+    letter-spacing: normal;
+    text-align: center;
+    color: #1c1819;
+  }
+
+  h3.text-center {
+    font-family: Halant;
+    font-size: 24px;
+    font-weight: bold;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: 1.33;
+    letter-spacing: normal;
+    text-align: center;
+    color: #1c1819;
+  }
+}
+
+.Create-your-systemat {
+  margin-top: 200px;
+  height: 56px;
+  font-family: Halant;
+  font-size: 48px;
+  font-weight: bold;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: 1.17;
+  letter-spacing: normal;
+  text-align: center;
+  color: #1c1819;
+}
+
+.SRDR-has-a-variety {
+  height: 28px;
+  font-family: NotoSans;
+  font-size: 20px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: 1.4;
+  letter-spacing: normal;
+  text-align: center;
+  color: #414247;
+}

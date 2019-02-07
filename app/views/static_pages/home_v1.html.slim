@@ -1,3 +1,76 @@
 - provide(:no_overlay_nav, true)
 
-.hero.expanded
+.hero
+  .row
+    .column.medium-4.medium-offset-2
+      .Hero-Message
+        h2.The-Easy-Systematic The Easy Systematic Review Tool for Hard Decisions
+        h3.Its-100-free-powe It’s 100% free, powerful and easy-to-use tool for data management. systematic reviews and meta-analyses
+    .column.medium-4.end
+      .Rectangle
+        .Search-review-datas.text-center
+          span.text-style-1 Search review datas in second.
+          br
+          span.text-style-1 Get started now.
+
+        = simple_form_for(User.new, as: :user, url: registration_path(:user), html: { data: { 'abide': '' } }) do |f|
+          .alert.callout data-abide-error='' style='display: none;'
+            p
+              i.fi-alert>
+              ' Please correct the errors below.
+
+          .form-inputs.row
+            .column.small-9.small-centered
+              = f.input :email, label: 'Email Address', required: true, hint: 'Email must have the following format: example@domain.edu', autofocus: true
+              = f.input :password, required: true, hint: ("Password must contain a minium of #{@minimum_password_length} characters." if @minimum_password_length),
+                input_html: { data: { validator: 'minimum_length', minimum_length: "#{ @minimum_password_length }" } }
+
+          .form-actions
+            = f.button :submit, "SIGN UP FOR FREE"
+
+.Rectangle-2
+  h2.See-how-you-can-work See how you can work with SRDR+
+  br
+  br
+  br
+  br
+  br
+  br
+  .row.center-align
+    .column.small-4
+      = image_tag 'icon-researchers.svg', class: 'float-center'
+      h3.text-center Researchers
+      h6.text-center.small.subheader Use SRDR for grant applications or original research.
+      .read-more.text-center = link_to 'READ MORE', '#'
+    .column.small-4
+      = image_tag 'icon-guideline-developers.svg', class: 'float-center'
+      h3.text-center Guideline Developers
+      h6.text-center.small.subheader Produce systematic reviews to support clinical practice guidelines.
+      .read-more.text-center = link_to 'READ MORE', '#'
+    .column.small-4
+      = image_tag 'icon-educators.svg', class: 'float-center'
+      h3.text-center Educators
+      h6.text-center.small.subheader Use SRDR for instructing students in the creation and methods of SRMAs.
+      .read-more.text-center = link_to 'READ MORE', '#'
+  .row style='margin-top: 30px;'
+    .column.small-4
+      = image_tag 'icon-policymakers.svg', class: 'float-center'
+      h3.text-center Policymakers
+      h6.text-center.small.subheader Use SRDR for a research perspective on different policy options.
+      .read-more.text-center = link_to 'READ MORE', '#'
+    .column.small-4
+      = image_tag 'icon-clinicians.svg', class: 'float-center'
+      h3.text-center Clinicians
+      h6.text-center.small.subheader Use SRDR for quick reference on clinical questions.
+      .read-more.text-center = link_to 'READ MORE', '#'
+    .column.small-4
+      = image_tag 'icon-librarians.svg', class: 'float-center'
+      h3.text-center Librarians
+      h6.text-center.small.subheader Use SRDR for a research perspective on different options.
+      .read-more.text-center = link_to 'READ MORE', '#'
+
+h1.Create-your-systemat.text-center Create your systematic review project today
+.SRDR-has-a-variety.text-center SRDR+ has a variety of features that make it the best place to do systematic review
+.row
+  .column.medium-6
+  .column.medium-6

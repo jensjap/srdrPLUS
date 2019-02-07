@@ -64,22 +64,6 @@
     }
   }
 }
-
-@keyframes glowing {
-  0% { box-shadow: 0 0 -20px #c4a300; }
-  40% { box-shadow: 0 0 40px #c4a300; }
-  60% { box-shadow: 0 0 40px #c4a300; }
-  100% { box-shadow: 0 0 -20px #c4a300; }
-}
-
-.glow {
-  animation: glowing 5000ms infinite;
-  background-color: #fdd835;
-  color: $primary-color;
-  border-radius: 6px;
-  padding: 5px;
-}
-
 // END Navigation.
 
 // Select2
