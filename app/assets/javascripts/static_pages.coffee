@@ -25,3 +25,12 @@ document.addEventListener 'turbolinks:load', ->
 
     # Attach click handler to .scroll-top-wrapper btn to scroll to top.
     $( '.scroll-top-wrapper' ).click scrollToTop
+
+    ## When topbar gets stuck to the top we want to visually highlight the
+    #  signup link.
+    $( '#responsive-menu' ).on( 'sticky.zf.stuckto:top', ->
+      $( '#signup-link-id' ).addClass 'glow'
+      return
+    ).on 'sticky.zf.unstuckfrom:top', ->
+      $( '#signup-link-id' ).removeClass 'glow'
+      return

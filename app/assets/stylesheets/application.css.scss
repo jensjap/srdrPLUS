@@ -33,11 +33,7 @@
 
 // Navigation.
 #navigation {
-  padding: 0;
-
-  a:hover {
-    text-decoration: none;
-  }
+  //padding: 0;
 
   .title-bar .title-bar-left {
     float: left;
@@ -45,7 +41,7 @@
     margin-left: 5px;
   }
 
-  .top-bar > .top-bar-left {
+  .top-bar {
     a:hover {
       background-color: transparent;
     }
@@ -68,6 +64,22 @@
     }
   }
 }
+
+@keyframes glowing {
+  0% { box-shadow: 0 0 -20px #c4a300; }
+  40% { box-shadow: 0 0 40px #c4a300; }
+  60% { box-shadow: 0 0 40px #c4a300; }
+  100% { box-shadow: 0 0 -20px #c4a300; }
+}
+
+.glow {
+  animation: glowing 5000ms infinite;
+  background-color: #fdd835;
+  color: $primary-color;
+  border-radius: 6px;
+  padding: 5px;
+}
+
 // END Navigation.
 
 // Select2
@@ -81,7 +93,7 @@ body {
 }
 
 .content {
-  margin-top: 10px;
+  //margin-top: 10px;
 }
 
 a {
@@ -131,7 +143,7 @@ body div.top-bar {
   padding: 3px 3px 6px 3px;
 
   .top-bar-right {
-    margin-top: 6px;
+    margin-top: 16px;
 
     a.button {
       border: 1px solid white;
@@ -247,8 +259,9 @@ ul.menu.vertical.submenu.is-dropdown-submenu {
 
 // Debug window.
 pre.debug_dump {
-  background-color: $color-complement-4;
+  background-color: $primary-color;
   border: 1px solid gray;
+  color: yellow;
   margin: 10px;
   padding: 5px;
   overflow-x: scroll;
@@ -306,7 +319,7 @@ pre.debug_dump {
 // END Scroll top-of-the-page button.
 
 .form-inputs label {
-  color: $color-primary-4;
+  color: $primary-color;
 
   &.required abbr {
     color: $alert-color;
@@ -381,3 +394,10 @@ a.accordion-title.populations {
   }
 }
 // END Results section nav table.
+
+// Hero section.
+.hero {
+  background-color: $primary-color;
+  height: 648px;
+}
+// END Hero section.
