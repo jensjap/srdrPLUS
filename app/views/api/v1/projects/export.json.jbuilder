@@ -57,6 +57,9 @@ json.set! @project.id do
     json.set! cp.citation.id do
       json.name cp.citation.name
       json.abstract cp.citation.abstract
+      json.refman cp.citation.refman
+      json.pmid cp.citation.pmid
+      json.publication_date cp.citation.publication_date
       json.journal do
         json.id cp.citation.journal.id
         json.name cp.citation.journal.name
@@ -73,10 +76,10 @@ json.set! @project.id do
       end
       json.labels cp.labels do |ll|
         json.set! ll.id do
-          json.labeler_user_id ll.projects_users_role.user.id 
+          json.labeler_user_id ll.projects_users_role.user.id
           json.labeler_role_id ll.projects_users_role.role.id
           json.label_type_id ll.label_type.id
-          
+
           json.reasons ll.reasons do |r|
             json.set! r.id do
               json.name r.name
@@ -131,7 +134,7 @@ json.set! @project.id do
       json.set! efps.section.id do
         json.name efps.section.name
         json.position efps.ordering.position
-        
+
         json.extraction_forms_projects_section_type do
           json.id efps.extraction_forms_projects_section_type.id
           json.name efps.extraction_forms_projects_section_type.name
@@ -309,13 +312,13 @@ json.set! @project.id do
                 end
               end
             end
-            
+
             if eefps.link_to_type1.present?
               json.linked_type1 eefps.link_to_type1.id
             end
 
             json.records Record.where(recordable: eefps.extractions_extraction_forms_projects_sections_question_row_column_fields) do |r|
-              json.set! r.recordable.question_row_column_field.id do 
+              json.set! r.recordable.question_row_column_field.id do
                 json.name r.name
               end
             end
