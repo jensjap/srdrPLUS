@@ -2,6 +2,61 @@
   #end-message.hide
     h3 NOTHING TO LABEL
 
+  #terms-modal.hide
+    #buttons-row
+      a#hide-modal-button
+        |✖
+    div.tm-inner-div
+      div.medium-6.tm-left-panel
+        label
+          |TERM GROUPS
+        div.callout 
+          #tg-panel
+            div#edit-term-groups
+              table#edit-term-groups-table
+                col.medium-5
+                col.medium-4
+                col.medium-2
+                col.medium-1
+                thead
+                  th Name
+                  th Color
+                  th Meaning
+                  th Delete
+                tbody#term-groups
+              #new-term-group.button.success.tiny
+                | New Term Group
+        label for="term-group-buttons"
+          | CREATE NEW TERM
+        div.term-group-buttons.callout
+          label for="term-input"
+            | Name
+          input.term-input type='text'
+          table.term-group-buttons-table
+            thead
+              th Add to
+            tbody.tg-buttons
+      div.medium-6
+        label
+          |TERMS
+        table#terms-list
+          col.medium-7
+          col.medium-2
+          col.medium-2
+          col.medium-1
+          thead
+            th
+              | Term Name
+            th
+              | Case Sensitive
+            th
+              | Partial Match
+            /th
+              | Regexp
+            th
+              | Delete
+          tbody
+
   #citation-row.row
     .column.full-height.large-9.medium-8.small-6
       #citation-container.callout
@@ -63,20 +118,22 @@
               cite Friendly Helper
             
             label for="term-group-buttons"
-              | Create new term
-            div#term-group-buttons.callout
+              | CREATE NEW TERM
+            div.term-group-buttons.callout
               label for="term-input"
                 | Name
-              input#term-input type='text'
-              table#term-group-buttons-table
+              input.term-input type='text'
+              table.term-group-buttons-table
                 thead
                   th Add to
-                tbody#tg-buttons
+                tbody.tg-buttons
 
-            #edit-tgs-button.button.tiny
+            /#edit-tgs-button.button.tiny
               | Edit Term Groups
+            #edit-terms-button.button.tiny
+              | Edit Terms
 
-            div#edit-term-groups style="display:none;"
+            /div#edit-term-groups style="display:none;"
               table#edit-term-groups-table
                 thead
                   th Name
@@ -89,7 +146,8 @@
               /#done-editing-term-groups.button.success.tiny
                 | Done Editing
             /#term-selects
-            #term-list
+            /#term-list
+
         div.accordion-item data-accordion-item=''
           a.accordion-title href="#" 
             | Add Tags
@@ -160,10 +218,6 @@
     /#tags-button.button
       | tags
 
-
-#terms-modal
-  #close-terms-modal
-  #terms-list
 
 
 #hide-me.hide

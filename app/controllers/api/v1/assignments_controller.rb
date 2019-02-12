@@ -100,11 +100,13 @@ module Api
         end
       end
       term_names = @terms_dict.keys.sort! { |x,y| -x.size <=> -y.size }
+      term_names = term_names.map { |k| Regexp.escape k }
       @terms_regexp = Regexp.new term_names.join('|')
     end
 
     def highlight_terms(input_string)
       if input_string.present? and @terms_dict.size > 0
+        #byebug
         input_string.gsub(@terms_regexp) {|match| '<b style="color: ' + @terms_dict[match] + ';">' + match + '</b>'}
       else
         return input_string
