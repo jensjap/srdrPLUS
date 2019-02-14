@@ -67,7 +67,8 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 ## Non-default gems.
 
 # Use Zurb Foundation as Front-End Framework
-gem 'foundation-rails', '~> 6.3.1.0'
+gem 'foundation-rails'
+gem 'autoprefixer-rails'
 gem 'foundation-icons-sass-rails'
 
 # Prettier templates.
