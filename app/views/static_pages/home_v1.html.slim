@@ -1,13 +1,12 @@
 - provide(:no_overlay_nav, true)
 
 .hero
-  .row
-    .column.medium-4.medium-offset-2
-      .Hero-Message
-        h2.The-Easy-Systematic The Easy Systematic Review Tool for Hard Decisions
-        h3.Its-100-free-powe It’s 100% free, powerful and easy-to-use tool for data management. systematic reviews and meta-analyses
-    .column.medium-4.end
-      .Rectangle
+  .grid-x.align-center.align-middle.grid-margin-x
+    .cell.medium-4.Hero-Message
+      h2.The-Easy-Systematic The Easy Systematic Review Tool for Hard Decisions
+      h3.Its-100-free-powe It’s 100% free, powerful and easy-to-use tool for data management. systematic reviews and meta-analyses
+    .cell.medium-4.grid-padding-x
+      .Rectangle.cell
         .Search-review-datas.text-center
           span.text-style-1 Search review datas in second.
           br
@@ -19,58 +18,163 @@
               i.fi-alert>
               ' Please correct the errors below.
 
-          .form-inputs.row
-            .column.small-9.small-centered
-              = f.input :email, label: 'Email Address', required: true, hint: 'Email must have the following format: example@domain.edu', autofocus: true
-              = f.input :password, required: true, hint: ("Password must contain a minium of #{@minimum_password_length} characters." if @minimum_password_length),
-                input_html: { data: { validator: 'minimum_length', minimum_length: "#{ @minimum_password_length }" } }
+          .form-inputs
+            = f.input :email, label: 'Email Address', required: true, hint: 'Email must have the following format: example@domain.edu', autofocus: true
+            = f.input :password, required: true, hint: ("Password must contain a minium of #{@minimum_password_length} characters." if @minimum_password_length),
+              input_html: { data: { validator: 'minimum_length', minimum_length: "#{ @minimum_password_length }" } }
 
           .form-actions
             = f.button :submit, "SIGN UP FOR FREE"
 
-.Rectangle-2
-  h2.See-how-you-can-work See how you can work with SRDR+
-  br
-  br
-  br
-  br
-  br
-  br
-  .row.center-align
-    .column.small-4
-      = image_tag 'icon-researchers.svg', class: 'float-center'
-      h3.text-center Researchers
-      h6.text-center.small.subheader Use SRDR for grant applications or original research.
-      .read-more.text-center = link_to 'READ MORE', '#'
-    .column.small-4
-      = image_tag 'icon-guideline-developers.svg', class: 'float-center'
-      h3.text-center Guideline Developers
-      h6.text-center.small.subheader Produce systematic reviews to support clinical practice guidelines.
-      .read-more.text-center = link_to 'READ MORE', '#'
-    .column.small-4
-      = image_tag 'icon-educators.svg', class: 'float-center'
-      h3.text-center Educators
-      h6.text-center.small.subheader Use SRDR for instructing students in the creation and methods of SRMAs.
-      .read-more.text-center = link_to 'READ MORE', '#'
-  .row style='margin-top: 30px;'
-    .column.small-4
-      = image_tag 'icon-policymakers.svg', class: 'float-center'
-      h3.text-center Policymakers
-      h6.text-center.small.subheader Use SRDR for a research perspective on different policy options.
-      .read-more.text-center = link_to 'READ MORE', '#'
-    .column.small-4
-      = image_tag 'icon-clinicians.svg', class: 'float-center'
-      h3.text-center Clinicians
-      h6.text-center.small.subheader Use SRDR for quick reference on clinical questions.
-      .read-more.text-center = link_to 'READ MORE', '#'
-    .column.small-4
-      = image_tag 'icon-librarians.svg', class: 'float-center'
-      h3.text-center Librarians
-      h6.text-center.small.subheader Use SRDR for a research perspective on different options.
-      .read-more.text-center = link_to 'READ MORE', '#'
+.grid-x.align-center.grid-padding-x
+  .cell.medium-8.Rectangle-2
+    h2.See-how-you-can-work See how you can work with SRDR+
+    .grid-x.align-center
+      .cell.small-4
+        = image_tag 'icon-researchers.svg', class: 'float-center'
+        h3.text-center Researchers
+        h6.text-center.small.subheader Use SRDR for grant applications or original research.
+        .read-more.text-center = link_to 'READ MORE', '#'
+      .cell.small-4
+        = image_tag 'icon-guideline-developers.svg', class: 'float-center'
+        h3.text-center Guideline Developers
+        h6.text-center.small.subheader Produce systematic reviews to support clinical practice guidelines.
+        .read-more.text-center = link_to 'READ MORE', '#'
+      .cell.small-4
+        = image_tag 'icon-educators.svg', class: 'float-center'
+        h3.text-center Educators
+        h6.text-center.small.subheader Use SRDR for instructing students in the creation and methods of SRMAs.
+        .read-more.text-center = link_to 'READ MORE', '#'
+    .grid-x.align-center style='margin-top: 30px;'
+      .cell.small-4
+        = image_tag 'icon-policymakers.svg', class: 'float-center'
+        h3.text-center Policymakers
+        h6.text-center.small.subheader Use SRDR for a research perspective on different policy options.
+        .read-more.text-center = link_to 'READ MORE', '#'
+      .cell.small-4
+        = image_tag 'icon-clinicians.svg', class: 'float-center'
+        h3.text-center Clinicians
+        h6.text-center.small.subheader Use SRDR for quick reference on clinical questions.
+        .read-more.text-center = link_to 'READ MORE', '#'
+      .cell.small-4
+        = image_tag 'icon-librarians.svg', class: 'float-center'
+        h3.text-center Librarians
+        h6.text-center.small.subheader Use SRDR for a research perspective on different options.
+        .read-more.text-center = link_to 'READ MORE', '#'
 
 h1.Create-your-systemat.text-center Create your systematic review project today
+
 .SRDR-has-a-variety.text-center SRDR+ has a variety of features that make it the best place to do systematic review
-.row
-  .column.medium-6
-  .column.medium-6
+
+.grid-x.align-center.grid-padding-x
+  .cell.medium-4
+    .grid-x.align-left.grid-padding-x.grid-padding-y
+      .cell.medium-2
+        = image_tag 'icon-extraction-form.svg', class: 'float-center'
+      .cell.medium-10
+        .Build-electronic-ext Build electronic extraction forms
+        .Feature-Lorem-ips Feature 1. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut
+  .cell.medium-4
+    .grid-x.align-left.grid-padding-x.grid-padding-y
+      .cell.medium-2
+        = image_tag 'icon-collaboration.svg', class: 'float-center'
+      .cell.medium-10
+        .Build-electronic-ext Collaborate with your team
+        .Feature-Lorem-ips Feature 1. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut
+
+.grid-x.align-center.grid-padding-x
+  .cell.medium-4
+    .grid-x.align-left.grid-padding-x.grid-padding-y
+      .cell.medium-2
+        = image_tag 'icon-include-studies.svg', class: 'float-center'
+      .cell.medium-10
+        .Build-electronic-ext Include questions from other studies
+        .Feature-Lorem-ips Feature 1. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut
+  .cell.medium-4
+    .grid-x.align-left.grid-padding-x.grid-padding-y
+      .cell.medium-2
+        = image_tag 'icon-include-studies.svg', class: 'float-center'
+      .cell.medium-10
+        .Build-electronic-ext Customize exports of your datasets
+        .Feature-Lorem-ips Feature 1. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut
+
+= image_tag 'placeholder-app-snapshot.png', class: 'placeholder-snapshot'
+
+.grid-x.align-center.grid-padding-x.Leading-professionals
+  .cell.medium-8
+    h1 Leading professionals love SRDR+
+
+  .cell.medium-8
+    .grid-x.align-center.grid-padding-x
+      .cell.auto
+        = image_tag 'logo-tuft@2x.png', class: 'float-center'
+      .cell.auto
+        = image_tag 'logo-dr-evidence@2x.png', class: 'float-center'
+      .cell.auto
+        = image_tag 'logo-icer@2x.png', class: 'float-center'
+      .cell.auto
+        = image_tag 'logo-mapi@2x.png', class: 'float-center'
+      .cell.auto
+        = image_tag 'logo-hrq@2x.png', class: 'float-center'
+
+.grid-x.align-center.grid-padding-x.grid-padding-y.Testimonials
+  .cell.medium-7
+    div[class="orbit" role="region" aria-label="Favorite Space Pictures" data-auto-play="false" data-orbit]
+      ul.orbit-container
+        button.orbit-previous
+          span.show-for-sr Previous Slide
+          |
+           &#9664;&#xFE0E;
+        button.orbit-next
+          span.show-for-sr Next Slide
+          |
+           &#9654;&#xFE0E;
+        li[class="orbit-slide is-active"]
+          h4 Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+          h5 Joseph Lau
+          h6 Co-director
+        li[class="orbit-slide is-active"]
+          h4 Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+          h5 Joseph Lau
+          h6 Co-director
+      nav.orbit-bullets
+        button[class="is-active" data-slide="0"]
+          span.show-for-sr First slide details.
+          span.show-for-sr Current Slide
+        button[data-slide="1"]
+          span.show-for-sr
+            Second slide details.
+
+.grid-x.align-center.Recently-published
+  .cell.medium-12
+    h1 Recently published projects
+  .cell.medium-8.recent-project
+    .grid-x.grid-padding-x.grid-padding-y
+      .cell.medium-4
+        h6 Published on Feb 19, 2019
+        h5.bold Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut
+        h6
+        |
+         147 Studies &bull; 2 Key Questions &bull; 2 Extraction Forms
+      .cell.medium-8
+        h6 Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+        h6 = link_to 'READ MORE', '#'
+  .cell.medium-8.recent-project
+    .grid-x.grid-padding-x.grid-padding-y
+      .cell.medium-4
+        h6 Published on Feb 19, 2019
+        h5.bold Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut
+        h6
+        |
+         147 Studies &bull; 2 Key Questions &bull; 2 Extraction Forms
+      .cell.medium-8
+        h6 Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+        h6 = link_to 'READ MORE', '#'
+
+  .cell.medium-8
+    h5.more-projects = link_to raw("SEE MORE PROJECTS &rarr;"), '#'
+
+.grid-x.align-center.align-middle.join-the-professionals
+  .cell.medium-8
+      h1 Join thousands of professionals
+      h6.button = link_to 'TRY SRDR NOW', '#'
