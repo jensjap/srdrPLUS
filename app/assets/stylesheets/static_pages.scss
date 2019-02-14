@@ -123,7 +123,7 @@
   input.button[type='submit'] {
     border-radius: 3px;
     background-color: #fdd835;
-    font-size: 18px;
+    font-size: 12px;
     font-weight: bold;
     font-style: normal;
     font-stretch: normal;
@@ -132,12 +132,32 @@
     text-align: center;
     color: #33124b;
   }
+
+  @media screen and #{breakpoint(large)} {
+    input.button[type='submit'] {
+      border-radius: 3px;
+      background-color: #fdd835;
+      font-size: 18px;
+      font-weight: bold;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: 1.44;
+      letter-spacing: normal;
+      text-align: center;
+      color: #33124b;
+    }
+  }
 }
 
 .Rectangle-2 {
   padding-top: 72px;
   padding-bottom: 72px;
-  margin: -100px auto;
+  position: relative;
+  @media screen and #{breakpoint(large)} {
+    top: -100px;
+  }
+  top: -50px;
+  // margin: -100px auto;
   border-radius: 3px;
   box-shadow: 0 20px 40px 0 rgba(0, 0, 0, 0.15);
   background-color: #ffffff;
