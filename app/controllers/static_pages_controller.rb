@@ -39,6 +39,6 @@ class StaticPagesController < ApplicationController
   private
 
   def set_style
-    @style = 1
+    @style = 2
   end
 end

@@ -39,6 +39,16 @@
   color: #ffffff;
 }
 
+.Systematic-Reviews-Made {
+  font-family: Halant;
+  font-size: 48px;
+  font-weight: bold;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: 1.17;
+  letter-spacing: normal;
+}
+
 .Its-100-free-powe {
   font-size: 20px;
   font-weight: normal;
@@ -47,6 +57,16 @@
   line-height: 1.4;
   letter-spacing: normal;
   color: #dee1e8;
+}
+
+.Free-Powerful {
+  font-size: 20px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: 1.4;
+  letter-spacing: normal;
+  color: #4a4a4a;
 }
 
 .Rectangle {
@@ -58,8 +78,8 @@
   background-color: #ffffff;
 }
 
-.hero {
-  padding-top: 100px;
+.hero-2 {
+  padding-top: 80px;
 }
 
 .Hero-Message {
@@ -200,6 +220,54 @@
   }
 }
 
+.Rectangle-3 {
+  margin-top: 50px;
+  margin-bottom: 85px;
+  padding-top: 72px;
+  padding-bottom: 72px;
+  position: relative;
+  border-radius: 3px;
+  box-shadow: 0 20px 40px 0 rgba(0, 0, 0, 0.15);
+  background-color: #ffffff;
+
+  .read-more {
+    font-family: AvenirNext;
+    font-size: 14px;
+    font-weight: 600;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: 1.57;
+    letter-spacing: normal;
+    text-align: center;
+    color: #5e258a;
+  }
+
+  .See-how-you-can-work {
+    font-family: Halant;
+    font-size: 48px;
+    font-weight: bold;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: 1.17;
+    letter-spacing: normal;
+    text-align: center;
+    color: #1c1819;
+    margin-bottom: 30px;
+  }
+
+  h3.text-center {
+    font-family: Halant;
+    font-size: 24px;
+    font-weight: bold;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: 1.33;
+    letter-spacing: normal;
+    text-align: center;
+    color: #1c1819;
+  }
+}
+
 .Create-your-systemat {
   font-family: Halant;
   font-size: 48px;
@@ -269,7 +337,25 @@
     letter-spacing: normal;
     text-align: center;
     color: #1c1819;
-    margin-bottom: 40px; 
+    margin-bottom: 40px;
+  }
+}
+
+.Leading-professionals-2 {
+  padding-top: 72px;
+  padding-bottom: 142px;
+
+  h1 {
+    font-family: Halant;
+    font-size: 48px;
+    font-weight: bold;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: 1.17;
+    letter-spacing: normal;
+    text-align: center;
+    color: #1c1819;
+    margin-bottom: 40px;
   }
 }
 
@@ -348,7 +434,7 @@ ul.orbit-container {
   font-weight: 500;
 }
 
-.join-the-professionals {
+.join-the-professionals, .join-2 {
   height: 256px;
   background-color: #4c0d7d;
   text-align: center;
@@ -369,4 +455,54 @@ ul.orbit-container {
     background-color: #fdd835;
     font-weight: bold;
   }
+}
+
+.join-2 {
+  .button {
+    background-color: #f0f0f0;
+  }
+}
+
+.get-started {
+  font-size: 18px;
+  border-radius: 3px;
+  background-color: #4c0d7d;
+  font-weight: bold;
+
+  a:visited {
+    color: white;
+  }
+}
+
+.button.learn-more {
+  font-size: 18px;
+  font-weight: bold;
+  border-radius: 3px;
+  border-color: black;
+  background-color: white;
+  margin-left: 10px;
+
+  a:visited {
+    color: #414247;
+  }
+}
+
+.stock-image-placeholder-1 {
+  width: 280px;
+  height: 186px;
+  position: relative;
+  top: -10px;
+  left: 225px;
+  box-shadow: 0 20px 40px 0 rgba(0, 0, 0, 0.15);
+  border-radius: 3px;
+}
+
+.stock-image-placeholder-2 {
+  top: -50px;
+  left: 125px;
+  width: 308px;
+  height: 166px;
+  position: relative;
+  box-shadow: 0 20px 40px 0 rgba(0, 0, 0, 0.15);
+  border-radius: 3px;
 }

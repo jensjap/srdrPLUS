@@ -166,7 +166,7 @@ ul hr {
 }
 
 ul.menu.vertical.submenu.is-dropdown-submenu {
-  border-color: $primary-color;
+  border-color: $medium-gray;
 
   li {
     &.title {
@@ -389,4 +389,26 @@ a.accordion-title.populations {
 
 .menubar {
   background-color: #4C0D7D;
+}
+
+.menubar-2 {
+  background-color: white;
+}
+
+.top-bar-2 {
+  background-color: white;
+    ul {
+      background-color: white;
+    }
+    a {
+      color: black !important;
+    }
+}
+
+.dropdown.menu > li.opens-left > .is-dropdown-submenu {
+  right: -50%;
+}
+
+.is-dropdown-submenu > li:hover {
+  background: #dee1e8;
 }

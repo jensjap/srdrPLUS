@@ -1,33 +1,18 @@
 - provide(:no_overlay_nav, true)
 
-.hero
+.hero-2
   .grid-x.align-center.align-middle.grid-margin-x
     .cell.medium-5.Hero-Message
-      h2.The-Easy-Systematic The Easy Systematic Review Tool for Hard Decisions
-      h3.Its-100-free-powe It’s 100% free, powerful and easy-to-use tool for data management. systematic reviews and meta-analyses
+      h2.Systematic-Reviews-Made Systematic Reviews made Easy
+      h3.Free-Powerful SRDR+ is a free, powerful and easy-to-use tool for data management, systematic reviews, and meta-analysis
+      h6.button.get-started = link_to 'GET STARTED', '#'
+      h6.button.learn-more = link_to 'LEARN MORE', '#'
     .cell.medium-5.grid-padding-x
-      .Rectangle.cell
-        .Search-review-datas.text-center
-          span.text-style-1 Search review data in seconds.
-          br
-          span.text-style-1 Get started now.
-
-        = simple_form_for(User.new, as: :user, url: registration_path(:user), html: { data: { 'abide': '' } }) do |f|
-          .alert.callout data-abide-error='' style='display: none;'
-            p
-              i.fi-alert>
-              ' Please correct the errors below.
-
-          .form-inputs
-            = f.input :email, label: 'Email Address', required: true, hint: 'Email must have the following format: example@domain.edu', autofocus: true
-            = f.input :password, required: true, hint: ("Password must contain a minium of #{@minimum_password_length} characters." if @minimum_password_length),
-              input_html: { data: { validator: 'minimum_length', minimum_length: "#{ @minimum_password_length }" } }
-
-          .form-actions
-            = f.button :submit, "SIGN UP FOR FREE"
+      = image_tag 'stock-image-placeholder-1.png', class: 'stock-image-placeholder-1'
+      = image_tag 'stock-image-placeholder-2.png', class: 'stock-image-placeholder-2'
 
 .grid-x.align-center.grid-padding-x
-  .cell.medium-10.Rectangle-2
+  .cell.medium-10.Rectangle-3
     h2.See-how-you-can-work See how you can work with SRDR+
     .grid-x.align-center
       .cell.small-4
@@ -98,24 +83,24 @@ h1.Create-your-systemat.text-center Create your systematic review project today
         .Build-electronic-ext Customize exports of your datasets
         .Feature-Lorem-ips Feature 1. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut
 
-= image_tag 'placeholder-app-snapshot.png', class: 'placeholder-snapshot'
+= image_tag 'browser-template-contentacle-color@2x.png', class: 'placeholder-snapshot'
 
-.grid-x.align-center.grid-padding-x.Leading-professionals
+.grid-x.align-center.grid-padding-x.Leading-professionals-2
   .cell.medium-10
     h1 Leading professionals love SRDR+
 
   .cell.medium-9
     .grid-x.align-center.grid-padding-x
       .cell.auto
-        = image_tag 'logo-tuft@2x.png', class: 'float-center'
+        = image_tag 'white-logo-tuft@2x.png', class: 'float-center'
       .cell.auto
-        = image_tag 'logo-dr-evidence@2x.png', class: 'float-center'
+        = image_tag 'white-logo-dr-evidence@2x.png', class: 'float-center'
       .cell.auto
-        = image_tag 'logo-icer@2x.png', class: 'float-center'
+        = image_tag 'white-logo-icer@2x.png', class: 'float-center'
       .cell.auto
-        = image_tag 'logo-mapi@2x.png', class: 'float-center'
+        = image_tag 'white-logo-mapi@2x.png', class: 'float-center'
       .cell.auto
-        = image_tag 'logo-hrq@2x.png', class: 'float-center'
+        = image_tag 'white-logo-hrq@2x.png', class: 'float-center'
 
 .grid-x.align-center.grid-padding-x.grid-padding-y.Testimonials
   .cell.medium-7
@@ -174,7 +159,7 @@ h1.Create-your-systemat.text-center Create your systematic review project today
   .cell.medium-10
     h5.more-projects = link_to raw("SEE MORE PROJECTS &rarr;"), '#'
 
-.grid-x.align-center.align-middle.join-the-professionals
+.grid-x.align-center.align-middle.join-2
   .cell.medium-10
       h1 Join thousands of professionals
       h6.button = link_to 'TRY SRDR NOW', '#'
