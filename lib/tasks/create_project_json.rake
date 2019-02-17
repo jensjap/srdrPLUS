@@ -3,7 +3,7 @@ require 'json'
 namespace :project_json do
   desc "Creates a json export of the given project"
   task export_projects: :environment do
-    projects = []
+    projects = nil
     if ENV['pids'].present?
       pids = ENV['pids'].split(",")
       projects = Project.where(id: pids)
@@ -83,16 +83,18 @@ namespace :project_json do
           notes: phash['notes'],
           funding_source: phash['funding_source']})
 
+        user_id_dict = {}
+        role_id_dict = {}
+        kqp_id_dict = {}
+        citation_id_dict = {}
+
         # users
         phash['users']&.each do |uid, uhash|
-          puts "LOYLOY"
           # is this enough to identify a user or should we check profile as well??
           u = User.find_by({id: uid, email: uhash['email']})
 
-          if u.present?
-            p.users << u
-          else
-            u = User.create(email: uhash['email'])
+          if u.nil?
+            u = User.create!(email: uhash['email'])
             profile = uhash['profile']
             u.profile = Profile.create({username: profile['username'],
                                         first_name: profile['first_name'],
@@ -108,21 +110,21 @@ namespace :project_json do
             end
           end
 
-          pu = ProjectsUser.find_by({project: p, user: u})
+          user_id_dict[uid.to_i] = u
+
+          pu = ProjectsUser.find_or_create_by!({project: p, user: u})
 
           uhash['roles']&.each do |rid, rhash|
-            puts "LEYLEY"
             r = Role.find_by(name: rhash['name'])
-            if r.present?
-              pu.roles << r
-            else
-              logger.warning "#{Time.now.to_s} - Could not find role with name '" +  rhash['name'] + "' for user: '" + u.profile.username + "'"
+            if r.nil?
+              r = Role.find_by(name: 'Contributor')
+              logger.warning "#{Time.now.to_s} - Could not find role with name '" +  rhash['name'] + "' for user: '" + u.profile.username + "', used 'Contributor' instead"
             end
+            role_id_dict[rid.to_i] = r
+            ProjectsUsersRole.find_or_create_by(projects_user: pu, role: r)
           end
 
-          puts uhash
           uhash['term_groups']&.each do |tgid, tghash|
-            puts "LAYLAYLOM"
             tg = TermGroup.find_or_create_by!(name: tghash['name'])
             ## Find by color?
             c = Color.find_by(name: tghash['color']['name'])
@@ -132,98 +134,112 @@ namespace :project_json do
             end
             tgc = TermGroupsColor.find_or_create_by!({term_group: tg, color: c})
             pu.term_groups_colors << tgc
-          
+
             p.save!
           end
         end
-        puts "LOYLOY"
 
         # key_questions
         phash['key_questions']&.each do |kqid, kqhash|
-          kq = KeyQuestion.find_or_create_by!(name: kqhash['name']) 
-          p.key_questions << kq
+          kq = KeyQuestion.find_or_create_by!(name: kqhash['name'])
+          kqp = KeyQuestionsProject.find_or_create_by(project: p, key_question: kq)
+          kqp_id_dict[kqid] = kqp
         end
 
         #citations
         phash['citations']&.each do |cid, chash|
-          j = Journal.find_or_create_by!(name: chash['journal'])
-
-          kwarr = []
-          chash['keywords']&.each do |kwid, kwhash|
-            kw = Keyword.find_or_create_by!(name: kwhash['name'])
-            kwarr << kw
-          end
-
-          auarr = []
-          chash['authors']&.each do |aid, ahash|
-            a = Author.find_or_create_by!(name: ahash['name'])
-          end
+          puts chash
+          puts phash['users']
+          j = Journal.find_or_create_by!(name: chash['journal']['name'])
 
           c = Citation.create!({
             name: chash['name'],
             abstract: chash['abstract'],
             refman: chash['refman'],
-            pmid: chash['pmid'],
-            publication_date: chash['publication_date'],
-            keywords: kwarr,
-            authors: auarr})
+            pmid: chash['pmid']
+          })
+
+          chash['keywords']&.each do |kwid, kwhash|
+            kw = Keyword.find_or_create_by!(name: kwhash['name'])
+            c.keywords << kw
+          end
+
+          chash['authors']&.each do |aid, ahash|
+            a = Author.find_or_create_by!(name: ahash['name'])
+            c.authors << a
+          end
 
           p.citations << c
 
           cp = CitationsProject.find_by!(project: p, citation: c)
-          
+
           chash['labels']&.each do |lid, lhash|
             pur = ProjectsUsersRole.find_by({
-              project: p,
-              user: User.find_by(name: phash['users'][lhash['labeler_user_id']]['name']),
-              role: Role.find_by(name: phash['users'][lhash['labeler_user_id']]['roles'][lhash['labeler_role_id']]['name'])
-            })
+                    projects_user: ProjectsUser.find_by({
+                      project: p,
+                      user: user_id_dict[lhash['labeler_user_id']]
+                    }),
+                    role: Role.find(role_id_dict[lhash['labeler_role_id']])
+                  })
             lt = LabelType.find_by(name: lhash['label_type']['name'])
             l = Label.create!(citations_project: cp, projects_users_role: pur, label_type: lt)
 
-            rarr = []
             lhash['reasons']&.each do |rid, rhash|
-              rarr << Reason.find_or_create_by!(name: rhash['name'])
+              r = Reason.find_or_create_by!(name: rhash['name'])
+              LabelsReason.find_or_create_by!(projects_users_role: pur, reason: r, label: l)
             end
-            l.update!(reasons:rarr)
           end
 
           chash['tags']&.each do |tid, thash|
             pur = ProjectsUsersRole.find_by({
-              project: p,
-              user: User.find_by(name: phash['users'][thash['creator_user_id']]['name']),
-              role: Role.find_by(name: phash['users'][thash['creator_user_id']]['roles'][thash['creator_role_id']]['name'])
-            })
+                    projects_user: ProjectsUser.find_by({
+                      project: p,
+                      user: user_id_dict[thash['creator_user_id']]
+                    }),
+                    role: role_id_dict[thash['creator_role_id']]
+                  })
             t = Tag.find_or_create_by!(name: thash['name'])
-            Tagging.create!({taggable_type: 'CitationsProject', 
-                            taggable_id: cp.id, 
+            Tagging.create!({taggable_type: 'CitationsProject',
+                            taggable_id: cp.id,
                             projects_users_role: pur, 
                             tag: t})
           end
 
+          narr = []
           chash['notes']&.each do |nid, nhash|
             pur = ProjectsUsersRole.find_by({
-              project: p,
-              user: User.find_by(name: phash['users'][nhash['creator_user_id']]['name']),
-              role: Role.find_by(name: phash['users'][nhash['creator_user_id']]['roles'][nhash['creator_role_id']]['name'])
+                    projects_user: ProjectsUser.find_by({
+                      project: p,
+                      user: user_id_dict[nhash['creator_user_id']]
+                    }),
+                    role: role_id_dict[nhash['creator_role_id']]
+                  })
+            Note.create!({
+              projects_users_role: pur,
+              notable_type: 'CitationsProject',
+              notable_id: cp.id,
+              value: nhash['value']
             })
-            cp.notes << Note.create!(projects_users_role: pur, name: nhash['name'])
           end
+
+          citation_id_dict[cid] = c
         end
 
         #tasks
         phash['tasks'].hash do |tid, thash|
           tt = TaskType.find_by(name: thash['task_type']['name'])
           na = thash['num_assigned']
-          
+
           t = Task.create!(task_type: tt, num_assigned: na)
 
           aarr = []
           thash['assignments']&.each do |aid, ahash|
             pur = ProjectsUsersRole.find_by({
-              project: p,
-              user: User.find_by(name: phash['users'][ahash['assignee_user_id']]['name']),
-              role: Role.find_by(name: phash['users'][ahash['assignee_user_id']]['roles'][ahash['assignee_role_id']]['name'])
+                    projects_user: ProjectsUser.find_by({
+                      project: p,
+                      user: user_id_dict[ahash['assignee_user_id']]
+                    }),
+                    role: role_id_dict[ahash['assignee_role_id']]
             })
 
             t.assignments << Assignment.create!({projects_users_role: pur, 
@@ -233,53 +249,87 @@ namespace :project_json do
           end
         end
 
+        efp = p.extraction_forms_projects.first()
+
+        section_dedup_dict = {}
+
+        t1_link_dict = {}
+        t1_id_dict = {}
+        efps_id_dict = {}
+
+        section_position_tuples = []
+        section_position_counter = 0
+
+        question_position_counters = {}
+        question_position_tuples_dict = {}
+
         phash['extraction_forms']&.each do |efpid, efhash|
           # i dont want to use this, but i guess it is necessary -birol
-          t1_link_dict = {}
-          efps_id_dict = {}
+
+          ## WOULD DEDUPLICATION WORK IF I JUST WORK ON THE SAME EF AND ALWAYS USE find_or_create_by! ?
 
           efhash['sections']&.each do |sid, shash|
             #do we want to create sections that does not exist? -Birol
             s = Section.find_or_create_by!(name: shash['name'])
-            efps_type = ExtractionFormsProjectsSectionType.find_by(name: shash['extraction_forms_projects_section_type'])
-            
-            t1arr = []
-            shash['type1s']&.each do |t1hash|
-              t1arr << Type1.find_or_create_by!(name: t1hash['name']['description'])
+            efps_type = ExtractionFormsProjectsSectionType.find_by(name: shash['extraction_forms_projects_section_type']['name'])
+            link_to_type1 = shash['link_to_type1']
+
+            if efps_type.nil?
+              efps_type = ExtractionFormsProjectsSectionType.first
+              logger.warning "#{Time.now.to_s} - Could not find extraction_forms_projects_section_type with name '" +  shash['extraction_forms_projects_section_type']['name'] + ", used '" + efps_type.name + "' instead."
             end
 
-            ### this is wrong, the id does not mean anything, also we have to do this at the end :/
-            efps = ExtractionFormsProjectsSection.create!(extraction_forms_project: efp, link_to_type1: nil)
+            efps =  section_dedup_dict[s.name + "<<<>>>" + efps_type.name]
 
-            Ordering.create!(orderable_type:'ExtractionFormsProjectsSection', orderable_id: efps.id, position: shash['position'])
+            if efps.nil?
+              efps = ExtractionFormsProjectsSection.create!({
+                extraction_forms_project: efp,
+                extraction_forms_projects_section_type: efps_type,
+                section: s
+              })
+              section_dedup_dict[s.name + "<<<>>>" + efps_type.name] = efps
+              section_position_tuples = [shash['position'].to_i + position_counter, efps]
+            end
 
             efps_id_dict[sid] = efps.id
+
             if link_to_type1.present?
-              t1_link_dict[efps.id] = efhash['sections'][link_to_type1]
+              t1_link_dict[efhash['sections'][link_to_type1]] = efps.id
             end
 
+            shash['type1s']&.each do |t1id, t1hash|
+              t1 = Type1.find_or_create_by!(name: t1hash['name'], description: t1hash['description'])
+              efps.type1s << t1
+              t1_id_dict[t1id] = t1
+            end
+
+
             #create efps first
-            efpsohash = shash['extraction_forms_projects_section_option'] 
+            efpsohash = shash['extraction_forms_projects_section_option']
             if efpsohash.present?
               ExtractionFormsProjectsSectionOption.create!(extraction_forms_projects_section: efps, by_type1: efpsohash['by_type1'], include_total: efpsohash['include_total'])
             end
 
+            question_position_counters[efps.id] ||= 0
+            question_position_tuples_dict[efps.id] ||= []
+
             shash['questions']&.each do |qid, qhash|
-              kqarr = []
+              q = Question.new extraction_forms_projects_section: efps, name: qhash['name']
+
+              q_hash_key = "q: <<<" + qhash['name'] + ">>> "
               qhash['key_questions']&.each do |kqid, kqhash|
                 # maybe storing the kq id earlier and using that would be better? -Birol
-                kqarr << KeyQuestion.find_by(name: kqhash['name'])
+                q_hash_key += "kq: <<<" + kqhash['name'] + ">>> "
+                q.key_questions_projects << kqp_id_dict[kqid]
               end
 
-              q = Question.create! extraction_forms_projects_section: efps, name: qhash['name']
-
-              # would this fire validations? -birol
-              q.key_questions << kqarr
-
               qhash['question_rows']&.each do |qrid, qrhash|
-                qr = QuestionRow.create!(question: q)
+                q_hash_key += "qr: <<<" + qrhash['name'] + ">>> "
+                qr = QuestionRow.create!(question: q, name: qrhash['name'])
                 qrhash['question_row_columns']&.each do |qrcid, qrchash|
                   # maybe use find_by and raise an error if not found? -Birol
+                  q_hash_key += "qrc: <<<" + qrchash['name'] + ">>> "
+
                   qrc_type = QuestionRowColumnType.find_or_create_by! name: qrchash['question_row_column_type']['name']
                   qrc = QuestionRowColumn.create!(question_row: qr, question_row_column_type: qrc_type)
 
@@ -297,13 +347,198 @@ namespace :project_json do
                 end
               end
 
-              Ordering.create!(orderable_type: 'Question', orderable_id: q.id, position: qhash['position'])
+              if question_dict[q_hash_key].nil?
+                q.save!
+                question_dict[q_hash_key] = q
+                question_position_tuples_dict[efps.id] << [qhash['position'].to_i + question_position_counter, q]
 
+              end
+
+              #Ordering.create!(orderable_type: 'Question', orderable_id: q.id, position: qhash['position'])
+
+            end
+            question_position_counter_dict[efps.id] += (shash['questions'].length || 0)
+          end
+
+          question_position_counter_dict.each do |efpsid, q_tuples|
+            q_tuples.sort { |tuple| tuple[0] }
+            q_tuples.each.with_index do |tuple, index|
+              q = tuple[1]
+              q.ordering.position = index + 1
             end
           end
 
-          t1_link_dict.each do |t2_efps_id, t1_efps_source_id|
-            ExtractionFormsProjectsSection.find(t2_efps_id).update!(link_to_type1: efps_id_dict[t1_efps_source_id])
+          section_position_counter += (0 || efhash['sections'].length)
+        end
+
+        # does this work? TEST!
+        t1_link_dict.each do |t2_efps_id, t1_efps_source_id|
+          ExtractionFormsProjectsSection.find(t2_efps_id).update!(link_to_type1: efps_id_dict[t1_efps_source_id])
+        end
+
+        # does this work? TEST!
+        section_position_tuples.sort { |tuple| tuple[0] }
+        section_position_tuples.each.with_index do |tuple, index|
+          efps = tuple[1]
+          efps.ordering.position = index + 1
+        end
+      end
+    end
+
+    phash['extractions'].each do |eid, ehash|
+      e = Extraction.new
+      e.citation = citation_id_dict[ehash['citation_id']
+      pur = ProjectsUsersRole.find_by({
+        user: user_id_dict[ehash['extractor_user_id']],
+        role: role_id_dict[ehash['extractor_role_id']]
+      })
+
+      ehash['sections'].each do |sid, shash|
+        efps = efps_id_dict[sid]
+        eefps = ExtractionsExtractionFormsProjectsSection.find_or_create_by({
+          extraction: e,
+          extraction_forms_projects_section: efps
+        })
+
+        shash['type1s'].each do |t1id, t1hash|
+          t1 = t1_id_dict[t1id]
+          t1_type = Type1Type.find_by(name: t1hash['type1_type']['name'])
+          if t1_type.nil?
+            t1_type = Type1Type.first
+            logger.warning "#{Time.now.to_s} - Could not find type1_type with name #{t1hash['type1_type']['name']} , used #{t1_type.name} instead"
+          end
+          eefpst1 = ExtractionsExtractionFormsProjectsSectionType1.find_or_create_by({
+            extractions_extraction_forms_projects_section: eefps,
+            type1: t1,
+            unit: t1hash['units']
+          })
+
+          t1hash['populations'].each do |popid, pophash|
+            pop_name = PopulationName.find_or_create_by(name: pophash['name'])
+            pop = ExtractionsExtractionFormsProjectsSectionType1Row.find_or_create_by!({
+              extractions_extraction_forms_projects_section_type1: eefpst1,
+              population_name: pop_name
+            })
+            pophash['timepoints'].each do |tpid, tphash|
+              tp_name = TimepointName.find_or_create_by!(name: tphash['name'])
+              tp = ExtractionsExtractionFormsProjectsSectionType1RowColumn.find_or_create_by!({
+                extractions_extraction_forms_projects_section_type1_row: pop,
+                timepoint_name: tp_name
+              })
+            end
+
+            pophash['result_statistic_sections'].each do |rssid, rsshash|
+              rss_type = ResultStatisticSectionType.find_or_create_by!({
+                name: rsshash['result_statistic_section_type']['name']
+              })
+
+              rss = ResultStatisticSection.find_or_create_by({
+                population: pop,
+                result_statistic_section_type: rss
+              })
+
+              comp_id_dict = {}
+
+              rsshash['comparisons'].each do |compid, comphash|
+                comp = Comparison.create!
+                comphash['comparate_groups'].each do |cgid, cghash|
+                  cg = ComparateGroup.create! comparison: comp
+                  cghash['comparates'].each do |ccid, cchash|
+                    ce = nil
+                    if cchash['comparable_type'] == 'ExtractionsExtractionFormsProjectsSectionsType1'
+                      ce = ComparableElement.create!({
+                        comparate_group: cg,
+                        comparable_type: 'ExtractionsExtractionFormsProjectsSectionsType1',
+                        comparable_id: pop_id_dict[cchassh['comparable_id']]
+                      })
+
+                    else if cchash['comparable_type'] == 'ExtractionsExtractionFormsProjectsSectionsType1RowColumn'
+                      ce = ComparableElement.create!({
+                        comparate_group: cg,
+                        comparable_type: 'ExtractionsExtractionFormsProjectsSectionsType1RowColumn',
+                        comparable_id: tp_id_dict[cchassh['comparable_id']]
+                      })
+                    else if cchash['comparable_type'] == 'Comparison'
+                      ce = ComparableElement.create!({
+                        comparate_group: cg,
+                        comparable_type: 'Comparison',
+                        comparable_id: comp_id_dict[cchassh['comparable_id']]
+                      })
+                    else
+                      logger.error "#{Time.now.to_s} - Unknown comparable_type"
+                      ### YOU NEED TO ABORT COMPARISON CREATION
+                    end
+                  end
+                end
+              end
+              comp_id_dict[compid] = comp.id
+
+              rsshash['measures'].each do |mid, mhash|
+                m = Measure.find_or_create_by(name: mhash['name'])
+                rssm = ResultStatisticSectionsMeasure.find_or_create_by!({
+                  result_statistic_section: rss,
+                  measure: m
+                })
+                comparisons = mhash['comparioson_ids'].collect {|compid| comp_id_dict[compid]}
+                rssm.comparisons = comparisons
+
+                mhash['records'].each do
+                  rhash['tps_comparisons_rssms'].each do |tcid, tchash|
+                    tcr = TpsComparisonsRssm.create!({
+                            timepoint: tp_id_dict[tchash['timepoint_id']],
+                            comparison: comp_id_dict[tchash['comparison_id']],
+                            result_statistic_sections_measure: rssm
+                          })
+
+                    Record.create!({
+                      recordable_type: 'TpsComparisonsRssm',
+                      recordable_id: tcr.id,
+                      name: tchash['record_name']
+                    })
+
+                  end
+                  rhash['tps_arms_rssms'].each do |taid, tahash|
+                    tar = TpsArmsRssm.create!({
+                            timepoint: tp_id_dict[tahash['id']],
+                            arm: t1_id_dict[tahash['arm_id']],
+                            result_statistic_sections_measure: rssm
+                          })
+
+                    Record.create!({
+                      recordable_type: 'TpsArmsRssm',
+                      recordable_id: tar.id,
+                      name: tahash['record_name']
+                    })
+                  end
+                  rhash['comparisons_arms_rssms'].each do |caid, cahash|
+                    car = ComparisonsArmsRssm.create!({
+                            comparison: comp_id_dict[cahash['comparison_id']],
+                            arm: t1_id_dict[cahash['arm_id']],
+                            result_statistic_sections_measure: rssm
+                          })
+
+                    Record.create!({
+                      recordable_type: 'ComparisonsArmsRssm',
+                      recordable_id: car.id,
+                      name: cahash['record_name']
+                    })
+                  end
+                  rhash['wacs_bacs_rssms'].each do |wbid, wbhash|
+                    tcr = WacsBacsRssm.create!({
+                            wac: rssm_id_dict[wbhash['wac_id']],
+                            bac: rssm_id_dict[wbhash['bac_id']],
+                            result_statistic_sections_measure: rssm
+                          })
+
+                    Record.create!({
+                      recordable_type: 'WacsBacsRssm',
+                      recordable_id: tcr.id,
+                      name: wbhash['record_name']
+                    })
+                  end
+                end
+              end
+            end
           end
         end
       end
@@ -311,12 +546,10 @@ namespace :project_json do
 
     #if ENV['file'].nil? then raise 'No file provided. Usage: file=<file_path>' end
 
-
-
     #projects_hash.each do |pid, phash|
       # We need to check if certain parts of a project are already in database, and use info in json to check references
       # Ignore project id since we're creating a new one
-      
+
       #if Project.find_by( id: phash['id'], name: phash['name'], description: phash['description'] ).present?
       #  raise 'Project already exists in srdrPLUS'
       #end
