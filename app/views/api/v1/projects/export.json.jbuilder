@@ -72,8 +72,8 @@ json.project do
         json.refman cp.citation.refman
         json.pmid cp.citation.pmid
         json.journal do
-          json.id cp.citation.journal.id
-          json.name cp.citation.journal.name
+          json.id cp.citation.journal&.id
+          json.name cp.citation.journal&.name
         end
         json.keywords do
           cp.citation.keywords.each do |kw|
@@ -159,7 +159,6 @@ json.project do
   json.extraction_forms do
     @project.extraction_forms_projects.each do |efp|
       json.set! efp.id do
-        ef = efp.extraction_form
 
         json.sections do
           efp.extraction_forms_projects_sections.each do |efps|
@@ -191,7 +190,7 @@ json.project do
               end
 
               if efps.link_to_type1.present?
-                json.linked_type1 efps.link_to_type1.id
+                json.link_to_type1 efps.link_to_type1.id
               end
 
               json.questions do
@@ -201,7 +200,7 @@ json.project do
                     json.description q.description
                     json.position q.ordering.position
                     json.key_questions do
-                      jq.key_questions_projects.each do |kqp|
+                      q.key_questions_projects.each do |kqp|
                         json.set! kqp.key_question.id do
                           json.name kqp.key_question.name
                         end
@@ -219,10 +218,15 @@ json.project do
                                   json.id qrc.question_row_column_type.id
                                   json.name qrc.question_row_column_type.name
                                 end
-                                json.question_row_column_options do
-                                  qrc.question_row_column_options.each do |qrco|
-                                    json.set! qrco.id do
-                                      json.name qrco.name
+                                json.question_row_columns_question_row_column_options do
+                                  qrc.question_row_columns_question_row_column_options.each do |qrcqrco|
+                                    json.set! qrcqrco.id do
+                                      qrco = qrcqrco.question_row_column_option
+                                      json.name qrcqrco.name
+                                      json.question_row_column_option do
+                                        json.id qrco.id
+                                        json.name qrco.name
+                                      end
                                     end
                                   end
                                 end
@@ -257,45 +261,55 @@ json.project do
         json.extractor_role_id ex.projects_users_role.role.id
         json.sections do
           ex.extractions_extraction_forms_projects_sections.each do |eefps|
-            json.set! eefps.extraction_forms_projects_section.section.id do
-              json.type1s eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
-                t1 = eefpst1.type1
-                json.set! t1.id do
-                  if eefpst1.type1_type.present?
-                    json.type1_type do
-                      json.id eefpst1.type1_type.id
-                      json.name eefpst1.type1_type.name
+            json.set! eefps.extraction_forms_projects_section.id do
+              json.extractions_extraction_forms_projects_sections_type1s do
+                eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
+                  t1 = eefpst1.type1
+                  json.set! eefpst1.id do
+                    json.type1 do
+                      json.id t1.id
+                      json.name t1.name
+                      json.description t1.description
                     end
-                  end
-                  json.name t1.name
-                  json.description t1.description
 
-                  json.units = eefpst1.units
+                    if eefpst1.type1_type.present?
+                      json.type1_type do
+                        json.id eefpst1.type1_type.id
+                        json.name eefpst1.type1_type.name
+                      end
+                    end
+                    json.units = eefpst1.units
 
-                  json.populations do
-                    eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |p|
-                      json.set! p.population_name.id do
-                        json.name p.population_name.name
+                    json.populations do
+                      eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |pop|
+                        json.set! pop.id do
+                          json.population_name do
+                            json.id pop.population_name.id
+                            json.name pop.population_name.name
+                          end
 
-                        json.result_statistic_sections do
-                          jp.result_statistic_sections.each do |rss|
-                            json.set! rss.id do
-                              json.result_statistic_section_type do
-                                json.id rss.result_statistic_section_type.id
-                                json.name rss.result_statistic_section_type.name
-                              end
-                              json.comparisons do
-                                comparisons.each m.comparisons do |c|
-                                  json.set! c.id do
-                                    json.set! :comparison_groups do
-                                      c.comparate_groups.each do |cg|
-                                        json.set! cg.id do
-                                          json.set! :comparates do
-                                            cg.comparates.each do |ct|
-                                              json.set! ct.id do
-                                                json.comparable_elements ct.comparable_elements do |ce|
-                                                  json.comparable_type ce.comparable_type
-                                                  json.comparable_id ce.comparable_id
+                          json.result_statistic_sections do
+                            pop.result_statistic_sections.each do |rss|
+                              json.set! rss.id do
+                                json.result_statistic_section_type do
+                                  json.id rss.result_statistic_section_type.id
+                                  json.name rss.result_statistic_section_type.name
+                                end
+                                json.comparisons do
+                                  rss.comparisons.each do |c|
+                                    json.set! c.id do
+                                      json.set! :comparate_groups do
+                                        c.comparate_groups.each do |cg|
+                                          json.set! cg.id do
+                                            json.set! :comparates do
+                                              cg.comparates.each do |ct|
+                                                json.set! ct.id do
+                                                  json.comparable_element do
+                                                    ce = ct.comparable_element
+                                                    json.id ce.id
+                                                    json.comparable_type ce.comparable_type
+                                                    json.comparable_id ce.comparable_id
+                                                  end
                                                 end
                                               end
                                             end
@@ -305,56 +319,59 @@ json.project do
                                     end
                                   end
                                 end
-                              end
 
-                              json.measures do
-                                rss.result_statistic_sections_measures.each do |rssm|
-                                  m = rssm.measure
-                                  json.set! m.id do
-                                    json.name m.name
+                                json.result_statistic_sections_measures do
+                                  rss.result_statistic_sections_measures.each do |rssm|
+                                    m = rssm.measure
+                                    json.set! rssm.id do
+                                      json.measure do
+                                        json.id m.id
+                                        json.name m.name
+                                      end
 
-                                    json.array! rssm.comparison_ids do |c|
-                                      json.id c.id
-                                    end
-
-                   ################# this would create lots of redundancy ############## 
-                                    # move it
-                                    # but then again
-
-                                    json.records do
-                                      json.tps_comparisons_rssms rssm.tps_comparisons_rssms.each do |tcr|
-                                        tcr.records.each do |r|
-                                          json.set! r.id do
-                                            json.timepoint_id tcr.timepoint.id
-                                            json.comparison_id tcr.comparison.id
-                                            json.record_name r.name
+                                      json.records do
+                                        json.tps_comparisons_rssms do
+                                          rssm.tps_comparisons_rssms.each do |tcr|
+                                            tcr.records.each do |r|
+                                              json.set! r.id do
+                                                json.timepoint_id tcr.timepoint.id
+                                                json.comparison_id tcr.comparison.id
+                                                json.record_name r.name
+                                              end
+                                            end
                                           end
                                         end
-                                      end
-                                      json.tps_arms_rssms rssm.tps_arms_rssms.each do |tar|
-                                        tar.records.each do |r|
-                                          json.set! r.id do
-                                            json.timepoint_id tar.timepoint.id
-                                            json.arm_id tar.extractions_extraction_forms_projects_sections_type1.id
-                                            json.record_name r.name
+                                        json.tps_arms_rssms do
+                                          rssm.tps_arms_rssms.each do |tar|
+                                            tar.records.each do |r|
+                                              json.set! r.id do
+                                                json.timepoint_id tar.timepoint.id
+                                                json.arm_id tar.extractions_extraction_forms_projects_sections_type1.id
+                                                json.record_name r.name
+                                              end
+                                            end
                                           end
                                         end
-                                      end
-                                      json.comparisons_arms_rssms rssm.comparisons_arms_rssms.each do |car|
-                                        car.records.each do |r|
-                                          json.set! r.id do
-                                            json.comparison_id car.comparison.id
-                                            json.arm_id car.extractions_extraction_forms_projects_sections_type1.id
-                                            json.record_name r.name
+                                        json.comparisons_arms_rssms do
+                                          rssm.comparisons_arms_rssms.each do |car|
+                                            car.records.each do |r|
+                                              json.set! r.id do
+                                                json.comparison_id car.comparison.id
+                                                json.arm_id car.extractions_extraction_forms_projects_sections_type1.id
+                                                json.record_name r.name
+                                              end
+                                            end
                                           end
                                         end
-                                      end
-                                      json.wacs_bacs_rssms rssm.wacs_bacs_rssms.each do |wbr|
-                                        wbr.records.each do |r|
-                                          json.set! r.id do
-                                            json.wac_id wbr.wac.id
-                                            json.bac_id wbr.bac.id
-                                            json.record_name r.name
+                                        json.wacs_bacs_rssms do
+                                          rssm.wacs_bacs_rssms.each do |wbr|
+                                            wbr.records.each do |r|
+                                              json.set! r.id do
+                                                json.wac_id wbr.wac.id
+                                                json.bac_id wbr.bac.id
+                                                json.record_name r.name
+                                              end
+                                            end
                                           end
                                         end
                                       end
@@ -364,12 +381,16 @@ json.project do
                               end
                             end
                           end
-                        end
 
-                        json.timepoints do
-                          p.extractions_extraction_forms_projects_sections_type1_row_columns.each do |tp|
-                            json.set! tp.timepoint_name.id do
-                              json.name tp.timepoint_name.name
+                          json.timepoints do
+                            pop.extractions_extraction_forms_projects_sections_type1_row_columns.each do |tp|
+                              json.set! tp.id do
+                                json.timepoint_name do
+                                  json.id tp.timepoint_name.id
+                                  json.name tp.timepoint_name.name
+                                  json.unit tp.timepoint_name.unit
+                                end
+                              end
                             end
                           end
                         end
@@ -380,7 +401,7 @@ json.project do
               end
 
               if eefps.link_to_type1.present?
-                json.linked_type1 eefps.link_to_type1.id
+                json.link_to_type1 eefps.link_to_type1.id
               end
 
               json.records Record.where(recordable: eefps.extractions_extraction_forms_projects_sections_question_row_column_fields) do |r|

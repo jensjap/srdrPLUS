@@ -3,7 +3,7 @@ require 'json'
 namespace :project_json do
   desc "Creates a json export of the given project"
   task export_projects: :environment do
-    projects = nil
+    #projects = nil
     if ENV['pids'].present?
       pids = ENV['pids'].split(",")
       projects = Project.where(id: pids)
@@ -88,6 +88,30 @@ namespace :project_json do
         kqp_id_dict = {}
         citation_id_dict = {}
 
+        section_dedup_dict = {}
+
+        qrcf_id_dict = {}
+
+        t1_link_dict = {}
+        t1_id_dict = {}
+        efps_id_dict = {}
+
+        eefps_id_dict = {}
+        eefps_t1_link_dict = {}
+
+        tp_id_dict = {}
+        pop_id_dict = {}
+
+        rssm_id_dict = {}
+        comp_id_dict = {}
+
+        section_position_tuples = []
+        section_position_counter = 0
+
+        question_position_counters = {}
+        question_position_tuples_dict = {}
+
+
         # users
         phash['users']&.each do |uid, uhash|
           # is this enough to identify a user or should we check profile as well??
@@ -134,10 +158,9 @@ namespace :project_json do
             end
             tgc = TermGroupsColor.find_or_create_by!({term_group: tg, color: c})
             pu.term_groups_colors << tgc
-
-            p.save!
           end
         end
+        p.save!
 
         # key_questions
         phash['key_questions']&.each do |kqid, kqhash|
@@ -250,19 +273,6 @@ namespace :project_json do
         end
 
         efp = p.extraction_forms_projects.first()
-
-        section_dedup_dict = {}
-
-        t1_link_dict = {}
-        t1_id_dict = {}
-        efps_id_dict = {}
-
-        section_position_tuples = []
-        section_position_counter = 0
-
-        question_position_counters = {}
-        question_position_tuples_dict = {}
-
         phash['extraction_forms']&.each do |efpid, efhash|
           # i dont want to use this, but i guess it is necessary -birol
 
@@ -339,11 +349,10 @@ namespace :project_json do
                   end
                   qrc.question_row_column_options << qrcoarr
 
-                  qrcfarr = []
-                  qrchash['question_row_column_fields']&.each do |qrcfid, qrcohash|
-                    qrcfarr << QuestionRowColumnField.find_or_create_by!(name: qrcfhash['name'])
+                  qrchash['question_row_column_fields']&.each do |qrcfid, qrcfhash|
+                    qrcf = QuestionRowColumnField.find_or_create_by!(question_row_column: qrc, name: qrcfhash['name'])
+                    qrcf_id_dict['qrcfid'] = qrcf.id
                   end
-                  qrc.question_row_column_fields << qrcfarr
                 end
               end
 
@@ -386,19 +395,25 @@ namespace :project_json do
     end
 
     phash['extractions'].each do |eid, ehash|
-      e = Extraction.new
-      e.citation = citation_id_dict[ehash['citation_id']
+      citation = citation_id_dict[ehash['citation_id']]
       pur = ProjectsUsersRole.find_by({
         user: user_id_dict[ehash['extractor_user_id']],
         role: role_id_dict[ehash['extractor_role_id']]
       })
+      e = Extraction.create! projects_users_role: pur, citation: citation
 
       ehash['sections'].each do |sid, shash|
         efps = efps_id_dict[sid]
+
         eefps = ExtractionsExtractionFormsProjectsSection.find_or_create_by({
           extraction: e,
           extraction_forms_projects_section: efps
         })
+
+        eefps_id_dict[sid] = eefps.id
+        if shash['link_to_t1'].present?
+          eefps_t1_link_dict[eepfs.id] = shash['link_to_t1']
+        end
 
         shash['type1s'].each do |t1id, t1hash|
           t1 = t1_id_dict[t1id]
@@ -407,7 +422,7 @@ namespace :project_json do
             t1_type = Type1Type.first
             logger.warning "#{Time.now.to_s} - Could not find type1_type with name #{t1hash['type1_type']['name']} , used #{t1_type.name} instead"
           end
-          eefpst1 = ExtractionsExtractionFormsProjectsSectionType1.find_or_create_by({
+          eefpst1 = ExtractionsExtractionFormsProjectsSectionsType1.find_or_create_by({
             extractions_extraction_forms_projects_section: eefps,
             type1: t1,
             unit: t1hash['units']
@@ -415,16 +430,20 @@ namespace :project_json do
 
           t1hash['populations'].each do |popid, pophash|
             pop_name = PopulationName.find_or_create_by(name: pophash['name'])
-            pop = ExtractionsExtractionFormsProjectsSectionType1Row.find_or_create_by!({
+            pop = ExtractionsExtractionFormsProjectsSectionsType1Row.find_or_create_by!({
               extractions_extraction_forms_projects_section_type1: eefpst1,
               population_name: pop_name
             })
+
+            pop_id_dict[popid] = pop
+
             pophash['timepoints'].each do |tpid, tphash|
               tp_name = TimepointName.find_or_create_by!(name: tphash['name'])
-              tp = ExtractionsExtractionFormsProjectsSectionType1RowColumn.find_or_create_by!({
+              tp = ExtractionsExtractionFormsProjectsSectionsType1RowColumn.find_or_create_by!({
                 extractions_extraction_forms_projects_section_type1_row: pop,
                 timepoint_name: tp_name
               })
+              tp_id_dict[tpid] = tp
             end
 
             pophash['result_statistic_sections'].each do |rssid, rsshash|
@@ -436,8 +455,6 @@ namespace :project_json do
                 population: pop,
                 result_statistic_section_type: rss
               })
-
-              comp_id_dict = {}
 
               rsshash['comparisons'].each do |compid, comphash|
                 comp = Comparison.create!
@@ -452,13 +469,13 @@ namespace :project_json do
                         comparable_id: pop_id_dict[cchassh['comparable_id']]
                       })
 
-                    else if cchash['comparable_type'] == 'ExtractionsExtractionFormsProjectsSectionsType1RowColumn'
+                    elsif cchash['comparable_type'] == 'ExtractionsExtractionFormsProjectsSectionsType1RowColumn'
                       ce = ComparableElement.create!({
                         comparate_group: cg,
                         comparable_type: 'ExtractionsExtractionFormsProjectsSectionsType1RowColumn',
                         comparable_id: tp_id_dict[cchassh['comparable_id']]
                       })
-                    else if cchash['comparable_type'] == 'Comparison'
+                    elsif cchash['comparable_type'] == 'Comparison'
                       ce = ComparableElement.create!({
                         comparate_group: cg,
                         comparable_type: 'Comparison',
@@ -539,6 +556,19 @@ namespace :project_json do
                 end
               end
             end
+          end
+
+          ### DOES THIS WORK? TEST!!
+          eefps_t1_link_dict.each do |t2_eefps_id, t1_eefps_source_id|
+            ExtractionFormsProjectsSection.find(t2_eefps_id).update!(link_to_type1: eefps_id_dict[t1_eefps_source_id])
+          end
+
+          shash['records'].each do |qrcfid, rhash|
+            qrcf = qrcf_id_dict[qrcfid]
+            r = Record.find_or_create_by!({
+                  recordable_type: 'QuestionRowColumnField',
+                  recordable_id: qrcf.id,
+                  name: rhash['name']})
           end
         end
       end
