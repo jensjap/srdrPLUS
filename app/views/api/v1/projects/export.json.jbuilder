@@ -404,9 +404,11 @@ json.project do
                 json.link_to_type1 eefps.link_to_type1.id
               end
 
-              json.records Record.where(recordable: eefps.extractions_extraction_forms_projects_sections_question_row_column_fields) do |r|
-                json.set! r.recordable.question_row_column_field.id do
-                  json.name r.name
+              json.records do
+                Record.where(recordable: eefps.extractions_extraction_forms_projects_sections_question_row_column_fields).each do |r|
+                  json.set! r.recordable.question_row_column_field.id do
+                    json.name r.name
+                  end
                 end
               end
             end

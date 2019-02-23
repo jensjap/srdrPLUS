@@ -287,6 +287,7 @@ module JsonImporters
       end
 
       efps =  @section_dedup_dict[s.name + "<<<>>>" + efps_type.name]
+      # we should take the linked t1 section while deduplicating
 
       if efps.nil?
         efps = ExtractionFormsProjectsSection.find_or_create_by!({extraction_forms_project:               @efp,
@@ -430,14 +431,15 @@ module JsonImporters
 
       ehash['sections']&.each do |sid, shash|
         efps = @efps_id_dict[sid]
-
         eefps = ExtractionsExtractionFormsProjectsSection.find_or_create_by! extraction: e,
                                                                              extraction_forms_projects_section: efps
 
         @eefps_id_dict[sid] = eefps.id
+
         if shash['link_to_t1'].present?
           @eefps_t1_link_dict[eefps.id] = shash['link_to_t1']
         end
+
         shash['extractions_extraction_forms_projects_sections_type1s']&.each do |eefpst1id, eefpst1hash|
           eefpst1 = import_eefpst1(eefps, eefpst1hash)
           @eefpst1_id_dict[eefpst1id.to_i] = eefpst1
@@ -447,7 +449,9 @@ module JsonImporters
       # here I use 2 loops where technically we should be able to get away with 1,
       # but it is hard to make sure no timepoint_id points to eefpst1 not yet created
 
-      ehash['sections']&.values&.each do |shash|
+      ehash['sections']&.each do |sid, shash|
+        eefps = @eefps_id_dict[sid]
+
         shash['extractions_extraction_forms_projects_sections_type1s']&.each do |eefpst1id, eefpst1hash|
           eefpst1 = @eefpst1_id_dict[eefpst1id.to_i]
 
@@ -558,17 +562,22 @@ module JsonImporters
             end
           end
 
-          ### DOES THIS WORK? TEST!!
-          @eefps_t1_link_dict.each do |t2_eefps_id, t1_eefps_source_id|
-            ExtractionFormsProjectsSection.find(t2_eefps_id).update!(link_to_type1: @eefps_id_dict[t1_eefps_source_id])
-          end
+        end
 
-          shash['records'].each do |qrcfid, rhash|
-            qrcf = @qrcf_id_dict[qrcfid]
-            Record.find_or_create_by!({recordable_type: 'QuestionRowColumnField',
-                                       recordable_id: qrcf.id,
-                                       name: rhash['name']})
-          end
+        ### THIS IS REDUNDANT?
+        ### DOES THIS WORK? TEST!!
+        #@eefps_t1_link_dict.each do |t2_eefps_id, t1_eefps_source_id|
+        #  ExtractionsExtractionFormsProjectsSection.find(t2_eefps_id).update!(link_to_type1: @eefps_id_dict[t1_eefps_source_id])
+        #end
+
+        shash['records']&.each do |qrcfid, rhash|
+          qrcf = @qrcf_id_dict[qrcfid]
+          eefpsqrcf = ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField.find_or_create_by! extractions_extraction_forms_projects_section: eefps,
+                                                                                                          qrcf: qrcf
+
+          Record.find_or_create_by!({recordable_type: 'ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField',
+                                     recordable_id: eefpsqrcf.id,
+                                     name: rhash['name']})
         end
       end
     end
