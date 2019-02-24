@@ -162,9 +162,11 @@ json.project do
 
         json.sections do
           efp.extraction_forms_projects_sections.each do |efps|
-
             json.set! efps.id do
-              json.name efps.section.name
+              json.section do
+                json.id efps.section.id
+                json.name efps.section.name
+              end
               json.position efps.ordering.position
 
               json.extraction_forms_projects_section_type do
