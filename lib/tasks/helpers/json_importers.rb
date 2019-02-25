@@ -3,30 +3,32 @@ module JsonImporters
     def initialize(logger)
       # we need to store stuff like the project, so an instance variable maybe?
       @p = Project.new
-      @efp = nil
       @logger = logger
 
-      @role_id_dict = {}
-      @color_id_dict = {}
+      @id_map = {}
 
-      @user_id_dict = {}
-      @tg_id_dict = {}
-      @kqp_id_dict = {}
-      @cp_id_dict = {}
-      @qrcf_id_dict = {}
-      @t1_id_dict = {}
-      @efps_id_dict = {}
-      @eefps_id_dict = {}
-      @eefpst1_id_dict = {}
-      @tp_id_dict = {}
-      @pop_id_dict = {}
-      @comp_id_dict = {}
+      @id_map['color'] = {}
+      @id_map['comparison'] = {}
+      @id_map['cp'] = {}
+      @id_map['efps'] = {}
+      @id_map['eefps'] = {}
+      @id_map['eefpst1'] = {}
+      @id_map['kqp'] = {}
+      @id_map['population'] = {}
+      @id_map['qrcf'] = {}
+      @id_map['question'] = {}
+      @id_map['role'] = {}
+      @id_map['t1'] = {}
+      @id_map['tp'] = {}
+      @id_map['user'] = {}
 
-      @section_dedup_dict = {}
-      @question_dedup_dict = {}
+      @dedup_map = {}
+      @dedup_map['efps'] = {}
+      @dedup_map['question'] = {}
 
       @t1_link_dict = {}
       @eefps_t1_link_dict = {}
+      @question_dependency_dict = {}
 
       @section_position_tuples = []
 
@@ -47,7 +49,6 @@ module JsonImporters
                        doi: phash['doi'],
                        notes: phash['notes'],
                        funding_source: phash['funding_source']})
-        @efp = @p.extraction_forms_projects.first
 
         ## KEY QUESTIONS
         phash['key_questions']&.each(&method(:import_key_question))
@@ -83,9 +84,13 @@ module JsonImporters
           end
         end
 
+        @question_dependency_dict.each do |question_id, dependendable_id|
+
+        end
+
         # does this work? TEST!
         @t1_link_dict.each do |t2_efps_id, t1_efps_source_id|
-          ExtractionFormsProjectsSection.find(t2_efps_id).update!(link_to_type1: @efps_id_dict[t1_efps_source_id])
+          ExtractionFormsProjectsSection.find(t2_efps_id).update!(link_to_type1: @id_map['efps'][t1_efps_source_id])
         end
 
         # does this work? TEST!
@@ -112,18 +117,25 @@ module JsonImporters
         temp_password = "Please_Update_Your_Password"
         u = User.create!(email: uhash['email'], password: temp_password)
         profile_hash = uhash['profile']
-        o =  Organization.find_or_create_by!(name: profile_hash['organization']['name'])
-        Profile.find_or_create_by!({user:         u,
-                                    username:     profile_hash['username'],
-                                    first_name:   profile_hash['first_name'],
-                                    middle_name:  profile_hash['middle_name'],
-                                    last_name:    profile_hash['last_name'],
-                                    time_zone:    profile_hash['time_zone'],
-                                    organization: o})
 
+        o = Organization.find_or_create_by! name: profile_hash['organization']['name']
+
+        profile = Profile.find_or_create_by! user:         u,
+                                             username:     profile_hash['username'],
+                                             first_name:   profile_hash['first_name'],
+                                             middle_name:  profile_hash['middle_name'],
+                                             last_name:    profile_hash['last_name'],
+                                             time_zone:    profile_hash['time_zone'],
+                                             organization: o
+
+        profile_hash['degrees']&.values&.each do |dhash|
+          d = Degree.find_or_create_by! name: dhash['name']
+          DegreesProfile.find_or_create_by! degree: d,
+                                            profile: profile
+        end
       end
 
-      @user_id_dict[uid.to_i] = u
+      @id_map['user'][uid.to_i] = u
 
       pu = ProjectsUser.find_or_create_by!({project: @p, user: u})
 
@@ -146,53 +158,53 @@ module JsonImporters
     end
 
     def import_key_question(kqpid, kqhash)
-      kqp = @kqp_id_dict[kqpid]
+      kqp = @id_map['kqp'][kqpid]
       if kqp.present? then return kqp end
 
       kq = KeyQuestion.find_or_create_by!(name: kqhash['name'])
       kqp = KeyQuestionsProject.find_or_create_by(project: @p, key_question: kq)
-      @kqp_id_dict[kqpid] = kqp
+      @id_map['kqp'][kqpid] = kqp
     end
 
     def find_role(rid, role_name)
       #check dictionary first
-      r =  @role_id_dict[rid.to_i]
+      r =  @id_map['role'][rid.to_i]
       if r.present? then return r end
 
       #then try to find it by name
       r = Role.find_by(name: role_name)
       if r.present?
-        @role_id_dict[rid.to_i] = r
+        @id_map['role'][rid.to_i] = r
         return r
       end
 
       #if can't find, use Contributor
       r = Role.find_by(name: 'Contributor')
       @logger.warning "#{Time.now.to_s} - Could not find role with name '" +  role_name + "' for user: '" + u.profile.username + "', used 'Contributor' instead"
-      @role_id_dict[rid.to_i] = r
+      @id_map['role'][rid.to_i] = r
       return r
     end
 
     def find_color(cid, color_name)
       #this is probably a bad way to find the color
-      c = @color_id_dict[cid]
+      c = @id_map['color'][cid]
       if c.present? then return c end
 
       c = Color.find_by(name: color_name)
       if c.present?
-        @color_id_dict[cid] = c
+        @id_map['color'][cid] = c
         return c
       end
 
       ## try to use different colors
-      c = Color.where.not( id: @color_id_dict.values.map {|c| c.id} ).first
+      c = Color.where.not( id: @id_map['color'].values.map {|c| c.id} ).first
       @logger.warning "#{Time.now.to_s} - Could not find color with name '" + color_name + "', used '" + c.name + "' instead"
-      @color_id_dict[cid] = c
+      @id_map['color'][cid] = c
       return c
     end
 
     def find_projects_user(uid)
-      u = @user_id_dict[uid]
+      u = @id_map['user'][uid]
       if u.present?
         return ProjectsUser.find_by(project: @p, user: u)
       end
@@ -200,8 +212,8 @@ module JsonImporters
     end
 
     def find_projects_users_role(uid, rid)
-      u = @user_id_dict[uid]
-      r = @role_id_dict[rid]
+      u = @id_map['user'][uid]
+      r = @id_map['role'][rid]
 
       if u.present? and r.present?
         pu = ProjectsUser.find_by(project: @p, user: u)
@@ -211,7 +223,7 @@ module JsonImporters
     end
 
     def import_citation(cpid, chash)
-      if @cp_id_dict[cpid].present? then return @cp_id_dict[cpid] end
+      if @id_map['cp'][cpid].present? then return @id_map['cp'][cpid] end
 
       j = Journal.find_or_create_by!(name: chash['journal']['name'])
 
@@ -261,7 +273,7 @@ module JsonImporters
                       value: nhash['value']})
       end
       cp = CitationsProject.find_or_create_by!(citation: c, project: @p)
-      @cp_id_dict[cpid.to_i] = cp
+      @id_map['cp'][cpid.to_i] = cp
     end
 
     def import_task(thash)
@@ -284,16 +296,18 @@ module JsonImporters
       end
     end
 
-    def get_dedup_key(shash, linked_shash)
+    def get_efps_dedup_key(shash, linked_shash)
       efps_type_name = shash['extraction_forms_projects_section_type']['name']
       section_name = shash['section']['name']
-      if efps_type_name == "Type 1"
-        return "<<<#{section_name}&&#{efps_type_name}&&#{(shash['type1s']&.map {|t1hash| t1hash['name']}).sort.join("||")}>>>"
-      elsif efps_type_name == "Type 2"
-        return "<<<#{section_name}&&#{efps_type_name}&&#{(linked_shash['type1s']&.map {|t1hash| t1hash['name']}).sort.join("||")}>>>"
+      if efps_type_name == "Type 1" and shash['type1s'].present?
+        return "<<<#{section_name}&&#{efps_type_name}&&#{(shash['type1s']&.values&.map {|t1hash| t1hash['name']}).sort.join("||")}>>>"
+      elsif efps_type_name == "Type 2" and linked_shash.present? and linked_shash['type1s'].present?
+        return "<<<#{section_name}&&#{efps_type_name}&&#{(linked_shash&['type1s']&.values&.map {|t1hash| t1hash['name']}).sort.join("||")}>>>"
       elsif efps_type_name == "Results"
         ## there should only ever be one results section?
         return "<<<#{efps_type_name}>>>"
+      else
+        return "<<<#{section_name}&&#{efps_type_name}>>>"
       end
     end
 
@@ -308,13 +322,16 @@ module JsonImporters
     end
 
     def import_efps(sid, shash, linked_shash, position_counter)
-      #if this is a duplicate section, we just want to return the original
-      dedup_key = get_dedup_key shash, linked_shash
-      efps = @section_dedup_dict[dedup_key]
+      efps = @id_map['efps'][sid]
       if efps.present? then return efps end
 
-      efps = @efps_id_dict[sid]
-      if efps.present? then return efps end
+      #if this is a duplicate section, we just want to return the original
+      dedup_key = get_efps_dedup_key shash, linked_shash
+      efps = @dedup_map['efps'][dedup_key]
+      if efps.present?
+        @id_map['efps'][sid] = efps
+        return efps
+      end
 
       #do we want to create sections that does not exist? -Birol
       s = Section.find_or_create_by! name: shash['section']['name']
@@ -326,7 +343,7 @@ module JsonImporters
       end
 
       if efps.nil?
-        efps = ExtractionFormsProjectsSection.find_or_create_by! extraction_forms_project: @efp,
+        efps = ExtractionFormsProjectsSection.find_or_create_by! extraction_forms_project: @p.extraction_forms_projects.first,
                                                                  extraction_forms_projects_section_type: efps_type,
                                                                  section: s
         @section_position_tuples << [shash['position'].to_i + position_counter, efps]
@@ -339,44 +356,71 @@ module JsonImporters
         shash['type1s']&.each do |t1id, t1hash|
           t1 = Type1.find_or_create_by!(name: t1hash['name'], description: t1hash['description'])
           efps.type1s << t1
-          @t1_id_dict[t1id] = t1
+          @id_map['t1'][t1id] = t1
         end
 
         #create efps first
         efpsohash = shash['extraction_forms_projects_section_option']
         if efpsohash.present?
-          ExtractionFormsProjectsSectionOption.create!({extraction_forms_projects_section: efps,
-                                                        by_type1: efpsohash['by_type1'],
-                                                        include_total: efpsohash['include_total']})
+          ExtractionFormsProjectsSectionOption.create! extraction_forms_projects_section: efps,
+                                                       by_type1: efpsohash['by_type1'],
+                                                       include_total: efpsohash['include_total']
         end
       end
 
       @question_position_counter_dict[efps.id] ||= 0
       @question_position_tuples_dict[efps.id] ||= []
-      @question_dedup_dict[efps.id] ||= {}
+      @dedup_map['question'][efps.id] ||= {}
 
-      shash['questions']&.values&.each do |qhash|
-        import_question(efps, qhash)
+      shash['questions']&.each do |qid, qhash|
+        import_question(efps, qid, qhash)
       end
       @question_position_counter_dict[efps.id] += (shash['questions'] || []).length
 
-      @efps_id_dict[sid] = efps
+      @id_map['efps'][sid] = efps
+      @dedup_map['efps'] = efps
     end
 
-    def import_question(efps, qhash)
-      q = Question.create! extraction_forms_projects_section: efps,
-                       name: qhash['name'],
-                       description: qhash['description']
-
-      q_hash_key = "q: <<<" + qhash['name'].to_s + ">>> "
+    def get_question_dedup_key(qhash)
+      q_dedup_key = "q: <<<" + qhash['name'].to_s + ">>> "
       qhash['key_questions']&.each do |kqid, kqhash|
+        q_dedup_key += "kq: <<<" + kqhash['name'].to_s + ">>> "
+      end
+      qhash['question_rows']&.values&.each_with_index do |qrhash, ri|
+        q_dedup_key += "qr: <<<" + qrhash['name'].to_s + ">>> "
+        qrhash['question_row_columns']&.values&.each_with_index do |qrchash, ci|
+          q_dedup_key += "qrc: <<<" + qrchash['name'].to_s + ">>> "
+        end
+      end
+      return q_dedup_key
+    end
+
+    def import_question(efps, qid, qhash)
+      if @id_map['question'][qid].present?
+        return @id_map['eefpst1'][qid]
+      end
+
+      q_dedup_key = get_question_dedup_key(qhash)
+      if @dedup_map['question'][efps.id][q_dedup_key].present?
+        @id_map['question'][qid] = @dedup_map['question'][efps.id][q_dedup_key]
+        return @dedup_map['question'][efps.id][q_dedup_key]
+      end
+
+      q = Question.create! extraction_forms_projects_section: efps,
+                           name: qhash['name'],
+                           description: qhash['description']
+
+      qhash['dependencies']&.values&.each do |dephash|
+        @question_dependency_dict[q.id] << dephash['dependable_id']
+      end
+
+      qhash['key_questions']&.each do |kqid|
         # maybe storing the kq id earlier and using that would be better? -Birol
-        q_hash_key += "kq: <<<" + kqhash['name'].to_s + ">>> "
-        q.key_questions_projects << @kqp_id_dict[kqid]
+        KeyQuestionsProjectsQuestion.find_or_create_by! key_question: @id_map['kqp'][kqid],
+                                                        question: q
       end
 
       qhash['question_rows']&.values&.each_with_index do |qrhash, ri|
-        q_hash_key += "qr: <<<" + qrhash['name'].to_s + ">>> "
 
         if ri == 0
           qr = QuestionRow.find_by!(question: q)
@@ -387,13 +431,9 @@ module JsonImporters
 
         qrhash['question_row_columns']&.values&.each_with_index do |qrchash, ci|
           # maybe use find_by and raise an error if not found? -Birol
-          q_hash_key += "qrc: <<<" + qrchash['name'].to_s + ">>> "
 
           qrc_type = QuestionRowColumnType.find_or_create_by! name: qrchash['question_row_column_type']['name']
 
-          p qrc_type
-
-          qrc = nil
           if ci == 0
             qrc = QuestionRowColumn.find_by! question_row: qr
           else
@@ -402,14 +442,13 @@ module JsonImporters
 
           qrc.update! question_row_column_type: qrc_type,
                       name: qrchash['name']
-          p qrc
 
           qrc.question_row_columns_question_row_column_options.destroy_all
           # can i prevent creation of default options to begin with
           qrchash['question_row_columns_question_row_column_options']&.values&.each do |qrcqrcohash|
             qrcohash = qrcqrcohash['question_row_column_option']
             qrco = QuestionRowColumnOption.find_or_create_by! name: qrcohash['name']
-            qrcqrco = QuestionRowColumnsQuestionRowColumnOption.find_or_create_by! question_row_column: qrc,
+            QuestionRowColumnsQuestionRowColumnOption.find_or_create_by! question_row_column: qrc,
                                                                          question_row_column_option: qrco,
                                                                          name: qrcqrcohash['name']
 
@@ -417,27 +456,22 @@ module JsonImporters
 
           qrchash['question_row_column_fields']&.each do |qrcfid, qrcfhash|
             qrcf = QuestionRowColumnField.find_or_create_by!(question_row_column: qrc, name: qrcfhash['name'])
-            @qrcf_id_dict[qrcfid] = qrcf
+            @id_map['qrcf'][qrcfid] = qrcf
           end
         end
       end
-
-      if @question_dedup_dict[efps.id][q_hash_key].nil?
-        @question_dedup_dict[efps.id][q_hash_key] = q
-        @question_position_tuples_dict[efps.id] << [qhash['position'].to_i + @question_position_counter_dict[efps.id], q]
-      else
-        # not very elegant to destroy question if it is a duplicate, but I dont want to traverse the same question structure multiple times
-        q.destroy
-      end
+      @dedup_map['question'][efps.id][q_dedup_key] = q
+      @question_position_tuples_dict[efps.id] << [qhash['position'].to_i + @question_position_counter_dict[efps.id], q]
+      @id_map['question'][qid] = q
     end
 
     def import_eefpst1(eefps, eefpst1hash)
       t1hash = eefpst1hash['type1']
-      t1 = @t1_id_dict[t1hash['id']]
+      t1 = @id_map['t1'][t1hash['id']]
 
       if t1.nil?
         t1 = Type1.find_or_create_by!(name: t1hash['name'], description: t1hash['description'])
-        @t1_id_dict[t1hash['id']] = t1
+        @id_map['t1'][t1hash['id']] = t1
       end
 
       t1_type = nil
@@ -450,14 +484,15 @@ module JsonImporters
         end
       end
 
-      eefpst1 = ExtractionsExtractionFormsProjectsSectionsType1.find_by! extractions_extraction_forms_projects_section: eefps,
-                                                                         type1: t1
+      eefpst1 = ExtractionsExtractionFormsProjectsSectionsType1.find_or_create_by! extractions_extraction_forms_projects_section: eefps,
+                                                                                   type1: t1
 
-      ## I dont want to create duplicate t1 associations, so I use find_by!, then update
-      eefpst1.update! ExtractionsExtractionFormsProjectsSectionsType1.find_or_create_by! extractions_extraction_forms_projects_section: eefps,
-                                                                                         type1: t1,
-                                                                                         units: t1hash['units'],
-                                                                                         type1_type: t1_type
+      ## I dont want to create duplicate t1 associations, so I use find_or_create_by!, then update!
+      eefpst1.update! extractions_extraction_forms_projects_section: eefps,
+                      type1: t1,
+                      units: t1hash['units'],
+                      type1_type: t1_type
+      return eefpst1
     end
 
     def import_population
@@ -466,26 +501,26 @@ module JsonImporters
 
 
     def import_extraction(ehash)
-      cp = @cp_id_dict[ehash['citation_id']]
+      cp = @id_map['cp'][ehash['citation_id']]
       pur = find_projects_users_role(ehash['extractor_user_id'], ehash['extractor_role_id'])
 
       e = Extraction.create! project: @p, projects_users_role: pur, citations_project: cp
 
       ehash['sections']&.each do |sid, shash|
-        efps = @efps_id_dict[sid]
+        efps = @id_map['efps'][sid]
 
         # this has to be already there, because I'm counting on the callback and validations
         eefps = ExtractionsExtractionFormsProjectsSection.find_by! extraction: e,
                                                                    extraction_forms_projects_section: efps
 
-        @eefps_id_dict[sid.to_i] = eefps
+        @id_map['eefps'][sid.to_i] = eefps
 
         #if shash['link_to_t1'].present?
         #  @eefps_t1_link_dict[eefps.id] = shash['link_to_t1']
         #end
 
         shash['extractions_extraction_forms_projects_sections_type1s']&.each do |eefpst1id, eefpst1hash|
-          @eefpst1_id_dict[eefpst1id.to_i] = import_eefpst1(eefps, eefpst1hash)
+          @id_map['eefpst1'][eefpst1id.to_i] = import_eefpst1(eefps, eefpst1hash)
         end
       end
 
@@ -493,24 +528,28 @@ module JsonImporters
       # but it is hard to make sure no timepoint_id points to eefpst1 not yet created
 
       ehash['sections']&.each do |sid, shash|
-        eefps = @eefps_id_dict[sid]
+        eefps = @id_map['eefps'][sid.to_i]
 
         shash['extractions_extraction_forms_projects_sections_type1s']&.each do |eefpst1id, eefpst1hash|
-          eefpst1 = @eefpst1_id_dict[eefpst1id.to_i]
+          eefpst1 = @id_map['eefpst1'][eefpst1id.to_i]
 
           eefpst1hash['populations']&.each do |popid, pophash|
             pop_name = PopulationName.find_or_create_by! name: pophash['population_name']['name']
-            pop = ExtractionsExtractionFormsProjectsSectionsType1Row.find_or_create_by! extractions_extraction_forms_projects_sections_type1: eefpst1,
-                                                                                        population_name: pop_name
+            begin
+              pop = ExtractionsExtractionFormsProjectsSectionsType1Row.find_or_create_by! extractions_extraction_forms_projects_sections_type1: eefpst1,
+                                                                                          population_name: pop_name
+            rescue => err
+              byebug
+            end
 
-            @pop_id_dict[popid.to_i] = pop
+            @id_map['population'][popid.to_i] = pop
 
             pophash['timepoints']&.each do |tpid, tphash|
               tp_name = TimepointName.find_or_create_by! name: tphash['timepoint_name']['name'],
                                                          unit: tphash['timepoint_name']['unit']
               tp = ExtractionsExtractionFormsProjectsSectionsType1RowColumn.find_or_create_by! extractions_extraction_forms_projects_sections_type1_row: pop,
                                                                                                timepoint_name: tp_name
-              @tp_id_dict[tpid.to_i] = tp
+              @id_map['tp'][tpid.to_i] = tp
             end
 
             pophash['result_statistic_sections']&.values&.each do |rsshash|
@@ -522,31 +561,31 @@ module JsonImporters
               rsshash['comparisons']&.keys&.each do |compid|
                 comp = Comparison.create!
                 ComparisonsResultStatisticSection.create! result_statistic_section: rss, comparison: comp
-                @comp_id_dict[compid.to_i] = comp
+                @id_map['comparison'][compid.to_i] = comp
               end
 
               ## comparisons are sometimes referring to other comparisons, so they all must be created beforehand
 
               rsshash['comparisons']&.each do |compid, comphash|
-                comp = @comp_id_dict[compid.to_i]
+                comp = @id_map['comparison'][compid.to_i]
                 comphash['comparate_groups']&.values&.each do |cghash|
                   cg = ComparateGroup.create! comparison: comp
                   cghash['comparates']&.values&.each do |cchash|
                     cehash = cchash['comparable_element']
                     if cehash['comparable_type'] == 'ExtractionsExtractionFormsProjectsSectionsType1'
                       ce = ComparableElement.create! comparable_type: 'ExtractionsExtractionFormsProjectsSectionsType1',
-                                                     comparable_id: @eefpst1_id_dict[cehash['comparable_id']]&.id
+                                                     comparable_id: @id_map['eefpst1'][cehash['comparable_id']]&.id
                       Comparate.create! comparate_group: cg,
                                         comparable_element: ce
 
                     elsif cehash['comparable_type'] == 'ExtractionsExtractionFormsProjectsSectionsType1RowColumn'
                       ce = ComparableElement.create! comparable_type: 'ExtractionsExtractionFormsProjectsSectionsType1RowColumn',
-                                                     comparable_id: @tp_id_dict[cehash['comparable_id']]&.id
+                                                     comparable_id: @id_map['tp'][cehash['comparable_id']]&.id
                       Comparate.create! comparate_group: cg,
                                         comparable_element: ce
                     elsif cehash['comparable_type'] == 'Comparison'
                       ce = ComparableElement.create! comparable_type: 'Comparison',
-                                                     comparable_id: @comp_id_dict[cehash['comparable_id']]&.id
+                                                     comparable_id: @id_map['comparison'][cehash['comparable_id']]&.id
                       Comparate.create! comparate_group: cg,
                                         comparable_element: ce
                     else
@@ -564,8 +603,8 @@ module JsonImporters
 
                 if rssmhash['records'].present?
                   rssmhash['records']['tps_comparisons_rssms']&.values&.each do |tchash|
-                    tcr = TpsComparisonsRssm.create!({timepoint: @tp_id_dict[tchash['timepoint_id']],
-                                                      comparison: @comp_id_dict[tchash['comparison_id']],
+                    tcr = TpsComparisonsRssm.create!({timepoint: @id_map['tp'][tchash['timepoint_id']],
+                                                      comparison: @id_map['comparison'][tchash['comparison_id']],
                                                       result_statistic_sections_measure: rssm})
 
                     Record.create!({recordable_type: 'TpsComparisonsRssm',
@@ -574,8 +613,8 @@ module JsonImporters
 
                   end
                   rssmhash['records']['tps_arms_rssms']&.values&.each do |tahash|
-                    tar = TpsArmsRssm.create!({timepoint: @tp_id_dict[tahash['timepoint_id']],
-                                               extractions_extraction_forms_projects_sections_type1: @eefpst1_id_dict[tahash['arm_id']],
+                    tar = TpsArmsRssm.create!({timepoint: @id_map['tp'][tahash['timepoint_id']],
+                                               extractions_extraction_forms_projects_sections_type1: @id_map['eefpst1'][tahash['arm_id']],
                                                result_statistic_sections_measure: rssm})
 
                     Record.create!({recordable_type: 'TpsArmsRssm',
@@ -583,8 +622,8 @@ module JsonImporters
                                     name: tahash['record_name']})
                   end
                   rssmhash['records']['comparisons_arms_rssms']&.values&.each do |cahash|
-                    car = ComparisonsArmsRssm.create!({comparison: @comp_id_dict[cahash['comparison_id']],
-                                                       extractions_extraction_forms_projects_sections_type1: @eefpst1_id_dict[cahash['arm_id']],
+                    car = ComparisonsArmsRssm.create!({comparison: @id_map['comparison'][cahash['comparison_id']],
+                                                       extractions_extraction_forms_projects_sections_type1: @id_map['eefpst1'][cahash['arm_id']],
                                                        result_statistic_sections_measure: rssm})
 
                     Record.create!({recordable_type: 'ComparisonsArmsRssm',
@@ -592,8 +631,8 @@ module JsonImporters
                                     name: cahash['record_name']})
                   end
                   rssmhash['records']['wacs_bacs_rssms']&.values&.each do |wbhash|
-                    tcr = WacsBacsRssm.create!({wac: @comp_id_dict[wbhash['wac_id']],
-                                                bac: @comp_id_dict[wbhash['bac_id']],
+                    tcr = WacsBacsRssm.create!({wac: @id_map['comparison'][wbhash['wac_id']],
+                                                bac: @id_map['comparison'][wbhash['bac_id']],
                                                 result_statistic_sections_measure: rssm})
 
                     Record.create!({recordable_type: 'WacsBacsRssm',
@@ -610,17 +649,21 @@ module JsonImporters
         ### THIS IS REDUNDANT?
         ### DOES THIS WORK? TEST!!
         #@eefps_t1_link_dict.each do |t2_eefps_id, t1_eefps_source_id|
-        #  ExtractionsExtractionFormsProjectsSection.find(t2_eefps_id).update!(link_to_type1: @eefps_id_dict[t1_eefps_source_id])
+        #  ExtractionsExtractionFormsProjectsSection.find(t2_eefps_id).update!(link_to_type1: @id_map['eefps'][t1_eefps_source_id])
         #end
 
         shash['records']&.each do |qrcfid, rhash|
-          qrcf = @qrcf_id_dict[qrcfid]
+          qrcf = @id_map['qrcf'][qrcfid]
           eefpsqrcf = ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField.find_or_create_by! extractions_extraction_forms_projects_section: eefps,
-                                                                                                          qrcf: qrcf
+                                                                                                          question_row_column_field: qrcf
 
-          Record.find_or_create_by!({recordable_type: 'ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField',
-                                     recordable_id: eefpsqrcf.id,
-                                     name: rhash['name']})
+          begin
+            Record.find_or_create_by! recordable_type: 'ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField',
+                                      recordable_id: eefpsqrcf.id,
+                                      name: rhash['name'] || ""
+          rescue => err
+            byebug
+          end
         end
       end
     end

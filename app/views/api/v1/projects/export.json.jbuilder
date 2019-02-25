@@ -23,6 +23,13 @@ json.project do
             json.id pu.user.profile.organization.id
             json.name pu.user.profile.organization.name
           end
+          json.degrees do
+            pu.user.profile.degrees.each do |degree|
+              json.set! degree.id do
+                json.name degree.name
+              end
+            end
+          end
         end
         json.roles do
           pu.roles.each do |r|
@@ -205,6 +212,14 @@ json.project do
                       q.key_questions_projects.each do |kqp|
                         json.set! kqp.key_question.id do
                           json.name kqp.key_question.name
+                        end
+                      end
+                    end
+                    json.dependencies do
+                      q.dependencies.each do |dep|
+                        json.set! dep.id do
+                          json.dependable_id dep.dependable_id
+                          json.dependable_type dep.dependable_type
                         end
                       end
                     end
