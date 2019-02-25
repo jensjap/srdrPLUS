@@ -29,7 +29,7 @@ html class='no-js' lang='en'
           .off-canvas.position-right#offCanvasNav data-off-canvas=''
             = render 'shared/sidebar_nav'
         .off-canvas-content data-off-canvas-content=''
-          = render 'shared/topbar_nav'
+          = render "shared/topbar_nav_#{ session[:layout_style] }"
 
           .content
             .breadcrumbs = render_breadcrumbs tag: :li, separator: ''

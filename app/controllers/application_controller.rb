@@ -22,6 +22,7 @@ class ApplicationController < ActionController::Base
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :set_current_user
   before_action :set_paper_trail_whodunnit
+  before_action :set_layout_style
 
   def authorize(*args)
     return true if Rails.env.test?
@@ -32,20 +33,24 @@ class ApplicationController < ActionController::Base
     User.current = current_user
   end
 
-#  def after_sign_in_path_for(resource)
-#    projects_path
-#  end
+  def after_sign_in_path_for(resource)
+    projects_path
+  end
+
+  def after_sign_out_path_for(resource)
+    new_user_session_path
+  end
 
   private
 
-  def user_not_authorized(exception)
-    flash[:error] = 'Sorry, you are not authorized to perform this action.'
-    redirect_to(request.referrer || root_path)
-  end
+    def user_not_authorized(exception)
+      flash[:error] = 'Sorry, you are not authorized to perform this action.'
+      redirect_to(request.referrer || root_path)
+    end
 
-  def set_time_zone(&block)
-    Time.use_zone(current_user.profile.time_zone, &block)
-  end
+    def set_time_zone(&block)
+      Time.use_zone(current_user.profile.time_zone, &block)
+    end
 
   protected
 
@@ -57,5 +62,9 @@ class ApplicationController < ActionController::Base
       added_attrs = [:username, :email, :password, :password_confirmation, :remember_me]
       devise_parameter_sanitizer.permit :sign_up, keys: added_attrs
       devise_parameter_sanitizer.permit :account_update, keys: added_attrs
+    end
+
+    def set_layout_style
+      session[:layout_style] = Random.rand 1..2
     end
 end
