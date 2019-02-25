@@ -58,10 +58,9 @@ namespace :project_json do
 
     logger.info "Task started at #{start_time}"
 
-    project_importer = ProjectImporter.new(logger)
-
     json_files.each do |json_file|
       puts "#{Time.now.to_s} - Processing file: #{json_file}"
+
       begin
         fhash = JSON.parse(File.read(json_file))
       rescue
@@ -76,6 +75,7 @@ namespace :project_json do
         next
       end
 
+      project_importer = ProjectImporter.new(logger)
       project_importer.import_project(phash)
 
       ### create project importer

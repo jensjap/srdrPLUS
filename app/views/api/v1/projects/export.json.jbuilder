@@ -218,17 +218,17 @@ json.project do
                     json.dependencies do
                       q.dependencies.each do |dep|
                         json.set! dep.id do
-                          json.dependable_id dep.dependable_id
-                          json.dependable_type dep.dependable_type
+                          json.prerequisitable_id dep.prerequisitable_id
+                          json.prerequisitable_type dep.prerequisitable_type
                         end
                       end
                     end
                     json.question_rows do
-                      q.question_rows.each do |qr|
+                      q.question_rows.order('id ASC').each do |qr|
                         json.set! qr.id do
                           json.name qr.name
                           json.question_row_columns do
-                            qr.question_row_columns.each do |qrc|
+                            qr.question_row_columns.order('id ASC').each do |qrc|
                               json.set! qrc.id do
                                 json.name qrc.name
                                 json.question_row_column_type do
@@ -236,7 +236,7 @@ json.project do
                                   json.name qrc.question_row_column_type.name
                                 end
                                 json.question_row_columns_question_row_column_options do
-                                  qrc.question_row_columns_question_row_column_options.each do |qrcqrco|
+                                  qrc.question_row_columns_question_row_column_options.order('id ASC').each do |qrcqrco|
                                     json.set! qrcqrco.id do
                                       qrco = qrcqrco.question_row_column_option
                                       json.name qrcqrco.name
@@ -248,7 +248,7 @@ json.project do
                                   end
                                 end
                                 json.question_row_column_fields do
-                                  qrc.question_row_column_fields.each do |qrcf|
+                                  qrc.question_row_column_fields.order('id ASC').each do |qrcf|
                                     json.set! qrcf.id do
                                       json.name qrcf.name
                                     end

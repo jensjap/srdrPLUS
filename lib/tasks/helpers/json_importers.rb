@@ -16,6 +16,7 @@ module JsonImporters
       @id_map['kqp'] = {}
       @id_map['population'] = {}
       @id_map['qrcf'] = {}
+      @id_map['qrcqrco'] = {}
       @id_map['question'] = {}
       @id_map['role'] = {}
       @id_map['t1'] = {}
@@ -84,8 +85,11 @@ module JsonImporters
           end
         end
 
-        @question_dependency_dict.each do |question_id, dependendable_id|
-
+        ## QUESTION DEPENDENCIES
+        @question_dependency_dict.each do |question_id, depenarr|
+          depenarr.each do |prehash|
+            create_dependency question_id, prehash
+          end
         end
 
         # does this work? TEST!
@@ -107,6 +111,27 @@ module JsonImporters
 
       end
       @p.id
+    end
+
+    def create_dependency(question_id, prehash)
+      case prehash['prerequisitable_type']
+      when 'Question'
+        Dependency.find_or_create_by! dependable_type: 'Question',
+                                      dependable_id: @id_map['question'][question_id.to_i],
+                                      prerequisitable_type: 'Question',
+                                      prerequisitable_id: @id_map['question'][prehash['prerequisitable_id']]
+      when 'QuestionRowColumnField'
+        Dependency.find_or_create_by! dependable_type: 'Question',
+                                      dependable_id: @id_map['question'][question_id.to_i],
+                                      prerequisitable_type: 'QuestionRowColumnField',
+                                      prerequisitable_id: @id_map['qrcf'][prehash['prerequisitable_id']]
+      when 'QuestionRowColumnQuestionRowColumnOption'
+        Dependency.find_or_create_by! dependable_type: 'Question',
+                                      dependable_id: @id_map['question'][question_id.to_i],
+                                      prerequisitable_type: 'QuestionRowColumnQuestionRowColumnOption',
+                                      prerequisitable_id: @id_map['qrcqrco'][prehash['prerequisitable_id']]
+
+      end
     end
 
     def import_user(uid, uhash)
@@ -141,7 +166,7 @@ module JsonImporters
 
       uhash['roles']&.each do |rid, rhash|
         r = find_role(rid, rhash['name'])
-        ProjectsUsersRole.find_or_create_by(projects_user: pu, role: r)
+        ProjectsUsersRole.find_or_create_by!(projects_user: pu, role: r)
       end
 
       uhash['term_groups']&.values&.each do |tghash|
@@ -162,7 +187,7 @@ module JsonImporters
       if kqp.present? then return kqp end
 
       kq = KeyQuestion.find_or_create_by!(name: kqhash['name'])
-      kqp = KeyQuestionsProject.find_or_create_by(project: @p, key_question: kq)
+      kqp = KeyQuestionsProject.find_or_create_by!(project: @p, key_question: kq)
       @id_map['kqp'][kqpid] = kqp
     end
 
@@ -406,18 +431,28 @@ module JsonImporters
         return @dedup_map['question'][efps.id][q_dedup_key]
       end
 
-      q = Question.create! extraction_forms_projects_section: efps,
-                           name: qhash['name'],
-                           description: qhash['description']
 
-      qhash['dependencies']&.values&.each do |dephash|
-        @question_dependency_dict[q.id] << dephash['dependable_id']
+      begin
+        q = Question.create! extraction_forms_projects_section: efps,
+                             name: qhash['name'],
+                             description: qhash['description']
+      rescue
+        byebug
       end
 
-      qhash['key_questions']&.each do |kqid|
+      @question_dependency_dict[q.id] = []
+      qhash['dependencies']&.values&.each do |dephash|
+        @question_dependency_dict[q.id] << dephash
+      end
+
+      qhash['key_questions']&.keys&.each do |kqid|
         # maybe storing the kq id earlier and using that would be better? -Birol
-        KeyQuestionsProjectsQuestion.find_or_create_by! key_question: @id_map['kqp'][kqid],
-                                                        question: q
+        begin
+          KeyQuestionsProjectsQuestion.find_or_create_by! key_questions_project: @id_map['kqp'][kqid],
+                                                          question: q
+        rescue
+          byebug
+        end
       end
 
       qhash['question_rows']&.values&.each_with_index do |qrhash, ri|
@@ -429,15 +464,20 @@ module JsonImporters
         end
         qr.update!(name: qrhash['name'])
 
+        qrcarr = qr.question_row_columns.order('id ASC')
+
         qrhash['question_row_columns']&.values&.each_with_index do |qrchash, ci|
           # maybe use find_by and raise an error if not found? -Birol
 
           qrc_type = QuestionRowColumnType.find_or_create_by! name: qrchash['question_row_column_type']['name']
 
-          if ci == 0
+          if ri == 0 and ci == 0
             qrc = QuestionRowColumn.find_by! question_row: qr
+          elsif ri == 0
+            qrc = QuestionRowColumn.create! question_row: qr,
+                                            question_row_column_type: qrc_type
           else
-            qrc = QuestionRowColumn.new question_row: qr
+            qrc = qrcarr[ci]
           end
 
           qrc.update! question_row_column_type: qrc_type,
@@ -445,17 +485,19 @@ module JsonImporters
 
           qrc.question_row_columns_question_row_column_options.destroy_all
           # can i prevent creation of default options to begin with
-          qrchash['question_row_columns_question_row_column_options']&.values&.each do |qrcqrcohash|
+          qrchash['question_row_columns_question_row_column_options']&.each do |qrcqrcoid, qrcqrcohash|
             qrcohash = qrcqrcohash['question_row_column_option']
             qrco = QuestionRowColumnOption.find_or_create_by! name: qrcohash['name']
-            QuestionRowColumnsQuestionRowColumnOption.find_or_create_by! question_row_column: qrc,
-                                                                         question_row_column_option: qrco,
-                                                                         name: qrcqrcohash['name']
+            qrcqrco = QuestionRowColumnsQuestionRowColumnOption.find_or_create_by! question_row_column: qrc,
+                                                                                   question_row_column_option: qrco,
+                                                                                   name: qrcqrcohash['name']
 
+            @id_map['qrcqrco'][qrcqrcoid] = qrcqrco
           end
 
-          qrchash['question_row_column_fields']&.each do |qrcfid, qrcfhash|
-            qrcf = QuestionRowColumnField.find_or_create_by!(question_row_column: qrc, name: qrcfhash['name'])
+          qrcfarr = qrc.question_row_column_fields.order('id ASC')
+          qrchash['question_row_column_fields']&.keys&.each_with_index do |qrcfid, fi|
+            qrcf = qrcfarr[fi]
             @id_map['qrcf'][qrcfid] = qrcf
           end
         end
