@@ -94,7 +94,7 @@ module JsonImporters
 
         # does this work? TEST!
         @t1_link_dict.each do |t2_efps_id, t1_efps_source_id|
-          ExtractionFormsProjectsSection.find(t2_efps_id).update!(link_to_type1: @id_map['efps'][t1_efps_source_id])
+          ExtractionFormsProjectsSection.find(t2_efps_id).update!(link_to_type1: @id_map['efps'][t1_efps_source_id.to_s])
         end
 
         # does this work? TEST!
@@ -378,10 +378,14 @@ module JsonImporters
           @t1_link_dict[efps.id] = link_to_type1
         end
 
-        shash['type1s']&.each do |t1id, t1hash|
-          t1 = Type1.find_or_create_by!(name: t1hash['name'], description: t1hash['description'])
-          efps.type1s << t1
-          @id_map['t1'][t1id] = t1
+        shash['extraction_forms_projects_sections_type1s']&.values&.each do |efpst1hash|
+          t1 = get_type1 efpst1hash['type1']
+          t1_type = get_type1_type efpst1hash['type1_type']
+
+          ExtractionFormsProjectsSectionsType1.find_or_create_by! extraction_forms_projects_section: efps,
+                                                                  type1: t1,
+                                                                  type1_type: t1_type
+          @id_map['t1'][efpst1hash['type1']['id']] = t1
         end
 
         #create efps first
@@ -432,13 +436,9 @@ module JsonImporters
       end
 
 
-      begin
-        q = Question.create! extraction_forms_projects_section: efps,
-                             name: qhash['name'],
-                             description: qhash['description']
-      rescue
-        byebug
-      end
+      q = Question.create! extraction_forms_projects_section: efps,
+                           name: qhash['name'],
+                           description: qhash['description']
 
       @question_dependency_dict[q.id] = []
       qhash['dependencies']&.values&.each do |dephash|
@@ -447,12 +447,8 @@ module JsonImporters
 
       qhash['key_questions']&.keys&.each do |kqid|
         # maybe storing the kq id earlier and using that would be better? -Birol
-        begin
-          KeyQuestionsProjectsQuestion.find_or_create_by! key_questions_project: @id_map['kqp'][kqid],
-                                                          question: q
-        rescue
-          byebug
-        end
+        KeyQuestionsProjectsQuestion.find_or_create_by! key_questions_project: @id_map['kqp'][kqid],
+                                                        question: q
       end
 
       qhash['question_rows']&.values&.each_with_index do |qrhash, ri|
@@ -507,32 +503,40 @@ module JsonImporters
       @id_map['question'][qid] = q
     end
 
-    def import_eefpst1(eefps, eefpst1hash)
-      t1hash = eefpst1hash['type1']
+    def get_type1(t1hash)
+      if t1hash.nil? then return end
       t1 = @id_map['t1'][t1hash['id']]
-
       if t1.nil?
         t1 = Type1.find_or_create_by!(name: t1hash['name'], description: t1hash['description'])
         @id_map['t1'][t1hash['id']] = t1
       end
+      return t1
+    end
 
-      t1_type = nil
-      if t1hash['type1_type'].present?
-        t1_type = Type1Type.find_by(name: t1hash['type1_type']['name'])
-        if t1_type.nil?
-          t1_type = Type1Type.first
-          logger.warning "#{Time.now.to_s} - Could not find type1_type with name #{t1hash['type1_type']['name']} , used #{t1_type.name} instead"
-          ## maybe we should just use nil in this case
-        end
+    def get_type1_type(t1typehash)
+      if t1typehash.nil? then return end
+      t1_type = Type1Type.find_by!(name: t1typehash['name'])
+      if t1_type.nil?
+        t1_type = Type1Type.first
+        logger.warning "#{Time.now.to_s} - Could not find type1_type with name #{t1typehash['name']} , used #{t1_type.name} instead"
+        ## maybe we should just use nil in this case
       end
+      return t1_type
+    end
+
+    def import_eefpst1(eefps, eefpst1hash)
+      t1 = get_type1 eefpst1hash['type1']
+      t1_type = get_type1_type eefpst1hash['type1_type']
 
       eefpst1 = ExtractionsExtractionFormsProjectsSectionsType1.find_or_create_by! extractions_extraction_forms_projects_section: eefps,
-                                                                                   type1: t1
+                                                                                   type1: t1,
+                                                                                   type1_type: t1_type
+
 
       ## I dont want to create duplicate t1 associations, so I use find_or_create_by!, then update!
       eefpst1.update! extractions_extraction_forms_projects_section: eefps,
                       type1: t1,
-                      units: t1hash['units'],
+                      units: eefpst1hash['units'],
                       type1_type: t1_type
       return eefpst1
     end
@@ -577,12 +581,8 @@ module JsonImporters
 
           eefpst1hash['populations']&.each do |popid, pophash|
             pop_name = PopulationName.find_or_create_by! name: pophash['population_name']['name']
-            begin
-              pop = ExtractionsExtractionFormsProjectsSectionsType1Row.find_or_create_by! extractions_extraction_forms_projects_sections_type1: eefpst1,
-                                                                                          population_name: pop_name
-            rescue => err
-              byebug
-            end
+            pop = ExtractionsExtractionFormsProjectsSectionsType1Row.find_or_create_by! extractions_extraction_forms_projects_sections_type1: eefpst1,
+                                                                                        population_name: pop_name
 
             @id_map['population'][popid.to_i] = pop
 
@@ -696,16 +696,31 @@ module JsonImporters
 
         shash['records']&.each do |qrcfid, rhash|
           qrcf = @id_map['qrcf'][qrcfid]
+          qrc_type_name = qrcf.question_row_column.question_row_column_type.name
           eefpsqrcf = ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField.find_or_create_by! extractions_extraction_forms_projects_section: eefps,
                                                                                                           question_row_column_field: qrcf
+          record_name = rhash['name'] || ""
 
-          begin
-            Record.find_or_create_by! recordable_type: 'ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField',
-                                      recordable_id: eefpsqrcf.id,
-                                      name: rhash['name'] || ""
-          rescue => err
-            byebug
+          case qrc_type_name
+          when 'checkbox'
+            checkedarr = record_name[1..-2]&.gsub('"', '')&.split(", ")
+            new_record_name = '["'
+
+            checkedarr&.each do |checked_id|
+              qrcqrco = @id_map['qrcqrco'][checked_id]
+              new_record_name += "#{qrcqrco&.id&.to_s}\", \""
+            end
+
+            new_record_name += '"]'
+            record_name = new_record_name
+          when 'dropdown', 'radio'
+            qrcqrco = @id_map['qrcqrco'][record_name]
+            record_name = qrcqrco&.id&.to_s
           end
+
+          Record.find_or_create_by! recordable_type: 'ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField',
+                                    recordable_id: eefpsqrcf.id,
+                                    name: record_name
         end
       end
     end

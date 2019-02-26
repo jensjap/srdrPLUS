@@ -189,11 +189,22 @@ json.project do
                 end
               end
 
-              json.type1s do
-                efps.type1s.each do |t1|
-                  json.set! t1.id do
-                    json.name t1.name
-                    json.description t1.description
+              json.extraction_forms_projects_sections_type1s do
+                efps.extraction_forms_projects_sections_type1s.each do |efpst1|
+                  json.set! efpst1.id do
+                    t1 = efpst1.type1
+                    t1_type = efpst1.type1_type
+                    json.type1 do
+                      json.id t1.id
+                      json.name t1.name
+                      json.description t1.description
+                    end
+                    if t1_type.present?
+                      json.type1_type do
+                        json.id t1_type.id
+                        json.name t1_type.name
+                      end
+                    end
                   end
                 end
               end
