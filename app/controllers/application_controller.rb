@@ -65,6 +65,8 @@ class ApplicationController < ActionController::Base
     end
 
     def set_layout_style
-      session[:layout_style] = Random.rand 1..2
+      #session[:layout_style] = Random.rand 1..2
+      #cookies[:layout_style] = Random.rand 1..2 unless cookies[:layout_style]
+      cookies[:layout_style] ||= Random.rand 1..2
     end
 end

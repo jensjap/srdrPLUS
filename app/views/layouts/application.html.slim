@@ -29,7 +29,7 @@ html class='no-js' lang='en'
           .off-canvas.position-right#offCanvasNav data-off-canvas=''
             = render 'shared/sidebar_nav'
         .off-canvas-content data-off-canvas-content=''
-          = render "shared/topbar_nav_#{ session[:layout_style] }"
+          = render "shared/topbar_nav_#{ cookies[:layout_style] }"
 
           .content
             .breadcrumbs = render_breadcrumbs tag: :li, separator: ''
@@ -40,3 +40,5 @@ html class='no-js' lang='en'
 
     iframe src="/ahrq_footer.html" text="AHRQ Footer" title="AHRQ Footer" height="350" width="100%" frameborder="0" scrolling="no" seemless
       p Browser does not support iframes. Please update your browser to for a better viewing experience.
+
+= cookies[:layout_style]
