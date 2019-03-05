@@ -1,6 +1,6 @@
 #navigation
 
-  - if @style && !user_signed_in?
+  - if cookies[:layout_style] && !user_signed_in?
     div data-sticky-container=''
       .title-bar data-hide-for='medium' data-responsive-toggle='responsive-menu'
         button.menu-icon data-toggle='responsive-menu' type='button'

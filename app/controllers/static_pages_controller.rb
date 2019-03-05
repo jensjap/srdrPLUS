@@ -7,7 +7,7 @@ class StaticPagesController < ApplicationController
   }.stringify_keys
 
   def home
-    case cookies[:layout_style]
+    case cookies[:layout_style].to_i
     when 1
       render 'home_v1'
     when 2
