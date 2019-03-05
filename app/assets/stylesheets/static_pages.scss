@@ -339,13 +339,6 @@
     text-align: center;
     color: #1c1819;
   }
-  .bold {
-    font-weight: bold;
-  }
-  .summary {
-    color: black;
-    line-height: 1.5;
-  }
   h4 {
     text-align: center;
     font-weight: bold;
@@ -356,7 +349,14 @@
   }
   h6 {
     color: #888b94;
-    font-size: 0.8em;
+    font-size: 0.9em;
+  }
+  .bold {
+    font-weight: bold;
+  }
+  .summary {
+    color: black;
+    line-height: 1.5;
   }
 }
 
@@ -500,6 +500,7 @@
   padding-bottom: 100px;
 
   h1 {
+    font-family: Halant;
     font-size: 2.5em;
     font-weight: bold;
     line-height: normal;
