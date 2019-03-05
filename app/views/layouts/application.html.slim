@@ -12,6 +12,7 @@ html class='no-js' lang='en'
     /= javascript_include_tag params[:controller], 'data-turbolinks-track': 'reload'
     = csrf_meta_tag
     = render 'toastr_rails/flash'
+    link href="https://fonts.googleapis.com/css?family=Halant:400,700|Noto+Sans:400,400i,700", rel="stylesheet"
 
   body class="#{controller_name} #{action_name}"
     = Gon::Base.render_data(camelCase: true)
