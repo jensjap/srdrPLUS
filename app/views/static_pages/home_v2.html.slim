@@ -3,163 +3,176 @@
 .hero-2
   .grid-x.align-center.align-middle
     .cell.medium-5.Hero-Message
-      h2.Systematic-Reviews-Made Systematic Reviews made Easy
-      h3.Free-Powerful SRDR+ is a free, powerful and easy-to-use tool for data management, systematic reviews, and meta-analysis
-      h6.button.get-started = link_to 'GET STARTED', '#'
-      h6.button.learn-more = link_to 'LEARN MORE', '#'
-    .cell.medium-5.grid-padding-x
-      = image_tag 'stock-image-placeholder-1.png', class: 'stock-image-placeholder-1'
-      = image_tag 'stock-image-placeholder-2.png', class: 'stock-image-placeholder-2'
+      h2.The-Easy-Systematic-2 SRDR+: Moving systematic reviews forward.
+      h3.Its-100-free-powe-2 SRDR+ is a free, powerful, easy to use tool for data extraction, management, and archival during systematic reviews.
+    .cell.medium-4.grid-padding-x
+      .Rectangle.cell
+        .Search-review-datas.text-center
+          span.text-style-1 Get started now.
 
-.grid-x.align-center.grid-padding-x
-  .cell.medium-10.Rectangle-3
+        = simple_form_for(User.new, as: :user, url: registration_path(:user), html: { data: { 'abide': '' } }) do |f|
+          .alert.callout data-abide-error='' style='display: none;'
+            p
+              i.fi-alert>
+              ' Please correct the errors below.
+
+          .form-inputs
+            = f.input :email, label: 'Email Address', required: true, hint: 'Email must have the following format: example@domain.edu', autofocus: true
+            = f.input :password, required: true, hint: ("Password must contain a minium of #{@minimum_password_length} characters." if @minimum_password_length),
+              input_html: { data: { validator: 'minimum_length', minimum_length: "#{ @minimum_password_length }" } }
+
+          .form-actions
+            = f.button :submit, "SIGN UP FOR FREE"
+
+.grid-x.align-center
+  .cell.medium-9.Rectangle-2
     h2.See-how-you-can-work See how you can work with SRDR+
-    .grid-x.align-center
-      .cell.small-4
+    .grid-x.align-center.user-description
+      .cell.small-2
         = image_tag 'icon-researchers.svg', class: 'float-center'
-        h3.text-center Researchers
-        h6.text-center.small.subheader Use SRDR for grant applications or original research.
-        .read-more.text-center = link_to 'READ MORE', '#'
-      .cell.small-4
+      .cell.small-8
+        h4.how-you-title Researchers
+        h6.small.subheader Use SRDR+ as a free platform for extracting, archiving, and sharing data during systematic reviews and accessing shared data related to systematic reviews.
+    .grid-x.align-center.user-description
+      .cell.small-2
         = image_tag 'icon-guideline-developers.svg', class: 'float-center'
-        h3.text-center Guideline Developers
-        h6.text-center.small.subheader Produce systematic reviews to support clinical practice guidelines.
-        .read-more.text-center = link_to 'READ MORE', '#'
-      .cell.small-4
+      .cell.small-8
+        h4.how-you-title Guideline Developers
+        h6.small.subheader Use SRDR+ for accessing data related to systematic reviews when producing guidelines and recommendation statements for their constituencies.
+    .grid-x.align-center.user-description
+      .cell.small-2
         = image_tag 'icon-educators.svg', class: 'float-center'
-        h3.text-center Educators
-        h6.text-center.small.subheader Use SRDR for instructing students in the creation and methods of SRMAs.
-        .read-more.text-center = link_to 'READ MORE', '#'
-    .grid-x.align-center style='margin-top: 30px;'
-      .cell.small-4
-        = image_tag 'icon-policymakers.svg', class: 'float-center'
-        h3.text-center Policymakers
-        h6.text-center.small.subheader Use SRDR for a research perspective on different policy options.
-        .read-more.text-center = link_to 'READ MORE', '#'
-      .cell.small-4
+      .cell.small-8
+        h4.how-you-title Educators & Librarians
+        h6.small.subheader Use SRDR+ for instructing students and trainees in the best practices related to research methodology and evaluation.
+    .grid-x.align-center.user-description
+      .cell.small-2
         = image_tag 'icon-clinicians.svg', class: 'float-center'
-        h3.text-center Clinicians
-        h6.text-center.small.subheader Use SRDR for quick reference on clinical questions.
-        .read-more.text-center = link_to 'READ MORE', '#'
-      .cell.small-4
-        = image_tag 'icon-librarians.svg', class: 'float-center'
-        h3.text-center Librarians
-        h6.text-center.small.subheader Use SRDR for a research perspective on different options.
-        .read-more.text-center = link_to 'READ MORE', '#'
+      .cell.small-8
+        h4.how-you-title Clinicians
+        h6.small.subheader Use SRDR+ for quick reference to study data that are relevant to clinical questions based on systematic reviews.
+    .grid-x.align-center.user-description
+      .cell.small-2
+        = image_tag 'icon-policymakers.svg', class: 'float-center'
+      .cell.small-8
+        h4.how-you-title Policymakers
+        h6.small.subheader Use SRDR+ for quick reference to study data that are relevant to policy questions or recommendations based on systematic reviews.
 
-h1.Create-your-systemat.text-center Create your systematic review project today
+h1.Create-your-systemat.text-center.professionals-title Leading professionals love SRDR+
 
-.SRDR-has-a-variety.text-center SRDR+ has a variety of features that make it the best place to do systematic review
+.grid-x.align-center.grid-padding-x.testimonial-rows
+  .grid-x.align-center.grid-padding-x.testimonial-row
+    .cell.testimonial-box.testimonial-left
+      = image_tag 'testimonial-matthias-perleth.png', class: 'float-center testimonial-picture'
+      h4.how-you-title Mathias Perleth, MPH
+      h6.small.subheader Board Treasurer, International Network of Agencies for Health Technology Assessment [INAHTA], Germany
+      h7 “In my regard, SRDR is among the most relevant developments in recent years!”
+    .cell.testimonial-box.testimonial-left
+      = image_tag 'testimonial-christine-clifford.png', class: 'float-center testimonial-picture'
+      h4.how-you-title Christine Clifford, MHP
+      h6.small.subheader Project Director, Eunice Kennedy Shriver Center, University of Massachusetts Medical School, USA
+      h7 “I like SRDR’s use of the Tabs and the separation by topic area of the Tabs; it allows for focus on sections of a paper at a time. SRDR is powerful and adaptable, provides a way to standardize diverse results, and provides structure.“
 
-.grid-x.align-center.grid-padding-x
-  .cell.medium-5
-    .grid-x.align-left.grid-padding-x.grid-padding-y
-      .cell.medium-2
-        = image_tag 'icon-extraction-form.svg', class: 'float-center'
-      .cell.medium-10
-        .Build-electronic-ext Build electronic extraction forms
-        .Feature-Lorem-ips Feature 1. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut
-  .cell.medium-5
-    .grid-x.align-left.grid-padding-x.grid-padding-y
-      .cell.medium-2
-        = image_tag 'icon-collaboration.svg', class: 'float-center'
-      .cell.medium-10
-        .Build-electronic-ext Collaborate with your team
-        .Feature-Lorem-ips Feature 1. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut
+  .grid-x.align-center.grid-padding-x.testimonial-row
+    .cell.testimonial-box.testimonial-left
+      = image_tag 'testimonial-tianjing-li.png', class: 'float-center testimonial-picture'
+      h4.how-you-title Tianjing Li, MD, MHS, PhD
+      h6.small.subheader Director, Cochrane Eyes and Vision United States Satellite, Associate Professor, Johns Hopkins Bloomberg School of Public Health, USA
+      h7 “SRDR is one of the few data systems designed specifically for producing and archiving systematic reviews with the intention to share the data with the public. It’s extremely flexible and it allows users to design their forms (and data items on the forms) in a way that best suit their needs and workflow.”
+    .cell.testimonial-box.testimonial-left
+      = image_tag 'testimonial-james-scott-parrott.png', class: 'float-center testimonial-picture'
+      h4.how-you-title James Scott Parrott, PhD
+      h6.small.subheader Professor, Rutgers University School of Health Professions, USA
+      h7 “The structure of SRDR lends itself well to teaching metacognitive processes associated with linking the discrete steps of the evidence analysis process. Another benefit is the flexibility of SRDR to handle diagnostic accuracy as well as etiology, treatment, and prognosis questions during systematic reviews.”
 
-.grid-x.align-center.grid-padding-x
-  .cell.medium-5
-    .grid-x.align-left.grid-padding-x.grid-padding-y
-      .cell.medium-2
-        = image_tag 'icon-include-studies.svg', class: 'float-center'
-      .cell.medium-10
-        .Build-electronic-ext Include questions from other studies
-        .Feature-Lorem-ips Feature 1. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut
-  .cell.medium-5
-    .grid-x.align-left.grid-padding-x.grid-padding-y
-      .cell.medium-2
-        = image_tag 'icon-include-studies.svg', class: 'float-center'
-      .cell.medium-10
-        .Build-electronic-ext Customize exports of your datasets
-        .Feature-Lorem-ips Feature 1. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut
+.grid-x.align-center.features-box
+  .grid-x.align-center.feature-box
+    .cell.medium-4
+      h1 Create your systematic review project today
+      h6 SRDR+ has a variety of features that make it the best place to conduct systematic reviews.
+    .cell.medium-5
+      .grid-x.align-center.sub-feature-box.align-middle
+        .cell.medium-2
+          = image_tag 'icon-extraction-form.png'
+        .cell.medium-10
+          h5 Build electronic data extraction forms
+      .grid-x.align-center.sub-feature-box.align-middle
+        .cell.medium-2
+          = image_tag 'icon-include-studies.png'
+        .cell.medium-10
+          h5 Extract and compare data
+      .grid-x.align-center.sub-feature-box.align-middle
+        .cell.medium-2
+          = image_tag 'icon-collaboration.png'
+        .cell.medium-10
+          h5 Collaborate with your team
+      .grid-x.align-center.sub-feature-box.align-middle
+        .cell.medium-2
+          = image_tag 'icon-export.png'
+        .cell.medium-10
+          h5 Customize exports of your datasets
 
-= image_tag 'browser-template-contentacle-color@2x.png', class: 'placeholder-snapshot'
-
-.grid-x.align-center.grid-padding-x.Leading-professionals-2
-  .cell.medium-10
-    h1 Leading professionals love SRDR+
-
-  .cell.medium-9
-    .grid-x.align-center.grid-padding-x
-      .cell.auto
-        = image_tag 'white-logo-tuft@2x.png', class: 'float-center'
-      .cell.auto
-        = image_tag 'white-logo-dr-evidence@2x.png', class: 'float-center'
-      .cell.auto
-        = image_tag 'white-logo-icer@2x.png', class: 'float-center'
-      .cell.auto
-        = image_tag 'white-logo-mapi@2x.png', class: 'float-center'
-      .cell.auto
-        = image_tag 'white-logo-hrq@2x.png', class: 'float-center'
-
-.grid-x.align-center.grid-padding-x.grid-padding-y.Testimonials
-  .cell.medium-7
-    div[class="orbit" role="region" aria-label="Favorite Space Pictures" data-auto-play="false" data-orbit]
-      ul.orbit-container
-        button.orbit-previous
-          span.show-for-sr Previous Slide
-          |
-           &#9664;&#xFE0E;
-        button.orbit-next
-          span.show-for-sr Next Slide
-          |
-           &#9654;&#xFE0E;
-        li[class="orbit-slide is-active"]
-          h4 Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-          h5 Joseph Lau
-          h6 Co-director
-        li[class="orbit-slide is-active"]
-          h4 Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-          h5 Joseph Lau
-          h6 Co-director
-      nav.orbit-bullets
-        button[class="is-active" data-slide="0"]
-          span.show-for-sr First slide details.
-          span.show-for-sr Current Slide
-        button[data-slide="1"]
-          span.show-for-sr
-            Second slide details.
+  .grid-x.align-center.feature-box
+    .cell.medium-4
+      h1 Access study data from published systematic reviews today.
+    .cell.medium-5
+      .grid-x.align-center.sub-feature-box.align-middle
+        .cell.medium-2
+          = image_tag 'icon-brose-topic.png'
+        .cell.medium-10
+          h5 Browse topics with available study data.
+      .grid-x.align-center.sub-feature-box.align-middle
+        .cell.medium-2
+          = image_tag 'icon-download-data.png'
+        .cell.medium-10
+          h5 Download study data
+      .grid-x.align-center.sub-feature-box.align-middle
+        .cell.medium-2
+          = image_tag 'icon-use-data.png'
+        .cell.medium-10
+          h5 Use study data in your own systematic review.
 
 .grid-x.align-center.Recently-published
-  .cell.medium-12
+  .cell.medium-9
     h1 Recently published projects
-  .cell.medium-10.recent-project
+  .cell.medium-9.recent-project
     .grid-x.grid-padding-x.grid-padding-y
       .cell.medium-4
-        h6 Published on Feb 19, 2019
-        h5.bold Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut
+        h6 Published on Nov 19, 2018
+        h5.bold Stroke Prevention in Patients With Atrial Fibrillation: A Systematic Review Update
         h6
-        |
-         147 Studies &bull; 2 Key Questions &bull; 2 Extraction Forms
+          |
+           147 Studies &bull; 2 Key Questions &bull; 2 Extraction Forms
       .cell.medium-8
-        h6 Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-        h6 = link_to 'READ MORE', '#'
-  .cell.medium-10.recent-project
+        h6.summary Objectives: This review updates previous reviews regarding the optimal risk stratification tools for stroke and bleeding prediction and treatment options for stroke prevention. Data Sources: We searched PubMed®, Embase®, and the Cochrane Database of Systematic Reviews for relevant English-language comparative studies published from January 1, 2000, to February 14, 2018. Review Methods: Two investigators screened each abstract and …text article for inclusion, abstracted data, rated quality and applicability, and graded evidence. When possible, random-effects models were used to compute summary estimates of effects.
+        h6.bold = link_to 'READ MORE', '#'
+  .cell.medium-9.recent-project
     .grid-x.grid-padding-x.grid-padding-y
       .cell.medium-4
-        h6 Published on Feb 19, 2019
-        h5.bold Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut
+        h6 Published on Mar 02, 2018
+        h5.bold Breastfeeding Programs and Policies, Breastfeeding Uptake, and Maternal Health Outcomes in Developed Countries
         h6
-        |
-         147 Studies &bull; 2 Key Questions &bull; 2 Extraction Forms
+          |
+           185 Studies &bull; 3 Key Questions &bull; 1 Extraction Forms
       .cell.medium-8
-        h6 Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-        h6 = link_to 'READ MORE', '#'
+        h6.summary The goal of this project is to summarize the effectiveness of community, workplace, and health care system–based programs and policies aimed at supporting and promoting breastfeeding and determine the association between breastfeedding and maternal health.
+        h6.bold = link_to 'READ MORE', '#'
+  .cell.medium-9.recent-project
+    .grid-x.grid-padding-x.grid-padding-y
+      .cell.medium-4
+        h6 Published on Jul 11, 2017
+        h5.bold Nonsurgical Treatments for Urinary Incontinence in Adult Women: A Systematic Review Update
+        h6
+          |
+           106 Studies &bull; 1 Key Questions &bull; 1 Extraction Forms
+      .cell.medium-8
+        h6.summary SR of nonsurgical interventions for stress, urgency, and mixed urinary incontinence in women (excluding neuropathic UI and children). Network meta-analysis of "urinary incontinence outcomes" ("cure", improvement, and satisfaction with the level of incontinence achieved). Qualitative review of quality of life outcomes. Summary of adverse events. This is an update of a 2012 review done by the Minnesota EPC. Available data from eligible…
+        h6.bold = link_to 'READ MORE', '#'
 
-  .cell.medium-10
-    h5.more-projects = link_to raw("SEE MORE PROJECTS &rarr;"), '#'
+  .cell.medium-9
+    h4 = link_to raw("SEE MORE PROJECTS &rarr;"), '#'
 
 .grid-x.align-center.align-middle.join-2
-  .cell.medium-10
+  .cell.medium-9
       h1 Join thousands of professionals
-      h6.button = link_to 'TRY SRDR NOW', '#'
+      h6.button = link_to 'TRY SRDR+ NOW', '#'
