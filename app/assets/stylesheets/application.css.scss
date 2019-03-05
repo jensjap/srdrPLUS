@@ -42,6 +42,8 @@
   }
 
   .top-bar {
+    padding: 0;
+    margin: 0;
     z-index: 999;
     a:hover {
       background-color: transparent;
@@ -382,17 +384,29 @@ a.accordion-title.populations {
 
 // Hero section.
 .hero {
-  background-color: $primary-color;
   height: 648px;
+  background-image: asset-data-url("background-hero-bottom.png");
+  background-repeat: no-repeat;
+  background-size: 100%;
 }
 // END Hero section.
 
 .menubar {
-  background-color: #4C0D7D;
+  background-image: asset-data-url("background-hero-top.png");
+  background-repeat: no-repeat;
+  background-size: 100%;
+  padding: 0;
+  margin: 0;
 }
 
 .menubar-2 {
   background-color: white;
+}
+
+.top-bar {
+  ul {
+    background-color: unset;
+  }
 }
 
 .top-bar-2 {
