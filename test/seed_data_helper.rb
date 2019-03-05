@@ -1354,11 +1354,11 @@ module SeedDataExtended
           User.current = User.first
           Project.create!(name:        n[0],
                           description: n[1],
-                          attribution: Faker::Cat.registry,
-                          methodology_description: Faker::HarryPotter.quote,
+                          attribution: Faker::Creature::Cat.registry,
+                          methodology_description: Faker::Movies::HarryPotter.quote,
                           prospero:                Faker::Number.hexadecimal(12),
                           doi:                     Faker::Number.hexadecimal(6),
-                          notes:                   Faker::HarryPotter.book,
+                          notes:                   Faker::Movies::HarryPotter.book,
                           funding_source:          Faker::Book.publisher,
                           created_at:              updated_at - rand(1000).hours,
                           updated_at:              updated_at)
@@ -1390,7 +1390,7 @@ module SeedDataExtended
 
           # Journals
           Journal.create!(
-            name:              Faker::RockBand.name,
+            name:              Faker::Music::RockBand.name,
             publication_date:  Faker::Date.backward(10000),
             volume:            Faker::Number.number(1),
             issue:             Faker::Number.number(1),
@@ -1399,12 +1399,12 @@ module SeedDataExtended
 
           # Keywords
           5.times do |n|
-            c.keywords << Keyword.create!(name:     Faker::Hipster.word)
+            c.keywords << Keyword.create!(name: Faker::Hipster.word)
           end
 
           # Authors
           5.times do |n|
-            c.authors << Author.create!(name:     Faker::HitchhikersGuideToTheGalaxy.character)
+            c.authors << Author.create!(name: Faker::Movies::HitchhikersGuideToTheGalaxy.character)
           end
 
         end
@@ -1531,7 +1531,7 @@ module SeedDataExtended
         # Messages.
         @totd = MessageType.first
         100.times do
-          @totd.messages.create!(name: Faker::HarryPotter.unique.book,
+          @totd.messages.create!(name: Faker::Book.unique.title,
                                 description: Faker::ChuckNorris.unique.fact,
                                 start_at: 10.minute.ago)
           Faker::UniqueGenerator.clear
@@ -1540,9 +1540,9 @@ module SeedDataExtended
         # Tags and Notes
         CitationsProject.all.each do |cp|
           5.times do
-            tag = Tag.find_or_create_by( name: Faker::Lovecraft.word )
-            cp.taggings << Tagging.create( tag: tag, projects_users_role: ProjectsUsersRole.all.sample )
-            cp.notes << Note.create( value: Faker::Lovecraft.sentence, projects_users_role: ProjectsUsersRole.all.sample )
+            tag = Tag.find_or_create_by(name: Faker::Books::Lovecraft.word)
+            cp.taggings << Tagging.create(tag: tag, projects_users_role: ProjectsUsersRole.all.sample)
+            cp.notes << Note.create(value: Faker::Books::Lovecraft.sentence, projects_users_role: ProjectsUsersRole.all.sample)
           end
         end
 
@@ -1554,13 +1554,13 @@ module SeedDataExtended
           projects_users_role = assignment.projects_users_role
           label_type = label_types.sample
 
-          label = Label.create( { label_type: label_type, citations_project: citations_project, projects_users_role: projects_users_role } )
+          label = Label.create({ label_type: label_type, citations_project: citations_project, projects_users_role: projects_users_role })
         end
 
         # Reasons
         Label.all.sample(150).each do |label|
-          reason = Reason.find_or_create_by!( name: Faker::RickAndMorty.quote )
-          label.labels_reasons << LabelsReason.create( { reason: reason, projects_users_role: label.project.projects_users_roles.all.sample } )
+          reason = Reason.find_or_create_by!(name: Faker::TvShows::RickAndMorty.quote)
+          label.labels_reasons << LabelsReason.create({ reason: reason, projects_users_role: label.project.projects_users_roles.all.sample })
         end
 
         # Turn on paper_trail.
