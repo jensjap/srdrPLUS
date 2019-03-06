@@ -3,8 +3,7 @@ li = link_to('My Projects', projects_path)
 - if (controller_name.eql?('projects') && not(action_name.eql?('index')) && not(action_name.eql?('new'))) || controller_name.eql?('assignments') || controller_name.eql?('extractions') || controller_name.eql?('extraction_forms_projects') || (controller_name.eql?('citations') && action_name.eql?('index')) || (controller_name.eql?('tasks') && action_name.eql?('index'))
   li
     a href='#' Project Tools
-    ul.menu.vertical
-      hr
+    ul.menu
       li = link_to t('.dashboard'),         '#'
       li = link_to t('.members_and_roles'), edit_project_path(@project || @extraction.try(:project) || @extraction_forms_project.project) + '#panel-projects-users', title: t('.members_and_roles')
       li = link_to t('export'),             export_project_path(@project || @extraction.try(:project) || @extraction_forms_project.project), method: :post,          title: t('request_export')
@@ -12,8 +11,7 @@ li = link_to('My Projects', projects_path)
 
   li
     a href='#' Project Navigation
-    ul.menu.vertical
-      hr
+    ul.menu
       li = link_to t('.project_information'), edit_project_path(@project || @extraction.try(:project) || @extraction_forms_project.project) + '#panel-project-information', title: t('.project_information')
       li = link_to t('.key_questions'),       edit_project_path(@project || @extraction.try(:project) || @extraction_forms_project.project) + '#panel-key-questions',       title: t('.key_questions')
       li = link_to t('.tasks'),               project_tasks_path(@project || @extraction.try(:project) || @extraction_forms_project.project), title: t('manage_tasks')
@@ -25,13 +23,11 @@ li = link_to('My Projects', projects_path)
       li = link_to 'Completed Extractions',              '#'
 
 li
-  a href='#' = current_user.profile.last_name.present? ? t('greet') + ', ' + current_user.profile.last_name : 'Menu'
-  ul.menu.vertical
-    hr
-    li.title User
+  a href='#' = current_user.profile.last_name.present? ? current_user.profile.last_name : 'Menu'
+  ul.menu
+    b User
     li = link_to 'Settings', edit_user_registration_path
     li = link_to 'Profile', profile_path
     li = link_to 'About', about_path
-    hr
-    li.title Actions
+    b Actions
     li = link_to 'Logout', destroy_user_session_path, :method => :delete

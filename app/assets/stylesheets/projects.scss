@@ -157,7 +157,7 @@ ul {
 #citations {
   ul {
     margin-top: 0rem;
-    li:nth-of-type(even) { 
+    li:nth-of-type(even) {
       background-color: darken( $white, 5% );
       a.citation-label {
         &:hover {
@@ -283,7 +283,7 @@ ul {
   }
 
   #sort-select {
-    max-width: 4.5rem; 
+    max-width: 4.5rem;
   }
 
   #search-box {
@@ -319,7 +319,7 @@ a.citation-label {
 //.remove-button-container {
 //  position: absolute;
 //  top: 0.5rem;
-//  right: 0.6rem;  
+//  right: 0.6rem;
 //  width: 2rem;
 //  height: 2rem;
 //  display: flex;
@@ -343,7 +343,7 @@ a.citation-label {
 .edit-citation-row {
   display: flex;
   flex-direction: row-reverse;
-  .button { 
+  .button {
     margin-top: 10px;
     margin-bottom: 0px;
   }
@@ -479,7 +479,7 @@ a.citation-label {
   margin-top: 20px;
   margin-bottom: 20px;
 }
-  
+
 .task-fields {
   width: 98%;
   margin-bottom: 20px;
@@ -488,10 +488,10 @@ a.citation-label {
 a.add-task-button {
   height: 80px;
   width: 80px;
-  
+
   font-size: 50px;
   border-radius: 0px;
-  
+
   .fi-plus {
     color: lighten($secondary-color, 20%);
     transition: color 0.3s;

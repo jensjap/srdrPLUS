@@ -56,7 +56,7 @@
 
   .top-bar > .top-bar-right {
     a:hover {
-      //color: #200845;
+      // color: #200845;
 
       &:after {
         border-top-color: #200845;
@@ -168,6 +168,7 @@ ul hr {
 }
 
 ul.menu.vertical.submenu.is-dropdown-submenu {
+  background-color: white;
   border-color: $medium-gray;
 
   li {
@@ -416,4 +417,12 @@ a.accordion-title.populations {
 
 .is-dropdown-submenu > li:hover {
   background: #dee1e8;
+}
+
+.dropdown .is-dropdown-submenu a {
+  color: black;
+}
+
+.dropdown.menu > li.is-dropdown-submenu-parent > a {
+  color: white;
 }
