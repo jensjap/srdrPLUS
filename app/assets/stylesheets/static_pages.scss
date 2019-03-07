@@ -4,6 +4,10 @@
 
 @import 'settings';
 
+.blog p {
+  font-size: 1.1em;
+}
+
 .elicit-registration {
   @include breakpoint(small only) {
     a.button {
