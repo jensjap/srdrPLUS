@@ -69,6 +69,16 @@ en:
         text:
           save: 'Update value'
   shared:
+    topbar_nav_1:
+      contact: Our Team
+      cite: How to Cite
+      usage: Usage Policy
+      help: Get Help
+    topbar_nav_2:
+      contact: Our Team
+      cite: How to Cite
+      usage: Usage Policy
+      help: Get Help
     signed_in_links:
       members_and_roles: Member(s) & Role(s)
       compare_extractions: Compare Extractions
