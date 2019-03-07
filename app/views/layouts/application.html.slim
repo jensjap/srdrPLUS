@@ -34,12 +34,8 @@ html class='no-js' lang='en'
 
           .content
             .breadcrumbs = render_breadcrumbs tag: :li, separator: ''
-
             == yield
-
             = render 'shared/scroll_top_wrapper'
 
     iframe src="/ahrq_footer.html" text="AHRQ Footer" title="AHRQ Footer" height="350" width="100%" frameborder="0" scrolling="no" seemless
       p Browser does not support iframes. Please update your browser to for a better viewing experience.
-
-= cookies[:layout_style]
