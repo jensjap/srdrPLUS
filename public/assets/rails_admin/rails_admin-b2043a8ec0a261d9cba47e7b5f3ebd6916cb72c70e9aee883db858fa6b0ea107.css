@@ -206,15 +206,10 @@
 .ui-widget-header {
   background: #ededed url(/assets/rails_admin/aristo/images/bg_fallback-bad53cee26694a42bdba717337e2de9f997ebf3ded300b8c3ff48ac5192c1903.png) 0 0 repeat-x;
   /* Old browsers */
-  background: -moz-linear-gradient(top, #ededed 0%, #c4c4c4 100%);
   /* FF3.6+ */
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #ededed), color-stop(100%, #c4c4c4));
   /* Chrome,Safari4+ */
-  background: -webkit-linear-gradient(top, #ededed 0%, #c4c4c4 100%);
   /* Chrome10+,Safari5.1+ */
-  background: -o-linear-gradient(top, #ededed 0%, #c4c4c4 100%);
   /* Opera11.10+ */
-  background: -ms-linear-gradient(top, #ededed 0%, #c4c4c4 100%);
   /* IE10+ */
   background: linear-gradient(to bottom, #ededed 0%, #c4c4c4 100%);
   /* W3C */
@@ -238,20 +233,13 @@
 .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
   background: #ededed url(/assets/rails_admin/aristo/images/bg_fallback-bad53cee26694a42bdba717337e2de9f997ebf3ded300b8c3ff48ac5192c1903.png) 0 0 repeat-x;
   /* Old browsers */
-  background: -moz-linear-gradient(top, #ededed 0%, #c4c4c4 100%);
   /* FF3.6+ */
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #ededed), color-stop(100%, #c4c4c4));
   /* Chrome,Safari4+ */
-  background: -webkit-linear-gradient(top, #ededed 0%, #c4c4c4 100%);
   /* Chrome10+,Safari5.1+ */
-  background: -o-linear-gradient(top, #ededed 0%, #c4c4c4 100%);
   /* Opera11.10+ */
-  background: -ms-linear-gradient(top, #ededed 0%, #c4c4c4 100%);
   /* IE10+ */
   background: linear-gradient(to bottom, #ededed 0%, #c4c4c4 100%);
   /* W3C */
-  -webkit-box-shadow: 0 1px 0 rgba(255, 255, 255, 0.6) inset;
-  -moz-box-shadow: 0 1px 0 rgba(255, 255, 255, 0.6) inset;
   box-shadow: 0 1px 0 rgba(255, 255, 255, 0.6) inset;
 }
 
@@ -281,20 +269,13 @@
   border: 1px solid #7096ab;
   background: #ededed url(/assets/rails_admin/aristo/images/bg_fallback-bad53cee26694a42bdba717337e2de9f997ebf3ded300b8c3ff48ac5192c1903.png) 0 -50px repeat-x;
   /* Old browsers */
-  background: -moz-linear-gradient(top, #b9e0f5 0%, #92bdd6 100%);
   /* FF3.6+ */
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #b9e0f5), color-stop(100%, #92bdd6));
   /* Chrome,Safari4+ */
-  background: -webkit-linear-gradient(top, #b9e0f5 0%, #92bdd6 100%);
   /* Chrome10+,Safari5.1+ */
-  background: -o-linear-gradient(top, #b9e0f5 0%, #92bdd6 100%);
   /* Opera11.10+ */
-  background: -ms-linear-gradient(top, #b9e0f5 0%, #92bdd6 100%);
   /* IE10+ */
   background: linear-gradient(to bottom, #b9e0f5 0%, #92bdd6 100%);
   /* W3C */
-  -webkit-box-shadow: none;
-  -moz-box-shadow: none;
   box-shadow: none;
 }
 
@@ -316,8 +297,6 @@
   border: 1px solid #d2dbf4;
   background: #f4f8fd;
   color: #0d2054;
-  -moz-border-radius: 0 !important;
-  -webkit-border-radius: 0 !important;
   border-radius: 0 !important;
 }
 
@@ -331,8 +310,6 @@
   border: 1px solid #e2d0d0;
   background: #fcf0f0;
   color: #280b0b;
-  -moz-border-radius: 0 !important;
-  -webkit-border-radius: 0 !important;
   border-radius: 0 !important;
 }
 
@@ -1292,76 +1269,50 @@
 /* Corner radius */
 /* line 318, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/aristo/jquery-ui-1.8.7.custom.scss */
 .ui-corner-tl {
-  -moz-border-radius-topleft: 3px;
-  -webkit-border-top-left-radius: 3px;
   border-top-left-radius: 3px;
 }
 
 /* line 319, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/aristo/jquery-ui-1.8.7.custom.scss */
 .ui-corner-tr {
-  -moz-border-radius-topright: 3px;
-  -webkit-border-top-right-radius: 3px;
   border-top-right-radius: 3px;
 }
 
 /* line 320, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/aristo/jquery-ui-1.8.7.custom.scss */
 .ui-corner-bl {
-  -moz-border-radius-bottomleft: 3px;
-  -webkit-border-bottom-left-radius: 3px;
   border-bottom-left-radius: 3px;
 }
 
 /* line 321, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/aristo/jquery-ui-1.8.7.custom.scss */
 .ui-corner-br {
-  -moz-border-radius-bottomright: 3px;
-  -webkit-border-bottom-right-radius: 3px;
   border-bottom-right-radius: 3px;
 }
 
 /* line 322, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/aristo/jquery-ui-1.8.7.custom.scss */
 .ui-corner-top {
-  -moz-border-radius-topleft: 3px;
-  -webkit-border-top-left-radius: 3px;
   border-top-left-radius: 3px;
-  -moz-border-radius-topright: 3px;
-  -webkit-border-top-right-radius: 3px;
   border-top-right-radius: 3px;
 }
 
 /* line 323, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/aristo/jquery-ui-1.8.7.custom.scss */
 .ui-corner-bottom {
-  -moz-border-radius-bottomleft: 3px;
-  -webkit-border-bottom-left-radius: 3px;
   border-bottom-left-radius: 3px;
-  -moz-border-radius-bottomright: 3px;
-  -webkit-border-bottom-right-radius: 3px;
   border-bottom-right-radius: 3px;
 }
 
 /* line 324, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/aristo/jquery-ui-1.8.7.custom.scss */
 .ui-corner-right {
-  -moz-border-radius-topright: 3px;
-  -webkit-border-top-right-radius: 3px;
   border-top-right-radius: 3px;
-  -moz-border-radius-bottomright: 3px;
-  -webkit-border-bottom-right-radius: 3px;
   border-bottom-right-radius: 3px;
 }
 
 /* line 325, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/aristo/jquery-ui-1.8.7.custom.scss */
 .ui-corner-left {
-  -moz-border-radius-topleft: 3px;
-  -webkit-border-top-left-radius: 3px;
   border-top-left-radius: 3px;
-  -moz-border-radius-bottomleft: 3px;
-  -webkit-border-bottom-left-radius: 3px;
   border-bottom-left-radius: 3px;
 }
 
 /* line 326, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/aristo/jquery-ui-1.8.7.custom.scss */
 .ui-corner-all {
-  -moz-border-radius: 3px;
-  -webkit-border-radius: 3px;
   border-radius: 3px;
 }
 
@@ -1380,8 +1331,6 @@
   background: #000000;
   opacity: .30;
   filter: Alpha(Opacity=30);
-  -moz-border-radius: 8px;
-  -webkit-border-radius: 8px;
   border-radius: 8px;
 }
 
@@ -1525,8 +1474,6 @@
 
 /* line 371, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/aristo/jquery-ui-1.8.7.custom.scss */
 .ui-accordion .ui-accordion-header, .ui-accordion .ui-accordion-content {
-  -moz-border-radius: 0;
-  -webkit-border-radius: 0;
   border-radius: 0;
 }
 
@@ -1593,11 +1540,7 @@
   position: absolute;
   cursor: default;
   z-index: 1051 !important;
-  -moz-border-radius: 0;
-  -webkit-border-radius: 0;
   border-radius: 0;
-  -moz-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.3);
-  -webkit-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.3);
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.3);
 }
 
@@ -1659,8 +1602,6 @@
   color: #FFFFFF;
   text-shadow: 0px 1px 1px #234386;
   border-color: #466086;
-  -moz-border-radius: 0;
-  -webkit-border-radius: 0;
   border-radius: 0;
 }
 
@@ -1686,7 +1627,8 @@
   overflow: visible;
   -webkit-user-select: none;
   -moz-user-select: none;
-  user-select: none;
+  -ms-user-select: none;
+      user-select: none;
 }
 
 /* the overflow property removes extra width in IE */
@@ -1723,8 +1665,6 @@ button.ui-button-icons-only {
 /*states*/
 /* line 469, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/aristo/jquery-ui-1.8.7.custom.scss */
 .ui-button.ui-state-hover {
-  -moz-box-shadow: 0 0 8px rgba(0, 0, 0, 0.15), 0 1px 0 rgba(255, 255, 255, 0.8) inset;
-  -webkit-box-shadow: 0 0 8px rgba(0, 0, 0, 0.15), 0 1px 0 rgba(255, 255, 255, 0.8) inset;
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.15), 0 1px 0 rgba(255, 255, 255, 0.8) inset;
 }
 
@@ -1735,20 +1675,13 @@ button.ui-button-icons-only {
   border-color: #7096ab;
   background: #ededed url(/assets/rails_admin/aristo/images/bg_fallback-bad53cee26694a42bdba717337e2de9f997ebf3ded300b8c3ff48ac5192c1903.png) 0 -50px repeat-x;
   /* Old browsers */
-  background: -moz-linear-gradient(top, #b9e0f5 0%, #92bdd6 100%);
   /* FF3.6+ */
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #b9e0f5), color-stop(100%, #92bdd6));
   /* Chrome,Safari4+ */
-  background: -webkit-linear-gradient(top, #b9e0f5 0%, #92bdd6 100%);
   /* Chrome10+,Safari5.1+ */
-  background: -o-linear-gradient(top, #b9e0f5 0%, #92bdd6 100%);
   /* Opera11.10+ */
-  background: -ms-linear-gradient(top, #b9e0f5 0%, #92bdd6 100%);
   /* IE10+ */
   background: linear-gradient(to bottom, #b9e0f5 0%, #92bdd6 100%);
   /* W3C */
-  -moz-box-shadow: 0 0 8px rgba(0, 0, 0, 0.15), 0 1px 0 rgba(255, 255, 255, 0.8) inset;
-  -webkit-box-shadow: 0 0 8px rgba(0, 0, 0, 0.15), 0 1px 0 rgba(255, 255, 255, 0.8) inset;
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.15), 0 1px 0 rgba(255, 255, 255, 0.8) inset;
 }
 
@@ -1864,20 +1797,13 @@ input.ui-button::-moz-focus-inner {
 .ui-buttonset .ui-button.ui-state-active {
   background: #ededed url(/assets/rails_admin/aristo/images/bg_fallback-bad53cee26694a42bdba717337e2de9f997ebf3ded300b8c3ff48ac5192c1903.png) 0 -50px repeat-x;
   /* Old browsers */
-  background: -moz-linear-gradient(top, #b9e0f5 0%, #92bdd6 100%);
   /* FF3.6+ */
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #b9e0f5), color-stop(100%, #92bdd6));
   /* Chrome,Safari4+ */
-  background: -webkit-linear-gradient(top, #b9e0f5 0%, #92bdd6 100%);
   /* Chrome10+,Safari5.1+ */
-  background: -o-linear-gradient(top, #b9e0f5 0%, #92bdd6 100%);
   /* Opera11.10+ */
-  background: -ms-linear-gradient(top, #b9e0f5 0%, #92bdd6 100%);
   /* IE10+ */
   background: linear-gradient(to bottom, #b9e0f5 0%, #92bdd6 100%);
   /* W3C */
-  -webkit-box-shadow: none;
-  -moz-box-shadow: none;
   box-shadow: none;
 }
 
@@ -1918,8 +1844,6 @@ button.ui-button::-moz-focus-inner {
   position: relative;
   border: none;
   border-bottom: 1px solid #979797;
-  -moz-border-radius: 0;
-  -webkit-border-radius: 0;
   border-radius: 0;
 }
 
@@ -2022,8 +1946,6 @@ button.ui-button::-moz-focus-inner {
 
 /* line 574, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/aristo/jquery-ui-1.8.7.custom.scss */
 .ui-slider {
-  -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5) inset;
-  -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5) inset;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5) inset;
 }
 
@@ -2037,8 +1959,6 @@ button.ui-button::-moz-focus-inner {
   cursor: default;
   border: none;
   outline: none;
-  -moz-box-shadow: none;
-  -webkit-box-shadow: none;
   box-shadow: none;
 }
 
@@ -2060,8 +1980,6 @@ button.ui-button::-moz-focus-inner {
 
 /* line 578, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/aristo/jquery-ui-1.8.7.custom.scss */
 .ui-slider .ui-slider-range {
-  -moz-box-shadow: 0 1px 2px rgba(17, 35, 45, 0.6) inset;
-  -webkit-box-shadow: 0 1px 2px rgba(17, 35, 45, 0.6) inset;
   box-shadow: 0 1px 2px rgba(17, 35, 45, 0.6) inset;
 }
 
@@ -2149,8 +2067,6 @@ button.ui-button::-moz-focus-inner {
 
 /* line 602, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/aristo/jquery-ui-1.8.7.custom.scss */
 .ui-tabs .ui-tabs-nav {
-  -moz-border-radius: 0;
-  -webkit-border-radius: 0;
   border-radius: 0;
 }
 
@@ -2207,8 +2123,6 @@ button.ui-button::-moz-focus-inner {
 /* line 613, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/aristo/jquery-ui-1.8.7.custom.scss */
 .ui-tabs .ui-tabs-panel {
   background: #FFF;
-  -moz-border-radius: 0;
-  -webkit-border-radius: 0;
   border-radius: 0;
 }
 
@@ -2236,8 +2150,6 @@ button.ui-button::-moz-focus-inner {
 
 /* line 629, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/aristo/jquery-ui-1.8.7.custom.scss */
 .ui-datepicker {
-  -moz-box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-  -webkit-box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
 }
 
@@ -2247,8 +2159,6 @@ button.ui-button::-moz-focus-inner {
   padding: .35em 0;
   border: none;
   border-bottom: 1px solid #B6B6B6;
-  -moz-border-radius: 0;
-  -webkit-border-radius: 0;
   border-radius: 0;
 }
 
@@ -2528,7 +2438,8 @@ button.ui-button::-moz-focus-inner {
   /*must have*/
   z-index: -1;
   /*must have*/
-  filter: mask();
+  -webkit-filter: mask();
+          filter: mask();
   /*must have*/
   top: -4px;
   /*must have*/
@@ -2567,13 +2478,9 @@ button.ui-button::-moz-focus-inner {
 /* line 708, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/aristo/jquery-ui-1.8.7.custom.scss */
 .ui-form textarea, .ui-form input:not([type="submit"]):not([type="button"]):not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]) {
   padding: 3px;
-  -webkit-border-radius: 2px;
-  -moz-border-radius: 2px;
   border-radius: 2px;
   border: 1px solid #cecece;
   outline: none;
-  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) inset, 0 1px 0 rgba(255, 255, 255, 0.2);
-  -moz-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) inset, 0 1px 0 rgba(255, 255, 255, 0.2);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) inset, 0 1px 0 rgba(255, 255, 255, 0.2);
   -webkit-transition: all 0.25s ease-in-out;
   -moz-transition: all 0.25 ease-in-out;
@@ -2583,16 +2490,12 @@ button.ui-button::-moz-focus-inner {
 /* line 722, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/aristo/jquery-ui-1.8.7.custom.scss */
 .ui-form textarea:hover, .ui-form input:not([type="submit"]):not([type="button"]):not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]):hover {
   border: 1px solid #bdbdbd;
-  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2) inset, 0 1px 0 rgba(255, 255, 255, 0.2);
-  -moz-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2) inset, 0 1px 0 rgba(255, 255, 255, 0.2);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2) inset, 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 /* line 728, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/aristo/jquery-ui-1.8.7.custom.scss */
 .ui-form textarea:focus, .ui-form input:not([type="submit"]):not([type="button"]):not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]):focus {
   border: 1px solid #95bdd4;
-  -webkit-box-shadow: 0 2px 3px rgba(161, 202, 226, 0.5) inset, 0 1px 0 rgba(255, 255, 255, 0.2);
-  -moz-box-shadow: 0 2px 3px rgba(161, 202, 226, 0.5) inset, 0 1px 0 rgba(255, 255, 255, 0.2);
   box-shadow: 0 2px 3px rgba(161, 202, 226, 0.5) inset, 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
@@ -3437,7 +3340,6 @@ iframe.wysihtml5-sandbox, .wysihtml5-editor {
 .fa-rotate-90 {
   -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=1)";
   -webkit-transform: rotate(90deg);
-  -ms-transform: rotate(90deg);
   transform: rotate(90deg);
 }
 
@@ -3445,7 +3347,6 @@ iframe.wysihtml5-sandbox, .wysihtml5-editor {
 .fa-rotate-180 {
   -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=2)";
   -webkit-transform: rotate(180deg);
-  -ms-transform: rotate(180deg);
   transform: rotate(180deg);
 }
 
@@ -3453,7 +3354,6 @@ iframe.wysihtml5-sandbox, .wysihtml5-editor {
 .fa-rotate-270 {
   -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=3)";
   -webkit-transform: rotate(270deg);
-  -ms-transform: rotate(270deg);
   transform: rotate(270deg);
 }
 
@@ -3461,7 +3361,6 @@ iframe.wysihtml5-sandbox, .wysihtml5-editor {
 .fa-flip-horizontal {
   -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=0, mirror=1)";
   -webkit-transform: scale(-1, 1);
-  -ms-transform: scale(-1, 1);
   transform: scale(-1, 1);
 }
 
@@ -3469,7 +3368,6 @@ iframe.wysihtml5-sandbox, .wysihtml5-editor {
 .fa-flip-vertical {
   -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=2, mirror=1)";
   -webkit-transform: scale(1, -1);
-  -ms-transform: scale(1, -1);
   transform: scale(1, -1);
 }
 
@@ -3479,7 +3377,8 @@ iframe.wysihtml5-sandbox, .wysihtml5-editor {
 :root .fa-rotate-270,
 :root .fa-flip-horizontal,
 :root .fa-flip-vertical {
-  filter: none;
+  -webkit-filter: none;
+          filter: none;
 }
 
 /* line 162, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/font-awesome-rails-4.7.0.4/app/assets/stylesheets/font-awesome.css.erb */
@@ -7168,7 +7067,6 @@ figure {
 
 /* line 209, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/_normalize.scss */
 hr {
-  -moz-box-sizing: content-box;
   box-sizing: content-box;
   height: 0;
 }
@@ -7252,8 +7150,6 @@ input[type="number"]::-webkit-outer-spin-button {
 /* line 355, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/_normalize.scss */
 input[type="search"] {
   -webkit-appearance: textfield;
-  -moz-box-sizing: content-box;
-  -webkit-box-sizing: content-box;
   box-sizing: content-box;
 }
 
@@ -7300,30 +7196,26 @@ th {
 
 /* line 11, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/_scaffolding.scss */
 * {
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
   box-sizing: border-box;
 }
 
 /* line 14, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/_scaffolding.scss */
 *:before,
 *:after {
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
   box-sizing: border-box;
 }
 
 /* line 22, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/_scaffolding.scss */
 html {
   font-size: 10px;
-  -webkit-tap-highlight-color: transparent;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
 /* line 27, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/_scaffolding.scss */
 body {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
-  line-height: 1.42857;
+  line-height: 1.428571429;
   color: #333333;
   background-color: #fff;
 }
@@ -7381,12 +7273,10 @@ img {
 /* line 93, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/_scaffolding.scss */
 .img-thumbnail {
   padding: 4px;
-  line-height: 1.42857;
+  line-height: 1.428571429;
   background-color: #fff;
   border: 1px solid #ddd;
   border-radius: 4px;
-  -webkit-transition: all 0.2s ease-in-out;
-  -o-transition: all 0.2s ease-in-out;
   transition: all 0.2s ease-in-out;
   display: inline-block;
   width: 100% \9;
@@ -7511,12 +7401,12 @@ hr {
 
 /* line 35, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
 .col-xs-1 {
-  width: 8.33333%;
+  width: 8.3333333333%;
 }
 
 /* line 35, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
 .col-xs-2 {
-  width: 16.66667%;
+  width: 16.6666666667%;
 }
 
 /* line 35, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
@@ -7526,12 +7416,12 @@ hr {
 
 /* line 35, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
 .col-xs-4 {
-  width: 33.33333%;
+  width: 33.3333333333%;
 }
 
 /* line 35, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
 .col-xs-5 {
-  width: 41.66667%;
+  width: 41.6666666667%;
 }
 
 /* line 35, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
@@ -7541,12 +7431,12 @@ hr {
 
 /* line 35, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
 .col-xs-7 {
-  width: 58.33333%;
+  width: 58.3333333333%;
 }
 
 /* line 35, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
 .col-xs-8 {
-  width: 66.66667%;
+  width: 66.6666666667%;
 }
 
 /* line 35, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
@@ -7556,12 +7446,12 @@ hr {
 
 /* line 35, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
 .col-xs-10 {
-  width: 83.33333%;
+  width: 83.3333333333%;
 }
 
 /* line 35, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
 .col-xs-11 {
-  width: 91.66667%;
+  width: 91.6666666667%;
 }
 
 /* line 35, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
@@ -7576,12 +7466,12 @@ hr {
 
 /* line 50, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
 .col-xs-pull-1 {
-  right: 8.33333%;
+  right: 8.3333333333%;
 }
 
 /* line 50, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
 .col-xs-pull-2 {
-  right: 16.66667%;
+  right: 16.6666666667%;
 }
 
 /* line 50, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
@@ -7591,12 +7481,12 @@ hr {
 
 /* line 50, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
 .col-xs-pull-4 {
-  right: 33.33333%;
+  right: 33.3333333333%;
 }
 
 /* line 50, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
 .col-xs-pull-5 {
-  right: 41.66667%;
+  right: 41.6666666667%;
 }
 
 /* line 50, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
@@ -7606,12 +7496,12 @@ hr {
 
 /* line 50, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
 .col-xs-pull-7 {
-  right: 58.33333%;
+  right: 58.3333333333%;
 }
 
 /* line 50, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
 .col-xs-pull-8 {
-  right: 66.66667%;
+  right: 66.6666666667%;
 }
 
 /* line 50, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
@@ -7621,12 +7511,12 @@ hr {
 
 /* line 50, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
 .col-xs-pull-10 {
-  right: 83.33333%;
+  right: 83.3333333333%;
 }
 
 /* line 50, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
 .col-xs-pull-11 {
-  right: 91.66667%;
+  right: 91.6666666667%;
 }
 
 /* line 50, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
@@ -7641,12 +7531,12 @@ hr {
 
 /* line 40, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
 .col-xs-push-1 {
-  left: 8.33333%;
+  left: 8.3333333333%;
 }
 
 /* line 40, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
 .col-xs-push-2 {
-  left: 16.66667%;
+  left: 16.6666666667%;
 }
 
 /* line 40, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
@@ -7656,12 +7546,12 @@ hr {
 
 /* line 40, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
 .col-xs-push-4 {
-  left: 33.33333%;
+  left: 33.3333333333%;
 }
 
 /* line 40, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
 .col-xs-push-5 {
-  left: 41.66667%;
+  left: 41.6666666667%;
 }
 
 /* line 40, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
@@ -7671,12 +7561,12 @@ hr {
 
 /* line 40, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
 .col-xs-push-7 {
-  left: 58.33333%;
+  left: 58.3333333333%;
 }
 
 /* line 40, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
 .col-xs-push-8 {
-  left: 66.66667%;
+  left: 66.6666666667%;
 }
 
 /* line 40, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
@@ -7686,12 +7576,12 @@ hr {
 
 /* line 40, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
 .col-xs-push-10 {
-  left: 83.33333%;
+  left: 83.3333333333%;
 }
 
 /* line 40, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
 .col-xs-push-11 {
-  left: 91.66667%;
+  left: 91.6666666667%;
 }
 
 /* line 40, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
@@ -7706,12 +7596,12 @@ hr {
 
 /* line 60, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
 .col-xs-offset-1 {
-  margin-left: 8.33333%;
+  margin-left: 8.3333333333%;
 }
 
 /* line 60, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
 .col-xs-offset-2 {
-  margin-left: 16.66667%;
+  margin-left: 16.6666666667%;
 }
 
 /* line 60, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
@@ -7721,12 +7611,12 @@ hr {
 
 /* line 60, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
 .col-xs-offset-4 {
-  margin-left: 33.33333%;
+  margin-left: 33.3333333333%;
 }
 
 /* line 60, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
 .col-xs-offset-5 {
-  margin-left: 41.66667%;
+  margin-left: 41.6666666667%;
 }
 
 /* line 60, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
@@ -7736,12 +7626,12 @@ hr {
 
 /* line 60, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
 .col-xs-offset-7 {
-  margin-left: 58.33333%;
+  margin-left: 58.3333333333%;
 }
 
 /* line 60, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
 .col-xs-offset-8 {
-  margin-left: 66.66667%;
+  margin-left: 66.6666666667%;
 }
 
 /* line 60, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
@@ -7751,12 +7641,12 @@ hr {
 
 /* line 60, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
 .col-xs-offset-10 {
-  margin-left: 83.33333%;
+  margin-left: 83.3333333333%;
 }
 
 /* line 60, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
 .col-xs-offset-11 {
-  margin-left: 91.66667%;
+  margin-left: 91.6666666667%;
 }
 
 /* line 60, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
@@ -7772,12 +7662,12 @@ hr {
 
   /* line 35, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-sm-1 {
-    width: 8.33333%;
+    width: 8.3333333333%;
   }
 
   /* line 35, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-sm-2 {
-    width: 16.66667%;
+    width: 16.6666666667%;
   }
 
   /* line 35, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
@@ -7787,12 +7677,12 @@ hr {
 
   /* line 35, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-sm-4 {
-    width: 33.33333%;
+    width: 33.3333333333%;
   }
 
   /* line 35, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-sm-5 {
-    width: 41.66667%;
+    width: 41.6666666667%;
   }
 
   /* line 35, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
@@ -7802,12 +7692,12 @@ hr {
 
   /* line 35, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-sm-7 {
-    width: 58.33333%;
+    width: 58.3333333333%;
   }
 
   /* line 35, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-sm-8 {
-    width: 66.66667%;
+    width: 66.6666666667%;
   }
 
   /* line 35, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
@@ -7817,12 +7707,12 @@ hr {
 
   /* line 35, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-sm-10 {
-    width: 83.33333%;
+    width: 83.3333333333%;
   }
 
   /* line 35, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-sm-11 {
-    width: 91.66667%;
+    width: 91.6666666667%;
   }
 
   /* line 35, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
@@ -7837,12 +7727,12 @@ hr {
 
   /* line 50, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-sm-pull-1 {
-    right: 8.33333%;
+    right: 8.3333333333%;
   }
 
   /* line 50, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-sm-pull-2 {
-    right: 16.66667%;
+    right: 16.6666666667%;
   }
 
   /* line 50, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
@@ -7852,12 +7742,12 @@ hr {
 
   /* line 50, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-sm-pull-4 {
-    right: 33.33333%;
+    right: 33.3333333333%;
   }
 
   /* line 50, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-sm-pull-5 {
-    right: 41.66667%;
+    right: 41.6666666667%;
   }
 
   /* line 50, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
@@ -7867,12 +7757,12 @@ hr {
 
   /* line 50, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-sm-pull-7 {
-    right: 58.33333%;
+    right: 58.3333333333%;
   }
 
   /* line 50, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-sm-pull-8 {
-    right: 66.66667%;
+    right: 66.6666666667%;
   }
 
   /* line 50, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
@@ -7882,12 +7772,12 @@ hr {
 
   /* line 50, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-sm-pull-10 {
-    right: 83.33333%;
+    right: 83.3333333333%;
   }
 
   /* line 50, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-sm-pull-11 {
-    right: 91.66667%;
+    right: 91.6666666667%;
   }
 
   /* line 50, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
@@ -7902,12 +7792,12 @@ hr {
 
   /* line 40, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-sm-push-1 {
-    left: 8.33333%;
+    left: 8.3333333333%;
   }
 
   /* line 40, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-sm-push-2 {
-    left: 16.66667%;
+    left: 16.6666666667%;
   }
 
   /* line 40, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
@@ -7917,12 +7807,12 @@ hr {
 
   /* line 40, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-sm-push-4 {
-    left: 33.33333%;
+    left: 33.3333333333%;
   }
 
   /* line 40, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-sm-push-5 {
-    left: 41.66667%;
+    left: 41.6666666667%;
   }
 
   /* line 40, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
@@ -7932,12 +7822,12 @@ hr {
 
   /* line 40, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-sm-push-7 {
-    left: 58.33333%;
+    left: 58.3333333333%;
   }
 
   /* line 40, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-sm-push-8 {
-    left: 66.66667%;
+    left: 66.6666666667%;
   }
 
   /* line 40, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
@@ -7947,12 +7837,12 @@ hr {
 
   /* line 40, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-sm-push-10 {
-    left: 83.33333%;
+    left: 83.3333333333%;
   }
 
   /* line 40, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-sm-push-11 {
-    left: 91.66667%;
+    left: 91.6666666667%;
   }
 
   /* line 40, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
@@ -7967,12 +7857,12 @@ hr {
 
   /* line 60, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-sm-offset-1 {
-    margin-left: 8.33333%;
+    margin-left: 8.3333333333%;
   }
 
   /* line 60, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-sm-offset-2 {
-    margin-left: 16.66667%;
+    margin-left: 16.6666666667%;
   }
 
   /* line 60, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
@@ -7982,12 +7872,12 @@ hr {
 
   /* line 60, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-sm-offset-4 {
-    margin-left: 33.33333%;
+    margin-left: 33.3333333333%;
   }
 
   /* line 60, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-sm-offset-5 {
-    margin-left: 41.66667%;
+    margin-left: 41.6666666667%;
   }
 
   /* line 60, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
@@ -7997,12 +7887,12 @@ hr {
 
   /* line 60, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-sm-offset-7 {
-    margin-left: 58.33333%;
+    margin-left: 58.3333333333%;
   }
 
   /* line 60, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-sm-offset-8 {
-    margin-left: 66.66667%;
+    margin-left: 66.6666666667%;
   }
 
   /* line 60, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
@@ -8012,12 +7902,12 @@ hr {
 
   /* line 60, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-sm-offset-10 {
-    margin-left: 83.33333%;
+    margin-left: 83.3333333333%;
   }
 
   /* line 60, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-sm-offset-11 {
-    margin-left: 91.66667%;
+    margin-left: 91.6666666667%;
   }
 
   /* line 60, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
@@ -8033,12 +7923,12 @@ hr {
 
   /* line 35, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-md-1 {
-    width: 8.33333%;
+    width: 8.3333333333%;
   }
 
   /* line 35, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-md-2 {
-    width: 16.66667%;
+    width: 16.6666666667%;
   }
 
   /* line 35, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
@@ -8048,12 +7938,12 @@ hr {
 
   /* line 35, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-md-4 {
-    width: 33.33333%;
+    width: 33.3333333333%;
   }
 
   /* line 35, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-md-5 {
-    width: 41.66667%;
+    width: 41.6666666667%;
   }
 
   /* line 35, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
@@ -8063,12 +7953,12 @@ hr {
 
   /* line 35, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-md-7 {
-    width: 58.33333%;
+    width: 58.3333333333%;
   }
 
   /* line 35, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-md-8 {
-    width: 66.66667%;
+    width: 66.6666666667%;
   }
 
   /* line 35, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
@@ -8078,12 +7968,12 @@ hr {
 
   /* line 35, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-md-10 {
-    width: 83.33333%;
+    width: 83.3333333333%;
   }
 
   /* line 35, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-md-11 {
-    width: 91.66667%;
+    width: 91.6666666667%;
   }
 
   /* line 35, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
@@ -8098,12 +7988,12 @@ hr {
 
   /* line 50, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-md-pull-1 {
-    right: 8.33333%;
+    right: 8.3333333333%;
   }
 
   /* line 50, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-md-pull-2 {
-    right: 16.66667%;
+    right: 16.6666666667%;
   }
 
   /* line 50, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
@@ -8113,12 +8003,12 @@ hr {
 
   /* line 50, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-md-pull-4 {
-    right: 33.33333%;
+    right: 33.3333333333%;
   }
 
   /* line 50, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-md-pull-5 {
-    right: 41.66667%;
+    right: 41.6666666667%;
   }
 
   /* line 50, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
@@ -8128,12 +8018,12 @@ hr {
 
   /* line 50, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-md-pull-7 {
-    right: 58.33333%;
+    right: 58.3333333333%;
   }
 
   /* line 50, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-md-pull-8 {
-    right: 66.66667%;
+    right: 66.6666666667%;
   }
 
   /* line 50, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
@@ -8143,12 +8033,12 @@ hr {
 
   /* line 50, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-md-pull-10 {
-    right: 83.33333%;
+    right: 83.3333333333%;
   }
 
   /* line 50, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-md-pull-11 {
-    right: 91.66667%;
+    right: 91.6666666667%;
   }
 
   /* line 50, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
@@ -8163,12 +8053,12 @@ hr {
 
   /* line 40, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-md-push-1 {
-    left: 8.33333%;
+    left: 8.3333333333%;
   }
 
   /* line 40, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-md-push-2 {
-    left: 16.66667%;
+    left: 16.6666666667%;
   }
 
   /* line 40, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
@@ -8178,12 +8068,12 @@ hr {
 
   /* line 40, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-md-push-4 {
-    left: 33.33333%;
+    left: 33.3333333333%;
   }
 
   /* line 40, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-md-push-5 {
-    left: 41.66667%;
+    left: 41.6666666667%;
   }
 
   /* line 40, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
@@ -8193,12 +8083,12 @@ hr {
 
   /* line 40, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-md-push-7 {
-    left: 58.33333%;
+    left: 58.3333333333%;
   }
 
   /* line 40, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-md-push-8 {
-    left: 66.66667%;
+    left: 66.6666666667%;
   }
 
   /* line 40, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
@@ -8208,12 +8098,12 @@ hr {
 
   /* line 40, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-md-push-10 {
-    left: 83.33333%;
+    left: 83.3333333333%;
   }
 
   /* line 40, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-md-push-11 {
-    left: 91.66667%;
+    left: 91.6666666667%;
   }
 
   /* line 40, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
@@ -8228,12 +8118,12 @@ hr {
 
   /* line 60, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-md-offset-1 {
-    margin-left: 8.33333%;
+    margin-left: 8.3333333333%;
   }
 
   /* line 60, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-md-offset-2 {
-    margin-left: 16.66667%;
+    margin-left: 16.6666666667%;
   }
 
   /* line 60, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
@@ -8243,12 +8133,12 @@ hr {
 
   /* line 60, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-md-offset-4 {
-    margin-left: 33.33333%;
+    margin-left: 33.3333333333%;
   }
 
   /* line 60, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-md-offset-5 {
-    margin-left: 41.66667%;
+    margin-left: 41.6666666667%;
   }
 
   /* line 60, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
@@ -8258,12 +8148,12 @@ hr {
 
   /* line 60, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-md-offset-7 {
-    margin-left: 58.33333%;
+    margin-left: 58.3333333333%;
   }
 
   /* line 60, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-md-offset-8 {
-    margin-left: 66.66667%;
+    margin-left: 66.6666666667%;
   }
 
   /* line 60, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
@@ -8273,12 +8163,12 @@ hr {
 
   /* line 60, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-md-offset-10 {
-    margin-left: 83.33333%;
+    margin-left: 83.3333333333%;
   }
 
   /* line 60, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-md-offset-11 {
-    margin-left: 91.66667%;
+    margin-left: 91.6666666667%;
   }
 
   /* line 60, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
@@ -8294,12 +8184,12 @@ hr {
 
   /* line 35, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-lg-1 {
-    width: 8.33333%;
+    width: 8.3333333333%;
   }
 
   /* line 35, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-lg-2 {
-    width: 16.66667%;
+    width: 16.6666666667%;
   }
 
   /* line 35, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
@@ -8309,12 +8199,12 @@ hr {
 
   /* line 35, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-lg-4 {
-    width: 33.33333%;
+    width: 33.3333333333%;
   }
 
   /* line 35, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-lg-5 {
-    width: 41.66667%;
+    width: 41.6666666667%;
   }
 
   /* line 35, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
@@ -8324,12 +8214,12 @@ hr {
 
   /* line 35, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-lg-7 {
-    width: 58.33333%;
+    width: 58.3333333333%;
   }
 
   /* line 35, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-lg-8 {
-    width: 66.66667%;
+    width: 66.6666666667%;
   }
 
   /* line 35, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
@@ -8339,12 +8229,12 @@ hr {
 
   /* line 35, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-lg-10 {
-    width: 83.33333%;
+    width: 83.3333333333%;
   }
 
   /* line 35, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-lg-11 {
-    width: 91.66667%;
+    width: 91.6666666667%;
   }
 
   /* line 35, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
@@ -8359,12 +8249,12 @@ hr {
 
   /* line 50, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-lg-pull-1 {
-    right: 8.33333%;
+    right: 8.3333333333%;
   }
 
   /* line 50, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-lg-pull-2 {
-    right: 16.66667%;
+    right: 16.6666666667%;
   }
 
   /* line 50, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
@@ -8374,12 +8264,12 @@ hr {
 
   /* line 50, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-lg-pull-4 {
-    right: 33.33333%;
+    right: 33.3333333333%;
   }
 
   /* line 50, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-lg-pull-5 {
-    right: 41.66667%;
+    right: 41.6666666667%;
   }
 
   /* line 50, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
@@ -8389,12 +8279,12 @@ hr {
 
   /* line 50, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-lg-pull-7 {
-    right: 58.33333%;
+    right: 58.3333333333%;
   }
 
   /* line 50, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-lg-pull-8 {
-    right: 66.66667%;
+    right: 66.6666666667%;
   }
 
   /* line 50, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
@@ -8404,12 +8294,12 @@ hr {
 
   /* line 50, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-lg-pull-10 {
-    right: 83.33333%;
+    right: 83.3333333333%;
   }
 
   /* line 50, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-lg-pull-11 {
-    right: 91.66667%;
+    right: 91.6666666667%;
   }
 
   /* line 50, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
@@ -8424,12 +8314,12 @@ hr {
 
   /* line 40, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-lg-push-1 {
-    left: 8.33333%;
+    left: 8.3333333333%;
   }
 
   /* line 40, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-lg-push-2 {
-    left: 16.66667%;
+    left: 16.6666666667%;
   }
 
   /* line 40, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
@@ -8439,12 +8329,12 @@ hr {
 
   /* line 40, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-lg-push-4 {
-    left: 33.33333%;
+    left: 33.3333333333%;
   }
 
   /* line 40, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-lg-push-5 {
-    left: 41.66667%;
+    left: 41.6666666667%;
   }
 
   /* line 40, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
@@ -8454,12 +8344,12 @@ hr {
 
   /* line 40, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-lg-push-7 {
-    left: 58.33333%;
+    left: 58.3333333333%;
   }
 
   /* line 40, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-lg-push-8 {
-    left: 66.66667%;
+    left: 66.6666666667%;
   }
 
   /* line 40, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
@@ -8469,12 +8359,12 @@ hr {
 
   /* line 40, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-lg-push-10 {
-    left: 83.33333%;
+    left: 83.3333333333%;
   }
 
   /* line 40, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-lg-push-11 {
-    left: 91.66667%;
+    left: 91.6666666667%;
   }
 
   /* line 40, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
@@ -8489,12 +8379,12 @@ hr {
 
   /* line 60, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-lg-offset-1 {
-    margin-left: 8.33333%;
+    margin-left: 8.3333333333%;
   }
 
   /* line 60, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-lg-offset-2 {
-    margin-left: 16.66667%;
+    margin-left: 16.6666666667%;
   }
 
   /* line 60, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
@@ -8504,12 +8394,12 @@ hr {
 
   /* line 60, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-lg-offset-4 {
-    margin-left: 33.33333%;
+    margin-left: 33.3333333333%;
   }
 
   /* line 60, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-lg-offset-5 {
-    margin-left: 41.66667%;
+    margin-left: 41.6666666667%;
   }
 
   /* line 60, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
@@ -8519,12 +8409,12 @@ hr {
 
   /* line 60, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-lg-offset-7 {
-    margin-left: 58.33333%;
+    margin-left: 58.3333333333%;
   }
 
   /* line 60, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-lg-offset-8 {
-    margin-left: 66.66667%;
+    margin-left: 66.6666666667%;
   }
 
   /* line 60, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
@@ -8534,12 +8424,12 @@ hr {
 
   /* line 60, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-lg-offset-10 {
-    margin-left: 83.33333%;
+    margin-left: 83.3333333333%;
   }
 
   /* line 60, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
   .col-lg-offset-11 {
-    margin-left: 91.66667%;
+    margin-left: 91.6666666667%;
   }
 
   /* line 60, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_grid-framework.scss */
@@ -8879,7 +8769,7 @@ dl {
 /* line 189, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/_type.scss */
 dt,
 dd {
-  line-height: 1.42857;
+  line-height: 1.428571429;
 }
 
 /* line 193, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/_type.scss */
@@ -8950,7 +8840,7 @@ blockquote small,
 blockquote .small {
   display: block;
   font-size: 80%;
-  line-height: 1.42857;
+  line-height: 1.428571429;
   color: #777777;
 }
 /* line 265, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/_type.scss */
@@ -8998,7 +8888,7 @@ blockquote:after {
 address {
   margin-bottom: 20px;
   font-style: normal;
-  line-height: 1.42857;
+  line-height: 1.428571429;
 }
 
 /* line 10, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/_forms.scss */
@@ -9032,8 +8922,6 @@ label {
 
 /* line 47, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/_forms.scss */
 input[type="search"] {
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
   box-sizing: border-box;
 }
 
@@ -9076,7 +8964,7 @@ output {
   display: block;
   padding-top: 7px;
   font-size: 14px;
-  line-height: 1.42857;
+  line-height: 1.428571429;
   color: #555555;
 }
 
@@ -9087,23 +8975,19 @@ output {
   height: 34px;
   padding: 6px 12px;
   font-size: 14px;
-  line-height: 1.42857;
+  line-height: 1.428571429;
   color: #555555;
   background-color: #fff;
   background-image: none;
   border: 1px solid #ccc;
   border-radius: 4px;
-  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-  -webkit-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
-  -o-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
   transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
 }
 /* line 53, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_forms.scss */
 .form-control:focus {
   border-color: #66afe9;
   outline: 0;
-  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);
 }
 /* line 102, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_vendor-prefixes.scss */
@@ -9142,7 +9026,7 @@ input[type="time"],
 input[type="datetime-local"],
 input[type="month"] {
   line-height: 34px;
-  line-height: 1.42857 \0;
+  line-height: 1.428571429 \0 ;
 }
 /* line 186, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/_forms.scss */
 input[type="date"].input-sm, .form-horizontal .form-group-sm input[type="date"].form-control, .input-group-sm > input[type="date"].form-control,
@@ -9247,22 +9131,22 @@ input[type="month"].input-lg,
 /* line 260, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/_forms.scss */
 input[type="radio"][disabled], input[type="radio"].disabled, fieldset[disabled] input[type="radio"],
 input[type="checkbox"][disabled],
-input[type="checkbox"].disabled, fieldset[disabled]
-input[type="checkbox"] {
+input[type="checkbox"].disabled,
+fieldset[disabled] input[type="checkbox"] {
   cursor: not-allowed;
 }
 
 /* line 269, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/_forms.scss */
 .radio-inline.disabled, fieldset[disabled] .radio-inline,
-.checkbox-inline.disabled, fieldset[disabled]
-.checkbox-inline {
+.checkbox-inline.disabled,
+fieldset[disabled] .checkbox-inline {
   cursor: not-allowed;
 }
 
 /* line 279, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/_forms.scss */
 .radio.disabled label, fieldset[disabled] .radio label,
-.checkbox.disabled label, fieldset[disabled]
-.checkbox label {
+.checkbox.disabled label,
+fieldset[disabled] .checkbox label {
   cursor: not-allowed;
 }
 
@@ -9396,13 +9280,11 @@ select[multiple].input-lg,
 /* line 17, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_forms.scss */
 .has-success .form-control {
   border-color: #3c763d;
-  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
 }
 /* line 20, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_forms.scss */
 .has-success .form-control:focus {
   border-color: #2b542c;
-  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #67b168;
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #67b168;
 }
 /* line 27, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_forms.scss */
@@ -9428,13 +9310,11 @@ select[multiple].input-lg,
 /* line 17, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_forms.scss */
 .has-warning .form-control {
   border-color: #8a6d3b;
-  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
 }
 /* line 20, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_forms.scss */
 .has-warning .form-control:focus {
   border-color: #66512c;
-  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #c0a16b;
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #c0a16b;
 }
 /* line 27, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_forms.scss */
@@ -9460,13 +9340,11 @@ select[multiple].input-lg,
 /* line 17, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_forms.scss */
 .has-error .form-control {
   border-color: #a94442;
-  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
 }
 /* line 20, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_forms.scss */
 .has-error .form-control:focus {
   border-color: #843534;
-  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #ce8483;
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #ce8483;
 }
 /* line 27, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_forms.scss */
@@ -9634,7 +9512,7 @@ th {
 .table > tfoot > tr > th,
 .table > tfoot > tr > td {
   padding: 8px;
-  line-height: 1.42857;
+  line-height: 1.428571429;
   vertical-align: top;
   border-top: 1px solid #ddd;
 }
@@ -9912,7 +9790,6 @@ table th[class*="col-"] {
   border: 1px solid #ccc;
   border: 1px solid rgba(0, 0, 0, 0.15);
   border-radius: 4px;
-  -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
   background-clip: padding-box;
 }
@@ -9934,7 +9811,7 @@ table th[class*="col-"] {
   padding: 3px 20px;
   clear: both;
   font-weight: normal;
-  line-height: 1.42857;
+  line-height: 1.428571429;
   color: #333333;
   white-space: nowrap;
 }
@@ -9994,7 +9871,7 @@ table th[class*="col-"] {
   display: block;
   padding: 3px 20px;
   font-size: 12px;
-  line-height: 1.42857;
+  line-height: 1.428571429;
   color: #777777;
   white-space: nowrap;
 }
@@ -10050,7 +9927,6 @@ table th[class*="col-"] {
   background-color: #f5f5f5;
   border: 1px solid #e3e3e3;
   border-radius: 4px;
-  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
 }
 /* line 15, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/_wells.scss */
@@ -10074,8 +9950,6 @@ table th[class*="col-"] {
 /* line 10, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/_component-animations.scss */
 .fade {
   opacity: 0;
-  -webkit-transition: opacity 0.15s linear;
-  -o-transition: opacity 0.15s linear;
   transition: opacity 0.15s linear;
 }
 /* line 13, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/_component-animations.scss */
@@ -10107,8 +9981,6 @@ tbody.collapse.in {
   position: relative;
   height: 0;
   overflow: hidden;
-  -webkit-transition: height 0.35s ease;
-  -o-transition: height 0.35s ease;
   transition: height 0.35s ease;
 }
 
@@ -10154,7 +10026,7 @@ button.close {
   white-space: nowrap;
   padding: 6px 12px;
   font-size: 14px;
-  line-height: 1.42857;
+  line-height: 1.428571429;
   border-radius: 4px;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -10176,7 +10048,6 @@ button.close {
 .btn:active, .btn.active {
   outline: 0;
   background-image: none;
-  -webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
   box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
 }
 /* line 43, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/_buttons.scss */
@@ -10185,7 +10056,6 @@ button.close {
   pointer-events: none;
   opacity: 0.65;
   filter: alpha(opacity=65);
-  -webkit-box-shadow: none;
   box-shadow: none;
 }
 
@@ -10361,7 +10231,6 @@ button.close {
 /* line 91, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/_buttons.scss */
 .btn-link, .btn-link:active, .btn-link[disabled], fieldset[disabled] .btn-link {
   background-color: transparent;
-  -webkit-box-shadow: none;
   box-shadow: none;
 }
 /* line 98, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/_buttons.scss */
@@ -10547,12 +10416,10 @@ input[type="button"].btn-block {
 
 /* line 119, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/_button-groups.scss */
 .btn-group.open .dropdown-toggle {
-  -webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
   box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
 }
 /* line 123, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/_button-groups.scss */
 .btn-group.open .dropdown-toggle.btn-link {
-  -webkit-box-shadow: none;
   box-shadow: none;
 }
 
@@ -10980,7 +10847,7 @@ input[type="button"].btn-block {
 /* line 84, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/_navs.scss */
 .nav-tabs > li > a {
   margin-right: 2px;
-  line-height: 1.42857;
+  line-height: 1.428571429;
   border: 1px solid transparent;
   border-radius: 4px 4px 0 0;
 }
@@ -11393,7 +11260,6 @@ input[type="button"].btn-block {
   padding: 10px 15px;
   border-top: 1px solid transparent;
   border-bottom: 1px solid transparent;
-  -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 0 rgba(255, 255, 255, 0.1);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 0 rgba(255, 255, 255, 0.1);
   margin-top: 8px;
   margin-bottom: 8px;
@@ -11413,7 +11279,6 @@ input[type="button"].btn-block {
     margin-right: 0;
     padding-top: 0;
     padding-bottom: 0;
-    -webkit-box-shadow: none;
     box-shadow: none;
   }
   /* line 335, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/_navbar.scss */
@@ -11719,7 +11584,7 @@ input[type="button"].btn-block {
   position: relative;
   float: left;
   padding: 6px 12px;
-  line-height: 1.42857;
+  line-height: 1.428571429;
   text-decoration: none;
   color: #428bca;
   background-color: #fff;
@@ -11886,10 +11751,9 @@ input[type="button"].btn-block {
 .modal.fade .modal-dialog {
   -webkit-transform: translate3d(0, -25%, 0);
   transform: translate3d(0, -25%, 0);
-  -webkit-transition: -webkit-transform 0.3s ease-out;
-  -moz-transition: -moz-transform 0.3s ease-out;
-  -o-transition: -o-transform 0.3s ease-out;
+  transition: -webkit-transform 0.3s ease-out;
   transition: transform 0.3s ease-out;
+  transition: transform 0.3s ease-out, -webkit-transform 0.3s ease-out;
 }
 /* line 36, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/_modals.scss */
 .modal.in .modal-dialog {
@@ -11917,7 +11781,6 @@ input[type="button"].btn-block {
   border: 1px solid #999;
   border: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 6px;
-  -webkit-box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
   box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
   background-clip: padding-box;
   outline: 0;
@@ -11948,7 +11811,7 @@ input[type="button"].btn-block {
 .modal-header {
   padding: 15px;
   border-bottom: 1px solid #e5e5e5;
-  min-height: 16.42857px;
+  min-height: 16.428571429px;
 }
 
 /* line 85, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/_modals.scss */
@@ -11959,7 +11822,7 @@ input[type="button"].btn-block {
 /* line 90, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/_modals.scss */
 .modal-title {
   margin: 0;
-  line-height: 1.42857;
+  line-height: 1.428571429;
 }
 
 /* line 97, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/_modals.scss */
@@ -12015,7 +11878,6 @@ input[type="button"].btn-block {
 
   /* line 140, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/_modals.scss */
   .modal-content {
-    -webkit-box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
   }
 
@@ -12163,7 +12025,6 @@ input[type="button"].btn-block {
   border: 1px solid #ccc;
   border: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 6px;
-  -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
   white-space: normal;
 }
@@ -12296,12 +12157,10 @@ input[type="button"].btn-block {
   display: block;
   padding: 4px;
   margin-bottom: 20px;
-  line-height: 1.42857;
+  line-height: 1.428571429;
   background-color: #fff;
   border: 1px solid #ddd;
   border-radius: 4px;
-  -webkit-transition: all 0.2s ease-in-out;
-  -o-transition: all 0.2s ease-in-out;
   transition: all 0.2s ease-in-out;
 }
 /* line 17, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/_thumbnails.scss */
@@ -12417,7 +12276,6 @@ a.label:hover, a.label:focus {
   background-color: #fff;
   border: 1px solid transparent;
   border-radius: 4px;
-  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
 }
 
@@ -12878,7 +12736,6 @@ a.badge:hover, a.badge:focus {
   margin-bottom: 20px;
   background-color: #f5f5f5;
   border-radius: 4px;
-  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
@@ -12892,18 +12749,13 @@ a.badge:hover, a.badge:focus {
   color: #fff;
   text-align: center;
   background-color: #428bca;
-  -webkit-box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.15);
   box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.15);
-  -webkit-transition: width 0.6s ease;
-  -o-transition: width 0.6s ease;
   transition: width 0.6s ease;
 }
 
 /* line 55, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/_progress-bars.scss */
 .progress-striped .progress-bar,
 .progress-bar-striped {
-  background-image: -webkit-linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
-  background-image: -o-linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
   background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
   background-size: 40px 40px;
 }
@@ -12912,7 +12764,6 @@ a.badge:hover, a.badge:focus {
 .progress.active .progress-bar,
 .progress-bar.active {
   -webkit-animation: progress-bar-stripes 2s linear infinite;
-  -o-animation: progress-bar-stripes 2s linear infinite;
   animation: progress-bar-stripes 2s linear infinite;
 }
 
@@ -12935,8 +12786,6 @@ a.badge:hover, a.badge:focus {
 }
 /* line 7, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_progress-bar.scss */
 .progress-striped .progress-bar-success {
-  background-image: -webkit-linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
-  background-image: -o-linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
   background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
 }
 
@@ -12946,8 +12795,6 @@ a.badge:hover, a.badge:focus {
 }
 /* line 7, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_progress-bar.scss */
 .progress-striped .progress-bar-info {
-  background-image: -webkit-linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
-  background-image: -o-linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
   background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
 }
 
@@ -12957,8 +12804,6 @@ a.badge:hover, a.badge:focus {
 }
 /* line 7, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_progress-bar.scss */
 .progress-striped .progress-bar-warning {
-  background-image: -webkit-linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
-  background-image: -o-linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
   background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
 }
 
@@ -12968,8 +12813,6 @@ a.badge:hover, a.badge:focus {
 }
 /* line 7, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/mixins/_progress-bar.scss */
 .progress-striped .progress-bar-danger {
-  background-image: -webkit-linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
-  background-image: -o-linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
   background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
 }
 
@@ -12988,8 +12831,6 @@ a.badge:hover, a.badge:focus {
 .carousel-inner > .item {
   display: none;
   position: relative;
-  -webkit-transition: 0.6s ease-in-out left;
-  -o-transition: 0.6s ease-in-out left;
   transition: 0.6s ease-in-out left;
 }
 /* line 22, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/_carousel.scss */
@@ -13056,8 +12897,6 @@ a.badge:hover, a.badge:focus {
 }
 /* line 84, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/_carousel.scss */
 .carousel-control.left {
-  background-image: -webkit-linear-gradient(left, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.0001) 100%);
-  background-image: -o-linear-gradient(left, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.0001) 100%);
   background-image: linear-gradient(to right, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.0001) 100%);
   background-repeat: repeat-x;
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#80000000', endColorstr='#00000000', GradientType=1);
@@ -13066,8 +12905,6 @@ a.badge:hover, a.badge:focus {
 .carousel-control.right {
   left: auto;
   right: 0;
-  background-image: -webkit-linear-gradient(left, rgba(0, 0, 0, 0.0001) 0%, rgba(0, 0, 0, 0.5) 100%);
-  background-image: -o-linear-gradient(left, rgba(0, 0, 0, 0.0001) 0%, rgba(0, 0, 0, 0.5) 100%);
   background-image: linear-gradient(to right, rgba(0, 0, 0, 0.0001) 0%, rgba(0, 0, 0, 0.5) 100%);
   background-repeat: repeat-x;
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#00000000', endColorstr='#80000000', GradientType=1);
@@ -13142,7 +12979,7 @@ a.badge:hover, a.badge:focus {
   border-radius: 10px;
   cursor: pointer;
   background-color: #000 \9;
-  background-color: transparent;
+  background-color: rgba(0, 0, 0, 0);
 }
 /* line 180, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/bootstrap/_carousel.scss */
 .carousel-indicators .active {
@@ -13729,7 +13566,6 @@ body.rails_admin .form-horizontal .tab-content .tab-pane > .remove_nested_fields
   position: absolute;
   top: 0px;
   left: 5px;
-  -webkit-transition: opacity .15s ease;
   transition: opacity .15s ease;
 }
 /* line 162, /Users/jensjap/Projects/srdrPLUS/.bundle/gems/rails_admin-1.3.0/app/assets/stylesheets/rails_admin/base/theming.scss */
@@ -13846,7 +13682,6 @@ body.rails_admin .table .headerSortUp:after {
   border-right: 4px solid transparent;
   border-top: 4px solid #000;
   visibility: visible;
-  -webkit-box-shadow: none;
   box-shadow: none;
   opacity: 60;
   filter: alpha(opacity=6000);
