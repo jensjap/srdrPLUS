@@ -1,17 +1,15 @@
-li = link_to('My Projects', projects_path)
+li = link_to('Dashboard', projects_path)
 
 - if (controller_name.eql?('projects') && not(action_name.eql?('index')) && not(action_name.eql?('new'))) || controller_name.eql?('assignments') || controller_name.eql?('extractions') || controller_name.eql?('extraction_forms_projects') || (controller_name.eql?('citations') && action_name.eql?('index')) || (controller_name.eql?('tasks') && action_name.eql?('index'))
   li
-    a href='#' Project Tools
+    a href='#' Project
     ul.menu
+      b Tools
       li = link_to t('.dashboard'),         '#'
       li = link_to t('.members_and_roles'), edit_project_path(@project || @extraction.try(:project) || @extraction_forms_project.project) + '#panel-projects-users', title: t('.members_and_roles')
       li = link_to t('export'),             export_project_path(@project || @extraction.try(:project) || @extraction_forms_project.project), method: :post,          title: t('request_export')
       li = link_to t('comparison_tool'),    comparison_tool_project_extractions_path(@project || @extraction.try(:project) || @extraction_forms_project.project),    title: t('.compare_extractions')
-
-  li
-    a href='#' Project Navigation
-    ul.menu
+      b Navigation
       li = link_to t('.project_information'), edit_project_path(@project || @extraction.try(:project) || @extraction_forms_project.project) + '#panel-project-information', title: t('.project_information')
       li = link_to t('.key_questions'),       edit_project_path(@project || @extraction.try(:project) || @extraction_forms_project.project) + '#panel-key-questions',       title: t('.key_questions')
       li = link_to t('.tasks'),               project_tasks_path(@project || @extraction.try(:project) || @extraction_forms_project.project), title: t('manage_tasks')
