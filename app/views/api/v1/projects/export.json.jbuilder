@@ -81,6 +81,8 @@ json.project do
         json.journal do
           json.id cp.citation.journal&.id
           json.name cp.citation.journal&.name
+          json.volume cp.citation.journal&.volume
+          json.issue cp.citation.journal&.issue
         end
         json.keywords do
           cp.citation.keywords.each do |kw|

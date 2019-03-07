@@ -1338,7 +1338,7 @@ ActiveRecord::Schema.define(version: 20190328213219) do
     t.index ["version_id"], name: "index_version_associations_on_version_id", using: :btree
   end
 
-  create_table "versions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci" do |t|
+  create_table "versions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4" do |t|
     t.string   "item_type",      limit: 191,        null: false
     t.integer  "item_id",                           null: false
     t.string   "event",                             null: false
