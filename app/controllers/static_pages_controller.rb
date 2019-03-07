@@ -1,6 +1,6 @@
 class StaticPagesController < ApplicationController
-  before_action :skip_authorization, :skip_policy_scope, only: [:home, :help, :about, :citing, :contact, :usage]
-  skip_before_action :authenticate_user!, only: [:home, :help, :about, :citing, :contact, :usage]
+  before_action :skip_authorization, :skip_policy_scope, only: [:home, :help, :about, :citing, :contact, :usage, :blog]
+  skip_before_action :authenticate_user!, only: [:home, :help, :about, :citing, :contact, :usage, :blog]
 
   SORT = {  'updated-at': { updated_at: :desc },
             'created-at': { created_at: :desc }
@@ -32,5 +32,8 @@ class StaticPagesController < ApplicationController
   end
 
   def usage
+  end
+
+  def blog
   end
 end

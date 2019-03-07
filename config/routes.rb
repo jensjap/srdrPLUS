@@ -190,11 +190,12 @@ Rails.application.routes.draw do
 
   root to: 'static_pages#home'
 
-  get  'about'   => 'static_pages#about'
-  get  'citing'  => 'static_pages#citing'
-  get  'contact' => 'static_pages#contact'
-  get  'help'    => 'static_pages#help'
-  get  'usage'   => 'static_pages#usage'
+  get 'about'   => 'static_pages#about'
+  get 'citing'  => 'static_pages#citing'
+  get 'contact' => 'static_pages#contact'
+  get 'help'    => 'static_pages#help'
+  get 'usage'   => 'static_pages#usage'
+  get 'blog'    => 'static_pages#blog'
 
   resource  :profile, only: [:show, :edit, :update]
   resources :degrees, only: [:index]
