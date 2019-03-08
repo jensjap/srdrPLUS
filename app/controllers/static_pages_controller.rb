@@ -7,6 +7,7 @@ class StaticPagesController < ApplicationController
   }.stringify_keys
 
   def home
+    @recently_published_projects = HTTParty.get('https://srdr.ahrq.gov/projects/api_index_published')
     case cookies[:layout_style].to_i
     when 1
       render 'home_v1'

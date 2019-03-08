@@ -145,3 +145,5 @@ gem 'pundit'
 
 # List reordering, Drag & Drop
 gem 'sortable-rails'
+
+gem 'httparty'
