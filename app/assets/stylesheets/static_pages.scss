@@ -4,11 +4,212 @@
 
 @import 'settings';
 
+.about {
+  table.governance-board {
+    border-collapse: unset;
+  }
+
+  .SRDR-Governance-Boar {
+    font-family: Halant;
+    font-size: 48px;
+    font-weight: bold;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: 1.17;
+    letter-spacing: normal;
+    text-align: center;
+    color: #1c1819;
+
+    .governance-board-links {
+      width: 381px;
+      height: 28px;
+      font-family: Halant;
+      font-size: 20px;
+      font-weight: bold;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: 1.4;
+      letter-spacing: normal;
+      color: #4c0d7d;
+    }
+  }
+
+  .White-box {
+    height: 722px;
+    border-radius: 3px;
+    box-shadow: 0 20px 40px 0 rgba(0, 0, 0, 0.15);
+    background-color: #ffffff;
+    text-align: center;
+
+    .subsection-headers {
+      font-family: NotoSans;
+      font-size: 20px;
+      font-weight: normal;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: 1.4;
+      letter-spacing: normal;
+      color: #414247;
+    }
+
+    .project-team-links {
+      font-family: Halant;
+      font-size: 20px;
+      font-weight: bold;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: 1.4;
+      letter-spacing: normal;
+      text-align: center;
+      color: #4c0d7d;
+    }
+  }
+
+  .SRDR-Project-Team {
+    font-family: Halant;
+    font-size: 48px;
+    font-weight: bold;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: 1.17;
+    letter-spacing: normal;
+    text-align: center;
+    color: #1c1819;
+  }
+
+  table {
+    tr td {
+      padding: 20px;
+    }
+  }
+
+  .SRDR-Annual-Reports {
+    font-family: Halant;
+    font-size: 48px;
+    font-weight: bold;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: 1.17;
+    letter-spacing: normal;
+    text-align: center;
+    color: #1c1819;
+  }
+
+  .Rectangle {
+    width: 996px;
+    height: 480px;
+    border-radius: 3px;
+    box-shadow: 0 20px 40px 0 rgba(0, 0, 0, 0.15);
+    background-color: #ffffff;
+  }
+
+  .Why-have-an-open-sys {
+    font-family: Halant;
+    font-size: 48px;
+    font-weight: bold;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: 1.17;
+    letter-spacing: normal;
+    text-align: center;
+    color: #1c1819;
+  }
+
+  .Such-a-repository-he {
+    font-family: NotoSans;
+    font-size: 16px;
+    font-weight: normal;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: 1.5;
+    letter-spacing: normal;
+    color: #414247;
+  }
+
+  .Such-a-repository-he .text-style-1 {
+    color: #4c0d7d;
+  }
+}
+
+.In-an-effort-to-redu {
+  font-family: NotoSans;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: 1.5;
+  letter-spacing: normal;
+  text-align: center;
+  color: #414247;
+}
+
+.In-an-effort-to-redu .text-style-1 {
+  color: #4c0d7d;
+}
+
+.about .hero {
+  //text-align: center;
+  height: 350px;
+}
+
+.blog .hero {
+  height: 375px;
+}
+
+.About-the-Systematic {
+  //width: 995px;
+  height: 144px;
+  font-family: Halant;
+  font-size: 64px;
+  font-weight: bold;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: 1.13;
+  letter-spacing: normal;
+  text-align: center;
+  color: #ffffff;
+}
+
+.The-newly-updated-Sy {
+  width: 790px;
+  height: 168px;
+  font-family: Halant;
+  font-size: 48px;
+  font-weight: bold;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: 1.17;
+  letter-spacing: normal;
+  color: #ffffff;
+}
+
+.isaldanh_photo_png {
+  width: 32px;
+  height: 32px;
+}
+
+.Ian-Saldanha-March {
+  width: 222px;
+  height: 24px;
+  font-family: NotoSans;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: 1.5;
+  letter-spacing: normal;
+  color: #dee1e8;
+}
+
 .blog p {
   margin-left: 0;
   margin-right: 0;
   font-size: 21px;
   line-height: 1.58;
+
+  &.title {
+    margin-bottom: -30px;
+  }
 }
 
 .elicit-registration {
@@ -95,7 +296,7 @@
 
 // Hero section.
 .hero, .hero-2 {
-  height: 525px;
+  //height: 525px;
   background-image: asset-data-url("background-hero-bottom.png");
   background-repeat: no-repeat;
   background-size: 100%;
