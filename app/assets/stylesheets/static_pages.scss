@@ -294,9 +294,13 @@
   background-color: #ffffff;
 }
 
+.home-v2 {
+  //margin-top: 1.5em;
+}
+
 // Hero section.
-.hero, .hero-2 {
-  //height: 525px;
+.hero, {
+  height: 525px;
   background-image: asset-data-url("background-hero-bottom.png");
   background-repeat: no-repeat;
   background-size: 100%;
@@ -396,15 +400,64 @@
   }
 }
 
+.Rectangle-2v2 {
+  padding-top: 72px;
+  padding-bottom: 72px;
+  position: relative;
+  @media screen and #{ breakpoint(large) } {
+  }
+  top: 100px;
+  border-radius: 3px;
+  box-shadow: 0 20px 40px 0 rgba(0, 0, 0, 0.15);
+  background-color: #ffffff;
+
+  .read-more {
+    font-family: AvenirNext;
+    font-size: 14px;
+    font-weight: 600;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: 1.57;
+    letter-spacing: normal;
+    text-align: center;
+    color: #5e258a;
+  }
+
+  .See-how-you-can-work {
+    font-family: Halant;
+    font-size: 48px;
+    font-weight: bold;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: 1.17;
+    letter-spacing: normal;
+    text-align: center;
+    color: #1c1819;
+    margin-bottom: 30px;
+  }
+
+  h3.text-center {
+    font-family: Halant;
+    font-size: 24px;
+    font-weight: bold;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: 1.33;
+    letter-spacing: normal;
+    text-align: center;
+    color: #1c1819;
+  }
+}
+
 .Rectangle-2 {
   padding-top: 72px;
   padding-bottom: 72px;
   position: relative;
   @media screen and #{breakpoint(large)} {
-    top: -100px;
+    //top: -100px;
   }
   top: -50px;
-  // margin: -100px auto;
+  //margin: -100px auto;
   border-radius: 3px;
   box-shadow: 0 20px 40px 0 rgba(0, 0, 0, 0.15);
   background-color: #ffffff;

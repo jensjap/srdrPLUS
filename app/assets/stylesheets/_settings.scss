@@ -866,7 +866,7 @@ $topbar-unstack-breakpoint: medium;
 // -----------
 
 $xy-grid: true;
-$grid-container: $global-width;
+$grid-container: 1200px;
 $grid-columns: 12;
 $grid-margin-gutters: (
   small: 20px,
