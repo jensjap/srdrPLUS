@@ -814,3 +814,63 @@
     margin-right: 12px;
   }
 }
+
+.v3 {
+  .Rectangle-2 {
+    border-radius: 3px;
+    box-shadow: 0 20px 40px 0 rgba(0, 0, 0, 0.15);
+    background-color: #ffffff;
+  }
+
+  .hero-background {
+    background-image: asset-data-url("background-hero-bottom.png");
+  }
+
+  background-color: white;
+
+  .hero-background .cell {
+    padding: 5em 0;
+
+    @include breakpoint(medium) {
+      text-align: left;
+    }
+
+    @include breakpoint(small) {
+      text-align: center;
+    }
+
+    .Get-started-now {
+      font-family: Halant;
+      font-size: 32px;
+      font-weight: bold;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: 1.25;
+      letter-spacing: normal;
+      text-align: center;
+      color: #1c1819;
+    }
+  }
+
+  .SRDR-Moving-system {
+    font-family: Halant;
+    font-size: 64px;
+    font-weight: bold;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: 1.13;
+    letter-spacing: normal;
+    color: #ffffff;
+  }
+
+  .SRDR-is-a-free-pow {
+    font-family: NotoSans;
+    font-size: 20px;
+    font-weight: normal;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: 1.4;
+    letter-spacing: normal;
+    color: #dee1e8;
+  }
+}
