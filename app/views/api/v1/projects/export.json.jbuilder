@@ -308,7 +308,7 @@ json.project do
                         json.name eefpst1.type1_type.name
                       end
                     end
-                    json.units = eefpst1.units
+                    json.units eefpst1.units
 
                     json.populations do
                       eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |pop|
@@ -436,7 +436,9 @@ json.project do
 
               json.records do
                 Record.where(recordable: eefps.extractions_extraction_forms_projects_sections_question_row_column_fields).each do |r|
-                  json.set! r.recordable.question_row_column_field.id do
+                  json.set! r.id do
+                    json.question_row_column_field_id r.recordable.question_row_column_field.id
+                    json.extractions_extraction_forms_projects_sections_type1_id r.recordable.extractions_extraction_forms_projects_sections_type1_id
                     json.name r.name
                   end
                 end

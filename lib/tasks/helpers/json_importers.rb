@@ -78,10 +78,10 @@ module JsonImporters
 
         # does this work? TEST!
         @question_position_tuples_dict.values&.each do |q_tuples|
-          q_tuples.sort { |tuple| tuple[0] }
+          q_tuples.sort! { |t1, t2| t1[0] <=> t2[0] }
           q_tuples.each.with_index do |tuple, index|
             q = tuple[1]
-            q.ordering.position = index + 1
+            q.ordering.update!( position: index + 1 )
           end
         end
 
@@ -98,10 +98,11 @@ module JsonImporters
         end
 
         # does this work? TEST!
-        @section_position_tuples.sort { |tuple| tuple[0] }
+        @section_position_tuples.sort! { |t1, t2| t1[0] <=> t2[0] }
         @section_position_tuples.each.with_index do |tuple, index|
           efps = tuple[1]
-          efps.ordering.position = index + 1
+          efps.ordering.update!( position: index + 1 )
+
         end
 
         ## EXTRACTIONS
@@ -117,41 +118,49 @@ module JsonImporters
       case prehash['prerequisitable_type']
       when 'Question'
         Dependency.find_or_create_by! dependable_type: 'Question',
-                                      dependable_id: @id_map['question'][question_id.to_i],
+                                      dependable_id: question_id,
                                       prerequisitable_type: 'Question',
-                                      prerequisitable_id: @id_map['question'][prehash['prerequisitable_id']]
+                                      prerequisitable_id: @id_map['question'][prehash['prerequisitable_id'].to_s].id
       when 'QuestionRowColumnField'
         Dependency.find_or_create_by! dependable_type: 'Question',
-                                      dependable_id: @id_map['question'][question_id.to_i],
+                                      dependable_id: question_id,
                                       prerequisitable_type: 'QuestionRowColumnField',
-                                      prerequisitable_id: @id_map['qrcf'][prehash['prerequisitable_id']]
-      when 'QuestionRowColumnQuestionRowColumnOption'
+                                      prerequisitable_id: @id_map['qrcf'][prehash['prerequisitable_id'].to_s].id
+      when 'QuestionRowColumnsQuestionRowColumnOption'
         Dependency.find_or_create_by! dependable_type: 'Question',
-                                      dependable_id: @id_map['question'][question_id.to_i],
-                                      prerequisitable_type: 'QuestionRowColumnQuestionRowColumnOption',
-                                      prerequisitable_id: @id_map['qrcqrco'][prehash['prerequisitable_id']]
-
+                                      dependable_id: question_id,
+                                      prerequisitable_type: 'QuestionRowColumnsQuestionRowColumnOption',
+                                      prerequisitable_id: @id_map['qrcqrco'][prehash['prerequisitable_id'].to_s].id
       end
     end
 
     def import_user(uid, uhash)
       # is this enough to identify a user or should we check profile as well??
-      u = User.find_by({id: uid, email: uhash['email']})
+      u = User.find_by(email: uhash['email'])
 
       if u.nil?
         temp_password = "Please_Update_Your_Password"
         u = User.create!(email: uhash['email'], password: temp_password)
+
+        ## If the user is already in the system, don't change the profile
         profile_hash = uhash['profile']
 
         o = Organization.find_or_create_by! name: profile_hash['organization']['name']
 
-        profile = Profile.find_or_create_by! user:         u,
-                                             username:     profile_hash['username'],
-                                             first_name:   profile_hash['first_name'],
-                                             middle_name:  profile_hash['middle_name'],
-                                             last_name:    profile_hash['last_name'],
-                                             time_zone:    profile_hash['time_zone'],
-                                             organization: o
+        uname = profile_hash['username']
+        if u.profile.username != uname and not Profile.find_by(username: uname).nil?
+          while not Profile.find_by(username: uname).nil?
+            uname += rand(10).to_s
+          end
+          @logger.warn "#{Time.now.to_s} - Username #{profile_hash['username']} is taken, using #{uname} for email #{uhash['email']} instead."
+        end
+
+        profile = u.profile.update! username:     uname,
+                                    first_name:   profile_hash['first_name'],
+                                    middle_name:  profile_hash['middle_name'],
+                                    last_name:    profile_hash['last_name'],
+                                    time_zone:    profile_hash['time_zone'],
+                                    organization: o
 
         profile_hash['degrees']&.values&.each do |dhash|
           d = Degree.find_or_create_by! name: dhash['name']
@@ -205,7 +214,7 @@ module JsonImporters
 
       #if can't find, use Contributor
       r = Role.find_by(name: 'Contributor')
-      @logger.warning "#{Time.now.to_s} - Could not find role with name '" +  role_name + "' for user: '" + u.profile.username + "', used 'Contributor' instead"
+      @logger.warn "#{Time.now.to_s} - Could not find role with name '" +  role_name + "' for user: '" + u.profile.username + "', used 'Contributor' instead"
       @id_map['role'][rid.to_i] = r
       return r
     end
@@ -223,7 +232,7 @@ module JsonImporters
 
       ## try to use different colors
       c = Color.where.not( id: @id_map['color'].values.map {|c| c.id} ).first
-      @logger.warning "#{Time.now.to_s} - Could not find color with name '" + color_name + "', used '" + c.name + "' instead"
+      @logger.warn "#{Time.now.to_s} - Could not find color with name '" + color_name + "', used '" + c.name + "' instead"
       @id_map['color'][cid] = c
       return c
     end
@@ -305,7 +314,7 @@ module JsonImporters
       tt = TaskType.find_by(name: thash['task_type']['name'])
       if tt.nil?
         tt = TaskType.first
-        logger.warning "#{Time.now.to_s} - Could not find task_type with name '" + thash['task_type']['name'] + ", used '" + tt.name + "' instead."
+        @logger.warn "#{Time.now.to_s} - Could not find task_type with name '" + thash['task_type']['name'] + ", used '" + tt.name + "' instead."
       end
       na = thash['num_assigned']
 
@@ -364,7 +373,7 @@ module JsonImporters
 
       if efps_type.nil?
         efps_type = figure_out_efps_type shash
-        logger.warning "#{Time.now.to_s} - Could not find extraction_forms_projects_section_type with name '" +  shash['extraction_forms_projects_section_type']['name'] + ", used '" + efps_type.name + "' instead."
+        @logger.warn "#{Time.now.to_s} - Could not find extraction_forms_projects_section_type with name '" +  shash['extraction_forms_projects_section_type']['name'] + ", used '" + efps_type.name + "' instead."
       end
 
       if efps.nil?
@@ -401,9 +410,29 @@ module JsonImporters
       @question_position_tuples_dict[efps.id] ||= []
       @dedup_map['question'][efps.id] ||= {}
 
+      q_with_dep = []
       shash['questions']&.each do |qid, qhash|
+        if qhash['dependencies'].present?
+          q_with_dep << [qid, qhash]
+          next
+        end
         import_question(efps, qid, qhash)
       end
+
+      abort_counter = 0
+      abort_limit = q_with_dep.length
+      while not q_with_dep.empty?
+        if abort_counter >= abort_limit
+          @logger.error << "There was a problem with importing questions with dependencies, there may be cyclical dependency"
+          break
+        end
+
+        qid, qhash = q_with_dep.pop
+        if not import_question(efps, qid, qhash)
+          q_with_dep.unshift [qid, qhash]
+        end
+      end
+
       @question_position_counter_dict[efps.id] += (shash['questions'] || []).length
 
       @id_map['efps'][sid] = efps
@@ -421,6 +450,30 @@ module JsonImporters
           q_dedup_key += "qrc: <<<" + qrchash['name'].to_s + ">>> "
         end
       end
+      q_dedup_key += "dependencies: <<<"
+      qhash['dependencies']&.each do |did,dhash|
+        case dhash['prerequisitable_type']
+        when 'Question'
+          q = @id_map['question'][dhash['prerequisitable_id'].to_s]
+          if q.nil?
+            return false
+          end
+          q_dedup_key += "(Question, #{q.id})"
+        when 'QuestionRowColumnField'
+          qrcf = @id_map['qrcf'][dhash['prerequisitable_id'].to_s]
+          if qrcf.nil?
+            return false
+          end
+          q_dedup_key += "(QuestionRowColumnField, #{qrcf.id})"
+        when 'QuestionRowColumnsQuestionRowColumnOption'
+          qrcqrco = @id_map['qrcqrco'][dhash['prerequisitable_id'].to_s]
+          if qrcqrco.nil?
+            return false
+          end
+          q_dedup_key += "(QuestionRowColumnsQuestionRowColumnOption, #{qrcqrco.id})"
+        end
+      end
+      q_dedup_key += ">>>"
       return q_dedup_key
     end
 
@@ -430,6 +483,9 @@ module JsonImporters
       end
 
       q_dedup_key = get_question_dedup_key(qhash)
+      if q_dedup_key.nil?
+        return false
+      end
       if @dedup_map['question'][efps.id][q_dedup_key].present?
         @id_map['question'][qid] = @dedup_map['question'][efps.id][q_dedup_key]
         return @dedup_map['question'][efps.id][q_dedup_key]
@@ -465,7 +521,7 @@ module JsonImporters
         qrhash['question_row_columns']&.values&.each_with_index do |qrchash, ci|
           # maybe use find_by and raise an error if not found? -Birol
 
-          qrc_type = QuestionRowColumnType.find_or_create_by! name: qrchash['question_row_column_type']['name']
+          qrc_type = QuestionRowColumnType.find_by! name: qrchash['question_row_column_type']['name']
 
           if ri == 0 and ci == 0
             qrc = QuestionRowColumn.find_by! question_row: qr
@@ -508,6 +564,9 @@ module JsonImporters
       t1 = @id_map['t1'][t1hash['id']]
       if t1.nil?
         t1 = Type1.find_or_create_by!(name: t1hash['name'], description: t1hash['description'])
+        if t1.suggestion.nil?
+          Suggestion.create! suggestable_type: 'Type1', suggestable_id: t1.id, user_id: 1
+        end
         @id_map['t1'][t1hash['id']] = t1
       end
       return t1
@@ -515,10 +574,10 @@ module JsonImporters
 
     def get_type1_type(t1typehash)
       if t1typehash.nil? then return end
-      t1_type = Type1Type.find_by!(name: t1typehash['name'])
+      t1_type = Type1Type.find_by(name: t1typehash['name'])
       if t1_type.nil?
         t1_type = Type1Type.first
-        logger.warning "#{Time.now.to_s} - Could not find type1_type with name #{t1typehash['name']} , used #{t1_type.name} instead"
+        @logger.warn "#{Time.now.to_s} - Could not find type1_type with name #{t1typehash['name']} , used #{t1_type.name} instead"
         ## maybe we should just use nil in this case
       end
       return t1_type
@@ -580,7 +639,7 @@ module JsonImporters
           eefpst1 = @id_map['eefpst1'][eefpst1id.to_i]
 
           eefpst1hash['populations']&.each do |popid, pophash|
-            pop_name = PopulationName.find_or_create_by! name: pophash['population_name']['name']
+            pop_name = PopulationName.find_or_create_by! name: pophash['population_name']['name'], description: pophash['population_name']['description']
             pop = ExtractionsExtractionFormsProjectsSectionsType1Row.find_or_create_by! extractions_extraction_forms_projects_sections_type1: eefpst1,
                                                                                         population_name: pop_name
 
@@ -595,7 +654,7 @@ module JsonImporters
             end
 
             pophash['result_statistic_sections']&.values&.each do |rsshash|
-              rss_type = ResultStatisticSectionType.find_or_create_by!({name: rsshash['result_statistic_section_type']['name']})
+              rss_type = ResultStatisticSectionType.find_by!({name: rsshash['result_statistic_section_type']['name']})
 
               rss = ResultStatisticSection.find_or_create_by! result_statistic_section_type: rss_type,
                                                               population: pop
@@ -631,7 +690,7 @@ module JsonImporters
                       Comparate.create! comparate_group: cg,
                                         comparable_element: ce
                     else
-                      logger.error "#{Time.now.to_s} - Unknown comparable_type"
+                      @logger.error "#{Time.now.to_s} - Unknown comparable_type"
                       ### YOU NEED TO ABORT COMPARISON CREATION
                     end
                   end
@@ -694,10 +753,14 @@ module JsonImporters
         #  ExtractionsExtractionFormsProjectsSection.find(t2_eefps_id).update!(link_to_type1: @id_map['eefps'][t1_eefps_source_id])
         #end
 
-        shash['records']&.each do |qrcfid, rhash|
+        shash['records']&.each do |rid, rhash|
+          qrcfid = rhash['question_row_column_field_id'].to_s
           qrcf = @id_map['qrcf'][qrcfid]
+          if qrcf.nil?; byebug end
           qrc_type_name = qrcf.question_row_column.question_row_column_type.name
+          eefpst1 = @id_map['eefpst1'][rhash['extractions_extraction_forms_projects_sections_type1_id']]
           eefpsqrcf = ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField.find_or_create_by! extractions_extraction_forms_projects_section: eefps,
+                                                                                                          extractions_extraction_forms_projects_sections_type1: eefpst1,
                                                                                                           question_row_column_field: qrcf
           record_name = rhash['name'] || ""
 
