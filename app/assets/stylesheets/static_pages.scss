@@ -139,7 +139,7 @@
   font-stretch: normal;
   line-height: 1.5;
   letter-spacing: normal;
-  text-align: center;
+  //text-align: center;
   color: #414247;
 }
 
@@ -189,8 +189,8 @@
 }
 
 .Ian-Saldanha-March {
-  width: 222px;
-  height: 24px;
+  //width: 222px;
+  //height: 24px;
   font-family: NotoSans;
   font-size: 16px;
   font-weight: normal;
@@ -733,7 +733,7 @@
 
 .testimonial-box {
   text-align: center;
-  width: 468px;
+  //width: 468px;
   padding-bottom: 30px;
   border-radius: 3px;
   box-shadow: 0 20px 40px 0 rgba(0, 0, 0, 0.15);
@@ -763,6 +763,9 @@
 
 .testimonial-left {
   margin-right: 30px;
+  @include breakpoint(small) {
+    margin-bottom: 100px;
+  }
 }
 
 .testimonial-picture {

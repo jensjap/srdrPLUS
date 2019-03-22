@@ -63,26 +63,25 @@
 
   h1.Create-your-systemat.text-center.professionals-title Leading professionals love SRDR+
 
-  .grid-x.align-center-middle.grid-padding-x.testimonial-rows
+  .grid-container
     .grid-x.align-center-middle.grid-padding-x.testimonial-row
-      .cell.testimonial-box.testimonial-left
+      .cell.medium-5.testimonial-box.testimonial-left
         = image_tag 'testimonial-matthias-perleth.png', class: 'float-center testimonial-picture'
         h4.how-you-title Mathias Perleth, MPH
         h6.small.subheader Board Treasurer, International Network of Agencies for Health Technology Assessment [INAHTA], Germany
         h7 “In my regard, SRDR is among the most relevant developments in recent years!”
-      .cell.testimonial-box.testimonial-left
+      .cell.medium-5.testimonial-box.testimonial-left
         = image_tag 'testimonial-christine-clifford.png', class: 'float-center testimonial-picture'
         h4.how-you-title Christine Clifford, MHP
         h6.small.subheader Project Director, Eunice Kennedy Shriver Center, University of Massachusetts Medical School, USA
         h7 “I like SRDR’s use of the Tabs and the separation by topic area of the Tabs; it allows for focus on sections of a paper at a time. SRDR is powerful and adaptable, provides a way to standardize diverse results, and provides structure.“
-
     .grid-x.align-center-middle.grid-padding-x.testimonial-row
-      .cell.testimonial-box.testimonial-left
+      .cell.medium-5.testimonial-box.testimonial-left
         = image_tag 'testimonial-tianjing-li.png', class: 'float-center testimonial-picture'
         h4.how-you-title Tianjing Li, MD, MHS, PhD
         h6.small.subheader Director, Cochrane Eyes and Vision United States Satellite, Associate Professor, Johns Hopkins Bloomberg School of Public Health, USA
         h7 “SRDR is one of the few data systems designed specifically for producing and archiving systematic reviews with the intention to share the data with the public. It’s extremely flexible and it allows users to design their forms (and data items on the forms) in a way that best suit their needs and workflow.”
-      .cell.testimonial-box.testimonial-left
+      .cell.medium-5.testimonial-box.testimonial-left
         = image_tag 'testimonial-james-scott-parrott.png', class: 'float-center testimonial-picture'
         h4.how-you-title James Scott Parrott, PhD
         h6.small.subheader Professor, Rutgers University School of Health Professions, USA
@@ -115,7 +114,6 @@
               = image_tag 'icon-export.png'
             .cell.medium-10
               h5 Customize exports of your datasets
-
       .grid-x.align-center-middle.feature-box
         .cell.medium-5
           h1 Access study data from published systematic reviews today.
@@ -151,7 +149,6 @@
           .cell.medium-8
             h6.summary Objectives: #{ rp[1]['description'].blank? ? 'None Provided' : rp[1]['description'] }
             h6.bold = link_to 'READ MORE', rp[1]['url'], target: '_blank'
-
     .cell.medium-9
       h4 = link_to raw("SEE MORE PROJECTS &rarr;"), 'https://srdr.ahrq.gov/projects/published', target: '_blank'
 
