@@ -8,11 +8,13 @@
       f: f,
       comparable_element_type: 'ExtractionsExtractionFormsProjectsSectionsType1',
       collection: @arms,
-      label_method: :type1_name_and_description
+      label_method: :type1_name_and_description,
+      wrapper_class: 'bac-select'
 - elsif comparison == :wac
   .nested-fields.wac-comparate-fields style='padding-bottom: 0px; margin-bottom: 0px'
     == render 'result_statistic_sections/edit/comparable_element_fields',
       f: f,
       comparable_element_type: 'ExtractionsExtractionFormsProjectsSectionsType1RowColumn',
       collection: @result_statistic_section.timepoints,
-      label_method: :label_with_baseline_indicator
+      label_method: :label_with_baseline_indicator,
+      wrapper_class: 'wac-select'

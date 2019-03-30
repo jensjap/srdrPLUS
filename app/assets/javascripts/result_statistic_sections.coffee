@@ -28,13 +28,49 @@ document.addEventListener 'turbolinks:load', ->
             return this.text.includes( '(Baseline)' )
           ).attr('selected', true)
 
+        $( '.links.add-anova a' ).click()
+        $( '.links.add-anova a' ).addClass( 'disabled' )
+
         $( '.links.add-comparison a' ).addClass( 'disabled' )
 
-  ######## coloring and consolidation dropdown
+        bac_select = $( insertedItem ).find( '.bac-select' ).first()
 
-    get_result_value = ( td_elem ) ->
-      inputs = $( td_elem ).find( "input.string" )
-      return ( if inputs.length > 0 then inputs[ 0 ].value else "" )
+        # When ANOVA is selected, hide the submit button for the comparison and replace with ANOVA form's submit button
+        # We also hide all the second dropdown and Add comparate buttons
+        bac_anova_handler = ( event ) ->
+          if $( event.target ).find( 'option:selected' ).first().val() == "000"
+            $( event.target ).closest( '.comparate-groups' ).children().hide()
+            $( event.target ).closest( '.comparates' ).show()
+            $( event.target ).closest( '.comparates' ).find( '.add-comparate' ).hide()
+
+            $( '.submit-comparison' ).toggleClass( 'hide' )
+            $( '.submit-anova' ).toggleClass( 'hide' )
+
+          else
+            $( event.target ).closest( '.comparate-groups' ).children().show()
+            $( event.target ).closest( '.comparates' ).find( '.add-comparate' ).show()
+            $( '.submit-comparison' ).toggleClass( 'hide' )
+            $( '.submit-anova' ).toggleClass( 'hide' )
+
+        if bac_select
+          bac_select.find( 'option' )
+            .first()
+            .text( 'All Arms (ANOVA)' )
+            .val( '000' )
+          bac_select.change( bac_anova_handler )
+          bac_select.trigger( 'change' )
+
+
+
+
+
+
+
+######## coloring and consolidation dropdown
+
+  get_result_value = ( td_elem ) ->
+    inputs = $( td_elem ).find( "input.string" )
+    return ( if inputs.length > 0 then inputs[ 0 ].value else "" )
 
     get_result_elem = ( td_elem ) ->
       inputs = $( td_elem ).find( "input.string" )

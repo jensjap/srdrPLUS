@@ -1,0 +1,8 @@
+/ ** For ANOVA, there are no ComparateGroups or Comparates or ComparableElements
+
+.nested-fields
+  = f.input :is_anova,
+          as: :hidden,
+          input_html: { value: true }
+
+= f.button :submit, t('save_comparison'), class: 'button small hide submit-anova'

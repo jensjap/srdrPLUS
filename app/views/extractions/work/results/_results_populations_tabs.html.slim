@@ -12,7 +12,7 @@ ul#results-table-tabs.tabs data-deep-link='true' data-deep-link-smudge='true' da
     - if is_first
 
       li.tabs-title.is-active
-        = link_to eefpst1r.population_name.name.titleize, "#panel-population-#{ eefpst1r.id }", title: eefpst1r.population_name.name.titleize
+        = link_to eefpst1r.population_name.name.titleize, "#panel-population-#{ eefpst1r.id }", title: eefpst1r.population_name.name.titleize, 'aria-selected' => true
 
       - is_first = false
 
