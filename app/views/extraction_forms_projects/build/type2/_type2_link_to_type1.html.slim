@@ -24,12 +24,13 @@ a data-toggle="link-to-type1-#{ efps.id }"
 
 - raise if associated_efps.length > 1
 
-div id="link-to-type1-#{ efps.id }" data-toggler='' data-animate='scale-in-up scale-out-down' style='display: none;'
-  = simple_form_for(efps, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
-    = f.association :link_to_type1,
-      label: "Do you want the questions displayed for each #{ associated_efps.first.section.name.singularize } defined in the form?",
-      collection: associated_efps,
-      prompt: false,
-      include_blank: 'No',
-      label_method: lambda { |efps| 'Yes' },
-      input_html: { onchange: 'this.form.submit();' }
+- if associated_efps.present?
+  div id="link-to-type1-#{ efps.id }" data-toggler='' data-animate='scale-in-up scale-out-down' style='display: none;'
+    = simple_form_for(efps, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
+      = f.association :link_to_type1,
+        label: "Do you want the questions displayed for each #{ associated_efps.first.section.name.singularize } defined in the form?",
+        collection: associated_efps,
+        prompt: false,
+        include_blank: 'No',
+        label_method: lambda { |efps| 'Yes' },
+        input_html: { onchange: 'this.form.submit();' }
