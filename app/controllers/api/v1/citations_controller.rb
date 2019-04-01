@@ -5,7 +5,7 @@ class Api::V1::CitationsController < Api::V1::BaseController
     page                      = ( params[ :page ] || 1 ).to_i
     page_size                 = 200
     offset                    = page_size * ( page - 1 )
-    query                     = params[ :q ] || ''
+    query                     = params[ :q ]
 
     @citation_project_dict    = { }
     @total_count              = 0
@@ -14,16 +14,25 @@ class Api::V1::CitationsController < Api::V1::BaseController
 
     if params[ :project_id ].present?
       project                 = Project.find( params[ :project_id ] )
-      total_arr               = project.citations.by_query( query )
-                                                 .order( pmid: :desc )
-                                                 .includes( :authors, :journal, :keywords )
+      if query
+        total_arr             = project.citations.by_query( query )
+                                    .order( pmid: :desc )
+                                    .includes( :authors, :journal, :keywords )
+      else
+        total_arr             = project.citations.order( pmid: :desc )
+                                    .includes( :authors, :journal, :keywords )
+      end
       citations_projects      = project.citations_projects.where( citation: total_arr )
       @total_count            = citations_projects.length
       @citation_project_dict  = Hash[ *citations_projects.map { | c_p | [ c_p.citation_id,  c_p.id ] }.flatten ]
       @citations              = total_arr[ offset .. offset + page_size - 1 ]
       @more                   = offset + @citations.length < @total_count
     else
-      citations               = Citation.by_query( query )
+      if query
+        citations             = Citation.by_query( query )
+      else
+        citations             = Citation
+      end
       @total_count            = citations.length
       @citations              = citations[ offset .. offset + page_size - 1 ]
       @more                   = offset + @citations.length < total_arr.length
