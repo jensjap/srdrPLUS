@@ -1,0 +1,15 @@
+( function() {
+  $( "#modal-project-delete" ).html( "<%= escape_javascript( render partial: "projects/confirm_deletion" ) %>" ).foundation( "open" );
+
+  let $deleteProjectBtn = $( "#delete-project-btn" )
+
+  $( "#delete-project-confirmation-box" ).on( "keyup", function(){
+    if (this.value.toLowerCase()=="delete") {
+      $deleteProjectBtn.attr( "disabled", false );
+      $deleteProjectBtn.removeClass( "disabled" );
+    } else {
+      $deleteProjectBtn.attr( "disabled", true );
+      $deleteProjectBtn.addClass( "disabled" );
+    }
+  } );
+} )();

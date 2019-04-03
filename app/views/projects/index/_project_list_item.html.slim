@@ -1,14 +1,12 @@
-/= link_to project.name, '#', class: 'accordion-title'
-a.accordion-title href='#'
+a.accordion-title href="#"
   .row
     .column.medium-8
       = project.name
     .column.medium-4
       / This dynamically switches between created_at and updated_at.
-      small = "#{ @order.split('-').first } " + t('time_prefix') + time_ago_in_words(project.send(@order.underscore).in_time_zone(current_user.profile.time_zone)) + t('ago')
+      small = "#{ @order.split("-").first } " + t("time_prefix") + time_ago_in_words(project.send(@order.underscore).in_time_zone(current_user.profile.time_zone)) + t("ago")
 
-.accordion-content data-tab-content=''
-
+.accordion-content data-tab-content=""
   .row
     .column.medium-8
       .column.row
@@ -28,32 +26,34 @@ a.accordion-title href='#'
     .column.medium-4
       .column.row
         span.label Date Created:
-        .callout = project.created_at.in_time_zone(current_user.profile.time_zone).strftime('%b %-d, %Y - %l:%M %P')
+        .callout = project.created_at.in_time_zone(current_user.profile.time_zone).strftime("%b %-d, %Y - %l:%M %P")
       .column.row
         span.label Date Updated:
-        .callout = project.updated_at.in_time_zone(current_user.profile.time_zone).strftime('%b %-d, %Y - %l:%M %P')
+        .callout = project.updated_at.in_time_zone(current_user.profile.time_zone).strftime("%b %-d, %Y - %l:%M %P")
       .column.row
         - if project.publishings.present?
           - if project.publishings.any?(&:approved?)
             span.label.success Date Published:
-            .callout = project.publishings.find(&:approved?).created_at.in_time_zone(current_user.profile.time_zone).strftime('%b %-d, %Y - %l:%M %P')
+            .callout = project.publishings.find(&:approved?).created_at.in_time_zone(current_user.profile.time_zone).strftime("%b %-d, %Y - %l:%M %P")
           - else
             span.label.warning Date Publishing Requested:
             .callout
               ol
                 - project.publishings.each do |publishing|
-                  li = publishing.created_at.in_time_zone(current_user.profile.time_zone).strftime('%b %-d, %Y - %l:%M %P') + \
+                  li = publishing.created_at.in_time_zone(current_user.profile.time_zone).strftime("%b %-d, %Y - %l:%M %P") + \
                        " (by: #{ publishing.user.profile.first_name })"
 
       .column.row
-        = link_to 'Edit Project', edit_project_path(project), class: 'button expanded'
+        = link_to "Edit Project", edit_project_path(project), class: "button expanded"
       - if project.leaders.include?(current_user) && project.key_questions.present?
         .column.row
-          = link_to 'Customize Extraction Form', build_extraction_forms_project_path(project.extraction_forms_projects.first.id, anchor: "panel-tab-#{ project.extraction_forms_projects.first.extraction_forms_projects_sections.first.id }"), class: 'button expanded'
+          = link_to "Customize Extraction Form", build_extraction_forms_project_path(project.extraction_forms_projects.first.id, anchor: "panel-tab-#{ project.extraction_forms_projects.first.extraction_forms_projects_sections.first.id }"), class: "button expanded"
       .column.row
-        = link_to 'List of Extractions', project_extractions_path(project), class: 'button expanded'
+        = link_to "List of Extractions", project_extractions_path(project), class: "button expanded"
       .column.row
-        = link_to 'Export Project Data', export_project_path(project), method: :post, class: 'button expanded'
+        = link_to "Export Project Data", export_project_path(project), method: :post, class: "button expanded"
+      .column.row
+        = link_to "Delete Project", confirm_deletion_project_path(project), method: :get, class: "alert button expanded", remote: true
 
 /  .row.gutter-small
     .column.medium-8
@@ -67,11 +67,11 @@ a.accordion-title href='#'
         .column.large-4
           span.label Extraction Forms:
           .callout = project.extraction_forms.length
-/    .column.medium-4
+    .column.medium-4
       .column.row
         .column.row
-          = link_to 'Edit Project', edit_project_path(project), class: 'button expanded'
+          = link_to "Edit Project", edit_project_path(project), class: "button expanded"
         .column.row
-          = link_to 'List of Extractions', project_extractions_path(project), class: 'button expanded'
+          = link_to "List of Extractions", project_extractions_path(project), class: "button expanded"
         .column.row
-          = link_to 'Export', export_project_path(project), method: :post, class: 'button expanded'
+          = link_to "Export", export_project_path(project), method: :post, class: "button expanded"

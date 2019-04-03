@@ -86,11 +86,14 @@ Rails.application.routes.draw do
   end
   resources :projects, concerns: :paginatable, shallow: true do
 
-    get 'next_assignment', on: :member
-    post 'import_csv', on: :member
-    post 'import_ris', on: :member
-    post 'import_endnote', on: :member
-    post 'import_pubmed', on: :member
+    member do
+      get  'confirm_deletion'
+      get  'next_assignment'
+      post 'import_csv'
+      post 'import_ris'
+      post 'import_endnote'
+      post 'import_pubmed'
+    end
 
     resources :citations do
       collection do

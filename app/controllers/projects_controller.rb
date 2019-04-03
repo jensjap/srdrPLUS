@@ -3,7 +3,8 @@ class ProjectsController < ApplicationController
 
   before_action :set_project, only: [
     :show, :edit, :update, :destroy, :export, :import_csv,
-    :import_pubmed, :import_endnote, :import_ris, :next_assignment
+    :import_pubmed, :import_endnote, :import_ris, :next_assignment,
+    :confirm_deletion
   ]
 
   before_action :skip_authorization, only: [:index, :show, :filter, :export, :new, :create]
@@ -81,6 +82,13 @@ class ProjectsController < ApplicationController
         format.html { render :edit }
         format.json { render json: @project.errors, status: :unprocessable_entity }
       end
+    end
+  end
+
+  # GET /projects/1/confirm_deletion.js
+  def confirm_deletion
+    respond_to do |format|
+      format.js
     end
   end
 

@@ -1,12 +1,15 @@
-- provide(:title, 'Project List')
+- provide(:title, "Project List")
+
+/! Modal for project deletion.
+#modal-project-delete.reveal.large data-reveal=""
 
 /! Row with content header and filter input field.
 .column.row
   .title-heading
     h2 My Projects
-    = link_to new_project_path, class: 'button secondary' do
+    = link_to new_project_path, class: "button secondary" do
       i.fi-plus>
-      = t('.create')
+      = t(".create")
 
 /! Row for toggler => sort by updated at or created at.
 .row.project-controls
@@ -16,25 +19,21 @@
       .input-group-button
         button.button.search
           i.fi-magnifying-glass
-      = search_field_tag 'project-filter', nil, class: 'search-field', placeholder: 'Filter by Name or Description'
+      = search_field_tag "project-filter", nil, class: "search-field", placeholder: "Filter by Name or Description"
 
   .column.medium-4
     .toggle-sort-order.show-for-large
-      button.button.updated-at.active   type='button' data-sort-order='updated-at' Updated at
-      button.button.created-at.disabled type='button' data-sort-order='created-at' Created at
+      button.button.updated-at.active   type="button" data-sort-order="updated-at" Updated at
+      button.button.created-at.disabled type="button" data-sort-order="created-at" Created at
 
 /! Project list.
 .column.row#project-list
-  = render 'projects/index/project_list'
+  = render "projects/index/project_list"
 
 /! Row with pagination and legend.
 .row
-
   .column.medium-5
-    = render 'projects/index/legend'
+    = render "projects/index/legend"
 
   .column.medium-7.pagination
     = paginate @projects, remote: true
-
-br
-

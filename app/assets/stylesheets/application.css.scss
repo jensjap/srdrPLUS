@@ -98,6 +98,10 @@ a {
   &.button {
     color: $white !important;
   }
+
+  &.disabled {
+    pointer-events: none;
+  }
 }
 
 a.button.remove-link {
