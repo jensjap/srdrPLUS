@@ -29,7 +29,9 @@ class ExtractionsController < ApplicationController
 
   # GET /extractions/new
   def new
-    @extraction = @project.extractions.new
+    @extraction           = @project.extractions.new
+    @citations_projects   = @project.citations_projects
+    @projects_users_roles = ProjectsUsersRole.joins(:projects_user).where(projects_users: { project: @project })
 
     authorize(@extraction.project, policy_class: ExtractionPolicy)
 
@@ -39,6 +41,10 @@ class ExtractionsController < ApplicationController
 
   # GET /extractions/1/edit
   def edit
+    @project              = @extraction.project
+    @citations_projects   = @extraction.project.citations_projects
+    @projects_users_roles = ProjectsUsersRole.joins(:projects_user).where(projects_users: { project: @project })
+
     authorize(@extraction.project, policy_class: ExtractionPolicy)
   end
 

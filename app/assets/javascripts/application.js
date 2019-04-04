@@ -153,4 +153,6 @@ document.addEventListener( 'turbolinks:load', function() {
     $( orderable_list ).sortable({ onUpdate: on_update, onStart: on_start });
     saved_state = $( orderable_list ).sortable( 'toArray' );
   }
+
+  $( "select.select2" ).select2();
 } );
