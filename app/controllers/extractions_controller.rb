@@ -41,9 +41,8 @@ class ExtractionsController < ApplicationController
 
   # GET /extractions/1/edit
   def edit
-    @project              = @extraction.project
     @citations_projects   = @extraction.project.citations_projects
-    @projects_users_roles = ProjectsUsersRole.joins(:projects_user).where(projects_users: { project: @project })
+    @projects_users_roles = ProjectsUsersRole.joins(:projects_user).where(projects_users: { project: @extraction.project })
 
     authorize(@extraction.project, policy_class: ExtractionPolicy)
   end
