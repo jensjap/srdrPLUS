@@ -106,9 +106,6 @@ class ExtractionsController < ApplicationController
   # GET /projects/1/extractions/comparison_tool
   def comparison_tool
     authorize(@project, policy_class: ExtractionPolicy)
-    @extractions = policy_scope(Extraction).
-      includes(projects_users_role: { projects_user: { user: :profile } })
-    @extractions.map(&:ensure_extraction_form_structure)
 
     @citation_groups = @project.citation_groups
 
