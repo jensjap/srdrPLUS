@@ -1,8 +1,6 @@
 #citations-header[style="font-size: 1rem;margin-bottom:1.5rem;color:#410093;"]
-  span id="citations-count"
-    | 0
-  '
-  | citations in this project
+  span> id="citations-count" 0
+  |citations in this project
 
 div.row
   div.columns.medium-9
@@ -26,7 +24,7 @@ div.row
             option[value='citation-authors'] Authors
             option[value='citation-journal'] Journal
             option[value='citation-journal-date'] Year
-        
+
         #insert-citation-div[ style="margin-bottom: 1rem;" ]
           = link_to_add_association 'Add Citation', f, :citations_projects, partial: 'projects/edit/added_citations_project_fields', 'data-association-insertion-node' => '#cp-insertion-node', 'data-association-insertion-method' => 'prepend'
           '
@@ -39,9 +37,9 @@ div.row
           /= f.simple_fields_for :citations_projects, @citations_projects do |c_p_f|
             = render 'projects/edit/citations_project_fields', f: c_p_f
 
-          / NOTE: Using CitationsProject.first as the collection looks odd, 
-          /       but it immediately gets replaced by citations fetched from server 
-          /       and link_to_remove_associaton javascript works properly. 
+          / NOTE: Using CitationsProject.first as the collection looks odd,
+          /       but it immediately gets replaced by citations fetched from server
+          /       and link_to_remove_associaton javascript works properly.
           = f.simple_fields_for :citations_projects, CitationsProject.first do |c_p_f|
             = render 'projects/edit/citations_project_fields', f: c_p_f
       #leyleyley
