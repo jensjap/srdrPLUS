@@ -251,17 +251,21 @@ class Project < ApplicationRecord
 
   def import_citations_from_pubmed( file )
     key_counter = 0
-    pmid_arr = File.readlines( file.path )
-    primary_id = CitationType.find_by( name: 'Primary' ).id
 
-    h_arr = []
-    Bio::PubMed.efetch( pmid_arr ).each do |cit_txt|
+    # Let's ensure that the list of PMIDs has pure integers and unique entries.
+    pmid_arr    = File.readlines( file.path ).map(&:chomp).map(&:to_i).uniq
+    primary_id  = CitationType.find_by( name: 'Primary' ).id
+    h_arr       = []
+
+    citations_already_in_system, citations_need_fetching = process_list_of_pmids(pmid_arr)
+
+    Bio::PubMed.efetch( citations_need_fetching ).each do |cit_txt|
       row_h = {}
       cit_h = Bio::MEDLINE.new( cit_txt ).pubmed
       ### will add as primary citation by default, there is no way to figure that out from pubmed
-      if cit_h[ 'PMID' ].present? then row_h[ 'pmid' ] = cit_h[ 'PMID' ].strip end
-      if cit_h[ 'TI' ].present? then row_h[ 'name' ] = cit_h[ 'TI' ].strip end
-      if cit_h[ 'AB' ].present? then row_h[ 'abstract' ] = cit_h[ 'AB' ].strip end
+      if cit_h[ 'PMID' ].present? then row_h[ 'pmid' ]     = cit_h[ 'PMID' ].strip end
+      if cit_h[ 'TI' ].present?   then row_h[ 'name' ]     = cit_h[ 'TI' ].strip end
+      if cit_h[ 'AB' ].present?   then row_h[ 'abstract' ] = cit_h[ 'AB' ].strip end
       row_h[ 'citation_type_id' ] = primary_id
 
       #keywords
@@ -298,15 +302,17 @@ class Project < ApplicationRecord
 
       #journal
       j_h = {}
-      if cit_h[ 'TA' ].present? then j_h[ 'name' ] = cit_h[ 'TA' ].strip end
+      if cit_h[ 'TA' ].present? then j_h[ 'name' ]             = cit_h[ 'TA' ].strip end
       if cit_h[ 'DP' ].present? then j_h[ 'publication_date' ] = cit_h[ 'DP' ].strip end
-      if cit_h[ 'VI' ].present? then j_h[ 'volume' ] = cit_h[ 'VI' ].strip end
-      if cit_h[ 'IP' ].present? then j_h[ 'issue' ] = cit_h[ 'IP' ].strip end
+      if cit_h[ 'VI' ].present? then j_h[ 'volume' ]           = cit_h[ 'VI' ].strip end
+      if cit_h[ 'IP' ].present? then j_h[ 'issue' ]            = cit_h[ 'IP' ].strip end
       row_h[ 'journal_attributes' ] = j_h
 
       h_arr << row_h
     end
+
     self.citations << Citation.create!( h_arr )
+    self.citations << citations_already_in_system
   end
 
   def import_citations_from_ris( file )
@@ -481,8 +487,39 @@ class Project < ApplicationRecord
     self.citations << Citation.create!( h_arr )
   end
 
+  def has_duplicate_citations?
+    citations_projects
+      .select(:citation_id, :project_id)
+      .group(:citation_id, :project_id)
+      .having("count(*) > 1").length > 1
+  end
+
+  def dedupe_citations
+    # Duplicate citations.
+    xxx = citations_projects
+      .select(:citation_id, :project_id)
+      .group(:citation_id, :project_id)
+      .having("count(*) > 1")
+      .each do |cp|
+      cp.dedupe
+    end
+  end
 
   private
+    def process_list_of_pmids(listOf_pmids)
+      citations_already_in_system = []
+      citations_need_fetching     = []
+
+      listOf_pmids.each do |pmid|
+        if c = Citation.find_by(pmid: pmid)
+          citations_already_in_system << c
+        else
+          citations_need_fetching << pmid
+        end
+      end
+
+      return citations_already_in_system, citations_need_fetching
+    end
 
     #def separate_pubmed_keywords( kw_string )
     #  return kw_string.split( "; " ).map { |str| str.strip }
