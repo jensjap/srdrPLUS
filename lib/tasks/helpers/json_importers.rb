@@ -659,8 +659,8 @@ module JsonImporters
               rss = ResultStatisticSection.find_or_create_by! result_statistic_section_type: rss_type,
                                                               population: pop
 
-              rsshash['comparisons']&.keys&.each do |compid|
-                comp = Comparison.create!
+              rsshash['comparisons']&.each do |compid, comphash|
+                comp = Comparison.create! is_anova: comphash["is_anova"]
                 ComparisonsResultStatisticSection.create! result_statistic_section: rss, comparison: comp
                 @id_map['comparison'][compid.to_i] = comp
               end
