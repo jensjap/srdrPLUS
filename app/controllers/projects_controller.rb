@@ -153,7 +153,8 @@ class ProjectsController < ApplicationController
     if params[:project].present? and params[:project][:citation_file].present?
       @project.import_citations_from_csv( params[:project][:citation_file] )
     end
-    redirect_to edit_project_path(@project, anchor: 'panel-citations')
+    #redirect_to edit_project_path(@project, anchor: 'panel-citations')
+    redirect_to project_citations_path(@project, anchor: 'panel-citations')
   end
 
   def import_pubmed
@@ -161,7 +162,8 @@ class ProjectsController < ApplicationController
     if params[:project].present? and params[:project][:citation_file].present?
       @project.import_citations_from_pubmed( params[:project][:citation_file] )
     end
-    redirect_to edit_project_path(@project, anchor: 'panel-citations')
+    #redirect_to edit_project_path(@project, anchor: 'panel-citations')
+    redirect_to project_citations_path(@project, anchor: 'panel-citations')
   end
 
   def import_ris
@@ -169,7 +171,8 @@ class ProjectsController < ApplicationController
     if params[:project].present? and params[:project][:citation_file].present?
       @project.import_citations_from_ris( params[:project][:citation_file] )
     end
-    redirect_to edit_project_path(@project, anchor: 'panel-citations')
+    #redirect_to edit_project_path(@project, anchor: 'panel-citations')
+    redirect_to project_citations_path(@project, anchor: 'panel-citations')
   end
 
   def import_endnote
@@ -177,7 +180,8 @@ class ProjectsController < ApplicationController
     if params[:project].present? and params[:project][:citation_file].present?
       @project.import_citations_from_enl( params[:project][:citation_file] )
     end
-    redirect_to edit_project_path(@project, anchor: 'panel-citations')
+    #redirect_to edit_project_path(@project, anchor: 'panel-citations')
+    redirect_to project_citations_path(@project, anchor: 'panel-citations')
   end
 
   def next_assignment
