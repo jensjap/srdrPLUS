@@ -42,7 +42,6 @@ class Citation < ApplicationRecord
     super
   end
 
-
   def keyword_ids=(tokens)
     tokens.map { |token|
       resource = Keyword.new
