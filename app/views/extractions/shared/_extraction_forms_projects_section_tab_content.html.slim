@@ -9,7 +9,7 @@
           efp: efp,
           efps: efps
       - is_first = false
-
+      
     - else
       .tabs-panel id="panel-tab-#{ efps.id.to_s }"
         = render "extractions/#{ action_name }/#{ efps.extraction_forms_projects_section_type.name.parameterize.underscore }",

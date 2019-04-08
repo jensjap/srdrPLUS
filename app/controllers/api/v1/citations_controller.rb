@@ -31,7 +31,7 @@ class Api::V1::CitationsController < Api::V1::BaseController
       if query
         citations             = Citation.by_query( query )
       else
-        citations             = Citation
+        citations             = Citation.all
       end
       @total_count            = citations.length
       @citations              = citations[ offset .. offset + page_size - 1 ]

@@ -7,27 +7,49 @@
         th Arm Comparison(s)
         - @result_statistic_section.comparisons.each do |bac|
           th
-            div style='text-align: center;'
-              - bac.comparate_groups.first.comparates.each do |c|
-                span.has-tip.tip-right data-tooltip='' aria-haspopup='true' data-options='show_on:small' title="Description: #{ c.comparable_element.comparable.type1.description }"
-                  = c.comparable_element.comparable.type1.short_name_and_description
-                br
-            div style='text-align: center; font-weight: normal;' vs.
-            div style='text-align: center;'
-              - bac.comparate_groups.second.comparates.each do |c|
-                span.has-tip.tip-right data-tooltip='' aria-haspopup='true' data-options='show_on:small' title="Description: #{ c.comparable_element.comparable.type1.description }"
-                  = c.comparable_element.comparable.type1.short_name_and_description
-                br
+            - if not bac.is_anova
+              div style='text-align: center;'
+                - bac.comparate_groups.first.comparates.each do |c|
+                  span.has-tip.tip-right data-tooltip='' aria-haspopup='true' data-options='show_on:small' title="Description: #{ c.comparable_element.comparable.type1.description }"
+                    = c.comparable_element.comparable.type1.short_name_and_description
+                  br
+              div style='text-align: center; font-weight: normal;' vs.
+              div style='text-align: center;'
+                - bac.comparate_groups.second.comparates.each do |c|
+                  span.has-tip.tip-right data-tooltip='' aria-haspopup='true' data-options='show_on:small' title="Description: #{ c.comparable_element.comparable.type1.description }"
+                    = c.comparable_element.comparable.type1.short_name_and_description
+                  br
+            - else
+              div style='text-align: center;'
+                  span.has-tip.tip-right data-tooltip='' aria-haspopup='true' data-options='show_on:small' title="Description: Analysis of variance"
+                    | All Arms (ANOVA)
+                  br
         th
-          = simple_form_for @result_statistic_section, url: add_comparison_result_statistic_section_path, method: :post do |f|
-            = f.input :comparison_type, as: :hidden, input_html: { value: :bac }
-            .links.add-comparison
-              = link_to_add_association f, :comparisons, \
-                class: 'button tiny', \
-                partial: 'result_statistic_sections/edit/comparison_fields', \
-                render_options: { locals: { comparison: :bac } } do
-                i.fi-plus>
-                | Add Comparison
+          .bac-comparison
+            = simple_form_for @result_statistic_section, url: add_comparison_result_statistic_section_path, method: :post do |f|
+              = f.input :comparison_type, as: :hidden, input_html: { value: :bac }
+              .links.add-comparison
+                = link_to_add_association f, :comparisons, \
+                  class: 'button tiny', \
+                  partial: 'result_statistic_sections/edit/comparison_fields', \
+                  render_options: { locals: { comparison: :bac } } do
+                  i.fi-plus>
+                  | Add Comparison
+
+          /We have a whole different form, because it is difficult and error prone to remove the comparate groups,
+            and add them back when needed, one possible way to avoid this is to keep the comparate groups in ANOVA,
+            but it is unclear whether these comparate groups would break data collection/export/import
+          .anova-comparison
+            = simple_form_for @result_statistic_section, url: add_comparison_result_statistic_section_path, method: :post do |f|
+              = f.input :comparison_type, as: :hidden, input_html: { value: :bac }
+              .links.add-anova style='display: none;'
+                = link_to_add_association f, :comparisons, \
+                  class: 'button tiny', \
+                  partial: 'result_statistic_sections/edit/anova_fields', \
+                  render_options: { locals: { comparison: :bac } } do
+                  i.fi-plus>
+                  | Add ANOVA
+
 
     tbody
       - @result_statistic_section.timepoints.each do |tp|

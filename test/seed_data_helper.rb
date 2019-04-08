@@ -83,6 +83,9 @@ module SeedData
       @type1_type_categorical = Type1Type.find_by(name: 'Categorical')
       @type1_type_continuous = Type1Type.find_by(name: 'Continuous')
 
+      # ANOVA Comparison
+      Comparison.create!(is_anova: true)
+
       # ResultStatisticSectionTypes.
       @descriptive_statistics_result_statistic_section_type  = ResultStatisticSectionType.create!(name: 'Descriptive Statistics')
       @between_arm_comparisons_result_statistic_section_type = ResultStatisticSectionType.create!(name: 'Between Arm Comparisons')

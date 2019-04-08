@@ -3,7 +3,7 @@ ul#extraction-forms-projects-tabs.tabs data-deep-link='true' data-deep-link-smud
   - @extraction_forms_projects.each do |efp|
     - ef_name = efp.extraction_form.name
     - if is_first
-      li.tabs-title.is-active
+      li.tabs-title
         = link_to ef_name,
           "#panel-extraction-forms-project-#{ efp.id.to_s }",
           title: "Extraction Form: #{ ef_name }"

@@ -108,7 +108,7 @@ class ResultStatisticSectionsController < ApplicationController
     def result_statistic_section_params
       params.require(:result_statistic_section).permit(
         measure_ids: [],
-        comparisons_attributes: [:id,
+        comparisons_attributes: [:id, :is_anova,
           comparate_groups_attributes: [:id,
             comparates_attributes: [:id,
               comparable_element_attributes: [:id, :comparable_type, :comparable_id]]]])

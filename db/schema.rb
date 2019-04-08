@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190305125522) do
+ActiveRecord::Schema.define(version: 20190328213219) do
 
   create_table "abstrackr_settings", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "profile_id"
@@ -211,9 +211,10 @@ ActiveRecord::Schema.define(version: 20190305125522) do
   end
 
   create_table "comparisons", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
     t.datetime "deleted_at"
+    t.boolean  "is_anova",   default: false, null: false
     t.index ["deleted_at"], name: "index_comparisons_on_deleted_at", using: :btree
   end
 
