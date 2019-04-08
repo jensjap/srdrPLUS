@@ -14,13 +14,25 @@ a#toggle-sections-link.button.tiny
       i.fi-arrow-left
 
 .tabs-content data-tabs-content='extraction-forms-projects-tabs'
+  - is_first = true
   - @extraction_forms_projects.each do |efp|
-    .tabs-panel.is-active id="panel-extraction-forms-project-#{ efp.id.to_s }"
-      .row
-        .toggle-sections-link-medium-2-0-hide.column.medium-2
-          = render 'extractions/shared/extraction_forms_projects_section_tab_links',
-            efp: efp
+    - if is_first
+      .tabs-panel.is-active id="panel-extraction-forms-project-#{ efp.id.to_s }"
+        .row
+          .toggle-sections-link-medium-2-0-hide.column.medium-2
+            = render 'extractions/shared/extraction_forms_projects_section_tab_links',
+              efp: efp
+          .toggle-sections-link-medium-10-12.column.medium-10
+            = render "extractions/shared/extraction_forms_projects_section_tab_content",
+              efp: efp
+      - is_first = false
 
-        .toggle-sections-link-medium-10-12.column.medium-10
-          = render "extractions/shared/extraction_forms_projects_section_tab_content",
-            efp: efp
+    - else
+      .tabs-panel id="panel-extraction-forms-project-#{ efp.id.to_s }"
+        .row
+          .toggle-sections-link-medium-2-0-hide.column.medium-2
+            = render 'extractions/shared/extraction_forms_projects_section_tab_links',
+              efp: efp
+          .toggle-sections-link-medium-10-12.column.medium-10
+            = render "extractions/shared/extraction_forms_projects_section_tab_content",
+              efp: efp

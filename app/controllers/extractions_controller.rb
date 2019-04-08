@@ -6,8 +6,8 @@ class ExtractionsController < ApplicationController
 
   before_action :set_project, only: [:index, :new, :create, :comparison_tool, :compare, :consolidate]
   before_action :set_extraction, only: [:show, :edit, :update, :destroy, :work]
-  before_action :set_extractions, only: [:compare, :consolidate, :edit_type1_across_extractions]
-  before_action :ensure_extraction_form_structure, only: [:comparison_tool, :consolidate, :work]
+  before_action :set_extractions, only: [:consolidate, :edit_type1_across_extractions]
+  before_action :ensure_extraction_form_structure, only: [:consolidate, :work]
 
   before_action :skip_policy_scope, except: [:compare, :consolidate, :edit_type1_across_extractions]
   before_action :skip_authorization, only: [:index, :show]
@@ -16,6 +16,7 @@ class ExtractionsController < ApplicationController
   # GET /projects/1/extractions.json
   def index
     @extractions = @project.extractions
+    @citation_groups = @project.citation_groups
 
     add_breadcrumb 'edit project', edit_project_path(@project)
     add_breadcrumb 'extractions',  :project_extractions_path
@@ -28,7 +29,9 @@ class ExtractionsController < ApplicationController
 
   # GET /extractions/new
   def new
-    @extraction = @project.extractions.new
+    @extraction           = @project.extractions.new
+    @citations_projects   = @project.citations_projects
+    @projects_users_roles = ProjectsUsersRole.joins(:projects_user).where(projects_users: { project: @project })
 
     authorize(@extraction.project, policy_class: ExtractionPolicy)
 
@@ -38,6 +41,9 @@ class ExtractionsController < ApplicationController
 
   # GET /extractions/1/edit
   def edit
+    @citations_projects   = @extraction.project.citations_projects
+    @projects_users_roles = ProjectsUsersRole.joins(:projects_user).where(projects_users: { project: @extraction.project })
+
     authorize(@extraction.project, policy_class: ExtractionPolicy)
   end
 
@@ -104,7 +110,7 @@ class ExtractionsController < ApplicationController
 
   # GET /projects/1/extractions/comparison_tool
   def comparison_tool
-    authorize(@extraction.project, policy_class: ExtractionPolicy)
+    authorize(@project, policy_class: ExtractionPolicy)
 
     @citation_groups = @project.citation_groups
 
@@ -115,7 +121,7 @@ class ExtractionsController < ApplicationController
 
   # GET /projects/1/extractions/consolidate
   def consolidate
-    authorize(@extraction.project, policy_class: ExtractionPolicy)
+    authorize(@project, policy_class: ExtractionPolicy)
 
     @extraction_forms_projects = @project.extraction_forms_projects
     @consolidated_extraction   = @project.consolidated_extraction(@extractions.first.citations_project_id, current_user.id)

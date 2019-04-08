@@ -80,7 +80,7 @@ body {
 }
 
 .content {
-  //margin-top: 10px;
+  min-height: 100vh;
 }
 
 a {
@@ -97,6 +97,10 @@ a {
 
   &.button {
     color: $white !important;
+  }
+
+  &.disabled {
+    pointer-events: none;
   }
 }
 
@@ -130,7 +134,7 @@ body div.top-bar {
   padding: 3px 3px 6px 3px;
 
   .top-bar-right {
-    margin-top: 16px;
+    margin-top: 9px;
 
     a.button {
       border: 1px solid white;

@@ -1,0 +1,8 @@
+h2 WARNING You are about to delete the project:
+h2 = "\"#{ @project.name }\""
+h4 To proceed, please follow the instructions below.
+h4 Type "DELETE" and press the button to confirm project deletion.
+= text_field :confirm, :text, id: "delete-project-confirmation-box"
+= link_to 'Delete Project', @project, method: :delete,\
+  id: "delete-project-btn", class: "alert button disabled",\
+  data: { disable_with: "Please wait..." }, disabled: true

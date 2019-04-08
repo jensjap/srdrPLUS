@@ -32,4 +32,10 @@ class CitationsProject < ApplicationRecord
   has_many :tags, through: :taggings
 
   accepts_nested_attributes_for :citation, reject_if: :all_blank
+
+  def label_method
+    citation.pmid.present? ?
+      "#{ citation.name } (PMID: #{ citation.pmid })" :
+      citation.name
+  end
 end
