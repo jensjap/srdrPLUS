@@ -93,6 +93,7 @@ Rails.application.routes.draw do
       post 'import_ris'
       post 'import_endnote'
       post 'import_pubmed'
+      post 'dedupe_citations'
     end
 
     resources :citations do

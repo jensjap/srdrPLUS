@@ -1,6 +1,8 @@
 #citations-header[style="font-size: 1rem;margin-bottom:1.5rem;color:#410093;"]
   span> id="citations-count" 0
   |citations in this project
+  - if @project.has_duplicate_citations?
+    = link_to " (Dedupe citations in this project)", dedupe_citations_project_path(@project), method: :POST
 
 div.row
   div.columns.medium-9

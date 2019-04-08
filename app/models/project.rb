@@ -495,9 +495,7 @@ class Project < ApplicationRecord
   end
 
   def dedupe_citations
-    # Duplicate citations.
-    xxx = citations_projects
-      .select(:citation_id, :project_id)
+    citations_projects
       .group(:citation_id, :project_id)
       .having("count(*) > 1")
       .each do |cp|

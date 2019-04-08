@@ -45,4 +45,8 @@ class ProjectPolicy < ApplicationPolicy
   def next_assignment?
     project_contributor?
   end
+
+  def dedupe_citations?
+    project_leader?
+  end
 end

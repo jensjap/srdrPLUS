@@ -38,4 +38,27 @@ class CitationsProject < ApplicationRecord
       "#{ citation.name } (PMID: #{ citation.pmid })" :
       citation.name
   end
+
+  def dedupe
+    citations_projects = CitationsProject.where(
+      citation_id: self.citation_id,
+      project_id: self.project_id
+    ).to_a
+    master_citations_project = citations_projects.shift
+    citations_projects.each do |citation|
+      citation.extractions.each do |e|
+        e.dup.update_attributes(citations_project_id: master_citations_project.id)
+      end
+      citation.labels.each do |l|
+        l.dup.update_attributes(citations_project_id: master_citations_project.id)
+      end
+      citation.notes.each do |n|
+        n.dup.update_attributes(notable_id: master_citations_project.id)
+      end
+      citation.taggings.each do |t|
+        t.dup.update_attributes(taggable_id: master_citations_project.id)
+      end
+      citation.destroy
+    end
+  end
 end

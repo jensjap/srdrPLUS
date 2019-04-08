@@ -4,7 +4,7 @@ class ProjectsController < ApplicationController
   before_action :set_project, only: [
     :show, :edit, :update, :destroy, :export, :import_csv,
     :import_pubmed, :import_endnote, :import_ris, :next_assignment,
-    :confirm_deletion
+    :confirm_deletion, :dedupe_citations
   ]
 
   before_action :skip_authorization, only: [:index, :show, :filter, :export, :new, :create]
@@ -153,6 +153,7 @@ class ProjectsController < ApplicationController
     if params[:project].present? and params[:project][:citation_file].present?
       @project.import_citations_from_csv( params[:project][:citation_file] )
     end
+
     #redirect_to edit_project_path(@project, anchor: 'panel-citations')
     redirect_to project_citations_path(@project, anchor: 'panel-citations')
   end
@@ -171,6 +172,7 @@ class ProjectsController < ApplicationController
     if params[:project].present? and params[:project][:citation_file].present?
       @project.import_citations_from_ris( params[:project][:citation_file] )
     end
+
     #redirect_to edit_project_path(@project, anchor: 'panel-citations')
     redirect_to project_citations_path(@project, anchor: 'panel-citations')
   end
@@ -180,6 +182,7 @@ class ProjectsController < ApplicationController
     if params[:project].present? and params[:project][:citation_file].present?
       @project.import_citations_from_enl( params[:project][:citation_file] )
     end
+
     #redirect_to edit_project_path(@project, anchor: 'panel-citations')
     redirect_to project_citations_path(@project, anchor: 'panel-citations')
   end
@@ -188,7 +191,15 @@ class ProjectsController < ApplicationController
     authorize(@project)
     projects_user = ProjectsUser.where( project: @project, user: current_user ).first
     next_assignment = projects_user.assignments.first
+
     redirect_to controller: :assignments, action: :screen, id: next_assignment.id
+  end
+
+  def dedupe_citations
+    authorize(@project)
+    @project.dedupe_citations
+
+    redirect_to project_citations_path(@project)
   end
 
   private
