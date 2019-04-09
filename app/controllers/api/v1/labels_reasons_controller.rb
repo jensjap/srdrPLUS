@@ -8,7 +8,6 @@ module Api
       
       #api :CREATE, '/v1/note', 'creates a new note with specified tag and citations_project'
       def create
-        byebug
       end
 
       private

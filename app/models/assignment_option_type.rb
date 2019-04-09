@@ -1,2 +1,0 @@
-class AssignmentOptionType < ApplicationRecord
-end

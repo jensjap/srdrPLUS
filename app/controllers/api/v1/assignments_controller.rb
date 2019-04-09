@@ -52,7 +52,7 @@ module Api
                 group_by { |note| note.notable_id }
 
 
-        @assignment_options = @assignment.assignment_options.includes( :assignment_option_type, :label_type )
+        @screening_options = @assignment.project.screening_options.includes( :screening_option_type, :label_type )
 
         render 'screen.json'
       end

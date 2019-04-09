@@ -9,11 +9,11 @@ module Api
         query         = params[ :q ] || ''
 
         all_reasons   = [ ]
-        if @assignment.assignment_option_types.where( name: "ONLY_LEAD_REASONS" ).length > 0
+        if @assignment.project.screening_option_types.where( name: "ONLY_LEAD_REASONS" ).length > 0
           all_reasons = Reason.by_project_lead( @assignment.project ).by_query( query )
         else
           all_reasons = ( Reason.by_project_lead( @assignment.project ).by_query( query ) +
-                          Reason.by_projects_user( @assignment.projects_user ).by_query( query ) ).distinct
+                          Reason.by_projects_user( @assignment.projects_user ).by_query( query ) ).uniq
         end
         offset        = [ page_size * ( page - 1 ), all_reasons.length ].min
         @reasons      = all_reasons[ offset .. offset + page_size - 1 ]

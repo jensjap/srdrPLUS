@@ -79,7 +79,6 @@ document.addEventListener 'turbolinks:load', ->
               q: params.term
               page: params.page || 1
 
-
 ######### CITATION MANAGEMENT
     ##### CHECK WHICH CONTROLLER ACTION THIS PAGE CORRESPONDS TO
     ##### ONLY RUN THIS CODE IF WE ARE IN INDEX CITATIONS PAGE
