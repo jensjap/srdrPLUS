@@ -43,6 +43,11 @@ document.addEventListener 'turbolinks:load', ->
       return
 
 
+########## DISTILLER IMPORT
+    if $( 'body.projects.new' ).length == 1
+      $( '#distiller-import-checkbox' ).on 'change', ( ) ->
+        $( '.distiller-import-panel' ).toggleClass( 'hide' )
+
 
 ########## TASK MANAGEMENT
     if $( 'body.projects.edit' ).length == 1

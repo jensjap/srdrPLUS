@@ -54,6 +54,7 @@ class ProjectsController < ApplicationController
   # POST /projects
   # POST /projects.json
   def create
+    byebug
     @project = Project.new(project_params)
 
     respond_to do |format|
@@ -150,43 +151,52 @@ class ProjectsController < ApplicationController
     redirect_to edit_project_path(@project)
   end
 
+
+  def import_distiller
+    authorize(@project)
+    DistillerImportJob.perform_later(current_user.id, @project.id, distiller_params)
+    flash[:success] = "Import request submitted for project '#{ @project.name }'. You will be notified by email of its completion."
+    #redirect_to edit_project_path(@project)
+  end
+
   def import_csv
     authorize(@project)
-    if params[:project].present? and params[:project][:citation_file].present?
-      @project.import_citations_from_csv( params[:project][:citation_file] )
+    if not citation_import_params.empty?
+      CsvImportJob.perform_later(current_user.id, @project.id, citation_import_params[:citation_file].path)
+      flash[:success] = "Import request submitted for project '#{ @project.name }'. You will be notified by email of its completion."
+      #@project.import_citations_from_csv( citation_import_params[:citation_file] )
     end
-
-    #redirect_to edit_project_path(@project, anchor: 'panel-citations')
-    redirect_to project_citations_path(@project, anchor: 'panel-citations')
+    redirect_to project_citations_path(@project)
   end
 
   def import_pubmed
     authorize(@project)
-    if params[:project].present? and params[:project][:citation_file].present?
-      @project.import_citations_from_pubmed( params[:project][:citation_file] )
+    if not citation_import_params.empty?
+      PubmedImportJob.perform_later(current_user.id, @project.id, citation_import_params[:citation_file].path)
+      flash[:success] = "Import request submitted for project '#{ @project.name }'. You will be notified by email of its completion."
+      #@project.import_citations_from_pubmed( citation_import_params[:citation_file] )
     end
-    #redirect_to edit_project_path(@project, anchor: 'panel-citations')
-    redirect_to project_citations_path(@project, anchor: 'panel-citations')
+    redirect_to project_citations_path(@project)
   end
 
   def import_ris
     authorize(@project)
-    if params[:project].present? and params[:project][:citation_file].present?
-      @project.import_citations_from_ris( params[:project][:citation_file] )
+    if not citation_import_params.empty?
+      RisImportJob.perform_later(current_user.id, @project.id, citation_import_params[:citation_file].path)
+      flash[:success] = "Import request submitted for project '#{ @project.name }'. You will be notified by email of its completion."
+      #@project.import_citations_from_ris( citation_import_params[:citation_file] )
     end
-
-    #redirect_to edit_project_path(@project, anchor: 'panel-citations')
-    redirect_to project_citations_path(@project, anchor: 'panel-citations')
+    redirect_to project_citations_path(@project)
   end
 
   def import_endnote
     authorize(@project)
-    if params[:project].present? and params[:project][:citation_file].present?
-      @project.import_citations_from_enl( params[:project][:citation_file] )
+    if not citation_import_params.empty?
+      EnlImportJob.perform_later(current_user.id, @project.id, citation_import_params[:citation_file].path)
+      flash[:success] = "Import request submitted for project '#{ @project.name }'. You will be notified by email of its completion."
+      #@project.import_citations_from_enl( citation_import_params[:citation_file] )
     end
-
-    #redirect_to edit_project_path(@project, anchor: 'panel-citations')
-    redirect_to project_citations_path(@project, anchor: 'panel-citations')
+    redirect_to project_citations_path(@project)
   end
 
   def next_assignment
@@ -228,7 +238,17 @@ class ProjectsController < ApplicationController
                 {screening_options_attributes: [:id, :_destroy, :project_id, :label_type_id, :screening_option_type_id]})
     end
 
-      def make_undo_link
+    def distiller_params
+      # what kind of files do we want to import?
+      params.require(:project).permit(:citation_file, :design_file, :arms_file, :outcomes_file, :bc_file, :rob_file)
+    end
+
+    def citation_import_params
+      # what kind of files do we want to import?
+      params.require(:project).permit(:citation_file)
+    end
+
+    def make_undo_link
         #!!! This is wrong. Just because there's an older version doesn't mean we should be able to revert to it.
       #    This could have been called when Assignment was created.
       if @project.versions.present?

@@ -14,6 +14,18 @@
       = f.input :name, required: true, hint: 'Project name cannot be blank', autofocus: true
       = f.input :description, input_html: { rows: 4 }
 
+    .distiller-import
+      input type="checkbox" id="distiller-import-checkbox"
+      label for="distiller-import-checkbox"
+        | Start a new project from a Distiller SR export
+      .distiller-import-panel.hide
+        = f.input :citation_file, as: :file, label: 'Citation References'
+        = f.input :design_file, as: :file, label: 'Design Details'
+        = f.input :arms_file, as: :file, label:  'Arms and Arm Details'
+        = f.input :outcomes_file, as: :file, label: 'Outcomes and Outcome Details'
+        = f.input :bc_file, as: :file, label: 'Baseline Characteristics'
+        = f.input :rob_file, as: :file, label: 'Risk of Bias Assessment'
+
     .form-actions
       = f.button :submit
 
