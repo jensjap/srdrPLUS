@@ -108,7 +108,7 @@ class PubmedImportJob < ApplicationJob
         if kw_arr.length == 1 then kw_arr = cit_h[ 'KW' ].split( / \| |\|/ ) end
         row_h[ 'keywords_attributes' ] = {}
         kw_arr.each do |kw|
-          row_h[ 'keywords_attributes' ] [Time.now.to_i + key_counter ] = { name: kw }
+          row_h[ 'keywords_attributes' ][Time.now.to_i + key_counter ] = { name: kw }
           key_counter += 1
         end
       end

@@ -37,7 +37,7 @@ class EnlImportJob < ApplicationJob
       if cit_h[ 'K' ].present?
         ### splitting kw strings still a huge pain
         kw_arr = []
-        if cit_h[ 'K' ].is_a? Enumerable
+        if cit_h[ 'K' ].is_a?
           kw_arr = cit_h[ 'K' ]
         else
           kw_arr = cit_h[ 'K' ].split( "     " )
@@ -45,11 +45,11 @@ class EnlImportJob < ApplicationJob
         if kw_arr.length == 1 then kw_arr = cit_h[ 'K' ].split( /, |,/ ) end
         if kw_arr.length == 1 then kw_arr = cit_h[ 'K' ].split( / \/ |\// ) end
         if kw_arr.length == 1 then kw_arr = cit_h[ 'K' ].split( / \| |\|/ ) end
-        if kw_arr.length == 1 then kw_arr = kw_str.split( /\n| \n/ ) end
+        if kw_arr.length == 1 then kw_arr = cit_h[ 'K' ].split( /\n| \n/ ) end
 
         row_h[ 'keywords_attributes' ] = {}
         kw_arr.each do |kw|
-          row_h[ 'keywords_attributes' ] [Time.now.to_i + key_counter ] = { name: kw }
+          row_h[ 'keywords_attributes' ][Time.now.to_i + key_counter ] = { name: kw }
           key_counter += 1
         end
       end

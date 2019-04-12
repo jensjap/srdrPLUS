@@ -152,9 +152,14 @@ class ProjectsController < ApplicationController
   end
 
 
-  def import_distiller
-    authorize(@project)
+  def create_from_distiller
     DistillerImportJob.perform_later(current_user.id, @project.id, distiller_params)
+    flash[:success] = "Import request submitted for project '#{ @project.name }'. You will be notified by email of its completion."
+    #redirect_to edit_project_path(@project)
+  end
+
+  def create_from_json
+    JsonImportJob.perform_later(current_user.id, @project.id, distiller_params)
     flash[:success] = "Import request submitted for project '#{ @project.name }'. You will be notified by email of its completion."
     #redirect_to edit_project_path(@project)
   end

@@ -120,15 +120,15 @@ document.addEventListener 'turbolinks:load', ->
               keywords.push( keyword )
 
             journal = {  }
-            journal[ 'name' ] = data.getElementsByTagName( 'Journal' )[ 0 ]. \
-                                getElementsByTagName( 'Title' )[ 0 ].childNodes[ 0 ].nodeValue || ''
-            journal[ 'issue' ] = data.getElementsByTagName( 'JournalIssue' )[ 0 ]. \
-                                getElementsByTagName( 'Issue' )[ 0 ].childNodes[ 0 ].nodeValue || ''
-            journal[ 'volume' ] = data.getElementsByTagName( 'JournalIssue' )[ 0 ]. \
-                                getElementsByTagName( 'Volume' )[ 0 ].childNodes[ 0 ].nodeValue || ''
+            journal[ 'name' ] = data.getElementsByTagName( 'Journal' )[ 0 ] \
+                                    .getElementsByTagName( 'Title' )[ 0 ].childNodes[ 0 ].nodeValue || ''
+            journal[ 'issue' ] = data.getElementsByTagName( 'JournalIssue' )[ 0 ] \
+                                     .getElementsByTagName( 'Issue' )[ 0 ].childNodes[ 0 ].nodeValue || ''
+            journal[ 'volume' ] = data.getElementsByTagName( 'JournalIssue' )[ 0 ] \
+                                      .getElementsByTagName( 'Volume' )[ 0 ].childNodes[ 0 ].nodeValue || ''
             ## My philosophy is to use publication year whenever possible, as researchers seem to be most concerned about the year, and it is easier to parse and sort - Birol
 
-            dateNode = data.getElementsByTagName( 'JournalIssue' )[ 0 ]. \
+            dateNode = data.getElementsByTagName( 'JournalIssue' )[ 0 ] \
             getElementsByTagName( 'PubDate' )[ 0 ]
 
             if dateNode.getElementsByTagName( 'Year' ).length > 0
@@ -161,28 +161,28 @@ document.addEventListener 'turbolinks:load', ->
             type: 'GET'
             data: { q: author }
             url: '/api/v1/authors.json' ).then ( data ) ->
-            # create the option and append to Select2
-            option = new Option( data[ 'results' ][ 0 ][ 'text' ], data[ 'results' ][ 0 ][ 'id' ], true, true )
-            authorselect.append(option).trigger 'change'
-            # manually trigger the `select2:select` event
-            authorselect.trigger
-              type: 'select2:select'
-              params: data: data[ 'results' ][ 0 ]
-            return
+              # create the option and append to Select2
+              option = new Option( data[ 'results' ][ 0 ][ 'text' ], data[ 'results' ][ 0 ][ 'id' ], true, true )
+              authorselect.append(option).trigger 'change'
+              # manually trigger the `select2:select` event
+              authorselect.trigger
+                type: 'select2:select'
+                params: data: data[ 'results' ][ 0 ]
+              return
         for keyword in citation[ 'keywords' ]
           keywordselect = $('.KEYWORDS select')
           $.ajax(
             type: 'GET'
             data: { q: keyword }
             url: '/api/v1/keywords.json' ).then ( data ) ->
-            # create the option and append to Select2
-            option = new Option( data[ 'results' ][ 0 ][ 'text' ], data[ 'results' ][ 0 ][ 'id' ], true, true )
-            keywordselect.append(option).trigger 'change'
-            # manually trigger the `select2:select` event
-            keywordselect.trigger
-              type: 'select2:select'
-              params: data: data[ 'results' ][ 0 ]
-            return
+              # create the option and append to Select2
+              option = new Option( data[ 'results' ][ 0 ][ 'text' ], data[ 'results' ][ 0 ][ 'id' ], true, true )
+              keywordselect.append(option).trigger 'change'
+              # manually trigger the `select2:select` event
+              keywordselect.trigger
+                type: 'select2:select'
+                params: data: data[ 'results' ][ 0 ]
+              return
 
         return
 
