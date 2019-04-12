@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190328213219) do
+ActiveRecord::Schema.define(version: 20190412194121) do
 
   create_table "abstrackr_settings", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "profile_id"
@@ -559,12 +559,12 @@ ActiveRecord::Schema.define(version: 20190328213219) do
   end
 
   create_table "key_questions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
-    t.string   "name"
+    t.text     "name",       limit: 65535
     t.datetime "deleted_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
     t.index ["deleted_at"], name: "index_key_questions_on_deleted_at", using: :btree
-    t.index ["name"], name: "index_key_questions_on_name", unique: true, using: :btree
+    t.index ["name"], name: "index_key_questions_on_name", unique: true, length: { name: 255 }, using: :btree
   end
 
   create_table "key_questions_projects", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|

@@ -79,7 +79,11 @@ class ProjectImporter
         q_tuples.sort! { |t1, t2| t1[0] <=> t2[0] }
         q_tuples.each.with_index do |tuple, index|
           q = tuple[1]
-          q.ordering.update!( position: index + 1 )
+          begin
+            q.ordering.update!( position: index + 1 )
+          rescue
+            byebug
+          end
         end
       end
 
@@ -259,11 +263,16 @@ class ProjectImporter
 
     j = Journal.find_or_create_by!(name: chash['journal']['name'])
 
-    c = Citation.create!({name: chash['name'],
-                          abstract: chash['abstract'],
-                          refman: chash['refman'],
-                          pmid: chash['pmid'],
-                          journal: j})
+    begin
+      c = Citation.create!({citation_type: CitationType.first,
+                            name: chash['name'],
+                            abstract: chash['abstract'],
+                            refman: chash['refman'],
+                            pmid: chash['pmid'],
+                            journal: j})
+    rescue => err
+      p err.backtrace
+    end
 
     chash['keywords']&.values&.each do |kwhash|
       kw = Keyword.find_or_create_by!(name: kwhash['name'])
@@ -702,9 +711,13 @@ class ProjectImporter
 
               if rssmhash['records'].present?
                 rssmhash['records']['tps_comparisons_rssms']&.values&.each do |tchash|
+                  begin
                   tcr = TpsComparisonsRssm.create!({timepoint: @id_map['tp'][tchash['timepoint_id']],
                                                     comparison: @id_map['comparison'][tchash['comparison_id']],
                                                     result_statistic_sections_measure: rssm})
+                  rescue
+                    byebug
+                  end
 
                   Record.create!({recordable_type: 'TpsComparisonsRssm',
                                   recordable_id: tcr.id,
