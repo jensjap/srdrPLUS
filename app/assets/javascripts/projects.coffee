@@ -44,10 +44,24 @@ document.addEventListener 'turbolinks:load', ->
 
 
 ########## DISTILLER IMPORT
-    if $( 'body.projects.new' ).length == 1
-      $( '#distiller-import-checkbox' ).on 'change', ( ) ->
-        $( '.distiller-import-panel' ).toggleClass( 'hide' )
+   # if $( 'body.projects.new' ).length == 1
+   #   $( '#distiller-import-checkbox' ).on 'change', ( ) ->
+   #     $( '.distiller-import-panel' ).toggleClass( 'hide' )
+   #   $( '#json-import-checkbox' ).on 'change', ( ) ->
+   #     $( '.json-import-panel' ).toggleClass( 'hide' )
 
+    if $( 'body.projects.new' ).length == 1
+      $( '#create-type' ).on 'change', ( e ) ->
+        $( '.input.file input' ).val('')
+        if $( e.target ).val() == "empty"
+          $( '.distiller-import-panel' ).addClass( 'hide' )
+          $( '.json-import-panel' ).addClass( 'hide' )
+        else if $( e.target ).val() == "distiller"
+          $( '.distiller-import-panel' ).removeClass( 'hide' )
+          $( '.json-import-panel' ).addClass( 'hide' )
+        else if $( e.target ).val() == "json"
+          $( '.distiller-import-panel' ).addClass( 'hide' )
+          $( '.json-import-panel' ).removeClass( 'hide' )
 
 ########## TASK MANAGEMENT
     if $( 'body.projects.edit' ).length == 1

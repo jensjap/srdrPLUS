@@ -17,7 +17,7 @@ class JsonImportJob < ApplicationJob
       fhash = JSON.parse(File.read(@json_file))
     rescue
       Rails.logger.debug "Cannot parse file as JSON: #{@json_file}"
-      next
+      return
     end
 
     phash = fhash["project"]

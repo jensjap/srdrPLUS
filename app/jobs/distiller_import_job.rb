@@ -9,6 +9,7 @@ class DistillerImportJob < ApplicationJob
     @user = User.find( args.second )
 
 
+
     ImportMailer.notify_import_completion(@user.id, @project.id).deliver_later
   end
 end
