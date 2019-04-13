@@ -263,16 +263,12 @@ class ProjectImporter
 
     j = Journal.find_or_create_by!(name: chash['journal']['name'])
 
-    begin
-      c = Citation.create!({citation_type: CitationType.first,
-                            name: chash['name'],
-                            abstract: chash['abstract'],
-                            refman: chash['refman'],
-                            pmid: chash['pmid'],
-                            journal: j})
-    rescue => err
-      p err.backtrace
-    end
+    c = Citation.create!({citation_type: CitationType.first,
+                          name: chash['name'],
+                          abstract: chash['abstract'],
+                          refman: chash['refman'],
+                          pmid: chash['pmid'],
+                          journal: j})
 
     chash['keywords']&.values&.each do |kwhash|
       kw = Keyword.find_or_create_by!(name: kwhash['name'])
@@ -646,7 +642,7 @@ class ProjectImporter
         eefpst1 = @id_map['eefpst1'][eefpst1id.to_i]
 
         eefpst1hash['populations']&.each do |popid, pophash|
-          pop_name = PopulationName.find_or_create_by! name: pophash['population_name']['name'], description: pophash['population_name']['description']
+          pop_name = PopulationName.find_or_create_by! name: pophash['population_name']['name'], description: (pophash['population_name']['description'] || "")
           pop = ExtractionsExtractionFormsProjectsSectionsType1Row.find_or_create_by! extractions_extraction_forms_projects_sections_type1: eefpst1,
                                                                                       population_name: pop_name
 
@@ -794,7 +790,7 @@ class ProjectImporter
 
         Record.find_or_create_by! recordable_type: 'ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField',
                                   recordable_id: eefpsqrcf.id,
-                                  name: record_name
+                                  name: (record_name || "")
       end
     end
   end

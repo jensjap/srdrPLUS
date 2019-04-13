@@ -328,6 +328,7 @@ json.project do
                                 json.comparisons do
                                   rss.comparisons.each do |c|
                                     json.set! c.id do
+                                      json.is_anova c.is_anova
                                       json.set! :comparate_groups do
                                         c.comparate_groups.each do |cg|
                                           json.set! cg.id do
