@@ -9,7 +9,7 @@ json.results do
       json.citations_project_id @citation_project_dict[ citation.id ]
     end
     json.name citation.name
-    json.abstract citation.abstract
+    json.abstract citation.abstract.nil? ? '' : citation.abstract.encode('utf-8', :invalid => :replace, :undef => :replace, :replace => '_')
     json.pmid citation.pmid
     json.refman citation.refman
     if citation.journal.present?
