@@ -25,12 +25,32 @@ Rails.application.routes.draw do
       resources :keywords, only: [:index]
       resources :users, only: [:index]
       resources :authors, only: [:index]
+      resources :colors, only: [:index]
+      resources :keywords, only: [:index]
+      resources :terms, only: [:index]
       resources :timepoint_names, only: [:index]
-      resources :citations, only: [:index] do 
+
+      resources :labels_reasons, only: [:create, :destroy]
+      resources :projects_users_term_groups_colors, only: [:create, :update, :destroy] do
+        resources :terms, only: [:index]
+      end
+      resources :projects_users_term_groups_colors_terms, only: [:create, :destroy]
+      resources :taggings, only: [:create, :destroy]
+
+      resources :notes, only: [:create, :update, :destroy]
+
+      resources :assignments do
+        resources :reasons, only: [:index]
+        resources :tags, only: [:index]
+        resources :projects_users_term_groups_colors, only: [:create, :index]
+      end
+
+      resources :citations, only: [:index] do
         collection do
           get 'titles'
         end
       end
+
       resources :projects, shallow: true do
         resources :projects_users_roles, only: [:index]
         resources :assignments do
@@ -50,19 +70,11 @@ Rails.application.routes.draw do
           end
         end
       end
-      resources :assignments do
-        resources :tags, only: [:index]
-        resources :reasons, only: [:index]
-      end
-      resources :taggings, only: [:create, :destroy]
-      resources :notes, only: [:create, :update, :destroy]
-      resources :labels_reasons, only: [:create, :destroy]
       resources :orderings do
         collection do
           patch 'update_positions'
         end
       end
-
     end
   end
 

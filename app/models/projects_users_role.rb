@@ -20,6 +20,8 @@ class ProjectsUsersRole < ApplicationRecord
   has_many :taggings, dependent: :destroy, inverse_of: :projects_users_role
   has_many :tags, through: :taggings, dependent: :destroy
 
+  has_many :notes, dependent: :destroy, inverse_of: :projects_users_role
+
   def get_projects_users_role_user_information_markup
     profile = self.projects_user.user.profile
     unless profile.first_name.blank? &&

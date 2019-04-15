@@ -283,18 +283,22 @@ ul {
   }
 
   #sort-select {
-    max-width: 4.5rem;
+    max-width: 5rem;
+    padding-top: 0;
+    padding-bottom: 0;
+    padding-left: 0.25rem;
+    font-size: 0.85rem;
   }
 
   #search-box {
     flex-grow: 100;
-    margin-right: 1.5rem;
+    margin-right: 1rem;
     input {
       width: 100%;
     }
   }
 
-  #search-box, #sort-button, #sort-select {
+  #search-box input, #sort-button, #sort-select {
     height: 2rem;
   }
 }

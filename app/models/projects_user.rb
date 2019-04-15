@@ -13,4 +13,9 @@ class ProjectsUser < ApplicationRecord
 
   has_many :taggings, through: :projects_users_roles, dependent: :destroy
   has_many :tags, through: :taggings, dependent: :destroy
+
+  has_many :projects_users_term_groups_colors, dependent: :destroy
+  has_many :projects_users_term_groups_colors_terms, through: :projects_users_term_groups_colors, dependent: :destroy
+  has_many :terms, through: :projects_users_term_groups_colors_terms, dependent: :destroy
+  has_many :term_groups_colors, through: :projects_users_term_groups_colors, dependent: :destroy
 end

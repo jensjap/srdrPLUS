@@ -200,7 +200,11 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
         timepoint_name_ids = []
 
         first_row.extractions_extraction_forms_projects_sections_type1_row_columns.each do |c|
-          timepoint_name_ids << [c.timepoint_name.id, c.is_baseline]
+          begin
+            timepoint_name_ids << [c.timepoint_name.id, c.is_baseline]
+          rescue
+            byebug
+            end
         end
 
         rest_rows.each do |r|

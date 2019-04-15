@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190328213219) do
+ActiveRecord::Schema.define(version: 20190412194121) do
 
   create_table "abstrackr_settings", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "profile_id"
@@ -161,6 +161,11 @@ ActiveRecord::Schema.define(version: 20190328213219) do
     t.index ["citation_id"], name: "index_citations_tasks_on_citation_id", using: :btree
     t.index ["deleted_at"], name: "index_citations_tasks_on_deleted_at", using: :btree
     t.index ["task_id"], name: "index_citations_tasks_on_task_id", using: :btree
+  end
+
+  create_table "colors", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string "hex_code"
+    t.string "name"
   end
 
   create_table "comparable_elements", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -554,12 +559,12 @@ ActiveRecord::Schema.define(version: 20190328213219) do
   end
 
   create_table "key_questions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
-    t.string   "name"
+    t.text     "name",       limit: 65535
     t.datetime "deleted_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
     t.index ["deleted_at"], name: "index_key_questions_on_deleted_at", using: :btree
-    t.index ["name"], name: "index_key_questions_on_name", unique: true, using: :btree
+    t.index ["name"], name: "index_key_questions_on_name", unique: true, length: { name: 255 }, using: :btree
   end
 
   create_table "key_questions_projects", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -854,6 +859,24 @@ ActiveRecord::Schema.define(version: 20190328213219) do
     t.index ["projects_user_id", "role_id", "deleted_at"], name: "index_pur_on_pu_id_r_id_deleted_at_uniq", unique: true, using: :btree
     t.index ["projects_user_id"], name: "index_projects_users_roles_on_projects_user_id", using: :btree
     t.index ["role_id"], name: "index_projects_users_roles_on_role_id", using: :btree
+  end
+
+  create_table "projects_users_term_groups_colors", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "term_groups_color_id"
+    t.integer  "projects_user_id"
+    t.datetime "deleted_at"
+    t.index ["deleted_at"], name: "index_projects_users_term_groups_colors_on_deleted_at", using: :btree
+    t.index ["projects_user_id"], name: "index_projects_users_term_groups_colors_on_projects_user_id", using: :btree
+    t.index ["term_groups_color_id"], name: "index_projects_users_term_groups_colors_on_term_groups_color_id", using: :btree
+  end
+
+  create_table "projects_users_term_groups_colors_terms", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "projects_users_term_groups_color_id"
+    t.integer  "term_id"
+    t.datetime "deleted_at"
+    t.index ["deleted_at"], name: "index_projects_users_term_groups_colors_terms_on_deleted_at", using: :btree
+    t.index ["projects_users_term_groups_color_id"], name: "index_putgcp_on_putc_id", using: :btree
+    t.index ["term_id"], name: "index_putgcp_on_terms_id", using: :btree
   end
 
   create_table "publishings", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -1198,6 +1221,21 @@ ActiveRecord::Schema.define(version: 20190328213219) do
     t.index ["task_type_id"], name: "index_tasks_on_task_type_id", using: :btree
   end
 
+  create_table "term_groups", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string "name"
+  end
+
+  create_table "term_groups_colors", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer "term_group_id"
+    t.integer "color_id"
+    t.index ["color_id"], name: "index_term_groups_colors_on_color_id", using: :btree
+    t.index ["term_group_id"], name: "index_term_groups_colors_on_term_group_id", using: :btree
+  end
+
+  create_table "terms", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string "name"
+  end
+
   create_table "timepoint_names", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "name"
     t.string   "unit",       default: "", null: false
@@ -1415,6 +1453,10 @@ ActiveRecord::Schema.define(version: 20190328213219) do
   add_foreign_key "projects_users", "users"
   add_foreign_key "projects_users_roles", "projects_users"
   add_foreign_key "projects_users_roles", "roles"
+  add_foreign_key "projects_users_term_groups_colors", "projects_users"
+  add_foreign_key "projects_users_term_groups_colors", "term_groups_colors"
+  add_foreign_key "projects_users_term_groups_colors_terms", "projects_users_term_groups_colors"
+  add_foreign_key "projects_users_term_groups_colors_terms", "terms"
   add_foreign_key "publishings", "users"
   add_foreign_key "quality_dimension_questions", "quality_dimension_sections"
   add_foreign_key "quality_dimension_questions_quality_dimension_options", "quality_dimension_options"
@@ -1445,6 +1487,8 @@ ActiveRecord::Schema.define(version: 20190328213219) do
   add_foreign_key "taggings", "tags"
   add_foreign_key "tasks", "projects"
   add_foreign_key "tasks", "task_types"
+  add_foreign_key "term_groups_colors", "colors"
+  add_foreign_key "term_groups_colors", "term_groups"
   add_foreign_key "tps_arms_rssms", "extractions_extraction_forms_projects_sections_type1_row_columns", column: "timepoint_id"
   add_foreign_key "tps_arms_rssms", "extractions_extraction_forms_projects_sections_type1s"
   add_foreign_key "tps_arms_rssms", "result_statistic_sections_measures"

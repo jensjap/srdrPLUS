@@ -14,6 +14,41 @@
       = f.input :name, required: true, hint: 'Project name cannot be blank', autofocus: true
       = f.input :description, input_html: { rows: 4 }
 
+        /input type="checkbox" id="distiller-import-checkbox"
+        /label for="distiller-import-checkbox"
+          | Start a new project from a Distiller SR export
+        /input type="checkbox" id="json-import-checkbox"
+        /label for="json-import-checkbox"
+          | Start a new project from an SRDR+ JSON export
+
+      /input type="radio" value="empty" name="create-type" checked="" Create an empty project
+      /br
+      /input type="radio" value="json" name="create-type" Create project from an SRDR+ JSON export
+      /br
+      /input type="radio" value="distiller" name="create-type" Create project from a Distiller SR export
+
+    .callout
+      select#create-type
+        option value="empty" Create an empty project
+        option value="json" Create project from an SRDR+ JSON export
+        option value="distiller" Create project from a Distiller SR export
+
+      .distiller-import-panel.hide
+        = f.input :citation_file, as: :file, label: 'Citation References'
+        hr
+        = f.input :design_file, as: :file, label: 'Design Details'
+        hr
+        = f.input :arms_file, as: :file, label:  'Arms and Arm Details'
+        hr
+        = f.input :outcomes_file, as: :file, label: 'Outcomes and Outcome Details'
+        hr
+        = f.input :bc_file, as: :file, label: 'Baseline Characteristics'
+        hr
+        = f.input :rob_file, as: :file, label: 'Risk of Bias Assessment'
+
+      .json-import-panel.hide
+        = f.input :json_file, as: :file, label: false
+
     .form-actions
       = f.button :submit
 

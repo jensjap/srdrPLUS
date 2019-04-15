@@ -6,7 +6,7 @@ class Citation < ApplicationRecord
   has_paper_trail
   searchkick
 
-  belongs_to :citation_type
+  belongs_to :citation_type, optional: true
 
   has_one :journal, dependent: :destroy
 

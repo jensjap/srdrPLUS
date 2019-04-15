@@ -43,6 +43,25 @@ document.addEventListener 'turbolinks:load', ->
       return
 
 
+########## DISTILLER IMPORT
+   # if $( 'body.projects.new' ).length == 1
+   #   $( '#distiller-import-checkbox' ).on 'change', ( ) ->
+   #     $( '.distiller-import-panel' ).toggleClass( 'hide' )
+   #   $( '#json-import-checkbox' ).on 'change', ( ) ->
+   #     $( '.json-import-panel' ).toggleClass( 'hide' )
+
+    if $( 'body.projects.new' ).length == 1
+      $( '#create-type' ).on 'change', ( e ) ->
+        $( '.input.file input' ).val('')
+        if $( e.target ).val() == "empty"
+          $( '.distiller-import-panel' ).addClass( 'hide' )
+          $( '.json-import-panel' ).addClass( 'hide' )
+        else if $( e.target ).val() == "distiller"
+          $( '.distiller-import-panel' ).removeClass( 'hide' )
+          $( '.json-import-panel' ).addClass( 'hide' )
+        else if $( e.target ).val() == "json"
+          $( '.distiller-import-panel' ).addClass( 'hide' )
+          $( '.json-import-panel' ).removeClass( 'hide' )
 
 ########## TASK MANAGEMENT
     if $( 'body.projects.edit' ).length == 1
@@ -115,15 +134,15 @@ document.addEventListener 'turbolinks:load', ->
               keywords.push( keyword )
 
             journal = {  }
-            journal[ 'name' ] = data.getElementsByTagName( 'Journal' )[ 0 ]. \
-                                getElementsByTagName( 'Title' )[ 0 ].childNodes[ 0 ].nodeValue || ''
-            journal[ 'issue' ] = data.getElementsByTagName( 'JournalIssue' )[ 0 ]. \
-                                getElementsByTagName( 'Issue' )[ 0 ].childNodes[ 0 ].nodeValue || ''
-            journal[ 'volume' ] = data.getElementsByTagName( 'JournalIssue' )[ 0 ]. \
-                                getElementsByTagName( 'Volume' )[ 0 ].childNodes[ 0 ].nodeValue || ''
+            journal[ 'name' ] = data.getElementsByTagName( 'Journal' )[ 0 ] \
+                                    .getElementsByTagName( 'Title' )[ 0 ].childNodes[ 0 ].nodeValue || ''
+            journal[ 'issue' ] = data.getElementsByTagName( 'JournalIssue' )[ 0 ] \
+                                     .getElementsByTagName( 'Issue' )[ 0 ].childNodes[ 0 ].nodeValue || ''
+            journal[ 'volume' ] = data.getElementsByTagName( 'JournalIssue' )[ 0 ] \
+                                      .getElementsByTagName( 'Volume' )[ 0 ].childNodes[ 0 ].nodeValue || ''
             ## My philosophy is to use publication year whenever possible, as researchers seem to be most concerned about the year, and it is easier to parse and sort - Birol
 
-            dateNode = data.getElementsByTagName( 'JournalIssue' )[ 0 ]. \
+            dateNode = data.getElementsByTagName( 'JournalIssue' )[ 0 ] \
             getElementsByTagName( 'PubDate' )[ 0 ]
 
             if dateNode.getElementsByTagName( 'Year' ).length > 0
@@ -156,28 +175,28 @@ document.addEventListener 'turbolinks:load', ->
             type: 'GET'
             data: { q: author }
             url: '/api/v1/authors.json' ).then ( data ) ->
-            # create the option and append to Select2
-            option = new Option( data[ 'results' ][ 0 ][ 'text' ], data[ 'results' ][ 0 ][ 'id' ], true, true )
-            authorselect.append(option).trigger 'change'
-            # manually trigger the `select2:select` event
-            authorselect.trigger
-              type: 'select2:select'
-              params: data: data[ 'results' ][ 0 ]
-            return
+              # create the option and append to Select2
+              option = new Option( data[ 'results' ][ 0 ][ 'text' ], data[ 'results' ][ 0 ][ 'id' ], true, true )
+              authorselect.append(option).trigger 'change'
+              # manually trigger the `select2:select` event
+              authorselect.trigger
+                type: 'select2:select'
+                params: data: data[ 'results' ][ 0 ]
+              return
         for keyword in citation[ 'keywords' ]
           keywordselect = $('.KEYWORDS select')
           $.ajax(
             type: 'GET'
             data: { q: keyword }
             url: '/api/v1/keywords.json' ).then ( data ) ->
-            # create the option and append to Select2
-            option = new Option( data[ 'results' ][ 0 ][ 'text' ], data[ 'results' ][ 0 ][ 'id' ], true, true )
-            keywordselect.append(option).trigger 'change'
-            # manually trigger the `select2:select` event
-            keywordselect.trigger
-              type: 'select2:select'
-              params: data: data[ 'results' ][ 0 ]
-            return
+              # create the option and append to Select2
+              option = new Option( data[ 'results' ][ 0 ][ 'text' ], data[ 'results' ][ 0 ][ 'id' ], true, true )
+              keywordselect.append(option).trigger 'change'
+              # manually trigger the `select2:select` event
+              keywordselect.trigger
+                type: 'select2:select'
+                params: data: data[ 'results' ][ 0 ]
+              return
 
         return
 

@@ -85,7 +85,7 @@ namespace :abstrackr do
     system("python " + Rails.root.join("lib", "tasks", "helpers", "find_pmids.py").to_s + " " + Rails.root.join("lib", "tasks", "temp", "terms.txt").to_s + " " + Rails.root.join("lib", "tasks", "temp", "pmids.csv").to_s)
   end
 
-  def log(f, str)
+  def my_log(f, str)
     f.flock(File::LOCK_EX)
     f.puts str
     f.flock(File::LOCK_UN)
@@ -217,7 +217,7 @@ namespace :abstrackr do
       user.save!
       user.profile.update({ username: 'consensus', first_name: 'consensus' })
     else
-      log(log_file, "PID: " + pid.to_s + " consensus user does not exist")
+      my_log(log_file, "PID: " + pid.to_s + " consensus user does not exist")
     end
     user_dict[ 0 ] = user.id
 
@@ -229,7 +229,7 @@ namespace :abstrackr do
         user.save
         user.profile.update({ username: old_u['username'], first_name: old_u['fullname'] })
       else
-        log(log_file, "PID: " + pid.to_s + " user does not exist. email: " + (old_u['email'] || "nil").to_s)
+        my_log(log_file, "PID: " + pid.to_s + " user does not exist. email: " + (old_u['email'] || "nil").to_s)
       end
       user_dict[ old_u['id'] ] = user.id
     end
@@ -254,9 +254,9 @@ namespace :abstrackr do
         end
       else
         if user_dict[old_u_p['user_id']].nil? 
-          log(log_file, "PID: " + pid.to_s + " user does not exist. old user id: " + (old_u_p['user_id'] || "nil").to_s)
+          my_log(log_file, "PID: " + pid.to_s + " user does not exist. old user id: " + (old_u_p['user_id'] || "nil").to_s)
         else
-          log(log_file, "PID: " + pid.to_s + " project does not exist. old project id: " + (old_u_p['project_id'] || "nil").to_s)
+          my_log(log_file, "PID: " + pid.to_s + " project does not exist. old project id: " + (old_u_p['project_id'] || "nil").to_s)
         end
       end
     end
@@ -377,9 +377,9 @@ namespace :abstrackr do
         label = Label.create!({ value: old_l['label'], citations_project: citations_project, user_id: user_dict[old_l['user_id']]})
       else
         if citations_project.nil?
-          log(log_file, "PID: " + pid.to_s + " ciations_project does not exist. old citation id: " + (old_l['study_id'] || "nil").to_s)
+          my_log(log_file, "PID: " + pid.to_s + " ciations_project does not exist. old citation id: " + (old_l['study_id'] || "nil").to_s)
         else
-          log(log_file, "PID: " + pid.to_s + " user does not exist. old user id: " + (old_l['user_id'] || "nil").to_s)
+          my_log(log_file, "PID: " + pid.to_s + " user does not exist. old user id: " + (old_l['user_id'] || "nil").to_s)
         end
       end
     end
@@ -392,7 +392,7 @@ namespace :abstrackr do
         task = Task.create!({ project_id: project_dict[old_t['project_id']], task_type: TaskType.find_by(name: task_type_dict[old_t['task_type']]), num_assigned: old_t['num_assigned'] })
         task_dict[ old_t['id'] ] = task.id
       else
-        log(log_file, "PID: " + pid.to_s + " project does not exist. old project id: " + (old_t['project_id'] || "nil").to_s)
+        my_log(log_file, "PID: " + pid.to_s + " project does not exist. old project id: " + (old_t['project_id'] || "nil").to_s)
       end
     end
 
@@ -402,9 +402,9 @@ namespace :abstrackr do
           citations_task = CitationsTask.create!({ citation_id: citation_dict[old_c_t['citation_id']], task_id: task_dict[old_c_t['task_id']] })
         else
           if citation_dict[old_c_t['citation_id']].nil?
-            log(log_file, "PID: " + pid.to_s + " citations does not exist. old citation id: " + (old_c_t['citation_id'] || "nil").to_s)
+            my_log(log_file, "PID: " + pid.to_s + " citations does not exist. old citation id: " + (old_c_t['citation_id'] || "nil").to_s)
           else
-            log(log_file, "PID: " + pid.to_s + " task does not exist. old task id: " + (old_c_t['task_id'] || "nil").to_s)
+            my_log(log_file, "PID: " + pid.to_s + " task does not exist. old task id: " + (old_c_t['task_id'] || "nil").to_s)
           end
         end
       rescue
@@ -418,20 +418,20 @@ namespace :abstrackr do
           projects_user = ProjectsUser.find_by!({ project_id: project_dict[old_a['project_id']], user_id: user_dict[old_a['user_id']] })
         else
           if user_dict[old_a['user_id']].nil? 
-            log(log_file, "PID: " + pid.to_s + " user does not exist. old user id: " + (old_a['user_id'] || "nil").to_s)
+            my_log(log_file, "PID: " + pid.to_s + " user does not exist. old user id: " + (old_a['user_id'] || "nil").to_s)
           else
-            log(log_file, "PID: " + pid.to_s + " project does not exist. old project id: " + old_a['project_id'].to_s)
+            my_log(log_file, "PID: " + pid.to_s + " project does not exist. old project id: " + old_a['project_id'].to_s)
           end
         end
         if not projects_user.nil?
           projects_users_role = ProjectsUsersRole.find_by({ projects_user_id: projects_user.id  })
         else
-          log(log_file, "PID: " + pid.to_s + " projects_user does not exist. old user id: " + (old_a['user_id'] || "nil").to_s + ". old project id: " + (old_a['project_id'] || "nil").to_s)
+          my_log(log_file, "PID: " + pid.to_s + " projects_user does not exist. old user id: " + (old_a['user_id'] || "nil").to_s + ". old project id: " + (old_a['project_id'] || "nil").to_s)
         end
         if not projects_users_role.nil?
           assignment = Assignment.create!({ task_id: task_dict[old_a['task_id']], projects_users_role: projects_users_role, done_so_far: old_a['done_so_far'], date_assigned: old_a['date_assigned'], date_due: old_a['date_due'], done: old_a['done'] })
         else
-          log(log_file, "PID: " + pid.to_s + " projects_user_role does not exist. old user id: " + (old_a['user_id'] || "nil").to_s + ". old project id: " + (old_a['project_id'] || "nil").to_s)
+          my_log(log_file, "PID: " + pid.to_s + " projects_user_role does not exist. old user id: " + (old_a['user_id'] || "nil").to_s + ". old project id: " + (old_a['project_id'] || "nil").to_s)
         end
       rescue
         byebug
@@ -457,9 +457,9 @@ namespace :abstrackr do
           note = Note.find_or_create_by!({ user_id: user_dict[old_n['creator_id']], notable_type: CitationsProject.name, notable_id: citations_project_dict[old_n['citation_id']], value: note_content })
         else
           if user_dict[old_n['creator_id']].nil?
-            log(log_file, "PID: " + pid.to_s + " user does not exist. old user id: " + (old_a['user_id'] || "nil").to_s)
+            my_log(log_file, "PID: " + pid.to_s + " user does not exist. old user id: " + (old_a['user_id'] || "nil").to_s)
           else
-            log(log_file, "PID: " + pid.to_s + " citations_project does not exist. old citation id: " + (old_a['citation_id'] || "nil").to_s) 
+            my_log(log_file, "PID: " + pid.to_s + " citations_project does not exist. old citation id: " + (old_a['citation_id'] || "nil").to_s) 
           end
         end
       end
@@ -481,9 +481,9 @@ namespace :abstrackr do
         tagging = Tagging.find_or_create_by!({ user_id: user_dict[old_tag['creator_id']], taggable_type: CitationsProject.name, taggable_id: citations_project_dict[old_tag['citation_id']], tag_id: tag_dict[old_tag['tag_id']] })
       else
         if user_dict[old_n['creator_id']].nil?
-          log(log_file, "PID: " + pid.to_s + "user does not exist. old user id: " + (old_a['user_id'] || "nil").to_s)
+          my_log(log_file, "PID: " + pid.to_s + "user does not exist. old user id: " + (old_a['user_id'] || "nil").to_s)
         else
-          log(log_file, "PID: " + pid.to_s + "citations_project does not exist. old citation id: " + (old_a['citation_id'] || "").to_s)
+          my_log(log_file, "PID: " + pid.to_s + "citations_project does not exist. old citation id: " + (old_a['citation_id'] || "").to_s)
         end
       end
     end
