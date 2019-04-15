@@ -56,7 +56,7 @@ class ExtractionsController < ApplicationController
 
     respond_to do |format|
       if @extraction.save
-        format.html { redirect_to project_extractions_url(@extraction.project), notice: 'Extraction was successfully created.' }
+        format.html { redirect_to work_extraction_path(@extraction), notice: "Extraction was successfully created. You can now begin extracting data." }
         format.json { render :show, status: :created, location: @extraction }
       else
         format.html { render :new }
