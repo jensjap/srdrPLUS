@@ -11,7 +11,6 @@ html class='no-js' lang='en'
     /= stylesheet_link_tag    params[:controller], media: 'all', 'data-turbolinks-track': 'reload'
     /= javascript_include_tag params[:controller], 'data-turbolinks-track': 'reload'
     = csrf_meta_tag
-    = render 'toastr_rails/flash'
     link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Halant:400,700|Noto+Sans:400,400i,700"
 
   body class="#{controller_name} #{action_name}"
@@ -37,5 +36,8 @@ html class='no-js' lang='en'
             == yield
             = render 'shared/scroll_top_wrapper'
 
+
     iframe src="/ahrq_footer.html" text="AHRQ Footer" title="AHRQ Footer" height="350" width="100%" frameborder="0" scrolling="no" seemless
       p Browser does not support iframes. Please update your browser to for a better viewing experience.
+
+    = render 'toastr_rails/flash'

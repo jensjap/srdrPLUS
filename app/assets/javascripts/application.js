@@ -52,10 +52,9 @@ toastr.options = {
   'showMethod': 'slideDown',
   'hideMethod': 'slideUp',
   'closeMethod': 'slideUp',
-  'positionClass': 'toast-bottom-right',
-  'closeDuration': 400,
-  'timeOut': 10000,
-  'extendedTimeOut': 10000,
+  'closeDuration': '400',
+  'timeOut': '10000',
+  'extendedTimeOut': '10000'
 };
 
 document.addEventListener( 'turbolinks:load', function() {
