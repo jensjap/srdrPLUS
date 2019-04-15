@@ -493,10 +493,24 @@ class Project < ApplicationRecord
   end
 
   def has_duplicate_citations?
-    citations_projects
+    is_any_citation_added_to_project_multiple_times =
+      citations_projects
       .select(:citation_id, :project_id)
       .group(:citation_id, :project_id)
-      .having("count(*) > 1").length > 1
+      .having("count(*) > 1").length > 0
+
+    is_the_same_citation_added_to_the_database_multiple_times_and_referenced_multiple_times =
+      citations
+      .select(:id)
+      .group(
+        :citation_type_id,
+        :name,
+        :refman,
+        :pmid,
+        :abstract)
+      .having("count(*) > 1").length > 0
+
+    return is_any_citation_added_to_project_multiple_times || is_the_same_citation_added_to_the_database_multiple_times_and_referenced_multiple_times
   end
 
   def dedupe_citations
