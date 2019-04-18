@@ -39,26 +39,34 @@ class CitationsProject < ApplicationRecord
       citation.name
   end
 
+  # We find all CitationsProject entries that have the exact same citation_id
+  # and project_id. Then we pick the first (oldest) one. We refer to it as the
+  # "Master CP" and link associations from all other CitationsProject entries
+  # to the "Master CP"
   def dedupe
     citations_projects = CitationsProject.where(
       citation_id: self.citation_id,
       project_id: self.project_id
     ).to_a
     master_citations_project = citations_projects.shift
-    citations_projects.each do |citation|
-      citation.extractions.each do |e|
-        e.dup.update_attributes(citations_project_id: master_citations_project.id)
-      end
-      citation.labels.each do |l|
-        l.dup.update_attributes(citations_project_id: master_citations_project.id)
-      end
-      citation.notes.each do |n|
-        n.dup.update_attributes(notable_id: master_citations_project.id)
-      end
-      citation.taggings.each do |t|
-        t.dup.update_attributes(taggable_id: master_citations_project.id)
-      end
-      citation.destroy
+    citations_projects.each do |cp|
+      self.dedupe_update_associations(master_citations_project, cp)
+      cp.destroy
+    end
+  end
+
+  def self.dedupe_update_associations(master_cp, cp_to_remove)
+    cp_to_remove.extractions.each do |e|
+      e.dup.update_attributes(citations_project_id: master_citations_project.id)
+    end
+    cp_to_remove.labels.each do |l|
+      l.dup.update_attributes(citations_project_id: master_citations_project.id)
+    end
+    cp_to_remove.notes.each do |n|
+      n.dup.update_attributes(notable_id: master_citations_project.id)
+    end
+    cp_to_remove.taggings.each do |t|
+      t.dup.update_attributes(taggable_id: master_citations_project.id)
     end
   end
 end

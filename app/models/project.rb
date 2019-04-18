@@ -836,11 +836,41 @@ class Project < ApplicationRecord
   end
 
   def dedupe_citations
+    # This takes care of citations that have been added to the project
+    # multiple times.
     citations_projects
       .group(:citation_id, :project_id)
       .having("count(*) > 1")
       .each do |cp|
       cp.dedupe
+    end
+
+    sub_query = citations
+      .select(
+        :citation_type_id,
+        :name,
+        :refman,
+        :pmid,
+        :abstract)
+      .group(
+        :citation_type_id,
+        :name,
+        :refman,
+        :pmid,
+        :abstract)
+      .having("count(*) > 1")
+    citations_that_have_multiple_entries = citations.joins("INNER JOIN (#{ sub_query.to_sql }) as t1").distinct
+
+    # Group citations and dedupe each group.
+    cthme_groups = citations_that_have_multiple_entries.group_by { |i| [i.citation_type_id, i.name, i.refman, i.pmid, i.abstract] }
+    cthme_groups.each do |cthme_group|
+      master_citation = cthme_group[1][0]
+      cthme_group[1][1..-1].each do |cit|
+        master_cp = CitationsProject.find_by(citation_id: master_citation.id, project_id: self.id)
+        cp_to_remove = CitationsProject.find_by(citation_id: cit.id, project_id: self.id)
+        CitationsProject.dedupe_update_associations(master_cp, cp_to_remove)
+        cit.destroy
+      end
     end
   end
 
