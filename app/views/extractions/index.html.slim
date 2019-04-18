@@ -5,7 +5,7 @@
   h2 = link_to 'go to extraction form builder ->', build_extraction_forms_project_path(efp, anchor: "panel-tab-#{ efp.extraction_forms_projects_sections.first.id }"), { style: 'float: right; font-size: 0.4em;' }
 
 .row
-  .column.medium-6
+  .column.medium-12
     h4 Extractions
     table
       thead
@@ -27,42 +27,44 @@
           - @extractions.unconsolidated.each do |extraction|
             tr
               td = link_to extraction.try(:citations_project).try(:citation).try(:name), work_extraction_path(extraction)
-              td = extraction.projects_users_role.projects_user.user.profile.username
+              td = extraction.projects_users_role.projects_user.user.handle
               td = extraction.projects_users_role.role.name
               td = link_to t('work'), work_extraction_path(extraction)
               td = link_to t('edit'), edit_extraction_path(extraction)
               td = link_to t('destroy'), extraction, data: { confirm: 'Are you sure?' }, method: :delete
 
-  .column.medium-6
-    h4 Consolidated Extractions
-    table
-      thead
-        tr
-          th Citation
-          th Assigned User
-          th Role
-          th
-          th
-          th
-
-      tbody
-        - if @extractions.consolidated.blank?
+- if @project.leaders.include? current_user
+  .row
+    .column.medium-12
+      h4 Consolidated Extractions
+      table
+        thead
           tr
-            td No extractions found.
+            th Citation
+            th Assigned User
+            th Role
+            th
+            th
+            th
 
-        - else
-          - @extractions.consolidated.each do |extraction|
+        tbody
+          - if @extractions.consolidated.blank?
             tr
-              td = link_to extraction.try(:citations_project).try(:citation).try(:name),\
-                consolidate_project_extractions_path(\
-                extraction_ids: @citation_groups[:citations_projects][extraction.citations_project_id][:extraction_ids])
-              td = extraction.projects_users_role.projects_user.user.profile.username
-              td = extraction.projects_users_role.role.name
-              td = link_to t('work'),\
-                consolidate_project_extractions_path(\
-                extraction_ids: @citation_groups[:citations_projects][extraction.citations_project_id][:extraction_ids])
-              td = link_to t('edit'), edit_extraction_path(extraction)
-              td = link_to t('destroy'), extraction, data: { confirm: 'Are you sure?' }, method: :delete
+              td No extractions found.
+
+          - else
+            - @extractions.consolidated.each do |extraction|
+              tr
+                td = link_to extraction.try(:citations_project).try(:citation).try(:name),\
+                  consolidate_project_extractions_path(\
+                  extraction_ids: @citation_groups[:citations_projects][extraction.citations_project_id][:extraction_ids])
+                td = extraction.projects_users_role.projects_user.user.handle
+                td = extraction.projects_users_role.role.name
+                td = link_to t('work'),\
+                  consolidate_project_extractions_path(\
+                  extraction_ids: @citation_groups[:citations_projects][extraction.citations_project_id][:extraction_ids])
+                td = link_to t('edit'), edit_extraction_path(extraction)
+                td = link_to t('destroy'), extraction, data: { confirm: 'Are you sure?' }, method: :delete
 
 .column.row
   = link_to new_project_extraction_path, class: 'button secondary' do
