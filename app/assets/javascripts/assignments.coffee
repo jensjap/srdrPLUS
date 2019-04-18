@@ -23,6 +23,10 @@ document.addEventListener 'turbolinks:load', ->
             update_info( obj )
             if data.unlabeled_citations_projects.length == 0
               toastr.warning( 'No more citations to label' )
+        error:
+          ( ) ->
+            toastr.error( 'ERROR: Cannot fetch citations to screen.' )
+
       }
       return
 
@@ -41,6 +45,9 @@ document.addEventListener 'turbolinks:load', ->
               obj.options = data.options
               if data.unlabeled_citations_projects.length == 0
                 toastr.warning( 'No more citations to label' )
+          error:
+            ( ) ->
+              toastr.error( 'ERROR: Cannot fetch citations to screen.' )
         }
       return
 
@@ -175,7 +182,7 @@ document.addEventListener 'turbolinks:load', ->
       $( '#tag-select select' ).trigger 'change'
 
       ## NOTES
-      if !!current_citation.notes[ 0 ]
+      if !!current_citation.notes
         $( 'textarea#note-textbox' ).val( current_citation.notes[ 0 ].value )
       else
         $( 'textarea#note-textbox' ).val( '' )
@@ -368,7 +375,7 @@ document.addEventListener 'turbolinks:load', ->
         $( 'textarea#note-textbox' ).removeClass( 'note-saved' )
         clearTimeout( timeoutId )
         timeoutId = setTimeout ( ->
-          is_patch = !!state_obj.history[ state_obj.index ].notes[ 0 ]
+          is_patch = !!state_obj.history[ state_obj.index ].notes
           $.ajax {
             type: if is_patch then 'PATCH' else 'POST'
             url: $( '#root-url' ).text() + '/api/v1/notes' + ( if is_patch then '/' + state_obj.history[ state_obj.index ].notes[ 0 ].id else '' )
@@ -974,6 +981,9 @@ document.addEventListener 'turbolinks:load', ->
         ( data ) ->
           $( '#screen-div' ).show()
           start_screening( data.unlabeled_citations_projects, data.labeled_citations_projects, data.options )
+      error:
+        ( ) ->
+          toastr.error( 'ERROR: Cannot fetch citations to screen.' )
     }
 
     $( '#hide-me' ).hide()

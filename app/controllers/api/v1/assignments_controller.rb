@@ -57,18 +57,6 @@ module Api
 
         @screening_options = @assignment.project.screening_options.includes( :screening_option_type, :label_type )
 
-        @labeled_notes = Note.
-                where(  notable: @past_labels.map { |label| label.citations_project }, 
-                        projects_users_role: @assignment.
-                                              projects_users_role.
-                                              projects_user.
-                                              projects_users_roles ).
-                order( created_at: :asc ).
-                group_by { |note| note.notable_id }
-
-
-        @assignment_options = @assignment.assignment_options.includes( :assignment_option_type, :label_type )
-
         render 'screen.json'
       end
 

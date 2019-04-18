@@ -34,9 +34,11 @@ json.labeled_citations_projects do
       end
     end
 
-    json.notes ( @labeled_notes[ citations_project.id ] || [] )[ 0 .. 0 ] do |note|
-      json.id note.id
-      json.value note.value
+    if  @labeled_notes[ citations_project.id ].present?
+      json.notes @labeled_notes[ citations_project.id ][ 0 .. 0 ] do |note|
+        json.id note.id
+        json.value note.value
+      end
     end
 
     json.label do

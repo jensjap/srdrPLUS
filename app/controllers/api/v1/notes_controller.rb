@@ -5,7 +5,7 @@ module Api
 
       api :DESTROY, '/v1/notes/:id', 'deletes specified note'
       def destroy
-        authorize(@note.project, scope_policy: NotePolicy)
+        authorize(@note.project, policy_class: NotePolicy)
         @note.destroy
         head :no_content
       end
@@ -13,13 +13,7 @@ module Api
       api :CREATE, '/v1/notes', 'creates a new note with specified tag and citations_project'
       def create
         @note = Note.create(note_params)
-        authorize(@note.project, scope_policy: NotePolicy)
-        render json: { id: @note.id }
-      end
-
-      api :UPDATE, '/v1/notes/:id', 'updates a new note with specified tag and citations_project'
-      def update
-        @note.update( note_params )
+        authorize(@note.project, policy_class: NotePolicy)
         render json: { id: @note.id }
       end
 

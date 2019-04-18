@@ -79,8 +79,8 @@ json.labeled_citations_projects do
       end
     end
 
-    if  @unlabeled_notes[ citations_project.id ].present?
-      json.notes @unlabeled_notes[ citations_project.id ][ 0 .. 0 ] do |note|
+    if  @labeled_notes[ citations_project.id ].present?
+      json.notes @labeled_notes[ citations_project.id ][ 0 .. 0 ] do |note|
         json.id note.id
         json.value note.value
       end
