@@ -60,7 +60,12 @@ class ProjectsController < ApplicationController
     @project = Project.new(project_params)
 
     respond_to do |format|
-      if @project.save
+      if @project.save and @project.update(import_params)
+
+        if distiller_params.present? and distiller_params["import_type"] == "distiller"
+          import_project_from_distiller @project
+        end
+
         format.html { redirect_to edit_project_path(@project),
                       notice: t('success') + " #{ make_undo_link }" }
         format.json { render :show, status: :created, location: @project }
@@ -70,11 +75,11 @@ class ProjectsController < ApplicationController
       end
     end
 
-    if json_params.present?
-      import_project_from_json @project, json_params
-    elsif distiller_params.present?
-      import_project_from_distiller @project, distiller_params
-    end
+    #if json_params.present?
+    #  import_project_from_json @project, json_params
+    #elsif distiller_params.present?
+    #  import_project_from_distiller @project, distiller_params
+    #end
   end
 
   # PATCH/PUT /projects/1
@@ -262,19 +267,28 @@ class ProjectsController < ApplicationController
                 {screening_options_attributes: [:id, :_destroy, :project_id, :label_type_id, :screening_option_type_id]})
     end
 
+    def import_params
+      params.require(:project)
+          .permit({key_questions_attributes: [:name], imported_files_attributes: [:id, :file_type_id, :import_type_id, :content, :user_id, section_attributes: [:name]]})
+    end
+
     def distiller_params
       # what kind of files do we want to import?
-      params.require(:project).permit(:citation_file, :design_file, :arms_file, :outcomes_file, :bc_file, :rob_file)
+      params.require(:project).permit(:import_type)
     end
+   # def distiller_params
+   #   # what kind of files do we want to import?
+   #   params.require(:project).permit(:citation_file, :design_file, :arms_file, :outcomes_file, :bc_file, :rob_file)
+   # end
 
-    def json_params
-      params.require(:project).permit(:json_file)
-    end
+   # def json_params
+   #   params.require(:project).permit(:json_file)
+   # end
 
-    def citation_import_params
-      # what kind of files do we want to import?
-      params.require(:project).permit(citation_files: [])
-    end
+   # def citation_import_params
+   #   # what kind of files do we want to import?
+   #   params.require(:project).permit(:citation_file)
+   # end
 
     def export_type_name
       params.require(:export_type_name)
@@ -300,15 +314,8 @@ class ProjectsController < ApplicationController
       flash[:success] = "Import request submitted for project '#{ project.name }'. You will be notified by email of its completion."
     end
 
-    def import_project_from_distiller(project, p)
-      citation_file = p[:citation_file]&.path || ""
-      design_file = p[:design_file]&.path || ""
-      arms_file = p[:arms_file]&.path || ""
-      outcomes_file = p[:outcomes_file]&.path || ""
-      bc_file = p[:bc_file]&.path || ""
-      rob_file = p[:rob_file]&.path || ""
-
-      DistillerImportJob.perform_later(current_user.id, project.id, citation_file, design_file, arms_file, outcomes_file, bc_file, rob_file)
+    def import_project_from_distiller(project)
+      DistillerImportJob.perform_later(current_user.id, project.id)
       flash[:success] = "Import request submitted for project '#{ project.name }'. You will be notified by email of its completion."
     end
 end

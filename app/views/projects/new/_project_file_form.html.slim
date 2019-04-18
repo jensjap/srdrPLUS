@@ -1,0 +1,5 @@
+div
+  = f.input :user_id, as: :hidden, input_html: { value: current_user.id }
+  = f.input :import_type_id, as: :hidden, input_html: { value: ImportType.find_by(name: 'Project').id }
+  = f.input :content, as: :file, label: 'Project File'
+  = f.input :file_type_id, as: :hidden, input_html: { value: FileType.find_by( name: '.json' ).id }

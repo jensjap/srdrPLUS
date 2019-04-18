@@ -40,14 +40,14 @@ class ProjectImporter
 
       ## PROJECT INFO
       @p.update!({
-                     name: phash['name'],
-                     description: phash['description'],
-                     attribution: phash['attribution'],
-                     methodology_description: phash['methodology_description'],
-                     prospero: phash['prospero'],
-                     doi: phash['doi'],
-                     notes: phash['notes'],
-                     funding_source: phash['funding_source']})
+                     name: phash['name'] || @p.name,
+                     description: phash['description'] || @p.description,
+                     attribution: phash['attribution'] || @p.attribution,
+                     methodology_description: phash['methodology_description'] || @p.methodology_description,
+                     prospero: phash['prospero'] || @p.prospero,
+                     doi: phash['doi'] || @p.doi,
+                     notes: phash['notes'] || @p.notes,
+                     funding_source: phash['funding_source'] || @p.funding_source})
 
       ## KEY QUESTIONS
       phash['key_questions']&.each(&method(:import_key_question))

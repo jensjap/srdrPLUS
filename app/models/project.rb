@@ -76,10 +76,13 @@ class Project < ApplicationRecord
   has_many :screening_option_types, through: :screening_options
 
   has_many :sd_meta_data
+  has_many :imported_files, dependent: :destroy
   validates :name, presence: true
 
   #accepts_nested_attributes_for :extraction_forms_projects, reject_if: :all_blank, allow_destroy: true
   #accepts_nested_attributes_for :key_questions_projects, reject_if: :all_blank, allow_destroy: true
+  #
+  accepts_nested_attributes_for :imported_files
   accepts_nested_attributes_for :citations
   accepts_nested_attributes_for :citations_projects, allow_destroy: true
   accepts_nested_attributes_for :tasks, allow_destroy: true

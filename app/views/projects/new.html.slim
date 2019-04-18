@@ -31,20 +31,36 @@
       select#create-type
         option value="empty" Create an empty project
         option value="json" Create project from an SRDR+ JSON export
-        option value="distiller" Create project from a Distiller SR export
+        option value="distiller" Create project from a Distiller SR .csv export
 
       .distiller-import-panel.hide
-        = f.input :citation_file, as: :file, label: 'Citation References'
-        hr
-        = f.input :design_file, as: :file, label: 'Design Details'
-        hr
-        = f.input :arms_file, as: :file, label:  'Arms and Arm Details'
-        hr
-        = f.input :outcomes_file, as: :file, label: 'Outcomes and Outcome Details'
-        hr
-        = f.input :bc_file, as: :file, label: 'Baseline Characteristics'
-        hr
-        = f.input :rob_file, as: :file, label: 'Risk of Bias Assessment'
+        = f.input :import_type, as: :hidden, input_html: {value: 'distiller'}
+        = f.simple_fields_for :imported_files do |g|
+          - if g.object.import_type == ImportType.find_by(name: 'Distiller References')
+            = render 'projects/new/distiller_references_file_form', f:g
+          - else
+            = render 'projects/new/distiller_section_file_form', f:g
+        .links
+          div
+            = link_to_add_association 'Add Distiller References File', f, :imported_files, partial: 'projects/new/distiller_references_file_form'
+          = link_to_add_association 'Add Distiller Section File', f, :imported_files, partial: 'projects/new/distiller_section_file_form'
+
+        /div
+          = f.input :citation_file, as: :file, label: 'Citation References'
+          hr
+          = f.input :section_files, as: :file, input_html: { multiple: true }, label: 'Risk of Bias Assessment'
+
+          = f.input :citation_file, as: :file, label: 'Citation References'
+          hr
+          = f.input :design_file, as: :file, label: 'Design Details'
+          hr
+          = f.input :arms_file, as: :file, label:  'Arms and Arm Details'
+          hr
+          = f.input :outcomes_file, as: :file, label: 'Outcomes and Outcome Details'
+          hr
+          = f.input :bc_file, as: :file, label: 'Baseline Characteristics'
+          hr
+          = f.input :rob_file, as: :file, label: 'Risk of Bias Assessment'
 
       .json-import-panel.hide
         = f.input :json_file, as: :file, label: false

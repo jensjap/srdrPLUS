@@ -1,4 +1,4 @@
-require 'json_import_job/_project_importer'
+require 'import_jobs/json_import_job/_project_importer'
 
 class JsonImportJob < ApplicationJob
   queue_as :default

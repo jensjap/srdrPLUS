@@ -1,0 +1,7 @@
+div
+  = f.input :user_id, as: :hidden, input_html: { value: current_user.id }
+  = f.input :import_type_id, as: :hidden, input_html: { value: ImportType.find_by(name: 'Distiller Section').id }
+  = f.input :content, as: :file, label: 'Section File'
+  = f.input :file_type_id, as: :hidden, input_html: { value: FileType.find_by( name: '.csv' ).id }
+  = f.simple_fields_for :section_attributes, collection: f.object.build_section do |s|
+    = s.input :name, label: 'Section Name'
