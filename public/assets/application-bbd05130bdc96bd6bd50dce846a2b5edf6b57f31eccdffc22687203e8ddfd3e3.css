@@ -1591,40 +1591,33 @@
 }
 
 /* line 67, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/assignments.scss */
-#tags-modal {
-  width: 50vw;
-  height: 50vh;
-  position: relative;
-  left: 25vw;
-  top: 25vh;
-  background-color: red;
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-  -webkit-flex-direction: column;
-      -ms-flex-direction: column;
-          flex-direction: column;
-}
-/* line 76, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/assignments.scss */
-#tags-modal #tags-controls {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: horizontal;
-  -webkit-box-direction: normal;
-  -webkit-flex-direction: row;
-      -ms-flex-direction: row;
-          flex-direction: row;
-}
-
-/* line 88, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/assignments.scss */
 #reasons-list {
   height: 70vh;
   overflow-y: scroll;
+}
+
+/* line 73, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/assignments.scss */
+#term-groups-table tr {
+  background-color: white;
+}
+/* line 75, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/assignments.scss */
+#term-groups-table tr td {
+  padding-top: 0.2rem;
+  padding-bottom: 0.2rem;
+}
+/* line 76, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/assignments.scss */
+#term-groups-table tr td input {
+  font-size: 100%;
+  height: 80%;
+  margin-bottom: 0rem;
+}
+/* line 83, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/assignments.scss */
+#term-groups-table tr td .button {
+  margin-bottom: 0rem;
+}
+/* line 88, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/assignments.scss */
+#term-groups-table tr.selected {
+  background-color: #e8e7f0;
 }
 /**
  * Foundation for Sites by ZURB
@@ -20685,31 +20678,35 @@ ul li.publishing-requested:before {
 }
 /* line 285, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
 #search-div #sort-select {
-  max-width: 4.5rem;
+  max-width: 5rem;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 0.25rem;
+  font-size: 0.85rem;
 }
-/* line 289, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+/* line 293, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
 #search-div #search-box {
   -webkit-box-flex: 100;
   -webkit-flex-grow: 100;
       -ms-flex-positive: 100;
           flex-grow: 100;
-  margin-right: 1.5rem;
+  margin-right: 1rem;
 }
-/* line 292, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+/* line 296, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
 #search-div #search-box input {
   width: 100%;
 }
-/* line 297, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
-#search-div #search-box, #search-div #sort-button, #search-div #sort-select {
+/* line 301, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+#search-div #search-box input, #search-div #sort-button, #search-div #sort-select {
   height: 2rem;
 }
 
-/* line 302, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+/* line 306, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
 .citation-select {
   margin-bottom: 0px;
 }
 
-/* line 306, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+/* line 310, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
 a.citation-label {
   line-height: 1.2rem;
   text-decoration: none;
@@ -20719,12 +20716,12 @@ a.citation-label {
   padding-bottom: 4px;
 }
 
-/* line 315, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+/* line 319, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
 #citations {
   min-height: 800px;
 }
 
-/* line 331, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+/* line 335, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
 .remove-button {
   font-size: 1rem;
   color: #8a8a8a;
@@ -20733,13 +20730,13 @@ a.citation-label {
   transition: color 0.25s;
 }
 
-/* line 338, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+/* line 342, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
 .remove-button:hover {
   text-decoration: none;
   color: #cc4b37;
 }
 
-/* line 343, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+/* line 347, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
 .edit-citation-row {
   display: -webkit-box;
   display: -webkit-flex;
@@ -20751,25 +20748,25 @@ a.citation-label {
       -ms-flex-direction: row-reverse;
           flex-direction: row-reverse;
 }
-/* line 346, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+/* line 350, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
 .edit-citation-row .button {
   margin-top: 10px;
   margin-bottom: 0px;
 }
 
-/* line 352, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+/* line 356, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
 .buttons-row {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
 }
-/* line 353, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+/* line 357, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
 .buttons-row .button {
   margin-left: 0.5rem;
 }
 
-/* line 359, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+/* line 363, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
 .added-item {
   border: solid 1px #666666;
   background-color: #F5F5F5;
@@ -20790,7 +20787,7 @@ a.citation-label {
           align-items: center;
 }
 
-/* line 370, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+/* line 374, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
 .citation-fields .citation-inputs {
   margin-top: 1rem;
   display: -webkit-box;
@@ -20809,19 +20806,19 @@ a.citation-label {
       -ms-flex-pack: center;
           justify-content: center;
 }
-/* line 379, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+/* line 383, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
 .citation-fields .citation-inputs .accession-number input.numeric {
   margin-bottom: 0;
 }
-/* line 382, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+/* line 386, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
 .citation-fields .citation-inputs .accession-number .pmid-checkbox {
   float: right;
 }
-/* line 388, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+/* line 392, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
 .citation-fields .citation-inputs .citation-abstract textarea {
   height: 8rem;
 }
-/* line 393, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+/* line 397, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
 .citation-fields .citation-inputs .middle-row {
   display: -webkit-box;
   display: -webkit-flex;
@@ -20837,7 +20834,7 @@ a.citation-label {
       -ms-flex-direction: row;
           flex-direction: row;
 }
-/* line 397, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+/* line 401, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
 .citation-fields .citation-inputs .middle-row div {
   -webkit-box-flex: 1;
   -webkit-flex: 1;
@@ -20845,7 +20842,7 @@ a.citation-label {
           flex: 1;
   padding-left: 0.6rem;
 }
-/* line 402, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+/* line 406, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
 .citation-fields .citation-inputs .middle-row .journal-name {
   -webkit-box-flex: 3;
   -webkit-flex: 3;
@@ -20853,7 +20850,7 @@ a.citation-label {
           flex: 3;
   padding-left: 0;
 }
-/* line 408, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+/* line 412, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
 .citation-fields .citation-inputs .bottom-row {
   display: -webkit-box;
   display: -webkit-flex;
@@ -20869,7 +20866,7 @@ a.citation-label {
       -ms-flex-direction: row;
           flex-direction: row;
 }
-/* line 412, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+/* line 416, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
 .citation-fields .citation-inputs .bottom-row .bottom-column {
   -webkit-box-orient: vertical;
   -webkit-box-direction: normal;
@@ -20879,7 +20876,7 @@ a.citation-label {
   width: 30%;
 }
 
-/* line 420, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+/* line 424, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
 #citations-footer {
   padding-top: 30px;
   display: -webkit-box;
@@ -20899,7 +20896,7 @@ a.citation-label {
   margin-bottom: 0px;
 }
 
-/* line 436, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+/* line 440, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
 .task-box {
   width: 300px;
   height: 365px;
@@ -20918,23 +20915,23 @@ a.citation-label {
   margin-bottom: 20px;
 }
 
-/* line 449, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+/* line 453, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
 .new-task {
   border: solid 1px #666666;
   background-color: #F5F5F5;
 }
-/* line 452, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+/* line 456, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
 .new-task .task-title, .new-task label, .new-task .remove-button {
   color: #666666 !important;
 }
 
-/* line 457, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+/* line 461, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
 .task-center {
   margin-left: 20px;
   width: 100%;
 }
 
-/* line 462, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+/* line 466, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
 .tasks-container {
   width: 100%;
   display: -webkit-box;
@@ -20951,13 +20948,13 @@ a.citation-label {
           flex-flow: row wrap;
 }
 
-/* line 470, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+/* line 474, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
 .projects-users-role-select2 .select2-container--default .select2-selection--multiple {
   height: 100px;
   overflow-y: auto;
 }
 
-/* line 476, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+/* line 480, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
 .task-title {
   font-size: 25px;
   color: #4C0D7D;
@@ -20965,13 +20962,13 @@ a.citation-label {
   margin-bottom: 20px;
 }
 
-/* line 483, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+/* line 487, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
 .task-fields {
   width: 98%;
   margin-bottom: 20px;
 }
 
-/* line 488, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+/* line 492, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
 a.add-task-button {
   height: 80px;
   width: 80px;
@@ -20979,18 +20976,18 @@ a.add-task-button {
   border-radius: 0px;
   text-decoration: none;
 }
-/* line 495, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+/* line 499, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
 a.add-task-button .fi-plus {
   color: #6b269d;
   -webkit-transition: color 0.3s;
   transition: color 0.3s;
 }
-/* line 499, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+/* line 503, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
 a.add-task-button .fi-plus:hover {
   color: #33124B;
 }
 
-/* line 506, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+/* line 510, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
 .task-button-container {
   height: 360px;
   width: 80px;
@@ -21002,6 +20999,30 @@ a.add-task-button .fi-plus:hover {
   -webkit-align-items: center;
       -ms-flex-align: center;
           align-items: center;
+}
+
+/* line 518, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+.options-table .require-button {
+  background: #8a8a8a;
+  font-weight: bold;
+}
+/* line 522, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+.options-table .require-button.success {
+  background: #3adb76;
+}
+/* line 525, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+.options-table .switch-paddle {
+  color: #fefefe;
+  background: #8a8a8a;
+}
+/* line 529, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+.options-table input:checked ~ .switch-paddle {
+  background: #3adb76;
+  color: #0a0a0a;
+}
+/* line 533, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/projects.scss */
+.options-table .switch {
+  margin-bottom: 0;
 }
 /* line 5, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/questions.scss */
 input.button.grey {

@@ -56311,10 +56311,30 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
 (function() {
   document.addEventListener('turbolinks:load', function() {
     (function() {
-      var add_breadcrumb, get_c_p, get_history_page, lock_button, next_citation, nothing_to_label, send_label, start_screening, switch_to_list, switch_to_screening, switch_to_tags, update_arrows, update_breadcrumb, update_index, update_info, update_label, update_reasons;
+      var add_breadcrumb, apply_select2_to_term_select, create_term_selects, delete_term_group, fetch_palette, fetch_term_groups, force_update_c_p, get_c_p, get_history_page, highlight_terms, lock_button, next_citation, nothing_to_label, send_label, send_new_term, send_new_term_group, start_screening, switch_to_list, switch_to_screening, update_arrows, update_breadcrumb, update_index, update_info, update_label, update_reasons, update_term, update_term_group;
       if (!($(".assignments.screen").length > 0)) {
         return;
       }
+      force_update_c_p = function(obj) {
+        $.ajax({
+          type: 'GET',
+          url: $('#screen-assignment-json-url').text(),
+          data: {
+            count: '10'
+          },
+          success: function(data) {
+            obj.citations = data.unlabeled_citations_projects;
+            obj.history = data.labeled_citations_projects;
+            obj.options = data.options;
+            next_citation(obj);
+            obj.index = 0;
+            update_info(obj);
+            if (data.unlabeled_citations_projects.length === 0) {
+              return toastr.warning('No more citations to label');
+            }
+          }
+        });
+      };
       get_c_p = function(obj) {
         if (obj.citations.length < 5) {
           $.ajax({
@@ -56406,31 +56426,23 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
       update_info = function(obj) {
         var current_citation, j, k, l, labels_reason, len, len1, len2, len3, len4, m, n, o, option, reason_option, ref, ref1, ref2, ref3, ref4, s, t, tag_option;
         current_citation = obj.history[obj.index];
-        $('#citation-name').text(current_citation.name);
-        $('#citation-abstract').text(current_citation.abstract);
+        $('#citation-name').html(current_citation.name);
+        $('#citation-abstract').html(current_citation.abstract);
         $('#citation-pmid').text(current_citation.pmid);
         $('#citation-refman').text(current_citation.refman);
-        if ($('#journal-visible').text() !== 'false') {
-          $('#journal-name').text(current_citation.journal.name);
-          $('#journal-date').text(current_citation.journal.publication_date);
-        } else {
-          $('#journal-div').hide();
-        }
-        if ($('#authors-visible').text() !== 'false') {
-          $('#citation-authors').empty();
-          s = true;
-          ref = current_citation.authors;
-          for (j = 0, len = ref.length; j < len; j++) {
-            k = ref[j];
-            if (s) {
-              s = false;
-              $('#citation-authors').append(k.name);
-            } else {
-              $('#citation-authors').append(', ' + k.name);
-            }
+        $('#journal-name').text(current_citation.journal.name);
+        $('#journal-date').text(current_citation.journal.publication_date);
+        $('#citation-authors').empty();
+        s = true;
+        ref = current_citation.authors;
+        for (j = 0, len = ref.length; j < len; j++) {
+          k = ref[j];
+          if (s) {
+            s = false;
+            $('#citation-authors').append(k.name);
+          } else {
+            $('#citation-authors').append(', ' + k.name);
           }
-        } else {
-          $('#authors-div').hide();
         }
         $('#citation-keywords').empty();
         s = true;
@@ -56450,7 +56462,15 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
         ref2 = obj.options;
         for (m = 0, len2 = ref2.length; m < len2; m++) {
           option = ref2[m];
-          lock_button(option.label_type, option.type);
+          if (option.label_type) {
+            lock_button(option.label_type, option.type);
+          } else {
+            if (option.type === 'HIDE_AUTHORS') {
+              $('#authors-div').hide();
+            } else if (option.type === 'HIDE_JOURNAL') {
+              $('#journal-div').hide();
+            }
+          }
         }
         $('#tag-select select').val(null);
         $('#tag-select select').empty();
@@ -56817,6 +56837,10 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
             }
           }
         });
+        fetch_term_groups(state_obj);
+        $('#new-term-group').click(function() {
+          return send_new_term_group(state_obj, "NEW GROUP", 1);
+        });
       };
       get_history_page = function(obj, page_index) {
         var count, offset, page_size;
@@ -57022,17 +57046,348 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
         $('#citations-list').show();
         return $('#screen-div').hide();
       };
-      switch_to_tags = function() {
-        $('#screen-div').hide();
-        $('#tags-modal').show();
-      };
       switch_to_screening = function(obj) {
         $('#pagination-buttons').hide();
         $('#citations-list-elements').empty();
         $('#citations-list').hide();
-        $('#tags-modal').hide();
         $('#screen-div').show();
         return $('#switch-button').val('OFF');
+      };
+      fetch_term_groups = function(obj) {
+        return $.ajax({
+          type: 'GET',
+          url: $('root-url').text() + '/api/v1/assignments/' + $('#assignment-id').text() + '/projects_users_term_groups_colors.json',
+          dataType: 'json',
+          success: function(data) {
+            var j, len, ref, tg, tg_color, tg_color_label, tg_color_palette, tg_delete, tg_elem, tg_meaning, tg_title, tg_title_input, tg_title_label;
+            $('#term-groups').empty();
+            ref = data['projects_users_term_groups_colors'];
+            for (j = 0, len = ref.length; j < len; j++) {
+              tg = ref[j];
+              tg_elem = $('<tr putgc-id="' + tg['id'] + '"></tr>');
+              tg_title = $('<td class="putgc-title"></td>');
+              tg_title_label = $('<div>' + tg['term_groups_color']['term_group']['name'] + '</div>');
+              tg_title_input = $('<input type="text" class="hide" value="' + tg['term_groups_color']['term_group']['name'] + '">');
+              tg_color = $('<td class="putgc-color" color-id="' + tg['term_groups_color']['color']['id'] + '" color-hex="' + tg['term_groups_color']['color']['hex_code'] + '"></td>');
+              tg_color_label = $('<div style="height: 20px; width: 20px; background-color:' + tg['term_groups_color']['color']['hex_code'] + ';"></div>');
+              tg_color_palette = $('<div class="hide" style="display: flex;"></div>');
+              fetch_palette(obj, tg_color_palette);
+              tg_meaning = $('<td class="putgc-meaning">' + tg['term_groups_color']['color']['name'] + '</td>');
+              tg_delete = $('<td class="delete_putgc"><div class="button tiny"> ✖ </td>');
+              tg_title_input.keypress(function(event) {
+                var color_id, putgc_elem, putgc_id, term_group_name;
+                if (event.which === 13) {
+                  putgc_elem = $(event.target).closest('tr');
+                  putgc_id = putgc_elem.attr('putgc-id');
+                  color_id = putgc_elem.find('.putgc-color').attr('color-id');
+                  term_group_name = $(event.target).val();
+                  return update_term_group(obj, putgc_id, term_group_name, color_id);
+                }
+              });
+              tg_title_label.dblclick(function(event) {
+                var child, l, len1, ref1, results;
+                ref1 = $(event.target).parent().children();
+                results = [];
+                for (l = 0, len1 = ref1.length; l < len1; l++) {
+                  child = ref1[l];
+                  $(child).toggleClass('hide');
+                  if ($(child).is('input')) {
+                    results.push($(child).focus());
+                  } else {
+                    results.push(void 0);
+                  }
+                }
+                return results;
+              });
+              tg_title_input.focusout(function(event) {
+                var child, l, len1, ref1, results;
+                ref1 = $(event.target).parent().children();
+                results = [];
+                for (l = 0, len1 = ref1.length; l < len1; l++) {
+                  child = ref1[l];
+                  results.push($(child).toggleClass('hide'));
+                }
+                return results;
+              });
+              tg_color_label.dblclick(function(event) {
+                var child, l, len1, ref1, results;
+                ref1 = $(event.target).parent().children();
+                results = [];
+                for (l = 0, len1 = ref1.length; l < len1; l++) {
+                  child = ref1[l];
+                  results.push($(child).toggleClass('hide'));
+                }
+                return results;
+              });
+              tg_elem.click(function(event) {
+                var putgc_elem;
+                $('#term-groups').children().removeClass('selected');
+                putgc_elem = $(event.target).closest('tr');
+                $(putgc_elem).addClass('selected');
+                $('#term-groups').attr('selected-putgc-id', putgc_elem.attr('putgc-id'));
+                $('#term-selects .select2-container').addClass('hide');
+                return $('#term-selects select[putgc-id=' + putgc_elem.attr('putgc-id') + ']').next('.select2-container').removeClass('hide');
+              });
+              tg_delete.click(function(event) {
+                var putgc_elem, putgc_id;
+                event.stopPropagation();
+                putgc_elem = $(event.target).closest('tr');
+                putgc_id = putgc_elem.attr('putgc-id');
+                return delete_term_group(obj, putgc_id);
+              });
+              tg_title.append(tg_title_label);
+              tg_title.append(tg_title_input);
+              tg_color.append(tg_color_label);
+              tg_color.append(tg_color_palette);
+              tg_elem.append(tg_title);
+              tg_elem.append(tg_color);
+              tg_elem.append(tg_meaning);
+              tg_elem.append(tg_delete);
+              $('#term-groups').append(tg_elem);
+            }
+            $('#term-groups tr[putgc-id="' + $('#term-groups').attr('selected-putgc-id') + '"]').addClass('selected');
+            return create_term_selects(obj);
+          },
+          error: function() {
+            return toastr.error('ERROR: Could not fetch term groups');
+          }
+        });
+      };
+      create_term_selects = function(obj) {
+        var j, len, putgc_id, ref, results, send_ajax, term_select, tg;
+        send_ajax = function(inner_putgc_id) {
+          return $.ajax({
+            type: 'GET',
+            url: $('#root-url').text() + '/api/v1/projects_users_term_groups_colors/' + inner_putgc_id + '/terms.json',
+            dataType: 'json',
+            success: function(data) {
+              var j, len, ref, term, term_option;
+              ref = data['results'];
+              for (j = 0, len = ref.length; j < len; j++) {
+                term = ref[j];
+                term_option = new Option(term['text'], term['id'], true, true);
+                $('select[putgc-id=' + inner_putgc_id + ']').append(term_option);
+              }
+              return apply_select2_to_term_select(obj, $('select[putgc-id=' + inner_putgc_id + ']'));
+            },
+            error: function() {
+              return toastr.error('ERROR: Could not fetch terms');
+            }
+          });
+        };
+        $('#term-selects').empty();
+        ref = $('#term-groups tr');
+        results = [];
+        for (j = 0, len = ref.length; j < len; j++) {
+          tg = ref[j];
+          putgc_id = $(tg).attr('putgc-id');
+          term_select = $('<select class="hide" putgc-id="' + putgc_id + '" multiple>');
+          $('#term-selects').append(term_select);
+          results.push(send_ajax(putgc_id));
+        }
+        return results;
+      };
+      apply_select2_to_term_select = function(obj, term_select) {
+        var putgc_id;
+        putgc_id = term_select.attr('putgc-id');
+        term_select.select2({
+          minimumInputLength: 0,
+          ajax: {
+            url: function() {
+              return $('root-url').text() + '/api/v1/terms.json';
+            },
+            dataType: 'json',
+            delay: 100,
+            data: function(params) {
+              return {
+                q: params.term,
+                page: params.page || 1
+              };
+            }
+          }
+        });
+        term_select.on('select2:select select2:unselect', function(event) {
+          var j, len, ref, term_elem, term_ids;
+          term_ids = [''];
+          ref = $(event.target).find('option:checked');
+          for (j = 0, len = ref.length; j < len; j++) {
+            term_elem = ref[j];
+            term_ids.push($(term_elem).val());
+          }
+          return $.ajax({
+            type: 'PATCH',
+            url: $('#root-url').text() + '/api/v1/projects_users_term_groups_colors/' + putgc_id,
+            dataType: 'json',
+            data: {
+              utf8: '✓',
+              authenticity_token: $('#authenticity-token').text(),
+              projects_users_term_groups_color: {
+                term_ids: term_ids
+              }
+            },
+            success: function(data) {
+              console.log("LOYLOY");
+              return force_update_c_p(obj);
+            },
+            error: function(error) {
+              return toastr.error('ERROR: Could not update terms');
+            }
+          });
+        });
+        if (!($('#term-groups').attr('selected-putgc-id') === putgc_id)) {
+          return term_select.next('.select2-container').addClass('hide');
+        }
+      };
+      delete_term_group = function(obj, id) {
+        return $.ajax({
+          type: 'DELETE',
+          url: $('root-url').text() + '/api/v1/projects_users_term_groups_colors/' + id,
+          success: function() {
+            return fetch_term_groups(obj);
+          },
+          error: function() {
+            return toastr.error('ERROR: Could not delete term group');
+          }
+        });
+      };
+      fetch_palette = function(obj, palette_elem) {
+        return $.ajax({
+          type: 'GET',
+          url: $('root-url').text() + '/api/v1/colors.json',
+          dataType: 'json',
+          success: function(data) {
+            var color, color_elem, j, len, ref, results;
+            $(palette_elem).empty();
+            ref = data['colors'];
+            results = [];
+            for (j = 0, len = ref.length; j < len; j++) {
+              color = ref[j];
+              color_elem = $('<div color-id="' + color['id'] + '"style="height: 20px; width: 20px; background-color:' + color['hex_code'] + ';"></div>');
+              color_elem.click(function(event) {
+                var color_id, putgc_elem, putgc_id, term_group_name;
+                putgc_elem = $(event.target).closest('tr');
+                putgc_id = putgc_elem.attr('putgc-id');
+                color_id = $(event.target).attr('color-id');
+                term_group_name = putgc_elem.find('.putgc-title input').val();
+                return update_term_group(obj, putgc_id, term_group_name, color_id);
+              });
+              results.push($(palette_elem).append(color_elem));
+            }
+            return results;
+          },
+          error: function() {
+            return toastr.error('ERROR: Could not fetch colors');
+          }
+        });
+      };
+      send_new_term_group = function(obj, term_group_name, color_id) {
+        return $.ajax({
+          type: 'POST',
+          url: $('root-url').text() + '/api/v1/assignments/' + $('#assignment-id').text() + '/projects_users_term_groups_colors',
+          dataType: 'json',
+          data: {
+            utf8: '✓',
+            authenticity_token: $('#authenticity-token').text(),
+            projects_users_term_groups_color: {
+              term_groups_color_attributes: {
+                term_group_attributes: {
+                  name: term_group_name
+                },
+                color_id: color_id
+              }
+            }
+          },
+          success: function(data) {
+            return fetch_term_groups(obj);
+          },
+          error: function() {
+            return toastr.error('ERROR: Could not create new term group');
+          }
+        });
+      };
+      update_term_group = function(obj, id, new_term_group_name, new_color_id) {
+        return $.ajax({
+          type: 'PATCH',
+          url: $('root-url').text() + '/api/v1/projects_users_term_groups_colors/' + id,
+          dataType: 'json',
+          data: {
+            utf8: '✓',
+            authenticity_token: $('#authenticity-token').text(),
+            projects_users_term_groups_color: {
+              term_groups_color_attributes: {
+                term_group_attributes: {
+                  name: new_term_group_name
+                },
+                color_id: new_color_id
+              }
+            }
+          },
+          success: function(data) {
+            return fetch_term_groups(obj);
+          },
+          error: function() {
+            return toastr.error('ERROR: Could not update term group');
+          }
+        });
+      };
+      highlight_terms = function(input_string) {
+        var j, l, len, len1, putgc_id, ref, ref1, term_, tg, tg_color;
+        ref = $('#term-groups');
+        for (j = 0, len = ref.length; j < len; j++) {
+          tg = ref[j];
+          putgc_id = $(tg).attr('putgc-id');
+          tg_color = $(tg).find('.putgc-color').attr('color-hex');
+          ref1 = $('#term-selects select[putgc-id=' + putgc_id + '] option');
+          for (l = 0, len1 = ref1.length; l < len1; l++) {
+            term_ = ref1[l];
+            "CoffeeScript is my favorite!".replace(/(\w+)/g, function(match) {
+              return match.toUpperCase();
+            });
+          }
+        }
+        return input_string;
+      };
+      send_new_term = function(projects_users_terms_groups_color_id, term) {
+        return $.ajax({
+          type: 'POST',
+          url: $('root-url').text() + '/api/v1/projects_users_terms_groups_colors_terms',
+          dataType: 'json',
+          data: {
+            utf8: '✓',
+            authenticity_token: $('#authenticity-token').text(),
+            projects_users_terms_groups_colors_term: {
+              projects_users_terms_groups_colors_term_id: projects_users_terms_groups_colors_term_id,
+              term_name: color_id
+            }
+          },
+          success: function(data) {
+            return fetch_term_groups(obj);
+          },
+          error: function() {
+            return toastr.error('ERROR: Could not create new term group');
+          }
+        });
+      };
+      update_term = function(id, new_term_group_name, new_color_id) {
+        return $.ajax({
+          type: 'PATCH',
+          url: $('root-url').text() + '/api/v1/projects_users_terms_groups_colors/' + id,
+          dataType: 'json',
+          data: {
+            utf8: '✓',
+            authenticity_token: $('#authenticity-token').text(),
+            projects_users_terms_groups_color: {
+              term_group_name: new_term_group_name,
+              color_id: new_color_id
+            }
+          },
+          success: function(data) {
+            return fetch_term_groups(obj);
+          },
+          error: function() {
+            return toastr.error('ERROR: Could not update term group');
+          }
+        });
       };
       $.ajax({
         type: 'GET',
@@ -58546,6 +58901,21 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
         $('.search-field').toggleClass('expand-search');
         $('#project-filter').focus();
       });
+      if ($('body.projects.new').length === 1) {
+        $('#create-type').on('change', function(e) {
+          $('.input.file input').val('');
+          if ($(e.target).val() === "empty") {
+            $('.distiller-import-panel').addClass('hide');
+            return $('.json-import-panel').addClass('hide');
+          } else if ($(e.target).val() === "distiller") {
+            $('.distiller-import-panel').removeClass('hide');
+            return $('.json-import-panel').addClass('hide');
+          } else if ($(e.target).val() === "json") {
+            $('.distiller-import-panel').addClass('hide');
+            return $('.json-import-panel').removeClass('hide');
+          }
+        });
+      }
       if ($('body.projects.edit').length === 1) {
         $('.project_tasks_projects_users_roles select').select2();
         $('.tasks-container').on('cocoon:before-insert', function(e, insertedItem) {
@@ -58636,7 +59006,7 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
               journal['name'] = data.getElementsByTagName('Journal')[0].getElementsByTagName('Title')[0].childNodes[0].nodeValue || '';
               journal['issue'] = data.getElementsByTagName('JournalIssue')[0].getElementsByTagName('Issue')[0].childNodes[0].nodeValue || '';
               journal['volume'] = data.getElementsByTagName('JournalIssue')[0].getElementsByTagName('Volume')[0].childNodes[0].nodeValue || '';
-              dateNode = data.getElementsByTagName('JournalIssue')[0].getElementsByTagName('PubDate')[0];
+              dateNode = data.getElementsByTagName('JournalIssue')[0](getElementsByTagName('PubDate')[0]);
               if (dateNode.getElementsByTagName('Year').length > 0) {
                 journal['year'] = dateNode.getElementsByTagName('Year')[0].childNodes[0].nodeValue;
               } else if (dateNode.getElementsByTagName('MedlineDate').length > 0) {
@@ -59025,11 +59395,12 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
 }).call(this);
 (function() {
   document.addEventListener('turbolinks:load', function() {
-    return (function() {
-      var add_change_listeners_to_results_section, get_result_elem, get_result_extractor_names, get_result_number_of_extractions, get_result_value, result_section_coloring, result_section_dropdowning;
-      $('.links.add-comparison').on('cocoon:before-insert', function() {
+    var get_result_value;
+    (function() {
+      return $('.links.add-comparison').on('cocoon:before-insert', function() {
         return $(this).hide();
       }).on('cocoon:after-insert', function(e, insertedItem) {
+        var bac_anova_handler, bac_select;
         $(insertedItem).find('.links.add-comparate-group a').click();
         $(insertedItem).find('.links.add-comparate-group a').click();
         $('.links.add-comparate-group a').hide();
@@ -59042,15 +59413,36 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
             return this.text.includes('(Baseline)');
           }).attr('selected', true);
         }
-        return $('.links.add-comparison a').addClass('disabled');
+        $('.links.add-anova a').click();
+        $('.links.add-anova a').addClass('disabled');
+        $('.links.add-comparison a').addClass('disabled');
+        bac_select = $(insertedItem).find('.bac-select').first();
+        bac_anova_handler = function(event) {
+          if ($(event.target).find('option:selected').first().val() === "000") {
+            $(event.target).closest('.comparate-groups').children().hide();
+            $(event.target).closest('.comparates').show();
+            $(event.target).closest('.comparates').find('.add-comparate').hide();
+            $('.submit-comparison').toggleClass('hide');
+            return $('.submit-anova').toggleClass('hide');
+          } else {
+            $(event.target).closest('.comparate-groups').children().show();
+            $(event.target).closest('.comparates').find('.add-comparate').show();
+            $('.submit-comparison').toggleClass('hide');
+            return $('.submit-anova').toggleClass('hide');
+          }
+        };
+        if (bac_select) {
+          bac_select.find('option').first().text('All Arms (ANOVA)').val('000');
+          bac_select.change(bac_anova_handler);
+          return bac_select.trigger('change');
+        }
       });
-      get_result_value = function(td_elem) {
-        var inputs;
-        inputs = $(td_elem).find("input.string");
-        return (inputs.length > 0 ? inputs[0].value : "");
-      };
+    })();
+    return get_result_value = function(td_elem) {
+      var add_change_listeners_to_results_section, get_result_elem, get_result_extractor_names, get_result_number_of_extractions, inputs, result_section_coloring, result_section_dropdowning;
+      inputs = $(td_elem).find("input.string");
+      return (inputs.length > 0 ? inputs[0].value : "");
       get_result_elem = function(td_elem) {
-        var inputs;
         inputs = $(td_elem).find("input.string");
         return (inputs.length > 0 ? inputs[0] : null);
       };
@@ -59191,6 +59583,56 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
       result_section_coloring();
       result_section_dropdowning();
       return add_change_listeners_to_results_section();
+    };
+  });
+
+}).call(this);
+(function() {
+  document.addEventListener('turbolinks:load', function() {
+    return (function() {
+      var find_existing_option, require_option_handler, send_new_option, switch_option_handler;
+      send_new_option = function(option_type, label_type) {
+        var new_option;
+        $('.add-option').click();
+        new_option = $('.option-fields').last();
+        $(new_option).find('input.option-type:radio[value="' + option_type + '"]').prop('checked', true);
+        return $(new_option).find('input.label-type:radio[value="' + label_type + '"]').prop('checked', true);
+      };
+      find_existing_option = function(option_type, label_type) {
+        if (label_type) {
+          return $('.option-fields:has(input.option-type:radio:checked[value="' + option_type + '"]):has(input.label-type:radio:checked[value="' + label_type + '"])');
+        } else {
+          return $('.option-fields:has(input.option-type:radio:checked[value="' + option_type + '"])');
+        }
+      };
+      require_option_handler = function(event) {
+        var existing_option, label_type, option_type;
+        option_type = $(event.target).attr('option-type');
+        label_type = $(event.target).attr('label-type');
+        existing_option = find_existing_option(option_type, label_type);
+        if ($(event.target).hasClass('success')) {
+          $(existing_option).find('.remove-option').click();
+        } else if (existing_option.length === 0 || $(existing_option).is(':hidden')) {
+          send_new_option(option_type, label_type);
+        }
+        return $(event.target).toggleClass('success');
+      };
+      switch_option_handler = function(event) {
+        var existing_option, option_type, switch_value;
+        option_type = $(event.target).attr('option-type');
+        switch_value = $(event.target).is(':checked');
+        console.log($(event.target).val());
+        existing_option = find_existing_option(option_type, null);
+        if (switch_value === false) {
+          return $(existing_option).find('.remove-option').click();
+        } else {
+          if (existing_option.length === 0 || $(existing_option).is(':hidden')) {
+            return send_new_option(option_type, null);
+          }
+        }
+      };
+      $('.options-table .require-button').on('click', require_option_handler);
+      return $('.options-table .switch input').on('change', switch_option_handler);
     })();
   });
 
@@ -59307,10 +59749,9 @@ toastr.options = {
   'showMethod': 'slideDown',
   'hideMethod': 'slideUp',
   'closeMethod': 'slideUp',
-  'positionClass': 'toast-bottom-right',
-  'closeDuration': 400,
-  'timeOut': 10000,
-  'extendedTimeOut': 10000,
+  'closeDuration': '400',
+  'timeOut': '10000',
+  'extendedTimeOut': '10000'
 };
 
 document.addEventListener( 'turbolinks:load', function() {
@@ -59408,4 +59849,6 @@ document.addEventListener( 'turbolinks:load', function() {
     $( orderable_list ).sortable({ onUpdate: on_update, onStart: on_start });
     saved_state = $( orderable_list ).sortable( 'toArray' );
   }
+
+  $( "select.select2" ).select2();
 } );
