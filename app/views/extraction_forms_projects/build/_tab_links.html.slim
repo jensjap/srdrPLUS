@@ -1,4 +1,4 @@
-ul#vertical-tabs.tabs.vertical data-deep-link='true' data-deep-link-smudge='true' data-deep-link-smudge-delay='500' data-update-history='true' data-tabs='' class=('orderable-list' if current_user.profile.advanced_mode) orderable-url=("#{ update_positions_api_v1_orderings_url }" if current_user.profile.advanced_mode)
+ul#vertical-tabs.tabs.vertical data-deep-link='true' data-update-history='true' data-tabs='' class=('orderable-list' if current_user.profile.advanced_mode) orderable-url=("#{ update_positions_api_v1_orderings_url }" if current_user.profile.advanced_mode)
 
   - @extraction_forms_projects_sections.ordered.each do |efps|
     li.tabs-title.orderable-item [ position="#{ efps.ordering.position }" ordering-id="#{ efps.ordering.id }" ]
