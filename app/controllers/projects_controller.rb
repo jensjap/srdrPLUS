@@ -81,8 +81,8 @@ class ProjectsController < ApplicationController
 
     respond_to do |format|
       if @project.update(project_params)
-        format.html { redirect_to edit_project_path(@project, anchor: 'panel-information'),
-                      notice: t('success') + " #{ make_undo_link }" }
+        format.html { redirect_back(fallback_location: edit_project_path(@project, anchor: 'panel-project-information'),
+                      notice: t('success') + " #{ make_undo_link }") }
         format.json { render :show, status: :ok, location: @project }
         format.js { render :show, status: :ok, location: @project }
       else
