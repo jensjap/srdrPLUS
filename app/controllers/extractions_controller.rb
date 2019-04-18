@@ -15,8 +15,13 @@ class ExtractionsController < ApplicationController
   # GET /projects/1/extractions
   # GET /projects/1/extractions.json
   def index
-    @extractions = @project.extractions
-    @citation_groups = @project.citation_groups
+    if @project.leaders.include? current_user
+      @extractions = @project.extractions
+      @citation_groups = @project.citation_groups
+    else
+      @extractions = @project.extractions.joins(projects_users_role: :projects_user).where(projects_users_role: { projects_users: { user_id: current_user.id } })
+      @citation_groups = []
+    end
 
     add_breadcrumb 'edit project', edit_project_path(@project)
     add_breadcrumb 'extractions',  :project_extractions_path
@@ -50,17 +55,21 @@ class ExtractionsController < ApplicationController
   # POST /extractions
   # POST /extractions.json
   def create
-    @extraction = @project.extractions.build(extraction_params)
+    lsof_extractions = Array.new
+    params["extraction"]["citations_project"].delete_if { |i| i=="" }.map(&:to_i).each do |citations_project_id|
+      lsof_extractions << @project.extractions.build(citations_project_id: citations_project_id, projects_users_role_id: params["extraction"]["projects_users_role_id"].to_i)
+    end
 
-    authorize(@extraction.project, policy_class: ExtractionPolicy)
+    authorize(@project, policy_class: ExtractionPolicy)
 
     respond_to do |format|
-      if @extraction.save
-        format.html { redirect_to work_extraction_path(@extraction), notice: "Extraction was successfully created. You can now begin extracting data." }
+      begin
+        lsof_extractions.map{ |e| e.save }
+        format.html { redirect_to project_extractions_url(@project), notice: 'Extractions was successfully created.' }
         format.json { render :show, status: :created, location: @extraction }
-      else
+      rescue
         format.html { render :new }
-        format.json { render json: @extraction.errors, status: :unprocessable_entity }
+        format.json { render json: lsof_extractions, status: :unprocessable_entity }
       end
     end
   end
@@ -97,14 +106,15 @@ class ExtractionsController < ApplicationController
 
   # GET /extractions/1/work
   def work
-    authorize(@extraction.project, policy_class: ExtractionPolicy)
+    @project = @extraction.project
+    authorize(@project, policy_class: ExtractionPolicy)
 
-    @extraction_forms_projects = @extraction.project.extraction_forms_projects
-    @key_questions_projects_array_for_select = @extraction.project.key_questions_projects_array_for_select
+    @extraction_forms_projects = @project.extraction_forms_projects
+    @key_questions_projects_array_for_select = @project.key_questions_projects_array_for_select
     @preselected_eefpst1 = params[:eefpst1_id].present? ? ExtractionsExtractionFormsProjectsSectionsType1.find(params[:eefpst1_id]) : nil
 
-    add_breadcrumb 'edit project', edit_project_path(@extraction.project)
-    add_breadcrumb 'extractions',  project_extractions_path(@extraction.project)
+    add_breadcrumb 'edit project', edit_project_path(@project)
+    add_breadcrumb 'extractions',  project_extractions_path(@project)
     add_breadcrumb 'work',         :work_extraction_path
   end
 

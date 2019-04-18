@@ -154,4 +154,6 @@ document.addEventListener( 'turbolinks:load', function() {
   }
 
   $( "select.select2" ).select2();
+  $( "select.select2_multi" ).select2({
+    multiple: 'true' });
 } );
