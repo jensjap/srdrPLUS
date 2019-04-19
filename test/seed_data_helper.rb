@@ -17,7 +17,8 @@ module SeedData
         { name: 'Leader'},
         { name: 'Consolidator'},
         { name: 'Contributor'},
-        { name: 'Auditor'}
+        { name: 'Auditor'},
+        { name: 'Importer'}
       ])
 
       # Frequency.

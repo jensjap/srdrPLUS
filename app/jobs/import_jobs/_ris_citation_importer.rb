@@ -17,6 +17,8 @@ def import_citations_from_ris(imported_file)
     row_h = {}
     ### will add as primary citation by default, there is no way to figure that out from pubmed
     ## NOT SURE ABOUT PMID KEY
+    #
+    if cit_h[ 'ID' ].present? then row_h[ 'refman' ] = cit_h[ 'ID' ].strip end
     if cit_h[ 'AN' ].present? then row_h[ 'pmid' ] = cit_h[ 'AN' ].strip end
     if cit_h[ 'TI' ].present? then row_h[ 'name' ] = cit_h[ 'TI' ].strip end
     if cit_h[ 'T1' ].present? then row_h[ 'name' ] = cit_h[ 'T1' ].strip end

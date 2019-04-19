@@ -36,7 +36,7 @@ class ProjectImporter
   end
 
   def import_project(phash)
-    Project.transaction do
+    #Project.transaction do
 
       ## PROJECT INFO
       @p.update!({
@@ -112,7 +112,7 @@ class ProjectImporter
         import_extraction(ehash)
       end
 
-    end
+    #end
     @p.id
   end
 
