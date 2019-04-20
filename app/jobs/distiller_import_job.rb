@@ -15,28 +15,18 @@ class DistillerImportJob < ApplicationJob
     @user = User.find( args.first )
     @project = Project.find( args.second )
 
-    #create importer role for user
-    pu = ProjectsUser.find_or_create_by!( user: @user, project: @project )
-    r_id = Role.find_by(name: 'Importer').id
-    ProjectsUsersRole.find_or_create_by!( projects_user: pu, role_id: r_id )
-
     ris_file_type_id = FileType.find_by(name:'.ris')
     citation_import_id = ImportType.find_by(name:'Distiller References').id
     section_import_id = ImportType.find_by(name:'Distiller Section').id
 
     import_citations_from_ris ImportedFile.where(project: @project, user: @user, import_type_id: citation_import_id, file_type_id: ris_file_type_id).first
 
-    project_json = JSON.parse(ApplicationController.render(template: 'api/v1/projects/export.json', assigns: { project: @project }))
-
-    distiller_importer = DistillerImporter.new project_json, @user
+    distiller_importer = DistillerImporter.new @project, @user
 
     #currently we only support ris_file
     ImportedFile.where(project: @project, user: @user, import_type_id: section_import_id).each do |ifile|
       distiller_importer.add_t2_section ifile
     end
-
-    project_importer = ProjectImporter.new(@project)
-    project_importer.import_project(distiller_importer.get_imported_json["project"])
 
     # #we need to import references first
     # import_references @project, ImportedFile.find args.third
