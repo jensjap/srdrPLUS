@@ -2,8 +2,63 @@
   #end-message.hide
     h3 NOTHING TO LABEL
 
+  #terms-modal.hide
+    #buttons-row
+      a#hide-modal-button
+        |✖
+    div.tm-inner-div
+      div.medium-6.tm-left-panel
+        label
+          |TERM GROUPS
+        div.callout 
+          #tg-panel
+            div#edit-term-groups
+              table#edit-term-groups-table
+                col.medium-5
+                col.medium-4
+                col.medium-2
+                col.medium-1
+                thead
+                  th Name
+                  th Color
+                  th Meaning
+                  th Delete
+                tbody#term-groups
+              #new-term-group.button.success.tiny
+                | New Term Group
+        label for="term-group-buttons"
+          | CREATE NEW TERM
+        div.term-group-buttons.callout
+          label for="term-input"
+            | Name
+          input.term-input type='text'
+          table.term-group-buttons-table
+            thead
+              th Add to
+            tbody.tg-buttons
+      div.medium-6
+        label
+          |TERMS
+        table#terms-list
+          col.medium-7
+          col.medium-2
+          col.medium-2
+          col.medium-1
+          thead
+            th
+              | Term Name
+            th
+              | Case Sensitive
+            th
+              | Partial Match
+            /th
+              | Regexp
+            th
+              | Delete
+          tbody
+
   #citation-row.row
-    .column.full-height.medium-9
+    .column.full-height.large-9.medium-8.small-6
       #citation-container.callout
         h5
           #citation-name
@@ -52,8 +107,8 @@
         i
           #citation-refman.display-inline
 
-    .column.full-height.medium-3
-      div.accordion data-accordion='' data-allow-all-closed='true' data-multi-expand='true'
+    .column.full-height.large-3.medium-4.small-6
+      div.accordion data-accordion='' data-allow-all-closed='true'
         div.accordion-item data-accordion-item=''
           a.accordion-title href="#" 
             | Highlight Terms
@@ -61,16 +116,38 @@
             blockquote
               | Create a new term group with the desired color and add terms to be highlighted during screening.
               cite Friendly Helper
-            table#term-groups-table
-              thead
-                th Name
-                th Color
-                th Meaning
-                th Delete
-              tbody#term-groups
-            #new-term-group.button.tiny
-              | Add Term Group
-            #term-selects
+            
+            label for="term-group-buttons"
+              | CREATE NEW TERM
+            div.term-group-buttons.callout
+              label for="term-input"
+                | Name
+              input.term-input type='text'
+              table.term-group-buttons-table
+                thead
+                  th Add to
+                tbody.tg-buttons
+
+            /#edit-tgs-button.button.tiny
+              | Edit Term Groups
+            #edit-terms-button.button.tiny
+              | Edit Terms
+
+            /div#edit-term-groups style="display:none;"
+              table#edit-term-groups-table
+                thead
+                  th Name
+                  th Color
+                  th Meaning
+                  th 
+                tbody#term-groups
+              #new-term-group.button.success.tiny
+                | New Term Group
+              /#done-editing-term-groups.button.success.tiny
+                | Done Editing
+            /#term-selects
+            /#term-list
+
         div.accordion-item data-accordion-item=''
           a.accordion-title href="#" 
             | Add Tags
@@ -78,6 +155,8 @@
             blockquote
               | Type into the box below and press ENTER to add a new tag to this citation.
               cite Friendly Helper
+            label for="tag-select"
+              | Tags
             #tag-select
               select multiple='multiple'
         div.accordion-item data-accordion-item=''
@@ -88,6 +167,8 @@
               | Notes are saved automatically.
               cite Friendly Helper
             /#notes-list
+            label for="note-textbox"
+              | New Note
             textarea#note-textbox
             /#save-note-button.button.tiny.hollow
               | Save Note
@@ -98,6 +179,8 @@
             blockquote
               | Type into the box below and press ENTER to add a reason. Reasons are saved when the citation is labeled.
               cite Friendly Helper
+            label for="reason-select"
+              | Reasons for labeling decision
             #reason-select
               select multiple='multiple'
             /#reasons-list
@@ -134,6 +217,7 @@
 
     /#tags-button.button
       | tags
+
 
 
 #hide-me.hide

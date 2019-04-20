@@ -114,41 +114,39 @@ document.addEventListener 'turbolinks:load', ->
             console.log errorThrown
             toastr.error( 'Could not fetch citation info from PUBMED' )
           success: ( data, textStatus, jqXHR ) ->
-            return 0 unless ( data.getElementsByTagName( 'ArticleTitle' )[ 0 ]? )
-            name = data.getElementsByTagName( 'ArticleTitle' )[ 0 ].childNodes[ 0 ].nodeValue || ''
+            return 0 unless ( $(data).find('ArticleTitle').text()? )
+            name = $(data).find('ArticleTitle').text() || ''
 
             abstract = ''
-            for node in data.getElementsByTagName( 'AbstractText' )
-              abstract += node.childNodes[ 0 ].nodeValue
+            for node in $(data).find('AbstractText')
+              abstract += $(node).text()
               abstract += "\n"
 
             authors = [ ]
-            for node in data.getElementsByTagName( 'Author' )
-              first_name = node.getElementsByTagName( 'ForeName' )[ 0 ].childNodes[ 0 ].nodeValue || ''
-              last_name = node.getElementsByTagName( 'LastName' )[ 0 ].childNodes[ 0 ].nodeValue || ''
+            for node in $(data).find('Author')
+              first_name = $(node).find('ForeName').text() || ''
+              last_name = $(node).find('LastName').text() || ''
               authors.push( first_name + ' ' + last_name )
 
             keywords = [ ]
-            for node in data.getElementsByTagName( 'Keyword' )
-              keyword = node.childNodes[ 0 ].nodeValue || ''
+            for node in $(data).find('Keyword')
+              keyword = $(node).text() || ''
               keywords.push( keyword )
 
             journal = {  }
-            journal[ 'name' ] = data.getElementsByTagName( 'Journal' )[ 0 ] \
-                                    .getElementsByTagName( 'Title' )[ 0 ].childNodes[ 0 ].nodeValue || ''
-            journal[ 'issue' ] = data.getElementsByTagName( 'JournalIssue' )[ 0 ] \
-                                     .getElementsByTagName( 'Issue' )[ 0 ].childNodes[ 0 ].nodeValue || ''
-            journal[ 'volume' ] = data.getElementsByTagName( 'JournalIssue' )[ 0 ] \
-                                      .getElementsByTagName( 'Volume' )[ 0 ].childNodes[ 0 ].nodeValue || ''
+            journal[ 'name' ] = $(data).find('Journal').find( 'Title' ).text() || ''
+            journal[ 'issue' ] = $(data).find('JournalIssue').find( 'Issue' ).text() || ''
+            journal[ 'vol' ] = $(data).find('JournalIssue').find( 'Volume' ).text() || ''
+            console.log $(data).find('JournalIssue').find( 'Volume' ).text()
+            console.log $(data).find('JournalIssue').find( 'Issue' ).text()
             ## My philosophy is to use publication year whenever possible, as researchers seem to be most concerned about the year, and it is easier to parse and sort - Birol
 
-            dateNode = data.getElementsByTagName( 'JournalIssue' )[ 0 ] \
-            getElementsByTagName( 'PubDate' )[ 0 ]
+            dateNode = $(data).find('JournalIssue').find( 'PubDate' )
 
-            if dateNode.getElementsByTagName( 'Year' ).length > 0
-              journal[ 'year' ] = dateNode.getElementsByTagName( 'Year' )[ 0 ].childNodes[ 0 ].nodeValue
-            else if dateNode.getElementsByTagName( 'MedlineDate' ).length > 0
-              journal[ 'year' ] = dateNode.getElementsByTagName( 'MedlineDate' )[ 0 ].childNodes[ 0 ].nodeValue
+            if $( dateNode ).find( 'Year' ).length > 0
+              journal[ 'year' ] = $( dateNode ).find( 'Year' ).text()
+            else if $( dateNode ).find( 'MedlineDate' ).length > 0
+              journal[ 'year' ] = $( dateNode ).find( 'MedlineDate' ).text()
             else
               journal[ 'year' ] = ''
 
@@ -160,10 +158,11 @@ document.addEventListener 'turbolinks:load', ->
             populate_citation_fields citation_hash
 
       populate_citation_fields = ( citation ) ->
+        console.log citation['journal']
         $( '.citation-fields' ).find( '.citation-name input' ).val citation[ 'name' ]
         $( '.citation-fields' ).find( '.citation-abstract textarea' ).val citation[ 'abstract' ]
         $( '.citation-fields' ).find( '.journal-name input' ).val citation[ 'journal' ][ 'name' ]
-        $( '.citation-fields' ).find( '.journal-volume input' ).val citation[ 'journal' ][ 'volume' ]
+        $( '.citation-fields' ).find( '.journal-volume input' ).val citation[ 'journal' ][ 'vol' ]
         $( '.citation-fields' ).find( '.journal-issue input' ).val citation[ 'journal' ][ 'issue' ]
         $( '.citation-fields' ).find( '.journal-year input' ).val citation[ 'journal' ][ 'year' ]
 

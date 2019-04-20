@@ -23,6 +23,10 @@ document.addEventListener 'turbolinks:load', ->
             update_info( obj )
             if data.unlabeled_citations_projects.length == 0
               toastr.warning( 'No more citations to label' )
+        error:
+          ( ) ->
+            toastr.error( 'ERROR: Cannot fetch citations to screen.' )
+
       }
       return
 
@@ -41,6 +45,9 @@ document.addEventListener 'turbolinks:load', ->
               obj.options = data.options
               if data.unlabeled_citations_projects.length == 0
                 toastr.warning( 'No more citations to label' )
+          error:
+            ( ) ->
+              toastr.error( 'ERROR: Cannot fetch citations to screen.' )
         }
       return
 
@@ -76,7 +83,7 @@ document.addEventListener 'turbolinks:load', ->
             $( button_to_lock ).addClass( 'reason-lock' )
           else
             $( button_to_lock ).removeClass( 'reason-lock' )
-            
+
           $( button_to_lock ).trigger 'change'
 
       else if requirement == "TAG_REQUIRED"
@@ -104,10 +111,6 @@ document.addEventListener 'turbolinks:load', ->
         else
           $( button_to_lock ).removeClass( 'disabled' )
       return
-
-        
-
-
 
 ##### next_citation #####
     #gets the first citation from citations and updates index with it
@@ -175,7 +178,7 @@ document.addEventListener 'turbolinks:load', ->
       $( '#tag-select select' ).trigger 'change'
 
       ## NOTES
-      if !!current_citation.notes[ 0 ]
+      if !!current_citation.notes
         $( 'textarea#note-textbox' ).val( current_citation.notes[ 0 ].value )
       else
         $( 'textarea#note-textbox' ).val( '' )
@@ -322,7 +325,7 @@ document.addEventListener 'turbolinks:load', ->
       switch_button = $( '#switch-button' )
       tags_button = $( '#tags-button' )
       close_tags_button = $( '#close-tags-button' )
-  
+
       next_button.click ->
         if !next_button.hasClass( 'disabled' )
           state_obj.index = state_obj.index - 1
@@ -368,7 +371,7 @@ document.addEventListener 'turbolinks:load', ->
         $( 'textarea#note-textbox' ).removeClass( 'note-saved' )
         clearTimeout( timeoutId )
         timeoutId = setTimeout ( ->
-          is_patch = !!state_obj.history[ state_obj.index ].notes[ 0 ]
+          is_patch = !!state_obj.history[ state_obj.index ].notes
           $.ajax {
             type: if is_patch then 'PATCH' else 'POST'
             url: $( '#root-url' ).text() + '/api/v1/notes' + ( if is_patch then '/' + state_obj.history[ state_obj.index ].notes[ 0 ].id else '' )
@@ -464,7 +467,7 @@ document.addEventListener 'turbolinks:load', ->
               () ->
                 toastr.error( 'ERROR: Could not delete tag' )
           }
-      
+
       ## REASON HANDLING
       $( '#reason-select select' ).select2
         minimumInputLength: 0
@@ -480,10 +483,22 @@ document.addEventListener 'turbolinks:load', ->
       ## POPULATE TERM GROUPS ##
       fetch_term_groups( state_obj )
 
+      ## EDIT TERM GROUP HANDLING ##
+      $( '#edit-tgs-button' ).click ->
+        $( '#edit-tgs-button' ).toggleClass( 'secondary' )
+        $( '#edit-term-groups' ).toggle()
+
       ## NEW TERM GROUP HANDLING ##
       $( '#new-term-group' ).click ->
         send_new_term_group( state_obj, "NEW GROUP", 1 )
 
+      ## EDIT TERMS BUTTON HANDLING ##
+      $( '#edit-terms-button' ).click ->
+        $( '#terms-modal' ).removeClass( 'hide' )
+
+
+      $( '#terms-modal #hide-modal-button' ).click () ->
+        $( '#terms-modal' ).addClass( 'hide' )
       return
 
 ##### get_history_page #####
@@ -683,18 +698,66 @@ document.addEventListener 'turbolinks:load', ->
         success:
           ( data ) ->
             $( '#term-groups' ).empty()
+            $( '.tg-buttons' ).empty()
             for tg in data[ 'projects_users_term_groups_colors' ]
-              tg_elem = $( '<tr putgc-id="' + tg[ 'id' ] + '"></tr>' )
+              hex_code = tg[ 'term_groups_color' ][ 'color' ][ 'hex_code' ]
+              tg_color_id = tg[ 'term_groups_color' ][ 'color' ][ 'id' ]
+              tg_name = tg[ 'term_groups_color' ][ 'term_group' ][ 'name' ]
+              tg_meaning = tg[ 'term_groups_color' ][ 'color' ][ 'name' ]
+              tg_id = tg[ 'id' ]
+
+              ##### create button element which is used to add a term to a term group
+              for elem in $( '.tg-buttons' )
+                tg_button_row = $( '<tr class="tg-button-row"></tr>' )
+                tg_button = $( '<div putgc-id="' + tg_id + '" class="button tiny" style="background-color:' + hex_code + ';">' + tg_name + '</div>' )
+
+                $( tg_button_row ).append( $('<td></td>').append( tg_button ) )
+                $( elem ).append( tg_button_row )
+
+                tg_button_row.click ( event ) ->
+                  textbox_value = $( event.target ).parents( '.term-group-buttons' ).find( '.term-input' ).val()
+                  if textbox_value.length == 0
+                    toastr.error( 'ERROR: Term cannot be empty' )
+                    return
+
+                  $.ajax {
+                    type: 'POST'
+                    url: $( '#root-url' ).text() + 'api/v1/projects_users_term_groups_colors_terms/'
+                    dataType: 'json'
+                    data: {
+                      utf8: '✓'
+                      authenticity_token: $( '#authenticity-token' ).text()
+                      projects_users_term_groups_colors_term: {
+                        projects_users_term_groups_color_id: $( event.target ).attr( 'putgc-id' )
+                        term_name: textbox_value
+                      }
+                    }
+                    success:
+                      ( data ) ->
+                        toastr.success( 'Term successfully added' )
+                        $( '.term-input' ).val('')
+                        force_update_c_p( obj )
+                        fetch_term_groups( obj )
+                    error:
+                      ( error ) ->
+                        toastr.error( 'ERROR: Could not update terms' )
+                  }
+
+              ##### create element to edit term groups
+              tg_elem = $( '<tr putgc-id="' + tg_id + '" class="tg-elem""></tr>' )
 
               tg_title = $( '<td class="putgc-title"></td>' )
-              tg_title_label = $( '<div>' + tg[ 'term_groups_color' ][ 'term_group' ][ 'name' ] + '</div>' )
-              tg_title_input = $( '<input type="text" class="hide" value="' + tg[ 'term_groups_color' ][ 'term_group' ][ 'name' ] + '">' )
-              tg_color = $( '<td class="putgc-color" color-id="' + tg[ 'term_groups_color' ][ 'color' ][ 'id' ] + '" color-hex="' + tg[ 'term_groups_color' ][ 'color' ][ 'hex_code' ] + '"></td>' )
-              tg_color_label = $( '<div style="height: 20px; width: 20px; background-color:' + tg[ 'term_groups_color' ][ 'color' ][ 'hex_code' ] + ';"></div>' )
-              tg_color_palette = $( '<div class="hide" style="display: flex;"></div>' )
+
+              tg_title_label = $( '<div class="tg-title-label">' + tg_name + '</div>' )
+              tg_title_input = $( '<input class="tg-title-input hide" type="text" value="' + tg_name + '">' )
+              tg_color = $( '<td class="putgc-color" color-id="' + tg_color_id + '" color-hex="' + hex_code + '"></td>' )
+              tg_color_label = $( '<div class="putgc-color-label" style="background-color:' + hex_code + ';"></div>' )
+              tg_color_palette = $( '<div class="putgc-color-palette hide"></div>' )
+              #tg_color_palette_cell = $('<td colspan="4"></td>' ).append( tg_color_palette )
+              #tg_color_palette_row = $( '<tr class="putgc-color-palette-row hide"></tr>' ).append( tg_color_palette_cell )
               fetch_palette( obj, tg_color_palette )
-              tg_meaning = $( '<td class="putgc-meaning">' + tg[ 'term_groups_color' ][ 'color' ][ 'name' ] + '</td>' )
-              tg_delete = $( '<td class="delete_putgc"><div class="button tiny"> ✖ </td>' )
+              tg_meaning = $( '<td class="putgc-meaning">' + tg_meaning + '</td>' )
+              tg_delete = $( '<td class="delete-putgc"><a> ✖ </a></td>' )
 
               tg_title_input.keypress ( event ) ->
                 if event.which == 13
@@ -714,25 +777,35 @@ document.addEventListener 'turbolinks:load', ->
                 for child in $( event.target ).parent().children()
                   $( child ).toggleClass( 'hide' )
 
+              tg_elem.click ( event ) ->
+                $( '#term-groups .tg-elem' ).removeClass( 'selected' )
+                putgc_elem = $( event.target ).closest '.tg-elem'
+                $( putgc_elem ).addClass( 'selected' )
+                putgc_id = putgc_elem.attr( 'putgc-id' )
+                $( '#term-groups' ).attr( 'selected-putgc-id', putgc_id )
+                populate_terms( putgc_id )
+
+
+              $( window ).click ( event ) ->
+                $( ".putgc-color-palette-row" ).addClass( 'hide' )
+                $( ".tg-elem" ).removeClass( 'hide' )
+
               tg_color_label.dblclick ( event ) ->
+                #$( event.target ).closest( 'tr' ).find( '.tg-title-label, .putgc-meaning, .delete-putgc' ).toggleClass( 'hide' )
+                #$( event.target ).closest( 'tr' ).toggleClass( 'hide' )
+                #$( event.target ).closest( 'tr' ).next( 'tr' ).toggleClass( 'hide' )
                 for child in $( event.target ).parent().children()
                   $( child ).toggleClass( 'hide' )
 
-              tg_elem.click ( event ) ->
-                $( '#term-groups' ).children().removeClass( 'selected' )
-                putgc_elem = $( event.target ).closest 'tr'
-                $( putgc_elem ).addClass( 'selected' )
-                $( '#term-groups' ).attr( 'selected-putgc-id', putgc_elem.attr( 'putgc-id' ) )
-
-                $( '#term-selects .select2-container' ).addClass( 'hide' )
-                $( '#term-selects select[putgc-id=' + putgc_elem.attr( 'putgc-id' ) + ']' ).next( '.select2-container' ).removeClass( 'hide' )
-                
+                #$( '#term-selects .select2-container' ).addClass( 'hide' )
+                #$( '#term-selects select[putgc-id=' + putgc_elem.attr( 'putgc-id' ) + ']' ).next( '.select2-container' ).removeClass( 'hide' )
 
               tg_delete.click ( event ) ->
-                event.stopPropagation()
-                putgc_elem = $( event.target ).closest 'tr'
-                putgc_id = putgc_elem.attr( 'putgc-id' )
-                delete_term_group( obj, putgc_id )
+                if confirm("Are you sure?")
+                  event.stopPropagation()
+                  putgc_elem = $( event.target ).closest 'tr'
+                  putgc_id = putgc_elem.attr( 'putgc-id' )
+                  delete_term_group( obj, putgc_id )
 
               tg_title.append( tg_title_label )
               tg_title.append( tg_title_input )
@@ -743,41 +816,28 @@ document.addEventListener 'turbolinks:load', ->
               tg_elem.append( tg_meaning )
               tg_elem.append( tg_delete )
               $( '#term-groups' ).append( tg_elem )
+              #$( '#term-groups' ).append( tg_color_palette_row )
 
-            $( '#term-groups tr[putgc-id="' + $( '#term-groups' ).attr( 'selected-putgc-id' ) + '"]' ).addClass( 'selected' )
+              $( '#term-groups .tg-elem[putgc-id="' + $( '#term-groups' ).attr( 'selected-putgc-id' ) + '"]' ).addClass( 'selected' )
 
-            create_term_selects( obj )
+            #### DELETE THIS!!! ####
+            #populate_term_modal( obj )
+            #### DELETE THIS!!! ####
+
+            selected_putgc_id = $( '#term-groups .tg-elem' ).first().attr( 'putgc-id' )
+            $( '#term-groups' ).attr( 'selected-putgc-id', selected_putgc_id )
+            $( '#term-groups .tg-elem' ).removeClass( 'selected' )
+            $( '#term-groups .tg-elem[putgc-id="' + selected_putgc_id + '"]' ).addClass( 'selected' )
+
+            populate_terms( selected_putgc_id )
+
+            #create_term_selects( obj )
         error:
           () ->
             toastr.error( 'ERROR: Could not fetch term groups' )
       }
 
-##### create_term_selects #####
-    create_term_selects = ( obj ) ->
-      send_ajax = ( inner_putgc_id ) ->
-        $.ajax {
-          type: 'GET'
-          url: $( '#root-url' ).text() + '/api/v1/projects_users_term_groups_colors/' + inner_putgc_id + '/terms.json'
-          dataType: 'json'
-          success:
-            ( data ) ->
-              for term in data[ 'results' ]
-                term_option = new Option( term[ 'text' ], term[ 'id' ], true, true )
-                $( 'select[putgc-id=' + inner_putgc_id + ']' ).append( term_option )
-              apply_select2_to_term_select( obj, $( 'select[putgc-id=' + inner_putgc_id + ']' ) )
-          error:
-            () ->
-              toastr.error( 'ERROR: Could not fetch terms' )
-        }
-
-      $( '#term-selects' ).empty()
-      for tg in $( '#term-groups tr' )
-        putgc_id = $( tg ).attr( 'putgc-id' )
-        term_select = $( '<select class="hide" putgc-id="' + putgc_id + '" multiple>' )
-        $( '#term-selects' ).append( term_select )
-
-        send_ajax( putgc_id )
-
+##### TO BE DELETED #####
 ##### apply_select2_to_term_selects #####
     apply_select2_to_term_select = ( obj, term_select ) ->
       putgc_id = term_select.attr( 'putgc-id' )
@@ -811,7 +871,6 @@ document.addEventListener 'turbolinks:load', ->
           }
           success:
             ( data ) ->
-              console.log "LOYLOY"
               force_update_c_p( obj )
           error:
             ( error ) ->
@@ -821,6 +880,110 @@ document.addEventListener 'turbolinks:load', ->
       if not ($( '#term-groups' ).attr( 'selected-putgc-id' ) == putgc_id)
         term_select.next( '.select2-container' ).addClass( 'hide' )
 
+##### TO BE DELETED #####
+##### create_term_selects #####
+    create_term_selects = ( obj ) ->
+      send_ajax = ( inner_putgc_id ) ->
+        $.ajax {
+          type: 'GET'
+          url: $( '#root-url' ).text() + '/api/v1/projects_users_term_groups_colors/' + inner_putgc_id + '/terms.json'
+          dataType: 'json'
+          success:
+            ( data ) ->
+              for term in data[ 'results' ]
+                term_option = new Option( term[ 'text' ], term[ 'id' ], true, true )
+                $( 'select[putgc-id=' + inner_putgc_id + ']' ).append( term_option )
+              #apply_select2_to_term_select( obj, $( 'select[putgc-id=' + inner_putgc_id + ']' ) )
+          error:
+            () ->
+              toastr.error( 'ERROR: Could not fetch terms' )
+        }
+
+      $( '#term-selects' ).empty()
+      for tg in $( '#term-groups tr' )
+        putgc_id = $( tg ).attr( 'putgc-id' )
+        term_select = $( '<select class="hide" putgc-id="' + putgc_id + '" multiple>' )
+        $( '#term-selects' ).append( term_select )
+
+        send_ajax( putgc_id )
+
+
+##### populate_terms #####
+    populate_terms = ( inner_putgc_id ) ->
+      if (typeof inner_putgc_id == 'undefined')
+        return
+      $.ajax {
+        type: 'GET'
+        url: $( '#root-url' ).text() + '/api/v1/projects_users_term_groups_colors/' + inner_putgc_id + '/terms.json'
+        dataType: 'json'
+        success:
+          ( data ) ->
+            terms_tbody = $( '#terms-modal #terms-list tbody' )
+            terms_tbody.empty()
+            for term in data[ 'results' ]
+              term_row = $( '<tr></tr>' )
+
+              term_name = $( '<div id=' + term[ 'id' ] + '>' + term[ 'text' ] + '</div>' )
+              term_name_td = $( '<td />' ).append( term_name )
+
+              term_CS = $( '<input />', { type: 'checkbox', class: 'term-CS-checkbox', term_id: term[ 'id' ] } )
+              term_CS_td = $( '<td />' ).append( term_CS )
+
+              term_PM = $( '<input />', { type: 'checkbox', class: 'term-PM-checkbox', term_id: term[ 'id' ] } )
+              term_PM_td = $( '<td />' ).append( term_PM )
+
+              term_delete = $( '<a />', { class: 'delete-term-button', term_id: term[ 'id' ] } )
+              term_delete.text( '✖' )
+              term_delete_td = $( '<td />' ).append( term_delete )
+
+              term_row.append( term_name_td )
+              term_row.append( term_CS_td )
+              term_row.append( term_PM_td )
+              term_row.append( term_delete_td )
+
+              terms_tbody.append( term_row )
+        error:
+          () ->
+            toastr.error( 'ERROR: Could not fetch terms' )
+      }
+
+##### populate_term_modal #####
+    populate_term_modal = ( obj ) ->
+      $( '#tg-panel' ).html( $( '#edit-term-groups #edit-term-groups-table' ).clone() )
+
+      selected_putgc_id = $( '#tg-panel #term-groups .tg-elem' ).first().attr( 'putgc-id' )
+      $( '#tg-panel #term-groups' ).attr( 'selected-putgc-id', selected_putgc_id )
+      $( '#tg-panel #term-groups .tg-elem[putgc-id="' + selected_putgc_id + '"]' )
+
+      $( '#tg-panel #term-groups .tg-title-label' ).dblclick ( event ) ->
+        for child in $( event.target ).parent().children()
+          $( child ).toggleClass( 'hide' )
+          if $( child ).is 'input'
+            $( child ).focus()
+
+      $( '#tg-panel #term-groups .tg-elem' ).focusout ( event ) ->
+        for child in $( event.target ).parent().children()
+          $( child ).toggleClass( 'hide' )
+
+      $( '#tg-panel #term-groups .putgc-color-label' ).dblclick ( event ) ->
+        for child in $( event.target ).parent().children()
+          $( child ).toggleClass( 'hide' )
+
+      $( '#tg-panel #term-groups .tg-elem' ).click ( event ) ->
+        $( '#tg-panel #term-groups' ).children().removeClass( 'selected' )
+        putgc_elem = $( event.target ).closest 'tr'
+        $( putgc_elem ).addClass( 'selected' )
+        putgc_id = putgc_elem.attr( 'putgc-id' )
+        $( '#tg-panel #term-groups' ).attr( 'selected-putgc-id', putgc_id )
+        populate_terms( putgc_id )
+
+      $( '#tg-panel #term-groups .delete-putgc' ).click ( event ) ->
+        event.stopPropagation()
+        putgc_elem = $( event.target ).closest 'tr'
+        putgc_id = putgc_elem.attr( 'putgc-id' )
+        delete_term_group( obj, putgc_id )
+
+      populate_terms( selected_putgc_id )
 
 ##### delete_term_group #####
     delete_term_group = ( obj, id ) ->
@@ -847,11 +1010,12 @@ document.addEventListener 'turbolinks:load', ->
             for color in data[ 'colors' ]
               color_elem = $( '<div color-id="' + color[ 'id' ] + '"style="height: 20px; width: 20px; background-color:' + color[ 'hex_code' ] + ';"></div>' )
               color_elem.click ( event ) ->
-                putgc_elem = $( event.target ).closest 'tr'
+                putgc_elem = $( event.target ).closest( '.tg-elem' )
                 putgc_id = putgc_elem.attr( 'putgc-id' )
                 color_id = $( event.target ).attr( 'color-id' )
                 term_group_name = putgc_elem.find( '.putgc-title input' ).val()
                 update_term_group( obj, putgc_id, term_group_name, color_id )
+                event.stopPropagation()
               $( palette_elem ).append( color_elem )
         error:
           () ->
@@ -906,7 +1070,6 @@ document.addEventListener 'turbolinks:load', ->
       }
 
 ##### highlight_terms ##### 
-    highlight_terms = ( input_string ) ->
       for tg in $( '#term-groups' )
         putgc_id = $( tg ).attr( 'putgc-id' )
         tg_color = $( tg ).find( '.putgc-color' ).attr( 'color-hex' )
@@ -915,8 +1078,6 @@ document.addEventListener 'turbolinks:load', ->
             match.toUpperCase()
 
       return input_string
-
-    
 
 ##### send_new_term #####
     send_new_term = ( projects_users_terms_groups_color_id, term ) ->
@@ -974,6 +1135,9 @@ document.addEventListener 'turbolinks:load', ->
         ( data ) ->
           $( '#screen-div' ).show()
           start_screening( data.unlabeled_citations_projects, data.labeled_citations_projects, data.options )
+      error:
+        ( ) ->
+          toastr.error( 'ERROR: Cannot fetch citations to screen.' )
     }
 
     $( '#hide-me' ).hide()
