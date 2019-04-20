@@ -12,6 +12,7 @@ class ExtractionFormsProject < ApplicationRecord
   #}
 
   after_create :create_default_sections
+  after_create :create_default_arms
 
   belongs_to :extraction_forms_project_type, inverse_of: :extraction_forms_projects, optional: true
   belongs_to :extraction_form,               inverse_of: :extraction_forms_projects
@@ -31,17 +32,26 @@ class ExtractionFormsProject < ApplicationRecord
 
     def create_default_sections
       Section.default_sections.each do |section|
-        ExtractionFormsProjectsSection.create(
-          {
-            extraction_forms_project: self,
-            extraction_forms_projects_section_type: ['Key Questions', 'Results'].include?(section.name) ?
-            ExtractionFormsProjectsSectionType.find_by(name: section.name) : ['Arms', 'Outcomes'].include?(section.name) ?
-            ExtractionFormsProjectsSectionType.find_by(name: 'Type 1') : ['Design Details', 'Arm Details', 'Sample Characteristics', 'Outcome Details', 'Risk of Bias Assessment'].include?(section.name) ?
-            ExtractionFormsProjectsSectionType.find_by(name: 'Type 2') : raise('Unexpected default section'),
-            section: section
-          }
-        )
+        ExtractionFormsProjectsSection.create({
+          extraction_forms_project: self,
+          extraction_forms_projects_section_type: ['Key Questions', 'Results'].include?(section.name) ?
+          ExtractionFormsProjectsSectionType.find_by(name: section.name) : ['Arms', 'Outcomes'].include?(section.name) ?
+          ExtractionFormsProjectsSectionType.find_by(name: 'Type 1') : ['Design Details', 'Arm Details', 'Sample Characteristics', 'Outcome Details', 'Risk of Bias Assessment'].include?(section.name) ?
+          ExtractionFormsProjectsSectionType.find_by(name: 'Type 2') : raise('Unexpected default section'),
+          section: section,
+          link_to_type1: ['Arm Details', 'Sample Characteristics'].include?(section.name) ?
+          ExtractionFormsProjectsSection.find_by(extraction_forms_project: self, extraction_forms_projects_section_type: ExtractionFormsProjectsSectionType.find_by(name: 'Type 1'), section: Section.find_by(name: 'Arms')) : ['Outcome Details'].include?(section.name) ?
+          ExtractionFormsProjectsSection.find_by(extraction_forms_project: self, extraction_forms_projects_section_type: ExtractionFormsProjectsSectionType.find_by(name: 'Type 1'), section: Section.find_by(name: 'Outcomes')) : nil
+        })
       end
+    end
+
+    def create_default_arms
+      ExtractionFormsProjectsSection.find_by(
+        extraction_forms_project: self,
+        extraction_forms_projects_section_type: ExtractionFormsProjectsSectionType.find_by(name: 'Type 1'),
+        section: Section.find_by(name: 'Arms')
+      ).type1s << Type1.find_or_create_by(name: 'Total', description: 'All interventions combined')
     end
 
     def extraction_form_name_exists?(attributes)
