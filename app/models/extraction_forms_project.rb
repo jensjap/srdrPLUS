@@ -50,11 +50,14 @@ class ExtractionFormsProject < ApplicationRecord
     end
 
     def create_default_arms
-      ExtractionFormsProjectsSection.find_by(
-        extraction_forms_project: self,
-        extraction_forms_projects_section_type: ExtractionFormsProjectsSectionType.find_by(name: 'Type 1'),
+      extraction_forms_projects_sections.find_by(
         section: Section.find_by(name: 'Arms')
       ).type1s << Type1.find_or_create_by(name: 'Total', description: 'All interventions combined')
+#      ExtractionFormsProjectsSection.find_by(
+#        extraction_forms_project: self,
+#        extraction_forms_projects_section_type: ExtractionFormsProjectsSectionType.find_by(name: 'Type 1'),
+#        section: Section.find_by(name: 'Arms')
+#      ).type1s << Type1.find_or_create_by(name: 'Total', description: 'All interventions combined')
     end
 
     def extraction_form_name_exists?(attributes)

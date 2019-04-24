@@ -17,7 +17,7 @@ class ExtractionsExtractionFormsProjectsSectionsController < ApplicationControll
           @action                = params[:extractions_extraction_forms_projects_section][:action]
           @extraction            = @extractions_extraction_forms_projects_section.extraction
           @linked_type2_sections = @extractions_extraction_forms_projects_section.link_to_type2s
-          @results_eefps         = @extraction.find_eefps_by_section_type('Results').first
+          @results_eefps         = @extraction.find_eefps_by_section_type('Results')
         end
       else
         format.html { redirect_to work_extraction_path(@extractions_extraction_forms_projects_section.extraction,

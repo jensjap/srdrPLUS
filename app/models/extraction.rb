@@ -11,6 +11,7 @@ class Extraction < ApplicationRecord
   # Note: 6/25/2018 - We call ensure_extraction_form_structure in work and consolidate action. this might be enough
   #                   to ensure consistency?
   after_create :ensure_extraction_form_structure
+  after_create :create_default_arms
 
   scope :by_project_and_user, -> ( project_id, user_id ) {
     joins(projects_users_role: { projects_user: :user })
@@ -71,8 +72,19 @@ class Extraction < ApplicationRecord
 
   # Returns a ActiveRecord::AssociationRelation.
   def find_eefps_by_section_type(section_name)
-    self.extractions_extraction_forms_projects_sections
+    extractions_extraction_forms_projects_sections
       .joins(extraction_forms_projects_section: :section)
-      .where(sections: { name: section_name })
+      .find_by(sections: { name: section_name })
+  end
+
+  private
+
+  def create_default_arms
+    find_eefps_by_section_type("Arms")
+      .type1s << Type1.find_or_create_by(name: 'Total', description: 'All interventions combined')
+#    extractions_extraction_forms_projects_sections
+#      .joins(extraction_forms_projects_section: :section)
+#      .find_by(sections: { name: "Arms" }
+#    ).type1s << Type1.find_or_create_by(name: 'Total', description: 'All interventions combined')
   end
 end

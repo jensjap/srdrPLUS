@@ -110,7 +110,10 @@ class ExtractionFormsProjectsSection < ApplicationRecord
   end
 
   def extraction_forms_projects_sections_type1s_without_total_arm
-    extraction_forms_projects_sections_type1s.ordered.to_a.delete_if { |efpst| efpst.type1==Type1.find_by(name: 'Total', description: 'All interventions combined') }
+    extraction_forms_projects_sections_type1s
+      .ordered
+      .to_a
+      .delete_if { |efpst| efpst.type1==Type1.find_by(name: 'Total', description: 'All interventions combined') }
   end
 
   def self.add_quality_dimension_by_questions_or_section(params)

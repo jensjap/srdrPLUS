@@ -10,16 +10,6 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
 #    joins(extraction_forms_projects_section: :section )
 #      .where(extraction_forms_projects_sections: { sections: { name: 'Results' } }) }
 
-  def type1s_suggested_by_project_leads
-    extraction_forms_projects_section
-      .type1s
-      .includes(suggestion: { user: :profile })
-      .joins(:extraction_forms_projects_sections_type1s)
-      .where.not(extraction_forms_projects_sections_type1s: { type1: self.type1s })
-      .where.not(extraction_forms_projects_sections_type1s: { type1s: { name: 'Total', description: 'All interventions combined' } })
-      .distinct
-  end
-
   belongs_to :extraction,                        inverse_of: :extractions_extraction_forms_projects_sections
   belongs_to :extraction_forms_projects_section, inverse_of: :extractions_extraction_forms_projects_sections
   belongs_to :link_to_type1, class_name: 'ExtractionsExtractionFormsProjectsSection',
@@ -43,6 +33,16 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
   delegate :project,           to: :extraction_forms_projects_section
   delegate :section,           to: :extraction_forms_projects_section
 
+  def type1s_suggested_by_project_leads
+    extraction_forms_projects_section
+      .type1s
+      .includes(suggestion: { user: :profile })
+      .joins(:extraction_forms_projects_sections_type1s)
+      .where.not(extraction_forms_projects_sections_type1s: { type1: self.type1s })
+      .where.not(extraction_forms_projects_sections_type1s: { type1s: { name: 'Total', description: 'All interventions combined' } })
+      .distinct
+  end
+
   def eefps_qrfc_values(eefpst1_id, qrc)
     recordables = extractions_extraction_forms_projects_sections_question_row_column_fields
       .where(extractions_extraction_forms_projects_sections_type1_id: eefpst1_id,
@@ -59,6 +59,14 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
     else
       return Record.where(recordable: recordables).pluck(:name).join('\r')
     end
+  end
+
+  def eefpst1_without_total_arm
+    extractions_extraction_forms_projects_sections_type1s
+      .includes(:type1_type, :type1)
+      .ordered
+      .to_a
+      .delete_if { |efpst| efpst.type1==Type1.find_by(name: 'Total', description: 'All interventions combined') }
   end
 
   # Do not create duplicate Type1 entries.
