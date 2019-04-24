@@ -16,6 +16,7 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
       .includes(suggestion: { user: :profile })
       .joins(:extraction_forms_projects_sections_type1s)
       .where.not(extraction_forms_projects_sections_type1s: { type1: self.type1s })
+      .where.not(extraction_forms_projects_sections_type1s: { type1s: { name: 'Total', description: 'All interventions combined' } })
       .distinct
   end
 

@@ -9,6 +9,7 @@ class ExtractionFormsProjectsSection < ApplicationRecord
   default_scope { order(id: :asc) }
 
   after_save :mark_as_deleted_or_restore_extraction_forms_projects_section_option
+  after_create :create_extraction_forms_projects_section_option
 
   before_validation -> { set_ordering_scoped_by(:extraction_forms_project_id) }
 
@@ -105,6 +106,10 @@ class ExtractionFormsProjectsSection < ApplicationRecord
       option = ExtractionFormsProjectsSectionOption.find_by(extraction_forms_projects_section: self)
       option.destroy if option
     end
+  end
+
+  def extraction_forms_projects_sections_type1s_without_total_arm
+    extraction_forms_projects_sections_type1s.ordered.to_a.delete_if { |efpst| efpst.type1==Type1.find_by(name: 'Total', description: 'All interventions combined') }
   end
 
   def self.add_quality_dimension_by_questions_or_section(params)

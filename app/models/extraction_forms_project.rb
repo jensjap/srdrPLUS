@@ -42,7 +42,10 @@ class ExtractionFormsProject < ApplicationRecord
           link_to_type1: ['Arm Details', 'Sample Characteristics'].include?(section.name) ?
           ExtractionFormsProjectsSection.find_by(extraction_forms_project: self, extraction_forms_projects_section_type: ExtractionFormsProjectsSectionType.find_by(name: 'Type 1'), section: Section.find_by(name: 'Arms')) : ['Outcome Details'].include?(section.name) ?
           ExtractionFormsProjectsSection.find_by(extraction_forms_project: self, extraction_forms_projects_section_type: ExtractionFormsProjectsSectionType.find_by(name: 'Type 1'), section: Section.find_by(name: 'Outcomes')) : nil
-        })
+        }).extraction_forms_projects_section_option.update!(
+          by_type1: ['Arm Details', 'Outcome Details'].include?(section.name) ? true : ['Sample Characteristics'].include?(section.name) ? false : nil,
+          include_total: ['Arm Details', 'Outcome Details'].include?(section.name) ? false : ['Sample Characteristics'].include?(section.name) ? true : nil
+        )
       end
     end
 
