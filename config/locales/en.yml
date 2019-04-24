@@ -66,9 +66,10 @@ en:
     comparison_tool:
       comparison_tool: Comparison Tool
     work:
+      extract_data: Extract Data
       question_row_column_field_types:
         text:
-          save: 'Update value'
+          save: Update Value
   shared:
     topbar_nav_1:
       contact: Our Team
@@ -98,6 +99,8 @@ en:
       login: Login
       signup: Sign Up
   extraction_forms_projects:
+    build:
+      build_extraction_form: Build Extraction Form
     form:
       save: Save Extraction Form
   failure: Could not create resource
