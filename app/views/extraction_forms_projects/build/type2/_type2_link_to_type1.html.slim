@@ -1,5 +1,5 @@
-a data-toggle="link-to-type1-#{ efps.id }"
-  ' Optionally associate with another tab
+/a data-toggle="link-to-type1-#{ efps.id }"
+  ' Toggle additional options
 
 - arm_efps = efps.extraction_forms_project\
                  .extraction_forms_projects_sections\
@@ -24,9 +24,9 @@ a data-toggle="link-to-type1-#{ efps.id }"
 
 - raise if associated_efps.length > 1
 
-- if associated_efps.present?
-  div id="link-to-type1-#{ efps.id }" data-toggler='' data-animate='scale-in-up scale-out-down' style='display: none;'
-    = simple_form_for(efps, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
+div id="link-to-type1-#{ efps.id }" data-toggler='' data-animate='scale-in-up scale-out-down' style='display: block;'
+  = simple_form_for(efps, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
+    = f.simple_fields_for :extraction_forms_projects_section_option, f.object.extraction_forms_projects_section_option do |sf|
       = f.association :link_to_type1,
         label: "Do you want the questions displayed for each #{ associated_efps.first.section.name.singularize } defined in the form?",
         collection: associated_efps,
@@ -34,3 +34,11 @@ a data-toggle="link-to-type1-#{ efps.id }"
         include_blank: 'No',
         label_method: lambda { |efps| 'Yes' },
         input_html: { onchange: 'this.form.submit();' }
+      - if associated_efps.present? && (efps.section.name.eql?('Arm Details') || efps.section.name.eql?('Outcome Details'))
+        = sf.input :by_type1,
+          label: "Do you want the questions displayed for each #{ associated_efps.first.section.name.singularize } defined in the form?",
+          input_html: { onclick: 'this.form.submit();' }
+      - elsif associated_efps.present? && (efps.section.name.eql?('Sample Characteristics'))
+        = sf.input :include_total,
+          label: "Do you want to include \"Total: All interventions combined\"?",
+          input_html: { onclick: 'this.form.submit();' }

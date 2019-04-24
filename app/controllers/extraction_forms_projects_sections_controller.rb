@@ -114,6 +114,7 @@ class ExtractionFormsProjectsSectionsController < ApplicationController
                 :section_id,
                 :extraction_forms_projects_section_id,
                 key_questions_project_ids: [],
+                extraction_forms_projects_section_option_attributes: [:id, :by_type1, :include_total],
                 extraction_forms_projects_sections_type1s_attributes: [:type1_type_id, timepoint_name_ids: [], type1_attributes: [:id, :name, :description], timepoint_names_attributes: [:id, :name, :unit]])
     end
 

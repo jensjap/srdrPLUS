@@ -38,6 +38,7 @@ class ExtractionFormsProjectsSection < ApplicationRecord
   has_many :questions, dependent: :destroy, inverse_of: :extraction_forms_projects_section
 
   accepts_nested_attributes_for :extraction_forms_projects_sections_type1s, reject_if: :all_blank
+  accepts_nested_attributes_for :extraction_forms_projects_section_option, reject_if: :all_blank
   #accepts_nested_attributes_for :type1s, reject_if: :all_blank
 
   delegate :project, to: :extraction_forms_project

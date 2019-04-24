@@ -14,7 +14,8 @@ blockquote
 
 - linked_section = eefps.link_to_type1
 
-- if linked_section && eefps.link_to_type1.type1s.blank?
+/- if linked_section && linked_section.type1s.blank?
+- if linked_section && eefps.extraction_forms_projects_section.extraction_forms_projects_section_option.by_type1 && linked_section.type1s.blank?
   h5 style='color: red;' You must add #{ linked_section.extraction_forms_projects_section.section.name } before extracting into this section.
 
 - else
@@ -36,7 +37,7 @@ blockquote
       .card-section
         .table-scroll
           #step-two
-            - if linked_section
+            - if linked_section && eefps.extraction_forms_projects_section.extraction_forms_projects_section_option.by_type1
               - eefps.link_to_type1.type1s.each do |t1|
                 fieldset.fieldset
                   legend
