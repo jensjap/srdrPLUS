@@ -18,27 +18,34 @@
   'Outcome Details'         => outcome_efps,\
   'Risk of Bias Assessment' => outcome_efps,\
 }
-- default_type2_to_type1_mapping.default = arm_efps
-
 - associated_efps = default_type2_to_type1_mapping[efps.section.name]
-
-- raise if associated_efps.length > 1
 
 div id="link-to-type1-#{ efps.id }" data-toggler='' data-animate='scale-in-up scale-out-down' style='display: block;'
   = simple_form_for(efps, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
     = f.simple_fields_for :extraction_forms_projects_section_option, f.object.extraction_forms_projects_section_option do |sf|
-      /= f.association :link_to_type1,
-        label: "Do you want the questions displayed for each #{ associated_efps.first.section.name.singularize } defined in the form?",
-        collection: associated_efps,
-        prompt: false,
-        include_blank: 'No',
-        label_method: lambda { |efps| 'Yes' },
-        input_html: { onchange: 'this.form.submit();' }
+      - if associated_efps.present?
+        /= f.association :link_to_type1,
+          label: "Would you like questions displayed for each #{ associated_efps.first.section.name.singularize } defined in the form?",
+          collection: associated_efps,
+          prompt: false,
+          include_blank: 'No',
+          label_method: lambda { |efps| 'Yes' },
+          input_html: { onchange: 'this.form.submit();' }
+
+      - else
+        = f.association :link_to_type1,
+          label: "Which independent section would you like to link to?",
+          collection: efps.extraction_forms_project.extraction_forms_projects_sections.where(extraction_forms_projects_section_type_id: 1),
+          prompt: true,
+          include_blank: 'None',
+          label_method: lambda { |efps| efps.section.name },
+          input_html: { onchange: 'this.form.submit();' }
+
       - if associated_efps.present? && (efps.section.name.eql?('Arm Details') || efps.section.name.eql?('Outcome Details'))
         = sf.input :by_type1,
-          label: "Do you want the questions displayed for each #{ associated_efps.first.section.name.singularize } defined in the form?",
+          label: "Would you like questions displayed for each #{ associated_efps.first.section.name.singularize } defined in the form?",
           input_html: { onclick: 'this.form.submit();' }
       - elsif associated_efps.present? && (efps.section.name.eql?('Sample Characteristics'))
         = sf.input :include_total,
-          label: "Do you want to include \"Total: All interventions combined\"?",
+          label: "Would you like to include \"Total: All interventions combined\"?",
           input_html: { onclick: 'this.form.submit();' }
