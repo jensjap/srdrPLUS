@@ -1,5 +1,12 @@
-div
-  = f.input :user_id, as: :hidden, input_html: { value: current_user.id }
-  = f.input :import_type_id, as: :hidden, input_html: { value: ImportType.find_by(name: 'Distiller References').id }
-  = f.input :content, as: :file, label: 'Citation File'
-  = f.input :file_type_id, as: :select, collection: FileType.where(name: ['.csv', '.ris', '.enl', 'PubMed']), selected: FileType.find_by(name: '.ris').id
+.nested-fields
+  .label
+    | Distiller References File
+  .callout
+    .row
+      .columns.small-12.medium-8.large-9
+        = f.input :user_id, as: :hidden, input_html: { value: current_user.id }
+        = f.input :import_type_id, as: :hidden, input_html: { value: ImportType.find_by(name: 'Distiller References').id }
+        = f.input :content, as: :file
+      .columns.small-12.medium-4.large-3
+        = f.input :file_type_id, as: :select, collection: FileType.where(name: ['.csv', '.ris']), selected: FileType.find_by(name: '.ris').id
+    = link_to_remove_association "Remove References File", f, id: 'distiller-remove-references-file'

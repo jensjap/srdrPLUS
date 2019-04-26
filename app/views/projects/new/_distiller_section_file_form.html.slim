@@ -1,7 +1,27 @@
-div
-  = f.input :user_id, as: :hidden, input_html: { value: current_user.id }
-  = f.input :import_type_id, as: :hidden, input_html: { value: ImportType.find_by(name: 'Distiller Section').id }
-  = f.input :content, as: :file, label: 'Section File'
-  = f.input :file_type_id, as: :hidden, input_html: { value: FileType.find_by( name: '.csv' ).id }
-  = f.simple_fields_for :section_attributes, collection: f.object.build_section do |s|
-    = s.input :name, label: 'Section Name'
+.nested-fields
+  .label
+    | Distiller Section File
+  .callout
+    .row
+      .columns
+        = f.simple_fields_for f.object.build_key_question do |kq|
+          = kq.input :name, as: :select,
+                  collection: ["AAA", "BBB", "CCC"]
+
+    .row
+      .columns.small-12.medium-6.large-6
+        = f.input :user_id, as: :hidden, input_html: { value: current_user.id }
+        = f.input :import_type_id, as: :hidden, input_html: { value: ImportType.find_by(name: 'Distiller Section').id }
+        = f.input :content, as: :file
+        = f.input :file_type_id, as: :hidden, input_html: { value: FileType.find_by( name: '.csv' ).id }
+      .columns.small-12.medium-6.large-6
+        = f.simple_fields_for f.object.build_section do |s|
+          = s.input :name, as: :select,
+                  collection: ["Design Details", "Arms", "Arm Details", "Sample Characteristics", "Outcomes", "Outcome Details", "Risk of Bias Assessment", "Results"],
+                  input_html: { id: 'distiller-section-input' },
+                  selected: "Design Details"
+
+    = link_to_remove_association "Remove Section File", f, id: 'distiller-remove-section-file'
+
+  /= f.simple_fields_for :section_attributes, collection: f.object.build_section do |s|
+    = s.input :name, as: :select, collection: FileType.where(name: ['.csv', '.ris']), selected: FileType.find_by(name: '.ris').id, label: 'Section Name'

@@ -83,6 +83,7 @@ class Project < ApplicationRecord
   #accepts_nested_attributes_for :key_questions_projects, reject_if: :all_blank, allow_destroy: true
   #
   accepts_nested_attributes_for :imported_files
+  accepts_nested_attributes_for :key_questions
   accepts_nested_attributes_for :citations
   accepts_nested_attributes_for :citations_projects, allow_destroy: true
   accepts_nested_attributes_for :tasks, allow_destroy: true

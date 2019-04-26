@@ -57,17 +57,27 @@ document.addEventListener 'turbolinks:load', ->
    #     $( '.json-import-panel' ).toggleClass( 'hide' )
 
     if $( 'body.projects.new' ).length == 1
+      $( '.distiller-section-file-container' ).on 'cocoon:after-insert', ( e ) ->
+        console.log $( e.target ).find( '#distiller-section-input' )
+        $( e.target ).find( '#distiller-section-input' ).select2()
+
       $( '#create-type' ).on 'change', ( e ) ->
         $( '.input.file input' ).val('')
         if $( e.target ).val() == "empty"
           $( '.distiller-import-panel' ).addClass( 'hide' )
           $( '.json-import-panel' ).addClass( 'hide' )
+          $( '#distiller-remove-references-file' ).trigger "click"
+          $( '#distiller-remove-section-file' ).trigger "click"
         else if $( e.target ).val() == "distiller"
           $( '.distiller-import-panel' ).removeClass( 'hide' )
           $( '.json-import-panel' ).addClass( 'hide' )
+          $( '#distiller-add-references-file' ).trigger "click"
+          $( '#distiller-add-section-file' ).trigger "click"
         else if $( e.target ).val() == "json"
           $( '.distiller-import-panel' ).addClass( 'hide' )
           $( '.json-import-panel' ).removeClass( 'hide' )
+          $( '#distiller-remove-references-file' ).trigger "click"
+          $( '#distiller-remove-section-file' ).trigger "click"
 
 ########## TASK MANAGEMENT
     if $( 'body.projects.edit' ).length == 1

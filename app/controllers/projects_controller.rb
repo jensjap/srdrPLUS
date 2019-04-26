@@ -262,14 +262,15 @@ class ProjectsController < ApplicationController
                 {citations_attributes: [:id, :name, :abstract, :pmid, :refman, :citation_type_id, :_destroy, author_ids: [], keyword_ids:[], journal_attributes: [:id, :name, :volume, :issue, :publication_date]]},
                 {citations_projects_attributes: [:id, :_destroy, :citation_id, :project_id,
                                                 citation_attributes: [:id, :_destroy, :name]]},
-                {key_questions_projects_attributes: [:id, :position]}, 
+                {key_questions_projects_attributes: [:id, :position]},
+                {key_questions_attributes: [:name]},
                 {projects_users_attributes: [:id, :_destroy, :user_id, role_ids: []]},
                 {screening_options_attributes: [:id, :_destroy, :project_id, :label_type_id, :screening_option_type_id]})
     end
 
     def import_params
       params.require(:project)
-          .permit({key_questions_attributes: [:name], imported_files_attributes: [:id, :file_type_id, :import_type_id, :content, :user_id, section_attributes: [:name]]})
+          .permit({imported_files_attributes: [:id, :file_type_id, :import_type_id, :content, :user_id, section:[:name], key_question:[ :name ]]})
     end
 
     def distiller_params
