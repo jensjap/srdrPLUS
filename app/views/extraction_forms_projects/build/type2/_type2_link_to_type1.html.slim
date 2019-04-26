@@ -24,13 +24,15 @@ div id="link-to-type1-#{ efps.id }" data-toggler='' data-animate='scale-in-up sc
   = simple_form_for(efps, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
     = f.simple_fields_for :extraction_forms_projects_section_option, f.object.extraction_forms_projects_section_option do |sf|
       - if associated_efps.present?
-        /= f.association :link_to_type1,
-          label: "Would you like questions displayed for each #{ associated_efps.first.section.name.singularize } defined in the form?",
-          collection: associated_efps,
-          prompt: false,
-          include_blank: 'No',
-          label_method: lambda { |efps| 'Yes' },
-          input_html: { onchange: 'this.form.submit();' }
+        - if (efps.section.name.eql?('Arm Details') || efps.section.name.eql?('Outcome Details'))
+          = sf.input :by_type1,
+            label: "Display questions for each #{ associated_efps.first.section.name.singularize } defined in the extraction?",
+            input_html: { onclick: 'this.form.submit();' }
+
+        - elsif (efps.section.name.eql?('Sample Characteristics'))
+          = sf.input :include_total,
+            label: "Include \"Total: All interventions combined\"?",
+            input_html: { onclick: 'this.form.submit();' }
 
       - else
         = f.association :link_to_type1,
@@ -40,12 +42,10 @@ div id="link-to-type1-#{ efps.id }" data-toggler='' data-animate='scale-in-up sc
           include_blank: 'None',
           label_method: lambda { |efps| efps.section.name },
           input_html: { onchange: 'this.form.submit();' }
-
-      - if associated_efps.present? && (efps.section.name.eql?('Arm Details') || efps.section.name.eql?('Outcome Details'))
-        = sf.input :by_type1,
-          label: "Would you like questions displayed for each #{ associated_efps.first.section.name.singularize } defined in the form?",
-          input_html: { onclick: 'this.form.submit();' }
-      - elsif associated_efps.present? && (efps.section.name.eql?('Sample Characteristics'))
-        = sf.input :include_total,
-          label: "Would you like to include \"Total: All interventions combined\"?",
-          input_html: { onclick: 'this.form.submit();' }
+        - if efps.link_to_type1.present?
+          = sf.input :by_type1,
+            label: "Display questions for each #{ efps.link_to_type1.section.name.singularize } defined in the extraction?",
+            input_html: { onclick: 'this.form.submit();' }
+          = sf.input :include_total,
+            label: "Include \"Total: All interventions combined\"?",
+            input_html: { onclick: 'this.form.submit();' }

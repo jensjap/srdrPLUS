@@ -69,6 +69,16 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
       .delete_if { |efpst| efpst.type1==Type1.find_by(name: 'Total', description: 'All interventions combined') }
   end
 
+  def type1s_with_total_arm
+    extractions_extraction_forms_projects_sections_type1s
+      .includes(:type1_type, :type1)
+      .ordered
+      .to_a
+      .delete_if { |efpst| efpst.type1==Type1.find_by(name: 'Total', description: 'All interventions combined') }
+      .push(extractions_extraction_forms_projects_sections_type1s.joins(:type1).find_by(type1s: { name: 'Total', description: 'All interventions combined' }))
+      .collect(&:type1)
+  end
+
   # Do not create duplicate Type1 entries.
   #
   # In nested forms, the type1s_attributes hash will have IDs for entries that
