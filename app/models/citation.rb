@@ -21,6 +21,11 @@ class Citation < ApplicationRecord
   accepts_nested_attributes_for :journal, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :labels, reject_if: :all_blank, allow_destroy: true
 
+  def abstract_utf8
+    abstract = self.abstract
+    abstract.nil? ? '' : abstract.encode('utf-8', :invalid => :replace, :undef => :replace, :replace => '_')
+  end
+
   def author_ids=(tokens)
     tokens.map { |token|
       resource = Author.new
