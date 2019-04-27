@@ -5,16 +5,14 @@ json.labeled_citations_projects do
 
     json.citations_project_id citations_project.id
     json.name highlight_terms(citation.name)
-    json.abstract highlight_terms(citation.abstract)
+    json.abstract highlight_terms(citation.abstract_utf8)
     json.pmid citation.pmid
     json.refman citation.refman
-    if citation.journal.present?
-      json.journal do
-        json.publication_date citation.journal.publication_date
-        json.name citation.journal.name
-        json.volume citation.journal.volume
-        json.issue citation.journal.issue
-      end
+    json.journal do
+      json.publication_date citation.journal.publication_date
+      json.name citation.journal.name
+      json.volume citation.journal.volume
+      json.issue citation.journal.issue
     end
     json.authors do
       json.array! citation.authors, :id, :name

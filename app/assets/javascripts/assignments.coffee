@@ -125,30 +125,30 @@ document.addEventListener 'turbolinks:load', ->
     update_info = ( obj ) ->
       current_citation = obj.history[ obj.index ]
 
-      $( '#citation-name' ).html( current_citation.name )
-      $( '#citation-abstract' ).html( current_citation.abstract )
-      $( '#citation-pmid' ).text( current_citation.pmid )
-      $( '#citation-refman' ).text( current_citation.refman )
-      $( '#journal-name' ).text( current_citation.journal.name )
-      $( '#journal-date' ).text( current_citation.journal.publication_date )
+      $( '#citation-name' ).html( current_citation.name || "" )
+      $( '#citation-abstract' ).html( current_citation.abstract || "" )
+      $( '#citation-pmid' ).text( current_citation.pmid || "" )
+      $( '#citation-refman' ).text( current_citation.refman || "" )
+      $( '#journal-name' ).text( current_citation.journal.name || "" )
+      $( '#journal-date' ).text( current_citation.journal.publication_date || "" )
 
       $( '#citation-authors' ).empty()
       s = true
       for k in current_citation.authors
         if s
           s = false
-          $( '#citation-authors' ).append( k.name )
+          $( '#citation-authors' ).append( k.name || "" )
         else
-          $( '#citation-authors' ).append( ', ' + k.name)
+          $( '#citation-authors' ).append( ', ' + ( k.name || "" ) )
 
       $( '#citation-keywords' ).empty()
       s = true
       for k in current_citation.keywords
         if s
           s = false
-          $( '#citation-keywords' ).append( k.name )
+          $( '#citation-keywords' ).append( k.name || "" )
         else
-          $( '#citation-keywords' ).append( ', ' + k.name)
+          $( '#citation-keywords' ).append( ', ' + ( k.name || "" ) )
 
       ## reset button colors
       $( '#yes-button' ).removeClass( 'success' )
