@@ -8,7 +8,7 @@ document.addEventListener 'turbolinks:load', ->
 
     ###########################
     # Hide unnecessary options.
-    multiSelect = ['checkbox', 'dropdown', 'radio', 'select2_single', 'select2_multi']
+    multiSelect = ['Checkbox (select multiple)', 'Dropdown (select one)', 'Radio (select one)', 'Select one (with write-in option)', 'Select multiple (with write-in option)']
 
     $('.fieldset').on 'change', ->
       that = $(this)
@@ -20,11 +20,11 @@ document.addEventListener 'turbolinks:load', ->
         that.find('.field-options.field-option-type-answer_choice').show()
         that.find('.links').show()
 
-      else if _value == 'text'  # Text.
+      else if _value == 'Text Field (alphanumeric)'  # Text.
         that.find('.field-options.field-option-type-min_length').show()
         that.find('.field-options.field-option-type-max_length').show()
 
-      else if _value == 'numeric'  # Numeric.
+      else if _value == 'Numeric Field (numeric)'  # Numeric.
         that.find('.field-options.field-option-type-additional_char').show()
         that.find('.field-options.field-option-type-min_value').show()
         that.find('.field-options.field-option-type-max_value').show()

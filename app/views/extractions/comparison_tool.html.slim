@@ -1,4 +1,5 @@
 - provide(:title, t("#{ action_name }"))
+- provide(:project_title, @project.name)
 
 .column.row
   .title-heading
@@ -17,6 +18,7 @@
 
     tbody
       - @citation_groups[:citations_projects].each do |key, val|
+        - next if val[:extraction_ids].length < 2
         tr
           td = val[:citations_project_id]
           td title=val[:citation_name_long] = val[:citation_name_short]

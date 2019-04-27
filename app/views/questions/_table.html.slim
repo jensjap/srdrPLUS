@@ -31,8 +31,12 @@
                 / Let's disable some question types for now...they are unstable.
                 = qrc_f.association :question_row_column_type, label: 'Field Type',
                                                                       include_blank: false,
-                                                                      disabled: QuestionRowColumnType.where(id: [3, 4, 8, 9]).pluck(:id),
+                                                                      collection: ['Text Field (alphanumeric)', 'Numeric Field (numeric)',\
+                                                                        'Checkbox (select multiple)', 'Dropdown (select one)', 'Radio (select one)',\
+                                                                        'Select one (with write-in option)', 'Select multiple (with write-in option)']\
+                                                                        .zip(QuestionRowColumnType.where(id: [1, 2, 5, 6, 7, 8, 9]).pluck(:id)),
                                                                       wrapper: 'horizontal_form'
+                                                                      /disabled: QuestionRowColumnType.where(id: [3, 4, 8, 9]).pluck(:id)
 
                 = qrc_f.simple_fields_for(:question_row_columns_question_row_column_options) do |qrcqrco_f|
 

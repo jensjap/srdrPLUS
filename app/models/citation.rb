@@ -62,4 +62,12 @@ class Citation < ApplicationRecord
     end
     super
   end
+
+  def handle
+    string_handle = ""
+    string_handle += "Study Citation: #{ name } "
+    string_handle += "(PMID: #{ pmid.to_s })" if pmid.present?
+
+    return string_handle
+  end
 end

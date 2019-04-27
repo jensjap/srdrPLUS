@@ -15,7 +15,7 @@
           th Role
           th
           th
-          th
+          /th
           th
 
       tbody
@@ -30,7 +30,7 @@
               td = extraction.projects_users_role.projects_user.user.handle
               td = extraction.projects_users_role.role.name
               td = link_to t('work'), work_extraction_path(extraction)
-              td = link_to t('edit'), edit_extraction_path(extraction)
+              /td = link_to t('edit'), edit_extraction_path(extraction)
               td = link_to t('destroy'), extraction, data: { confirm: 'Are you sure?' }, method: :delete
 
 - if @project.leaders.include? current_user
@@ -44,7 +44,7 @@
             th Assigned User
             th Role
             th
-            th
+            /th
             th
 
         tbody
@@ -63,7 +63,7 @@
                 td = link_to t('work'),\
                   consolidate_project_extractions_path(\
                   extraction_ids: @citation_groups[:citations_projects][extraction.citations_project_id][:extraction_ids])
-                td = link_to t('edit'), edit_extraction_path(extraction)
+                /td = link_to t('edit'), edit_extraction_path(extraction)
                 td = link_to t('destroy'), extraction, data: { confirm: 'Are you sure?' }, method: :delete
 
 .column.row

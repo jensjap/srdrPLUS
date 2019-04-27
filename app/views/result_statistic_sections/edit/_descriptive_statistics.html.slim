@@ -35,7 +35,7 @@
 
       tr
         td = simple_form_for @result_statistic_section do |f|
-          = f.association :measures
+          = f.association :measures, as: :check_boxes
 
           = f.submit
 
