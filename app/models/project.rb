@@ -17,6 +17,8 @@ class Project < ApplicationRecord
   after_create :create_default_perpetual_task
   after_create :create_default_member
 
+  has_many_attached :citation_files
+
   has_many :extractions, dependent: :destroy, inverse_of: :project
 
   has_many :extraction_forms_projects, dependent: :destroy, inverse_of: :project

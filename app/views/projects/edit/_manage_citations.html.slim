@@ -63,24 +63,24 @@ div.row
         #import-ris-div[style="display:none;"]
           = simple_form_for @project, method: :post, url: import_ris_project_url(@project), multipart: true do |f|
             .form-inputs
-              = f.input :citation_file, as: :file, label: false
+              = f.file_field :citation_files, multiple: true, direct_upload: true, label: false, class: 'file'
             .form-actions[style="display:none;"]
               = f.button :submit, 'Upload .ris file', class:"small"
         #import-csv-div[style="display:none;"]
           = simple_form_for @project, method: :post, url: import_csv_project_url(@project), multipart: true do |f|
             .form-inputs
-              = f.input :citation_file, as: :file, label: false
+              = f.file_field :citation_files, multiple: true, direct_upload: true, label: false, class: 'file'
             .form-actions[style="display:none;"]
               = f.button :submit, 'Upload .csv file', class:"small"
         #import-pubmed-div[style="display:none;"]
           = simple_form_for @project, method: :post, url: import_pubmed_project_url(@project), multipart: true do |f|
             .form-inputs
-              = f.input :citation_file, as: :file, label: false
+              = f.file_field :citation_files, multiple: true, direct_upload: true, label: false, class: 'file'
             .form-actions[style="display:none;"]
               = f.button :submit, 'Upload PMID list', class:"small"
         #import-endnote-div[style="display:none;"]
           = simple_form_for @project, method: :post, url: import_endnote_project_url(@project), multipart: true do |f|
             .form-inputs
-              = f.input :citation_file, as: :file, label: false
+              = f.file_field :citation_files, multiple: true, direct_upload: true, label: false, class: 'file'
             .form-actions[style="display:none;"]
               = f.button :submit, 'Upload .enl file', class:"small"

@@ -25,6 +25,7 @@
 //= require list.min.js
 //= require jquery.form.min.js
 //= require sortable-rails-jquery
+//= require activestorage
 //= require_tree .
 
 //$(function(){ $(document).foundation(); });

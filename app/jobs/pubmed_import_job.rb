@@ -7,11 +7,12 @@ class PubmedImportJob < ApplicationJob
     # Do something later
     Rails.logger.debug "#{ self.class.name }: I'm performing my job with arguments: #{ args.inspect }"
 
-    @user = User.find( args.first )
-    @project = Project.find( args.second )
+    @user          = User.find( args.first )
+    @project       = Project.find( args.second )
+    @citation_file = @project.citation_files.find(args.third)
 
     key_counter = 0
-    pmid_arr = File.readlines( args.third )
+    pmid_arr = @citation_file.download.split
     primary_id = CitationType.find_by( name: 'Primary' ).id
 
     h_arr = []

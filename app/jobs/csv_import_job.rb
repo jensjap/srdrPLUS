@@ -7,8 +7,9 @@ class CsvImportJob < ApplicationJob
     # Do something later
     Rails.logger.debug "#{ self.class.name }: I'm performing my job with arguments: #{ args.inspect }"
 
-    @user = User.find( args.first )
-    @project = Project.find( args.second )
+    @user          = User.find( args.first )
+    @project       = Project.find( args.second )
+    @citation_file = @project.citation_files.find(args.third)
 
     primary_id = CitationType.find_by( name: 'Primary' ).id
     ### citation type, not sure if necessary
@@ -20,7 +21,7 @@ class CsvImportJob < ApplicationJob
 
     h_arr = []
 
-    file_data = File.read( args.third ).gsub(/(\r\n|\r|\n)/, "\n")
+    file_data = @citation_file.download.gsub(/(\r\n|\r|\n)/, "\n")
     file_string = ""
     ### open file using 'rU'
     file_data.split("\n").each do |line|

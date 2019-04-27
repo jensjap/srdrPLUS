@@ -11,8 +11,11 @@ module SrdrPLUS
     # Use the responders controller from the responders gem
     config.app_generators.scaffold_controller :responders_controller
 
+    # Initialize configuration defaults for originally generated Rails version.
+    config.load_defaults 5.0
+
     # Settings in config/environments/* take precedence over those specified here.
-    # Application configuration should go into files in config/initializers
+    # Application configuration can go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
 
     # Use a real queuing backend for Active Job (and separate queues per environment)

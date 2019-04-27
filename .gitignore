@@ -42,3 +42,6 @@ dump.rdb
 
 # Ignore passenger files.
 passenger*
+
+# Ignore master key for decrypting credentials and more.
+/config/master.key

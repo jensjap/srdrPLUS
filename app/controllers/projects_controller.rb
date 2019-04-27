@@ -156,43 +156,43 @@ class ProjectsController < ApplicationController
     redirect_to edit_project_path(@project)
   end
 
+  def import_ris
+    authorize(@project)
+    @project.citation_files.attach(citation_import_params[:citation_files])
+    RisImportJob.perform_later(current_user.id, @project.id, @project.citation_files.last.id)
+    flash[:success] = "Import request submitted for project '#{ @project.name }'. You will be notified by email of its completion."
+    #@project.import_citations_from_ris( citation_import_params[:citation_file] )
+
+    redirect_to project_citations_path(@project)
+  end
+
   def import_csv
     authorize(@project)
-    if not citation_import_params.empty?
-      CsvImportJob.perform_later(current_user.id, @project.id, citation_import_params[:citation_file].path)
-      flash[:success] = "Import request submitted for project '#{ @project.name }'. You will be notified by email of its completion."
-      #@project.import_citations_from_csv( citation_import_params[:citation_file] )
-    end
+    @project.citation_files.attach(citation_import_params[:citation_files])
+    CsvImportJob.perform_later(current_user.id, @project.id, @project.citation_files.last.id)
+    flash[:success] = "Import request submitted for project '#{ @project.name }'. You will be notified by email of its completion."
+    #@project.import_citations_from_csv( citation_import_params[:citation_file] )
+
     redirect_to project_citations_path(@project)
   end
 
   def import_pubmed
     authorize(@project)
-    if not citation_import_params.empty?
-      PubmedImportJob.perform_later(current_user.id, @project.id, citation_import_params[:citation_file].path)
-      flash[:success] = "Import request submitted for project '#{ @project.name }'. You will be notified by email of its completion."
-      #@project.import_citations_from_pubmed( citation_import_params[:citation_file] )
-    end
-    redirect_to project_citations_path(@project)
-  end
+    @project.citation_files.attach(citation_import_params[:citation_files])
+    PubmedImportJob.perform_later(current_user.id, @project.id, @project.citation_files.last.id)
+    flash[:success] = "Import request submitted for project '#{ @project.name }'. You will be notified by email of its completion."
+    #@project.import_citations_from_pubmed( citation_import_params[:citation_file] )
 
-  def import_ris
-    authorize(@project)
-    if not citation_import_params.empty?
-      RisImportJob.perform_later(current_user.id, @project.id, citation_import_params[:citation_file].path)
-      flash[:success] = "Import request submitted for project '#{ @project.name }'. You will be notified by email of its completion."
-      #@project.import_citations_from_ris( citation_import_params[:citation_file] )
-    end
     redirect_to project_citations_path(@project)
   end
 
   def import_endnote
     authorize(@project)
-    if not citation_import_params.empty?
-      EnlImportJob.perform_later(current_user.id, @project.id, citation_import_params[:citation_file].path)
-      flash[:success] = "Import request submitted for project '#{ @project.name }'. You will be notified by email of its completion."
-      #@project.import_citations_from_enl( citation_import_params[:citation_file] )
-    end
+    @project.citation_files.attach(citation_import_params[:citation_files])
+    EnlImportJob.perform_later(current_user.id, @project.id, @project.citation_files.last.id)
+    flash[:success] = "Import request submitted for project '#{ @project.name }'. You will be notified by email of its completion."
+    #@project.import_citations_from_enl( citation_import_params[:citation_file] )
+
     redirect_to project_citations_path(@project)
   end
 
@@ -248,7 +248,7 @@ class ProjectsController < ApplicationController
 
     def citation_import_params
       # what kind of files do we want to import?
-      params.require(:project).permit(:citation_file)
+      params.require(:project).permit(citation_files: [])
     end
 
     def make_undo_link

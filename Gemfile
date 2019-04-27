@@ -144,7 +144,14 @@ gem 'breadcrumbs_on_rails'
 # authorizations.
 gem 'pundit'
 
-# List reordering, Drag & Drop
+# List reordering, Drag & Drop.
 gem 'sortable-rails'
 
+# Simple calls to external API.
 gem 'httparty'
+
+# New for Rails 5.2.
+gem 'bootsnap'
+
+# Access to AWS S3 Cloud Storage.
+gem "aws-sdk-s3", require: false
