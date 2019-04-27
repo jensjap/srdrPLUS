@@ -57,16 +57,16 @@ class CitationsProject < ApplicationRecord
 
   def self.dedupe_update_associations(master_cp, cp_to_remove)
     cp_to_remove.extractions.each do |e|
-      e.dup.update_attributes(citations_project_id: master_citations_project.id)
+      e.dup.update_attributes(citations_project_id: master_cp.id)
     end
     cp_to_remove.labels.each do |l|
-      l.dup.update_attributes(citations_project_id: master_citations_project.id)
+      l.dup.update_attributes(citations_project_id: master_cp.id)
     end
     cp_to_remove.notes.each do |n|
-      n.dup.update_attributes(notable_id: master_citations_project.id)
+      n.dup.update_attributes(notable_id: master_cp.id)
     end
     cp_to_remove.taggings.each do |t|
-      t.dup.update_attributes(taggable_id: master_citations_project.id)
+      t.dup.update_attributes(taggable_id: master_cp.id)
     end
   end
 end
