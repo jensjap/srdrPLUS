@@ -17,7 +17,7 @@ blockquote
 /- if linked_section && linked_section.type1s.blank?
 /- if (linked_section && eefps.extraction_forms_projects_section.extraction_forms_projects_section_option.by_type1 && linked_section.eefpst1_without_total_arm.blank?) ||\
   (linked_section && !eefps.extraction_forms_projects_section.extraction_forms_projects_section_option.include_total && linked_section.eefpst1_without_total_arm.blank?)
-- if linked_section && eefps.extraction_forms_projects_section.extraction_forms_projects_section_option.by_type1 && linked_section.eefpst1_without_total_arm.blank?
+- if linked_section && eefps.extraction_forms_projects_section.extraction_forms_projects_section_option.by_type1 && linked_section.eefpst1s_without_total.blank?
     h5 style='color: red;' You must add #{ linked_section.extraction_forms_projects_section.section.name } before extracting into this section.
 
 - else
@@ -39,7 +39,80 @@ blockquote
       .card-section
         .table-scroll
           #step-two
-            - if linked_section && (eefps.extraction_forms_projects_section.extraction_forms_projects_section_option.by_type1\
+
+            - if linked_section
+              - if eefps.extraction_forms_projects_section.extraction_forms_projects_section_option.by_type1
+                - if eefps.extraction_forms_projects_section.extraction_forms_projects_section_option.include_total
+                  / by_type1 && include_total
+                  - linked_section.eefpst1s_with_total.collect(&:type1).each do |t1|
+                    fieldset.fieldset
+                      legend
+                        = linked_section.extraction_forms_projects_section.section.name.singularize + ': ' + t1.name
+                        br
+                        = 'Description: ' + t1.description
+                      = render 'extractions/shared/type_2/question_fields',
+                        q: q,
+                        t1: t1,
+                        eefps: eefps,
+                        display_only: false
+
+                - else
+                  / by_type1 && !include_total
+                  - linked_section.type1s.where.not(name: 'Total', description: "All #{ linked_section.extraction_forms_projects_section.section.name } combined").each do |t1|
+                    fieldset.fieldset
+                      legend
+                        = linked_section.extraction_forms_projects_section.section.name.singularize + ': ' + t1.name
+                        br
+                        = 'Description: ' + t1.description
+                      = render 'extractions/shared/type_2/question_fields',
+                        q: q,
+                        t1: t1,
+                        eefps: eefps,
+                        display_only: false
+
+              - else
+                - if eefps.extraction_forms_projects_section.extraction_forms_projects_section_option.include_total
+                  / !by_type1 && include_total
+                  - linked_section.eefpst1s_only_total.collect(&:type1).each do |t1|
+                    fieldset.fieldset
+                      legend
+                        = linked_section.extraction_forms_projects_section.section.name.singularize + ': ' + t1.name
+                        br
+                        = 'Description: ' + t1.description
+                      = render 'extractions/shared/type_2/question_fields',
+                        q: q,
+                        t1: t1,
+                        eefps: eefps,
+                        display_only: false
+
+                - else
+                  / !by_type1 && !include_total
+                  fieldset.fieldset
+                    legend
+                    = render 'extractions/shared/type_2/question_fields',
+                      q: q,
+                      t1: nil,
+                      eefps: eefps,
+                      display_only: false
+
+            / Not linked
+            - else
+              / !by_type1 && !include_total
+              fieldset.fieldset
+                legend
+                = render 'extractions/shared/type_2/question_fields',
+                  q: q,
+                  t1: nil,
+                  eefps: eefps,
+                  display_only: false
+
+
+
+
+
+
+
+/            - if linked_section && (eefps.extraction_forms_projects_section.extraction_forms_projects_section_option.by_type1\
               || eefps.extraction_forms_projects_section.section.name.eql?("Sample Characteristics"))
               / Sample Characteristics may display with total arm.
               - if eefps.extraction_forms_projects_section.section.name.eql?("Sample Characteristics")
@@ -55,7 +128,6 @@ blockquote
                         t1: t1,
                         eefps: eefps,
                         display_only: false
-
                 - else
                   - linked_section.type1s.where.not(name: 'Total', description: 'All interventions combined').each do |t1|
                     fieldset.fieldset
@@ -68,7 +140,6 @@ blockquote
                         t1: t1,
                         eefps: eefps,
                         display_only: false
-
               - else
                 - linked_section.type1s.where.not(name: 'Total', description: 'All interventions combined').each do |t1|
                   fieldset.fieldset
@@ -81,15 +152,27 @@ blockquote
                       t1: t1,
                       eefps: eefps,
                       display_only: false
-
             - else
-              fieldset.fieldset
-                legend
-                = render 'extractions/shared/type_2/question_fields',
-                  q: q,
-                  t1: nil,
-                  eefps: eefps,
-                  display_only: false
+              - if eefps.extraction_forms_projects_section.extraction_forms_projects_section_option.include_total
+                - linked_section.type1s_with_total_arm.each do |t1|
+                  fieldset.fieldset
+                    legend
+                      = linked_section.extraction_forms_projects_section.section.name.singularize + ': ' + t1.name
+                      br
+                      = 'Description: ' + t1.description
+                    = render 'extractions/shared/type_2/question_fields',
+                      q: q,
+                      t1: t1,
+                      eefps: eefps,
+                      display_only: false
+              - else
+                fieldset.fieldset
+                  legend
+                    = render 'extractions/shared/type_2/question_fields',
+                      q: q,
+                      t1: nil,
+                      eefps: eefps,
+                      display_only: false
 
 
 

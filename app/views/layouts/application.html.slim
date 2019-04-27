@@ -32,6 +32,8 @@ html class='no-js' lang='en'
           = render "shared/topbar_nav_#{ cookies[:layout_style] }"
 
           .content
+            - if content_for(:project_title)
+              h3 == "Project: " + yield(:project_title)
             .breadcrumbs = render_breadcrumbs tag: :li, separator: ''
             == yield
             = render 'shared/scroll_top_wrapper'

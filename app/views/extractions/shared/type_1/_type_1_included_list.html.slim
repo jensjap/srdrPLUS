@@ -13,7 +13,7 @@ h5 #{ section_name } that are included in this Extraction
           th Timepoints
 
     tbody.orderable-list orderable-url="#{ update_positions_api_v1_orderings_url }"
-      - eefps.eefpst1_without_total_arm.each do |eefpst1|
+      - eefps.eefpst1s_without_total.each do |eefpst1|
         tr.orderable-item [ position="#{ eefpst1.ordering.position }" ordering-id="#{ eefpst1.ordering.id }" ]
           - if section_name == 'Outcomes'
             td = eefpst1.type1_type.present? ? eefpst1.type1_type.name : ''

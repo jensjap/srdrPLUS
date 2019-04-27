@@ -80,8 +80,8 @@ class Extraction < ApplicationRecord
   private
 
   def create_default_arms
-    find_eefps_by_section_type("Arms")
-      .type1s << Type1.find_or_create_by(name: 'Total', description: 'All interventions combined')
+#    find_eefps_by_section_type("Arms")
+#      .type1s << Type1.find_or_create_by(name: 'Total', description: 'All interventions combined')
 #    extractions_extraction_forms_projects_sections
 #      .joins(extraction_forms_projects_section: :section)
 #      .find_by(sections: { name: "Arms" }

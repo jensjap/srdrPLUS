@@ -24,15 +24,24 @@ div id="link-to-type1-#{ efps.id }" data-toggler='' data-animate='scale-in-up sc
   = simple_form_for(efps, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
     = f.simple_fields_for :extraction_forms_projects_section_option, f.object.extraction_forms_projects_section_option do |sf|
       - if associated_efps.present?
+        - if current_user.profile.advanced_mode
+          = f.association :link_to_type1,
+            label: "Which independent section would you like to link to?",
+            collection: efps.extraction_forms_project.extraction_forms_projects_sections.where(extraction_forms_projects_section_type_id: 1),
+            prompt: true,
+            include_blank: 'None',
+            label_method: lambda { |efps| efps.section.name },
+            input_html: { onchange: 'this.form.submit();' }
+
         - if (efps.section.name.eql?('Arm Details') || efps.section.name.eql?('Outcome Details'))
           = sf.input :by_type1,
             label: "Display questions for each #{ associated_efps.first.section.name.singularize } defined in the extraction?",
-            input_html: { onclick: 'this.form.submit();' }
+            input_html: { namespace: efps.section.name.singularize, onclick: 'this.form.submit();' }
 
         - elsif (efps.section.name.eql?('Sample Characteristics'))
           = sf.input :include_total,
             label: "Include \"Total: All interventions combined\"?",
-            input_html: { onclick: 'this.form.submit();' }
+            input_html: { namespace: efps.section.name.singularize, onclick: 'this.form.submit();' }
 
       - else
         = f.association :link_to_type1,
@@ -45,7 +54,7 @@ div id="link-to-type1-#{ efps.id }" data-toggler='' data-animate='scale-in-up sc
         - if efps.link_to_type1.present?
           = sf.input :by_type1,
             label: "Display questions for each #{ efps.link_to_type1.section.name.singularize } defined in the extraction?",
-            input_html: { onclick: 'this.form.submit();' }
+            input_html: { namespace: efps.section.name.singularize, onclick: 'this.form.submit();' }
           = sf.input :include_total,
-            label: "Include \"Total: All interventions combined\"?",
-            input_html: { onclick: 'this.form.submit();' }
+            label: "Include \"Total: All #{ efps.link_to_type1.section.name } combined\"?",
+            input_html: { namespace: efps.section.name.singularize, onclick: 'this.form.submit();' }

@@ -43,8 +43,8 @@ class ExtractionFormsProject < ApplicationRecord
           ExtractionFormsProjectsSection.find_by(extraction_forms_project: self, extraction_forms_projects_section_type: ExtractionFormsProjectsSectionType.find_by(name: 'Type 1'), section: Section.find_by(name: 'Arms')) : ['Outcome Details'].include?(section.name) ?
           ExtractionFormsProjectsSection.find_by(extraction_forms_project: self, extraction_forms_projects_section_type: ExtractionFormsProjectsSectionType.find_by(name: 'Type 1'), section: Section.find_by(name: 'Outcomes')) : nil
         }).extraction_forms_projects_section_option.update!(
-          by_type1: ['Arm Details', 'Outcome Details'].include?(section.name) ? true : ['Sample Characteristics'].include?(section.name) ? false : nil,
-          include_total: ['Arm Details', 'Outcome Details'].include?(section.name) ? false : ['Sample Characteristics'].include?(section.name) ? true : nil
+          by_type1: ['Arm Details', 'Outcome Details'].include?(section.name) ? true : ['Sample Characteristics'].include?(section.name) ? true : false,
+          include_total: ['Arm Details', 'Outcome Details'].include?(section.name) ? false : ['Sample Characteristics'].include?(section.name) ? true : false
         )
       end
     end
@@ -52,7 +52,7 @@ class ExtractionFormsProject < ApplicationRecord
     def create_default_arms
       extraction_forms_projects_sections.find_by(
         section: Section.find_by(name: 'Arms')
-      ).type1s << Type1.find_or_create_by(name: 'Total', description: 'All interventions combined')
+      ).type1s << Type1.find_or_create_by(name: 'Total', description: 'All Arms combined')
 #      ExtractionFormsProjectsSection.find_by(
 #        extraction_forms_project: self,
 #        extraction_forms_projects_section_type: ExtractionFormsProjectsSectionType.find_by(name: 'Type 1'),
