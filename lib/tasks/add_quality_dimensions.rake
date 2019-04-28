@@ -11,6 +11,9 @@ namespace :quality_dimension_tasks do
       section_group['sections'].each do |section|
         section_title       = section['section-title']
         section_description = section['section-description']
+
+        qdq_id_dict = {}
+
         if QualityDimensionQuestion.where(quality_dimension_section: QualityDimensionSection.find_by(name: section_title)).blank?
           qds = QualityDimensionSection.find_or_create_by(
               name: section_title,
@@ -24,12 +27,27 @@ namespace :quality_dimension_tasks do
                 description: d['description']
             )
 
+            qdq_id_dict[d['id']] = qdq
+
             d['options']&.each do |opt|
               option = QualityDimensionOption.find_or_create_by(name: opt['option'])
               QualityDimensionQuestionsQualityDimensionOption.create(
                   quality_dimension_question: qdq,
                   quality_dimension_option: option
               )
+            end
+          end
+          section['dimensions'].each do |d|
+            depen = qdq_id_dict[d['id']]
+            d['dependencies']&.each do |prereq|
+              prereq_q = qdq_id_dict[prereq['id']]
+              prereq['options']&.each do |o|
+                prereq_o = prereq_q.quality_dimension_options.where(name: o['option']).first
+                Dependency.find_or_create_by dependable_type: 'QualityDimensionQuestion',
+                                             dependable_id: depen.id,
+                                             prerequisitable_type: 'QualityDimensionOption',
+                                             prerequisitable_id: prereq_o.id
+              end
             end
           end
         else

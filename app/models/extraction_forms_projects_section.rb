@@ -128,6 +128,9 @@ class ExtractionFormsProjectsSection < ApplicationRecord
       efps = ExtractionFormsProjectsSection.find(efps_id)
 
       # Iterate through the array of quality dimension question ids and add the question to the section.
+      #
+      depen_arr = []
+      qrcqrco_id_dict = {}
       lsof_qdq_ids.each do |qdq_id|
         qdq = QualityDimensionQuestion.find(qdq_id)
         q = efps.questions.create(name: qdq.name, description: qdq.description)
@@ -138,26 +141,48 @@ class ExtractionFormsProjectsSection < ApplicationRecord
           q.key_questions_projects << kqp
         end
 
-        # Set field type.
-        qrc = q.question_rows.first.question_row_columns.first
-        # Make it a dropdown.
-        qrc.update(question_row_column_type_id: 6)
+        # if there are no options, then this quality dimension is a text question
+        if qdq.quality_dimension_options.empty?
+          # Set field type.
+          qrc = q.question_rows.first.question_row_columns.first
+          # Make it a dropdown.
+          qrc.update(question_row_column_type_id: 1)
+        else
+          # Set field type.
+          qrc = q.question_rows.first.question_row_columns.first
+          # Make it a dropdown.
+          qrc.update(question_row_column_type_id: 6)
 
-        # Iterate through options and add them.
-        first = true
-        qdq.quality_dimension_options.each do |qdo|
-          if first
-            qrcqrco = qrc.question_row_columns_question_row_column_options.where(question_row_column_option_id: 1).first
-            qrcqrco.update(name: qdo.name)
-            first = false
-          else
-            qrc.question_row_columns_question_row_column_options.create(
-              question_row_column_option_id: 1,
-              name: qdo.name
-            )
-          end
-        end  # qdq.quality_dimension_options.each do |qdo|
+          # Iterate through options and add them.
+          first = true
+          qdq.quality_dimension_options.each do |qdo|
+            if first
+              qrcqrco = qrc.question_row_columns_question_row_column_options.where(question_row_column_option_id: 1).first
+              qrcqrco.update(name: qdo.name)
+
+
+              first = false
+            else
+              qrcqrco = QuestionRowColumnsQuestionRowColumnOption.create(
+                  question_row_column_id: qrc.id,
+                  question_row_column_option_id: 1,
+                  name: qdo.name
+              )
+            end
+            qrcqrco_id_dict[qdo.id] = qrcqrco
+          end  # qdq.quality_dimension_options.each do |qdo|
+        end
+        qdq.dependencies.each do |prereq|
+          depen_arr << [q.id, prereq]
+        end
       end  # lsof_qdq_ids.each do |qdq_id|
+      depen_arr.each do |q_id, prereq_id|
+        Dependency.find_or_create_by! dependable_type: 'Question',
+                                      dependable_id: q_id,
+                                      prerequisitable_type: 'QuestionRowColumnsQuestionRowColumnOption',
+                                      prerequisitable_id: qrcqrco_id_dict[prereq_id]
+
+      end
     end  # ExtractionFormsProjectsSection.transaction do
   end
 end
