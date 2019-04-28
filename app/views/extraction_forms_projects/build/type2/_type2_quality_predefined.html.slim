@@ -4,34 +4,40 @@
     button.button id='submit-quality-dimensions' type='button' data-extraction-forms-projects-section-id=efps.id.to_s style='position: fixed; right: 20%;' Submit
 
   .columns.row
-    - QualityDimensionSection.includes(quality_dimension_questions: :quality_dimension_options).all.each do |qds|
-      table.unstriped.hover
-        caption style='text-align: left; font-weight: bold; font-size: 1.4em;'
-          a.add-quality-dimension-section id=qds.id style='cursor: copy;' = qds.name
+    ul.accordion[data-accordion data-allow-all-closed="true"]
+      - QualityDimensionSectionGroup.includes(quality_dimension_sections: { quality_dimension_questions: :quality_dimension_options }).all.each do |qdsg|
+        li.accordion-item[data-accordion-item]
+          a.accordion-title
+            = qdsg.name
+          .accordion-content[data-tab-content]
+            - qdsg.quality_dimension_sections.each do |qds|
+              table.unstriped.hover
+                caption style='text-align: left; font-weight: bold; font-size: 1.4em;'
+                  a.add-quality-dimension-section id=qds.id style='cursor: copy;' = qds.name
 
-        col
-        col
-        colgroup span='5'
+                col
+                col
+                colgroup span='5'
 
-        thead
-          tr
-            th scope='col'
-              input.select-all id='select-all-section-id-#{ qds.id }' type='checkbox'
-            th scope='col' Question Text
-            th colspan='5' scope='colgroup' Options
+                thead
+                  tr
+                    th scope='col'
+                      input.select-all id='select-all-section-id-#{ qds.id }' type='checkbox'
+                    th scope='col' Question Text
+                    th colspan='5' scope='colgroup' Options
 
-          tbody
-            - qds.quality_dimension_questions.each do |qdq|
-              - is_present = false
-              - efps.questions.each do |q|
-                - if q.name == qdq.name && q.description == qdq.description
-                  - is_present = true
+                  tbody
+                    - qds.quality_dimension_questions.each do |qdq|
+                      - is_present = false
+                      - efps.questions.each do |q|
+                        - if q.name == qdq.name && q.description == qdq.description
+                          - is_present = true
 
-              - unless is_present
-                tr
-                  td
+                      - unless is_present
+                        tr
+                          td
 
-                    input.quality-dimension-select id=qdq.id type='checkbox'
-                  th id=qdq.id scope='row' style='text-align: left; cursor: copy;' = qdq.name
-                  - qdq.quality_dimension_options.each do |qdo|
-                    td = qdo.name
+                            input.quality-dimension-select id=qdq.id type='checkbox'
+                          th id=qdq.id scope='row' style='text-align: left; cursor: copy;' = qdq.name
+                          - qdq.quality_dimension_options.each do |qdo|
+                            td = qdo.name

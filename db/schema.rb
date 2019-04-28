@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_27_055634) do
+ActiveRecord::Schema.define(version: 2019_04_28_033212) do
 
   create_table "abstrackr_settings", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "profile_id"
@@ -721,7 +721,7 @@ ActiveRecord::Schema.define(version: 2019_04_27_055634) do
     t.datetime "created_at", null: false
     t.datetime "revoked_at"
     t.string "scopes"
-    t.index ["application_id"], name: "fk_rails_b4b53e07b8"
+    t.index ["application_id"], name: "index_oauth_access_grants_on_application_id"
     t.index ["token"], name: "index_oauth_access_grants_on_token", unique: true
   end
 
@@ -735,7 +735,7 @@ ActiveRecord::Schema.define(version: 2019_04_27_055634) do
     t.datetime "created_at", null: false
     t.string "scopes"
     t.string "previous_refresh_token", default: "", null: false
-    t.index ["application_id"], name: "fk_rails_732cb83ab7"
+    t.index ["application_id"], name: "index_oauth_access_tokens_on_application_id"
     t.index ["refresh_token"], name: "index_oauth_access_tokens_on_refresh_token", unique: true
     t.index ["resource_owner_id"], name: "index_oauth_access_tokens_on_resource_owner_id"
     t.index ["token"], name: "index_oauth_access_tokens_on_token", unique: true
@@ -947,13 +947,23 @@ ActiveRecord::Schema.define(version: 2019_04_27_055634) do
     t.index ["quality_dimension_question_id"], name: "index_qdqqdo_on_qdq_id"
   end
 
+  create_table "quality_dimension_section_groups", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "name"
+    t.datetime "deleted_at"
+    t.boolean "active"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "quality_dimension_sections", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
     t.text "description"
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "quality_dimension_section_group_id"
     t.index ["deleted_at"], name: "index_quality_dimension_sections_on_deleted_at"
+    t.index ["quality_dimension_section_group_id"], name: "index_qds_on_qdsg_id"
   end
 
   create_table "question_row_column_fields", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -1154,10 +1164,10 @@ ActiveRecord::Schema.define(version: 2019_04_27_055634) do
     t.string "query"
     t.string "normalized_query"
     t.integer "results_count"
-    t.datetime "created_at"
+    t.timestamp "created_at"
     t.string "convertable_type"
     t.integer "convertable_id"
-    t.datetime "converted_at"
+    t.timestamp "converted_at"
     t.index ["convertable_type", "convertable_id"], name: "index_searchjoy_searches_on_convertable_type_and_convertable_id"
     t.index ["created_at"], name: "index_searchjoy_searches_on_created_at"
     t.index ["search_type", "created_at"], name: "index_searchjoy_searches_on_search_type_and_created_at"
