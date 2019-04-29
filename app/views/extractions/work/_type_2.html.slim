@@ -40,10 +40,11 @@ blockquote
         .table-scroll
           #step-two
 
+            / Linked section.
             - if linked_section
+              / by_type1 && include_total
               - if eefps.extraction_forms_projects_section.extraction_forms_projects_section_option.by_type1
                 - if eefps.extraction_forms_projects_section.extraction_forms_projects_section_option.include_total
-                  / by_type1 && include_total
                   - linked_section.eefpst1s_with_total.collect(&:type1).each do |t1|
                     fieldset.fieldset
                       legend
@@ -56,8 +57,8 @@ blockquote
                         eefps: eefps,
                         display_only: false
 
+                / by_type1 && !include_total
                 - else
-                  / by_type1 && !include_total
                   - linked_section.type1s.where.not(name: 'Total', description: "All #{ linked_section.extraction_forms_projects_section.section.name } combined").each do |t1|
                     fieldset.fieldset
                       legend
@@ -70,9 +71,9 @@ blockquote
                         eefps: eefps,
                         display_only: false
 
+              / !by_type1 && include_total
               - else
                 - if eefps.extraction_forms_projects_section.extraction_forms_projects_section_option.include_total
-                  / !by_type1 && include_total
                   - linked_section.eefpst1s_only_total.collect(&:type1).each do |t1|
                     fieldset.fieldset
                       legend
@@ -85,8 +86,8 @@ blockquote
                         eefps: eefps,
                         display_only: false
 
+                / !by_type1 && !include_total
                 - else
-                  / !by_type1 && !include_total
                   fieldset.fieldset
                     legend
                     = render 'extractions/shared/type_2/question_fields',
