@@ -492,13 +492,6 @@ document.addEventListener 'turbolinks:load', ->
       $( '#new-term-group' ).click ->
         send_new_term_group( state_obj, "NEW GROUP", 1 )
 
-      ## EDIT TERMS BUTTON HANDLING ##
-      $( '#edit-terms-button' ).click ->
-        $( '#terms-modal' ).removeClass( 'hide' )
-
-
-      $( '#terms-modal #hide-modal-button' ).click () ->
-        $( '#terms-modal' ).addClass( 'hide' )
       return
 
 ##### get_history_page #####
