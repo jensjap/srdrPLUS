@@ -241,7 +241,7 @@ module ConsolidationHelper
 
             t1_type_id = ( eefps_qrcf.extractions_extraction_forms_projects_sections_type1.present? and
                            eefps_qrcf.extractions_extraction_forms_projects_sections_type1.type1_type.present? ) ?
-                           eefps_qrcf.extractions_extraction_forms_projects_sections_type1.type1_type_id.id.to_s : nil
+                           eefps_qrcf.extractions_extraction_forms_projects_sections_type1.type1_type_id.to_s : nil
 
             record_name = eefps_qrcf.records.first.name
 
