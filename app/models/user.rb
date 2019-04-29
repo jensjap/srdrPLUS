@@ -43,14 +43,13 @@ class User < ApplicationRecord
   has_many :tags, through: :taggings, dependent: :destroy
 
   def handle
-    profile = self.profile
     ret_value = ""
-    if [profile.first_name, profile.middle_name, profile.last_name].any?(&:present?)
+    if (profile.present? && [profile.first_name, profile.middle_name, profile.last_name].any?(&:present?))
       ret_value += "#{ profile.first_name } "  if profile.first_name.present?
       ret_value += "#{ profile.middle_name } " if profile.middle_name.present?
       ret_value += "#{ profile.last_name } "   if profile.last_name.present?
       return ret_value
-    elsif profile.username.present?
+    elsif (profile.present? && profile.username.present?)
       return profile.username
     else
       return email
