@@ -42,11 +42,12 @@ namespace :quality_dimension_tasks do
             d['dependencies']&.each do |prereq|
               prereq_q = qdq_id_dict[prereq['id']]
               prereq['options']&.each do |o|
-                prereq_o = prereq_q.quality_dimension_options.where(name: o['option']).first
+                prereq_qdo_id = QualityDimensionOption.where(name: o['option']).first.id
+                prereq_qdqqdo_id = prereq_q.quality_dimension_questions_quality_dimension_options.where(quality_dimension_option_id: prereq_qdo_id).first.id
                 Dependency.find_or_create_by dependable_type: 'QualityDimensionQuestion',
                                              dependable_id: depen.id,
-                                             prerequisitable_type: 'QualityDimensionOption',
-                                             prerequisitable_id: prereq_o.id
+                                             prerequisitable_type: 'QualityDimensionQuestionsQualityDimensionOption',
+                                             prerequisitable_id: prereq_qdqqdo_id
               end
             end
           end

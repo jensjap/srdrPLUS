@@ -586,6 +586,12 @@
         - dimension:
           id: 51
           question: "Describe:"
+          description: ""
+          dependencies:
+            - question:
+              id: 50
+              options:
+                - option: "High"
           options:
     - section:
       id: 3

@@ -38,7 +38,7 @@ class EnlImportJob < ApplicationJob
       if cit_h[ 'K' ].present?
         ### splitting kw strings still a huge pain
         kw_arr = []
-        if cit_h[ 'K' ].is_a?
+        if cit_h[ 'K' ].is_a? Enumerable
           kw_arr = cit_h[ 'K' ]
         else
           kw_arr = cit_h[ 'K' ].split( "     " )

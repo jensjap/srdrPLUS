@@ -169,18 +169,23 @@ class ExtractionFormsProjectsSection < ApplicationRecord
                   name: qdo.name
               )
             end
-            qrcqrco_id_dict[qdo.id] = qrcqrco
+            qdqqdo = QualityDimensionQuestionsQualityDimensionOption.find_by quality_dimension_question: qdq, quality_dimension_option: qdo
+            qrcqrco_id_dict[qdqqdo.id] = qrcqrco.id
           end  # qdq.quality_dimension_options.each do |qdo|
         end
         qdq.dependencies.each do |prereq|
-          depen_arr << [q.id, prereq]
+          depen_arr << [q.id, prereq.prerequisitable_id]
         end
       end  # lsof_qdq_ids.each do |qdq_id|
       depen_arr.each do |q_id, prereq_id|
-        Dependency.find_or_create_by! dependable_type: 'Question',
-                                      dependable_id: q_id,
-                                      prerequisitable_type: 'QuestionRowColumnsQuestionRowColumnOption',
-                                      prerequisitable_id: qrcqrco_id_dict[prereq_id]
+        begin
+          Dependency.find_or_create_by! dependable_type: 'Question',
+                                        dependable_id: q_id,
+                                        prerequisitable_type: 'QuestionRowColumnsQuestionRowColumnOption',
+                                        prerequisitable_id: qrcqrco_id_dict[prereq_id]
+        rescue
+          byebug
+        end
 
       end
     end  # ExtractionFormsProjectsSection.transaction do
