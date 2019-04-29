@@ -22,7 +22,7 @@ class ProjectsUsersRole < ApplicationRecord
 
   has_many :notes, dependent: :destroy, inverse_of: :projects_users_role
 
-  def get_projects_users_role_user_information_markup
+  def handle
     profile = self.projects_user.user.profile
     ret_value = ""
     if [profile.first_name, profile.middle_name, profile.last_name].any?(&:present?)
