@@ -3,13 +3,13 @@
     h3 NOTHING TO LABEL
 
   #terms-modal.reveal.large data-reveal=""
-    div.tm-inner-div
-      div.medium-6.tm-left-panel
+    .tm-inner-div.grid-x
+      .cell.medium-6
         label
           |TERM GROUPS
-        div.callout
+        .callout
           #tg-panel
-            div#edit-term-groups
+            #edit-term-groups
               table#edit-term-groups-table
                 col.medium-5
                 col.medium-4
@@ -25,7 +25,7 @@
                 | New Term Group
         label for="term-group-buttons"
           | CREATE NEW TERM
-        div.term-group-buttons.callout
+        .term-group-buttons.callout
           label for="term-input"
             | Name
           input.term-input type='text'
@@ -33,7 +33,7 @@
             thead
               th Add to
             tbody.tg-buttons
-      div.medium-6
+      .cell.medium-6
         label
           |TERMS
         table#terms-list
@@ -105,18 +105,18 @@
           #citation-refman.display-inline
 
     .column.full-height.large-3.medium-4.small-6
-      div.accordion data-accordion='' data-allow-all-closed='true'
-        div.accordion-item data-accordion-item=''
+      .accordion data-accordion='' data-allow-all-closed='true'
+        .accordion-item data-accordion-item=''
           a.accordion-title href="#"
             | Highlight Terms
-          div.accordion-content data-tab-content=''
+          .accordion-content data-tab-content=''
             blockquote
               | Create a new term group with the desired color and add terms to be highlighted during screening.
               cite Friendly Helper
 
             label for="term-group-buttons"
               | CREATE NEW TERM
-            div.term-group-buttons.callout
+            .term-group-buttons.callout
               label for="term-input"
                 | Name
               input.term-input type='text'
@@ -145,10 +145,10 @@
             /#term-selects
             /#term-list
 
-        div.accordion-item data-accordion-item=''
+        .accordion-item data-accordion-item=''
           a.accordion-title href="#"
             | Add Tags
-          div.accordion-content data-tab-content=''
+          .accordion-content data-tab-content=''
             blockquote
               | Type into the box below and press ENTER to add a new tag to this citation.
               cite Friendly Helper
@@ -156,10 +156,10 @@
               | Tags
             #tag-select
               select multiple='multiple'
-        div.accordion-item data-accordion-item=''
+        .accordion-item data-accordion-item=''
           a.accordion-title href="#"
             | Take Note
-          div.accordion-content data-tab-content=''
+          .accordion-content data-tab-content=''
             blockquote
               | Notes are saved automatically.
               cite Friendly Helper
@@ -169,10 +169,10 @@
             textarea#note-textbox
             /#save-note-button.button.tiny.hollow
               | Save Note
-        div.accordion-item data-accordion-item=''
+        .accordion-item data-accordion-item=''
           a.accordion-title href="#"
             | Give Labeling Reasons
-          div.accordion-content data-tab-content=''
+          .accordion-content data-tab-content=''
             blockquote
               | Type into the box below and press ENTER to add a reason. Reasons are saved when the citation is labeled.
               cite Friendly Helper
