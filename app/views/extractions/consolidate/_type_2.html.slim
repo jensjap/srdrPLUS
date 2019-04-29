@@ -27,7 +27,7 @@
 
             - linked_section = eefps.link_to_type1
 
-            - if linked_section && eefps.link_to_type1.type1s.blank?
+            - if linked_section && linked_section.type1s.blank?
               th
                 h5 style='color: red;' You must add #{ linked_section.extraction_forms_projects_section.section.name } before extracting into this section.
 
@@ -45,7 +45,7 @@
 
           - linked_section = eefps.link_to_type1
 
-          - if linked_section && eefps.link_to_type1.type1s.blank?
+          - if linked_section && linked_section.type1s.blank?
             th
               h5 style='color: red;' You must add #{ linked_section.extraction_forms_projects_section.section.name } before extracting into this section.
 
@@ -63,62 +63,221 @@
             = q.description
 
         tbody class='consolidation-data-row'
-          - if efps.link_to_type1
-            - @head_to_head.dig(efp.id, efps.link_to_type1.id, :all_type1s).each do |t1|
-              tr
-                - @extractions.each_with_index do |extraction, idx|
+
+          / Linked section.
+          - if linked_section
+            / by_type1 && include_total
+            - if efps.extraction_forms_projects_section_option.by_type1
+              - if efps.extraction_forms_projects_section_option.include_total
+                - @head_to_head.dig(efp.id, efps.link_to_type1.id, :all_type1s).each do |t1|
+                  tr
+                    - @extractions.each_with_index do |extraction, idx|
+                      - eefps = ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by( \
+                        extraction: extraction,
+                        extraction_forms_projects_section: efps,
+                        link_to_type1: efps.link_to_type1.nil? \
+                          ? nil \
+                          : ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by!( \
+                            extraction: extraction,
+                            extraction_forms_projects_section: efps.link_to_type1))
+
+                      - linked_section = eefps.link_to_type1
+
+                      - unless linked_section && eefps.link_to_type1.type1s.blank?
+                        - if eefps.link_to_type1.type1s.include?(t1)
+                          td style='border: 2px solid #{ color_array[0] };'
+                            div style="height: 55px;"
+                            h6 = linked_section.extraction_forms_projects_section.section.name.singularize + ': ' + t1.name_and_description
+                            = render 'extractions/shared/type_2/question_fields',
+                              q: q,
+                              t1: t1,
+                              eefps: eefps,
+                              display_only: true
+
+                        - else
+                          td style='vertical-align: top;'
+                            h6 style='text-decoration: line-through;' = linked_section.extraction_forms_projects_section.section.name.singularize + ': ' + t1.name_and_description
+
+                    - eefps = ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by( \
+                      extraction: @consolidated_extraction,
+                      extraction_forms_projects_section: efps,
+                      link_to_type1: efps.link_to_type1.nil? \
+                        ? nil \
+                        : ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by!( \
+                          extraction: @consolidated_extraction,
+                          extraction_forms_projects_section: efps.link_to_type1))
+
+                    - linked_section = eefps.link_to_type1
+
+                    - unless linked_section && eefps.link_to_type1.type1s.blank?
+                      - if eefps.link_to_type1.type1s.include?(t1)
+                        td
+                          div id="consolidation-dropdown" style="height: 55px;"
+                          h6 = linked_section.extraction_forms_projects_section.section.name.singularize + ': ' + t1.name_and_description
+                          = render 'extractions/shared/type_2/question_fields',
+                            q: q,
+                            t1: t1,
+                            eefps: eefps,
+                            display_only: false
+
+              / by_type1 && !include_total
+              - else
+                - @head_to_head.dig(efp.id, efps.link_to_type1.id, :all_type1s).each do |t1|
+                  - next if (t1.name.eql?("Total") && t1.description.eql?("All #{ linked_section.extraction_forms_projects_section.section.name } combined"))
+                  tr
+                    - @extractions.each_with_index do |extraction, idx|
+                      - eefps = ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by( \
+                        extraction: extraction,
+                        extraction_forms_projects_section: efps,
+                        link_to_type1: efps.link_to_type1.nil? \
+                          ? nil \
+                          : ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by!( \
+                            extraction: extraction,
+                            extraction_forms_projects_section: efps.link_to_type1))
+
+                      - linked_section = eefps.link_to_type1
+
+                      - unless linked_section && eefps.link_to_type1.type1s.blank?
+                        - if eefps.link_to_type1.type1s.include?(t1)
+                          td style='border: 2px solid #{ color_array[0] };'
+                            div style="height: 55px;"
+                            h6 = linked_section.extraction_forms_projects_section.section.name.singularize + ': ' + t1.name_and_description
+                            = render 'extractions/shared/type_2/question_fields',
+                              q: q,
+                              t1: t1,
+                              eefps: eefps,
+                              display_only: true
+
+                        - else
+                          td style='vertical-align: top;'
+                            h6 style='text-decoration: line-through;' = linked_section.extraction_forms_projects_section.section.name.singularize + ': ' + t1.name_and_description
+
+                    - eefps = ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by( \
+                      extraction: @consolidated_extraction,
+                      extraction_forms_projects_section: efps,
+                      link_to_type1: efps.link_to_type1.nil? \
+                        ? nil \
+                        : ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by!( \
+                          extraction: @consolidated_extraction,
+                          extraction_forms_projects_section: efps.link_to_type1))
+
+                    - linked_section = eefps.link_to_type1
+
+                    - unless linked_section && eefps.link_to_type1.type1s.blank?
+                      - if eefps.link_to_type1.type1s.include?(t1)
+                        td
+                          div id="consolidation-dropdown" style="height: 55px;"
+                          h6 = linked_section.extraction_forms_projects_section.section.name.singularize + ': ' + t1.name_and_description
+                          = render 'extractions/shared/type_2/question_fields',
+                            q: q,
+                            t1: t1,
+                            eefps: eefps,
+                            display_only: false
+
+                      - else
+                        td style='vertical-align: top;'
+                          h6 style='text-decoration: line-through;' = linked_section.extraction_forms_projects_section.section.name.singularize + ': ' + t1.name_and_description
+
+            / !by_type1 && include_total
+            - else
+              - if efps.extraction_forms_projects_section_option.include_total
+                - @head_to_head.dig(efp.id, efps.link_to_type1.id, :all_type1s).each do |t1|
+                  - next unless (t1.name.eql?("Total") && t1.description.eql?("All #{ linked_section.extraction_forms_projects_section.section.name } combined"))
+                  tr
+                    - @extractions.each_with_index do |extraction, idx|
+                      - eefps = ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by( \
+                        extraction: extraction,
+                        extraction_forms_projects_section: efps,
+                        link_to_type1: efps.link_to_type1.nil? \
+                          ? nil \
+                          : ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by!( \
+                            extraction: extraction,
+                            extraction_forms_projects_section: efps.link_to_type1))
+
+                      - linked_section = eefps.link_to_type1
+
+                      - unless linked_section && eefps.link_to_type1.type1s.blank?
+                        - if eefps.link_to_type1.type1s.include?(t1)
+                          td style='border: 2px solid #{ color_array[0] };'
+                            div style="height: 55px;"
+                            h6 = linked_section.extraction_forms_projects_section.section.name.singularize + ': ' + t1.name_and_description
+                            = render 'extractions/shared/type_2/question_fields',
+                              q: q,
+                              t1: t1,
+                              eefps: eefps,
+                              display_only: true
+
+                        - else
+                          td style='vertical-align: top;'
+                            h6 style='text-decoration: line-through;' = linked_section.extraction_forms_projects_section.section.name.singularize + ': ' + t1.name_and_description
+
+                    - eefps = ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by( \
+                      extraction: @consolidated_extraction,
+                      extraction_forms_projects_section: efps,
+                      link_to_type1: efps.link_to_type1.nil? \
+                        ? nil \
+                        : ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by!( \
+                          extraction: @consolidated_extraction,
+                          extraction_forms_projects_section: efps.link_to_type1))
+
+                    - linked_section = eefps.link_to_type1
+
+                    - unless linked_section && eefps.link_to_type1.type1s.blank?
+                      - if eefps.link_to_type1.type1s.include?(t1)
+                        td
+                          div id="consolidation-dropdown" style="height: 55px;"
+                          h6 = linked_section.extraction_forms_projects_section.section.name.singularize + ': ' + t1.name_and_description
+                          = render 'extractions/shared/type_2/question_fields',
+                            q: q,
+                            t1: t1,
+                            eefps: eefps,
+                            display_only: false
+
+                      - else
+                        td style='vertical-align: top;'
+                          h6 style='text-decoration: line-through;' = linked_section.extraction_forms_projects_section.section.name.singularize + ': ' + t1.name_and_description
+
+              / !by_type1 && !include_total
+              - else
+                tr
+                  - @extractions.each_with_index do |extraction, idx|
+                    - eefps = ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by( \
+                      extraction: extraction,
+                      extraction_forms_projects_section: efps,
+                      link_to_type1: efps.link_to_type1.nil? \
+                        ? nil \
+                        : ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by!( \
+                          extraction: extraction,
+                          extraction_forms_projects_section: efps.link_to_type1))
+
+                    td style='border: 2px solid #{ color_array[0] };'
+                      div style="height: 55px;"
+                      = render 'extractions/shared/type_2/question_fields',
+                        q: q,
+                        t1: nil,
+                        eefps: eefps,
+                        display_only: true
+
                   - eefps = ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by( \
-                    extraction: extraction,
+                    extraction: @consolidated_extraction,
                     extraction_forms_projects_section: efps,
                     link_to_type1: efps.link_to_type1.nil? \
                       ? nil \
                       : ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by!( \
-                        extraction: extraction,
+                        extraction: @consolidated_extraction,
                         extraction_forms_projects_section: efps.link_to_type1))
 
-                  - linked_section = eefps.link_to_type1
+                  td
+                    div id="consolidation-dropdown" style="height: 55px;"
 
-                  - unless linked_section && eefps.link_to_type1.type1s.blank?
-                    - if eefps.link_to_type1.type1s.include?(t1)
-                      td style='border: 2px solid #{ color_array[0] };'
-                        div style="height: 55px;"
-                        h6 = linked_section.extraction_forms_projects_section.section.name.singularize + ': ' + t1.name_and_description
-                        = render 'extractions/shared/type_2/question_fields',
-                          q: q,
-                          t1: t1,
-                          eefps: eefps,
-                          display_only: true
+                    = render 'extractions/shared/type_2/question_fields',
+                      q: q,
+                      t1: nil,
+                      eefps: eefps,
+                      display_only: false
 
-                    - else
-                      td style='vertical-align: top;'
-                        h6 style='text-decoration: line-through;' = linked_section.extraction_forms_projects_section.section.name.singularize + ': ' + t1.name_and_description
-
-                - eefps = ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by( \
-                  extraction: @consolidated_extraction,
-                  extraction_forms_projects_section: efps,
-                  link_to_type1: efps.link_to_type1.nil? \
-                    ? nil \
-                    : ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by!( \
-                      extraction: @consolidated_extraction,
-                      extraction_forms_projects_section: efps.link_to_type1))
-
-                - linked_section = eefps.link_to_type1
-
-                - unless linked_section && eefps.link_to_type1.type1s.blank?
-                  - if eefps.link_to_type1.type1s.include?(t1)
-                    td
-                      div id="consolidation-dropdown" style="height: 55px;"
-                      h6 = linked_section.extraction_forms_projects_section.section.name.singularize + ': ' + t1.name_and_description
-                      = render 'extractions/shared/type_2/question_fields',
-                        q: q,
-                        t1: t1,
-                        eefps: eefps,
-                        display_only: false
-
-                  - else
-                    td style='vertical-align: top;'
-                      h6 style='text-decoration: line-through;' = linked_section.extraction_forms_projects_section.section.name.singularize + ': ' + t1.name_and_description
-
+          / Not linked
+          / !by_type1 && !include_total
           - else
             tr
               - @extractions.each_with_index do |extraction, idx|
