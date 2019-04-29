@@ -13,7 +13,7 @@
             - qdsg.quality_dimension_sections.each do |qds|
               table.unstriped.hover
                 caption style='text-align: left; font-weight: bold; font-size: 1.4em;'
-                  a.add-quality-dimension-section id=qds.id style='cursor: copy;' = qds.name
+                  a.add-quality-dimension-section id=qds.id = qds.name
 
                 col
                 col
@@ -38,6 +38,6 @@
                           td
 
                             input.quality-dimension-select id=qdq.id type='checkbox'
-                          th id=qdq.id scope='row' style='text-align: left; cursor: copy;' = qdq.name
+                          th id=qdq.id scope='row' style='text-align: left;' = qdq.name
                           - qdq.quality_dimension_options.each do |qdo|
                             td = qdo.name
