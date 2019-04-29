@@ -40,7 +40,7 @@ div id="link-to-type1-#{ efps.id }" data-toggler='' data-animate='scale-in-up sc
 
         - elsif (efps.section.name.eql?('Sample Characteristics'))
           = sf.input :include_total,
-            label: "Include \"Total: All interventions combined\"?",
+            label: "Include \"Total: All #{ efps.link_to_type1.section.name } combined\"?",
             input_html: { namespace: efps.section.name.singularize, onclick: 'this.form.submit();' }
 
       - else

@@ -13,7 +13,7 @@
 .row
   / If user chose to allow additional char then make this input field available.
   - if ActiveModel::Type::Boolean.new.cast(qrc.field_validation_value_for(:additional_char))
-    .column.medium-2
+    .column.medium-4
       / Special char is one of the following: ~, <, >, ≤, ≥
       - eefps_qrcf_special = ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField.find_or_create_by!( \
         extractions_extraction_forms_projects_sections_type1: t1.blank? \
@@ -38,7 +38,7 @@
         /.form-actions
           = f.button :submit, 'Save'
 
-  .column.medium-10
+  .column.medium-8
     / We handle the creation of the second question_row_column_fields in model/question_row_column :after_save callback.
     - byebug if qrc.question_row_column_fields.length < 2
     /- qrc.question_row_column_fields.create if qrc.question_row_column_fields.lenght < 2

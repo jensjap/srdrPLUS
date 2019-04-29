@@ -24,12 +24,16 @@ class ProjectsUsersRole < ApplicationRecord
 
   def get_projects_users_role_user_information_markup
     profile = self.projects_user.user.profile
-    unless profile.first_name.blank? &&
-        profile.middle_name.blank? &&
-        profile.last_name.blank?
-      return "#{ profile.first_name } #{ profile.middle_name }. #{ profile.last_name } (#{ self.role.name })" 
+    ret_value = ""
+    if [profile.first_name, profile.middle_name, profile.last_name].any?(&:present?)
+      ret_value += "#{ profile.first_name } "  if profile.first_name.present?
+      ret_value += "#{ profile.middle_name } " if profile.middle_name.present?
+      ret_value += "#{ profile.last_name } "    if profile.last_name.present?
+      ret_value += "(#{ self.role.name })"
+      return ret_value
+    else
+      return "#{ user.email } (#{ self.role.name })"
     end
-    return "#{ user.email } (#{ self.role.name })"
   end
 
   delegate :project, to: :projects_user

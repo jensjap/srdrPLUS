@@ -59,7 +59,9 @@ class ExtractionsExtractionFormsProjectsSectionsType1sController < ApplicationCo
                                                        .extractions_extraction_forms_projects_section
                                                        .extraction,
                                                      anchor: "panel-tab-#{ @extractions_extraction_forms_projects_sections_type1
-                                                             .extractions_extraction_forms_projects_section.id }"),
+                                                             .extractions_extraction_forms_projects_section
+                                                             .extraction_forms_projects_section
+                                                             .id }"),
                                                      notice: t('removed') }
       format.json { head :no_content }
     end
