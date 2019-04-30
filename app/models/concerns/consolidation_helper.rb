@@ -203,7 +203,6 @@ module ConsolidationHelper
 
                   else
                     # why would there ever be a different rss type except when in testing environment
-                    byebug
                   end
                 end
               end
@@ -219,6 +218,10 @@ module ConsolidationHelper
 
         #iterate over type2 eefpss
         eefps_t2.each do |eefps|
+          if (eefps.link_to_type1.present? and not eefps.extraction_forms_projects_section.link_to_type1.present?) or
+             (not eefps.link_to_type1.present? and eefps.extraction_forms_projects_section.link_to_type1.present?)
+            next
+          end
           extraction = eefps.extraction
           efps = eefps.extraction_forms_projects_section
           efps_id = efps.id.to_s
@@ -234,7 +237,8 @@ module ConsolidationHelper
 
             qrcf_id = eefps_qrcf.question_row_column_field.id.to_s
 
-            linked_efps_id = eefps.link_to_type1 ? eefps.link_to_type1.id.to_s : nil
+            linked_efps_id = eefps.extraction_forms_projects_section.link_to_type1 ? eefps.extraction_forms_projects_section.link_to_type1.id.to_s : nil
+
 
             t1_id = eefps_qrcf.extractions_extraction_forms_projects_sections_type1.present? ?
                          eefps_qrcf.extractions_extraction_forms_projects_sections_type1.type1.id.to_s : nil
@@ -446,7 +450,6 @@ module ConsolidationHelper
                       end
                     else
                       # if rss_type is different than 1,2,3 or 4, jump into byebug
-                      byebug
                     end
                   end
                 end
@@ -463,9 +466,8 @@ module ConsolidationHelper
             r_efps_linkedefps_t1_hash.each do |t1_type_id, r_efps_linkedefps_t1_t1t_hash|
               r_efps_linkedefps_t1_t1t_hash.each do |qrcf_id, r_efps_linkedefps_t1_t1t_qrcf_hash|
                 r_efps_linkedefps_t1_t1t_qrcf_hash.each do |record_name, r_es|
-                  if r_es.length == extractions.length
+                  if r_es.uniq.length == extractions.length
                     linked_eefps = linked_efps_id.present? ? self.extractions_extraction_forms_projects_sections.find_by!(extraction_forms_projects_section_id: linked_efps_id) : nil
-                    #byebug
                     eefps = self.extractions_extraction_forms_projects_sections.
                       find_by!(extraction_forms_projects_section_id: efps_id,
                       link_to_type1: linked_eefps )
@@ -477,7 +479,7 @@ module ConsolidationHelper
                     #we want  to change find_or_create_by into  find_by asap
                     eefps_qrcf = ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField.find_or_create_by!(extractions_extraction_forms_projects_section: eefps, extractions_extraction_forms_projects_sections_type1: eefps_t1,  question_row_column_field: qrcf)
                     record = Record.find_or_create_by!(recordable: eefps_qrcf, recordable_type: eefps_qrcf.class.name)
-                    if record.name.nil? or record.name == ""
+                    if (record.name.nil? or record.name == "") and not (record_name == nil or record_name == "")
                       record.update!( name: record_name.dup.to_s )
                     end
                   end

@@ -125,7 +125,7 @@ document.addEventListener 'turbolinks:load', ->
           cb_arr = []
           $( question ).find( 'input.check_boxes' ).filter( ':checked' ).each ( input_id, input_elem ) ->
             cb_arr.push input_elem.value
-           return ( if cb_arr.length > 0 then cb_arr.join( "&&" ) else "" )
+          return ( if cb_arr.length > 0 then cb_arr.join( "&&" ) else "" )
 
 
         when "dropdown"
@@ -159,7 +159,6 @@ document.addEventListener 'turbolinks:load', ->
                     when "checkbox"
                       $( td_elem ).find( 'input.check_boxes' ).each ( input_id, input_elem ) ->
                         $( input_elem ).change ->
-                          console.log "LOYLOY"
                           apply_coloring( )
 
                     when "dropdown"
@@ -298,12 +297,13 @@ document.addEventListener 'turbolinks:load', ->
                 else
                   if value != consolidated_value[ tr_id ][ td_id ]
                     color_dict[ tr_id ][ td_id ] = "#D1F2EB"
-                  else
-                    color_dict[ tr_id ][ td_id ] = "#E8DAEF"
+                  #else
+                    #color_dict[ tr_id ][ td_id ] = "#E8DAEF"
 
           $.each color_dict, ( tr_id, color_tr_dict ) ->
             $.each color_tr_dict, ( td_id, color ) ->
-              consolidated_cell[ tr_id ][ td_id ].css( 'background', color )
+              if !!consolidated_cell[ tr_id ][ td_id ]
+                consolidated_cell[ tr_id ][ td_id ].css( 'background', color )
 
     ## call coloring for the first time
     add_change_listeners_to_questions( )
