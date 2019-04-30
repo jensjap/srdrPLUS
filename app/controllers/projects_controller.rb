@@ -4,7 +4,7 @@ class ProjectsController < ApplicationController
   before_action :set_project, only: [
     :show, :edit, :update, :destroy, :export, :import_csv,
     :import_pubmed, :import_endnote, :import_ris, :next_assignment,
-    :confirm_deletion, :dedupe_citations
+    :confirm_deletion, :dedupe_citations, :create_citation_screening_extraction_form, :create_full_text_screening_extraction_form
   ]
 
   before_action :skip_authorization, only: [:index, :show, :filter, :export, :new, :create]
@@ -211,6 +211,27 @@ class ProjectsController < ApplicationController
     flash[:success] = "Request to deduplicate citations has been received. Please come back later."
 
     redirect_to project_citations_path(@project)
+  end
+
+  def create_citation_screening_extraction_form
+    authorize(@project)
+    @project.extraction_forms_projects.find_or_create_by(
+      extraction_forms_project_type: ExtractionFormsProjectType.find_or_create_by(name: "Citation Screening Extraction Form"),
+      extraction_form: ExtractionForm.find_or_create_by(name: "ef2")
+    )
+    flash[:success] = "Success."
+
+    redirect_to edit_project_path(@project, anchor: 'panel-citation-screening-extraction-form'), notice: t('success')
+  end
+
+  def create_full_text_screening_extraction_form
+    authorize(@project)
+    @project.extraction_forms_projects.find_or_create_by(
+      extraction_forms_project_type: ExtractionFormsProjectType.find_or_create_by(name: "Full Text Screening Extraction Form"),
+      extraction_form: ExtractionForm.find_or_create_by(name: "ef3")
+    )
+    flash[:success] = "Success."
+
   end
 
   private

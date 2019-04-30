@@ -1,0 +1,63 @@
+- efp = @project.extraction_forms_projects.find_by(\
+    extraction_forms_project_type: ExtractionFormsProjectType.find_by(name: "Citation Screening Extraction Form")\
+  )
+
+- if efp
+  .grid-container
+    .grid-x.grid-margin-x
+      .cell.medium-3
+        ul#citation-screening-extraction-tabs.vertical.tabs data-tabs=""
+          li.tabs-title.is-active
+            a href="#tabs-panel-acceptance-reasons" aria-selected="true" Acceptance Reasons
+          li.tabs-title
+            a href="#tabs-panel-deferment-reasons" Deferment Reasons
+          li.tabs-title
+            a href="#tabs-panel-rejection-reasons" Rejection Reasons
+
+      .cell.medium-9
+        .tabs-content data-tabs-content="citation-screening-extraction-tabs"
+          - is_first = true
+          - efp.extraction_forms_projects_sections.each do |efps|
+
+            - if is_first
+              .tabs-panel id="tabs-panel-#{ efps.section.name.parameterize }" class="is-active"
+                .column.row
+                  = render 'extraction_forms_projects/build/type2/type2_friendly_helper_message', efps: efps
+
+                .column.row
+                  = render 'extraction_forms_projects/build/type2/type2_link_to_type1', efps: efps
+
+                .column.row
+                  = render 'extraction_forms_projects/build/type2/type2_question_list', efps: efps
+
+                - if efps.section.name == 'Risk of Bias Assessment'
+                  .column.row
+                    = render 'extraction_forms_projects/build/type2/type2_quality_predefined', efps: efps
+
+                = link_to new_extraction_forms_projects_section_question_path(efps), { class: 'button secondary' } do
+                  i.fi-plus>
+                  | Add Question
+
+              - is_first = false
+
+            - else
+              .tabs-panel id="tabs-panel-#{ efps.section.name.parameterize }"
+                .column.row
+                  = render 'extraction_forms_projects/build/type2/type2_friendly_helper_message', efps: efps
+
+                .column.row
+                  = render 'extraction_forms_projects/build/type2/type2_link_to_type1', efps: efps
+
+                .column.row
+                  = render 'extraction_forms_projects/build/type2/type2_question_list', efps: efps
+
+                - if efps.section.name == 'Risk of Bias Assessment'
+                  .column.row
+                    = render 'extraction_forms_projects/build/type2/type2_quality_predefined', efps: efps
+
+                = link_to new_extraction_forms_projects_section_question_path(efps), { class: 'button secondary' } do
+                  i.fi-plus>
+                  | Add Question
+
+- else
+  = link_to "Create Citation Screening Mini Extraction Form", create_citation_screening_extraction_form_project_path(@project), class: "button", method: :post

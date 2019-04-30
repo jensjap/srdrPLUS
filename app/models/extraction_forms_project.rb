@@ -37,33 +37,48 @@ class ExtractionFormsProject < ApplicationRecord
   private
 
     def create_default_sections
-      Section.default_sections.each do |section|
-        ExtractionFormsProjectsSection.create({
-          extraction_forms_project: self,
-          extraction_forms_projects_section_type: ['Key Questions', 'Results'].include?(section.name) ?
-          ExtractionFormsProjectsSectionType.find_by(name: section.name) : ['Arms', 'Outcomes'].include?(section.name) ?
-          ExtractionFormsProjectsSectionType.find_by(name: 'Type 1') : ['Design Details', 'Arm Details', 'Sample Characteristics', 'Outcome Details', 'Risk of Bias Assessment'].include?(section.name) ?
-          ExtractionFormsProjectsSectionType.find_by(name: 'Type 2') : raise('Unexpected default section'),
-          section: section,
-          link_to_type1: ['Arm Details', 'Sample Characteristics'].include?(section.name) ?
-          ExtractionFormsProjectsSection.find_by(extraction_forms_project: self, extraction_forms_projects_section_type: ExtractionFormsProjectsSectionType.find_by(name: 'Type 1'), section: Section.find_by(name: 'Arms')) : ['Outcome Details'].include?(section.name) ?
-          ExtractionFormsProjectsSection.find_by(extraction_forms_project: self, extraction_forms_projects_section_type: ExtractionFormsProjectsSectionType.find_by(name: 'Type 1'), section: Section.find_by(name: 'Outcomes')) : nil
-        }).extraction_forms_projects_section_option.update!(
-          by_type1: ['Arm Details', 'Outcome Details'].include?(section.name) ? true : ['Sample Characteristics'].include?(section.name) ? true : false,
-          include_total: ['Arm Details', 'Outcome Details'].include?(section.name) ? false : ['Sample Characteristics'].include?(section.name) ? true : false
-        )
+      if extraction_forms_project_type.eql?(ExtractionFormsProjectType.find_by(name: "Standard"))
+        Section.default_sections.each do |section|
+          ExtractionFormsProjectsSection.create({
+            extraction_forms_project: self,
+            extraction_forms_projects_section_type: ['Key Questions', 'Results'].include?(section.name) ?
+            ExtractionFormsProjectsSectionType.find_by(name: section.name) : ['Arms', 'Outcomes'].include?(section.name) ?
+            ExtractionFormsProjectsSectionType.find_by(name: 'Type 1') : ['Design Details', 'Arm Details', 'Sample Characteristics', 'Outcome Details', 'Risk of Bias Assessment'].include?(section.name) ?
+            ExtractionFormsProjectsSectionType.find_by(name: 'Type 2') : raise('Unexpected default section'),
+            section: section,
+            link_to_type1: ['Arm Details', 'Sample Characteristics'].include?(section.name) ?
+            ExtractionFormsProjectsSection.find_by(extraction_forms_project: self, extraction_forms_projects_section_type: ExtractionFormsProjectsSectionType.find_by(name: 'Type 1'), section: Section.find_by(name: 'Arms')) : ['Outcome Details'].include?(section.name) ?
+            ExtractionFormsProjectsSection.find_by(extraction_forms_project: self, extraction_forms_projects_section_type: ExtractionFormsProjectsSectionType.find_by(name: 'Type 1'), section: Section.find_by(name: 'Outcomes')) : nil
+          }).extraction_forms_projects_section_option.update!(
+            by_type1: ['Arm Details', 'Outcome Details'].include?(section.name) ? true : ['Sample Characteristics'].include?(section.name) ? true : false,
+            include_total: ['Arm Details', 'Outcome Details'].include?(section.name) ? false : ['Sample Characteristics'].include?(section.name) ? true : false
+          )
+        end
+
+      elsif extraction_forms_project_type.eql?(ExtractionFormsProjectType.find_by(name: "Citation Screening Extraction Form"))
+        %w(Acceptance\ Reasons Deferment\ Reasons Rejection\ Reasons).each do |name|
+          extraction_forms_projects_sections.create(
+            extraction_forms_projects_section_type: ExtractionFormsProjectsSectionType.find_by(name: 'Type 2'),
+            section: Section.find_or_create_by(name: name),
+            link_to_type1: nil
+          )
+        end
+
+      elsif extraction_forms_project_type.eql?(ExtractionFormsProjectType.find_by(name: "Full Text Screening Extraction Form"))
+        # Placeholder
+
+      else
+        raise 'Unknown ExtractionFormsProjectType'
+
       end
     end
 
     def create_default_arms
-      extraction_forms_projects_sections.find_by(
-        section: Section.find_by(name: 'Arms')
-      ).type1s << Type1.find_or_create_by(name: 'Total', description: 'All Arms combined')
-#      ExtractionFormsProjectsSection.find_by(
-#        extraction_forms_project: self,
-#        extraction_forms_projects_section_type: ExtractionFormsProjectsSectionType.find_by(name: 'Type 1'),
-#        section: Section.find_by(name: 'Arms')
-#      ).type1s << Type1.find_or_create_by(name: 'Total', description: 'All interventions combined')
+      if extraction_forms_project_type.eql?(ExtractionFormsProjectType.find_by(name: "Standard"))
+        extraction_forms_projects_sections.find_by(
+          section: Section.find_by(name: 'Arms')
+        ).type1s << Type1.find_or_create_by(name: 'Total', description: 'All Arms combined')
+      end
     end
 
     def extraction_form_name_exists?(attributes)

@@ -171,7 +171,7 @@ class Project < ApplicationRecord
 
     return citation_groups
   end
-  
+
   # def import_citations_from_csv( file )
   #   primary_id = CitationType.find_by( name: 'Primary' ).id
   #   ### citation type, not sure if necessary
@@ -902,7 +902,10 @@ class Project < ApplicationRecord
     #end
 
     def create_default_extraction_form
-      self.extraction_forms_projects.create!(extraction_forms_project_type: ExtractionFormsProjectType.first, extraction_form: ExtractionForm.first)
+      extraction_forms_projects.create!(
+        extraction_forms_project_type: ExtractionFormsProjectType.find_by(name: "Standard"),
+        extraction_form: ExtractionForm.find_by(name: "ef1")
+      )
     end
 
     def create_default_perpetual_task

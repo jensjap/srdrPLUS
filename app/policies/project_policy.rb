@@ -49,4 +49,12 @@ class ProjectPolicy < ApplicationPolicy
   def dedupe_citations?
     project_leader?
   end
+
+  def create_citation_screening_extraction_form?
+    project_leader?
+  end
+
+  def create_full_text_screening_extraction_form?
+    project_leader?
+  end
 end
