@@ -319,7 +319,7 @@ module ConsolidationHelper
                             if old_comparable.instance_of? ExtractionsExtractionFormsProjectsSectionsType1
                               comp_t1 = old_comparable.type1
                               comp_efps = old_comparable.extractions_extraction_forms_projects_section.extraction_forms_projects_section
-                              comp_eefps = ExtractionsExtractionFormsProjectsSection.find_by!(extraction_forms_projects_section: comp_efps)
+                              comp_eefps = self.extractions_extraction_forms_projects_sections.find_by!(extraction_forms_projects_section: comp_efps)
                               comp_eefps_t1 = ExtractionsExtractionFormsProjectsSectionsType1.find_by!(extractions_extraction_forms_projects_section: comp_eefps, type1: comp_t1)
                               new_comparable_element = ComparableElement.create!(comparable: comp_eefps_t1, comparable_type: 'ExtractionsExtractionFormsProjectsSectionsType1')
                               new_comparate = Comparate.create!(comparate_group: new_comparate_group, comparable_element: new_comparable_element)
