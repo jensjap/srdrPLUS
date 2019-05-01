@@ -1,6 +1,6 @@
 .tabs-content.vertical data-tabs-content='vertical-tabs'
 
-  - @extraction_forms_projects_sections.each do |efps|
+  - @extraction_forms_projects_sections.ordered.each do |efps|
 
     .tabs-panel id="panel-tab-#{ efps.id.to_s }"
 
