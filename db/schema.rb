@@ -574,22 +574,22 @@ ActiveRecord::Schema.define(version: 2019_08_17_024915) do
     t.index ["population_name_id"], name: "index_eefpst1r_on_pn_id"
   end
 
-  create_table "imported_files", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer  "project_id"
-    t.integer  "user_id"
-    t.integer  "file_type_id"
-    t.integer  "import_type_id"
-    t.integer  "section_id"
-    t.binary   "content",         limit: 4294967295, null: false
-    t.datetime "created_at",                         null: false
-    t.datetime "updated_at",                         null: false
-    t.integer  "key_question_id"
-    t.index ["file_type_id"], name: "index_imported_files_on_file_type_id", using: :btree
-    t.index ["import_type_id"], name: "index_imported_files_on_import_type_id", using: :btree
-    t.index ["key_question_id"], name: "index_imported_files_on_key_question_id", using: :btree
-    t.index ["project_id"], name: "index_imported_files_on_project_id", using: :btree
-    t.index ["section_id"], name: "index_imported_files_on_section_id", using: :btree
-    t.index ["user_id"], name: "index_imported_files_on_user_id", using: :btree
+  create_table "extractions_extraction_forms_projects_sections_type1s", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "type1_type_id"
+    t.integer "extractions_extraction_forms_projects_section_id"
+    t.integer "type1_id"
+    t.string "units"
+    t.datetime "deleted_at"
+    t.boolean "active"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["active"], name: "index_eefpst1_on_active"
+    t.index ["deleted_at"], name: "index_eefpst1_on_deleted_at"
+    t.index ["extractions_extraction_forms_projects_section_id"], name: "index_eefpst1_on_eefps_id"
+    t.index ["type1_id"], name: "index_eefpst1_on_t1_id"
+    t.index ["type1_type_id", "extractions_extraction_forms_projects_section_id", "type1_id", "active"], name: "index_eefpst1_on_t1t_id_eefps_id_t1_id_active", unique: true
+    t.index ["type1_type_id", "extractions_extraction_forms_projects_section_id", "type1_id", "deleted_at"], name: "index_eefpst1_on_t1t_id_eefps_id_t1_id_deleted_at", unique: true
+    t.index ["type1_type_id"], name: "index_eefpst1_on_t1t_id"
   end
 
   create_table "extractions_projects_users_roles", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -605,6 +605,13 @@ ActiveRecord::Schema.define(version: 2019_08_17_024915) do
     t.index ["extraction_id", "projects_users_role_id", "deleted_at"], name: "index_epur_on_e_id_pur_id_deleted_at_uniq", unique: true
     t.index ["extraction_id"], name: "index_epur_on_e_id"
     t.index ["projects_users_role_id"], name: "index_epur_on_pur_id"
+  end
+
+  create_table "file_types", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_file_types_on_name", unique: true
   end
 
   create_table "frequencies", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -641,6 +648,30 @@ ActiveRecord::Schema.define(version: 2019_08_17_024915) do
     t.index ["invitable_type", "invitable_id"], name: "index_invitations_on_invitable_type_and_invitable_id"
     t.index ["role_id"], name: "index_invitations_on_role_id"
     t.index ["token"], name: "index_invitations_on_token", unique: true
+  end
+
+  create_table "import_types", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_import_types_on_name", unique: true
+  end
+
+  create_table "imported_files", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "project_id"
+    t.integer "user_id"
+    t.integer "file_type_id"
+    t.integer "import_type_id"
+    t.integer "section_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "key_question_id"
+    t.index ["file_type_id"], name: "index_imported_files_on_file_type_id"
+    t.index ["import_type_id"], name: "index_imported_files_on_import_type_id"
+    t.index ["key_question_id"], name: "index_imported_files_on_key_question_id"
+    t.index ["project_id"], name: "index_imported_files_on_project_id"
+    t.index ["section_id"], name: "index_imported_files_on_section_id"
+    t.index ["user_id"], name: "index_imported_files_on_user_id"
   end
 
   create_table "journals", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

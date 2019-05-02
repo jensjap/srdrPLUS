@@ -12,19 +12,21 @@ class DistillerImportJob < ApplicationJob
     #   user_id,
     Rails.logger.debug "#{ self.class.name }: I'm performing my job with arguments: #{ args.inspect }"
 
-    @user = User.find( args.first )
-    @project = Project.find( args.second )
+    @user = User.find args.first
+    @project = Project.find args.second
+    @references_file = ImportedFile.find args.third
 
-    ris_file_type_id = FileType.find_by(name:'.ris')
-    citation_import_id = ImportType.find_by(name:'Distiller References').id
-    section_import_id = ImportType.find_by(name:'Distiller Section').id
 
-    import_citations_from_ris ImportedFile.where(project: @project, user: @user, import_type_id: citation_import_id, file_type_id: ris_file_type_id).first
+    # the idea is that we have to import the references first, so the references imported_file object is the entry point for the import, the sections will only be attempted if this job is completed
+    import_citations_from_ris @references_file
+    #import_citations_from_ris ImportedFile.where(project: @project, user: @user, import_type_id: citation_import_id, file_type_id: ris_file_type_id).first
 
     distiller_importer = DistillerImporter.new @project, @user
 
     #currently we only support ris_file
-    ImportedFile.where(project: @project, user: @user, import_type_id: section_import_id).each do |ifile|
+    ImportedFile.where(project: @project,
+                       user: @user,
+                       import_type_id: ImportType.find_by(name:'Distiller Section').id).each do |ifile|
       distiller_importer.add_t2_section ifile
     end
 

@@ -6,7 +6,6 @@ class CreateImportedFiles < ActiveRecord::Migration[5.0]
       t.references :file_type, foreign_key: true
       t.references :import_type, foreign_key: true
       t.references :section, foreign_key: true
-      t.longblob :content, null: false
 
       t.timestamps
     end

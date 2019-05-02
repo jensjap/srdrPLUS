@@ -11,10 +11,10 @@ class JsonImportJob < ApplicationJob
 
     @user = User.find( args.first )
     @project = Project.find( args.second )
-    @json_file = args.third
+    @json_file = ImportedFile.find( args.third )
 
     begin
-      fhash = JSON.parse(File.read(@json_file))
+      fhash = JSON.parse(@json_file.content.download)
     rescue
       Rails.logger.debug "Cannot parse file as JSON: #{@json_file}"
       return

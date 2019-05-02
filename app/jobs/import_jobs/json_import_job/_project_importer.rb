@@ -79,11 +79,7 @@ class ProjectImporter
         q_tuples.sort! { |t1, t2| t1[0] <=> t2[0] }
         q_tuples.each.with_index do |tuple, index|
           q = tuple[1]
-          begin
-            q.ordering.update!( position: index + 1 )
-          rescue
-            byebug
-          end
+          q.ordering.update!( position: index + 1 )
         end
       end
 
@@ -707,13 +703,9 @@ class ProjectImporter
 
               if rssmhash['records'].present?
                 rssmhash['records']['tps_comparisons_rssms']&.values&.each do |tchash|
-                  begin
                   tcr = TpsComparisonsRssm.create!({timepoint: @id_map['tp'][tchash['timepoint_id']],
                                                     comparison: @id_map['comparison'][tchash['comparison_id']],
                                                     result_statistic_sections_measure: rssm})
-                  rescue
-                    byebug
-                  end
 
                   Record.create!({recordable_type: 'TpsComparisonsRssm',
                                   recordable_id: tcr.id,
@@ -763,7 +755,6 @@ class ProjectImporter
       shash['records']&.each do |rid, rhash|
         qrcfid = rhash['question_row_column_field_id'].to_s
         qrcf = @id_map['qrcf'][qrcfid]
-        if qrcf.nil?; byebug end
         qrc_type_name = qrcf.question_row_column.question_row_column_type.name
         eefpst1 = @id_map['eefpst1'][rhash['extractions_extraction_forms_projects_sections_type1_id']]
         eefpsqrcf = ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField.find_or_create_by! extractions_extraction_forms_projects_section: eefps,

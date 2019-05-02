@@ -1,5 +1,5 @@
 def import_citations_from_pubmed_file(imported_file)
-  pmid_arr = imported_file.content.split("\n").map{|pmid| pmid.strip}
+  pmid_arr = imported_file.content.download.split("\n").map{|pmid| pmid.strip}
   import_citations_from_pubmed_array imported_file.project, pmid_arr
 end
 

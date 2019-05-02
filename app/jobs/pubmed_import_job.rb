@@ -1,4 +1,4 @@
-require "import_jobs/_pubmed_importer"
+require "import_jobs/_pubmed_citation_importer"
 
 class PubmedImportJob < ApplicationJob
   queue_as :default
@@ -11,9 +11,9 @@ class PubmedImportJob < ApplicationJob
 
     @user          = User.find( args.first )
     @project       = Project.find( args.second )
-    @citation_file = @project.citation_files.find(args.third)
+    @imported_file = ImportedFile.find(args.third)
 
-    import_citations_from_pubmed_file @project, args.third
+    import_citations_from_pubmed_file @imported_file
 
     ImportMailer.notify_import_completion(@user.id, @project.id).deliver_later
   end

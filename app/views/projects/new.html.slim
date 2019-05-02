@@ -25,21 +25,21 @@
                     "data-association-insertion-method" => 'append'
 
 
+        /= f.input :create_option, as: :hidden, input_html: {value: 'distiller'}
         select#create-type
           option value="empty" Create an empty project
           option value="json" Create project from an SRDR+ JSON export
           option value="distiller" Create project from a Distiller SR .csv export
 
         .distiller-import-panel.hide
-          = f.input :import_type, as: :hidden, input_html: {value: 'distiller'}
           .distiller-reference-file-container
             = f.simple_fields_for :imported_files do |g|
               - if g.object.import_type == ImportType.find_by(name: 'Distiller References')
                 = render 'projects/new/distiller_references_file_form', f:g
           .distiller-section-file-container
-          = f.simple_fields_for :imported_files do |g|
-            - if g.object.import_type == ImportType.find_by(name: 'Distiller Section')
-              = render 'projects/new/distiller_section_file_form', f:g
+            = f.simple_fields_for :imported_files do |g|
+              - if g.object.import_type == ImportType.find_by(name: 'Distiller Section')
+                = render 'projects/new/distiller_section_file_form', f:g
           .links
             .hide
               = link_to_add_association 'Add Distiller References File', f, :imported_files,
@@ -47,6 +47,7 @@
                       id: 'distiller-add-references-file',
                       "data-association-insertion-node" => '.distiller-reference-file-container',
                       "data-association-insertion-method" => 'append'
+
             = link_to_add_association 'Add Distiller Section File', f, :imported_files,
                     partial: 'projects/new/distiller_section_file_form',
                     id: 'distiller-add-section-file',

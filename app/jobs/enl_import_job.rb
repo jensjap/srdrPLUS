@@ -11,9 +11,9 @@ class EnlImportJob < ApplicationJob
 
     @user          = User.find( args.first )
     @project       = Project.find( args.second )
-    @citation_file = @project.citation_files.find(args.third)
+    @imported_file = ImportedFile.find(args.third)
 
-    import_citations_from_enl @project, args.third
+    import_citations_from_enl @imported_file
 
     ImportMailer.notify_import_completion(@user.id, @project.id).deliver_later
   end

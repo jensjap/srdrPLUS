@@ -60,12 +60,7 @@ class ProjectsController < ApplicationController
     @project = Project.new(project_params)
 
     respond_to do |format|
-      if @project.save and @project.update(import_params)
-
-        if distiller_params.present? and distiller_params["import_type"] == "distiller"
-          import_project_from_distiller @project
-        end
-
+      if @project.save
         format.html { redirect_to edit_project_path(@project),
                       notice: t('success') + " #{ make_undo_link }" }
         format.json { render :show, status: :created, location: @project }
@@ -74,12 +69,6 @@ class ProjectsController < ApplicationController
         format.json { render json: @project.errors, status: :unprocessable_entity }
       end
     end
-
-    #if json_params.present?
-    #  import_project_from_json @project, json_params
-    #elsif distiller_params.present?
-    #  import_project_from_distiller @project, distiller_params
-    #end
   end
 
   # PATCH/PUT /projects/1
@@ -165,45 +154,45 @@ class ProjectsController < ApplicationController
     redirect_to request.referer
   end
 
-  def import_ris
-    authorize(@project)
-    @project.citation_files.attach(citation_import_params[:citation_files])
-    RisImportJob.perform_later(current_user.id, @project.id, @project.citation_files.last.id)
-    flash[:success] = "Import request submitted for project '#{ @project.name }'. You will be notified by email of its completion."
-    #@project.import_citations_from_ris( citation_import_params[:citation_file] )
+  # def import_ris
+  #   authorize(@project)
+  #   @project.citation_files.attach(citation_import_params[:citation_files])
+  #   RisImportJob.perform_later(current_user.id, @project.id, @project.citation_files.last.id)
+  #   flash[:success] = "Import request submitted for project '#{ @project.name }'. You will be notified by email of its completion."
+  #   #@project.import_citations_from_ris( citation_import_params[:citation_file] )
 
-    redirect_to project_citations_path(@project)
-  end
+  #   redirect_to project_citations_path(@project)
+  # end
 
-  def import_csv
-    authorize(@project)
-    @project.citation_files.attach(citation_import_params[:citation_files])
-    CsvImportJob.perform_later(current_user.id, @project.id, @project.citation_files.last.id)
-    flash[:success] = "Import request submitted for project '#{ @project.name }'. You will be notified by email of its completion."
-    #@project.import_citations_from_csv( citation_import_params[:citation_file] )
+  # def import_csv
+  #   authorize(@project)
+  #   @project.citation_files.attach(citation_import_params[:citation_files])
+  #   CsvImportJob.perform_later(current_user.id, @project.id, @project.citation_files.last.id)
+  #   flash[:success] = "Import request submitted for project '#{ @project.name }'. You will be notified by email of its completion."
+  #   #@project.import_citations_from_csv( citation_import_params[:citation_file] )
 
-    redirect_to project_citations_path(@project)
-  end
+  #   redirect_to project_citations_path(@project)
+  # end
 
-  def import_pubmed
-    authorize(@project)
-    @project.citation_files.attach(citation_import_params[:citation_files])
-    PubmedImportJob.perform_later(current_user.id, @project.id, @project.citation_files.last.id)
-    flash[:success] = "Import request submitted for project '#{ @project.name }'. You will be notified by email of its completion."
-    #@project.import_citations_from_pubmed( citation_import_params[:citation_file] )
+  # def import_pubmed
+  #   authorize(@project)
+  #   @project.citation_files.attach(citation_import_params[:citation_files])
+  #   PubmedImportJob.perform_later(current_user.id, @project.id, @project.citation_files.last.id)
+  #   flash[:success] = "Import request submitted for project '#{ @project.name }'. You will be notified by email of its completion."
+  #   #@project.import_citations_from_pubmed( citation_import_params[:citation_file] )
 
-    redirect_to project_citations_path(@project)
-  end
+  #   redirect_to project_citations_path(@project)
+  # end
 
-  def import_endnote
-    authorize(@project)
-    @project.citation_files.attach(citation_import_params[:citation_files])
-    EnlImportJob.perform_later(current_user.id, @project.id, @project.citation_files.last.id)
-    flash[:success] = "Import request submitted for project '#{ @project.name }'. You will be notified by email of its completion."
-    #@project.import_citations_from_enl( citation_import_params[:citation_file] )
+  # def import_endnote
+  #   authorize(@project)
+  #   @project.citation_files.attach(citation_import_params[:citation_files])
+  #   EnlImportJob.perform_later(current_user.id, @project.id, @project.citation_files.last.id)
+  #   flash[:success] = "Import request submitted for project '#{ @project.name }'. You will be notified by email of its completion."
+  #   #@project.import_citations_from_enl( citation_import_params[:citation_file] )
 
-    redirect_to project_citations_path(@project)
-  end
+  #   redirect_to project_citations_path(@project)
+  # end
 
   def next_assignment
     authorize(@project)
@@ -265,18 +254,15 @@ class ProjectsController < ApplicationController
                 {key_questions_projects_attributes: [:id, :position]},
                 {key_questions_attributes: [:name]},
                 {projects_users_attributes: [:id, :_destroy, :user_id, role_ids: []]},
-                {screening_options_attributes: [:id, :_destroy, :project_id, :label_type_id, :screening_option_type_id]})
+                {screening_options_attributes: [:id, :_destroy, :project_id, :label_type_id, :screening_option_type_id]},
+                {imported_files_attributes: [:id, :file_type_id, :import_type_id, :content, :user_id, section:[:name], key_question:[ :name ]]})
     end
 
-    def import_params
-      params.require(:project)
-          .permit({imported_files_attributes: [:id, :file_type_id, :import_type_id, :content, :user_id, section:[:name], key_question:[ :name ]]})
-    end
+   #def import_params
+   #  params.require(:project)
+   #      .permit(
+   #end
 
-    def distiller_params
-      # what kind of files do we want to import?
-      params.require(:project).permit(:import_type)
-    end
    # def distiller_params
    #   # what kind of files do we want to import?
    #   params.require(:project).permit(:citation_file, :design_file, :arms_file, :outcomes_file, :bc_file, :rob_file)
@@ -310,13 +296,13 @@ class ProjectsController < ApplicationController
       view_context.link_to link, undo_project_path(@project_version.next, redo: !params[:redo]), method: :post
     end
 
-    def import_project_from_json(project, f)
-      JsonImportJob.perform_later(current_user.id, project.id, f[:json_file].path)
-      flash[:success] = "Import request submitted for project '#{ project.name }'. You will be notified by email of its completion."
-    end
+    # def import_project_from_json(project, f)
+    #   JsonImportJob.perform_later(current_user.id, project.id, f[:json_file].path)
+    #   flash[:success] = "Import request submitted for project '#{ project.name }'. You will be notified by email of its completion."
+    # end
 
-    def import_project_from_distiller(project)
-      DistillerImportJob.perform_later(current_user.id, project.id)
-      flash[:success] = "Import request submitted for project '#{ project.name }'. You will be notified by email of its completion."
-    end
+    # def import_project_from_distiller(project)
+    #   DistillerImportJob.perform_later(current_user.id, project.id)
+    #   flash[:success] = "Import request submitted for project '#{ project.name }'. You will be notified by email of its completion."
+    # end
 end

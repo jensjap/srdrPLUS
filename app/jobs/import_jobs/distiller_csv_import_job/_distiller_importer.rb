@@ -16,7 +16,7 @@ class DistillerImporter
     # TODO => Check filetype and importtype and return if wrong
     # TODO => KEY QUESTION STUFF DOES NOT WORK
 
-    csv_content = CSV.parse(imported_file.content.gsub /\r/, '')
+    csv_content = CSV.parse(imported_file.content.download.gsub /\r/, '')
 
     #efps_hash = create_efps_hash csv_content.first, kq_hash, imported_file.section.name
     #@project_json["project"]["extraction_forms"][@ef_id]["sections"][imported_file.section.id] = efps_hash
