@@ -1,4 +1,4 @@
-#bulk-delete.reveal.large data-reveal=""
+#delete-citations-modal.reveal.large data-reveal=""
   = simple_form_for @project do |form_project|
     table
       thead
@@ -52,11 +52,10 @@ div.row
 
         #insert-citation-div[ style="margin-bottom: 1rem;" ]
           = link_to_add_association 'Add Citation', f, :citations_projects, partial: 'projects/edit/added_citations_project_fields', 'data-association-insertion-node' => '#cp-insertion-node', 'data-association-insertion-method' => 'prepend'
-          '
-          ' or
-
+          '&nbsp;|
           = link_to_add_association 'Create New Citation', f, :citations, partial: 'projects/edit/citation_fields', 'data-association-insertion-node' => '#cp-insertion-node', 'data-association-insertion-method' => 'prepend'
-          .bulk-delete.button.tiny.alert.float-right data-open="bulk-delete"  Remove multiple citations
+          '&nbsp;|
+          = link_to "Delete Citations", "javascript:;", data: { open: "delete-citations-modal" }
 
         #cp-insertion-node
         ul.accordion.list.form-inputs data-accordion='' data-multi-expand='false' data-allow-all-closed='true' id='citations-projects-list'
