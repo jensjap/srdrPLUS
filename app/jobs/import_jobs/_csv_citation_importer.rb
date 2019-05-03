@@ -40,9 +40,10 @@ def import_citations_from_csv(imported_file)
       kw_str.gsub! /"/, ''
       kw_arr = kw_str.split( "     " )
       if kw_arr.length == 1 then kw_arr = kw_str.split( /, |,/ ) end
+      if kw_arr.length == 1 then kw_arr = kw_str.split( /; |;/ ) end
       if kw_arr.length == 1 then kw_arr = kw_str.split( / \/ |\// ) end
       if kw_arr.length == 1 then kw_arr = kw_str.split( / \| |\|/ ) end
-      if kw_arr.length == 1 then kw_arr = kw_str.split( /\n| \n/ ) end
+      if kw_arr.length == 1 then kw_arr = kw_str.split( /\n/ ) end
 
       cit_h[ 'keywords_attributes' ] = {}
       kw_arr.each do |kw|

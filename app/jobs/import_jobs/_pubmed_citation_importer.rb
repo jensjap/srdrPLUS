@@ -23,9 +23,10 @@ def import_citations_from_pubmed_array(project, pubmed_id_array)
       kw_str.gsub! /"/, ''
       kw_arr = kw_str.split( "     " )
       if kw_arr.length == 1 then kw_arr = kw_str.split( /, |,/ ) end
+      if kw_arr.length == 1 then kw_arr = kw_str.split( /; |;/ ) end
       if kw_arr.length == 1 then kw_arr = kw_str.split( / \/ |\// ) end
       if kw_arr.length == 1 then kw_arr = kw_str.split( / \| |\|/ ) end
-      if kw_arr.length == 1 then kw_arr = kw_str.split( /\n| \n/ ) end
+      if kw_arr.length == 1 then kw_arr = kw_str.split( /\n/ ) end
       row_h[ 'keywords_attributes' ] = {}
       kw_arr.each do |kw|
         row_h[ 'keywords_attributes' ][Time.now.to_i + key_counter] = { name: kw }

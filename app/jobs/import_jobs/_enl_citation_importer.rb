@@ -32,9 +32,10 @@ def import_citations_from_enl(imported_file)
         kw_arr = cit_h[ 'K' ].split( "     " )
       end
       if kw_arr.length == 1 then kw_arr = cit_h[ 'K' ].split( /, |,/ ) end
+      if kw_arr.length == 1 then kw_arr = cit_h[ 'K' ].split( /; |;/ ) end
       if kw_arr.length == 1 then kw_arr = cit_h[ 'K' ].split( / \/ |\// ) end
       if kw_arr.length == 1 then kw_arr = cit_h[ 'K' ].split( / \| |\|/ ) end
-      if kw_arr.length == 1 then kw_arr = cit_h[ 'K' ].split( /\n| \n/ ) end
+      if kw_arr.length == 1 then kw_arr = cit_h[ 'K' ].split( /\n/ ) end
 
       row_h[ 'keywords_attributes' ] = {}
       kw_arr.each do |kw|

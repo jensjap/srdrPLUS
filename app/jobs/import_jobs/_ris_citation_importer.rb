@@ -34,8 +34,10 @@ def import_citations_from_ris(imported_file)
         kw_arr = cit_h[ 'KW' ].split( "     " )
       end
       if kw_arr.length == 1 then kw_arr = cit_h[ 'KW' ].split( /, |,/ ) end
+      if kw_arr.length == 1 then kw_arr = cit_h[ 'KW' ].split( /; |;/ ) end
       if kw_arr.length == 1 then kw_arr = cit_h[ 'KW' ].split( / \/ |\// ) end
       if kw_arr.length == 1 then kw_arr = cit_h[ 'KW' ].split( / \| |\|/ ) end
+      if kw_arr.length == 1 then kw_arr = cit_h[ 'KW' ].split( /\n/ ) end
       row_h[ 'keywords_attributes' ] = {}
       kw_arr.each do |kw|
         row_h[ 'keywords_attributes' ][Time.now.to_i + key_counter ] = { name: kw }

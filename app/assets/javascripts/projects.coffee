@@ -58,8 +58,25 @@ document.addEventListener 'turbolinks:load', ->
 
     if $( 'body.projects.new' ).length == 1
       $( '.distiller-section-file-container' ).on 'cocoon:after-insert', ( e ) ->
-        console.log $( e.target ).find( '#distiller-section-input' )
-        $( e.target ).find( '#distiller-section-input' ).select2()
+        $( e.target ).find( '.distiller-section-input' ).select2( placeholder: "-- Select Section --" )
+        $( e.target ).find( '.distiller-key-question-input' ).select2( placeholder: "-- Select Key Question --" )
+
+      $( '.key-questions-list' ).on 'cocoon:after-insert', ( e ) ->
+        textbox = $( e.target ).find( 'input' )
+        console.log textbox
+        $( textbox ).on 'change', ( input_e ) ->
+          console.log "Laylay"
+          _textbox_name = $( input_e.target ).attr( 'id' )
+          ops = $( '.distiller-section-file-container' ).find( 'input.distiller-key-question-input' ).find("option[data-textbox-name='"+_textbox_name+"']")
+          $( ops ).val( $( input_e.target ).val() )
+          $( ops ).text( $( input_e.target ).val() )
+          $( '.distiller-section-file-container' ).find( 'input.distiller-key-question-input' ).trigger( 'change' )
+
+        newOption = new $('<option/>')
+        newOption.val('')
+        newOption.text('')
+        newOption.attr('data-textbox-name', $( textbox ).attr( 'id' ))
+        $( '.distiller-section-file-container' ).find( 'input.distiller-key-question-input' ).append( newOption ).trigger( 'change' )
 
       $( '#create-type' ).on 'change', ( e ) ->
         $( '.input.file input' ).val('')
