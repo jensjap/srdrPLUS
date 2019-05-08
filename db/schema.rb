@@ -636,19 +636,6 @@ ActiveRecord::Schema.define(version: 2019_08_17_024915) do
     t.index ["funding_source_id"], name: "index_funding_sources_sd_meta_data_on_funding_source_id"
     t.index ["sd_meta_datum_id"], name: "index_funding_sources_sd_meta_data_on_sd_meta_datum_id"
   end
-  
-  create_table "invitations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "role_id"
-    t.string "invitable_type"
-    t.bigint "invitable_id"
-    t.boolean "enabled", default: false
-    t.string "token"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["invitable_type", "invitable_id"], name: "index_invitations_on_invitable_type_and_invitable_id"
-    t.index ["role_id"], name: "index_invitations_on_role_id"
-    t.index ["token"], name: "index_invitations_on_token", unique: true
-  end
 
   create_table "import_types", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
@@ -672,6 +659,19 @@ ActiveRecord::Schema.define(version: 2019_08_17_024915) do
     t.index ["project_id"], name: "index_imported_files_on_project_id"
     t.index ["section_id"], name: "index_imported_files_on_section_id"
     t.index ["user_id"], name: "index_imported_files_on_user_id"
+  end
+
+  create_table "invitations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "role_id"
+    t.string "invitable_type"
+    t.bigint "invitable_id"
+    t.boolean "enabled", default: false
+    t.string "token"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["invitable_type", "invitable_id"], name: "index_invitations_on_invitable_type_and_invitable_id"
+    t.index ["role_id"], name: "index_invitations_on_role_id"
+    t.index ["token"], name: "index_invitations_on_token", unique: true
   end
 
   create_table "journals", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -1672,6 +1672,12 @@ ActiveRecord::Schema.define(version: 2019_08_17_024915) do
     t.string "unlock_token"
     t.datetime "locked_at"
     t.integer "user_type_id"
+    t.string "provider"
+    t.string "uid"
+    t.string "token"
+    t.integer "expires_at"
+    t.boolean "expires"
+    t.string "refresh_token"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["deleted_at"], name: "index_users_on_deleted_at"
     t.index ["email", "deleted_at"], name: "index_users_on_email_and_deleted_at", unique: true
@@ -1780,7 +1786,6 @@ ActiveRecord::Schema.define(version: 2019_08_17_024915) do
   add_foreign_key "extractions_extraction_forms_projects_sections_type1s", "type1s"
   add_foreign_key "extractions_projects_users_roles", "extractions"
   add_foreign_key "extractions_projects_users_roles", "projects_users_roles"
-  add_foreign_key "invitations", "roles"
   add_foreign_key "funding_sources_sd_meta_data", "funding_sources"
   add_foreign_key "funding_sources_sd_meta_data", "sd_meta_data"
   add_foreign_key "imported_files", "file_types"
@@ -1788,6 +1793,7 @@ ActiveRecord::Schema.define(version: 2019_08_17_024915) do
   add_foreign_key "imported_files", "projects"
   add_foreign_key "imported_files", "sections"
   add_foreign_key "imported_files", "users"
+  add_foreign_key "invitations", "roles"
   add_foreign_key "journals", "citations"
   add_foreign_key "key_questions_projects", "extraction_forms_projects_sections"
   add_foreign_key "key_questions_projects", "key_questions"

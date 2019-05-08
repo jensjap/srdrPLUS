@@ -165,10 +165,12 @@ gem 'google-api-client'
 gem 'sidekiq-cron', '~> 1.1'
 
 # Formatted console logs
-gem "awesome_print"
+gem 'awesome_print'
 
 # Fuzzy Match
-gem "fuzzy_match"
+gem 'fuzzy_match'
 
 # Font Awesome Icons
-gem "font-awesome-rails"
+gem 'font-awesome-rails'
+
+gem 'omniauth-google-oauth2'

@@ -226,6 +226,7 @@ Rails.application.routes.draw do
     member do
       post 'undo'
       post 'export'
+      post 'export_to_gdrive'
     end
   end
 

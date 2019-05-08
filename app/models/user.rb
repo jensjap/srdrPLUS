@@ -31,6 +31,7 @@ class User < ApplicationRecord
   has_paper_trail ignore: [:sign_in_count, :current_sign_in_at,
       :last_sign_in_at, :current_sign_in_ip, :last_sign_in_ip]
 
+  devise :omniauthable, :omniauth_providers => [:google_oauth2]
 
   after_create :ensure_profile_username_uniqueness
   before_validation { self.user_type = UserType.where(user_type: 'Member').first if self.user_type.nil? }
@@ -111,6 +112,19 @@ class User < ApplicationRecord
       else
         where(username: conditions[:username]).first
       end
+    end
+  end
+
+
+  def self.from_omniauth(auth)
+    # Either create a User record or update it based on the provider (Google) and the UID
+    #
+    # This is not quite what we want though, we want to add Google to existing users, no? - Birol
+    where(provider: auth.provider, uid: auth.uid).first_or_create do |user|
+      user.token = auth.credentials.token
+      user.expires = auth.credentials.expires
+      user.expires_at = auth.credentials.expires_at
+      user.refresh_token = auth.credentials.refresh_token
     end
   end
 
