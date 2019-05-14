@@ -1,0 +1,38 @@
+#panel-0.tabs-panel.is-active
+  fieldset
+    legend Title, Funding Sources, and Dates
+    = f.input :project_id, :as => :hidden, :input_html => { value: project.id }
+    div data-row-span="1"
+      div data-field-span="1"
+        = f.input :report_title, label: '1. Report Title (auto from the report)'
+    div data-row-span="1"
+      div data-field-span="1"
+        label 2. Project Title in SRDR
+        div #{project.name}
+    div data-row-span="1"
+      div data-field-span="1"
+        = f.association :funding_sources, include_blank: false, label: '3. Funding Source'
+    div data-row-span="3"
+      div data-field-span="1"
+        = f.input :date_of_last_search, as: :date, html5: true, label: '4. Date of Last Search (most recent date from  Search Strategy structured element)'
+      div data-field-span="1"
+        label 5. Date of Publication to SRDR:
+        / todo
+        / div #{project.publication_requested_at ? project.publication_requested_at : "Not Published"}
+        br/
+        br/
+        br/
+      div data-field-span="1"
+        = f.input :date_of_publication_full_report, as: :date, html5: true, label: '6. Date of Publication of Full Report (to be taken from Report)'
+  br/
+  br/
+  fieldset
+    legend Section Review & Validation
+    div data-row-span="1"
+      div data-field-span="1"
+        div Section Finished?
+        .switch
+          input.switch-input id="0-yes-no-section" type="checkbox" name="sectionSection" data-sd_meta_datum_id="#{sd_meta_datum.id}"
+          label.switch-paddle for="0-yes-no-section"
+            span.switch-active aria-hidden="true" Yes
+            span.switch-inactive aria-hidden="true" No

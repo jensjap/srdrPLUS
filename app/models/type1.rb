@@ -1,3 +1,15 @@
+# == Schema Information
+#
+# Table name: type1s
+#
+#  id          :integer          not null, primary key
+#  name        :string(255)
+#  description :text(65535)
+#  deleted_at  :datetime
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
+#
+
 class Type1 < ApplicationRecord
   include SharedQueryableMethods
   include SharedSuggestableMethods

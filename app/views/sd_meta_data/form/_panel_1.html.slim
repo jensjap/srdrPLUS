@@ -1,0 +1,40 @@
+#panel-1.tabs-panel.is-active
+  fieldset
+    legend Authors and Stakeholders
+    div data-row-span="1"
+      div data-field-span="1"
+        label 7. Authors
+        / todo
+        - @project.members.map do |user|
+          / div #{user.fname} #{user.lname} (#{user.email})
+    div data-row-span="1"
+      div data-field-span="1"
+        = f.input :authors_conflict_of_interest_of_full_report, label: '8. Conflicts of Interest of Authors of Full Report', :input_html => { :rows => 5 }
+    div data-row-span="1"
+      div data-field-span="1"
+        = f.input :stakeholder_involvement_extent, label: '9. Stakeholders Involved', :input_html => { :rows => 5 }
+    div data-row-span="1"
+      div data-field-span="1"
+        = f.input :stakeholders_conflict_of_interest, label: '10. Conflicts of Interest of Stakeholders', :input_html => { :rows => 5 }
+    div data-row-span="2"
+      div data-field-span="1"
+        label 11. Project Leads:
+        - @project.leaders.map do |user|
+          / todo
+          / div #{user.fname} #{user.lname} (#{user.email})
+      div data-field-span="1"
+        label 12. SRDR Project Creator:
+        / todo
+        / div #{@project.creator.fname} #{@project.creator.lname} (#{@project.creator.email})
+  br/
+  br/
+  fieldset
+    legend Section Review & Validation
+    div data-row-span="1"
+      div data-field-span="1"
+        div Section Finished?
+        .switch
+          input.switch-input id="1-yes-no-section" type="checkbox" name="sectionSection" data-sd_meta_datum_id="#{@sd_meta_datum.id}"
+          label.switch-paddle for="1-yes-no-section"
+            span.switch-active aria-hidden="true" Yes
+            span.switch-inactive aria-hidden="true" No

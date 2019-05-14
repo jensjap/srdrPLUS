@@ -1,3 +1,16 @@
+# == Schema Information
+#
+# Table name: comparisons_result_statistic_sections
+#
+#  id                          :integer          not null, primary key
+#  comparison_id               :integer
+#  result_statistic_section_id :integer
+#  deleted_at                  :datetime
+#  active                      :boolean
+#  created_at                  :datetime         not null
+#  updated_at                  :datetime         not null
+#
+
 class ComparisonsResultStatisticSection < ApplicationRecord
   include SharedParanoiaMethods
 

@@ -1,0 +1,69 @@
+.column.row#project-list
+  h3 Create New Project Link
+  select id="project-create"
+    - @projects.each do |project|
+      option
+      option value="#{project.id}" #{project.id}: #{project.name}
+  a.button.medium#create-new-sd-meta-datum style="margin-top: 10px;" Create
+.column.row#sdMetaData-list
+  h3 My Project Links
+  table.hover
+    thead
+      tr
+        th width="100" Project Link ID
+        th width="175" Project Title
+        th width="375" Incomplete Sections
+        th State
+        th width="150" Toggle State
+        th width="75" Edit
+        th width="75" Delete
+        th width="75" Last Updated
+    tbody
+      - if @sd_meta_data.empty?
+        tr
+          td No Records
+          td
+          td
+          td
+          td
+          td
+          td
+          td
+      - else
+        - @sd_meta_data.each do |sd_meta_datum|
+          tr
+            td = sd_meta_datum.id
+            td = sd_meta_datum.project.name
+            td
+              - sd_meta_datum.incomplete_sections.each do |section|
+                p style="margin: 10px 0px;" #{section}
+            td style="font-weight: #{sd_meta_datum.state == 'DRAFT' ? 'normal' : 'bold' };" = sd_meta_datum.state
+            td
+              = simple_form_for(sd_meta_datum, url: sd_meta_datum_path(sd_meta_datum)) do |f|
+                = f.input :state, :as => :hidden, input_html: { value: sd_meta_datum.state == 'DRAFT' ? 'COMPLETED' : 'DRAFT' }
+                = f.button :submit, 'Toggle State', class: 'state-toggler', state: sd_meta_datum.state, data_sections_complete: sd_meta_datum.all_sections_complete?
+            td = link_to "Edit", edit_sd_meta_datum_path(sd_meta_datum.id)
+            td = link_to 'Destroy', sd_meta_datum_path(sd_meta_datum), data: { confirm: 'Are you sure?' }, method: :delete
+            td = distance_of_time_in_words_to_now(sd_meta_datum.updated_at) + ' ago'
+
+javascript:
+  $('.state-toggler').on('click', function(e) {
+    if (this.attributes.state.value == 'DRAFT' && this.attributes.data_sections_complete.value === 'false') {
+      alert('There are still incomplete sections.  Please mark any incomplete sections complete first.')
+      e.preventDefault();
+    }
+  })
+
+  $('#project-create').select2({
+    placeholder: "Select a Project",
+    allowClear: true
+  })
+
+  $('#create-new-sd-meta-datum').on('click', function(e) {
+    var id = $('#project-create').val();
+    e.preventDefault();
+    $.ajax({
+      type: "POST",
+      url: `/projects/${id}/sd_meta_data`
+    });
+  })

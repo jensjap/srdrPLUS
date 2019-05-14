@@ -1,3 +1,14 @@
+# == Schema Information
+#
+# Table name: quality_dimension_options
+#
+#  id         :integer          not null, primary key
+#  name       :text(65535)
+#  deleted_at :datetime
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
+
 class QualityDimensionOption < ApplicationRecord
   acts_as_paranoid
   has_paper_trail

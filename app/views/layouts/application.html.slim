@@ -17,7 +17,7 @@ html class='no-js' lang='en'
     = csrf_meta_tag
     link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Halant:400,700|Noto+Sans:400,400i,700"
 
-  body class="#{controller_name} #{action_name}"
+  body class="#{controller_name} #{action_name}" data-turbolinks="#{controller_name == 'sd_meta_data' ? 'false' : 'true'}"
     = Gon::Base.render_data(camelCase: true)
     = render 'shared/noscript'
 
@@ -47,3 +47,5 @@ html class='no-js' lang='en'
       p Browser does not support iframes. Please update your browser to for a better viewing experience.
 
     = render 'toastr_rails/flash'
+  = stylesheet_link_tag    'application', 'data-turbolinks-track' => 'reload'
+  = javascript_include_tag 'application', 'data-turbolinks-track' => 'reload'

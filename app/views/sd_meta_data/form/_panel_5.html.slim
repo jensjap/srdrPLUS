@@ -1,0 +1,40 @@
+#panel-5.tabs-panel.is-active
+  fieldset
+    legend Mapping Key Questions (Submitter Only)
+    div data-row-span="2"
+      div data-field-span="2"
+        .legend-box.alice-box
+        div Drop SRDR Key Question here to associate with a Report Key Question
+      div data-field-span="2"
+        .legend-box.green-box
+        div SRDR Key Question has been associated to at least 1 Report Key Question
+    div data-row-span="2"
+      div data-field-span="1"
+        h5 SRDR Key Questions
+      div data-field-span="1"
+        h5 style="float: left;" Report Key Questions
+        .button.tiny id="reset-all" style="float: right;" onClick="resetAllMappings()" Auto Reset All
+      .srdr-key-questions-box data-field-span="1" style="overflow: scroll; max-height: 400px;"
+        - @sd_meta_datum.project.key_questions.each do |srdr_kq|
+          .draggable id="srdr_kq-#{srdr_kq.id}" data-keyQuestionId="#{srdr_kq.id}" draggable="true" = srdr_kq.name
+      .report-key-questions-box data-field-span="1" style="overflow: scroll; max-height: 400px;"
+        - @sd_meta_datum.sd_key_questions.each do |sd_key_question|
+          .droppable.disableselect data-reportKeyQuestionId="#{sd_key_question.id}"
+            | #{sd_key_question.key_question.name}
+            - sd_key_question.srdr_key_questions.each do |srdr_key_question|
+              .draggable.clickremove id="srdr_kq-#{srdr_key_question.id}" data-keyQuestionId="#{srdr_key_question.id}" draggable="true" = "#{srdr_key_question.question} - (click to remove)"
+          a.button.tiny style="margin: 10px;" onClick="resetMapping(#{sd_key_question.id})" Reset Auto Match
+  br/
+  br/
+  fieldset
+    legend Section Review & Validation
+    div data-row-span="4"
+      div data-field-span="4"
+        div Section Finished?
+        .switch
+          input.switch-input id="5-yes-no-section" type="checkbox" name="sectionSection" data-sd_meta_datum_id="#{@sd_meta_datum.id}"
+          label.switch-paddle for="5-yes-no-section"
+            span.switch-active aria-hidden="true" Yes
+            span.switch-inactive aria-hidden="true" No
+
+= render 'sd_meta_data/form/form_mapping_js'

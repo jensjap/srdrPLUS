@@ -1,3 +1,17 @@
+# == Schema Information
+#
+# Table name: comparisons_arms_rssms
+#
+#  id                                                      :integer          not null, primary key
+#  comparison_id                                           :integer
+#  extractions_extraction_forms_projects_sections_type1_id :integer
+#  result_statistic_sections_measure_id                    :integer
+#  deleted_at                                              :datetime
+#  active                                                  :boolean
+#  created_at                                              :datetime         not null
+#  updated_at                                              :datetime         not null
+#
+
 class ComparisonsArmsRssm < ApplicationRecord
   include SharedParanoiaMethods
 

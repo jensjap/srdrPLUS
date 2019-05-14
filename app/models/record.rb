@@ -1,3 +1,16 @@
+# == Schema Information
+#
+# Table name: records
+#
+#  id              :integer          not null, primary key
+#  name            :string(255)
+#  recordable_type :string(255)
+#  recordable_id   :integer
+#  deleted_at      :datetime
+#  created_at      :datetime         not null
+#  updated_at      :datetime         not null
+#
+
 class Record < ApplicationRecord
   include SharedProcessTokenMethods
 

@@ -1,3 +1,16 @@
+# == Schema Information
+#
+# Table name: eefpsqrcf_qrcqrcos
+#
+#  id                                                 :integer          not null, primary key
+#  eefps_qrcf_id                                      :integer
+#  question_row_columns_question_row_column_option_id :integer
+#  deleted_at                                         :datetime
+#  active                                             :boolean
+#  created_at                                         :datetime         not null
+#  updated_at                                         :datetime         not null
+#
+
 class ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnFieldsQuestionRowColumnsQuestionRowColumnOption < ApplicationRecord
   #!!! Don't quite remember what this is for. My best guess is that it is going to be used when we record multiple options for a particular record.
   # So used for select many options like checkboxes, select2-multi???

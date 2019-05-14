@@ -1,3 +1,17 @@
+# == Schema Information
+#
+# Table name: dispatches
+#
+#  id                :integer          not null, primary key
+#  dispatchable_type :string(255)
+#  dispatchable_id   :integer
+#  user_id           :integer
+#  deleted_at        :datetime
+#  active            :boolean
+#  created_at        :datetime         not null
+#  updated_at        :datetime         not null
+#
+
 class Dispatch < ApplicationRecord
   include SharedParanoiaMethods
 

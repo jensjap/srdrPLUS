@@ -1,3 +1,18 @@
+# == Schema Information
+#
+# Table name: citations
+#
+#  id               :integer          not null, primary key
+#  citation_type_id :integer
+#  name             :string(500)
+#  deleted_at       :datetime
+#  created_at       :datetime         not null
+#  updated_at       :datetime         not null
+#  refman           :string(255)
+#  pmid             :string(255)
+#  abstract         :binary(65535)
+#
+
 class Citation < ApplicationRecord
   include SharedQueryableMethods
   include SharedProcessTokenMethods
@@ -27,10 +42,10 @@ class Citation < ApplicationRecord
   end
 
   def author_ids=(tokens)
-    tokens.map { |token|
+    tokens.map do |token|
       resource = Author.new
       save_resource_name_with_token(resource, token)
-    }
+    end
     super
   end
 
@@ -48,10 +63,10 @@ class Citation < ApplicationRecord
   end
 
   def keyword_ids=(tokens)
-    tokens.map { |token|
+    tokens.map do |token|
       resource = Keyword.new
       save_resource_name_with_token(resource, token)
-    }
+    end
     super
   end
 

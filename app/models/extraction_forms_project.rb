@@ -1,3 +1,18 @@
+# == Schema Information
+#
+# Table name: extraction_forms_projects
+#
+#  id                               :integer          not null, primary key
+#  extraction_forms_project_type_id :integer
+#  extraction_form_id               :integer
+#  project_id                       :integer
+#  public                           :boolean          default(FALSE)
+#  deleted_at                       :datetime
+#  active                           :boolean
+#  created_at                       :datetime         not null
+#  updated_at                       :datetime         not null
+#
+
 class ExtractionFormsProject < ApplicationRecord
   include SharedParanoiaMethods
 

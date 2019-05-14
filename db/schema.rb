@@ -615,6 +615,21 @@ ActiveRecord::Schema.define(version: 2019_08_17_024915) do
     t.index ["deleted_at"], name: "index_frequencies_on_deleted_at"
   end
 
+  create_table "funding_sources", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.text "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "funding_sources_sd_meta_data", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "funding_source_id"
+    t.integer "sd_meta_datum_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["funding_source_id"], name: "index_funding_sources_sd_meta_data_on_funding_source_id"
+    t.index ["sd_meta_datum_id"], name: "index_funding_sources_sd_meta_data_on_sd_meta_datum_id"
+  end
+  
   create_table "invitations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "role_id"
     t.string "invitable_type"
@@ -637,6 +652,12 @@ ActiveRecord::Schema.define(version: 2019_08_17_024915) do
     t.datetime "updated_at", null: false
     t.string "publication_date"
     t.index ["citation_id"], name: "index_journals_on_citation_id"
+  end
+
+  create_table "key_question_types", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "key_questions", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin", force: :cascade do |t|
@@ -1240,6 +1261,173 @@ ActiveRecord::Schema.define(version: 2019_08_17_024915) do
     t.index ["screening_option_type_id"], name: "index_screening_options_on_screening_option_type_id"
   end
 
+  create_table "sd_analytic_frameworks", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "sd_meta_datum_id"
+    t.text "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["sd_meta_datum_id"], name: "index_sd_analytic_frameworks_on_sd_meta_datum_id"
+  end
+
+  create_table "sd_grey_literature_searches", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "sd_meta_datum_id"
+    t.text "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["sd_meta_datum_id"], name: "index_sd_grey_literature_searches_on_sd_meta_datum_id"
+  end
+
+  create_table "sd_journal_article_urls", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "sd_meta_datum_id"
+    t.text "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["sd_meta_datum_id"], name: "index_sd_journal_article_urls_on_sd_meta_datum_id"
+  end
+
+  create_table "sd_key_questions", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "sd_meta_datum_id"
+    t.integer "sd_key_question_id"
+    t.integer "key_question_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["key_question_id"], name: "index_sd_key_questions_on_key_question_id"
+    t.index ["sd_key_question_id"], name: "index_sd_key_questions_on_sd_key_question_id"
+    t.index ["sd_meta_datum_id"], name: "index_sd_key_questions_on_sd_meta_datum_id"
+  end
+
+  create_table "sd_key_questions_key_question_types", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "sd_key_question_id"
+    t.bigint "key_question_type_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["key_question_type_id"], name: "index_kq_types"
+    t.index ["sd_key_question_id", "key_question_type_id"], name: "index_sd_kqs_kq_types"
+    t.index ["sd_key_question_id"], name: "index_sd_kqs"
+  end
+
+  create_table "sd_key_questions_projects", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "sd_key_question_id"
+    t.integer "key_questions_project_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["key_questions_project_id"], name: "index_sd_key_questions_projects_on_key_questions_project_id"
+    t.index ["sd_key_question_id"], name: "index_sd_key_questions_projects_on_sd_key_question_id"
+  end
+
+  create_table "sd_key_questions_sd_picods", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "sd_key_question_id"
+    t.integer "sd_picod_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["sd_key_question_id"], name: "index_sd_key_questions_sd_picods_on_sd_key_question_id"
+    t.index ["sd_picod_id"], name: "index_sd_key_questions_sd_picods_on_sd_picod_id"
+  end
+
+  create_table "sd_meta_data", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "project_id"
+    t.string "report_title"
+    t.datetime "date_of_last_search"
+    t.datetime "date_of_publication_to_srdr"
+    t.datetime "date_of_publication_full_report"
+    t.text "stakeholder_involvement_extent"
+    t.text "authors_conflict_of_interest_of_full_report"
+    t.text "stakeholders_conflict_of_interest"
+    t.text "prototcol_link"
+    t.text "full_report_link"
+    t.text "structured_abstract_link"
+    t.text "key_messages_link"
+    t.text "abstract_summary_link"
+    t.text "evidence_summary_link"
+    t.text "evs_introduction_link"
+    t.text "evs_methods_link"
+    t.text "evs_results_link"
+    t.text "evs_discussion_link"
+    t.text "evs_conclusions_link"
+    t.text "evs_tables_figures_link"
+    t.text "disposition_of_comments_link"
+    t.text "srdr_data_link"
+    t.text "most_previous_version_srdr_link"
+    t.text "most_previous_version_full_report_link"
+    t.text "overall_purpose_of_review"
+    t.string "type_of_review"
+    t.string "level_of_analysis"
+    t.string "state", default: "DRAFT", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.boolean "section_flag_0", default: false, null: false
+    t.boolean "section_flag_1", default: false, null: false
+    t.boolean "section_flag_2", default: false, null: false
+    t.boolean "section_flag_3", default: false, null: false
+    t.boolean "section_flag_4", default: false, null: false
+    t.boolean "section_flag_5", default: false, null: false
+    t.boolean "section_flag_6", default: false, null: false
+  end
+
+  create_table "sd_other_items", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "sd_meta_datum_id"
+    t.text "name"
+    t.text "url"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["sd_meta_datum_id"], name: "index_sd_other_items_on_sd_meta_datum_id"
+  end
+
+  create_table "sd_picods", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "sd_meta_datum_id"
+    t.text "name"
+    t.string "p_type"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["sd_meta_datum_id"], name: "index_sd_picods_on_sd_meta_datum_id"
+  end
+
+  create_table "sd_prisma_flows", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "sd_meta_datum_id"
+    t.text "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["sd_meta_datum_id"], name: "index_sd_prisma_flows_on_sd_meta_datum_id"
+  end
+
+  create_table "sd_project_leads", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "sd_meta_datum_id"
+    t.integer "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["sd_meta_datum_id"], name: "index_sd_project_leads_on_sd_meta_datum_id"
+    t.index ["user_id"], name: "index_sd_project_leads_on_user_id"
+  end
+
+  create_table "sd_search_databases", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "sd_search_strategies", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "sd_meta_datum_id"
+    t.integer "sd_search_database_id"
+    t.string "date_of_search"
+    t.text "search_limits"
+    t.text "search_terms"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["sd_meta_datum_id"], name: "index_sd_search_strategies_on_sd_meta_datum_id"
+    t.index ["sd_search_database_id"], name: "index_sd_search_strategies_on_sd_search_database_id"
+  end
+
+  create_table "sd_summary_of_evidences", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "sd_meta_datum_id"
+    t.integer "sd_key_question_id"
+    t.text "name"
+    t.string "soe_type"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["sd_key_question_id"], name: "index_sd_summary_of_evidences_on_sd_key_question_id"
+    t.index ["sd_meta_datum_id"], name: "index_sd_summary_of_evidences_on_sd_meta_datum_id"
+  end
+
   create_table "searchjoy_searches", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "user_id"
     t.string "search_type"
@@ -1562,6 +1750,8 @@ ActiveRecord::Schema.define(version: 2019_08_17_024915) do
   add_foreign_key "extractions_projects_users_roles", "extractions"
   add_foreign_key "extractions_projects_users_roles", "projects_users_roles"
   add_foreign_key "invitations", "roles"
+  add_foreign_key "funding_sources_sd_meta_data", "funding_sources"
+  add_foreign_key "funding_sources_sd_meta_data", "sd_meta_data"
   add_foreign_key "journals", "citations"
   add_foreign_key "key_questions_projects", "extraction_forms_projects_sections"
   add_foreign_key "key_questions_projects", "key_questions"
@@ -1623,6 +1813,25 @@ ActiveRecord::Schema.define(version: 2019_08_17_024915) do
   add_foreign_key "screening_options", "label_types"
   add_foreign_key "screening_options", "projects"
   add_foreign_key "screening_options", "screening_option_types"
+  add_foreign_key "sd_analytic_frameworks", "sd_meta_data"
+  add_foreign_key "sd_grey_literature_searches", "sd_meta_data"
+  add_foreign_key "sd_journal_article_urls", "sd_meta_data"
+  add_foreign_key "sd_key_questions", "key_questions"
+  add_foreign_key "sd_key_questions", "sd_key_questions"
+  add_foreign_key "sd_key_questions", "sd_meta_data"
+  add_foreign_key "sd_key_questions_projects", "key_questions_projects"
+  add_foreign_key "sd_key_questions_projects", "sd_key_questions"
+  add_foreign_key "sd_key_questions_sd_picods", "sd_key_questions"
+  add_foreign_key "sd_key_questions_sd_picods", "sd_picods"
+  add_foreign_key "sd_other_items", "sd_meta_data"
+  add_foreign_key "sd_picods", "sd_meta_data"
+  add_foreign_key "sd_prisma_flows", "sd_meta_data"
+  add_foreign_key "sd_project_leads", "sd_meta_data"
+  add_foreign_key "sd_project_leads", "users"
+  add_foreign_key "sd_search_strategies", "sd_meta_data"
+  add_foreign_key "sd_search_strategies", "sd_search_databases"
+  add_foreign_key "sd_summary_of_evidences", "sd_key_questions"
+  add_foreign_key "sd_summary_of_evidences", "sd_meta_data"
   add_foreign_key "suggestions", "users"
   add_foreign_key "taggings", "projects_users_roles"
   add_foreign_key "taggings", "tags"

@@ -12,7 +12,7 @@
 //
 //= require jquery
 //= require jquery.turbolinks
-//= require jquery_ujs
+//= require rails-ujs
 //= require foundation
 //= require turbolinks
 //= require toastr_rails

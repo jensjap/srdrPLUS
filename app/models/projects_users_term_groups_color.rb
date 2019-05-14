@@ -1,3 +1,13 @@
+# == Schema Information
+#
+# Table name: projects_users_term_groups_colors
+#
+#  id                   :integer          not null, primary key
+#  term_groups_color_id :integer
+#  projects_user_id     :integer
+#  deleted_at           :datetime
+#
+
 class ProjectsUsersTermGroupsColor < ApplicationRecord
   include SharedProcessTokenMethods
   acts_as_paranoid

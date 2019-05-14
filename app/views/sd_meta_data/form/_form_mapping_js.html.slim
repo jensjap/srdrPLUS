@@ -1,0 +1,217 @@
+javascript:
+  $.event.props.push('dataTransfer');
+
+  var colorCode = function() {
+    var reportQuestions = $('.srdr-key-questions-box').children();
+    reportQuestions.each(function() {
+      var kqId = $(this).attr('data-keyquestionid');
+      var allKqItems = $(`*[data-keyquestionid=${kqId}]`);
+      if (allKqItems.length === 1) {
+        allKqItems.css('background-color', 'white');
+      } else if (allKqItems.length > 1) {
+        allKqItems.css('background-color', 'lightgreen');
+      }
+    })
+  }
+
+  $(document).on('click', '.clickremove', function(ev) {
+    ev.target.remove();
+    var mappings = checkMapping();
+    var emptyReportQuestions = mappings.emptyReportQuestions;
+    var emptySrdrQuestions = mappings.emptySrdrQuestions;
+    if (emptyReportQuestions.length > 0 || emptySrdrQuestions.length > 0) {
+      $('#5-yes-no-section')[0].checked = false;
+      updateSectionFlag($('#5-yes-no-section')[0]);
+    }
+    colorCode();
+  })
+
+  var extractReportQuestions = function() {
+    var hash = {};
+    var reportQuestions = $('.report-key-questions-box').children();
+    reportQuestions.each(function() {
+      var currentKey = $(this).attr('data-reportKeyQuestionId');
+      hash[currentKey] = [];
+      $(this).children().each(function() {
+        hash[currentKey].push($(this).attr('data-keyQuestionId'));
+      })
+    })
+    delete hash[undefined]
+    return hash;
+  }
+
+  var extractSrdrQuestions = function() {
+    var hash = {};
+    var srdrQuestions = $('.srdr-key-questions-box').children();
+    srdrQuestions.each(function() {
+      var currentKey = $(this).attr('data-keyQuestionId');
+      hash[currentKey] = [];
+    })
+
+    var reportKeyQuestionsHash = extractReportQuestions();
+    Object.keys(reportKeyQuestionsHash).forEach(function(key) {
+      var values = reportKeyQuestionsHash[key];
+      if (values === undefined) return;
+      values.forEach(function(value) {
+        hash[value].push(key);
+      });
+    });
+    delete hash[undefined];
+    return hash
+  }
+  window.extractSrdrQuestions = extractSrdrQuestions
+
+  var postMappings = function() {
+    $.post(`${$('#sd-meta-form')[0].action}/mapping_update`,
+      { sd_meta_datum: {
+        key_questions: extractSrdrQuestions(),
+        _: true,
+        }
+      }
+    );
+  }
+
+  var resetMapping = function(sdKeyQuestionId) {
+    $.get( `/sd_key_questions/${sdKeyQuestionId}/fuzzy_match`, function( data ) {
+      var parentNode = $(`[data-reportKeyQuestionId=${sdKeyQuestionId}]`)
+      parentNode.children().remove();
+      if (data === undefined) {
+        alert(`No match found for Question: ${parentNode.text()}`);
+      } else {
+        var newNode = $( `<div id="srdr_kq-${data.id}" data-keyQuestionId="${data.id}" draggable="true" class="draggable clickremove">${data.name} - (click to remove)</div>` );
+        parentNode.append(newNode);
+        colorCode();
+      }
+    });
+  };
+
+  var resetAllMappings = function() {
+    var sdKeyQuestionIds = Object.keys(extractReportQuestions());
+    sdKeyQuestionIds.forEach(function(sdKeyQuestionId) {
+      resetMapping(sdKeyQuestionId);
+    });
+  };
+
+  var checkMapping = function() {
+    var emptyReportQuestions = [];
+    var emptySrdrQuestions = [];
+
+    var reportQuestions = extractReportQuestions();
+    var srdrQuestions = extractSrdrQuestions();
+
+    Object.keys(reportQuestions).forEach(function(key) {
+      if (reportQuestions[key].length === 0) emptyReportQuestions.push(key);
+    });
+
+    Object.keys(srdrQuestions).forEach(function(key) {
+      if (srdrQuestions[key].length === 0) emptySrdrQuestions.push(key);
+    });
+    emptyReportQuestions = emptyReportQuestions.map(function(id) {
+      var parentNode = $(`[data-reportKeyQuestionId=${id}]`);
+      return parentNode.text();
+    })
+    emptySrdrQuestions = emptySrdrQuestions.map(function(id) {
+      var parentNode = $(`[data-keyQuestionId=${id}]`);
+      return parentNode.text();
+    })
+
+    return { emptyReportQuestions: emptyReportQuestions, emptySrdrQuestions: emptySrdrQuestions }
+  }
+
+  var addWarningIcon = function(elementId, add) {
+    var attention = ' <i id="map-warning" class="fa fa-exclamation-triangle"></i>';
+    var link = $(elementId);
+    var label = link.html();
+    var newLabel = label.replace(attention, '');
+    if (add == true) {
+      link.html(newLabel + attention);
+    } else {
+      link.html(newLabel);
+    }
+  };
+
+  var appendMissingKQs = function(title, questions) {
+    $('#missing-mappings').append($(`<br />`))
+    $('#missing-mappings').append($(`<h5>${title}</h5>`))
+    questions.forEach(function(el, index) {
+      $('#missing-mappings').append($(`<br />`));
+      $('#missing-mappings').append($(`<div>${el}</div>`));
+    })
+  }
+
+  var reportMissingKqs = function() {
+    var mappings = checkMapping();
+    var emptyReportQuestions = mappings.emptyReportQuestions;
+    var emptySrdrQuestions = mappings.emptySrdrQuestions;
+
+    addWarningIcon('#panel-3-label', emptyReportQuestions.length > 0);
+    addWarningIcon('#panel-5-label', emptySrdrQuestions.length > 0);
+  }
+
+  var initialize = function () {
+    $('.draggable').each(function() {
+      colorCode();
+    })
+    $(document).on('dragend', '.draggable', function(ev) {
+      colorCode();
+    })
+    $(document).on('dragstart', '.draggable', function(ev) {
+      ev.dataTransfer.setData("text/plain", ev.target.id);
+    })
+    $(document).on('dragleave', '.droppable', function(ev) {
+      ev.preventDefault();
+      ev.currentTarget.style.background = "aliceblue";
+    })
+    $(document).on('dragover', '.droppable', function(ev) {
+      ev.stopPropagation();
+      ev.preventDefault();
+      if (ev.target.getAttribute("draggable") == "true") {
+        ev.dataTransfer.dropEffect = "none";
+      } else {
+        ev.currentTarget.style.background = "lightblue";
+        ev.dataTransfer.dropEffect = "copy";
+      }
+    })
+    $(document).on('drop', '.droppable', function(ev) {
+      ev.preventDefault();
+      ev.currentTarget.style.background = "aliceblue";
+      var data = ev.dataTransfer.getData("text/plain");
+      var nodeCopy = document.getElementById(data).cloneNode(true);
+      nodeCopy.id = new Date().getTime();
+      $(nodeCopy).text(`${$(nodeCopy).text()} - (click to remove)`)
+      $(nodeCopy).addClass('disableselect');
+      $(nodeCopy).addClass('clickremove');
+      ev.target.appendChild(nodeCopy);
+    })
+    colorCode();
+  }
+
+  $(document).on('click', '#5-yes-no-section', function() {
+    reportMissingKqs();
+    var sectionId = this.id[0];
+    var mappings = checkMapping();
+    var emptyReportQuestions = mappings.emptyReportQuestions;
+    var emptySrdrQuestions = mappings.emptySrdrQuestions;
+    var anyMissingKqs = emptyReportQuestions.length > 0 || emptySrdrQuestions.length > 0;
+
+    if (this.checked == false) {
+      updateSectionFlag(this);
+    } else if (anyMissingKqs && this.checked) {
+      if (confirm('There are still some Key Questions that have not been mapped.  You may press OK to mark this section finished anyway.')) {
+        updateSectionFlag(this);
+      } else {
+        this.checked = false;
+      }
+    } else {
+      updateSectionFlag(this);
+    }
+  });
+
+  $(document).on('DOMSubtreeModified', "div.report-key-questions-box", function() {
+    postMappings();
+  });
+
+  $(document).on("turbolinks:load", function() {
+    initialize();
+    setTimeout(function(){ reportMissingKqs(); }, 500);
+  });

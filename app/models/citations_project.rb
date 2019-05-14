@@ -1,3 +1,18 @@
+# == Schema Information
+#
+# Table name: citations_projects
+#
+#  id                :integer          not null, primary key
+#  citation_id       :integer
+#  project_id        :integer
+#  deleted_at        :datetime
+#  active            :boolean
+#  created_at        :datetime         not null
+#  updated_at        :datetime         not null
+#  consensus_type_id :integer
+#  pilot_flag        :boolean
+#
+
 class CitationsProject < ApplicationRecord
   include SharedParanoiaMethods
 

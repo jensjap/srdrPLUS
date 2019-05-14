@@ -1,3 +1,21 @@
+# == Schema Information
+#
+# Table name: projects
+#
+#  id                      :integer          not null, primary key
+#  name                    :string(255)
+#  description             :text(65535)
+#  attribution             :text(65535)
+#  methodology_description :text(65535)
+#  prospero                :string(255)
+#  doi                     :string(255)
+#  notes                   :text(65535)
+#  funding_source          :string(255)
+#  deleted_at              :datetime
+#  created_at              :datetime         not null
+#  updated_at              :datetime         not null
+#
+
 class Project < ApplicationRecord
   require 'csv'
 
@@ -57,6 +75,7 @@ class Project < ApplicationRecord
   has_many :screening_options
   has_many :screening_option_types, through: :screening_options
 
+  has_many :sd_meta_data
   validates :name, presence: true
 
   #accepts_nested_attributes_for :extraction_forms_projects, reject_if: :all_blank, allow_destroy: true
@@ -88,6 +107,18 @@ class Project < ApplicationRecord
 
   def key_questions_projects_array_for_select
     self.key_questions_projects.map { |kqp| [kqp.key_question.name, kqp.id] }
+  end
+
+  def prospero_link
+    self.prospero_id.present? ?
+      "<a href='https://www.crd.york.ac.uk/prospero/display_record.asp?ID=#{self.prospero_id}'>Prospero Link</a>" :
+      "Not Available"
+  end
+
+  def creator
+    User.joins({ projects_users: [:project, { projects_users_roles: :role }] })
+      .where(projects_users: { project_id: id })
+      .first
   end
 
   def leaders

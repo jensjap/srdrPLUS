@@ -1,3 +1,16 @@
+# == Schema Information
+#
+# Table name: projects_users
+#
+#  id         :integer          not null, primary key
+#  project_id :integer
+#  user_id    :integer
+#  deleted_at :datetime
+#  active     :boolean
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
+
 class ProjectsUser < ApplicationRecord
   include SharedParanoiaMethods
 
