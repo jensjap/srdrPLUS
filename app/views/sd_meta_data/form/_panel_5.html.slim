@@ -22,7 +22,7 @@
           .droppable.disableselect data-reportKeyQuestionId="#{sd_key_question.id}"
             | #{sd_key_question.key_question.name}
             - sd_key_question.srdr_key_questions.each do |srdr_key_question|
-              .draggable.clickremove id="srdr_kq-#{srdr_key_question.id}" data-keyQuestionId="#{srdr_key_question.id}" draggable="true" = "#{srdr_key_question.question} - (click to remove)"
+              .draggable.clickremove id="srdr_kq-#{srdr_key_question.id}" data-keyQuestionId="#{srdr_key_question.id}" draggable="true" = "#{srdr_key_question.name} - (click to remove)"
           a.button.tiny style="margin: 10px;" onClick="resetMapping(#{sd_key_question.id})" Reset Auto Match
   br/
   br/

@@ -11,5 +11,8 @@
 
 class SdKeyQuestionsProject < ApplicationRecord
   belongs_to :sd_key_question, inverse_of: :sd_key_questions_projects
-  belongs_to :key_question, inverse_of: :sd_key_questions_projects
+  has_one :sd_meta_datum, through: :sd_key_question
+
+  belongs_to :key_questions_project, inverse_of: :sd_key_questions_projects
+  has_one :key_question, through: :key_questions_project
 end

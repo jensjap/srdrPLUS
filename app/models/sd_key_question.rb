@@ -24,10 +24,7 @@ class SdKeyQuestion < ApplicationRecord
   has_many :sd_key_questions, inverse_of: :sd_key_question
 
   has_many :sd_key_questions_projects, inverse_of: :sd_key_question
-  # has_many :srdr_key_questions, through: :sd_key_questions_projects
-  def srdr_key_questions
-    SdKeyQuestionsProject.where(sd_key_question_id: self.id).map(&:srdr_key_question)
-  end
+  has_many :srdr_key_questions, through: :sd_key_questions_projects, source: :key_question
 
   has_many :sd_key_questions_sd_picods, inverse_of: :sd_key_question
   has_many :sd_picods, through: :sd_key_questions_sd_picods

@@ -53,10 +53,11 @@ class SdMetaDatum < ApplicationRecord
 
   has_many :sd_key_questions, inverse_of: :sd_meta_datum
   has_many :key_questions, through: :sd_key_questions
-  has_many :sd_key_questions_sd_picods, through: :sd_key_questions
 
-  has_many :sd_key_questions_projects, through: :sd_key_questions
-  # has_many :key_questions_projects, through: :sd_key_questions_projects
+  has_many :sd_key_questions_projects, through: :sd_key_questions, inverse_of: :sd_meta_datum
+  has_many :project_key_questions, through: :sd_key_questions_projects, source: :key_question
+
+  has_many :sd_key_questions_sd_picods, through: :sd_key_questions
 
   has_many :sd_journal_article_urls, inverse_of: :sd_meta_datum, dependent: :destroy
   has_many :sd_other_items, inverse_of: :sd_meta_datum, dependent: :destroy
