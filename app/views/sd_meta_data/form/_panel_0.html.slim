@@ -17,8 +17,7 @@
         = f.input :date_of_last_search, as: :date, html5: true, label: '4. Date of Last Search (most recent date from  Search Strategy structured element)'
       div data-field-span="1"
         label 5. Date of Publication to SRDR:
-        / todo
-        / div #{project.publication_requested_at ? project.publication_requested_at : "Not Published"}
+        div #{project.publication_requested_at ? project.publication_requested_at : "Not Published"}
         br/
         br/
         br/

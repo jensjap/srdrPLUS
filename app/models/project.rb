@@ -109,9 +109,13 @@ class Project < ApplicationRecord
     self.key_questions_projects.map { |kqp| [kqp.key_question.name, kqp.id] }
   end
 
+  def publication_requested_at
+    self.publishings.any?(&:approved?).try(:last).try(:created_at)
+  end
+
   def prospero_link
-    self.prospero_id.present? ?
-      "<a href='https://www.crd.york.ac.uk/prospero/display_record.asp?ID=#{self.prospero_id}'>Prospero Link</a>" :
+    self.prospero.present? ?
+      "<a href='https://www.crd.york.ac.uk/prospero/display_record.asp?ID=#{self.prospero}'>Prospero Link</a>" :
       "Not Available"
   end
 

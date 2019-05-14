@@ -85,7 +85,6 @@ class SdMetaDatum < ApplicationRecord
   accepts_nested_attributes_for :sd_prisma_flows, allow_destroy: true
 
   def sd_key_questions_attributes=(attr)
-    ActiveRecord::Base.connection.execute('SET foreign_key_checks = 0;')
     deleted_keys = []
     attr.each do |idx, payload|
       if payload[:_destroy] == '1'
@@ -94,13 +93,10 @@ class SdMetaDatum < ApplicationRecord
       end
     end
     deleted_keys.each { |key| attr.delete(key) }
-    ActiveRecord::Base.connection.execute('SET foreign_key_checks = 1;')
     super
   end
 
   def sd_picods_attributes=(attr)
-    ActiveRecord::Base.connection.execute('SET foreign_key_checks = 0;')
-
     attr.each do |idx, payload|
       next if payload[:sd_key_questions].blank?
       sd_key_question = SdKeyQuestion.
@@ -140,13 +136,9 @@ class SdMetaDatum < ApplicationRecord
         sd_picod_id: sd_picod.id
       )
     end
-
-    ActiveRecord::Base.connection.execute('SET foreign_key_checks = 1;')
   end
 
   def sd_summary_of_evidences_attributes=(attr)
-    ActiveRecord::Base.connection.execute('SET foreign_key_checks = 0;')
-
     attr.each do |idx, payload|
       next if payload[:sd_key_question].blank?
       if payload[:_destroy] == '1'
@@ -172,8 +164,6 @@ class SdMetaDatum < ApplicationRecord
         )
       end
     end
-
-    ActiveRecord::Base.connection.execute('SET foreign_key_checks = 1;')
   end
 
   def create_fuzzy_matches

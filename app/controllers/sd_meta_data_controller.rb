@@ -75,10 +75,8 @@ class SdMetaDataController < ApplicationController
     def wrap_in_transaction
       ActiveRecord::Base.transaction do
         begin
-          ActiveRecord::Base.connection.execute('SET foreign_key_checks = 0;')
           yield
         ensure
-          ActiveRecord::Base.connection.execute('SET foreign_key_checks = 1;')
         end
       end
     end
