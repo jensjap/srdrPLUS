@@ -53,6 +53,17 @@
                     id: 'distiller-add-section-file',
                     "data-association-insertion-node" => '.distiller-section-file-container',
                     "data-association-insertion-method" => 'append'
+        .json-import-panel.hide
+          .project-file-container
+          = f.simple_fields_for :imported_files do |g|
+            = render 'projects/new/project_file_form', f:g
+          .links
+            = link_to_add_association 'Add Project File', f, :imported_files,
+                    partial: 'projects/new/project_file_form',
+                    id: 'add-project-file',
+                    "data-association-insertion-node" => '.project-file-container',
+                    "data-association-insertion-method" => 'append'
+
 
           /div
             = f.input :citation_file, as: :file, label: 'Citation References'
@@ -70,9 +81,6 @@
             = f.input :bc_file, as: :file, label: 'Baseline Characteristics'
             hr
             = f.input :rob_file, as: :file, label: 'Risk of Bias Assessment'
-
-          .json-import-panel.hide
-            = f.input :json_file, as: :file, label: false
 
       .form-actions
         = f.button :submit

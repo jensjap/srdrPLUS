@@ -63,9 +63,7 @@ document.addEventListener 'turbolinks:load', ->
 
       $( '.key-questions-list' ).on 'cocoon:after-insert', ( e ) ->
         textbox = $( e.target ).find( 'input' )
-        console.log textbox
         $( textbox ).on 'change', ( input_e ) ->
-          console.log "Laylay"
           _textbox_name = $( input_e.target ).attr( 'id' )
           ops = $( '.distiller-section-file-container' ).find( 'input.distiller-key-question-input' ).find("option[data-textbox-name='"+_textbox_name+"']")
           $( ops ).val( $( input_e.target ).val() )
@@ -85,16 +83,19 @@ document.addEventListener 'turbolinks:load', ->
           $( '.json-import-panel' ).addClass( 'hide' )
           $( '#distiller-remove-references-file' ).trigger "click"
           $( '#distiller-remove-section-file' ).trigger "click"
+          $( '#remove-project-file' ).trigger "click"
         else if $( e.target ).val() == "distiller"
           $( '.distiller-import-panel' ).removeClass( 'hide' )
           $( '.json-import-panel' ).addClass( 'hide' )
           $( '#distiller-add-references-file' ).trigger "click"
           $( '#distiller-add-section-file' ).trigger "click"
+          $( '#remove-project-file' ).trigger "click"
         else if $( e.target ).val() == "json"
           $( '.distiller-import-panel' ).addClass( 'hide' )
           $( '.json-import-panel' ).removeClass( 'hide' )
           $( '#distiller-remove-references-file' ).trigger "click"
           $( '#distiller-remove-section-file' ).trigger "click"
+          $( '#add-project-file' ).trigger "click"
 
 ########## TASK MANAGEMENT
     if $( 'body.projects.edit' ).length == 1

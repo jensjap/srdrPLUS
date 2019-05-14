@@ -1,5 +1,12 @@
-div
-  = f.input :user_id, as: :hidden, input_html: { value: current_user.id }
-  = f.input :import_type_id, as: :hidden, input_html: { value: ImportType.find_by(name: 'Project').id }
-  = f.input :content, as: :file, label: 'Project File'
-  = f.input :file_type_id, as: :hidden, input_html: { value: FileType.find_by( name: '.json' ).id }
+.nested-fields
+  .label
+    | Project JSON File
+  .callout
+    .row
+      .columns.medium-8.large-9
+        = f.input :user_id, as: :hidden, input_html: { value: current_user.id }
+        = f.input :import_type_id, as: :hidden, input_html: { value: ImportType.find_by(name: 'Project').id }
+        = f.input :content, as: :file, label: 'File'
+      .columns.small-12.medium-4.large-3
+        = f.input :file_type_id, as: :select, collection: FileType.where(name: ['.json']), selected: FileType.find_by(name: '.json').id
+    = link_to_remove_association "Remove Project File", f, id: 'remove-project-file'
