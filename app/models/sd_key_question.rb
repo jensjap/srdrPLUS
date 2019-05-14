@@ -56,7 +56,7 @@ class SdKeyQuestion < ApplicationRecord
   end
 
   def fuzzy_match
-    fz = FuzzyMatch.new(self.sd_meta_datum.srdr_key_questions, :read => :question)
+    fz = FuzzyMatch.new(self.sd_meta_datum.project_key_questions, read: :name)
     fz.find(self.key_question.name)
   end
 end
