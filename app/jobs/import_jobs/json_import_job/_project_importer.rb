@@ -146,7 +146,9 @@ class ProjectImporter
       ## If the user is already in the system, don't change the profile
       profile_hash = uhash['profile']
 
-      o = Organization.find_or_create_by! name: profile_hash['organization']['name']
+      if profile_hash['organization']['name'].present?
+        o = Organization.find_or_create_by! name: profile_hash['organization']['name']
+      end
 
       uname = profile_hash['username']
       if u.profile.username != uname and not Profile.find_by(username: uname).nil?
@@ -397,7 +399,6 @@ class ProjectImporter
         ExtractionFormsProjectsSectionsType1.find_or_create_by! extraction_forms_projects_section: efps,
                                                                 type1: t1,
                                                                 type1_type: t1_type
-        @id_map['t1'][efpst1hash['type1']['id']] = t1
       end
 
       #create efps first
@@ -773,9 +774,6 @@ class ProjectImporter
         qrcf = @id_map['qrcf'][qrcfid]
         qrc_type_name = qrcf.question_row_column.question_row_column_type.name
         eefpst1 = @id_map['eefpst1'][rhash['extractions_extraction_forms_projects_sections_type1_id']]
-        if rhash['extractions_extraction_forms_projects_sections_type1_id'].present? and eefpst1.nil?
-          byebug
-        end
         eefpsqrcf = ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField.find_or_create_by! extractions_extraction_forms_projects_section: eefps,
                                                                                                         extractions_extraction_forms_projects_sections_type1: eefpst1,
                                                                                                         question_row_column_field: qrcf
