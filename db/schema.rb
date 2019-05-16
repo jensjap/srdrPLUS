@@ -1393,6 +1393,7 @@ ActiveRecord::Schema.define(version: 2019_08_17_024915) do
     t.boolean "section_flag_4", default: false, null: false
     t.boolean "section_flag_5", default: false, null: false
     t.boolean "section_flag_6", default: false, null: false
+    t.string "report_accession_id"
   end
 
   create_table "sd_other_items", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
