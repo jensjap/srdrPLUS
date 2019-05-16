@@ -41,6 +41,7 @@ class SdMetaDataController < ApplicationController
   end
 
   def edit
+    @systematic_review_report = true
     @panel_number = params[:panel_number].try(:to_i) || 0
     @sd_meta_datum = SdMetaDatum.find(params[:id])
     @project = @sd_meta_datum.try(:project)
