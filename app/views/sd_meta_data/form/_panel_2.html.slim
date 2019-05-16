@@ -4,7 +4,7 @@
     div data-row-span="1"
       div data-field-span="1"
         label 13. Prospero
-        div #{raw(@project.prospero_link)}
+        div #{raw(@project.try(:prospero_link))}
     div data-row-span="2"
       div data-field-span="1"
         = f.input :prototcol_link, as: :string, label: '14. Protocol'

@@ -1,17 +1,25 @@
 .column.row#project-list
-  h3 Create New Project Link
+  h3 Create New Project-Report Link
+  h6 style="font-weight: bold; margin-top: 10px;" Project
   select id="project-create"
     - @projects.each do |project|
       option
-      option value="#{project.id}" #{project.id}: #{project.name}
+      option value="#{project.id}" #{project.name}
+  h6 style="font-weight: bold; margin-top: 10px;" Report
+  select id="report-create"
+    - @reports.each do |report|
+      option
+      option value="#{report.accession_id}" #{report.accession_id}: #{report.title}
   a.button.medium#create-new-sd-meta-datum style="margin-top: 10px;" Create
+hr style="border: 0.5px solid; margin: 20px 55px;"
 .column.row#sdMetaData-list
-  h3 My Project Links
+  h3 My Project-Report Links
   table.hover
     thead
       tr
-        th width="100" Project Link ID
+        th width="100" Project-Report Link ID
         th width="175" Project Title
+        th width="175" Report Title
         th width="375" Incomplete Sections
         th State
         th width="150" Toggle State
@@ -29,11 +37,13 @@
           td
           td
           td
+          td
       - else
         - @sd_meta_data.each do |sd_meta_datum|
           tr
             td = sd_meta_datum.id
-            td = sd_meta_datum.project.name
+            td = sd_meta_datum.try(:project).try(:name)
+            td = sd_meta_datum.report.try(:title)
             td
               - sd_meta_datum.incomplete_sections.each do |section|
                 p style="margin: 10px 0px;" #{section}
@@ -59,11 +69,24 @@ javascript:
     allowClear: true
   })
 
+  $('#report-create').select2({
+    placeholder: "Select a Report",
+    allowClear: true
+  })
+
   $('#create-new-sd-meta-datum').on('click', function(e) {
-    var id = $('#project-create').val();
+    var project_id = $('#project-create').val();
+    var report_accession_id = $('#report-create').val();
+
     e.preventDefault();
     $.ajax({
       type: "POST",
-      url: `/projects/${id}/sd_meta_data`
+      url: "/sd_meta_data",
+      data: {
+        sd_meta_datum: {
+          project_id,
+          report_accession_id
+        }
+      }
     });
   })

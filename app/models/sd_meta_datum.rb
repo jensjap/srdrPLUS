@@ -47,9 +47,9 @@ class SdMetaDatum < ApplicationRecord
 
   SECTIONS = ['Title, Funding Sources, and Dates', 'Authors and Stakeholders', 'Links', 'Purpose and Key Questions', 'PICODS for each Key Question', 'Mapping Key Questions (Submitter Only)', 'Search Strategy & Summary of Results'].freeze
 
-  default_scope { order(project_id: :asc) }
+  default_scope { order(id: :desc) }
 
-  belongs_to :project, inverse_of: :sd_meta_data
+  belongs_to :project, inverse_of: :sd_meta_data, optional: true
 
   has_many :sd_key_questions, inverse_of: :sd_meta_datum
   has_many :key_questions, through: :sd_key_questions
@@ -83,6 +83,10 @@ class SdMetaDatum < ApplicationRecord
   accepts_nested_attributes_for :sd_grey_literature_searches, allow_destroy: true
   accepts_nested_attributes_for :sd_summary_of_evidences, allow_destroy: true
   accepts_nested_attributes_for :sd_prisma_flows, allow_destroy: true
+
+  def report
+    Report.all.find { |report_meta| report_meta.accession_id == self.report_accession_id }
+  end
 
   def sd_key_questions_attributes=(attr)
     deleted_keys = []

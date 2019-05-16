@@ -34,7 +34,7 @@ class SdMetaDataController < ApplicationController
   end
 
   def create
-    @sd_meta_datum = SdMetaDatum.create(project_id: params[:project_id])
+    @sd_meta_datum = SdMetaDatum.create(new_sd_meta_datum_params)
     @sd_meta_datum.create_fuzzy_matches
     flash[:notice] = "Succesfully created Sd Meta Datum ID: #{@sd_meta_datum.id} for Project ID: #{@sd_meta_datum.project_id}"
     redirect_to edit_sd_meta_datum_path(@sd_meta_datum.id)
@@ -43,7 +43,8 @@ class SdMetaDataController < ApplicationController
   def edit
     @panel_number = params[:panel_number].try(:to_i) || 0
     @sd_meta_datum = SdMetaDatum.find(params[:id])
-    @project = Project.find(@sd_meta_datum.project_id)
+    @project = @sd_meta_datum.try(:project)
+    @report = @sd_meta_datum.report
     @url = sd_meta_datum_path(@sd_meta_datum)
   end
 
@@ -67,6 +68,7 @@ class SdMetaDataController < ApplicationController
 
   def index
     @projects = Project.all
+    @reports = Report.all
     @sd_meta_data = SdMetaDatum.all
   end
 
@@ -101,48 +103,57 @@ class SdMetaDataController < ApplicationController
             )
     end
 
+    def new_sd_meta_datum_params
+      params.
+        require(:sd_meta_datum).
+        permit(
+          :project_id,
+          :report_accession_id
+        )
+    end
+
     def sd_meta_datum_params
       params.
         require(:sd_meta_datum).
-          permit(
-            :project_id,
-            :report_title,
-            { funding_source_ids: [] },
-            :date_of_last_search,
-            :date_of_publication_full_report,
-            :state,
-            :stakeholder_involvement_extent,
-            :authors_conflict_of_interest_of_full_report,
-            :stakeholders_conflict_of_interest,
-            :prototcol_link,
-            :full_report_link,
-            :structured_abstract_link,
-            :key_messages_link,
-            :abstract_summary_link,
-            :evidence_summary_link,
-            :evs_introduction_link,
-            :evs_methods_link,
-            :evs_results_link,
-            :evs_discussion_link,
-            :evs_conclusions_link,
-            :evs_tables_figures_link,
-            { sd_journal_article_urls_attributes: [:id, :name, :_destroy, :id] },
-            { sd_other_items_attributes: [:id, :name, :url, :_destroy, :id] },
-            :disposition_of_comments_link,
-            :srdr_data_link,
-            :most_previous_version_srdr_link,
-            :most_previous_version_full_report_link,
-            :overall_purpose_of_review,
-            :type_of_review,
-            :level_of_analysis,
-            { sd_analytic_frameworks_attributes: [:id, :name, :_destroy, :id, pictures: []] },
-            { sd_key_questions_attributes: [:key_question_id, { key_question_type_ids: [] }, :name, :_destroy, :id, { sd_key_questions_key_question_type_ids: [] }] },
-            { sd_key_question_ids: [] },
-            { sd_picods_attributes: [:sd_key_questions, :p_type, :name, :_destroy, :id] },
-            { sd_search_strategies_attributes: [:sd_search_database_id, :date_of_search, :search_limits, :search_terms, :_destroy, :id] },
-            { sd_grey_literature_searches_attributes: [:name, :_destroy, :id] },
-            { sd_prisma_flows_attributes: [:name, :_destroy, :id, pictures: []] },
-            { sd_summary_of_evidences_attributes: [:sd_key_question, :soe_type, :name, :_destroy, :id] }
-          )
+        permit(
+          :project_id,
+          :report_title,
+          { funding_source_ids: [] },
+          :date_of_last_search,
+          :date_of_publication_full_report,
+          :state,
+          :stakeholder_involvement_extent,
+          :authors_conflict_of_interest_of_full_report,
+          :stakeholders_conflict_of_interest,
+          :prototcol_link,
+          :full_report_link,
+          :structured_abstract_link,
+          :key_messages_link,
+          :abstract_summary_link,
+          :evidence_summary_link,
+          :evs_introduction_link,
+          :evs_methods_link,
+          :evs_results_link,
+          :evs_discussion_link,
+          :evs_conclusions_link,
+          :evs_tables_figures_link,
+          { sd_journal_article_urls_attributes: [:id, :name, :_destroy, :id] },
+          { sd_other_items_attributes: [:id, :name, :url, :_destroy, :id] },
+          :disposition_of_comments_link,
+          :srdr_data_link,
+          :most_previous_version_srdr_link,
+          :most_previous_version_full_report_link,
+          :overall_purpose_of_review,
+          :type_of_review,
+          :level_of_analysis,
+          { sd_analytic_frameworks_attributes: [:id, :name, :_destroy, :id, pictures: []] },
+          { sd_key_questions_attributes: [:key_question_id, { key_question_type_ids: [] }, :name, :_destroy, :id, { sd_key_questions_key_question_type_ids: [] }] },
+          { sd_key_question_ids: [] },
+          { sd_picods_attributes: [:sd_key_questions, :p_type, :name, :_destroy, :id] },
+          { sd_search_strategies_attributes: [:sd_search_database_id, :date_of_search, :search_limits, :search_terms, :_destroy, :id] },
+          { sd_grey_literature_searches_attributes: [:name, :_destroy, :id] },
+          { sd_prisma_flows_attributes: [:name, :_destroy, :id, pictures: []] },
+          { sd_summary_of_evidences_attributes: [:sd_key_question, :soe_type, :name, :_destroy, :id] }
+        )
     end
 end

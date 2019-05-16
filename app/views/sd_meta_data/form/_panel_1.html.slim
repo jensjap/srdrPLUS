@@ -5,7 +5,7 @@
       div data-field-span="1"
         label 7. Authors
         / todo
-        - @project.members.map do |user|
+        - @project.try(:members).try(:map) do |user|
           / div #{user.fname} #{user.lname} (#{user.email})
     div data-row-span="1"
       div data-field-span="1"
@@ -19,7 +19,7 @@
     div data-row-span="2"
       div data-field-span="1"
         label 11. Project Leads:
-        - @project.leaders.map do |user|
+        - @project.try(:leaders).try(:map) do |user|
           / todo
           / div #{user.fname} #{user.lname} (#{user.email})
       div data-field-span="1"
