@@ -16,26 +16,30 @@ class SdKeyQuestion < ApplicationRecord
   belongs_to :sd_meta_datum, inverse_of: :sd_key_questions
   belongs_to :key_question, inverse_of: :sd_key_questions
 
-  has_many :sd_key_questions_key_question_types, inverse_of: :sd_key_question
+  has_many :sd_key_questions_key_question_types, inverse_of: :sd_key_question, dependent: :destroy
   has_many :key_question_types, through: :sd_key_questions_key_question_types
 
   # to enable sub questions
   # belongs_to :sd_key_question, inverse_of: :sd_key_questions, optional: true
   # has_many :sd_key_questions, inverse_of: :sd_key_question
 
-  has_many :sd_key_questions_projects, inverse_of: :sd_key_question
+  has_many :sd_key_questions_projects, inverse_of: :sd_key_question, dependent: :destroy
   has_many :srdr_key_questions, through: :sd_key_questions_projects, source: :key_question
 
-  has_many :sd_key_questions_sd_picods, inverse_of: :sd_key_question
+  has_many :sd_key_questions_sd_picods, inverse_of: :sd_key_question, dependent: :destroy
   has_many :sd_picods, through: :sd_key_questions_sd_picods
 
-  has_many :sd_summary_of_evidences, inverse_of: :sd_key_question
+  has_many :sd_summary_of_evidences, inverse_of: :sd_key_question, dependent: :destroy
 
   accepts_nested_attributes_for :sd_key_questions_key_question_types, allow_destroy: true
 
   def key_question_id=(token)
     save_resource_name_with_token(KeyQuestion.new, token)
     super
+  end
+
+  def name
+    self.try(:key_question).try(:name)
   end
 
   def key_question_type_ids=(tokens)

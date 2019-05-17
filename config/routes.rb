@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   resources :key_question_types, only: [:index]
   resources :sd_search_databases, only: [:index]
   resources :key_questions, only: [:index]
+  resources :sd_key_questions, only: [:index]
 
   devise_for :admins
   devise_for :users, controllers: {

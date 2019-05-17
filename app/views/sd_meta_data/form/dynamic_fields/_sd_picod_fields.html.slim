@@ -1,5 +1,5 @@
 .nested-fields
-  = f.input :sd_key_questions, include_blank: false, label: "Key Question", input_html: { class: "sd_picods_key_question" }, collection: f.object.sd_meta_datum.key_questions.map(&:name)
+  = f.association :sd_key_questions, include_blank: false ,label: "Key Question", input_html: { class: "sd_picods_key_question", data: { sd_meta_datum_id: f.object.sd_meta_datum.id } }
   = f.input :p_type, include_blank: false, label: 'PICODS Type', collection: ["Populations", "Interventions/Exposures", "Comparators", "Outcomes", "Study Designs", "Settings"], input_html: { class: "sd_picods_type" }
   = f.input :name, label: 'Description', :input_html => { :rows => 5 }
   = link_to_remove_association "remove", f

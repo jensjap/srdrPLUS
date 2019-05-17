@@ -54,12 +54,12 @@ class SdMetaDatum < ApplicationRecord
   has_many :sd_key_questions, inverse_of: :sd_meta_datum, dependent: :destroy
   has_many :key_questions, through: :sd_key_questions
 
-  has_many :sd_key_questions_projects, through: :sd_key_questions, inverse_of: :sd_meta_datum, dependent: :destroy
+  has_many :sd_key_questions_projects, through: :sd_key_questions, inverse_of: :sd_meta_datum
   has_many :project_key_questions, through: :sd_key_questions_projects, source: :key_question
 
-  has_many :sd_key_questions_sd_picods, through: :sd_key_questions
+  has_many :sd_key_questions_sd_picods, through: :sd_key_questions, dependent: :destroy
 
-  has_many :sd_journal_article_urls, inverse_of: :sd_meta_datum, dependent: :destroy
+  has_many :sd_journal_article_urls, inverse_of: :sd_meta_datum
   has_many :sd_other_items, inverse_of: :sd_meta_datum, dependent: :destroy
 
   has_many :sd_search_strategies, inverse_of: :sd_meta_datum, dependent: :destroy
@@ -86,60 +86,6 @@ class SdMetaDatum < ApplicationRecord
 
   def report
     Report.all.find { |report_meta| report_meta.accession_id == self.report_accession_id }
-  end
-
-  def sd_key_questions_attributes=(attr)
-    deleted_keys = []
-    attr.each do |idx, payload|
-      if payload[:_destroy] == '1'
-        SdKeyQuestion.find_by(id: payload[:id]).try(:destroy)
-        deleted_keys << idx
-      end
-    end
-    deleted_keys.each { |key| attr.delete(key) }
-    super
-  end
-
-  def sd_picods_attributes=(attr)
-    attr.each do |idx, payload|
-      next if payload[:sd_key_questions].blank?
-      sd_key_question = SdKeyQuestion.
-        includes(:key_question).where(sd_meta_datum: self).
-        find { |sd_kq| sd_kq.key_question.name == payload[:sd_key_questions] }
-
-      if payload[:_destroy] == '1'
-        sd_picod = SdPicod.find(payload[:id])
-
-        if sd_key_question && sd_picod
-          sd_key_questions_sd_picod = SdKeyQuestionsSdPicod.find_by(
-            sd_key_question_id: sd_key_question.id,
-            sd_picod_id: sd_picod.id
-          ).try(:destroy)
-        end
-        sd_picod.destroy
-        next
-      end
-
-      if payload[:id]
-        sd_picod = SdPicod.find(payload[:id])
-        sd_picod.update!(
-          name: payload[:name],
-          p_type: payload[:p_type],
-          sd_meta_datum_id: self.id
-        )
-      else
-        sd_picod = SdPicod.create!(
-          name: payload[:name],
-          p_type: payload[:p_type],
-          sd_meta_datum_id: self.id
-        )
-      end
-
-      sd_key_questions_sd_picod = SdKeyQuestionsSdPicod.find_or_create_by!(
-        sd_key_question_id: sd_key_question.id,
-        sd_picod_id: sd_picod.id
-      )
-    end
   end
 
   def sd_summary_of_evidences_attributes=(attr)

@@ -19,8 +19,6 @@
     = simple_form_for(@sd_meta_datum, url: @url, html: { id: 'sd-meta-form', class: "grid-form", data: { 'abide': '', 'live-validate': true } }) do |f|
       .tabs-content.vertical
         = render partial: "sd_meta_data/form/panel_#{@panel_number}", locals: { f: f, sd_meta_datum: @sd_meta_datum, project: @project, url: @url }
-      .tabs-content.vertical style="display: none;"
-        = render partial: "sd_meta_data/form/panel_5", locals: { f: f, sd_meta_datum: @sd_meta_datum, project: @project, url: @url } unless @panel_number == 5
       br/
       .form-actions
         = f.error_notification

@@ -52,11 +52,15 @@ document.addEventListener 'turbolinks:load', ->
     init_select2(".sd_search_database", '/sd_search_databases')
     init_select2(".key_question", '/key_questions')
     init_select2(".key_question_type", '/key_question_types')
+    sd_meta_datum_id = $(".sd_picods_key_question").data('sd-meta-datum-id')
+    init_select2(".sd_picods_key_question", "/sd_key_questions?sd_meta_datum_id=#{sd_meta_datum_id}")
 
     $( "form" ).on "cocoon:after-insert", (_, row) ->
+      sd_meta_datum_id = $(".sd_picods_key_question").data('sd-meta-datum-id')
       init_select2($( row ).find( ".sd_search_database" ), '/sd_search_databases')
       init_select2($( row ).find( ".key_question" ), '/key_questions')
       init_select2($( row ).find( ".key_question_type" ), '/key_question_types')
+      init_select2($( row ).find( ".sd_picods_key_question" ), "/sd_key_questions?sd_meta_datum_id=#{sd_meta_datum_id}")
 
     $( "a[data-remote]" ).on "ajax:success",  ( event ) ->
       $( this ).parent().closest( 'div' ).fadeOut();
