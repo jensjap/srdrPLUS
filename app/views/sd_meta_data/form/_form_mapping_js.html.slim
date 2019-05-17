@@ -207,7 +207,11 @@ javascript:
     }
   });
 
-  $(document).on('DOMSubtreeModified', "div.report-key-questions-box", function() {
+  // $(document).on('DOMSubtreeModified', "div.report-key-questions-box", function() {
+  //   postMappings();
+  // });
+
+  $(window).on('beforeunload', function () {
     postMappings();
   });
 
