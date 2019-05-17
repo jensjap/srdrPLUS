@@ -2,16 +2,18 @@ class SdMetaDataController < ApplicationController
   around_action :wrap_in_transaction
 
   def mapping_update
-    key_questions = mapping_params[:key_questions] || {}
+    key_questions = mapping_params[:key_questions].to_h || {}
+    key_questions = key_questions.map { |key, value| { key => value.uniq } }
     SdKeyQuestionsProject.
       where(sd_key_question_id: SdMetaDatum.
       find(params[:sd_meta_datum_id]).
       sd_key_questions).
       destroy_all
-
-    key_questions.keys.each do |kq_project_id|
-      key_questions[kq_project_id].each do |sd_kq_id|
-        SdKeyQuestionsProject.create(key_questions_project_id: kq_project_id, sd_key_question_id: sd_kq_id)
+    key_questions.each do |mapping_hash|
+      mapping_hash.each do |kq_project_id, key_q_ids|
+        key_q_ids.each do |sd_kq_id|
+          SdKeyQuestionsProject.create(key_questions_project_id: kq_project_id, sd_key_question_id: sd_kq_id)
+        end
       end
     end
     head :no_content
@@ -24,7 +26,13 @@ class SdMetaDataController < ApplicationController
   end
 
   def destroy
-    sd_meta_datum =  SdMetaDatum.find(params[:id]).destroy
+    sd_meta_datum =  SdMetaDatum.find(params[:id])
+    sd_key_questions_ids = sd_meta_datum.sd_key_questions.map(&:id)
+
+    SdKeyQuestionsProject.where(sd_key_question_id: sd_key_questions_ids).destroy_all
+    SdSummaryOfEvidence.where(id: sd_meta_datum.sd_summary_of_evidences.map(&:id)).destroy_all
+
+    sd_meta_datum.destroy
     if sd_meta_datum.destroyed?
       flash[:notice] = "Succesfully deleted Sd Meta Datum ID: #{sd_meta_datum.id}"
     else
@@ -35,6 +43,9 @@ class SdMetaDataController < ApplicationController
 
   def create
     @sd_meta_datum = SdMetaDatum.create(new_sd_meta_datum_params)
+    # For Demo Only START
+    Parser.parse(@sd_meta_datum) if @sd_meta_datum.report.try(:accession_id) == "NBK534625"
+    # For Demo Only END
     @sd_meta_datum.create_fuzzy_matches
     flash[:notice] = "Succesfully created Sd Meta Datum ID: #{@sd_meta_datum.id} for Project ID: #{@sd_meta_datum.project_id}"
     redirect_to edit_sd_meta_datum_path(@sd_meta_datum.id)
@@ -154,7 +165,7 @@ class SdMetaDataController < ApplicationController
           { sd_search_strategies_attributes: [:sd_search_database_id, :date_of_search, :search_limits, :search_terms, :_destroy, :id] },
           { sd_grey_literature_searches_attributes: [:name, :_destroy, :id] },
           { sd_prisma_flows_attributes: [:name, :_destroy, :id, pictures: []] },
-          { sd_summary_of_evidences_attributes: [:sd_key_question, :soe_type, :name, :_destroy, :id] }
+          { sd_summary_of_evidences_attributes: [:sd_key_question_id, :soe_type, :name, :_destroy, :id, pictures: []] }
         )
     end
 end

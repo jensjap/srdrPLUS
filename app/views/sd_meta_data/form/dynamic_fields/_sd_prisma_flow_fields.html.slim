@@ -1,8 +1,9 @@
 .nested-fields
   = f.input :name, label: 'Description'
   = f.input :pictures, label: 'Pictures', input_html: { multiple: true }
-  = link_to_remove_association "Remove Prisma Flow", f
-  - f.object.pictures.each do |picture|
-    div
-      = image_tag(picture)
-      = link_to 'Remove Attachment', delete_image_attachment_picture_path(picture.id), method: :delete, data: { confirm: 'Are you sure?' }, remote: true
+  div
+    = link_to_remove_association "Remove Prisma Flow", f
+    - f.object.pictures.each do |picture|
+      div
+        = image_tag(picture, style: "width: 100px; margin: 20px;")
+        = link_to 'Remove', delete_image_attachment_picture_path(picture.id), method: :delete, data: { confirm: 'Are you sure?' }, remote: true

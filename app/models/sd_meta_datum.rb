@@ -51,10 +51,10 @@ class SdMetaDatum < ApplicationRecord
 
   belongs_to :project, inverse_of: :sd_meta_data, optional: true
 
-  has_many :sd_key_questions, inverse_of: :sd_meta_datum
+  has_many :sd_key_questions, inverse_of: :sd_meta_datum, dependent: :destroy
   has_many :key_questions, through: :sd_key_questions
 
-  has_many :sd_key_questions_projects, through: :sd_key_questions, inverse_of: :sd_meta_datum
+  has_many :sd_key_questions_projects, through: :sd_key_questions, inverse_of: :sd_meta_datum, dependent: :destroy
   has_many :project_key_questions, through: :sd_key_questions_projects, source: :key_question
 
   has_many :sd_key_questions_sd_picods, through: :sd_key_questions
@@ -62,16 +62,16 @@ class SdMetaDatum < ApplicationRecord
   has_many :sd_journal_article_urls, inverse_of: :sd_meta_datum, dependent: :destroy
   has_many :sd_other_items, inverse_of: :sd_meta_datum, dependent: :destroy
 
-  has_many :sd_search_strategies, inverse_of: :sd_meta_datum
+  has_many :sd_search_strategies, inverse_of: :sd_meta_datum, dependent: :destroy
   has_many :sd_search_databases, through: :sd_search_strategies
 
-  has_many :sd_summary_of_evidences, inverse_of: :sd_meta_datum
+  has_many :sd_summary_of_evidences, inverse_of: :sd_meta_datum, dependent: :destroy
   has_many :sd_grey_literature_searches, inverse_of: :sd_meta_datum, dependent: :destroy
   has_many :sd_prisma_flows, inverse_of: :sd_meta_datum, dependent: :destroy
-  has_many :sd_picods, inverse_of: :sd_meta_datum
+  has_many :sd_picods, inverse_of: :sd_meta_datum, dependent: :destroy
   has_many :sd_analytic_frameworks, inverse_of: :sd_meta_datum, dependent: :destroy
 
-  has_many :funding_sources_sd_meta_data, inverse_of: :sd_meta_datum
+  has_many :funding_sources_sd_meta_data, inverse_of: :sd_meta_datum, dependent: :destroy
   has_many :funding_sources, through: :funding_sources_sd_meta_data
 
   accepts_nested_attributes_for :sd_key_questions, allow_destroy: true
@@ -144,13 +144,12 @@ class SdMetaDatum < ApplicationRecord
 
   def sd_summary_of_evidences_attributes=(attr)
     attr.each do |idx, payload|
-      next if payload[:sd_key_question].blank?
       if payload[:_destroy] == '1'
         SdSummaryOfEvidence.find(payload[:id]).destroy
         next
       end
+      sd_key_question = SdKeyQuestion.find(payload[:sd_key_question_id])
 
-      sd_key_question = SdKeyQuestion.includes(:key_question).where(sd_meta_datum: self).find { |sd_kq| sd_kq.key_question.name == payload[:sd_key_question] }
       if payload[:id]
         sd_key_questions_sd_soe = SdSummaryOfEvidence.find(payload[:id])
         sd_key_questions_sd_soe.update!(
@@ -159,6 +158,7 @@ class SdMetaDatum < ApplicationRecord
           soe_type: payload[:soe_type],
           name: payload[:name]
         )
+        sd_key_questions_sd_soe.pictures.attach(payload["pictures"]) if payload["pictures"]
       else
         sd_key_questions_sd_soe = SdSummaryOfEvidence.create!(
           sd_meta_datum_id: self.id,
@@ -166,6 +166,7 @@ class SdMetaDatum < ApplicationRecord
           soe_type: payload[:soe_type],
           name: payload[:name]
         )
+        sd_key_questions_sd_soe.pictures.attach(payload["pictures"]) if payload["pictures"]
       end
     end
   end
