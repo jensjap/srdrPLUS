@@ -119,7 +119,7 @@ class Project < ApplicationRecord
 
   def prospero_link
     self.prospero.present? ?
-      "<a href='https://www.crd.york.ac.uk/prospero/display_record.asp?ID=#{self.prospero}'>Prospero Link</a>" :
+      "<a href='https://www.crd.york.ac.uk/prospero/display_record.asp?ID=#{self.prospero}'>https://www.crd.york.ac.uk/prospero/display_record.asp?ID=#{self.prospero}</a>" :
       "Not Available"
   end
 
