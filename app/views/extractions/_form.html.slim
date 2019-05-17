@@ -2,7 +2,7 @@
   = f.error_notification
 
   .form-inputs
-    = f.association :projects_users_role, label: "Select User",     collection: @projects_users_roles, label_method: :get_projects_users_role_user_information_markup, input_html: { class: "select2" }
+    = f.association :projects_users_role, label: "Select User",     collection: @projects_users_roles, label_method: :handle, input_html: { class: "select2" }
     = f.input :citations_project_id,         label: "Select Citation", collection: @citations_projects,   label_method: :label_method,                                    input_html: { class: "select2_multi", multiple: true }
 
   .form-actions
