@@ -88,35 +88,6 @@ class SdMetaDatum < ApplicationRecord
     Report.all.find { |report_meta| report_meta.accession_id == self.report_accession_id }
   end
 
-  def sd_summary_of_evidences_attributes=(attr)
-    attr.each do |idx, payload|
-      if payload[:_destroy] == '1'
-        SdSummaryOfEvidence.find(payload[:id]).destroy
-        next
-      end
-      sd_key_question = SdKeyQuestion.find(payload[:sd_key_question_id])
-
-      if payload[:id]
-        sd_key_questions_sd_soe = SdSummaryOfEvidence.find(payload[:id])
-        sd_key_questions_sd_soe.update!(
-          sd_meta_datum_id: self.id,
-          sd_key_question: sd_key_question,
-          soe_type: payload[:soe_type],
-          name: payload[:name]
-        )
-        sd_key_questions_sd_soe.pictures.attach(payload["pictures"]) if payload["pictures"]
-      else
-        sd_key_questions_sd_soe = SdSummaryOfEvidence.create!(
-          sd_meta_datum_id: self.id,
-          sd_key_question: sd_key_question,
-          soe_type: payload[:soe_type],
-          name: payload[:name]
-        )
-        sd_key_questions_sd_soe.pictures.attach(payload["pictures"]) if payload["pictures"]
-      end
-    end
-  end
-
   def create_fuzzy_matches
     sd_key_questions.each do |sd_kq|
       fuzzy_match = sd_kq.fuzzy_match
