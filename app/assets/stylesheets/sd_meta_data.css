@@ -177,7 +177,3 @@
 li.tabs-title > a:visited {
   color: inherit;
 }
-
-.select2-container .select2-selection--multiple .select2-selection__rendered {
-  white-space: normal !important;
-}
