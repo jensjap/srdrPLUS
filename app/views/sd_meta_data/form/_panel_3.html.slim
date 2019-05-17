@@ -10,13 +10,13 @@
     div data-row-span="1"
       div data-field-span="1"
         = f.input :level_of_analysis, label: '34. Level of Data Analysis'
-    div data-row-span="2"
-      div data-field-span="2"
+    div data-row-span="1"
+      div data-field-span="1"
         label 35 & 37. Key Question Types and Key Questions
         = f.simple_fields_for :sd_key_questions do |sd_key_question|
           = render 'sd_meta_data/form/dynamic_fields/sd_key_question_fields', f: sd_key_question
-        div
-          = link_to_add_association 'add', f, :sd_key_questions, partial: 'sd_meta_data/form/dynamic_fields/sd_key_question_fields'
+        / div
+        /   = link_to_add_association 'add', f, :sd_key_questions, partial: 'sd_meta_data/form/dynamic_fields/sd_key_question_fields'
   br/
   br/
   fieldset
