@@ -3,10 +3,7 @@
     legend Authors and Stakeholders
     div data-row-span="1"
       div data-field-span="1"
-        label 7. Authors
-        / todo
-        - @project.try(:members).try(:map) do |user|
-          / div #{user.fname} #{user.lname} (#{user.email})
+        = f.input :authors, label: '7. Authors', :input_html => { :rows => 5 }
     div data-row-span="1"
       div data-field-span="1"
         = f.input :authors_conflict_of_interest_of_full_report, label: '8. Conflicts of Interest of Authors of Full Report', :input_html => { :rows => 5 }
@@ -21,11 +18,11 @@
         label 11. Project Leads:
         - @project.try(:leaders).try(:map) do |user|
           / todo
-          / div #{user.fname} #{user.lname} (#{user.email})
+          div #{user.email}
       div data-field-span="1"
         label 12. SRDR Project Creator:
         / todo
-        / div #{@project.creator.fname} #{@project.creator.lname} (#{@project.creator.email})
+        div #{@project.creator.email}
   br/
   br/
   fieldset
