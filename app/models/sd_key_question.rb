@@ -20,8 +20,8 @@ class SdKeyQuestion < ApplicationRecord
   has_many :key_question_types, through: :sd_key_questions_key_question_types
 
   # to enable sub questions
-  belongs_to :sd_key_question, inverse_of: :sd_key_questions, optional: true
-  has_many :sd_key_questions, inverse_of: :sd_key_question
+  # belongs_to :sd_key_question, inverse_of: :sd_key_questions, optional: true
+  # has_many :sd_key_questions, inverse_of: :sd_key_question
 
   has_many :sd_key_questions_projects, inverse_of: :sd_key_question
   has_many :srdr_key_questions, through: :sd_key_questions_projects, source: :key_question
