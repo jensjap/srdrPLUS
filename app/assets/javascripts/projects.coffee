@@ -49,7 +49,7 @@ document.addEventListener 'turbolinks:load', ->
         console.log export_button
         link_string = $( export_button ).attr( 'href', $( this ).val() )
 
-########## DISTILLER IMPORT
+########## IMPORTERS
    # if $( 'body.projects.new' ).length == 1
    #   $( '#distiller-import-checkbox' ).on 'change', ( ) ->
    #     $( '.distiller-import-panel' ).toggleClass( 'hide' )
@@ -57,24 +57,38 @@ document.addEventListener 'turbolinks:load', ->
    #     $( '.json-import-panel' ).toggleClass( 'hide' )
 
     if $( 'body.projects.new' ).length == 1
-      $( '.distiller-section-file-container' ).on 'cocoon:after-insert', ( e ) ->
+      $( '.distiller-section-file-container' ).on 'cocoon:after-insert', ( e, insertedElem ) ->
+        $( '.key-questions-list' ).find( 'input.string' ).each ( i, kq_textbox ) ->
+          op = new Option( $( kq_textbox ).val(), $( kq_textbox ).val(), false, false )
+          $( insertedElem ).find( '.distiller-key-question-input' ).first().append op
         $( e.target ).find( '.distiller-section-input' ).select2( placeholder: "-- Select Section --" )
         $( e.target ).find( '.distiller-key-question-input' ).select2( placeholder: "-- Select Key Question --" )
 
-      $( '.key-questions-list' ).on 'cocoon:after-insert', ( e ) ->
-        textbox = $( e.target ).find( 'input' )
-        $( textbox ).on 'change', ( input_e ) ->
-          _textbox_name = $( input_e.target ).attr( 'id' )
-          ops = $( '.distiller-section-file-container' ).find( 'input.distiller-key-question-input' ).find("option[data-textbox-name='"+_textbox_name+"']")
-          $( ops ).val( $( input_e.target ).val() )
-          $( ops ).text( $( input_e.target ).val() )
-          $( '.distiller-section-file-container' ).find( 'input.distiller-key-question-input' ).trigger( 'change' )
 
-        newOption = new $('<option/>')
-        newOption.val('')
-        newOption.text('')
-        newOption.attr('data-textbox-name', $( textbox ).attr( 'id' ))
-        $( '.distiller-section-file-container' ).find( 'input.distiller-key-question-input' ).append( newOption ).trigger( 'change' )
+      $( '.key-questions-list' ).on 'cocoon:after-insert', ( e, insertedElem ) ->
+
+        textbox = $( insertedElem ).find( 'input.string' )
+        $( textbox ).val('New Key Question ' + $( '.key-questions-list' ).find('input.string').length.toString())
+        $( textbox ).on 'input', ( input_e ) ->
+          option_name = $( input_e.target ).attr( 'data-option-name' )
+          textbox_val = $( input_e.target ).val()
+          $( '.distiller-section-file-container' ).find( 'select.distiller-key-question-input' ).each ( i, kq_input ) ->
+            textbox_val = $( input_e.target ).val()
+            old_option = $( kq_input ).find("option[value='"+option_name+"']")
+            new_option = new Option( textbox_val, textbox_val, false, false )
+
+            kq_select_val = $( kq_input ).val()
+            if $( kq_input ).val() == $( old_option ).val()
+              kq_select_val = $( new_option ).val()
+            $( '.distiller-section-file-container' ).find( 'select.distiller-key-question-input' ).append( new_option )
+            $( '.distiller-section-file-container' ).find( 'select.distiller-key-question-input' ).val( kq_select_val )
+            $( old_option ).remove()
+            $( '.distiller-section-file-container' ).trigger( 'change' )
+            $( input_e.target ).attr( 'data-option-name' , $( new_option ).val() )
+
+        newOption = new Option( $( textbox ).val(), $( textbox ).val(), false, false)
+        $( '.distiller-section-file-container' ).find( 'select.distiller-key-question-input' ).append( newOption ).trigger( 'change' )
+        $( textbox ).attr('data-option-name', $( newOption ).val() )
 
       $( '#create-type' ).on 'change', ( e ) ->
         $( '.input.file input' ).val('')
@@ -171,8 +185,6 @@ document.addEventListener 'turbolinks:load', ->
             journal[ 'name' ] = $(data).find('Journal').find( 'Title' ).text() || ''
             journal[ 'issue' ] = $(data).find('JournalIssue').find( 'Issue' ).text() || ''
             journal[ 'vol' ] = $(data).find('JournalIssue').find( 'Volume' ).text() || ''
-            console.log $(data).find('JournalIssue').find( 'Volume' ).text()
-            console.log $(data).find('JournalIssue').find( 'Issue' ).text()
             ## My philosophy is to use publication year whenever possible, as researchers seem to be most concerned about the year, and it is easier to parse and sort - Birol
 
             dateNode = $(data).find('JournalIssue').find( 'PubDate' )
@@ -192,7 +204,6 @@ document.addEventListener 'turbolinks:load', ->
             populate_citation_fields citation_hash
 
       populate_citation_fields = ( citation ) ->
-        console.log citation['journal']
         $( '.citation-fields' ).find( '.citation-name input' ).val citation[ 'name' ]
         $( '.citation-fields' ).find( '.citation-abstract textarea' ).val citation[ 'abstract' ]
         $( '.citation-fields' ).find( '.journal-name input' ).val citation[ 'journal' ][ 'name' ]

@@ -1,5 +1,4 @@
 require 'import_jobs/distiller_csv_import_job/_distiller_importer'
-require 'import_jobs/json_import_job/_project_importer'
 require 'import_jobs/_ris_citation_importer'
 
 class DistillerImportJob < ApplicationJob

@@ -89,7 +89,7 @@ class DistillerImporter
                                                     question: q
 
     qr = QuestionRow.find_by!(question: q)
-    qrc_type = QuestionRowColumnType.find_by! name: "Text"
+    qrc_type = QuestionRowColumnType.find_by! name: "text"
     qrc = QuestionRowColumn.find_by! question_row: qr
     qrc.update! question_row_column_type: qrc_type,
                 name: ""

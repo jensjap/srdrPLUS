@@ -6,7 +6,7 @@
       .columns
         = f.simple_fields_for f.object.build_key_question do |kq|
           = kq.input :name, as: :select,
-                  collection: [ "AAA", "BBB", "CCC" ],
+                  collection: [ ],
                   input_html: { class: 'distiller-key-question-input' },
                   label: "Key Question"
 
