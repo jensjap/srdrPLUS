@@ -393,6 +393,17 @@ ActiveRecord::Schema.define(version: 2019_08_17_024915) do
     t.index ["name"], name: "index_export_types_on_name", unique: true
   end
 
+  create_table "exported_files", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "project_id"
+    t.integer "user_id"
+    t.integer "file_type_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["file_type_id"], name: "index_exported_files_on_file_type_id"
+    t.index ["project_id"], name: "index_exported_files_on_project_id"
+    t.index ["user_id"], name: "index_exported_files_on_user_id"
+  end
+
   create_table "exported_items", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "projects_user_id"
     t.bigint "export_type_id"
@@ -1784,6 +1795,9 @@ ActiveRecord::Schema.define(version: 2019_08_17_024915) do
   add_foreign_key "eefps_qrcfs", "question_row_column_fields"
   add_foreign_key "eefpsqrcf_qrcqrcos", "eefps_qrcfs"
   add_foreign_key "eefpsqrcf_qrcqrcos", "question_row_columns_question_row_column_options"
+  add_foreign_key "exported_files", "file_types"
+  add_foreign_key "exported_files", "projects"
+  add_foreign_key "exported_files", "users"
   add_foreign_key "exported_items", "export_types"
   add_foreign_key "exported_items", "projects_users"
   add_foreign_key "extraction_forms_projects", "extraction_forms"

@@ -276,8 +276,8 @@ Devise.setup do |config|
   # config.omniauth_path_prefix = '/my_engine/users/auth'
   #
 
-  client_id = Rails.application.credentials[:google_apis]&[:client_id] || ""
-  client_secret = Rails.application.credentials[:google_apis]&[:client_secret] || ""
+  client_id = Rails.application.credentials[:google_apis][:client_id] || ""
+  client_secret = Rails.application.credentials[:google_apis][:client_secret] || ""
   # Configure Google omniauth with proper scope
   config.omniauth :google_oauth2, client_id, client_secret, {
     scope: "userinfo.email, drive.file"
