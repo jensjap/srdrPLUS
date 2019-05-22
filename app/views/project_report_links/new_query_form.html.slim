@@ -63,7 +63,10 @@ javascript:
 
   function addColumn() {
     var columnName = $('#column-name').val();
-    if (columnName === '') return;
+    if (columnName === '') {
+      $('#column-name').focus().select()
+      return;
+    }
     $('#table thead tr').append(`<th width="300px">${columnName}</th>`);
     $('#table tbody tr').append(`<td data-column-data=${columnName} class="droppable"></td>`);
     $('#column-name').val('');
