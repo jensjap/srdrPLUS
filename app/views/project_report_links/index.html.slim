@@ -1,0 +1,30 @@
+.column.row#sdMetaData-list
+  h3 Available Project-Report Links
+  table.hover
+    thead
+      tr
+        th width="20" Project-Report Link ID
+        th width="30" Project Title
+        th width="30" Report Title
+        th width="30" Key Questions to be included
+        th width="30" Query Extraction
+    tbody
+      - if @sd_meta_data.empty?
+        tr
+          td No Records
+          td
+          td
+          td
+          td
+      - else
+        - @sd_meta_data.each do |sd_meta_datum|
+          = simple_form_for(sd_meta_datum, url: project_report_links_new_query_form_path(sd_meta_datum), method: :get) do |f|
+            tr
+              td = sd_meta_datum.id
+              td = sd_meta_datum.try(:project).try(:name)
+              td = sd_meta_datum.try(:report).try(:title)
+              td
+                - collection = sd_meta_datum.project.key_questions_projects.map { |kqp| [kqp.key_question.name, kqp.id]}
+                - sd_meta_datum.project.key_questions_projects.each do |kqp|
+                  = f.input :kqp_ids, label: "", as: :check_boxes, collection: collection, checked: [kqp.id]
+              td = f.button :submit, "Create New Query"

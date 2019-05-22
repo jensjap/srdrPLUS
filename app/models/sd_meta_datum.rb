@@ -45,6 +45,8 @@
 class SdMetaDatum < ApplicationRecord
   include SharedProcessTokenMethods
 
+  attr_accessor :kqp_ids
+
   SECTIONS = ['Title, Funding Sources, and Dates', 'Authors and Stakeholders', 'Links', 'Purpose and Key Questions', 'PICODS for each Key Question', 'Mapping Key Questions (Submitter Only)', 'Search Strategy & Summary of Results'].freeze
 
   default_scope { order(id: :desc) }

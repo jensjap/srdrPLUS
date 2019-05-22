@@ -1,0 +1,113 @@
+- if @groups.keys.empty?
+  div Must include at least one key question
+- else
+  div class="grid-x grid-padding-x"
+    div class="cell small-12"
+      div.button.start-query style="float: right; margin-left: 10px;" Start Query
+      div.button.alert.remove-last-column style="float: right; margin-left: 10px;" Remove Last Column
+      div.button.success.add-column style="float: right; margin-left: 10px;" Add Column
+      fieldset
+        input#column-name autofocus="" style="float: right; margin: 10px; padding-left: 5px; width: 300px;" placeholder="Enter New Column Name"
+  div class="grid-x grid-padding-x"
+    div class="cell small-3" style="max-height: 500px; overflow-y: scroll;"
+      - @groups.keys.each do |key|
+        div style="font-weight: bold" #{key.name}
+        - @groups[key].each do |question|
+          - type = [1, 3, 6, 10].include?(key.id) ? "Type2" : "Other"
+          div.query-draggable id="kq-#{question.id}" data-type="#{type}" data-question-id="#{question.id}" draggable="true" query-draggable="true" style="font-size: 12px;" #{ question.name }
+    div class="cell small-9" style="overflow-x: auto;"
+      table id='table' style="width: 300px; table-layout: fixed;"
+        thead
+          tr
+        tbody
+          tr
+
+javascript:
+  $.event.props.push('dataTransfer');
+
+  $(document).on('dragstart', '.query-draggable', function(ev) {
+    ev.dataTransfer.setData("text/plain", ev.target.id);
+  })
+
+  $(document).on('dragleave', '.droppable', function(ev) {
+    ev.preventDefault();
+    ev.currentTarget.style.background = "aliceblue";
+  })
+
+  $(document).on('dragover', '.droppable', function(ev) {
+    ev.stopPropagation();
+    ev.preventDefault();
+    if (ev.target.getAttribute("query-draggable") == "true") {
+      ev.dataTransfer.dropEffect = "none";
+    } else {
+      ev.currentTarget.style.background = "lightblue";
+      ev.dataTransfer.dropEffect = "copy";
+    }
+  })
+
+  $(document).on('drop', '.droppable', function(ev) {
+    ev.preventDefault();
+    ev.currentTarget.style.background = "aliceblue";
+    var data = ev.dataTransfer.getData("text/plain");
+    var nodeCopy = document.getElementById(data).cloneNode(true);
+    nodeCopy.id = new Date().getTime();
+    $(nodeCopy).text(`${$(nodeCopy).text()} - (click to remove)`)
+    $(nodeCopy).addClass('disableselect');
+    $(nodeCopy).addClass('clickremove');
+    ev.target.appendChild(nodeCopy);
+  })
+
+  $(document).on('click', '.clickremove', function(ev) {
+    ev.target.remove();
+  })
+
+  function addColumn() {
+    var columnName = $('#column-name').val();
+    if (columnName === '') return;
+    $('#table thead tr').append(`<th width="300px">${columnName}</th>`);
+    $('#table tbody tr').append(`<td data-column-data=${columnName} class="droppable"></td>`);
+    $('#column-name').val('');
+  }
+
+  function removeLastColumn() {
+    $('#table thead tr th').last().remove();
+    $('#table tbody tr td').last().remove();
+  }
+
+  function extractReportQuestions() {
+    var mapping = [];
+
+    $('#table tbody tr').children().each(function() {
+      var column_name = $(this).data('column-data');
+      var sectionMap = {
+        column_name,
+        export_ids: [],
+        type: ''
+      };
+      $(this).children().each (function() {
+        var questionId = $(this).data('question-id');
+        var type = $(this).data('type');
+        sectionMap.export_ids.push(questionId);
+        sectionMap.type = type;
+      })
+      mapping.push(sectionMap);
+    });
+
+    return mapping;
+  }
+
+  $('#column-name').on("keyup", function(e) {
+    if (e.keyCode === 13) { addColumn(); }
+  });
+
+  $(document).on('click', '.add-column', function() {
+    addColumn();
+  })
+
+  $(document).on('click', '.remove-last-column', function() {
+    removeLastColumn();
+  })
+
+  $(document).on('click', '.start-query', function() {
+    alert(JSON.stringify(extractReportQuestions()))
+  })
