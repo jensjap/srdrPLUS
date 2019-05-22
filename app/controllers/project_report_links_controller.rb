@@ -6,7 +6,6 @@ class ProjectReportLinksController < ApplicationController
   def new_query_form
     @sd_meta_datum = SdMetaDatum.find(params[:project_report_link_id])
     @project = @sd_meta_datum.project
-    ids = [1,2,3]
     if @project
       @groups = @project.questions.joins(:key_questions_projects).where(key_questions_projects: { id: new_query_params[:kqp_ids] }).group_by { |question| question.extraction_forms_projects_section.section }
     end
