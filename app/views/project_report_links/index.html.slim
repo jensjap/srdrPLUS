@@ -18,7 +18,7 @@
           td
       - else
         - @sd_meta_data.each do |sd_meta_datum|
-          = simple_form_for(sd_meta_datum, url: project_report_links_new_query_form_path(sd_meta_datum), method: :get) do |f|
+          = simple_form_for(sd_meta_datum, url: project_report_link_new_query_form_path(sd_meta_datum), method: :get) do |f|
             tr
               td = sd_meta_datum.id
               td = sd_meta_datum.try(:project).try(:name)
