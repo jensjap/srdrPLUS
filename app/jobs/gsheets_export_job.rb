@@ -1,11 +1,4 @@
-require 'simple_export_job/_se_project_information_section'
-require 'simple_export_job/_se_type1_sections_compact'
-require 'simple_export_job/_se_type1_sections_wide'
-require 'simple_export_job/_se_type2_sections_compact'
-require 'simple_export_job/_se_type2_sections_wide'
-require 'simple_export_job/_se_result_sections_compact'
-require 'simple_export_job/_se_result_sections_wide'
-require 'simple_export_job/_se_sample_3d_pie_chart'
+require 'simple_export_job/sheet_info'
 
 require 'google/api_client/client_secrets.rb'
 require 'google/apis/drive_v3'
@@ -20,6 +13,86 @@ class GsheetsExportJob < ApplicationJob
     Rails.logger.debug "#{ self.class.name }: I'm performing my job with arguments: #{ args.inspect }"
     @project = Project.find args.second
     @user = User.find args.first
+    @column_args = args.third
+
+    @columns = []
+
+    @column_args.each do |col_hash|
+      #c_header = q_arr.map { |q| q.name }.join ", "
+      c_header = col_hash['column_name']
+
+      case col_hash['type']
+        when "Type 2"
+          col_hash['ids'].each do |q|
+            @project.extractions.each do |extraction|
+              efps = q.extraction_forms_projects_section
+
+              if efps.link_to_type1
+
+
+              end
+
+              eefps = ExtractionsExtractionFormsProjectsSection.find_by extraction_id: extraction.id, extraction_forms_projects_section_id: efps.id
+              if efps.extraction_forms_projects_section_option.by_type1
+                eefpsqrcf_arr = eefps.\
+                          extractions_extraction_forms_projects_sections_question_row_column_fields.\
+                          where.not(extractions_extraction_forms_projects_sections_type1: nil)
+
+              else
+                eefpsqrcf_arr = eefps.\
+                          extractions_extraction_forms_projects_sections_question_row_column_fields.\
+                          where(extractions_extraction_forms_projects_sections_type1: nil)
+              end
+              eefpsqrcf_arr.each do |eefpsqrcf|
+                record = Record.find_by recordable_id: eefpsqrcf.id,
+                                        recordable_type: 'ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField'
+              end
+            end
+          end
+        when "Descriptive"
+        when "BAC"
+        when "WAC"
+        when "NET"
+      end
+    end
+
+      #{
+      #    column_name: "",
+      #    ids: [],
+      #    type: ''
+      #}
+
+
+    qrcf_arr = []
+    qid_arr.each do |qid|
+      q = Question.find qid
+      q.question_rows.each do |qr|
+        qr.question_row_columns.each do |qrc|
+          case qrc.question_row_column_type_id
+          when 1
+            #text
+          when 2
+            #numeric
+          when 5
+            #checkbox
+          when 6
+            #dropdown
+          when 7
+            #radio
+          when 8
+            #single
+          when 9
+            #multi
+          end
+
+          qrc.question_row_column_fields.each do |qrcf|
+
+          end
+        end
+      end
+    end
+
+
     Rails.logger.debug "#{ self.class.name }: Working on project: #{ @project.name }"
 
     Axlsx::Package.new do |p|
