@@ -112,6 +112,7 @@ class SdMetaDataController < ApplicationController
             :section_flag_4,
             :section_flag_5,
             :section_flag_6,
+            :section_flag_7,
             )
     end
 
@@ -164,7 +165,10 @@ class SdMetaDataController < ApplicationController
           { sd_picods_attributes: [:p_type, :name, :_destroy, :id, sd_key_question_ids: []] },
           { sd_search_strategies_attributes: [:sd_search_database_id, :date_of_search, :search_limits, :search_terms, :_destroy, :id] },
           { sd_grey_literature_searches_attributes: [:name, :_destroy, :id] },
+          { comparison_outcome_intervention_subgroups_attributes: [:name, :_destroy, :id] },
           { sd_prisma_flows_attributes: [:name, :_destroy, :id, pictures: []] },
+          { network_meta_analysis_results_attributes: [:name, :_destroy, :id, pictures: []] },
+          { pairwise_meta_analytic_results_attributes: [:name, :_destroy, :id, pictures: []] },
           { sd_summary_of_evidences_attributes: [:sd_key_question_id, :soe_type, :name, :_destroy, :id, pictures: []] }
         )
     end

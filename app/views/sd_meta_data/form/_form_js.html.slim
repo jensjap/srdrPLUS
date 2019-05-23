@@ -49,6 +49,9 @@ javascript:
 
     if ("#{@sd_meta_datum.section_flag_6}" === 'true') check(6, true)
     if ("#{@sd_meta_datum.section_flag_6}" === 'true' && $('#6-yes-no-section')[0]) $('#6-yes-no-section')[0].checked = true;
+
+    if ("#{@sd_meta_datum.section_flag_7}" === 'true') check(7, true)
+    if ("#{@sd_meta_datum.section_flag_7}" === 'true' && $('#7-yes-no-section')[0]) $('#7-yes-no-section')[0].checked = true;
   };
 
   $( document ).on("turbolinks:load", function() {

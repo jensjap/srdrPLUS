@@ -237,6 +237,14 @@ ActiveRecord::Schema.define(version: 2019_08_17_024915) do
     t.index ["deleted_at"], name: "index_comparates_on_deleted_at"
   end
 
+  create_table "comparison_outcome_intervention_subgroups", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.text "name"
+    t.integer "sd_meta_datum_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["sd_meta_datum_id"], name: "index_cois_on_sd_meta_datum_id"
+  end
+
   create_table "comparisons", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -811,6 +819,14 @@ ActiveRecord::Schema.define(version: 2019_08_17_024915) do
     t.index ["message_type_id"], name: "index_messages_on_message_type_id"
   end
 
+  create_table "network_meta_analysis_results", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.text "name"
+    t.integer "sd_meta_datum_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["sd_meta_datum_id"], name: "index_network_meta_analysis_results_on_sd_meta_datum_id"
+  end
+
   create_table "notes", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "notable_type"
     t.integer "notable_id"
@@ -886,6 +902,14 @@ ActiveRecord::Schema.define(version: 2019_08_17_024915) do
     t.datetime "updated_at", null: false
     t.index ["deleted_at"], name: "index_organizations_on_deleted_at"
     t.index ["name"], name: "index_organizations_on_name", unique: true
+  end
+
+  create_table "pairwise_meta_analytic_results", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.text "name"
+    t.integer "sd_meta_datum_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["sd_meta_datum_id"], name: "index_pairwise_meta_analytic_results_on_sd_meta_datum_id"
   end
 
   create_table "pending_invitations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -1395,6 +1419,7 @@ ActiveRecord::Schema.define(version: 2019_08_17_024915) do
     t.boolean "section_flag_6", default: false, null: false
     t.string "report_accession_id"
     t.text "authors"
+    t.boolean "section_flag_7", default: false, null: false
   end
 
   create_table "sd_other_items", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -1743,6 +1768,7 @@ ActiveRecord::Schema.define(version: 2019_08_17_024915) do
   add_foreign_key "comparate_groups", "comparisons"
   add_foreign_key "comparates", "comparable_elements"
   add_foreign_key "comparates", "comparate_groups"
+  add_foreign_key "comparison_outcome_intervention_subgroups", "sd_meta_data"
   add_foreign_key "comparisons_arms_rssms", "comparisons"
   add_foreign_key "comparisons_arms_rssms", "extractions_extraction_forms_projects_sections_type1s"
   add_foreign_key "comparisons_arms_rssms", "result_statistic_sections_measures"
@@ -1811,9 +1837,11 @@ ActiveRecord::Schema.define(version: 2019_08_17_024915) do
   add_foreign_key "measurements", "comparisons_measures"
   add_foreign_key "message_types", "frequencies"
   add_foreign_key "messages", "message_types"
+  add_foreign_key "network_meta_analysis_results", "sd_meta_data"
   add_foreign_key "notes", "projects_users_roles"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
+  add_foreign_key "pairwise_meta_analytic_results", "sd_meta_data"
   add_foreign_key "pending_invitations", "invitations"
   add_foreign_key "pending_invitations", "users"
   add_foreign_key "predictions", "citations_projects"

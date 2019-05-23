@@ -15,6 +15,8 @@
         = link_to 'Mapping Key Questions (Submitter Only)', '?panel_number=5', class: (@panel_number == 5 ? 'bg-light-grey' : ''), id: "panel-5-label"
       li.tabs-title
         = link_to 'Search Strategy & Summary of Results', '?panel_number=6', class: (@panel_number == 6 ? 'bg-light-grey' : ''), id: "panel-6-label"
+      li.tabs-title
+        = link_to 'Study Results', '?panel_number=7', class: (@panel_number == 7 ? 'bg-light-grey' : ''), id: "panel-7-label"
   .cell.medium-10
     = simple_form_for(@sd_meta_datum, url: @url, html: { id: 'sd-meta-form', class: "grid-form", data: { 'abide': '', 'live-validate': true } }) do |f|
       .tabs-content.vertical

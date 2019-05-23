@@ -1,0 +1,9 @@
+.nested-fields
+  = f.input :name, label: 'Result', input_html: { rows: 5 }
+  = f.input :pictures, label: 'Pictures', input_html: { multiple: true }
+  div
+    = link_to_remove_association "Remove", f
+    - f.object.pictures.each do |picture|
+      div
+        = image_tag(picture, style: "width: 100px; margin: 20px;")
+        = link_to 'Remove', delete_image_attachment_picture_path(picture.id), method: :delete, data: { confirm: 'Are you sure?' }, remote: true
