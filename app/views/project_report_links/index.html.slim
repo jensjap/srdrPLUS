@@ -23,8 +23,14 @@
               td = sd_meta_datum.id
               td = sd_meta_datum.try(:project).try(:name)
               td = sd_meta_datum.try(:report).try(:title)
-              td
-                - collection = sd_meta_datum.project.key_questions_projects.map { |kqp| [kqp.key_question.name, kqp.id]}
-                - sd_meta_datum.project.key_questions_projects.each do |kqp|
-                  = f.input :kqp_ids, label: "", as: :check_boxes, collection: collection, checked: [kqp.id]
-              td = f.button :submit, "Create New Query"
+              - if sd_meta_datum.project
+                td
+                  - collection = sd_meta_datum.project.key_questions_projects.map { |kqp| [kqp.key_question.name, kqp.id]}
+                  - sd_meta_datum.project.key_questions_projects.each do |kqp|
+                    = f.input :kqp_ids, label: "", as: :check_boxes, collection: collection, checked: [kqp.id]
+                td
+                  = f.button :submit, "Create New Query"
+              - else
+                td
+                td
+                  div Project Required
