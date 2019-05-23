@@ -6,6 +6,7 @@ class ProjectReportLinksController < ApplicationController
   def new_query_form
     meta_datum_id = params[:project_report_link_id]
     project = SdMetaDatum.find(meta_datum_id).project
+    @key_question_project_ids = new_query_params[:kqp_ids].join(",")
     if project
       @groups = project.
         questions.
