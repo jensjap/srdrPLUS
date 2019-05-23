@@ -37,7 +37,7 @@ class ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField < Applica
   has_many :records, as: :recordable
 
   delegate :extraction, to: :extractions_extraction_forms_projects_section
-  delegate :project, to: :extraction
+  delegate :project,    to: :extractions_extraction_forms_projects_section
 
 #  def record_ids=(tokens)
 #    byebug

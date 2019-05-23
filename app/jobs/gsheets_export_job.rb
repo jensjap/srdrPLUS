@@ -15,83 +15,71 @@ class GsheetsExportJob < ApplicationJob
     @user = User.find args.first
     @column_args = args.third
 
-    @columns = []
+    column_headers = ["Study ID", "Study Title", "Username"]
+
+    @rows = []
+    t1_efps_set = Set.new
+    t1_efps_arr = []
+    t1_arr = []
+    efps_id_to_combination_index = {}
+
 
     @column_args.each do |col_hash|
-      #c_header = q_arr.map { |q| q.name }.join ", "
-      c_header = col_hash['column_name']
-
-      case col_hash['type']
-        when "Type 2"
-          col_hash['ids'].each do |q|
-            @project.extractions.each do |extraction|
-              efps = q.extraction_forms_projects_section
-
-              if efps.link_to_type1
-
-
-              end
-
-              eefps = ExtractionsExtractionFormsProjectsSection.find_by extraction_id: extraction.id, extraction_forms_projects_section_id: efps.id
-              if efps.extraction_forms_projects_section_option.by_type1
-                eefpsqrcf_arr = eefps.\
-                          extractions_extraction_forms_projects_sections_question_row_column_fields.\
-                          where.not(extractions_extraction_forms_projects_sections_type1: nil)
-
-              else
-                eefpsqrcf_arr = eefps.\
-                          extractions_extraction_forms_projects_sections_question_row_column_fields.\
-                          where(extractions_extraction_forms_projects_sections_type1: nil)
-              end
-              eefpsqrcf_arr.each do |eefpsqrcf|
-                record = Record.find_by recordable_id: eefpsqrcf.id,
-                                        recordable_type: 'ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField'
-              end
-            end
+      if col_hash['type'] == "Type 2"
+        efps = Question.find( col_hash['export_ids'].first ).extraction_forms_projects_section
+        if efps.link_to_type1.present?
+          t1_efps_set << efps.link_to_type1
+          if efps.extraction_forms_projects_section_option.by_type1
+            t1_efps_arr << efps.link_to_type1
+          else
+            t1_efps_arr << nil
           end
-        when "Descriptive"
-        when "BAC"
-        when "WAC"
-        when "NET"
-      end
-    end
-
-      #{
-      #    column_name: "",
-      #    ids: [],
-      #    type: ''
-      #}
-
-
-    qrcf_arr = []
-    qid_arr.each do |qid|
-      q = Question.find qid
-      q.question_rows.each do |qr|
-        qr.question_row_columns.each do |qrc|
-          case qrc.question_row_column_type_id
-          when 1
-            #text
-          when 2
-            #numeric
-          when 5
-            #checkbox
-          when 6
-            #dropdown
-          when 7
-            #radio
-          when 8
-            #single
-          when 9
-            #multi
-          end
-
-          qrc.question_row_column_fields.each do |qrcf|
-
-          end
+        else
+          t1_efps_arr << nil
         end
       end
     end
 
+    @project.extractions.each do |ex|
+      #@t1_efps_set.to_a.sort{ |a,b| a.id <=> b.id }.each do |t1_efps|
+      t1_efps_set.each_with_index do |t1_efps, i|
+        if t1_efps.extraction_forms_projects_section_option.by_type1
+          t1_arr << ExtractionsExtractionFormsProjectsSection.find_by( extraction_forms_projects_section: t1_efps,\
+                                                                        extraction: ex ).type1s.all
+        else
+          t1_arr << [nil]
+        end
+        efps_id_to_combination_index[t1_efps.id] = i
+      end
+
+      combination_arr = []
+      get_combinations t1_arr, 0, [], combination_arr
+
+      combination_arr.each do |t1_combination|
+        current_row = []
+        @column_args.each_with_index do |col_hash, i|
+          case col_hash['type']
+          when "Type 2"
+            efps = Question.find( col_hash['export_ids'].first ).extraction_forms_projects_section
+            eefps = ExtractionsExtractionFormsProjectsSection.find_by extraction_id: ex.id, extraction_forms_projects_section_id: efps.id
+            t1_efps = t1_efps_arr[i]
+            t1 = nil
+            if t1_efps.present?
+              t1 = t1_combination[efps_id_to_combination_index[t1_efps.id]]
+            end
+
+            current_row << get_question_data_string eefps, t1, col_hash['export_ids']
+          when "Descriptive"
+          when "BAC"
+          when "WAC"
+          when "NET"
+          end
+        end
+        @rows << current_row
+      end
+    end
+
+    byebug
 
     Rails.logger.debug "#{ self.class.name }: Working on project: #{ @project.name }"
 
@@ -182,6 +170,75 @@ class GsheetsExportJob < ApplicationJob
 
       # Notify the user that the export is ready for download.
       ExportMailer.notify_simple_export_completion(@user.id, @project.id).deliver_later
+    end
+  end
+
+  def get_question_data_string eefps, t1, qid_arr
+    _first = true
+
+    qid_arr.each do |qid|
+      q = Question.find qid
+      q_name = q.name
+      data_string = ""
+
+      q.question_rows.each_with_index do |qr, ri|
+        qr.question_row_columns.each_with_index do |qrc, ci|
+
+          if not _first then data_string += "\n"; _first = false end
+
+          if q.question_rows.length > 1 or qr.question_row_columns.length > 1
+            data_string += (q_name + " (row: " + ri.to_s ", column: " + ci.to_s + "): ")
+          else
+            data_string += (q_name + ": ")
+          end
+
+          qrcf_arr = qrc.question_row_column_fields.sort { |a,b| a.id <=> b.id }
+          qrc_type_id = qrc.question_row_column_type_id
+          eefpsqrcf_arr = eefps.extractions_extraction_forms_projects_sections_question_row_column_fields.where( question_row_column_field: qrcf_arr, extractions_extraction_forms_projects_sections_type1: ExtractionsExtractionFormsProjectsSectionsType1.find_by( extractions_extraction_forms_projects_section: eefps, type1: t1 ))
+          record_arr = Record.where( recordable_type: 'ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField',
+                                     recordable_id: eefpsqrcf_arr.map { |eefpsqrcf| eefpsqrcf.id } ).sort { |a,b| a.recordable_id <=> b.recordable_id }
+          case qrc_type_id
+          when 1
+            if record_arr.length == 1
+              data_string += record_arr.first.name
+            end
+          when 2
+            if record_arr.length == 1
+              data_string += record_arr.first.name
+            elsif record_arr.length == 2
+              data_string += record_arr.first.name.to_s + " " + record_arr.second.name.to_s
+            end
+          when 3
+            #nothing
+          when 4
+            #nothing
+          when 5
+            if record_arr.length == 1
+              option_names = (record_arr.first.name[1..-2].split(", ") - ['""']).map { |r| QuestionRowColumnsQuestionRowColumnOption.find(r.to_i).name }
+              data_string += '["' + option_names.join('", "') + '"]'
+            end
+          when 6,7,8
+            if record_arr.length == 1
+              data_string += QuestionRowColumnsQuestionRowColumnOption.find(record_arr.first.name).name
+            end
+
+          when 9
+            #problematic
+          end
+        end
+      end
+    end
+  end
+
+  def get_combinations arr_of_arrs, n, prefix, result_arr
+    if n >= arr_of_arrs.length
+      result_arr << prefix
+      return
+    else
+      arr_of_arrs[n].each do |elem|
+        new_prefix = prefix + [elem]
+        get_combinations arr_of_arrs, n+1, new_prefix, result_arr
+      end
     end
   end
 end
