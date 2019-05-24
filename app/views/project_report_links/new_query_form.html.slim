@@ -147,13 +147,31 @@ javascript:
 
       currentHeaderElement.siblings('ul').find('li > div').each(function() {
         var currentOptionElement = $(this);
-        console.log(currentOptionElement)
         if (!currentOptionElement.hasClass('hide')) {
           currentChildCount += 1;
         }
       })
 
       currentHeaderElement.text(`${currentHeaderText} - ${currentChildCount}`)
+    })
+  }
+
+  function colorFieldOptions() {
+    $('.query-draggable').each(function() {
+      var currentElement = $(this);
+      var type = currentElement.data('type');
+
+      if (type === 'Type2') {
+        currentElement.css({ 'background-color': '#006aaa' });
+      } else if (type === 'Descriptive') {
+        currentElement.css({ 'background-color': '#cc4b37' });
+      } else if (type === 'BAC') {
+        currentElement.css({ 'background-color': '#4c0d7d' });
+      } else if (type === 'WAC') {
+        currentElement.css({ 'background-color': '#c4a300' });
+      } else if (type === 'NET') {
+        currentElement.css({ 'background-color': '#4c4c4c' });
+      }
     })
   }
 
@@ -175,10 +193,9 @@ javascript:
 
   $(document).on('click', '.start-query', function() {
     $.post($('#export-to-gdrive-url').text(),{ columns: extractReportQuestions() })
-
-    //alert(JSON.stringify(extractReportQuestions()))
   })
 
   $( document ).ready(function() {
+    colorFieldOptions();
     countFieldChildren();
   });
