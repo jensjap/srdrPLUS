@@ -1,6 +1,6 @@
 class ProjectReportLinksController < ApplicationController
   def index
-    @sd_meta_data = SdMetaDatum.includes(project: { key_questions_projects: :key_question }).all
+    @sd_meta_data = SdMetaDatum.includes(project: { key_questions_projects: :key_question }).where(state: 'COMPLETED')
   end
 
   def new_query_form
