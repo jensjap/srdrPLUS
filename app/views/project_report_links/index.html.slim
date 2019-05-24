@@ -1,5 +1,5 @@
 .column.row#sdMetaData-list
-  h3 Available Project-Report Links
+  h3 Completed Project-Report Links
   table.hover
     thead
       tr
@@ -7,8 +7,9 @@
         th width="30" Project Title
         th width="30" Report Title
         th width="30" Key Questions to be included
-        th width="30" Query Extraction
-    tbody
+        th width="30" Read Link
+        th width="30" Query
+    tbody style="font-size: 12px;"
       - if @sd_meta_data.empty?
         tr
           td No Records
@@ -28,8 +29,9 @@
                   - collection = sd_meta_datum.project.key_questions_projects.map { |kqp| [kqp.key_question.name, kqp.id]}
                   - sd_meta_datum.project.key_questions_projects.each do |kqp|
                     = f.input :kqp_ids, label: "", as: :check_boxes, collection: collection, checked: [kqp.id]
+                td = link_to('Open', sd_meta_datum, class: 'button')
                 td
-                  = f.button :submit, "Create New Query"
+                  = f.button :submit, "Create"
               - else
                 td
                 td
