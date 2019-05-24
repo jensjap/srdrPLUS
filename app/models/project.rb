@@ -924,6 +924,14 @@ class Project < ApplicationRecord
     end
   end
 
+  def key_questions_attributes=(attributes)
+    attributes.each do |i, kq_attrib|
+      kq = KeyQuestion.find_or_create_by name: kq_attrib['name']
+      KeyQuestionsProject.find_or_create_by project: self, key_question: kq
+    end
+    #super(attributes)
+  end
+
   private
     def process_list_of_pmids(listOf_pmids)
       citations_already_in_system = []
