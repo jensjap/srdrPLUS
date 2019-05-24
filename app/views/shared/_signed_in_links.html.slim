@@ -43,9 +43,9 @@ li = link_to('Dashboard', projects_path)
 
 li
   a href='#' = current_user.profile.last_name.present? ? current_user.profile.last_name : 'Menu'
-  ul.menu
+  ul.menu style="width: 350px;"
     b User
-    li = link_to 'Project-Report Links', sd_meta_data_path
+    li = link_to 'Submit Project-Report Links', sd_meta_data_path
     li = link_to 'Query Project-Report Links', project_report_links_path
     li = link_to 'Settings', edit_user_registration_path
     li = link_to 'Profile', profile_path
