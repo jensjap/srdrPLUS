@@ -9,12 +9,11 @@
     div.cell.small-3 style="margin-top: 15px;"
       h5 Add columns to get started
     div.cell.small-9 style="margin-top: 5px;"
-
       div.button.start-query style="float: right; margin-left: 10px;" Start Query
       div.button.alert.remove-last-column style="float: right; margin-left: 10px;" Remove Last Column
       div.button.success.add-column style="float: right; margin-left: 10px;" Add Column
       fieldset
-        input#column-name autofocus="" style="float: right; margin: 10px; padding-left: 5px; width: 300px;" placeholder="Enter Column Name to Add"
+        input#column-name autofocus="" style="float: right; margin: 10px; padding-left: 5px; width: 300px;" placeholder="Column Name"
   div.grid-x.grid-padding-x
     div.cell.small-3 style="padding-top: 10px; border: 0.4px solid; max-height: 500px; overflow-y: scroll;"
       input#field-search placeholder="Search for fields" style="width: 100%;"
@@ -35,6 +34,7 @@
                 - @results_groups[group].each do |rssm|
                   div.query-draggable id="rssm-#{rssm.id}" data-type="#{group.type_name}" data-item-id="#{rssm.id}" draggable="true" query-draggable="true" style="font-size: 12px;" #{ rssm.measure.name }
     div.cell.small-9 style="padding-top: 10px; border: 0.4px solid; overflow-x: auto;"
+      h1.noselect Add a column above to get started
       table id='table' style="width: 300px; table-layout: fixed;"
         thead
           tr
@@ -81,12 +81,13 @@ javascript:
   })
 
   function addColumn() {
+    $('.noselect').remove();
     var columnName = $('#column-name').val();
     if (columnName === '') {
       $('#column-name').focus().select()
       return;
     }
-    $('#table thead tr').append(`<th width="300px">${columnName}</th>`);
+    $('#table thead tr').append(`<th class='field-option-column-title' width="300px">${columnName}</th>`);
     $('#table tbody tr').append(`<td data-column-data=${columnName} class="droppable"></td>`);
     $('#column-name').val('');
   }
@@ -94,6 +95,10 @@ javascript:
   function removeLastColumn() {
     $('#table thead tr th').last().remove();
     $('#table tbody tr td').last().remove();
+
+    if ($('#table tbody tr td').length == 0) {
+      $('#table').before("<h1 class='noselect'>Add a column above to get started</h1>");
+    }
   }
 
   function extractReportQuestions() {
