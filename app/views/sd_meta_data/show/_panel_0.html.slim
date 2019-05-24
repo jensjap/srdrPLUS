@@ -1,0 +1,30 @@
+#panel-0.tabs-panel.is-active
+  fieldset
+    legend Title, Funding Sources, and Dates
+    div data-row-span="1"
+      div data-field-span="1"
+        label 1. Report Title
+        div #{@report.title}
+    div data-row-span="1"
+      div data-field-span="1"
+        label 2. Project Title in SRDR
+        div #{project.try(:name)}
+    div data-row-span="1"
+      div data-field-span="1"
+        label 3. Funding Sources
+        ol
+          - @sd_meta_datum.funding_sources.each do |fs|
+            li style='font-size: 12px;' #{fs.name}
+    div data-row-span="3"
+      div data-field-span="1"
+        label 4. Date of Last Search
+        div #{@sd_meta_datum.try(:date_of_last_search).try(:to_date)}
+      div data-field-span="1"
+        label 5. Date of Publication to SRDR:
+        div #{project.try(:publication_requested_at) ? project.publication_requested_at : "Not Published"}
+        br/
+        br/
+        br/
+      div data-field-span="1"
+        label 6. Date of Publication of Full Report
+        div #{@sd_meta_datum.try(:date_of_publication_full_report).try(:to_date)}

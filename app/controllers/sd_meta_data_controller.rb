@@ -1,6 +1,14 @@
 class SdMetaDataController < ApplicationController
   around_action :wrap_in_transaction
 
+  def show
+    @systematic_review_report = true
+    @panel_number = params[:panel_number].try(:to_i) || 0
+    @sd_meta_datum = SdMetaDatum.first
+    @project = @sd_meta_datum.try(:project)
+    @report = @sd_meta_datum.report
+  end
+
   def mapping_update
     key_questions = mapping_params[:key_questions].to_h || {}
     key_questions = key_questions.map { |key, value| { key => value.uniq } }

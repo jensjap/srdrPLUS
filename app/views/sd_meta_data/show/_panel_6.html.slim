@@ -1,0 +1,72 @@
+= render 'sd_meta_data/show/intense_js'
+
+#panel-6.tabs-panel.is-active
+  fieldset
+    legend Search Strategy & Summary of Results
+    div data-row-span="1"
+      div data-field-span="1"
+        label 36. Analytic/ Conceptual Framework
+        - if @sd_meta_datum.sd_analytic_frameworks.empty?
+          div N/A
+        - else
+          - @sd_meta_datum.sd_analytic_frameworks.each do |sd_analytic_framework|
+            div #{sd_analytic_framework.name}
+            p
+              - sd_analytic_framework.pictures.each do |picture|
+                = image_tag(picture, class: 'intense', size: '150x150')
+    div data-row-span="1"
+      div data-field-span="1"
+        label 44-47. Search Strategies
+        - if @sd_meta_datum.sd_search_strategies.empty?
+          div N/A
+        - else
+          - @sd_meta_datum.sd_search_strategies.each do |sd_search_strategy|
+            p style="border: 1px solid lightgrey"
+              p <b>#{sd_search_strategy.sd_search_database.name} | Searched on: #{sd_search_strategy.date_of_search}</b>
+              p <b>Search Terms</b>
+              p style="font-size: 12px;" #{sd_search_strategy.search_terms}
+              p <b>Search Limits</b>
+              p style="font-size: 12px;" #{sd_search_strategy.search_limits}
+
+    div data-row-span="1"
+      div data-field-span="1"
+        label 48. Grey Literature Search
+
+        - if @sd_meta_datum.sd_grey_literature_searches.empty?
+          div N/A
+        - else
+          - @sd_meta_datum.sd_grey_literature_searches.each do |sd_grey_literature_search|
+            div #{sd_grey_literature_search.name}
+
+    div data-row-span="1"
+      div data-field-span="1"
+        label 49. PRISMA/Literature Flow
+        - if @sd_meta_datum.sd_prisma_flows.empty?
+          div N/A
+        - else
+          - @sd_meta_datum.sd_prisma_flows.each do |sd_prisma_flow|
+            div #{sd_prisma_flow.name}
+            p
+              - sd_prisma_flow.pictures.each do |picture|
+                = image_tag(picture, class: 'intense', size: '150x150')
+
+    div data-row-span="1"
+      div data-field-span="1"
+        label 50-53. Results/Summary of Evidence/Findings
+        - if @sd_meta_datum.sd_summary_of_evidences.empty?
+          div N/A
+        - else
+          - @sd_meta_datum.sd_summary_of_evidences.each do |sd_summary_of_evidence|
+            p
+              h5 <b>#{sd_summary_of_evidence.soe_type}</b>
+              div #{sd_summary_of_evidence.name}
+              p style="font-size: 11px;" #{sd_summary_of_evidence.try(:sd_key_question).try(:name)}
+              p
+                - sd_summary_of_evidence.pictures.each do |picture|
+                  = image_tag(picture, class: 'intense', size: '150x150')
+
+javascript:
+  $(document).ready(function() {
+    var intenseImages = $(document).find('.intense');
+    Intense(intenseImages);
+  })

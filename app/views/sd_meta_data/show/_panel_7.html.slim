@@ -1,0 +1,41 @@
+= render 'sd_meta_data/show/intense_js'
+
+#panel-7.tabs-panel.is-active
+  fieldset
+    legend Study Results
+    div data-row-span="1"
+      div data-field-span="1"
+        label 77. Comparison Outcome by Intervention Subgroup
+        - if @sd_meta_datum.comparison_outcome_intervention_subgroups.empty?
+          div N/A
+        - else
+          - @sd_meta_datum.comparison_outcome_intervention_subgroups.each do |cois|
+            p
+              div style="font-size: 12px;" #{cois.name}
+    div data-row-span="1"
+      div data-field-span="1"
+        label 81. Pairwise Meta Analytic Result
+        - if @sd_meta_datum.pairwise_meta_analytic_results.empty?
+          div N/A
+        - else
+          - @sd_meta_datum.pairwise_meta_analytic_results.each do |pairwise_meta_analytic_result|
+            div #{pairwise_meta_analytic_result.name}
+            p
+              - pairwise_meta_analytic_result.pictures.each do |picture|
+                = image_tag(picture, class: 'intense', size: '150x150')
+    div data-row-span="1"
+      div data-field-span="1"
+        label 83. Network Meta Analysis Result
+        - if @sd_meta_datum.network_meta_analysis_results.empty?
+          div N/A
+        - else
+          - @sd_meta_datum.network_meta_analysis_results.each do |network_meta_analysis_result|
+            div #{network_meta_analysis_result.name}
+            p
+              - network_meta_analysis_result.pictures.each do |picture|
+                = image_tag(picture, class: 'intense', size: '150x150')
+javascript:
+  $(document).ready(function() {
+    var intenseImages = $(document).find('.intense');
+    Intense(intenseImages);
+  })

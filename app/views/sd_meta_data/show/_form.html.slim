@@ -1,0 +1,21 @@
+.grid-x.align-center style="font-size: small !important;"
+  .cell.medium-2
+    #vertical-tabs.ul.tabs.vertical
+      li.tabs-title
+        = link_to 'Title, Funding Sources, and Dates', '?panel_number=0', class: (@panel_number == 0 ? 'bg-light-grey' : ''), id: "panel-0-label"
+      li.tabs-title
+        = link_to 'Authors and Stakeholders', '?panel_number=1', class: (@panel_number == 1 ? 'bg-light-grey' : ''), id: "panel-1-label"
+      li.tabs-title
+        = link_to 'Links', '?panel_number=2', class: (@panel_number == 2 ? 'bg-light-grey' : ''), id: "panel-2-label"
+      li.tabs-title
+        = link_to "Purpose and Key Questions", '?panel_number=3', class: (@panel_number == 3 ? 'bg-light-grey' : ''), id: "panel-3-label"
+      li.tabs-title
+        = link_to "PICODS for each Key Question", '?panel_number=4', class: (@panel_number == 4 ? 'bg-light-grey' : ''), id: "panel-4-label"
+      li.tabs-title
+        = link_to 'Search Strategy & Summary of Results', '?panel_number=6', class: (@panel_number == 6 ? 'bg-light-grey' : ''), id: "panel-6-label"
+      li.tabs-title
+        = link_to 'Study Results', '?panel_number=7', class: (@panel_number == 7 ? 'bg-light-grey' : ''), id: "panel-7-label"
+  .cell.medium-10
+    .tabs-content.vertical
+      div.grid-form
+        = render partial: "sd_meta_data/show/panel_#{@panel_number}", locals: { sd_meta_datum: @sd_meta_datum, project: @project }

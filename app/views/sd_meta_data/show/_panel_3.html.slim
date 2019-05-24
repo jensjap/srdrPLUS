@@ -1,0 +1,29 @@
+#panel-3.tabs-panel.is-active
+  fieldset
+    legend Purpose and Key Questions
+    div data-row-span="1"
+      div data-field-span="1"
+        label 32. Overall Purpose of Review
+        - opor = @sd_meta_datum.overall_purpose_of_review
+        div #{opor.present? ? opor : 'N/A' }
+    div data-row-span="1"
+      div data-field-span="1"
+        label 33. Type of Review
+        - tor = @sd_meta_datum.type_of_review
+        div #{tor.present? ? tor : 'N/A' }
+    div data-row-span="1"
+      div data-field-span="1"
+        label 34. Level of Data Analysis
+        - loa = @sd_meta_datum.level_of_analysis
+        div #{loa.present? ? loa : 'N/A' }
+    div data-row-span="1"
+      div data-field-span="1"
+        label 35 & 37. Key Question Types and Key Questions
+        - if @sd_meta_datum.sd_key_questions.empty?
+          div N/A
+        - else
+          - @sd_meta_datum.sd_key_questions.each do |sd_key_question|
+            - kqts = sd_key_question.key_question_types.map { |kqt| kqt.name }.join(", ")
+            p
+              div <b>Key Question Types:</b> #{kqts.present? ? kqts : 'N/A'}
+              div #{sd_key_question.key_question.name}
