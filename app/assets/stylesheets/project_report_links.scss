@@ -17,3 +17,6 @@
 .button.success.add-column {
   color: white;
 }
+li > .field-option-header, li > .field-option-header > * {
+  padding-left: 0;
+}
