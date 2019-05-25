@@ -141,7 +141,8 @@
       .cell.medium-9.recent-project
         .grid-x.grid-padding-x.grid-padding-y
           .cell.medium-4
-            h6 = "Published on #{ rp[1]['publication_requested_at'].to_datetime.strftime("%B %d, %Y") }"
+            - if rp[1]['publication_requested_at'].present?
+              h6 = "Published on #{ rp[1]['publication_requested_at'].to_datetime.strftime("%B %d, %Y") }"
             h5.bold = rp[1]['title']
             h6
               |
