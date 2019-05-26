@@ -14,7 +14,7 @@
         = f.input :name, required: true, hint: 'Project name cannot be blank', autofocus: true
         = f.input :description, input_html: { rows: 4 }
 
-        .key-questions
+        /.key-questions
           .key-questions-list
             = f.simple_fields_for :key_questions do |kq|
               = render 'projects/new/key_question_form', f: kq
@@ -25,7 +25,6 @@
                     "data-association-insertion-method" => 'append'
 
 
-        /= f.input :create_option, as: :hidden, input_html: {value: 'distiller'}
         select#create-type
           option value="empty" Create an empty project
           option value="json" Create project from an SRDR+ JSON export

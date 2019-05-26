@@ -1,5 +1,5 @@
 .nested-fields
-  .label
+  .label.confirm
     | Distiller References File
   .callout
     .row
@@ -9,4 +9,5 @@
         = f.input :content, as: :file, label: "File"
       .columns.small-12.medium-4.large-3
         = f.input :file_type_id, as: :select, collection: FileType.where(name: ['.csv', '.ris']), selected: FileType.find_by(name: '.ris').id
-    = link_to_remove_association "Remove References File", f, class: 'distiller-remove-references-file'
+    .hide
+      = link_to_remove_association "Remove References File", f, id: 'distiller-remove-references-file'

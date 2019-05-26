@@ -58,9 +58,8 @@ class ProjectsController < ApplicationController
   # POST /projects.json
   def create
     @project = Project.new(project_params)
-
     respond_to do |format|
-      if @project.save
+      if save_without_sections_if_imported_files_params_exist @project
         format.html { redirect_to edit_project_path(@project),
                       notice: t('success') + " #{ make_undo_link }" }
         format.json { render :show, status: :created, location: @project }
@@ -268,6 +267,23 @@ class ProjectsController < ApplicationController
 
     def gdrive_params
       params.permit( :columns => [ :column_name, :type, { :export_ids => [] } ] )
+    end
+
+    def save_without_sections_if_imported_files_params_exist(project)
+      if project_params[:imported_files_attributes].present?
+        ExtractionFormsProject.without_callback(:create, :after, :create_default_sections) do
+          ExtractionFormsProject.without_callback(:create, :after, :create_default_arms) do
+            if project.save
+              flash[:success] = "Import request submitted for project '#{ project.name }'. You will be notified by email of its completion."
+              return true
+            else
+              return false
+            end
+          end
+        end
+      else
+        return project.save
+      end
     end
 
    #def import_params

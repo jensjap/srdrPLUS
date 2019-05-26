@@ -72,6 +72,9 @@ class GsheetsExportJob < ApplicationJob
 
             current_row << get_question_data_string( eefps, t1_eefps, t1, col_hash['export_ids'] )
           when "Descriptive"
+            # TPs x ARMs x MEASUREs
+
+
           when "BAC"
           when "WAC"
           when "NET"

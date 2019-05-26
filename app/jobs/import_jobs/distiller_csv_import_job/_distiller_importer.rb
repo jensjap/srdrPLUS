@@ -4,8 +4,8 @@ class DistillerImporter
     @project = project
     pu = ProjectsUser.find_or_create_by!( project: @project, user: @user )
     @projects_users_role = ProjectsUsersRole.find_or_create_by!( projects_user: pu, role: Role.find_by( name: 'Importer' ) )
-    kq = KeyQuestion.find_or_create_by!( name: "FAKE KEY QUESTION")
-    @kqp = KeyQuestionsProject.find_or_create_by!( key_question: kq, project: @project )
+    #kq = KeyQuestion.find_or_create_by!( name: "FAKE KEY QUESTION")
+    #@kqp = KeyQuestionsProject.find_or_create_by!( key_question: kq, project: @project )
     user_info_kq = KeyQuestion.find_or_create_by!( name: "Imported User Info" )
     @user_info_kqp = KeyQuestionsProject.find_or_create_by!( key_question: user_info_kq, project: @project )
     @efps_position = 1
@@ -14,7 +14,6 @@ class DistillerImporter
   def add_t2_section(imported_file)
     qrcf_id_map = {}
     # TODO => Check filetype and importtype and return if wrong
-    # TODO => KEY QUESTION STUFF DOES NOT WORK
 
     csv_content = CSV.parse(imported_file.content.download.gsub /\r/, '')
 
@@ -30,7 +29,9 @@ class DistillerImporter
         next
       end
       # ordering is the same as the order in the header
-      qrcf_id_map[i] = import_question(efps, h, @kqp, i-2)
+      kq = imported_file.key_question
+      kqp = KeyQuestionsProject.find_or_create_by key_question: kq, project: @project
+      qrcf_id_map[i] = import_question(efps, h, kqp, i-2)
     end
     qrcf_id_map[1] = import_question(efps, "Extractor Username", @user_info_kqp, headers.length-2)
 
@@ -42,6 +43,12 @@ class DistillerImporter
   def import_extraction(row, pur, efps, qrcf_id_map)
     c_arr = Citation.where( refman: row[0] )
     cp = CitationsProject.where( project: @project, citation: c_arr ).first
+
+    if cp.nil?
+      raise "Citation Not Found"
+      return
+    end
+
     e = Extraction.find_or_create_by! project: @project, projects_users_role: pur, citations_project: cp
 
     row.each_with_index do |cell, i|
@@ -73,8 +80,8 @@ class DistillerImporter
 
     # ????????
     ExtractionFormsProjectsSectionOption.create! extraction_forms_projects_section: efps,
-                                                 by_type1: nil,
-                                                 include_total: nil
+                                                 by_type1: false,
+                                                 include_total: false
     return efps
   end
 
