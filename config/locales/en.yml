@@ -64,9 +64,11 @@ en:
       citations: Citation(s)
       tab_links:
         citations_index: Citation(s)
+        screening_teams: Screening Teams
         screening_options: Screening Options
         screening_extraction_form: Screening Extraction Form
         manage_citations_index: Manage Citation(s)
+        manage_screening_teams: Manage Screening Teams
         manage_screening_options: Manage_Screening Options
         manage_screening_extraction_form: Manage Screening Extraction Form
   screening_options: Screening Options
