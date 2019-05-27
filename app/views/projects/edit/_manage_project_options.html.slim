@@ -11,16 +11,16 @@
             = so_f.association :label_type, as: :check_boxes
 
           /VARIABLES
-          - yes_id = LabelType.find_by( name: 'Yes' ).id
-          - no_id = LabelType.find_by( name: 'No' ).id
-          - maybe_id = LabelType.find_by( name: 'Maybe' ).id
-          - reason_option_id = ScreeningOptionType.find_by( name: 'REASON_REQUIRED' ).id
-          - tag_option_id = ScreeningOptionType.find_by( name: 'TAG_REQUIRED' ).id
-          - note_option_id = ScreeningOptionType.find_by( name: 'NOTE_REQUIRED' ).id
-          - lead_tags_id = ScreeningOptionType.find_by( name: 'ONLY_LEAD_TAGS' ).id
-          - lead_reasons_id = ScreeningOptionType.find_by( name: 'ONLY_LEAD_REASONS' ).id
-          - hide_authors_id = ScreeningOptionType.find_by( name: 'HIDE_AUTHORS' ).id
-          - hide_journal_id = ScreeningOptionType.find_by( name: 'HIDE_JOURNAL' ).id
+          - yes_id = LabelType.find_or_create_by( name: 'Yes' ).id
+          - no_id = LabelType.find_or_create_by( name: 'No' ).id
+          - maybe_id = LabelType.find_or_create_by( name: 'Maybe' ).id
+          - reason_option_id = ScreeningOptionType.find_or_create_by( name: 'REASON_REQUIRED' ).id
+          - tag_option_id = ScreeningOptionType.find_or_create_by( name: 'TAG_REQUIRED' ).id
+          - note_option_id = ScreeningOptionType.find_or_create_by( name: 'NOTE_REQUIRED' ).id
+          - lead_tags_id = ScreeningOptionType.find_or_create_by( name: 'ONLY_LEAD_TAGS' ).id
+          - lead_reasons_id = ScreeningOptionType.find_or_create_by( name: 'ONLY_LEAD_REASONS' ).id
+          - hide_authors_id = ScreeningOptionType.find_or_create_by( name: 'HIDE_AUTHORS' ).id
+          - hide_journal_id = ScreeningOptionType.find_or_create_by( name: 'HIDE_JOURNAL' ).id
 
           table.hover.options-table
             tbody
