@@ -59,7 +59,16 @@ en:
   project_information: Project Information
   key_questions: Key Question(s)
   extraction_forms: Extraction Form(s)
-  citations: Citation(s)
+  citations:
+    index:
+      citations: Citation(s)
+      tab_links:
+        citations_index: Citation(s)
+        screening_options: Screening Options
+        screening_extraction_form: Screening Extraction Form
+        manage_citations_index: Manage Citation(s)
+        manage_screening_options: Manage_Screening Options
+        manage_screening_extraction_form: Manage Screening Extraction Form
   screening_options: Screening Options
   tasks: Task(s)
   time_prefix: ''

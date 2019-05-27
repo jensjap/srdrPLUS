@@ -1,14 +1,12 @@
-- provide(:title, t("citations"))
+- provide(:title, t('.citations'))
 
-.column.row
-  .title-heading
-    h2 = "Project Name: " + @project.name
+.grid-container
+  .grid-x
+    .cell
+      .title-heading
+        h2 = "Project Name: " + @project.name
 
-.column.row
-  = render 'projects/edit/manage_citations'
+    .cell
+      = render 'citations/index/tab_links'
 
-/.column.row
-  = render 'citations/index/citation_list'
-
-/  .column.medium-7.pagination
-/    = paginate @projects, remote: true
+      = render 'citations/index/tab_content'

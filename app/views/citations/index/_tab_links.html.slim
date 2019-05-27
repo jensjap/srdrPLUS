@@ -1,0 +1,10 @@
+ul#citations-tab.tabs data-deep-link='true' data-update-history='true' data-tabs=''
+
+  li.tabs-title.is-active
+    = link_to t('.citations_index'), '#panel-citations-index', title: t('.manage_citations_index')
+
+  li.tabs-title
+    = link_to t('.screening_options'), '#panel-screening-options', title: t('.manage_screening_options')
+
+  li.tabs-title
+    = link_to t('.screening_extraction_form'), '#panel-screening-extraction-form', title: t('.manage_screening_extraction_form')
