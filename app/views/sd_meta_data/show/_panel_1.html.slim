@@ -26,9 +26,8 @@
       div data-field-span="1"
         label 11. Project Leads:
         - @project.try(:leaders).try(:map) do |user|
-          / todo
-          div #{user.email}
+          - next if user.email.include?("@test.com")
+          div <b>#{[user.profile.first_name, user.profile.middle_name, user.profile.last_name].join(" ")}</b> (#{user.email})
       div data-field-span="1"
         label 12. SRDR Project Creator:
-        / todo
-        div #{@project.creator.email}
+        div <b>#{[@project.creator.profile.first_name, @project.creator.profile.middle_name, @project.creator.profile.last_name].join(" ")}</b> (#{@project.creator.email})
