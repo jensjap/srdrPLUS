@@ -22,6 +22,8 @@ class Project < ApplicationRecord
   include SharedPublishableMethods
   include SharedQueryableMethods
 
+  attr_accessor :create_empty
+
   acts_as_paranoid
   has_paper_trail
   searchkick
@@ -31,7 +33,8 @@ class Project < ApplicationRecord
   scope :published, -> { joins(publishings: :approval) }
   scope :lead_by_current_user, -> {}
 
-  after_create :create_default_extraction_form
+  after_create :create_default_extraction_form, unless: :create_empty
+  after_create :create_empty_extraction_form, if: :create_empty
   after_create :create_default_perpetual_task
   after_create :create_default_member
 
@@ -957,6 +960,14 @@ class Project < ApplicationRecord
         extraction_forms_project_type: ExtractionFormsProjectType.find_by(name: "Standard"),
         extraction_form: ExtractionForm.find_by(name: "ef1")
       )
+    end
+
+    def create_empty_extraction_form
+      efp = ExtractionFormsProject.new(project: self,
+                                       extraction_forms_project_type: ExtractionFormsProjectType.first,
+                                       extraction_form: ExtractionForm.first)
+      efp.create_empty = true
+      efp.save!
     end
 
     def create_default_perpetual_task

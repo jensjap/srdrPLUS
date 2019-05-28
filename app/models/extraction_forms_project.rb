@@ -16,6 +16,8 @@
 class ExtractionFormsProject < ApplicationRecord
   include SharedParanoiaMethods
 
+  attr_accessor :create_empty
+
   acts_as_paranoid column: :active, sentinel_value: true
   has_paper_trail
 
@@ -26,8 +28,8 @@ class ExtractionFormsProject < ApplicationRecord
   #    .distinct
   #}
 
-  after_create :create_default_sections
-  after_create :create_default_arms
+  after_create :create_default_sections, unless: :create_empty
+  after_create :create_default_arms, unless: :create_empty
 
   belongs_to :extraction_forms_project_type, inverse_of: :extraction_forms_projects, optional: true
   belongs_to :extraction_form,               inverse_of: :extraction_forms_projects

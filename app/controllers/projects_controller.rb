@@ -269,22 +269,19 @@ class ProjectsController < ApplicationController
       params.permit( :columns => [ :column_name, :type, { :export_ids => [] } ] )
     end
 
-    def save_without_sections_if_imported_files_params_exist(project)
-      if project_params[:imported_files_attributes].present?
-        ExtractionFormsProject.without_callback(:create, :after, :create_default_sections) do
-          ExtractionFormsProject.without_callback(:create, :after, :create_default_arms) do
-            if project.save
-              flash[:success] = "Import request submitted for project '#{ project.name }'. You will be notified by email of its completion."
-              return true
-            else
-              return false
-            end
-          end
-        end
-      else
-        return project.save
+  def save_without_sections_if_imported_files_params_exist(project)
+    if project_params[:imported_files_attributes].present?
+      project.create_empty = true
+      if not project.save
+        return false
       end
+      if project.imported_files.present?
+        flash[:success] = "Import request submitted for project '#{ project.name }'. You will be notified by email of its completion."
+      end
+      return true
     end
+    project.save
+  end
 
    #def import_params
    #  params.require(:project)
