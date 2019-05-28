@@ -1,3 +1,18 @@
+# == Schema Information
+#
+# Table name: imported_files
+#
+#  id              :integer          not null, primary key
+#  project_id      :integer
+#  user_id         :integer
+#  file_type_id    :integer
+#  import_type_id  :integer
+#  section_id      :integer
+#  created_at      :datetime         not null
+#  updated_at      :datetime         not null
+#  key_question_id :integer
+#
+
 class ImportedFile < ApplicationRecord
   validates :content, :presence => true
 

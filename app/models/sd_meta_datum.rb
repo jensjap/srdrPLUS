@@ -40,6 +40,8 @@
 #  section_flag_4                              :boolean          default(FALSE), not null
 #  section_flag_5                              :boolean          default(FALSE), not null
 #  section_flag_6                              :boolean          default(FALSE), not null
+#  report_accession_id                         :string(255)
+#  authors                                     :text(65535)
 #  section_flag_7                              :boolean          default(FALSE), not null
 #
 

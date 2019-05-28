@@ -24,6 +24,12 @@
 #  unlock_token           :string(255)
 #  locked_at              :datetime
 #  user_type_id           :integer
+#  provider               :string(255)
+#  uid                    :string(255)
+#  token                  :string(255)
+#  expires_at             :integer
+#  expires                :boolean
+#  refresh_token          :string(255)
 #
 
 class User < ApplicationRecord
