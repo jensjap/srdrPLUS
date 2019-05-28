@@ -20,6 +20,10 @@ class Project < ApplicationRecord
   has_many_attached :citation_files
 
   has_many :extractions, dependent: :destroy, inverse_of: :project
+  has_many :teams, dependent: :destroy
+  has_many :publishings, as: :publishable, dependent: :destroy
+  ## this does not feel right - Birol
+  has_many :orderings, through: :key_questions_projects, dependent: :destroy
 
   has_many :extraction_forms_projects, dependent: :destroy, inverse_of: :project
   has_many :extraction_forms, through: :extraction_forms_projects, dependent: :destroy
@@ -41,8 +45,6 @@ class Project < ApplicationRecord
   has_many :projects_users_roles, through: :projects_users, dependent: :destroy
   has_many :users, through: :projects_users, dependent: :destroy
 
-  has_many :publishings, as: :publishable, dependent: :destroy
-
   has_many :citations_projects, dependent: :destroy, inverse_of: :project
   has_many :citations, through: :citations_projects, dependent: :destroy
 
@@ -54,7 +56,6 @@ class Project < ApplicationRecord
 
   has_many :screening_options
   has_many :screening_option_types, through: :screening_options
-
 
   validates :name, presence: true
 

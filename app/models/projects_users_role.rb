@@ -14,8 +14,11 @@ class ProjectsUsersRole < ApplicationRecord
   has_one :user, through: :projects_user
   has_one :project, through: :projects_user
 
-  has_many :extractions, dependent: :destroy, inverse_of: :projects_users_role
   has_many :assignments, dependent: :destroy, inverse_of: :projects_users_role
+  has_many :extractions, dependent: :destroy, inverse_of: :projects_users_role
+
+  has_many :projects_users_roles_teams
+  has_many :teams, through: :projects_users_roles_teams, dependent: :destroy
 
   has_many :taggings, dependent: :destroy, inverse_of: :projects_users_role
   has_many :tags, through: :taggings, dependent: :destroy

@@ -1,0 +1,13 @@
+= simple_form_for(team) do |f|
+  table
+    thead
+      tr
+        th Name
+        th Delete?
+
+    tbody
+      tr
+        - team.projects_users_roles.each do |pur|
+          td = pur.handle
+          - f.simple_fields_for :projects_users_roles, pur do |sf_pur|
+            td = sf_pur.check_box :_destroy
