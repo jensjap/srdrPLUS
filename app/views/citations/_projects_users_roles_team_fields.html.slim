@@ -1,0 +1,3 @@
+.nested-fields
+  = f.association :projects_users_role, collection: f.object.project.projects_users_roles.uniq, label_method: :handle
+  = link_to_remove_association "Remove", f

@@ -110,6 +110,8 @@ Rails.application.routes.draw do
       post 'create_full_text_screening_extraction_form'
     end
 
+    resources :teams, only: [:create, :update, :destroy]
+
     resources :citations do
       collection do
         get 'labeled'

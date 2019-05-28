@@ -1,4 +1,10 @@
+span Team Members:
 = simple_form_for(team) do |f|
+  .links
+    = link_to_add_association f, :projects_users_roles_teams, class: 'button warning' do
+      i.fi-plus.warning
+      span< Add Member
+
   table
     thead
       tr
@@ -6,8 +12,10 @@
         th Delete?
 
     tbody
-      tr
-        - team.projects_users_roles.each do |pur|
-          td = pur.handle
-          - f.simple_fields_for :projects_users_roles, pur do |sf_pur|
-            td = sf_pur.check_box :_destroy
+      - team.projects_users_roles_teams.each do |purt|
+        tr
+          td = purt.handle
+          = f.simple_fields_for :projects_users_roles_teams, purt do |sf_purt|
+            td = sf_purt.check_box :_destroy
+
+  = f.submit 'Confirm', class: :button

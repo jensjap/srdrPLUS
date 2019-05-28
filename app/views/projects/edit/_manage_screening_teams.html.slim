@@ -2,22 +2,60 @@
   .grid-x.grid-margin-x
     .cell.medium-3
       ul#team-tabs.vertical.tabs data-tabs=''
-        - @project.teams.each do |team|
-          li.tabs-title.is-active
-            = link_to team.name || 'Team', "#panel-team-#{ team.id }", title: "Awesome team #{ team.name }"
+
+        - is_first = true
+
+        - @project.screening_teams.each do |team|
+          - if is_first
+            li.tabs-title.is-active
+              - if team.enabled
+                = link_to "#panel-team-#{ team.id }", title: "Citation Screening Team #{ team.name }" do
+                  span> = team.name
+                  i.fi-check style='color: green;'
+
+              - else
+                = link_to team.name, "#panel-team-#{ team.id }", title: "Citation Screening Team #{ team.name }"
+
+            - is_first = false
+
+          - else
+            li.tabs-title
+              - if team.enabled
+                = link_to "#panel-team-#{ team.id }", title: "Citation Screening Team #{ team.name }" do
+                  span> = team.name
+                  i.fi-check style='color: green;'
+
+              - else
+                = link_to team.name, "#panel-team-#{ team.id }", title: "Citation Screening Team #{ team.name }"
 
     .cell.medium-9
       .tabs-content data-tabs-content='team-tabs'
-        - @project.teams.each do |team|
-          .tabs-panel.is-active id="panel-team-#{ team.id }"
-            h1 Team members:
-            /= render 'projects/edit/team_table', team: team
 
+        - is_first = true
 
+        - @project.screening_teams.each do |team|
+          - if is_first
+            .tabs-panel.is-active id="panel-team-#{ team.id }"
+              = simple_form_for(team) do |f|
+                = f.input :enabled
+                = f.association :team_type, label: 'Team Type', include_blank: false
+                = f.input :name, label: 'Team Name'
+                = f.submit 'Update', class: :button
 
+              hr
 
+              = render 'projects/edit/team_table', team: team
 
-/= simple_form_for(@project) do |f|
-  = f.simple_fields_for(:teams) do |sf|
-    = sf.input :name
-  = f.submit 'Save', class: :button
+            - is_first = false
+
+          - else
+            .tabs-panel id="panel-team-#{ team.id }"
+              = simple_form_for(team) do |f|
+                = f.input :enabled
+                = f.association :team_type, label: 'Team Type', include_blank: false
+                = f.input :name, label: 'Team Name'
+                = f.submit 'Update', class: :button
+
+              hr
+
+              = render 'projects/edit/team_table', team: team

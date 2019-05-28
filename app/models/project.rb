@@ -70,6 +70,9 @@ class Project < ApplicationRecord
   accepts_nested_attributes_for :projects_users, allow_destroy: true
   accepts_nested_attributes_for :screening_options, allow_destroy: true
 
+  def screening_teams
+    teams.where(team_type: TeamType.find_by(name: 'Citation Screening Team')).or(teams.where(team_type: TeamType.find_by(name: 'Citation Screening Blacklist')))
+  end
 
   def public?
     self.publishings.any?(&:approval)
