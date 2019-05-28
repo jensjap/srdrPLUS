@@ -24,6 +24,13 @@
           = link_to_add_association 'add', f, :sd_evidence_tables, partial: 'sd_meta_data/form/dynamic_fields/sd_evidence_table_fields'
     div data-row-span="1"
       div data-field-span="1"
+        label 80. Forest Plot
+        = f.simple_fields_for :sd_forest_plots do |sd_forest_plot|
+          = render 'sd_meta_data/form/dynamic_fields/sd_forest_plot_fields', f: sd_forest_plot
+        div
+          = link_to_add_association 'add', f, :sd_forest_plots, partial: 'sd_meta_data/form/dynamic_fields/sd_forest_plot_fields'
+    div data-row-span="1"
+      div data-field-span="1"
         label 81-82. Pairwise Meta Analytic Result (Forest plot with summary estimate, type of model, and estimates of heterogeneity)
         = f.simple_fields_for :pairwise_meta_analytic_results do |pairwise_meta_analytic_result|
           = render 'sd_meta_data/form/dynamic_fields/pairwise_meta_analytic_result_fields', f: pairwise_meta_analytic_result

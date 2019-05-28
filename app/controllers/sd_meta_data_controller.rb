@@ -179,6 +179,7 @@ class SdMetaDataController < ApplicationController
           { sd_prisma_flows_attributes: [:name, :_destroy, :id, pictures: []] },
           { network_meta_analysis_results_attributes: [:name, :p_type, :_destroy, :id, pictures: []] },
           { pairwise_meta_analytic_results_attributes: [:name, :p_type, :_destroy, :id, pictures: []] },
+          { sd_forest_plots_attributes: [:name, :_destroy, :id, pictures: []] },
           { sd_meta_regression_analysis_results_attributes: [:name, :_destroy, :id] },
           { sd_summary_of_evidences_attributes: [:sd_key_question_id, :soe_type, :name, :_destroy, :id, pictures: []] }
         )

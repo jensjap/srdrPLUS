@@ -5,35 +5,76 @@
     legend Study Results
     div data-row-span="1"
       div data-field-span="1"
-        label 77. Comparison Outcome by Intervention Subgroup
+        label 76. & 78. Comparison Outcome by Population Subgroup
         - if @sd_meta_datum.comparison_outcome_intervention_subgroups.empty?
           div N/A
         - else
           - @sd_meta_datum.comparison_outcome_intervention_subgroups.each do |cois|
-            p
-              div style="font-size: 12px;" #{cois.name}
+            div style="margin: 20px 0;"
+              h3 style="font-size: 12px;" #{cois.sd_key_question.key_question.name}
+              div style="margin-left: 20px;"
+                p
+                  div style="font-weight: bold;" Comparison
+                  div style="font-size: 12px;" #{cois.name}
+                p
+                  div style="font-weight: bold;" Narrative Results
+                  div style="font-size: 12px;" #{cois.narrative_results.present? ? cois.narrative_results : "N/A"}
     div data-row-span="1"
       div data-field-span="1"
-        label 81. Pairwise Meta Analytic Result
+        label 79. Evidence Tables
+        - if @sd_meta_datum.sd_evidence_tables.empty?
+          div N/A
+        - else
+          - @sd_meta_datum.sd_evidence_tables.each do |sd_evidence_table|
+            div #{sd_evidence_table.name}
+    div data-row-span="1"
+      div data-field-span="1"
+        label 80. Forest Plots
+        - if @sd_meta_datum.sd_forest_plots.empty?
+          div N/A
+        - else
+          - @sd_meta_datum.sd_forest_plots.each do |sd_forest_plot|
+            div #{sd_forest_plot.name}
+            p
+              - sd_forest_plot.pictures.each do |picture|
+                = image_tag(picture, class: 'intense', size: '150x150')
+    div data-row-span="1"
+      div data-field-span="1"
+        label 81-82. Pairwise Meta Analytic Result
         - if @sd_meta_datum.pairwise_meta_analytic_results.empty?
           div N/A
         - else
           - @sd_meta_datum.pairwise_meta_analytic_results.each do |pairwise_meta_analytic_result|
+            div style="font-weight: bold" Type: #{pairwise_meta_analytic_result.p_type.present? ? pairwise_meta_analytic_result.p_type : "N/A" }
             div #{pairwise_meta_analytic_result.name}
             p
               - pairwise_meta_analytic_result.pictures.each do |picture|
                 = image_tag(picture, class: 'intense', size: '150x150')
     div data-row-span="1"
       div data-field-span="1"
-        label 83. Network Meta Analysis Result
+        label 83-85. Network Meta Analysis Result
         - if @sd_meta_datum.network_meta_analysis_results.empty?
           div N/A
         - else
           - @sd_meta_datum.network_meta_analysis_results.each do |network_meta_analysis_result|
+            div style="font-weight: bold" Type: #{network_meta_analysis_result.p_type.present? ? network_meta_analysis_result.p_type : "N/A" }
             div #{network_meta_analysis_result.name}
             p
               - network_meta_analysis_result.pictures.each do |picture|
                 = image_tag(picture, class: 'intense', size: '150x150')
+    div data-row-span="1"
+      div data-field-span="1"
+        label 86. Published Project Link
+        div = @sd_meta_datum.srdr_data_link.present? ? @sd_meta_datum.srdr_data_link.present? : "N/A"
+    div data-row-span="1"
+      div data-field-span="1"
+        label 87. Meta-regression analysis results
+        - if @sd_meta_datum.sd_meta_regression_analysis_results.empty?
+          div N/A
+        - else
+          - @sd_meta_datum.sd_meta_regression_analysis_results.each do |sd_meta_regression_analysis_result|
+            div #{sd_meta_regression_analysis_result.name}
+
 javascript:
   $(document).ready(function() {
     var intenseImages = $(document).find('.intense');

@@ -59,6 +59,7 @@ class SdMetaDatum < ApplicationRecord
   has_many :sd_evidence_tables, inverse_of: :sd_meta_datum
   has_many :network_meta_analysis_results, inverse_of: :sd_meta_datum
   has_many :pairwise_meta_analytic_results, inverse_of: :sd_meta_datum
+  has_many :sd_forest_plots, inverse_of: :sd_meta_datum
   has_many :sd_meta_regression_analysis_results, inverse_of: :sd_meta_datum
 
   has_many :sd_key_questions, inverse_of: :sd_meta_datum, dependent: :destroy
@@ -98,6 +99,7 @@ class SdMetaDatum < ApplicationRecord
   accepts_nested_attributes_for :sd_evidence_tables, allow_destroy: true
   accepts_nested_attributes_for :network_meta_analysis_results, allow_destroy: true
   accepts_nested_attributes_for :pairwise_meta_analytic_results, allow_destroy: true
+  accepts_nested_attributes_for :sd_forest_plots, allow_destroy: true
   accepts_nested_attributes_for :sd_meta_regression_analysis_results, allow_destroy: true
 
   def report
