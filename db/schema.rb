@@ -242,7 +242,21 @@ ActiveRecord::Schema.define(version: 2019_08_17_024915) do
     t.integer "sd_meta_datum_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "sd_key_question_id"
+    t.text "narrative_results"
+    t.index ["sd_key_question_id"], name: "index_cois_on_sd_key_question"
     t.index ["sd_meta_datum_id"], name: "index_cois_on_sd_meta_datum_id"
+  end
+
+  create_table "comparison_outcome_population_subgroups", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.text "name"
+    t.text "narrative_results"
+    t.integer "sd_meta_datum_id"
+    t.integer "sd_key_question_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["sd_key_question_id"], name: "index_cops_on_sd_key_question"
+    t.index ["sd_meta_datum_id"], name: "index_cops_on_sd_meta_datum"
   end
 
   create_table "comparisons", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -835,6 +849,7 @@ ActiveRecord::Schema.define(version: 2019_08_17_024915) do
     t.integer "sd_meta_datum_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "p_type"
     t.index ["sd_meta_datum_id"], name: "index_network_meta_analysis_results_on_sd_meta_datum_id"
   end
 
@@ -920,6 +935,7 @@ ActiveRecord::Schema.define(version: 2019_08_17_024915) do
     t.integer "sd_meta_datum_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "p_type"
     t.index ["sd_meta_datum_id"], name: "index_pairwise_meta_analytic_results_on_sd_meta_datum_id"
   end
 
@@ -1335,6 +1351,14 @@ ActiveRecord::Schema.define(version: 2019_08_17_024915) do
     t.index ["sd_meta_datum_id"], name: "index_sd_analytic_frameworks_on_sd_meta_datum_id"
   end
 
+  create_table "sd_evidence_tables", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.text "name"
+    t.integer "sd_meta_datum_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["sd_meta_datum_id"], name: "index_sd_evidence_tables_on_sd_meta_datum_id"
+  end
+
   create_table "sd_grey_literature_searches", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "sd_meta_datum_id"
     t.text "name"
@@ -1431,6 +1455,14 @@ ActiveRecord::Schema.define(version: 2019_08_17_024915) do
     t.string "report_accession_id"
     t.text "authors"
     t.boolean "section_flag_7", default: false, null: false
+  end
+
+  create_table "sd_meta_regression_analysis_results", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.text "name"
+    t.integer "sd_meta_datum_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["sd_meta_datum_id"], name: "index_sd_meta_regression_analysis_results_on_sd_meta_datum_id"
   end
 
   create_table "sd_other_items", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -1779,7 +1811,10 @@ ActiveRecord::Schema.define(version: 2019_08_17_024915) do
   add_foreign_key "comparate_groups", "comparisons"
   add_foreign_key "comparates", "comparable_elements"
   add_foreign_key "comparates", "comparate_groups"
+  add_foreign_key "comparison_outcome_intervention_subgroups", "sd_key_questions"
   add_foreign_key "comparison_outcome_intervention_subgroups", "sd_meta_data"
+  add_foreign_key "comparison_outcome_population_subgroups", "sd_key_questions"
+  add_foreign_key "comparison_outcome_population_subgroups", "sd_meta_data"
   add_foreign_key "comparisons_arms_rssms", "comparisons"
   add_foreign_key "comparisons_arms_rssms", "extractions_extraction_forms_projects_sections_type1s"
   add_foreign_key "comparisons_arms_rssms", "result_statistic_sections_measures"
@@ -1900,6 +1935,7 @@ ActiveRecord::Schema.define(version: 2019_08_17_024915) do
   add_foreign_key "screening_options", "projects"
   add_foreign_key "screening_options", "screening_option_types"
   add_foreign_key "sd_analytic_frameworks", "sd_meta_data"
+  add_foreign_key "sd_evidence_tables", "sd_meta_data"
   add_foreign_key "sd_grey_literature_searches", "sd_meta_data"
   add_foreign_key "sd_journal_article_urls", "sd_meta_data"
   add_foreign_key "sd_key_questions", "key_questions"
@@ -1909,6 +1945,7 @@ ActiveRecord::Schema.define(version: 2019_08_17_024915) do
   add_foreign_key "sd_key_questions_projects", "sd_key_questions"
   add_foreign_key "sd_key_questions_sd_picods", "sd_key_questions"
   add_foreign_key "sd_key_questions_sd_picods", "sd_picods"
+  add_foreign_key "sd_meta_regression_analysis_results", "sd_meta_data"
   add_foreign_key "sd_other_items", "sd_meta_data"
   add_foreign_key "sd_picods", "sd_meta_data"
   add_foreign_key "sd_prisma_flows", "sd_meta_data"

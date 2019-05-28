@@ -54,9 +54,12 @@ class SdMetaDatum < ApplicationRecord
 
   belongs_to :project, inverse_of: :sd_meta_data, optional: true
 
+  has_many :comparison_outcome_population_subgroups, inverse_of: :sd_meta_datum
   has_many :comparison_outcome_intervention_subgroups, inverse_of: :sd_meta_datum
+  has_many :sd_evidence_tables, inverse_of: :sd_meta_datum
   has_many :network_meta_analysis_results, inverse_of: :sd_meta_datum
   has_many :pairwise_meta_analytic_results, inverse_of: :sd_meta_datum
+  has_many :sd_meta_regression_analysis_results, inverse_of: :sd_meta_datum
 
   has_many :sd_key_questions, inverse_of: :sd_meta_datum, dependent: :destroy
   has_many :key_questions, through: :sd_key_questions
@@ -91,8 +94,11 @@ class SdMetaDatum < ApplicationRecord
   accepts_nested_attributes_for :sd_summary_of_evidences, allow_destroy: true
   accepts_nested_attributes_for :sd_prisma_flows, allow_destroy: true
   accepts_nested_attributes_for :comparison_outcome_intervention_subgroups, allow_destroy: true
+  accepts_nested_attributes_for :comparison_outcome_population_subgroups, allow_destroy: true
+  accepts_nested_attributes_for :sd_evidence_tables, allow_destroy: true
   accepts_nested_attributes_for :network_meta_analysis_results, allow_destroy: true
   accepts_nested_attributes_for :pairwise_meta_analytic_results, allow_destroy: true
+  accepts_nested_attributes_for :sd_meta_regression_analysis_results, allow_destroy: true
 
   def report
     Report.all.find { |report_meta| report_meta.accession_id == self.report_accession_id }

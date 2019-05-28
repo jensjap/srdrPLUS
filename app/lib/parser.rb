@@ -218,11 +218,7 @@ class Parser
       "Adverse Events\nRates of adverse events from combined interventions are presented in Table 26. Each adverse event was reported in only a single study. Detailed results are in Appendix F. One study reported on a combination of PFMT and the anticholinergic medication trospium, but reported only on three adverse events in 31 people.179 In this study low percentages of women reported visual adverse events (3.2%) and discontinuation due to adverse events (3.2%), but more reported dry mouth (23%).179 Four studies reported on adverse events from estrogen combined with PFMT, pessaries, and/or transcutaneous electrical nerve stimulation (TENS).82, 171, 177, 224 Each adverse event was evaluated by only a single study, but the percentage of women reporting these adverse events were below 4 percent."
     ]
     kq_77s.each do |name|
-      sd_meta_datum.comparison_outcome_intervention_subgroups << ComparisonOutcomeInterventionSubgroup.create(name: name)
-    end
-
-    kq_77s.each do |name|
-      sd_meta_datum.pairwise_meta_analytic_results << PairwiseMetaAnalyticResult.create(name: name)
+      sd_meta_datum.comparison_outcome_intervention_subgroups << ComparisonOutcomeInterventionSubgroup.create(name: name, sd_key_question: sd_meta_datum.sd_key_questions.first)
     end
 
     kq_81s = [
@@ -235,32 +231,38 @@ class Parser
     kq_81s.each do |data|
       pmar = PairwiseMetaAnalyticResult.create(
         sd_meta_datum: sd_meta_datum,
-        name: data[:name]
+        name: data[:name],
+        p_type: 'Forest plot with summary estimate, type of model, and estimates of heterogeneity'
       )
       data[:pictures].each do |picture|
         pmar.pictures.attach(io: File.open(Rails.root.join('demo_temp', picture)), filename: picture, content_type: 'image/png')
       end
+      sd_meta_datum.pairwise_meta_analytic_results << pmar
     end
 
     kq_83s = [
       {
         name: "The evidence graph for cure with respect to individual treatments is relatively sparse compared to all possible comparisons among treatments (or treatment categories) (Figures 8 and 9). Of note in Figure 8, there are three subgraphs. Three periurethral bulking agents (nodes U1, U2, and U4) have only been compared with each other and not with any of the other interventions in the graph. Also, a combination of vaginal estrogen and bladder support (H1+T5) has been compared with vaginal estrogen only (H1) and not with any other treatment in the graph. All other treatments in the graph have been compared with each other directly or indirectly.",
-        pictures: ["ch5f4.jpg", "ch5f5.jpg", "ch5f6.jpg"]
+        pictures: ["ch5f4.jpg", "ch5f5.jpg", "ch5f6.jpg"],
+        p_type: 'Network graph'
       },
       {
         name: "The evidence graph for improvement with respect to individual treatments is sparse (Figure 10) and comprises 2 subgraphs (U1/U2/U4/U7 and all others including U5). Figure 11 shows the evidence graph with respect to types of interventions. All intervention categories are connected in one subgraph.",
-        pictures: ["ch5f7.jpg", "ch5f8.jpg"]
+        pictures: ["ch5f7.jpg", "ch5f8.jpg"],
+        p_type: 'Network graph'
       },
       {
         name: "The evidence graph for improvement with respect to individual treatments is sparse (Figure 12), and comprises two subgraphs (B/N2 and all others). Figure 13 shows the evidence graph with respect to types of interventions. All intervention types are connected.",
-        pictures: ["ch5f9.jpg", "ch5f10.gif"]
+        pictures: ["ch5f9.jpg", "ch5f10.gif"],
+        p_type: 'Network graph'
       }
     ]
 
     kq_83s.each do |data|
       nmar = NetworkMetaAnalysisResult.create(
         sd_meta_datum: sd_meta_datum,
-        name: data[:name]
+        name: data[:name],
+        p_type: data[:p_type]
       )
       data[:pictures].each do |picture|
         nmar.pictures.attach(io: File.open(Rails.root.join('demo_temp', picture)), filename: picture, content_type: 'image/png')
