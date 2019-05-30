@@ -17,67 +17,180 @@ class GsheetsExportJob < ApplicationJob
 
     @rows = []
     t1_efps_set = Set.new
-    t1_efps_set << nil
-    t1_efps_arr = []
-    efps_id_to_combination_index = {}
+
+    efps_set = Set.new
+    include_pops = false
+    include_tps = false
+    include_comp_arms = false
+    include_comp_tps = false
+    arms_efps = nil
+    outcomes_efps = nil
 
     @column_args.each do |i, col_hash|
-      if col_hash['type'] == "Type 2"
+      case col_hash['type']
+      when "Type 2"
         efps = Question.find( col_hash['export_ids'].first ).extraction_forms_projects_section
-        if efps.link_to_type1.present?
-          t1_efps_set << efps.link_to_type1
-          if efps.extraction_forms_projects_section_option.by_type1
-            t1_efps_arr << efps.link_to_type1
-          else
-            t1_efps_arr << nil
-          end
-        else
-          t1_efps_arr << nil
+        if efps.section.name == "Arms"
+          arms_efps = efps
+        elsif efps.section.name == "Outcomes"
+          outcomes_efps = efps
+        elsif efps.link_to_type1.present?
+          efps_set << efps.link_to_type1
         end
+
+      when "Descriptive"
+        rssm = ResultStatisticSectionsMeasure.find(col_hash['export_ids'].first)
+        #outcomes
+        efps_set << @project.extraction_forms_projects.first.extractions_extraction_forms_projects_sections.where(section: Section.find_by(name: "Outcomes")).first
+        #arms
+        efps_set << @project.extraction_forms_projects.first.extractions_extraction_forms_projects_sections.where(section: Section.find_by(name: "Arms")).first
+        #populations
+        include_pops = true
+        #timepoints
+        include_tps = true
+      when "BAC"
+        #outcomes
+        efps_set << @project.extraction_forms_projects.first.extractions_extraction_forms_projects_sections.where(section: Section.find_by(name: "Outcomes")).first
+        #populations
+        include_pops = true
+        #timepoints
+        include_tps = true
+        #comp arms
+        include_comp_arms = true
+      when "WAC"
+        #outcomes
+        efps_set << @project.extraction_forms_projects.first.extractions_extraction_forms_projects_sections.where(section: Section.find_by(name: "Outcomes")).first
+        #arms
+        efps_set << @project.extraction_forms_projects.first.extractions_extraction_forms_projects_sections.where(section: Section.find_by(name: "Arms")).first
+        #populations
+        include_pops = true
+        #comp tps
+        include_comp_tps = true
+      when "NET"
+        #outcomes
+        efps_set << @project.extraction_forms_projects.first.extractions_extraction_forms_projects_sections.where(section: Section.find_by(name: "Outcomes")).first
+        #populations
+        include_pops = true
+        #comp arms
+        include_comp_arms = true
+        #comp tps
+        include_comp_tps = true
       end
     end
 
-    _first = true
-    @column_headers = ["Study ID", "Study Title", "Username"]
-    t1_efps_non_nil_indices = []
+    @type_dict = {'Descriptive' => ResultStatisticSectionType.find_by(name: 'Descriptive Statistics'),
+                  'BAC' => ResultStatisticSectionType.find_by(name: 'Between Arm Comparisons'),
+                  'WAC' => ResultStatisticSectionType.find_by(name: 'Within Arm Comparisons'),
+                  'NET' => ResultStatisticSectionType.find_by(name: 'NET Change')}
     @project.extractions.each do |ex|
-      #@t1_efps_set.to_a.sort{ |a,b| a.id <=> b.id }.each do |t1_efps|
-      t1_arr = []
-      t1_efps_set.each_with_index do |t1_efps, i|
-        if t1_efps
-          if _first then t1_efps_non_nil_indices << i; @column_headers << t1_efps.section.name end
-          t1_arr << ExtractionsExtractionFormsProjectsSection.find_by( extraction_forms_projects_section: t1_efps,\
-                                                                        extraction: ex ).type1s.all
-        else
-          t1_arr << [nil]
+      what_to_iter = []
+
+      if arms_efps.present?
+        eefps = ExtractionsExtractionFormsProjectsSection.find_by extraction: ex,
+                                                                  extraction_forms_projects_section: arms_efps
+
+        what_to_iter << eefps.extractions_extraction_forms_projects_sections_type1s.all
+      else
+        what_to_iter << [nil]
+      end
+
+      if outcomes_efps.present?
+        eefps = ExtractionsExtractionFormsProjectsSection.find_by extraction: ex,
+                                                                  extraction_forms_projects_section: outcomes_efps
+
+        combined_outcome_iter_arr = []
+
+        outcomes_eefpst1_arr = eefps.extractions_extraction_forms_projects_sections_type1s.all
+        outcomes_eefpst1_arr.each do |current_outcome|
+          outcome_iter_arr = [[current_outcome]]
+
+          # tps
+          if include_tps
+            outcome_iter_arr << current_outcome.extractions_extraction_forms_projects_sections_type1_row_columns.all#.map{|eefpst1_r| eefpst1_r.timepoint_name}
+          else
+            outcome_iter_arr << [nil]
+          end
+
+          if include_pops
+            eefpst1r_arr = current_outcome.extractions_extraction_forms_projects_sections_type1_rows.all
+
+            combined_pop_combinations = []
+
+            eefpst1r_arr.each do |eefpst1r|
+              population_iter_arr = [[eefpst1r]]#.population_name]]
+
+              # arms comparisons
+              if include_comp_arms
+                population_iter_arr << eefpst1r.result_statistic_sections.where(result_statistic_section_type_id: 2).first.comparisons.all
+              else
+                population_iter_arr << [nil]
+              end
+
+              # tps comparisons
+              if include_comp_tps
+                population_iter_arr << eefpst1r.result_statistic_sections.where(result_statistic_section_type_id: 2).first.comparisons.all
+              else
+                population_iter_arr << [nil]
+              end
+
+              pop_combinations = []
+              combined_pop_combinations << get_combinations(population_iter_arr, 0, [], pop_combinations)
+            end
+
+            #  [[pop, arms_comp, tps_comp]]
+            outcome_iter_arr << combined_pop_combinations
+          else
+            #  [[pop, arms_comp, tps_comp]]
+            outcome_iter_arr << [[nil, nil, nil]]
+          end
+
+          outcome_combinations = []
+          get_combinations(outcome_iter_arr, 0, [], outcome_combinations)
+          combined_outcome_iter_arr << [ outcome_combinations[0] ] + outcome_combinations[1]
         end
-        efps_id_to_combination_index[t1_efps&.id] = i
+        what_to_iter << combined_outcome_iter_arr
+      else
+        what_to_iter << [[nil, nil, nil, nil, nil]]
+      end
+
+      #other type1s
+      @t1_efps_dict = {arms_efps.id => 0, outcomes_efps => 1}
+      i = 5
+      efps_set.each do |efps|
+        eefps = ExtractionsExtractionFormsProjectsSection.find_by extraction: ex,
+                                                                  extraction_forms_projects_section: efps
+
+        what_to_iter << eefps.extractions_extraction_forms_projects_sections_type1s.all
+        @t1_efps_dict[efps.id] = i
+        i += 1
       end
 
       combination_arr = []
-      get_combinations t1_arr, 0, [], combination_arr
+      get_combinations what_to_iter, 0, [], combination_arr
 
-      combination_arr.each do |t1_combination|
-        current_row = [ex.citations_project.citation.id.to_s, ex.citations_project.citation.name, @user.profile.username] + t1_efps_non_nil_indices.map { |i| t1_combination[i].name }
+      flat_combination_arr = [combination_arr[0]] + combination_arr[1] + combination_arr[2..-1]
+
+      flat_combination_arr.each do |current_combination|
+        #current_row = [ex.citations_project.citation.id.to_s, ex.citations_project.citation.name, @user.profile.username] + t1_efps_non_nil_indices.map { |i| t1_combination[i].name }
+        current_row = []
         @column_args.each do |i, col_hash|
-          case col_hash['type']
-          when "Type 2"
+          if col_hash['type'] == "Type 2"
             efps = Question.find( col_hash['export_ids'].first ).extraction_forms_projects_section
             eefps = ExtractionsExtractionFormsProjectsSection.find_by extraction_id: ex.id, extraction_forms_projects_section_id: efps.id
-            t1_efps = t1_efps_arr[i.to_i]
-            t1_eefps = if t1_efps then ExtractionsExtractionFormsProjectsSection.find_by extraction_id: ex.id, extraction_forms_projects_section_id: t1_efps.id else nil end
+            t1_efps = efps.link_to_type1
 
-            t1 = nil
-            if t1_efps.present? then t1 = t1_combination[efps_id_to_combination_index[t1_efps&.id]] end
+            if t1_efps.present?
+              eefpst1 = current_combination[@t1_efps_dict[t1_efps.id]]
+            end
 
-            current_row << get_question_data_string( eefps, t1_eefps, t1, col_hash['export_ids'] )
-          when "Descriptive"
-            # TPs x ARMs x MEASUREs
-
-
-          when "BAC"
-          when "WAC"
-          when "NET"
+            current_row << get_question_data_string(eefps, eefpst1, col_hash['export_ids'])
+          else
+            rss = @type_dict[col_hash['type']]
+            eefpst1rc = current_combination[3]
+            arm_eefpst1 = current_combination[0]
+            arm_comp = current_combination[4]
+            tp_comp = current_combination[5]
+            current_row << get_results_data_string(rss, col_hash['export_ids'], arm_eefpst1, eefpst1rc, arm_comp, tp_comp)
           end
         end
         @rows << current_row
@@ -147,7 +260,7 @@ class GsheetsExportJob < ApplicationJob
     end
   end
 
-  def get_question_data_string eefps, t1_eefps, t1, qid_arr
+  def get_question_data_string(eefps, eefpst1, qid_arr)
     _first = true
 
     data_string = ""
@@ -169,7 +282,7 @@ class GsheetsExportJob < ApplicationJob
 
           qrcf_arr = qrc.question_row_column_fields.sort { |a,b| a.id <=> b.id }
           qrc_type_id = qrc.question_row_column_type_id
-          eefpsqrcf_arr = eefps.extractions_extraction_forms_projects_sections_question_row_column_fields.where( question_row_column_field: qrcf_arr, extractions_extraction_forms_projects_sections_type1: ExtractionsExtractionFormsProjectsSectionsType1.find_by( extractions_extraction_forms_projects_section: t1_eefps, type1: t1 ))
+          eefpsqrcf_arr = eefps.extractions_extraction_forms_projects_sections_question_row_column_fields.where( question_row_column_field: qrcf_arr, extractions_extraction_forms_projects_sections_type1: eefpst1 )
           record_arr = Record.where( recordable_type: 'ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField',
                                      recordable_id: eefpsqrcf_arr.map { |eefpsqrcf| eefpsqrcf.id } ).sort { |a,b| a.recordable_id <=> b.recordable_id }
           case qrc_type_id
@@ -207,7 +320,57 @@ class GsheetsExportJob < ApplicationJob
     return data_string
   end
 
-  def get_combinations arr_of_arrs, n, prefix, result_arr
+  def get_combination_headers combination
+  end
+
+  def get_combination_data_string combination
+    combination.each do
+  end
+
+  def get_results_data_string(rss, mid_arr, arm_eefpst1, eefpst1rc, arm_comp, tp_comp)
+    _first = true
+
+    data_string = ""
+
+    mid_arr.each do |mid|
+      if not _first then data_string += "\n" else _first = false end
+      rssm = ResultStatisticSectionsMeasure.find_by result_statistic_section: rss, measure: Measure.find(mid)
+      data_string += (rssm.measure.name+ ": ")
+
+      case rss.result_statistic_section_type_id
+      when 1
+        r_elem = TpsArmsRssm.find_by timepoint: eefpst1rc,
+                                     extractions_extraction_forms_projects_sections_type1: arm_eefpst1,
+                                     result_statistic_sections_measure: rssm
+        r = Record.find_by recordable_id: r_elem.id, recordable_type: "TpsArmsRssm"
+        data_string += r&.name || ""
+      when 2
+        r_elem = TpsComparisonsRssm.find_by timepoint: eefpst1rc,
+                                            comparison: arm_comp,
+                                            result_statistic_sections_measure: rssm
+        r = Record.find_by recordable_id: r_elem.id, recordable_type: "TpsComparisonsRssm"
+        data_string += r&.name || ""
+      when 3
+        r_elem = ComparisonsArmsRssm.find_by comparison: tp_comp,
+                                             arm: arm_eefpst1,
+                                             result_statistic_sections_measure: rssm
+        r = Record.find_by recordable_id: r_elem.id, recordable_type: "ComparisonsArmsRssm"
+        data_string += r&.name || ""
+      when 4
+        r_elem = WacsBacsRssm.find_by wac: tp_comp,
+                                      bac: arm_comp,
+                                      result_statistic_sections_measure: rssm
+        r = Record.find_by recordable_id: r_elem.id, recordable_type: "WacsBacsRssm"
+        data_string += r&.name || ""
+      end
+    end
+
+    return data_string
+  end
+
+  end
+
+  def get_combinations(arr_of_arrs, n, prefix, result_arr)
     if n >= arr_of_arrs.length
       result_arr << prefix
       return

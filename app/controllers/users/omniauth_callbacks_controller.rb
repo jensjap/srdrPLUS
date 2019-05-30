@@ -43,6 +43,6 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
       session["devise.google_data"] = request.env["omniauth.auth"].except("extra")
     end
 
-    redirect_to projects_path
+    redirect_back(fallback_location: projects_path)
   end
 end
