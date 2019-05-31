@@ -19,7 +19,7 @@
 .grid-form [data-row-span] [data-field-span] { padding: 8px; float: left; }
 @media only screen and (min-width: 0) and (max-width: 700px) { .grid-form [data-row-span] [data-field-span] { border-bottom: 1px solid #333; width: 100% !important; } }
 @media only screen and (min-width: 700px) { .grid-form [data-row-span] [data-field-span] { border-right: 1px solid #333; display: block; } }
-.grid-form [data-row-span] [data-field-span] label:first-child { margin-top: 0; text-transform: uppercase; letter-spacing: 1px; font-size: 12px; color: #333; display: block; margin-bottom: 4px; }
+.grid-form [data-row-span] [data-field-span] label:first-child { font-weight: bold; margin-top: 0; text-transform: uppercase; letter-spacing: 1px; font-size: 12px; color: #333; display: block; margin-bottom: 4px; }
 .grid-form [data-row-span] [data-field-span] label:first-child:hover { cursor: text; }
 .grid-form [data-row-span] [data-field-span]:last-child { border-right: none; }
 .grid-form [data-row-span] [data-field-span]:hover { background: #fffded; cursor: text; }
