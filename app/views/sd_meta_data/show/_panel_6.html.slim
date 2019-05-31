@@ -62,8 +62,3 @@
               p
                 - sd_summary_of_evidence.pictures.each do |picture|
                   = image_tag(picture, class: 'openable', style: 'height:100%;width:auto;')
-
-javascript:
-  $(document).on("click", ".openable", function() {
-    window.open($(this).attr('src'));
-  })

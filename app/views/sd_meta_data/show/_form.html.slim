@@ -19,3 +19,8 @@
     .tabs-content.vertical
       div.grid-form
         = render partial: "sd_meta_data/show/panel_#{@panel_number}", locals: { sd_meta_datum: @sd_meta_datum, project: @project }
+
+javascript:
+  $(document).on("click", ".openable", function() {
+    window.open($(this).attr('src'));
+  })

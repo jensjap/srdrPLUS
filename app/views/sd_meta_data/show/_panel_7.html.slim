@@ -72,8 +72,3 @@
         - else
           - @sd_meta_datum.sd_meta_regression_analysis_results.each do |sd_meta_regression_analysis_result|
             div #{sd_meta_regression_analysis_result.name}
-
-javascript:
-  $(document).on("click", ".openable", function() {
-    window.open($(this).attr('src'));
-  })

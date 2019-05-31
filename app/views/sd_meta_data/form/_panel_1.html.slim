@@ -3,16 +3,16 @@
     legend Authors and Stakeholders
     div data-row-span="1"
       div data-field-span="1"
-        = f.input :authors, label: '7. Authors', :input_html => { :rows => 5 }
+        = f.input :authors, label: '7. Authors', :input_html => { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
     div data-row-span="1"
       div data-field-span="1"
-        = f.input :authors_conflict_of_interest_of_full_report, label: '8. Conflicts of Interest of Authors of Full Report', :input_html => { :rows => 5 }
+        = f.input :authors_conflict_of_interest_of_full_report, label: '8. Conflicts of Interest of Authors of Full Report', :input_html => { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
     div data-row-span="1"
       div data-field-span="1"
-        = f.input :stakeholder_involvement_extent, label: '9. Stakeholders Involved', :input_html => { :rows => 5 }
+        = f.input :stakeholder_involvement_extent, label: '9. Stakeholders Involved', :input_html => { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
     div data-row-span="1"
       div data-field-span="1"
-        = f.input :stakeholders_conflict_of_interest, label: '10. Conflicts of Interest of Stakeholders', :input_html => { :rows => 5 }
+        = f.input :stakeholders_conflict_of_interest, label: '10. Conflicts of Interest of Stakeholders', :input_html => { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
     div data-row-span="2"
       div data-field-span="1"
         label 11. Project Leads:

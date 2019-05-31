@@ -3,7 +3,7 @@
     legend Purpose and Key Questions
     div data-row-span="1"
       div data-field-span="1"
-        = f.input :overall_purpose_of_review, label: '32. Overall Purpose of Review', :input_html => { :rows => 5 }
+        = f.input :overall_purpose_of_review, label: '32. Overall Purpose of Review', :input_html => { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
     div data-row-span="1"
       div data-field-span="1"
         = f.input :type_of_review, label: '33. Type of Review'

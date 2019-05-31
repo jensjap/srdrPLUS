@@ -1,10 +1,11 @@
 .nested-fields
-  = f.input :name, label: 'Result', input_html: { rows: 5 }
-  = f.input :p_type, label: 'Type', include_blank: false, input_html: { rows: 5 }, collection: ['Forest plot with summary estimate, type of model, and estimates of heterogeneity', 'Meta-analysis results table']
+  = f.input :name, label: 'Result', input_html: { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
+  = f.input :p_type, label: 'Type', include_blank: false, input_html: { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }, collection: ['Forest plot with summary estimate, type of model, and estimates of heterogeneity', 'Meta-analysis results table']
   = f.input :pictures, label: 'Pictures', input_html: { multiple: true }
   div
     = link_to_remove_association "Remove", f
     - f.object.pictures.each do |picture|
       div
-        = image_tag(picture, style: "width: 100px; margin: 20px;")
+        = image_tag(picture, class: 'openable', style: 'height:100%;width:auto;')
+        br
         = link_to 'Remove', delete_image_attachment_picture_path(picture.id), method: :delete, data: { confirm: 'Are you sure?' }, remote: true

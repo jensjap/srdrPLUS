@@ -24,4 +24,14 @@
       br/
       .form-actions
         = f.error_notification
-        = link_to 'Save & Go Back to SD Meta Data Dashboard', sd_meta_data_path, class: "button", style: "margin-left: 10px;"
+        = link_to 'Save & Go Back to My SRDR 2.0 Dashboard', sd_meta_data_path, class: "button", style: "margin-left: 10px;"
+
+javascript:
+  $('textarea').each(function() {
+    this.style.height = "";
+    this.style.height = this.scrollHeight + "px"
+  })
+
+  $(document).on("click", ".openable", function() {
+    window.open($(this).attr('src'));
+  })
