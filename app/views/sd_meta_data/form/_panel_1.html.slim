@@ -21,7 +21,10 @@
           div <b>#{[user.profile.first_name, user.profile.middle_name, user.profile.last_name].join(" ")}</b> (#{user.email})
       div data-field-span="1"
         label 12. SRDR Project Creator:
-        div <b>#{[@project.creator.profile.first_name, @project.creator.profile.middle_name, @project.creator.profile.last_name].join(" ")}</b> (#{@project.creator.email})
+        - if @project.creator.email.include?("@test.com")
+          div
+        - else
+          div <b>#{[@project.creator.profile.first_name, @project.creator.profile.middle_name, @project.creator.profile.last_name].join(" ")}</b> (#{@project.creator.email})
   br/
   br/
   fieldset

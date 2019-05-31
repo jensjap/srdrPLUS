@@ -1,11 +1,11 @@
 .column.row#project-list
   h3 Create New Link
-  h6 style="font-weight: bold; margin-top: 10px;" Linked SRDR Project
+  h6 style="font-weight: bold; margin-top: 10px;" Source SRDR Project
   select id="project-create"
     - @projects.each do |project|
       option
       option value="#{project.id}" #{project.name}
-  h6 style="font-weight: bold; margin-top: 10px;" Linked Systematic Review
+  h6 style="font-weight: bold; margin-top: 10px;" Source Systematic Review Report
   select id="report-create"
     - @reports.each do |report|
       option

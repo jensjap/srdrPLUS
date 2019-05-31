@@ -1,5 +1,3 @@
-= render 'sd_meta_data/show/intense_js'
-
 #panel-7.tabs-panel.is-active
   fieldset
     legend Study Results
@@ -37,7 +35,7 @@
             div #{sd_forest_plot.name}
             p
               - sd_forest_plot.pictures.each do |picture|
-                = image_tag(picture, class: 'intense', size: '150x150')
+                = image_tag(picture, class: 'openable', style: 'height:100%;width:auto;')
     div data-row-span="1"
       div data-field-span="1"
         label 81-82. Pairwise Meta Analytic Result
@@ -49,7 +47,7 @@
             div #{pairwise_meta_analytic_result.name}
             p
               - pairwise_meta_analytic_result.pictures.each do |picture|
-                = image_tag(picture, class: 'intense', size: '150x150')
+                = image_tag(picture, class: 'openable', style: 'height:100%;width:auto;')
     div data-row-span="1"
       div data-field-span="1"
         label 83-85. Network Meta Analysis Result
@@ -61,11 +59,11 @@
             div #{network_meta_analysis_result.name}
             p
               - network_meta_analysis_result.pictures.each do |picture|
-                = image_tag(picture, class: 'intense', size: '150x150')
+                = image_tag(picture, class: 'openable', style: 'height:100%;width:auto;')
     div data-row-span="1"
       div data-field-span="1"
         label 86. Published Project Link
-        div = @sd_meta_datum.srdr_data_link.present? ? @sd_meta_datum.srdr_data_link.present? : "N/A"
+        div = @sd_meta_datum.srdr_data_link.present? ? link_to(@sd_meta_datum.srdr_data_link, @sd_meta_datum.srdr_data_link, target: :_blank) : "N/A"
     div data-row-span="1"
       div data-field-span="1"
         label 87. Meta-regression analysis results
@@ -76,7 +74,6 @@
             div #{sd_meta_regression_analysis_result.name}
 
 javascript:
-  $(document).ready(function() {
-    var intenseImages = $(document).find('.intense');
-    Intense(intenseImages);
+  $(document).on("click", ".openable", function() {
+    window.open($(this).attr('src'));
   })

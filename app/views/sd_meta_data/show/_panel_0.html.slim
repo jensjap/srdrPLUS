@@ -21,7 +21,7 @@
         div #{@sd_meta_datum.try(:date_of_last_search).try(:to_date)}
       div data-field-span="1"
         label 5. Date of Publication to SRDR:
-        div #{project.try(:publication_requested_at) ? project.publication_requested_at : "Not Published"}
+        div #{@sd_meta_datum.date_of_publication_to_srdr.try(:to_date)}
         br/
         br/
         br/
