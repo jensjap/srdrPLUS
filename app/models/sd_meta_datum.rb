@@ -56,13 +56,13 @@ class SdMetaDatum < ApplicationRecord
 
   belongs_to :project, inverse_of: :sd_meta_data, optional: true
 
-  has_many :comparison_outcome_population_subgroups, inverse_of: :sd_meta_datum
-  has_many :comparison_outcome_intervention_subgroups, inverse_of: :sd_meta_datum
-  has_many :sd_evidence_tables, inverse_of: :sd_meta_datum
-  has_many :network_meta_analysis_results, inverse_of: :sd_meta_datum
-  has_many :pairwise_meta_analytic_results, inverse_of: :sd_meta_datum
-  has_many :sd_forest_plots, inverse_of: :sd_meta_datum
-  has_many :sd_meta_regression_analysis_results, inverse_of: :sd_meta_datum
+  has_many :comparison_outcome_population_subgroups, inverse_of: :sd_meta_datum, dependent: :destroy
+  has_many :comparison_outcome_intervention_subgroups, inverse_of: :sd_meta_datum, dependent: :destroy
+  has_many :sd_evidence_tables, inverse_of: :sd_meta_datum, dependent: :destroy
+  has_many :network_meta_analysis_results, inverse_of: :sd_meta_datum, dependent: :destroy
+  has_many :pairwise_meta_analytic_results, inverse_of: :sd_meta_datum, dependent: :destroy
+  has_many :sd_forest_plots, inverse_of: :sd_meta_datum, dependent: :destroy
+  has_many :sd_meta_regression_analysis_results, inverse_of: :sd_meta_datum, dependent: :destroy
 
   has_many :sd_key_questions, inverse_of: :sd_meta_datum, dependent: :destroy
   has_many :key_questions, through: :sd_key_questions
