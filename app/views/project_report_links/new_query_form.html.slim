@@ -197,7 +197,7 @@ javascript:
   })
 
   $(document).on('click', '.start-query', function() {
-    $.post($('#export-to-gdrive-url').text(),{ columns: extractReportQuestions() })
+    $.post($('#export-to-gdrive-url').text(),extractReportQuestions())
   })
 
   $( document ).ready(function() {
