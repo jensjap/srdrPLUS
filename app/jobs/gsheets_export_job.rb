@@ -270,7 +270,7 @@ class GsheetsExportJob < ApplicationJob
       ## This metadata specifies resulting file name and what it should be converted into (in this case 'Google Sheets')
       file_metadata = {
           # BELOW IS THE FOLDER ID, IT SHOULD BE IN A CONFIG FILE, I DON'T KNOW WHICH -BIROL
-          parent: "1ch4FAcY8yjnlyDtYnxj0mRWh4hWoIvtB",
+          parents: ["1ch4FAcY8yjnlyDtYnxj0mRWh4hWoIvtB"],
           name: @project.name,
           mime_type: 'application/vnd.google-apps.spreadsheet'
       }
