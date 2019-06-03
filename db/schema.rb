@@ -1485,10 +1485,24 @@ ActiveRecord::Schema.define(version: 2019_08_17_024915) do
   create_table "sd_picods", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "sd_meta_datum_id"
     t.text "name"
-    t.string "p_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["sd_meta_datum_id"], name: "index_sd_picods_on_sd_meta_datum_id"
+  end
+
+  create_table "sd_picods_sd_picods_types", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "sd_picod_id"
+    t.integer "sd_picods_type_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["sd_picod_id"], name: "index_sdspt_sd_picod"
+    t.index ["sd_picods_type_id"], name: "index_sdspt_sd_picod_type"
+  end
+
+  create_table "sd_picods_types", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "sd_prisma_flows", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -1957,6 +1971,8 @@ ActiveRecord::Schema.define(version: 2019_08_17_024915) do
   add_foreign_key "sd_meta_regression_analysis_results", "sd_meta_data"
   add_foreign_key "sd_other_items", "sd_meta_data"
   add_foreign_key "sd_picods", "sd_meta_data"
+  add_foreign_key "sd_picods_sd_picods_types", "sd_picods"
+  add_foreign_key "sd_picods_sd_picods_types", "sd_picods_types"
   add_foreign_key "sd_prisma_flows", "sd_meta_data"
   add_foreign_key "sd_project_leads", "sd_meta_data"
   add_foreign_key "sd_project_leads", "users"

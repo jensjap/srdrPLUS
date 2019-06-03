@@ -54,6 +54,7 @@ document.addEventListener 'turbolinks:load', ->
     init_select2(".key_question_type", '/key_question_types')
     sd_meta_datum_id = $(".sd_picods_key_question").data('sd-meta-datum-id')
     init_select2(".sd_picods_key_question", "/sd_key_questions?sd_meta_datum_id=#{sd_meta_datum_id}")
+    init_select2(".sd_picods_type", '/sd_picods_types')
 
     $( "form" ).on "cocoon:after-insert", (_, row) ->
       sd_meta_datum_id = $(".sd_picods_key_question").data('sd-meta-datum-id')

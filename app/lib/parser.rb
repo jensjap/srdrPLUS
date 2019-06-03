@@ -134,7 +134,7 @@ class Parser
       }
     ]
 
-    sd_meta_datum.sd_picods << picods.map { |picod| SdPicod.find_or_create_by(name: picod[:text], sd_meta_datum_id: sd_meta_datum.id, p_type: picod[:type]) }
+    sd_meta_datum.sd_picods << picods.map { |picod| SdPicod.find_or_create_by(name: picod[:text], sd_picods_types: [SdPicodsType.find_or_create_by(name: picod[:type])]) }
 
     literature_flows = [
       {
