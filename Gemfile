@@ -173,4 +173,7 @@ gem 'fuzzy_match'
 # Font Awesome Icons
 gem 'font-awesome-rails'
 
-gem 'omniauth-google-oauth2'
+# Allows us to authenticate via Google's servers, so we can create google exports
+gem "omniauth-google-oauth2"
+
+gem "googleauth"

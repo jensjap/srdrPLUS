@@ -562,6 +562,7 @@ DEPENDENCIES
   fuzzy_match
   gon
   google-api-client
+  googleauth
   guard
   guard-minitest
   httparty

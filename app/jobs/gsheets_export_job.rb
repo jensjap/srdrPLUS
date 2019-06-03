@@ -14,6 +14,7 @@ class GsheetsExportJob < ApplicationJob
     @project = Project.find args.second
     @user = User.find args.first
     @column_args = args.third['payload']
+    @key_questions_projects = KeyQuestionsProject.find args.third['kqs_ids']
 
     @rows = []
 
@@ -160,11 +161,7 @@ class GsheetsExportJob < ApplicationJob
 
 
           outcome_combinations.each do |outcome_combination|
-            begin
-              combined_outcome_iter_arr << [outcome_combination[0], outcome_combination[1]] + outcome_combination[2]
-            rescue
-              byebug
-            end
+            combined_outcome_iter_arr << [outcome_combination[0], outcome_combination[1]] + outcome_combination[2]
           end
 
         end
@@ -195,12 +192,8 @@ class GsheetsExportJob < ApplicationJob
 
       # flatten array manually
       combination_arr.each do |arr_elem|
-        begin
-          flat_combination_arr << [arr_elem[0]] + arr_elem[1]
-          arm_comparison_arr << arr_elem[1][3]
-        rescue
-          byebug
-        end
+        flat_combination_arr << [arr_elem[0]] + arr_elem[1]
+        arm_comparison_arr << arr_elem[1][3]
       end
 
       flat_combination_arr.each do |current_combination|
@@ -243,8 +236,10 @@ class GsheetsExportJob < ApplicationJob
       wrap       = p.workbook.styles.add_style alignment: { wrap_text: true }
 
 
-      p.workbook.add_worksheet(name: "KEY QUESTION NAME") do |sheet|
-        sheet.add_row @column_headers
+      p.workbook.add_worksheet(name: "Data") do |sheet|
+        write_key_questions @key_questions_projects, sheet, highlight
+        header_row = sheet.add_row @column_headers
+        header_row.style = highlight
         @rows.each do |row|
           sheet.add_row row
         end
@@ -252,52 +247,61 @@ class GsheetsExportJob < ApplicationJob
 
       p.serialize('tmp/project_'+@project.id.to_s+'.xlsx')
 
-      secrets = Google::APIClient::ClientSecrets.new({
-        "web" => {"access_token" => @user.token,
-                  "refresh_token" => @user.refresh_token,
-                  "client_id" => Rails.application.credentials[:google_apis][:client_id],
-                  "client_secret" => Rails.application.credentials[:google_apis][:client_secret]}})
-      service = Google::Apis::DriveV3::DriveService.new
-      service.authorization = secrets.to_authorization
+     # secrets = Google::APIClient::ClientSecrets.new({
+     #   "web" => {"access_token" => @user.token,
+     #             "refresh_token" => @user.refresh_token,
+     #             "client_id" => Rails.application.credentials[:google_apis][:client_id],
+     #             "client_secret" => Rails.application.credentials[:google_apis][:client_secret]}})
+      drive_service = Google::Apis::DriveV3::DriveService.new
+     #service.authorization = secrets.to_authorization
+      drive_service.authorization = ::Google::Auth::ServiceAccountCredentials
+                                         .make_creds(json_key_io: File.open('config/google_service_account_credentials.json'),
+                                                     scope: 'https://www.googleapis.com/auth/drive')
 
+      callback = lambda do |res, err|
+        if err
+          # Handle error...
+          puts err.body
+        else
+          puts "Permission ID: #{res.id}"
+        end
+      end
 
       ## This metadata specifies resulting file name and what it should be converted into (in this case 'Google Sheets')
       file_metadata = {
-        name: @project.name,
-        mime_type: 'application/vnd.google-apps.spreadsheet'
+          # BELOW IS THE FOLDER ID, IT SHOULD BE IN A CONFIG FILE, I DON'T KNOW WHICH -BIROL
+          parent: "1ch4FAcY8yjnlyDtYnxj0mRWh4hWoIvtB",
+          name: @project.name,
+          mime_type: 'application/vnd.google-apps.spreadsheet'
       }
       ## Here we specify what should server return (only the file id in this case), file location and the filetype (in this case 'xlsx')
-      file = service.create_file(file_metadata,
-                                 fields: 'id',
-                                 upload_source: 'tmp/project_'+@project.id.to_s+'.xlsx',
-                                 content_type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+      file = drive_service.create_file(file_metadata,
+                                       fields: 'id, webViewLink',
+                                       upload_source: 'tmp/project_'+@project.id.to_s+'.xlsx',
+                                       content_type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+      domain_permission = {
+          type: 'anyone',
+          role: 'reader'
+      }
+
+      drive_service.create_permission(file.id,
+                                domain_permission,
+                                fields: 'id',
+                                &callback)
+
 
       puts "File Id: #{file.id}"
-      # spreadsheet = service.create_spreadsheet(spreadsheet, fields: 'spreadsheetId')
-      # spreadsheet_id = spreadsheet.spreadsheet_id
-
-      # range = 'Sheet1'
-
-      # val_range = Google::Apis::SheetsV4::ValueRange.new( values: [['TEST_HEADER', 'LOYLOY'], ['TEST_CONTENT', 'LEYLEY']] )
-      # service.append_spreadsheet_value(spreadsheet_id, range, val_range, value_input_option: "RAW")
-
-      # response = service.get_spreadsheet_values(spreadsheet_id, range)
-      #
-      # response.values.each do |row|
-      #   # Print columns A and E, which correspond to indices 0 and 4.
-      #   puts "#{row[0]}, #{row[1]}"
-      # end
-
+      puts "File Link: #{file.web_view_link}"
 
       # Notify the user that the export is ready for download.
-      ExportMailer.notify_gsheets_export_completion(@user.id, @project.id, file.web_content_link).deliver_later
+      ExportMailer.notify_gsheets_export_completion(@user.id, @project.id, file.web_view_link).deliver_later
     end
   end
 
   def get_question_data_string(eefps, eefpst1, qid_arr)
     _first = true
 
-    data_string = ""
+    data_string = Axlsx::RichText.new
 
     qid_arr.each do |qid|
       q = Question.find qid
@@ -306,12 +310,21 @@ class GsheetsExportJob < ApplicationJob
       q.question_rows.each_with_index do |qr, ri|
         qr.question_row_columns.each_with_index do |qrc, ci|
 
-          if not _first then data_string += "\n" else _first = false end
+          #if not _first then data_string += "\n" else _first = false end
+          if not _first
+            data_string.add_run("\n")
+          else
+            _first = false
+          end
 
           if q.question_rows.length > 1 or qr.question_row_columns.length > 1
-            data_string += (q_name + " (row: " + ri.to_s + ", column: " + ci.to_s + "): ")
+            #data_string += (q_name + " (row: " + ri.to_s + ", column: " + ci.to_s + "): ")
+            data_string.add_run(q_name + " ", :b => true)
+            data_string.add_run("(row: " + ri.to_s + ", column: " + ci.to_s + ")", :b => true, :i => true)
+            data_string.add_run(": ", :b => true)
           else
-            data_string += (q_name + ": ")
+            #data_string += (q_name + ": ")
+            data_string.add_run(q_name + ": ", :b => true)
           end
 
           qrcf_arr = qrc.question_row_column_fields.sort { |a,b| a.id <=> b.id }
@@ -325,13 +338,16 @@ class GsheetsExportJob < ApplicationJob
           case qrc_type_id
           when 1
             if record_arr.length == 1
-              data_string += record_arr.first.name.to_s
+              #data_string += record_arr.first.name.to_s
+              data_string.add_run(record_arr.first.name.to_s)
             end
           when 2
             if record_arr.length == 1
-              data_string += record_arr.first.name.to_s
+              #data_string += record_arr.first.name.to_s
+              data_string.add_run(record_arr.first.name.to_s)
             elsif record_arr.length == 2
-              data_string += record_arr.first.name.to_s + " " + record_arr.second.name.to_s
+              #data_string += record_arr.first.name.to_s + " " + record_arr.second.name.to_s
+              data_string.add_run(record_arr.first.name.to_s + " " + record_arr.second.name.to_s)
             end
           when 3
             #nothing
@@ -340,11 +356,13 @@ class GsheetsExportJob < ApplicationJob
           when 5
             if record_arr.length == 1
               option_names = (record_arr.first.name[2..-3].split('", "') - [""]).map { |r| QuestionRowColumnsQuestionRowColumnOption.find(r.to_i).name }
-              data_string += '["' + option_names.join('", "') + '"]'
+              #data_string += '["' + option_names.join('", "') + '"]'
+              data_string.add_run( '["' + option_names.join('", "') + '"]' )
             end
           when 6,7,8
             if record_arr.length == 1
-              data_string += QuestionRowColumnsQuestionRowColumnOption.find(record_arr.first.name.to_i).name
+              #data_string += QuestionRowColumnsQuestionRowColumnOption.find(record_arr.first.name.to_i).name
+              data_string.add_run(QuestionRowColumnsQuestionRowColumnOption.find(record_arr.first.name.to_i).name)
             end
 
           when 9
@@ -364,7 +382,7 @@ class GsheetsExportJob < ApplicationJob
     if @include_pops then string_arr << "Population" end
     if @include_tps then string_arr << "Timepoint" end
     if @include_comp_arms
-      string_arr += ((1..(comp1_length+comp2_length)).map.with_index { |x, i| "Arm #{i}"})
+      string_arr += ((1..(comp1_length+comp2_length)).map.with_index { |x, i| "Arm #{(i+1).to_s}"})
       string_arr << "Comparison"
     end
     if @include_comp_tps
@@ -385,26 +403,6 @@ class GsheetsExportJob < ApplicationJob
 
   def get_combination_data_string combination, comp1_length, comp2_length
     string_arr = []
-    #combination.each do |c_elem|
-      #if c_elem.nil? then next end
-      #case c_elem.class.name
-      #when "ExtractionsExtractionFormsProjectsSectionType1"
-      #  string_arr << c_elem.type1.name
-      #when "ExtractionsExtractionFormsProjectsSectionType1Row"
-      #  string_arr << c_elem.population_name.name
-      #when "ExtractionsExtractionFormsProjectsSectionType1RowColumn"
-      #  string_arr << c_elem.timepoint_name.name
-      #when "Comparison"
-      #  if c_elem.comparate_groups.length == 0
-      #    string_arr << ([""] * (comp1_length + comp2_length))
-      #  else
-      #    c_elem.comparate_groups.first.comparates.map{ |c| c.comparable_element }
-      #  end
-      #  comp1_arr = c_elem.comparate_groups.first.
-      #  comp1_arr = [nil]*comp1_length
-      #  string_arr <<
-
-      #end
     if combination[0].present? then string_arr << combination[0].type1.name end
     if combination[1].present? then string_arr << combination[1].type1.name end
     if combination[3].present? then string_arr << combination[3].population_name.name end
@@ -416,21 +414,19 @@ class GsheetsExportJob < ApplicationJob
         comp1_string_arr = combination[4].comparate_groups.first.comparates.all.map{ |c| c.comparable_element.comparable.type1.name }
         comp2_string_arr = combination[4].comparate_groups.second.comparates.all.map{ |c| c.comparable_element.comparable.type1.name }
 
-        string_arr += (comp1_string_arr + (combination[4].comparate_groups.first.comparates.length - comp1_length) * [""])
-        string_arr += (comp2_string_arr + (combination[4].comparate_groups.second.comparates.length - comp2_length) * [""])
-        string_arr << comp1_string_arr.map.with_index { |x, i| "Arm #{i}"}.join(' and ') + " vs. " + comp2_string_arr.map.with_index { |x, i| "Arm #{comp1_string_arr.length + i}"}.join(' and ')
+        string_arr += (comp1_string_arr + ([""] * (combination[4].comparate_groups.first.comparates.length - comp1_length)))
+        string_arr += (comp2_string_arr + ([""] * (combination[4].comparate_groups.second.comparates.length - comp2_length)))
+        string_arr << comp1_string_arr.map.with_index { |x, i| "Arm #{i + 1}"}.join(' and ') + " vs. " + comp2_string_arr.map.with_index { |x, i| "Arm #{comp1_string_arr.length + i + 1}"}.join(' and ')
       end
     end
     if combination[5].present?
       if combination[5].comparate_groups.length == 0
         string_arr += ([""] * 3)
       else
-        begin
-          string_arr << combination[5].comparate_groups.first.comparates.first.comparable_element.comparable.timepoint_name.name
-        rescue
-          byebug
-        end
-        string_arr << combination[5].comparate_groups.second.comparates.first.comparable_element.comparable.timepoint_name.name
+        tp1 = combination[5].comparate_groups.first.comparates.first.comparable_element.comparable
+        tp2 = combination[5].comparate_groups.second.comparates.first.comparable_element.comparable
+        string_arr << tp1.timepoint_name.name + " " + tp1.timepoint_name.unit
+        string_arr << tp2.timepoint_name.name + " " + tp2.timepoint_name.unit
         string_arr << "Timepoint 1 vs. Timepoint 2"
       end
     end
@@ -446,13 +442,20 @@ class GsheetsExportJob < ApplicationJob
   def get_results_data_string(rss, mid_arr, arm_eefpst1, outcome_eefpst1, eefpst1r, eefpst1rc, arm_comp, tp_comp)
     _first = true
 
-    data_string = ""
+    #data_string = ""
+    data_string = Axlsx::RichText.new
 
     (mid_arr || []).each do |mid|
-      if not _first then data_string += "\n" else _first = false end
+      #if not _first then data_string += "\n" else _first = false end
+      if not _first
+          data_string.add_run("\n")
+        else
+          _first = false
+        end
       #rssm = ResultStatisticSectionsMeasure.find_by result_statistic_section: rss, measure: Measure.find(mid)
       rssm = ResultStatisticSectionsMeasure.find mid
-      data_string += (rssm.measure.name+ ": ")
+      #data_string += (rssm.measure.name+ ": ")
+      data_string.add_run(rssm.measure.name + ": ", :b => true)
 
       case rss.result_statistic_section_type_id
       when 1
@@ -461,7 +464,8 @@ class GsheetsExportJob < ApplicationJob
                                      result_statistic_sections_measure: rssm
         if r_elem.present?
           r = Record.find_by recordable_id: r_elem.id, recordable_type: "TpsArmsRssm"
-          data_string += r&.name || ""
+          #data_string += r&.name || ""
+          data_string.add_run(r&.name || "")
         end
       when 2
         r_elem = TpsComparisonsRssm.find_by timepoint: eefpst1rc,
@@ -469,7 +473,8 @@ class GsheetsExportJob < ApplicationJob
                                             result_statistic_sections_measure: rssm
         if r_elem.present?
           r = Record.find_by recordable_id: r_elem.id, recordable_type: "TpsComparisonsRssm"
-          data_string += r&.name || ""
+          #data_string += r&.name || ""
+          data_string.add_run(r&.name || "")
         end
       when 3
         r_elem = ComparisonsArmsRssm.find_by comparison: tp_comp,
@@ -477,7 +482,8 @@ class GsheetsExportJob < ApplicationJob
                                              result_statistic_sections_measure: rssm
         if r_elem.present?
           r = Record.find_by recordable_id: r_elem.id, recordable_type: "ComparisonsArmsRssm"
-          data_string += r&.name || ""
+          #data_string += r&.name || ""
+          data_string.add_run(r&.name || "")
         end
       when 4
         r_elem = WacsBacsRssm.find_by wac: tp_comp,
@@ -485,7 +491,8 @@ class GsheetsExportJob < ApplicationJob
                                       result_statistic_sections_measure: rssm
         if r_elem.present?
           r = Record.find_by recordable_id: r_elem.id, recordable_type: "WacsBacsRssm"
-          data_string += r&.name || ""
+          #data_string += r&.name || ""
+          data_string.add_run(r&.name || "")
         end
       end
     end
@@ -528,5 +535,13 @@ class GsheetsExportJob < ApplicationJob
                   end
     end
     return comp1_length, comp2_length
+  end
+
+  def write_key_questions(kqp_arr, sheet, highlight)
+    kq_header_row = sheet.add_row ["", "Key Questions"]
+    kq_header_row.style = highlight
+    kqp_arr.each_with_index do |kqp, i|
+      sheet.add_row [(i + 1).to_s, kqp.key_question.name]
+    end
   end
 end

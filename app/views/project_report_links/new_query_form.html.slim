@@ -121,7 +121,7 @@ javascript:
     });
     var keyQuestionProjectIds = $('#project-ids').
       data('key-question-project-ids').
-      split("").
+      split(",").
       slice(1).
       map(function(string) { return Number(string) })
 

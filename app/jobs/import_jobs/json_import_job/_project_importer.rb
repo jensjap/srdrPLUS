@@ -604,7 +604,6 @@ class ProjectImporter
                                                                                  type1: t1,
                                                                                  type1_type: t1_type
 
-
     ## I dont want to create duplicate t1 associations, so I use find_or_create_by!, then update!
     eefpst1.update! extractions_extraction_forms_projects_section: eefps,
                     type1: t1,
