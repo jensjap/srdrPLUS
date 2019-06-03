@@ -72,7 +72,7 @@ class SdMetaDatum < ApplicationRecord
 
   has_many :sd_key_questions_sd_picods, through: :sd_key_questions, dependent: :destroy
 
-  has_many :sd_journal_article_urls, inverse_of: :sd_meta_datum
+  has_many :sd_journal_article_urls, inverse_of: :sd_meta_datum, dependent: :destroy
   has_many :sd_other_items, inverse_of: :sd_meta_datum, dependent: :destroy
 
   has_many :sd_search_strategies, inverse_of: :sd_meta_datum, dependent: :destroy
