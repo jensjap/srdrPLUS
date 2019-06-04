@@ -7,7 +7,7 @@ class ProjectsController < ApplicationController
     :confirm_deletion, :dedupe_citations, :create_citation_screening_extraction_form, :create_full_text_screening_extraction_form
   ]
 
-  before_action :skip_authorization, only: [:index, :show, :filter, :export, :export_to_gdrive, :new, :create]
+  before_action :skip_authorization, only: [:index, :edit, :show, :filter, :export, :export_to_gdrive, :new, :create]
   before_action :skip_policy_scope, except: [
     :index, :show, :edit, :update, :destroy, :filter, :export, :export_to_gdrive, :import_csv,
     :import_pubmed, :import_endnote, :import_ris, :next_assignment
@@ -47,7 +47,7 @@ class ProjectsController < ApplicationController
 
   # GET /projects/1/edit
   def edit
-    authorize(@project)
+    # authorize(@project)
     @citation_dict = @project.citations.eager_load(:authors, :journal, :keywords).map{ |c| [c.id, c] }.to_h
     @citations_projects = @project.citations_projects
 

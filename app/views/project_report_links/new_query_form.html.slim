@@ -6,9 +6,7 @@
     = export_to_gdrive_project_url @project.id
 
   div#project-ids.grid-x.grid-padding-x data-key-question-project-ids="#{@key_question_project_ids}"
-    div.cell.small-3 style="margin-top: 15px;"
-      h5 Add columns to get started
-    div.cell.small-9 style="margin-top: 5px;"
+    div.cell.small-12
       div.button.start-query style="float: right; margin-left: 10px;" Start Query
       div.button.alert.remove-last-column style="float: right; margin-left: 10px;" Remove Last Column
       div.button.success.add-column style="float: right; margin-left: 10px;" Add Column
@@ -21,7 +19,7 @@
         ul.vertical.menu.accordion-menu data-accordion-menu=''
           li
             a.field-option-header href="#" #{key.name}
-            ul.menu.vertical.nested.is-active style="margin: 0;"
+            ul.menu.vertical.nested style="margin: 0;"
               li.field-option-parent
                 - @groups[key].each do |question|
                   div.query-draggable.right data-tooltip='' title="#{question.description.present? ? question.description : "No Description" }" id="kq-#{question.id}" data-type="Type2" data-item-id="#{question.id}" draggable="true" query-draggable="true" style="font-size: 12px;" #{ question.name }
@@ -29,17 +27,18 @@
         ul.vertical.menu.accordion-menu data-accordion-menu=''
           li
             a.field-option-header href="#" #{group.name}
-            ul.menu.vertical.nested.is-active style="margin: 0;"
+            ul.menu.vertical.nested style="margin: 0;"
               li.field-option-parent
                 - @results_groups[group].each do |rssm|
                   div.query-draggable id="rssm-#{rssm.id}" data-type="#{group.type_name}" data-item-id="#{rssm.id}" draggable="true" query-draggable="true" style="font-size: 12px;" #{ rssm.measure.name }
     div.cell.small-9 style="padding-top: 10px; border: 0.4px solid; overflow-x: auto;"
-      h1.noselect Add a column above to get started
       table id='table' style="width: 300px; table-layout: fixed;"
         thead
           tr
+            th.field-option-column-title style="width: 300px;" sample column
         tbody
           tr
+            td.droppable data-column-data="sample column"
 
 javascript:
   $.event.props.push('dataTransfer');
