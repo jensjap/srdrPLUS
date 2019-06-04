@@ -67,6 +67,7 @@ javascript:
     $('#table thead tr').append(`<th class='field-option-column-title' width="300px">${columnName}</th>`);
     $('#table tbody tr').append(`<td data-column-data=${columnName} class="droppable sortable"></td>`);
     $('#column-name').val('');
+    makeSortable();
   }
 
   function removeLastColumn() {
@@ -214,7 +215,6 @@ javascript:
 
   $(document).on('click', '.add-column', function() {
     addColumn();
-    makeSortable()
   })
 
   $(document).on('click', '.remove-last-column', function() {
