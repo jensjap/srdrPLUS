@@ -198,22 +198,10 @@ ul.menu.vertical.submenu.is-dropdown-submenu {
 // END Miscellaneous stuff.
 
 // Pagination.
-.column.row .pagination {
-  li {
-    a,
-    a:visited {
-      color: $primary-color;
-
-      &:hover {
-        background: none;
-      }
-    }
-
-    &.current {
-      a,
-      a:visited {
-        color: $white;
-      }
+.pagination {
+  .current {
+    a {
+      color: $white;
     }
   }
 }
