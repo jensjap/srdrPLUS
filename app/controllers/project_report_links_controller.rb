@@ -59,7 +59,7 @@ class ProjectReportLinksController < ApplicationController
       rssms.each do |key, values|
         ordered_2d[MEASURES_ORDER.index(key.name)] = [key, values]
       end
-      ordered_2d
+      ordered_2d.compact
     end
 
     def new_query_params
