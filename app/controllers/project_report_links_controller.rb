@@ -1,4 +1,6 @@
 class ProjectReportLinksController < ApplicationController
+  MEASURES_ORDER = ["Descriptive Statistics", "Between Arm Comparisons", "Within Arm Comparisons", "NET Change"].freeze
+
   def index
     @sd_meta_data = SdMetaDatum.includes(project: { key_questions_projects: :key_question }).where(state: 'COMPLETED')
   end
@@ -8,11 +10,13 @@ class ProjectReportLinksController < ApplicationController
     @key_question_project_ids = new_query_params[:kqp_ids].join(",")
     @project = SdMetaDatum.find(meta_datum_id).project
     if @project
-      @groups = @project.
+      groups_hash = @project.
         questions.
         joins(:key_questions_projects).
         where(key_questions_projects: { id: new_query_params[:kqp_ids] }).
         group_by { |question| question.extraction_forms_projects_section.section }
+
+      @groups = order_groups_hash(groups_hash)
     end
 
     @results_groups = get_rssm_groups(@project.id)
@@ -20,7 +24,17 @@ class ProjectReportLinksController < ApplicationController
 
   private
 
+    def order_groups_hash(hash)
+      ordered_2d = []
+      hash.each do |key, values|
+        index = values.first.extraction_forms_projects_section.ordering.position
+        ordered_2d[index] = [key, values]
+      end
+      ordered_2d.compact
+    end
+
     def get_rssm_groups(project_id)
+      ordered_2d = []
       rssms = ResultStatisticSectionsMeasure.
         joins(result_statistic_section: {
           population: {
@@ -41,7 +55,11 @@ class ProjectReportLinksController < ApplicationController
           }
         }).
         uniq(&:measure_id)
-      rssms.group_by { |rssm| rssm.result_statistic_section.result_statistic_section_type }
+      rssms = rssms.group_by { |rssm| rssm.result_statistic_section.result_statistic_section_type }
+      rssms.each do |key, values|
+        ordered_2d[MEASURES_ORDER.index(key.name)] = [key, values]
+      end
+      ordered_2d
     end
 
     def new_query_params

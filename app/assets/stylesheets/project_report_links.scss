@@ -2,7 +2,10 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
-.query-draggable {
+.field-option-column-title {
+  cursor: copy;
+}
+.query-pill {
   border: 1px solid;
   margin: 10px 0;
   padding: 3px;
@@ -24,6 +27,7 @@ li > .field-option-header, li > .field-option-header > * {
 }
 .field-option-column-title {
   text-align: center;
+  border: 1px solid black;
 }
 .noselect {
   color: lightgrey;

@@ -1,4 +1,6 @@
-- if @groups.keys.empty?
+script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"
+
+- if @groups.empty?
   div No questions found. Please make another selection.
   = link_to('Go Back', project_report_links_path)
 - else
@@ -15,22 +17,25 @@
   div.grid-x.grid-padding-x
     div.cell.small-3 style="padding-top: 10px; border: 0.4px solid; max-height: 500px; overflow-y: scroll;"
       input#field-search placeholder="Search for fields" style="width: 100%;"
-      - @groups.keys.each do |key|
+      - @groups.each do |section, items|
         ul.vertical.menu.accordion-menu data-accordion-menu=''
           li
-            a.field-option-header href="#" #{key.name}
+            a.field-option-header ondragstart="return false;" href="#" #{section.name}
             ul.menu.vertical.nested style="margin: 0;"
               li.field-option-parent
-                - @groups[key].each do |question|
-                  div.query-draggable.right data-tooltip='' title="#{question.description.present? ? question.description : "No Description" }" id="kq-#{question.id}" data-type="Type2" data-item-id="#{question.id}" draggable="true" query-draggable="true" style="font-size: 12px;" #{ question.name }
-      - @results_groups.keys.each do |group|
-        ul.vertical.menu.accordion-menu data-accordion-menu=''
-          li
-            a.field-option-header href="#" #{group.name}
-            ul.menu.vertical.nested style="margin: 0;"
-              li.field-option-parent
-                - @results_groups[group].each do |rssm|
-                  div.query-draggable id="rssm-#{rssm.id}" data-type="#{group.type_name}" data-item-id="#{rssm.id}" draggable="true" query-draggable="true" style="font-size: 12px;" #{ rssm.measure.name }
+                - items.each do |question|
+                  div.query-pill.query-draggable.right data-tooltip='' title="#{question.description.present? ? question.description : "No Description" }" id="kq-#{question.id}" data-type="Type2" data-item-id="#{question.id}" draggable="true" query-pill.="true" style="font-size: 12px;" #{ question.name }
+      ul.vertical.menu.accordion-menu data-accordion-menu=''
+        li
+          a.field-option-header ondragstart="return false;" href="#" Results
+          - @results_groups.each do |section, items|
+            ul.vertical.menu.accordion-menu data-accordion-menu=''
+              li
+                a.field-option-header ondragstart="return false;" href="#" #{section.name}
+                ul.menu.vertical.nested style="margin: 0;"
+                  li.field-option-parent
+                    - items.each do |rssm|
+                      div.query-pill.query-draggable id="rssm-#{rssm.id}" data-type="#{section.type_name}" data-item-id="#{rssm.id}" draggable="true" style="font-size: 12px;" #{ rssm.measure.name }
     div.cell.small-9 style="padding-top: 10px; border: 0.4px solid; overflow-x: auto;"
       table id='table' style="width: 300px; table-layout: fixed;"
         thead
@@ -38,46 +43,19 @@
             th.field-option-column-title style="width: 300px;" sample column
         tbody
           tr
-            td.droppable data-column-data="sample column"
+            td.droppable.sortable data-column-data="sample column"
 
 javascript:
   $.event.props.push('dataTransfer');
 
-  $(document).on('dragstart', '.query-draggable', function(ev) {
-    ev.dataTransfer.setData("text/plain", ev.target.id);
-  })
-
-  $(document).on('dragleave', '.droppable', function(ev) {
-    ev.preventDefault();
-    ev.currentTarget.style.background = "aliceblue";
-  })
-
-  $(document).on('dragover', '.droppable', function(ev) {
-    ev.stopPropagation();
-    ev.preventDefault();
-    if (ev.target.getAttribute("query-draggable") == "true") {
-      ev.dataTransfer.dropEffect = "none";
-    } else {
-      ev.currentTarget.style.background = "lightblue";
-      ev.dataTransfer.dropEffect = "copy";
-    }
-  })
-
-  $(document).on('drop', '.droppable', function(ev) {
-    ev.preventDefault();
-    ev.currentTarget.style.background = "aliceblue";
-    var data = ev.dataTransfer.getData("text/plain");
-    var nodeCopy = document.getElementById(data).cloneNode(true);
-    nodeCopy.id = new Date().getTime();
-    $(nodeCopy).text(`${$(nodeCopy).text()} - (click to remove)`)
-    $(nodeCopy).addClass('disableselect');
-    $(nodeCopy).addClass('clickremove');
-    ev.target.appendChild(nodeCopy);
-  })
-
-  $(document).on('click', '.clickremove', function(ev) {
-    ev.target.remove();
-  })
+  function checkForDuplicate(parentNode, candidateNode) {
+    var existingIds = [];
+    $(parentNode).children().each(function() {
+      existingIds.push(this.getAttribute('data-item-id'));
+    })
+    var candidateNodeId = candidateNode.getAttribute('data-item-id');
+    return existingIds.includes(candidateNodeId.toString());
+  }
 
   function addColumn() {
     $('.noselect').remove();
@@ -87,7 +65,7 @@ javascript:
       return;
     }
     $('#table thead tr').append(`<th class='field-option-column-title' width="300px">${columnName}</th>`);
-    $('#table tbody tr').append(`<td data-column-data=${columnName} class="droppable"></td>`);
+    $('#table tbody tr').append(`<td data-column-data=${columnName} class="droppable sortable"></td>`);
     $('#column-name').val('');
   }
 
@@ -104,13 +82,14 @@ javascript:
     var mapping = [];
 
     $('#table tbody tr').children().each(function() {
-      var column_name = $(this).data('column-data');
+      var currentEl = $(this);
+      var column_name = currentEl.closest('table').find('th').eq(currentEl.index()).text();
       var sectionMap = {
         column_name,
         export_ids: [],
         type: ''
       };
-      $(this).children().each (function() {
+      currentEl.children().each (function() {
         var questionId = $(this).data('item-id');
         var type = $(this).data('type');
         sectionMap.export_ids.push(questionId);
@@ -179,16 +158,63 @@ javascript:
     })
   }
 
+  function makeSortable() {
+    $('.sortable').sortable({
+      connectWith: ".sortable"
+    });
+  }
+
+  $(document).on('dragstart', '.query-draggable', function(ev) {
+    ev.dataTransfer.setData("text/plain", ev.target.id);
+  })
+
+  $(document).on('dragleave', '.droppable', function(ev) {
+    ev.preventDefault();
+    ev.currentTarget.style.background = "aliceblue";
+  })
+
+  $(document).on('dragover', '.droppable', function(ev) {
+    ev.stopPropagation();
+    ev.preventDefault();
+
+    if (ev.target.getAttribute("draggable") == "true") {
+      ev.dataTransfer.dropEffect = "none";
+    } else {
+      ev.currentTarget.style.background = "lightblue";
+      ev.dataTransfer.dropEffect = "copy";
+    }
+  })
+
+  $(document).on('drop', '.droppable', function(ev) {
+    ev.preventDefault();
+    ev.currentTarget.style.background = "aliceblue";
+    var data = ev.dataTransfer.getData("text/plain");
+    var originalNode = document.getElementById(data);
+
+    //if (checkForDuplicate(ev.target, originalNode)) return;
+
+    var nodeCopy = originalNode.cloneNode(true);
+    nodeCopy.id = new Date().getTime();
+    $(nodeCopy).text(`${$(nodeCopy).text()} - (click to remove)`)
+    $(nodeCopy).addClass('clickremove');
+    ev.target.appendChild(nodeCopy);
+  })
+
+  $(document).on('click', '.clickremove', function(ev) {
+    ev.target.remove();
+  })
+
   $('#column-name').on("keyup", function(e) {
     if (e.keyCode === 13) { addColumn(); }
   });
 
   $('#field-search').on("keyup", function(e) {
-    searchFields(e.target.value.toLowerCase())
+    searchFields(e.target.value.toLowerCase());
   });
 
   $(document).on('click', '.add-column', function() {
     addColumn();
+    makeSortable()
   })
 
   $(document).on('click', '.remove-last-column', function() {
@@ -196,10 +222,36 @@ javascript:
   })
 
   $(document).on('click', '.start-query', function() {
-    $.post($('#export-to-gdrive-url').text(),extractReportQuestions())
+    $.post($('#export-to-gdrive-url').text(), extractReportQuestions());
   })
 
-  $( document ).ready(function() {
+  $(document).on('click', '.field-option-column-title', function() {
+    var title = $(this).text();
+    var newInput = $(`<input class="column-title-input" value="${title}">`);
+    $(this).text('');
+    $(this).append(newInput);
+    newInput.focus();
+  })
+
+  $(document).on('click', '.column-title-input', function(ev) {
+    ev.stopPropagation();
+  })
+
+  $(document).on('focusout', '.column-title-input', function() {
+    var title = $(this).val();
+    if (title === '') title = 'No Title';
+    $(this).parent().text(title);
+    $(this).remove();
+  })
+
+  $(document).on('keypress', '.column-title-input', function(ev) {
+    if (ev.charCode === 13) {
+      $(ev.currentTarget).blur();
+    }
+  })
+
+  $(document).ready(function() {
     colorFieldOptions();
     countFieldChildren();
+    makeSortable();
   });
