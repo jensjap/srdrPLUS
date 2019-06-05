@@ -119,18 +119,24 @@ document.addEventListener 'turbolinks:load', ->
           $( '#distiller-remove-references-file' ).trigger "click"
           $( '#distiller-remove-section-file' ).trigger "click"
           $( '#remove-project-file' ).trigger "click"
+          $( '.submit' ).removeClass( 'hide' )
+          $( '.submit-with-confirmation' ).addClass( 'hide' )
         else if $( e.target ).val() == "distiller"
           $( '.distiller-import-panel' ).removeClass( 'hide' )
           $( '.json-import-panel' ).addClass( 'hide' )
           $( '#distiller-add-references-file' ).trigger "click"
           $( '#distiller-add-section-file' ).trigger "click"
           $( '#remove-project-file' ).trigger "click"
+          $( '.submit' ).addClass( 'hide' )
+          $( '.submit-with-confirmation' ).removeClass( 'hide' )
         else if $( e.target ).val() == "json"
           $( '.distiller-import-panel' ).addClass( 'hide' )
           $( '.json-import-panel' ).removeClass( 'hide' )
           $( '#distiller-remove-references-file' ).trigger "click"
           $( '#distiller-remove-section-file' ).trigger "click"
           $( '#add-project-file' ).trigger "click"
+          $( '.submit' ).addClass( 'hide' )
+          $( '.submit-with-confirmation' ).removeClass( 'hide' )
 
 ########## TASK MANAGEMENT
     if $( 'body.projects.edit' ).length == 1

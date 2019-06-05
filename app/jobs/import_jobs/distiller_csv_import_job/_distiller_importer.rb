@@ -40,8 +40,6 @@ class DistillerImporter
     kqp = KeyQuestionsProject.find_or_create_by key_question: kq, project: @project
 
     q_piece_arr = build_questions efps, header, kqp
-    q = import_question(efps, "Extractor Username", @user_info_kqp, "text")
-    q_piece_arr << q.question_rows.first.question_row_columns.first.question_row_column_fields.first
 
     csv_content[1..csv_content.length].each do |row|
       import_extraction(row, @projects_users_role, efps, q_piece_arr)
@@ -66,10 +64,14 @@ class DistillerImporter
     prev_qrcf = nil
 
     row.each_with_index do |cell, i|
-      if [0,1,2].include? i
+      if [0,2].include? i
         next
       end
-      q_piece = q_piece_arr[i-3]
+      if i == 1
+        q_piece = q_piece_arr.first
+      else
+        q_piece = q_piece_arr[i-2]
+      end
       if q_piece.class.name == "QuestionRowColumnField"
         qrcf = q_piece
         eefps = ExtractionsExtractionFormsProjectsSection.find_or_create_by!( extraction: e, extraction_forms_projects_section: efps )
@@ -148,11 +150,14 @@ class DistillerImporter
     q_piece_arr = []
     current_question = nil
     header.each_with_index do |cell, i|
-      if [0,1,2].include? i
+      if [0,2].include? i
         next
-      elsif i == 3
-        current_question = import_question efps, cell, kqp, "text"
-        q_piece_arr << current_question.question_rows.first.question_row_columns.first.question_row_column_fields.first
+      elsif i == 1
+      #  current_question = import_question efps, cell, kqp, "text"
+      #  q_piece_arr << current_question.question_rows.first.question_row_columns.first.question_row_column_fields.first
+      #  next
+        q = import_question(efps, "Extractor Username", @user_info_kqp, "text")
+        q_piece_arr << q.question_rows.first.question_row_columns.first.question_row_column_fields.first
         next
       end
 
@@ -184,7 +189,7 @@ class DistillerImporter
         end
       else
         #question_arr << { question_rows: [{question_row_columns: [{question_row_column_type_id: 1}]}], name: cell }
-        current_question = import_question efps, cell, kqp, "text"
+        current_question = import_question efps, cell.strip, kqp, "text"
         q_piece_arr << current_question.question_rows.first.question_row_columns.first.question_row_column_fields.first
       end
     end
@@ -217,7 +222,7 @@ class DistillerImporter
   end
 
   def add_comment_to_checkbox_question(q, option_text)
-    qr = QuestionRow.create(question: q, name: option_text + " - Comment:")
+    qr = QuestionRow.create(question: q, name: option_text)
     qr.question_row_columns.first.question_row_column_type_id = 1
     return qr
   end

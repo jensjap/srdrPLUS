@@ -215,7 +215,7 @@ class GsheetsExportJob < ApplicationJob
             outcome_eefpst1 = current_combination[1]
             eefpst1rc = current_combination[2]
             eefpst1r = current_combination[3]
-            rss = eefpst1r.result_statistic_sections.where(result_statistic_section_type: @type_dict[col_hash['type']]).first
+            rss = eefpst1r.result_statistic_sections.where(result_statistic_section_type: @type_dict[col_hash['type']])&.first
             arm_comp = current_combination[4]
             tp_comp = current_combination[5]
             current_row << get_results_data_string(rss, col_hash['export_ids'], arm_eefpst1, outcome_eefpst1, eefpst1r, eefpst1rc, arm_comp, tp_comp)
@@ -454,6 +454,7 @@ class GsheetsExportJob < ApplicationJob
         end
       #rssm = ResultStatisticSectionsMeasure.find_by result_statistic_section: rss, measure: Measure.find(mid)
       rssm = ResultStatisticSectionsMeasure.find mid
+      rss = rssm.result_statistic_section
       #data_string += (rssm.measure.name+ ": ")
       data_string.add_run(rssm.measure.name + ": ", :b => true)
 

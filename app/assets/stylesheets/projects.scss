@@ -533,6 +533,23 @@ a.add-task-button {
   }
 }
 
+.distiller-reference-file-container {
+  .callout {
+    background: #eee8f3;
+  }
+}
 
+.distiller-section-file-container {
+  .callout {
+    background: #fff3dc;
+  }
+}
+
+.drop-area {
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
 // END Colored triangles on the project index page.

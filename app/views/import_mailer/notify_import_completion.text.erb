@@ -1,11 +1,17 @@
 Huzzah!
 =======
 
-We have finished importing the files you have uploaded and your project:
+We have finished importing following files you have uploaded
 
-  "<%= @project.name %>"
+<% @project.imported_files.each do |imported_file| %>
+<%=imported_file.content.filename%>
+<% end %>
+
+and your project
+
+"<%= @project.name %>"
 
 is ready for you to view.
 Please follow this link:
-t
+
 <%= project_extractions_url(@project) %>
