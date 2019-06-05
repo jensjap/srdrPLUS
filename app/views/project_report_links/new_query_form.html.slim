@@ -37,13 +37,11 @@ script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha25
                     - items.each do |rssm|
                       div.query-pill.query-draggable id="rssm-#{rssm.id}" data-type="#{section.type_name}" data-item-id="#{rssm.id}" draggable="true" style="font-size: 12px;" #{ rssm.measure.name }
     div.cell.small-9 style="padding-top: 10px; border: 0.4px solid; overflow-x: auto;"
-      table id='table' style="width: 300px; table-layout: fixed;"
-        thead
-          tr
-            th.field-option-column-title style="width: 300px;" sample column
-        tbody
-          tr
-            td.droppable.sortable data-column-data="sample column"
+      div#columns.column-sortable
+        div.field-column style="width: 300px;"
+          span class="grippy" draggable="true"
+          h3.field-option-column-title Sample Column
+          div.droppable.sortable
 
 javascript:
   $.event.props.push('dataTransfer');
@@ -61,30 +59,25 @@ javascript:
     $('.noselect').remove();
     var columnName = $('#column-name').val();
     if (columnName === '') {
-      $('#column-name').focus().select()
+      $('#column-name').focus().select();
       return;
     }
-    $('#table thead tr').append(`<th class='field-option-column-title' width="300px">${columnName}</th>`);
-    $('#table tbody tr').append(`<td data-column-data=${columnName} class="droppable sortable"></td>`);
+
+    $('#columns').append(`<div class="field-column" style="width: 300px;"><span class="grippy" draggable="true"></span><h3 class='field-option-column-title'>${columnName}</h3><div class="droppable sortable"></div></div>`);
     $('#column-name').val('');
     makeSortable();
   }
 
   function removeLastColumn() {
-    $('#table thead tr th').last().remove();
-    $('#table tbody tr td').last().remove();
-
-    if ($('#table tbody tr td').length == 0) {
-      $('#table').before("<h1 class='noselect'>Add a column above to get started</h1>");
-    }
+    $('#columns > div:last-child').remove();
   }
 
   function extractReportQuestions() {
     var mapping = [];
 
-    $('#table tbody tr').children().each(function() {
+    $('.droppable').each(function() {
       var currentEl = $(this);
-      var column_name = currentEl.closest('table').find('th').eq(currentEl.index()).text();
+      var column_name = currentEl.closest('.field-column').children('h3').text();
       var sectionMap = {
         column_name,
         export_ids: [],
@@ -160,9 +153,8 @@ javascript:
   }
 
   function makeSortable() {
-    $('.sortable').sortable({
-      connectWith: ".sortable"
-    });
+    $('.sortable').sortable({ connectWith: ".sortable" });
+    $('.column-sortable').sortable();
   }
 
   $(document).on('dragstart', '.query-draggable', function(ev) {
@@ -240,7 +232,7 @@ javascript:
   $(document).on('focusout', '.column-title-input', function() {
     var title = $(this).val();
     if (title === '') title = 'No Title';
-    $(this).parent().text(title);
+    $(this).parent().parent().children('h3').text(title);
     $(this).remove();
   })
 

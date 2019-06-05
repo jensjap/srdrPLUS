@@ -18,6 +18,8 @@
 }
 .droppable {
   vertical-align: top;
+  min-height: 300px !important;
+  margin: 0px !important;
 }
 .button.success.add-column {
   color: white;
@@ -38,4 +40,40 @@ li > .field-option-header, li > .field-option-header > * {
         -ms-user-select: none; /* Internet Explorer/Edge */
             user-select: none; /* Non-prefixed version, currently
                                   supported by Chrome and Opera */
+}
+span.grippy {
+  float: right;
+  content: '....';
+  width: 10px;
+  line-height: 8px;
+  cursor: move;
+  margin-right: 12px;
+  font-size: 19px;
+  font-family: sans-serif;
+  letter-spacing: 4px;
+  color: #cccccc;
+  text-shadow: 1px 0 1px black;
+}
+span.grippy::after {
+  content: '.. .. .. ..';
+}
+
+#columns > div > h3 {
+  margin-bottom: 0;
+  padding-left: 10px;
+  background-color: white;
+}
+
+#columns > div > h3 > input {
+  width: calc(100% - 60px);
+  text-align: center;
+}
+
+.column-sortable {
+  overflow-x: auto;
+  display: flex;
+}
+
+#columns > div {
+  flex: 0 0 auto;
 }
