@@ -60057,46 +60057,41 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
         }
       });
       if ($('body.projects.new').length === 1) {
-        $('.distiller-section-file-container').on('cocoon:after-insert', function(e, insertedElem) {
-          $('.key-questions-list').find('input.string').each(function(i, kq_textbox) {
-            var op;
-            op = new Option($(kq_textbox).val(), $(kq_textbox).val(), false, false);
-            return $(insertedElem).find('.distiller-key-question-input').first().append(op);
+        $('.distiller-section-file-container').on('cocoon:after-insert', function(_, insertedElem) {
+          var $new_kq_input, $source_kq_input;
+          $(insertedElem).find('.distiller-section-input').select2({
+            placeholder: "-- Select Section --",
+            tags: true
           });
-          $(e.target).find('.distiller-section-input').select2({
-            placeholder: "-- Select Section --"
-          });
-          return $(e.target).find('.distiller-key-question-input').select2({
-            placeholder: "-- Select Key Question --"
-          });
-        });
-        $('.key-questions-list').on('cocoon:after-insert', function(e, insertedElem) {
-          var newOption, textbox;
-          textbox = $(insertedElem).find('input.string');
-          $(textbox).val('New Key Question ' + $('.key-questions-list').find('input.string').length.toString());
-          $(textbox).on('input', function(input_e) {
-            var option_name, textbox_val;
-            option_name = $(input_e.target).attr('data-option-name');
-            textbox_val = $(input_e.target).val();
-            return $('.distiller-section-file-container').find('select.distiller-key-question-input').each(function(i, kq_input) {
-              var kq_select_val, new_option, old_option;
-              textbox_val = $(input_e.target).val();
-              old_option = $(kq_input).find("option[value='" + option_name + "']");
-              new_option = new Option(textbox_val, textbox_val, false, false);
-              kq_select_val = $(kq_input).val();
-              if ($(kq_input).val() === $(old_option).val()) {
-                kq_select_val = $(new_option).val();
+          $new_kq_input = $(insertedElem).find('.distiller-key-question-input');
+          if ($('.distiller-section-file-container select.distiller-key-question-input').length > 1) {
+            $source_kq_input = $('.distiller-section-file-container select.distiller-key-question-input').first();
+            $source_kq_input.find('option').each(function(_, kq_option) {
+              var $kq_option;
+              $kq_option = $(kq_option);
+              if ($new_kq_input.find('option[value="' + $kq_option.val() + '"]').length === 0) {
+                $new_kq_input.append(new Option($kq_option.val(), $kq_option.val(), false, false));
               }
-              $('.distiller-section-file-container').find('select.distiller-key-question-input').append(new_option);
-              $('.distiller-section-file-container').find('select.distiller-key-question-input').val(kq_select_val);
-              $(old_option).remove();
-              $('.distiller-section-file-container').trigger('change');
-              return $(input_e.target).attr('data-option-name', $(new_option).val());
+              return $new_kq_input.trigger('change');
             });
+          }
+          return $new_kq_input.select2({
+            placeholder: "-- Select Key Question --",
+            tags: true
+          }).on('change', function(e) {
+            var $isNew;
+            $isNew = $(this).find('[data-select2-tag="true"]');
+            if ($isNew.length && $isNew.val() === $(this).val()) {
+              return $('.distiller-section-file-container select.distiller-key-question-input').each(function(_, kq_input) {
+                var $kq_input;
+                $kq_input = $(kq_input);
+                if ($kq_input.find('option[value="' + $isNew.val() + '"]').length === 0) {
+                  $kq_input.append(new Option($isNew.val(), $isNew.val(), false, false)).trigger('change');
+                }
+                return $isNew.replaceWith(new Option($isNew.val(), $isNew.val(), false, true));
+              });
+            }
           });
-          newOption = new Option($(textbox).val(), $(textbox).val(), false, false);
-          $('.distiller-section-file-container').find('select.distiller-key-question-input').append(newOption).trigger('change');
-          return $(textbox).attr('data-option-name', $(newOption).val());
         });
         $('#create-type').on('change', function(e) {
           $('.input.file input').val('');
@@ -60105,19 +60100,25 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
             $('.json-import-panel').addClass('hide');
             $('#distiller-remove-references-file').trigger("click");
             $('#distiller-remove-section-file').trigger("click");
-            return $('#remove-project-file').trigger("click");
+            $('#remove-project-file').trigger("click");
+            $('.submit').removeClass('hide');
+            return $('.submit-with-confirmation').addClass('hide');
           } else if ($(e.target).val() === "distiller") {
             $('.distiller-import-panel').removeClass('hide');
             $('.json-import-panel').addClass('hide');
             $('#distiller-add-references-file').trigger("click");
             $('#distiller-add-section-file').trigger("click");
-            return $('#remove-project-file').trigger("click");
+            $('#remove-project-file').trigger("click");
+            $('.submit').addClass('hide');
+            return $('.submit-with-confirmation').removeClass('hide');
           } else if ($(e.target).val() === "json") {
             $('.distiller-import-panel').addClass('hide');
             $('.json-import-panel').removeClass('hide');
             $('#distiller-remove-references-file').trigger("click");
             $('#distiller-remove-section-file').trigger("click");
-            return $('#add-project-file').trigger("click");
+            $('#add-project-file').trigger("click");
+            $('.submit').addClass('hide');
+            return $('.submit-with-confirmation').removeClass('hide');
           }
         });
       }
@@ -60180,30 +60181,30 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
               return toastr.error('Could not fetch citation info from PUBMED');
             },
             success: function(data, textStatus, jqXHR) {
-              var abstract, authors, citation_hash, dateNode, first_name, j, journal, k, keyword, keywords, l, last_name, len, len1, len2, name, node, ref, ref1, ref2;
+              var abstract, authors, citation_hash, dateNode, first_name, i, j, journal, k, keyword, keywords, last_name, len, len1, len2, name, node, ref, ref1, ref2;
               if (!($(data).find('ArticleTitle').text() != null)) {
                 return 0;
               }
               name = $(data).find('ArticleTitle').text() || '';
               abstract = '';
               ref = $(data).find('AbstractText');
-              for (j = 0, len = ref.length; j < len; j++) {
-                node = ref[j];
+              for (i = 0, len = ref.length; i < len; i++) {
+                node = ref[i];
                 abstract += $(node).text();
                 abstract += "\n";
               }
               authors = [];
               ref1 = $(data).find('Author');
-              for (k = 0, len1 = ref1.length; k < len1; k++) {
-                node = ref1[k];
+              for (j = 0, len1 = ref1.length; j < len1; j++) {
+                node = ref1[j];
                 first_name = $(node).find('ForeName').text() || '';
                 last_name = $(node).find('LastName').text() || '';
                 authors.push(first_name + ' ' + last_name);
               }
               keywords = [];
               ref2 = $(data).find('Keyword');
-              for (l = 0, len2 = ref2.length; l < len2; l++) {
-                node = ref2[l];
+              for (k = 0, len2 = ref2.length; k < len2; k++) {
+                node = ref2[k];
                 keyword = $(node).text() || '';
                 keywords.push(keyword);
               }
@@ -60231,7 +60232,7 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
           });
         };
         populate_citation_fields = function(citation) {
-          var author, authorselect, j, k, keyword, keywordselect, len, len1, ref, ref1;
+          var author, authorselect, i, j, keyword, keywordselect, len, len1, ref, ref1;
           $('.citation-fields').find('.citation-name input').val(citation['name']);
           $('.citation-fields').find('.citation-abstract textarea').val(citation['abstract']);
           $('.citation-fields').find('.journal-name input').val(citation['journal']['name']);
@@ -60239,8 +60240,8 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
           $('.citation-fields').find('.journal-issue input').val(citation['journal']['issue']);
           $('.citation-fields').find('.journal-year input').val(citation['journal']['year']);
           ref = citation['authors'];
-          for (j = 0, len = ref.length; j < len; j++) {
-            author = ref[j];
+          for (i = 0, len = ref.length; i < len; i++) {
+            author = ref[i];
             authorselect = $('.AUTHORS select');
             $.ajax({
               type: 'GET',
@@ -60261,8 +60262,8 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
             });
           }
           ref1 = citation['keywords'];
-          for (k = 0, len1 = ref1.length; k < len1; k++) {
-            keyword = ref1[k];
+          for (j = 0, len1 = ref1.length; j < len1; j++) {
+            keyword = ref1[j];
             keywordselect = $('.KEYWORDS select');
             $.ajax({
               type: 'GET',
@@ -60294,12 +60295,12 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
               return toastr.error('Could not get citations');
             },
             success: function(data, textStatus, jqXHR) {
-              var c, citation_journal, citation_journal_date, j, len, ref, to_add;
+              var c, citation_journal, citation_journal_date, i, len, ref, to_add;
               to_add = [];
               $("#citations-count").html(data['pagination']['total_count']);
               ref = data['results'];
-              for (j = 0, len = ref.length; j < len; j++) {
-                c = ref[j];
+              for (i = 0, len = ref.length; i < len; i++) {
+                c = ref[i];
                 citation_journal = '';
                 citation_journal_date = '';
                 if ('journal' in c) {
@@ -60322,10 +60323,10 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
                 citationList.clear();
               }
               citationList.add(to_add, function(items) {
-                var item, k, len1, list_index, list_index_string;
+                var item, j, len1, list_index, list_index_string;
                 list_index = (page - 1) * items.length;
-                for (k = 0, len1 = items.length; k < len1; k++) {
-                  item = items[k];
+                for (j = 0, len1 = items.length; j < len1; j++) {
+                  item = items[j];
                   list_index_string = list_index.toString();
                   $('<input type="hidden" value="' + item.values()['citations-project-id'] + '" name="project[citations_projects_attributes][' + list_index_string + '][id]" id="project_citations_projects_attributes_' + list_index_string + '_id">').insertBefore(item.elm);
                   $(item.elm).find('#project_citations_projects_attributes_0__destroy')[0].outerHTML = '<input type="hidden" name="project[citations_projects_attributes][' + list_index_string + '][_destroy]" id="project_citations_projects_attributes_' + list_index_string + '__destroy" value="false">';
@@ -60925,6 +60926,7 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
       init_select2(".key_question_type", '/key_question_types');
       sd_meta_datum_id = $(".sd_picods_key_question").data('sd-meta-datum-id');
       init_select2(".sd_picods_key_question", "/sd_key_questions?sd_meta_datum_id=" + sd_meta_datum_id);
+      init_select2(".sd_picods_type", '/sd_picods_types');
       $("form").on("cocoon:after-insert", function(_, row) {
         sd_meta_datum_id = $(".sd_picods_key_question").data('sd-meta-datum-id');
         init_select2($(row).find(".sd_search_database"), '/sd_search_databases');
@@ -60937,6 +60939,10 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
       });
     })();
   });
+
+}).call(this);
+(function() {
+
 
 }).call(this);
 (function() {

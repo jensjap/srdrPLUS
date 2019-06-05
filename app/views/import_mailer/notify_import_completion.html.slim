@@ -10,7 +10,6 @@ html
     .file-list
       - @project.imported_files.each do |imported_file|
         h3 #{ imported_file.content.filename }
-        br
 
     p and your project
 
@@ -22,4 +21,3 @@ html
 
   p
     = project_extractions_url(@project)
-

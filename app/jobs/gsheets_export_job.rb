@@ -362,7 +362,7 @@ class GsheetsExportJob < ApplicationJob
           when 6,7,8
             if record_arr.length == 1
               #data_string += QuestionRowColumnsQuestionRowColumnOption.find(record_arr.first.name.to_i).name
-              data_string.add_run(QuestionRowColumnsQuestionRowColumnOption.find(record_arr.first.name.to_i).name)
+              data_string.add_run(QuestionRowColumnsQuestionRowColumnOption.find_by(id: record_arr.first.name.to_i)&.name || "")
             end
 
           when 9
