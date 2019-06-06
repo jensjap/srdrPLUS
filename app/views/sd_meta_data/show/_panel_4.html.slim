@@ -9,7 +9,8 @@
         - else
           - @sd_meta_datum.sd_picods.each do |sd_picod|
             p
-              div <b>Type:</b> #{sd_picod.p_type}
+              - picod_types = sd_picod.sd_picods_types
+              div <b>Type:</b> #{picod_types.map(&:name).join(", ")}
               div <b>Name:</b> #{sd_picod.name}
               p
                 - sd_picod.sd_key_questions.each do |skq|
