@@ -237,12 +237,15 @@ class GsheetsExportJob < ApplicationJob
 
 
       p.workbook.add_worksheet(name: "Data") do |sheet|
-        write_key_questions @key_questions_projects, sheet, highlight
         header_row = sheet.add_row @column_headers
         header_row.style = highlight
         @rows.each do |row|
           sheet.add_row row
         end
+      end
+
+      p.workbook.add_worksheet(name: "Key Questions") do |sheet|
+        write_key_questions @key_questions_projects, sheet, highlight
       end
 
       p.serialize('tmp/project_'+@project.id.to_s+'.xlsx')
@@ -406,7 +409,7 @@ class GsheetsExportJob < ApplicationJob
     if combination[0].present? then string_arr << combination[0].type1.name end
     if combination[1].present? then string_arr << combination[1].type1.name end
     if combination[3].present? then string_arr << combination[3].population_name.name end
-    if combination[2].present? then string_arr << combination[2].timepoint_name.name end
+    if combination[2].present? then string_arr << combination[2].timepoint_name.name + " " + combination[2].timepoint_name.unit end
     if combination[4].present?
       if combination[4].comparate_groups.length == 0
         string_arr += ([""] * (comp1_length + comp2_length + 1))
