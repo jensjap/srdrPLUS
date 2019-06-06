@@ -24,7 +24,7 @@ script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha25
             ul.menu.vertical.nested style="margin: 0;"
               li.field-option-parent
                 - items.each do |question|
-                  div.query-pill.query-draggable.right data-tooltip='' title="#{question.description.present? ? question.description : "No Description" }" id="kq-#{question.id}" data-type="Type2" data-item-id="#{question.id}" draggable="true" query-pill.="true" style="font-size: 12px;" #{ question.name }
+                  div.query-pill.query-draggable.right data-tooltip='' title="#{question.description.present? ? question.description : "No Description" }" id="kq-#{question.id}" data-type="Type2" data-item-id="#{question.id}" draggable="true" #{ question.name }
       ul.vertical.menu.accordion-menu data-accordion-menu=''
         li
           a.field-option-header ondragstart="return false;" href="#" Results
@@ -35,12 +35,12 @@ script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha25
                 ul.menu.vertical.nested style="margin: 0;"
                   li.field-option-parent
                     - items.each do |rssm|
-                      div.query-pill.query-draggable id="rssm-#{rssm.id}" data-type="#{section.type_name}" data-item-id="#{rssm.id}" draggable="true" style="font-size: 12px;" #{ rssm.measure.name }
+                      div.query-pill.query-draggable id="rssm-#{rssm.id}" data-type="#{section.type_name}" data-item-id="#{rssm.id}" draggable="true" #{ rssm.measure.name }
     div.cell.small-9 style="padding-top: 10px; border: 0.4px solid; overflow-x: auto;"
       div#columns.column-sortable
         div.field-column style="width: 300px;"
           span class="grippy" draggable="true"
-          h3.field-option-column-title Sample Column
+          h5.field-option-column-title Sample Column
           div.droppable.sortable
 
 javascript:
@@ -63,7 +63,7 @@ javascript:
       return;
     }
 
-    $('#columns').append(`<div class="field-column" style="width: 300px;"><span class="grippy" draggable="true"></span><h3 class='field-option-column-title'>${columnName}</h3><div class="droppable sortable"></div></div>`);
+    $('#columns').append(`<div class="field-column" style="width: 300px;"><span class="grippy" draggable="true"></span><h5 class='field-option-column-title'>${columnName}</h5><div class="droppable sortable"></div></div>`);
     $('#column-name').val('');
     makeSortable();
   }
@@ -77,7 +77,7 @@ javascript:
 
     $('.droppable').each(function() {
       var currentEl = $(this);
-      var column_name = currentEl.closest('.field-column').children('h3').text();
+      var column_name = currentEl.closest('.field-column').children('h5').text();
       var sectionMap = {
         column_name,
         export_ids: [],
@@ -232,7 +232,7 @@ javascript:
   $(document).on('focusout', '.column-title-input', function() {
     var title = $(this).val();
     if (title === '') title = 'No Title';
-    $(this).parent().parent().children('h3').text(title);
+    $(this).parent().parent().children('h5').text(title);
     $(this).remove();
   })
 

@@ -15,6 +15,9 @@
   color: white;
   border-radius: 5px;
   text-align: center;
+  font-weight: 500;
+  font-family: sans-serif;
+  font-size: 18px;
 }
 .droppable {
   vertical-align: top;
@@ -45,7 +48,7 @@ span.grippy {
   float: right;
   content: '....';
   width: 10px;
-  line-height: 8px;
+  line-height: 5px;
   cursor: move;
   margin-right: 12px;
   font-size: 19px;
@@ -58,13 +61,13 @@ span.grippy::after {
   content: '.. .. .. ..';
 }
 
-#columns > div > h3 {
+#columns > div > h5 {
   margin-bottom: 0;
   padding-left: 10px;
   background-color: white;
 }
 
-#columns > div > h3 > input {
+#columns > div > h5 > input {
   width: calc(100% - 60px);
   text-align: center;
 }
