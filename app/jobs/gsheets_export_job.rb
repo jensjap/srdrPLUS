@@ -29,14 +29,16 @@ class GsheetsExportJob < ApplicationJob
     @column_args.each do |i, col_hash|
       case col_hash['type']
       when "Type2"
-        efps = Question.find( col_hash['export_ids'].first ).extraction_forms_projects_section
-        if efps.link_to_type1.present?
-          if efps.link_to_type1.section.name == "Arms"
-            @arms_efps = efps.link_to_type1
-          elsif efps.link_to_type1.section.name == "Outcomes"
-            @outcomes_efps = efps.link_to_type1
-          else
-            @efps_arr << efps.link_to_type1
+        col_hash['export_ids'].each do |qid|
+          efps = Question.find(qid).extraction_forms_projects_section
+          if efps.link_to_type1.present?
+            if efps.link_to_type1.section.name == "Arms"
+              @arms_efps = efps.link_to_type1
+            elsif efps.link_to_type1.section.name == "Outcomes"
+              @outcomes_efps = efps.link_to_type1
+            else
+              @efps_arr << efps.link_to_type1
+            end
           end
         end
 
@@ -201,15 +203,8 @@ class GsheetsExportJob < ApplicationJob
         current_row = [ex.citations_project.citation.id.to_s, ex.citations_project.citation.name, @user.profile.username] + get_combination_data_string(current_combination, @comparate_1_length, @comparate_2_length)
         @column_args.each do |i, col_hash|
           if col_hash['type'] == "Type2"
-            efps = Question.find( col_hash['export_ids'].first ).extraction_forms_projects_section
-            eefps = ExtractionsExtractionFormsProjectsSection.find_by extraction_id: ex.id, extraction_forms_projects_section_id: efps.id
-            t1_efps = efps.link_to_type1
-
-            if t1_efps.present?
-              eefpst1 = current_combination[@t1_efps_dict[t1_efps.id]]
-            end
-
-            current_row << get_question_data_string(eefps, eefpst1, col_hash['export_ids'])
+            #current_row << get_question_data_string(eefps, eefpst1, col_hash['export_ids'])
+            current_row << get_question_data_string(col_hash['export_ids'], ex, current_combination)
           else
             arm_eefpst1 = current_combination[0]
             outcome_eefpst1 = current_combination[1]
@@ -301,7 +296,8 @@ class GsheetsExportJob < ApplicationJob
     end
   end
 
-  def get_question_data_string(eefps, eefpst1, qid_arr)
+  #def get_question_data_string(eefps, eefpst1, qid_arr)
+  def get_question_data_string(qid_arr, extraction, combination)
     _first = true
 
     data_string = Axlsx::RichText.new
@@ -309,6 +305,18 @@ class GsheetsExportJob < ApplicationJob
     qid_arr.each do |qid|
       q = Question.find qid
       q_name = q.name
+
+      eefps = ExtractionsExtractionFormsProjectsSection.find_by extraction: extraction,
+                                                                extraction_forms_projects_section: q.extraction_forms_projects_section
+      t1_efps = q.extraction_forms_projects_section.link_to_type1
+
+      if t1_efps.present?
+        begin
+          eefpst1 = combination[@t1_efps_dict[t1_efps.id]]
+        rescue
+          byebug
+        end
+      end
 
       q.question_rows.each_with_index do |qr, ri|
         qr.question_row_columns.each_with_index do |qrc, ci|
@@ -332,7 +340,10 @@ class GsheetsExportJob < ApplicationJob
 
           qrcf_arr = qrc.question_row_column_fields.sort { |a,b| a.id <=> b.id }
           qrc_type_id = qrc.question_row_column_type_id
-          eefpsqrcf_arr = eefps.extractions_extraction_forms_projects_sections_question_row_column_fields.where( question_row_column_field: qrcf_arr, extractions_extraction_forms_projects_sections_type1: eefpst1 )
+          eefpsqrcf_arr = eefps\
+            .extractions_extraction_forms_projects_sections_question_row_column_fields.where( question_row_column_field: qrcf_arr, 
+                                                                                             extractions_extraction_forms_projects_sections_type1: eefpst1 )
+
           record_arr = Record.where( recordable_type: 'ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField',
                                      recordable_id: eefpsqrcf_arr.map { |eefpsqrcf| eefpsqrcf.id } ).sort { |a,b| a.recordable_id <=> b.recordable_id }
 
