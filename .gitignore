@@ -45,3 +45,9 @@ passenger*
 
 # Ignore master key for decrypting credentials and more.
 /config/master.key
+
+# Ignore reports and storage folder.
+# /reports are the XML files for AHRQ SR reports
+# /storage are locally attached files. We use Amazon S3 on production
+/reports/*
+/storage/*
