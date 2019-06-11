@@ -22,7 +22,7 @@ class LoginFlowTest < Capybara::Rails::TestCase
 
     click_on 'Log in'
 
-    assert_current_path root_path
+    assert_current_path projects_path
     refute page.has_content? 'Log in'
     assert page.has_content? 'Welcome'
   end
@@ -33,7 +33,7 @@ class LoginFlowTest < Capybara::Rails::TestCase
 
     click_on 'Log in'
 
-    assert_current_path root_path
+    assert_current_path projects_path
     refute page.has_content? 'Log in'
     assert page.has_content? 'Welcome'
   end

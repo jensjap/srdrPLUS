@@ -1,5 +1,4 @@
 require 'test_helper'
-require 'minitest/byebug' if ENV['DEBUG']
 
 class ExtractionsExtractionFormsProjectsSectionsControllerTest < ActionDispatch::IntegrationTest
   setup do
