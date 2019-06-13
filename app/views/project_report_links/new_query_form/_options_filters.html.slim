@@ -3,13 +3,13 @@ div#filterOptions.reveal data-reveal="" style="width: unset;"
     div.cell.small-12
       div.grid-x.grid-padding-x
         div.cell.small-6
-          h4 Filter Options
+          h4 Available Fields
           - Type1Type.all.each do |type1_type|
             div style="float: left;"
               label
                 input.section-type-filter type="checkbox" name="#{type1_type.name}" value="#{type1_type.name}" checked="" = type1_type.name
         div.cell.small-6
-          h4 Select Only Fields
+          h4 Included Fields
     div.cell.small-6 style="height: 70vh; overflow: auto;"
       = simple_form_for("sd_meta_datum", url: project_report_link_new_query_form_path("sd_meta_datum"), method: :get) do |f|
         div.accordion data-accordion="" data-allow-all-closed="true"
@@ -28,10 +28,10 @@ div#filterOptions.reveal data-reveal="" style="width: unset;"
       div#apply-filter.button style="text-align: left;" Apply Filter
       br
       div#kq-filter-header style="font-weight: 300; width: 100%;"
-        h5 Select Only Key Questions
+        h5 Selected Key Questions
       - included_type1s.each do |type_1|
         div.section-filter-header id="efps#{type_1[:extraction_forms_projects_section_id]}" data-efps-id="#{type_1[:extraction_forms_projects_section_id]}" style="font-weight: 300; width: 100%;"
-          h5 = "Select Only " + type_1[:section_name]
+          h5 = "Selected " + type_1[:section_name]
 
   button class="close-button" data-close="" aria-label="Close modal" type="button"
     span aria-hidden="true" &times;
@@ -96,14 +96,14 @@ javascript:
 
   function getKqFilters() {
     var kqFilterIds = $('#kq-filter-header > div').map(function() {
-      return $(this).data('key-question-id')
+      return $(this).data('key-question-id');
     })
     return kqFilterIds.get();
   }
 
   function getSectionFilters() {
     var type1sFilters = { };
-    var sectionFilterIds = $('.section-filter-header > div').each(function() {
+    $('.section-filter-header > div').each(function() {
       var efpsId = $(this).data('efps-id');
       var exportId = $(this).data('export-id');
       if (type1sFilters[efpsId] === undefined) type1sFilters[efpsId] = [];

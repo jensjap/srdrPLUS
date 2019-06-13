@@ -8,15 +8,6 @@ div#options-form
 javascript:
   $.event.props.push('dataTransfer');
 
-  function checkForDuplicate(parentNode, candidateNode) {
-    var existingIds = [];
-    $(parentNode).children().each(function() {
-      existingIds.push(this.getAttribute('data-item-id'));
-    })
-    var candidateNodeId = candidateNode.getAttribute('data-item-id');
-    return existingIds.includes(candidateNodeId.toString());
-  }
-
   function addColumn() {
     $('.noselect').remove();
     var columnName = $('#column-name').val();
@@ -100,8 +91,8 @@ javascript:
       slice(1).
       map(function(string) { return Number(string) })
     }
-
-    return { payload, kqs_ids: keyQuestionProjectIds };
+    payload.kqs_ids = keyQuestionProjectIds;
+    return payload;
   }
 
   function searchFields(searchString) {
@@ -193,9 +184,6 @@ javascript:
     ev.currentTarget.style.background = "aliceblue";
     var data = ev.dataTransfer.getData("text/plain");
     var originalNode = document.getElementById(data);
-
-    //if (checkForDuplicate(ev.target, originalNode)) return;
-
     var nodeCopy = originalNode.cloneNode(true);
     nodeCopy.id = new Date().getTime();
     $(nodeCopy).text(`${$(nodeCopy).text()} - (click to remove)`)
