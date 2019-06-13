@@ -6,7 +6,6 @@
         th width="20" Project-Report Link ID
         th width="30" Project Title
         th width="30" Report Title
-        th width="30" Key Questions to be included
         th width="30" Read Link
         th width="30" Query
     tbody style="font-size: 12px;"
@@ -16,23 +15,16 @@
           td
           td
           td
-          td
       - else
         - @sd_meta_data.each do |sd_meta_datum|
-          = simple_form_for(sd_meta_datum, url: project_report_link_new_query_form_path(sd_meta_datum), method: :get) do |f|
-            tr
-              td = sd_meta_datum.id
-              td = sd_meta_datum.try(:project).try(:name)
-              td = sd_meta_datum.try(:report).try(:title)
-              - if sd_meta_datum.project
-                td
-                  - collection = sd_meta_datum.project.key_questions_projects.map { |kqp| [kqp.key_question.name, kqp.id]}
-                  - sd_meta_datum.project.key_questions_projects.each do |kqp|
-                    = f.input :kqp_ids, label: "", as: :check_boxes, collection: collection, checked: [kqp.id]
-                td = link_to('Open', sd_meta_datum, class: 'button')
-                td
-                  = f.button :submit, "Create"
-              - else
-                td
-                td
-                  div Project Required
+          tr
+            td = sd_meta_datum.id
+            td = sd_meta_datum.try(:project).try(:name)
+            td = sd_meta_datum.try(:report).try(:title)
+            - if sd_meta_datum.project
+              td = link_to('Open', sd_meta_datum, class: 'button')
+              td = link_to('Create Query', project_report_link_new_query_form_path(sd_meta_datum), class: 'button')
+            - else
+              td
+              td
+                div Project Required

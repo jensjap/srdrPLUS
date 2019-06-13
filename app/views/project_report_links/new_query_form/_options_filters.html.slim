@@ -1,0 +1,113 @@
+div#filterOptions.reveal data-reveal="" style="width: unset;"
+  div.grid-x.grid-padding-x
+    div.cell.small-12
+      div.grid-x.grid-padding-x
+        div.cell.small-6
+          h4 Filter Options
+          - Type1Type.all.each do |type1_type|
+            div style="float: left;"
+              label
+                input.section-type-filter type="checkbox" name="#{type1_type.name}" value="#{type1_type.name}" checked="" = type1_type.name
+        div.cell.small-6
+          h4 Select Only Fields
+    div.cell.small-6 style="height: 70vh; overflow: auto;"
+      = simple_form_for("sd_meta_datum", url: project_report_link_new_query_form_path("sd_meta_datum"), method: :get) do |f|
+        div.accordion data-accordion="" data-allow-all-closed="true"
+          div.accordion-item data-accordion-item=""
+            a.accordion-title href="#" Key Questions
+            div.accordion-content data-tab-content=""
+              - key_questions_projects.each do |kqp|
+                div.button.kq-filter style="text-align: left; width: 100%;" data-key-question="true" data-key-question-id="#{kqp.id}" = kqp.key_question.name
+          - included_type1s.each do |type_1|
+            div.accordion-item data-accordion-item=""
+              a.accordion-title href="#" = type_1[:section_name]
+              div.accordion-content data-tab-content=""
+                - type_1[:export_ids].each do |type_1_el|
+                  div.button.efps style="text-align: left; width: 100%;" data-efps-id="#{type_1[:extraction_forms_projects_section_id]}" data-section-name="#{type_1[:section_name]}" data-type1_type="#{type_1_el[:type1_type]}" data-export-id="#{type_1_el[:type1_id]}" = type_1_el[:name_and_description]
+    div.cell.small-6 style="height: 75vh; overflow: auto; position: relative; top: -5vh; margin-bottom: -5vh;"
+      div#apply-filter.button style="text-align: left;" Apply Filter
+      br
+      div#kq-filter-header style="font-weight: 300; width: 100%;"
+        h5 Select Only Key Questions
+      - included_type1s.each do |type_1|
+        div.section-filter-header id="efps#{type_1[:extraction_forms_projects_section_id]}" data-efps-id="#{type_1[:extraction_forms_projects_section_id]}" style="font-weight: 300; width: 100%;"
+          h5 = "Select Only " + type_1[:section_name]
+
+  button class="close-button" data-close="" aria-label="Close modal" type="button"
+    span aria-hidden="true" &times;
+
+javascript:
+  $(document).on('click', '.efps', function() {
+    var efpsId = $(this).data('efps-id');
+    var exportId = $(this).data('export-id');
+    var noDuplicate = true;
+    $(`#efps${efpsId}`).each(function() {
+      $(this).children().each(function() {
+        if ($(this).data('export-id') === exportId) noDuplicate = false;
+      })
+    })
+    var clone = $(this).clone();
+    $(clone).addClass('clone');
+    if (noDuplicate) $(`#efps${efpsId}`).append(clone)
+  })
+
+  $(document).on('click', '.kq-filter', function() {
+    var kqId = $(this).data('key-question-id');
+    var noDuplicate = true;
+    $('#kq-filter-header').children().each(function() {
+      if ($(this).data('key-question-id') === kqId) noDuplicate = false;
+    })
+    var clone = $(this).clone();
+    $(clone).addClass('clone');
+    if (noDuplicate) $('#kq-filter-header').append(clone)
+  })
+
+  $(document).on('click', '.clone', function() {
+    $(this).remove();
+  })
+
+  $(document).on('click', '.section-type-filter', function() {
+    var checked = $(this).is(':checked');
+    var val = $(this).val();
+    if (!checked) {
+      $(`*[data-type1_type="${val}"]`).hide()
+    } else {
+      $(`*[data-type1_type="${val}"]`).show()
+    }
+  })
+
+  $(document).on('click', '#apply-filter', function() {
+    $('.close-button').click();
+    $("#options-form").html('<div class="lds-ellipsis">Loading <div></div><div></div><div></div><div></div></div>');
+
+    $.ajax({
+      beforeSend: xhr => { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+      url: "#{project_report_link_options_form_path(sd_meta_datum)}",
+      method: 'POST',
+      data: {
+        kqp_ids: getKqFilters(),
+        type1s: getSectionFilters(),
+      },
+    }).done(function() {
+      initialize();
+      $('.accordion-menu').foundation();
+    });
+  })
+
+  function getKqFilters() {
+    var kqFilterIds = $('#kq-filter-header > div').map(function() {
+      return $(this).data('key-question-id')
+    })
+    return kqFilterIds.get();
+  }
+
+  function getSectionFilters() {
+    var type1sFilters = { };
+    var sectionFilterIds = $('.section-filter-header > div').each(function() {
+      var efpsId = $(this).data('efps-id');
+      var exportId = $(this).data('export-id');
+      if (type1sFilters[efpsId] === undefined) type1sFilters[efpsId] = [];
+      type1sFilters[efpsId].push(exportId)
+    });
+    return type1sFilters;
+  }

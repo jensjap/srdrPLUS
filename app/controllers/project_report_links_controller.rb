@@ -1,28 +1,64 @@
 class ProjectReportLinksController < ApplicationController
-  MEASURES_ORDER = ["Descriptive Statistics", "Between Arm Comparisons", "Within Arm Comparisons", "NET Change"].freeze
+  MEASURES_ORDER = [
+    "Descriptive Statistics",
+    "Between Arm Comparisons",
+    "Within Arm Comparisons",
+    "NET Change"].freeze
 
   def index
-    @sd_meta_data = SdMetaDatum.includes(project: { key_questions_projects: :key_question }).where(state: 'COMPLETED')
+    @sd_meta_data = SdMetaDatum.
+      includes(project: { key_questions_projects: :key_question }).
+      where(state: 'COMPLETED')
+  end
+
+  def options_form
+    create_common_instance_variables
   end
 
   def new_query_form
-    meta_datum_id = params[:project_report_link_id]
-    @key_question_project_ids = new_query_params[:kqp_ids].join(",")
-    @project = SdMetaDatum.find(meta_datum_id).project
-    if @project
-      groups_hash = @project.
-        questions.
-        joins(:key_questions_projects).
-        where(key_questions_projects: { id: new_query_params[:kqp_ids] }).
-        group_by { |question| question.extraction_forms_projects_section.section }
-
-      @groups = order_groups_hash(groups_hash)
-    end
-
-    @results_groups = get_rssm_groups(@project.id)
+    create_common_instance_variables
   end
 
   private
+
+    def create_common_instance_variables
+      meta_datum_id = params[:project_report_link_id]
+      @sd_meta_datum = SdMetaDatum.find(meta_datum_id)
+      @project = @sd_meta_datum.project
+      kqp_ids = params[:kqp_ids] || @project.key_questions_projects.map(&:id)
+      @key_question_project_ids = kqp_ids ? kqp_ids.join(",") : ""
+      if @project
+        groups_hash = @project.
+          questions.
+          joins(:key_questions_projects).
+          where(key_questions_projects: { id: kqp_ids }).
+          group_by { |question| question.extraction_forms_projects_section.section }
+
+        @groups = order_groups_hash(groups_hash)
+      end
+
+      @included_type1s = @project.extraction_forms_projects.
+        where(extraction_forms_project_type_id: [1, 2]).
+        first.
+        extraction_forms_projects_sections.
+        where(extraction_forms_projects_section_type_id: 1).
+        map do |efps|
+          { section_name:  efps.section.name,
+            extraction_forms_projects_section_id: efps.id,
+            export_ids: ExtractionsExtractionFormsProjectsSectionsType1.
+              joins(extractions_extraction_forms_projects_section: :extraction_forms_projects_section).
+              where(extractions_extraction_forms_projects_sections: { extraction_forms_projects_section_id: efps.id }).
+              map { |eefpst| {
+                type1_id: eefpst.type1_id,
+                name_and_description: eefpst.type1.name_and_description,
+                type1_type: eefpst.try(:type1_type).try(:name),
+              } }.
+              uniq
+          }
+        end
+      @results_groups = get_rssm_groups(@project.id)
+      @key_questions_projects = @project.key_questions_projects
+    end
 
     def order_groups_hash(hash)
       ordered_2d = []
@@ -57,14 +93,9 @@ class ProjectReportLinksController < ApplicationController
         uniq(&:measure_id)
       rssms = rssms.group_by { |rssm| rssm.result_statistic_section.result_statistic_section_type }
       rssms.each do |key, values|
-        ordered_2d[MEASURES_ORDER.index(key.name)] = [key, values]
+        values_with_efps_id = values.map { |rssm| { rssm: rssm, efps_id: rssm.result_statistic_section.population.extractions_extraction_forms_projects_section.extraction_forms_projects_section_id } }
+        ordered_2d[MEASURES_ORDER.index(key.name)] = [key, values_with_efps_id]
       end
       ordered_2d.compact
-    end
-
-    def new_query_params
-      params[:sd_meta_datum] ?
-        params.require(:sd_meta_datum).permit(kqp_ids: []) :
-        { kqp_ids: [] }
     end
 end

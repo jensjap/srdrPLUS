@@ -3,6 +3,7 @@ require 'sidekiq/web'
 Rails.application.routes.draw do
   resources :project_report_links, only: [:index, :view] do
     get 'new_query_form'
+    post 'options_form'
   end
   resources :searches, only: [:new, :create]
   resources :funding_sources, only: [:index]

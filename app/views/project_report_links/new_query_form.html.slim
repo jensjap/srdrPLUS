@@ -1,47 +1,9 @@
 script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"
 
-- if @groups.empty?
-  div No questions found. Please make another selection.
-  = link_to('Go Back', project_report_links_path)
-- else
-  #export-to-gdrive-url.div.hide
-    = export_to_gdrive_project_url @project.id
+= render partial: 'project_report_links/new_query_form/options_filters', locals: { key_questions_projects: @key_questions_projects, included_type1s: @included_type1s, sd_meta_datum: @sd_meta_datum }
 
-  div#project-ids.grid-x.grid-padding-x data-key-question-project-ids="#{@key_question_project_ids}"
-    div.cell.small-12
-      div.button.start-query style="float: right; margin-left: 10px;" Start Query
-      div.button.alert.remove-last-column style="float: right; margin-left: 10px;" Remove Last Column
-      div.button.success.add-column style="float: right; margin-left: 10px;" Add Column
-      fieldset
-        input#column-name autofocus="" style="float: right; margin: 10px; padding-left: 5px; width: 300px;" placeholder="Column Name"
-  div.grid-x.grid-padding-x
-    div.cell.small-3 style="padding-top: 10px; border: 0.4px solid; max-height: 500px; overflow-y: scroll;"
-      input#field-search placeholder="Search for fields" style="width: 100%;"
-      - @groups.each do |section, items|
-        ul.vertical.menu.accordion-menu data-accordion-menu=''
-          li
-            a.field-option-header ondragstart="return false;" href="#" #{section.name}
-            ul.menu.vertical.nested style="margin: 0;"
-              li.field-option-parent
-                - items.each do |question|
-                  div.query-pill.query-draggable.right data-tooltip='' title="#{question.description.present? ? question.description : "No Description" }" id="kq-#{question.id}" data-type="Type2" data-item-id="#{question.id}" draggable="true" #{ question.name }
-      ul.vertical.menu.accordion-menu data-accordion-menu=''
-        li
-          a.field-option-header ondragstart="return false;" href="#" Results
-          - @results_groups.each do |section, items|
-            ul.vertical.menu.accordion-menu data-accordion-menu=''
-              li
-                a.field-option-header ondragstart="return false;" href="#" #{section.name}
-                ul.menu.vertical.nested style="margin: 0;"
-                  li.field-option-parent
-                    - items.each do |rssm|
-                      div.query-pill.query-draggable id="rssm-#{rssm.id}" data-type="#{section.type_name}" data-item-id="#{rssm.id}" draggable="true" #{ rssm.measure.name }
-    div.cell.small-9 style="padding-top: 10px; border: 0.4px solid; overflow-x: auto;"
-      div#columns.column-sortable
-        div.field-column style="width: 300px;"
-          span class="grippy" draggable="true"
-          h5.field-option-column-title Sample Column
-          div.droppable.sortable
+div#options-form
+  = render partial: 'project_report_links/new_query_form/options_form', locals: { groups: @groups, project: @project, key_question_project_ids: @key_question_project_ids, results_groups: @results_groups }
 
 javascript:
   $.event.props.push('dataTransfer');
@@ -72,7 +34,7 @@ javascript:
     $('#columns > div:last-child').remove();
   }
 
-  function extractReportQuestions() {
+  function extractReportQuestionsOld() {
     var mapping = [];
 
     $('.droppable').each(function() {
@@ -98,6 +60,48 @@ javascript:
       map(function(string) { return Number(string) })
 
     return { payload: mapping, kqs_ids: keyQuestionProjectIds };
+  }
+
+  function extractReportQuestions() {
+    var payload = {
+      columns: []
+    };
+
+    $('.droppable').each(function() {
+      var currentEl = $(this);
+      var name = currentEl.closest('.field-column').children('h5').text();
+      var sectionMap = {
+        name,
+        export_items: [],
+      };
+
+      currentEl.children().each (function() {
+        var questionId = $(this).data('item-id');
+        var type = $(this).data('type') || '';
+        var efpsid = $(this).data('efpsid');
+        sectionMap.type = type;
+        sectionMap.export_items.push({
+          export_id: questionId,
+          type: type,
+          extraction_forms_projects_section_id: efpsid,
+        })
+      })
+      payload.columns.push(sectionMap);
+    });
+
+    var keyQuestionProjectIds = $('#project-ids').data('key-question-project-ids');
+    if (keyQuestionProjectIds === undefined) {
+      keyQuestionProjectIds = null;
+    } else if (typeof(keyQuestionProjectIds) === 'number') {
+      keyQuestionProjectIds = keyQuestionProjectIds.toString();
+    } else {
+      keyQuestionProjectIds = keyQuestionProjectIds.
+      split(",").
+      slice(1).
+      map(function(string) { return Number(string) })
+    }
+
+    return { payload, kqs_ids: keyQuestionProjectIds };
   }
 
   function searchFields(searchString) {
@@ -155,6 +159,12 @@ javascript:
   function makeSortable() {
     $('.sortable').sortable({ connectWith: ".sortable" });
     $('.column-sortable').sortable();
+  }
+
+  function initialize() {
+    colorFieldOptions();
+    countFieldChildren();
+    makeSortable();
   }
 
   $(document).on('dragstart', '.query-draggable', function(ev) {
@@ -243,7 +253,5 @@ javascript:
   })
 
   $(document).ready(function() {
-    colorFieldOptions();
-    countFieldChildren();
-    makeSortable();
+    initialize();
   });
