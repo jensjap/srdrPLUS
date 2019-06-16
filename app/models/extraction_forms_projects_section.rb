@@ -194,4 +194,10 @@ class ExtractionFormsProjectsSection < ApplicationRecord
       end
     end  # ExtractionFormsProjectsSection.transaction do
   end
+
+  def ensure_sequential_questions
+    questions.ordered.each_with_index do |q, idx|
+      q.position = idx + 1
+    end
+  end
 end

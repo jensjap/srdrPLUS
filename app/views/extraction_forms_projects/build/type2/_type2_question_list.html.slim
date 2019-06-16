@@ -18,6 +18,7 @@ h4 #{ efps.section.name.titleize } Question List
           th Description
 
       tbody.orderable-list orderable-url="#{ update_positions_api_v1_orderings_url }"
+        - efps.ensure_sequential_questions
         - efps.questions.ordered.each do |q|
           tr.orderable-item [ position="#{ q.ordering.position }" ordering-id="#{ q.ordering.id }" ]
             td = q.ordering.position
