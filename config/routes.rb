@@ -1,6 +1,7 @@
 require 'sidekiq/web'
 
 Rails.application.routes.draw do
+  resources :invitations
   resources :searches, only: [:new, :create]
 
   devise_for :admins

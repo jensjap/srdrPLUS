@@ -61,7 +61,7 @@ class CitationsController < ApplicationController
     #  .where(:projects => { :id => @project.id }).all
     #@labels = Label.where(:user_id => current_user.id).where(:citations_project_id => [@project.citations_projects]).all
     @citations = @project.citations.order(:id)
-    @project.teams.build
+    #@project.teams.build
 
     add_breadcrumb 'edit project', edit_project_path(@project)
     add_breadcrumb 'citations',    :project_citations_path

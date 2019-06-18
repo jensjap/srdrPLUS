@@ -1,0 +1,25 @@
+h1 Listing invitations
+
+table
+  thead
+    tr
+      th Invitable
+      th Enable
+      th Role
+      th
+      th
+      th
+
+  tbody
+    - @invitations.each do |invitation|
+      tr
+        td = invitation.invitable
+        td = invitation.enable
+        td = invitation.role
+        td = link_to 'Show', invitation
+        td = link_to 'Edit', edit_invitation_path(invitation)
+        td = link_to 'Destroy', invitation, data: { confirm: 'Are you sure?' }, method: :delete
+
+br
+
+= link_to 'New Invitation', new_invitation_path

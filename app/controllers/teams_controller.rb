@@ -3,6 +3,17 @@ class TeamsController < ApplicationController
   before_action :set_team, only: [:update, :destroy]
 
   def create
+    @team = @project.teams.new(team_params)
+
+    respond_to do |format|
+      if @team.save
+        format.html { redirect_to project_citations_path(@project, anchor: 'panel-screening-teams'), notice: t('success') }
+        format.json { render :show, status: :created, location: @citation }
+      else
+        format.html { render :new }
+        format.json { render json: @citation.errors, status: :unprocessable_entity }
+      end
+    end
   end
 
   def update
@@ -32,7 +43,7 @@ class TeamsController < ApplicationController
 
     def team_params
       params.require(:team)
-        .permit(:team_type_id, :name, :enabled,
+        .permit(:team_type_id, :project_id, :name, :enabled,
                projects_users_roles_teams_attributes: [:id, :projects_users_role_id, :_destroy])
     end
 end

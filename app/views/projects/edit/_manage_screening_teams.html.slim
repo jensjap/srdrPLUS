@@ -28,6 +28,11 @@
               - else
                 = link_to team.name, "#panel-team-#{ team.id }", title: "Citation Screening Team #{ team.name }"
 
+        li.tabs-title
+          = link_to "#panel-team-new", title: "Create a new Citation Screening Team" do
+            i.fi-plus.pull-right
+            span< Create new team
+
     .cell.medium-9
       .tabs-content data-tabs-content='team-tabs'
 
@@ -59,3 +64,11 @@
               hr
 
               = render 'projects/edit/team_table', team: team
+
+
+        .tabs-panel id="panel-team-new"
+          = simple_form_for [@project, @project.teams.build] do |f|
+            = f.association :team_type
+            = f.input :name
+
+            = f.button :submit, 'Create Team', class: 'button'
