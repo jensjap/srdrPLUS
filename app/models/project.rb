@@ -24,10 +24,15 @@ class Project < ApplicationRecord
   has_many :extraction_forms_projects, dependent: :destroy, inverse_of: :project
   has_many :extraction_forms, through: :extraction_forms_projects, dependent: :destroy
 
-  has_many :key_questions_projects, dependent: :destroy, inverse_of: :project
-  has_many :key_questions, through: :key_questions_projects, dependent: :destroy
+  has_many :key_questions_projects,
+    -> { ordered },
+    dependent: :destroy, inverse_of: :project
+  has_many :key_questions,
+    -> { joins(key_questions_projects: :ordering) },
+    through: :key_questions_projects, dependent: :destroy
   ## this does not feel right - Birol
-  has_many :orderings, through: :key_questions_projects, dependent: :destroy
+  # jens 2019-06-17: I believe we ought to define the ordering via a scope block in has_many.
+  #has_many :orderings, through: :key_questions_projects, dependent: :destroy
 
   has_many :projects_studies, dependent: :destroy, inverse_of: :project
   has_many :studies, through: :projects_studies, dependent: :destroy
@@ -60,7 +65,7 @@ class Project < ApplicationRecord
   accepts_nested_attributes_for :tasks, allow_destroy: true
   accepts_nested_attributes_for :assignments, allow_destroy: true
   accepts_nested_attributes_for :key_questions_projects, allow_destroy: true
-  accepts_nested_attributes_for :orderings
+  #accepts_nested_attributes_for :orderings
   accepts_nested_attributes_for :projects_users, allow_destroy: true
   accepts_nested_attributes_for :screening_options, allow_destroy: true
 

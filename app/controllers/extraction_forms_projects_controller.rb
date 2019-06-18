@@ -58,11 +58,9 @@ class ExtractionFormsProjectsController < ApplicationController
     @key_questions_projects = @extraction_forms_project.project.key_questions_projects.includes(:key_question)
     @extraction_forms_projects_sections = @extraction_forms_project.extraction_forms_projects_sections
       .includes([:extraction_forms_projects_section_type,
-                 :ordering,
                  :section,
                  :type1s,
-                 { questions: [:ordering,
-                               :dependencies,
+                 { questions: [:dependencies,
                                { question_rows: [:question_row_columns] }] }])
     add_breadcrumb 'my projects',  :projects_path
     add_breadcrumb 'edit project', :edit_project_path
@@ -79,7 +77,7 @@ class ExtractionFormsProjectsController < ApplicationController
     def set_extraction_forms_project
       @extraction_forms_project = ExtractionFormsProject
         .includes(:extraction_form)
-        .includes(key_questions_projects: [:key_question])
+        .includes(extraction_forms_projects_sections: { key_questions_projects: [:key_question] })
         .includes(:project)
         .find(params[:id])
       authorize(@extraction_forms_project.project, policy_class: ExtractionFormsProjectPolicy)

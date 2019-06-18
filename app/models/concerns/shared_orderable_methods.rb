@@ -2,7 +2,8 @@ module SharedOrderableMethods
   extend ActiveSupport::Concern
 
   included do
-    scope :ordered, -> { joins(:ordering).reorder('orderings.position') }
+    scope :ordered, -> { joins(:ordering).merge(Ordering.order(position: :asc)) }
+
     # Params:
     #   symbol - Scope of the ordering. Each orderable is grouped by some parameter.
     #
@@ -18,7 +19,6 @@ module SharedOrderableMethods
     def position=(new_position)
       self.ordering.update(position: new_position) unless self.ordering.nil?
     end
-
   end
 
   class_methods do

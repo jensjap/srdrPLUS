@@ -6,8 +6,6 @@ class ExtractionFormsProjectsSection < ApplicationRecord
   acts_as_paranoid column: :active, sentinel_value: true
   has_paper_trail
 
-  default_scope { order(id: :asc) }
-
   after_save :mark_as_deleted_or_restore_extraction_forms_projects_section_option
   after_create :create_extraction_forms_projects_section_option
 
@@ -23,8 +21,12 @@ class ExtractionFormsProjectsSection < ApplicationRecord
   has_one :extraction_forms_projects_section_option, dependent: :destroy
   has_one :ordering, as: :orderable, dependent: :destroy
 
-  has_many :extraction_forms_projects_sections_type1s, dependent: :destroy, inverse_of: :extraction_forms_projects_section
-  has_many :type1s, through: :extraction_forms_projects_sections_type1s, dependent: :destroy
+  has_many :extraction_forms_projects_sections_type1s,
+    -> { ordered },
+    dependent: :destroy, inverse_of: :extraction_forms_projects_section
+  has_many :type1s,
+    -> { joins(extraction_forms_projects_sections_type1s: :ordering) },
+    through: :extraction_forms_projects_sections_type1s, dependent: :destroy
 
   has_many :extraction_forms_projects_section_type2s, class_name:  'ExtractionFormsProjectsSection',
                                                       foreign_key: 'extraction_forms_projects_section_id'
@@ -36,7 +38,7 @@ class ExtractionFormsProjectsSection < ApplicationRecord
   has_many :key_questions, through: :key_questions_projects, dependent: :destroy
 
   has_many :questions,
-    -> { joins(:ordering).merge(Ordering.order(position: :asc)) },
+    -> { ordered },
     dependent: :destroy, inverse_of: :extraction_forms_projects_section
 
   accepts_nested_attributes_for :extraction_forms_projects_sections_type1s, reject_if: :all_blank
@@ -113,7 +115,6 @@ class ExtractionFormsProjectsSection < ApplicationRecord
 
   def extraction_forms_projects_sections_type1s_without_total_arm
     extraction_forms_projects_sections_type1s
-      .ordered
       .to_a
       .delete_if { |efpst| efpst.type1==Type1.find_by(name: "Total", description: "All #{ link_to_type1.present? ? link_to_type1.section.name : section.name } combined") }
   end
@@ -196,7 +197,7 @@ class ExtractionFormsProjectsSection < ApplicationRecord
   end
 
   def ensure_sequential_questions
-    questions.ordered.each_with_index do |q, idx|
+    questions.each_with_index do |q, idx|
       q.position = idx + 1
     end
   end

@@ -21,7 +21,7 @@ blockquote
     h5 style='color: red;' You must add #{ linked_section.extraction_forms_projects_section.section.name } before extracting into this section.
 
 - else
-  - efps.questions.ordered.each_with_index do |q, idx|
+  - efps.questions.each_with_index do |q, idx|
     / Questions that have prerequisites get classes of the form 'prereq-<type>-<id>' which are disabled while these classes are present.
       Listeners are attached on form fields which trigger on change and remove class from any element that has the 'prereq-<type>-<id>'.
       Once all 'prereq-<type>-<id>' classes are removed the question is enabled.

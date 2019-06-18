@@ -16,7 +16,7 @@
 
     //orderable-table class is used for drag and drop
     tbody.orderable-list orderable-url="#{ update_positions_api_v1_orderings_url }"
-      - @project.key_questions_projects.ordered.each do |kqp|
+      - @project.key_questions_projects.each do |kqp|
         tr.orderable-item [ position="#{ kqp.ordering.position }" ordering-id="#{ kqp.ordering.id }" ]
           td = kqp.key_question.name
           td

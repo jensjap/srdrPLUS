@@ -19,8 +19,12 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
   has_many :link_to_type2s, class_name: 'ExtractionsExtractionFormsProjectsSection',
     foreign_key: 'extractions_extraction_forms_projects_section_id'
 
-  has_many :extractions_extraction_forms_projects_sections_type1s, dependent: :destroy, inverse_of: :extractions_extraction_forms_projects_section
-  has_many :type1s, through: :extractions_extraction_forms_projects_sections_type1s, dependent: :destroy
+  has_many :extractions_extraction_forms_projects_sections_type1s,
+    -> { ordered },
+    dependent: :destroy, inverse_of: :extractions_extraction_forms_projects_section
+  has_many :type1s,
+    -> { joins(extractions_extraction_forms_projects_sections_type1s: :ordering) },
+    through: :extractions_extraction_forms_projects_sections_type1s, dependent: :destroy
 
   has_many :extractions_extraction_forms_projects_sections_question_row_column_fields, dependent: :destroy, inverse_of: :extractions_extraction_forms_projects_section
   has_many :question_row_column_fields, through: :extractions_extraction_forms_projects_sections_question_row_column_fields, dependent: :destroy
@@ -70,7 +74,6 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
   def eefpst1s_without_total
     extractions_extraction_forms_projects_sections_type1s
       .includes(:type1_type, :type1)
-      .ordered
       .to_a
       .delete_if { |efpst1| efpst1.type1==Type1.find_by(name: 'Total', description: "All #{ extraction_forms_projects_section.link_to_type1.present? ? extraction_forms_projects_section.link_to_type1.section.name : extraction_forms_projects_section.section.name } combined") }
   end
@@ -80,7 +83,6 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
     type1s << type1 unless type1s.include? type1
     ab = extractions_extraction_forms_projects_sections_type1s
       .includes(:type1_type, :type1)
-      .ordered
       .to_a
       .delete_if { |efpst1| efpst1.type1==Type1.find_by(name: 'Total', description: "All #{ extraction_forms_projects_section.link_to_type1.present? ? extraction_forms_projects_section.link_to_type1.section.name : extraction_forms_projects_section.section.name } combined") }
       .push(extractions_extraction_forms_projects_sections_type1s.joins(:type1).find_by(type1s: { name: 'Total', description: "All #{ extraction_forms_projects_section.link_to_type1.present? ? extraction_forms_projects_section.link_to_type1.section.name : extraction_forms_projects_section.section.name } combined" }))

@@ -3,11 +3,12 @@ module Api
     class OrderingsController < BaseController
       def update_positions
         Ordering.transaction do
-          orderings_params['orderings'].values.each do |o|
+          orderings_params['orderings'].values.each_with_index do |o, index|
             ordering = Ordering.find(o['id'])
-            ordering.update!(position: o['position'])
+            ordering.update!(position: index + 1)
           end
         end
+
         respond_to do |format|
           format.json { head :ok }
         end
