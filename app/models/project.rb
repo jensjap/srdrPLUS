@@ -75,11 +75,11 @@ class Project < ApplicationRecord
   end
 
   def duplicate_key_question?
-    self.key_questions.select('name').having('count(*) > 1').group('name').length.nonzero?
+    self.key_questions.pluck(:name).uniq.length < self.key_questions.length
   end
 
   def duplicate_extraction_form?
-    self.extraction_forms.having('count(*) > 1').group('name').length.nonzero?
+    self.extraction_forms.pluck(:name).uniq.length < self.extraction_forms.length
   end
 
   def key_questions_projects_array_for_select
