@@ -266,7 +266,8 @@ class ProjectsController < ApplicationController
     end
 
     def gdrive_params
-      params.permit( :kqs_ids => [], :payload => [ :column_name, :type, { :export_ids => [] } ] )
+      #params.permit( :kqs_ids => [], :payload => [ :column_name, :type, { :export_ids => [] } ] )
+      params.permit( :kqs_ids => [], :columns => [:name, :type, { :export_items => [:export_id, :type, :extraction_forms_projects_section_id] }])
     end
 
   def save_without_sections_if_imported_files_params_exist(project)
