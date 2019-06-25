@@ -30,7 +30,9 @@ class InvitationsController < ApplicationController
   def new
     invitable
     @existing_invitations = @behaveable.invitations
-    #@invitation = @behaveable.invitations.build
+    respond_to do |format|
+      format.js
+    end
   end
 
   # Create a invitation.

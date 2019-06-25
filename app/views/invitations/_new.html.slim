@@ -1,0 +1,16 @@
+button.close-button data-close='' aria-label='Close modal' type='button'
+  span aria-hidden='true' &times;
+
+h4 Manage Invitations for team #{ behaveable.name }
+
+.grid-container
+  .grid-x.grid-margin-x
+    .cell.medium-7 id="invitations-table-#{ behaveable.id }"
+      = render 'invitations_table', behaveable: behaveable
+
+    .cell.medium-5
+      h5 New invitation link
+
+      = render 'form'
+
+/= link_to 'Back', project_citations_path(@behaveable.project, anchor: 'panel-screening-teams')

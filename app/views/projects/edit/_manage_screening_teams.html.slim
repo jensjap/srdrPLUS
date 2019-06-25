@@ -1,3 +1,5 @@
+#manage-invitation-links-modal.reveal.large data-reveal=""
+
 .grid-container
   .grid-x.grid-margin-x
     .cell.medium-3
@@ -29,7 +31,7 @@
         - @project.screening_teams.each do |team|
           - if is_first
             .tabs-panel.is-active id="panel-team-#{ team.id }"
-              = link_to 'Manage invitations', new_team_invitation_path(team.id)
+              = link_to 'Manage invitations', new_team_invitation_path(team.id), remote: true
 
               = render 'projects/edit/manage_team_partials/tabs_content', team: team
 
@@ -37,7 +39,7 @@
 
           - else
             .tabs-panel id="panel-team-#{ team.id }"
-              = link_to 'Manage invitations', new_team_invitation_path(team.id)
+              = link_to 'Manage invitations', new_team_invitation_path(team.id), remote: true
 
               = render 'projects/edit/manage_team_partials/tabs_content', team: team
 
