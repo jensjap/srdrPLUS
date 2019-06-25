@@ -4,7 +4,7 @@ class User < ApplicationRecord
       :last_sign_in_at, :current_sign_in_ip, :last_sign_in_ip]
 
 
-  after_create { create_profile(username: email.gsub(/@/, '_at_')) }
+  after_create :ensure_profile_username_uniqueness
   before_validation { self.user_type = UserType.where(user_type: 'Member').first if self.user_type.nil? }
 
   # Include default devise modules. Others available are:
@@ -23,7 +23,7 @@ class User < ApplicationRecord
 
   has_many :approvals, dependent: :destroy, inverse_of: :user
 
-  has_many :assignments, dependent: :destroy, inverse_of: :user
+  #has_many :assignments, dependent: :destroy, inverse_of: :user
 
   has_many :degrees, through: :profile
 
@@ -37,7 +37,7 @@ class User < ApplicationRecord
 
   has_many :suggestions, dependent: :destroy, inverse_of: :user
 
-  has_many :notes, dependent: :destroy, inverse_of: :user
+  #has_many :notes, dependent: :destroy, inverse_of: :user
 
   has_many :taggings, through: :projects_users, dependent: :destroy
   has_many :tags, through: :taggings, dependent: :destroy
@@ -84,5 +84,21 @@ class User < ApplicationRecord
         where(username: conditions[:username]).first
       end
     end
+  end
+
+  private
+
+  def ensure_profile_username_uniqueness
+    _username = self.email.gsub(/@/, '_at_')
+    if Profile.find_by(username: _username)
+      i = 0
+      loop do
+        i += 1
+        _username = _username + i.to_s
+        break unless Profile.find_by(username: _username)
+      end
+    end
+
+    create_profile(username: _username)
   end
 end
