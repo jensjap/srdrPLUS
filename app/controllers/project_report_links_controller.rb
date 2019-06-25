@@ -37,7 +37,8 @@ class ProjectReportLinksController < ApplicationController
         @groups = order_groups_hash(groups_hash)
       end
 
-      @included_type1s = @project.extraction_forms_projects.
+      @included_type1s = @project.
+        extraction_forms_projects.
         where(extraction_forms_project_type_id: [1, 2]).
         first.
         extraction_forms_projects_sections.
@@ -70,6 +71,22 @@ class ProjectReportLinksController < ApplicationController
     end
 
     def get_rssm_groups(project_id)
+      if params[:type1s].present?
+        extractions_extraction_forms_projects_sections_type1 = {
+          type1_id: params[:type1s].values,
+          extractions_extraction_forms_projects_sections: {
+            extractions: { project_id: project_id },
+            extraction_forms_projects_section_id: params[:type1s].keys,
+          }
+        }
+      else
+        extractions_extraction_forms_projects_sections_type1 = {
+          extractions_extraction_forms_projects_sections: {
+            extractions: { project_id: project_id },
+          }
+        }
+      end
+
       ordered_2d = []
       rssms = ResultStatisticSectionsMeasure.
         joins(result_statistic_section: {
@@ -83,11 +100,7 @@ class ProjectReportLinksController < ApplicationController
         }).
         where(result_statistic_section: {
           population: {
-            extractions_extraction_forms_projects_sections_type1: {
-              extractions_extraction_forms_projects_section: {
-                extractions: { project_id: project_id }
-              }
-            }
+            extractions_extraction_forms_projects_sections_type1s: extractions_extraction_forms_projects_sections_type1
           }
         }).
         uniq(&:measure_id)
