@@ -25,6 +25,7 @@ class GsheetsExportJob < ApplicationJob
       wrap       = p.workbook.styles.add_style alignment: { wrap_text: true }
 
       p.workbook.add_worksheet(name: "Data") do |sheet|
+        @custom_exporter.write_column_headers sheet, highlight
         @project.extractions.each do |ex|
           @custom_exporter.write_extraction_rows(ex, sheet, nil)
         end
@@ -106,7 +107,7 @@ class CustomExporter
 
     @inclusion_dict = identify_independents project, @col_args
 
-    @t1_efps_dict = create_efps_dict @arms_efps, @outcomes_efps, @efps_arr
+    @t1_efps_dict = create_efps_dict @inclusion_dict, @efps_arr
 
     #### COMPUTE COMPARATE LENGTH ####
     @comparate_1_length, @comparate_2_length = get_comparate_lengths(project)
@@ -135,9 +136,11 @@ class CustomExporter
     combination_arr.each do |current_combination|
       current_row = row_prefix + get_combination_data_string(current_combination, @comparate_1_length, @comparate_2_length)
       @col_args.each do |_, col_hash|
+        rich_text = Axlsx::RichText.new
         col_hash['export_items'].each do |_, export_item|
           if export_item['type'] == "Type2"
-            current_row << get_question_data_string([export_item['export_id']], extraction, current_combination, @t1_efps_dict)
+            process_qids(rich_text, [export_item['export_id']], extraction, current_combination, @t1_efps_dict)
+            rich_text.add_run "\n"
           else
             arm_eefpst1 = current_combination[0]
             outcome_eefpst1 = current_combination[1]
@@ -146,9 +149,11 @@ class CustomExporter
             rss = eefpst1r.result_statistic_sections.where(result_statistic_section_type: @type_dict[export_item['type']])&.first
             arm_comp = current_combination[4]
             tp_comp = current_combination[5]
-            current_row << get_results_data_string(rss,[export_item['export_id']], arm_eefpst1, outcome_eefpst1, eefpst1r, eefpst1rc, arm_comp, tp_comp)
+            process_results(rich_text, rss,[export_item['export_id']], arm_eefpst1, outcome_eefpst1, eefpst1r, eefpst1rc, arm_comp, tp_comp)
+            rich_text.add_run "\n"
           end
         end
+        current_row << rich_text
       end
       sheet.add_row current_row
     end
@@ -171,11 +176,11 @@ class CustomExporter
     @t1_efps_dict
   end
 
-  def create_efps_dict(arms_efps, outcomes_efps, efps_arr)
+  def create_efps_dict(inclusion_dict, efps_arr)
     #other type1s
     t1_efps_dict = {}
-    if arms_efps then t1_efps_dict[@arms_efps.id] = 0 end
-    if outcomes_efps then t1_efps_dict[@outcomes_efps.id] = 1 end
+    if inclusion_dict['arms_efps'] then t1_efps_dict[inclusion_dict['arms_efps'].id] = 0 end
+    if inclusion_dict['outcomes_efps'] then t1_efps_dict[inclusion_dict['outcomes_efps'].id] = 1 end
     i = 5
     efps_arr.each do |efps|
       t1_efps_dict[efps.id] = i
@@ -400,27 +405,26 @@ class CustomExporter
     return inclusion_dict
   end
 
-  def get_question_data(q, t2_eefps, eefpst1)
+  def process_question(rich_text, q, t2_eefps, eefpst1)
     q_name = q.name
-    data_string = Axlsx::RichText.new
 
     _first = true
     q.question_rows.each_with_index do |qr, ri|
       qr.question_row_columns.each_with_index do |qrc, ci|
 
-        #if not _first then data_string += "\n" else _first = false end
+        #if not _first then rich_text += "\n" else _first = false end
         if not _first
-          data_string.add_run("\n")
+          rich_text.add_run("\n")
         else
           _first = false
         end
 
         if q.question_rows.length > 1 or qr.question_row_columns.length > 1
-          data_string.add_run(q_name + " ", :b => true)
-          data_string.add_run("(row: " + ri.to_s + ", column: " + ci.to_s + ")", :b => true, :i => true)
-          data_string.add_run(": ", :b => true)
+          rich_text.add_run(q_name + " ", :b => true)
+          rich_text.add_run("(row: " + ri.to_s + ", column: " + ci.to_s + ")", :b => true, :i => true)
+          rich_text.add_run(": ", :b => true)
         else
-          data_string.add_run(q_name + ": ", :b => true)
+          rich_text.add_run(q_name + ": ", :b => true)
         end
 
         qrcf_arr = qrc.question_row_column_fields.sort { |a,b| a.id <=> b.id }
@@ -437,14 +441,14 @@ class CustomExporter
         case qrc_type_id
         when 1
           if record_arr.length == 1
-            data_string.add_run(record_arr.first.name.to_s)
+            rich_text.add_run(record_arr.first.name.to_s)
           end
         when 2
           if record_arr.length == 1
-            data_string.add_run(record_arr.first.name.to_s)
+            rich_text.add_run(record_arr.first.name.to_s)
           elsif record_arr.length == 2
-            #data_string += record_arr.first.name.to_s + " " + record_arr.second.name.to_s
-            data_string.add_run(record_arr.first.name.to_s + " " + record_arr.second.name.to_s)
+            #rich_text += record_arr.first.name.to_s + " " + record_arr.second.name.to_s
+            rich_text.add_run(record_arr.first.name.to_s + " " + record_arr.second.name.to_s)
           end
         when 3
           #nothing
@@ -453,11 +457,11 @@ class CustomExporter
         when 5
           if record_arr.length == 1
             option_names = (record_arr.first.name[2..-3].split('", "') - [""]).map { |r| QuestionRowColumnsQuestionRowColumnOption.find(r.to_i).name }
-            data_string.add_run( '["' + option_names.join('", "') + '"]' )
+            rich_text.add_run( '["' + option_names.join('", "') + '"]' )
           end
         when 6,7,8
           if record_arr.length == 1
-            data_string.add_run(QuestionRowColumnsQuestionRowColumnOption.find_by(id: record_arr.first.name.to_i)&.name || "")
+            rich_text.add_run(QuestionRowColumnsQuestionRowColumnOption.find_by(id: record_arr.first.name.to_i)&.name || "")
           end
 
         when 9
@@ -465,13 +469,11 @@ class CustomExporter
         end
       end
     end
-    return data_string
+    return rich_text
   end
 
 
-  def get_question_data_string(qid_arr, extraction, combination, t1_efps_dict)
-    data_string = Axlsx::RichText.new
-
+  def process_qids(rich_text, qid_arr, extraction, combination, t1_efps_dict)
     qid_arr.each do |qid|
       q = Question.find qid
 
@@ -482,10 +484,10 @@ class CustomExporter
       if t1_efps.present?
         eefpst1 = combination[t1_efps_dict[t1_efps.id]]
       end
-      data_string.add_run get_question_data(q, t2_eefps, eefpst1)
+      process_question(rich_text, q, t2_eefps, eefpst1)
     end
 
-    return data_string
+    return rich_text
   end
 
   def get_headers
@@ -509,8 +511,8 @@ class CustomExporter
       header_arr << t1_efps.section.name
     end
 
-    @column_args.each do |i, chash|
-      header_arr << chash['column_name']
+    @col_args.each do |_, chash|
+      header_arr << chash['name']
     end
 
     return header_arr
@@ -554,24 +556,21 @@ class CustomExporter
     return string_arr
   end
 
-  def get_results_data_string(rss, mid_arr, arm_eefpst1, outcome_eefpst1, eefpst1r, eefpst1rc, arm_comp, tp_comp)
+  def process_results(rich_text, rss, mid_arr, arm_eefpst1, outcome_eefpst1, eefpst1r, eefpst1rc, arm_comp, tp_comp)
     _first = true
 
-    #data_string = ""
-    data_string = Axlsx::RichText.new
-
     (mid_arr || []).each do |mid|
-      #if not _first then data_string += "\n" else _first = false end
+      #if not _first then rich_text += "\n" else _first = false end
       if not _first
-        data_string.add_run("\n")
+        rich_text.add_run("\n")
       else
         _first = false
       end
       #rssm = ResultStatisticSectionsMeasure.find_by result_statistic_section: rss, measure: Measure.find(mid)
       rssm = ResultStatisticSectionsMeasure.find mid
       rss = rssm.result_statistic_section
-      #data_string += (rssm.measure.name+ ": ")
-      data_string.add_run(rssm.measure.name + ": ", :b => true)
+      #rich_text += (rssm.measure.name+ ": ")
+      rich_text.add_run(rssm.measure.name + ": ", :b => true)
 
       case rss.result_statistic_section_type_id
       when 1
@@ -580,8 +579,8 @@ class CustomExporter
                                      result_statistic_sections_measure: rssm
         if r_elem.present?
           r = Record.find_by recordable_id: r_elem.id, recordable_type: "TpsArmsRssm"
-          #data_string += r&.name || ""
-          data_string.add_run(r&.name || "")
+          #rich_text += r&.name || ""
+          rich_text.add_run(r&.name || "")
         end
       when 2
         r_elem = TpsComparisonsRssm.find_by timepoint: eefpst1rc,
@@ -589,8 +588,8 @@ class CustomExporter
                                             result_statistic_sections_measure: rssm
         if r_elem.present?
           r = Record.find_by recordable_id: r_elem.id, recordable_type: "TpsComparisonsRssm"
-          #data_string += r&.name || ""
-          data_string.add_run(r&.name || "")
+          #rich_text += r&.name || ""
+          rich_text.add_run(r&.name || "")
         end
       when 3
         r_elem = ComparisonsArmsRssm.find_by comparison: tp_comp,
@@ -598,8 +597,8 @@ class CustomExporter
                                              result_statistic_sections_measure: rssm
         if r_elem.present?
           r = Record.find_by recordable_id: r_elem.id, recordable_type: "ComparisonsArmsRssm"
-          #data_string += r&.name || ""
-          data_string.add_run(r&.name || "")
+          #rich_text += r&.name || ""
+          rich_text.add_run(r&.name || "")
         end
       when 4
         r_elem = WacsBacsRssm.find_by wac: tp_comp,
@@ -607,13 +606,13 @@ class CustomExporter
                                       result_statistic_sections_measure: rssm
         if r_elem.present?
           r = Record.find_by recordable_id: r_elem.id, recordable_type: "WacsBacsRssm"
-          #data_string += r&.name || ""
-          data_string.add_run(r&.name || "")
+          #rich_text += r&.name || ""
+          rich_text.add_run(r&.name || "")
         end
       end
     end
 
-    return data_string
+    return rich_text
   end
 
   def list_combinations(arr_of_arrs, n, prefix, result_arr)
