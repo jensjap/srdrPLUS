@@ -1,4 +1,6 @@
 class Team < ApplicationRecord
+  include SharedInvitableMethods
+
   belongs_to :team_type
   belongs_to :project
 

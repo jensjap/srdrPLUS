@@ -1,0 +1,22 @@
+= simple_form_for behaveable, remote: true do |f|
+  table
+    thead
+      tr
+        th style='width: 20%;' Enabled
+        th Role Assignment
+        th URL Link
+        th Delete?
+
+    tbody
+      = f.error_notification
+
+      .form-inputs
+        = f.simple_fields_for :invitations do |sf_i|
+          tr
+            td = sf_i.input :enabled
+            td = sf_i.object.role.name
+            td = link_to sf_i.object.generate_url, '#', class: 'copy-to-clipboard'
+            td = sf_i.check_box :_destroy
+
+  .form-actions
+    = f.submit 'Confirm', class: 'button'

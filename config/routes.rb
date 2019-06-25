@@ -1,7 +1,6 @@
 require 'sidekiq/web'
 
 Rails.application.routes.draw do
-  resources :invitations
   resources :searches, only: [:new, :create]
 
   devise_for :admins
@@ -90,14 +89,20 @@ Rails.application.routes.draw do
   #resources :tasks
   resources :records, only: [:update]
   resources :comparisons
+
   concern :paginatable do
     get '(page/:page)', action: :index, on: :collection, as: ''
+  end
+
+  concern :invitable do
+    resources :invitations
   end
 
   resources :extractions_extraction_forms_projects_sections_type1s, only: [] do
     get 'get_results_populations', on: :member
   end
   resources :projects, concerns: :paginatable, shallow: true do
+    resources :teams, concerns: :invitable, only: [:create, :update, :destroy]
 
     member do
       get  'confirm_deletion'
@@ -110,8 +115,6 @@ Rails.application.routes.draw do
       post 'create_citation_screening_extraction_form'
       post 'create_full_text_screening_extraction_form'
     end
-
-    resources :teams, only: [:create, :update, :destroy]
 
     resources :citations do
       collection do

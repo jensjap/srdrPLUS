@@ -20,9 +20,11 @@ class TeamsController < ApplicationController
     respond_to do |format|
       if @team.update(team_params)
         format.html { redirect_to project_citations_path(@team.project, anchor: 'panel-screening-teams'), notice: 'Success!' }
+        format.js
         format.json { render :show, status: :ok, location: @team }
       else
         format.html { render :edit }
+        format.js
         format.json { render json: @team.errors, status: :unprocessable_entity }
       end
     end
@@ -44,6 +46,7 @@ class TeamsController < ApplicationController
     def team_params
       params.require(:team)
         .permit(:team_type_id, :project_id, :name, :enabled,
-               projects_users_roles_teams_attributes: [:id, :projects_users_role_id, :_destroy])
+                invitations_attributes: [:id, :enabled, :_destroy],
+                projects_users_roles_teams_attributes: [:id, :projects_users_role_id, :_destroy])
     end
 end

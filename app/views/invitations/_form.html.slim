@@ -1,10 +1,10 @@
-= simple_form_for(@invitation) do |f|
+= simple_form_for [@behaveable, @behaveable.invitations.build], remote: true do |f|
   = f.error_notification
 
   .form-inputs
-    = f.association :invitable
-    = f.input :enable
+    = f.input :enabled, input_html: { checked: true }
     = f.association :role
+    = f.input :requires_approval, as: :boolean
 
   .form-actions
     = f.button :submit

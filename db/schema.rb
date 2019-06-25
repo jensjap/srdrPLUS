@@ -587,10 +587,10 @@ ActiveRecord::Schema.define(version: 2019_06_18_091411) do
   end
 
   create_table "invitations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "role_id"
     t.string "invitable_type"
     t.bigint "invitable_id"
-    t.boolean "enable", default: false
-    t.integer "role_id"
+    t.boolean "enabled", default: false
     t.string "token"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
