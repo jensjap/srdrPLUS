@@ -1,10 +1,11 @@
 ( function() {
   <% if @team.errors.present? %>
-      <% @team.errors.full_messages.each do |msg| %>
+    <% @team.errors.full_messages.each do |msg| %>
       toastr.error('<%= msg[1] %>', '<%= msg[0] %>');
-<% end %>
+    <% end %>
   <% else %>
-      $( "#invitations-table-<%= @team.id %>" ).html( "<%= escape_javascript( render "invitations/invitations_table", behaveable: @team ) %>" )
-  toastr.success( 'Success!' );
+    $( "#invitations-table-<%= @team.id %>" ).html( "<%= escape_javascript( render "invitations/invitations_table", behaveable: @team ) %>" );
+    $( '.copy-to-clipboard' ).click( copyToClipboardMessage );
+    toastr.success( 'Success!' );
 <% end %>
 })();

@@ -67,6 +67,15 @@ const copyToClipboard = str => {
   }
 };
 
+const copyToClipboardMessage = ( e ) => {
+  e.preventDefault();
+  copyToClipboard( $( e.target ).text() );
+  $( e.target ).append( '<span class="copied-message" style="color: green; font-size: 0.8em;"> Copied!</span>' );
+  $( '.copied-message' ).delay( 800 ).fadeOut( 400 ).queue( function() { $( this ).remove(); } );
+
+  return false;
+};
+
 // Set toastr.js options.
 toastr.options = {
   'closeButton': false,
