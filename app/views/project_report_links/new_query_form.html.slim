@@ -25,34 +25,6 @@ javascript:
     $('#columns > div:last-child').remove();
   }
 
-  function extractReportQuestionsOld() {
-    var mapping = [];
-
-    $('.droppable').each(function() {
-      var currentEl = $(this);
-      var column_name = currentEl.closest('.field-column').children('h5').text();
-      var sectionMap = {
-        column_name,
-        export_ids: [],
-        type: ''
-      };
-      currentEl.children().each (function() {
-        var questionId = $(this).data('item-id');
-        var type = $(this).data('type');
-        sectionMap.export_ids.push(questionId);
-        sectionMap.type = type;
-      })
-      mapping.push(sectionMap);
-    });
-    var keyQuestionProjectIds = $('#project-ids').
-      data('key-question-project-ids').
-      split(",").
-      slice(1).
-      map(function(string) { return Number(string) })
-
-    return { payload: mapping, kqs_ids: keyQuestionProjectIds };
-  }
-
   function extractReportQuestions() {
     var payload = {
       columns: []
@@ -84,12 +56,9 @@ javascript:
     if (keyQuestionProjectIds === undefined) {
       keyQuestionProjectIds = null;
     } else if (typeof(keyQuestionProjectIds) === 'number') {
-      keyQuestionProjectIds = keyQuestionProjectIds.toString();
+      keyQuestionProjectIds = [keyQuestionProjectIds.toString()];
     } else {
-      keyQuestionProjectIds = keyQuestionProjectIds.
-      split(",").
-      slice(1).
-      map(function(string) { return Number(string) })
+      keyQuestionProjectIds = keyQuestionProjectIds.split(",");
     }
     payload.kqs_ids = keyQuestionProjectIds;
     return payload;
