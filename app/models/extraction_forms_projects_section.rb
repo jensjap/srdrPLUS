@@ -24,6 +24,7 @@ class ExtractionFormsProjectsSection < ApplicationRecord
   has_many :extraction_forms_projects_sections_type1s,
     -> { ordered },
     dependent: :destroy, inverse_of: :extraction_forms_projects_section
+  # Note: This might be a bug...it's returning too many type1s.
   has_many :type1s,
     -> { joins(extraction_forms_projects_sections_type1s: :ordering) },
     through: :extraction_forms_projects_sections_type1s, dependent: :destroy

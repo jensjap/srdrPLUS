@@ -36,7 +36,7 @@
           #step-two
 
             - if @extraction_forms_projects_section.link_to_type1.present?
-              - @extraction_forms_projects_section.link_to_type1.type1s.each do |t1|
+              - @extraction_forms_projects_section.link_to_type1.extraction_forms_projects_sections_type1s.collect(&:type1).each do |t1|
                 = t1.name + ':'
                 == render 'extraction_forms_projects_sections/question_fields', q: q, t1: t1
 
