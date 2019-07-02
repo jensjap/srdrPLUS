@@ -141,6 +141,7 @@ class SdMetaDataController < ApplicationController
           :report_title,
           { funding_source_ids: [] },
           :date_of_last_search,
+          :date_of_publication_to_srdr,
           :date_of_publication_full_report,
           :state,
           :stakeholder_involvement_extent,

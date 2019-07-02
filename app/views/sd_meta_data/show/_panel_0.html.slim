@@ -21,7 +21,7 @@
         div #{@sd_meta_datum.try(:date_of_last_search).try(:to_date)}
       div data-field-span="1"
         label 5. Date of Publication to SRDR:
-        div #{@sd_meta_datum.date_of_publication_to_srdr.try(:to_date)}
+        div #{@sd_meta_datum.try(:date_of_publication_to_srdr).try(:to_date)}
         br/
         br/
         br/
