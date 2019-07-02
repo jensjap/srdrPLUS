@@ -5,7 +5,7 @@
       div data-field-span="1"
         label 7. Authors
         div
-          - @sd_meta_datum.authors.split("\n").each do |author|
+          - @sd_meta_datum.authors && @sd_meta_datum.authors.split("\n").each do |author|
             div #{author}
     div data-row-span="1"
       div data-field-span="1"
