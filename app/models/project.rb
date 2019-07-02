@@ -22,8 +22,6 @@ class Project < ApplicationRecord
   has_many :extractions, dependent: :destroy, inverse_of: :project
   has_many :teams, dependent: :destroy
   has_many :publishings, as: :publishable, dependent: :destroy
-  ## this does not feel right - Birol
-  has_many :orderings, through: :key_questions_projects, dependent: :destroy
 
   has_many :extraction_forms_projects, dependent: :destroy, inverse_of: :project
   has_many :extraction_forms, through: :extraction_forms_projects, dependent: :destroy

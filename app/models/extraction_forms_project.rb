@@ -22,7 +22,7 @@ class ExtractionFormsProject < ApplicationRecord
     -> { ordered },
     dependent: :destroy, inverse_of: :extraction_forms_project
   has_many :key_questions_projects,
-    -> { joins(extraction_forms_projects_sections: :ordering) },
+    -> { joins(extraction_forms_projects_section: :ordering) },
     through: :extraction_forms_projects_sections, dependent: :destroy
   has_many :sections,
     -> { joins(extraction_forms_projects_sections: :ordering) },
