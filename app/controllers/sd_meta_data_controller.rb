@@ -144,6 +144,7 @@ class SdMetaDataController < ApplicationController
           :date_of_publication_full_report,
           :state,
           :stakeholder_involvement_extent,
+          :authors,
           :authors_conflict_of_interest_of_full_report,
           :stakeholders_conflict_of_interest,
           :prototcol_link,
