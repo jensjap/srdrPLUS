@@ -294,14 +294,10 @@ class CustomExporter
     flat_combination_arr = []
 
     # flatten array manually
-    begin
-      temp_combination_arr.each do |arr_elem|
-        flat_combination_arr << [arr_elem[0]] + arr_elem[1]
-      end
-    rescue
-      byebug
+    temp_combination_arr.each do |arr_elem|
+      flat_combination_arr << [arr_elem[0]] + arr_elem[1]
     end
-    return flat_combination_arr
+    return flat_combination_arr.uniq
   end
 
   def identify_independents(project, col_args)
