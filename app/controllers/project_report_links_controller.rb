@@ -8,7 +8,14 @@ class ProjectReportLinksController < ApplicationController
   def index
     @sd_meta_data = SdMetaDatum.
       includes(project: { key_questions_projects: :key_question }).
-      where(state: 'COMPLETED')
+      #where(state: 'COMPLETED')
+      where(section_flag_0: true,
+            section_flag_1: true,
+            section_flag_2: true,
+            section_flag_3: true,
+            section_flag_4: true,
+            section_flag_5: true,
+            section_flag_6: true)
   end
 
   def options_form

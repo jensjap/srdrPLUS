@@ -1,11 +1,11 @@
 .column.row#project-list
   h3 Create New Link
-  h6 style="font-weight: bold; margin-top: 10px;" Source SRDR Project
+  h6 style="font-weight: bold; margin-top: 10px;" SRDR+ Project
   select id="project-create"
     - @projects.each do |project|
       option
       option value="#{project.id}" #{project.name}
-  h6 style="font-weight: bold; margin-top: 10px;" Source Systematic Review Report
+  h6 style="font-weight: bold; margin-top: 10px;" Systematic Review Report
   select id="report-create"
     - @reports.each do |report|
       option
@@ -17,21 +17,15 @@ hr style="border: 0.5px solid; margin: 20px 55px;"
   table.hover
     thead
       tr
-        th width="100" Project-Report Link ID
-        th width="175" Project Title
-        th width="175" Report Title
-        th width="375" Incomplete Sections
-        th State
-        th width="150" Toggle State
+        th width="175" SRDR+ Project
+        th width="175" Systematic Review Report
+        th width="375" Status
         th width="75" Edit
         th width="75" Delete
         th width="75" Last Updated
     tbody
       - if @sd_meta_data.empty?
         tr
-          td No Records
-          td
-          td
           td
           td
           td
@@ -41,14 +35,19 @@ hr style="border: 0.5px solid; margin: 20px 55px;"
       - else
         - @sd_meta_data.each do |sd_meta_datum|
           tr
-            td = sd_meta_datum.id
             td = sd_meta_datum.try(:project).try(:name)
             td = sd_meta_datum.report.try(:title)
-            td
-              - sd_meta_datum.incomplete_sections.each do |section|
-                p style="margin: 10px 0px;" #{section}
-            td style="font-weight: #{sd_meta_datum.state == 'DRAFT' ? 'normal' : 'bold' };" = sd_meta_datum.state
-            td
+            - if sd_meta_datum.incomplete_sections.empty?
+              td style="font-weight: bold;"
+                | Completed
+            - else
+              td
+                p style="margin: 10px 0px;font-weight: bold;" 
+                  | Incomplete Sections:
+                - sd_meta_datum.incomplete_sections.each do |section|
+                  p style="margin: 10px 0px;" #{section}
+            /td style="font-weight: #{sd_meta_datum.state == 'DRAFT' ? 'normal' : 'bold' };" = sd_meta_datum.state
+            /td
               = simple_form_for(sd_meta_datum, url: sd_meta_datum_path(sd_meta_datum)) do |f|
                 = f.input :state, :as => :hidden, input_html: { value: sd_meta_datum.state == 'DRAFT' ? 'COMPLETED' : 'DRAFT' }
                 = f.button :submit, 'Toggle State', class: 'state-toggler', state: sd_meta_datum.state, data_sections_complete: sd_meta_datum.all_sections_complete?
