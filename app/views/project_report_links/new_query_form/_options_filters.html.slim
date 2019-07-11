@@ -1,16 +1,11 @@
 div#filterOptions.reveal data-reveal="" style="width: unset;"
   div.grid-x.grid-padding-x
-    div.cell.small-12
-      div.grid-x.grid-padding-x
-        div.cell.small-6
-          h4 Available Fields
-          - Type1Type.all.each do |type1_type|
-            div style="float: left;"
-              label
-                input.section-type-filter type="checkbox" name="#{type1_type.name}" value="#{type1_type.name}" checked="" = type1_type.name
-        div.cell.small-6
-          h4 Included Fields
     div.cell.small-6 style="height: 70vh; overflow: auto;"
+      h4 Available Fields
+      div style="display: flex; flex-wrap:wrap;"
+        - Type1Type.all.each do |type1_type|
+          label style='padding-right: 1vw;'
+            input.section-type-filter type="checkbox" name="#{type1_type.name}" value="#{type1_type.name}" checked="" = type1_type.name
       = simple_form_for("sd_meta_datum", url: project_report_link_new_query_form_path("sd_meta_datum"), method: :get) do |f|
         div.accordion data-accordion="" data-allow-all-closed="true"
           div.accordion-item data-accordion-item=""
@@ -24,7 +19,8 @@ div#filterOptions.reveal data-reveal="" style="width: unset;"
               div.accordion-content data-tab-content=""
                 - type_1[:export_ids].each do |type_1_el|
                   div.button.efps style="text-align: left; width: 100%;" data-efps-id="#{type_1[:extraction_forms_projects_section_id]}" data-section-name="#{type_1[:section_name]}" data-type1_type="#{type_1_el[:type1_type]}" data-export-id="#{type_1_el[:type1_id]}" = type_1_el[:name_and_description]
-    div.cell.small-6 style="height: 75vh; overflow: auto; position: relative; top: -5vh; margin-bottom: -5vh;"
+    div.cell.small-6 style="height: 75vh; overflow: auto;"
+      h4 Included Fields
       div#apply-filter.button style="text-align: left;" Apply Filter
       br
       div#kq-filter-header style="font-weight: 300; width: 100%;"
