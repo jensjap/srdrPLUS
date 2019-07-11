@@ -1,15 +1,11 @@
-div style="float: right; margin-right: 20px;"
-  = link_to('Display Source Project', edit_project_path(@project), class: "button secondary float-right", target: "_blank")
-  br
-  - if @systematic_review_report
-    button.button type='button' data-toggle='offCanvasRightReportHtml' Display Source Report
-
-.column.row
+.column.row style='margin-bottom: 3vh;'
   /= image_tag('SRDR 2.0 Placeholder.png', size: '100x100', class: 'right', style: "float: right;")
-  h6 style="font-weight: bold; margin: 20px 0 0 0;" Source SRDR Project
-  div style="word-break: break-all;" #{@project.try(:name) ? @project.try(:name) : 'None' }
+  h6 style="font-weight: bold; margin: 20px 0 0 0;" SRDR+ Project
+  =link_to(@project.try(:name) ? @project.try(:name) : 'None', edit_project_path(@project), target: '_blank')
+    
   h6 style="font-weight: bold; margin: 20px 0 0;" Source Systematic Review Report
-  div style="word-break: break-all; margin: 0 0 20px 0;" #{@report.try(:title) ? @report.try(:title) : 'None' }
+  - if @systematic_review_report
+    a data-toggle='offCanvasRightReportHtml' #{@report.try(:title) ? @report.try(:title) : 'None'}
 
 .column.row#complete-form
   = render 'sd_meta_data/show/form'
