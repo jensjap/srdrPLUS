@@ -33,6 +33,22 @@ class ProjectsController < ApplicationController
       .includes(:key_questions)
       .includes(publishings: [{ user: :profile }, approval: [{ user: :profile }]])
       .by_query(@query).order(SORT[@order]).page(params[:page])
+
+    @published = policy_scope(Project).published.includes(:extraction_forms)
+      .includes(:key_questions)
+      .includes(publishings: [{ user: :profile }, approval: [{ user: :profile }]])
+      .by_query(@query).order(SORT[@order]).page(params[:page])
+
+    @pending = policy_scope(Project).pending.includes(:extraction_forms)
+      .includes(:key_questions)
+      .includes(publishings: [{ user: :profile }, approval: [{ user: :profile }]])
+      .by_query(@query).order(SORT[@order]).page(params[:page])
+    
+    @draft = policy_scope(Project).draft.includes(:extraction_forms)
+      .includes(:key_questions)
+      .includes(publishings: [{ user: :profile }, approval: [{ user: :profile }]])
+      .by_query(@query).order(SORT[@order]).page(params[:page])
+ 
   end
 
   # GET /projects/1
@@ -116,6 +132,17 @@ class ProjectsController < ApplicationController
     @order = params[:o]
 
     @projects = policy_scope(Project).includes(publishings: [{ user: :profile }, approval: [{ user: :profile }]])
+      .includes(:key_questions)
+      .by_name_description_and_query(@query).order(SORT[@order]).page(params[:page])
+    @published = policy_scope(Project).published.includes(publishings: [{ user: :profile }, approval: [{ user: :profile }]])
+      .includes(:key_questions)
+      .by_name_description_and_query(@query).order(SORT[@order]).page(params[:page])
+
+    @pending = policy_scope(Project).pending.includes(publishings: [{ user: :profile }, approval: [{ user: :profile }]])
+      .includes(:key_questions)
+      .by_name_description_and_query(@query).order(SORT[@order]).page(params[:page])
+    
+    @draft = policy_scope(Project).draft.includes(publishings: [{ user: :profile }, approval: [{ user: :profile }]])
       .includes(:key_questions)
       .by_name_description_and_query(@query).order(SORT[@order]).page(params[:page])
     render 'index'

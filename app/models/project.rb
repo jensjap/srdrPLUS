@@ -31,6 +31,11 @@ class Project < ApplicationRecord
   paginates_per 8
 
   scope :published, -> { joins(publishings: :approval) }
+  scope :pending, -> { joins(:publishings).\
+                      left_joins(publishings: :approval).\
+                      where(publishings: { approvals: { id:nil } }) }
+  scope :draft, -> { left_joins(:publishings).\
+                     where(publishings: { id: nil }) }
   scope :lead_by_current_user, -> {}
 
   after_create :create_default_extraction_form, unless: :create_empty
