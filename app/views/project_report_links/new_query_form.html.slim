@@ -1,10 +1,19 @@
 script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"
 
-= render partial: 'project_report_links/new_query_form/options_filters', locals: { key_questions_projects: @key_questions_projects, included_type1s: @included_type1s, sd_meta_datum: @sd_meta_datum }
+ul.tabs#query-tabs[data-tabs]
+  li.tabs-title.is-active
+    a href="#filter-panel"
+      | Step 1: Filter Options
+  li.tabs-title
+    a href="#query-panel"
+      | Step 2: Create Query
 
-div#options-form
-  = render partial: 'project_report_links/new_query_form/options_form', locals: { groups: @groups, project: @project, key_question_project_ids: @key_question_project_ids, results_groups: @results_groups }
+div.tabs-content data-tabs-content='query-tabs'
+  div.tabs-panel.is-active#filter-panel
+    = render partial: 'project_report_links/new_query_form/options_filters', locals: { key_questions_projects: @key_questions_projects, included_type1s: @included_type1s, sd_meta_datum: @sd_meta_datum }
 
+  div.tabs-panel#query-panel
+    = render partial: 'project_report_links/new_query_form/options_form', locals: { groups: @groups, project: @project, key_question_project_ids: @key_question_project_ids, results_groups: @results_groups }
 javascript:
   $.event.props.push('dataTransfer');
 
