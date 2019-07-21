@@ -3,27 +3,25 @@
   table.hover
     thead
       tr
-        th width="20" Project-Report Link ID
-        th width="30" Project Title
-        th width="30" Report Title
-        th width="30" Read Link
-        th width="30" Query
+        th style="width: 45%;" SRDR+ Project
+        th style="width: 45%;" Systematic Review Report
+        th style="width: 5%;" 
+        th style="width: 5%;" 
     tbody style="font-size: 12px;"
       - if @sd_meta_data.empty?
         tr
-          td No Records
+          td
           td
           td
           td
       - else
         - @sd_meta_data.each do |sd_meta_datum|
           tr
-            td = sd_meta_datum.id
             td = sd_meta_datum.try(:project).try(:name)
             td = sd_meta_datum.try(:report).try(:title)
             - if sd_meta_datum.project
-              td = link_to('Open', sd_meta_datum, class: 'button')
-              td = link_to('Create Query', project_report_link_new_query_form_path(sd_meta_datum), class: 'button')
+              td = link_to('View', sd_meta_datum, class: 'button')
+              td = link_to('Filter', project_report_link_new_query_form_path(sd_meta_datum), class: 'button')
             - else
               td
               td

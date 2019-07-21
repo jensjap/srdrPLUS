@@ -29,9 +29,6 @@ div#filterOptions
         div.section-filter-header id="efps#{type_1[:extraction_forms_projects_section_id]}" data-efps-id="#{type_1[:extraction_forms_projects_section_id]}" style="font-weight: 300; width: 100%;"
           h5 = "Selected " + type_1[:section_name]
 
-  button class="close-button" data-close="" aria-label="Close modal" type="button"
-    span aria-hidden="true" &times;
-
 javascript:
   $(document).on('click', '.efps', function() {
     var efpsId = $(this).data('efps-id');
@@ -73,7 +70,7 @@ javascript:
   })
 
   $(document).on('click', '#apply-filter', function() {
-    $('.close-button').click();
+    $('#query-tab-title a').click();
     $("#options-form").html('<div class="lds-ellipsis">Loading <div></div><div></div><div></div><div></div></div>');
 
     $.ajax({
