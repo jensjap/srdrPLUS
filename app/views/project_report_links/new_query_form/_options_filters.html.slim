@@ -1,5 +1,53 @@
 div#filterOptions
   div.grid-x.grid-padding-x
+    div.cell.large-2.medium-4.small-12
+      ul.tabs.vertical#filter-tabs[data-tabs]
+        li.tabs-title.is-active#kq-tab-title
+          a href="#kq-panel"
+            | Key Questions
+        - included_type1s.each do |t1|
+          li.tabs-title id="#{t1[:section_name].camelcase}-tab-title"
+            a href="##{t1[:section_name].camelcase}-panel"
+              = t1[:section_name].titlecase
+        li
+          div style="display: flex; justify-content: center;"
+            div#apply-filter.button.success.large style="margin-top: 5vh;" Apply Filter
+    div.tabs-content.cell.large-10.medium-8.small-12 data-tabs-content='filter-tabs'
+      div.tabs-panel.is-active#kq-panel
+        - key_questions_projects.each do |kqp|
+          div style="display: flex; align-items: flex-start;"
+            input.kq-filter type="checkbox" name="#{kqp.key_question.name}" data-key-question="true" value="#{kqp.id}" checked="" id="kqp_#{kqp.id}"
+            label for="kqp_#{kqp.id}" = kqp.key_question.name
+
+      - included_type1s.each do |t1|
+        div.tabs-panel id="#{t1[:section_name].camelcase}-panel"
+          - if t1[:section_name] == "Outcomes"
+            - t1_type_set = Set.new []
+            - t1[:export_ids].each do |t1_el|
+              - t1_type_set << t1_el[:type1_type]
+            div.outcome-types style="display: flex;"
+              label style="margin-right: 1vh;"
+                | Outcome Types:
+              
+              - t1_type_set.to_a.sort.each do |t1_type|
+                label style='padding-right: 1vw;'
+                  input.section-type-filter type="checkbox" name="#{t1_type}" value="#{t1_type}" checked="" = t1_type
+          input.t1-search type="text" placeholder="Search #{t1[:section_name]}"
+
+          div style="display: flex; align-items: flex-start;"
+            input.epfs type="checkbox" data-efps-id="#{t1[:extraction_forms_projects_section_id]}" data-section-name="#{t1[:section_name]}"checked="" id="#{t1[:section_name]}_all"
+            label for="#{t1[:section_name]}_all"
+              | (Select All)
+          - t1[:export_ids].each do |t1_el|
+            div style="display: flex; align-items: flex-start;"
+              input.epfs type="checkbox" data-efps-id="#{t1[:extraction_forms_projects_section_id]}" data-section-name="#{t1[:section_name]}" data-type1_type="#{t1_el[:type1_type]}" value="#{t1_el[:type1_id]}" checked="" id="#{t1[:section_name]}_#{t1_el[:type1_id]}"
+              label for="#{t1[:section_name]}_#{t1_el[:type1_id]}" = t1_el[:name_and_description]
+
+
+
+
+/div#filterOptions
+  div.grid-x.grid-padding-x
     div.cell.small-6 style="height: 70vh; overflow: auto;"
       h4 Available Fields
       div style="display: flex; flex-wrap:wrap;"
