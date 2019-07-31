@@ -181,7 +181,6 @@ class ProjectsController < ApplicationController
   end
 
   def export_to_gdrive
-    byebug
     authorize(@project)
     GsheetsExportJob.perform_later(current_user.id, @project.id, gdrive_params)
     flash[:success] = "Export request submitted for project '#{ @project.name }'. You will be notified by email of its completion."
