@@ -27,8 +27,14 @@ document.addEventListener 'turbolinks:load', ->
         clearTimeout( timers[formId] )
       timers[formId] = setTimeout( submitForm( $form ), 750 )
 
+
+    # Autogrow Text Field to fit the content.
+    $( 'form.edit_record input, form.edit_record textarea' ).each () ->
+      while $(this).outerHeight() < @scrollHeight + parseFloat($(this).css('borderTopWidth')) + parseFloat($(this).css('borderBottomWidth'))
+          $(this).height $(this).height() + 1
+
     # Text Field.
-    $( 'form.edit_record input' ).keyup ( e ) ->
+    $( 'form.edit_record input, form.edit_record textarea' ).keyup ( e ) ->
       e.preventDefault()
 
       # Ignore 'keyup' for a list of keys.
@@ -48,3 +54,7 @@ document.addEventListener 'turbolinks:load', ->
       if formId of timers
         clearTimeout( timers[formId] )
       timers[formId] = setTimeout( submitForm( $form ), 750 )
+
+      #  the following will help the text expand as typing takes place
+      while $(this).outerHeight() < @scrollHeight + parseFloat($(this).css('borderTopWidth')) + parseFloat($(this).css('borderBottomWidth'))
+        $(this).height $(this).height() + 1
