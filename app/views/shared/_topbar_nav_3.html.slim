@@ -28,6 +28,7 @@
                   li = link_to(t(".usage"), usage_path)
                   li = link_to(t(".help"), help_path)
               li = link_to(t(".blog"), blog_path)
+              li = link_to("Resources", resources_path)
               li = link_to("Published Projects", "https://srdr.ahrq.gov/projects/published")
               - if user_signed_in?
                 = render "shared/signed_in_links"
