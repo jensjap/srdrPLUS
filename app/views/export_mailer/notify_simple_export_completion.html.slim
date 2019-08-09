@@ -12,4 +12,4 @@ html
     p Please follow this link:
 
   p
-    = Rails.application.routes.url_helpers.rails_blob_path(@exported_item.file, only_path: true)
+    = @exported_item.file.service_url
