@@ -122,6 +122,10 @@ class ExtractionsController < ApplicationController
     @extraction_forms_projects = @project.extraction_forms_projects
     @key_questions_projects_array_for_select = @project.key_questions_projects_array_for_select
     @preselected_eefpst1 = params[:eefpst1_id].present? ? ExtractionsExtractionFormsProjectsSectionsType1.find(params[:eefpst1_id]) : nil
+    @outcomes = ExtractionsExtractionFormsProjectsSectionsType1
+      .by_section_name_and_extraction_id_and_extraction_forms_project_id('Outcomes',
+                                                                         @extraction.id,
+                                                                         @extraction_forms_projects.first.id).page(1)
 
     add_breadcrumb 'edit project', edit_project_path(@project)
     add_breadcrumb 'extractions',  project_extractions_path(@project)

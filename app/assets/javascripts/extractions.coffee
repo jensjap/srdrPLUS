@@ -7,6 +7,18 @@ document.addEventListener 'turbolinks:load', ->
   return unless $( '.extractions' ).length > 0
 
   do ->
+    $( '#results_panel' ).scroll ->
+      # End of the document reached?
+      #if $( this ).prop( 'scrollHeight' ) - $( this ).height() - 50 < $( this ).scrollTop()
+      if $( this ).prop( 'scrollHeight' ) - $( this ).height() == $( this ).scrollTop()
+        alert 'Scrolled to Bottom'
+      return
+
+#    $( window ).scroll ->
+#      # End of the document reached?
+#      if $( '#results_panel' ).length and $( document ).height() - $( this ).height() == $( this ).scrollTop()
+#        alert 'Scrolled to Bottom'
+#      return
 
 #    # Adds a delay to calling a specific function.
 #    delay = do ->

@@ -25,6 +25,8 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
 
   after_commit :set_extraction_stale, on: [:create, :update, :destroy]
 
+  paginates_per 1
+
   before_validation -> { set_ordering_scoped_by(:extractions_extraction_forms_projects_section_id) }, on: :create
 
   #!!! Implement this for type1 selection also.
