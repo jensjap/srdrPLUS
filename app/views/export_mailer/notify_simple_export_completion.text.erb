@@ -7,3 +7,5 @@ The export you requested for project:
 
 is ready for you to download.
 Please follow this link:
+
+<%= Rails.application.routes.url_helpers.rails_blob_path(@exported_item.file, only_path: true) %>

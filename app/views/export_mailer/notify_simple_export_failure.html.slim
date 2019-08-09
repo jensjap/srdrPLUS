@@ -4,12 +4,10 @@ html
     meta content='text/html; charset=UTF-8' http-equiv='Content-Type'
 
   body
-    h1 Huzzah!
+    h1 Error
     p The export you requested for project:
     .project-name
       h2 "#{ @project.name }"
-    p is ready for you to download.
-    p Please follow this link:
-
-  p
-    = Rails.application.routes.url_helpers.rails_blob_path(@exported_item.file, only_path: true)
+    p has encountered the following error:
+    .error-message
+      h3 "#{ @message }"

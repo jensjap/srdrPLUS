@@ -12,6 +12,11 @@ class SimpleExportJob < ApplicationJob
 
   queue_as :default
 
+  rescue_from(StandardError) do |exception|
+       # Do something with the exception
+    ExportMailer.notify_simple_export_failure(arguments.first, arguments.second, exception.message).deliver_later
+  end
+
   def perform(*args)
     # Do something later
     Rails.logger.debug "#{ self.class.name }: I'm performing my job with arguments: #{ args.inspect }"
@@ -49,10 +54,17 @@ class SimpleExportJob < ApplicationJob
       # Default sample 3D pie chart.
       build_sample_3d_pie_chart(p)
 
-      p.serialize('simple.xlsx')
-
-      # Notify the user that the export is ready for download.
-      ExportMailer.notify_simple_export_completion(@user.id, @project.id).deliver_later
+      f_name = 'tmp/simple_exports/project_' + @project.id.to_s + '_' + Time.now.strftime('%s') + '.xlsx'
+      if p.serialize(f_name)
+        exported_item = ExportedItem.create! projects_user: ProjectsUser.find_by(project: @project, user: @user), export_type: ExportType.find_by(name: '.xlsx')
+        exported_item.file.attach io: File.open(f_name), filename: f_name
+        # Notify the user that the export is ready for download.
+        if exported_item.file.attached?
+          ExportMailer.notify_simple_export_completion(exported_item.id).deliver_later
+        else
+          raise "Cannot save exported file"
+        end
+      end
     end
   end
 end
