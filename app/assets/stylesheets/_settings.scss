@@ -72,7 +72,7 @@
 // ---------
 
 $global-font-size: 100%;
-$global-width: rem-calc(1800);
+$global-width: rem-calc(2400);
 $global-lineheight: 1.5;
 $foundation-palette: (
   primary: #4C0D7D,
@@ -786,8 +786,8 @@ $switch-paddle-transition: all 0.25s ease-out;
 
 $table-background: $white;
 $table-color-scale: 5%;
-$table-border: 1px solid smart-scale($table-background, $table-color-scale);
-$table-padding: rem-calc(8 10 10);
+$table-border: 3px solid smart-scale($table-background, $table-color-scale);
+$table-padding: rem-calc(2 3 3);
 $table-hover-scale: 2%;
 $table-row-hover: darken($table-background, $table-hover-scale);
 $table-row-stripe-hover: darken($table-background, $table-color-scale + $table-hover-scale);

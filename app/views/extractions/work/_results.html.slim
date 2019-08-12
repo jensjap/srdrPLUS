@@ -18,20 +18,25 @@
           .by_section_name_and_extraction_id_and_extraction_forms_project_id('Arms',
                                                                              @extraction.id,
                                                                              eefpst1r.extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_section.extraction_forms_projects_section.extraction_forms_project.id)
-      table
+      table.unstriped.table-scroll
+        caption = eefpst1.type1_name_and_description + ' (' + eefpst1r.population_name.name + ')'
         thead
           tr
             th
+            th
             th colspan="#{ @arms.length }" Descriptive Statistics
-            th colspan="#{ bac_rss.comparisons.length }" Between Arm Comparisons
+            th style="background-color: lightblue;"
+            th style="background-color: lightblue;" colspan="#{ bac_rss.comparisons.length }" Between Arm Comparisons
 
           tr
+            th
             th
             - @arms.each do |arm|
               th = arm.type1.name
 
+            th style="background-color: lightblue;"
             - bac_rss.comparisons.each do |bac|
-              th
+              th style="background-color: lightblue;"
                 - if not bac.is_anova
                   div
                     - bac.comparate_groups.first.comparates.each do |c|
@@ -51,30 +56,88 @@
                     br
 
         tbody
-          tr
-            td Timepoint
-            td 1
-            td 2
-          tr
-            td Timepoint
-            td 1
-            td 2
+          - print_tp_name = true
+          - dsc_rss.timepoints.each do |tp|
+            - for row_cnt in 0..[dsc_rss.result_statistic_sections_measures.length, bac_rss.result_statistic_sections_measures.length].max - 1 do
+              tr
+                - if print_tp_name
+                  td rowspan="#{ [dsc_rss.result_statistic_sections_measures.length, bac_rss.result_statistic_sections_measures.length].max }"
+                    div = tp.timepoint_name.pretty_print_export_header
+                  - print_tp_name = false
+
+                td = dsc_rss.result_statistic_sections_measures[row_cnt].try(:measure).try(:name)
+                - @arms.each do |arm|
+                  - if dsc_rss.result_statistic_sections_measures[row_cnt].try(:measure).try(:name)
+                    td Descriptive Value
+
+                - if bac_rss.result_statistic_sections_measures[row_cnt].try(:measure).try(:name)
+                  td style="background-color: lightblue;" = bac_rss.result_statistic_sections_measures[row_cnt].measure.name
+                  - bac_rss.comparisons.each do |bac|
+                    td style="background-color: lightblue;" BAC Value
+
+                - else
+                  td style="background-color: lightblue;"
+                  - bac_rss.comparisons.each do |bac|
+                    td style="background-color: lightblue;"
+
+            - print_tp_name = true
 
         thead
           tr
-            th
-            th colspan="#{ @arms.length }" Within Arm Comparisons
-            th colspan="#{ net_rss.comparisons.length }" Net Differences
+            th style="background-color: lightgreen;"
+            th style="background-color: lightgreen;"
+            th style="background-color: lightgreen;" colspan="#{ @arms.length }" Within Arm Comparisons
+            th style="background-color: lightpink;"
+            th style="background-color: lightpink;" colspan="#{ bac_rss.comparisons.length }" Net Comparisons
+
+          tr
+            th style="background-color: lightgreen;"
+            th style="background-color: lightgreen;"
+            - @arms.each do |arm|
+              th style="background-color: lightgreen;" = arm.type1.name
+
+            th style="background-color: lightpink;"
+              - bac_rss.comparisons.each do |bac|
+                th style="background-color: lightpink;"
+                  - if not bac.is_anova
+                    div
+                      - bac.comparate_groups.first.comparates.each do |c|
+                        span.has-tip.tip-right data-tooltip='' aria-haspopup='true' data-options='show_on:small' title="Description: #{ c.comparable_element.comparable.type1.description }"
+                          = c.comparable_element.comparable.type1.short_name_and_description
+                        br
+                    div style='font-weight: normal;' vs.
+                    div
+                      - bac.comparate_groups.second.comparates.each do |c|
+                        span.has-tip.tip-right data-tooltip='' aria-haspopup='true' data-options='show_on:small' title="Description: #{ c.comparable_element.comparable.type1.description }"
+                          = c.comparable_element.comparable.type1.short_name_and_description
+                        br
+                  - else
+                    div
+                      span.has-tip.tip-right data-tooltip='' aria-haspopup='true' data-options='show_on:small' title="Description: Analysis of variance"
+                        | All Arms (ANOVA)
+                      br
 
         tbody
-          tr
-            td Timepoint
-            td 1
-            td 2
-          tr
-            td Timepoint
-            td 1
-            td 2
+          - print_wac_name = true
+          - wac_rss.comparisons.each do |wac|
+            - for row_cnt in 0..[wac_rss.result_statistic_sections_measures.length, net_rss.result_statistic_sections_measures.length].max - 1 do
+              tr
+                - if print_wac_name
+                  td rowspan="#{ [wac_rss.result_statistic_sections_measures.length, net_rss.result_statistic_sections_measures.length].max }"
+                    div style='text-align: center; font-weight: bold;' = wac.comparate_groups.first.comparates.map { |c| c.comparable_element.comparable.label_with_baseline_indicator }.join('<br>')
+                    div style='text-align: center;' vs.
+                    div style='text-align: center; font-weight: bold;' = wac.comparate_groups.second.comparates.map { |c| c.comparable_element.comparable.label_with_baseline_indicator }.join('<br>')
+                  - print_wac_name = false
+
+                td = wac_rss.result_statistic_sections_measures[row_cnt].try(:measure).try(:name)
+                - @arms.each do |arm|
+                  td WAC Value
+
+                td = bac_rss.result_statistic_sections_measures[row_cnt].try(:measure).try(:name)
+                - bac_rss.comparisons.each do |bac|
+                  td NET Value
+
+            - print_wac_name = true
 
 
 
