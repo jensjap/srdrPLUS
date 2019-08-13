@@ -155,3 +155,6 @@ gem 'bootsnap'
 
 # Access to AWS S3 Cloud Storage.
 gem "aws-sdk-s3", require: false
+
+# Access Google sheets programmatically
+gem "google-api-client"

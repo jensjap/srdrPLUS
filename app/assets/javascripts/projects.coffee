@@ -41,7 +41,13 @@ document.addEventListener 'turbolinks:load', ->
       $( '.search-field' ).toggleClass 'expand-search'
       $( '#project-filter' ).focus()
       return
-
+    
+    $( '.export-type-radio' ).on 'change', ( e ) ->
+      if $( this ).is ':checked'
+        export_button = $( this ).parents('.reveal').find( '.start-export-button' )
+        console.log e.target
+        console.log export_button
+        link_string = $( export_button ).attr( 'href', $( this ).val() )
 
 ########## DISTILLER IMPORT
    # if $( 'body.projects.new' ).length == 1
