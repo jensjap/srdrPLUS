@@ -7,16 +7,22 @@ document.addEventListener 'turbolinks:load', ->
   return unless $( '.extractions' ).length > 0
 
   do ->
-    $( '#results_panel' ).scroll ->
+    $( '#results-panel .table-container' ).scroll ->
       # End of the document reached?
       #if $( this ).prop( 'scrollHeight' ) - $( this ).height() - 50 < $( this ).scrollTop()
       if $( this ).prop( 'scrollHeight' ) - $( this ).height() == $( this ).scrollTop()
         alert 'Scrolled to Bottom'
       return
 
+#    $( '#results-panel .table-container' ).scroll ->
+#      if $( this ).scrollLeft() > 0
+#        $( '.first-column' ).addClass( 'rotate' )
+#      else if $( this ).scrollLeft() == 0
+#        $( '.first-column' ).removeClass( 'rotate' )
+
 #    $( window ).scroll ->
 #      # End of the document reached?
-#      if $( '#results_panel' ).length and $( document ).height() - $( this ).height() == $( this ).scrollTop()
+#      if $( '#results-panel' ).length and $( document ).height() - $( this ).height() == $( this ).scrollTop()
 #        alert 'Scrolled to Bottom'
 #      return
 

@@ -125,7 +125,7 @@ class ExtractionsController < ApplicationController
     @outcomes = ExtractionsExtractionFormsProjectsSectionsType1
       .by_section_name_and_extraction_id_and_extraction_forms_project_id('Outcomes',
                                                                          @extraction.id,
-                                                                         @extraction_forms_projects.first.id).page(2)
+                                                                         @extraction_forms_projects.first.id).page(1)
 
     add_breadcrumb 'edit project', edit_project_path(@project)
     add_breadcrumb 'extractions',  project_extractions_path(@project)

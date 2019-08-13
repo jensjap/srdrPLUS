@@ -1,6 +1,6 @@
 - if @extraction.results_section_ready_for_extraction?
   - eefpst1 = @outcomes.first
-  #results_panel style="min-height: 60vh; max-height: 80vh; overflow-y: scroll;"
+  #results-panel
     h5 = section_name
     blockquote
       | The results section is where you enter numerical data, comparisons, etc.
@@ -8,136 +8,218 @@
     /#results-data-table-links
       = render 'extractions/work/results/results_populations_tabs', eefpst1: eefpst1
 
-    / Each population:
-    - eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |eefpst1r|
-      - dsc_rss = eefpst1r.result_statistic_sections.where(result_statistic_section_type_id: 1).first
-      - bac_rss = eefpst1r.result_statistic_sections.where(result_statistic_section_type_id: 2).first
-      - wac_rss = eefpst1r.result_statistic_sections.where(result_statistic_section_type_id: 3).first
-      - net_rss = eefpst1r.result_statistic_sections.where(result_statistic_section_type_id: 4).first
-      - @arms = ExtractionsExtractionFormsProjectsSectionsType1\
-          .by_section_name_and_extraction_id_and_extraction_forms_project_id('Arms',
-                                                                             @extraction.id,
-                                                                             eefpst1r.extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_section.extraction_forms_projects_section.extraction_forms_project.id)
-      table.unstriped.table-scroll
-        caption = eefpst1.type1_name_and_description + ' (' + eefpst1r.population_name.name + ')'
-        thead
-          tr
-            th
-            th
-            th colspan="#{ @arms.length }" Descriptive Statistics
-            th style="background-color: lightblue;"
-            th style="background-color: lightblue;" colspan="#{ bac_rss.comparisons.length }" Between Arm Comparisons
+    .table-container style="min-height: 60vh; max-height: 80vh; overflow: scroll;"
 
-          tr
-            th
-            th
-            - @arms.each do |arm|
-              th = arm.type1.name
+      / Each population:
+      - eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |eefpst1r|
+        - dsc_rss = eefpst1r.result_statistic_sections.where(result_statistic_section_type_id: 1).first
+        - bac_rss = eefpst1r.result_statistic_sections.where(result_statistic_section_type_id: 2).first
+        - wac_rss = eefpst1r.result_statistic_sections.where(result_statistic_section_type_id: 3).first
+        - net_rss = eefpst1r.result_statistic_sections.where(result_statistic_section_type_id: 4).first
+        - @arms = ExtractionsExtractionFormsProjectsSectionsType1\
+            .by_section_name_and_extraction_id_and_extraction_forms_project_id('Arms',
+                                                                               @extraction.id,
+                                                                               eefpst1r.extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_section.extraction_forms_projects_section.extraction_forms_project.id)
 
-            th style="background-color: lightblue;"
-            - bac_rss.comparisons.each do |bac|
-              th style="background-color: lightblue;"
-                - if not bac.is_anova
-                  div
-                    - bac.comparate_groups.first.comparates.each do |c|
-                      span.has-tip.tip-right data-tooltip='' aria-haspopup='true' data-options='show_on:small' title="Description: #{ c.comparable_element.comparable.type1.description }"
-                        = c.comparable_element.comparable.type1.short_name_and_description
-                      br
-                  div style='font-weight: normal;' vs.
-                  div
-                    - bac.comparate_groups.second.comparates.each do |c|
-                      span.has-tip.tip-right data-tooltip='' aria-haspopup='true' data-options='show_on:small' title="Description: #{ c.comparable_element.comparable.type1.description }"
-                        = c.comparable_element.comparable.type1.short_name_and_description
-                      br
-                - else
-                  div
-                    span.has-tip.tip-right data-tooltip='' aria-haspopup='true' data-options='show_on:small' title="Description: Analysis of variance"
-                      | All Arms (ANOVA)
-                    br
-
-        tbody
-          - print_tp_name = true
-          - dsc_rss.timepoints.each do |tp|
-            - for row_cnt in 0..[dsc_rss.result_statistic_sections_measures.length, bac_rss.result_statistic_sections_measures.length].max - 1 do
+        .table-fixed-headers
+          table.unstriped style='overflow: scroll;'
+            caption = eefpst1.type1_name_and_description + ' (' + eefpst1r.population_name.name + ')'
+            thead
               tr
-                - if print_tp_name
-                  td rowspan="#{ [dsc_rss.result_statistic_sections_measures.length, bac_rss.result_statistic_sections_measures.length].max }"
-                    div = tp.timepoint_name.pretty_print_export_header
-                  - print_tp_name = false
+                th.vertical
+                th.freeze
+                th colspan="#{ @arms.length }" Descriptive Statistics
+                th.bg-lightblue.freeze
+                th.bg-lightblue colspan="#{ bac_rss.comparisons.length }" Between Arm Comparisons
 
-                td = dsc_rss.result_statistic_sections_measures[row_cnt].try(:measure).try(:name)
+              tr
+                th.vertical
+                th.freeze
                 - @arms.each do |arm|
-                  - if dsc_rss.result_statistic_sections_measures[row_cnt].try(:measure).try(:name)
-                    td Descriptive Value
+                  th = arm.type1.name
 
-                - if bac_rss.result_statistic_sections_measures[row_cnt].try(:measure).try(:name)
-                  td style="background-color: lightblue;" = bac_rss.result_statistic_sections_measures[row_cnt].measure.name
-                  - bac_rss.comparisons.each do |bac|
-                    td style="background-color: lightblue;" BAC Value
+                th.bg-lightblue.freeze
+                - if bac_rss.comparisons.blank?
+                  th.bg-lightblue
 
                 - else
-                  td style="background-color: lightblue;"
                   - bac_rss.comparisons.each do |bac|
-                    td style="background-color: lightblue;"
+                    th.bg-lightblue
+                      - if not bac.is_anova
+                        div
+                          - bac.comparate_groups.first.comparates.each do |c|
+                            span.has-tip.tip-right data-tooltip='' aria-haspopup='true' data-options='show_on:small' title="Description: #{ c.comparable_element.comparable.type1.description }"
+                              = c.comparable_element.comparable.type1.short_name_and_description
+                            br
+                        div style='font-weight: normal;' vs.
+                        div
+                          - bac.comparate_groups.second.comparates.each do |c|
+                            span.has-tip.tip-right data-tooltip='' aria-haspopup='true' data-options='show_on:small' title="Description: #{ c.comparable_element.comparable.type1.description }"
+                              = c.comparable_element.comparable.type1.short_name_and_description
+                            br
+                      - else
+                        div
+                          span.has-tip.tip-right data-tooltip='' aria-haspopup='true' data-options='show_on:small' title="Description: Analysis of variance"
+                            | All Arms (ANOVA)
+                          br
 
-            - print_tp_name = true
+            tbody
+              - print_tp_name = true
+              - dsc_rss.timepoints.each do |tp|
+                - for row_cnt in 0..[dsc_rss.result_statistic_sections_measures.length, bac_rss.result_statistic_sections_measures.length].max - 1 do
+                  - if print_tp_name
+                    tr
+                      td.vertical rowspan="#{ [dsc_rss.result_statistic_sections_measures.length, bac_rss.result_statistic_sections_measures.length].max }"
+                        div = tp.timepoint_name.pretty_print_export_header
+                      - print_tp_name = false
 
-        thead
-          tr
-            th style="background-color: lightgreen;"
-            th style="background-color: lightgreen;"
-            th style="background-color: lightgreen;" colspan="#{ @arms.length }" Within Arm Comparisons
-            th style="background-color: lightpink;"
-            th style="background-color: lightpink;" colspan="#{ bac_rss.comparisons.length }" Net Comparisons
-
-          tr
-            th style="background-color: lightgreen;"
-            th style="background-color: lightgreen;"
-            - @arms.each do |arm|
-              th style="background-color: lightgreen;" = arm.type1.name
-
-            th style="background-color: lightpink;"
-              - bac_rss.comparisons.each do |bac|
-                th style="background-color: lightpink;"
-                  - if not bac.is_anova
-                    div
-                      - bac.comparate_groups.first.comparates.each do |c|
-                        span.has-tip.tip-right data-tooltip='' aria-haspopup='true' data-options='show_on:small' title="Description: #{ c.comparable_element.comparable.type1.description }"
-                          = c.comparable_element.comparable.type1.short_name_and_description
-                        br
-                    div style='font-weight: normal;' vs.
-                    div
-                      - bac.comparate_groups.second.comparates.each do |c|
-                        span.has-tip.tip-right data-tooltip='' aria-haspopup='true' data-options='show_on:small' title="Description: #{ c.comparable_element.comparable.type1.description }"
-                          = c.comparable_element.comparable.type1.short_name_and_description
-                        br
                   - else
-                    div
-                      span.has-tip.tip-right data-tooltip='' aria-haspopup='true' data-options='show_on:small' title="Description: Analysis of variance"
-                        | All Arms (ANOVA)
-                      br
+                    tr
+                      td.freeze = dsc_rss.result_statistic_sections_measures[row_cnt].try(:measure).try(:name)
+                      - @arms.each do |arm|
+                        - if dsc_rss.result_statistic_sections_measures[row_cnt].try(:measure).try(:name)
+                          td
+                            - record = TpsArmsRssm.find_record(timepoint=tp, extractions_extraction_forms_projects_sections_type1=arm, result_statistic_sections_measure=dsc_rss.result_statistic_sections_measures[row_cnt])
+                            = simple_form_for(record,
+                              remote: true,
+                              html: { data: { 'abide': '', 'live-validate': true } }) do |f|
+                              = f.input :name,
+                                as: :string,
+                                label: false,
+                                required: false,
+                                class: 'form-control',
+                                wrapper_html: { style: 'padding-bottom: 0;' },
+                                input_html: { style: 'margin-bottom: 0;' }
+                              div id="record-id-#{ record.id.to_s }" class='record-info' style='opacity: 0;' = 'Saved!'
 
-        tbody
-          - print_wac_name = true
-          - wac_rss.comparisons.each do |wac|
-            - for row_cnt in 0..[wac_rss.result_statistic_sections_measures.length, net_rss.result_statistic_sections_measures.length].max - 1 do
+                        - else
+                          td
+
+                        /- if dsc_rss.result_statistic_sections_measures[row_cnt].try(:measure).try(:name)
+                          td Descriptive Value
+
+                        /- else
+                          td
+
+                      - if bac_rss.result_statistic_sections_measures[row_cnt].try(:measure).try(:name)
+                        td.bg-lightblue.freeze = bac_rss.result_statistic_sections_measures[row_cnt].measure.name
+                        - if bac_rss.comparisons.present?
+                          - bac_rss.comparisons.each do |bac|
+                            td.bg-lightblue
+                              - record = TpsComparisonsRssm.find_record(timepoint=tp, comparison=bac, result_statistic_sections_measure=bac_rss.result_statistic_sections_measures[row_cnt])
+                              = simple_form_for(record,
+                                remote: true,
+                                html: { data: { 'abide': '', 'live-validate': true } }) do |f|
+                                = f.input :name,
+                                  as: :string,
+                                  label: false,
+                                  required: false,
+                                  class: 'form-control',
+                                  wrapper_html: { style: 'padding-bottom: 0;' },
+                                  input_html: { style: 'margin-bottom: 0;' }
+                                div id="record-id-#{ record.id.to_s }" class='record-info' style='opacity: 0;' = 'Saved!'
+
+                        - else
+                          td.bg-lightblue.freeze
+
+                      - else
+                        td.bg-lightblue
+                        - bac_rss.comparisons.each do |bac|
+                          td.bg-lightblue
+
+                - print_tp_name = true
+
+            thead
               tr
-                - if print_wac_name
-                  td rowspan="#{ [wac_rss.result_statistic_sections_measures.length, net_rss.result_statistic_sections_measures.length].max }"
-                    div style='text-align: center; font-weight: bold;' = wac.comparate_groups.first.comparates.map { |c| c.comparable_element.comparable.label_with_baseline_indicator }.join('<br>')
-                    div style='text-align: center;' vs.
-                    div style='text-align: center; font-weight: bold;' = wac.comparate_groups.second.comparates.map { |c| c.comparable_element.comparable.label_with_baseline_indicator }.join('<br>')
-                  - print_wac_name = false
+                th.bg-lightgreen.vertical
+                th.bg-lightgreen.freeze
+                th.bg-lightgreen colspan="#{ @arms.length }" Within Arm Comparisons
+                th.bg-lightpink.freeze
+                th.bg-lightpink colspan="#{ bac_rss.comparisons.length }" Net Comparisons
 
-                td = wac_rss.result_statistic_sections_measures[row_cnt].try(:measure).try(:name)
+              tr
+                th.bg-lightgreen.vertical
+                th.bg-lightgreen.freeze
                 - @arms.each do |arm|
-                  td WAC Value
+                  th.bg-lightgreen = arm.type1.name
 
-                td = bac_rss.result_statistic_sections_measures[row_cnt].try(:measure).try(:name)
-                - bac_rss.comparisons.each do |bac|
-                  td NET Value
+                th.bg-lightpink.freeze
+                  - bac_rss.comparisons.each do |bac|
+                    th.bg-lightpink
+                      - if not bac.is_anova
+                        div
+                          - bac.comparate_groups.first.comparates.each do |c|
+                            span.has-tip.tip-right data-tooltip='' aria-haspopup='true' data-options='show_on:small' title="Description: #{ c.comparable_element.comparable.type1.description }"
+                              = c.comparable_element.comparable.type1.short_name_and_description
+                            br
+                        div style='font-weight: normal;' vs.
+                        div
+                          - bac.comparate_groups.second.comparates.each do |c|
+                            span.has-tip.tip-right data-tooltip='' aria-haspopup='true' data-options='show_on:small' title="Description: #{ c.comparable_element.comparable.type1.description }"
+                              = c.comparable_element.comparable.type1.short_name_and_description
+                            br
+                      - else
+                        div
+                          span.has-tip.tip-right data-tooltip='' aria-haspopup='true' data-options='show_on:small' title="Description: Analysis of variance"
+                            | All Arms (ANOVA)
+                          br
 
-            - print_wac_name = true
+            tbody
+              - print_wac_name = true
+              - wac_rss.comparisons.each do |wac|
+                - for row_cnt in 0..[wac_rss.result_statistic_sections_measures.length, net_rss.result_statistic_sections_measures.length].max - 1 do
+                  - if print_wac_name
+                    tr
+                      td.bg-lightgreen.vertical rowspan="#{ [wac_rss.result_statistic_sections_measures.length, net_rss.result_statistic_sections_measures.length].max }"
+                        div
+                          div style='text-align: center; font-weight: bold;' = wac.comparate_groups.first.comparates.map { |c| c.comparable_element.comparable.label_with_baseline_indicator }.join('<br>')
+                          div style='text-align: center;' vs.
+                          div style='text-align: center; font-weight: bold;' = wac.comparate_groups.second.comparates.map { |c| c.comparable_element.comparable.label_with_baseline_indicator }.join('<br>')
+                      - print_wac_name = false
+
+                  - else
+                    tr
+                      td.bg-lightgreen.freeze = wac_rss.result_statistic_sections_measures[row_cnt].try(:measure).try(:name)
+                      - @arms.each do |arm|
+                        td.bg-lightgreen
+                          - record = ComparisonsArmsRssm.find_record(comparison=wac, extractions_extraction_forms_projects_sections_type1=arm, result_statistic_sections_measure=wac_rss.result_statistic_sections_measures[row_cnt])
+                          = simple_form_for(record,
+                            remote: true,
+                            html: { data: { 'abide': '', 'live-validate': true } }) do |f|
+                            = f.input :name,
+                              as: :string,
+                              label: false,
+                              required: false,
+                              class: 'form-control',
+                              wrapper_html: { style: 'padding-bottom: 0;' },
+                              input_html: { style: 'margin-bottom: 0;' }
+                            div id="record-id-#{ record.id.to_s }" class='record-info' style='opacity: 0;' = 'Saved!'
+
+                      td.bg-lightpink.freeze = bac_rss.result_statistic_sections_measures[row_cnt].try(:measure).try(:name)
+                      - if bac_rss.comparisons.blank?
+                        td.bg-lightpink.freeze
+
+                      - else
+                        - bac_rss.comparisons.each do |bac|
+                          - if bac_rss.result_statistic_sections_measures[row_cnt].present?
+                            td.bg-lightpink
+                              - record = WacsBacsRssm.find_record(wac=wac, bac=bac, result_statistic_sections_measure=bac_rss.result_statistic_sections_measures[row_cnt])
+                              = simple_form_for(record,
+                                remote: true,
+                                html: { data: { 'abide': '', 'live-validate': true } }) do |f|
+                                = f.input :name,
+                                  as: :string,
+                                  label: false,
+                                  required: false,
+                                  class: 'form-control',
+                                  wrapper_html: { style: 'padding-bottom: 0;' },
+                                  input_html: { style: 'margin-bottom: 0;' }
+                                div id="record-id-#{ record.id.to_s }" class='record-info' style='opacity: 0;' = 'Saved!'
+
+                          - else
+                            td.bg-lightpink.freeze
+
+                - print_wac_name = true
 
 
 
