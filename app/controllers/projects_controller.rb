@@ -150,7 +150,7 @@ class ProjectsController < ApplicationController
 
   def export
     authorize(@project)
-    SimpleExportJob.perform_later(current_user.id, @project.id)
+    SimpleExportJob.perform_later(current_user.id, @project.id, export_type_name)
     flash[:success] = "Export request submitted for project '#{ @project.name }'. You will be notified by email of its completion."
 
     redirect_to edit_project_path(@project)
@@ -270,6 +270,10 @@ class ProjectsController < ApplicationController
     def citation_import_params
       # what kind of files do we want to import?
       params.require(:project).permit(citation_files: [])
+    end
+
+    def export_type_name
+      params.require(:export_type_name)
     end
 
     def make_undo_link

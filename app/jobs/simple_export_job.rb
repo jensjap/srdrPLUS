@@ -7,6 +7,9 @@ require 'simple_export_job/_se_result_sections_compact'
 require 'simple_export_job/_se_result_sections_wide'
 require 'simple_export_job/_se_sample_3d_pie_chart'
 
+require 'google/api_client/client_secrets.rb'
+require 'google/apis/drive_v3'
+
 class SimpleExportJob < ApplicationJob
   require 'axlsx'
 
@@ -20,8 +23,10 @@ class SimpleExportJob < ApplicationJob
   def perform(*args)
     # Do something later
     Rails.logger.debug "#{ self.class.name }: I'm performing my job with arguments: #{ args.inspect }"
-    @project = Project.find args.second
-    @user = User.find args.first
+
+    @user             = User.find args.first
+    @project          = Project.find args.second
+
     Rails.logger.debug "#{ self.class.name }: Working on project: #{ @project.name }"
 
     Axlsx::Package.new do |p|
@@ -56,13 +61,65 @@ class SimpleExportJob < ApplicationJob
 
       f_name = 'tmp/simple_exports/project_' + @project.id.to_s + '_' + Time.now.strftime('%s') + '.xlsx'
       if p.serialize(f_name)
-        exported_item = ExportedItem.create! projects_user: ProjectsUser.find_by(project: @project, user: @user), export_type: ExportType.find_by(name: '.xlsx')
-        exported_item.file.attach io: File.open(f_name), filename: f_name
-        # Notify the user that the export is ready for download.
-        if exported_item.file.attached?
+        export_type  = ExportType.find_by name: args.third
+        case export_type.name
+        when '.xlsx'
+          exported_item = ExportedItem.create! projects_user: ProjectsUser.find_by( project: @project, user: @user), export_type: export_type
+
+          exported_item.file.attach io: File.open(f_name), filename: f_name
+          # Notify the user that the export is ready for download.
+          if exported_item.file.attached?
+            exported_item.external_url = exported_item.file.service_url
+            exported_item.save!
+            ExportMailer.notify_simple_export_completion(exported_item.id).deliver_later
+          else
+            raise "Cannot attach exported file"
+          end
+        when 'Google Sheets'
+          drive_service = Google::Apis::DriveV3::DriveService.new
+         #service.authorization = secrets.to_authorization
+          drive_service.authorization = ::Google::Auth::ServiceAccountCredentials
+                                             .make_creds(json_key_io: File.open('config/google_service_account_credentials.json'),
+                                                         scope: 'https://www.googleapis.com/auth/drive')
+
+          callback = lambda do |res, err|
+            if err
+              # Handle error...
+              puts err.body
+            else
+              puts "Permission ID: #{res.id}"
+            end
+          end
+
+          ## This metadata specifies resulting file name and what it should be converted into (in this case 'Google Sheets')
+          ## BELOW IS THE FOLDER ID, IT SHOULD BE IN A CONFIG FILE, I DON'T KNOW WHICH -BIROL
+          file_metadata = {
+              parents: ["1ch4FAcY8yjnlyDtYnxj0mRWh4hWoIvtB"],
+              name: @project.name,
+              mime_type: 'application/vnd.google-apps.spreadsheet'
+          }
+          ## Here we specify what should server return (only the file id in this case), file location and the filetype (in this case 'xlsx')
+          file = drive_service.create_file(file_metadata,
+                                           fields: 'id, webViewLink',
+                                           upload_source: f_name,
+                                           content_type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+          domain_permission = {
+              type: 'anyone',
+              role: 'reader'
+          }
+
+          drive_service.create_permission(file.id,
+                                    domain_permission,
+                                    fields: 'id',
+                                    &callback)
+
+
+          puts "File Id: #{file.id}"
+          puts "File Link: #{file.web_view_link}"
+
+          exported_item = ExportedItem.create! projects_user: ProjectsUser.find_by( project: @project, user: @user), export_type: export_type, external_url: file.web_view_link
+
           ExportMailer.notify_simple_export_completion(exported_item.id).deliver_later
-        else
-          raise "Cannot save exported file"
         end
       end
     end

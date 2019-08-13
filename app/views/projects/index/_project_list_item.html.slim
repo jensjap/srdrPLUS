@@ -51,7 +51,24 @@ a.accordion-title href="#"
       .column.row
         = link_to "List of Extractions", project_extractions_path(project), class: "button expanded"
       .column.row
-        = link_to "Export Project Data", export_project_path(project), method: :post, class: "button expanded"
+        a.button.expanded#export-modal-button[data-open="export-modal-#{project.id.to_s}"]
+          | Export Project Data
+
+        .reveal[data-reveal='' id="export-modal-#{project.id.to_s}"]
+          a[data-close='' style='float: right; font-size: large;']
+            |×
+          fieldset
+            legend[style='font-size: large;']
+              | Select export type:
+            input[class='export-type-radio' type='radio' name="export-type-#{project.id.to_s}" value="#{export_project_path(project, export_type_name: '.xlsx')}" checked='' id="xlsx-radio-#{project.id.to_s}"]
+            label for="xlsx-radio-#{project.id.to_s}"
+              | Microsoft Excel (.xlsx)
+            input[class='export-type-radio' type='radio' name='export-type-#{project.id.to_s}' value=value="#{export_project_path(project, export_type_name: 'Google Sheets')}" id="gsheets-radio-#{project.id.to_s}"]
+            label for="gsheets-radio-#{project.id.to_s}"
+              | Google Sheets
+          = link_to "Export Project Data", export_project_path(project, export_type_name: '.xlsx'), method: :post, class: "button expanded start-export-button"
+
+
       .column.row
         = link_to "Delete Project", confirm_deletion_project_path(project), method: :get, class: "alert button expanded", remote: true
 
