@@ -9,7 +9,24 @@ li = link_to('Dashboard', projects_path)
       /li = link_to t('.dashboard'),         '#'
       li = link_to t('.members_and_roles'), edit_project_path(@project || @extraction.try(:project) || @extraction_forms_project.project) + '#panel-projects-users', title: t('.members_and_roles')
       /li = link_to t('.screening_options'), project_screening_options_path(@project || @extraction.try(:project) || @extraction_forms_project.project), title: t('manage_screening_options')
-      li = link_to t('export'),             export_project_path(@project || @extraction.try(:project) || @extraction_forms_project.project), method: :post,          title: t('request_export')
+      /li = link_to t('export'),             export_project_path(@project || @extraction.try(:project) || @extraction_forms_project.project), method: :post,          title: t('request_export')
+      li
+        .reveal[data-reveal='' id="export-modal-#{@project.id.to_s}"]
+          a[data-close='' style='float: right; font-size: large;']
+            |×
+          fieldset
+            legend[style='font-size: large;']
+              | Select export type:
+            input[class='export-type-radio' type='radio' name="export-type-#{@project.id.to_s}" value="#{export_project_path(@project, export_type_name: '.xlsx')}" checked='' id="xlsx-radio-#{@project.id.to_s}"]
+            label for="xlsx-radio-#{@project.id.to_s}"
+              | Microsoft Excel (.xlsx)
+            input[class='export-type-radio' type='radio' name='export-type-#{@project.id.to_s}' value=value="#{export_project_path(@project, export_type_name: 'Google Sheets')}" id="gsheets-radio-#{@project.id.to_s}"]
+            label for="gsheets-radio-#{@project.id.to_s}"
+              | Google Sheets
+          = link_to "Export Project Data", export_project_path(@project, export_type_name: '.xlsx'), method: :post, class: "button expanded start-export-button"
+
+        a#export-modal-button[data-open="export-modal-#{@project.id.to_s}"] = 'Export'
+
       li = link_to t('comparison_tool'),    comparison_tool_project_extractions_path(@project || @extraction.try(:project) || @extraction_forms_project.project),    title: t('.compare_extractions')
       b Navigation
       li = link_to t('.project_information'), edit_project_path(@project || @extraction.try(:project) || @extraction_forms_project.project) + '#panel-project-information', title: t('.project_information')

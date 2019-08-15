@@ -24,7 +24,7 @@
             td No extractions found.
 
         - else
-          - @extractions.unconsolidated.each do |extraction|
+          - @extractions.unconsolidated.includes([{ projects_users_role: [{ projects_user: { user: :profile } }, :role] },{ citations_project: :citation }]).each do |extraction|
             tr
               td = link_to extraction.try(:citations_project).try(:citation).try(:name), work_extraction_path(extraction)
               td = extraction.projects_users_role.handle
@@ -53,7 +53,7 @@
               td No extractions found.
 
           - else
-            - @extractions.consolidated.each do |extraction|
+            - @extractions.consolidated.includes(citations_project: :citation).each do |extraction|
               tr
                 td = link_to extraction.try(:citations_project).try(:citation).try(:name),\
                   consolidate_project_extractions_path(\
