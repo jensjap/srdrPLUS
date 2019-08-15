@@ -1,43 +1,44 @@
 li = link_to('Dashboard', projects_path)
 
 - if (controller_name.eql?('projects') && not(action_name.eql?('index')) && not(action_name.eql?('new'))) || controller_name.eql?('assignments') || controller_name.eql?('extractions') || controller_name.eql?('extraction_forms_projects') || (controller_name.eql?('citations') && action_name.eql?('index')) || (controller_name.eql?('tasks') && action_name.eql?('index')) || (controller_name.eql?('screening_options') && action_name.eql?('index'))
+  - project = @project || @extraction.try(:project) || @extraction_forms_project.project
 
   li
     a href='#' Project
     ul.menu
       b Tools
       /li = link_to t('.dashboard'),         '#'
-      li = link_to t('.members_and_roles'), edit_project_path(@project || @extraction.try(:project) || @extraction_forms_project.project) + '#panel-projects-users', title: t('.members_and_roles')
+      li = link_to t('.members_and_roles'), edit_project_path(project) + '#panel-projects-users', title: t('.members_and_roles')
       /li = link_to t('.screening_options'), project_screening_options_path(@project || @extraction.try(:project) || @extraction_forms_project.project), title: t('manage_screening_options')
       /li = link_to t('export'),             export_project_path(@project || @extraction.try(:project) || @extraction_forms_project.project), method: :post,          title: t('request_export')
       li
-        .reveal[data-reveal='' id="export-modal-#{@project.id.to_s}"]
+        .reveal[data-reveal='' id="export-modal-#{project.id.to_s}"]
           a[data-close='' style='float: right; font-size: large;']
             |×
           fieldset
             legend[style='font-size: large;']
               | Select export type:
-            input[class='export-type-radio' type='radio' name="export-type-#{@project.id.to_s}" value="#{export_project_path(@project, export_type_name: '.xlsx')}" checked='' id="xlsx-radio-#{@project.id.to_s}"]
-            label for="xlsx-radio-#{@project.id.to_s}"
+            input[class='export-type-radio' type='radio' name="export-type-#{project.id.to_s}" value="#{export_project_path(project, export_type_name: '.xlsx')}" checked='' id="xlsx-radio-#{project.id.to_s}"]
+            label for="xlsx-radio-#{project.id.to_s}"
               | Microsoft Excel (.xlsx)
-            input[class='export-type-radio' type='radio' name='export-type-#{@project.id.to_s}' value=value="#{export_project_path(@project, export_type_name: 'Google Sheets')}" id="gsheets-radio-#{@project.id.to_s}"]
-            label for="gsheets-radio-#{@project.id.to_s}"
+            input[class='export-type-radio' type='radio' name='export-type-#{project.id.to_s}' value=value="#{export_project_path(project, export_type_name: 'Google Sheets')}" id="gsheets-radio-#{project.id.to_s}"]
+            label for="gsheets-radio-#{project.id.to_s}"
               | Google Sheets
-          = link_to "Export Project Data", export_project_path(@project, export_type_name: '.xlsx'), method: :post, class: "button expanded start-export-button"
+          = link_to "Export Project Data", export_project_path(project, export_type_name: '.xlsx'), method: :post, class: "button expanded start-export-button"
 
-        a#export-modal-button[data-open="export-modal-#{@project.id.to_s}"] = 'Export'
+        a#export-modal-button[data-open="export-modal-#{project.id.to_s}"] = 'Export'
 
-      li = link_to t('comparison_tool'),    comparison_tool_project_extractions_path(@project || @extraction.try(:project) || @extraction_forms_project.project),    title: t('.compare_extractions')
+      li = link_to t('comparison_tool'),    comparison_tool_project_extractions_path(project),    title: t('.compare_extractions')
       b Navigation
-      li = link_to t('.project_information'), edit_project_path(@project || @extraction.try(:project) || @extraction_forms_project.project) + '#panel-project-information', title: t('.project_information')
-      li = link_to t('.key_questions'),       edit_project_path(@project || @extraction.try(:project) || @extraction_forms_project.project) + '#panel-key-questions',       title: t('.key_questions')
-      - if (@project || @extraction.try(:project) || @extraction_forms_project.project).leaders.include? current_user
-        li = link_to t('.tasks'),               project_tasks_path(@project || @extraction.try(:project) || @extraction_forms_project.project), title: t('manage_tasks')
-      li = link_to t('.citations'),           project_citations_path(@project || @extraction.try(:project) || @extraction_forms_project.project), title: t('manage_citations')
-      li = link_to t('.screen'),              next_assignment_project_path(@project || @extraction.try(:project) || @extraction_forms_project.project)
+      li = link_to t('.project_information'), edit_project_path(project) + '#panel-project-information', title: t('.project_information')
+      li = link_to t('.key_questions'),       edit_project_path(project) + '#panel-key-questions',       title: t('.key_questions')
+      - if (project).leaders.include? current_user
+        li = link_to t('.tasks'),               project_tasks_path(project), title: t('manage_tasks')
+      li = link_to t('.citations'),           project_citations_path(project), title: t('manage_citations')
+      li = link_to t('.screen'),              next_assignment_project_path(project)
       /li = link_to 'Excluded Citations',                 '#'
       /li = link_to 'Included Citations and Assignments', '#'
-      li = link_to t('.extractions'),         project_extractions_path(@project || @extraction.try(:project) || @extraction_forms_project.project),                         title: t('.manage_extractions')
+      li = link_to t('.extractions'),         project_extractions_path(project),                         title: t('.manage_extractions')
       /li = link_to 'Completed Extractions',              '#'
 
 li

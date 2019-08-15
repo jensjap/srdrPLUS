@@ -16,7 +16,7 @@ class SimpleExportJob < ApplicationJob
   queue_as :default
 
   rescue_from(StandardError) do |exception|
-       # Do something with the exception
+    # Do something with the exception
     ExportMailer.notify_simple_export_failure(arguments.first, arguments.second, exception.message).deliver_later
   end
 

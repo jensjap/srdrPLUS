@@ -51,14 +51,37 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
     recordables = extractions_extraction_forms_projects_sections_question_row_column_fields
       .where(extractions_extraction_forms_projects_sections_type1_id: eefpst1_id,
              question_row_column_field: qrc.question_row_column_fields)
-    if [5, 6, 7, 8, 9].include? qrc.question_row_column_type_id
+
+    case qrc.question_row_column_type_id
+
+    when 5
+      text_arr = []
+      Record.where(recordable: recordables).pluck(:name).each do |opt_ids|
+        if opt_ids.nil? or opt_ids.length < 4 then next end
+        (opt_ids[2..-3].split('", "')-[""]).each do |opt_id|
+          # opt_id can be nil here for questions that have not been answered.
+          # Protect by casting to zero and check.
+
+          text_arr << qrc.question_row_columns_question_row_column_options.find(opt_id.to_i).name unless opt_id.to_i.zero?
+        end
+      end
+      return text_arr.join ', '
+
+    when 6, 7, 8
       text = ''
       Record.where(recordable: recordables).pluck(:name).each do |opt_id|
         # opt_id can be nil here for questions that have not been answered.
         # Protect by casting to zero and check.
         text += qrc.question_row_columns_question_row_column_options.find(opt_id.to_i).name + "\r" unless opt_id.to_i.zero?
       end
-
+      return text
+    when 9
+      text = ''
+      ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnFieldsQuestionRowColumnsQuestionRowColumnOption.where(extractions_extraction_forms_projects_sections_question_row_column_field: recordables).pluck(:'question_row_columns_question_row_column_option.name').each do |opt_id|
+        # opt_id can be nil here for questions that have not been answered.
+        # Protect by casting to zero and check.
+        text += qrc.question_row_columns_question_row_column_options.find(opt_id.to_i).name + "\r" unless opt_id.to_i.zero?
+      end
       return text
     else
       return Record.where(recordable: recordables).pluck(:name).join('\r')
