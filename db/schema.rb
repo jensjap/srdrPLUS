@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_06_233957) do
+ActiveRecord::Schema.define(version: 2019_08_16_025225) do
 
   create_table "abstrackr_settings", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "profile_id"
@@ -394,6 +394,16 @@ ActiveRecord::Schema.define(version: 2019_08_06_233957) do
     t.datetime "updated_at", null: false
     t.index ["export_type_id"], name: "index_exported_items_on_export_type_id"
     t.index ["projects_user_id"], name: "index_exported_items_on_projects_user_id"
+  end
+
+  create_table "extraction_checksums", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "extraction_id"
+    t.string "hexdigest"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["deleted_at"], name: "index_extraction_checksums_on_deleted_at"
+    t.index ["extraction_id"], name: "index_extraction_checksums_on_extraction_id"
   end
 
   create_table "extraction_forms", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin", force: :cascade do |t|

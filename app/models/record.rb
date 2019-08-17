@@ -4,6 +4,8 @@ class Record < ApplicationRecord
   acts_as_paranoid
   has_paper_trail
 
+  after_update :schedule_extraction_checksum_update
+
   belongs_to :recordable, polymorphic: true
 
   validate :check_constraints
@@ -86,5 +88,10 @@ class Record < ApplicationRecord
         end
       end
     end
+  end
+
+  def schedule_extraction_checksum_update
+    time_now = DateTime.now.to_i
+    UpdateExtractionChecksumJob.set(wait: 2.minute).perform_later(time_now.to_i, self.id)
   end
 end
