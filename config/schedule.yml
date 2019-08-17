@@ -1,0 +1,18 @@
+#config/schedule.yml
+#
+#my_first_job:
+#  cron: "*/5 * * * *"
+#  class: "HardWorker"
+#  queue: hard_worker
+#
+#second_job:
+#  cron: "*/30 * * * *" # execute at every 30 minutes
+#  class: "HardWorker"
+#  queue: hard_worker_long
+#  args:
+#    hard: "stuff"
+
+update_extraction_checksums:
+  cron: "*/30 * * * *" # execute at every 30 minutes
+  class: "UpdateExtractionChecksumsJob"
+  queue: default

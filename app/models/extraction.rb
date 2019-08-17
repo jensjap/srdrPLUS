@@ -14,8 +14,9 @@ class Extraction < ApplicationRecord
   after_create :create_default_arms
   
   # create checksums without delay after create and update, since extractions/index would be incorrect.
-  after_create :update_checksum
-  after_update :update_checksum
+  after_create do |extraction|
+    ExtractionChecksum.create! extraction: extraction
+  end
 
   scope :by_project_and_user, -> ( project_id, user_id ) {
     joins(projects_users_role: { projects_user: :user })
@@ -36,6 +37,8 @@ class Extraction < ApplicationRecord
   has_many :extraction_forms_projects_sections, through: :extractions_extraction_forms_projects_sections, dependent: :destroy
 
   has_many :extractions_projects_users_roles, dependent: :destroy, inverse_of: :extraction
+
+  validates :extraction_checksum, presence: true
 
   delegate :citation, to: :citations_project
   delegate :user, to: :projects_users_role
@@ -84,20 +87,6 @@ class Extraction < ApplicationRecord
   end
 
   private
-
-  def update_checksum
-    if self.extraction_checksum.nil?
-      # should raise an error on failure, right?
-      ExtractionChecksum.create! extraction: self, hexdigest: Digest::MD5.hexdigest('')
-    end
-    e_json = ApplicationController.new.view_context.render(
-      partial: 'extractions/extraction_for_comparison_tool',
-      locals: { extraction: self },
-      formats: [:json],
-      handlers: [:jbuilder]
-    )
-    self.extraction_checksum.update( hexdigest: Digest::MD5.hexdigest(e_json) )
-  end
 
   def create_default_arms
 #    find_eefps_by_section_type("Arms")

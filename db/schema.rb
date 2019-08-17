@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_16_025225) do
+ActiveRecord::Schema.define(version: 2019_08_17_024915) do
 
   create_table "abstrackr_settings", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "profile_id"
@@ -402,6 +402,7 @@ ActiveRecord::Schema.define(version: 2019_08_16_025225) do
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "is_stale"
     t.index ["deleted_at"], name: "index_extraction_checksums_on_deleted_at"
     t.index ["extraction_id"], name: "index_extraction_checksums_on_extraction_id"
   end

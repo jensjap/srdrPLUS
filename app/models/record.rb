@@ -4,7 +4,7 @@ class Record < ApplicationRecord
   acts_as_paranoid
   has_paper_trail
 
-  after_update :schedule_extraction_checksum_update
+  after_commit :set_extraction_stale, [:create, :update, :destroy]
 
   belongs_to :recordable, polymorphic: true
 
@@ -90,8 +90,16 @@ class Record < ApplicationRecord
     end
   end
 
-  def schedule_extraction_checksum_update
-    time_now = DateTime.now.to_i
-    UpdateExtractionChecksumJob.set(wait: 2.minute).perform_later(time_now.to_i, self.id)
+  def set_extraction_stale
+#    time_now = DateTime.now.to_i
+#    UpdateExtractionChecksumJob.set(wait: 2.minute).perform_later(time_now.to_i, self.id)
+    extraction = nil
+    case recordable.class.name
+    when 'ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField'
+      extraction = recordable.extraction
+    else
+      extraction = recordable.result_statistic_section.extraction
+    end
+    extraction.extraction_checksum.update( is_stale: true ) 
   end
 end
