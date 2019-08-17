@@ -7,7 +7,7 @@ class UpdateExtractionChecksumsJob < ApplicationJob
   end
 
   def perform(*args)
-    ExtractionChecksum.where(is_stale: true).each do |e_checksum|
+    ExtractionChecksum.where(is_stale: true).each do |extraction_checksum|
     
       extraction_checksum.update_hexdigest
     end

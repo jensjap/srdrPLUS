@@ -10,6 +10,7 @@ class ExtractionsExtractionFormsProjectsSectionsType1Row < ApplicationRecord
   #   - NET Change
   after_create :create_default_result_statistic_sections
   after_create :create_default_type1_row_columns
+  after_commit :set_extraction_stale, on: [:create, :update, :destroy]
 
   belongs_to :extractions_extraction_forms_projects_sections_type1, inverse_of: :extractions_extraction_forms_projects_sections_type1_rows
   belongs_to :population_name,                                      inverse_of: :extractions_extraction_forms_projects_sections_type1_rows
@@ -66,6 +67,10 @@ class ExtractionsExtractionFormsProjectsSectionsType1Row < ApplicationRecord
   end
 
   private
+
+    def set_extraction_stale
+      self.extraction.extraction_checksum.update( is_stale: true ) 
+    end
 
     def create_default_result_statistic_sections
       result_statistic_sections.create!([

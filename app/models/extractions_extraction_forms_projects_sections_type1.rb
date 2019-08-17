@@ -8,6 +8,8 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
   acts_as_paranoid column: :active, sentinel_value: true
   has_paper_trail
 
+  after_commit :set_extraction_stale, on: [:create, :update, :destroy]
+
   before_validation -> { set_ordering_scoped_by(:extractions_extraction_forms_projects_section_id) }, on: :create
 
   #!!! Implement this for type1 selection also.
@@ -160,6 +162,10 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
   end
 
   private
+      
+    def set_extraction_stale
+      self.extraction.extraction_checksum.update( is_stale: true ) 
+    end
 
     # Do not overwrite existing entries but associate to one that already exists or create a new one.
     #
