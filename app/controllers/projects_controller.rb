@@ -21,8 +21,11 @@ class ProjectsController < ApplicationController
   # GET /projects
   # GET /projects.json
   def index
-    msg = Message.get_totd.check_message
-    flash.now[:info] = msg if msg
+    #####  TEMPORARILY DISABLE TOTD
+    #msg = Message.get_totd.check_message
+    #flash.now[:info] = msg if msg
+    #####  TEMPORARILY DISABLE TOTD
+
     @query = params[:q]
     @order = params[:o] || 'updated-at'
 
@@ -153,7 +156,8 @@ class ProjectsController < ApplicationController
     SimpleExportJob.perform_later(current_user.id, @project.id, export_type_name)
     flash[:success] = "Export request submitted for project '#{ @project.name }'. You will be notified by email of its completion."
 
-    redirect_to edit_project_path(@project)
+   # redirect_to edit_project_path(@project)
+    redirect_to request.referer
   end
 
   def import_ris

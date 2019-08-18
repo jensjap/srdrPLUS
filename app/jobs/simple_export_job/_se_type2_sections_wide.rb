@@ -38,13 +38,13 @@ def build_type2_sections_wide(p, project, highlight, wrap, kq_ids=[])
             # Iterate over each of the questions that are associated with this particular # extraction's
             # extraction_forms_projects_section and collect name and description.
             questions = efps.questions.joins(:key_questions_projects_questions)
-              .where(key_questions_projects_questions: { key_questions_project: kq_ids }).distinct.order(id: :asc)
+              .where(key_questions_projects_questions: { key_questions_project: KeyQuestionsProject.where(project: project, key_question_id: kq_ids) }).distinct.order(id: :asc)
 
             # If this section is linked we have to iterate through each occurrence of
             # type1 via eefps.link_to_type1.extractions_extraction_forms_projects_sections_type1s.
             # Otherwise we proceed with eefpst1s set to a custom Struct that responds
             # to :id, type1: :id.
-            eefpst1s = eefps.link_to_type1.present? ?
+            eefpst1s = (eefps.extraction_forms_projects_section.extraction_forms_projects_section_option.by_type1 and eefps.link_to_type1.present?) ? 
               eefps.link_to_type1.extractions_extraction_forms_projects_sections_type1s :
               [Struct.new(:id, :type1).new(nil, Struct.new(:id).new(nil))]
 

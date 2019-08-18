@@ -152,9 +152,9 @@ class Project < ApplicationRecord
             citation_groups[:citations_projects][e.citations_project_id][:consolidated_status] = e.consolidated
           end
 
-        else citation_groups[:citations_projects][e.citations_project_id][:data_discrepancy]
+        else 
           citation_groups[:citations_projects][e.citations_project_id][:data_discrepancy] =
-            discover_extraction_discrepancy(citation_groups[:citations_projects][e.citations_project_id][:extraction_ids].first, e.id)
+            discover_extraction_discrepancy_fast(citation_groups[:citations_projects][e.citations_project_id][:extraction_ids].first, e.id)
         end
 
       else
@@ -917,6 +917,29 @@ class Project < ApplicationRecord
       #ProjectsUsersRole.by_project(@project).each do |pur|
       #  new_task.assignments << Assignment.create!(projects_users_role: pur)
       #end
+    end
+
+    def discover_extraction_discrepancy_fast(extraction1_id, extraction2_id)
+      e1_eefps_arr = Extraction.find(extraction1_id).extractions_extraction_forms_projects_sections.order(:extraction_forms_projects_section_id).includes({extractions_extraction_forms_projects_sections_type1s: :type1}, :extraction_forms_projects_section)
+      e2_eefps_arr = Extraction.find(extraction2_id).extractions_extraction_forms_projects_sections.order(:extraction_forms_projects_section_id).includes({extractions_extraction_forms_projects_sections_type1s: :type1}, :extraction_forms_projects_section)
+
+      e1_eefps_arr.zip(e2_eefps_arr).each do |eefps_pair|
+        eefps1 = eefps_pair.first
+        eefps2 = eefps_pair.second
+
+        if eefps1.nil? or eefps2.nil? then byebug end
+
+        if eefps1.extraction_forms_projects_section_id != eefps2.extraction_forms_projects_section_id then return true end
+
+        case eefps1.extraction_forms_projects_section.extraction_forms_projects_section_type_id
+          when 1
+            if eefps1.type1s != eefps2.type1s then return true end
+          when 2
+          when 3
+          end
+      end
+
+      return false
     end
 
     def discover_extraction_discrepancy(extraction1_id, extraction2_id)
