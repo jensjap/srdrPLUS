@@ -13,6 +13,6 @@
 #    hard: "stuff"
 
 update_extraction_checksums:
-  cron: "* * * * *" # execute at every 30 minutes
+  cron: "*/30 * * * *" # execute at every 30 minutes
   class: "UpdateExtractionChecksumsJob"
   queue: default
