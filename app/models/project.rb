@@ -938,7 +938,7 @@ class Project < ApplicationRecord
 #      e2_json = e2.to_builder.target!
 
       e1_checksum = extraction1.extraction_checksum
-      e2_checksum = extraction1.extraction_checksum
+      e2_checksum = extraction2.extraction_checksum
 
       if e1_checksum.is_stale then e1_checksum.update_hexdigest end
       if e2_checksum.is_stale then e2_checksum.update_hexdigest end

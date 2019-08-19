@@ -38,8 +38,6 @@ class Extraction < ApplicationRecord
 
   has_many :extractions_projects_users_roles, dependent: :destroy, inverse_of: :extraction
 
-  validates :extraction_checksum, presence: true
-
   delegate :citation, to: :citations_project
   delegate :user, to: :projects_users_role
 
