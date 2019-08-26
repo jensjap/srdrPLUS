@@ -11,10 +11,10 @@ module JsonImporters
       @id_map['comparison'] = {}
       @id_map['cp'] = {}
       @id_map['efps'] = {}
-      @id_map['eefps'] = {}
-      @id_map['eefpst1'] = {}
+      @id_map['eefps'] = {} #extraction specific
+      @id_map['eefpst1'] = {} #extraction specific
       @id_map['kqp'] = {}
-      @id_map['population'] = {}
+      @id_map['population'] = {} #extraction specific
       @id_map['qrcf'] = {}
       @id_map['qrcqrco'] = {}
       @id_map['question'] = {}
@@ -145,22 +145,26 @@ module JsonImporters
         ## If the user is already in the system, don't change the profile
         profile_hash = uhash['profile']
 
-        o = Organization.find_or_create_by! name: profile_hash['organization']['name']
+        o = Organization.find_or_create_by name: profile_hash['organization']['name']
 
-        uname = profile_hash['username']
-        if u.profile.username != uname and not Profile.find_by(username: uname).nil?
-          while not Profile.find_by(username: uname).nil?
-            uname += rand(10).to_s
-          end
-          @logger.warn "#{Time.now.to_s} - Username #{profile_hash['username']} is taken, using #{uname} for email #{uhash['email']} instead."
+        # uname = profile_hash['username'] || "USER_"
+        # if u.profile.username != uname and Profile.find_by(username: uname).present?
+        #   while not Profile.find_by(username: uname).nil?
+        #     uname += rand(10).to_s
+        #   end
+        #   @logger.warn "#{Time.now.to_s} - Username #{profile_hash['username']} is taken, using #{uname} for email #{uhash['email']} instead."
+        # end
+        uname = profile_hash['username']&.gsub(/@/, "_at_")&.gsub(/ /, "_") || uhash['email'].gsub(/@/, "_at_")
+        begin
+          profile = u.profile.update! username:     uname,
+                                      first_name:   profile_hash['first_name'],
+                                      middle_name:  profile_hash['middle_name'],
+                                      last_name:    profile_hash['last_name'],
+                                      time_zone:    profile_hash['time_zone'],
+                                      organization: o
+        rescue
+          byebug
         end
-
-        profile = u.profile.update! username:     uname,
-                                    first_name:   profile_hash['first_name'],
-                                    middle_name:  profile_hash['middle_name'],
-                                    last_name:    profile_hash['last_name'],
-                                    time_zone:    profile_hash['time_zone'],
-                                    organization: o
 
         profile_hash['degrees']&.values&.each do |dhash|
           d = Degree.find_or_create_by! name: dhash['name']
@@ -448,6 +452,10 @@ module JsonImporters
         q_dedup_key += "qr: <<<" + qrhash['name'].to_s + ">>> "
         qrhash['question_row_columns']&.values&.each_with_index do |qrchash, ci|
           q_dedup_key += "qrc: <<<" + qrchash['name'].to_s + ">>> "
+          q_dedup_key += "qrct: <<<" + qrchash['question_row_column_type']['name'].to_s + ">>> "
+          qrchash['question_row_columns_question_row_column_options']&.values&.each_with_index do |qrcqrcohash, oi|
+            q_dedup_key += "qrcqrco: <<<" + qrcqrcohash['question_row_column_option']['name'].to_s + ">>> "
+          end
         end
       end
       q_dedup_key += "dependencies: <<<"
@@ -492,6 +500,7 @@ module JsonImporters
       end
 
 
+      puts "creating question"
       q = Question.create! extraction_forms_projects_section: efps,
                            name: qhash['name'],
                            description: qhash['description']
@@ -600,16 +609,15 @@ module JsonImporters
       return eefpst1
     end
 
-    def import_population
-
-    end
-
-
     def import_extraction(ehash)
       cp = @id_map['cp'][ehash['citation_id']]
       pur = find_projects_users_role(ehash['extractor_user_id'], ehash['extractor_role_id'])
 
-      e = Extraction.create! project: @p, projects_users_role: pur, citations_project: cp
+      begin
+        e = Extraction.create! project: @p, projects_users_role: pur, citations_project: cp
+      rescue
+        byebug
+      end
 
       ehash['sections']&.each do |sid, shash|
         efps = @id_map['efps'][sid]
@@ -640,6 +648,7 @@ module JsonImporters
 
           eefpst1hash['populations']&.each do |popid, pophash|
             pop_name = PopulationName.find_or_create_by! name: pophash['population_name']['name'], description: pophash['population_name']['description']
+            puts "creating populations"
             pop = ExtractionsExtractionFormsProjectsSectionsType1Row.find_or_create_by! extractions_extraction_forms_projects_sections_type1: eefpst1,
                                                                                         population_name: pop_name
 
@@ -648,6 +657,7 @@ module JsonImporters
             pophash['timepoints']&.each do |tpid, tphash|
               tp_name = TimepointName.find_or_create_by! name: tphash['timepoint_name']['name'],
                                                          unit: tphash['timepoint_name']['unit']
+              puts "creating timepoints"
               tp = ExtractionsExtractionFormsProjectsSectionsType1RowColumn.find_or_create_by! extractions_extraction_forms_projects_sections_type1_row: pop,
                                                                                                timepoint_name: tp_name
               @id_map['tp'][tpid.to_i] = tp
@@ -656,10 +666,12 @@ module JsonImporters
             pophash['result_statistic_sections']&.values&.each do |rsshash|
               rss_type = ResultStatisticSectionType.find_by!({name: rsshash['result_statistic_section_type']['name']})
 
+              puts "creating rss"
               rss = ResultStatisticSection.find_or_create_by! result_statistic_section_type: rss_type,
                                                               population: pop
 
               rsshash['comparisons']&.each do |compid, comphash|
+                puts "creating comparison"
                 comp = Comparison.create! is_anova: comphash["is_anova"]
                 ComparisonsResultStatisticSection.create! result_statistic_section: rss, comparison: comp
                 @id_map['comparison'][compid.to_i] = comp
@@ -759,6 +771,7 @@ module JsonImporters
           if qrcf.nil?; byebug end
           qrc_type_name = qrcf.question_row_column.question_row_column_type.name
           eefpst1 = @id_map['eefpst1'][rhash['extractions_extraction_forms_projects_sections_type1_id']]
+          puts "creating eefpsqrcf"
           eefpsqrcf = ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField.find_or_create_by! extractions_extraction_forms_projects_section: eefps,
                                                                                                           extractions_extraction_forms_projects_sections_type1: eefpst1,
                                                                                                           question_row_column_field: qrcf
@@ -783,7 +796,7 @@ module JsonImporters
 
           Record.find_or_create_by! recordable_type: 'ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField',
                                     recordable_id: eefpsqrcf.id,
-                                    name: record_name
+                                    name: record_name || ""
         end
       end
     end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_17_024915) do
+ActiveRecord::Schema.define(version: 2019_08_23_022131) do
 
   create_table "abstrackr_settings", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "profile_id"
@@ -1224,7 +1224,7 @@ ActiveRecord::Schema.define(version: 2019_08_17_024915) do
 
   create_table "questions", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "extraction_forms_projects_section_id"
-    t.string "name"
+    t.text "name"
     t.text "description"
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
