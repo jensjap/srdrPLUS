@@ -465,7 +465,7 @@ a.accordion-title.populations {
       &.freeze {
         position: sticky;
         left: 65px;
-        z-index: 0;
+        z-index: 1;
         font-weight: bold;
       }
     }
