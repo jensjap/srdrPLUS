@@ -218,8 +218,8 @@ module ConsolidationHelper
 
         #iterate over type2 eefpss
         eefps_t2.each do |eefps|
-          if (eefps.link_to_type1.present? and not eefps.extraction_forms_projects_section.link_to_type1.present?) or
-             (not eefps.link_to_type1.present? and eefps.extraction_forms_projects_section.link_to_type1.present?)
+          if (eefps.link_to_type1.present? and not eefps.extraction_forms_projects_section.extraction_forms_projects_section_option.by_type1) or
+             (not eefps.link_to_type1.present? and eefps.extraction_forms_projects_section.extraction_forms_projects_section_option.by_type1)
             next
           end
           extraction = eefps.extraction
@@ -237,7 +237,7 @@ module ConsolidationHelper
 
             qrcf_id = eefps_qrcf.question_row_column_field.id.to_s
 
-            linked_efps_id = eefps.extraction_forms_projects_section.link_to_type1 ? eefps.extraction_forms_projects_section.link_to_type1.id.to_s : nil
+            linked_efps_id = (eefps.extraction_forms_projects_section.link_to_type1 and eefps.extraction_forms_projects_section.extraction_forms_projects_section_option.by_type1) ? eefps.extraction_forms_projects_section.link_to_type1.id.to_s : nil
 
 
             t1_id = eefps_qrcf.extractions_extraction_forms_projects_sections_type1.present? ?

@@ -138,9 +138,9 @@ class Project < ApplicationRecord
     citation_groups[:citations_projects] = Hash.new
     citation_groups[:citations_project_ids] = Array.new
     citation_groups[:citations_project_count] = 0
-    self.extractions.each do |e|
+    self.extractions.includes({citations_project: [:citation]}, :extraction_checksum).each do |e|
       if citation_groups[:citations_projects].keys.include? e.citations_project_id
-        citation_groups[:citations_projects][e.citations_project_id][:extraction_ids] << e.id
+        citation_groups[:citations_projects][e.citations_project_id][:extractions] << e
 
         # If data_discrepancy is true then check for the existence of a consolidated
         # extraction and skip the discovery process.
@@ -154,7 +154,7 @@ class Project < ApplicationRecord
 
         else 
           citation_groups[:citations_projects][e.citations_project_id][:data_discrepancy] =
-            discover_extraction_discrepancy_fast(citation_groups[:citations_projects][e.citations_project_id][:extraction_ids].first, e.id)
+            discover_extraction_discrepancy(citation_groups[:citations_projects][e.citations_project_id][:extractions].first, e)
         end
 
       else
@@ -165,12 +165,12 @@ class Project < ApplicationRecord
         citation_groups[:citations_projects][e.citations_project_id][:citation_name_short]  = e.citations_project.citation.name.truncate(32)
         citation_groups[:citations_projects][e.citations_project_id][:citation_name_long]   = e.citations_project.citation.name
         citation_groups[:citations_projects][e.citations_project_id][:data_discrepancy]     = false
-        citation_groups[:citations_projects][e.citations_project_id][:extraction_ids]       = [e.id]
+        citation_groups[:citations_projects][e.citations_project_id][:extractions]       = [e]
         citation_groups[:citations_projects][e.citations_project_id][:consolidated_status]  = e.consolidated
       end
 
-      # Remove the consolidated extraction from the list of extraction_ids.
-      citation_groups[:citations_projects][e.citations_project_id][:extraction_ids].delete(e.id) if e.consolidated
+      # Remove the consolidated extraction from the list of extractions.
+      citation_groups[:citations_projects][e.citations_project_id][:extractions].delete(e) if e.consolidated
     end
 
     return citation_groups
@@ -919,48 +919,31 @@ class Project < ApplicationRecord
       #end
     end
 
-    def discover_extraction_discrepancy_fast(extraction1_id, extraction2_id)
-      e1_eefps_arr = Extraction.find(extraction1_id).extractions_extraction_forms_projects_sections.order(:extraction_forms_projects_section_id).includes({extractions_extraction_forms_projects_sections_type1s: :type1}, :extraction_forms_projects_section)
-      e2_eefps_arr = Extraction.find(extraction2_id).extractions_extraction_forms_projects_sections.order(:extraction_forms_projects_section_id).includes({extractions_extraction_forms_projects_sections_type1s: :type1}, :extraction_forms_projects_section)
+    def discover_extraction_discrepancy(extraction1, extraction2)
+#      e1 = Extraction.find(extraction1_id)
+#      e1_json = ApplicationController.new.view_context.render(
 
-      e1_eefps_arr.zip(e2_eefps_arr).each do |eefps_pair|
-        eefps1 = eefps_pair.first
-        eefps2 = eefps_pair.second
-
-        if eefps1.nil? or eefps2.nil? then byebug end
-
-        if eefps1.extraction_forms_projects_section_id != eefps2.extraction_forms_projects_section_id then return true end
-
-        case eefps1.extraction_forms_projects_section.extraction_forms_projects_section_type_id
-          when 1
-            if eefps1.type1s != eefps2.type1s then return true end
-          when 2
-          when 3
-          end
-      end
-
-      return false
-    end
-
-    def discover_extraction_discrepancy(extraction1_id, extraction2_id)
-      e1 = Extraction.find(extraction1_id)
-      e1_json = ApplicationController.new.view_context.render(
-        partial: 'extractions/extraction_for_comparison_tool',
-        locals: { extraction: e1 },
-        formats: [:json],
-        handlers: [:jbuilder]
-      )
-      e2 = Extraction.find(extraction2_id)
-      e2_json = ApplicationController.new.view_context.render(
-        partial: 'extractions/extraction_for_comparison_tool',
-        locals: { extraction: e2 },
-        formats: [:json],
-        handlers: [:jbuilder]
-      )
+#        locals: { extraction: e1 },
+#        formats: [:json],
+#        handlers: [:jbuilder]
+#      )
+#      e2 = Extraction.find(extraction2_id)
+#      e2_json = ApplicationController.new.view_context.render(
+#        partial: 'extractions/extraction_for_comparison_tool',
+#        locals: { extraction: e2 },
+#        formats: [:json],
+#        handlers: [:jbuilder]
+#      )
 #      e1_json = e1.to_builder.target!
 #      e2_json = e2.to_builder.target!
 
-      return not(e1_json.eql? e2_json)
+      e1_checksum = extraction1.extraction_checksum
+      e2_checksum = extraction2.extraction_checksum
+
+      if e1_checksum.is_stale then e1_checksum.update_hexdigest end
+      if e2_checksum.is_stale then e2_checksum.update_hexdigest end
+      
+      return not(e1_checksum.hexdigest.eql? e2_checksum.hexdigest)
     end
 
     def create_default_member
