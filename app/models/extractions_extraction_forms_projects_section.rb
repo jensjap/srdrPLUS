@@ -77,7 +77,8 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
       return text
     when 9
       text = ''
-      ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnFieldsQuestionRowColumnsQuestionRowColumnOption.where(extractions_extraction_forms_projects_sections_question_row_column_field: recordables).pluck(:'question_row_columns_question_row_column_option.name').each do |opt_id|
+      ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnFieldsQuestionRowColumnsQuestionRowColumnOption.includes(:question_row_columns_question_row_column_option).where(extractions_extraction_forms_projects_sections_question_row_column_field: recordables).each do |eefpsqrcfqrcqrco|
+        opt_id = eefpsqrcfqrcqrco.question_row_columns_question_row_column_option.name
         # opt_id can be nil here for questions that have not been answered.
         # Protect by casting to zero and check.
         text += qrc.question_row_columns_question_row_column_options.find(opt_id.to_i).name + "\r" unless opt_id.to_i.zero?

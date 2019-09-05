@@ -5,6 +5,7 @@ class ExtractionsExtractionFormsProjectsSectionsType1RowColumn < ApplicationReco
 
   after_commit :ensure_only_one_baseline
   after_commit :ensure_timepoints_across_populations
+  after_commit :set_extraction_stale, on: [:create, :update, :destroy]
 
   after_destroy :remove_timepoints_across_populations
 
@@ -46,6 +47,10 @@ class ExtractionsExtractionFormsProjectsSectionsType1RowColumn < ApplicationReco
   end
 
   private
+
+    def set_extraction_stale
+      self.extraction.extraction_checksum.update( is_stale: true ) 
+    end
 
     def ensure_only_one_baseline
       return false unless extractions_extraction_forms_projects_sections_type1_row.extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_section.section.name == 'Outcomes'

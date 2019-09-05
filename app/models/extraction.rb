@@ -12,6 +12,11 @@ class Extraction < ApplicationRecord
   #                   to ensure consistency?
   after_create :ensure_extraction_form_structure
   after_create :create_default_arms
+  
+  # create checksums without delay after create and update, since extractions/index would be incorrect.
+  after_create do |extraction|
+    ExtractionChecksum.create! extraction: extraction
+  end
 
   scope :by_project_and_user, -> ( project_id, user_id ) {
     joins(projects_users_role: { projects_user: :user })
@@ -25,6 +30,8 @@ class Extraction < ApplicationRecord
   belongs_to :project,             inverse_of: :extractions
   belongs_to :citations_project,   inverse_of: :extractions
   belongs_to :projects_users_role, inverse_of: :extractions
+
+  has_one :extraction_checksum,    inverse_of: :extraction
 
   has_many :extractions_extraction_forms_projects_sections, dependent: :destroy, inverse_of: :extraction
   has_many :extraction_forms_projects_sections, through: :extractions_extraction_forms_projects_sections, dependent: :destroy
