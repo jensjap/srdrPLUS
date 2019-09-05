@@ -1,6 +1,6 @@
   tr.nested-fields
     td style="width: 50%;"
-      = f.association :user, label_method: :handle
+      = f.association :user, collection: @project.users, label_method: :handle
 
     td style="width: 40%;"
       = f.association :roles, label: false, required: false, as: :check_boxes
