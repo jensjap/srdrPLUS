@@ -5,12 +5,13 @@ module Api
         page          = ( params[ :page ] || 1 ).to_i
         page_size     = 100
         query         = params[ :q ] || ''
-        user_ids_from_other_projects = current_user.
-            projects.
-            map{|project| project.users}.
-            flatten.
-            map{|user| user.id}.
-            uniq
+        user_ids_from_other_projects = current_user
+          .projects
+          .includes(:users)
+          .map{ |project| project.users }
+          .flatten
+          .map{ |user| user.id }
+          .uniq
 
         exact_match_user_ids = User.joins(:profile).
           where(profiles: { username: query }).map{ |user| user.id }
