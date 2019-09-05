@@ -123,6 +123,10 @@ module ConsolidationHelper
                   # Descriptive Statistics
                   when "1"
                     rssm.tps_arms_rssms.each do |tps_arms_rssm|
+
+                      # !!! What do we do with this?
+                      next if tps_arms_rssm.timepoint.blank?
+
                       tp_name_id = tps_arms_rssm.timepoint.timepoint_name_id.to_s
                       arm_efps_id = tps_arms_rssm.extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_section.extraction_forms_projects_section.id
                       arm_name_id = tps_arms_rssm.extractions_extraction_forms_projects_sections_type1.type1_id
@@ -148,6 +152,9 @@ module ConsolidationHelper
                   when "2"
                     # Between Arms Comparisons
                     rssm.tps_comparisons_rssms.each do |tps_comparisons_rssm|
+
+                      next if tps_comparisons_rssm.timepoint.blank?
+
                       tp_name_id = tps_comparisons_rssm.timepoint.timepoint_name_id
                       is_baseline = tps_comparisons_rssm.timepoint.is_baseline
                       comparison_name = tps_comparisons_rssm.comparison.tokenize
@@ -168,6 +175,9 @@ module ConsolidationHelper
                   when "3"
                     # Within Arm Comparisons
                     rssm.comparisons_arms_rssms.each do |comparisons_arms_rssm|
+
+                      next if comparisons_arms_rssm.timepoint.blank?
+
                       comparison_name = comparisons_arms_rssm.comparison.tokenize
                       arm_efps_id = comparisons_arms_rssm.extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_section.extraction_forms_projects_section.id
                       arm_name_id = comparisons_arms_rssm.extractions_extraction_forms_projects_sections_type1.type1_id
@@ -187,6 +197,9 @@ module ConsolidationHelper
 
                   when "4"
                     rssm.wacs_bacs_rssms.each do |wacs_bacs_rssm|
+
+                      next if wacs_bacs_rssm.timepoint.blank?
+
                       wac_name = wacs_bacs_rssm.wac.tokenize
                       bac_name = wacs_bacs_rssm.bac.tokenize
                       record_name = wacs_bacs_rssm.records.first.name
