@@ -1,0 +1,10 @@
+( function(){
+  $( '#manage-measures-modal' ).html( "<%= j( render partial: "result_statistic_sections/rssm_form" ) %>" ).foundation( 'open' );
+  $( '.zmultiselect' ).zmultiselect( {
+    filter: true,
+    filterResult: true,
+    selectAll: true,
+    get: "zmultiselect",
+    placeholder: "Select measures to include:"
+  })
+} )();

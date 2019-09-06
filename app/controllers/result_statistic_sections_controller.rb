@@ -77,6 +77,14 @@ class ResultStatisticSectionsController < ApplicationController
     add_breadcrumb quadrant_name.downcase, consolidate_result_statistic_section_path(extraction_ids: @extractions.map(&:id))
   end
 
+  def manage_measures
+    respond_to do |format|
+      format.js do
+        @result_statistic_section = ResultStatisticSection.find(params[:rss_id])
+      end
+    end
+  end
+
   private
 #    # check if all the join table entries are in place, create if needed
 #    def set_comparisons_measures

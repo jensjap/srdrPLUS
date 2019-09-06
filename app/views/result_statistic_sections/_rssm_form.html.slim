@@ -1,0 +1,7 @@
+button.close-button data-close='' aria-label='Close modal' type='button'
+  span aria-hidden='true' &times;
+
+= simple_form_for @result_statistic_section do |f|
+  = f.association :measures, input_html: { class: 'zmultiselect' }
+
+  = f.submit

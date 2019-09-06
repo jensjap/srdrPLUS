@@ -1,6 +1,13 @@
 - section_name = section_name.present? ? section_name : 'Results'
 - if @extraction.results_section_ready_for_extraction?
   #results-panel
+    .reveal#manage-measures-modal.large data-reveal='' style='min-height: 80vh'
+      h1 Awesome. I Have It.
+      p.lead Your couch. It is mine.
+      p I'm a cool paragraph that lives inside of an even cooler modal. Wins!
+      button.close-button data-close='' aria-label='Close modal' type='button'
+        span aria-hidden='true' &times;
+
     h5 = section_name
     blockquote
       | The results section is where you enter numerical data, comparisons, etc.
@@ -8,6 +15,7 @@
     /#results-data-table-links
       = render 'extractions/work/results/results_populations_tabs', eefpst1: @eefpst1
 
+    h4 style='display: inline; margin-right: 1em;' Outcome you are working on:
     button.button type='button' data-toggle='example-dropdown-1' = @eefpst1.type1_name_and_description
     .dropdown-pane#example-dropdown-1 data-dropdown='' data-hover='true' data-hover-pane='true'
       ul
@@ -35,9 +43,13 @@
               tr
                 th.vertical
                 th.freeze
-                th colspan="#{ @arms.length }" Descriptive Statistics
+                th colspan="#{ @arms.length }"
+                  | Descriptive Statistics &nbsp;
+                  = link_to '(edit measures)', manage_measures_result_statistic_section_path(rss_id: dsc_rss.id), remote: true
                 th.bg-lightblue.freeze
-                th.bg-lightblue colspan="#{ bac_rss.comparisons.length }" Between Arm Comparisons
+                th.bg-lightblue colspan="#{ bac_rss.comparisons.length }"
+                  | Between Arm Comparisons &nbsp;
+                  = link_to '(edit measures)', manage_measures_result_statistic_section_path(rss_id: bac_rss.id), remote: true
 
               tr
                 th.vertical
@@ -140,9 +152,13 @@
               tr
                 th.bg-lightgreen.vertical
                 th.bg-lightgreen.freeze
-                th.bg-lightgreen colspan="#{ @arms.length }" Within Arm Comparisons
+                th.bg-lightgreen colspan="#{ @arms.length }"
+                  | Within Arm Comparisons &nbsp;
+                  = link_to '(edit measures)', manage_measures_result_statistic_section_path(rss_id: wac_rss.id), remote: true
                 th.bg-lightpink.freeze
-                th.bg-lightpink colspan="#{ bac_rss.comparisons.length }" Net Comparisons
+                th.bg-lightpink colspan="#{ bac_rss.comparisons.length }"
+                  | Net Comparisons &nbsp;
+                  = link_to '(edit measures)', manage_measures_result_statistic_section_path(rss_id: net_rss.id), remote: true
 
               tr
                 th.bg-lightgreen.vertical
