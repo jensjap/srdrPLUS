@@ -1,17 +1,24 @@
+- section_name = section_name.present? ? section_name : 'Results'
 - if @extraction.results_section_ready_for_extraction?
-  - eefpst1 = @outcomes.first
   #results-panel
     h5 = section_name
     blockquote
       | The results section is where you enter numerical data, comparisons, etc.
 
     /#results-data-table-links
-      = render 'extractions/work/results/results_populations_tabs', eefpst1: eefpst1
+      = render 'extractions/work/results/results_populations_tabs', eefpst1: @eefpst1
+
+    button.button type='button' data-toggle='example-dropdown-1' = @eefpst1.type1_name_and_description
+    .dropdown-pane#example-dropdown-1 data-dropdown='' data-hover='true' data-hover-pane='true'
+      ul
+        / Let's remove the currently displayed outcomes from the @eefpst1s so it doesn't show in the possible selections.
+        - @eefpst1s.where.not(id: @eefpst1.id).each do |eefpst1|
+          li = link_to eefpst1.type1_name_and_description, change_outcome_in_results_section_extraction_path(eefpst1_id: eefpst1.id), remote: true, class: 'change-outcome-link'
 
     .table-container style="min-height: 60vh; max-height: 80vh; overflow: scroll;"
 
       / Each population:
-      - eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |eefpst1r|
+      - @eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |eefpst1r|
         - dsc_rss = eefpst1r.result_statistic_sections.where(result_statistic_section_type_id: 1).first
         - bac_rss = eefpst1r.result_statistic_sections.where(result_statistic_section_type_id: 2).first
         - wac_rss = eefpst1r.result_statistic_sections.where(result_statistic_section_type_id: 3).first
@@ -23,7 +30,7 @@
 
         .table-fixed-headers
           table.unstriped style='overflow: scroll;'
-            caption = eefpst1.type1_name_and_description + ' (' + eefpst1r.population_name.name + ')'
+            caption = @eefpst1.type1_name_and_description + ' (' + eefpst1r.population_name.name + ')'
             thead
               tr
                 th.vertical

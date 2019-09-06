@@ -7,31 +7,18 @@ document.addEventListener 'turbolinks:load', ->
   return unless $( '.extractions' ).length > 0
 
   do ->
+
+    $( '.change-outcome-link' ).click ( e ) ->
+      $( '#results-panel > .table-container' ).html( '<br><br><br><h1>loading..</h1>' )
+      e.preventDefault()
+      return
+
     $( '#results-panel .table-container' ).scroll ->
       # End of the document reached?
       #if $( this ).prop( 'scrollHeight' ) - $( this ).height() - 50 < $( this ).scrollTop()
       if $( this ).prop( 'scrollHeight' ) - $( this ).height() == $( this ).scrollTop()
         alert 'Scrolled to Bottom'
       return
-
-#    $( '#results-panel .table-container' ).scroll ->
-#      if $( this ).scrollLeft() > 0
-#        $( '.first-column' ).addClass( 'rotate' )
-#      else if $( this ).scrollLeft() == 0
-#        $( '.first-column' ).removeClass( 'rotate' )
-
-#    $( window ).scroll ->
-#      # End of the document reached?
-#      if $( '#results-panel' ).length and $( document ).height() - $( this ).height() == $( this ).scrollTop()
-#        alert 'Scrolled to Bottom'
-#      return
-
-#    # Adds a delay to calling a specific function.
-#    delay = do ->
-#      timer = 0
-#      ( callback, ms ) ->
-#        clearTimeout timer
-#        timer = setTimeout( callback, ms )
 
     #################################################
     # State toggler for eefps
