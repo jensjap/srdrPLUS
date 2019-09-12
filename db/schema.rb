@@ -116,8 +116,8 @@ ActiveRecord::Schema.define(version: 2019_08_23_022131) do
     t.index ["user_id"], name: "index_assignments_on_user_id"
   end
 
-  create_table "authors", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin", force: :cascade do |t|
-    t.string "name"
+  create_table "authors", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+    t.string "name", collation: "utf8_general_ci"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "deleted_at"
@@ -136,14 +136,14 @@ ActiveRecord::Schema.define(version: 2019_08_23_022131) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "citations", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin", force: :cascade do |t|
+  create_table "citations", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "citation_type_id"
-    t.string "name", limit: 500
+    t.string "name", limit: 500, collation: "utf8_general_ci"
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "refman"
-    t.string "pmid"
+    t.string "refman", collation: "utf8_general_ci"
+    t.string "pmid", collation: "utf8_general_ci"
     t.binary "abstract"
     t.index ["citation_type_id"], name: "index_citations_on_citation_type_id"
     t.index ["deleted_at"], name: "index_citations_on_deleted_at"
@@ -707,14 +707,14 @@ ActiveRecord::Schema.define(version: 2019_08_23_022131) do
     t.index ["token"], name: "index_invitations_on_token", unique: true
   end
 
-  create_table "journals", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin", force: :cascade do |t|
+  create_table "journals", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "citation_id"
     t.integer "volume"
     t.integer "issue"
-    t.string "name", limit: 1000
+    t.string "name", limit: 1000, collation: "utf8_general_ci"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "publication_date"
+    t.string "publication_date", collation: "utf8_general_ci"
     t.index ["citation_id"], name: "index_journals_on_citation_id"
   end
 
@@ -725,7 +725,7 @@ ActiveRecord::Schema.define(version: 2019_08_23_022131) do
   end
 
   create_table "key_questions", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC", force: :cascade do |t|
-    t.text "name", limit: 16777215
+    t.text "name", collation: "utf8_bin"
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -922,7 +922,7 @@ ActiveRecord::Schema.define(version: 2019_08_23_022131) do
   end
 
   create_table "organizations", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC", force: :cascade do |t|
-    t.string "name"
+    t.string "name", collation: "utf8_general_ci"
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -1675,8 +1675,8 @@ ActiveRecord::Schema.define(version: 2019_08_23_022131) do
     t.index ["term_group_id"], name: "index_term_groups_colors_on_term_group_id"
   end
 
-  create_table "terms", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin", force: :cascade do |t|
-    t.string "name"
+  create_table "terms", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+    t.string "name", collation: "utf8_general_ci"
   end
 
   create_table "timepoint_names", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
