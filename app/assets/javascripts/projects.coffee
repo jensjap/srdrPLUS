@@ -45,8 +45,6 @@ document.addEventListener 'turbolinks:load', ->
     $( '.export-type-radio' ).on 'change', ( e ) ->
       if $( this ).is ':checked'
         export_button = $( this ).parents('.reveal').find( '.start-export-button' )
-        console.log e.target
-        console.log export_button
         link_string = $( export_button ).attr( 'href', $( this ).val() )
 
 ########## DISTILLER IMPORT
@@ -132,7 +130,11 @@ document.addEventListener 'turbolinks:load', ->
             for node in $(data).find('Author')
               first_name = $(node).find('ForeName').text() || ''
               last_name = $(node).find('LastName').text() || ''
-              authors.push( first_name + ' ' + last_name )
+              author_name = first_name + ' ' + last_name
+              if author_name == ' '
+                author_name = $(node).find('CollectiveName').text() || ''
+              if author_name != ''
+                authors.push( author_name )
 
             keywords = [ ]
             for node in $(data).find('Keyword')
@@ -143,8 +145,6 @@ document.addEventListener 'turbolinks:load', ->
             journal[ 'name' ] = $(data).find('Journal').find( 'Title' ).text() || ''
             journal[ 'issue' ] = $(data).find('JournalIssue').find( 'Issue' ).text() || ''
             journal[ 'vol' ] = $(data).find('JournalIssue').find( 'Volume' ).text() || ''
-            console.log $(data).find('JournalIssue').find( 'Volume' ).text()
-            console.log $(data).find('JournalIssue').find( 'Issue' ).text()
             ## My philosophy is to use publication year whenever possible, as researchers seem to be most concerned about the year, and it is easier to parse and sort - Birol
 
             dateNode = $(data).find('JournalIssue').find( 'PubDate' )
@@ -164,7 +164,6 @@ document.addEventListener 'turbolinks:load', ->
             populate_citation_fields citation_hash
 
       populate_citation_fields = ( citation ) ->
-        console.log citation['journal']
         $( '.citation-fields' ).find( '.citation-name input' ).val citation[ 'name' ]
         $( '.citation-fields' ).find( '.citation-abstract textarea' ).val citation[ 'abstract' ]
         $( '.citation-fields' ).find( '.journal-name input' ).val citation[ 'journal' ][ 'name' ]
