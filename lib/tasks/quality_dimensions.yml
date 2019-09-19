@@ -284,17 +284,6 @@
             - option: "Low"
             - option: "High"
             - option: "Some concerns"
-        - dimension: #dimension 22
-          id: 22
-          question: "Optional: (effect of adhering to intervention) What is the predicted direction of bias due to deviations from intended interventions?"
-          description: ""
-          options:
-            - option: "NA"
-            - option: "Favours experimental"
-            - option: "Favours comparator"
-            - option: "Towards null"
-            - option: "Away from null"
-            - option: "Unpredictable"
         - dimension: #dimension 23
           id: 23
           question: "3.1. Were data for this outcome available for all, or nearly all, participants randomized?"
@@ -1510,7 +1499,7 @@
     #        - option: "Yes, eg record linkage or based on self reports"
     - section:
       id: 10
-      section-title: "Ethan customs"
+      section-title: "Customs"
       section-description: ""
       dimensions:
         - dimension: #dimension 1
