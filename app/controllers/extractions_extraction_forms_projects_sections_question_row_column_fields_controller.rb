@@ -10,11 +10,17 @@ class ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnFieldsControlle
                                                        anchor: "panel-tab-#{ @eefps_qrcf.extractions_extraction_forms_projects_section.id.to_s }"),
                                   notice: t('success') }
         format.json { render :show, status: :ok, location: @eefps_qrcf }
+        format.js do
+          @info = [true, 'Saved!', '#410093']
+        end
       else
         format.html { redirect_to work_extraction_path(@eefps_qrcf.extractions_extraction_forms_projects_section.extraction,
                                                        anchor: "panel-tab-#{ @eefps_qrcf.extractions_extraction_forms_projects_section.id.to_s }"),
                                   notice: t('success') }
         format.json { render json: @eefps_qrcf.errors, status: :unprocessable_entity }
+        format.js do
+          @info = [false, @eefps_qrcf.errors.full_messages.first, 'red']
+        end
       end
     end
   end

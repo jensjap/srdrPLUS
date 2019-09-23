@@ -310,16 +310,16 @@ document.addEventListener 'turbolinks:load', ->
           #$(this).data('remove-timeout', 1000)
           #citation.slideUp('slow')
         $( document ).on 'cocoon:after-insert', ( e, insertedItem ) ->
-          $( insertedItem ).find( '.AUTHORS select' ).select2
-            minimumInputLength: 0
-            #closeOnSelect: false
-            ajax:
-              url: '/api/v1/authors.json'
-              dataType: 'json'
-              delay: 100
-              data: (params) ->
-                q: params.term
-                page: params.page || 1
+         # $( insertedItem ).find( '.AUTHORS select' ).select2
+         #   minimumInputLength: 0
+         #   #closeOnSelect: false
+         #   ajax:
+         #     url: '/api/v1/authors.json'
+         #     dataType: 'json'
+         #     delay: 100
+         #     data: (params) ->
+         #       q: params.term
+         #       page: params.page || 1
           $( insertedItem ).find( '.KEYWORDS select' ).select2
             minimumInputLength: 0
             #closeOnSelect: false
@@ -368,6 +368,8 @@ document.addEventListener 'turbolinks:load', ->
         $( '#citations-form' ).bind "ajax:error", ( status ) ->
           append_citations( 1 )
           toastr.error('Could not save changes')
+
+        #$( '.add-authors-citation' ).on 'click', () ->
 
         $( '#citations' ).attr( 'listeners-exist', 'true' )
 

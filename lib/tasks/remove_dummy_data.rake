@@ -16,5 +16,6 @@ namespace :dummy_data do
 
     Tag.where(created_at: BEGINNING_OF_TIME..DUMMY_DATA_CREATION_TIME).destroy_all
     Reason.where(created_at: BEGINNING_OF_TIME..DUMMY_DATA_CREATION_TIME).destroy_all
+
   end
 end
