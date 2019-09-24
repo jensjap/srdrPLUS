@@ -18,7 +18,7 @@ a#toggle-sections-link.button.tiny
   - @extraction_forms_projects.each do |efp|
     - if is_first
       .tabs-panel.is-active id="panel-extraction-forms-project-#{ efp.id.to_s }"
-        .row
+        .row.expanded
           .toggle-sections-link-medium-2-0-hide.column.medium-2
             = render 'extractions/shared/extraction_forms_projects_section_tab_links',
               efp: efp
@@ -29,7 +29,7 @@ a#toggle-sections-link.button.tiny
 
     - else
       .tabs-panel id="panel-extraction-forms-project-#{ efp.id.to_s }"
-        .row
+        .row.expanded
           .toggle-sections-link-medium-2-0-hide.column.medium-2
             = render 'extractions/shared/extraction_forms_projects_section_tab_links',
               efp: efp

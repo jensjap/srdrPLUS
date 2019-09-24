@@ -17,7 +17,7 @@ html class='no-js' lang='en'
     = csrf_meta_tag
     link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Halant:400,700|Noto+Sans:400,400i,700"
 
-  body class="#{controller_name} #{action_name}"
+  body class="#{ controller_name } #{ action_name }"
     = Gon::Base.render_data(camelCase: true)
     = render 'shared/noscript'
 
@@ -36,9 +36,9 @@ html class='no-js' lang='en'
           = render "shared/topbar_nav_#{ cookies[:layout_style] }"
 
           .content
+            .breadcrumbs = render_breadcrumbs tag: :li, separator: ''
             - if content_for(:project_title)
               h3 == "Project: " + yield(:project_title)
-            .breadcrumbs = render_breadcrumbs tag: :li, separator: ''
             == yield
             = render 'shared/scroll_top_wrapper'
 

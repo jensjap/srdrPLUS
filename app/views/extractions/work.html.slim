@@ -1,22 +1,20 @@
 - provide(:title, t(".extract_data"))
 - provide(:project_title, @extraction.project.name)
 
-.column.row
-  h4 = @extraction.citation.handle
+h3 = @extraction.citation.handle
 
-  .key-question-selector
-    h5 Select Key Question(s):
-    - @key_questions_projects_array_for_select.each do |kqp|
-      = check_box_tag kqp[1], 1, true
-      = label_tag kqp[1], kqp[0]
-      br
+.key-question-selector
+  h5 Select Key Question(s):
+  - @key_questions_projects_array_for_select.each do |kqp|
+    = check_box_tag kqp[1], 1, true
+    = label_tag kqp[1], kqp[0]
 
-  hr
+hr
 
-  #preview.column.row.work
-    = render 'extractions/shared/extraction_forms_project_tab_links'
+#preview.work
+  = render 'extractions/shared/extraction_forms_project_tab_links'
 
-    = render 'extractions/shared/extraction_forms_project_tab_content'
+  = render 'extractions/shared/extraction_forms_project_tab_content'
 
 = link_to 'Back to Extractions',
   project_extractions_path(@extraction.project),
