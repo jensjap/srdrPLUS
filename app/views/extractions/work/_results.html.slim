@@ -16,12 +16,14 @@
       = render 'extractions/work/results/results_populations_tabs', eefpst1: @eefpst1
 
     h4 style='display: inline; margin-right: 1em;' Outcome you are working on:
-    button.button type='button' data-toggle='example-dropdown-1' = @eefpst1.type1_name_and_description
-    .dropdown-pane#example-dropdown-1 data-dropdown='' data-hover='true' data-hover-pane='true'
-      ul
-        / Let's remove the currently displayed outcomes from the @eefpst1s so it doesn't show in the possible selections.
-        - @eefpst1s.where.not(id: @eefpst1.id).each do |eefpst1|
-          li = link_to eefpst1.type1_name_and_description, change_outcome_in_results_section_extraction_path(eefpst1_id: eefpst1.id), remote: true, class: 'change-outcome-link'
+    button.button type='button' data-toggle='example-dropdown-1'
+      => @eefpst1.type1_name_and_description
+    - if @eefpst1s.where.not(id: @eefpst1.id).length > 0
+      .dropdown-pane#example-dropdown-1 data-dropdown='' data-hover='true' data-hover-pane='true'
+        ul
+          / Let's remove the currently displayed outcomes from the @eefpst1s so it doesn't show in the possible selections.
+          - @eefpst1s.where.not(id: @eefpst1.id).each do |eefpst1|
+            li = link_to eefpst1.type1_name_and_description, change_outcome_in_results_section_extraction_path(eefpst1_id: eefpst1.id), remote: true, class: 'change-outcome-link'
 
     .table-container style="min-height: 60vh; max-height: 80vh; overflow: scroll;"
 
