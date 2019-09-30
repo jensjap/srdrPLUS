@@ -173,20 +173,12 @@ document.addEventListener 'turbolinks:load', ->
 
 
         #$( '.citation-fields' ).find( '.AUTHORS input' ).val citation[ 'authors' ][ 0 ]
+        position = 1
         for author in citation[ 'authors' ]
-          authorselect = $('.AUTHORS select')
-          $.ajax(
-            type: 'GET'
-            data: { q: author }
-            url: '/api/v1/authors.json' ).then ( data ) ->
-              # create the option and append to Select2
-              option = new Option( data[ 'results' ][ 0 ][ 'text' ], data[ 'results' ][ 0 ][ 'id' ], true, true )
-              authorselect.append(option).trigger 'change'
-              # manually trigger the `select2:select` event
-              authorselect.trigger
-                type: 'select2:select'
-                params: data: data[ 'results' ][ 0 ]
-              return
+          $( '.add-author' ).click()
+          $( '#AUTHORS .authors-citation input.author-name' ).last().val( author )
+          $( '#AUTHORS .authors-citation input.author-position' ).last().val( position )
+          position = position + 1
         for keyword in citation[ 'keywords' ]
           keywordselect = $('.KEYWORDS select')
           $.ajax(
@@ -302,7 +294,8 @@ document.addEventListener 'turbolinks:load', ->
         # cocoon listeners
         # Note: some of the animations don't work well together and are disabled for now 
         $( '#cp-insertion-node' ).on 'cocoon:before-insert', ( e, citation ) ->
-          $( '.cancel-button' ).click()
+          if not $( citation ).hasClass( 'authors-citation' )
+            $( '.cancel-button' ).click()
           #citation.slideDown('slow')
         $( '#citations' ).find( '.list' ).on 'cocoon:after-remove', ( e, citation ) ->
           $( '#citations-form' ).submit()
@@ -333,7 +326,7 @@ document.addEventListener 'turbolinks:load', ->
 
           $( insertedItem ).find( '#is-pmid' ).on 'click', () ->
             ## clean up the citation fields
-            $( insertedItem ).find('.AUTHORS select').val(null).trigger('change')
+            $( insertedItem ).find('#AUTHORS .remove-authors-citation').click()
             $( insertedItem ).find('.KEYWORDS select').val(null).trigger('change')
             $( insertedItem ).find('.citation-name input').val(null)
             $( insertedItem ).find('.citation-abstract textarea').val(null)

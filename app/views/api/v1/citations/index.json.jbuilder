@@ -21,7 +21,7 @@ json.results do
       end
     end
     json.authors do
-      json.array! citation.authors, :id, :name
+      json.array! citation.authors_citations.map(&:author), :id, :name
     end
     json.keywords do
       json.array! citation.keywords, :id, :name

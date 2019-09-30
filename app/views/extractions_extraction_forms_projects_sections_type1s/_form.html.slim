@@ -7,7 +7,7 @@
       - if @extractions_extraction_forms_projects_sections_type1\
         .extractions_extraction_forms_projects_section.extraction_forms_projects_section.section.name == 'Outcomes'
         = f.association :type1_type
-      = f.input :units
+        = f.input :units
 
       #type1s
         = f.simple_fields_for(:type1) do |type1_form|

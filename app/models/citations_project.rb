@@ -6,21 +6,21 @@ class CitationsProject < ApplicationRecord
 
   #paginates_per 25
 
-  scope :unlabeled, -> ( project, count ) { includes( :citation => [ :authors, :keywords, :journal ] )
+  scope :unlabeled, -> ( project, count ) { includes( :citation => [{ :authors_citations => [:author] }, :keywords, :journal] )
                                             .left_outer_joins(:labels)
                                             .where( :labels => { :id => nil },
                                                     :project_id => project.id )
                                             .distinct
                                             .limit(count) }
 
-  scope :labeled, -> ( project, count ) { includes( { :citation => [ :authors, :keywords, :journal ] , labels => [ :reasons ] } )
+  scope :labeled, -> ( project, count ) { includes( { :citation => [{ :authors_citations => [:author] }, :keywords, :journal] , labels => [:reasons] } )
                                           .joins(:labels)
                                           .where(:project_id => project.id )
                                           .distinct
                                           .limit(count) }
 
-  belongs_to :citation
-  belongs_to :project
+  belongs_to :citation, inverse_of: :citations_projects
+  belongs_to :project, inverse_of: :citations_projects
 
   has_one :prediction, dependent: :destroy
   has_one :priority, dependent: :destroy

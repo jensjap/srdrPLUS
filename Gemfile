@@ -92,7 +92,6 @@ gem 'toastr_rails'
 
 # Versioning of models + soft-delete.
 gem 'paper_trail'
-gem 'paper_trail-association_tracking'
 gem 'paranoia', '~>2.2'
 
 # Create lots of data.

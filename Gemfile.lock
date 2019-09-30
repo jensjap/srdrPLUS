@@ -320,7 +320,6 @@ GEM
     paper_trail (10.2.0)
       activerecord (>= 4.2, < 6.1)
       request_store (~> 1.1)
-    paper_trail-association_tracking (2.0.0)
     paranoia (2.4.1)
       activerecord (>= 4.0, < 5.3)
     passenger (6.0.2)
@@ -553,7 +552,6 @@ DEPENDENCIES
   mysql2 (>= 0.3.18, < 0.5)
   omniauth
   paper_trail
-  paper_trail-association_tracking
   paranoia (~> 2.2)
   passenger
   puma (~> 3.0)
