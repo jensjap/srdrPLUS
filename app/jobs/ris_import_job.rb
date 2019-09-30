@@ -75,7 +75,7 @@ class RisImportJob < ApplicationJob
             au_arr = cit_h[ au_key ].split( "     " )
           end
           au_arr.each do |au|
-            row_h[ 'authors_citations_attributes' ][Time.now.to_i + key_counter] = { author_attributes: { name: au }, ordering_attributes: { position: idx }}
+            row_h[ 'authors_citations_attributes' ][Time.now.to_i + key_counter] = { author_attributes: { name: au }, ordering_attributes: { position: idx } }
             key_counter += 1
           end
         end
