@@ -132,9 +132,9 @@ document.addEventListener 'turbolinks:load', ->
 
             authors = [ ]
             for node in $(data).find('Author')
-              first_name = $(node).find('ForeName').text() || ''
+              first_name = $(node).find('ForeName').text() || $(node).find('Initials').text() || ''
               last_name = $(node).find('LastName').text() || ''
-              author_name = first_name + ' ' + last_name
+              author_name = last_name + ' ' + first_name
               if author_name == ' '
                 author_name = $(node).find('CollectiveName').text() || ''
               if author_name != ''

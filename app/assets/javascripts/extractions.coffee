@@ -16,6 +16,14 @@ document.addEventListener 'turbolinks:load', ->
 #        timer = setTimeout( callback, ms )
 
     #################################################
+    # State toggler for eefps
+    $( '.status-switch input' ).on 'change', () ->
+      if $( this ).prop('checked')
+        return
+      else
+        return
+
+    #################################################
     # Attach listener to outcome population selector.
     $( '#outcome_populations_selector_eefpst1_id' ).change ( event ) ->
       $.ajax

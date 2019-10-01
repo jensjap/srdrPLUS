@@ -16,6 +16,9 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
     foreign_key: 'extractions_extraction_forms_projects_section_id',
     optional: true
 
+  has_one :statusing, as: :statusable, dependent: :destroy
+  has_one :status, through: :statusing
+
   has_many :link_to_type2s, class_name: 'ExtractionsExtractionFormsProjectsSection',
     foreign_key: 'extractions_extraction_forms_projects_section_id'
 
@@ -30,6 +33,8 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
   has_many :question_row_column_fields, through: :extractions_extraction_forms_projects_sections_question_row_column_fields, dependent: :destroy
 
   accepts_nested_attributes_for :extractions_extraction_forms_projects_sections_type1s, reject_if: :all_blank
+  accepts_nested_attributes_for :statusing, reject_if: :all_blank
+  accepts_nested_attributes_for :status, reject_if: :all_blank
   #accepts_nested_attributes_for :type1s, reject_if: :all_blank
 
   delegate :citation,          to: :extraction

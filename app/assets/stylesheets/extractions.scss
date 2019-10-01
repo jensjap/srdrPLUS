@@ -62,3 +62,27 @@
 .clean-table table tr td:first-child {
   font-weight: bold;
 }
+
+.section-header {
+  display: flex;
+  flex-direction: row;
+  .status-switch {
+    margin-left: 1rem;
+    .switch-input:checked ~ .switch-paddle {
+      background-color: $success-color;
+      width: 6.5rem;
+    }
+    .switch-paddle::after {
+      display: none;
+    }
+    .switch-paddle {
+      width: 3.5rem;
+    }
+    .switch-inactive {
+      left: 13%;
+    }
+    .switch-active {
+      left: 9%;
+    }
+  }
+}

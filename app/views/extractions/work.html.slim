@@ -1,7 +1,9 @@
 - provide(:title, t(".extract_data"))
 - provide(:project_title, @extraction.project.name)
 
-h3 = @extraction.citation.handle
+.column.row
+  - @extraction.citation.handle.split("\n").each do |handle_part|
+    h4 = handle_part
 
 .key-question-selector
   h5 Select Key Question(s):

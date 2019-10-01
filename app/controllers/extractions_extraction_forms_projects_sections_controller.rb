@@ -29,6 +29,14 @@ class ExtractionsExtractionFormsProjectsSectionsController < ApplicationControll
     end
   end
 
+  def set_status
+    if not ["Draft", "Completed"].include? extractions_extraction_forms_projects_section_params[:statusing_attributes][:status][:name]
+      return
+    end
+    if @extractions_extraction_forms_projects_section.statusing.nil?
+    @extractions_extraction_forms_projects_section.statusing
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_extractions_extraction_forms_projects_section

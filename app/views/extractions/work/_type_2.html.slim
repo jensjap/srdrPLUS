@@ -1,8 +1,3 @@
-h5 = section_name
-blockquote
-  | Please answer the questions to the best of your ability. If you require clarification, please consult the project lead.
-  cite Friendly Helper
-
 - eefps = ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by( \
   extraction: @extraction,
   extraction_forms_projects_section: efps,
@@ -13,6 +8,23 @@ blockquote
       extraction_forms_projects_section: efps.link_to_type1))
 
 - linked_section = eefps.link_to_type1
+
+.section-header
+  h5 = section_name 
+  = simple_form_for(eefps, url: extractions_extraction_forms_projects_section_path(eefps)) do |f|
+
+    .status-switch.switch style='width: 5rem;'
+      input.switch-input id="#{ eefps.id.to_s }-eefps-status" type='checkbox' name="#{ eefps.id.to_s }-eefps-status"
+      label.switch-paddle for="#{ eefps.id.to_s }-eefps-status"
+        span.show-for-sr
+          | Completion Status
+        span.switch-active
+          | Completed
+        span.switch-inactive
+          | Draft
+blockquote
+  | Please answer the questions to the best of your ability. If you require clarification, please consult the project lead.
+  cite Friendly Helper
 
 /- if linked_section && linked_section.type1s.blank?
 /- if (linked_section && eefps.extraction_forms_projects_section.extraction_forms_projects_section_option.by_type1 && linked_section.eefpst1_without_total_arm.blank?) ||\

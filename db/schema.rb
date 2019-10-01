@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_18_172400) do
+ActiveRecord::Schema.define(version: 2019_10_01_003906) do
 
   create_table "abstrackr_settings", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "profile_id"
@@ -1272,6 +1272,26 @@ ActiveRecord::Schema.define(version: 2019_09_18_172400) do
     t.index ["name"], name: "index_sections_on_name", unique: true
   end
 
+  create_table "statuses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "name"
+  end
+
+  create_table "statusings", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "statusable_type"
+    t.bigint "statusable_id"
+    t.bigint "status_id"
+    t.datetime "deleted_at"
+    t.boolean "active"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["active"], name: "index_statusings_on_active"
+    t.index ["deleted_at"], name: "index_statusings_on_deleted_at"
+    t.index ["status_id"], name: "index_statusings_on_status_id"
+    t.index ["statusable_type", "statusable_id", "status_id", "active"], name: "index_statusings_on_type_id_status_id_active_uniq", unique: true
+    t.index ["statusable_type", "statusable_id", "status_id", "deleted_at"], name: "index_statusings_on_type_id_status_id_deleted_at_uniq", unique: true
+    t.index ["statusable_type", "statusable_id"], name: "index_statusings_on_statusable_type_and_statusable_id"
+  end
+
   create_table "studies", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
     t.datetime "deleted_at"
@@ -1627,6 +1647,7 @@ ActiveRecord::Schema.define(version: 2019_09_18_172400) do
   add_foreign_key "screening_options", "label_types"
   add_foreign_key "screening_options", "projects"
   add_foreign_key "screening_options", "screening_option_types"
+  add_foreign_key "statusings", "statuses"
   add_foreign_key "suggestions", "users"
   add_foreign_key "taggings", "projects_users_roles"
   add_foreign_key "taggings", "tags"

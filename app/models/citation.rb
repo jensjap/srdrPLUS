@@ -103,8 +103,15 @@ class Citation < ApplicationRecord
 
   def handle
     string_handle = ""
-    string_handle += "Study Citation: #{ name } "
-    string_handle += "(PMID: #{ pmid.to_s })" if pmid.present?
+#    string_handle += "Study Citation: #{ name } "
+#    string_handle += "(PMID: #{ pmid.to_s })" if pmid.present?
+    string_handle += (authors_citations.includes(:ordering).order('orderings.position asc').first&.author&.name || '')
+    string_handle += ", "
+    string_handle += journal.publication_date || ''
+    string_handle += ", "
+    string_handle += pmid || ''
+    string_handle += "\n"
+    string_handle += name
 
     return string_handle
   end
