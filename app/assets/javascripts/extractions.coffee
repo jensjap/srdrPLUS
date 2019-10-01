@@ -15,9 +15,8 @@ document.addEventListener 'turbolinks:load', ->
 
     $( '#results-panel .table-container' ).scroll ->
       # End of the document reached?
-      #if $( this ).prop( 'scrollHeight' ) - $( this ).height() - 50 < $( this ).scrollTop()
       if $( this ).prop( 'scrollHeight' ) - $( this ).height() == $( this ).scrollTop()
-        alert 'Scrolled to Bottom'
+        console.log 'Scrolled to Bottom'
       return
 
     #################################################
