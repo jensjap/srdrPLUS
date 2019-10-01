@@ -9,9 +9,6 @@
     blockquote
       | The results section is where you enter numerical data, comparisons, etc.
 
-    /#results-data-table-links
-      = render 'extractions/work/results/results_populations_tabs', eefpst1: @eefpst1
-
     h4 style='display: inline; margin-right: 1em;' Outcome you are working on:
     button.button type='button' data-toggle='example-dropdown-1'
       => @eefpst1.type1_name_and_description
@@ -84,10 +81,10 @@
             tbody
               - print_tp_name = true
               - dsc_rss.timepoints.each do |tp|
-                - for row_cnt in 0..[dsc_rss.result_statistic_sections_measures.length, bac_rss.result_statistic_sections_measures.length].max - 1 do
+                - for row_cnt in -1..[dsc_rss.result_statistic_sections_measures.length, bac_rss.result_statistic_sections_measures.length].max - 1 do
                   - if print_tp_name
                     tr
-                      td.vertical rowspan="#{ [dsc_rss.result_statistic_sections_measures.length, bac_rss.result_statistic_sections_measures.length].max }"
+                      td.vertical rowspan="#{ [dsc_rss.result_statistic_sections_measures.length, bac_rss.result_statistic_sections_measures.length].max + 1 }"
                         div = tp.timepoint_name.pretty_print_export_header
                       - print_tp_name = false
 
@@ -111,12 +108,6 @@
                               div id="record-id-#{ record.id.to_s }" class='record-info' style='opacity: 0;' = 'Saved!'
 
                         - else
-                          td
-
-                        /- if dsc_rss.result_statistic_sections_measures[row_cnt].try(:measure).try(:name)
-                          td Descriptive Value
-
-                        /- else
                           td
 
                       - if bac_rss.result_statistic_sections_measures[row_cnt].try(:measure).try(:name)
@@ -189,10 +180,10 @@
             tbody
               - print_wac_name = true
               - wac_rss.comparisons.each do |wac|
-                - for row_cnt in 0..[wac_rss.result_statistic_sections_measures.length, net_rss.result_statistic_sections_measures.length].max - 1 do
+                - for row_cnt in -1..[wac_rss.result_statistic_sections_measures.length, net_rss.result_statistic_sections_measures.length].max - 1 do
                   - if print_wac_name
                     tr
-                      td.bg-lightgreen.vertical rowspan="#{ [wac_rss.result_statistic_sections_measures.length, net_rss.result_statistic_sections_measures.length].max }"
+                      td.bg-lightgreen.vertical rowspan="#{ [wac_rss.result_statistic_sections_measures.length, net_rss.result_statistic_sections_measures.length].max + 1 }"
                         div
                           div style='text-align: center; font-weight: bold;' = wac.comparate_groups.first.comparates.map { |c| c.comparable_element.comparable.label_with_baseline_indicator }.join('<br>')
                           div style='text-align: center;' vs.
@@ -242,36 +233,6 @@
                             td.bg-lightpink.freeze
 
                 - print_wac_name = true
-
-
-
-
-
-      /.grid-x
-        - dsc_section = eefpst1r.result_statistic_sections.where(result_statistic_section_type_id: 1).first
-        - bac_section = eefpst1r.result_statistic_sections.where(result_statistic_section_type_id: 2).first
-        .cell.large-6 class="section-id-#{ dsc_section.id }"
-          = link_to nil, edit_result_statistic_section_path(dsc_section), remote: true
-        .cell.large-6 class="section-id-#{ bac_section.id }"
-          = link_to nil, edit_result_statistic_section_path(bac_section), remote: true
-      /.grid-x
-        - wac_section = eefpst1r.result_statistic_sections.where(result_statistic_section_type_id: 3).first
-        - net_section = eefpst1r.result_statistic_sections.where(result_statistic_section_type_id: 4).first
-        .cell.large-6 class="section-id-#{ wac_section.id }"
-          = link_to nil, edit_result_statistic_section_path(wac_section), remote: true
-        .cell.large-6 class="section-id-#{ net_section.id }"
-          = link_to nil, edit_result_statistic_section_path(net_section), remote: true
-
-    /p Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec aliquam dolor quam, in molestie libero maximus ac. Sed tincidunt at nulla eget tempus. Donec faucibus tempor magna. In semper blandit iaculis. Cras malesuada tristique nisl eu facilisis. Ut sed mollis tellus. Phasellus ornare felis urna, in semper magna blandit eget. Integer convallis commodo mi non porta. Etiam at sodales orci. Nunc ac vehicula felis, a maximus tellus. Sed nec arcu quis libero fringilla vehicula nec sed ante. Curabitur sed pharetra nunc, ut bibendum enim. Proin vitae tortor dolor. In ultrices posuere enim. Integer venenatis elit accumsan, faucibus lectus a, consequat dolor. In eleifend quam id metus scelerisque tristique eget vitae justo.
-    /p Pellentesque posuere lorem sed elementum bibendum. Quisque quis leo non arcu congue venenatis eget auctor enim. Mauris faucibus risus sit amet pharetra ullamcorper. In consequat venenatis orci, at luctus dui vulputate ac. Mauris aliquam odio quam, vel vulputate nulla gravida non. Aenean erat leo, dapibus ut metus vitae, iaculis porttitor turpis. In vestibulum tortor a orci mattis, quis cursus dolor ultricies. Pellentesque posuere non nisi non varius. Ut lobortis varius placerat. Morbi mi metus, faucibus ac sapien sed, mollis dapibus odio. Maecenas quis elit sit amet dui dapibus tristique. Cras eu felis ut tellus hendrerit convallis. Nullam fringilla eros vitae tortor mollis pulvinar.
-    /p Praesent euismod, metus et porttitor aliquet, elit felis posuere leo, eu pellentesque leo nunc nec lectus. Ut eget quam ante. Ut condimentum interdum urna eu consequat. Praesent lobortis nunc non odio condimentum, a finibus metus vehicula. Mauris mattis elit sed ullamcorper dignissim. Praesent vulputate elit nec nulla auctor, nec mollis sapien laoreet. Curabitur libero nisl, mollis et dignissim quis, rhoncus a lectus. Quisque ac nisi sodales, finibus urna vitae, finibus tortor. Ut viverra viverra fermentum. Integer vitae feugiat enim. Vestibulum sed varius elit. Duis in libero tortor. Aenean faucibus velit vel sem euismod, in ultricies odio tempus. Praesent eleifend quam ut felis dignissim, ut pharetra risus ultricies. Proin dignissim, nisl vel iaculis suscipit, elit nisi convallis arcu, sed faucibus ipsum metus non nulla.
-    /p Aliquam leo lectus, pretium ut erat eget, eleifend tempor enim. In rutrum mi at maximus pulvinar. Praesent at semper felis, eu efficitur tellus. Suspendisse at orci ut ex convallis ultricies in ac massa. Vestibulum ac lacus et quam convallis interdum ac quis libero. In fringilla tempor ante, eget interdum mauris faucibus vel. Sed non sapien tellus. Integer eu mattis nisl, nec tempor nunc. Cras a rutrum diam. Quisque laoreet odio quis leo mattis interdum. Fusce non neque eleifend, vestibulum ante eu, tincidunt augue. Ut aliquet aliquet luctus. Donec tempor pellentesque metus vel fermentum. Ut interdum dolor a nunc hendrerit, vitae volutpat leo suscipit. Nam blandit feugiat arcu.
-    /p Aliquam et vestibulum libero. Duis ac convallis risus. Etiam tempus velit ac convallis condimentum. Etiam id urna maximus, congue nulla non, vulputate purus. Maecenas sit amet efficitur est, ut laoreet nulla. Morbi consequat, metus et molestie porttitor, neque dolor maximus ligula, eu scelerisque ligula turpis sed nunc. Nunc vel ullamcorper velit, ac accumsan erat. Donec vitae cursus eros. Quisque a diam non dui sodales iaculis ut ut turpis. Aenean hendrerit diam at dignissim laoreet. Nunc eget dignissim risus, in scelerisque dolor. In sit amet consequat arcu, ac pellentesque diam. Nullam placerat congue sapien, sed pharetra ligula posuere eget. Nam rhoncus tincidunt ligula. Duis quis ligula feugiat, lacinia dolor sit amet, ultricies diam.
-    /p Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec aliquam dolor quam, in molestie libero maximus ac. Sed tincidunt at nulla eget tempus. Donec faucibus tempor magna. In semper blandit iaculis. Cras malesuada tristique nisl eu facilisis. Ut sed mollis tellus. Phasellus ornare felis urna, in semper magna blandit eget. Integer convallis commodo mi non porta. Etiam at sodales orci. Nunc ac vehicula felis, a maximus tellus. Sed nec arcu quis libero fringilla vehicula nec sed ante. Curabitur sed pharetra nunc, ut bibendum enim. Proin vitae tortor dolor. In ultrices posuere enim. Integer venenatis elit accumsan, faucibus lectus a, consequat dolor. In eleifend quam id metus scelerisque tristique eget vitae justo.
-    /p Pellentesque posuere lorem sed elementum bibendum. Quisque quis leo non arcu congue venenatis eget auctor enim. Mauris faucibus risus sit amet pharetra ullamcorper. In consequat venenatis orci, at luctus dui vulputate ac. Mauris aliquam odio quam, vel vulputate nulla gravida non. Aenean erat leo, dapibus ut metus vitae, iaculis porttitor turpis. In vestibulum tortor a orci mattis, quis cursus dolor ultricies. Pellentesque posuere non nisi non varius. Ut lobortis varius placerat. Morbi mi metus, faucibus ac sapien sed, mollis dapibus odio. Maecenas quis elit sit amet dui dapibus tristique. Cras eu felis ut tellus hendrerit convallis. Nullam fringilla eros vitae tortor mollis pulvinar.
-    /p Praesent euismod, metus et porttitor aliquet, elit felis posuere leo, eu pellentesque leo nunc nec lectus. Ut eget quam ante. Ut condimentum interdum urna eu consequat. Praesent lobortis nunc non odio condimentum, a finibus metus vehicula. Mauris mattis elit sed ullamcorper dignissim. Praesent vulputate elit nec nulla auctor, nec mollis sapien laoreet. Curabitur libero nisl, mollis et dignissim quis, rhoncus a lectus. Quisque ac nisi sodales, finibus urna vitae, finibus tortor. Ut viverra viverra fermentum. Integer vitae feugiat enim. Vestibulum sed varius elit. Duis in libero tortor. Aenean faucibus velit vel sem euismod, in ultricies odio tempus. Praesent eleifend quam ut felis dignissim, ut pharetra risus ultricies. Proin dignissim, nisl vel iaculis suscipit, elit nisi convallis arcu, sed faucibus ipsum metus non nulla.
-    /p Aliquam leo lectus, pretium ut erat eget, eleifend tempor enim. In rutrum mi at maximus pulvinar. Praesent at semper felis, eu efficitur tellus. Suspendisse at orci ut ex convallis ultricies in ac massa. Vestibulum ac lacus et quam convallis interdum ac quis libero. In fringilla tempor ante, eget interdum mauris faucibus vel. Sed non sapien tellus. Integer eu mattis nisl, nec tempor nunc. Cras a rutrum diam. Quisque laoreet odio quis leo mattis interdum. Fusce non neque eleifend, vestibulum ante eu, tincidunt augue. Ut aliquet aliquet luctus. Donec tempor pellentesque metus vel fermentum. Ut interdum dolor a nunc hendrerit, vitae volutpat leo suscipit. Nam blandit feugiat arcu.
-    /p Aliquam et vestibulum libero. Duis ac convallis risus. Etiam tempus velit ac convallis condimentum. Etiam id urna maximus, congue nulla non, vulputate purus. Maecenas sit amet efficitur est, ut laoreet nulla. Morbi consequat, metus et molestie porttitor, neque dolor maximus ligula, eu scelerisque ligula turpis sed nunc. Nunc vel ullamcorper velit, ac accumsan erat. Donec vitae cursus eros. Quisque a diam non dui sodales iaculis ut ut turpis. Aenean hendrerit diam at dignissim laoreet. Nunc eget dignissim risus, in scelerisque dolor. In sit amet consequat arcu, ac pellentesque diam. Nullam placerat congue sapien, sed pharetra ligula posuere eget. Nam rhoncus tincidunt ligula. Duis quis ligula feugiat, lacinia dolor sit amet, ultricies diam.
 
 - else
   h5 style='color: red;' You must add Arms and Outcomes before extracting into this section.
