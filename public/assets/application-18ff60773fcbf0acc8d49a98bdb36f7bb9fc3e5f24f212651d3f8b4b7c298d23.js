@@ -60047,8 +60047,6 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
         var export_button, link_string;
         if ($(this).is(':checked')) {
           export_button = $(this).parents('.reveal').find('.start-export-button');
-          console.log(e.target);
-          console.log(export_button);
           return link_string = $(export_button).attr('href', $(this).val());
         }
       });
@@ -60126,7 +60124,7 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
               return toastr.error('Could not fetch citation info from PUBMED');
             },
             success: function(data, textStatus, jqXHR) {
-              var abstract, authors, citation_hash, dateNode, first_name, i, j, journal, k, keyword, keywords, last_name, len, len1, len2, name, node, ref, ref1, ref2;
+              var abstract, author_name, authors, citation_hash, dateNode, first_name, i, j, journal, k, keyword, keywords, last_name, len, len1, len2, name, node, ref, ref1, ref2;
               if (!($(data).find('ArticleTitle').text() != null)) {
                 return 0;
               }
@@ -60144,7 +60142,13 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
                 node = ref1[j];
                 first_name = $(node).find('ForeName').text() || '';
                 last_name = $(node).find('LastName').text() || '';
-                authors.push(first_name + ' ' + last_name);
+                author_name = first_name + ' ' + last_name;
+                if (author_name === ' ') {
+                  author_name = $(node).find('CollectiveName').text() || '';
+                }
+                if (author_name !== '') {
+                  authors.push(author_name);
+                }
               }
               keywords = [];
               ref2 = $(data).find('Keyword');
@@ -60157,8 +60161,6 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
               journal['name'] = $(data).find('Journal').find('Title').text() || '';
               journal['issue'] = $(data).find('JournalIssue').find('Issue').text() || '';
               journal['vol'] = $(data).find('JournalIssue').find('Volume').text() || '';
-              console.log($(data).find('JournalIssue').find('Volume').text());
-              console.log($(data).find('JournalIssue').find('Issue').text());
               dateNode = $(data).find('JournalIssue').find('PubDate');
               if ($(dateNode).find('Year').length > 0) {
                 journal['year'] = $(dateNode).find('Year').text();
@@ -60179,35 +60181,21 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
           });
         };
         populate_citation_fields = function(citation) {
-          var author, authorselect, i, j, keyword, keywordselect, len, len1, ref, ref1;
-          console.log(citation['journal']);
+          var author, i, j, keyword, keywordselect, len, len1, position, ref, ref1;
           $('.citation-fields').find('.citation-name input').val(citation['name']);
           $('.citation-fields').find('.citation-abstract textarea').val(citation['abstract']);
           $('.citation-fields').find('.journal-name input').val(citation['journal']['name']);
           $('.citation-fields').find('.journal-volume input').val(citation['journal']['vol']);
           $('.citation-fields').find('.journal-issue input').val(citation['journal']['issue']);
           $('.citation-fields').find('.journal-year input').val(citation['journal']['year']);
+          position = 1;
           ref = citation['authors'];
           for (i = 0, len = ref.length; i < len; i++) {
             author = ref[i];
-            authorselect = $('.AUTHORS select');
-            $.ajax({
-              type: 'GET',
-              data: {
-                q: author
-              },
-              url: '/api/v1/authors.json'
-            }).then(function(data) {
-              var option;
-              option = new Option(data['results'][0]['text'], data['results'][0]['id'], true, true);
-              authorselect.append(option).trigger('change');
-              authorselect.trigger({
-                type: 'select2:select',
-                params: {
-                  data: data['results'][0]
-                }
-              });
-            });
+            $('.add-author').click();
+            $('#AUTHORS .authors-citation input.author-name').last().val(author);
+            $('#AUTHORS .authors-citation input.author-position').last().val(position);
+            position = position + 1;
           }
           ref1 = citation['keywords'];
           for (j = 0, len1 = ref1.length; j < len1; j++) {
@@ -60346,26 +60334,14 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
             });
           });
           $('#cp-insertion-node').on('cocoon:before-insert', function(e, citation) {
-            return $('.cancel-button').click();
+            if (!$(citation).hasClass('authors-citation')) {
+              return $('.cancel-button').click();
+            }
           });
           $('#citations').find('.list').on('cocoon:after-remove', function(e, citation) {
             return $('#citations-form').submit();
           });
           $(document).on('cocoon:after-insert', function(e, insertedItem) {
-            $(insertedItem).find('.AUTHORS select').select2({
-              minimumInputLength: 0,
-              ajax: {
-                url: '/api/v1/authors.json',
-                dataType: 'json',
-                delay: 100,
-                data: function(params) {
-                  return {
-                    q: params.term,
-                    page: params.page || 1
-                  };
-                }
-              }
-            });
             $(insertedItem).find('.KEYWORDS select').select2({
               minimumInputLength: 0,
               ajax: {
@@ -60381,7 +60357,7 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
               }
             });
             $(insertedItem).find('#is-pmid').on('click', function() {
-              $(insertedItem).find('.AUTHORS select').val(null).trigger('change');
+              $(insertedItem).find('#AUTHORS .remove-authors-citation').click();
               $(insertedItem).find('.KEYWORDS select').val(null).trigger('change');
               $(insertedItem).find('.citation-name input').val(null);
               $(insertedItem).find('.citation-abstract textarea').val(null);
@@ -60517,7 +60493,17 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
           return form.submit();
         };
       };
-      $('form.edit_record select, form.edit_record input[type="checkbox"], form.edit_record input[type="radio"], form.edit_record input[type="number"]').change(function(e) {
+      $('.select2').on('select2:select select2:unselect', function(event) {
+        var $form, formId;
+        $form = $(this).closest('form');
+        formId = $form.attr('id');
+        $form.addClass('dirty');
+        if (formId in timers) {
+          clearTimeout(timers[formId]);
+        }
+        return timers[formId] = setTimeout(submitForm($form), 750);
+      });
+      $('form.edit_record input[type="checkbox"], form.edit_record input[type="radio"], form.edit_record input[type="number"]').change(function(e) {
         var $form, formId;
         e.preventDefault();
         $form = $(this).closest('form');
