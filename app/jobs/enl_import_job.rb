@@ -55,7 +55,7 @@ class EnlImportJob < ApplicationJob
         end
       end
 
-      row_h[ 'authors_attributes' ] = {}
+      row_h[ 'authors_citations_attributes' ] = {}
 
       ##authors
       #if cit_h[ 'AU' ].present?
@@ -75,8 +75,8 @@ class EnlImportJob < ApplicationJob
           else
             au_arr = cit_h[ au_key ].split( "     " )
           end
-          au_arr.each do |au|
-            row_h[ 'authors_attributes' ][Time.now.to_i + key_counter] = { name: au }
+          au_arr.each_with_index do |au, idx|
+            row_h[ 'authors_citations_attributes' ][Time.now.to_i + key_counter] = { author_attributes: { name: au }, ordering_attributes: { position: idx } }
             key_counter += 1
           end
         end
@@ -92,7 +92,12 @@ class EnlImportJob < ApplicationJob
 
       h_arr << row_h
     end
-    @project.citations << Citation.create!( h_arr )
+
+    ActiveRecord::Base.transaction do 
+      h_arr.each_slice(100) do |h_arr_slice|
+        @project.citations << Citation.create!( h_arr_slice )
+      end
+    end
 
     ImportMailer.notify_import_completion(@user.id, @project.id).deliver_later
   end

@@ -47,10 +47,8 @@ blockquote
                 - if eefps.extraction_forms_projects_section.extraction_forms_projects_section_option.include_total
                   - linked_section.eefpst1s_with_total.collect(&:type1).each do |t1|
                     fieldset.fieldset
-                      legend
-                        = linked_section.extraction_forms_projects_section.section.name.singularize + ': ' + t1.name
-                        br
-                        = 'Description: ' + t1.description
+                      legend style="font-weight: bold;" data-allow-html="true" data-tooltip="" title='#{linked_section.extraction_forms_projects_section.section.name.singularize + ": " + t1.name + "<br>" + "Description: " + t1.description}'
+                        = t1.name
                       = render 'extractions/shared/type_2/question_fields',
                         q: q,
                         t1: t1,
@@ -59,12 +57,10 @@ blockquote
 
                 / by_type1 && !include_total
                 - else
-                  - linked_section.type1s.where.not(name: 'Total', description: "All #{ linked_section.extraction_forms_projects_section.section.name } combined").each do |t1|
+                  - linked_section.type1s.where.not(name: 'Total', description: "All #{ linked_section.extraction_forms_projects_section.section.name } combined").uniq.each do |t1|
                     fieldset.fieldset
-                      legend
-                        = linked_section.extraction_forms_projects_section.section.name.singularize + ': ' + t1.name
-                        br
-                        = 'Description: ' + t1.description
+                      legend style="font-weight: bold;" data-allow-html="true" data-tooltip="" title='#{linked_section.extraction_forms_projects_section.section.name.singularize + ": " + t1.name + "<br>" + "Description: " + t1.description}'
+                        = t1.name
                       = render 'extractions/shared/type_2/question_fields',
                         q: q,
                         t1: t1,
@@ -76,10 +72,8 @@ blockquote
                 - if eefps.extraction_forms_projects_section.extraction_forms_projects_section_option.include_total
                   - linked_section.eefpst1s_only_total.collect(&:type1).each do |t1|
                     fieldset.fieldset
-                      legend
-                        = linked_section.extraction_forms_projects_section.section.name.singularize + ': ' + t1.name
-                        br
-                        = 'Description: ' + t1.description
+                      legend style="font-weight: bold;" data-allow-html="true" data-tooltip="" title='#{linked_section.extraction_forms_projects_section.section.name.singularize + ": " + t1.name + "<br>" + "Description: " + t1.description}'
+                        = t1.name
                       = render 'extractions/shared/type_2/question_fields',
                         q: q,
                         t1: t1,

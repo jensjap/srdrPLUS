@@ -51,8 +51,8 @@ class PubmedImportJob < ApplicationJob
         if au_arr.length == 1 then au_arr = au_str.split( / \| |\|/ ) end
         if au_arr.length == 1 then au_arr = au_str.split( /\n| \n/ ) end
         row_h[ 'authors_attributes' ] = {}
-        au_arr.each do |au|
-          row_h[ 'authors_attributes' ][Time.now.to_i + key_counter] = { name: au }
+        au_arr.each_with_index do |au, idx|
+          row_h[ 'authors_citations_attributes' ][Time.now.to_i + key_counter] = { author_attributes: { name: au }, ordering_attributes: { position: idx } }
           key_counter+=1
         end
       end
@@ -154,7 +154,12 @@ class PubmedImportJob < ApplicationJob
 
       h_arr << row_h
     end
-    self.citations << Citation.create!( h_arr )
+    
+    ActiveRecord::Base.transaction do 
+      h_arr.each_slice(100) do |h_arr_slice|
+        @project.citations << Citation.create!( h_arr_slice )
+      end
+    end
 
     ImportMailer.notify_import_completion(@user.id, @project.id).deliver_later
   end

@@ -3,12 +3,13 @@ class UpdateExtractionChecksumsJob < ApplicationJob
 
   rescue_from(StandardError) do |exception|
     # Do something with the exception
-    byebug
+
+    #byebug
+    puts exception.message
   end
 
   def perform(*args)
     ExtractionChecksum.where(is_stale: true).each do |extraction_checksum|
-    
       extraction_checksum.update_hexdigest
     end
   end

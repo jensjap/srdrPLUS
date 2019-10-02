@@ -73,9 +73,9 @@ class CsvImportJob < ApplicationJob
         if au_arr.length == 1 then au_arr = au_str.split( / \| |\|/ ) end
         if au_arr.length == 1 then au_arr = au_str.split( /\n| \n/ ) end
 
-        cit_h[ 'authors_attributes' ] = {}
-        au_arr.each do |au|
-          cit_h[ 'authors_attributes' ][Time.now.to_i + key_counter] = { name: au }
+        cit_h[ 'authors_citations_attributes' ] = {}
+        au_arr.each_with_index do |au, idx|
+          cit_h[ 'authors_citations_attributes' ][Time.now.to_i + key_counter] = { author_attributes: { name: au }, ordering_attributes: { position: idx } }
           key_counter+=1
         end
       end

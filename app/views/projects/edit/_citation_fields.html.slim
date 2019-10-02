@@ -10,19 +10,41 @@
 
     .middle-row
       = f.simple_fields_for :journal_attributes do |j_f|
-        = j_f.input :name, label: "Journal Name", required: false, wrapper_html: { class: "journal-name" }
-        = j_f.input :volume, label: "Volume", required: false, wrapper_html: { class: "journal-volume" }
-        = j_f.input :issue, label: "Issue", required: false, wrapper_html: { class: "journal-issue" }
-        = j_f.input :publication_date, label: "Year", required: false, wrapper_html: { class: "journal-year" }
+        .journal-info
+          label
+            |Journal
+          .name-year
+            = j_f.input :name, label: "Name", required: false, wrapper_html: { class: "journal-name" }
+            = j_f.input :publication_date, label: "Year", required: false, wrapper_html: { class: "journal-year" }
+          .volume-issue-page-numbers
+            = j_f.input :volume, label: "Volume", required: false, wrapper_html: { class: "journal-volume" }
+            = j_f.input :issue, label: "Issue", required: false, wrapper_html: { class: "journal-issue" }
+            .page-numbers
+              label
+                |Page Numbers
+              div
+                = f.input :page_number_start, label: false, required: false, wrapper_html: { class: "page-number-start" }
+                h4
+                  |-
+                = f.input :page_number_end, label: false, required: false, wrapper_html: { class: "page-number-end" }
 
     .bottom-row
       .number-column.bottom-column
         = f.input :refman, as: :integer, required: false
         = f.association :citation_type, label: 'Citation Type', selected: 1
       .bottom-column
-        = f.association :authors, collection: [], label: 'Authors', wrapper_html: { class: "AUTHORS" }
+        = f.simple_fields_for :authors_citations do |a_c|
+          = render 'projects/edit/citations/authors_citation_fields', f: a_c
+        /a.add-authors-citation
+          | Add Author
+        #AUTHORS
+          label
+            | Authors
+        = link_to_add_association 'Add Author', f, :authors_citations, partial:'projects/edit/citations/authors_citation_fields', 'data-association-insertion-node' => '#AUTHORS', 'data-association-insertion-method' => 'append', class: 'add-author'
+
+        /= f.association :authors, collection: [], label: 'Authors', wrapper_html: { class: "AUTHORS" }
       .bottom-column
-        = f.association :keywords, collection: [], label: 'Keywords', wrapper_html: { class: "KEYWORDS" }
+        /= f.association :keywords, collection: [], label: 'Keywords', wrapper_html: { class: "KEYWORDS" }
     .buttons-row
       .save-citation.button.success.small
         | Save Citation

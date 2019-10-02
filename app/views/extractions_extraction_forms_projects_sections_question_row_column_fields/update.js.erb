@@ -1,0 +1,18 @@
+( function() {
+  let infoDiv = $( "#eefpsqrcf-id-<%= @eefps_qrcf.id %>" );
+
+  // Remove 'dirty' class from form.
+  <% if @info[0] %>
+    infoDiv.closest( 'form' ).removeClass( 'dirty' );
+  <% end %>
+
+  // Update message. @info = [success, message, color]
+  infoDiv.html( "<%= @info[1] %>" );
+  infoDiv.css( 'color', "<%= @info[2] %>" );
+
+  // Animate @info message.
+  infoDiv.show().animate( { opacity: 1 } );
+  <% if @info[0] %>
+    infoDiv.show().delay( 2000 ).animate( { opacity: 0 } );
+  <% end %>
+} )();

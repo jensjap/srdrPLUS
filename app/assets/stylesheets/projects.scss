@@ -393,17 +393,43 @@ a.citation-label {
     }
 
     .middle-row {
-      display: flex;
-      justify-content: space-between;
-      flex-direction: row;
-      div {
-        flex: 1;
-        padding-left: 0.6rem;
-
-      }
-      .journal-name {
-        flex:3;
-        padding-left: 0;
+      .journal-info {
+        .name-year {
+          display: flex;
+          justify-content: space-between;
+          flex-direction: row;
+          .journal-name {
+            flex: 4;
+          }
+          .journal-year {
+            margin-left: 1rem;
+            flex: 1;
+          }
+        }
+        .volume-issue-page-numbers {
+          display: flex;
+          justify-content: space-between;
+          flex-direction: row;
+          input {
+            width: 90%;
+          }
+          .page-numbers {
+            flex: 2;
+            margin-left: 0.6rem;
+            div {
+              display: flex;
+              flex-direction: row;
+              justify-content: space-between;
+              input {
+                width: 100%;
+              }
+            }
+            h4 {
+              margin-left: 1rem;
+              margin-right: 1rem;
+            }
+          }
+        }
       }
     }
 
@@ -414,6 +440,16 @@ a.citation-label {
       .bottom-column {
         flex-direction: column;
         width: 30%;
+      }
+      .authors-citation {
+        margin: 0px;
+        padding: 0px;
+        display: flex;
+        justify-content: space-between;
+        flex-direction: row;
+        .remove-authors-citation {
+          margin-left: 1rem;
+        }
       }
     }
   }

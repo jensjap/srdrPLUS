@@ -18,7 +18,7 @@
     question_row_column_field: qrc.question_row_column_fields.first)
 
   - record = Record.find_or_create_by(recordable: eefps_qrcf)
-  = simple_form_for(record, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
+  = simple_form_for(record, remote: true, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
     = f.error_notification
 
     - options = qrc.question_row_columns_question_row_column_options.\
@@ -28,6 +28,4 @@
       collection: options,
       input_html: { class: 'select2 form-control' },
       include_blank: '-- Select response --'
-
-    .form-actions
-      = f.button :submit, 'Save'
+    div id="record-id-#{ record.id.to_s }" class='record-info' style='opacity: 0;' = 'Saved!'
