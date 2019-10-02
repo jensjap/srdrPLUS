@@ -62,6 +62,18 @@ class ResultStatisticSectionsController < ApplicationController
         format.html { redirect_to edit_result_statistic_section_path(@result_statistic_section),
                       notice: t('success') }
         format.json { render :show, status: :ok, location: @result_statistic_section }
+        format.js do
+          @eefpst1 = @result_statistic_section
+            .population
+            .extractions_extraction_forms_projects_sections_type1
+          @extraction                = @result_statistic_section.extraction
+          @project                   = @result_statistic_section.project
+          @extraction_forms_projects = @project.extraction_forms_projects
+          @eefpst1s                  = ExtractionsExtractionFormsProjectsSectionsType1
+            .by_section_name_and_extraction_id_and_extraction_forms_project_id('Outcomes',
+                                                                               @extraction.id,
+                                                                               @extraction_forms_projects.first.id)
+        end
       else
         format.html do
           flash[:alert] = 'Invalid comparison'

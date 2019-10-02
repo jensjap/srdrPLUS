@@ -1,3 +1,5 @@
+- @result_statistic_section = rss
+
 .nested-fields.comparates
   = f.simple_fields_for :comparates do |comparate|
     = render 'result_statistic_sections/edit/' + @result_statistic_section.result_statistic_section_type.name.parameterize.underscore + '_comparate_fields', f: comparate
