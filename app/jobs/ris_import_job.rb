@@ -54,7 +54,7 @@ class RisImportJob < ApplicationJob
         end
       end
 
-      row_h[ 'authors_attributes' ] = {}
+      row_h[ 'authors_citations_attributes' ] = {}
 
       ##authors
       #if cit_h[ 'AU' ].present?
@@ -66,7 +66,7 @@ class RisImportJob < ApplicationJob
       #end
 
       #there are other tags for authors
-      [ "A1", "A2", "A3", "A4", "AU" ].each do |au_key|
+      [ "A1", "A2", "A3", "A4", "AU" ].each_with_index do |au_key, idx|
         if cit_h[ au_key ].present?
           au_arr = []
           if cit_h[ au_key ].is_a? Enumerable
@@ -75,7 +75,7 @@ class RisImportJob < ApplicationJob
             au_arr = cit_h[ au_key ].split( "     " )
           end
           au_arr.each do |au|
-            row_h[ 'authors_attributes' ][Time.now.to_i + key_counter] = { name: au }
+            row_h[ 'authors_citations_attributes' ][Time.now.to_i + key_counter] = { author_attributes: { name: au }, ordering_attributes: { position: idx } }
             key_counter += 1
           end
         end
@@ -95,7 +95,11 @@ class RisImportJob < ApplicationJob
       h_arr << row_h
     end
 
-    @project.citations << Citation.create!( h_arr )
+    ActiveRecord::Base.transaction do 
+      h_arr.each_slice(100) do |h_arr_slice|
+        @project.citations << Citation.create!( h_arr_slice )
+      end
+    end
 
     ImportMailer.notify_import_completion(@user.id, @project.id).deliver_later
   end

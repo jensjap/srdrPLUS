@@ -17,10 +17,11 @@ class Api::V1::CitationsController < Api::V1::BaseController
       if query
         total_arr             = project.citations.by_query( query )
                                     .order( pmid: :desc )
-                                    .includes( :authors, :journal, :keywords )
+                                    .includes( { authors_citations: [:author, :ordering] }, :journal, :keywords )
       else
-        total_arr             = project.citations.order( pmid: :desc )
-                                    .includes( :authors, :journal, :keywords )
+        total_arr             = project.citations
+                                    .order( pmid: :desc )
+                                    .includes( { authors_citations: [:author, :ordering] }, :journal, :keywords )
       end
       citations_projects      = project.citations_projects.where( citation: total_arr )
       @total_count            = citations_projects.length

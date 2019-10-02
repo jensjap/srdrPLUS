@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_17_024915) do
+ActiveRecord::Schema.define(version: 2019_09_18_172400) do
 
   create_table "abstrackr_settings", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "profile_id"
@@ -124,10 +124,12 @@ ActiveRecord::Schema.define(version: 2019_08_17_024915) do
     t.index ["deleted_at"], name: "index_authors_on_deleted_at"
   end
 
-  create_table "authors_citations", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "authors_citations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "citation_id", null: false
     t.integer "author_id", null: false
+    t.datetime "deleted_at"
     t.index ["citation_id", "author_id"], name: "index_authors_citations_on_citation_id_and_author_id"
+    t.index ["deleted_at"], name: "index_authors_citations_on_deleted_at"
   end
 
   create_table "citation_types", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -145,6 +147,8 @@ ActiveRecord::Schema.define(version: 2019_08_17_024915) do
     t.string "refman"
     t.string "pmid"
     t.binary "abstract"
+    t.integer "page_number_start"
+    t.integer "page_number_end"
     t.index ["citation_type_id"], name: "index_citations_on_citation_type_id"
     t.index ["deleted_at"], name: "index_citations_on_deleted_at"
   end
@@ -781,7 +785,7 @@ ActiveRecord::Schema.define(version: 2019_08_17_024915) do
     t.datetime "created_at", null: false
     t.datetime "revoked_at"
     t.string "scopes"
-    t.index ["application_id"], name: "index_oauth_access_grants_on_application_id"
+    t.index ["application_id"], name: "fk_rails_b4b53e07b8"
     t.index ["token"], name: "index_oauth_access_grants_on_token", unique: true
   end
 
@@ -795,7 +799,7 @@ ActiveRecord::Schema.define(version: 2019_08_17_024915) do
     t.datetime "created_at", null: false
     t.string "scopes"
     t.string "previous_refresh_token", default: "", null: false
-    t.index ["application_id"], name: "index_oauth_access_tokens_on_application_id"
+    t.index ["application_id"], name: "fk_rails_732cb83ab7"
     t.index ["refresh_token"], name: "index_oauth_access_tokens_on_refresh_token", unique: true
     t.index ["resource_owner_id"], name: "index_oauth_access_tokens_on_resource_owner_id"
     t.index ["token"], name: "index_oauth_access_tokens_on_token", unique: true
@@ -1246,10 +1250,10 @@ ActiveRecord::Schema.define(version: 2019_08_17_024915) do
     t.string "query"
     t.string "normalized_query"
     t.integer "results_count"
-    t.timestamp "created_at"
+    t.datetime "created_at"
     t.string "convertable_type"
     t.integer "convertable_id"
-    t.timestamp "converted_at"
+    t.datetime "converted_at"
     t.index ["convertable_type", "convertable_id"], name: "index_searchjoy_searches_on_convertable_type_and_convertable_id"
     t.index ["created_at"], name: "index_searchjoy_searches_on_created_at"
     t.index ["search_type", "created_at"], name: "index_searchjoy_searches_on_search_type_and_created_at"

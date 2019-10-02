@@ -253,13 +253,13 @@ class ProjectsController < ApplicationController
       params.require(:project)
         .permit(:name, :description, :attribution, :methodology_description,
                 :prospero, :doi, :notes, :funding_source,
-                {tasks_attributes: [:id, :name, :num_assigned, :task_type_id, projects_users_role_ids:[]]},
-                {citations_attributes: [:id, :name, :abstract, :pmid, :refman, :citation_type_id, :_destroy, author_ids: [], keyword_ids:[], journal_attributes: [:id, :name, :volume, :issue, :publication_date]]},
-                {citations_projects_attributes: [:id, :_destroy, :citation_id, :project_id,
-                                                citation_attributes: [:id, :_destroy, :name]]},
-                {key_questions_projects_attributes: [:id, :position]}, 
-                {projects_users_attributes: [:id, :_destroy, :user_id, role_ids: []]},
-                {screening_options_attributes: [:id, :_destroy, :project_id, :label_type_id, :screening_option_type_id]})
+                { tasks_attributes: [:id, :name, :num_assigned, :task_type_id, projects_users_role_ids:[]] },
+                { citations_attributes: [:id, :name, :abstract, :pmid, :refman, :citation_type_id, :page_number_start, :page_number_end, :_destroy, authors_citations_attributes: [{ author_attributes: :name }, { ordering_attributes: :position }, :_destroy], keyword_ids: [], journal_attributes: [:id, :name, :volume, :issue, :publication_date]] },
+                { citations_projects_attributes: [:id, :_destroy, :citation_id, :project_id,
+                                                citation_attributes: [:id, :_destroy, :name]] },
+                { key_questions_projects_attributes: [:id, :position] }, 
+                { projects_users_attributes: [:id, :_destroy, :user_id, role_ids: []] },
+                { screening_options_attributes: [:id, :_destroy, :project_id, :label_type_id, :screening_option_type_id] })
     end
 
     def distiller_params

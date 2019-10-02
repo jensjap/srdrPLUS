@@ -60,7 +60,8 @@ class CitationsController < ApplicationController
     #  .group('citations.id')
     #  .where(:projects => { :id => @project.id }).all
     #@labels = Label.where(:user_id => current_user.id).where(:citations_project_id => [@project.citations_projects]).all
-    @citations = @project.citations.order(:id)
+    @citations = @project.citations.includes(:journal, authors_citations: [:ordering, :author]).order(:id)
+    @citations_projects_dict = @project.citations_projects.map{|cp| [cp.citation_id, cp]}.to_h
     #@project.teams.build
 
     add_breadcrumb 'edit project', edit_project_path(@project)
@@ -69,13 +70,15 @@ class CitationsController < ApplicationController
 
   def labeled
     authorize(@project, policy_class: CitationPolicy)
-    @citations = Citation.labeled(@project)
+    @citations = Citation.labeled(@project).includes(:citations_projects, :journal, authors_citations: [:ordering, :author])
+    @citations_projects_dict = @project.citations_projects.map{|cp| [cp.citation_id, cp]}.to_h
     render 'index'
   end
 
   def unlabeled
     authorize(@project, policy_class: CitationPolicy)
-    @citations = citation.unlabeled(@project)
+    @citations = citation.unlabeled(@project).includes(:citations_projects, :journal, authors_citations: [:ordering, :author])
+    @citations_projects_dict = @project.citations_projects.map{|cp| [cp.citation_id, cp]}.to_h
     render 'index'
   end
 
@@ -93,9 +96,9 @@ class CitationsController < ApplicationController
 
     def citation_params
       params.require(:citation)
-          .permit(:name, :citation_type_id, :pmid, :refman, :abstract,
+          .permit(:name, :citation_type_id, :pmid, :refman, :abstract, :page_number_start, :page_number_end, :_destroy, 
             journal_attributes: [:id, :name, :publication_date, :issue, :volume, :_destroy],
-            authors_attributes: [:id, :name, :_destroy] ,
+            authors_citations_attributes: [:id, { author_attributes: :name }, { ordering_attributes: :position }, :_destroy],
             keywords_attributes: [:id, :name, :_destroy],
             labels_attributes: [:id, :value, :_destroy])
     end
