@@ -3,6 +3,7 @@
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
 document.addEventListener 'turbolinks:load', ->
+
   do ->
 
     timers = {}
@@ -24,7 +25,7 @@ document.addEventListener 'turbolinks:load', ->
         clearTimeout( timers[formId] )
       timers[formId] = setTimeout( submitForm( $form ), 750 )
 
-      
+
     # Select Drop Down and Radio
     $( 'form.edit_record input[type="checkbox"], form.edit_record input[type="radio"], form.edit_record input[type="number"]' ).change ( e ) ->
       e.preventDefault()
@@ -72,3 +73,7 @@ document.addEventListener 'turbolinks:load', ->
       #  the following will help the text expand as typing takes place
       while $(this).outerHeight() < @scrollHeight + parseFloat($(this).css('borderTopWidth')) + parseFloat($(this).css('borderBottomWidth'))
         $(this).height $(this).height() + 1
+
+    return # END do ->
+
+  return # END turbolinks:load

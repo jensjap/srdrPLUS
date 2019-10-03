@@ -4,6 +4,8 @@
 
 document.addEventListener 'turbolinks:load', ->
 
+  return unless $( '.questions' ).length > 0
+
   do ->
 
     ###########################
@@ -82,3 +84,7 @@ document.addEventListener 'turbolinks:load', ->
           $( '#add_row_button' ).click()
           return
       return false
+
+    return # END do ->
+
+  return # END turbolinks:load

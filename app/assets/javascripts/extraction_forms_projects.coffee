@@ -3,6 +3,8 @@
 # You can use CoffeeScript in this file: http://coffeescript.org/
 document.addEventListener 'turbolinks:load', ->
 
+  return unless $( '.extraction_forms_projects' ).length > 0
+
   do ->
 
     post = (path, params, method) ->

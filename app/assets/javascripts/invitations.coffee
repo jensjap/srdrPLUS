@@ -3,8 +3,13 @@
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
 document.addEventListener 'turbolinks:load', ->
+
+  return unless $( '.invitations' ).length > 0
+
   do ->
+
     $( '.copy-to-clipboard' ).click copyToClipboardMessage
-    return
-  return
-return
+
+    return # END do ->
+
+  return # END turbolinks:load

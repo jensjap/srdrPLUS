@@ -3,7 +3,9 @@
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
 document.addEventListener 'turbolinks:load', ->
-  return unless $('.result_statistic_sections.edit').length > 0
+
+  return unless $( '.result_statistic_sections' ).length > 0
+
   do ->
 
     $( '.links.add-comparison' )
@@ -139,9 +141,9 @@ document.addEventListener 'turbolinks:load', ->
               color = "#E8DAEF"
             else
               color = "#D1F2EB"
-        
+
           $( a_dict[ "consolidated_elem" ] ).css( 'background', color )
-    
+
 
     result_section_dropdowning = ( ) ->
       number_of_extractions = get_result_number_of_extractions( )
@@ -185,3 +187,7 @@ document.addEventListener 'turbolinks:load', ->
     result_section_coloring()
     result_section_dropdowning()
     add_change_listeners_to_results_section()
+
+    return # END do ->
+
+  return # END turbolinks:load

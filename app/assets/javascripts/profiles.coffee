@@ -4,6 +4,8 @@
 
 document.addEventListener 'turbolinks:load', ->
 
+  return unless $( '.profiles' ).length > 0
+
   do ->
 
     # Set the field to display from the result set.

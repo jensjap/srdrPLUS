@@ -3,11 +3,13 @@
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
 document.addEventListener 'turbolinks:load', ->
-  do ->
-    return unless $(".assignments.screen").length > 0
-    #if (window.location.pathname != '/info.php') 
 
-##### force_update_c_p #####
+  return unless $( '.assignments.screen' ).length > 0
+
+  do ->
+    #if (window.location.pathname != '/info.php')
+
+    ##### force_update_c_p #####
     force_update_c_p = ( obj ) ->
       $.ajax {
         type: 'GET'
@@ -30,7 +32,7 @@ document.addEventListener 'turbolinks:load', ->
       }
       return
 
-##### get_c_p #####
+    ##### get_c_p #####
     #get a list of unlabeled_citations from server
     get_c_p = ( obj ) ->
       if obj.citations.length < 5
@@ -51,7 +53,7 @@ document.addEventListener 'turbolinks:load', ->
         }
       return
 
-##### nothing_to_label #####
+    ##### nothing_to_label #####
     nothing_to_label = ( obj ) ->
       interval_id = setInterval(
         ->
@@ -65,7 +67,7 @@ document.addEventListener 'turbolinks:load', ->
             clearInterval( interval_id )
       , 1000 )
 
-##### lock_label #####
+    ##### lock_label #####
     lock_button = ( label, requirement ) ->
       button_to_lock = null
       if label == "Yes"
@@ -112,7 +114,7 @@ document.addEventListener 'turbolinks:load', ->
           $( button_to_lock ).removeClass( 'disabled' )
       return
 
-##### next_citation #####
+    ##### next_citation #####
     #gets the first citation from citations and updates index with it
     next_citation = ( obj ) ->
       if obj.citations.length == 0
@@ -121,7 +123,7 @@ document.addEventListener 'turbolinks:load', ->
       obj.history.unshift obj.citations.shift()
       return
 
-##### update_info #####
+    ##### update_info #####
     update_info = ( obj ) ->
       current_citation = obj.history[ obj.index ]
 
@@ -210,7 +212,7 @@ document.addEventListener 'turbolinks:load', ->
       $( '#reason-select select' ).trigger 'change'
       return
 
-##### send_label #####
+    ##### send_label #####
     send_label = ( obj, label_type_id ) ->
       this.current_citation = obj.history[ obj.index ]
       # check if 'create' label or 'update'
@@ -275,12 +277,12 @@ document.addEventListener 'turbolinks:load', ->
       }
       return
 
-##### update_label #####
+    ##### update_label #####
     update_label = ( obj, index, label_type_id ) ->
       obj.index = index
       send_label( obj, label_type_id )
 
-##### update_arrows #####
+    ##### update_arrows #####
     update_arrows = ( obj ) ->
       if obj.index < obj.history.length - 1
         $( '#previous-button' ).removeClass( 'disabled' )
@@ -293,7 +295,7 @@ document.addEventListener 'turbolinks:load', ->
         $( '#next-button' ).addClass( 'disabled' )
       return
 
-##### start_screening #####
+    ##### start_screening #####
     start_screening = ( citations, history, options ) ->
       #we need the projects_users_role_id
       projects_users_role_id = $( '#projects-users-role-id' ).text()
@@ -494,7 +496,7 @@ document.addEventListener 'turbolinks:load', ->
 
       return
 
-##### get_history_page #####
+    ##### get_history_page #####
     get_history_page = ( obj, page_index ) ->
       page_size = 10
 
@@ -515,7 +517,7 @@ document.addEventListener 'turbolinks:load', ->
         switch_to_list( obj, obj.history.slice( page_index * page_size, ( page_index + 1 ) * page_size ) )
         obj.history_page = page_index
 
-##### add_breadcrumb #####
+    ##### add_breadcrumb #####
     add_breadcrumb = ( obj ) ->
       next_index = obj.history.length
       breadcrumb_id = 'breadcrumb_' + next_index
@@ -532,7 +534,7 @@ document.addEventListener 'turbolinks:load', ->
       obj.history[ obj.index ].id = id
       return
 
-##### update_breadcrumb #####
+    ##### update_breadcrumb #####
     update_breadcrumb = ( citation ) ->
       button = $( '#' + citation.breadcrumb_id )
       label = citation.label.label_type_id
@@ -543,7 +545,7 @@ document.addEventListener 'turbolinks:load', ->
         button.addClass( 'alert' )
       return
 
-##### update_index #####
+    ##### update_index #####
     update_index = ( obj, new_index ) ->
       old_breadcrumb_id = obj.history[ obj.index ].breadcrumb_id
       obj.index = new_index
@@ -552,7 +554,7 @@ document.addEventListener 'turbolinks:load', ->
       $( '#' + new_breadcrumb_id ).addClass( 'hollow' )
       return
 
-##### update_reasons #####
+    ##### update_reasons #####
     update_reasons = () ->
       ## REASONS
       root_url = $( '#root-url' ).text()
@@ -588,7 +590,7 @@ document.addEventListener 'turbolinks:load', ->
             toastr.error( 'ERROR: Could not fetch reasons' )
       }
 
-##### switch_to_list #####
+    ##### switch_to_list #####
     switch_to_list = ( obj, history_elements ) ->
       $( '#citations-list-elements' ).empty()
       next_index = 0
@@ -663,7 +665,7 @@ document.addEventListener 'turbolinks:load', ->
         citation_buttons.append( citation_button_yes )
         citation_buttons.append( citation_button_maybe )
         citation_buttons.append( citation_button_no )
-        
+
         citation_element.append( info_wrapper )
         citation_element.append( citation_buttons )
         $( '#citations-list-elements' ).append( citation_element )
@@ -674,7 +676,7 @@ document.addEventListener 'turbolinks:load', ->
       $( '#citations-list' ).show()
       $( '#screen-div' ).hide()
 
-##### switch_to_screening #####
+    ##### switch_to_screening #####
     switch_to_screening = ( obj ) ->
       $( '#pagination-buttons' ).hide()
       $( '#citations-list-elements' ).empty()
@@ -682,7 +684,7 @@ document.addEventListener 'turbolinks:load', ->
       $( '#screen-div' ).show()
       $( '#switch-button').val('OFF')
 
-##### fetch_term_groups #####
+    ##### fetch_term_groups #####
     fetch_term_groups = ( obj ) ->
       $.ajax {
         type: 'GET'
@@ -830,8 +832,8 @@ document.addEventListener 'turbolinks:load', ->
             toastr.error( 'ERROR: Could not fetch term groups' )
       }
 
-##### TO BE DELETED #####
-##### apply_select2_to_term_selects #####
+    ##### TO BE DELETED #####
+    ##### apply_select2_to_term_selects #####
     apply_select2_to_term_select = ( obj, term_select ) ->
       putgc_id = term_select.attr( 'putgc-id' )
       term_select.select2
@@ -873,8 +875,8 @@ document.addEventListener 'turbolinks:load', ->
       if not ($( '#term-groups' ).attr( 'selected-putgc-id' ) == putgc_id)
         term_select.next( '.select2-container' ).addClass( 'hide' )
 
-##### TO BE DELETED #####
-##### create_term_selects #####
+    ##### TO BE DELETED #####
+    ##### create_term_selects #####
     create_term_selects = ( obj ) ->
       send_ajax = ( inner_putgc_id ) ->
         $.ajax {
@@ -901,7 +903,7 @@ document.addEventListener 'turbolinks:load', ->
         send_ajax( putgc_id )
 
 
-##### populate_terms #####
+    ##### populate_terms #####
     populate_terms = ( inner_putgc_id ) ->
       if (typeof inner_putgc_id == 'undefined')
         return
@@ -940,7 +942,7 @@ document.addEventListener 'turbolinks:load', ->
             toastr.error( 'ERROR: Could not fetch terms' )
       }
 
-##### populate_term_modal #####
+    ##### populate_term_modal #####
     populate_term_modal = ( obj ) ->
       $( '#tg-panel' ).html( $( '#edit-term-groups #edit-term-groups-table' ).clone() )
 
@@ -978,7 +980,7 @@ document.addEventListener 'turbolinks:load', ->
 
       populate_terms( selected_putgc_id )
 
-##### delete_term_group #####
+    ##### delete_term_group #####
     delete_term_group = ( obj, id ) ->
       $.ajax {
         type: 'DELETE'
@@ -990,8 +992,8 @@ document.addEventListener 'turbolinks:load', ->
           () ->
             toastr.error( 'ERROR: Could not delete term group' )
       }
- 
-##### fetch_palette #####
+
+    ##### fetch_palette #####
     fetch_palette = ( obj, palette_elem ) ->
       $.ajax {
         type: 'GET'
@@ -1014,7 +1016,7 @@ document.addEventListener 'turbolinks:load', ->
           () ->
             toastr.error( 'ERROR: Could not fetch colors' )
       }
-##### send_new_term_group #####
+    ##### send_new_term_group #####
     send_new_term_group = ( obj, term_group_name, color_id ) ->
       $.ajax {
         type: 'POST'
@@ -1038,7 +1040,7 @@ document.addEventListener 'turbolinks:load', ->
             toastr.error( 'ERROR: Could not create new term group' )
       }
 
-##### update_term_group #####
+    ##### update_term_group #####
     update_term_group = ( obj, id, new_term_group_name, new_color_id ) ->
       $.ajax {
         type: 'PATCH'
@@ -1062,7 +1064,7 @@ document.addEventListener 'turbolinks:load', ->
             toastr.error( 'ERROR: Could not update term group' )
       }
 
-##### highlight_terms ##### 
+    ##### highlight_terms #####
       for tg in $( '#term-groups' )
         putgc_id = $( tg ).attr( 'putgc-id' )
         tg_color = $( tg ).find( '.putgc-color' ).attr( 'color-hex' )
@@ -1072,7 +1074,7 @@ document.addEventListener 'turbolinks:load', ->
 
       return input_string
 
-##### send_new_term #####
+    ##### send_new_term #####
     send_new_term = ( projects_users_terms_groups_color_id, term ) ->
       $.ajax {
         type: 'POST'
@@ -1094,7 +1096,7 @@ document.addEventListener 'turbolinks:load', ->
             toastr.error( 'ERROR: Could not create new term group' )
       }
 
-##### update_term #####
+    ##### update_term #####
     update_term = ( id, new_term_group_name, new_color_id ) ->
       $.ajax {
         type: 'PATCH'
@@ -1116,9 +1118,9 @@ document.addEventListener 'turbolinks:load', ->
             toastr.error( 'ERROR: Could not update term group' )
       }
 
-###################################
-######  THIS IS THE START  ########
-###################################
+    ###################################
+    ######  THIS IS THE START  ########
+    ###################################
 
     $.ajax {
       type: 'GET'
@@ -1136,5 +1138,6 @@ document.addEventListener 'turbolinks:load', ->
     $( '#hide-me' ).hide()
     $( '#pagination-buttons' ).hide()
 
-  return # END do ->
-return # END turbolinks:load
+    return # END do ->
+
+  return # END turbolinks:load

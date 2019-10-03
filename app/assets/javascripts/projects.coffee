@@ -3,7 +3,11 @@
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
 document.addEventListener 'turbolinks:load', ->
+
+  return unless $( '.projects' ).length > 0
+
   do ->
+
     # Ajax call to filter the project list. We want to return a function here
     # to prevent it from being called immediately. Wrapper is to allow passing
     # param without immediate function invocation.

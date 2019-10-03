@@ -34604,11 +34604,11 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
 });
 (function() {
   document.addEventListener('turbolinks:load', function() {
+    if (!($('.assignments.screen').length > 0)) {
+      return;
+    }
     (function() {
       var add_breadcrumb, apply_select2_to_term_select, create_term_selects, delete_term_group, fetch_palette, fetch_term_groups, force_update_c_p, get_c_p, get_history_page, lock_button, next_citation, nothing_to_label, populate_term_modal, populate_terms, send_label, send_new_term, send_new_term_group, start_screening, switch_to_list, switch_to_screening, update_arrows, update_breadcrumb, update_index, update_info, update_label, update_reasons, update_term, update_term_group;
-      if (!($(".assignments.screen").length > 0)) {
-        return;
-      }
       force_update_c_p = function(obj) {
         $.ajax({
           type: 'GET',
@@ -35870,11 +35870,9 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
         }
       });
       $('#hide-me').hide();
-      return $('#pagination-buttons').hide();
+      $('#pagination-buttons').hide();
     })();
   });
-
-  return;
 
 }).call(this);
 (function() {
@@ -36503,6 +36501,9 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
 }).call(this);
 (function() {
   document.addEventListener('turbolinks:load', function() {
+    if (!($('.extraction_forms_projects').length > 0)) {
+      return;
+    }
     (function() {
       var post;
       post = function(path, params, method) {
@@ -36574,6 +36575,9 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
 }).call(this);
 (function() {
   document.addEventListener('turbolinks:load', function() {
+    if (!($('.extraction_forms_projects_sections').length > 0)) {
+      return;
+    }
     (function() {
       var formatResult, formatResultSelection, prereqOff, prereqOn, subroutine, turnPrereqOffSelfAndDescendants, turnPrereqOnSelfAndDescendants;
       formatResultSelection = function(result, container) {
@@ -36830,7 +36834,10 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
   var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   document.addEventListener('turbolinks:load', function() {
-    return (function() {
+    if (!($('.extractions').length > 0)) {
+      return;
+    }
+    (function() {
       var add_change_listeners_to_questions, apply_coloring, apply_consolidation_dropdown, get_extractor_names, get_number_of_extractions, get_question_type, get_question_value;
       $('#outcome_populations_selector_eefpst1_id').change(function(event) {
         return $.ajax({
@@ -37146,7 +37153,7 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
       };
       add_change_listeners_to_questions();
       apply_coloring();
-      return apply_consolidation_dropdown();
+      apply_consolidation_dropdown();
     })();
   });
 
@@ -37165,6 +37172,9 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
 }).call(this);
 (function() {
   document.addEventListener('turbolinks:load', function() {
+    if (!($('.extractions_extraction_forms_projects_sections_type1s').length > 0)) {
+      return;
+    }
     (function() {
       var formatTimepoint, formatTimepointSelection;
       $('.edit_extractions_extraction_forms_projects_sections_type1 .add_fields').data('association-insertion-method', 'append').data('association-insertion-node', function(link) {
@@ -37246,12 +37256,13 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
 }).call(this);
 (function() {
   document.addEventListener('turbolinks:load', function() {
+    if (!($('.invitations').length > 0)) {
+      return;
+    }
     (function() {
       $('.copy-to-clipboard').click(copyToClipboardMessage);
     })();
   });
-
-  return;
 
 }).call(this);
 (function() {
@@ -37276,6 +37287,9 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
 }).call(this);
 (function() {
   document.addEventListener('turbolinks:load', function() {
+    if (!($('.profiles').length > 0)) {
+      return;
+    }
     (function() {
       var formatResult, formatResultSelection;
       formatResultSelection = function(result, container) {
@@ -37368,6 +37382,9 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
 }).call(this);
 (function() {
   document.addEventListener('turbolinks:load', function() {
+    if (!($('.projects').length > 0)) {
+      return;
+    }
     (function() {
       var append_citations, citationList, fetch_from_pubmed, filterProjectList, list_options, populate_citation_fields;
       filterProjectList = function(order) {
@@ -37764,7 +37781,10 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
   var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   document.addEventListener('turbolinks:load', function() {
-    return (function() {
+    if (!($('.questions').length > 0)) {
+      return;
+    }
+    (function() {
       var hideHeaders, multiSelect;
       multiSelect = ['Checkbox (select multiple)', 'Dropdown (select one)', 'Radio (select one)', 'Select one (with write-in option)', 'Select multiple (with write-in option)'];
       $('.fieldset').on('change', function() {
@@ -37822,7 +37842,7 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
         });
         return false;
       });
-      return $('#add_row_link').click(function(event) {
+      $('#add_row_link').click(function(event) {
         var $form;
         event.preventDefault();
         $form = $("form[id^='edit_question_']");
@@ -37840,7 +37860,7 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
 }).call(this);
 (function() {
   document.addEventListener('turbolinks:load', function() {
-    return (function() {
+    (function() {
       var submitForm, timers;
       timers = {};
       submitForm = function(form) {
@@ -37877,7 +37897,7 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
         }
         return results;
       });
-      return $('form.edit_record input, form.edit_record textarea').keyup(function(e) {
+      $('form.edit_record input, form.edit_record textarea').keyup(function(e) {
         var $form, code, formId, results;
         e.preventDefault();
         code = e.keyCode || e.which;
@@ -37904,6 +37924,9 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
 (function() {
   document.addEventListener('turbolinks:load', function() {
     var get_result_value;
+    if (!($('.result_statistic_sections').length > 0)) {
+      return;
+    }
     (function() {
       return $('.links.add-comparison').on('cocoon:before-insert', function() {
         return $(this).hide();
@@ -37915,7 +37938,7 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
         $(insertedItem).find('.links.add-comparate').each(function() {
           return $(this).find('a').click();
         });
-        $('.nested-fields.comparate-groups').find('.nested-fields.comparates').first().after($('<div style="text-align: center; font-weight: normal;">vs.</div>'));
+        $('.nested-fields > .comparate-groups').find('.nested-fields.comparates').first().after($('<div style="text-align: center; font-weight: normal;">vs.</div>'));
         if ($('.wac-comparate-fields').length === 2) {
           $('.wac-comparate-fields:eq(1)').find('select option').filter(function() {
             return this.text.includes('(Baseline)');
@@ -37946,7 +37969,7 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
         }
       });
     })();
-    return get_result_value = function(td_elem) {
+    get_result_value = function(td_elem) {
       var add_change_listeners_to_results_section, get_result_elem, get_result_extractor_names, get_result_number_of_extractions, inputs, result_section_coloring, result_section_dropdowning;
       inputs = $(td_elem).find("input.string");
       return (inputs.length > 0 ? inputs[0].value : "");
@@ -38090,14 +38113,17 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
       };
       result_section_coloring();
       result_section_dropdowning();
-      return add_change_listeners_to_results_section();
+      add_change_listeners_to_results_section();
     };
   });
 
 }).call(this);
 (function() {
   document.addEventListener('turbolinks:load', function() {
-    return (function() {
+    if (!($('.assignments').length > 0)) {
+      return;
+    }
+    (function() {
       var find_existing_option, require_option_handler, send_new_option, switch_option_handler;
       send_new_option = function(option_type, label_type) {
         var new_option;
@@ -38142,6 +38168,7 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
       $('.options-table .require-button').on('click', require_option_handler);
       return $('.options-table .switch input').on('change', switch_option_handler);
     })();
+    return;
   });
 
 }).call(this);
@@ -38151,7 +38178,10 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
 }).call(this);
 (function() {
   document.addEventListener('turbolinks:load', function() {
-    return (function() {
+    if (!($('.static_pages').length > 0)) {
+      return;
+    }
+    (function() {
       var scrollToTop;
       scrollToTop = function() {
         var element, offset, offsetTop;
@@ -38170,7 +38200,7 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
         }
       });
       $('.scroll-top-wrapper').click(scrollToTop);
-      return $('#responsive-menu').on('sticky.zf.stuckto:top', function() {
+      $('#responsive-menu').on('sticky.zf.stuckto:top', function() {
         $('#signup-link-id').addClass('glow');
       }).on('sticky.zf.unstuckfrom:top', function() {
         $('#signup-link-id').removeClass('glow');
@@ -38181,9 +38211,12 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
 }).call(this);
 (function() {
   document.addEventListener('turbolinks:load', function() {
-    return (function() {
+    if (!($('.tasks').length > 0)) {
+      return;
+    }
+    (function() {
       $('.task_num_assigned').hide();
-      return $('#task_task_type_id').on("change", function() {
+      $('#task_task_type_id').on("change", function() {
         if ($('#task_task_type_id option:selected').text() !== "Advanced") {
           return $('.task_num_assigned').hide();
         } else {

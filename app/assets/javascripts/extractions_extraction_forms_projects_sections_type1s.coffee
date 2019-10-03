@@ -4,6 +4,8 @@
 
 document.addEventListener 'turbolinks:load', ->
 
+  return unless $( '.extractions_extraction_forms_projects_sections_type1s' ).length > 0
+
   do ->
 
     $( '.edit_extractions_extraction_forms_projects_sections_type1 .add_fields' )

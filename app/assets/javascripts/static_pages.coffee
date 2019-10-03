@@ -3,6 +3,9 @@
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
 document.addEventListener 'turbolinks:load', ->
+
+  return unless $( '.static_pages' ).length > 0
+
   do ->
 
     scrollToTop = ->
@@ -34,3 +37,7 @@ document.addEventListener 'turbolinks:load', ->
     ).on 'sticky.zf.unstuckfrom:top', ->
       $( '#signup-link-id' ).removeClass 'glow'
       return
+
+    return # END do ->
+
+  return # END turbolinks:load

@@ -4,6 +4,8 @@
 
 document.addEventListener 'turbolinks:load', ->
 
+  return unless $( '.extraction_forms_projects_sections' ).length > 0
+
   do ->
 
     ###############################################

@@ -1,10 +1,14 @@
 document.addEventListener 'turbolinks:load', ->
+
+  return unless $( '.assignments' ).length > 0
+
   do ->
+
       send_new_option = ( option_type, label_type ) ->
         $( '.add-option' ).click()
         new_option = $( '.option-fields' ).last()
         $( new_option ).find( 'input.option-type:radio[value="' + option_type + '"]' ).prop( 'checked', true )
-        
+
         $( new_option ).find( 'input.label-type:radio[value="' + label_type + '"]' ).prop( 'checked', true )
 
       find_existing_option = ( option_type, label_type ) ->
@@ -12,7 +16,7 @@ document.addEventListener 'turbolinks:load', ->
           return $( '.option-fields:has(input.option-type:radio:checked[value="' + option_type + '"]):has(input.label-type:radio:checked[value="' + label_type + '"])' )
         else
           return $( '.option-fields:has(input.option-type:radio:checked[value="' + option_type + '"])' )
-  
+
       require_option_handler = ( event ) ->
         option_type = $( event.target ).attr( 'option-type' )
         label_type = $( event.target ).attr( 'label-type' )
@@ -53,3 +57,6 @@ document.addEventListener 'turbolinks:load', ->
       $( '.options-table .require-button' ).on( 'click', require_option_handler )
       $( '.options-table .switch input' ).on( 'change', switch_option_handler )
 
+    return # END do ->
+
+  return # END turbolinks:load

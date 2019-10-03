@@ -4,6 +4,8 @@
 
 document.addEventListener 'turbolinks:load', ->
 
+  return unless $( '.extractions' ).length > 0
+
   do ->
 
 #    # Adds a delay to calling a specific function.
@@ -309,3 +311,7 @@ document.addEventListener 'turbolinks:load', ->
     add_change_listeners_to_questions( )
     apply_coloring( )
     apply_consolidation_dropdown( )
+
+    return  # END do ->
+
+  return  # END document.addEventListener 'turbolinks:load', ->
