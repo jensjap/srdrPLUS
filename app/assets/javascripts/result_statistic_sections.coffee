@@ -3,6 +3,7 @@
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
 document.addEventListener 'turbolinks:load', ->
+  return unless $('.result_statistic_sections.edit').length > 0
   do ->
 
     $( '.links.add-comparison' )
