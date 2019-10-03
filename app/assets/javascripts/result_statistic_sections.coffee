@@ -18,7 +18,7 @@ document.addEventListener 'turbolinks:load', ->
           $( this ).find( 'a' ).click()
 
         # Insert 'vs.' between the two comparate groups.
-        $( '.nested-fields.comparate-groups' )
+        $( '.nested-fields > .comparate-groups' )
           .find( '.nested-fields.comparates' )
           .first()
           .after( $( '<div style="text-align: center; font-weight: normal;">vs.</div>' ) )
