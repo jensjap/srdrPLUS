@@ -1,34 +1,51 @@
-// This is a manifest file that'll be compiled into application.js, which will include all the files
-// listed below.
-//
-// Any JavaScript/Coffee file within this directory, lib/assets/javascripts, vendor/assets/javascripts,
-// or any plugin's vendor/assets/javascripts directory can be referenced here using a relative path.
-//
-// It's not advisable to add code directly here, but if you do, it'll appear at the bottom of the
-// compiled file. JavaScript code in this file should be added after the last require_* statement.
-//
-// Read Sprockets README (https://github.com/rails/sprockets#sprockets-directives) for details
-// about supported directives.
-//
 //= require jquery
-//= require jquery.turbolinks
 //= require jquery_ujs
-//= require foundation
 //= require turbolinks
+//= require init
+
+//= require jquery.turbolinks
+//= require foundation
 //= require toastr_rails
 //= require select2
 //= require cocoon
 //= require jquery_mark_es6
-//= require react
-//= require react_ujs
-//= require components
 //= require list.min.js
 //= require jquery.form.min.js
 //= require sortable-rails-jquery
 //= require activestorage
-//= require_tree .
 
-//$(function(){ $(document).foundation(); });
+//= require assignments
+//= require author
+//= require cable
+//= require citations
+//= require extraction_forms_projects
+//= require extraction_forms_projects_sections
+//= require extraction_forms_projects_sections_type1s
+//= require extractions
+//= require extractions_extraction_forms_projects_sections_question_row_column_fields
+//= require extractions_extraction_forms_projects_sections_type1_row_columns
+//= require extractions_extraction_forms_projects_sections_type1_rows
+//= require extractions_extraction_forms_projects_sections_type1s
+//= require forms
+//= require invitations
+//= require journal
+//= require key_questions
+//= require keywords
+//= require labels
+//= require organizations
+//= require profiles
+//= require projects
+//= require projects_users_roles
+//= require questions
+//= require records
+//= require result_statistic_sections
+//= require screening_options
+//= require searches
+//= require static_pages
+//= require tasks
+//= require teams
+
+//$(function(){ $( document ).foundation(); });
 
 'use strict';
 

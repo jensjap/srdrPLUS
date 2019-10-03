@@ -25,7 +25,7 @@ html class='no-js' lang='en'
       p Browser does not support iframes. Please update your browser to for a better viewing experience.
 
     - if content_for?(:content)
-      == yield(:content)
+      = yield(:content)
 
     - else
       .off-canvas-wrapper
@@ -38,8 +38,8 @@ html class='no-js' lang='en'
           .content
             .breadcrumbs = render_breadcrumbs tag: :li, separator: ''
             - if content_for(:project_title)
-              h3 == "Project: " + yield(:project_title)
-            == yield
+              h3 = "Project: " + yield(:project_title)
+            = yield
             = render 'shared/scroll_top_wrapper'
 
 

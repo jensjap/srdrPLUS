@@ -109,12 +109,6 @@ gem 'rack-cors'
 # Help DRY up code.
 gem 'responders'
 
-# React Js.
-gem 'react-rails'
-
-# Helps with logins.
-#gem 'doorkeeper'
-
 # Api documentation.
 gem 'apipie-rails'
 
