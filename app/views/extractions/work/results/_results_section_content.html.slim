@@ -1,4 +1,13 @@
-h5 = section_name
+- eefps = ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by!( \
+  extraction: @extraction,
+  extraction_forms_projects_section: efps,
+  link_to_type1: efps.link_to_type1.nil? \
+    ? nil \
+    : ExtractionsExtractionFormsProjectsSection.find_by!( \
+      extraction: @extraction,
+      extraction_forms_projects_section: efps.link_to_type1))
+
+= render 'extractions/shared/extractions_extraction_forms_projects_section_status_fields', eefps: eefps, section_name: section_name
 
 blockquote
   | The results section is where you enter numerical data, comparisons, etc.

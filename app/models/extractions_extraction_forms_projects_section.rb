@@ -10,6 +10,8 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
 #    joins(extraction_forms_projects_section: :section )
 #      .where(extraction_forms_projects_sections: { sections: { name: 'Results' } }) }
 
+  after_create :create_default_draft_status
+
   belongs_to :extraction,                        inverse_of: :extractions_extraction_forms_projects_sections
   belongs_to :extraction_forms_projects_section, inverse_of: :extractions_extraction_forms_projects_sections
   belongs_to :link_to_type1, class_name: 'ExtractionsExtractionFormsProjectsSection',
@@ -145,6 +147,27 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
       end
     end
     super
+  end
+
+  # Create default draft status
+  def create_default_draft_status
+    if statusing.nil?
+      create_statusing( status: Status.find_by(name: 'Draft'))
+    end
+  end
+
+  # If you try to use accepts_nested_attributes_for :status, you get:
+  #   "Cannot build association 'status'. Are you trying to build a polymorphic one-to-one association."
+  # So we are creating a build method manually
+  def build_status(params)
+    new_status = Status.find_by(params)
+    if new_status.present?
+      if statusing.present?
+        statusing.update(statusable: self, status: new_status)
+      else
+        create_statusing(status: new)
+      end
+    end
   end
 
 #  def to_builder

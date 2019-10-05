@@ -8,6 +8,8 @@
       extraction_forms_projects_section: efps.link_to_type1))
 
 .column.row
+  = render 'extractions/shared/extractions_extraction_forms_projects_section_status_fields', eefps: eefps, section_name: section_name
+
   = render 'extractions/shared/type_1/type_1_friendly_helper_message',
     extraction: @extraction,
     section_name: section_name,

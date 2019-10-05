@@ -6,7 +6,7 @@ class ExtractionsExtractionFormsProjectsSectionsController < ApplicationControll
   def update
     authorize(@extractions_extraction_forms_projects_section.project, policy_class: ExtractionsExtractionFormsProjectsSectionPolicy)
     respond_to do |format|
-      if @extractions_extraction_forms_projects_section.update(extractions_extraction_forms_projects_section_params)
+     if @extractions_extraction_forms_projects_section.update(extractions_extraction_forms_projects_section_params)
         format.html do
           redirect_to work_extraction_path(@extractions_extraction_forms_projects_section.extraction,
                                            anchor: "panel-tab-#{ @extractions_extraction_forms_projects_section.extraction_forms_projects_section.id.to_s }"),
@@ -29,13 +29,13 @@ class ExtractionsExtractionFormsProjectsSectionsController < ApplicationControll
     end
   end
 
-  def set_status
-    if not ["Draft", "Completed"].include? extractions_extraction_forms_projects_section_params[:statusing_attributes][:status][:name]
-      return
-    end
-    if @extractions_extraction_forms_projects_section.statusing.nil?
-    @extractions_extraction_forms_projects_section.statusing
-  end
+#  def update_status
+#    if not ["Draft", "Completed"].include? extractions_extraction_forms_projects_section_params[:statusing_attributes][:status_attributes][:name]
+#      return
+#    end
+#    if @extractions_extraction_forms_projects_section.statusing.nil?
+#    @extractions_extraction_forms_projects_section.statusing
+#  end
 
   private
     # Use callbacks to share common setup or constraints between actions.
@@ -48,6 +48,7 @@ class ExtractionsExtractionFormsProjectsSectionsController < ApplicationControll
       params.require(:extractions_extraction_forms_projects_section)
         .permit(:extraction_id,
                 :extraction_forms_projects_section_id,
+                { status_attributes: [:name] } ,
                 extractions_extraction_forms_projects_sections_type1s_attributes: [:type1_type_id, type1_attributes: [:id, :name, :description]])
     end
 end

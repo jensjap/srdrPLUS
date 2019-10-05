@@ -17,11 +17,21 @@ document.addEventListener 'turbolinks:load', ->
 
     #################################################
     # State toggler for eefps
-    $( '.status-switch input' ).on 'change', () ->
-      if $( this ).prop('checked')
-        return
+#    for status_name_elem in $( '.eefps-status-name' )
+#      if $( status_name_elem ).val() == 'Completed'
+#        eefps_id = $( status_name_elem ).attr( 'eefps-id' )
+#        $( ".status-switch .switch-input[eefps-id=" + eefps_id + "]" ).prop( 'checked', true )
+#        $( ".status-switch .switch-input[eefps-id=" + eefps_id + "]" ).change()
+
+    #################################################
+    # State toggler for eefps
+    $( '.status-switch .switch-input' ).on 'change', () ->
+      eefps_id = $( this ).attr( 'eefps-id' )
+      if $( this ).prop( 'checked' )
+        $( ".eefps-status-name[eefps-id=" + eefps_id + "]" ).val( 'Completed' )
       else
-        return
+        $( ".eefps-status-name[eefps-id=" + eefps_id + "]" ).val( 'Draft' )
+      $( this ).parents( 'form' ).submit()
 
     #################################################
     # Attach listener to outcome population selector.

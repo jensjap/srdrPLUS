@@ -9,19 +9,8 @@
 
 - linked_section = eefps.link_to_type1
 
-.section-header
-  h5 = section_name 
-  = simple_form_for(eefps, url: extractions_extraction_forms_projects_section_path(eefps)) do |f|
+= render 'extractions/shared/extractions_extraction_forms_projects_section_status_fields', eefps: eefps, section_name: section_name
 
-    .status-switch.switch style='width: 5rem;'
-      input.switch-input id="#{ eefps.id.to_s }-eefps-status" type='checkbox' name="#{ eefps.id.to_s }-eefps-status"
-      label.switch-paddle for="#{ eefps.id.to_s }-eefps-status"
-        span.show-for-sr
-          | Completion Status
-        span.switch-active
-          | Completed
-        span.switch-inactive
-          | Draft
 blockquote
   | Please answer the questions to the best of your ability. If you require clarification, please consult the project lead.
   cite Friendly Helper
