@@ -13,9 +13,9 @@
           th Citation
           th Assigned User
           /th Role
+          th Progress
           th
           th
-          /th
           th
 
       tbody
@@ -24,10 +24,14 @@
             td No extractions found.
 
         - else
-          - @extractions.unconsolidated.includes([{ projects_users_role: [{ projects_user: { user: :profile } }, :role] },{ citations_project: :citation }]).each do |extraction|
+          - @extractions.unconsolidated.includes([{ extractions_extraction_forms_projects_sections: [:status, { extraction_forms_projects_section: :section }] }, { projects_users_role: [{ projects_user: { user: :profile } }, :role] },{ citations_project: :citation }]).each do |extraction|
             tr
               td = link_to extraction.try(:citations_project).try(:citation).try(:name), work_extraction_path(extraction)
               td = extraction.projects_users_role.handle
+              td
+                - tooltip_text = "<span style='font-weight: bold;'>Incomplete Sections:</span><br>" + (extraction.extractions_extraction_forms_projects_sections.map{ |eefps| eefps.status.name != 'Completed' ? eefps.section.name : "" } - [""]).join('<br>')
+                .success.progress style="width: 10vw;" data-allow-html="true" data-tooltip="" title="#{ tooltip_text }"
+                  .progress-meter style="width: #{((extraction.extractions_extraction_forms_projects_sections.map{ |eefps| eefps.status.name == 'Completed' ? 1 : 0 }.sum.to_f * 100) / extraction.extractions_extraction_forms_projects_sections.length).round.to_s}%;"
               /td = extraction.projects_users_role.role.name
               td = link_to t('work'), work_extraction_path(extraction)
               /td = link_to t('edit'), edit_extraction_path(extraction)

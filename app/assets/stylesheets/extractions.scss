@@ -86,3 +86,9 @@
     }
   }
 }
+
+body.extractions.index {
+  .tooltip {
+    max-width: rem-calc(300px) !important;
+  }
+}
