@@ -4745,6 +4745,49 @@ div[class*=' prereq-'] input, div[class*=' prereq-'] select {
 .clean-table table tr td:first-child {
   font-weight: bold;
 }
+
+/* line 66, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/extractions.scss */
+.section-header {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: row;
+      -ms-flex-direction: row;
+          flex-direction: row;
+}
+/* line 69, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/extractions.scss */
+.section-header .status-switch {
+  margin-left: 1rem;
+}
+/* line 71, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/extractions.scss */
+.section-header .status-switch .switch-input:checked ~ .switch-paddle {
+  background-color: #3adb76;
+  width: 6.5rem;
+}
+/* line 75, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/extractions.scss */
+.section-header .status-switch .switch-paddle::after {
+  display: none;
+}
+/* line 78, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/extractions.scss */
+.section-header .status-switch .switch-paddle {
+  width: 3.5rem;
+}
+/* line 81, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/extractions.scss */
+.section-header .status-switch .switch-inactive {
+  left: 13%;
+}
+/* line 84, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/extractions.scss */
+.section-header .status-switch .switch-active {
+  left: 9%;
+}
+
+/* line 91, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/extractions.scss */
+body.extractions.index .tooltip {
+  max-width: 18.75rem !important;
+}
 /**
  * Foundation for Sites by ZURB
  * Version 6.5.3

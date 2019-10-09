@@ -36839,6 +36839,16 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
     }
     (function() {
       var add_change_listeners_to_questions, apply_coloring, apply_consolidation_dropdown, get_extractor_names, get_number_of_extractions, get_question_type, get_question_value;
+      $('.status-switch .switch-input').on('change', function() {
+        var eefps_id;
+        eefps_id = $(this).attr('eefps-id');
+        if ($(this).prop('checked')) {
+          $(".eefps-status-name[eefps-id=" + eefps_id + "]").val('Completed');
+        } else {
+          $(".eefps-status-name[eefps-id=" + eefps_id + "]").val('Draft');
+        }
+        return $(this).parents('form').submit();
+      });
       $('#outcome_populations_selector_eefpst1_id').change(function(event) {
         return $.ajax({
           url: '/extractions_extraction_forms_projects_sections_type1s/' + this.value + '/get_results_populations',
@@ -37512,9 +37522,9 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
               ref1 = $(data).find('Author');
               for (j = 0, len1 = ref1.length; j < len1; j++) {
                 node = ref1[j];
-                first_name = $(node).find('ForeName').text() || '';
+                first_name = $(node).find('ForeName').text() || $(node).find('Initials').text() || '';
                 last_name = $(node).find('LastName').text() || '';
-                author_name = first_name + ' ' + last_name;
+                author_name = last_name + ' ' + first_name;
                 if (author_name === ' ') {
                   author_name = $(node).find('CollectiveName').text() || '';
                 }
