@@ -101,18 +101,26 @@ class Citation < ApplicationRecord
     super
   end
 
+  def year
+    return journal.publication_date.match(/[1-2][0-9][0-9][0-9]/)[0] || journal.publication_date || ''
+  end
+
+  def first_author
+    return authors_citations.includes(:ordering).order('orderings.position asc').first&.author&.name || ''
+  end
+
   def handle
     string_handle = ""
 #    string_handle += "Study Citation: #{ name } "
 #    string_handle += "(PMID: #{ pmid.to_s })" if pmid.present?
-    string_handle += (authors_citations.includes(:ordering).order('orderings.position asc').first&.author&.name || '')
-    string_handle += ", "
-    string_handle += journal.publication_date || ''
-    string_handle += ", "
+    string_handle += first_author
+    string_handle += "\n"
+    string_handle += year
+    string_handle += "\n"
     string_handle += pmid || ''
     string_handle += "\n"
-    string_handle += name
-
+    string_handle += name || ''
+ 
     return string_handle
   end
 end

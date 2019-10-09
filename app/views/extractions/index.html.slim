@@ -6,7 +6,8 @@
 
 .row
   .column.medium-12
-    h4 Extractions
+    div style='display: flex; flex-direction: row;'
+      h4 Extractions
     table
       thead
         tr
@@ -26,7 +27,12 @@
         - else
           - @extractions.unconsolidated.includes([{ extractions_extraction_forms_projects_sections: [:status, { extraction_forms_projects_section: :section }] }, { projects_users_role: [{ projects_user: { user: :profile } }, :role] },{ citations_project: :citation }]).each do |extraction|
             tr
-              td = link_to extraction.try(:citations_project).try(:citation).try(:name), work_extraction_path(extraction)
+              td
+                div
+                  - citation = extraction.citations_project.citation
+                  - citation_handle = citation.first_author + ', ' + citation.year + ', ' + citation.pmid.to_s + '<br />' + citation.name[0..50] + (citation.name.length > 50 ? "..." : "")
+                  = link_to citation_handle.html_safe, work_extraction_path(extraction)
+                  
               td = extraction.projects_users_role.handle
               td
                 - tooltip_text = "<span style='font-weight: bold;'>Incomplete Sections:</span><br>" + (extraction.extractions_extraction_forms_projects_sections.map{ |eefps| eefps.status.name != 'Completed' ? eefps.section.name : "" } - [""]).join('<br>')
