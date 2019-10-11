@@ -33,11 +33,11 @@ document.addEventListener 'turbolinks:load', ->
            })
 
       shift_down = false
-      $( 'body.extractions.index' ).on 'keydown keyup', ( event ) ->
+      $( 'body.extractions.index' ).on 'keydown', ( event ) ->
         if event.shiftKey
           shift_down = true
-        else
-          shift_down = false
+      $( 'body.extractions.index' ).on 'keyup', ( event ) ->
+        shift_down = false
 
       $( '.extractions-list .citation-handle-header' ).click () ->
         if ( not shift_down ) and $( this ).data( 'sort-direction' ) == 'asc'
