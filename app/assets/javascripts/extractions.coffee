@@ -25,48 +25,83 @@ document.addEventListener 'turbolinks:load', ->
 
     #################################################
     # DataTables for Extractions List
-    dt = $( 'table.extractions-list' ).DataTable({
-           "paging": false,
-           "info": false,
-           "columnDefs": [{ "orderable": false, "targets": [3,4] }]
-         })
+    if $( 'body.extractions.index' ).length > 0
+      dt = $( 'table.extractions-list' ).DataTable({
+             "paging": false,
+             "info": false,
+             "columnDefs": [{ "orderable": false, "targets": [3,4] }]
+           })
 
-    $( '.extractions-list .citation-handle-header' ).click () ->
-      if $( this ).data( 'sort-direction' ) == 'asc'
-        $( this ).data( 'sort-direction', 'desc' )
-        return
+      shift_down = false
+      $( 'body.extractions.index' ).on 'keydown keyup', ( event ) ->
+        if event.shiftKey
+          shift_down = true
+        else
+          shift_down = false
 
-      $( this ).data( 'sort-direction', 'asc' )
-      if $( this ).data( 'sort-mode' ) == 'author'
-        $( this ).html( 'Citation (Sorted by PMID)' )
-        new_sort_mode = 'pmid'
-      else if $( this ).data( 'sort-mode' ) == 'pmid'
-        $( this ).html( 'Citation (Sorted by Title)' )
-        new_sort_mode = 'name'
-      else if $( this ).data( 'sort-mode' ) == 'name'
-        $( this ).html( 'Citation (Sorted by Publication Year)' )
-        new_sort_mode = 'year'
-      else
-        $( this ).html( 'Citation (Sorted by First Author)' )
-        new_sort_mode = 'author'
+      $( '.extractions-list .citation-handle-header' ).click () ->
+        if ( not shift_down ) and $( this ).data( 'sort-direction' ) == 'asc'
+          $( this ).data( 'sort-direction', 'desc' )
+          return
 
-      $( this ).data( 'sort-mode', new_sort_mode )
+        if shift_down and $( this ).data( 'sort-direction' ) == 'desc'
+          $( this ).data( 'sort-direction', 'asc' )
+          return
 
-      if new_sort_mode == 'pmid'
-        $( 'td.citation-handle' ).each () ->
-          $( this ).attr( 'data-sort', $( this ).attr( 'data-pmid' ) )
-      else if new_sort_mode == 'name'
-        $( 'td.citation-handle' ).each () ->
-          $( this ).attr( 'data-sort', $( this ).attr( 'data-name' ) )
-      else if new_sort_mode == 'year'
-        $( 'td.citation-handle' ).each () ->
-          $( this ).attr( 'data-sort', $( this ).attr( 'data-year' ) )
-      else
-        $( 'td.citation-handle' ).each () ->
-          $( this ).attr( 'data-sort', $( this ).attr( 'data-author' ) )
+        if $( this ).data( 'sort-mode' ) == 'author'
+          if shift_down
+            $( this ).data( 'sort-direction', 'desc' )
+            $( this ).html( 'Citation (Sorted by Publication Year)' )
+            new_sort_mode = 'year'
+          else
+            $( this ).data( 'sort-direction', 'asc' )
+            $( this ).html( 'Citation (Sorted by PMID)' )
+            new_sort_mode = 'pmid'
+        else if $( this ).data( 'sort-mode' ) == 'pmid'
+          if shift_down
+            $( this ).data( 'sort-direction', 'desc' )
+            $( this ).html( 'Citation (Sorted by First Author)' )
+            new_sort_mode = 'author'
+          else
+            $( this ).data( 'sort-direction', 'asc' )
+            $( this ).html( 'Citation (Sorted by Title)' )
+            new_sort_mode = 'name'
+        else if $( this ).data( 'sort-mode' ) == 'name'
+          if shift_down
+            $( this ).data( 'sort-direction', 'desc' )
+            $( this ).html( 'Citation (Sorted by PMID)' )
+            new_sort_mode = 'pmid'
+          else
+            $( this ).data( 'sort-direction', 'asc' )
+            $( this ).html( 'Citation (Sorted by Publication Year)' )
+            new_sort_mode = 'year'
+        else
+          if shift_down
+            $( this ).data( 'sort-direction', 'desc' )
+            $( this ).html( 'Citation (Sorted by Title)' )
+            new_sort_mode = 'name'
+          else
+            $( this ).data( 'sort-direction', 'asc' )
+            $( this ).html( 'Citation (Sorted by First Author)' )
+            new_sort_mode = 'author'
 
-      dt.rows( { page:'current' } ).invalidate()
-      dt.draw()
+        $( this ).data( 'sort-mode', new_sort_mode )
+
+        if new_sort_mode == 'pmid'
+          $( 'td.citation-handle' ).each () ->
+            $( this ).attr( 'data-sort', $( this ).attr( 'data-pmid' ) )
+        else if new_sort_mode == 'name'
+          $( 'td.citation-handle' ).each () ->
+            $( this ).attr( 'data-sort', $( this ).attr( 'data-name' ) )
+        else if new_sort_mode == 'year'
+          $( 'td.citation-handle' ).each () ->
+            $( this ).attr( 'data-sort', $( this ).attr( 'data-year' ) )
+        else
+          $( 'td.citation-handle' ).each () ->
+            $( this ).attr( 'data-sort', $( this ).attr( 'data-author' ) )
+
+        dt.rows( { page:'current' } ).invalidate()
+        dt.draw()
 
     #################################################
     # State Toggler for EEFPS
