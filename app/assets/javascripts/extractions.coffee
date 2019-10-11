@@ -24,7 +24,52 @@ document.addEventListener 'turbolinks:load', ->
 #        $( ".status-switch .switch-input[eefps-id=" + eefps_id + "]" ).change()
 
     #################################################
-    # State toggler for eefps
+    # DataTables for Extractions List
+    dt = $( 'table.extractions-list' ).DataTable({
+           "paging": false,
+           "info": false,
+           "columnDefs": [{ "orderable": false, "targets": [3,4] }]
+         })
+
+    $( '.extractions-list .citation-handle-header' ).click () ->
+      if $( this ).data( 'sort-direction' ) == 'asc'
+        $( this ).data( 'sort-direction', 'desc' )
+        return
+
+      $( this ).data( 'sort-direction', 'asc' )
+      if $( this ).data( 'sort-mode' ) == 'author'
+        $( this ).html( 'Citation (Sorted by PMID)' )
+        new_sort_mode = 'pmid'
+      else if $( this ).data( 'sort-mode' ) == 'pmid'
+        $( this ).html( 'Citation (Sorted by Title)' )
+        new_sort_mode = 'name'
+      else if $( this ).data( 'sort-mode' ) == 'name'
+        $( this ).html( 'Citation (Sorted by Publication Year)' )
+        new_sort_mode = 'year'
+      else
+        $( this ).html( 'Citation (Sorted by First Author)' )
+        new_sort_mode = 'author'
+
+      $( this ).data( 'sort-mode', new_sort_mode )
+
+      if new_sort_mode == 'pmid'
+        $( 'td.citation-handle' ).each () ->
+          $( this ).attr( 'data-sort', $( this ).attr( 'data-pmid' ) )
+      else if new_sort_mode == 'name'
+        $( 'td.citation-handle' ).each () ->
+          $( this ).attr( 'data-sort', $( this ).attr( 'data-name' ) )
+      else if new_sort_mode == 'year'
+        $( 'td.citation-handle' ).each () ->
+          $( this ).attr( 'data-sort', $( this ).attr( 'data-year' ) )
+      else
+        $( 'td.citation-handle' ).each () ->
+          $( this ).attr( 'data-sort', $( this ).attr( 'data-author' ) )
+
+      dt.rows( { page:'current' } ).invalidate()
+      dt.draw()
+
+    #################################################
+    # State Toggler for EEFPS
     $( '.status-switch .switch-input' ).on 'change', () ->
       eefps_id = $( this ).attr( 'eefps-id' )
       if $( this ).prop( 'checked' )

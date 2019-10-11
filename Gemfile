@@ -154,3 +154,6 @@ gem 'google-api-client'
 
 # Allows periodic background jobs
 gem 'sidekiq-cron', '~> 1.1'
+
+# For making sortable searchable tables
+gem 'jquery-datatables'
