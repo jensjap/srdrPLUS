@@ -210,6 +210,7 @@ Rails.application.routes.draw do
     member do
       post 'undo'
       post 'export'
+      post 'export_citation_labels'
     end
   end
 

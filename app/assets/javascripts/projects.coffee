@@ -4,7 +4,7 @@
 
 document.addEventListener 'turbolinks:load', ->
 
-  return unless $( '.projects' ).length > 0
+  return unless $( '.projects, .citations' ).length > 0
 
   do ->
 
@@ -45,7 +45,7 @@ document.addEventListener 'turbolinks:load', ->
       $( '.search-field' ).toggleClass 'expand-search'
       $( '#project-filter' ).focus()
       return
-    
+
     $( '.export-type-radio' ).on 'change', ( e ) ->
       if $( this ).is ':checked'
         export_button = $( this ).parents('.reveal').find( '.start-export-button' )
