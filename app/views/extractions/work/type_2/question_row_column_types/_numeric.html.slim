@@ -58,6 +58,7 @@
       = f.input :name, as: :numeric, label: false,
         input_html: { \
           data: { prereq: "prereq-#{ qrc.class }-#{ qrc.id }" },
+          onkeydown: "return event.keyCode !== 69",
           min: qrc.field_validation_value_for(:min_value),
           max: qrc.field_validation_value_for(:max_value) }
       div id="record-id-#{ record.id.to_s }" class='record-info' style='opacity: 0;' = 'Saved!'
