@@ -7,6 +7,10 @@ class StaticPagesController < ApplicationController
   }.stringify_keys
 
   def home
+    if current_user.present?
+      redirect_to(controller: 'projects', action: 'index')
+      return
+    end
     @recently_published_projects = HTTParty.get('https://srdr.ahrq.gov/projects/api_index_published')
     case cookies[:layout_style].to_i
     when 1
