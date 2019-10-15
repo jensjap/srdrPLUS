@@ -7,25 +7,47 @@
             .SRDR-Moving-system SRDR+:
             .SRDR-Moving-system Moving systematic reviews forward.
             .SRDR-is-a-free-pow SRDR+ is a free, powerful, easy to use tool for data extraction, management, and archival during systematic reviews.
-          .cell.medium-5 style="background-color: white; border-radius: 3px; box-shadow: 0 20px 40px 0 rgba(0, 0, 0, 0.15); padding: 33px;"
-            .Get-started-now
-              br
-              span.text-style-1 Get started now.
-              br
-              br
-            = simple_form_for(User.new, as: :user, url: registration_path(:user), html: { data: { 'abide': '' } }) do |f|
-              .alert.callout data-abide-error='' style='display: none;'
-                p
-                  i.fi-alert>
-                  ' Please correct the errors below.
+          .cell.medium-5 style="background-color: white; border-radius: 3px; box-shadow: 0 20px 40px 0 rgba(0, 0, 0, 0.15); padding: 0px;"
+            ul.tabs#login-box[data-tabs data-match-height='true']
+              li.tabs-title style='width: 50%'
+                a href='#existing-user-panel' Login
+              li.tabs-title.is-active style='width: 50%'
+                a href='#new-user-panel' Register
+            .tabs-content data-tabs-content='login-box'
+              .tabs-panel#existing-user-panel.align-middle style='padding: 33px;'
+                .Get-started-now
+                  span.text-style-1 Already have an account?
+                = simple_form_for(:user, url: new_user_session_path, html: { data: { 'abide': '' } }) do |f|
+                  .alert.callout data-abide-error='' style='display: none;'
+                    p
+                      i.fi-alert>
+                      ' Please correct the errors below.
 
-              .form-inputs
-                = f.input :email, label: 'Email Address', required: true, hint: 'Email must have the following format: example@domain.edu', autofocus: true
-                = f.input :password, required: true, hint: ("Password must contain a minium of #{@minimum_password_length} characters." if @minimum_password_length),
-                  input_html: { data: { validator: 'minimum_length', minimum_length: "#{ @minimum_password_length }" } }
+                  .form-inputs style='margin-top: 1rem;'
+                    = f.input :login, label: false, placeholder: 'Email or Username', required: true, autofocus: true
+                    = f.input :password, label: false, placeholder: 'Password', required: true
+                    /= f.input :remember_me, as: :boolean if devise_mapping.rememberable?
 
-              .form-actions
-                = f.button :submit, "SIGN UP FOR FREE"
+                  .form-actions
+                    = f.button :submit, "Sign In", class: "sign-in-button"
+
+              .tabs-panel.is-active#new-user-panel style='padding: 33px;'
+                .Get-started-now
+                  span.text-style-1 Get started now.
+                = simple_form_for(User.new, as: :user, url: registration_path(:user), html: { data: { 'abide': '' } }) do |f|
+                  .alert.callout data-abide-error='' style='display: none;'
+                    p
+                      i.fi-alert>
+                      ' Please correct the errors below.
+
+                  .form-inputs style='margin-top: 1rem;'
+                    = f.input :email, label: false, placeholder: 'Email', required: true, hint: 'Email must have the following format: example@domain.edu', autofocus: true
+                    = f.input :password, label: false, placeholder: 'Password', required: true, hint: ("Password must contain a minium of #{@minimum_password_length} characters." if @minimum_password_length),
+                      input_html: { data: { validator: 'minimum_length', minimum_length: "#{ @minimum_password_length }" } }
+
+                  .form-actions
+                    = f.button :submit, "Create an Account", class: "sign-up-button"
+               
 
   .grid-x.align-center-middle
     .cell.medium-9.Rectangle-2
@@ -39,7 +61,7 @@
       .grid-x.align-center-middle.user-description
         .cell.small-2
           = image_tag 'icon-guideline-developers.svg', class: 'float-center'
-        .cell.small-8
+        .cell.small-8 
           h4.how-you-title Guideline Developers
           h6.small.subheader Use SRDR+ for accessing data related to systematic reviews when producing guidelines and recommendation statements for their constituencies.
       .grid-x.align-center-middle.user-description

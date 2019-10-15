@@ -38,7 +38,8 @@ html class='no-js' lang='en'
           .content
             .breadcrumbs = render_breadcrumbs tag: :li, separator: ''
             - if content_for(:project_title)
-              h3 = "Project: " + yield(:project_title)
+              div style='margin-left: 2rem;'
+                h3 = yield(:project_title)
             = yield
             = render 'shared/scroll_top_wrapper'
 

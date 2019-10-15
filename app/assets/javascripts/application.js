@@ -1,9 +1,11 @@
 //= require jquery
 //= require jquery_ujs
 //= require turbolinks
+//= require datatables
 //= require init
 
 //= require jquery.turbolinks
+//= require datatables
 //= require foundation
 //= require toastr_rails
 //= require select2

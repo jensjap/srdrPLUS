@@ -12,7 +12,7 @@ document.addEventListener 'turbolinks:load', ->
       ->
         form.submit()
 
-    $( '.select2' ).on 'select2:select select2:unselect', (event) ->
+    $( 'form.edit_record .select2' ).on 'select2:select select2:unselect', (event) ->
       $form = $( this ).closest( 'form' )
 
       # Use this to keep track of the different timers.

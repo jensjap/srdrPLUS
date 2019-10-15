@@ -6,15 +6,15 @@
 
 .row
   .column.medium-12
-    h4 Extractions
-    table
+    div style='display: flex; flex-direction: row;'
+      h4 Extractions
+    table.extractions-list
       thead
         tr
-          th Citation
+          th.citation-handle-header[data-sort-mode="name" data-sort-direction="asc"] Citation (Sorted by Title)
           th Assigned User
           /th Role
           th Progress
-          th
           th
           th
 
@@ -26,12 +26,20 @@
         - else
           - @extractions.unconsolidated.includes([{ extractions_extraction_forms_projects_sections: [:status, { extraction_forms_projects_section: :section }] }, { projects_users_role: [{ projects_user: { user: :profile } }, :role] },{ citations_project: :citation }]).each do |extraction|
             tr
-              td = link_to extraction.try(:citations_project).try(:citation).try(:name), work_extraction_path(extraction)
+              - citation = extraction.citations_project.citation
+              - first_author = citation.first_author
+              - year = citation.year
+              - pmid = citation.pmid.to_s
+              - name = citation.name[0..70] + (citation.name.length > 70 ? "..." : "")
+              - citation_handle = first_author + ', ' + year + ', ' + pmid + '<br />' + name
+              - progress_meter_width = ((extraction.extractions_extraction_forms_projects_sections.map{ |eefps| eefps.status.name == 'Completed' ? 1 : 0 }.sum.to_f * 100) / extraction.extractions_extraction_forms_projects_sections.length).round.to_s
+              - tooltip_text = "<span style='font-weight: bold;'>Incomplete Sections:</span><br>" + (extraction.extractions_extraction_forms_projects_sections.map{ |eefps| eefps.status.name != 'Completed' ? eefps.section.name : "" } - [""]).join('<br>')
+
+              td.citation-handle[data-sort="#{ name }" data-pmid="#{ pmid }" data-name="#{ name }" data-year="#{ year }" data-author="#{ first_author }"] = link_to citation_handle.html_safe, work_extraction_path(extraction)
               td = extraction.projects_users_role.handle
-              td
-                - tooltip_text = "<span style='font-weight: bold;'>Incomplete Sections:</span><br>" + (extraction.extractions_extraction_forms_projects_sections.map{ |eefps| eefps.status.name != 'Completed' ? eefps.section.name : "" } - [""]).join('<br>')
+              td[data-sort="#{ progress_meter_width }"]
                 .success.progress style="width: 10vw;" data-allow-html="true" data-tooltip="" title="#{ tooltip_text }"
-                  .progress-meter style="width: #{((extraction.extractions_extraction_forms_projects_sections.map{ |eefps| eefps.status.name == 'Completed' ? 1 : 0 }.sum.to_f * 100) / extraction.extractions_extraction_forms_projects_sections.length).round.to_s}%;"
+                  .progress-meter style="width: #{ progress_meter_width }%;"
               /td = extraction.projects_users_role.role.name
               td = link_to t('work'), work_extraction_path(extraction)
               /td = link_to t('edit'), edit_extraction_path(extraction)
