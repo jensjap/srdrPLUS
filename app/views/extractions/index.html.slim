@@ -37,7 +37,7 @@
 
               td.citation-handle[data-sort="#{ name }" data-pmid="#{ pmid }" data-name="#{ name }" data-year="#{ year }" data-author="#{ first_author }"] = link_to citation_handle.html_safe, work_extraction_path(extraction)
               td data-sort="#{ extraction.projects_users_role.handle }"
-                .projects-users-role
+                .projects-users-role dropdown-active='false'
                   span.projects-users-role-label data-extraction-id="#{ extraction.id.to_s }"
                     = extraction.projects_users_role.handle
                   .projects-users-role-select.hide

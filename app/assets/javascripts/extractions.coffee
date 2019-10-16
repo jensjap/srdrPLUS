@@ -23,24 +23,39 @@ document.addEventListener 'turbolinks:load', ->
 #        $( ".status-switch .switch-input[eefps-id=" + eefps_id + "]" ).prop( 'checked', true )
 #        $( ".status-switch .switch-input[eefps-id=" + eefps_id + "]" ).change()
 
-    #################################################
-    # DataTables for Extractions List
     if $( 'body.extractions.index' ).length > 0
-      $( 'body' ).on 'click', ( event ) ->
-        $( '.projects-users-role-select' ).each () ->
-          if ( not $( event.target ).closest( '.projects-users-role-select' ).is( this )) and ( not $( event.target ).hasClass( 'projects-users-role-label' ))
+    #################################################
+    # Editable ProjectsUserRole
+      $( '.projects-users-role' ).hover(
+        ->
+          $( this ).closest( '.projects-users-role' ).find( '.projects-users-role-select' ).removeClass( 'hide' )
+          $( this ).closest( '.projects-users-role' ).find( '.projects-users-role-label' ).addClass( 'hide' )
+        ->
+          if $( this ).closest( '.projects-users-role' ).attr( 'dropdown-active' ) == 'false'
             $( this ).closest( '.projects-users-role' ).find( '.projects-users-role-select' ).addClass( 'hide' )
             $( this ).closest( '.projects-users-role' ).find( '.projects-users-role-label' ).removeClass( 'hide' )
+      )
+    
+      $( 'body' ).on 'click', ( event ) ->
+        $( '.projects-users-role-select' ).each () ->
+          if ( not $( event.target ).closest( '.projects-users-role-select' ).is( this ) ) and ( not $( event.target ).hasClass( 'projects-users-role-label' ))
+            $( this ).closest( '.projects-users-role' ).find( '.projects-users-role-select' ).addClass( 'hide' )
+            $( this ).closest( '.projects-users-role' ).find( '.projects-users-role-label' ).removeClass( 'hide' )
+            $( this ).closest( '.projects-users-role' ).attr( 'dropdown-active', 'false' )
       
-      $( '.projects-users-role-label' ).on 'click', ( event ) ->
-        $( this ).closest( '.projects-users-role' ).find( '.projects-users-role-select' ).removeClass( 'hide' )
-        $( this ).addClass( 'hide' )
+      $( '.projects-users-role' ).on 'click', ( event ) ->
+#        $( this ).closest( '.projects-users-role' ).find( '.projects-users-role-select' ).removeClass( 'hide' )
+        $( this ).closest( '.projects-users-role' ).attr( 'dropdown-active', 'true' )
+#        $( this ).addClass( 'hide' )
 
       $( '.projects-users-role-select select' ).on 'change', ( event ) ->
         $( this ).closest( 'form' ).submit()
         $( this ).closest( '.projects-users-role' ).find( '.projects-users-role-select' ).addClass( 'hide' )
         $( this ).closest( '.projects-users-role' ).find( '.projects-users-role-label' ).removeClass( 'hide' )
+        $( this ).closest( '.projects-users-role' ).attr( 'dropdown-active', 'false' )
       
+    #################################################
+    # DataTables for Extractions List
       dt = $( 'table.extractions-list' ).DataTable({
              "paging": false,
              "info": false,
