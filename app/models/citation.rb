@@ -102,7 +102,10 @@ class Citation < ApplicationRecord
   end
 
   def year
-    return journal.publication_date.match(/[1-2][0-9][0-9][0-9]/)[0] || journal.publication_date || ''
+    if not journal then return '' end
+    year_match = journal.publication_date.match(/[1-2][0-9][0-9][0-9]/)
+    if year_match then return year_match[0] end
+    return journal.publication_date
   end
 
   def first_author
@@ -122,5 +125,11 @@ class Citation < ApplicationRecord
     string_handle += name || ''
  
     return string_handle
+  end
+
+  def label_method
+    pmid.present? ?
+      "#{ name } (PMID: #{ pmid })" :
+      name
   end
 end

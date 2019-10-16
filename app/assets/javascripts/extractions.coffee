@@ -26,6 +26,21 @@ document.addEventListener 'turbolinks:load', ->
     #################################################
     # DataTables for Extractions List
     if $( 'body.extractions.index' ).length > 0
+      $( 'body' ).on 'click', ( event ) ->
+        $( '.projects-users-role-select' ).each () ->
+          if ( not $( event.target ).closest( '.projects-users-role-select' ).is( this )) and ( not $( event.target ).hasClass( 'projects-users-role-label' ))
+            $( this ).closest( '.projects-users-role' ).find( '.projects-users-role-select' ).addClass( 'hide' )
+            $( this ).closest( '.projects-users-role' ).find( '.projects-users-role-label' ).removeClass( 'hide' )
+      
+      $( '.projects-users-role-label' ).on 'click', ( event ) ->
+        $( this ).closest( '.projects-users-role' ).find( '.projects-users-role-select' ).removeClass( 'hide' )
+        $( this ).addClass( 'hide' )
+
+      $( '.projects-users-role-select select' ).on 'change', ( event ) ->
+        $( this ).closest( 'form' ).submit()
+        $( this ).closest( '.projects-users-role' ).find( '.projects-users-role-select' ).addClass( 'hide' )
+        $( this ).closest( '.projects-users-role' ).find( '.projects-users-role-label' ).removeClass( 'hide' )
+      
       dt = $( 'table.extractions-list' ).DataTable({
              "paging": false,
              "info": false,
