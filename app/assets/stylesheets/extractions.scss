@@ -97,9 +97,11 @@ body.extractions.index {
 
   .projects-users-role {
     cursor: pointer;
-//    .projects-users-role-label {
-//      border: 5px solid transparent;
-//    }
+    .projects-users-role-label {
+      padding-left: 8px;
+      padding-right: 20px;
+      white-space: nowrap;
+    }
 //    .projects-users-role-label:hover {
 //      color: white;
 //      border-radius: 5px;
