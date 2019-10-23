@@ -94,4 +94,18 @@ body.extractions.index {
   .progress {
     margin-bottom: 0;
   }
+  .projects-users-role {
+    cursor: pointer;
+    .projects-users-role-label {
+      padding-left: 8px;
+      padding-right: 20px;
+      white-space: nowrap;
+    }
+//    .projects-users-role-label:hover {
+//      color: white;
+//      border-radius: 5px;
+//      border: 5px solid #006aaa;
+//      background-color: #006aaa;
+//    }
+  }
 }

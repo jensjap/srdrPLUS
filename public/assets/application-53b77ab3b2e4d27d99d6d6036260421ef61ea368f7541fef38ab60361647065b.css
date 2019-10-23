@@ -4935,6 +4935,16 @@ body.extractions.index .tooltip {
 body.extractions.index .progress {
   margin-bottom: 0;
 }
+/* line 97, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/extractions.scss */
+body.extractions.index .projects-users-role {
+  cursor: pointer;
+}
+/* line 99, /Users/jensjap/Projects/srdrPLUS/app/assets/stylesheets/extractions.scss */
+body.extractions.index .projects-users-role .projects-users-role-label {
+  padding-left: 8px;
+  padding-right: 20px;
+  white-space: nowrap;
+}
 /**
  * Foundation for Sites by ZURB
  * Version 6.5.3

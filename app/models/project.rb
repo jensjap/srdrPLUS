@@ -162,6 +162,7 @@ class Project < ApplicationRecord
         citation_groups[:citations_project_ids] << e.citations_project_id
         citation_groups[:citations_projects][e.citations_project_id] = Hash.new
         citation_groups[:citations_projects][e.citations_project_id][:citations_project_id] = e.citations_project_id
+        citation_groups[:citations_projects][e.citations_project_id][:citation_id] = e.citation.id
         citation_groups[:citations_projects][e.citations_project_id][:citation_name_short]  = e.citations_project.citation.name.truncate(32)
         citation_groups[:citations_projects][e.citations_project_id][:citation_name_long]   = e.citations_project.citation.name
         citation_groups[:citations_projects][e.citations_project_id][:data_discrepancy]     = false
