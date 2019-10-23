@@ -15,8 +15,11 @@ class ExtractionsController < ApplicationController
   # GET /projects/1/extractions
   # GET /projects/1/extractions.json
   def index
+    @is_leader = false
     if @project.leaders.include? current_user
+      @is_leader = false
       @extractions = @project.extractions
+      @projects_users_roles = ProjectsUsersRole.joins(:projects_user).where(projects_users: { project: @project })
       @citation_groups = @project.citation_groups
     else
       @extractions = @project.extractions.joins(projects_users_role: :projects_user).where(projects_users_role: { projects_users: { user_id: current_user.id } })
@@ -34,9 +37,11 @@ class ExtractionsController < ApplicationController
 
   # GET /extractions/new
   def new
-    @extraction           = @project.extractions.new
+    @extraction           = @project.extractions.new(citations_project: CitationsProject.new(project: @project))
     @citations_projects   = @project.citations_projects
+    @citations            = @project.citations
     @projects_users_roles = ProjectsUsersRole.joins(:projects_user).where(projects_users: { project: @project })
+    @current_projects_users_role = ProjectsUsersRole.joins(:projects_user).where(projects_users: { user: current_user, project: @project }).order(role_id: :asc).first
 
     authorize(@extraction.project, policy_class: ExtractionPolicy)
 
@@ -56,8 +61,8 @@ class ExtractionsController < ApplicationController
   # POST /extractions.json
   def create
     lsof_extractions = Array.new
-    params["extraction"]["citations_project"].delete_if { |i| i=="" }.map(&:to_i).each do |citations_project_id|
-      lsof_extractions << @project.extractions.build(citations_project_id: citations_project_id, projects_users_role_id: params["extraction"]["projects_users_role_id"].to_i)
+    params["extraction"]["citation"].delete_if { |i| i=="" }.map(&:to_i).each do |citation_id|
+      lsof_extractions << @project.extractions.build(citations_project: CitationsProject.find_by(citation_id: citation_id, project: @project), projects_users_role_id: params["extraction"]["projects_users_role_id"].to_i)
     end
 
     authorize(@project, policy_class: ExtractionPolicy)
@@ -83,11 +88,13 @@ class ExtractionsController < ApplicationController
       if @extraction.update(extraction_params)
         format.html { redirect_to work_extraction_path(@extraction,
                                                        anchor: "panel-tab-#{ params[:extraction][:extraction_forms_projects_section_id] }"),
-                                  notice: t('success') }
+                                                       notice: t('success') }
         format.json { render :show, status: :ok, location: @extraction }
+        format.js
       else
         format.html { render :edit }
         format.json { render json: @extraction.errors, status: :unprocessable_entity }
+        format.js
       end
     end
   end

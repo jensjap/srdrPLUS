@@ -33,12 +33,6 @@ class CitationsProject < ApplicationRecord
 
   accepts_nested_attributes_for :citation, reject_if: :all_blank
 
-  def label_method
-    citation.pmid.present? ?
-      "#{ citation.name } (PMID: #{ citation.pmid })" :
-      citation.name
-  end
-
   # We find all CitationsProject entries that have the exact same citation_id
   # and project_id. Then we pick the first (oldest) one. We refer to it as the
   # "Master CP" and link associations from all other CitationsProject entries

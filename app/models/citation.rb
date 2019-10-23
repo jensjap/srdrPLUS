@@ -10,32 +10,32 @@ class Citation < ApplicationRecord
 
   has_one :journal, dependent: :destroy
 
-  has_many :citations_projects, 
-    dependent: :destroy, 
+  has_many :citations_projects,
+    dependent: :destroy,
     inverse_of: :citation
-  has_many :projects, 
+  has_many :projects,
       through: :citations_projects
   has_many :authors_citations,
     dependent: :destroy
   has_many :authors,
     through: :authors_citations
-  has_many :labels, 
-    through: :citations_projects, 
+  has_many :labels,
+    through: :citations_projects,
     dependent: :destroy
-  has_and_belongs_to_many :keywords, 
+  has_and_belongs_to_many :keywords,
     dependent: :destroy
 
-  accepts_nested_attributes_for :authors_citations, 
-    reject_if: :all_blank, 
+  accepts_nested_attributes_for :authors_citations,
+    reject_if: :all_blank,
     allow_destroy: true
   accepts_nested_attributes_for :keywords,
-    reject_if: :all_blank, 
+    reject_if: :all_blank,
     allow_destroy: true
-  accepts_nested_attributes_for :journal, 
-    reject_if: :all_blank, 
+  accepts_nested_attributes_for :journal,
+    reject_if: :all_blank,
     allow_destroy: true
-  accepts_nested_attributes_for :labels, 
-    reject_if: :all_blank, 
+  accepts_nested_attributes_for :labels,
+    reject_if: :all_blank,
     allow_destroy: true
 
   def abstract_utf8
@@ -102,7 +102,10 @@ class Citation < ApplicationRecord
   end
 
   def year
-    return journal.publication_date.match(/[1-2][0-9][0-9][0-9]/)[0] || journal.publication_date || ''
+    if not journal then return '' end
+    year_match = journal.publication_date.match(/[1-2][0-9][0-9][0-9]/)
+    if year_match then return year_match[0] end
+    return journal.publication_date
   end
 
   def first_author
@@ -120,7 +123,13 @@ class Citation < ApplicationRecord
     string_handle += pmid || ''
     string_handle += "\n"
     string_handle += name || ''
- 
+
     return string_handle
+  end
+
+  def label_method
+    pmid.present? ?
+      "#{ name } (PMID: #{ pmid })" :
+      name
   end
 end
