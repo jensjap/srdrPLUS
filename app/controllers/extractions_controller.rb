@@ -62,7 +62,9 @@ class ExtractionsController < ApplicationController
   def create
     lsof_extractions = Array.new
     params["extraction"]["citation"].delete_if { |i| i=="" }.map(&:to_i).each do |citation_id|
-      lsof_extractions << @project.extractions.build(citations_project: CitationsProject.find_by(citation_id: citation_id, project: @project), projects_users_role_id: params["extraction"]["projects_users_role_id"].to_i)
+      lsof_extractions << @project.extractions.build(
+        citations_project: CitationsProject.find_by(citation_id: citation_id, project: @project),
+        projects_users_role_id: params["extraction"]["projects_users_role_id"].to_i)
     end
 
     authorize(@project, policy_class: ExtractionPolicy)
@@ -85,6 +87,7 @@ class ExtractionsController < ApplicationController
     authorize(@extraction.project, policy_class: ExtractionPolicy)
 
     respond_to do |format|
+      byebug
       if @extraction.update(extraction_params)
         format.html { redirect_to work_extraction_path(@extraction,
                                                        anchor: "panel-tab-#{ params[:extraction][:extraction_forms_projects_section_id] }"),
@@ -204,8 +207,8 @@ class ExtractionsController < ApplicationController
     def extraction_params
       params.
         require(:extraction).
-        permit(:citations_project_id,
-          :projects_users_role_id,
+        permit(:projects_users_role_id,
+          citations_project_ids: [],
           extractions_key_questions_project_ids: [],
           key_questions_project_ids: [])
     end

@@ -1,3 +1,21 @@
+# == Schema Information
+#
+# Table name: profiles
+#
+#  id              :integer          not null, primary key
+#  user_id         :integer
+#  organization_id :integer
+#  time_zone       :string(255)      default("UTC")
+#  username        :string(255)
+#  first_name      :string(255)
+#  middle_name     :string(255)
+#  last_name       :string(255)
+#  advanced_mode   :boolean          default(FALSE)
+#  deleted_at      :datetime
+#  created_at      :datetime         not null
+#  updated_at      :datetime         not null
+#
+
 class Profile < ApplicationRecord
   include SharedProcessTokenMethods
 
@@ -29,10 +47,10 @@ class Profile < ApplicationRecord
   validate :validate_username
 
   def degree_ids=(tokens)
-    tokens.map { |token|
+    tokens.map do |token|
       resource = Degree.new
       save_resource_name_with_token(resource, token)
-    }
+    end
     super
   end
 
@@ -92,4 +110,3 @@ class Profile < ApplicationRecord
 #      PaperTrail::Version.where(event: 'destroy', item_type: self.class.name, item_id: self.id).last.created_at
 #    end
 end
-

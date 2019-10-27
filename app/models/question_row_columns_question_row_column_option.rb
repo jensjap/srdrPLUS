@@ -1,3 +1,17 @@
+# == Schema Information
+#
+# Table name: question_row_columns_question_row_column_options
+#
+#  id                            :integer          not null, primary key
+#  question_row_column_id        :integer
+#  question_row_column_option_id :integer
+#  name                          :text(65535)
+#  deleted_at                    :datetime
+#  active                        :boolean
+#  created_at                    :datetime         not null
+#  updated_at                    :datetime         not null
+#
+
 class QuestionRowColumnsQuestionRowColumnOption < ApplicationRecord
   include SharedParanoiaMethods
   include SharedQueryableMethods

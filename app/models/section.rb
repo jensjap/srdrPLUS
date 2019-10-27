@@ -1,3 +1,15 @@
+# == Schema Information
+#
+# Table name: sections
+#
+#  id         :integer          not null, primary key
+#  name       :string(255)
+#  default    :boolean          default(FALSE)
+#  deleted_at :datetime
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
+
 class Section < ApplicationRecord
   include SharedQueryableMethods
   include SharedSuggestableMethods

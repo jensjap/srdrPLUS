@@ -1,3 +1,14 @@
+# == Schema Information
+#
+# Table name: comparisons
+#
+#  id         :integer          not null, primary key
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#  deleted_at :datetime
+#  is_anova   :boolean          default(FALSE), not null
+#
+
 class Comparison < ApplicationRecord
   acts_as_paranoid
   has_paper_trail

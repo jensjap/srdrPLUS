@@ -1,3 +1,18 @@
+# == Schema Information
+#
+# Table name: eefps_qrcfs
+#
+#  id                                                      :integer          not null, primary key
+#  extractions_extraction_forms_projects_sections_type1_id :integer
+#  extractions_extraction_forms_projects_section_id        :integer
+#  question_row_column_field_id                            :integer
+#  name                                                    :text(65535)
+#  deleted_at                                              :datetime
+#  active                                                  :boolean
+#  created_at                                              :datetime         not null
+#  updated_at                                              :datetime         not null
+#
+
 class ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField < ApplicationRecord
   include SharedParanoiaMethods
   include SharedProcessTokenMethods
@@ -22,14 +37,14 @@ class ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField < Applica
   has_many :records, as: :recordable
 
   delegate :extraction, to: :extractions_extraction_forms_projects_section
-  delegate :project, to: :extraction
+  delegate :project,    to: :extractions_extraction_forms_projects_section
 
 #  def record_ids=(tokens)
 #    byebug
-#    tokens.map { |token|
+#    tokens.map do |token|
 #      resource = self.question_row_column_field.question_row_column.question_row_columns_question_row_column_options.build(question_row_column_option_id: 1)
 #      save_resource_name_with_token(resource, token)
-#    }
+#    end
 #    byebug
 #    super
 #  end

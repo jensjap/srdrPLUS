@@ -1,26 +1,46 @@
 <% provide(:title, 'Help & Training') %>
 
-<div class="grid-container">
-  <h2>Getting Help</h2>
-  <div>
-    <p>
-      In order to familiarize yourself with SRDRPLUS, we recommend that you download the following training tutorial which can be completed at your convenience, offline.
-      <br>
-      <br>
-      <a href='https://srdrplus.s3.amazonaws.com/SRDR%2BPLUS%2BTraining%2B-%2B12-16-2018.pdf' target='_blank'>
-        2018 SRDR PLUS Training Manual
-      </a>
-      (Right-click, or control-click on a Mac, the link and choose “Save Link As” to save the document to your computer)<br>
-      File size: 9.1 MB<br>
-      MD5 checksum: 66ed426085beeff2c7173fe0792bbf1e<br>
-    </p>
+<h2 style="margin: 2rem;">Getting Help</h2>
+<div class="lead">
+  <div style="margin: 2rem;">
+    Below you will find a variety of documents that will help you familiarize yourself with SRDR+ features. We recommend that you read through them to get the most out of your SRDR+ experience. 
   </div>
-
-  <div>
-    <p>Or you may contact us. Our information can be found <a href='./contact'>here</a>.</p>
+  <div style="margin: 2rem;">
+    <a href='https://srdrplus.s3.amazonaws.com/SRDR%2BPLUS%2BTraining%2B-%2B12-16-2018.pdf' target='_blank'>
+      2018 SRDR PLUS Training Manual
+    </a>
+    <div class="small">
+      <small>
+        (Right-click, or control-click on a Mac, the link and choose “Save Link As” to save the document to your computer)
+      </small>
+    </div>
+    <div>
+      File size: 9.1 MB
+    </div>
+    <div>
+      MD5 checksum: 66ed426085beeff2c7173fe0792bbf1e
+    </div>
   </div>
+  <div style="margin: 2rem;">
+    <a href='https://srdrplus.s3.amazonaws.com/Appendix+D_Instructions+for+importing+structured+data+from+DistillerSR+to+SRDR.docx' target='_blank'>
+      Instructions for Importing Structured Data from DistillerSR into SRDR+
+    </a>
+    <div>
+      File size: 6 MB
+    </div>
+    <div>
+      MD5 checksum: 3d2f796f825606199c4ce3109894b052
+    </div>
+  </div>
+  <div style="margin: 2rem;">
+    Or you may contact us. Our information can be found <a style="font-weight:bold" href='./contact'>here</a>.
+  </div>
+</div>
 
-  <% if false %>
+
+<!--
+<#% if false %>
+
 
   <div id='content' tabindex=200>
     <script type="text/javascript" src="/movies/com/js/swfobject/swfobject.js"></script>
@@ -78,16 +98,16 @@
           In the Systematic Review Data Repository you will see the following icons:<br/><br/>
 
 
-          <%= image_tag "Accept.png", :style=>"border-style:none;vertical-align:top;", :alt => "Accept"  %> Save Form or Table Data<br/>
-          <%= image_tag "Add.png", :style=>"border-style:none;vertical-align:top;", :alt => "Add"  %> Add Item, Record or Table Row<br/>
-          <%= image_tag "Cancel.png", :style=>"border-style:none;vertical-align:top;", :alt => "Cancel"  %> Cancel<br/>
-          <%= image_tag "Silk_cross.png", :style=>"border-style:none;vertical-align:top;", :alt => "Delete or Close"  %> Delete Item or Close Window<br/>
-          <%= image_tag "Group.png", :style=>"border-style:none;vertical-align:top;", :alt => "Manage Users"  %> Manage Users for a Systematic Review (Project Leads only)<br/>
-          <%= image_tag "Information-silk.png", :style=>"border-style:none;vertical-align:top;", :alt => "Informational message"  %> Informational Message<br/>
-          <%= image_tag "Exclamation.png", :style=>"border-style:none;vertical-align:top;", :alt => "Warning or Error Message"  %> Warning or Error Message<br/>
-          <%= image_tag "Zoom.png", :style=>"border-style:none;vertical-align:top;", :alt => "Search"  %> Search<br/>
-          <%= image_tag "Note_go.png", :style=>"border-style:none;vertical-align:top;", :alt => "Continue"  %> Continue<br/>
-          <%= image_tag "Printer.png", :style=>"border-style:none;vertical-align:top;", :alt => "Print"  %> Print<br/>
+          <#%= image_tag "Accept.png", :style=>"border-style:none;vertical-align:top;", :alt => "Accept"  %> Save Form or Table Data<br/>
+          <#%= image_tag "Add.png", :style=>"border-style:none;vertical-align:top;", :alt => "Add"  %> Add Item, Record or Table Row<br/>
+          <#%= image_tag "Cancel.png", :style=>"border-style:none;vertical-align:top;", :alt => "Cancel"  %> Cancel<br/>
+          <#%= image_tag "Silk_cross.png", :style=>"border-style:none;vertical-align:top;", :alt => "Delete or Close"  %> Delete Item or Close Window<br/>
+          <#%= image_tag "Group.png", :style=>"border-style:none;vertical-align:top;", :alt => "Manage Users"  %> Manage Users for a Systematic Review (Project Leads only)<br/>
+          <#%= image_tag "Information-silk.png", :style=>"border-style:none;vertical-align:top;", :alt => "Informational message"  %> Informational Message<br/>
+          <#%= image_tag "Exclamation.png", :style=>"border-style:none;vertical-align:top;", :alt => "Warning or Error Message"  %> Warning or Error Message<br/>
+          <#%= image_tag "Zoom.png", :style=>"border-style:none;vertical-align:top;", :alt => "Search"  %> Search<br/>
+          <#%= image_tag "Note_go.png", :style=>"border-style:none;vertical-align:top;", :alt => "Continue"  %> Continue<br/>
+          <#%= image_tag "Printer.png", :style=>"border-style:none;vertical-align:top;", :alt => "Print"  %> Print<br/>
         </div>
       </div>
       <div id="help-4"><br/><br/>
@@ -119,9 +139,9 @@
       <script>
         $(function(e) {
           selected = 0;
-          <% if defined?(@selected) %>
-              selected = <%= @selected.to_i %>;
-        <% end %>
+          <#% if defined?(@selected) %>
+              selected = <#%= @selected.to_i %>;
+        <#% end %>
             $( "#help-tabs" ).tabs({
               selected: selected,
               ajaxOptions: {
@@ -138,6 +158,7 @@
       </script>
 
     </div>
+  </div>
 
-  <% end %>
-</div>
+  <#% end %>
+  -->

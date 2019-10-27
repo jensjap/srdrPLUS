@@ -1,0 +1,143 @@
+// Place all the styles related to the ProjectReportLinks controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+.field-option-column-title {
+  cursor: copy;
+}
+.query-pill {
+  border: 1px solid;
+  margin: 10px 0;
+  padding: 3px;
+  cursor: grab;
+  display: block;
+  font-weight: 100;
+  color: white;
+  border-radius: 5px;
+  text-align: center;
+  font-weight: 500;
+  font-family: sans-serif;
+  font-size: 18px;
+}
+.droppable {
+  vertical-align: top;
+  min-height: 300px !important;
+  margin: 0px !important;
+}
+.button.success.add-column {
+  color: white;
+}
+li > .field-option-header, li > .field-option-header > * {
+  padding-left: 0;
+}
+.field-option-column-title {
+  text-align: center;
+  border: 1px solid black;
+}
+.noselect {
+  color: lightgrey;
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome and Opera */
+}
+span.grippy {
+  float: right;
+  content: '....';
+  width: 10px;
+  line-height: 5px;
+  cursor: move;
+  margin-right: 12px;
+  font-size: 19px;
+  font-family: sans-serif;
+  letter-spacing: 4px;
+  color: #cccccc;
+  text-shadow: 1px 0 1px black;
+}
+span.grippy::after {
+  content: '.. .. .. ..';
+}
+
+#columns > div > h5 {
+  margin-bottom: 0;
+  padding-left: 10px;
+  background-color: white;
+}
+
+#columns > div > h5 > input {
+  width: calc(100% - 60px);
+  text-align: center;
+}
+
+.column-sortable {
+  overflow-x: auto;
+  display: flex;
+}
+
+#columns > div {
+  flex: 0 0 auto;
+}
+
+#filterOptions > div > div.cell.small-12 > div > div > div > label > input[type=checkbox] {
+  margin: unset;
+  margin: 0 3px;
+}
+
+.lds-ellipsis {
+  display: inline-block;
+  position: relative;
+  width: 64px;
+  height: 64px;
+}
+.lds-ellipsis div {
+  position: absolute;
+  top: 27px;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: black;
+  animation-timing-function: cubic-bezier(0, 1, 1, 0);
+}
+.lds-ellipsis div:nth-child(1) {
+  left: 6px;
+  animation: lds-ellipsis1 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(2) {
+  left: 6px;
+  animation: lds-ellipsis2 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(3) {
+  left: 26px;
+  animation: lds-ellipsis2 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(4) {
+  left: 45px;
+  animation: lds-ellipsis3 0.6s infinite;
+}
+@keyframes lds-ellipsis1 {
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes lds-ellipsis3 {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0);
+  }
+}
+@keyframes lds-ellipsis2 {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(19px, 0);
+  }
+}

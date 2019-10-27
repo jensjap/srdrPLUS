@@ -5,7 +5,6 @@
 document.addEventListener 'turbolinks:load', ->
 
   do ->
-
     timers = {}
 
     submitForm = ( form ) ->

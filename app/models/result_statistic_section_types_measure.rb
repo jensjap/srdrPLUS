@@ -1,3 +1,19 @@
+# == Schema Information
+#
+# Table name: result_statistic_section_types_measures
+#
+#  id                                        :integer          not null, primary key
+#  result_statistic_section_type_id          :integer
+#  measure_id                                :integer
+#  deleted_at                                :datetime
+#  active                                    :boolean
+#  created_at                                :datetime         not null
+#  updated_at                                :datetime         not null
+#  default                                   :boolean          default(FALSE)
+#  type1_type_id                             :integer
+#  result_statistic_section_types_measure_id :integer
+#
+
 # These are the measures that should appear for each result_statistic_section.
 class ResultStatisticSectionTypesMeasure < ApplicationRecord
   include SharedParanoiaMethods

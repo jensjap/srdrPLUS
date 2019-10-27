@@ -1,0 +1,50 @@
+#panel-6.tabs-panel.is-active
+  fieldset
+    legend Search Strategy & Summary of Results
+    div data-row-span="1"
+      div data-field-span="1"
+        label 43. Analytic/ Conceptual Framework
+        = f.simple_fields_for :sd_analytic_frameworks do |sd_analytic_framework|
+          = render 'sd_meta_data/form/dynamic_fields/sd_analytic_framework_fields', f: sd_analytic_framework
+        div
+          = link_to_add_association 'add', f, :sd_analytic_frameworks, partial: 'sd_meta_data/form/dynamic_fields/sd_analytic_framework_fields'
+    div data-row-span="1"
+      div data-field-span="1"
+        label 44-47. Search Strategies
+        = f.simple_fields_for :sd_search_strategies do |sd_search_strategy|
+          = render 'sd_meta_data/form/dynamic_fields/sd_search_strategy_fields', f: sd_search_strategy
+        div
+          = link_to_add_association 'add', f, :sd_search_strategies, partial: 'sd_meta_data/form/dynamic_fields/sd_search_strategy_fields'
+    div data-row-span="1"
+      div data-field-span="1"
+        label 48. Grey Literature Search
+        = f.simple_fields_for :sd_grey_literature_searches do |sd_grey_literature_search|
+          = render 'sd_meta_data/form/dynamic_fields/sd_grey_literature_search_fields', f: sd_grey_literature_search
+        div
+          = link_to_add_association 'add', f, :sd_grey_literature_searches, partial: 'sd_meta_data/form/dynamic_fields/sd_grey_literature_search_fields'
+    div data-row-span="1"
+      div data-field-span="1"
+        label 49. PRISMA/Literature Flow
+        = f.simple_fields_for :sd_prisma_flows do |sd_prisma_flow|
+          = render 'sd_meta_data/form/dynamic_fields/sd_prisma_flow_fields', f: sd_prisma_flow
+        div
+          = link_to_add_association 'add', f, :sd_prisma_flows, partial: 'sd_meta_data/form/dynamic_fields/sd_prisma_flow_fields'
+    div data-row-span="1"
+      div data-field-span="1"
+        label 50-53. Results/Summary of Evidence/Findings
+        = f.simple_fields_for :sd_summary_of_evidences do |sd_summary_of_evidence|
+          = render 'sd_meta_data/form/dynamic_fields/sd_summary_of_evidence_fields', f: sd_summary_of_evidence
+        div
+          = link_to_add_association 'add', f, :sd_summary_of_evidences, partial: 'sd_meta_data/form/dynamic_fields/sd_summary_of_evidence_fields'
+  br/
+  br/
+  fieldset
+    legend Section Review & Validation
+    div data-row-span="1"
+      div data-field-span="1"
+        div Section Finished?
+        .switch
+          input.switch-input id="6-yes-no-section" type="checkbox" name="sectionSection" data-sd_meta_datum_id="#{@sd_meta_datum.id}"
+          label.switch-paddle for="6-yes-no-section"
+            span.switch-active aria-hidden="true" Yes
+            span.switch-inactive aria-hidden="true" No

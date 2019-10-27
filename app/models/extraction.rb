@@ -1,3 +1,17 @@
+# == Schema Information
+#
+# Table name: extractions
+#
+#  id                     :integer          not null, primary key
+#  project_id             :integer
+#  citations_project_id   :integer
+#  projects_users_role_id :integer
+#  consolidated           :boolean          default(FALSE)
+#  deleted_at             :datetime
+#  created_at             :datetime         not null
+#  updated_at             :datetime         not null
+#
+
 class Extraction < ApplicationRecord
   include ConsolidationHelper
 

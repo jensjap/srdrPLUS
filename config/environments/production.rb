@@ -69,12 +69,14 @@ Rails.application.configure do
   # config.action_mailer.raise_delivery_errors = false
 
   # Set default url options. In production, :host should be set to the actual host of your application.
-  config.action_mailer.default_url_options = { host: 'https://srdrplus.ahrq.gov' }
+  config.action_mailer.default_url_options = { host: 'http://ec2-3-81-33-151.compute-1.amazonaws.com/' }
   config.action_mailer.perform_deliveries = true
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
-    address: '10.1.5.15',
-    port: 25,
+    address: 'smtp.sendgrid.net',
+    user_name: Rails.application.credentials[:sendgrid][:username],
+    password: Rails.application.credentials[:sendgrid][:password],
+    port: 587,
     tls: false
   }
 

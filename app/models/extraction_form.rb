@@ -1,3 +1,14 @@
+# == Schema Information
+#
+# Table name: extraction_forms
+#
+#  id         :integer          not null, primary key
+#  name       :string(255)
+#  deleted_at :datetime
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
+
 class ExtractionForm < ApplicationRecord
   include SharedPublishableMethods
   include SharedSuggestableMethods

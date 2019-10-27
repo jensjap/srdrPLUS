@@ -64,6 +64,7 @@
 @import 'foundation';
 
 @include foundation-grid;
+
 //@include foundation-flex-classes;
 //@include foundation-flex-grid;
 
@@ -506,9 +507,11 @@ $meter-fill-bad: $alert-color;
 
 $offcanvas-sizes: (
   small: 250px,
+  large: 100%,
 );
 $offcanvas-vertical-sizes: (
   small: 250px,
+  large: 100%,
 );
 $offcanvas-background: $light-gray;
 $offcanvas-shadow: 0 0 10px rgba($black, 0.7);
@@ -548,7 +551,7 @@ $pagination-item-color: $black;
 $pagination-item-padding: rem-calc(3 10);
 $pagination-item-spacing: rem-calc(1);
 $pagination-radius: $global-radius;
-$pagination-item-background-hover: $light-gray;
+$pagination-item-background-hover: transparent;
 $pagination-item-background-current: $primary-color;
 $pagination-item-color-current: $white;
 $pagination-item-color-disabled: $medium-gray;

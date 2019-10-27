@@ -1,8 +1,43 @@
+# == Schema Information
+#
+# Table name: users
+#
+#  id                     :integer          not null, primary key
+#  email                  :string(255)      default(""), not null
+#  encrypted_password     :string(255)      default(""), not null
+#  reset_password_token   :string(255)
+#  reset_password_sent_at :datetime
+#  remember_created_at    :datetime
+#  sign_in_count          :integer          default(0), not null
+#  current_sign_in_at     :datetime
+#  last_sign_in_at        :datetime
+#  current_sign_in_ip     :string(255)
+#  last_sign_in_ip        :string(255)
+#  created_at             :datetime         not null
+#  updated_at             :datetime         not null
+#  deleted_at             :datetime
+#  confirmation_token     :string(255)
+#  confirmed_at           :datetime
+#  confirmation_sent_at   :datetime
+#  unconfirmed_email      :string(255)
+#  failed_attempts        :integer          default(0), not null
+#  unlock_token           :string(255)
+#  locked_at              :datetime
+#  user_type_id           :integer
+#  provider               :string(255)
+#  uid                    :string(255)
+#  token                  :string(255)
+#  expires_at             :integer
+#  expires                :boolean
+#  refresh_token          :string(255)
+#
+
 class User < ApplicationRecord
   acts_as_paranoid
   has_paper_trail ignore: [:sign_in_count, :current_sign_in_at,
       :last_sign_in_at, :current_sign_in_ip, :last_sign_in_ip]
 
+  devise :omniauthable, :omniauth_providers => [:google_oauth2]
 
   after_create :ensure_profile_username_uniqueness
   before_validation { self.user_type = UserType.where(user_type: 'Member').first if self.user_type.nil? }
@@ -83,6 +118,19 @@ class User < ApplicationRecord
       else
         where(username: conditions[:username]).first
       end
+    end
+  end
+
+
+  def self.from_omniauth(auth)
+    # Either create a User record or update it based on the provider (Google) and the UID
+    #
+    # This is not quite what we want though, we want to add Google to existing users, no? - Birol
+    where(provider: auth.provider, uid: auth.uid).first_or_create do |user|
+      user.token = auth.credentials.token
+      user.expires = auth.credentials.expires
+      user.expires_at = auth.credentials.expires_at
+      user.refresh_token = auth.credentials.refresh_token
     end
   end
 

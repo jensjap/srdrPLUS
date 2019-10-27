@@ -1,8 +1,28 @@
+# == Schema Information
+#
+# Table name: projects
+#
+#  id                      :integer          not null, primary key
+#  name                    :string(255)
+#  description             :text(65535)
+#  attribution             :text(65535)
+#  methodology_description :text(65535)
+#  prospero                :string(255)
+#  doi                     :string(255)
+#  notes                   :text(65535)
+#  funding_source          :string(255)
+#  deleted_at              :datetime
+#  created_at              :datetime         not null
+#  updated_at              :datetime         not null
+#
+
 class Project < ApplicationRecord
   require 'csv'
 
   include SharedPublishableMethods
   include SharedQueryableMethods
+
+  attr_accessor :create_empty
 
   acts_as_paranoid
   has_paper_trail
@@ -11,9 +31,15 @@ class Project < ApplicationRecord
   paginates_per 8
 
   scope :published, -> { joins(publishings: :approval) }
+  scope :pending, -> { joins(:publishings).\
+                      left_joins(publishings: :approval).\
+                      where(publishings: { approvals: { id:nil } }) }
+  scope :draft, -> { left_joins(:publishings).\
+                     where(publishings: { id: nil }) }
   scope :lead_by_current_user, -> {}
 
-  after_create :create_default_extraction_form
+  after_create :create_default_extraction_form, unless: :create_empty
+  after_create :create_empty_extraction_form, if: :create_empty
   after_create :create_default_perpetual_task
   after_create :create_default_member
 
@@ -57,11 +83,15 @@ class Project < ApplicationRecord
   has_many :screening_options
   has_many :screening_option_types, through: :screening_options
 
+  has_many :sd_meta_data
+  has_many :imported_files, dependent: :destroy
   validates :name, presence: true
 
   #accepts_nested_attributes_for :extraction_forms_projects, reject_if: :all_blank, allow_destroy: true
   #accepts_nested_attributes_for :key_questions_projects, reject_if: :all_blank, allow_destroy: true
-  accepts_nested_attributes_for :citations, allow_destroy: true
+  accepts_nested_attributes_for :imported_files
+  accepts_nested_attributes_for :key_questions
+  accepts_nested_attributes_for :citations
   accepts_nested_attributes_for :citations_projects, allow_destroy: true
   accepts_nested_attributes_for :tasks, allow_destroy: true
   accepts_nested_attributes_for :assignments, allow_destroy: true
@@ -88,6 +118,22 @@ class Project < ApplicationRecord
 
   def key_questions_projects_array_for_select
     self.key_questions_projects.map { |kqp| [kqp.key_question.name, kqp.id] }
+  end
+
+  def publication_requested_at
+    self.publishings.any?(&:approved?).try(:last).try(:created_at)
+  end
+
+  def prospero_link
+    self.prospero.present? ?
+      "<a target='_blank' href='https://www.crd.york.ac.uk/prospero/display_record.asp?ID=#{self.prospero}'>https://www.crd.york.ac.uk/prospero/display_record.asp?ID=#{self.prospero}</a>" :
+      "Not Available"
+  end
+
+  def creator
+    User.joins({ projects_users: [:project, { projects_users_roles: :role }] })
+      .where(projects_users: { project_id: id })
+      .first
   end
 
   def leaders
@@ -886,6 +932,14 @@ class Project < ApplicationRecord
     end
   end
 
+  def key_questions_attributes=(attributes)
+    attributes.each do |i, kq_attrib|
+      kq = KeyQuestion.find_or_create_by name: kq_attrib['name']
+      KeyQuestionsProject.find_or_create_by project: self, key_question: kq
+    end
+    #super(attributes)
+  end
+
   private
     def process_list_of_pmids(listOf_pmids)
       citations_already_in_system = []
@@ -911,6 +965,14 @@ class Project < ApplicationRecord
         extraction_forms_project_type: ExtractionFormsProjectType.find_by(name: "Standard"),
         extraction_form: ExtractionForm.find_by(name: "ef1")
       )
+    end
+
+    def create_empty_extraction_form
+      efp = ExtractionFormsProject.new(project: self,
+                                       extraction_forms_project_type: ExtractionFormsProjectType.first,
+                                       extraction_form: ExtractionForm.first)
+      efp.create_empty = true
+      efp.save!
     end
 
     def create_default_perpetual_task

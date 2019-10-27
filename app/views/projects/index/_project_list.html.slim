@@ -1,24 +1,20 @@
-ul.accordion data-accordion='' data-multi-expand='false' data-allow-all-closed='true'
+- if @projects.blank?
 
-  - if @projects.blank?
+  h4 No Projects found.
 
-    h4 No Projects found.
-
-  - @projects.each do |project|
-
-    - if project.publishings.present?
-
-      - if project.publishings.any?(&:approved?)
-
-        li.publishing-approved.accordion-item data-accordion-item=''
-          = render 'projects/index/project_list_item', project: project
-
-      - else
-
-        li.publishing-requested.accordion-item data-accordion-item=''
-          = render 'projects/index/project_list_item', project: project
-
-    - else
-
+- else
+  h3 Draft
+  ul.accordion data-accordion='' data-multi-expand='false' data-allow-all-closed='true'
+    - @draft.each do |project|
       li.accordion-item data-accordion-item=''
+        = render 'projects/index/project_list_item', project: project
+  h3 Pending Publication
+  ul.accordion data-accordion='' data-multi-expand='false' data-allow-all-closed='true'
+    - @pending.each do |project|
+      li.publishing-requested.accordion-item data-accordion-item=''
+        = render 'projects/index/project_list_item', project: project
+  h3 Published
+  ul.accordion data-accordion='' data-multi-expand='false' data-allow-all-closed='true'
+    - @published.each do |project|
+      li.publishing-approved.accordion-item data-accordion-item=''
         = render 'projects/index/project_list_item', project: project

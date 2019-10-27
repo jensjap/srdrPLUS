@@ -1,3 +1,14 @@
+# == Schema Information
+#
+# Table name: type1_types
+#
+#  id         :integer          not null, primary key
+#  name       :string(255)
+#  deleted_at :datetime
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
+
 class Type1Type < ApplicationRecord
   has_many :extraction_forms_projects_sections_type1s,             inverse_of: :type1_type
   has_many :extractions_extraction_forms_projects_sections_type1s, inverse_of: :type1_type

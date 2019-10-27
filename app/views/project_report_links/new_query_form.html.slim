@@ -1,0 +1,224 @@
+script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"
+
+ul.tabs#query-tabs[data-tabs]
+  li.tabs-title.is-active#filter-tab-title
+    a href="#filter-panel"
+      | Step 1: Filter Options
+  li.tabs-title#query-tab-title
+    a href="#options-form"
+      | Step 2: Create Query
+
+div.tabs-content data-tabs-content='query-tabs'
+  div.tabs-panel.is-active#filter-panel
+    = render partial: 'project_report_links/new_query_form/options_filters', locals: { key_questions_projects: @key_questions_projects, included_type1s: @included_type1s, sd_meta_datum: @sd_meta_datum }
+
+  div.tabs-panel#options-form
+    = render partial: 'project_report_links/new_query_form/options_form', locals: { groups: @groups, project: @project, key_question_project_ids: @key_question_project_ids, results_groups: @results_groups }
+javascript:
+  $.event.props.push('dataTransfer');
+
+  function addColumn() {
+    $('.noselect').remove();
+    var columnName = $('#column-name').val();
+    if (columnName === '') {
+      $('#column-name').focus().select();
+      return;
+    }
+
+    $('#columns').append(`<div class="field-column" style="width: 300px;"><span class="grippy" draggable="true"></span><h5 class='field-option-column-title'>${columnName}</h5><div class="droppable sortable"></div></div>`);
+    $('#column-name').val('');
+    makeSortable();
+  }
+
+  function removeLastColumn() {
+    $('#columns > div:last-child').remove();
+  }
+
+  function extractReportQuestions() {
+    var payload = {
+      columns: []
+    };
+
+    $('.droppable').each(function() {
+      var currentEl = $(this);
+      var name = currentEl.closest('.field-column').children('h5').text();
+      var sectionMap = {
+        name,
+        export_items: [],
+      };
+
+      currentEl.children().each (function() {
+        var questionId = $(this).data('item-id');
+        var type = $(this).data('type') || '';
+        var efpsid = $(this).data('efpsid');
+        sectionMap.type = type;
+        sectionMap.export_items.push({
+          export_id: questionId,
+          type: type,
+          extraction_forms_projects_section_id: efpsid,
+        })
+      })
+      payload.columns.push(sectionMap);
+    });
+
+    var keyQuestionProjectIds = $('#project-ids').data('key-question-project-ids');
+    if (keyQuestionProjectIds === undefined) {
+      keyQuestionProjectIds = null;
+    } else if (typeof(keyQuestionProjectIds) === 'number') {
+      keyQuestionProjectIds = [keyQuestionProjectIds.toString()];
+    } else {
+      keyQuestionProjectIds = keyQuestionProjectIds.split(",");
+
+    }
+    payload.kqs_ids = keyQuestionProjectIds;
+    return payload;
+  }
+
+  function searchFields(searchString) {
+    $('.field-option-parent').children().each(function() {
+      var currentElement = $(this);
+
+      var fieldName = currentElement.text().toLowerCase();
+      if (searchString === '') {
+        currentElement.removeClass('hide')
+      } else if (fieldName.includes(searchString)) {
+        currentElement.removeClass('hide')
+      } else {
+        currentElement.addClass('hide')
+      }
+    })
+    countFieldChildren();
+  }
+
+  function countFieldChildren() {
+    $('.field-option-header').each(function() {
+      var currentHeaderElement = $(this);
+      var currentChildCount = 0;
+      var currentHeaderText = currentHeaderElement.text().split(" - ")[0];
+
+      currentHeaderElement.siblings('ul').find('li > div').each(function() {
+        var currentOptionElement = $(this);
+        if (!currentOptionElement.hasClass('hide')) {
+          currentChildCount += 1;
+        }
+      })
+
+      currentHeaderElement.text(`${currentHeaderText} - ${currentChildCount}`)
+    })
+  }
+
+  function colorFieldOptions() {
+    $('.query-draggable').each(function() {
+      var currentElement = $(this);
+      var type = currentElement.data('type');
+
+      if (type === 'Type2') {
+        currentElement.css({ 'background-color': '#006aaa' });
+      } else if (type === 'Descriptive') {
+        currentElement.css({ 'background-color': '#cc4b37' });
+      } else if (type === 'BAC') {
+        currentElement.css({ 'background-color': '#4c0d7d' });
+      } else if (type === 'WAC') {
+        currentElement.css({ 'background-color': '#c4a300' });
+      } else if (type === 'NET') {
+        currentElement.css({ 'background-color': '#4c4c4c' });
+      }
+    })
+  }
+
+  function makeSortable() {
+    $('.sortable').sortable({ connectWith: ".sortable" });
+    $('.column-sortable').sortable();
+  }
+
+  function initialize() {
+    colorFieldOptions();
+    countFieldChildren();
+    makeSortable();
+  }
+
+  $(document).on('dragstart', '.query-draggable', function(ev) {
+    ev.dataTransfer.setData("text/plain", ev.target.id);
+  })
+
+  $(document).on('dragleave', '.droppable', function(ev) {
+    ev.preventDefault();
+    ev.currentTarget.style.background = "aliceblue";
+  })
+
+  $(document).on('dragover', '.droppable', function(ev) {
+    ev.stopPropagation();
+    ev.preventDefault();
+
+    if (ev.target.getAttribute("draggable") == "true") {
+      ev.dataTransfer.dropEffect = "none";
+    } else {
+      ev.currentTarget.style.background = "lightblue";
+      ev.dataTransfer.dropEffect = "copy";
+    }
+  })
+
+  $(document).on('drop', '.droppable', function(ev) {
+    ev.preventDefault();
+    ev.currentTarget.style.background = "aliceblue";
+    var data = ev.dataTransfer.getData("text/plain");
+    var originalNode = document.getElementById(data);
+    var nodeCopy = originalNode.cloneNode(true);
+    nodeCopy.id = new Date().getTime();
+    $(nodeCopy).text(`${$(nodeCopy).text()} - (click to remove)`)
+    $(nodeCopy).addClass('clickremove');
+    ev.target.appendChild(nodeCopy);
+  })
+
+  $(document).on('click', '.clickremove', function(ev) {
+    ev.target.remove();
+  })
+
+  $('#column-name').on("keyup", function(e) {
+    if (e.keyCode === 13) { addColumn(); }
+  });
+
+  $('#field-search').on("keyup", function(e) {
+    searchFields(e.target.value.toLowerCase());
+  });
+
+  $(document).on('click', '.add-column', function() {
+    addColumn();
+  })
+
+  $(document).on('click', '.remove-last-column', function() {
+    removeLastColumn();
+  })
+
+  $(document).on('click', '.start-query', function() {
+    $.post($('#export-to-gdrive-url').text(), extractReportQuestions());
+  })
+
+  $(document).on('click', '.field-option-column-title', function() {
+    var title = $(this).text();
+    var newInput = $(`<input class="column-title-input" value="${title}">`);
+    $(this).text('');
+    $(this).append(newInput);
+    newInput.focus();
+  })
+
+  $(document).on('click', '.column-title-input', function(ev) {
+    ev.stopPropagation();
+  })
+
+  $(document).on('focusout', '.column-title-input', function() {
+    var title = $(this).val();
+    if (title === '') title = 'No Title';
+    $(this).parent().parent().children('h5').text(title);
+    $(this).remove();
+  })
+
+  $(document).on('keypress', '.column-title-input', function(ev) {
+    if (ev.charCode === 13) {
+      $(ev.currentTarget).blur();
+    }
+  })
+
+  $(document).ready(function() {
+    initialize();
+  });
