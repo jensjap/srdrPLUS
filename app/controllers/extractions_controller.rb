@@ -61,8 +61,10 @@ class ExtractionsController < ApplicationController
   # POST /extractions.json
   def create
     lsof_extractions = Array.new
-    params["extraction"]["citations_project_id"].delete_if { |i| i=="" }.map(&:to_i).each do |citations_project_id|
-      lsof_extractions << @project.extractions.build(citations_project_id: citations_project_id, projects_users_role_id: params["extraction"]["projects_users_role_id"].to_i)
+    params["extraction"]["citation"].delete_if { |i| i=="" }.map(&:to_i).each do |citation_id|
+      lsof_extractions << @project.extractions.build(
+        citations_project: CitationsProject.find_by(citation_id: citation_id, project: @project),
+        projects_users_role_id: params["extraction"]["projects_users_role_id"].to_i)
     end
 
     authorize(@project, policy_class: ExtractionPolicy)
