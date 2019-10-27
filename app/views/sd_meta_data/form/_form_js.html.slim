@@ -1,0 +1,77 @@
+javascript:
+  var updateSectionFlag = function(domEl) {
+    var sectionId = domEl.id[0];
+    var sd_meta_datum_id = $(domEl).attr('data-sd_meta_datum_id');
+    var status = domEl.checked;
+    var paramKey = `section_flag_${sectionId}`;
+    $.post(`${$('#sd-meta-form')[0].action}/section_update`,
+      { sd_meta_datum: { [paramKey]: status } },
+      function( data ) { check(sectionId, data.status); }
+    );
+  }
+
+  $(document).on('click', '.switch-input', function() {
+    if (this.id[0] != 5) { updateSectionFlag(this); }
+  });
+
+  var check = function(panelNumber, status) {
+    var check = ' <i id="map-warning" class="fa fa-check"></i>';
+    var link = $(`#panel-${panelNumber}-label`);
+    var label = link.html();
+    var newLabel = label.replace(check, '');
+    if (status === true || status === 'true') {
+      newLabel = newLabel + check;
+      link.css({ 'color': 'green' });
+    } else {
+      link.css({ 'color': 'unset' });
+    }
+    link.html(newLabel);
+  }
+
+  var initializeSwitches = function() {
+    if ("#{@sd_meta_datum.section_flag_0}" === 'true') check(0, true)
+    if ("#{@sd_meta_datum.section_flag_0}" === 'true' && $('#0-yes-no-section')[0]) $('#0-yes-no-section')[0].checked = true;
+
+    if ("#{@sd_meta_datum.section_flag_1}" === 'true') check(1, true)
+    if ("#{@sd_meta_datum.section_flag_1}" === 'true' && $('#1-yes-no-section')[0]) $('#1-yes-no-section')[0].checked = true;
+
+    if ("#{@sd_meta_datum.section_flag_2}" === 'true') check(2, true)
+    if ("#{@sd_meta_datum.section_flag_2}" === 'true' && $('#2-yes-no-section')[0]) $('#2-yes-no-section')[0].checked = true;
+
+    if ("#{@sd_meta_datum.section_flag_3}" === 'true') check(3, true)
+    if ("#{@sd_meta_datum.section_flag_3}" === 'true' && $('#3-yes-no-section')[0]) $('#3-yes-no-section')[0].checked = true;
+
+    if ("#{@sd_meta_datum.section_flag_4}" === 'true') check(4, true)
+    if ("#{@sd_meta_datum.section_flag_4}" === 'true' && $('#4-yes-no-section')[0]) $('#4-yes-no-section')[0].checked = true;
+
+    if ("#{@sd_meta_datum.section_flag_5}" === 'true') check(5, true)
+    if ("#{@sd_meta_datum.section_flag_5}" === 'true' && $('#5-yes-no-section')[0]) $('#5-yes-no-section')[0].checked = true;
+
+    if ("#{@sd_meta_datum.section_flag_6}" === 'true') check(6, true)
+    if ("#{@sd_meta_datum.section_flag_6}" === 'true' && $('#6-yes-no-section')[0]) $('#6-yes-no-section')[0].checked = true;
+
+    if ("#{@sd_meta_datum.section_flag_7}" === 'true') check(7, true)
+    if ("#{@sd_meta_datum.section_flag_7}" === 'true' && $('#7-yes-no-section')[0]) $('#7-yes-no-section')[0].checked = true;
+  };
+
+  $( document ).on("turbolinks:load", function() {
+    setTimeout(function(){ initializeSwitches(); }, 500);
+  });
+
+  var submit_form = function(async = true) {
+    var form = $('#sd-meta-form')[0]
+    var formData = new FormData(form);
+
+    $.ajax({
+      type: "PATCH",
+      url: `${$('#sd-meta-form')[0].action}`,
+      data: formData,
+      async: async,
+      contentType: false,
+      processData: false
+    });
+  }
+
+  $(window).on('beforeunload', function () {
+    submit_form(false);
+  });

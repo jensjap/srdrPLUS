@@ -1,0 +1,22 @@
+#panel-4.tabs-panel.is-active
+  fieldset
+    legend PICODS
+    div data-row-span="1"
+      div data-field-span="1"
+        label 37-42. PICODS
+        = f.simple_fields_for :sd_picods do |sd_picod|
+          = render 'sd_meta_data/form/dynamic_fields/sd_picod_fields', f: sd_picod
+        div
+          = link_to_add_association 'add', f, :sd_picods, partial: 'sd_meta_data/form/dynamic_fields/sd_picod_fields'
+  br/
+  br/
+  fieldset
+    legend Section Review & Validation
+    div data-row-span="1"
+      div data-field-span="1"
+        div Section Finished?
+        .switch
+          input.switch-input id="4-yes-no-section" type="checkbox" name="sectionSection" data-sd_meta_datum_id="#{@sd_meta_datum.id}"
+          label.switch-paddle for="4-yes-no-section"
+            span.switch-active aria-hidden="true" Yes
+            span.switch-inactive aria-hidden="true" No

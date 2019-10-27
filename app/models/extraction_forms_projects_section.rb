@@ -1,3 +1,18 @@
+# == Schema Information
+#
+# Table name: extraction_forms_projects_sections
+#
+#  id                                        :integer          not null, primary key
+#  extraction_forms_project_id               :integer
+#  extraction_forms_projects_section_type_id :integer
+#  section_id                                :integer
+#  extraction_forms_projects_section_id      :integer
+#  deleted_at                                :datetime
+#  active                                    :boolean
+#  created_at                                :datetime         not null
+#  updated_at                                :datetime         not null
+#
+
 class ExtractionFormsProjectsSection < ApplicationRecord
   include SharedOrderableMethods
   include SharedProcessTokenMethods

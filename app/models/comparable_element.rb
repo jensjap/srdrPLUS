@@ -1,3 +1,15 @@
+# == Schema Information
+#
+# Table name: comparable_elements
+#
+#  id              :integer          not null, primary key
+#  created_at      :datetime         not null
+#  updated_at      :datetime         not null
+#  comparable_type :string(255)
+#  comparable_id   :integer
+#  deleted_at      :datetime
+#
+
 class ComparableElement < ApplicationRecord
   acts_as_paranoid
   has_paper_trail

@@ -1,3 +1,18 @@
+# == Schema Information
+#
+# Table name: extractions_extraction_forms_projects_sections_type1s
+#
+#  id                                               :integer          not null, primary key
+#  type1_type_id                                    :integer
+#  extractions_extraction_forms_projects_section_id :integer
+#  type1_id                                         :integer
+#  units                                            :string(255)
+#  deleted_at                                       :datetime
+#  active                                           :boolean
+#  created_at                                       :datetime         not null
+#  updated_at                                       :datetime         not null
+#
+
 class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
   # Need this to accept an attribute on the fly when making bulk changes to the eefpst1 within consolidation tool.
   attr_writer :should
@@ -66,7 +81,7 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
   delegate :extraction,        to: :extractions_extraction_forms_projects_section
   delegate :project,           to: :extractions_extraction_forms_projects_section
 
-  validates :type1, uniqueness: { scope: :extractions_extraction_forms_projects_section }
+  validates :type1, uniqueness: { scope: [:extractions_extraction_forms_projects_section, :type1_type] }
 
   def type1_name_and_description
     text =  "#{ type1.name }"

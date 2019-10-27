@@ -1,3 +1,15 @@
+# == Schema Information
+#
+# Table name: question_rows
+#
+#  id          :integer          not null, primary key
+#  question_id :integer
+#  name        :string(255)
+#  deleted_at  :datetime
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
+#
+
 class QuestionRow < ApplicationRecord
   acts_as_paranoid
   has_paper_trail

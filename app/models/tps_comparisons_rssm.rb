@@ -1,3 +1,17 @@
+# == Schema Information
+#
+# Table name: tps_comparisons_rssms
+#
+#  id                                   :integer          not null, primary key
+#  timepoint_id                         :integer
+#  comparison_id                        :integer
+#  result_statistic_sections_measure_id :integer
+#  deleted_at                           :datetime
+#  active                               :boolean
+#  created_at                           :datetime         not null
+#  updated_at                           :datetime         not null
+#
+
 class TpsComparisonsRssm < ApplicationRecord
   include SharedParanoiaMethods
 

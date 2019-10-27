@@ -1,0 +1,188 @@
+div#filterOptions
+  div.grid-x.grid-padding-x
+    div.cell.large-2.medium-4.small-12
+      ul.tabs.vertical#filter-tabs[data-tabs]
+        li.tabs-title.is-active#kq-tab-title
+          a href="#kq-panel"
+            | Key Questions
+        - included_type1s.each do |t1|
+          li.tabs-title id="#{t1[:section_name].camelcase}-tab-title"
+            a href="##{t1[:section_name].camelcase}-panel"
+              = t1[:section_name].titlecase
+        li
+          div style="display: flex; justify-content: center;"
+            div#apply-filter.button.success.large style="margin-top: 5vh;" Apply Filter
+    div.tabs-content.cell.large-10.medium-8.small-12 data-tabs-content='filter-tabs'
+      div.tabs-panel.is-active#kq-panel
+        - key_questions_projects.each do |kqp|
+          div style="display: flex; align-items: flex-start;"
+            input.kq-filter type="checkbox" name="#{kqp.key_question.name}" data-key-question="true" value="#{kqp.id}" checked="" id="kqp_#{kqp.id}"
+            label for="kqp_#{kqp.id}" = kqp.key_question.name
+
+      - included_type1s.each do |t1|
+        div.tabs-panel id="#{t1[:section_name].camelcase}-panel"
+          - if t1[:section_name] == "Outcomes"
+            - t1_type_set = Set.new []
+            - t1[:export_ids].each do |t1_el|
+              - t1_type_set << t1_el[:type1_type]
+            div.outcome-types style="display: flex;"
+              label style="margin-right: 1vh;"
+                | Outcome Types:
+
+              - t1_type_set.to_a.sort.each do |t1_type|
+                label style='padding-right: 1vw;'
+                  input.section-type-filter type="checkbox" name="#{t1_type}" value="#{t1_type}" checked="" = t1_type
+          input.t1-search type="text" placeholder="Search #{t1[:section_name]}" data-efps-id="#{t1[:extraction_forms_projects_section_id]}"
+
+          div style="display: flex; align-items: flex-start;"
+            input.all-t1s type="checkbox" data-efps-id="#{t1[:extraction_forms_projects_section_id]}" data-section-name="#{t1[:section_name]}" checked="" id="#{t1[:section_name]}_all"
+            label for="#{t1[:section_name]}_all"
+              | (Select All)
+          - t1[:export_ids].each do |t1_el|
+            div style="display: flex; align-items: flex-start;"
+              input.efps type="checkbox" data-efps-id="#{t1[:extraction_forms_projects_section_id]}" data-section-name="#{t1[:section_name]}" data-type1_type="#{t1_el[:type1_type]}" value="#{t1_el[:type1_id]}" checked="" id="#{t1[:section_name]}_#{t1_el[:type1_id]}"
+              label data-efps-id="#{t1[:extraction_forms_projects_section_id]}" data-type1_type="#{t1_el[:type1_type]}" for="#{t1[:section_name]}_#{t1_el[:type1_id]}" = t1_el[:name_and_description]
+
+
+
+
+/div#filterOptions
+  div.grid-x.grid-padding-x
+    div.cell.small-6 style="height: 70vh; overflow: auto;"
+      h4 Available Fields
+      div style="display: flex; flex-wrap:wrap;"
+        - Type1Type.all.each do |type1_type|
+          label style='padding-right: 1vw;'
+            input.section-type-filter type="checkbox" name="#{type1_type.name}" value="#{type1_type.name}" checked="" = type1_type.name
+      = simple_form_for("sd_meta_datum", url: project_report_link_new_query_form_path("sd_meta_datum"), method: :get) do |f|
+        div.accordion data-accordion="" data-allow-all-closed="true"
+          div.accordion-item data-accordion-item=""
+            a.accordion-title href="#" Key Questions
+            div.accordion-content data-tab-content=""
+              - key_questions_projects.each do |kqp|
+                div.button.kq-filter style="text-align: left; width: 100%;" data-key-question="true" data-key-question-id="#{kqp.id}" = kqp.key_question.name
+          - included_type1s.each do |type_1|
+            div.accordion-item data-accordion-item=""
+              a.accordion-title href="#" = type_1[:section_name]
+              div.accordion-content data-tab-content=""
+                - type_1[:export_ids].each do |type_1_el|
+                  div.button.efps style="text-align: left; width: 100%;" data-efps-id="#{type_1[:extraction_forms_projects_section_id]}" data-section-name="#{type_1[:section_name]}" data-type1_type="#{type_1_el[:type1_type]}" data-export-id="#{type_1_el[:type1_id]}" = type_1_el[:name_and_description]
+    div.cell.small-6 style="height: 75vh; overflow: auto;"
+      h4 Included Fields
+      div#apply-filter.button style="text-align: left;" Apply Filter
+      br
+      div#kq-filter-header style="font-weight: 300; width: 100%;"
+        h5 Selected Key Questions
+      - included_type1s.each do |type_1|
+        div.section-filter-header id="efps#{type_1[:extraction_forms_projects_section_id]}" data-efps-id="#{type_1[:extraction_forms_projects_section_id]}" style="font-weight: 300; width: 100%;"
+          h5 = "Selected " + type_1[:section_name]
+
+javascript:
+  function searchType1s(searchString, efpsId) {
+    $(`label[data-efps-id="${efpsId}"]`).each(function() {
+      var currentElement = $(this).parent();
+      var fieldName = $(this).text().toLowerCase();
+
+      if (searchString === '') {
+        currentElement.removeClass('hide')
+      } else if (fieldName.includes(searchString)) {
+        currentElement.removeClass('hide')
+      } else {
+        currentElement.addClass('hide')
+      }
+    })
+  }
+
+  $(`.t1-search`).each(function() {
+    var efpsId = $(this).data('efps-id');
+    $(this).on("keyup", function(e) {
+      searchType1s(e.target.value.toLowerCase(), efpsId);
+    });
+  })
+
+  $(document).on('click', '.efps', function() {
+    var efpsId = $(this).data('efps-id');
+    var all_checked = true;
+    $(`.efps[data-efps-id="${efpsId}"]`).each(function() {
+      if ($(this).is(':checked') === false) all_checked = false;
+    })
+
+    if (all_checked === true) {
+      $(`.all-t1s[data-efps-id="${efpsId}"]`).prop('checked', true);
+    } else {
+      $(`.all-t1s[data-efps-id="${efpsId}"]`).prop('checked', false);
+    }
+  })
+
+ // $(document).on('click', '.kq-filter', function() {
+ //   var kqId = $(this).data('key-question-id');
+ //   var noDuplicate = true;
+ //   $('#kq-filter-header').children().each(function() {
+ //     if ($(this).data('key-question-id') === kqId) noDuplicate = false;
+ //   })
+ //   var clone = $(this).clone();
+ //   $(clone).addClass('clone');
+ //   if (noDuplicate) $('#kq-filter-header').append(clone)
+ // })
+
+ // $(document).on('click', '.clone', function() {
+ //   $(this).remove();
+ // })
+
+  $(document).on('click', '.section-type-filter', function() {
+    var checked = $(this).is(':checked');
+    var val = $(this).val();
+    if (!checked) {
+      $(`*[data-type1_type="${val}"]`).hide()
+    } else {
+      $(`*[data-type1_type="${val}"]`).show()
+    }
+  })
+
+  $(document).on('click', '.all-t1s', function() {
+    var checked = $(this).is(':checked');
+    var val = $(this).data('efps-id');
+    if (!checked) {
+      $(`*[data-efps-id="${val}"]`).prop('checked', false)
+    } else {
+      $(`*[data-efps-id="${val}"]`).prop('checked', true)
+    }
+  })
+
+  $(document).on('click', '#apply-filter', function() {
+    $('#query-tab-title a').click();
+    $("#options-form").html('<div class="lds-ellipsis">Loading <div></div><div></div><div></div><div></div></div>');
+
+    $.ajax({
+      beforeSend: xhr => { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+      url: "#{project_report_link_options_form_path(sd_meta_datum)}",
+      method: 'POST',
+      data: {
+        kqp_ids: getKqFilters(),
+        type1s: getSectionFilters(),
+      },
+    }).done(function() {
+      initialize();
+      $('.accordion-menu').foundation();
+    });
+  })
+
+  function getKqFilters() {
+    var kqFilterIds = $('.kq-filter:checked').map(function() {
+      return $(this).val();
+    })
+    console.log(kqFilterIds)
+    return kqFilterIds.get();
+  }
+
+  function getSectionFilters() {
+    var type1sFilters = { };
+    $('.efps:checked').each(function() {
+      var efpsId = $(this).data('efps-id');
+      var exportId = $(this).val();
+      if (type1sFilters[efpsId] === undefined) type1sFilters[efpsId] = [];
+      type1sFilters[efpsId].push(exportId)
+    });
+    console.log(type1sFilters)
+    return type1sFilters;
+  }

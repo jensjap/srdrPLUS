@@ -1,3 +1,13 @@
+# == Schema Information
+#
+# Table name: projects_users_term_groups_colors_terms
+#
+#  id                                  :integer          not null, primary key
+#  projects_users_term_groups_color_id :integer
+#  term_id                             :integer
+#  deleted_at                          :datetime
+#
+
 class ProjectsUsersTermGroupsColorsTerm < ApplicationRecord
   acts_as_paranoid
   has_paper_trail

@@ -19,6 +19,7 @@
  */
 
 @import 'settings';
+@import "font-awesome";
 
 // Cocoon.
 .add_fields {
@@ -174,6 +175,7 @@ ul hr {
 ul.menu.vertical.submenu.is-dropdown-submenu {
   background-color: white;
   border-color: $medium-gray;
+  padding: 10px 10px 0 30px;
 
   li {
     &.title {
@@ -196,22 +198,10 @@ ul.menu.vertical.submenu.is-dropdown-submenu {
 // END Miscellaneous stuff.
 
 // Pagination.
-.column.row .pagination {
-  li {
-    a,
-    a:visited {
-      color: $primary-color;
-
-      &:hover {
-        background: none;
-      }
-    }
-
-    &.current {
-      a,
-      a:visited {
-        color: $white;
-      }
+.pagination {
+  .current {
+    a {
+      color: $white;
     }
   }
 }
@@ -413,10 +403,6 @@ a.accordion-title.populations {
     a {
       color: black !important;
     }
-}
-
-.dropdown.menu > li.opens-left > .is-dropdown-submenu {
-  right: -50%;
 }
 
 .is-dropdown-submenu > li:hover {

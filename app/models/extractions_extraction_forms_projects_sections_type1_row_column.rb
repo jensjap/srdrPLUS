@@ -1,3 +1,16 @@
+# == Schema Information
+#
+# Table name: extractions_extraction_forms_projects_sections_type1_row_columns
+#
+#  id                                                          :integer          not null, primary key
+#  extractions_extraction_forms_projects_sections_type1_row_id :integer
+#  timepoint_name_id                                           :integer
+#  is_baseline                                                 :boolean          default(FALSE)
+#  deleted_at                                                  :datetime
+#  created_at                                                  :datetime         not null
+#  updated_at                                                  :datetime         not null
+#
+
 # Temporarily calling it ExtractionsExtractionFormsProjectsSectionsType1RowColumn. This is meant to be Outcome Timepoint.
 class ExtractionsExtractionFormsProjectsSectionsType1RowColumn < ApplicationRecord
   acts_as_paranoid

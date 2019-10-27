@@ -22,6 +22,10 @@ class ProjectPolicy < ApplicationPolicy
     project_leader?
   end
 
+  def export_to_gdrive?
+    project_contributor?
+  end
+
   def export?
     project_contributor?
   end

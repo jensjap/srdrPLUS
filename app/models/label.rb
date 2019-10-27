@@ -1,3 +1,16 @@
+# == Schema Information
+#
+# Table name: labels
+#
+#  id                     :integer          not null, primary key
+#  citations_project_id   :integer
+#  created_at             :datetime         not null
+#  updated_at             :datetime         not null
+#  projects_users_role_id :integer
+#  deleted_at             :datetime
+#  label_type_id          :integer
+#
+
 class Label < ApplicationRecord
   acts_as_paranoid
   has_paper_trail

@@ -1,3 +1,14 @@
+# == Schema Information
+#
+# Table name: degrees
+#
+#  id         :integer          not null, primary key
+#  name       :string(255)
+#  deleted_at :datetime
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
+
 class Degree < ApplicationRecord
   include SharedQueryableMethods
   include SharedSuggestableMethods

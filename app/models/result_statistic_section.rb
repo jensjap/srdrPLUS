@@ -1,3 +1,15 @@
+# == Schema Information
+#
+# Table name: result_statistic_sections
+#
+#  id                               :integer          not null, primary key
+#  result_statistic_section_type_id :integer
+#  population_id                    :integer
+#  deleted_at                       :datetime
+#  created_at                       :datetime         not null
+#  updated_at                       :datetime         not null
+#
+
 class ResultStatisticSection < ApplicationRecord
   acts_as_paranoid
   has_paper_trail

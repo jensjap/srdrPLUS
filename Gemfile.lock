@@ -77,11 +77,15 @@ GEM
       tzinfo (~> 1.1)
     addressable (2.6.0)
       public_suffix (>= 2.0.2, < 4.0)
+    annotate (2.7.5)
+      activerecord (>= 3.2, < 7.0)
+      rake (>= 10.4, < 13.0)
     apipie-rails (0.5.15)
       rails (>= 4.1)
     arel (9.0.0)
     autoprefixer-rails (9.4.9)
       execjs
+    awesome_print (1.8.0)
     aws-eventstream (1.0.3)
     aws-partitions (1.154.0)
     aws-sdk-core (3.48.6)
@@ -187,6 +191,7 @@ GEM
     fugit (1.3.2)
       et-orbi (~> 1.1, >= 1.1.8)
       raabro (~> 1.1)
+    fuzzy_match (2.1.0)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
     gon (6.2.1)
@@ -313,9 +318,22 @@ GEM
     notiffany (0.1.1)
       nenv (~> 0.1)
       shellany (~> 0.0)
+    oauth2 (1.4.1)
+      faraday (>= 0.8, < 0.16.0)
+      jwt (>= 1.0, < 3.0)
+      multi_json (~> 1.3)
+      multi_xml (~> 0.5)
+      rack (>= 1.2, < 3)
     omniauth (1.9.0)
       hashie (>= 3.4.6, < 3.7.0)
       rack (>= 1.6.2, < 3)
+    omniauth-google-oauth2 (0.8.0)
+      jwt (>= 2.0)
+      omniauth (>= 1.1.1)
+      omniauth-oauth2 (>= 1.6)
+    omniauth-oauth2 (1.6.0)
+      oauth2 (~> 1.1)
+      omniauth (~> 1.9)
     orm_adapter (0.5.0)
     os (1.0.1)
     paper_trail (10.2.0)
@@ -514,8 +532,10 @@ PLATFORMS
   x86_64-darwin-19
 
 DEPENDENCIES
+  annotate (~> 2.7, >= 2.7.4)
   apipie-rails
   autoprefixer-rails
+  awesome_print
   aws-sdk-s3
   axlsx!
   axlsx_rails
@@ -531,10 +551,13 @@ DEPENDENCIES
   dotenv-rails
   factory_bot_rails
   faker!
+  font-awesome-rails
   foundation-icons-sass-rails
   foundation-rails
+  fuzzy_match
   gon
   google-api-client
+  googleauth
   guard
   guard-minitest
   httparty
@@ -548,6 +571,7 @@ DEPENDENCIES
   minitest-rails-capybara
   mysql2 (>= 0.3.18, < 0.5)
   omniauth
+  omniauth-google-oauth2
   paper_trail
   paranoia (~> 2.2)
   passenger

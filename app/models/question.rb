@@ -1,3 +1,16 @@
+# == Schema Information
+#
+# Table name: questions
+#
+#  id                                   :integer          not null, primary key
+#  extraction_forms_projects_section_id :integer
+#  name                                 :string(255)
+#  description                          :text(65535)
+#  deleted_at                           :datetime
+#  created_at                           :datetime         not null
+#  updated_at                           :datetime         not null
+#
+
 class Question < ApplicationRecord
   include SharedOrderableMethods
   include SharedSuggestableMethods

@@ -1,0 +1,12 @@
+.nested-fields
+  = f.association :sd_key_question, include_blank: false, collection: f.object.sd_meta_datum.key_questions.map { |kq| [kq.name, SdKeyQuestion.find_by(sd_meta_datum_id: f.object.sd_meta_datum.id, key_question_id: kq.id).id] }
+  = f.input :soe_type, include_blank: false, label: 'Summary of Findings Type', collection: ["Summary of Findings", "Narrative Summary of Findings", "Strength of Evidence", "Risk of Bias"], input_html: { class: "soe_type" }
+  = f.input :name, label: 'Description', :input_html => { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
+  = f.input :pictures, label: 'Pictures', input_html: { multiple: true }
+  div
+    = link_to_remove_association "Remove Summary of Evidence", f
+    - f.object.pictures.each do |picture|
+      div
+        = image_tag(picture, class: 'openable', style: 'height:100%;width:auto;')
+        br
+        = link_to 'Remove', delete_image_attachment_picture_path(picture.id), method: :delete, data: { confirm: 'Are you sure?' }, remote: true

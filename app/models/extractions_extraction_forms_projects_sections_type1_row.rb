@@ -1,3 +1,15 @@
+# == Schema Information
+#
+# Table name: extractions_extraction_forms_projects_sections_type1_rows
+#
+#  id                                                      :integer          not null, primary key
+#  extractions_extraction_forms_projects_sections_type1_id :integer
+#  population_name_id                                      :integer
+#  deleted_at                                              :datetime
+#  created_at                                              :datetime         not null
+#  updated_at                                              :datetime         not null
+#
+
 # Temporarily calling it ExtractionsExtractionFormsProjectsSectionsType1Row. This is meant to be Outcome Population.
 class ExtractionsExtractionFormsProjectsSectionsType1Row < ApplicationRecord
   acts_as_paranoid

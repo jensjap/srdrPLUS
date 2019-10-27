@@ -1,0 +1,39 @@
+#panel-1.tabs-panel.is-active
+  fieldset
+    legend Authors and Stakeholders
+    div data-row-span="1"
+      div data-field-span="1"
+        = f.input :authors, label: '7. Authors', :input_html => { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
+    div data-row-span="1"
+      div data-field-span="1"
+        = f.input :authors_conflict_of_interest_of_full_report, label: '8. Conflicts of Interest of Authors of Full Report', :input_html => { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
+    div data-row-span="1"
+      div data-field-span="1"
+        = f.input :stakeholder_involvement_extent, label: '9. Stakeholders Involved', :input_html => { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
+    div data-row-span="1"
+      div data-field-span="1"
+        = f.input :stakeholders_conflict_of_interest, label: '10. Conflicts of Interest of Stakeholders', :input_html => { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
+    div data-row-span="2"
+      div data-field-span="1"
+        label 11. Project Leads:
+        - @project.try(:leaders).try(:map) do |user|
+          - next if user.email.include?("@test.com")
+          div <b>#{[user.profile.first_name, user.profile.middle_name, user.profile.last_name].join(" ")}</b> (#{user.email})
+      div data-field-span="1"
+        label 12. SRDR Project Creator:
+        - if @project.creator.email.include?("@test.com")
+          div
+        - else
+          div <b>#{[@project.creator.profile.first_name, @project.creator.profile.middle_name, @project.creator.profile.last_name].join(" ")}</b> (#{@project.creator.email})
+  br/
+  br/
+  fieldset
+    legend Section Review & Validation
+    div data-row-span="1"
+      div data-field-span="1"
+        div Section Finished?
+        .switch
+          input.switch-input id="1-yes-no-section" type="checkbox" name="sectionSection" data-sd_meta_datum_id="#{@sd_meta_datum.id}"
+          label.switch-paddle for="1-yes-no-section"
+            span.switch-active aria-hidden="true" Yes
+            span.switch-inactive aria-hidden="true" No

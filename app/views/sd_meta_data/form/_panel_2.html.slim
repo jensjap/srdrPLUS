@@ -1,0 +1,71 @@
+#panel-2.tabs-panel.is-active
+  fieldset
+    legend Links
+    div data-row-span="1"
+      div data-field-span="1"
+        label 13. Prospero
+        div #{raw(@project.try(:prospero_link))}
+    div data-row-span="2"
+      div data-field-span="1"
+        = f.input :prototcol_link, as: :string, label: '14. Protocol'
+      div data-field-span="1"
+        = f.input :full_report_link, as: :string, label: '15. Full Report'
+    div data-row-span="2"
+      div data-field-span="1"
+        = f.input :structured_abstract_link, as: :string, label: '16. Structured Abstract'
+      div data-field-span="1"
+        = f.input :key_messages_link, as: :string, label: '17. Key Messages'
+    div data-row-span="2"
+      div data-field-span="1"
+        = f.input :abstract_summary_link, as: :string, label: '18. Lay Abstract/ Lay Language Summary'
+    div data-row-span="2" style="border: 0;"
+      div data-field-span="2"
+        = f.input :evidence_summary_link, as: :string, label: '19. Evidence Summary (or Executive Summary)'
+    div data-row-span="2"
+      div data-field-span="1" style="border: 0; margin-left: 25px; width: calc(50% - 25px);"
+        = f.input :evs_introduction_link, as: :string, label: '20. Introduction'
+      div data-field-span="1" style="border: 0;"
+        = f.input :evs_methods_link, as: :string, label: '21. Methods'
+      div data-field-span="1" style="border: 0; margin-left: 25px; width: calc(50% - 25px);"
+        = f.input :evs_results_link, as: :string, label: '22. Results'
+      div data-field-span="1" style="border: 0;"
+        = f.input :evs_discussion_link, as: :string, label: '23. Discussion'
+      div data-field-span="1" style="border: 0; margin-left: 25px; width: calc(50% - 25px);"
+        = f.input :evs_conclusions_link, as: :string, label: '24. Conclusions'
+      div data-field-span="1" style="border: 0;"
+        = f.input :evs_tables_figures_link, as: :string, label: '25. Tables and Figures'
+    div data-row-span="2"
+      div data-field-span="1"
+        label 26. Journal Article URLs
+        = f.simple_fields_for :sd_journal_article_urls do |sd_journal_article_url|
+          = render 'sd_meta_data/form/dynamic_fields/sd_journal_article_url_fields', f: sd_journal_article_url
+        div
+          = link_to_add_association 'add', f, :sd_journal_article_urls, partial: 'sd_meta_data/form/dynamic_fields/sd_journal_article_url_fields'
+      div data-field-span="1"
+        label 27. Other Item URLs
+        = f.simple_fields_for :sd_other_items do |sd_other_item|
+          = render 'sd_meta_data/form/dynamic_fields/sd_other_item_fields', f: sd_other_item
+        div
+          = link_to_add_association 'add', f, :sd_other_items, partial: 'sd_meta_data/form/dynamic_fields/sd_other_item_fields'
+    div data-row-span="2"
+      div data-field-span="1"
+        = f.input :disposition_of_comments_link, as: :string, label: '28. Disposition of Comments'
+      div data-field-span="1"
+        = f.input :srdr_data_link, as: :string, label: '29. Data (in SRDR)'
+    div data-row-span="2"
+      div data-field-span="1"
+        = f.input :most_previous_version_srdr_link, as: :string, label: '30. Most Recent Previous Version of SRDR Data'
+      div data-field-span="1"
+        = f.input :most_previous_version_full_report_link, as: :string, label: '31. Most Recent Previous Version of Full Report'
+  br/
+  br/
+  fieldset
+    legend Section Review & Validation
+    div data-row-span="1"
+      div data-field-span="1"
+        div Section Finished?
+        .switch
+          input.switch-input id="2-yes-no-section" type="checkbox" name="sectionSection" data-sd_meta_datum_id="#{@sd_meta_datum.id}"
+          label.switch-paddle for="2-yes-no-section"
+            span.switch-active aria-hidden="true" Yes
+            span.switch-inactive aria-hidden="true" No

@@ -1,0 +1,17 @@
+#panel-4.tabs-panel.is-active
+  fieldset
+    legend PICODS
+    div data-row-span="1"
+      div data-field-span="1"
+        label 37-42. PICODS
+        - if @sd_meta_datum.sd_picods.empty?
+          div N/A
+        - else
+          - @sd_meta_datum.sd_picods.each do |sd_picod|
+            p
+              - picod_types = sd_picod.sd_picods_types
+              div <b>Type:</b> #{picod_types.map(&:name).join(", ")}
+              div <b>Name:</b> #{sd_picod.name}
+              p
+                - sd_picod.sd_key_questions.each do |skq|
+                  p style="font-size: 12px;" #{skq.key_question.name}

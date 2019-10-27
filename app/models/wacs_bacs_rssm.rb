@@ -1,3 +1,17 @@
+# == Schema Information
+#
+# Table name: wacs_bacs_rssms
+#
+#  id                                   :integer          not null, primary key
+#  wac_id                               :integer
+#  bac_id                               :integer
+#  result_statistic_sections_measure_id :integer
+#  deleted_at                           :datetime
+#  active                               :boolean
+#  created_at                           :datetime         not null
+#  updated_at                           :datetime         not null
+#
+
 class WacsBacsRssm < ApplicationRecord
   include SharedParanoiaMethods
 

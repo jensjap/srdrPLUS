@@ -76,8 +76,9 @@ namespace :project_json do
       end
 
       project_importer = ProjectImporter.new(logger)
-      project_importer.import_project(phash)
-
+      if project_importer.import_project(phash)
+        FileUtils.mv(json_file, Rails.root.join('tmp','json_exports', 'projects', 'imported'))
+      end
       ### create project importer
     end
 

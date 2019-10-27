@@ -1,3 +1,16 @@
+# == Schema Information
+#
+# Table name: labels_reasons
+#
+#  id                     :integer          not null, primary key
+#  label_id               :integer
+#  reason_id              :integer
+#  created_at             :datetime         not null
+#  updated_at             :datetime         not null
+#  deleted_at             :datetime
+#  projects_users_role_id :integer
+#
+
 class LabelsReason < ApplicationRecord
   acts_as_paranoid
   has_paper_trail

@@ -17,7 +17,8 @@ module SeedData
         { name: 'Leader'},
         { name: 'Consolidator'},
         { name: 'Contributor'},
-        { name: 'Auditor'}
+        { name: 'Auditor'},
+        { name: 'Importer'}
       ])
 
       # Frequency.
@@ -26,6 +27,24 @@ module SeedData
         { name: 'Weekly' },
         { name: 'Monthly' },
         { name: 'Annually' }
+      ])
+
+      #ImportType.
+      ImportType.create!([
+        { name: 'Distiller References' },
+        { name: 'Distiller Section' },
+        { name: 'Citation' },
+        { name: 'Project' }
+      ])
+
+      #FileType.
+      FileType.create!([
+        { name: '.csv' },
+        { name: '.ris' },
+        { name: '.xlsx' },
+        { name: '.enl' },
+        { name: 'PubMed' },
+        { name: '.json' }
       ])
 
       # MessageTypes.

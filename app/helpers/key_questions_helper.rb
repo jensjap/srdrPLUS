@@ -1,0 +1,2 @@
+module KeyQuestionsHelper
+end
