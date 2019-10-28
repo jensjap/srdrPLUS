@@ -39,6 +39,7 @@ class ProjectReportLinksController < ApplicationController
           questions.
           joins(:key_questions_projects).
           where(key_questions_projects: { id: kqp_ids }).
+          uniq.
           group_by { |question| question.extraction_forms_projects_section.section }
 
         @groups = order_groups_hash(groups_hash)
