@@ -62,6 +62,13 @@ class Project < ApplicationRecord
   # jens 2019-06-17: I believe we ought to define the ordering via a scope block in has_many.
   #has_many :orderings, through: :key_questions_projects, dependent: :destroy
 
+  has_many :extraction_forms_projects_sections,
+    -> { ordered },
+    through: :extraction_forms_projects
+  has_many :questions,
+    -> { ordered },
+    through: :extraction_forms_projects_sections
+
   has_many :teams, dependent: :destroy
 
   has_many :projects_studies, dependent: :destroy, inverse_of: :project
