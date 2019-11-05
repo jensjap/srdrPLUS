@@ -3,7 +3,7 @@ class Api::V1::CitationsController < Api::V1::BaseController
 
   def index
     page                      = ( params[ :page ] || 1 ).to_i
-    page_size                 = 200
+    page_size                 = 1000
     offset                    = page_size * ( page - 1 )
     query                     = params[ :q ]
 

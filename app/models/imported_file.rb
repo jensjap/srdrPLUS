@@ -18,8 +18,7 @@ class ImportedFile < ApplicationRecord
 
   has_one_attached :content
 
-  belongs_to :project
-  belongs_to :user
+  belongs_to :projects_user
   belongs_to :file_type
   belongs_to :import_type
   belongs_to :section, optional: true
@@ -29,6 +28,9 @@ class ImportedFile < ApplicationRecord
   accepts_nested_attributes_for :key_question
 
   after_create_commit :start_import_job
+
+  delegate :project, to: :projects_user
+  delegate :user, to: :projects_user
 
   # def initialize(params = {})
   #   file = params.delete(:content)
@@ -45,7 +47,7 @@ class ImportedFile < ApplicationRecord
         case self.file_type.name
           when ".ris"
             #RisImportJob.perform_later(self.user.id, self.project.id, self.id)
-            DistillerImportJob.perform_later(self.user.id, self.project.id, self.id)
+            DistillerImportJob.perform_later(self.id)
           when ".csv"
             #CsvImportJob.perform_later(self.user.id, self.project.id, self.id)
             # WE SHOULD DO NOTHING HERE
@@ -63,21 +65,21 @@ class ImportedFile < ApplicationRecord
       when "Citation"
         case self.file_type.name
           when ".ris"
-            RisImportJob.perform_later(self.user.id, self.project.id, self.id)
+            RisImportJob.perform_later(self.id)
 
           when ".csv"
-            CsvImportJob.perform_later(self.user.id, self.project.id, self.id)
+            CsvImportJob.perform_later(self.id)
           when ".enl"
-            EnlImportJob.perform_later(self.user.id, self.project.id, self.id)
-          when "Pubmed"
-            PubmedImportJob.perform_later(self.user.id, self.project.id, self.id)
+            EnlImportJob.perform_later(self.id)
+          when "PubMed"
+            PubmedImportJob.perform_later(self.id)
           else
             ## NOT SUPPORTED, WHAT TO DO?
         end
       when "Project"
         case self.file_type.name
           when ".json"
-            JsonImportJob.perform_later(self.user.id, self.project.id, self.id)
+            JsonImportJob.perform_later(self.id)
           else
             ## NOT SUPPORTED, WHAT TO DO?
         end

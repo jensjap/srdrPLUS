@@ -9,9 +9,7 @@ class JsonImportJob < ApplicationJob
     # Do something later
     Rails.logger.debug "#{ self.class.name }: I'm performing my job with arguments: #{ args.inspect }"
 
-    @user = User.find( args.first )
-    @project = Project.find( args.second )
-    @json_file = ImportedFile.find( args.third )
+    @json_file = ImportedFile.find( args.first)
 
     begin
       fhash = JSON.parse(@json_file.content.download)
@@ -30,7 +28,7 @@ class JsonImportJob < ApplicationJob
     project_importer = ProjectImporter.new(@project)
     project_importer.import_project(phash)
 
-    ImportMailer.notify_import_completion(@user.id, @project.id).deliver_later
+    ImportMailer.notify_import_completion(@imported_file.user.id, @imported_file.project.id).deliver_later
   end
 end
 

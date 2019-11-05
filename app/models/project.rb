@@ -43,8 +43,6 @@ class Project < ApplicationRecord
   after_create :create_default_perpetual_task
   after_create :create_default_member
 
-  has_many_attached :citation_files
-
   has_many :extractions, dependent: :destroy, inverse_of: :project
   has_many :teams, dependent: :destroy
   has_many :publishings, as: :publishable, dependent: :destroy
@@ -62,12 +60,7 @@ class Project < ApplicationRecord
   # jens 2019-06-17: I believe we ought to define the ordering via a scope block in has_many.
   #has_many :orderings, through: :key_questions_projects, dependent: :destroy
 
-  has_many :extraction_forms_projects_sections,
-    -> { ordered },
-    through: :extraction_forms_projects
-  has_many :questions,
-    -> { ordered },
-    through: :extraction_forms_projects_sections
+  has_many :questions, through: :key_questions_projects
 
   has_many :teams, dependent: :destroy
 
@@ -91,7 +84,7 @@ class Project < ApplicationRecord
   has_many :screening_option_types, through: :screening_options
 
   has_many :sd_meta_data
-  has_many :imported_files, dependent: :destroy
+  has_many :imported_files, through: :projects_users,  dependent: :destroy
   validates :name, presence: true
 
   #accepts_nested_attributes_for :extraction_forms_projects, reject_if: :all_blank, allow_destroy: true
@@ -927,7 +920,7 @@ class Project < ApplicationRecord
     citations_that_have_multiple_entries = citations.joins("INNER JOIN (#{ sub_query.to_sql }) as t1").distinct
 
     # Group citations and dedupe each group.
-    cthme_groups = citations_that_have_multiple_entries.group_by { |i| [i.citation_type_id, i.name, i.refman, i.pmid, i.abstract] }
+    cthme_groups = citations_that_have_multiple_entries.group_b y { |i| [i.citation_type_id, i.name, i.refman, i.pmid, i.abstract] }
     cthme_groups.each do |cthme_group|
       master_citation = cthme_group[1][0]
       cthme_group[1][1..-1].each do |cit|

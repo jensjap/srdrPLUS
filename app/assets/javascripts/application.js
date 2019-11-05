@@ -47,6 +47,8 @@
 //= require tasks
 //= require teams
 
+//= require dropzone
+
 //$(function(){ $( document ).foundation(); });
 
 'use strict';
@@ -106,8 +108,11 @@ toastr.options = {
   'extendedTimeOut': '10000'
 };
 
+Dropzone.autoDiscover = false;
+
 document.addEventListener( 'turbolinks:load', function() {
   $( document ).foundation();
+
 
   // Check for dirty forms.
   window.onbeforeunload = function (e) {

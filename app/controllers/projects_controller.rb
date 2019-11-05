@@ -327,7 +327,7 @@ class ProjectsController < ApplicationController
 
     def citation_import_params
       # what kind of files do we want to import?
-      params.require(:project).permit(:citation_file)
+      params.require(:project).permit(:citation_files => [])
     end
 
     def export_type_name

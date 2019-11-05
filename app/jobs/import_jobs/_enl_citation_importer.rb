@@ -26,7 +26,7 @@ def import_citations_from_enl(imported_file)
     if cit_h[ 'K' ].present?
       ### splitting kw strings still a huge pain
       kw_arr = []
-      if cit_h[ 'K' ].is_a?
+      if cit_h[ 'K' ].is_a? Enumerable
         kw_arr = cit_h[ 'K' ]
       else
         kw_arr = cit_h[ 'K' ].split( "     " )
@@ -44,7 +44,7 @@ def import_citations_from_enl(imported_file)
       end
     end
 
-    row_h[ 'authors_attributes' ] = {}
+    row_h[ 'authors_citations_attributes' ] = {}
 
     ##authors
     #if cit_h[ 'AU' ].present?
@@ -64,8 +64,8 @@ def import_citations_from_enl(imported_file)
         else
           au_arr = cit_h[ au_key ].split( "     " )
         end
-        au_arr.each do |au|
-          row_h[ 'authors_attributes' ][Time.now.to_i + key_counter] = { name: au }
+        au_arr.each_with_index do |au, position|
+          row_h[ 'authors_citations_attributes' ][Time.now.to_i + key_counter] = { author_attributes: { name: au }, ordering_attributes: { position: (position + 1) } }
           key_counter += 1
         end
       end

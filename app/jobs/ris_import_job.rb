@@ -9,13 +9,11 @@ class RisImportJob < ApplicationJob
     # Do something later
     Rails.logger.debug "#{ self.class.name }: I'm performing my job with arguments: #{ args.inspect }"
 
-    @user          = User.find( args.first )
-    @project       = Project.find( args.second )
-    @imported_file = ImportedFile.find(args.third)
+    @imported_file = ImportedFile.find(args.first)
 
     import_citations_from_ris @imported_file
 
-    ImportMailer.notify_import_completion(@user.id, @project.id).deliver_later
+    ImportMailer.notify_import_completion(@imported_file.user.id, @imported_file.project.id).deliver_later
   end
 end
 

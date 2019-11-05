@@ -9,13 +9,11 @@ class CsvImportJob < ApplicationJob
     # Do something later
     Rails.logger.debug "#{ self.class.name }: I'm performing my job with arguments: #{ args.inspect }"
 
-    @user          = User.find( args.first )
-    @project       = Project.find( args.second )
-    @citation_file = @project.citation_files.find(args.third)
+    @imported_file = ImportedFile.find(args.first)
 
-    import_citations_from_csv @project, args.third
+    import_citations_from_csv @imported_file
 
-    ImportMailer.notify_import_completion(@user.id, @project.id).deliver_later
+    ImportMailer.notify_import_completion(@imported_file.user.id, @imported_file.project.id).deliver_later
   end
 end
 

@@ -12,7 +12,8 @@
       thead
         tr
           th.citation-handle-header[data-sort-mode="name" data-sort-direction="asc"] Citation (Sorted by Title)
-          th Assigned User
+          - if @project.leaders.include? current_user
+            th Assigned User
           /th Role
           th Progress
           th
@@ -36,13 +37,14 @@
               - tooltip_text = "<span style='font-weight: bold;'>Incomplete Sections:</span><br>" + (extraction.extractions_extraction_forms_projects_sections.map{ |eefps| eefps.status.name != 'Completed' ? eefps.section.name : "" } - [""]).join('<br>')
 
               td.citation-handle[data-sort="#{ name }" data-pmid="#{ pmid }" data-name="#{ name }" data-year="#{ year }" data-author="#{ first_author }"] = link_to citation_handle.html_safe, work_extraction_path(extraction)
-              td data-sort="#{ extraction.projects_users_role.handle }"
-                .projects-users-role dropdown-active='false'
-                  span.projects-users-role-label data-extraction-id="#{ extraction.id.to_s }"
-                    = extraction.projects_users_role.handle
-                  .projects-users-role-select.hide
-                    = simple_form_for extraction, remote: true do |e_f|
-                      = e_f.association :projects_users_role, label: false, collection: @projects_users_roles, label_method: :handle, input_html: { class: "select2" }, selected: extraction.projects_users_role.id
+              - if @project.leaders.include? current_user
+                td data-sort="#{ extraction.projects_users_role.handle }"
+                  .projects-users-role dropdown-active='false'
+                    span.projects-users-role-label data-extraction-id="#{ extraction.id.to_s }"
+                      = extraction.projects_users_role.handle
+                    .projects-users-role-select.hide
+                      = simple_form_for extraction, remote: true do |e_f|
+                        = e_f.association :projects_users_role, label: false, collection: @projects_users_roles, label_method: :handle, input_html: { class: "select2" }, selected: extraction.projects_users_role.id
 
               td[data-sort="#{ progress_meter_width }"]
                 .success.progress style="width: 10vw;" data-allow-html="true" data-tooltip="" title="#{ tooltip_text }"
