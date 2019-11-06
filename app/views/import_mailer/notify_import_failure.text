@@ -1,0 +1,10 @@
+Error
+=======
+
+The import you requested for file
+
+"<%= @filename %>"
+
+has encountered the following error
+
+"<%= @message %>"

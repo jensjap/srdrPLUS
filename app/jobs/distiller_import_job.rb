@@ -1,14 +1,18 @@
-require 'import_jobs/distiller_csv_import_job/_distiller_importer'
-require 'import_jobs/_ris_citation_importer'
+require "import_jobs/distiller_csv_import_job/_distiller_importer"
+require "import_jobs/_ris_citation_importer"
 
 class DistillerImportJob < ApplicationJob
   queue_as :default
+
+  rescue_from(StandardError) do |e|
+    ImportMailer.notify_distiller_import_completion(@project.id, @user.id, e.message).deliver_later
+  end
 
   def perform(*args)
     # args:
     #   project_id,
     #   user_id,
-    Rails.logger.debug "#{ self.class.name }: I'm performing my job with arguments: #{ args.inspect }"
+    Rails.logger.debug "#{self.class.name}: I'm performing my job with arguments: #{args.inspect}"
 
     @references_file = ImportedFile.find args.first
     @user = @references_file.user
@@ -21,8 +25,8 @@ class DistillerImportJob < ApplicationJob
     distiller_importer = DistillerImporter.new @project, @user
 
     #currently we only support ris_file
-    ImportedFile.where(projects_user: ProjectsUser.find_by( project: @project, user: @user ),
-                       import_type_id: ImportType.find_by(name:'Distiller Section').id).each do |ifile|
+    ImportedFile.where(projects_user: ProjectsUser.find_by(project: @project, user: @user),
+                       import_type_id: ImportType.find_by(name: "Distiller Section").id).each do |ifile|
       distiller_importer.add_t2_section ifile
     end
 
@@ -34,7 +38,6 @@ class DistillerImportJob < ApplicationJob
     # end
     # import_references @project, ImportedFile.find args.third
 
-    ImportMailer.notify_import_completion(@user.id, @project.id).deliver_later
+    ImportMailer.notify_distiller_import_completion(@project.id, @user.id).deliver_later
   end
 end
-

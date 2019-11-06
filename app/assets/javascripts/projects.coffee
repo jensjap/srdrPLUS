@@ -37,11 +37,11 @@ document.addEventListener 'turbolinks:load', ->
         )
 
         this.on('success', (file, response) ->
-          toastr.success('Citation file successfully uploaded. You will be notified by email when citation import completes.')
+          toastr.success('Citation file successfully uploaded. You will be notified by email when citaion import finishes.')
           wrapperThis.removeFile(file)
         )
         this.on('error', (file, error_message) ->
-          toastr.error('ERROR: Cannot upload citation file')
+          toastr.error('ERROR: Cannot upload citation file.')
         )
     }
 

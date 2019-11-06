@@ -76,7 +76,28 @@ div.row
         - projects_user = ProjectsUser.find_by user: current_user, project: @project
         - new_imported_file = projects_user.imported_files.build
       
-        h5 Import Citations from a File
+        /span data-tooltip="" data-click-open="true" title="You can import citations from .ris, .csv, PubMed ID list or EndNote Library"
+        
+        div style='display:flex; flex-direction:row;'
+          span.import-headline 
+            h5 Upload Citation File(s)
+          span.import-tooltip-icon style="margin-left: 3px;" data-open="import-tooltip-content"
+            i.fi-info style="color:#28b0f3;font-size:20px;"
+        .reveal#import-tooltip-content data-reveal="" style="font-size:large;line-height:25px;"
+          | You can upload the following file formats to add citations to this project:
+          ul style="padding-top:15px;font-size:large;line-height:25px;"
+            li
+              a href="https://srdrplus.s3.amazonaws.com/sample_ris.ris"
+                | RIS File (.ris)
+            li
+              a href="https://srdrplus.s3.amazonaws.com/sample_csv.csv"
+                | Comma Separated File (.csv)
+            li
+              a href="https://srdrplus.s3.amazonaws.com/sample_pubmed.txt"
+                | PubMed ID List (.txt)
+            li
+              a href="https://srdrplus.s3.amazonaws.com/sample_endnote.enw"
+                | EndNote File (.enw)
 
         #dropzone-div
           input#ris-file-type-id.hide value="#{ FileType.find_by(name: '.ris').id }"

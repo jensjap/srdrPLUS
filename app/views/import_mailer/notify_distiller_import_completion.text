@@ -1,11 +1,7 @@
 Huzzah!
 =======
 
-We have finished importing following files you have uploaded
-
-<% @filename %>
-
-and your project
+We have finished importing your Distiller data and the project
 
 "<%= @project.name %>"
 
