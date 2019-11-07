@@ -158,6 +158,7 @@ Rails.application.routes.draw do
 
       member do
         get 'work'
+        get 'change_outcome_in_results_section', constraints: { format: 'js' }
       end
 
       resources :extractions_extraction_forms_projects_sections do
@@ -176,6 +177,7 @@ Rails.application.routes.draw do
                 member do
                   post 'add_comparison'
                   get  'consolidate'
+                  get  'manage_measures', constraints: { format: 'js' }
                 end
 
               end

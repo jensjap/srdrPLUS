@@ -43,7 +43,7 @@
               = link_to_add_association f, :comparisons, \
                 class: 'button tiny', \
                 partial: 'result_statistic_sections/edit/comparison_fields', \
-                render_options: { locals: { comparison: :wac } } do
+                render_options: { locals: { rss: rss, comparison: :wac } } do
                 i.fi-plus>
                 | Add Comparison
 

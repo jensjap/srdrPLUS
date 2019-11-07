@@ -120,11 +120,38 @@ class ExtractionsController < ApplicationController
 
     @extraction_forms_projects = @project.extraction_forms_projects
     @key_questions_projects_array_for_select = @project.key_questions_projects_array_for_select
-    @preselected_eefpst1 = params[:eefpst1_id].present? ? ExtractionsExtractionFormsProjectsSectionsType1.find(params[:eefpst1_id]) : nil
+
+    # If a specific 'Outcome' is requested we load it here.
+    @eefpst1s = ExtractionsExtractionFormsProjectsSectionsType1
+      .by_section_name_and_extraction_id_and_extraction_forms_project_id('Outcomes',
+                                                                         @extraction.id,
+                                                                         @extraction_forms_projects.first.id)
+    if params[:eefpst1_id].present?
+      @eefpst1 = ExtractionsExtractionFormsProjectsSectionsType1.find(params[:eefpst1_id])
+
+    # Otherwise we choose the first 'Outcome' in the extraction to display.
+    else
+      @eefpst1 = @eefpst1s.first
+    end
 
     add_breadcrumb 'edit project', edit_project_path(@project)
     add_breadcrumb 'extractions',  project_extractions_path(@project)
     add_breadcrumb 'work',         :work_extraction_path
+  end
+
+  def change_outcome_in_results_section
+    respond_to do |format|
+      format.js do
+        @eefpst1                   = ExtractionsExtractionFormsProjectsSectionsType1.find(params[:eefpst1_id])
+        @extraction                = @eefpst1.extraction
+        @project                   = @extraction.project
+        @extraction_forms_projects = @project.extraction_forms_projects
+        @eefpst1s                  = ExtractionsExtractionFormsProjectsSectionsType1
+          .by_section_name_and_extraction_id_and_extraction_forms_project_id('Outcomes',
+                                                                             @extraction.id,
+                                                                             @extraction_forms_projects.first.id)
+      end
+    end
   end
 
   # GET /projects/1/extractions/comparison_tool

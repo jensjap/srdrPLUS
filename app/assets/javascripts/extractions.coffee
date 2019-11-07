@@ -8,12 +8,16 @@ document.addEventListener 'turbolinks:load', ->
 
   do ->
 
-#    # Adds a delay to calling a specific function.
-#    delay = do ->
-#      timer = 0
-#      ( callback, ms ) ->
-#        clearTimeout timer
-#        timer = setTimeout( callback, ms )
+    $( '.change-outcome-link' ).click ( e ) ->
+      $( '#results-panel > .table-container' ).html( '<br><br><br><h1>loading..</h1>' )
+      e.preventDefault()
+      return
+
+    $( '#results-panel .table-container' ).scroll ->
+      # End of the document reached?
+      if $( this ).prop( 'scrollHeight' ) - $( this ).height() == $( this ).scrollTop()
+        console.log 'Scrolled to Bottom'
+      return
 
     #################################################
     # State toggler for eefps

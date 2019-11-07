@@ -1,0 +1,3 @@
+( function() {
+  $( ".section-id-<%= @result_statistic_section.id %>" ).html( "<%= escape_javascript( render partial: 'result_statistic_sections/edit', locals: { result_statistic_section: @result_statistic_section } ) %>" ).foundation();
+} )();

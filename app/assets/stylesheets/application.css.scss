@@ -16,6 +16,7 @@
  *= require toastr_rails
  *= require select2
  *= require dropzone/dropzone
+ *= require zmultiselect.min
  */
 
 @import 'settings';
@@ -312,7 +313,9 @@ pre.debug_dump {
   width: 100%;
 
   td, th {
-    border-radius: 3px;
+    border-radius: 2px;
+    min-width: 8em;
+    border: 1px solid grey;
   }
 
   &.consolidate .missing-value {
@@ -415,4 +418,57 @@ a.accordion-title.populations {
 
 .dropdown.menu > li.is-dropdown-submenu-parent > a {
   color: white;
+}
+
+.table-fixed-headers {
+  table {
+    thead {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+    th, td {
+      margin: 0;
+      padding: 0;
+      background-clip: padding-box;
+      background-color: white;
+      min-width: 200px;
+      height: 20px;
+      &.bg-lightblue {
+        background-color: lightblue;
+      }
+      &.bg-lightgreen {
+        background-color: lightgreen;
+      }
+      &.bg-lightpink {
+        background-color: lightpink;
+      }
+      &.vertical {
+        font-weight: bold;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: middle;
+        min-width: 65px;
+        width: 65px;
+        position: sticky;
+        left: 0;
+        z-index: 1;
+      }
+      &.vertical > div {
+        -moz-transform: rotate(-90.0deg);  /* FF3.5+ */
+        -o-transform: rotate(-90.0deg);  /* Opera 10.5 */
+        -webkit-transform: rotate(-90.0deg);  /* Saf3.1+, Chrome */
+        filter:  progid:DXImageTransform.Microsoft.BasicImage(rotation=0.083);  /* IE6,IE7 */
+        -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=0.083)"; /* IE8 */
+        margin-left: -10em;
+        margin-right: -10em;
+      }
+      &.freeze {
+        position: sticky;
+        left: 65px;
+        z-index: 1;
+        font-weight: bold;
+      }
+    }
+  }
 }
