@@ -5,11 +5,10 @@ html
 
   body
     h1 Huzzah!
-    p We have finished importing following files you have uploaded
+    p We have finished importing following file you have uploaded
 
     .file-list
-      - @project.imported_files.each do |imported_file|
-        h3 #{ imported_file.content.filename }
+      = @filename
 
     p and your project
 

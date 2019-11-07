@@ -1,19 +1,22 @@
-require 'import_jobs/distiller_csv_import_job/_distiller_importer'
-require 'import_jobs/_ris_citation_importer'
+require "import_jobs/distiller_csv_import_job/_distiller_importer"
+require "import_jobs/_ris_citation_importer"
 
 class DistillerImportJob < ApplicationJob
   queue_as :default
+
+  rescue_from(StandardError) do |e|
+    ImportMailer.notify_distiller_import_completion(@project.id, @user.id, e.message).deliver_later
+  end
 
   def perform(*args)
     # args:
     #   project_id,
     #   user_id,
-    Rails.logger.debug "#{ self.class.name }: I'm performing my job with arguments: #{ args.inspect }"
+    Rails.logger.debug "#{self.class.name}: I'm performing my job with arguments: #{args.inspect}"
 
-    @user = User.find args.first
-    @project = Project.find args.second
-    @references_file = ImportedFile.find args.third
-
+    @references_file = ImportedFile.find args.first
+    @user = @references_file.user
+    @project = @references_file.project
 
     # the idea is that we have to import the references first, so the references imported_file object is the entry point for the import, the sections will only be attempted if this job is completed
     import_citations_from_ris @references_file
@@ -22,9 +25,8 @@ class DistillerImportJob < ApplicationJob
     distiller_importer = DistillerImporter.new @project, @user
 
     #currently we only support ris_file
-    ImportedFile.where(project: @project,
-                       user: @user,
-                       import_type_id: ImportType.find_by(name:'Distiller Section').id).each do |ifile|
+    ImportedFile.where(projects_user: ProjectsUser.find_by(project: @project, user: @user),
+                       import_type_id: ImportType.find_by(name: "Distiller Section").id).each do |ifile|
       distiller_importer.add_t2_section ifile
     end
 
@@ -36,7 +38,6 @@ class DistillerImportJob < ApplicationJob
     # end
     # import_references @project, ImportedFile.find args.third
 
-    ImportMailer.notify_import_completion(@user.id, @project.id).deliver_later
+    ImportMailer.notify_distiller_import_completion(@project.id, @user.id).deliver_later
   end
 end
-

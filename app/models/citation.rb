@@ -92,7 +92,6 @@ class Citation < ApplicationRecord
         end
       end
     end
-    super
   end
 
   def keyword_ids=(tokens)

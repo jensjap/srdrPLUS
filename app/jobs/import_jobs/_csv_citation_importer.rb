@@ -53,7 +53,7 @@ def import_citations_from_csv(imported_file)
     end
 
     ### authors
-    au_str = row_h[ 'Author' ]
+    au_str = row_h[ 'Authors' ]
     if au_str.present?
       au_str.gsub! /"/, ''
       au_arr = au_str.split( "     " )
@@ -62,9 +62,9 @@ def import_citations_from_csv(imported_file)
       if au_arr.length == 1 then au_arr = au_str.split( / \| |\|/ ) end
       if au_arr.length == 1 then au_arr = au_str.split( /\n| \n/ ) end
 
-      cit_h[ 'authors_attributes' ] = {}
-      au_arr.each do |au|
-        cit_h[ 'authors_attributes' ][Time.now.to_i + key_counter] = { name: au }
+      cit_h[ 'authors_citations_attributes' ] = {}
+      au_arr.each_with_index do |au, position|
+        cit_h[ 'authors_citations_attributes' ][Time.now.to_i + key_counter] = { author_attributes: { name: au }, ordering_attributes: { position: (position + 1) } }
         key_counter+=1
       end
     end

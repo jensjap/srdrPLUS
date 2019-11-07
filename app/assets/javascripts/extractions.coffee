@@ -139,6 +139,7 @@ document.addEventListener 'turbolinks:load', ->
         dt.rows( { page:'current' } ).invalidate()
         dt.draw()
 
+    if $( 'body.extractions.work' ).length > 0
       #################################################
       # State Toggler for EEFPS
       $( '.status-switch .switch-input' ).on 'change', () ->
@@ -159,6 +160,8 @@ document.addEventListener 'turbolinks:load', ->
           error: -> alert 'Server busy. Please try again later.'
           timeout: 5000
 
+      
+    if $( 'body.extractions.consolidate' ).length > 0
       ######################################################################
       # Attach click event to edit type1 from within extraction:consolidate.
       $( '.consolidate .edit-type1-link' ).click ( e ) ->

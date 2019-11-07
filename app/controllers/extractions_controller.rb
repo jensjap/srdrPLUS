@@ -87,7 +87,6 @@ class ExtractionsController < ApplicationController
     authorize(@extraction.project, policy_class: ExtractionPolicy)
 
     respond_to do |format|
-      byebug
       if @extraction.update(extraction_params)
         format.html { redirect_to work_extraction_path(@extraction,
                                                        anchor: "panel-tab-#{ params[:extraction][:extraction_forms_projects_section_id] }"),

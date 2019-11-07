@@ -25,49 +25,55 @@
                     "data-association-insertion-method" => 'append'
 
 
-        select#create-type
+        select#create-type.hide
           option value="empty" Create an empty project
           option value="json" Create project from an SRDR+ JSON export
           option value="distiller" Create project from a Distiller SR .csv export
 
-        .distiller-import-panel.hide
-          .distiller-reference-file-container
-            = f.simple_fields_for :imported_files do |g|
-              - if g.object.import_type == ImportType.find_by(name: 'Distiller References')
-                = render 'projects/new/distiller_references_file_form', f:g
-          .distiller-section-file-container
-            = f.simple_fields_for :imported_files do |g|
-              - if g.object.import_type == ImportType.find_by(name: 'Distiller Section')
-                = render 'projects/new/distiller_section_file_form', f:g
-          .links
-            .hide
-              = link_to_add_association 'Add Distiller References File', f, :imported_files,
-                      partial: 'projects/new/distiller_references_file_form',
-                      id: 'distiller-add-references-file',
-                      "data-association-insertion-node" => '.distiller-reference-file-container',
-                      "data-association-insertion-method" => 'append'
+        = f.simple_fields_for :projects_users do |g|
+          = g.input :user_id, as: :hidden, input_html: { value: current_user.id }
+          /= g.input :role_id, as: :hidden, input_html: { value: Role.find_by(name: 'Leader').id }
 
-            = link_to_add_association 'Add Distiller Section File', f, :imported_files,
-                    partial: 'projects/new/distiller_section_file_form',
-                    id: 'distiller-add-section-file',
-                    "data-association-insertion-node" => '.distiller-section-file-container',
-                    "data-association-insertion-method" => 'append'
-            br
-            br
-            br
-        .json-import-panel.hide
-          .project-file-container
-          = f.simple_fields_for :imported_files do |g|
-            = render 'projects/new/project_file_form', f:g
-          .links
-            = link_to_add_association 'Add Project File', f, :imported_files,
-                    partial: 'projects/new/project_file_form',
-                    id: 'add-project-file',
-                    "data-association-insertion-node" => '.project-file-container',
-                    "data-association-insertion-method" => 'append'
-            br
-            br
-            br
+          .distiller-import-panel.hide
+            .distiller-reference-file-container
+              = g.simple_fields_for :imported_files do |h|
+                - imported_file = h.object
+                - if imported_file.present? and imported_file.import_type == ImportType.find_by(name: 'Distiller References')
+                  = render 'projects/new/distiller_references_file_form', f:h
+            .distiller-section-file-container
+              = g.simple_fields_for :imported_files do |h|
+                - imported_file = h.object
+                - if imported_file.present? and imported_file.import_type == ImportType.find_by(name: 'Distiller Section')
+                  = render 'projects/new/distiller_section_file_form', f:h
+            .links
+              .hide
+                = link_to_add_association 'Add Distiller References File', g, :imported_files,
+                        partial: 'projects/new/distiller_references_file_form',
+                        id: 'distiller-add-references-file',
+                        "data-association-insertion-node" => '.distiller-reference-file-container',
+                        "data-association-insertion-method" => 'append'
+
+              = link_to_add_association 'Add Distiller Section File', g, :imported_files,
+                      partial: 'projects/new/distiller_section_file_form',
+                      id: 'distiller-add-section-file',
+                      "data-association-insertion-node" => '.distiller-section-file-container',
+                      "data-association-insertion-method" => 'append'
+              br
+              br
+              br
+          .json-import-panel.hide
+            .project-file-container
+            = g.simple_fields_for :imported_files do |h|
+              = render 'projects/new/project_file_form', f:h
+            .links
+              = link_to_add_association 'Add Project File', g, :imported_files,
+                      partial: 'projects/new/project_file_form',
+                      id: 'add-project-file',
+                      "data-association-insertion-node" => '.project-file-container',
+                      "data-association-insertion-method" => 'append'
+              br
+              br
+              br
 
 
           /div

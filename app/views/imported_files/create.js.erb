@@ -1,0 +1,12 @@
+( function() {
+  <% if @imported_file.errors.present? %>
+    <% @imported_file.errors.full_messages.each do |msg| %>
+      toastr.error('<%= msg[1] %>', '<%= msg[0] %>');
+    <% end %>
+  <% else %>
+    $( 'imported_file_content input.file' ).val( '' );
+    $( '#import-select' ).val( 'not-selected' );
+    $( 'form.new_imported_file input.button' ).attr( 'disabled', false );
+    toastr.success( 'Upload completed' );
+  <% end %>
+} )();

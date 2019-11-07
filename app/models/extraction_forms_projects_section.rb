@@ -199,14 +199,10 @@ class ExtractionFormsProjectsSection < ApplicationRecord
         end
       end  # lsof_qdq_ids.each do |qdq_id|
       depen_arr.each do |q_id, prereq_id|
-        begin
-          Dependency.find_or_create_by! dependable_type: 'Question',
-                                        dependable_id: q_id,
-                                        prerequisitable_type: 'QuestionRowColumnsQuestionRowColumnOption',
-                                        prerequisitable_id: qrcqrco_id_dict[prereq_id]
-        rescue
-          byebug
-        end
+        Dependency.find_or_create_by! dependable_type: 'Question',
+                                      dependable_id: q_id,
+                                      prerequisitable_type: 'QuestionRowColumnsQuestionRowColumnOption',
+                                      prerequisitable_id: qrcqrco_id_dict[prereq_id]
 
       end
     end  # ExtractionFormsProjectsSection.transaction do

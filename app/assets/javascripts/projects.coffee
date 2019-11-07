@@ -7,7 +7,6 @@ document.addEventListener 'turbolinks:load', ->
   return unless $( '.projects, .citations' ).length > 0
 
   do ->
-
     # Ajax call to filter the project list. We want to return a function here
     # to prevent it from being called immediately. Wrapper is to allow passing
     # param without immediate function invocation.
@@ -179,6 +178,46 @@ document.addEventListener 'turbolinks:load', ->
     ##### CHECK WHICH CONTROLLER ACTION THIS PAGE CORRESPONDS TO
     ##### ONLY RUN THIS CODE IF WE ARE IN INDEX CITATIONS PAGE
     if $( 'body.citations.index' ).length == 1
+      # Dropzone for uploading citation files
+      Dropzone.options.fileDropzone = {
+        url: "/imported_files",
+        autoProcessQueue: true,
+        uploadMultiple: false,
+
+        init: ()->
+          wrapperThis = this
+
+          this.on('sending', (file, xhr, formData) ->
+            ris_type_id = $( "#dropzone-div input#ris-file-type-id" ).val()
+            csv_type_id = $( "#dropzone-div input#csv-file-type-id" ).val()
+            endnote_type_id = $( "#dropzone-div input#endnote-file-type-id" ).val()
+            pubmed_type_id = $( "#dropzone-div input#pubmed-file-type-id" ).val()
+
+            file_extension = file.name.split('.').pop()
+            file_type_id = switch 
+              when file_extension == 'ris' then ris_type_id
+              when file_extension == 'csv' then csv_type_id
+              when file_extension == 'enw' then endnote_type_id
+              else pubmed_type_id
+
+            formData.append("authenticity_token", $("#dropzone-div input[name='authenticity_token']").val())
+            formData.append("projects_user_id", $("#dropzone-div").find("#imported_file_projects_user_id").val())
+            formData.append("import_type_id", $("#dropzone-div").find("#imported_file_import_type_id").val())
+            formData.append("file_type_id", file_type_id)
+            formData.append("authenticity_token", $("#dropzone-div input[name='authenticity_token']").val())
+          )
+
+          this.on('success', (file, response) ->
+            toastr.success('Citation file successfully uploaded. You will be notified by email when citaion import finishes.')
+            wrapperThis.removeFile(file)
+          )
+          this.on('error', (file, error_message) ->
+            toastr.error('ERROR: Cannot upload citation file.')
+          )
+      }
+
+      new Dropzone( '#fileDropzone' )
+
       list_options = { valueNames: [ 'citation-numbers', 'citation-title', 'citation-authors', 'citation-journal', 'citation-journal-date', 'citation-abstract', 'citation-abstract' ] }
 
       ## Method to pull citation info from PUBMED as XML

@@ -145,6 +145,7 @@ Rails.application.routes.draw do
       end
 
     end
+    
     resources :screening_options
     resources :tasks
     resources :extractions do
@@ -253,6 +254,7 @@ Rails.application.routes.draw do
   resources :degrees, only: [:index]
   resources :organizations, only: [:index]
   resources :sections, only: [:index]
+  resources :imported_files, only: [:new, :create]
 
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end

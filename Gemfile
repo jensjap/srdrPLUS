@@ -173,3 +173,7 @@ gem 'font-awesome-rails'
 gem "omniauth-google-oauth2"
 
 gem "googleauth"
+
+# Allows users to drop files to upload
+gem "dropzonejs-rails"
+

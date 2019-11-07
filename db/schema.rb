@@ -10,7 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_01_003906) do
+ActiveRecord::Schema.define(version: 2019_10_30_184245) do
+
+  create_table "abraham_histories", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "controller_name"
+    t.string "action_name"
+    t.string "tour_name"
+    t.integer "creator_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_at"], name: "index_abraham_histories_on_created_at"
+    t.index ["creator_id"], name: "index_abraham_histories_on_creator_id"
+    t.index ["updated_at"], name: "index_abraham_histories_on_updated_at"
+  end
 
   create_table "abstrackr_settings", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "profile_id"
@@ -690,10 +702,12 @@ ActiveRecord::Schema.define(version: 2019_10_01_003906) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "key_question_id"
+    t.integer "projects_user_id"
     t.index ["file_type_id"], name: "index_imported_files_on_file_type_id"
     t.index ["import_type_id"], name: "index_imported_files_on_import_type_id"
     t.index ["key_question_id"], name: "index_imported_files_on_key_question_id"
     t.index ["project_id"], name: "index_imported_files_on_project_id"
+    t.index ["projects_user_id"], name: "index_imported_files_on_projects_user_id"
     t.index ["section_id"], name: "index_imported_files_on_section_id"
     t.index ["user_id"], name: "index_imported_files_on_user_id"
   end
@@ -879,7 +893,7 @@ ActiveRecord::Schema.define(version: 2019_10_01_003906) do
     t.datetime "created_at", null: false
     t.datetime "revoked_at"
     t.string "scopes"
-    t.index ["application_id"], name: "index_oauth_access_grants_on_application_id"
+    t.index ["application_id"], name: "fk_rails_b4b53e07b8"
     t.index ["token"], name: "index_oauth_access_grants_on_token", unique: true
   end
 
@@ -893,7 +907,7 @@ ActiveRecord::Schema.define(version: 2019_10_01_003906) do
     t.datetime "created_at", null: false
     t.string "scopes"
     t.string "previous_refresh_token", default: "", null: false
-    t.index ["application_id"], name: "index_oauth_access_tokens_on_application_id"
+    t.index ["application_id"], name: "fk_rails_732cb83ab7"
     t.index ["refresh_token"], name: "index_oauth_access_tokens_on_refresh_token", unique: true
     t.index ["resource_owner_id"], name: "index_oauth_access_tokens_on_resource_owner_id"
     t.index ["token"], name: "index_oauth_access_tokens_on_token", unique: true
@@ -1561,10 +1575,10 @@ ActiveRecord::Schema.define(version: 2019_10_01_003906) do
     t.string "query"
     t.string "normalized_query"
     t.integer "results_count"
-    t.timestamp "created_at"
+    t.datetime "created_at"
     t.string "convertable_type"
     t.integer "convertable_id"
-    t.timestamp "converted_at"
+    t.datetime "converted_at"
     t.index ["convertable_type", "convertable_id"], name: "index_searchjoy_searches_on_convertable_type_and_convertable_id"
     t.index ["created_at"], name: "index_searchjoy_searches_on_created_at"
     t.index ["search_type", "created_at"], name: "index_searchjoy_searches_on_search_type_and_created_at"
@@ -1914,6 +1928,7 @@ ActiveRecord::Schema.define(version: 2019_10_01_003906) do
   add_foreign_key "imported_files", "file_types"
   add_foreign_key "imported_files", "import_types"
   add_foreign_key "imported_files", "projects"
+  add_foreign_key "imported_files", "projects_users"
   add_foreign_key "imported_files", "sections"
   add_foreign_key "imported_files", "users"
   add_foreign_key "invitations", "roles"
