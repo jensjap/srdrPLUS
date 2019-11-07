@@ -53364,48 +53364,6 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
     }
     (function() {
       var append_citations, citationList, fetch_from_pubmed, filterProjectList, list_options, populate_citation_fields;
-      Dropzone.options.fileDropzone = {
-        url: "/imported_files",
-        autoProcessQueue: true,
-        uploadMultiple: false,
-        init: function() {
-          var wrapperThis;
-          wrapperThis = this;
-          this.on('sending', function(file, xhr, formData) {
-            var csv_type_id, endnote_type_id, file_extension, file_type_id, pubmed_type_id, ris_type_id;
-            ris_type_id = $("#dropzone-div input#ris-file-type-id").val();
-            csv_type_id = $("#dropzone-div input#csv-file-type-id").val();
-            endnote_type_id = $("#dropzone-div input#endnote-file-type-id").val();
-            pubmed_type_id = $("#dropzone-div input#pubmed-file-type-id").val();
-            file_extension = file.name.split('.').pop();
-            file_type_id = (function() {
-              switch (false) {
-                case file_extension !== 'ris':
-                  return ris_type_id;
-                case file_extension !== 'csv':
-                  return csv_type_id;
-                case file_extension !== 'enw':
-                  return endnote_type_id;
-                default:
-                  return pubmed_type_id;
-              }
-            })();
-            formData.append("authenticity_token", $("#dropzone-div input[name='authenticity_token']").val());
-            formData.append("projects_user_id", $("#dropzone-div").find("#imported_file_projects_user_id").val());
-            formData.append("import_type_id", $("#dropzone-div").find("#imported_file_import_type_id").val());
-            formData.append("file_type_id", file_type_id);
-            return formData.append("authenticity_token", $("#dropzone-div input[name='authenticity_token']").val());
-          });
-          this.on('success', function(file, response) {
-            toastr.success('Citation file successfully uploaded. You will be notified by email when citaion import finishes.');
-            return wrapperThis.removeFile(file);
-          });
-          return this.on('error', function(file, error_message) {
-            return toastr.error('ERROR: Cannot upload citation file.');
-          });
-        }
-      };
-      new Dropzone('#fileDropzone');
       filterProjectList = function(order) {
         return function() {
           $.get({
@@ -53549,6 +53507,48 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
         });
       }
       if ($('body.citations.index').length === 1) {
+        Dropzone.options.fileDropzone = {
+          url: "/imported_files",
+          autoProcessQueue: true,
+          uploadMultiple: false,
+          init: function() {
+            var wrapperThis;
+            wrapperThis = this;
+            this.on('sending', function(file, xhr, formData) {
+              var csv_type_id, endnote_type_id, file_extension, file_type_id, pubmed_type_id, ris_type_id;
+              ris_type_id = $("#dropzone-div input#ris-file-type-id").val();
+              csv_type_id = $("#dropzone-div input#csv-file-type-id").val();
+              endnote_type_id = $("#dropzone-div input#endnote-file-type-id").val();
+              pubmed_type_id = $("#dropzone-div input#pubmed-file-type-id").val();
+              file_extension = file.name.split('.').pop();
+              file_type_id = (function() {
+                switch (false) {
+                  case file_extension !== 'ris':
+                    return ris_type_id;
+                  case file_extension !== 'csv':
+                    return csv_type_id;
+                  case file_extension !== 'enw':
+                    return endnote_type_id;
+                  default:
+                    return pubmed_type_id;
+                }
+              })();
+              formData.append("authenticity_token", $("#dropzone-div input[name='authenticity_token']").val());
+              formData.append("projects_user_id", $("#dropzone-div").find("#imported_file_projects_user_id").val());
+              formData.append("import_type_id", $("#dropzone-div").find("#imported_file_import_type_id").val());
+              formData.append("file_type_id", file_type_id);
+              return formData.append("authenticity_token", $("#dropzone-div input[name='authenticity_token']").val());
+            });
+            this.on('success', function(file, response) {
+              toastr.success('Citation file successfully uploaded. You will be notified by email when citaion import finishes.');
+              return wrapperThis.removeFile(file);
+            });
+            return this.on('error', function(file, error_message) {
+              return toastr.error('ERROR: Cannot upload citation file.');
+            });
+          }
+        };
+        new Dropzone('#fileDropzone');
         list_options = {
           valueNames: ['citation-numbers', 'citation-title', 'citation-authors', 'citation-journal', 'citation-journal-date', 'citation-abstract', 'citation-abstract']
         };
