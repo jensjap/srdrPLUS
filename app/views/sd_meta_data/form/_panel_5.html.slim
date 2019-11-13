@@ -1,6 +1,9 @@
 #panel-5.tabs-panel.is-active
   fieldset
-    legend Mapping Key Questions (Submitter Only)
+    div style="display:flex; flex-direction: row;"
+      legend Mapping Key Questions (Submitter Only)
+      = render 'shared/status_switch', statusable_id: "#{ f.object.id.to_s + '_5' }", status_name:"#{ f.object.section_flag_5 ? 'Completed' : 'Draft' }"
+
     div data-row-span="2"
       div data-field-span="2"
         .legend-box.alice-box
@@ -24,17 +27,17 @@
             - sd_key_question.srdr_key_questions.each do |srdr_key_question|
               .draggable.clickremove id="srdr_kq-#{srdr_key_question.id}" data-keyQuestionId="#{srdr_key_question.id}" draggable="true" = "#{srdr_key_question.name} - (click to remove)"
           a.button.tiny style="margin: 10px;" onClick="resetMapping(#{sd_key_question.id})" Reset Auto Match
-  br/
-  br/
-  fieldset
-    legend Section Review & Validation
-    div data-row-span="4"
-      div data-field-span="4"
-        div Section Finished?
-        .switch
-          input.switch-input id="5-yes-no-section" type="checkbox" name="sectionSection" data-sd_meta_datum_id="#{@sd_meta_datum.id}"
-          label.switch-paddle for="5-yes-no-section"
-            span.switch-active aria-hidden="true" Yes
-            span.switch-inactive aria-hidden="true" No
+  / br/
+  / br/
+  / fieldset
+  /   legend Section Review & Validation
+  /   div data-row-span="4"
+  /     div data-field-span="4"
+  /       div Section Finished?
+  /       .switch
+  /         input.switch-input id="5-yes-no-section" type="checkbox" name="sectionSection" data-sd_meta_datum_id="#{@sd_meta_datum.id}"
+  /         label.switch-paddle for="5-yes-no-section"
+  /           span.switch-active aria-hidden="true" Yes
+  /           span.switch-inactive aria-hidden="true" No
 
 = render 'sd_meta_data/form/form_mapping_js'

@@ -50,7 +50,7 @@ class SdMetaDatum < ApplicationRecord
 
   attr_accessor :kqp_ids
 
-  SECTIONS = ['Title, Funding Sources, and Dates', 'Authors and Stakeholders', 'Links', 'Purpose and Key Questions', 'PICODS for each Key Question', 'Mapping Key Questions (Submitter Only)', 'Search Strategy & Summary of Results', 'Study Results'].freeze
+  SECTIONS = ["Title, Funding Sources, and Dates", "Authors and Stakeholders", "Links", "Purpose and Key Questions", "PICODS for each Key Question", "Mapping Key Questions (Submitter Only)", "Search Strategy & Summary of Results", "Study Results"].freeze
 
   default_scope { order(id: :desc) }
 
@@ -119,6 +119,10 @@ class SdMetaDatum < ApplicationRecord
     section_statuses.all? { |status| status == true }
   end
 
+  def progress_meter_width
+    progress_meter_width = (incomplete_sections.length.to_f * 100 / SECTIONS.length.to_f).round.to_s
+  end
+
   def incomplete_sections
     incomplete_sections = []
 
@@ -128,13 +132,13 @@ class SdMetaDatum < ApplicationRecord
 
   def section_statuses
     (0..7).to_a.map do |i|
-      section = 'section_flag_' + i.to_s
+      section = "section_flag_" + i.to_s
       self[section]
     end
   end
 
   def toggle_state
-    new_state = state == 'DRAFT' ? 'COMPLETED' : 'DRAFT'
+    new_state = state == "DRAFT" ? "COMPLETED" : "DRAFT"
     update(state: new_state)
   end
 

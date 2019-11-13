@@ -2,14 +2,7 @@
   h5 = section_name 
   = simple_form_for(eefps, url: extractions_extraction_forms_projects_section_path(eefps), remote: true) do |f|
     = f.simple_fields_for(:status) do |s_f|
-      = s_f.input :name, as: :hidden, input_html: { class: "eefps-status-name", 'eefps-id': "#{ eefps.id.to_s }" }
-    .status-switch.switch style='width: 5rem;'
-      input.switch-input[id="#{ eefps.id.to_s }-eefps-status" type='checkbox' name="#{ eefps.id.to_s }-eefps-status" 
-                         eefps-id="#{ eefps.id.to_s }" checked=(true if f.object.status.name == 'Completed')]
-      label.switch-paddle for="#{ eefps.id.to_s }-eefps-status"
-        span.show-for-sr
-          | Completion Status
-        span.switch-active
-          | Completed
-        span.switch-inactive
-          | Draft
+      = s_f.input :name, as: :hidden, input_html: { class: "status-name", 'statusable-id': "#{ eefps.id.to_s }" }
+
+    = render 'shared/status_switch', statusable_name: 'eefps', statusable_id: eefps.id, status_name: eefps.status.name
+    .status-send-form-trigger.hide statusable_id="#{ eefps.id.to_s }"

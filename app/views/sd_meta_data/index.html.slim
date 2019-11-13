@@ -17,12 +17,12 @@ hr style="border: 0.5px solid; margin: 20px 55px;"
   table.hover
     thead
       tr
-        th width="175" SRDR+ Project
-        th width="175" Systematic Review Report
-        th width="375" Status
-        th width="75" Edit
-        th width="75" Delete
-        th width="75" Last Updated
+        th width="150" SRDR+ Project
+        th width="150" Systematic Review Report
+        th width="50" Progress
+        th width="50" Last Updated
+        th width="25" 
+        th width="25" 
     tbody
       - if @sd_meta_data.empty?
         tr
@@ -41,7 +41,11 @@ hr style="border: 0.5px solid; margin: 20px 55px;"
               td style="font-weight: bold;"
                 | Completed
             - else
+              - tooltip_text = "<span style='font-weight: bold;'>Incomplete Sections:</span><br>" + (sd_meta_datum.incomplete_sections.join('<br>'))
               td
+                .success.progress data-allow-html="true" data-tooltip="" title="#{ tooltip_text }"
+                  .progress-meter style="width: #{ sd_meta_datum.progress_meter_width }%;"
+              /td
                 p style="margin: 10px 0px;font-weight: bold;" 
                   | Incomplete Sections:
                 - sd_meta_datum.incomplete_sections.each do |section|
@@ -51,9 +55,9 @@ hr style="border: 0.5px solid; margin: 20px 55px;"
               = simple_form_for(sd_meta_datum, url: sd_meta_datum_path(sd_meta_datum)) do |f|
                 = f.input :state, :as => :hidden, input_html: { value: sd_meta_datum.state == 'DRAFT' ? 'COMPLETED' : 'DRAFT' }
                 = f.button :submit, 'Toggle State', class: 'state-toggler', state: sd_meta_datum.state, data_sections_complete: sd_meta_datum.all_sections_complete?
+            td = distance_of_time_in_words_to_now(sd_meta_datum.updated_at) + ' ago'           
             td = link_to "Edit", edit_sd_meta_datum_path(sd_meta_datum.id)
             td = link_to 'Destroy', sd_meta_datum_path(sd_meta_datum), data: { confirm: 'Are you sure?' }, method: :delete
-            td = distance_of_time_in_words_to_now(sd_meta_datum.updated_at) + ' ago'
 
 javascript:
   $('.state-toggler').on('click', function(e) {

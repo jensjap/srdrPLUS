@@ -1,6 +1,8 @@
 javascript:
   var updateSectionFlag = function(domEl) {
-    var sectionId = domEl.id[0];
+    //var sectionId = domEl.id[0];
+    var sectionId = domEl.getAttribute('statusable-id')[domEl.getAttribute('statusable-id').length- 1];
+
     var sd_meta_datum_id = $(domEl).attr('data-sd_meta_datum_id');
     var status = domEl.checked;
     var paramKey = `section_flag_${sectionId}`;

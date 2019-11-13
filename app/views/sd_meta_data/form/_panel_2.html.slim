@@ -1,6 +1,9 @@
 #panel-2.tabs-panel.is-active
   fieldset
-    legend Links
+    div style="display:flex; flex-direction: row;"
+      legend Links
+      = render 'shared/status_switch', statusable_id: "#{ f.object.id.to_s + '_2' }", status_name:"#{ f.object.section_flag_2 ? 'Completed' : 'Draft' }"
+
     div data-row-span="1"
       div data-field-span="1"
         label 13. Prospero
@@ -57,9 +60,9 @@
         = f.input :most_previous_version_srdr_link, as: :string, label: '30. Most Recent Previous Version of SRDR Data'
       div data-field-span="1"
         = f.input :most_previous_version_full_report_link, as: :string, label: '31. Most Recent Previous Version of Full Report'
-  br/
-  br/
-  fieldset
+  /br/
+  /br/
+  /fieldset
     legend Section Review & Validation
     div data-row-span="1"
       div data-field-span="1"

@@ -1,6 +1,9 @@
 #panel-1.tabs-panel.is-active
   fieldset
-    legend Authors and Stakeholders
+    div style="display:flex; flex-direction: row;"
+      legend Authors and Stakeholders
+      = render 'shared/status_switch', statusable_id: "#{ f.object.id.to_s + '_1' }", status_name:"#{ f.object.section_flag_1 ? 'Completed' : 'Draft' }"
+
     div data-row-span="1"
       div data-field-span="1"
         = f.input :authors, label: '7. Authors', :input_html => { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
@@ -25,9 +28,9 @@
           div
         - else
           div <b>#{[@project.creator.profile.first_name, @project.creator.profile.middle_name, @project.creator.profile.last_name].join(" ")}</b> (#{@project.creator.email})
-  br/
-  br/
-  fieldset
+  /br/
+  /br/
+  /fieldset
     legend Section Review & Validation
     div data-row-span="1"
       div data-field-span="1"

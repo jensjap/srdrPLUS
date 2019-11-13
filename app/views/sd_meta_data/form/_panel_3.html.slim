@@ -1,6 +1,9 @@
 #panel-3.tabs-panel.is-active
   fieldset
-    legend Purpose and Key Questions
+    div style="display:flex; flex-direction: row;"
+      legend Purpose and Key Questions
+      = render 'shared/status_switch', statusable_id: "#{ f.object.id.to_s + '_3' }", status_name:"#{ f.object.section_flag_3 ? 'Completed' : 'Draft' }"
+
     div data-row-span="1"
       div data-field-span="1"
         = f.input :overall_purpose_of_review, label: '32. Overall Purpose of Review', :input_html => { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
@@ -17,9 +20,9 @@
           = render 'sd_meta_data/form/dynamic_fields/sd_key_question_fields', f: sd_key_question
         div
           = link_to_add_association 'add', f, :sd_key_questions, partial: 'sd_meta_data/form/dynamic_fields/sd_key_question_fields'
-  br/
-  br/
-  fieldset
+  / br/
+  / br/
+  / fieldset
     legend Section Review & Validation
     div data-row-span="1"
       div data-field-span="1"
