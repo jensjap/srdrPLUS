@@ -29,7 +29,6 @@ document.addEventListener 'turbolinks:load', ->
 
     # DataTables for Extractions List
     if $( 'body.extractions.index' ).length > 0
-
       #################################################
       # Editable ProjectsUserRole
       $( '.projects-users-role' ).hover(
@@ -50,9 +49,9 @@ document.addEventListener 'turbolinks:load', ->
             $( this ).closest( '.projects-users-role' ).attr( 'dropdown-active', 'false' )
 
       $( '.projects-users-role' ).on 'click', ( event ) ->
-#        $( this ).closest( '.projects-users-role' ).find( '.projects-users-role-select' ).removeClass( 'hide' )
+        #$( this ).closest( '.projects-users-role' ).find( '.projects-users-role-select' ).removeClass( 'hide' )
         $( this ).closest( '.projects-users-role' ).attr( 'dropdown-active', 'true' )
-#        $( this ).addClass( 'hide' )
+        #$( this ).addClass( 'hide' )
 
       $( '.projects-users-role-select select' ).on 'change', ( event ) ->
         $( this ).closest( 'form' ).submit()
@@ -140,16 +139,6 @@ document.addEventListener 'turbolinks:load', ->
         dt.draw()
 
     if $( 'body.extractions.work' ).length > 0
-      #################################################
-      # State Toggler for EEFPS
-      $( '.status-switch .switch-input' ).on 'change', () ->
-        eefps_id = $( this ).attr( 'eefps-id' )
-        if $( this ).prop( 'checked' )
-          $( ".eefps-status-name[eefps-id=" + eefps_id + "]" ).val( 'Completed' )
-        else
-          $( ".eefps-status-name[eefps-id=" + eefps_id + "]" ).val( 'Draft' )
-        $( this ).parents( 'form' ).submit()
-
       #################################################
       # Attach listener to outcome population selector.
       $( '#outcome_populations_selector_eefpst1_id' ).change ( event ) ->

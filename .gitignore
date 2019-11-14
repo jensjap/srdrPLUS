@@ -51,3 +51,4 @@ passenger*
 # /storage are locally attached files. We use Amazon S3 on production
 /reports/*
 /storage/*
+app/jobs/import_jobs/srdrplus.code-workspace

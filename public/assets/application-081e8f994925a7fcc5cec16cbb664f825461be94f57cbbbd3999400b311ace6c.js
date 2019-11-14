@@ -52803,16 +52803,6 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
         });
       }
       if ($('body.extractions.work').length > 0) {
-        $('.status-switch .switch-input').on('change', function() {
-          var eefps_id;
-          eefps_id = $(this).attr('eefps-id');
-          if ($(this).prop('checked')) {
-            $(".eefps-status-name[eefps-id=" + eefps_id + "]").val('Completed');
-          } else {
-            $(".eefps-status-name[eefps-id=" + eefps_id + "]").val('Draft');
-          }
-          return $(this).parents('form').submit();
-        });
         $('#outcome_populations_selector_eefpst1_id').change(function(event) {
           return $.ajax({
             url: '/extractions_extraction_forms_projects_sections_type1s/' + this.value + '/get_results_populations',
@@ -58059,5 +58049,21 @@ document.addEventListener( 'turbolinks:load', function() {
 
   $( "select.select2" ).select2();
   $( "select.select2_multi" ).select2({
-    multiple: 'true' });
+    multiple: 'true'
+  });
+
+  if ($('body.extractions.work, body.sd_meta_data.edit').length > 0) {
+    //################################################
+    // State Toggler for EEFPS
+    $('.status-switch .switch-input').on('change', function () {
+      const statusable_id = $(this).attr('statusable-id');
+      if ($(this).prop('checked')) {
+        $(".status-name[statusable-id=" + statusable_id + "]").val('Completed');
+      } else {
+        $(".status-name[statusable-id=" + statusable_id + "]").val('Draft');
+      }
+      return $(this).parents('form').submit();
+    });
+  }
+
 } );

@@ -1,6 +1,9 @@
 #panel-6.tabs-panel.is-active
   fieldset
-    legend Search Strategy & Summary of Results
+    div style="display:flex; flex-direction: row;"
+      legend Search Strategy & Summary of Results
+      = render 'shared/status_switch', statusable_id: "#{ f.object.id.to_s + '_6' }", status_name:"#{ f.object.section_flag_6 ? 'Completed' : 'Draft' }"
+
     div data-row-span="1"
       div data-field-span="1"
         label 43. Analytic/ Conceptual Framework
@@ -36,15 +39,15 @@
           = render 'sd_meta_data/form/dynamic_fields/sd_summary_of_evidence_fields', f: sd_summary_of_evidence
         div
           = link_to_add_association 'add', f, :sd_summary_of_evidences, partial: 'sd_meta_data/form/dynamic_fields/sd_summary_of_evidence_fields'
-  br/
-  br/
-  fieldset
-    legend Section Review & Validation
-    div data-row-span="1"
-      div data-field-span="1"
-        div Section Finished?
-        .switch
-          input.switch-input id="6-yes-no-section" type="checkbox" name="sectionSection" data-sd_meta_datum_id="#{@sd_meta_datum.id}"
-          label.switch-paddle for="6-yes-no-section"
-            span.switch-active aria-hidden="true" Yes
-            span.switch-inactive aria-hidden="true" No
+  / br/
+  / br/
+  / fieldset
+  /   legend Section Review & Validation
+  /   div data-row-span="1"
+  /     div data-field-span="1"
+  /       div Section Finished?
+  /       .switch
+  /         input.switch-input id="6-yes-no-section" type="checkbox" name="sectionSection" data-sd_meta_datum_id="#{@sd_meta_datum.id}"
+  /         label.switch-paddle for="6-yes-no-section"
+  /           span.switch-active aria-hidden="true" Yes
+  /           span.switch-inactive aria-hidden="true" No

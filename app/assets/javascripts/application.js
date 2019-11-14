@@ -209,5 +209,21 @@ document.addEventListener( 'turbolinks:load', function() {
 
   $( "select.select2" ).select2();
   $( "select.select2_multi" ).select2({
-    multiple: 'true' });
+    multiple: 'true'
+  });
+
+  if ($('body.extractions.work, body.sd_meta_data.edit').length > 0) {
+    //################################################
+    // State Toggler for EEFPS
+    $('.status-switch .switch-input').on('change', function () {
+      const statusable_id = $(this).attr('statusable-id');
+      if ($(this).prop('checked')) {
+        $(".status-name[statusable-id=" + statusable_id + "]").val('Completed');
+      } else {
+        $(".status-name[statusable-id=" + statusable_id + "]").val('Draft');
+      }
+      $('.status-send-form-trigger[statusable-id=' + statusable_id + ']').parents('form').submit();
+    });
+  }
+
 } );

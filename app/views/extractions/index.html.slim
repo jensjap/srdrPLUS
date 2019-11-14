@@ -11,13 +11,17 @@
     table.extractions-list
       thead
         tr
-          th.citation-handle-header[data-sort-mode="name" data-sort-direction="asc"] Citation (Sorted by Title)
           - if @project.leaders.include? current_user
-            th Assigned User
+            th.citation-handle-header[width="50%" data-sort-mode="name" data-sort-direction="asc"]
+              | Citation (Sorted by Title)
+            th width="30%" Assigned User
+          - else 
+            th.citation-handle-header[width="80%" data-sort-mode="name" data-sort-direction="asc"]
+              | Citation (Sorted by Title)
           /th Role
-          th Progress
-          th
-          th
+          th width="10%" Progress
+          th width="5%"
+          th width="5%"
 
       tbody
         - if @extractions.unconsolidated.blank?
@@ -47,7 +51,7 @@
                         = e_f.association :projects_users_role, label: false, collection: @projects_users_roles, label_method: :handle, input_html: { class: "select2" }, selected: extraction.projects_users_role.id
 
               td[data-sort="#{ progress_meter_width }"]
-                .success.progress style="width: 10vw;" data-allow-html="true" data-tooltip="" title="#{ tooltip_text }"
+                .success.progress data-allow-html="true" data-tooltip="" title="#{ tooltip_text }"
                   .progress-meter style="width: #{ progress_meter_width }%;"
               /td = extraction.projects_users_role.role.name
               td = link_to t('work'), work_extraction_path(extraction)
@@ -61,12 +65,18 @@
       table
         thead
           tr
-            th Citation
-            th Assigned User
+            - if @project.leaders.include? current_user
+              th width="50%"
+                | Citation
+              th width="30%" Assigned User
+            - else 
+              th width="80%"
+                | Citation
             /th Role
-            th
+            th width="10%"
+            th width="5%"
             /th
-            th
+            th width="5%"
 
         tbody
           - if @extractions.consolidated.blank?
@@ -80,6 +90,7 @@
                   consolidate_project_extractions_path(\
                   extraction_ids: @citation_groups[:citations_projects][extraction.citations_project_id][:extraction_ids])
                 td = extraction.projects_users_role.handle
+                td
                 /td = extraction.projects_users_role.role.name
                 td = link_to t('work'),\
                   consolidate_project_extractions_path(\

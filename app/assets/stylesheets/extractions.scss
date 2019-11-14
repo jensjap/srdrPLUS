@@ -66,33 +66,11 @@
 .section-header {
   display: flex;
   flex-direction: row;
-  .status-switch {
-    margin-left: 1rem;
-    .switch-input:checked ~ .switch-paddle {
-      background-color: $success-color;
-      width: 6.5rem;
-    }
-    .switch-paddle::after {
-      display: none;
-    }
-    .switch-paddle {
-      width: 3.5rem;
-    }
-    .switch-inactive {
-      left: 13%;
-    }
-    .switch-active {
-      left: 9%;
-    }
-  }
 }
 
 body.extractions.index {
   .tooltip {
     max-width: rem-calc(300px) !important;
-  }
-  .progress {
-    margin-bottom: 0;
   }
   .projects-users-role {
     cursor: pointer;
@@ -108,4 +86,8 @@ body.extractions.index {
 //      background-color: #006aaa;
 //    }
   }
+}
+
+span.select2-container {
+  width: 100% !important;
 }
