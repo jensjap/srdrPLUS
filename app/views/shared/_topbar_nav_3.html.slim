@@ -27,6 +27,16 @@
                   li = link_to(t(".cite"), citing_path)
                   li = link_to(t(".usage"), usage_path)
                   li = link_to(t(".help"), help_path)
+              li
+                = link_to('Tutorials', '#')
+                ul.menu style='min-width: 450px'
+                  li = link_to('SRDR+ Tutorial', 'https://srdrplus.s3.amazonaws.com/SRDR%2B+Tutorial.pdf', target: '_blank')
+                  li
+                    = link_to('Importing Structured Data from Microsoft Excel into SRDR+', 'https://srdrplus.s3.amazonaws.com/Importing+Structured+Data+from+Microsoft+Excel+into+SRDR%2B.pdf', target: '_blank')
+                    ul.menu style='min-width: 450px'
+                      li = link_to('Importing Structured Data from Microsoft Excel into SRDR+', 'https://srdrplus.s3.amazonaws.com/Importing+Structured+Data+from+Microsoft+Excel+into+SRDR%2B.pdf', target: '_blank')
+                      li = link_to('Import Templates', 'https://srdrplus.s3.amazonaws.com/Import+Templates.zip', target: '_blank')
+                  li = link_to('Importing Structured data from DistillerSR into SRDR+', 'https://srdrplus.s3.amazonaws.com/Importing+Structured+Data+from+DistillerSR+into+SRDR%2B.pdf', target: '_blank')
               li = link_to(t(".blog"), blog_path)
               li = link_to("Resources", resources_path)
               li = link_to("Published Projects", "https://srdr.ahrq.gov/projects/published")
