@@ -15,7 +15,7 @@
             th.citation-handle-header[width="50%" data-sort-mode="name" data-sort-direction="asc"]
               | Citation (Sorted by Title)
             th width="30%" Assigned User
-          - else 
+          - else
             th.citation-handle-header[width="80%" data-sort-mode="name" data-sort-direction="asc"]
               | Citation (Sorted by Title)
           /th Role
@@ -27,6 +27,10 @@
         - if @extractions.unconsolidated.blank?
           tr
             td No extractions found.
+            td
+            td
+            td
+            td
 
         - else
           - @extractions.unconsolidated.includes([{ extractions_extraction_forms_projects_sections: [:status, { extraction_forms_projects_section: :section }] }, { projects_users_role: [{ projects_user: { user: :profile } }, :role] },{ citations_project: :citation }]).each do |extraction|
@@ -35,12 +39,12 @@
               - first_author = citation.first_author
               - year = citation.year
               - pmid = citation.pmid.to_s
-              - name = citation.name[0..70] + (citation.name.length > 70 ? "..." : "")
+              - name = citation.name.truncate(70)
               - citation_handle = first_author + ', ' + year + ', ' + pmid + '<br />' + name
               - progress_meter_width = ((extraction.extractions_extraction_forms_projects_sections.map{ |eefps| eefps.status.name == 'Completed' ? 1 : 0 }.sum.to_f * 100) / extraction.extractions_extraction_forms_projects_sections.length).round.to_s
               - tooltip_text = "<span style='font-weight: bold;'>Incomplete Sections:</span><br>" + (extraction.extractions_extraction_forms_projects_sections.map{ |eefps| eefps.status.name != 'Completed' ? eefps.section.name : "" } - [""]).join('<br>')
 
-              td.citation-handle[data-sort="#{ name }" data-pmid="#{ pmid }" data-name="#{ name }" data-year="#{ year }" data-author="#{ first_author }"] = link_to citation_handle.html_safe, work_extraction_path(extraction)
+              td.citation-handle[data-sort="#{ name }" data-pmid="#{ pmid }" data-name="#{ name }" data-year="#{ year }" data-author="#{ first_author }"] = link_to citation_handle.html_safe, citation_path(citation)
               - if @project.leaders.include? current_user
                 td data-sort="#{ extraction.projects_users_role.handle }"
                   .projects-users-role dropdown-active='false'
@@ -54,15 +58,20 @@
                 .success.progress data-allow-html="true" data-tooltip="" title="#{ tooltip_text }"
                   .progress-meter style="width: #{ progress_meter_width }%;"
               /td = extraction.projects_users_role.role.name
-              td = link_to t('work'), work_extraction_path(extraction)
+              td = link_to t('work'), work_extraction_path(extraction), style: 'font-weight:bold;'
               /td = link_to t('edit'), edit_extraction_path(extraction)
-              td = link_to t('destroy'), extraction, data: { confirm: 'Are you sure?' }, method: :delete
+              td = link_to t('destroy'), extraction, style: 'font-weight:bold;color:#cc4b37 !important;', data: { confirm: 'Are you sure?' }, method: :delete
+.column.row
+  = link_to new_project_extraction_path, class: 'button', style: 'background-color: #1986c7 !important;' do
+    i.fi-plus>
+    = t('.create')
 
 - if @project.leaders.include? current_user
   .row
     .column.medium-12
-      h4 Consolidated Extractions
-      table
+      h4 Comparison Tool
+      = render 'extractions/consolidate/form.html.slim'
+      /table
         thead
           tr
             - if @project.leaders.include? current_user
@@ -98,7 +107,3 @@
                 /td = link_to t('edit'), edit_extraction_path(extraction)
                 td = link_to t('destroy'), extraction, data: { confirm: 'Are you sure?' }, method: :delete
 
-.column.row
-  = link_to new_project_extraction_path, class: 'button secondary' do
-    i.fi-plus>
-    = t('.create')

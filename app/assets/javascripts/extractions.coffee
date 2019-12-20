@@ -27,7 +27,6 @@ document.addEventListener 'turbolinks:load', ->
 #        $( ".status-switch .switch-input[eefps-id=" + eefps_id + "]" ).prop( 'checked', true )
 #        $( ".status-switch .switch-input[eefps-id=" + eefps_id + "]" ).change()
 
-    # DataTables for Extractions List
     if $( 'body.extractions.index' ).length > 0
       #################################################
       # Editable ProjectsUserRole
@@ -60,13 +59,7 @@ document.addEventListener 'turbolinks:load', ->
         $( this ).closest( '.projects-users-role' ).attr( 'dropdown-active', 'false' )
 
       #################################################
-      # DataTables for Extractions List
-      dt = $( 'table.extractions-list' ).DataTable({
-             "paging": false,
-             "info": false,
-             "columnDefs": [{ "orderable": false, "targets": [3,4] }]
-           })
-
+      ## Listeners to change citation sort mode between title, year, author and pmid 
       shift_down = false
       $( 'body.extractions.index' ).on 'keydown', ( event ) ->
         if event.shiftKey
@@ -74,7 +67,7 @@ document.addEventListener 'turbolinks:load', ->
       $( 'body.extractions.index' ).on 'keyup', ( event ) ->
         shift_down = false
 
-      $( '.extractions-list .citation-handle-header' ).click () ->
+      $( '.extractions-list .citation-handle-header, .comparisons-list .citation-handle-header' ).click () ->
         if ( not shift_down ) and $( this ).data( 'sort-direction' ) == 'asc'
           $( this ).data( 'sort-direction', 'desc' )
           return
@@ -135,8 +128,23 @@ document.addEventListener 'turbolinks:load', ->
           $( 'td.citation-handle' ).each () ->
             $( this ).attr( 'data-sort', $( this ).attr( 'data-author' ) )
 
-        dt.rows( { page:'current' } ).invalidate()
-        dt.draw()
+      # DataTables for Extractions List
+      dt = $( 'table.extractions-list' ).DataTable({
+             "paging": false,
+             "info": false,
+             "columnDefs": [{ "orderable": false, "targets": [3,4] }]
+           })
+      dt.rows( { page:'current' } ).invalidate()
+      dt.draw()
+
+      # DataTables for Comparisons List
+      dt = $( 'table.comparisons-list' ).DataTable({
+             "paging": false,
+             "info": false,
+             "columnDefs": [{ "orderable": false, "targets": [3] }]
+           })
+      dt.rows( { page:'current' } ).invalidate()
+      dt.draw()
 
     if $( 'body.extractions.work' ).length > 0
       #################################################

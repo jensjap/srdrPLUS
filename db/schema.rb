@@ -12,6 +12,18 @@
 
 ActiveRecord::Schema.define(version: 2019_10_30_184245) do
 
+  create_table "abraham_histories", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "controller_name"
+    t.string "action_name"
+    t.string "tour_name"
+    t.integer "creator_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_at"], name: "index_abraham_histories_on_created_at"
+    t.index ["creator_id"], name: "index_abraham_histories_on_creator_id"
+    t.index ["updated_at"], name: "index_abraham_histories_on_updated_at"
+  end
+
   create_table "abstrackr_settings", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
