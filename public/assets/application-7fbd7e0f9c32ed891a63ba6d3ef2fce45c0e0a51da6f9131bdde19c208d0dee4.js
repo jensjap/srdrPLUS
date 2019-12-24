@@ -52334,7 +52334,7 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
 }).call(this);
 (function() {
   document.addEventListener('turbolinks:load', function() {
-    if (!($('.extraction_forms_projects').length > 0)) {
+    if (!($('.extraction_forms_projects, .extractions').length > 0)) {
       return;
     }
     (function() {
@@ -52708,16 +52708,6 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
           $(this).closest('.projects-users-role').find('.projects-users-role-label').removeClass('hide');
           return $(this).closest('.projects-users-role').attr('dropdown-active', 'false');
         });
-        dt = $('table.extractions-list').DataTable({
-          "paging": false,
-          "info": false,
-          "columnDefs": [
-            {
-              "orderable": false,
-              "targets": [3, 4]
-            }
-          ]
-        });
         shift_down = false;
         $('body.extractions.index').on('keydown', function(event) {
           if (event.shiftKey) {
@@ -52727,7 +52717,7 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
         $('body.extractions.index').on('keyup', function(event) {
           return shift_down = false;
         });
-        $('.extractions-list .citation-handle-header').click(function() {
+        $('.extractions-list .citation-handle-header, .comparisons-list .citation-handle-header').click(function() {
           var new_sort_mode;
           if ((!shift_down) && $(this).data('sort-direction') === 'asc') {
             $(this).data('sort-direction', 'desc');
@@ -52780,27 +52770,51 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
           }
           $(this).data('sort-mode', new_sort_mode);
           if (new_sort_mode === 'pmid') {
-            $('td.citation-handle').each(function() {
+            return $('td.citation-handle').each(function() {
               return $(this).attr('data-sort', $(this).attr('data-pmid'));
             });
           } else if (new_sort_mode === 'name') {
-            $('td.citation-handle').each(function() {
+            return $('td.citation-handle').each(function() {
               return $(this).attr('data-sort', $(this).attr('data-name'));
             });
           } else if (new_sort_mode === 'year') {
-            $('td.citation-handle').each(function() {
+            return $('td.citation-handle').each(function() {
               return $(this).attr('data-sort', $(this).attr('data-year'));
             });
           } else {
-            $('td.citation-handle').each(function() {
+            return $('td.citation-handle').each(function() {
               return $(this).attr('data-sort', $(this).attr('data-author'));
             });
           }
-          dt.rows({
-            page: 'current'
-          }).invalidate();
-          return dt.draw();
         });
+        dt = $('table.extractions-list').DataTable({
+          "paging": false,
+          "info": false,
+          "columnDefs": [
+            {
+              "orderable": false,
+              "targets": [3, 4]
+            }
+          ]
+        });
+        dt.rows({
+          page: 'current'
+        }).invalidate();
+        dt.draw();
+        dt = $('table.comparisons-list').DataTable({
+          "paging": false,
+          "info": false,
+          "columnDefs": [
+            {
+              "orderable": false,
+              "targets": [3]
+            }
+          ]
+        });
+        dt.rows({
+          page: 'current'
+        }).invalidate();
+        dt.draw();
       }
       if ($('body.extractions.work').length > 0) {
         $('#outcome_populations_selector_eefpst1_id').change(function(event) {
@@ -53860,7 +53874,7 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
   var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   document.addEventListener('turbolinks:load', function() {
-    if (!($('.questions').length > 0)) {
+    if (!($('.questions').length > 0 || $('.extractions').length > 0)) {
       return;
     }
     (function() {
@@ -58062,7 +58076,7 @@ document.addEventListener( 'turbolinks:load', function() {
       } else {
         $(".status-name[statusable-id=" + statusable_id + "]").val('Draft');
       }
-      return $(this).parents('form').submit();
+      $('.status-send-form-trigger[statusable-id=' + statusable_id + ']').parents('form').submit();
     });
   }
 
