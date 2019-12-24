@@ -1,0 +1,7 @@
+# Production environment (Uncomment when running on the production machine)
+# worker1: RAILS_ENV=production bundle exec sidekiq -q default
+# worker2: RAILS_ENV=production bundle exec sidekiq -q mailers
+
+# Development environment
+worker1: bundle exec sidekiq -q default
+worker2: bundle exec sidekiq -q mailers

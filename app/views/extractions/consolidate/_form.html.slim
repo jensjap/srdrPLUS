@@ -1,0 +1,56 @@
+.column.row
+  table.hover.comparisons-list
+    thead
+      tr
+        /th Citation ID
+        th.citation-handle-header[width="50%" data-sort-mode="name" data-sort-direction="asc"] Citation (Sorted by Title)
+        th[width="17%"] Number of Extractions
+        th[width="17%"] Status
+        th[width="16%"]
+
+    tbody
+      - @citation_groups[:citations_projects].each do |key, val|
+        - next if val[:extractions].length < 2
+        tr
+          /td = val[:citation_id]
+          - citation_handle = val[:citation_info] + '<br />' + val[:citation_name_long].truncate(70)
+          /td title=val[:citation_name_long] = val[:citation_name_short]
+          td[title=val[:citation_name_long]] = link_to citation_handle.html_safe, citation_path(val[:citation_id])
+          td = val[:extractions].length.to_s
+
+          - if val[:data_discrepancy]
+
+            - if val[:consolidated_status]
+              td
+                i.fi-asterisk<> style="color: #006aaa"
+                |Consolidation in Progress
+              td
+                = link_to('Resume',
+                  consolidate_project_extractions_path(extraction_ids: val[:extractions].pluck(:id)),
+                  style: 'margin-bottom:0; color:#006aaa; font-weight:bold;')
+
+            - else
+              td
+                i.fi-alert> style="color: #c527c0;"
+                | Differences Detected
+              td
+                = link_to('Consolidate Extractions',
+                  consolidate_project_extractions_path(extraction_ids: val[:extractions].pluck(:id)),
+                  style: 'margin-bottom:0; color:#c527c0; font-weight:bold;')
+
+          - else
+            td
+              i.fi-check> style="color: green;"
+              | No Differences Detected
+            td
+              /= link_to('Consolidate',
+                consolidate_project_extractions_path(extraction_ids: val[:extractions].pluck(:id)),
+                style: 'margin-bottom: 0; background-color: #1986c7 !important;',
+                class: 'button tiny')
+      - if @citation_groups[:citations_project_count] < 1
+        tr
+          td No comparisons found.
+          td
+          td
+          td
+
