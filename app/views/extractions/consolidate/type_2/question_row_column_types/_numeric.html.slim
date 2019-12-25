@@ -55,7 +55,7 @@
     = simple_form_for(record, remote: true, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
       = f.error_notification
 
-      = f.input :name, label: false, disabled: true,
+      = f.input :name, as: :numeric, label: false, disabled: true,
               input_html: { \
           data: { prereq: "prereq-#{ qrc.class }-#{ qrc.id }" },
                       min: qrc.field_validation_value_for(:min_value),
