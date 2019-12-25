@@ -44,7 +44,7 @@
               - progress_meter_width = ((extraction.extractions_extraction_forms_projects_sections.map{ |eefps| eefps.status.name == 'Completed' ? 1 : 0 }.sum.to_f * 100) / extraction.extractions_extraction_forms_projects_sections.length).round.to_s
               - tooltip_text = "<span style='font-weight: bold;'>Incomplete Sections:</span><br>" + (extraction.extractions_extraction_forms_projects_sections.map{ |eefps| eefps.status.name != 'Completed' ? eefps.section.name : "" } - [""]).join('<br>')
 
-              td.citation-handle[data-sort="#{ name }" data-pmid="#{ pmid }" data-name="#{ name }" data-year="#{ year }" data-author="#{ first_author }"] = link_to citation_handle.html_safe, citation_path(citation)
+              td.citation-handle[data-sort="#{ name }" data-pmid="#{ pmid }" data-name="#{ name }" data-year="#{ year }" data-author="#{ first_author }"] = link_to citation_handle.html_safe, citation_path(citation, project_id: @project.id)
               - if @project.leaders.include? current_user
                 td data-sort="#{ extraction.projects_users_role.handle }"
                   .projects-users-role dropdown-active='false'

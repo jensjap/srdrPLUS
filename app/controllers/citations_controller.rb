@@ -52,6 +52,12 @@ class CitationsController < ApplicationController
   end
 
   def show
+    if params[:project_id]
+      add_breadcrumb 'edit project', edit_project_path(params[:project_id])
+      add_breadcrumb 'extractions', project_extractions_path(params[:project_id])
+      add_breadcrumb 'citation', :citation_path
+    end
+
     render 'show'
   end
 
