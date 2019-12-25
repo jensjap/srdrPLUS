@@ -25,33 +25,17 @@ class Citation < ApplicationRecord
 
   has_one :journal, dependent: :destroy
 
-  has_many :citations_projects,
-    dependent: :destroy,
-    inverse_of: :citation
-  has_many :projects,
-      through: :citations_projects
-  has_many :authors_citations,
-    dependent: :destroy
-  has_many :authors,
-    through: :authors_citations
-  has_many :labels,
-    through: :citations_projects,
-    dependent: :destroy
-  has_and_belongs_to_many :keywords,
-    dependent: :destroy
+  has_many :citations_projects, dependent: :destroy, inverse_of: :citation
+  has_many :projects, through: :citations_projects
+  has_many :authors_citations, dependent: :destroy
+  has_many :authors, through: :authors_citations
+  has_many :labels, through: :citations_projects, dependent: :destroy
+  has_and_belongs_to_many :keywords, dependent: :destroy
 
-  accepts_nested_attributes_for :authors_citations,
-    reject_if: :all_blank,
-    allow_destroy: true
-  accepts_nested_attributes_for :keywords,
-    reject_if: :all_blank,
-    allow_destroy: true
-  accepts_nested_attributes_for :journal,
-    reject_if: :all_blank,
-    allow_destroy: true
-  accepts_nested_attributes_for :labels,
-    reject_if: :all_blank,
-    allow_destroy: true
+  accepts_nested_attributes_for :authors_citations, reject_if: :all_blank, allow_destroy: true
+  accepts_nested_attributes_for :keywords, reject_if: :all_blank, allow_destroy: true
+  accepts_nested_attributes_for :journal, reject_if: :all_blank, allow_destroy: true
+  accepts_nested_attributes_for :labels, reject_if: :all_blank, allow_destroy: true
 
   def abstract_utf8
     abstract = self.abstract
@@ -124,6 +108,15 @@ class Citation < ApplicationRecord
 
   def first_author
     return authors_citations.includes(:ordering).order('orderings.position asc').first&.author&.name || ''
+  end
+
+  # Citation information in one line.
+  def info_zinger
+    citation_info = []
+    citation_info << first_author if first_author
+    citation_info << year if year
+    citation_info << pmid if pmid
+    return citation_info.join(', ')
   end
 
   def handle

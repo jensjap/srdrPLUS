@@ -50,6 +50,7 @@ passenger*
 # /reports are the XML files for AHRQ SR reports
 # /storage are locally attached files. We use Amazon S3 on production
 /reports/*
+!/reports/file_list.csv
 /storage/*
 app/jobs/import_jobs/srdrplus.code-workspace
 
