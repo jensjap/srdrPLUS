@@ -1,6 +1,4 @@
 class ExportMailer < ApplicationMailer
-  default from: 'support@srdrPLUS.com'
-
   def notify_simple_export_completion(exported_item_id)
     @exported_item = ExportedItem.find exported_item_id
     @user    = @exported_item.projects_user.user

@@ -1,6 +1,4 @@
 class ImportMailer < ApplicationMailer
-  default from: "support@srdrPLUS.com"
-
   def notify_import_completion(imported_file_id)
     imported_file = ImportedFile.find imported_file_id
     @project = imported_file.project
