@@ -1,5 +1,5 @@
 .section-header
-  h5 = section_name 
+  h5 = section_name
   = simple_form_for(eefps, url: extractions_extraction_forms_projects_section_path(eefps), remote: true) do |f|
     = f.simple_fields_for(:status) do |s_f|
       = s_f.input :name, as: :hidden, input_html: { class: "status-name", 'statusable-id': "#{ eefps.id.to_s }" }

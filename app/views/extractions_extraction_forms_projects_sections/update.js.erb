@@ -1,49 +1,49 @@
-<% if @extractions_extraction_forms_projects_section.errors.messages.values.dig(0, 0).present? %>
-  toastr.error( '<%= @extractions_extraction_forms_projects_section.errors.messages.values.dig(0, 0) %>' );
-<% else %>
-  <% if @action.eql?('work') %>
-    // Updates the current type1 section.
-    $( '#panel-tab-<%= @extractions_extraction_forms_projects_section.extraction_forms_projects_section.id %>' )
-      .html( "<%= escape_javascript( render partial: 'extractions/' + @action + '/' + @extractions_extraction_forms_projects_section.extraction_forms_projects_section.extraction_forms_projects_section_type.name.parameterize.underscore,
-                                     locals: { section_name: @extractions_extraction_forms_projects_section.extraction_forms_projects_section.section.name,
-                                               efp: @extractions_extraction_forms_projects_section.extraction_forms_projects_section.extraction_forms_project,
-                                               efps: @extractions_extraction_forms_projects_section.extraction_forms_projects_section } ) %>" )
-    .foundation();
-
-    // Updates any type2 sections linked to current type1 section.
-    <% @linked_type2_sections.each do |eefps| %>
-      $( '#panel-tab-<%= eefps.extraction_forms_projects_section.id %>' )
-        .html( "<%= escape_javascript( render partial: 'extractions/' + @action + '/' + eefps.extraction_forms_projects_section.extraction_forms_projects_section_type.name.parameterize.underscore,
-                                       locals: { section_name: eefps.extraction_forms_projects_section.section.name,
-                                                 efp: eefps.extraction_forms_projects_section.extraction_forms_project,
-                                                 efps: eefps.extraction_forms_projects_section } ) %>" )
-      .foundation();
-    <% end %>
-
-    // Updates the results section.
-    $( '#panel-tab-<%= @results_eefps.extraction_forms_projects_section.id %>' )
-      .html( "<%= escape_javascript( render partial: 'extractions/' + @action + '/' + @results_eefps.extraction_forms_projects_section.extraction_forms_projects_section_type.name.parameterize.underscore,
-                                     locals: { section_name: @results_eefps.extraction_forms_projects_section.section.name,
-                                               efp: @results_eefps.extraction_forms_projects_section.extraction_forms_project,
-                                               efps: @results_eefps.extraction_forms_projects_section } ) %>" )
-    .foundation();
-
-    // Reattach event listeners to outcome selector.
-    $( '#outcome_populations_selector_eefpst1_id' ).change( function( event ) {
-      return $.ajax({
-        url: '/extractions_extraction_forms_projects_sections_type1s/' + this.value + '/get_results_populations',
-        type: 'GET',
-        dataType: 'script',
-        error: function() {
-          return alert( 'Server busy. Please try again later.' );
-        },
-        timeout: 5000
-      } );
-    } );
-    toastr.success( 'Success' );
+( function() {
+  <% if @extractions_extraction_forms_projects_section.errors.messages.values.dig(0, 0).present? %>
+    toastr.error( '<%= @extractions_extraction_forms_projects_section.errors.messages.values.dig(0, 0) %>' );
   <% else %>
-    $( document.getElementById( 'spinner-modal' ) ).foundation( 'open' );
-    //toastr.success( 'Please wait for page to reload..' );
-    location.reload();
+    <% if @action.eql?('work') %>
+      // Updates the current type1 section.
+      $( '#panel-tab-<%= @extractions_extraction_forms_projects_section.extraction_forms_projects_section.id %>' )
+        .html( "<%= j( render partial: 'extractions/' + @action + '/' + @extractions_extraction_forms_projects_section.extraction_forms_projects_section.extraction_forms_projects_section_type.name.parameterize.underscore,
+                                       locals: { section_name: @extractions_extraction_forms_projects_section.extraction_forms_projects_section.section.name,
+                                                 efp: @extractions_extraction_forms_projects_section.extraction_forms_projects_section.extraction_forms_project,
+                                                 efps: @extractions_extraction_forms_projects_section.extraction_forms_projects_section } ) %>" )
+      .foundation();
+
+      // Updates any type2 sections linked to current type1 section.
+      <% @linked_type2_sections.each do |eefps| %>
+        $( '#panel-tab-<%= eefps.extraction_forms_projects_section.id %>' )
+          .html( "<%= j( render partial: 'extractions/' + @action + '/' + eefps.extraction_forms_projects_section.extraction_forms_projects_section_type.name.parameterize.underscore,
+                                         locals: { section_name: eefps.extraction_forms_projects_section.section.name,
+                                                   efp: eefps.extraction_forms_projects_section.extraction_forms_project,
+                                                   efps: eefps.extraction_forms_projects_section } ) %>" )
+        .foundation();
+      <% end %>
+
+      // Updates the results section.
+      $( '#panel-tab-<%= @results_eefps.extraction_forms_projects_section.id %>' )
+        .html( "<%= j( render partial: 'extractions/' + @action + '/' + @results_eefps.extraction_forms_projects_section.extraction_forms_projects_section_type.name.parameterize.underscore,
+                                       locals: { section_name: @results_eefps.extraction_forms_projects_section.section.name,
+                                                 efp: @results_eefps.extraction_forms_projects_section.extraction_forms_project,
+                                                 efps: @results_eefps.extraction_forms_projects_section } ) %>" )
+      .foundation();
+
+      // Reattach event listeners to outcome selector.
+      $( '#outcome_populations_selector_eefpst1_id' ).change( function( event ) {
+        return $.ajax({
+          url: '/extractions_extraction_forms_projects_sections_type1s/' + this.value + '/get_results_populations',
+          type: 'GET',
+          dataType: 'script',
+          error: function() {
+            return alert( 'Server busy. Please try again later.' );
+          },
+          timeout: 5000
+        } );
+      } );
+      toastr.success( 'Success' );
+    <% else %>
+      location.reload();
+    <% end %>
   <% end %>
-<% end %>
+} )();

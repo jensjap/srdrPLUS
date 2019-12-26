@@ -6,13 +6,15 @@ class ExtractionsExtractionFormsProjectsSectionsController < ApplicationControll
   def update
     authorize(@extractions_extraction_forms_projects_section.project, policy_class: ExtractionsExtractionFormsProjectsSectionPolicy)
     respond_to do |format|
-     if @extractions_extraction_forms_projects_section.update(extractions_extraction_forms_projects_section_params)
+      if @extractions_extraction_forms_projects_section.update(extractions_extraction_forms_projects_section_params)
         format.html do
           redirect_to work_extraction_path(@extractions_extraction_forms_projects_section.extraction,
-                                           anchor: "panel-tab-#{ @extractions_extraction_forms_projects_section.extraction_forms_projects_section.id.to_s }"),
-                      notice: t('success')
+            anchor: "panel-tab-#{ @extractions_extraction_forms_projects_section.extraction_forms_projects_section.id.to_s }"),
+            notice: t('success')
         end
-        format.json { render :show, status: :ok, location: @extractions_extraction_forms_projects_section }
+        format.json {
+          render :show, status: :ok, location: @extractions_extraction_forms_projects_section
+        }
         format.js do
           @action                = params[:extractions_extraction_forms_projects_section][:action]
           @extraction            = @extractions_extraction_forms_projects_section.extraction
@@ -20,11 +22,16 @@ class ExtractionsExtractionFormsProjectsSectionsController < ApplicationControll
           @results_eefps         = @extraction.find_eefps_by_section_type('Results')
         end
       else
-        format.html { redirect_to work_extraction_path(@extractions_extraction_forms_projects_section.extraction,
-                                                       anchor: "panel-tab-#{ @extractions_extraction_forms_projects_section.id.to_s }"),
-                                  alert: t('failure') }
-        format.json { render json: @extractions_extraction_forms_projects_section.errors, status: :unprocessable_entity }
-        format.js {}
+        format.html {
+          redirect_to work_extraction_path(@extractions_extraction_forms_projects_section.extraction,
+            anchor: "panel-tab-#{ @extractions_extraction_forms_projects_section.id.to_s }"),
+            alert: t('failure')
+        }
+        format.json {
+          render json: @extractions_extraction_forms_projects_section.errors, status: :unprocessable_entity
+        }
+        format.js do
+        end
       end
     end
   end
