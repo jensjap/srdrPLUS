@@ -4,7 +4,7 @@
 
 document.addEventListener 'turbolinks:load', ->
 
-  return unless $( '.questions' ).length > 0 or $( '.extractions' ).length > 0
+  return unless $( '.questions, .extractions' ).length > 0
 
   do ->
 
@@ -45,7 +45,6 @@ document.addEventListener 'turbolinks:load', ->
 
     ###########################################
     # Hide first row and column if only 1 cell.
-
     hideHeaders = (_tableRows) ->
       _rowCnt = _tableRows.length
       _colCnt = _tableRows[0].cells.length

@@ -158,7 +158,7 @@ document.addEventListener 'turbolinks:load', ->
           timeout: 5000
 
 
-    if $( 'body.extractions.consolidate' ).length > 0
+    if $( 'body.extractions' ).length > 0
       ######################################################################
       # Attach click event to edit type1 from within extraction:consolidate.
       $( '.consolidate .edit-type1-link' ).click ( e ) ->
