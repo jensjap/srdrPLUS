@@ -4,5 +4,5 @@
     = f.simple_fields_for(:status) do |s_f|
       = s_f.input :name, as: :hidden, input_html: { class: "status-name", 'statusable-id': "#{ eefps.id.to_s }" }
 
-    = render 'shared/status_switch', statusable_name: 'eefps', statusable_id: eefps.id, status_name: eefps.status.name
-    .status-send-form-trigger.hide statusable_id="#{ eefps.id.to_s }"
+    = render 'shared/status_switch', statusable_id: eefps.id, status_name: eefps.status.name, statusable_name: 'eefps'
+    .status-send-form-trigger.hide statusable-id="#{ eefps.id.to_s }"
