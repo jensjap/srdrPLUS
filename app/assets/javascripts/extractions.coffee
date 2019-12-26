@@ -157,7 +157,7 @@ document.addEventListener 'turbolinks:load', ->
           error: -> alert 'Server busy. Please try again later.'
           timeout: 5000
 
-      
+
     if $( 'body.extractions.consolidate' ).length > 0
       ######################################################################
       # Attach click event to edit type1 from within extraction:consolidate.
@@ -226,14 +226,13 @@ document.addEventListener 'turbolinks:load', ->
         ## We assume a question only ever has one type of input,
         ## which may be a problem if I accidentally place the dropdown in the wrong place
 
-        #text or numeric
-        str_input_arr = $( question ).find( 'input.string' )
-        if str_input_arr.length == 1
-          str_input = $( str_input_arr[ 0 ] )
-          if str_input.attr( "type" ) == "number"
-            return "numeric"
-          if str_input.attr( "type" ) == "text"
-            return "text"
+        #numeric
+        if $( question ).find( 'input[type="number"]' ).length == 1
+          return "numeric"
+
+        # text
+        if $( question ).find( 'textarea' ).length == 1
+          return "text"
 
         #checkbox
         cb_input_arr = $( question ).find( 'div.input.check_boxes' )
@@ -254,8 +253,18 @@ document.addEventListener 'turbolinks:load', ->
 
       get_question_value = ( question ) ->
         switch get_question_type question
-          when "text", "numeric"
-            return $( question ).find( 'input.string' )[ 0 ].value
+          when "text"
+            return $( question ).find( 'textarea' )[ 0 ].value
+
+          when "numeric"
+            sign_option = $( $( question ).find( 'select' )[ 0 ] ).children('option').filter(':selected')[ 0 ]
+
+            numeric_value = ""
+            if sign_option
+              numeric_value += sign_option.value || ""
+            numeric_value += "&&&&&"
+            numeric_value += $( question ).find( 'input[type="number"]' )[ 0 ].value || ""
+            return numeric_value
 
           when "checkbox"
             cb_arr = []
@@ -288,8 +297,15 @@ document.addEventListener 'turbolinks:load', ->
                 $( tr_elem ).find( 'td' ).each ( td_id, td_elem ) ->
                   if td_id != 0 && cell_id == number_of_extractions
                     switch get_question_type( td_elem )
-                      when "text", "numeric"
+                      when "text"
                         $( td_elem ).find( 'input.string' ).keyup ->
+                          apply_coloring( )
+
+                      when "numeric"
+                        $( td_elem ).find( 'input.number' ).keyup ->
+                          apply_coloring( )
+
+                        $( td_elem ).find( 'select' ).change ->
                           apply_coloring( )
 
                       when "checkbox"
@@ -348,12 +364,21 @@ document.addEventListener 'turbolinks:load', ->
                       if td_id != 0
                         cell_id = $drop_elem.children("option").filter(":selected")[ 0 ].value
                         new_value = c_dict[ arm_row_id ][ cell_id ][ tr_id ][ td_id ][ "question_value" ]
-                        #console.log "new_value: " + new_value
                         switch c_dict[ arm_row_id ][ cell_id ][ tr_id ][ td_id ][ "question_type" ]
-                          when "text", "numeric"
-                            $( td_elem ).find( 'input.string' ).val( new_value )
+                          when "text"
+                            $( td_elem ).find( 'textarea' ).val( new_value )
                             ## auto save expects keyup for textfield
-                            $( td_elem ).find( 'input.string' ).trigger( 'keyup' )
+                            $( td_elem ).find( 'textarea' ).trigger( 'keyup' )
+
+                          when "numeric"
+                            new_sign = new_value.split( "&&&&&" )[ 0 ]
+                            new_val = new_value.split( "&&&&&" ).pop()
+
+                            $( td_elem ).find( 'select' ).val( new_sign )
+                            $( td_elem ).find( 'select' ).trigger( 'change' )
+
+                            $( td_elem ).find( 'input[type="number"]' ).val( new_val )
+                            $( td_elem ).find( 'input[type="number"]' ).trigger( 'keyup' )
 
                           when "checkbox"
                             cb_arr = if new_value.length > 0 then new_value.split( "&&" ) else []
