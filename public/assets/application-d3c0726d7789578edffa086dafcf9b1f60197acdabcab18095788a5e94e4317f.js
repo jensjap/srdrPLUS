@@ -52884,16 +52884,12 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
           return [];
         };
         get_question_type = function(question) {
-          var cb_input_arr, drop_input_arr, rb_input_arr, str_input, str_input_arr;
-          str_input_arr = $(question).find('input.string');
-          if (str_input_arr.length === 1) {
-            str_input = $(str_input_arr[0]);
-            if (str_input.attr("type") === "number") {
-              return "numeric";
-            }
-            if (str_input.attr("type") === "text") {
-              return "text";
-            }
+          var cb_input_arr, drop_input_arr, rb_input_arr;
+          if ($(question).find('input[type="number"]').length === 1) {
+            return "numeric";
+          }
+          if ($(question).find('textarea').length === 1) {
+            return "text";
           }
           cb_input_arr = $(question).find('div.input.check_boxes');
           if (cb_input_arr.length > 0) {
@@ -52910,11 +52906,19 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
           return "unclear";
         };
         get_question_value = function(question) {
-          var cb_arr, drop_input, rb_selected, selected;
+          var cb_arr, drop_input, numeric_value, rb_selected, selected, sign_option;
           switch (get_question_type(question)) {
             case "text":
+              return $(question).find('textarea')[0].value;
             case "numeric":
-              return $(question).find('input.string')[0].value;
+              sign_option = $($(question).find('select')[0]).children('option').filter(':selected')[0];
+              numeric_value = "";
+              if (sign_option) {
+                numeric_value += sign_option.value || "";
+              }
+              numeric_value += "&&&&&";
+              numeric_value += $(question).find('input[type="number"]')[0].value || "";
+              return numeric_value;
             case "checkbox":
               cb_arr = [];
               $(question).find('input.check_boxes').filter(':checked').each(function(input_id, input_elem) {
@@ -52947,8 +52951,14 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
                     if (td_id !== 0 && cell_id === number_of_extractions) {
                       switch (get_question_type(td_elem)) {
                         case "text":
-                        case "numeric":
                           return $(td_elem).find('input.string').keyup(function() {
+                            return apply_coloring();
+                          });
+                        case "numeric":
+                          $(td_elem).find('input.number').keyup(function() {
+                            return apply_coloring();
+                          });
+                          return $(td_elem).find('select').change(function() {
                             return apply_coloring();
                           });
                         case "checkbox":
@@ -53018,15 +53028,21 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
                   if (cell_id === number_of_extractions) {
                     $(cell_elem).find('tr').each(function(tr_id, tr_elem) {
                       return $(tr_elem).find('td').each(function(td_id, td_elem) {
-                        var cb_arr, new_value, select_elem;
+                        var cb_arr, new_sign, new_val, new_value, select_elem;
                         if (td_id !== 0) {
                           cell_id = $drop_elem.children("option").filter(":selected")[0].value;
                           new_value = c_dict[arm_row_id][cell_id][tr_id][td_id]["question_value"];
                           switch (c_dict[arm_row_id][cell_id][tr_id][td_id]["question_type"]) {
                             case "text":
+                              $(td_elem).find('textarea').val(new_value);
+                              return $(td_elem).find('textarea').trigger('keyup');
                             case "numeric":
-                              $(td_elem).find('input.string').val(new_value);
-                              return $(td_elem).find('input.string').trigger('keyup');
+                              new_sign = new_value.split("&&&&&")[0];
+                              new_val = new_value.split("&&&&&").pop();
+                              $(td_elem).find('select').val(new_sign);
+                              $(td_elem).find('select').trigger('change');
+                              $(td_elem).find('input[type="number"]').val(new_val);
+                              return $(td_elem).find('input[type="number"]').trigger('keyup');
                             case "checkbox":
                               cb_arr = new_value.length > 0 ? new_value.split("&&") : [];
                               return $(td_elem).find('input.check_boxes').each(function(input_id, input_elem) {
