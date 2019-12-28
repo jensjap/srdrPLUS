@@ -4,7 +4,7 @@
 
 document.addEventListener 'turbolinks:load', ->
 
-  return unless $( '.questions, .extractions' ).length > 0
+  return unless $( '.questions, .extractions, .extraction_forms_projects_sections.preview' ).length > 0
 
   do ->
 
@@ -49,9 +49,12 @@ document.addEventListener 'turbolinks:load', ->
       _rowCnt = _tableRows.length
       _colCnt = _tableRows[0].cells.length
 
-      if _rowCnt == 2 and _colCnt == 2
+      if _rowCnt == 2
+        _tableRows.find('td:first-child, th:first-child').hide()
+
+      if _colCnt == 2
         _tableRows.find('th:nth-child(-n+3)').hide()
-        _tableRows.find('td:first-child').hide()
+
 
     $('.clean-table table').each ->
 
