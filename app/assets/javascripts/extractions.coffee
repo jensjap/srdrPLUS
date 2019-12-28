@@ -27,7 +27,7 @@ document.addEventListener 'turbolinks:load', ->
 #        $( ".status-switch .switch-input[eefps-id=" + eefps_id + "]" ).prop( 'checked', true )
 #        $( ".status-switch .switch-input[eefps-id=" + eefps_id + "]" ).change()
 
-    if $( 'body.extractions.index' ).length > 0
+    if $( 'body.extractions.index, body.extractions.comparison_tool' ).length > 0
       #################################################
       # Editable ProjectsUserRole
       $( '.projects-users-role' ).hover(
