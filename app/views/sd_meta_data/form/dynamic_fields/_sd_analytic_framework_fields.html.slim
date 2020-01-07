@@ -1,9 +1,16 @@
 .nested-fields
   = f.input :name, label: 'Description', input_html: { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
-  #sdAnalyticFrameworkDropzone.dropzone name='analyticFrameworkUploader'
+  /#sdAnalyticFrameworkDropzone.dropzone name='analyticFrameworkUploader'
     .fallback
       = f.input :pictures, as: :file, label: 'Pictures', input_html: { multiple: true }
-  /= f.input :pictures, as: :file, label: 'Pictures', input_html: { multiple: true }
+  div[style='margin-top:20px;']
+    label
+      | PICTURES
+    .sd-drop-area[style='border: solid 1px;padding:20px;max-width:50%;']
+      span
+        | Drop or select images
+      = f.input :pictures, as: :file, label: false, input_html: { multiple: true, accept:'image/*' }
+    .gallery
 
   div
     = link_to_remove_association "Remove Framework", f
@@ -13,39 +20,81 @@
         br
         = link_to 'Remove Figure', delete_image_attachment_picture_path(picture.id), method: :delete, data: { confirm: 'Are you sure?' }, remote: true
 
+css:
+  .sd-drop-area.highlight {
+    border: dashed 5px !important;
+    border-color: purple !important;
+  }
+
 javascript:
-  Dropzone.options.sdAnalyticFrameworkDropzone = {
-    url: "/imported_files",
-    autoProcessQueue: false,
-    uploadMultiple: true,
-    parallelUploads: 100,
-    maxFiles: 100,
+  var dropArea = $( '.sd-drop-area' )[ 0 ]
 
-    init: function() {
-      var myDropzone = this;
+  initializeListeners( dropArea )
 
-      // First change the button to actually tell Dropzone to process the queue.
-      this.element.querySelector("button[type=submit]").addEventListener("click", function(e) {
-        // Make sure that the form isn't actually being sent.
-        e.preventDefault();
-        e.stopPropagation();
-        //myDropzone.processQueue();
-      });
+  $( '#sd-container' ).on( 'cocoon:after-insert', function(e, insertedItem, originalEvent) { 
+    initializeListeners( $( insertedItem ).find( '.sd-drop-area' )[ 0 ] )
+  })
 
-      // Listen to the sendingmultiple event. In this case, it's the sendingmultiple event instead
-      // of the sending event because uploadMultiple is set to true.
-      this.on("sendingmultiple", function() {
-        // Gets triggered when the form is actually being sent.
-        // Hide the success button or the complete form.
-      });
-      this.on("successmultiple", function(files, response) {
-        // Gets triggered when the files have successfully been sent.
-        // Redirect user or notify of success.
-      });
-      this.on("errormultiple", function(files, response) {
-        // Gets triggered when there was an error sending the files.
-        // Maybe show form again, and notify user of error
-      });
+  function initializeListeners( elem ) {
+    ;['dragenter', 'dragover'].forEach(eventName => {
+      elem.addEventListener(eventName, highlight, false)
+    })
+
+    ;['dragleave', 'drop'].forEach(eventName => {
+      elem.addEventListener(eventName, unhighlight, false)
+    })
+
+    ;['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+      elem.addEventListener(eventName, preventDefaults, false)
+    })
+
+    elem.addEventListener('drop', handleDrop, false)
+
+    $( elem ).find( 'input' ).change( function( e ){ 
+      updatePreviews( e.target )
+    })
+  }
+  
+
+  function preventDefaults (e) {
+    e.preventDefault()
+    e.stopPropagation()
+  }
+
+  function handleDrop(e) {
+    let dt = e.dataTransfer
+    let files = dt.files
+    files = [...files]
+
+    input_elem = $( e.target ).parent().find( 'input' )[ 0 ]
+    input_elem.files = e.dataTransfer.files;
+
+    updatePreviews( input_elem )
+  }
+
+  function updatePreviews( elem ) {
+    gallery = $( elem ).closest( '.sd-drop-area' ).parent().find( '.gallery' )[ 0 ]
+    $( gallery ).empty()
+    let files = elem.files
+    $.each(files, function(i, file) {
+      previewFile( gallery, file )
+    })
+  }
+
+  function highlight(e) {
+    $( e.target ).closest( '.sd-drop-area' )[ 0 ].classList.add( 'highlight' )
+  }
+
+  function unhighlight(e) {
+    $( e.target ).closest( '.sd-drop-area' )[ 0 ].classList.remove( 'highlight' )
+  }
+
+  function previewFile(gallery, file) {
+    let reader = new FileReader()
+    reader.readAsDataURL(file)
+    reader.onloadend = function() {
+      let img = document.createElement('img')
+      img.src = reader.result
+      gallery.appendChild(img)
     }
   }
-  new Dropzone( '#sdAnalyticFrameworkDropzone' );

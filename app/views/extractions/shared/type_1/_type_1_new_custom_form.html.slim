@@ -17,7 +17,7 @@ h4 Add #{ section_name }
     .form-inputs class="new-type1-fields-#{ eefps.id.to_s }"
 
       - if section_name.eql? 'Outcome'
-        = sf_eefpst1.association :type1_type, label: "Type of #{ section_name }"
+        = sf_eefpst1.association :type1_type, label: "Type of #{ section_name }", required: true, selected: Type1.first.id
 
       = sf_eefpst1.simple_fields_for(:type1, sf_eefpst1.object.build_type1) do |sf_t1|
           = sf_t1.input :name,        label: section_name.eql?('Outcome') ? 'Domain'               : 'Name', required: true, hint: 'Name can\'t be blank'

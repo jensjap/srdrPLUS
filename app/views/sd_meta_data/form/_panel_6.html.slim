@@ -5,7 +5,7 @@
       = render 'shared/status_switch', statusable_id: "#{ f.object.id.to_s + '_6' }", status_name:"#{ f.object.section_flag_6 ? 'Completed' : 'Draft' }"
 
     div data-row-span="1"
-      div data-field-span="1"
+      #sd-container data-field-span="1"
         label 43. Analytic/ Conceptual Framework
         = f.simple_fields_for :sd_analytic_frameworks do |sd_analytic_framework|
           = render 'sd_meta_data/form/dynamic_fields/sd_analytic_framework_fields', f: sd_analytic_framework
