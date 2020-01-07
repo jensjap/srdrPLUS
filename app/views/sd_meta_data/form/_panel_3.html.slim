@@ -15,6 +15,13 @@
         = f.input :level_of_analysis, label: '34. Level of Data Analysis'
     div data-row-span="1"
       div data-field-span="1"
+        label 43. Analytic/ Conceptual Framework
+        = f.simple_fields_for :sd_analytic_frameworks do |sd_analytic_framework|
+          = render 'sd_meta_data/form/dynamic_fields/sd_analytic_framework_fields', f: sd_analytic_framework
+        div
+          = link_to_add_association 'add', f, :sd_analytic_frameworks, partial: 'sd_meta_data/form/dynamic_fields/sd_analytic_framework_fields'
+    div data-row-span="1"
+      div data-field-span="1"
         label 35 & 36. Key Question Types and Key Questions
         = f.simple_fields_for :sd_key_questions do |sd_key_question|
           = render 'sd_meta_data/form/dynamic_fields/sd_key_question_fields', f: sd_key_question
