@@ -60,20 +60,20 @@ javascript:
     setTimeout(function(){ initializeSwitches(); }, 500);
   });
 
-  var submit_form = function(async = true) {
-    var form = $('#sd-meta-form')[0]
-    var formData = new FormData(form);
+//  var submit_form = function(async = true) {
+//    var form = $('#sd-meta-form')[0]
+//    var formData = new FormData(form);
 
-    $.ajax({
-      type: "PATCH",
-      url: `${$('#sd-meta-form')[0].action}`,
-      data: formData,
-      async: async,
-      contentType: false,
-      processData: false
-    });
-  }
+//    $.ajax({
+//      type: "PATCH",
+//      url: `${$('#sd-meta-form')[0].action}`,
+//      data: formData,
+//      async: async,
+//      contentType: false,
+//      processData: false
+//    });
+//  }
 
-  $(window).on('beforeunload', function () {
-    submit_form(false);
-  });
+//  $(window).on('beforeunload', function () {
+//    submit_form(false);
+//   });
