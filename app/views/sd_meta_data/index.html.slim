@@ -4,12 +4,12 @@
   select id="project-create"
     - @projects.each do |project|
       option
-      option value="#{project.id}" #{project.name}
+      option value="#{ project.id }" ID #{ project.id }: #{ project.name }
   h6 style="font-weight: bold; margin-top: 10px;" Systematic Review Report
   select id="report-create"
     - @reports.each do |report|
       option
-      option value="#{report.accession_id}" #{report.accession_id}: #{report.title}
+      option value="#{ report.accession_id }" #{ report.accession_id }: #{ report.title }
   a.button.medium#create-new-sd-meta-datum style="margin-top: 10px;" Create
 hr style="border: 0.5px solid; margin: 20px 55px;"
 .column.row#sdMetaData-list
@@ -35,7 +35,7 @@ hr style="border: 0.5px solid; margin: 20px 55px;"
       - else
         - @sd_meta_data.each do |sd_meta_datum|
           tr
-            td = sd_meta_datum.try(:project).try(:name)
+            td ID #{ sd_meta_datum.try(:project).id }: #{ sd_meta_datum.try(:project).try(:name) }
             td = sd_meta_datum.report.try(:title)
             - if sd_meta_datum.incomplete_sections.empty?
               td style="font-weight: bold;"
@@ -55,7 +55,7 @@ hr style="border: 0.5px solid; margin: 20px 55px;"
               = simple_form_for(sd_meta_datum, url: sd_meta_datum_path(sd_meta_datum)) do |f|
                 = f.input :state, :as => :hidden, input_html: { value: sd_meta_datum.state == 'DRAFT' ? 'COMPLETED' : 'DRAFT' }
                 = f.button :submit, 'Toggle State', class: 'state-toggler', state: sd_meta_datum.state, data_sections_complete: sd_meta_datum.all_sections_complete?
-            td = distance_of_time_in_words_to_now(sd_meta_datum.updated_at) + ' ago'           
+            td = distance_of_time_in_words_to_now(sd_meta_datum.updated_at) + ' ago'
             td = link_to "Edit", edit_sd_meta_datum_path(sd_meta_datum.id)
             td = link_to 'Destroy', sd_meta_datum_path(sd_meta_datum), data: { confirm: 'Are you sure?' }, method: :delete
 
