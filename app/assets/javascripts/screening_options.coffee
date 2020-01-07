@@ -1,7 +1,6 @@
 document.addEventListener 'turbolinks:load', ->
 
-  return unless $( '.assignments' ).length > 0
-
+  return unless $( 'body.projects.edit' ).length > 0
   do ->
 
       send_new_option = ( option_type, label_type ) ->
@@ -46,7 +45,6 @@ document.addEventListener 'turbolinks:load', ->
       switch_option_handler = ( event ) ->
         option_type = $( event.target ).attr( 'option-type' )
         switch_value = $( event.target ).is( ':checked' )
-        console.log $( event.target ).val()
         existing_option = find_existing_option( option_type, null )
         if switch_value == false
           $( existing_option ).find( '.remove-option' ).click()

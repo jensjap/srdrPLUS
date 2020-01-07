@@ -52680,7 +52680,7 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
           console.log('Scrolled to Bottom');
         }
       });
-      if ($('body.extractions.index').length > 0) {
+      if ($('body.extractions.index, body.extractions.comparison_tool').length > 0) {
         $('.projects-users-role').hover(function() {
           $(this).closest('.projects-users-role').find('.projects-users-role-select').removeClass('hide');
           return $(this).closest('.projects-users-role').find('.projects-users-role-label').addClass('hide');
@@ -52829,7 +52829,7 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
           });
         });
       }
-      if ($('body.extractions.consolidate').length > 0) {
+      if ($('body.extractions').length > 0) {
         $('.consolidate .edit-type1-link').click(function(e) {
           var $modal, $this, urlString;
           e.preventDefault();
@@ -53890,7 +53890,7 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
   var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   document.addEventListener('turbolinks:load', function() {
-    if (!($('.questions').length > 0 || $('.extractions').length > 0)) {
+    if (!($('.questions, .extractions, .extraction_forms_projects_sections.preview').length > 0)) {
       return;
     }
     (function() {
@@ -53927,9 +53927,11 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
         var _colCnt, _rowCnt;
         _rowCnt = _tableRows.length;
         _colCnt = _tableRows[0].cells.length;
-        if (_rowCnt === 2 && _colCnt === 2) {
-          _tableRows.find('th:nth-child(-n+3)').hide();
-          return _tableRows.find('td:first-child').hide();
+        if (_rowCnt === 2) {
+          _tableRows.find('td:first-child, th:first-child').hide();
+        }
+        if (_colCnt === 2) {
+          return _tableRows.find('th:nth-child(-n+3)').hide();
         }
       };
       $('.clean-table table').each(function() {

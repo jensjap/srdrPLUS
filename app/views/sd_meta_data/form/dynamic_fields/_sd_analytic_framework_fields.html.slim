@@ -1,10 +1,51 @@
 .nested-fields
   = f.input :name, label: 'Description', input_html: { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
-  = f.input :pictures, label: 'Pictures', input_html: { multiple: true }
+  #sdAnalyticFrameworkDropzone.dropzone name='analyticFrameworkUploader'
+    .fallback
+      = f.input :pictures, as: :file, label: 'Pictures', input_html: { multiple: true }
+  /= f.input :pictures, as: :file, label: 'Pictures', input_html: { multiple: true }
+
   div
-    = link_to_remove_association "Remove Concept", f
+    = link_to_remove_association "Remove Framework", f
     - f.object.pictures.each do |picture|
       div
         = image_tag(picture, class: 'openable', style: 'height:100%;width:auto;')
         br
-        = link_to 'Remove', delete_image_attachment_picture_path(picture.id), method: :delete, data: { confirm: 'Are you sure?' }, remote: true
+        = link_to 'Remove Figure', delete_image_attachment_picture_path(picture.id), method: :delete, data: { confirm: 'Are you sure?' }, remote: true
+
+javascript:
+  Dropzone.options.sdAnalyticFrameworkDropzone = {
+    url: "/imported_files",
+    autoProcessQueue: false,
+    uploadMultiple: true,
+    parallelUploads: 100,
+    maxFiles: 100,
+
+    init: function() {
+      var myDropzone = this;
+
+      // First change the button to actually tell Dropzone to process the queue.
+      this.element.querySelector("button[type=submit]").addEventListener("click", function(e) {
+        // Make sure that the form isn't actually being sent.
+        e.preventDefault();
+        e.stopPropagation();
+        //myDropzone.processQueue();
+      });
+
+      // Listen to the sendingmultiple event. In this case, it's the sendingmultiple event instead
+      // of the sending event because uploadMultiple is set to true.
+      this.on("sendingmultiple", function() {
+        // Gets triggered when the form is actually being sent.
+        // Hide the success button or the complete form.
+      });
+      this.on("successmultiple", function(files, response) {
+        // Gets triggered when the files have successfully been sent.
+        // Redirect user or notify of success.
+      });
+      this.on("errormultiple", function(files, response) {
+        // Gets triggered when there was an error sending the files.
+        // Maybe show form again, and notify user of error
+      });
+    }
+  }
+  new Dropzone( '#sdAnalyticFrameworkDropzone' );
