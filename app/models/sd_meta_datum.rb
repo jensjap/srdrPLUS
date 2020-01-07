@@ -50,7 +50,16 @@ class SdMetaDatum < ApplicationRecord
 
   attr_accessor :kqp_ids
 
-  SECTIONS = ["Title, Funding Sources, and Dates", "Authors and Stakeholders", "Links", "Purpose and Key Questions", "PICODS for each Key Question", "Mapping Key Questions (Submitter Only)", "Search Strategy & Summary of Results", "Study Results"].freeze
+  SECTIONS = [
+    "Title, Funding Sources, and Dates",
+    "Authors and Stakeholders",
+    "Links",
+    "Purpose and Key Questions",
+    "PICODS for each Key Question",
+    "Mapping Key Questions (Submitter Only)",
+    "Search Strategy & Summary of Results",
+    "Study Results"
+  ].freeze
 
   default_scope { order(id: :desc) }
 
@@ -65,7 +74,7 @@ class SdMetaDatum < ApplicationRecord
   has_many :sd_meta_regression_analysis_results, inverse_of: :sd_meta_datum, dependent: :destroy
 
   has_many :sd_key_questions, inverse_of: :sd_meta_datum, dependent: :destroy
-  has_many :key_questions, through: :sd_key_questions
+  has_many :key_questions, -> { distinct }, through: :sd_key_questions
 
   has_many :sd_key_questions_projects, through: :sd_key_questions, inverse_of: :sd_meta_datum
   has_many :project_key_questions, through: :sd_key_questions_projects, source: :key_question
