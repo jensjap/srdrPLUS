@@ -29,7 +29,7 @@ div#filterOptions
               label style="margin-right: 1vh;"
                 | Outcome Types:
 
-              - t1_type_set.to_a.sort.each do |t1_type|
+              - t1_type_set.to_a.compact.sort.each do |t1_type|
                 label style='padding-right: 1vw;'
                   input.section-type-filter type="checkbox" name="#{t1_type}" value="#{t1_type}" checked="" = t1_type
           input.t1-search type="text" placeholder="Search #{t1[:section_name]}" data-efps-id="#{t1[:extraction_forms_projects_section_id]}"
