@@ -7,15 +7,21 @@ html class='no-js' lang='en'
     title == content_for?(:title) ? yield(:title) : 'srdrPLUS'
 
     /! Google Analytics
-    script
+    /script
       | (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){ (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o), m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m) })(window,document,'script','https://www.google-analytics.com/analytics.js','ga'); ga('create', 'UA-146336211-1', 'auto'); ga('send', 'pageview');
+
+    script async="" src="https://www.googletagmanager.com/gtag/js?id=UA-146336211-1" 
+    javascript:
+      | window.dataLayer = window.dataLayer || [];
+      | function gtag(){dataLayer.push(arguments);}
+      | gtag('js', new Date());
+      | gtag('config', 'UA-146336211-1');
 
     script async="" src="https://www.googletagmanager.com/gtag/js?id=UA-76714758-1"
     javascript:
       | window.dataLayer = window.dataLayer || [];
       | function gtag(){dataLayer.push(arguments);}
       | gtag('js', new Date());
-
       | gtag('config', 'UA-76714758-1');
 
     = stylesheet_link_tag    'application', 'data-turbolinks-track' => 'reload'
