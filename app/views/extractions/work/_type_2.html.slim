@@ -8,8 +8,9 @@
       extraction_forms_projects_section: efps.link_to_type1))
 
 - linked_section = eefps.link_to_type1
-
-= render 'extractions/shared/extractions_extraction_forms_projects_section_status_fields', eefps: eefps, section_name: section_name
+.section-header
+  h5 = section_name
+  = render 'shared/statusing_form.html.slim', statusing: eefps.statusing, status_name: eefps.statusing.status.name
 
 blockquote
   | Please answer the questions to the best of your ability. If you require clarification, please consult the project lead.

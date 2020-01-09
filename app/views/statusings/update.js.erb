@@ -1,0 +1,16 @@
+( function () {
+  <% if @statusing.errors.present? %>
+    <% @statusing.errors.full_messages.each do |msg| %>
+      toastr.error('<%= msg[1] %>', '<%= msg[0] %>');
+    <% end %>
+  <% end %> 
+
+  <% if @statusing.status.name == 'Draft' %>
+    $( '.status-switch[statusing-id="<%=@statusing.id.to_s%>"]' ).removeClass( 'waiting completed' );
+    $( '.status-switch[statusing-id="<%=@statusing.id.to_s%>"]' ).addClass( 'draft' );
+  <% elsif @statusing.status.name == 'Completed' %>
+    $( '.status-switch[statusing-id="<%=@statusing.id.to_s%>"]').removeClass( 'waiting draft' );
+    $( '.status-switch[statusing-id="<%=@statusing.id.to_s%>"]').addClass( 'completed' );
+  <% end %> 
+    $( '.status-switch[statusing-id="<%=@statusing.id.to_s%>"]').html( "<%= @statusing.status.name %>" )
+} )();

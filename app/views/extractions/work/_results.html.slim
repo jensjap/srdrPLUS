@@ -5,9 +5,10 @@
       button.close-button data-close='' aria-label='Close modal' type='button'
         span aria-hidden='true' &times;
 
-    = render 'extractions/shared/extractions_extraction_forms_projects_section_status_fields',
-      eefps: @eefpst1.extractions_extraction_forms_projects_section,
-      section_name: section_name
+    .section-header
+      h5 = section_name
+      - eefps = @eefpst1.extractions_extraction_forms_projects_section
+      = render 'shared/statusing_form.html.slim', statusing: eefps.statusing, status_name: eefps.statusing.status.name
     blockquote
       | The results section is where you enter numerical data, comparisons, etc.
 

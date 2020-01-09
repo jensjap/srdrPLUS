@@ -92,13 +92,14 @@ Rails.application.routes.draw do
     get 'screen', on: :member
   end
   resources :authors
+  resources :comparisons
   #resources :citations, only: [:new, :create, :edit, :update, :destroy, :show]
   resources :journals
   resources :keywords
   resources :labels
   #resources :tasks
   resources :records, only: [:update]
-  resources :comparisons
+  resources :statusings, only: [:update]
 
   concern :paginatable do
     get '(page/:page)', action: :index, on: :collection, as: ''
@@ -120,7 +121,7 @@ Rails.application.routes.draw do
     post 'section_update'
     post 'mapping_update'
   end
-
+  
   get 'sd_key_questions/:id/fuzzy_match', to: 'sd_key_questions#fuzzy_match'
 
   resources :projects, concerns: :paginatable, shallow: true do

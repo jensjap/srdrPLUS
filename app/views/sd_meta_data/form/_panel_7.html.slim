@@ -2,7 +2,11 @@
   fieldset
     div style="display:flex; flex-direction: row;"
       legend Study Results
-      = render 'shared/status_switch', statusable_id: "#{ f.object.id.to_s + '_7' }", status_name:"#{ f.object.section_flag_7 ? 'Completed' : 'Draft' }"
+      .status-switch.button[id="7-yes-no-section" class=(@sd_meta_datum.section_flag_7 ? 'completed' : 'draft') data-sd_meta_datum_id="#{sd_meta_datum.id}"]
+        - if @sd_meta_datum.section_flag_7
+          | Completed
+        - else
+          | Draft
 
     div data-row-span="1"
       div data-field-span="1"

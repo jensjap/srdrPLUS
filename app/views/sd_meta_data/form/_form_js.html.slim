@@ -1,10 +1,10 @@
 javascript:
   var updateSectionFlag = function(domEl) {
-    //var sectionId = domEl.id[0];
-    var sectionId = domEl.getAttribute('statusable-id')[domEl.getAttribute('statusable-id').length- 1];
+    var sectionId = domEl.id[0];
+    //var sectionId = domEl.getAttribute('statusable-id')[domEl.getAttribute('statusable-id').length- 1];
 
     var sd_meta_datum_id = $(domEl).attr('data-sd_meta_datum_id');
-    var status = domEl.checked;
+    var status = $( domEl ).hasClass( 'draft' );
     var paramKey = `section_flag_${sectionId}`;
     $.post(`${$('#sd-meta-form')[0].action}/section_update`,
       { sd_meta_datum: { [paramKey]: status } },
@@ -12,11 +12,21 @@ javascript:
     );
   }
 
-  $(document).on('click', '.switch-input', function() {
+  $(document).on('click', '.status-switch', function() {
     if (this.id[0] != 5) { updateSectionFlag(this); }
   });
 
   var check = function(panelNumber, status) {
+    if ( status === true || status === 'true' ) {
+      $( "#".concat(panelNumber.toString(), "-yes-no-section.status-switch" ) ).removeClass( 'draft warning' )
+      $( "#".concat(panelNumber.toString(), "-yes-no-section.status-switch" ) ).addClass( 'completed' )
+      $( "#".concat(panelNumber.toString(), "-yes-no-section.status-switch" ) ).html( 'Completed' )
+    } else {
+      $( "#".concat(panelNumber.toString(), "-yes-no-section.status-switch" ) ).removeClass( 'completed warning' )
+      $( "#".concat(panelNumber.toString(), "-yes-no-section.status-switch" ) ).addClass( 'draft' )
+      $( "#".concat(panelNumber.toString(), "-yes-no-section.status-switch" ) ).html( 'Draft' )
+    }
+
     var check = ' <i id="map-warning" class="fa fa-check"></i>';
     var link = $(`#panel-${panelNumber}-label`);
     var label = link.html();
@@ -63,7 +73,7 @@ javascript:
 //  var submit_form = function(async = true) {
 //    var form = $('#sd-meta-form')[0]
 //    var formData = new FormData(form);
-
+//
 //    $.ajax({
 //      type: "PATCH",
 //      url: `${$('#sd-meta-form')[0].action}`,
@@ -73,7 +83,7 @@ javascript:
 //      processData: false
 //    });
 //  }
-
+//
 //  $(window).on('beforeunload', function () {
 //    submit_form(false);
 //   });
