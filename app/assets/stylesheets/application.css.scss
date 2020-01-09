@@ -475,25 +475,20 @@ a.accordion-title.populations {
 
 body.extractions.work, body.sd_meta_data.edit {
   .status-switch {
+    background-color: grey;
+    font-weight: bold;
+    padding: 0.3rem 0.5rem 0.3rem 0.5rem;
     margin-left: 1rem;
-    .switch-input:checked ~ .switch-paddle {
-      background-color: $success-color;
-      width: 6.5rem;
-    }
-
-    .switch-paddle::after {
-      display: none;
-    }
-    .switch-paddle {
-      width: 3.5rem;
-    }
-    .switch-inactive {
-      left: 13%;
-    }
-    .switch-active {
-      left: 9%;
-    }
+    transition: all 0.3s ease;
+    width: 4rem;
   }
+  .status-switch.completed {
+    background-color: $success-color;
+    width: 7rem;
+  }
+//  .status-switch.waiting {
+//    background-color: blue;
+//  }
 }
 
 .progress {

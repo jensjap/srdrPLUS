@@ -212,18 +212,27 @@ document.addEventListener( 'turbolinks:load', function() {
     multiple: 'true'
   });
 
-  if ($('body.extractions.work, body.sd_meta_data.edit').length > 0) {
-    //################################################
-    // State Toggler for EEFPS
-    $('.status-switch .switch-input').on('change', function () {
-      const statusable_id = $(this).attr('statusable-id');
-      if ($(this).prop('checked')) {
-        $(".status-name[statusable-id=" + statusable_id + "]").val('Completed');
-      } else {
-        $(".status-name[statusable-id=" + statusable_id + "]").val('Draft');
+  ////################################################
+  // State Toggler for EEFPS
+  if ( $( 'body.extractions.work' ).length > 0 ) {
+    $( '.status-switch' ).on( 'click', function () {
+      var $outer_form = $( this ).parents( 'form' )
+      var $outer_input = $outer_form.find( 'select' )
+      var draft_id = $outer_form.find( 'option' ).filter(function () { return $(this).html() == "Draft"; }).val()
+      var completed_id = $outer_form.find( 'option' ).filter(function () { return $(this).html() == "Completed"; }).val()
+
+      if ( $( this ).hasClass( 'completed' ) ) {
+        $outer_input.val( draft_id ).change()
+      } else if( $( this ).hasClass( 'draft' ) ) {
+        $outer_input.val( completed_id ).change()
       }
-      $('.status-send-form-trigger[statusable-id=' + statusable_id + ']').parents('form').submit();
-    });
+
+      $( this ).removeClass( 'completed draft' )
+      $( this ).addClass( 'waiting' )
+      //$( this ).html( 'Waiting...' )
+
+      $outer_form.submit()
+    })
   }
 
 } );

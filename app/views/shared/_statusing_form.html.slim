@@ -1,0 +1,12 @@
+= simple_form_for(statusing, remote: true) do |f|
+  .hide
+    = f.input :status_id, as: :select, collection: Status.all, selected: statusing.status.id
+  .status-switch.button [
+    class=(status_name == 'Draft' ? 'draft' : 'completed' )
+    id="#{ statusing.id.to_s }-status"
+    statusing-id="#{ statusing.id.to_s }" ]
+    
+      - if status_name == 'Draft'
+        | Draft
+      - elsif status_name == 'Completed'
+        | Completed

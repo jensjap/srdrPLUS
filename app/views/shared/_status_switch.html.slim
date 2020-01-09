@@ -1,9 +1,0 @@
-.status-switch.switch
-  input.switch-input[id="#{ statusable_id.to_s }-status" type='checkbox' name="#{ statusable_id.to_s }-status" statusable-id="#{ statusable_id.to_s }" checked=('true' if status_name == 'Completed')]
-  label.switch-paddle for="#{ statusable_id.to_s }-status"
-    span.show-for-sr
-        | Completion Status
-    span.switch-active
-        | Completed
-    span.switch-inactive
-        | Draft

@@ -1,8 +1,0 @@
-.section-header
-  h5 = section_name
-  = simple_form_for(eefps, url: extractions_extraction_forms_projects_section_path(eefps), remote: true) do |f|
-    = f.simple_fields_for(:status) do |s_f|
-      = s_f.input :name, as: :hidden, input_html: { class: "status-name", 'statusable-id': "#{ eefps.id.to_s }" }
-
-    = render 'shared/status_switch', statusable_name: 'eefps', statusable_id: eefps.id, status_name: eefps.status.name
-    .status-send-form-trigger.hide statusable_id="#{ eefps.id.to_s }"

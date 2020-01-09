@@ -2,7 +2,11 @@
   fieldset
     div style="display:flex; flex-direction: row;"
       legend Mapping Key Questions (Submitter Only)
-      = render 'shared/status_switch', statusable_id: "#{ f.object.id.to_s + '_5' }", status_name:"#{ f.object.section_flag_5 ? 'Completed' : 'Draft' }"
+      .status-switch.button[id="5-yes-no-section" class=(@sd_meta_datum.section_flag_5 ? 'completed' : 'draft') data-sd_meta_datum_id="#{@sd_meta_datum.id}"]
+        - if @sd_meta_datum.section_flag_5
+          | Completed
+        - else
+          | Draft
 
     div data-row-span="2"
       div data-field-span="2"

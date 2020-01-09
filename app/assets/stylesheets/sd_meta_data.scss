@@ -177,3 +177,9 @@
 li.tabs-title > a:visited {
   color: inherit;
 }
+
+.tabs-panel {
+  legend {
+    width: auto !important;
+  }
+}
