@@ -129,7 +129,7 @@ class SdMetaDatum < ApplicationRecord
   end
 
   def progress_meter_width
-    progress_meter_width = (incomplete_sections.length.to_f * 100 / SECTIONS.length.to_f).round.to_s
+    progress_meter_width = ((SECTIONS.length - incomplete_sections.length).to_f * 100 / SECTIONS.length.to_f).round.to_s
   end
 
   def incomplete_sections
