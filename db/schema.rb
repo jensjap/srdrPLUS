@@ -10,19 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_30_184245) do
-
-  create_table "abraham_histories", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.string "controller_name"
-    t.string "action_name"
-    t.string "tour_name"
-    t.integer "creator_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["created_at"], name: "index_abraham_histories_on_created_at"
-    t.index ["creator_id"], name: "index_abraham_histories_on_creator_id"
-    t.index ["updated_at"], name: "index_abraham_histories_on_updated_at"
-  end
+ActiveRecord::Schema.define(version: 2020_01_10_172655) do
 
   create_table "abstrackr_settings", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "profile_id"
@@ -1481,6 +1469,16 @@ ActiveRecord::Schema.define(version: 2019_10_30_184245) do
     t.string "report_accession_id"
     t.text "authors"
     t.boolean "section_flag_7", default: false, null: false
+  end
+
+  create_table "sd_meta_data_queries", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.text "query_text"
+    t.bigint "sd_meta_datum_id"
+    t.bigint "projects_user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["projects_user_id"], name: "index_sd_meta_data_queries_on_projects_user_id"
+    t.index ["sd_meta_datum_id"], name: "index_sd_meta_data_queries_on_sd_meta_datum_id"
   end
 
   create_table "sd_meta_regression_analysis_results", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
