@@ -2,38 +2,48 @@ class SdMetaDataQuery < ApplicationRecord
   belongs_to :sd_meta_datum
   belongs_to :projects_user
 
-  #delegate :project, to: :projects_user
-  #delegate :user, to: :projects_user
+  before_create :add_names_to_query_hash
 
-  def query_hash= query_hash
-    update( query_string: query_hash.to_query )
-  end
+  delegate :project, to: :projects_user
+  delegate :user, to: :projects_user
 
   def query_hash
-    Rack::Utils.parse_query query_string
+    Rack::Utils.parse_nested_query(query_text)
   end
 
-  def key_questions_projects
-    kqp_ids = []
-    query_hash[ 'key_questions[]' ].each do |kqp_elem|
-      kqp_ids << kqp_elem[ :key_questions_project_id ]
-    end
-    KeyQuestionsProject.find( kqp_ids )
-  end
+  private
 
-  def arms
-    eefps_ids = []
-    query_hash[ 'arms[]' ].each do |eefps_elem|
-      eefps_ids << eefps_elem[ :extractions_extraction_forms_projects_sections_type1_id ]
-    end
-    ExtractionsExtractionFormsProjectsSectionsType1.find( eefps_ids )
-  end
+  # we are adding extra keys to the params hash we saved, so that this params can be: 
+  #   1) used for naming the contents of ".query-item" element
+  #   2) passed into ProjectReportLinksControllers' "options_form" action 
+  def add_names_to_query_hash
+    query_hash = Rack::Utils.parse_nested_query self.query_text
 
-  def outcomes
-    eefps_ids = []
-    query_hash[ 'outcomes[]' ].each do |eefps_elem|
-      eefps_ids << eefps_elem[ :extractions_extraction_forms_projects_sections_type1_id ]
+    query_hash['project_report_link_id'] = self.sd_meta_datum_id
+
+    query_hash['type1_names'] ||= {}
+    query_hash['type1s'].each do |efps_id, t1_id_arr|
+      section_name = ExtractionFormsProjectsSection.find(efps_id).section.name
+      Type1.find(t1_id_arr).each do |t1|
+        query_hash['type1_names'][section_name] ||= []
+        query_hash['type1_names'][section_name] << t1.name
+      end
     end
-    ExtractionsExtractionFormsProjectsSectionsType1.find( eefps_ids )
+
+    query_hash['key_question_names'] ||= []
+    query_hash['kqp_ids'].each do |kqp_id|
+      query_hash['key_question_names'] << KeyQuestionsProject.find(kqp_id).key_question.name
+    end
+
+    query_hash['columns'].each do |idx, column_hash|
+      column_hash['export_items'].each do |idy, export_item_hash|
+        if export_item_hash['type'] == 'Type2'
+          query_hash['columns'][idx]['export_items'][idy]['name'] = Question.find(export_item_hash['export_id']).name
+        else
+          query_hash['columns'][idx]['export_items'][idy]['name'] = ResultStatisticSectionsMeasure.find(export_item_hash['export_id']).measure.name
+        end
+      end
+    end
+    self.query_text = query_hash.to_query
   end
 end

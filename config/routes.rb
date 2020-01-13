@@ -5,6 +5,8 @@ Rails.application.routes.draw do
     get 'new_query_form'
     post 'options_form'
   end
+
+  
   resources :searches, only: [:new, :create]
   resources :funding_sources, only: [:index]
   resources :sd_picods_types, only: [:index]
@@ -12,6 +14,8 @@ Rails.application.routes.draw do
   resources :sd_search_databases, only: [:index]
   resources :key_questions, only: [:index]
   resources :sd_key_questions, only: [:index]
+  resources :sd_meta_data_queries, only: [:create, :destroy]
+
 
   devise_for :admins
   devise_for :users, controllers: {

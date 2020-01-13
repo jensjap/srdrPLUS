@@ -14,7 +14,7 @@ class GsheetsExportJob < ApplicationJob
     @project = Project.find args.second
     @user = User.find args.first
     @column_args = args.third['columns']
-    @key_questions_projects = KeyQuestionsProject.find args.third['kqs_ids']
+    @key_questions_projects = KeyQuestionsProject.find args.third['kqp_ids']
 
     @custom_exporter = CustomExporter.new @project, @user, @column_args
 

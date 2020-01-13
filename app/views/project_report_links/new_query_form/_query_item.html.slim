@@ -1,0 +1,18 @@
+.query-item.grid-x.grid-margin-x[data-sd-meta-data-query-id="#{sd_meta_data_query_id}"]
+  .key_questions.cell.auto
+    label = 'Key Questions'
+    - query_hash['key_question_names'].each do |kq_name|
+      .query-item-kq = kq_name
+  .type1s.cell.auto
+    - query_hash['type1_names'].each do |section_name, t1_name_arr|
+      label = section_name
+      div[class="#{ section_name.downcase }"]
+        - t1_name_arr.each do |t1_name|
+          .t1-item = t1_name
+  .query-columns.cell.auto
+    - query_hash['columns'].values.each do |column|
+      .query-item-column[class="#{ column['type'].downcase }"]
+        label = column['name']
+        .query-item-questions
+          - column['export_items'].values.each do |export_item|
+            .export-item = export_item['name']
