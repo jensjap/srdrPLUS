@@ -2,9 +2,10 @@
   .no-saved-query
     | You do not have any saved queries yet
 - else
+  - is_first = true
   - sd_meta_data_queries.each do |sd_meta_data_query|
-    = render partial: 'project_report_links/new_query_form/query_item', locals: { query_hash: sd_meta_data_query.query_hash.deep_stringify_keys, sd_meta_data_query_id: sd_meta_data_query.id }
-
+    = render partial: 'project_report_links/new_query_form/query_item', locals: { query_hash: sd_meta_data_query.query_hash.deep_stringify_keys, sd_meta_data_query_id: sd_meta_data_query.id, is_first: is_first }
+    - is_first = false
   .select-query.button
     | Run Selected Query
 
@@ -15,7 +16,31 @@ scss:
     font-size: large;
   }
   .query-item.selected {
-    border: solid;
+    background-color: lavender;
+    border: solid 2px indigo;
+  }
+
+  .query-item {
+    background-color: whitesmoke;
+    margin: 1rem;
+    height: 10rem;
+    max-height: 10rem;
+    border: solid 1px lightgrey;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    padding: 1rem;
+    overflow: ellipsis;
+
+    label {
+      font-weight: bold;
+    }
+
+    .query-item-column {
+      background-color: aliceblue;
+      border: solid 1px grey;
+      margin: 0.6rem;
+      padding: 0.6rem;
+    }
   }
 
 javascript:

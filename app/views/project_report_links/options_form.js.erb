@@ -7,16 +7,13 @@ $("#options-form").html("<%= j render(partial: 'project_report_links/new_query_f
 <% @columns.each do |key, column| %>
   $( '#column-name' ).val("<%= column['name'] %>")
   $( '.add-column' ).click()
-  var new_column = $($( '#columns.column-sortable' ).children()[ 0 ]).find( '.droppable' )[ 0 ]
+  var new_column = $($( '#columns.column-sortable' ).children().last()[ 0 ]).find( '.droppable' )[ 0 ]
   <% column['export_items'].each do |key, export_item| %>
-    var originalNode = $( '.query-pill[data-efpsid="<%= export_item['extraction_forms_projects_section_id'] %>"]')[ 0 ] 
-    console.log(new_column)
+    var originalNode = $( '.query-pill[data-efpsid="<%= export_item['extraction_forms_projects_section_id'] %>"][data-item-id="<%= export_item['export_id'] %>"][data-type="<%= export_item['type'] %>"]')[ 0 ] 
     var nodeCopy = originalNode.cloneNode(true);
     nodeCopy.id = new Date().getTime();
     $(nodeCopy).text(`${$(nodeCopy).text()} - (click to remove)`)
     $(nodeCopy).addClass('clickremove');
     new_column.appendChild(nodeCopy);
-      
-    
   <% end %>
 <% end %>
