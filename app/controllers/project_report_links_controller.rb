@@ -22,6 +22,7 @@ class ProjectReportLinksController < ApplicationController
     sd_meta_data_query = ( params[:sd_meta_data_query_id].present? ? SdMetaDataQuery.find(params[:sd_meta_data_query_id]) : nil )
     loaded_params = ( sd_meta_data_query ? sd_meta_data_query.query_hash.symbolize_keys : params )
     create_common_instance_variables loaded_params
+    @columns = loaded_params[:columns] || {}
   end
 
   def new_query_form

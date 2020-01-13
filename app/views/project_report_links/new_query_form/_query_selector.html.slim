@@ -26,7 +26,11 @@ javascript:
 
   $( '.select-query' ).on( 'click', function( data ){
     sd_meta_data_query_id = $( '.query-item.selected' ).data( 'sd-meta-data-query-id' )
-    $.post("#{project_report_link_options_form_path(sd_meta_datum)}", { sd_meta_data_query_id: sd_meta_data_query_id }, function(data){
+    $.ajax({
+      beforeSend: xhr => { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+      url: "#{project_report_link_options_form_path(sd_meta_datum)}", 
+      method: 'POST',
+      data: { sd_meta_data_query_id: sd_meta_data_query_id }}).done(function(data){
       initialize();
       $('.accordion-menu').foundation();
       $( '#query-tab-title' ).click()
