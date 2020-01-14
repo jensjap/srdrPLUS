@@ -22,7 +22,7 @@
         h5 style="float: left;" Report Key Questions
         .button.tiny id="reset-all" style="float: right;" onClick="resetAllMappings()" Auto Reset All
       .srdr-key-questions-box data-field-span="1" style="overflow: scroll; max-height: 400px;"
-        - @sd_meta_datum.try(:project).try(:key_questions).try(:each) do |srdr_kq|
+        - @sd_meta_datum.try(:project).try(:key_questions).uniq.try(:each) do |srdr_kq|
           .draggable id="srdr_kq-#{srdr_kq.id}" data-keyQuestionId="#{srdr_kq.id}" draggable="true" = srdr_kq.name
       .report-key-questions-box data-field-span="1" style="overflow: scroll; max-height: 400px;"
         - @sd_meta_datum.sd_key_questions.each do |sd_key_question|
