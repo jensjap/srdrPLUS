@@ -15,6 +15,7 @@
 //= require jquery.form.min.js
 //= require sortable-rails-jquery
 //= require activestorage
+//= require foundation-datepicker.min
 
 // require assignments
 // require author

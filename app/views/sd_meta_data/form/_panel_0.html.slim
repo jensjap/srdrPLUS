@@ -22,11 +22,11 @@
         = f.association :funding_sources, include_blank: false, label: '3. Funding Source'
     div data-row-span="3"
       div data-field-span="1"
-        = f.input :date_of_last_search, as: :date, html5: true, label: '4. Date of Last Search'
+        = f.input :date_of_last_search, as: :date, html5: true, label: '4. Date of Last Search', input_html: { class: 'datepicker' }
       div data-field-span="1"
-        = f.input :date_of_publication_to_srdr, as: :date, html5: true, label: '5. Date of Publication to SRDR'
+        = f.input :date_of_publication_to_srdr, as: :date, html5: true, label: '5. Date of Publication to SRDR', input_html: { class: 'datepicker' }
       div data-field-span="1"
-        = f.input :date_of_publication_full_report, as: :date, html5: true, label: '6. Date of Publication of Full Report'
+        = f.input :date_of_publication_full_report, as: :date, html5: true, label: '6. Date of Publication of Full Report', input_html: { class: 'datepicker' }
   /br/
   /br/
   /fieldset
@@ -39,3 +39,14 @@
           label.switch-paddle for="0-yes-no-section"
             span.switch-active aria-hidden="true" Yes
             span.switch-inactive aria-hidden="true" No
+
+javascript:
+  $('.datepicker').fdatepicker({
+    initialDate: '01-01-2000',
+    format: 'mm-dd-yyyy',
+    disableDblClickSelection: true,
+    leftArrow:'<<',
+    rightArrow:'>>',
+    closeIcon:'X',
+    closeButton: true
+    }).show();
