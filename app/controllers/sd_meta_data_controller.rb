@@ -63,6 +63,8 @@ class SdMetaDataController < ApplicationController
     @systematic_review_report = true
     @panel_number = params[:panel_number].try(:to_i) || 0
     @sd_meta_datum = SdMetaDatum.find(params[:id])
+    @sd_meta_datum.sd_journal_article_urls.build
+    @sd_meta_datum.sd_other_items.build
     @project = @sd_meta_datum.try(:project)
     @report = @sd_meta_datum.report
     @url = sd_meta_datum_path(@sd_meta_datum)
