@@ -2,7 +2,7 @@
   = f.input :name, label: 'Result', input_html: { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
   = f.input :pictures, label: 'Pictures', input_html: { multiple: true }
   div
-    = link_to_remove_association "Remove", f
+    = link_to_remove_association "Remove", f, data: { confirm: "Are you sure?" }
     - f.object.pictures.each do |picture|
       div
         = image_tag(picture, class: 'openable', style: 'height:100%;width:auto;')

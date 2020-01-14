@@ -6,7 +6,7 @@
   /= f.input :pictures, as: :file, label: 'Pictures', input_html: { multiple: true }
 
   div
-    = link_to_remove_association "Remove Framework", f
+    = link_to_remove_association "Remove Framework", f, data: { confirm: "Are you sure?" }
     - f.object.pictures.each do |picture|
       div
         = image_tag(picture, class: 'openable', style: 'height:100%;width:auto;')
