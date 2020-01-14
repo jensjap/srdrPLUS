@@ -16,38 +16,45 @@
 //= require sortable-rails-jquery
 //= require activestorage
 
-//= require assignments
-//= require author
-//= require cable
-//= require citations
-//= require extraction_forms_projects
-//= require extraction_forms_projects_sections
-//= require extraction_forms_projects_sections_type1s
-//= require extractions
-//= require extractions_extraction_forms_projects_sections_question_row_column_fields
-//= require extractions_extraction_forms_projects_sections_type1_row_columns
-//= require extractions_extraction_forms_projects_sections_type1_rows
-//= require extractions_extraction_forms_projects_sections_type1s
-//= require forms
-//= require invitations
-//= require journal
-//= require key_questions
-//= require keywords
-//= require labels
-//= require organizations
-//= require profiles
-//= require projects
-//= require projects_users_roles
-//= require questions
-//= require records
-//= require result_statistic_sections
-//= require screening_options
-//= require searches
-//= require static_pages
-//= require tasks
-//= require teams
+// require assignments
+// require author
+// require cable
+// require citations
+// require extraction_forms_projects
+// require extraction_forms_projects_sections
+// require extraction_forms_projects_sections_type1s
+// require extractions
+// require extractions_extraction_forms_projects_sections_question_row_column_fields
+// require extractions_extraction_forms_projects_sections_type1_row_columns
+// require extractions_extraction_forms_projects_sections_type1_rows
+// require extractions_extraction_forms_projects_sections_type1s
+// require forms
+// require invitations
+// require journal
+// require key_questions
+// require keywords
+// require labels
+// require organizations
+// require profiles
+// require project_report_links
+// require projects
+// require projects_users_roles
+// require questions
+// require records
+// require result_statistic_sections
+// require screening_options
+// require sd_key_questions
+// require sd_meta_data
+// require sd_picods_types
+// require sd_search_databases
+// require searches
+// require static_pages
+// require tasks
+// require teams
 
 //= require dropzone
+
+//= require_tree .
 
 //$(function(){ $( document ).foundation(); });
 
@@ -112,7 +119,6 @@ Dropzone.autoDiscover = false;
 
 document.addEventListener( 'turbolinks:load', function() {
   $( document ).foundation();
-
 
   // Check for dirty forms.
   window.onbeforeunload = function (e) {
