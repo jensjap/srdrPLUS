@@ -55,7 +55,7 @@ class Project < ApplicationRecord
     -> { ordered },
     dependent: :destroy, inverse_of: :project
   has_many :key_questions,
-    -> { joins(key_questions_projects: :ordering).distinct },
+    -> { joins(key_questions_projects: :ordering) },
     through: :key_questions_projects, dependent: :destroy
   ## this does not feel right - Birol
   # jens 2019-06-17: I believe we ought to define the ordering via a scope block in has_many.
