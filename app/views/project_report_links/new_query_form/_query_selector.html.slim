@@ -4,7 +4,12 @@
 - else
   - is_first = true
   - sd_meta_data_queries.each do |sd_meta_data_query|
-    = render partial: 'project_report_links/new_query_form/query_item', locals: { query_hash: sd_meta_data_query.query_hash.deep_stringify_keys, sd_meta_data_query_id: sd_meta_data_query.id, is_first: is_first }
+    = render partial: 'project_report_links/new_query_form/query_item', 
+      locals: { query_hash: sd_meta_data_query.query_hash.deep_stringify_keys, 
+        sd_meta_data_query_id: sd_meta_data_query.id, 
+        is_first: is_first, 
+        created_at: distance_of_time_in_words(sd_meta_data_query.created_at, Time.now) + " ago", 
+        updated_at: distance_of_time_in_words(sd_meta_data_query.updated_at, Time.now) + " ago" }
     - is_first = false
   .select-query.button
     | Run Selected Query
@@ -33,6 +38,15 @@ scss:
 
     label {
       font-weight: bold;
+    }
+
+    .query-item-info {
+      padding: 1rem;
+      .id {
+        font-weight: bold;
+        font-size: large;
+        margin: 1rem 1rem 1rem 1rem;
+      }
     }
 
     .query-item-column {
