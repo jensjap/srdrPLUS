@@ -1,0 +1,63 @@
+- if sd_meta_data_queries.empty?
+  .no-saved-query
+    | You do not have any saved queries yet
+- else
+  - is_first = true
+  - sd_meta_data_queries.each do |sd_meta_data_query|
+    = render partial: 'project_report_links/new_query_form/query_item', locals: { query_hash: sd_meta_data_query.query_hash.deep_stringify_keys, sd_meta_data_query_id: sd_meta_data_query.id, is_first: is_first }
+    - is_first = false
+  .select-query.button
+    | Run Selected Query
+
+scss:
+  .no-saved-query {
+    margin: 2rem 2rem 15rem 2rem;
+    font-weight: bold;
+    font-size: large;
+  }
+  .query-item.selected {
+    background-color: lavender;
+    border: solid 2px indigo;
+  }
+
+  .query-item {
+    background-color: whitesmoke;
+    margin: 1rem;
+    height: 10rem;
+    max-height: 10rem;
+    border: solid 1px lightgrey;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    padding: 1rem;
+    overflow: ellipsis;
+
+    label {
+      font-weight: bold;
+    }
+
+    .query-item-column {
+      background-color: aliceblue;
+      border: solid 1px grey;
+      margin: 0.6rem;
+      padding: 0.6rem;
+    }
+  }
+
+javascript:
+  $( '.query-item' ).on( 'click', function( data ){
+    $( '.query-item' ).removeClass( 'selected' )
+    $( this ).addClass( 'selected' )
+  })
+
+  $( '.select-query' ).on( 'click', function( data ){
+    sd_meta_data_query_id = $( '.query-item.selected' ).data( 'sd-meta-data-query-id' )
+    $.ajax({
+      beforeSend: xhr => { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
+      url: "#{project_report_link_options_form_path(sd_meta_datum)}", 
+      method: 'POST',
+      data: { sd_meta_data_query_id: sd_meta_data_query_id }}).done(function(data){
+      initialize();
+      $('.accordion-menu').foundation();
+      $( '#query-tab-title' ).click()
+    }) 
+  })

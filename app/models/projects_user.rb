@@ -33,5 +33,7 @@ class ProjectsUser < ApplicationRecord
   has_many :terms, through: :projects_users_term_groups_colors_terms, dependent: :destroy
   has_many :term_groups_colors, through: :projects_users_term_groups_colors, dependent: :destroy
 
+  has_many :sd_meta_data_queries, dependent: :destroy
+
   accepts_nested_attributes_for :imported_files, allow_destroy: true
 end

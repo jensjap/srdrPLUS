@@ -19,20 +19,26 @@ class ProjectReportLinksController < ApplicationController
   end
 
   def options_form
-    create_common_instance_variables
+    sd_meta_data_query = ( params[:sd_meta_data_query_id].present? ? SdMetaDataQuery.find(params[:sd_meta_data_query_id]) : nil )
+    loaded_params = ( sd_meta_data_query ? sd_meta_data_query.query_hash.symbolize_keys : params )
+    create_common_instance_variables loaded_params
+    @columns = loaded_params[:columns] || {}
   end
 
   def new_query_form
-    create_common_instance_variables
+    create_common_instance_variables params
+
+    @projects_user = ProjectsUser.find_by user: current_user, project: @project
+    @sd_meta_data_queries = @sd_meta_datum.sd_meta_data_queries.where( projects_user: @projects_user )
   end
 
   private
 
-    def create_common_instance_variables
-      meta_datum_id = params[:project_report_link_id]
+    def create_common_instance_variables loaded_params
+      meta_datum_id = loaded_params[:project_report_link_id]
       @sd_meta_datum = SdMetaDatum.find(meta_datum_id)
       @project = @sd_meta_datum.project
-      kqp_ids = params[:kqp_ids] || @project.key_questions_projects.map(&:id)
+      kqp_ids = loaded_params[:kqp_ids] || @project.key_questions_projects.map(&:id)
       @key_question_project_ids = kqp_ids ? kqp_ids.join(",") : ""
       if @project
         groups_hash = @project.
@@ -65,7 +71,7 @@ class ProjectReportLinksController < ApplicationController
               uniq
           }
         end
-      @results_groups = get_rssm_groups(@project.id)
+      @results_groups = get_rssm_groups(@project.id, loaded_params[:type1s])
       @key_questions_projects = @project.key_questions_projects
     end
 
@@ -78,19 +84,20 @@ class ProjectReportLinksController < ApplicationController
       ordered_2d.compact
     end
 
-    def get_rssm_groups(project_id)
-      if params[:type1s].present?
-        extractions_extraction_forms_projects_sections_type1 = {
-          type1_id: params[:type1s].values,
-          extractions_extraction_forms_projects_sections: {
-            extractions: { project_id: project_id },
-            extraction_forms_projects_section_id: params[:type1s].keys,
+    def get_rssm_groups(project_id, type1s)
+      # TODO: The logic here is wrong. This would cause problem if there are arms/outcomes with the same spelling -Birol
+      if type1s.present?
+        eefpst1 = {
+          type1_id: type1s.values.flatten,
+            extractions_extraction_forms_projects_sections: {
+              extractions: { project_id: project_id },
+              extraction_forms_projects_section_id: type1s.keys
+            }
           }
-        }
       else
-        extractions_extraction_forms_projects_sections_type1 = {
+        eefpst1 = {
           extractions_extraction_forms_projects_sections: {
-            extractions: { project_id: project_id },
+            extractions: { project_id: project_id }
           }
         }
       end
@@ -108,7 +115,7 @@ class ProjectReportLinksController < ApplicationController
         }).
         where(result_statistic_section: {
           population: {
-            extractions_extraction_forms_projects_sections_type1s: extractions_extraction_forms_projects_sections_type1
+            extractions_extraction_forms_projects_sections_type1s: eefpst1
           }
         }).
         uniq(&:measure_id)

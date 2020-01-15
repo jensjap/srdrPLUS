@@ -159,10 +159,10 @@ javascript:
       method: 'POST',
       data: {
         kqp_ids: getKqFilters(),
-        type1s: getSectionFilters(),
+        type1s: getSectionFilters()
       },
     }).done(function() {
-      initialize();
+      //initialize();
       $('.accordion-menu').foundation();
     });
   })
@@ -171,7 +171,6 @@ javascript:
     var kqFilterIds = $('.kq-filter:checked').map(function() {
       return $(this).val();
     })
-    console.log(kqFilterIds)
     return kqFilterIds.get();
   }
 
