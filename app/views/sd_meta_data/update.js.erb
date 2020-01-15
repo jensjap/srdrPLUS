@@ -1,0 +1,5 @@
+<% if @errors %>
+  toastr.warning('<%= @errors.full_messages.join(', ') %>')
+<% else %>
+  toastr.success('Data saved!')
+<% end %>

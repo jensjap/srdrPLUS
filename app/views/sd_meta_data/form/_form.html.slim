@@ -24,7 +24,7 @@
       br/
       .form-actions
         = f.error_notification
-        = f.button :submit, 'Save Changes', class: "button", style: "margin-left: 10px;"
+        = f.button :submit, 'Save Changes', class: "button", style: "margin-left: 10px;", data: { disable_with: "Please wait..." }
 
 javascript:
   $('textarea').each(function() {

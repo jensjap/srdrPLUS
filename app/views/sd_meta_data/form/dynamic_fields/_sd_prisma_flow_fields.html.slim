@@ -1,6 +1,6 @@
 .nested-fields
   = f.input :name, label: 'Description'
-  = f.input :pictures, label: 'Pictures', input_html: { multiple: true }
+  = f.input :pictures, as: :file, label: 'Pictures', input_html: { multiple: true }
   div
     = link_to_remove_association "Remove Prisma Flow", f, data: { confirm: "Are you sure?" }
     - f.object.pictures.each do |picture|

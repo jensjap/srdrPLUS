@@ -76,14 +76,11 @@ class SdMetaDataController < ApplicationController
     @url = sd_meta_datum_path(@sd_meta_datum)
     sd_meta_datum = SdMetaDatum.find(params[:id])
     update = sd_meta_datum.update(sd_meta_datum_params)
-  ensure
-    if request.xhr?
-      head :no_content
-    else
-      if update
-        redirect_to sd_meta_data_path
-      else
-        render :edit
+    respond_to do |format|
+      format.js do
+        unless update
+          @errors = sd_meta_datum.errors.full_messages
+        end
       end
     end
   end
