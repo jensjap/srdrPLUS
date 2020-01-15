@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_10_172655) do
+ActiveRecord::Schema.define(version: 2020_01_15_121501) do
 
   create_table "abstrackr_settings", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "profile_id"
@@ -1471,7 +1471,7 @@ ActiveRecord::Schema.define(version: 2020_01_10_172655) do
     t.boolean "section_flag_7", default: false, null: false
   end
 
-  create_table "sd_meta_data_queries", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "sd_meta_data_queries", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci", force: :cascade do |t|
     t.text "query_text"
     t.bigint "sd_meta_datum_id"
     t.bigint "projects_user_id"
@@ -1503,6 +1503,12 @@ ActiveRecord::Schema.define(version: 2020_01_10_172655) do
     t.text "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "population"
+    t.string "interventions"
+    t.string "comparators"
+    t.string "outcomes"
+    t.string "study_designs"
+    t.string "settings"
     t.index ["sd_meta_datum_id"], name: "index_sd_picods_on_sd_meta_datum_id"
   end
 
@@ -1823,7 +1829,7 @@ ActiveRecord::Schema.define(version: 2020_01_10_172655) do
     t.index ["version_id"], name: "index_version_associations_on_version_id"
   end
 
-  create_table "versions", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
+  create_table "versions", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "item_type", limit: 191, null: false
     t.integer "item_id", null: false
     t.string "event", null: false

@@ -65,6 +65,8 @@ class SdMetaDataController < ApplicationController
     @sd_meta_datum = SdMetaDatum.find(params[:id])
     @sd_meta_datum.sd_journal_article_urls.build
     @sd_meta_datum.sd_other_items.build
+    @sd_meta_datum.sd_grey_literature_searches.build
+    @sd_meta_datum.sd_prisma_flows.build
     @project = @sd_meta_datum.try(:project)
     @report = @sd_meta_datum.report
     @url = sd_meta_datum_path(@sd_meta_datum)
@@ -171,7 +173,7 @@ class SdMetaDataController < ApplicationController
           { sd_analytic_frameworks_attributes: [:id, :name, :_destroy, :id, pictures: []] },
           { sd_key_questions_attributes: [:key_question_id, { key_question_type_ids: [] }, :name, :_destroy, :id, { sd_key_questions_key_question_type_ids: [] }] },
           { sd_key_question_ids: [] },
-          { sd_picods_attributes: [:name, :_destroy, :id, sd_key_question_ids: [], sd_picods_type_ids: []] },
+          { sd_picods_attributes: [:name, :population, :interventions, :comparators, :outcomes, :study_designs, :settings, :_destroy, :id, sd_key_question_ids: [], sd_picods_type_ids: []] },
           { sd_search_strategies_attributes: [:sd_search_database_id, :date_of_search, :search_limits, :search_terms, :_destroy, :id] },
           { sd_grey_literature_searches_attributes: [:name, :_destroy, :id] },
           { comparison_outcome_intervention_subgroups_attributes: [:sd_key_question_id, :narrative_results, :name, :_destroy, :id] },

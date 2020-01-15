@@ -1,5 +1,11 @@
 .nested-fields
-  = f.association :sd_picods_types, include_blank: true, label: 'PICODS Type', input_html: { class: "sd_picods_type" }
   = f.association :sd_key_questions, include_blank: true, label: "Key Question", input_html: { class: "sd_picods_key_question", data: { sd_meta_datum_id: f.object.sd_meta_datum.id } }
-  = f.input :name, label: 'Description', :input_html => { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
+  /= f.association :sd_picods_types, include_blank: true, label: 'PICODS Type', input_html: { class: "sd_picods_type" }
+  /= f.input :name, label: 'Description', :input_html => { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
+  = f.input :population, :input_html => { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
+  = f.input :interventions, :input_html => { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
+  = f.input :comparators, :input_html => { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
+  = f.input :outcomes, :input_html => { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
+  = f.input :study_designs, :input_html => { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
+  = f.input :settings, :input_html => { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
   = link_to_remove_association "remove", f, data: { confirm: "Are you sure?" }
