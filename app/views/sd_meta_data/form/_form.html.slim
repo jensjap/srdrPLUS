@@ -18,7 +18,7 @@
       li.tabs-title
         = link_to 'Study Results', '?panel_number=7', class: (@panel_number == 7 ? 'bg-light-grey' : ''), id: "panel-7-label"
   .cell.medium-10
-    = simple_form_for(@sd_meta_datum, url: @url, remote: true, html: { id: 'sd-meta-form', class: "grid-form", data: { 'abide': '', 'live-validate': true } }) do |f|
+    = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { id: 'sd-meta-form', class: "grid-form", data: { 'abide': '', 'live-validate': true } }) do |f|
       .tabs-content.vertical
         = render partial: "sd_meta_data/form/panel_#{@panel_number}", locals: { f: f, sd_meta_datum: @sd_meta_datum, project: @project, url: @url }
       br/

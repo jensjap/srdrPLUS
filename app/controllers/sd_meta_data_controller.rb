@@ -84,6 +84,9 @@ class SdMetaDataController < ApplicationController
           @errors = sd_meta_datum.errors.full_messages
         end
       end
+      format.html do |format|
+        redirect_to edit_sd_meta_datum_path(sd_meta_datum.id)
+      end
     end
   end
 

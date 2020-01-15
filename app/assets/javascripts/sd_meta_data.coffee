@@ -2,8 +2,81 @@
 # All this logic will automatically be available in application.js.
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
+# Place all the behaviors and hooks related to the matching controller here.
+# All this logic will automatically be available in application.js.
+# You can use CoffeeScript in this file: http://coffeescript.org/
+
+bind_srdr20_saving_mechanism = () ->
+  return if $('body.sd_meta_data').length == 0
+
+  timers = {}
+
+  submitForm = ( form ) ->
+    ->
+      form = $('#sd-meta-form')[0]
+      formData = new FormData(form)
+
+      $.ajax({
+        type: "PATCH",
+        url: $('#sd-meta-form')[0].action,
+        data: formData,
+        async: true,
+        contentType: false,
+        processData: false
+      })
+
+  # Select Drop Down and Radio
+  $( 'form' ).change ( e ) ->
+    e.preventDefault()
+
+    $form = $( this ).closest( 'form' )
+
+    # Use this to keep track of the different timers.
+    formId = $form.attr( 'id' )
+
+    # Mark form as 'dirty'.
+    $form.addClass( 'dirty' )
+
+    if formId of timers
+      clearTimeout( timers[formId] )
+    timers[formId] = setTimeout( submitForm( $form ), 750 )
+
+
+  # Autogrow Text Field to fit the content.
+  $( 'form' ).each () ->
+    while $(this).outerHeight() < @scrollHeight + parseFloat($(this).css('borderTopWidth')) + parseFloat($(this).css('borderBottomWidth'))
+      $(this).height $(this).height() + 1
+
+  # Text Field.
+  $( 'form' ).keyup ( e ) ->
+    e.preventDefault()
+
+    # Ignore 'keyup' for a list of keys.
+    code = e.keyCode || e.which;
+    # 9: tab; 16: shift; 37: left-arrow; 38: up-arrow; 39: right-arrow; 40: down-arrow; 18: option; 91: cmd
+    if code in [9, 16, 18, 37, 38, 39, 40, 91]
+      return
+
+    $form = $( this ).closest( 'form' )
+
+    # Use this to keep track of the different timers.
+    formId = $form.attr( 'id' )
+
+    # Mark form as 'dirty'.
+    $form.addClass( 'dirty' )
+
+    if formId of timers
+      clearTimeout( timers[formId] )
+    timers[formId] = setTimeout( submitForm( $form ), 750 )
+
+    # the following will help the text expand as typing takes place
+    while $(this).outerHeight() < @scrollHeight + parseFloat($(this).css('borderTopWidth')) + parseFloat($(this).css('borderBottomWidth'))
+      $(this).height $(this).height() + 1
+
 document.addEventListener 'turbolinks:load', ->
   do ->
+    bind_srdr20_saving_mechanism()
+
     # Set the field to display from the result set.
     formatResultSelection = ( result, container ) ->
       result.text

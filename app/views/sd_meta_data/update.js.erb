@@ -2,4 +2,5 @@
   toastr.warning('<%= @errors.full_messages.join(', ') %>')
 <% else %>
   toastr.success('Data saved!')
+  $('.dirty').removeClass('dirty');
 <% end %>
