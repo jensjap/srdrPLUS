@@ -71,6 +71,7 @@ class SdMetaDataController < ApplicationController
     @sd_meta_datum.sd_grey_literature_searches.build
     @sd_meta_datum.sd_prisma_flows.build
     @sd_meta_datum.sd_meta_regression_analysis_results.build
+    @sd_meta_datum.sd_evidence_tables.build
     @project = @sd_meta_datum.try(:project)
     @report = @sd_meta_datum.report
     @url = sd_meta_datum_path(@sd_meta_datum)
@@ -187,7 +188,7 @@ end
           { sd_grey_literature_searches_attributes: [:name, :_destroy, :id] },
           { comparison_outcome_intervention_subgroups_attributes: [:sd_key_question_id, :narrative_results, :name, :_destroy, :id] },
           { comparison_outcome_population_subgroups_attributes: [:sd_key_question_id, :narrative_results, :name, :_destroy, :id] },
-          { sd_evidence_tables_attributes: [:name, :_destroy, :id] },
+          { sd_evidence_tables_attributes: [:name, :_destroy, :id, :picture] },
           { sd_prisma_flows_attributes: [:name, :_destroy, :id, pictures: []] },
           { network_meta_analysis_results_attributes: [:name, :p_type, :_destroy, :id, pictures: []] },
           { pairwise_meta_analytic_results_attributes: [:name, :p_type, :_destroy, :id, pictures: []] },

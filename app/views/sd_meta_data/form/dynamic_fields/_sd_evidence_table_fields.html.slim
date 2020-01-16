@@ -1,3 +1,5 @@
 .nested-fields
-  = f.input :name, label: 'Evidence Table', input_html: { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
+  = f.input :name, label: 'Description', input_html: { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
+  = f.input :picture, as: :file
   = link_to_remove_association "Remove", f, data: { confirm: "Are you sure?" }
+  = image_tag(f.object.picture, class: 'openable', style: 'height: 100%; width: auto;') if f.object.picture.attached?
