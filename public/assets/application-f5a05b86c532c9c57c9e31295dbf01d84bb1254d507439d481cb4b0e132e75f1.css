@@ -23276,7 +23276,6 @@ label {
 
 /* line 8, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/sd_meta_data.scss */
 .grid-form input[type="text"], .grid-form input[type="email"], .grid-form input[type="number"], .grid-form input[type="password"], .grid-form input[type="search"], .grid-form input[type="tel"], .grid-form input[type="url"], .grid-form input[type="color"], .grid-form input[type="date"], .grid-form input[type="datetime"], .grid-form input[type="datetime-local"], .grid-form input[type="month"], .grid-form input[type="time"], .grid-form input[type="week"], .grid-form textarea {
-  border: 0;
   background: transparent;
   font-size: small;
 }
@@ -23401,7 +23400,7 @@ label {
 
 /* line 26, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/sd_meta_data.scss */
 .grid-form [data-row-span] [data-field-span]:hover {
-  background: #fffded;
+  background: rgba(153, 123, 177, 0.2);
   cursor: text;
 }
 
@@ -26438,6 +26437,7 @@ li.tabs-title > a:visited {
  * files in this directory. Styles in this file should be added after the last require_* statement.
  * It is generally better to create a new file per style scope.
  *
+
 
 
 
@@ -31709,38 +31709,38 @@ li.tabs-title > a:visited {
   clip: auto;
 }
 
-/* line 27, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 28, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .add_fields {
   white-space: pre;
 }
 
-/* line 32, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 33, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .turbolinks-progress-bar {
   height: 4px;
   background-color: red;
 }
 
-/* line 41, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 42, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 #navigation .title-bar .title-bar-left {
   float: left;
   padding: 0;
   margin-left: 5px;
 }
-/* line 47, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 48, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 #navigation .top-bar {
   padding: 0;
   margin: 0;
   z-index: 999;
 }
-/* line 51, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 52, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 #navigation .top-bar a:hover {
   background-color: transparent;
 }
-/* line 55, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 56, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 #navigation .top-bar img {
   cursor: pointer;
 }
-/* line 64, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 65, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 #navigation .top-bar > .top-bar-right a:hover:after {
   border-top-color: #200845;
   border-right-color: transparent;
@@ -31748,39 +31748,39 @@ li.tabs-title > a:visited {
   border-left-color: transparent;
 }
 
-/* line 81, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 82, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 body {
   margin: 0;
 }
 
-/* line 85, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 86, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .content {
   min-height: 100vh;
 }
 
-/* line 89, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 90, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 a {
   color: #4C0D7D;
 }
-/* line 92, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 93, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 a:visited {
   color: #4C0D7D;
 }
-/* line 96, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 97, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 a:hover {
   color: #4C0D7D;
   background-color: transparent;
 }
-/* line 101, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 102, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 a.button {
   color: #fefefe !important;
 }
-/* line 105, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 106, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 a.disabled {
   pointer-events: none;
 }
 
-/* line 110, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 111, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 a.button.remove-link {
   color: red !important;
   background-color: transparent;
@@ -31789,7 +31789,7 @@ a.button.remove-link {
   transition: all 0.35s ease-in-out;
   margin-bottom: 5px;
 }
-/* line 117, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 118, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 a.button.remove-link:hover, a.button.remove-link:focus {
   color: red !important;
   background-color: transparent;
@@ -31797,114 +31797,114 @@ a.button.remove-link:hover, a.button.remove-link:focus {
   opacity: 1;
 }
 
-/* line 126, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 127, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .title-heading h2 {
   float: left;
 }
-/* line 130, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 131, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .title-heading a.button.secondary {
   float: right;
   margin-top: 1.1em;
 }
 
-/* line 136, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 137, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 body div.top-bar {
   padding: 3px 3px 6px 3px;
 }
-/* line 139, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 140, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 body div.top-bar .top-bar-right {
   margin-top: 9px;
 }
-/* line 142, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 143, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 body div.top-bar .top-bar-right a.button {
   border: 1px solid white;
   border-radius: 20px;
   margin-left: 5px;
 }
 @media screen and (max-width: 39.99875em) {
-  /* line 142, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+  /* line 143, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
   body div.top-bar .top-bar-right a.button {
     margin-top: 10px;
   }
 }
-/* line 153, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 154, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 body div.top-bar a {
   font-size: 1.1em;
   color: #fefefe;
 }
-/* line 157, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 158, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 body div.top-bar a:hover {
   border-radius: 2px;
   background-color: #33124B;
 }
 
-/* line 164, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 165, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .error {
   color: red;
 }
 
-/* line 168, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 169, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 table ul {
   margin: 0.625rem;
 }
 
-/* line 172, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 173, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 ul hr {
   width: 80%;
   margin: 0;
 }
 
-/* line 177, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 178, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 ul.menu.vertical.submenu.is-dropdown-submenu {
   background-color: white;
   border-color: #cacaca;
   padding: 10px 10px 0 30px;
 }
-/* line 183, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 184, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 ul.menu.vertical.submenu.is-dropdown-submenu li.title {
   font-weight: bold;
   color: #33124B;
   padding: 4px 0 0 4px;
 }
-/* line 189, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 190, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 ul.menu.vertical.submenu.is-dropdown-submenu li:last-child {
   margin-bottom: 15px;
 }
 
-/* line 195, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 196, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .contain-in-viewport {
   overflow: scroll;
   max-height: 95vh;
 }
 
-/* line 205, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 206, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .pagination .current a {
   color: #fefefe;
 }
 
 @media screen and (max-width: 39.99875em) {
-  /* line 215, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+  /* line 216, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
   .no-js .top-bar {
     display: none;
   }
 }
 @media print, screen and (min-width: 40em) {
-  /* line 221, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+  /* line 222, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
   .no-js .title-bar {
     display: none;
   }
 }
 
-/* line 230, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 231, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 #toast-container div.toast {
   opacity: 1;
 }
-/* line 234, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 235, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 #toast-container.toast-bottom-right, #toast-container.toast-bottom-left, #toast-container.toast-bottom-center, #toast-container.toast-bottom-full-width {
   top: auto;
 }
 
-/* line 245, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 246, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 pre.debug_dump {
   background-color: #4C0D7D;
   border: 1px solid gray;
@@ -31914,7 +31914,7 @@ pre.debug_dump {
   overflow-x: scroll;
 }
 
-/* line 256, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 257, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .off-canvas-link {
   position: fixed;
   z-index: 1;
@@ -31923,7 +31923,7 @@ pre.debug_dump {
   cursor: pointer;
 }
 
-/* line 266, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 267, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .scroll-top-wrapper {
   position: fixed;
   opacity: 0;
@@ -31947,72 +31947,72 @@ pre.debug_dump {
   transition: all 0.5s ease-in-out;
 }
 
-/* line 291, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 292, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .scroll-top-wrapper:hover {
   background-color: #888888;
 }
 
-/* line 294, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 295, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .scroll-top-wrapper.show {
   visibility: visible;
   cursor: pointer;
   opacity: 0.8;
 }
 
-/* line 299, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 300, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .scroll-top-wrapper i.fi {
   line-height: 0;
   font-size: 2em;
 }
 
-/* line 305, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 306, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .form-inputs label {
   color: #4C0D7D;
 }
-/* line 308, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 309, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .form-inputs label.required abbr {
   color: #cc4b37;
 }
 
-/* line 313, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 314, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .table-scroll table {
   width: 100%;
 }
-/* line 316, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 317, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .table-scroll table td, .table-scroll table th {
   border-radius: 2px;
   min-width: 8em;
   border: 1px solid grey;
 }
-/* line 322, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 323, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .table-scroll table.consolidate .missing-value {
   margin-bottom: 3px;
   border: 1.2px solid red;
   min-height: 18px;
 }
 
-/* line 329, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 330, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .column.row.footer, .row.footer.columns {
   min-height: 300px;
   background-color: #4C0D7D;
 }
 
-/* line 334, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 335, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .off-canvas-content {
   min-height: -webkit-fill-available;
 }
 
-/* line 340, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 341, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 #extraction-forms-projects-tabs {
   display: none;
 }
 
-/* line 344, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 345, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 a.accordion-title.populations {
   font-size: 1em;
 }
 
-/* line 350, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 351, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .spinner {
   border: 16px solid #f3f3f3;
   /* Light grey */
@@ -32046,18 +32046,18 @@ a.accordion-title.populations {
             transform: rotate(360deg);
   }
 }
-/* line 375, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 376, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .results-nav-table td {
   border: 1px solid grey;
   width: 40%;
 }
-/* line 378, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 379, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .results-nav-table td.active {
   background: -webkit-repeating-linear-gradient(45deg, #eacfff, #fff 10px, #fff 10px, #fff 20px);
   background: repeating-linear-gradient(45deg, #eacfff, #fff 10px, #fff 10px, #fff 20px);
 }
 
-/* line 384, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 385, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .menubar {
   background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABaAAAABaCAIAAADB82ZHAAAACXBIWXMAAAsTAAALEwEAmpwYAAAGAGlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS42LWMxNDUgNzkuMTYzNDk5LCAyMDE4LzA4LzEzLTE2OjQwOjIyICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyIgeG1sbnM6cGhvdG9zaG9wPSJodHRwOi8vbnMuYWRvYmUuY29tL3Bob3Rvc2hvcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RFdnQ9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZUV2ZW50IyIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ0MgMjAxOSAoTWFjaW50b3NoKSIgeG1wOkNyZWF0ZURhdGU9IjIwMTktMDMtMDRUMTE6NDk6MjQrMDg6MDAiIHhtcDpNb2RpZnlEYXRlPSIyMDE5LTAzLTA1VDA4OjQxOjUxKzA4OjAwIiB4bXA6TWV0YWRhdGFEYXRlPSIyMDE5LTAzLTA1VDA4OjQxOjUxKzA4OjAwIiBkYzpmb3JtYXQ9ImltYWdlL3BuZyIgcGhvdG9zaG9wOkNvbG9yTW9kZT0iMyIgcGhvdG9zaG9wOklDQ1Byb2ZpbGU9InNSR0IgSUVDNjE5NjYtMi4xIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjc2OWQxNDFmLWIxOGYtNGFkYS04YjJjLTY3MDBmNzlhODM0OCIgeG1wTU06RG9jdW1lbnRJRD0iYWRvYmU6ZG9jaWQ6cGhvdG9zaG9wOmIzYjIzYmEzLTkyNmEtZmE0Mi05OThmLTU0ZmY0NzFlOTU1MyIgeG1wTU06T3JpZ2luYWxEb2N1bWVudElEPSJ4bXAuZGlkOmFkNWQwZmM1LWEwMWItNDU5NS04NGE5LTQzYjdkN2U2MjhlMiI%2BIDx4bXBNTTpIaXN0b3J5PiA8cmRmOlNlcT4gPHJkZjpsaSBzdEV2dDphY3Rpb249ImNyZWF0ZWQiIHN0RXZ0Omluc3RhbmNlSUQ9InhtcC5paWQ6YWQ1ZDBmYzUtYTAxYi00NTk1LTg0YTktNDNiN2Q3ZTYyOGUyIiBzdEV2dDp3aGVuPSIyMDE5LTAzLTA0VDExOjQ5OjI0KzA4OjAwIiBzdEV2dDpzb2Z0d2FyZUFnZW50PSJBZG9iZSBQaG90b3Nob3AgQ0MgMjAxOSAoTWFjaW50b3NoKSIvPiA8cmRmOmxpIHN0RXZ0OmFjdGlvbj0ic2F2ZWQiIHN0RXZ0Omluc3RhbmNlSUQ9InhtcC5paWQ6NzY5ZDE0MWYtYjE4Zi00YWRhLThiMmMtNjcwMGY3OWE4MzQ4IiBzdEV2dDp3aGVuPSIyMDE5LTAzLTA1VDA4OjQxOjUxKzA4OjAwIiBzdEV2dDpzb2Z0d2FyZUFnZW50PSJBZG9iZSBQaG90b3Nob3AgQ0MgMjAxOSAoTWFjaW50b3NoKSIgc3RFdnQ6Y2hhbmdlZD0iLyIvPiA8L3JkZjpTZXE%2BIDwveG1wTU06SGlzdG9yeT4gPC9yZGY6RGVzY3JpcHRpb24%2BIDwvcmRmOlJERj4gPC94OnhtcG1ldGE%2BIDw%2FeHBhY2tldCBlbmQ9InIiPz4pv2gpAAAD7klEQVR4nO3dzW4cRRiG0f6qqmcmNo4hKFtY8pPc%2F1VlYwmiAPYMiyywIxJsFLv7dZ9zBZ9Go%2F55uqurfvn511dXby7e%2FziOL6YoL79%2FMeax9BRs2mk6LT3CV3O8Pv7x4XrpKdi04%2FXNnx9ulp4CnpvdflSrpafgYY6n41%2BOh4S4fH3ee1t6Cv7DzfXx6t3vS0%2FxFMarq7ff%2FfbT0mNApJrqOTUOWFi5BwMA4P9rF%2B9%2FWHoGyKVuAAAArMKIW5kCAACsRLXaH%2Bax661V67XZhz%2BbfQuxrE9J0Ed9%2B%2Fp86Smegm9YAAAAD9ZHO7vYz3s3FLB%2B1fomKpzjEQAA8AA1TYeL%2FeF8t4kbJiCHwAEAANxXtfrm8uDFDWCFrJgCAADuSd0A1kvgAAAA7uXspY9uAOvl8AQAz8rHjQymqtam02nrC%2BRrmja%2BpXf1jf8AkVqr3b4vPcW%2FaL0dzualpwD4LIEDAJ6H6qP63OrWZoW19b7x0bZ%2FBXUj0amqrfF%2FezjfLz0CwJcIHAAQr7Uau156BvBoWt%2FKNpNALoEDALL1XvOunzb%2BngLwyPpY46oZgNsEDgAI1kcbc7cKAXhsfbY7AbB2jlMAkKr1GrNnqsBTaBbBAasncABApJpq7NQN4Ims87unALcJHAAQ6ZMNUwAANk7gAIA8NVUfTuIAAP9wbQQAecpXwgEA7hI4ACBP787gAAB3uDwCgDxlOwMAgLsEDgDIo28AAHxC4ACARAoHAMAdAgcAAAAQT%2BAAAAAA4gkcAAAAQDyBAwAAAIgncAAAAADxBA4AAAAgnsABAAAAxBM4AAAAgHgCBwAAABBP4AAAAADiCRwAAABAPIEDAAAAiCdwAAAAAPEEDgAAACCewAEAAADEEzgAAACAeAIHAAAAEE%2FgAAAAAOIJHAAAAEA8gQMAAACIJ3AAAAAA8QQOAAAAIJ7AAQAAAMQTOAAAAIB4AgcAAAAQT%2BAAAAAA4gkcAAAAQDyBAwAAAIgncAAAAADxBA4AAAAgnsABAAAAxBM4AAAAgHgCBwAAABBP4AAAAADiCRwAAABAPIEDAAAAiCdwAAAAAPEEDgAAACCewAEAAADEEzgAAACAeAIHAAAAEE%2FgAAAAAOIJHAAAAEA8gQMAAACIJ3AAAAAA8QQOAAAAIJ7AAQAAAMQTOAAAAIB4AgcAAAAQT%2BAAAAAA4gkcAAAAQDyBAwAAAIgncAAAAADxBA4AAAAgnsABAAAAxBM4AAAAgHgCBwAAABBP4AAAAADiCRwAAABAPIEDAAAAiCdwAAAAAPEEDgAAACCewAEAAADEEzgAAACAeAIHAAAAEE%2FgAAAAAOIJHAAAAEC8vwE7njHPehCMGAAAAABJRU5ErkJggg%3D%3D);
   background-repeat: no-repeat;
@@ -32067,52 +32067,52 @@ a.accordion-title.populations {
   margin: 0;
 }
 
-/* line 392, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 393, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .menubar-2 {
   background-color: white;
 }
 
-/* line 397, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 398, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .top-bar ul {
   background-color: unset;
 }
 
-/* line 402, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 403, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .top-bar-2 {
   background-color: white;
 }
-/* line 404, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 405, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .top-bar-2 ul {
   background-color: white;
 }
-/* line 407, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 408, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .top-bar-2 a {
   color: black !important;
 }
 
-/* line 412, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 413, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .is-dropdown-submenu > li:hover {
   background: #dee1e8;
 }
 
-/* line 416, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 417, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .dropdown .is-dropdown-submenu a {
   color: black;
 }
 
-/* line 420, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 421, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .dropdown.menu > li.is-dropdown-submenu-parent > a {
   color: white;
 }
 
-/* line 426, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 427, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .table-fixed-headers table thead {
   position: -webkit-sticky;
   position: sticky;
   top: 0;
   z-index: 2;
 }
-/* line 431, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 432, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .table-fixed-headers table th, .table-fixed-headers table td {
   margin: 0;
   padding: 0;
@@ -32121,19 +32121,19 @@ a.accordion-title.populations {
   min-width: 200px;
   height: 20px;
 }
-/* line 438, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 439, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .table-fixed-headers table th.bg-lightblue, .table-fixed-headers table td.bg-lightblue {
   background-color: lightblue;
 }
-/* line 441, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 442, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .table-fixed-headers table th.bg-lightgreen, .table-fixed-headers table td.bg-lightgreen {
   background-color: lightgreen;
 }
-/* line 444, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 445, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .table-fixed-headers table th.bg-lightpink, .table-fixed-headers table td.bg-lightpink {
   background-color: lightpink;
 }
-/* line 447, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 448, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .table-fixed-headers table th.vertical, .table-fixed-headers table td.vertical {
   font-weight: bold;
   text-align: center;
@@ -32146,7 +32146,7 @@ a.accordion-title.populations {
   left: 0;
   z-index: 1;
 }
-/* line 458, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 459, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .table-fixed-headers table th.vertical > div, .table-fixed-headers table td.vertical > div {
   -moz-transform: rotate(-90deg);
   /* FF3.5+ */
@@ -32161,7 +32161,7 @@ a.accordion-title.populations {
   margin-left: -10em;
   margin-right: -10em;
 }
-/* line 467, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 468, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .table-fixed-headers table th.freeze, .table-fixed-headers table td.freeze {
   position: -webkit-sticky;
   position: sticky;
@@ -32170,7 +32170,7 @@ a.accordion-title.populations {
   font-weight: bold;
 }
 
-/* line 478, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 479, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 body.extractions.work .status-switch, body.sd_meta_data.edit .status-switch {
   background-color: grey;
   font-weight: bold;
@@ -32180,13 +32180,13 @@ body.extractions.work .status-switch, body.sd_meta_data.edit .status-switch {
   transition: all 0.3s ease;
   width: 4rem;
 }
-/* line 486, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 487, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 body.extractions.work .status-switch.completed, body.sd_meta_data.edit .status-switch.completed {
   background-color: #3adb76;
   width: 7rem;
 }
 
-/* line 495, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 496, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .progress {
   margin-bottom: 0;
   width: 90%;
@@ -33343,3 +33343,4 @@ button.toast-close-button {
 * @license: MIT
 !*/
 .zselect{margin:0 0 1rem;padding:.5rem 24px .32rem .5rem;-webkit-appearance:none;-moz-appearance:none;appearance:none;background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' width='32' height='24' viewBox='0 0 32 24'><polygon points='0,0 32,0 16,24' style='fill: rgb%28138, 138, 138%29'></polygon></svg>") right -1rem center no-repeat #fefefe;background-origin:content-box;background-size:9px 6px;border:1px solid #ccc;font-size:.77778rem;font-family:inherit;font-weight:400;border-radius:0;-webkit-touch-callout:none;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;cursor:default}.zselect ul li.deselectall,.zselect ul li.optgroup,.zselect ul li.selectall{cursor:pointer!important}.zselect ul{position:absolute;background-color:#fefefe;border:1px solid #ccc;border-top:none;padding:0;margin:5px 0 0 -.55rem;z-index:10;list-style-type:none;display:none;overflow-y:auto;max-height:400px}.zselect span.zmshead{font-size:1rem}.zselect ul li{display:table;width:100%;padding:4px .7rem 0;font-size:.9rem}.zselect ul li.disabled{color:grey}.zselect ul li:hover{background-color:#2672EC;color:#fff}.zselect ul li.filterResult,.zselect ul li.filterResult:hover,.zselect ul li.optgroup,.zselect ul li.optgroup:hover,.zselect ul li.zmsfilter,.zselect ul li.zmsfilter:hover{background-color:transparent;color:#000}.zselect ul li.zmsfilter input{margin-bottom:.3rem}.zselect ul li input[type=checkbox]{padding:0;margin:0 4px 0 0;display:table-cell}.zselect ul li.filterResult{font-size:.8em}.zselect ul li.optgroup{font-weight:700}.zselect ul[x-placement=top]{border-top:1px solid #ccc!important;border-bottom:none!important;margin:7px 0 0 -.25rem!important}.zselect ul[x-placement=bottom]{top:-7px!important;left:5px!important}
+.datepicker{display:none;position:absolute;padding:4px;margin-top:1px;direction:ltr}.datepicker.dropdown-menu{position:absolute;top:100%;left:0;z-index:1000;float:left;display:none;min-width:160px;list-style:none;background-color:#fff;border:1px solid rgba(0,0,0,.2);border-radius:5px;box-shadow:0 5px 10px rgba(0,0,0,.2);-webkit-background-clip:padding-box;-moz-background-clip:padding;background-clip:padding-box;color:#333;font-size:13px;line-height:18px}.datepicker.dropdown-menu td,.datepicker.dropdown-menu th{padding:4px 5px}.datepicker table{border:0;margin:0;width:auto}.datepicker table tr td span{display:block;width:23%;height:54px;line-height:54px;float:left;margin:1%;cursor:pointer}.datepicker td,.datepicker th{text-align:center;width:20px;height:20px;border:0;font-size:12px;padding:4px 8px;cursor:pointer}.datepicker td{background:#fff}.datepicker td span.active,.datepicker td.active.day,.datepicker td.active.year{background:#2ba6cb}.datepicker td.new,.datepicker td.old{color:#999}.datepicker td span.month.disabled,.datepicker td span.year.disabled,.datepicker td.day.disabled{color:#eee}.datepicker th{background:#fff}.datepicker th span.active,.datepicker th.active.day,.datepicker th.active.year{background:#2ba6cb}.datepicker th.date-switch{width:145px}.datepicker .cw{font-size:10px;width:12px;padding:0 2px 0 5px;vertical-align:middle}.datepicker.days div.datepicker-days,.datepicker.months div.datepicker-months,.datepicker.years div.datepicker-years{display:block}.datepicker-dropdown:after,.datepicker-dropdown:before{content:'';display:inline-block;position:absolute}.datepicker thead tr:first-child th{cursor:pointer}.datepicker thead tr:first-child th.cw{cursor:default;background-color:transparent}.datepicker tfoot tr:first-child th{cursor:pointer}.datepicker-inline{width:220px}.datepicker-rtl{direction:rtl}.datepicker-rtl table tr td span{float:right}.datepicker-dropdown{top:0;left:0}.datepicker-dropdown:before{border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:7px solid #ccc;border-bottom-color:1px solid rgba(0,0,0,.2);top:-7px;left:6px}.datepicker-dropdown:after{border-left:6px solid transparent;border-right:6px solid transparent;border-bottom:6px solid #fff;top:-6px;left:7px}.datepicker-dropdown::after,.datepicker-dropdown::before,.datepicker>div{display:none}.datepicker-close{position:absolute;top:-30px;right:0;width:15px;height:30px;padding:0;display:none}.table-striped .datepicker table tr td,.table-striped .datepicker table tr th{background-color:transparent}

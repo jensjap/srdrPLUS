@@ -50140,4204 +50140,7 @@ var List=function(t){function e(n){if(r[n])return r[n].exports;var i=r[n]={i:n,l
     value: true
   });
 });
-(function() {
-  document.addEventListener('turbolinks:load', function() {
-    if (!($('.assignments.screen').length > 0)) {
-      return;
-    }
-    (function() {
-      var add_breadcrumb, apply_select2_to_term_select, create_term_selects, delete_term_group, fetch_palette, fetch_term_groups, force_update_c_p, get_c_p, get_history_page, lock_button, next_citation, nothing_to_label, populate_term_modal, populate_terms, send_label, send_new_term, send_new_term_group, start_screening, switch_to_list, switch_to_screening, update_arrows, update_breadcrumb, update_index, update_info, update_label, update_reasons, update_term, update_term_group;
-      force_update_c_p = function(obj) {
-        $.ajax({
-          type: 'GET',
-          url: $('#screen-assignment-json-url').text(),
-          data: {
-            count: '10'
-          },
-          success: function(data) {
-            obj.citations = data.unlabeled_citations_projects;
-            obj.history = data.labeled_citations_projects;
-            obj.options = data.options;
-            next_citation(obj);
-            obj.index = 0;
-            update_info(obj);
-            if (data.unlabeled_citations_projects.length === 0) {
-              return toastr.warning('No more citations to label');
-            }
-          },
-          error: function() {
-            return toastr.error('ERROR: Cannot fetch citations to screen.');
-          }
-        });
-      };
-      get_c_p = function(obj) {
-        if (obj.citations.length < 5) {
-          $.ajax({
-            type: 'GET',
-            url: $('#screen-assignment-json-url').text(),
-            data: {
-              count: '10'
-            },
-            success: function(data) {
-              obj.citations = data.unlabeled_citations_projects;
-              obj.history = data.labeled_citations_projects;
-              obj.options = data.options;
-              if (data.unlabeled_citations_projects.length === 0) {
-                return toastr.warning('No more citations to label');
-              }
-            },
-            error: function() {
-              return toastr.error('ERROR: Cannot fetch citations to screen.');
-            }
-          });
-        }
-      };
-      nothing_to_label = function(obj) {
-        var interval_id;
-        return interval_id = setInterval(function() {
-          get_c_p(obj);
-          if (obj.citations.length === 0) {
-            $('#citation-row').hide();
-            return $('#end-message').show();
-          } else {
-            $('#citation-row').show();
-            $('#end-message').hide();
-            return clearInterval(interval_id);
-          }
-        }, 1000);
-      };
-      lock_button = function(label, requirement) {
-        var button_to_lock;
-        button_to_lock = null;
-        if (label === "Yes") {
-          button_to_lock = $('#yes-button');
-        } else if (label === "No") {
-          button_to_lock = $('#no-button');
-        } else if (label === "Maybe") {
-          button_to_lock = $('#maybe-button');
-        } else {
-          return;
-        }
-        if (requirement === "REASON_REQUIRED") {
-          $('#reason-select select').on('change', function() {
-            if ($('#reason-select select option:checked').length === 0) {
-              $(button_to_lock).addClass('reason-lock');
-            } else {
-              $(button_to_lock).removeClass('reason-lock');
-            }
-            return $(button_to_lock).trigger('change');
-          });
-        } else if (requirement === "TAG_REQUIRED") {
-          $('#tag-select select').on('change', function() {
-            if ($('#tag-select select option:checked').length === 0) {
-              $(button_to_lock).addClass('tag-lock');
-            } else {
-              $(button_to_lock).removeClass('tag-lock');
-            }
-            return $(button_to_lock).trigger('change');
-          });
-        } else if (requirement === "NOTE_REQUIRED") {
-          $('textarea#note-textbox').on('change', function() {
-            if (!$('textarea#note-textbox').hasClass('note-saved')) {
-              $(button_to_lock).addClass('note-lock');
-            } else {
-              $(button_to_lock).removeClass('note-lock');
-            }
-            return $(button_to_lock).trigger('change');
-          });
-        }
-        $(button_to_lock).on('change', function() {
-          if ($(button_to_lock).hasClass('note-lock') || $(button_to_lock).hasClass('tag-lock') || $(button_to_lock).hasClass('reason-lock')) {
-            return $(button_to_lock).addClass('disabled');
-          } else {
-            return $(button_to_lock).removeClass('disabled');
-          }
-        });
-      };
-      next_citation = function(obj) {
-        if (obj.citations.length === 0) {
-          nothing_to_label(obj);
-          return;
-        }
-        obj.history.unshift(obj.citations.shift());
-      };
-      update_info = function(obj) {
-        var current_citation, j, k, l, labels_reason, len, len1, len2, len3, len4, m, n, o, option, reason_option, ref, ref1, ref2, ref3, ref4, s, t, tag_option;
-        current_citation = obj.history[obj.index];
-        $('#citation-name').html(current_citation.name || "");
-        $('#citation-abstract').html(current_citation.abstract || "");
-        $('#citation-pmid').text(current_citation.pmid || "");
-        $('#citation-refman').text(current_citation.refman || "");
-        $('#journal-name').text(current_citation.journal.name || "");
-        $('#journal-date').text(current_citation.journal.publication_date || "");
-        $('#citation-authors').empty();
-        s = true;
-        ref = current_citation.authors;
-        for (j = 0, len = ref.length; j < len; j++) {
-          k = ref[j];
-          if (s) {
-            s = false;
-            $('#citation-authors').append(k.name || "");
-          } else {
-            $('#citation-authors').append(', ' + (k.name || ""));
-          }
-        }
-        $('#citation-keywords').empty();
-        s = true;
-        ref1 = current_citation.keywords;
-        for (l = 0, len1 = ref1.length; l < len1; l++) {
-          k = ref1[l];
-          if (s) {
-            s = false;
-            $('#citation-keywords').append(k.name || "");
-          } else {
-            $('#citation-keywords').append(', ' + (k.name || ""));
-          }
-        }
-        $('#yes-button').removeClass('success');
-        $('#no-button').removeClass('alert');
-        $('#maybe-button').removeClass('secondary');
-        ref2 = obj.options;
-        for (m = 0, len2 = ref2.length; m < len2; m++) {
-          option = ref2[m];
-          if (option.label_type) {
-            lock_button(option.label_type, option.type);
-          } else {
-            if (option.type === 'HIDE_AUTHORS') {
-              $('#authors-div').hide();
-            } else if (option.type === 'HIDE_JOURNAL') {
-              $('#journal-div').hide();
-            }
-          }
-        }
-        $('#tag-select select').val(null);
-        $('#tag-select select').empty();
-        ref3 = current_citation.taggings;
-        for (n = 0, len3 = ref3.length; n < len3; n++) {
-          t = ref3[n];
-          tag_option = new Option(t.tag.name, t.tag.id, true, true);
-          $(tag_option).attr('tagging-id', t.id);
-          $('#tag-select select').append(tag_option);
-          $('#tag-select select').trigger({
-            type: 'select2:select',
-            params: {
-              data: {
-                id: t.tag.id,
-                text: t.tag.name
-              }
-            }
-          });
-        }
-        $('#tag-select select').trigger('change');
-        if (!!current_citation.notes) {
-          $('textarea#note-textbox').val(current_citation.notes[0].value);
-        } else {
-          $('textarea#note-textbox').val('');
-        }
-        if ($('textarea#note-textbox').val() !== '') {
-          $('textarea#note-textbox').addClass('note-saved');
-        }
-        $('textarea#note-textbox').trigger('change');
-        $('#reason-select select').val(null);
-        $('#reason-select select').empty();
-        if (obj.index > 0) {
-          if (!!current_citation.label && !!current_citation.label.labels_reasons) {
-            ref4 = current_citation.label.labels_reasons;
-            for (o = 0, len4 = ref4.length; o < len4; o++) {
-              labels_reason = ref4[o];
-              reason_option = new Option(labels_reason.reason.name, labels_reason.reason.id, true, true);
-              $(reason_option).attr('labels-reason-id', labels_reason.id);
-              $('#reason-select select').append(reason_option);
-              $('#reason-select select').trigger({
-                type: 'select2:select',
-                params: {
-                  data: {
-                    id: labels_reason.reason.id,
-                    text: labels_reason.reason.name
-                  }
-                }
-              });
-            }
-          }
-          if (current_citation.label.label_type_id === 1) {
-            $('#yes-button').addClass('success');
-          } else if (current_citation.label.label_type_id === 2) {
-            $('#no-button').addClass('alert');
-          } else if (current_citation.label.label_type_id === 3) {
-            $('#maybe-button').addClass('secondary');
-          }
-        }
-        $('#reason-select select').trigger('change');
-      };
-      send_label = function(obj, label_type_id) {
-        var is_patch, j, l, label_params, label_url, len, len1, reason_option, ref, ref1;
-        this.current_citation = obj.history[obj.index];
-        is_patch = false;
-        if (obj.index > 0 || obj.history[obj.index].label) {
-          is_patch = true;
-        }
-        label_params = {
-          label_type_id: label_type_id,
-          citations_project_id: current_citation.citations_project_id,
-          projects_users_role_id: obj.projects_users_role_id
-        };
-        ref = $('#reason-select select option:checked');
-        for (j = 0, len = ref.length; j < len; j++) {
-          reason_option = ref[j];
-          if (label_params.labels_reasons_attributes == null) {
-            label_params.labels_reasons_attributes = [];
-          }
-          if (!$(reason_option).attr('labels-reason-id')) {
-            label_params.labels_reasons_attributes.push({
-              projects_users_role_id: obj.projects_users_role_id,
-              reason_id: $(reason_option).val()
-            });
-          }
-        }
-        ref1 = $('#reason-select select option:not(:checked)');
-        for (l = 0, len1 = ref1.length; l < len1; l++) {
-          reason_option = ref1[l];
-          if (label_params.labels_reasons_attributes == null) {
-            label_params.labels_reasons_attributes = [];
-          }
-          if ($(reason_option).attr('labels-reason-id')) {
-            label_params.labels_reasons_attributes.push({
-              id: $(reason_option).attr('labels-reason-id'),
-              _destroy: true
-            });
-          }
-        }
-        label_url = $('#root-url').text() + '/labels';
-        if (is_patch) {
-          label_url = label_url + '/' + obj.history[obj.index].label.id;
-        }
-        $.ajax({
-          type: is_patch > 0 ? 'PATCH' : 'POST',
-          url: label_url,
-          dataType: 'json',
-          data: {
-            utf8: '✓',
-            authenticity_token: $('#authenticity-token').text(),
-            label: label_params
-          },
-          success: function(data) {
-            parent.current_citation.label = {
-              id: data.id,
-              label_type_id: label_type_id,
-              labels_reasons: data.labels_reasons
-            };
-            if ($('#switch-button').val() === 'ON') {
-              get_history_page(obj, 0);
-            }
-            toastr.success('Label is created successfully');
-            get_c_p(obj);
-            if (obj.index > 0) {
-              obj.index = obj.index - 1;
-            } else if (obj.citations.length > 0) {
-              next_citation(obj);
-              add_breadcrumb(obj);
-              obj.index = 0;
-            }
-            update_info(obj);
-            return update_arrows(obj);
-          },
-          error: function() {
-            return toastr.error('ERROR: Could not create label');
-          }
-        });
-      };
-      update_label = function(obj, index, label_type_id) {
-        obj.index = index;
-        return send_label(obj, label_type_id);
-      };
-      update_arrows = function(obj) {
-        if (obj.index < obj.history.length - 1) {
-          $('#previous-button').removeClass('disabled');
-        } else {
-          $('#previous-button').addClass('disabled');
-        }
-        if (obj.index > 0) {
-          $('#next-button').removeClass('disabled');
-        } else {
-          $('#next-button').addClass('disabled');
-        }
-      };
-      start_screening = function(citations, history, options) {
-        var close_tags_button, next_button, previous_button, projects_users_role_id, state_obj, switch_button, tags_button, timeoutId;
-        projects_users_role_id = $('#projects-users-role-id').text();
-        state_obj = {
-          projects_users_role_id: projects_users_role_id,
-          citations: citations,
-          history: history,
-          index: 0,
-          done: 'false',
-          history_page: 0,
-          options: options
-        };
-        next_citation(state_obj);
-        state_obj.index = 0;
-        update_info(state_obj);
-        update_arrows(state_obj);
-        $('#switch-button').val('OFF');
-        $('#yes-button').click(function() {
-          if (!$(this).hasClass('disabled')) {
-            return send_label(state_obj, 1);
-          }
-        });
-        $('#no-button').click(function() {
-          if (!$(this).hasClass('disabled')) {
-            return send_label(state_obj, 2);
-          }
-        });
-        $('#maybe-button').click(function() {
-          if (!$(this).hasClass('disabled')) {
-            return send_label(state_obj, 3);
-          }
-        });
-        next_button = $('#next-button');
-        previous_button = $('#previous-button');
-        switch_button = $('#switch-button');
-        tags_button = $('#tags-button');
-        close_tags_button = $('#close-tags-button');
-        next_button.click(function() {
-          if (!next_button.hasClass('disabled')) {
-            state_obj.index = state_obj.index - 1;
-            update_arrows(state_obj);
-            return update_info(state_obj);
-          }
-        });
-        previous_button.click(function() {
-          if (!previous_button.hasClass('disabled')) {
-            state_obj.index = state_obj.index + 1;
-            update_arrows(state_obj);
-            return update_info(state_obj);
-          }
-        });
-        switch_button.click(function() {
-          if (switch_button.val() === 'OFF') {
-            get_history_page(state_obj, 0);
-            return switch_button.val('ON');
-          } else {
-            switch_to_screening(state_obj);
-            return switch_button.val('OFF');
-          }
-        });
-        tags_button.click(function() {
-          return switch_to_tags();
-        });
-        close_tags_button.click(function() {
-          return switch_to_screening();
-        });
-        $('#next-page').click(function(e) {
-          return get_history_page(state_obj, state_obj.history_page + 1);
-        });
-        $('#prev-page').click(function(e) {
-          return get_history_page(state_obj, state_obj.history_page - 1);
-        });
-        timeoutId = null;
-        $('textarea#note-textbox').on('input', function() {
-          $('textarea#note-textbox').removeClass('note-saved');
-          clearTimeout(timeoutId);
-          return timeoutId = setTimeout((function() {
-            var is_patch;
-            is_patch = !!state_obj.history[state_obj.index].notes;
-            return $.ajax({
-              type: is_patch ? 'PATCH' : 'POST',
-              url: $('#root-url').text() + '/api/v1/notes' + (is_patch ? '/' + state_obj.history[state_obj.index].notes[0].id : ''),
-              dataType: 'json',
-              data: {
-                utf8: '✓',
-                authenticity_token: $('#authenticity-token').text(),
-                note: {
-                  value: $('#note-textbox').val(),
-                  projects_users_role_id: state_obj.projects_users_role_id,
-                  notable_id: state_obj.history[state_obj.index].citations_project_id,
-                  notable_type: "CitationsProject"
-                }
-              },
-              success: function(data) {
-                if ($('#note-textbox').val() !== '') {
-                  $('textarea#note-textbox').addClass('note-saved');
-                  $('textarea#note-textbox').trigger('change');
-                }
-                state_obj.history[state_obj.index].notes[0] = {
-                  id: data.id,
-                  value: $('#note-textbox').val()
-                };
-                return toastr.success('Note successfully saved');
-              },
-              error: function() {
-                return toastr.error('ERROR: Could not save note');
-              }
-            });
-          }), 1200);
-        });
-        $('#tag-select select').select2({
-          minimumInputLength: 0,
-          ajax: {
-            url: function() {
-              return $('root-url').text() + '/api/v1/assignments/' + $('#assignment-id').text() + '/tags.json';
-            },
-            dataType: 'json',
-            delay: 100,
-            data: function(params) {
-              return {
-                q: params.term,
-                page: params.page || 1
-              };
-            }
-          }
-        });
-        $('#tag-select select').on('select2:select', function(event) {
-          var tag_id, tag_option_element, tag_text;
-          tag_text = event.params.data.text;
-          tag_id = event.params.data.id;
-          tag_option_element = $(event.target).find('option[value="' + tag_id + '"]')[0];
-          if (!$(tag_option_element).attr('tagging-id')) {
-            return $.ajax({
-              type: 'POST',
-              url: $('#root-url').text() + '/api/v1/taggings',
-              dataType: 'json',
-              data: {
-                utf8: '✓',
-                authenticity_token: $('#authenticity-token').text(),
-                tagging: {
-                  tag_id: tag_id,
-                  projects_users_role_id: state_obj.projects_users_role_id,
-                  taggable_id: state_obj.history[state_obj.index].citations_project_id,
-                  taggable_type: "CitationsProject"
-                }
-              },
-              success: function(data) {
-                state_obj.history[state_obj.index].taggings.push({
-                  id: data.id,
-                  tag: {
-                    id: tag_id,
-                    name: tag_text
-                  }
-                });
-                $(tag_option_element).attr('tagging-id', data.id);
-                return toastr.success('Tag successfully created');
-              },
-              error: function() {
-                return toastr.error('ERROR: Could not create tag');
-              }
-            });
-          }
-        });
-        $('#tag-select select').on('select2:unselect', function(event) {
-          var tag_id, tag_option_element, tagging_id;
-          tag_id = event.params.data.id;
-          tag_option_element = $(event.target).find('option[value="' + tag_id + '"]')[0];
-          if ($(tag_option_element).attr('tagging-id')) {
-            tagging_id = +$(tag_option_element).attr('tagging-id');
-            return $.ajax({
-              type: 'DELETE',
-              url: $('#root-url').text() + '/api/v1/taggings/' + tagging_id,
-              data: {
-                utf8: '✓',
-                authenticity_token: $('#authenticity-token').text()
-              },
-              success: function() {
-                var current_citation, i, j, len, ref, tagging;
-                i = 0;
-                current_citation = state_obj.history[state_obj.index];
-                ref = current_citation.taggings;
-                for (j = 0, len = ref.length; j < len; j++) {
-                  tagging = ref[j];
-                  if (tagging.id === tagging_id) {
-                    current_citation.taggings.splice(i, 1);
-                    break;
-                  }
-                  i++;
-                }
-                return toastr.success('Tag successfully deleted');
-              },
-              error: function() {
-                return toastr.error('ERROR: Could not delete tag');
-              }
-            });
-          }
-        });
-        $('#reason-select select').select2({
-          minimumInputLength: 0,
-          ajax: {
-            url: function() {
-              return $('root-url').text() + '/api/v1/assignments/' + $('#assignment-id').text() + '/reasons.json';
-            },
-            dataType: 'json',
-            delay: 100,
-            data: function(params) {
-              return {
-                q: params.term,
-                page: params.page || 1
-              };
-            }
-          }
-        });
-        fetch_term_groups(state_obj);
-        $('#edit-tgs-button').click(function() {
-          $('#edit-tgs-button').toggleClass('secondary');
-          return $('#edit-term-groups').toggle();
-        });
-        $('#new-term-group').click(function() {
-          return send_new_term_group(state_obj, "NEW GROUP", 1);
-        });
-      };
-      get_history_page = function(obj, page_index) {
-        var count, offset, page_size;
-        page_size = 10;
-        if (obj.history.length < (page_index + 1) * page_size) {
-          offset = obj.history.length - 1;
-          count = (page_index + 1) * page_size - obj.history.length;
-          return $.ajax({
-            type: 'GET',
-            url: $('#history-json-url').text(),
-            data: {
-              count: count,
-              offset: offset
-            },
-            success: function(data) {
-              obj.history = obj.history.concat(data.labeled_citations_projects);
-              switch_to_list(obj, obj.history.slice(page_index * page_size, (page_index + 1) * page_size));
-              return obj.history_page = page_index;
-            }
-          });
-        } else {
-          switch_to_list(obj, obj.history.slice(page_index * page_size, (page_index + 1) * page_size));
-          return obj.history_page = page_index;
-        }
-      };
-      add_breadcrumb = function(obj) {
-        var breadcrumb_id, button, id, next_index;
-        next_index = obj.history.length;
-        breadcrumb_id = 'breadcrumb_' + next_index;
-        id = next_index;
-        button = $('<input/>').attr({
-          type: 'button',
-          id: breadcrumb_id,
-          "class": 'button'
-        });
-        button.click(function() {
-          obj.index = obj.history.length - next_index;
-          update_info(obj);
-          return update_arrows(obj);
-        });
-        $('#breadcrumb-group').append(button);
-        obj.history[obj.index].breadcrumb_id = breadcrumb_id;
-        obj.history[obj.index].id = id;
-      };
-      update_breadcrumb = function(citation) {
-        var button, label;
-        button = $('#' + citation.breadcrumb_id);
-        label = citation.label.label_type_id;
-        button.removeClass('success alert');
-        if (label === 1) {
-          button.addClass('success');
-        } else if (label === 2) {
-          button.addClass('alert');
-        }
-      };
-      update_index = function(obj, new_index) {
-        var new_breadcrumb_id, old_breadcrumb_id;
-        old_breadcrumb_id = obj.history[obj.index].breadcrumb_id;
-        obj.index = new_index;
-        new_breadcrumb_id = obj.history[new_index].breadcrumb_id;
-        $('#' + old_breadcrumb_id).removeClass('hollow');
-        $('#' + new_breadcrumb_id).addClass('hollow');
-      };
-      update_reasons = function() {
-        var project_lead_reasons, projects_user_reasons, root_url;
-        root_url = $('#root-url').text();
-        projects_user_reasons = $('#projects-user-reasons fieldset');
-        project_lead_reasons = $('#project-lead-reasons fieldset');
-        return $.ajax({
-          type: 'GET',
-          url: $('root-url').text() + '/api/v1/assignments/' + $('#assignment-id').text() + '/reasons.json',
-          success: function(data) {
-            var j, l, len, len1, reason, reason_element, reason_label, ref, ref1, results;
-            if (data.results.projects_user_reasons != null) {
-              projects_user_reasons.empty();
-              ref = data.results.projects_user_reasons;
-              for (j = 0, len = ref.length; j < len; j++) {
-                reason = ref[j];
-                reason_element = $('<input type="checkbox" value="' + reason.id + '" id="reason-' + reason.id + '" style="display: inline; margin-bottom: 0;">');
-                reason_label = $('<label for="reason-' + reason.id + '" style="display: inline;">' + reason.text + '</label><br>');
-                projects_user_reasons.append(reason_element);
-                projects_user_reasons.append(reason_label);
-              }
-            } else {
-              projects_user_reasons.hide();
-            }
-            if (data.results.project_lead_reasons != null) {
-              project_lead_reasons.empty();
-              ref1 = data.results.project_lead_reasons;
-              results = [];
-              for (l = 0, len1 = ref1.length; l < len1; l++) {
-                reason = ref1[l];
-                reason_element = $('<input type="checkbox" value="' + reason.id + '" id="reason-' + reason.id + '" style="display: inline; margin-bottom: 0;">');
-                reason_label = $('<label for="reason-' + reason.id + '" style="display: inline;">' + reason.text + '</label><br>');
-                project_lead_reasons.append(reason_element);
-                results.push(project_lead_reasons.append(reason_label));
-              }
-              return results;
-            } else {
-              return project_lead_reasons.hide();
-            }
-          },
-          error: function() {
-            return toastr.error('ERROR: Could not fetch reasons');
-          }
-        });
-      };
-      switch_to_list = function(obj, history_elements) {
-        var c, citation_abstract, citation_button_maybe, citation_button_no, citation_button_yes, citation_buttons, citation_element, citation_info, citation_title, info_wrapper, j, len, next_index;
-        $('#citations-list-elements').empty();
-        next_index = 0;
-        for (j = 0, len = history_elements.length; j < len; j++) {
-          c = history_elements[j];
-          info_wrapper = $('<div><div/>').attr({
-            id: 'info-wrapper-' + c.citations_project_id,
-            "class": 'info-wrapper'
-          });
-          citation_info = $('<div></div>').attr({
-            id: 'citation-info-' + c.citations_project_id,
-            "class": 'citation-info'
-          });
-          citation_element = $('<div></div>').attr({
-            id: 'citation-element-' + c.citations_project_id,
-            "class": 'callout row',
-            index: next_index
-          });
-          citation_title = $('<b>' + c.name + '<b/>').attr({
-            id: '#citation-element-title-' + c.citations_project_id
-          });
-          if (c.abstract.length > 400) {
-            citation_abstract = $('<div>' + c.abstract.slice(0, 400) + '...<div/>').attr({
-              id: '#citation-element-abstact-' + c.citations_project_id
-            });
-          } else {
-            citation_abstract = $('<div>' + c.abstract + '<div/>').attr({
-              id: '#citation-element-abstact-' + c.breadcrumb_id
-            });
-          }
-          citation_buttons = $('<div><div/>').attr({
-            id: 'citation-buttons-' + c.citations_project_id,
-            "class": 'button-group citation-buttons'
-          });
-          citation_button_yes = $('<div>Yes</div>').attr({
-            id: 'citation-button-yes-' + c.citations_project_id,
-            "class": 'button',
-            index: next_index
-          });
-          citation_button_maybe = $('<div>Maybe</div>').attr({
-            id: 'citation-button-maybe-' + c.citations_project_id,
-            "class": 'button',
-            index: next_index
-          });
-          citation_button_no = $('<div>No</div>').attr({
-            id: 'citation-button-no-' + c.citations_project_id,
-            "class": 'button',
-            index: next_index
-          });
-          citation_button_yes.click(function(e) {
-            e.stopPropagation();
-            return update_label(obj, $(this).attr('index'), 1);
-          });
-          citation_button_no.click(function(e) {
-            e.stopPropagation();
-            return update_label(obj, $(this).attr('index'), 2);
-          });
-          citation_button_maybe.click(function(e) {
-            e.stopPropagation();
-            return update_label(obj, $(this).attr('index'), 3);
-          });
-          citation_element.click(function() {
-            obj.index = +$(this).attr('index');
-            update_info(obj);
-            update_arrows(obj);
-            return switch_to_screening(obj);
-          });
-          if (c.label != null) {
-            if (c.label.label_type_id === 1) {
-              citation_button_yes.addClass('success');
-              citation_button_no.addClass('hollow');
-              citation_button_maybe.addClass('hollow');
-            } else if (c.label.label_type_id === 2) {
-              citation_button_yes.addClass('hollow');
-              citation_button_no.addClass('alert');
-              citation_button_maybe.addClass('hollow');
-            } else if (c.label.label_type_id === 3) {
-              citation_button_yes.addClass('hollow');
-              citation_button_no.addClass('hollow');
-              citation_button_maybe.addClass('secondary');
-            }
-          }
-          citation_info.append(citation_title);
-          citation_info.append(citation_abstract);
-          info_wrapper.append(citation_info);
-          citation_buttons.append(citation_button_yes);
-          citation_buttons.append(citation_button_maybe);
-          citation_buttons.append(citation_button_no);
-          citation_element.append(info_wrapper);
-          citation_element.append(citation_buttons);
-          $('#citations-list-elements').append(citation_element);
-          next_index++;
-        }
-        $('#pagination-buttons').show();
-        $('#citations-list').show();
-        return $('#screen-div').hide();
-      };
-      switch_to_screening = function(obj) {
-        $('#pagination-buttons').hide();
-        $('#citations-list-elements').empty();
-        $('#citations-list').hide();
-        $('#screen-div').show();
-        return $('#switch-button').val('OFF');
-      };
-      fetch_term_groups = function(obj) {
-        return $.ajax({
-          type: 'GET',
-          url: $('root-url').text() + '/api/v1/assignments/' + $('#assignment-id').text() + '/projects_users_term_groups_colors.json',
-          dataType: 'json',
-          success: function(data) {
-            var elem, hex_code, j, l, len, len1, ref, ref1, selected_putgc_id, tg, tg_button, tg_button_row, tg_color, tg_color_id, tg_color_label, tg_color_palette, tg_delete, tg_elem, tg_id, tg_meaning, tg_name, tg_title, tg_title_input, tg_title_label;
-            $('#term-groups').empty();
-            $('.tg-buttons').empty();
-            ref = data['projects_users_term_groups_colors'];
-            for (j = 0, len = ref.length; j < len; j++) {
-              tg = ref[j];
-              hex_code = tg['term_groups_color']['color']['hex_code'];
-              tg_color_id = tg['term_groups_color']['color']['id'];
-              tg_name = tg['term_groups_color']['term_group']['name'];
-              tg_meaning = tg['term_groups_color']['color']['name'];
-              tg_id = tg['id'];
-              ref1 = $('.tg-buttons');
-              for (l = 0, len1 = ref1.length; l < len1; l++) {
-                elem = ref1[l];
-                tg_button_row = $('<tr class="tg-button-row"></tr>');
-                tg_button = $('<div putgc-id="' + tg_id + '" class="button tiny" style="background-color:' + hex_code + ';">' + tg_name + '</div>');
-                $(tg_button_row).append($('<td></td>').append(tg_button));
-                $(elem).append(tg_button_row);
-                tg_button_row.click(function(event) {
-                  var textbox_value;
-                  textbox_value = $(event.target).parents('.term-group-buttons').find('.term-input').val();
-                  if (textbox_value.length === 0) {
-                    toastr.error('ERROR: Term cannot be empty');
-                    return;
-                  }
-                  return $.ajax({
-                    type: 'POST',
-                    url: $('#root-url').text() + 'api/v1/projects_users_term_groups_colors_terms/',
-                    dataType: 'json',
-                    data: {
-                      utf8: '✓',
-                      authenticity_token: $('#authenticity-token').text(),
-                      projects_users_term_groups_colors_term: {
-                        projects_users_term_groups_color_id: $(event.target).attr('putgc-id'),
-                        term_name: textbox_value
-                      }
-                    },
-                    success: function(data) {
-                      toastr.success('Term successfully added');
-                      $('.term-input').val('');
-                      force_update_c_p(obj);
-                      return fetch_term_groups(obj);
-                    },
-                    error: function(error) {
-                      return toastr.error('ERROR: Could not update terms');
-                    }
-                  });
-                });
-              }
-              tg_elem = $('<tr putgc-id="' + tg_id + '" class="tg-elem""></tr>');
-              tg_title = $('<td class="putgc-title"></td>');
-              tg_title_label = $('<div class="tg-title-label">' + tg_name + '</div>');
-              tg_title_input = $('<input class="tg-title-input hide" type="text" value="' + tg_name + '">');
-              tg_color = $('<td class="putgc-color" color-id="' + tg_color_id + '" color-hex="' + hex_code + '"></td>');
-              tg_color_label = $('<div class="putgc-color-label" style="background-color:' + hex_code + ';"></div>');
-              tg_color_palette = $('<div class="putgc-color-palette hide"></div>');
-              fetch_palette(obj, tg_color_palette);
-              tg_meaning = $('<td class="putgc-meaning">' + tg_meaning + '</td>');
-              tg_delete = $('<td class="delete-putgc"><a> ✖ </a></td>');
-              tg_title_input.keypress(function(event) {
-                var color_id, putgc_elem, putgc_id, term_group_name;
-                if (event.which === 13) {
-                  putgc_elem = $(event.target).closest('tr');
-                  putgc_id = putgc_elem.attr('putgc-id');
-                  color_id = putgc_elem.find('.putgc-color').attr('color-id');
-                  term_group_name = $(event.target).val();
-                  return update_term_group(obj, putgc_id, term_group_name, color_id);
-                }
-              });
-              tg_title_label.dblclick(function(event) {
-                var child, len2, m, ref2, results;
-                ref2 = $(event.target).parent().children();
-                results = [];
-                for (m = 0, len2 = ref2.length; m < len2; m++) {
-                  child = ref2[m];
-                  $(child).toggleClass('hide');
-                  if ($(child).is('input')) {
-                    results.push($(child).focus());
-                  } else {
-                    results.push(void 0);
-                  }
-                }
-                return results;
-              });
-              tg_title_input.focusout(function(event) {
-                var child, len2, m, ref2, results;
-                ref2 = $(event.target).parent().children();
-                results = [];
-                for (m = 0, len2 = ref2.length; m < len2; m++) {
-                  child = ref2[m];
-                  results.push($(child).toggleClass('hide'));
-                }
-                return results;
-              });
-              tg_elem.click(function(event) {
-                var putgc_elem, putgc_id;
-                $('#term-groups .tg-elem').removeClass('selected');
-                putgc_elem = $(event.target).closest('.tg-elem');
-                $(putgc_elem).addClass('selected');
-                putgc_id = putgc_elem.attr('putgc-id');
-                $('#term-groups').attr('selected-putgc-id', putgc_id);
-                return populate_terms(putgc_id);
-              });
-              $(window).click(function(event) {
-                $(".putgc-color-palette-row").addClass('hide');
-                return $(".tg-elem").removeClass('hide');
-              });
-              tg_color_label.dblclick(function(event) {
-                var child, len2, m, ref2, results;
-                ref2 = $(event.target).parent().children();
-                results = [];
-                for (m = 0, len2 = ref2.length; m < len2; m++) {
-                  child = ref2[m];
-                  results.push($(child).toggleClass('hide'));
-                }
-                return results;
-              });
-              tg_delete.click(function(event) {
-                var putgc_elem, putgc_id;
-                if (confirm("Are you sure?")) {
-                  event.stopPropagation();
-                  putgc_elem = $(event.target).closest('tr');
-                  putgc_id = putgc_elem.attr('putgc-id');
-                  return delete_term_group(obj, putgc_id);
-                }
-              });
-              tg_title.append(tg_title_label);
-              tg_title.append(tg_title_input);
-              tg_color.append(tg_color_label);
-              tg_color.append(tg_color_palette);
-              tg_elem.append(tg_title);
-              tg_elem.append(tg_color);
-              tg_elem.append(tg_meaning);
-              tg_elem.append(tg_delete);
-              $('#term-groups').append(tg_elem);
-              $('#term-groups .tg-elem[putgc-id="' + $('#term-groups').attr('selected-putgc-id') + '"]').addClass('selected');
-            }
-            selected_putgc_id = $('#term-groups .tg-elem').first().attr('putgc-id');
-            $('#term-groups').attr('selected-putgc-id', selected_putgc_id);
-            $('#term-groups .tg-elem').removeClass('selected');
-            $('#term-groups .tg-elem[putgc-id="' + selected_putgc_id + '"]').addClass('selected');
-            return populate_terms(selected_putgc_id);
-          },
-          error: function() {
-            return toastr.error('ERROR: Could not fetch term groups');
-          }
-        });
-      };
-      apply_select2_to_term_select = function(obj, term_select) {
-        var putgc_id;
-        putgc_id = term_select.attr('putgc-id');
-        term_select.select2({
-          minimumInputLength: 0,
-          ajax: {
-            url: function() {
-              return $('root-url').text() + '/api/v1/terms.json';
-            },
-            dataType: 'json',
-            delay: 100,
-            data: function(params) {
-              return {
-                q: params.term,
-                page: params.page || 1
-              };
-            }
-          }
-        });
-        term_select.on('select2:select select2:unselect', function(event) {
-          var j, len, ref, term_elem, term_ids;
-          term_ids = [''];
-          ref = $(event.target).find('option:checked');
-          for (j = 0, len = ref.length; j < len; j++) {
-            term_elem = ref[j];
-            term_ids.push($(term_elem).val());
-          }
-          return $.ajax({
-            type: 'PATCH',
-            url: $('#root-url').text() + '/api/v1/projects_users_term_groups_colors/' + putgc_id,
-            dataType: 'json',
-            data: {
-              utf8: '✓',
-              authenticity_token: $('#authenticity-token').text(),
-              projects_users_term_groups_color: {
-                term_ids: term_ids
-              }
-            },
-            success: function(data) {
-              return force_update_c_p(obj);
-            },
-            error: function(error) {
-              return toastr.error('ERROR: Could not update terms');
-            }
-          });
-        });
-        if (!($('#term-groups').attr('selected-putgc-id') === putgc_id)) {
-          return term_select.next('.select2-container').addClass('hide');
-        }
-      };
-      create_term_selects = function(obj) {
-        var j, len, putgc_id, ref, results, send_ajax, term_select, tg;
-        send_ajax = function(inner_putgc_id) {
-          return $.ajax({
-            type: 'GET',
-            url: $('#root-url').text() + '/api/v1/projects_users_term_groups_colors/' + inner_putgc_id + '/terms.json',
-            dataType: 'json',
-            success: function(data) {
-              var j, len, ref, results, term, term_option;
-              ref = data['results'];
-              results = [];
-              for (j = 0, len = ref.length; j < len; j++) {
-                term = ref[j];
-                term_option = new Option(term['text'], term['id'], true, true);
-                results.push($('select[putgc-id=' + inner_putgc_id + ']').append(term_option));
-              }
-              return results;
-            },
-            error: function() {
-              return toastr.error('ERROR: Could not fetch terms');
-            }
-          });
-        };
-        $('#term-selects').empty();
-        ref = $('#term-groups tr');
-        results = [];
-        for (j = 0, len = ref.length; j < len; j++) {
-          tg = ref[j];
-          putgc_id = $(tg).attr('putgc-id');
-          term_select = $('<select class="hide" putgc-id="' + putgc_id + '" multiple>');
-          $('#term-selects').append(term_select);
-          results.push(send_ajax(putgc_id));
-        }
-        return results;
-      };
-      populate_terms = function(inner_putgc_id) {
-        if (typeof inner_putgc_id === 'undefined') {
-          return;
-        }
-        return $.ajax({
-          type: 'GET',
-          url: $('#root-url').text() + '/api/v1/projects_users_term_groups_colors/' + inner_putgc_id + '/terms.json',
-          dataType: 'json',
-          success: function(data) {
-            var j, len, ref, results, term, term_CS, term_CS_td, term_PM, term_PM_td, term_delete, term_delete_td, term_name, term_name_td, term_row, terms_tbody;
-            terms_tbody = $('#terms-modal #terms-list tbody');
-            terms_tbody.empty();
-            ref = data['results'];
-            results = [];
-            for (j = 0, len = ref.length; j < len; j++) {
-              term = ref[j];
-              term_row = $('<tr></tr>');
-              term_name = $('<div id=' + term['id'] + '>' + term['text'] + '</div>');
-              term_name_td = $('<td />').append(term_name);
-              term_CS = $('<input />', {
-                type: 'checkbox',
-                "class": 'term-CS-checkbox',
-                term_id: term['id']
-              });
-              term_CS_td = $('<td />').append(term_CS);
-              term_PM = $('<input />', {
-                type: 'checkbox',
-                "class": 'term-PM-checkbox',
-                term_id: term['id']
-              });
-              term_PM_td = $('<td />').append(term_PM);
-              term_delete = $('<a />', {
-                "class": 'delete-term-button',
-                term_id: term['id']
-              });
-              term_delete.text('✖');
-              term_delete_td = $('<td />').append(term_delete);
-              term_row.append(term_name_td);
-              term_row.append(term_CS_td);
-              term_row.append(term_PM_td);
-              term_row.append(term_delete_td);
-              results.push(terms_tbody.append(term_row));
-            }
-            return results;
-          },
-          error: function() {
-            return toastr.error('ERROR: Could not fetch terms');
-          }
-        });
-      };
-      populate_term_modal = function(obj) {
-        var selected_putgc_id;
-        $('#tg-panel').html($('#edit-term-groups #edit-term-groups-table').clone());
-        selected_putgc_id = $('#tg-panel #term-groups .tg-elem').first().attr('putgc-id');
-        $('#tg-panel #term-groups').attr('selected-putgc-id', selected_putgc_id);
-        $('#tg-panel #term-groups .tg-elem[putgc-id="' + selected_putgc_id + '"]');
-        $('#tg-panel #term-groups .tg-title-label').dblclick(function(event) {
-          var child, j, len, ref, results;
-          ref = $(event.target).parent().children();
-          results = [];
-          for (j = 0, len = ref.length; j < len; j++) {
-            child = ref[j];
-            $(child).toggleClass('hide');
-            if ($(child).is('input')) {
-              results.push($(child).focus());
-            } else {
-              results.push(void 0);
-            }
-          }
-          return results;
-        });
-        $('#tg-panel #term-groups .tg-elem').focusout(function(event) {
-          var child, j, len, ref, results;
-          ref = $(event.target).parent().children();
-          results = [];
-          for (j = 0, len = ref.length; j < len; j++) {
-            child = ref[j];
-            results.push($(child).toggleClass('hide'));
-          }
-          return results;
-        });
-        $('#tg-panel #term-groups .putgc-color-label').dblclick(function(event) {
-          var child, j, len, ref, results;
-          ref = $(event.target).parent().children();
-          results = [];
-          for (j = 0, len = ref.length; j < len; j++) {
-            child = ref[j];
-            results.push($(child).toggleClass('hide'));
-          }
-          return results;
-        });
-        $('#tg-panel #term-groups .tg-elem').click(function(event) {
-          var putgc_elem, putgc_id;
-          $('#tg-panel #term-groups').children().removeClass('selected');
-          putgc_elem = $(event.target).closest('tr');
-          $(putgc_elem).addClass('selected');
-          putgc_id = putgc_elem.attr('putgc-id');
-          $('#tg-panel #term-groups').attr('selected-putgc-id', putgc_id);
-          return populate_terms(putgc_id);
-        });
-        $('#tg-panel #term-groups .delete-putgc').click(function(event) {
-          var putgc_elem, putgc_id;
-          event.stopPropagation();
-          putgc_elem = $(event.target).closest('tr');
-          putgc_id = putgc_elem.attr('putgc-id');
-          return delete_term_group(obj, putgc_id);
-        });
-        return populate_terms(selected_putgc_id);
-      };
-      delete_term_group = function(obj, id) {
-        return $.ajax({
-          type: 'DELETE',
-          url: $('root-url').text() + '/api/v1/projects_users_term_groups_colors/' + id,
-          success: function() {
-            return fetch_term_groups(obj);
-          },
-          error: function() {
-            return toastr.error('ERROR: Could not delete term group');
-          }
-        });
-      };
-      fetch_palette = function(obj, palette_elem) {
-        return $.ajax({
-          type: 'GET',
-          url: $('root-url').text() + '/api/v1/colors.json',
-          dataType: 'json',
-          success: function(data) {
-            var color, color_elem, j, len, ref, results;
-            $(palette_elem).empty();
-            ref = data['colors'];
-            results = [];
-            for (j = 0, len = ref.length; j < len; j++) {
-              color = ref[j];
-              color_elem = $('<div color-id="' + color['id'] + '"style="height: 20px; width: 20px; background-color:' + color['hex_code'] + ';"></div>');
-              color_elem.click(function(event) {
-                var color_id, putgc_elem, putgc_id, term_group_name;
-                putgc_elem = $(event.target).closest('.tg-elem');
-                putgc_id = putgc_elem.attr('putgc-id');
-                color_id = $(event.target).attr('color-id');
-                term_group_name = putgc_elem.find('.putgc-title input').val();
-                update_term_group(obj, putgc_id, term_group_name, color_id);
-                return event.stopPropagation();
-              });
-              results.push($(palette_elem).append(color_elem));
-            }
-            return results;
-          },
-          error: function() {
-            return toastr.error('ERROR: Could not fetch colors');
-          }
-        });
-      };
-      send_new_term_group = function(obj, term_group_name, color_id) {
-        return $.ajax({
-          type: 'POST',
-          url: $('root-url').text() + '/api/v1/assignments/' + $('#assignment-id').text() + '/projects_users_term_groups_colors',
-          dataType: 'json',
-          data: {
-            utf8: '✓',
-            authenticity_token: $('#authenticity-token').text(),
-            projects_users_term_groups_color: {
-              term_groups_color_attributes: {
-                term_group_attributes: {
-                  name: term_group_name
-                },
-                color_id: color_id
-              }
-            }
-          },
-          success: function(data) {
-            return fetch_term_groups(obj);
-          },
-          error: function() {
-            return toastr.error('ERROR: Could not create new term group');
-          }
-        });
-      };
-      update_term_group = function(obj, id, new_term_group_name, new_color_id) {
-        var j, l, len, len1, putgc_id, ref, ref1, term_, tg, tg_color;
-        $.ajax({
-          type: 'PATCH',
-          url: $('root-url').text() + '/api/v1/projects_users_term_groups_colors/' + id,
-          dataType: 'json',
-          data: {
-            utf8: '✓',
-            authenticity_token: $('#authenticity-token').text(),
-            projects_users_term_groups_color: {
-              term_groups_color_attributes: {
-                term_group_attributes: {
-                  name: new_term_group_name
-                },
-                color_id: new_color_id
-              }
-            }
-          },
-          success: function(data) {
-            return fetch_term_groups(obj);
-          },
-          error: function() {
-            return toastr.error('ERROR: Could not update term group');
-          }
-        });
-        ref = $('#term-groups');
-        for (j = 0, len = ref.length; j < len; j++) {
-          tg = ref[j];
-          putgc_id = $(tg).attr('putgc-id');
-          tg_color = $(tg).find('.putgc-color').attr('color-hex');
-          ref1 = $('#term-selects select[putgc-id=' + putgc_id + '] option');
-          for (l = 0, len1 = ref1.length; l < len1; l++) {
-            term_ = ref1[l];
-            "CoffeeScript is my favorite!".replace(/(\w+)/g, function(match) {
-              return match.toUpperCase();
-            });
-          }
-        }
-        return input_string;
-      };
-      send_new_term = function(projects_users_terms_groups_color_id, term) {
-        return $.ajax({
-          type: 'POST',
-          url: $('root-url').text() + '/api/v1/projects_users_terms_groups_colors_terms',
-          dataType: 'json',
-          data: {
-            utf8: '✓',
-            authenticity_token: $('#authenticity-token').text(),
-            projects_users_terms_groups_colors_term: {
-              projects_users_terms_groups_colors_term_id: projects_users_terms_groups_colors_term_id,
-              term_name: color_id
-            }
-          },
-          success: function(data) {
-            return fetch_term_groups(obj);
-          },
-          error: function() {
-            return toastr.error('ERROR: Could not create new term group');
-          }
-        });
-      };
-      update_term = function(id, new_term_group_name, new_color_id) {
-        return $.ajax({
-          type: 'PATCH',
-          url: $('root-url').text() + '/api/v1/projects_users_terms_groups_colors/' + id,
-          dataType: 'json',
-          data: {
-            utf8: '✓',
-            authenticity_token: $('#authenticity-token').text(),
-            projects_users_terms_groups_color: {
-              term_group_name: new_term_group_name,
-              color_id: new_color_id
-            }
-          },
-          success: function(data) {
-            return fetch_term_groups(obj);
-          },
-          error: function() {
-            return toastr.error('ERROR: Could not update term group');
-          }
-        });
-      };
-      $.ajax({
-        type: 'GET',
-        url: $('#screen-assignment-json-url').text(),
-        data: {
-          count: '10'
-        },
-        success: function(data) {
-          $('#screen-div').show();
-          return start_screening(data.unlabeled_citations_projects, data.labeled_citations_projects, data.options);
-        },
-        error: function() {
-          return toastr.error('ERROR: Cannot fetch citations to screen.');
-        }
-      });
-      $('#hide-me').hide();
-      $('#pagination-buttons').hide();
-    })();
-  });
-
-}).call(this);
-(function() {
-
-
-}).call(this);
-(function() {
-  var context = this;
-
-  (function() {
-    (function() {
-      var slice = [].slice;
-
-      this.ActionCable = {
-        INTERNAL: {
-          "message_types": {
-            "welcome": "welcome",
-            "ping": "ping",
-            "confirmation": "confirm_subscription",
-            "rejection": "reject_subscription"
-          },
-          "default_mount_path": "/cable",
-          "protocols": ["actioncable-v1-json", "actioncable-unsupported"]
-        },
-        WebSocket: window.WebSocket,
-        logger: window.console,
-        createConsumer: function(url) {
-          var ref;
-          if (url == null) {
-            url = (ref = this.getConfig("url")) != null ? ref : this.INTERNAL.default_mount_path;
-          }
-          return new ActionCable.Consumer(this.createWebSocketURL(url));
-        },
-        getConfig: function(name) {
-          var element;
-          element = document.head.querySelector("meta[name='action-cable-" + name + "']");
-          return element != null ? element.getAttribute("content") : void 0;
-        },
-        createWebSocketURL: function(url) {
-          var a;
-          if (url && !/^wss?:/i.test(url)) {
-            a = document.createElement("a");
-            a.href = url;
-            a.href = a.href;
-            a.protocol = a.protocol.replace("http", "ws");
-            return a.href;
-          } else {
-            return url;
-          }
-        },
-        startDebugging: function() {
-          return this.debugging = true;
-        },
-        stopDebugging: function() {
-          return this.debugging = null;
-        },
-        log: function() {
-          var messages, ref;
-          messages = 1 <= arguments.length ? slice.call(arguments, 0) : [];
-          if (this.debugging) {
-            messages.push(Date.now());
-            return (ref = this.logger).log.apply(ref, ["[ActionCable]"].concat(slice.call(messages)));
-          }
-        }
-      };
-
-    }).call(this);
-  }).call(context);
-
-  var ActionCable = context.ActionCable;
-
-  (function() {
-    (function() {
-      var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
-
-      ActionCable.ConnectionMonitor = (function() {
-        var clamp, now, secondsSince;
-
-        ConnectionMonitor.pollInterval = {
-          min: 3,
-          max: 30
-        };
-
-        ConnectionMonitor.staleThreshold = 6;
-
-        function ConnectionMonitor(connection) {
-          this.connection = connection;
-          this.visibilityDidChange = bind(this.visibilityDidChange, this);
-          this.reconnectAttempts = 0;
-        }
-
-        ConnectionMonitor.prototype.start = function() {
-          if (!this.isRunning()) {
-            this.startedAt = now();
-            delete this.stoppedAt;
-            this.startPolling();
-            document.addEventListener("visibilitychange", this.visibilityDidChange);
-            return ActionCable.log("ConnectionMonitor started. pollInterval = " + (this.getPollInterval()) + " ms");
-          }
-        };
-
-        ConnectionMonitor.prototype.stop = function() {
-          if (this.isRunning()) {
-            this.stoppedAt = now();
-            this.stopPolling();
-            document.removeEventListener("visibilitychange", this.visibilityDidChange);
-            return ActionCable.log("ConnectionMonitor stopped");
-          }
-        };
-
-        ConnectionMonitor.prototype.isRunning = function() {
-          return (this.startedAt != null) && (this.stoppedAt == null);
-        };
-
-        ConnectionMonitor.prototype.recordPing = function() {
-          return this.pingedAt = now();
-        };
-
-        ConnectionMonitor.prototype.recordConnect = function() {
-          this.reconnectAttempts = 0;
-          this.recordPing();
-          delete this.disconnectedAt;
-          return ActionCable.log("ConnectionMonitor recorded connect");
-        };
-
-        ConnectionMonitor.prototype.recordDisconnect = function() {
-          this.disconnectedAt = now();
-          return ActionCable.log("ConnectionMonitor recorded disconnect");
-        };
-
-        ConnectionMonitor.prototype.startPolling = function() {
-          this.stopPolling();
-          return this.poll();
-        };
-
-        ConnectionMonitor.prototype.stopPolling = function() {
-          return clearTimeout(this.pollTimeout);
-        };
-
-        ConnectionMonitor.prototype.poll = function() {
-          return this.pollTimeout = setTimeout((function(_this) {
-            return function() {
-              _this.reconnectIfStale();
-              return _this.poll();
-            };
-          })(this), this.getPollInterval());
-        };
-
-        ConnectionMonitor.prototype.getPollInterval = function() {
-          var interval, max, min, ref;
-          ref = this.constructor.pollInterval, min = ref.min, max = ref.max;
-          interval = 5 * Math.log(this.reconnectAttempts + 1);
-          return Math.round(clamp(interval, min, max) * 1000);
-        };
-
-        ConnectionMonitor.prototype.reconnectIfStale = function() {
-          if (this.connectionIsStale()) {
-            ActionCable.log("ConnectionMonitor detected stale connection. reconnectAttempts = " + this.reconnectAttempts + ", pollInterval = " + (this.getPollInterval()) + " ms, time disconnected = " + (secondsSince(this.disconnectedAt)) + " s, stale threshold = " + this.constructor.staleThreshold + " s");
-            this.reconnectAttempts++;
-            if (this.disconnectedRecently()) {
-              return ActionCable.log("ConnectionMonitor skipping reopening recent disconnect");
-            } else {
-              ActionCable.log("ConnectionMonitor reopening");
-              return this.connection.reopen();
-            }
-          }
-        };
-
-        ConnectionMonitor.prototype.connectionIsStale = function() {
-          var ref;
-          return secondsSince((ref = this.pingedAt) != null ? ref : this.startedAt) > this.constructor.staleThreshold;
-        };
-
-        ConnectionMonitor.prototype.disconnectedRecently = function() {
-          return this.disconnectedAt && secondsSince(this.disconnectedAt) < this.constructor.staleThreshold;
-        };
-
-        ConnectionMonitor.prototype.visibilityDidChange = function() {
-          if (document.visibilityState === "visible") {
-            return setTimeout((function(_this) {
-              return function() {
-                if (_this.connectionIsStale() || !_this.connection.isOpen()) {
-                  ActionCable.log("ConnectionMonitor reopening stale connection on visibilitychange. visbilityState = " + document.visibilityState);
-                  return _this.connection.reopen();
-                }
-              };
-            })(this), 200);
-          }
-        };
-
-        now = function() {
-          return new Date().getTime();
-        };
-
-        secondsSince = function(time) {
-          return (now() - time) / 1000;
-        };
-
-        clamp = function(number, min, max) {
-          return Math.max(min, Math.min(max, number));
-        };
-
-        return ConnectionMonitor;
-
-      })();
-
-    }).call(this);
-    (function() {
-      var i, message_types, protocols, ref, supportedProtocols, unsupportedProtocol,
-        slice = [].slice,
-        bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
-        indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
-
-      ref = ActionCable.INTERNAL, message_types = ref.message_types, protocols = ref.protocols;
-
-      supportedProtocols = 2 <= protocols.length ? slice.call(protocols, 0, i = protocols.length - 1) : (i = 0, []), unsupportedProtocol = protocols[i++];
-
-      ActionCable.Connection = (function() {
-        Connection.reopenDelay = 500;
-
-        function Connection(consumer) {
-          this.consumer = consumer;
-          this.open = bind(this.open, this);
-          this.subscriptions = this.consumer.subscriptions;
-          this.monitor = new ActionCable.ConnectionMonitor(this);
-          this.disconnected = true;
-        }
-
-        Connection.prototype.send = function(data) {
-          if (this.isOpen()) {
-            this.webSocket.send(JSON.stringify(data));
-            return true;
-          } else {
-            return false;
-          }
-        };
-
-        Connection.prototype.open = function() {
-          if (this.isActive()) {
-            ActionCable.log("Attempted to open WebSocket, but existing socket is " + (this.getState()));
-            return false;
-          } else {
-            ActionCable.log("Opening WebSocket, current state is " + (this.getState()) + ", subprotocols: " + protocols);
-            if (this.webSocket != null) {
-              this.uninstallEventHandlers();
-            }
-            this.webSocket = new ActionCable.WebSocket(this.consumer.url, protocols);
-            this.installEventHandlers();
-            this.monitor.start();
-            return true;
-          }
-        };
-
-        Connection.prototype.close = function(arg) {
-          var allowReconnect, ref1;
-          allowReconnect = (arg != null ? arg : {
-            allowReconnect: true
-          }).allowReconnect;
-          if (!allowReconnect) {
-            this.monitor.stop();
-          }
-          if (this.isActive()) {
-            return (ref1 = this.webSocket) != null ? ref1.close() : void 0;
-          }
-        };
-
-        Connection.prototype.reopen = function() {
-          var error;
-          ActionCable.log("Reopening WebSocket, current state is " + (this.getState()));
-          if (this.isActive()) {
-            try {
-              return this.close();
-            } catch (error1) {
-              error = error1;
-              return ActionCable.log("Failed to reopen WebSocket", error);
-            } finally {
-              ActionCable.log("Reopening WebSocket in " + this.constructor.reopenDelay + "ms");
-              setTimeout(this.open, this.constructor.reopenDelay);
-            }
-          } else {
-            return this.open();
-          }
-        };
-
-        Connection.prototype.getProtocol = function() {
-          var ref1;
-          return (ref1 = this.webSocket) != null ? ref1.protocol : void 0;
-        };
-
-        Connection.prototype.isOpen = function() {
-          return this.isState("open");
-        };
-
-        Connection.prototype.isActive = function() {
-          return this.isState("open", "connecting");
-        };
-
-        Connection.prototype.isProtocolSupported = function() {
-          var ref1;
-          return ref1 = this.getProtocol(), indexOf.call(supportedProtocols, ref1) >= 0;
-        };
-
-        Connection.prototype.isState = function() {
-          var ref1, states;
-          states = 1 <= arguments.length ? slice.call(arguments, 0) : [];
-          return ref1 = this.getState(), indexOf.call(states, ref1) >= 0;
-        };
-
-        Connection.prototype.getState = function() {
-          var ref1, state, value;
-          for (state in WebSocket) {
-            value = WebSocket[state];
-            if (value === ((ref1 = this.webSocket) != null ? ref1.readyState : void 0)) {
-              return state.toLowerCase();
-            }
-          }
-          return null;
-        };
-
-        Connection.prototype.installEventHandlers = function() {
-          var eventName, handler;
-          for (eventName in this.events) {
-            handler = this.events[eventName].bind(this);
-            this.webSocket["on" + eventName] = handler;
-          }
-        };
-
-        Connection.prototype.uninstallEventHandlers = function() {
-          var eventName;
-          for (eventName in this.events) {
-            this.webSocket["on" + eventName] = function() {};
-          }
-        };
-
-        Connection.prototype.events = {
-          message: function(event) {
-            var identifier, message, ref1, type;
-            if (!this.isProtocolSupported()) {
-              return;
-            }
-            ref1 = JSON.parse(event.data), identifier = ref1.identifier, message = ref1.message, type = ref1.type;
-            switch (type) {
-              case message_types.welcome:
-                this.monitor.recordConnect();
-                return this.subscriptions.reload();
-              case message_types.ping:
-                return this.monitor.recordPing();
-              case message_types.confirmation:
-                return this.subscriptions.notify(identifier, "connected");
-              case message_types.rejection:
-                return this.subscriptions.reject(identifier);
-              default:
-                return this.subscriptions.notify(identifier, "received", message);
-            }
-          },
-          open: function() {
-            ActionCable.log("WebSocket onopen event, using '" + (this.getProtocol()) + "' subprotocol");
-            this.disconnected = false;
-            if (!this.isProtocolSupported()) {
-              ActionCable.log("Protocol is unsupported. Stopping monitor and disconnecting.");
-              return this.close({
-                allowReconnect: false
-              });
-            }
-          },
-          close: function(event) {
-            ActionCable.log("WebSocket onclose event");
-            if (this.disconnected) {
-              return;
-            }
-            this.disconnected = true;
-            this.monitor.recordDisconnect();
-            return this.subscriptions.notifyAll("disconnected", {
-              willAttemptReconnect: this.monitor.isRunning()
-            });
-          },
-          error: function() {
-            return ActionCable.log("WebSocket onerror event");
-          }
-        };
-
-        return Connection;
-
-      })();
-
-    }).call(this);
-    (function() {
-      var slice = [].slice;
-
-      ActionCable.Subscriptions = (function() {
-        function Subscriptions(consumer) {
-          this.consumer = consumer;
-          this.subscriptions = [];
-        }
-
-        Subscriptions.prototype.create = function(channelName, mixin) {
-          var channel, params, subscription;
-          channel = channelName;
-          params = typeof channel === "object" ? channel : {
-            channel: channel
-          };
-          subscription = new ActionCable.Subscription(this.consumer, params, mixin);
-          return this.add(subscription);
-        };
-
-        Subscriptions.prototype.add = function(subscription) {
-          this.subscriptions.push(subscription);
-          this.consumer.ensureActiveConnection();
-          this.notify(subscription, "initialized");
-          this.sendCommand(subscription, "subscribe");
-          return subscription;
-        };
-
-        Subscriptions.prototype.remove = function(subscription) {
-          this.forget(subscription);
-          if (!this.findAll(subscription.identifier).length) {
-            this.sendCommand(subscription, "unsubscribe");
-          }
-          return subscription;
-        };
-
-        Subscriptions.prototype.reject = function(identifier) {
-          var i, len, ref, results, subscription;
-          ref = this.findAll(identifier);
-          results = [];
-          for (i = 0, len = ref.length; i < len; i++) {
-            subscription = ref[i];
-            this.forget(subscription);
-            this.notify(subscription, "rejected");
-            results.push(subscription);
-          }
-          return results;
-        };
-
-        Subscriptions.prototype.forget = function(subscription) {
-          var s;
-          this.subscriptions = (function() {
-            var i, len, ref, results;
-            ref = this.subscriptions;
-            results = [];
-            for (i = 0, len = ref.length; i < len; i++) {
-              s = ref[i];
-              if (s !== subscription) {
-                results.push(s);
-              }
-            }
-            return results;
-          }).call(this);
-          return subscription;
-        };
-
-        Subscriptions.prototype.findAll = function(identifier) {
-          var i, len, ref, results, s;
-          ref = this.subscriptions;
-          results = [];
-          for (i = 0, len = ref.length; i < len; i++) {
-            s = ref[i];
-            if (s.identifier === identifier) {
-              results.push(s);
-            }
-          }
-          return results;
-        };
-
-        Subscriptions.prototype.reload = function() {
-          var i, len, ref, results, subscription;
-          ref = this.subscriptions;
-          results = [];
-          for (i = 0, len = ref.length; i < len; i++) {
-            subscription = ref[i];
-            results.push(this.sendCommand(subscription, "subscribe"));
-          }
-          return results;
-        };
-
-        Subscriptions.prototype.notifyAll = function() {
-          var args, callbackName, i, len, ref, results, subscription;
-          callbackName = arguments[0], args = 2 <= arguments.length ? slice.call(arguments, 1) : [];
-          ref = this.subscriptions;
-          results = [];
-          for (i = 0, len = ref.length; i < len; i++) {
-            subscription = ref[i];
-            results.push(this.notify.apply(this, [subscription, callbackName].concat(slice.call(args))));
-          }
-          return results;
-        };
-
-        Subscriptions.prototype.notify = function() {
-          var args, callbackName, i, len, results, subscription, subscriptions;
-          subscription = arguments[0], callbackName = arguments[1], args = 3 <= arguments.length ? slice.call(arguments, 2) : [];
-          if (typeof subscription === "string") {
-            subscriptions = this.findAll(subscription);
-          } else {
-            subscriptions = [subscription];
-          }
-          results = [];
-          for (i = 0, len = subscriptions.length; i < len; i++) {
-            subscription = subscriptions[i];
-            results.push(typeof subscription[callbackName] === "function" ? subscription[callbackName].apply(subscription, args) : void 0);
-          }
-          return results;
-        };
-
-        Subscriptions.prototype.sendCommand = function(subscription, command) {
-          var identifier;
-          identifier = subscription.identifier;
-          return this.consumer.send({
-            command: command,
-            identifier: identifier
-          });
-        };
-
-        return Subscriptions;
-
-      })();
-
-    }).call(this);
-    (function() {
-      ActionCable.Subscription = (function() {
-        var extend;
-
-        function Subscription(consumer, params, mixin) {
-          this.consumer = consumer;
-          if (params == null) {
-            params = {};
-          }
-          this.identifier = JSON.stringify(params);
-          extend(this, mixin);
-        }
-
-        Subscription.prototype.perform = function(action, data) {
-          if (data == null) {
-            data = {};
-          }
-          data.action = action;
-          return this.send(data);
-        };
-
-        Subscription.prototype.send = function(data) {
-          return this.consumer.send({
-            command: "message",
-            identifier: this.identifier,
-            data: JSON.stringify(data)
-          });
-        };
-
-        Subscription.prototype.unsubscribe = function() {
-          return this.consumer.subscriptions.remove(this);
-        };
-
-        extend = function(object, properties) {
-          var key, value;
-          if (properties != null) {
-            for (key in properties) {
-              value = properties[key];
-              object[key] = value;
-            }
-          }
-          return object;
-        };
-
-        return Subscription;
-
-      })();
-
-    }).call(this);
-    (function() {
-      ActionCable.Consumer = (function() {
-        function Consumer(url) {
-          this.url = url;
-          this.subscriptions = new ActionCable.Subscriptions(this);
-          this.connection = new ActionCable.Connection(this);
-        }
-
-        Consumer.prototype.send = function(data) {
-          return this.connection.send(data);
-        };
-
-        Consumer.prototype.connect = function() {
-          return this.connection.open();
-        };
-
-        Consumer.prototype.disconnect = function() {
-          return this.connection.close({
-            allowReconnect: false
-          });
-        };
-
-        Consumer.prototype.ensureActiveConnection = function() {
-          if (!this.connection.isActive()) {
-            return this.connection.open();
-          }
-        };
-
-        return Consumer;
-
-      })();
-
-    }).call(this);
-  }).call(this);
-
-  if (typeof module === "object" && module.exports) {
-    module.exports = ActionCable;
-  } else if (typeof define === "function" && define.amd) {
-    define(ActionCable);
-  }
-}).call(this);
-// Action Cable provides the framework to deal with WebSockets in Rails.
-// You can generate new channels where WebSocket features live using the rails generate channel command.
-//
-
-
-
-
-'use strict';
-
-(function() {
-  this.App || (this.App = {});
-
-  App.cable = ActionCable.createConsumer();
-
-}).call(this);
-(function() {
-  document.addEventListener('turbolinks:load', function() {
-    (function() {
-      var append_citations, citationList, fetch_from_pubmed, list_options, populate_citation_fields;
-      if ($('body.citations.index').length === 1) {
-        list_options = {
-          valueNames: ['citation-numbers', 'citation-title', 'citation-authors', 'citation-journal', 'citation-journal-date', 'citation-abstract', 'citation-abstract']
-        };
-        fetch_from_pubmed = function(pmid) {
-          return $.ajax('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi', {
-            type: 'GET',
-            dataType: 'xml',
-            data: {
-              db: 'pubmed',
-              retmode: 'xml',
-              id: pmid
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-              console.log(errorThrown);
-              return toastr.error('Could not fetch citation info from PUBMED');
-            },
-            success: function(data, textStatus, jqXHR) {
-              var abstract, author_name, authors, citation_hash, dateNode, first_name, i, j, journal, k, keyword, keywords, last_name, len, len1, len2, name, node, ref, ref1, ref2;
-              if (!($(data).find('ArticleTitle').text() != null)) {
-                return 0;
-              }
-              name = $(data).find('ArticleTitle').text() || '';
-              abstract = '';
-              ref = $(data).find('AbstractText');
-              for (i = 0, len = ref.length; i < len; i++) {
-                node = ref[i];
-                abstract += $(node).text();
-                abstract += "\n";
-              }
-              authors = [];
-              ref1 = $(data).find('Author');
-              for (j = 0, len1 = ref1.length; j < len1; j++) {
-                node = ref1[j];
-                first_name = $(node).find('ForeName').text() || $(node).find('Initials').text() || '';
-                last_name = $(node).find('LastName').text() || '';
-                author_name = last_name + ' ' + first_name;
-                if (author_name === ' ') {
-                  author_name = $(node).find('CollectiveName').text() || '';
-                }
-                if (author_name !== '') {
-                  authors.push(author_name);
-                }
-              }
-              keywords = [];
-              ref2 = $(data).find('Keyword');
-              for (k = 0, len2 = ref2.length; k < len2; k++) {
-                node = ref2[k];
-                keyword = $(node).text() || '';
-                keywords.push(keyword);
-              }
-              journal = {};
-              journal['name'] = $(data).find('Journal').find('Title').text() || '';
-              journal['issue'] = $(data).find('JournalIssue').find('Issue').text() || '';
-              journal['vol'] = $(data).find('JournalIssue').find('Volume').text() || '';
-              dateNode = $(data).find('JournalIssue').find('PubDate');
-              if ($(dateNode).find('Year').length > 0) {
-                journal['year'] = $(dateNode).find('Year').text();
-              } else if ($(dateNode).find('MedlineDate').length > 0) {
-                journal['year'] = $(dateNode).find('MedlineDate').text();
-              } else {
-                journal['year'] = '';
-              }
-              citation_hash = {
-                name: name,
-                abstract: abstract,
-                authors: authors,
-                keywords: keywords,
-                journal: journal
-              };
-              return populate_citation_fields(citation_hash);
-            }
-          });
-        };
-        populate_citation_fields = function(citation) {
-          var author, i, j, keyword, keywordselect, len, len1, position, ref, ref1;
-          $('.citation-fields').find('.citation-name input').val(citation['name']);
-          $('.citation-fields').find('.citation-abstract textarea').val(citation['abstract']);
-          $('.citation-fields').find('.journal-name input').val(citation['journal']['name']);
-          $('.citation-fields').find('.journal-volume input').val(citation['journal']['vol']);
-          $('.citation-fields').find('.journal-issue input').val(citation['journal']['issue']);
-          $('.citation-fields').find('.journal-year input').val(citation['journal']['year']);
-          position = 1;
-          ref = citation['authors'];
-          for (i = 0, len = ref.length; i < len; i++) {
-            author = ref[i];
-            $('.add-author').click();
-            $('#AUTHORS .authors-citation input.author-name').last().val(author);
-            $('#AUTHORS .authors-citation input.author-position').last().val(position);
-            position = position + 1;
-          }
-          ref1 = citation['keywords'];
-          for (j = 0, len1 = ref1.length; j < len1; j++) {
-            keyword = ref1[j];
-            keywordselect = $('.KEYWORDS select');
-            $.ajax({
-              type: 'GET',
-              data: {
-                q: keyword
-              },
-              url: '/api/v1/keywords.json'
-            }).then(function(data) {
-              var option;
-              option = new Option(data['results'][0]['text'], data['results'][0]['id'], true, true);
-              keywordselect.append(option).trigger('change');
-              keywordselect.trigger({
-                type: 'select2:select',
-                params: {
-                  data: data['results'][0]
-                }
-              });
-            });
-          }
-        };
-        append_citations = function(page) {
-          return $.ajax($('#citations-url').text(), {
-            type: 'GET',
-            dataType: 'json',
-            data: {
-              page: page
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-              return toastr.error('Could not get citations');
-            },
-            success: function(data, textStatus, jqXHR) {
-              var c, citation_journal, citation_journal_date, i, len, ref, to_add;
-              to_add = [];
-              $("#citations-count").html(data['pagination']['total_count']);
-              ref = data['results'];
-              for (i = 0, len = ref.length; i < len; i++) {
-                c = ref[i];
-                citation_journal = '';
-                citation_journal_date = '';
-                if ('journal' in c) {
-                  citation_journal = c['journal']['name'];
-                  citation_journal_date = ' (' + c['journal']['publication_date'] + ')';
-                }
-                to_add.push({
-                  'citation-title': c['name'],
-                  'citation-abstract': c['abstract'],
-                  'citation-journal': citation_journal,
-                  'citation-journal-date': citation_journal_date,
-                  'citation-authors': (c['authors'].map(function(author) {
-                    return author['name'];
-                  })).join(', '),
-                  'citation-numbers': c['pmid'] || 'N/A',
-                  'citations-project-id': c['citations_project_id']
-                });
-              }
-              if (page === 1) {
-                citationList.clear();
-              }
-              citationList.add(to_add, function(items) {
-                var item, j, len1, list_index, list_index_string;
-                list_index = (page - 1) * items.length;
-                for (j = 0, len1 = items.length; j < len1; j++) {
-                  item = items[j];
-                  list_index_string = list_index.toString();
-                  $('<input type="hidden" value="' + item.values()['citations-project-id'] + '" name="project[citations_projects_attributes][' + list_index_string + '][id]" id="project_citations_projects_attributes_' + list_index_string + '_id">').insertBefore(item.elm);
-                  $(item.elm).find('#project_citations_projects_attributes_0__destroy')[0].outerHTML = '<input type="hidden" name="project[citations_projects_attributes][' + list_index_string + '][_destroy]" id="project_citations_projects_attributes_' + list_index_string + '__destroy" value="false">';
-                  list_index++;
-                }
-                citationList.reIndex();
-                return Foundation.reInit($('#citations-projects-list'));
-              });
-              if (data['pagination']['more'] === true) {
-                return append_citations(page + 1);
-              } else {
-                return citationList.sort($('#sort-select').val(), {
-                  order: $('#sort-button').attr('sort-order'),
-                  alphabet: void 0,
-                  insensitive: true,
-                  sortFunction: void 0
-                });
-              }
-            }
-          });
-        };
-        append_citations(1);
-        citationList = new List('citations', list_options);
-        if (!$('#citations').attr('listeners-exist')) {
-          $('#import-select').on('change', function() {
-            $('#import-ris-div').hide();
-            $('#import-csv-div').hide();
-            $('#import-pubmed-div').hide();
-            $('#import-endnote-div').hide();
-            switch ($(this).val()) {
-              case 'ris':
-                return $('#import-ris-div').show();
-              case 'csv':
-                return $('#import-csv-div').show();
-              case 'pmid-list':
-                return $('#import-pubmed-div').show();
-              case 'endnote':
-                return $('#import-endnote-div').show();
-            }
-          });
-          $('input.file').on('change', function() {
-            if (!!$(this).val()) {
-              return $(this).closest('.simple_form').find('.form-actions').show();
-            } else {
-              return $(this).closest('.simple_form').find('.form-actions').hide();
-            }
-          });
-          $('#sort-button').on('click', function() {
-            if ($(this).attr('sort-order') === 'desc') {
-              $(this).attr('sort-order', 'asc');
-              $(this).html('ASCENDING');
-            } else {
-              $(this).attr('sort-order', 'desc');
-              $(this).html('DESCENDING');
-            }
-            return citationList.sort($('#sort-select').val(), {
-              order: $(this).attr('sort-order'),
-              alphabet: void 0,
-              insensitive: true,
-              sortFunction: void 0
-            });
-          });
-          $('#sort-select').on("change", function() {
-            return citationList.sort($(this).val(), {
-              order: $('#sort-button').attr('sort-order'),
-              alphabet: void 0,
-              insensitive: true,
-              sortFunction: void 0
-            });
-          });
-          $('#cp-insertion-node').on('cocoon:before-insert', function(e, citation) {
-            if (!$(citation).hasClass('authors-citation')) {
-              return $('.cancel-button').click();
-            }
-          });
-          $('#citations').find('.list').on('cocoon:after-remove', function(e, citation) {
-            return $('#citations-form').submit();
-          });
-          $(document).on('cocoon:after-insert', function(e, insertedItem) {
-            $(insertedItem).find('.KEYWORDS select').select2({
-              minimumInputLength: 0,
-              ajax: {
-                url: '/api/v1/keywords.json',
-                dataType: 'json',
-                delay: 100,
-                data: function(params) {
-                  return {
-                    q: params.term,
-                    page: params.page || 1
-                  };
-                }
-              }
-            });
-            $(insertedItem).find('#is-pmid').on('click', function() {
-              $(insertedItem).find('#AUTHORS .remove-authors-citation').click();
-              $(insertedItem).find('.KEYWORDS select').val(null).trigger('change');
-              $(insertedItem).find('.citation-name input').val(null);
-              $(insertedItem).find('.citation-abstract textarea').val(null);
-              $(insertedItem).find('.journal-name input').val(null);
-              $(insertedItem).find('.journal-volume input').val(null);
-              $(insertedItem).find('.journal-issue input').val(null);
-              $(insertedItem).find('.journal-year input').val(null);
-              return fetch_from_pubmed($('.project_citations_pmid input').val());
-            });
-            $(insertedItem).find('.citation-select').select2({
-              minimumInputLength: 0,
-              ajax: {
-                url: '/api/v1/citations/titles.json',
-                dataType: 'json',
-                delay: 100,
-                data: function(params) {
-                  return {
-                    q: params.term,
-                    page: params.page || 1
-                  };
-                }
-              }
-            });
-            return $(insertedItem).find('.save-citation').on('click', function() {
-              return $('#citations-form').submit();
-            });
-          });
-          $('#citations-form').bind("ajax:success", function(status) {
-            append_citations(1);
-            toastr.success('Save successful!');
-            return $('.cancel-button').click();
-          });
-          $('#citations-form').bind("ajax:error", function(status) {
-            append_citations(1);
-            return toastr.error('Could not save changes');
-          });
-          $('#citations').attr('listeners-exist', 'true');
-        }
-      }
-    })();
-  });
-
-}).call(this);
-(function() {
-  document.addEventListener('turbolinks:load', function() {
-    if (!($('.extraction_forms_projects, .extractions').length > 0)) {
-      return;
-    }
-    (function() {
-      var post;
-      post = function(path, params, method) {
-        var form, hiddenField, key;
-        method = method || 'post';
-        form = document.createElement('form');
-        form.setAttribute('method', method);
-        form.setAttribute('action', path);
-        for (key in params) {
-          if (params.hasOwnProperty(key)) {
-            hiddenField = document.createElement('input');
-            hiddenField.setAttribute('type', 'hidden');
-            hiddenField.setAttribute('name', key);
-            hiddenField.setAttribute('value', params[key]);
-            form.appendChild(hiddenField);
-          }
-        }
-        document.body.appendChild(form);
-        form.submit();
-      };
-      $('.fill-suggestion').click(function(event) {
-        var efpsId, inputFields, tableRow, type1Desc, type1Name;
-        if ($(event.target).is('td')) {
-          tableRow = $(event.target).closest('tr');
-          type1Name = tableRow.children('td:nth-child(1)').text();
-          type1Desc = tableRow.children('td:nth-child(2)').text();
-          efpsId = $(this).data('sectionId');
-          inputFields = $('.new-type1-fields-' + efpsId).last();
-          inputFields.find('input').val(type1Name);
-          inputFields.find('textarea').val(type1Desc);
-          return $(this).closest('.reveal').foundation('close');
-        }
-      });
-      $('input.select-all[type="checkbox"]').click(function(e) {
-        var that;
-        that = $(this);
-        return that.closest('table').find('input.quality-dimension-select').prop('checked', that.is(':checked'));
-      });
-      $('#submit-quality-dimensions').click(function(e) {
-        var a_qdqId, csrfToken, efpsId;
-        a_qdqId = [];
-        efpsId = $(this).data('extraction-forms-projects-section-id');
-        csrfToken = $('meta[name="csrf-token"]').attr('content');
-        $('input.quality-dimension-select:checkbox:checked').each(function() {
-          var qdqId, that;
-          that = $(this);
-          qdqId = that.attr('id');
-          return a_qdqId.push(qdqId);
-        });
-        if (!Array.isArray(a_qdqId) || !a_qdqId.length) {
-          return $('#modal-' + efpsId).foundation('close');
-        } else {
-          $('#modal-' + efpsId).html('Submitting..');
-          return post('/extraction_forms_projects_sections/' + efpsId + '/add_quality_dimension', {
-            a_qdqId: a_qdqId,
-            authenticity_token: csrfToken
-          });
-        }
-      });
-      $('#extraction_forms_projects_section_extraction_forms_projects_sections_type1s_attributes_0_timepoint_name_ids').select2({
-        minimumInputLength: 0
-      });
-      $('#extraction_forms_projects_sections_type1_timepoint_name_ids').select2({
-        minimumInputLength: 0
-      });
-    })();
-  });
-
-}).call(this);
-(function() {
-  document.addEventListener('turbolinks:load', function() {
-    (function() {
-      var formatResult, formatResultSelection, prereqOff, prereqOn, subroutine, turnPrereqOffSelfAndDescendants, turnPrereqOnSelfAndDescendants;
-      if ($('.extraction_forms_projects_sections, .extractions').length > 0) {
-        formatResultSelection = function(result, container) {
-          return result.text;
-        };
-        formatResult = function(result) {
-          var markup;
-          if (result.loading) {
-            return result.text;
-          }
-          markup = '<span>';
-          if (~result.text.indexOf('Pirate')) {
-            markup += '<img src=\'https://s-media-cache-ak0.pinimg.com/originals/01/ee/fe/01eefe3662a40757d082404a19bce33b.png\' alt=\'pirate flag\' height=\'32\' width=\'32\'> ';
-          }
-          if (~result.text.indexOf('New item: ')) {
-            markup += '';
-          }
-          markup += result.text;
-          if (result.suggestion) {
-            markup += ' (suggested by ' + result.suggestion.first_name + ')';
-          }
-          markup += '</span>';
-          return markup;
-        };
-        $('#preview .question-row-column .select2').select2({
-          placeholder: '--Select--',
-          width: '100%',
-          minimumInputLength: 0,
-          ajax: {
-            url: function() {
-              var id;
-              id = $(this).closest('.question-row-column').data('question-row-column-id');
-              return '/question_row_columns/' + id + '/answer_choices';
-            },
-            dataType: 'json',
-            delay: 250,
-            data: function(params) {
-              return {
-                q: params.term,
-                page: params.page
-              };
-            },
-            processResults: function(data, params) {
-              params.page = params.page || 1;
-              return {
-                results: $.map(data.items, function(i) {
-                  return {
-                    id: i.id,
-                    text: i.name,
-                    suggestion: i.suggestion
-                  };
-                })
-              };
-            }
-          },
-          escapeMarkup: function(markup) {
-            return markup;
-          },
-          templateResult: formatResult,
-          templateSelection: formatResultSelection
-        });
-        $('#extraction_forms_projects_section_section_id').select2({
-          placeholder: '--Select--',
-          width: '100%',
-          minimumInputLength: 0,
-          ajax: {
-            url: '/sections.json',
-            dataType: 'json',
-            delay: 250,
-            data: function(params) {
-              return {
-                q: params.term,
-                page: params.page
-              };
-            },
-            processResults: function(data, params) {
-              params.page = params.page || 1;
-              return {
-                results: $.map(data.items, function(i) {
-                  return {
-                    id: i.id,
-                    text: i.name,
-                    suggestion: i.suggestion
-                  };
-                })
-              };
-            }
-          },
-          escapeMarkup: function(markup) {
-            return markup;
-          },
-          templateResult: formatResult,
-          templateSelection: formatResultSelection
-        });
-        prereqOff = function(prereq) {
-          var _on;
-          _on = $('.' + prereq);
-          if (_on.length) {
-            _on.removeClass(prereq).addClass('off-' + prereq);
-          }
-        };
-        prereqOn = function(prereq) {
-          var _off;
-          _off = $('.off-' + prereq);
-          if (_off.length) {
-            _off.removeClass('off-' + prereq).addClass(prereq);
-          }
-        };
-        subroutine = function(that) {
-          var active, prereq;
-          active = that.is(':checked');
-          if (!active && !that.is('input[type="checkbox"]') && !that.is('input[type="radio"]')) {
-            active = that.val();
-          }
-          prereq = that.data('prereq');
-          if (!prereq) {
-            if ($.isArray(active)) {
-              that.find(':selected').each(function() {
-                var temp;
-                temp = $(this).data('prereq');
-                if ($('.' + temp).length || $('.off-' + temp).length) {
-                  prereq = temp;
-                }
-              });
-            } else {
-              prereq = that.find(':selected').data('prereq');
-            }
-          }
-          return {
-            active: active,
-            prereq: prereq
-          };
-        };
-        turnPrereqOffSelfAndDescendants = function(prereq, that) {
-          prereqOff(prereq);
-          that.closest('table').find('input[data-prereq],option[data-prereq]').each(function(idx) {
-            prereq = $(this).data('prereq');
-            prereqOff(prereq);
-          });
-        };
-        turnPrereqOnSelfAndDescendants = function(prereq, that) {
-          prereqOn(prereq);
-          that.closest('table').find('input[data-prereq],option[data-prereq]').each(function(idx) {
-            prereq = $(this).data('prereq');
-            prereqOn(prereq);
-          });
-        };
-        $('#preview .card input[type="text"]').on('input', function(e) {
-          var currentValue, that;
-          e.preventDefault();
-          that = $(this);
-          currentValue = that.val();
-          that.data('previous-value', currentValue);
-        });
-        $('#preview .card input[type="number"]').on('input', function(e) {
-          var currentValue, that;
-          e.preventDefault();
-          that = $(this);
-          currentValue = that.val();
-          that.data('previous-value', currentValue);
-        });
-        $('#preview .card input[type="checkbox"]').on('mouseup', function(e) {
-          var isChecked, that;
-          e.preventDefault();
-          that = $(this);
-          isChecked = that.prop('checked');
-          that.data('previous-value', !isChecked);
-        });
-        $('#preview .card select').on('blur', function(e) {
-          var isSelected, that;
-          e.preventDefault();
-          that = $(this);
-          isSelected = that.val();
-          that.data('previous-value', isSelected);
-        });
-        $('#preview .card select.select2').on('select2:close', function(e) {
-          var isSelected, that;
-          that = $(this);
-          isSelected = that.val();
-          that.data('previous-value', isSelected);
-        });
-        $('#preview .card input[type="radio"]').on('blur', function(e) {
-          var that;
-          e.preventDefault();
-          that = $(this);
-          that.data('previous-value', that.is(':checked'));
-          that.siblings('input[type="radio"]').each(function() {
-            return $(this).data('previous-value', $(this).is(':checked'));
-          });
-        });
-        $('#preview .card input,select').on('change keyup', function(e) {
-          var active, noneActiveAndPrereq, prereq, result, that;
-          e.preventDefault();
-          that = $(this);
-          result = subroutine(that);
-          active = result.active;
-          prereq = result.prereq;
-          if (active && $('.' + prereq).length) {
-            turnPrereqOffSelfAndDescendants(prereq, that);
-          } else {
-            noneActiveAndPrereq = true;
-            that.closest('table').find('input,select').each(function(idx) {
-              that = $(this);
-              result = subroutine(that);
-              active = result.active;
-              prereq = result.prereq;
-              if (active && $('.off-' + prereq).length) {
-                noneActiveAndPrereq = false;
-                return false;
-              }
-            });
-            if (noneActiveAndPrereq) {
-              turnPrereqOnSelfAndDescendants(prereq, that);
-            }
-          }
-        });
-        $('input').trigger('change');
-        $('.key-question-selector input[type="checkbox"').on('change', function(e) {
-          var modal;
-          e.preventDefault();
-          modal = $('#update-form-modal');
-          if (modal.length) {
-            modal.foundation('open');
-          }
-          $('.card').each(function() {
-            return $(this).addClass('hide');
-          });
-          $('.key-question-selector input[type="checkbox"').each(function() {
-            var isChecked, kqId, that;
-            that = $(this);
-            isChecked = that.prop('checked');
-            if (isChecked) {
-              kqId = that.attr('id');
-              return $('.card').each(function() {
-                if ($(this).hasClass('kqreq-' + kqId)) {
-                  return $(this).removeClass('hide');
-                }
-              });
-            }
-          });
-          if (modal.length) {
-            return modal.foundation('close');
-          }
-        });
-      }
-    })();
-  });
-
-}).call(this);
-(function() {
-
-
-}).call(this);
-(function() {
-  var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
-
-  document.addEventListener('turbolinks:load', function() {
-    if (!($('.extractions').length > 0)) {
-      return;
-    }
-    (function() {
-      var add_change_listeners_to_questions, apply_coloring, apply_consolidation_dropdown, dt, get_extractor_names, get_number_of_extractions, get_question_type, get_question_value, shift_down;
-      $('.change-outcome-link').click(function(e) {
-        $('#results-panel > .table-container').html('<br><br><br><h1>loading..</h1>');
-        e.preventDefault();
-      });
-      $('#results-panel .table-container').scroll(function() {
-        if ($(this).prop('scrollHeight') - $(this).height() === $(this).scrollTop()) {
-          console.log('Scrolled to Bottom');
-        }
-      });
-      if ($('body.extractions.index, body.extractions.comparison_tool').length > 0) {
-        $('.projects-users-role').hover(function() {
-          $(this).closest('.projects-users-role').find('.projects-users-role-select').removeClass('hide');
-          return $(this).closest('.projects-users-role').find('.projects-users-role-label').addClass('hide');
-        }, function() {
-          if ($(this).closest('.projects-users-role').attr('dropdown-active') === 'false') {
-            $(this).closest('.projects-users-role').find('.projects-users-role-select').addClass('hide');
-            return $(this).closest('.projects-users-role').find('.projects-users-role-label').removeClass('hide');
-          }
-        });
-        $('body').on('click', function(event) {
-          return $('.projects-users-role-select').each(function() {
-            if ((!$(event.target).closest('.projects-users-role-select').is(this)) && (!$(event.target).hasClass('projects-users-role-label'))) {
-              $(this).closest('.projects-users-role').find('.projects-users-role-select').addClass('hide');
-              $(this).closest('.projects-users-role').find('.projects-users-role-label').removeClass('hide');
-              return $(this).closest('.projects-users-role').attr('dropdown-active', 'false');
-            }
-          });
-        });
-        $('.projects-users-role').on('click', function(event) {
-          return $(this).closest('.projects-users-role').attr('dropdown-active', 'true');
-        });
-        $('.projects-users-role-select select').on('change', function(event) {
-          $(this).closest('form').submit();
-          $(this).closest('.projects-users-role').find('.projects-users-role-select').addClass('hide');
-          $(this).closest('.projects-users-role').find('.projects-users-role-label').removeClass('hide');
-          return $(this).closest('.projects-users-role').attr('dropdown-active', 'false');
-        });
-        shift_down = false;
-        $('body.extractions.index').on('keydown', function(event) {
-          if (event.shiftKey) {
-            return shift_down = true;
-          }
-        });
-        $('body.extractions.index').on('keyup', function(event) {
-          return shift_down = false;
-        });
-        $('.extractions-list .citation-handle-header, .comparisons-list .citation-handle-header').click(function() {
-          var new_sort_mode;
-          if ((!shift_down) && $(this).data('sort-direction') === 'asc') {
-            $(this).data('sort-direction', 'desc');
-            return;
-          }
-          if (shift_down && $(this).data('sort-direction') === 'desc') {
-            $(this).data('sort-direction', 'asc');
-            return;
-          }
-          if ($(this).data('sort-mode') === 'author') {
-            if (shift_down) {
-              $(this).data('sort-direction', 'desc');
-              $(this).html('Citation (Sorted by Publication Year)');
-              new_sort_mode = 'year';
-            } else {
-              $(this).data('sort-direction', 'asc');
-              $(this).html('Citation (Sorted by PMID)');
-              new_sort_mode = 'pmid';
-            }
-          } else if ($(this).data('sort-mode') === 'pmid') {
-            if (shift_down) {
-              $(this).data('sort-direction', 'desc');
-              $(this).html('Citation (Sorted by First Author)');
-              new_sort_mode = 'author';
-            } else {
-              $(this).data('sort-direction', 'asc');
-              $(this).html('Citation (Sorted by Title)');
-              new_sort_mode = 'name';
-            }
-          } else if ($(this).data('sort-mode') === 'name') {
-            if (shift_down) {
-              $(this).data('sort-direction', 'desc');
-              $(this).html('Citation (Sorted by PMID)');
-              new_sort_mode = 'pmid';
-            } else {
-              $(this).data('sort-direction', 'asc');
-              $(this).html('Citation (Sorted by Publication Year)');
-              new_sort_mode = 'year';
-            }
-          } else {
-            if (shift_down) {
-              $(this).data('sort-direction', 'desc');
-              $(this).html('Citation (Sorted by Title)');
-              new_sort_mode = 'name';
-            } else {
-              $(this).data('sort-direction', 'asc');
-              $(this).html('Citation (Sorted by First Author)');
-              new_sort_mode = 'author';
-            }
-          }
-          $(this).data('sort-mode', new_sort_mode);
-          if (new_sort_mode === 'pmid') {
-            return $('td.citation-handle').each(function() {
-              return $(this).attr('data-sort', $(this).attr('data-pmid'));
-            });
-          } else if (new_sort_mode === 'name') {
-            return $('td.citation-handle').each(function() {
-              return $(this).attr('data-sort', $(this).attr('data-name'));
-            });
-          } else if (new_sort_mode === 'year') {
-            return $('td.citation-handle').each(function() {
-              return $(this).attr('data-sort', $(this).attr('data-year'));
-            });
-          } else {
-            return $('td.citation-handle').each(function() {
-              return $(this).attr('data-sort', $(this).attr('data-author'));
-            });
-          }
-        });
-        dt = $('table.extractions-list').DataTable({
-          "paging": false,
-          "info": false,
-          "columnDefs": [
-            {
-              "orderable": false,
-              "targets": [3, 4]
-            }
-          ]
-        });
-        dt.rows({
-          page: 'current'
-        }).invalidate();
-        dt.draw();
-        dt = $('table.comparisons-list').DataTable({
-          "paging": false,
-          "info": false,
-          "columnDefs": [
-            {
-              "orderable": false,
-              "targets": [3]
-            }
-          ]
-        });
-        dt.rows({
-          page: 'current'
-        }).invalidate();
-        dt.draw();
-      }
-      if ($('body.extractions.work').length > 0) {
-        $('#outcome_populations_selector_eefpst1_id').change(function(event) {
-          return $.ajax({
-            url: '/extractions_extraction_forms_projects_sections_type1s/' + this.value + '/get_results_populations',
-            type: 'GET',
-            dataType: 'script',
-            error: function() {
-              return alert('Server busy. Please try again later.');
-            },
-            timeout: 5000
-          });
-        });
-      }
-      if ($('body.extractions').length > 0) {
-        $('.consolidate .edit-type1-link').click(function(e) {
-          var $modal, $this, urlString;
-          e.preventDefault();
-          e.stopPropagation();
-          $this = $(this);
-          $modal = $('#edit-type1-modal');
-          urlString = 'edit_type1_across_extractions?';
-          urlString = urlString.concat('type1_id=');
-          urlString = urlString.concat($this.data('type1-id'));
-          urlString = urlString.concat('&efps_id=');
-          urlString = urlString.concat($this.data('efps-id'));
-          urlString = urlString.concat('&eefps_id=');
-          urlString = urlString.concat($this.data('eefps-id'));
-          $($this.data('extraction-ids')).each(function(idx, elem) {
-            urlString = urlString.concat('&extraction_ids[]=');
-            return urlString = urlString.concat(elem);
-          });
-          return $.ajax(urlString).done(function(resp) {
-            return $modal.html(resp).foundation('open');
-          });
-        });
-        $('#toggle-sections-link').click(function(e) {
-          e.preventDefault;
-          $('#toggle-sections-link .toggle-hide').toggleClass('hide');
-          $('.toggle-sections-link-medium-2-0-hide').toggleClass('medium-2 medium-0 hide');
-          return $('.toggle-sections-link-medium-10-12').toggleClass('medium-10 medium-12');
-        });
-        $('#toggle-consolidated-extraction-link').click(function(e) {
-          e.preventDefault;
-          $('#toggle-consolidated-extraction-link .toggle-hide').toggleClass('hide');
-          $('.toggle-consolidated-extraction-link-medium-8-12').toggleClass('medium-8 medium-12');
-          return $('.toggle-consolidated-extraction-link-medium-4-0-hide').toggleClass('medium-4 medium-0 hide');
-        });
-        get_number_of_extractions = function() {
-          var $questions, $rows;
-          $questions = $('.consolidation-data-row');
-          if ($questions.length > 0) {
-            $rows = $questions.children('tr');
-            return ($rows.length > 0 ? Math.max(0, $rows.first().children('td').length - 1) : 0);
-          }
-        };
-        get_extractor_names = function() {
-          var $panels, extractor_names;
-          $panels = $('div[id^="panel-tab-"]');
-          if ($panels.length > 0) {
-            extractor_names = [];
-            $panels.first().find('th[extractor-name]').each(function(extractor_id, extractor_elem) {
-              return extractor_names.push($(extractor_elem).attr('extractor-name'));
-            });
-            return extractor_names;
-          }
-          return [];
-        };
-        get_question_type = function(question) {
-          var cb_input_arr, drop_input_arr, rb_input_arr;
-          if ($(question).find('input[type="number"]').length === 1) {
-            return "numeric";
-          }
-          if ($(question).find('textarea').length === 1) {
-            return "text";
-          }
-          cb_input_arr = $(question).find('div.input.check_boxes');
-          if (cb_input_arr.length > 0) {
-            return "checkbox";
-          }
-          drop_input_arr = $(question).find('select');
-          if (drop_input_arr.length > 0) {
-            return "dropdown";
-          }
-          rb_input_arr = $(question).find('div.input.radio_buttons');
-          if (rb_input_arr.length > 0) {
-            return "radio_buttons";
-          }
-          return "unclear";
-        };
-        get_question_value = function(question) {
-          var cb_arr, drop_input, numeric_value, rb_selected, selected, sign_option;
-          switch (get_question_type(question)) {
-            case "text":
-              return $(question).find('textarea')[0].value;
-            case "numeric":
-              sign_option = $($(question).find('select')[0]).children('option').filter(':selected')[0];
-              numeric_value = "";
-              if (sign_option) {
-                numeric_value += sign_option.value || "";
-              }
-              numeric_value += "&&&&&";
-              numeric_value += $(question).find('input[type="number"]')[0].value || "";
-              return numeric_value;
-            case "checkbox":
-              cb_arr = [];
-              $(question).find('input.check_boxes').filter(':checked').each(function(input_id, input_elem) {
-                return cb_arr.push(input_elem.value);
-              });
-              return (cb_arr.length > 0 ? cb_arr.join("&&") : "");
-            case "dropdown":
-              drop_input = $(question).find('select')[0];
-              if (drop_input) {
-                selected = $(drop_input).children('option').filter(':selected')[0];
-                return (selected.value ? selected.value : "");
-              }
-              break;
-            case "radio_buttons":
-              rb_selected = $(question).find('input.radio_buttons').filter(':checked');
-              return (rb_selected.length === 1 ? rb_selected[0].value : "");
-            default:
-              return "";
-          }
-        };
-        add_change_listeners_to_questions = function() {
-          var number_of_extractions;
-          number_of_extractions = get_number_of_extractions();
-          return $('.consolidation-data-row').each(function(row_id, row_elem) {
-            return $(row_elem).children('tr').each(function(arm_row_id, arm_row_elem) {
-              return $(arm_row_elem).find('td tbody').each(function(cell_id, cell_elem) {
-                return $(cell_elem).find('tr').each(function(tr_id, tr_elem) {
-                  return $(tr_elem).find('td').each(function(td_id, td_elem) {
-                    var select_elem;
-                    if (td_id !== 0 && cell_id === number_of_extractions) {
-                      switch (get_question_type(td_elem)) {
-                        case "text":
-                          return $(td_elem).find('input.string').keyup(function() {
-                            return apply_coloring();
-                          });
-                        case "numeric":
-                          $(td_elem).find('input.number').keyup(function() {
-                            return apply_coloring();
-                          });
-                          return $(td_elem).find('select').change(function() {
-                            return apply_coloring();
-                          });
-                        case "checkbox":
-                          return $(td_elem).find('input.check_boxes').each(function(input_id, input_elem) {
-                            return $(input_elem).change(function() {
-                              return apply_coloring();
-                            });
-                          });
-                        case "dropdown":
-                          select_elem = $(td_elem).find('select');
-                          return $(select_elem).change(function() {
-                            return apply_coloring();
-                          });
-                        case "radio_buttons":
-                          return $(td_elem).find('input.radio_buttons').each(function(rb_index, rb_input) {
-                            return $(rb_input).change(function() {
-                              return apply_coloring();
-                            });
-                          });
-                      }
-                    }
-                  });
-                });
-              });
-            });
-          });
-        };
-        apply_consolidation_dropdown = function() {
-          var extractor_names, number_of_extractions;
-          number_of_extractions = get_number_of_extractions();
-          extractor_names = get_extractor_names();
-          return $('.consolidation-data-row').each(function(row_id, row_elem) {
-            var $drop_elem, c_dict, drop_option, extraction_id, i, ref;
-            c_dict = {};
-            $drop_elem = $("<select>");
-            for (extraction_id = i = 0, ref = number_of_extractions; 0 <= ref ? i <= ref : i >= ref; extraction_id = 0 <= ref ? ++i : --i) {
-              drop_option = $("<option>");
-              drop_option.text(extractor_names[extraction_id]);
-              drop_option.val(extraction_id);
-              if (extraction_id === number_of_extractions) {
-                drop_option.prop("selected", true);
-              }
-              $drop_elem.append(drop_option);
-            }
-            $(row_elem).children('tr').each(function(arm_row_id, arm_row_elem) {
-              c_dict[arm_row_id] || (c_dict[arm_row_id] = {});
-              return $(arm_row_elem).find('td tbody').each(function(cell_id, cell_elem) {
-                var base;
-                (base = c_dict[arm_row_id])[cell_id] || (base[cell_id] = {});
-                return $(cell_elem).find('tr').each(function(tr_id, tr_elem) {
-                  var base1;
-                  (base1 = c_dict[arm_row_id][cell_id])[tr_id] || (base1[tr_id] = {});
-                  return $(tr_elem).find('td').each(function(td_id, td_elem) {
-                    var base2;
-                    if (td_id !== 0) {
-                      (base2 = c_dict[arm_row_id][cell_id][tr_id])[td_id] || (base2[td_id] = {});
-                      c_dict[arm_row_id][cell_id][tr_id][td_id]["question_type"] = get_question_type(td_elem);
-                      return c_dict[arm_row_id][cell_id][tr_id][td_id]["question_value"] = get_question_value(td_elem);
-                    }
-                  });
-                });
-              });
-            });
-            $drop_elem.change(function() {
-              return $(row_elem).children('tr').each(function(arm_row_id, arm_row_elem) {
-                return $(arm_row_elem).find('td tbody').each(function(cell_id, cell_elem) {
-                  if (cell_id === number_of_extractions) {
-                    $(cell_elem).find('tr').each(function(tr_id, tr_elem) {
-                      return $(tr_elem).find('td').each(function(td_id, td_elem) {
-                        var cb_arr, new_sign, new_val, new_value, select_elem;
-                        if (td_id !== 0) {
-                          cell_id = $drop_elem.children("option").filter(":selected")[0].value;
-                          new_value = c_dict[arm_row_id][cell_id][tr_id][td_id]["question_value"];
-                          switch (c_dict[arm_row_id][cell_id][tr_id][td_id]["question_type"]) {
-                            case "text":
-                              $(td_elem).find('textarea').val(new_value);
-                              return $(td_elem).find('textarea').trigger('keyup');
-                            case "numeric":
-                              new_sign = new_value.split("&&&&&")[0];
-                              new_val = new_value.split("&&&&&").pop();
-                              $(td_elem).find('select').val(new_sign);
-                              $(td_elem).find('select').trigger('change');
-                              $(td_elem).find('input[type="number"]').val(new_val);
-                              return $(td_elem).find('input[type="number"]').trigger('keyup');
-                            case "checkbox":
-                              cb_arr = new_value.length > 0 ? new_value.split("&&") : [];
-                              return $(td_elem).find('input.check_boxes').each(function(input_id, input_elem) {
-                                var ref1;
-                                if (ref1 = input_elem.value, indexOf.call(cb_arr, ref1) >= 0) {
-                                  $(input_elem).prop('checked', true);
-                                } else {
-                                  $(input_elem).prop('checked', false);
-                                }
-                                return $(input_elem).trigger('change');
-                              });
-                            case "dropdown":
-                              select_elem = $(td_elem).find('select');
-                              $(select_elem).val(new_value);
-                              return $(select_elem).trigger('change');
-                            case "radio_buttons":
-                              return $(td_elem).find('input.radio_buttons').each(function(rb_index, rb_input) {
-                                if (rb_input.value === new_value) {
-                                  $(rb_input).prop('checked', true);
-                                } else {
-                                  $(rb_input).prop('checked', false);
-                                }
-                                return $(rb_input).trigger('change');
-                              });
-                          }
-                        }
-                      });
-                    });
-                  }
-                  return apply_coloring();
-                });
-              });
-            });
-            return $(row_elem).find('div#consolidation-dropdown').html($drop_elem);
-          });
-        };
-        apply_coloring = function() {
-          var extractor_arr, number_of_extractions;
-          number_of_extractions = get_number_of_extractions();
-          extractor_arr = get_extractor_names();
-          return $('.consolidation-data-row').each(function(row_id, row_elem) {
-            var b_dict, consolidated_cell, consolidated_value;
-            b_dict = {};
-            consolidated_cell = {};
-            consolidated_value = {};
-            $(row_elem).children('tr').each(function(arm_row_id, arm_row_elem) {
-              b_dict[arm_row_id] || (b_dict[arm_row_id] = {});
-              return $(arm_row_elem).find('td tbody').each(function(cell_id, cell_elem) {
-                return $(cell_elem).find('tr').each(function(tr_id, tr_elem) {
-                  var base;
-                  (base = b_dict[arm_row_id])[tr_id] || (base[tr_id] = {});
-                  consolidated_cell[tr_id] || (consolidated_cell[tr_id] = {});
-                  consolidated_value[tr_id] || (consolidated_value[tr_id] = {});
-                  return $(tr_elem).find('td').each(function(td_id, td_elem) {
-                    var base1, base2, question_value;
-                    if (td_id !== 0) {
-                      if (cell_id !== number_of_extractions) {
-                        question_value = get_question_value(td_elem);
-                        (base1 = b_dict[arm_row_id][tr_id])[td_id] || (base1[td_id] = {});
-                        (base2 = b_dict[arm_row_id][tr_id][td_id])[question_value] || (base2[question_value] = 0);
-                        return b_dict[arm_row_id][tr_id][td_id][question_value]++;
-                      } else {
-                        consolidated_cell[tr_id][td_id] = $(td_elem);
-                        return consolidated_value[tr_id][td_id] = get_question_value(td_elem);
-                      }
-                    }
-                  });
-                });
-              });
-            });
-            return $.each(b_dict, function(arm_row_id, tr_dict) {
-              var color_dict, value_arr;
-              color_dict = {};
-              value_arr = [];
-              $.each(tr_dict, function(tr_id, td_dict) {
-                color_dict[tr_id] || (color_dict[tr_id] = {});
-                return $.each(td_dict, function(td_id, value_dict) {
-                  color_dict[tr_id][td_id] = "";
-                  return $.each(value_dict, function(value, value_count) {
-                    value_arr.push(value);
-                    if (value_count !== number_of_extractions) {
-                      if (consolidated_value[tr_id][td_id] !== "") {
-                        return color_dict[tr_id][td_id] = "#D1F2EB";
-                      } else {
-                        return color_dict[tr_id][td_id] = "#FADBD8";
-                      }
-                    } else {
-                      if (value !== consolidated_value[tr_id][td_id]) {
-                        return color_dict[tr_id][td_id] = "#D1F2EB";
-                      }
-                    }
-                  });
-                });
-              });
-              return $.each(color_dict, function(tr_id, color_tr_dict) {
-                return $.each(color_tr_dict, function(td_id, color) {
-                  if (!!consolidated_cell[tr_id][td_id]) {
-                    return consolidated_cell[tr_id][td_id].css('background', color);
-                  }
-                });
-              });
-            });
-          });
-        };
-        add_change_listeners_to_questions();
-        apply_coloring();
-        apply_consolidation_dropdown();
-      }
-    })();
-  });
-
-}).call(this);
-(function() {
-
-
-}).call(this);
-(function() {
-
-
-}).call(this);
-(function() {
-
-
-}).call(this);
-(function() {
-  document.addEventListener('turbolinks:load', function() {
-    if (!($('.extractions_extraction_forms_projects_sections_type1s').length > 0)) {
-      return;
-    }
-    (function() {
-      var formatTimepoint, formatTimepointSelection;
-      $('.edit_extractions_extraction_forms_projects_sections_type1 .add_fields').data('association-insertion-method', 'append').data('association-insertion-node', function(link) {
-        return link.closest('#populations, #timepoints').find('tbody');
-      });
-      formatTimepoint = function(timepoint) {
-        var markup;
-        if (timepoint.loading) {
-          return timepoint.text;
-        }
-        markup = '<div class="select2-timepoint" style="border: 1px solid grey; border-radius: 10px; padding: 5px;">';
-        markup += '  <div class="select2-timepoint__name">Name: ' + timepoint.text + '</div>';
-        if (timepoint.unit) {
-          markup += '  <div class="select2-timepoint__unit">Unit: ' + timepoint.unit + '</div>';
-        } else {
-          markup += '  <div class="select2-timepoint__unit">Unit: </div>';
-        }
-        markup += '</div>';
-        return markup;
-      };
-      formatTimepointSelection = function(timepoint) {
-        return timepoint.text;
-      };
-      $('#extractions_extraction_forms_projects_sections_type1_row_timepoint_name_id').select2({
-        minimumInputLength: 0,
-        closeOnSelect: true,
-        ajax: {
-          url: '/api/v1/timepoint_names',
-          dataType: 'json',
-          delay: 250,
-          data: function(params) {
-            return {
-              q: params.term,
-              page: params.page
-            };
-          },
-          processResults: function(data, params) {
-            params.page = params.page || 1;
-            return {
-              results: $.map(data.items, function(i) {
-                return {
-                  id: i.id,
-                  text: i.name,
-                  unit: i.unit
-                };
-              })
-            };
-          },
-          cache: true
-        },
-        placeholder: 'Search for an existing Timepoint',
-        escapeMarkup: function(markup) {
-          return markup;
-        },
-        templateResult: formatTimepoint,
-        templateSelection: formatTimepointSelection
-      });
-    })();
-  });
-
-}).call(this);
-(function() {
-  document.addEventListener('turbolinks:load', function() {
-    (function() {
-      Foundation.Abide.defaults.validators['minimum_length'] = function($el, required, parent) {
-        var fieldLength, minimumLength;
-        if (!required) {
-          return true;
-        }
-        fieldLength = $el.val().length;
-        minimumLength = $el.data('minimumLength');
-        if (fieldLength < minimumLength) {
-          return false;
-        }
-      };
-    })();
-  });
-
-}).call(this);
-(function() {
-  document.addEventListener('turbolinks:load', function() {
-    if (!($('.invitations').length > 0)) {
-      return;
-    }
-    (function() {
-      $('.copy-to-clipboard').click(copyToClipboardMessage);
-    })();
-  });
-
-}).call(this);
-(function() {
-
-
-}).call(this);
-(function() {
-
-
-}).call(this);
-(function() {
-
-
-}).call(this);
-(function() {
-
-
-}).call(this);
-(function() {
-
-
-}).call(this);
-(function() {
-  document.addEventListener('turbolinks:load', function() {
-    if (!($('.profiles').length > 0)) {
-      return;
-    }
-    (function() {
-      var formatResult, formatResultSelection;
-      formatResultSelection = function(result, container) {
-        return result.text;
-      };
-      formatResult = function(result) {
-        var markup;
-        if (result.loading) {
-          return result.text;
-        }
-        markup = '<span>';
-        if (~result.text.indexOf('Pirate')) {
-          markup += '<img src=\'https://s-media-cache-ak0.pinimg.com/originals/01/ee/fe/01eefe3662a40757d082404a19bce33b.png\' alt=\'pirate flag\' height=\'32\' width=\'32\'> ';
-        }
-        if (~result.text.indexOf('New item: ')) {
-          markup += '';
-        }
-        markup += result.text;
-        if (result.suggestion) {
-          markup += ' (suggested by ' + result.suggestion.first_name + ')';
-        }
-        markup += '</span>';
-        return markup;
-      };
-      $('#profile_degree_ids').select2({
-        minimumInputLength: 0,
-        ajax: {
-          url: '/degrees.json',
-          dataType: 'json',
-          delay: 250,
-          data: function(params) {
-            return {
-              q: params.term,
-              page: params.page
-            };
-          },
-          processResults: function(data, params) {
-            params.page = params.page || 1;
-            return {
-              results: $.map(data.items, function(i) {
-                return {
-                  id: i.id,
-                  text: i.name,
-                  suggestion: i.suggestion
-                };
-              })
-            };
-          }
-        },
-        escapeMarkup: function(markup) {
-          return markup;
-        },
-        templateResult: formatResult,
-        templateSelection: formatResultSelection
-      });
-      $('#profile_organization_id').select2({
-        minimumInputLength: 0,
-        ajax: {
-          url: '/organizations.json',
-          dataType: 'json',
-          delay: 250,
-          data: function(params) {
-            return {
-              q: params.term,
-              page: params.page
-            };
-          },
-          processResults: function(data, params) {
-            params.page = params.page || 1;
-            return {
-              results: $.map(data.items, function(i) {
-                return {
-                  id: i.id,
-                  text: i.name,
-                  suggestion: i.suggestion
-                };
-              })
-            };
-          }
-        },
-        escapeMarkup: function(markup) {
-          return markup;
-        },
-        templateResult: formatResult,
-        templateSelection: formatResultSelection
-      });
-    })();
-  });
-
-}).call(this);
-(function() {
-  document.addEventListener('turbolinks:load', function() {
-    if (!($('.projects, .citations').length > 0)) {
-      return;
-    }
-    (function() {
-      var append_citations, citationList, fetch_from_pubmed, filterProjectList, list_options, populate_citation_fields;
-      filterProjectList = function(order) {
-        return function() {
-          $.get({
-            url: '/projects/filter?q=' + $('#project-filter').val() + '&o=' + order,
-            dataType: 'script'
-          });
-        };
-      };
-      $('#project-filter').keyup(function(e) {
-        var currentOrder;
-        e.preventDefault();
-        currentOrder = $('.toggle-sort-order button.button.active').data('sortOrder');
-        delay(filterProjectList(currentOrder), 750);
-      });
-      $('.toggle-sort-order button').mousedown(function(e) {
-        var nextOrder;
-        e.preventDefault();
-        if ($(this).hasClass('active')) {
-          return;
-        }
-        nextOrder = $('.toggle-sort-order button.button.disabled').data('sortOrder');
-        filterProjectList(nextOrder)();
-      });
-      $('button.search').mousedown(function(e) {
-        e.preventDefault();
-        $('.search-field').toggleClass('expand-search');
-        $('#project-filter').focus();
-      });
-      $('.export-type-radio').on('change', function(e) {
-        var export_button, link_string;
-        if ($(this).is(':checked')) {
-          export_button = $(this).parents('.reveal').find('.start-export-button');
-          return link_string = $(export_button).attr('href', $(this).val());
-        }
-      });
-      if ($('body.projects.new').length === 1) {
-        $('.distiller-section-file-container').on('cocoon:after-insert', function(_, insertedElem) {
-          var $new_kq_input, $source_kq_input;
-          $(insertedElem).find('.distiller-section-input').select2({
-            placeholder: "-- Select Section --",
-            tags: true
-          });
-          $new_kq_input = $(insertedElem).find('.distiller-key-question-input');
-          if ($('.distiller-section-file-container select.distiller-key-question-input').length > 1) {
-            $source_kq_input = $('.distiller-section-file-container select.distiller-key-question-input').first();
-            $source_kq_input.find('option').each(function(_, kq_option) {
-              var $kq_option;
-              $kq_option = $(kq_option);
-              if ($new_kq_input.find('option[value="' + $kq_option.val() + '"]').length === 0) {
-                $new_kq_input.append(new Option($kq_option.val(), $kq_option.val(), false, false));
-              }
-              return $new_kq_input.trigger('change');
-            });
-          }
-          return $new_kq_input.select2({
-            placeholder: "-- Select Key Question --",
-            tags: true
-          }).on('change', function(e) {
-            var $isNew;
-            $isNew = $(this).find('[data-select2-tag="true"]');
-            if ($isNew.length && $isNew.val() === $(this).val()) {
-              return $('.distiller-section-file-container select.distiller-key-question-input').each(function(_, kq_input) {
-                var $kq_input;
-                $kq_input = $(kq_input);
-                if ($kq_input.find('option[value="' + $isNew.val() + '"]').length === 0) {
-                  $kq_input.append(new Option($isNew.val(), $isNew.val(), false, false)).trigger('change');
-                }
-                return $isNew.replaceWith(new Option($isNew.val(), $isNew.val(), false, true));
-              });
-            }
-          });
-        });
-        $('#create-type').on('change', function(e) {
-          $('.input.file input').val('');
-          if ($(e.target).val() === "empty") {
-            $('.distiller-import-panel').addClass('hide');
-            $('.json-import-panel').addClass('hide');
-            $('#distiller-remove-references-file').trigger("click");
-            $('#distiller-remove-section-file').trigger("click");
-            $('#remove-project-file').trigger("click");
-            $('.submit').removeClass('hide');
-            return $('.submit-with-confirmation').addClass('hide');
-          } else if ($(e.target).val() === "distiller") {
-            $('.distiller-import-panel').removeClass('hide');
-            $('.json-import-panel').addClass('hide');
-            $('#distiller-add-references-file').trigger("click");
-            $('#distiller-add-section-file').trigger("click");
-            $('#remove-project-file').trigger("click");
-            $('.submit').addClass('hide');
-            return $('.submit-with-confirmation').removeClass('hide');
-          } else if ($(e.target).val() === "json") {
-            $('.distiller-import-panel').addClass('hide');
-            $('.json-import-panel').removeClass('hide');
-            $('#distiller-remove-references-file').trigger("click");
-            $('#distiller-remove-section-file').trigger("click");
-            $('#add-project-file').trigger("click");
-            $('.submit').addClass('hide');
-            return $('.submit-with-confirmation').removeClass('hide');
-          }
-        });
-      }
-      if ($('body.projects.edit').length === 1) {
-        $('.project_tasks_projects_users_roles select').select2();
-        $('.tasks-container').on('cocoon:before-insert', function(e, insertedItem) {
-          insertedItem.fadeIn('slow');
-          return insertedItem.css('display', 'flex');
-        });
-        $('.tasks-container').on('cocoon:after-insert', function(e, insertedItem) {
-          insertedItem.addClass('new-task');
-          return $(insertedItem).find('.project_tasks_projects_users_roles select').select2();
-        });
-        $(".project_projects_users_user select").select2({
-          minimumInputLength: 0,
-          ajax: {
-            url: '/api/v1/users.json',
-            dataType: 'json',
-            delay: 100,
-            data: function(params) {
-              return {
-                q: params.term,
-                page: params.page || 1
-              };
-            }
-          }
-        });
-        $('#projects-users-table').on('cocoon:after-insert', function(e, insertedItem) {
-          return $(insertedItem).find('.project_projects_users_user select').select2({
-            minimumInputLength: 0,
-            ajax: {
-              url: '/api/v1/users.json',
-              dataType: 'json',
-              delay: 100,
-              data: function(params) {
-                return {
-                  q: params.term,
-                  page: params.page || 1
-                };
-              }
-            }
-          });
-        });
-      }
-      if ($('body.citations.index').length === 1) {
-        Dropzone.options.fileDropzone = {
-          url: "/imported_files",
-          autoProcessQueue: true,
-          uploadMultiple: false,
-          init: function() {
-            var wrapperThis;
-            wrapperThis = this;
-            this.on('sending', function(file, xhr, formData) {
-              var csv_type_id, endnote_type_id, file_extension, file_type_id, pubmed_type_id, ris_type_id;
-              ris_type_id = $("#dropzone-div input#ris-file-type-id").val();
-              csv_type_id = $("#dropzone-div input#csv-file-type-id").val();
-              endnote_type_id = $("#dropzone-div input#endnote-file-type-id").val();
-              pubmed_type_id = $("#dropzone-div input#pubmed-file-type-id").val();
-              file_extension = file.name.split('.').pop();
-              file_type_id = (function() {
-                switch (false) {
-                  case file_extension !== 'ris':
-                    return ris_type_id;
-                  case file_extension !== 'csv':
-                    return csv_type_id;
-                  case file_extension !== 'enw':
-                    return endnote_type_id;
-                  default:
-                    return pubmed_type_id;
-                }
-              })();
-              formData.append("authenticity_token", $("#dropzone-div input[name='authenticity_token']").val());
-              formData.append("projects_user_id", $("#dropzone-div").find("#imported_file_projects_user_id").val());
-              formData.append("import_type_id", $("#dropzone-div").find("#imported_file_import_type_id").val());
-              formData.append("file_type_id", file_type_id);
-              return formData.append("authenticity_token", $("#dropzone-div input[name='authenticity_token']").val());
-            });
-            this.on('success', function(file, response) {
-              toastr.success('Citation file successfully uploaded. You will be notified by email when citaion import finishes.');
-              return wrapperThis.removeFile(file);
-            });
-            return this.on('error', function(file, error_message) {
-              return toastr.error('ERROR: Cannot upload citation file.');
-            });
-          }
-        };
-        new Dropzone('#fileDropzone');
-        list_options = {
-          valueNames: ['citation-numbers', 'citation-title', 'citation-authors', 'citation-journal', 'citation-journal-date', 'citation-abstract', 'citation-abstract']
-        };
-        fetch_from_pubmed = function(pmid) {
-          return $.ajax('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi', {
-            type: 'GET',
-            dataType: 'xml',
-            data: {
-              db: 'pubmed',
-              retmode: 'xml',
-              id: pmid
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-              console.log(errorThrown);
-              return toastr.error('Could not fetch citation info from PUBMED');
-            },
-            success: function(data, textStatus, jqXHR) {
-              var abstract, authors, citation_hash, dateNode, first_name, i, j, journal, k, keyword, keywords, last_name, len, len1, len2, name, node, ref, ref1, ref2;
-              if (!($(data).find('ArticleTitle').text() != null)) {
-                return 0;
-              }
-              name = $(data).find('ArticleTitle').text() || '';
-              abstract = '';
-              ref = $(data).find('AbstractText');
-              for (i = 0, len = ref.length; i < len; i++) {
-                node = ref[i];
-                abstract += $(node).text();
-                abstract += "\n";
-              }
-              authors = [];
-              ref1 = $(data).find('Author');
-              for (j = 0, len1 = ref1.length; j < len1; j++) {
-                node = ref1[j];
-                first_name = $(node).find('ForeName').text() || '';
-                last_name = $(node).find('LastName').text() || '';
-                authors.push(first_name + ' ' + last_name);
-              }
-              keywords = [];
-              ref2 = $(data).find('Keyword');
-              for (k = 0, len2 = ref2.length; k < len2; k++) {
-                node = ref2[k];
-                keyword = $(node).text() || '';
-                keywords.push(keyword);
-              }
-              journal = {};
-              journal['name'] = $(data).find('Journal').find('Title').text() || '';
-              journal['issue'] = $(data).find('JournalIssue').find('Issue').text() || '';
-              journal['vol'] = $(data).find('JournalIssue').find('Volume').text() || '';
-              dateNode = $(data).find('JournalIssue').find('PubDate');
-              if ($(dateNode).find('Year').length > 0) {
-                journal['year'] = $(dateNode).find('Year').text();
-              } else if ($(dateNode).find('MedlineDate').length > 0) {
-                journal['year'] = $(dateNode).find('MedlineDate').text();
-              } else {
-                journal['year'] = '';
-              }
-              citation_hash = {
-                name: name,
-                abstract: abstract,
-                authors: authors,
-                keywords: keywords,
-                journal: journal
-              };
-              return populate_citation_fields(citation_hash);
-            }
-          });
-        };
-        populate_citation_fields = function(citation) {
-          var author, authorselect, i, j, keyword, keywordselect, len, len1, ref, ref1;
-          $('.citation-fields').find('.citation-name input').val(citation['name']);
-          $('.citation-fields').find('.citation-abstract textarea').val(citation['abstract']);
-          $('.citation-fields').find('.journal-name input').val(citation['journal']['name']);
-          $('.citation-fields').find('.journal-volume input').val(citation['journal']['vol']);
-          $('.citation-fields').find('.journal-issue input').val(citation['journal']['issue']);
-          $('.citation-fields').find('.journal-year input').val(citation['journal']['year']);
-          ref = citation['authors'];
-          for (i = 0, len = ref.length; i < len; i++) {
-            author = ref[i];
-            authorselect = $('.AUTHORS select');
-            $.ajax({
-              type: 'GET',
-              data: {
-                q: author
-              },
-              url: '/api/v1/authors.json'
-            }).then(function(data) {
-              var option;
-              option = new Option(data['results'][0]['text'], data['results'][0]['id'], true, true);
-              authorselect.append(option).trigger('change');
-              authorselect.trigger({
-                type: 'select2:select',
-                params: {
-                  data: data['results'][0]
-                }
-              });
-            });
-          }
-          ref1 = citation['keywords'];
-          for (j = 0, len1 = ref1.length; j < len1; j++) {
-            keyword = ref1[j];
-            keywordselect = $('.KEYWORDS select');
-            $.ajax({
-              type: 'GET',
-              data: {
-                q: keyword
-              },
-              url: '/api/v1/keywords.json'
-            }).then(function(data) {
-              var option;
-              option = new Option(data['results'][0]['text'], data['results'][0]['id'], true, true);
-              keywordselect.append(option).trigger('change');
-              keywordselect.trigger({
-                type: 'select2:select',
-                params: {
-                  data: data['results'][0]
-                }
-              });
-            });
-          }
-        };
-        append_citations = function(page) {
-          return $.ajax($('#citations-url').text(), {
-            type: 'GET',
-            dataType: 'json',
-            data: {
-              page: page
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-              return toastr.error('Could not get citations');
-            },
-            success: function(data, textStatus, jqXHR) {
-              var c, citation_journal, citation_journal_date, i, len, ref, to_add;
-              to_add = [];
-              $("#citations-count").html(data['pagination']['total_count']);
-              ref = data['results'];
-              for (i = 0, len = ref.length; i < len; i++) {
-                c = ref[i];
-                citation_journal = '';
-                citation_journal_date = '';
-                if ('journal' in c) {
-                  citation_journal = c['journal']['name'];
-                  citation_journal_date = ' (' + c['journal']['publication_date'] + ')';
-                }
-                to_add.push({
-                  'citation-title': c['name'],
-                  'citation-abstract': c['abstract'],
-                  'citation-journal': citation_journal,
-                  'citation-journal-date': citation_journal_date,
-                  'citation-authors': (c['authors'].map(function(author) {
-                    return author['name'];
-                  })).join(', '),
-                  'citation-numbers': c['pmid'] || 'N/A',
-                  'citations-project-id': c['citations_project_id']
-                });
-              }
-              if (page === 1) {
-                citationList.clear();
-              }
-              citationList.add(to_add, function(items) {
-                var item, j, len1, list_index, list_index_string;
-                list_index = (page - 1) * items.length;
-                for (j = 0, len1 = items.length; j < len1; j++) {
-                  item = items[j];
-                  list_index_string = list_index.toString();
-                  $('<input type="hidden" value="' + item.values()['citations-project-id'] + '" name="project[citations_projects_attributes][' + list_index_string + '][id]" id="project_citations_projects_attributes_' + list_index_string + '_id">').insertBefore(item.elm);
-                  $(item.elm).find('#project_citations_projects_attributes_0__destroy')[0].outerHTML = '<input type="hidden" name="project[citations_projects_attributes][' + list_index_string + '][_destroy]" id="project_citations_projects_attributes_' + list_index_string + '__destroy" value="false">';
-                  list_index++;
-                }
-                citationList.reIndex();
-                return Foundation.reInit($('#citations-projects-list'));
-              });
-              if (data['pagination']['more'] === true) {
-                return append_citations(page + 1);
-              } else {
-                return citationList.sort($('#sort-select').val(), {
-                  order: $('#sort-button').attr('sort-order'),
-                  alphabet: void 0,
-                  insensitive: true,
-                  sortFunction: void 0
-                });
-              }
-            }
-          });
-        };
-        append_citations(1);
-        citationList = new List('citations', list_options);
-        if (!$('#citations').attr('listeners-exist')) {
-          $('#import-select').on('change', function() {
-            $('#import-ris-div').hide();
-            $('#import-csv-div').hide();
-            $('#import-pubmed-div').hide();
-            $('#import-endnote-div').hide();
-            switch ($(this).val()) {
-              case 'ris':
-                return $('#import-ris-div').show();
-              case 'csv':
-                return $('#import-csv-div').show();
-              case 'pmid-list':
-                return $('#import-pubmed-div').show();
-              case 'endnote':
-                return $('#import-endnote-div').show();
-            }
-          });
-          $('input.file').on('change', function() {
-            if (!!$(this).val()) {
-              return $(this).closest('.simple_form').find('.form-actions').show();
-            } else {
-              return $(this).closest('.simple_form').find('.form-actions').hide();
-            }
-          });
-          $('#sort-button').on('click', function() {
-            if ($(this).attr('sort-order') === 'desc') {
-              $(this).attr('sort-order', 'asc');
-              $(this).html('ASCENDING');
-            } else {
-              $(this).attr('sort-order', 'desc');
-              $(this).html('DESCENDING');
-            }
-            return citationList.sort($('#sort-select').val(), {
-              order: $(this).attr('sort-order'),
-              alphabet: void 0,
-              insensitive: true,
-              sortFunction: void 0
-            });
-          });
-          $('#sort-select').on("change", function() {
-            return citationList.sort($(this).val(), {
-              order: $('#sort-button').attr('sort-order'),
-              alphabet: void 0,
-              insensitive: true,
-              sortFunction: void 0
-            });
-          });
-          $('#cp-insertion-node').on('cocoon:before-insert', function(e, citation) {
-            return $('.cancel-button').click();
-          });
-          $('#citations').find('.list').on('cocoon:after-remove', function(e, citation) {
-            return $('#citations-form').submit();
-          });
-          $(document).on('cocoon:after-insert', function(e, insertedItem) {
-            $(insertedItem).find('.AUTHORS select').select2({
-              minimumInputLength: 0,
-              ajax: {
-                url: '/api/v1/authors.json',
-                dataType: 'json',
-                delay: 100,
-                data: function(params) {
-                  return {
-                    q: params.term,
-                    page: params.page || 1
-                  };
-                }
-              }
-            });
-            $(insertedItem).find('.KEYWORDS select').select2({
-              minimumInputLength: 0,
-              ajax: {
-                url: '/api/v1/keywords.json',
-                dataType: 'json',
-                delay: 100,
-                data: function(params) {
-                  return {
-                    q: params.term,
-                    page: params.page || 1
-                  };
-                }
-              }
-            });
-            $(insertedItem).find('#is-pmid').on('click', function() {
-              $(insertedItem).find('.AUTHORS select').val(null).trigger('change');
-              $(insertedItem).find('.KEYWORDS select').val(null).trigger('change');
-              $(insertedItem).find('.citation-name input').val(null);
-              $(insertedItem).find('.citation-abstract textarea').val(null);
-              $(insertedItem).find('.journal-name input').val(null);
-              $(insertedItem).find('.journal-volume input').val(null);
-              $(insertedItem).find('.journal-issue input').val(null);
-              $(insertedItem).find('.journal-year input').val(null);
-              return fetch_from_pubmed($('.project_citations_pmid input').val());
-            });
-            $(insertedItem).find('.citation-select').select2({
-              minimumInputLength: 0,
-              ajax: {
-                url: '/api/v1/citations/titles.json',
-                dataType: 'json',
-                delay: 100,
-                data: function(params) {
-                  return {
-                    q: params.term,
-                    page: params.page || 1
-                  };
-                }
-              }
-            });
-            return $(insertedItem).find('.save-citation').on('click', function() {
-              return $('#citations-form').submit();
-            });
-          });
-          $('#citations-form').bind("ajax:success", function(status) {
-            append_citations(1);
-            toastr.success('Save successful!');
-            return $('.cancel-button').click();
-          });
-          $('#citations-form').bind("ajax:error", function(status) {
-            append_citations(1);
-            return toastr.error('Could not save changes');
-          });
-          $('#citations').attr('listeners-exist', 'true');
-        }
-      }
-    })();
-  });
-
-}).call(this);
-(function() {
-
-
-}).call(this);
-(function() {
-  var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
-
-  document.addEventListener('turbolinks:load', function() {
-    if (!($('.questions, .extractions, .extraction_forms_projects_sections.preview').length > 0)) {
-      return;
-    }
-    (function() {
-      var hideHeaders, multiSelect;
-      multiSelect = ['Checkbox (select multiple)', 'Dropdown (select one)', 'Radio (select one)', 'Select one (with write-in option)', 'Select multiple (with write-in option)'];
-      $('.fieldset').on('change', function() {
-        var _value, that;
-        that = $(this);
-        that.find('.field-options').hide();
-        that.find('.links').hide();
-        _value = that.find('select').children(':selected').text();
-        if (indexOf.call(multiSelect, _value) >= 0) {
-          that.find('.field-options.field-option-type-answer_choice').show();
-          return that.find('.links').show();
-        } else if (_value === 'Text Field (alphanumeric)') {
-          that.find('.field-options.field-option-type-min_length').show();
-          return that.find('.field-options.field-option-type-max_length').show();
-        } else if (_value === 'Numeric Field (numeric)') {
-          that.find('.field-options.field-option-type-additional_char').show();
-          that.find('.field-options.field-option-type-min_value').show();
-          return that.find('.field-options.field-option-type-max_value').show();
-        } else if (_value === 'numeric_range') {
-          that.find('.field-options.field-option-type-min_value').show();
-          return that.find('.field-options.field-option-type-max_value').show();
-        } else if (_value === 'scientific') {
-          that.find('.field-options.field-option-type-min_value').show();
-          that.find('.field-options.field-option-type-max_value').show();
-          that.find('.field-options.field-option-type-coefficient').show();
-          return that.find('.field-options.field-option-type-exponent').show();
-        }
-      });
-      $('.fieldset').trigger('change');
-      hideHeaders = function(_tableRows) {
-        var _colCnt, _rowCnt;
-        _rowCnt = _tableRows.length;
-        _colCnt = _tableRows[0].cells.length;
-        if (_rowCnt === 2) {
-          _tableRows.find('td:first-child, th:first-child').hide();
-        }
-        if (_colCnt === 2) {
-          return _tableRows.find('th:nth-child(-n+3)').hide();
-        }
-      };
-      $('.clean-table table').each(function() {
-        var _tableRows;
-        _tableRows = $(this).find('tr');
-        if (_tableRows.length > 1) {
-          return hideHeaders(_tableRows);
-        }
-      });
-      $('#add_column_link').click(function(event) {
-        var $form;
-        event.preventDefault();
-        $form = $("form[id^='edit_question_']");
-        $form.ajaxSubmit({
-          dataType: 'script',
-          success: function() {
-            $('#add_column_button').click();
-          }
-        });
-        return false;
-      });
-      $('#add_row_link').click(function(event) {
-        var $form;
-        event.preventDefault();
-        $form = $("form[id^='edit_question_']");
-        $form.ajaxSubmit({
-          dataType: 'script',
-          success: function() {
-            $('#add_row_button').click();
-          }
-        });
-        return false;
-      });
-    })();
-  });
-
-}).call(this);
-(function() {
-  var bind_record_saving_mechanism;
-
-  bind_record_saving_mechanism = function() {
-    var submitForm, timers;
-    timers = {};
-    submitForm = function(form) {
-      return function() {
-        return form.submit();
-      };
-    };
-    $('form.edit_record select, form.edit_record input[type="checkbox"], form.edit_record input[type="radio"], form.edit_record input[type="number"]').change(function(e) {
-      var $form, formId;
-      e.preventDefault();
-      $form = $(this).closest('form');
-      formId = $form.attr('id');
-      $form.addClass('dirty');
-      if (formId in timers) {
-        clearTimeout(timers[formId]);
-      }
-      return timers[formId] = setTimeout(submitForm($form), 750);
-    });
-    $('form.edit_record input, form.edit_record textarea').each(function() {
-      var results;
-      results = [];
-      while ($(this).outerHeight() < this.scrollHeight + parseFloat($(this).css('borderTopWidth')) + parseFloat($(this).css('borderBottomWidth'))) {
-        results.push($(this).height($(this).height() + 1));
-      }
-      return results;
-    });
-    return $('form.edit_record input, form.edit_record textarea').keyup(function(e) {
-      var $form, code, formId, results;
-      e.preventDefault();
-      code = e.keyCode || e.which;
-      if (code === 9 || code === 16 || code === 18 || code === 37 || code === 38 || code === 39 || code === 40 || code === 91) {
-        return;
-      }
-      $form = $(this).closest('form');
-      formId = $form.attr('id');
-      $form.addClass('dirty');
-      if (formId in timers) {
-        clearTimeout(timers[formId]);
-      }
-      timers[formId] = setTimeout(submitForm($form), 750);
-      results = [];
-      while ($(this).outerHeight() < this.scrollHeight + parseFloat($(this).css('borderTopWidth')) + parseFloat($(this).css('borderBottomWidth'))) {
-        results.push($(this).height($(this).height() + 1));
-      }
-      return results;
-    });
-  };
-
-  document.addEventListener('turbolinks:load', function() {
-    return (function() {
-      return bind_record_saving_mechanism();
-    })();
-  });
-
-}).call(this);
-(function() {
-  document.addEventListener('turbolinks:load', function() {
-    var get_result_value;
-    if (!($('.result_statistic_sections').length > 0)) {
-      return;
-    }
-    (function() {
-      return $('.links.add-comparison').on('cocoon:before-insert', function() {
-        return $(this).hide();
-      }).on('cocoon:after-insert', function(e, insertedItem) {
-        var bac_anova_handler, bac_select;
-        $(insertedItem).find('.links.add-comparate-group a').click();
-        $(insertedItem).find('.links.add-comparate-group a').click();
-        $('.links.add-comparate-group a').hide();
-        $(insertedItem).find('.links.add-comparate').each(function() {
-          return $(this).find('a').click();
-        });
-        $('.nested-fields > .comparate-groups').find('.nested-fields.comparates').first().after($('<div style="text-align: center; font-weight: normal;">vs.</div>'));
-        if ($('.wac-comparate-fields').length === 2) {
-          $('.wac-comparate-fields:eq(1)').find('select option').filter(function() {
-            return this.text.includes('(Baseline)');
-          }).attr('selected', true);
-        }
-        $('.links.add-anova a').click();
-        $('.links.add-anova a').addClass('disabled');
-        $('.links.add-comparison a').addClass('disabled');
-        bac_select = $(insertedItem).find('.bac-select').first();
-        bac_anova_handler = function(event) {
-          if ($(event.target).find('option:selected').first().val() === "000") {
-            $(event.target).closest('.comparate-groups').children().hide();
-            $(event.target).closest('.comparates').show();
-            $(event.target).closest('.comparates').find('.add-comparate').hide();
-            $('.submit-comparison').toggleClass('hide');
-            return $('.submit-anova').toggleClass('hide');
-          } else {
-            $(event.target).closest('.comparate-groups').children().show();
-            $(event.target).closest('.comparates').find('.add-comparate').show();
-            $('.submit-comparison').toggleClass('hide');
-            return $('.submit-anova').toggleClass('hide');
-          }
-        };
-        if (bac_select) {
-          bac_select.find('option').first().text('All Arms (ANOVA)').val('000');
-          bac_select.change(bac_anova_handler);
-          return bac_select.trigger('change');
-        }
-      });
-    })();
-    get_result_value = function(td_elem) {
-      var add_change_listeners_to_results_section, get_result_elem, get_result_extractor_names, get_result_number_of_extractions, inputs, result_section_coloring, result_section_dropdowning;
-      inputs = $(td_elem).find("input.string");
-      return (inputs.length > 0 ? inputs[0].value : "");
-      get_result_elem = function(td_elem) {
-        inputs = $(td_elem).find("input.string");
-        return (inputs.length > 0 ? inputs[0] : null);
-      };
-      get_result_number_of_extractions = function() {
-        var questions, rows;
-        questions = $('table.consolidated-data-table tbody');
-        if (questions.length > 0) {
-          rows = $(questions[0]).find('tr');
-          return Math.max(0, rows.length - 1);
-        }
-        return 0;
-      };
-      get_result_extractor_names = function() {
-        var $rows, extractor_names, questions;
-        questions = $('table.consolidated-data-table tbody');
-        if (questions.length > 0) {
-          extractor_names = [];
-          $rows = $(questions[0]).find('tr');
-          $rows.each(function(tr_id, tr_elem) {
-            return $(tr_elem).find("td.extractor-name").each(function(td_id, td_elem) {
-              if (td_id === 0) {
-                return extractor_names.push(td_elem.innerHTML);
-              }
-            });
-          });
-          return extractor_names;
-        }
-        return [];
-      };
-      add_change_listeners_to_results_section = function() {
-        var number_of_extractions;
-        number_of_extractions = get_result_number_of_extractions();
-        return $('table.consolidated-data-table tbody').each(function(row_id, row_elem) {
-          return $(row_elem).find('tr').each(function(tr_id, tr_elem) {
-            return $(tr_elem).find('td').not('.extractor-name').each(function(td_id, td_elem) {
-              var input_elem;
-              if (tr_id === number_of_extractions) {
-                input_elem = get_result_elem(td_elem);
-                if (input_elem) {
-                  return $(input_elem).keyup(function() {
-                    return result_section_coloring();
-                  });
-                }
-              }
-            });
-          });
-        });
-      };
-      result_section_coloring = function() {
-        var number_of_extractions;
-        number_of_extractions = get_result_number_of_extractions();
-        return $('table.consolidated-data-table tbody').each(function(row_id, row_elem) {
-          var a_dict, color;
-          a_dict = {};
-          $(row_elem).find('tr').each(function(tr_id, tr_elem) {
-            return $(tr_elem).find('td').not('.extractor-name').each(function(td_id, td_elem) {
-              var base, name;
-              if (tr_id < number_of_extractions) {
-                a_dict["counts"] || (a_dict["counts"] = {});
-                (base = a_dict["counts"])[name = td_elem.innerHTML] || (base[name] = 0);
-                return a_dict["counts"][td_elem.innerHTML]++;
-              } else {
-                a_dict["consolidated_value"] = get_result_value(td_elem);
-                return a_dict["consolidated_elem"] = td_elem;
-              }
-            });
-          });
-          color = "#E8DAEF";
-          return $.each(a_dict["counts"], function(value, count) {
-            console.log(value + ', ' + count);
-            console.log(a_dict["consolidated_value"]);
-            console.log(a_dict["consolidated_elem"]);
-            if (count !== number_of_extractions) {
-              if (a_dict["consolidated_value"] !== "") {
-                color = "#D1F2EB";
-              } else {
-                color = "#FADBD8";
-              }
-            } else {
-              if (a_dict["consolidated_value"] === value) {
-                color = "#E8DAEF";
-              } else {
-                color = "#D1F2EB";
-              }
-            }
-            return $(a_dict["consolidated_elem"]).css('background', color);
-          });
-        });
-      };
-      result_section_dropdowning = function() {
-        var extractor_names, number_of_extractions;
-        number_of_extractions = get_result_number_of_extractions();
-        extractor_names = get_result_extractor_names();
-        return $('td.consolidated-data-cell').each(function(cell_id, cell_elem) {
-          var $drop_elem, a_dict, drop_option, extraction_id, i, ref;
-          a_dict = {};
-          $drop_elem = $("<select>");
-          for (extraction_id = i = 0, ref = number_of_extractions; 0 <= ref ? i <= ref : i >= ref; extraction_id = 0 <= ref ? ++i : --i) {
-            drop_option = $("<option>");
-            drop_option.text(extractor_names[extraction_id]);
-            drop_option.val(extraction_id);
-            if (extraction_id === number_of_extractions) {
-              drop_option.prop("selected", true);
-            }
-            $drop_elem.append(drop_option);
-          }
-          $(cell_elem).find('table.consolidated-data-table tbody').each(function(row_id, row_elem) {
-            a_dict[row_id] || (a_dict[row_id] = {});
-            return $(row_elem).find('tr').each(function(tr_id, tr_elem) {
-              return $(tr_elem).find('td').not('.extractor-name').each(function(td_id, td_elem) {
-                if (tr_id < number_of_extractions) {
-                  return a_dict[row_id][tr_id] = td_elem.innerHTML;
-                } else {
-                  return a_dict[row_id][tr_id] = get_result_value(td_elem);
-                }
-              });
-            });
-          });
-          $drop_elem.change(function() {
-            return $(cell_elem).find('table.consolidated-data-table tbody').each(function(row_id, row_elem) {
-              return $(row_elem).find('tr').each(function(tr_id, tr_elem) {
-                return $(tr_elem).find('td').not('.extractor-name').each(function(td_id, td_elem) {
-                  var input_elem, selected_id;
-                  if (tr_id === number_of_extractions) {
-                    selected_id = $drop_elem.children("option").filter(":selected")[0].value;
-                    input_elem = get_result_elem(td_elem);
-                    $(input_elem).val(a_dict[row_id][selected_id]);
-                    result_section_coloring();
-                    return $(input_elem).trigger('keyup');
-                  }
-                });
-              });
-            });
-          });
-          return $(cell_elem).find("div.consolidated-dropdown").html($drop_elem);
-        });
-      };
-      result_section_coloring();
-      result_section_dropdowning();
-      add_change_listeners_to_results_section();
-    };
-  });
-
-}).call(this);
-(function() {
-  document.addEventListener('turbolinks:load', function() {
-    if (!($('body.projects.edit').length > 0)) {
-      return;
-    }
-    (function() {
-      var find_existing_option, require_option_handler, send_new_option, switch_option_handler;
-      send_new_option = function(option_type, label_type) {
-        var new_option;
-        $('.add-option').click();
-        new_option = $('.option-fields').last();
-        $(new_option).find('input.option-type:radio[value="' + option_type + '"]').prop('checked', true);
-        return $(new_option).find('input.label-type:radio[value="' + label_type + '"]').prop('checked', true);
-      };
-      find_existing_option = function(option_type, label_type) {
-        if (label_type) {
-          return $('.option-fields:has(input.option-type:radio:checked[value="' + option_type + '"]):has(input.label-type:radio:checked[value="' + label_type + '"])');
-        } else {
-          return $('.option-fields:has(input.option-type:radio:checked[value="' + option_type + '"])');
-        }
-      };
-      require_option_handler = function(event) {
-        var existing_option, label_type, option_type;
-        option_type = $(event.target).attr('option-type');
-        label_type = $(event.target).attr('label-type');
-        existing_option = find_existing_option(option_type, label_type);
-        if ($(event.target).hasClass('success')) {
-          $(existing_option).find('.remove-option').click();
-        } else if (existing_option.length === 0 || $(existing_option).is(':hidden')) {
-          send_new_option(option_type, label_type);
-        }
-        return $(event.target).toggleClass('success');
-      };
-      switch_option_handler = function(event) {
-        var existing_option, option_type, switch_value;
-        option_type = $(event.target).attr('option-type');
-        switch_value = $(event.target).is(':checked');
-        existing_option = find_existing_option(option_type, null);
-        if (switch_value === false) {
-          return $(existing_option).find('.remove-option').click();
-        } else {
-          if (existing_option.length === 0 || $(existing_option).is(':hidden')) {
-            return send_new_option(option_type, null);
-          }
-        }
-      };
-      $('.options-table .require-button').on('click', require_option_handler);
-      return $('.options-table .switch input').on('change', switch_option_handler);
-    })();
-    return;
-  });
-
-}).call(this);
-(function() {
-
-
-}).call(this);
-(function() {
-  document.addEventListener('turbolinks:load', function() {
-    if (!($('.static_pages').length > 0)) {
-      return;
-    }
-    (function() {
-      var scrollToTop;
-      scrollToTop = function() {
-        var element, offset, offsetTop;
-        element = $('body');
-        offset = element.offset();
-        offsetTop = offset.top;
-        return $('html, body').animate({
-          scrollTop: offsetTop
-        }, 1000, 'swing');
-      };
-      $(document).scroll(function() {
-        if ($(window).scrollTop() > 100) {
-          return $('.scroll-top-wrapper').addClass('show');
-        } else {
-          return $('.scroll-top-wrapper').removeClass('show');
-        }
-      });
-      $('.scroll-top-wrapper').click(scrollToTop);
-      $('#responsive-menu').on('sticky.zf.stuckto:top', function() {
-        $('#signup-link-id').addClass('glow');
-      }).on('sticky.zf.unstuckfrom:top', function() {
-        $('#signup-link-id').removeClass('glow');
-      });
-    })();
-  });
-
-}).call(this);
-(function() {
-  document.addEventListener('turbolinks:load', function() {
-    if (!($('.tasks').length > 0)) {
-      return;
-    }
-    (function() {
-      $('.task_num_assigned').hide();
-      $('#task_task_type_id').on("change", function() {
-        if ($('#task_task_type_id option:selected').text() !== "Advanced") {
-          return $('.task_num_assigned').hide();
-        } else {
-          $('.task_num_assigned').show();
-          return $('#task_num_assigned').val('');
-        }
-      });
-    })();
-  });
-
-}).call(this);
-(function() {
-
-
-}).call(this);
+!function(a){function b(){return new Date(Date.UTC.apply(Date,arguments))}var c=function(b,c){var f=this;this.element=a(b),this.autoShow=void 0==c.autoShow||c.autoShow,this.appendTo=c.appendTo||"body",this.closeButton=c.closeButton,this.language=c.language||this.element.data("date-language")||"en",this.language=this.language in d?this.language:this.language.split("-")[0],this.language=this.language in d?this.language:"en",this.isRTL=d[this.language].rtl||!1,this.format=e.parseFormat(c.format||this.element.data("date-format")||d[this.language].format||"mm/dd/yyyy"),this.formatText=c.format||this.element.data("date-format")||d[this.language].format||"mm/dd/yyyy",this.isInline=!1,this.isInput=this.element.is("input"),this.component=!!this.element.is(".date")&&this.element.find(".prefix, .postfix"),this.hasInput=this.component&&this.element.find("input").length,this.disableDblClickSelection=c.disableDblClickSelection,this.onRender=c.onRender||function(){},this.component&&0===this.component.length&&(this.component=!1),this.linkField=c.linkField||this.element.data("link-field")||!1,this.linkFormat=e.parseFormat(c.linkFormat||this.element.data("link-format")||"yyyy-mm-dd hh:ii:ss"),this.minuteStep=c.minuteStep||this.element.data("minute-step")||5,this.pickerPosition=c.pickerPosition||this.element.data("picker-position")||"bottom-right",this.initialDate=c.initialDate||null,this.faCSSprefix=c.faCSSprefix||"fa",this.leftArrow=c.leftArrow||'<i class="'+this.faCSSprefix+" "+this.faCSSprefix+'-chevron-left fi-arrow-left"/>',this.rightArrow=c.rightArrow||'<i class="'+this.faCSSprefix+" "+this.faCSSprefix+'-chevron-right fi-arrow-right"/>',this.closeIcon=c.closeIcon||'<i class="'+this.faCSSprefix+" "+this.faCSSprefix+"-remove "+this.faCSSprefix+'-times fi-x"></i>',this.minView=0,"minView"in c?this.minView=c.minView:"minView"in this.element.data()&&(this.minView=this.element.data("min-view")),this.minView=e.convertViewMode(this.minView),this.maxView=e.modes.length-1,"maxView"in c?this.maxView=c.maxView:"maxView"in this.element.data()&&(this.maxView=this.element.data("max-view")),this.maxView=e.convertViewMode(this.maxView),this.startViewMode="month","startView"in c?this.startViewMode=c.startView:"startView"in this.element.data()&&(this.startViewMode=this.element.data("start-view")),this.startViewMode=e.convertViewMode(this.startViewMode),this.viewMode=this.startViewMode,"minView"in c||"maxView"in c||this.element.data("min-view")||this.element.data("max-view")||(this.pickTime=!1,"pickTime"in c&&(this.pickTime=c.pickTime),1==this.pickTime?(this.minView=0,this.maxView=4):(this.minView=2,this.maxView=4)),this.forceParse=!0,"forceParse"in c?this.forceParse=c.forceParse:"dateForceParse"in this.element.data()&&(this.forceParse=this.element.data("date-force-parse")),this.picker=a(e.template(this.leftArrow,this.rightArrow,this.closeIcon)).appendTo(this.isInline?this.element:this.appendTo).on({click:a.proxy(this.click,this),mousedown:a.proxy(this.mousedown,this)}),this.closeButton?this.picker.find("a.datepicker-close").show():this.picker.find("a.datepicker-close").hide(),this.isInline?this.picker.addClass("datepicker-inline"):this.picker.addClass("datepicker-dropdown dropdown-menu"),this.isRTL&&(this.picker.addClass("datepicker-rtl"),this.picker.find(".date-switch").each(function(){a(this).parent().prepend(a(this).siblings(".next")),a(this).parent().append(a(this).siblings(".prev"))}),this.picker.find(".prev, .next").toggleClass("prev next")),a(document).on("mousedown",function(b){f.isInput&&b.target===f.element[0]||0===a(b.target).closest(".datepicker.datepicker-inline, .datepicker.datepicker-dropdown").length&&f.hide()}),this.autoclose=!0,"autoclose"in c?this.autoclose=c.autoclose:"dateAutoclose"in this.element.data()&&(this.autoclose=this.element.data("date-autoclose")),this.keyboardNavigation=!0,"keyboardNavigation"in c?this.keyboardNavigation=c.keyboardNavigation:"dateKeyboardNavigation"in this.element.data()&&(this.keyboardNavigation=this.element.data("date-keyboard-navigation")),this.todayBtn=c.todayBtn||this.element.data("date-today-btn")||!1,this.todayHighlight=c.todayHighlight||this.element.data("date-today-highlight")||!1,this.calendarWeeks=!1,"calendarWeeks"in c?this.calendarWeeks=c.calendarWeeks:"dateCalendarWeeks"in this.element.data()&&(this.calendarWeeks=this.element.data("date-calendar-weeks")),this.calendarWeeks&&this.picker.find("tfoot th.today").attr("colspan",function(a,b){return parseInt(b)+1}),this.weekStart=(c.weekStart||this.element.data("date-weekstart")||d[this.language].weekStart||0)%7,this.weekEnd=(this.weekStart+6)%7,this.startDate=-1/0,this.endDate=1/0,this.daysOfWeekDisabled=[],this.datesDisabled=[],this.setStartDate(c.startDate||this.element.data("date-startdate")),this.setEndDate(c.endDate||this.element.data("date-enddate")),this.setDaysOfWeekDisabled(c.daysOfWeekDisabled||this.element.data("date-days-of-week-disabled")),this.setDatesDisabled(c.datesDisabled||this.element.data("dates-disabled")),null!=this.initialDate&&(this.date=this.viewDate=e.parseDate(this.initialDate,this.format,this.language),this.setValue()),this.fillDow(),this.fillMonths(),this.update(),this.showMode(),this.isInline&&this.show(),this._attachEvents()};c.prototype={constructor:c,_events:[],_attachEvents:function(){this._detachEvents(),this.isInput?this.keyboardNavigation?this._events=[[this.element,{focus:this.autoShow?a.proxy(this.show,this):function(){},keyup:a.proxy(this.update,this),keydown:a.proxy(this.keydown,this),click:this.element.attr("readonly")?a.proxy(this.show,this):function(){}}]]:this._events=[[this.element,{focus:this.autoShow?a.proxy(this.show,this):function(){}}]]:this.component&&this.hasInput?this._events=[[this.element.find("input"),{focus:this.autoShow?a.proxy(this.show,this):function(){},keyup:a.proxy(this.update,this),keydown:a.proxy(this.keydown,this)}],[this.component,{click:a.proxy(this.show,this)}]]:this.element.is("div")?this.isInline=!0:this._events=[[this.element,{click:a.proxy(this.show,this)}]],this.disableDblClickSelection&&(this._events[this._events.length]=[this.element,{dblclick:function(b){b.preventDefault(),b.stopPropagation(),a(this).blur()}}]);for(var b,c,d=0;d<this._events.length;d++)b=this._events[d][0],c=this._events[d][1],b.on(c)},_detachEvents:function(){for(var a,b,c=0;c<this._events.length;c++)a=this._events[c][0],b=this._events[c][1],a.off(b);this._events=[]},show:function(b){this.picker.show(),this.height=this.component?this.component.outerHeight():this.element.outerHeight(),this.update(),this.place(),a(window).on("resize",a.proxy(this.place,this)),b&&(b.stopPropagation(),b.preventDefault()),this.element.trigger({type:"show",date:this.date})},hide:function(b){this.isInline||this.picker.is(":visible")&&(this.picker.hide(),a(window).off("resize",this.place),this.viewMode=this.startViewMode,this.showMode(),this.isInput||a(document).off("mousedown",this.hide),this.forceParse&&(this.isInput&&this.element.val()||this.hasInput&&this.element.find("input").val())&&this.setValue(),this.element.trigger({type:"hide",date:this.date}))},remove:function(){this._detachEvents(),this.picker.remove(),delete this.element.data().datepicker},getDate:function(){var a=this.getUTCDate();return new Date(a.getTime()+6e4*a.getTimezoneOffset())},getUTCDate:function(){return this.date},setDate:function(a){this.setUTCDate(new Date(a.getTime()-6e4*a.getTimezoneOffset()))},setUTCDate:function(a){this.date=a,this.setValue()},setValue:function(){var a=this.getFormattedDate();this.isInput?this.element.val(a):(this.component&&this.element.find("input").val(a),this.element.data("date",a))},getFormattedDate:function(a){return void 0===a&&(a=this.format),e.formatDate(this.date,a,this.language)},setStartDate:function(a){this.startDate=a||-1/0,this.startDate!==-1/0&&(this.startDate=e.parseDate(this.startDate,this.format,this.language)),this.update(),this.updateNavArrows()},setEndDate:function(a){this.endDate=a||1/0,this.endDate!==1/0&&(this.endDate=e.parseDate(this.endDate,this.format,this.language)),this.update(),this.updateNavArrows()},setDaysOfWeekDisabled:function(b){this.daysOfWeekDisabled=b||[],a.isArray(this.daysOfWeekDisabled)||(this.daysOfWeekDisabled=this.daysOfWeekDisabled.split(/,\s*/)),this.daysOfWeekDisabled=a.map(this.daysOfWeekDisabled,function(a){return parseInt(a,10)}),this.update(),this.updateNavArrows()},setDatesDisabled:function(b){this.datesDisabled=b||[],a.isArray(this.datesDisabled)||(this.datesDisabled=this.datesDisabled.split(/,\s*/)),this.datesDisabled=a.map(this.datesDisabled,function(a){return e.parseDate(a,this.format,this.language).valueOf()}),this.update(),this.updateNavArrows()},place:function(){if(!this.isInline){var b=[];this.element.parents().map(function(){"auto"!=a(this).css("z-index")&&b.push(parseInt(a(this).css("z-index")))});var c=b.sort(function(a,b){return a-b}).pop()+10,d=this.component?this.component:this.element,e=d.offset(),f=d.outerHeight()+parseInt(d.css("margin-top")),g=d.outerWidth()+parseInt(d.css("margin-left")),h=e.top+f,i=e.left;this.picker.removeClass("datepicker-top datepicker-bottom");var j=a(window).scrollTop()<e.top-this.picker.outerHeight(),k=h+this.picker.outerHeight()<a(window).scrollTop()+a(window).height();!k&&j?(h=e.top-this.picker.outerHeight(),this.picker.addClass("datepicker-top")):(k||a(window).scrollTop(e.top),this.picker.addClass("datepicker-bottom")),e.left+this.picker.width()>=a(window).width()&&(i=e.left+g-this.picker.width()),this.picker.css({top:h,left:i,zIndex:c})}},update:function(){var a,b=!1,c=this.isInput?this.element.val():this.element.data("date")||this.element.find("input").val();arguments&&arguments.length&&("string"==typeof arguments[0]||arguments[0]instanceof Date)?(a=arguments[0],b=!0):a=this.isInput?this.element.val():this.element.data("date")||this.element.find("input").val(),this.date=e.parseDate(a,this.format,this.language),b?this.setValue():""==c&&this.element.trigger({type:"changeDate",date:null}),this.date<this.startDate?this.viewDate=new Date(this.startDate.valueOf()):this.date>this.endDate?this.viewDate=new Date(this.endDate.valueOf()):this.viewDate=new Date(this.date.valueOf()),this.fill()},fillDow:function(){var a=this.weekStart,b="<tr>";if(this.calendarWeeks){var c='<th class="cw">&nbsp;</th>';b+=c,this.picker.find(".datepicker-days thead tr:first-child").prepend(c)}for(;a<this.weekStart+7;)b+='<th class="dow">'+d[this.language].daysMin[a++%7]+"</th>";b+="</tr>",this.picker.find(".datepicker-days thead").append(b)},fillMonths:function(){for(var a="",b=0;b<12;)a+='<span class="month">'+d[this.language].monthsShort[b++]+"</span>";this.picker.find(".datepicker-months td").html(a)},fill:function(){if(null!=this.date&&null!=this.viewDate){var c=new Date(this.viewDate.valueOf()),f=c.getUTCFullYear(),g=c.getUTCMonth(),h=c.getUTCDate(),i=c.getUTCHours(),j=c.getUTCMinutes(),k=this.startDate!==-1/0?this.startDate.getUTCFullYear():-1/0,l=this.startDate!==-1/0?this.startDate.getUTCMonth():-1/0,m=this.endDate!==1/0?this.endDate.getUTCFullYear():1/0,n=this.endDate!==1/0?this.endDate.getUTCMonth():1/0,o=this.date&&b(this.date.getUTCFullYear(),this.date.getUTCMonth(),this.date.getUTCDate()).valueOf(),p=new Date;d[this.language].titleFormat||d.en.titleFormat;this.picker.find(".datepicker-days thead th:eq(1)").text(d[this.language].months[g]+" "+f),this.picker.find(".datepicker-hours thead th:eq(1)").text(h+" "+d[this.language].months[g]+" "+f),this.picker.find(".datepicker-minutes thead th:eq(1)").text(h+" "+d[this.language].months[g]+" "+f),this.picker.find("tfoot th.today").text(d[this.language].today).toggle(!1!==this.todayBtn),this.updateNavArrows(),this.fillMonths();var q=b(f,g-1,28,0,0,0,0),r=e.getDaysInMonth(q.getUTCFullYear(),q.getUTCMonth());q.setUTCDate(r),q.setUTCDate(r-(q.getUTCDay()-this.weekStart+7)%7);var s=new Date(q.valueOf());s.setUTCDate(s.getUTCDate()+42),s=s.valueOf();for(var t,u=[];q.valueOf()<s;){if(q.getUTCDay()==this.weekStart&&(u.push("<tr>"),this.calendarWeeks)){var v=new Date(q.getUTCFullYear(),q.getUTCMonth(),q.getUTCDate()-q.getDay()+10-(this.weekStart&&this.weekStart%7<5&&7)),w=new Date(v.getFullYear(),0,4),x=~~((v-w)/864e5/7+1.5);u.push('<td class="cw">'+x+"</td>")}t=" "+this.onRender(q)+" ",q.getUTCFullYear()<f||q.getUTCFullYear()==f&&q.getUTCMonth()<g?t+=" old":(q.getUTCFullYear()>f||q.getUTCFullYear()==f&&q.getUTCMonth()>g)&&(t+=" new"),this.todayHighlight&&q.getUTCFullYear()==p.getFullYear()&&q.getUTCMonth()==p.getMonth()&&q.getUTCDate()==p.getDate()&&(t+=" today"),o&&q.valueOf()==o&&(t+=" active"),(q.valueOf()<this.startDate||q.valueOf()>this.endDate||-1!==a.inArray(q.getUTCDay(),this.daysOfWeekDisabled)||-1!==a.inArray(q.valueOf(),this.datesDisabled))&&(t+=" disabled"),u.push('<td class="day'+t+'">'+q.getUTCDate()+"</td>"),q.getUTCDay()==this.weekEnd&&u.push("</tr>"),q.setUTCDate(q.getUTCDate()+1)}this.picker.find(".datepicker-days tbody").empty().append(u.join("")),u=[];for(var y=0;y<24;y++){var z=b(f,g,h,y);t="",z.valueOf()+36e5<this.startDate||z.valueOf()>this.endDate?t+=" disabled":i==y&&(t+=" active"),u.push('<span class="hour'+t+'">'+y+":00</span>")}this.picker.find(".datepicker-hours td").html(u.join("")),u=[];for(var y=0;y<60;y+=this.minuteStep){var z=b(f,g,h,i,y);t="",z.valueOf()<this.startDate||z.valueOf()>this.endDate?t+=" disabled":Math.floor(j/this.minuteStep)==Math.floor(y/this.minuteStep)&&(t+=" active"),u.push('<span class="minute'+t+'">'+i+":"+(y<10?"0"+y:y)+"</span>")}this.picker.find(".datepicker-minutes td").html(u.join(""));var A=this.date&&this.date.getUTCFullYear(),B=this.picker.find(".datepicker-months").find("th:eq(1)").text(f).end().find("span").removeClass("active");A&&A==f&&B.eq(this.date.getUTCMonth()).addClass("active"),(f<k||f>m)&&B.addClass("disabled"),f==k&&B.slice(0,l).addClass("disabled"),f==m&&B.slice(n+1).addClass("disabled"),u="",f=10*parseInt(f/10,10);var C=this.picker.find(".datepicker-years").find("th:eq(1)").text(f+"-"+(f+9)).end().find("td");f-=1;for(var y=-1;y<11;y++)u+='<span class="year'+(-1==y||10==y?" old":"")+(A==f?" active":"")+(f<k||f>m?" disabled":"")+'">'+f+"</span>",f+=1;C.html(u)}},updateNavArrows:function(){var a=new Date(this.viewDate),b=a.getUTCFullYear(),c=a.getUTCMonth(),d=a.getUTCDate(),e=a.getUTCHours();switch(this.viewMode){case 0:this.startDate!==-1/0&&b<=this.startDate.getUTCFullYear()&&c<=this.startDate.getUTCMonth()&&d<=this.startDate.getUTCDate()&&e<=this.startDate.getUTCHours()?this.picker.find(".prev").css({visibility:"hidden"}):this.picker.find(".prev").css({visibility:"visible"}),this.endDate!==1/0&&b>=this.endDate.getUTCFullYear()&&c>=this.endDate.getUTCMonth()&&d>=this.endDate.getUTCDate()&&e>=this.endDate.getUTCHours()?this.picker.find(".next").css({visibility:"hidden"}):this.picker.find(".next").css({visibility:"visible"});break;case 1:this.startDate!==-1/0&&b<=this.startDate.getUTCFullYear()&&c<=this.startDate.getUTCMonth()&&d<=this.startDate.getUTCDate()?this.picker.find(".prev").css({visibility:"hidden"}):this.picker.find(".prev").css({visibility:"visible"}),this.endDate!==1/0&&b>=this.endDate.getUTCFullYear()&&c>=this.endDate.getUTCMonth()&&d>=this.endDate.getUTCDate()?this.picker.find(".next").css({visibility:"hidden"}):this.picker.find(".next").css({visibility:"visible"});break;case 2:this.startDate!==-1/0&&b<=this.startDate.getUTCFullYear()&&c<=this.startDate.getUTCMonth()?this.picker.find(".prev").css({visibility:"hidden"}):this.picker.find(".prev").css({visibility:"visible"}),this.endDate!==1/0&&b>=this.endDate.getUTCFullYear()&&c>=this.endDate.getUTCMonth()?this.picker.find(".next").css({visibility:"hidden"}):this.picker.find(".next").css({visibility:"visible"});break;case 3:case 4:this.startDate!==-1/0&&b<=this.startDate.getUTCFullYear()?this.picker.find(".prev").css({visibility:"hidden"}):this.picker.find(".prev").css({visibility:"visible"}),this.endDate!==1/0&&b>=this.endDate.getUTCFullYear()?this.picker.find(".next").css({visibility:"hidden"}):this.picker.find(".next").css({visibility:"visible"})}},click:function(c){c.stopPropagation(),c.preventDefault(),(a(c.target).hasClass("datepicker-close")||a(c.target).parent().hasClass("datepicker-close"))&&this.hide();var d=a(c.target).closest("span, td, th");if(1==d.length){if(d.is(".disabled"))return void this.element.trigger({type:"outOfRange",date:this.viewDate,startDate:this.startDate,endDate:this.endDate});switch(d[0].nodeName.toLowerCase()){case"th":switch(d[0].className){case"date-switch":this.showMode(1);break;case"prev":case"next":var f=e.modes[this.viewMode].navStep*("prev"==d[0].className?-1:1);switch(this.viewMode){case 0:this.viewDate=this.moveHour(this.viewDate,f);break;case 1:this.viewDate=this.moveDate(this.viewDate,f);break;case 2:this.viewDate=this.moveMonth(this.viewDate,f);break;case 3:case 4:this.viewDate=this.moveYear(this.viewDate,f)}this.fill();break;case"today":var g=new Date;g=b(g.getFullYear(),g.getMonth(),g.getDate(),g.getHours(),g.getMinutes(),g.getSeconds()),this.viewMode=this.startViewMode,this.showMode(0),this._setDate(g)}break;case"span":if(!d.is(".disabled")){if(d.is(".month"))if(3===this.minView){var h=d.parent().find("span").index(d)||0,i=this.viewDate.getUTCFullYear(),j=1,k=this.viewDate.getUTCHours(),l=this.viewDate.getUTCMinutes(),m=this.viewDate.getUTCSeconds();this._setDate(b(i,h,j,k,l,m,0))}else{this.viewDate.setUTCDate(1);var h=d.parent().find("span").index(d);this.viewDate.setUTCMonth(h),this.element.trigger({type:"changeMonth",date:this.viewDate})}else if(d.is(".year"))if(4===this.minView){var i=parseInt(d.text(),10)||0,h=0,j=1,k=this.viewDate.getUTCHours(),l=this.viewDate.getUTCMinutes(),m=this.viewDate.getUTCSeconds();this._setDate(b(i,h,j,k,l,m,0))}else{this.viewDate.setUTCDate(1);var i=parseInt(d.text(),10)||0;this.viewDate.setUTCFullYear(i),this.element.trigger({type:"changeYear",date:this.viewDate})}else if(d.is(".hour")){var k=parseInt(d.text(),10)||0,i=this.viewDate.getUTCFullYear(),h=this.viewDate.getUTCMonth(),j=this.viewDate.getUTCDate(),l=this.viewDate.getUTCMinutes(),m=this.viewDate.getUTCSeconds();this._setDate(b(i,h,j,k,l,m,0))}else if(d.is(".minute")){var l=parseInt(d.text().substr(d.text().indexOf(":")+1),10)||0,i=this.viewDate.getUTCFullYear(),h=this.viewDate.getUTCMonth(),j=this.viewDate.getUTCDate(),k=this.viewDate.getUTCHours(),m=this.viewDate.getUTCSeconds();this._setDate(b(i,h,j,k,l,m,0))}if(0!=this.viewMode){var n=this.viewMode;this.showMode(-1),this.fill(),n==this.viewMode&&this.autoclose&&this.hide()}else this.fill(),this.autoclose&&this.hide()}break;case"td":if(d.is(".day")&&!d.is(".disabled")){var j=parseInt(d.text(),10)||1,i=this.viewDate.getUTCFullYear(),h=this.viewDate.getUTCMonth(),k=this.viewDate.getUTCHours(),l=this.viewDate.getUTCMinutes(),m=this.viewDate.getUTCSeconds();d.is(".old")?0===h?(h=11,i-=1):h-=1:d.is(".new")&&(11==h?(h=0,i+=1):h+=1),this._setDate(b(i,h,j,k,l,m,0))}var n=this.viewMode;this.showMode(-1),this.fill(),n==this.viewMode&&this.autoclose&&this.hide()}}},_setDate:function(a,b){b&&"date"!=b||(this.date=a),b&&"view"!=b||(this.viewDate=a),this.fill(),this.setValue(),this.element.trigger({type:"changeDate",date:this.date});var c;this.isInput?c=this.element:this.component&&(c=this.element.find("input")),c&&(c.change(),this.autoclose)},moveHour:function(a,b){if(!b)return a;var c=new Date(a.valueOf());return b=b>0?1:-1,c.setUTCHours(c.getUTCHours()+b),c},moveDate:function(a,b){if(!b)return a;var c=new Date(a.valueOf());return b=b>0?1:-1,c.setUTCDate(c.getUTCDate()+b),c},moveMonth:function(a,b){if(!b)return a;var c,d,e=new Date(a.valueOf()),f=e.getUTCDate(),g=e.getUTCMonth(),h=Math.abs(b);if(b=b>0?1:-1,1==h)d=-1==b?function(){return e.getUTCMonth()==g}:function(){return e.getUTCMonth()!=c},c=g+b,e.setUTCMonth(c),(c<0||c>11)&&(c=(c+12)%12);else{for(var i=0;i<h;i++)e=this.moveMonth(e,b);c=e.getUTCMonth(),e.setUTCDate(f),d=function(){return c!=e.getUTCMonth()}}for(;d();)e.setUTCDate(--f),e.setUTCMonth(c);return e},moveYear:function(a,b){return this.moveMonth(a,12*b)},dateWithinRange:function(a){return a>=this.startDate&&a<=this.endDate},keydown:function(a){if(!this.keyboardNavigation)return!0;if(this.picker.is(":not(:visible)"))return void(27==a.keyCode&&this.show());var b,c,d,e=!1;switch(a.keyCode){case 27:this.hide(),a.preventDefault();break;case 37:case 39:if(!this.keyboardNavigation)break;b=37==a.keyCode?-1:1,a.ctrlKey?(c=this.moveYear(this.date,b),d=this.moveYear(this.viewDate,b)):a.shiftKey?(c=this.moveMonth(this.date,b),d=this.moveMonth(this.viewDate,b)):(c=new Date(this.date.valueOf()),c.setUTCDate(this.date.getUTCDate()+b),d=new Date(this.viewDate.valueOf()),d.setUTCDate(this.viewDate.getUTCDate()+b)),this.dateWithinRange(c)&&(this.date=c,this.viewDate=d,this.setValue(),this.update(),a.preventDefault(),e=!0);break;case 38:case 40:if(!this.keyboardNavigation)break;b=38==a.keyCode?-1:1,a.ctrlKey?(c=this.moveYear(this.date,b),d=this.moveYear(this.viewDate,b)):a.shiftKey?(c=this.moveMonth(this.date,b),d=this.moveMonth(this.viewDate,b)):(c=new Date(this.date.valueOf()),c.setUTCDate(this.date.getUTCDate()+7*b),d=new Date(this.viewDate.valueOf()),d.setUTCDate(this.viewDate.getUTCDate()+7*b)),this.dateWithinRange(c)&&(this.date=c,this.viewDate=d,this.setValue(),this.update(),a.preventDefault(),e=!0);break;case 13:this.hide(),a.preventDefault();break;case 9:this.hide()}if(e){this.element.trigger({type:"changeDate",date:this.date});var f;this.isInput?f=this.element:this.component&&(f=this.element.find("input")),f&&f.change()}},showMode:function(a){if(a){var b=Math.max(0,Math.min(e.modes.length-1,this.viewMode+a));b>=this.minView&&b<=this.maxView&&(this.viewMode=b)}this.picker.find(">div").hide().filter(".datepicker-"+e.modes[this.viewMode].clsName).css("display","block"),this.updateNavArrows()},changeViewDate:function(a){this.date=a,this.viewDate=a,this.fill()},reset:function(a){this._setDate(null,"date")}},a.fn.fdatepicker=function(b){var d=Array.apply(null,arguments);return d.shift(),this.each(function(){var e=a(this),f=e.data("datepicker"),g="object"==typeof b&&b;f||e.data("datepicker",f=new c(this,a.extend({},a.fn.fdatepicker.defaults,g))),"string"==typeof b&&"function"==typeof f[b]&&f[b].apply(f,d)})},a.fn.fdatepicker.defaults={onRender:function(a){return""}},a.fn.fdatepicker.Constructor=c;var d=a.fn.fdatepicker.dates={en:{days:["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],daysShort:["Sun","Mon","Tue","Wed","Thu","Fri","Sat","Sun"],daysMin:["Su","Mo","Tu","We","Th","Fr","Sa","Su"],months:["January","February","March","April","May","June","July","August","September","October","November","December"],monthsShort:["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],today:"Today",titleFormat:"MM yyyy"}},e={modes:[{clsName:"minutes",navFnc:"Hours",navStep:1},{clsName:"hours",navFnc:"Date",navStep:1},{clsName:"days",navFnc:"Month",navStep:1},{clsName:"months",navFnc:"FullYear",navStep:1},{clsName:"years",navFnc:"FullYear",navStep:10}],isLeapYear:function(a){return a%4==0&&a%100!=0||a%400==0},getDaysInMonth:function(a,b){return[31,e.isLeapYear(a)?29:28,31,30,31,30,31,31,30,31,30,31][b]},validParts:/hh?|ii?|ss?|dd?|mm?|MM?|yy(?:yy)?/g,nonpunctuation:/[^ -\/:-@\[\u3400-\u9fff-`{-~\t\n\r]+/g,parseFormat:function(a){var b=a.replace(this.validParts,"\0").split("\0"),c=a.match(this.validParts);if(!b||!b.length||!c||0===c.length)throw new Error("Invalid date format.");return this.formatText=a,{separators:b,parts:c}},parseDate:function(c,e,f){if(c instanceof Date)return new Date(c.valueOf()-6e4*c.getTimezoneOffset());if(/^\d{4}\-\d{1,2}\-\d{1,2}$/.test(c)&&(e=this.parseFormat("yyyy-mm-dd")),/^\d{4}\-\d{1,2}\-\d{1,2}[T ]\d{1,2}\:\d{1,2}$/.test(c)&&(e=this.parseFormat("yyyy-mm-dd hh:ii")),/^\d{4}\-\d{1,2}\-\d{1,2}[T ]\d{1,2}\:\d{1,2}\:\d{1,2}[Z]{0,1}$/.test(c)&&(e=this.parseFormat("yyyy-mm-dd hh:ii:ss")),/^[-+]\d+[dmwy]([\s,]+[-+]\d+[dmwy])*$/.test(c)){var g,h,i=/([-+]\d+)([dmwy])/,j=c.match(/([-+]\d+)([dmwy])/g);c=new Date;for(var k=0;k<j.length;k++)switch(g=i.exec(j[k]),h=parseInt(g[1]),g[2]){case"d":c.setUTCDate(c.getUTCDate()+h);break;case"m":c=Datetimepicker.prototype.moveMonth.call(Datetimepicker.prototype,c,h);break;case"w":c.setUTCDate(c.getUTCDate()+7*h);break;case"y":c=Datetimepicker.prototype.moveYear.call(Datetimepicker.prototype,c,h)}return b(c.getUTCFullYear(),c.getUTCMonth(),c.getUTCDate(),c.getUTCHours(),c.getUTCMinutes(),c.getUTCSeconds())}var l,m,g,j=c&&c.match(this.nonpunctuation)||[],c=new Date,n={},o=["hh","h","ii","i","ss","s","yyyy","yy","M","MM","m","mm","d","dd"],p={hh:function(a,b){return a.setUTCHours(b)},h:function(a,b){return a.setUTCHours(b)},ii:function(a,b){return a.setUTCMinutes(b)},i:function(a,b){return a.setUTCMinutes(b)},ss:function(a,b){return a.setUTCSeconds(b)},s:function(a,b){return a.setUTCSeconds(b)},yyyy:function(a,b){return a.setUTCFullYear(b)},yy:function(a,b){return a.setUTCFullYear(2e3+b)},m:function(a,b){for(b-=1;b<0;)b+=12;for(b%=12,a.setUTCMonth(b);a.getUTCMonth()!=b;)a.setUTCDate(a.getUTCDate()-1);return a},d:function(a,b){return a.setUTCDate(b)}};if(p.M=p.MM=p.mm=p.m,p.dd=p.d,c=b(c.getFullYear(),c.getMonth(),c.getDate(),0,0,0),j.length==e.parts.length){for(var k=0,q=e.parts.length;k<q;k++){if(l=parseInt(j[k],10),g=e.parts[k],isNaN(l))switch(g){case"MM":m=a(d[f].months).filter(function(){var a=this.slice(0,j[k].length);return a==j[k].slice(0,a.length)}),l=a.inArray(m[0],d[f].months)+1;break;case"M":m=a(d[f].monthsShort).filter(function(){var a=this.slice(0,j[k].length);return a==j[k].slice(0,a.length)}),l=a.inArray(m[0],d[f].monthsShort)+1}n[g]=l}for(var r,k=0;k<o.length;k++)(r=o[k])in n&&!isNaN(n[r])&&p[r](c,n[r])}return c},formatDate:function(b,c,e){if(null==b)return"";var f={h:b.getUTCHours(),i:b.getUTCMinutes(),s:b.getUTCSeconds(),d:b.getUTCDate(),m:b.getUTCMonth()+1,M:d[e].monthsShort[b.getUTCMonth()],MM:d[e].months[b.getUTCMonth()],yy:b.getUTCFullYear().toString().substring(2),yyyy:b.getUTCFullYear()};f.hh=(f.h<10?"0":"")+f.h,f.ii=(f.i<10?"0":"")+f.i,f.ss=(f.s<10?"0":"")+f.s,f.dd=(f.d<10?"0":"")+f.d,f.mm=(f.m<10?"0":"")+f.m;for(var b=[],g=a.extend([],c.separators),h=0,i=c.parts.length;h<i;h++)g.length&&b.push(g.shift()),b.push(f[c.parts[h]]);return b.join("")},convertViewMode:function(a){switch(a){case 4:case"decade":a=4;break;case 3:case"year":a=3;break;case 2:case"month":a=2;break;case 1:case"day":a=1;break;case 0:case"hour":a=0}return a},headTemplate:function(a,b){return'<thead><tr><th class="prev">'+a+'</th><th colspan="5" class="date-switch"></th><th class="next">'+b+"</th></tr></thead>"},contTemplate:'<tbody><tr><td colspan="7"></td></tr></tbody>',footTemplate:'<tfoot><tr><th colspan="7" class="today"></th></tr></tfoot>'};e.template=function(a,b,c){return'<div class="datepicker"><div class="datepicker-minutes"><table class=" table-condensed">'+e.headTemplate(a,b)+e.contTemplate+e.footTemplate+'</table></div><div class="datepicker-hours"><table class=" table-condensed">'+e.headTemplate(a,b)+e.contTemplate+e.footTemplate+'</table></div><div class="datepicker-days"><table class=" table-condensed">'+e.headTemplate(a,b)+"<tbody></tbody>"+e.footTemplate+'</table></div><div class="datepicker-months"><table class="table-condensed">'+e.headTemplate(a,b)+e.contTemplate+e.footTemplate+'</table></div><div class="datepicker-years"><table class="table-condensed">'+e.headTemplate(a,b)+e.contTemplate+e.footTemplate+'</table></div><a class="button datepicker-close tiny alert right" style="width:auto;">'+c+"</a></div>"},a.fn.fdatepicker.DPGlobal=e}(window.jQuery);
 "use strict";
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -57869,6 +53672,4366 @@ function __guardMethod__(obj, methodName, transform) {
   }
 }
 ;
+(function() {
+  document.addEventListener('turbolinks:load', function() {
+    if (!($('.assignments.screen').length > 0)) {
+      return;
+    }
+    (function() {
+      var add_breadcrumb, apply_select2_to_term_select, create_term_selects, delete_term_group, fetch_palette, fetch_term_groups, force_update_c_p, get_c_p, get_history_page, lock_button, next_citation, nothing_to_label, populate_term_modal, populate_terms, send_label, send_new_term, send_new_term_group, start_screening, switch_to_list, switch_to_screening, update_arrows, update_breadcrumb, update_index, update_info, update_label, update_reasons, update_term, update_term_group;
+      force_update_c_p = function(obj) {
+        $.ajax({
+          type: 'GET',
+          url: $('#screen-assignment-json-url').text(),
+          data: {
+            count: '10'
+          },
+          success: function(data) {
+            obj.citations = data.unlabeled_citations_projects;
+            obj.history = data.labeled_citations_projects;
+            obj.options = data.options;
+            next_citation(obj);
+            obj.index = 0;
+            update_info(obj);
+            if (data.unlabeled_citations_projects.length === 0) {
+              return toastr.warning('No more citations to label');
+            }
+          },
+          error: function() {
+            return toastr.error('ERROR: Cannot fetch citations to screen.');
+          }
+        });
+      };
+      get_c_p = function(obj) {
+        if (obj.citations.length < 5) {
+          $.ajax({
+            type: 'GET',
+            url: $('#screen-assignment-json-url').text(),
+            data: {
+              count: '10'
+            },
+            success: function(data) {
+              obj.citations = data.unlabeled_citations_projects;
+              obj.history = data.labeled_citations_projects;
+              obj.options = data.options;
+              if (data.unlabeled_citations_projects.length === 0) {
+                return toastr.warning('No more citations to label');
+              }
+            },
+            error: function() {
+              return toastr.error('ERROR: Cannot fetch citations to screen.');
+            }
+          });
+        }
+      };
+      nothing_to_label = function(obj) {
+        var interval_id;
+        return interval_id = setInterval(function() {
+          get_c_p(obj);
+          if (obj.citations.length === 0) {
+            $('#citation-row').hide();
+            return $('#end-message').show();
+          } else {
+            $('#citation-row').show();
+            $('#end-message').hide();
+            return clearInterval(interval_id);
+          }
+        }, 1000);
+      };
+      lock_button = function(label, requirement) {
+        var button_to_lock;
+        button_to_lock = null;
+        if (label === "Yes") {
+          button_to_lock = $('#yes-button');
+        } else if (label === "No") {
+          button_to_lock = $('#no-button');
+        } else if (label === "Maybe") {
+          button_to_lock = $('#maybe-button');
+        } else {
+          return;
+        }
+        if (requirement === "REASON_REQUIRED") {
+          $('#reason-select select').on('change', function() {
+            if ($('#reason-select select option:checked').length === 0) {
+              $(button_to_lock).addClass('reason-lock');
+            } else {
+              $(button_to_lock).removeClass('reason-lock');
+            }
+            return $(button_to_lock).trigger('change');
+          });
+        } else if (requirement === "TAG_REQUIRED") {
+          $('#tag-select select').on('change', function() {
+            if ($('#tag-select select option:checked').length === 0) {
+              $(button_to_lock).addClass('tag-lock');
+            } else {
+              $(button_to_lock).removeClass('tag-lock');
+            }
+            return $(button_to_lock).trigger('change');
+          });
+        } else if (requirement === "NOTE_REQUIRED") {
+          $('textarea#note-textbox').on('change', function() {
+            if (!$('textarea#note-textbox').hasClass('note-saved')) {
+              $(button_to_lock).addClass('note-lock');
+            } else {
+              $(button_to_lock).removeClass('note-lock');
+            }
+            return $(button_to_lock).trigger('change');
+          });
+        }
+        $(button_to_lock).on('change', function() {
+          if ($(button_to_lock).hasClass('note-lock') || $(button_to_lock).hasClass('tag-lock') || $(button_to_lock).hasClass('reason-lock')) {
+            return $(button_to_lock).addClass('disabled');
+          } else {
+            return $(button_to_lock).removeClass('disabled');
+          }
+        });
+      };
+      next_citation = function(obj) {
+        if (obj.citations.length === 0) {
+          nothing_to_label(obj);
+          return;
+        }
+        obj.history.unshift(obj.citations.shift());
+      };
+      update_info = function(obj) {
+        var current_citation, j, k, l, labels_reason, len, len1, len2, len3, len4, m, n, o, option, reason_option, ref, ref1, ref2, ref3, ref4, s, t, tag_option;
+        current_citation = obj.history[obj.index];
+        $('#citation-name').html(current_citation.name || "");
+        $('#citation-abstract').html(current_citation.abstract || "");
+        $('#citation-pmid').text(current_citation.pmid || "");
+        $('#citation-refman').text(current_citation.refman || "");
+        $('#journal-name').text(current_citation.journal.name || "");
+        $('#journal-date').text(current_citation.journal.publication_date || "");
+        $('#citation-authors').empty();
+        s = true;
+        ref = current_citation.authors;
+        for (j = 0, len = ref.length; j < len; j++) {
+          k = ref[j];
+          if (s) {
+            s = false;
+            $('#citation-authors').append(k.name || "");
+          } else {
+            $('#citation-authors').append(', ' + (k.name || ""));
+          }
+        }
+        $('#citation-keywords').empty();
+        s = true;
+        ref1 = current_citation.keywords;
+        for (l = 0, len1 = ref1.length; l < len1; l++) {
+          k = ref1[l];
+          if (s) {
+            s = false;
+            $('#citation-keywords').append(k.name || "");
+          } else {
+            $('#citation-keywords').append(', ' + (k.name || ""));
+          }
+        }
+        $('#yes-button').removeClass('success');
+        $('#no-button').removeClass('alert');
+        $('#maybe-button').removeClass('secondary');
+        ref2 = obj.options;
+        for (m = 0, len2 = ref2.length; m < len2; m++) {
+          option = ref2[m];
+          if (option.label_type) {
+            lock_button(option.label_type, option.type);
+          } else {
+            if (option.type === 'HIDE_AUTHORS') {
+              $('#authors-div').hide();
+            } else if (option.type === 'HIDE_JOURNAL') {
+              $('#journal-div').hide();
+            }
+          }
+        }
+        $('#tag-select select').val(null);
+        $('#tag-select select').empty();
+        ref3 = current_citation.taggings;
+        for (n = 0, len3 = ref3.length; n < len3; n++) {
+          t = ref3[n];
+          tag_option = new Option(t.tag.name, t.tag.id, true, true);
+          $(tag_option).attr('tagging-id', t.id);
+          $('#tag-select select').append(tag_option);
+          $('#tag-select select').trigger({
+            type: 'select2:select',
+            params: {
+              data: {
+                id: t.tag.id,
+                text: t.tag.name
+              }
+            }
+          });
+        }
+        $('#tag-select select').trigger('change');
+        if (!!current_citation.notes) {
+          $('textarea#note-textbox').val(current_citation.notes[0].value);
+        } else {
+          $('textarea#note-textbox').val('');
+        }
+        if ($('textarea#note-textbox').val() !== '') {
+          $('textarea#note-textbox').addClass('note-saved');
+        }
+        $('textarea#note-textbox').trigger('change');
+        $('#reason-select select').val(null);
+        $('#reason-select select').empty();
+        if (obj.index > 0) {
+          if (!!current_citation.label && !!current_citation.label.labels_reasons) {
+            ref4 = current_citation.label.labels_reasons;
+            for (o = 0, len4 = ref4.length; o < len4; o++) {
+              labels_reason = ref4[o];
+              reason_option = new Option(labels_reason.reason.name, labels_reason.reason.id, true, true);
+              $(reason_option).attr('labels-reason-id', labels_reason.id);
+              $('#reason-select select').append(reason_option);
+              $('#reason-select select').trigger({
+                type: 'select2:select',
+                params: {
+                  data: {
+                    id: labels_reason.reason.id,
+                    text: labels_reason.reason.name
+                  }
+                }
+              });
+            }
+          }
+          if (current_citation.label.label_type_id === 1) {
+            $('#yes-button').addClass('success');
+          } else if (current_citation.label.label_type_id === 2) {
+            $('#no-button').addClass('alert');
+          } else if (current_citation.label.label_type_id === 3) {
+            $('#maybe-button').addClass('secondary');
+          }
+        }
+        $('#reason-select select').trigger('change');
+      };
+      send_label = function(obj, label_type_id) {
+        var is_patch, j, l, label_params, label_url, len, len1, reason_option, ref, ref1;
+        this.current_citation = obj.history[obj.index];
+        is_patch = false;
+        if (obj.index > 0 || obj.history[obj.index].label) {
+          is_patch = true;
+        }
+        label_params = {
+          label_type_id: label_type_id,
+          citations_project_id: current_citation.citations_project_id,
+          projects_users_role_id: obj.projects_users_role_id
+        };
+        ref = $('#reason-select select option:checked');
+        for (j = 0, len = ref.length; j < len; j++) {
+          reason_option = ref[j];
+          if (label_params.labels_reasons_attributes == null) {
+            label_params.labels_reasons_attributes = [];
+          }
+          if (!$(reason_option).attr('labels-reason-id')) {
+            label_params.labels_reasons_attributes.push({
+              projects_users_role_id: obj.projects_users_role_id,
+              reason_id: $(reason_option).val()
+            });
+          }
+        }
+        ref1 = $('#reason-select select option:not(:checked)');
+        for (l = 0, len1 = ref1.length; l < len1; l++) {
+          reason_option = ref1[l];
+          if (label_params.labels_reasons_attributes == null) {
+            label_params.labels_reasons_attributes = [];
+          }
+          if ($(reason_option).attr('labels-reason-id')) {
+            label_params.labels_reasons_attributes.push({
+              id: $(reason_option).attr('labels-reason-id'),
+              _destroy: true
+            });
+          }
+        }
+        label_url = $('#root-url').text() + '/labels';
+        if (is_patch) {
+          label_url = label_url + '/' + obj.history[obj.index].label.id;
+        }
+        $.ajax({
+          type: is_patch > 0 ? 'PATCH' : 'POST',
+          url: label_url,
+          dataType: 'json',
+          data: {
+            utf8: '✓',
+            authenticity_token: $('#authenticity-token').text(),
+            label: label_params
+          },
+          success: function(data) {
+            parent.current_citation.label = {
+              id: data.id,
+              label_type_id: label_type_id,
+              labels_reasons: data.labels_reasons
+            };
+            if ($('#switch-button').val() === 'ON') {
+              get_history_page(obj, 0);
+            }
+            toastr.success('Label is created successfully');
+            get_c_p(obj);
+            if (obj.index > 0) {
+              obj.index = obj.index - 1;
+            } else if (obj.citations.length > 0) {
+              next_citation(obj);
+              add_breadcrumb(obj);
+              obj.index = 0;
+            }
+            update_info(obj);
+            return update_arrows(obj);
+          },
+          error: function() {
+            return toastr.error('ERROR: Could not create label');
+          }
+        });
+      };
+      update_label = function(obj, index, label_type_id) {
+        obj.index = index;
+        return send_label(obj, label_type_id);
+      };
+      update_arrows = function(obj) {
+        if (obj.index < obj.history.length - 1) {
+          $('#previous-button').removeClass('disabled');
+        } else {
+          $('#previous-button').addClass('disabled');
+        }
+        if (obj.index > 0) {
+          $('#next-button').removeClass('disabled');
+        } else {
+          $('#next-button').addClass('disabled');
+        }
+      };
+      start_screening = function(citations, history, options) {
+        var close_tags_button, next_button, previous_button, projects_users_role_id, state_obj, switch_button, tags_button, timeoutId;
+        projects_users_role_id = $('#projects-users-role-id').text();
+        state_obj = {
+          projects_users_role_id: projects_users_role_id,
+          citations: citations,
+          history: history,
+          index: 0,
+          done: 'false',
+          history_page: 0,
+          options: options
+        };
+        next_citation(state_obj);
+        state_obj.index = 0;
+        update_info(state_obj);
+        update_arrows(state_obj);
+        $('#switch-button').val('OFF');
+        $('#yes-button').click(function() {
+          if (!$(this).hasClass('disabled')) {
+            return send_label(state_obj, 1);
+          }
+        });
+        $('#no-button').click(function() {
+          if (!$(this).hasClass('disabled')) {
+            return send_label(state_obj, 2);
+          }
+        });
+        $('#maybe-button').click(function() {
+          if (!$(this).hasClass('disabled')) {
+            return send_label(state_obj, 3);
+          }
+        });
+        next_button = $('#next-button');
+        previous_button = $('#previous-button');
+        switch_button = $('#switch-button');
+        tags_button = $('#tags-button');
+        close_tags_button = $('#close-tags-button');
+        next_button.click(function() {
+          if (!next_button.hasClass('disabled')) {
+            state_obj.index = state_obj.index - 1;
+            update_arrows(state_obj);
+            return update_info(state_obj);
+          }
+        });
+        previous_button.click(function() {
+          if (!previous_button.hasClass('disabled')) {
+            state_obj.index = state_obj.index + 1;
+            update_arrows(state_obj);
+            return update_info(state_obj);
+          }
+        });
+        switch_button.click(function() {
+          if (switch_button.val() === 'OFF') {
+            get_history_page(state_obj, 0);
+            return switch_button.val('ON');
+          } else {
+            switch_to_screening(state_obj);
+            return switch_button.val('OFF');
+          }
+        });
+        tags_button.click(function() {
+          return switch_to_tags();
+        });
+        close_tags_button.click(function() {
+          return switch_to_screening();
+        });
+        $('#next-page').click(function(e) {
+          return get_history_page(state_obj, state_obj.history_page + 1);
+        });
+        $('#prev-page').click(function(e) {
+          return get_history_page(state_obj, state_obj.history_page - 1);
+        });
+        timeoutId = null;
+        $('textarea#note-textbox').on('input', function() {
+          $('textarea#note-textbox').removeClass('note-saved');
+          clearTimeout(timeoutId);
+          return timeoutId = setTimeout((function() {
+            var is_patch;
+            is_patch = !!state_obj.history[state_obj.index].notes;
+            return $.ajax({
+              type: is_patch ? 'PATCH' : 'POST',
+              url: $('#root-url').text() + '/api/v1/notes' + (is_patch ? '/' + state_obj.history[state_obj.index].notes[0].id : ''),
+              dataType: 'json',
+              data: {
+                utf8: '✓',
+                authenticity_token: $('#authenticity-token').text(),
+                note: {
+                  value: $('#note-textbox').val(),
+                  projects_users_role_id: state_obj.projects_users_role_id,
+                  notable_id: state_obj.history[state_obj.index].citations_project_id,
+                  notable_type: "CitationsProject"
+                }
+              },
+              success: function(data) {
+                if ($('#note-textbox').val() !== '') {
+                  $('textarea#note-textbox').addClass('note-saved');
+                  $('textarea#note-textbox').trigger('change');
+                }
+                state_obj.history[state_obj.index].notes[0] = {
+                  id: data.id,
+                  value: $('#note-textbox').val()
+                };
+                return toastr.success('Note successfully saved');
+              },
+              error: function() {
+                return toastr.error('ERROR: Could not save note');
+              }
+            });
+          }), 1200);
+        });
+        $('#tag-select select').select2({
+          minimumInputLength: 0,
+          ajax: {
+            url: function() {
+              return $('root-url').text() + '/api/v1/assignments/' + $('#assignment-id').text() + '/tags.json';
+            },
+            dataType: 'json',
+            delay: 100,
+            data: function(params) {
+              return {
+                q: params.term,
+                page: params.page || 1
+              };
+            }
+          }
+        });
+        $('#tag-select select').on('select2:select', function(event) {
+          var tag_id, tag_option_element, tag_text;
+          tag_text = event.params.data.text;
+          tag_id = event.params.data.id;
+          tag_option_element = $(event.target).find('option[value="' + tag_id + '"]')[0];
+          if (!$(tag_option_element).attr('tagging-id')) {
+            return $.ajax({
+              type: 'POST',
+              url: $('#root-url').text() + '/api/v1/taggings',
+              dataType: 'json',
+              data: {
+                utf8: '✓',
+                authenticity_token: $('#authenticity-token').text(),
+                tagging: {
+                  tag_id: tag_id,
+                  projects_users_role_id: state_obj.projects_users_role_id,
+                  taggable_id: state_obj.history[state_obj.index].citations_project_id,
+                  taggable_type: "CitationsProject"
+                }
+              },
+              success: function(data) {
+                state_obj.history[state_obj.index].taggings.push({
+                  id: data.id,
+                  tag: {
+                    id: tag_id,
+                    name: tag_text
+                  }
+                });
+                $(tag_option_element).attr('tagging-id', data.id);
+                return toastr.success('Tag successfully created');
+              },
+              error: function() {
+                return toastr.error('ERROR: Could not create tag');
+              }
+            });
+          }
+        });
+        $('#tag-select select').on('select2:unselect', function(event) {
+          var tag_id, tag_option_element, tagging_id;
+          tag_id = event.params.data.id;
+          tag_option_element = $(event.target).find('option[value="' + tag_id + '"]')[0];
+          if ($(tag_option_element).attr('tagging-id')) {
+            tagging_id = +$(tag_option_element).attr('tagging-id');
+            return $.ajax({
+              type: 'DELETE',
+              url: $('#root-url').text() + '/api/v1/taggings/' + tagging_id,
+              data: {
+                utf8: '✓',
+                authenticity_token: $('#authenticity-token').text()
+              },
+              success: function() {
+                var current_citation, i, j, len, ref, tagging;
+                i = 0;
+                current_citation = state_obj.history[state_obj.index];
+                ref = current_citation.taggings;
+                for (j = 0, len = ref.length; j < len; j++) {
+                  tagging = ref[j];
+                  if (tagging.id === tagging_id) {
+                    current_citation.taggings.splice(i, 1);
+                    break;
+                  }
+                  i++;
+                }
+                return toastr.success('Tag successfully deleted');
+              },
+              error: function() {
+                return toastr.error('ERROR: Could not delete tag');
+              }
+            });
+          }
+        });
+        $('#reason-select select').select2({
+          minimumInputLength: 0,
+          ajax: {
+            url: function() {
+              return $('root-url').text() + '/api/v1/assignments/' + $('#assignment-id').text() + '/reasons.json';
+            },
+            dataType: 'json',
+            delay: 100,
+            data: function(params) {
+              return {
+                q: params.term,
+                page: params.page || 1
+              };
+            }
+          }
+        });
+        fetch_term_groups(state_obj);
+        $('#edit-tgs-button').click(function() {
+          $('#edit-tgs-button').toggleClass('secondary');
+          return $('#edit-term-groups').toggle();
+        });
+        $('#new-term-group').click(function() {
+          return send_new_term_group(state_obj, "NEW GROUP", 1);
+        });
+      };
+      get_history_page = function(obj, page_index) {
+        var count, offset, page_size;
+        page_size = 10;
+        if (obj.history.length < (page_index + 1) * page_size) {
+          offset = obj.history.length - 1;
+          count = (page_index + 1) * page_size - obj.history.length;
+          return $.ajax({
+            type: 'GET',
+            url: $('#history-json-url').text(),
+            data: {
+              count: count,
+              offset: offset
+            },
+            success: function(data) {
+              obj.history = obj.history.concat(data.labeled_citations_projects);
+              switch_to_list(obj, obj.history.slice(page_index * page_size, (page_index + 1) * page_size));
+              return obj.history_page = page_index;
+            }
+          });
+        } else {
+          switch_to_list(obj, obj.history.slice(page_index * page_size, (page_index + 1) * page_size));
+          return obj.history_page = page_index;
+        }
+      };
+      add_breadcrumb = function(obj) {
+        var breadcrumb_id, button, id, next_index;
+        next_index = obj.history.length;
+        breadcrumb_id = 'breadcrumb_' + next_index;
+        id = next_index;
+        button = $('<input/>').attr({
+          type: 'button',
+          id: breadcrumb_id,
+          "class": 'button'
+        });
+        button.click(function() {
+          obj.index = obj.history.length - next_index;
+          update_info(obj);
+          return update_arrows(obj);
+        });
+        $('#breadcrumb-group').append(button);
+        obj.history[obj.index].breadcrumb_id = breadcrumb_id;
+        obj.history[obj.index].id = id;
+      };
+      update_breadcrumb = function(citation) {
+        var button, label;
+        button = $('#' + citation.breadcrumb_id);
+        label = citation.label.label_type_id;
+        button.removeClass('success alert');
+        if (label === 1) {
+          button.addClass('success');
+        } else if (label === 2) {
+          button.addClass('alert');
+        }
+      };
+      update_index = function(obj, new_index) {
+        var new_breadcrumb_id, old_breadcrumb_id;
+        old_breadcrumb_id = obj.history[obj.index].breadcrumb_id;
+        obj.index = new_index;
+        new_breadcrumb_id = obj.history[new_index].breadcrumb_id;
+        $('#' + old_breadcrumb_id).removeClass('hollow');
+        $('#' + new_breadcrumb_id).addClass('hollow');
+      };
+      update_reasons = function() {
+        var project_lead_reasons, projects_user_reasons, root_url;
+        root_url = $('#root-url').text();
+        projects_user_reasons = $('#projects-user-reasons fieldset');
+        project_lead_reasons = $('#project-lead-reasons fieldset');
+        return $.ajax({
+          type: 'GET',
+          url: $('root-url').text() + '/api/v1/assignments/' + $('#assignment-id').text() + '/reasons.json',
+          success: function(data) {
+            var j, l, len, len1, reason, reason_element, reason_label, ref, ref1, results;
+            if (data.results.projects_user_reasons != null) {
+              projects_user_reasons.empty();
+              ref = data.results.projects_user_reasons;
+              for (j = 0, len = ref.length; j < len; j++) {
+                reason = ref[j];
+                reason_element = $('<input type="checkbox" value="' + reason.id + '" id="reason-' + reason.id + '" style="display: inline; margin-bottom: 0;">');
+                reason_label = $('<label for="reason-' + reason.id + '" style="display: inline;">' + reason.text + '</label><br>');
+                projects_user_reasons.append(reason_element);
+                projects_user_reasons.append(reason_label);
+              }
+            } else {
+              projects_user_reasons.hide();
+            }
+            if (data.results.project_lead_reasons != null) {
+              project_lead_reasons.empty();
+              ref1 = data.results.project_lead_reasons;
+              results = [];
+              for (l = 0, len1 = ref1.length; l < len1; l++) {
+                reason = ref1[l];
+                reason_element = $('<input type="checkbox" value="' + reason.id + '" id="reason-' + reason.id + '" style="display: inline; margin-bottom: 0;">');
+                reason_label = $('<label for="reason-' + reason.id + '" style="display: inline;">' + reason.text + '</label><br>');
+                project_lead_reasons.append(reason_element);
+                results.push(project_lead_reasons.append(reason_label));
+              }
+              return results;
+            } else {
+              return project_lead_reasons.hide();
+            }
+          },
+          error: function() {
+            return toastr.error('ERROR: Could not fetch reasons');
+          }
+        });
+      };
+      switch_to_list = function(obj, history_elements) {
+        var c, citation_abstract, citation_button_maybe, citation_button_no, citation_button_yes, citation_buttons, citation_element, citation_info, citation_title, info_wrapper, j, len, next_index;
+        $('#citations-list-elements').empty();
+        next_index = 0;
+        for (j = 0, len = history_elements.length; j < len; j++) {
+          c = history_elements[j];
+          info_wrapper = $('<div><div/>').attr({
+            id: 'info-wrapper-' + c.citations_project_id,
+            "class": 'info-wrapper'
+          });
+          citation_info = $('<div></div>').attr({
+            id: 'citation-info-' + c.citations_project_id,
+            "class": 'citation-info'
+          });
+          citation_element = $('<div></div>').attr({
+            id: 'citation-element-' + c.citations_project_id,
+            "class": 'callout row',
+            index: next_index
+          });
+          citation_title = $('<b>' + c.name + '<b/>').attr({
+            id: '#citation-element-title-' + c.citations_project_id
+          });
+          if (c.abstract.length > 400) {
+            citation_abstract = $('<div>' + c.abstract.slice(0, 400) + '...<div/>').attr({
+              id: '#citation-element-abstact-' + c.citations_project_id
+            });
+          } else {
+            citation_abstract = $('<div>' + c.abstract + '<div/>').attr({
+              id: '#citation-element-abstact-' + c.breadcrumb_id
+            });
+          }
+          citation_buttons = $('<div><div/>').attr({
+            id: 'citation-buttons-' + c.citations_project_id,
+            "class": 'button-group citation-buttons'
+          });
+          citation_button_yes = $('<div>Yes</div>').attr({
+            id: 'citation-button-yes-' + c.citations_project_id,
+            "class": 'button',
+            index: next_index
+          });
+          citation_button_maybe = $('<div>Maybe</div>').attr({
+            id: 'citation-button-maybe-' + c.citations_project_id,
+            "class": 'button',
+            index: next_index
+          });
+          citation_button_no = $('<div>No</div>').attr({
+            id: 'citation-button-no-' + c.citations_project_id,
+            "class": 'button',
+            index: next_index
+          });
+          citation_button_yes.click(function(e) {
+            e.stopPropagation();
+            return update_label(obj, $(this).attr('index'), 1);
+          });
+          citation_button_no.click(function(e) {
+            e.stopPropagation();
+            return update_label(obj, $(this).attr('index'), 2);
+          });
+          citation_button_maybe.click(function(e) {
+            e.stopPropagation();
+            return update_label(obj, $(this).attr('index'), 3);
+          });
+          citation_element.click(function() {
+            obj.index = +$(this).attr('index');
+            update_info(obj);
+            update_arrows(obj);
+            return switch_to_screening(obj);
+          });
+          if (c.label != null) {
+            if (c.label.label_type_id === 1) {
+              citation_button_yes.addClass('success');
+              citation_button_no.addClass('hollow');
+              citation_button_maybe.addClass('hollow');
+            } else if (c.label.label_type_id === 2) {
+              citation_button_yes.addClass('hollow');
+              citation_button_no.addClass('alert');
+              citation_button_maybe.addClass('hollow');
+            } else if (c.label.label_type_id === 3) {
+              citation_button_yes.addClass('hollow');
+              citation_button_no.addClass('hollow');
+              citation_button_maybe.addClass('secondary');
+            }
+          }
+          citation_info.append(citation_title);
+          citation_info.append(citation_abstract);
+          info_wrapper.append(citation_info);
+          citation_buttons.append(citation_button_yes);
+          citation_buttons.append(citation_button_maybe);
+          citation_buttons.append(citation_button_no);
+          citation_element.append(info_wrapper);
+          citation_element.append(citation_buttons);
+          $('#citations-list-elements').append(citation_element);
+          next_index++;
+        }
+        $('#pagination-buttons').show();
+        $('#citations-list').show();
+        return $('#screen-div').hide();
+      };
+      switch_to_screening = function(obj) {
+        $('#pagination-buttons').hide();
+        $('#citations-list-elements').empty();
+        $('#citations-list').hide();
+        $('#screen-div').show();
+        return $('#switch-button').val('OFF');
+      };
+      fetch_term_groups = function(obj) {
+        return $.ajax({
+          type: 'GET',
+          url: $('root-url').text() + '/api/v1/assignments/' + $('#assignment-id').text() + '/projects_users_term_groups_colors.json',
+          dataType: 'json',
+          success: function(data) {
+            var elem, hex_code, j, l, len, len1, ref, ref1, selected_putgc_id, tg, tg_button, tg_button_row, tg_color, tg_color_id, tg_color_label, tg_color_palette, tg_delete, tg_elem, tg_id, tg_meaning, tg_name, tg_title, tg_title_input, tg_title_label;
+            $('#term-groups').empty();
+            $('.tg-buttons').empty();
+            ref = data['projects_users_term_groups_colors'];
+            for (j = 0, len = ref.length; j < len; j++) {
+              tg = ref[j];
+              hex_code = tg['term_groups_color']['color']['hex_code'];
+              tg_color_id = tg['term_groups_color']['color']['id'];
+              tg_name = tg['term_groups_color']['term_group']['name'];
+              tg_meaning = tg['term_groups_color']['color']['name'];
+              tg_id = tg['id'];
+              ref1 = $('.tg-buttons');
+              for (l = 0, len1 = ref1.length; l < len1; l++) {
+                elem = ref1[l];
+                tg_button_row = $('<tr class="tg-button-row"></tr>');
+                tg_button = $('<div putgc-id="' + tg_id + '" class="button tiny" style="background-color:' + hex_code + ';">' + tg_name + '</div>');
+                $(tg_button_row).append($('<td></td>').append(tg_button));
+                $(elem).append(tg_button_row);
+                tg_button_row.click(function(event) {
+                  var textbox_value;
+                  textbox_value = $(event.target).parents('.term-group-buttons').find('.term-input').val();
+                  if (textbox_value.length === 0) {
+                    toastr.error('ERROR: Term cannot be empty');
+                    return;
+                  }
+                  return $.ajax({
+                    type: 'POST',
+                    url: $('#root-url').text() + 'api/v1/projects_users_term_groups_colors_terms/',
+                    dataType: 'json',
+                    data: {
+                      utf8: '✓',
+                      authenticity_token: $('#authenticity-token').text(),
+                      projects_users_term_groups_colors_term: {
+                        projects_users_term_groups_color_id: $(event.target).attr('putgc-id'),
+                        term_name: textbox_value
+                      }
+                    },
+                    success: function(data) {
+                      toastr.success('Term successfully added');
+                      $('.term-input').val('');
+                      force_update_c_p(obj);
+                      return fetch_term_groups(obj);
+                    },
+                    error: function(error) {
+                      return toastr.error('ERROR: Could not update terms');
+                    }
+                  });
+                });
+              }
+              tg_elem = $('<tr putgc-id="' + tg_id + '" class="tg-elem""></tr>');
+              tg_title = $('<td class="putgc-title"></td>');
+              tg_title_label = $('<div class="tg-title-label">' + tg_name + '</div>');
+              tg_title_input = $('<input class="tg-title-input hide" type="text" value="' + tg_name + '">');
+              tg_color = $('<td class="putgc-color" color-id="' + tg_color_id + '" color-hex="' + hex_code + '"></td>');
+              tg_color_label = $('<div class="putgc-color-label" style="background-color:' + hex_code + ';"></div>');
+              tg_color_palette = $('<div class="putgc-color-palette hide"></div>');
+              fetch_palette(obj, tg_color_palette);
+              tg_meaning = $('<td class="putgc-meaning">' + tg_meaning + '</td>');
+              tg_delete = $('<td class="delete-putgc"><a> ✖ </a></td>');
+              tg_title_input.keypress(function(event) {
+                var color_id, putgc_elem, putgc_id, term_group_name;
+                if (event.which === 13) {
+                  putgc_elem = $(event.target).closest('tr');
+                  putgc_id = putgc_elem.attr('putgc-id');
+                  color_id = putgc_elem.find('.putgc-color').attr('color-id');
+                  term_group_name = $(event.target).val();
+                  return update_term_group(obj, putgc_id, term_group_name, color_id);
+                }
+              });
+              tg_title_label.dblclick(function(event) {
+                var child, len2, m, ref2, results;
+                ref2 = $(event.target).parent().children();
+                results = [];
+                for (m = 0, len2 = ref2.length; m < len2; m++) {
+                  child = ref2[m];
+                  $(child).toggleClass('hide');
+                  if ($(child).is('input')) {
+                    results.push($(child).focus());
+                  } else {
+                    results.push(void 0);
+                  }
+                }
+                return results;
+              });
+              tg_title_input.focusout(function(event) {
+                var child, len2, m, ref2, results;
+                ref2 = $(event.target).parent().children();
+                results = [];
+                for (m = 0, len2 = ref2.length; m < len2; m++) {
+                  child = ref2[m];
+                  results.push($(child).toggleClass('hide'));
+                }
+                return results;
+              });
+              tg_elem.click(function(event) {
+                var putgc_elem, putgc_id;
+                $('#term-groups .tg-elem').removeClass('selected');
+                putgc_elem = $(event.target).closest('.tg-elem');
+                $(putgc_elem).addClass('selected');
+                putgc_id = putgc_elem.attr('putgc-id');
+                $('#term-groups').attr('selected-putgc-id', putgc_id);
+                return populate_terms(putgc_id);
+              });
+              $(window).click(function(event) {
+                $(".putgc-color-palette-row").addClass('hide');
+                return $(".tg-elem").removeClass('hide');
+              });
+              tg_color_label.dblclick(function(event) {
+                var child, len2, m, ref2, results;
+                ref2 = $(event.target).parent().children();
+                results = [];
+                for (m = 0, len2 = ref2.length; m < len2; m++) {
+                  child = ref2[m];
+                  results.push($(child).toggleClass('hide'));
+                }
+                return results;
+              });
+              tg_delete.click(function(event) {
+                var putgc_elem, putgc_id;
+                if (confirm("Are you sure?")) {
+                  event.stopPropagation();
+                  putgc_elem = $(event.target).closest('tr');
+                  putgc_id = putgc_elem.attr('putgc-id');
+                  return delete_term_group(obj, putgc_id);
+                }
+              });
+              tg_title.append(tg_title_label);
+              tg_title.append(tg_title_input);
+              tg_color.append(tg_color_label);
+              tg_color.append(tg_color_palette);
+              tg_elem.append(tg_title);
+              tg_elem.append(tg_color);
+              tg_elem.append(tg_meaning);
+              tg_elem.append(tg_delete);
+              $('#term-groups').append(tg_elem);
+              $('#term-groups .tg-elem[putgc-id="' + $('#term-groups').attr('selected-putgc-id') + '"]').addClass('selected');
+            }
+            selected_putgc_id = $('#term-groups .tg-elem').first().attr('putgc-id');
+            $('#term-groups').attr('selected-putgc-id', selected_putgc_id);
+            $('#term-groups .tg-elem').removeClass('selected');
+            $('#term-groups .tg-elem[putgc-id="' + selected_putgc_id + '"]').addClass('selected');
+            return populate_terms(selected_putgc_id);
+          },
+          error: function() {
+            return toastr.error('ERROR: Could not fetch term groups');
+          }
+        });
+      };
+      apply_select2_to_term_select = function(obj, term_select) {
+        var putgc_id;
+        putgc_id = term_select.attr('putgc-id');
+        term_select.select2({
+          minimumInputLength: 0,
+          ajax: {
+            url: function() {
+              return $('root-url').text() + '/api/v1/terms.json';
+            },
+            dataType: 'json',
+            delay: 100,
+            data: function(params) {
+              return {
+                q: params.term,
+                page: params.page || 1
+              };
+            }
+          }
+        });
+        term_select.on('select2:select select2:unselect', function(event) {
+          var j, len, ref, term_elem, term_ids;
+          term_ids = [''];
+          ref = $(event.target).find('option:checked');
+          for (j = 0, len = ref.length; j < len; j++) {
+            term_elem = ref[j];
+            term_ids.push($(term_elem).val());
+          }
+          return $.ajax({
+            type: 'PATCH',
+            url: $('#root-url').text() + '/api/v1/projects_users_term_groups_colors/' + putgc_id,
+            dataType: 'json',
+            data: {
+              utf8: '✓',
+              authenticity_token: $('#authenticity-token').text(),
+              projects_users_term_groups_color: {
+                term_ids: term_ids
+              }
+            },
+            success: function(data) {
+              return force_update_c_p(obj);
+            },
+            error: function(error) {
+              return toastr.error('ERROR: Could not update terms');
+            }
+          });
+        });
+        if (!($('#term-groups').attr('selected-putgc-id') === putgc_id)) {
+          return term_select.next('.select2-container').addClass('hide');
+        }
+      };
+      create_term_selects = function(obj) {
+        var j, len, putgc_id, ref, results, send_ajax, term_select, tg;
+        send_ajax = function(inner_putgc_id) {
+          return $.ajax({
+            type: 'GET',
+            url: $('#root-url').text() + '/api/v1/projects_users_term_groups_colors/' + inner_putgc_id + '/terms.json',
+            dataType: 'json',
+            success: function(data) {
+              var j, len, ref, results, term, term_option;
+              ref = data['results'];
+              results = [];
+              for (j = 0, len = ref.length; j < len; j++) {
+                term = ref[j];
+                term_option = new Option(term['text'], term['id'], true, true);
+                results.push($('select[putgc-id=' + inner_putgc_id + ']').append(term_option));
+              }
+              return results;
+            },
+            error: function() {
+              return toastr.error('ERROR: Could not fetch terms');
+            }
+          });
+        };
+        $('#term-selects').empty();
+        ref = $('#term-groups tr');
+        results = [];
+        for (j = 0, len = ref.length; j < len; j++) {
+          tg = ref[j];
+          putgc_id = $(tg).attr('putgc-id');
+          term_select = $('<select class="hide" putgc-id="' + putgc_id + '" multiple>');
+          $('#term-selects').append(term_select);
+          results.push(send_ajax(putgc_id));
+        }
+        return results;
+      };
+      populate_terms = function(inner_putgc_id) {
+        if (typeof inner_putgc_id === 'undefined') {
+          return;
+        }
+        return $.ajax({
+          type: 'GET',
+          url: $('#root-url').text() + '/api/v1/projects_users_term_groups_colors/' + inner_putgc_id + '/terms.json',
+          dataType: 'json',
+          success: function(data) {
+            var j, len, ref, results, term, term_CS, term_CS_td, term_PM, term_PM_td, term_delete, term_delete_td, term_name, term_name_td, term_row, terms_tbody;
+            terms_tbody = $('#terms-modal #terms-list tbody');
+            terms_tbody.empty();
+            ref = data['results'];
+            results = [];
+            for (j = 0, len = ref.length; j < len; j++) {
+              term = ref[j];
+              term_row = $('<tr></tr>');
+              term_name = $('<div id=' + term['id'] + '>' + term['text'] + '</div>');
+              term_name_td = $('<td />').append(term_name);
+              term_CS = $('<input />', {
+                type: 'checkbox',
+                "class": 'term-CS-checkbox',
+                term_id: term['id']
+              });
+              term_CS_td = $('<td />').append(term_CS);
+              term_PM = $('<input />', {
+                type: 'checkbox',
+                "class": 'term-PM-checkbox',
+                term_id: term['id']
+              });
+              term_PM_td = $('<td />').append(term_PM);
+              term_delete = $('<a />', {
+                "class": 'delete-term-button',
+                term_id: term['id']
+              });
+              term_delete.text('✖');
+              term_delete_td = $('<td />').append(term_delete);
+              term_row.append(term_name_td);
+              term_row.append(term_CS_td);
+              term_row.append(term_PM_td);
+              term_row.append(term_delete_td);
+              results.push(terms_tbody.append(term_row));
+            }
+            return results;
+          },
+          error: function() {
+            return toastr.error('ERROR: Could not fetch terms');
+          }
+        });
+      };
+      populate_term_modal = function(obj) {
+        var selected_putgc_id;
+        $('#tg-panel').html($('#edit-term-groups #edit-term-groups-table').clone());
+        selected_putgc_id = $('#tg-panel #term-groups .tg-elem').first().attr('putgc-id');
+        $('#tg-panel #term-groups').attr('selected-putgc-id', selected_putgc_id);
+        $('#tg-panel #term-groups .tg-elem[putgc-id="' + selected_putgc_id + '"]');
+        $('#tg-panel #term-groups .tg-title-label').dblclick(function(event) {
+          var child, j, len, ref, results;
+          ref = $(event.target).parent().children();
+          results = [];
+          for (j = 0, len = ref.length; j < len; j++) {
+            child = ref[j];
+            $(child).toggleClass('hide');
+            if ($(child).is('input')) {
+              results.push($(child).focus());
+            } else {
+              results.push(void 0);
+            }
+          }
+          return results;
+        });
+        $('#tg-panel #term-groups .tg-elem').focusout(function(event) {
+          var child, j, len, ref, results;
+          ref = $(event.target).parent().children();
+          results = [];
+          for (j = 0, len = ref.length; j < len; j++) {
+            child = ref[j];
+            results.push($(child).toggleClass('hide'));
+          }
+          return results;
+        });
+        $('#tg-panel #term-groups .putgc-color-label').dblclick(function(event) {
+          var child, j, len, ref, results;
+          ref = $(event.target).parent().children();
+          results = [];
+          for (j = 0, len = ref.length; j < len; j++) {
+            child = ref[j];
+            results.push($(child).toggleClass('hide'));
+          }
+          return results;
+        });
+        $('#tg-panel #term-groups .tg-elem').click(function(event) {
+          var putgc_elem, putgc_id;
+          $('#tg-panel #term-groups').children().removeClass('selected');
+          putgc_elem = $(event.target).closest('tr');
+          $(putgc_elem).addClass('selected');
+          putgc_id = putgc_elem.attr('putgc-id');
+          $('#tg-panel #term-groups').attr('selected-putgc-id', putgc_id);
+          return populate_terms(putgc_id);
+        });
+        $('#tg-panel #term-groups .delete-putgc').click(function(event) {
+          var putgc_elem, putgc_id;
+          event.stopPropagation();
+          putgc_elem = $(event.target).closest('tr');
+          putgc_id = putgc_elem.attr('putgc-id');
+          return delete_term_group(obj, putgc_id);
+        });
+        return populate_terms(selected_putgc_id);
+      };
+      delete_term_group = function(obj, id) {
+        return $.ajax({
+          type: 'DELETE',
+          url: $('root-url').text() + '/api/v1/projects_users_term_groups_colors/' + id,
+          success: function() {
+            return fetch_term_groups(obj);
+          },
+          error: function() {
+            return toastr.error('ERROR: Could not delete term group');
+          }
+        });
+      };
+      fetch_palette = function(obj, palette_elem) {
+        return $.ajax({
+          type: 'GET',
+          url: $('root-url').text() + '/api/v1/colors.json',
+          dataType: 'json',
+          success: function(data) {
+            var color, color_elem, j, len, ref, results;
+            $(palette_elem).empty();
+            ref = data['colors'];
+            results = [];
+            for (j = 0, len = ref.length; j < len; j++) {
+              color = ref[j];
+              color_elem = $('<div color-id="' + color['id'] + '"style="height: 20px; width: 20px; background-color:' + color['hex_code'] + ';"></div>');
+              color_elem.click(function(event) {
+                var color_id, putgc_elem, putgc_id, term_group_name;
+                putgc_elem = $(event.target).closest('.tg-elem');
+                putgc_id = putgc_elem.attr('putgc-id');
+                color_id = $(event.target).attr('color-id');
+                term_group_name = putgc_elem.find('.putgc-title input').val();
+                update_term_group(obj, putgc_id, term_group_name, color_id);
+                return event.stopPropagation();
+              });
+              results.push($(palette_elem).append(color_elem));
+            }
+            return results;
+          },
+          error: function() {
+            return toastr.error('ERROR: Could not fetch colors');
+          }
+        });
+      };
+      send_new_term_group = function(obj, term_group_name, color_id) {
+        return $.ajax({
+          type: 'POST',
+          url: $('root-url').text() + '/api/v1/assignments/' + $('#assignment-id').text() + '/projects_users_term_groups_colors',
+          dataType: 'json',
+          data: {
+            utf8: '✓',
+            authenticity_token: $('#authenticity-token').text(),
+            projects_users_term_groups_color: {
+              term_groups_color_attributes: {
+                term_group_attributes: {
+                  name: term_group_name
+                },
+                color_id: color_id
+              }
+            }
+          },
+          success: function(data) {
+            return fetch_term_groups(obj);
+          },
+          error: function() {
+            return toastr.error('ERROR: Could not create new term group');
+          }
+        });
+      };
+      update_term_group = function(obj, id, new_term_group_name, new_color_id) {
+        var j, l, len, len1, putgc_id, ref, ref1, term_, tg, tg_color;
+        $.ajax({
+          type: 'PATCH',
+          url: $('root-url').text() + '/api/v1/projects_users_term_groups_colors/' + id,
+          dataType: 'json',
+          data: {
+            utf8: '✓',
+            authenticity_token: $('#authenticity-token').text(),
+            projects_users_term_groups_color: {
+              term_groups_color_attributes: {
+                term_group_attributes: {
+                  name: new_term_group_name
+                },
+                color_id: new_color_id
+              }
+            }
+          },
+          success: function(data) {
+            return fetch_term_groups(obj);
+          },
+          error: function() {
+            return toastr.error('ERROR: Could not update term group');
+          }
+        });
+        ref = $('#term-groups');
+        for (j = 0, len = ref.length; j < len; j++) {
+          tg = ref[j];
+          putgc_id = $(tg).attr('putgc-id');
+          tg_color = $(tg).find('.putgc-color').attr('color-hex');
+          ref1 = $('#term-selects select[putgc-id=' + putgc_id + '] option');
+          for (l = 0, len1 = ref1.length; l < len1; l++) {
+            term_ = ref1[l];
+            "CoffeeScript is my favorite!".replace(/(\w+)/g, function(match) {
+              return match.toUpperCase();
+            });
+          }
+        }
+        return input_string;
+      };
+      send_new_term = function(projects_users_terms_groups_color_id, term) {
+        return $.ajax({
+          type: 'POST',
+          url: $('root-url').text() + '/api/v1/projects_users_terms_groups_colors_terms',
+          dataType: 'json',
+          data: {
+            utf8: '✓',
+            authenticity_token: $('#authenticity-token').text(),
+            projects_users_terms_groups_colors_term: {
+              projects_users_terms_groups_colors_term_id: projects_users_terms_groups_colors_term_id,
+              term_name: color_id
+            }
+          },
+          success: function(data) {
+            return fetch_term_groups(obj);
+          },
+          error: function() {
+            return toastr.error('ERROR: Could not create new term group');
+          }
+        });
+      };
+      update_term = function(id, new_term_group_name, new_color_id) {
+        return $.ajax({
+          type: 'PATCH',
+          url: $('root-url').text() + '/api/v1/projects_users_terms_groups_colors/' + id,
+          dataType: 'json',
+          data: {
+            utf8: '✓',
+            authenticity_token: $('#authenticity-token').text(),
+            projects_users_terms_groups_color: {
+              term_group_name: new_term_group_name,
+              color_id: new_color_id
+            }
+          },
+          success: function(data) {
+            return fetch_term_groups(obj);
+          },
+          error: function() {
+            return toastr.error('ERROR: Could not update term group');
+          }
+        });
+      };
+      $.ajax({
+        type: 'GET',
+        url: $('#screen-assignment-json-url').text(),
+        data: {
+          count: '10'
+        },
+        success: function(data) {
+          $('#screen-div').show();
+          return start_screening(data.unlabeled_citations_projects, data.labeled_citations_projects, data.options);
+        },
+        error: function() {
+          return toastr.error('ERROR: Cannot fetch citations to screen.');
+        }
+      });
+      $('#hide-me').hide();
+      $('#pagination-buttons').hide();
+    })();
+  });
+
+}).call(this);
+(function() {
+
+
+}).call(this);
+(function() {
+  var context = this;
+
+  (function() {
+    (function() {
+      var slice = [].slice;
+
+      this.ActionCable = {
+        INTERNAL: {
+          "message_types": {
+            "welcome": "welcome",
+            "ping": "ping",
+            "confirmation": "confirm_subscription",
+            "rejection": "reject_subscription"
+          },
+          "default_mount_path": "/cable",
+          "protocols": ["actioncable-v1-json", "actioncable-unsupported"]
+        },
+        WebSocket: window.WebSocket,
+        logger: window.console,
+        createConsumer: function(url) {
+          var ref;
+          if (url == null) {
+            url = (ref = this.getConfig("url")) != null ? ref : this.INTERNAL.default_mount_path;
+          }
+          return new ActionCable.Consumer(this.createWebSocketURL(url));
+        },
+        getConfig: function(name) {
+          var element;
+          element = document.head.querySelector("meta[name='action-cable-" + name + "']");
+          return element != null ? element.getAttribute("content") : void 0;
+        },
+        createWebSocketURL: function(url) {
+          var a;
+          if (url && !/^wss?:/i.test(url)) {
+            a = document.createElement("a");
+            a.href = url;
+            a.href = a.href;
+            a.protocol = a.protocol.replace("http", "ws");
+            return a.href;
+          } else {
+            return url;
+          }
+        },
+        startDebugging: function() {
+          return this.debugging = true;
+        },
+        stopDebugging: function() {
+          return this.debugging = null;
+        },
+        log: function() {
+          var messages, ref;
+          messages = 1 <= arguments.length ? slice.call(arguments, 0) : [];
+          if (this.debugging) {
+            messages.push(Date.now());
+            return (ref = this.logger).log.apply(ref, ["[ActionCable]"].concat(slice.call(messages)));
+          }
+        }
+      };
+
+    }).call(this);
+  }).call(context);
+
+  var ActionCable = context.ActionCable;
+
+  (function() {
+    (function() {
+      var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+
+      ActionCable.ConnectionMonitor = (function() {
+        var clamp, now, secondsSince;
+
+        ConnectionMonitor.pollInterval = {
+          min: 3,
+          max: 30
+        };
+
+        ConnectionMonitor.staleThreshold = 6;
+
+        function ConnectionMonitor(connection) {
+          this.connection = connection;
+          this.visibilityDidChange = bind(this.visibilityDidChange, this);
+          this.reconnectAttempts = 0;
+        }
+
+        ConnectionMonitor.prototype.start = function() {
+          if (!this.isRunning()) {
+            this.startedAt = now();
+            delete this.stoppedAt;
+            this.startPolling();
+            document.addEventListener("visibilitychange", this.visibilityDidChange);
+            return ActionCable.log("ConnectionMonitor started. pollInterval = " + (this.getPollInterval()) + " ms");
+          }
+        };
+
+        ConnectionMonitor.prototype.stop = function() {
+          if (this.isRunning()) {
+            this.stoppedAt = now();
+            this.stopPolling();
+            document.removeEventListener("visibilitychange", this.visibilityDidChange);
+            return ActionCable.log("ConnectionMonitor stopped");
+          }
+        };
+
+        ConnectionMonitor.prototype.isRunning = function() {
+          return (this.startedAt != null) && (this.stoppedAt == null);
+        };
+
+        ConnectionMonitor.prototype.recordPing = function() {
+          return this.pingedAt = now();
+        };
+
+        ConnectionMonitor.prototype.recordConnect = function() {
+          this.reconnectAttempts = 0;
+          this.recordPing();
+          delete this.disconnectedAt;
+          return ActionCable.log("ConnectionMonitor recorded connect");
+        };
+
+        ConnectionMonitor.prototype.recordDisconnect = function() {
+          this.disconnectedAt = now();
+          return ActionCable.log("ConnectionMonitor recorded disconnect");
+        };
+
+        ConnectionMonitor.prototype.startPolling = function() {
+          this.stopPolling();
+          return this.poll();
+        };
+
+        ConnectionMonitor.prototype.stopPolling = function() {
+          return clearTimeout(this.pollTimeout);
+        };
+
+        ConnectionMonitor.prototype.poll = function() {
+          return this.pollTimeout = setTimeout((function(_this) {
+            return function() {
+              _this.reconnectIfStale();
+              return _this.poll();
+            };
+          })(this), this.getPollInterval());
+        };
+
+        ConnectionMonitor.prototype.getPollInterval = function() {
+          var interval, max, min, ref;
+          ref = this.constructor.pollInterval, min = ref.min, max = ref.max;
+          interval = 5 * Math.log(this.reconnectAttempts + 1);
+          return Math.round(clamp(interval, min, max) * 1000);
+        };
+
+        ConnectionMonitor.prototype.reconnectIfStale = function() {
+          if (this.connectionIsStale()) {
+            ActionCable.log("ConnectionMonitor detected stale connection. reconnectAttempts = " + this.reconnectAttempts + ", pollInterval = " + (this.getPollInterval()) + " ms, time disconnected = " + (secondsSince(this.disconnectedAt)) + " s, stale threshold = " + this.constructor.staleThreshold + " s");
+            this.reconnectAttempts++;
+            if (this.disconnectedRecently()) {
+              return ActionCable.log("ConnectionMonitor skipping reopening recent disconnect");
+            } else {
+              ActionCable.log("ConnectionMonitor reopening");
+              return this.connection.reopen();
+            }
+          }
+        };
+
+        ConnectionMonitor.prototype.connectionIsStale = function() {
+          var ref;
+          return secondsSince((ref = this.pingedAt) != null ? ref : this.startedAt) > this.constructor.staleThreshold;
+        };
+
+        ConnectionMonitor.prototype.disconnectedRecently = function() {
+          return this.disconnectedAt && secondsSince(this.disconnectedAt) < this.constructor.staleThreshold;
+        };
+
+        ConnectionMonitor.prototype.visibilityDidChange = function() {
+          if (document.visibilityState === "visible") {
+            return setTimeout((function(_this) {
+              return function() {
+                if (_this.connectionIsStale() || !_this.connection.isOpen()) {
+                  ActionCable.log("ConnectionMonitor reopening stale connection on visibilitychange. visbilityState = " + document.visibilityState);
+                  return _this.connection.reopen();
+                }
+              };
+            })(this), 200);
+          }
+        };
+
+        now = function() {
+          return new Date().getTime();
+        };
+
+        secondsSince = function(time) {
+          return (now() - time) / 1000;
+        };
+
+        clamp = function(number, min, max) {
+          return Math.max(min, Math.min(max, number));
+        };
+
+        return ConnectionMonitor;
+
+      })();
+
+    }).call(this);
+    (function() {
+      var i, message_types, protocols, ref, supportedProtocols, unsupportedProtocol,
+        slice = [].slice,
+        bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
+        indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+
+      ref = ActionCable.INTERNAL, message_types = ref.message_types, protocols = ref.protocols;
+
+      supportedProtocols = 2 <= protocols.length ? slice.call(protocols, 0, i = protocols.length - 1) : (i = 0, []), unsupportedProtocol = protocols[i++];
+
+      ActionCable.Connection = (function() {
+        Connection.reopenDelay = 500;
+
+        function Connection(consumer) {
+          this.consumer = consumer;
+          this.open = bind(this.open, this);
+          this.subscriptions = this.consumer.subscriptions;
+          this.monitor = new ActionCable.ConnectionMonitor(this);
+          this.disconnected = true;
+        }
+
+        Connection.prototype.send = function(data) {
+          if (this.isOpen()) {
+            this.webSocket.send(JSON.stringify(data));
+            return true;
+          } else {
+            return false;
+          }
+        };
+
+        Connection.prototype.open = function() {
+          if (this.isActive()) {
+            ActionCable.log("Attempted to open WebSocket, but existing socket is " + (this.getState()));
+            return false;
+          } else {
+            ActionCable.log("Opening WebSocket, current state is " + (this.getState()) + ", subprotocols: " + protocols);
+            if (this.webSocket != null) {
+              this.uninstallEventHandlers();
+            }
+            this.webSocket = new ActionCable.WebSocket(this.consumer.url, protocols);
+            this.installEventHandlers();
+            this.monitor.start();
+            return true;
+          }
+        };
+
+        Connection.prototype.close = function(arg) {
+          var allowReconnect, ref1;
+          allowReconnect = (arg != null ? arg : {
+            allowReconnect: true
+          }).allowReconnect;
+          if (!allowReconnect) {
+            this.monitor.stop();
+          }
+          if (this.isActive()) {
+            return (ref1 = this.webSocket) != null ? ref1.close() : void 0;
+          }
+        };
+
+        Connection.prototype.reopen = function() {
+          var error;
+          ActionCable.log("Reopening WebSocket, current state is " + (this.getState()));
+          if (this.isActive()) {
+            try {
+              return this.close();
+            } catch (error1) {
+              error = error1;
+              return ActionCable.log("Failed to reopen WebSocket", error);
+            } finally {
+              ActionCable.log("Reopening WebSocket in " + this.constructor.reopenDelay + "ms");
+              setTimeout(this.open, this.constructor.reopenDelay);
+            }
+          } else {
+            return this.open();
+          }
+        };
+
+        Connection.prototype.getProtocol = function() {
+          var ref1;
+          return (ref1 = this.webSocket) != null ? ref1.protocol : void 0;
+        };
+
+        Connection.prototype.isOpen = function() {
+          return this.isState("open");
+        };
+
+        Connection.prototype.isActive = function() {
+          return this.isState("open", "connecting");
+        };
+
+        Connection.prototype.isProtocolSupported = function() {
+          var ref1;
+          return ref1 = this.getProtocol(), indexOf.call(supportedProtocols, ref1) >= 0;
+        };
+
+        Connection.prototype.isState = function() {
+          var ref1, states;
+          states = 1 <= arguments.length ? slice.call(arguments, 0) : [];
+          return ref1 = this.getState(), indexOf.call(states, ref1) >= 0;
+        };
+
+        Connection.prototype.getState = function() {
+          var ref1, state, value;
+          for (state in WebSocket) {
+            value = WebSocket[state];
+            if (value === ((ref1 = this.webSocket) != null ? ref1.readyState : void 0)) {
+              return state.toLowerCase();
+            }
+          }
+          return null;
+        };
+
+        Connection.prototype.installEventHandlers = function() {
+          var eventName, handler;
+          for (eventName in this.events) {
+            handler = this.events[eventName].bind(this);
+            this.webSocket["on" + eventName] = handler;
+          }
+        };
+
+        Connection.prototype.uninstallEventHandlers = function() {
+          var eventName;
+          for (eventName in this.events) {
+            this.webSocket["on" + eventName] = function() {};
+          }
+        };
+
+        Connection.prototype.events = {
+          message: function(event) {
+            var identifier, message, ref1, type;
+            if (!this.isProtocolSupported()) {
+              return;
+            }
+            ref1 = JSON.parse(event.data), identifier = ref1.identifier, message = ref1.message, type = ref1.type;
+            switch (type) {
+              case message_types.welcome:
+                this.monitor.recordConnect();
+                return this.subscriptions.reload();
+              case message_types.ping:
+                return this.monitor.recordPing();
+              case message_types.confirmation:
+                return this.subscriptions.notify(identifier, "connected");
+              case message_types.rejection:
+                return this.subscriptions.reject(identifier);
+              default:
+                return this.subscriptions.notify(identifier, "received", message);
+            }
+          },
+          open: function() {
+            ActionCable.log("WebSocket onopen event, using '" + (this.getProtocol()) + "' subprotocol");
+            this.disconnected = false;
+            if (!this.isProtocolSupported()) {
+              ActionCable.log("Protocol is unsupported. Stopping monitor and disconnecting.");
+              return this.close({
+                allowReconnect: false
+              });
+            }
+          },
+          close: function(event) {
+            ActionCable.log("WebSocket onclose event");
+            if (this.disconnected) {
+              return;
+            }
+            this.disconnected = true;
+            this.monitor.recordDisconnect();
+            return this.subscriptions.notifyAll("disconnected", {
+              willAttemptReconnect: this.monitor.isRunning()
+            });
+          },
+          error: function() {
+            return ActionCable.log("WebSocket onerror event");
+          }
+        };
+
+        return Connection;
+
+      })();
+
+    }).call(this);
+    (function() {
+      var slice = [].slice;
+
+      ActionCable.Subscriptions = (function() {
+        function Subscriptions(consumer) {
+          this.consumer = consumer;
+          this.subscriptions = [];
+        }
+
+        Subscriptions.prototype.create = function(channelName, mixin) {
+          var channel, params, subscription;
+          channel = channelName;
+          params = typeof channel === "object" ? channel : {
+            channel: channel
+          };
+          subscription = new ActionCable.Subscription(this.consumer, params, mixin);
+          return this.add(subscription);
+        };
+
+        Subscriptions.prototype.add = function(subscription) {
+          this.subscriptions.push(subscription);
+          this.consumer.ensureActiveConnection();
+          this.notify(subscription, "initialized");
+          this.sendCommand(subscription, "subscribe");
+          return subscription;
+        };
+
+        Subscriptions.prototype.remove = function(subscription) {
+          this.forget(subscription);
+          if (!this.findAll(subscription.identifier).length) {
+            this.sendCommand(subscription, "unsubscribe");
+          }
+          return subscription;
+        };
+
+        Subscriptions.prototype.reject = function(identifier) {
+          var i, len, ref, results, subscription;
+          ref = this.findAll(identifier);
+          results = [];
+          for (i = 0, len = ref.length; i < len; i++) {
+            subscription = ref[i];
+            this.forget(subscription);
+            this.notify(subscription, "rejected");
+            results.push(subscription);
+          }
+          return results;
+        };
+
+        Subscriptions.prototype.forget = function(subscription) {
+          var s;
+          this.subscriptions = (function() {
+            var i, len, ref, results;
+            ref = this.subscriptions;
+            results = [];
+            for (i = 0, len = ref.length; i < len; i++) {
+              s = ref[i];
+              if (s !== subscription) {
+                results.push(s);
+              }
+            }
+            return results;
+          }).call(this);
+          return subscription;
+        };
+
+        Subscriptions.prototype.findAll = function(identifier) {
+          var i, len, ref, results, s;
+          ref = this.subscriptions;
+          results = [];
+          for (i = 0, len = ref.length; i < len; i++) {
+            s = ref[i];
+            if (s.identifier === identifier) {
+              results.push(s);
+            }
+          }
+          return results;
+        };
+
+        Subscriptions.prototype.reload = function() {
+          var i, len, ref, results, subscription;
+          ref = this.subscriptions;
+          results = [];
+          for (i = 0, len = ref.length; i < len; i++) {
+            subscription = ref[i];
+            results.push(this.sendCommand(subscription, "subscribe"));
+          }
+          return results;
+        };
+
+        Subscriptions.prototype.notifyAll = function() {
+          var args, callbackName, i, len, ref, results, subscription;
+          callbackName = arguments[0], args = 2 <= arguments.length ? slice.call(arguments, 1) : [];
+          ref = this.subscriptions;
+          results = [];
+          for (i = 0, len = ref.length; i < len; i++) {
+            subscription = ref[i];
+            results.push(this.notify.apply(this, [subscription, callbackName].concat(slice.call(args))));
+          }
+          return results;
+        };
+
+        Subscriptions.prototype.notify = function() {
+          var args, callbackName, i, len, results, subscription, subscriptions;
+          subscription = arguments[0], callbackName = arguments[1], args = 3 <= arguments.length ? slice.call(arguments, 2) : [];
+          if (typeof subscription === "string") {
+            subscriptions = this.findAll(subscription);
+          } else {
+            subscriptions = [subscription];
+          }
+          results = [];
+          for (i = 0, len = subscriptions.length; i < len; i++) {
+            subscription = subscriptions[i];
+            results.push(typeof subscription[callbackName] === "function" ? subscription[callbackName].apply(subscription, args) : void 0);
+          }
+          return results;
+        };
+
+        Subscriptions.prototype.sendCommand = function(subscription, command) {
+          var identifier;
+          identifier = subscription.identifier;
+          return this.consumer.send({
+            command: command,
+            identifier: identifier
+          });
+        };
+
+        return Subscriptions;
+
+      })();
+
+    }).call(this);
+    (function() {
+      ActionCable.Subscription = (function() {
+        var extend;
+
+        function Subscription(consumer, params, mixin) {
+          this.consumer = consumer;
+          if (params == null) {
+            params = {};
+          }
+          this.identifier = JSON.stringify(params);
+          extend(this, mixin);
+        }
+
+        Subscription.prototype.perform = function(action, data) {
+          if (data == null) {
+            data = {};
+          }
+          data.action = action;
+          return this.send(data);
+        };
+
+        Subscription.prototype.send = function(data) {
+          return this.consumer.send({
+            command: "message",
+            identifier: this.identifier,
+            data: JSON.stringify(data)
+          });
+        };
+
+        Subscription.prototype.unsubscribe = function() {
+          return this.consumer.subscriptions.remove(this);
+        };
+
+        extend = function(object, properties) {
+          var key, value;
+          if (properties != null) {
+            for (key in properties) {
+              value = properties[key];
+              object[key] = value;
+            }
+          }
+          return object;
+        };
+
+        return Subscription;
+
+      })();
+
+    }).call(this);
+    (function() {
+      ActionCable.Consumer = (function() {
+        function Consumer(url) {
+          this.url = url;
+          this.subscriptions = new ActionCable.Subscriptions(this);
+          this.connection = new ActionCable.Connection(this);
+        }
+
+        Consumer.prototype.send = function(data) {
+          return this.connection.send(data);
+        };
+
+        Consumer.prototype.connect = function() {
+          return this.connection.open();
+        };
+
+        Consumer.prototype.disconnect = function() {
+          return this.connection.close({
+            allowReconnect: false
+          });
+        };
+
+        Consumer.prototype.ensureActiveConnection = function() {
+          if (!this.connection.isActive()) {
+            return this.connection.open();
+          }
+        };
+
+        return Consumer;
+
+      })();
+
+    }).call(this);
+  }).call(this);
+
+  if (typeof module === "object" && module.exports) {
+    module.exports = ActionCable;
+  } else if (typeof define === "function" && define.amd) {
+    define(ActionCable);
+  }
+}).call(this);
+// Action Cable provides the framework to deal with WebSockets in Rails.
+// You can generate new channels where WebSocket features live using the rails generate channel command.
+//
+
+
+
+
+'use strict';
+
+(function() {
+  this.App || (this.App = {});
+
+  App.cable = ActionCable.createConsumer();
+
+}).call(this);
+(function() {
+  document.addEventListener('turbolinks:load', function() {
+    (function() {
+      var append_citations, citationList, fetch_from_pubmed, list_options, populate_citation_fields;
+      if ($('body.citations.index').length === 1) {
+        list_options = {
+          valueNames: ['citation-numbers', 'citation-title', 'citation-authors', 'citation-journal', 'citation-journal-date', 'citation-abstract', 'citation-abstract']
+        };
+        fetch_from_pubmed = function(pmid) {
+          return $.ajax('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi', {
+            type: 'GET',
+            dataType: 'xml',
+            data: {
+              db: 'pubmed',
+              retmode: 'xml',
+              id: pmid
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+              console.log(errorThrown);
+              return toastr.error('Could not fetch citation info from PUBMED');
+            },
+            success: function(data, textStatus, jqXHR) {
+              var abstract, author_name, authors, citation_hash, dateNode, first_name, i, j, journal, k, keyword, keywords, last_name, len, len1, len2, name, node, ref, ref1, ref2;
+              if (!($(data).find('ArticleTitle').text() != null)) {
+                return 0;
+              }
+              name = $(data).find('ArticleTitle').text() || '';
+              abstract = '';
+              ref = $(data).find('AbstractText');
+              for (i = 0, len = ref.length; i < len; i++) {
+                node = ref[i];
+                abstract += $(node).text();
+                abstract += "\n";
+              }
+              authors = [];
+              ref1 = $(data).find('Author');
+              for (j = 0, len1 = ref1.length; j < len1; j++) {
+                node = ref1[j];
+                first_name = $(node).find('ForeName').text() || $(node).find('Initials').text() || '';
+                last_name = $(node).find('LastName').text() || '';
+                author_name = last_name + ' ' + first_name;
+                if (author_name === ' ') {
+                  author_name = $(node).find('CollectiveName').text() || '';
+                }
+                if (author_name !== '') {
+                  authors.push(author_name);
+                }
+              }
+              keywords = [];
+              ref2 = $(data).find('Keyword');
+              for (k = 0, len2 = ref2.length; k < len2; k++) {
+                node = ref2[k];
+                keyword = $(node).text() || '';
+                keywords.push(keyword);
+              }
+              journal = {};
+              journal['name'] = $(data).find('Journal').find('Title').text() || '';
+              journal['issue'] = $(data).find('JournalIssue').find('Issue').text() || '';
+              journal['vol'] = $(data).find('JournalIssue').find('Volume').text() || '';
+              dateNode = $(data).find('JournalIssue').find('PubDate');
+              if ($(dateNode).find('Year').length > 0) {
+                journal['year'] = $(dateNode).find('Year').text();
+              } else if ($(dateNode).find('MedlineDate').length > 0) {
+                journal['year'] = $(dateNode).find('MedlineDate').text();
+              } else {
+                journal['year'] = '';
+              }
+              citation_hash = {
+                name: name,
+                abstract: abstract,
+                authors: authors,
+                keywords: keywords,
+                journal: journal
+              };
+              return populate_citation_fields(citation_hash);
+            }
+          });
+        };
+        populate_citation_fields = function(citation) {
+          var author, i, j, keyword, keywordselect, len, len1, position, ref, ref1;
+          $('.citation-fields').find('.citation-name input').val(citation['name']);
+          $('.citation-fields').find('.citation-abstract textarea').val(citation['abstract']);
+          $('.citation-fields').find('.journal-name input').val(citation['journal']['name']);
+          $('.citation-fields').find('.journal-volume input').val(citation['journal']['vol']);
+          $('.citation-fields').find('.journal-issue input').val(citation['journal']['issue']);
+          $('.citation-fields').find('.journal-year input').val(citation['journal']['year']);
+          position = 1;
+          ref = citation['authors'];
+          for (i = 0, len = ref.length; i < len; i++) {
+            author = ref[i];
+            $('.add-author').click();
+            $('#AUTHORS .authors-citation input.author-name').last().val(author);
+            $('#AUTHORS .authors-citation input.author-position').last().val(position);
+            position = position + 1;
+          }
+          ref1 = citation['keywords'];
+          for (j = 0, len1 = ref1.length; j < len1; j++) {
+            keyword = ref1[j];
+            keywordselect = $('.KEYWORDS select');
+            $.ajax({
+              type: 'GET',
+              data: {
+                q: keyword
+              },
+              url: '/api/v1/keywords.json'
+            }).then(function(data) {
+              var option;
+              option = new Option(data['results'][0]['text'], data['results'][0]['id'], true, true);
+              keywordselect.append(option).trigger('change');
+              keywordselect.trigger({
+                type: 'select2:select',
+                params: {
+                  data: data['results'][0]
+                }
+              });
+            });
+          }
+        };
+        append_citations = function(page) {
+          return $.ajax($('#citations-url').text(), {
+            type: 'GET',
+            dataType: 'json',
+            data: {
+              page: page
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+              return toastr.error('Could not get citations');
+            },
+            success: function(data, textStatus, jqXHR) {
+              var c, citation_journal, citation_journal_date, i, len, ref, to_add;
+              to_add = [];
+              $("#citations-count").html(data['pagination']['total_count']);
+              ref = data['results'];
+              for (i = 0, len = ref.length; i < len; i++) {
+                c = ref[i];
+                citation_journal = '';
+                citation_journal_date = '';
+                if ('journal' in c) {
+                  citation_journal = c['journal']['name'];
+                  citation_journal_date = ' (' + c['journal']['publication_date'] + ')';
+                }
+                to_add.push({
+                  'citation-title': c['name'],
+                  'citation-abstract': c['abstract'],
+                  'citation-journal': citation_journal,
+                  'citation-journal-date': citation_journal_date,
+                  'citation-authors': (c['authors'].map(function(author) {
+                    return author['name'];
+                  })).join(', '),
+                  'citation-numbers': c['pmid'] || 'N/A',
+                  'citations-project-id': c['citations_project_id']
+                });
+              }
+              if (page === 1) {
+                citationList.clear();
+              }
+              citationList.add(to_add, function(items) {
+                var item, j, len1, list_index, list_index_string;
+                list_index = (page - 1) * items.length;
+                for (j = 0, len1 = items.length; j < len1; j++) {
+                  item = items[j];
+                  list_index_string = list_index.toString();
+                  $('<input type="hidden" value="' + item.values()['citations-project-id'] + '" name="project[citations_projects_attributes][' + list_index_string + '][id]" id="project_citations_projects_attributes_' + list_index_string + '_id">').insertBefore(item.elm);
+                  $(item.elm).find('#project_citations_projects_attributes_0__destroy')[0].outerHTML = '<input type="hidden" name="project[citations_projects_attributes][' + list_index_string + '][_destroy]" id="project_citations_projects_attributes_' + list_index_string + '__destroy" value="false">';
+                  list_index++;
+                }
+                citationList.reIndex();
+                return Foundation.reInit($('#citations-projects-list'));
+              });
+              if (data['pagination']['more'] === true) {
+                return append_citations(page + 1);
+              } else {
+                return citationList.sort($('#sort-select').val(), {
+                  order: $('#sort-button').attr('sort-order'),
+                  alphabet: void 0,
+                  insensitive: true,
+                  sortFunction: void 0
+                });
+              }
+            }
+          });
+        };
+        append_citations(1);
+        citationList = new List('citations', list_options);
+        if (!$('#citations').attr('listeners-exist')) {
+          $('#import-select').on('change', function() {
+            $('#import-ris-div').hide();
+            $('#import-csv-div').hide();
+            $('#import-pubmed-div').hide();
+            $('#import-endnote-div').hide();
+            switch ($(this).val()) {
+              case 'ris':
+                return $('#import-ris-div').show();
+              case 'csv':
+                return $('#import-csv-div').show();
+              case 'pmid-list':
+                return $('#import-pubmed-div').show();
+              case 'endnote':
+                return $('#import-endnote-div').show();
+            }
+          });
+          $('input.file').on('change', function() {
+            if (!!$(this).val()) {
+              return $(this).closest('.simple_form').find('.form-actions').show();
+            } else {
+              return $(this).closest('.simple_form').find('.form-actions').hide();
+            }
+          });
+          $('#sort-button').on('click', function() {
+            if ($(this).attr('sort-order') === 'desc') {
+              $(this).attr('sort-order', 'asc');
+              $(this).html('ASCENDING');
+            } else {
+              $(this).attr('sort-order', 'desc');
+              $(this).html('DESCENDING');
+            }
+            return citationList.sort($('#sort-select').val(), {
+              order: $(this).attr('sort-order'),
+              alphabet: void 0,
+              insensitive: true,
+              sortFunction: void 0
+            });
+          });
+          $('#sort-select').on("change", function() {
+            return citationList.sort($(this).val(), {
+              order: $('#sort-button').attr('sort-order'),
+              alphabet: void 0,
+              insensitive: true,
+              sortFunction: void 0
+            });
+          });
+          $('#cp-insertion-node').on('cocoon:before-insert', function(e, citation) {
+            if (!$(citation).hasClass('authors-citation')) {
+              return $('.cancel-button').click();
+            }
+          });
+          $('#citations').find('.list').on('cocoon:after-remove', function(e, citation) {
+            return $('#citations-form').submit();
+          });
+          $(document).on('cocoon:after-insert', function(e, insertedItem) {
+            $(insertedItem).find('.KEYWORDS select').select2({
+              minimumInputLength: 0,
+              ajax: {
+                url: '/api/v1/keywords.json',
+                dataType: 'json',
+                delay: 100,
+                data: function(params) {
+                  return {
+                    q: params.term,
+                    page: params.page || 1
+                  };
+                }
+              }
+            });
+            $(insertedItem).find('#is-pmid').on('click', function() {
+              $(insertedItem).find('#AUTHORS .remove-authors-citation').click();
+              $(insertedItem).find('.KEYWORDS select').val(null).trigger('change');
+              $(insertedItem).find('.citation-name input').val(null);
+              $(insertedItem).find('.citation-abstract textarea').val(null);
+              $(insertedItem).find('.journal-name input').val(null);
+              $(insertedItem).find('.journal-volume input').val(null);
+              $(insertedItem).find('.journal-issue input').val(null);
+              $(insertedItem).find('.journal-year input').val(null);
+              return fetch_from_pubmed($('.project_citations_pmid input').val());
+            });
+            $(insertedItem).find('.citation-select').select2({
+              minimumInputLength: 0,
+              ajax: {
+                url: '/api/v1/citations/titles.json',
+                dataType: 'json',
+                delay: 100,
+                data: function(params) {
+                  return {
+                    q: params.term,
+                    page: params.page || 1
+                  };
+                }
+              }
+            });
+            return $(insertedItem).find('.save-citation').on('click', function() {
+              return $('#citations-form').submit();
+            });
+          });
+          $('#citations-form').bind("ajax:success", function(status) {
+            append_citations(1);
+            toastr.success('Save successful!');
+            return $('.cancel-button').click();
+          });
+          $('#citations-form').bind("ajax:error", function(status) {
+            append_citations(1);
+            return toastr.error('Could not save changes');
+          });
+          $('#citations').attr('listeners-exist', 'true');
+        }
+      }
+    })();
+  });
+
+}).call(this);
+(function() {
+  document.addEventListener('turbolinks:load', function() {
+    if (!($('.extraction_forms_projects, .extractions').length > 0)) {
+      return;
+    }
+    (function() {
+      var post;
+      post = function(path, params, method) {
+        var form, hiddenField, key;
+        method = method || 'post';
+        form = document.createElement('form');
+        form.setAttribute('method', method);
+        form.setAttribute('action', path);
+        for (key in params) {
+          if (params.hasOwnProperty(key)) {
+            hiddenField = document.createElement('input');
+            hiddenField.setAttribute('type', 'hidden');
+            hiddenField.setAttribute('name', key);
+            hiddenField.setAttribute('value', params[key]);
+            form.appendChild(hiddenField);
+          }
+        }
+        document.body.appendChild(form);
+        form.submit();
+      };
+      $('.fill-suggestion').click(function(event) {
+        var efpsId, inputFields, tableRow, type1Desc, type1Name;
+        if ($(event.target).is('td')) {
+          tableRow = $(event.target).closest('tr');
+          type1Name = tableRow.children('td:nth-child(1)').text();
+          type1Desc = tableRow.children('td:nth-child(2)').text();
+          efpsId = $(this).data('sectionId');
+          inputFields = $('.new-type1-fields-' + efpsId).last();
+          inputFields.find('input').val(type1Name);
+          inputFields.find('textarea').val(type1Desc);
+          return $(this).closest('.reveal').foundation('close');
+        }
+      });
+      $('input.select-all[type="checkbox"]').click(function(e) {
+        var that;
+        that = $(this);
+        return that.closest('table').find('input.quality-dimension-select').prop('checked', that.is(':checked'));
+      });
+      $('#submit-quality-dimensions').click(function(e) {
+        var a_qdqId, csrfToken, efpsId;
+        a_qdqId = [];
+        efpsId = $(this).data('extraction-forms-projects-section-id');
+        csrfToken = $('meta[name="csrf-token"]').attr('content');
+        $('input.quality-dimension-select:checkbox:checked').each(function() {
+          var qdqId, that;
+          that = $(this);
+          qdqId = that.attr('id');
+          return a_qdqId.push(qdqId);
+        });
+        if (!Array.isArray(a_qdqId) || !a_qdqId.length) {
+          return $('#modal-' + efpsId).foundation('close');
+        } else {
+          $('#modal-' + efpsId).html('Submitting..');
+          return post('/extraction_forms_projects_sections/' + efpsId + '/add_quality_dimension', {
+            a_qdqId: a_qdqId,
+            authenticity_token: csrfToken
+          });
+        }
+      });
+      $('#extraction_forms_projects_section_extraction_forms_projects_sections_type1s_attributes_0_timepoint_name_ids').select2({
+        minimumInputLength: 0
+      });
+      $('#extraction_forms_projects_sections_type1_timepoint_name_ids').select2({
+        minimumInputLength: 0
+      });
+    })();
+  });
+
+}).call(this);
+(function() {
+  document.addEventListener('turbolinks:load', function() {
+    (function() {
+      var formatResult, formatResultSelection, prereqOff, prereqOn, subroutine, turnPrereqOffSelfAndDescendants, turnPrereqOnSelfAndDescendants;
+      if ($('.extraction_forms_projects_sections, .extractions').length > 0) {
+        formatResultSelection = function(result, container) {
+          return result.text;
+        };
+        formatResult = function(result) {
+          var markup;
+          if (result.loading) {
+            return result.text;
+          }
+          markup = '<span>';
+          if (~result.text.indexOf('Pirate')) {
+            markup += '<img src=\'https://s-media-cache-ak0.pinimg.com/originals/01/ee/fe/01eefe3662a40757d082404a19bce33b.png\' alt=\'pirate flag\' height=\'32\' width=\'32\'> ';
+          }
+          if (~result.text.indexOf('New item: ')) {
+            markup += '';
+          }
+          markup += result.text;
+          if (result.suggestion) {
+            markup += ' (suggested by ' + result.suggestion.first_name + ')';
+          }
+          markup += '</span>';
+          return markup;
+        };
+        $('#preview .question-row-column .select2').select2({
+          placeholder: '--Select--',
+          width: '100%',
+          minimumInputLength: 0,
+          ajax: {
+            url: function() {
+              var id;
+              id = $(this).closest('.question-row-column').data('question-row-column-id');
+              return '/question_row_columns/' + id + '/answer_choices';
+            },
+            dataType: 'json',
+            delay: 250,
+            data: function(params) {
+              return {
+                q: params.term,
+                page: params.page
+              };
+            },
+            processResults: function(data, params) {
+              params.page = params.page || 1;
+              return {
+                results: $.map(data.items, function(i) {
+                  return {
+                    id: i.id,
+                    text: i.name,
+                    suggestion: i.suggestion
+                  };
+                })
+              };
+            }
+          },
+          escapeMarkup: function(markup) {
+            return markup;
+          },
+          templateResult: formatResult,
+          templateSelection: formatResultSelection
+        });
+        $('#extraction_forms_projects_section_section_id').select2({
+          placeholder: '--Select--',
+          width: '100%',
+          minimumInputLength: 0,
+          ajax: {
+            url: '/sections.json',
+            dataType: 'json',
+            delay: 250,
+            data: function(params) {
+              return {
+                q: params.term,
+                page: params.page
+              };
+            },
+            processResults: function(data, params) {
+              params.page = params.page || 1;
+              return {
+                results: $.map(data.items, function(i) {
+                  return {
+                    id: i.id,
+                    text: i.name,
+                    suggestion: i.suggestion
+                  };
+                })
+              };
+            }
+          },
+          escapeMarkup: function(markup) {
+            return markup;
+          },
+          templateResult: formatResult,
+          templateSelection: formatResultSelection
+        });
+        prereqOff = function(prereq) {
+          var _on;
+          _on = $('.' + prereq);
+          if (_on.length) {
+            _on.removeClass(prereq).addClass('off-' + prereq);
+          }
+        };
+        prereqOn = function(prereq) {
+          var _off;
+          _off = $('.off-' + prereq);
+          if (_off.length) {
+            _off.removeClass('off-' + prereq).addClass(prereq);
+          }
+        };
+        subroutine = function(that) {
+          var active, prereq;
+          active = that.is(':checked');
+          if (!active && !that.is('input[type="checkbox"]') && !that.is('input[type="radio"]')) {
+            active = that.val();
+          }
+          prereq = that.data('prereq');
+          if (!prereq) {
+            if ($.isArray(active)) {
+              that.find(':selected').each(function() {
+                var temp;
+                temp = $(this).data('prereq');
+                if ($('.' + temp).length || $('.off-' + temp).length) {
+                  prereq = temp;
+                }
+              });
+            } else {
+              prereq = that.find(':selected').data('prereq');
+            }
+          }
+          return {
+            active: active,
+            prereq: prereq
+          };
+        };
+        turnPrereqOffSelfAndDescendants = function(prereq, that) {
+          prereqOff(prereq);
+          that.closest('table').find('input[data-prereq],option[data-prereq]').each(function(idx) {
+            prereq = $(this).data('prereq');
+            prereqOff(prereq);
+          });
+        };
+        turnPrereqOnSelfAndDescendants = function(prereq, that) {
+          prereqOn(prereq);
+          that.closest('table').find('input[data-prereq],option[data-prereq]').each(function(idx) {
+            prereq = $(this).data('prereq');
+            prereqOn(prereq);
+          });
+        };
+        $('#preview .card input[type="text"]').on('input', function(e) {
+          var currentValue, that;
+          e.preventDefault();
+          that = $(this);
+          currentValue = that.val();
+          that.data('previous-value', currentValue);
+        });
+        $('#preview .card input[type="number"]').on('input', function(e) {
+          var currentValue, that;
+          e.preventDefault();
+          that = $(this);
+          currentValue = that.val();
+          that.data('previous-value', currentValue);
+        });
+        $('#preview .card input[type="checkbox"]').on('mouseup', function(e) {
+          var isChecked, that;
+          e.preventDefault();
+          that = $(this);
+          isChecked = that.prop('checked');
+          that.data('previous-value', !isChecked);
+        });
+        $('#preview .card select').on('blur', function(e) {
+          var isSelected, that;
+          e.preventDefault();
+          that = $(this);
+          isSelected = that.val();
+          that.data('previous-value', isSelected);
+        });
+        $('#preview .card select.select2').on('select2:close', function(e) {
+          var isSelected, that;
+          that = $(this);
+          isSelected = that.val();
+          that.data('previous-value', isSelected);
+        });
+        $('#preview .card input[type="radio"]').on('blur', function(e) {
+          var that;
+          e.preventDefault();
+          that = $(this);
+          that.data('previous-value', that.is(':checked'));
+          that.siblings('input[type="radio"]').each(function() {
+            return $(this).data('previous-value', $(this).is(':checked'));
+          });
+        });
+        $('#preview .card input,select').on('change keyup', function(e) {
+          var active, noneActiveAndPrereq, prereq, result, that;
+          e.preventDefault();
+          that = $(this);
+          result = subroutine(that);
+          active = result.active;
+          prereq = result.prereq;
+          if (active && $('.' + prereq).length) {
+            turnPrereqOffSelfAndDescendants(prereq, that);
+          } else {
+            noneActiveAndPrereq = true;
+            that.closest('table').find('input,select').each(function(idx) {
+              that = $(this);
+              result = subroutine(that);
+              active = result.active;
+              prereq = result.prereq;
+              if (active && $('.off-' + prereq).length) {
+                noneActiveAndPrereq = false;
+                return false;
+              }
+            });
+            if (noneActiveAndPrereq) {
+              turnPrereqOnSelfAndDescendants(prereq, that);
+            }
+          }
+        });
+        $('input').trigger('change');
+        $('.key-question-selector input[type="checkbox"').on('change', function(e) {
+          var modal;
+          e.preventDefault();
+          modal = $('#update-form-modal');
+          if (modal.length) {
+            modal.foundation('open');
+          }
+          $('.card').each(function() {
+            return $(this).addClass('hide');
+          });
+          $('.key-question-selector input[type="checkbox"').each(function() {
+            var isChecked, kqId, that;
+            that = $(this);
+            isChecked = that.prop('checked');
+            if (isChecked) {
+              kqId = that.attr('id');
+              return $('.card').each(function() {
+                if ($(this).hasClass('kqreq-' + kqId)) {
+                  return $(this).removeClass('hide');
+                }
+              });
+            }
+          });
+          if (modal.length) {
+            return modal.foundation('close');
+          }
+        });
+      }
+    })();
+  });
+
+}).call(this);
+(function() {
+
+
+}).call(this);
+(function() {
+  var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+
+  document.addEventListener('turbolinks:load', function() {
+    if (!($('.extractions').length > 0)) {
+      return;
+    }
+    (function() {
+      var add_change_listeners_to_questions, apply_coloring, apply_consolidation_dropdown, dt, get_extractor_names, get_number_of_extractions, get_question_type, get_question_value, shift_down;
+      $('.change-outcome-link').click(function(e) {
+        $('#results-panel > .table-container').html('<br><br><br><h1>loading..</h1>');
+        e.preventDefault();
+      });
+      $('#results-panel .table-container').scroll(function() {
+        if ($(this).prop('scrollHeight') - $(this).height() === $(this).scrollTop()) {
+          console.log('Scrolled to Bottom');
+        }
+      });
+      if ($('body.extractions.index, body.extractions.comparison_tool').length > 0) {
+        $('.projects-users-role').hover(function() {
+          $(this).closest('.projects-users-role').find('.projects-users-role-select').removeClass('hide');
+          return $(this).closest('.projects-users-role').find('.projects-users-role-label').addClass('hide');
+        }, function() {
+          if ($(this).closest('.projects-users-role').attr('dropdown-active') === 'false') {
+            $(this).closest('.projects-users-role').find('.projects-users-role-select').addClass('hide');
+            return $(this).closest('.projects-users-role').find('.projects-users-role-label').removeClass('hide');
+          }
+        });
+        $('body').on('click', function(event) {
+          return $('.projects-users-role-select').each(function() {
+            if ((!$(event.target).closest('.projects-users-role-select').is(this)) && (!$(event.target).hasClass('projects-users-role-label'))) {
+              $(this).closest('.projects-users-role').find('.projects-users-role-select').addClass('hide');
+              $(this).closest('.projects-users-role').find('.projects-users-role-label').removeClass('hide');
+              return $(this).closest('.projects-users-role').attr('dropdown-active', 'false');
+            }
+          });
+        });
+        $('.projects-users-role').on('click', function(event) {
+          return $(this).closest('.projects-users-role').attr('dropdown-active', 'true');
+        });
+        $('.projects-users-role-select select').on('change', function(event) {
+          $(this).closest('form').submit();
+          $(this).closest('.projects-users-role').find('.projects-users-role-select').addClass('hide');
+          $(this).closest('.projects-users-role').find('.projects-users-role-label').removeClass('hide');
+          return $(this).closest('.projects-users-role').attr('dropdown-active', 'false');
+        });
+        shift_down = false;
+        $('body.extractions.index').on('keydown', function(event) {
+          if (event.shiftKey) {
+            return shift_down = true;
+          }
+        });
+        $('body.extractions.index').on('keyup', function(event) {
+          return shift_down = false;
+        });
+        $('.extractions-list .citation-handle-header, .comparisons-list .citation-handle-header').click(function() {
+          var new_sort_mode;
+          if ((!shift_down) && $(this).data('sort-direction') === 'asc') {
+            $(this).data('sort-direction', 'desc');
+            return;
+          }
+          if (shift_down && $(this).data('sort-direction') === 'desc') {
+            $(this).data('sort-direction', 'asc');
+            return;
+          }
+          if ($(this).data('sort-mode') === 'author') {
+            if (shift_down) {
+              $(this).data('sort-direction', 'desc');
+              $(this).html('Citation (Sorted by Publication Year)');
+              new_sort_mode = 'year';
+            } else {
+              $(this).data('sort-direction', 'asc');
+              $(this).html('Citation (Sorted by PMID)');
+              new_sort_mode = 'pmid';
+            }
+          } else if ($(this).data('sort-mode') === 'pmid') {
+            if (shift_down) {
+              $(this).data('sort-direction', 'desc');
+              $(this).html('Citation (Sorted by First Author)');
+              new_sort_mode = 'author';
+            } else {
+              $(this).data('sort-direction', 'asc');
+              $(this).html('Citation (Sorted by Title)');
+              new_sort_mode = 'name';
+            }
+          } else if ($(this).data('sort-mode') === 'name') {
+            if (shift_down) {
+              $(this).data('sort-direction', 'desc');
+              $(this).html('Citation (Sorted by PMID)');
+              new_sort_mode = 'pmid';
+            } else {
+              $(this).data('sort-direction', 'asc');
+              $(this).html('Citation (Sorted by Publication Year)');
+              new_sort_mode = 'year';
+            }
+          } else {
+            if (shift_down) {
+              $(this).data('sort-direction', 'desc');
+              $(this).html('Citation (Sorted by Title)');
+              new_sort_mode = 'name';
+            } else {
+              $(this).data('sort-direction', 'asc');
+              $(this).html('Citation (Sorted by First Author)');
+              new_sort_mode = 'author';
+            }
+          }
+          $(this).data('sort-mode', new_sort_mode);
+          if (new_sort_mode === 'pmid') {
+            return $('td.citation-handle').each(function() {
+              return $(this).attr('data-sort', $(this).attr('data-pmid'));
+            });
+          } else if (new_sort_mode === 'name') {
+            return $('td.citation-handle').each(function() {
+              return $(this).attr('data-sort', $(this).attr('data-name'));
+            });
+          } else if (new_sort_mode === 'year') {
+            return $('td.citation-handle').each(function() {
+              return $(this).attr('data-sort', $(this).attr('data-year'));
+            });
+          } else {
+            return $('td.citation-handle').each(function() {
+              return $(this).attr('data-sort', $(this).attr('data-author'));
+            });
+          }
+        });
+        dt = $('table.extractions-list').DataTable({
+          "paging": false,
+          "info": false,
+          "columnDefs": [
+            {
+              "orderable": false,
+              "targets": [3, 4]
+            }
+          ]
+        });
+        dt.rows({
+          page: 'current'
+        }).invalidate();
+        dt.draw();
+        dt = $('table.comparisons-list').DataTable({
+          "paging": false,
+          "info": false,
+          "columnDefs": [
+            {
+              "orderable": false,
+              "targets": [3]
+            }
+          ]
+        });
+        dt.rows({
+          page: 'current'
+        }).invalidate();
+        dt.draw();
+      }
+      if ($('body.extractions.work').length > 0) {
+        $('#outcome_populations_selector_eefpst1_id').change(function(event) {
+          return $.ajax({
+            url: '/extractions_extraction_forms_projects_sections_type1s/' + this.value + '/get_results_populations',
+            type: 'GET',
+            dataType: 'script',
+            error: function() {
+              return alert('Server busy. Please try again later.');
+            },
+            timeout: 5000
+          });
+        });
+      }
+      if ($('body.extractions').length > 0) {
+        $('.consolidate .edit-type1-link').click(function(e) {
+          var $modal, $this, urlString;
+          e.preventDefault();
+          e.stopPropagation();
+          $this = $(this);
+          $modal = $('#edit-type1-modal');
+          urlString = 'edit_type1_across_extractions?';
+          urlString = urlString.concat('type1_id=');
+          urlString = urlString.concat($this.data('type1-id'));
+          urlString = urlString.concat('&efps_id=');
+          urlString = urlString.concat($this.data('efps-id'));
+          urlString = urlString.concat('&eefps_id=');
+          urlString = urlString.concat($this.data('eefps-id'));
+          $($this.data('extraction-ids')).each(function(idx, elem) {
+            urlString = urlString.concat('&extraction_ids[]=');
+            return urlString = urlString.concat(elem);
+          });
+          return $.ajax(urlString).done(function(resp) {
+            return $modal.html(resp).foundation('open');
+          });
+        });
+        $('#toggle-sections-link').click(function(e) {
+          e.preventDefault;
+          $('#toggle-sections-link .toggle-hide').toggleClass('hide');
+          $('.toggle-sections-link-medium-2-0-hide').toggleClass('medium-2 medium-0 hide');
+          return $('.toggle-sections-link-medium-10-12').toggleClass('medium-10 medium-12');
+        });
+        $('#toggle-consolidated-extraction-link').click(function(e) {
+          e.preventDefault;
+          $('#toggle-consolidated-extraction-link .toggle-hide').toggleClass('hide');
+          $('.toggle-consolidated-extraction-link-medium-8-12').toggleClass('medium-8 medium-12');
+          return $('.toggle-consolidated-extraction-link-medium-4-0-hide').toggleClass('medium-4 medium-0 hide');
+        });
+        get_number_of_extractions = function() {
+          var $questions, $rows;
+          $questions = $('.consolidation-data-row');
+          if ($questions.length > 0) {
+            $rows = $questions.children('tr');
+            return ($rows.length > 0 ? Math.max(0, $rows.first().children('td').length - 1) : 0);
+          }
+        };
+        get_extractor_names = function() {
+          var $panels, extractor_names;
+          $panels = $('div[id^="panel-tab-"]');
+          if ($panels.length > 0) {
+            extractor_names = [];
+            $panels.first().find('th[extractor-name]').each(function(extractor_id, extractor_elem) {
+              return extractor_names.push($(extractor_elem).attr('extractor-name'));
+            });
+            return extractor_names;
+          }
+          return [];
+        };
+        get_question_type = function(question) {
+          var cb_input_arr, drop_input_arr, rb_input_arr;
+          if ($(question).find('input[type="number"]').length === 1) {
+            return "numeric";
+          }
+          if ($(question).find('textarea').length === 1) {
+            return "text";
+          }
+          cb_input_arr = $(question).find('div.input.check_boxes');
+          if (cb_input_arr.length > 0) {
+            return "checkbox";
+          }
+          drop_input_arr = $(question).find('select');
+          if (drop_input_arr.length > 0) {
+            return "dropdown";
+          }
+          rb_input_arr = $(question).find('div.input.radio_buttons');
+          if (rb_input_arr.length > 0) {
+            return "radio_buttons";
+          }
+          return "unclear";
+        };
+        get_question_value = function(question) {
+          var cb_arr, drop_input, numeric_value, rb_selected, selected, sign_option;
+          switch (get_question_type(question)) {
+            case "text":
+              return $(question).find('textarea')[0].value;
+            case "numeric":
+              sign_option = $($(question).find('select')[0]).children('option').filter(':selected')[0];
+              numeric_value = "";
+              if (sign_option) {
+                numeric_value += sign_option.value || "";
+              }
+              numeric_value += "&&&&&";
+              numeric_value += $(question).find('input[type="number"]')[0].value || "";
+              return numeric_value;
+            case "checkbox":
+              cb_arr = [];
+              $(question).find('input.check_boxes').filter(':checked').each(function(input_id, input_elem) {
+                return cb_arr.push(input_elem.value);
+              });
+              return (cb_arr.length > 0 ? cb_arr.join("&&") : "");
+            case "dropdown":
+              drop_input = $(question).find('select')[0];
+              if (drop_input) {
+                selected = $(drop_input).children('option').filter(':selected')[0];
+                return (selected.value ? selected.value : "");
+              }
+              break;
+            case "radio_buttons":
+              rb_selected = $(question).find('input.radio_buttons').filter(':checked');
+              return (rb_selected.length === 1 ? rb_selected[0].value : "");
+            default:
+              return "";
+          }
+        };
+        add_change_listeners_to_questions = function() {
+          var number_of_extractions;
+          number_of_extractions = get_number_of_extractions();
+          return $('.consolidation-data-row').each(function(row_id, row_elem) {
+            return $(row_elem).children('tr').each(function(arm_row_id, arm_row_elem) {
+              return $(arm_row_elem).find('td tbody').each(function(cell_id, cell_elem) {
+                return $(cell_elem).find('tr').each(function(tr_id, tr_elem) {
+                  return $(tr_elem).find('td').each(function(td_id, td_elem) {
+                    var select_elem;
+                    if (td_id !== 0 && cell_id === number_of_extractions) {
+                      switch (get_question_type(td_elem)) {
+                        case "text":
+                          return $(td_elem).find('input.string').keyup(function() {
+                            return apply_coloring();
+                          });
+                        case "numeric":
+                          $(td_elem).find('input.number').keyup(function() {
+                            return apply_coloring();
+                          });
+                          return $(td_elem).find('select').change(function() {
+                            return apply_coloring();
+                          });
+                        case "checkbox":
+                          return $(td_elem).find('input.check_boxes').each(function(input_id, input_elem) {
+                            return $(input_elem).change(function() {
+                              return apply_coloring();
+                            });
+                          });
+                        case "dropdown":
+                          select_elem = $(td_elem).find('select');
+                          return $(select_elem).change(function() {
+                            return apply_coloring();
+                          });
+                        case "radio_buttons":
+                          return $(td_elem).find('input.radio_buttons').each(function(rb_index, rb_input) {
+                            return $(rb_input).change(function() {
+                              return apply_coloring();
+                            });
+                          });
+                      }
+                    }
+                  });
+                });
+              });
+            });
+          });
+        };
+        apply_consolidation_dropdown = function() {
+          var extractor_names, number_of_extractions;
+          number_of_extractions = get_number_of_extractions();
+          extractor_names = get_extractor_names();
+          return $('.consolidation-data-row').each(function(row_id, row_elem) {
+            var $drop_elem, c_dict, drop_option, extraction_id, i, ref;
+            c_dict = {};
+            $drop_elem = $("<select>");
+            for (extraction_id = i = 0, ref = number_of_extractions; 0 <= ref ? i <= ref : i >= ref; extraction_id = 0 <= ref ? ++i : --i) {
+              drop_option = $("<option>");
+              drop_option.text(extractor_names[extraction_id]);
+              drop_option.val(extraction_id);
+              if (extraction_id === number_of_extractions) {
+                drop_option.prop("selected", true);
+              }
+              $drop_elem.append(drop_option);
+            }
+            $(row_elem).children('tr').each(function(arm_row_id, arm_row_elem) {
+              c_dict[arm_row_id] || (c_dict[arm_row_id] = {});
+              return $(arm_row_elem).find('td tbody').each(function(cell_id, cell_elem) {
+                var base;
+                (base = c_dict[arm_row_id])[cell_id] || (base[cell_id] = {});
+                return $(cell_elem).find('tr').each(function(tr_id, tr_elem) {
+                  var base1;
+                  (base1 = c_dict[arm_row_id][cell_id])[tr_id] || (base1[tr_id] = {});
+                  return $(tr_elem).find('td').each(function(td_id, td_elem) {
+                    var base2;
+                    if (td_id !== 0) {
+                      (base2 = c_dict[arm_row_id][cell_id][tr_id])[td_id] || (base2[td_id] = {});
+                      c_dict[arm_row_id][cell_id][tr_id][td_id]["question_type"] = get_question_type(td_elem);
+                      return c_dict[arm_row_id][cell_id][tr_id][td_id]["question_value"] = get_question_value(td_elem);
+                    }
+                  });
+                });
+              });
+            });
+            $drop_elem.change(function() {
+              return $(row_elem).children('tr').each(function(arm_row_id, arm_row_elem) {
+                return $(arm_row_elem).find('td tbody').each(function(cell_id, cell_elem) {
+                  if (cell_id === number_of_extractions) {
+                    $(cell_elem).find('tr').each(function(tr_id, tr_elem) {
+                      return $(tr_elem).find('td').each(function(td_id, td_elem) {
+                        var cb_arr, new_sign, new_val, new_value, select_elem;
+                        if (td_id !== 0) {
+                          cell_id = $drop_elem.children("option").filter(":selected")[0].value;
+                          new_value = c_dict[arm_row_id][cell_id][tr_id][td_id]["question_value"];
+                          switch (c_dict[arm_row_id][cell_id][tr_id][td_id]["question_type"]) {
+                            case "text":
+                              $(td_elem).find('textarea').val(new_value);
+                              return $(td_elem).find('textarea').trigger('keyup');
+                            case "numeric":
+                              new_sign = new_value.split("&&&&&")[0];
+                              new_val = new_value.split("&&&&&").pop();
+                              $(td_elem).find('select').val(new_sign);
+                              $(td_elem).find('select').trigger('change');
+                              $(td_elem).find('input[type="number"]').val(new_val);
+                              return $(td_elem).find('input[type="number"]').trigger('keyup');
+                            case "checkbox":
+                              cb_arr = new_value.length > 0 ? new_value.split("&&") : [];
+                              return $(td_elem).find('input.check_boxes').each(function(input_id, input_elem) {
+                                var ref1;
+                                if (ref1 = input_elem.value, indexOf.call(cb_arr, ref1) >= 0) {
+                                  $(input_elem).prop('checked', true);
+                                } else {
+                                  $(input_elem).prop('checked', false);
+                                }
+                                return $(input_elem).trigger('change');
+                              });
+                            case "dropdown":
+                              select_elem = $(td_elem).find('select');
+                              $(select_elem).val(new_value);
+                              return $(select_elem).trigger('change');
+                            case "radio_buttons":
+                              return $(td_elem).find('input.radio_buttons').each(function(rb_index, rb_input) {
+                                if (rb_input.value === new_value) {
+                                  $(rb_input).prop('checked', true);
+                                } else {
+                                  $(rb_input).prop('checked', false);
+                                }
+                                return $(rb_input).trigger('change');
+                              });
+                          }
+                        }
+                      });
+                    });
+                  }
+                  return apply_coloring();
+                });
+              });
+            });
+            return $(row_elem).find('div#consolidation-dropdown').html($drop_elem);
+          });
+        };
+        apply_coloring = function() {
+          var extractor_arr, number_of_extractions;
+          number_of_extractions = get_number_of_extractions();
+          extractor_arr = get_extractor_names();
+          return $('.consolidation-data-row').each(function(row_id, row_elem) {
+            var b_dict, consolidated_cell, consolidated_value;
+            b_dict = {};
+            consolidated_cell = {};
+            consolidated_value = {};
+            $(row_elem).children('tr').each(function(arm_row_id, arm_row_elem) {
+              b_dict[arm_row_id] || (b_dict[arm_row_id] = {});
+              return $(arm_row_elem).find('td tbody').each(function(cell_id, cell_elem) {
+                return $(cell_elem).find('tr').each(function(tr_id, tr_elem) {
+                  var base;
+                  (base = b_dict[arm_row_id])[tr_id] || (base[tr_id] = {});
+                  consolidated_cell[tr_id] || (consolidated_cell[tr_id] = {});
+                  consolidated_value[tr_id] || (consolidated_value[tr_id] = {});
+                  return $(tr_elem).find('td').each(function(td_id, td_elem) {
+                    var base1, base2, question_value;
+                    if (td_id !== 0) {
+                      if (cell_id !== number_of_extractions) {
+                        question_value = get_question_value(td_elem);
+                        (base1 = b_dict[arm_row_id][tr_id])[td_id] || (base1[td_id] = {});
+                        (base2 = b_dict[arm_row_id][tr_id][td_id])[question_value] || (base2[question_value] = 0);
+                        return b_dict[arm_row_id][tr_id][td_id][question_value]++;
+                      } else {
+                        consolidated_cell[tr_id][td_id] = $(td_elem);
+                        return consolidated_value[tr_id][td_id] = get_question_value(td_elem);
+                      }
+                    }
+                  });
+                });
+              });
+            });
+            return $.each(b_dict, function(arm_row_id, tr_dict) {
+              var color_dict, value_arr;
+              color_dict = {};
+              value_arr = [];
+              $.each(tr_dict, function(tr_id, td_dict) {
+                color_dict[tr_id] || (color_dict[tr_id] = {});
+                return $.each(td_dict, function(td_id, value_dict) {
+                  color_dict[tr_id][td_id] = "";
+                  return $.each(value_dict, function(value, value_count) {
+                    value_arr.push(value);
+                    if (value_count !== number_of_extractions) {
+                      if (consolidated_value[tr_id][td_id] !== "") {
+                        return color_dict[tr_id][td_id] = "#D1F2EB";
+                      } else {
+                        return color_dict[tr_id][td_id] = "#FADBD8";
+                      }
+                    } else {
+                      if (value !== consolidated_value[tr_id][td_id]) {
+                        return color_dict[tr_id][td_id] = "#D1F2EB";
+                      }
+                    }
+                  });
+                });
+              });
+              return $.each(color_dict, function(tr_id, color_tr_dict) {
+                return $.each(color_tr_dict, function(td_id, color) {
+                  if (!!consolidated_cell[tr_id][td_id]) {
+                    return consolidated_cell[tr_id][td_id].css('background', color);
+                  }
+                });
+              });
+            });
+          });
+        };
+        add_change_listeners_to_questions();
+        apply_coloring();
+        apply_consolidation_dropdown();
+      }
+    })();
+  });
+
+}).call(this);
+(function() {
+
+
+}).call(this);
+(function() {
+
+
+}).call(this);
+(function() {
+
+
+}).call(this);
+(function() {
+  document.addEventListener('turbolinks:load', function() {
+    if (!($('.extractions_extraction_forms_projects_sections_type1s').length > 0)) {
+      return;
+    }
+    (function() {
+      var formatTimepoint, formatTimepointSelection;
+      $('.edit_extractions_extraction_forms_projects_sections_type1 .add_fields').data('association-insertion-method', 'append').data('association-insertion-node', function(link) {
+        return link.closest('#populations, #timepoints').find('tbody');
+      });
+      formatTimepoint = function(timepoint) {
+        var markup;
+        if (timepoint.loading) {
+          return timepoint.text;
+        }
+        markup = '<div class="select2-timepoint" style="border: 1px solid grey; border-radius: 10px; padding: 5px;">';
+        markup += '  <div class="select2-timepoint__name">Name: ' + timepoint.text + '</div>';
+        if (timepoint.unit) {
+          markup += '  <div class="select2-timepoint__unit">Unit: ' + timepoint.unit + '</div>';
+        } else {
+          markup += '  <div class="select2-timepoint__unit">Unit: </div>';
+        }
+        markup += '</div>';
+        return markup;
+      };
+      formatTimepointSelection = function(timepoint) {
+        return timepoint.text;
+      };
+      $('#extractions_extraction_forms_projects_sections_type1_row_timepoint_name_id').select2({
+        minimumInputLength: 0,
+        closeOnSelect: true,
+        ajax: {
+          url: '/api/v1/timepoint_names',
+          dataType: 'json',
+          delay: 250,
+          data: function(params) {
+            return {
+              q: params.term,
+              page: params.page
+            };
+          },
+          processResults: function(data, params) {
+            params.page = params.page || 1;
+            return {
+              results: $.map(data.items, function(i) {
+                return {
+                  id: i.id,
+                  text: i.name,
+                  unit: i.unit
+                };
+              })
+            };
+          },
+          cache: true
+        },
+        placeholder: 'Search for an existing Timepoint',
+        escapeMarkup: function(markup) {
+          return markup;
+        },
+        templateResult: formatTimepoint,
+        templateSelection: formatTimepointSelection
+      });
+    })();
+  });
+
+}).call(this);
+(function() {
+  document.addEventListener('turbolinks:load', function() {
+    (function() {
+      Foundation.Abide.defaults.validators['minimum_length'] = function($el, required, parent) {
+        var fieldLength, minimumLength;
+        if (!required) {
+          return true;
+        }
+        fieldLength = $el.val().length;
+        minimumLength = $el.data('minimumLength');
+        if (fieldLength < minimumLength) {
+          return false;
+        }
+      };
+    })();
+  });
+
+}).call(this);
+(function() {
+  document.addEventListener('turbolinks:load', function() {
+    if (!($('.invitations').length > 0)) {
+      return;
+    }
+    (function() {
+      $('.copy-to-clipboard').click(copyToClipboardMessage);
+    })();
+  });
+
+}).call(this);
+(function() {
+
+
+}).call(this);
+(function() {
+
+
+}).call(this);
+(function() {
+
+
+}).call(this);
+(function() {
+
+
+}).call(this);
+(function() {
+
+
+}).call(this);
+(function() {
+  document.addEventListener('turbolinks:load', function() {
+    if (!($('.profiles').length > 0)) {
+      return;
+    }
+    (function() {
+      var formatResult, formatResultSelection;
+      formatResultSelection = function(result, container) {
+        return result.text;
+      };
+      formatResult = function(result) {
+        var markup;
+        if (result.loading) {
+          return result.text;
+        }
+        markup = '<span>';
+        if (~result.text.indexOf('Pirate')) {
+          markup += '<img src=\'https://s-media-cache-ak0.pinimg.com/originals/01/ee/fe/01eefe3662a40757d082404a19bce33b.png\' alt=\'pirate flag\' height=\'32\' width=\'32\'> ';
+        }
+        if (~result.text.indexOf('New item: ')) {
+          markup += '';
+        }
+        markup += result.text;
+        if (result.suggestion) {
+          markup += ' (suggested by ' + result.suggestion.first_name + ')';
+        }
+        markup += '</span>';
+        return markup;
+      };
+      $('#profile_degree_ids').select2({
+        minimumInputLength: 0,
+        ajax: {
+          url: '/degrees.json',
+          dataType: 'json',
+          delay: 250,
+          data: function(params) {
+            return {
+              q: params.term,
+              page: params.page
+            };
+          },
+          processResults: function(data, params) {
+            params.page = params.page || 1;
+            return {
+              results: $.map(data.items, function(i) {
+                return {
+                  id: i.id,
+                  text: i.name,
+                  suggestion: i.suggestion
+                };
+              })
+            };
+          }
+        },
+        escapeMarkup: function(markup) {
+          return markup;
+        },
+        templateResult: formatResult,
+        templateSelection: formatResultSelection
+      });
+      $('#profile_organization_id').select2({
+        minimumInputLength: 0,
+        ajax: {
+          url: '/organizations.json',
+          dataType: 'json',
+          delay: 250,
+          data: function(params) {
+            return {
+              q: params.term,
+              page: params.page
+            };
+          },
+          processResults: function(data, params) {
+            params.page = params.page || 1;
+            return {
+              results: $.map(data.items, function(i) {
+                return {
+                  id: i.id,
+                  text: i.name,
+                  suggestion: i.suggestion
+                };
+              })
+            };
+          }
+        },
+        escapeMarkup: function(markup) {
+          return markup;
+        },
+        templateResult: formatResult,
+        templateSelection: formatResultSelection
+      });
+    })();
+  });
+
+}).call(this);
+(function() {
+
+
+}).call(this);
+(function() {
+  document.addEventListener('turbolinks:load', function() {
+    if (!($('.projects, .citations').length > 0)) {
+      return;
+    }
+    (function() {
+      var append_citations, citationList, fetch_from_pubmed, filterProjectList, list_options, populate_citation_fields;
+      filterProjectList = function(order) {
+        return function() {
+          $.get({
+            url: '/projects/filter?q=' + $('#project-filter').val() + '&o=' + order,
+            dataType: 'script'
+          });
+        };
+      };
+      $('#project-filter').keyup(function(e) {
+        var currentOrder;
+        e.preventDefault();
+        currentOrder = $('.toggle-sort-order button.button.active').data('sortOrder');
+        delay(filterProjectList(currentOrder), 750);
+      });
+      $('.toggle-sort-order button').mousedown(function(e) {
+        var nextOrder;
+        e.preventDefault();
+        if ($(this).hasClass('active')) {
+          return;
+        }
+        nextOrder = $('.toggle-sort-order button.button.disabled').data('sortOrder');
+        filterProjectList(nextOrder)();
+      });
+      $('button.search').mousedown(function(e) {
+        e.preventDefault();
+        $('.search-field').toggleClass('expand-search');
+        $('#project-filter').focus();
+      });
+      $('.export-type-radio').on('change', function(e) {
+        var export_button, link_string;
+        if ($(this).is(':checked')) {
+          export_button = $(this).parents('.reveal').find('.start-export-button');
+          return link_string = $(export_button).attr('href', $(this).val());
+        }
+      });
+      if ($('body.projects.new').length === 1) {
+        $('.distiller-section-file-container').on('cocoon:after-insert', function(_, insertedElem) {
+          var $new_kq_input, $source_kq_input;
+          $(insertedElem).find('.distiller-section-input').select2({
+            placeholder: "-- Select Section --",
+            tags: true
+          });
+          $new_kq_input = $(insertedElem).find('.distiller-key-question-input');
+          if ($('.distiller-section-file-container select.distiller-key-question-input').length > 1) {
+            $source_kq_input = $('.distiller-section-file-container select.distiller-key-question-input').first();
+            $source_kq_input.find('option').each(function(_, kq_option) {
+              var $kq_option;
+              $kq_option = $(kq_option);
+              if ($new_kq_input.find('option[value="' + $kq_option.val() + '"]').length === 0) {
+                $new_kq_input.append(new Option($kq_option.val(), $kq_option.val(), false, false));
+              }
+              return $new_kq_input.trigger('change');
+            });
+          }
+          return $new_kq_input.select2({
+            placeholder: "-- Select Key Question --",
+            tags: true
+          }).on('change', function(e) {
+            var $isNew;
+            $isNew = $(this).find('[data-select2-tag="true"]');
+            if ($isNew.length && $isNew.val() === $(this).val()) {
+              return $('.distiller-section-file-container select.distiller-key-question-input').each(function(_, kq_input) {
+                var $kq_input;
+                $kq_input = $(kq_input);
+                if ($kq_input.find('option[value="' + $isNew.val() + '"]').length === 0) {
+                  $kq_input.append(new Option($isNew.val(), $isNew.val(), false, false)).trigger('change');
+                }
+                return $isNew.replaceWith(new Option($isNew.val(), $isNew.val(), false, true));
+              });
+            }
+          });
+        });
+        $('#create-type').on('change', function(e) {
+          $('.input.file input').val('');
+          if ($(e.target).val() === "empty") {
+            $('.distiller-import-panel').addClass('hide');
+            $('.json-import-panel').addClass('hide');
+            $('#distiller-remove-references-file').trigger("click");
+            $('#distiller-remove-section-file').trigger("click");
+            $('#remove-project-file').trigger("click");
+            $('.submit').removeClass('hide');
+            return $('.submit-with-confirmation').addClass('hide');
+          } else if ($(e.target).val() === "distiller") {
+            $('.distiller-import-panel').removeClass('hide');
+            $('.json-import-panel').addClass('hide');
+            $('#distiller-add-references-file').trigger("click");
+            $('#distiller-add-section-file').trigger("click");
+            $('#remove-project-file').trigger("click");
+            $('.submit').addClass('hide');
+            return $('.submit-with-confirmation').removeClass('hide');
+          } else if ($(e.target).val() === "json") {
+            $('.distiller-import-panel').addClass('hide');
+            $('.json-import-panel').removeClass('hide');
+            $('#distiller-remove-references-file').trigger("click");
+            $('#distiller-remove-section-file').trigger("click");
+            $('#add-project-file').trigger("click");
+            $('.submit').addClass('hide');
+            return $('.submit-with-confirmation').removeClass('hide');
+          }
+        });
+      }
+      if ($('body.projects.edit').length === 1) {
+        $('.project_tasks_projects_users_roles select').select2();
+        $('.tasks-container').on('cocoon:before-insert', function(e, insertedItem) {
+          insertedItem.fadeIn('slow');
+          return insertedItem.css('display', 'flex');
+        });
+        $('.tasks-container').on('cocoon:after-insert', function(e, insertedItem) {
+          insertedItem.addClass('new-task');
+          return $(insertedItem).find('.project_tasks_projects_users_roles select').select2();
+        });
+        $(".project_projects_users_user select").select2({
+          minimumInputLength: 0,
+          ajax: {
+            url: '/api/v1/users.json',
+            dataType: 'json',
+            delay: 100,
+            data: function(params) {
+              return {
+                q: params.term,
+                page: params.page || 1
+              };
+            }
+          }
+        });
+        $('#projects-users-table').on('cocoon:after-insert', function(e, insertedItem) {
+          return $(insertedItem).find('.project_projects_users_user select').select2({
+            minimumInputLength: 0,
+            ajax: {
+              url: '/api/v1/users.json',
+              dataType: 'json',
+              delay: 100,
+              data: function(params) {
+                return {
+                  q: params.term,
+                  page: params.page || 1
+                };
+              }
+            }
+          });
+        });
+      }
+      if ($('body.citations.index').length === 1) {
+        Dropzone.options.fileDropzone = {
+          url: "/imported_files",
+          autoProcessQueue: true,
+          uploadMultiple: false,
+          init: function() {
+            var wrapperThis;
+            wrapperThis = this;
+            this.on('sending', function(file, xhr, formData) {
+              var csv_type_id, endnote_type_id, file_extension, file_type_id, pubmed_type_id, ris_type_id;
+              ris_type_id = $("#dropzone-div input#ris-file-type-id").val();
+              csv_type_id = $("#dropzone-div input#csv-file-type-id").val();
+              endnote_type_id = $("#dropzone-div input#endnote-file-type-id").val();
+              pubmed_type_id = $("#dropzone-div input#pubmed-file-type-id").val();
+              file_extension = file.name.split('.').pop();
+              file_type_id = (function() {
+                switch (false) {
+                  case file_extension !== 'ris':
+                    return ris_type_id;
+                  case file_extension !== 'csv':
+                    return csv_type_id;
+                  case file_extension !== 'enw':
+                    return endnote_type_id;
+                  default:
+                    return pubmed_type_id;
+                }
+              })();
+              formData.append("authenticity_token", $("#dropzone-div input[name='authenticity_token']").val());
+              formData.append("projects_user_id", $("#dropzone-div").find("#imported_file_projects_user_id").val());
+              formData.append("import_type_id", $("#dropzone-div").find("#imported_file_import_type_id").val());
+              formData.append("file_type_id", file_type_id);
+              return formData.append("authenticity_token", $("#dropzone-div input[name='authenticity_token']").val());
+            });
+            this.on('success', function(file, response) {
+              toastr.success('Citation file successfully uploaded. You will be notified by email when citaion import finishes.');
+              return wrapperThis.removeFile(file);
+            });
+            return this.on('error', function(file, error_message) {
+              return toastr.error('ERROR: Cannot upload citation file.');
+            });
+          }
+        };
+        new Dropzone('#fileDropzone');
+        list_options = {
+          valueNames: ['citation-numbers', 'citation-title', 'citation-authors', 'citation-journal', 'citation-journal-date', 'citation-abstract', 'citation-abstract']
+        };
+        fetch_from_pubmed = function(pmid) {
+          return $.ajax('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi', {
+            type: 'GET',
+            dataType: 'xml',
+            data: {
+              db: 'pubmed',
+              retmode: 'xml',
+              id: pmid
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+              console.log(errorThrown);
+              return toastr.error('Could not fetch citation info from PUBMED');
+            },
+            success: function(data, textStatus, jqXHR) {
+              var abstract, authors, citation_hash, dateNode, first_name, i, j, journal, k, keyword, keywords, last_name, len, len1, len2, name, node, ref, ref1, ref2;
+              if (!($(data).find('ArticleTitle').text() != null)) {
+                return 0;
+              }
+              name = $(data).find('ArticleTitle').text() || '';
+              abstract = '';
+              ref = $(data).find('AbstractText');
+              for (i = 0, len = ref.length; i < len; i++) {
+                node = ref[i];
+                abstract += $(node).text();
+                abstract += "\n";
+              }
+              authors = [];
+              ref1 = $(data).find('Author');
+              for (j = 0, len1 = ref1.length; j < len1; j++) {
+                node = ref1[j];
+                first_name = $(node).find('ForeName').text() || '';
+                last_name = $(node).find('LastName').text() || '';
+                authors.push(first_name + ' ' + last_name);
+              }
+              keywords = [];
+              ref2 = $(data).find('Keyword');
+              for (k = 0, len2 = ref2.length; k < len2; k++) {
+                node = ref2[k];
+                keyword = $(node).text() || '';
+                keywords.push(keyword);
+              }
+              journal = {};
+              journal['name'] = $(data).find('Journal').find('Title').text() || '';
+              journal['issue'] = $(data).find('JournalIssue').find('Issue').text() || '';
+              journal['vol'] = $(data).find('JournalIssue').find('Volume').text() || '';
+              dateNode = $(data).find('JournalIssue').find('PubDate');
+              if ($(dateNode).find('Year').length > 0) {
+                journal['year'] = $(dateNode).find('Year').text();
+              } else if ($(dateNode).find('MedlineDate').length > 0) {
+                journal['year'] = $(dateNode).find('MedlineDate').text();
+              } else {
+                journal['year'] = '';
+              }
+              citation_hash = {
+                name: name,
+                abstract: abstract,
+                authors: authors,
+                keywords: keywords,
+                journal: journal
+              };
+              return populate_citation_fields(citation_hash);
+            }
+          });
+        };
+        populate_citation_fields = function(citation) {
+          var author, authorselect, i, j, keyword, keywordselect, len, len1, ref, ref1;
+          $('.citation-fields').find('.citation-name input').val(citation['name']);
+          $('.citation-fields').find('.citation-abstract textarea').val(citation['abstract']);
+          $('.citation-fields').find('.journal-name input').val(citation['journal']['name']);
+          $('.citation-fields').find('.journal-volume input').val(citation['journal']['vol']);
+          $('.citation-fields').find('.journal-issue input').val(citation['journal']['issue']);
+          $('.citation-fields').find('.journal-year input').val(citation['journal']['year']);
+          ref = citation['authors'];
+          for (i = 0, len = ref.length; i < len; i++) {
+            author = ref[i];
+            authorselect = $('.AUTHORS select');
+            $.ajax({
+              type: 'GET',
+              data: {
+                q: author
+              },
+              url: '/api/v1/authors.json'
+            }).then(function(data) {
+              var option;
+              option = new Option(data['results'][0]['text'], data['results'][0]['id'], true, true);
+              authorselect.append(option).trigger('change');
+              authorselect.trigger({
+                type: 'select2:select',
+                params: {
+                  data: data['results'][0]
+                }
+              });
+            });
+          }
+          ref1 = citation['keywords'];
+          for (j = 0, len1 = ref1.length; j < len1; j++) {
+            keyword = ref1[j];
+            keywordselect = $('.KEYWORDS select');
+            $.ajax({
+              type: 'GET',
+              data: {
+                q: keyword
+              },
+              url: '/api/v1/keywords.json'
+            }).then(function(data) {
+              var option;
+              option = new Option(data['results'][0]['text'], data['results'][0]['id'], true, true);
+              keywordselect.append(option).trigger('change');
+              keywordselect.trigger({
+                type: 'select2:select',
+                params: {
+                  data: data['results'][0]
+                }
+              });
+            });
+          }
+        };
+        append_citations = function(page) {
+          return $.ajax($('#citations-url').text(), {
+            type: 'GET',
+            dataType: 'json',
+            data: {
+              page: page
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+              return toastr.error('Could not get citations');
+            },
+            success: function(data, textStatus, jqXHR) {
+              var c, citation_journal, citation_journal_date, i, len, ref, to_add;
+              to_add = [];
+              $("#citations-count").html(data['pagination']['total_count']);
+              ref = data['results'];
+              for (i = 0, len = ref.length; i < len; i++) {
+                c = ref[i];
+                citation_journal = '';
+                citation_journal_date = '';
+                if ('journal' in c) {
+                  citation_journal = c['journal']['name'];
+                  citation_journal_date = ' (' + c['journal']['publication_date'] + ')';
+                }
+                to_add.push({
+                  'citation-title': c['name'],
+                  'citation-abstract': c['abstract'],
+                  'citation-journal': citation_journal,
+                  'citation-journal-date': citation_journal_date,
+                  'citation-authors': (c['authors'].map(function(author) {
+                    return author['name'];
+                  })).join(', '),
+                  'citation-numbers': c['pmid'] || 'N/A',
+                  'citations-project-id': c['citations_project_id']
+                });
+              }
+              if (page === 1) {
+                citationList.clear();
+              }
+              citationList.add(to_add, function(items) {
+                var item, j, len1, list_index, list_index_string;
+                list_index = (page - 1) * items.length;
+                for (j = 0, len1 = items.length; j < len1; j++) {
+                  item = items[j];
+                  list_index_string = list_index.toString();
+                  $('<input type="hidden" value="' + item.values()['citations-project-id'] + '" name="project[citations_projects_attributes][' + list_index_string + '][id]" id="project_citations_projects_attributes_' + list_index_string + '_id">').insertBefore(item.elm);
+                  $(item.elm).find('#project_citations_projects_attributes_0__destroy')[0].outerHTML = '<input type="hidden" name="project[citations_projects_attributes][' + list_index_string + '][_destroy]" id="project_citations_projects_attributes_' + list_index_string + '__destroy" value="false">';
+                  list_index++;
+                }
+                citationList.reIndex();
+                return Foundation.reInit($('#citations-projects-list'));
+              });
+              if (data['pagination']['more'] === true) {
+                return append_citations(page + 1);
+              } else {
+                return citationList.sort($('#sort-select').val(), {
+                  order: $('#sort-button').attr('sort-order'),
+                  alphabet: void 0,
+                  insensitive: true,
+                  sortFunction: void 0
+                });
+              }
+            }
+          });
+        };
+        append_citations(1);
+        citationList = new List('citations', list_options);
+        if (!$('#citations').attr('listeners-exist')) {
+          $('#import-select').on('change', function() {
+            $('#import-ris-div').hide();
+            $('#import-csv-div').hide();
+            $('#import-pubmed-div').hide();
+            $('#import-endnote-div').hide();
+            switch ($(this).val()) {
+              case 'ris':
+                return $('#import-ris-div').show();
+              case 'csv':
+                return $('#import-csv-div').show();
+              case 'pmid-list':
+                return $('#import-pubmed-div').show();
+              case 'endnote':
+                return $('#import-endnote-div').show();
+            }
+          });
+          $('input.file').on('change', function() {
+            if (!!$(this).val()) {
+              return $(this).closest('.simple_form').find('.form-actions').show();
+            } else {
+              return $(this).closest('.simple_form').find('.form-actions').hide();
+            }
+          });
+          $('#sort-button').on('click', function() {
+            if ($(this).attr('sort-order') === 'desc') {
+              $(this).attr('sort-order', 'asc');
+              $(this).html('ASCENDING');
+            } else {
+              $(this).attr('sort-order', 'desc');
+              $(this).html('DESCENDING');
+            }
+            return citationList.sort($('#sort-select').val(), {
+              order: $(this).attr('sort-order'),
+              alphabet: void 0,
+              insensitive: true,
+              sortFunction: void 0
+            });
+          });
+          $('#sort-select').on("change", function() {
+            return citationList.sort($(this).val(), {
+              order: $('#sort-button').attr('sort-order'),
+              alphabet: void 0,
+              insensitive: true,
+              sortFunction: void 0
+            });
+          });
+          $('#cp-insertion-node').on('cocoon:before-insert', function(e, citation) {
+            return $('.cancel-button').click();
+          });
+          $('#citations').find('.list').on('cocoon:after-remove', function(e, citation) {
+            return $('#citations-form').submit();
+          });
+          $(document).on('cocoon:after-insert', function(e, insertedItem) {
+            $(insertedItem).find('.AUTHORS select').select2({
+              minimumInputLength: 0,
+              ajax: {
+                url: '/api/v1/authors.json',
+                dataType: 'json',
+                delay: 100,
+                data: function(params) {
+                  return {
+                    q: params.term,
+                    page: params.page || 1
+                  };
+                }
+              }
+            });
+            $(insertedItem).find('.KEYWORDS select').select2({
+              minimumInputLength: 0,
+              ajax: {
+                url: '/api/v1/keywords.json',
+                dataType: 'json',
+                delay: 100,
+                data: function(params) {
+                  return {
+                    q: params.term,
+                    page: params.page || 1
+                  };
+                }
+              }
+            });
+            $(insertedItem).find('#is-pmid').on('click', function() {
+              $(insertedItem).find('.AUTHORS select').val(null).trigger('change');
+              $(insertedItem).find('.KEYWORDS select').val(null).trigger('change');
+              $(insertedItem).find('.citation-name input').val(null);
+              $(insertedItem).find('.citation-abstract textarea').val(null);
+              $(insertedItem).find('.journal-name input').val(null);
+              $(insertedItem).find('.journal-volume input').val(null);
+              $(insertedItem).find('.journal-issue input').val(null);
+              $(insertedItem).find('.journal-year input').val(null);
+              return fetch_from_pubmed($('.project_citations_pmid input').val());
+            });
+            $(insertedItem).find('.citation-select').select2({
+              minimumInputLength: 0,
+              ajax: {
+                url: '/api/v1/citations/titles.json',
+                dataType: 'json',
+                delay: 100,
+                data: function(params) {
+                  return {
+                    q: params.term,
+                    page: params.page || 1
+                  };
+                }
+              }
+            });
+            return $(insertedItem).find('.save-citation').on('click', function() {
+              return $('#citations-form').submit();
+            });
+          });
+          $('#citations-form').bind("ajax:success", function(status) {
+            append_citations(1);
+            toastr.success('Save successful!');
+            return $('.cancel-button').click();
+          });
+          $('#citations-form').bind("ajax:error", function(status) {
+            append_citations(1);
+            return toastr.error('Could not save changes');
+          });
+          $('#citations').attr('listeners-exist', 'true');
+        }
+      }
+    })();
+  });
+
+}).call(this);
+(function() {
+
+
+}).call(this);
+(function() {
+  var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+
+  document.addEventListener('turbolinks:load', function() {
+    if (!($('.questions, .extractions, .extraction_forms_projects_sections.preview').length > 0)) {
+      return;
+    }
+    (function() {
+      var hideHeaders, multiSelect;
+      multiSelect = ['Checkbox (select multiple)', 'Dropdown (select one)', 'Radio (select one)', 'Select one (with write-in option)', 'Select multiple (with write-in option)'];
+      $('.fieldset').on('change', function() {
+        var _value, that;
+        that = $(this);
+        that.find('.field-options').hide();
+        that.find('.links').hide();
+        _value = that.find('select').children(':selected').text();
+        if (indexOf.call(multiSelect, _value) >= 0) {
+          that.find('.field-options.field-option-type-answer_choice').show();
+          return that.find('.links').show();
+        } else if (_value === 'Text Field (alphanumeric)') {
+          that.find('.field-options.field-option-type-min_length').show();
+          return that.find('.field-options.field-option-type-max_length').show();
+        } else if (_value === 'Numeric Field (numeric)') {
+          that.find('.field-options.field-option-type-additional_char').show();
+          that.find('.field-options.field-option-type-min_value').show();
+          return that.find('.field-options.field-option-type-max_value').show();
+        } else if (_value === 'numeric_range') {
+          that.find('.field-options.field-option-type-min_value').show();
+          return that.find('.field-options.field-option-type-max_value').show();
+        } else if (_value === 'scientific') {
+          that.find('.field-options.field-option-type-min_value').show();
+          that.find('.field-options.field-option-type-max_value').show();
+          that.find('.field-options.field-option-type-coefficient').show();
+          return that.find('.field-options.field-option-type-exponent').show();
+        }
+      });
+      $('.fieldset').trigger('change');
+      hideHeaders = function(_tableRows) {
+        var _colCnt, _rowCnt;
+        _rowCnt = _tableRows.length;
+        _colCnt = _tableRows[0].cells.length;
+        if (_rowCnt === 2) {
+          _tableRows.find('td:first-child, th:first-child').hide();
+        }
+        if (_colCnt === 2) {
+          return _tableRows.find('th:nth-child(-n+3)').hide();
+        }
+      };
+      $('.clean-table table').each(function() {
+        var _tableRows;
+        _tableRows = $(this).find('tr');
+        if (_tableRows.length > 1) {
+          return hideHeaders(_tableRows);
+        }
+      });
+      $('#add_column_link').click(function(event) {
+        var $form;
+        event.preventDefault();
+        $form = $("form[id^='edit_question_']");
+        $form.ajaxSubmit({
+          dataType: 'script',
+          success: function() {
+            $('#add_column_button').click();
+          }
+        });
+        return false;
+      });
+      $('#add_row_link').click(function(event) {
+        var $form;
+        event.preventDefault();
+        $form = $("form[id^='edit_question_']");
+        $form.ajaxSubmit({
+          dataType: 'script',
+          success: function() {
+            $('#add_row_button').click();
+          }
+        });
+        return false;
+      });
+    })();
+  });
+
+}).call(this);
+(function() {
+  var bind_record_saving_mechanism;
+
+  bind_record_saving_mechanism = function() {
+    var submitForm, timers;
+    timers = {};
+    submitForm = function(form) {
+      return function() {
+        return form.submit();
+      };
+    };
+    $('form.edit_record select, form.edit_record input[type="checkbox"], form.edit_record input[type="radio"], form.edit_record input[type="number"]').change(function(e) {
+      var $form, formId;
+      e.preventDefault();
+      $form = $(this).closest('form');
+      formId = $form.attr('id');
+      $form.addClass('dirty');
+      if (formId in timers) {
+        clearTimeout(timers[formId]);
+      }
+      return timers[formId] = setTimeout(submitForm($form), 750);
+    });
+    $('form.edit_record input, form.edit_record textarea').each(function() {
+      var results;
+      results = [];
+      while ($(this).outerHeight() < this.scrollHeight + parseFloat($(this).css('borderTopWidth')) + parseFloat($(this).css('borderBottomWidth'))) {
+        results.push($(this).height($(this).height() + 1));
+      }
+      return results;
+    });
+    return $('form.edit_record input, form.edit_record textarea').keyup(function(e) {
+      var $form, code, formId, results;
+      e.preventDefault();
+      code = e.keyCode || e.which;
+      if (code === 9 || code === 16 || code === 18 || code === 37 || code === 38 || code === 39 || code === 40 || code === 91) {
+        return;
+      }
+      $form = $(this).closest('form');
+      formId = $form.attr('id');
+      $form.addClass('dirty');
+      if (formId in timers) {
+        clearTimeout(timers[formId]);
+      }
+      timers[formId] = setTimeout(submitForm($form), 750);
+      results = [];
+      while ($(this).outerHeight() < this.scrollHeight + parseFloat($(this).css('borderTopWidth')) + parseFloat($(this).css('borderBottomWidth'))) {
+        results.push($(this).height($(this).height() + 1));
+      }
+      return results;
+    });
+  };
+
+  document.addEventListener('turbolinks:load', function() {
+    return (function() {
+      return bind_record_saving_mechanism();
+    })();
+  });
+
+}).call(this);
+(function() {
+  document.addEventListener('turbolinks:load', function() {
+    var get_result_value;
+    if (!($('.result_statistic_sections').length > 0)) {
+      return;
+    }
+    (function() {
+      return $('.links.add-comparison').on('cocoon:before-insert', function() {
+        return $(this).hide();
+      }).on('cocoon:after-insert', function(e, insertedItem) {
+        var bac_anova_handler, bac_select;
+        $(insertedItem).find('.links.add-comparate-group a').click();
+        $(insertedItem).find('.links.add-comparate-group a').click();
+        $('.links.add-comparate-group a').hide();
+        $(insertedItem).find('.links.add-comparate').each(function() {
+          return $(this).find('a').click();
+        });
+        $('.nested-fields > .comparate-groups').find('.nested-fields.comparates').first().after($('<div style="text-align: center; font-weight: normal;">vs.</div>'));
+        if ($('.wac-comparate-fields').length === 2) {
+          $('.wac-comparate-fields:eq(1)').find('select option').filter(function() {
+            return this.text.includes('(Baseline)');
+          }).attr('selected', true);
+        }
+        $('.links.add-anova a').click();
+        $('.links.add-anova a').addClass('disabled');
+        $('.links.add-comparison a').addClass('disabled');
+        bac_select = $(insertedItem).find('.bac-select').first();
+        bac_anova_handler = function(event) {
+          if ($(event.target).find('option:selected').first().val() === "000") {
+            $(event.target).closest('.comparate-groups').children().hide();
+            $(event.target).closest('.comparates').show();
+            $(event.target).closest('.comparates').find('.add-comparate').hide();
+            $('.submit-comparison').toggleClass('hide');
+            return $('.submit-anova').toggleClass('hide');
+          } else {
+            $(event.target).closest('.comparate-groups').children().show();
+            $(event.target).closest('.comparates').find('.add-comparate').show();
+            $('.submit-comparison').toggleClass('hide');
+            return $('.submit-anova').toggleClass('hide');
+          }
+        };
+        if (bac_select) {
+          bac_select.find('option').first().text('All Arms (ANOVA)').val('000');
+          bac_select.change(bac_anova_handler);
+          return bac_select.trigger('change');
+        }
+      });
+    })();
+    get_result_value = function(td_elem) {
+      var add_change_listeners_to_results_section, get_result_elem, get_result_extractor_names, get_result_number_of_extractions, inputs, result_section_coloring, result_section_dropdowning;
+      inputs = $(td_elem).find("input.string");
+      return (inputs.length > 0 ? inputs[0].value : "");
+      get_result_elem = function(td_elem) {
+        inputs = $(td_elem).find("input.string");
+        return (inputs.length > 0 ? inputs[0] : null);
+      };
+      get_result_number_of_extractions = function() {
+        var questions, rows;
+        questions = $('table.consolidated-data-table tbody');
+        if (questions.length > 0) {
+          rows = $(questions[0]).find('tr');
+          return Math.max(0, rows.length - 1);
+        }
+        return 0;
+      };
+      get_result_extractor_names = function() {
+        var $rows, extractor_names, questions;
+        questions = $('table.consolidated-data-table tbody');
+        if (questions.length > 0) {
+          extractor_names = [];
+          $rows = $(questions[0]).find('tr');
+          $rows.each(function(tr_id, tr_elem) {
+            return $(tr_elem).find("td.extractor-name").each(function(td_id, td_elem) {
+              if (td_id === 0) {
+                return extractor_names.push(td_elem.innerHTML);
+              }
+            });
+          });
+          return extractor_names;
+        }
+        return [];
+      };
+      add_change_listeners_to_results_section = function() {
+        var number_of_extractions;
+        number_of_extractions = get_result_number_of_extractions();
+        return $('table.consolidated-data-table tbody').each(function(row_id, row_elem) {
+          return $(row_elem).find('tr').each(function(tr_id, tr_elem) {
+            return $(tr_elem).find('td').not('.extractor-name').each(function(td_id, td_elem) {
+              var input_elem;
+              if (tr_id === number_of_extractions) {
+                input_elem = get_result_elem(td_elem);
+                if (input_elem) {
+                  return $(input_elem).keyup(function() {
+                    return result_section_coloring();
+                  });
+                }
+              }
+            });
+          });
+        });
+      };
+      result_section_coloring = function() {
+        var number_of_extractions;
+        number_of_extractions = get_result_number_of_extractions();
+        return $('table.consolidated-data-table tbody').each(function(row_id, row_elem) {
+          var a_dict, color;
+          a_dict = {};
+          $(row_elem).find('tr').each(function(tr_id, tr_elem) {
+            return $(tr_elem).find('td').not('.extractor-name').each(function(td_id, td_elem) {
+              var base, name;
+              if (tr_id < number_of_extractions) {
+                a_dict["counts"] || (a_dict["counts"] = {});
+                (base = a_dict["counts"])[name = td_elem.innerHTML] || (base[name] = 0);
+                return a_dict["counts"][td_elem.innerHTML]++;
+              } else {
+                a_dict["consolidated_value"] = get_result_value(td_elem);
+                return a_dict["consolidated_elem"] = td_elem;
+              }
+            });
+          });
+          color = "#E8DAEF";
+          return $.each(a_dict["counts"], function(value, count) {
+            console.log(value + ', ' + count);
+            console.log(a_dict["consolidated_value"]);
+            console.log(a_dict["consolidated_elem"]);
+            if (count !== number_of_extractions) {
+              if (a_dict["consolidated_value"] !== "") {
+                color = "#D1F2EB";
+              } else {
+                color = "#FADBD8";
+              }
+            } else {
+              if (a_dict["consolidated_value"] === value) {
+                color = "#E8DAEF";
+              } else {
+                color = "#D1F2EB";
+              }
+            }
+            return $(a_dict["consolidated_elem"]).css('background', color);
+          });
+        });
+      };
+      result_section_dropdowning = function() {
+        var extractor_names, number_of_extractions;
+        number_of_extractions = get_result_number_of_extractions();
+        extractor_names = get_result_extractor_names();
+        return $('td.consolidated-data-cell').each(function(cell_id, cell_elem) {
+          var $drop_elem, a_dict, drop_option, extraction_id, i, ref;
+          a_dict = {};
+          $drop_elem = $("<select>");
+          for (extraction_id = i = 0, ref = number_of_extractions; 0 <= ref ? i <= ref : i >= ref; extraction_id = 0 <= ref ? ++i : --i) {
+            drop_option = $("<option>");
+            drop_option.text(extractor_names[extraction_id]);
+            drop_option.val(extraction_id);
+            if (extraction_id === number_of_extractions) {
+              drop_option.prop("selected", true);
+            }
+            $drop_elem.append(drop_option);
+          }
+          $(cell_elem).find('table.consolidated-data-table tbody').each(function(row_id, row_elem) {
+            a_dict[row_id] || (a_dict[row_id] = {});
+            return $(row_elem).find('tr').each(function(tr_id, tr_elem) {
+              return $(tr_elem).find('td').not('.extractor-name').each(function(td_id, td_elem) {
+                if (tr_id < number_of_extractions) {
+                  return a_dict[row_id][tr_id] = td_elem.innerHTML;
+                } else {
+                  return a_dict[row_id][tr_id] = get_result_value(td_elem);
+                }
+              });
+            });
+          });
+          $drop_elem.change(function() {
+            return $(cell_elem).find('table.consolidated-data-table tbody').each(function(row_id, row_elem) {
+              return $(row_elem).find('tr').each(function(tr_id, tr_elem) {
+                return $(tr_elem).find('td').not('.extractor-name').each(function(td_id, td_elem) {
+                  var input_elem, selected_id;
+                  if (tr_id === number_of_extractions) {
+                    selected_id = $drop_elem.children("option").filter(":selected")[0].value;
+                    input_elem = get_result_elem(td_elem);
+                    $(input_elem).val(a_dict[row_id][selected_id]);
+                    result_section_coloring();
+                    return $(input_elem).trigger('keyup');
+                  }
+                });
+              });
+            });
+          });
+          return $(cell_elem).find("div.consolidated-dropdown").html($drop_elem);
+        });
+      };
+      result_section_coloring();
+      result_section_dropdowning();
+      add_change_listeners_to_results_section();
+    };
+  });
+
+}).call(this);
+(function() {
+  document.addEventListener('turbolinks:load', function() {
+    if (!($('body.projects.edit').length > 0)) {
+      return;
+    }
+    (function() {
+      var find_existing_option, require_option_handler, send_new_option, switch_option_handler;
+      send_new_option = function(option_type, label_type) {
+        var new_option;
+        $('.add-option').click();
+        new_option = $('.option-fields').last();
+        $(new_option).find('input.option-type:radio[value="' + option_type + '"]').prop('checked', true);
+        return $(new_option).find('input.label-type:radio[value="' + label_type + '"]').prop('checked', true);
+      };
+      find_existing_option = function(option_type, label_type) {
+        if (label_type) {
+          return $('.option-fields:has(input.option-type:radio:checked[value="' + option_type + '"]):has(input.label-type:radio:checked[value="' + label_type + '"])');
+        } else {
+          return $('.option-fields:has(input.option-type:radio:checked[value="' + option_type + '"])');
+        }
+      };
+      require_option_handler = function(event) {
+        var existing_option, label_type, option_type;
+        option_type = $(event.target).attr('option-type');
+        label_type = $(event.target).attr('label-type');
+        existing_option = find_existing_option(option_type, label_type);
+        if ($(event.target).hasClass('success')) {
+          $(existing_option).find('.remove-option').click();
+        } else if (existing_option.length === 0 || $(existing_option).is(':hidden')) {
+          send_new_option(option_type, label_type);
+        }
+        return $(event.target).toggleClass('success');
+      };
+      switch_option_handler = function(event) {
+        var existing_option, option_type, switch_value;
+        option_type = $(event.target).attr('option-type');
+        switch_value = $(event.target).is(':checked');
+        existing_option = find_existing_option(option_type, null);
+        if (switch_value === false) {
+          return $(existing_option).find('.remove-option').click();
+        } else {
+          if (existing_option.length === 0 || $(existing_option).is(':hidden')) {
+            return send_new_option(option_type, null);
+          }
+        }
+      };
+      $('.options-table .require-button').on('click', require_option_handler);
+      return $('.options-table .switch input').on('change', switch_option_handler);
+    })();
+    return;
+  });
+
+}).call(this);
+(function() {
+
+
+}).call(this);
+(function() {
+  var bind_srdr20_saving_mechanism;
+
+  bind_srdr20_saving_mechanism = function() {
+    var submitForm, timers;
+    if ($('body.sd_meta_data').length === 0) {
+      return;
+    }
+    timers = {};
+    submitForm = function(form) {
+      return function() {
+        var formData;
+        form = $('#sd-meta-form')[0];
+        formData = new FormData(form);
+        return $.ajax({
+          type: "PATCH",
+          url: $('#sd-meta-form')[0].action,
+          data: formData,
+          async: true,
+          contentType: false,
+          processData: false
+        });
+      };
+    };
+    $('form').change(function(e) {
+      var $form, formId;
+      e.preventDefault();
+      $form = $(this).closest('form');
+      formId = $form.attr('id');
+      $form.addClass('dirty');
+      if (formId in timers) {
+        clearTimeout(timers[formId]);
+      }
+      return timers[formId] = setTimeout(submitForm($form), 750);
+    });
+    $('form').each(function() {
+      var results;
+      results = [];
+      while ($(this).outerHeight() < this.scrollHeight + parseFloat($(this).css('borderTopWidth')) + parseFloat($(this).css('borderBottomWidth'))) {
+        results.push($(this).height($(this).height() + 1));
+      }
+      return results;
+    });
+    return $('form').keyup(function(e) {
+      var $form, code, formId, results;
+      e.preventDefault();
+      code = e.keyCode || e.which;
+      if (code === 9 || code === 16 || code === 18 || code === 37 || code === 38 || code === 39 || code === 40 || code === 91) {
+        return;
+      }
+      $form = $(this).closest('form');
+      formId = $form.attr('id');
+      $form.addClass('dirty');
+      if (formId in timers) {
+        clearTimeout(timers[formId]);
+      }
+      timers[formId] = setTimeout(submitForm($form), 750);
+      results = [];
+      while ($(this).outerHeight() < this.scrollHeight + parseFloat($(this).css('borderTopWidth')) + parseFloat($(this).css('borderBottomWidth'))) {
+        results.push($(this).height($(this).height() + 1));
+      }
+      return results;
+    });
+  };
+
+  document.addEventListener('turbolinks:load', function() {
+    (function() {
+      var formatResult, formatResultSelection, init_select2, sd_meta_datum_id;
+      bind_srdr20_saving_mechanism();
+      formatResultSelection = function(result, container) {
+        return result.text;
+      };
+      formatResult = function(result) {
+        var markup;
+        if (result.loading) {
+          return result.text;
+        }
+        markup = '<span>';
+        if (~result.text.indexOf('Pirate')) {
+          markup += '<img src=\'https://s-media-cache-ak0.pinimg.com/originals/01/ee/fe/01eefe3662a40757d082404a19bce33b.png\' alt=\'pirate flag\' height=\'32\' width=\'32\'> ';
+        }
+        if (~result.text.indexOf('New item: ')) {
+          markup += '';
+        }
+        markup += result.text;
+        if (result.suggestion) {
+          markup += ' (suggested by ' + result.suggestion.first_name + ')';
+        }
+        markup += '</span>';
+        return markup;
+      };
+      init_select2 = function(selector, url) {
+        return $(selector).select2({
+          minimumInputLength: 0,
+          ajax: {
+            url: url,
+            dataType: 'json',
+            delay: 250,
+            data: function(params) {
+              return {
+                q: params.term,
+                page: params.page
+              };
+            },
+            processResults: function(data, params) {
+              params.page = params.page || 1;
+              return {
+                results: $.map(data.items, function(i) {
+                  return {
+                    id: i.id,
+                    text: i.name,
+                    suggestion: i.suggestion
+                  };
+                })
+              };
+            }
+          },
+          escapeMarkup: function(markup) {
+            return markup;
+          },
+          templateResult: formatResult,
+          templateSelection: formatResultSelection
+        });
+      };
+      init_select2("#sd_meta_datum_funding_source_ids", '/funding_sources');
+      init_select2("#sd_meta_datum_key_question_type_ids", '/key_question_types');
+      init_select2(".sd_search_database", '/sd_search_databases');
+      init_select2(".key_question", '/key_questions');
+      init_select2(".key_question_type", '/key_question_types');
+      sd_meta_datum_id = $(".sd_picods_key_question").data('sd-meta-datum-id');
+      init_select2(".sd_picods_key_question", "/sd_key_questions?sd_meta_datum_id=" + sd_meta_datum_id);
+      init_select2(".sd_picods_type", '/sd_picods_types');
+      $("form").on("cocoon:after-insert", function(_, row) {
+        sd_meta_datum_id = $(".sd_picods_key_question").data('sd-meta-datum-id');
+        init_select2($(row).find(".sd_search_database"), '/sd_search_databases');
+        init_select2($(row).find(".key_question"), '/key_questions');
+        init_select2($(row).find(".key_question_type"), '/key_question_types');
+        return init_select2($(row).find(".sd_picods_key_question"), "/sd_key_questions?sd_meta_datum_id=" + sd_meta_datum_id);
+      });
+      $("a[data-remote]").on("ajax:success", function(event) {
+        return $(this).parent().closest('div').fadeOut();
+      });
+    })();
+  });
+
+}).call(this);
+(function() {
+
+
+}).call(this);
+(function() {
+
+
+}).call(this);
+(function() {
+
+
+}).call(this);
+(function() {
+  document.addEventListener('turbolinks:load', function() {
+    if (!($('.static_pages').length > 0)) {
+      return;
+    }
+    (function() {
+      var scrollToTop;
+      scrollToTop = function() {
+        var element, offset, offsetTop;
+        element = $('body');
+        offset = element.offset();
+        offsetTop = offset.top;
+        return $('html, body').animate({
+          scrollTop: offsetTop
+        }, 1000, 'swing');
+      };
+      $(document).scroll(function() {
+        if ($(window).scrollTop() > 100) {
+          return $('.scroll-top-wrapper').addClass('show');
+        } else {
+          return $('.scroll-top-wrapper').removeClass('show');
+        }
+      });
+      $('.scroll-top-wrapper').click(scrollToTop);
+      $('#responsive-menu').on('sticky.zf.stuckto:top', function() {
+        $('#signup-link-id').addClass('glow');
+      }).on('sticky.zf.unstuckfrom:top', function() {
+        $('#signup-link-id').removeClass('glow');
+      });
+    })();
+  });
+
+}).call(this);
+(function() {
+  document.addEventListener('turbolinks:load', function() {
+    if (!($('.tasks').length > 0)) {
+      return;
+    }
+    (function() {
+      $('.task_num_assigned').hide();
+      $('#task_task_type_id').on("change", function() {
+        if ($('#task_task_type_id option:selected').text() !== "Advanced") {
+          return $('.task_num_assigned').hide();
+        } else {
+          $('.task_num_assigned').show();
+          return $('#task_num_assigned').val('');
+        }
+      });
+    })();
+  });
+
+}).call(this);
+(function() {
+
+
+}).call(this);
 
 
 
@@ -57888,33 +58051,41 @@ function __guardMethod__(obj, methodName, transform) {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+// require assignments
+// require author
+// require cable
+// require citations
+// require extraction_forms_projects
+// require extraction_forms_projects_sections
+// require extraction_forms_projects_sections_type1s
+// require extractions
+// require extractions_extraction_forms_projects_sections_question_row_column_fields
+// require extractions_extraction_forms_projects_sections_type1_row_columns
+// require extractions_extraction_forms_projects_sections_type1_rows
+// require extractions_extraction_forms_projects_sections_type1s
+// require forms
+// require invitations
+// require journal
+// require key_questions
+// require keywords
+// require labels
+// require organizations
+// require profiles
+// require project_report_links
+// require projects
+// require projects_users_roles
+// require questions
+// require records
+// require result_statistic_sections
+// require screening_options
+// require sd_key_questions
+// require sd_meta_data
+// require sd_picods_types
+// require sd_search_databases
+// require searches
+// require static_pages
+// require tasks
+// require teams
 
 
 
@@ -57983,7 +58154,6 @@ Dropzone.autoDiscover = false;
 
 document.addEventListener( 'turbolinks:load', function() {
   $( document ).foundation();
-
 
   // Check for dirty forms.
   window.onbeforeunload = function (e) {
