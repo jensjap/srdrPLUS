@@ -1,6 +1,12 @@
-<% if @errors %>
-  toastr.warning('<%= @errors.full_messages.join(', ') %>')
-<% else %>
-  toastr.success('Data saved!')
-  $('.dirty').removeClass('dirty');
-<% end %>
+( function() {
+  let infoDiv = $( ".infoDiv" );
+
+  <% if @errors %>
+    toastr.warning('<%= @errors.full_messages.join(', ') %>')
+  <% else %>
+    //toastr.success('Data saved!')
+    $('.dirty').removeClass('dirty');
+    infoDiv.show().animate( { opacity: 1 } );
+    infoDiv.show().delay( 2000 ).animate( { opacity: 0 } );
+  <% end %>
+} )();
