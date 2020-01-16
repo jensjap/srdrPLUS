@@ -67,6 +67,7 @@ class SdMetaDataController < ApplicationController
     @sd_meta_datum.sd_other_items.build
     @sd_meta_datum.sd_grey_literature_searches.build
     @sd_meta_datum.sd_prisma_flows.build
+    @sd_meta_datum.sd_meta_regression_analysis_results.build
     @project = @sd_meta_datum.try(:project)
     @report = @sd_meta_datum.report
     @url = sd_meta_datum_path(@sd_meta_datum)
@@ -186,7 +187,7 @@ class SdMetaDataController < ApplicationController
           { network_meta_analysis_results_attributes: [:name, :p_type, :_destroy, :id, pictures: []] },
           { pairwise_meta_analytic_results_attributes: [:name, :p_type, :_destroy, :id, pictures: []] },
           { sd_forest_plots_attributes: [:name, :_destroy, :id, pictures: []] },
-          { sd_meta_regression_analysis_results_attributes: [:name, :_destroy, :id] },
+          { sd_meta_regression_analysis_results_attributes: [:name, :_destroy, :id, :picture] },
           { sd_summary_of_evidences_attributes: [:sd_key_question_id, :soe_type, :name, :_destroy, :id, pictures: []] }
         )
     end

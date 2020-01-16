@@ -113,7 +113,7 @@ class SdMetaDatum < ApplicationRecord
   accepts_nested_attributes_for :network_meta_analysis_results, allow_destroy: true
   accepts_nested_attributes_for :pairwise_meta_analytic_results, allow_destroy: true
   accepts_nested_attributes_for :sd_forest_plots, allow_destroy: true
-  accepts_nested_attributes_for :sd_meta_regression_analysis_results, allow_destroy: true
+  accepts_nested_attributes_for :sd_meta_regression_analysis_results, allow_destroy: true, reject_if: :all_blank
 
   def report
     Report.all.find { |report_meta| report_meta.accession_id == self.report_accession_id }
