@@ -4,7 +4,12 @@
 - else
   - is_first = true
   - sd_meta_data_queries.each do |sd_meta_data_query|
-    = render partial: 'project_report_links/new_query_form/query_item', locals: { query_hash: sd_meta_data_query.query_hash.deep_stringify_keys, sd_meta_data_query_id: sd_meta_data_query.id, is_first: is_first }
+    = render partial: 'project_report_links/new_query_form/query_item', 
+      locals: { query_hash: sd_meta_data_query.query_hash.deep_stringify_keys, 
+        sd_meta_data_query_id: sd_meta_data_query.id, 
+        is_first: is_first, 
+        created_at: distance_of_time_in_words(sd_meta_data_query.created_at, Time.now) + " ago", 
+        updated_at: distance_of_time_in_words(sd_meta_data_query.updated_at, Time.now) + " ago" }
     - is_first = false
   .select-query.button
     | Run Selected Query
@@ -35,15 +40,41 @@ scss:
       font-weight: bold;
     }
 
+    .query-item-info {
+      padding: 1rem;
+      .query-id {
+        font-size: large;
+      }
+
+      div {
+        margin-top: 0.3rem !important;
+        margin-bottom: 0.3rem !important;
+      }
+    }
+
     .query-item-column {
+      max-width: 100%;
       background-color: aliceblue;
       border: solid 1px grey;
-      margin: 0.6rem;
-      padding: 0.6rem;
+      margin-left: 0.3rem;
+      margin-right: 0.3rem;
+      padding: 0.3rem;
     }
   }
 
 javascript:
+  $( '.destroy-query' ).on('click', function(event) {
+    if(confirm("Are you sure?")){
+      sd_meta_data_query_id = $( event.target ).parents( '.query-item' ).data( 'sd-meta-data-query-id' )
+      $.ajax({ 
+        url: "#{ sd_meta_data_queries_url }/" + sd_meta_data_query_id,
+        method: 'DELETE',
+        success: function(data) { $( '.query-item[data-sd-meta-data-query-id="' + sd_meta_data_query_id + '"]' ).remove() },
+        error: function(data) { toastr.error('ERROR: Unable to delete query')}
+      })
+    }
+  })
+    
   $( '.query-item' ).on( 'click', function( data ){
     $( '.query-item' ).removeClass( 'selected' )
     $( this ).addClass( 'selected' )
