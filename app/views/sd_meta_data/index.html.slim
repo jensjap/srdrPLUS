@@ -81,15 +81,24 @@ javascript:
     var project_id = $('#project-create').val();
     var report_accession_id = $('#report-create').val();
 
-    e.preventDefault();
-    $.ajax({
-      type: "POST",
-      url: "/sd_meta_data",
-      data: {
-        sd_meta_datum: {
-          project_id,
-          report_accession_id
+    if ( project_id && report_accession_id ) { 
+      e.preventDefault();
+      $.ajax({
+        type: "POST",
+        url: "/sd_meta_data",
+        data: {
+          sd_meta_datum: {
+            project_id,
+            report_accession_id
+          }
         }
+      });
+    } else {
+      if (!project_id) {
+        toastr.warning("You must select an SRDR+ project")
       }
-    });
+      if (!report_accession_id) {
+        toastr.warning("You must select a Systematic Review report")
+      }
+    }
   })
