@@ -1,4 +1,6 @@
 class ProjectReportLinksController < ApplicationController
+  add_breadcrumb 'my project-report links',  :project_report_links_url
+
   MEASURES_ORDER = [
     "Descriptive Statistics",
     "Between Arm Comparisons",
@@ -27,6 +29,7 @@ class ProjectReportLinksController < ApplicationController
 
   def new_query_form
     create_common_instance_variables params
+    add_breadcrumb 'new query',  project_report_link_new_query_form_url(@sd_meta_datum)
 
     @projects_user = ProjectsUser.find_by user: current_user, project: @project
     @sd_meta_data_queries = @sd_meta_datum.sd_meta_data_queries.where( projects_user: @projects_user )

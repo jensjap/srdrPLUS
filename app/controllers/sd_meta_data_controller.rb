@@ -1,5 +1,5 @@
 class SdMetaDataController < ApplicationController
-  add_breadcrumb 'my project report links', :sd_meta_data_path
+  add_breadcrumb 'my project-report links', :sd_meta_data_path
 
   around_action :wrap_in_transaction
 
@@ -9,6 +9,7 @@ class SdMetaDataController < ApplicationController
     @sd_meta_datum = SdMetaDatum.find(params[:id])
     @project = @sd_meta_datum.try(:project)
     @report = @sd_meta_datum.report
+    add_breadcrumb 'view project-report link',  sd_meta_datum_url(@sd_meta_datum)
   end
 
   def mapping_update
@@ -73,7 +74,7 @@ class SdMetaDataController < ApplicationController
     @report = @sd_meta_datum.report
     @url = sd_meta_datum_path(@sd_meta_datum)
  
-    add_breadcrumb 'edit project report link', edit_sd_meta_datum_url(@sd_meta_datum)
+    add_breadcrumb 'edit project-report link', edit_sd_meta_datum_url(@sd_meta_datum)
 end
 
   def update
