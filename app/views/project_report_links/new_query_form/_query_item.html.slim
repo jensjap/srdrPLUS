@@ -1,9 +1,15 @@
 .query-item.grid-x.grid-margin-x[data-sd-meta-data-query-id="#{ sd_meta_data_query_id}" class="#{ (is_first ? 'selected' : '') }"]
-  .query-item-info.large-1.medium-1.small-1
-    .id = sd_meta_data_query_id
-    /.created-date = created_at
+  .query-item-info.large-2.medium-2.small-2
+    .query-id
+      span
+        'Id: 
+      span
+        = sd_meta_data_query_id.to_s
     .updated-date = updated_at
-  .key_questions.cell.large-2.medium-2.small-5
+    .query-columns.cell
+      .destroy-query.button.small.alert
+        | Delete
+  .key_questions.cell.large-2.medium-2.small-4
     label = 'Key Questions'
     - query_hash['key_question_names'].each do |kq_name|
       .query-item-kq = kq_name
@@ -13,11 +19,11 @@
       div[class="#{ section_name.downcase }"]
         - t1_name_arr.each do |t1_name|
           .t1-item = t1_name
-  .query-columns.cell.large-7.medium-7.small-12
-    label = 'Columns'
+  .query-columns.cell.large-6.medium-6.small-12
+    /label = 'Columns'
     .grid-x
       - query_hash['columns'].values.each do |column|
-        .query-item-column.cell.large-2.medium-2.small-4 [class="#{ column['type'].downcase }"]
+        .query-item-column.cell.shrink [class="#{ column['type'].downcase }"]
           label = column['name']
           .query-item-questions
             - column['export_items'].values.each do |export_item|

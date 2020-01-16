@@ -42,22 +42,39 @@ scss:
 
     .query-item-info {
       padding: 1rem;
-      .id {
-        font-weight: bold;
+      .query-id {
         font-size: large;
-        margin: 1rem 1rem 1rem 1rem;
+      }
+
+      div {
+        margin-top: 0.3rem !important;
+        margin-bottom: 0.3rem !important;
       }
     }
 
     .query-item-column {
+      max-width: 100%;
       background-color: aliceblue;
       border: solid 1px grey;
-      margin: 0.6rem;
-      padding: 0.6rem;
+      margin-left: 0.3rem;
+      margin-right: 0.3rem;
+      padding: 0.3rem;
     }
   }
 
 javascript:
+  $( '.destroy-query' ).on('click', function(event) {
+    if(confirm("Are you sure?")){
+      sd_meta_data_query_id = $( event.target ).parents( '.query-item' ).data( 'sd-meta-data-query-id' )
+      $.ajax({ 
+        url: "#{ sd_meta_data_queries_url }/" + sd_meta_data_query_id,
+        method: 'DELETE',
+        success: function(data) { $( '.query-item[data-sd-meta-data-query-id="' + sd_meta_data_query_id + '"]' ).remove() },
+        error: function(data) { toastr.error('ERROR: Unable to delete query')}
+      })
+    }
+  })
+    
   $( '.query-item' ).on( 'click', function( data ){
     $( '.query-item' ).removeClass( 'selected' )
     $( this ).addClass( 'selected' )

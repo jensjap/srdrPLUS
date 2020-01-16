@@ -14,7 +14,7 @@ Rails.application.routes.draw do
   resources :sd_search_databases, only: [:index]
   resources :key_questions, only: [:index]
   resources :sd_key_questions, only: [:index]
-  resources :sd_meta_data_queries, only: [:create, :destroy]
+  resources :sd_meta_data_queries, only: [:create, :update, :destroy]
 
 
   devise_for :admins

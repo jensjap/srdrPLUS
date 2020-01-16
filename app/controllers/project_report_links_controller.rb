@@ -6,7 +6,7 @@ class ProjectReportLinksController < ApplicationController
     "NET Change"].freeze
 
   def index
-    @sd_meta_data = SdMetaDatum.policy_scope(ProjectReportLink)
+    @sd_meta_data = policy_scope(SdMetaDatum).
       includes(project: { key_questions_projects: :key_question }).
       #where(state: 'COMPLETED')
       where(section_flag_0: true,

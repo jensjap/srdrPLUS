@@ -1,4 +1,6 @@
 class SdMetaDataController < ApplicationController
+  add_breadcrumb 'my project report links', :sd_meta_data_path
+
   around_action :wrap_in_transaction
 
   def show
@@ -70,7 +72,9 @@ class SdMetaDataController < ApplicationController
     @project = @sd_meta_datum.try(:project)
     @report = @sd_meta_datum.report
     @url = sd_meta_datum_path(@sd_meta_datum)
-  end
+ 
+    add_breadcrumb 'edit project report link', edit_sd_meta_datum_url(@sd_meta_datum)
+end
 
   def update
     @sd_meta_datum = SdMetaDatum.find(params[:id])
@@ -93,7 +97,7 @@ class SdMetaDataController < ApplicationController
   def index
     @projects = Project.all
     @reports = Report.all
-    @sd_meta_data = SdMetaDatum.all
+    @sd_meta_data = policy_scope(SdMetaDatum)
   end
 
   private

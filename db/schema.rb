@@ -1471,7 +1471,7 @@ ActiveRecord::Schema.define(version: 2020_01_15_121501) do
     t.boolean "section_flag_7", default: false, null: false
   end
 
-  create_table "sd_meta_data_queries", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci", force: :cascade do |t|
+  create_table "sd_meta_data_queries", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.text "query_text"
     t.bigint "sd_meta_datum_id"
     t.bigint "projects_user_id"
@@ -1829,7 +1829,7 @@ ActiveRecord::Schema.define(version: 2020_01_15_121501) do
     t.index ["version_id"], name: "index_version_associations_on_version_id"
   end
 
-  create_table "versions", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "versions", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.string "item_type", limit: 191, null: false
     t.integer "item_id", null: false
     t.string "event", null: false
