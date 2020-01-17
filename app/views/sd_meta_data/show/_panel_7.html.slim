@@ -60,13 +60,14 @@
             p
               - network_meta_analysis_result.pictures.each do |picture|
                 = image_tag(picture, class: 'openable', style: 'height:100%;width:auto;')
-    div data-row-span="1"
+    /div data-row-span="1"
       div data-field-span="1"
         label 86. Published Project Link
         div = @sd_meta_datum.srdr_data_link.present? ? link_to(@sd_meta_datum.srdr_data_link, @sd_meta_datum.srdr_data_link, target: :_blank) : "N/A"
     div data-row-span="1"
       div data-field-span="1"
-        label 87. Meta-regression analysis results
+        /label 87. Meta-regression analysis results
+        label 86. Meta-regression analysis results
         - if @sd_meta_datum.sd_meta_regression_analysis_results.empty?
           div N/A
         - else

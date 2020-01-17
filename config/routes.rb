@@ -122,6 +122,7 @@ Rails.application.routes.draw do
   end
 
   resources :sd_meta_data, only: [:index, :create] do
+    get 'preview'
     post 'section_update'
     post 'mapping_update'
   end
