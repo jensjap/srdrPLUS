@@ -6,6 +6,4 @@
     = f.input :citation, require: true, label: "Select Citation", collection: @citations, label_method: :label_method, input_html: { class: "select2_multi", multiple: true }
 
   .form-actions
-    = f.button :submit
-
-
+    = f.button :submit, class: 'create-extraction-button', label: t('.create')

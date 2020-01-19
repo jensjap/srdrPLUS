@@ -62,7 +62,7 @@
               /td = link_to t('edit'), edit_extraction_path(extraction)
               td = link_to t('destroy'), extraction, style: 'font-weight:bold;color:#cc4b37 !important;', data: { confirm: 'Are you sure?' }, method: :delete
 .column.row
-  = link_to new_project_extraction_path, class: 'button', style: 'background-color: #1986c7 !important;' do
+  = link_to new_project_extraction_path, class: 'button create-extraction-button' do
     i.fi-plus>
     = t('.create')
 
