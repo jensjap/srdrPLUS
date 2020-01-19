@@ -18,12 +18,13 @@
       li.tabs-title
         = link_to 'Study Results', '?panel_number=7', class: (@panel_number == 7 ? 'bg-light-grey' : ''), id: "panel-7-label"
   .cell.medium-10
-    .preview-container-container.float-center.hide
-      a.close-preview.float-right = "✖"
-      .grid-form
-        .preview-container
-    a.preview-button.button.float-right.secondary[data-panel-number="#{ @panel_number }"]
-      | Preview
+    - if @panel_number != 5
+      .preview-container-container.float-center.hide
+        a.close-preview.float-right = "✖"
+        .grid-form
+          .preview-container
+      a.preview-button.button.float-right.secondary[data-panel-number="#{ @panel_number }"]
+        | Preview
     = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { id: 'sd-meta-form', class: "grid-form", data: { 'abide': '', 'live-validate': true } }) do |f|
       .tabs-content.vertical
         .infoDiv style="opacity: 0; color: green;"
