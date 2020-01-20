@@ -4921,6 +4921,12 @@ body.extractions.index .projects-users-role .projects-users-role-label {
 span.select2-container {
   width: 100% !important;
 }
+
+/* line 95, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/extractions.scss */
+.create-extraction-button {
+  margin-top: 1rem !important;
+  background-color: #1986c7 !important;
+}
 /**
  * Foundation for Sites by ZURB
  * Version 6.5.3
