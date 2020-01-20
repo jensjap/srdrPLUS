@@ -27,3 +27,6 @@
             p
               div <b>Key Question Types:</b> #{kqts.present? ? kqts : 'N/A'}
               div #{sd_key_question.key_question.name}
+    div data-row-span="1"
+      div data-field-span="1"
+        = f.input :srdr_data_link, as: :string, label: '86. Published Project Link'

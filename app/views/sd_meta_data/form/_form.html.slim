@@ -18,6 +18,13 @@
       li.tabs-title
         = link_to 'Study Results', '?panel_number=7', class: (@panel_number == 7 ? 'bg-light-grey' : ''), id: "panel-7-label"
   .cell.medium-10
+    - if @panel_number != 5
+      .preview-container-container.float-center.hide
+        a.close-preview.float-right = "✖"
+        .grid-form
+          .preview-container
+      a.preview-button.button.float-right.secondary[data-panel-number="#{ @panel_number }"]
+        | Preview
     = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { id: 'sd-meta-form', class: "grid-form", data: { 'abide': '', 'live-validate': true } }) do |f|
       .tabs-content.vertical
         .infoDiv style="opacity: 0; color: green;"
@@ -26,7 +33,17 @@
       br/
       .form-actions
         = f.error_notification
-        = f.button :submit, 'Save Changes', class: "button", style: "margin-left: 10px;", data: { disable_with: "Please wait..." }
+        /= f.button :submit, 'Save Changes', class: "button", style: "margin-left: 10px;", data: { disable_with: "Please wait..." }
+
+scss:
+  .preview-container-container {
+    .close-preview {
+      font-size: xx-large;
+    }
+    width: 100%;
+    height: 100%;
+    background-color: white;
+  }
 
 javascript:
   $('textarea').each(function() {
@@ -36,4 +53,17 @@ javascript:
 
   $(document).on("click", ".openable", function() {
     window.open($(this).attr('src'));
+  })
+
+  $( 'a.close-preview' ).on('click', function(event) {
+    $( '.preview-container' ).html('')
+    $( '.preview-container-container' ).addClass( 'hide' )
+  })
+
+  $( '.preview-button' ).on( 'click', function(event) {
+    $.ajax({
+      url: "#{ sd_meta_datum_preview_url(@sd_meta_datum) }",
+      data: { panel_number: $('.preview-button').data('panel-number')},
+      method: 'GET'
+    })
   })

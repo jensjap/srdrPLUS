@@ -30,6 +30,16 @@ class SdMetaDataController < ApplicationController
     head :no_content
   end
 
+  def preview
+    respond_to do |format|
+      format.js do
+        @panel_number = params[:panel_number].try(:to_i) || 0
+        @sd_meta_datum = SdMetaDatum.find(params[:sd_meta_datum_id])
+        @project = @sd_meta_datum.try(:project)
+      end
+    end
+  end
+
   def section_update
     sd_meta_datum = SdMetaDatum.find(params[:sd_meta_datum_id])
     sd_meta_datum.update(section_params)
