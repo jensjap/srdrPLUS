@@ -13,18 +13,4 @@ class ImportMailer < ApplicationMailer
     @message = message
     mail(to: imported_file.user.email, subject: "SRDR+ File Import Failed: #{@filename}")
   end
-
-  def notify_distiller_import_completion(imported_file_id)
-    imported_file = ImportedFile.find imported_file_id
-    @filename = (imported_file.content || OpenStruct.new(:filename => "")).filename.to_s
-    @project = imported_file.project
-    mail(to: imported_file.user.email, subject: "SRDR+ Project Import Completed: #{@filename}")
-  end
-
-  def notify_distiller_import_failure(imported_file_id, message)
-    imported_file = ImportedFile.find imported_file_id
-    @filename = (imported_file.content || OpenStruct.new(:filename => "")).filename.to_s
-    @project = imported_file.project
-    mail(to: imported_file.user.email, subject: "SRDR+ Project Import Failed: #{@filename}")
-  end
 end

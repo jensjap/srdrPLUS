@@ -4,7 +4,7 @@ class DistillerImporter
     @project = project
     @projects_users_role = ProjectsUsersRole.find_or_create_by!(
                                       projects_user: ProjectsUser.find_or_create_by!(project: @project, user: @user),
-                                      role: Role.find_by( name: 'Importer'))
+                                      role: Role.find_by( name: 'Leader'))
 
     # We want to save distiller user reference as another question, and we want to create a separate kq for that
     user_info_kq = KeyQuestion.find_or_create_by!(name: "Imported User Info")
