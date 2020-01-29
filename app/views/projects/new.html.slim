@@ -25,14 +25,13 @@
                     "data-association-insertion-method" => 'append'
 
 
-        select#create-type.hide
+        select#create-type
           option value="empty" Create an empty project
-          option value="json" Create project from an SRDR+ JSON export
+          /option value="json" Create project from an SRDR+ JSON export
           option value="distiller" Create project from a Distiller SR .csv export
 
-        = f.simple_fields_for :projects_users do |g|
+        = f.simple_fields_for :projects_users, collection: [@project.projects_users.new] do |g|
           = g.input :user_id, as: :hidden, input_html: { value: current_user.id }
-          /= g.input :role_id, as: :hidden, input_html: { value: Role.find_by(name: 'Leader').id }
 
           .distiller-import-panel.hide
             .distiller-reference-file-container

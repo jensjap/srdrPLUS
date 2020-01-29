@@ -3,10 +3,7 @@ require "import_jobs/_ris_citation_importer"
 
 class DistillerImportJob < ApplicationJob
   queue_as :default
-
-  rescue_from(StandardError) do |e|
-    ImportMailer.notify_distiller_import_completion(@project.id, @user.id, e.message).deliver_later
-  end
+  rescue_from StandardError, with: :handle_standard_error
 
   def perform(*args)
     # args:
@@ -38,6 +35,11 @@ class DistillerImportJob < ApplicationJob
     # end
     # import_references @project, ImportedFile.find args.third
 
-    ImportMailer.notify_distiller_import_completion(@project.id, @user.id).deliver_later
+    ImportMailer.notify_distiller_import_completion(@references_file.id).deliver_later
   end
+
+  private
+    def handle_standard_error(e)
+      ImportMailer.notify_distiller_import_failure(@references_file.id, e.message).deliver_later
+    end
 end
