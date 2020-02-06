@@ -1,7 +1,8 @@
 li = link_to('Dashboard', projects_path)
 
-- if (controller_name.eql?('projects') && not(action_name.eql?('index')) && not(action_name.eql?('new'))) || controller_name.eql?('assignments') || controller_name.eql?('extractions') || controller_name.eql?('extraction_forms_projects') || (controller_name.eql?('citations') && action_name.eql?('index')) || (controller_name.eql?('tasks') && action_name.eql?('index')) || (controller_name.eql?('screening_options') && action_name.eql?('index'))
-  - project = @project || @extraction.try(:project) || @extraction_forms_project.project
+- if (controller_name.eql?('projects') && not(action_name.eql?('index')) && not(action_name.eql?('new'))) || controller_name.eql?('assignments') || controller_name.eql?('extractions') || controller_name.eql?('extraction_forms_projects') || (controller_name.eql?('citations') && action_name.eql?('index')) || (controller_name.eql?('tasks') && action_name.eql?('index')) || (controller_name.eql?('screening_options') && action_name.eql?('index')) ||  (controller_name.eql?('questions') && (action_name.eql?('dependencies') || action_name.eql?('edit')))
+
+  - project = @project || @extraction.try(:project) || @extraction_forms_project.try(:project) || @question.project
 
   li
     a href='#' Project
