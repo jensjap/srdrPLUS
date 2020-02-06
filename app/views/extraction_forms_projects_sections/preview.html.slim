@@ -7,12 +7,13 @@
   /= select_tag(:key_question_id, options_for_select(@extraction_forms_projects_section.key_questions_projects_array))
   .key-question-selector
     h4 Select Key Question to work on
-    - @key_questions_projects_array_for_select.each do |kqp|
-      .grid-x
-        .cell.shrink style='margin-right: 0.5rem;'
-          = check_box_tag kqp[1], 1, true
-        .cell.auto
-          = label_tag kqp[1], kqp[0]
+    .grid-y
+      - @key_questions_projects_array_for_select.each do |kqp|
+        .cell.grid-x
+          .cell.shrink style='margin-right: 0.5rem;'
+            = check_box_tag kqp[1], 1, true
+          .cell.auto
+            = label_tag kqp[1], kqp[0]
 
   - @extraction_forms_projects_section.questions.each_with_index do |q, idx|
 
