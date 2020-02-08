@@ -6,13 +6,17 @@
     .row.column
       - if @extractions_extraction_forms_projects_sections_type1\
         .extractions_extraction_forms_projects_section.extraction_forms_projects_section.section.name == 'Outcomes'
-        = f.association :type1_type
+        = f.association :type1_type, label: 'Type of Outcome'
+        #type1s
+          = f.simple_fields_for(:type1) do |type1_form|
+            = type1_form.input :name, label: 'Domain'
+            = type1_form.input :description, label: 'Specific Measurement'
         = f.input :units
-
-      #type1s
-        = f.simple_fields_for(:type1) do |type1_form|
-          = type1_form.input :name
-          = type1_form.input :description
+      - else
+        #type1s
+          = f.simple_fields_for(:type1) do |type1_form|
+            = type1_form.input :name
+            = type1_form.input :description
 
     - if @extractions_extraction_forms_projects_sections_type1\
       .extractions_extraction_forms_projects_section.extraction_forms_projects_section.section.name == 'Outcomes'
