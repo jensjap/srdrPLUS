@@ -57842,7 +57842,18 @@ function __guardMethod__(obj, methodName, transform) {
         });
       };
     };
-    $('form').change(function(e) {
+    $('.trigger-autosave').click(function(e) {
+      var $form, formId;
+      e.preventDefault();
+      $form = $(this).closest('form');
+      formId = $form.attr('id');
+      $form.addClass('dirty');
+      if (formId in timers) {
+        clearTimeout(timers[formId]);
+      }
+      return timers[formId] = setTimeout(submitForm($form), 750);
+    });
+    $('form, .trigger-autosave').change(function(e) {
       var $form, formId;
       e.preventDefault();
       $form = $(this).closest('form');

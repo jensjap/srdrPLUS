@@ -70,9 +70,6 @@ a.accordion-title href="#"
 
 
       .column.row
-        a.button.expanded[data-open="gdrive-export-modal-#{project.id.to_s}"]
-          | Export to Google Drive
-      .column.row
         = link_to "Delete Project", confirm_deletion_project_path(project), method: :get, class: "alert button expanded", remote: true
       .reveal[data-reveal id="gdrive-export-modal-#{project.id.to_s}"]
         .column.row

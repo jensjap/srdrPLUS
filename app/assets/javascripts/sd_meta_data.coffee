@@ -26,7 +26,22 @@ bind_srdr20_saving_mechanism = () ->
       })
 
   # Select Drop Down and Radio
-  $( 'form' ).change ( e ) ->
+  $( '.trigger-autosave' ).click ( e ) ->
+    e.preventDefault()
+
+    $form = $( this ).closest( 'form' )
+
+    # Use this to keep track of the different timers.
+    formId = $form.attr( 'id' )
+
+    # Mark form as 'dirty'.
+    $form.addClass( 'dirty' )
+
+    if formId of timers
+      clearTimeout( timers[formId] )
+    timers[formId] = setTimeout( submitForm( $form ), 750 )
+
+  $( 'form, .trigger-autosave' ).change ( e ) ->
     e.preventDefault()
 
     $form = $( this ).closest( 'form' )

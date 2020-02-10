@@ -123,6 +123,7 @@ document.addEventListener 'turbolinks:load', ->
           $( '.submit' ).removeClass( 'hide' )
           $( '.submit-with-confirmation' ).addClass( 'hide' )
         else if $( e.target ).val() == "distiller"
+          console.log("OYOY")
           $( '.distiller-import-panel' ).removeClass( 'hide' )
           $( '.json-import-panel' ).addClass( 'hide' )
           $( '#distiller-add-references-file' ).trigger "click"

@@ -163,6 +163,18 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
     super
   end
 
+  def extractions_extraction_forms_projects_sections_type1s_attributes=(attributes)
+    attributes.each do |key, attribute_collection|
+      unless attribute_collection.has_key? 'id'
+        Type1.transaction do
+          type1 = Type1.find_or_create_by!(attribute_collection['type1_attributes'])
+          attributes[key]['type1_attributes']['id'] = type1.id.to_s
+        end
+      end
+    end
+    super
+  end
+
   # Create default draft status
   def create_default_draft_status
     if statusing.nil?

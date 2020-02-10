@@ -1,0 +1,2 @@
+$( '.preview-container' ).html("<%= j render(partial: "sd_meta_data/show/panel_#{@panel_number}", locals: { sd_meta_datum: @sd_meta_datum, project: @project })  %>")
+$( '.preview-container-container' ).removeClass( 'hide' )

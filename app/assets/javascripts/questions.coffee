@@ -56,8 +56,7 @@ document.addEventListener 'turbolinks:load', ->
         _tableRows.find('th:nth-child(-n+3)').hide()
 
 
-    $('.clean-table table').each ->
-
+    $('.clean-table table, table.dependency-table').each ->
       _tableRows = $(this).find('tr')
 
       if _tableRows.length > 1

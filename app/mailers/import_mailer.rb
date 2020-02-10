@@ -13,16 +13,4 @@ class ImportMailer < ApplicationMailer
     @message = message
     mail(to: imported_file.user.email, subject: "SRDR+ File Import Failed: #{@filename}")
   end
-
-  def notify_distiller_import_completion(project_id, user_id)
-    user = User.find user_id
-    @project = Project.find project_id
-    mail(to: user.email, subject: "SRDR+ Project Import Completed: #{@project.name}")
-  end
-
-  def notify_distiller_import_failure(project_id, user_id)
-    user = User.find user_id
-    @project = Project.find project_id
-    mail(to: user.email, subject: "SRDR+ Project Import Failed: #{@project.name}")
-  end
 end

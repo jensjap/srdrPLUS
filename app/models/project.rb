@@ -148,6 +148,12 @@ class Project < ApplicationRecord
       .where(projects_users: { projects_users_roles: { roles: { name: "Leader" } } })
   end
 
+  def consolidators
+    User.joins({ projects_users: [:project, { projects_users_roles: :role }] })
+      .where(projects_users: { project_id: id })
+      .where(projects_users: { projects_users_roles: { roles: { name: "Consolidator" } } })
+  end
+
   def contributors
     User.joins({ projects_users: [:project, { projects_users_roles: :role }] })
       .where(projects_users: { project_id: id })
@@ -1022,9 +1028,12 @@ class Project < ApplicationRecord
 
   def create_default_member
     if User.try(:current)
-      self.users << User.current
-      self.projects_users.first.roles << Role.first
-      self.save
+      projects_user = self.projects_users.select{ |pu| pu.user == User.current }.first
+      projects_user ||= ProjectsUser.create( user: User.current, project: self ).first
+      if not projects_user.roles.where( name: 'Leader' ).present?
+        projects_user.roles << Role.where( name: 'Leader' )
+        projects_user.save
+      end
     end
   end
 end
