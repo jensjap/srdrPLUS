@@ -89,18 +89,18 @@ body {
 a {
   color: $primary-color;
 
-  &:visited {
-    color: $primary-color;
-  }
+//  &:visited {
+//    color: $primary-color;
+//  }
+//
+//  &:hover {
+//    color: $primary-color;
+//    background-color: transparent;
+//  }
 
-  &:hover {
-    color: $primary-color;
-    background-color: transparent;
-  }
-
-  &.button {
-    color: $white !important;
-  }
+//  &.button {
+//    color: $white !important;
+//  }
 
   &.disabled {
     pointer-events: none;

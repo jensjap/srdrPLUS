@@ -66,7 +66,7 @@
     i.fi-plus>
     = t('.create')
 
-- if @project.leaders.include? current_user
+- if @project.leaders.include?(current_user) or @project.consolidators.include? current_user
   .row
     .column.medium-12
       h4 Comparison Tool

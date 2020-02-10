@@ -148,6 +148,12 @@ class Project < ApplicationRecord
       .where(projects_users: { projects_users_roles: { roles: { name: "Leader" } } })
   end
 
+  def consolidators
+    User.joins({ projects_users: [:project, { projects_users_roles: :role }] })
+      .where(projects_users: { project_id: id })
+      .where(projects_users: { projects_users_roles: { roles: { name: "Consolidator" } } })
+  end
+
   def contributors
     User.joins({ projects_users: [:project, { projects_users_roles: :role }] })
       .where(projects_users: { project_id: id })

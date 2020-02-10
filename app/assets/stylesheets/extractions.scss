@@ -68,6 +68,16 @@
   flex-direction: row;
 }
 
+#project-list a.accordion-title {
+  color: #5b5b5b;
+}
+
+#project-list li.accordion-item {
+  &:hover {
+    background-color: lavender;
+  }
+}
+
 body.extractions.index {
   .tooltip {
     max-width: rem-calc(300px) !important;
