@@ -7,10 +7,10 @@ class ExtractionsExtractionFormsProjectsSectionsType1sController < ApplicationCo
 
   # GET /extractions_extraction_forms_projects_sections_type1/1/edit
   def edit
-    project = @extractions_extraction_forms_projects_sections_type1.project
+    @project = @extractions_extraction_forms_projects_sections_type1.project
 
-    add_breadcrumb 'edit project', edit_project_path(project)
-    add_breadcrumb 'extractions',  project_extractions_path(project)
+    add_breadcrumb 'edit project', edit_project_path(@project)
+    add_breadcrumb 'extractions',  project_extractions_path(@project)
     add_breadcrumb 'work',         work_extraction_path(@extractions_extraction_forms_projects_sections_type1.extraction,
                                                         anchor: "panel-tab-#{ @extractions_extraction_forms_projects_sections_type1
                                                           .extractions_extraction_forms_projects_section

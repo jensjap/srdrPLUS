@@ -23,7 +23,11 @@ class ExtractionsController < ApplicationController
       @citation_groups = @project.citation_groups
     else
       @extractions = @project.extractions.joins(projects_users_role: :projects_user).where(projects_users_role: { projects_users: { user_id: current_user.id } })
-      @citation_groups = []
+      if @project.consolidators.include? current_user
+        @citation_groups = @project.citation_groups
+      else
+        @citation_groups = []
+      end
     end
 
     add_breadcrumb 'edit project', edit_project_path(@project)

@@ -1,4 +1,4 @@
-h5 #{ section_name } that are included in this Extraction
+/h5 #{ section_name } that are included in this Extraction
 
 .table-scroll
   table
@@ -6,8 +6,8 @@ h5 #{ section_name } that are included in this Extraction
       tr
         - if section_name == 'Outcomes'
           th Type
-        th = section_name.eql?('Outcomes') ? 'Domain' : 'Name'
-        th = section_name.eql?('Outcomes') ? 'Specific Measurement' : 'Description'
+        th = section_name.eql?('Outcomes') ? 'Domain' : "#{section_name.singularize} Name"
+        th = section_name.eql?('Outcomes') ? 'Specific Measurement' : "#{section_name.singularize} Description"
         - if section_name == 'Outcomes'
           th Populations
           th Timepoints

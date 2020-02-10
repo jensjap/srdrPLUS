@@ -1,15 +1,19 @@
 - provide(:title, t(".extract_data"))
 - provide(:project_title, @extraction.project.name)
 
-.column.row
+div style= 'margin: 1.2rem 62px 1.2rem 62px ; background-color: Lavender; border: solid 1px; border-color: #bbb6dd; padding: 1rem; width: auto;'
   - @extraction.citation.handle.split("\n").each do |handle_part|
-    h4 = handle_part
+    h5 = handle_part
 
-.key-question-selector
+.key-question-selector style='margin-left: 31px;'
   h5 Select Key Question(s):
-  - @key_questions_projects_array_for_select.each do |kqp|
-    = check_box_tag kqp[1], 1, true
-    = label_tag kqp[1], kqp[0]
+  .grid-y
+    - @key_questions_projects_array_for_select.each do |kqp|
+      .cell.grid-x
+        .cell.shrink style='margin-right: 0.5rem;'
+          = check_box_tag kqp[1], 1, true
+        .cell.auto
+          = label_tag kqp[1], kqp[0]
 
 hr
 

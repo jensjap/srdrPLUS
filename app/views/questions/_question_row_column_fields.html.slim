@@ -3,4 +3,4 @@ div id='#{ prerequisitable.class }-#{ prerequisitable.id }'
   = simple_form_for(@question, url: toggle_dependency_question_path(@question), method: :patch, remote: true) do |f|
     = f.hidden_field :prerequisitable_type, value: prerequisitable.class
     = f.hidden_field :prerequisitable_id, value: prerequisitable.id
-    = f.button :submit, 'Prerequisite', class: "#{ @question.depends_on?(prerequisitable) ? 'success' : 'grey' }"
+    = f.button :submit, 'Prerequisite', class: "prerequisite-button #{ @question.depends_on?(prerequisitable) ? 'success' : 'grey' }"
