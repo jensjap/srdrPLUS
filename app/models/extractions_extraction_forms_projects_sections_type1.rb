@@ -124,6 +124,9 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
     super
   end
 
+  def extractions_extraction_forms_projects_sections_type1_row_columns_attributes=(attributes)
+  end
+
 #  def to_builder
 #    Jbuilder.new do |json|
 #      json.name type1.name
