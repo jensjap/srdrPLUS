@@ -28,58 +28,47 @@ h5 Add New #{ section_name }
 
       - if section_name.eql? 'Outcome'
         br
-        h5 Populations
-        #populations
-          table
-            thead
-              tr
-                th Delete
-                th Name
-                th Description
-
-            tbody#populations-node
-              = sf_eefpst1.simple_fields_for(sf_eefpst1.object.extractions_extraction_forms_projects_sections_type1_rows.build({ population_name_attributes: { name: 'All Participants', description: 'All patients enrolled in this study.' } })) do |pop_form|
-                = render 'extractions_extraction_forms_projects_sections_type1s/population_fields', f: pop_form
-          .links
-            = link_to_add_association sf_eefpst1,
-              :extractions_extraction_forms_projects_sections_type1_rows,
-              'data-association-insertion-node': 'tbody#populations-node',
-              'data-association-insertion-method': 'append',
-              partial: 'extractions_extraction_forms_projects_sections_type1s/population_fields' do
-              i.fi-plus>
-              | Add Population
-        br
-        br
-        br
-        h5 Timepoints
-        #timepoints
-          = sf_eefpst1.simple_fields_for(:extractions_extraction_forms_projects_sections_type1_rows,
-            sf_eefpst1.object\
-            .extractions_extraction_forms_projects_sections_type1_rows.first) do |pop_form|
-
+        = sf_eefpst1.simple_fields_for(:extractions_extraction_forms_projects_sections_type1_rows, sf_eefpst1.object.extractions_extraction_forms_projects_sections_type1_rows.build({ population_name_attributes: { name: 'All Participants', description: 'All patients enrolled in this study.' } })) do |pop_form|
+          #populations style='margin: 1rem 0 1rem 0;'
+            h5 Populations
             table
               thead
                 tr
                   th Delete
                   th Name
-                  th Unit
-
-              tbody#timepoints-node
-                = pop_form.simple_fields_for(:extractions_extraction_forms_projects_sections_type1_row_columns) do |tp_form|
-                  = render 'extractions_extraction_forms_projects_sections_type1s/timepoint_fields', f: tp_form
+                  th Description
+              tbody#populations-node
+                = render 'extractions_extraction_forms_projects_sections_type1s/population_fields', f: pop_form
             .links
-              = link_to_add_association pop_form,
-                :extractions_extraction_forms_projects_sections_type1_row_columns,
-                'data-association-insertion-node': 'tbody#timepoints-node',
+              = link_to_add_association sf_eefpst1,
+                :extractions_extraction_forms_projects_sections_type1_rows,
+                class: 'add-population-link',
+                'data-association-insertion-node': 'tbody#populations-node',
                 'data-association-insertion-method': 'append',
-                partial: 'extractions_extraction_forms_projects_sections_type1s/timepoint_fields' do
+                partial: 'extractions_extraction_forms_projects_sections_type1s/population_fields' do
                 i.fi-plus>
-                | Add Timepoint
+                | Add Population
+          = pop_form.simple_fields_for(:extractions_extraction_forms_projects_sections_type1_row_columns, pop_form.object.extractions_extraction_forms_projects_sections_type1_row_columns.build({ is_baseline: true, timepoint_name_attributes: { name: 'Baseline' } })) do |tp_form|
+            #timepoints style='margin: 1rem 0 1rem 0;'
+              h5 Timepoints
+              table
+                thead
+                  tr
+                    th Delete
+                    th Name
+                    th Unit
 
-        br
-        br
-        br
-
+                tbody#timepoints-node
+                  = render 'extractions_extraction_forms_projects_sections_type1s/timepoint_fields', f: tp_form
+              .links
+                = link_to_add_association pop_form,
+                  :extractions_extraction_forms_projects_sections_type1_row_columns,
+                  class: 'add-timepoint-link',
+                  'data-association-insertion-node': 'tbody#timepoints-node',
+                  'data-association-insertion-method': 'append',
+                  partial: 'extractions_extraction_forms_projects_sections_type1s/timepoint_fields' do
+                  i.fi-plus>
+                  | Add Timepoint
 
       /- if section_name.eql? 'Outcome'
         = sf_eefpst1.association :timepoint_names,

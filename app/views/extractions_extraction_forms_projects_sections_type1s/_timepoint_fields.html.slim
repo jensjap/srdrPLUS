@@ -1,8 +1,9 @@
 tr.nested-fields
+  = f.input :is_baseline, as: :hidden
   = f.simple_fields_for(:timepoint_name, f.object.timepoint_name || f.object.build_timepoint_name) do |tn_form|
     td[style='font-size: x-large;'] = link_to_remove_association '✖', f
     /td.field = f.check_box :_destroy
-    td.field = tn_form.input :name
+    td.field = tn_form.input :name, required: true
     td.field = tn_form.input :unit
 
 /  - if f.object.persisted?

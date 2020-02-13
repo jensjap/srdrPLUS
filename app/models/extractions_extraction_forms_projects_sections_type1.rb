@@ -58,7 +58,8 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
   }
 
   # Temporarily calling it ExtractionsExtractionFormsProjectsSectionsType1Row. This is meant to be Outcome Timepoint.
-  after_create :create_default_type1_rows
+  # TEMPORARILY DISABLED -Birol
+  # after_create :create_default_type1_rows
 
   after_save :ensure_matrix_column_headers
 

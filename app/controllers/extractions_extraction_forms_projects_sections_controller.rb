@@ -56,6 +56,6 @@ class ExtractionsExtractionFormsProjectsSectionsController < ApplicationControll
         .permit(:extraction_id,
                 :extraction_forms_projects_section_id,
                 { status_attributes: [:name] } ,
-                extractions_extraction_forms_projects_sections_type1s_attributes: [:type1_type_id, type1_attributes: [:id, :name, :description, :units], extractions_extraction_forms_projects_sections_type1_rows_attributes: [population_name_attributes: [:name, :description ], extractions_extraction_forms_projects_sections_type1_row_columns_attributes: [:extractions_extraction_forms_projects_sections_type1_row_id, timepoint_name_attributes: [:name, :unit]]]])
+                extractions_extraction_forms_projects_sections_type1s_attributes: [:type1_type_id, :units, type1_attributes: [:id, :name, :description], extractions_extraction_forms_projects_sections_type1_rows_attributes: [:_destroy, population_name_attributes: [:name, :description ], extractions_extraction_forms_projects_sections_type1_row_columns_attributes: [:_destroy, :is_baseline, :extractions_extraction_forms_projects_sections_type1_row_id, timepoint_name_attributes: [:name, :unit]]]])
     end
 end

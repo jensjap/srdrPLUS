@@ -14,6 +14,7 @@
 
     - if section_name.eql? 'Outcome'
       = f.association :timepoint_names,
+        input_html: { class: 'select2' },
         including_blank: false,
         label: "Suggest Timepoint(s) to associate with this #{ section_name }. If you cannot find an existing Timepoint to associate, #{ link_to_add_association('click here', f, :timepoint_names, partial: 'extraction_forms_projects/build/type1/timepoint_name_fields') } to create a new one.".html_safe,
         label_method: :select_label
