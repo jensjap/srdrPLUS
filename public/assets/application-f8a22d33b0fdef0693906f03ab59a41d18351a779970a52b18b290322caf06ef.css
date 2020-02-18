@@ -4902,30 +4902,45 @@ div[class*=' prereq-'] input, div[class*=' prereq-'] select {
           flex-direction: row;
 }
 
-/* line 72, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/extractions.scss */
+/* line 71, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/extractions.scss */
+#project-list a.accordion-title {
+  color: #5b5b5b;
+}
+
+/* line 76, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/extractions.scss */
+#project-list li.accordion-item:hover {
+  background-color: lavender;
+}
+
+/* line 82, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/extractions.scss */
 body.extractions.index .tooltip {
   max-width: 18.75rem !important;
 }
-/* line 75, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/extractions.scss */
+/* line 85, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/extractions.scss */
 body.extractions.index .projects-users-role {
   cursor: pointer;
 }
-/* line 77, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/extractions.scss */
+/* line 87, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/extractions.scss */
 body.extractions.index .projects-users-role .projects-users-role-label {
   padding-left: 8px;
   padding-right: 20px;
   white-space: nowrap;
 }
 
-/* line 91, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/extractions.scss */
+/* line 101, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/extractions.scss */
 span.select2-container {
   width: 100% !important;
 }
 
-/* line 95, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/extractions.scss */
+/* line 105, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/extractions.scss */
 .create-extraction-button {
   margin-top: 1rem !important;
   background-color: #1986c7 !important;
+}
+
+/* line 111, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/extractions.scss */
+button.suggestion-list-button:hover {
+  background-color: lavender !important;
 }
 /**
  * Foundation for Sites by ZURB
@@ -21015,11 +21030,6 @@ mark {
 #project-list h4 {
   font-style: italic;
 }
-/* line 85, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/projects.scss */
-#project-list li.accordion-item a,
-#project-list li.accordion-item a:visited {
-  color: gray;
-}
 /* line 92, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/projects.scss */
 #project-list li.accordion-item.is-active a.accordion-title {
   font-weight: bold;
@@ -21650,6 +21660,16 @@ a.add-task-button .fi-plus:hover {
 /* line 5, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/questions.scss */
 input.button.grey {
   background-color: grey;
+}
+
+/* line 9, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/questions.scss */
+.button.prerequisite-button {
+  margin: 1rem;
+}
+
+/* line 14, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/questions.scss */
+table.dependency-table th {
+  padding: 1rem;
 }
 /**
  * Foundation for Sites by ZURB
@@ -23192,20 +23212,6 @@ pre {
   background-color: #eee;
   padding: 10px;
   font-size: 11px;
-}
-
-/* line 22, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/scaffolds.scss */
-a {
-  color: #000;
-}
-/* line 25, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/scaffolds.scss */
-a:visited {
-  color: #666;
-}
-/* line 29, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/scaffolds.scss */
-a:hover {
-  color: #fff;
-  background-color: #000;
 }
 
 /* line 35, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/scaffolds.scss */
@@ -31768,19 +31774,6 @@ body {
 a {
   color: #4C0D7D;
 }
-/* line 93, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
-a:visited {
-  color: #4C0D7D;
-}
-/* line 97, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
-a:hover {
-  color: #4C0D7D;
-  background-color: transparent;
-}
-/* line 102, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
-a.button {
-  color: #fefefe !important;
-}
 /* line 106, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 a.disabled {
   pointer-events: none;
@@ -31847,11 +31840,6 @@ body div.top-bar a:hover {
 /* line 165, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .error {
   color: red;
-}
-
-/* line 169, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
-table ul {
-  margin: 0.625rem;
 }
 
 /* line 173, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */

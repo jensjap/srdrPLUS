@@ -57003,6 +57003,7 @@ function __guardMethod__(obj, methodName, transform) {
             $('.submit').removeClass('hide');
             return $('.submit-with-confirmation').addClass('hide');
           } else if ($(e.target).val() === "distiller") {
+            console.log("OYOY");
             $('.distiller-import-panel').removeClass('hide');
             $('.json-import-panel').addClass('hide');
             $('#distiller-add-references-file').trigger("click");
@@ -57470,7 +57471,7 @@ function __guardMethod__(obj, methodName, transform) {
           return _tableRows.find('th:nth-child(-n+3)').hide();
         }
       };
-      $('.clean-table table').each(function() {
+      $('.clean-table table, table.dependency-table').each(function() {
         var _tableRows;
         _tableRows = $(this).find('tr');
         if (_tableRows.length > 1) {
