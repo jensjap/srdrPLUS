@@ -105,7 +105,7 @@ class ExtractionsExtractionFormsProjectsSectionsType1Row < ApplicationRecord
       if self.extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_sections_type1_rows.first.extractions_extraction_forms_projects_sections_type1_row_columns.count == 0
 
         # If this is the first/only row then we default to creating (arbitrarily) 1 column.
-        self.extractions_extraction_forms_projects_sections_type1_row_columns.create(timepoint_name: TimepointName.first, is_baseline: true)
+        #self.extractions_extraction_forms_projects_sections_type1_row_columns.create(timepoint_name: TimepointName.first, is_baseline: true)
 
       else
 

@@ -8,7 +8,7 @@ class ExtractionsExtractionFormsProjectsSectionsType1Policy < ApplicationPolicy
   end
 
   def destroy?
-    project_consolidator?
+    project_contributor?
   end
 
   def edit_timepoints?

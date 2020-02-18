@@ -9,17 +9,35 @@
 
       thead
         tr
+        - if section_name == 'Outcome'
+          th Type of Outcome
+          th Domain
+          th Specific Measurement
+          th Timepoint(s)
+        - else
           th Name
           th Description
-          th Suggested by
+        th Suggested by
 
       tbody
         / #!!! Add profject lead info if project lead.
-        - eefps.type1s_suggested_by_project_leads.each do |t1|
+        - eefps.type1s_suggested_by_project_leads.each do |efpst1|
+          - t1 = efpst1.type1
           tr
-            td = t1.name
-            td = t1.description
-            td = t1.suggestion.user.handle
+            - if section_name == 'Outcome'
+              td = efpst1.type1_type.name
+              td = t1.name
+              td = t1.description
+              td
+                - if efpst1.timepoint_names.present?
+                  ul
+                    - efpst1.timepoint_names.each do |tn|
+                      li = tn.pretty_print_export_header
+              td = t1.suggestion.user.handle
+            - else
+              td = t1.name
+              td = t1.description
+              td = t1.suggestion.user.handle
 
   button.close-button data-close='' aria-label='Close modal' type='button'
     span aria-hidden='true'

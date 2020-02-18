@@ -1,7 +1,8 @@
 tr.nested-fields
   = f.simple_fields_for(:population_name, f.object.population_name || f.object.build_population_name) do |pn_form|
-    td.field = f.check_box :_destroy
-    td.field = pn_form.input :name
+    td[style='font-size: x-large;'] = link_to_remove_association '✖', f
+    /td.field = f.check_box :_destroy
+    td.field = pn_form.input :name, required: true
     td.field = pn_form.input :description
 
 /  - if f.object.persisted?

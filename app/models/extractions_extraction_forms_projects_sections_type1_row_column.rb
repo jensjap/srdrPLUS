@@ -17,7 +17,7 @@ class ExtractionsExtractionFormsProjectsSectionsType1RowColumn < ApplicationReco
   has_paper_trail
 
   after_commit :ensure_only_one_baseline
-  after_commit :ensure_timepoints_across_populations
+  after_commit :ensure_timepoints_across_populations, on: [:create, :update]
   after_commit :set_extraction_stale, on: [:create, :update, :destroy]
 
   after_destroy :remove_timepoints_across_populations

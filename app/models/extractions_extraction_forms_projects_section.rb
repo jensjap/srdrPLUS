@@ -60,11 +60,10 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
 
   def type1s_suggested_by_project_leads
     extraction_forms_projects_section
-      .type1s
-      .includes(suggestion: { user: :profile })
-      .joins(:extraction_forms_projects_sections_type1s)
-      .where.not(extraction_forms_projects_sections_type1s: { type1: self.type1s })
-      .where.not(extraction_forms_projects_sections_type1s: { type1s: { name: 'Total', description: "All #{ extraction_forms_projects_section.link_to_type1.present? ? extraction_forms_projects_section.link_to_type1.section.name : extraction_forms_projects_section.section.name } combined" } })
+      .extraction_forms_projects_sections_type1s
+      .includes(:timepoint_names, :type1, type1: { suggestion: { user: :profile } })
+      .where.not(type1: self.type1s)
+      .where.not(type1s: { name: 'Total', description: "All #{ extraction_forms_projects_section.link_to_type1.present? ? extraction_forms_projects_section.link_to_type1.section.name : extraction_forms_projects_section.section.name } combined" })
       .distinct
   end
 
