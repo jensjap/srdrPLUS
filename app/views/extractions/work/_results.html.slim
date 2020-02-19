@@ -30,5 +30,25 @@
 
     = render 'extractions/work/results/results_table'
 
-- else
-  h5 style='color: red;' You must add Arms and Outcomes before extracting into this section.
+- elsif @eefpst1
+  / Make available extraction form type selector.
+  = simple_form_for(efp, remote: true) do |f|
+    = f.association :extraction_forms_project_type
+    = f.submit 'Update Extraction Form Type', class: 'button'
+
+  h4 style='display: inline; margin-right: 1em;' Outcome you are working on:
+  button.button type='button' data-toggle='example-dropdown-1'
+    => @eefpst1.type1_name_and_description
+  - if @eefpst1s.where.not(id: @eefpst1.id).length > 0
+    .dropdown-pane#example-dropdown-1 data-dropdown='' data-hover='true' data-hover-pane='true'
+      ul
+        / Let's remove the currently displayed outcomes from the @eefpst1s so it doesn't show in the possible selections.
+        - @eefpst1s.where.not(id: @eefpst1.id).each do |eefpst1|
+          li = link_to eefpst1.type1_name_and_description, change_outcome_in_results_section_extraction_path(eefpst1_id: eefpst1.id), remote: true, class: 'change-outcome-link'
+
+  - if efp.extraction_forms_project_type.eql? ExtractionFormsProjectType.second
+    = render 'extractions/work/results/diagnostic_test_results_table'
+
+- elsif efp.extraction_forms_project_type.eql? ExtractionFormsProjectType.first
+  h5 style='color: red;' You must add Arms and Outcomes before extracting into this section if this is a Standard Extraction Form.
+  h5 style='color: red;' If this is a Diagnostic Test form you must enter at least 1 (one) outcome.

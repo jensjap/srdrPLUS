@@ -37,7 +37,7 @@ table
       tr
         td = efpst1.type1.name
         td = efpst1.type1.description
-        td = efpst1.thresholds.collect(&:name).join(', ')
+        td = efpst1.extraction_forms_projects_sections_type1_rows.collect(&:population_name).collect(&:name).join(', ')
 
 h5 Reference Tests
 table
@@ -52,4 +52,4 @@ table
       tr
         td = efpst1.type1.name
         td = efpst1.type1.description
-        td = efpst1.thresholds.collect(&:name).join(', ')
+        td = efpst1.extraction_forms_projects_sections_type1_rows.collect(&:population_name).collect(&:name).join(', ')

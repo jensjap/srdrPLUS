@@ -33,6 +33,7 @@ class ExtractionFormsProjectsSectionsType1 < ApplicationRecord
 
   validates :type1_id, uniqueness: { scope: :extraction_forms_projects_section_id }
 
+  accepts_nested_attributes_for :extraction_forms_projects_sections_type1_rows, reject_if: :all_blank
   accepts_nested_attributes_for :type1, reject_if: :all_blank
   accepts_nested_attributes_for :timepoint_names, reject_if: :all_blank
 

@@ -16,19 +16,21 @@ h5 Add New #{ section_name }
     .row
       .columns.medium-12.form-inputs class="new-type1-fields-#{ eefps.id.to_s }"
         - if section_name.eql? 'Outcome'
-          = sf_eefpst1.association :type1_type,\
+          = sf_eefpst1.association :type1_type,
             required: true,
-            label: "Type of #{ section_name }",\
+            collection: Type1Type.where("name not in (?)", ['Index Test', 'Reference Test']),
+            label: "Type of #{ section_name }",
             input_html: { 'data-t1-type-input' => '' }
 
         = sf_eefpst1.simple_fields_for(:type1, sf_eefpst1.object.build_type1) do |sf_t1|
-          = sf_t1.input :name,\      
+          = sf_t1.input :name,\
             label: section_name.eql?('Outcome') ? 'Domain' : 'Name',\
             required: true,\
             hint: 'Name can\'t be blank', input_html: { 'data-t1-name-input' => '' }
           = sf_t1.input :description,\
             label: section_name.eql?('Outcome') ? 'Specific Measurement' : 'Description',\
             input_html: { rows: 2 }, input_html: { 'data-t1-description-input' => '' }
+
         - if section_name.eql? 'Outcome'
           = sf_eefpst1.input :units, input_html: { 'data-t1-units-input' => '' }
 
