@@ -25,19 +25,19 @@
           - t1 = efpst1.type1
           tr
             - if section_name == 'Outcome'
-              td = efpst1.type1_type.name
-              td = t1.name
-              td = t1.description
-              td
+              td[data-t1-type data-t1-type-id="#{ efpst1.type1_type.id }"] = efpst1.type1_type.name
+              td[data-t1-name] = t1.name
+              td[data-t1-description] = t1.description
+              td[data-timepoints]
                 - if efpst1.timepoint_names.present?
                   ul
                     - efpst1.timepoint_names.each do |tn|
-                      li = tn.pretty_print_export_header
+                      li[data-tp-name="#{ tn.name }" data-tp-unit="#{ tn.unit }"] = tn.pretty_print_export_header
               td = t1.suggestion.user.handle
             - else
-              td = t1.name
-              td = t1.description
-              td = t1.suggestion.user.handle
+              td[data-t1-name] = t1.name
+              td[data-t1-description] = t1.description
+              td = t1.suggestion.user.handl
 
   button.close-button data-close='' aria-label='Close modal' type='button'
     span aria-hidden='true'
