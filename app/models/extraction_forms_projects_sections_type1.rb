@@ -27,6 +27,7 @@ class ExtractionFormsProjectsSectionsType1 < ApplicationRecord
 
   has_one :ordering, as: :orderable, dependent: :destroy
 
+  has_many :extraction_forms_projects_sections_type1_rows
   has_many :extraction_forms_projects_sections_type1s_timepoint_names, dependent: :destroy, inverse_of: :extraction_forms_projects_sections_type1
   has_many :timepoint_names, through: :extraction_forms_projects_sections_type1s_timepoint_names, dependent: :destroy
 

@@ -459,6 +459,15 @@ ActiveRecord::Schema.define(version: 2020_03_18_181447) do
     t.index ["name"], name: "index_extraction_forms_on_name", unique: true
   end
 
+  create_table "extraction_forms_projecs_sections_type1_rows", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci", force: :cascade do |t|
+    t.bigint "extraction_forms_projects_sections_type1_id"
+    t.bigint "population_name_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["extraction_forms_projects_sections_type1_id"], name: "index_efpst1r_on_efpst1_id"
+    t.index ["population_name_id"], name: "index_efpst1r_on_pn_id"
+  end
+
   create_table "extraction_forms_project_types", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
     t.datetime "deleted_at"

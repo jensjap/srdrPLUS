@@ -1,0 +1,21 @@
+- eefps = ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by!( \
+  extraction: @extraction,
+  extraction_forms_projects_section: efps,
+  link_to_type1: efps.link_to_type1.nil? \
+    ? nil \
+    : ExtractionsExtractionFormsProjectsSection.find_by!( \
+      extraction: @extraction,
+      extraction_forms_projects_section: efps.link_to_type1))
+
+.section-header
+  h4 = section_name
+  = render 'shared/statusing_form.html.slim', statusing: eefps.statusing, status_name: eefps.statusing.status.name
+
+hr
+
+.row
+  .column.medium-centered.medium-10
+    = render 'extractions/shared/type_3/type_3_new_custom_form',
+      extraction: @extraction,
+      section_name: section_name,
+      eefps: eefps

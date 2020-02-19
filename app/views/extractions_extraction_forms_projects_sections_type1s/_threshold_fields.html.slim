@@ -1,0 +1,5 @@
+.nested-fields
+  = f.simple_fields_for(:population_name, f.object.population_name || f.object.build_population_name) do |sf_pname|
+    td[style='font-size: x-large;'] = link_to_remove_association '✖', f
+    td.field = sf_pname.input :name, label: 'Threshold', required: true
+    td.field = sf_pname.input :description, as: :hidden

@@ -1,0 +1,65 @@
+- section_name = section_name.singularize
+
+h5 Add New #{ section_name }
+
+= simple_form_for(eefps, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
+  .alert.callout data-abide-error='' style='display: none;'
+    p
+      i.fi-alert>
+      ' Please correct the errors below.
+
+  / We need to know whether this are sending this from a work or consolidate action for eefps/update.js to load the correct partials.
+  = f.hidden_field :action, value: @extractions.present? ? :consolidate : :work
+
+  = f.simple_fields_for(:extractions_extraction_forms_projects_sections_type1s,
+    f.object.extractions_extraction_forms_projects_sections_type1s.build) do |sf_eefpst1|
+    .row
+      .columns.medium-6.form-inputs class="new-type1-fields-#{ eefps.id.to_s }"
+        = sf_eefpst1.association :type1_type,
+          collection: Type1Type.where("name in (?)", ['Index Test', 'Reference Test']),
+          required: true,
+          label: "Select Type of Test"
+        = sf_eefpst1.simple_fields_for(:type1, sf_eefpst1.object.build_type1) do |sf_t1|
+          = sf_t1.input :name, label: 'Title', required: true, hint: 'Name can\'t be blank'
+          = sf_t1.input :description, label: 'Description', input_html: { rows: 2 }
+
+    .links
+      = link_to_add_association sf_eefpst1,
+        :extractions_extraction_forms_projects_sections_type1_rows,
+        class: 'add-population-link',
+        partial: 'extractions_extraction_forms_projects_sections_type1s/threshold_fields' do
+        i.fi-plus>
+        | Add Threshold
+
+  .form-actions
+    = f.button :submit, 'Save'
+
+h5 Index Tests
+table
+  thead
+    tr
+      th Name
+      th Description
+      th Thresholds
+
+  tbody
+    - eefps.extractions_extraction_forms_projects_sections_type1s.where('type1_type_id = 5').each do |eefpst1|
+      tr
+        td = eefpst1.type1.name
+        td = eefpst1.type1.description
+        td = eefpst1.extractions_extraction_forms_projects_sections_type1_rows.collect(&:population_name).collect(&:name).join(', ')
+
+h5 Reference Tests
+table
+  thead
+    tr
+      th Name
+      th Description
+      th Thresholds
+
+  tbody
+    - eefps.extractions_extraction_forms_projects_sections_type1s.where('type1_type_id = 6').each do |eefpst1|
+      tr
+        td = eefpst1.type1.name
+        td = eefpst1.type1.description
+        td = eefpst1.extractions_extraction_forms_projects_sections_type1_rows.collect(&:population_name).collect(&:name).join(', ')
