@@ -13,7 +13,8 @@
 
     .table-fixed-headers
       table.unstriped style='overflow: scroll;'
-        caption = @eefpst1.type1_name_and_description + ' (' + eefpst1r.population_name.name + ')'
+        /caption = @eefpst1.type1_name_and_description + ' (' + eefpst1r.population_name.name + ')'
+        caption = eefpst1r.population_name.name
         thead
           tr
             th.vertical

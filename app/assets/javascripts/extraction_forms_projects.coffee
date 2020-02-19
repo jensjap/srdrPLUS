@@ -35,16 +35,36 @@ document.addEventListener 'turbolinks:load', ->
         tableRow = $( event.target ).closest( 'tr' )
 
         # Get name and description from this table row.
-        type1Name = tableRow.children( 'td:nth-child(1)' ).text()
-        type1Desc = tableRow.children( 'td:nth-child(2)' ).text()
+
+        type1Type = tableRow.children( 'td[data-t1-type=""]' ).data('t1-type-id')
+        type1Name = tableRow.children( 'td[data-t1-name=""]' ).text()
+        type1Desc = tableRow.children( 'td[data-t1-description=""]' ).text()
+        timepoints = []
+        tableRow.find( 'td[data-timepoints=""] ul li' ).each ->
+          timepoints.push({ name: $( this ).data( 'tp-name' ), unit: $( this ).data( 'tp-unit' ) })
+          
+        #type1Units = tableRow.children( 'td[data-t1-units=""]' ).text()
 
         # Find and fill the last input pair.
         efpsId = $( this ).data( 'sectionId' )
+
         inputFields = $( '.new-type1-fields-' + efpsId ).last()
 
         # Can't use .text() on form input/textarea -_-.
-        inputFields.find( 'input' ).val( type1Name )
-        inputFields.find( 'textarea' ).val( type1Desc )
+        inputFields.find( 'select[data-t1-type-input=""]' ).val( type1Type )
+        inputFields.find( 'input[data-t1-name-input=""]' ).val( type1Name )
+        inputFields.find( 'textarea[data-t1-description-input=""]' ).val( type1Desc )
+        
+        $('#timepoints-node tr')[1..].each ->
+          $( this ).find( 'td.remove-tp-link a' ).trigger( 'click' )
+
+        if timepoints.length > 1
+          $( 'a.add-timepoint-link' ).trigger( 'click' ) for [2..timepoints.length]
+
+        tp_elems = $('#timepoints-node tr')
+        for tp, i in timepoints
+          $( tp_elems[i] ).find( 'td.tp-name-input input' ).val(tp['name'])
+          $( tp_elems[i] ).find( 'td.tp-unit-input input' ).val(tp['unit'])
 
         # Close the modal.
         $( this ).closest('.reveal').foundation( 'close' )
