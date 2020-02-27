@@ -1,5 +1,5 @@
 ( function() {
-  $( '#results-panel' ).html( "<%= j( render partial: 'extractions/work/results' ) %>" ).foundation();
+  $( '#results-panel' ).html( "<%= j( render 'extractions/work/results', efp: @extraction_forms_projects.first) %>" ).foundation();
 
   var bind_record_saving_mechanism;
   bind_record_saving_mechanism = function() {

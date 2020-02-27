@@ -91,8 +91,9 @@ class ExtractionsExtractionFormsProjectsSectionsType1Row < ApplicationRecord
         { result_statistic_section_type: ResultStatisticSectionType.find_or_create_by(name: 'Within Arm Comparisons') },
         { result_statistic_section_type: ResultStatisticSectionType.find_or_create_by(name: 'NET Change') },
         { result_statistic_section_type: ResultStatisticSectionType.find_or_create_by(name: 'Diagnostic Test Descriptive Statistics') },
-        { result_statistic_section_type: ResultStatisticSectionType.find_or_create_by(name: 'Diagnostic Test Assuming Reference Standard') },
-        { result_statistic_section_type: ResultStatisticSectionType.find_or_create_by(name: 'Diagnostic Test Additiona Analysis') },
+        { result_statistic_section_type: ResultStatisticSectionType.find_or_create_by(name: 'Diagnostic Test -placeholder for AUC and Q*-') },
+        { result_statistic_section_type: ResultStatisticSectionType.find_or_create_by(name: 'Diagnostic Test 2x2 Table') },
+        { result_statistic_section_type: ResultStatisticSectionType.find_or_create_by(name: 'Diagnostic Test Test Accuracy Metrics') },
       ])
     end
 
