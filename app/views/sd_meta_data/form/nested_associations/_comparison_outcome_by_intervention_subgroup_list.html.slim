@@ -1,0 +1,7 @@
+= simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
+  = f.input :item_id, as: :hidden, input_html: { value: 56 }
+  = f.simple_fields_for :comparison_outcome_intervention_subgroups do |comparison_outcome_intervention_subgroup|
+    = render 'sd_meta_data/form/dynamic_fields/comparison_outcome_intervention_subgroup_fields', f: comparison_outcome_intervention_subgroup
+  div
+    = link_to_add_association 'add', f, :comparison_outcome_intervention_subgroups, partial: 'sd_meta_data/form/dynamic_fields/comparison_outcome_intervention_subgroup_fields'
+

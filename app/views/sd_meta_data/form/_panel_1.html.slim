@@ -10,16 +10,20 @@
 
     div data-row-span="1"
       div data-field-span="1"
-        = f.input :authors, label: '7. Authors', :input_html => { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
+        = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
+          = f.input :authors, label: '7. Authors', :input_html => { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
     div data-row-span="1"
       div data-field-span="1"
-        = f.input :authors_conflict_of_interest_of_full_report, label: '8. Conflicts of Interest of Authors of Full Report', :input_html => { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
+        = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
+          = f.input :authors_conflict_of_interest_of_full_report, label: '8. Conflicts of Interest of Authors of Full Report', :input_html => { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
     div data-row-span="1"
       div data-field-span="1"
-        = f.input :stakeholder_involvement_extent, label: '9. Stakeholders Involved', :input_html => { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
+        = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
+          = f.input :stakeholder_involvement_extent, label: '9. Stakeholders Involved', :input_html => { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
     div data-row-span="1"
       div data-field-span="1"
-        = f.input :stakeholders_conflict_of_interest, label: '10. Conflicts of Interest of Stakeholders', :input_html => { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
+        = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
+          = f.input :stakeholders_conflict_of_interest, label: '10. Conflicts of Interest of Stakeholders', :input_html => { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
     div data-row-span="2"
       div data-field-span="1"
         label 11. Project Leads:
