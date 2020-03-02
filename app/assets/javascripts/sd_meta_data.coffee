@@ -24,48 +24,12 @@ bind_srdr20_saving_mechanism = () ->
       processData: false
     })
 
-  # Select Drop Down and Radio
-#  $( '.trigger-autosave' ).click ( e ) ->
-#    e.preventDefault()
-#
-#    $form = $( this ).closest( 'form' )
-#
-#    # Use this to keep track of the different timers.
-#    formId = $form.attr( 'id' )
-#
-#    # Mark form as 'dirty'.
-#    $form.addClass( 'dirty' )
-#
-#    if formId of timers
-#      clearTimeout( timers[formId] )
-#    timers[formId] = setTimeout( submitForm( $form ), 750 )
-#
-  #$( '.sd-form:has(input)' ).change ( e ) ->
-
   setupForm =( form ) ->
     $form = $( form )
     # Use this to keep track of the different timers.
     formId = $form.attr( 'id' )
     $( form ).children( 'input' ).change ( e ) ->
       e.preventDefault()
-
-      # Mark form as 'dirty'.
-      $form.addClass( 'dirty' )
-
-#    # Autogrow Text Field to fit the content.
-#    while $form.outerHeight() < @scrollHeight + parseFloat($form.css('borderTopWidth')) + parseFloat($form.css('borderBottomWidth'))
-#      $form.height $form.height() + 1
-
-    # Text Field.
-    $form.keyup ( e ) ->
-      e.preventDefault()
-
-      # Ignore 'keyup' for a list of keys.
-      code = e.keyCode || e.which;
-      # 9: tab; 16: shift; 37: left-arrow; 38: up-arrow; 39: right-arrow; 40: down-arrow; 18: option; 91: cmd
-      if code in [9, 16, 18, 37, 38, 39, 40, 91]
-        return
-
       # Mark form as 'dirty'.
       $form.addClass( 'dirty' )
 
@@ -76,14 +40,21 @@ bind_srdr20_saving_mechanism = () ->
         clearTimeout( timers[formId] )
       timers[formId] = setTimeout( submitForm( $form[0] ), 750 )
 
-    $form.focusout ( e ) ->
-      if $form.hasClass( 'dirty' ) and formId of timers
+    # Text Field.
+    $form.find( 'input, textarea, select' ).change ( e ) ->
+      e.preventDefault()
+
+      # Ignore 'keyup' for a list of keys.
+      code = e.keyCode || e.which;
+      # 9: tab; 16: shift; 37: left-arrow; 38: up-arrow; 39: right-arrow; 40: down-arrow; 18: option; 91: cmd
+      if code in [9, 16, 18, 37, 38, 39, 40, 91]
+        return
+
+      # Mark form as 'dirty'.
+      $form.addClass( 'dirty' )
+      if formId of timers
         clearTimeout( timers[formId] )
       timers[formId] = setTimeout( submitForm( $form[0] ), 750 )
-
-      # the following will help the text expand as typing takes place
-#      while $form.outerHeight() < @scrollHeight + parseFloat($form.css('borderTopWidth')) + parseFloat($form.css('borderBottomWidth'))
-#        $form.height $form.height() + 1
 
   $( 'form.sd-form' ).each ( i, form ) ->
     setupForm( form )
@@ -91,8 +62,6 @@ bind_srdr20_saving_mechanism = () ->
     $cocoon_container.on 'sd:form-loaded', ( e ) ->
      setupForm( $cocoon_container.children( 'form' ) )
   
-
-
 document.addEventListener 'turbolinks:load', ->
   do ->
     bind_srdr20_saving_mechanism()

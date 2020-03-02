@@ -37,9 +37,15 @@ class Citation < ApplicationRecord
   accepts_nested_attributes_for :journal, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :labels, reject_if: :all_blank, allow_destroy: true
 
+  # Redundant?
   def abstract_utf8
-    abstract = self.abstract
+    abstract = self.read_attribute(:abstract)
     abstract.nil? ? '' : abstract.encode('utf-8', :invalid => :replace, :undef => :replace, :replace => '_')
+  end
+
+  # Without this Searchkick cannot create indices
+  def abstract
+    (self.read_attribute(:abstract) || '').force_encoding('UTF-8')
   end
 
   def author_ids=(tokens)

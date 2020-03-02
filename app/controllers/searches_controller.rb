@@ -113,7 +113,7 @@ class SearchesController < ApplicationController
 
       # If we are not restricting to projects we own, then we must only return projects that are published.
       else
-        @results[:project_ids] = Project.published.where(id: @results[:project_ids].to_a)
+        @results[:project_ids] = Project.published.where(id: @results[:project_ids].to_a).map{|p| p.id}
       end
 
       # Project members.
@@ -263,9 +263,7 @@ class SearchesController < ApplicationController
       end
 
       # Find all projects associated with the citations.
-      @results[:citation_ids].each do |c_id|
-        @results[:project_ids].merge(Citation.find(c_id).citations_projects.map { |cp| cp.project.id })
-      end
+      @results[:project_ids].merge(CitationsProject.where(citation_id: @results[:citation_ids]).map { |cp| cp.project_id })
 
       # Check conditions that would further reduce @results[:project_ids]
       # Project owned.
@@ -280,7 +278,7 @@ class SearchesController < ApplicationController
 
         # If we are not restricting to projects we own, then we must only return projects that are published.
       else
-        @results[:project_ids] = Project.published.where(id: @results[:project_ids].to_a)
+        @results[:project_ids] = Project.published.where(id: @results[:project_ids].to_a).map{ |p| p.id }
       end
 
       # Project members.
