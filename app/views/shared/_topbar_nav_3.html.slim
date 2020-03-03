@@ -17,9 +17,11 @@
             ul.dropdown.menu data-dropdown-menu=""
               li = link_to root_path do
                 i.fi-home style="font-size: 1.5em;"
+
               li = link_to new_search_path, title: "Search Published Projects" do
                 i.fi-magnifying-glass
                 |  Search
+
               li
                 = link_to("About", about_path)
                 ul.menu
@@ -27,6 +29,7 @@
                   li = link_to(t(".cite"), citing_path)
                   li = link_to(t(".usage"), usage_path)
                   li = link_to(t(".help"), help_path)
+
               li
                 = link_to('Tutorials', '#')
                 ul.menu style='min-width: 450px'
@@ -36,12 +39,18 @@
                     ul.menu style='min-width: 450px'
                       li = link_to('Importing Structured Data from Microsoft Excel into SRDR+', 'https://srdrplus.s3.amazonaws.com/Importing+Structured+Data+from+Microsoft+Excel+into+SRDR%2B.pdf', target: '_blank')
                       li = link_to('Import Templates', 'https://srdrplus.s3.amazonaws.com/Import+Templates.zip', target: '_blank')
+
                   li = link_to('Importing Structured data from DistillerSR into SRDR+', 'https://srdrplus.s3.amazonaws.com/Importing+Structured+Data+from+DistillerSR+into+SRDR%2B.pdf', target: '_blank')
+
               li = link_to(t(".blog"), blog_path)
               li = link_to("Resources", resources_path)
-              li = link_to("Published Projects", "https://srdr.ahrq.gov/projects/published")
+              li = link_to "https://srdr.ahrq.gov/projects/published", target: '_blank', data: { confirm: @exit_disclaimer  } do
+                |Published Projects
+                i.fas.fa-external-link-alt.fa-sm<
+
               - if user_signed_in?
                 = render "shared/signed_in_links"
+
               - else
                 li = link_to "Login", new_user_session_path
                 li = link_to new_user_registration_path do
