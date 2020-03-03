@@ -122,29 +122,3 @@
           of conducting a meta-analysis or systematic review. This database contains Population, Intervention, Comparator,
           and Outcome (PICO) data to help users formulate and narrow the focus of their research question. It is expected
           that secondary searches will be conducted to augment this database.
-
-  /section.column
-    h3 Contributors to SRDR+
-
-  /section.column
-    = image_tag("", alt: "SRDR Users on Global Map",
-                    class: "small-12 small-centered column",
-                    data: { interchange: "[#{ image_path('global_map.jpg') }, small],
-                                          [#{ image_path('global_map-lg.jpg') }, medium]" })
-
-  /section.column
-    .callout
-      h4 Statistics
-      pre style='font-size: 1.2em;' System Wide
-        Number of projects: #{ Project.count }
-        Number of project contributors: #{ User.count }
-        Number of public commentators: 50
-        Number of published projects: 15
-        Number of articles: 1000
-      br
-      pre style='font-size: 1.2em;' Project Level
-        Average number of articles per project: 50
-        Average number of extractions per project: 30
-        Average number of collaborators per project: 8
-        Average number of key questions per project: 2
-        Average duration of a project: 3 months, 28 days
