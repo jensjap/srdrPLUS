@@ -16,24 +16,24 @@
           td class=(@result_statistic_section.result_statistic_section_type.name.eql?('Descriptive Statistics') ? 'active' : '') = link_to edit_result_statistic_section_path(@result_statistic_section.population.result_statistic_sections.where(result_statistic_section_type: ResultStatisticSectionType.find_by(name: 'Descriptive Statistics')).first) do
             span MEASURED VALUES
             br
-            = image_tag('results_link_measured_values.png')
+            = image_tag('results_link_measured_values.png', alt: 'Quicklink to Measured Values tab in Results Section')
 
           td class=(@result_statistic_section.result_statistic_section_type.name.eql?('Between Arm Comparisons') ? 'active' : '') = link_to edit_result_statistic_section_path(@result_statistic_section.population.result_statistic_sections.where(result_statistic_section_type: ResultStatisticSectionType.find_by(name: 'Between Arm Comparisons')).first) do
             span BETWEEN-ARM COMPARISONS
             br
-            = image_tag('results_link_between_arm_comparisons.png')
+            = image_tag('results_link_between_arm_comparisons.png', alt: 'Quicklink to Between Arm Comparisons tab in Results Section')
 
         - if @result_statistic_section.population.extractions_extraction_forms_projects_sections_type1.type1_type_id == 2
           tr
             td class=(@result_statistic_section.result_statistic_section_type.name.eql?('Within Arm Comparisons') ? 'active' : '') = link_to edit_result_statistic_section_path(@result_statistic_section.population.result_statistic_sections.where(result_statistic_section_type: ResultStatisticSectionType.find_by(name: 'Within Arm Comparisons')).first) do
               span WITHIN-ARM CHANGES
               br
-              = image_tag('results_link_within_arm_comparisons.png')
+              = image_tag('results_link_within_arm_comparisons.png', alt: 'Quicklink to Within Arm Comparisons tab in Results Section')
 
             td class=(@result_statistic_section.result_statistic_section_type.name.eql?('NET Change') ? 'active' : '') = link_to edit_result_statistic_section_path(@result_statistic_section.population.result_statistic_sections.where(result_statistic_section_type: ResultStatisticSectionType.find_by(name: 'NET Change')).first) do
               span NET COMPARISONS
               br
-              = image_tag('results_link_net_comparisons.png')
+              = image_tag('results_link_net_comparisons.png', alt: 'Quicklink to NET Comparisons tab in Results Section')
 
 .column.row
   = render 'result_statistic_sections/shared/auto_save_notification'

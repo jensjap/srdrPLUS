@@ -11,7 +11,7 @@
             ul.dropdown.menu data-dropdown-menu=""
               li.menu-text
                 = link_to root_path
-                  = image_tag("brand.png", size: "200x50")
+                  = image_tag("brand.png", alt: "Anchor to Home Page", size: "200x50")
 
           .top-bar-right
             ul.dropdown.menu data-dropdown-menu=""
@@ -44,9 +44,7 @@
 
               li = link_to(t(".blog"), blog_path)
               li = link_to("Resources", resources_path)
-              li = link_to "https://srdr.ahrq.gov/projects/published", target: '_blank', data: { confirm: @exit_disclaimer  } do
-                |Published Projects
-                i.fas.fa-external-link-alt.fa-sm<
+              li = link_to("Published Projects", published_projects_path)
 
               - if user_signed_in?
                 = render "shared/signed_in_links"
