@@ -174,9 +174,14 @@
                 #{ rp[1]['number_of_studies'] } Studies &bull; #{ rp[1]['number_of_key_questions'] } Key Questions &bull; #{ rp[1]['number_of_extraction_forms'] } Extraction Forms
           .cell.medium-8
             h6.summary Objectives: #{ rp[1]['description'].blank? ? 'None Provided' : rp[1]['description'] }
-            h6.bold = link_to 'READ MORE', rp[1]['url'], target: '_blank'
+            h6.bold = link_to rp[1]['url'], target: '_blank', data: { confirm: @exit_disclaimer } do
+              |READ MORE
+              i.fas.fa-external-link-alt.fa-sm<
+
     .cell.medium-9
-      h4 = link_to raw("SEE MORE PROJECTS &rarr;"), 'https://srdr.ahrq.gov/projects/published', target: '_blank'
+      h4 = link_to 'https://srdr.ahrq.gov/projects/published', target: '_blank', data: { confirm: @exit_disclaimer } do
+        |SEE MORE PROJECTS
+        i.fas.fa-external-link-alt.fa-sm<
 
   .grid-x.align-center-middle.align-middle.join-the-professionals
     .cell.medium-9

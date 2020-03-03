@@ -47,7 +47,9 @@
                           #{ rp[1]['number_of_studies'] } Studies &bull; #{ rp[1]['number_of_key_questions'] } Key Questions &bull; #{ rp[1]['number_of_extraction_forms'] } Extraction Forms
                     .cell.medium-8
                       h6.summary Objectives: #{ rp[1]['description'].blank? ? 'None Provided' : rp[1]['description'] }
-                      h6.bold = link_to 'READ MORE', rp[1]['url'], target: '_blank'
+                      h6.bold = link_to rp[1]['url'], target: '_blank' do
+                        |READ MORE
+                        i.fas.fa-external-link-alt.fa-sm<
 
         nav.orbit-bullets
           button.is-active data-slide="0"

@@ -4,7 +4,7 @@ html class='no-js' lang='en'
     meta charset='utf-8'
     meta name='viewport' content='width=device-width, initial-scale=1.0'
 
-    title == content_for?(:title) ? yield(:title) : 'srdrPLUS'
+    title == content_for?(:title) ? yield(:title) : 'SRDR+'
 
     script[async src="https://www.googletagmanager.com/gtag/js?id=UA-146336211-1"]
     script
@@ -13,6 +13,8 @@ html class='no-js' lang='en'
     script[async src="https://www.googletagmanager.com/gtag/js?id=UA-76714758-1"]
     script
       |  window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'UA-76714758-1');
+
+    script src="https://kit.fontawesome.com/a55e144d79.js" crossorigin="anonymous"
 
     = stylesheet_link_tag    'application', 'https://fonts.googleapis.com/css?family=Roboto&display=swap'
     = stylesheet_link_tag    'application', 'data-turbolinks-track' => 'reload'
