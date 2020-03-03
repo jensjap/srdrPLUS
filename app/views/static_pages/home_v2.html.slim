@@ -30,7 +30,7 @@
                             i.fi-alert>
                             ' Please correct the errors below.
                         .form-inputs
-                          = f.input :email, label: 'Email Address', required: true, hint: 'Email must have the following format: example@domain.edu', autofocus: true
+                          = f.input :email, required: true, hint: 'Email must have the following format: example@domain.edu', autofocus: true
                           = f.input :password, required: true, hint: ("Password must contain a minium of #{@minimum_password_length} characters." if @minimum_password_length),
                             input_html: { data: { validator: 'minimum_length', minimum_length: "#{ @minimum_password_length }" } }
                         .form-actions
