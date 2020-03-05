@@ -9973,7 +9973,7 @@ body {
   margin: 0;
   padding: 0;
   background: #fefefe;
-  font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+  font-family: "Roboto", sans-serif;
   font-weight: normal;
   line-height: 1.5;
   color: #0a0a0a;
@@ -13460,7 +13460,7 @@ h3, .h3,
 h4, .h4,
 h5, .h5,
 h6, .h6 {
-  font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+  font-family: "Roboto", sans-serif;
   font-style: normal;
   font-weight: normal;
   color: inherit;
@@ -13635,14 +13635,14 @@ blockquote {
 /* line 454, /Users/jensjap/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/typography/_base.scss */
 blockquote, blockquote p {
   line-height: 1.6;
-  color: #8a8a8a;
+  color: #4c4c4c;
 }
 
 /* line 461, /Users/jensjap/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/typography/_base.scss */
 cite {
   display: block;
   font-size: 0.8125rem;
-  color: #8a8a8a;
+  color: #4c4c4c;
 }
 /* line 466, /Users/jensjap/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/typography/_base.scss */
 cite:before {
@@ -13687,7 +13687,7 @@ kbd {
   margin-bottom: 0.5rem;
   font-weight: normal;
   line-height: 1.4;
-  color: #8a8a8a;
+  color: #4c4c4c;
 }
 
 /* line 58, /Users/jensjap/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/typography/_helpers.scss */
@@ -13855,7 +13855,7 @@ ul.no-bullet, ol.no-bullet {
   /* line 58, /Users/jensjap/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/typography/_print.scss */
   pre,
   blockquote {
-    border: 1px solid #8a8a8a;
+    border: 1px solid #4c4c4c;
     page-break-inside: avoid;
   }
 
@@ -13929,7 +13929,7 @@ textarea {
 [type='text']:focus, [type='password']:focus, [type='date']:focus, [type='datetime']:focus, [type='datetime-local']:focus, [type='month']:focus, [type='week']:focus, [type='email']:focus, [type='number']:focus, [type='search']:focus, [type='tel']:focus, [type='time']:focus, [type='url']:focus, [type='color']:focus,
 textarea:focus {
   outline: none;
-  border: 1px solid #8a8a8a;
+  border: 1px solid #4c4c4c;
   background-color: #fefefe;
   -webkit-box-shadow: 0 0 5px #cacaca;
           box-shadow: 0 0 5px #cacaca;
@@ -14158,7 +14158,7 @@ select {
   font-weight: normal;
   line-height: 1.5;
   color: #0a0a0a;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' width='32' height='24' viewBox='0 0 32 24'><polygon points='0,0 32,0 16,24' style='fill: rgb%28138, 138, 138%29'></polygon></svg>");
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' width='32' height='24' viewBox='0 0 32 24'><polygon points='0,0 32,0 16,24' style='fill: rgb%2876, 76, 76%29'></polygon></svg>");
   -webkit-background-origin: content-box;
           background-origin: content-box;
   background-position: right -1rem center;
@@ -14180,7 +14180,7 @@ select {
 /* line 54, /Users/jensjap/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/forms/_select.scss */
 select:focus {
   outline: none;
-  border: 1px solid #8a8a8a;
+  border: 1px solid #4c4c4c;
   background-color: #fefefe;
   -webkit-box-shadow: 0 0 5px #cacaca;
           box-shadow: 0 0 5px #cacaca;
@@ -15293,7 +15293,7 @@ a.button:hover, a.button:focus {
 /* line 96, /Users/jensjap/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_close-button.scss */
 .close-button {
   position: absolute;
-  color: #8a8a8a;
+  color: #4c4c4c;
   cursor: pointer;
 }
 /* line 202, /Users/jensjap/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/util/_mixins.scss */
@@ -15626,9 +15626,9 @@ a.button:hover, a.button:focus {
 }
 /* line 137, /Users/jensjap/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/util/_mixins.scss */
 .menu-icon.dark:hover::after {
-  background: #8a8a8a;
-  -webkit-box-shadow: 0 7px 0 #8a8a8a, 0 14px 0 #8a8a8a;
-          box-shadow: 0 7px 0 #8a8a8a, 0 14px 0 #8a8a8a;
+  background: #4c4c4c;
+  -webkit-box-shadow: 0 7px 0 #4c4c4c, 0 14px 0 #4c4c4c;
+          box-shadow: 0 7px 0 #4c4c4c, 0 14px 0 #4c4c4c;
 }
 
 /* line 74, /Users/jensjap/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_drilldown.scss */
@@ -17026,11 +17026,11 @@ a.button:hover, a.button:focus {
 }
 /* line 145, /Users/jensjap/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_orbit.scss */
 .orbit-bullets button:hover {
-  background-color: #8a8a8a;
+  background-color: #4c4c4c;
 }
 /* line 149, /Users/jensjap/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_orbit.scss */
 .orbit-bullets button.is-active {
-  background-color: #8a8a8a;
+  background-color: #4c4c4c;
 }
 
 /* line 162, /Users/jensjap/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_pagination.scss */
@@ -17897,7 +17897,7 @@ a.thumbnail image {
 .has-tip {
   position: relative;
   display: inline-block;
-  border-bottom: dotted 1px #8a8a8a;
+  border-bottom: dotted 1px #4c4c4c;
   font-weight: bold;
   cursor: help;
 }
@@ -21256,7 +21256,7 @@ a.citation-label {
 /* line 333, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/projects.scss */
 .remove-button {
   font-size: 1rem;
-  color: #8a8a8a;
+  color: #4c4c4c;
   margin-right: 5px;
   -webkit-transition: color 0.25s;
   transition: color 0.25s;
@@ -21609,7 +21609,7 @@ a.add-task-button .fi-plus:hover {
 
 /* line 552, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/projects.scss */
 .options-table .require-button {
-  background: #8a8a8a;
+  background: #4c4c4c;
   font-weight: bold;
 }
 /* line 556, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/projects.scss */
@@ -21619,7 +21619,7 @@ a.add-task-button .fi-plus:hover {
 /* line 559, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/projects.scss */
 .options-table .switch-paddle {
   color: #fefefe;
-  background: #8a8a8a;
+  background: #4c4c4c;
 }
 /* line 563, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/projects.scss */
 .options-table input:checked ~ .switch-paddle {
@@ -23195,14 +23195,12 @@ body {
   background-color: #fff;
   color: #333;
   margin: 33px;
-  font-family: verdana, arial, helvetica, sans-serif;
   font-size: 13px;
   line-height: 18px;
 }
 
 /* line 10, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/scaffolds.scss */
 p, ol, ul, td {
-  font-family: verdana, arial, helvetica, sans-serif;
   font-size: 13px;
   line-height: 18px;
 }
@@ -25472,7 +25470,7 @@ li.tabs-title > a:visited {
 }
 /* line 44, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .about .White-box .subsection-headers {
-  font-family: NotoSans;
+  font-family: 'Noto Sans';
   font-size: 20px;
   font-weight: normal;
   font-style: normal;
@@ -25544,7 +25542,7 @@ li.tabs-title > a:visited {
 }
 /* line 118, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .about .Such-a-repository-he {
-  font-family: NotoSans;
+  font-family: 'Noto Sans';
   font-size: 16px;
   font-weight: normal;
   font-style: normal;
@@ -25560,7 +25558,7 @@ li.tabs-title > a:visited {
 
 /* line 134, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .In-an-effort-to-redu {
-  font-family: NotoSans;
+  font-family: 'Noto Sans';
   font-size: 16px;
   font-weight: normal;
   font-style: normal;
@@ -25621,7 +25619,7 @@ li.tabs-title > a:visited {
 
 /* line 191, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .Ian-Saldanha-March {
-  font-family: NotoSans;
+  font-family: 'Noto Sans';
   font-size: 16px;
   font-weight: normal;
   font-style: normal;
@@ -26106,7 +26104,7 @@ li.tabs-title > a:visited {
 
 /* line 618, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .Feature-Lorem-ips {
-  font-family: NotoSans;
+  font-family: 'Noto Sans';
   font-size: 16px;
   font-weight: normal;
   font-style: normal;
@@ -26157,7 +26155,7 @@ li.tabs-title > a:visited {
 }
 /* line 662, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .Recently-published h6 {
-  color: #888b94;
+  color: #56585f;
   font-size: 0.9em;
 }
 /* line 666, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
@@ -26428,7 +26426,7 @@ li.tabs-title > a:visited {
 }
 /* line 906, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .v3 .SRDR-is-a-free-pow {
-  font-family: NotoSans;
+  font-family: 'Noto Sans';
   font-size: 20px;
   font-weight: normal;
   font-style: normal;

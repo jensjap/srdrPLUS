@@ -55890,15 +55890,38 @@ function __guardMethod__(obj, methodName, transform) {
         form.submit();
       };
       $('.fill-suggestion').click(function(event) {
-        var efpsId, inputFields, tableRow, type1Desc, type1Name;
+        var efpsId, i, inputFields, j, k, len, ref, tableRow, timepoints, tp, tp_elems, type1Desc, type1Name, type1Type;
         if ($(event.target).is('td')) {
           tableRow = $(event.target).closest('tr');
-          type1Name = tableRow.children('td:nth-child(1)').text();
-          type1Desc = tableRow.children('td:nth-child(2)').text();
+          type1Type = tableRow.children('td[data-t1-type=""]').data('t1-type-id');
+          type1Name = tableRow.children('td[data-t1-name=""]').text();
+          type1Desc = tableRow.children('td[data-t1-description=""]').text();
+          timepoints = [];
+          tableRow.find('td[data-timepoints=""] ul li').each(function() {
+            return timepoints.push({
+              name: $(this).data('tp-name'),
+              unit: $(this).data('tp-unit')
+            });
+          });
           efpsId = $(this).data('sectionId');
           inputFields = $('.new-type1-fields-' + efpsId).last();
-          inputFields.find('input').val(type1Name);
-          inputFields.find('textarea').val(type1Desc);
+          inputFields.find('select[data-t1-type-input=""]').val(type1Type);
+          inputFields.find('input[data-t1-name-input=""]').val(type1Name);
+          inputFields.find('textarea[data-t1-description-input=""]').val(type1Desc);
+          $('#timepoints-node tr').slice(1).each(function() {
+            return $(this).find('td.remove-tp-link a').trigger('click');
+          });
+          if (timepoints.length > 1) {
+            for (j = 2, ref = timepoints.length; 2 <= ref ? j <= ref : j >= ref; 2 <= ref ? j++ : j--) {
+              $('a.add-timepoint-link').trigger('click');
+            }
+          }
+          tp_elems = $('#timepoints-node tr');
+          for (i = k = 0, len = timepoints.length; k < len; i = ++k) {
+            tp = timepoints[i];
+            $(tp_elems[i]).find('td.tp-name-input input').val(tp['name']);
+            $(tp_elems[i]).find('td.tp-unit-input input').val(tp['unit']);
+          }
           return $(this).closest('.reveal').foundation('close');
         }
       });
