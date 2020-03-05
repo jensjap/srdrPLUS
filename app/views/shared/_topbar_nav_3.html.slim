@@ -11,15 +11,17 @@
             ul.dropdown.menu data-dropdown-menu=""
               li.menu-text
                 = link_to root_path
-                  = image_tag("brand.png", size: "200x50")
+                  = image_tag("brand.png", alt: "Anchor to Home Page", size: "200x50")
 
           .top-bar-right
             ul.dropdown.menu data-dropdown-menu=""
               li = link_to root_path do
                 i.fi-home style="font-size: 1.5em;"
+
               li = link_to new_search_path, title: "Search Published Projects" do
                 i.fi-magnifying-glass
                 |  Search
+
               li
                 = link_to("About", about_path)
                 ul.menu
@@ -27,6 +29,7 @@
                   li = link_to(t(".cite"), citing_path)
                   li = link_to(t(".usage"), usage_path)
                   li = link_to(t(".help"), help_path)
+
               li
                 = link_to('Tutorials', '#')
                 ul.menu style='min-width: 450px'
@@ -42,9 +45,11 @@
                     li = link_to('Download Import Templates', 'https://srdrplus.s3.amazonaws.com/Import+Templates.zip', target: '_blank')
               li = link_to(t(".blog"), blog_path)
               li = link_to("Resources", resources_path)
-              li = link_to("Published Projects", "https://srdr.ahrq.gov/projects/published")
+              li = link_to("Published Projects", published_projects_path)
+
               - if user_signed_in?
                 = render "shared/signed_in_links"
+
               - else
                 li = link_to "Login", new_user_session_path
                 li = link_to new_user_registration_path do

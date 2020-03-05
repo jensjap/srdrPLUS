@@ -23,6 +23,7 @@ class ApplicationController < ActionController::Base
   before_action :set_current_user
   before_action :set_paper_trail_whodunnit
   before_action :set_layout_style
+  before_action :set_exit_disclaimer_message
 
   def authorize(*args)
     return true if Rails.env.test?
@@ -69,5 +70,9 @@ class ApplicationController < ActionController::Base
       #cookies[:layout_style] = Random.rand 1..2 unless cookies[:layout_style]
       #cookies[:layout_style] ||= Random.rand 1..1
       cookies[:layout_style] ||= 3
+    end
+
+    def set_exit_disclaimer_message
+      @exit_disclaimer = "Exit Disclaimer\r\r- This external link provides additional information that is consistent with the intended purpose of a Federal site.\r- Linking to a non-Federal site does not constitute an endorsement by the Department of Health and Human Services (HHS) or any of its employees of the sponsors or the information and products presented on the site.\r- HHS cannot attest to the accuracy of information provided by this link.\r- You will be subject to the destination site's privacy policy when you follow the link."
     end
 end

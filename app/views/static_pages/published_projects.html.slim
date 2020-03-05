@@ -1,0 +1,9 @@
+.grid-container.fluid
+  .grid-x.align-center
+    .cell.medium-12
+      h1 Published Projects
+      p
+        |Please follow this link to a list of
+        =< link_to "https://srdr.ahrq.gov/projects/published", target: '_blank', data: { confirm: @exit_disclaimer  } do
+          |Published Projects
+          i.fas.fa-external-link-alt.fa-sm<

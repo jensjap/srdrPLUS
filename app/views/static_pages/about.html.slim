@@ -4,15 +4,16 @@
   .hero
     .grid-x.align-center
       .cell.small-6
-        h2.About-the-Systematic About the Systematic Review Data Repository Plus&trade; (SRDR+)
+        h1.About-the-Systematic About the Systematic Review Data Repository Plus (SRDR+)
 
   .grid-x.align-center
     .cell.small-6.In-an-effort-to-redu
       p In an effort to reduce the burden of conducting systematic reviews,
         researchers and developers at the Brown University Evidence-based
         Practice Center (EPC) (previously at Tufts Medical Center), with
-        support from the <a href='https://www.ahrq.gov' target='_blank'>Agency for Healthcare
-        Research and Quality (AHRQ)</a> developed a collaborative, Web-based
+        support from the <a href='https://www.ahrq.gov' target='_blank'
+        data-confirm="#{ @exit_disclaimer }">Agency for Healthcare
+        Research and Quality (AHRQ) <span class='i fas fa-external-link-alt fa-sm'></span></a> developed a collaborative, Web-based
         repository of systematic review data. This resource serves as both
         an archive and data extraction tool and is shared among organizations
         and individuals producing systematic reviews worldwide, enabling the
@@ -34,7 +35,9 @@
           li Promotion of transparency and reliability in the systematic review
             process via communal review;
           li Enhanced cooperation and utilization across related resources
-            (such as <a href='https://clinicaltrials.gov' target='_blank'>ClinicalTrials.gov</a>);
+            (such as <a href='https://clinicaltrials.gov' target='_blank'
+            data-confirm="#{ @exit_disclaimer }">
+            ClinicalTrials.gov <span class='i fas fa-external-link-alt fa-sm'></span></a>);
           li More efficient means of producing and updating systematic reviews; and
           li Facilitation of other novel avenues of inquiry, such as those
             investigating research methodology (e.g., comparing different types of
@@ -92,18 +95,26 @@
       .White-box style="padding-top: 3em;"
         .grid-x
           .cell.medium-4
-            div = image_tag "photo-team-ian@2x.png"
-            div = link_to "Ian Saldanha, MBBS, MPH, PhD", "https://vivo.brown.edu/display/isaldanh", class: "project-team-links", target: "_blank"
+            div = image_tag "photo-team-ian@2x.png", alt: 'Image of Ian Saldanha'
+            div = link_to "https://vivo.brown.edu/display/isaldanh", class: "project-team-links", target: "_blank", data: { confirm: @exit_disclaimer } do
+              |Ian Saldanha, MBBS, MPH, PhD
+              i.fas.fa-external-link-alt.fa-sm<
             span Director and Principal Investigator:
             .subheader Brown University
+
           .cell.medium-4
-            div = image_tag "photo-team-joseph@2x.png"
-            div = link_to "Joseph Lau, MD", "https://vivo.brown.edu/display/jl122", class: "project-team-links", target: "_blank"
+            div = image_tag "photo-team-joseph@2x.png", alt: 'Image of Joseph Lau'
+            div = link_to "https://vivo.brown.edu/display/jl122", class: "project-team-links", target: "_blank", data: { confirm: @exit_disclaimer } do
+              |Joseph Lau, MD
+              i.fas.fa-external-link-alt.fa-sm<
             span Founder and former Director:
             .subheader Brown University
+
           .cell.medium-4
-            div = image_tag "photo-team-ethan@2x.png"
-            div = link_to "Ethan Balk, MD, MPH", "https://vivo.brown.edu/display/ebalk", class: "project-team-links", target: "_blank"
+            div = image_tag "photo-team-ethan@2x.png", alt: 'Image of Ethan Balk'
+            div = link_to "https://vivo.brown.edu/display/ebalk", class: "project-team-links", target: "_blank", data: { confirm: @exit_disclaimer } do
+              |Ethan Balk, MD, MPH
+              i.fas.fa-external-link-alt.fa-sm<
             span Co-Investigator:
             .subheader Brown University
 
@@ -111,18 +122,26 @@
 
         .grid-x
           .cell.medium-4
-            div = image_tag "photo-team-bryant@2x.png"
-            div = link_to "Bryant Smith, MPH, CPH", "https://www.linkedin.com/in/bryant-smith-mph-cph-b65a3b21/", class: "project-team-links", target: "_blank"
+            div = image_tag "photo-team-bryant@2x.png", alt: 'Image of Bryant Smith'
+            div = link_to "https://www.linkedin.com/in/bryant-smith-mph-cph-b65a3b21/", class: "project-team-links", target: "_blank", data: { confirm: @exit_disclaimer } do
+              |Bryant Smith, MPH, CPH
+              i.fas.fa-external-link-alt.fa-sm<
             span Administrator:
             .subheader Brown University
+
           .cell.medium-4
-            div = image_tag "photo-team-birol@2x.png"
-            div = link_to "Birol Senturk, BS", "https://www.linkedin.com/in/birolsenturk/", class: "project-team-links", target: "_blank"
+            div = image_tag "photo-team-birol@2x.png", alt: 'Image of Birol Senturk'
+            div = link_to "https://www.linkedin.com/in/birolsenturk/", class: "project-team-links", target: "_blank", data: { confirm: @exit_disclaimer } do
+              |Birol Senturk, BS
+              i.fas.fa-external-link-alt.fa-sm<
             span Assistant Programmer:
             .subheader Brown University
+
           .cell.medium-4
-            div = image_tag "photo-team-jens@2x.png"
-            div = link_to "Jens Jap, BS", "https://www.linkedin.com/in/jens-jap-2a7b555a/", class: "project-team-links", target: "_blank"
+            div = image_tag "photo-team-jens@2x.png", alt: 'Image of Jens Jap'
+            div = link_to "https://www.linkedin.com/in/jens-jap-2a7b555a/", class: "project-team-links", target: "_blank", data: { confirm: @exit_disclaimer } do
+              |Jens Jap, BS
+              i.fas.fa-external-link-alt.fa-sm<
             span Lead Programmer:
             .subheader Brown University
 
@@ -133,14 +152,23 @@
           br
           .grid-x
             .cell
-              div = link_to "Joseph Lau MD", "https://vivo.brown.edu/display/jl122", class: "project-team-links", target:"_blank"
+              div = link_to "https://vivo.brown.edu/display/jl122", class: "project-team-links", target:"_blank", data: { confirm: @exit_disclaimer } do
+                |Joseph Lau, MD
+                i.fas.fa-external-link-alt.fa-sm<
               .subheader Brown University
+
             .cell
-              div = link_to "Byron Wallace, PhD", "https://www.ccis.northeastern.edu/people/byron-wallace/", class: "project-team-links", target:"_blank"
+              div = link_to "https://www.ccis.northeastern.edu/people/byron-wallace/", class: "project-team-links", target:"_blank", data: { confirm: @exit_disclaimer } do
+                |Byron Wallace, PhD
+                i.fas.fa-external-link-alt.fa-sm<
               .subheader Northeastern University
+
             .cell
-              div = link_to "Iain Marshall, MRCGP, PhD", "https://kclpure.kcl.ac.uk/portal/iain.marshall.html", class: "project-team-links", target:"_blank"
+              div = link_to "https://kclpure.kcl.ac.uk/portal/iain.marshall.html", class: "project-team-links", target:"_blank", data: { confirm: @exit_disclaimer } do
+                |Iain Marshall, MRCGP, PhD
+                i.fas.fa-external-link-alt.fa-sm<
               .subheader King’s College London
+
         .cell.medium-6.subsection-headers.small-offset-2
           div PAST CONTRIBUTORS
           br
@@ -180,41 +208,68 @@
       table.governance-board.unstriped
         tr
           td
-            div = link_to "James Scott Parrott, PhD (Chair)", "https://apps.shp.rutgers.edu/projects/facultyLocator/profile1.cfm?RUID=parrotja", target: "_blank", class: "governance-board-links"
+            div = link_to "https://apps.shp.rutgers.edu/projects/facultyLocator/profile1.cfm?RUID=parrotja", target: "_blank", class: "governance-board-links", data: { confirm: @exit_disclaimer } do
+              |James Scott Parrott, PhD (Chair)
+              i.fas.fa-external-link-alt.fa-sm<
             .subheader Professor, Rutgers University School of Health Professions, Newark, NJ, USA
+
           td
-            div = link_to "Linn Brandt, MD", "http://magicproject.org/", target: "_blank", class: "governance-board-links"
+            div = link_to "http://magicproject.org/", target: "_blank", class: "governance-board-links", data: { confirm: @exit_disclaimer } do
+              |Linn Brandt, MD
+              i.fas.fa-external-link-alt.fa-sm<
             .subheader Member, MAGIC Board, University of Oslo, Oslo, Norway
+
         tr
           td
-            div = link_to "Christine Laine, MD, MPH", "http://annals.org/aim/pages/biography", target: "_blank", class: "governance-board-links"
+            div = link_to "http://annals.org/aim/pages/biography", target: "_blank", class: "governance-board-links", data: { confirm: @exit_disclaimer } do
+              |Christine Laine, MD, MPH
+              i.fas.fa-external-link-alt.fa-sm<
             .subheader Editor-in-Chief, Annals of Internal Medicine, American College of Physicians, Philadelphia, PA, USA
+
           td
-            div = link_to "Robert McDonough, MD, JD, MPP", "https://www.linkedin.com/in/mcdonough-robert-2317a29/", target: "_blank", class: "governance-board-links"
+            div = link_to "https://www.linkedin.com/in/mcdonough-robert-2317a29/", target: "_blank", class: "governance-board-links", data: { confirm: @exit_disclaimer } do
+              |Robert McDonough, MD, JD, MPP
+              i.fas.fa-external-link-alt.fa-sm<
             .subheader Senior Director, Clinical Policy Research & Development, Aetna, Hartford, CT, USA
+
         tr
           td
-            div = link_to "Maria Michaels, MBA, PMP", "https://www.linkedin.com/in/maria-michaels-mba-pmp-b793689", target: "_blank", class: "governance-board-links"
+            div = link_to "https://www.linkedin.com/in/maria-michaels-mba-pmp-b793689", target: "_blank", class: "governance-board-links", data: { confirm: @exit_disclaimer } do
+              |Maria Michaels, MBA, PMP
+              i.fas.fa-external-link-alt.fa-sm<
             .subheader Public Health Advisor, Centers for Disease Control and Prevention (CDC), Atlanta, GA, USA
 
           td
-            div = link_to "Karen Robinson, MSc, PhD", "https://www.hopkinsmedicine.org/profiles/results/directory/profile/4592359/karen-robinson", target: "_blank", class: "governance-board-links"
+            div = link_to "https://www.hopkinsmedicine.org/profiles/results/directory/profile/4592359/karen-robinson", target: "_blank", class: "governance-board-links", data: { confirm: @exit_disclaimer } do
+              |Karen Robinson, MSc, PhD
+              i.fas.fa-external-link-alt.fa-sm<
             .subheader Associate Professor and Director, Johns Hopkins Evidence-based Practice Center, Johns Hopkins University, Baltimore, MD, USA
+
         tr
           td
-            div = link_to "Joanne M. Spahn, MS, RD, FADA", "https://www.linkedin.com/in/joanne-spahn-26005414/", target: "_blank", class: "governance-board-links"
+            div = link_to "https://www.linkedin.com/in/joanne-spahn-26005414/", target: "_blank", class: "governance-board-links", data: { confirm: @exit_disclaimer } do
+              |Joanne M. Spahn, MS, RD, FADA
+              i.fas.fa-external-link-alt.fa-sm<
             .subheader Lead Nutritionist, US Department of Agriculture Center for Nutrition Policy and Promotion, Alexandria, VA, USA
+
           td
-            div = link_to "James Thomas, PhD", "https://iris.ucl.ac.uk/iris/browse/profile?upi=JTHOA32&openTabNum=2", target: "_blank", class: "governance-board-links"
+            div = link_to "https://iris.ucl.ac.uk/iris/browse/profile?upi=JTHOA32&openTabNum=2", target: "_blank", class: "governance-board-links", data: { confirm: @exit_disclaimer } do
+              |James Thomas, PhD
+              i.fas.fa-external-link-alt.fa-sm<
             .subheader Associate Director, Evidence for Policy and Practice Information and Co-ordinating Centre (EPPI-Centre), University College London, London, UK
+
         tr
           td
-            div = link_to "Howard White, PhD", "http://iristl.org/faculty/howard-white/", target: "_blank", class: "governance-board-links"
+            div = link_to "http://iristl.org/faculty/howard-white/", target: "_blank", class: "governance-board-links", data: { confirm: @exit_disclaimer } do
+              |Howard White, PhD
+              i.fas.fa-external-link-alt.fa-sm<
             .subheader Chief Executive Officer, Campbell Collaboration, Washington University in St. Louis, St. Louis, MO, USA
+
           td
-            div = link_to "Craig Whittington, PhD", "https://www.linkedin.com/in/craig-whittington-71472697/", target: "_blank", class: "governance-board-links"
+            div = link_to "https://www.linkedin.com/in/craig-whittington-71472697/", target: "_blank", class: "governance-board-links", data: { confirm: @exit_disclaimer } do
+              |Craig Whittington, PhD
+              i.fas.fa-external-link-alt.fa-sm<
             .subheader Global Head of Quality, Methodology & Innovation, Doctor Evidence, LLC., Santa Monica, CA, USA
-          td
 
       br
       br
@@ -225,31 +280,52 @@
       table.governance-board.unstriped
         tr
           td
-            div = link_to "Kay Dickersin, MA, PhD", "https://www.jhsph.edu/faculty/directory/profile/1695/kay-dickersin", target: "_blank", class: "governance-board-links"
+            div = link_to "https://www.jhsph.edu/faculty/directory/profile/1695/kay-dickersin", target: "_blank", class: "governance-board-links", data: { confirm: @exit_disclaimer } do
+              |Kay Dickersin, MA, PhD
+              i.fas.fa-external-link-alt.fa-sm<
             .subheader Professor Emeritus and Former Director, Cochrane Eyes and Vision, Johns Hopkins University, Baltimore, MD, USA
           td
-            div = link_to "David Moher, PhD", "http://www.ohri.ca/profile/dmoher", target: "_blank", class: "governance-board-links"
+            div = link_to "http://www.ohri.ca/profile/dmoher", target: "_blank", class: "governance-board-links", data: { confirm: @exit_disclaimer } do
+              |David Moher, PhD
+              i.fas.fa-external-link-alt.fa-sm<
             .subheader Editor-in-Chief, Systematic Reviews, Associate Professor, University of Ottawa, Ottawa, ON, Canada
         tr
           td
-            div = link_to "Ida Sim, MD, PhD", "https://vivli.org/team/ida-sim/", target: "_blank", class: "governance-board-links"
+            div = link_to "https://vivli.org/team/ida-sim/", target: "_blank", class: "governance-board-links", data: { confirm: @exit_disclaimer } do
+              |Ida Sim, MD, PhD
+              i.fas.fa-external-link-alt.fa-sm<
             .subheader Technical Lead, Vivli, Professor, University of California San Francisco, San Francisco, CA, USA
+
           td
-            div = link_to "Lesley A. Stewart, PhD", "https://www.york.ac.uk/crd/staff/lesley-stewart/", target: "_blank", class: "governance-board-links"
+            div = link_to "https://www.york.ac.uk/crd/staff/lesley-stewart/", target: "_blank", class: "governance-board-links", data: { confirm: @exit_disclaimer } do
+              |Lesley A. Stewart
+              i.fas.fa-external-link-alt.fa-sm<
             .subheader Professor and Director, Centre for Reviews and Dissemination, University of York, York, UK
+
         tr
           td
-            div = link_to "David Tovey, MBBS, FRCGP", "https://community.cochrane.org/editorial-and-publishing-policy-resource/overview-cochrane-library-and-related-content/editorial-team", target: "_blank", class: "governance-board-links"
+            div = link_to "https://community.cochrane.org/editorial-and-publishing-policy-resource/overview-cochrane-library-and-related-content/editorial-team", target: "_blank", class: "governance-board-links", data: { confirm: @exit_disclaimer } do
+              |David Tovey, MBBS
+              i.fas.fa-external-link-alt.fa-sm<
             .subheader Editor-in-Chief, Cochrane Library, London, UK
+
           td
-            div = link_to "Craig A. Umscheid, MD, MS", "https://hdsi.uchicago.edu/center-staff/", target: "_blank", class: "governance-board-links"
+            div = link_to "https://hdsi.uchicago.edu/center-staff/", target: "_blank", class: "governance-board-links", data: { confirm: @exit_disclaimer } do
+              |Craig A. Umscheid, MD
+              i.fas.fa-external-link-alt.fa-sm<
             .subheader Director, Center for Healthcare Delivery and Service and Innovation, University of Chicago, Chicago, IL, USA
+
         tr
           td
-            div = link_to "Evelyn P. Whitlock, MD, MPH", "https://www.pcori.org/people/evelyn-p-whitlock-md-mph", target: "_blank", class: "governance-board-links"
+            div = link_to "https://www.pcori.org/people/evelyn-p-whitlock-md-mph", target: "_blank", class: "governance-board-links", data: { confirm: @exit_disclaimer } do
+              |Evelyn P. Whitlock, MD, MPH
+              i.fas.fa-external-link-alt.fa-sm<
             .subheader Senior Scientific Officer, Patient-Centered Outcomes Research Institute, Washington, DC, USA
+
           td
-            div = link_to "Deborah A. Zarin, MD", "https://en.wikipedia.org/wiki/Deborah_Zarin", target: "_blank", class: "governance-board-links"
+            div = link_to "https://en.wikipedia.org/wiki/Deborah_Zarin", target: "_blank", class: "governance-board-links", data: { confirm: @exit_disclaimer } do
+              |Deborah A. Zarin, MD
+              i.fas.fa-external-link-alt.fa-sm<
             .subheader Former Director, ClinicalTrials.gov, National Library of Medicine, Bethesda, MD, USA
 
 
