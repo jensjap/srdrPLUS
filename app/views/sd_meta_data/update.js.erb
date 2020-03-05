@@ -2,7 +2,7 @@
   <% if @item_id > 0 %>
     <% div_partial_dict = { 
       63 => { :class => '.meta-regression-analysis-result-list',\
-              :partial => 'sd_meta_data/form/nested_associations/meta_regression_analysis_list' },\
+              :partial => 'sd_meta_data/form/nested_associations/meta_regression_analysis_result_list' },\
       61 => { :class => '.network-meta-analysis-result-list',\
               :partial => 'sd_meta_data/form/nested_associations/network_meta_analysis_result_list' },\
       59 => { :class => '.pairwise-meta-analytic-result-list',\
@@ -43,7 +43,7 @@
   let infoDiv = $( ".infoDiv" );
 
   <% if @errors %>
-    toastr.warning('<%= @errors.full_messages.join(', ') %>')
+    toastr.warning('<%= @errors.join(', ') %>')
   <% else %>
     //toastr.success('Data saved!')
     $('.dirty').removeClass('dirty');

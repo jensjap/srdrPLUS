@@ -26,7 +26,7 @@
       a.preview-button.button.float-right.secondary[data-panel-number="#{ @panel_number }"]
         | Preview
     /= simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { id: 'sd-meta-form', class: "grid-form", data: { 'abide': '', 'live-validate': true } }) do |f|
-    .grid-form
+    .panel-content.grid-form
       .tabs-content.vertical
         .infoDiv style="opacity: 0; color: green;"
           ' Saved!
@@ -60,9 +60,13 @@ javascript:
   $( 'a.close-preview' ).on('click', function(event) {
     $( '.preview-container' ).html('')
     $( '.preview-container-container' ).addClass( 'hide' )
+    $( '.panel-content' ).removeClass( 'hide' )
+    $( '.preview-button' ).removeClass( 'hide' )
   })
 
   $( '.preview-button' ).on( 'click', function(event) {
+    $( '.panel-content' ).addClass( 'hide' )
+    $( '.preview-button' ).addClass( 'hide' )
     $.ajax({
       url: "#{ sd_meta_datum_preview_url(@sd_meta_datum) }",
       data: { panel_number: $('.preview-button').data('panel-number')},
