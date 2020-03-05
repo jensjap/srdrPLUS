@@ -20,7 +20,7 @@
               .tabs-panel#existing-user-panel.align-middle style='padding: 33px;'
                 .Get-started-now
                   span.text-style-1 Already have an account?
-                = simple_form_for(:user, url: new_user_session_path, html: { data: { 'abide': '' } }) do |f|
+                = simple_form_for(:user, namespace: 'login', url: new_user_session_path, html: { data: { 'abide': '' } }) do |f|
                   .alert.callout data-abide-error='' style='display: none;'
                     p
                       i.fi-alert>
@@ -45,7 +45,7 @@
 
                   .form-inputs style='margin-top: 1rem;'
                     = f.input :email, placeholder: 'Email', required: true, hint: 'Email must have the following format: example@domain.edu', autofocus: true
-                    = f.input :password, placeholder: 'Password', required: true, hint: ("Password must contain a minium of #{@minimum_password_length} characters." if @minimum_password_length),
+                    = f.input :password, placeholder: 'Password', required: true, hint: ("Password must contain a minium of #{ @minimum_password_length } characters." if @minimum_password_length),
                       input_html: { data: { validator: 'minimum_length', minimum_length: "#{ @minimum_password_length }" } }
 
                   .form-actions

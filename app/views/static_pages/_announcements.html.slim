@@ -7,13 +7,13 @@
     span The course is offered through the <a href='https://evsynthacademy.org/'>Evidence Synthesis Academy</a>.
 
 javascript:
-  $('.announcement-label').on('click', function() { 
+  $('.announcement-label').on('click', function() {
     $('.announcement-label').fadeOut('fast');
     $('.announcement-content').fadeIn('fast');
   });
 
   $('body').on('click', function(e) {
-    container = $('.announcement-container') 
+    container = $('.announcement-container')
     if (!container.is(e.target) && container.has(e.target).length === 0) {
       $('.announcement-content').fadeOut('fast');
       $('.announcement-label').fadeIn('fast');
@@ -22,14 +22,14 @@ javascript:
 
 scss:
   .announcement-container {
-    display: block; 
-    position: relative; 
-    left: 30px; 
+    display: block;
+    position: relative;
+    left: 30px;
     top: auto;
     .announcement-content {
-      position: absolute; 
-      width: 60vw; 
-      background: transparent; 
+      position: absolute;
+      width: 60vw;
+      background: transparent;
       display: none;
       a {
         color: #58b3e8 !important;
@@ -39,17 +39,18 @@ scss:
         display: block;
         color: white;
         font-size: 15px;
-      }  
+      }
     }
 
     .announcement-label {
       cursor: pointer;
-      opacity: 0.8;
-      position: absolute; 
-      background: #1986c7; 
-      font-size: 15px; 
-      font-weight: bold; 
+      opacity: 0.9;
+      position: absolute;
+      background: #1986c7;
+      font-size: 15px;
+      font-weight: bold;
       border-radius: 15px;
+      padding-top: 7px;
     }
   }
 
