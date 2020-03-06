@@ -14,7 +14,7 @@ class Timekeeper
     if formId of @_timer_dict
       clearTimeout( @_timer_dict[formId] )
     @_timer_dict[ formId ] = setTimeout -> 
-      submitForm( form )
+      send_async_form( form )
     , 750
     @_timer_dict[ formId ] 
 
@@ -96,12 +96,7 @@ add_form_listeners =( form ) ->
     # Mark form as 'dirty'.
     $form.addClass( 'dirty' )
 
-  $form.on 'cocoon:after-insert cocoon:after-remove', ( e ) ->
-    # Mark form as 'dirty'.
-    $form.addClass( 'dirty' )
-    Timekeeper.create_timer_for_form $form[0]
-
-  $form.find( 'input[type="file"]' ).change ( e ) ->
+  $form.on 'cocoon:after-insert cocoon:after-remove change', ( e ) ->
     # Mark form as 'dirty'.
     $form.addClass( 'dirty' )
     Timekeeper.create_timer_for_form $form[0]

@@ -34,14 +34,16 @@ class ExtractionFormsProjectsSectionsController < ApplicationController
   # PATCH/PUT /extraction_forms_projects_sections/1.json
   def update
     respond_to do |format|
+      @errors = @extraction_forms_projects_section.errors
       if @extraction_forms_projects_section.update(extraction_forms_projects_section_params)
         format.html { redirect_to build_extraction_forms_project_path(@extraction_forms_projects_section.extraction_forms_project,
                                                                       anchor: "panel-tab-#{ @extraction_forms_projects_section.id }"),
                       notice: t('success') }
         format.json { render :show, status: :ok, location: @extraction_forms_projects_section }
+        format.js {}
       else
         format.html { render :edit }
-        format.json { render json: @extraction_forms_projects_section.errors, status: :unprocessable_entity }
+        format.json { render json: @errors, status: :unprocessable_entity }
       end
     end
   end
