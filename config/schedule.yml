@@ -16,3 +16,8 @@ update_extraction_checksums:
   cron: "*/30 * * * *" # execute at every 30 minutes
   class: "UpdateExtractionChecksumsJob"
   queue: default
+
+searchkick_reindex:
+  cron: "0 1 * * *" # execute at 1am every day
+  class: "SearchkickReindexJob"
+  queue: default

@@ -3,8 +3,6 @@ class UpdateExtractionChecksumsJob < ApplicationJob
 
   rescue_from(StandardError) do |exception|
     # Do something with the exception
-
-    #byebug
     puts exception.message
   end
 
