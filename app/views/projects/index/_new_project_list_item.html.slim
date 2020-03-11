@@ -1,56 +1,66 @@
 a.accordion-title href="#"
-  .row
-    .column.medium-8
-      = project.name
-    .column.medium-4
-      / This dynamically switches between created_at and updated_at.
-      small = "#{ @order.split("-").first } " + t("time_prefix") + time_ago_in_words(project.send(@order.underscore).in_time_zone(current_user.profile.time_zone)) + t("ago")
+  div
+    = project.name
+  div
+    / This dynamically switches between created_at and updated_at.
+    small = "#{ @order.split("-").first } " + t("time_prefix") + time_ago_in_words(project.send(@order.underscore).in_time_zone(current_user.profile.time_zone)) + t("ago")
 
-.accordion-content data-tab-content=""
-  .row
-    .column.medium-9
-      .column.row
-        span.label Description:
-        .callout.description = project.description
-      .row
-        .column.large-4
-          span.label Key Questions:
-          .callout = project.key_questions.length
-        .column.large-4
-          span.label Studies:
-          .callout = project.citations.length
-        .column.large-4
-          span.label Extraction Forms:
-          .callout = project.extraction_forms.length
-      .row
-        .column.medium-6
+.accordion-content.grid-container data-tab-content=""
+  .grid-y
+    /.cell
+      .grid-x.grid-padding-x
+        .cell
+          span.label Description:
+          .callout.description = project.description
+    .cell
+      .grid-x.grid-padding-x
+        .cell.auto
+          - pu_count = @projects_projects_user_counts[project.id] || " 0"
+          - pu_title = (pu_count + (pu_count == "1" ? " Member" : " Members"))
+          h5 = link_to pu_title, edit_project_path(project) + '#panel-projects-users', title: t('.members_and_roles')
+        .cell.auto
+          - kqp_count = @projects_key_questions_project_counts[project.id] || " 0"
+          - kqp_title = (kqp_count + (kqp_count == "1" ? " Key Question" : " Key Questions"))
+          h5 = link_to kqp_title, edit_project_path(project) + '#panel-key-questions',       title: t('.key_questions')
+        .cell.auto
+          - cp_count = @projects_citations_project_counts[project.id] || " 0"
+          - cp_title = (cp_count + (cp_count == "1" ? " Citation" : " Citations"))
+          h5 = link_to cp_title, project_citations_path(project), title: t('manage_citations')
+        .cell.auto
+          - e_count = @projects_extraction_counts[project.id] || " 0"
+          - e_title = (e_count + (e_count == "1" ? " Extraction" : " Extractions"))
+          h5 = link_to e_title, project_extractions_path(project), title: t('manage_extractions')
+        /.cell.auto
           span.label Date Created:
           .callout = project.created_at.in_time_zone(current_user.profile.time_zone).strftime("%b %-d, %Y - %l:%M %P")
-        .column.medium-6
+        /.cell.auto
           span.label Date Updated:
           .callout = project.updated_at.in_time_zone(current_user.profile.time_zone).strftime("%b %-d, %Y - %l:%M %P")
 
-    .column.medium-3
-      .column.row
-        - if project.publishings.present?
-          - if project.publishings.any?(&:approved?)
-            span.label.success Date Published:
-            .callout = project.publishings.find(&:approved?).created_at.in_time_zone(current_user.profile.time_zone).strftime("%b %-d, %Y - %l:%M %P")
-          - else
-            span.label.warning Date Publishing Requested:
-            .callout
-              ol
-                - project.publishings.each do |publishing|
-                  li = publishing.created_at.in_time_zone(current_user.profile.time_zone).strftime("%b %-d, %Y - %l:%M %P") + \
-                       " (by: #{ publishing.user.profile.first_name })"
-
-      .column.row
+      - if project.publishings.present?
+        .cell
+          .grid-x.grid-padding-x
+            - if project.publishings.any?(&:approved?)
+              .cell.auto
+                span.label.success Date Published:
+                .callout = project.publishings.find(&:approved?).created_at.in_time_zone(current_user.profile.time_zone).strftime("%b %-d, %Y - %l:%M %P")
+            - else
+              .cell.auto
+                span.label.warning Date Publishing Requested:
+                .callout
+                  ol
+                    - project.publishings.each do |publishing|
+                      li = publishing.created_at.in_time_zone(current_user.profile.time_zone).strftime("%b %-d, %Y - %l:%M %P") + \
+                           " (by: #{ publishing.user.profile.first_name })"
+    .grid-x.grid-padding-x
+      .cell.auto
         = link_to "Edit Project", edit_project_path(project), class: "button expanded"
-      .column.row
-        = link_to "Build Extraction Form", build_extraction_forms_project_path(project.extraction_forms_projects.first.id, anchor: "panel-tab-#{ project.extraction_forms_projects.first.extraction_forms_projects_sections.first.id }"), class: "button expanded#{project.leaders.include?(current_user) && project.key_questions.present? ? '' : ' disabled'}"
-      .column.row
+      .cell.auto
+        - efp_id = @projects_extraction_forms_project_ids[project.id]
+        = link_to "Build Extraction Form", build_extraction_forms_project_path(efp_id, anchor: "panel-tab-#{ efp_id }"), class: "button expanded#{ @projects_lead_or_with_key_questions[project.id] ? '' : ' disabled'}"
+      /.cell.auto
         = link_to "List Extractions", project_extractions_path(project), class: "button expanded"
-      .column.row
+      .cell.auto
         a.button.expanded#export-modal-button[data-open="export-modal-#{project.id.to_s}"]
           | Export Project Data
 
@@ -69,10 +79,10 @@ a.accordion-title href="#"
           = link_to "Export Project Data", export_project_path(project, export_type_name: '.xlsx'), method: :post, class: "button expanded start-export-button"
 
 
-      .column.row
+      .cell.auto
         = link_to "Delete Project", confirm_deletion_project_path(project), method: :get, class: "alert button expanded", remote: true
-      .reveal[data-reveal id="gdrive-export-modal-#{project.id.to_s}"]
-        .column.row
+      .reveal.grid-x[data-reveal id="gdrive-export-modal-#{project.id.to_s}"]
+        .cell.auto
           = link_to "Sign In to Google", user_google_oauth2_omniauth_authorize_path, method: :get, class: "button"
-        .column.row
+        .cell.auto
           = link_to "Export to Google Drive", export_to_gdrive_project_path(project), method: :post, class: "button"
