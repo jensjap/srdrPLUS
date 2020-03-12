@@ -56,33 +56,33 @@ class Citation < ApplicationRecord
     super
   end
 
-  def authors_citations_attributes=(attributes)
-    attributes.sort_by{|k,v| v[:ordering_attributes][:position]}.each do |key, attribute_collection|
-      ActiveRecord::Base.transaction do
-        unless attribute_collection.has_key? 'id'
-          author = Author.find_or_create_by(name: attribute_collection[:author_attributes][:name])
-          authors_citation = AuthorsCitation.find_or_create_by(citation: self, author: author)
-          attributes[key]['id'] = authors_citation.id.to_s
-        else
-          authors_citation = AuthorsCitation.find attribute_collection[:id]
-        end
-        authors_citation.ordering.update(position: attribute_collection[:ordering_attributes][:position])
-      end
-    end
-    super
-  end
+#  def authors_citations_attributes=(attributes)
+#    attributes.sort_by{|k,v| v[:ordering_attributes][:position]}.each do |key, attribute_collection|
+#      ActiveRecord::Base.transaction do
+#        unless attribute_collection.has_key? 'id'
+#          author = Author.find_or_create_by(name: attribute_collection[:author_attributes][:name])
+#          authors_citation = AuthorsCitation.find_or_create_by(citation: self, author: author)
+#          attributes[key]['id'] = authors_citation.id.to_s
+#        else
+#          authors_citation = AuthorsCitation.find attribute_collection[:id]
+#        end
+#        authors_citation.ordering.update(position: attribute_collection[:ordering_attributes][:position])
+#      end
+#    end
+#    super
+#  end
 
-  def authors_attributes=(attributes)
-    attributes.each do |key, attribute_collection|
-      unless attribute_collection.has_key? 'id'
-        Author.transaction do
-          author = Author.find_or_create_by(attribute_collection)
-          authors << author unless authors.include? author
-          attributes[key]['id'] = author.id.to_s
-        end
-      end
-    end
-  end
+#  def authors_attributes=(attributes)
+#    attributes.each do |key, attribute_collection|
+#      unless attribute_collection.has_key? 'id'
+#        Author.transaction do
+#          author = Author.find_or_create_by(attribute_collection)
+#          authors << author unless authors.include? author
+#          attributes[key]['id'] = author.id.to_s
+#        end
+#      end
+#    end
+#  end
 
   def keyword_ids=(tokens)
     tokens.map do |token|
@@ -92,18 +92,18 @@ class Citation < ApplicationRecord
     super
   end
 
-  def keywords_attributes=(attributes)
-    attributes.each do |key, attribute_collection|
-      unless attribute_collection.has_key? 'id'
-        Keyword.transaction do
-          keyword = Keyword.find_or_create_by!(attribute_collection)
-          keywords << keyword unless keywords.include? keyword
-          attributes[key]['id'] = keyword.id.to_s
-        end
-      end
-    end
-    super
-  end
+#  def keywords_attributes=(attributes)
+#    attributes.each do |key, attribute_collection|
+#      unless attribute_collection.has_key? 'id'
+#        Keyword.transaction do
+#          keyword = Keyword.find_or_create_by!(attribute_collection)
+#          keywords << keyword unless keywords.include? keyword
+#          attributes[key]['id'] = keyword.id.to_s
+#        end
+#      end
+#    end
+#    super
+#  end
 
   def year
     if not journal then return '' end
