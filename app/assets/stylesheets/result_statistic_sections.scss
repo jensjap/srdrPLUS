@@ -6,6 +6,8 @@
   font-weight: bold;
 }
 
-form.dirty input {
-  background-color: lightyellow !important;
+form.dirty {
+  input, textarea {
+    background-color: lightyellow !important;
+  }
 }

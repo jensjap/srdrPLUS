@@ -118,6 +118,20 @@ toastr.options = {
 
 Dropzone.autoDiscover = false;
 
+/// GLOBAL METHOD TO SEND ASYNC FORMS  
+function send_async_form(form) {
+  var formData = new FormData(form);
+
+  $.ajax({
+    type: "PATCH",
+    url: form.action,
+    data: formData,
+    async: true,
+    contentType: false,
+    processData: false
+  })
+}
+
 document.addEventListener( 'turbolinks:load', function() {
   $( document ).foundation();
 

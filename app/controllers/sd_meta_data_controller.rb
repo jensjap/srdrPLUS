@@ -76,12 +76,12 @@ class SdMetaDataController < ApplicationController
     @systematic_review_report = true
     @panel_number = params[:panel_number].try(:to_i) || 0
     @sd_meta_datum = SdMetaDatum.find(params[:id])
-    @sd_meta_datum.sd_journal_article_urls.build
-    @sd_meta_datum.sd_other_items.build
-    @sd_meta_datum.sd_grey_literature_searches.build
-    @sd_meta_datum.sd_prisma_flows.build
-    @sd_meta_datum.sd_meta_regression_analysis_results.build
-    @sd_meta_datum.sd_evidence_tables.build
+    #@sd_meta_datum.sd_journal_article_urls.build
+    #@sd_meta_datum.sd_other_items.build
+    #@sd_meta_datum.sd_grey_literature_searches.build
+    #@sd_meta_datum.sd_prisma_flows.build
+    #@sd_meta_datum.sd_meta_regression_analysis_results.build
+    #@sd_meta_datum.sd_evidence_tables.build
     @project = @sd_meta_datum.try(:project)
     @report = @sd_meta_datum.report
     @url = sd_meta_datum_path(@sd_meta_datum)
@@ -93,22 +93,22 @@ end
     @sd_meta_datum = SdMetaDatum.find(params[:id])
     @project = Project.find(@sd_meta_datum.project_id)
     @url = sd_meta_datum_path(@sd_meta_datum)
-    sd_meta_datum = SdMetaDatum.find(params[:id])
-    update = sd_meta_datum.update(sd_meta_datum_params)
+    update = @sd_meta_datum.update(sd_meta_datum_params)
     respond_to do |format|
       format.js do
         unless update
-          @errors = sd_meta_datum.errors.full_messages
+          @errors = @sd_meta_datum.errors.full_messages
         end
+        @item_id = params[:sd_meta_datum][:item_id].to_i || nil
       end
       format.html do |format|
-        redirect_to edit_sd_meta_datum_path(sd_meta_datum.id)
+        redirect_to edit_sd_meta_datum_path(@sd_meta_datum.id)
       end
     end
   end
 
   def index
-    @projects = Project.all
+    @projects = policy_scope(Project)
     @reports = Report.all
     @sd_meta_data = policy_scope(SdMetaDatum)
   end

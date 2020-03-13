@@ -5,12 +5,7 @@ def import_citations_from_ris(imported_file)
   # creates a new parser of type RIS
   parser = RefParsers::RISParser.new
 
-  file_data = imported_file.content.download.gsub(/(\r\n|\r|\n)/, "\n")
-  file_string = ""
-  ### open file using 'rU'
-  file_data.split("\n").each do |line|
-    file_string += (line.strip_control_and_extended_characters + "\n")
-  end
+  file_string = imported_file.content.download.force_encoding('UTF-8').gsub(/(\r\n|\r|\n)/, "\n")
 
   h_arr = []
   parser.parse(file_string).each do |cit_h|
@@ -86,5 +81,5 @@ def import_citations_from_ris(imported_file)
     h_arr << row_h
   end
 
-  imported_file.project.citations << Citation.create!(h_arr)
+  imported_file.project.citations << Citation.create(h_arr)
 end

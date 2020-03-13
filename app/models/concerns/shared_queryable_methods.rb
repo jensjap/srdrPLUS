@@ -17,11 +17,11 @@ module SharedQueryableMethods
     #           Please note that you cannot chain AR methods after calling by_query.
     def by_query(query)
       # Try exact match first.
-      exact_match = where('name=?', query)
+      exact_match = where("#{name.downcase.pluralize}.name=?", query)
       return exact_match unless exact_match.blank?
 
       # Try approximate matches using 'like'
-      approximate_matches = where('name like ?', "%#{ query }%")
+      approximate_matches = where("#{name.downcase.pluralize}.name like ?", "%#{ query }%")
       return query.blank? ?
         approximate_matches : approximate_matches + [ OpenStruct.new(id: "<<<#{ query }>>>", name: "New: '#{ query }'") ]
     end
@@ -33,7 +33,7 @@ module SharedQueryableMethods
     # Returns:
     #   [Array] An array of the Resource found that matched the field and query string
     def by_name_description_and_query(query)
-      where('name LIKE ? OR description LIKE ?', "%#{ query }%", "%#{ query }%")
+      where("#{name.downcase.pluralize}.name LIKE ? OR #{name.downcase.pluralize}.description LIKE ?", "%#{ query }%", "%#{ query }%")
     end
   end
 end

@@ -57843,158 +57843,163 @@ function __guardMethod__(obj, methodName, transform) {
 
 }).call(this);
 (function() {
-  var bind_srdr20_saving_mechanism;
+  var Timekeeper, add_form_listeners, apply_all_select2, bind_srdr20_saving_mechanism, formatResult, formatResultSelection, init_select2, submitForm;
 
-  bind_srdr20_saving_mechanism = function() {
-    var submitForm, timers;
-    if ($('body.sd_meta_data').length === 0) {
-      return;
-    }
-    timers = {};
-    submitForm = function(form) {
-      return function() {
-        var formData;
-        form = $('#sd-meta-form')[0];
-        formData = new FormData(form);
-        return $.ajax({
-          type: "PATCH",
-          url: $('#sd-meta-form')[0].action,
-          data: formData,
-          async: true,
-          contentType: false,
-          processData: false
-        });
-      };
+  Timekeeper = (function() {
+    function Timekeeper() {}
+
+    Timekeeper._timer_dict = {};
+
+    Timekeeper.create_timer_for_form = function(form) {
+      var formId;
+      formId = form.getAttribute('id');
+      if (formId in this._timer_dict) {
+        clearTimeout(this._timer_dict[formId]);
+      }
+      this._timer_dict[formId] = setTimeout(function() {
+        return submitForm(form);
+      }, 750);
+      return this._timer_dict[formId];
     };
-    $('.trigger-autosave').click(function(e) {
-      var $form, formId;
+
+    return Timekeeper;
+
+  })();
+
+  submitForm = function(form) {
+    var formData;
+    formData = new FormData(form);
+    return $.ajax({
+      type: "PATCH",
+      url: form.action,
+      data: formData,
+      async: true,
+      contentType: false,
+      processData: false
+    });
+  };
+
+  formatResultSelection = function(result, container) {
+    return result.text;
+  };
+
+  formatResult = function(result) {
+    var markup;
+    if (result.loading) {
+      return result.text;
+    }
+    markup = '<span>';
+    if (~result.text.indexOf('Pirate')) {
+      markup += '<img src=\'https://s-media-cache-ak0.pinimg.com/originals/01/ee/fe/01eefe3662a40757d082404a19bce33b.png\' alt=\'pirate flag\' height=\'32\' width=\'32\'> ';
+    }
+    if (~result.text.indexOf('New item: ')) {
+      markup += '';
+    }
+    markup += result.text;
+    if (result.suggestion) {
+      markup += ' (suggested by ' + result.suggestion.first_name + ')';
+    }
+    markup += '</span>';
+    return markup;
+  };
+
+  init_select2 = function(selector, url) {
+    return $(selector).select2({
+      minimumInputLength: 0,
+      ajax: {
+        url: url,
+        dataType: 'json',
+        delay: 250,
+        data: function(params) {
+          return {
+            q: params.term,
+            page: params.page
+          };
+        },
+        processResults: function(data, params) {
+          params.page = params.page || 1;
+          return {
+            results: $.map(data.items, function(i) {
+              return {
+                id: i.id,
+                text: i.name,
+                suggestion: i.suggestion
+              };
+            })
+          };
+        }
+      },
+      escapeMarkup: function(markup) {
+        return markup;
+      },
+      templateResult: formatResult,
+      templateSelection: formatResultSelection
+    });
+  };
+
+  apply_all_select2 = function() {
+    var sd_meta_datum_id;
+    init_select2("#sd_meta_datum_funding_source_ids", '/funding_sources');
+    init_select2("#sd_meta_datum_key_question_type_ids", '/key_question_types');
+    init_select2(".sd_search_database", '/sd_search_databases');
+    init_select2(".key_question", '/key_questions');
+    init_select2(".key_question_type", '/key_question_types');
+    sd_meta_datum_id = $(".sd_picods_key_question").data('sd-meta-datum-id');
+    init_select2(".sd_picods_key_question", "/sd_key_questions?sd_meta_datum_id=" + sd_meta_datum_id);
+    return init_select2(".sd_picods_type", '/sd_picods_types');
+  };
+
+  add_form_listeners = function(form) {
+    var $form, formId;
+    $form = $(form);
+    formId = $form.attr('id');
+    $(form).children('input').change(function(e) {
       e.preventDefault();
-      $form = $(this).closest('form');
-      formId = $form.attr('id');
+      return $form.addClass('dirty');
+    });
+    $form.on('cocoon:after-insert cocoon:after-remove', function(e) {
       $form.addClass('dirty');
-      if (formId in timers) {
-        clearTimeout(timers[formId]);
-      }
-      return timers[formId] = setTimeout(submitForm($form), 750);
+      return Timekeeper.create_timer_for_form($form[0]);
     });
-    $('form, .trigger-autosave').change(function(e) {
-      var $form, formId;
-      e.preventDefault();
-      $form = $(this).closest('form');
-      formId = $form.attr('id');
+    $form.find('input[type="file"]').change(function(e) {
       $form.addClass('dirty');
-      if (formId in timers) {
-        clearTimeout(timers[formId]);
-      }
-      return timers[formId] = setTimeout(submitForm($form), 750);
+      return Timekeeper.create_timer_for_form($form[0]);
     });
-    $('form').each(function() {
-      var results;
-      results = [];
-      while ($(this).outerHeight() < this.scrollHeight + parseFloat($(this).css('borderTopWidth')) + parseFloat($(this).css('borderBottomWidth'))) {
-        results.push($(this).height($(this).height() + 1));
-      }
-      return results;
+    $("a.remove-figure[data-remote]").on("ajax:success", function(event) {
+      return $(this).parent().closest('div').fadeOut();
     });
-    return $('form').keyup(function(e) {
-      var $form, code, formId, results;
+    return;
+    return $form.keyup(function(e) {
+      var code;
       e.preventDefault();
       code = e.keyCode || e.which;
       if (code === 9 || code === 16 || code === 18 || code === 37 || code === 38 || code === 39 || code === 40 || code === 91) {
         return;
       }
-      $form = $(this).closest('form');
-      formId = $form.attr('id');
       $form.addClass('dirty');
-      if (formId in timers) {
-        clearTimeout(timers[formId]);
-      }
-      timers[formId] = setTimeout(submitForm($form), 750);
-      results = [];
-      while ($(this).outerHeight() < this.scrollHeight + parseFloat($(this).css('borderTopWidth')) + parseFloat($(this).css('borderBottomWidth'))) {
-        results.push($(this).height($(this).height() + 1));
-      }
-      return results;
+      return Timekeeper.create_timer_for_form($form[0]);
+    });
+  };
+
+  bind_srdr20_saving_mechanism = function() {
+    return $('form.sd-form').each(function(i, form) {
+      var $cocoon_container;
+      add_form_listeners(form);
+      $cocoon_container = $(form).parents('.cocoon-container');
+      return $cocoon_container.on('sd:form-loaded', function(e) {
+        add_form_listeners($cocoon_container.children('form'));
+        return apply_all_select2();
+      });
     });
   };
 
   document.addEventListener('turbolinks:load', function() {
     (function() {
-      var formatResult, formatResultSelection, init_select2, sd_meta_datum_id;
+      if ($('body.sd_meta_data').length === 0) {
+        return;
+      }
       bind_srdr20_saving_mechanism();
-      formatResultSelection = function(result, container) {
-        return result.text;
-      };
-      formatResult = function(result) {
-        var markup;
-        if (result.loading) {
-          return result.text;
-        }
-        markup = '<span>';
-        if (~result.text.indexOf('Pirate')) {
-          markup += '<img src=\'https://s-media-cache-ak0.pinimg.com/originals/01/ee/fe/01eefe3662a40757d082404a19bce33b.png\' alt=\'pirate flag\' height=\'32\' width=\'32\'> ';
-        }
-        if (~result.text.indexOf('New item: ')) {
-          markup += '';
-        }
-        markup += result.text;
-        if (result.suggestion) {
-          markup += ' (suggested by ' + result.suggestion.first_name + ')';
-        }
-        markup += '</span>';
-        return markup;
-      };
-      init_select2 = function(selector, url) {
-        return $(selector).select2({
-          minimumInputLength: 0,
-          ajax: {
-            url: url,
-            dataType: 'json',
-            delay: 250,
-            data: function(params) {
-              return {
-                q: params.term,
-                page: params.page
-              };
-            },
-            processResults: function(data, params) {
-              params.page = params.page || 1;
-              return {
-                results: $.map(data.items, function(i) {
-                  return {
-                    id: i.id,
-                    text: i.name,
-                    suggestion: i.suggestion
-                  };
-                })
-              };
-            }
-          },
-          escapeMarkup: function(markup) {
-            return markup;
-          },
-          templateResult: formatResult,
-          templateSelection: formatResultSelection
-        });
-      };
-      init_select2("#sd_meta_datum_funding_source_ids", '/funding_sources');
-      init_select2("#sd_meta_datum_key_question_type_ids", '/key_question_types');
-      init_select2(".sd_search_database", '/sd_search_databases');
-      init_select2(".key_question", '/key_questions');
-      init_select2(".key_question_type", '/key_question_types');
-      sd_meta_datum_id = $(".sd_picods_key_question").data('sd-meta-datum-id');
-      init_select2(".sd_picods_key_question", "/sd_key_questions?sd_meta_datum_id=" + sd_meta_datum_id);
-      init_select2(".sd_picods_type", '/sd_picods_types');
-      $("form").on("cocoon:after-insert", function(_, row) {
-        sd_meta_datum_id = $(".sd_picods_key_question").data('sd-meta-datum-id');
-        init_select2($(row).find(".sd_search_database"), '/sd_search_databases');
-        init_select2($(row).find(".key_question"), '/key_questions');
-        init_select2($(row).find(".key_question_type"), '/key_question_types');
-        return init_select2($(row).find(".sd_picods_key_question"), "/sd_key_questions?sd_meta_datum_id=" + sd_meta_datum_id);
-      });
-      $("a[data-remote]").on("ajax:success", function(event) {
-        return $(this).parent().closest('div').fadeOut();
-      });
+      return apply_all_select2();
     })();
   });
 

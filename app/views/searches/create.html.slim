@@ -14,10 +14,9 @@
       h3 Citations found:
 
       ul
-        - @results[:citation_ids].each do |c_id|
-          - cps = CitationsProject.where(citation_id: c_id, project_id: @results[:project_ids].to_a)
-          - cps.each do |cp|
-            li = link_to "#{ cp.citation.name } (Project: #{ cp.project.name })", cp.project
+        - cps = CitationsProject.includes(:citation, :project).where(citation_id: @results[:citation_ids].to_a, project_id: @results[:project_ids].to_a)
+        - cps.each do |cp|
+          li = link_to "#{ cp.citation.name } (Project: #{ cp.project.name })", cp.project
 
   - else
     p Nothing found. Consider loosening the search criteria.

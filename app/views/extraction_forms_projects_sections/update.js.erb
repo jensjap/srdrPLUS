@@ -1,0 +1,6 @@
+( function() {
+  if ( '<%= @errors.messages.values.dig(0, 0) %>'.length > 0 ) {
+    toastr.error( '<%= @errors.messages.values.dig(0, 0) %>' );
+  }
+  $( '.efps-container' ).html( "<%= j( render 'extraction_forms_projects/build/' + @extraction_forms_projects_section.extraction_forms_projects_section_type.name.parameterize.underscore, efps: @extraction_forms_projects_section) %>" );
+} )();

@@ -3,17 +3,6 @@
     legend Search Strategy & Summary of Results
     div data-row-span="1"
       div data-field-span="1"
-        label 43. Analytic/ Conceptual Framework
-        - if @sd_meta_datum.sd_analytic_frameworks.empty?
-          div N/A
-        - else
-          - @sd_meta_datum.sd_analytic_frameworks.each do |sd_analytic_framework|
-            div #{sd_analytic_framework.name}
-            p
-              - sd_analytic_framework.pictures.each do |picture|
-                = image_tag(picture, class: 'openable', style: 'height:100%;width:auto;')
-    div data-row-span="1"
-      div data-field-span="1"
         label 44-47. Search Strategies
         - if @sd_meta_datum.sd_search_strategies.empty?
           div N/A

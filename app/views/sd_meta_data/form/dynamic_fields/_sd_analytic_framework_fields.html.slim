@@ -8,4 +8,4 @@
       div
         = image_tag(picture, class: 'openable', style: 'height:100%;width:auto;')
         br
-        = link_to 'Remove Figure', delete_image_attachment_picture_path(picture.id), method: :delete, data: { confirm: 'Are you sure?' }, remote: true
+        = link_to 'Remove Figure', delete_image_attachment_picture_path(picture.id), method: :delete, data: { confirm: 'Are you sure?' }, remote: true, class: 'remove-figure'
