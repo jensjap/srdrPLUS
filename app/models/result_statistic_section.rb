@@ -14,7 +14,7 @@ class ResultStatisticSection < ApplicationRecord
   acts_as_paranoid
   has_paper_trail
 
-  after_create :create_default_descriptive_statistics
+  after_create :create_default_measures
 
   belongs_to :result_statistic_section_type,                                                inverse_of: :result_statistic_sections
   belongs_to :population, class_name: 'ExtractionsExtractionFormsProjectsSectionsType1Row', inverse_of: :result_statistic_sections
@@ -61,7 +61,7 @@ class ResultStatisticSection < ApplicationRecord
 
   private
 
-    def create_default_descriptive_statistics
+    def create_default_measures
       #Measure.result_statistic_section_type_defaults(self.result_statistic_section_type.id).each do |m|
       #  self.result_statistic_sections_measures.create(measure: m)
       #  #!!!: This might work now. Previously ResultStatisticSection was child of ExtractionsExtractionFormsProjectsSectionsType1RowColumn

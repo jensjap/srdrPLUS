@@ -1,0 +1,846 @@
+# If type1_types is present, then it implies that the measure
+# is to be to created by default (default: true) for that specific
+# outcome type and result_statistic_section.
+#
+# provider_name represents the measure name that serves as a parent measure
+# that triggers creation of children measures. It is assumed that a provider
+# measure precedes dependent measure listings.
+#
+# Time to Event -> Continuous
+# Advese Event -> Cat
+--- 
+- 
+  name: "Total (N analyzed)"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Descriptive Statistics"
+  type1_types:
+    - Categorical
+    - Continuous
+    - "Time to Event"
+    - "Adverse Event"
+- 
+  name: Events
+  provider_name: ~
+  result_statistic_section_types:
+    - "Descriptive Statistics"
+  type1_types:
+    - Categorical
+    - "Time to Event"
+    - "Adverse Event"
+- 
+  name: "No events"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Descriptive Statistics"
+  type1_types: ~
+- 
+  name: Percentage
+  provider_name: ~
+  result_statistic_section_types:
+    - "Descriptive Statistics"
+  type1_types:
+    - Categorical
+    - "Time to Event"
+    - "Adverse Event"
+- 
+  name: "SD (percent)"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Descriptive Statistics"
+  type1_types: ~
+- 
+  name: "SE (percent)"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Descriptive Statistics"
+  type1_types: ~
+- 
+  name: "95% CI low (percent)"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Descriptive Statistics"
+  type1_types: ~
+- 
+  name: "95% CI high (percent)"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Descriptive Statistics"
+  type1_types: ~
+- 
+  name: Proportion
+  provider_name: ~
+  result_statistic_section_types:
+    - "Descriptive Statistics"
+  type1_types:
+    - Categorical
+    - "Time to Event"
+    - "Adverse Event"
+- 
+  name: "SD (proportion)"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Descriptive Statistics"
+  type1_types: ~
+- 
+  name: "SE (proportion)"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Descriptive Statistics"
+  type1_types: ~
+- 
+  name: "95% CI low (proportion)"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Descriptive Statistics"
+  type1_types: ~
+- 
+  name: "95% CI high (proportion)"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Descriptive Statistics"
+  type1_types: ~
+- 
+  name: "Incidence Rate (per 1000)"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Descriptive Statistics"
+  type1_types:
+    - Categorical
+    - "Time to Event"
+    - "Adverse Event"
+- 
+  name: "SD (Incidence rate per 1000)"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Descriptive Statistics"
+  type1_types: ~
+- 
+  name: "SE (Incidence rate per 1000)"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Descriptive Statistics"
+  type1_types: ~
+- 
+  name: "95% CI low (Incidence rate per 1000)"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Descriptive Statistics"
+  type1_types: ~
+- 
+  name: "95% CI high (Incidence rate per 1000)"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Descriptive Statistics"
+  type1_types: ~
+- 
+  name: "Incidence Rate (per 10,000)"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Descriptive Statistics"
+  type1_types:
+    - Categorical
+    - "Time to Event"
+    - "Adverse Event"
+- 
+  name: "SD (Incidence rate per 10,000)"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Descriptive Statistics"
+  type1_types: ~
+- 
+  name: "SE (Incidence rate per 10,000)"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Descriptive Statistics"
+  type1_types: ~
+- 
+  name: "95% CI low (Incidence rate per 10,000)"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Descriptive Statistics"
+  type1_types: ~
+- 
+  name: "95% CI high (Incidence rate per 10,000)"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Descriptive Statistics"
+  type1_types: ~
+- 
+  name: "Incidence Rate (per 100,000)"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Descriptive Statistics"
+  type1_types:
+    - Categorical
+    - "Time to Event"
+    - "Adverse Event"
+- 
+  name: "SD (Incidence rate per 100,000)"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Descriptive Statistics"
+  type1_types: ~
+- 
+  name: "SE (Incidence rate per 100,000)"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Descriptive Statistics"
+  type1_types: ~
+- 
+  name: "95% CI low (Incidence rate per 100,000)"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Descriptive Statistics"
+  type1_types: ~
+- 
+  name: "95% CI high (Incidence rate per 100,000)"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Descriptive Statistics"
+  type1_types: ~
+- 
+  name: Mean
+  provider_name: ~
+  result_statistic_section_types:
+    - "Descriptive Statistics"
+  type1_types:
+    - Continuous
+- 
+  name: Median
+  provider_name: ~
+  result_statistic_section_types:
+    - "Descriptive Statistics"
+  type1_types:
+    - Continuous
+- 
+  name: "25th percentile"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Descriptive Statistics"
+  type1_types:
+    - Continuous
+- 
+  name: "75th percentile"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Descriptive Statistics"
+  type1_types:
+    - Continuous
+- 
+  name: SD
+  provider_name: ~
+  result_statistic_section_types:
+    - "Descriptive Statistics"
+  type1_types:
+    - Continuous
+- 
+  name: SE
+  provider_name: ~
+  result_statistic_section_types:
+    - "Descriptive Statistics"
+  type1_types:
+    - Continuous
+- 
+  name: "95% CI low"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Descriptive Statistics"
+  type1_types:
+    - Continuous
+- 
+  name: "95% CI high"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Descriptive Statistics"
+  type1_types:
+    - Continuous
+- 
+  name: Minimum
+  provider_name: ~
+  result_statistic_section_types:
+    - "Descriptive Statistics"
+  type1_types:
+    - Continuous
+- 
+  name: Maximum
+  provider_name: ~
+  result_statistic_section_types:
+    - "Descriptive Statistics"
+  type1_types:
+    - Continuous
+- 
+  name: Note
+  provider_name: ~
+  result_statistic_section_types:
+    - "Descriptive Statistics"
+  type1_types:
+    - Categorical
+    - Continuous
+    - "Time to Event"
+    - "Adverse Event"
+- 
+  name: "p value"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
+  type1_types:
+    - Categorical
+    - Continuous
+    - "Time to Event"
+    - "Adverse Event"
+- 
+  name: "95% CI low"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
+  type1_types:
+    - Categorical
+    - Continuous
+    - "Time to Event"
+    - "Adverse Event"
+- 
+  name: "95% CI high"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
+  type1_types:
+    - Categorical
+    - Continuous
+    - "Time to Event"
+    - "Adverse Event"
+- 
+  name: "p value of change"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
+  type1_types: ~
+- 
+  name: "p value of difference"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
+  type1_types: ~
+- 
+  name: "Odds Ratio (OR)"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
+  type1_types:
+    - Categorical
+    - "Time to Event"
+    - "Adverse Event"
+- 
+  name: "95% CI low (OR)"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
+  type1_types: ~
+- 
+  name: "95% CI high (OR)"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
+  type1_types: ~
+- 
+  name: "Adjusted Odds Ratio (adjOR)"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
+  type1_types:
+    - Categorical
+    - "Time to Event"
+    - "Adverse Event"
+- 
+  name: "95% CI low (adjOR)"
+  provider_name: "Adjusted Odds Ratio (adjOR)"
+  result_statistic_section_types:
+    - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
+  type1_types: ~
+- 
+  name: "95% CI high (adjOR)"
+  provider_name: "Adjusted Odds Ratio (adjOR)"
+  result_statistic_section_types:
+    - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
+  type1_types: ~
+- 
+  name: "Risk Ratio (RR)"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
+  type1_types:
+    - Continuous
+- 
+  name: "95% CI low (RR)"
+  provider_name: "Risk Ratio (RR)"
+  result_statistic_section_types:
+    - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
+  type1_types: ~
+- 
+  name: "95% CI high (RR)"
+  provider_name: "Risk Ratio (RR)"
+  result_statistic_section_types:
+    - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
+  type1_types: ~
+- 
+  name: "Adjusted Risk Ratio (adjRR)"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
+  type1_types:
+    - Continuous
+- 
+  name: "95% CI low (adjRR)"
+  provider_name: "Adjusted Risk Ratio (adjRR)"
+  result_statistic_section_types:
+    - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
+  type1_types: ~
+- 
+  name: "95% CI high (adjRR)"
+  provider_name: "Adjusted Risk Ratio (adjRR)"
+  result_statistic_section_types:
+    - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
+  type1_types: ~
+- 
+  name: "Incidence Rate Ratio (IRR)"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
+  type1_types:
+    - Categorical
+    - "Time to Event"
+    - "Adverse Event"
+- 
+  name: "95% CI low (IRR)"
+  provider_name: "Incidence Rate Ratio (IRR)"
+  result_statistic_section_types:
+    - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
+  type1_types: ~
+- 
+  name: "95% CI high (IRR)"
+  provider_name: "Incidence Rate Ratio (IRR)"
+  result_statistic_section_types:
+    - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
+  type1_types: ~
+- 
+  name: "Adjusted Incidence Rate Ratio (adjIRR)"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
+  type1_types:
+    - Categorical
+    - "Time to Event"
+    - "Adverse Event"
+- 
+  name: "95% CI low (adjIRR)"
+  provider_name: "Adjusted Incidence Rate Ratio (adjIRR)"
+  result_statistic_section_types:
+    - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
+  type1_types: ~
+- 
+  name: "95% CI high (adjIRR)"
+  provider_name: "Adjusted Incidence Rate Ratio (adjIRR)"
+  result_statistic_section_types:
+    - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
+  type1_types: ~
+- 
+  name: "Hazard Ratio (HR)"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
+  type1_types:
+    - Categorical
+    - "Time to Event"
+    - "Adverse Event"
+- 
+  name: "95% CI low (HR)"
+  provider_name: "Hazard Ratio (HR)"
+  result_statistic_section_types:
+    - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
+  type1_types: ~
+- 
+  name: "95% CI high (HR)"
+  provider_name: "Hazard Ratio (HR)"
+  result_statistic_section_types:
+    - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
+  type1_types: ~
+- 
+  name: "Adjusted Hazard Ratio (adjHR)"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
+  type1_types:
+    - Categorical
+    - "Time to Event"
+    - "Adverse Event"
+- 
+  name: "95% CI low (adjHR)"
+  provider_name: "Adjusted Hazard Ratio (adjHR)"
+  result_statistic_section_types:
+    - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
+  type1_types: ~
+- 
+  name: "95% CI high (adjHR)"
+  provider_name: "Adjusted Hazard Ratio (adjHR)"
+  result_statistic_section_types:
+    - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
+  type1_types: ~
+- 
+  name: "Risk Difference (RD)"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
+  type1_types:
+    - Continuous
+- 
+  name: "95% CI low (RD)"
+  provider_name: "Risk Difference (RD)"
+  result_statistic_section_types:
+    - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
+  type1_types: ~
+- 
+  name: "95% CI high (RD)"
+  provider_name: "Risk Difference (RD)"
+  result_statistic_section_types:
+    - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
+  type1_types: ~
+- 
+  name: "Adjusted Risk Difference (adjRD)"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
+  type1_types:
+    - Continuous
+- 
+  name: "95% CI low (adjRD)"
+  provider_name: "Adjusted Risk Difference (adjRD)"
+  result_statistic_section_types:
+    - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
+  type1_types: ~
+- 
+  name: "95% CI high (adjRD)"
+  provider_name: "Adjusted Risk Difference (adjRD)"
+  result_statistic_section_types:
+    - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
+  type1_types: ~
+- 
+# Question for Ian: Should there be an "adjusted for"
+# field for each of the blue fields or just 1 for all
+# even when there are multiple such fields?
+  name: "Adjusted for: "
+  provider_name: ~
+  result_statistic_section_types:
+    - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
+  type1_types:
+    - Categorical
+    - Continuous
+    - "Time to Event"
+    - "Adverse Event"
+- 
+  name: "Events, difference"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
+  type1_types:
+    - Categorical
+    - "Time to Event"
+    - "Adverse Event"
+- 
+  name: "Percentage, difference"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
+  type1_types:
+    - Categorical
+    - "Time to Event"
+    - "Adverse Event"
+- 
+  name: "p value of difference (percentage)"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
+  type1_types: ~
+- 
+  name: "SD of difference (percentage)"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
+  type1_types: ~
+- 
+  name: "SE of difference (percentage)"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
+  type1_types: ~
+- 
+  name: "Proportion, difference"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
+  type1_types:
+    - Categorical
+    - "Time to Event"
+    - "Adverse Event"
+- 
+  name: "p value of difference (proportion)"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
+  type1_types: ~
+- 
+  name: "SD of difference (proportion)"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
+  type1_types: ~
+- 
+  name: "SE of difference (proportion)"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
+  type1_types: ~
+- 
+  name: "Incidence Rate (per 1000), difference"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
+  type1_types:
+    - Categorical
+    - "Time to Event"
+    - "Adverse Event"
+- 
+  name: "p value of difference (Incidence rate per 1,000)"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
+  type1_types: ~
+- 
+  name: "SD of difference (Incidence rate per 1,000)"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
+  type1_types: ~
+- 
+  name: "SE of difference (Incidence rate per 1,000)"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
+  type1_types: ~
+- 
+  name: "Incidence Rate (per 10,000), difference"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
+  type1_types:
+    - Categorical
+    - "Time to Event"
+    - "Adverse Event"
+- 
+  name: "p value of difference (Incidence rate per 10,000)"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
+  type1_types: ~
+- 
+  name: "SD of difference (Incidence rate per 10,000)"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
+  type1_types: ~
+- 
+  name: "SE of difference (Incidence rate per 10,000)"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
+  type1_types: ~
+- 
+  name: "Incidence Rate (per 100,000), difference"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
+  type1_types:
+    - Categorical
+    - "Time to Event"
+    - "Adverse Event"
+- 
+  name: "p value of difference (Incidence rate per 100,000)"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
+  type1_types: ~
+- 
+  name: "SD of difference (Incidence rate per 100,000)"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
+  type1_types: ~
+- 
+  name: "SE of difference (Incidence rate per 100,000)"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
+  type1_types: ~
+- 
+  name: "Mean, difference"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
+  type1_types:
+    - Continuous
+- 
+  name: "Median, difference"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
+  type1_types:
+    - Continuous
+- 
+  name: "25th percentile, difference"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
+  type1_types:
+    - Continuous
+- 
+  name: "75th percentile, difference"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
+  type1_types:
+    - Continuous
+- 
+  name: "SD of difference"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
+  type1_types: ~
+- 
+  name: "SE of difference"
+  provider_name: ~
+  result_statistic_section_types:
+    - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
+  type1_types: ~
+- 
+  name: "p value of net difference"
+  provider_name: ~
+  result_statistic_section_types:
+    - "NET Change"
+  type1_types:
+    - Continuous
+    - "Time to Event"
+    - "Adverse Event"
+- 
+  name: "Net Mean Difference (NMD)"
+  provider_name: ~
+  result_statistic_section_types:
+    - "NET Change"
+  type1_types:
+    - Continuous
+    - "Time to Event"
+    - "Adverse Event"
+- 
+  name: "95% CI low (NMD)"
+  provider_name: ~
+  result_statistic_section_types:
+    - "NET Change"
+  type1_types:
+    - Continuous
+- 
+  name: "95% CI high (NMD)"
+  provider_name: ~
+  result_statistic_section_types:
+    - "NET Change"
+  type1_types:
+    - Continuous
+- 
+  name: "Adjusted Net Mean Difference (adjNMD)"
+  provider_name: ~
+  result_statistic_section_types:
+    - "NET Change"
+  type1_types:
+    - Continuous
+- 
+  name: "95% CI low (adjNMD)"
+  provider_name: "Adjusted Net Mean Difference (adjNMD)"
+  result_statistic_section_types:
+    - "NET Change"
+  type1_types:
+    - Continuous
+- 
+  name: "95% CI high (adjNMD)"
+  provider_name: "Adjusted Net Mean Difference (adjNMD)"
+  result_statistic_section_types:
+    - "NET Change"
+  type1_types:
+    - Continuous
+- 
+  name: "Adjusted for: "
+  provider_name: "Adjusted Net Mean Difference (adjNMD)"
+  result_statistic_section_types:
+    - "NET Change"
+  type1_types:
+    - Continuous
+
