@@ -18,6 +18,7 @@ h5 Add New #{ section_name }
       .columns.medium-12.form-inputs class="new-type1-fields-#{ eefps.id.to_s }"
         - if section_name.eql? 'Outcome'
           = sf_eefpst1.association :type1_type,\
+            required: true,
             label: "Type of #{ section_name }",\
             input_html: { 'data-t1-type-input' => '' }
 
