@@ -1,4 +1,8 @@
 #panel-5.tabs-panel.is-active
+  .hide
+    // JS expects there to be a form on every panel, needs to be updated later
+    = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
+
   fieldset
     div style="display:flex; flex-direction: row;"
       legend Mapping Key Questions (Submitter Only)
