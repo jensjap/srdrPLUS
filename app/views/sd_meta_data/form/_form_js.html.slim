@@ -6,7 +6,7 @@ javascript:
     var sd_meta_datum_id = $(domEl).attr('data-sd_meta_datum_id');
     var status = $( domEl ).hasClass( 'draft' );
     var paramKey = `section_flag_${sectionId}`;
-    $.post(`${$('#sd-meta-form')[0].action}/section_update`,
+    $.post(`${$('.sd-form')[0].action}/section_update`,
       { sd_meta_datum: { [paramKey]: status } },
       function( data ) { check(sectionId, data.status); }
     );
@@ -29,15 +29,14 @@ javascript:
 
     var check = ' <i id="map-warning" class="fa fa-check"></i>';
     var link = $(`#panel-${panelNumber}-label`);
-    var label = link.html();
-    var newLabel = label.replace(check, '');
+    var check_container = $(`.check-container[panel-number="${panelNumber}"]`);
+    check_container.html('');
     if (status === true || status === 'true') {
-      newLabel = newLabel + check;
+      check_container.html(check);
       link.css({ 'color': 'green' });
     } else {
       link.css({ 'color': 'unset' });
     }
-    link.html(newLabel);
   }
 
   var initializeSwitches = function() {

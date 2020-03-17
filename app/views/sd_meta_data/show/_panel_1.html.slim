@@ -29,7 +29,7 @@
           - next if user.email.include?("@test.com")
           div <b>#{[user.profile.first_name, user.profile.middle_name, user.profile.last_name].join(" ")}</b> (#{user.email})
       div data-field-span="1"
-        label 12. SRDR Project Creator:
+        label 12. SRDR+ Project Creator:
         - if @project.creator.email.include?("@test.com")
           div
         - else

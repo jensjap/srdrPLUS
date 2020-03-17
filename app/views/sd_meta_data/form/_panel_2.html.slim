@@ -68,11 +68,11 @@
           = f.input :disposition_of_comments_link, as: :string, label: '28. Disposition of Comments'
       div data-field-span="1"
         = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
-          = f.input :srdr_data_link, as: :string, label: '29. Data (in SRDR)'
+          = f.input :srdr_data_link, as: :string, label: '29. Data (in SRDR+)'
     div data-row-span="2"
       div data-field-span="1"
         = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
-          = f.input :most_previous_version_srdr_link, as: :string, label: '30. Most Recent Previous Version of SRDR Data'
+          = f.input :most_previous_version_srdr_link, as: :string, label: '30. Most Recent Previous Version of SRDR+ Data'
       div data-field-span="1"
         = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
           = f.input :most_previous_version_full_report_link, as: :string, label: '31. Most Recent Previous Version of Full Report'
