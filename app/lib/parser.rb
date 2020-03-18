@@ -15,7 +15,7 @@ class Parser
     " Stakeholders, including Key Informants and Technical Experts, participated in a virtual workshop by the Patient-Centered Research Outcomes Institute (PCORI) in December 2016 to help formulate the research protocol. Details on the virtual workshop, including a list of participants, can be found at https://www.pcori.org/events/2016/updating-systematic-reviews- pcori-virtual-multi-stakeholder-workshop-nonsurgical.    Key Informants in the workshop included end users of research, such as patients and caregivers, practicing clinicians, relevant professional and consumer organizations, purchasers of health care, and others with experience in making health care decisions. Technical Experts in the workshop included multidisciplinary groups of clinical, content, and methodological experts who provided input in defining populations, interventions, comparisons, and outcomes and identified particular studies or databases to search. They were selected to provide broad expertise and perspectives specific to the topic under development.    During the virtual workshop, stakeholders reviewed scoping for the updated review, prioritized key questions, and discussed where the evidence base has accumulated since the prior review and emerging issues in urinary incontinence. A protocol on nonpharmacological and pharmacological treatments of urinary incontinence was developed based upon findings from the workshop.    Key Informants and Technical Experts do not do analysis of any kind nor do they contribute to the writing of the report. They have not reviewed the report, except as given the opportunity to do so through the peer or public review mechanisms."
     authors_conflict_of_interest_of_full_report = ''
     stakeholders_conflict_of_interest = ''
-    prototcol_link = ''
+    protocol_link = ''
     full_report_link = 'https://www.ncbi.nlm.nih.gov/books/NBK534614/'
     structured_abstract_link = 'https://www.ncbi.nlm.nih.gov/books/NBK534625/'
     key_messages_link = ''
@@ -32,8 +32,8 @@ class Parser
     most_previous_version_srdr_link = ''
     most_previous_version_full_report_link = ''
     overall_purpose_of_review = "To update the evidence on the topic of nonsurgical treatments for UI in women. (See AHRQ Pub No. 11(12)-EHC074-EF, April 2012).\nTo conduct a systematic review and meta-analyses of the comparative effectiveness and harms of nonpharmacological and pharmacological interventions for women with all forms of UI.\nTo summarize information on how women with UI define a successful outcome, and to highlight data on these outcomes."
-    type_of_review = ''
-    level_of_analysis = ''
+    review_level_id = 1
+    data_analysis_level_id = 1
     authors = [
       "Ethan Balk, M.D., M.P.H.",
       "Gaelen P. Adam, M.L.I.S.",
@@ -53,7 +53,7 @@ class Parser
       stakeholder_involvement_extent: stakeholder_involvement_extent,
       authors_conflict_of_interest_of_full_report: authors_conflict_of_interest_of_full_report,
       stakeholders_conflict_of_interest: stakeholders_conflict_of_interest,
-      prototcol_link: prototcol_link,
+      protocol_link: protocol_link,
       full_report_link: full_report_link,
       structured_abstract_link: structured_abstract_link,
       key_messages_link: key_messages_link,

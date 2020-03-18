@@ -4,11 +4,11 @@
     div data-row-span="1"
       div data-field-span="1"
         label 13. Prospero
-        div #{raw(@project.try(:prospero_link))}
+        div = sd_url_for @sd_meta_datum.prospero_link
     div data-row-span="2"
       div data-field-span="1"
         label 14. Protocol
-        div = sd_url_for @sd_meta_datum.prototcol_link
+        div = sd_url_for @sd_meta_datum.protocol_link
       div data-field-span="1"
         label 15. Full Report
         div = sd_url_for @sd_meta_datum.full_report_link

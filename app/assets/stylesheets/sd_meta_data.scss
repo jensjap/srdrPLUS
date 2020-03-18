@@ -187,3 +187,12 @@ li.tabs-title > a:visited {
 .check-container, .warning-container {
   display: inline;
 }
+
+.select2-selection__placeholder {
+  color: black !important;
+}
+
+// For Safari
+.select2-search__field {
+  padding: 0 !important;
+}
