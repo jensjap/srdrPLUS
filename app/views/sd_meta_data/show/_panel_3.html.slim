@@ -9,12 +9,12 @@
     div data-row-span="1"
       div data-field-span="1"
         label 33. Type of Review
-        - tor = @sd_meta_datum.type_of_review
+        - tor = @sd_meta_datum.review_type&.name
         div #{tor.present? ? tor : 'N/A' }
     div data-row-span="1"
       div data-field-span="1"
         label 34. Level of Data Analysis
-        - loa = @sd_meta_datum.level_of_analysis
+        - loa = @sd_meta_datum.data_analysis_level&.name
         div #{loa.present? ? loa : 'N/A' }
     div data-row-span="1"
       div data-field-span="1"

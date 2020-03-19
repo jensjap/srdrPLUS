@@ -478,14 +478,14 @@ body.extractions.work, body.sd_meta_data.edit {
   .status-switch {
     background-color: grey;
     font-weight: bold;
-    padding: 0.3rem 0.5rem 0.3rem 0.5rem;
+    padding: 0.45rem 0.5rem 0.3rem 0.5rem;
     margin-left: 1rem;
     transition: all 0.3s ease;
-    width: 4rem;
+    width: 3.5rem;
   }
   .status-switch.completed {
     background-color: $success-color;
-    width: 7rem;
+    width: 5.8rem;
   }
 //  .status-switch.waiting {
 //    background-color: blue;

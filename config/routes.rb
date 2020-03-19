@@ -15,6 +15,8 @@ Rails.application.routes.draw do
   resources :key_questions, only: [:index]
   resources :sd_key_questions, only: [:index]
   resources :sd_meta_data_queries, only: [:create, :update, :destroy]
+  resources :review_types, only: [:index]
+  resources :data_analysis_levels, only: [:index]
 
 
   devise_for :admins

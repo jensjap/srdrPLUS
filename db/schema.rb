@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_15_121501) do
+ActiveRecord::Schema.define(version: 2020_03_18_181447) do
 
   create_table "abstrackr_settings", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "profile_id"
@@ -311,6 +311,12 @@ ActiveRecord::Schema.define(version: 2020_01_15_121501) do
   end
 
   create_table "consensus_types", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "data_analysis_levels", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -1323,6 +1329,12 @@ ActiveRecord::Schema.define(version: 2020_01_15_121501) do
     t.index ["result_statistic_section_id"], name: "index_rssmc_on_rss_id"
   end
 
+  create_table "review_types", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "roles", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
     t.datetime "deleted_at"
@@ -1437,7 +1449,7 @@ ActiveRecord::Schema.define(version: 2020_01_15_121501) do
     t.text "stakeholder_involvement_extent"
     t.text "authors_conflict_of_interest_of_full_report"
     t.text "stakeholders_conflict_of_interest"
-    t.text "prototcol_link"
+    t.text "protocol_link"
     t.text "full_report_link"
     t.text "structured_abstract_link"
     t.text "key_messages_link"
@@ -1454,8 +1466,6 @@ ActiveRecord::Schema.define(version: 2020_01_15_121501) do
     t.text "most_previous_version_srdr_link"
     t.text "most_previous_version_full_report_link"
     t.text "overall_purpose_of_review"
-    t.string "type_of_review"
-    t.string "level_of_analysis"
     t.string "state", default: "DRAFT", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -1469,9 +1479,14 @@ ActiveRecord::Schema.define(version: 2020_01_15_121501) do
     t.string "report_accession_id"
     t.text "authors"
     t.boolean "section_flag_7", default: false, null: false
+    t.string "prospero_link"
+    t.bigint "review_type_id"
+    t.bigint "data_analysis_level_id"
+    t.index ["data_analysis_level_id"], name: "index_sd_meta_data_on_data_analysis_level_id"
+    t.index ["review_type_id"], name: "index_sd_meta_data_on_review_type_id"
   end
 
-  create_table "sd_meta_data_queries", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci", force: :cascade do |t|
+  create_table "sd_meta_data_queries", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.text "query_text"
     t.bigint "sd_meta_datum_id"
     t.bigint "projects_user_id"
@@ -1829,7 +1844,7 @@ ActiveRecord::Schema.define(version: 2020_01_15_121501) do
     t.index ["version_id"], name: "index_version_associations_on_version_id"
   end
 
-  create_table "versions", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "versions", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.string "item_type", limit: 191, null: false
     t.integer "item_id", null: false
     t.string "event", null: false
@@ -2011,6 +2026,8 @@ ActiveRecord::Schema.define(version: 2020_01_15_121501) do
   add_foreign_key "sd_key_questions_projects", "sd_key_questions"
   add_foreign_key "sd_key_questions_sd_picods", "sd_key_questions"
   add_foreign_key "sd_key_questions_sd_picods", "sd_picods"
+  add_foreign_key "sd_meta_data", "data_analysis_levels"
+  add_foreign_key "sd_meta_data", "review_types"
   add_foreign_key "sd_meta_regression_analysis_results", "sd_meta_data"
   add_foreign_key "sd_other_items", "sd_meta_data"
   add_foreign_key "sd_picods", "sd_meta_data"

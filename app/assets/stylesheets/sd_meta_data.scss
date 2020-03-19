@@ -22,7 +22,8 @@
 .grid-form [data-row-span] [data-field-span] label:first-child { font-weight: bold; margin-top: 0; text-transform: uppercase; letter-spacing: 1px; font-size: 12px; color: #333; display: block; margin-bottom: 4px; }
 .grid-form [data-row-span] [data-field-span] label:first-child:hover { cursor: text; }
 .grid-form [data-row-span] [data-field-span]:last-child { border-right: none; }
-.grid-form [data-row-span] [data-field-span]:hover { background: rgba(153, 123, 177, 0.2); cursor: text; }
+//.grid-form [data-row-span] [data-field-span]:hover { background: rgba(153, 123, 177, 0.2); cursor: text; }
+.sd-item:hover { background: rgba(153, 123, 177, 0.2); cursor: text; }
 .grid-form [data-row-span] [data-field-span].focus { background: #fffad4; }
 .grid-form [data-row-span] [data-field-span].focus label { color: #262626; }
 @media print { .grid-form [data-row-span] { display: table; height: 56px; page-break-inside: avoid; }
@@ -182,4 +183,17 @@ li.tabs-title > a:visited {
   legend {
     width: auto !important;
   }
+}
+
+.check-container, .warning-container {
+  display: inline;
+}
+
+.select2-selection__placeholder {
+  color: black !important;
+}
+
+// For Safari
+.select2-search__field {
+  padding: 0 !important;
 }

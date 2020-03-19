@@ -1,7 +1,8 @@
 = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
   = f.input :item_id, as: :hidden, input_html: { value: 49 }
   = f.simple_fields_for :sd_prisma_flows do |sd_prisma_flow|
-    = render 'sd_meta_data/form/dynamic_fields/sd_prisma_flow_fields', f: sd_prisma_flow
+    .sd-item
+      = render 'sd_meta_data/form/dynamic_fields/sd_prisma_flow_fields', f: sd_prisma_flow
   div
     = link_to_add_association 'add', f, :sd_prisma_flows, partial: 'sd_meta_data/form/dynamic_fields/sd_prisma_flow_fields'
 
