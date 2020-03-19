@@ -70,8 +70,8 @@ class Parser
       most_previous_version_srdr_link: most_previous_version_srdr_link,
       most_previous_version_full_report_link: most_previous_version_full_report_link,
       overall_purpose_of_review: overall_purpose_of_review,
-      type_of_review: type_of_review,
-      level_of_analysis: level_of_analysis,
+      review_type_id: review_type_id,
+      data_analysis_level_id: data_analysis_level_id
     )
 
     funding_sources = [

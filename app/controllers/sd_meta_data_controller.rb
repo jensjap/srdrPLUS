@@ -13,6 +13,11 @@ class SdMetaDataController < ApplicationController
   end
 
   def mapping_update
+    project_id = SdMetaDatum.find(params[:sd_meta_datum_id])&.project&.id
+    if project_id.nil?
+      head :bad_request
+      return
+    end
     key_questions = mapping_params[:key_questions].to_h || {}
     key_questions = key_questions.map { |key, value| { key => value.uniq } }
     SdKeyQuestionsProject.
@@ -21,9 +26,12 @@ class SdMetaDataController < ApplicationController
       sd_key_questions).
       destroy_all
     key_questions.each do |mapping_hash|
-      mapping_hash.each do |kq_project_id, key_q_ids|
+      mapping_hash.each do |kq_id, key_q_ids|
         key_q_ids.each do |sd_kq_id|
-          SdKeyQuestionsProject.create(key_questions_project_id: kq_project_id, sd_key_question_id: sd_kq_id)
+          key_questions_project_id = KeyQuestionsProject.find_by(key_question_id: kq_id,\
+                                                                 project_id: project_id)&.id
+          SdKeyQuestionsProject.create(key_questions_project_id: key_questions_project_id,\
+                                       sd_key_question_id: sd_kq_id)
         end
       end
     end
