@@ -6,24 +6,22 @@ namespace :result_statistic_section_tasks do
   task populate_seed_measures_table: [:environment] do
     TYPE1_TYPES_TO_ID = {
       "Categorical"   => Type1Type.find_by(name: "Categorical").id,
-      "Continuous"    => Type1Type.find_by(name: "Continuous").id,
-      "Time to Event" => Type1Type.find_by(name: "Time to Event").id,
-      "Adverse Event" => Type1Type.find_by(name: "Adverse Event").id
-    }
+      "Continuous"    => Type1Type.find_by(name: "Continuous").id
+    }.freeze
 
     RSS_TYPES_TO_ID = {
       "Descriptive Statistics"  => ResultStatisticSectionType.find_by(name: "Descriptive Statistics").id,
       "Between Arm Comparisons" => ResultStatisticSectionType.find_by(name: "Between Arm Comparisons").id,
       "Within Arm Comparisons"  => ResultStatisticSectionType.find_by(name: "Within Arm Comparisons").id,
       "NET Change"              => ResultStatisticSectionType.find_by(name: "NET Change").id
-    }
-
-    def get_lsof_type1_type_ids(measure)
-      return measure["type1_types"].map { |t1t_type| TYPE1_TYPES_TO_ID[t1t_type] }
-    end
+    }.freeze
 
     def get_lsof_rss_type_ids(measure)
       return measure["result_statistic_section_types"].map { |rss_type| RSS_TYPES_TO_ID[rss_type] }
+    end
+
+    def get_lsof_type1_type_ids(measure)
+      return measure["type1_types"].map { |t1t_type| TYPE1_TYPES_TO_ID[t1t_type] }
     end
 
     def find_or_create_rsstm(rsst_id, m, default, t1t_id, provider)
@@ -36,34 +34,43 @@ namespace :result_statistic_section_tasks do
       )
     end
 
-    def find_provider_rsstm(rsst_id, provider_m, default=true, t1t_id)
+    def find_provider_rsstm(rsst_id, provider_m, t1t_id)
       return ResultStatisticSectionTypesMeasure.find_by(
         result_statistic_section_type_id: rsst_id,
         measure: provider_m,
-        default: true,
         type1_type_id: t1t_id,
         result_statistic_section_types_measure_id: nil
       )
     end
 
+    def create_rsstm(rsst_id, measure, incl_by_default, t1t_id, provider_ms)
+      if provider_ms.present?
+        provider_ms.each do |provider_m|
+          provider = find_provider_rsstm(rsst_id, provider_m, t1t_id)
+          find_or_create_rsstm(rsst_id, measure, incl_by_default, t1t_id, provider)
+        end
+      else
+        provider = nil
+        find_or_create_rsstm(rsst_id, measure, incl_by_default, t1t_id, provider)
+      end
+    end
+
     rss_seed_measures_yml = YAML.load_file('./lib/tasks/result_statistic_section_seed_measures.yml')
     rss_seed_measures_yml.each do |measure|
       m = Measure.find_or_create_by(name: measure["name"])
-      provider_m = Measure.find_by(name: measure["provider_name"])
+      provider_ms = Measure.where("name in (?)", measure["provider_names"])
       get_lsof_rss_type_ids(measure).each do |rsst_id|
         # If the measure belongs to a specific outcome type we set default to true
         # and create a record for each of the outcome types.
         if measure["type1_types"].present?
           get_lsof_type1_type_ids(measure).each do |t1t_id|
-            provider = find_provider_rsstm(rsst_id, provider_m, true, t1t_id)
-            find_or_create_rsstm(rsst_id, m, true, t1t_id, provider)
+            create_rsstm(rsst_id, m, true, t1t_id, provider_ms)
           end
 
         # Otherwise create a record for all type1_types but set default to false.
         else
           TYPE1_TYPES_TO_ID.values.each do |t1t_id|
-            provider = find_provider_rsstm(rsst_id, provider_m, true, t1t_id)
-            find_or_create_rsstm(rsst_id, m, false, t1t_id, provider)
+            create_rsstm(rsst_id, m, false, t1t_id, provider_ms)
           end
         end
       end
