@@ -105,6 +105,10 @@ class ResultStatisticSectionsController < ApplicationController
     respond_to do |format|
       format.js do
         @result_statistic_section = ResultStatisticSection.find(params[:rss_id])
+        t1_type_id = @result_statistic_section
+          .population
+          .extractions_extraction_forms_projects_sections_type1
+          .type1_type_id
         @options = @result_statistic_section
           .result_statistic_section_type
           .result_statistic_section_types_measures

@@ -9,7 +9,7 @@
         - else
           - @sd_meta_datum.sd_search_strategies.each do |sd_search_strategy|
             p style="border: 1px solid lightgrey"
-              p <b>#{sd_search_strategy.sd_search_database.name} | Searched on: #{sd_search_strategy.date_of_search}</b>
+              p <b>#{sd_search_strategy.sd_search_database&.name || ""} | Searched on: #{sd_search_strategy.date_of_search}</b>
               p <b>Search Terms</b>
               p style="font-size: 12px;" #{sd_search_strategy.search_terms}
               p <b>Search Limits</b>

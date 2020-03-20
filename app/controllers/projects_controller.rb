@@ -85,8 +85,6 @@ class ProjectsController < ApplicationController
   # GET /projects/1/edit
   def edit
     # authorize(@project)
-    @citation_dict = @project.citations.eager_load(:authors, :journal, :keywords).map { |c| [c.id, c] }.to_h
-    @citations_projects = @project.citations_projects
 
     add_breadcrumb "edit project", :edit_project_path
   end

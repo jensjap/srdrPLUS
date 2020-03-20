@@ -4,90 +4,76 @@
     div data-row-span="1"
       div data-field-span="1"
         label 13. Prospero
-        div #{raw(@project.try(:prospero_link))}
+        div = sd_url_for @sd_meta_datum.prospero_link
     div data-row-span="2"
       div data-field-span="1"
         label 14. Protocol
-        - pl = @sd_meta_datum.prototcol_link
-        div #{pl.present? ? pl : 'N/A' }
+        div = sd_url_for @sd_meta_datum.protocol_link
       div data-field-span="1"
         label 15. Full Report
-        - frl = @sd_meta_datum.full_report_link
-        div #{frl.present? ? link_to(frl, frl, target: :_blank) : 'N/A' }
+        div = sd_url_for @sd_meta_datum.full_report_link
     div data-row-span="2"
       div data-field-span="1"
         label 16. Structured Abstract
-        - sal = @sd_meta_datum.structured_abstract_link
-        div #{sal.present? ? link_to(sal, sal, target: :_blank) : 'N/A' }
+        div = sd_url_for @sd_meta_datum.structured_abstract_link
       div data-field-span="1"
         label 17. Key Messages
-        - kml = @sd_meta_datum.key_messages_link
-        div #{kml.present? ? link_to(kml, kml, target: :_blank) : 'N/A' }
+        div = sd_url_for @sd_meta_datum.key_messages_link
     div data-row-span="2"
       div data-field-span="1"
         label 18. Lay Abstract/ Lay Language Summary
-        - asl = @sd_meta_datum.abstract_summary_link
-        div #{asl.present? ? link_to(asl, asl, target: :_blank) : 'N/A' }
+        div = sd_url_for @sd_meta_datum.abstract_summary_link
     div data-row-span="2" style="border: 0;"
       div data-field-span="2"
         label 19. Evidence Summary (or Executive Summary)
-        - esl = @sd_meta_datum.evidence_summary_link
-        div #{esl.present? ? link_to(esl, esl, target: :_blank) : 'N/A' }
+        div = sd_url_for @sd_meta_datum.evidence_summary_link
     div data-row-span="2"
       div data-field-span="1" style="border: 0; margin-left: 25px; width: calc(50% - 25px);"
         label 20. Introduction
-        - eil = @sd_meta_datum.evs_introduction_link
-        div #{eil.present? ? link_to(eil, eil, target: :_blank) : 'N/A' }
+        div = sd_url_for @sd_meta_datum.evs_introduction_link
       div data-field-span="1" style="border: 0;"
         label 21. Methods
-        - eml = @sd_meta_datum.evs_methods_link
-        div #{eml.present? ? link_to(eml, eml, target: :_blank) : 'N/A' }
+        div = sd_url_for @sd_meta_datum.evs_methods_link
       div data-field-span="1" style="border: 0; margin-left: 25px; width: calc(50% - 25px);"
         label 22. Results
-        - erl = @sd_meta_datum.evs_results_link
-        div #{erl.present? ? link_to(erl, erl, target: :_blank) : 'N/A' }
+        div = sd_url_for @sd_meta_datum.evs_results_link
       div data-field-span="1" style="border: 0;"
         label 23. Discussion
-        - edl = @sd_meta_datum.evs_discussion_link
-        div #{edl.present? ? link_to(edl, edl, target: :_blank) : 'N/A' }
+        div = sd_url_for @sd_meta_datum.evs_discussion_link
       div data-field-span="1" style="border: 0; margin-left: 25px; width: calc(50% - 25px);"
         label 24. Conclusions
-        - ecl = @sd_meta_datum.evs_conclusions_link
-        div #{ecl.present? ? link_to(ecl, ecl, target: :_blank) : 'N/A' }
+        div = sd_url_for @sd_meta_datum.evs_conclusions_link
       div data-field-span="1" style="border: 0;"
         label 25. Tables and Figures
-        - etfl = @sd_meta_datum.evs_tables_figures_link
-        div #{etfl.present? ? link_to(etfl, etfl, target: :_blank) : 'N/A' }
+        div = sd_url_for @sd_meta_datum.evs_tables_figures_link
     div data-row-span="2"
       div data-field-span="1"
         label 26. Journal Article URLs
         - if @sd_meta_datum.sd_journal_article_urls.empty?
           div N/A
         - else
-          - @sd_meta_datum.sd_journal_article_urls.each do |sd_journal_article_url|
-            = link_to(sd_journal_article_url.name, sd_journal_article_url.name, target: :_blank)
+          td
+            - @sd_meta_datum.sd_journal_article_urls.each do |sd_journal_article_url|
+              li = sd_url_for sd_journal_article_url.name
       div data-field-span="1"
         label 27. Other Item URLs
         - if @sd_meta_datum.sd_other_items.empty?
           div N/A
         - else
-          - @sd_meta_datum.sd_other_items.each do |sd_other_item|
-            = link_to(sd_other_item.name, sd_other_item.name, target: :_blank)
+          td
+            - @sd_meta_datum.sd_other_items.each do |sd_other_item|
+              li = sd_url_for sd_other_item.url, sd_other_item.name
     div data-row-span="2"
       div data-field-span="1"
         label 28. Disposition of Comments
-        - docl = @sd_meta_datum.disposition_of_comments_link
-        div #{docl.present? ? link_to(docl, docl, target: :_blank) : 'N/A' }
+        div = sd_url_for @sd_meta_datum.disposition_of_comments_link
       div data-field-span="1"
-        label 29. Data (in SRDR)
-        - sdl = @sd_meta_datum.srdr_data_link
-        div #{sdl.present? ? link_to(sdl, sdl, target: :_blank) : 'N/A' }
+        label 29. Data (in SRDR+)
+        div = sd_url_for @sd_meta_datum.srdr_data_link
     div data-row-span="2"
       div data-field-span="1"
-        label 30. Most Recent Previous Version of SRDR Data
-        - mpvsl = @sd_meta_datum.most_previous_version_srdr_link
-        div #{mpvsl.present? ? link_to(mpvsl, mpvsl, target: :_blank) : 'N/A' }
+        label 30. Most Recent Previous Version of SRDR+ Data
+        div = sd_url_for @sd_meta_datum.most_previous_version_srdr_link
       div data-field-span="1"
         label 31. Most Recent Previous Version of Full Report
-        - mpvfrl = @sd_meta_datum.most_previous_version_full_report_link
-        div #{mpvfrl.present? ? link_to(mpvfrl, mpvfrl, target: :_blank) : 'N/A' }
+        div = sd_url_for @sd_meta_datum.most_previous_version_full_report_link

@@ -17,11 +17,11 @@ module SharedQueryableMethods
     #           Please note that you cannot chain AR methods after calling by_query.
     def by_query(query)
       # Try exact match first.
-      exact_match = where("#{name.downcase.pluralize}.name=?", query)
+      exact_match = where("#{name.pluralize.underscore}.name=?", query)
       return exact_match unless exact_match.blank?
 
       # Try approximate matches using 'like'
-      approximate_matches = where("#{name.downcase.pluralize}.name like ?", "%#{ query }%")
+      approximate_matches = where("#{name.pluralize.underscore}.name like ?", "%#{ query }%")
       return query.blank? ?
         approximate_matches : approximate_matches + [ OpenStruct.new(id: "<<<#{ query }>>>", name: "New: '#{ query }'") ]
     end

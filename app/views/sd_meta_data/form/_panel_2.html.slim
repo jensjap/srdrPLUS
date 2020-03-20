@@ -9,48 +9,48 @@
           | Draft
 
     div data-row-span="1"
-      div data-field-span="1"
-        label 13. Prospero
-        div #{raw(@project.try(:prospero_link))}
-    div data-row-span="2"
-      div data-field-span="1"
+      .sd-item data-field-span="1"
         = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
-          = f.input :prototcol_link, as: :string, label: '14. Protocol'
-      div data-field-span="1"
+          = f.input :prospero_link, as: :string, label: '13. Prospero', input_html: { value: f.object.prospero_link || raw(@project.try(:prospero_link)) || "" }
+    div data-row-span="2"
+      .sd-item data-field-span="1"
+        = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
+          = f.input :protocol_link, as: :string, label: '14. Protocol'
+      .sd-item data-field-span="1"
         = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
           = f.input :full_report_link, as: :string, label: '15. Full Report'
     div data-row-span="2"
-      div data-field-span="1"
+      .sd-item data-field-span="1"
         = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
           = f.input :structured_abstract_link, as: :string, label: '16. Structured Abstract'
-      div data-field-span="1"
+      .sd-item data-field-span="1"
         = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
           = f.input :key_messages_link, as: :string, label: '17. Key Messages'
     div data-row-span="2"
-      div data-field-span="1"
+      .sd-item data-field-span="1"
         = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
           = f.input :abstract_summary_link, as: :string, label: '18. Lay Abstract/ Lay Language Summary'
     div data-row-span="2" style="border: 0;"
-      div data-field-span="2"
+      .sd-item data-field-span="2"
         = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
           = f.input :evidence_summary_link, as: :string, label: '19. Evidence Summary (or Executive Summary)'
     div data-row-span="2"
-      div data-field-span="1" style="border: 0; margin-left: 25px; width: calc(50% - 25px);"
+      .sd-item data-field-span="1" style="border: 0; margin-left: 25px; width: calc(50% - 25px);"
         = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
           = f.input :evs_introduction_link, as: :string, label: '20. Introduction'
-      div data-field-span="1" style="border: 0;"
+      .sd-item data-field-span="1" style="border: 0;"
         = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
           = f.input :evs_methods_link, as: :string, label: '21. Methods'
-      div data-field-span="1" style="border: 0; margin-left: 25px; width: calc(50% - 25px);"
+      .sd-item data-field-span="1" style="border: 0; margin-left: 25px; width: calc(50% - 25px);"
         = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
           = f.input :evs_results_link, as: :string, label: '22. Results'
-      div data-field-span="1" style="border: 0;"
+      .sd-item data-field-span="1" style="border: 0;"
         = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
           = f.input :evs_discussion_link, as: :string, label: '23. Discussion'
-      div data-field-span="1" style="border: 0; margin-left: 25px; width: calc(50% - 25px);"
+      .sd-item data-field-span="1" style="border: 0; margin-left: 25px; width: calc(50% - 25px);"
         = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
           = f.input :evs_conclusions_link, as: :string, label: '24. Conclusions'
-      div data-field-span="1" style="border: 0;"
+      .sd-item data-field-span="1" style="border: 0;"
         = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
           = f.input :evs_tables_figures_link, as: :string, label: '25. Tables and Figures'
     div data-row-span="2"
@@ -63,17 +63,17 @@
         .cocoon-container.other-item-list
           = render 'sd_meta_data/form/nested_associations/other_item_list', sd_meta_datum: @sd_meta_datum, url: @url
     div data-row-span="2"
-      div data-field-span="1"
+      .sd-item data-field-span="1"
         = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
           = f.input :disposition_of_comments_link, as: :string, label: '28. Disposition of Comments'
-      div data-field-span="1"
+      .sd-item data-field-span="1"
         = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
-          = f.input :srdr_data_link, as: :string, label: '29. Data (in SRDR)'
+          = f.input :srdr_data_link, as: :string, label: '29. Data (in SRDR+)'
     div data-row-span="2"
-      div data-field-span="1"
+      .sd-item data-field-span="1"
         = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
-          = f.input :most_previous_version_srdr_link, as: :string, label: '30. Most Recent Previous Version of SRDR Data'
-      div data-field-span="1"
+          = f.input :most_previous_version_srdr_link, as: :string, label: '30. Most Recent Previous Version of SRDR+ Data'
+      .sd-item data-field-span="1"
         = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
           = f.input :most_previous_version_full_report_link, as: :string, label: '31. Most Recent Previous Version of Full Report'
   /br/

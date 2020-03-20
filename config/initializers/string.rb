@@ -10,4 +10,13 @@ class String
       str << char if char.ascii_only? and char.ord.between?(32,126)
     end
   end
+
+  def is_url?
+    uri = URI.parse(self)
+    %w( http https ).include?(uri.scheme)
+    rescue URI::BadURIError
+      false
+    rescue URI::InvalidURIError
+      false
+  end
 end

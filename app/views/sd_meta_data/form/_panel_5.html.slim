@@ -1,4 +1,8 @@
 #panel-5.tabs-panel.is-active
+  .hide
+    // JS expects there to be a form on every panel, needs to be updated later
+    = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
+
   fieldset
     div style="display:flex; flex-direction: row;"
       legend Mapping Key Questions (Submitter Only)
@@ -11,16 +15,16 @@
     div data-row-span="2"
       div data-field-span="2"
         .legend-box.alice-box
-        div Drop SRDR Key Question here to associate with a Report Key Question
+        div Drop SRDR+ Key Question here to associate with a Report Key Question
       div data-field-span="2"
         .legend-box.green-box
-        div SRDR Key Question has been associated to at least 1 Report Key Question
+        div SRDR+ Key Question has been associated to at least 1 Report Key Question
     div data-row-span="2"
       div data-field-span="1"
-        h5 SRDR Key Questions
+        h5 SRDR+ Key Questions
       div data-field-span="1"
         h5 style="float: left;" Report Key Questions
-        .button.tiny id="reset-all" style="float: right;" onClick="resetAllMappings()" Auto Reset All
+        .button.tiny id="reset-all" onClick="resetAllMappings()" style="float: right;" Auto Reset All
       .srdr-key-questions-box data-field-span="1" style="overflow: scroll; max-height: 400px;"
         - @sd_meta_datum.try(:project).try(:key_questions).uniq.try(:each) do |srdr_kq|
           .draggable id="srdr_kq-#{srdr_kq.id}" data-keyQuestionId="#{srdr_kq.id}" draggable="true" = srdr_kq.name

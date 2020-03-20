@@ -62,7 +62,7 @@ javascript:
   window.extractSrdrQuestions = extractSrdrQuestions
 
   var postMappings = function() {
-    $.post(`${$('#sd-meta-form')[0].action}/mapping_update`,
+    $.post(`${$('.sd-form')[0].action}/mapping_update`,
       { sd_meta_datum: {
         key_questions: extractSrdrQuestions(),
         _: true,
@@ -118,15 +118,12 @@ javascript:
     return { emptyReportQuestions: emptyReportQuestions, emptySrdrQuestions: emptySrdrQuestions }
   }
 
-  var addWarningIcon = function(elementId, add) {
+  var addWarningIcon = function(panel_no, add) {
     var attention = ' <i id="map-warning" class="fa fa-exclamation-triangle"></i>';
-    var link = $(elementId);
-    var label = link.html();
-    var newLabel = label.replace(attention, '');
+    var warning_container = $('.warning-container[panel-number="' + panel_no.toString() + '"]');
+    warning_container.html('');
     if (add == true) {
-      link.html(newLabel + attention);
-    } else {
-      link.html(newLabel);
+      warning_container.html(attention);
     }
   };
 
@@ -144,8 +141,8 @@ javascript:
     var emptyReportQuestions = mappings.emptyReportQuestions;
     var emptySrdrQuestions = mappings.emptySrdrQuestions;
 
-    addWarningIcon('#panel-3-label', emptyReportQuestions.length > 0);
-    addWarningIcon('#panel-5-label', emptySrdrQuestions.length > 0);
+    addWarningIcon(3, emptyReportQuestions.length > 0);
+    addWarningIcon(5, emptySrdrQuestions.length > 0);
   }
 
   var initialize = function () {

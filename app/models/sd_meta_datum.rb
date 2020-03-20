@@ -11,7 +11,7 @@
 #  stakeholder_involvement_extent              :text(65535)
 #  authors_conflict_of_interest_of_full_report :text(65535)
 #  stakeholders_conflict_of_interest           :text(65535)
-#  prototcol_link                              :text(65535)
+#  protocol_link                               :text(65535)
 #  full_report_link                            :text(65535)
 #  structured_abstract_link                    :text(65535)
 #  key_messages_link                           :text(65535)
@@ -28,8 +28,8 @@
 #  most_previous_version_srdr_link             :text(65535)
 #  most_previous_version_full_report_link      :text(65535)
 #  overall_purpose_of_review                   :text(65535)
-#  type_of_review                              :string(255)
-#  level_of_analysis                           :string(255)
+#  review_type_id                              :integer
+#  data_analysis_level_id                      :integer
 #  state                                       :string(255)      default("DRAFT"), not null
 #  created_at                                  :datetime         not null
 #  updated_at                                  :datetime         not null
@@ -40,7 +40,7 @@
 #  section_flag_4                              :boolean          default(FALSE), not null
 #  section_flag_5                              :boolean          default(FALSE), not null
 #  section_flag_6                              :boolean          default(FALSE), not null
-#  report_accession_id                         :string(255)
+#  report_accession_id                         :integer
 #  authors                                     :text(65535)
 #  section_flag_7                              :boolean          default(FALSE), not null
 #
@@ -64,6 +64,8 @@ class SdMetaDatum < ApplicationRecord
   default_scope { order(id: :desc) }
 
   belongs_to :project, inverse_of: :sd_meta_data, optional: true
+  belongs_to :review_type, inverse_of: :sd_meta_data, optional: true
+  belongs_to :data_analysis_level, inverse_of: :sd_meta_data, optional: true
 
   has_many :comparison_outcome_population_subgroups, inverse_of: :sd_meta_datum, dependent: :destroy
   has_many :comparison_outcome_intervention_subgroups, inverse_of: :sd_meta_datum, dependent: :destroy
@@ -113,7 +115,7 @@ class SdMetaDatum < ApplicationRecord
   accepts_nested_attributes_for :network_meta_analysis_results, allow_destroy: true
   accepts_nested_attributes_for :pairwise_meta_analytic_results, allow_destroy: true
   accepts_nested_attributes_for :sd_forest_plots, allow_destroy: true
-  accepts_nested_attributes_for :sd_meta_regression_analysis_results, allow_destroy: true, reject_if: :all_blank
+  accepts_nested_attributes_for :sd_meta_regression_analysis_results, allow_destroy: true
 
   def report
     Report.all.find { |report_meta| report_meta.accession_id == self.report_accession_id }
@@ -158,6 +160,18 @@ class SdMetaDatum < ApplicationRecord
       resource = FundingSource.new
       save_resource_name_with_token(resource, token)
     end
+    super
+  end
+
+  def review_type_id=(token)
+    resource = ReviewType.new
+    save_resource_name_with_token(resource, token)
+    super
+  end
+
+  def data_analysis_level_id=(token)
+    resource = DataAnalysisLevel.new
+    save_resource_name_with_token(resource, token)
     super
   end
 end
