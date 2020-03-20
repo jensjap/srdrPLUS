@@ -33,7 +33,7 @@ module SharedQueryableMethods
     # Returns:
     #   [Array] An array of the Resource found that matched the field and query string
     def by_name_description_and_query(query)
-      where("#{name.downcase.pluralize}.name LIKE ? OR #{name.downcase.pluralize}.description LIKE ?", "%#{ query }%", "%#{ query }%")
+      where("#{name.pluralize.underscore}.name LIKE ? OR #{name.pluralize.underscore}.description LIKE ?", "%#{ query }%", "%#{ query }%")
     end
   end
 end

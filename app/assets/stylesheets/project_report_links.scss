@@ -21,7 +21,7 @@
 }
 .droppable {
   vertical-align: top;
-  min-height: 300px !important;
+  //min-height: 300px !important;
   margin: 0px !important;
 }
 .button.success.add-column {
@@ -140,4 +140,8 @@ span.grippy::after {
   100% {
     transform: translate(19px, 0);
   }
+}
+
+.query-column {
+  min-height: 300px !important;
 }

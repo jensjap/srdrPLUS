@@ -1,15 +1,35 @@
 javascript:
   $.event.props.push('dataTransfer');
 
+  // sends mappings to server after a set time
+  var timer;
+  var reset_post_timer = function() {
+    if( timer ) {
+      clearTimeout( timer );
+    }
+    timer = setTimeout( postMappings, 750 );
+  }
+
+  var update_kq_target_prompt = function() {
+    $( '.srdr-kq-target' ).each( function( i, target_elem ) {
+      $prompt_elem = $( target_elem ).find( '.srdr-kq-target-prompt' );
+      if ( $( target_elem ).find( '.srdr-kq' ).length > 0 ) {
+        $prompt_elem.addClass( 'hide' ) ;
+      } else {
+        $prompt_elem.removeClass( 'hide' );
+      }
+    });
+  }
+
   var colorCode = function() {
     var reportQuestions = $('.srdr-key-questions-box').children();
     reportQuestions.each(function() {
       var kqId = $(this).attr('data-keyquestionid');
       var allKqItems = $(`*[data-keyquestionid=${kqId}]`);
       if (allKqItems.length === 1) {
-        allKqItems.css('background-color', 'white');
+        allKqItems.css('background-color', '#493163');
       } else if (allKqItems.length > 1) {
-        allKqItems.css('background-color', 'lightgreen');
+        allKqItems.css('background-color', '#78658c');
       }
     })
   }
@@ -21,9 +41,11 @@ javascript:
     var emptySrdrQuestions = mappings.emptySrdrQuestions;
     if (emptyReportQuestions.length > 0 || emptySrdrQuestions.length > 0) {
       $('#5-yes-no-section')[0].checked = false;
-      updateSectionFlag($('#5-yes-no-section')[0]);
+      //updateSectionFlag($('#5-yes-no-section')[0]);
     }
     colorCode();
+    update_kq_target_prompt();
+    reset_post_timer();
   })
 
   var extractReportQuestions = function() {
@@ -32,7 +54,7 @@ javascript:
     reportQuestions.each(function() {
       var currentKey = $(this).attr('data-reportKeyQuestionId');
       hash[currentKey] = [];
-      $(this).children().each(function() {
+      $(this).find('.srdr-kq').each(function() {
         hash[currentKey].push($(this).attr('data-keyQuestionId'));
       })
     })
@@ -83,6 +105,8 @@ javascript:
         colorCode();
       }
     });
+    update_kq_target_prompt();
+    reset_post_timer();
   };
 
   var resetAllMappings = function() {
@@ -178,7 +202,9 @@ javascript:
       $(nodeCopy).text(`${$(nodeCopy).text()} - (click to remove)`)
       $(nodeCopy).addClass('disableselect');
       $(nodeCopy).addClass('clickremove');
-      ev.target.appendChild(nodeCopy);
+      $( ev.target ).closest( '.report-kq' ).find( '.srdr-kq-target' )[ 0 ].appendChild(nodeCopy);
+      update_kq_target_prompt();
+      reset_post_timer();
     })
     colorCode();
   }

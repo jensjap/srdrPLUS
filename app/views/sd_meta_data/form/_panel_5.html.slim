@@ -12,29 +12,34 @@
         - else
           | Draft
 
-    div data-row-span="2"
-      div data-field-span="2"
+    .sd-kq-mapping-container data-row-span="2"
+      .no-border data-field-span="1"
+        h5 SRDR+ Key Questions
+      .no-border data-field-span="1"
+        h5 style="float: left;" Report Key Questions
+        a id="reset-all" onClick="resetAllMappings()" style="float: right;" Reset Mapping
+      .srdr-key-questions-box.no-border data-field-span="1" style="overflow: scroll; max-height: 1000px;"
+        - @sd_meta_datum.try(:project).try(:key_questions).uniq.try(:each) do |srdr_kq|
+          .srdr-kq.draggable id="srdr_kq-#{srdr_kq.id}" data-keyQuestionId="#{srdr_kq.id}" draggable="true" = srdr_kq.name
+      .report-key-questions-box data-field-span="1" style="overflow: scroll; max-height: 1000px;"
+        - @sd_meta_datum.sd_key_questions.each do |sd_key_question|
+          .report-kq.droppable.disableselect data-reportKeyQuestionId="#{sd_key_question.id}"
+            | #{sd_key_question.key_question.name}
+            .srdr-kq-target.grid-x.align-center
+              - if sd_key_question.srdr_key_questions.length == 0
+                .srdr-kq-target-prompt = 'Drag Key Question Here'
+              - else
+                .srdr-kq-target-prompt.hide = 'Drag Key Question Here'
+                - sd_key_question.srdr_key_questions.each do |srdr_key_question|
+                  .srdr-kq.draggable.clickremove id="srdr_kq-#{srdr_key_question.id}" data-keyQuestionId="#{srdr_key_question.id}" draggable="true" = "#{srdr_key_question.name} - (click to remove)"
+          /a.button.tiny style="margin: 10px;" onClick="resetMapping(#{sd_key_question.id})" Reset Auto Match
+    /.no-border data-row-span="2"
+      .no-border data-field-span="2"
         .legend-box.alice-box
         div Drop SRDR+ Key Question here to associate with a Report Key Question
       div data-field-span="2"
         .legend-box.green-box
         div SRDR+ Key Question has been associated to at least 1 Report Key Question
-    div data-row-span="2"
-      div data-field-span="1"
-        h5 SRDR+ Key Questions
-      div data-field-span="1"
-        h5 style="float: left;" Report Key Questions
-        .button.tiny id="reset-all" onClick="resetAllMappings()" style="float: right;" Auto Reset All
-      .srdr-key-questions-box data-field-span="1" style="overflow: scroll; max-height: 400px;"
-        - @sd_meta_datum.try(:project).try(:key_questions).uniq.try(:each) do |srdr_kq|
-          .draggable id="srdr_kq-#{srdr_kq.id}" data-keyQuestionId="#{srdr_kq.id}" draggable="true" = srdr_kq.name
-      .report-key-questions-box data-field-span="1" style="overflow: scroll; max-height: 400px;"
-        - @sd_meta_datum.sd_key_questions.each do |sd_key_question|
-          .droppable.disableselect data-reportKeyQuestionId="#{sd_key_question.id}"
-            | #{sd_key_question.key_question.name}
-            - sd_key_question.srdr_key_questions.each do |srdr_key_question|
-              .draggable.clickremove id="srdr_kq-#{srdr_key_question.id}" data-keyQuestionId="#{srdr_key_question.id}" draggable="true" = "#{srdr_key_question.name} - (click to remove)"
-          a.button.tiny style="margin: 10px;" onClick="resetMapping(#{sd_key_question.id})" Reset Auto Match
   / br/
   / br/
   / fieldset
