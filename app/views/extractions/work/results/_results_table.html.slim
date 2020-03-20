@@ -27,7 +27,7 @@
             th.bg-lightblue colspan="#{ bac_rss.comparisons.length }"
               | Between Arm Comparisons
               br
-              = link_to '(edit measures)',    manage_measures_result_statistic_section_path(rss_id: bac_rss.id), remote: true
+              = link_to '(edit measures)', manage_measures_result_statistic_section_path(rss_id: bac_rss.id), remote: true
             th
               .bac-comparison
                 = simple_form_for bac_rss, url: add_comparison_result_statistic_section_path, remote: true, method: :post do |f|

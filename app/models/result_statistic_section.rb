@@ -75,9 +75,6 @@ class ResultStatisticSection < ApplicationRecord
         default: true
       ).each do |rsstm|
         self.result_statistic_sections_measures.create(measure: rsstm.measure)
-        #rsstm.dependent_measures.each do |dm|
-        #  self.result_statistic_sections_measures.create(measure: dm.measure)
-        #end
       end
     end
 end
