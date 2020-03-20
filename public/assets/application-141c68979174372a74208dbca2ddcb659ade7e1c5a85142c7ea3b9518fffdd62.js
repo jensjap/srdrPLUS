@@ -55644,21 +55644,18 @@ function __guardMethod__(obj, methodName, transform) {
           });
         };
         populate_citation_fields = function(citation) {
-          var author, i, j, keyword, keywordselect, len, len1, position, ref, ref1;
+          var author, i, j, keyword, keywordselect, len, len1, ref, ref1;
           $('.citation-fields').find('.citation-name input').val(citation['name']);
           $('.citation-fields').find('.citation-abstract textarea').val(citation['abstract']);
           $('.citation-fields').find('.journal-name input').val(citation['journal']['name']);
           $('.citation-fields').find('.journal-volume input').val(citation['journal']['vol']);
           $('.citation-fields').find('.journal-issue input').val(citation['journal']['issue']);
           $('.citation-fields').find('.journal-year input').val(citation['journal']['year']);
-          position = 1;
           ref = citation['authors'];
           for (i = 0, len = ref.length; i < len; i++) {
             author = ref[i];
             $('.add-author').click();
             $('#AUTHORS .authors-citation input.author-name').last().val(author);
-            $('#AUTHORS .authors-citation input.author-position').last().val(position);
-            position = position + 1;
           }
           ref1 = citation['keywords'];
           for (j = 0, len1 = ref1.length; j < len1; j++) {
@@ -55829,6 +55826,18 @@ function __guardMethod__(obj, methodName, transform) {
               $(insertedItem).find('.journal-issue input').val(null);
               $(insertedItem).find('.journal-year input').val(null);
               return fetch_from_pubmed($('.project_citations_pmid input').val());
+            });
+            $(insertedItem).find('#AUTHORS').on('cocoon:after-insert cocoon:after-remove', function(e, insertedItem) {
+              var author_elem, i, len, new_position, ref, results;
+              new_position = 1;
+              ref = $('#AUTHORS .authors-citation input.author-position');
+              results = [];
+              for (i = 0, len = ref.length; i < len; i++) {
+                author_elem = ref[i];
+                $(author_elem).val(new_position);
+                results.push(new_position += 1);
+              }
+              return results;
             });
             $(insertedItem).find('.citation-select').select2({
               minimumInputLength: 0,
@@ -57857,7 +57866,7 @@ function __guardMethod__(obj, methodName, transform) {
         clearTimeout(this._timer_dict[formId]);
       }
       this._timer_dict[formId] = setTimeout(function() {
-        return submitForm(form);
+        return send_async_form(form);
       }, 750);
       return this._timer_dict[formId];
     };
@@ -57906,6 +57915,7 @@ function __guardMethod__(obj, methodName, transform) {
   init_select2 = function(selector, url) {
     return $(selector).select2({
       minimumInputLength: 0,
+      placeholder: '-- Select --',
       ajax: {
         url: url,
         dataType: 'json',
@@ -57946,7 +57956,9 @@ function __guardMethod__(obj, methodName, transform) {
     init_select2(".key_question_type", '/key_question_types');
     sd_meta_datum_id = $(".sd_picods_key_question").data('sd-meta-datum-id');
     init_select2(".sd_picods_key_question", "/sd_key_questions?sd_meta_datum_id=" + sd_meta_datum_id);
-    return init_select2(".sd_picods_type", '/sd_picods_types');
+    init_select2(".sd_picods_type", '/sd_picods_types');
+    init_select2(".review_type", '/review_types');
+    return init_select2(".data_analysis_level", '/data_analysis_levels');
   };
 
   add_form_listeners = function(form) {
@@ -57957,11 +57969,7 @@ function __guardMethod__(obj, methodName, transform) {
       e.preventDefault();
       return $form.addClass('dirty');
     });
-    $form.on('cocoon:after-insert cocoon:after-remove', function(e) {
-      $form.addClass('dirty');
-      return Timekeeper.create_timer_for_form($form[0]);
-    });
-    $form.find('input[type="file"]').change(function(e) {
+    $form.on('cocoon:after-insert cocoon:after-remove change', function(e) {
       $form.addClass('dirty');
       return Timekeeper.create_timer_for_form($form[0]);
     });
@@ -58191,6 +58199,20 @@ toastr.options = {
 };
 
 Dropzone.autoDiscover = false;
+
+/// GLOBAL METHOD TO SEND ASYNC FORMS  
+function send_async_form(form) {
+  var formData = new FormData(form);
+
+  $.ajax({
+    type: "PATCH",
+    url: form.action,
+    data: formData,
+    async: true,
+    contentType: false,
+    processData: false
+  })
+}
 
 document.addEventListener( 'turbolinks:load', function() {
   $( document ).foundation();
