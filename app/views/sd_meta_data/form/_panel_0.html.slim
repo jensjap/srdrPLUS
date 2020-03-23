@@ -2,15 +2,12 @@
   fieldset
     div style="display:flex; flex-direction: row;"
       legend Title, Funding Sources, and Dates
-      /= render 'shared/status_switch', statusable_id: "#{ f.object.id.to_s + '_0' }", status_name:"#{ f.object.section_flag_0 ? 'Completed' : 'Draft' }"
       .status-switch.button[id="0-yes-no-section" class=(@sd_meta_datum.section_flag_0 ? 'completed' : 'draft') data-sd_meta_datum_id="#{@sd_meta_datum.id}"]
         - if @sd_meta_datum.section_flag_0
           | Completed
         - else
           | Draft
 
-    /= simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { id: 'sd-meta-form', class: "grid-form", data: { 'abide': '', 'live-validate': true } }) do |f|
-      = f.input :project_id, :as => :hidden, :input_html => { value: project.try(:id) }
     div data-row-span="1"
       .sd-item data-field-span="1"
         = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
@@ -26,33 +23,24 @@
     div data-row-span="3"
       .sd-item data-field-span="1"
         = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
-          = f.input :date_of_last_search, as: :date, html5: true, label: '4. Date of Last Search', input_html: { style: 'width: initial; position: relative;' }
+          = f.input :date_of_last_search, as: :date, html5: true, label: '4. Date of Last Search', input_html: { class: 'fdp', style: 'width: initial; position: relative;' }
       .sd-item data-field-span="1"
         = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
-          = f.input :date_of_publication_to_srdr, as: :date, html5: true, label: '5. Date of Publication to SRDR+', input_html: { style: 'width: initial; position: relative;' }
+          = f.input :date_of_publication_to_srdr, as: :date, html5: true, label: '5. Date of Publication to SRDR+', input_html: { class: 'fdp', style: 'width: initial; position: relative;' }
       .sd-item data-field-span="1"
         = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
-          = f.input :date_of_publication_full_report, as: :date, html5: true, label: '6. Date of Publication of Full Report', input_html: { style: 'width: initial; position: relative;' }
-  /br/
-  /br/
-  /fieldset
-    legend Section Review & Validation
-    div data-row-span="1"
-      div data-field-span="1"
-        div Section Finished?
-        .switch
-          input.switch-input id="0-yes-no-section" type="checkbox" name="sectionSection" data-sd_meta_datum_id="#{sd_meta_datum.id}"
-          label.switch-paddle for="0-yes-no-section"
-            span.switch-active aria-hidden="true" Yes
-            span.switch-inactive aria-hidden="true" No
+          = f.input :date_of_publication_full_report, as: :date, html5: true, label: '6. Date of Publication of Full Report', input_html: { class: 'fdp', style: 'width: initial; position: relative;' }
 
 javascript:
-  $('.datepicker').fdatepicker({
-    initialDate: '2000-10-10',
-    format: 'yyyy-mm-dd',
-    disableDblClickSelection: true,
-    leftArrow:'<<',
-    rightArrow:'>>',
-    closeIcon:'X',
-    closeButton: true
-    }).show();
+  ( function() {
+    var elem = document.createElement( 'input' );
+    elem.setAttribute( 'type', 'date' );
+
+    if ( elem.type === 'text' ) {
+      $( '.fdp' ).fdatepicker( {
+        format: 'yyyy-mm-dd',
+        leftArrow: '<<',
+        rightArrow: '>>'
+      } );
+    }
+  } )();
