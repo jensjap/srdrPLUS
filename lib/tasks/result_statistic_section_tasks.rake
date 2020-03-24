@@ -5,8 +5,8 @@ namespace :result_statistic_section_tasks do
   section by outcome type."
   task populate_seed_measures_table: [:environment] do
     TYPE1_TYPES_TO_ID = {
-      "Categorical"   => Type1Type.find_by(name: "Categorical").id,
-      "Continuous"    => Type1Type.find_by(name: "Continuous").id
+      "Categorical" => Type1Type.find_by(name: "Categorical").id,
+      "Continuous"  => Type1Type.find_by(name: "Continuous").id
     }.freeze
 
     RSS_TYPES_TO_ID = {
@@ -60,19 +60,30 @@ namespace :result_statistic_section_tasks do
       m = Measure.find_or_create_by(name: measure["name"])
       provider_ms = Measure.where("name in (?)", measure["provider_names"])
       get_lsof_rss_type_ids(measure).each do |rsst_id|
-        # If the measure belongs to a specific outcome type we set default to true
-        # and create a record for each of the outcome types.
-        if measure["type1_types"].present?
-          get_lsof_type1_type_ids(measure).each do |t1t_id|
+        # Create a measure for the designated quadrant. If type1 type is specified we will set default to true,
+        # otherwise, set it to false.
+        TYPE1_TYPES_TO_ID.each do |key, t1t_id|
+          if measure["type1_types"].present? && measure["type1_types"].include?(key)
             create_rsstm(rsst_id, m, true, t1t_id, provider_ms)
-          end
-
-        # Otherwise create a record for all type1_types but set default to false.
-        else
-          TYPE1_TYPES_TO_ID.values.each do |t1t_id|
+          else
             create_rsstm(rsst_id, m, false, t1t_id, provider_ms)
           end
         end
+
+#        # If the measure belongs to a specific outcome type we set default to true
+#        # and create a record for each of the outcome types.
+#        if measure["type1_types"].present?
+#          get_lsof_type1_type_ids(measure).each do |t1t_id|
+#            create_rsstm(rsst_id, m, true, t1t_id, provider_ms)
+#          end
+#
+#        # Otherwise create a record for all type1_types but set default to false.
+#        else
+#          TYPE1_TYPES_TO_ID.values.each do |t1t_id|
+#            create_rsstm(rsst_id, m, false, t1t_id, provider_ms)
+#          end
+#        end
+
       end
     end
   end
