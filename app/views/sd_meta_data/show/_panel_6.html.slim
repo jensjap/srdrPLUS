@@ -1,6 +1,6 @@
 #panel-6.tabs-panel.is-active
   fieldset
-    legend Search Strategy & Summary of Results
+    legend Search Strategy and Evidence Summary
     div data-row-span="1"
       div data-field-span="1"
         label 44-47. Search Strategies
@@ -35,7 +35,7 @@
             div #{sd_prisma_flow.name}
             p
               - sd_prisma_flow.pictures.each do |picture|
-                = image_tag(picture, class: 'openable', style: 'height:100%;width:auto;')
+                = image_tag(picture, class: 'openable sd-image')
 
     div data-row-span="1"
       div data-field-span="1"
@@ -50,4 +50,4 @@
               p style="font-size: 11px;" #{sd_summary_of_evidence.try(:sd_key_question).try(:name)}
               p
                 - sd_summary_of_evidence.pictures.each do |picture|
-                  = image_tag(picture, class: 'openable', style: 'height:100%;width:auto;')
+                  = image_tag(picture, class: 'openable sd-image')

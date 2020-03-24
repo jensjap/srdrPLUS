@@ -63,7 +63,7 @@
             div #{pairwise_meta_analytic_result.name}
             p
               - pairwise_meta_analytic_result.pictures.each do |picture|
-                = image_tag(picture, class: 'openable', style: 'height:100%;width:auto;')
+                = image_tag(picture, class: 'openable sd-image')
     div data-row-span="1"
       div data-field-span="1"
         label 61-62. Network Meta Analysis Result
@@ -75,7 +75,7 @@
             div #{network_meta_analysis_result.name}
             p
               - network_meta_analysis_result.pictures.each do |picture|
-                = image_tag(picture, class: 'openable', style: 'height:100%;width:auto;')
+                = image_tag(picture, class: 'openable sd-image')
     /div data-row-span="1"
       div data-field-span="1"
         label 86. Published Project Link

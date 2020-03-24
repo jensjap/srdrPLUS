@@ -5,7 +5,7 @@
 
   fieldset
     div style="display:flex; flex-direction: row;"
-      legend Mapping Key Questions (Submitter Only)
+      legend Key Question Mapping
       .status-switch.button[id="5-yes-no-section" class=(@sd_meta_datum.section_flag_5 ? 'completed' : 'draft') data-sd_meta_datum_id="#{@sd_meta_datum.id}"]
         - if @sd_meta_datum.section_flag_5
           | Completed

@@ -11,23 +11,22 @@
     div data-row-span="1"
       .sd-item data-field-span="1"
         = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
-          = f.input :overall_purpose_of_review, label: '32. Overall Purpose of Review', :input_html => { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
-    div data-row-span="1"
+          = f.input :overall_purpose_of_review, label: 'Overall Purpose of Review', :input_html => { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
+    div data-row-span="2"
       .sd-item data-field-span="1"
         = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
-          = f.association :review_type, label: '33. Type of Review', input_html: { class: 'review_type' }
-    div data-row-span="1"
+          = f.association :review_type, label: 'Type of Review', input_html: { class: 'review_type' }
       .sd-item data-field-span="1"
         = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
-          = f.association :data_analysis_level, label: '34. Level of Data Analysis', input_html: { class: 'data_analysis_level' }
+          = f.association :data_analysis_level, label: 'Level of Data Analysis', input_html: { class: 'data_analysis_level' }
     div data-row-span="1"
       div data-field-span="1"
-        label 35. Analytic/ Conceptual Framework
+        label Analytic/ Conceptual Framework
         .cocoon-container.analytic-framework-list
           = render 'sd_meta_data/form/nested_associations/analytic_framework_list', sd_meta_datum: @sd_meta_datum, url: @url
     div data-row-span="1"
       div data-field-span="1"
-        label 36 & 37. Key Question Types and Key Questions
+        label Report Key Questions
         .cocoon-container.key-question-list
           = render 'sd_meta_data/form/nested_associations/key_question_list', sd_meta_datum: @sd_meta_datum, url: @url
   / br/

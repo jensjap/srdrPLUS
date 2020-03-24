@@ -14,14 +14,13 @@
  *= require_self
  *= require foundation_and_overrides
  *= require toastr_rails
- *= require select2
  *= require dropzone/dropzone
  *= require zmultiselect.min
  *= require foundation-datepicker.min
  */
 
 @import 'settings';
-@import "font-awesome";
+//@import "font-awesome";
 
 // Cocoon.
 .add_fields {
@@ -496,3 +495,25 @@ body.extractions.work, body.sd_meta_data.edit {
   margin-bottom: 0;
   width: 90%;
 }
+
+// Select2 overflow fixes
+.select2-container--default {
+  display: table!important;
+  table-layout: fixed!important;
+}
+
+li.select2-selection__choice {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis; //use this if you want to shorten
+}
+ul.select2-selection__rendered {
+    padding-right: 12px !important; //overrides select2 style
+}
+
+// There is an annoying textarea resizing issue and I cannot find the cause
+// solution is to ban all horizontal resizing -Birol
+textarea {
+  resize: vertical !important;
+}
+

@@ -3,33 +3,33 @@
     legend Authors and Stakeholders
     div data-row-span="1"
       div data-field-span="1"
-        label 7. Authors
+        label Authors
         div
           - @sd_meta_datum.authors && @sd_meta_datum.authors.split("\n").each do |author|
             div #{author}
     div data-row-span="1"
       div data-field-span="1"
-        label 8. Conflicts of Interest of Authors of Full Report
+        label Conflicts of Interest of Authors of Full Report
         - acoiof = @sd_meta_datum.authors_conflict_of_interest_of_full_report
         div #{acoiof.present? ? acoiof : 'N/A' }
     div data-row-span="1"
       div data-field-span="1"
-        label 9. Stakeholders Involved
+        label Stakeholders Involved
         - sie = @sd_meta_datum.stakeholder_involvement_extent
         div #{sie.present? ? sie : 'N/A' }
     div data-row-span="1"
       div data-field-span="1"
-        label 10. Conflicts of Interest of Stakeholders
+        label Conflicts of Interest of Stakeholders
         - scoi = @sd_meta_datum.stakeholders_conflict_of_interest
         div #{scoi.present? ? scoi : 'N/A' }
     div data-row-span="2"
       div data-field-span="1"
-        label 11. Project Leads:
+        label Project Leads:
         - @project.try(:leaders).try(:map) do |user|
           - next if user.email.include?("@test.com")
           div <b>#{[user.profile.first_name, user.profile.middle_name, user.profile.last_name].join(" ")}</b> (#{user.email})
       div data-field-span="1"
-        label 12. SRDR+ Project Creator:
+        label SRDR+ Project Creator:
         - if @project.creator.email.include?("@test.com")
           div
         - else

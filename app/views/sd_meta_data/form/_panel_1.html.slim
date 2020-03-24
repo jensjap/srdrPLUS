@@ -11,27 +11,27 @@
     div data-row-span="1"
       .sd-item data-field-span="1"
         = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
-          = f.input :authors, label: '7. Authors', :input_html => { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
+          = f.input :authors, label: 'Authors', :input_html => { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
     div data-row-span="1"
       .sd-item data-field-span="1"
         = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
-          = f.input :authors_conflict_of_interest_of_full_report, label: '8. Conflicts of Interest of Authors of Full Report', :input_html => { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
+          = f.input :authors_conflict_of_interest_of_full_report, label: 'Conflicts of Interest of Authors of Full Report', :input_html => { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
     div data-row-span="1"
       .sd-item data-field-span="1"
         = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
-          = f.input :stakeholder_involvement_extent, label: '9. Stakeholders Involved', :input_html => { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
+          = f.input :stakeholder_involvement_extent, label: 'Stakeholders Involved', :input_html => { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
     div data-row-span="1"
       .sd-item data-field-span="1"
         = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
-          = f.input :stakeholders_conflict_of_interest, label: '10. Conflicts of Interest of Stakeholders', :input_html => { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
+          = f.input :stakeholders_conflict_of_interest, label: 'Conflicts of Interest of Stakeholders', :input_html => { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
     div data-row-span="2"
       .sd-item data-field-span="1"
-        label 11. Project Leads:
+        label SRDR+ Project Leads
         - @project.try(:leaders).try(:map) do |user|
           - next if user.email.include?("@test.com")
           div <b>#{[user.profile.first_name, user.profile.middle_name, user.profile.last_name].join(" ")}</b> (#{user.email})
       .sd-item data-field-span="1"
-        label 12. SRDR+ Project Creator:
+        label SRDR+ Project Creator
         - if @project.creator.email.include?("@test.com")
           div
         - else

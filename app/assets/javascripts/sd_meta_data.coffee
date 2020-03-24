@@ -10,6 +10,7 @@ class Timekeeper
   @_timer_dict: {}
 
   @create_timer_for_form: ( form ) -> 
+    $( '.preview-button' ).attr( 'disabled', '' )
     formId = form.getAttribute( 'id' )
     if formId of @_timer_dict
       clearTimeout( @_timer_dict[formId] )
@@ -17,20 +18,6 @@ class Timekeeper
       send_async_form( form )
     , 750
     @_timer_dict[ formId ] 
-
-# submits given form
-submitForm = ( form ) ->
-  #form = $('#sd-meta-form')[0]
-  formData = new FormData(form)
-
-  $.ajax({
-    type: "PATCH",
-    url: form.action,
-    data: formData,
-    async: true,
-    contentType: false,
-    processData: false
-  })
 
 # Set the field to display from the result set.
 formatResultSelection = ( result, container ) ->
@@ -106,7 +93,6 @@ add_form_listeners =( form ) ->
 
   $( "a.remove-figure[data-remote]" ).on "ajax:success",  ( event ) ->
     $( this ).parent().closest( 'div' ).fadeOut();
-  return  # END do ->
 
   # Text Field.
   $form.keyup ( e ) ->
@@ -121,6 +107,8 @@ add_form_listeners =( form ) ->
     # Mark form as 'dirty'.
     $form.addClass( 'dirty' )
     Timekeeper.create_timer_for_form $form[0]
+
+  $( '.fdatepicker' ).fdatepicker({format: 'yyyy-mm-dd', disableDblClickSelection: true}).show();
 
 bind_srdr20_saving_mechanism = () ->
   $( 'form.sd-form' ).each ( i, form ) ->

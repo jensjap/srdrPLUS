@@ -16,7 +16,7 @@ gem 'sass-rails', '~> 5.0'
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
 # Use CoffeeScript for .coffee assets and views
-gem 'coffee-rails', '~> 4.2'
+gem 'coffee-rails', '~> 5.0'
 # See https://github.com/rails/execjs#readme for more supported runtimes
 # gem 'therubyracer', platforms: :ruby
 
@@ -81,7 +81,6 @@ gem 'slim-rails'
 gem 'simple_form'
 gem 'country_select'
 gem 'cocoon'
-gem "select2-rails"
 
 # Authentication.
 gem 'devise'
@@ -167,7 +166,7 @@ gem 'awesome_print'
 gem 'fuzzy_match'
 
 # Font Awesome Icons
-gem 'font-awesome-rails'
+#gem 'font-awesome-rails'
 
 # Allows us to authenticate via Google's servers, so we can create google exports
 gem "omniauth-google-oauth2"
@@ -176,4 +175,3 @@ gem "googleauth"
 
 # Allows users to drop files to upload
 gem "dropzonejs-rails"
-

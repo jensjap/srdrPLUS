@@ -3,38 +3,37 @@
     legend Purpose and Key Questions
     div data-row-span="1"
       div data-field-span="1"
-        label 32. Overall Purpose of Review
+        label Overall Purpose of Review
         - opor = @sd_meta_datum.overall_purpose_of_review
-        div #{opor.present? ? opor : 'N/A' }
-    div data-row-span="1"
+        div #{opor.present? ? opor : '-----' }
+    div data-row-span="2"
       div data-field-span="1"
-        label 33. Type of Review
+        label Type of Review
         - tor = @sd_meta_datum.review_type&.name
-        div #{tor.present? ? tor : 'N/A' }
-    div data-row-span="1"
+        div #{tor.present? ? tor : '-----' }
       div data-field-span="1"
-        label 34. Level of Data Analysis
+        label Level of Data Analysis
         - loa = @sd_meta_datum.data_analysis_level&.name
-        div #{loa.present? ? loa : 'N/A' }
+        div #{loa.present? ? loa : '-----' }
     div data-row-span="1"
       div data-field-span="1"
-        label 35. Analytic/ Conceptual Framework
+        label Analytic / Conceptual Framework
         - if @sd_meta_datum.sd_analytic_frameworks.empty?
-          div N/A
+          div -----
         - else
           - @sd_meta_datum.sd_analytic_frameworks.each do |sd_analytic_framework|
             div #{sd_analytic_framework.name}
             p
               - sd_analytic_framework.pictures.each do |picture|
-                = image_tag(picture, class: 'openable', style: 'height:100%;width:auto;')
+                = image_tag(picture, class: 'openable sd-image')
     div data-row-span="1"
       div data-field-span="1"
-        label 36 & 37. Key Question Types and Key Questions
+        label Report Key Questions
         - if @sd_meta_datum.sd_key_questions.empty?
-          div N/A
+          div -----
         - else
           - @sd_meta_datum.sd_key_questions.each do |sd_key_question|
             - kqts = sd_key_question.key_question_types.map { |kqt| kqt.name }.join(", ")
             p
-              div <b>Key Question Types:</b> #{kqts.present? ? kqts : 'N/A'}
+              label Key Question Types: #{kqts.present? ? kqts : '-----'}
               div #{sd_key_question.key_question.name}

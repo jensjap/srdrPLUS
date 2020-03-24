@@ -210,7 +210,7 @@ javascript:
   }
 
   $(document).on('click', '#5-yes-no-section', function() {
-    reportMissingKqs();
+    //reportMissingKqs();
     var sectionId = this.id[0];
     var mappings = checkMapping();
     var emptyReportQuestions = mappings.emptyReportQuestions;
@@ -236,5 +236,5 @@ javascript:
 
   $(document).on("turbolinks:load", function() {
     initialize();
-    setTimeout(function(){ reportMissingKqs(); }, 500);
+    //setTimeout(function(){ reportMissingKqs(); }, 500);
   });

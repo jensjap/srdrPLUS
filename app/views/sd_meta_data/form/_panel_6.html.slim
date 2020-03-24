@@ -1,7 +1,7 @@
 #panel-6.tabs-panel.is-active
   fieldset
     div style="display:flex; flex-direction: row;"
-      legend Search Strategy & Summary of Results
+      legend Search Strategy and Evidence Summary
       .status-switch.button[id="6-yes-no-section" class=(@sd_meta_datum.section_flag_6 ? 'completed' : 'draft') data-sd_meta_datum_id="#{@sd_meta_datum.id}"]
         - if @sd_meta_datum.section_flag_6
           | Completed
@@ -10,22 +10,22 @@
 
     div data-row-span="1"
       div data-field-span="1"
-        label 44-47. Search Strategies
+        label Search Strategies
         .cocoon-container.search-strategy-list
           = render 'sd_meta_data/form/nested_associations/search_strategy_list', sd_meta_datum: @sd_meta_datum, url: @url
     div data-row-span="1"
       div data-field-span="1"
-        label 48. Grey Literature Search
+        label Grey Literature Searches
         .cocoon-container.grey-literature-list
           = render 'sd_meta_data/form/nested_associations/grey_literature_list', sd_meta_datum: @sd_meta_datum, url: @url
     div data-row-span="1"
       div data-field-span="1"
-        label 49. PRISMA/Literature Flow
+        label PRISMAs
         .cocoon-container.prisma-list
           = render 'sd_meta_data/form/nested_associations/prisma_list', sd_meta_datum: @sd_meta_datum, url: @url
     div data-row-span="1"
       div data-field-span="1"
-        label 50-53. Results/Summary of Evidence/Findings
+        label Summaries of Evidence
         .cocoon-container.result-list
           = render 'sd_meta_data/form/nested_associations/result_list', sd_meta_datum: @sd_meta_datum, url: @url
   / br/

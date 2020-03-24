@@ -1,5 +1,5 @@
 .grid-x.align-center style="font-size: small !important;"
-  .cell.medium-2
+  .cell.medium-3
     #vertical-tabs.ul.tabs.vertical
       li.tabs-title
         = link_to '?panel_number=0', class: (@panel_number == 0 ? 'bg-light-grey' : ''), id: "panel-0-label" do
@@ -18,24 +18,24 @@
           |Purpose and Key Questions
           .check-container[panel-number="3"]
           .warning-container[panel-number="3"]
-      li.tabs-title
-        = link_to '?panel_number=4', class: (@panel_number == 4 ? 'bg-light-grey' : ''), id: "panel-4-label" do
-          |PICODS for each Key Question
-          .check-container[panel-number="4"]
-      li.tabs-title
+      li.tabs-title.mapping-kq-title
         = link_to '?panel_number=5', class: (@panel_number == 5 ? 'bg-light-grey' : ''), id: "panel-5-label" do
-          'Mapping Key Questions (Submitter Only)'
+          |Key Question Mapping (Submitter Only)
           .check-container[panel-number="5"]
           .warning-container[panel-number="5"]
       li.tabs-title
+        = link_to '?panel_number=4', class: (@panel_number == 4 ? 'bg-light-grey' : ''), id: "panel-4-label" do
+          |PICODs
+          .check-container[panel-number="4"]
+      li.tabs-title
         = link_to '?panel_number=6', class: (@panel_number == 6 ? 'bg-light-grey' : ''), id: "panel-6-label" do
-          |Search Strategy & Summary of Results
+          |Search Strategy and Evidence Summary
           .check-container[panel-number="6"]
       li.tabs-title
         = link_to '?panel_number=7', class: (@panel_number == 7 ? 'bg-light-grey' : ''), id: "panel-7-label" do
           |Study Results
           .check-container[panel-number="7"]
-  .cell.medium-10
+  .cell.medium-9
     - if @panel_number != 5
       .preview-container-container.float-center.hide
         a.close-preview.float-right = "✖"
@@ -71,18 +71,14 @@ javascript:
     this.style.height = this.scrollHeight + "px"
   })
 
-  $(document).on("click", ".openable", function() {
-    window.open($(this).attr('src'));
-  })
-
-  $( 'a.close-preview' ).on('click', function(event) {
+  $( 'a.close-preview' ).on('click', function( event ) {
     $( '.preview-container' ).html('')
     $( '.preview-container-container' ).addClass( 'hide' )
     $( '.panel-content' ).removeClass( 'hide' )
     $( '.preview-button' ).removeClass( 'hide' )
-  })
+  });
 
-  $( '.preview-button' ).on( 'click', function(event) {
+  $( '.preview-button' ).on( 'click', function( event ) {
     $( '.panel-content' ).addClass( 'hide' )
     $( '.preview-button' ).addClass( 'hide' )
     $.ajax({
@@ -90,4 +86,8 @@ javascript:
       data: { panel_number: $('.preview-button').data('panel-number')},
       method: 'GET'
     })
-  })
+  });
+
+  $(document).on("click", ".openable", function() {
+    window.open($(this).attr('src'));
+  });

@@ -55,9 +55,9 @@ class SdMetaDatum < ApplicationRecord
     "Authors and Stakeholders",
     "Links",
     "Purpose and Key Questions",
-    "PICODS for each Key Question",
-    "Mapping Key Questions (Submitter Only)",
-    "Search Strategy & Summary of Results",
+    "PICODs",
+    "Key Question Mapping",
+    "Search Strategy and Evidence Summary",
     "Study Results"
   ].freeze
 
