@@ -5,13 +5,7 @@ module RoleChecker
   AUDITOR = 'Auditor'.freeze
 
   def get_highest_role
-    @highest_role ||= Role.
-      select(:id, :name).
-      joins(:projects_users_roles).
-      joins(:projects_users).
-      where(projects_users_roles: { projects_users: { project: record, user: user } }).
-      min.
-      try(:name)
+    @highest_role = user.highest_role_in_project(record)
   end
 
   def project_leader?

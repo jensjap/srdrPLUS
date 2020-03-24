@@ -4,7 +4,7 @@
 
 document.addEventListener 'turbolinks:load', ->
 
-  return unless $( '.result_statistic_sections' ).length > 0
+  return unless $( '.extractions.work' ).length > 0
 
   do ->
 

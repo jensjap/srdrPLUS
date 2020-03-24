@@ -2,13 +2,13 @@ class ResultStatisticSectionsController < ApplicationController
 
   add_breadcrumb 'my projects', :projects_path
 
+  before_action :skip_policy_scope
+
   before_action :set_result_statistic_section, only: [:edit, :update, :add_comparison, :consolidate]
   before_action :set_arms, only: [:edit, :update, :add_comparison, :consolidate]
   before_action :set_extractions, only: [:consolidate]
   #!!! Birol: don't think this is working...where is comparables set?
   #before_action :set_comparisons_measures, only: [:edit]
-
-  before_action :skip_policy_scope
 
   # GET /result_statistic_sections/1/edit
   def edit

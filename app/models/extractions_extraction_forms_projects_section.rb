@@ -55,7 +55,7 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
 
   delegate :citation,          to: :extraction
   delegate :citations_project, to: :extraction
-  delegate :project,           to: :extraction_forms_projects_section
+  delegate :project,           to: :extraction
   delegate :section,           to: :extraction_forms_projects_section
 
   def type1s_suggested_by_project_leads
