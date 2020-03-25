@@ -117,7 +117,7 @@ toastr.options = {
 
 Dropzone.autoDiscover = false;
 
-/// GLOBAL METHOD TO SEND ASYNC FORMS  
+/// GLOBAL function TO SEND ASYNC FORMS  
 function send_async_form(form) {
   var formData = new FormData(form);
 
@@ -129,6 +129,16 @@ function send_async_form(form) {
     contentType: false,
     processData: false
   })
+}
+
+// Global function to check if a string is a URL
+function is_valid_URL(string){
+  try {
+    new URL(string);
+    return true;
+  } catch (_) {
+    return false;  
+  }
 }
 
 document.addEventListener( 'turbolinks:load', function() {

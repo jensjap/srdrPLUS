@@ -23,6 +23,22 @@ class Timekeeper
 formatResultSelection = ( result, container ) ->
   result.text
 
+# returns validation status of form
+# also adds the class invalid to form inputs failing validation
+validate_form_inputs = ( form ) ->
+  $form = $( form )
+  $form.find( '.invalid' ).removeClass( 'invalid' )
+  is_form_valid = true
+  # validate url inputs
+  for input_elem in $form.find( '.url-input' )
+    $input_elem = $( input_elem )
+    input_val = $input_elem.val()
+    is_input_valid = is_valid_URL( input_val ) || ( input_val == "" )
+    if not is_input_valid
+      $input_elem.addClass( 'invalid' ) 
+    is_form_valid = is_form_valid && is_input_valid
+  return is_form_valid
+
 # Markup result.
 formatResult = ( result ) ->
   if result.loading
@@ -76,6 +92,7 @@ apply_all_select2 =() ->
   init_select2(".review_type", '/review_types')
   init_select2(".data_analysis_level", '/data_analysis_levels')
 
+  $( '.apply-select2' ).select2( placeholder: '-- Select --' )
 
 add_form_listeners =( form ) ->
   $form = $( form )
@@ -86,7 +103,14 @@ add_form_listeners =( form ) ->
     # Mark form as 'dirty'.
     $form.addClass( 'dirty' )
 
-  $form.on 'cocoon:after-insert cocoon:after-remove change', ( e ) ->
+  $form.find( 'textarea, select, input' ).on 'change', ( e ) ->
+    if not validate_form_inputs( form )
+      return
+    # Mark form as 'dirty'.
+    $form.addClass( 'dirty' )
+    Timekeeper.create_timer_for_form $form[0]
+
+  $form.on 'cocoon:after-insert cocoon:after-remove', ( e ) ->
     # Mark form as 'dirty'.
     $form.addClass( 'dirty' )
     Timekeeper.create_timer_for_form $form[0]
@@ -102,6 +126,9 @@ add_form_listeners =( form ) ->
     code = e.keyCode || e.which;
     # 9: tab; 16: shift; 37: left-arrow; 38: up-arrow; 39: right-arrow; 40: down-arrow; 18: option; 91: cmd
     if code in [9, 16, 18, 37, 38, 39, 40, 91]
+      return
+
+    if not validate_form_inputs( form )
       return
 
     # Mark form as 'dirty'.

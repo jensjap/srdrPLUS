@@ -22,18 +22,29 @@
           div -----
         - else
           - @sd_meta_datum.sd_analytic_frameworks.each do |sd_analytic_framework|
-            div #{sd_analytic_framework.name}
-            p
-              - sd_analytic_framework.pictures.each do |picture|
-                = image_tag(picture, class: 'openable sd-image')
+            .sd-show-inner
+              div
+                label Description
+                div #{sd_analytic_framework.name.present? ? sd_analytic_framework.name : "-----"}
+              div
+                label Pictures
+                p
+                  - if sd_analytic_framework.pictures.empty?
+                    |-----
+                  - sd_analytic_framework.pictures.each do |picture|
+                    = image_tag(picture, class: 'openable sd-image')
     div data-row-span="1"
       div data-field-span="1"
         label Report Key Questions
         - if @sd_meta_datum.sd_key_questions.empty?
           div -----
         - else
-          - @sd_meta_datum.sd_key_questions.each do |sd_key_question|
-            - kqts = sd_key_question.key_question_types.map { |kqt| kqt.name }.join(", ")
-            p
-              label Key Question Types: #{kqts.present? ? kqts : '-----'}
-              div #{sd_key_question.key_question.name}
+            - @sd_meta_datum.sd_key_questions.each do |sd_key_question|
+              - kqts = sd_key_question.key_question_types.map { |kqt| kqt.name }.join(", ")
+              .sd-show-inner
+                div
+                  label Key Question
+                  div = sd_key_question.key_question.name.present? ? sd_key_question.key_question.name : '-----'
+                div
+                  label Type(s)
+                  div = kqts.present? ? kqts : '-----'

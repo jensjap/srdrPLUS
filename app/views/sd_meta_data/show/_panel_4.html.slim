@@ -8,10 +8,44 @@
           div -----
         - else
           - @sd_meta_datum.sd_picods.each do |sd_picod|
-            p
               - picod_types = sd_picod.sd_picods_types
-              div <b>Type:</b> #{picod_types.map(&:name).join(", ")}
-              div <b>Name:</b> #{sd_picod.name}
-              p
-                - sd_picod.sd_key_questions.each do |skq|
-                  p style="font-size: 12px;" #{skq.key_question.name}
+              .sd-show-inner
+                /div
+                  label Type(s)
+                  div = picod_types.present? ? picod_types.map(&:name).join(", ") : '-----'
+                /div
+                  label Name
+                  div = sd_picod.name.present? ? sd_picod.name : '-----'
+                div data-row-span="1"
+                  div data-field-span="1"
+                    label Key Question(s)
+                    - if not sd_picod.sd_key_questions.present?
+                      div = '-----'
+                    - else
+                      ol
+                        - sd_picod.sd_key_questions.each do |skq|
+                          li style="font-size: 12px;" #{skq.key_question.name.present? ? skq.key_question.name : '-----'}
+                div data-row-span="1"
+                  div data-field-span="1"
+                    label Population
+                    div = ( sd_picod.population.present? ? sd_picod.population : '-----' )
+                div data-row-span="1"
+                  div data-field-span="1"
+                    label Interventions
+                    div = ( sd_picod.interventions.present? ? sd_picod.interventions : '-----' )
+                div data-row-span="1"
+                  div data-field-span="1"
+                    label Comparators
+                    div = ( sd_picod.comparators.present? ? sd_picod.comparators : '-----' )
+                div data-row-span="1"
+                  div data-field-span="1"
+                    label Outcomes
+                    div = ( sd_picod.outcomes.present? ? sd_picod.outcomes : '-----' )
+                div data-row-span="1"
+                  div data-field-span="1"
+                    label Study Designs
+                    div = ( sd_picod.study_designs.present? ? sd_picod.study_designs : '-----' )
+                div data-row-span="1"
+                  div data-field-span="1"
+                    label Settings
+                    div = ( sd_picod.settings.present? ? sd_picod.settings : '-----' )

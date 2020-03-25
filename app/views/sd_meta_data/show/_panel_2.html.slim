@@ -22,29 +22,30 @@
       div data-field-span="1"
         label Lay Abstract / Lay Language Summary
         div = sd_url_for @sd_meta_datum.abstract_summary_link
-    div data-row-span="1"
-      div data-field-span="1"
-        label Evidence Summary / Executive Summary
-        div = sd_url_for @sd_meta_datum.evidence_summary_link
-    div data-row-span="2"
-      div data-field-span="1" style="border: 0; margin-left: 25px; width: calc(50% - 25px);"
-        label Introduction
-        div = sd_url_for @sd_meta_datum.evs_introduction_link
-      div data-field-span="1" style="border: 0;"
-        label Methods
-        div = sd_url_for @sd_meta_datum.evs_methods_link
-      div data-field-span="1" style="border: 0; margin-left: 25px; width: calc(50% - 25px);"
-        label Results
-        div = sd_url_for @sd_meta_datum.evs_results_link
-      div data-field-span="1" style="border: 0;"
-        label Discussion
-        div = sd_url_for @sd_meta_datum.evs_discussion_link
-      div data-field-span="1" style="border: 0; margin-left: 25px; width: calc(50% - 25px);"
-        label Conclusions
-        div = sd_url_for @sd_meta_datum.evs_conclusions_link
-      div data-field-span="1" style="border: 0;"
-        label Tables and Figures
-        div = sd_url_for @sd_meta_datum.evs_tables_figures_link
+    .sd-show-inner
+      div data-row-span="1"
+        div data-field-span="1"
+          label Evidence Summary / Executive Summary
+          div = sd_url_for @sd_meta_datum.evidence_summary_link
+      div data-row-span="2"
+        div data-field-span="1"
+          label Introduction
+          div = sd_url_for @sd_meta_datum.evs_introduction_link
+        div data-field-span="1"
+          label Methods
+          div = sd_url_for @sd_meta_datum.evs_methods_link
+        div data-field-span="1"
+          label Results
+          div = sd_url_for @sd_meta_datum.evs_results_link
+        div data-field-span="1"
+          label Discussion
+          div = sd_url_for @sd_meta_datum.evs_discussion_link
+        div data-field-span="1" style="border: 0; margin-left: 25px; width: calc(50% - 25px);"
+          label Conclusions
+          div = sd_url_for @sd_meta_datum.evs_conclusions_link
+        div data-field-span="1" style="border: 0;"
+          label Tables and Figures
+          div = sd_url_for @sd_meta_datum.evs_tables_figures_link
     div data-row-span="2"
       div data-field-span="1"
         label Disposition of Comments
@@ -63,7 +64,7 @@
       div data-field-span="1"
         label Journal Articles
         - if @sd_meta_datum.sd_journal_article_urls.empty?
-          div N/A
+          div -----
         - else
           td
             - @sd_meta_datum.sd_journal_article_urls.each do |sd_journal_article_url|
@@ -71,7 +72,7 @@
       div data-field-span="1"
         label Other Items
         - if @sd_meta_datum.sd_other_items.empty?
-          div N/A
+          div -----
         - else
           td
             - @sd_meta_datum.sd_other_items.each do |sd_other_item|

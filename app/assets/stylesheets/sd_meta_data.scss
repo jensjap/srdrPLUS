@@ -23,7 +23,7 @@ body.sd_meta_data {
   .grid-form [data-row-span] [data-field-span] label:first-child { font-weight: bold; margin-top: 0; font-weight: bold; font-size: 12px; color: #333; display: block; margin-bottom: 4px; }
   .grid-form [data-row-span] [data-field-span] label:first-child:hover { cursor: text; }
   //.grid-form [data-row-span] [data-field-span]:hover { background: rgba(153, 123, 177, 0.2); cursor: text; }
-  .sd-item:hover { background: rgba(153, 123, 177, 0.2); border-radius: 0.4rem; cursor: text; }
+  .sd-item:hover { background: rgba(153, 123, 177, 0.2); border-radius: 0.1rem; cursor: text; }
   .grid-form [data-row-span] [data-field-span].focus { background: #fffad4; }
   .grid-form [data-row-span] [data-field-span].focus label { color: #262626; }
   @media print { .grid-form [data-row-span] { display: table; height: 56px; page-break-inside: avoid; }
@@ -245,9 +245,19 @@ body.sd_meta_data {
   .sd-inner {
     margin: 1.2rem 1.2rem 1.2rem 1.2rem; 
     background-color: #f3eff3; 
-    border-radius: 0.6rem;
+    border-radius: 0.1rem;
     padding: 0.3rem;
     border: solid 1px #e4dee4;
+  }
+
+  .sd-show-inner {
+    margin: 1.2rem 1.2rem 1.2rem 1.2rem; 
+    padding: 0.6rem 0.6rem 0.6rem 0.6rem; 
+    box-shadow: 0.1rem 0.1rem 0.5rem #adadad;
+  }
+  
+  .sd-show-image {
+    margin: .5rem;
   }
 
   .sd-item, .sd-inner {
@@ -321,5 +331,29 @@ body.sd_meta_data {
   .sd-image {
     height:auto;
     max-width:100%;
+  }
+
+  .invalid {
+    border: solid 1px red;
+  }
+
+  .preview-button {
+    border-radius: 0;
+    background-color: #006aaa;
+    padding: 0.4rem;
+    z-index: 1000;
+  
+    &.disabled {
+      background-color: grey !important;
+    }
+
+    &:hover {
+      background-color: #1388ce;
+      cursor: pointer !important;
+    }
+  }
+
+  .infoDiv {
+    width: 50%;
   }
 }

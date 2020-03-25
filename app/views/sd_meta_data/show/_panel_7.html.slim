@@ -3,44 +3,59 @@
     legend Study Results
     div data-row-span="1"
       div data-field-span="1"
-        label 54. & 55. Comparison Outcome by Population Subgroup
+        label Comparison Outcome by Population Subgroup
         - if @sd_meta_datum.comparison_outcome_intervention_subgroups.empty?
-          div N/A
+          div -----
         - else
           - @sd_meta_datum.comparison_outcome_population_subgroups.each do |cops|
-            div style="margin: 20px 0;"
-              h3 style="font-size: 12px;" #{cops.sd_key_question&.key_question&.name || "N/A"}
-              div style="margin-left: 20px;"
-                p
-                  div style="font-weight: bold;" Comparison
-                  div style="font-size: 12px;" #{cops.name}
-                p
-                  div style="font-weight: bold;" Narrative Results
-                  div style="font-size: 12px;" #{cops.narrative_results.present? ? cops.narrative_results : "N/A"}
+            .sd-show-inner
+              div data-row-span="1"
+                div data-field-span="1"
+                  label Key Question
+                  - kq_name = cops.sd_key_question&.key_question&.name
+                  div = kq_name.present? ? kq_name : '-----'
+              div data-row-span="1"
+                div data-field-span="1"
+                  label Comparison
+                  div = cops.name.present? ? cops.name : '-----'
+              div data-row-span="1"
+                div data-field-span="1"
+                  label Narrative Results
+                  div = cops.narrative_results.present? ? cops.narrative_results : '-----'
     div data-row-span="1"
       div data-field-span="1"
-        label 56. & 57. Comparison Outcome by Intervention Subgroup
+        label Comparison Outcome by Intervention Subgroup
         - if @sd_meta_datum.comparison_outcome_intervention_subgroups.empty?
-          div N/A
+          div -----
         - else
           - @sd_meta_datum.comparison_outcome_intervention_subgroups.each do |cois|
-            div style="margin: 20px 0;"
-              h3 style="font-size: 12px;" #{cois.sd_key_question&.key_question&.name || "N/A"}
-              div style="margin-left: 20px;"
-                p
-                  div style="font-weight: bold;" Comparison
-                  div style="font-size: 12px;" #{cois.name}
-                p
-                  div style="font-weight: bold;" Narrative Results
-                  div style="font-size: 12px;" #{cois.narrative_results.present? ? cois.narrative_results : "N/A"}
+            .sd-show-inner
+              div data-row-span="1"
+                div data-field-span="1"
+                  label Key Question
+                  - kq_name = cois.sd_key_question&.key_question&.name
+                  div = kq_name.present? ? kq_name : '-----'
+              div data-row-span="1"
+                div data-field-span="1"
+                  label Comparison
+                  div = cois.name.present? ? cois.name : '-----'
+              div data-row-span="1"
+                div data-field-span="1"
+                  label Narrative Results
+                  div = cois.narrative_results.present? ? cois.narrative_results : '-----'
     div data-row-span="1"
       div data-field-span="1"
-        label 58. Evidence Tables
-        - if @sd_meta_datum.sd_evidence_tables.empty?
-          div N/A
-        - else
-          - @sd_meta_datum.sd_evidence_tables.each do |sd_evidence_table|
-            div #{sd_evidence_table.name}
+        label Evidence Tables
+        .sd-show-inner
+          - if @sd_meta_datum.sd_evidence_tables.empty?
+            div -----
+          - else
+            - @sd_meta_datum.sd_evidence_tables.each do |sd_evidence_table|
+              div data-row-span="1"
+                div data-field-span="1"
+                  label Description
+                  div = sd_evidence_table.name.present? ? sd_evidence_table.name : '-----'
+              
     /div data-row-span="1"
       div data-field-span="1"
         label 80. Forest Plots
@@ -54,7 +69,7 @@
                 = image_tag(picture, class: 'openable', style: 'height:100%;width:auto;')
     div data-row-span="1"
       div data-field-span="1"
-        label 59-60. Pairwise Meta Analytic Result
+        label Pairwise Meta Analytic Result
         - if @sd_meta_datum.pairwise_meta_analytic_results.empty?
           div N/A
         - else

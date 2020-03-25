@@ -41,7 +41,7 @@
         a.close-preview.float-right = "✖"
         .grid-form
           .preview-container
-      a.preview-button.button.float-right.secondary[data-panel-number="#{ @panel_number }"]
+      a.preview-button.button.float-right[data-panel-number="#{ @panel_number }"]
         | Preview
     /= simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { id: 'sd-meta-form', class: "grid-form", data: { 'abide': '', 'live-validate': true } }) do |f|
     .panel-content.grid-form
@@ -79,6 +79,7 @@ javascript:
   });
 
   $( '.preview-button' ).on( 'click', function( event ) {
+    if ( event.target.hasAttribute( 'disabled' ) ){ return }
     $( '.panel-content' ).addClass( 'hide' )
     $( '.preview-button' ).addClass( 'hide' )
     $.ajax({
