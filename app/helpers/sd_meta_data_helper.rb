@@ -7,7 +7,7 @@ module SdMetaDataHelper
         str
       end
     else
-      "N/A"
+      "-----"
     end
   end
 end

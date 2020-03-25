@@ -47,6 +47,7 @@
   <% else %>
     //toastr.success('Data saved!')
     $('.dirty').removeClass('dirty');
+    $( '.preview-button' ).removeAttr( 'disabled' )
     infoDiv.show().animate( { opacity: 1 } );
     infoDiv.show().delay( 2000 ).animate( { opacity: 0 } );
   <% end %>

@@ -1,7 +1,7 @@
 #panel-4.tabs-panel.is-active
   fieldset
     div style="display:flex; flex-direction: row;"
-      legend PICODS
+      legend PICODs
       .status-switch.button[id="4-yes-no-section" class=(@sd_meta_datum.section_flag_4 ? 'completed' : 'draft') data-sd_meta_datum_id="#{@sd_meta_datum.id}"]
         - if @sd_meta_datum.section_flag_4
           | Completed
@@ -10,7 +10,6 @@
 
     div data-row-span="1"
       div data-field-span="1"
-        label 38-43. PICODS
         .cocoon-container.picod-list
           = render 'sd_meta_data/form/nested_associations/picod_list', sd_meta_datum: @sd_meta_datum, url: @url
   / br/

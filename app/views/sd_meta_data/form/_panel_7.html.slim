@@ -10,17 +10,17 @@
 
     div data-row-span="1"
       div data-field-span="1"
-        label 54. & 55. Comparison Outcome by Population Subgroup
+        label Comparison Outcome by Population Subgroup
         .cocoon-container.comparison-outcome-by-population-subgroup-list
           = render 'sd_meta_data/form/nested_associations/comparison_outcome_by_population_subgroup_list', sd_meta_datum: @sd_meta_datum, url: @url
     div data-row-span="1"
       div data-field-span="1"
-        label 56. & 57. Comparison Outcome by Intervention Subgroup
+        label Comparison Outcome by Intervention Subgroup
         .cocoon-container.comparison-outcome-by-intervention-subgroup-list
           = render 'sd_meta_data/form/nested_associations/comparison_outcome_by_intervention_subgroup_list', sd_meta_datum: @sd_meta_datum, url: @url
     div data-row-span="1"
       div data-field-span="1"
-        label 58. Evidence Tables
+        label Evidence Tables
         .cocoon-container.evidence-table-list
           = render 'sd_meta_data/form/nested_associations/evidence_table_list', sd_meta_datum: @sd_meta_datum, url: @url
     /div data-row-span="1"
@@ -32,12 +32,12 @@
           = link_to_add_association 'add', f, :sd_forest_plots, partial: 'sd_meta_data/form/dynamic_fields/sd_forest_plot_fields'
     div data-row-span="1"
       div data-field-span="1"
-        label 59-60. Pairwise Meta Analytic Result (Forest plot with summary estimate, type of model, and estimates of heterogeneity)
+        label Pairwise Meta Analytic Result (Forest plot with summary estimate, type of model, and estimates of heterogeneity)
         .cocoon-container.pairwise-meta-analytic-result-list
           = render 'sd_meta_data/form/nested_associations/pairwise_meta_analytic_result_list', sd_meta_datum: @sd_meta_datum, url: @url
     div data-row-span="1"
       div data-field-span="1"
-        label 61-62. Network Meta Analysis Result
+        label Network Meta Analysis Result
         .cocoon-container.network-meta-analysis-result-list
           = render 'sd_meta_data/form/nested_associations/network_meta_analysis_result_list', sd_meta_datum: @sd_meta_datum, url: @url
     /div data-row-span="1"
@@ -46,7 +46,7 @@
     div data-row-span="1"
       div data-field-span="1"
         /label 87. Meta-regression analysis results
-        label 63. Meta-regression analysis results
+        label Meta-regression Analysis Results
         .cocoon-container.meta-regression-analysis-result-list
           = render 'sd_meta_data/form/nested_associations/meta_regression_analysis_result_list', sd_meta_datum: @sd_meta_datum, url: @url
   / br/

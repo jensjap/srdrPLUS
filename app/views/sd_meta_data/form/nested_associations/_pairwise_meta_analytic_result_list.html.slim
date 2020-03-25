@@ -1,8 +1,8 @@
 = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
   = f.input :item_id, as: :hidden, input_html: { value: 59 }
   = f.simple_fields_for :pairwise_meta_analytic_results do |pairwise_meta_analytic_result|
-    .sd-item
+    .sd-item.sd-inner
       = render 'sd_meta_data/form/dynamic_fields/pairwise_meta_analytic_result_fields', f: pairwise_meta_analytic_result
   div
-    = link_to_add_association 'add', f, :pairwise_meta_analytic_results, partial: 'sd_meta_data/form/dynamic_fields/pairwise_meta_analytic_result_fields'
+    = link_to_add_association 'Add Result', f, :pairwise_meta_analytic_results, partial: 'sd_meta_data/form/dynamic_fields/pairwise_meta_analytic_result_fields', class: 'add-item-link'
 

@@ -27,7 +27,7 @@ javascript:
       $( "#".concat(panelNumber.toString(), "-yes-no-section.status-switch" ) ).html( 'Draft' )
     }
 
-    var check = ' <i id="map-warning" class="fa fa-check"></i>';
+    var check = ' <i class="fa fa-check"></i>';
     var link = $(`#panel-${panelNumber}-label`);
     var check_container = $(`.check-container[panel-number="${panelNumber}"]`);
     check_container.html('');
@@ -66,8 +66,8 @@ javascript:
   };
 
   $( document ).on("turbolinks:load", function() {
-    setTimeout(function(){ initializeSwitches(); }, 500);
-
+    //setTimeout(function(){ initializeSwitches(); }, 500);
+    initializeSwitches();
     // var form = $('#sd-meta-form');
 
     // $('input').on('keyup', function() {

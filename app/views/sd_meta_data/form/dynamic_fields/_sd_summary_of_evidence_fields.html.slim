@@ -1,12 +1,13 @@
 .nested-fields
-  = f.association :sd_key_question, label: 'Key Question', include_blank: false, collection: f.object.sd_meta_datum.key_questions.map { |kq| [kq.name, SdKeyQuestion.find_by(sd_meta_datum_id: f.object.sd_meta_datum.id, key_question_id: kq.id).id] }
-  = f.input :soe_type, include_blank: false, label: 'Summary of Evidence Type', collection: ["Summary of Findings", "Narrative Summary of Findings", "Strength of Evidence", "Risk of Bias"], input_html: { class: "soe_type" }
+  = f.association :sd_key_question, label: 'Key Question', include_blank: false, collection: f.object.sd_meta_datum.key_questions.map { |kq| [kq.name, SdKeyQuestion.find_by(sd_meta_datum_id: f.object.sd_meta_datum.id, key_question_id: kq.id).id] }, input_html: { class: 'apply-select2' }
+  = f.input :soe_type, include_blank: false, label: 'Type', collection: ["Summary of Findings", "Narrative Summary of Findings", "Strength of Evidence", "Risk of Bias"], input_html: { class: "soe_type apply-select2" }
   = f.input :name, label: 'Description', :input_html => { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
-  = f.input :pictures, as: :file, label: 'Table or Figure', input_html: { multiple: true }
+  = f.input :pictures, as: :file, label: 'Figures', input_html: { multiple: true }
   div
-    = link_to_remove_association "Remove Summary of Evidence", f, data: { confirm: "Are you sure?" }
     - f.object.pictures.each do |picture|
       div
-        = image_tag(picture, class: 'openable', style: 'height:100%;width:auto;')
+        = image_tag(picture, class: 'openable sd-image')
         br
-        = link_to 'Remove', delete_image_attachment_picture_path(picture.id), method: :delete, data: { confirm: 'Are you sure?' }, remote: true
+        = link_to 'remove figure', delete_image_attachment_picture_path(picture.id), method: :delete, data: { confirm: 'Are you sure?' }, remote: true
+  div
+    = link_to_remove_association "remove", f, data: { confirm: "Are you sure?" }

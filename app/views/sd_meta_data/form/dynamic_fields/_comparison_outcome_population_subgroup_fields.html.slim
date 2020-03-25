@@ -1,5 +1,5 @@
 .nested-fields
-  = f.association :sd_key_question, label: 'Key Question', include_blank: false, collection: f.object.sd_meta_datum.key_questions.map { |kq| [kq.name, SdKeyQuestion.find_by(sd_meta_datum_id: f.object.sd_meta_datum.id, key_question_id: kq.id).id] }
-  = f.input :name, label: 'Outcome by population subgroup', input_html: { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
-  = f.input :narrative_results, label: '78. Narrative Results', input_html: { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
-  = link_to_remove_association "Remove", f, data: { confirm: "Are you sure?" }
+  = f.association :sd_key_question, label: 'Key Question', include_blank: false, collection: f.object.sd_meta_datum.key_questions.map { |kq| [kq.name, SdKeyQuestion.find_by(sd_meta_datum_id: f.object.sd_meta_datum.id, key_question_id: kq.id).id] }, input_html: { class: 'apply-select2' }
+  = f.input :name, label: 'Comparison', input_html: { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
+  = f.input :narrative_results, label: 'Narrative Results', input_html: { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
+  = link_to_remove_association "remove", f, data: { confirm: "Are you sure?" }

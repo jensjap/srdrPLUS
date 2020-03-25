@@ -16,11 +16,16 @@ html class='no-js' lang='en'
 
     script src="https://kit.fontawesome.com/a55e144d79.js" crossorigin="anonymous"
 
+    / Roboto Font Family
     = stylesheet_link_tag    'application', 'https://fonts.googleapis.com/css?family=Noto+Sans|Roboto&display=swap'
+
     = stylesheet_link_tag    'application', 'data-turbolinks-track' => 'reload'
     = javascript_include_tag 'application', 'data-turbolinks-track' => 'reload'
-    /= stylesheet_link_tag    params[:controller], media: 'all', 'data-turbolinks-track': 'reload'
-    /= javascript_include_tag params[:controller], 'data-turbolinks-track': 'reload'
+
+    / Latest Select2
+    = stylesheet_link_tag 'https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css'
+    = javascript_include_tag 'https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js'
+
     = csrf_meta_tag
     link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Halant:400,700|Noto+Sans:400,400i,700"
 

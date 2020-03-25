@@ -1,8 +1,8 @@
 = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
   = f.input :item_id, as: :hidden, input_html: { value: 48 }
   = f.simple_fields_for :sd_grey_literature_searches do |sd_grey_literature_search|
-    .sd-item
+    .sd-item.sd-inner
       = render 'sd_meta_data/form/dynamic_fields/sd_grey_literature_search_fields', f: sd_grey_literature_search
   div
-    = link_to_add_association 'add', f, :sd_grey_literature_searches, partial: 'sd_meta_data/form/dynamic_fields/sd_grey_literature_search_fields'
+    = link_to_add_association 'Add Grey Literature Search', f, :sd_grey_literature_searches, partial: 'sd_meta_data/form/dynamic_fields/sd_grey_literature_search_fields', class: 'add-item-link'
 
