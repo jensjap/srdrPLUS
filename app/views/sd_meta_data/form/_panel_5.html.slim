@@ -20,7 +20,8 @@
         a id="reset-all" onClick="resetAllMappings()" style="float: right;" Reset Mapping
       .srdr-key-questions-box.no-border data-field-span="1" style="overflow: scroll; max-height: 1000px;"
         - @sd_meta_datum.try(:project).try(:key_questions).uniq.try(:each) do |srdr_kq|
-          .srdr-kq.draggable id="srdr_kq-#{srdr_kq.id}" data-keyQuestionId="#{srdr_kq.id}" draggable="true" = srdr_kq.name
+          .srdr-kq.draggable id="srdr_kq-#{srdr_kq.id}" data-keyQuestionId="#{srdr_kq.id}" draggable="true"
+            span.clamp-span = srdr_kq.name
       .report-key-questions-box data-field-span="1" style="overflow: scroll; max-height: 1000px;"
         - @sd_meta_datum.sd_key_questions.each do |sd_key_question|
           .report-kq.droppable.disableselect data-reportKeyQuestionId="#{sd_key_question.id}"
@@ -31,7 +32,8 @@
               - else
                 .srdr-kq-target-prompt.hide = 'Drag Key Question Here'
                 - sd_key_question.srdr_key_questions.each do |srdr_key_question|
-                  .srdr-kq.draggable.clickremove id="srdr_kq-#{srdr_key_question.id}" data-keyQuestionId="#{srdr_key_question.id}" draggable="true" = "#{srdr_key_question.name} - (click to remove)"
+                  .srdr-kq.draggable.clickremove id="srdr_kq-#{srdr_key_question.id}" data-keyQuestionId="#{srdr_key_question.id}" draggable="true"
+                    span.clamp-span = "#{srdr_key_question.name} - (click to remove)"
           /a.button.tiny style="margin: 10px;" onClick="resetMapping(#{sd_key_question.id})" Reset Auto Match
     /.no-border data-row-span="2"
       .no-border data-field-span="2"

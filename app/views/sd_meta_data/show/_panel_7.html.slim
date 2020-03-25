@@ -46,10 +46,10 @@
     div data-row-span="1"
       div data-field-span="1"
         label Evidence Tables
-        .sd-show-inner
-          - if @sd_meta_datum.sd_evidence_tables.empty?
-            div -----
-          - else
+        - if @sd_meta_datum.sd_evidence_tables.empty?
+          div -----
+        - else
+          .sd-show-inner
             - @sd_meta_datum.sd_evidence_tables.each do |sd_evidence_table|
               div data-row-span="1"
                 div data-field-span="1"
@@ -58,10 +58,11 @@
               div data-row-span="1"
                 div data-field-span="1"
                   label Figure
-                  div
-                    - if sd_evidence_table.picture.present?
-                      .sd-show-image
-                        = image_tag(sd_evidence_table.picture, class: 'openable sd-image')
+                  - if (sd_evidence_table.picture.present? and sd_evidence_table.picture.attached?)
+                    .sd-show-image
+                      = image_tag(sd_evidence_table.picture, class: 'openable sd-image')
+                  - else
+                    div = '-----'
               
     /div data-row-span="1"
       div data-field-span="1"
@@ -141,7 +142,7 @@
                 div data-field-span="1"
                   label Figure
                   div
-                    - if not sd_meta_regression_analysis_result.picture.present?
+                    - if not (sd_meta_regression_analysis_result.picture.present? and sd_meta_regression_analysis_result.picture.attached?)
                       div
                         |-----
                     - else

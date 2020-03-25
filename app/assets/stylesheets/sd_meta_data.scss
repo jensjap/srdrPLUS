@@ -229,6 +229,14 @@ body.sd_meta_data {
     color: white;
   }
 
+  .clamp-span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+  }
+
   .srdr-kq-target {
     .srdr-kq {
       width: 100%;

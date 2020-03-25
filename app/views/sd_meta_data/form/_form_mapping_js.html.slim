@@ -29,13 +29,13 @@ javascript:
       if (allKqItems.length === 1) {
         allKqItems.css('background-color', '#493163');
       } else if (allKqItems.length > 1) {
-        allKqItems.css('background-color', '#78658c');
+        allKqItems.css('background-color', '#38969a');
       }
     })
   }
 
   $(document).on('click', '.clickremove', function(ev) {
-    ev.target.remove();
+    $( ev.target ).closest('.clickremove').remove();
     var mappings = checkMapping();
     var emptyReportQuestions = mappings.emptyReportQuestions;
     var emptySrdrQuestions = mappings.emptySrdrQuestions;
@@ -100,7 +100,7 @@ javascript:
       if (data === undefined) {
         alert(`No match found for Question: ${parentNode.text()}`);
       } else {
-        var newNode = $( `<div id="srdr_kq-${data.id}" data-keyQuestionId="${data.id}" draggable="true" class="draggable clickremove">${data.name} - (click to remove)</div>` );
+        var newNode = $( `<div id="srdr_kq-${data.id}" data-keyQuestionId="${data.id}" draggable="true" class="srdr-kq draggable clickremove"><span class="clamp-span">${data.name} - (click to remove)</span></div>` );
         parentNode.append(newNode);
         colorCode();
       }
@@ -197,9 +197,14 @@ javascript:
       ev.preventDefault();
       ev.currentTarget.style.background = "aliceblue";
       var data = ev.dataTransfer.getData("text/plain");
+      // line below checks if the dragged kq is already mapped to this report kq. It's lazy, but works.
+      if ($( ev.target ).closest( '.report-kq' ).find(".srdr-kq[data-keyquestionid='" + $(document.getElementById(data)).data('keyquestionid') + "']" ).length > 0) {
+        return
+      }
       var nodeCopy = document.getElementById(data).cloneNode(true);
+      nodeCopy.removeAttribute('draggable');
       nodeCopy.id = new Date().getTime();
-      $(nodeCopy).text(`${$(nodeCopy).text()} - (click to remove)`)
+      $(nodeCopy).find( 'span.clamp-span' ).text(`${$(nodeCopy).text()} - (click to remove)`)
       $(nodeCopy).addClass('disableselect');
       $(nodeCopy).addClass('clickremove');
       $( ev.target ).closest( '.report-kq' ).find( '.srdr-kq-target' )[ 0 ].appendChild(nodeCopy);
