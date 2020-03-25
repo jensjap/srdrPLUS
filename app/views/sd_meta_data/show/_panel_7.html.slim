@@ -55,6 +55,13 @@
                 div data-field-span="1"
                   label Description
                   div = sd_evidence_table.name.present? ? sd_evidence_table.name : '-----'
+              div data-row-span="1"
+                div data-field-span="1"
+                  label Figure
+                  div
+                    - if sd_evidence_table.picture.present?
+                      .sd-show-image
+                        = image_tag(sd_evidence_table.picture, class: 'openable sd-image')
               
     /div data-row-span="1"
       div data-field-span="1"
@@ -71,26 +78,48 @@
       div data-field-span="1"
         label Pairwise Meta Analytic Result
         - if @sd_meta_datum.pairwise_meta_analytic_results.empty?
-          div N/A
+          div -----
         - else
           - @sd_meta_datum.pairwise_meta_analytic_results.each do |pairwise_meta_analytic_result|
-            div style="font-weight: bold" Type: #{pairwise_meta_analytic_result.p_type.present? ? pairwise_meta_analytic_result.p_type : "N/A" }
-            div #{pairwise_meta_analytic_result.name}
-            p
-              - pairwise_meta_analytic_result.pictures.each do |picture|
-                = image_tag(picture, class: 'openable sd-image')
+            .sd-show-inner
+              div data-row-span="1"
+                div data-field-span="1"
+                  label Narrative Text
+                  div = pairwise_meta_analytic_result.name.present? ? pairwise_meta_analytic_result.name : "-----"
+              div data-row-span="1"
+                div data-field-span="1"
+                  label Type
+                  div = pairwise_meta_analytic_result.p_type.present? ? pairwise_meta_analytic_result.p_type : "-----"
+              div data-row-span="1"
+                div data-field-span="1"
+                  label Figures
+                  div
+                    - pairwise_meta_analytic_result.pictures.each do |picture|
+                      .sd-show-image
+                        = image_tag(picture, class: 'openable sd-image')
     div data-row-span="1"
       div data-field-span="1"
-        label 61-62. Network Meta Analysis Result
+        label Network Meta Analytic Result
         - if @sd_meta_datum.network_meta_analysis_results.empty?
-          div N/A
+          div -----
         - else
           - @sd_meta_datum.network_meta_analysis_results.each do |network_meta_analysis_result|
-            div style="font-weight: bold" Type: #{network_meta_analysis_result.p_type.present? ? network_meta_analysis_result.p_type : "N/A" }
-            div #{network_meta_analysis_result.name}
-            p
-              - network_meta_analysis_result.pictures.each do |picture|
-                = image_tag(picture, class: 'openable sd-image')
+            .sd-show-inner
+              div data-row-span="1"
+                div data-field-span="1"
+                  label Narrative Text
+                  div = network_meta_analysis_result.name.present? ? network_meta_analysis_result.name : "-----"
+              div data-row-span="1"
+                div data-field-span="1"
+                  label Type
+                  div = network_meta_analysis_result.p_type.present? ? network_meta_analysis_result.p_type : "-----"
+              div data-row-span="1"
+                div data-field-span="1"
+                  label Figures
+                  div
+                    - network_meta_analysis_result.pictures.each do |picture|
+                      .sd-show-image
+                        = image_tag(picture, class: 'openable sd-image')
     /div data-row-span="1"
       div data-field-span="1"
         label 86. Published Project Link
@@ -98,9 +127,27 @@
     div data-row-span="1"
       div data-field-span="1"
         /label 87. Meta-regression analysis results
-        label 63. Meta-regression analysis results
+        label Meta-regression Analysis Results
         - if @sd_meta_datum.sd_meta_regression_analysis_results.empty?
-          div N/A
+          div -----
         - else
           - @sd_meta_datum.sd_meta_regression_analysis_results.each do |sd_meta_regression_analysis_result|
-            div #{sd_meta_regression_analysis_result.name}
+            .sd-show-inner
+              div data-row-span="1"
+                div data-field-span="1"
+                  label Narrative Text
+                  div = sd_meta_regression_analysis_result.name
+              div data-row-span="1"
+                div data-field-span="1"
+                  label Figure
+                  div
+                    - if not sd_meta_regression_analysis_result.picture.present?
+                      div
+                        |-----
+                    - else
+                      .sd-show-image
+                        = image_tag(sd_meta_regression_analysis_result.picture, class: 'openable sd-image')
+  
+
+
+
