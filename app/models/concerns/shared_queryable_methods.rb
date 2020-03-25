@@ -23,7 +23,7 @@ module SharedQueryableMethods
       # Try approximate matches using 'like'
       approximate_matches = where("#{name.pluralize.underscore}.name like ?", "%#{ query }%")
       return query.blank? ?
-        approximate_matches : approximate_matches + [ OpenStruct.new(id: "<<<#{ query }>>>", name: "New: '#{ query }'") ]
+        approximate_matches : approximate_matches + [ OpenStruct.new(id: "<<<#{ query }>>>", name: "Other: '#{ query }'") ]
     end
 
     # Params:
