@@ -1,53 +1,91 @@
 #panel-6.tabs-panel.is-active
   fieldset
-    legend Search Strategy & Summary of Results
+    legend Search Strategy and Evidence Summary
     div data-row-span="1"
       div data-field-span="1"
-        label 44-47. Search Strategies
+        label Search Strategies
         - if @sd_meta_datum.sd_search_strategies.empty?
-          div N/A
+          div -----
         - else
           - @sd_meta_datum.sd_search_strategies.each do |sd_search_strategy|
-            p style="border: 1px solid lightgrey"
-              p <b>#{sd_search_strategy.sd_search_database&.name || ""} | Searched on: #{sd_search_strategy.date_of_search}</b>
-              p <b>Search Terms</b>
-              p style="font-size: 12px;" #{sd_search_strategy.search_terms}
-              p <b>Search Limits</b>
-              p style="font-size: 12px;" #{sd_search_strategy.search_limits}
+              .sd-show-inner
+                div data-row-span="2"
+                  div data-field-span="1"
+                    label Database
+                    div = ( sd_search_strategy.sd_search_database&.name.present? ? sd_search_strategy.sd_search_database&.name : "-----" )
+                  div data-field-span="1"
+                    label Search Run Date
+                    div = ( sd_search_strategy.date_of_search.present? ? sd_search_strategy.date_of_search : '-----' )
+
+                div data-row-span="1"
+                  div data-field-span="1"
+                    label Search Terms
+                    div = ( sd_search_strategy.search_terms.present? ? sd_search_strategy.search_terms : '-----' )
+
+                div data-row-span="1"
+                  div data-field-span="1"
+                    label Search Limits
+                    div = ( sd_search_strategy.search_limits.present? ? sd_search_strategy.search_limits : '-----' )
 
     div data-row-span="1"
       div data-field-span="1"
-        label 48. Grey Literature Search
-
+        label Grey Literature Search
         - if @sd_meta_datum.sd_grey_literature_searches.empty?
-          div N/A
+          div -----
         - else
           - @sd_meta_datum.sd_grey_literature_searches.each do |sd_grey_literature_search|
-            div #{sd_grey_literature_search.name}
+            .sd-show-inner
+              div
+                label Description
+                div = sd_grey_literature_search.name.present? ? sd_grey_literature_search.name : '-----'
 
     div data-row-span="1"
       div data-field-span="1"
-        label 49. PRISMA/Literature Flow
+        label PRISMAs / Literature Flows
         - if @sd_meta_datum.sd_prisma_flows.empty?
-          div N/A
+          div -----
         - else
           - @sd_meta_datum.sd_prisma_flows.each do |sd_prisma_flow|
-            div #{sd_prisma_flow.name}
-            p
-              - sd_prisma_flow.pictures.each do |picture|
-                = image_tag(picture, class: 'openable', style: 'height:100%;width:auto;')
+            .sd-show-inner
+              div data-row-span="1"
+                div data-field-span="1"
+                  label Description
+                  div = ( sd_prisma_flow.name.present? ? sd_prisma_flow.name : '-----' )
+              div data-row-span="1"
+                div data-field-span="1"
+                  label Figures
+                  div
+                    - sd_prisma_flow.pictures.each do |picture|
+                      .sd-show-image
+                        = image_tag(picture, class: 'openable sd-image')
 
     div data-row-span="1"
       div data-field-span="1"
-        label 50-53. Results/Summary of Evidence/Findings
+        label Summaries of Evidence
         - if @sd_meta_datum.sd_summary_of_evidences.empty?
-          div N/A
+          div -----
         - else
           - @sd_meta_datum.sd_summary_of_evidences.each do |sd_summary_of_evidence|
-            p
-              h5 <b>#{sd_summary_of_evidence.soe_type}</b>
-              div #{sd_summary_of_evidence.name}
-              p style="font-size: 11px;" #{sd_summary_of_evidence.try(:sd_key_question).try(:name)}
-              p
-                - sd_summary_of_evidence.pictures.each do |picture|
-                  = image_tag(picture, class: 'openable', style: 'height:100%;width:auto;')
+            .sd-show-inner
+              div data-row-span="1"
+                div data-field-span="1"
+                  label Key Question
+                  - kq_name = sd_summary_of_evidence.try(:sd_key_question).try(:name)
+                  div = kq_name.present? ? kq_name : '-----'
+              div data-row-span="1"
+                div data-field-span="1"
+                  label Type
+                  - type = sd_summary_of_evidence.soe_type
+                  div = type.present? ? type : '-----'
+              div data-row-span="1"
+                div data-field-span="1"
+                  label Description
+                  - desc = sd_summary_of_evidence.name
+                  div = desc.present? ? desc : '-----'
+              div data-row-span="1"
+                div data-field-span="1"
+                  label Figures
+                  div
+                    - sd_summary_of_evidence.pictures.each do |picture|
+                      .sd-show-image
+                        = image_tag(picture, class: 'openable sd-image')

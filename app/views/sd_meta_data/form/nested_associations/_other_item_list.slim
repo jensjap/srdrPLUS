@@ -1,8 +1,8 @@
 = simple_form_for(sd_meta_datum, url: url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
   = f.input :item_id, as: :hidden, input_html: { value: 27 }
   = f.simple_fields_for :sd_other_items do |sd_other_item|
-    .sd-item
+    .sd-item.sd-inner
       = render 'sd_meta_data/form/dynamic_fields/sd_other_item_fields', f: sd_other_item
   div
-    = link_to_add_association 'add', f, :sd_other_items, partial: 'sd_meta_data/form/dynamic_fields/sd_other_item_fields'
+    = link_to_add_association 'Add Item', f, :sd_other_items, partial: 'sd_meta_data/form/dynamic_fields/sd_other_item_fields', class: 'add-item-link'
 

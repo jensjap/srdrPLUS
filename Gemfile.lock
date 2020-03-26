@@ -455,8 +455,6 @@ GEM
       activemodel (>= 4.2)
       elasticsearch (>= 5)
       hashie
-    select2-rails (4.0.3)
-      thor (~> 0.14)
     shellany (0.0.1)
     sidekiq (5.2.5)
       connection_pool (~> 2.2, >= 2.2.2)
@@ -554,7 +552,6 @@ DEPENDENCIES
   dropzonejs-rails
   factory_bot_rails
   faker!
-  font-awesome-rails
   foundation-icons-sass-rails
   foundation-rails
   fuzzy_match
@@ -591,7 +588,6 @@ DEPENDENCIES
   sass-rails (~> 5.0)
   searchjoy
   searchkick
-  select2-rails
   sidekiq
   sidekiq-cron (~> 1.1)
   simple_form

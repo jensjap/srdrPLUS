@@ -1,5 +1,6 @@
 .nested-fields
   = f.input :name, label: 'Description', input_html: { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
   = f.input :picture, label: 'Figure', as: :file
-  = link_to_remove_association "Remove", f, data: { confirm: "Are you sure?" }
-  = image_tag(f.object.picture, class: 'openable', style: 'height: 100%; width: auto;') if f.object.picture.attached?
+  div 
+    = image_tag(f.object.picture, class: 'openable sd-image') if f.object.picture.attached?
+  = link_to_remove_association "remove", f, data: { confirm: "Are you sure?" }
