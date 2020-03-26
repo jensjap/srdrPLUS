@@ -1,0 +1,55 @@
+tr
+  th.vertical
+  th.freeze
+  th colspan="#{ @arms.length }"
+    | Descriptive Statistics
+    br
+    = link_to '(edit measures)', manage_measures_result_statistic_section_path(rss_id: dsc_rss.id), remote: true
+  th.bg-lightblue.freeze
+  th.bg-lightblue colspan="#{ bac_rss.comparisons.length }"
+    | Between Arm Comparisons
+    br
+    = link_to '(edit measures)', manage_measures_result_statistic_section_path(rss_id: bac_rss.id), remote: true
+  th
+    .bac-comparison
+      = simple_form_for bac_rss, url: add_comparison_result_statistic_section_path(bac_rss), remote: true, method: :post do |f|
+        = f.input :comparison_type, as: :hidden, input_html: { value: :bac }
+        .links.add-comparison
+          = link_to_add_association f, :comparisons, \
+            class: 'button tiny', \
+            partial: 'result_statistic_sections/edit/comparison_fields', \
+            render_options: { locals: { rss: bac_rss, comparison: :bac } } do
+            i.fi-plus>
+            | Add Comparison
+
+tr
+  th.vertical
+  th.freeze
+  - @arms.each do |arm|
+    th = arm.type1.name
+
+  th.bg-lightblue.freeze
+  - if bac_rss.comparisons.blank?
+    th.bg-lightblue
+
+  - else
+    - bac_rss.comparisons.each do |bac|
+      th.bg-lightblue
+        - if not bac.is_anova
+          div
+            - bac.comparate_groups.first.comparates.each do |c|
+              span.has-tip.tip-right data-tooltip='' aria-haspopup='true' data-options='show_on:small' title="Description: #{ c.comparable_element.comparable.type1.description }"
+                = c.comparable_element.comparable.type1.short_name_and_description
+              br
+          div style='font-weight: normal;' vs.
+          div
+            - bac.comparate_groups.second.comparates.each do |c|
+              span.has-tip.tip-right data-tooltip='' aria-haspopup='true' data-options='show_on:small' title="Description: #{ c.comparable_element.comparable.type1.description }"
+                = c.comparable_element.comparable.type1.short_name_and_description
+              br
+        - else
+          div
+            span.has-tip.tip-right data-tooltip='' aria-haspopup='true' data-options='show_on:small' title="Description: Analysis of variance"
+              | All Arms (ANOVA)
+            br
+

@@ -1,0 +1,59 @@
+- print_tp_name = true
+- dsc_rss.timepoints.each do |tp|
+  - for row_cnt in -1..[dsc_rss.result_statistic_sections_measures.length, bac_rss.result_statistic_sections_measures.length].max - 1 do
+    - if print_tp_name
+      tr
+        td.vertical rowspan="#{ [dsc_rss.result_statistic_sections_measures.length, bac_rss.result_statistic_sections_measures.length].max + 1 }"
+          div = tp.timepoint_name.pretty_print_export_header
+        - print_tp_name = false
+
+    - else
+      tr
+        td.freeze = dsc_rss.result_statistic_sections_measures[row_cnt].try(:measure).try(:name)
+        - @arms.each do |arm|
+          - if dsc_rss.result_statistic_sections_measures[row_cnt].try(:measure).try(:name)
+            td
+              - record = TpsArmsRssm.find_record(timepoint=tp, extractions_extraction_forms_projects_sections_type1=arm, result_statistic_sections_measure=dsc_rss.result_statistic_sections_measures[row_cnt])
+              = simple_form_for(record,
+                remote: true,
+                html: { data: { 'abide': '', 'live-validate': true } }) do |f|
+                = f.input :name,
+                  as: :string,
+                  label: false,
+                  required: false,
+                  class: 'form-control',
+                  wrapper_html: { style: 'padding-bottom: 0;' },
+                  input_html: { style: 'margin-bottom: 0;' }
+                div id="record-id-#{ record.id.to_s }" class='record-info' style='opacity: 0;' = 'Saved!'
+
+          - else
+            td
+
+        - if bac_rss.result_statistic_sections_measures[row_cnt].try(:measure).try(:name)
+          td.bg-lightblue.freeze = bac_rss.result_statistic_sections_measures[row_cnt].measure.name
+          - if bac_rss.comparisons.present?
+            - bac_rss.comparisons.each do |bac|
+              td.bg-lightblue
+                - record = TpsComparisonsRssm.find_record(timepoint=tp, comparison=bac, result_statistic_sections_measure=bac_rss.result_statistic_sections_measures[row_cnt])
+                = simple_form_for(record,
+                  remote: true,
+                  html: { data: { 'abide': '', 'live-validate': true } }) do |f|
+                  = f.input :name,
+                    as: :string,
+                    label: false,
+                    required: false,
+                    class: 'form-control',
+                    wrapper_html: { style: 'padding-bottom: 0;' },
+                    input_html: { style: 'margin-bottom: 0;' }
+                  div id="record-id-#{ record.id.to_s }" class='record-info' style='opacity: 0;' = 'Saved!'
+
+          - else
+            td.bg-lightblue.freeze
+
+        - else
+          td.bg-lightblue
+          - bac_rss.comparisons.each do |bac|
+            td.bg-lightblue
+
+  - print_tp_name = true
+

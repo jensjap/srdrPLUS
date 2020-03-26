@@ -1,0 +1,68 @@
+- print_wac_name = true
+- wac_rss.comparisons.each do |wac|
+  - for row_cnt in -1..[wac_rss.result_statistic_sections_measures.length, net_rss.result_statistic_sections_measures.length].max - 1 do
+    - if print_wac_name
+      tr
+        td.bg-lightgreen.vertical rowspan="#{ [wac_rss.result_statistic_sections_measures.length, net_rss.result_statistic_sections_measures.length].max + 1 }"
+          div
+            div style='text-align: center; font-weight: bold;' = wac.comparate_groups.first.comparates.map { |c| c.comparable_element.comparable.label_with_baseline_indicator }.join('<br>')
+            div style='text-align: center;' vs.
+            div style='text-align: center; font-weight: bold;' = wac.comparate_groups.second.comparates.map { |c| c.comparable_element.comparable.label_with_baseline_indicator }.join('<br>')
+        - print_wac_name = false
+
+    - else
+      tr
+        td.bg-lightgreen.freeze = wac_rss.result_statistic_sections_measures[row_cnt].try(:measure).try(:name)
+        - @arms.each do |arm|
+          td.bg-lightgreen
+            - record = ComparisonsArmsRssm.find_record(comparison=wac, extractions_extraction_forms_projects_sections_type1=arm, result_statistic_sections_measure=wac_rss.result_statistic_sections_measures[row_cnt])
+            = simple_form_for(record,
+              remote: true,
+              html: { data: { 'abide': '', 'live-validate': true } }) do |f|
+              = f.input :name,
+                as: :string,
+                label: false,
+                required: false,
+                class: 'form-control',
+                wrapper_html: { style: 'padding-bottom: 0;' },
+                input_html: { style: 'margin-bottom: 0;' }
+              div id="record-id-#{ record.id.to_s }" class='record-info' style='opacity: 0;' = 'Saved!'
+
+        td.bg-lightpink.freeze = net_rss.result_statistic_sections_measures[row_cnt].try(:measure).try(:name)
+        - if bac_rss.comparisons.blank?
+          td.bg-lightpink.freeze
+
+        - else
+          - bac_rss.comparisons.each do |bac|
+            - if net_rss.result_statistic_sections_measures[row_cnt].present?
+              td.bg-lightpink
+                - record = WacsBacsRssm.find_record(wac=wac, bac=bac, result_statistic_sections_measure=bac_rss.result_statistic_sections_measures[row_cnt])
+                = simple_form_for(record,
+                  remote: true,
+                  html: { data: { 'abide': '', 'live-validate': true } }) do |f|
+                  = f.input :name,
+                    as: :string,
+                    label: false,
+                    required: false,
+                    class: 'form-control',
+                    wrapper_html: { style: 'padding-bottom: 0;' },
+                    input_html: { style: 'margin-bottom: 0;' }
+                  div id="record-id-#{ record.id.to_s }" class='record-info' style='opacity: 0;' = 'Saved!'
+
+            - else
+              td.bg-lightpink.freeze
+
+  - print_wac_name = true
+
+tr
+  td
+    = simple_form_for wac_rss, url: add_comparison_result_statistic_section_path(wac_rss), remote: true, method: :post do |f|
+      = f.input :comparison_type, as: :hidden, input_html: { value: :wac }
+      .links.add-comparison
+        = link_to_add_association f, :comparisons, \
+          class: 'button tiny', \
+          partial: 'result_statistic_sections/edit/comparison_fields', \
+          render_options: { locals: { rss: wac_rss, comparison: :wac } } do
+          i.fi-plus>
+          | Add Comparison
+
