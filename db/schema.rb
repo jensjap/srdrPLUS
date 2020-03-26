@@ -528,15 +528,6 @@ ActiveRecord::Schema.define(version: 2020_03_18_181447) do
     t.index ["section_id"], name: "index_efps_on_s_id"
   end
 
-  create_table "extraction_forms_projects_sections_type1_rows", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.bigint "extraction_forms_projects_sections_type1_id"
-    t.bigint "population_name_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["extraction_forms_projects_sections_type1_id"], name: "index_efpst1r_on_efpst1_id"
-    t.index ["population_name_id"], name: "index_efpst1r_on_pn_id"
-  end
-
   create_table "extraction_forms_projects_sections_type1s", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "extraction_forms_projects_section_id"
     t.integer "type1_id"
@@ -1853,7 +1844,7 @@ ActiveRecord::Schema.define(version: 2020_03_18_181447) do
     t.index ["version_id"], name: "index_version_associations_on_version_id"
   end
 
-  create_table "versions", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "versions", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.string "item_type", limit: 191, null: false
     t.integer "item_id", null: false
     t.string "event", null: false
