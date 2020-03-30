@@ -1,7 +1,7 @@
 #panel-2.tabs-panel.is-active
   fieldset
     div style="display:flex; flex-direction: row;"
-      legend Links
+      legend URL Links
       .status-switch.button[id="2-yes-no-section" class=(@sd_meta_datum.section_flag_2 ? 'completed' : 'draft') data-sd_meta_datum_id="#{@sd_meta_datum.id}"]
         - if @sd_meta_datum.section_flag_2
           | Completed

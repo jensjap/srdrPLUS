@@ -221,6 +221,7 @@ body.sd_meta_data {
   }
 
   .srdr-kq {
+    position: relative;
     margin: 1rem 1rem 2rem 1rem;
     padding-left: 1.3rem;
     border: none;
@@ -341,9 +342,11 @@ body.sd_meta_data {
     max-width:100%;
   }
 
-  .invalid {
-    border: solid 1px red;
+  .invalid-url::after {
+    color: red;
+    content: "Please enter a valid URL" !important;
   }
+
 
   .preview-button {
     border-radius: 0;
@@ -363,5 +366,24 @@ body.sd_meta_data {
 
   .infoDiv {
     width: 50%;
+  }
+
+  .srdr-kq .hover-message {
+    font-size: 130%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 140ms;
+    border-radius: 2rem;
+    opacity: 0;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .srdr-kq:hover .hover-message {
+    background-color: #2e7c80;
+    opacity: 1;
   }
 }

@@ -53,7 +53,7 @@ class SdMetaDatum < ApplicationRecord
   SECTIONS = [
     "Title, Funding Sources, and Dates",
     "Authors and Stakeholders",
-    "Links",
+    "URL Links",
     "Purpose and Key Questions",
     "PICODS",
     "Key Question Mapping",

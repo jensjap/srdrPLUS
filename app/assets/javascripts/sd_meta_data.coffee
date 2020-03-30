@@ -10,14 +10,19 @@ class Timekeeper
   @_timer_dict: {}
 
   @create_timer_for_form: ( form ) -> 
-    $( '.preview-button' ).attr( 'disabled', '' )
     formId = form.getAttribute( 'id' )
     if formId of @_timer_dict
       clearTimeout( @_timer_dict[formId] )
     @_timer_dict[ formId ] = setTimeout -> 
-      send_async_form( form )
-    , 750
+      validate_and_send_async_form( form )
+    , 375
     @_timer_dict[ formId ] 
+
+validate_and_send_async_form = ( form ) ->
+  if not validate_form_inputs( form )
+    return
+  $( '.preview-button' ).attr( 'disabled', '' )
+  send_async_form( form )
 
 # Set the field to display from the result set.
 formatResultSelection = ( result, container ) ->
@@ -27,15 +32,23 @@ formatResultSelection = ( result, container ) ->
 # also adds the class invalid to form inputs failing validation
 validate_form_inputs = ( form ) ->
   $form = $( form )
-  $form.find( '.invalid' ).removeClass( 'invalid' )
+  $form.find( '.invalid-url' ).removeClass( 'invalid-url' )
   is_form_valid = true
   # validate url inputs
   for input_elem in $form.find( '.url-input' )
     $input_elem = $( input_elem )
-    input_val = $input_elem.val()
-    is_input_valid = is_valid_URL( input_val ) || ( input_val == "" )
-    if not is_input_valid
-      $input_elem.addClass( 'invalid' ) 
+    input_val = $input_elem.val() || ""
+    is_input_valid = true
+    if not (input_val == "")
+      valid_href = get_valid_URL( input_val )
+      if not valid_href
+        https_appended_val = "https://" + input_val
+        valid_href = get_valid_URL( https_appended_val )
+        if not valid_href
+          $input_elem.parents('div.input').addClass( 'invalid-url' ) 
+          is_input_valid = false
+        else
+          $input_elem.val( valid_href )
     is_form_valid = is_form_valid && is_input_valid
   return is_form_valid
 
@@ -99,14 +112,9 @@ add_form_listeners =( form ) ->
   $form = $( form )
   # Use this to keep track of the different timers.
   formId = $form.attr( 'id' )
-  $( form ).children( 'input' ).change ( e ) ->
+  
+  $form.find( 'select, input[type="file"]' ).on 'change', ( e ) ->
     e.preventDefault()
-    # Mark form as 'dirty'.
-    $form.addClass( 'dirty' )
-
-  $form.find( 'textarea, select, input' ).on 'change', ( e ) ->
-    if not validate_form_inputs( form )
-      return
     # Mark form as 'dirty'.
     $form.addClass( 'dirty' )
     Timekeeper.create_timer_for_form $form[0]
@@ -120,16 +128,13 @@ add_form_listeners =( form ) ->
     $( this ).parent().closest( 'div' ).fadeOut();
 
   # Text Field.
-  $form.keyup ( e ) ->
+  $form.find('input[type="text"], textarea').keyup ( e ) ->
     e.preventDefault()
 
     # Ignore 'keyup' for a list of keys.
     code = e.keyCode || e.which;
     # 9: tab; 16: shift; 37: left-arrow; 38: up-arrow; 39: right-arrow; 40: down-arrow; 18: option; 91: cmd
     if code in [9, 16, 18, 37, 38, 39, 40, 91]
-      return
-
-    if not validate_form_inputs( form )
       return
 
     # Mark form as 'dirty'.

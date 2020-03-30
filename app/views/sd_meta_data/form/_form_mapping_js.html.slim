@@ -95,17 +95,17 @@ javascript:
 
   var resetMapping = function(sdKeyQuestionId) {
     $.get( `/sd_key_questions/${sdKeyQuestionId}/fuzzy_match`, function( data ) {
-      var parentNode = $(`[data-reportKeyQuestionId=${sdKeyQuestionId}]`)
-      parentNode.children().remove();
+      var parentNode = $(`[data-reportKeyQuestionId=${sdKeyQuestionId}] .srdr-kq-target`)
+      parentNode.children('.srdr-kq').remove();
       if (data === undefined) {
         alert(`No match found for Question: ${parentNode.text()}`);
       } else {
-        var newNode = $( `<div id="srdr_kq-${data.id}" data-keyQuestionId="${data.id}" draggable="true" class="srdr-kq draggable clickremove"><span class="clamp-span">${data.name} - (click to remove)</span></div>` );
+        var newNode = $( `<div id="srdr_kq-${data.id}" data-keyQuestionId="${data.id}" draggable="true" class="srdr-kq draggable clickremove"><span class="clamp-span">${data.name}</span><span class="hover-message">Click to Remove</span></div>` );
         parentNode.append(newNode);
         colorCode();
       }
+      update_kq_target_prompt();
     });
-    update_kq_target_prompt();
     reset_post_timer();
   };
 
@@ -114,6 +114,15 @@ javascript:
     sdKeyQuestionIds.forEach(function(sdKeyQuestionId) {
       resetMapping(sdKeyQuestionId);
     });
+  };
+
+  var clear_all_mappings = function() {
+    var sdKeyQuestionIds = Object.keys(extractReportQuestions());
+    sdKeyQuestionIds.forEach(function(sdKeyQuestionId) {
+      var parentNode = $(`[data-reportKeyQuestionId=${sdKeyQuestionId}] .srdr-kq-target`);
+      parentNode.children('.srdr-kq').remove();
+    });
+    update_kq_target_prompt();
   };
 
   var checkMapping = function() {
@@ -204,7 +213,9 @@ javascript:
       var nodeCopy = document.getElementById(data).cloneNode(true);
       nodeCopy.removeAttribute('draggable');
       nodeCopy.id = new Date().getTime();
-      $(nodeCopy).find( 'span.clamp-span' ).text(`${$(nodeCopy).text()} - (click to remove)`)
+      $(nodeCopy).find( 'span.clamp-span' ).text(`${$(nodeCopy).text()}`)
+      $(nodeCopy).append( $('<span />').addClass('hover-message').text('Click to Remove') )
+
       $(nodeCopy).addClass('disableselect');
       $(nodeCopy).addClass('clickremove');
       $( ev.target ).closest( '.report-kq' ).find( '.srdr-kq-target' )[ 0 ].appendChild(nodeCopy);
