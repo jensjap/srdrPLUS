@@ -55,7 +55,7 @@ class SdMetaDatum < ApplicationRecord
     "Authors and Stakeholders",
     "Links",
     "Purpose and Key Questions",
-    "PICODs",
+    "PICODS",
     "Key Question Mapping",
     "Search Strategy and Evidence Summary",
     "Study Results"

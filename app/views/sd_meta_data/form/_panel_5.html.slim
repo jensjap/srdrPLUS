@@ -17,7 +17,7 @@
         h5 SRDR+ Key Questions
       .no-border data-field-span="1"
         h5 style="float: left;" Report Key Questions
-        a id="reset-all" onClick="resetAllMappings()" style="float: right;" Reset Mapping
+        a id="reset-all" onClick="resetAllMappings()" style="float: right;" Auto Mapping
       .srdr-key-questions-box.no-border data-field-span="1" style="overflow: scroll; max-height: 1000px;"
         - @sd_meta_datum.try(:project).try(:key_questions).uniq.try(:each) do |srdr_kq|
           .srdr-kq.draggable id="srdr_kq-#{srdr_kq.id}" data-keyQuestionId="#{srdr_kq.id}" draggable="true"

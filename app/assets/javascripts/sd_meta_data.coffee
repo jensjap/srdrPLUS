@@ -58,8 +58,9 @@ formatResult = ( result ) ->
 # initiates select2 dropdowns
 init_select2 = (selector, url) ->
   $( selector ).select2
+    selectOnClose: true, # use TAB and ESC to select
     minimumInputLength: 0,
-    placeholder: '-- Select --',
+    placeholder: '-- Select or type other value --', # This wording is ambiguous
     ajax:
       url: url,
       dataType: 'json'
