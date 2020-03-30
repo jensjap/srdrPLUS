@@ -1,6 +1,6 @@
-- extraction_forms_project_type = efp.extraction_forms_project_type
-
 - section_name = section_name.present? ? section_name : 'Results'
+- efp = @extraction.extraction_forms_projects_sections.first.extraction_forms_project
+- extraction_forms_project_type = efp.extraction_forms_project_type
 
 / If at least one Outcome is present, make extraction form type selector available.
 - if @eefpst1

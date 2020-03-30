@@ -1,5 +1,29 @@
+/ @eefpst1 -> Outcome
+/ @eefpst1.extractions_extraction_forms_projects_sections_type1_rows -> population
+
 - @eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |eefpst1r|
+  - @diagnostic_tests = ExtractionsExtractionFormsProjectsSectionsType1.by_section_name_and_extraction_id_and_extraction_forms_project_id(\
+    'Diagnostic Tests',
+    @extraction.id,
+    eefpst1r.extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_section.extraction_forms_projects_section.extraction_forms_project.id)
+
   h4 Population: #{ eefpst1r.population_name.name }
+
+  .diagnostic-test-comparison
+    - diagnostic_test_descriptive_rss = eefpst1r.result_statistic_sections.diagnostic_test_type_rsss.first
+    = simple_form_for(diagnostic_test_descriptive_rss,
+      url: add_comparison_result_statistic_section_path(diagnostic_test_descriptive_rss),
+      remote: true, method: :post) do |f|
+
+      = f.input :comparison_type, as: :hidden, input_html: { value: :diagnostic_test }
+      .links.add-comparison
+        = link_to_add_association f, :comparisons,
+          class: 'button tiny',
+          partial: 'result_statistic_sections/edit/diagnostic_test/comparison_fields',
+          render_options: { locals: { rss: diagnostic_test_descriptive_rss, comparison: :diagnostic_test } } do
+          i.fi-plus>
+          | Add Comparison
+
   table
     thead
       tr
@@ -19,18 +43,30 @@
 
 
 
+
+
+
+hr
+hr
+hr
+
+
+
+
+
+
+
+
 / STATIC TABLE JUST FOR MOCK-UP
-table
+/table
   thead
     tr
       th Timepoint
       th Measure
       th Index Test 1 (at threshold) vs. Reference Test (at threshold)
       th Index Test 2 (at threshold) vs. Reference Test (at threshold)
-
     tr
       th colspan='4' Descriptive Statistics
-
   tbody
     tr
       td rowspan='6'
@@ -40,27 +76,22 @@ table
       td # of participants recruited
       td 128
       td 128
-
     tr
       td # not receiving index test
       td 0
       td 0
-
     tr
       td # not receiving reference test
       td 0
       td 0
-
     tr
       td % of participants recruited
       td 100
       td 100
-
     tr
       td % not receiving index test
       td 0
       td 0
-
     tr
       td % not receiving reference test
       td 0
@@ -68,11 +99,10 @@ table
 
 hr
 
-table
+/table
   thead
     tr
       th colspan='3' Special area for AUC and Q*
-
   tbody
     tr
       td rowspan='2'
@@ -81,7 +111,6 @@ table
         span style='color: blue; text-decoration: underline;' remove
       td Area under the curve
       td 0.87
-
     tr
       td Q*
       td ???
@@ -92,7 +121,6 @@ table
         span style='color: blue; text-decoration: underline;' remove
       td Area under the curve
       td 0.88
-
     tr
       td Q*
       td ???
@@ -103,15 +131,12 @@ table
         span style='color: blue; text-decoration: underline;' remove
       td Area under the curve
       td 0.89
-
     tr
       td Q*
       td ???
-
   thead
     tr
       th colspan='3' 2x2 Table
-
   tbody
     tr
       td
@@ -126,20 +151,17 @@ table
               th Disease (+)
               th Disease (-)
               th Total
-
           tbody
             tr
               td Test (+)
               td 139
               td 0
               td 139
-
             tr
               td Test (-)
               td 2
               td 38
               td 40
-
             tr
               td Total
               td 141
@@ -158,20 +180,17 @@ table
               th Disease (+)
               th Disease (-)
               th Total
-
           tbody
             tr
               td Test (+)
               td 139
               td 0
               td 139
-
             tr
               td Test (-)
               td 2
               td 38
               td 40
-
             tr
               td Total
               td 141
@@ -190,30 +209,25 @@ table
               th Disease (+)
               th Disease (-)
               th Total
-
           tbody
             tr
               td Test (+)
               td 139
               td 0
               td 139
-
             tr
               td Test (-)
               td 2
               td 38
               td 40
-
             tr
               td Total
               td 141
               td 38
               td 179
-
   thead
     tr
       th colspan='3' Test Accuracy Metrics
-
   tbody
     tr
       td
@@ -228,50 +242,42 @@ table
               th
               th 95% CI (Lower)
               th 95% CI (Upper)
-
           tbody
             tr
               td Sensitivity %
               td 98.58%
               td
               td
-
             tr
               td Specificity %
               td 100%
               td
               td
-
             tr
               td Positive Predictive Value
               td 0
               td
               td
-
             tr
               td Negative Predictive Value
               td 0
               td
               td
-
             tr
               td Likelihood Ratio of a Positive Test
               td 0
               td
               td
-
             tr
               td Likelihood Ratio of a Negative Test
               td 0
               td
               td
-
             tr
               td Diagnostic Odds Ratio
               td 0
               td
               td
-
     tr
       td
         |Threshold: 'Greater than 58'
@@ -285,50 +291,42 @@ table
               th
               th 95% CI (Lower)
               th 95% CI (Upper)
-
           tbody
             tr
               td Sensitivity %
               td 98.58%
               td
               td
-
             tr
               td Specificity %
               td 100%
               td
               td
-
             tr
               td Positive Predictive Value
               td 0
               td
               td
-
             tr
               td Negative Predictive Value
               td 0
               td
               td
-
             tr
               td Likelihood Ratio of a Positive Test
               td 0
               td
               td
-
             tr
               td Likelihood Ratio of a Negative Test
               td 0
               td
               td
-
             tr
               td Diagnostic Odds Ratio
               td 0
               td
               td
-
     tr
       td
         |Threshold: 'Greater than 59'
@@ -342,44 +340,37 @@ table
               th
               th 95% CI (Lower)
               th 95% CI (Upper)
-
           tbody
             tr
               td Sensitivity %
               td 98.58%
               td
               td
-
             tr
               td Specificity %
               td 100%
               td
               td
-
             tr
               td Positive Predictive Value
               td 0
               td
               td
-
             tr
               td Negative Predictive Value
               td 0
               td
               td
-
             tr
               td Likelihood Ratio of a Positive Test
               td 0
               td
               td
-
             tr
               td Likelihood Ratio of a Negative Test
               td 0
               td
               td
-
             tr
               td Diagnostic Odds Ratio
               td 0

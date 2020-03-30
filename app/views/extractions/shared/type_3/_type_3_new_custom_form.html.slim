@@ -16,7 +16,7 @@ h5 Add New #{ section_name }
     .row
       .columns.medium-6.form-inputs class="new-type1-fields-#{ eefps.id.to_s }"
         = sf_eefpst1.association :type1_type,
-          collection: Type1Type.where("name in (?)", ['Index Test', 'Reference Test']),
+          collection: Type1Type.diagnostic_test_types,
           required: true,
           label: "Select Type of Test"
         = sf_eefpst1.simple_fields_for(:type1, sf_eefpst1.object.build_type1) do |sf_t1|

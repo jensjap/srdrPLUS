@@ -18,7 +18,7 @@ h5 Add New #{ section_name }
         - if section_name.eql? 'Outcome'
           = sf_eefpst1.association :type1_type,
             required: true,
-            collection: Type1Type.where("name not in (?)", ['Index Test', 'Reference Test']),
+            collection: Type1Type.outcome_types,
             label: "Type of #{ section_name }",
             input_html: { 'data-t1-type-input' => '' }
 

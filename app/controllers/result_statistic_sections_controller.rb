@@ -55,6 +55,8 @@ class ResultStatisticSectionsController < ApplicationController
       temp_result_statistic_section = @result_statistic_section.population.result_statistic_sections.find_by(result_statistic_section_type_id: 2)
     elsif params[:result_statistic_section]['comparison_type'] == 'wac'
       temp_result_statistic_section = @result_statistic_section.population.result_statistic_sections.find_by(result_statistic_section_type_id: 3)
+    elsif params[:result_statistic_section]['comparison_type'] == 'diagnostic_test'
+      temp_result_statistic_section = @result_statistic_section.population.result_statistic_sections.find_by(result_statistic_section_type_id: 5)
     end
 
     respond_to do |format|

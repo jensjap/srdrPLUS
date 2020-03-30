@@ -26,7 +26,7 @@ class Extraction < ApplicationRecord
   #                   to ensure consistency?
   after_create :ensure_extraction_form_structure
   after_create :create_default_arms
-  
+
   # create checksums without delay after create and update, since extractions/index would be incorrect.
   after_create do |extraction|
     ExtractionChecksum.create! extraction: extraction

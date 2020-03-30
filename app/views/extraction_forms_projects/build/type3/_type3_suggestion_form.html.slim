@@ -6,7 +6,7 @@ h5 Add #{ section_name } Suggestion
     f.object.extraction_forms_projects_sections_type1s.build) do |sf_efpst1|
     .form-inputs class="new-type1-fields-#{ efps.id.to_s }"
       = sf_efpst1.association :type1_type,
-        collection: Type1Type.where("name in (?)", ['Index Test', 'Reference Test']),
+        collection: Type1Type.diagnostic_test_types,
         required: true,
         label: "Select Type of Suggested #{ section_name }"
       = sf_efpst1.simple_fields_for(:type1, sf_efpst1.object.build_type1) do |sf_t1|
