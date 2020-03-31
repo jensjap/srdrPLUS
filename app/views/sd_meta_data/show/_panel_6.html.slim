@@ -19,13 +19,13 @@
 
                 div data-row-span="1"
                   div data-field-span="1"
-                    label Search Terms
-                    div = ( sd_search_strategy.search_terms.present? ? sd_search_strategy.search_terms : '-----' )
-
+                    label Search Limits
+                    div = ( sd_search_strategy.search_limits.present? ? simple_format(sd_search_strategy.search_limits) : '-----' )
                 div data-row-span="1"
                   div data-field-span="1"
-                    label Search Limits
-                    div = ( sd_search_strategy.search_limits.present? ? sd_search_strategy.search_limits : '-----' )
+                    label Search Terms
+                    div = ( sd_search_strategy.search_terms.present? ? simple_format(sd_search_strategy.search_terms) : '-----' )
+
 
     div data-row-span="1"
       div data-field-span="1"
@@ -37,7 +37,7 @@
             .sd-show-inner
               div
                 label Description
-                div = sd_grey_literature_search.name.present? ? sd_grey_literature_search.name : '-----'
+                div = sd_grey_literature_search.name.present? ? simple_format(sd_grey_literature_search.name) : '-----'
 
     div data-row-span="1"
       div data-field-span="1"
@@ -50,7 +50,7 @@
               div data-row-span="1"
                 div data-field-span="1"
                   label Description
-                  div = ( sd_prisma_flow.name.present? ? sd_prisma_flow.name : '-----' )
+                  div = ( sd_prisma_flow.name.present? ? simple_format(sd_prisma_flow.name) : '-----' )
               div data-row-span="1"
                 div data-field-span="1"
                   label Figures
@@ -81,7 +81,7 @@
                 div data-field-span="1"
                   label Description
                   - desc = sd_summary_of_evidence.name
-                  div = desc.present? ? desc : '-----'
+                  div = desc.present? ? simple_format(desc) : '-----'
               div data-row-span="1"
                 div data-field-span="1"
                   label Figures

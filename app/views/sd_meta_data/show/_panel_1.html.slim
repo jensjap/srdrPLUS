@@ -14,17 +14,17 @@
       div data-field-span="1"
         label Conflicts of Interest of Authors of Full Report
         - acoiof = @sd_meta_datum.authors_conflict_of_interest_of_full_report
-        div #{acoiof.present? ? acoiof : '-----' }
+        div #{acoiof.present? ? simple_format(acoiof) : '-----' }
     div data-row-span="1"
       div data-field-span="1"
         label Stakeholders Involved
         - sie = @sd_meta_datum.stakeholder_involvement_extent
-        div #{sie.present? ? sie : '-----' }
+        div #{sie.present? ? simple_format(sie) : '-----' }
     div data-row-span="1"
       div data-field-span="1"
         label Conflicts of Interest of Stakeholders
         - scoi = @sd_meta_datum.stakeholders_conflict_of_interest
-        div #{scoi.present? ? scoi : '-----' }
+        div #{scoi.present? ? simple_format(scoi) : '-----' }
     div data-row-span="2"
       div data-field-span="1"
         label SRDR+ Project Leads:

@@ -5,7 +5,7 @@
       div data-field-span="1"
         label Overall Purpose of Review
         - opor = @sd_meta_datum.overall_purpose_of_review
-        div #{opor.present? ? opor : '-----' }
+        div #{opor.present? ? simple_format(opor) : '-----' }
     div data-row-span="2"
       div data-field-span="1"
         label Type of Review
@@ -25,7 +25,7 @@
             .sd-show-inner
               div
                 label Description
-                div #{sd_analytic_framework.name.present? ? sd_analytic_framework.name : "-----"}
+                div #{sd_analytic_framework.name.present? ? simple_format(sd_analytic_framework.name) : "-----"}
               div
                 label Pictures
                 p
