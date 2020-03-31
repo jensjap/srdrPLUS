@@ -708,4 +708,53 @@
   type1_types:
     categorical: false
     continuous: available
+# Diagnostic Test Results Measures
+- 
+  name: "# of participants recruited"
+  provider_names: ~
+  result_statistic_section_types:
+    - "Diagnostic Test Descriptive Statistics"
+  type1_types:
+    categorical: default
+    continuous: default
+- 
+  name: "# not receiving Index test"
+  provider_names: ~
+  result_statistic_section_types:
+    - "Diagnostic Test Descriptive Statistics"
+  type1_types:
+    categorical: default
+    continuous: default
+- 
+  name: "# not receiving Reference test"
+  provider_names: ~
+  result_statistic_section_types:
+    - "Diagnostic Test Descriptive Statistics"
+  type1_types:
+    categorical: default
+    continuous: default
+- 
+  name: "% of participants recruited"
+  provider_names: ~
+  result_statistic_section_types:
+    - "Diagnostic Test Descriptive Statistics"
+  type1_types:
+    categorical: default
+    continuous: default
+- 
+  name: "% not receiving Index test"
+  provider_names: ~
+  result_statistic_section_types:
+    - "Diagnostic Test Descriptive Statistics"
+  type1_types:
+    categorical: default
+    continuous: default
+- 
+  name: "% not receiving Reference test"
+  provider_names: ~
+  result_statistic_section_types:
+    - "Diagnostic Test Descriptive Statistics"
+  type1_types:
+    categorical: default
+    continuous: default
 
