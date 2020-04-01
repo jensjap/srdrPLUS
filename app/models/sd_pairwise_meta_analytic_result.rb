@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: pairwise_meta_analytic_results
+# Table name: sd_pairwise_meta_analytic_results
 #
 #  id               :bigint(8)        not null, primary key
 #  name             :text(65535)
@@ -8,10 +8,11 @@
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
 #  p_type           :string(255)
+#  sd_key_question_id :integer
 #
 
-class PairwiseMetaAnalyticResult < ApplicationRecord
+class SdPairwiseMetaAnalyticResult < ApplicationRecord
   has_many_attached :pictures
 
-  belongs_to :sd_meta_datum, inverse_of: :pairwise_meta_analytic_results
+  belongs_to :sd_meta_datum, inverse_of: :sd_pairwise_meta_analytic_results
 end

@@ -71,7 +71,7 @@ class SdMetaDatum < ApplicationRecord
   has_many :comparison_outcome_intervention_subgroups, inverse_of: :sd_meta_datum, dependent: :destroy
   has_many :sd_evidence_tables, inverse_of: :sd_meta_datum, dependent: :destroy
   has_many :network_meta_analysis_results, inverse_of: :sd_meta_datum, dependent: :destroy
-  has_many :pairwise_meta_analytic_results, inverse_of: :sd_meta_datum, dependent: :destroy
+  has_many :sd_pairwise_meta_analytic_results, inverse_of: :sd_meta_datum, dependent: :destroy
   has_many :sd_forest_plots, inverse_of: :sd_meta_datum, dependent: :destroy
   has_many :sd_meta_regression_analysis_results, inverse_of: :sd_meta_datum, dependent: :destroy
 
@@ -109,11 +109,10 @@ class SdMetaDatum < ApplicationRecord
   accepts_nested_attributes_for :sd_grey_literature_searches, allow_destroy: true
   accepts_nested_attributes_for :sd_summary_of_evidences, allow_destroy: true
   accepts_nested_attributes_for :sd_prisma_flows, allow_destroy: true
-  accepts_nested_attributes_for :comparison_outcome_intervention_subgroups, allow_destroy: true
-  accepts_nested_attributes_for :comparison_outcome_population_subgroups, allow_destroy: true
+  accepts_nested_attributes_for :sd_narrative_results, allow_destroy: true
   accepts_nested_attributes_for :sd_evidence_tables, allow_destroy: true
   accepts_nested_attributes_for :network_meta_analysis_results, allow_destroy: true
-  accepts_nested_attributes_for :pairwise_meta_analytic_results, allow_destroy: true
+  accepts_nested_attributes_for :sd_pairwise_meta_analytic_results, allow_destroy: true
   accepts_nested_attributes_for :sd_forest_plots, allow_destroy: true
   accepts_nested_attributes_for :sd_meta_regression_analysis_results, allow_destroy: true
 
