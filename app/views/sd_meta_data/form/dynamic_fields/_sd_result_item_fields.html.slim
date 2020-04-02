@@ -4,15 +4,13 @@
 div
   div data-row-span="1"
     div data-field-span="1"
-      label Narrative Results
+      label Narrative Results by Outcome
       div
         = f.simple_fields_for :sd_narrative_results do |sd_narrative_result|
           .sd-item.sd-inner 
             = render 'sd_meta_data/form/dynamic_fields/sd_narrative_result_fields', f: sd_narrative_result
         div
           = link_to_add_association 'Add Narrative Result', f, :sd_narrative_results, partial: 'sd_meta_data/form/dynamic_fields/sd_narrative_result_fields', class: 'add-item-link'
-
-
 
   div data-row-span="1"
     div data-field-span="1"
@@ -26,7 +24,7 @@ div
           = link_to_add_association 'Add Evidence Table', f, :sd_evidence_tables, partial: 'sd_meta_data/form/dynamic_fields/sd_evidence_table_fields', class: 'add-item-link'
   div data-row-span="1"
     div data-field-span="1"
-      label Pairwise Meta Analytic Result (Forest plot with summary estimate, type of model, and estimates of heterogeneity)
+      label Pairwise Meta-Analysis
       /.cocoon-container.pairwise-meta-analytic-result-list
       div
         = f.simple_fields_for :sd_pairwise_meta_analytic_results do |pairwise_meta_analytic_result|
@@ -36,7 +34,7 @@ div
           = link_to_add_association 'Add Result', f, :sd_pairwise_meta_analytic_results, partial: 'sd_meta_data/form/dynamic_fields/pairwise_meta_analytic_result_fields', class: 'add-item-link'
   div data-row-span="1"
     div data-field-span="1"
-      label Network Meta Analysis Result
+      label Network Meta-Analysis
       /.cocoon-container.network-meta-analysis-result-list
       div
         = f.simple_fields_for :sd_network_meta_analysis_results do |network_meta_analysis_result|
