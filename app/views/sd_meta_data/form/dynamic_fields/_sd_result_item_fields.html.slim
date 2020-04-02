@@ -24,34 +24,34 @@ div
           = link_to_add_association 'Add Evidence Table', f, :sd_evidence_tables, partial: 'sd_meta_data/form/dynamic_fields/sd_evidence_table_fields', class: 'add-item-link'
   div data-row-span="1"
     div data-field-span="1"
-      label Pairwise Meta-Analysis
+      label Pairwise Meta-Analyses
       /.cocoon-container.pairwise-meta-analytic-result-list
       div
         = f.simple_fields_for :sd_pairwise_meta_analytic_results do |pairwise_meta_analytic_result|
           .sd-item.sd-inner
             = render 'sd_meta_data/form/dynamic_fields/pairwise_meta_analytic_result_fields', f: pairwise_meta_analytic_result
         div
-          = link_to_add_association 'Add Result', f, :sd_pairwise_meta_analytic_results, partial: 'sd_meta_data/form/dynamic_fields/pairwise_meta_analytic_result_fields', class: 'add-item-link'
+          = link_to_add_association 'Add Pairwise Meta-Analysis', f, :sd_pairwise_meta_analytic_results, partial: 'sd_meta_data/form/dynamic_fields/pairwise_meta_analytic_result_fields', class: 'add-item-link'
   div data-row-span="1"
     div data-field-span="1"
-      label Network Meta-Analysis
+      label Network Meta-Analyses
       /.cocoon-container.network-meta-analysis-result-list
       div
         = f.simple_fields_for :sd_network_meta_analysis_results do |network_meta_analysis_result|
           .sd-item.sd-inner
             = render 'sd_meta_data/form/dynamic_fields/network_meta_analysis_result_fields', f: network_meta_analysis_result
         div
-          = link_to_add_association 'Add Result', f, :sd_network_meta_analysis_results, partial: 'sd_meta_data/form/dynamic_fields/network_meta_analysis_result_fields', class: 'add-item-link'
+          = link_to_add_association 'Add Network Meta-Analysis', f, :sd_network_meta_analysis_results, partial: 'sd_meta_data/form/dynamic_fields/network_meta_analysis_result_fields', class: 'add-item-link'
   div data-row-span="1"
     div data-field-span="1"
-      label Meta-regression Analysis Results
+      label Meta-Regression Analysis Results
       /.cocoon-container.meta-regression-analysis-result-list
       div
         = f.simple_fields_for :sd_meta_regression_analysis_results do |sd_meta_regression_analysis_result|
           .sd-item.sd-inner
             = render 'sd_meta_data/form/dynamic_fields/sd_meta_regression_analysis_result_fields', f: sd_meta_regression_analysis_result
         div
-          = link_to_add_association 'Add Result', f, :sd_meta_regression_analysis_results, partial: 'sd_meta_data/form/dynamic_fields/sd_meta_regression_analysis_result_fields', class: 'add-item-link'
+          = link_to_add_association 'Add Meta-Regression Analysis Result', f, :sd_meta_regression_analysis_results, partial: 'sd_meta_data/form/dynamic_fields/sd_meta_regression_analysis_result_fields', class: 'add-item-link'
 / br/
 / br/
 / fieldset
