@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_04_02_192057) do
+ActiveRecord::Schema.define(version: 2020_04_02_230005) do
 
   create_table "abstrackr_settings", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "profile_id"
@@ -1491,6 +1491,7 @@ ActiveRecord::Schema.define(version: 2020_04_02_192057) do
     t.datetime "deleted_at"
     t.index ["name"], name: "index_sd_outcomes_on_name"
     t.index ["sd_outcomeable_id", "sd_outcomeable_type"], name: "index_sd_outcomes_on_sd_outcomeable_id_and_sd_outcomeable_type"
+    t.index ["sd_outcomeable_type", "sd_outcomeable_id", "name"], name: "index_sd_outcomes_on_type_id_name", unique: true
   end
 
   create_table "sd_pairwise_meta_analytic_results", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
