@@ -1,10 +1,7 @@
-= simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
-  = f.input :item_id, as: :hidden, input_html: { value: 100 }
-  = f.simple_fields_for :sd_key_questions do |sd_key_question|
-    = f.input :sd_key_question, label: 'Key Question', include_blank: false, collection: f.object.sd_meta_datum.key_questions.map { |kq| [kq.name, SdKeyQuestion.find_by(sd_meta_datum_id: f.object.sd_meta_datum.id, key_question_id: kq.id).id] }, input_html: { class: 'apply-select2' }
-    = f.simple_fields_for :sd_narrative_results do |sd_narrative_result|
-      .sd-item.sd-inner 
-        = render 'sd_meta_data/form/dynamic_fields/comparison_outcome_population_subgroup_fields', f: comparison_outcome_population_subgroup
-    div
-      = link_to_add_association 'Add Item', f, :comparison_outcome_population_subgroups, partial: 'sd_meta_data/form/dynamic_fields/comparison_outcome_population_subgroup_fields', class: 'add-item-link'
-
+= simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |g|
+  = g.input :item_id, as: :hidden, input_html: { value: 100 }
+  = g.simple_fields_for :sd_result_items do |f|
+    .sd-item.sd-inner 
+      = render 'sd_meta_data/form/dynamic_fields/sd_narrative_result_fields', f: f
+  div
+    = link_to_add_association 'Add Result Item', g, :sd_result_items, partial: 'sd_meta_data/form/dynamic_fields/sd_result_item_fields', class: 'add-item-link'

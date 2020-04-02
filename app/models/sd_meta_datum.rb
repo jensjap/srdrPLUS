@@ -70,7 +70,7 @@ class SdMetaDatum < ApplicationRecord
   has_many :sd_key_questions, inverse_of: :sd_meta_datum, dependent: :destroy
   has_many :key_questions, -> { distinct }, through: :sd_key_questions
 
-  has_many :sd_result_items, through: :sd_key_questions
+  has_many :sd_result_items
   has_many :sd_narrative_results, through: :sd_result_items
   has_many :sd_evidence_tables, inverse_of: :sd_meta_datum
   has_many :network_meta_analysis_results, through: :sd_result_items

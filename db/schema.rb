@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_04_02_000905) do
+ActiveRecord::Schema.define(version: 2020_04_02_015736) do
 
   create_table "abstrackr_settings", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "profile_id"
@@ -1552,7 +1552,9 @@ ActiveRecord::Schema.define(version: 2020_04_02_000905) do
     t.bigint "sd_key_question_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "sd_meta_datum_id"
     t.index ["sd_key_question_id"], name: "index_sd_result_items_on_sd_key_question_id"
+    t.index ["sd_meta_datum_id"], name: "index_sd_result_items_on_sd_meta_datum_id"
   end
 
   create_table "sd_search_databases", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

@@ -1,4 +1,5 @@
 class SdResultItem < ApplicationRecord
+  belongs_to :sd_meta_datum, inverse_of: :sd_result_items, optional: true
   belongs_to :sd_key_question, inverse_of: :sd_result_items, optional: true
 
   has_many :sd_pairwise_meta_analytic_results, inverse_of: :sd_result_item, dependent: :destroy
