@@ -2,6 +2,6 @@
   = g.input :item_id, as: :hidden, input_html: { value: 100 }
   = g.simple_fields_for :sd_result_items do |f|
     .sd-item.sd-inner 
-      = render 'sd_meta_data/form/dynamic_fields/sd_narrative_result_fields', f: f
+      = render 'sd_meta_data/form/dynamic_fields/sd_result_item_fields', f: f
   div
     = link_to_add_association 'Add Result Item', g, :sd_result_items, partial: 'sd_meta_data/form/dynamic_fields/sd_result_item_fields', class: 'add-item-link'

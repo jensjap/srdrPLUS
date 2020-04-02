@@ -11,10 +11,10 @@
 #  p_type           :string(255)
 #
 
-class NetworkMetaAnalysisResult < ApplicationRecord
-  has_many_attached :pictures
+class SdNetworkMetaAnalysisResult < ApplicationRecord
+  belongs_to :sd_result_item, inverse_of: :sd_network_meta_analysis_results
 
-  belongs_to :sd_result_item, inverse_of: :network_meta_analysis_results
+  has_many_attached :pictures
 
   has_many :sd_outcomes, as: :sd_outcomeable
 end

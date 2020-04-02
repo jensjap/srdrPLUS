@@ -73,7 +73,7 @@ class SdMetaDatum < ApplicationRecord
   has_many :sd_result_items
   has_many :sd_narrative_results, through: :sd_result_items
   has_many :sd_evidence_tables, inverse_of: :sd_meta_datum
-  has_many :network_meta_analysis_results, through: :sd_result_items
+  has_many :sd_network_meta_analysis_results, through: :sd_result_items
   has_many :sd_pairwise_meta_analytic_results, through: :sd_result_items
   has_many :sd_meta_regression_analysis_results, through: :sd_result_items
   

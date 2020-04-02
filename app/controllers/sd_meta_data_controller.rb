@@ -207,9 +207,9 @@ end
           { sd_grey_literature_searches_attributes: [:name, :_destroy, :id] },
           { sd_prisma_flows_attributes: [:name, :_destroy, :id, pictures: []] },
           { sd_result_items_attributes: [:sd_key_question_id, :_destroy, :id, 
-            { sd_narrative_result_attributes: [:sd_key_question_id, :narrative_results, :name, :_destroy, :id] },
+            { sd_narrative_results_attributes: [:sd_key_question_id, :narrative_results, :name, :_destroy, :id] },
             { sd_evidence_tables_attributes: [:name, :_destroy, :id, :picture] },
-            { network_meta_analysis_results_attributes: [:name, :p_type, :_destroy, :id, pictures: []] },
+            { sd_network_meta_analysis_results_attributes: [:name, :p_type, :_destroy, :id, pictures: []] },
             { sd_pairwise_meta_analytic_results_attributes: [:name, :p_type, :_destroy, :id, pictures: []] },
             { sd_meta_regression_analysis_results_attributes: [:name, :_destroy, :id, :picture] }] },
           { sd_summary_of_evidences_attributes: [:sd_key_question_id, :soe_type, :name, :_destroy, :id, pictures: []] }

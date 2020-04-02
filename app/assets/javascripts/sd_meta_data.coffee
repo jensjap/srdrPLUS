@@ -106,7 +106,7 @@ apply_all_select2 =() ->
   init_select2(".review_type", '/review_types')
   init_select2(".data_analysis_level", '/data_analysis_levels')
 
-  $( '.apply-select2' ).select2( placeholder: '-- Select --' )
+  $( '.apply-select2' ).select2( placeholder: '-- Select or type other value --' )
 
 add_form_listeners =( form ) ->
   $form = $( form )

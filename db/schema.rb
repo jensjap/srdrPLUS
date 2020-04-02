@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_04_02_015736) do
+ActiveRecord::Schema.define(version: 2020_04_02_192057) do
 
   create_table "abstrackr_settings", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "profile_id"
@@ -834,15 +834,6 @@ ActiveRecord::Schema.define(version: 2020_04_02_015736) do
     t.index ["message_type_id"], name: "index_messages_on_message_type_id"
   end
 
-  create_table "network_meta_analysis_results", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.text "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "p_type"
-    t.bigint "sd_result_item_id"
-    t.index ["sd_result_item_id"], name: "index_network_meta_analysis_results_on_sd_result_item_id"
-  end
-
   create_table "notes", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "notable_type"
     t.integer "notable_id"
@@ -1473,6 +1464,15 @@ ActiveRecord::Schema.define(version: 2020_04_02_015736) do
     t.text "narrative_results_by_intervention"
     t.bigint "sd_result_item_id"
     t.index ["sd_result_item_id"], name: "index_sd_narrative_results_on_sd_result_item_id"
+  end
+
+  create_table "sd_network_meta_analysis_results", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.text "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "p_type"
+    t.bigint "sd_result_item_id"
+    t.index ["sd_result_item_id"], name: "index_sd_network_meta_analysis_results_on_sd_result_item_id"
   end
 
   create_table "sd_other_items", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
