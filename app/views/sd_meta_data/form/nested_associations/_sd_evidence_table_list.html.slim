@@ -1,6 +1,0 @@
-= f.input :item_id, as: :hidden, input_html: { value: 58 }
-= f.simple_fields_for :sd_evidence_tables do |sd_evidence_table|
-  .sd-item.sd-inner
-    = render 'sd_meta_data/form/dynamic_fields/sd_evidence_table_fields', f: sd_evidence_table
-div
-  = link_to_add_association 'Add Evidence Table', f, :sd_evidence_tables, partial: 'sd_meta_data/form/dynamic_fields/sd_evidence_table_fields', class: 'add-item-link'
