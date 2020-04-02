@@ -12,6 +12,7 @@
 #
 
 class SdNetworkMetaAnalysisResult < ApplicationRecord
+  include SharedSdOutcomeableMethods
   belongs_to :sd_result_item, inverse_of: :sd_network_meta_analysis_results
 
   has_many_attached :pictures

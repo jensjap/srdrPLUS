@@ -11,6 +11,7 @@
 #
 
 class SdEvidenceTable < ApplicationRecord
+  include SharedSdOutcomeableMethods
   belongs_to :sd_result_item, inverse_of: :sd_evidence_tables
 
   has_one_attached :picture

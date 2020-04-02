@@ -11,6 +11,7 @@
 #
 
 class SdMetaRegressionAnalysisResult < ApplicationRecord
+  include SharedSdOutcomeableMethods
   belongs_to :sd_result_item, inverse_of: :sd_meta_regression_analysis_results
 
   has_one_attached :picture

@@ -107,6 +107,7 @@ apply_all_select2 =() ->
   init_select2(".data_analysis_level", '/data_analysis_levels')
 
   $( '.apply-select2' ).select2( placeholder: '-- Select or type other value --' )
+  $( '.sd-outcome-select2' ).select2({ tags: true, placeholder: '-- Select or type other value --' })
 
 add_form_listeners =( form ) ->
   $form = $( form )

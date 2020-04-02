@@ -1,5 +1,5 @@
 .nested-fields
-  = f.association :sd_outcomes, label: 'Outcome(s)', include_blank: true, input_html: { class: 'apply-select2' }
+  = f.input :sd_outcome_names, as: :select, collection: f.object.sd_outcome_names, label: 'Outcome(s)', include_blank: false, input_html: { class: 'sd-outcome-select2', multiple: true }
   = f.input :narrative_results, label: 'Narrative Results', input_html: { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
   = f.input :narrative_results_by_population, label: 'Narrative Results by Population', input_html: { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
   = f.input :narrative_results_by_intervention, label: 'Narrative Results by Intervention', input_html: { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
