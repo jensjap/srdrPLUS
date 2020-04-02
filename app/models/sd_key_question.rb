@@ -16,8 +16,7 @@ class SdKeyQuestion < ApplicationRecord
   belongs_to :sd_meta_datum, inverse_of: :sd_key_questions
   belongs_to :key_question, inverse_of: :sd_key_questions
 
-  has_many :comparison_outcome_intervention_subgroups, inverse_of: :sd_key_question
-  has_many :comparison_outcome_population_subgroups, inverse_of: :sd_key_question
+  has_many :sd_result_items, inverse_of: :sd_key_question, dependent: :destroy
   has_many :sd_key_questions_key_question_types, inverse_of: :sd_key_question, dependent: :destroy
   has_many :key_question_types, through: :sd_key_questions_key_question_types
 

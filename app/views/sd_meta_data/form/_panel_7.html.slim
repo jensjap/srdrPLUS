@@ -10,6 +10,12 @@
 
     div data-row-span="1"
       div data-field-span="1"
+        label Result Items
+        .result-item-list
+          = render 'sd_meta_data/form/nested_associations/result_item_list', sd_meta_datum: @sd_meta_datum, url: @url
+  /div
+    div data-row-span="1"
+      div data-field-span="1"
         label Comparison Outcome by Population Subgroup
         .cocoon-container.comparison-outcome-by-population-subgroup-list
           = render 'sd_meta_data/form/nested_associations/comparison_outcome_by_population_subgroup_list', sd_meta_datum: @sd_meta_datum, url: @url

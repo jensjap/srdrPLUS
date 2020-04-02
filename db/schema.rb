@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_04_01_013540) do
+ActiveRecord::Schema.define(version: 2020_04_02_000905) do
 
   create_table "abstrackr_settings", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "profile_id"
@@ -836,13 +836,11 @@ ActiveRecord::Schema.define(version: 2020_04_01_013540) do
 
   create_table "network_meta_analysis_results", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.text "name"
-    t.integer "sd_meta_datum_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "p_type"
-    t.bigint "sd_key_question_id"
-    t.index ["sd_key_question_id"], name: "index_network_meta_analysis_results_on_sd_key_question_id"
-    t.index ["sd_meta_datum_id"], name: "index_network_meta_analysis_results_on_sd_meta_datum_id"
+    t.bigint "sd_result_item_id"
+    t.index ["sd_result_item_id"], name: "index_network_meta_analysis_results_on_sd_result_item_id"
   end
 
   create_table "notes", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -1342,20 +1340,10 @@ ActiveRecord::Schema.define(version: 2020_04_01_013540) do
 
   create_table "sd_evidence_tables", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.text "name"
-    t.integer "sd_meta_datum_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "sd_key_question_id"
-    t.index ["sd_key_question_id"], name: "index_sd_evidence_tables_on_sd_key_question_id"
-    t.index ["sd_meta_datum_id"], name: "index_sd_evidence_tables_on_sd_meta_datum_id"
-  end
-
-  create_table "sd_forest_plots", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.text "name"
-    t.integer "sd_meta_datum_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["sd_meta_datum_id"], name: "index_sd_forest_plots_on_sd_meta_datum_id"
+    t.bigint "sd_result_item_id"
+    t.index ["sd_result_item_id"], name: "index_sd_evidence_tables_on_sd_result_item_id"
   end
 
   create_table "sd_grey_literature_searches", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -1471,24 +1459,20 @@ ActiveRecord::Schema.define(version: 2020_04_01_013540) do
 
   create_table "sd_meta_regression_analysis_results", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.text "name"
-    t.integer "sd_meta_datum_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "sd_key_question_id"
-    t.index ["sd_key_question_id"], name: "index_sd_meta_regression_analysis_results_on_sd_key_question_id"
-    t.index ["sd_meta_datum_id"], name: "index_sd_meta_regression_analysis_results_on_sd_meta_datum_id"
+    t.bigint "sd_result_item_id"
+    t.index ["sd_result_item_id"], name: "index_sd_meta_regression_analysis_results_on_sd_result_item_id"
   end
 
   create_table "sd_narrative_results", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.text "narrative_results"
-    t.integer "sd_meta_datum_id"
-    t.integer "sd_key_question_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.text "narrative_results_by_population"
     t.text "narrative_results_by_intervention"
-    t.index ["sd_key_question_id"], name: "index_cops_on_sd_key_question"
-    t.index ["sd_meta_datum_id"], name: "index_cops_on_sd_meta_datum"
+    t.bigint "sd_result_item_id"
+    t.index ["sd_result_item_id"], name: "index_sd_narrative_results_on_sd_result_item_id"
   end
 
   create_table "sd_other_items", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -1511,13 +1495,11 @@ ActiveRecord::Schema.define(version: 2020_04_01_013540) do
 
   create_table "sd_pairwise_meta_analytic_results", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.text "name"
-    t.integer "sd_meta_datum_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "p_type"
-    t.bigint "sd_key_question_id"
-    t.index ["sd_key_question_id"], name: "index_sd_pairwise_meta_analytic_results_on_sd_key_question_id"
-    t.index ["sd_meta_datum_id"], name: "index_sd_pairwise_meta_analytic_results_on_sd_meta_datum_id"
+    t.bigint "sd_result_item_id"
+    t.index ["sd_result_item_id"], name: "index_sd_pairwise_meta_analytic_results_on_sd_result_item_id"
   end
 
   create_table "sd_picods", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -1564,6 +1546,13 @@ ActiveRecord::Schema.define(version: 2020_04_01_013540) do
     t.datetime "updated_at", null: false
     t.index ["sd_meta_datum_id"], name: "index_sd_project_leads_on_sd_meta_datum_id"
     t.index ["user_id"], name: "index_sd_project_leads_on_user_id"
+  end
+
+  create_table "sd_result_items", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "sd_key_question_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["sd_key_question_id"], name: "index_sd_result_items_on_sd_key_question_id"
   end
 
   create_table "sd_search_databases", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -1969,7 +1958,6 @@ ActiveRecord::Schema.define(version: 2020_04_01_013540) do
   add_foreign_key "measurements", "comparisons_measures"
   add_foreign_key "message_types", "frequencies"
   add_foreign_key "messages", "message_types"
-  add_foreign_key "network_meta_analysis_results", "sd_meta_data"
   add_foreign_key "notes", "projects_users_roles"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
@@ -2017,8 +2005,6 @@ ActiveRecord::Schema.define(version: 2020_04_01_013540) do
   add_foreign_key "screening_options", "projects"
   add_foreign_key "screening_options", "screening_option_types"
   add_foreign_key "sd_analytic_frameworks", "sd_meta_data"
-  add_foreign_key "sd_evidence_tables", "sd_meta_data"
-  add_foreign_key "sd_forest_plots", "sd_meta_data"
   add_foreign_key "sd_grey_literature_searches", "sd_meta_data"
   add_foreign_key "sd_journal_article_urls", "sd_meta_data"
   add_foreign_key "sd_key_questions", "key_questions"
@@ -2030,11 +2016,7 @@ ActiveRecord::Schema.define(version: 2020_04_01_013540) do
   add_foreign_key "sd_key_questions_sd_picods", "sd_picods"
   add_foreign_key "sd_meta_data", "data_analysis_levels"
   add_foreign_key "sd_meta_data", "review_types"
-  add_foreign_key "sd_meta_regression_analysis_results", "sd_meta_data"
-  add_foreign_key "sd_narrative_results", "sd_key_questions"
-  add_foreign_key "sd_narrative_results", "sd_meta_data"
   add_foreign_key "sd_other_items", "sd_meta_data"
-  add_foreign_key "sd_pairwise_meta_analytic_results", "sd_meta_data"
   add_foreign_key "sd_picods", "sd_meta_data"
   add_foreign_key "sd_picods_sd_picods_types", "sd_picods"
   add_foreign_key "sd_picods_sd_picods_types", "sd_picods_types"
