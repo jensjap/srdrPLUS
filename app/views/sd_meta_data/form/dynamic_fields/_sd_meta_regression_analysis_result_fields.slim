@@ -1,6 +1,6 @@
 .nested-fields
   = f.input :sd_outcome_names, as: :select, collection: f.object.sd_outcome_names, label: 'Outcome(s)', include_blank: false, input_html: { class: 'sd-outcome-select2', multiple: true }
-  = f.input :name, label: 'Narrative Text', input_html: { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
+  = f.input :name, label: 'Description', input_html: { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
   = f.input :picture, label: 'Figure', as: :file
   = image_tag(f.object.picture, class: 'openable sd-image') if f.object.picture.attached?
   = link_to_remove_association "remove", f, data: { confirm: "Are you sure?" }

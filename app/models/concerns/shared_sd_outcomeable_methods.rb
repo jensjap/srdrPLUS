@@ -3,7 +3,8 @@ module SharedSdOutcomeableMethods
   
   included do
     def sd_outcome_names
-      names = SdOutcome.where(sd_outcomeable_id: self.id, sd_outcomeable_type: self.class.name).map{ |sd_outcome| sd_outcome.name }
+      # Even though it is inefficient to repeat the query every time this method is called, not doing so causes weird bugs. -Birol
+      SdOutcome.where(sd_outcomeable_id: self.id, sd_outcomeable_type: self.class.name).map{ |sd_outcome| sd_outcome.name }
     end
 
     def sd_outcome_names=(tokens)
@@ -14,7 +15,6 @@ module SharedSdOutcomeableMethods
         new_sd_outcome.save!
       end
       self.sd_outcomes.where( name: (existing_outcome_names - tokens) ).delete_all
-      self.save!
     end
   end
 
