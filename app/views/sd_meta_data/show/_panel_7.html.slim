@@ -17,8 +17,6 @@
                   - else
                     div = result_item.sd_key_question.key_question&.name || "-----"
 
-
-
               div data-row-span="1"
                 div data-field-span="1"
                   label Narrative Results
@@ -47,7 +45,6 @@
                           div data-field-span="1"
                             label Narrative Results by Intervention Subgroup
                             div = narr.narrative_results_by_intervention.present? ? simple_format(narr.narrative_results_by_intervention) : '-----'
-
 
               div data-row-span="1"
                 div data-field-span="1"
