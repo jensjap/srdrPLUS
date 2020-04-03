@@ -36,6 +36,18 @@
           |Study Results
           .check-container[panel-number="7"]
   .cell.medium-9
+    #status-check-modal.reveal data-reveal=""
+      - if @panel_number != 5
+       | There are incomplete input fields. Do you want to continue? 
+      - else
+       | There are unmapped key questions. Do you want to continue?
+      .grid-x.grid-margin-x
+        .cell.large-3
+          #abort-status-switch.button.alert
+            | Go back
+        .cell.large-3
+          #confirm-status-switch.button.confirm
+            | Continue
     - if @panel_number != 5
       .preview-container-container.float-center.hide
         a.close-preview.float-right = "✖"

@@ -25,10 +25,19 @@ class StatusChecker
   @get_all_inputs: ( ) ->
     return $( 'input, select, textarea' )
 
-  @highlight_empty: ( ) ->
+  @check_status: ( ) ->
     for elem in StatusChecker.get_all_inputs()
       if StatusChecker.input_empty( elem )
+        return false
+    return true
+
+  @highlight_empty: ( ) ->
+    completeable = true
+    for elem in StatusChecker.get_all_inputs()
+      if StatusChecker.input_empty( elem )
+        completeable = false
         $( elem ).addClass( 'empty-input' )
+    return completeable
 
 validate_and_send_async_form = ( form ) ->
   if not validate_form_inputs( form )
@@ -154,8 +163,6 @@ add_form_listeners =( form ) ->
     $form.addClass( 'dirty' )
     Timekeeper.create_timer_for_form $form[0]
 
-  $( '.fdatepicker' ).fdatepicker({format: 'yyyy-mm-dd', disableDblClickSelection: true}).show();
-
 bind_srdr20_saving_mechanism = () ->
   $( 'form.sd-form' ).each ( i, form ) ->
     add_form_listeners( form )
@@ -178,9 +185,19 @@ updateSectionFlag = (domEl) ->
 
 $(document).on 'click', '.status-switch', ->
   if this.id[0] != 5
-    StatusChecker.highlight_empty()
-    updateSectionFlag this
+    if not StatusChecker.check_status()
+      $('#status-check-modal').foundation("open");
+    else
+      updateSectionFlag this
   return
+
+$(document).on 'click', '#abort-status-switch', ->
+  StatusChecker.highlight_empty()
+  $('#status-check-modal').foundation("close");
+
+$(document).on 'click', '#confirm-status-switch', ->
+  updateSectionFlag $( '.status-switch' )[0]
+  $('#status-check-modal').foundation("close");
 
 check = (panelNumber, status) ->
   `var check`
