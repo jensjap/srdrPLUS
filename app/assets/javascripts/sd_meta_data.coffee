@@ -30,8 +30,6 @@ class StatusChecker
       if StatusChecker.input_empty( elem )
         $( elem ).addClass( 'empty-input' )
 
-  
-
 validate_and_send_async_form = ( form ) ->
   if not validate_form_inputs( form )
     return
@@ -180,6 +178,7 @@ updateSectionFlag = (domEl) ->
 
 $(document).on 'click', '.status-switch', ->
   if this.id[0] != 5
+    StatusChecker.highlight_empty()
     updateSectionFlag this
   return
 
