@@ -23,7 +23,7 @@ class StatusChecker
     return !$( input ).val()
 
   @get_all_inputs: ( ) ->
-    return $( 'input, select, textarea' )
+    return $( 'input:not(.select2-search__field), select, textarea' )
 
   @check_status: ( ) ->
     for elem in StatusChecker.get_all_inputs()
@@ -185,7 +185,7 @@ updateSectionFlag = (domEl) ->
 
 $(document).on 'click', '.status-switch', ->
   if this.id[0] != 5
-    if not StatusChecker.check_status()
+    if not (StatusChecker.check_status() || $(this).hasClass( 'completed' ))
       $('#status-check-modal').foundation("open");
     else
       updateSectionFlag this

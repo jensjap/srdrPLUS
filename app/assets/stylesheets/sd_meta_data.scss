@@ -396,13 +396,17 @@ body.sd_meta_data {
   }
 
   .empty-input {
-    background-color: blue !important;
+    border: solid 2px #ff5e00 !important;
+    background-color: #faeee6 !important;
   }
   #status-check-modal {
     text-align: center;
     font-size: larger;
 
     #status-check-modal-buttons {
+      .confirm {
+        background-color: #30c769;
+      }
       .button {
         margin: 0 1rem 0 1rem;
       }
