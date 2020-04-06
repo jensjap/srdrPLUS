@@ -128,9 +128,6 @@ document.addEventListener 'turbolinks:load', ->
 
         color = "#E8DAEF"
         $.each a_dict[ "counts" ], ( value, count ) ->
-          console.log value + ', ' + count
-          console.log a_dict[ "consolidated_value" ]
-          console.log a_dict[ "consolidated_elem" ]
           if count != number_of_extractions
             if a_dict[ "consolidated_value" ] != ""
               color = "#D1F2EB"

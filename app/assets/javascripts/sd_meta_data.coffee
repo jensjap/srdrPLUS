@@ -136,6 +136,8 @@ add_form_listeners =( form ) ->
   formId = $form.attr( 'id' )
   
   $form.find( 'select, input[type="file"]' ).on 'change', ( e ) ->
+    if !!$(e.target).val()
+      $(e.target).removeClass('empty-input')
     e.preventDefault()
     # Mark form as 'dirty'.
     $form.addClass( 'dirty' )
@@ -151,6 +153,8 @@ add_form_listeners =( form ) ->
 
   # Text Field.
   $form.find('input[type="text"], textarea').keyup ( e ) ->
+    if !!$(e.target).val()
+      $(e.target).removeClass('empty-input')
     e.preventDefault()
 
     # Ignore 'keyup' for a list of keys.
@@ -170,6 +174,9 @@ bind_srdr20_saving_mechanism = () ->
     $cocoon_container.on 'sd:form-loaded', ( e ) ->
       add_form_listeners( $cocoon_container.children( 'form' ) )
       apply_all_select2()
+      StatusChecker.get_all_inputs().each () ->
+        this.style.height = ""
+        this.style.height = this.scrollHeight + "px" 
   
 updateSectionFlag = (domEl) ->
   sectionId = domEl.id[0]
@@ -233,5 +240,9 @@ document.addEventListener 'turbolinks:load', ->
     initializeSwitches()
     bind_srdr20_saving_mechanism()
     apply_all_select2()
+    StatusChecker.get_all_inputs().each () ->
+      this.style.height = ""
+      this.style.height = this.scrollHeight + "px" 
+
 
   return  # END document.addEventListener 'turbolinks:load', ->
