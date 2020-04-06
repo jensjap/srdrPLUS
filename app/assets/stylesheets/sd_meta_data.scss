@@ -252,6 +252,14 @@ body.sd_meta_data {
 
 
   .sd-inner {
+    .sd-inner {
+      background: #997bb133;
+      border: solid 1px #d0c9d0;
+
+      &:hover {
+        background: #997bb155;
+      }
+    }
     margin: 1.2rem 1.2rem 1.2rem 1.2rem; 
     background-color: #f3eff3; 
     border-radius: 0.1rem;
@@ -389,5 +397,16 @@ body.sd_meta_data {
 
   .empty-input {
     background-color: blue !important;
+  }
+  #status-check-modal {
+    text-align: center;
+    font-size: larger;
+
+    #status-check-modal-buttons {
+      .button {
+        margin: 0 1rem 0 1rem;
+      }
+      margin: 1rem;
+    }
   }
 }
