@@ -26,3 +26,16 @@ button.close-button data-close='' aria-label='Close modal' type='button'
   /= f.association :measures, as: :check_boxes, collection: @options
 
   = f.submit
+
+javascript:
+  $( 'table.dependence-selector tr' ).each( function( index ) {
+    var input = $( this ).find( 'td:first input' )
+
+    input.change( function( event ) {
+      if ( this.checked ) {
+        $( this ).closest( 'tr' ).find( 'td' ).each( function() {
+          $( this ).find( 'input' ).prop( 'checked', true )
+        } )
+      }
+    } );
+  } );
