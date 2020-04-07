@@ -606,44 +606,52 @@
     continuous: available
 - 
   name: "Adjusted for: "
-  provider_names: "Odds Ratio, Adjusted (adjOR)"
+  provider_names: ~
   result_statistic_section_types:
     - "Between Arm Comparisons"
   type1_types:
     categorical: available
     continuous: available
-- 
-  name: "Adjusted for: "
-  provider_names: "Risk Ratio, Adjusted (adjRR)"
-  result_statistic_section_types:
-    - "Between Arm Comparisons"
-  type1_types:
-    categorical: available
-    continuous: available
-- 
-  name: "Adjusted for: "
-  provider_names: "Incidence Rate Ratio, Adjusted (adjIRR)"
-  result_statistic_section_types:
-    - "Between Arm Comparisons"
-  type1_types:
-    categorical: available
-    continuous: available
-- 
-  name: "Adjusted for: "
-  provider_names: "Hazard Ratio, Adjusted (adjHR)"
-  result_statistic_section_types:
-    - "Between Arm Comparisons"
-  type1_types:
-    categorical: available
-    continuous: available
-- 
-  name: "Adjusted for: "
-  provider_names: "Risk Difference, Adjusted (adjRD)"
-  result_statistic_section_types:
-    - "Between Arm Comparisons"
-  type1_types:
-    categorical: available
-    continuous: available
+#- 
+#  name: "Adjusted for: "
+#  provider_names: "Odds Ratio, Adjusted (adjOR)"
+#  result_statistic_section_types:
+#    - "Between Arm Comparisons"
+#  type1_types:
+#    categorical: available
+#    continuous: available
+#- 
+#  name: "Adjusted for: "
+#  provider_names: "Risk Ratio, Adjusted (adjRR)"
+#  result_statistic_section_types:
+#    - "Between Arm Comparisons"
+#  type1_types:
+#    categorical: available
+#    continuous: available
+#- 
+#  name: "Adjusted for: "
+#  provider_names: "Incidence Rate Ratio, Adjusted (adjIRR)"
+#  result_statistic_section_types:
+#    - "Between Arm Comparisons"
+#  type1_types:
+#    categorical: available
+#    continuous: available
+#- 
+#  name: "Adjusted for: "
+#  provider_names: "Hazard Ratio, Adjusted (adjHR)"
+#  result_statistic_section_types:
+#    - "Between Arm Comparisons"
+#  type1_types:
+#    categorical: available
+#    continuous: available
+#- 
+#  name: "Adjusted for: "
+#  provider_names: "Risk Difference, Adjusted (adjRD)"
+#  result_statistic_section_types:
+#    - "Between Arm Comparisons"
+#  type1_types:
+#    categorical: available
+#    continuous: available
 - 
   name: "P value (net difference)"
   provider_names: ~
@@ -702,12 +710,20 @@
     continuous: available
 - 
   name: "Adjusted for: "
-  provider_names: "Net Mean Difference, Adjusted (adjNMD)"
+  provider_names: ~
   result_statistic_section_types:
     - "NET Change"
   type1_types:
     categorical: false
     continuous: available
+#- 
+#  name: "Adjusted for: "
+#  provider_names: "Net Mean Difference, Adjusted (adjNMD)"
+#  result_statistic_section_types:
+#    - "NET Change"
+#  type1_types:
+#    categorical: false
+#    continuous: available
 # Diagnostic Test Results Measures
 - 
   name: "# of participants recruited"
