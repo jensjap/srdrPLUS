@@ -7,15 +7,16 @@
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
 class Timekeeper
+  @focused_elem
   @_timer_dict: {}
 
-  @create_timer_for_form: ( form ) -> 
+  @create_timer_for_form: ( form, duration ) -> 
     formId = form.getAttribute( 'id' )
     if formId of @_timer_dict
       clearTimeout( @_timer_dict[formId] )
     @_timer_dict[ formId ] = setTimeout -> 
       validate_and_send_async_form( form )
-    , 375
+    , duration
     @_timer_dict[ formId ] 
 
 class StatusChecker
@@ -42,6 +43,8 @@ class StatusChecker
 validate_and_send_async_form = ( form ) ->
   if not validate_form_inputs( form )
     return
+  Timekeeper.focused_elem_id = document.activeElement.id
+  console.log Timekeeper.focused_elem
   $( '.preview-button' ).attr( 'disabled', '' )
   send_async_form( form )
 
@@ -127,26 +130,26 @@ apply_all_select2 =() ->
   init_select2(".review_type", '/review_types')
   init_select2(".data_analysis_level", '/data_analysis_levels')
 
-  $( '.apply-select2' ).select2( placeholder: '-- Select or type other value --' )
-  $( '.sd-outcome-select2' ).select2({ tags: true, placeholder: '-- Select or type other value --' })
+  $( '.apply-select2' ).select2({selectOnClose: true, placeholder: '-- Select or type other value --'})
+  $( '.sd-outcome-select2' ).select2({ tags: true, selectOnClose: true, placeholder: '-- Select or type other value --' })
 
 add_form_listeners =( form ) ->
   $form = $( form )
   # Use this to keep track of the different timers.
   formId = $form.attr( 'id' )
   
-  $form.find( 'select, input[type="file"]' ).on 'change', ( e ) ->
+  $form.find( 'select, input[type="file"], input[type="date"]' ).on 'change', ( e ) ->
     if !!$(e.target).val()
       $(e.target).removeClass('empty-input')
     e.preventDefault()
     # Mark form as 'dirty'.
     $form.addClass( 'dirty' )
-    Timekeeper.create_timer_for_form $form[0]
+    Timekeeper.create_timer_for_form $form[0], 375
 
   $form.on 'cocoon:after-insert cocoon:after-remove', ( e ) ->
     # Mark form as 'dirty'.
     $form.addClass( 'dirty' )
-    Timekeeper.create_timer_for_form $form[0]
+    Timekeeper.create_timer_for_form $form[0], 375
 
   $( "a.remove-figure[data-remote]" ).on "ajax:success",  ( event ) ->
     $( this ).parent().closest( 'div' ).fadeOut();
@@ -165,7 +168,7 @@ add_form_listeners =( form ) ->
 
     # Mark form as 'dirty'.
     $form.addClass( 'dirty' )
-    Timekeeper.create_timer_for_form $form[0]
+    Timekeeper.create_timer_for_form $form[0], 375
 
 bind_srdr20_saving_mechanism = () ->
   $( 'form.sd-form' ).each ( i, form ) ->
@@ -174,6 +177,7 @@ bind_srdr20_saving_mechanism = () ->
     $cocoon_container.on 'sd:form-loaded', ( e ) ->
       add_form_listeners( $cocoon_container.children( 'form' ) )
       apply_all_select2()
+      $( "##{Timekeeper.focused_elem_id}" ).focus()
       StatusChecker.get_all_inputs().each () ->
         this.style.height = ""
         this.style.height = this.scrollHeight + "px" 
