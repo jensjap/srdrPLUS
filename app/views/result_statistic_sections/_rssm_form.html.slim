@@ -10,7 +10,7 @@ button.close-button data-close='' aria-label='Close modal' type='button'
         / If option[3] is blank then this is a top level measure.
         - if option[3].blank?
           tr
-            td
+            td.provider-measure-td
               = label_tag do
                 => check_box_tag 'result_statistic_section[measure_ids][]', option[1], option[2].present? ? true : false, id: "result_statistic_section_measure_ids_#{ option[1] }"
                 =< option[0]
@@ -28,14 +28,10 @@ button.close-button data-close='' aria-label='Close modal' type='button'
   = f.submit
 
 javascript:
-  $( 'table.dependence-selector tr' ).each( function( index ) {
-    var input = $( this ).find( 'td:first input' )
+  $( '.provider-measure-td input').change( function() {
+    var _checked = this.checked;
 
-    input.change( function( event ) {
-      if ( this.checked ) {
-        $( this ).closest( 'tr' ).find( 'td' ).each( function() {
-          $( this ).find( 'input' ).prop( 'checked', true )
-        } )
-      }
-    } );
-  } );
+    $( this ).closest( 'tr' ).find( 'td' ).each( function() {
+      $( this ).find( 'input' ).prop( 'checked', _checked )
+    } )
+  } )
