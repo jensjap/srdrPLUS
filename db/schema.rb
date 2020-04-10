@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_04_02_230005) do
+ActiveRecord::Schema.define(version: 2020_04_10_204904) do
 
   create_table "abstrackr_settings", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "profile_id"
@@ -1321,6 +1321,13 @@ ActiveRecord::Schema.define(version: 2020_04_02_230005) do
     t.index ["screening_option_type_id"], name: "index_screening_options_on_screening_option_type_id"
   end
 
+  create_table "sd_analysis_figures", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "sd_figurable_id"
+    t.string "sd_figurable_type"
+    t.string "p_type"
+    t.index ["sd_figurable_id", "sd_figurable_type"], name: "index_sd_analysis_figures_on_type_id"
+  end
+
   create_table "sd_analytic_frameworks", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "sd_meta_datum_id"
     t.text "name"
@@ -1470,7 +1477,6 @@ ActiveRecord::Schema.define(version: 2020_04_02_230005) do
     t.text "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "p_type"
     t.bigint "sd_result_item_id"
     t.index ["sd_result_item_id"], name: "index_sd_network_meta_analysis_results_on_sd_result_item_id"
   end
@@ -1498,7 +1504,6 @@ ActiveRecord::Schema.define(version: 2020_04_02_230005) do
     t.text "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "p_type"
     t.bigint "sd_result_item_id"
     t.index ["sd_result_item_id"], name: "index_sd_pairwise_meta_analytic_results_on_sd_result_item_id"
   end

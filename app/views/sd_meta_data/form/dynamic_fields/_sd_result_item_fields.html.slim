@@ -52,6 +52,8 @@ div
             = render 'sd_meta_data/form/dynamic_fields/sd_meta_regression_analysis_result_fields', f: sd_meta_regression_analysis_result
         div
           = link_to_add_association 'Add Meta-Regression Analysis Result', f, :sd_meta_regression_analysis_results, partial: 'sd_meta_data/form/dynamic_fields/sd_meta_regression_analysis_result_fields', class: 'add-item-link'
+div
+  = link_to_remove_association "remove", f, data: { confirm: "Are you sure?" }
 / br/
 / br/
 / fieldset

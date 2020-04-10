@@ -1,0 +1,9 @@
+.nested-fields
+  = f.input :p_type, label: 'Type', include_blank: false, input_html: { class: 'apply-select2' }, collection: ['Forest plot with summary estimate, type of model, and estimates of heterogeneity', 'Meta-analysis results table']
+  = f.input :pictures, as: :file, label: 'Figure(s)', input_html: { multiple: true }
+  - f.object.pictures.each do |picture|
+    div
+      = image_tag(picture, class: 'openable sd-image')
+      br
+      = link_to 'remove figure', delete_image_attachment_picture_path(picture.id), method: :delete, data: { confirm: 'Are you sure?' }, remote: true
+    = link_to_remove_association "remove analysis figures item", f, data: { confirm: "Are you sure?" }

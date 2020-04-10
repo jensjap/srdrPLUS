@@ -13,9 +13,11 @@
 
 class SdNetworkMetaAnalysisResult < ApplicationRecord
   include SharedSdOutcomeableMethods
+  include SharedSdFigurableMethods
   belongs_to :sd_result_item, inverse_of: :sd_network_meta_analysis_results
 
-  has_many_attached :pictures
-
+  has_many :sd_analysis_figures, as: :sd_figurable
   has_many :sd_outcomes, as: :sd_outcomeable
+
+  accepts_nested_attributes_for :sd_analysis_figures
 end
