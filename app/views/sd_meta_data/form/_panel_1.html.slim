@@ -30,7 +30,7 @@
         - @project.try(:leaders).try(:map) do |user|
           - next if user.email.include?("@test.com")
           div <b>#{[user.profile.first_name, user.profile.middle_name, user.profile.last_name].join(" ")}</b> (#{user.email})
-      .sd-item data-field-span="1"
+      /.sd-item data-field-span="1"
         label SRDR+ Project Creator
         - if @project.creator.email.include?("@test.com")
           div

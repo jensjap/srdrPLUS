@@ -72,7 +72,7 @@ validate_form_inputs = ( form ) ->
           $input_elem.parents('div.input').addClass( 'invalid-url' ) 
           is_input_valid = false
         else
-          $input_elem.val( valid_href )
+          #$input_elem.val( valid_href )
     is_form_valid = is_form_valid && is_input_valid
   return is_form_valid
 
@@ -100,6 +100,7 @@ init_select2 = (selector, url) ->
     placeholder: '-- Select or type other value --', # This wording is ambiguous
     ajax:
       url: url,
+      allowClear: true,
       dataType: 'json'
       delay: 250
       data: ( params ) ->
@@ -130,8 +131,8 @@ apply_all_select2 =() ->
   init_select2(".review_type", '/review_types')
   init_select2(".data_analysis_level", '/data_analysis_levels')
 
-  $( '.apply-select2' ).select2({selectOnClose: true, placeholder: '-- Select or type other value --'})
-  $( '.sd-outcome-select2' ).select2({ tags: true, selectOnClose: true, placeholder: '-- Select or type other value --' })
+  $( '.apply-select2' ).select2({selectOnClose: true, allowClear: true, placeholder: '-- Select or type other value --'})
+  $( '.sd-outcome-select2' ).select2({ tags: true, allowClear: true, selectOnClose: true, placeholder: '-- Select or type other value --' })
 
 add_form_listeners =( form ) ->
   $form = $( form )
@@ -144,12 +145,12 @@ add_form_listeners =( form ) ->
     e.preventDefault()
     # Mark form as 'dirty'.
     $form.addClass( 'dirty' )
-    Timekeeper.create_timer_for_form $form[0], 375
+    Timekeeper.create_timer_for_form $form[0], 750
 
   $form.on 'cocoon:after-insert cocoon:after-remove', ( e ) ->
     # Mark form as 'dirty'.
     $form.addClass( 'dirty' )
-    Timekeeper.create_timer_for_form $form[0], 375
+    Timekeeper.create_timer_for_form $form[0], 750
 
   $( "a.remove-figure[data-remote]" ).on "ajax:success",  ( event ) ->
     $( this ).parent().closest( 'div' ).fadeOut();
@@ -159,16 +160,17 @@ add_form_listeners =( form ) ->
     if !!$(e.target).val()
       $(e.target).removeClass('empty-input')
     e.preventDefault()
+    console.log "ADSF"
 
     # Ignore 'keyup' for a list of keys.
     code = e.keyCode || e.which;
-    # 9: tab; 16: shift; 37: left-arrow; 38: up-arrow; 39: right-arrow; 40: down-arrow; 18: option; 91: cmd
+    # 9: tab; 16: shift; 500: left-arrow; 38: up-arrow; 39: right-arrow; 40: down-arrow; 18: option; 91: cmd
     if code in [9, 16, 18, 37, 38, 39, 40, 91]
       return
 
     # Mark form as 'dirty'.
     $form.addClass( 'dirty' )
-    Timekeeper.create_timer_for_form $form[0], 375
+    Timekeeper.create_timer_for_form $form[0], 750
 
 bind_srdr20_saving_mechanism = () ->
   $( 'form.sd-form' ).each ( i, form ) ->
