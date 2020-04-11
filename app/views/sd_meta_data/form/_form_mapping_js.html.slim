@@ -122,7 +122,9 @@ javascript:
       var parentNode = $(`[data-reportKeyQuestionId=${sdKeyQuestionId}] .srdr-kq-target`);
       parentNode.children('.srdr-kq').remove();
     });
+    colorCode();
     update_kq_target_prompt();
+    reset_post_timer();
   };
 
   var checkMapping = function() {
