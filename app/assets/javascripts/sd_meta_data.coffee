@@ -236,7 +236,8 @@ add_form_listeners =( form ) ->
       Timekeeper.create_timer_for_form $form[0], 750
 
   $form.focusin ( e ) ->
-    if $( document.activeElement ).is('input[type="search"], input[type="text"], textarea')
+    #if $( document.activeElement ).is('input[type="search"], input[type="text"], textarea')
+    if $( document.activeElement ).is('input[type="text"], textarea')
       Timekeeper.clear_timer_for_form( $form[0] )
 
 bind_srdr20_saving_mechanism = () ->

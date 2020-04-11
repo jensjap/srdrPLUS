@@ -1,4 +1,4 @@
 .nested-fields
-  = f.association :key_question, include_blank: false, label: 'Key Question', input_html: { class: "key_question" }
-  = f.association :key_question_types, include_blank: false, label: 'Type(s)', input_html: { class: "key_question_type" }
+  = f.association :key_question, include_blank: true, label: 'Key Question', input_html: { class: "key_question" }
+  = f.association :key_question_types, include_blank: true, label: 'Type(s)', input_html: { class: "key_question_type" }
   = link_to_remove_association "remove", f, 'data-remove-key-question': 'true', class: 'trigger-autosave', data: { confirm: "Are you sure? If any SRDR+ to Report Key Question Mapping exists on the next page, they will be destroyed." }

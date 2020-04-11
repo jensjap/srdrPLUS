@@ -1,5 +1,5 @@
 .nested-fields
-  = f.input :sd_outcome_names, as: :select, collection: f.object.sd_outcome_names, label: 'Outcome(s)', include_blank: false, input_html: { class: 'sd-outcome-select2', multiple: true }
+  = f.input :sd_outcome_names, as: :select, collection: f.object.sd_outcome_names, label: 'Outcome(s)', include_blank: true, input_html: { class: 'sd-outcome-select2', multiple: true }
   = f.input :name, label: 'Description', input_html: { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
   div
     = f.simple_fields_for :sd_analysis_figures do |sd_analysis_figure|

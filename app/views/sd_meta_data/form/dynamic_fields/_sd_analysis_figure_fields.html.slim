@@ -1,5 +1,5 @@
 .nested-fields
-  = f.input :p_type, label: 'Type', include_blank: false, input_html: { class: 'apply-select2' }, collection: ['Forest plot with summary estimate, type of model, and estimates of heterogeneity', 'Meta-analysis results table']
+  = f.input :p_type, label: 'Type', include_blank: true, input_html: { class: 'apply-select2' }, collection: ['Forest plot with summary estimate, type of model, and estimates of heterogeneity', 'Meta-analysis results table']
   = f.input :pictures, as: :file, label: 'Figure(s)', input_html: { multiple: true }
   - f.object.pictures.each do |picture|
     div
