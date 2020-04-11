@@ -3,6 +3,6 @@
   = f.simple_fields_for :sd_journal_article_urls do |sd_journal_article_url|
     .sd-item.sd-inner
       = render 'sd_meta_data/form/dynamic_fields/sd_journal_article_url_fields', f: sd_journal_article_url
-  div
+  div class="#{ f.object.sd_journal_article_urls.present? ? '' : 'zero-nested-associations'}"
     = link_to_add_association 'Add URL', f, :sd_journal_article_urls, partial: 'sd_meta_data/form/dynamic_fields/sd_journal_article_url_fields', class: 'add-item-link'
 

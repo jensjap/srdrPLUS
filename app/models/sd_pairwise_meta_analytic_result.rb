@@ -12,6 +12,7 @@
 #
 
 class SdPairwiseMetaAnalyticResult < ApplicationRecord
+  include SharedSdOutcomeableMethods
   include SharedSdFigurableMethods
 
   belongs_to :sd_result_item, inverse_of: :sd_pairwise_meta_analytic_results

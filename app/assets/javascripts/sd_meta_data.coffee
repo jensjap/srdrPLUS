@@ -40,22 +40,30 @@ class StatusChecker
     return true
 
   @check_status: ( ) ->
+    if $( '.zero-nested-associations' ).length > 0
+      return false
+
     for elem in StatusChecker.get_all_inputs()
       if StatusChecker.input_empty( elem )
         return false
     return true
 
   @remove_highlights: ( ) ->
+    $( '.empty-associations' ).removeClass( 'empty-associations' )
     $( '.empty-input' ).removeClass( 'empty-input' )
     $( '.empty-kq' ).removeClass( 'empty-kq' )
 
   @highlight_empty: ( ) ->
+    #kq-mapping
     StatusChecker.get_all_unmapped_srdr_kq().addClass( 'empty-kq' )
     StatusChecker.get_all_unmapped_report_kq().addClass( 'empty-kq' )
+    #inputs
     for elem in StatusChecker.get_all_inputs()
       if StatusChecker.input_empty( elem )
         completeable = false
         $( elem ).addClass( 'empty-input' )
+    #associations
+    $( '.zero-nested-associations a' ).addClass( 'empty-associations' )
 
   @initialize_listeners: ( ) ->
     $( '#status-check-modal[data-reveal]' ).on 'open.zf.reveal', ( e ) ->

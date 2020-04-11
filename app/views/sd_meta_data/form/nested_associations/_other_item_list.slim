@@ -3,6 +3,7 @@
   = f.simple_fields_for :sd_other_items do |sd_other_item|
     .sd-item.sd-inner
       = render 'sd_meta_data/form/dynamic_fields/sd_other_item_fields', f: sd_other_item
-  div
+  /div class="#{ f.object..present? ? '' : 'zero-nested-associations'}"
+  div class="#{ f.object.sd_other_items.present? ? '' : 'zero-nested-associations'}"
     = link_to_add_association 'Add Item', f, :sd_other_items, partial: 'sd_meta_data/form/dynamic_fields/sd_other_item_fields', class: 'add-item-link'
 
