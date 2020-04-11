@@ -10,10 +10,14 @@ class Timekeeper
   @focused_elem
   @_timer_dict: {}
 
-  @create_timer_for_form: ( form, duration ) -> 
+  @clear_timer_for_form: ( form ) -> 
     formId = form.getAttribute( 'id' )
     if formId of @_timer_dict
       clearTimeout( @_timer_dict[formId] )
+
+  @create_timer_for_form: ( form, duration ) -> 
+    Timekeeper.clear_timer_for_form( form )
+    formId = form.getAttribute( 'id' )
     @_timer_dict[ formId ] = setTimeout -> 
       validate_and_send_async_form( form )
     , duration
@@ -223,7 +227,17 @@ add_form_listeners =( form ) ->
 
     # Mark form as 'dirty'.
     $form.addClass( 'dirty' )
-    Timekeeper.create_timer_for_form $form[0], 750
+    #Timekeeper.create_timer_for_form $form[0], 750
+
+  $form.focusout ( e ) ->
+    #if $( document.activeElement ).is('*:not(input[type="text"],input[type="text"], textarea)')
+    #  console.log ( document.activeElement )
+    if $form.is( '.dirty' )
+      Timekeeper.create_timer_for_form $form[0], 750
+
+  $form.focusin ( e ) ->
+    if $( document.activeElement ).is('input[type="search"], input[type="text"], textarea')
+      Timekeeper.clear_timer_for_form( $form[0] )
 
 bind_srdr20_saving_mechanism = () ->
   $( 'form.sd-form' ).each ( i, form ) ->
@@ -232,7 +246,7 @@ bind_srdr20_saving_mechanism = () ->
     $cocoon_container.on 'sd:form-loaded', ( e ) ->
       add_form_listeners( $cocoon_container.children( 'form' ) )
       apply_all_select2()
-      $( "##{Timekeeper.focused_elem_id}" ).focus()
+      #$( "##{Timekeeper.focused_elem_id}" ).focus()
       StatusChecker.get_all_inputs().each () ->
         this.style.height = ""
         this.style.height = this.scrollHeight + "px" 
@@ -279,7 +293,6 @@ initializeSwitches = ->
 document.addEventListener 'turbolinks:load', ->
   do ->
     return if $('body.sd_meta_data').length == 0
-
     StatusChecker.initialize_listeners()
     initializeSwitches()
     bind_srdr20_saving_mechanism()
