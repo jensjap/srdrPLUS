@@ -29,7 +29,6 @@ class StatusChecker
   @check_status: ( ) ->
     for elem in StatusChecker.get_all_inputs()
       if StatusChecker.input_empty( elem )
-        console.log elem
         return false
     return true
 
@@ -41,11 +40,35 @@ class StatusChecker
         $( elem ).addClass( 'empty-input' )
     return completeable
 
+  @initialize_listeners: ( ) ->
+    $( '#status-check-modal[data-reveal]' ).on 'open.zf.reveal', ( e ) ->
+      StatusChecker.highlight_empty()
+    $( document ).keyup ( e ) ->
+      if not $('#status-check-modal').is(':visible')
+        console.log( 'LAYLAY' )
+        return
+      code = e.keyCode || e.which;
+      if code in [13] 
+        $( '#confirm-status-switch' ).click()
+        return
+    $( document ).on 'click', '.status-switch', ->
+      if this.id[0] != 5
+        if not (StatusChecker.check_status() || $(this).hasClass( 'completed' ))
+          $('#status-check-modal').foundation("open");
+        else
+          updateSectionFlag this
+      return
+    $( document ).on 'click', '#abort-status-switch', ->
+      $('#status-check-modal').foundation("close");
+    $( document ).on 'click', '#confirm-status-switch', ->
+      $( '.empty-input' ).removeClass( 'empty-input' )
+      updateSectionFlag $( '.status-switch' )[0]
+      $('#status-check-modal').foundation("close");
+
 validate_and_send_async_form = ( form ) ->
   if not validate_form_inputs( form )
     return
   Timekeeper.focused_elem_id = document.activeElement.id
-  console.log Timekeeper.focused_elem
   $( '.preview-button' ).attr( 'disabled', '' )
   send_async_form( form )
 
@@ -139,7 +162,7 @@ add_form_listeners =( form ) ->
   $form = $( form )
   # Use this to keep track of the different timers.
   formId = $form.attr( 'id' )
-  
+
   $form.find( 'select, input[type="file"], input[type="date"]' ).on 'change', ( e ) ->
     if !!$(e.target).val()
       $(e.target).removeClass('empty-input')
@@ -161,7 +184,6 @@ add_form_listeners =( form ) ->
     if !!$(e.target).val()
       $(e.target).removeClass('empty-input')
     e.preventDefault()
-    console.log "ADSF"
 
     # Ignore 'keyup' for a list of keys.
     code = e.keyCode || e.which;
@@ -197,22 +219,6 @@ updateSectionFlag = (domEl) ->
     return
   return
 
-$(document).on 'click', '.status-switch', ->
-  if this.id[0] != 5
-    if not (StatusChecker.check_status() || $(this).hasClass( 'completed' ))
-      $('#status-check-modal').foundation("open");
-    else
-      updateSectionFlag this
-  return
-
-$(document).on 'click', '#abort-status-switch', ->
-  StatusChecker.highlight_empty()
-  $('#status-check-modal').foundation("close");
-
-$(document).on 'click', '#confirm-status-switch', ->
-  updateSectionFlag $( '.status-switch' )[0]
-  $('#status-check-modal').foundation("close");
-
 check = (panelNumber, status) ->
   `var check`
   if status == true or status == 'true'
@@ -244,6 +250,7 @@ document.addEventListener 'turbolinks:load', ->
   do ->
     return if $('body.sd_meta_data').length == 0
 
+    StatusChecker.initialize_listeners()
     initializeSwitches()
     bind_srdr20_saving_mechanism()
     apply_all_select2()
