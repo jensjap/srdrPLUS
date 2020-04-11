@@ -26,10 +26,16 @@ class StatusChecker
   @get_all_inputs: ( ) ->
     return $( 'input:not([type="hidden"], .select2-search__field), select, textarea' )
 
+  @get_all_unmapped_srdr_kq: () ->
+    return $('.srdr-key-questions-box').find( '.srdr-kq:not(".kq-mapped")' )
+
+  @get_all_unmapped_report_kq: () ->
+    return $('.report-key-questions-box').find( '.srdr-kq-target-prompt:not(".hide")' ).parents('.report-kq')
+
   @check_kq_mapping_status: ( ) ->
-    if $('.srdr-key-questions-box').find( '.srdr-kq:not(".kq-mapped")' ).length > 0
+    if StatusChecker.get_all_unmapped_srdr_kq().length > 0
       return false
-    if $('.report-key-questions-box').find( '.srdr-kq-target-prompt:not(".hide")' ).length > 0
+    if StatusChecker.get_all_unmapped_report_kq().length > 0
       return false
     return true
 
@@ -39,13 +45,17 @@ class StatusChecker
         return false
     return true
 
+  @remove_highlights: ( ) ->
+    $( '.empty-input' ).removeClass( 'empty-input' )
+    $( '.empty-kq' ).removeClass( 'empty-kq' )
+
   @highlight_empty: ( ) ->
-    completeable = true
+    StatusChecker.get_all_unmapped_srdr_kq().addClass( 'empty-kq' )
+    StatusChecker.get_all_unmapped_report_kq().addClass( 'empty-kq' )
     for elem in StatusChecker.get_all_inputs()
       if StatusChecker.input_empty( elem )
         completeable = false
         $( elem ).addClass( 'empty-input' )
-    return completeable
 
   @initialize_listeners: ( ) ->
     $( '#status-check-modal[data-reveal]' ).on 'open.zf.reveal', ( e ) ->
@@ -73,7 +83,7 @@ class StatusChecker
     $( document ).on 'click', '#abort-status-switch', ->
       $('#status-check-modal').foundation("close");
     $( document ).on 'click', '#confirm-status-switch', ->
-      $( '.empty-input' ).removeClass( 'empty-input' )
+      StatusChecker.remove_highlights()
       updateSectionFlag $( '.status-switch' )[0]
       $('#status-check-modal').foundation("close");
 
@@ -177,7 +187,7 @@ add_form_listeners =( form ) ->
 
   $form.find( 'select, input[type="file"], input[type="date"]' ).on 'change', ( e ) ->
     if !!$(e.target).val()
-      $(e.target).removeClass('empty-input')
+      StatusChecker.remove_highlights()
     e.preventDefault()
     # Mark form as 'dirty'.
     $form.addClass( 'dirty' )
@@ -194,7 +204,7 @@ add_form_listeners =( form ) ->
   # Text Field.
   $form.find('input[type="text"], textarea').keyup ( e ) ->
     if !!$(e.target).val()
-      $(e.target).removeClass('empty-input')
+      StatusChecker.remove_highlights()
     e.preventDefault()
 
     # Ignore 'keyup' for a list of keys.

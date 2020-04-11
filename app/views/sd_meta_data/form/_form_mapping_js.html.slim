@@ -22,6 +22,8 @@ javascript:
   }
 
   var colorCode = function() {
+    $( '.srdr-kq.kq-mapped' ).removeClass( 'empty-kq' );
+    $('.report-key-questions-box').find( '.srdr-kq-target-prompt.hide' ).parents('.report-kq').removeClass( 'empty-kq' );
     var reportQuestions = $('.srdr-key-questions-box').children();
     reportQuestions.each(function() {
       var kqId = $(this).attr('data-keyquestionid');
@@ -112,6 +114,7 @@ javascript:
   };
 
   var resetAllMappings = function() {
+    $( '.empty-kq' ).removeClass( 'empty-kq' );
     var sdKeyQuestionIds = Object.keys(extractReportQuestions());
     sdKeyQuestionIds.forEach(function(sdKeyQuestionId) {
       resetMapping(sdKeyQuestionId);
@@ -119,6 +122,7 @@ javascript:
   };
 
   var clear_all_mappings = function() {
+    $( '.empty-kq' ).removeClass( 'empty-kq' );
     var sdKeyQuestionIds = Object.keys(extractReportQuestions());
     sdKeyQuestionIds.forEach(function(sdKeyQuestionId) {
       var parentNode = $(`[data-reportKeyQuestionId=${sdKeyQuestionId}] .srdr-kq-target`);
@@ -183,7 +187,6 @@ javascript:
   }
 
   var initialize = function () {
-    colorCode();
     $(document).on('dragend', '.draggable', function(ev) {
       colorCode();
     })
@@ -223,6 +226,7 @@ javascript:
       $( ev.target ).closest( '.report-kq' ).find( '.srdr-kq-target' )[ 0 ].appendChild(nodeCopy);
       update_kq_target_prompt();
       reset_post_timer();
+      colorCode();
     })
     colorCode();
   }
