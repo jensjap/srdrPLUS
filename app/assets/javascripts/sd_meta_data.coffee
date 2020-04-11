@@ -24,11 +24,12 @@ class StatusChecker
     return !$( input ).val()
 
   @get_all_inputs: ( ) ->
-    return $( 'input:not(.select2-search__field), select, textarea' )
+    return $( 'input:not([type="hidden"], .select2-search__field), select, textarea' )
 
   @check_status: ( ) ->
     for elem in StatusChecker.get_all_inputs()
       if StatusChecker.input_empty( elem )
+        console.log elem
         return false
     return true
 
