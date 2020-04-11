@@ -26,6 +26,13 @@ class StatusChecker
   @get_all_inputs: ( ) ->
     return $( 'input:not([type="hidden"], .select2-search__field), select, textarea' )
 
+  @check_kq_mapping_status: ( ) ->
+    if $('.srdr-key-questions-box').find( '.srdr-kq:not(".kq-mapped")' ).length > 0
+      return false
+    if $('.report-key-questions-box').find( '.srdr-kq-target-prompt:not(".hide")' ).length > 0
+      return false
+    return true
+
   @check_status: ( ) ->
     for elem in StatusChecker.get_all_inputs()
       if StatusChecker.input_empty( elem )
@@ -45,18 +52,23 @@ class StatusChecker
       StatusChecker.highlight_empty()
     $( document ).keyup ( e ) ->
       if not $('#status-check-modal').is(':visible')
-        console.log( 'LAYLAY' )
         return
       code = e.keyCode || e.which;
       if code in [13] 
         $( '#confirm-status-switch' ).click()
         return
     $( document ).on 'click', '.status-switch', ->
-      if this.id[0] != 5
+      if this.id[0] != "5"
         if not (StatusChecker.check_status() || $(this).hasClass( 'completed' ))
-          $('#status-check-modal').foundation("open");
+          $('#status-check-modal').foundation("open")
         else
           updateSectionFlag this
+      else
+        if not (StatusChecker.check_kq_mapping_status() || $(this).hasClass( 'completed' ))
+          $('#status-check-modal').foundation("open")
+        else
+          updateSectionFlag this
+        
       return
     $( document ).on 'click', '#abort-status-switch', ->
       $('#status-check-modal').foundation("close");

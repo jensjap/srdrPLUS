@@ -27,9 +27,11 @@ javascript:
       var kqId = $(this).attr('data-keyquestionid');
       var allKqItems = $(`*[data-keyquestionid=${kqId}]`);
       if (allKqItems.length === 1) {
-        allKqItems.css('background-color', '#493163');
+        allKqItems.removeClass('kq-mapped')
+        //allKqItems.css('background-color', '#493163');
       } else if (allKqItems.length > 1) {
-        allKqItems.css('background-color', '#38969a');
+        allKqItems.addClass('kq-mapped')
+        //allKqItems.css('background-color', '#38969a');
       }
     })
   }
@@ -181,9 +183,7 @@ javascript:
   }
 
   var initialize = function () {
-    $('.draggable').each(function() {
-      colorCode();
-    })
+    colorCode();
     $(document).on('dragend', '.draggable', function(ev) {
       colorCode();
     })
@@ -226,27 +226,6 @@ javascript:
     })
     colorCode();
   }
-
-  $(document).on('click', '#5-yes-no-section', function() {
-    //reportMissingKqs();
-    var sectionId = this.id[0];
-    var mappings = checkMapping();
-    var emptyReportQuestions = mappings.emptyReportQuestions;
-    var emptySrdrQuestions = mappings.emptySrdrQuestions;
-    var anyMissingKqs = emptyReportQuestions.length > 0 || emptySrdrQuestions.length > 0;
-
-    if (this.checked == false) {
-      updateSectionFlag(this);
-    } else if (anyMissingKqs && this.checked) {
-      if (confirm('There are still some Key Questions that have not been mapped.  You may press OK to mark this section finished anyway.')) {
-        updateSectionFlag(this);
-      } else {
-        this.checked = false;
-      }
-    } else {
-      updateSectionFlag(this);
-    }
-  });
 
   $(window).on('beforeunload', function () {
     postMappings();
