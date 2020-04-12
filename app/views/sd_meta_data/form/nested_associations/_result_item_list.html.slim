@@ -4,4 +4,4 @@
     .sd-item.sd-inner 
       = render 'sd_meta_data/form/dynamic_fields/sd_result_item_fields', f: f
   div class="#{ g.object.sd_result_items.present? ? '' : 'zero-nested-associations'}"
-    = link_to_add_association 'Add Result Item', g, :sd_result_items, partial: 'sd_meta_data/form/dynamic_fields/sd_result_item_fields', class: 'add-item-link'
+    = link_to_add_association 'Add Results for Another Key Question', g, :sd_result_items, partial: 'sd_meta_data/form/dynamic_fields/sd_result_item_fields', class: 'add-item-link'

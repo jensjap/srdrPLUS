@@ -3,7 +3,7 @@
     legend Study Results
     div data-row-span="1"
       div data-field-span="1"
-        label Result Items
+        label Results by Key Questions
         - if @sd_meta_datum.sd_result_items.empty?
           div -----
         - else
@@ -19,7 +19,7 @@
 
               div data-row-span="1"
                 div data-field-span="1"
-                  label Narrative Results
+                  label Narrative Results by Outcome
                   - if result_item.sd_narrative_results.empty?
                     div -----
                   - else
@@ -35,7 +35,7 @@
                                 li = sd_outcome_name
                         div data-row-span="1"
                           div data-field-span="1"
-                            label Narrative Results
+                            label Narrative Results (Overall)
                             div = narr.narrative_results.present? ? simple_format(narr.narrative_results) : '-----'
                         div data-row-span="1"
                           div data-field-span="1"
@@ -77,7 +77,7 @@
 
               div data-row-span="1"
                 div data-field-span="1"
-                  label Pairwise Meta Analysis
+                  label Pairwise Meta-analyses
                   - if result_item.sd_pairwise_meta_analytic_results.empty?
                     div -----
                   - else
@@ -109,7 +109,7 @@
 
               div data-row-span="1"
                 div data-field-span="1"
-                  label Network Meta Analysis
+                  label Network Meta-analyses
                   - if result_item.sd_network_meta_analysis_results.empty?
                     div -----
                   - else
@@ -141,7 +141,7 @@
 
               div data-row-span="1"
                 div data-field-span="1"
-                  label Meta-regression Analysis Results
+                  label Meta-regression Results
                   - if result_item.sd_meta_regression_analysis_results.empty?
                     div -----
                   - else

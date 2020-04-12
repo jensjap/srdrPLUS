@@ -209,8 +209,8 @@ end
           { sd_result_items_attributes: [:sd_key_question_id, :_destroy, :id, 
             { sd_narrative_results_attributes: [:narrative_results, :narrative_results_by_population, :narrative_results_by_intervention, :_destroy, :id, sd_outcome_names: []] },
             { sd_evidence_tables_attributes: [:name, :_destroy, :id, :picture, sd_outcome_names: []] },
-            { sd_network_meta_analysis_results_attributes: [:name, :_destroy, :id, { sd_analysis_figures_attributes: [:id, :p_type, { pictures: [] }] }, sd_outcome_names: []] },
-            { sd_pairwise_meta_analytic_results_attributes: [:name, :_destroy, :id, { sd_analysis_figures_attributes: [:id, :p_type, { pictures: [] }] }, sd_outcome_names: []] },
+            { sd_network_meta_analysis_results_attributes: [:name, :_destroy, :id, { sd_analysis_figures_attributes: [:id,:_destroy, :p_type, { pictures: [] }] }, sd_outcome_names: []] },
+            { sd_pairwise_meta_analytic_results_attributes: [:name, :_destroy, :id, { sd_analysis_figures_attributes: [:id, :_destroy, :p_type, { pictures: [] }] }, sd_outcome_names: []] },
             { sd_meta_regression_analysis_results_attributes: [:name, :_destroy, :id, :picture, sd_outcome_names: []] }] },
           { sd_summary_of_evidences_attributes: [:soe_type, :sd_key_question_id, :name, :_destroy, :id, pictures: []] }
 

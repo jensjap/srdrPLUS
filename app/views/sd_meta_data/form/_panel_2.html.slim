@@ -71,7 +71,7 @@
           = f.input :disposition_of_comments_link, as: :string, label: 'Disposition of Comments', input_html: { class: 'url-input' }
       .sd-item data-field-span="1"
         = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
-          = f.input :srdr_data_link, as: :string, label: 'Data (in SRDR)', input_html: { class: 'url-input' }
+          = f.input :srdr_data_link, as: :string, label: 'Downloadable Content', input_html: { class: 'url-input' }
     div data-row-span="2"
       .sd-item data-field-span="1"
         = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|

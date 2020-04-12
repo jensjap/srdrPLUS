@@ -18,5 +18,5 @@ class SdNetworkMetaAnalysisResult < ApplicationRecord
   has_many :sd_analysis_figures, as: :sd_figurable
   has_many :sd_outcomes, as: :sd_outcomeable
 
-  accepts_nested_attributes_for :sd_analysis_figures
+  accepts_nested_attributes_for :sd_analysis_figures, allow_destroy: true
 end
