@@ -13,7 +13,7 @@ namespace :result_statistic_section_tasks do
       "Descriptive Statistics"  => ResultStatisticSectionType.find_by(name: "Descriptive Statistics").id,
       "Between Arm Comparisons" => ResultStatisticSectionType.find_by(name: "Between Arm Comparisons").id,
       "Within Arm Comparisons"  => ResultStatisticSectionType.find_by(name: "Within Arm Comparisons").id,
-      "NET Change"              => ResultStatisticSectionType.find_by(name: "NET Change").id,
+      "Net Difference"          => ResultStatisticSectionType.find_by(name: "NET Change").id,
       "Diagnostic Test Descriptive Statistics"       => ResultStatisticSectionType.find_by(name: "Diagnostic Test Descriptive Statistics").id,
       "Diagnostic Test -placeholder for AUC and Q*-" => ResultStatisticSectionType.find_by(name: "Diagnostic Test -placeholder for AUC and Q*-").id,
       "Diagnostic Test 2x2 Table"                    => ResultStatisticSectionType.find_by(name: "Diagnostic Test 2x2 Table").id,
