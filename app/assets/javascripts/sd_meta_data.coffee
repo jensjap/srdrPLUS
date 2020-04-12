@@ -99,6 +99,18 @@ class StatusChecker
       updateSectionFlag $( '.status-switch' )[0]
       $('#status-check-modal').foundation("close");
 
+class Select2Helper
+  @copy_sd_outcome_names: ( ) ->
+    sd_outcome_option_set = new Set()
+    $( '.sd-outcome-select2 option' ).each ( i, option_elem ) ->
+      if option_elem.text != ''
+        sd_outcome_option_set.add( option_elem.text )
+    $( '.sd-outcome-select2' ).each ( i, select2_elem ) ->
+      sd_outcome_option_set.forEach ( key, option_text, sd_outcome_option_set ) ->
+        if not $( select2_elem ).find("option[value='" + option_text + "']").length 
+          newOption = new Option( option_text, option_text, false, false)
+          $( select2_elem ).append( newOption ).trigger( 'change.select2' )
+
 validate_and_send_async_form = ( form ) ->
   if not validate_form_inputs( form )
     return
@@ -189,8 +201,16 @@ apply_all_select2 =() ->
   init_select2(".review_type", '/review_types')
   init_select2(".data_analysis_level", '/data_analysis_levels')
 
-  $( '.apply-select2' ).select2({selectOnClose: true, allowClear: true, placeholder: '-- Select or type other value --'})
-  $( '.sd-outcome-select2' ).select2({ tags: true, allowClear: true, selectOnClose: true, placeholder: '-- Select or type other value --' })
+  $( '.apply-select2' ).select2
+    selectOnClose: true, 
+    allowClear: true, 
+    placeholder: '-- Select or type other value --'
+
+  $( '.sd-outcome-select2' ).select2
+    tags: true,
+    allowClear: true,
+    selectOnClose: true,
+    placeholder: '-- Select or type other value --'
 
   $('.sd-select2, .apply-select2, .sd-outcome-select2').on 'select2:unselecting', ( e ) ->
     $(this).on 'select2:opening', ( event ) ->
@@ -200,6 +220,8 @@ apply_all_select2 =() ->
     setTimeout( () ->
       sel.off('select2:opening');
     , 100)
+  
+  Select2Helper.copy_sd_outcome_names()
 #  $( '.sd-select2' ).on 'select2:open', ( e ) ->
 #    $( '.select2-container' ).mouseleave ( e ) ->
 #      $( '.select2-container').find('.select2-results__option--highlighted').removeClass('select2-results__option--highlighted')
@@ -263,7 +285,8 @@ bind_srdr20_saving_mechanism = () ->
       StatusChecker.get_all_inputs().each () ->
         this.style.height = ""
         this.style.height = this.scrollHeight + "px" 
-  
+      Select2Helper.copy_sd_outcome_names()
+
 updateSectionFlag = (domEl) ->
   sectionId = domEl.id[0]
   #var sectionId = domEl.getAttribute('statusable-id')[domEl.getAttribute('statusable-id').length- 1];
