@@ -25,6 +25,12 @@ class Timekeeper
 
 class StatusChecker
   @input_empty: ( input ) ->
+    if $( input ).is( 'input[type=file]' )
+      console.log $( input ).closest( '.sd-inner' ).find( 'img' )
+      if $( input ).closest( '.sd-inner' ).find( 'img' ).length
+        return false
+      else
+        return true
     return !$( input ).val()
 
   @get_all_inputs: ( ) ->
@@ -57,6 +63,12 @@ class StatusChecker
     $( '.empty-input' ).removeClass( 'empty-input' )
     $( '.empty-kq' ).removeClass( 'empty-kq' )
 
+  @highlight_input: ( input ) ->
+    if $( input ).is( 'select' )
+      $( input ).parent().find( '.select2-container' ).addClass( 'empty-input' )
+    else
+      $( input ).addClass( 'empty-input' )
+
   @highlight_empty: ( ) ->
     #kq-mapping
     StatusChecker.get_all_unmapped_srdr_kq().addClass( 'empty-kq' )
@@ -65,7 +77,7 @@ class StatusChecker
     for elem in StatusChecker.get_all_inputs()
       if StatusChecker.input_empty( elem )
         completeable = false
-        $( elem ).addClass( 'empty-input' )
+        StatusChecker.highlight_input( elem )
     #associations
     $( '.zero-nested-associations a' ).addClass( 'empty-associations' )
 
