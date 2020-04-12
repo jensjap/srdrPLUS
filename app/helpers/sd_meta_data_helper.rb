@@ -4,7 +4,12 @@ module SdMetaDataHelper
       if str.is_url?
         link_to(name || str, str, target: :_blank)
       else 
-        str
+        prefixed_str = 'https://' + str
+        if prefixed_str.is_url?
+          link_to(name || prefixed_str, prefixed_str, target: :_blank)
+        else
+          str
+        end
       end
     else
       "-----"
