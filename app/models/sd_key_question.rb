@@ -14,7 +14,7 @@ class SdKeyQuestion < ApplicationRecord
   include SharedProcessTokenMethods
 
   belongs_to :sd_meta_datum, inverse_of: :sd_key_questions
-  belongs_to :key_question, inverse_of: :sd_key_questions
+  belongs_to :key_question, inverse_of: :sd_key_questions, optional: true
 
   has_many :sd_result_items, inverse_of: :sd_key_question, dependent: :destroy
   has_many :sd_key_questions_key_question_types, inverse_of: :sd_key_question, dependent: :destroy

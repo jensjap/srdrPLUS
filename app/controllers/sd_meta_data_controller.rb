@@ -212,7 +212,7 @@ end
             { sd_network_meta_analysis_results_attributes: [:name, :_destroy, :id, { sd_analysis_figures_attributes: [:id, :p_type, { pictures: [] }] }, sd_outcome_names: []] },
             { sd_pairwise_meta_analytic_results_attributes: [:name, :_destroy, :id, { sd_analysis_figures_attributes: [:id, :p_type, { pictures: [] }] }, sd_outcome_names: []] },
             { sd_meta_regression_analysis_results_attributes: [:name, :_destroy, :id, :picture, sd_outcome_names: []] }] },
-          { sd_summary_of_evidences_attributes: [:soe_type, :name, :_destroy, :id, pictures: []] }
+          { sd_summary_of_evidences_attributes: [:soe_type, :sd_key_question_id, :name, :_destroy, :id, pictures: []] }
 
         )
     end

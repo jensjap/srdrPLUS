@@ -154,11 +154,11 @@ formatResult = ( result ) ->
 init_select2 = (selector, url) ->
   $( selector ).select2
     selectOnClose: true, # use TAB and ESC to select
+    allowClear: true,
     minimumInputLength: 0,
     placeholder: '-- Select or type other value --', # This wording is ambiguous
     ajax:
       url: url,
-      allowClear: true,
       dataType: 'json'
       delay: 250
       data: ( params ) ->
@@ -191,6 +191,18 @@ apply_all_select2 =() ->
 
   $( '.apply-select2' ).select2({selectOnClose: true, allowClear: true, placeholder: '-- Select or type other value --'})
   $( '.sd-outcome-select2' ).select2({ tags: true, allowClear: true, selectOnClose: true, placeholder: '-- Select or type other value --' })
+
+  $('.sd-select2, .apply-select2, .sd-outcome-select2').on 'select2:unselecting', ( e ) ->
+    $(this).on 'select2:opening', ( event ) ->
+      event.preventDefault()
+  $('.sd-select2').on 'select2:unselect', ( e ) ->
+    sel = $(this)
+    setTimeout( () ->
+      sel.off('select2:opening');
+    , 100)
+#  $( '.sd-select2' ).on 'select2:open', ( e ) ->
+#    $( '.select2-container' ).mouseleave ( e ) ->
+#      $( '.select2-container').find('.select2-results__option--highlighted').removeClass('select2-results__option--highlighted')
 
 add_form_listeners =( form ) ->
   $form = $( form )

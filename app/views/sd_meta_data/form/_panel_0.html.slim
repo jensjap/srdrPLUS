@@ -19,7 +19,7 @@
     div data-row-span="1"
       .sd-item data-field-span="1"
         = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
-          = f.association :funding_sources, include_blank: false, label: 'Funding Source'
+          = f.association :funding_sources, include_blank: false, label: 'Funding Source', input_html: { class: 'sd-select2' }
     div data-row-span="3"
       .sd-item data-field-span="1"
         = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
