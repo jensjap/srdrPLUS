@@ -105,6 +105,7 @@ class StatusChecker
         
       return
     $( document ).on 'click', '#abort-status-switch', ->
+      StatusChecker.highlight_empty()
       $('#status-check-modal').foundation("close");
     $( document ).on 'click', '#confirm-status-switch', ->
       StatusChecker.remove_highlights()
