@@ -28,10 +28,31 @@ button.close-button data-close='' aria-label='Close modal' type='button'
   = f.submit
 
 javascript:
+  // Check and Uncheck dependents when provider changes.
   $( '.provider-measure-td input').change( function() {
     var _checked = this.checked;
 
     $( this ).closest( 'tr' ).find( 'td' ).each( function() {
       $( this ).find( 'input' ).prop( 'checked', _checked )
     } )
+  } )
+
+  // If at least one of the providers containing the word "Adjusted" we also select "Adjusted for:".
+  // If none of the providers containing the word "Adjusted" is selected we deselect "Adjusted for:".
+  $( '.provider-measure-td input').change( function() {
+    var lsof_tds_w_adjusted = $( this ).closest( 'table' ).find( 'td label:contains("Adjusted")' );
+    var _checked = false;
+
+    // Kind of a while loop. While _checked is not true continue to look. Otherwise, if _checked is already true
+    // we can stop checking.
+    lsof_tds_w_adjusted.each( function( idx ) {
+      if ( ( $( this ).text().toLowerCase().indexOf( 'adjusted' ) !== -1 ) && !( $( this ).text().match( 'Adjusted for:' ) ) ) {
+        if ( !_checked ) {
+          _checked = $( this ).find( 'input' )[0].checked
+        }
+      }
+    } )
+
+    // Set the "Adjusted for:" selection to the _checked value.
+    $( $( 'td label:contains("Adjusted for:")' ).find( 'input' )[0] ).prop( 'checked', _checked )
   } )
