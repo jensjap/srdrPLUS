@@ -119,6 +119,17 @@ class ResultStatisticSectionsController < ApplicationController
               rsstm.provider_measure.present? ? { 'provider-measure-id' => rsstm.provider_measure.measure.id } : ''
             ]
         end
+
+        @result_statistic_section.measures.each do |measure|
+          @options <<
+          [
+            measure.name,
+            measure.id,
+            { 'data-selected' => '' },
+            ''
+          ] unless @options.collect { |opt| opt.second }.include?(measure.id)
+        end
+
         @options.uniq!
 
         # Create a dictionary that carries as keys the id of a provider measure and values an Array of options.
@@ -162,6 +173,7 @@ class ResultStatisticSectionsController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def result_statistic_section_params
       params.require(:result_statistic_section).permit(
+        measures_attributes: [:id, :name, :_destroy],
         measure_ids: [],
         comparisons_attributes: [:id, :is_anova,
           comparate_groups_attributes: [:id,

@@ -1,6 +1,7 @@
 button.close-button data-close='' aria-label='Close modal' type='button'
   span aria-hidden='true' &times;
 
+h4 Please select measures to be included from the list below:
 = simple_form_for @result_statistic_section, remote: true do |f|
   table.dependence-selector
     caption Measures
@@ -23,7 +24,9 @@ button.close-button data-close='' aria-label='Close modal' type='button'
             - (1..(5 - @dict_of_dependencies[[] << option[1]].length)).each do |cnt|
               td
 
-  /= f.association :measures, as: :check_boxes, collection: @options
+  #measures
+    .links
+      = link_to_add_association 'Add new measure', f, :measures
 
   = f.submit
 

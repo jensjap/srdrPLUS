@@ -44,6 +44,7 @@ class ResultStatisticSection < ApplicationRecord
   #accepts_nested_attributes_for :comparables,                           allow_destroy: false  #!!! Do we need this?
   accepts_nested_attributes_for :comparisons_measures,                  allow_destroy: false
   accepts_nested_attributes_for :measurements,                          allow_destroy: false
+  accepts_nested_attributes_for :measures
 
   delegate :extraction, to: :population
   delegate :project, to: :extraction
