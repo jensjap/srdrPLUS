@@ -673,7 +673,7 @@
     continuous: default
 - 
   name: "SD (NMD)"
-  provider_names: ~
+  provider_names: "Net Mean Difference (NMD)"
   result_statistic_section_types:
     - "Net Difference"
   type1_types:
