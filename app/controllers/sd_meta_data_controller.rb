@@ -107,7 +107,8 @@ end
         unless update
           @errors = @sd_meta_datum.errors.full_messages
         end
-        @item_id = params[:sd_meta_datum][:item_id].to_i || nil
+        set_partial_name_and_container_class params[:sd_meta_datum][:item_id].to_i
+        set_report_title_update_flag (params[:sd_meta_datum][:report_title].present?)
       end
       format.html do |format|
         redirect_to edit_sd_meta_datum_path(@sd_meta_datum.id)
@@ -122,6 +123,52 @@ end
   end
 
   private
+    def set_partial_name_and_container_class( item_id )
+      div_partial_dict = { 
+ #      63 => { :class => '.meta-regression-analysis-result-list',\
+ #              :partial => 'sd_meta_data/form/nested_associations/meta_regression_analysis_result_list' },\
+ #      61 => { :class => '.network-meta-analysis-result-list',\
+ #              :partial => 'sd_meta_data/form/nested_associations/network_meta_analysis_result_list' },\
+ #      59 => { :class => '.pairwise-meta-analytic-result-list',\
+ #              :partial => 'sd_meta_data/form/nested_associations/pairwise_meta_analytic_result_list' },\
+ #      58 => { :class => '.evidence-table-list',\
+ #              :partial => 'sd_meta_data/form/nested_associations/evidence_table_list' },\
+ #      56 => { :class => '.comparison-outcome-by-intervention-subgroup-list',\
+ #              :partial => 'sd_meta_data/form/nested_associations/comparison_outcome_by_intervention_subgroup_list' },\
+ #      54 => { :class => '.comparison-outcome-by-population-subgroup-list',\
+ #              :partial => 'sd_meta_data/form/nested_associations/comparison_outcome_by_population_subgroup_list' },\
+        50 => { :class => '.result-list',\
+                :partial => 'sd_meta_data/form/nested_associations/result_list' },\
+        49 => { :class => '.prisma-list',\
+                :partial => 'sd_meta_data/form/nested_associations/prisma_list' },\
+        48 => { :class => '.grey-literature-list',\
+                :partial => 'sd_meta_data/form/nested_associations/grey_literature_list' },\
+        44 => { :class => '.search-strategy-list',\
+                :partial => 'sd_meta_data/form/nested_associations/search_strategy_list' },\
+        38 => { :class => '.picod-list',\
+                :partial => 'sd_meta_data/form/nested_associations/picod_list' },\
+        36 => { :class => '.key-question-list',\
+                :partial => 'sd_meta_data/form/nested_associations/key_question_list' },\
+        35 => { :class => '.analytic-framework-list',\
+                :partial => 'sd_meta_data/form/nested_associations/analytic_framework_list' },\
+        26 => { :class => '.journal-article-url-list',\
+                :partial => 'sd_meta_data/form/nested_associations/journal_article_url_list' },\
+        27 => { :class =>  '.other-item-list',\
+                :partial => 'sd_meta_data/form/nested_associations/other_item_list' },\
+        100 => { :class => '.result-item-list',\
+                :partial => 'sd_meta_data/form/nested_associations/result_item_list' },\
+      }.freeze
+      if div_partial_dict.key? item_id
+        @container = div_partial_dict[item_id][:class]
+        @partial_name = div_partial_dict[item_id][:partial]
+      end
+    end
+
+    def set_report_title_update_flag(bool)
+      if bool
+        @report_title_updated = true
+      end
+    end
 
     def wrap_in_transaction
       ActiveRecord::Base.transaction do

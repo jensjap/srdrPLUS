@@ -48,6 +48,8 @@
 class SdMetaDatum < ApplicationRecord
   include SharedProcessTokenMethods
 
+  after_create :set_report_title
+
   attr_accessor :kqp_ids
 
   SECTIONS = [
@@ -167,4 +169,9 @@ class SdMetaDatum < ApplicationRecord
     save_resource_name_with_token(resource, token)
     super
   end
+
+  private
+    def set_report_title
+      self.update( report_title: self.report&.title )
+    end
 end
