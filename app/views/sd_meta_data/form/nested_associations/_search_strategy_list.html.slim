@@ -3,5 +3,5 @@
   = f.simple_fields_for :sd_search_strategies do |sd_search_strategy|
     .sd-item.sd-inner
       = render 'sd_meta_data/form/dynamic_fields/sd_search_strategy_fields', f: sd_search_strategy
-  div
+  div class="#{ f.object.sd_search_strategies.present? ? '' : 'zero-nested-associations'}"
     = link_to_add_association 'Add Search Strategy', f, :sd_search_strategies, partial: 'sd_meta_data/form/dynamic_fields/sd_search_strategy_fields', class: 'add-item-link'

@@ -205,15 +205,15 @@ end
           { sd_picods_attributes: [:name, :population, :interventions, :comparators, :outcomes, :study_designs, :settings, :_destroy, :id, sd_key_question_ids: [], sd_picods_type_ids: []] },
           { sd_search_strategies_attributes: [:sd_search_database_id, :date_of_search, :search_limits, :search_terms, :_destroy, :id] },
           { sd_grey_literature_searches_attributes: [:name, :_destroy, :id] },
-          { comparison_outcome_intervention_subgroups_attributes: [:sd_key_question_id, :narrative_results, :name, :_destroy, :id] },
-          { comparison_outcome_population_subgroups_attributes: [:sd_key_question_id, :narrative_results, :name, :_destroy, :id] },
-          { sd_evidence_tables_attributes: [:name, :_destroy, :id, :picture] },
           { sd_prisma_flows_attributes: [:name, :_destroy, :id, pictures: []] },
-          { network_meta_analysis_results_attributes: [:name, :p_type, :_destroy, :id, pictures: []] },
-          { pairwise_meta_analytic_results_attributes: [:name, :p_type, :_destroy, :id, pictures: []] },
-          { sd_forest_plots_attributes: [:name, :_destroy, :id, pictures: []] },
-          { sd_meta_regression_analysis_results_attributes: [:name, :_destroy, :id, :picture] },
-          { sd_summary_of_evidences_attributes: [:sd_key_question_id, :soe_type, :name, :_destroy, :id, pictures: []] }
+          { sd_result_items_attributes: [:sd_key_question_id, :_destroy, :id, 
+            { sd_narrative_results_attributes: [:narrative_results, :narrative_results_by_population, :narrative_results_by_intervention, :_destroy, :id, sd_outcome_names: []] },
+            { sd_evidence_tables_attributes: [:name, :_destroy, :id, :picture, sd_outcome_names: []] },
+            { sd_network_meta_analysis_results_attributes: [:name, :_destroy, :id, { sd_analysis_figures_attributes: [:id,:_destroy, :p_type, { pictures: [] }] }, sd_outcome_names: []] },
+            { sd_pairwise_meta_analytic_results_attributes: [:name, :_destroy, :id, { sd_analysis_figures_attributes: [:id, :_destroy, :p_type, { pictures: [] }] }, sd_outcome_names: []] },
+            { sd_meta_regression_analysis_results_attributes: [:name, :_destroy, :id, :picture, sd_outcome_names: []] }] },
+          { sd_summary_of_evidences_attributes: [:soe_type, :sd_key_question_id, :name, :_destroy, :id, pictures: []] }
+
         )
     end
 end

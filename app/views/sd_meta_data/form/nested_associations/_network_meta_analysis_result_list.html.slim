@@ -1,7 +1,0 @@
-= simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
-  = f.input :item_id, as: :hidden, input_html: { value: 61 }
-  = f.simple_fields_for :network_meta_analysis_results do |network_meta_analysis_result|
-    .sd-item.sd-inner
-      = render 'sd_meta_data/form/dynamic_fields/network_meta_analysis_result_fields', f: network_meta_analysis_result
-  div
-    = link_to_add_association 'Add Result', f, :network_meta_analysis_results, partial: 'sd_meta_data/form/dynamic_fields/network_meta_analysis_result_fields', class: 'add-item-link'

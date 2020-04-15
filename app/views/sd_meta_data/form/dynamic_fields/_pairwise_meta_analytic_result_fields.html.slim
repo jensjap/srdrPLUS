@@ -1,11 +1,12 @@
 .nested-fields
-  = f.input :name, label: 'Narrative Text', input_html: { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
-  = f.input :p_type, label: 'Type', include_blank: false, input_html: { class: 'apply-select2', oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }, collection: ['Forest plot with summary estimate, type of model, and estimates of heterogeneity', 'Meta-analysis results table']
-  = f.input :pictures, as: :file, label: 'Figures', input_html: { multiple: true }
-  - f.object.pictures.each do |picture|
+  = f.input :sd_outcome_names, as: :select, collection: f.object.sd_outcome_names, label: 'Outcome(s)', include_blank: true, input_html: { class: 'sd-outcome-select2', multiple: true }
+  = f.input :name, label: 'Description', input_html: { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
+  div
+    = f.simple_fields_for :sd_analysis_figures do |sd_analysis_figure|
+      .sd-item.sd-inner
+        = render 'sd_meta_data/form/dynamic_fields/sd_analysis_figure_fields', f: sd_analysis_figure
     div
-      = image_tag(picture, class: 'openable sd-image')
-      br
-      = link_to 'remove figure', delete_image_attachment_picture_path(picture.id), method: :delete, data: { confirm: 'Are you sure?' }, remote: true
+      = link_to_add_association 'Add Figure', f, :sd_analysis_figures, partial: 'sd_meta_data/form/dynamic_fields/sd_analysis_figure_fields', class: 'add-item-link'
+
   div
     = link_to_remove_association "remove", f, data: { confirm: "Are you sure?" }

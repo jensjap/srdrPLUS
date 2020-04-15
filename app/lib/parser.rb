@@ -229,7 +229,7 @@ class Parser
     ]
 
     kq_81s.each do |data|
-      pmar = PairwiseMetaAnalyticResult.create(
+      pmar = SdPairwiseMetaAnalyticResult.create(
         sd_meta_datum: sd_meta_datum,
         name: data[:name],
         p_type: 'Forest plot with summary estimate, type of model, and estimates of heterogeneity'
@@ -237,7 +237,7 @@ class Parser
       data[:pictures].each do |picture|
         pmar.pictures.attach(io: File.open(Rails.root.join('demo_temp', picture)), filename: picture, content_type: 'image/png')
       end
-      sd_meta_datum.pairwise_meta_analytic_results << pmar
+      sd_meta_datum.sd_pairwise_meta_analytic_results << pmar
     end
 
     kq_83s = [

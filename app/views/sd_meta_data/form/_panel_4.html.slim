@@ -1,7 +1,7 @@
 #panel-4.tabs-panel.is-active
   fieldset
     div style="display:flex; flex-direction: row;"
-      legend PICODs
+      legend PICODS
       .status-switch.button[id="4-yes-no-section" class=(@sd_meta_datum.section_flag_4 ? 'completed' : 'draft') data-sd_meta_datum_id="#{@sd_meta_datum.id}"]
         - if @sd_meta_datum.section_flag_4
           | Completed

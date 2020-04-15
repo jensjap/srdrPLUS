@@ -132,12 +132,11 @@ function send_async_form(form) {
 }
 
 // Global function to check if a string is a URL
-function is_valid_URL(string){
+function get_valid_URL(string){
   try {
-    new URL(string);
-    return true;
+    return new URL(string).href
   } catch (_) {
-    return false;  
+    return false;
   }
 }
 

@@ -3,5 +3,6 @@
   = f.simple_fields_for :sd_summary_of_evidences do |sd_summary_of_evidence|
     .sd-item.sd-inner
       = render 'sd_meta_data/form/dynamic_fields/sd_summary_of_evidence_fields', f: sd_summary_of_evidence
-  div
-    = link_to_add_association 'Add Summary of Evidence', f, :sd_summary_of_evidences, partial: 'sd_meta_data/form/dynamic_fields/sd_summary_of_evidence_fields', class: 'add-item-link'
+
+  div class="#{ f.object.sd_summary_of_evidences.present? ? '' : 'zero-nested-associations'}"
+    = link_to_add_association 'Add Summary', f, :sd_summary_of_evidences, partial: 'sd_meta_data/form/dynamic_fields/sd_summary_of_evidence_fields', class: 'add-item-link'

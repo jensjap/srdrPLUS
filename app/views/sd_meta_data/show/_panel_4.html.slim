@@ -1,9 +1,9 @@
 #panel-4.tabs-panel.is-active
   fieldset
-    legend PICODs
+    legend PICODS
     div data-row-span="1"
       div data-field-span="1"
-        label PICODs
+        label PICODS
         - if @sd_meta_datum.sd_picods.empty?
           div -----
         - else
@@ -28,24 +28,24 @@
                 div data-row-span="1"
                   div data-field-span="1"
                     label Population
-                    div = ( sd_picod.population.present? ? sd_picod.population : '-----' )
+                    div = ( sd_picod.population.present? ? simple_format(sd_picod.population) : '-----' )
                 div data-row-span="1"
                   div data-field-span="1"
                     label Interventions
-                    div = ( sd_picod.interventions.present? ? sd_picod.interventions : '-----' )
+                    div = ( sd_picod.interventions.present? ? simple_format(sd_picod.interventions) : '-----' )
                 div data-row-span="1"
                   div data-field-span="1"
                     label Comparators
-                    div = ( sd_picod.comparators.present? ? sd_picod.comparators : '-----' )
+                    div = ( sd_picod.comparators.present? ? simple_format(sd_picod.comparators) : '-----' )
                 div data-row-span="1"
                   div data-field-span="1"
                     label Outcomes
-                    div = ( sd_picod.outcomes.present? ? sd_picod.outcomes : '-----' )
+                    div = ( sd_picod.outcomes.present? ? simple_format(sd_picod.outcomes) : '-----' )
                 div data-row-span="1"
                   div data-field-span="1"
                     label Study Designs
-                    div = ( sd_picod.study_designs.present? ? sd_picod.study_designs : '-----' )
+                    div = ( sd_picod.study_designs.present? ? simple_format(sd_picod.study_designs) : '-----' )
                 div data-row-span="1"
                   div data-field-span="1"
                     label Settings
-                    div = ( sd_picod.settings.present? ? sd_picod.settings : '-----' )
+                    div = ( sd_picod.settings.present? ? simple_format(sd_picod.settings) : '-----' )

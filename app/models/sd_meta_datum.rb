@@ -53,9 +53,9 @@ class SdMetaDatum < ApplicationRecord
   SECTIONS = [
     "Title, Funding Sources, and Dates",
     "Authors and Stakeholders",
-    "Links",
+    "URL Links",
     "Purpose and Key Questions",
-    "PICODs",
+    "PICODS",
     "Key Question Mapping",
     "Search Strategy and Evidence Summary",
     "Study Results"
@@ -67,17 +67,16 @@ class SdMetaDatum < ApplicationRecord
   belongs_to :review_type, inverse_of: :sd_meta_data, optional: true
   belongs_to :data_analysis_level, inverse_of: :sd_meta_data, optional: true
 
-  has_many :comparison_outcome_population_subgroups, inverse_of: :sd_meta_datum, dependent: :destroy
-  has_many :comparison_outcome_intervention_subgroups, inverse_of: :sd_meta_datum, dependent: :destroy
-  has_many :sd_evidence_tables, inverse_of: :sd_meta_datum, dependent: :destroy
-  has_many :network_meta_analysis_results, inverse_of: :sd_meta_datum, dependent: :destroy
-  has_many :pairwise_meta_analytic_results, inverse_of: :sd_meta_datum, dependent: :destroy
-  has_many :sd_forest_plots, inverse_of: :sd_meta_datum, dependent: :destroy
-  has_many :sd_meta_regression_analysis_results, inverse_of: :sd_meta_datum, dependent: :destroy
-
   has_many :sd_key_questions, inverse_of: :sd_meta_datum, dependent: :destroy
   has_many :key_questions, -> { distinct }, through: :sd_key_questions
 
+  has_many :sd_result_items
+  has_many :sd_narrative_results, through: :sd_result_items
+  has_many :sd_evidence_tables, inverse_of: :sd_meta_datum
+  has_many :sd_network_meta_analysis_results, through: :sd_result_items
+  has_many :sd_pairwise_meta_analytic_results, through: :sd_result_items
+  has_many :sd_meta_regression_analysis_results, through: :sd_result_items
+  
   has_many :sd_key_questions_projects, through: :sd_key_questions, inverse_of: :sd_meta_datum
   has_many :project_key_questions, through: :sd_key_questions_projects, source: :key_question
 
@@ -109,13 +108,7 @@ class SdMetaDatum < ApplicationRecord
   accepts_nested_attributes_for :sd_grey_literature_searches, allow_destroy: true
   accepts_nested_attributes_for :sd_summary_of_evidences, allow_destroy: true
   accepts_nested_attributes_for :sd_prisma_flows, allow_destroy: true
-  accepts_nested_attributes_for :comparison_outcome_intervention_subgroups, allow_destroy: true
-  accepts_nested_attributes_for :comparison_outcome_population_subgroups, allow_destroy: true
-  accepts_nested_attributes_for :sd_evidence_tables, allow_destroy: true
-  accepts_nested_attributes_for :network_meta_analysis_results, allow_destroy: true
-  accepts_nested_attributes_for :pairwise_meta_analytic_results, allow_destroy: true
-  accepts_nested_attributes_for :sd_forest_plots, allow_destroy: true
-  accepts_nested_attributes_for :sd_meta_regression_analysis_results, allow_destroy: true
+  accepts_nested_attributes_for :sd_result_items, allow_destroy: true
 
   def report
     Report.all.find { |report_meta| report_meta.accession_id == self.report_accession_id }

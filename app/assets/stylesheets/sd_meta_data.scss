@@ -221,6 +221,10 @@ body.sd_meta_data {
   }
 
   .srdr-kq {
+    &:before {
+      border-radius: 2rem;
+    }
+    position: relative;
     margin: 1rem 1rem 2rem 1rem;
     padding-left: 1.3rem;
     border: none;
@@ -251,6 +255,14 @@ body.sd_meta_data {
 
 
   .sd-inner {
+    .sd-inner {
+      background: #997bb133;
+      border: solid 1px #d0c9d0;
+
+      &:hover {
+        background: #997bb155;
+      }
+    }
     margin: 1.2rem 1.2rem 1.2rem 1.2rem; 
     background-color: #f3eff3; 
     border-radius: 0.1rem;
@@ -341,9 +353,11 @@ body.sd_meta_data {
     max-width:100%;
   }
 
-  .invalid {
-    border: solid 1px red;
+  .invalid-url::after {
+    color: red;
+    content: "Please enter a valid URL" !important;
   }
+
 
   .preview-button {
     border-radius: 0;
@@ -363,5 +377,63 @@ body.sd_meta_data {
 
   .infoDiv {
     width: 50%;
+  }
+
+  .srdr-kq .hover-message {
+    font-size: 130%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 140ms;
+    border-radius: 2rem;
+    opacity: 0;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .srdr-kq:hover .hover-message {
+    background-color: #2e7c80;
+    opacity: 1;
+  }
+
+  #status-check-modal {
+    text-align: center;
+    font-size: larger;
+
+    #status-check-modal-buttons {
+      .confirm {
+        background-color: #30c769;
+      }
+      .button {
+        margin: 0 1rem 0 1rem;
+      }
+      margin: 1rem;
+    }
+  }
+
+  .kq-mapped {
+    background-color: #38969a;
+  }
+  
+  .empty-input, .empty-associations {
+    border: solid 2px #ff5e00 !important;
+    background-color: #faeee6 !important;
+  }
+  .empty-kq.srdr-kq, .empty-kq.report-kq {
+    position: relative;
+    &:before {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      z-index: 2;
+      opacity: 0.1;
+      top: 0;
+      left: 0;
+      background-color: #fa6400 !important;
+    }
+    border: solid 2px #ff5e00 !important;
   }
 }

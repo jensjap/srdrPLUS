@@ -3,6 +3,6 @@
   = f.simple_fields_for :sd_picods do |sd_picod|
     .sd-item.sd-inner
       = render 'sd_meta_data/form/dynamic_fields/sd_picod_fields', f: sd_picod
-  div
-    = link_to_add_association 'Add PICOD', f, :sd_picods, partial: 'sd_meta_data/form/dynamic_fields/sd_picod_fields', class: 'add-item-link'
+  div class="#{ f.object.sd_picods.present? ? '' : 'zero-nested-associations'}"
+    = link_to_add_association 'Add PICODS', f, :sd_picods, partial: 'sd_meta_data/form/dynamic_fields/sd_picod_fields', class: 'add-item-link'
 

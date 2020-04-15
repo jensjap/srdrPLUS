@@ -8,4 +8,4 @@
       div
         = image_tag(picture, class: 'openable sd-image')
         br
-        = link_to 'Remove Figure', delete_image_attachment_picture_path(picture.id), method: :delete, data: { confirm: 'Are you sure?' }, remote: true, class: 'remove-figure'
+        = link_to 'remove figure', delete_image_attachment_picture_path(picture.id), method: :delete, data: { confirm: 'Are you sure?' }, remote: true, class: 'remove-figure'

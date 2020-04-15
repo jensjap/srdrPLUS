@@ -7,17 +7,129 @@
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
 class Timekeeper
+  @focused_elem
   @_timer_dict: {}
 
-  @create_timer_for_form: ( form ) -> 
-    $( '.preview-button' ).attr( 'disabled', '' )
+  @clear_timer_for_form: ( form ) -> 
     formId = form.getAttribute( 'id' )
     if formId of @_timer_dict
       clearTimeout( @_timer_dict[formId] )
+
+  @create_timer_for_form: ( form, duration ) -> 
+    Timekeeper.clear_timer_for_form( form )
+    formId = form.getAttribute( 'id' )
     @_timer_dict[ formId ] = setTimeout -> 
-      send_async_form( form )
-    , 750
+      validate_and_send_async_form( form )
+    , duration
     @_timer_dict[ formId ] 
+
+class StatusChecker
+  @input_empty: ( input ) ->
+    if $( input ).is( 'input[type=file]' )
+      console.log $( input ).closest( '.sd-inner' ).find( 'img' )
+      if $( input ).closest( '.sd-inner' ).find( 'img' ).length
+        return false
+      else
+        return true
+    return !$( input ).val()
+
+  @get_all_inputs: ( ) ->
+    return $( 'input:not([type="hidden"], .select2-search__field), select, textarea' )
+
+  @get_all_unmapped_srdr_kq: () ->
+    return $('.srdr-key-questions-box').find( '.srdr-kq:not(".kq-mapped")' )
+
+  @get_all_unmapped_report_kq: () ->
+    return $('.report-key-questions-box').find( '.srdr-kq-target-prompt:not(".hide")' ).parents('.report-kq')
+
+  @check_kq_mapping_status: ( ) ->
+    if StatusChecker.get_all_unmapped_srdr_kq().length > 0
+      return false
+    if StatusChecker.get_all_unmapped_report_kq().length > 0
+      return false
+    return true
+
+  @check_status: ( ) ->
+    if $( '.zero-nested-associations' ).length > 0
+      return false
+
+    for elem in StatusChecker.get_all_inputs()
+      if StatusChecker.input_empty( elem )
+        return false
+    return true
+
+  @remove_highlights: ( ) ->
+    $( '.empty-associations' ).removeClass( 'empty-associations' )
+    $( '.empty-input' ).removeClass( 'empty-input' )
+    $( '.empty-kq' ).removeClass( 'empty-kq' )
+
+  @highlight_input: ( input ) ->
+    if $( input ).is( 'select' )
+      $( input ).parent().find( '.select2-container' ).addClass( 'empty-input' )
+    else
+      $( input ).addClass( 'empty-input' )
+
+  @highlight_empty: ( ) ->
+    #kq-mapping
+    StatusChecker.get_all_unmapped_srdr_kq().addClass( 'empty-kq' )
+    StatusChecker.get_all_unmapped_report_kq().addClass( 'empty-kq' )
+    #inputs
+    for elem in StatusChecker.get_all_inputs()
+      if StatusChecker.input_empty( elem )
+        completeable = false
+        StatusChecker.highlight_input( elem )
+    #associations
+    $( '.zero-nested-associations a' ).addClass( 'empty-associations' )
+
+  @initialize_listeners: ( ) ->
+    $( '#status-check-modal[data-reveal]' ).on 'open.zf.reveal', ( e ) ->
+      StatusChecker.highlight_empty()
+    $( document ).keyup ( e ) ->
+      if not $('#status-check-modal').is(':visible')
+        return
+      code = e.keyCode || e.which;
+      if code in [13] 
+        $( '#confirm-status-switch' ).click()
+        return
+    $( document ).on 'click', '.status-switch', ->
+      if this.id[0] != "5"
+        if not (StatusChecker.check_status() || $(this).hasClass( 'completed' ))
+          $('#status-check-modal').foundation("open")
+        else
+          updateSectionFlag this
+      else
+        if not (StatusChecker.check_kq_mapping_status() || $(this).hasClass( 'completed' ))
+          $('#status-check-modal').foundation("open")
+        else
+          updateSectionFlag this
+        
+      return
+    $( document ).on 'click', '#abort-status-switch', ->
+      StatusChecker.highlight_empty()
+      $('#status-check-modal').foundation("close");
+    $( document ).on 'click', '#confirm-status-switch', ->
+      StatusChecker.remove_highlights()
+      updateSectionFlag $( '.status-switch' )[0]
+      $('#status-check-modal').foundation("close");
+
+class Select2Helper
+  @copy_sd_outcome_names: ( ) ->
+    sd_outcome_option_set = new Set()
+    $( '.sd-outcome-select2 option' ).each ( i, option_elem ) ->
+      if option_elem.text != ''
+        sd_outcome_option_set.add( option_elem.text )
+    $( '.sd-outcome-select2' ).each ( i, select2_elem ) ->
+      sd_outcome_option_set.forEach ( key, option_text, sd_outcome_option_set ) ->
+        if not $( select2_elem ).find("option[value='" + option_text + "']").length 
+          newOption = new Option( option_text, option_text, false, false)
+          $( select2_elem ).append( newOption ).trigger( 'change.select2' )
+
+validate_and_send_async_form = ( form ) ->
+  if not validate_form_inputs( form )
+    return
+  Timekeeper.focused_elem_id = document.activeElement.id
+  $( '.preview-button' ).attr( 'disabled', '' )
+  send_async_form( form )
 
 # Set the field to display from the result set.
 formatResultSelection = ( result, container ) ->
@@ -27,15 +139,23 @@ formatResultSelection = ( result, container ) ->
 # also adds the class invalid to form inputs failing validation
 validate_form_inputs = ( form ) ->
   $form = $( form )
-  $form.find( '.invalid' ).removeClass( 'invalid' )
+  $form.find( '.invalid-url' ).removeClass( 'invalid-url' )
   is_form_valid = true
   # validate url inputs
   for input_elem in $form.find( '.url-input' )
     $input_elem = $( input_elem )
-    input_val = $input_elem.val()
-    is_input_valid = is_valid_URL( input_val ) || ( input_val == "" )
-    if not is_input_valid
-      $input_elem.addClass( 'invalid' ) 
+    input_val = $input_elem.val() || ""
+    is_input_valid = true
+    if not (input_val == "")
+      valid_href = get_valid_URL( input_val )
+      if not valid_href
+        https_appended_val = "https://" + input_val
+        valid_href = get_valid_URL( https_appended_val )
+        if not valid_href
+          $input_elem.parents('div.input').addClass( 'invalid-url' ) 
+          is_input_valid = false
+        else
+          #$input_elem.val( valid_href )
     is_form_valid = is_form_valid && is_input_valid
   return is_form_valid
 
@@ -58,8 +178,10 @@ formatResult = ( result ) ->
 # initiates select2 dropdowns
 init_select2 = (selector, url) ->
   $( selector ).select2
+    selectOnClose: true, # use TAB and ESC to select
+    allowClear: true,
     minimumInputLength: 0,
-    placeholder: '-- Select --',
+    placeholder: '-- Select or type other value --', # This wording is ambiguous
     ajax:
       url: url,
       dataType: 'json'
@@ -92,50 +214,78 @@ apply_all_select2 =() ->
   init_select2(".review_type", '/review_types')
   init_select2(".data_analysis_level", '/data_analysis_levels')
 
-  $( '.apply-select2' ).select2( placeholder: '-- Select --' )
+  $( '.apply-select2' ).select2
+    selectOnClose: true, 
+    allowClear: true, 
+    placeholder: '-- Select or type other value --'
+
+  $( '.sd-outcome-select2' ).select2
+    tags: true,
+    allowClear: true,
+    selectOnClose: true,
+    placeholder: '-- Select or type other value --'
+
+  $('.sd-select2, .apply-select2, .sd-outcome-select2').on 'select2:unselecting', ( e ) ->
+    $(this).on 'select2:opening', ( event ) ->
+      event.preventDefault()
+  $('.sd-select2').on 'select2:unselect', ( e ) ->
+    sel = $(this)
+    setTimeout( () ->
+      sel.off('select2:opening');
+    , 100)
+  
+  Select2Helper.copy_sd_outcome_names()
+#  $( '.sd-select2' ).on 'select2:open', ( e ) ->
+#    $( '.select2-container' ).mouseleave ( e ) ->
+#      $( '.select2-container').find('.select2-results__option--highlighted').removeClass('select2-results__option--highlighted')
 
 add_form_listeners =( form ) ->
   $form = $( form )
   # Use this to keep track of the different timers.
   formId = $form.attr( 'id' )
-  $( form ).children( 'input' ).change ( e ) ->
+
+  $form.find( 'select, input[type="file"], input[type="date"]' ).on 'change', ( e ) ->
+    if !!$(e.target).val()
+      StatusChecker.remove_highlights()
     e.preventDefault()
     # Mark form as 'dirty'.
     $form.addClass( 'dirty' )
-
-  $form.find( 'textarea, select, input' ).on 'change', ( e ) ->
-    if not validate_form_inputs( form )
-      return
-    # Mark form as 'dirty'.
-    $form.addClass( 'dirty' )
-    Timekeeper.create_timer_for_form $form[0]
+    Timekeeper.create_timer_for_form $form[0], 750
 
   $form.on 'cocoon:after-insert cocoon:after-remove', ( e ) ->
     # Mark form as 'dirty'.
     $form.addClass( 'dirty' )
-    Timekeeper.create_timer_for_form $form[0]
+    Timekeeper.create_timer_for_form $form[0], 750
 
   $( "a.remove-figure[data-remote]" ).on "ajax:success",  ( event ) ->
     $( this ).parent().closest( 'div' ).fadeOut();
 
   # Text Field.
-  $form.keyup ( e ) ->
+  $form.find('input[type="text"], textarea').keyup ( e ) ->
+    if !!$(e.target).val()
+      StatusChecker.remove_highlights()
     e.preventDefault()
 
     # Ignore 'keyup' for a list of keys.
     code = e.keyCode || e.which;
-    # 9: tab; 16: shift; 37: left-arrow; 38: up-arrow; 39: right-arrow; 40: down-arrow; 18: option; 91: cmd
+    # 9: tab; 16: shift; 500: left-arrow; 38: up-arrow; 39: right-arrow; 40: down-arrow; 18: option; 91: cmd
     if code in [9, 16, 18, 37, 38, 39, 40, 91]
-      return
-
-    if not validate_form_inputs( form )
       return
 
     # Mark form as 'dirty'.
     $form.addClass( 'dirty' )
-    Timekeeper.create_timer_for_form $form[0]
+    #Timekeeper.create_timer_for_form $form[0], 750
 
-  $( '.fdatepicker' ).fdatepicker({format: 'yyyy-mm-dd', disableDblClickSelection: true}).show();
+  $form.focusout ( e ) ->
+    #if $( document.activeElement ).is('*:not(input[type="text"],input[type="text"], textarea)')
+    #  console.log ( document.activeElement )
+    if $form.is( '.dirty' )
+      Timekeeper.create_timer_for_form $form[0], 750
+
+  $form.focusin ( e ) ->
+    #if $( document.activeElement ).is('input[type="search"], input[type="text"], textarea')
+    if $( document.activeElement ).is('input[type="text"], textarea')
+      Timekeeper.clear_timer_for_form( $form[0] )
 
 bind_srdr20_saving_mechanism = () ->
   $( 'form.sd-form' ).each ( i, form ) ->
@@ -144,12 +294,61 @@ bind_srdr20_saving_mechanism = () ->
     $cocoon_container.on 'sd:form-loaded', ( e ) ->
       add_form_listeners( $cocoon_container.children( 'form' ) )
       apply_all_select2()
-  
+      #$( "##{Timekeeper.focused_elem_id}" ).focus()
+      StatusChecker.get_all_inputs().each () ->
+        this.style.height = ""
+        this.style.height = this.scrollHeight + "px" 
+      Select2Helper.copy_sd_outcome_names()
+
+updateSectionFlag = (domEl) ->
+  sectionId = domEl.id[0]
+  #var sectionId = domEl.getAttribute('statusable-id')[domEl.getAttribute('statusable-id').length- 1];
+  sd_meta_datum_id = $(domEl).attr('data-sd_meta_datum_id')
+  status = $(domEl).hasClass('draft')
+  paramKey = "section_flag_#{sectionId}"
+  url_base = $('.sd-form')[0].action
+  $.post "#{url_base}/section_update", { sd_meta_datum: "#{paramKey}": status }, (data) ->
+    check sectionId, data.status
+    return
+  return
+
+check = (panelNumber, status) ->
+  `var check`
+  if status == true or status == 'true'
+    $('#'.concat(panelNumber.toString(), '-yes-no-section.status-switch')).removeClass 'draft warning'
+    $('#'.concat(panelNumber.toString(), '-yes-no-section.status-switch')).addClass 'completed'
+    $('#'.concat(panelNumber.toString(), '-yes-no-section.status-switch')).html 'Completed'
+  else
+    $('#'.concat(panelNumber.toString(), '-yes-no-section.status-switch')).removeClass 'completed warning'
+    $('#'.concat(panelNumber.toString(), '-yes-no-section.status-switch')).addClass 'draft'
+    $('#'.concat(panelNumber.toString(), '-yes-no-section.status-switch')).html 'Draft'
+  check = ' <i class="fa fa-check"></i>'
+  link = $("#panel-#{panelNumber}-label")
+  check_container = $(".check-container[panel-number='#{panelNumber}']")
+  check_container.html ''
+  if status == true or status == 'true'
+    check_container.html check
+    link.css 'color': 'green'
+  else
+    link.css 'color': 'unset'
+  return
+
+initializeSwitches = ->
+  for elem in $( '.to-be-checked' )
+    check $( elem ).find( '.check-container' ).attr('panel-number'), true
+    $( elem ).removeClass( 'to-be-checked' )
+  return
+
 document.addEventListener 'turbolinks:load', ->
   do ->
     return if $('body.sd_meta_data').length == 0
-
+    StatusChecker.initialize_listeners()
+    initializeSwitches()
     bind_srdr20_saving_mechanism()
     apply_all_select2()
+    StatusChecker.get_all_inputs().each () ->
+      this.style.height = ""
+      this.style.height = this.scrollHeight + "px" 
+
 
   return  # END document.addEventListener 'turbolinks:load', ->

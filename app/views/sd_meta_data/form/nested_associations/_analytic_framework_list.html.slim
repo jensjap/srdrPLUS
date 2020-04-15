@@ -3,6 +3,7 @@
   = f.simple_fields_for :sd_analytic_frameworks do |sd_analytic_framework|
     .sd-item.sd-inner
       = render 'sd_meta_data/form/dynamic_fields/sd_analytic_framework_fields', f: sd_analytic_framework
-  div
+
+  div class="#{ f.object.sd_analytic_frameworks.present? ? '' : 'zero-nested-associations'}"
     = link_to_add_association 'Add Framework', f, :sd_analytic_frameworks, partial: 'sd_meta_data/form/dynamic_fields/sd_analytic_framework_fields', class: 'add-item-link'
 
