@@ -1,0 +1,7 @@
+= f.simple_fields_for(:measure) do |measure|
+  = measure.input :name
+
+= f.simple_fields_for(:result_statistic_sections_measures) do |rssm|
+  = rssm.simple_fields_for(:measure) do |measure|
+    = measure.input :name
+

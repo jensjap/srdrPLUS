@@ -107,6 +107,7 @@ class ResultStatisticSectionsController < ApplicationController
     respond_to do |format|
       format.js do
         @result_statistic_section = ResultStatisticSection.find(params[:rss_id])
+        @result_statistic_section.result_statistic_sections_measures.build.build_measure
         @options = @result_statistic_section
           .result_statistic_section_type
           .result_statistic_section_types_measures
@@ -175,6 +176,7 @@ class ResultStatisticSectionsController < ApplicationController
       params.require(:result_statistic_section).permit(
         measures_attributes: [:id, :name, :_destroy],
         measure_ids: [],
+        result_statistic_sections_measures_attributes: [measure_attributes: [:id, :name]],
         comparisons_attributes: [:id, :is_anova,
           comparate_groups_attributes: [:id,
             comparates_attributes: [:id,

@@ -25,8 +25,9 @@ h4 Please select measures to be included from the list below:
               td
 
   #measures
+
     .links
-      = link_to_add_association 'Add new measure', f, :measures
+      = link_to_add_association 'Add new measure', f, :result_statistic_sections_measures
 
   = f.submit
 
@@ -59,3 +60,4 @@ javascript:
     // Set the "Adjusted for:" selection to the _checked value.
     $( $( 'td label:contains("Adjusted for:")' ).find( 'input' )[0] ).prop( 'checked', _checked )
   } )
+
