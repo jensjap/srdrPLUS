@@ -6,8 +6,16 @@
 # All this logic will automatically be available in application.js.
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
+class Caretkeeper
+  @save_caret_position: () ->
+    Caretkeeper.focused_elem_id = document.activeElement.id
+    Caretkeeper.focused_elem_cursor_location = document.activeElement.selectionStart
+
+  @restore_caret_position: () ->
+    $( "##{Caretkeeper.focused_elem_id}" ).focus()
+    $( "##{Caretkeeper.focused_elem_id}" )[0].setSelectionRange(Caretkeeper.focused_elem_cursor_location, Caretkeeper.focused_elem_cursor_location)
+
 class Timekeeper
-  @focused_elem
   @_timer_dict: {}
 
   @clear_timer_for_form: ( form ) -> 
@@ -127,7 +135,6 @@ class Select2Helper
 validate_and_send_async_form = ( form ) ->
   if not validate_form_inputs( form )
     return
-  Timekeeper.focused_elem_id = document.activeElement.id
   $( '.preview-button' ).attr( 'disabled', '' )
   send_async_form( form )
 
@@ -274,18 +281,18 @@ add_form_listeners =( form ) ->
 
     # Mark form as 'dirty'.
     $form.addClass( 'dirty' )
-    #Timekeeper.create_timer_for_form $form[0], 750
+    Timekeeper.create_timer_for_form $form[0], 750
 
-  $form.focusout ( e ) ->
-    #if $( document.activeElement ).is('*:not(input[type="text"],input[type="text"], textarea)')
-    #  console.log ( document.activeElement )
-    if $form.is( '.dirty' )
-      Timekeeper.create_timer_for_form $form[0], 750
-
-  $form.focusin ( e ) ->
-    #if $( document.activeElement ).is('input[type="search"], input[type="text"], textarea')
-    if $( document.activeElement ).is('input[type="text"], textarea')
-      Timekeeper.clear_timer_for_form( $form[0] )
+#  $form.focusout ( e ) ->
+#    #if $( document.activeElement ).is('*:not(input[type="text"],input[type="text"], textarea)')
+#    #  console.log ( document.activeElement )
+#    if $form.is( '.dirty' )
+#      Timekeeper.create_timer_for_form $form[0], 750
+#
+#  $form.focusin ( e ) ->
+#    #if $( document.activeElement ).is('input[type="search"], input[type="text"], textarea')
+#    if $( document.activeElement ).is('input[type="text"], textarea')
+#      Timekeeper.clear_timer_for_form( $form[0] )
 
 bind_srdr20_saving_mechanism = () ->
   $( 'form.sd-form' ).each ( i, form ) ->
@@ -294,11 +301,14 @@ bind_srdr20_saving_mechanism = () ->
     $cocoon_container.on 'sd:form-loaded', ( e ) ->
       add_form_listeners( $cocoon_container.children( 'form' ) )
       apply_all_select2()
-      #$( "##{Timekeeper.focused_elem_id}" ).focus()
       StatusChecker.get_all_inputs().each () ->
         this.style.height = ""
         this.style.height = this.scrollHeight + "px" 
       Select2Helper.copy_sd_outcome_names()
+  $( '.infoDiv' ).first().on 'sd:restore-caret-position-now', ( e ) ->
+    Caretkeeper.restore_caret_position()
+  $( '.infoDiv' ).first().on 'sd:save-caret-position-now', ( e ) ->
+    Caretkeeper.save_caret_position()
 
 updateSectionFlag = (domEl) ->
   sectionId = domEl.id[0]

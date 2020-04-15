@@ -1,12 +1,14 @@
 ( function() {
+  let infoDiv = $( ".infoDiv" );
+
   <% if @container and @partial_name %>
     let $container = $( "<%= @container %>" )
 
+    infoDiv.trigger( 'sd:save-caret-position-now' )
     $container.html("<%= j render @partial_name, sd_meta_datum: @sd_meta_datum, url: @url %>");
+    infoDiv.trigger( 'sd:restore-caret-position-now' )
     $container.trigger( 'sd:form-loaded' )
   <% end %>
-
-  let infoDiv = $( ".infoDiv" );
 
   <% if @errors %>
     toastr.warning('<%= @errors.join(', ') %>')
