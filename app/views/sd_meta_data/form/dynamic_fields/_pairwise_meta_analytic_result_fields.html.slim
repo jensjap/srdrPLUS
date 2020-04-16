@@ -3,7 +3,7 @@
   = f.input :sd_outcome_names, as: :select, collection: f.object.sd_outcome_names, label: 'Outcome(s)', include_blank: true, input_html: { class: 'sd-outcome-select2', multiple: true }
   = f.input :name, label: 'Description', input_html: { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
   div
-    = f.simple_fields_for :sd_analysis_figures do |sd_analysis_figure|
+    = f.simple_fields_for :sd_analysis_figures, (f.object.sd_analysis_figures.present? ? f.object.sd_analysis_figures : f.object.sd_analysis_figures.build)  do |sd_analysis_figure|
       .sd-item.sd-inner
         = render 'sd_meta_data/form/dynamic_fields/sd_analysis_figure_fields', f: sd_analysis_figure, p_type_collection: collection
     div
