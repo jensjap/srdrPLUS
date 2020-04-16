@@ -72,9 +72,9 @@ class SdMetaDataController < ApplicationController
 
   def create
     @sd_meta_datum = SdMetaDatum.create(new_sd_meta_datum_params)
-    # For Demo Only START
-    Parser.parse(@sd_meta_datum) if @sd_meta_datum.report.try(:accession_id) == "NBK534625"
-    # For Demo Only END
+#    # For Demo Only START
+#    Parser.parse(@sd_meta_datum) if @sd_meta_datum.report.try(:accession_id) == "NBK534625"
+#    # For Demo Only END
     @sd_meta_datum.create_fuzzy_matches
     flash[:notice] = "Succesfully created Sd Meta Datum ID: #{@sd_meta_datum.id} for Project ID: #{@sd_meta_datum.project_id}"
     redirect_to edit_sd_meta_datum_path(@sd_meta_datum.id)

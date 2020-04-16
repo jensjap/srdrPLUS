@@ -35,9 +35,18 @@ class Timekeeper
     @_timer_dict[ formId ] 
 
 class StatusChecker
+  restore_highlights: false
+
+  @save_highlights: ( ) ->
+    if $( '.empty-input, .empty-associations, .empty-kq' ).length > 0
+      StatusChecker.prototype.restore_highlights = true
+
+  @restore_highlights: ( ) ->
+    if StatusChecker.prototype.restore_highlights
+      StatusChecker.highlight_empty()
+
   @input_empty: ( input ) ->
     if $( input ).is( 'input[type=file]' )
-      console.log $( input ).closest( '.sd-inner' ).find( 'img' )
       if $( input ).closest( '.sd-inner' ).find( 'img' ).length
         return false
       else
@@ -70,6 +79,7 @@ class StatusChecker
     return true
 
   @remove_highlights: ( ) ->
+    StatusChecker.prototype.restore_highlights = false
     $( '.empty-associations' ).removeClass( 'empty-associations' )
     $( '.empty-input' ).removeClass( 'empty-input' )
     $( '.empty-kq' ).removeClass( 'empty-kq' )
@@ -93,8 +103,8 @@ class StatusChecker
     $( '.zero-nested-associations a' ).addClass( 'empty-associations' )
 
   @initialize_listeners: ( ) ->
-    $( '#status-check-modal[data-reveal]' ).on 'open.zf.reveal', ( e ) ->
-      StatusChecker.highlight_empty()
+    $( '#status-check-modal[data-reveal]' ).on 'closed.zf.reveal', ( e ) ->
+      StatusChecker.remove_highlights()
     $( document ).keyup ( e ) ->
       if not $('#status-check-modal').is(':visible')
         return
@@ -116,8 +126,8 @@ class StatusChecker
         
       return
     $( document ).on 'click', '#abort-status-switch', ->
-      StatusChecker.highlight_empty()
       $('#status-check-modal').foundation("close");
+      StatusChecker.highlight_empty()
     $( document ).on 'click', '#confirm-status-switch', ->
       StatusChecker.remove_highlights()
       updateSectionFlag $( '.status-switch' )[0]
@@ -255,8 +265,8 @@ add_form_listeners =( form ) ->
   formId = $form.attr( 'id' )
 
   $form.find( 'select, input[type="file"], input[type="date"]' ).on 'change', ( e ) ->
-    if !!$(e.target).val()
-      StatusChecker.remove_highlights()
+#    if !!$(e.target).val()
+#      StatusChecker.remove_highlights()
     e.preventDefault()
     # Mark form as 'dirty'.
     $form.addClass( 'dirty' )
@@ -272,8 +282,8 @@ add_form_listeners =( form ) ->
 
   # Text Field.
   $form.find('input[type="text"], textarea').keyup ( e ) ->
-    if !!$(e.target).val()
-      StatusChecker.remove_highlights()
+#    if !!$(e.target).val()
+#      StatusChecker.remove_highlights()
     e.preventDefault()
 
     # Ignore 'keyup' for a list of keys.
@@ -308,10 +318,12 @@ bind_srdr20_saving_mechanism = () ->
         this.style.height = ""
         this.style.height = this.scrollHeight + "px" 
       Select2Helper.copy_sd_outcome_names()
-  $( '.infoDiv' ).first().on 'sd:restore-caret-position-now', ( e ) ->
+  $( '.infoDiv' ).first().on 'sd:replaced-html-content', ( e ) ->
     Caretkeeper.restore_caret_position()
-  $( '.infoDiv' ).first().on 'sd:save-caret-position-now', ( e ) ->
+    StatusChecker.restore_highlights()
+  $( '.infoDiv' ).first().on 'sd:replacing-html-content', ( e ) ->
     Caretkeeper.save_caret_position()
+    StatusChecker.save_highlights()
 
 updateSectionFlag = (domEl) ->
   sectionId = domEl.id[0]

@@ -2,10 +2,10 @@
   let infoDiv = $( ".infoDiv" );
   <% if @container and @partial_name %>
     let $container = $( "<%= @container %>" );
-    infoDiv.trigger( 'sd:save-caret-position-now' );
+    infoDiv.trigger( 'sd:replacing-html-content' );
     $container.html("<%= j render @partial_name, sd_meta_datum: @sd_meta_datum, url: @url %>");
-    infoDiv.trigger( 'sd:restore-caret-position-now' );
     $container.trigger( 'sd:form-loaded' );
+    infoDiv.trigger( 'sd:replaced-html-content' );
   <% end %>
 
   <% if @errors %>
