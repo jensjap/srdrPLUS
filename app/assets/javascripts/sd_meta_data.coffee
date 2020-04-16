@@ -12,8 +12,11 @@ class Caretkeeper
     Caretkeeper.focused_elem_cursor_location = document.activeElement.selectionStart
 
   @restore_caret_position: () ->
-    $( "##{Caretkeeper.focused_elem_id}" ).focus()
-    $( "##{Caretkeeper.focused_elem_id}" )[0].setSelectionRange(Caretkeeper.focused_elem_cursor_location, Caretkeeper.focused_elem_cursor_location)
+    try
+      $( "##{Caretkeeper.focused_elem_id}" ).focus()
+      $( "##{Caretkeeper.focused_elem_id}" )[0].setSelectionRange(Caretkeeper.focused_elem_cursor_location, Caretkeeper.focused_elem_cursor_location)
+    catch e
+      console.log "Error: " + e
 
 class Timekeeper
   @_timer_dict: {}

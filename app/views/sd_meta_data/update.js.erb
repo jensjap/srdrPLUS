@@ -1,21 +1,19 @@
 ( function() {
   let infoDiv = $( ".infoDiv" );
-
   <% if @container and @partial_name %>
-    let $container = $( "<%= @container %>" )
-
-    infoDiv.trigger( 'sd:save-caret-position-now' )
+    let $container = $( "<%= @container %>" );
+    infoDiv.trigger( 'sd:save-caret-position-now' );
     $container.html("<%= j render @partial_name, sd_meta_datum: @sd_meta_datum, url: @url %>");
-    infoDiv.trigger( 'sd:restore-caret-position-now' )
-    $container.trigger( 'sd:form-loaded' )
+    infoDiv.trigger( 'sd:restore-caret-position-now' );
+    $container.trigger( 'sd:form-loaded' );
   <% end %>
 
   <% if @errors %>
-    toastr.warning('<%= @errors.join(', ') %>')
+    toastr.warning('<%= @errors.join(', ') %>');
   <% else %>
     //toastr.success('Data saved!')
     $('.dirty').removeClass('dirty');
-    $( '.preview-button' ).removeAttr( 'disabled' )
+    $( '.preview-button' ).removeAttr( 'disabled' );
 
     infoDiv.show().animate( { opacity: 1 } );
     infoDiv.show().delay( 2000 ).animate( { opacity: 0 } );
