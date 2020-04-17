@@ -1,4 +1,11 @@
 module SdMetaDataHelper
+  def prospero_url_for(str)
+    if not str.present?
+      "-----"
+    end
+    link_to(str, "https://www.crd.york.ac.uk/prospero/display_record.asp?ID=#{str}", target: :_blank )
+  end
+
   def sd_url_for(str, name=nil)
     if str.present?
       got_str = str.get_url

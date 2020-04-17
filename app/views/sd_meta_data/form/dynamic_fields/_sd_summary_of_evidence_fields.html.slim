@@ -3,11 +3,10 @@
   = f.input :soe_type, include_blank: true, label: 'Type', collection: ["Summary of Findings", "Narrative Summary of Findings", "Strength of Evidence", "Risk of Bias"], input_html: { class: "soe_type apply-select2" }
   = f.input :name, label: 'Description', :input_html => { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
   = f.input :pictures, as: :file, label: 'Figures', input_html: { multiple: true }
-  div
-    - f.object.pictures.each do |picture|
-      div
-        = image_tag(picture, class: 'openable sd-image')
-        br
-        = link_to 'remove figure', delete_image_attachment_picture_path(picture.id), method: :delete, data: { confirm: 'Are you sure?' }, remote: true
-  div
-    = link_to_remove_association "remove", f, data: { confirm: "Are you sure?" }
+  - f.object.pictures.each do |picture|
+    div
+    .hoverable-figure
+      .hover-message = link_to 'Click to remove', delete_image_attachment_picture_path(picture.id), method: :delete, data: { confirm: 'Are you sure?' }, remote: true, class: 'remove-figure'
+      = image_tag(picture, class: 'openable sd-image')
+  br
+  = link_to_remove_association "remove", f, data: { confirm: "Are you sure?" }
