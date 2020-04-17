@@ -3,7 +3,9 @@
   = f.input :pictures, as: :file, input_html: { multiple: true }
   - f.object.pictures.each do |picture|
     div
-      = image_tag(picture, class: 'openable sd-image')
+      .hoverable-figure
+        .hover-message = link_to 'Click to remove', delete_image_attachment_picture_path(picture.id), method: :delete, data: { confirm: 'Are you sure?' }, remote: true
+        
+        = image_tag(picture, class: 'openable sd-image')
       br
-      = link_to 'remove figure', delete_image_attachment_picture_path(picture.id), method: :delete, data: { confirm: 'Are you sure?' }, remote: true
-  = link_to_remove_association "remove", f, data: { confirm: "Are you sure?" }
+      = link_to_remove_association "remove figure", f, data: { confirm: "Are you sure?" }

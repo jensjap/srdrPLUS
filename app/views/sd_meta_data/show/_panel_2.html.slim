@@ -48,20 +48,6 @@
           div = sd_url_for @sd_meta_datum.evs_tables_figures_link
     div data-row-span="2"
       div data-field-span="1"
-        label Disposition of Comments
-        div = sd_url_for @sd_meta_datum.disposition_of_comments_link
-      div data-field-span="1"
-        label Downloadable Content
-        div = sd_url_for @sd_meta_datum.srdr_data_link
-    div data-row-span="2"
-      div data-field-span="1"
-        label Most Recent Previous Version of SRDR+ Data
-        div = sd_url_for @sd_meta_datum.most_previous_version_srdr_link
-      div data-field-span="1"
-        label Most Recent Previous Version of Full Report
-        div = sd_url_for @sd_meta_datum.most_previous_version_full_report_link
-    div data-row-span="2"
-      div data-field-span="1"
         label Journal Articles
         - if @sd_meta_datum.sd_journal_article_urls.empty?
           div -----
@@ -77,3 +63,17 @@
           td
             - @sd_meta_datum.sd_other_items.each do |sd_other_item|
               li = sd_url_for sd_other_item.url, sd_other_item.name
+    div data-row-span="2"
+      div data-field-span="1"
+        label Disposition of Comments
+        div = sd_url_for @sd_meta_datum.disposition_of_comments_link
+      div data-field-span="1"
+        label Downloadable Content
+        div = sd_url_for @sd_meta_datum.srdr_data_link
+    div data-row-span="2"
+      div data-field-span="1"
+        label Most Recent Previous Version of SRDR+ Data
+        div = sd_url_for @sd_meta_datum.most_previous_version_srdr_link
+      div data-field-span="1"
+        label Most Recent Previous Version of Full Report
+        div = sd_url_for @sd_meta_datum.most_previous_version_full_report_link

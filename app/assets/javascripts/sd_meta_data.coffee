@@ -167,15 +167,19 @@ validate_form_inputs = ( form ) ->
     input_val = $input_elem.val() || ""
     is_input_valid = true
     if not (input_val == "")
-      valid_href = get_valid_URL( input_val )
-      if not valid_href
-        https_appended_val = "https://" + input_val
-        valid_href = get_valid_URL( https_appended_val )
+      if input_val.includes( ' ' )
+        $input_elem.parents('div.input').addClass( 'invalid-url' ) 
+        is_input_valid = false
+      else
+        valid_href = get_valid_URL( input_val )
         if not valid_href
-          $input_elem.parents('div.input').addClass( 'invalid-url' ) 
-          is_input_valid = false
-        else
-          #$input_elem.val( valid_href )
+          https_appended_val = "https://" + input_val
+          valid_href = get_valid_URL( https_appended_val )
+          if not valid_href
+            $input_elem.parents('div.input').addClass( 'invalid-url' ) 
+            is_input_valid = false
+          else
+            #$input_elem.val( valid_href )
     is_form_valid = is_form_valid && is_input_valid
   return is_form_valid
 
@@ -279,6 +283,10 @@ add_form_listeners =( form ) ->
 
   $( "a.remove-figure[data-remote]" ).on "ajax:success",  ( event ) ->
     $( this ).parent().closest( 'div' ).fadeOut();
+
+  $form.find('input[type="text"], textarea').on 'paste', ( e ) ->
+    $form.addClass( 'dirty' )
+    Timekeeper.create_timer_for_form $form[0], 750
 
   # Text Field.
   $form.find('input[type="text"], textarea').keyup ( e ) ->
