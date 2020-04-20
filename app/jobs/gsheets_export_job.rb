@@ -44,10 +44,11 @@ class GsheetsExportJob < ApplicationJob
      #             "client_secret" => Rails.application.credentials[:google_apis][:client_secret]}})
       drive_service = Google::Apis::DriveV3::DriveService.new
      #service.authorization = secrets.to_authorization
-      drive_service.authorization = ::Google::Auth::ServiceAccountCredentials
-                                         .make_creds(json_key_io: File.open('config/google_service_account_credentials.json'),
-                                                     scope: 'https://www.googleapis.com/auth/drive')
-
+      drive_service.authorization = ::Google::Auth::ServiceAccountCredentials.new( token_credential_uri: Google::Auth::ServiceAccountCredentials::TOKEN_CRED_URI,
+                                      audience: Google::Auth::ServiceAccountCredentials::TOKEN_CRED_URI,
+                                      scope: 'https://www.googleapis.com/auth/drive',
+                                      issuer: Rails.application.credentials[:google_service_account][:client_email],
+                                      signing_key: OpenSSL::PKey::RSA.new(Rails.application.credentials[:google_service_account][:private_key]))
       callback = lambda do |res, err|
         if err
           # Handle error...
