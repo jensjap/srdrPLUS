@@ -22,7 +22,7 @@
                     - if not sd_picod.sd_key_questions.present?
                       div = '-----'
                     - else
-                      ol
+                      ul
                         - sd_picod.sd_key_questions.each do |skq|
                           li style="font-size: 12px;" #{skq.key_question.name.present? ? skq.key_question.name : '-----'}
                 div data-row-span="1"

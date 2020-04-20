@@ -19,7 +19,7 @@
 
               div data-row-span="1"
                 div data-field-span="1"
-                  label Narrative Results by Outcome
+                  label Narrative Results by Outcome(s)
                   - if result_item.sd_narrative_results.empty?
                     div -----
                   - else
@@ -48,7 +48,7 @@
 
               div data-row-span="1"
                 div data-field-span="1"
-                  label Evidence Tables
+                  label Evidence Tables by Outcome(s)
                   - if result_item.sd_evidence_tables.empty?
                     div -----
                   - else
@@ -77,7 +77,7 @@
 
               div data-row-span="1"
                 div data-field-span="1"
-                  label Pairwise Meta-analyses
+                  label Pairwise Meta-analyses by Outcome(s)
                   - if result_item.sd_pairwise_meta_analytic_results.empty?
                     div -----
                   - else
@@ -97,19 +97,22 @@
                             div = pairwise_meta_analytic_result.name.present? ? simple_format(pairwise_meta_analytic_result.name) : "-----"
                         div data-row-span="1"
                           div data-field-span="1"
-                            label Type
-                            div = pairwise_meta_analytic_result.p_type.present? ? pairwise_meta_analytic_result.p_type : "-----"
-                        div data-row-span="1"
-                          div data-field-span="1"
                             label Figure(s)
-                            div
-                              - pairwise_meta_analytic_result.pictures.each do |picture|
-                                .sd-show-image
-                                  = image_tag(picture, class: 'openable sd-image')
+                            - pairwise_meta_analytic_result.sd_analysis_figures.each do |sd_analysis_figure|
+                              .sd-show-inner
+                                div data-row-span="1"
+                                  div data-field-span="1"
+                                    label Type
+                                    div = sd_analysis_figure.p_type.present? ? sd_analysis_figure.p_type : "-----"
+                                div data-row-span="1"
+                                  div data-field-span="1"
+                                    - sd_analysis_figure.pictures.each do |picture|
+                                      .sd-show-image
+                                        = image_tag(picture, class: 'openable sd-image')
 
               div data-row-span="1"
                 div data-field-span="1"
-                  label Network Meta-analyses
+                  label Network Meta-analyses by Outcome(s)
                   - if result_item.sd_network_meta_analysis_results.empty?
                     div -----
                   - else
@@ -129,19 +132,22 @@
                             div = network_meta_analysis_result.name.present? ? simple_format(network_meta_analysis_result.name) : "-----"
                         div data-row-span="1"
                           div data-field-span="1"
-                            label Type
-                            div = network_meta_analysis_result.p_type.present? ? network_meta_analysis_result.p_type : "-----"
-                        div data-row-span="1"
-                          div data-field-span="1"
                             label Figure(s)
-                            div
-                              - network_meta_analysis_result.pictures.each do |picture|
-                                .sd-show-image
-                                  = image_tag(picture, class: 'openable sd-image')
+                            - network_meta_analysis_result.sd_analysis_figures.each do |sd_analysis_figure|
+                              .sd-show-inner
+                                div data-row-span="1"
+                                  div data-field-span="1"
+                                    label Type
+                                    div = sd_analysis_figure.p_type.present? ? sd_analysis_figure.p_type : "-----"
+                                div data-row-span="1"
+                                  div data-field-span="1"
+                                    - sd_analysis_figure.pictures.each do |picture|
+                                      .sd-show-image
+                                        = image_tag(picture, class: 'openable sd-image')
 
               div data-row-span="1"
                 div data-field-span="1"
-                  label Meta-regression Results
+                  label Meta-regression Results by Outcome(s)
                   - if result_item.sd_meta_regression_analysis_results.empty?
                     div -----
                   - else
