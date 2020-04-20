@@ -53,7 +53,7 @@
           div class="#{ f.object.sd_meta_regression_analysis_results.present? ? '' : 'zero-nested-associations'}"
             = link_to_add_association 'Add Meta-regression Result', f, :sd_meta_regression_analysis_results, partial: 'sd_meta_data/form/dynamic_fields/sd_meta_regression_analysis_result_fields', class: 'add-item-link'
   div
-    = link_to_remove_association "remove", f, data: { confirm: "Are you sure?" }
+    = link_to_remove_association "remove results for this key question", f, data: { confirm: "Are you sure?" }
 / br/
 / br/
 / fieldset

@@ -4,7 +4,7 @@
   - f.object.pictures.each do |picture|
     div
       .hoverable-figure
-        .hover-message = link_to 'Click to remove', delete_image_attachment_picture_path(picture.id), method: :delete, data: { confirm: 'Are you sure?' }, remote: true, class: 'remove-figure'
+        .hover-message = link_to 'Click to remove figure', delete_image_attachment_picture_path(picture.id), method: :delete, data: { confirm: 'Are you sure?' }, remote: true, class: 'remove-figure'
         
         = image_tag(picture, class: 'openable sd-image')
   br
