@@ -4,7 +4,7 @@
 
   h6 style="font-weight: bold; margin: 20px 0 0;" Source Systematic Review Report
   - if @systematic_review_report
-    a data-toggle='offCanvasRightReportHtml' #{@report.try(:title) ? @report.try(:title) : 'None'}
+    a data-toggle='offCanvasRightReportHtml' #{@sd_meta_datum.try(:report_title) || @report.try(:title) || 'None'}
 
 .column.row#complete-form
   = render 'sd_meta_data/form/form'

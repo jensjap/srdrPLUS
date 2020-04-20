@@ -11,9 +11,13 @@ class String
     end
   end
 
-  def is_url?
+  def get_url
     uri = URI.parse(self)
-    %w( http https ).include?(uri.scheme)
+    if %w( http https ).include?(uri.scheme)
+      return uri.to_s
+    else
+      return false
+    end
     rescue URI::BadURIError
       false
     rescue URI::InvalidURIError

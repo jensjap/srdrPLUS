@@ -11,7 +11,6 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema.define(version: 2020_04_10_163130) do
-
   create_table "abstrackr_settings", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -1513,12 +1512,12 @@ ActiveRecord::Schema.define(version: 2020_04_10_163130) do
     t.text "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "population"
-    t.string "interventions"
-    t.string "comparators"
-    t.string "outcomes"
-    t.string "study_designs"
-    t.string "settings"
+    t.text "population"
+    t.text "interventions"
+    t.text "comparators"
+    t.text "outcomes"
+    t.text "study_designs"
+    t.text "settings"
     t.index ["sd_meta_datum_id"], name: "index_sd_picods_on_sd_meta_datum_id"
   end
 

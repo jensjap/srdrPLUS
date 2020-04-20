@@ -6,8 +6,19 @@
 # All this logic will automatically be available in application.js.
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
+class Caretkeeper
+  @save_caret_position: () ->
+    Caretkeeper.focused_elem_id = document.activeElement.id
+    Caretkeeper.focused_elem_cursor_location = document.activeElement.selectionStart
+
+  @restore_caret_position: () ->
+    try
+      $( "##{Caretkeeper.focused_elem_id}" ).focus()
+      $( "##{Caretkeeper.focused_elem_id}" )[0].setSelectionRange(Caretkeeper.focused_elem_cursor_location, Caretkeeper.focused_elem_cursor_location)
+    catch e
+      console.log "Error: " + e
+
 class Timekeeper
-  @focused_elem
   @_timer_dict: {}
 
   @clear_timer_for_form: ( form ) -> 
@@ -24,9 +35,18 @@ class Timekeeper
     @_timer_dict[ formId ] 
 
 class StatusChecker
+  restore_highlights: false
+
+  @save_highlights: ( ) ->
+    if $( '.empty-input, .empty-associations, .empty-kq' ).length > 0
+      StatusChecker.prototype.restore_highlights = true
+
+  @restore_highlights: ( ) ->
+    if StatusChecker.prototype.restore_highlights
+      StatusChecker.highlight_empty()
+
   @input_empty: ( input ) ->
     if $( input ).is( 'input[type=file]' )
-      console.log $( input ).closest( '.sd-inner' ).find( 'img' )
       if $( input ).closest( '.sd-inner' ).find( 'img' ).length
         return false
       else
@@ -59,6 +79,7 @@ class StatusChecker
     return true
 
   @remove_highlights: ( ) ->
+    StatusChecker.prototype.restore_highlights = false
     $( '.empty-associations' ).removeClass( 'empty-associations' )
     $( '.empty-input' ).removeClass( 'empty-input' )
     $( '.empty-kq' ).removeClass( 'empty-kq' )
@@ -82,8 +103,8 @@ class StatusChecker
     $( '.zero-nested-associations a' ).addClass( 'empty-associations' )
 
   @initialize_listeners: ( ) ->
-    $( '#status-check-modal[data-reveal]' ).on 'open.zf.reveal', ( e ) ->
-      StatusChecker.highlight_empty()
+    $( '#status-check-modal[data-reveal]' ).on 'closed.zf.reveal', ( e ) ->
+      StatusChecker.remove_highlights()
     $( document ).keyup ( e ) ->
       if not $('#status-check-modal').is(':visible')
         return
@@ -105,8 +126,8 @@ class StatusChecker
         
       return
     $( document ).on 'click', '#abort-status-switch', ->
-      StatusChecker.highlight_empty()
       $('#status-check-modal').foundation("close");
+      StatusChecker.highlight_empty()
     $( document ).on 'click', '#confirm-status-switch', ->
       StatusChecker.remove_highlights()
       updateSectionFlag $( '.status-switch' )[0]
@@ -127,7 +148,6 @@ class Select2Helper
 validate_and_send_async_form = ( form ) ->
   if not validate_form_inputs( form )
     return
-  Timekeeper.focused_elem_id = document.activeElement.id
   $( '.preview-button' ).attr( 'disabled', '' )
   send_async_form( form )
 
@@ -147,15 +167,19 @@ validate_form_inputs = ( form ) ->
     input_val = $input_elem.val() || ""
     is_input_valid = true
     if not (input_val == "")
-      valid_href = get_valid_URL( input_val )
-      if not valid_href
-        https_appended_val = "https://" + input_val
-        valid_href = get_valid_URL( https_appended_val )
+      if input_val.includes( ' ' )
+        $input_elem.parents('div.input').addClass( 'invalid-url' ) 
+        is_input_valid = false
+      else
+        valid_href = get_valid_URL( input_val )
         if not valid_href
-          $input_elem.parents('div.input').addClass( 'invalid-url' ) 
-          is_input_valid = false
-        else
-          #$input_elem.val( valid_href )
+          https_appended_val = "https://" + input_val
+          valid_href = get_valid_URL( https_appended_val )
+          if not valid_href
+            $input_elem.parents('div.input').addClass( 'invalid-url' ) 
+            is_input_valid = false
+          else
+            #$input_elem.val( valid_href )
     is_form_valid = is_form_valid && is_input_valid
   return is_form_valid
 
@@ -245,8 +269,8 @@ add_form_listeners =( form ) ->
   formId = $form.attr( 'id' )
 
   $form.find( 'select, input[type="file"], input[type="date"]' ).on 'change', ( e ) ->
-    if !!$(e.target).val()
-      StatusChecker.remove_highlights()
+#    if !!$(e.target).val()
+#      StatusChecker.remove_highlights()
     e.preventDefault()
     # Mark form as 'dirty'.
     $form.addClass( 'dirty' )
@@ -260,10 +284,14 @@ add_form_listeners =( form ) ->
   $( "a.remove-figure[data-remote]" ).on "ajax:success",  ( event ) ->
     $( this ).parent().closest( 'div' ).fadeOut();
 
+  $form.find('input[type="text"], textarea').on 'paste', ( e ) ->
+    $form.addClass( 'dirty' )
+    Timekeeper.create_timer_for_form $form[0], 750
+
   # Text Field.
   $form.find('input[type="text"], textarea').keyup ( e ) ->
-    if !!$(e.target).val()
-      StatusChecker.remove_highlights()
+#    if !!$(e.target).val()
+#      StatusChecker.remove_highlights()
     e.preventDefault()
 
     # Ignore 'keyup' for a list of keys.
@@ -274,18 +302,18 @@ add_form_listeners =( form ) ->
 
     # Mark form as 'dirty'.
     $form.addClass( 'dirty' )
-    #Timekeeper.create_timer_for_form $form[0], 750
+    Timekeeper.create_timer_for_form $form[0], 750
 
-  $form.focusout ( e ) ->
-    #if $( document.activeElement ).is('*:not(input[type="text"],input[type="text"], textarea)')
-    #  console.log ( document.activeElement )
-    if $form.is( '.dirty' )
-      Timekeeper.create_timer_for_form $form[0], 750
-
-  $form.focusin ( e ) ->
-    #if $( document.activeElement ).is('input[type="search"], input[type="text"], textarea')
-    if $( document.activeElement ).is('input[type="text"], textarea')
-      Timekeeper.clear_timer_for_form( $form[0] )
+#  $form.focusout ( e ) ->
+#    #if $( document.activeElement ).is('*:not(input[type="text"],input[type="text"], textarea)')
+#    #  console.log ( document.activeElement )
+#    if $form.is( '.dirty' )
+#      Timekeeper.create_timer_for_form $form[0], 750
+#
+#  $form.focusin ( e ) ->
+#    #if $( document.activeElement ).is('input[type="search"], input[type="text"], textarea')
+#    if $( document.activeElement ).is('input[type="text"], textarea')
+#      Timekeeper.clear_timer_for_form( $form[0] )
 
 bind_srdr20_saving_mechanism = () ->
   $( 'form.sd-form' ).each ( i, form ) ->
@@ -294,11 +322,16 @@ bind_srdr20_saving_mechanism = () ->
     $cocoon_container.on 'sd:form-loaded', ( e ) ->
       add_form_listeners( $cocoon_container.children( 'form' ) )
       apply_all_select2()
-      #$( "##{Timekeeper.focused_elem_id}" ).focus()
       StatusChecker.get_all_inputs().each () ->
         this.style.height = ""
         this.style.height = this.scrollHeight + "px" 
       Select2Helper.copy_sd_outcome_names()
+  $( '.infoDiv' ).first().on 'sd:replaced-html-content', ( e ) ->
+    Caretkeeper.restore_caret_position()
+    StatusChecker.restore_highlights()
+  $( '.infoDiv' ).first().on 'sd:replacing-html-content', ( e ) ->
+    Caretkeeper.save_caret_position()
+    StatusChecker.save_highlights()
 
 updateSectionFlag = (domEl) ->
   sectionId = domEl.id[0]

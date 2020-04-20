@@ -59,6 +59,11 @@ def import_citations_from_pubmed_array(project, pubmed_id_array)
     row_h[ 'journal_attributes' ] = j_h
 
     h_arr << row_h
+
+    if h_arr.length >= CITATION_BATCH_SIZE
+      imported_file.project.citations << Citation.create(h_arr)
+      h_arr = []
+    end
   end
-  project.citations << Citation.create!( h_arr )
+  #project.citations << Citation.create!( h_arr )
 end

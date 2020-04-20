@@ -25,6 +25,7 @@
       where(question_row_column_option_id: 1).\
       collect { |opt| [opt.name, opt.id, { 'data-prereq': "prereq-#{ opt.class }-#{ opt.id }" }] }
     = f.association :question_row_columns_question_row_column_options, include_blank: false,
+      label: false,
       collection: options,
       input_html: { class: 'select2 form-control' }
     div id="eefpsqrcf-id-#{ eefps_qrcf.id.to_s }" class='record-info' style='opacity: 0;' = 'Saved!'

@@ -1,12 +1,13 @@
 .nested-fields
+  - collection = ['Forest plot with summary estimate, type of model, and estimates of heterogeneity', 'Meta-analysis results table'].freeze
   = f.input :sd_outcome_names, as: :select, collection: f.object.sd_outcome_names, label: 'Outcome(s)', include_blank: true, input_html: { class: 'sd-outcome-select2', multiple: true }
   = f.input :name, label: 'Description', input_html: { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
   div
-    = f.simple_fields_for :sd_analysis_figures do |sd_analysis_figure|
+    = f.simple_fields_for :sd_analysis_figures, (f.object.sd_analysis_figures.present? ? f.object.sd_analysis_figures : f.object.sd_analysis_figures.build)  do |sd_analysis_figure|
       .sd-item.sd-inner
-        = render 'sd_meta_data/form/dynamic_fields/sd_analysis_figure_fields', f: sd_analysis_figure
+        = render 'sd_meta_data/form/dynamic_fields/sd_analysis_figure_fields', f: sd_analysis_figure, p_type_collection: collection
     div
-      = link_to_add_association 'Add Figure', f, :sd_analysis_figures, partial: 'sd_meta_data/form/dynamic_fields/sd_analysis_figure_fields', class: 'add-item-link'
+      = link_to_add_association 'Add Another Figure Type', f, :sd_analysis_figures, partial: 'sd_meta_data/form/dynamic_fields/sd_analysis_figure_fields', class: 'add-item-link'
 
   div
     = link_to_remove_association "remove", f, data: { confirm: "Are you sure?" }

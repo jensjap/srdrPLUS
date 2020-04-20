@@ -75,6 +75,11 @@ def import_citations_from_enl(imported_file)
     row_h[ 'journal_attributes' ] = j_h
 
     h_arr << row_h
+
+    if h_arr.length >= CITATION_BATCH_SIZE
+      imported_file.project.citations << Citation.create(h_arr)
+      h_arr = []
+    end
   end
-  imported_file.project.citations << Citation.create!( h_arr )
+  #imported_file.project.citations << Citation.create!( h_arr )
 end

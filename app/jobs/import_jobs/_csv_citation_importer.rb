@@ -78,8 +78,15 @@ def import_citations_from_csv(imported_file)
     if row_h[ 'Accession Number' ].present? then cit_h[ 'pmid' ] = row_h[ 'Accession Number' ].strip end
 
     h_arr << cit_h
+    if h_arr.length >= 500
+      imported_file.project.citations << Citation.create(h_arr)
+      h_arr = []
+    end
+
+    if h_arr.length >= CITATION_BATCH_SIZE
+      imported_file.project.citations << Citation.create(h_arr)
+      h_arr = []
+    end
   end
-
-  imported_file.project.citations << Citation.create!( h_arr )
-
+  #imported_file.project.citations << Citation.create( h_arr )
 end
