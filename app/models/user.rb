@@ -80,13 +80,17 @@ class User < ApplicationRecord
   has_many :tags, through: :taggings, dependent: :destroy
 
   def highest_role_in_project(project)
-    self
-      .projects_users_roles
-      .where('projects_user_id in ( ? )', self.projects_users.select(:id).where(project: project))
-      .order(id: :asc)
-      .first  # Higher roles have lower id.
-      .role
-      .name
+    begin
+      self
+        .projects_users_roles
+        .where('projects_user_id in ( ? )', self.projects_users.select(:id).where(project: project))
+        .order(id: :asc)
+        .first  # Higher roles have lower id.
+        .role
+        .name
+    rescue
+      false
+    end
   end
 
   def handle

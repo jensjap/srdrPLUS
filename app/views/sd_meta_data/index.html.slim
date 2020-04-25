@@ -36,7 +36,7 @@ hr style="border: 0.5px solid; margin: 20px 55px;"
         - @sd_meta_data.each do |sd_meta_datum|
           tr
             td ID #{ sd_meta_datum.try(:project).id }: #{ sd_meta_datum.try(:project).try(:name) }
-            td = sd_meta_datum.report.try(:title)
+            td = (sd_meta_datum.report_title.present? ? sd_meta_datum.report_title : sd_meta_datum.report.try(:title)) || _____
             - if sd_meta_datum.incomplete_sections.empty?
               td style="font-weight: bold;"
                 | Completed

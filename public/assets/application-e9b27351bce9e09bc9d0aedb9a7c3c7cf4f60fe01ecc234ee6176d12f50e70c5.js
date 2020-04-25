@@ -51309,7 +51309,6 @@ function __guardMethod__(obj, methodName, transform) {
             $('.submit').removeClass('hide');
             return $('.submit-with-confirmation').addClass('hide');
           } else if ($(e.target).val() === "distiller") {
-            console.log("OYOY");
             $('.distiller-import-panel').removeClass('hide');
             $('.json-import-panel').addClass('hide');
             $('#distiller-add-references-file').trigger("click");
@@ -51993,9 +51992,6 @@ function __guardMethod__(obj, methodName, transform) {
           });
           color = "#E8DAEF";
           return $.each(a_dict["counts"], function(value, count) {
-            console.log(value + ', ' + count);
-            console.log(a_dict["consolidated_value"]);
-            console.log(a_dict["consolidated_elem"]);
             if (count !== number_of_extractions) {
               if (a_dict["consolidated_value"] !== "") {
                 color = "#D1F2EB";
@@ -52126,23 +52122,51 @@ function __guardMethod__(obj, methodName, transform) {
 
 }).call(this);
 (function() {
-  var Timekeeper, add_form_listeners, apply_all_select2, bind_srdr20_saving_mechanism, formatResult, formatResultSelection, init_select2, validate_form_inputs;
+  var Caretkeeper, Select2Helper, StatusChecker, Timekeeper, add_form_listeners, apply_all_select2, bind_srdr20_saving_mechanism, check, formatResult, formatResultSelection, init_select2, initializeSwitches, updateSectionFlag, validate_and_send_async_form, validate_form_inputs;
+
+  Caretkeeper = (function() {
+    function Caretkeeper() {}
+
+    Caretkeeper.save_caret_position = function() {
+      Caretkeeper.focused_elem_id = document.activeElement.id;
+      return Caretkeeper.focused_elem_cursor_location = document.activeElement.selectionStart;
+    };
+
+    Caretkeeper.restore_caret_position = function() {
+      var e;
+      try {
+        $("#" + Caretkeeper.focused_elem_id).focus();
+        return $("#" + Caretkeeper.focused_elem_id)[0].setSelectionRange(Caretkeeper.focused_elem_cursor_location, Caretkeeper.focused_elem_cursor_location);
+      } catch (error) {
+        e = error;
+        return console.log("Error: " + e);
+      }
+    };
+
+    return Caretkeeper;
+
+  })();
 
   Timekeeper = (function() {
     function Timekeeper() {}
 
     Timekeeper._timer_dict = {};
 
-    Timekeeper.create_timer_for_form = function(form) {
+    Timekeeper.clear_timer_for_form = function(form) {
       var formId;
-      $('.preview-button').attr('disabled', '');
       formId = form.getAttribute('id');
       if (formId in this._timer_dict) {
-        clearTimeout(this._timer_dict[formId]);
+        return clearTimeout(this._timer_dict[formId]);
       }
+    };
+
+    Timekeeper.create_timer_for_form = function(form, duration) {
+      var formId;
+      Timekeeper.clear_timer_for_form(form);
+      formId = form.getAttribute('id');
       this._timer_dict[formId] = setTimeout(function() {
-        return send_async_form(form);
-      }, 750);
+        return validate_and_send_async_form(form);
+      }, duration);
       return this._timer_dict[formId];
     };
 
@@ -52150,23 +52174,211 @@ function __guardMethod__(obj, methodName, transform) {
 
   })();
 
+  StatusChecker = (function() {
+    function StatusChecker() {}
+
+    StatusChecker.prototype.restore_highlights = false;
+
+    StatusChecker.save_highlights = function() {
+      if ($('.empty-input, .empty-associations, .empty-kq').length > 0) {
+        return StatusChecker.prototype.restore_highlights = true;
+      }
+    };
+
+    StatusChecker.restore_highlights = function() {
+      if (StatusChecker.prototype.restore_highlights) {
+        return StatusChecker.highlight_empty();
+      }
+    };
+
+    StatusChecker.input_empty = function(input) {
+      if ($(input).is('input[type=file]')) {
+        if ($(input).closest('.sd-inner').find('img').length) {
+          return false;
+        } else {
+          return true;
+        }
+      }
+      return !$(input).val();
+    };
+
+    StatusChecker.get_all_inputs = function() {
+      return $('input:not([type="hidden"], .select2-search__field), select, textarea');
+    };
+
+    StatusChecker.get_all_unmapped_srdr_kq = function() {
+      return $('.srdr-key-questions-box').find('.srdr-kq:not(".kq-mapped")');
+    };
+
+    StatusChecker.get_all_unmapped_report_kq = function() {
+      return $('.report-key-questions-box').find('.srdr-kq-target-prompt:not(".hide")').parents('.report-kq');
+    };
+
+    StatusChecker.check_kq_mapping_status = function() {
+      if (StatusChecker.get_all_unmapped_srdr_kq().length > 0) {
+        return false;
+      }
+      if (StatusChecker.get_all_unmapped_report_kq().length > 0) {
+        return false;
+      }
+      return true;
+    };
+
+    StatusChecker.check_status = function() {
+      var elem, j, len, ref;
+      if ($('.zero-nested-associations').length > 0) {
+        return false;
+      }
+      ref = StatusChecker.get_all_inputs();
+      for (j = 0, len = ref.length; j < len; j++) {
+        elem = ref[j];
+        if (StatusChecker.input_empty(elem)) {
+          return false;
+        }
+      }
+      return true;
+    };
+
+    StatusChecker.remove_highlights = function() {
+      StatusChecker.prototype.restore_highlights = false;
+      $('.empty-associations').removeClass('empty-associations');
+      $('.empty-input').removeClass('empty-input');
+      return $('.empty-kq').removeClass('empty-kq');
+    };
+
+    StatusChecker.highlight_input = function(input) {
+      if ($(input).is('select')) {
+        return $(input).parent().find('.select2-container').addClass('empty-input');
+      } else {
+        return $(input).addClass('empty-input');
+      }
+    };
+
+    StatusChecker.highlight_empty = function() {
+      var completeable, elem, j, len, ref;
+      StatusChecker.get_all_unmapped_srdr_kq().addClass('empty-kq');
+      StatusChecker.get_all_unmapped_report_kq().addClass('empty-kq');
+      ref = StatusChecker.get_all_inputs();
+      for (j = 0, len = ref.length; j < len; j++) {
+        elem = ref[j];
+        if (StatusChecker.input_empty(elem)) {
+          completeable = false;
+          StatusChecker.highlight_input(elem);
+        }
+      }
+      return $('.zero-nested-associations a').addClass('empty-associations');
+    };
+
+    StatusChecker.initialize_listeners = function() {
+      $('#status-check-modal[data-reveal]').on('closed.zf.reveal', function(e) {
+        return StatusChecker.remove_highlights();
+      });
+      $(document).keyup(function(e) {
+        var code;
+        if (!$('#status-check-modal').is(':visible')) {
+          return;
+        }
+        code = e.keyCode || e.which;
+        if (code === 13) {
+          $('#confirm-status-switch').click();
+        }
+      });
+      $(document).on('click', '.status-switch', function() {
+        if (this.id[0] !== "5") {
+          if (!(StatusChecker.check_status() || $(this).hasClass('completed'))) {
+            $('#status-check-modal').foundation("open");
+          } else {
+            updateSectionFlag(this);
+          }
+        } else {
+          if (!(StatusChecker.check_kq_mapping_status() || $(this).hasClass('completed'))) {
+            $('#status-check-modal').foundation("open");
+          } else {
+            updateSectionFlag(this);
+          }
+        }
+      });
+      $(document).on('click', '#abort-status-switch', function() {
+        $('#status-check-modal').foundation("close");
+        return StatusChecker.highlight_empty();
+      });
+      return $(document).on('click', '#confirm-status-switch', function() {
+        StatusChecker.remove_highlights();
+        updateSectionFlag($('.status-switch')[0]);
+        return $('#status-check-modal').foundation("close");
+      });
+    };
+
+    return StatusChecker;
+
+  })();
+
+  Select2Helper = (function() {
+    function Select2Helper() {}
+
+    Select2Helper.copy_sd_outcome_names = function() {
+      var sd_outcome_option_set;
+      sd_outcome_option_set = new Set();
+      $('.sd-outcome-select2 option').each(function(i, option_elem) {
+        if (option_elem.text !== '') {
+          return sd_outcome_option_set.add(option_elem.text);
+        }
+      });
+      return $('.sd-outcome-select2').each(function(i, select2_elem) {
+        return sd_outcome_option_set.forEach(function(key, option_text, sd_outcome_option_set) {
+          var newOption;
+          if (!$(select2_elem).find("option[value='" + option_text + "']").length) {
+            newOption = new Option(option_text, option_text, false, false);
+            return $(select2_elem).append(newOption).trigger('change.select2');
+          }
+        });
+      });
+    };
+
+    return Select2Helper;
+
+  })();
+
+  validate_and_send_async_form = function(form) {
+    if (!validate_form_inputs(form)) {
+      return;
+    }
+    $('.preview-button').attr('disabled', '');
+    return send_async_form(form);
+  };
+
   formatResultSelection = function(result, container) {
     return result.text;
   };
 
   validate_form_inputs = function(form) {
-    var $form, $input_elem, input_elem, input_val, is_form_valid, is_input_valid, j, len, ref;
+    var $form, $input_elem, https_appended_val, input_elem, input_val, is_form_valid, is_input_valid, j, len, ref, valid_href;
     $form = $(form);
-    $form.find('.invalid').removeClass('invalid');
+    $form.find('.invalid-url').removeClass('invalid-url');
     is_form_valid = true;
     ref = $form.find('.url-input');
     for (j = 0, len = ref.length; j < len; j++) {
       input_elem = ref[j];
       $input_elem = $(input_elem);
-      input_val = $input_elem.val();
-      is_input_valid = is_valid_URL(input_val) || (input_val === "");
-      if (!is_input_valid) {
-        $input_elem.addClass('invalid');
+      input_val = $input_elem.val() || "";
+      is_input_valid = true;
+      if (!(input_val === "")) {
+        if (input_val.includes(' ')) {
+          $input_elem.parents('div.input').addClass('invalid-url');
+          is_input_valid = false;
+        } else {
+          valid_href = get_valid_URL(input_val);
+          if (!valid_href) {
+            https_appended_val = "https://" + input_val;
+            valid_href = get_valid_URL(https_appended_val);
+            if (!valid_href) {
+              $input_elem.parents('div.input').addClass('invalid-url');
+              is_input_valid = false;
+            } else {
+
+            }
+          }
+        }
       }
       is_form_valid = is_form_valid && is_input_valid;
     }
@@ -52195,8 +52407,10 @@ function __guardMethod__(obj, methodName, transform) {
 
   init_select2 = function(selector, url) {
     return $(selector).select2({
+      selectOnClose: true,
+      allowClear: true,
       minimumInputLength: 0,
-      placeholder: '-- Select --',
+      placeholder: '-- Select or type other value --',
       ajax: {
         url: url,
         dataType: 'json',
@@ -52240,62 +52454,143 @@ function __guardMethod__(obj, methodName, transform) {
     init_select2(".sd_picods_type", '/sd_picods_types');
     init_select2(".review_type", '/review_types');
     init_select2(".data_analysis_level", '/data_analysis_levels');
-    return $('.apply-select2').select2({
-      placeholder: '-- Select --'
+    $('.apply-select2').select2({
+      selectOnClose: true,
+      allowClear: true,
+      placeholder: '-- Select or type other value --'
     });
+    $('.sd-outcome-select2').select2({
+      tags: true,
+      allowClear: true,
+      selectOnClose: true,
+      placeholder: '-- Select or type other value --'
+    });
+    $('.sd-select2, .apply-select2, .sd-outcome-select2').on('select2:unselecting', function(e) {
+      return $(this).on('select2:opening', function(event) {
+        return event.preventDefault();
+      });
+    });
+    $('.sd-select2').on('select2:unselect', function(e) {
+      var sel;
+      sel = $(this);
+      return setTimeout(function() {
+        return sel.off('select2:opening');
+      }, 100);
+    });
+    return Select2Helper.copy_sd_outcome_names();
   };
 
   add_form_listeners = function(form) {
     var $form, formId;
     $form = $(form);
     formId = $form.attr('id');
-    $(form).children('input').change(function(e) {
+    $form.find('select, input[type="file"], input[type="date"]').on('change', function(e) {
       e.preventDefault();
-      return $form.addClass('dirty');
-    });
-    $form.find('textarea, select, input').on('change', function(e) {
-      if (!validate_form_inputs(form)) {
-        return;
-      }
       $form.addClass('dirty');
-      return Timekeeper.create_timer_for_form($form[0]);
+      return Timekeeper.create_timer_for_form($form[0], 750);
     });
     $form.on('cocoon:after-insert cocoon:after-remove', function(e) {
       $form.addClass('dirty');
-      return Timekeeper.create_timer_for_form($form[0]);
+      return Timekeeper.create_timer_for_form($form[0], 750);
     });
     $("a.remove-figure[data-remote]").on("ajax:success", function(event) {
       return $(this).parent().closest('div').fadeOut();
     });
-    $form.keyup(function(e) {
+    $form.find('input[type="text"], textarea').on('paste', function(e) {
+      $form.addClass('dirty');
+      return Timekeeper.create_timer_for_form($form[0], 750);
+    });
+    return $form.find('input[type="text"], textarea').keyup(function(e) {
       var code;
       e.preventDefault();
       code = e.keyCode || e.which;
       if (code === 9 || code === 16 || code === 18 || code === 37 || code === 38 || code === 39 || code === 40 || code === 91) {
         return;
       }
-      if (!validate_form_inputs(form)) {
-        return;
-      }
       $form.addClass('dirty');
-      return Timekeeper.create_timer_for_form($form[0]);
+      return Timekeeper.create_timer_for_form($form[0], 750);
     });
-    return $('.fdatepicker').fdatepicker({
-      format: 'yyyy-mm-dd',
-      disableDblClickSelection: true
-    }).show();
   };
 
   bind_srdr20_saving_mechanism = function() {
-    return $('form.sd-form').each(function(i, form) {
+    $('form.sd-form').each(function(i, form) {
       var $cocoon_container;
       add_form_listeners(form);
       $cocoon_container = $(form).parents('.cocoon-container');
       return $cocoon_container.on('sd:form-loaded', function(e) {
         add_form_listeners($cocoon_container.children('form'));
-        return apply_all_select2();
+        apply_all_select2();
+        StatusChecker.get_all_inputs().each(function() {
+          this.style.height = "";
+          return this.style.height = this.scrollHeight + "px";
+        });
+        return Select2Helper.copy_sd_outcome_names();
       });
     });
+    $('.infoDiv').first().on('sd:replaced-html-content', function(e) {
+      Caretkeeper.restore_caret_position();
+      return StatusChecker.restore_highlights();
+    });
+    return $('.infoDiv').first().on('sd:replacing-html-content', function(e) {
+      Caretkeeper.save_caret_position();
+      return StatusChecker.save_highlights();
+    });
+  };
+
+  updateSectionFlag = function(domEl) {
+    var obj, paramKey, sd_meta_datum_id, sectionId, status, url_base;
+    sectionId = domEl.id[0];
+    sd_meta_datum_id = $(domEl).attr('data-sd_meta_datum_id');
+    status = $(domEl).hasClass('draft');
+    paramKey = "section_flag_" + sectionId;
+    url_base = $('.sd-form')[0].action;
+    $.post(url_base + "/section_update", {
+      sd_meta_datum: (
+        obj = {},
+        obj["" + paramKey] = status,
+        obj
+      )
+    }, function(data) {
+      check(sectionId, data.status);
+    });
+  };
+
+  check = function(panelNumber, status) {
+    var check;
+    var check_container, link;
+    if (status === true || status === 'true') {
+      $('#'.concat(panelNumber.toString(), '-yes-no-section.status-switch')).removeClass('draft warning');
+      $('#'.concat(panelNumber.toString(), '-yes-no-section.status-switch')).addClass('completed');
+      $('#'.concat(panelNumber.toString(), '-yes-no-section.status-switch')).html('Completed');
+    } else {
+      $('#'.concat(panelNumber.toString(), '-yes-no-section.status-switch')).removeClass('completed warning');
+      $('#'.concat(panelNumber.toString(), '-yes-no-section.status-switch')).addClass('draft');
+      $('#'.concat(panelNumber.toString(), '-yes-no-section.status-switch')).html('Draft');
+    }
+    check = ' <i class="fa fa-check"></i>';
+    link = $("#panel-" + panelNumber + "-label");
+    check_container = $(".check-container[panel-number='" + panelNumber + "']");
+    check_container.html('');
+    if (status === true || status === 'true') {
+      check_container.html(check);
+      link.css({
+        'color': 'green'
+      });
+    } else {
+      link.css({
+        'color': 'unset'
+      });
+    }
+  };
+
+  initializeSwitches = function() {
+    var elem, j, len, ref;
+    ref = $('.to-be-checked');
+    for (j = 0, len = ref.length; j < len; j++) {
+      elem = ref[j];
+      check($(elem).find('.check-container').attr('panel-number'), true);
+      $(elem).removeClass('to-be-checked');
+    }
   };
 
   document.addEventListener('turbolinks:load', function() {
@@ -52303,8 +52598,14 @@ function __guardMethod__(obj, methodName, transform) {
       if ($('body.sd_meta_data').length === 0) {
         return;
       }
+      StatusChecker.initialize_listeners();
+      initializeSwitches();
       bind_srdr20_saving_mechanism();
-      return apply_all_select2();
+      apply_all_select2();
+      return StatusChecker.get_all_inputs().each(function() {
+        this.style.height = "";
+        return this.style.height = this.scrollHeight + "px";
+      });
     })();
   });
 
@@ -52511,12 +52812,11 @@ function send_async_form(form) {
 }
 
 // Global function to check if a string is a URL
-function is_valid_URL(string){
+function get_valid_URL(string){
   try {
-    new URL(string);
-    return true;
+    return new URL(string).href
   } catch (_) {
-    return false;  
+    return false;
   }
 }
 

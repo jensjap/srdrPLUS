@@ -17,7 +17,9 @@
         h5 SRDR+ Key Questions
       .no-border data-field-span="1"
         h5 style="float: left;" Report Key Questions
-        a id="reset-all" onClick="resetAllMappings()" style="float: right;" Reset Mapping
+        div style="float: right; display: flex; flex-direction: column; align-items: flex-end;" 
+          a id="reset-all" onClick="resetAllMappings()" Auto Mapping
+          a id="clear-all" onClick="clear_all_mappings()" Clear All
       .srdr-key-questions-box.no-border data-field-span="1" style="overflow: scroll; max-height: 1000px;"
         - @sd_meta_datum.try(:project).try(:key_questions).uniq.try(:each) do |srdr_kq|
           .srdr-kq.draggable id="srdr_kq-#{srdr_kq.id}" data-keyQuestionId="#{srdr_kq.id}" draggable="true"
@@ -33,7 +35,9 @@
                 .srdr-kq-target-prompt.hide = 'Drag Key Question Here'
                 - sd_key_question.srdr_key_questions.each do |srdr_key_question|
                   .srdr-kq.draggable.clickremove id="srdr_kq-#{srdr_key_question.id}" data-keyQuestionId="#{srdr_key_question.id}" draggable="true"
-                    span.clamp-span = "#{srdr_key_question.name} - (click to remove)"
+                    span.clamp-span = "#{srdr_key_question.name}"
+                    span.hover-message
+                      |Click to Remove
           /a.button.tiny style="margin: 10px;" onClick="resetMapping(#{sd_key_question.id})" Reset Auto Match
     /.no-border data-row-span="2"
       .no-border data-field-span="2"

@@ -2,40 +2,50 @@
   .cell.medium-3
     #vertical-tabs.ul.tabs.vertical
       li.tabs-title
-        = link_to '?panel_number=0', class: (@panel_number == 0 ? 'bg-light-grey' : ''), id: "panel-0-label" do
+        = link_to '?panel_number=0', class: ([(@panel_number == 0 ? 'bg-light-grey' : ''), (@sd_meta_datum.section_flag_0 ? 'to-be-checked' : '')] - ['']).join(' '), id: "panel-0-label" do
           |Title, Funding Sources, and Dates
           .check-container[panel-number="0"]
       li.tabs-title
-        = link_to '?panel_number=1', class: (@panel_number == 1 ? 'bg-light-grey' : ''), id: "panel-1-label" do
+        = link_to '?panel_number=1', class: ([(@panel_number == 1 ? 'bg-light-grey' : ''), (@sd_meta_datum.section_flag_1 ? 'to-be-checked' : '')] - ['']).join(' '), id: "panel-1-label" do
           |Authors and Stakeholders
           .check-container[panel-number="1"]
       li.tabs-title
-        = link_to '?panel_number=2', class: (@panel_number == 2 ? 'bg-light-grey' : ''), id: "panel-2-label" do
-          |Links
+        = link_to '?panel_number=2', class: ([(@panel_number == 2 ? 'bg-light-grey' : ''), (@sd_meta_datum.section_flag_2 ? 'to-be-checked' : '')] - ['']).join(' '), id: "panel-2-label" do
+          |URL Links
           .check-container[panel-number="2"]
       li.tabs-title
-        = link_to '?panel_number=3', class: (@panel_number == 3 ? 'bg-light-grey' : ''), id: "panel-3-label" do
+        = link_to '?panel_number=3', class: ([(@panel_number == 3 ? 'bg-light-grey' : ''), (@sd_meta_datum.section_flag_3 ? 'to-be-checked' : '')] - ['']).join(' '), id: "panel-3-label" do
           |Purpose and Key Questions
           .check-container[panel-number="3"]
           .warning-container[panel-number="3"]
+      li.tabs-title
+        = link_to '?panel_number=4', class: ([(@panel_number == 4 ? 'bg-light-grey' : ''), (@sd_meta_datum.section_flag_4 ? 'to-be-checked' : '')] - ['']).join(' '), id: "panel-4-label" do
+          |PICODS
+          .check-container[panel-number="4"]
       li.tabs-title.mapping-kq-title
-        = link_to '?panel_number=5', class: (@panel_number == 5 ? 'bg-light-grey' : ''), id: "panel-5-label" do
+        = link_to '?panel_number=5', class: ([(@panel_number == 5 ? 'bg-light-grey' : ''), (@sd_meta_datum.section_flag_5 ? 'to-be-checked' : '')] - ['']).join(' '), id: "panel-5-label" do
           |Key Question Mapping (Submitter Only)
           .check-container[panel-number="5"]
           .warning-container[panel-number="5"]
       li.tabs-title
-        = link_to '?panel_number=4', class: (@panel_number == 4 ? 'bg-light-grey' : ''), id: "panel-4-label" do
-          |PICODs
-          .check-container[panel-number="4"]
-      li.tabs-title
-        = link_to '?panel_number=6', class: (@panel_number == 6 ? 'bg-light-grey' : ''), id: "panel-6-label" do
+        = link_to '?panel_number=6', class: ([(@panel_number == 6 ? 'bg-light-grey' : ''), (@sd_meta_datum.section_flag_6 ? 'to-be-checked' : '')] - ['']).join(' '), id: "panel-6-label" do
           |Search Strategy and Evidence Summary
           .check-container[panel-number="6"]
       li.tabs-title
-        = link_to '?panel_number=7', class: (@panel_number == 7 ? 'bg-light-grey' : ''), id: "panel-7-label" do
+        = link_to '?panel_number=7', class: ([(@panel_number == 7 ? 'bg-light-grey' : ''), (@sd_meta_datum.section_flag_7 ? 'to-be-checked' : '')] - ['']).join(' '), id: "panel-7-label" do
           |Study Results
           .check-container[panel-number="7"]
   .cell.medium-9
+    #status-check-modal.reveal data-reveal=""
+      - if @panel_number != 5
+       | There are incomplete input fields. Do you want to continue? 
+      - else
+       | There are unmapped key questions. Do you want to continue?
+      #status-check-modal-buttons
+          #abort-status-switch.button.alert
+            | Show missing fields
+          #confirm-status-switch.button.confirm
+            | Continue
     - if @panel_number != 5
       .preview-container-container.float-center.hide
         a.close-preview.float-right = "✖"

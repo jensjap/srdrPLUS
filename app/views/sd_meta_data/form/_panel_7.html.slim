@@ -2,7 +2,7 @@
   fieldset
     div style="display:flex; flex-direction: row;"
       legend Study Results
-      .status-switch.button[id="7-yes-no-section" class=(@sd_meta_datum.section_flag_7 ? 'completed' : 'draft') data-sd_meta_datum_id="#{sd_meta_datum.id}"]
+      .status-switch.button[id="7-yes-no-section" class=(@sd_meta_datum.section_flag_7 ? 'completed' : 'draft') data-sd_meta_datum_id="#{@sd_meta_datum.id}"]
         - if @sd_meta_datum.section_flag_7
           | Completed
         - else
@@ -10,54 +10,6 @@
 
     div data-row-span="1"
       div data-field-span="1"
-        label Comparison Outcome by Population Subgroup
-        .cocoon-container.comparison-outcome-by-population-subgroup-list
-          = render 'sd_meta_data/form/nested_associations/comparison_outcome_by_population_subgroup_list', sd_meta_datum: @sd_meta_datum, url: @url
-    div data-row-span="1"
-      div data-field-span="1"
-        label Comparison Outcome by Intervention Subgroup
-        .cocoon-container.comparison-outcome-by-intervention-subgroup-list
-          = render 'sd_meta_data/form/nested_associations/comparison_outcome_by_intervention_subgroup_list', sd_meta_datum: @sd_meta_datum, url: @url
-    div data-row-span="1"
-      div data-field-span="1"
-        label Evidence Tables
-        .cocoon-container.evidence-table-list
-          = render 'sd_meta_data/form/nested_associations/evidence_table_list', sd_meta_datum: @sd_meta_datum, url: @url
-    /div data-row-span="1"
-      div data-field-span="1"
-        label 80. Forest Plot
-        = f.simple_fields_for :sd_forest_plots do |sd_forest_plot|
-          = render 'sd_meta_data/form/dynamic_fields/sd_forest_plot_fields', f: sd_forest_plot
-        div
-          = link_to_add_association 'add', f, :sd_forest_plots, partial: 'sd_meta_data/form/dynamic_fields/sd_forest_plot_fields'
-    div data-row-span="1"
-      div data-field-span="1"
-        label Pairwise Meta Analytic Result (Forest plot with summary estimate, type of model, and estimates of heterogeneity)
-        .cocoon-container.pairwise-meta-analytic-result-list
-          = render 'sd_meta_data/form/nested_associations/pairwise_meta_analytic_result_list', sd_meta_datum: @sd_meta_datum, url: @url
-    div data-row-span="1"
-      div data-field-span="1"
-        label Network Meta Analysis Result
-        .cocoon-container.network-meta-analysis-result-list
-          = render 'sd_meta_data/form/nested_associations/network_meta_analysis_result_list', sd_meta_datum: @sd_meta_datum, url: @url
-    /div data-row-span="1"
-      div data-field-span="1"
-        = f.input :srdr_data_link, as: :string, label: '86. Published Project Link'
-    div data-row-span="1"
-      div data-field-span="1"
-        /label 87. Meta-regression analysis results
-        label Meta-regression Analysis Results
-        .cocoon-container.meta-regression-analysis-result-list
-          = render 'sd_meta_data/form/nested_associations/meta_regression_analysis_result_list', sd_meta_datum: @sd_meta_datum, url: @url
-  / br/
-  / br/
-  / fieldset
-  /   legend Section Review & Validation
-  /   div data-row-span="1"
-  /     div data-field-span="1"
-  /       div Section Finished?
-  /       .switch
-  /         input.switch-input id="7-yes-no-section" type="checkbox" name="sectionSection" data-sd_meta_datum_id="#{@sd_meta_datum.id}"
-  /         label.switch-paddle for="7-yes-no-section"
-  /           span.switch-active aria-hidden="true" Yes
-  /           span.switch-inactive aria-hidden="true" No
+        label Results by Key Questions
+        .cocoon-container.result-item-list
+          = render 'sd_meta_data/form/nested_associations/result_item_list', sd_meta_datum: @sd_meta_datum, url: @url

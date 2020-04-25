@@ -1,5 +1,5 @@
 .nested-fields
-  = f.association :sd_search_database, include_blank: false, label: 'Database', input_html: { class: "sd_search_database" }
+  = f.association :sd_search_database, include_blank: true, label: 'Database', input_html: { class: "sd_search_database sd-select2" }
   = f.input :date_of_search, label: 'Search Run Date'
   = f.input :search_limits, label: 'Search Limits'
   = f.input :search_terms, label: 'Search Terms'

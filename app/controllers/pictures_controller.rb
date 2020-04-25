@@ -4,6 +4,6 @@ class PicturesController < ApplicationController
   def delete_image_attachment
     @picture = ActiveStorage::Attachment.find(params[:id])
     @picture.purge
-    head :no_content
+    #head :no_content
   end
 end
