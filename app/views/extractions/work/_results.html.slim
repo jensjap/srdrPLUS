@@ -3,7 +3,7 @@
 - extraction_forms_project_type = efp.extraction_forms_project_type
 
 / If at least one Outcome is present, make extraction form type selector available.
-- if @eefpst1
+/- if @eefpst1
   = simple_form_for(efp, remote: true) do |f|
     = f.association :extraction_forms_project_type,
       collection: ExtractionFormsProjectType.where(id: [1, 2])
@@ -28,11 +28,13 @@
     = render 'extractions/work/results/results_table'
 
 / Diagnostic Test extraction and at least one Outcome.
-- elsif extraction_forms_project_type.id.eql?(2)
+- elsif extraction_forms_project_type.id.eql?(2) && @extraction.results_section_ready_for_extraction?
   = render 'shared/extractions/work/results/outcome_selector'
 
   = render 'extractions/work/results/diagnostic_test_results_table'
 
-- else efp.extraction_forms_project_type.eql? ExtractionFormsProjectType.first
-  h5 style='color: red;' You must add Arms and Outcomes before extracting into this section if this is a Standard Extraction Form.
-  h5 style='color: red;' If this is a Diagnostic Test form you must enter at least 1 (one) outcome.
+- elsif extraction_forms_project_type.id.eql?(1)
+  h5 style='color: red;' This is a Standard extraction. You must add Arms and Outcomes before extracting into this section.
+
+- elsif extraction_forms_project_type.id.eql?(2)
+  h5 style='color: red;' This is a Diagnostic Test extraction. You must enter at least one Diagnostic Test and one Diagnosis.
