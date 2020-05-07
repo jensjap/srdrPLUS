@@ -30,7 +30,7 @@ javascript:
       return;
     }
 
-    $('#columns').append(`<div class="field-column" style="width: 300px;"><span class="grippy" draggable="true"></span><h5 class='field-option-column-title'>${columnName}</h5><div class="droppable sortable"></div></div>`);
+    $('#columns').append(`<div class="field-column" style="width: 300px;"><span class="grippy" draggable="true"></span><h5 class='field-option-column-title'>${columnName}</h5><div class="droppable sortable query-column"></div></div>`);
     $('#column-name').val('');
     makeSortable();
   }
