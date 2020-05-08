@@ -50467,7 +50467,7 @@ function __guardMethod__(obj, methodName, transform) {
         $('.key-question-selector input[type="checkbox"]').on('change', function(e) {
           e.preventDefault();
           $('.card').addClass('hide');
-          return $(this).parents('#preview').find('.key-question-selector input[type="checkbox"]').each(function() {
+          return $(this).parents('#preview, .content').find('.key-question-selector input[type="checkbox"]').each(function() {
             var isChecked, kqId, that;
             that = $(this);
             isChecked = that.prop('checked');
