@@ -2,9 +2,6 @@
 
 #preview.column.row
 
-  h1 Preview
-
-  /= select_tag(:key_question_id, options_for_select(@extraction_forms_projects_section.key_questions_projects_array))
   .key-question-selector
     h4 Select Key Question to work on
     .grid-y
@@ -15,7 +12,7 @@
           .cell.auto
             = label_tag kqp[1], kqp[0]
 
-  - @extraction_forms_projects_section.questions.each_with_index do |q, idx|
+  - extraction_forms_projects_section.questions.each_with_index do |q, idx|
 
     / Questions that have prerequisites get classes of the form 'prereq-<type>-<id>' which are disabled while these classes are present.
       Listeners are attached on form fields which trigger on change and remove class from any element that has the 'prereq-<type>-<id>'.
@@ -39,18 +36,10 @@
 
           #step-two
 
-            - if @extraction_forms_projects_section.link_to_type1.present?
-              - @extraction_forms_projects_section.link_to_type1.extraction_forms_projects_sections_type1s.collect(&:type1).each do |t1|
+            - if extraction_forms_projects_section.link_to_type1.present?
+              - extraction_forms_projects_section.link_to_type1.extraction_forms_projects_sections_type1s.collect(&:type1).each do |t1|
                 = t1.name + ':'
                 == render 'extraction_forms_projects_sections/question_fields', q: q, t1: t1
 
             - else
               == render 'extraction_forms_projects_sections/question_fields', q: q, t1: nil
-
-.column.row
-  = link_to 'Back', build_extraction_forms_project_path(@extraction_forms_projects_section.extraction_forms_project,
-                    anchor: "panel-tab-#{ @extraction_forms_projects_section.id }")
-
-#update-form-modal.reveal data-reveal=''
-  h1 Please wait while we update your form
-  p.lead Still working...thank you for your patience...

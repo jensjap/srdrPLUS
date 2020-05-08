@@ -61,16 +61,6 @@ class ExtractionFormsProjectsSectionsController < ApplicationController
     end
   end
 
-  def preview
-    @key_questions_projects_array_for_select = @extraction_forms_projects_section.project.key_questions_projects_array_for_select
-
-    add_breadcrumb 'my projects',  :projects_path
-    add_breadcrumb 'edit project', edit_project_path(@extraction_forms_projects_section.project)
-    add_breadcrumb 'builder',      build_extraction_forms_project_path(@extraction_forms_projects_section.extraction_forms_project,
-                                                                       anchor: "panel-tab-#{ @extraction_forms_projects_section.id }")
-    add_breadcrumb "preview #{ @extraction_forms_projects_section.section.name } form", preview_extraction_forms_projects_section_path
-  end
-
   def dissociate_type1
     @extraction_forms_projects_section = ExtractionFormsProjectsSection.find(dissociate_type1_params[0])
     authorize(@extraction_forms_projects_section.project, policy_class: ExtractionFormsProjectsSectionPolicy)

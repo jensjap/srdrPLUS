@@ -100,6 +100,12 @@ document.addEventListener 'turbolinks:load', ->
     $( '#extraction_forms_projects_sections_type1_timepoint_name_ids' ).select2
       minimumInputLength: 0
 
+#    $( '.preview-button' ).on 'click', ( event ) ->
+#      if event.target.hasAttribute( 'disabled' )
+#        return
+#      $.ajax
+#        url: $( this ).data( 'preview-url' )
+#        method: 'GET'
+#      return
     return  # END do ->
-
   return  # END document.addEventListener 'turbolinks:load', ->

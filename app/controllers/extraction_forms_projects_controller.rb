@@ -56,6 +56,7 @@ class ExtractionFormsProjectsController < ApplicationController
   # GET /extraction_forms_projects/1/build
   def build
     @key_questions_projects = @extraction_forms_project.project.key_questions_projects.includes(:key_question)
+    @key_questions_projects_array_for_select = @extraction_forms_project.project.key_questions_projects_array_for_select
     @extraction_forms_projects_sections = @extraction_forms_project.extraction_forms_projects_sections
       .includes([:extraction_forms_projects_section_type,
                  :section,

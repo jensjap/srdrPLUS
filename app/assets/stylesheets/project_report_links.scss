@@ -21,7 +21,6 @@
 }
 .droppable {
   vertical-align: top;
-  //min-height: 300px !important;
   margin: 0px !important;
 }
 .button.success.add-column {
@@ -144,4 +143,7 @@ span.grippy::after {
 
 .query-column {
   min-height: 300px !important;
+  border: solid 1px black;
+  color:black;
+  background-color: aliceblue;
 }

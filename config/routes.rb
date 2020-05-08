@@ -201,11 +201,9 @@ Rails.application.routes.draw do
         resources :extraction_forms_projects_sections_type1s, only: [:edit, :update]
 
         member do
-          get 'preview'
           post 'add_quality_dimension'
         end
 
-        get 'preview', on: :member
         resources :questions, only: [:new, :create, :edit, :update, :destroy] do
 
           member do
