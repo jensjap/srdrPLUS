@@ -50248,7 +50248,7 @@ function __guardMethod__(obj, methodName, transform) {
   document.addEventListener('turbolinks:load', function() {
     (function() {
       var formatResult, formatResultSelection, prereqOff, prereqOn, subroutine, turnPrereqOffSelfAndDescendants, turnPrereqOnSelfAndDescendants;
-      if ($('.extraction_forms_projects_sections, .extractions').length > 0) {
+      if ($('.extraction_forms_projects.build, .extraction_forms_projects_sections, .extractions').length > 0) {
         formatResultSelection = function(result, container) {
           return result.text;
         };
@@ -50464,32 +50464,18 @@ function __guardMethod__(obj, methodName, transform) {
           }
         });
         $('input').trigger('change');
-        $('.key-question-selector input[type="checkbox"').on('change', function(e) {
-          var modal;
+        $('.key-question-selector input[type="checkbox"]').on('change', function(e) {
           e.preventDefault();
-          modal = $('#update-form-modal');
-          if (modal.length) {
-            modal.foundation('open');
-          }
-          $('.card').each(function() {
-            return $(this).addClass('hide');
-          });
-          $('.key-question-selector input[type="checkbox"').each(function() {
+          $('.card').addClass('hide');
+          return $(this).parents('#preview').find('.key-question-selector input[type="checkbox"]').each(function() {
             var isChecked, kqId, that;
             that = $(this);
             isChecked = that.prop('checked');
             if (isChecked) {
               kqId = that.attr('id');
-              return $('.card').each(function() {
-                if ($(this).hasClass('kqreq-' + kqId)) {
-                  return $(this).removeClass('hide');
-                }
-              });
+              return $('.card.kqreq-' + kqId).removeClass('hide');
             }
           });
-          if (modal.length) {
-            return modal.foundation('close');
-          }
         });
       }
     })();
@@ -51732,7 +51718,7 @@ function __guardMethod__(obj, methodName, transform) {
   var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   document.addEventListener('turbolinks:load', function() {
-    if (!($('.questions, .extractions, .extraction_forms_projects_sections.preview').length > 0)) {
+    if (!($('.questions, .extractions, .extraction_forms_projects.build').length > 0)) {
       return;
     }
     (function() {
@@ -52790,9 +52776,10 @@ toastr.options = {
   'showMethod': 'slideDown',
   'hideMethod': 'slideUp',
   'closeMethod': 'slideUp',
-  'closeDuration': '400',
-  'timeOut': '10000',
-  'extendedTimeOut': '10000'
+  'hideDuration': '10',
+  'closeDuration': '10',
+  'timeOut': '1200',
+  'extendedTimeOut': '4000'
 };
 
 Dropzone.autoDiscover = false;

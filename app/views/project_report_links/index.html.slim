@@ -21,7 +21,7 @@
             td = sd_meta_datum.try(:report).try(:title)
             - if sd_meta_datum.project
               td = link_to('View', sd_meta_datum, class: 'button')
-              td = link_to('Filter', project_report_link_new_query_form_path(sd_meta_datum), class: 'button')
+              td = link_to('Query', project_report_link_new_query_form_path(sd_meta_datum), class: 'button')
             - else
               td
               td

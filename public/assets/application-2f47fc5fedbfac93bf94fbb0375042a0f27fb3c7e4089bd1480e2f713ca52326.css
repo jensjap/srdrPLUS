@@ -3316,6 +3316,13 @@ ul#dependencies {
   list-style: none;
   margin: 0;
 }
+
+/* line 26, /Users/birol/Projects/srdr+/app/assets/stylesheets/extraction_forms_projects.scss */
+#ef-preview-container {
+  position: relative;
+  height: 95%;
+  width: 90%;
+}
 /* line 5, /Users/birol/Projects/srdr+/app/assets/stylesheets/extraction_forms_projects_sections.scss */
 div[class*=' prereq-'] {
   opacity: 0.5;
@@ -19249,23 +19256,23 @@ a.thumbnail image {
   margin: 0px !important;
 }
 
-/* line 27, /Users/birol/Projects/srdr+/app/assets/stylesheets/project_report_links.scss */
+/* line 26, /Users/birol/Projects/srdr+/app/assets/stylesheets/project_report_links.scss */
 .button.success.add-column {
   color: white;
 }
 
-/* line 30, /Users/birol/Projects/srdr+/app/assets/stylesheets/project_report_links.scss */
+/* line 29, /Users/birol/Projects/srdr+/app/assets/stylesheets/project_report_links.scss */
 li > .field-option-header, li > .field-option-header > * {
   padding-left: 0;
 }
 
-/* line 33, /Users/birol/Projects/srdr+/app/assets/stylesheets/project_report_links.scss */
+/* line 32, /Users/birol/Projects/srdr+/app/assets/stylesheets/project_report_links.scss */
 .field-option-column-title {
   text-align: center;
   border: 1px solid black;
 }
 
-/* line 37, /Users/birol/Projects/srdr+/app/assets/stylesheets/project_report_links.scss */
+/* line 36, /Users/birol/Projects/srdr+/app/assets/stylesheets/project_report_links.scss */
 .noselect {
   color: lightgrey;
   -webkit-touch-callout: none;
@@ -19282,7 +19289,7 @@ li > .field-option-header, li > .field-option-header > * {
      supported by Chrome and Opera */
 }
 
-/* line 47, /Users/birol/Projects/srdr+/app/assets/stylesheets/project_report_links.scss */
+/* line 46, /Users/birol/Projects/srdr+/app/assets/stylesheets/project_report_links.scss */
 span.grippy {
   float: right;
   content: '....';
@@ -19297,25 +19304,25 @@ span.grippy {
   text-shadow: 1px 0 1px black;
 }
 
-/* line 60, /Users/birol/Projects/srdr+/app/assets/stylesheets/project_report_links.scss */
+/* line 59, /Users/birol/Projects/srdr+/app/assets/stylesheets/project_report_links.scss */
 span.grippy::after {
   content: '.. .. .. ..';
 }
 
-/* line 64, /Users/birol/Projects/srdr+/app/assets/stylesheets/project_report_links.scss */
+/* line 63, /Users/birol/Projects/srdr+/app/assets/stylesheets/project_report_links.scss */
 #columns > div > h5 {
   margin-bottom: 0;
   padding-left: 10px;
   background-color: white;
 }
 
-/* line 70, /Users/birol/Projects/srdr+/app/assets/stylesheets/project_report_links.scss */
+/* line 69, /Users/birol/Projects/srdr+/app/assets/stylesheets/project_report_links.scss */
 #columns > div > h5 > input {
   width: calc(100% - 60px);
   text-align: center;
 }
 
-/* line 75, /Users/birol/Projects/srdr+/app/assets/stylesheets/project_report_links.scss */
+/* line 74, /Users/birol/Projects/srdr+/app/assets/stylesheets/project_report_links.scss */
 .column-sortable {
   overflow-x: auto;
   display: -webkit-box;
@@ -19324,7 +19331,7 @@ span.grippy::after {
   display: flex;
 }
 
-/* line 80, /Users/birol/Projects/srdr+/app/assets/stylesheets/project_report_links.scss */
+/* line 79, /Users/birol/Projects/srdr+/app/assets/stylesheets/project_report_links.scss */
 #columns > div {
   -webkit-box-flex: 0;
   -webkit-flex: 0 0 auto;
@@ -19332,13 +19339,13 @@ span.grippy::after {
           flex: 0 0 auto;
 }
 
-/* line 84, /Users/birol/Projects/srdr+/app/assets/stylesheets/project_report_links.scss */
+/* line 83, /Users/birol/Projects/srdr+/app/assets/stylesheets/project_report_links.scss */
 #filterOptions > div > div.cell.small-12 > div > div > div > label > input[type=checkbox] {
   margin: unset;
   margin: 0 3px;
 }
 
-/* line 89, /Users/birol/Projects/srdr+/app/assets/stylesheets/project_report_links.scss */
+/* line 88, /Users/birol/Projects/srdr+/app/assets/stylesheets/project_report_links.scss */
 .lds-ellipsis {
   display: inline-block;
   position: relative;
@@ -19346,7 +19353,7 @@ span.grippy::after {
   height: 64px;
 }
 
-/* line 95, /Users/birol/Projects/srdr+/app/assets/stylesheets/project_report_links.scss */
+/* line 94, /Users/birol/Projects/srdr+/app/assets/stylesheets/project_report_links.scss */
 .lds-ellipsis div {
   position: absolute;
   top: 27px;
@@ -19358,28 +19365,28 @@ span.grippy::after {
           animation-timing-function: cubic-bezier(0, 1, 1, 0);
 }
 
-/* line 104, /Users/birol/Projects/srdr+/app/assets/stylesheets/project_report_links.scss */
+/* line 103, /Users/birol/Projects/srdr+/app/assets/stylesheets/project_report_links.scss */
 .lds-ellipsis div:nth-child(1) {
   left: 6px;
   -webkit-animation: lds-ellipsis1 0.6s infinite;
           animation: lds-ellipsis1 0.6s infinite;
 }
 
-/* line 108, /Users/birol/Projects/srdr+/app/assets/stylesheets/project_report_links.scss */
+/* line 107, /Users/birol/Projects/srdr+/app/assets/stylesheets/project_report_links.scss */
 .lds-ellipsis div:nth-child(2) {
   left: 6px;
   -webkit-animation: lds-ellipsis2 0.6s infinite;
           animation: lds-ellipsis2 0.6s infinite;
 }
 
-/* line 112, /Users/birol/Projects/srdr+/app/assets/stylesheets/project_report_links.scss */
+/* line 111, /Users/birol/Projects/srdr+/app/assets/stylesheets/project_report_links.scss */
 .lds-ellipsis div:nth-child(3) {
   left: 26px;
   -webkit-animation: lds-ellipsis2 0.6s infinite;
           animation: lds-ellipsis2 0.6s infinite;
 }
 
-/* line 116, /Users/birol/Projects/srdr+/app/assets/stylesheets/project_report_links.scss */
+/* line 115, /Users/birol/Projects/srdr+/app/assets/stylesheets/project_report_links.scss */
 .lds-ellipsis div:nth-child(4) {
   left: 45px;
   -webkit-animation: lds-ellipsis3 0.6s infinite;
@@ -19447,9 +19454,12 @@ span.grippy::after {
             transform: translate(19px, 0);
   }
 }
-/* line 145, /Users/birol/Projects/srdr+/app/assets/stylesheets/project_report_links.scss */
+/* line 144, /Users/birol/Projects/srdr+/app/assets/stylesheets/project_report_links.scss */
 .query-column {
   min-height: 300px !important;
+  border: solid 1px black;
+  color: black;
+  background-color: aliceblue;
 }
 /**
  * Foundation for Sites by ZURB
@@ -23992,27 +24002,11 @@ body.sd_meta_data .invalid-url::after {
   color: red;
   content: "Please enter a valid URL" !important;
 }
-/* line 363, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
-body.sd_meta_data .preview-button {
-  border-radius: 0;
-  background-color: #006aaa;
-  padding: 0.4rem;
-  z-index: 1000;
-}
-/* line 369, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
-body.sd_meta_data .preview-button.disabled {
-  background-color: grey !important;
-}
-/* line 373, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
-body.sd_meta_data .preview-button:hover {
-  background-color: #1388ce;
-  cursor: pointer !important;
-}
-/* line 379, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
+/* line 362, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
 body.sd_meta_data .infoDiv {
   width: 50%;
 }
-/* line 383, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
+/* line 366, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
 body.sd_meta_data .srdr-kq .hover-message {
   font-size: 130%;
   display: -webkit-box;
@@ -24037,43 +24031,43 @@ body.sd_meta_data .srdr-kq .hover-message {
   width: 100%;
   height: 100%;
 }
-/* line 397, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
+/* line 380, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
 body.sd_meta_data .srdr-kq:hover .hover-message {
   background-color: #2e7c80;
   opacity: 1;
 }
-/* line 402, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
+/* line 385, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
 body.sd_meta_data #status-check-modal {
   text-align: center;
   font-size: larger;
 }
-/* line 406, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
+/* line 389, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
 body.sd_meta_data #status-check-modal #status-check-modal-buttons {
   margin: 1rem;
 }
-/* line 407, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
+/* line 390, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
 body.sd_meta_data #status-check-modal #status-check-modal-buttons .confirm {
   background-color: #30c769;
 }
-/* line 410, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
+/* line 393, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
 body.sd_meta_data #status-check-modal #status-check-modal-buttons .button {
   margin: 0 1rem 0 1rem;
 }
-/* line 417, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
+/* line 400, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
 body.sd_meta_data .kq-mapped {
   background-color: #38969a;
 }
-/* line 421, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
+/* line 404, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
 body.sd_meta_data .empty-input, body.sd_meta_data .empty-associations {
   border: solid 2px #ff5e00 !important;
   background-color: #faeee6 !important;
 }
-/* line 425, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
+/* line 408, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
 body.sd_meta_data .empty-kq.srdr-kq, body.sd_meta_data .empty-kq.report-kq {
   position: relative;
   border: solid 2px #ff5e00 !important;
 }
-/* line 427, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
+/* line 410, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
 body.sd_meta_data .empty-kq.srdr-kq:before, body.sd_meta_data .empty-kq.report-kq:before {
   content: '';
   position: absolute;
@@ -24085,15 +24079,15 @@ body.sd_meta_data .empty-kq.srdr-kq:before, body.sd_meta_data .empty-kq.report-k
   left: 0;
   background-color: #fa6400 !important;
 }
-/* line 441, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
+/* line 424, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
 body.sd_meta_data .nested-fields {
   margin-bottom: 0.1rem;
 }
-/* line 445, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
+/* line 428, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
 body.sd_meta_data .hoverable-figure {
   position: relative;
 }
-/* line 449, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
+/* line 432, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
 body.sd_meta_data .hoverable-figure .hover-message {
   color: white;
   font-size: 130%;
@@ -24106,12 +24100,12 @@ body.sd_meta_data .hoverable-figure .hover-message {
   width: 100%;
   height: 100%;
 }
-/* line 460, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
+/* line 443, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
 body.sd_meta_data .hoverable-figure:hover .hover-message {
   background-color: black;
   opacity: 0.5;
 }
-/* line 461, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
+/* line 444, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
 body.sd_meta_data .hoverable-figure:hover .hover-message a {
   display: -webkit-box;
   display: -webkit-flex;
@@ -28651,6 +28645,23 @@ ul.select2-selection__rendered {
 /* line 517, /Users/birol/Projects/srdr+/app/assets/stylesheets/application.css.scss */
 textarea {
   resize: vertical !important;
+}
+
+/* line 521, /Users/birol/Projects/srdr+/app/assets/stylesheets/application.css.scss */
+.preview-button {
+  border-radius: 0;
+  background-color: #006aaa;
+  padding: 0.4rem;
+  z-index: 1000;
+}
+/* line 527, /Users/birol/Projects/srdr+/app/assets/stylesheets/application.css.scss */
+.preview-button.disabled {
+  background-color: grey !important;
+}
+/* line 531, /Users/birol/Projects/srdr+/app/assets/stylesheets/application.css.scss */
+.preview-button:hover, .preview-button:focus {
+  background-color: #1388ce;
+  cursor: pointer !important;
 }
 /* line 1, /Users/birol/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/toastr_rails-2.1.3/app/assets/styleseets/toastr.scss */
 .toast-title {

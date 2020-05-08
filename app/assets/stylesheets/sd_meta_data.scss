@@ -358,23 +358,6 @@ body.sd_meta_data {
     content: "Please enter a valid URL" !important;
   }
 
-
-  .preview-button {
-    border-radius: 0;
-    background-color: #006aaa;
-    padding: 0.4rem;
-    z-index: 1000;
-  
-    &.disabled {
-      background-color: grey !important;
-    }
-
-    &:hover {
-      background-color: #1388ce;
-      cursor: pointer !important;
-    }
-  }
-
   .infoDiv {
     width: 50%;
   }
