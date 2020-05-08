@@ -517,3 +517,18 @@ textarea {
   resize: vertical !important;
 }
 
+.preview-button {
+  border-radius: 0;
+  background-color: #006aaa;
+  padding: 0.4rem;
+  z-index: 1000;
+
+  &.disabled {
+    background-color: grey !important;
+  }
+
+  &:hover, &:focus {
+    background-color: #1388ce;
+    cursor: pointer !important;
+  }
+}

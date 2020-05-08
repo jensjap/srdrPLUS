@@ -6,7 +6,7 @@ document.addEventListener 'turbolinks:load', ->
 
 
   do ->
-    if $( '.extraction_forms_projects_sections, .extractions' ).length > 0
+    if $( '.extraction_forms_projects.build, .extraction_forms_projects_sections, .extractions' ).length > 0
       ###############################################
       # Set the field to display from the result set.
       formatResultSelection = ( result, container ) ->
@@ -281,30 +281,20 @@ document.addEventListener 'turbolinks:load', ->
 
       #################################################################################
       # Make all cards visible that require at least one of the key questions selected.
-      $( '.key-question-selector input[type="checkbox"' ).on 'change', ( e ) ->
+      $( '.key-question-selector input[type="checkbox"]' ).on 'change', ( e ) ->
         e.preventDefault()
 
-        modal = $( '#update-form-modal' )
-        if modal.length
-          modal.foundation( 'open' )
-
         # Hide all questions first.
-        $( '.card' ).each ->
-          $( this ).addClass( 'hide' )
+        $( '.card' ).addClass( 'hide' )
 
         # Go over each key question checkbox and reveal question if its key question
         # prerequisite is checked.
-        $( '.key-question-selector input[type="checkbox"' ).each ->
+        $( this ).parents( '#preview' ).find( '.key-question-selector input[type="checkbox"]' ).each ->
           that = $( this )
           isChecked = that.prop( 'checked' )
           if isChecked
             kqId = that.attr( 'id' )
-            $( '.card' ).each ->
-              if $( this ).hasClass( 'kqreq-' + kqId )
-                $( this ).removeClass( 'hide' )
-
-        if modal.length
-          modal.foundation( 'close' )
+            $( '.card.kqreq-'+kqId ).removeClass( 'hide' )
 
     return  # END do ->
 

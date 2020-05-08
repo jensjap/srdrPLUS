@@ -4,7 +4,7 @@
 
 document.addEventListener 'turbolinks:load', ->
 
-  return unless $( '.questions, .extractions, .extraction_forms_projects_sections.preview' ).length > 0
+  return unless $( '.questions, .extractions, .extraction_forms_projects.build' ).length > 0
 
   do ->
 

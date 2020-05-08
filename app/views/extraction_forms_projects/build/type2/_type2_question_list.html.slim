@@ -1,11 +1,14 @@
-= link_to 'Preview', preview_extraction_forms_projects_section_path(efps),
-                     class: 'button tiny float-right', style: 'margin-bottom: 0;'
+#ef-preview-container.reveal[data-reveal=""]
+  .preview-content
+    = render(partial: "extraction_forms_projects_sections/preview", locals: { extraction_forms_projects_section: efps })
+    
+.button.preview-button.float-right[data-open="ef-preview-container" data-preview-url="#{ preview_extraction_forms_projects_section_path(efps) }"] = 'Preview'
 
 h4 #{ efps.section.name.titleize } Question List
 
 .column.row
 
-  .table-scroll
+  .table-scroll style='width: 100%;'
 
     table.hover style='width: 100%;'
 
