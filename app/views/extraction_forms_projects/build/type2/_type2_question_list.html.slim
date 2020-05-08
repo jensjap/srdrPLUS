@@ -1,8 +1,8 @@
-#ef-preview-container.reveal[data-reveal=""]
+.ef-preview-container.reveal[data-reveal="" id="unique-ef-preview-container-id-#{efps.id}"]
   .preview-content
     = render(partial: "extraction_forms_projects_sections/preview", locals: { extraction_forms_projects_section: efps })
     
-.button.preview-button.float-right[data-open="ef-preview-container"] = 'Preview'
+.button.preview-button.float-right[data-open="unique-ef-preview-container-id-#{efps.id}"] = 'Preview'
 
 h4 #{ efps.section.name.titleize } Question List
 
