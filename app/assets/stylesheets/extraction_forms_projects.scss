@@ -23,9 +23,9 @@ ul#dependencies {
   margin: 0;
 }
 
-#ef-preview-container {
+.ef-preview-container {
   position: relative;
-  height: 95%;
-  width: 90%;
+  height: 95% !important;
+  width: 90% !important;
 }
 
