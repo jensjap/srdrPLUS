@@ -141,6 +141,10 @@ class ExtractionFormsProject < ApplicationRecord
         # Paranoia isn't restoring polymorphic associations. We do it here manually.
         Ordering.with_deleted.find_by(orderable_type: efps.class.name, orderable_id: efps.id).restore
       end
+
+      self.extraction_forms_projects_sections
+        .where({ extraction_forms_projects_sections: { section: [Section.where('sections.name in (?)', DIAGNOSTIC_TEST_SECTIONS
+      )] } }).each(&:destroy)
     end
 
     def sections_for_efp_type2
