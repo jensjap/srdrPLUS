@@ -289,7 +289,7 @@ document.addEventListener 'turbolinks:load', ->
 
         # Go over each key question checkbox and reveal question if its key question
         # prerequisite is checked.
-        $( this ).parents( '#preview' ).find( '.key-question-selector input[type="checkbox"]' ).each ->
+        $( this ).parents( '#preview, .content' ).find( '.key-question-selector input[type="checkbox"]' ).each ->
           that = $( this )
           isChecked = that.prop( 'checked' )
           if isChecked

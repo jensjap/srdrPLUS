@@ -2,7 +2,7 @@
   .preview-content
     = render(partial: "extraction_forms_projects_sections/preview", locals: { extraction_forms_projects_section: efps })
     
-.button.preview-button.float-right[data-open="ef-preview-container" data-preview-url="#{ preview_extraction_forms_projects_section_path(efps) }"] = 'Preview'
+.button.preview-button.float-right[data-open="ef-preview-container"] = 'Preview'
 
 h4 #{ efps.section.name.titleize } Question List
 
