@@ -80,8 +80,10 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
         (opt_ids[2..-3].split('", "')-[""]).each do |opt_id|
           # opt_id can be nil here for questions that have not been answered.
           # Protect by casting to zero and check.
-
-          text_arr << qrc.question_row_columns_question_row_column_options.find(opt_id.to_i).name unless opt_id.to_i.zero?
+          qrcqrco = qrc.question_row_columns_question_row_column_options.find_by(id: opt_id.to_i)
+          if qrcqrco.present? and not opt_id.to_i.zero?
+            text_arr << qrcqrco.name
+          end
         end
       end
       return text_arr.join ', '
