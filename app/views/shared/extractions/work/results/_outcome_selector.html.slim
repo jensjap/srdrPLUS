@@ -1,0 +1,15 @@
+.grid-x style='font-family: "Open Sans", sans-serif; margin-bottom: 1em;'
+  .cell.shrink.grid-x.align-middle style='border: solid 2px #1986c7; border-radius: 7px;'
+    .cell.shrink
+      h5 style='display: inline; margin: 0 0.6rem 0 0.6rem; color: #1986c7;' Outcome:
+    .cell.auto
+      button.button.has-dropdown data-toggle='outcome-dropdown' style='margin-bottom: 0 !important; padding: 0.5rem; background-color: #1986c7 !important; border-radius: 0;'
+        => @eefpst1.type1_name_and_description + ' ▾'
+    - if @eefpst1s.where.not(id: @eefpst1.id).length > 0
+      .dropdown-pane#outcome-dropdown data-dropdown='' data-hover='true' data-hover-pane='true'
+        - @eefpst1s.includes(:type1_type).map{ |eefpst1| eefpst1.type1_type&.name || "Uncategorized" }.uniq.sort.each do |t1_name|
+          ul style='list-style-type: none; margin: 0.5rem 0 0.5rem 0;'
+            label = t1_name
+            / Let's remove the currently displayed outcomes from the @eefpst1s so it doesn't show in the possible selections.
+            - @eefpst1s.left_joins(:type1_type).where(t1_name == "Uncategorized" ? { type1_type_id: nil } : { type1_types: { name: t1_name } }).where.not(id: @eefpst1.id).each do |eefpst1|
+              li[style='font-size: larger;'] = link_to eefpst1.type1_name_and_description, change_outcome_in_results_section_extraction_path(eefpst1_id: eefpst1.id), remote: true, class: 'change-outcome-link'

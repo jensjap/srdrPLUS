@@ -1,7 +1,63 @@
 button.close-button data-close='' aria-label='Close modal' type='button'
   span aria-hidden='true' &times;
 
+h4 Please select measures to be included from the list below:
 = simple_form_for @result_statistic_section, remote: true do |f|
-  = f.association :measures, as: :check_boxes, collection: @options
+  table.dependence-selector
+    caption Measures
+
+    tbody
+      - @options.each do |option|
+        / If option[3] is blank then this is a top level measure.
+        - if option[3].blank?
+          tr
+            td.provider-measure-td
+              = label_tag do
+                => check_box_tag 'result_statistic_section[measure_ids][]', option[1], option[2].present? ? true : false, id: "result_statistic_section_measure_ids_#{ option[1] }"
+                =< option[0]
+            - @dict_of_dependencies[[] << option[1]].each do |dependent_opt|
+              td
+                = label_tag do
+                  => check_box_tag 'result_statistic_section[measure_ids][]', dependent_opt[1], dependent_opt[2].present? ? true : false
+                  =< dependent_opt[0]
+            / Might need to adjust this to the max number of dependent measures.
+            - (1..(5 - @dict_of_dependencies[[] << option[1]].length)).each do |cnt|
+              td
+
+  #measures
+
+    .links
+      = link_to_add_association 'Add new measure', f, :result_statistic_sections_measures
 
   = f.submit
+
+javascript:
+  // Check and Uncheck dependents when provider changes.
+  $( '.provider-measure-td input').change( function() {
+    var _checked = this.checked;
+
+    $( this ).closest( 'tr' ).find( 'td' ).each( function() {
+      $( this ).find( 'input' ).prop( 'checked', _checked )
+    } )
+  } )
+
+  // If at least one of the providers containing the word "Adjusted" we also select "Adjusted for:".
+  // If none of the providers containing the word "Adjusted" is selected we deselect "Adjusted for:".
+  $( '.provider-measure-td input').change( function() {
+    var lsof_tds_w_adjusted = $( this ).closest( 'table' ).find( 'td label:contains("Adjusted")' );
+    var _checked = false;
+
+    // Kind of a while loop. While _checked is not true continue to look. Otherwise, if _checked is already true
+    // we can stop checking.
+    lsof_tds_w_adjusted.each( function( idx ) {
+      if ( ( $( this ).text().toLowerCase().indexOf( 'adjusted' ) !== -1 ) && !( $( this ).text().match( 'Adjusted for:' ) ) ) {
+        if ( !_checked ) {
+          _checked = $( this ).find( 'input' )[0].checked
+        }
+      }
+    } )
+
+    // Set the "Adjusted for:" selection to the _checked value.
+    $( $( 'td label:contains("Adjusted for:")' ).find( 'input' )[0] ).prop( 'checked', _checked )
+  } )
+

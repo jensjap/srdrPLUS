@@ -1,0 +1,14 @@
+- rss.comparisons.each do |comparison|
+  h5
+    => comparison.comparate_groups.first.comparable_elements.map { |comparable_e| comparable_e.comparable.type1.short_name_and_description }
+    span vs.
+    =< comparison.comparate_groups.second.comparable_elements.map { |comparable_e| comparable_e.comparable.type1.short_name_and_description }
+
+  = render 'extractions/work/results/diagnostic_test_results_table/descriptive_statistics',
+    rss: rss,
+    timepoint: timepoint,
+    comparison: comparison
+
+  = render 'extractions/work/results/diagnostic_test_results_table/special_area_for_AUC_and_qStar'
+
+  = render 'extractions/work/results/diagnostic_test_results_table/2x2_table_and_test_accuracy_metrics'

@@ -33,6 +33,7 @@ class ExtractionFormsProjectsController < ApplicationController
         format.html { redirect_to build_extraction_forms_project_path(@extraction_forms_project,
                                                                       anchor: "panel-tab-#{ @extraction_forms_project.extraction_forms_projects_sections.first.id }"),
                       notice: t('success') }
+        format.js   {}
         format.json { render :show, status: :ok, location: @extraction_forms_project }
       else
         format.html { render :edit }
@@ -87,6 +88,9 @@ class ExtractionFormsProjectsController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def extraction_forms_project_params
       params.require(:extraction_forms_project)
-        .permit(extraction_form_attributes: [:name])
+        .permit(
+          :extraction_forms_project_type_id,
+          extraction_form_attributes: [:name]
+      )
     end
 end

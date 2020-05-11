@@ -55,6 +55,8 @@ class ResultStatisticSectionsController < ApplicationController
       temp_result_statistic_section = @result_statistic_section.population.result_statistic_sections.find_by(result_statistic_section_type_id: 2)
     elsif params[:result_statistic_section]['comparison_type'] == 'wac'
       temp_result_statistic_section = @result_statistic_section.population.result_statistic_sections.find_by(result_statistic_section_type_id: 3)
+    elsif params[:result_statistic_section]['comparison_type'] == 'diagnostic_test'
+      temp_result_statistic_section = @result_statistic_section.population.result_statistic_sections.find_by(result_statistic_section_type_id: 5)
     end
 
     respond_to do |format|
@@ -105,18 +107,39 @@ class ResultStatisticSectionsController < ApplicationController
     respond_to do |format|
       format.js do
         @result_statistic_section = ResultStatisticSection.find(params[:rss_id])
-        t1_type_id = @result_statistic_section
-          .population
-          .extractions_extraction_forms_projects_sections_type1
-          .type1_type_id
+        @result_statistic_section.result_statistic_sections_measures.build.build_measure
         @options = @result_statistic_section
           .result_statistic_section_type
           .result_statistic_section_types_measures
           .where(type1_type: @result_statistic_section.population.extractions_extraction_forms_projects_sections_type1.type1_type)
           .map do |rsstm|
-            [rsstm.measure.name, rsstm.measure.id, @result_statistic_section.measures.include?(rsstm.measure) ? { 'data-selected' => '' } : '']
+            [
+              rsstm.measure.name,
+              rsstm.measure.id,
+              @result_statistic_section.measures.include?(rsstm.measure) ? { 'data-selected' => '' } : '',
+              rsstm.provider_measure.present? ? { 'provider-measure-id' => rsstm.provider_measure.measure.id } : ''
+            ]
         end
+
+        @result_statistic_section.measures.each do |measure|
+          @options <<
+          [
+            measure.name,
+            measure.id,
+            { 'data-selected' => '' },
+            ''
+          ] unless @options.collect { |opt| opt.second }.include?(measure.id)
+        end
+
         @options.uniq!
+
+        # Create a dictionary that carries as keys the id of a provider measure and values an Array of options.
+        @dict_of_dependencies = Hash.new { |hash, key| hash[key] = [] }
+        @options.each do |opt|
+          if opt[3].present?
+            @dict_of_dependencies[opt[3].values] << opt
+          end
+        end
       end
     end
   end
@@ -151,7 +174,9 @@ class ResultStatisticSectionsController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def result_statistic_section_params
       params.require(:result_statistic_section).permit(
+        measures_attributes: [:id, :name, :_destroy],
         measure_ids: [],
+        result_statistic_sections_measures_attributes: [measure_attributes: [:id, :name]],
         comparisons_attributes: [:id, :is_anova,
           comparate_groups_attributes: [:id,
             comparates_attributes: [:id,

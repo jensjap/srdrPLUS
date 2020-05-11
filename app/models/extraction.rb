@@ -26,7 +26,7 @@ class Extraction < ApplicationRecord
   #                   to ensure consistency?
   after_create :ensure_extraction_form_structure
   after_create :create_default_arms
-  
+
   # create checksums without delay after create and update, since extractions/index would be incorrect.
   after_create do |extraction|
     ExtractionChecksum.create! extraction: extraction
@@ -78,17 +78,42 @@ class Extraction < ApplicationRecord
     end
   end
 
+  # There are two types of extraction forms:
+  # 1. Standard
+  # 2. Diagnostic Test
+  #
+  # Conditions for type 1. Standard results section to be ready for extraction:
+  # a) Extraction contains Arms
+  # b) Extraction contains Outcomes
+  #
+  # Conditions for type 2. Diagnostic Test results section to be ready for extraction:
+  # a) Extraction contains Diagnostic Tests
+  # b) Extraction contains Diagnoses
   def results_section_ready_for_extraction?
-    ExtractionsExtractionFormsProjectsSectionsType1
-      .by_section_name_and_extraction_id_and_extraction_forms_project_id(
-        'Arms',
-        self.id,
-        self.project.extraction_forms_projects.first.id).present? &&
-    ExtractionsExtractionFormsProjectsSectionsType1
-      .by_section_name_and_extraction_id_and_extraction_forms_project_id(
-        'Outcomes',
-        self.id,
-        self.project.extraction_forms_projects.first.id).present?
+    efp_type_id = self.extraction_forms_projects_sections.first.extraction_forms_project.extraction_forms_project_type_id
+    if efp_type_id.eql?(1)
+      return ExtractionsExtractionFormsProjectsSectionsType1
+        .by_section_name_and_extraction_id_and_extraction_forms_project_id(
+          'Arms',
+          self.id,
+          self.project.extraction_forms_projects.first.id).present? &&
+         ExtractionsExtractionFormsProjectsSectionsType1
+        .by_section_name_and_extraction_id_and_extraction_forms_project_id(
+          'Outcomes',
+          self.id,
+          self.project.extraction_forms_projects.first.id).present?
+    elsif efp_type_id.eql?(2)
+      return ExtractionsExtractionFormsProjectsSectionsType1
+        .by_section_name_and_extraction_id_and_extraction_forms_project_id(
+          'Diagnostic Tests',
+          self.id,
+          self.project.extraction_forms_projects.first.id).present? &&
+         ExtractionsExtractionFormsProjectsSectionsType1
+        .by_section_name_and_extraction_id_and_extraction_forms_project_id(
+          'Diagnoses',
+          self.id,
+          self.project.extraction_forms_projects.first.id).present?
+    end
   end
 
   # Returns a ActiveRecord::AssociationRelation.

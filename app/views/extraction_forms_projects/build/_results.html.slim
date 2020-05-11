@@ -1,5 +1,12 @@
 .column.row
   h4 Results
   blockquote
-    | This section will be filled out during extraction, once Arms and Outcomes have been added.
+    | Depending on the Extraction type, the results section will take on different formats.
+      The default type is set to "Standard". You may choose to select a different type here.
+      This change will will affect all extractions in this project.
     cite Friendly Helper
+
+= simple_form_for(efps.extraction_forms_project, remote: true) do |f|
+  = f.association :extraction_forms_project_type,
+    collection: ExtractionFormsProjectType.where(id: [1, 2])
+  = f.submit 'Update Extraction Form Type', class: 'button'

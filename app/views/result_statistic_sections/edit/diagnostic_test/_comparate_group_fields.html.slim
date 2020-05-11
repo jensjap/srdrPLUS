@@ -1,0 +1,26 @@
+- @result_statistic_section = rss
+
+.nested-fields.comparates
+  = f.simple_fields_for :comparates do |comparate|
+    = render 'result_statistic_sections/edit/' + @result_statistic_section.result_statistic_section_type.name.parameterize.underscore + '_comparate_fields', f: comparate
+  .links.add-comparate
+    - if comparison == :bac
+      = link_to_add_association f, :comparates,
+        partial: 'result_statistic_sections/edit/' + @result_statistic_section.result_statistic_section_type.name.parameterize.underscore + '_comparate_fields',
+        render_options: { locals: { comparison: comparison } } do
+        i.fi-plus>
+        | Add Arm
+    - elsif comparison == :wac
+      / We don't want multiple comparates for WAC but we need the link to exist so JS has something to open.
+      = link_to_add_association f, :comparates,
+        partial: 'result_statistic_sections/edit/' + @result_statistic_section.result_statistic_section_type.name.parameterize.underscore + '_comparate_fields',
+        render_options: { locals: { comparison: comparison } },
+        style: 'display: none;' do
+        i.fi-plus>
+        | Add Timepoint
+    - elsif comparison == :diagnostic_test
+      = link_to_add_association f, :comparates,
+        partial: 'result_statistic_sections/edit/diagnostic_test/comparate_fields',
+        render_options: { locals: { comparison: comparison } } do
+        i.fi-plus>
+        | Add Test

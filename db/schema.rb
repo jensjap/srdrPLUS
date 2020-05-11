@@ -506,6 +506,15 @@ ActiveRecord::Schema.define(version: 2020_04_17_191216) do
     t.index ["section_id"], name: "index_efps_on_s_id"
   end
 
+  create_table "extraction_forms_projects_sections_type1_rows", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "extraction_forms_projects_sections_type1_id"
+    t.bigint "population_name_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["extraction_forms_projects_sections_type1_id"], name: "index_efpst1r_on_efpst1_id"
+    t.index ["population_name_id"], name: "index_efpst1r_on_pn_id"
+  end
+
   create_table "extraction_forms_projects_sections_type1s", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "extraction_forms_projects_section_id"
     t.integer "type1_id"
@@ -1272,12 +1281,14 @@ ActiveRecord::Schema.define(version: 2020_04_17_191216) do
     t.boolean "active"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "result_statistic_sections_measure_id"
     t.index ["active"], name: "index_result_statistic_sections_measures_on_active"
     t.index ["deleted_at"], name: "index_result_statistic_sections_measures_on_deleted_at"
     t.index ["measure_id", "result_statistic_section_id", "active"], name: "index_rssm_on_m_id_rss_id_active"
     t.index ["measure_id", "result_statistic_section_id", "deleted_at"], name: "index_rssm_on_m_id_rss_id_deleted_at"
     t.index ["measure_id"], name: "index_result_statistic_sections_measures_on_measure_id"
     t.index ["result_statistic_section_id"], name: "index_rssm_on_rss_id"
+    t.index ["result_statistic_sections_measure_id"], name: "index_rssm_on_rssm_id"
   end
 
   create_table "result_statistic_sections_measures_comparisons", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -2007,6 +2018,7 @@ ActiveRecord::Schema.define(version: 2020_04_17_191216) do
   add_foreign_key "result_statistic_sections", "result_statistic_section_types"
   add_foreign_key "result_statistic_sections_measures", "measures"
   add_foreign_key "result_statistic_sections_measures", "result_statistic_sections"
+  add_foreign_key "result_statistic_sections_measures", "result_statistic_sections_measures"
   add_foreign_key "result_statistic_sections_measures_comparisons", "comparisons"
   add_foreign_key "result_statistic_sections_measures_comparisons", "result_statistic_sections"
   add_foreign_key "screening_options", "label_types"

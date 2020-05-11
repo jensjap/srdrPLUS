@@ -7,7 +7,7 @@
 # measure precedes dependent measure listings.
 #
 # Time to Event -> Continuous
-# Advese Event -> Cat
+# Adverse Event -> Cat
 #
 # type1_types: [categorical, continuous]: [default, available, false]
 --- 
@@ -173,113 +173,100 @@
     categorical: default
     continuous: default
 - 
-  name: "Change, %"
+  name: "Mean Difference (MD)"
   provider_names: ~
   result_statistic_section_types:
-    - "Within Arm Comparisons"
-  type1_types:
-    categorical: default
-    continuous: false
-- 
-  name: "95% CI low (chg, %)"
-  provider_names: "Change, %"
-  result_statistic_section_types:
-    - "Within Arm Comparisons"
-  type1_types:
-    categorical: default
-    continuous: false
-- 
-  name: "95% CI high (chg, %)"
-  provider_names: "Change, %"
-  result_statistic_section_types:
-    - "Within Arm Comparisons"
-  type1_types:
-    categorical: default
-    continuous: false
-- 
-  name: "Change, proportion"
-  provider_names: ~
-  result_statistic_section_types:
-    - "Within Arm Comparisons"
-  type1_types:
-    categorical: available
-    continuous: false
-- 
-  name: "95% CI low (chg, prop)"
-  provider_names: "Change, proportion"
-  result_statistic_section_types:
-    - "Within Arm Comparisons"
-  type1_types:
-    categorical: available
-    continuous: false
-- 
-  name: "95% CI high (chg, prop)"
-  provider_names: "Change, proportion"
-  result_statistic_section_types:
-    - "Within Arm Comparisons"
-  type1_types:
-    categorical: available
-    continuous: false
-- 
-  name: "Mean Change"
-  provider_names: ~
-  result_statistic_section_types:
+    - "Between Arm Comparisons"
     - "Within Arm Comparisons"
   type1_types:
     categorical: false
     continuous: default
 - 
-  name: "SD (mean chg)"
-  provider_names: "Mean Change"
+  name: "95% CI low (MD)"
+  provider_names: "Mean Difference (MD)"
   result_statistic_section_types:
+    - "Between Arm Comparisons"
     - "Within Arm Comparisons"
   type1_types:
     categorical: false
     continuous: default
 - 
-  name: "SE (mean chg)"
-  provider_names: "Mean Change"
+  name: "95% CI high (MD)"
+  provider_names: "Mean Difference (MD)"
   result_statistic_section_types:
+    - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
+  type1_types:
+    categorical: false
+    continuous: default
+- 
+  name: "SD (MD)"
+  provider_names: "Mean Difference (MD)"
+  result_statistic_section_types:
+    - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
+  type1_types:
+    categorical: false
+    continuous: default
+- 
+  name: "Mean Difference, Adjusted (adjMD)"
+  provider_names: "Mean Difference, Adjusted (adjRD)"
+  result_statistic_section_types:
+    - "Between Arm Comparisons"
     - "Within Arm Comparisons"
   type1_types:
     categorical: false
     continuous: available
 - 
-  name: "95% CI low (mean chg)"
-  provider_names: "Mean Change"
+  name: "95% CI low (adjMD)"
+  provider_names: "Mean Difference, Adjusted (adjMD)"
   result_statistic_section_types:
+    - "Between Arm Comparisons"
     - "Within Arm Comparisons"
   type1_types:
     categorical: false
-    continuous: default
+    continuous: available
 - 
-  name: "95% CI high (mean chg)"
-  provider_names: "Mean Change"
+  name: "95% CI high (adjMD)"
+  provider_names: "Mean Difference, Adjusted (adjMD)"
   result_statistic_section_types:
+    - "Between Arm Comparisons"
     - "Within Arm Comparisons"
   type1_types:
     categorical: false
-    continuous: default
+    continuous: available
 - 
-  name: "Median Change"
+  name: "SD (adjMD)"
+  provider_names: "Mean Difference, Adjusted (adjMD)"
+  result_statistic_section_types:
+    - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
+  type1_types:
+    categorical: false
+    continuous: available
+- 
+  name: "Median Difference"
   provider_names: ~
   result_statistic_section_types:
+    - "Between Arm Comparisons"
     - "Within Arm Comparisons"
   type1_types:
     categorical: false
     continuous: available
 - 
-  name: "25th %ile (Median chg)"
-  provider_names: "Median Change"
+  name: "25th %ile (Median Difference)"
+  provider_names: "Median Difference"
   result_statistic_section_types:
+    - "Between Arm Comparisons"
     - "Within Arm Comparisons"
   type1_types:
     categorical: false
     continuous: available
 - 
-  name: "75th %ile (Median chg)"
-  provider_names: "Median Change"
+  name: "75th %ile (Median Difference)"
+  provider_names: "Median Difference"
   result_statistic_section_types:
+    - "Between Arm Comparisons"
     - "Within Arm Comparisons"
   type1_types:
     categorical: false
@@ -289,6 +276,7 @@
   provider_names: ~
   result_statistic_section_types:
     - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
   type1_types:
     categorical: default
     continuous: false
@@ -297,6 +285,7 @@
   provider_names: "Odds Ratio (OR)"
   result_statistic_section_types:
     - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
   type1_types:
     categorical: default
     continuous: false
@@ -305,6 +294,7 @@
   provider_names: "Odds Ratio (OR)"
   result_statistic_section_types:
     - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
   type1_types:
     categorical: default
     continuous: false
@@ -313,6 +303,7 @@
   provider_names: ~
   result_statistic_section_types:
     - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
   type1_types:
     categorical: available
     continuous: false
@@ -321,6 +312,7 @@
   provider_names: "Odds Ratio, Adjusted (adjOR)"
   result_statistic_section_types:
     - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
   type1_types:
     categorical: available
     continuous: false
@@ -329,6 +321,7 @@
   provider_names: "Odds Ratio, Adjusted (adjOR)"
   result_statistic_section_types:
     - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
   type1_types:
     categorical: available
     continuous: false
@@ -337,38 +330,34 @@
   provider_names: ~
   result_statistic_section_types:
     - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
   type1_types:
     categorical: available
-    continuous: available
+    continuous: false
 - 
   name: "95% CI low (RR)"
   provider_names: "Risk Ratio (RR)"
   result_statistic_section_types:
     - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
   type1_types:
     categorical: available
-    continuous: available
+    continuous: false
 - 
   name: "95% CI high (RR)"
   provider_names: "Risk Ratio (RR)"
   result_statistic_section_types:
     - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
   type1_types:
     categorical: available
-    continuous: available
-- 
-  name: "Unit (RR)"
-  provider_names: "Risk Ratio (RR)"
-  result_statistic_section_types:
-    - "Between Arm Comparisons"
-  type1_types:
-    categorical: false
-    continuous: available
+    continuous: false
 - 
   name: "Risk Ratio, Adjusted (adjRR)"
   provider_names: ~
   result_statistic_section_types:
     - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
   type1_types:
     categorical: available
     continuous: false
@@ -377,6 +366,7 @@
   provider_names: "Risk Ratio, Adjusted (adjRR)"
   result_statistic_section_types:
     - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
   type1_types:
     categorical: available
     continuous: false
@@ -385,22 +375,16 @@
   provider_names: "Risk Ratio, Adjusted (adjRR)"
   result_statistic_section_types:
     - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
   type1_types:
     categorical: available
     continuous: false
-- 
-  name: "Unit (adjRR)"
-  provider_names: "Risk Ratio, Adjusted (adjRR)"
-  result_statistic_section_types:
-    - "Between Arm Comparisons"
-  type1_types:
-    categorical: false
-    continuous: available
 - 
   name: "Incidence Rate Ratio (IRR)"
   provider_names: ~
   result_statistic_section_types:
     - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
   type1_types:
     categorical: available
     continuous: false
@@ -409,6 +393,7 @@
   provider_names: "Incidence Rate Ratio (IRR)"
   result_statistic_section_types:
     - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
   type1_types:
     categorical: available
     continuous: false
@@ -417,6 +402,7 @@
   provider_names: "Incidence Rate Ratio (IRR)"
   result_statistic_section_types:
     - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
   type1_types:
     categorical: available
     continuous: false
@@ -425,6 +411,7 @@
   provider_names: ~
   result_statistic_section_types:
     - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
   type1_types:
     categorical: available
     continuous: false
@@ -433,6 +420,7 @@
   provider_names: "Incidence Rate Ratio, Adjusted (adjIRR)"
   result_statistic_section_types:
     - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
   type1_types:
     categorical: available
     continuous: false
@@ -441,6 +429,7 @@
   provider_names: "Incidence Rate Ratio, Adjusted (adjIRR)"
   result_statistic_section_types:
     - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
   type1_types:
     categorical: available
     continuous: false
@@ -449,6 +438,7 @@
   provider_names: ~
   result_statistic_section_types:
     - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
   type1_types:
     categorical: available
     continuous: false
@@ -457,6 +447,7 @@
   provider_names: "Hazard Ratio (HR)"
   result_statistic_section_types:
     - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
   type1_types:
     categorical: available
     continuous: false
@@ -465,6 +456,7 @@
   provider_names: "Hazard Ratio (HR)"
   result_statistic_section_types:
     - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
   type1_types:
     categorical: available
     continuous: false
@@ -473,6 +465,7 @@
   provider_names: ~
   result_statistic_section_types:
     - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
   type1_types:
     categorical: available
     continuous: false
@@ -481,6 +474,7 @@
   provider_names: "Hazard Ratio, Adjusted (adjHR)"
   result_statistic_section_types:
     - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
   type1_types:
     categorical: available
     continuous: false
@@ -489,6 +483,7 @@
   provider_names: "Hazard Ratio, Adjusted (adjHR)"
   result_statistic_section_types:
     - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
   type1_types:
     categorical: available
     continuous: false
@@ -497,6 +492,7 @@
   provider_names: ~
   result_statistic_section_types:
     - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
   type1_types:
     categorical: available
     continuous: false
@@ -505,6 +501,7 @@
   provider_names: "Risk Difference (RD)"
   result_statistic_section_types:
     - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
   type1_types:
     categorical: available
     continuous: false
@@ -513,6 +510,7 @@
   provider_names: "Risk Difference (RD)"
   result_statistic_section_types:
     - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
   type1_types:
     categorical: available
     continuous: false
@@ -521,6 +519,7 @@
   provider_names: ~
   result_statistic_section_types:
     - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
   type1_types:
     categorical: available
     continuous: false
@@ -529,6 +528,7 @@
   provider_names: "Risk Difference, Adjusted (adjRD)"
   result_statistic_section_types:
     - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
   type1_types:
     categorical: available
     continuous: false
@@ -537,118 +537,24 @@
   provider_names: "Risk Difference, Adjusted (adjRD)"
   result_statistic_section_types:
     - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
   type1_types:
     categorical: available
     continuous: false
 - 
-  name: "Mean Difference (MD)"
+  name: "Adjusted for: "
   provider_names: ~
   result_statistic_section_types:
     - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
   type1_types:
-    categorical: false
-    continuous: default
-- 
-  name: "95% CI low (MD)"
-  provider_names: "Mean Difference (MD)"
-  result_statistic_section_types:
-    - "Between Arm Comparisons"
-  type1_types:
-    categorical: false
-    continuous: default
-- 
-  name: "95% CI high (MD)"
-  provider_names: "Mean Difference (MD)"
-  result_statistic_section_types:
-    - "Between Arm Comparisons"
-  type1_types:
-    categorical: false
-    continuous: default
-- 
-  name: "SD (MD)"
-  provider_names: "Mean Difference (MD)"
-  result_statistic_section_types:
-    - "Between Arm Comparisons"
-  type1_types:
-    categorical: false
-    continuous: default
-- 
-  name: "SE (MD)"
-  provider_names: "Mean Difference (MD)"
-  result_statistic_section_types:
-    - "Between Arm Comparisons"
-  type1_types:
-    categorical: false
+    categorical: available
     continuous: available
 - 
-  name: "Median Difference"
+  name: "P value"
   provider_names: ~
   result_statistic_section_types:
-    - "Between Arm Comparisons"
-  type1_types:
-    categorical: false
-    continuous: available
-- 
-  name: "25th %ile (Median diff)"
-  provider_names: "Median Difference"
-  result_statistic_section_types:
-    - "Between Arm Comparisons"
-  type1_types:
-    categorical: false
-    continuous: available
-- 
-  name: "75th %ile (Median diff)"
-  provider_names: "Median Difference"
-  result_statistic_section_types:
-    - "Between Arm Comparisons"
-  type1_types:
-    categorical: false
-    continuous: available
-- 
-  name: "Adjusted for: "
-  provider_names: "Odds Ratio, Adjusted (adjOR)"
-  result_statistic_section_types:
-    - "Between Arm Comparisons"
-  type1_types:
-    categorical: available
-    continuous: available
-- 
-  name: "Adjusted for: "
-  provider_names: "Risk Ratio, Adjusted (adjRR)"
-  result_statistic_section_types:
-    - "Between Arm Comparisons"
-  type1_types:
-    categorical: available
-    continuous: available
-- 
-  name: "Adjusted for: "
-  provider_names: "Incidence Rate Ratio, Adjusted (adjIRR)"
-  result_statistic_section_types:
-    - "Between Arm Comparisons"
-  type1_types:
-    categorical: available
-    continuous: available
-- 
-  name: "Adjusted for: "
-  provider_names: "Hazard Ratio, Adjusted (adjHR)"
-  result_statistic_section_types:
-    - "Between Arm Comparisons"
-  type1_types:
-    categorical: available
-    continuous: available
-- 
-  name: "Adjusted for: "
-  provider_names: "Risk Difference, Adjusted (adjRD)"
-  result_statistic_section_types:
-    - "Between Arm Comparisons"
-  type1_types:
-    categorical: available
-    continuous: available
-- 
-  name: "P value (net difference)"
-  provider_names: ~
-  result_statistic_section_types:
-    - "NET Change"
+    - "Net Difference"
   type1_types:
     categorical: false
     continuous: default
@@ -656,7 +562,7 @@
   name: "Net Mean Difference (NMD)"
   provider_names: ~
   result_statistic_section_types:
-    - "NET Change"
+    - "Net Difference"
   type1_types:
     categorical: false
     continuous: default
@@ -664,7 +570,7 @@
   name: "95% CI low (NMD)"
   provider_names: "Net Mean Difference (NMD)"
   result_statistic_section_types:
-    - "NET Change"
+    - "Net Difference"
   type1_types:
     categorical: false
     continuous: default
@@ -672,7 +578,15 @@
   name: "95% CI high (NMD)"
   provider_names: "Net Mean Difference (NMD)"
   result_statistic_section_types:
-    - "NET Change"
+    - "Net Difference"
+  type1_types:
+    categorical: false
+    continuous: default
+- 
+  name: "SD (NMD)"
+  provider_names: "Net Mean Difference (NMD)"
+  result_statistic_section_types:
+    - "Net Difference"
   type1_types:
     categorical: false
     continuous: default
@@ -680,7 +594,7 @@
   name: "Net Mean Difference, Adjusted (adjNMD)"
   provider_names: ~
   result_statistic_section_types:
-    - "NET Change"
+    - "Net Difference"
   type1_types:
     categorical: false
     continuous: available
@@ -688,7 +602,7 @@
   name: "95% CI low (adjNMD)"
   provider_names: "Net Mean Difference, Adjusted (adjNMD)"
   result_statistic_section_types:
-    - "NET Change"
+    - "Net Difference"
   type1_types:
     categorical: false
     continuous: available
@@ -696,16 +610,72 @@
   name: "95% CI high (adjNMD)"
   provider_names: "Net Mean Difference, Adjusted (adjNMD)"
   result_statistic_section_types:
-    - "NET Change"
+    - "Net Difference"
+  type1_types:
+    categorical: false
+    continuous: available
+- 
+  name: "SD (adjNMD)"
+  provider_names: "Net Mean Difference, Adjusted (adjNMD)"
+  result_statistic_section_types:
+    - "Net Difference"
   type1_types:
     categorical: false
     continuous: available
 - 
   name: "Adjusted for: "
-  provider_names: "Net Mean Difference, Adjusted (adjNMD)"
+  provider_names: ~
   result_statistic_section_types:
-    - "NET Change"
+    - "Net Difference"
   type1_types:
     categorical: false
     continuous: available
+- 
+  name: "# of participants recruited"
+  provider_names: ~
+  result_statistic_section_types:
+    - "Diagnostic Test Descriptive Statistics"
+  type1_types:
+    categorical: default
+    continuous: default
+- 
+  name: "# not receiving Index test"
+  provider_names: ~
+  result_statistic_section_types:
+    - "Diagnostic Test Descriptive Statistics"
+  type1_types:
+    categorical: default
+    continuous: default
+- 
+  name: "# not receiving Reference test"
+  provider_names: ~
+  result_statistic_section_types:
+    - "Diagnostic Test Descriptive Statistics"
+  type1_types:
+    categorical: default
+    continuous: default
+- 
+  name: "% of participants recruited"
+  provider_names: ~
+  result_statistic_section_types:
+    - "Diagnostic Test Descriptive Statistics"
+  type1_types:
+    categorical: default
+    continuous: default
+- 
+  name: "% not receiving Index test"
+  provider_names: ~
+  result_statistic_section_types:
+    - "Diagnostic Test Descriptive Statistics"
+  type1_types:
+    categorical: default
+    continuous: default
+- 
+  name: "% not receiving Reference test"
+  provider_names: ~
+  result_statistic_section_types:
+    - "Diagnostic Test Descriptive Statistics"
+  type1_types:
+    categorical: default
+    continuous: default
 

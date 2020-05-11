@@ -1,0 +1,11 @@
+/ For BAC comparable_type is ExtractionsExtractionFormsProjectsSectionsType1
+  For WAC comparable_type is ExtractionsExtractionFormsProjectsSectionsType1RowColumn
+  For NET comparable_type is Comparison
+
+.nested-fields.bac-comparate-fields style='padding-bottom: 0px; margin-bottom: 0px'
+  == render 'result_statistic_sections/edit/comparable_element_fields',
+    f: f,
+    comparable_element_type: 'ExtractionsExtractionFormsProjectsSectionsType1',
+    collection: @diagnostic_tests,
+    label_method: :type1_name_and_description,
+    wrapper_class: 'diagnostic-test-select'

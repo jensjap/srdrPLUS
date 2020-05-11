@@ -1,0 +1,139 @@
+table
+  caption 2X2 Table and Test Accuracy Metrics
+  thead
+    tr
+      th Thresholds
+      th 2X2 Table
+      th Test Accuracy Metrics
+
+  tbody
+    - lsof_thresholds = Array.new
+    - @diagnostic_tests.each do |dt|
+      - dt.extractions_extraction_forms_projects_sections_type1_rows.each do |pop|
+        - lsof_thresholds << pop.population_name.name
+    - lsof_thresholds.each do |threshold|
+      tr
+        td
+          |Threshold: '#{ threshold }'
+        td
+          table
+            thead
+              tr
+                th
+                th Disease (+)
+                th Disease (-)
+                th Total
+
+            tbody
+              tr
+                td Test (+)
+                td
+                td
+                td
+
+              tr
+                td Test (-)
+                td
+                td
+                td
+
+              tr
+                td Total
+                td
+                td
+                td
+
+        td
+          table
+            thead
+              tr
+                th
+                th
+                th 95% CI (Lower)
+                th 95% CI (Upper)
+
+            tbody
+              tr
+                td Sensitivity %
+                td
+                  = simple_form_for(:a) do |f|
+                    = f.input :name, label: false
+                td
+                  = simple_form_for(:a) do |f|
+                    = f.input :name, label: false
+                td
+                  = simple_form_for(:a) do |f|
+                    = f.input :name, label: false
+
+              tr
+                td Specificity %
+                td
+                  = simple_form_for(:a) do |f|
+                    = f.input :name, label: false
+                td
+                  = simple_form_for(:a) do |f|
+                    = f.input :name, label: false
+                td
+                  = simple_form_for(:a) do |f|
+                    = f.input :name, label: false
+
+              tr
+                td Positive Predictive Value
+                td
+                  = simple_form_for(:a) do |f|
+                    = f.input :name, label: false
+                td
+                  = simple_form_for(:a) do |f|
+                    = f.input :name, label: false
+                td
+                  = simple_form_for(:a) do |f|
+                    = f.input :name, label: false
+
+              tr
+                td Negative Predictive Value
+                td
+                  = simple_form_for(:a) do |f|
+                    = f.input :name, label: false
+                td
+                  = simple_form_for(:a) do |f|
+                    = f.input :name, label: false
+                td
+                  = simple_form_for(:a) do |f|
+                    = f.input :name, label: false
+
+              tr
+                td Likelihood Ratio of a Positive Test
+                td
+                  = simple_form_for(:a) do |f|
+                    = f.input :name, label: false
+                td
+                  = simple_form_for(:a) do |f|
+                    = f.input :name, label: false
+                td
+                  = simple_form_for(:a) do |f|
+                    = f.input :name, label: false
+
+              tr
+                td Likelihood Ratio of a Negative Test
+                td
+                  = simple_form_for(:a) do |f|
+                    = f.input :name, label: false
+                td
+                  = simple_form_for(:a) do |f|
+                    = f.input :name, label: false
+                td
+                  = simple_form_for(:a) do |f|
+                    = f.input :name, label: false
+
+              tr
+                td Diagnostic Odds Ratio
+                td
+                  = simple_form_for(:a) do |f|
+                    = f.input :name, label: false
+                td
+                  = simple_form_for(:a) do |f|
+                    = f.input :name, label: false
+                td
+                  = simple_form_for(:a) do |f|
+                    = f.input :name, label: false
+

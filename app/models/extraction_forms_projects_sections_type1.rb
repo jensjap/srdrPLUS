@@ -27,11 +27,13 @@ class ExtractionFormsProjectsSectionsType1 < ApplicationRecord
 
   has_one :ordering, as: :orderable, dependent: :destroy
 
+  has_many :extraction_forms_projects_sections_type1_rows
   has_many :extraction_forms_projects_sections_type1s_timepoint_names, dependent: :destroy, inverse_of: :extraction_forms_projects_sections_type1
   has_many :timepoint_names, through: :extraction_forms_projects_sections_type1s_timepoint_names, dependent: :destroy
 
   validates :type1_id, uniqueness: { scope: :extraction_forms_projects_section_id }
 
+  accepts_nested_attributes_for :extraction_forms_projects_sections_type1_rows, reject_if: :all_blank
   accepts_nested_attributes_for :type1, reject_if: :all_blank
   accepts_nested_attributes_for :timepoint_names, reject_if: :all_blank
 

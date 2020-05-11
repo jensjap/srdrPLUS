@@ -1,5 +1,16 @@
 - section_name = section_name.present? ? section_name : 'Results'
-- if @extraction.results_section_ready_for_extraction?
+- efp = @extraction.extraction_forms_projects_sections.first.extraction_forms_project
+- extraction_forms_project_type = efp.extraction_forms_project_type
+
+/ If at least one Outcome is present, make extraction form type selector available.
+/- if @eefpst1
+  = simple_form_for(efp, remote: true) do |f|
+    = f.association :extraction_forms_project_type,
+      collection: ExtractionFormsProjectType.where(id: [1, 2])
+    = f.submit 'Update Extraction Form Type', class: 'button'
+
+/ Standard extraction and there are at least one Arm and one Outcome.
+- if extraction_forms_project_type.id.eql?(1) && @extraction.results_section_ready_for_extraction?
   #results-panel
     .reveal#manage-measures-modal.large data-reveal='' style='min-height: 80vh'
       button.close-button data-close='' aria-label='Close modal' type='button'
@@ -12,23 +23,18 @@
     blockquote
       | The results section is where you enter numerical data, comparisons, etc.
 
-    .grid-x style='font-family: "Open Sans", sans-serif;'
-      .cell.shrink.grid-x.align-middle style='border: solid 2px #1986c7; border-radius: 7px;'
-        .cell.shrink
-          h5 style='display: inline; margin: 0 0.6rem 0 0.6rem; color: #1986c7;' Outcome: 
-        .cell.auto
-          button.button.has-dropdown data-toggle='outcome-dropdown' style='margin-bottom: 0 !important; padding: 0.5rem; background-color: #1986c7 !important; border-radius: 0;'
-            => @eefpst1.type1_name_and_description + ' ▾'
-        - if @eefpst1s.where.not(id: @eefpst1.id).length > 0
-          .dropdown-pane#outcome-dropdown data-dropdown='' data-hover='true' data-hover-pane='true'
-            - @eefpst1s.includes(:type1_type).map{ |eefpst1| eefpst1.type1_type&.name || "Uncategorized" }.uniq.sort.each do |t1_name|
-              ul style='list-style-type: none; margin: 0.5rem 0 0.5rem 0;'
-                label = t1_name
-                / Let's remove the currently displayed outcomes from the @eefpst1s so it doesn't show in the possible selections.
-                - @eefpst1s.left_joins(:type1_type).where(t1_name == "Uncategorized" ? { type1_type_id: nil } : { type1_types: { name: t1_name } }).where.not(id: @eefpst1.id).each do |eefpst1|
-                  li[style='font-size: larger;'] = link_to eefpst1.type1_name_and_description, change_outcome_in_results_section_extraction_path(eefpst1_id: eefpst1.id), remote: true, class: 'change-outcome-link'
+    = render 'shared/extractions/work/results/outcome_selector'
 
     = render 'extractions/work/results/results_table'
 
-- else
-  h5 style='color: red;' You must add Arms and Outcomes before extracting into this section.
+/ Diagnostic Test extraction and at least one Outcome.
+- elsif extraction_forms_project_type.id.eql?(2) && @extraction.results_section_ready_for_extraction?
+  = render 'shared/extractions/work/results/outcome_selector'
+
+  = render 'extractions/work/results/diagnostic_test_results_table'
+
+- elsif extraction_forms_project_type.id.eql?(1)
+  h5 style='color: red;' This is a Standard extraction. You must add Arms and Outcomes before extracting into this section.
+
+- elsif extraction_forms_project_type.id.eql?(2)
+  h5 style='color: red;' This is a Diagnostic Test extraction. You must enter at least one Diagnostic Test and one Diagnosis.
