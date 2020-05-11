@@ -8,22 +8,32 @@ h4 #{ efps.section.name.titleize } Question List
 
 .column.row
 
-  .table-scroll style='width: 100%;'
+  .table-scroll style='width: 99%;'
 
-    table.hover style='width: 100%;'
-
+    table#efp-question-list.hover style='width: 100%;'
+      col.handle-col
+      col
+      col
+      col
+      col
+      col
+      col
       thead
         tr
+          th
           th Position
           th Dependency
           th Key Questions
           th Name
           th Description
+          th
 
       tbody.orderable-list orderable-url="#{ update_positions_api_v1_orderings_url }"
         - efps.ensure_sequential_questions
         - efps.questions.each do |q|
           tr.orderable-item [ position="#{ q.ordering.position }" ordering-id="#{ q.ordering.id }" ]
+            td
+              .grippy
             td = q.ordering.position
             td
               ul#dependencies
@@ -56,15 +66,17 @@ h4 #{ efps.section.name.titleize } Question List
 
             td = q.name
             td style='white-space: pre-wrap;' = q.description
-            td = link_to edit_question_path(q) do
-              i.fi-pencil>
-              = t('edit')
-
-            td = link_to q, method: :delete, data: { confirm: t('confirm') } do
-              i.fi-trash>
-              = t('remove')
-
             td
-              = link_to dependencies_question_path(q) do
-                i.fi-link>
-                | Dependencies
+              .utilities
+                = link_to edit_question_path(q) do
+                  i.fi-pencil>
+                  = t('edit')
+
+                = link_to dependencies_question_path(q) do
+                    i.fi-link>
+                    | Dependencies
+
+                = link_to q, method: :delete, data: { confirm: t('confirm') } do
+                  i.fi-trash>
+                  = t('remove')
+
