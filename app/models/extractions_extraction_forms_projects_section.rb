@@ -73,8 +73,7 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
              question_row_column_field: qrc.question_row_column_fields)
 
     case qrc.question_row_column_type_id
-
-    when 5
+    when 5  # Checkbox.
       text_arr = []
       Record.where(recordable: recordables).pluck(:name).each do |opt_ids|
         if opt_ids.nil? or opt_ids.length < 4 then next end
