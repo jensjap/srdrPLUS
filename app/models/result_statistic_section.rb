@@ -45,6 +45,7 @@ class ResultStatisticSection < ApplicationRecord
   accepts_nested_attributes_for :comparisons_measures,                  allow_destroy: false
   accepts_nested_attributes_for :measurements,                          allow_destroy: false
   accepts_nested_attributes_for :result_statistic_sections_measures
+  accepts_nested_attributes_for :measures
 
   delegate :extraction, to: :population
   delegate :project, to: :extraction
