@@ -116,7 +116,8 @@ json.sections extraction.extractions_extraction_forms_projects_sections.order(:e
                   end
                 end
               else
-                raise RuntimeError, 'Result Statistic Section is of Unknown Type'
+                #raise RuntimeError, 'Result Statistic Section is of Unknown Type'
+                next
               end
             end
           end
