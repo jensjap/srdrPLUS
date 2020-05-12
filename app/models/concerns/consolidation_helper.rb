@@ -176,7 +176,7 @@ module ConsolidationHelper
                     # Within Arm Comparisons
                     rssm.comparisons_arms_rssms.each do |comparisons_arms_rssm|
 
-                      next if comparisons_arms_rssm.timepoint.blank?
+                      #next if comparisons_arms_rssm.timepoint.blank?
 
                       comparison_name = comparisons_arms_rssm.comparison.tokenize
                       arm_efps_id = comparisons_arms_rssm.extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_section.extraction_forms_projects_section.id
@@ -198,7 +198,7 @@ module ConsolidationHelper
                   when "4"
                     rssm.wacs_bacs_rssms.each do |wacs_bacs_rssm|
 
-                      next if wacs_bacs_rssm.timepoint.blank?
+                      #next if wacs_bacs_rssm.timepoint.blank?
 
                       wac_name = wacs_bacs_rssm.wac.tokenize
                       bac_name = wacs_bacs_rssm.bac.tokenize
