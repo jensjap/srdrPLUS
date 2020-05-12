@@ -20,7 +20,5 @@
       collection: options,
       checked: record.name.present? ? JSON.parse(record.name) : [],
       class: 'form-control'
-    div id="record-id-#{ record.id.to_s }" class='record-info' style='opacity: 0;' = 'Saved!'
 
-      /.form-actions
-        = f.button :submit, 'Save'
+    div class='record-info' style='opacity: 0;' = 'Saved!'

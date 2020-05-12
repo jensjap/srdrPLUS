@@ -60,7 +60,5 @@
           data: { prereq: "prereq-#{ qrc.class }-#{ qrc.id }" },
                       min: qrc.field_validation_value_for(:min_value),
                       max: qrc.field_validation_value_for(:max_value) }
-      div id="record-id-#{ record.id.to_s }" class='record-info' style='opacity: 0;' = 'Saved!'
 
-      /.form-actions
-        = f.button :submit, 'Save'
+    div class='record-info' style='opacity: 0;' = 'Saved!'

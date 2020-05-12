@@ -29,7 +29,5 @@
       collection: options,
       input_html: { class: 'form-control' },
       include_blank: '-- Select response --'
-    div id="record-id-#{ record.id.to_s }" class='record-info' style='opacity: 0;' = 'Saved!'
 
-    /.form-actions
-      = f.button :submit, 'Save'
+    div class='record-info' style='opacity: 0;' = 'Saved!'

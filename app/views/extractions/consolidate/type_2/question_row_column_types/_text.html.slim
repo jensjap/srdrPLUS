@@ -27,7 +27,5 @@
       input_html: { \
         title: "Constraints: Blank OR between #{ qrc.field_validation_value_for(:min_length) } and #{ qrc.field_validation_value_for(:max_length) } chars" \
       }
-    div id="record-id-#{ record.id.to_s }" class='record-info' style='opacity: 0;' = 'Saved!'
 
-    /.form-actions
-      = f.button :submit, 'Save'
+    div class='record-info' style='opacity: 0;' = 'Saved!'
