@@ -2,5 +2,11 @@
   if ( '<%= @errors.messages.values.dig(0, 0) %>'.length > 0 ) {
     toastr.error( '<%= @errors.messages.values.dig(0, 0) %>' );
   }
-  $( '.efps-container' ).html( "<%= j( render 'extraction_forms_projects/build/' + @extraction_forms_projects_section.extraction_forms_projects_section_type.name.parameterize.underscore, efps: @extraction_forms_projects_section) %>" );
+
+  $efps_container = $( '.efps-container[data-efps-id=<%=@extraction_forms_projects_section.id.to_s%>]' )
+  $efps_container.html( "<%= j( render 'extraction_forms_projects/build/' + @extraction_forms_projects_section.extraction_forms_projects_section_type.name.parameterize.underscore, efps: @extraction_forms_projects_section) %>" );
 } )();
+
+  // This allows container to reload certain js listeners. Orderable so far.
+  $efps_container.trigger( 'srdr:content-loaded' );
+  

@@ -15,7 +15,7 @@
 
     hr
 
-.column.row.efps-container
+.column.row.efps-container[data-efps-id="#{efps.id.to_s}"]
 
   == render 'extraction_forms_projects/build/' + efps.extraction_forms_projects_section_type.name.parameterize.underscore,
     efps: efps
