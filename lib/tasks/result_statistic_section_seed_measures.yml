@@ -164,15 +164,6 @@
     categorical: available
     continuous: available
 - 
-  name: "p value"
-  provider_names: ~
-  result_statistic_section_types:
-    - "Between Arm Comparisons"
-    - "Within Arm Comparisons"
-  type1_types:
-    categorical: default
-    continuous: default
-- 
   name: "Mean Difference (MD)"
   provider_names: ~
   result_statistic_section_types:
@@ -209,6 +200,15 @@
     categorical: false
     continuous: default
 - 
+  name: "p value (MD)"
+  provider_names: "Mean Difference (MD)"
+  result_statistic_section_types:
+    - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
+  type1_types:
+    categorical: false
+    continuous: default
+- 
   name: "Mean Difference, Adjusted (adjMD)"
   provider_names: "Mean Difference, Adjusted (adjRD)"
   result_statistic_section_types:
@@ -237,6 +237,24 @@
     continuous: available
 - 
   name: "SD (adjMD)"
+  provider_names: "Mean Difference, Adjusted (adjMD)"
+  result_statistic_section_types:
+    - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
+  type1_types:
+    categorical: false
+    continuous: available
+- 
+  name: "p value (adjMD)"
+  provider_names: "Mean Difference, Adjusted (adjMD)"
+  result_statistic_section_types:
+    - "Between Arm Comparisons"
+    - "Within Arm Comparisons"
+  type1_types:
+    categorical: false
+    continuous: available
+- 
+  name: "Adjusted for (adjMD): "
   provider_names: "Mean Difference, Adjusted (adjMD)"
   result_statistic_section_types:
     - "Between Arm Comparisons"
@@ -542,23 +560,6 @@
     categorical: available
     continuous: false
 - 
-  name: "Adjusted for: "
-  provider_names: ~
-  result_statistic_section_types:
-    - "Between Arm Comparisons"
-    - "Within Arm Comparisons"
-  type1_types:
-    categorical: available
-    continuous: available
-- 
-  name: "P value"
-  provider_names: ~
-  result_statistic_section_types:
-    - "Net Difference"
-  type1_types:
-    categorical: false
-    continuous: default
-- 
   name: "Net Mean Difference (NMD)"
   provider_names: ~
   result_statistic_section_types:
@@ -584,6 +585,14 @@
     continuous: default
 - 
   name: "SD (NMD)"
+  provider_names: "Net Mean Difference (NMD)"
+  result_statistic_section_types:
+    - "Net Difference"
+  type1_types:
+    categorical: false
+    continuous: default
+- 
+  name: "P value (NMD)"
   provider_names: "Net Mean Difference (NMD)"
   result_statistic_section_types:
     - "Net Difference"
@@ -623,8 +632,16 @@
     categorical: false
     continuous: available
 - 
-  name: "Adjusted for: "
-  provider_names: ~
+  name: "P value (adjNMD)"
+  provider_names: "Net Mean Difference, Adjusted (adjNMD)"
+  result_statistic_section_types:
+    - "Net Difference"
+  type1_types:
+    categorical: false
+    continuous: available
+- 
+  name: "Adjusted for (adjNMD): "
+  provider_names: "Net Mean Difference, Adjusted (adjNMD)"
   result_statistic_section_types:
     - "Net Difference"
   type1_types:

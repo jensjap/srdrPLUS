@@ -110,6 +110,8 @@ namespace :result_statistic_section_tasks do
 
       end
     end
+
+    puts "Done Populating Seed Measures"
   end
 
   desc "Clear all seed measures for the result statistic sections"
