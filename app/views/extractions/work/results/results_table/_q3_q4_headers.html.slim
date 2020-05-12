@@ -22,13 +22,13 @@ tr
     th.bg-lightpink
       - if not bac.is_anova
         div style='padding-top: 15px;'
-          - bac.comparate_groups.first.comparates.each do |c|
+          - bac.comparate_groups.first&.comparates&.each do |c|
             span.has-tip.tip-right data-tooltip='' aria-haspopup='true' data-options='show_on:small' title="Description: #{ c.comparable_element.comparable.type1.description }"
               = c.comparable_element.comparable.type1.short_name_and_description
             br
         div style='font-weight: normal;' vs.
         div style='padding-bottom: 15px;'
-          - bac.comparate_groups.second.comparates.each do |c|
+          - bac.comparate_groups.second&.comparates&.each do |c|
             span.has-tip.tip-right data-tooltip='' aria-haspopup='true' data-options='show_on:small' title="Description: #{ c.comparable_element.comparable.type1.description }"
               = c.comparable_element.comparable.type1.short_name_and_description
             br

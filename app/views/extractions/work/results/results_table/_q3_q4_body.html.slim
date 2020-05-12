@@ -5,9 +5,9 @@
       tr
         td.bg-lightgreen.vertical rowspan="#{ [wac_rss.result_statistic_sections_measures.length, net_rss.result_statistic_sections_measures.length].max + 1 }"
           div
-            div style='text-align: center; font-weight: bold;' = wac.comparate_groups.first.comparates.map { |c| c.comparable_element.comparable.label_with_baseline_indicator }.join('<br>')
+            div style='text-align: center; font-weight: bold;' = (wac.comparate_groups.first&.comparates || []).map { |c| c.comparable_element.comparable.label_with_baseline_indicator }.join('<br>')
             div style='text-align: center;' vs.
-            div style='text-align: center; font-weight: bold;' = wac.comparate_groups.second.comparates.map { |c| c.comparable_element.comparable.label_with_baseline_indicator }.join('<br>')
+            div style='text-align: center; font-weight: bold;' = (wac.comparate_groups.second&.comparates || []).map { |c| c.comparable_element.comparable.label_with_baseline_indicator }.join('<br>')
         - print_wac_name = false
 
     - else
