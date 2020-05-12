@@ -7,6 +7,8 @@ document.addEventListener 'turbolinks:load', ->
   return unless $( '.extractions' ).length > 0
 
   do ->
+    $( '.consolidation-select2' ).select2()
+    $( '.consolidation-select2-multi' ).select2( multiple: 'true' )
 
     $( '.change-outcome-link' ).click ( e ) ->
       $( '#results-panel > .table-container' ).html( '<br><br><br><h1>loading..</h1>' )
