@@ -278,8 +278,8 @@ document.addEventListener 'turbolinks:load', ->
           when "dropdown"
             drop_input = $( question ).find( 'select' )[ 0 ]
             if drop_input
-              selected = $( drop_input ).children('option').filter(':selected')[ 0 ]
-              return ( if selected.value then selected.value else "" )
+              val = $( drop_input ).val()
+              return ( if val then val else "" )
 
           when "radio_buttons"
             rb_selected = $( question ).find( 'input.radio_buttons' ).filter(':checked')
