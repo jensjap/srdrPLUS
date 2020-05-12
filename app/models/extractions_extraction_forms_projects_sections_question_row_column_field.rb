@@ -39,13 +39,11 @@ class ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField < Applica
   delegate :extraction, to: :extractions_extraction_forms_projects_section
   delegate :project,    to: :extractions_extraction_forms_projects_section
 
-#  def record_ids=(tokens)
-#    byebug
-#    tokens.map do |token|
-#      resource = self.question_row_column_field.question_row_column.question_row_columns_question_row_column_options.build(question_row_column_option_id: 1)
-#      save_resource_name_with_token(resource, token)
-#    end
-#    byebug
-#    super
-#  end
+  def question_row_columns_question_row_column_option_ids=(tokens)
+    tokens.map do |token|
+      resource = self.question_row_column_field.question_row_column.question_row_columns_question_row_column_options.build(question_row_column_option_id: 1)
+      save_resource_name_with_token(resource, token)
+    end
+    super
+  end
 end

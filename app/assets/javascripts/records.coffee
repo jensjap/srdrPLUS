@@ -11,7 +11,7 @@ bind_record_saving_mechanism = () ->
       form.submit()
 
   # Select Drop Down and Radio
-  $( 'form.edit_record select, form.edit_record input[type="checkbox"], form.edit_record input[type="radio"], form.edit_record input[type="number"]' ).change ( e ) ->
+  $( 'form.edit_extractions_extraction_forms_projects_sections_question_row_column_field select, form.edit_record select, form.edit_record input[type="checkbox"], form.edit_record input[type="radio"], form.edit_record input[type="number"]' ).change ( e ) ->
     e.preventDefault()
 
     $form = $( this ).closest( 'form' )

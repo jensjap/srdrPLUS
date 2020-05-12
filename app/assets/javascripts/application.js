@@ -244,10 +244,10 @@ document.addEventListener( 'turbolinks:load', function() {
     initialize_orderable_element( e.target );
   } );
 
-  $( "select.select2" ).select2();
-  $( "select.select2_multi" ).select2({
-    multiple: 'true'
-  });
+  //$( "select.select2" ).select2();
+  //$( "select.select2_multi" ).select2({
+  //  multiple: 'true'
+  //});
 
   ////################################################
   // State Toggler for EEFPS
