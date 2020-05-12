@@ -50272,7 +50272,7 @@ function __guardMethod__(obj, methodName, transform) {
           return markup;
         };
         $('#preview .question-row-column .select2').select2({
-          placeholder: '--Select--',
+          placeholder: '-- Select or type other value --',
           width: '100%',
           minimumInputLength: 0,
           ajax: {
@@ -50309,7 +50309,7 @@ function __guardMethod__(obj, methodName, transform) {
           templateSelection: formatResultSelection
         });
         $('#extraction_forms_projects_section_section_id').select2({
-          placeholder: '--Select--',
+          placeholder: '-- Select or type other value --',
           width: '100%',
           minimumInputLength: 0,
           ajax: {

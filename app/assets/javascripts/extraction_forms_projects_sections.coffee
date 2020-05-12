@@ -30,7 +30,7 @@ document.addEventListener 'turbolinks:load', ->
 
       # /extraction_forms_projects_sections/3/preview
       $( '#preview .question-row-column .select2' ).select2
-        placeholder: '--Select--'
+        placeholder: '-- Select or type other value --'
         width: '100%'
         minimumInputLength: 0
         ajax:
@@ -61,7 +61,7 @@ document.addEventListener 'turbolinks:load', ->
 
       # /extraction_forms_projects/1/extraction_forms_projects_sections/new
       $( '#extraction_forms_projects_section_section_id' ).select2
-        placeholder: '--Select--'
+        placeholder: '-- Select or type other value --'
         width: '100%'
         minimumInputLength: 0
         ajax:
