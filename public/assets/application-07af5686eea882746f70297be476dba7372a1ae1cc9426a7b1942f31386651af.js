@@ -50495,6 +50495,10 @@ function __guardMethod__(obj, methodName, transform) {
     }
     (function() {
       var add_change_listeners_to_questions, apply_coloring, apply_consolidation_dropdown, dt, get_extractor_names, get_number_of_extractions, get_question_type, get_question_value, shift_down;
+      $('.consolidation-select2').select2();
+      $('.consolidation-select2-multi').select2({
+        multiple: 'true'
+      });
       $('.change-outcome-link').click(function(e) {
         $('#results-panel > .table-container').html('<br><br><br><h1>loading..</h1>');
         e.preventDefault();
@@ -50730,7 +50734,7 @@ function __guardMethod__(obj, methodName, transform) {
           return "unclear";
         };
         get_question_value = function(question) {
-          var cb_arr, drop_input, numeric_value, rb_selected, selected, sign_option;
+          var cb_arr, drop_input, numeric_value, rb_selected, sign_option, val;
           switch (get_question_type(question)) {
             case "text":
               return $(question).find('textarea')[0].value;
@@ -50752,8 +50756,8 @@ function __guardMethod__(obj, methodName, transform) {
             case "dropdown":
               drop_input = $(question).find('select')[0];
               if (drop_input) {
-                selected = $(drop_input).children('option').filter(':selected')[0];
-                return (selected.value ? selected.value : "");
+                val = $(drop_input).val();
+                return (val ? val : "");
               }
               break;
             case "radio_buttons":
@@ -51808,7 +51812,7 @@ function __guardMethod__(obj, methodName, transform) {
         return form.submit();
       };
     };
-    $('form.edit_record select, form.edit_record input[type="checkbox"], form.edit_record input[type="radio"], form.edit_record input[type="number"]').change(function(e) {
+    $('form.edit_extractions_extraction_forms_projects_sections_question_row_column_field select, form.edit_record select, form.edit_record input[type="checkbox"], form.edit_record input[type="radio"], form.edit_record input[type="number"]').change(function(e) {
       var $form, formId;
       e.preventDefault();
       $form = $(this).closest('form');
@@ -52910,10 +52914,10 @@ document.addEventListener( 'turbolinks:load', function() {
     initialize_orderable_element( e.target );
   } );
 
-  $( "select.select2" ).select2();
-  $( "select.select2_multi" ).select2({
-    multiple: 'true'
-  });
+  //$( "select.select2" ).select2();
+  //$( "select.select2_multi" ).select2({
+  //  multiple: 'true'
+  //});
 
   ////################################################
   // State Toggler for EEFPS
