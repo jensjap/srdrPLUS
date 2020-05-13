@@ -59,7 +59,8 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
 
   # Temporarily calling it ExtractionsExtractionFormsProjectsSectionsType1Row. This is meant to be Outcome Timepoint.
   # TEMPORARILY DISABLED -Birol
-  # after_create :create_default_type1_rows
+  # !!! jens 2020/05/13: Why is this disabled?
+  after_create :create_default_type1_rows
 
   after_save :ensure_matrix_column_headers
 
@@ -183,7 +184,7 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
   end
 
   private
-      
+
     def set_extraction_stale
       self.extraction.extraction_checksum.update( is_stale: true ) 
     end
@@ -212,9 +213,13 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
 #    end
 
     # Only create these for Outcomes.
+    #
+    # We only need this to run for consolidated extractions. Once default populations and timepoints are present we update their names in ensure_matrix_column_headers.
     def create_default_type1_rows
       if self.extractions_extraction_forms_projects_section.extraction_forms_projects_section.section.name == 'Outcomes'
-        self.extractions_extraction_forms_projects_sections_type1_rows.create(population_name: PopulationName.first)
+        if self.extractions_extraction_forms_projects_sections_type1_rows.blank?
+          self.extractions_extraction_forms_projects_sections_type1_rows.create(population_name: PopulationName.first)
+        end
       end
     end
 
