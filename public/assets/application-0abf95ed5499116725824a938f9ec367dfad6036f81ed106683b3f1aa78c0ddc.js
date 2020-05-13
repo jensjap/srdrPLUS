@@ -49844,304 +49844,323 @@ function __guardMethod__(obj, methodName, transform) {
     (function() {
       var append_citations, citationList, fetch_from_pubmed, list_options, populate_citation_fields;
       if ($('body.citations.index').length === 1) {
-        list_options = {
-          valueNames: ['citation-numbers', 'citation-title', 'citation-authors', 'citation-journal', 'citation-journal-date', 'citation-abstract', 'citation-abstract']
-        };
-        fetch_from_pubmed = function(pmid) {
-          return $.ajax('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi', {
-            type: 'GET',
-            dataType: 'xml',
-            data: {
-              db: 'pubmed',
-              retmode: 'xml',
-              id: pmid
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-              console.log(errorThrown);
-              return toastr.error('Could not fetch citation info from PUBMED');
-            },
-            success: function(data, textStatus, jqXHR) {
-              var abstract, author_name, authors, citation_hash, dateNode, first_name, i, j, journal, k, keyword, keywords, last_name, len, len1, len2, name, node, ref, ref1, ref2;
-              if (!($(data).find('ArticleTitle').text() != null)) {
-                return 0;
-              }
-              name = $(data).find('ArticleTitle').text() || '';
-              abstract = '';
-              ref = $(data).find('AbstractText');
-              for (i = 0, len = ref.length; i < len; i++) {
-                node = ref[i];
-                abstract += $(node).text();
-                abstract += "\n";
-              }
-              authors = [];
-              ref1 = $(data).find('Author');
-              for (j = 0, len1 = ref1.length; j < len1; j++) {
-                node = ref1[j];
-                first_name = $(node).find('ForeName').text() || $(node).find('Initials').text() || '';
-                last_name = $(node).find('LastName').text() || '';
-                author_name = last_name + ' ' + first_name;
-                if (author_name === ' ') {
-                  author_name = $(node).find('CollectiveName').text() || '';
-                }
-                if (author_name !== '') {
-                  authors.push(author_name);
-                }
-              }
-              keywords = [];
-              ref2 = $(data).find('Keyword');
-              for (k = 0, len2 = ref2.length; k < len2; k++) {
-                node = ref2[k];
-                keyword = $(node).text() || '';
-                keywords.push(keyword);
-              }
-              journal = {};
-              journal['name'] = $(data).find('Journal').find('Title').text() || '';
-              journal['issue'] = $(data).find('JournalIssue').find('Issue').text() || '';
-              journal['vol'] = $(data).find('JournalIssue').find('Volume').text() || '';
-              dateNode = $(data).find('JournalIssue').find('PubDate');
-              if ($(dateNode).find('Year').length > 0) {
-                journal['year'] = $(dateNode).find('Year').text();
-              } else if ($(dateNode).find('MedlineDate').length > 0) {
-                journal['year'] = $(dateNode).find('MedlineDate').text();
-              } else {
-                journal['year'] = '';
-              }
-              citation_hash = {
-                name: name,
-                abstract: abstract,
-                authors: authors,
-                keywords: keywords,
-                journal: journal
-              };
-              return populate_citation_fields(citation_hash);
-            }
-          });
-        };
-        populate_citation_fields = function(citation) {
-          var author, i, j, keyword, keywordselect, len, len1, ref, ref1;
-          $('.citation-fields').find('.citation-name input').val(citation['name']);
-          $('.citation-fields').find('.citation-abstract textarea').val(citation['abstract']);
-          $('.citation-fields').find('.journal-name input').val(citation['journal']['name']);
-          $('.citation-fields').find('.journal-volume input').val(citation['journal']['vol']);
-          $('.citation-fields').find('.journal-issue input').val(citation['journal']['issue']);
-          $('.citation-fields').find('.journal-year input').val(citation['journal']['year']);
-          ref = citation['authors'];
-          for (i = 0, len = ref.length; i < len; i++) {
-            author = ref[i];
-            $('.add-author').click();
-            $('#AUTHORS .authors-citation input.author-name').last().val(author);
+        $('#delete-citations-select-all').change(function(e) {
+          e.preventDefault();
+          if ($(this).prop('checked')) {
+            return $('#delete-citations-inner input[type="checkbox"]').prop('checked', true);
+          } else {
+            return $('#delete-citations-inner input[type="checkbox"]').prop('checked', false);
           }
-          ref1 = citation['keywords'];
-          for (j = 0, len1 = ref1.length; j < len1; j++) {
-            keyword = ref1[j];
-            keywordselect = $('.KEYWORDS select');
-            $.ajax({
-              type: 'GET',
-              data: {
-                q: keyword
-              },
-              url: '/api/v1/keywords.json'
-            }).then(function(data) {
-              var option;
-              option = new Option(data['results'][0]['text'], data['results'][0]['id'], true, true);
-              keywordselect.append(option).trigger('change');
-              keywordselect.trigger({
-                type: 'select2:select',
-                params: {
-                  data: data['results'][0]
-                }
-              });
-            });
+        });
+      }
+      $('#delete-citations-inner input[type="checkbox"]').change(function(e) {
+        e.preventDefault();
+        if ($(this).prop('checked')) {
+          if (!$('#delete-citations-inner input[type="checkbox"]:not(:checked)').length > 0) {
+            return $('#delete-citations-select-all').prop('checked', true);
           }
-        };
-        append_citations = function(page) {
-          return $.ajax($('#citations-url').text(), {
+        } else {
+          e.preventDefault();
+          return $('#delete-citations-select-all').prop('checked', false);
+        }
+      });
+      list_options = {
+        valueNames: ['citation-numbers', 'citation-title', 'citation-authors', 'citation-journal', 'citation-journal-date', 'citation-abstract', 'citation-abstract']
+      };
+      fetch_from_pubmed = function(pmid) {
+        return $.ajax('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi', {
+          type: 'GET',
+          dataType: 'xml',
+          data: {
+            db: 'pubmed',
+            retmode: 'xml',
+            id: pmid
+          },
+          error: function(jqXHR, textStatus, errorThrown) {
+            console.log(errorThrown);
+            return toastr.error('Could not fetch citation info from PUBMED');
+          },
+          success: function(data, textStatus, jqXHR) {
+            var abstract, author_name, authors, citation_hash, dateNode, first_name, i, j, journal, k, keyword, keywords, last_name, len, len1, len2, name, node, ref, ref1, ref2;
+            if (!($(data).find('ArticleTitle').text() != null)) {
+              return 0;
+            }
+            name = $(data).find('ArticleTitle').text() || '';
+            abstract = '';
+            ref = $(data).find('AbstractText');
+            for (i = 0, len = ref.length; i < len; i++) {
+              node = ref[i];
+              abstract += $(node).text();
+              abstract += "\n";
+            }
+            authors = [];
+            ref1 = $(data).find('Author');
+            for (j = 0, len1 = ref1.length; j < len1; j++) {
+              node = ref1[j];
+              first_name = $(node).find('ForeName').text() || $(node).find('Initials').text() || '';
+              last_name = $(node).find('LastName').text() || '';
+              author_name = last_name + ' ' + first_name;
+              if (author_name === ' ') {
+                author_name = $(node).find('CollectiveName').text() || '';
+              }
+              if (author_name !== '') {
+                authors.push(author_name);
+              }
+            }
+            keywords = [];
+            ref2 = $(data).find('Keyword');
+            for (k = 0, len2 = ref2.length; k < len2; k++) {
+              node = ref2[k];
+              keyword = $(node).text() || '';
+              keywords.push(keyword);
+            }
+            journal = {};
+            journal['name'] = $(data).find('Journal').find('Title').text() || '';
+            journal['issue'] = $(data).find('JournalIssue').find('Issue').text() || '';
+            journal['vol'] = $(data).find('JournalIssue').find('Volume').text() || '';
+            dateNode = $(data).find('JournalIssue').find('PubDate');
+            if ($(dateNode).find('Year').length > 0) {
+              journal['year'] = $(dateNode).find('Year').text();
+            } else if ($(dateNode).find('MedlineDate').length > 0) {
+              journal['year'] = $(dateNode).find('MedlineDate').text();
+            } else {
+              journal['year'] = '';
+            }
+            citation_hash = {
+              name: name,
+              abstract: abstract,
+              authors: authors,
+              keywords: keywords,
+              journal: journal
+            };
+            return populate_citation_fields(citation_hash);
+          }
+        });
+      };
+      populate_citation_fields = function(citation) {
+        var author, i, j, keyword, keywordselect, len, len1, ref, ref1;
+        $('.citation-fields').find('.citation-name input').val(citation['name']);
+        $('.citation-fields').find('.citation-abstract textarea').val(citation['abstract']);
+        $('.citation-fields').find('.journal-name input').val(citation['journal']['name']);
+        $('.citation-fields').find('.journal-volume input').val(citation['journal']['vol']);
+        $('.citation-fields').find('.journal-issue input').val(citation['journal']['issue']);
+        $('.citation-fields').find('.journal-year input').val(citation['journal']['year']);
+        ref = citation['authors'];
+        for (i = 0, len = ref.length; i < len; i++) {
+          author = ref[i];
+          $('.add-author').click();
+          $('#AUTHORS .authors-citation input.author-name').last().val(author);
+        }
+        ref1 = citation['keywords'];
+        for (j = 0, len1 = ref1.length; j < len1; j++) {
+          keyword = ref1[j];
+          keywordselect = $('.KEYWORDS select');
+          $.ajax({
             type: 'GET',
-            dataType: 'json',
             data: {
-              page: page
+              q: keyword
             },
-            error: function(jqXHR, textStatus, errorThrown) {
-              return toastr.error('Could not get citations');
-            },
-            success: function(data, textStatus, jqXHR) {
-              var c, citation_journal, citation_journal_date, i, len, ref, to_add;
-              to_add = [];
-              $("#citations-count").html(data['pagination']['total_count']);
-              ref = data['results'];
-              for (i = 0, len = ref.length; i < len; i++) {
-                c = ref[i];
-                citation_journal = '';
-                citation_journal_date = '';
-                if ('journal' in c) {
-                  citation_journal = c['journal']['name'];
-                  citation_journal_date = ' (' + c['journal']['publication_date'] + ')';
-                }
-                to_add.push({
-                  'citation-title': c['name'],
-                  'citation-abstract': c['abstract'],
-                  'citation-journal': citation_journal,
-                  'citation-journal-date': citation_journal_date,
-                  'citation-authors': (c['authors'].map(function(author) {
-                    return author['name'];
-                  })).join(', '),
-                  'citation-numbers': c['pmid'] || 'N/A',
-                  'citations-project-id': c['citations_project_id']
-                });
+            url: '/api/v1/keywords.json'
+          }).then(function(data) {
+            var option;
+            option = new Option(data['results'][0]['text'], data['results'][0]['id'], true, true);
+            keywordselect.append(option).trigger('change');
+            keywordselect.trigger({
+              type: 'select2:select',
+              params: {
+                data: data['results'][0]
               }
-              if (page === 1) {
-                citationList.clear();
+            });
+          });
+        }
+      };
+      append_citations = function(page) {
+        return $.ajax($('#citations-url').text(), {
+          type: 'GET',
+          dataType: 'json',
+          data: {
+            page: page
+          },
+          error: function(jqXHR, textStatus, errorThrown) {
+            return toastr.error('Could not get citations');
+          },
+          success: function(data, textStatus, jqXHR) {
+            var c, citation_journal, citation_journal_date, i, len, ref, to_add;
+            to_add = [];
+            $("#citations-count").html(data['pagination']['total_count']);
+            ref = data['results'];
+            for (i = 0, len = ref.length; i < len; i++) {
+              c = ref[i];
+              citation_journal = '';
+              citation_journal_date = '';
+              if ('journal' in c) {
+                citation_journal = c['journal']['name'];
+                citation_journal_date = ' (' + c['journal']['publication_date'] + ')';
               }
-              citationList.add(to_add, function(items) {
-                var item, j, len1, list_index, list_index_string;
-                list_index = (page - 1) * items.length;
-                for (j = 0, len1 = items.length; j < len1; j++) {
-                  item = items[j];
-                  list_index_string = list_index.toString();
-                  $('<input type="hidden" value="' + item.values()['citations-project-id'] + '" name="project[citations_projects_attributes][' + list_index_string + '][id]" id="project_citations_projects_attributes_' + list_index_string + '_id">').insertBefore(item.elm);
-                  $(item.elm).find('#project_citations_projects_attributes_0__destroy')[0].outerHTML = '<input type="hidden" name="project[citations_projects_attributes][' + list_index_string + '][_destroy]" id="project_citations_projects_attributes_' + list_index_string + '__destroy" value="false">';
-                  list_index++;
-                }
-                citationList.reIndex();
-                return Foundation.reInit($('#citations-projects-list'));
+              to_add.push({
+                'citation-title': c['name'],
+                'citation-abstract': c['abstract'],
+                'citation-journal': citation_journal,
+                'citation-journal-date': citation_journal_date,
+                'citation-authors': (c['authors'].map(function(author) {
+                  return author['name'];
+                })).join(', '),
+                'citation-numbers': c['pmid'] || 'N/A',
+                'citations-project-id': c['citations_project_id']
               });
-              if (data['pagination']['more'] === true) {
-                return append_citations(page + 1);
-              } else {
-                return citationList.sort($('#sort-select').val(), {
-                  order: $('#sort-button').attr('sort-order'),
-                  alphabet: void 0,
-                  insensitive: true,
-                  sortFunction: void 0
-                });
+            }
+            if (page === 1) {
+              citationList.clear();
+            }
+            citationList.add(to_add, function(items) {
+              var item, j, len1, list_index, list_index_string;
+              list_index = (page - 1) * items.length;
+              for (j = 0, len1 = items.length; j < len1; j++) {
+                item = items[j];
+                list_index_string = list_index.toString();
+                $('<input type="hidden" value="' + item.values()['citations-project-id'] + '" name="project[citations_projects_attributes][' + list_index_string + '][id]" id="project_citations_projects_attributes_' + list_index_string + '_id">').insertBefore(item.elm);
+                $(item.elm).find('#project_citations_projects_attributes_0__destroy')[0].outerHTML = '<input type="hidden" name="project[citations_projects_attributes][' + list_index_string + '][_destroy]" id="project_citations_projects_attributes_' + list_index_string + '__destroy" value="false">';
+                list_index++;
+              }
+              citationList.reIndex();
+              return Foundation.reInit($('#citations-projects-list'));
+            });
+            if (data['pagination']['more'] === true) {
+              return append_citations(page + 1);
+            } else {
+              return citationList.sort($('#sort-select').val(), {
+                order: $('#sort-button').attr('sort-order'),
+                alphabet: void 0,
+                insensitive: true,
+                sortFunction: void 0
+              });
+            }
+          }
+        });
+      };
+      append_citations(1);
+      citationList = new List('citations', list_options);
+      if (!$('#citations').attr('listeners-exist')) {
+        $('#import-select').on('change', function() {
+          $('#import-ris-div').hide();
+          $('#import-csv-div').hide();
+          $('#import-pubmed-div').hide();
+          $('#import-endnote-div').hide();
+          switch ($(this).val()) {
+            case 'ris':
+              return $('#import-ris-div').show();
+            case 'csv':
+              return $('#import-csv-div').show();
+            case 'pmid-list':
+              return $('#import-pubmed-div').show();
+            case 'endnote':
+              return $('#import-endnote-div').show();
+          }
+        });
+        $('input.file').on('change', function() {
+          if (!!$(this).val()) {
+            return $(this).closest('.simple_form').find('.form-actions').show();
+          } else {
+            return $(this).closest('.simple_form').find('.form-actions').hide();
+          }
+        });
+        $('#sort-button').on('click', function() {
+          if ($(this).attr('sort-order') === 'desc') {
+            $(this).attr('sort-order', 'asc');
+            $(this).html('ASCENDING');
+          } else {
+            $(this).attr('sort-order', 'desc');
+            $(this).html('DESCENDING');
+          }
+          return citationList.sort($('#sort-select').val(), {
+            order: $(this).attr('sort-order'),
+            alphabet: void 0,
+            insensitive: true,
+            sortFunction: void 0
+          });
+        });
+        $('#sort-select').on("change", function() {
+          return citationList.sort($(this).val(), {
+            order: $('#sort-button').attr('sort-order'),
+            alphabet: void 0,
+            insensitive: true,
+            sortFunction: void 0
+          });
+        });
+        $('#cp-insertion-node').on('cocoon:before-insert', function(e, citation) {
+          if (!$(citation).hasClass('authors-citation')) {
+            return $('.cancel-button').click();
+          }
+        });
+        $('#citations').find('.list').on('cocoon:after-remove', function(e, citation) {
+          return $('#citations-form').submit();
+        });
+        $(document).on('cocoon:after-insert', function(e, insertedItem) {
+          $(insertedItem).find('.KEYWORDS select').select2({
+            minimumInputLength: 0,
+            ajax: {
+              url: '/api/v1/keywords.json',
+              dataType: 'json',
+              delay: 100,
+              data: function(params) {
+                return {
+                  q: params.term,
+                  page: params.page || 1
+                };
               }
             }
           });
-        };
-        append_citations(1);
-        citationList = new List('citations', list_options);
-        if (!$('#citations').attr('listeners-exist')) {
-          $('#import-select').on('change', function() {
-            $('#import-ris-div').hide();
-            $('#import-csv-div').hide();
-            $('#import-pubmed-div').hide();
-            $('#import-endnote-div').hide();
-            switch ($(this).val()) {
-              case 'ris':
-                return $('#import-ris-div').show();
-              case 'csv':
-                return $('#import-csv-div').show();
-              case 'pmid-list':
-                return $('#import-pubmed-div').show();
-              case 'endnote':
-                return $('#import-endnote-div').show();
+          $(insertedItem).find('#is-pmid').on('click', function() {
+            $(insertedItem).find('#AUTHORS .remove-authors-citation').click();
+            $(insertedItem).find('.KEYWORDS select').val(null).trigger('change');
+            $(insertedItem).find('.citation-name input').val(null);
+            $(insertedItem).find('.citation-abstract textarea').val(null);
+            $(insertedItem).find('.journal-name input').val(null);
+            $(insertedItem).find('.journal-volume input').val(null);
+            $(insertedItem).find('.journal-issue input').val(null);
+            $(insertedItem).find('.journal-year input').val(null);
+            return fetch_from_pubmed($('.project_citations_pmid input').val());
+          });
+          $(insertedItem).find('#AUTHORS').on('cocoon:after-insert cocoon:after-remove', function(e, insertedItem) {
+            var author_elem, i, len, new_position, ref, results;
+            new_position = 1;
+            ref = $('#AUTHORS .authors-citation input.author-position');
+            results = [];
+            for (i = 0, len = ref.length; i < len; i++) {
+              author_elem = ref[i];
+              $(author_elem).val(new_position);
+              results.push(new_position += 1);
+            }
+            return results;
+          });
+          $(insertedItem).find('.citation-select').select2({
+            minimumInputLength: 0,
+            ajax: {
+              url: '/api/v1/citations/titles.json',
+              dataType: 'json',
+              delay: 100,
+              data: function(params) {
+                return {
+                  q: params.term,
+                  page: params.page || 1
+                };
+              }
             }
           });
-          $('input.file').on('change', function() {
-            if (!!$(this).val()) {
-              return $(this).closest('.simple_form').find('.form-actions').show();
-            } else {
-              return $(this).closest('.simple_form').find('.form-actions').hide();
-            }
-          });
-          $('#sort-button').on('click', function() {
-            if ($(this).attr('sort-order') === 'desc') {
-              $(this).attr('sort-order', 'asc');
-              $(this).html('ASCENDING');
-            } else {
-              $(this).attr('sort-order', 'desc');
-              $(this).html('DESCENDING');
-            }
-            return citationList.sort($('#sort-select').val(), {
-              order: $(this).attr('sort-order'),
-              alphabet: void 0,
-              insensitive: true,
-              sortFunction: void 0
-            });
-          });
-          $('#sort-select').on("change", function() {
-            return citationList.sort($(this).val(), {
-              order: $('#sort-button').attr('sort-order'),
-              alphabet: void 0,
-              insensitive: true,
-              sortFunction: void 0
-            });
-          });
-          $('#cp-insertion-node').on('cocoon:before-insert', function(e, citation) {
-            if (!$(citation).hasClass('authors-citation')) {
-              return $('.cancel-button').click();
-            }
-          });
-          $('#citations').find('.list').on('cocoon:after-remove', function(e, citation) {
+          return $(insertedItem).find('.save-citation').on('click', function() {
             return $('#citations-form').submit();
           });
-          $(document).on('cocoon:after-insert', function(e, insertedItem) {
-            $(insertedItem).find('.KEYWORDS select').select2({
-              minimumInputLength: 0,
-              ajax: {
-                url: '/api/v1/keywords.json',
-                dataType: 'json',
-                delay: 100,
-                data: function(params) {
-                  return {
-                    q: params.term,
-                    page: params.page || 1
-                  };
-                }
-              }
-            });
-            $(insertedItem).find('#is-pmid').on('click', function() {
-              $(insertedItem).find('#AUTHORS .remove-authors-citation').click();
-              $(insertedItem).find('.KEYWORDS select').val(null).trigger('change');
-              $(insertedItem).find('.citation-name input').val(null);
-              $(insertedItem).find('.citation-abstract textarea').val(null);
-              $(insertedItem).find('.journal-name input').val(null);
-              $(insertedItem).find('.journal-volume input').val(null);
-              $(insertedItem).find('.journal-issue input').val(null);
-              $(insertedItem).find('.journal-year input').val(null);
-              return fetch_from_pubmed($('.project_citations_pmid input').val());
-            });
-            $(insertedItem).find('#AUTHORS').on('cocoon:after-insert cocoon:after-remove', function(e, insertedItem) {
-              var author_elem, i, len, new_position, ref, results;
-              new_position = 1;
-              ref = $('#AUTHORS .authors-citation input.author-position');
-              results = [];
-              for (i = 0, len = ref.length; i < len; i++) {
-                author_elem = ref[i];
-                $(author_elem).val(new_position);
-                results.push(new_position += 1);
-              }
-              return results;
-            });
-            $(insertedItem).find('.citation-select').select2({
-              minimumInputLength: 0,
-              ajax: {
-                url: '/api/v1/citations/titles.json',
-                dataType: 'json',
-                delay: 100,
-                data: function(params) {
-                  return {
-                    q: params.term,
-                    page: params.page || 1
-                  };
-                }
-              }
-            });
-            return $(insertedItem).find('.save-citation').on('click', function() {
-              return $('#citations-form').submit();
-            });
-          });
-          $('#citations-form').bind("ajax:success", function(status) {
-            append_citations(1);
-            toastr.success('Save successful!');
-            return $('.cancel-button').click();
-          });
-          $('#citations-form').bind("ajax:error", function(status) {
-            append_citations(1);
-            return toastr.error('Could not save changes');
-          });
-          $('#citations').attr('listeners-exist', 'true');
-        }
+        });
+        $('#citations-form').bind("ajax:success", function(status) {
+          append_citations(1);
+          toastr.success('Save successful!');
+          return $('.cancel-button').click();
+        });
+        $('#citations-form').bind("ajax:error", function(status) {
+          append_citations(1);
+          return toastr.error('Could not save changes');
+        });
+        $('#citations').attr('listeners-exist', 'true');
       }
     })();
   });

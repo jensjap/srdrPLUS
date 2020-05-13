@@ -3150,6 +3150,81 @@
   margin: 0;
   padding: 0;
 }
+
+/* line 14, /Users/birol/Projects/srdr+/app/assets/stylesheets/citations.scss */
+#delete-citations-modal {
+  height: 90%;
+}
+/* line 16, /Users/birol/Projects/srdr+/app/assets/stylesheets/citations.scss */
+#delete-citations-modal form {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  height: 100%;
+  max-height: 100%;
+}
+/* line 21, /Users/birol/Projects/srdr+/app/assets/stylesheets/citations.scss */
+#delete-citations-modal form #delete-citations-inner {
+  -webkit-flex-shrink: 1;
+      -ms-flex-negative: 1;
+          flex-shrink: 1;
+  overflow: scroll;
+}
+/* line 25, /Users/birol/Projects/srdr+/app/assets/stylesheets/citations.scss */
+#delete-citations-modal form #delete-citations-submit-row {
+  -webkit-flex-shrink: 0;
+      -ms-flex-negative: 0;
+          flex-shrink: 0;
+}
+/* line 27, /Users/birol/Projects/srdr+/app/assets/stylesheets/citations.scss */
+#delete-citations-modal form #delete-citations-submit-row .float-right {
+  height: 4rem;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: row;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+/* line 33, /Users/birol/Projects/srdr+/app/assets/stylesheets/citations.scss */
+#delete-citations-modal form #delete-citations-submit-row .float-right #delete-citations-select-all {
+  -webkit-box-flex: 1;
+  -webkit-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  margin-top: 1rem;
+}
+/* line 37, /Users/birol/Projects/srdr+/app/assets/stylesheets/citations.scss */
+#delete-citations-modal form #delete-citations-submit-row .float-right label[for='delete-citations-select-all'] {
+  font-size: 1rem;
+}
+/* line 41, /Users/birol/Projects/srdr+/app/assets/stylesheets/citations.scss */
+#delete-citations-modal form #delete-citations-submit-row .float-right .button {
+  margin-bottom: 0;
+  height: 3rem;
+  font-size: 1rem;
+  -webkit-box-flex: 1;
+  -webkit-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+}
 /* line 2, /Users/birol/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/jquery-datatables-1.10.19.1/app/assets/stylesheets/datatables/dataTables.foundation.scss */
 table.dataTable {
   clear: both;
