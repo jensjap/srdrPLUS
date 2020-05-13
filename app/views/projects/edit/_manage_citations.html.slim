@@ -23,8 +23,8 @@
 
     #delete-citations-submit-row
       .float-right
-        a#delete-citations-select-all[href="#" data-mode="select"]
-          = 'Select All'
+        input#delete-citations-select-all[type="checkbox"]
+        label[for='delete-citations-select-all'] = 'Select All'
         = form_project.submit 'Delete Selected Citations', class: "button alert float-right"
 
 #citations-header[style="font-size: 1rem;margin-bottom:1.5rem;color:#410093;"]

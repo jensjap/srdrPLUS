@@ -25,16 +25,22 @@
     #delete-citations-submit-row {
       flex-shrink: 0;
       .float-right {
+        height: 4rem;
         display: flex;
         flex-direction: row;
-        a {
+        align-items: center;
+        justify-content: center;
+        #delete-citations-select-all {
           flex: 1;
-          font-size: 1rem;
-          margin: 2rem 1rem 1rem 1rem;
-        }
-        .button {
           margin-top: 1rem;
+        }
+        label[for='delete-citations-select-all'] {
+          font-size: 1rem;
+        }
+        
+        .button {
           margin-bottom: 0;
+          height: 3rem;
           font-size: 1rem;
           flex: 1;
         }
