@@ -23,7 +23,7 @@
 
     #delete-citations-submit-row
       .float-right
-        a href="#"
+        a#delete-citations-select-all[href="#" data-mode="select"]
           = 'Select All'
         = form_project.submit 'Delete Selected Citations', class: "button alert float-right"
 
