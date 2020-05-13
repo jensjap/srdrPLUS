@@ -4,7 +4,8 @@ def import_citations_from_ris(imported_file)
   # creates a new parser of type RIS
   parser = RefParsers::RISParser.new
 
-  file_string = imported_file.content.download.force_encoding('UTF-8').gsub(/(\r\n|\r|\n)/, "\n")
+  file_string = imported_file.content.download.encode('UTF-8', invalid: :replace, undef: :replace, replace: '□', universal_newline: true)
+
   h_arr = []
   parser.parse(file_string).each do |cit_h|
     h_arr << get_row_hash(cit_h, key_counter)

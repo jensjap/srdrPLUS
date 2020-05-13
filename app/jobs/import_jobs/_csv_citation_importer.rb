@@ -9,7 +9,7 @@ def import_citations_from_csv(imported_file)
 
   h_arr = []
 
-  file_string = imported_file.content.download.force_encoding('UTF-8').gsub(/(\r\n|\r|\n)/, "\n")
+  file_string = imported_file.content.download.encode('UTF-8', invalid: :replace, undef: :replace, replace: '□', universal_newline: true)
 
   CSV.parse( file_string, headers: :true ) do |row|
     key_counter = 0

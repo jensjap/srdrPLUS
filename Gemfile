@@ -130,7 +130,7 @@ gem 'passenger'
 gem 'bio'
 
 # for parsing ris files.
-gem 'ref_parsers'
+gem 'ref_parsers', '~> 0.2.0'
 
 # breadcrumbs.
 gem 'breadcrumbs_on_rails'
