@@ -5,7 +5,11 @@ class ProjectReportLinksController < ApplicationController
     "Descriptive Statistics",
     "Between Arm Comparisons",
     "Within Arm Comparisons",
-    "NET Change"].freeze
+    "NET Change",
+    "Diagnostic Test Descriptive Statistics",
+    "Diagnostic Test -placeholder for AUC and Q*-",
+    "Diagnostic Test 2x2 Table",
+    "Diagnostic Test Test Accuracy Metrics"].freeze
 
   def index
     @sd_meta_data = policy_scope(SdMetaDatum).
