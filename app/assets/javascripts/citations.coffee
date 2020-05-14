@@ -6,6 +6,25 @@ document.addEventListener 'turbolinks:load', ->
     ##### CHECK WHICH CONTROLLER ACTION THIS PAGE CORRESPONDS TO
     ##### ONLY RUN THIS CODE IF WE ARE IN INDEX CITATIONS PAGE
     if $( 'body.citations.index' ).length == 1
+      
+      $( '#delete-citations-select-all' ).change ( e )->
+        e.preventDefault()
+        if $( this ).prop('checked')
+          $( '#delete-citations-inner input[type="checkbox"]' ).prop( 'checked', true )
+        else
+          $( '#delete-citations-inner input[type="checkbox"]' ).prop( 'checked', false )
+
+    $( '#delete-citations-inner input[type="checkbox"]' ).change ( e )->
+        e.preventDefault()
+        if $( this ).prop('checked')
+          if not $( '#delete-citations-inner input[type="checkbox"]:not(:checked)' ).length > 0
+            $( '#delete-citations-select-all' ).prop( 'checked', true )
+        else
+          e.preventDefault()
+          $( '#delete-citations-select-all' ).prop( 'checked', false )
+
+
+
       list_options = { valueNames: [ 'citation-numbers', 'citation-title', 'citation-authors', 'citation-journal', 'citation-journal-date', 'citation-abstract', 'citation-abstract' ] }
 
       ## Method to pull citation info from PUBMED as XML

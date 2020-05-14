@@ -1,26 +1,31 @@
 #delete-citations-modal.reveal.large data-reveal=""
   = simple_form_for @project do |form_project|
-    table
-      thead
-        tr
-          th Accession No.
-          th RefID
-          th Authors
-          th Title
-          th Delete?
-
-      tbody
-        - @citations.each do |citation|
+    #delete-citations-inner
+      table
+        thead
           tr
-            td = citation.try(:pmid)
-            td = citation.try(:refman)
-            /td = citation.authors_citations.order(position: :asc).map{ |ca| ca.author.name }.join(', ')
-            td = citation.authors_citations.map{ |ac| [ac.ordering.position, ac.author.name] }.sort{ |a,b| (a[0] || 0) <=> (b[0] || 0) }.map{|a| a[1]}.join('; ')
-            td = citation.try(:name)
-            = form_project.simple_fields_for :citations_projects, @citations_projects_dict[citation.id] do |sf_cp|
-              td = sf_cp.check_box :_destroy
+            th Accession No.
+            th RefID
+            th Authors
+            th Title
+            th Delete?
 
-    = form_project.submit 'Delete marked citations', class: "button alert float-right"
+        tbody
+          - @citations.each do |citation|
+            tr
+              td = citation.try(:pmid)
+              td = citation.try(:refman)
+              /td = citation.authors_citations.order(position: :asc).map{ |ca| ca.author.name }.join(', ')
+              td = citation.authors_citations.map{ |ac| [ac.ordering.position, ac.author.name] }.sort{ |a,b| (a[0] || 0) <=> (b[0] || 0) }.map{|a| a[1]}.join('; ')
+              td = citation.try(:name)
+              = form_project.simple_fields_for :citations_projects, @citations_projects_dict[citation.id] do |sf_cp|
+                td = sf_cp.check_box :_destroy
+
+    #delete-citations-submit-row
+      .float-right
+        input#delete-citations-select-all[type="checkbox"]
+        label[for='delete-citations-select-all'] = 'Select All'
+        = form_project.submit 'Delete Selected Citations', class: "button alert float-right"
 
 #citations-header[style="font-size: 1rem;margin-bottom:1.5rem;color:#410093;"]
   span> id="citations-count" 0

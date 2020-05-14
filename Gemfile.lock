@@ -405,7 +405,7 @@ GEM
     rb-inotify (0.10.0)
       ffi (~> 1.0)
     redis (4.1.0)
-    ref_parsers (0.1.3)
+    ref_parsers (0.2.0)
     representable (3.0.4)
       declarative (< 0.1.0)
       declarative-option (< 0.2.0)
@@ -580,7 +580,7 @@ DEPENDENCIES
   rack-cors
   rails (~> 5.2.0)
   rails_admin (~> 1.3.0)
-  ref_parsers
+  ref_parsers (~> 0.2.0)
   remotipart!
   responders
   rspec-rails

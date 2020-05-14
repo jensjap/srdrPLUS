@@ -5,7 +5,9 @@ def import_citations_from_enl(imported_file)
   # creates a new parser of type EndNote
   parser = RefParsers::EndNoteParser.new
 
-  file_string = imported_file.content.download.force_encoding('UTF-8').gsub(/(\r\n|\r|\n)/, "\n")
+  file_string = imported_file.content.download.encode('UTF-8', invalid: :replace, undef: :replace, replace: '□', universal_newline: true)
+
+  byebug
 
   h_arr = []
   parser.parse( file_string ).each do |cit_h|

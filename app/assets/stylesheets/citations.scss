@@ -8,3 +8,43 @@
   margin: 0;
   padding: 0;
 }
+
+// Move citation css here from projects.scss
+
+#delete-citations-modal {
+  height: 90%;
+  form {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    max-height: 100%;
+    #delete-citations-inner {
+      flex-shrink: 1;
+      overflow: scroll;
+    }
+    #delete-citations-submit-row {
+      flex-shrink: 0;
+      .float-right {
+        height: 4rem;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        #delete-citations-select-all {
+          flex: 1;
+          margin-top: 1rem;
+        }
+        label[for='delete-citations-select-all'] {
+          font-size: 1rem;
+        }
+        
+        .button {
+          margin-bottom: 0;
+          height: 3rem;
+          font-size: 1rem;
+          flex: 1;
+        }
+      }
+    }
+  }
+}
