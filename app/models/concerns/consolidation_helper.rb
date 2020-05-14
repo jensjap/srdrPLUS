@@ -308,6 +308,7 @@ module ConsolidationHelper
                   rss_type_id = rss.result_statistic_section_type.id.to_s
 
                   # clone comparisons for the consolidated extraction
+                  next if c_hash[efps_id][type1_id][population_name_id][rss_type_id].nil?
                   c_hash[efps_id][type1_id][population_name_id][rss_type_id].each do |comparison_name, comparison_arr|
                     if comparison_arr.length == extractions.length
                       rss.comparisons.each do |existing_comp|
