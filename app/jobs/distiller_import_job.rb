@@ -16,7 +16,7 @@ class DistillerImportJob < ApplicationJob
     @project = @references_file.project
 
     # the idea is that we have to import the references first, so the references imported_file object is the entry point for the import, the sections will only be attempted if this job is completed
-    import_citations_from_ris @references_file
+    citation_import_status = import_citations_from_ris @references_file
     #import_citations_from_ris ImportedFile.where(project: @project, user: @user, import_type_id: citation_import_id, file_type_id: ris_file_type_id).first
 
     distiller_importer = DistillerImporter.new @project, @user
@@ -24,7 +24,7 @@ class DistillerImportJob < ApplicationJob
     #currently we only support ris_file
     ImportedFile.where(projects_user: ProjectsUser.find_by(project: @project, user: @user),
                        import_type_id: ImportType.find_by(name: "Distiller Section").id).each do |ifile|
-      distiller_importer.add_t2_section ifile
+      e = distiller_importer.add_t2_section(ifile)
     end
 
     # #we need to import references first

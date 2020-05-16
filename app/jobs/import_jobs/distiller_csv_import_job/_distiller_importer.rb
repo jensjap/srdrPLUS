@@ -15,7 +15,7 @@ class DistillerImporter
   def add_t2_section(imported_file)
     # TODO => Check filetype and importtype and return if wrong
 
-    csv_content = CSV.parse(imported_file.content.download.gsub /\r/, '')
+    csv_content = CSV.parse(imported_file.content.download.encode('UTF-8', invalid: :replace, undef: :replace, replace: '□', universal_newline: true))
 
     #efps_hash = create_efps_hash csv_content.first, kq_hash, imported_file.section.name
     #@project_json["project"]["extraction_forms"][@ef_id]["sections"][imported_file.section.id] = efps_hash
@@ -54,11 +54,13 @@ class DistillerImporter
     cp = CitationsProject.where( project: @project, citation: c_arr ).first
 
     if cp.nil?
-      raise "Citation Not Found"
-      return
+      return false
     end
 
-    e = Extraction.find_or_create_by! project: @project, projects_users_role: pur, citations_project: cp
+    e = Extraction.find_or_create_by project: @project, projects_users_role: pur, citations_project: cp
+
+    if e.id.nil?
+      return e
 
     checkbox_ans_arr = []
     prev_qrcf = nil
@@ -109,6 +111,8 @@ class DistillerImporter
                                 recordable_id: eefpsqrcf.id,
                                 name: ('["' + checkbox_ans_arr.join('", "') + '"]')
     end
+
+    return e
   end
 
 

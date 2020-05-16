@@ -79,7 +79,7 @@ div.row
       div.sticky(data-sticky data-top-anchor="top-anchor" data-btm-anchor="leyleyley" data-margin-bottom="0" data-check-every="0")
 
         - projects_user = ProjectsUser.find_by user: current_user, project: @project
-        - new_imported_file = projects_user.imported_files.build
+        - new_import = projects_user.imports.build
       
         /span data-tooltip="" data-click-open="true" title="You can import citations from .ris, .csv, PubMed ID list or EndNote Library"
         
@@ -109,13 +109,14 @@ div.row
           input#csv-file-type-id.hide value="#{ FileType.find_by(name: '.csv').id }"
           input#endnote-file-type-id.hide value="#{ FileType.find_by(name: '.enl').id }"
           input#pubmed-file-type-id.hide value="#{ FileType.find_by(name: 'PubMed').id }"
-          = simple_form_for new_imported_file, authenticity_token: true do |f|
+          = simple_form_for new_import, authenticity_token: true do |f|
             .form-inputs
               = f.input :projects_user_id, as: :hidden, input_html: { value: projects_user.id }
               = f.input :import_type_id, as: :hidden, input_html: { value: ImportType.find_by(name: 'Citation').id }
-              #fileDropzone.dropzone name='mainFileUploader'
-                .fallback
-                  = f.input :file_type_id, as: :select, required: true, collection: FileType.all
-                  = f.input :content, as: :file, label: 'Citation File'
-                  .form-actions
-                    = f.button :submit, 'Upload .ris file', class:"small", id:"submit-all"
+              = simple_fields_for new_import.imported_files.build do |i_f|
+                #fileDropzone.dropzone name='mainFileUploader'
+                  .fallback
+                    = i_f.input :file_type_id, as: :select, required: true, collection: FileType.all
+                    = i_f.input :content, as: :file, label: 'Citation File'
+                    .form-actions
+                      = f.button :submit, 'Upload .ris file', class:"small", id:"submit-all"
