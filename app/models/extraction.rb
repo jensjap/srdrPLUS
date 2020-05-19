@@ -45,7 +45,7 @@ class Extraction < ApplicationRecord
   belongs_to :citations_project,   inverse_of: :extractions
   belongs_to :projects_users_role, inverse_of: :extractions
 
-  has_one :extraction_checksum,    inverse_of: :extraction
+  has_one :extraction_checksum, dependent: :destroy, inverse_of: :extraction
 
   has_many :extractions_extraction_forms_projects_sections, dependent: :destroy, inverse_of: :extraction
   has_many :extraction_forms_projects_sections, through: :extractions_extraction_forms_projects_sections, dependent: :destroy

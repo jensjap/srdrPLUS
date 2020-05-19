@@ -7,6 +7,8 @@ class UpdateExtractionChecksumsJob < ApplicationJob
   end
 
   def perform(*args)
+    ExtractionChecksum.left_outer_joins(:extraction).where(extractions: { id: nil }).destroy_all
+
     ExtractionChecksum.where(is_stale: true).each do |extraction_checksum|
       extraction_checksum.update_hexdigest
     end
