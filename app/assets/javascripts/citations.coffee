@@ -26,7 +26,7 @@ document.addEventListener 'turbolinks:load', ->
 
     #### FILE DROPZONE
     Dropzone.options.fileDropzone = {
-      url: "/imported_files",
+      url: "/imports",
       autoProcessQueue: true,
       uploadMultiple: false,
 
@@ -47,8 +47,8 @@ document.addEventListener 'turbolinks:load', ->
             else pubmed_type_id
 
           formData.append("authenticity_token", $("#dropzone-div input[name='authenticity_token']").val())
-          formData.append("projects_user_id", $("#dropzone-div").find("#imported_file_projects_user_id").val())
-          formData.append("import_type_id", $("#dropzone-div").find("#imported_file_import_type_id").val())
+          formData.append("projects_user_id", $("#dropzone-div").find("#import_projects_user_id").val())
+          formData.append("import_type_id", $("#dropzone-div").find("#import_import_type_id").val())
           formData.append("file_type_id", file_type_id)
           formData.append("authenticity_token", $("#dropzone-div input[name='authenticity_token']").val())
         )

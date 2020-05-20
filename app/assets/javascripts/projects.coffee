@@ -51,12 +51,6 @@ document.addEventListener 'turbolinks:load', ->
         link_string = $( export_button ).attr( 'href', $( this ).val() )
 
 ########## IMPORTERS
-   # if $( 'body.projects.new' ).length == 1
-   #   $( '#distiller-import-checkbox' ).on 'change', ( ) ->
-   #     $( '.distiller-import-panel' ).toggleClass( 'hide' )
-   #   $( '#json-import-checkbox' ).on 'change', ( ) ->
-   #     $( '.json-import-panel' ).toggleClass( 'hide' )
-
     if $( 'body.projects.new' ).length == 1
       $( '.distiller-section-file-container' ).on 'cocoon:after-insert', ( _, insertedElem ) ->
         #$( '.key-questions-list' ).find( 'input.string' ).each ( i, kq_textbox ) ->

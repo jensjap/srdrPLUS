@@ -5,7 +5,6 @@ Rails.application.routes.draw do
     get 'new_query_form'
     post 'options_form'
   end
-
   
   resources :searches, only: [:new, :create]
   resources :funding_sources, only: [:index]
@@ -261,7 +260,7 @@ Rails.application.routes.draw do
   resources :degrees, only: [:index]
   resources :organizations, only: [:index]
   resources :sections, only: [:index]
-  resources :imported_files, only: [:new, :create]
+  resources :imports, only: [:new, :create]
 
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end

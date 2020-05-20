@@ -116,7 +116,7 @@ div.row
               = simple_fields_for new_import.imported_files.build do |i_f|
                 #fileDropzone.dropzone name='mainFileUploader'
                   .fallback
-                    = i_f.input :file_type_id, as: :select, required: true, collection: FileType.all
+                    = i_f.input :file_type_id, as: :select, required: true, collection: FileType.all, selected: FileType.first.id
                     = i_f.input :content, as: :file, label: 'Citation File'
                     .form-actions
-                      = f.button :submit, 'Upload .ris file', class:"small", id:"submit-all"
+                      = f.button :submit, 'Upload file', class:"small", id:"submit-all"

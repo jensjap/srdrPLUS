@@ -30,37 +30,35 @@
           /option value="json" Create project from an SRDR+ JSON export
           option value="distiller" Create project from a Distiller SR .csv export
 
-        = f.simple_fields_for :projects_users, collection: [@project.projects_users.new] do |g|
-          = g.input :user_id, as: :hidden, input_html: { value: current_user.id }
+        = f.simple_fields_for :projects_users, collection: [@project.projects_users.new] do |b|
+          = b.input :user_id, as: :hidden, input_html: { value: current_user.id }
+          = b.simple_fields_for b.object.imports.build do |g|
+            = g.input :import_type_id, as: :hidden, input_html: { value: ImportType.find_by(name: 'Distiller').id }
+            .distiller-import-panel.hide
+              .distiller-reference-file-container
+                = g.simple_fields_for :imported_files do |h|
+                  - imported_file = h.object
+                  - if imported_file.present? and ['.csv','.ris','.xlsx','.enl','PubMed','.json'].include? imported_file.file_type.name
+                    = render 'projects/new/distiller_references_file_form', f:h
+              .distiller-section-file-container
+                = g.simple_fields_for :imported_files do |h|
+                  - imported_file = h.object
+                  - if imported_file.present? and ['Distiller Section'].include? imported_file.file_type.name
+                    = render 'projects/new/distiller_section_file_form', f:h
+              .links
+                .hide
+                  = link_to_add_association 'Add Distiller References File', g, :imported_files,
+                          partial: 'projects/new/distiller_references_file_form',
+                          id: 'distiller-add-references-file',
+                          "data-association-insertion-node" => '.distiller-reference-file-container',
+                          "data-association-insertion-method" => 'append'
 
-          .distiller-import-panel.hide
-            .distiller-reference-file-container
-              = g.simple_fields_for :imported_files do |h|
-                - imported_file = h.object
-                - if imported_file.present? and imported_file.import_type == ImportType.find_by(name: 'Distiller References')
-                  = render 'projects/new/distiller_references_file_form', f:h
-            .distiller-section-file-container
-              = g.simple_fields_for :imported_files do |h|
-                - imported_file = h.object
-                - if imported_file.present? and imported_file.import_type == ImportType.find_by(name: 'Distiller Section')
-                  = render 'projects/new/distiller_section_file_form', f:h
-            .links
-              .hide
-                = link_to_add_association 'Add Distiller References File', g, :imported_files,
-                        partial: 'projects/new/distiller_references_file_form',
-                        id: 'distiller-add-references-file',
-                        "data-association-insertion-node" => '.distiller-reference-file-container',
+                = link_to_add_association 'Add Distiller Section File', g, :imported_files,
+                        partial: 'projects/new/distiller_section_file_form',
+                        id: 'distiller-add-section-file',
+                        "data-association-insertion-node" => '.distiller-section-file-container',
                         "data-association-insertion-method" => 'append'
-
-              = link_to_add_association 'Add Distiller Section File', g, :imported_files,
-                      partial: 'projects/new/distiller_section_file_form',
-                      id: 'distiller-add-section-file',
-                      "data-association-insertion-node" => '.distiller-section-file-container',
-                      "data-association-insertion-method" => 'append'
-              br
-              br
-              br
-          .json-import-panel.hide
+          /.json-import-panel.hide
             .project-file-container
             = g.simple_fields_for :imported_files do |h|
               = render 'projects/new/project_file_form', f:h
@@ -70,16 +68,12 @@
                       id: 'add-project-file',
                       "data-association-insertion-node" => '.project-file-container',
                       "data-association-insertion-method" => 'append'
-              br
-              br
-              br
 
 
           /div
             = f.input :citation_file, as: :file, label: 'Citation References'
             hr
             = f.input :section_files, as: :file, input_html: { multiple: true }, label: 'Risk of Bias Assessment'
-
             = f.input :citation_file, as: :file, label: 'Citation References'
             hr
             = f.input :design_file, as: :file, label: 'Design Details'

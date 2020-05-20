@@ -19,47 +19,49 @@ class Import < ApplicationRecord
   after_create_commit :start_import_job
 
   def start_import_job
-    case self.import_type.name
-      when "Distiller References"
-        case self.file_type.name
-          when ".ris"
-            #RisImportJob.perform_later(self.user.id, self.project.id, self.id)
-            DistillerImportJob.perform_later(self.id)
-          when ".csv"
-            #CsvImportJob.perform_later(self.user.id, self.project.id, self.id)
-            # WE SHOULD DO NOTHING HERE
-          else
-            ## NOT SUPPORTED, WHAT TO DO?
-        end
+    for imported_file in self.imported_files
+      case self.import_type.name
+        when "Distiller References"
+          case imported_file.file_type.name
+            when ".ris"
+              #RisImportJob.perform_later(self.user.id, self.project.id, self.id)
+              DistillerImportJob.perform_later(imported_file.id)
+            when ".csv"
+              #CsvImportJob.perform_later(self.user.id, self.project.id, self.id)
+              # WE SHOULD DO NOTHING HERE
+            else
+              ## NOT SUPPORTED, WHAT TO DO?
+          end
 
-      when "Distiller Section"
-        case self.file_type.name
-          when ".csv"
-            # WE SHOULD DO NOTHING HERE
-          else
-          ## NOT SUPPORTED, WHAT TO DO?
-        end
-      when "Citation"
-        case self.file_type.name
-          when ".ris"
-            RisImportJob.perform_later(self.id)
+        when "Distiller Section"
+          case imported_file.file_type.name
+            when ".csv"
+              # WE SHOULD DO NOTHING HERE
+            else
+            ## NOT SUPPORTED, WHAT TO DO?
+          end
+        when "Citation"
+          case imported_file.file_type.name
+            when ".ris"
+              RisImportJob.perform_later(imported_file.id)
 
-          when ".csv"
-            CsvImportJob.perform_later(self.id)
-          when ".enl"
-            EnlImportJob.perform_later(self.id)
-          when "PubMed"
-            PubmedImportJob.perform_later(self.id)
-          else
-            ## NOT SUPPORTED, WHAT TO DO?
-        end
-      when "Project"
-        case self.file_type.name
-          when ".json"
-            JsonImportJob.perform_later(self.id)
-          else
-            ## NOT SUPPORTED, WHAT TO DO?
-        end
+            when ".csv"
+              CsvImportJob.perform_later(imported_file.id)
+            when ".enl"
+              EnlImportJob.perform_later(imported_file.id)
+            when "PubMed"
+              PubmedImportJob.perform_later(imported_file.id)
+            else
+              ## NOT SUPPORTED, WHAT TO DO?
+          end
+        when "Project"
+          case imported_file.file_type.name
+            when ".json"
+              JsonImportJob.perform_later(imported_file.id)
+            else
+              ## NOT SUPPORTED, WHAT TO DO?
+          end
+      end
     end
   end
 end

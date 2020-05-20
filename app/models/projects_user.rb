@@ -36,5 +36,6 @@ class ProjectsUser < ApplicationRecord
 
   has_many :sd_meta_data_queries, dependent: :destroy
 
+  accepts_nested_attributes_for :imports, allow_destroy: true
   accepts_nested_attributes_for :imported_files, allow_destroy: true
 end
