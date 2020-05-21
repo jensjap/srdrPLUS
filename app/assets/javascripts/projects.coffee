@@ -52,84 +52,74 @@ document.addEventListener 'turbolinks:load', ->
 
 ########## IMPORTERS
     if $( 'body.projects.new' ).length == 1
-      $( '.distiller-section-file-container' ).on 'cocoon:after-insert', ( _, insertedElem ) ->
-        #$( '.key-questions-list' ).find( 'input.string' ).each ( i, kq_textbox ) ->
-        #  op = new Option( $( kq_textbox ).val(), $( kq_textbox ).val(), false, false )
-        #  $( insertedElem ).find( '.distiller-key-question-input' ).first().append op
-        $( insertedElem ).find( '.distiller-section-input' ).select2( placeholder: "-- Select Section --", tags: true )
+      $( '#projects-users-container' ).on 'cocoon:after-insert', ( _, projectsUsersElem ) ->
+        $( projectsUsersElem ).on 'cocoon:after-insert', ( _, insertedElem ) ->
+          #$( '.key-questions-list' ).find( 'input.string' ).each ( i, kq_textbox ) ->
+          #  op = new Option( $( kq_textbox ).val(), $( kq_textbox ).val(), false, false )
+          #  $( insertedElem ).find( '.distiller-key-question-input' ).first().append op
+          $( insertedElem ).find( '.distiller-section-input' ).select2( placeholder: "-- Select Section --", tags: true )
 
-        # We want to copy key questions from existing section files after inserting a new section box
-        $new_kq_input = $( insertedElem ).find( '.distiller-key-question-input' )
-        if $( '.distiller-section-file-container select.distiller-key-question-input' ).length > 1
-          $source_kq_input = $( '.distiller-section-file-container select.distiller-key-question-input' ).first()
-          $source_kq_input.find( 'option' ).each ( _, kq_option ) ->
-            $kq_option = $( kq_option )
-            if $new_kq_input.find( 'option[value="' + $kq_option.val() + '"]' ).length == 0
-              $new_kq_input.append( new Option( $kq_option.val(), $kq_option.val(), false, false ) )
-            $new_kq_input.trigger 'change'
+          # We want to copy key questions from existing section files after inserting a new section box
+          $new_kq_input = $( insertedElem ).find( '.distiller-key-question-input' )
+          if $( '.distiller-section-file-container select.distiller-key-question-input' ).length > 1
+            $source_kq_input = $( '.distiller-section-file-container select.distiller-key-question-input' ).first()
+            $source_kq_input.find( 'option' ).each ( _, kq_option ) ->
+              $kq_option = $( kq_option )
+              if $new_kq_input.find( 'option[value="' + $kq_option.val() + '"]' ).length == 0
+                $new_kq_input.append( new Option( $kq_option.val(), $kq_option.val(), false, false ) )
+              $new_kq_input.trigger 'change'
 
-        $new_kq_input.select2( placeholder: "-- Select Key Question --", tags: true ).on 'change', ( e ) ->
-          $isNew = $( this ).find( '[data-select2-tag="true"]' )
-          if $isNew.length and $isNew.val() == $( this ).val()
-            # find other kq select2's and add this kq to them as well
-            $( '.distiller-section-file-container select.distiller-key-question-input' ).each ( _, kq_input ) ->
-              $kq_input = $( kq_input )
-              if $kq_input.find( 'option[value="' + $isNew.val() + '"]' ).length == 0
-                $kq_input.append( new Option( $isNew.val(), $isNew.val(), false, false ) ).trigger 'change'
-              $isNew.replaceWith new Option( $isNew.val(), $isNew.val(), false, true )
+          $new_kq_input.select2( placeholder: "-- Select Key Question --", tags: true ).on 'change', ( e ) ->
+            $isNew = $( this ).find( '[data-select2-tag="true"]' )
+            if $isNew.length and $isNew.val() == $( this ).val()
+              # find other kq select2's and add this kq to them as well
+              $( '.distiller-section-file-container select.distiller-key-question-input' ).each ( _, kq_input ) ->
+                $kq_input = $( kq_input )
+                if $kq_input.find( 'option[value="' + $isNew.val() + '"]' ).length == 0
+                  $kq_input.append( new Option( $isNew.val(), $isNew.val(), false, false ) ).trigger 'change'
+                $isNew.replaceWith new Option( $isNew.val(), $isNew.val(), false, true )
 
-     # $( '.key-questions-list' ).on 'cocoon:after-remove', ( e, removedElem ) ->
-     #   removed_kq_val = $( removedElem ).find( 'input.string' ).val()
-     #   $( '.distiller-section-file-container' ).find( "select.distiller-key-question-input option[value=\'" + removed_kq_val + "\']" ).remove()
-     #   $( '.distiller-section-file-container' ).trigger( 'change' )
+       # $( '.key-questions-list' ).on 'cocoon:after-remove', ( e, removedElem ) ->
+       #   removed_kq_val = $( removedElem ).find( 'input.string' ).val()
+       #   $( '.distiller-section-file-container' ).find( "select.distiller-key-question-input option[value=\'" + removed_kq_val + "\']" ).remove()
+       #   $( '.distiller-section-file-container' ).trigger( 'change' )
 
-     # $( '.key-questions-list' ).on 'cocoon:after-insert', ( e, insertedElem ) ->
-     #   textbox = $( insertedElem ).find( 'input.string' )
-     #   $( textbox ).val('New Key Question ' + $( '.key-questions-list' ).find('input.string').length.toString())
-     #   $( textbox ).on 'input', ( input_e ) ->
-     #     option_name = $( input_e.target ).attr( 'data-option-name' )
-     #     textbox_val = $( input_e.target ).val()
-     #     $( '.distiller-section-file-container' ).find( 'select.distiller-key-question-input' ).each ( i, kq_input ) ->
-     #       textbox_val = $( input_e.target ).val()
-     #       old_option = $( kq_input ).find("option[value='"+option_name+"']")
-     #       new_option = new Option( textbox_val, textbox_val, false, false )
+       # $( '.key-questions-list' ).on 'cocoon:after-insert', ( e, insertedElem ) ->
+       #   textbox = $( insertedElem ).find( 'input.string' )
+       #   $( textbox ).val('New Key Question ' + $( '.key-questions-list' ).find('input.string').length.toString())
+       #   $( textbox ).on 'input', ( input_e ) ->
+       #     option_name = $( input_e.target ).attr( 'data-option-name' )
+       #     textbox_val = $( input_e.target ).val()
+       #     $( '.distiller-section-file-container' ).find( 'select.distiller-key-question-input' ).each ( i, kq_input ) ->
+       #       textbox_val = $( input_e.target ).val()
+       #       old_option = $( kq_input ).find("option[value='"+option_name+"']")
+       #       new_option = new Option( textbox_val, textbox_val, false, false )
 
-     #       kq_select_val = $( kq_input ).val()
-     #       if $( kq_input ).val() == $( old_option ).val()
-     #         kq_select_val = $( new_option ).val()
-     #       $( '.distiller-section-file-container' ).find( 'select.distiller-key-question-input' ).append( new_option )
-     #       $( '.distiller-section-file-container' ).find( 'select.distiller-key-question-input' ).val( kq_select_val )
-     #       $( old_option ).remove()
-     #       $( '.distiller-section-file-container' ).trigger( 'change' )
-     #       $( input_e.target ).attr( 'data-option-name' , $( new_option ).val() )
-     #   newOption = new Option( $( textbox ).val(), $( textbox ).val(), false, false)
-     #   $( '.distiller-section-file-container' ).find( 'select.distiller-key-question-input' ).append( newOption ).trigger( 'change' )
-     #   $( textbox ).attr('data-option-name', $( newOption ).val() )
+       #       kq_select_val = $( kq_input ).val()
+       #       if $( kq_input ).val() == $( old_option ).val()
+       #         kq_select_val = $( new_option ).val()
+       #       $( '.distiller-section-file-container' ).find( 'select.distiller-key-question-input' ).append( new_option )
+       #       $( '.distiller-section-file-container' ).find( 'select.distiller-key-question-input' ).val( kq_select_val )
+       #       $( old_option ).remove()
+       #       $( '.distiller-section-file-container' ).trigger( 'change' )
+       #       $( input_e.target ).attr( 'data-option-name' , $( new_option ).val() )
+       #   newOption = new Option( $( textbox ).val(), $( textbox ).val(), false, false)
+       #   $( '.distiller-section-file-container' ).find( 'select.distiller-key-question-input' ).append( newOption ).trigger( 'change' )
+       #   $( textbox ).attr('data-option-name', $( newOption ).val() )
 
       $( '#create-type' ).on 'change', ( e ) ->
         $( '.input.file input' ).val('')
         if $( e.target ).val() == "empty"
-          $( '.distiller-import-panel' ).addClass( 'hide' )
-          $( '.json-import-panel' ).addClass( 'hide' )
-          $( '#distiller-remove-references-file' ).trigger "click"
-          $( '#distiller-remove-section-file' ).trigger "click"
-          $( '#remove-project-file' ).trigger "click"
+          $( '.remove-projects-user' ).trigger "click"
           $( '.submit' ).removeClass( 'hide' )
           $( '.submit-with-confirmation' ).addClass( 'hide' )
         else if $( e.target ).val() == "distiller"
-          $( '.distiller-import-panel' ).removeClass( 'hide' )
-          $( '.json-import-panel' ).addClass( 'hide' )
+          $( '#add-projects-user' ).trigger "click"
           $( '#distiller-add-references-file' ).trigger "click"
           $( '#distiller-add-section-file' ).trigger "click"
-          $( '#remove-project-file' ).trigger "click"
           $( '.submit' ).addClass( 'hide' )
           $( '.submit-with-confirmation' ).removeClass( 'hide' )
         else if $( e.target ).val() == "json"
-          $( '.distiller-import-panel' ).addClass( 'hide' )
-          $( '.json-import-panel' ).removeClass( 'hide' )
-          $( '#distiller-remove-references-file' ).trigger "click"
-          $( '#distiller-remove-section-file' ).trigger "click"
-          $( '#add-project-file' ).trigger "click"
           $( '.submit' ).addClass( 'hide' )
           $( '.submit-with-confirmation' ).removeClass( 'hide' )
 

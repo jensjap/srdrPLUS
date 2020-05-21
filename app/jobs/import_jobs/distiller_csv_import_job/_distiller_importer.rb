@@ -61,6 +61,7 @@ class DistillerImporter
 
     if e.id.nil?
       return e
+    end
 
     checkbox_ans_arr = []
     prev_qrcf = nil
