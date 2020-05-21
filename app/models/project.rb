@@ -382,7 +382,7 @@ class Project < ApplicationRecord
   def create_default_member
     if User.try(:current)
       projects_user = self.projects_users.select{ |pu| pu.user == User.current }.first
-      projects_user ||= ProjectsUser.create( user: User.current, project: self ).first
+      projects_user ||= ProjectsUser.create( user: User.current, project: self )
       if not projects_user.roles.where( name: 'Leader' ).present?
         projects_user.roles << Role.where( name: 'Leader' )
         projects_user.save

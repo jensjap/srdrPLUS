@@ -347,7 +347,6 @@ class ProjectsController < ApplicationController
   end
 
   def save_without_sections_if_imported_files_params_exist(project)
-    byebug
     if project_params[:projects_users_attributes].present?
       project.create_empty = true
       if not project.save
