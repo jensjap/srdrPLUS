@@ -1,6 +1,6 @@
 .row
   .columns.small-12.medium-8.large-6.large-centered
-    h2 Start a new Project
+    h3 Start a new Project
 
     = simple_form_for(@project, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
       = f.error_notification
@@ -14,84 +14,21 @@
         = f.input :name, required: true, hint: 'Project name cannot be blank', autofocus: true
         = f.input :description, input_html: { rows: 4 }
 
-        /.key-questions
-          .key-questions-list
-            = f.simple_fields_for :key_questions do |kq|
-              = render 'projects/new/key_question_form', f: kq
-          .links
-            = link_to_add_association 'Add Key Question', f, :key_questions,
-                    partial: 'projects/new/key_question_form',
-                    "data-association-insertion-node" => '.key-questions-list',
-                    "data-association-insertion-method" => 'append'
-
-
         select#create-type
           option value="empty" Create an empty project
           /option value="json" Create project from an SRDR+ JSON export
           option value="distiller" Create project from a Distiller SR .csv export
 
-        = f.simple_fields_for :projects_users, collection: [@project.projects_users.new] do |g|
-          = g.input :user_id, as: :hidden, input_html: { value: current_user.id }
-
-          .distiller-import-panel.hide
-            .distiller-reference-file-container
-              = g.simple_fields_for :imported_files do |h|
-                - imported_file = h.object
-                - if imported_file.present? and imported_file.import_type == ImportType.find_by(name: 'Distiller References')
-                  = render 'projects/new/distiller_references_file_form', f:h
-            .distiller-section-file-container
-              = g.simple_fields_for :imported_files do |h|
-                - imported_file = h.object
-                - if imported_file.present? and imported_file.import_type == ImportType.find_by(name: 'Distiller Section')
-                  = render 'projects/new/distiller_section_file_form', f:h
-            .links
-              .hide
-                = link_to_add_association 'Add Distiller References File', g, :imported_files,
-                        partial: 'projects/new/distiller_references_file_form',
-                        id: 'distiller-add-references-file',
-                        "data-association-insertion-node" => '.distiller-reference-file-container',
-                        "data-association-insertion-method" => 'append'
-
-              = link_to_add_association 'Add Distiller Section File', g, :imported_files,
-                      partial: 'projects/new/distiller_section_file_form',
-                      id: 'distiller-add-section-file',
-                      "data-association-insertion-node" => '.distiller-section-file-container',
-                      "data-association-insertion-method" => 'append'
-              br
-              br
-              br
-          .json-import-panel.hide
-            .project-file-container
-            = g.simple_fields_for :imported_files do |h|
-              = render 'projects/new/project_file_form', f:h
-            .links
-              = link_to_add_association 'Add Project File', g, :imported_files,
-                      partial: 'projects/new/project_file_form',
-                      id: 'add-project-file',
-                      "data-association-insertion-node" => '.project-file-container',
-                      "data-association-insertion-method" => 'append'
-              br
-              br
-              br
-
-
-          /div
-            = f.input :citation_file, as: :file, label: 'Citation References'
-            hr
-            = f.input :section_files, as: :file, input_html: { multiple: true }, label: 'Risk of Bias Assessment'
-
-            = f.input :citation_file, as: :file, label: 'Citation References'
-            hr
-            = f.input :design_file, as: :file, label: 'Design Details'
-            hr
-            = f.input :arms_file, as: :file, label:  'Arms and Arm Details'
-            hr
-            = f.input :outcomes_file, as: :file, label: 'Outcomes and Outcome Details'
-            hr
-            = f.input :bc_file, as: :file, label: 'Baseline Characteristics'
-            hr
-            = f.input :rob_file, as: :file, label: 'Risk of Bias Assessment'
-
+        #projects-users-container
+        = f.simple_fields_for :projects_users do |g|
+          = render 'projects/new/projects_user_form', f:g
+        .hide
+          = link_to_add_association 'Add User', f, :projects_users,
+              partial: 'projects/new/projects_user_form',
+              id: 'add-projects-user',
+              "data-association-insertion-node" => '#projects-users-container',
+              "data-association-insertion-method" => 'append'
+          
       .form-actions
         .submit-with-confirmation.hide
           = f.button :submit, data: { confirm: t('confirm') }

@@ -1,5 +1,6 @@
 .column.row
-  h2 = t('project_name') + ': ' + @project.name
+  /h3 = t('project_name') + ': ' + @project.name
+  h3 = @project.name
 
 .column.row
   == render 'form'

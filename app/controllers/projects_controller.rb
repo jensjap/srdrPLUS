@@ -335,7 +335,7 @@ class ProjectsController < ApplicationController
                                                citation_attributes: [:id, :_destroy, :name]] },
               { key_questions_projects_attributes: [:id, :position] },
               { key_questions_attributes: [:name] },
-              { projects_users_attributes: [:id, :_destroy, :user_id, role_ids: [], imported_files_attributes: [:id, :file_type_id, :import_type_id, :content, section: [:name], key_question: [:name]]] },
+              { projects_users_attributes: [:id, :_destroy, :user_id, role_ids: [], imports_attributes: [ :import_type_id, { imported_files_attributes: [:id, :file_type_id, :content, section: [:name], key_question: [:name]] }]] },
               { screening_options_attributes: [:id, :_destroy, :project_id, :label_type_id, :screening_option_type_id] })
   end
 
@@ -347,7 +347,7 @@ class ProjectsController < ApplicationController
   end
 
   def save_without_sections_if_imported_files_params_exist(project)
-    if project_params[:imported_files_attributes].present?
+    if project_params[:projects_users_attributes].present?
       project.create_empty = true
       if not project.save
         return false

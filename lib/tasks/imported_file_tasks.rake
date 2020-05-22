@@ -1,13 +1,13 @@
-namespace :imported_files do
+namespace :imports do
   task add_file_types: [:environment] do
-    file_type_arr = [{ name: '.csv' }, { name: '.ris' }, { name: '.xlsx' }, { name: '.enl' }, { name: 'PubMed' }, { name: '.json' }]
+    file_type_arr = [{ name: '.csv' }, { name: '.ris' }, { name: '.xlsx' }, { name: '.enl' }, { name: 'PubMed' }, { name: '.json' }, { name: 'Distiller Section' }]
     file_type_arr.each do |file_type_dict|
       FileType.find_or_create_by(file_type_dict)
     end
   end
   
   task add_import_types: [:environment] do
-    import_type_arr = [{ name: 'Distiller References' }, { name: 'Distiller Section' }, { name: 'Citation' }, { name: 'Project' }]
+    import_type_arr = [{ name: 'Distiller' }, { name: 'Citation' }, { name: 'Project' }]
     import_type_arr.each do |import_type_dict|
       ImportType.find_or_create_by(import_type_dict)
     end

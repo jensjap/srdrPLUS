@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_04_17_191216) do
+ActiveRecord::Schema.define(version: 2020_05_15_233507) do
 
   create_table "abstrackr_settings", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "profile_id"
@@ -675,22 +675,22 @@ ActiveRecord::Schema.define(version: 2020_04_17_191216) do
   end
 
   create_table "imported_files", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "project_id"
-    t.integer "user_id"
     t.integer "file_type_id"
-    t.integer "import_type_id"
     t.integer "section_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "key_question_id"
-    t.integer "projects_user_id"
+    t.integer "import_id"
     t.index ["file_type_id"], name: "index_imported_files_on_file_type_id"
-    t.index ["import_type_id"], name: "index_imported_files_on_import_type_id"
     t.index ["key_question_id"], name: "index_imported_files_on_key_question_id"
-    t.index ["project_id"], name: "index_imported_files_on_project_id"
-    t.index ["projects_user_id"], name: "index_imported_files_on_projects_user_id"
     t.index ["section_id"], name: "index_imported_files_on_section_id"
-    t.index ["user_id"], name: "index_imported_files_on_user_id"
+  end
+
+  create_table "imports", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "import_type_id"
+    t.integer "projects_user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "invitations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -1956,11 +1956,7 @@ ActiveRecord::Schema.define(version: 2020_04_17_191216) do
   add_foreign_key "funding_sources_sd_meta_data", "funding_sources"
   add_foreign_key "funding_sources_sd_meta_data", "sd_meta_data"
   add_foreign_key "imported_files", "file_types"
-  add_foreign_key "imported_files", "import_types"
-  add_foreign_key "imported_files", "projects"
-  add_foreign_key "imported_files", "projects_users"
   add_foreign_key "imported_files", "sections"
-  add_foreign_key "imported_files", "users"
   add_foreign_key "invitations", "roles"
   add_foreign_key "journals", "citations"
   add_foreign_key "key_questions_projects", "extraction_forms_projects_sections"
