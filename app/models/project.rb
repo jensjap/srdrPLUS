@@ -90,7 +90,8 @@ class Project < ApplicationRecord
   has_many :screening_option_types, through: :screening_options
 
   has_many :sd_meta_data
-  has_many :imported_files, through: :projects_users, dependent: :destroy
+  has_many :imports, through: :projects_users, dependent: :destroy
+  has_many :imported_files, through: :imports, dependent: :destroy
   validates :name, presence: true
 
   #accepts_nested_attributes_for :extraction_forms_projects, reject_if: :all_blank, allow_destroy: true
@@ -104,6 +105,7 @@ class Project < ApplicationRecord
   #accepts_nested_attributes_for :orderings
   accepts_nested_attributes_for :projects_users, allow_destroy: true
   accepts_nested_attributes_for :screening_options, allow_destroy: true
+  accepts_nested_attributes_for :imports, allow_destroy: true
   accepts_nested_attributes_for :imported_files, allow_destroy: true
 
   def screening_teams
@@ -380,7 +382,7 @@ class Project < ApplicationRecord
   def create_default_member
     if User.try(:current)
       projects_user = self.projects_users.select{ |pu| pu.user == User.current }.first
-      projects_user ||= ProjectsUser.create( user: User.current, project: self ).first
+      projects_user ||= ProjectsUser.create( user: User.current, project: self )
       if not projects_user.roles.where( name: 'Leader' ).present?
         projects_user.roles << Role.where( name: 'Leader' )
         projects_user.save

@@ -7,16 +7,24 @@ def import_citations_from_ris(imported_file)
   file_string = imported_file.content.download.encode('UTF-8', invalid: :replace, undef: :replace, replace: '□', universal_newline: true)
 
   h_arr = []
+  successful_refman_arr = []
+  failed_refman_arr = []
   parser.parse(file_string).each do |cit_h|
     h_arr << get_row_hash(cit_h, key_counter)
+    # CITATION_BATCH_SIZE is defined in config/initializers/sidekiq.rb
     if h_arr.length >= CITATION_BATCH_SIZE
-      imported_file.project.citations << Citation.create(h_arr)
+      begin
+        imported_file.project.citations << Citation.create!(h_arr)
+        successful_refman_arr << h_arr.map{ |h| h[:refman] }
+      rescue
+        failed_refman_arr << h_arr.map{ |h| h[:refman] }
+      end
       h_arr.clear()
-      GC.start()
     end
     cit_h.clear()
   end
   #imported_file.project.citations << Citation.create(h_arr)
+  return { imported_refmans: successful_refman_arr, failed_refmans: failed_refman_arr }
 end
 
 def get_row_hash(cit_h, key_counter)

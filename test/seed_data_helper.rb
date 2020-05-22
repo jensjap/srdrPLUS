@@ -31,14 +31,14 @@ module SeedData
 
       #ImportType.
       ImportType.create!([
-        { name: 'Distiller References' },
-        { name: 'Distiller Section' },
+        { name: 'Distiller' },
         { name: 'Citation' },
         { name: 'Project' }
       ])
 
       #FileType.
       FileType.create!([
+        { name: 'Distiller Section' },
         { name: '.csv' },
         { name: '.ris' },
         { name: '.xlsx' },
