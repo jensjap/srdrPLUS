@@ -27,12 +27,11 @@ class Import < ApplicationRecord
     end
 
     for imported_file in self.imported_files
-      case self.import_type
+      case self.import_type.name
         when "Citation"
           case imported_file.file_type.name
             when ".ris"
               RisImportJob.perform_later(imported_file.id)
-
             when ".csv"
               CsvImportJob.perform_later(imported_file.id)
             when ".enl"
