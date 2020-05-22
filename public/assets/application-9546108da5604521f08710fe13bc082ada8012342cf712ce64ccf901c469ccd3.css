@@ -5195,10 +5195,9 @@ span.select2-container {
 /* line 105, /Users/birol/Projects/srdr+/app/assets/stylesheets/extractions.scss */
 .create-extraction-button {
   margin-top: 1rem !important;
-  background-color: #1986c7 !important;
 }
 
-/* line 111, /Users/birol/Projects/srdr+/app/assets/stylesheets/extractions.scss */
+/* line 110, /Users/birol/Projects/srdr+/app/assets/stylesheets/extractions.scss */
 button.suggestion-list-button:hover {
   background-color: lavender !important;
 }
@@ -28914,6 +28913,11 @@ textarea {
 .preview-button:hover, .preview-button:focus {
   background-color: #1388ce;
   cursor: pointer !important;
+}
+
+/* line 537, /Users/birol/Projects/srdr+/app/assets/stylesheets/application.css.scss */
+.create-button {
+  background-color: #1986c7 !important;
 }
 /* line 1, /Users/birol/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/toastr_rails-2.1.3/app/assets/styleseets/toastr.scss */
 .toast-title {
