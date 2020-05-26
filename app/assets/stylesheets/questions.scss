@@ -2,6 +2,22 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
+// questions/edit
+body.questions.edit {
+  .kq-container {
+    padding: 1rem;
+    background: lavender;
+    border: solid 1px purple;
+    margin: 1rem;
+  }
+  .checkbox {
+    margin-left: 1rem;
+    label {
+      color: black;
+    }
+  }
+}
+
 input.button.grey {
   background-color: grey;
 }
