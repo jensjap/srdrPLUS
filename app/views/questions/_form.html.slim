@@ -9,8 +9,9 @@
   .form-inputs
     #step-one
       - kqps = @question.project.key_questions_projects || []
-      .kq-container
-        = f.association :key_questions_projects, collection: kqps, label: 'Associated Key Questions', as: :check_boxes, label_method: :kq_name
+      label.field-label for="kq-container" = 'Associated Key Questions'
+      #kq-container
+        = f.association :key_questions_projects, collection: kqps, label: false, as: :check_boxes, label_method: :kq_name
       = f.input :name, required: true, label: 'Question Text', autofocus: true
       = f.input :description, label: 'Instructions'
 
