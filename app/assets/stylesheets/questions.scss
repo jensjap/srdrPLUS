@@ -4,6 +4,16 @@
 
 // questions/edit
 body.questions.edit {
+  .delete-question {
+    margin-left: 1rem;
+  }
+
+  #name-container, #description-container, #structure {
+    margin: 0.4rem 1rem 2rem 1rem;
+    textarea {
+      padding: 0 0.2rem 0 0.2rem;
+    }
+  }
   label.field-label {
     font-size: 1.2rem;
   }
@@ -11,7 +21,7 @@ body.questions.edit {
     background: white;
     padding: 0.4rem;
     box-shadow: 0.1rem 0.1rem 0.5rem #adadad; 
-    margin: 1rem;
+    margin: 0.4rem 1rem 2rem 1rem;
     .checkbox {
       margin-left: 1rem;
       label {

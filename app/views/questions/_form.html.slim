@@ -7,22 +7,22 @@
       ' Please correct the errors below.
 
   .form-inputs
-    #step-one
-      - kqps = @question.project.key_questions_projects || []
-      label.field-label for="kq-container" = 'Associated Key Questions'
-      #kq-container
-        = f.association :key_questions_projects, collection: kqps, label: false, as: :check_boxes, label_method: :kq_name
-      = f.input :name, required: true, label: 'Question Text', autofocus: true
-      = f.input :description, label: 'Instructions'
+    - kqps = @question.project.key_questions_projects || []
+    label.field-label for="kq-container" = 'Associated Key Questions'
+    #kq-container
+      = f.association :key_questions_projects, collection: kqps, label: false, as: :check_boxes, label_method: :kq_name
+    label.field-label for="name-container" = 'Question Text'
+    #name-container
+      = f.input :name, required: true, label: false, autofocus: true
+    label.field-label for="description-container" = 'Extractor Instructions'
+    #description-container
+      = f.input :description, label: false
 
-    #step-two
+    label.field-label for="structure-container" = 'Question Structure'
+    #structure
       = link_to '#', id: 'add_column_link', class: 'float-right button secondary tiny' do
         i.fi-arrow-right>
         | Add Column
-
-      = link_to add_column_question_path(@question), id: 'add_column_button', method: :post, class: 'hide float-right button secondary tiny' do
-        i.fi-arrow-right>
-        | Add Column old
 
       == render 'questions/table', f: f
 
@@ -30,10 +30,9 @@
         i.fi-arrow-down>
         | Add Row
 
-      = link_to add_row_question_path(@question), id: 'add_row_button', method: :post, class: 'hide button secondary tiny' do
-        i.fi-arrow-down>
-        | Add Row old
-
   .form-actions
 
-    = f.button :submit, @question.question_rows.any? ? 'Save Question Type Details and Close' : 'Next: Define the question type and answer choices'
+    = f.button :submit, 'Save Changes', class: 'create-button'
+    = link_to @question, method: :delete, class: 'delete-question button alert', data: { confirm: t('confirm') } do
+      i.fi-trash>
+      = 'Delete'

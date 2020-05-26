@@ -19,11 +19,14 @@
   | Add Question
 
 div.new-question-modal.reveal[data-reveal="" id="#{efps.id.to_s}-new-question-modal"]
-  h3 New Question
   = simple_form_for([efps, efps.questions.new], html: { data: { 'abide': '', 'live-validate': true } }) do |f|
     = f.input :name, required: true, label: 'Question Text', autofocus: true
     .form-actions
-      = f.button :submit
+      = button_tag type: 'submit', class: 'button create-button' do
+        i.fi-plus>
+        | Add Question
+
+        
 
 - if efps.section.name == 'Risk of Bias Assessment'
   button.button.float-right data-open='modal-#{ efps.id.to_s }' Add questions from a pre-defined list
