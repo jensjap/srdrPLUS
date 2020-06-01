@@ -4,7 +4,9 @@ def import_citations_from_ris(imported_file)
   # creates a new parser of type RIS
   parser = RefParsers::RISParser.new
 
-  file_string = imported_file.content.download.encode('UTF-8', invalid: :replace, undef: :replace, replace: '□', universal_newline: true)
+  file_string = imported_file.content.download.encode('UTF-8', invalid: :replace, undef: :replace, replace: '', universal_newline: true)
+
+  if not file_string then return false end
 
   h_arr = []
   successful_refman_arr = []
