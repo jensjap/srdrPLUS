@@ -32,10 +32,12 @@ class QuestionsController < ApplicationController
   def create
     @question = @extraction_forms_projects_section.questions.new(question_params)
 
-    if @question.question.question_rows.first.question_row_columns.count == 0
-      # If this is the first/only row in the matrix then we default to creating
-      # (arbitrarily) 1 column.
-      @question.question_row_columns.create
+    if @question.question_rows.count == 0
+      @question.question_rows.new
+      new_qrc = @question.question_rows.first.question_row_columns.new(question_row_column_type: QuestionRowColumnType.find_by(name: 'text'))
+      QuestionRowColumnOption.all.each do |opt|
+        new_qrc.question_row_column_options << opt
+      end
     end
 
     # !!! Check for params 'q_type' and build values based on the type.
@@ -85,7 +87,10 @@ class QuestionsController < ApplicationController
   # POST /questions/1/add_column.json
   def add_column
     @question.question_rows.each do |qr|
-      qr.question_row_columns.create!(question_row_column_type: QuestionRowColumnType.first)
+      new_qrc = qr.question_row_columns.create(question_row_column_type: QuestionRowColumnType.find_by(name: 'text'))
+      QuestionRowColumnOption.all.each do |opt|
+        new_qrc.question_row_column_options << opt
+      end
     end
 
     redirect_to edit_question_path(@question), notice: t('success')
@@ -94,7 +99,21 @@ class QuestionsController < ApplicationController
   # POST /questions/1/add_row
   # POST /questions/1/add_row.json
   def add_row
-    @question.question_rows.create
+    new_row = @question.question_rows.create
+
+    if @question.question_rows.first.question_row_columns.count == 0
+      # If this is the first/only row in the matrix then we default to creating
+      # (arbitrarily) 1 column.
+      new_row.question_row_columns.create
+    else
+      # Otherwise, create the same number of columns as other rows have.
+      @question.question_rows.first.question_row_columns.count.times do |c|
+        new_qrc = new_row.question_row_columns.create( question_row_column_type: QuestionRowColumnType.find_by(name: 'text') ) 
+        QuestionRowColumnOption.all.each do |opt|
+          new_qrc.question_row_column_options << opt
+        end
+      end
+    end
 
     # Newly created question_row_columns do not have their name field set.
     # This triggers after_save :ensure_matrix_column_headers callback in

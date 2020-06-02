@@ -16,7 +16,6 @@ class QuestionRowColumn < ApplicationRecord
   has_paper_trail
 
   after_create :associate_default_question_row_column_type
-  after_create :create_default_question_row_column_options
   after_create :create_default_question_row_column_field
 
   after_save :ensure_question_row_column_fields
@@ -33,7 +32,7 @@ class QuestionRowColumn < ApplicationRecord
 
   amoeba do
     enable
-    clone [:question_row_columns_question_row_column_options, :question_row_column_options, :question_row_column_fields]
+    clone [:question_row_columns_question_row_column_options, :question_row_column_fields]
   end
 
   #accepts_nested_attributes_for :question_row_column_fields
@@ -53,22 +52,21 @@ class QuestionRowColumn < ApplicationRecord
   private
 
     def associate_default_question_row_column_type
-      self.question_row_column_type = QuestionRowColumnType.find_by(name: 'text')
-      self.save
-    end
-
-    def create_default_question_row_column_options
-      QuestionRowColumnOption.all.each do |opt|
-        self.question_row_column_options << opt
+      # it is possible that this callback no longer serves a purpose after changes to other callbacks -Birol
+      if not self.question_row_column_type.present?
+        self.question_row_column_type = QuestionRowColumnType.find_by(name: 'text')
+        self.save
       end
     end
 
     def create_default_question_row_column_field
-      self.question_row_column_fields.create
+      if not self.question_row_column_fields.present?
+        self.question_row_column_fields.create
+      end
     end
 
     def ensure_question_row_column_fields
-      if self.question_row_column_type_id == 2  # Numeric requires 2 fields.
+      if self.question_row_column_type.name == "Numeric"  # Numeric requires 2 fields.
         self.question_row_column_fields.create if self.question_row_column_fields.length < 2
       end
     end
