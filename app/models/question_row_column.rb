@@ -31,6 +31,11 @@ class QuestionRowColumn < ApplicationRecord
 
   has_many :dependencies, as: :prerequisitable, dependent: :destroy
 
+  amoeba do
+    enable
+    clone [:question_row_columns_question_row_column_options, :question_row_column_options, :question_row_column_fields]
+  end
+
   #accepts_nested_attributes_for :question_row_column_fields
   accepts_nested_attributes_for :question_row_columns_question_row_column_options, allow_destroy: true
 

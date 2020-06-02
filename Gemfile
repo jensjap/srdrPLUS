@@ -175,3 +175,6 @@ gem "googleauth"
 
 # Allows users to drop files to upload
 gem "dropzonejs-rails"
+
+# for things like cloning questions (extraction forms maybe?)
+gem "amoeba"

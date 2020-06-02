@@ -24,6 +24,11 @@ class QuestionRow < ApplicationRecord
 
   delegate :question_type, to: :question
 
+  amoeba do
+    enable
+    clone [:question_row_columns]
+  end
+
   private
 
     def create_default_question_row_columns

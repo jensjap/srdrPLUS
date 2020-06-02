@@ -1,7 +1,7 @@
 class QuestionsController < ApplicationController
   before_action :set_extraction_forms_projects_section, only: [:new, :create]
   before_action :set_question, only: [:edit, :update, :destroy, :add_column, :add_row,
-                                      :dependencies, :toggle_dependency]
+                                      :dependencies, :toggle_dependency, :duplicate]
   before_action :skip_policy_scope
 
   #before_action :ensure_matrix_type, only: [:add_column, :add_row]
@@ -31,6 +31,12 @@ class QuestionsController < ApplicationController
   # POST /extraction_forms_projects_section/1/questions.json
   def create
     @question = @extraction_forms_projects_section.questions.new(question_params)
+
+    if @question.question.question_rows.first.question_row_columns.count == 0
+      # If this is the first/only row in the matrix then we default to creating
+      # (arbitrarily) 1 column.
+      @question.question_row_columns.create
+    end
 
     # !!! Check for params 'q_type' and build values based on the type.
 
@@ -110,6 +116,16 @@ class QuestionsController < ApplicationController
       format.js
       format.html { redirect_to dependencies_question_path(@question), notice: t('success') }
     end
+  end
+
+  def duplicate
+    @duplicated_question = @question.duplicate
+    add_breadcrumb 'my projects',  :projects_path
+    add_breadcrumb 'edit project', edit_project_path(@question.project)
+    add_breadcrumb 'builder',      build_extraction_forms_project_path(@question.extraction_forms_project,
+                                                                       anchor: "panel-tab-#{ @question.extraction_forms_projects_section.id }")
+    add_breadcrumb 'question details', edit_question_path(@duplicated_question)
+    redirect_to edit_question_path(@duplicated_question), notice: t('success')
   end
 
   private

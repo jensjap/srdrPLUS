@@ -19,6 +19,10 @@ class QuestionPolicy < ApplicationPolicy
     project_consolidator?
   end
 
+  def duplicate?
+    project_consolidator?
+  end
+
   def add_row?
     project_consolidator?
   end

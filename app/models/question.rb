@@ -46,6 +46,16 @@ class Question < ApplicationRecord
 
   validates :ordering, presence: true
 
+  amoeba do
+    enable
+    prepend :name => "Copy of '"
+    append :name => "'"
+    clone [:question_rows]
+    #dependencies, orderings are polymorphic, not supported by amoeba
+    #dependencies should not be copied anyway
+    exclude_association [:ordering, :dependencies]
+  end
+
   # Returns the question type based on how many how many rows/columns/answer choices the question has.
   def question_type
     if self.question_rows.length == 1 && self.question_rows.first.question_row_columns.length == 1
@@ -73,6 +83,21 @@ class Question < ApplicationRecord
     self.dependencies << Dependency.create(prerequisitable: prerequisitable) if dependency.blank?
 
     return nil
+  end
+
+  def duplicate
+    Question.transaction do
+      duplicated_question = self.amoeba_dup
+      duplicated_question.save
+      return duplicated_question
+      #duplicated_question = Question.new( name: self.name, description: self.description )
+      #duplicated_question.key_questions << self.key_questions
+
+      #self.question_rows.each do |question_row|
+      #  question_row.question_row_columns.each do |question_row_column|
+      #  end
+      #end
+    end
   end
 
   private
