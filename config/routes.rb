@@ -210,7 +210,7 @@ Rails.application.routes.draw do
             post  'add_column'
             post  'add_row'
             get   'dependencies'
-            get 'duplicate'
+            post 'duplicate'
             #post 'duplicate'
           end
 

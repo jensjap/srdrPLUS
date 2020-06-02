@@ -80,3 +80,8 @@ h4 #{ efps.section.name.titleize } Question List
                   i.fi-trash>
                   = t('remove')
 
+                = link_to duplicate_question_path(q), method: :post do
+                  i.fi-page-copy>
+                  = 'Duplicate'
+
+
