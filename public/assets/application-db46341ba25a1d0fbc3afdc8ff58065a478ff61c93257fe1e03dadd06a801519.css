@@ -21937,17 +21937,50 @@ a.add-task-button .fi-plus:hover {
       -ms-flex-pack: center;
           justify-content: center;
 }
-/* line 5, /Users/birol/Projects/srdr+/app/assets/stylesheets/questions.scss */
+/* line 7, /Users/birol/Projects/srdr+/app/assets/stylesheets/questions.scss */
+body.questions.edit .delete-question {
+  margin-left: 1rem;
+}
+/* line 11, /Users/birol/Projects/srdr+/app/assets/stylesheets/questions.scss */
+body.questions.edit #name-container, body.questions.edit #description-container, body.questions.edit #structure {
+  margin: 0.4rem 1rem 2rem 1rem;
+}
+/* line 13, /Users/birol/Projects/srdr+/app/assets/stylesheets/questions.scss */
+body.questions.edit #name-container textarea, body.questions.edit #description-container textarea, body.questions.edit #structure textarea {
+  padding: 0 0.2rem 0 0.2rem;
+}
+/* line 17, /Users/birol/Projects/srdr+/app/assets/stylesheets/questions.scss */
+body.questions.edit label.field-label {
+  font-size: 1.2rem;
+}
+/* line 20, /Users/birol/Projects/srdr+/app/assets/stylesheets/questions.scss */
+body.questions.edit #kq-container {
+  background: white;
+  padding: 0.4rem;
+  -webkit-box-shadow: 0.1rem 0.1rem 0.5rem #adadad;
+          box-shadow: 0.1rem 0.1rem 0.5rem #adadad;
+  margin: 0.4rem 1rem 2rem 1rem;
+}
+/* line 25, /Users/birol/Projects/srdr+/app/assets/stylesheets/questions.scss */
+body.questions.edit #kq-container .checkbox {
+  margin-left: 1rem;
+}
+/* line 27, /Users/birol/Projects/srdr+/app/assets/stylesheets/questions.scss */
+body.questions.edit #kq-container .checkbox label {
+  color: black;
+}
+
+/* line 34, /Users/birol/Projects/srdr+/app/assets/stylesheets/questions.scss */
 input.button.grey {
   background-color: grey;
 }
 
-/* line 9, /Users/birol/Projects/srdr+/app/assets/stylesheets/questions.scss */
+/* line 38, /Users/birol/Projects/srdr+/app/assets/stylesheets/questions.scss */
 .button.prerequisite-button {
   margin: 1rem;
 }
 
-/* line 14, /Users/birol/Projects/srdr+/app/assets/stylesheets/questions.scss */
+/* line 43, /Users/birol/Projects/srdr+/app/assets/stylesheets/questions.scss */
 table.dependency-table th {
   padding: 1rem;
 }

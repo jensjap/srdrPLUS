@@ -210,6 +210,8 @@ Rails.application.routes.draw do
             post  'add_column'
             post  'add_row'
             get   'dependencies'
+            post 'duplicate'
+            #post 'duplicate'
           end
 
           resources :question_rows, only: [:destroy] do

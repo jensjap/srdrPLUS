@@ -18,8 +18,6 @@ class Question < ApplicationRecord
   acts_as_paranoid
   has_paper_trail
 
-  after_create :create_default_question_rows
-
   after_save :ensure_matrix_column_headers
 
   before_validation -> { set_ordering_scoped_by(:extraction_forms_projects_section_id) }, on: :create
@@ -45,6 +43,16 @@ class Question < ApplicationRecord
   delegate :section,                  to: :extraction_forms_projects_section
 
   validates :ordering, presence: true
+
+  amoeba do
+    enable
+    prepend :name => "Copy of '"
+    append :name => "'"
+    clone [:question_rows]
+    #dependencies, orderings are polymorphic, not supported by amoeba
+    #dependencies should not be copied anyway
+    exclude_association [:ordering, :dependencies]
+  end
 
   # Returns the question type based on how many how many rows/columns/answer choices the question has.
   def question_type
@@ -75,11 +83,22 @@ class Question < ApplicationRecord
     return nil
   end
 
-  private
+  def duplicate
+    Question.transaction do
+      duplicated_question = self.amoeba_dup
+      duplicated_question.save
+      return duplicated_question
+      #duplicated_question = Question.new( name: self.name, description: self.description )
+      #duplicated_question.key_questions << self.key_questions
 
-    def create_default_question_rows
-      self.question_rows.create
+      #self.question_rows.each do |question_row|
+      #  question_row.question_row_columns.each do |question_row_column|
+      #  end
+      #end
     end
+  end
+
+  private
 
     #!!! May need to rethink this.
     def ensure_matrix_column_headers

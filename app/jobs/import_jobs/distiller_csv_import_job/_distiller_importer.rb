@@ -15,7 +15,7 @@ class DistillerImporter
   def add_t2_section(imported_file)
     # TODO => Check filetype and importtype and return if wrong
 
-    csv_content = CSV.parse(imported_file.content.download.encode('UTF-8', invalid: :replace, undef: :replace, replace: '□', universal_newline: true))
+    csv_content = CSV.parse(imported_file.content.download.encode('UTF-8', invalid: :replace, undef: :replace, replace: '', universal_newline: true))
 
     #efps_hash = create_efps_hash csv_content.first, kq_hash, imported_file.section.name
     #@project_json["project"]["extraction_forms"][@ef_id]["sections"][imported_file.section.id] = efps_hash

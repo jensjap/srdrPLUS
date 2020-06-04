@@ -76,7 +76,10 @@ h4 #{ efps.section.name.titleize } Question List
                     i.fi-link>
                     | Dependencies
 
+                = link_to duplicate_question_path(q), method: :post do
+                  i.fi-page-copy>
+                  = 'Duplicate'
+
                 = link_to q, method: :delete, data: { confirm: t('confirm') } do
                   i.fi-trash>
                   = t('remove')
-

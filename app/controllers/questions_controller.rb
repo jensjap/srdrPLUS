@@ -1,7 +1,7 @@
 class QuestionsController < ApplicationController
   before_action :set_extraction_forms_projects_section, only: [:new, :create]
   before_action :set_question, only: [:edit, :update, :destroy, :add_column, :add_row,
-                                      :dependencies, :toggle_dependency]
+                                      :dependencies, :toggle_dependency, :duplicate]
   before_action :skip_policy_scope
 
   #before_action :ensure_matrix_type, only: [:add_column, :add_row]
@@ -31,6 +31,14 @@ class QuestionsController < ApplicationController
   # POST /extraction_forms_projects_section/1/questions.json
   def create
     @question = @extraction_forms_projects_section.questions.new(question_params)
+
+    if @question.question_rows.count == 0
+      @question.question_rows.new
+      new_qrc = @question.question_rows.first.question_row_columns.new(question_row_column_type: QuestionRowColumnType.find_by(name: 'text'))
+      QuestionRowColumnOption.all.each do |opt|
+        new_qrc.question_row_column_options << opt
+      end
+    end
 
     # !!! Check for params 'q_type' and build values based on the type.
 
@@ -79,7 +87,10 @@ class QuestionsController < ApplicationController
   # POST /questions/1/add_column.json
   def add_column
     @question.question_rows.each do |qr|
-      qr.question_row_columns.create!(question_row_column_type: QuestionRowColumnType.first)
+      new_qrc = qr.question_row_columns.create(question_row_column_type: QuestionRowColumnType.find_by(name: 'text'))
+      QuestionRowColumnOption.all.each do |opt|
+        new_qrc.question_row_column_options << opt
+      end
     end
 
     redirect_to edit_question_path(@question), notice: t('success')
@@ -88,7 +99,21 @@ class QuestionsController < ApplicationController
   # POST /questions/1/add_row
   # POST /questions/1/add_row.json
   def add_row
-    @question.question_rows.create
+    new_row = @question.question_rows.create
+
+    if @question.question_rows.first.question_row_columns.count == 0
+      # If this is the first/only row in the matrix then we default to creating
+      # (arbitrarily) 1 column.
+      new_row.question_row_columns.create
+    else
+      # Otherwise, create the same number of columns as other rows have.
+      @question.question_rows.first.question_row_columns.count.times do |c|
+        new_qrc = new_row.question_row_columns.create( question_row_column_type: QuestionRowColumnType.find_by(name: 'text') ) 
+        QuestionRowColumnOption.all.each do |opt|
+          new_qrc.question_row_column_options << opt
+        end
+      end
+    end
 
     # Newly created question_row_columns do not have their name field set.
     # This triggers after_save :ensure_matrix_column_headers callback in
@@ -110,6 +135,16 @@ class QuestionsController < ApplicationController
       format.js
       format.html { redirect_to dependencies_question_path(@question), notice: t('success') }
     end
+  end
+
+  def duplicate
+    @duplicated_question = @question.duplicate
+    add_breadcrumb 'my projects',  :projects_path
+    add_breadcrumb 'edit project', edit_project_path(@question.project)
+    add_breadcrumb 'builder',      build_extraction_forms_project_path(@question.extraction_forms_project,
+                                                                       anchor: "panel-tab-#{ @question.extraction_forms_projects_section.id }")
+    add_breadcrumb 'question details', edit_question_path(@duplicated_question)
+    redirect_to edit_question_path(@duplicated_question), notice: t('success')
   end
 
   private

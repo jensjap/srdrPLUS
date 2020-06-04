@@ -2,6 +2,35 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
+// questions/edit
+body.questions.edit {
+  .delete-question {
+    margin-left: 1rem;
+  }
+
+  #name-container, #description-container, #structure {
+    margin: 0.4rem 1rem 2rem 1rem;
+    textarea {
+      padding: 0 0.2rem 0 0.2rem;
+    }
+  }
+  label.field-label {
+    font-size: 1.2rem;
+  }
+  #kq-container {
+    background: white;
+    padding: 0.4rem;
+    box-shadow: 0.1rem 0.1rem 0.5rem #adadad; 
+    margin: 0.4rem 1rem 2rem 1rem;
+    .checkbox {
+      margin-left: 1rem;
+      label {
+        color: black;
+      }
+    }
+  }
+}
+
 input.button.grey {
   background-color: grey;
 }
