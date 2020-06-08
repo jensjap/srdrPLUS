@@ -101,6 +101,8 @@ class SdMetaDatum < ApplicationRecord
 
   has_many :sd_meta_data_queries, dependent: :destroy
 
+  has_one_attached :report_file
+
   accepts_nested_attributes_for :sd_key_questions, allow_destroy: true
   accepts_nested_attributes_for :sd_journal_article_urls, allow_destroy: true
   accepts_nested_attributes_for :sd_other_items, allow_destroy: true

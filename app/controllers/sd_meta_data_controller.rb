@@ -205,7 +205,8 @@ end
         require(:sd_meta_datum).
         permit(
           :project_id,
-          :report_accession_id
+          :report_accession_id,
+          :report_file
         )
     end
 
