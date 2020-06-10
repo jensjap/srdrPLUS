@@ -1,6 +1,8 @@
 .nested-fields
   = f.input :p_type, label: 'Type', include_blank: true, input_html: { class: 'apply-select2' }, collection: ( defined?(p_type_collection) ? p_type_collection : [] )
-  = f.input :pictures, as: :file, input_html: { multiple: true }
+  = f.input :pictures, as: :file, label: 'Figures', input_html: { multiple: true, id: "#{dom_id(f.object)}" }
+  label.button for="#{dom_id(f.object)}"
+    | Choose File
   - f.object.pictures.each do |picture|
     .hoverable-figure
       .hover-message 

@@ -364,6 +364,9 @@ check = (panelNumber, status) ->
     link.css 'color': 'green'
   else
     link.css 'color': 'unset'
+
+  # this is a bad way to do this, but the idea is I now have to compute completion percentage on the go
+  $( '.progress-meter' ).attr( 'style', 'width: ' + ($('i.fa.fa-check').length * 100.0/ 8.0).toString() + '%' );
   return
 
 initializeSwitches = ->

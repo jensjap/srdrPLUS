@@ -51,8 +51,15 @@
         a.close-preview.float-right = "✖"
         .grid-form
           .preview-container
+
       a.preview-button.button.float-right[data-panel-number="#{ @panel_number }"]
         | Preview
+      .float-right style="display: flex; justify-contents: center; margin: 8px;"
+        span style="font-weight: bold; margin-right: 10px;"
+          |Progress:
+        - sd_meta_datum = @sd_meta_datum
+        .success.progress style="width: 100px;"
+          .progress-meter style="width: #{ sd_meta_datum.progress_meter_width }%;"
     /= simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { id: 'sd-meta-form', class: "grid-form", data: { 'abide': '', 'live-validate': true } }) do |f|
     .panel-content.grid-form
       .tabs-content.vertical

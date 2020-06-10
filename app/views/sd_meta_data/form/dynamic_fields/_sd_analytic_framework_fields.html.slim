@@ -1,6 +1,8 @@
 .nested-fields
   = f.input :name, label: 'Description', input_html: { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
-  = f.input :pictures, as: :file, label: 'Pictures', input_html: { multiple: true }, onchange: "form.submit()"
+  = f.input :pictures, as: :file, label: 'Pictures', input_html: { multiple: true, id: "#{dom_id(f.object)}" }
+  label.button for="#{dom_id(f.object)}"
+    | Choose File
   - f.object.pictures.each do |picture|
     .hoverable-figure
       .hover-message 
