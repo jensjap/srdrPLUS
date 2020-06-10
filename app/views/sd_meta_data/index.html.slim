@@ -65,7 +65,7 @@ hr style="border: 0.5px solid; margin: 20px 55px;"
                 = f.button :submit, 'Toggle State', class: 'state-toggler', state: sd_meta_datum.state, data_sections_complete: sd_meta_datum.all_sections_complete?
             td = distance_of_time_in_words_to_now(sd_meta_datum.updated_at) + ' ago'
             td = link_to "Edit", edit_sd_meta_datum_path(sd_meta_datum.id)
-            td = link_to 'Destroy', sd_meta_datum_path(sd_meta_datum), data: { confirm: 'Are you sure?' }, method: :delete
+            td = link_to 'Destroy', sd_meta_datum_path(sd_meta_datum), data: { confirm: 'Are you sure? This will destroy the link you have created between a report and a project in SRDR. It will also destroy everything you have entered for this project in SRDR 2.0.' }, method: :delete
 
 javascript:
   $('.state-toggler').on('click', function(e) {
