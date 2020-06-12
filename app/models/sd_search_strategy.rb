@@ -13,7 +13,10 @@
 #
 
 class SdSearchStrategy < ApplicationRecord
+  include SharedOrderableMethods
   include SharedProcessTokenMethods
+
+  before_validation -> { set_ordering_scoped_by(:sd_meta_datum_id) }, on: :create
 
   # Made these associations optional so the autosave functions consistently -Birol
   #belongs_to :sd_meta_datum, inverse_of: :sd_search_strategies
@@ -21,6 +24,8 @@ class SdSearchStrategy < ApplicationRecord
 
   belongs_to :sd_meta_datum, inverse_of: :sd_search_strategies, optional: true
   belongs_to :sd_search_database, inverse_of: :sd_search_strategies, optional: true
+
+  has_one :ordering, as: :orderable, dependent: :destroy
 
   def sd_search_database_id=(token)
     save_resource_name_with_token(SdSearchDatabase.new, token)

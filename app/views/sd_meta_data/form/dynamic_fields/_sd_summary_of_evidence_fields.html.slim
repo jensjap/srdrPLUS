@@ -1,5 +1,5 @@
 .nested-fields
-  = f.association :sd_key_question, label: 'Key Question', include_blank: true, collection: f.object.sd_meta_datum.key_questions.map { |kq| [kq.name, SdKeyQuestion.find_by(sd_meta_datum_id: f.object.sd_meta_datum.id, key_question_id: kq.id).id] }, input_html: { class: 'apply-select2' }
+  = f.association :sd_key_question, label: 'Key Question', include_blank: true, collection: f.object.sd_meta_datum.sd_key_questions.where.not( key_question_id: nil ).map { |kq| [kq.key_question.name, kq.id] }, input_html: { class: 'apply-select2' }
   = f.input :soe_type, include_blank: true, label: 'Type', collection: ["Summary of Findings", "Narrative Summary of Findings", "Strength of Evidence", "Risk of Bias"], input_html: { class: "soe_type apply-select2" }
   = f.input :name, label: 'Description', :input_html => { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
   = f.input :pictures, as: :file, label: 'Figures', input_html: { multiple: true, id: "#{dom_id(f.object)}", class: 'hide' }

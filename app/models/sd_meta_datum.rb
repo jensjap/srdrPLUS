@@ -87,12 +87,12 @@ class SdMetaDatum < ApplicationRecord
   has_many :sd_journal_article_urls, -> { ordered }, inverse_of: :sd_meta_datum, dependent: :destroy
   has_many :sd_other_items, -> { ordered }, inverse_of: :sd_meta_datum, dependent: :destroy
 
-  has_many :sd_search_strategies, inverse_of: :sd_meta_datum, dependent: :destroy
+  has_many :sd_search_strategies, -> { ordered }, inverse_of: :sd_meta_datum, dependent: :destroy
   has_many :sd_search_databases, through: :sd_search_strategies
 
-  has_many :sd_summary_of_evidences, inverse_of: :sd_meta_datum, dependent: :destroy
-  has_many :sd_grey_literature_searches, inverse_of: :sd_meta_datum, dependent: :destroy
-  has_many :sd_prisma_flows, inverse_of: :sd_meta_datum, dependent: :destroy
+  has_many :sd_summary_of_evidences, -> { ordered }, inverse_of: :sd_meta_datum, dependent: :destroy
+  has_many :sd_grey_literature_searches, -> { ordered }, inverse_of: :sd_meta_datum, dependent: :destroy
+  has_many :sd_prisma_flows, -> { ordered }, inverse_of: :sd_meta_datum, dependent: :destroy
   has_many :sd_picods, -> { ordered }, inverse_of: :sd_meta_datum, dependent: :destroy
   has_many :sd_analytic_frameworks, inverse_of: :sd_meta_datum, dependent: :destroy
 
