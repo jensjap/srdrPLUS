@@ -10,5 +10,8 @@
 #
 
 class SdJournalArticleUrl < ApplicationRecord
+  include SharedOrderableMethods
+  before_validation -> { set_ordering_scoped_by(:sd_meta_datum_id) }, on: :create
   belongs_to :sd_meta_datum, inverse_of: :sd_journal_article_urls
+  has_one :ordering, as: :orderable, dependent: :destroy
 end
