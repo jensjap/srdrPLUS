@@ -2,7 +2,7 @@
   = f.input :sd_outcome_names, as: :select, collection: f.object.sd_outcome_names, label: 'Outcome(s)', include_blank: true, input_html: { class: 'sd-outcome-select2', multiple: true }
   = f.input :name, label: 'Description', input_html: { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
 
-  = f.input :picture, label: 'Figure', as: :file, input_html: { id: "#{dom_id(f.object)}" }
+  = f.input :picture, label: 'Figure', as: :file, input_html: { id: "#{dom_id(f.object)}", class: 'hide' }
   label.button for="#{dom_id(f.object)}"
     | Choose File
   - if f.object.picture.attached?

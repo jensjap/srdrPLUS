@@ -6,6 +6,7 @@
     $container.html("<%= j render @partial_name, sd_meta_datum: @sd_meta_datum, url: @url %>");
     $container.trigger( 'sd:form-loaded' );
     infoDiv.trigger( 'sd:replaced-html-content' );
+    $container.trigger( 'srdr:content-loaded' );
   <% end %>
 
   <% if @errors %>

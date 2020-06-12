@@ -1,6 +1,6 @@
 .nested-fields
   = f.input :name, label: 'Description'
-  = f.input :pictures, as: :file, label: 'Figures', input_html: { multiple: true, id: "#{dom_id(f.object)}" }
+  = f.input :pictures, as: :file, label: 'Figures', input_html: { multiple: true, id: "#{dom_id(f.object)}", class: 'hide' }
   label.button for="#{dom_id(f.object)}"
     | Choose File
   - f.object.pictures.each do |picture|
