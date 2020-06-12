@@ -69,7 +69,7 @@ class SdMetaDatum < ApplicationRecord
   belongs_to :review_type, inverse_of: :sd_meta_data, optional: true
   belongs_to :data_analysis_level, inverse_of: :sd_meta_data, optional: true
 
-  has_many :sd_key_questions, inverse_of: :sd_meta_datum, dependent: :destroy
+  has_many :sd_key_questions, -> { ordered }, inverse_of: :sd_meta_datum, dependent: :destroy
   has_many :key_questions, -> { distinct }, through: :sd_key_questions
 
   has_many :sd_result_items
@@ -84,12 +84,8 @@ class SdMetaDatum < ApplicationRecord
 
   has_many :sd_key_questions_sd_picods, through: :sd_key_questions, dependent: :destroy
 
-  has_many :sd_journal_article_urls,
-    -> { ordered },  
-    inverse_of: :sd_meta_datum, dependent: :destroy
-  has_many :sd_other_items,
-    -> { ordered },  
-    inverse_of: :sd_meta_datum, dependent: :destroy
+  has_many :sd_journal_article_urls, -> { ordered }, inverse_of: :sd_meta_datum, dependent: :destroy
+  has_many :sd_other_items, -> { ordered }, inverse_of: :sd_meta_datum, dependent: :destroy
 
   has_many :sd_search_strategies, inverse_of: :sd_meta_datum, dependent: :destroy
   has_many :sd_search_databases, through: :sd_search_strategies
@@ -97,9 +93,7 @@ class SdMetaDatum < ApplicationRecord
   has_many :sd_summary_of_evidences, inverse_of: :sd_meta_datum, dependent: :destroy
   has_many :sd_grey_literature_searches, inverse_of: :sd_meta_datum, dependent: :destroy
   has_many :sd_prisma_flows, inverse_of: :sd_meta_datum, dependent: :destroy
-  has_many :sd_picods,
-    -> { ordered },  
-    inverse_of: :sd_meta_datum, dependent: :destroy
+  has_many :sd_picods, -> { ordered }, inverse_of: :sd_meta_datum, dependent: :destroy
   has_many :sd_analytic_frameworks, inverse_of: :sd_meta_datum, dependent: :destroy
 
   has_many :funding_sources_sd_meta_data, inverse_of: :sd_meta_datum, dependent: :destroy
