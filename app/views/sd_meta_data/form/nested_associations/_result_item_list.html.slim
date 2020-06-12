@@ -1,7 +1,8 @@
 = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |g|
   = g.input :item_id, as: :hidden, input_html: { value: 100 }
-  = g.simple_fields_for :sd_result_items do |f|
-    .sd-item.sd-inner 
-      = render 'sd_meta_data/form/dynamic_fields/sd_result_item_fields', f: f
+  .orderable-list orderable-url="#{ update_positions_api_v1_orderings_url }"
+    = g.simple_fields_for :sd_result_items do |f|
+        .sd-item.sd-inner.orderable-item ordering-id="#{ f.object.ordering.id.to_s }"
+          = render 'sd_meta_data/form/dynamic_fields/sd_result_item_fields', f: f
   div class="#{ g.object.sd_result_items.present? ? '' : 'zero-nested-associations'}"
     = link_to_add_association 'Add Results for Another Key Question', g, :sd_result_items, partial: 'sd_meta_data/form/dynamic_fields/sd_result_item_fields', class: 'add-item-link'
