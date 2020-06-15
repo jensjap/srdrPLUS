@@ -268,7 +268,7 @@ add_form_listeners =( form ) ->
   # Use this to keep track of the different timers.
   formId = $form.attr( 'id' )
 
-  $form.find( 'select, input[type="file"], input[type="date"]' ).on 'change', ( e ) ->
+  $form.find( 'select, input[type="file"], input.fdp' ).on 'change', ( e ) ->
 #    if !!$(e.target).val()
 #      StatusChecker.remove_highlights()
     e.preventDefault()
@@ -276,7 +276,7 @@ add_form_listeners =( form ) ->
     $form.addClass( 'dirty' )
     Timekeeper.create_timer_for_form $form[0], 750
 
-  $form.on 'cocoon:after-insert cocoon:after-remove', ( e ) ->
+  $form.on 'cocoon:after-in:after-remove', ( e ) ->
     # Mark form as 'dirty'.
     $form.addClass( 'dirty' )
     Timekeeper.create_timer_for_form $form[0], 750
