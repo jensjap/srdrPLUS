@@ -46,6 +46,7 @@
 #
 
 class SdMetaDatum < ApplicationRecord
+  include SharedPublishableMethods
   include SharedProcessTokenMethods
 
   after_create :set_report_title
@@ -100,6 +101,21 @@ class SdMetaDatum < ApplicationRecord
   has_many :funding_sources, through: :funding_sources_sd_meta_data
 
   has_many :sd_meta_data_queries, dependent: :destroy
+
+  has_many :publishings, as: :publishable, dependent: :destroy
+  # NOTE
+  # I think we are using polymorphism incorrectly above. I think what we want is for each project to have at most one 
+  # publishing, therefore:
+  # 
+  #   belongs_to :publishing, polymorphic: true
+  # 
+  # and on the publishing:
+  #
+  #   has_many :publishable, as: :publishing
+  #
+  # is actually what we want. 
+  #
+  # Birol
 
   has_one_attached :report_file
 
