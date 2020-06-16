@@ -12,6 +12,9 @@
 
 class SdKeyQuestion < ApplicationRecord
   include SharedProcessTokenMethods
+  include SharedOrderableMethods
+
+  before_validation -> { set_ordering_scoped_by(:sd_meta_datum_id) }, on: :create
 
   belongs_to :sd_meta_datum, inverse_of: :sd_key_questions
   belongs_to :key_question, inverse_of: :sd_key_questions, optional: true
@@ -31,6 +34,8 @@ class SdKeyQuestion < ApplicationRecord
   has_many :sd_picods, through: :sd_key_questions_sd_picods
 
   has_many :sd_summary_of_evidences, inverse_of: :sd_key_question, dependent: :destroy
+
+  has_one :ordering, as: :orderable, dependent: :destroy
 
   accepts_nested_attributes_for :sd_key_questions_key_question_types, allow_destroy: true
 

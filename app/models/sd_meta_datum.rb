@@ -69,37 +69,39 @@ class SdMetaDatum < ApplicationRecord
   belongs_to :review_type, inverse_of: :sd_meta_data, optional: true
   belongs_to :data_analysis_level, inverse_of: :sd_meta_data, optional: true
 
-  has_many :sd_key_questions, inverse_of: :sd_meta_datum, dependent: :destroy
+  has_many :sd_key_questions, -> { ordered }, inverse_of: :sd_meta_datum, dependent: :destroy
   has_many :key_questions, -> { distinct }, through: :sd_key_questions
 
-  has_many :sd_result_items
-  has_many :sd_narrative_results, through: :sd_result_items
-  has_many :sd_evidence_tables, inverse_of: :sd_meta_datum
-  has_many :sd_network_meta_analysis_results, through: :sd_result_items
-  has_many :sd_pairwise_meta_analytic_results, through: :sd_result_items
-  has_many :sd_meta_regression_analysis_results, through: :sd_result_items
+  has_many :sd_result_items, -> { ordered }, dependent: :destroy
+  has_many :sd_narrative_results, through: :sd_result_items, dependent: :destroy
+  has_many :sd_evidence_tables, inverse_of: :sd_meta_datum, dependent: :destroy
+  has_many :sd_network_meta_analysis_results, through: :sd_result_items, dependent: :destroy
+  has_many :sd_pairwise_meta_analytic_results, through: :sd_result_items, dependent: :destroy
+  has_many :sd_meta_regression_analysis_results, through: :sd_result_items, dependent: :destroy
   
   has_many :sd_key_questions_projects, through: :sd_key_questions, inverse_of: :sd_meta_datum
   has_many :project_key_questions, through: :sd_key_questions_projects, source: :key_question
 
   has_many :sd_key_questions_sd_picods, through: :sd_key_questions, dependent: :destroy
 
-  has_many :sd_journal_article_urls, inverse_of: :sd_meta_datum, dependent: :destroy
-  has_many :sd_other_items, inverse_of: :sd_meta_datum, dependent: :destroy
+  has_many :sd_journal_article_urls, -> { ordered }, inverse_of: :sd_meta_datum, dependent: :destroy
+  has_many :sd_other_items, -> { ordered }, inverse_of: :sd_meta_datum, dependent: :destroy
 
-  has_many :sd_search_strategies, inverse_of: :sd_meta_datum, dependent: :destroy
+  has_many :sd_search_strategies, -> { ordered }, inverse_of: :sd_meta_datum, dependent: :destroy
   has_many :sd_search_databases, through: :sd_search_strategies
 
-  has_many :sd_summary_of_evidences, inverse_of: :sd_meta_datum, dependent: :destroy
-  has_many :sd_grey_literature_searches, inverse_of: :sd_meta_datum, dependent: :destroy
-  has_many :sd_prisma_flows, inverse_of: :sd_meta_datum, dependent: :destroy
-  has_many :sd_picods, inverse_of: :sd_meta_datum, dependent: :destroy
+  has_many :sd_summary_of_evidences, -> { ordered }, inverse_of: :sd_meta_datum, dependent: :destroy
+  has_many :sd_grey_literature_searches, -> { ordered }, inverse_of: :sd_meta_datum, dependent: :destroy
+  has_many :sd_prisma_flows, -> { ordered }, inverse_of: :sd_meta_datum, dependent: :destroy
+  has_many :sd_picods, -> { ordered }, inverse_of: :sd_meta_datum, dependent: :destroy
   has_many :sd_analytic_frameworks, inverse_of: :sd_meta_datum, dependent: :destroy
 
   has_many :funding_sources_sd_meta_data, inverse_of: :sd_meta_datum, dependent: :destroy
   has_many :funding_sources, through: :funding_sources_sd_meta_data
 
   has_many :sd_meta_data_queries, dependent: :destroy
+
+  has_one_attached :report_file
 
   accepts_nested_attributes_for :sd_key_questions, allow_destroy: true
   accepts_nested_attributes_for :sd_journal_article_urls, allow_destroy: true

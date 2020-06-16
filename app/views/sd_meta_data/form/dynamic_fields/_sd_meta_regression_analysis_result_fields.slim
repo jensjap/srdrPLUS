@@ -1,9 +1,14 @@
 .nested-fields
   = f.input :sd_outcome_names, as: :select, collection: f.object.sd_outcome_names, label: 'Outcome(s)', include_blank: true, input_html: { class: 'sd-outcome-select2', multiple: true }
   = f.input :name, label: 'Description', input_html: { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
-  = f.input :picture, label: 'Figure', as: :file
+
+  = f.input :picture, label: 'Figure', as: :file, input_html: { id: "#{dom_id(f.object)}", class: 'hide' }
+  label.button for="#{dom_id(f.object)}"
+    | Choose File
   - if f.object.picture.attached?
     .hoverable-figure
-      .hover-message = link_to 'Click to remove figure', delete_image_attachment_picture_path(f.object.picture.id), method: :delete, data: { confirm: 'Are you sure?' }, remote: true, class: 'remove-figure'
+      .hover-message 
+        = link_to delete_image_attachment_picture_path(picture.id), method: :delete, data: { confirm: 'Are you sure?' }, remote: true, class: 'remove-figure' do
+          = fa_icon "close 2x"
       = image_tag(f.object.picture, class: 'openable sd-image') 
   = link_to_remove_association "remove meta-regression result", f, data: { confirm: "Are you sure?" }
