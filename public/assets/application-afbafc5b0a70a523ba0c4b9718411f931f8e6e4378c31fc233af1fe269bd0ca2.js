@@ -52175,12 +52175,12 @@ function __guardMethod__(obj, methodName, transform) {
     var $form, formId;
     $form = $(form);
     formId = $form.attr('id');
-    $form.find('select, input[type="file"], input[type="date"]').on('change', function(e) {
+    $form.find('select, input[type="file"], input.fdp').on('change', function(e) {
       e.preventDefault();
       $form.addClass('dirty');
       return Timekeeper.create_timer_for_form($form[0], 750);
     });
-    $form.on('cocoon:after-insert cocoon:after-remove', function(e) {
+    $form.on('cocoon:after-in:after-remove', function(e) {
       $form.addClass('dirty');
       return Timekeeper.create_timer_for_form($form[0], 750);
     });
@@ -52272,6 +52272,7 @@ function __guardMethod__(obj, methodName, transform) {
         'color': 'unset'
       });
     }
+    $('.progress-meter').attr('style', 'width: ' + ($('i.fa.fa-check').length * 100.0 / 8.0).toString() + '%');
   };
 
   initializeSwitches = function() {
