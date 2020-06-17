@@ -24374,39 +24374,20 @@ body.sd_meta_data .hoverable-figure {
 /* line 432, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
 body.sd_meta_data .hoverable-figure .hover-message {
   color: white;
-  font-size: 130%;
-  -webkit-transition: opacity 140ms;
-  transition: opacity 140ms;
-  opacity: 0;
   position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  top: 1rem;
+  right: 1rem;
 }
-/* line 443, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
-body.sd_meta_data .hoverable-figure:hover .hover-message {
-  background-color: black;
-  opacity: 0.5;
+/* line 437, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .hoverable-figure .hover-message a {
+  color: white;
+  -webkit-text-stroke-width: 3px;
+  -webkit-text-stroke-color: darkslateblue;
 }
 /* line 444, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
-body.sd_meta_data .hoverable-figure:hover .hover-message a {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-align: center;
-  -webkit-align-items: center;
-      -ms-flex-align: center;
-          align-items: center;
-  -webkit-box-pack: center;
-  -webkit-justify-content: center;
-      -ms-flex-pack: center;
-          justify-content: center;
-  width: 100%;
-  height: 100%;
-  color: white;
-  opacity: 1;
+body.sd_meta_data .hover-message:hover a {
+  color: lavender;
+  -webkit-text-stroke-color: maroon;
 }
 /**
  * Foundation for Sites by ZURB
