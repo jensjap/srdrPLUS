@@ -1,6 +1,8 @@
 require 'sidekiq/web'
 
 Rails.application.routes.draw do
+  get 'publishings/create'
+  get 'publishings/destroy'
   resources :project_report_links, only: [:index, :view] do
     get 'new_query_form'
     post 'options_form'

@@ -276,7 +276,7 @@ add_form_listeners =( form ) ->
     $form.addClass( 'dirty' )
     Timekeeper.create_timer_for_form $form[0], 750
 
-  $form.on 'cocoon:after-in:after-remove', ( e ) ->
+  $form.on 'cocoon:after-insert cocoon:after-remove', ( e ) ->
     # Mark form as 'dirty'.
     $form.addClass( 'dirty' )
     Timekeeper.create_timer_for_form $form[0], 750

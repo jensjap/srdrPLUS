@@ -52180,7 +52180,7 @@ function __guardMethod__(obj, methodName, transform) {
       $form.addClass('dirty');
       return Timekeeper.create_timer_for_form($form[0], 750);
     });
-    $form.on('cocoon:after-in:after-remove', function(e) {
+    $form.on('cocoon:after-insert cocoon:after-remove', function(e) {
       $form.addClass('dirty');
       return Timekeeper.create_timer_for_form($form[0], 750);
     });

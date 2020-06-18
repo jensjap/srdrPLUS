@@ -46,7 +46,21 @@ class Project < ApplicationRecord
 
   has_many :extractions, dependent: :destroy, inverse_of: :project
   has_many :teams, dependent: :destroy
+
   has_many :publishings, as: :publishable, dependent: :destroy
+  # NOTE
+  # I think we are using polymorphism incorrectly above. I think what we want is for each project to have at most one 
+  # publishing, therefore:
+  # 
+  #   belongs_to :publishing, polymorphic: true
+  # 
+  # and on the publishing:
+  #
+  #   has_many :publishable, as: :publishing
+  #
+  # is actually what we want. 
+  #
+  # Birol
 
   has_many :extraction_forms_projects, dependent: :destroy, inverse_of: :project
   has_many :extraction_forms, through: :extraction_forms_projects, dependent: :destroy
