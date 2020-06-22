@@ -70,3 +70,12 @@
           label.switch-paddle for="2-yes-no-section"
             span.switch-active aria-hidden="true" Yes
             span.switch-inactive aria-hidden="true" No
+
+javascript:
+  function removeSpaces(string) {
+    return string.split(' ').join('');
+  }
+
+  $("body").on('keyup', '.url-input', function (e) {
+    this.value = removeSpaces(this.value);
+  });
