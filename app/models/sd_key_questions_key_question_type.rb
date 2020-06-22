@@ -2,9 +2,9 @@
 #
 # Table name: sd_key_questions_key_question_types
 #
-#  id                   :bigint(8)        not null, primary key
-#  sd_key_question_id   :bigint(8)
-#  key_question_type_id :bigint(8)
+#  id                   :bigint           not null, primary key
+#  sd_key_question_id   :bigint
+#  key_question_type_id :bigint
 #  created_at           :datetime         not null
 #  updated_at           :datetime         not null
 #

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_15_233507) do
+ActiveRecord::Schema.define(version: 2020_06_22_074059) do
 
   create_table "abstrackr_settings", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "profile_id"
@@ -865,7 +865,7 @@ ActiveRecord::Schema.define(version: 2020_05_15_233507) do
     t.datetime "created_at", null: false
     t.datetime "revoked_at"
     t.string "scopes"
-    t.index ["application_id"], name: "fk_rails_b4b53e07b8"
+    t.index ["application_id"], name: "index_oauth_access_grants_on_application_id"
     t.index ["token"], name: "index_oauth_access_grants_on_token", unique: true
   end
 
@@ -879,7 +879,7 @@ ActiveRecord::Schema.define(version: 2020_05_15_233507) do
     t.datetime "created_at", null: false
     t.string "scopes"
     t.string "previous_refresh_token", default: "", null: false
-    t.index ["application_id"], name: "fk_rails_732cb83ab7"
+    t.index ["application_id"], name: "index_oauth_access_tokens_on_application_id"
     t.index ["refresh_token"], name: "index_oauth_access_tokens_on_refresh_token", unique: true
     t.index ["resource_owner_id"], name: "index_oauth_access_tokens_on_resource_owner_id"
     t.index ["token"], name: "index_oauth_access_tokens_on_token", unique: true
@@ -1425,12 +1425,6 @@ ActiveRecord::Schema.define(version: 2020_05_15_233507) do
     t.text "key_messages_link"
     t.text "abstract_summary_link"
     t.text "evidence_summary_link"
-    t.text "evs_introduction_link"
-    t.text "evs_methods_link"
-    t.text "evs_results_link"
-    t.text "evs_discussion_link"
-    t.text "evs_conclusions_link"
-    t.text "evs_tables_figures_link"
     t.text "disposition_of_comments_link"
     t.text "srdr_data_link"
     t.text "most_previous_version_srdr_link"
@@ -1609,10 +1603,10 @@ ActiveRecord::Schema.define(version: 2020_05_15_233507) do
     t.string "query"
     t.string "normalized_query"
     t.integer "results_count"
-    t.datetime "created_at"
+    t.timestamp "created_at"
     t.string "convertable_type"
     t.integer "convertable_id"
-    t.datetime "converted_at"
+    t.timestamp "converted_at"
     t.index ["convertable_type", "convertable_id"], name: "index_searchjoy_searches_on_convertable_type_and_convertable_id"
     t.index ["created_at"], name: "index_searchjoy_searches_on_created_at"
     t.index ["search_type", "created_at"], name: "index_searchjoy_searches_on_search_type_and_created_at"

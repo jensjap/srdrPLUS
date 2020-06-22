@@ -1,11 +1,12 @@
 # == Schema Information
 #
-# Table name: imported_files
+# Table name: imports
 #
-# t.integer "import_type_id"
-# t.integer "projects_user_id"
-# t.datetime "created_at", null: false
-# t.datetime "updated_at", null: false
+#  id               :bigint           not null, primary key
+#  import_type_id   :integer
+#  projects_user_id :integer
+#  created_at       :datetime         not null
+#  updated_at       :datetime         not null
 #
 
 class Import < ApplicationRecord

@@ -17,19 +17,11 @@
 #  key_messages_link                           :text(65535)
 #  abstract_summary_link                       :text(65535)
 #  evidence_summary_link                       :text(65535)
-#  evs_introduction_link                       :text(65535)
-#  evs_methods_link                            :text(65535)
-#  evs_results_link                            :text(65535)
-#  evs_discussion_link                         :text(65535)
-#  evs_conclusions_link                        :text(65535)
-#  evs_tables_figures_link                     :text(65535)
 #  disposition_of_comments_link                :text(65535)
 #  srdr_data_link                              :text(65535)
 #  most_previous_version_srdr_link             :text(65535)
 #  most_previous_version_full_report_link      :text(65535)
 #  overall_purpose_of_review                   :text(65535)
-#  review_type_id                              :integer
-#  data_analysis_level_id                      :integer
 #  state                                       :string(255)      default("DRAFT"), not null
 #  created_at                                  :datetime         not null
 #  updated_at                                  :datetime         not null
@@ -40,9 +32,12 @@
 #  section_flag_4                              :boolean          default(FALSE), not null
 #  section_flag_5                              :boolean          default(FALSE), not null
 #  section_flag_6                              :boolean          default(FALSE), not null
-#  report_accession_id                         :integer
+#  report_accession_id                         :string(255)
 #  authors                                     :text(65535)
 #  section_flag_7                              :boolean          default(FALSE), not null
+#  prospero_link                               :string(255)
+#  review_type_id                              :bigint
+#  data_analysis_level_id                      :bigint
 #
 
 class SdMetaDatum < ApplicationRecord

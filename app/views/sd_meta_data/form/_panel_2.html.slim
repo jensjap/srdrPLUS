@@ -34,27 +34,6 @@
         .sd-item data-field-span="1"
           = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
             = f.input :evidence_summary_link, as: :string, label: 'Evidence Summary / Executive Summary', input_html: { class: 'url-input' }
-      div data-row-span="2"
-        .sd-item data-field-span="1"
-          = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
-            = f.input :evs_introduction_link, as: :string, label: 'Introduction', input_html: { class: 'url-input' }
-        .sd-item data-field-span="1"
-          = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
-            = f.input :evs_methods_link, as: :string, label: 'Methods', input_html: { class: 'url-input' }
-      div data-row-span="2"
-        .sd-item data-field-span="1"
-          = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
-            = f.input :evs_results_link, as: :string, label: 'Results', input_html: { class: 'url-input' }
-        .sd-item data-field-span="1"
-          = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
-            = f.input :evs_discussion_link, as: :string, label: 'Discussion', input_html: { class: 'url-input' }
-      div data-row-span="2"
-        .sd-item data-field-span="1"
-          = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
-            = f.input :evs_conclusions_link, as: :string, label: 'Conclusions', input_html: { class: 'url-input' }
-        .sd-item data-field-span="1"
-          = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
-            = f.input :evs_tables_figures_link, as: :string, label: 'Tables and Figures', input_html: { class: 'url-input' }
     div data-row-span="2"
       div data-field-span="1"
         label Journal Articles

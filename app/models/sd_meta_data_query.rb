@@ -1,3 +1,15 @@
+# == Schema Information
+#
+# Table name: sd_meta_data_queries
+#
+#  id               :bigint           not null, primary key
+#  query_text       :text(65535)
+#  sd_meta_datum_id :bigint
+#  projects_user_id :bigint
+#  created_at       :datetime         not null
+#  updated_at       :datetime         not null
+#
+
 class SdMetaDataQuery < ApplicationRecord
   belongs_to :sd_meta_datum
   belongs_to :projects_user

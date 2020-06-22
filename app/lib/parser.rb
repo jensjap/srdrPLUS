@@ -21,12 +21,6 @@ class Parser
     key_messages_link = ''
     abstract_summary_link = ''
     evidence_summary_link = "https://www.ncbi.nlm.nih.gov/books/NBK534627/#ch1.s1"
-    evs_introduction_link = "https://www.ncbi.nlm.nih.gov/books/NBK534627/#ch1.s1"
-    evs_methods_link = "https://www.ncbi.nlm.nih.gov/books/NBK534627/#_ch1_s2_"
-    evs_results_link = "https://www.ncbi.nlm.nih.gov/books/NBK534627/#ch1.s4"
-    evs_discussion_link = "https://www.ncbi.nlm.nih.gov/books/NBK534627/#_ch1_s5_"
-    evs_conclusions_link = "https://www.ncbi.nlm.nih.gov/books/NBK534627/#ch1.s5.6"
-    evs_tables_figures_link = "https://www.ncbi.nlm.nih.gov/books/NBK534627/table/ch1.tab12/?report=objectonly"
     disposition_of_comments_link = ''
     srdr_data_link = 'https://srdr.ahrq.gov/projects/1153'
     most_previous_version_srdr_link = ''
@@ -59,12 +53,6 @@ class Parser
       key_messages_link: key_messages_link,
       abstract_summary_link: abstract_summary_link,
       evidence_summary_link: evidence_summary_link,
-      evs_introduction_link: evs_introduction_link,
-      evs_methods_link: evs_methods_link,
-      evs_results_link: evs_results_link,
-      evs_discussion_link: evs_discussion_link,
-      evs_conclusions_link: evs_conclusions_link,
-      evs_tables_figures_link: evs_tables_figures_link,
       disposition_of_comments_link: disposition_of_comments_link,
       srdr_data_link: srdr_data_link,
       most_previous_version_srdr_link: most_previous_version_srdr_link,

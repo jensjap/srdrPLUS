@@ -2,15 +2,17 @@
 #
 # Table name: citations
 #
-#  id               :integer          not null, primary key
-#  citation_type_id :integer
-#  name             :string(500)
-#  deleted_at       :datetime
-#  created_at       :datetime         not null
-#  updated_at       :datetime         not null
-#  refman           :string(255)
-#  pmid             :string(255)
-#  abstract         :binary(65535)
+#  id                :integer          not null, primary key
+#  citation_type_id  :integer
+#  name              :string(500)
+#  deleted_at        :datetime
+#  created_at        :datetime         not null
+#  updated_at        :datetime         not null
+#  refman            :string(255)
+#  pmid              :string(255)
+#  abstract          :binary(65535)
+#  page_number_start :integer
+#  page_number_end   :integer
 #
 
 class Citation < ApplicationRecord
