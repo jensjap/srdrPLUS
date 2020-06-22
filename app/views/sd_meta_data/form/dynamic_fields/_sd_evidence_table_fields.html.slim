@@ -1,11 +1,12 @@
 .nested-fields
+  div class="text-right"
+    = link_to_remove_association "remove evidence table", f, data: { confirm: "Are you sure?" }
   = f.input :sd_outcome_names, as: :select, collection: f.object.sd_outcome_names, label: 'Outcome(s)', include_blank: true, input_html: { class: 'sd-outcome-select2', multiple: true }
   = f.input :name, label: 'Description', input_html: { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
   = f.input :picture, label: 'Figure', as: :file
   - if f.object.picture.attached?
     .hoverable-figure
-      .hover-message 
+      .hover-message
         = link_to delete_image_attachment_picture_path(f.object.picture.id), method: :delete, data: { confirm: 'Are you sure?' }, remote: true, class: 'remove-figure' do
           = fa_icon "close 2x"
       = image_tag(f.object.picture, class: 'openable sd-image') if f.object.picture.attached?
-  = link_to_remove_association "remove evidence table", f, data: { confirm: "Are you sure?" }

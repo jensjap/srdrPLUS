@@ -1,13 +1,14 @@
 .nested-fields
+  div class="text-right"
+    = link_to_remove_association "remove framework", f, data: { confirm: "Are you sure?" }
   = f.input :name, label: 'Description', input_html: { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
   = f.input :pictures, as: :file, label: 'Pictures', input_html: { multiple: true, id: "#{dom_id(f.object)}", class: 'hide' }
   label.button.file-picker for="#{dom_id(f.object)}"
     | Choose File
   - f.object.pictures.each do |picture|
     .hoverable-figure
-      .hover-message 
+      .hover-message
         = link_to delete_image_attachment_picture_path(picture.id), method: :delete, data: { confirm: 'Are you sure?' }, remote: true, class: 'remove-figure' do
           = fa_icon "close 2x"
       = image_tag(picture, class: 'openable sd-image')
   br
-  = link_to_remove_association "remove framework", f, data: { confirm: "Are you sure?" }

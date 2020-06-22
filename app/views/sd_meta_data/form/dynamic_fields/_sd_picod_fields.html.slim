@@ -1,4 +1,6 @@
 .nested-fields
+  div class="text-right"
+    = link_to_remove_association "remove picods", f, data: { confirm: "Are you sure?" }
   = f.association :sd_key_questions, include_blank: true, label: "Key Question(s)", input_html: { class: "sd_picods_key_question sd-select2", data: { sd_meta_datum_id: f.object.sd_meta_datum.id } }
   /= f.association :sd_picods_types, include_blank: true, label: 'PICODS Type', input_html: { class: "sd_picods_type" }
   /= f.input :name, label: 'Description', :input_html => { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
@@ -8,4 +10,3 @@
   = f.input :outcomes, as: :text, :input_html => { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
   = f.input :study_designs, as: :text, label: 'Study Designs', :input_html => { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
   = f.input :settings, as: :text, :input_html => { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
-  = link_to_remove_association "remove picods", f, data: { confirm: "Are you sure?" }
