@@ -25,7 +25,7 @@
     div data-row-span="2"
       .sd-item data-field-span="1"
         = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
-          = f.input :key_messages_link, as: :string, label: 'Key Messages', input_html: { class: 'url-input' }
+          = f.input :key_messages_link, as: :string, label: 'Main Points or Key Messages', input_html: { class: 'url-input' }
       .sd-item data-field-span="1"
         = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
           = f.input :abstract_summary_link, as: :string, label: 'Lay Abstract / Lay Language Summary', input_html: { class: 'url-input' }
