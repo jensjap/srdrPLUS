@@ -1,4 +1,4 @@
 .nested-fields
   div class="text-right"
     = link_to_remove_association "remove url", f, data: { confirm: "Are you sure?" }
-  = f.input :name, as: :string, label: 'URL', input_html: { class: 'url-input' }
+  = f.input :name, placeholder: 'url', as: :string, label: 'URL', input_html: { class: 'url-input' }

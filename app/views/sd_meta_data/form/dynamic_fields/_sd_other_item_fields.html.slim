@@ -2,4 +2,4 @@
   div class="text-right"
     = link_to_remove_association "remove url", f, data: { confirm: "Are you sure?" }
   = f.input :name, label: 'Type', as: :string
-  = f.input :url, label: 'URL', as: :string, input_html: { class: 'url-input' }
+  = f.input :url, placeholder: 'url', label: 'URL', as: :string, input_html: { class: 'url-input' }
