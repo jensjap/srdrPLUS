@@ -24207,22 +24207,22 @@ body.sd_meta_data .sd-inner .sd-inner {
 body.sd_meta_data .sd-inner .sd-inner:hover {
   background: #997bb155;
 }
-/* line 274, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
+/* line 275, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
 body.sd_meta_data .sd-show-inner {
   margin: 1.2rem 1.2rem 1.2rem 1.2rem;
   padding: 0.6rem 0.6rem 0.6rem 0.6rem;
   -webkit-box-shadow: 0.1rem 0.1rem 0.5rem #adadad;
           box-shadow: 0.1rem 0.1rem 0.5rem #adadad;
 }
-/* line 280, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
+/* line 281, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
 body.sd_meta_data .sd-show-image {
   margin: .5rem;
 }
-/* line 285, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
+/* line 286, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
 body.sd_meta_data .sd-item input:not([type="file"]), body.sd_meta_data .sd-item textarea, body.sd_meta_data .sd-inner input:not([type="file"]), body.sd_meta_data .sd-inner textarea {
   background-color: #ffffffb5;
 }
-/* line 306, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
+/* line 307, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
 body.sd_meta_data .journal-article-url-list .nested-fields,
 body.sd_meta_data .other-item-list .nested-fields,
 body.sd_meta_data .analytic-framework-list .nested-fields,
@@ -24240,18 +24240,18 @@ body.sd_meta_data .network-meta-analysis-result-list .nested-fields,
 body.sd_meta_data .meta-regression-analysis-result-list .nested-fields {
   margin-bottom: 0;
 }
-/* line 311, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
+/* line 312, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
 body.sd_meta_data .add-item-link {
   margin: 0 1.2rem 0 1.2rem;
   color: #8f20a2;
   font-weight: bolder;
   font-size: 105%;
 }
-/* line 318, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
+/* line 319, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
 body.sd_meta_data input, body.sd_meta_data textarea {
   padding: 0 0.2rem 0 0.2rem !important;
 }
-/* line 322, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
+/* line 323, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
 body.sd_meta_data .mapping-kq-title {
   color: grey;
   border-top: 1px solid #e6e6e6;
@@ -24261,36 +24261,36 @@ body.sd_meta_data .mapping-kq-title {
   background: -webkit-repeating-linear-gradient(135deg, #F2F2F2, #f2f2f2 10px, #F8F8F8 10px, #F8F8F8 20px);
   background: repeating-linear-gradient(-45deg, #F2F2F2, #f2f2f2 10px, #F8F8F8 10px, #F8F8F8 20px);
 }
-/* line 328, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
+/* line 329, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
 body.sd_meta_data .mapping-kq-title a {
   padding-top: 0.6rem;
   padding-bottom: 0.6rem;
 }
-/* line 342, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
+/* line 343, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
 body.sd_meta_data .tabs-title a:hover {
   text-decoration: none;
   background: #c4c4c430;
 }
-/* line 346, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
+/* line 347, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
 body.sd_meta_data .tabs-title a {
   padding-left: 0.7rem;
   padding-right: 0.7rem;
 }
-/* line 352, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
+/* line 353, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
 body.sd_meta_data .sd-image {
   height: auto;
   max-width: 100%;
 }
-/* line 357, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
+/* line 358, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
 body.sd_meta_data .invalid-url::after {
   color: red;
   content: "Please enter a valid URL" !important;
 }
-/* line 362, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
+/* line 363, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
 body.sd_meta_data .infoDiv {
   width: 50%;
 }
-/* line 366, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
+/* line 367, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
 body.sd_meta_data .srdr-kq .hover-message {
   font-size: 130%;
   display: -webkit-box;
@@ -24315,43 +24315,43 @@ body.sd_meta_data .srdr-kq .hover-message {
   width: 100%;
   height: 100%;
 }
-/* line 380, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
+/* line 381, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
 body.sd_meta_data .srdr-kq:hover .hover-message {
   background-color: #2e7c80;
   opacity: 1;
 }
-/* line 385, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
+/* line 386, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
 body.sd_meta_data #status-check-modal {
   text-align: center;
   font-size: larger;
 }
-/* line 389, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
+/* line 390, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
 body.sd_meta_data #status-check-modal #status-check-modal-buttons {
   margin: 1rem;
 }
-/* line 390, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
+/* line 391, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
 body.sd_meta_data #status-check-modal #status-check-modal-buttons .confirm {
   background-color: #30c769;
 }
-/* line 393, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
+/* line 394, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
 body.sd_meta_data #status-check-modal #status-check-modal-buttons .button {
   margin: 0 1rem 0 1rem;
 }
-/* line 400, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
+/* line 401, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
 body.sd_meta_data .kq-mapped {
   background-color: #38969a;
 }
-/* line 404, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
+/* line 405, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
 body.sd_meta_data .empty-input, body.sd_meta_data .empty-associations {
   border: solid 2px #ff5e00 !important;
   background-color: #faeee6 !important;
 }
-/* line 408, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
+/* line 409, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
 body.sd_meta_data .empty-kq.srdr-kq, body.sd_meta_data .empty-kq.report-kq {
   position: relative;
   border: solid 2px #ff5e00 !important;
 }
-/* line 410, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
+/* line 411, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
 body.sd_meta_data .empty-kq.srdr-kq:before, body.sd_meta_data .empty-kq.report-kq:before {
   content: '';
   position: absolute;
@@ -24363,28 +24363,28 @@ body.sd_meta_data .empty-kq.srdr-kq:before, body.sd_meta_data .empty-kq.report-k
   left: 0;
   background-color: #fa6400 !important;
 }
-/* line 424, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
+/* line 425, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
 body.sd_meta_data .nested-fields {
   margin-bottom: 0.1rem;
 }
-/* line 428, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
+/* line 429, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
 body.sd_meta_data .hoverable-figure {
   position: relative;
 }
-/* line 432, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
+/* line 433, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
 body.sd_meta_data .hoverable-figure .hover-message {
   color: white;
   position: absolute;
   top: 1rem;
   right: 1rem;
 }
-/* line 437, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
+/* line 438, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
 body.sd_meta_data .hoverable-figure .hover-message a {
   color: white;
   -webkit-text-stroke-width: 3px;
   -webkit-text-stroke-color: darkslateblue;
 }
-/* line 444, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
+/* line 445, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
 body.sd_meta_data .hover-message:hover a {
   color: lavender;
   -webkit-text-stroke-color: maroon;

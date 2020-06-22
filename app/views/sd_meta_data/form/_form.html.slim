@@ -15,12 +15,12 @@
           .check-container[panel-number="2"]
       li.tabs-title
         = link_to '?panel_number=3', class: ([(@panel_number == 3 ? 'bg-light-grey' : ''), (@sd_meta_datum.section_flag_3 ? 'to-be-checked' : '')] - ['']).join(' '), id: "panel-3-label" do
-          |Purpose and Key Questions
+          |Purpose, Analytic Framework, and Key Questions
           .check-container[panel-number="3"]
           .warning-container[panel-number="3"]
       li.tabs-title
         = link_to '?panel_number=4', class: ([(@panel_number == 4 ? 'bg-light-grey' : ''), (@sd_meta_datum.section_flag_4 ? 'to-be-checked' : '')] - ['']).join(' '), id: "panel-4-label" do
-          |PICODS
+          |PICODTS
           .check-container[panel-number="4"]
       li.tabs-title.mapping-kq-title
         = link_to '?panel_number=5', class: ([(@panel_number == 5 ? 'bg-light-grey' : ''), (@sd_meta_datum.section_flag_5 ? 'to-be-checked' : '')] - ['']).join(' '), id: "panel-5-label" do
