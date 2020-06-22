@@ -35,16 +35,6 @@
           = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
             = f.input :evidence_summary_link, placeholder: 'URL', as: :string, label: 'Evidence Summary / Executive Summary', input_html: { class: 'url-input' }
     div data-row-span="2"
-      div data-field-span="1"
-        label Journal Articles
-        .cocoon-container.journal-article-url-list
-          = render 'sd_meta_data/form/nested_associations/journal_article_url_list', sd_meta_datum: @sd_meta_datum, url: @url
-      div data-field-span="1"
-        label Other Items
-        .cocoon-container.other-item-list
-          = render 'sd_meta_data/form/nested_associations/other_item_list', sd_meta_datum: @sd_meta_datum, url: @url
-
-    div data-row-span="2"
       .sd-item data-field-span="1"
         = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
           = f.input :disposition_of_comments_link, placeholder: 'URL', as: :string, label: 'Disposition of Comments', input_html: { class: 'url-input' }
@@ -58,6 +48,15 @@
       .sd-item data-field-span="1"
         = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
           = f.input :most_previous_version_full_report_link, placeholder: 'URL', as: :string, label: 'Most Recent Previous Version of Full Report', input_html: { class: 'url-input' }
+    div data-row-span="2"
+      div data-field-span="1"
+        label Journal Articles
+        .cocoon-container.journal-article-url-list
+          = render 'sd_meta_data/form/nested_associations/journal_article_url_list', sd_meta_datum: @sd_meta_datum, url: @url
+      div data-field-span="1"
+        label Other Items
+        .cocoon-container.other-item-list
+          = render 'sd_meta_data/form/nested_associations/other_item_list', sd_meta_datum: @sd_meta_datum, url: @url
   /br/
   /br/
   /fieldset
