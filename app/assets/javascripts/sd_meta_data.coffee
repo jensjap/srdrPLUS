@@ -231,11 +231,12 @@ apply_all_select2 =() ->
   init_select2("#sd_meta_datum_key_question_type_ids", '/key_question_types')
   init_select2(".sd_search_database", '/sd_search_databases')
   init_select2(".key_question_type", '/key_question_types')
-  sd_meta_datum_id = $(".sd_picods_key_question").data('sd-meta-datum-id')
-  init_select2(".sd_picods_key_question", "/sd_key_questions?sd_meta_datum_id=" + sd_meta_datum_id)
   init_select2(".sd_picods_type", '/sd_picods_types')
   init_select2(".review_type", '/review_types')
   init_select2(".data_analysis_level", '/data_analysis_levels')
+  sd_meta_datum_id = $(".sd_picods_key_question").data('sd-meta-datum-id')
+  init_select2(".sd_picods_key_question", "/sd_key_questions?sd_meta_datum_id=" + sd_meta_datum_id)
+  $(".sd_picods_key_question").select2({ placeholder: "-- Select Key Question(s) --" })
 
   $( '.apply-select2' ).select2
     selectOnClose: true, 
