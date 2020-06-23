@@ -27,7 +27,7 @@ def build_type1_sections_wide(p, project, highlight, wrap)
               refman: extraction.citations_project.citation.refman,
               pmid: extraction.citations_project.citation.pmid)
 
-            eefps = efps.extractions_extraction_forms_projects_sections.find_by(
+            eefps = efps.extractions_extraction_forms_projects_sections.find_or_create_by(
               extraction: extraction,
               extraction_forms_projects_section: efps)
 
