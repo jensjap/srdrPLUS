@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_23_201415) do
+ActiveRecord::Schema.define(version: 2020_06_23_205334) do
 
   create_table "abstrackr_settings", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "profile_id"
@@ -1526,6 +1526,7 @@ ActiveRecord::Schema.define(version: 2020_06_23_201415) do
     t.text "study_designs"
     t.text "settings"
     t.bigint "data_analysis_level_id"
+    t.text "timing"
     t.index ["data_analysis_level_id"], name: "index_sd_picods_on_data_analysis_level_id"
     t.index ["sd_meta_datum_id"], name: "index_sd_picods_on_sd_meta_datum_id"
   end
