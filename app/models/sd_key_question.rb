@@ -69,4 +69,12 @@ class SdKeyQuestion < ApplicationRecord
     fz = FuzzyMatch.new(self.sd_meta_datum.project.key_questions, read: :name)
     fz.find(self.key_question.name)
   end
+
+  def key_question_name
+    self.key_question&.name || ""
+  end
+
+  def key_question_name=(name)
+    self.update( key_question: KeyQuestion.find_or_create_by(name: name) )
+  end
 end

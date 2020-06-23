@@ -1,7 +1,7 @@
 #panel-3.tabs-panel.is-active
   fieldset
     div style="display:flex; flex-direction: row;"
-      legend Purpose and Key Questions
+      legend Purpose, Analytic Framework, and Key Questions
       .status-switch.button[id="3-yes-no-section" class=(@sd_meta_datum.section_flag_3 ? 'completed' : 'draft') data-sd_meta_datum_id="#{@sd_meta_datum.id}"]
         - if @sd_meta_datum.section_flag_3
           | Completed
@@ -16,9 +16,6 @@
       .sd-item data-field-span="1"
         = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
           = f.association :review_type, label: 'Type of Review', input_html: { class: 'review_type sd-select2' }
-      .sd-item data-field-span="1"
-        = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
-          = f.association :data_analysis_level, label: 'Level of Data Analysis', input_html: { class: 'data_analysis_level sd-select2' }
     div data-row-span="1"
       div data-field-span="1"
         label Analytic / Conceptual Framework

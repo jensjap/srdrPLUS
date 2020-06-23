@@ -3,7 +3,8 @@ class KeyQuestionTypesController < ApplicationController
     "Intervention benefits and/or harms",
     "Epidemiology - Exposure-outcome relationship",
     "Epidemiology - Incidence/prevalence",
-    "Diagnostic accuracy"
+    "Diagnostic accuracy",
+    "Screening benefits and/or harms"
   ].freeze
 
   def index
@@ -15,6 +16,7 @@ class KeyQuestionTypesController < ApplicationController
       @key_question_types << KeyQuestionType.find_or_create_by(name: DEFAULT_KEY_QUESTION_TYPES[1])
       @key_question_types << KeyQuestionType.find_or_create_by(name: DEFAULT_KEY_QUESTION_TYPES[2])
       @key_question_types << KeyQuestionType.find_or_create_by(name: DEFAULT_KEY_QUESTION_TYPES[3])
+      @key_question_types << KeyQuestionType.find_or_create_by(name: DEFAULT_KEY_QUESTION_TYPES[4])
     end
   end
 end

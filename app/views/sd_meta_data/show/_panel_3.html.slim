@@ -1,6 +1,6 @@
 #panel-3.tabs-panel.is-active
   fieldset
-    legend Purpose and Key Questions
+    legend Purpose, Analytic Framework, and Key Questions
     div data-row-span="1"
       div data-field-span="1"
         label Overall Purpose of Review
@@ -11,10 +11,6 @@
         label Type of Review
         - tor = @sd_meta_datum.review_type&.name
         div #{tor.present? ? tor : '-----' }
-      div data-field-span="1"
-        label Level of Data Analysis
-        - loa = @sd_meta_datum.data_analysis_level&.name
-        div #{loa.present? ? loa : '-----' }
     div data-row-span="1"
       div data-field-span="1"
         label Analytic / Conceptual Framework
@@ -44,7 +40,10 @@
               .sd-show-inner
                 div
                   label Key Question
-                  div = sd_key_question.key_question.name.present? ? sd_key_question.key_question.name : '-----'
+                  div = sd_key_question.key_question.present? ? sd_key_question.key_question.name : '-----'
                 div
                   label Type(s)
                   div = kqts.present? ? kqts : '-----'
+                div
+                  label Did this Key Question include a meta-analysis?
+                  div = sd_key_question.includes_meta_analysis.present? ? 'Yes' : 'No'

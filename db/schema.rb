@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_22_074059) do
+ActiveRecord::Schema.define(version: 2020_06_22_185159) do
 
   create_table "abstrackr_settings", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "profile_id"
@@ -1377,6 +1377,7 @@ ActiveRecord::Schema.define(version: 2020_06_22_074059) do
     t.integer "key_question_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "includes_meta_analysis"
     t.index ["key_question_id"], name: "index_sd_key_questions_on_key_question_id"
     t.index ["sd_key_question_id"], name: "index_sd_key_questions_on_sd_key_question_id"
     t.index ["sd_meta_datum_id"], name: "index_sd_key_questions_on_sd_meta_datum_id"
@@ -1445,8 +1446,6 @@ ActiveRecord::Schema.define(version: 2020_06_22_074059) do
     t.boolean "section_flag_7", default: false, null: false
     t.string "prospero_link"
     t.bigint "review_type_id"
-    t.bigint "data_analysis_level_id"
-    t.index ["data_analysis_level_id"], name: "index_sd_meta_data_on_data_analysis_level_id"
     t.index ["review_type_id"], name: "index_sd_meta_data_on_review_type_id"
   end
 
@@ -1524,6 +1523,8 @@ ActiveRecord::Schema.define(version: 2020_06_22_074059) do
     t.text "outcomes"
     t.text "study_designs"
     t.text "settings"
+    t.bigint "data_analysis_level_id"
+    t.index ["data_analysis_level_id"], name: "index_sd_picods_on_data_analysis_level_id"
     t.index ["sd_meta_datum_id"], name: "index_sd_picods_on_sd_meta_datum_id"
   end
 
@@ -2024,9 +2025,9 @@ ActiveRecord::Schema.define(version: 2020_06_22_074059) do
   add_foreign_key "sd_key_questions_projects", "sd_key_questions"
   add_foreign_key "sd_key_questions_sd_picods", "sd_key_questions"
   add_foreign_key "sd_key_questions_sd_picods", "sd_picods"
-  add_foreign_key "sd_meta_data", "data_analysis_levels"
   add_foreign_key "sd_meta_data", "review_types"
   add_foreign_key "sd_other_items", "sd_meta_data"
+  add_foreign_key "sd_picods", "data_analysis_levels"
   add_foreign_key "sd_picods", "sd_meta_data"
   add_foreign_key "sd_picods_sd_picods_types", "sd_picods"
   add_foreign_key "sd_picods_sd_picods_types", "sd_picods_types"

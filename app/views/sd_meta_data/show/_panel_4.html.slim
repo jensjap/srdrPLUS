@@ -1,14 +1,14 @@
 #panel-4.tabs-panel.is-active
   fieldset
-    legend PICODS
+    legend PICODTS
     div data-row-span="1"
       div data-field-span="1"
-        label PICODS
+        label PICODTS
         - if @sd_meta_datum.sd_picods.empty?
           div -----
         - else
           - @sd_meta_datum.sd_picods.each do |sd_picod|
-              - picod_types = sd_picod.sd_picods_types
+              /- picod_types = sd_picod.sd_picods_types
               .sd-show-inner
                 /div
                   label Type(s)
@@ -25,6 +25,13 @@
                       ul
                         - sd_picod.sd_key_questions.each do |skq|
                           li style="font-size: 12px;" #{skq.key_question.name.present? ? skq.key_question.name : '-----'}
+                div data-row-span="1"
+                  div data-field-span="1"
+                    label Level of Data Analysis
+                    - if not sd_picod.data_analysis_level.present?
+                      div = '-----'
+                    - else
+                      div = sd_picod.data_analysis_level.name
                 div data-row-span="1"
                   div data-field-span="1"
                     label Population

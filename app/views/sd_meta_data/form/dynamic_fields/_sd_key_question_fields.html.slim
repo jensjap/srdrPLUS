@@ -1,5 +1,6 @@
 .nested-fields
   div class="text-right"
     = link_to_remove_association "remove key question", f, 'data-remove-key-question': 'true', class: 'trigger-autosave', data: { confirm: "Are you sure? If any SRDR+ to Report Key Question Mapping exists on the next page, they will be destroyed." }
-  = f.association :key_question, include_blank: true, label: 'Key Question', input_html: { class: "key_question sd-select2" }
+  = f.input :key_question_name, label: 'Key Question', input_html: { class: "key_question" }
   = f.association :key_question_types, include_blank: true, label: 'Type(s)', input_html: { class: "key_question_type sd-select2" }
+  = f.input :includes_meta_analysis, as: :select, label: 'Did this Key Question include a meta-analysis?', selected: f.object.includes_meta_analysis

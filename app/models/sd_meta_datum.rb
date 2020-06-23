@@ -52,8 +52,8 @@ class SdMetaDatum < ApplicationRecord
     "Title, Funding Sources, and Dates",
     "Authors and Stakeholders",
     "URL Links",
-    "Purpose and Key Questions",
-    "PICODS",
+    "Purpose, Analytic Framework, and Key Questions",
+    "PICODTS",
     "Key Question Mapping",
     "Search Strategy and Evidence Summary",
     "Study Results"
@@ -63,7 +63,6 @@ class SdMetaDatum < ApplicationRecord
 
   belongs_to :project, inverse_of: :sd_meta_data, optional: true
   belongs_to :review_type, inverse_of: :sd_meta_data, optional: true
-  belongs_to :data_analysis_level, inverse_of: :sd_meta_data, optional: true
 
   has_many :sd_key_questions, -> { ordered }, inverse_of: :sd_meta_datum, dependent: :destroy
   has_many :key_questions, -> { distinct }, through: :sd_key_questions

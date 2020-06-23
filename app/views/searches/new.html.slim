@@ -17,13 +17,13 @@
 
         .form-inputs
           = f.simple_fields_for :projects_search do |projects_search_form|
-            .label-group.float-left
-              = projects_search_form.check_box :public, required: false
-              = projects_search_form.label :public,     required: false
-
             - if current_user
+              .label-group.float-left
+                = projects_search_form.check_box :public, required: false, checked: true
+                = projects_search_form.label :public,     required: false
+
               .label-group
-                = projects_search_form.check_box :owned, required: false
+                = projects_search_form.check_box :owned, required: false, checked: true
                 = projects_search_form.label :owned,     required: false
 
             = projects_search_form.input :name,                    required: false
