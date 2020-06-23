@@ -11,7 +11,7 @@
     div data-row-span="1"
       .sd-item data-field-span="1"
         = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
-          = f.input :authors, label: 'Authors', :input_html => { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
+          = f.input :authors, label: 'Authors of Full Report', :input_html => { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
     div data-row-span="1"
       .sd-item data-field-span="1"
         = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|

@@ -1,6 +1,7 @@
 .nested-fields
+  div class="text-right"
+    = link_to_remove_association "remove search strategy", f, data: { confirm: "Are you sure?" }
   = f.association :sd_search_database, include_blank: true, label: 'Database', input_html: { class: "sd_search_database sd-select2" }
   = f.input :date_of_search, label: 'Search Run Date'
   = f.input :search_limits, label: 'Search Limits'
   = f.input :search_terms, label: 'Search Terms'
-  = link_to_remove_association "remove search strategy", f, data: { confirm: "Are you sure?" }

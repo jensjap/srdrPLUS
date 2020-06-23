@@ -7,6 +7,12 @@
 #  name             :text(65535)
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
+#  population       :text(65535)
+#  interventions    :text(65535)
+#  comparators      :text(65535)
+#  outcomes         :text(65535)
+#  study_designs    :text(65535)
+#  settings         :text(65535)
 #
 
 class SdPicod < ApplicationRecord

@@ -1,3 +1,17 @@
+# == Schema Information
+#
+# Table name: invitations
+#
+#  id             :bigint           not null, primary key
+#  role_id        :integer
+#  invitable_type :string(255)
+#  invitable_id   :bigint
+#  enabled        :boolean          default(FALSE)
+#  token          :string(255)
+#  created_at     :datetime         not null
+#  updated_at     :datetime         not null
+#
+
 class Invitation < ApplicationRecord
   include SharedApprovableMethods
   include SharedTokenableMethods

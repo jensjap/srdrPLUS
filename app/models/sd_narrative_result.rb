@@ -2,14 +2,13 @@
 #
 # Table name: sd_narrative_results
 #
-#  id                 :bigint(8)        not null, primary key
-#  narrative_results_by_population               :text(65535)
-#  narrative_results_by_intervention               :text(65535)
-#  narrative_results  :text(65535)
-#  sd_meta_datum_id   :integer
-#  sd_result_item_id :integer
-#  created_at         :datetime         not null
-#  updated_at         :datetime         not null
+#  id                                :bigint           not null, primary key
+#  narrative_results                 :text(65535)
+#  created_at                        :datetime         not null
+#  updated_at                        :datetime         not null
+#  narrative_results_by_population   :text(65535)
+#  narrative_results_by_intervention :text(65535)
+#  sd_result_item_id                 :bigint
 #
 
 class SdNarrativeResult < ApplicationRecord

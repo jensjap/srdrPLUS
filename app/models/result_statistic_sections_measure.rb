@@ -2,13 +2,14 @@
 #
 # Table name: result_statistic_sections_measures
 #
-#  id                          :integer          not null, primary key
-#  measure_id                  :integer
-#  result_statistic_section_id :integer
-#  deleted_at                  :datetime
-#  active                      :boolean
-#  created_at                  :datetime         not null
-#  updated_at                  :datetime         not null
+#  id                                   :integer          not null, primary key
+#  measure_id                           :integer
+#  result_statistic_section_id          :integer
+#  deleted_at                           :datetime
+#  active                               :boolean
+#  created_at                           :datetime         not null
+#  updated_at                           :datetime         not null
+#  result_statistic_sections_measure_id :integer
 #
 
 class ResultStatisticSectionsMeasure < ApplicationRecord

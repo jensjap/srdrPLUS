@@ -2,13 +2,11 @@
 #
 # Table name: sd_pairwise_meta_analytic_results
 #
-#  id               :bigint(8)        not null, primary key
-#  name             :text(65535)
-#  sd_meta_datum_id :integer
-#  created_at       :datetime         not null
-#  updated_at       :datetime         not null
-#  p_type           :string(255)
-#  sd_result_item_id :integer
+#  id                :bigint           not null, primary key
+#  name              :text(65535)
+#  created_at        :datetime         not null
+#  updated_at        :datetime         not null
+#  sd_result_item_id :bigint
 #
 
 class SdPairwiseMetaAnalyticResult < ApplicationRecord
