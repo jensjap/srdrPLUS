@@ -17,14 +17,24 @@
         div #{acoiof.present? ? simple_format(acoiof) : '-----' }
     div data-row-span="1"
       div data-field-span="1"
-        label Stakeholders Involved
-        - sie = @sd_meta_datum.stakeholder_involvement_extent
-        div #{sie.present? ? simple_format(sie) : '-----' }
+        label Stakeholders Involved - Key Informants
+        - s1 = @sd_meta_datum.stakeholders_key_informants
+        div #{s1.present? ? simple_format(s1) : '-----' }
     div data-row-span="1"
       div data-field-span="1"
-        label Conflicts of Interest of Stakeholders
-        - scoi = @sd_meta_datum.stakeholders_conflict_of_interest
-        div #{scoi.present? ? simple_format(scoi) : '-----' }
+        label Stakeholders Involved - Technical Expert Panel
+        - s2 = @sd_meta_datum.stakeholders_technical_experts
+        div #{s2.present? ? simple_format(s2) : '-----' }
+    div data-row-span="1"
+      div data-field-span="1"
+        label Stakeholders Involved - Peer Reviewers
+        - s3 = @sd_meta_datum.stakeholders_peer_reviewers
+        div #{s3.present? ? simple_format(s3) : '-----' }
+    div data-row-span="1"
+      div data-field-span="1"
+        label Stakeholders Involved - Others
+        - s4 = @sd_meta_datum.stakeholders_others
+        div #{s4.present? ? simple_format(s4) : '-----' }
     div data-row-span="2"
       div data-field-span="1"
         label SRDR+ Project Leads:
