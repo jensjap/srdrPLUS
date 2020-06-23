@@ -1,6 +1,6 @@
 class DataAnalysisLevelsController < ApplicationController
   DEFAULT_DATA_ANALYSIS_LEVELS = [
-    "Individual patient data (IPD)",
+    "Individual participant data (IPD)",
     "Summary"
   ].freeze
 
