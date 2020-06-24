@@ -351,10 +351,15 @@ check = (panelNumber, status) ->
     $('#'.concat(panelNumber.toString(), '-yes-no-section.status-switch')).removeClass 'draft warning'
     $('#'.concat(panelNumber.toString(), '-yes-no-section.status-switch')).addClass 'completed'
     $('#'.concat(panelNumber.toString(), '-yes-no-section.status-switch')).html 'Completed'
+    if panelNumber == '3'
+      $('.mapping-kq-title').removeClass('hide')
   else
     $('#'.concat(panelNumber.toString(), '-yes-no-section.status-switch')).removeClass 'completed warning'
     $('#'.concat(panelNumber.toString(), '-yes-no-section.status-switch')).addClass 'draft'
     $('#'.concat(panelNumber.toString(), '-yes-no-section.status-switch')).html 'Draft'
+    if panelNumber == '3'
+      $('.mapping-kq-title').addClass('hide')
+
   check = ' <i class="fa fa-check"></i>'
   link = $("#panel-#{panelNumber}-label")
   check_container = $(".check-container[panel-number='#{panelNumber}']")
