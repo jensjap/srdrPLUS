@@ -133,6 +133,32 @@ class StatusChecker
       updateSectionFlag $( '.status-switch' )[0]
       $('#status-check-modal').foundation("close");
 
+class Collapser
+  @_state_dict: {}
+  @initialize_states: ( ) ->
+    for elem in $( '.collapse-content' )
+      Collapser._state_dict[$( elem ).data( 'result-item-id' )] = true
+  @initialize_listeners: ( ) ->
+    $( '.collapsed-icon' ).on 'click', ->
+      $parent = $( $( this ).closest( '.nested-fields' ) )
+      $parent.find( '.collapse-content' ).removeClass( 'hide' )
+      $parent.find( '.not-collapsed-icon' ).removeClass( 'hide' )
+      $parent.find( '.collapsed-icon' ).addClass( 'hide' )
+      Collapser._state_dict[$parent.find( '.collapse-content' ).data('result-item-id')] = false
+    $( '.not-collapsed-icon' ).on 'click', ->
+      $parent = $( $( this ).closest( '.nested-fields' ) )
+      $parent.find( '.collapse-content' ).addClass( 'hide' )
+      $parent.find( '.not-collapsed-icon' ).addClass( 'hide' )
+      $parent.find( '.collapsed-icon' ).removeClass( 'hide' )
+      Collapser._state_dict[$parent.find( '.collapse-content' ).data('result-item-id')] = true
+  @restore_states: ( ) ->
+    for result_item_id,state of Collapser._state_dict
+      if not state
+        $parent = $( '.collapse-content[data-result-item-id="' + result_item_id + '"]' ).closest( '.nested-fields' )
+        $parent.find( '.collapse-content' ).removeClass( 'hide' )
+        $parent.find( '.not-collapsed-icon' ).removeClass( 'hide' )
+        $parent.find( '.collapsed-icon' ).addClass( 'hide' )
+
 class Select2Helper
   @copy_sd_outcome_names: ( ) ->
     sd_outcome_option_set = new Set()
@@ -321,6 +347,8 @@ bind_srdr20_saving_mechanism = () ->
     $cocoon_container = $( form ).parents( '.cocoon-container' )
     $cocoon_container.on 'sd:form-loaded', ( e ) ->
       add_form_listeners( $cocoon_container.children( 'form' ) )
+      Collapser.initialize_listeners()
+      Collapser.restore_states()
       apply_all_select2()
       StatusChecker.get_all_inputs().each () ->
         this.style.height = ""
@@ -384,6 +412,8 @@ document.addEventListener 'turbolinks:load', ->
   do ->
     return if $('body.sd_meta_data').length == 0
     StatusChecker.initialize_listeners()
+    Collapser.initialize_states()
+    Collapser.initialize_listeners()
     initializeSwitches()
     bind_srdr20_saving_mechanism()
     apply_all_select2()

@@ -308,6 +308,20 @@ body.sd_meta_data {
     }
   }
 
+  .remove_fields {
+    color: #c10e0e;
+    font-weight: bolder;
+    font-size: 105%;
+  }
+
+  .collapse-button {
+    div {
+      margin: 0.5rem 0 0 0; 
+    }
+    color: #4b83b5;
+    font-weight: bolder;
+    font-size: 105%;
+  }
   .add-item-link {
     margin: 0 1.2rem 0 1.2rem; 
     color: #8f20a2;
