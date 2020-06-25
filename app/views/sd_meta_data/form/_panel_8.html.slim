@@ -1,7 +1,7 @@
 #panel-8.tabs-panel.is-active
   fieldset
     div style="display:flex; flex-direction: row;"
-      legend Study Results
+      legend Results for Individual Outcomes
       .status-switch.button[id="8-yes-no-section" class=(@sd_meta_datum.section_flag_8 ? 'completed' : 'draft') data-sd_meta_datum_id="#{@sd_meta_datum.id}"]
         - if @sd_meta_datum.section_flag_8
           | Completed
