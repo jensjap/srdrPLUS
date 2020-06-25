@@ -1,7 +1,7 @@
 #panel-6.tabs-panel.is-active
   fieldset
     div style="display:flex; flex-direction: row;"
-      legend Search Strategy and Evidence Summary
+      legend Search Strategy and Results of Screening
       .status-switch.button[id="6-yes-no-section" class=(@sd_meta_datum.section_flag_6 ? 'completed' : 'draft') data-sd_meta_datum_id="#{@sd_meta_datum.id}"]
         - if @sd_meta_datum.section_flag_6
           | Completed

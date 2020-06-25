@@ -29,7 +29,7 @@
           .warning-container[panel-number="5"]
       li.tabs-title
         = link_to '?panel_number=6', class: ([(@panel_number == 6 ? 'bg-light-grey' : ''), (@sd_meta_datum.section_flag_6 ? 'to-be-checked' : '')] - ['']).join(' '), id: "panel-6-label" do
-          |Search Strategy and Evidence Summary
+          |Search Strategy and Results of Screening
           .check-container[panel-number="6"]
       li.tabs-title
         = link_to '?panel_number=7', class: ([(@panel_number == 7 ? 'bg-light-grey' : ''), (@sd_meta_datum.section_flag_7 ? 'to-be-checked' : '')] - ['']).join(' '), id: "panel-7-label" do
@@ -38,7 +38,7 @@
   .cell.medium-9
     #status-check-modal.reveal data-reveal=""
       - if @panel_number != 5
-       | There are incomplete input fields. Do you want to continue? 
+       | There are incomplete input fields. Do you want to continue?
       - else
        | There are unmapped key questions. Do you want to continue?
       #status-check-modal-buttons
