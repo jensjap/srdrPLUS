@@ -1,6 +1,6 @@
 .nested-fields
   div class="text-right"
-    = link_to_remove_association "remove pairwise meta-analysis", f, data: { confirm: "Are you sure?" }
+    = link_to_remove_association "remove pairwise meta-analysis", f, data: { confirm: "This will remove associated outcomes, descriptions, and figures.  Are you sure?" }
   - collection = ['Forest plot with summary estimate, type of model, and estimates of heterogeneity', 'Meta-analysis results table'].freeze
   = f.input :sd_outcome_names, as: :select, collection: f.object.sd_outcome_names, label: 'Outcome(s)', include_blank: true, input_html: { class: 'sd-outcome-select2', multiple: true }
   = f.input :name, label: 'Description', input_html: { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }

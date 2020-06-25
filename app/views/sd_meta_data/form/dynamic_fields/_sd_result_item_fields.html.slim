@@ -1,6 +1,6 @@
 .nested-fields
   div class="text-right"
-    = link_to_remove_association "remove results for this key question", f, data: { confirm: "Are you sure?" }
+    = link_to_remove_association "remove results for this key question", f, data: { confirm: "This will remove this result, and any of its narrative results by outcome, evidence tables, pairwise meta-analyses by outcomes, network meta-analyses by outcomes, and meta-regression results by outcomes.  Are you sure?" }
   = f.association :sd_key_question, label: 'Key Question', include_blank: true, collection: f.object.sd_meta_datum.sd_key_questions.where.not( key_question_id: nil ).map { |kq| [kq.key_question.name, kq.id] }, input_html: { class: 'apply-select2' }
 
   div

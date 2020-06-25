@@ -1,6 +1,6 @@
 .nested-fields
   div class="text-right"
-    = link_to_remove_association "remove figure", f, data: { confirm: "Are you sure?" }
+    = link_to_remove_association "remove figure", f, data: { confirm: "This will remove the figure(s). Are you sure?" }
   = f.input :p_type, label: 'Type', include_blank: true, input_html: { class: 'apply-select2' }, collection: ( defined?(p_type_collection) ? p_type_collection : [] )
   = f.input :pictures, as: :file, label: 'Figures', input_html: { multiple: true, id: "#{dom_id(f.object)}", class: 'hide' }
   label.button for="#{dom_id(f.object)}"

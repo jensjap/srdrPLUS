@@ -1,6 +1,6 @@
 .nested-fields
   div class="text-right"
-    = link_to_remove_association "remove prisma", f, data: { confirm: "Are you sure?" }
+    = link_to_remove_association "remove prisma", f, data: { confirm: "This will remove the description and any figures associated. Are you sure?" }
   = f.input :name, label: 'Description'
   = f.input :pictures, as: :file, label: 'Figures', input_html: { multiple: true, id: "#{dom_id(f.object)}", class: 'hide' }
   label.button for="#{dom_id(f.object)}"
