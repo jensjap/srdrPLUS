@@ -133,6 +133,32 @@ class StatusChecker
       updateSectionFlag $( '.status-switch' )[0]
       $('#status-check-modal').foundation("close");
 
+class Collapser
+  @_state_dict: {}
+  @initialize_states: ( ) ->
+    for elem in $( '.collapse-content' )
+      Collapser._state_dict[$( elem ).data( 'result-item-id' )] = true
+  @initialize_listeners: ( ) ->
+    $( '.collapsed-icon' ).on 'click', ->
+      $parent = $( $( this ).closest( '.nested-fields' ) )
+      $parent.find( '.collapse-content' ).removeClass( 'hide' )
+      $parent.find( '.not-collapsed-icon' ).removeClass( 'hide' )
+      $parent.find( '.collapsed-icon' ).addClass( 'hide' )
+      Collapser._state_dict[$parent.find( '.collapse-content' ).data('result-item-id')] = false
+    $( '.not-collapsed-icon' ).on 'click', ->
+      $parent = $( $( this ).closest( '.nested-fields' ) )
+      $parent.find( '.collapse-content' ).addClass( 'hide' )
+      $parent.find( '.not-collapsed-icon' ).addClass( 'hide' )
+      $parent.find( '.collapsed-icon' ).removeClass( 'hide' )
+      Collapser._state_dict[$parent.find( '.collapse-content' ).data('result-item-id')] = true
+  @restore_states: ( ) ->
+    for result_item_id,state of Collapser._state_dict
+      if not state
+        $parent = $( '.collapse-content[data-result-item-id="' + result_item_id + '"]' ).closest( '.nested-fields' )
+        $parent.find( '.collapse-content' ).removeClass( 'hide' )
+        $parent.find( '.not-collapsed-icon' ).removeClass( 'hide' )
+        $parent.find( '.collapsed-icon' ).addClass( 'hide' )
+
 class Select2Helper
   @copy_sd_outcome_names: ( ) ->
     sd_outcome_option_set = new Set()
@@ -231,11 +257,12 @@ apply_all_select2 =() ->
   init_select2("#sd_meta_datum_key_question_type_ids", '/key_question_types')
   init_select2(".sd_search_database", '/sd_search_databases')
   init_select2(".key_question_type", '/key_question_types')
-  sd_meta_datum_id = $(".sd_picods_key_question").data('sd-meta-datum-id')
-  init_select2(".sd_picods_key_question", "/sd_key_questions?sd_meta_datum_id=" + sd_meta_datum_id)
   init_select2(".sd_picods_type", '/sd_picods_types')
   init_select2(".review_type", '/review_types')
   init_select2(".data_analysis_level", '/data_analysis_levels')
+  sd_meta_datum_id = $(".sd_picods_key_question").data('sd-meta-datum-id')
+  init_select2(".sd_picods_key_question", "/sd_key_questions?sd_meta_datum_id=" + sd_meta_datum_id)
+  $(".sd_picods_key_question").select2({ placeholder: "-- Select Key Question(s) --" })
 
   $( '.apply-select2' ).select2
     selectOnClose: true, 
@@ -320,6 +347,8 @@ bind_srdr20_saving_mechanism = () ->
     $cocoon_container = $( form ).parents( '.cocoon-container' )
     $cocoon_container.on 'sd:form-loaded', ( e ) ->
       add_form_listeners( $cocoon_container.children( 'form' ) )
+      Collapser.initialize_listeners()
+      Collapser.restore_states()
       apply_all_select2()
       StatusChecker.get_all_inputs().each () ->
         this.style.height = ""
@@ -350,10 +379,15 @@ check = (panelNumber, status) ->
     $('#'.concat(panelNumber.toString(), '-yes-no-section.status-switch')).removeClass 'draft warning'
     $('#'.concat(panelNumber.toString(), '-yes-no-section.status-switch')).addClass 'completed'
     $('#'.concat(panelNumber.toString(), '-yes-no-section.status-switch')).html 'Completed'
+    if panelNumber == '3'
+      $('.mapping-kq-title').removeClass('hide')
   else
     $('#'.concat(panelNumber.toString(), '-yes-no-section.status-switch')).removeClass 'completed warning'
     $('#'.concat(panelNumber.toString(), '-yes-no-section.status-switch')).addClass 'draft'
     $('#'.concat(panelNumber.toString(), '-yes-no-section.status-switch')).html 'Draft'
+    if panelNumber == '3'
+      $('.mapping-kq-title').addClass('hide')
+
   check = ' <i class="fa fa-check"></i>'
   link = $("#panel-#{panelNumber}-label")
   check_container = $(".check-container[panel-number='#{panelNumber}']")
@@ -378,6 +412,8 @@ document.addEventListener 'turbolinks:load', ->
   do ->
     return if $('body.sd_meta_data').length == 0
     StatusChecker.initialize_listeners()
+    Collapser.initialize_states()
+    Collapser.initialize_listeners()
     initializeSwitches()
     bind_srdr20_saving_mechanism()
     apply_all_select2()

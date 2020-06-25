@@ -51813,7 +51813,7 @@ function __guardMethod__(obj, methodName, transform) {
 
 }).call(this);
 (function() {
-  var Caretkeeper, Select2Helper, StatusChecker, Timekeeper, add_form_listeners, apply_all_select2, bind_srdr20_saving_mechanism, check, formatResult, formatResultSelection, init_select2, initializeSwitches, updateSectionFlag, validate_and_send_async_form, validate_form_inputs;
+  var Caretkeeper, Collapser, Select2Helper, StatusChecker, Timekeeper, add_form_listeners, apply_all_select2, bind_srdr20_saving_mechanism, check, formatResult, formatResultSelection, init_select2, initializeSwitches, updateSectionFlag, validate_and_send_async_form, validate_form_inputs;
 
   Caretkeeper = (function() {
     function Caretkeeper() {}
@@ -52004,6 +52004,63 @@ function __guardMethod__(obj, methodName, transform) {
 
   })();
 
+  Collapser = (function() {
+    function Collapser() {}
+
+    Collapser._state_dict = {};
+
+    Collapser.initialize_states = function() {
+      var elem, j, len, ref, results;
+      ref = $('.collapse-content');
+      results = [];
+      for (j = 0, len = ref.length; j < len; j++) {
+        elem = ref[j];
+        results.push(Collapser._state_dict[$(elem).data('result-item-id')] = true);
+      }
+      return results;
+    };
+
+    Collapser.initialize_listeners = function() {
+      $('.collapsed-icon').on('click', function() {
+        var $parent;
+        $parent = $($(this).closest('.nested-fields'));
+        $parent.find('.collapse-content').removeClass('hide');
+        $parent.find('.not-collapsed-icon').removeClass('hide');
+        $parent.find('.collapsed-icon').addClass('hide');
+        return Collapser._state_dict[$parent.find('.collapse-content').data('result-item-id')] = false;
+      });
+      return $('.not-collapsed-icon').on('click', function() {
+        var $parent;
+        $parent = $($(this).closest('.nested-fields'));
+        $parent.find('.collapse-content').addClass('hide');
+        $parent.find('.not-collapsed-icon').addClass('hide');
+        $parent.find('.collapsed-icon').removeClass('hide');
+        return Collapser._state_dict[$parent.find('.collapse-content').data('result-item-id')] = true;
+      });
+    };
+
+    Collapser.restore_states = function() {
+      var $parent, ref, result_item_id, results, state;
+      ref = Collapser._state_dict;
+      results = [];
+      for (result_item_id in ref) {
+        state = ref[result_item_id];
+        if (!state) {
+          $parent = $('.collapse-content[data-result-item-id="' + result_item_id + '"]').closest('.nested-fields');
+          $parent.find('.collapse-content').removeClass('hide');
+          $parent.find('.not-collapsed-icon').removeClass('hide');
+          results.push($parent.find('.collapsed-icon').addClass('hide'));
+        } else {
+          results.push(void 0);
+        }
+      }
+      return results;
+    };
+
+    return Collapser;
+
+  })();
+
   Select2Helper = (function() {
     function Select2Helper() {}
 
@@ -52139,11 +52196,14 @@ function __guardMethod__(obj, methodName, transform) {
     init_select2("#sd_meta_datum_key_question_type_ids", '/key_question_types');
     init_select2(".sd_search_database", '/sd_search_databases');
     init_select2(".key_question_type", '/key_question_types');
-    sd_meta_datum_id = $(".sd_picods_key_question").data('sd-meta-datum-id');
-    init_select2(".sd_picods_key_question", "/sd_key_questions?sd_meta_datum_id=" + sd_meta_datum_id);
     init_select2(".sd_picods_type", '/sd_picods_types');
     init_select2(".review_type", '/review_types');
     init_select2(".data_analysis_level", '/data_analysis_levels');
+    sd_meta_datum_id = $(".sd_picods_key_question").data('sd-meta-datum-id');
+    init_select2(".sd_picods_key_question", "/sd_key_questions?sd_meta_datum_id=" + sd_meta_datum_id);
+    $(".sd_picods_key_question").select2({
+      placeholder: "-- Select Key Question(s) --"
+    });
     $('.apply-select2').select2({
       selectOnClose: true,
       allowClear: true,
@@ -52209,6 +52269,8 @@ function __guardMethod__(obj, methodName, transform) {
       $cocoon_container = $(form).parents('.cocoon-container');
       return $cocoon_container.on('sd:form-loaded', function(e) {
         add_form_listeners($cocoon_container.children('form'));
+        Collapser.initialize_listeners();
+        Collapser.restore_states();
         apply_all_select2();
         StatusChecker.get_all_inputs().each(function() {
           this.style.height = "";
@@ -52252,10 +52314,16 @@ function __guardMethod__(obj, methodName, transform) {
       $('#'.concat(panelNumber.toString(), '-yes-no-section.status-switch')).removeClass('draft warning');
       $('#'.concat(panelNumber.toString(), '-yes-no-section.status-switch')).addClass('completed');
       $('#'.concat(panelNumber.toString(), '-yes-no-section.status-switch')).html('Completed');
+      if (panelNumber === '3') {
+        $('.mapping-kq-title').removeClass('hide');
+      }
     } else {
       $('#'.concat(panelNumber.toString(), '-yes-no-section.status-switch')).removeClass('completed warning');
       $('#'.concat(panelNumber.toString(), '-yes-no-section.status-switch')).addClass('draft');
       $('#'.concat(panelNumber.toString(), '-yes-no-section.status-switch')).html('Draft');
+      if (panelNumber === '3') {
+        $('.mapping-kq-title').addClass('hide');
+      }
     }
     check = ' <i class="fa fa-check"></i>';
     link = $("#panel-" + panelNumber + "-label");
@@ -52290,6 +52358,8 @@ function __guardMethod__(obj, methodName, transform) {
         return;
       }
       StatusChecker.initialize_listeners();
+      Collapser.initialize_states();
+      Collapser.initialize_listeners();
       initializeSwitches();
       bind_srdr20_saving_mechanism();
       apply_all_select2();

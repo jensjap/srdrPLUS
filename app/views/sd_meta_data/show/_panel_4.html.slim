@@ -34,25 +34,29 @@
                       div = sd_picod.data_analysis_level.name
                 div data-row-span="1"
                   div data-field-span="1"
-                    label Population
+                    label Population (P)
                     div = ( sd_picod.population.present? ? simple_format(sd_picod.population) : '-----' )
                 div data-row-span="1"
                   div data-field-span="1"
-                    label Interventions
+                    label Interventions (I)
                     div = ( sd_picod.interventions.present? ? simple_format(sd_picod.interventions) : '-----' )
                 div data-row-span="1"
                   div data-field-span="1"
-                    label Comparators
+                    label Comparators (C)
                     div = ( sd_picod.comparators.present? ? simple_format(sd_picod.comparators) : '-----' )
                 div data-row-span="1"
                   div data-field-span="1"
-                    label Outcomes
+                    label Outcomes (O)
                     div = ( sd_picod.outcomes.present? ? simple_format(sd_picod.outcomes) : '-----' )
                 div data-row-span="1"
                   div data-field-span="1"
-                    label Study Designs
+                    label Study Designs (D)
                     div = ( sd_picod.study_designs.present? ? simple_format(sd_picod.study_designs) : '-----' )
                 div data-row-span="1"
                   div data-field-span="1"
-                    label Settings
+                    label Timing (T)
+                    div = ( sd_picod.timing.present? ? simple_format(sd_picod.timing) : '-----' )
+                div data-row-span="1"
+                  div data-field-span="1"
+                    label Settings (S)
                     div = ( sd_picod.settings.present? ? simple_format(sd_picod.settings) : '-----' )
