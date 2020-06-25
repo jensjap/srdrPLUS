@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_22_185159) do
+ActiveRecord::Schema.define(version: 2020_06_25_045927) do
 
   create_table "abstrackr_settings", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "profile_id"
@@ -1446,6 +1446,7 @@ ActiveRecord::Schema.define(version: 2020_06_22_185159) do
     t.boolean "section_flag_7", default: false, null: false
     t.string "prospero_link"
     t.bigint "review_type_id"
+    t.boolean "section_flag_8", default: false, null: false
     t.index ["review_type_id"], name: "index_sd_meta_data_on_review_type_id"
   end
 

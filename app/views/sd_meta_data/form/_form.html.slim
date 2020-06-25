@@ -33,8 +33,12 @@
           .check-container[panel-number="6"]
       li.tabs-title
         = link_to '?panel_number=7', class: ([(@panel_number == 7 ? 'bg-light-grey' : ''), (@sd_meta_datum.section_flag_7 ? 'to-be-checked' : '')] - ['']).join(' '), id: "panel-7-label" do
-          |Study Results
+          |Risk of Bias and Overall Summary of Evidence
           .check-container[panel-number="7"]
+      li.tabs-title
+        = link_to '?panel_number=8', class: ([(@panel_number == 8 ? 'bg-light-grey' : ''), (@sd_meta_datum.section_flag_8 ? 'to-be-checked' : '')] - ['']).join(' '), id: "panel-8-label" do
+          |Study Results
+          .check-container[panel-number="8"]
   .cell.medium-9
     #status-check-modal.reveal data-reveal=""
       - if @panel_number != 5
