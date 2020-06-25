@@ -11,50 +11,43 @@
     div data-row-span="2"
       .sd-item data-field-span="1"
         = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
-          = f.input :prospero_link, as: :string, label: 'Prospero', input_html: { value: f.object.prospero_link || @project.try(:prospero) || "", class: 'url-input' }
+          = f.input :prospero_link, placeholder: 'Enter PROSPERO ID or URL', as: :string, label: 'Prospero', input_html: { value: f.object.prospero_link || @project.try(:prospero) || "", class: 'url-input' }
       .sd-item data-field-span="1"
         = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
-          = f.input :protocol_link, as: :string, label: 'Protocol', input_html: { class: 'url-input' }
+          = f.input :protocol_link, placeholder: 'URL', as: :string, label: 'Protocol', input_html: { class: 'url-input' }
     div data-row-span="2"
       .sd-item data-field-span="1"
         = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
-          = f.input :full_report_link, as: :string, label: 'Full Report', input_html: { class: 'url-input' }
+          = f.input :full_report_link, placeholder: 'URL', as: :string, label: 'Full Report', input_html: { class: 'url-input' }
       .sd-item data-field-span="1"
         = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
-          = f.input :structured_abstract_link, as: :string, label: 'Structured Abstract', input_html: { class: 'url-input' }
+          = f.input :structured_abstract_link, placeholder: 'URL', as: :string, label: 'Structured Abstract', input_html: { class: 'url-input' }
     div data-row-span="2"
       .sd-item data-field-span="1"
         = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
-          = f.input :key_messages_link, as: :string, label: 'Key Messages', input_html: { class: 'url-input' }
+          = f.input :key_messages_link, placeholder: 'URL', as: :string, label: 'Main Points or Key Messages', input_html: { class: 'url-input' }
       .sd-item data-field-span="1"
         = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
-          = f.input :abstract_summary_link, as: :string, label: 'Lay Abstract / Lay Language Summary', input_html: { class: 'url-input' }
+          = f.input :abstract_summary_link, placeholder: 'URL', as: :string, label: 'Lay Abstract / Lay Language Summary', input_html: { class: 'url-input' }
     .sd-inner
       div data-row-span="1"
         .sd-item data-field-span="1"
           = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
-            = f.input :evidence_summary_link, as: :string, label: 'Evidence Summary / Executive Summary', input_html: { class: 'url-input' }
-      div data-row-span="2"
-        .sd-item data-field-span="1"
-          = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
-            = f.input :evs_introduction_link, as: :string, label: 'Introduction', input_html: { class: 'url-input' }
-        .sd-item data-field-span="1"
-          = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
-            = f.input :evs_methods_link, as: :string, label: 'Methods', input_html: { class: 'url-input' }
-      div data-row-span="2"
-        .sd-item data-field-span="1"
-          = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
-            = f.input :evs_results_link, as: :string, label: 'Results', input_html: { class: 'url-input' }
-        .sd-item data-field-span="1"
-          = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
-            = f.input :evs_discussion_link, as: :string, label: 'Discussion', input_html: { class: 'url-input' }
-      div data-row-span="2"
-        .sd-item data-field-span="1"
-          = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
-            = f.input :evs_conclusions_link, as: :string, label: 'Conclusions', input_html: { class: 'url-input' }
-        .sd-item data-field-span="1"
-          = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
-            = f.input :evs_tables_figures_link, as: :string, label: 'Tables and Figures', input_html: { class: 'url-input' }
+            = f.input :evidence_summary_link, placeholder: 'URL', as: :string, label: 'Evidence Summary / Executive Summary', input_html: { class: 'url-input' }
+    div data-row-span="2"
+      .sd-item data-field-span="1"
+        = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
+          = f.input :disposition_of_comments_link, placeholder: 'URL', as: :string, label: 'Disposition of Comments', input_html: { class: 'url-input' }
+      .sd-item data-field-span="1"
+        = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
+          = f.input :srdr_data_link, placeholder: 'URL', as: :string, label: 'Downloadable Content', input_html: { class: 'url-input' }
+    div data-row-span="2"
+      .sd-item data-field-span="1"
+        = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
+          = f.input :most_previous_version_srdr_link, placeholder: 'URL', as: :string, label: 'Most Recent Previous Version of SRDR+ Data', input_html: { class: 'url-input' }
+      .sd-item data-field-span="1"
+        = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
+          = f.input :most_previous_version_full_report_link, placeholder: 'URL', as: :string, label: 'Most Recent Previous Version of Full Report', input_html: { class: 'url-input' }
     div data-row-span="2"
       div data-field-span="1"
         label Journal Articles
@@ -64,21 +57,6 @@
         label Other Items
         .cocoon-container.other-item-list
           = render 'sd_meta_data/form/nested_associations/other_item_list', sd_meta_datum: @sd_meta_datum, url: @url
-
-    div data-row-span="2"
-      .sd-item data-field-span="1"
-        = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
-          = f.input :disposition_of_comments_link, as: :string, label: 'Disposition of Comments', input_html: { class: 'url-input' }
-      .sd-item data-field-span="1"
-        = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
-          = f.input :srdr_data_link, as: :string, label: 'Downloadable Content', input_html: { class: 'url-input' }
-    div data-row-span="2"
-      .sd-item data-field-span="1"
-        = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
-          = f.input :most_previous_version_srdr_link, as: :string, label: 'Most Recent Previous Version of SRDR+ Data', input_html: { class: 'url-input' }
-      .sd-item data-field-span="1"
-        = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
-          = f.input :most_previous_version_full_report_link, as: :string, label: 'Most Recent Previous Version of Full Report', input_html: { class: 'url-input' }
   /br/
   /br/
   /fieldset
@@ -91,3 +69,12 @@
           label.switch-paddle for="2-yes-no-section"
             span.switch-active aria-hidden="true" Yes
             span.switch-inactive aria-hidden="true" No
+
+javascript:
+  function removeSpaces(string) {
+    return string.split(' ').join('');
+  }
+
+  $("body").on('keyup', '.url-input', function (e) {
+    this.value = removeSpaces(this.value);
+  });

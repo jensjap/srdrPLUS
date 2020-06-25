@@ -1,3 +1,14 @@
+# == Schema Information
+#
+# Table name: sd_result_items
+#
+#  id                 :bigint           not null, primary key
+#  sd_key_question_id :bigint
+#  created_at         :datetime         not null
+#  updated_at         :datetime         not null
+#  sd_meta_datum_id   :bigint
+#
+
 class SdResultItem < ApplicationRecord
   include SharedOrderableMethods
   before_validation -> { set_ordering_scoped_by(:sd_meta_datum_id) }, on: :create

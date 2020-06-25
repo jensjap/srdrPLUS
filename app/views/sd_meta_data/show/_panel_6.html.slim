@@ -1,6 +1,6 @@
 #panel-6.tabs-panel.is-active
   fieldset
-    legend Search Strategy and Evidence Summary
+    legend Search Strategy and Results of Screening
     div data-row-span="1"
       div data-field-span="1"
         label Search Strategies
@@ -56,36 +56,5 @@
                   label Figures
                   div
                     - sd_prisma_flow.pictures.each do |picture|
-                      .sd-show-image
-                        = image_tag(picture, class: 'openable sd-image')
-
-    div data-row-span="1"
-      div data-field-span="1"
-        label Summaries of Evidence
-        - if @sd_meta_datum.sd_summary_of_evidences.empty?
-          div -----
-        - else
-          - @sd_meta_datum.sd_summary_of_evidences.each do |sd_summary_of_evidence|
-            .sd-show-inner
-              div data-row-span="1"
-                div data-field-span="1"
-                  label Key Question
-                  - kq_name = sd_summary_of_evidence.try(:sd_key_question).try(:name)
-                  div = kq_name.present? ? kq_name : '-----'
-              div data-row-span="1"
-                div data-field-span="1"
-                  label Type
-                  - type = sd_summary_of_evidence.soe_type
-                  div = type.present? ? type : '-----'
-              div data-row-span="1"
-                div data-field-span="1"
-                  label Description
-                  - desc = sd_summary_of_evidence.name
-                  div = desc.present? ? simple_format(desc) : '-----'
-              div data-row-span="1"
-                div data-field-span="1"
-                  label Figures
-                  div
-                    - sd_summary_of_evidence.pictures.each do |picture|
                       .sd-show-image
                         = image_tag(picture, class: 'openable sd-image')

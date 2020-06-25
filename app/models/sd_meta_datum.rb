@@ -17,19 +17,11 @@
 #  key_messages_link                           :text(65535)
 #  abstract_summary_link                       :text(65535)
 #  evidence_summary_link                       :text(65535)
-#  evs_introduction_link                       :text(65535)
-#  evs_methods_link                            :text(65535)
-#  evs_results_link                            :text(65535)
-#  evs_discussion_link                         :text(65535)
-#  evs_conclusions_link                        :text(65535)
-#  evs_tables_figures_link                     :text(65535)
 #  disposition_of_comments_link                :text(65535)
 #  srdr_data_link                              :text(65535)
 #  most_previous_version_srdr_link             :text(65535)
 #  most_previous_version_full_report_link      :text(65535)
 #  overall_purpose_of_review                   :text(65535)
-#  review_type_id                              :integer
-#  data_analysis_level_id                      :integer
 #  state                                       :string(255)      default("DRAFT"), not null
 #  created_at                                  :datetime         not null
 #  updated_at                                  :datetime         not null
@@ -40,9 +32,12 @@
 #  section_flag_4                              :boolean          default(FALSE), not null
 #  section_flag_5                              :boolean          default(FALSE), not null
 #  section_flag_6                              :boolean          default(FALSE), not null
-#  report_accession_id                         :integer
+#  report_accession_id                         :string(255)
 #  authors                                     :text(65535)
 #  section_flag_7                              :boolean          default(FALSE), not null
+#  prospero_link                               :string(255)
+#  review_type_id                              :bigint
+#  section_flag_8                              :boolean          default(FALSE), not null
 #
 
 class SdMetaDatum < ApplicationRecord
@@ -78,7 +73,7 @@ class SdMetaDatum < ApplicationRecord
   has_many :sd_network_meta_analysis_results, through: :sd_result_items, dependent: :destroy
   has_many :sd_pairwise_meta_analytic_results, through: :sd_result_items, dependent: :destroy
   has_many :sd_meta_regression_analysis_results, through: :sd_result_items, dependent: :destroy
-  
+
   has_many :sd_key_questions_projects, through: :sd_key_questions, inverse_of: :sd_meta_datum
   has_many :project_key_questions, through: :sd_key_questions_projects, source: :key_question
 
@@ -103,16 +98,16 @@ class SdMetaDatum < ApplicationRecord
 
   has_many :publishings, as: :publishable, dependent: :destroy
   # NOTE
-  # I think we are using polymorphism incorrectly above. I think what we want is for each project to have at most one 
+  # I think we are using polymorphism incorrectly above. I think what we want is for each project to have at most one
   # publishing, therefore:
-  # 
+  #
   #   belongs_to :publishing, polymorphic: true
-  # 
+  #
   # and on the publishing:
   #
   #   has_many :publishable, as: :publishing
   #
-  # is actually what we want. 
+  # is actually what we want.
   #
   # Birol
 
@@ -156,7 +151,7 @@ class SdMetaDatum < ApplicationRecord
   end
 
   def section_statuses
-    (0..7).to_a.map do |i|
+    (0..8).to_a.map do |i|
       section = "section_flag_" + i.to_s
       self[section]
     end

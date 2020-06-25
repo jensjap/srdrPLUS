@@ -1,4 +1,6 @@
 .nested-fields
+  div class="text-right"
+    = link_to_remove_association "remove results for this key question", f, data: { confirm: "This will remove this result, and any of its narrative results by outcome, evidence tables, pairwise meta-analyses by outcomes, network meta-analyses by outcomes, and meta-regression results by outcomes.  Are you sure?" }
   = f.association :sd_key_question, label: 'Key Question', include_blank: true, collection: f.object.sd_meta_datum.sd_key_questions.where.not( key_question_id: nil ).map { |kq| [kq.key_question.name, kq.id] }, input_html: { class: 'apply-select2' }
 
   div
@@ -52,8 +54,6 @@
               = render 'sd_meta_data/form/dynamic_fields/sd_meta_regression_analysis_result_fields', f: sd_meta_regression_analysis_result
           div class="#{ f.object.sd_meta_regression_analysis_results.present? ? '' : 'zero-nested-associations'}"
             = link_to_add_association 'Add Meta-regression Result', f, :sd_meta_regression_analysis_results, partial: 'sd_meta_data/form/dynamic_fields/sd_meta_regression_analysis_result_fields', class: 'add-item-link'
-  div
-    = link_to_remove_association "remove results for this key question", f, data: { confirm: "Are you sure?" }
 / br/
 / br/
 / fieldset

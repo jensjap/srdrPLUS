@@ -1,3 +1,13 @@
+# == Schema Information
+#
+# Table name: authors_citations
+#
+#  citation_id :integer          not null
+#  author_id   :integer          not null
+#  id          :bigint           not null, primary key
+#  deleted_at  :datetime
+#
+
 class AuthorsCitation < ApplicationRecord
   include SharedOrderableMethods
 

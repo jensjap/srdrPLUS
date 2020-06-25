@@ -2,12 +2,13 @@
 #
 # Table name: sd_key_questions
 #
-#  id                 :integer          not null, primary key
-#  sd_meta_datum_id   :integer
-#  sd_key_question_id :integer
-#  key_question_id    :integer
-#  created_at         :datetime         not null
-#  updated_at         :datetime         not null
+#  id                     :integer          not null, primary key
+#  sd_meta_datum_id       :integer
+#  sd_key_question_id     :integer
+#  key_question_id        :integer
+#  created_at             :datetime         not null
+#  updated_at             :datetime         not null
+#  includes_meta_analysis :boolean
 #
 
 class SdKeyQuestion < ApplicationRecord

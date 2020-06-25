@@ -8,7 +8,7 @@
 #  deleted_at                         :datetime
 #  created_at                         :datetime         not null
 #  updated_at                         :datetime         not null
-#  quality_dimension_section_group_id :bigint(8)
+#  quality_dimension_section_group_id :bigint
 #
 
 class QualityDimensionSection < ApplicationRecord

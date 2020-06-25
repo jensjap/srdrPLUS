@@ -93,7 +93,7 @@ class SdMetaDataController < ApplicationController
     @project = @sd_meta_datum.try(:project)
     @report = @sd_meta_datum.report
     @url = sd_meta_datum_path(@sd_meta_datum)
- 
+
     add_breadcrumb 'edit project-report link', edit_sd_meta_datum_url(@sd_meta_datum)
 end
 
@@ -124,7 +124,7 @@ end
 
   private
     def set_partial_name_and_container_class( item_id )
-      div_partial_dict = { 
+      div_partial_dict = {
  #      63 => { :class => '.meta-regression-analysis-result-list',\
  #              :partial => 'sd_meta_data/form/nested_associations/meta_regression_analysis_result_list' },\
  #      61 => { :class => '.network-meta-analysis-result-list',\
@@ -232,12 +232,6 @@ end
           :key_messages_link,
           :abstract_summary_link,
           :evidence_summary_link,
-          :evs_introduction_link,
-          :evs_methods_link,
-          :evs_results_link,
-          :evs_discussion_link,
-          :evs_conclusions_link,
-          :evs_tables_figures_link,
           { sd_journal_article_urls_attributes: [:id, :name, :_destroy, :id] },
           { sd_other_items_attributes: [:id, :name, :url, :_destroy, :id] },
           :disposition_of_comments_link,
@@ -253,7 +247,7 @@ end
                     { sd_search_strategies_attributes: [:sd_search_database_id, :date_of_search, :search_limits, :search_terms, :_destroy, :id] },
           { sd_grey_literature_searches_attributes: [:name, :_destroy, :id] },
           { sd_prisma_flows_attributes: [:name, :_destroy, :id, pictures: []] },
-          { sd_result_items_attributes: [:sd_key_question_id, :_destroy, :id, 
+          { sd_result_items_attributes: [:sd_key_question_id, :_destroy, :id,
             { sd_narrative_results_attributes: [:narrative_results, :narrative_results_by_population, :narrative_results_by_intervention, :_destroy, :id, sd_outcome_names: []] },
             { sd_evidence_tables_attributes: [:name, :_destroy, :id, :picture, sd_outcome_names: []] },
             { sd_network_meta_analysis_results_attributes: [:name, :_destroy, :id, { sd_analysis_figures_attributes: [:id,:_destroy, :p_type, { pictures: [] }] }, sd_outcome_names: []] },

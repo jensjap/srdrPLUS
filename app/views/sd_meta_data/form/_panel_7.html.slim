@@ -1,7 +1,7 @@
 #panel-7.tabs-panel.is-active
   fieldset
     div style="display:flex; flex-direction: row;"
-      legend Study Results
+      legend Risk of Bias and Overall Summary of Evidence
       .status-switch.button[id="7-yes-no-section" class=(@sd_meta_datum.section_flag_7 ? 'completed' : 'draft') data-sd_meta_datum_id="#{@sd_meta_datum.id}"]
         - if @sd_meta_datum.section_flag_7
           | Completed
@@ -10,6 +10,6 @@
 
     div data-row-span="1"
       div data-field-span="1"
-        label Results by Key Questions
-        .cocoon-container.result-item-list
-          = render 'sd_meta_data/form/nested_associations/result_item_list', sd_meta_datum: @sd_meta_datum, url: @url
+        label Summaries of Evidence
+        .cocoon-container.result-list
+          = render 'sd_meta_data/form/nested_associations/result_list', sd_meta_datum: @sd_meta_datum, url: @url
