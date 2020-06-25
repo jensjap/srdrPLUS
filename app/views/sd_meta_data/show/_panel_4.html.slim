@@ -60,3 +60,7 @@
                   div data-field-span="1"
                     label Settings (S)
                     div = ( sd_picod.settings.present? ? simple_format(sd_picod.settings) : '-----' )
+                div data-row-span="1"
+                  div data-field-span="1"
+                    label Other Elements
+                    div = ( sd_picod.other_elements.present? ? simple_format(sd_picod.other_elements) : '-----' )
