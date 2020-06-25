@@ -24,7 +24,7 @@
               .sd-item.sd-inner.orderable-item ordering-id="#{ sd_evidence_table.object.ordering.id.to_s }"
                 = render 'sd_meta_data/form/dynamic_fields/sd_evidence_table_fields', f: sd_evidence_table
             div class="#{ f.object.sd_evidence_tables.present? ? '' : 'zero-nested-associations'}"
-              = link_to_add_association 'Add Evidence Table', f, :sd_evidence_tables, partial: 'sd_meta_data/form/dynamic_fields/sd_evidence_table_fields', class: 'add-item-link'
+              = link_to_add_association 'Add Result', f, :sd_evidence_tables, partial: 'sd_meta_data/form/dynamic_fields/sd_evidence_table_fields', class: 'add-item-link'
       div data-row-span="1"
         div data-field-span="1"
           label Pairwise Meta-analyses by Outcome(s)
