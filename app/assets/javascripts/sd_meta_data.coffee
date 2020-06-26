@@ -251,8 +251,6 @@ init_select2 = (selector, url) ->
       markup
     templateResult: formatResult
     templateSelection: formatResultSelection
-  $( selector ).on 'turbolinks:before-cache', () ->
-    $( selector ).select2 'destroy'
 
 apply_all_select2 =() ->
   init_select2("#sd_meta_datum_funding_source_ids", '/funding_sources')
