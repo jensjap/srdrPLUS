@@ -85,6 +85,11 @@ javascript:
     allowClear: true
   })
 
+  $( document ).on( 'turbolinks:before-cache', function(){
+    $('#report-create').select2('destroy')
+    $('#project-create').select2('destroy')
+  })
+
   $( '#report-radio-select' ).on('click', function(){
     $( '#report-select-div' ).removeClass('hide');
     $( '#report-upload-div' ).addClass('hide');
