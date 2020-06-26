@@ -245,7 +245,7 @@ end
           { sd_analytic_frameworks_attributes: [:id, :name, :_destroy, :id, pictures: []] },
           { sd_key_questions_attributes: [:includes_meta_analysis, :key_question_name, { key_question_type_ids: [] }, :_destroy, :id, { sd_key_questions_key_question_type_ids: [] }] },
           { sd_key_question_ids: [] },
-          { sd_picods_attributes: [:data_analysis_level_id, :name, :population, :interventions, :comparators, :outcomes, :study_designs, :timing, :settings, :_destroy, :id, sd_key_question_ids: [], sd_picods_type_ids: []] },
+          { sd_picods_attributes: [:data_analysis_level_id, :name, :population, :interventions, :comparators, :outcomes, :study_designs, :timing, :settings, :other_elements, :_destroy, :id, sd_key_question_ids: [], sd_picods_type_ids: []] },
                     { sd_search_strategies_attributes: [:sd_search_database_id, :date_of_search, :search_limits, :search_terms, :_destroy, :id] },
           { sd_grey_literature_searches_attributes: [:name, :_destroy, :id] },
           { sd_prisma_flows_attributes: [:name, :_destroy, :id, pictures: []] },
