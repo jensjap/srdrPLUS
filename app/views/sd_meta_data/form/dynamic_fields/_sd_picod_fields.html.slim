@@ -1,7 +1,7 @@
 .nested-fields
   div class="text-right"
     = link_to_remove_association "remove picods", f, data: { confirm: "This will this PICODTS and anything entered in it.  Are you sure?" }
-  = f.association :sd_key_questions, include_blank: true, label: "Key Question(s)", input_html: { class: "sd_picods_key_question sd-select2", data: { sd_meta_datum_id: f.object.sd_meta_datum.id } }
+  = f.association :sd_key_questions, collection: f.object.sd_meta_datum.sd_key_questions, include_blank: true, label: "Key Question(s)", input_html: { class: "sd_picods_key_question sd-select2", data: { sd_meta_datum_id: f.object.sd_meta_datum.id } }
   /= f.association :sd_picods_types, include_blank: true, label: 'PICODS Type', input_html: { class: "sd_picods_type" }
   /= f.input :name, label: 'Description', :input_html => { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
   = f.association :data_analysis_level, label: 'Level of Data Analysis', input_html: { class: 'data_analysis_level sd-select2' }

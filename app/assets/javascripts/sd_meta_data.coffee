@@ -350,6 +350,7 @@ bind_srdr20_saving_mechanism = () ->
     add_form_listeners( form )
     $cocoon_container = $( form ).parents( '.cocoon-container' )
     $cocoon_container.on 'sd:form-loaded', ( e ) ->
+      $( '.reveal' ).foundation()
       add_form_listeners( $cocoon_container.children( 'form' ) )
       Collapser.initialize_listeners()
       Collapser.restore_states()

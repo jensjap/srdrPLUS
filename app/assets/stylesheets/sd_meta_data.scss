@@ -308,7 +308,7 @@ body.sd_meta_data {
     }
   }
 
-  .remove_fields {
+  .text-right .remove_fields {
     color: #c10e0e;
     font-weight: bolder;
     font-size: 105%;
@@ -460,6 +460,31 @@ body.sd_meta_data {
       -webkit-text-stroke-color: maroon;
     }
   }
+}
+.sd-kq-prompt {
+  font-size: 120%;
+}
+
+.sd-kq-destroy-picods-button {
+  background-color: #cc4b37;
+  margin: 1rem 0.5rem 0 0;
+  a {
+    color: white !important;
+    text-decoration: none !important
+  }
+}
+
+.sd-kq-only-kq-button {
+  background-color: #ffae00;
+  margin: 1rem 0.5rem 0 0.5rem;
+  a {
+    color: white !important;
+    text-decoration: none !important
+  }
+}
+
+.sd-kq-go-back-button {
+  margin: 1rem 0 1rem 0.5rem;
 }
 
 ::-webkit-input-placeholder { /* WebKit, Blink, Edge */
