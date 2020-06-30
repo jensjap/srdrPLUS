@@ -52209,11 +52209,17 @@ function __guardMethod__(obj, methodName, transform) {
       allowClear: true,
       placeholder: '-- Select or type other value --'
     });
+    $('.apply-select2').on('turbolinks:before-cache', function() {
+      return $('.apply-select2').select2('destroy');
+    });
     $('.sd-outcome-select2').select2({
       tags: true,
       allowClear: true,
       selectOnClose: true,
       placeholder: '-- Select or type other value --'
+    });
+    $('.sd-outcome-select2').on('turbolinks:before-cache', function() {
+      return $('.sd-outcome-select2').select2('destroy');
     });
     $('.sd-select2, .apply-select2, .sd-outcome-select2').on('select2:unselecting', function(e) {
       return $(this).on('select2:opening', function(event) {
@@ -52268,6 +52274,7 @@ function __guardMethod__(obj, methodName, transform) {
       add_form_listeners(form);
       $cocoon_container = $(form).parents('.cocoon-container');
       return $cocoon_container.on('sd:form-loaded', function(e) {
+        $('.reveal').foundation();
         add_form_listeners($cocoon_container.children('form'));
         Collapser.initialize_listeners();
         Collapser.restore_states();
@@ -52353,7 +52360,7 @@ function __guardMethod__(obj, methodName, transform) {
   };
 
   document.addEventListener('turbolinks:load', function() {
-    (function() {
+    return (function() {
       if ($('body.sd_meta_data').length === 0) {
         return;
       }
@@ -52368,6 +52375,21 @@ function __guardMethod__(obj, methodName, transform) {
         return this.style.height = this.scrollHeight + "px";
       });
     })();
+  });
+
+  document.addEventListener('turbolinks:before-cache', function() {
+    (function() {})();
+    $("#sd_meta_datum_funding_source_ids").select2('destroy');
+    $("#sd_meta_datum_key_question_type_ids").select2('destroy');
+    $(".sd_search_database").select2('destroy');
+    $(".key_question_type").select2('destroy');
+    $(".sd_picods_type").select2('destroy');
+    $(".review_type").select2('destroy');
+    $(".data_analysis_level").select2('destroy');
+    $(".sd_picods_key_question").select2('destroy');
+    $('.apply-select2').select2('destroy');
+    $('.apply-select2').select2('destroy');
+    $('.sd-outcome-select2').select2('destroy');
   });
 
 }).call(this);
@@ -52714,3 +52736,7 @@ document.addEventListener( 'turbolinks:load', function() {
   }
   
 } );
+document.addEventListener( 'turbolinks:before-cache', function() {
+  $( '.reveal' ).foundation( 'close' )
+} );
+

@@ -7,7 +7,15 @@
       option value="#{ project.id }" ID #{ project.id }: #{ project.name }
   h6 style="font-weight: bold; margin-top: 10px;" Systematic Review Report
   input[type="radio" id="report-radio-file" name="report-radio" checked="checked"]
-  label[for="report-radio-file"] = "Upload PDF"
+  label[for="report-radio-file" style="margin-right: 0;"] = "Upload PDF"
+  span.import-tooltip-icon style="margin: 0 6px 0 3px;" data-open="import-tooltip-content"
+    i.fi-info style="color:#28b0f3;font-size:20px;"
+  .reveal#import-tooltip-content data-reveal="" style="font-size:large;line-height:25px;"
+    | You can upload the following file formats:
+    ul style="padding-top:15px;font-size:large;line-height:25px;"
+      li
+        a href="https://acrobat.adobe.com/us/en/acrobat/about-adobe-pdf.html" target="_blank"
+          | Adobe PDF File Format Information (external site)
   input[type="radio" id="report-radio-select" name="report-radio"]
   label[for="report-radio-select"] = "Select from existing reports"
   #report-select-div.hide
@@ -17,7 +25,7 @@
         option value="#{ report.accession_id }" #{ report.accession_id }: #{ report.title }
   #report-upload-div
     input#report-upload[type="file" accept="application/pdf"]
-    
+
   a.button.medium#create-new-sd-meta-datum style="margin-top: 10px;" Create
 hr style="border: 0.5px solid; margin: 20px 55px;"
 .column.row#sdMetaData-list
@@ -29,8 +37,8 @@ hr style="border: 0.5px solid; margin: 20px 55px;"
         th width="150" Systematic Review Report
         th width="50" Progress
         th width="50" Last Updated
-        th width="25" 
-        th width="25" 
+        th width="25"
+        th width="25"
     tbody
       - if @sd_meta_data.empty?
         tr
@@ -54,7 +62,7 @@ hr style="border: 0.5px solid; margin: 20px 55px;"
                 .success.progress data-allow-html="true" data-tooltip="" title="#{ tooltip_text }"
                   .progress-meter style="width: #{ sd_meta_datum.progress_meter_width }%;"
               /td
-                p style="margin: 10px 0px;font-weight: bold;" 
+                p style="margin: 10px 0px;font-weight: bold;"
                   | Incomplete Sections:
                 - sd_meta_datum.incomplete_sections.each do |section|
                   p style="margin: 10px 0px;" #{section}
@@ -108,7 +116,7 @@ javascript:
       var project_id = $('#project-create').val();
       var report_accession_id = $('#report-create').val();
 
-      if ( project_id && report_accession_id ) { 
+      if ( project_id && report_accession_id ) {
         e.preventDefault();
         $.ajax({
           type: "POST",
@@ -135,13 +143,13 @@ javascript:
       form_data.append('sd_meta_datum[report_file]', report_file);
       form_data.append('sd_meta_datum[project_id]', project_id);
 
-      if ( project_id && report_file ) { 
+      if ( project_id && report_file ) {
         e.preventDefault();
         $.ajax({
           type: "POST",
           url: "/sd_meta_data",
           processData: false,
-          contentType: false, 
+          contentType: false,
           data: form_data
         });
       } else {

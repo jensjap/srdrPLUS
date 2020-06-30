@@ -80,11 +80,11 @@ div.row
 
         - projects_user = ProjectsUser.find_by user: current_user, project: @project
         - new_import = projects_user.imports.build
-      
+
         /span data-tooltip="" data-click-open="true" title="You can import citations from .ris, .csv, PubMed ID list or EndNote Library"
-        
+
         div style='display:flex; flex-direction:row;'
-          span.import-headline 
+          span.import-headline
             h5 Upload Citation File(s)
           span.import-tooltip-icon style="margin-left: 3px;" data-open="import-tooltip-content"
             i.fi-info style="color:#28b0f3;font-size:20px;"

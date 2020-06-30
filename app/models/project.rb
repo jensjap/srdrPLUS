@@ -49,16 +49,16 @@ class Project < ApplicationRecord
 
   has_many :publishings, as: :publishable, dependent: :destroy
   # NOTE
-  # I think we are using polymorphism incorrectly above. I think what we want is for each project to have at most one 
+  # I think we are using polymorphism incorrectly above. I think what we want is for each project to have at most one
   # publishing, therefore:
-  # 
+  #
   #   belongs_to :publishing, polymorphic: true
-  # 
+  #
   # and on the publishing:
   #
   #   has_many :publishable, as: :publishing
   #
-  # is actually what we want. 
+  # is actually what we want.
   #
   # Birol
 
@@ -144,12 +144,6 @@ class Project < ApplicationRecord
 
   def publication_requested_at
     self.publishings.any?(&:approved?).try(:last).try(:created_at)
-  end
-
-  def prospero_link
-    self.prospero.present? ?
-      "<a target='_blank' href='https://www.crd.york.ac.uk/prospero/display_record.asp?ID=#{self.prospero}'>https://www.crd.york.ac.uk/prospero/display_record.asp?ID=#{self.prospero}</a>" :
-      "Not Available"
   end
 
   def creator
