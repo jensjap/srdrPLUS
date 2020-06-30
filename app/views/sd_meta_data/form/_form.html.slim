@@ -22,11 +22,12 @@
         = link_to '?panel_number=4', class: ([(@panel_number == 4 ? 'bg-light-grey' : ''), (@sd_meta_datum.section_flag_4 ? 'to-be-checked' : '')] - ['']).join(' '), id: "panel-4-label" do
           |PICODTS
           .check-container[panel-number="4"]
-      li.tabs-title.mapping-kq-title
-        = link_to '?panel_number=5', class: ([(@panel_number == 5 ? 'bg-light-grey' : ''), (@sd_meta_datum.section_flag_5 ? 'to-be-checked' : '')] - ['']).join(' '), id: "panel-5-label" do
-          |Key Question Mapping (Submitter Only)
-          .check-container[panel-number="5"]
-          .warning-container[panel-number="5"]
+      - if @sd_meta_datum.section_flag_3 
+        li.tabs-title.mapping-kq-title
+          = link_to '?panel_number=5', class: ([(@panel_number == 5 ? 'bg-light-grey' : ''), (@sd_meta_datum.section_flag_5 ? 'to-be-checked' : '')] - ['']).join(' '), id: "panel-5-label" do
+            |Key Question Mapping (Submitter Only)
+            .check-container[panel-number="5"]
+            .warning-container[panel-number="5"]
       li.tabs-title
         = link_to '?panel_number=6', class: ([(@panel_number == 6 ? 'bg-light-grey' : ''), (@sd_meta_datum.section_flag_6 ? 'to-be-checked' : '')] - ['']).join(' '), id: "panel-6-label" do
           |Search Strategy and Results of Screening

@@ -3,66 +3,73 @@
     = link_to_remove_association "remove results for this key question", f, data: { confirm: "This will remove this result, and any of its narrative results by outcome, evidence tables, pairwise meta-analyses by outcomes, network meta-analyses by outcomes, and meta-regression results by outcomes.  Are you sure?" }
   = f.association :sd_key_question, label: 'Key Question', include_blank: true, collection: f.object.sd_meta_datum.sd_key_questions.where.not( key_question_id: nil ).map { |kq| [kq.key_question.name, kq.id] }, input_html: { class: 'apply-select2' }
 
-  div
-    div data-row-span="1"
-      div data-field-span="1"
-        label Narrative Results by Outcome(s)
-        .orderable-list orderable-url="#{ update_positions_api_v1_orderings_url }"
-          = f.simple_fields_for :sd_narrative_results do |sd_narrative_result|
-            .sd-item.sd-inner.orderable-item ordering-id="#{ sd_narrative_result.object.ordering.id.to_s }"
-              = render 'sd_meta_data/form/dynamic_fields/sd_narrative_result_fields', f: sd_narrative_result
-          div class="#{ f.object.sd_narrative_results.present? ? '' : 'zero-nested-associations'}"
-            = link_to_add_association 'Add Narrative Result', f, :sd_narrative_results, partial: 'sd_meta_data/form/dynamic_fields/sd_narrative_result_fields', class: 'add-item-link'
+  .collapse-content.hide data-result-item-id="#{f.object.id.to_s}"
+    div
+      div data-row-span="1"
+        div data-field-span="1"
+          label Narrative Results by Outcome(s)
+          .orderable-list orderable-url="#{ update_positions_api_v1_orderings_url }"
+            = f.simple_fields_for :sd_narrative_results do |sd_narrative_result|
+              .sd-item.sd-inner.orderable-item ordering-id="#{ sd_narrative_result.object.ordering.id.to_s }"
+                = render 'sd_meta_data/form/dynamic_fields/sd_narrative_result_fields', f: sd_narrative_result
+            div class="#{ f.object.sd_narrative_results.present? ? '' : 'zero-nested-associations'}"
+              = link_to_add_association 'Add Narrative Result', f, :sd_narrative_results, partial: 'sd_meta_data/form/dynamic_fields/sd_narrative_result_fields', class: 'add-item-link'
 
-    div data-row-span="1"
-      div data-field-span="1"
-        label Evidence Tables by Outcome(s)
-        /.cocoon-container.evidence-table-list
-        .orderable-list orderable-url="#{ update_positions_api_v1_orderings_url }"
-          = f.simple_fields_for :sd_evidence_tables do |sd_evidence_table|
-            .sd-item.sd-inner.orderable-item ordering-id="#{ sd_evidence_table.object.ordering.id.to_s }"
-              = render 'sd_meta_data/form/dynamic_fields/sd_evidence_table_fields', f: sd_evidence_table
-          div class="#{ f.object.sd_evidence_tables.present? ? '' : 'zero-nested-associations'}"
-            = link_to_add_association 'Add Evidence Table', f, :sd_evidence_tables, partial: 'sd_meta_data/form/dynamic_fields/sd_evidence_table_fields', class: 'add-item-link'
-    div data-row-span="1"
-      div data-field-span="1"
-        label Pairwise Meta-analyses by Outcome(s)
-        /.cocoon-container.pairwise-meta-analytic-result-list
-        .orderable-list orderable-url="#{ update_positions_api_v1_orderings_url }"
-          = f.simple_fields_for :sd_pairwise_meta_analytic_results do |pairwise_meta_analytic_result|
-            .sd-item.sd-inner.orderable-item ordering-id="#{ pairwise_meta_analytic_result.object.ordering.id.to_s }"
-              = render 'sd_meta_data/form/dynamic_fields/pairwise_meta_analytic_result_fields', f: pairwise_meta_analytic_result
-          div class="#{ f.object.sd_pairwise_meta_analytic_results.present? ? '' : 'zero-nested-associations'}"
-            = link_to_add_association 'Add Pairwise Meta-analysis', f, :sd_pairwise_meta_analytic_results, partial: 'sd_meta_data/form/dynamic_fields/pairwise_meta_analytic_result_fields', class: 'add-item-link'
-    div data-row-span="1"
-      div data-field-span="1"
-        label Network Meta-analyses by Outcome(s)
-        /.cocoon-container.network-meta-analysis-result-list
-        .orderable-list orderable-url="#{ update_positions_api_v1_orderings_url }"
-          = f.simple_fields_for :sd_network_meta_analysis_results do |network_meta_analysis_result|
-            .sd-item.sd-inner.orderable-item ordering-id="#{ network_meta_analysis_result.object.ordering.id.to_s }"
-              = render 'sd_meta_data/form/dynamic_fields/network_meta_analysis_result_fields', f: network_meta_analysis_result
-          div class="#{ f.object.sd_network_meta_analysis_results.present? ? '' : 'zero-nested-associations'}"
-            = link_to_add_association 'Add Network Meta-analysis', f, :sd_network_meta_analysis_results, partial: 'sd_meta_data/form/dynamic_fields/network_meta_analysis_result_fields', class: 'add-item-link'
-    div data-row-span="1"
-      div data-field-span="1"
-        label Meta-regression Results by Outcome(s)
-        /.cocoon-container.meta-regression-analysis-result-list
-        .orderable-list orderable-url="#{ update_positions_api_v1_orderings_url }"
-          = f.simple_fields_for :sd_meta_regression_analysis_results do |sd_meta_regression_analysis_result|
-            .sd-item.sd-inner.orderable-item ordering-id="#{ sd_meta_regression_analysis_result.object.ordering.id.to_s }"
-              = render 'sd_meta_data/form/dynamic_fields/sd_meta_regression_analysis_result_fields', f: sd_meta_regression_analysis_result
-          div class="#{ f.object.sd_meta_regression_analysis_results.present? ? '' : 'zero-nested-associations'}"
-            = link_to_add_association 'Add Meta-regression Result', f, :sd_meta_regression_analysis_results, partial: 'sd_meta_data/form/dynamic_fields/sd_meta_regression_analysis_result_fields', class: 'add-item-link'
-/ br/
-/ br/
-/ fieldset
-/   legend Section Review & Validation
-/   div data-row-span="1"
-/     div data-field-span="1"
-/       div Section Finished?
-/       .switch
-/         input.switch-input id="7-yes-no-section" type="checkbox" name="sectionSection" data-sd_meta_datum_id="#{@sd_meta_datum.id}"
-/         label.switch-paddle for="7-yes-no-section"
-/           span.switch-active aria-hidden="true" Yes
-/           span.switch-inactive aria-hidden="true" No
+      div data-row-span="1"
+        div data-field-span="1"
+          label Results by Outcome(s)
+          /.cocoon-container.evidence-table-list
+          .orderable-list orderable-url="#{ update_positions_api_v1_orderings_url }"
+            = f.simple_fields_for :sd_evidence_tables do |sd_evidence_table|
+              .sd-item.sd-inner.orderable-item ordering-id="#{ sd_evidence_table.object.ordering.id.to_s }"
+                = render 'sd_meta_data/form/dynamic_fields/sd_evidence_table_fields', f: sd_evidence_table
+            div class="#{ f.object.sd_evidence_tables.present? ? '' : 'zero-nested-associations'}"
+              = link_to_add_association 'Add Result', f, :sd_evidence_tables, partial: 'sd_meta_data/form/dynamic_fields/sd_evidence_table_fields', class: 'add-item-link'
+      div data-row-span="1"
+        div data-field-span="1"
+          label Pairwise Meta-analyses by Outcome(s)
+          /.cocoon-container.pairwise-meta-analytic-result-list
+          .orderable-list orderable-url="#{ update_positions_api_v1_orderings_url }"
+            = f.simple_fields_for :sd_pairwise_meta_analytic_results do |pairwise_meta_analytic_result|
+              .sd-item.sd-inner.orderable-item ordering-id="#{ pairwise_meta_analytic_result.object.ordering.id.to_s }"
+                = render 'sd_meta_data/form/dynamic_fields/pairwise_meta_analytic_result_fields', f: pairwise_meta_analytic_result
+            div class="#{ f.object.sd_pairwise_meta_analytic_results.present? ? '' : 'zero-nested-associations'}"
+              = link_to_add_association 'Add Pairwise Meta-analysis', f, :sd_pairwise_meta_analytic_results, partial: 'sd_meta_data/form/dynamic_fields/pairwise_meta_analytic_result_fields', class: 'add-item-link'
+      div data-row-span="1"
+        div data-field-span="1"
+          label Network Meta-analyses by Outcome(s)
+          /.cocoon-container.network-meta-analysis-result-list
+          .orderable-list orderable-url="#{ update_positions_api_v1_orderings_url }"
+            = f.simple_fields_for :sd_network_meta_analysis_results do |network_meta_analysis_result|
+              .sd-item.sd-inner.orderable-item ordering-id="#{ network_meta_analysis_result.object.ordering.id.to_s }"
+                = render 'sd_meta_data/form/dynamic_fields/network_meta_analysis_result_fields', f: network_meta_analysis_result
+            div class="#{ f.object.sd_network_meta_analysis_results.present? ? '' : 'zero-nested-associations'}"
+              = link_to_add_association 'Add Network Meta-analysis', f, :sd_network_meta_analysis_results, partial: 'sd_meta_data/form/dynamic_fields/network_meta_analysis_result_fields', class: 'add-item-link'
+      div data-row-span="1"
+        div data-field-span="1"
+          label Meta-regression Results by Outcome(s)
+          /.cocoon-container.meta-regression-analysis-result-list
+          .orderable-list orderable-url="#{ update_positions_api_v1_orderings_url }"
+            = f.simple_fields_for :sd_meta_regression_analysis_results do |sd_meta_regression_analysis_result|
+              .sd-item.sd-inner.orderable-item ordering-id="#{ sd_meta_regression_analysis_result.object.ordering.id.to_s }"
+                = render 'sd_meta_data/form/dynamic_fields/sd_meta_regression_analysis_result_fields', f: sd_meta_regression_analysis_result
+            div class="#{ f.object.sd_meta_regression_analysis_results.present? ? '' : 'zero-nested-associations'}"
+              = link_to_add_association 'Add Meta-regression Result', f, :sd_meta_regression_analysis_results, partial: 'sd_meta_data/form/dynamic_fields/sd_meta_regression_analysis_result_fields', class: 'add-item-link'
+  a.collapse-button
+    .not-collapsed-icon.hide
+      = 'Collapse Content'
+    .collapsed-icon
+      = 'Expand Content'
+
+  / br/
+  / br/
+  / fieldset
+  /   legend Section Review & Validation
+  /   div data-row-span="1"
+  /     div data-field-span="1"
+  /       div Section Finished?
+  /       .switch
+  /         input.switch-input id="7-yes-no-section" type="checkbox" name="sectionSection" data-sd_meta_datum_id="#{@sd_meta_datum.id}"
+  /         label.switch-paddle for="7-yes-no-section"
+  /           span.switch-active aria-hidden="true" Yes
+  /           span.switch-inactive aria-hidden="true" No

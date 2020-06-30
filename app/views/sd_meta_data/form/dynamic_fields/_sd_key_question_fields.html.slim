@@ -1,6 +1,20 @@
 .nested-fields
   div class="text-right"
-    = link_to_remove_association "remove key question", f, 'data-remove-key-question': 'true', class: 'trigger-autosave', data: { confirm: "Are you sure? If any SRDR+ to Report Key Question Mapping exists on the next page, they will be destroyed." }
+    - if f.object.id.present?
+      a.remove_fields[data-open= "modal_#{dom_id(f.object)}"] = "remove key question"
+      .reveal[data-reveal="" id="modal_#{dom_id(f.object)}"]
+        .sd-kq-prompt
+          | If you delete this Key Question, would you also like to destroy the PICODTS and Results data associated with it?
+        .button.sd-kq-destroy-picods-button
+          = link_to "Yes, destroy", destroy_with_picodts_sd_key_question_url( f.object.id )
+        .button.sd-kq-only-kq-button
+          = link_to_remove_association "No, only remove Key Question", f, 'data-remove-key-question': 'true', class: 'trigger-autosave', data: { confirm: "Are you sure? If any SRDR+ to Report Key Question Mapping exists on the next page, they will be destroyed." }
+        .button.hollow.sd-kq-go-back-button onClick="$('#modal_#{dom_id(f.object)}').foundation('close');"
+          |Go back
+    - else
+      = link_to_remove_association "remove key question", f, 'data-remove-key-question': 'true', class: 'trigger-autosave', data: { confirm: "Are you sure? If any SRDR+ to Report Key Question Mapping exists on the next page, they will be destroyed." }
   = f.input :key_question_name, label: 'Key Question', input_html: { class: "key_question" }
   = f.association :key_question_types, include_blank: true, label: 'Type(s)', input_html: { class: "key_question_type sd-select2" }
   = f.input :includes_meta_analysis, as: :select, label: 'Did this Key Question include a meta-analysis?', selected: f.object.includes_meta_analysis
+
+      

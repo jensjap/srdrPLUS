@@ -308,6 +308,20 @@ body.sd_meta_data {
     }
   }
 
+  .text-right .remove_fields {
+    color: #c10e0e;
+    font-weight: bolder;
+    font-size: 105%;
+  }
+
+  .collapse-button {
+    div {
+      margin: 0.5rem 0 0 0; 
+    }
+    color: #4b83b5;
+    font-weight: bolder;
+    font-size: 105%;
+  }
   .add-item-link {
     margin: 0 1.2rem 0 1.2rem;
     color: #8f20a2;
@@ -413,7 +427,7 @@ body.sd_meta_data {
       width: 100%;
       height: 100%;
       z-index: 2;
-      opacity: 0.1;
+      opacity: 0.25;
       top: 0;
       left: 0;
       background-color: #fa6400 !important;
@@ -446,6 +460,31 @@ body.sd_meta_data {
       -webkit-text-stroke-color: maroon;
     }
   }
+}
+.sd-kq-prompt {
+  font-size: 120%;
+}
+
+.sd-kq-destroy-picods-button {
+  background-color: #cc4b37;
+  margin: 1rem 0.5rem 0 0;
+  a {
+    color: white !important;
+    text-decoration: none !important
+  }
+}
+
+.sd-kq-only-kq-button {
+  background-color: #ffae00;
+  margin: 1rem 0.5rem 0 0.5rem;
+  a {
+    color: white !important;
+    text-decoration: none !important
+  }
+}
+
+.sd-kq-go-back-button {
+  margin: 1rem 0 1rem 0.5rem;
 }
 
 ::-webkit-input-placeholder { /* WebKit, Blink, Edge */

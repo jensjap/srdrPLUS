@@ -89,7 +89,7 @@ class SdMetaDatum < ApplicationRecord
   has_many :sd_grey_literature_searches, -> { ordered }, inverse_of: :sd_meta_datum, dependent: :destroy
   has_many :sd_prisma_flows, -> { ordered }, inverse_of: :sd_meta_datum, dependent: :destroy
   has_many :sd_picods, -> { ordered }, inverse_of: :sd_meta_datum, dependent: :destroy
-  has_many :sd_analytic_frameworks, inverse_of: :sd_meta_datum, dependent: :destroy
+  has_many :sd_analytic_frameworks, -> { ordered }, inverse_of: :sd_meta_datum, dependent: :destroy
 
   has_many :funding_sources_sd_meta_data, inverse_of: :sd_meta_datum, dependent: :destroy
   has_many :funding_sources, through: :funding_sources_sd_meta_data
