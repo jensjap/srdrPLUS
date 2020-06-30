@@ -4,7 +4,7 @@
     div data-row-span="2"
       div data-field-span="1"
         label Prospero
-        div = prospero_url_for( @sd_meta_datum.prospero_link || @sd_meta_datum.project.try(:prospero) )
+        div = sd_url_for @sd_meta_datum.prospero_link
       div data-field-span="1"
         label Protocol
         div = sd_url_for @sd_meta_datum.protocol_link
