@@ -226,6 +226,7 @@ end
           :stakeholders_technical_experts,
           :stakeholders_peer_reviewers,
           :stakeholders_others,
+          :organization,
           :authors,
           :authors_conflict_of_interest_of_full_report,
           :prospero_link,
