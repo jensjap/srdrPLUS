@@ -24241,7 +24241,7 @@ body.sd_meta_data .meta-regression-analysis-result-list .nested-fields {
   margin-bottom: 0;
 }
 /* line 312, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
-body.sd_meta_data .remove_fields {
+body.sd_meta_data .text-right .remove_fields {
   color: #c10e0e;
   font-weight: bolder;
   font-size: 105%;
@@ -24374,7 +24374,7 @@ body.sd_meta_data .empty-kq.srdr-kq:before, body.sd_meta_data .empty-kq.report-k
   width: 100%;
   height: 100%;
   z-index: 2;
-  opacity: 0.1;
+  opacity: 0.25;
   top: 0;
   left: 0;
   background-color: #fa6400 !important;
@@ -24404,6 +24404,88 @@ body.sd_meta_data .hoverable-figure .hover-message a {
 body.sd_meta_data .hover-message:hover a {
   color: lavender;
   -webkit-text-stroke-color: maroon;
+}
+
+/* line 465, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
+.sd-kq-prompt {
+  font-size: 120%;
+}
+
+/* line 469, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
+.sd-kq-destroy-picods-button {
+  background-color: #cc4b37;
+  margin: 1rem 0.5rem 0 0;
+}
+/* line 472, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
+.sd-kq-destroy-picods-button a {
+  color: white !important;
+  text-decoration: none !important;
+}
+
+/* line 478, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
+.sd-kq-only-kq-button {
+  background-color: #ffae00;
+  margin: 1rem 0.5rem 0 0.5rem;
+}
+/* line 481, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
+.sd-kq-only-kq-button a {
+  color: white !important;
+  text-decoration: none !important;
+}
+
+/* line 487, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
+.sd-kq-go-back-button {
+  margin: 1rem 0 1rem 0.5rem;
+}
+
+/* line 491, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
+::-webkit-input-placeholder {
+  /* WebKit, Blink, Edge */
+  color: silver !important;
+}
+
+/* line 494, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
+:-moz-placeholder {
+  /* Mozilla Firefox 4 to 18 */
+  color: silver !important;
+  opacity: 1;
+}
+
+/* line 498, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
+::-moz-placeholder {
+  /* Mozilla Firefox 19+ */
+  color: silver !important;
+  opacity: 1;
+}
+
+/* line 502, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
+:-ms-input-placeholder {
+  /* Internet Explorer 10-11 */
+  color: silver !important;
+}
+
+/* line 505, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
+::-ms-input-placeholder {
+  /* Microsoft Edge */
+  color: silver !important;
+}
+
+/* line 509, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
+::-webkit-input-placeholder {
+  /* Most modern browsers support this now. */
+  color: silver !important;
+}
+:-ms-input-placeholder {
+  /* Most modern browsers support this now. */
+  color: silver !important;
+}
+::-ms-input-placeholder {
+  /* Most modern browsers support this now. */
+  color: silver !important;
+}
+::placeholder {
+  /* Most modern browsers support this now. */
+  color: silver !important;
 }
 /**
  * Foundation for Sites by ZURB
