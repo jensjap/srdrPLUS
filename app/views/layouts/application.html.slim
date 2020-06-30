@@ -50,7 +50,7 @@ html class='no-js' lang='en'
           .off-canvas.position-right#offCanvasRightReportHtml data-off-canvas=''
             button.close-button aria-label='Close menu' type='button' data-close=''
               span aria-hidden='true' &times;
-            iframe src='/TOC.html' text='Systematic Review Report' title='Systematic Review Report' width='100%' height='100%'
+            iframe id='htmlReportIframe' src='/TOC.html' text='Systematic Review Report' title='Systematic Review Report' width='100%' height='100%'
 
         .off-canvas-content data-off-canvas-content=''
           = render "shared/topbar_nav_#{ cookies[:layout_style] }"
