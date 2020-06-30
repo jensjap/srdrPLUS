@@ -10,7 +10,13 @@
 #
 
 class SdAnalyticFramework < ApplicationRecord
-  has_many_attached :pictures
+  include SharedOrderableMethods
+
+  before_validation -> { set_ordering_scoped_by(:sd_meta_datum_id) }, on: :create
 
   belongs_to :sd_meta_datum, inverse_of: :sd_analytic_frameworks
+
+  has_many_attached :pictures
+
+  has_one :ordering, as: :orderable, dependent: :destroy
 end

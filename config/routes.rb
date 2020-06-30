@@ -14,7 +14,9 @@ Rails.application.routes.draw do
   resources :key_question_types, only: [:index]
   resources :sd_search_databases, only: [:index]
   resources :key_questions, only: [:index]
-  resources :sd_key_questions, only: [:index]
+  resources :sd_key_questions, only: [:index] do
+    get 'destroy_with_picodts', on: :member
+  end
   resources :sd_meta_data_queries, only: [:create, :update, :destroy]
   resources :review_types, only: [:index]
   resources :data_analysis_levels, only: [:index]

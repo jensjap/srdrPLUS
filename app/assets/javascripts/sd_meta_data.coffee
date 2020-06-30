@@ -268,12 +268,16 @@ apply_all_select2 =() ->
     selectOnClose: true, 
     allowClear: true, 
     placeholder: '-- Select or type other value --'
+  $( '.apply-select2' ).on 'turbolinks:before-cache', () ->
+    $( '.apply-select2' ).select2 'destroy'
 
   $( '.sd-outcome-select2' ).select2
     tags: true,
     allowClear: true,
     selectOnClose: true,
     placeholder: '-- Select or type other value --'
+  $( '.sd-outcome-select2' ).on 'turbolinks:before-cache', () ->
+    $( '.sd-outcome-select2' ).select2 'destroy'
 
   $('.sd-select2, .apply-select2, .sd-outcome-select2').on 'select2:unselecting', ( e ) ->
     $(this).on 'select2:opening', ( event ) ->
@@ -346,6 +350,7 @@ bind_srdr20_saving_mechanism = () ->
     add_form_listeners( form )
     $cocoon_container = $( form ).parents( '.cocoon-container' )
     $cocoon_container.on 'sd:form-loaded', ( e ) ->
+      $( '.reveal' ).foundation()
       add_form_listeners( $cocoon_container.children( 'form' ) )
       Collapser.initialize_listeners()
       Collapser.restore_states()
@@ -421,5 +426,17 @@ document.addEventListener 'turbolinks:load', ->
       this.style.height = ""
       this.style.height = this.scrollHeight + "px" 
 
-
-  return  # END document.addEventListener 'turbolinks:load', ->
+document.addEventListener 'turbolinks:before-cache', ->
+  do ->
+  $("#sd_meta_datum_funding_source_ids").select2 'destroy'
+  $("#sd_meta_datum_key_question_type_ids").select2 'destroy'
+  $(".sd_search_database").select2 'destroy'
+  $(".key_question_type").select2 'destroy'
+  $(".sd_picods_type").select2 'destroy'
+  $(".review_type").select2 'destroy'
+  $(".data_analysis_level").select2 'destroy'
+  $(".sd_picods_key_question").select2 'destroy'
+  $( '.apply-select2' ).select2 'destroy'
+  $( '.apply-select2' ).select2 'destroy'
+  $( '.sd-outcome-select2' ).select2 'destroy'
+  return  # END document.addEventListener 'turbolinks:before-cache', ->

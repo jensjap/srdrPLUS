@@ -37,7 +37,7 @@
 #  section_flag_7                              :boolean          default(FALSE), not null
 #  prospero_link                               :string(255)
 #  review_type_id                              :bigint
-#  data_analysis_level_id                      :bigint
+#  section_flag_8                              :boolean          default(FALSE), not null
 #
 
 class SdMetaDatum < ApplicationRecord
@@ -73,7 +73,7 @@ class SdMetaDatum < ApplicationRecord
   has_many :sd_network_meta_analysis_results, through: :sd_result_items, dependent: :destroy
   has_many :sd_pairwise_meta_analytic_results, through: :sd_result_items, dependent: :destroy
   has_many :sd_meta_regression_analysis_results, through: :sd_result_items, dependent: :destroy
-  
+
   has_many :sd_key_questions_projects, through: :sd_key_questions, inverse_of: :sd_meta_datum
   has_many :project_key_questions, through: :sd_key_questions_projects, source: :key_question
 
@@ -89,7 +89,7 @@ class SdMetaDatum < ApplicationRecord
   has_many :sd_grey_literature_searches, -> { ordered }, inverse_of: :sd_meta_datum, dependent: :destroy
   has_many :sd_prisma_flows, -> { ordered }, inverse_of: :sd_meta_datum, dependent: :destroy
   has_many :sd_picods, -> { ordered }, inverse_of: :sd_meta_datum, dependent: :destroy
-  has_many :sd_analytic_frameworks, inverse_of: :sd_meta_datum, dependent: :destroy
+  has_many :sd_analytic_frameworks, -> { ordered }, inverse_of: :sd_meta_datum, dependent: :destroy
 
   has_many :funding_sources_sd_meta_data, inverse_of: :sd_meta_datum, dependent: :destroy
   has_many :funding_sources, through: :funding_sources_sd_meta_data
@@ -98,16 +98,16 @@ class SdMetaDatum < ApplicationRecord
 
   has_many :publishings, as: :publishable, dependent: :destroy
   # NOTE
-  # I think we are using polymorphism incorrectly above. I think what we want is for each project to have at most one 
+  # I think we are using polymorphism incorrectly above. I think what we want is for each project to have at most one
   # publishing, therefore:
-  # 
+  #
   #   belongs_to :publishing, polymorphic: true
-  # 
+  #
   # and on the publishing:
   #
   #   has_many :publishable, as: :publishing
   #
-  # is actually what we want. 
+  # is actually what we want.
   #
   # Birol
 
@@ -151,7 +151,7 @@ class SdMetaDatum < ApplicationRecord
   end
 
   def section_statuses
-    (0..7).to_a.map do |i|
+    (0..8).to_a.map do |i|
       section = "section_flag_" + i.to_s
       self[section]
     end
