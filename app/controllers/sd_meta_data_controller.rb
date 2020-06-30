@@ -205,6 +205,7 @@ class SdMetaDataController < ApplicationController
             :section_flag_5,
             :section_flag_6,
             :section_flag_7,
+            :section_flag_8,
             )
     end
 
