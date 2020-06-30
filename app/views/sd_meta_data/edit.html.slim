@@ -13,9 +13,10 @@
 
 #systematic_review_report_pdf_container
 
-javascript:
-  document.addEventListener('DOMContentLoaded', function(event) {
-    offCanvasRightReportHtml_iframe = document.getElementById("htmlReportIframe")
-    offCanvasRightReportHtml_iframe.src = "#{ @report_html_path }"
-  })
+- unless @pdf2html_in_progress
+  javascript:
+    document.addEventListener('DOMContentLoaded', function(event) {
+      offCanvasRightReportHtml_iframe = document.getElementById("htmlReportIframe")
+      offCanvasRightReportHtml_iframe.src = "#{ @report_html_path }"
+    })
 
