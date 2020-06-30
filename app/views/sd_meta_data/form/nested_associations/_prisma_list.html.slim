@@ -7,4 +7,3 @@
         = render 'sd_meta_data/form/dynamic_fields/sd_prisma_flow_fields', f: sd_prisma_flow
   div class="#{ f.object.sd_prisma_flows.present? ? '' : 'zero-nested-associations'}"
     = link_to_add_association 'Add PRISMA', f, :sd_prisma_flows, partial: 'sd_meta_data/form/dynamic_fields/sd_prisma_flow_fields', class: 'add-item-link'
-
