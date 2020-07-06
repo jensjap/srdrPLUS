@@ -7,8 +7,10 @@
       tr
         th width="150" SRDR+ Project
         th width="150" Systematic Review Report
-        th width="50" Progress
-        th width="50" Last Updated
+        th width="75" Progress
+        /th width="50" Last Updated
+        th width="25"
+        th width="25"
         th width="25"
         th width="25"
     tbody
@@ -16,6 +18,8 @@
         tr
           td
           td
+          td
+          /td
           td
           td
           td
@@ -43,9 +47,11 @@
               = simple_form_for(sd_meta_datum, url: sd_meta_datum_path(sd_meta_datum)) do |f|
                 = f.input :state, :as => :hidden, input_html: { value: sd_meta_datum.state == 'DRAFT' ? 'COMPLETED' : 'DRAFT' }
                 = f.button :submit, 'Toggle State', class: 'state-toggler', state: sd_meta_datum.state, data_sections_complete: sd_meta_datum.all_sections_complete?
-            td = distance_of_time_in_words_to_now(sd_meta_datum.updated_at) + ' ago'
-            td = link_to "Edit", edit_sd_meta_datum_path(sd_meta_datum.id)
-            td = link_to 'Destroy', sd_meta_datum_path(sd_meta_datum), data: { confirm: 'Are you sure? This will destroy the link you have created between a report and a project in SRDR. It will also destroy everything you have entered for this project in SRDR 2.0.' }, method: :delete
+            /td = distance_of_time_in_words_to_now(sd_meta_datum.updated_at) + ' ago'
+            td = link_to('Query', project_report_link_new_query_form_path(sd_meta_datum))
+            td = link_to('View', sd_meta_datum)
+            td = link_to "Work", edit_sd_meta_datum_path(sd_meta_datum.id), class: "sd-meta-data-index-edit"
+            td = link_to 'Destroy', sd_meta_datum_path(sd_meta_datum), data: { confirm: 'Are you sure? This will destroy the link you have created between a report and a project in SRDR. It will also destroy everything you have entered for this project in SRDR 2.0.' }, method: :delete, class: "sd-meta-data-index-delete"
 .column.row
   #create-sd-meta-datum-modal-button.create-button.button [data-open='create-sd-meta-datum-modal']
     i.fi-plus>

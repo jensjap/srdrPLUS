@@ -493,4 +493,22 @@ body.sd_meta_data {
   #report-upload {
     margin-bottom: 0;
   }
+
+  .sd-meta-data-index-delete {
+    font-weight:bold;
+    color:#cc4b37 !important;
+  }
+
+  .sd-meta-data-index-query {
+    font-weight:bold;
+    color:#cc4b37 !important;
+  }
+
+  .sd-meta-data-index-view {
+    font-weight:bold;
+    color:#cc4b37 !important;
+  }
+  .sd-meta-data-index-edit {
+    font-weight:bold;
+  }
 }
