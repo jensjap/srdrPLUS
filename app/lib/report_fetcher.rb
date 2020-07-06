@@ -9,6 +9,8 @@ class ReportFetcher
   REPORTS_DIRECTORY = "#{Rails.root}/reports".freeze
   REPORT_DIRECTORY_FILE = "#{REPORTS_DIRECTORY}/file_list.csv".freeze
 
+  PUBLIC_REPORTS_DIRECTORY = "#{ Rails.root }/public/reports".freeze
+
   def self.run_daily_update
     puts 'listing or creating report directory'
     self.list_or_create_report_directory
@@ -60,5 +62,15 @@ class ReportFetcher
       end
     end
     nil
+  end
+
+  def self.update_htmls
+    report_metas = self.read_list_of_cer_report_metas
+    report_metas.each do |meta|
+      accession_id = meta["Accession ID"]
+      unless File.exists?("#{ PUBLIC_REPORTS_DIRECTORY }/#{ accession_id }/TOC.html")
+        ConvertPdf2HtmlJob.perform_later(accession_id)
+      end
+    end
   end
 end
