@@ -1,35 +1,7 @@
-.column.row#project-list
-  h3 Create New Link
-  h6 style="font-weight: bold; margin-top: 10px;" SRDR+ Project
-  select id="project-create"
-    - @projects.each do |project|
-      option
-      option value="#{ project.id }" ID #{ project.id }: #{ project.name }
-  h6 style="font-weight: bold; margin-top: 10px;" Systematic Review Report
-  input[type="radio" id="report-radio-file" name="report-radio" checked="checked"]
-  label[for="report-radio-file" style="margin-right: 0;"] = "Upload PDF"
-  span.import-tooltip-icon style="margin: 0 6px 0 3px;" data-open="import-tooltip-content"
-    i.fi-info style="color:#28b0f3;font-size:20px;"
-  .reveal#import-tooltip-content data-reveal="" style="font-size:large;line-height:25px;"
-    | You can upload the following file formats:
-    ul style="padding-top:15px;font-size:large;line-height:25px;"
-      li
-        a href="https://acrobat.adobe.com/us/en/acrobat/about-adobe-pdf.html" target="_blank"
-          | Adobe PDF File Format Information (external site)
-  input[type="radio" id="report-radio-select" name="report-radio"]
-  label[for="report-radio-select"] = "Select from existing reports"
-  #report-select-div.hide
-    select id="report-create"
-      - @reports.each do |report|
-        option
-        option value="#{ report.accession_id }" #{ report.accession_id }: #{ report.title }
-  #report-upload-div
-    input#report-upload[type="file" accept="application/pdf"]
-
-  a.button.medium#create-new-sd-meta-datum style="margin-top: 10px;" Create
-hr style="border: 0.5px solid; margin: 20px 55px;"
 .column.row#sdMetaData-list
-  h3 My SRDR 2.0 Dashboard
+  h3 = "Project: " + @project.name
+  br
+  h5 = "SR-360 Items"
   table.hover
     thead
       tr
@@ -74,8 +46,48 @@ hr style="border: 0.5px solid; margin: 20px 55px;"
             td = distance_of_time_in_words_to_now(sd_meta_datum.updated_at) + ' ago'
             td = link_to "Edit", edit_sd_meta_datum_path(sd_meta_datum.id)
             td = link_to 'Destroy', sd_meta_datum_path(sd_meta_datum), data: { confirm: 'Are you sure? This will destroy the link you have created between a report and a project in SRDR. It will also destroy everything you have entered for this project in SRDR 2.0.' }, method: :delete
+.column.row
+  #create-sd-meta-datum-modal-button.create-button.button [data-open='create-sd-meta-datum-modal']
+    i.fi-plus>
+    = 'Create'
+#create-sd-meta-datum-modal.reveal [data-reveal='']
+  .column.row#project-list
+    .hide
+      select id="project-create"
+        option value="#{ @project.id }"
+    h6 style="font-weight: bold; margin-top: 10px;" Systematic Review Report
+    span style='margin-right: 1rem;'
+      input[type="radio" id="report-radio-file" name="report-radio" checked="checked"]
+      label[for="report-radio-file" style="margin-right: 0;"]
+        = "Upload PDF"
+        span.import-tooltip-icon style="margin: 0 6px 0 3px;" data-open="import-tooltip-content"
+          i.fi-info style="color:#28b0f3;font-size:20px;"
+        .reveal#import-tooltip-content data-reveal="" style="font-size:large;line-height:25px;"
+          | You can upload the following file formats:
+          ul style="padding-top:15px;font-size:large;line-height:25px;"
+            li
+              a href="https://acrobat.adobe.com/us/en/acrobat/about-adobe-pdf.html" target="_blank"
+                | Adobe PDF File Format Information (external site)
+    span
+      input[type="radio" id="report-radio-select" name="report-radio"]
+      label[for="report-radio-select"] = "Select from existing reports"
+
+    div style='margin-top: 1rem; margin-bottom: 1rem; height: 2rem;'
+      #report-select-div.hide
+        select id="report-create"
+          - @reports.each do |report|
+            option
+            option value="#{ report.accession_id }" #{ report.accession_id }: #{ report.title }
+      #report-upload-div
+        input#report-upload[type="file" accept="application/pdf"]
+
+    a.button.create-button.medium#create-new-sd-meta-datum
+      i.fi-plus>
+      = "Create"
+  /hr style="border: 0.5px solid; margin: 20px 55px;"
 
 javascript:
+  $('#import-tooltip-content').on('closed.zf.reveal', function() {$('#create-sd-meta-datum-modal').foundation('open');});
   $('.state-toggler').on('click', function(e) {
     if (this.attributes.state.value == 'DRAFT' && this.attributes.data_sections_complete.value === 'false') {
       alert('There are still incomplete sections.  Please mark any incomplete sections complete first.')

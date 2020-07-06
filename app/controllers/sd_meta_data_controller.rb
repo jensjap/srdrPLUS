@@ -1,5 +1,5 @@
 class SdMetaDataController < ApplicationController
-  add_breadcrumb 'my project-report links', :sd_meta_data_path
+  add_breadcrumb 'my projects', :projects_path
 
   around_action :wrap_in_transaction
 
@@ -56,6 +56,7 @@ class SdMetaDataController < ApplicationController
 
   def destroy
     sd_meta_datum =  SdMetaDatum.find(params[:id])
+    project = sd_meta_datum.project
     sd_key_questions_ids = sd_meta_datum.sd_key_questions.map(&:id)
 
     SdKeyQuestionsProject.where(sd_key_question_id: sd_key_questions_ids).destroy_all
@@ -67,7 +68,8 @@ class SdMetaDataController < ApplicationController
     else
       flash[:alert] = "Error deleting Sd Meta Datum ID: #{sd_meta_datum.id}"
     end
-    redirect_to sd_meta_data_path
+
+    redirect_to project_sd_meta_data_path( project )
   end
 
   def create
@@ -117,9 +119,10 @@ end
   end
 
   def index
-    @projects = policy_scope(Project)
+    #@projects = policy_scope(Project)
+    @project = Project.find( params[ :project_id ] )
     @reports = Report.all
-    @sd_meta_data = policy_scope(SdMetaDatum)
+    @sd_meta_data = policy_scope(SdMetaDatum).where( project: @project )
   end
 
   private

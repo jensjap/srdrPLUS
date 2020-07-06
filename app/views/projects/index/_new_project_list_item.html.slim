@@ -30,6 +30,10 @@ a.accordion-title href="#"
           - e_count = @projects_extraction_counts[project.id] || " 0"
           - e_title = (e_count + (e_count == "1" ? " Extraction" : " Extractions"))
           h5 = link_to e_title, project_extractions_path(project), title: t('manage_extractions')
+        .cell.auto
+          - e_count = @sd_meta_data_counts[project.id] || " 0"
+          - e_title = (e_count + (e_count == "1" ? " SR-360 Item" : " SR-360 Items"))
+          h5 = link_to e_title, project_sd_meta_data_path(project), title: t('manage_extractions')
         /.cell.auto
           span.label Date Created:
           .callout = project.created_at.in_time_zone(current_user.profile.time_zone).strftime("%b %-d, %Y - %l:%M %P")
@@ -37,21 +41,19 @@ a.accordion-title href="#"
           span.label Date Updated:
           .callout = project.updated_at.in_time_zone(current_user.profile.time_zone).strftime("%b %-d, %Y - %l:%M %P")
 
-      - if project.publishings.present?
+      - if project.publishing.present?
         .cell
           .grid-x.grid-padding-x
-            - if project.publishings.any?(&:approved?)
+            - if project.publishing.approved?
               .cell.auto
                 span.label.success Date Published:
-                .callout = project.publishings.find(&:approved?).created_at.in_time_zone(current_user.profile.time_zone).strftime("%b %-d, %Y - %l:%M %P")
+                .callout = project.publishing.created_at.in_time_zone(current_user.profile.time_zone).strftime("%b %-d, %Y - %l:%M %P")
             - else
               .cell.auto
                 span.label.warning Date Publishing Requested:
                 .callout
-                  ol
-                    - project.publishings.each do |publishing|
-                      li = publishing.created_at.in_time_zone(current_user.profile.time_zone).strftime("%b %-d, %Y - %l:%M %P") + \
-                           " (by: #{ publishing.user.profile.first_name })"
+                  = project.publishing.created_at.in_time_zone(current_user.profile.time_zone).strftime("%b %-d, %Y - %l:%M %P") + \
+                         " (by: #{ publishing.user.profile.first_name })"
     .grid-x.grid-padding-x
       .cell.auto
         = link_to "Edit Project", edit_project_path(project), class: "button expanded"

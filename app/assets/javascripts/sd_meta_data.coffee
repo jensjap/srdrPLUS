@@ -415,7 +415,7 @@ initializeSwitches = ->
 
 document.addEventListener 'turbolinks:load', ->
   do ->
-    return if $('body.sd_meta_data').length == 0
+    return if $('body.sd_meta_data.edit').length == 0
     StatusChecker.initialize_listeners()
     Collapser.initialize_states()
     Collapser.initialize_listeners()
