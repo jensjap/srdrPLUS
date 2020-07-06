@@ -155,15 +155,15 @@ class ProjectsController < ApplicationController
     @query = params[:q]  # Need @query for index partial.
     @order = params[:o]
 
-    @projects = policy_scope(Project).includes(publishings: [{ user: :profile }, approval: [{ user: :profile }]])
+    @projects = policy_scope(Project).includes(publishing: [{ user: :profile }, approval: [{ user: :profile }]])
       .by_name_description_and_query(@query).order(SORT[@order]).page(params[:page])
-    @published = policy_scope(Project).published.includes(publishings: [{ user: :profile }, approval: [{ user: :profile }]])
-      .by_name_description_and_query(@query).order(SORT[@order]).page(params[:page])
-
-    @pending = policy_scope(Project).pending.includes(publishings: [{ user: :profile }, approval: [{ user: :profile }]])
+    @published = policy_scope(Project).published.includes(publishing: [{ user: :profile }, approval: [{ user: :profile }]])
       .by_name_description_and_query(@query).order(SORT[@order]).page(params[:page])
 
-    @draft = policy_scope(Project).draft.includes(publishings: [{ user: :profile }, approval: [{ user: :profile }]])
+    @pending = policy_scope(Project).pending.includes(publishing: [{ user: :profile }, approval: [{ user: :profile }]])
+      .by_name_description_and_query(@query).order(SORT[@order]).page(params[:page])
+
+    @draft = policy_scope(Project).draft.includes(publishing: [{ user: :profile }, approval: [{ user: :profile }]])
       .by_name_description_and_query(@query).order(SORT[@order]).page(params[:page])
 
     #### NOTE
@@ -320,7 +320,7 @@ class ProjectsController < ApplicationController
     @project = Project.includes(:extraction_forms)
                       .includes(:key_questions_projects)
                       .includes(:key_questions)
-                      .includes(publishings: [{ user: :profile }, approval: [{ user: :profile }]])
+                      .includes(publishing: [{ user: :profile }, approval: [{ user: :profile }]])
                       .find(params[:id])
   end
 

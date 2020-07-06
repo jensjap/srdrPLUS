@@ -1,31 +1,21 @@
 .column.row#sdMetaData-list
-  h3 = "Project: " + @project.name
+  h3 = "SR-360"
+  h5 = @project.name
   br
-  h4 = "SR-360 Items"
-  br
-  table.hover
-    thead
-      tr
-        th width="150" SRDR+ Project
-        th width="150" Systematic Review Report
-        th width="75" Progress
-        /th width="50" Last Updated
-        th width="25"
-        th width="25"
-        th width="25"
-        th width="25"
-    tbody
-      - if @sd_meta_data.empty?
+  - if @sd_meta_data.present?
+    br
+
+    table.hover
+      thead
         tr
-          td
-          td
-          td
-          /td
-          td
-          td
-          td
-          td
-      - else
+          th width="150" SRDR+ Project
+          th width="150" Systematic Review Report
+          th width="75" Progress
+          /th width="50" Last Updated
+          th width="25"
+          th width="25"
+          th width="25"
+      tbody
         - @sd_meta_data.each do |sd_meta_datum|
           tr
             td ID #{ sd_meta_datum.try(:project).id }: #{ sd_meta_datum.try(:project).try(:name) }
@@ -49,49 +39,53 @@
                 = f.input :state, :as => :hidden, input_html: { value: sd_meta_datum.state == 'DRAFT' ? 'COMPLETED' : 'DRAFT' }
                 = f.button :submit, 'Toggle State', class: 'state-toggler', state: sd_meta_datum.state, data_sections_complete: sd_meta_datum.all_sections_complete?
             /td = distance_of_time_in_words_to_now(sd_meta_datum.updated_at) + ' ago'
-            td = link_to('Query', project_report_link_new_query_form_path(sd_meta_datum))
             td = link_to('View', sd_meta_datum)
             td = link_to "Work", edit_sd_meta_datum_path(sd_meta_datum.id), class: "sd-meta-data-index-edit"
             td = link_to 'Destroy', sd_meta_datum_path(sd_meta_datum), data: { confirm: 'Are you sure? This will destroy the link you have created between a report and a project in SRDR. It will also destroy everything you have entered for this project in SRDR 2.0.' }, method: :delete, class: "sd-meta-data-index-delete"
-.column.row
-  #create-sd-meta-datum-modal-button.create-button.button [data-open='create-sd-meta-datum-modal']
-    i.fi-plus>
-    = 'Create'
-#create-sd-meta-datum-modal.reveal [data-reveal='']
-  .column.row#project-list
-    .hide
-      select id="project-create"
-        option value="#{ @project.id }"
-    h6 style="font-weight: bold; margin-top: 10px;" Systematic Review Report
-    span style='margin-right: 1rem;'
-      input[type="radio" id="report-radio-file" name="report-radio" checked="checked"]
-      label[for="report-radio-file" style="margin-right: 0;"]
-        = "Upload PDF"
-        span.import-tooltip-icon style="margin: 0 6px 0 3px;" data-open="import-tooltip-content"
-          i.fi-info style="color:#28b0f3;font-size:20px;"
-        .reveal#import-tooltip-content data-reveal="" style="font-size:large;line-height:25px;"
-          | You can upload the following file formats:
-          ul style="padding-top:15px;font-size:large;line-height:25px;"
-            li
-              a href="https://acrobat.adobe.com/us/en/acrobat/about-adobe-pdf.html" target="_blank"
-                | Adobe PDF File Format Information (external site)
-    span
-      input[type="radio" id="report-radio-select" name="report-radio"]
-      label[for="report-radio-select"] = "Select from existing reports"
-
-    div style='margin-top: 1rem; margin-bottom: 1rem; height: 2rem;'
-      #report-select-div.hide
-        select id="report-create"
-          - @reports.each do |report|
-            option
-            option value="#{ report.accession_id }" #{ report.accession_id }: #{ report.title }
-      #report-upload-div
-        input#report-upload[type="file" accept="application/pdf"]
-
-    a.button.create-button.medium#create-new-sd-meta-datum
+  .column.row
+    #create-sd-meta-datum-modal-button.create-button.button [data-open='create-sd-meta-datum-modal']
       i.fi-plus>
-      = "Create"
-  /hr style="border: 0.5px solid; margin: 20px 55px;"
+      = 'Create SR-360 Item'
+
+    - if @sd_meta_data.present?
+      .button.sd-meta-data-index-query 
+        = link_to('Query SRDR+ Project Data', project_report_link_new_query_form_path(@sd_meta_data.first))
+
+  #create-sd-meta-datum-modal.reveal [data-reveal='']
+    .column.row#project-list
+      .hide
+        select id="project-create"
+          option value="#{ @project.id }"
+      h6 style="font-weight: bold; margin-top: 10px;" Systematic Review Report
+      span style='margin-right: 1rem;'
+        input[type="radio" id="report-radio-file" name="report-radio" checked="checked"]
+        label[for="report-radio-file" style="margin-right: 0;"]
+          = "Upload PDF"
+          span.import-tooltip-icon style="margin: 0 6px 0 3px;" data-open="import-tooltip-content"
+            i.fi-info style="color:#28b0f3;font-size:20px;"
+          .reveal#import-tooltip-content data-reveal="" style="font-size:large;line-height:25px;"
+            | You can upload the following file formats:
+            ul style="padding-top:15px;font-size:large;line-height:25px;"
+              li
+                a href="https://acrobat.adobe.com/us/en/acrobat/about-adobe-pdf.html" target="_blank"
+                  | Adobe PDF File Format Information (external site)
+      span
+        input[type="radio" id="report-radio-select" name="report-radio"]
+        label[for="report-radio-select"] = "Select from existing reports"
+
+      div style='margin-top: 1rem; margin-bottom: 1rem; height: 2rem;'
+        #report-select-div.hide
+          select id="report-create"
+            - @reports.each do |report|
+              option
+              option value="#{ report.accession_id }" #{ report.accession_id }: #{ report.title }
+        #report-upload-div
+          input#report-upload[type="file" accept="application/pdf"]
+
+      a.button.create-button.medium#create-new-sd-meta-datum
+        i.fi-plus>
+        = "Create"
+    /hr style="border: 0.5px solid; margin: 20px 55px;"
 
 javascript:
   $('#import-tooltip-content').on('closed.zf.reveal', function() {$('#create-sd-meta-datum-modal').foundation('open');});

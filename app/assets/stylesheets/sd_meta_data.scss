@@ -495,20 +495,19 @@ body.sd_meta_data {
   }
 
   .sd-meta-data-index-delete {
-    font-weight:bold;
-    color:#cc4b37 !important;
+    font-weight: bold;
+    color: #cc4b37 !important;
   }
 
   .sd-meta-data-index-query {
-    font-weight:bold;
-    color:#cc4b37 !important;
+    margin-left: 1rem;
+    background-color: #e49013;
+    a {
+      color: white !important;
+    }
   }
 
-  .sd-meta-data-index-view {
-    font-weight:bold;
-    color:#cc4b37 !important;
-  }
   .sd-meta-data-index-edit {
-    font-weight:bold;
+    font-weight: bold;
   }
 }
