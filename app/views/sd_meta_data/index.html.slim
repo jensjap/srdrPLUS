@@ -8,17 +8,15 @@
     table.hover
       thead
         tr
-          th width="150" SRDR+ Project
           th width="150" Systematic Review Report
           th width="75" Progress
-          /th width="50" Last Updated
+          th width="50" Last Updated
           th width="25"
           th width="25"
           th width="25"
       tbody
         - @sd_meta_data.each do |sd_meta_datum|
           tr
-            td ID #{ sd_meta_datum.try(:project).id }: #{ sd_meta_datum.try(:project).try(:name) }
             td = (sd_meta_datum.report_title.present? ? sd_meta_datum.report_title : sd_meta_datum.report.try(:title)) || '_____'
             - if sd_meta_datum.incomplete_sections.empty?
               td style="font-weight: bold;"
@@ -38,7 +36,7 @@
               = simple_form_for(sd_meta_datum, url: sd_meta_datum_path(sd_meta_datum)) do |f|
                 = f.input :state, :as => :hidden, input_html: { value: sd_meta_datum.state == 'DRAFT' ? 'COMPLETED' : 'DRAFT' }
                 = f.button :submit, 'Toggle State', class: 'state-toggler', state: sd_meta_datum.state, data_sections_complete: sd_meta_datum.all_sections_complete?
-            /td = distance_of_time_in_words_to_now(sd_meta_datum.updated_at) + ' ago'
+            td = distance_of_time_in_words_to_now(sd_meta_datum.updated_at) + ' ago'
             td = link_to('View', sd_meta_datum)
             td = link_to "Work", edit_sd_meta_datum_path(sd_meta_datum.id), class: "sd-meta-data-index-edit"
             td = link_to 'Destroy', sd_meta_datum_path(sd_meta_datum), data: { confirm: 'Are you sure? This will destroy the link you have created between a report and a project in SRDR. It will also destroy everything you have entered for this project in SRDR 2.0.' }, method: :delete, class: "sd-meta-data-index-delete"
