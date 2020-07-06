@@ -96,8 +96,16 @@ class SdMetaDataController < ApplicationController
     @report = @sd_meta_datum.report
     @url = sd_meta_datum_path(@sd_meta_datum)
 
+    # PDF preview.
+    accession_id = @report.accession_id
+    @report_html_path = "/reports/#{ accession_id }/TOC.html"
+    unless File.exists?("#{ Rails.root }/public/" + @report_html_path)
+      ConvertPdf2HtmlJob.perform_later(accession_id)
+      @pdf2html_in_progress = true
+    end
+
     add_breadcrumb 'edit project-report link', edit_sd_meta_datum_url(@sd_meta_datum)
-end
+  end
 
   def update
     @sd_meta_datum = SdMetaDatum.find(params[:id])
@@ -112,7 +120,7 @@ end
         set_partial_name_and_container_class params[:sd_meta_datum][:item_id].to_i
         set_report_title_update_flag (params[:sd_meta_datum][:report_title].present?)
       end
-      format.html do |format|
+      format.html do
         redirect_to edit_sd_meta_datum_path(@sd_meta_datum.id)
       end
     end
