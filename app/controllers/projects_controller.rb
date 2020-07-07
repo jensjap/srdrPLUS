@@ -30,19 +30,19 @@ class ProjectsController < ApplicationController
     @order = params[:o] || "updated-at"
 
     @projects = policy_scope(Project)
-      .includes(publishings: [{ user: :profile }, approval: [{ user: :profile }]])
+      .includes(publishing: [{ user: :profile }, approval: [{ user: :profile }]])
       .by_query(@query).order(SORT[@order]).page(params[:page])
 
     @published = policy_scope(Project).published
-      .includes(publishings: [{ user: :profile }, approval: [{ user: :profile }]])
+      .includes(publishing: [{ user: :profile }, approval: [{ user: :profile }]])
       .by_query(@query).order(SORT[@order]).page(params[:page])
 
     @pending = policy_scope(Project).pending
-      .includes(publishings: [{ user: :profile }, approval: [{ user: :profile }]])
+      .includes(publishing: [{ user: :profile }, approval: [{ user: :profile }]])
       .by_query(@query).order(SORT[@order]).page(params[:page])
 
     @draft = policy_scope(Project).draft
-      .includes(publishings: [{ user: :profile }, approval: [{ user: :profile }]])
+      .includes(publishing: [{ user: :profile }, approval: [{ user: :profile }]])
       .by_query(@query).order(SORT[@order]).page(params[:page])
 
     project_ids = (@projects.pluck(:id) +  @published.pluck(:id) +  @pending.pluck(:id) +  @draft.pluck(:id)).uniq
@@ -55,15 +55,15 @@ class ProjectsController < ApplicationController
                                               .group_by(&:project_id)
                                               .map{|k,v| [k, v.length.to_s]}.to_h
     @projects_projects_user_counts         = ProjectsUser.where(project_id: project_ids)
-                                              .where(project_id: project_ids)
                                               .group_by(&:project_id)
                                               .map{|k,v| [k, v.length.to_s]}.to_h
     @projects_extraction_counts            = Extraction.where(project_id: project_ids)
-                                              .where(project_id: project_ids)
+                                              .group_by(&:project_id)
+                                              .map{|k,v| [k, v.length.to_s]}.to_h
+    @sd_meta_data_counts                   = SdMetaDatum.where(project_id: project_ids)
                                               .group_by(&:project_id)
                                               .map{|k,v| [k, v.length.to_s]}.to_h
     @projects_extraction_forms_project_ids = ExtractionFormsProject.where(project_id: project_ids)
-                                              .where(project_id: project_ids)
                                               .group_by(&:project_id)
 
     @projects_lead_or_with_key_questions   = ProjectsUsersRole.where(projects_user: ProjectsUser.where(project_id: project_ids, user_id: current_user), role: Role.where(name: 'Leader')).includes(projects_user: { project: [ :key_questions_projects ] }).map{ |pur| [pur.project.id, pur.project.key_questions_projects.present?] }.to_h
@@ -155,15 +155,15 @@ class ProjectsController < ApplicationController
     @query = params[:q]  # Need @query for index partial.
     @order = params[:o]
 
-    @projects = policy_scope(Project).includes(publishings: [{ user: :profile }, approval: [{ user: :profile }]])
+    @projects = policy_scope(Project).includes(publishing: [{ user: :profile }, approval: [{ user: :profile }]])
       .by_name_description_and_query(@query).order(SORT[@order]).page(params[:page])
-    @published = policy_scope(Project).published.includes(publishings: [{ user: :profile }, approval: [{ user: :profile }]])
-      .by_name_description_and_query(@query).order(SORT[@order]).page(params[:page])
-
-    @pending = policy_scope(Project).pending.includes(publishings: [{ user: :profile }, approval: [{ user: :profile }]])
+    @published = policy_scope(Project).published.includes(publishing: [{ user: :profile }, approval: [{ user: :profile }]])
       .by_name_description_and_query(@query).order(SORT[@order]).page(params[:page])
 
-    @draft = policy_scope(Project).draft.includes(publishings: [{ user: :profile }, approval: [{ user: :profile }]])
+    @pending = policy_scope(Project).pending.includes(publishing: [{ user: :profile }, approval: [{ user: :profile }]])
+      .by_name_description_and_query(@query).order(SORT[@order]).page(params[:page])
+
+    @draft = policy_scope(Project).draft.includes(publishing: [{ user: :profile }, approval: [{ user: :profile }]])
       .by_name_description_and_query(@query).order(SORT[@order]).page(params[:page])
 
     #### NOTE
@@ -320,7 +320,7 @@ class ProjectsController < ApplicationController
     @project = Project.includes(:extraction_forms)
                       .includes(:key_questions_projects)
                       .includes(:key_questions)
-                      .includes(publishings: [{ user: :profile }, approval: [{ user: :profile }]])
+                      .includes(publishing: [{ user: :profile }, approval: [{ user: :profile }]])
                       .find(params[:id])
   end
 

@@ -29,7 +29,7 @@ module Api
         @projects = current_user.projects
           .includes(:extraction_forms)
           .includes(:key_questions)
-          .includes(publishings: [{ user: :profile }, approval: [{ user: :profile }]])
+          .includes(publishing: [{ user: :profile }, approval: [{ user: :profile }]])
           .by_query(@query).order(SORT[@order]).page(params[:page])
       end
 

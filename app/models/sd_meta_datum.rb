@@ -55,8 +55,9 @@ class SdMetaDatum < ApplicationRecord
     "Purpose, Analytic Framework, and Key Questions",
     "PICODTS",
     "Key Question Mapping",
-    "Search Strategy and Evidence Summary",
-    "Study Results"
+    "Search Strategy and Results of Screening",
+    "Risk of Bias and Overall Summary of Evidence",
+    "Results for Individual Outcomes"
   ].freeze
 
   default_scope { order(id: :desc) }

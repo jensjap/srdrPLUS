@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_25_190005) do
+ActiveRecord::Schema.define(version: 2020_06_30_210116) do
 
   create_table "abstrackr_settings", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "profile_id"
@@ -1449,6 +1449,7 @@ ActiveRecord::Schema.define(version: 2020_06_25_190005) do
     t.text "stakeholders_peer_reviewers"
     t.text "stakeholders_others"
     t.boolean "section_flag_8", default: false, null: false
+    t.text "organization"
     t.index ["review_type_id"], name: "index_sd_meta_data_on_review_type_id"
   end
 

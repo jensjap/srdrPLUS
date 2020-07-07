@@ -30,12 +30,12 @@ class Project < ApplicationRecord
 
   paginates_per 8
 
-  scope :published, -> { joins(publishings: :approval) }
+  scope :published, -> { joins(publishing: :approval) }
   scope :pending, -> {
-          joins(:publishings).left_joins(publishings: :approval).where(publishings: { approvals: { id: nil } })
+          joins(:publishing).left_joins(publishing: :approval).where(publishings: { approvals: { id: nil } })
         }
   scope :draft, -> {
-          left_joins(:publishings).where(publishings: { id: nil })
+          left_joins(:publishing).where(publishings: { id: nil })
         }
   scope :lead_by_current_user, -> { }
 
@@ -47,7 +47,7 @@ class Project < ApplicationRecord
   has_many :extractions, dependent: :destroy, inverse_of: :project
   has_many :teams, dependent: :destroy
 
-  has_many :publishings, as: :publishable, dependent: :destroy
+  has_one :publishing, as: :publishable, dependent: :destroy
   # NOTE
   # I think we are using polymorphism incorrectly above. I think what we want is for each project to have at most one
   # publishing, therefore:

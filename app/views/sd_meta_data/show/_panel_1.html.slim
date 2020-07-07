@@ -3,7 +3,16 @@
     legend Authors and Stakeholders
     div data-row-span="1"
       div data-field-span="1"
-        label Authors
+        label Organization of Authors of Full Report
+        div
+          - if not @sd_meta_datum.organization.present?
+            |-----
+
+          - @sd_meta_datum.organization && @sd_meta_datum.organization.split("\n").each do |organization|
+            div #{organization}
+    div data-row-span="1"
+      div data-field-span="1"
+        label Authors of Full Report
         div
           - if not @sd_meta_datum.authors.present?
             |-----

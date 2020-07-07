@@ -536,3 +536,26 @@ textarea {
 .create-button {
   background-color: #1986c7 !important;
 }
+
+::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+  color:    rgb(192, 192, 192) !important;
+}
+:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+  color:    rgb(192, 192, 192) !important;
+  opacity:  1;
+}
+::-moz-placeholder { /* Mozilla Firefox 19+ */
+  color:    rgb(192, 192, 192) !important;
+  opacity:  1;
+}
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+  color:    rgb(192, 192, 192) !important;
+}
+::-ms-input-placeholder { /* Microsoft Edge */
+  color:    rgb(192, 192, 192) !important;
+}
+
+::placeholder { /* Most modern browsers support this now. */
+  color:    rgb(192, 192, 192) !important;
+}
+

@@ -1,5 +1,5 @@
 class ProjectReportLinksController < ApplicationController
-  add_breadcrumb 'my project-report links',  :project_report_links_url
+  add_breadcrumb 'my projects',  :projects_path
 
   MEASURES_ORDER = [
     "Descriptive Statistics",
