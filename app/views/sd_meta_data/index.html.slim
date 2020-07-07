@@ -46,7 +46,7 @@
       = 'Create SR-360 Item'
 
     - if @sd_meta_data.present?
-      .button.sd-meta-data-index-query 
+      .button.sd-meta-data-index-query
         = link_to('Query SRDR+ Project Data', project_report_link_new_query_form_path(@sd_meta_data.first))
 
   #create-sd-meta-datum-modal.reveal [data-reveal='']
@@ -131,7 +131,7 @@ javascript:
         e.preventDefault();
         $.ajax({
           type: "POST",
-          url: "/sd_meta_data",
+          url: `/projects/${project_id}/sd_meta_data`,
           data: {
             sd_meta_datum: {
               project_id,
