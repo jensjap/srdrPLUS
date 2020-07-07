@@ -3,10 +3,7 @@ module SharedOrderableMethods
 
   included do
     scope :ordered, -> do
-      # TODO
-      if self.respond_to?(:ordering)
-        joins(:ordering).merge(Ordering.order(position: :asc))
-      end
+      joins(:ordering).merge(Ordering.order(position: :asc))
     end
 
     # Params:
