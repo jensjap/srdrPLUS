@@ -193,7 +193,7 @@ class SdMetaDatum < ApplicationRecord
        errors << 'Authors and Stakeholders'
     end
 
-    if self.key_questions.blank? ||
+    if self.sd_key_questions.blank? ||
        sd_key_questions.any? { |sd_key_question| sd_key_question.sd_key_questions_key_question_types.blank? } ||
        sd_key_questions.any? { |sd_key_question| !sd_key_question.includes_meta_analysis }
       errors << 'URL Links'
