@@ -2,7 +2,12 @@ module SharedOrderableMethods
   extend ActiveSupport::Concern
 
   included do
-    scope :ordered, -> { joins(:ordering).merge(Ordering.order(position: :asc)) }
+    scope :ordered, -> do
+      # TODO
+      if self.respond_to?(:ordering)
+        joins(:ordering).merge(Ordering.order(position: :asc))
+      end
+    end
 
     # Params:
     #   symbol - Scope of the ordering. Each orderable is grouped by some parameter.

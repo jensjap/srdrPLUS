@@ -13,6 +13,7 @@
           th width="50" Last Updated
           th width="25"
           th width="25"
+          th width="100"
           th width="25"
       tbody
         - @sd_meta_data.each do |sd_meta_datum|
@@ -39,6 +40,19 @@
             td = distance_of_time_in_words_to_now(sd_meta_datum.updated_at) + ' ago'
             td = link_to('View', sd_meta_datum)
             td = link_to "Work", edit_sd_meta_datum_path(sd_meta_datum.id), class: "sd-meta-data-index-edit"
+            - if sd_meta_datum.publishings.empty? && sd_meta_datum.check_publishing_eligibility.blank?
+              td = link_to("Request to Make SR 360 Public", publishings_create_path(type: :sd_meta_datum, id: sd_meta_datum.id), class: "sd-meta-data-index-request-publish", method: :post)
+            - elsif sd_meta_datum.publishings.empty?
+              td
+                div data-open="publish-sd-meta-datum-errors-modal-#{sd_meta_datum.id}" style="color: #410b6c;" class="sd-meta-data-index-request-publish" = "Request to Make SR 360 Public"
+              div id="publish-sd-meta-datum-errors-modal-#{sd_meta_datum.id}" class="reveal" data-reveal=''
+                .column.row#project-list
+                  h6 style="font-weight: bold; margin-top: 10px;" Some required fields are missing. Please go to the SR 360 record to fill out all required fields.
+                  h6 Tabs with missing fields:
+                  - sd_meta_datum.check_publishing_eligibility.each do |error|
+                    div = error
+            - else
+              td = "Request under review"
             td = link_to 'Destroy', sd_meta_datum_path(sd_meta_datum), data: { confirm: 'Are you sure? This will destroy the link you have created between a report and a project in SRDR. It will also destroy everything you have entered for this project in SRDR 2.0.' }, method: :delete, class: "sd-meta-data-index-delete"
   .column.row
     #create-sd-meta-datum-modal-button.create-button.button [data-open='create-sd-meta-datum-modal']
