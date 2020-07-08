@@ -98,11 +98,7 @@ class SdMetaDataController < ApplicationController
 
     # PDF preview.
     accession_id = @report.accession_id
-    @report_html_path = "/reports/#{ accession_id }/TOC.html"
-    unless File.exists?("#{ Rails.root }/public/" + @report_html_path)
-      ConvertPdf2HtmlJob.perform_later(accession_id)
-      @pdf2html_in_progress = true
-    end
+    @report_html_path = "https://srdrplus-report-htmls.s3.amazonaws.com/reports/#{ accession_id }/TOC.html"
 
     add_breadcrumb 'edit project-report link', edit_sd_meta_datum_url(@sd_meta_datum)
   end
