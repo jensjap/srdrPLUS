@@ -2,8 +2,9 @@ class PublishingsController < ApplicationController
   SD_META_DATUM = 'sd_meta_datum'
   def create
     publishable_model = find_publishable_model
-    errors = publishable_model.check_publishing_eligibility
+    return render body: nil, :status => :bad_request unless publishable_model
 
+    errors = publishable_model.check_publishing_eligibility
     if errors.present?
       flash[:errors] = "Some required fields are missing. Please go to the SR 360 record to fill out all required fields: #{errors.join(', ')}"
     else
