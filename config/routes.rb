@@ -1,13 +1,14 @@
 require 'sidekiq/web'
 
 Rails.application.routes.draw do
-  get 'publishings/create'
-  get 'publishings/destroy'
+  post 'publishings/create'
+  delete 'publishings/destroy'
+
   resources :project_report_links, only: [:index, :view] do
     get 'new_query_form'
     post 'options_form'
   end
-  
+
   resources :searches, only: [:new, :create]
   resources :funding_sources, only: [:index]
   resources :sd_picods_types, only: [:index]
@@ -131,7 +132,7 @@ Rails.application.routes.draw do
     post 'section_update'
     post 'mapping_update'
   end
-  
+
   get 'sd_key_questions/:id/fuzzy_match', to: 'sd_key_questions#fuzzy_match'
 
   resources :projects, concerns: :paginatable, shallow: true do
@@ -156,7 +157,7 @@ Rails.application.routes.draw do
       end
 
     end
-    
+
     resources :screening_options
     resources :tasks
     resources :extractions do

@@ -9,7 +9,8 @@ class SdMetaDataController < ApplicationController
     @sd_meta_datum = SdMetaDatum.find(params[:id])
     @project = @sd_meta_datum.try(:project)
     @report = @sd_meta_datum.report
-    add_breadcrumb 'view project-report link',  sd_meta_datum_url(@sd_meta_datum)
+    add_breadcrumb 'sr360 items', project_sd_meta_data_path(@project)
+    add_breadcrumb 'preview sr360', sd_meta_datum_url(@sd_meta_datum)
   end
 
   def mapping_update
@@ -103,8 +104,8 @@ class SdMetaDataController < ApplicationController
       ConvertPdf2HtmlJob.perform_later(accession_id)
       @pdf2html_in_progress = true
     end
-
-    add_breadcrumb 'edit project-report link', edit_sd_meta_datum_url(@sd_meta_datum)
+    add_breadcrumb 'sr360 items', project_sd_meta_data_path(@project)
+    add_breadcrumb 'edit sr360', edit_sd_meta_datum_url(@sd_meta_datum)
   end
 
   def update
@@ -131,6 +132,7 @@ class SdMetaDataController < ApplicationController
     @project = Project.find( params[ :project_id ] )
     @reports = Report.all
     @sd_meta_data = policy_scope(SdMetaDatum).where( project: @project )
+    add_breadcrumb 'sr360 items', project_sd_meta_data_path(@project)
   end
 
   private
