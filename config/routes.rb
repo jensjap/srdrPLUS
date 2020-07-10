@@ -127,7 +127,7 @@ Rails.application.routes.draw do
     delete :delete_image_attachment, on: :member
   end
 
-  resources :sd_meta_data, only: [:create] do
+  resources :sd_meta_data, only: [] do
     get 'preview'
     post 'section_update'
     post 'mapping_update'
@@ -136,7 +136,7 @@ Rails.application.routes.draw do
   get 'sd_key_questions/:id/fuzzy_match', to: 'sd_key_questions#fuzzy_match'
 
   resources :projects, concerns: :paginatable, shallow: true do
-    resources :sd_meta_data, except: [:create]
+    resources :sd_meta_data
     resources :teams, concerns: :invitable, only: [:create, :update, :destroy]
     member do
       get  'confirm_deletion'

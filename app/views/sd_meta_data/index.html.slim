@@ -135,7 +135,7 @@ javascript:
 
   $('#create-new-sd-meta-datum').on('click', function(e) {
     // back button fix
-    Turbolinks.visit("#{project_report_links_url}")
+    //Turbolinks.visit("#{project_report_links_url}")
 
     if ($('#report-select-div.hide').length == 0) {
       var project_id = $('#project-create').val();
@@ -172,7 +172,7 @@ javascript:
         e.preventDefault();
         $.ajax({
           type: "POST",
-          url: "/sd_meta_data",
+          url: `/projects/${project_id}/sd_meta_data`,
           processData: false,
           contentType: false,
           data: form_data
