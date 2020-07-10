@@ -98,15 +98,15 @@
                         div data-row-span="1"
                           div data-field-span="1"
                             label Figure(s)
-                            - pairwise_meta_analytic_result.sd_analysis_figures.each do |sd_analysis_figure|
+                            - pairwise_meta_analytic_result.sd_meta_data_figures.each do |sd_meta_data_figure|
                               .sd-show-inner
                                 div data-row-span="1"
                                   div data-field-span="1"
                                     label Type
-                                    div = sd_analysis_figure.p_type.present? ? sd_analysis_figure.p_type : "-----"
+                                    div = sd_meta_data_figure.p_type.present? ? sd_meta_data_figure.p_type : "-----"
                                 div data-row-span="1"
                                   div data-field-span="1"
-                                    - sd_analysis_figure.pictures.each do |picture|
+                                    - sd_meta_data_figure.pictures.each do |picture|
                                       .sd-show-image
                                         = image_tag(picture, class: 'openable sd-image')
 
@@ -133,15 +133,15 @@
                         div data-row-span="1"
                           div data-field-span="1"
                             label Figure(s)
-                            - network_meta_analysis_result.sd_analysis_figures.each do |sd_analysis_figure|
+                            - network_meta_analysis_result.sd_meta_data_figures.each do |sd_meta_data_figure|
                               .sd-show-inner
                                 div data-row-span="1"
                                   div data-field-span="1"
                                     label Type
-                                    div = sd_analysis_figure.p_type.present? ? sd_analysis_figure.p_type : "-----"
+                                    div = sd_meta_data_figure.p_type.present? ? sd_meta_data_figure.p_type : "-----"
                                 div data-row-span="1"
                                   div data-field-span="1"
-                                    - sd_analysis_figure.pictures.each do |picture|
+                                    - sd_meta_data_figure.pictures.each do |picture|
                                       .sd-show-image
                                         = image_tag(picture, class: 'openable sd-image')
 

@@ -17,10 +17,10 @@ class SdPairwiseMetaAnalyticResult < ApplicationRecord
 
   belongs_to :sd_result_item, inverse_of: :sd_pairwise_meta_analytic_results
 
-  has_many :sd_analysis_figures, as: :sd_figurable
+  has_many :sd_meta_data_figures, as: :sd_figurable
   has_many :sd_outcomes, as: :sd_outcomeable
 
   has_one :ordering, as: :orderable, dependent: :destroy
 
-  accepts_nested_attributes_for :sd_analysis_figures, allow_destroy: true
+  accepts_nested_attributes_for :sd_meta_data_figures, allow_destroy: true
 end
