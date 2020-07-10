@@ -11,7 +11,7 @@ class ConvertPdf2HtmlJob < ApplicationJob
       system("mv TOC.html #{ Rails.root }/public/reports/#{ accession_id }/")
     elsif args.second.present?
       sd_meta_datum = SdMetaDatum.find args.second
-      pdf_path = "#{ Rails.root }/public/reports/#{ accession_id }/#{sd_meta_datum.report_file.filename}"
+      pdf_path = "#{ Rails.root }/public/reports/#{ accession_id }/TOC.pdf"
       system("mkdir -p #{ Rails.root }/public/reports/#{ accession_id }")
       File.open(pdf_path, 'wb') do |file|
         file.write(sd_meta_datum.report_file.download)

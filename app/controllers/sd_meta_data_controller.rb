@@ -99,6 +99,7 @@ class SdMetaDataController < ApplicationController
     @report = @sd_meta_datum.report
     @url = sd_meta_datum_path(@sd_meta_datum)
 
+    @pdf2html_in_progress = false
     if @report.present?
       # PDF preview for reports selected from dropdown.
       accession_id = @report.accession_id
