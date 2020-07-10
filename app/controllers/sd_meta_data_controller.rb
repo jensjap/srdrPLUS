@@ -1,6 +1,8 @@
 class SdMetaDataController < ApplicationController
   add_breadcrumb 'my projects', :projects_path
 
+  #Birol: although bucket swapping works, it is unnecessary, since at the moment converted pdfs has to be stored on disk
+  #around_action :wrap_in_bucket_swap, only: [:create, :destroy, :show, :edit]
   around_action :wrap_in_transaction
 
   def show
@@ -97,12 +99,24 @@ class SdMetaDataController < ApplicationController
     @report = @sd_meta_datum.report
     @url = sd_meta_datum_path(@sd_meta_datum)
 
-    # PDF preview.
-    accession_id = @report.accession_id
-    @report_html_path = "/reports/#{ accession_id }/TOC.html"
-    unless File.exists?("#{ Rails.root }/public/" + @report_html_path)
-      ConvertPdf2HtmlJob.perform_later(accession_id)
-      @pdf2html_in_progress = true
+    if @report.present?
+      # PDF preview for reports selected from dropdown.
+      accession_id = @report.accession_id
+      @report_html_path = "/reports/#{ accession_id }/TOC.html"
+      unless File.exists?("#{ Rails.root }/public/" + @report_html_path)
+        ConvertPdf2HtmlJob.perform_later(accession_id)
+        @pdf2html_in_progress = true
+      end
+    elsif @sd_meta_datum.report_file.present?
+      # PDF preview for reports selected from dropdown.
+      accession_id = "sd_meta_datum_" + @sd_meta_datum.id.to_s
+      @report_html_path = "/reports/#{ accession_id }/TOC.html"
+      unless File.exists?("#{ Rails.root }/public/" + @report_html_path)
+        ConvertPdf2HtmlJob.perform_later(accession_id, @sd_meta_datum.id)
+        @pdf2html_in_progress = true
+      end
+    else
+      @pdf_url
     end
     add_breadcrumb 'sr360 items', project_sd_meta_data_path(@project)
     add_breadcrumb 'edit sr360', edit_sd_meta_datum_url(@sd_meta_datum)
@@ -136,6 +150,36 @@ class SdMetaDataController < ApplicationController
   end
 
   private
+    def set_bucket
+      service = ActiveStorage::Blob.service
+      return if not service.present?
+      return unless service.class.to_s == 'ActiveStorage::Service::S3Service'
+
+      perm_bucket = nil
+      service.client.buckets.each do |bucket|
+        if bucket.name == "srdrplus-uploads"
+          perm_bucket = bucket
+        end
+      end
+      service.set_bucket(perm_bucket)
+      service.set_public(true)
+    end
+
+    def revert_bucket
+      service = ActiveStorage::Blob.service
+      return if not service.present?
+      return unless service.class.to_s == 'ActiveStorage::Service::S3Service'
+
+      temp_bucket = nil
+      service.client.buckets.each do |bucket|
+        if bucket.name == "srdrplus-temp"
+          temp_bucket = bucket
+        end
+      end
+      service.set_bucket(temp_bucket)
+      service.set_public(false)
+    end
+
     def set_partial_name_and_container_class( item_id )
       div_partial_dict = {
  #      63 => { :class => '.meta-regression-analysis-result-list',\
@@ -180,6 +224,15 @@ class SdMetaDataController < ApplicationController
     def set_report_title_update_flag(bool)
       if bool
         @report_title_updated = true
+      end
+    end
+
+    def wrap_in_bucket_swap
+      begin
+        set_bucket
+        yield
+      ensure
+        revert_bucket
       end
     end
 

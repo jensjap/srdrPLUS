@@ -127,7 +127,7 @@ class Project < ApplicationRecord
   end
 
   def public?
-    self.publishings.any?(&:approval)
+    self.publishing.present? and self.publishing.approval.present?
   end
 
   def duplicate_key_question?
@@ -143,7 +143,10 @@ class Project < ApplicationRecord
   end
 
   def publication_requested_at
-    self.publishings.any?(&:approved?).try(:last).try(:created_at)
+    if self.publishing.present? 
+      return self.publishing.created_at
+    end
+    return nil
   end
 
   def creator

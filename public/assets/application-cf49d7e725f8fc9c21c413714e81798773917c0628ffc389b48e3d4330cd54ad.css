@@ -24441,6 +24441,24 @@ body.sd_meta_data input[type="radio"] {
 body.sd_meta_data #report-upload {
   margin-bottom: 0;
 }
+/* line 498, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .sd-meta-data-index-delete {
+  font-weight: bold;
+  color: #cc4b37 !important;
+}
+/* line 503, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .sd-meta-data-index-query {
+  margin-left: 1rem;
+  background-color: #e49013;
+}
+/* line 506, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .sd-meta-data-index-query a {
+  color: white !important;
+}
+/* line 511, /Users/birol/Projects/srdr+/app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .sd-meta-data-index-edit {
+  font-weight: bold;
+}
 /**
  * Foundation for Sites by ZURB
  * Version 6.5.3
