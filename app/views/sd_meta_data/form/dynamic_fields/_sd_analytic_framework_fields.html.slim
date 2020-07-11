@@ -2,13 +2,11 @@
   div class="text-right"
     = link_to_remove_association "remove framework", f, data: { confirm: "This will remove associated descriptions and pictures.  Are you sure?" }
   = f.input :name, label: 'Description', input_html: { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
-  = f.input :pictures, as: :file, label: 'Pictures', input_html: { multiple: true, id: "#{dom_id(f.object)}", class: 'hide' }
-  label.button.file-picker for="#{dom_id(f.object)}"
-    | Choose File
-  - f.object.pictures.each do |picture|
-    .hoverable-figure
-      .hover-message
-        = link_to delete_image_attachment_picture_path(picture.id), method: :delete, data: { confirm: 'Are you sure?' }, remote: true, class: 'remove-figure' do
-          = fa_icon "close 2x"
-      = image_tag(picture, class: 'openable sd-image')
+  div
+    label Figure(s)
+    = f.simple_fields_for :sd_meta_data_figures, (f.object.sd_meta_data_figures.present? ? f.object.sd_meta_data_figures : f.object.sd_meta_data_figures.build)  do |sd_meta_data_figure|
+      .sd-item.sd-inner
+        = render 'sd_meta_data/form/dynamic_fields/sd_meta_data_figure_fields', f: sd_meta_data_figure
+    .row
+      = link_to_add_association 'Add Figure', f, :sd_meta_data_figures, partial: 'sd_meta_data/form/dynamic_fields/sd_meta_data_figure_fields', class: 'add-item-link'
   br
