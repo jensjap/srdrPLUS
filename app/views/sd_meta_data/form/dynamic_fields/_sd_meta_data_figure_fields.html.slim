@@ -3,7 +3,7 @@
     = link_to_remove_association "remove figure", f, data: { confirm: "This will remove the figure(s). Are you sure?" }
   - if defined?(p_type_collection)
     = f.input :p_type, label: 'Type', include_blank: true, input_html: { class: 'apply-select2' }, collection: p_type_collection
-  = f.input :alt_text, as: :string
+  = f.input :alt_text
   div style="margin-bottom: 4px;"
     span class="text-bold"
       strong style="font-size: 12px; color: #333;" Pictures
@@ -23,4 +23,4 @@
       .hover-message
         = link_to delete_image_attachment_picture_path(picture.id), method: :delete, data: { confirm: 'Are you sure?' }, remote: true, class: 'remove-figure' do
           = fa_icon "close 2x"
-      = image_tag(picture, class: 'openable sd-image')
+      = image_tag(picture, class: 'openable sd-image', title: f.object.alt_text || "" )

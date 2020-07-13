@@ -68,12 +68,14 @@
                             div = sd_evidence_table.name.present? ? simple_format(sd_evidence_table.name) : '-----'
                         div data-row-span="1"
                           div data-field-span="1"
-                            label Figure
-                            - if (sd_evidence_table.picture.present? and sd_evidence_table.picture.attached?)
-                              .sd-show-image
-                                = image_tag(sd_evidence_table.picture, class: 'openable sd-image')
-                            - else
-                              div = '-----'
+                            label Figure(s)
+                            - sd_evidence_table.sd_meta_data_figures.each do |sd_meta_data_figure|
+                              .sd-show-inner
+                                div data-row-span="1"
+                                  div data-field-span="1"
+                                    - sd_meta_data_figure.pictures.each do |picture|
+                                      .sd-show-image
+                                        = image_tag(picture, class: 'openable sd-image', title: sd_meta_data_figure.alt_text || "")
 
               div data-row-span="1"
                 div data-field-span="1"
@@ -167,11 +169,11 @@
                             div = sd_meta_regression_analysis_result.name.present? ? simple_format(sd_meta_regression_analysis_result.name) : "-----"
                         div data-row-span="1"
                           div data-field-span="1"
-                            label Figure
-                            div
-                              - if not (sd_meta_regression_analysis_result.picture.present? and sd_meta_regression_analysis_result.picture.attached?)
-                                div
-                                  |-----
-                              - else
-                                .sd-show-image
-                                  = image_tag(sd_meta_regression_analysis_result.picture, class: 'openable sd-image')
+                            label Figure(s)
+                            - sd_meta_regression_analysis_result.sd_meta_data_figures.each do |sd_meta_data_figure|
+                              .sd-show-inner
+                                div data-row-span="1"
+                                  div data-field-span="1"
+                                    - sd_meta_data_figure.pictures.each do |picture|
+                                      .sd-show-image
+                                        = image_tag(picture, class: 'openable sd-image', title: sd_meta_data_figure.alt_text || "")

@@ -16,10 +16,9 @@ class SdMetaRegressionAnalysisResult < ApplicationRecord
   before_validation -> { set_ordering_scoped_by(:sd_result_item_id) }, on: :create
 
   belongs_to :sd_result_item, inverse_of: :sd_meta_regression_analysis_results
-
-  has_one_attached :picture
-
   has_many :sd_outcomes, as: :sd_outcomeable
-
+  has_many :sd_meta_data_figures, as: :sd_figurable
   has_one :ordering, as: :orderable, dependent: :destroy
+
+  accepts_nested_attributes_for :sd_meta_data_figures, allow_destroy: true
 end

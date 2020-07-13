@@ -26,8 +26,11 @@
                   div = desc.present? ? simple_format(desc) : '-----'
               div data-row-span="1"
                 div data-field-span="1"
-                  label Figures
-                  div
-                    - sd_summary_of_evidence.pictures.each do |picture|
-                      .sd-show-image
-                        = image_tag(picture, class: 'openable sd-image')
+                  label Figure(s)
+                  - sd_summary_of_evidence.sd_meta_data_figures.each do |sd_meta_data_figure|
+                    .sd-show-inner
+                      div data-row-span="1"
+                        div data-field-span="1"
+                          - sd_meta_data_figure.pictures.each do |picture|
+                            .sd-show-image
+                              = image_tag(picture, class: 'openable sd-image', title: sd_meta_data_figure.alt_text || "")

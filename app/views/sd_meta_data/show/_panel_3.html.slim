@@ -23,12 +23,14 @@
                 label Description
                 div #{sd_analytic_framework.name.present? ? simple_format(sd_analytic_framework.name) : "-----"}
               div
-                label Pictures
-                p
-                  - if sd_analytic_framework.pictures.empty?
-                    |-----
-                  - sd_analytic_framework.pictures.each do |picture|
-                    = image_tag(picture, class: 'openable sd-image')
+                label Figure(s)
+                - sd_analytic_framework.sd_meta_data_figures.each do |sd_meta_data_figure|
+                  .sd-show-inner
+                    div data-row-span="1"
+                      div data-field-span="1"
+                        - sd_meta_data_figure.pictures.each do |picture|
+                          .sd-show-image
+                            = image_tag(picture, class: 'openable sd-image', title: sd_meta_data_figure.alt_text || "")
     div data-row-span="1"
       div data-field-span="1"
         label Report Key Questions
