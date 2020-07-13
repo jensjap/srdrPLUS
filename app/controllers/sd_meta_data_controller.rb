@@ -99,25 +99,18 @@ class SdMetaDataController < ApplicationController
     @report = @sd_meta_datum.report
     @url = sd_meta_datum_path(@sd_meta_datum)
 
-    @pdf2html_in_progress = false
     if @report.present?
-      # PDF preview for reports selected from dropdown.
+      # PDF preview.
       accession_id = @report.accession_id
-      @report_html_path = "/reports/#{ accession_id }/TOC.html"
-      unless File.exists?("#{ Rails.root }/public/" + @report_html_path)
-        ConvertPdf2HtmlJob.perform_later(accession_id)
-        @pdf2html_in_progress = true
-      end
+      @report_html_path = "https://srdrplus-report-htmls.s3.amazonaws.com/reports/#{ accession_id }/TOC.html"
     elsif @sd_meta_datum.report_file.present?
       # PDF preview for reports selected from dropdown.
-      accession_id = "sd_meta_datum_" + @sd_meta_datum.id.to_s
-      @report_html_path = "/reports/#{ accession_id }/TOC.html"
-      unless File.exists?("#{ Rails.root }/public/" + @report_html_path)
-        ConvertPdf2HtmlJob.perform_later(accession_id, @sd_meta_datum.id)
-        @pdf2html_in_progress = true
-      end
-    else
-      @pdf_url
+      # accession_id = "sd_meta_datum_" + @sd_meta_datum.id.to_s
+      # @report_html_path = "/reports/#{ accession_id }/TOC.html"
+      # unless File.exists?("#{ Rails.root }/public/" + @report_html_path)
+      #   ConvertPdf2HtmlJob.perform_later(accession_id, @sd_meta_datum.id)
+      # end
+      @report_html_path = rails_blob_path( @sd_meta_datum.report_file )
     end
     add_breadcrumb 'sr360 items', project_sd_meta_data_path(@project)
     add_breadcrumb 'edit sr360', edit_sd_meta_datum_url(@sd_meta_datum)
