@@ -97,7 +97,7 @@ class SdMetaDatum < ApplicationRecord
 
   has_many :sd_meta_data_queries, dependent: :destroy
 
-  has_many :publishings, as: :publishable, dependent: :destroy
+  has_one :publishing, as: :publishable, dependent: :destroy
   # NOTE
   # I think we are using polymorphism incorrectly above. I think what we want is for each project to have at most one
   # publishing, therefore:
@@ -181,6 +181,53 @@ class SdMetaDatum < ApplicationRecord
     resource = DataAnalysisLevel.new
     save_resource_name_with_token(resource, token)
     super
+  end
+
+  def check_publishing_eligibility
+    errors = []
+    if self.report_title.blank? || self.date_of_publication_full_report.blank?
+       errors << 'Title, Funding Sources, and Dates'
+    end
+
+    if (self.authors_conflict_of_interest_of_full_report.blank? && self.organization.blank?) || self.full_report_link.blank?
+       errors << 'Authors and Stakeholders'
+    end
+
+    if self.sd_key_questions.blank? ||
+       sd_key_questions.any? { |sd_key_question| sd_key_question.sd_key_questions_key_question_types.blank? } ||
+       sd_key_questions.any? { |sd_key_question| !sd_key_question.includes_meta_analysis }
+      errors << 'URL Links'
+    end
+
+    if self.sd_picods.blank? ||
+      self.sd_picods.any? { |sd_picod| sd_picod.sd_key_questions_sd_picods.blank? } ||
+      self.sd_picods.any? { |sd_picod| sd_picod.data_analysis_level.blank? } ||
+      self.sd_picods.any? { |sd_picod| sd_picod.population.blank? } ||
+      self.sd_picods.any? { |sd_picod| sd_picod.interventions.blank? } ||
+      self.sd_picods.any? { |sd_picod| sd_picod.comparators.blank? } ||
+      self.sd_picods.any? { |sd_picod| sd_picod.outcomes.blank? }
+      errors << 'PICODTS'
+    end
+
+    if sd_search_strategies.blank? ||
+       sd_search_strategies.any? { |sd_search_strategy| sd_search_strategy.date_of_search.blank? } ||
+       sd_search_strategies.any? { |sd_search_strategy| sd_search_strategy.search_terms.blank? }
+      errors << 'Search Strategy and Results of Screening'
+    end
+
+    if sd_result_items.blank? ||
+       sd_result_items.any? { |sd_result_item| sd_result_item.sd_key_question.blank? } ||
+       sd_result_items.any? { |sd_result_item| sd_result_item.sd_pairwise_meta_analytic_results.blank? &&
+         sd_result_item.sd_pairwise_meta_analytic_results.blank? &&
+         sd_result_item.sd_narrative_results.blank? &&
+         sd_result_item.sd_evidence_tables.blank? &&
+         sd_result_item.sd_network_meta_analysis_results.blank? &&
+         sd_result_item.sd_meta_regression_analysis_results.blank?
+       }
+      errors << 'Results for Individual Outcomes'
+    end
+
+    errors
   end
 
   private

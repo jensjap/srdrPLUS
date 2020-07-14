@@ -26,7 +26,7 @@
           td = kqp.updated_at.in_time_zone(current_user.profile.time_zone).strftime('%b %-d, %Y - %l:%M %P')
           td = link_to edit_key_questions_project_path(kqp) do
             i.fi-pencil>
-            = t('rename')
+            = t('edit')
           td = link_to kqp, method: :delete, data: { confirm: t('confirm') } do
             i.fi-trash>
             = t('remove')

@@ -18,7 +18,7 @@
     div data-row-span="2"
       .sd-item data-field-span="1"
         = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
-          = f.input :full_report_link, placeholder: 'URL', as: :string, label: 'Full Report', input_html: { class: 'url-input' }
+          = f.input :full_report_link, placeholder: 'URL', as: :string, label: 'Full Report (Required)', input_html: { class: 'url-input' }
       .sd-item data-field-span="1"
         = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
           = f.input :structured_abstract_link, placeholder: 'URL', as: :string, label: 'Structured Abstract', input_html: { class: 'url-input' }

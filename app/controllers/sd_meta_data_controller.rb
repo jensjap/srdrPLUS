@@ -1,6 +1,8 @@
 class SdMetaDataController < ApplicationController
   add_breadcrumb 'my projects', :projects_path
 
+  #Birol: although bucket swapping works, it is unnecessary, since at the moment converted pdfs has to be stored on disk
+  #around_action :wrap_in_bucket_swap, only: [:create, :destroy, :show, :edit]
   around_action :wrap_in_transaction
 
   def show
@@ -9,7 +11,8 @@ class SdMetaDataController < ApplicationController
     @sd_meta_datum = SdMetaDatum.find(params[:id])
     @project = @sd_meta_datum.try(:project)
     @report = @sd_meta_datum.report
-    add_breadcrumb 'view project-report link',  sd_meta_datum_url(@sd_meta_datum)
+    add_breadcrumb 'sr360 items', project_sd_meta_data_path(@project)
+    add_breadcrumb 'preview sr360', sd_meta_datum_url(@sd_meta_datum)
   end
 
   def mapping_update
@@ -96,11 +99,21 @@ class SdMetaDataController < ApplicationController
     @report = @sd_meta_datum.report
     @url = sd_meta_datum_path(@sd_meta_datum)
 
-    # PDF preview.
-    accession_id = @report.accession_id
-    @report_html_path = "https://srdrplus-report-htmls.s3.amazonaws.com/reports/#{ accession_id }/TOC.html"
-
-    add_breadcrumb 'edit project-report link', edit_sd_meta_datum_url(@sd_meta_datum)
+    if @report.present?
+      # PDF preview.
+      accession_id = @report.accession_id
+      @report_html_path = "https://srdrplus-report-htmls.s3.amazonaws.com/reports/#{ accession_id }/TOC.html"
+    elsif @sd_meta_datum.report_file.present?
+      # PDF preview for reports selected from dropdown.
+      # accession_id = "sd_meta_datum_" + @sd_meta_datum.id.to_s
+      # @report_html_path = "/reports/#{ accession_id }/TOC.html"
+      # unless File.exists?("#{ Rails.root }/public/" + @report_html_path)
+      #   ConvertPdf2HtmlJob.perform_later(accession_id, @sd_meta_datum.id)
+      # end
+      @report_html_path = rails_blob_path( @sd_meta_datum.report_file )
+    end
+    add_breadcrumb 'sr360 items', project_sd_meta_data_path(@project)
+    add_breadcrumb 'edit sr360', edit_sd_meta_datum_url(@sd_meta_datum)
   end
 
   def update
@@ -127,9 +140,40 @@ class SdMetaDataController < ApplicationController
     @project = Project.find( params[ :project_id ] )
     @reports = Report.all
     @sd_meta_data = policy_scope(SdMetaDatum).where( project: @project )
+    add_breadcrumb 'sr360 items', project_sd_meta_data_path(@project)
   end
 
   private
+    def set_bucket
+      service = ActiveStorage::Blob.service
+      return if not service.present?
+      return unless service.class.to_s == 'ActiveStorage::Service::S3Service'
+
+      perm_bucket = nil
+      service.client.buckets.each do |bucket|
+        if bucket.name == "srdrplus-uploads"
+          perm_bucket = bucket
+        end
+      end
+      service.set_bucket(perm_bucket)
+      service.set_public(true)
+    end
+
+    def revert_bucket
+      service = ActiveStorage::Blob.service
+      return if not service.present?
+      return unless service.class.to_s == 'ActiveStorage::Service::S3Service'
+
+      temp_bucket = nil
+      service.client.buckets.each do |bucket|
+        if bucket.name == "srdrplus-temp"
+          temp_bucket = bucket
+        end
+      end
+      service.set_bucket(temp_bucket)
+      service.set_public(false)
+    end
+
     def set_partial_name_and_container_class( item_id )
       div_partial_dict = {
  #      63 => { :class => '.meta-regression-analysis-result-list',\
@@ -174,6 +218,15 @@ class SdMetaDataController < ApplicationController
     def set_report_title_update_flag(bool)
       if bool
         @report_title_updated = true
+      end
+    end
+
+    def wrap_in_bucket_swap
+      begin
+        set_bucket
+        yield
+      ensure
+        revert_bucket
       end
     end
 
@@ -251,20 +304,20 @@ class SdMetaDataController < ApplicationController
           :most_previous_version_full_report_link,
           :overall_purpose_of_review,
           :review_type_id,
-          { sd_analytic_frameworks_attributes: [:id, :name, :_destroy, :id, pictures: []] },
+          { sd_analytic_frameworks_attributes: [:id, :name, :_destroy, :id, { sd_meta_data_figures_attributes: [:id,:_destroy, :p_type, :alt_text, { pictures: [] }] }] },
           { sd_key_questions_attributes: [:includes_meta_analysis, :key_question_name, { key_question_type_ids: [] }, :_destroy, :id, { sd_key_questions_key_question_type_ids: [] }] },
           { sd_key_question_ids: [] },
           { sd_picods_attributes: [:data_analysis_level_id, :name, :population, :interventions, :comparators, :outcomes, :study_designs, :timing, :settings, :other_elements, :_destroy, :id, sd_key_question_ids: [], sd_picods_type_ids: []] },
                     { sd_search_strategies_attributes: [:sd_search_database_id, :date_of_search, :search_limits, :search_terms, :_destroy, :id] },
           { sd_grey_literature_searches_attributes: [:name, :_destroy, :id] },
-          { sd_prisma_flows_attributes: [:name, :_destroy, :id, pictures: []] },
+          { sd_prisma_flows_attributes: [:name, :_destroy, :id, { sd_meta_data_figures_attributes: [:id,:_destroy, :p_type, :alt_text, { pictures: [] }] }] },
           { sd_result_items_attributes: [:sd_key_question_id, :_destroy, :id,
             { sd_narrative_results_attributes: [:narrative_results, :narrative_results_by_population, :narrative_results_by_intervention, :_destroy, :id, sd_outcome_names: []] },
-            { sd_evidence_tables_attributes: [:name, :_destroy, :id, :picture, sd_outcome_names: []] },
-            { sd_network_meta_analysis_results_attributes: [:name, :_destroy, :id, { sd_analysis_figures_attributes: [:id,:_destroy, :p_type, { pictures: [] }] }, sd_outcome_names: []] },
-            { sd_pairwise_meta_analytic_results_attributes: [:name, :_destroy, :id, { sd_analysis_figures_attributes: [:id, :_destroy, :p_type, { pictures: [] }] }, sd_outcome_names: []] },
-            { sd_meta_regression_analysis_results_attributes: [:name, :_destroy, :id, :picture, sd_outcome_names: []] }] },
-          { sd_summary_of_evidences_attributes: [:soe_type, :sd_key_question_id, :name, :_destroy, :id, pictures: []] }
+            { sd_evidence_tables_attributes: [:name, :_destroy, :id, { sd_meta_data_figures_attributes: [:id,:_destroy, :p_type, :alt_text, { pictures: [] }] }, sd_outcome_names: []] },
+            { sd_network_meta_analysis_results_attributes: [:name, :_destroy, :id, { sd_meta_data_figures_attributes: [:id,:_destroy, :p_type, :alt_text, { pictures: [] }] }, sd_outcome_names: []] },
+            { sd_pairwise_meta_analytic_results_attributes: [:name, :_destroy, :id, { sd_meta_data_figures_attributes: [:id, :_destroy, :p_type, :alt_text, { pictures: [] }] }, sd_outcome_names: []] },
+            { sd_meta_regression_analysis_results_attributes: [:name, :_destroy, :id, { sd_meta_data_figures_attributes: [:id,:_destroy, :p_type, :alt_text, { pictures: [] }] }, sd_outcome_names: []] }] },
+          { sd_summary_of_evidences_attributes: [:soe_type, :sd_key_question_id, :name, :_destroy, :id, { sd_meta_data_figures_attributes: [:id,:_destroy, :p_type, :alt_text, { pictures: [] }] }] }
 
         )
     end

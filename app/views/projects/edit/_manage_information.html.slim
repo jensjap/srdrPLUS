@@ -10,7 +10,9 @@
     = f.input :name, label: t('name'), required: true, hint: 'Name can\'t be blank'
     = f.input :description, label: t('topic_description'), input_html: { rows: 8 }
     = f.input :attribution, label: t('attribution'), input_html: { rows: 4 }
-    = f.input :methodology_description, label: t('methodology_description'), input_html: { rows: 4 }
+    - methodology_options = ["Systematic Review", "Technical Brief", "Rapid Review", "Evidence Map", ""]
+    - if not methodology_options.include? f.object.methodology_description then methodology_options << f.object.methodology_description
+    = f.input :methodology_description, as: :select, selected: f.object.methodology_description, collection: methodology_options, label: t('methodology_description'), input_html: { id: "project_method_description_select2", rows: 4 }
     = f.input :prospero, label: t('prospero_id')
     = f.input :doi, label: t('doi')
     = f.input :notes, label: t('notes'), input_html: { rows: 8 }

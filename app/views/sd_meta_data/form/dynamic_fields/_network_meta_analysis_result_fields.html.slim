@@ -6,8 +6,8 @@
   = f.input :name, label: 'Description', input_html: { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
   div
     label Figure(s)
-    = f.simple_fields_for :sd_analysis_figures, (f.object.sd_analysis_figures.present? ? f.object.sd_analysis_figures : f.object.sd_analysis_figures.build) do |sd_analysis_figure|
+    = f.simple_fields_for :sd_meta_data_figures, (f.object.sd_meta_data_figures.present? ? f.object.sd_meta_data_figures : f.object.sd_meta_data_figures.build) do |sd_meta_data_figure|
       .sd-item.sd-inner
-       = render 'sd_meta_data/form/dynamic_fields/sd_analysis_figure_fields', f: sd_analysis_figure, p_type_collection: collection
-    div
-      = link_to_add_association 'Add Another Figure Type', f, :sd_analysis_figures, partial: 'sd_meta_data/form/dynamic_fields/sd_analysis_figure_fields', class: 'add-item-link'
+       = render 'sd_meta_data/form/dynamic_fields/sd_meta_data_figure_fields', f: sd_meta_data_figure, p_type_collection: collection
+    .row
+      = link_to_add_association 'Add Another Figure Type', f, :sd_meta_data_figures, partial: 'sd_meta_data/form/dynamic_fields/sd_meta_data_figure_fields', class: 'add-item-link'

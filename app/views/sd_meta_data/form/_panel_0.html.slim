@@ -11,7 +11,7 @@
     div data-row-span="1"
       .sd-item data-field-span="1"
         = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
-          = f.input :report_title, label: 'Report Title', input_html: { value: f.object.report_title }
+          = f.input :report_title, label: 'Report Title (Required)', input_html: { value: f.object.report_title }
     div data-row-span="1"
       .sd-item data-field-span="1"
         label Project Title in SRDR+
@@ -29,7 +29,7 @@
           = f.input :date_of_publication_to_srdr, as: :string, html5: true, label: 'Date of Publication to SRDR+', input_html: { value: @sd_meta_datum.date_of_publication_to_srdr&.strftime("%d %b %Y"), class: 'fdp',style: 'width: initial; position: relative;' }
       .sd-item data-field-span="1"
         = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
-          = f.input :date_of_publication_full_report, as: :string, html5: true, label: 'Date of Publication of Full Report', input_html: { value: @sd_meta_datum.date_of_publication_full_report&.strftime("%d %b %Y"), class: 'fdp', style: 'width: initial; position: relative;' }
+          = f.input :date_of_publication_full_report, as: :string, html5: true, label: 'Date of Publication of Full Report (Required)', input_html: { value: @sd_meta_datum.date_of_publication_full_report&.strftime("%d %b %Y"), class: 'fdp', style: 'width: initial; position: relative;' }
   /br/
   /br/
   /fieldset

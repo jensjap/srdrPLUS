@@ -52346,7 +52346,7 @@ function __guardMethod__(obj, methodName, transform) {
         'color': 'unset'
       });
     }
-    $('.progress-meter').attr('style', 'width: ' + ($('i.fa.fa-check').length * 100.0 / 8.0).toString() + '%');
+    $('.progress-meter').attr('style', 'width: ' + ($('i.fa.fa-check').length * 100.0 / 9.0).toString() + '%');
   };
 
   initializeSwitches = function() {
@@ -52361,7 +52361,7 @@ function __guardMethod__(obj, methodName, transform) {
 
   document.addEventListener('turbolinks:load', function() {
     return (function() {
-      if ($('body.sd_meta_data').length === 0) {
+      if ($('body.sd_meta_data.edit').length === 0) {
         return;
       }
       StatusChecker.initialize_listeners();
