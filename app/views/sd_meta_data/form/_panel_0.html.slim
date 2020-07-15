@@ -2,11 +2,12 @@
   fieldset
     div style="display:flex; flex-direction: row;"
       legend Title, Funding Sources, and Dates
-      .status-switch.button[id="0-yes-no-section" class=(@sd_meta_datum.section_flag_0 ? 'completed' : 'draft') data-sd_meta_datum_id="#{@sd_meta_datum.id}"]
-        - if @sd_meta_datum.section_flag_0
-          | Completed
-        - else
-          | Draft
+      .status-switch[id="0-yes-no-section" class=(@sd_meta_datum.section_flag_0 ? 'completed' : 'draft') data-sd_meta_datum_id="#{@sd_meta_datum.id}"]
+        span.status-label
+          - if @sd_meta_datum.section_flag_0
+            | Completed
+          - else
+            | Draft
 
     div data-row-span="1"
       .sd-item data-field-span="1"

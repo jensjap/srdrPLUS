@@ -6,11 +6,12 @@
   fieldset
     div style="display:flex; flex-direction: row;"
       legend Key Question Mapping
-      .status-switch.button[id="5-yes-no-section" class=(@sd_meta_datum.section_flag_5 ? 'completed' : 'draft') data-sd_meta_datum_id="#{@sd_meta_datum.id}"]
-        - if @sd_meta_datum.section_flag_5
-          | Completed
-        - else
-          | Draft
+      .status-switch[id="5-yes-no-section" class=(@sd_meta_datum.section_flag_5 ? 'completed' : 'draft') data-sd_meta_datum_id="#{@sd_meta_datum.id}"]
+        span.status-label
+          - if @sd_meta_datum.section_flag_5
+            | Completed
+          - else
+            | Draft
 
     .sd-kq-mapping-container data-row-span="2"
       .no-border data-field-span="1"

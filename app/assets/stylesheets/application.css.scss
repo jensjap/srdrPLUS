@@ -475,16 +475,52 @@ a.accordion-title.populations {
 
 body.extractions.work, body.sd_meta_data.edit {
   .status-switch {
+    cursor: pointer;
+    border-radius: 0.4rem;
     background-color: grey;
     font-weight: bold;
-    padding: 0.45rem 0.5rem 0.3rem 0.5rem;
+    padding: 0.3rem 0.3rem 0.3rem 0.3rem;
     margin-left: 1rem;
     transition: all 0.3s ease;
-    width: 3.5rem;
+    height: 2.1rem;
+    width: 5.5rem;
+    position: relative;
+    .status-label {
+      transition-delay: 0.1s;
+      transition: all 0.2s ease;
+      color: white;
+      position: absolute;
+      top: 0.45rem;
+      font-size: 1.1rem;
+      left: 2.4rem;
+    }
   }
+  .status-switch::after {
+    border-radius: 0.2rem;
+    position: absolute;
+    top: 0.3rem;
+    left: 0.35rem;
+    display: block;
+    width: 1.5rem;
+    height: 1.5rem;
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+    background: #fefefe;
+    -webkit-transition: all 0.25s ease-out;
+    transition: all 0.25s ease-out;
+    content: '';
+  }
+
+  .status-switch.completed::after {
+    left: 6.1rem;
+  }
+
   .status-switch.completed {
-    background-color: $success-color;
-    width: 5.8rem;
+    background-color: #1cd05f;
+    width: 7.9rem;
+    .status-label {
+      left: 0.4rem;
+    }
   }
 //  .status-switch.waiting {
 //    background-color: blue;

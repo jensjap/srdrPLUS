@@ -2,11 +2,12 @@
   fieldset
     div style="display:flex; flex-direction: row;"
       legend Risk of Bias and Overall Summary of Evidence
-      .status-switch.button[id="7-yes-no-section" class=(@sd_meta_datum.section_flag_7 ? 'completed' : 'draft') data-sd_meta_datum_id="#{@sd_meta_datum.id}"]
-        - if @sd_meta_datum.section_flag_7
-          | Completed
-        - else
-          | Draft
+      .status-switch[id="7-yes-no-section" class=(@sd_meta_datum.section_flag_7 ? 'completed' : 'draft') data-sd_meta_datum_id="#{@sd_meta_datum.id}"]
+        span.status-label
+          - if @sd_meta_datum.section_flag_7
+            | Completed
+          - else
+            | Draft
 
     div data-row-span="1"
       div data-field-span="1"

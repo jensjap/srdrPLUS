@@ -387,13 +387,13 @@ check = (panelNumber, status) ->
   if status == true or status == 'true'
     $('#'.concat(panelNumber.toString(), '-yes-no-section.status-switch')).removeClass 'draft warning'
     $('#'.concat(panelNumber.toString(), '-yes-no-section.status-switch')).addClass 'completed'
-    $('#'.concat(panelNumber.toString(), '-yes-no-section.status-switch')).html 'Completed'
+    $('#'.concat(panelNumber.toString(), '-yes-no-section.status-switch span.status-label')).html 'Completed'
     if panelNumber == '3'
       $('.mapping-kq-title').removeClass('hide')
   else
     $('#'.concat(panelNumber.toString(), '-yes-no-section.status-switch')).removeClass 'completed warning'
     $('#'.concat(panelNumber.toString(), '-yes-no-section.status-switch')).addClass 'draft'
-    $('#'.concat(panelNumber.toString(), '-yes-no-section.status-switch')).html 'Draft'
+    $('#'.concat(panelNumber.toString(), '-yes-no-section.status-switch span.status-label')).html 'Draft'
     if panelNumber == '3'
       $('.mapping-kq-title').addClass('hide')
 
