@@ -2,11 +2,12 @@
   fieldset
     div style="display:flex; flex-direction: row;"
       legend Results for Individual Outcomes
-      .status-switch.button[id="8-yes-no-section" class=(@sd_meta_datum.section_flag_8 ? 'completed' : 'draft') data-sd_meta_datum_id="#{@sd_meta_datum.id}"]
-        - if @sd_meta_datum.section_flag_8
-          | Completed
-        - else
-          | Draft
+      .status-switch[id="8-yes-no-section" class=(@sd_meta_datum.section_flag_8 ? 'completed' : 'draft') data-sd_meta_datum_id="#{@sd_meta_datum.id}"]
+        span.status-label
+          - if @sd_meta_datum.section_flag_8
+            | Completed
+          - else
+            | Draft
 
     div data-row-span="1"
       div data-field-span="1"

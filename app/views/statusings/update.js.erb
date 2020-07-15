@@ -12,5 +12,5 @@
     $( '.status-switch[statusing-id="<%=@statusing.id.to_s%>"]').removeClass( 'waiting draft' );
     $( '.status-switch[statusing-id="<%=@statusing.id.to_s%>"]').addClass( 'completed' );
   <% end %> 
-    $( '.status-switch[statusing-id="<%=@statusing.id.to_s%>"]').html( "<%= @statusing.status.name %>" )
+    $( '.status-switch[statusing-id="<%=@statusing.id.to_s%>"] span.status-label').html( "<%= @statusing.status.name %>" )
 } )();
