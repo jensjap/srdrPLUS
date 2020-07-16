@@ -13,12 +13,14 @@
 
 class SdSummaryOfEvidence < ApplicationRecord
   include SharedOrderableMethods
-  has_many_attached :pictures
 
   before_validation -> { set_ordering_scoped_by(:sd_meta_datum_id) }, on: :create
+
   belongs_to :sd_meta_datum, inverse_of: :sd_summary_of_evidences, optional: true
   belongs_to :sd_key_question, inverse_of: :sd_summary_of_evidences, optional: true
-
   has_one :ordering, as: :orderable, dependent: :destroy
   has_one :key_question, through: :sd_key_question
+  has_many :sd_meta_data_figures, as: :sd_figurable
+
+  accepts_nested_attributes_for :sd_meta_data_figures, allow_destroy: true
 end

@@ -4,23 +4,10 @@
   = f.association :sd_key_question, label: 'Key Question (if applicable)', include_blank: true, collection: f.object.sd_meta_datum.sd_key_questions.where.not( key_question_id: nil ).map { |kq| [kq.key_question.name, kq.id] }, input_html: { class: 'apply-select2' }
   = f.input :soe_type, include_blank: true, label: 'Type', collection: ["Overall Summary of Findings", "Narrative for Overall Summary of Findings", "Risk of Bias"], input_html: { class: "soe_type apply-select2" }
   = f.input :name, label: 'Description', :input_html => { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
-  = f.input :pictures, as: :file, label: false, input_html: { multiple: true, id: "#{dom_id(f.object)}", class: 'hide' }
-  div style="margin-bottom: 4px;"
-    span class="text-bold"
-      strong style="font-size: 12px; color: #333;" Figures
-    span.import-tooltip-icon style="margin: 0 6px 0 3px;" data-open="import-tooltip-content"
-      i.fi-info style="color:#28b0f3;font-size:20px;"
-    .reveal#import-tooltip-content data-reveal="" style="font-size:large;line-height:25px;"
-      | You can upload the following file formats:
-      ul style="padding-top:15px;font-size:large;line-height:25px;"
-        li JPG
-        li GIF
-        li PNG
-  label.button for="#{dom_id(f.object)}"
-    | Choose File(s)
-  - f.object.pictures.each do |picture|
-    .hoverable-figure
-      .hover-message
-        = link_to delete_image_attachment_picture_path(picture.id), method: :delete, data: { confirm: 'Are you sure?' }, remote: true, class: 'remove-figure' do
-          = fa_icon "close 2x"
-      = image_tag(picture, class: 'openable sd-image')
+  div
+    label Figure(s)
+    = f.simple_fields_for :sd_meta_data_figures, (f.object.sd_meta_data_figures.present? ? f.object.sd_meta_data_figures : f.object.sd_meta_data_figures.build)  do |sd_meta_data_figure|
+      .sd-item.sd-inner
+        = render 'sd_meta_data/form/dynamic_fields/sd_meta_data_figure_fields', f: sd_meta_data_figure
+    .row
+      = link_to_add_association 'Add Figure', f, :sd_meta_data_figures, partial: 'sd_meta_data/form/dynamic_fields/sd_meta_data_figure_fields', class: 'add-item-link'

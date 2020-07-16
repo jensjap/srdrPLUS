@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_30_210116) do
+ActiveRecord::Schema.define(version: 2020_07_10_142920) do
 
   create_table "abstrackr_settings", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "profile_id"
@@ -1332,13 +1332,6 @@ ActiveRecord::Schema.define(version: 2020_06_30_210116) do
     t.index ["screening_option_type_id"], name: "index_screening_options_on_screening_option_type_id"
   end
 
-  create_table "sd_analysis_figures", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.bigint "sd_figurable_id"
-    t.string "sd_figurable_type"
-    t.string "p_type"
-    t.index ["sd_figurable_id", "sd_figurable_type"], name: "index_sd_analysis_figures_on_type_id"
-  end
-
   create_table "sd_analytic_frameworks", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "sd_meta_datum_id"
     t.text "name"
@@ -1451,6 +1444,14 @@ ActiveRecord::Schema.define(version: 2020_06_30_210116) do
     t.boolean "section_flag_8", default: false, null: false
     t.text "organization"
     t.index ["review_type_id"], name: "index_sd_meta_data_on_review_type_id"
+  end
+
+  create_table "sd_meta_data_figures", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "sd_figurable_id"
+    t.string "sd_figurable_type"
+    t.string "p_type"
+    t.text "alt_text"
+    t.index ["sd_figurable_id", "sd_figurable_type"], name: "index_sd_analysis_figures_on_type_id"
   end
 
   create_table "sd_meta_data_queries", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

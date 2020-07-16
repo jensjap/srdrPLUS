@@ -1,7 +1,7 @@
 File,Title,Publisher,Publication Year,Accession ID,Last Updated (YYYY-MM-DD HH:MM:SS)
 03/56/styleguide_NBK988.tar.gz,The NCBI Style Guide,National Center for Biotechnology Information (US),2004,NBK988,2019-06-18 02:37:21
 f5/f7/coursework_NBK1056.tar.gz,NCBI Short Courses,National Center for Biotechnology Information (US),2004,NBK1056,2019-08-07 02:37:16
-ca/84/gene_NBK1116.tar.gz,GeneReviews&#174;,"University of Washington, Seattle",1993,NBK1116,2020-06-26 02:42:50
+ca/84/gene_NBK1116.tar.gz,GeneReviews&#174;,"University of Washington, Seattle",1993,NBK1116,2020-07-03 02:41:36
 ec/9a/diabetes_NBK1667.tar.gz,The Genetic Landscape of Diabetes,National Center for Biotechnology Information (US),2004,NBK1667,2016-12-07 02:39:12
 ae/61/helpblast_NBK1762.tar.gz,BLAST&#xAE; Help,National Center for Biotechnology Information (US),2008,NBK1762,2020-06-09 02:37:18
 8d/5c/newsncbi_NBK1969.tar.gz,NCBI News,National Center for Biotechnology Information (US),1991,NBK1969,2018-05-18 02:37:33
@@ -18,7 +18,7 @@ bf/ab/helppmc_NBK3825.tar.gz,PubMed Central Help,National Center for Biotechnolo
 40/e0/helpbookshelf_NBK3833.tar.gz,Bookshelf Help,National Center for Biotechnology Information (US),2005,NBK3833,2020-03-13 02:37:19
 76/ee/helpentrez_NBK3836.tar.gz,Entrez Help,National Center for Biotechnology Information (US),2005,NBK3836,2019-06-04 02:37:16
 56/f2/helpgene_NBK3839.tar.gz,Gene Help,National Center for Biotechnology Information (US),2005,NBK3839,2019-08-20 02:37:10
-29/6d/helpmyncbi_NBK3843.tar.gz,My NCBI Help,National Center for Biotechnology Information (US),2005,NBK3843,2020-06-19 02:37:26
+29/6d/helpmyncbi_NBK3843.tar.gz,My NCBI Help,National Center for Biotechnology Information (US),2005,NBK3843,2020-07-01 02:37:27
 af/5c/helpnihms_NBK3845.tar.gz,NIH Manuscript Submission Help,National Center for Biotechnology Information (US),2005,NBK3845,2019-06-05 02:37:20
 b7/29/helpsnpfaq_NBK3848.tar.gz,SNP FAQ Archive,National Center for Biotechnology Information (US),2005,NBK3848,2019-06-05 02:38:00
 b6/2e/helplinks_NBK3863.tar.gz,Web Link Help,National Center for Biotechnology Information (US),2005,NBK3863,2019-05-30 02:37:16
@@ -539,7 +539,7 @@ d1/53/methresempirical_NBK56925.tar.gz,Empirical Evidence of Associations Betwee
 07/44/hscpscollect_NBK61778.tar.gz,US Preventive Services Task Force Guides to Clinical Preventive Services,Agency for Healthcare Research and Quality (US),1996,NBK61778,2014-08-19 02:37:44
 4b/f3/cer34_NBK61789.tar.gz,"Angiotensin-Converting Enzyme Inhibitors (ACEIs), Angiotensin II Receptor Antagonists (ARBs), and Direct Renin Inhibitors for Treating Essential Hypertension: An Update",Agency for Healthcare Research and Quality (US),2011,NBK61789,2012-07-09 18:47:27
 2d/0e/cer23_NBK61941.tar.gz,Effectiveness of Recombinant Human Growth Hormone (rhGH) in the Treatment of Patients With Cystic Fibrosis,Agency for Healthcare Research and Quality (US),2010,NBK61941,2012-07-09 18:43:56
-0f/7f/gtrbook_NBK61999.tar.gz,Medical Genetics Summaries,National Center for Biotechnology Information (US),2012,NBK61999,2020-02-06 02:37:29
+0f/7f/gtrbook_NBK61999.tar.gz,Medical Genetics Summaries,National Center for Biotechnology Information (US),2012,NBK61999,2020-07-01 02:37:47
 7c/a6/cer25_NBK62061.tar.gz,Traumatic Brain Injury and Depression,Agency for Healthcare Research and Quality (US),2011,NBK62061,2012-07-09 18:45:08
 08/4f/es87_NBK62074.tar.gz,Common Syndromes in Older Adults Related to Primary and Secondary Prevention,Agency for Healthcare Research and Quality (US),2011,NBK62074,2012-07-09 18:47:34
 17/f8/methfrn3_NBK62116.tar.gz,Defining an Optimal Format for Presenting Research Needs,Agency for Healthcare Research and Quality (US),2011,NBK62116,2012-07-09 18:39:06
@@ -615,7 +615,7 @@ df/ad/es89_NBK65294.tar.gz,Screening for and Management of Obesity and Overweigh
 24/2b/cer38_NBK65646.tar.gz,Analgesics for Osteoarthritis: An Update of the 2006 Comparative Effectiveness Review,Agency for Healthcare Research and Quality (US),2011,NBK65646,2012-07-09 18:44:13
 56/ca/cer43_NBK66081.tar.gz,Off-Label Use of Atypical Antipsychotics: An Update,Agency for Healthcare Research and Quality (US),2011,NBK66081,2012-07-09 18:37:59
 88/1e/es86_NBK66099.tar.gz,Screening for Cervical Cancer: A Systematic Evidence Review for the U.S. Preventive Services Task Force,Agency for Healthcare Research and Quality (US),2011,NBK66099,2012-07-09 18:42:09
-00/ec/pdqcis_NBK82221.tar.gz,National Cancer Institute - PDQ Cancer Information Summaries,National Cancer Institute (US),2002,NBK82221,2020-06-25 02:43:36
+00/ec/pdqcis_NBK82221.tar.gz,National Cancer Institute - PDQ Cancer Information Summaries,National Cancer Institute (US),2002,NBK82221,2020-07-01 02:45:07
 93/c8/methresrate_NBK82248.tar.gz,A Process for Robust and Transparent Rating of Study Quality: Phase 1,Agency for Healthcare Research and Quality (US),2011,NBK82248,2012-07-09 18:42:16
 5d/c2/methresobsbias_NBK82258.tar.gz,Development of the RTI Item Bank on Risk of Bias and Precision of Observational Studies,Agency for Healthcare Research and Quality (US),2011,NBK82258,2012-07-09 18:45:12
 fd/38/methreswiki_NBK82273.tar.gz,Feasibility Study of a Wiki Collaboration Platform for Systematic Reviews,Agency for Healthcare Research and Quality (US),2011,NBK82273,2012-07-09 18:37:16
@@ -699,7 +699,7 @@ e0/c7/cer55_NBK97388.tar.gz,Drug Therapy for Rheumatoid Arthritis in Adults: An 
 6f/bc/ukhta1542_NBK97468.tar.gz,Lapatinib and Trastuzumab in Combination with an Aromatase Inhibitor for the First-Line Treatment of Metastatic Hormone Receptor-Positive Breast Cancer which Over-Expresses Human Epidermal Growth Factor 2 (HER2): A Systematic Review and Economic Analysis,NIHR Journals Library,2011,NBK97468,2018-05-03 03:00:58
 e8/fd/ukhta1541_NBK97497.tar.gz,The Clinical Effectiveness and Cost-Effectiveness of Bortezomib and Thalidomide in Combination Regimens with an Alkylating Agent and a Corticosteroid for the First-Line Treatment of Multiple Myeloma: A Systematic Review and Economic Evaluation,NIHR Journals Library,2011,NBK97497,2018-05-03 02:48:20
 78/70/ukhta1604_NBK97524.tar.gz,Non-Invasive Diagnostic Assessment Tools for the Detection of Liver Fibrosis in Patients with Suspected Alcohol-Related Liver Disease: A Systematic Review and Economic Evaluation,NIHR Journals Library,2012,NBK97524,2018-05-03 03:00:27
-32/64/ukhtacollect_NBK97531.tar.gz,Health Technology Assessment,NIHR Journals Library,2000,NBK97531,2020-06-27 02:37:11
+32/64/ukhtacollect_NBK97531.tar.gz,Health Technology Assessment,NIHR Journals Library,2000,NBK97531,2020-07-02 02:37:21
 b2/ed/vawarfarin_NBK97541.tar.gz,Comparative Effectiveness of Warfarin and Newer Oral Anticoagulants for the Long-term Prevention and Treatment of Arterial and Venous Thromboembolism,Department of Veterans Affairs (US),2012,NBK97541,2016-05-10 02:37:21
 bb/f9/ukhta1612_NBK97560.tar.gz,A Systematic Review of the Clinical Effectiveness and Cost-Effectiveness of Pharmalgen&#x000AE; for the Treatment of Bee and Wasp Venom Allergy,NIHR Journals Library,2012,NBK97560,2018-05-03 02:57:49
 76/f6/ukhta1605_NBK97589.tar.gz,What is the Clinical Effectiveness and Cost-Effectiveness of Using Drugs in Treating Obese Patients in Primary Care? A Systematic Review,NIHR Journals Library,2012,NBK97589,2018-05-03 02:43:51
@@ -1038,7 +1038,7 @@ bd/4b/sr0329_NBK195493.tar.gz,Saxagliptin (Onglyza),Canadian Agency for Drugs an
 c6/be/sr0333_NBK195568.tar.gz,somatropin (Genotropin) for subcutaneous injection,Canadian Agency for Drugs and Technologies in Health,2014,NBK195568,2016-02-14 02:46:36
 2a/93/sr0330_NBK195596.tar.gz,ingenol mebutate (Picato),Canadian Agency for Drugs and Technologies in Health,2014,NBK195596,2016-02-14 02:46:47
 77/0e/sr0331_NBK195622.tar.gz,lurasidone hydrochloride (Latuda),Canadian Agency for Drugs and Technologies in Health,2014,NBK195622,2016-02-14 02:46:57
-22/70/cadthcdrcollect_NBK195629.tar.gz,CADTH Common Drug Review,Canadian Agency for Drugs and Technologies in Health,2013,NBK195629,2020-06-27 02:37:10
+22/70/cadthcdrcollect_NBK195629.tar.gz,CADTH Common Drug Review,Canadian Agency for Drugs and Technologies in Health,2013,NBK195629,2020-07-02 02:37:20
 78/4b/rc0517_NBK195634.tar.gz,Oncotype DX in Women and Men with ER-Positive HER2-Negative Early Stage Breast Cancer Who are Lymph Node-Positive: A Review of Clinical Effectiveness and Guidelines,Canadian Agency for Drugs and Technologies in Health,2014,NBK195634,2015-10-29 02:42:18
 cf/f2/rc0515_NBK195647.tar.gz,"Montelukast for Sleep Apnea: A Review of the Clinical Effectiveness, Cost Effectiveness, and Guidelines",Canadian Agency for Drugs and Technologies in Health,2014,NBK195647,2015-10-29 02:42:06
 44/71/rc0516_NBK195659.tar.gz,Positron Emission Tomography in Neurology and Cardiology: A Review of Guidelines and Recommendations,Canadian Agency for Drugs and Technologies in Health,2014,NBK195659,2015-10-29 02:42:19
@@ -1368,7 +1368,7 @@ c5/91/ukhta1832_NBK263133.tar.gz,Epidermal growth factor receptor tyrosine kinas
 2b/c6/ukemecollect_NBK263214.tar.gz,Efficacy and Mechanism Evaluation,NIHR Journals Library,2014,NBK263214,2020-05-28 02:37:20
 24/f9/ukpgfarcollect_NBK263215.tar.gz,Programme Grants for Applied Research,NIHR Journals Library,2014,NBK263215,2020-05-28 02:37:20
 5e/f6/ukphrcollect_NBK263216.tar.gz,Public Health Research,NIHR Journals Library,2013,NBK263216,2020-05-20 02:37:12
-30/e4/ukhsdrcollect_NBK263217.tar.gz,Health Services and Delivery Research,NIHR Journals Library,2013,NBK263217,2020-06-26 02:37:24
+30/e4/ukhsdrcollect_NBK263217.tar.gz,Health Services and Delivery Research,NIHR Journals Library,2013,NBK263217,2020-07-03 02:37:11
 3d/30/rc0611_NBK263224.tar.gz,Antibacterial Sutures for Wound Closure After Surgery: A Review of Clinical and Cost-Effectiveness and Guidelines for Use,Canadian Agency for Drugs and Technologies in Health,2014,NBK263224,2015-10-29 02:37:26
 99/bc/rc0610_NBK263237.tar.gz,Non-Contact Thermometers for Detecting Fever: A Review of Clinical Effectiveness,Canadian Agency for Drugs and Technologies in Health,2014,NBK263237,2015-10-29 02:37:28
 eb/c5/rc0609_NBK263249.tar.gz,Mass Thermography Screening for Infection and Prevention: A Review of the Clinical Effectiveness,Canadian Agency for Drugs and Technologies in Health,2014,NBK263249,2015-10-29 02:37:22
@@ -1843,7 +1843,7 @@ ba/e0/rc0687_NBK327008.tar.gz,Endovascular Therapy for Patients with Ischemic St
 9e/e2/ukphr0314_NBK327028.tar.gz,A cluster randomised controlled trial comparing the effectiveness and cost-effectiveness of a school-based cognitive&#x02013;behavioural therapy programme (FRIENDS) in the reduction of anxiety and improvement in mood in children aged 9/10 years,NIHR Journals Library,2015,NBK327028,2018-05-03 02:39:29
 d7/f9/ukhta1996_NBK327098.tar.gz,Procalcitonin testing to guide antibiotic therapy for the treatment of sepsis in intensive care settings and for suspected bacterial infection in emergency department settings: a systematic review and cost-effectiveness analysis,NIHR Journals Library,2015,NBK327098,2018-05-03 02:41:30
 54/4c/ukhta1995_NBK327140.tar.gz,Evaluating Long-term Outcomes of NHS Stop Smoking Services (ELONS): a prospective cohort study,NIHR Journals Library,2015,NBK327140,2018-05-03 02:39:21
-34/bc/wtcollect_NBK327155.tar.gz,Wellcome Trust&#x2013;Funded Monographs and Book Chapters,Wellcome Trust,2011,NBK327155,2020-06-25 02:37:17
+34/bc/wtcollect_NBK327155.tar.gz,Wellcome Trust&#x2013;Funded Monographs and Book Chapters,Wellcome Trust,2011,NBK327155,2020-07-02 02:37:20
 92/04/ukeme0206_NBK327178.tar.gz,"Parent-determined oral montelukast therapy for preschool wheeze with stratification for arachidonate 5-lipoxygenase (ALOX5) promoter genotype: a multicentre, randomised, placebo-controlled trial",NIHR Journals Library,2015,NBK327178,2018-05-03 02:53:27
 e4/78/ukhta1997_NBK327197.tar.gz,"Protocolised Management In Sepsis (ProMISe): a multicentre randomised controlled trial of the clinical effectiveness and cost-effectiveness of early, goal-directed, protocolised resuscitation for emerging septic shock",NIHR Journals Library,2015,NBK327197,2018-05-03 02:38:04
 0d/43/cer154_NBK327222.tar.gz,Psychosocial and Pharmacologic Interventions for Disruptive Behavior in Children and Adolescents,Agency for Healthcare Research and Quality (US),2015,NBK327222,2015-11-25 02:37:11
@@ -2493,7 +2493,7 @@ a6/18/mepssb_NBK425793.tar.gz,Medical Expenditure Panel Survey Statistical Brief
 74/da/ukphr0503_NBK426078.tar.gz,Health impacts of the M74 urban motorway extension: a mixed-method natural experimental study,NIHR Journals Library,2017,NBK426078,2018-05-03 02:55:45
 72/20/ukhsdr0516_NBK426098.tar.gz,Better guidelines for better care: accounting for multimorbidity in clinical guidelines &#x02013; structured examination of exemplar guidelines and health economic modelling,NIHR Journals Library,2017,NBK426098,2018-05-03 02:41:05
 06/3a/ukhta2122_NBK426112.tar.gz,What carcinoembryonic antigen level should trigger further investigation during colorectal cancer follow-up? A systematic review and secondary analysis of a randomised controlled trial,NIHR Journals Library,2017,NBK426112,2018-05-03 02:40:38
-3d/12/statpearls_NBK430685.tar.gz,StatPearls,StatPearls Publishing,2017,NBK430685,2020-06-28 03:00:29
+3d/12/statpearls_NBK430685.tar.gz,StatPearls,StatPearls Publishing,2017,NBK430685,2020-07-05 02:59:56
 33/24/mmmdb_NBK435748.tar.gz,"Micro-, Meso- and Macro-Dynamics of the Brain",Springer,2016,NBK435748,2017-07-06 10:22:58
 3e/52/mmmcb_NBK435763.tar.gz,"Micro-, Meso- and Macro-Connectomics of the Brain",Springer,2016,NBK435763,2017-07-06 10:22:52
 73/b9/phecsg_NBK435776.tar.gz,Public Health Ethics: Cases Spanning the Globe,Springer,2016,NBK435776,2017-07-06 10:22:58
@@ -3475,7 +3475,7 @@ cb/4f/rc0996_NBK532534.tar.gz,MRI-Compatible Ventilators and Physiological Equip
 dd/44/methresler_NBK532626.tar.gz,"Linking Evidence Reviews to Organizational Guideline Planning: A Pilot Test of an Interactive, Web-Based Presentation and Discussion of Evidence",Agency for Healthcare Research and Quality (US),2018,NBK532626,2018-11-06 02:37:10
 f1/64/rtirr0027_NBK532652.tar.gz,Financial Considerations of Hospital-Based Palliative Care,RTI Press,2016,NBK532652,2019-03-22 02:37:23
 d8/30/who275377_NBK532672.tar.gz,WHO Recommendations Non-Clinical Interventions to Reduce Unnecessary Caesarean Sections,World Health Organization,2018,NBK532672,2019-06-11 02:37:16
-b5/af/healthus17_NBK532685.tar.gz,"Health, United States, 2017: With Special Feature on Mortality",National Center for Health Statistics (US),2018,NBK532685,2019-02-01 02:37:29
+b5/af/healthus17_NBK532685.tar.gz,"Health, United States, 2017: With Special Feature on Mortality",National Center for Health Statistics (US),2018,NBK532685,2020-07-01 02:37:35
 61/f2/srrec0542_NBK532699.tar.gz,"CADTH Canadian Drug Expert Committee Recommendation: Ocrelizumab (Ocrevus &#8210; Hoffmann-La Roche Limited): Indication: Management of adult patients with early primary progressive multiple sclerosis (PPMS) as defined by disease duration and level of disability, in conjunction with imaging features characteristic of inflammatory activity",Canadian Agency for Drugs and Technologies in Health,2018,NBK532699,2018-11-08 02:37:09
 14/28/srrec0538_NBK532700.tar.gz,CADTH Canadian Drug Expert Committee Recommendation: Nitisinone (MDK-Nitisinone &#8212; MendeliKABs Inc.): Indication: The treatment of adult and pediatric patients with hereditary tyrosinemia type 1 (HT-1) in combination with dietary restriction of tyrosine and phenylalanine,Canadian Agency for Drugs and Technologies in Health,2018,NBK532700,2018-11-08 02:37:08
 a1/7f/rc0980_NBK532701.tar.gz,"Telehealth for the Assessment and Treatment of Depression, Post-Traumatic Stress Disorder, and Anxiety: Clinical Evidence",Canadian Agency for Drugs and Technologies in Health,2018,NBK532701,2018-11-08 02:37:08
@@ -3754,14 +3754,14 @@ ee/80/rc1021_NBK538349.tar.gz,Benzydamine for the Treatment of Oropharyngeal Muc
 0c/9f/srrec0470_NBK538372.tar.gz,"CADTH Canadian Drug Expert Committee Final Recommendation: Emtricitabine/Tenofovir Alafenamide (Descovy &#x2014; Gilead Sciences Canada, Inc.): Indication: HIV-1 Infection",Canadian Agency for Drugs and Technologies in Health,2016,NBK538372,2019-03-13 02:37:10
 9f/9e/wt605949_NBK538383.tar.gz,The Ethics of Vaccination,Palgrave Pivot,2019,NBK538383,2019-03-20 02:37:11
 15/bb/srrec0445_NBK538386.tar.gz,CADTH Canadian Drug Expert Committee Final Recommendation: Dapagliflozin (Forxiga &#x02014; AstraZeneca Canada Inc.): Indication: Type 2 Diabetes,Canadian Agency for Drugs and Technologies in Health,2016,NBK538386,2019-03-13 02:37:09
-0c/1d/surgwalking_NBK538433.tar.gz,Step It Up! The Surgeon General's Call to Action to Promote Walking and Walkable Communities,US Department of Health and Human Services,2015,NBK538433,2019-03-13 02:37:11
-e9/0b/surgopioids_NBK538436.tar.gz,Facing Addiction in America: The Surgeon General's Spotlight on Opioids,US Department of Health and Human Services,2018,NBK538436,2019-03-13 02:37:10
+0c/1d/surgwalking_NBK538433.tar.gz,Step It Up! The Surgeon General's Call to Action to Promote Walking and Walkable Communities,US Department of Health and Human Services,2015,NBK538433,2020-07-01 02:37:29
+e9/0b/surgopioids_NBK538436.tar.gz,Facing Addiction in America: The Surgeon General's Spotlight on Opioids,US Department of Health and Human Services,2018,NBK538436,2020-07-01 02:37:27
 d9/a8/srrec0436_NBK538535.tar.gz,CADTH Canadian Drug Expert Committee Final Recommendation: Tiotropium/Olodaterol (Inspiolto Respimat &#x2013; Boehringer Ingelheim Canada Ltd.): Indication: Chronic Obstructive Pulmonary Disease,Canadian Agency for Drugs and Technologies in Health,2015,NBK538535,2019-03-13 02:37:09
 89/20/rc1015_NBK538536.tar.gz,Substance Use in Breastfeeding Parents: A Review of Safety and Guidelines,Canadian Agency for Drugs and Technologies in Health,2018,NBK538536,2019-03-13 02:37:10
 08/dc/ukhta2310_NBK538650.tar.gz,Goal-oriented cognitive rehabilitation for early-stage Alzheimer&#x02019;s and related dementias: the GREAT RCT,NIHR Journals Library,2019,NBK538650,2019-03-15 02:37:22
 3a/2a/srcl0438_NBK538670.tar.gz,Clinical Review Report: Riociguat (Adempas),Canadian Agency for Drugs and Technologies in Health,2015,NBK538670,2019-03-15 02:37:14
 88/45/srrec0450_NBK538675.tar.gz,CADTH Canadian Drug Expert Review Committee Final Recommendation: Adalimumab (Humira &#x2014; AbbVie): Indication: Ulcerative Colitis,Canadian Agency for Drugs and Technologies in Health,2016,NBK538675,2019-03-15 02:37:12
-dc/6a/surgecigarete_NBK538680.tar.gz,E-Cigarette Use Among Youth and Young Adults: A Report of the Surgeon General,Centers for Disease Control and Prevention (US),2016,NBK538680,2019-03-15 02:37:16
+dc/6a/surgecigarete_NBK538680.tar.gz,E-Cigarette Use Among Youth and Young Adults: A Report of the Surgeon General,Centers for Disease Control and Prevention (US),2016,NBK538680,2020-07-01 02:37:35
 05/60/srcl0445_NBK538725.tar.gz,Clinical Review Report: Dapagliflozin (Forxiga),Canadian Agency for Drugs and Technologies in Health,2016,NBK538725,2019-03-15 02:37:17
 14/92/wt605956_NBK538732.tar.gz,Manuscript and Print in Late Medieval and Early Modern Britain: Essays in Honour of Professor Julia Boffey,Boydell &#x26; Brewer,2019,NBK538732,2019-03-27 02:37:09
 27/a7/rc1041_NBK538734.tar.gz,"Preventative Foot Care for Patients with Diabetes: A Review of Clinical Effectiveness, Cost-Effectiveness, and Guidelines",Canadian Agency for Drugs and Technologies in Health,2018,NBK538734,2019-03-19 02:37:12
@@ -3793,7 +3793,7 @@ a5/16/srrec0477_NBK538939.tar.gz,CADTH Canadian Drug Expert Committee Final Reco
 6b/20/rc1040_NBK538943.tar.gz,Nabilone for Chronic Pain Management: A Review of Clinical Effectiveness and Guidelines &#x2013; An Update,Canadian Agency for Drugs and Technologies in Health,2018,NBK538943,2019-03-22 02:37:16
 e5/12/rc1047_NBK538944.tar.gz,"Misoprostol for Cervical Ripening and Induction of Labour: A Review of Clinical Effectiveness, Cost-Effectiveness and Guidelines",Canadian Agency for Drugs and Technologies in Health,2018,NBK538944,2019-03-26 02:37:09
 21/b0/srpe0477_NBK538949.tar.gz,Pharmacoeconomic Review Report: Tesamorelin (Egrifta),Canadian Agency for Drugs and Technologies in Health,2016,NBK538949,2019-03-22 02:37:11
-12/e7/surghealthyaging_NBK538955.tar.gz,Healthy Aging in Action: Advancing the National Prevention Strategy,US Department of Health and Human Services,2016,NBK538955,2019-03-22 02:37:14
+12/e7/surghealthyaging_NBK538955.tar.gz,Healthy Aging in Action: Advancing the National Prevention Strategy,US Department of Health and Human Services,2016,NBK538955,2020-07-01 02:37:31
 29/18/srpe0474_NBK538959.tar.gz,Pharmacoeconomic Review Report: Ticagrelor (Brilinta),Canadian Agency for Drugs and Technologies in Health,2016,NBK538959,2019-03-22 02:37:14
 e8/0f/wt605932_NBK538966.tar.gz,Inner Speech: New Voices,Oxford University Press,2018,NBK538966,2019-03-22 02:37:18
 cf/01/db20181_NBK538971.tar.gz,Role of Continuous Glucose Monitoring in Diabetes Treatment,American Diabetes Association,2018,NBK538971,2019-04-09 02:37:10
@@ -4232,7 +4232,7 @@ b2/72/ukhta2357_NBK547568.tar.gz,Group cognitive&#x02013;behavioural programme t
 9c/59/ukeme0611_NBK547623.tar.gz,Levothyroxine to increase live births in euthyroid women with thyroid antibodies trying to conceive: the TABLET RCT,NIHR Journals Library,2019,NBK547623,2019-10-17 02:37:13
 1e/fb/ntptox80_NBK547779.tar.gz,NTP Technical Report on the Toxicity Studies of Sodium Thioglycolate (CASRN 367-51-1) Administered Dermally to F344/N Rats and B6C3F1/N Mice: Toxicity Report 80,National Toxicology Program,2016,NBK547779,2019-11-07 02:37:15
 0b/6b/ntptoxcollect_NBK547785.tar.gz,NTP Toxicity Reports,National Toxicology Program,1991,NBK547785,2020-05-23 02:37:10
-29/31/livertox_NBK547852.tar.gz,LiverTox: Clinical and Research Information on Drug-Induced Liver Injury,National Institute of Diabetes and Digestive and Kidney Diseases,2012,NBK547852,2020-06-19 02:41:19
+29/31/livertox_NBK547852.tar.gz,LiverTox: Clinical and Research Information on Drug-Induced Liver Injury,National Institute of Diabetes and Digestive and Kidney Diseases,2012,NBK547852,2020-07-02 02:41:09
 96/cb/ukpgfar0709_NBK548959.tar.gz,Training to enhance user and carer involvement in mental health-care planning: the EQUIP research programme including a cluster RCT,NIHR Journals Library,2019,NBK548959,2019-10-25 02:37:12
 84/80/ukhsdr0737_NBK548991.tar.gz,Alternative community-based models of care for young people with anorexia nervosa: the CostED national surveillance study,NIHR Journals Library,2019,NBK548991,2019-10-30 02:37:15
 87/55/ukhta2359_NBK549017.tar.gz,An intervention to improve outcomes of falls in dementia: the DIFRID mixed-methods feasibility study,NIHR Journals Library,2019,NBK549017,2019-10-30 02:37:33
@@ -4510,7 +4510,7 @@ a4/56/ukhta2422_NBK557080.tar.gz,Fluoxetine to improve functional outcomes in pa
 58/bb/methreswpsld_NBK557116.tar.gz,Standardized Library of Depression Outcome Measures,Agency for Healthcare Research and Quality (US),2020,NBK557116,2020-05-29 02:37:13
 68/29/nycgart_NBK557123.tar.gz,"When to Initiate Antiretroviral Therapy, With Protocol for Rapid Initiation",Johns Hopkins University,2020,NBK557123,2020-05-29 02:37:13
 05/8d/cer226_NBK557137.tar.gz,Labor Dystocia,Agency for Healthcare Research and Quality (US),2020,NBK557137,2020-06-02 02:37:24
-e8/f0/ntptechcollect_NBK557146.tar.gz,NTP Technical Reports,National Toxicology Program,1976,NBK557146,2020-05-30 02:37:12
+e8/f0/ntptechcollect_NBK557146.tar.gz,NTP Technical Reports,National Toxicology Program,1976,NBK557146,2020-07-02 02:37:20
 c7/a3/ntptech580_NBK557164.tar.gz,NTP Technical Report on the Toxicology and Carcinogenesis Studies of &#x03B2;-Picoline (CASRN 108-99-6) in F344/N Rats and B6C3F1/N Mice (Drinking Water Studies): Technical Report 580,National Toxicology Program,2014,NBK557164,2020-05-29 02:37:17
 57/77/methrestelehcv19_NBK557174.tar.gz,The Evidence Base for Telehealth: Reassurance in the Face of Rapid Expansion During the COVID-19 Pandemic,Agency for Healthcare Research and Quality (US),2020,NBK557174,2020-06-02 02:37:20
 8f/b4/niehsaids2_NBK557179.tar.gz,"NIEHS Technical Report on the Reproductive, Developmental, and General Toxicity Study of 3&#x2019;-Azido-3&#x2019;-deoxythymidine (AZT), Trimethoprim (TMP)/Sulfamethoxazole (SMX), and Folinic Acid Combinations Administered by Gavage to Swiss (CD-1&#x00AE;) Mice",National Institute of Environmental Health Sciences,1998,NBK557179,2020-06-02 02:37:20
@@ -4552,7 +4552,7 @@ b5/13/srrec0618_NBK558322.tar.gz,CADTH Canadian Drug Expert Committee Recommenda
 6c/cf/wt606010_NBK558323.tar.gz,"PathoGraphics: Narrative, Aesthetics, Contention, Community",Pennsylvania State University Press,2020,NBK558323,2020-06-24 02:37:10
 84/3f/rc1224_NBK558325.tar.gz,"Elevated Vacuum Suspension Systems for Adults with Amputation: A Review of Clinical Effectiveness, Cost-Effectiveness, and Guidelines",Canadian Agency for Drugs and Technologies in Health,2020,NBK558325,2020-06-24 02:37:10
 ae/45/ukhsdr0826_NBK558337.tar.gz,Medication management in older people: the MEMORABLE realist synthesis,NIHR Journals Library,2020,NBK558337,2020-06-25 02:37:14
-46/be/srpe0603_NBK558350.tar.gz,"Pharmacoeconomic Review Report: Inotersen (Tegsedi) (Akcea Therapeutics, Inc.): Indication: Stage I or II polyneuropathy in adults with hereditary transthyretin-mediated amyloidosis (hATTR)",Canadian Agency for Drugs and Technologies in Health,2020,NBK558350,2020-06-25 02:37:11
+46/be/srpe0603_NBK558350.tar.gz,"Pharmacoeconomic Review Report: Inotersen (Tegsedi) (Akcea Therapeutics, Inc.): Indication: Stage I or II polyneuropathy in adults with hereditary transthyretin-mediated amyloidosis (hATTR)",Canadian Agency for Drugs and Technologies in Health,2020,NBK558350,2020-06-30 02:37:21
 91/e8/srcl0615_NBK558360.tar.gz,Clinical Review Report: Cyclosporine (VERKAZIA) (Santen Canada Inc.): Indication: Treatment of severe vernal keratoconjunctivitis in children from four years of age through adolescence,Canadian Agency for Drugs and Technologies in Health,2020,NBK558360,2020-06-25 02:37:12
 96/87/srrec0603_NBK558368.tar.gz,"CADTH Canadian Drug Expert Committee Recommendation: Inotersen (Tegsedi &#x2014; Akcea Therapeutics, Inc.): Indication: Treatment of polyneuropathy in adults with hereditary transthyretin-mediated amyloidosis (hATTR)",Canadian Agency for Drugs and Technologies in Health,2019,NBK558368,2020-06-25 02:37:11
 58/bb/srpe0615_NBK558372.tar.gz,Pharmacoeconomic Review Report: Cyclosporine (Verkazia) (Santen Canada Inc.): Indication: Treatment of severe vernal keratoconjunctivitis in children from four years of age through adolescence,Canadian Agency for Drugs and Technologies in Health,2020,NBK558372,2020-06-25 02:37:14
@@ -4567,3 +4567,10 @@ bb/7e/ibcollect_NBK558474.tar.gz,National Health Policy Forum Issue Briefs,Natio
 72/00/srpe0614_NBK558494.tar.gz,Pharmacoeconomic Review Report: Upadacitinib (Rinvoq) (AbbVie): Indication: For the treatment of adults with moderately to severely active rheumatoid arthritis who have had an inadequate response or intolerance to methotrexate,Canadian Agency for Drugs and Technologies in Health,2020,NBK558494,2020-06-26 02:37:12
 ac/c3/nycgperio_NBK558499.tar.gz,Management of Periodontal Disease,Johns Hopkins University,2020,NBK558499,2020-06-26 02:37:14
 f1/e1/nycgimmune_NBK558500.tar.gz,Virologic and Immunologic Monitoring,Johns Hopkins University,2019,NBK558500,2020-06-26 02:37:12
+d4/85/ukhta2429_NBK558522.tar.gz,"Denosumab, raloxifene, romosozumab and teriparatide to prevent osteoporotic fragility fractures: a systematic review and economic evaluation",NIHR Journals Library,2020,NBK558522,2020-06-30 02:37:18
+7e/6e/ukhta2430_NBK558585.tar.gz,Prophylactic removal of impacted mandibular third molars: a systematic review and economic evaluation,NIHR Journals Library,2020,NBK558585,2020-07-01 02:37:13
+a7/85/srcl0614_NBK558599.tar.gz,Clinical Review Report: Upadacitinib (Rinvoq) (AbbVie): Indication: For the treatment of adults with moderately to severely active rheumatoid arthritis who have had an inadequate response or intolerance to methotrexate,Canadian Agency for Drugs and Technologies in Health,2020,NBK558599,2020-06-30 02:37:13
+be/86/srcl0618_NBK558612.tar.gz,Clinical Review Report Lanadelumab (Takhzyro) (Shire Pharma Canada ULC): Indication: For routine prevention of attacks of hereditary angioedema in adolescents and adults,Canadian Agency for Drugs and Technologies in Health,2020,NBK558612,2020-07-01 02:37:16
+8d/b1/ukhsdr0827_NBK558632.tar.gz,Dementia and mild cognitive impairment in prisoners aged over 50 years in England and Wales: a mixed-methods study,NIHR Journals Library,2020,NBK558632,2020-07-02 02:37:18
+ff/eb/wt606008_NBK558647.tar.gz,Exploring Greek Manuscripts in the Library at Wellcome Collection in London,Routledge,2020,NBK558647,2020-07-01 02:37:15
+35/92/ntptech582_NBK558672.tar.gz,NTP Technical Report on the Toxicology and Carcinogenesis Studies of Vinylidene Chloride (CASRN 75-35-4) in F344/N Rats and B6C3F1/N Mice (Inhalation Studies): Technical Report 582,National Toxicology Program,2015,NBK558672,2020-07-01 02:37:16

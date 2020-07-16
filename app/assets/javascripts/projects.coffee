@@ -158,6 +158,12 @@ document.addEventListener 'turbolinks:load', ->
               q: params.term
               page: params.page || 1
 
+    #### METHOD DESCRIPTION DROPDOWN
+    $( '.projects.edit' ).find( '#project_method_description_select2' ).select2(
+      tags: true,
+      allowClear: true,
+      placeholder: '-- Select or type other --'
+    )
     return  # END do ->
 
   return  # END document.addEventListener 'turbolinks:load', ->

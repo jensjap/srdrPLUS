@@ -144,6 +144,9 @@ class Collapser
       $parent.find( '.collapse-content' ).removeClass( 'hide' )
       $parent.find( '.not-collapsed-icon' ).removeClass( 'hide' )
       $parent.find( '.collapsed-icon' ).addClass( 'hide' )
+      $( 'textarea' ).each () ->
+        this.style.height = this.scrollHeight + "px" 
+
       Collapser._state_dict[$parent.find( '.collapse-content' ).data('result-item-id')] = false
     $( '.not-collapsed-icon' ).on 'click', ->
       $parent = $( $( this ).closest( '.nested-fields' ) )
@@ -158,6 +161,8 @@ class Collapser
         $parent.find( '.collapse-content' ).removeClass( 'hide' )
         $parent.find( '.not-collapsed-icon' ).removeClass( 'hide' )
         $parent.find( '.collapsed-icon' ).addClass( 'hide' )
+        $( 'textarea' ).each () ->
+          this.style.height = this.scrollHeight + "px" 
 
 class Select2Helper
   @copy_sd_outcome_names: ( ) ->
@@ -350,15 +355,14 @@ bind_srdr20_saving_mechanism = () ->
     add_form_listeners( form )
     $cocoon_container = $( form ).parents( '.cocoon-container' )
     $cocoon_container.on 'sd:form-loaded', ( e ) ->
-      $( '.reveal' ).foundation()
       add_form_listeners( $cocoon_container.children( 'form' ) )
       Collapser.initialize_listeners()
       Collapser.restore_states()
       apply_all_select2()
-      StatusChecker.get_all_inputs().each () ->
-        this.style.height = ""
+      $( 'textarea' ).each () ->
         this.style.height = this.scrollHeight + "px" 
       Select2Helper.copy_sd_outcome_names()
+      $( '.reveal' ).foundation()
   $( '.infoDiv' ).first().on 'sd:replaced-html-content', ( e ) ->
     Caretkeeper.restore_caret_position()
     StatusChecker.restore_highlights()
@@ -383,13 +387,13 @@ check = (panelNumber, status) ->
   if status == true or status == 'true'
     $('#'.concat(panelNumber.toString(), '-yes-no-section.status-switch')).removeClass 'draft warning'
     $('#'.concat(panelNumber.toString(), '-yes-no-section.status-switch')).addClass 'completed'
-    $('#'.concat(panelNumber.toString(), '-yes-no-section.status-switch')).html 'Completed'
+    $('#'.concat(panelNumber.toString(), '-yes-no-section.status-switch span.status-label')).html 'Completed'
     if panelNumber == '3'
       $('.mapping-kq-title').removeClass('hide')
   else
     $('#'.concat(panelNumber.toString(), '-yes-no-section.status-switch')).removeClass 'completed warning'
     $('#'.concat(panelNumber.toString(), '-yes-no-section.status-switch')).addClass 'draft'
-    $('#'.concat(panelNumber.toString(), '-yes-no-section.status-switch')).html 'Draft'
+    $('#'.concat(panelNumber.toString(), '-yes-no-section.status-switch span.status-label')).html 'Draft'
     if panelNumber == '3'
       $('.mapping-kq-title').addClass('hide')
 
@@ -422,8 +426,7 @@ document.addEventListener 'turbolinks:load', ->
     initializeSwitches()
     bind_srdr20_saving_mechanism()
     apply_all_select2()
-    StatusChecker.get_all_inputs().each () ->
-      this.style.height = ""
+    $( 'textarea' ).each () ->
       this.style.height = this.scrollHeight + "px" 
 
 document.addEventListener 'turbolinks:before-cache', ->
