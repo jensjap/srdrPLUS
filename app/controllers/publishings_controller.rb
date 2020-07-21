@@ -15,6 +15,14 @@ class PublishingsController < ApplicationController
   end
 
   def destroy
+    publishing = Publishing.find(params[:id])
+    if publishing.user == current_user && publishing.destroy
+      flash[:success] = "Success! Your publication request was cancelled."
+      return redirect_to '/projects'
+    else
+      flash[:error] = "You are not authorized to cancel this request."
+      return redirect_to '/projects'
+    end
   end
 
   private

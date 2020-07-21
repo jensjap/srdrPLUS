@@ -1,0 +1,20 @@
+- if @approved_publishings.blank?
+
+  h4 No approved publications found.
+
+- else
+  table
+    thead
+      tr
+        th width="200" Name
+        th width="50" Type
+        th width="150" Date of Publication
+    tbody
+      - @approved_publishings.each do |pr|
+        tr
+          td
+            = pr.publishable.report_title
+          td
+            = pr.name_of_pub_type
+          td
+            = pr.approval.created_at
