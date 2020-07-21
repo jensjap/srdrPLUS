@@ -31,7 +31,7 @@ class Approval < ApplicationRecord
       type = publishing.name_of_pub_type
       email_of_publisher = publishing.user.email
       id = publishing.publishable_id
-      title = publishing.publishable.report_title
+      title = publishing.publishable.display
       PublishingMailer.notify_publisher_of_approval(email_of_publisher, title, type, id).deliver_later
     end
 end

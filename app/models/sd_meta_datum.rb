@@ -230,6 +230,10 @@ class SdMetaDatum < ApplicationRecord
     errors
   end
 
+  def display
+    report_title
+  end
+
   private
     def set_report_title
       self.update( report_title: self.report&.title )
