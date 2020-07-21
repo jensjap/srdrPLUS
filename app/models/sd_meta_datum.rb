@@ -189,7 +189,7 @@ class SdMetaDatum < ApplicationRecord
        errors << 'Title, Funding Sources, and Dates'
     end
 
-    if (self.authors_conflict_of_interest_of_full_report.blank? && self.organization.blank?) || self.full_report_link.blank?
+    if self.authors.blank? && self.organization.blank?
        errors << 'Authors and Stakeholders'
     end
 
