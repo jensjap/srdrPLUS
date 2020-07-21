@@ -120,6 +120,9 @@ gem 'sidekiq'
 gem 'axlsx', git: 'https://github.com/randym/axlsx.git'
 gem 'axlsx_rails'
 
+# Spreadsheet reading.
+gem 'rubyXL'
+
 # Searching with Elasticsearch.
 gem 'searchkick'
 gem 'searchjoy'
