@@ -70,8 +70,13 @@ class ProjectsController < ApplicationController
 
     @projects_lead_or_with_key_questions.default = false
 
-    @unapproved_publishings = Publishing.unapproved.where(user: current_user)
-    @approved_publishings = Publishing.approved.where(user: current_user)
+    @unapproved_publishings = Publishing.unapproved
+    @approved_publishings = Publishing.approved
+
+    unless current_user.admin?
+      @unapproved_publishings = @unapproved_publishings.where(user: current_user)
+      @approved_publishings = @approved_publishings.where(user: current_user)
+    end
   end
 
   # GET /projects/1
