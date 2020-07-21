@@ -9,10 +9,8 @@
         th width="200" Name
         th width="50" Type
         th width="100" Date of Submission
-        - if current_user.admin?
-          th width="50" Approve Request
-        - else
-          th width="50" Cancel Request
+        th width="50"
+        th width="50"
     tbody
       - @unapproved_publishings.each do |pr|
         tr
@@ -22,9 +20,10 @@
             = pr.name_of_pub_type
           td
             = pr.created_at
+          td
+            - if pr.name_of_pub_type == 'SR360'
+              = link_to 'View', sd_meta_datum_path(pr.publishable_id), class: 'btn-link'
           - if current_user.admin?
-            td
-              = link_to 'Approve', publishings_approve_path(id: pr.publishable_id, type: :sd_meta_datum), class: 'btn-link', method: :post
+            td = link_to 'Approve', publishings_approve_path(id: pr.publishable_id, type: :sd_meta_datum), class: 'btn-link', method: :post
           - else
-            td
-              = link_to 'Cancel', publishings_destroy_path(pr.publishable_id), class: 'btn-link', data: { confirm: 'Are you sure?' }, method: :delete
+            td = link_to 'Cancel', publishings_destroy_path(pr.publishable_id), class: 'btn-link', data: { confirm: 'Are you sure?' }, method: :delete
