@@ -1,0 +1,11 @@
+doctype html
+html
+  head
+    meta content='text/html; charset=UTF-8' http-equiv='Content-Type'
+
+  body
+    h1 Publishing Request
+    p Hello, the following publishing request was made.
+    p = "Type: #{@name_of_pub_type}"
+    p = "ID: #{@id}"
+    p = link_to 'See request', '#', target: :_blank
