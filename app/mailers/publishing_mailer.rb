@@ -1,14 +1,23 @@
 class PublishingMailer < ApplicationMailer
-  def notify_admin(name_of_pub_type, id)
+  def notify_admin_of_request(title, name_of_pub_type, id)
+    @title = title
     @name_of_pub_type = name_of_pub_type
     @id = id
-    email = 'admin@srdrplus.ahrq.gov'
-    mail(to: email, subject: "Publishing Requested")
+    email = 'bryant_smith@brown.edu'
+    mail(to: email, subject: "Publishing requested")
   end
 
-  def notify_publisher(email, name_of_pub_type, id)
+  def notify_publisher_of_request(email, title, name_of_pub_type, id)
+    @title = title
     @name_of_pub_type = name_of_pub_type
     @id = id
     mail(to: email, subject: "Thank you for your submission")
+  end
+
+  def notify_publisher_of_approval(email, title, name_of_pub_type, id)
+    @title = title
+    @name_of_pub_type = name_of_pub_type
+    @id = id
+    mail(to: email, subject: "Your publication request has been approved")
   end
 end

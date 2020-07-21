@@ -22,4 +22,16 @@ class Approval < ApplicationRecord
   belongs_to :user, inverse_of: :approvals
 
   validates :approvable, :user, presence: true
+
+  after_create :notify_publisher
+
+  private
+    def notify_publisher
+      publishing = self.approvable
+      type = publishing.name_of_pub_type
+      email_of_publisher = publishing.user.email
+      id = publishing.publishable_id
+      title = publishing.publishable.report_title
+      PublishingMailer.notify_publisher_of_approval(email_of_publisher, title, type, id).deliver_later
+    end
 end

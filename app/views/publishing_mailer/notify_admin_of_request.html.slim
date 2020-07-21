@@ -6,6 +6,7 @@ html
   body
     h1 Publishing Request
     p Hello, the following publishing request was made.
+    p = "Ttitle: #{@title}"
     p = "Type: #{@name_of_pub_type}"
     p = "ID: #{@id}"
-    p = link_to 'See request', '#', target: :_blank
+    p = link_to 'See pending requests', url_for(:host => root_url, :controller => "projects", :action => "index"), target: :_blank

@@ -51,7 +51,9 @@
                   h6 Tabs with missing fields:
                   - sd_meta_datum.check_publishing_eligibility.each do |error|
                     div = error
-            - else
+            - elsif sd_meta_datum.publishing.approval.present?
+              td = "Published"
+            - else sd_meta_datum.publishing.approval.present?
               td = "Request under review"
             td = link_to 'Destroy', sd_meta_datum_path(sd_meta_datum), data: { confirm: 'Are you sure? This will destroy the link you have created between a report and a project in SRDR. It will also destroy everything you have entered for this project in SRDR 2.0.' }, method: :delete, class: "sd-meta-data-index-delete"
   .column.row
