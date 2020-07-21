@@ -2,7 +2,7 @@ require 'sidekiq/web'
 
 Rails.application.routes.draw do
   post 'publishings/create'
-  delete 'publishings/destroy'
+  delete 'publishings/:id', to: 'publishings#destroy', as: 'publishings_destroy'
 
   resources :project_report_links, only: [:index, :view] do
     get 'new_query_form'
