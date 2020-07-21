@@ -40,7 +40,9 @@
             td = distance_of_time_in_words_to_now(sd_meta_datum.updated_at) + ' ago'
             td = link_to('View', sd_meta_datum)
             td = link_to "Work", edit_sd_meta_datum_path(sd_meta_datum.id), class: "sd-meta-data-index-edit"
-            - if sd_meta_datum.publishing.nil? && sd_meta_datum.check_publishing_eligibility.blank?
+            - if !sd_meta_datum.all_sections_complete?
+              td
+            - elsif sd_meta_datum.publishing.nil? && sd_meta_datum.check_publishing_eligibility.blank?
               td = link_to("Publish", publishings_create_path(type: :sd_meta_datum, id: sd_meta_datum.id), class: "sd-meta-data-index-request-publish", method: :post)
             - elsif sd_meta_datum.publishing.nil?
               td
