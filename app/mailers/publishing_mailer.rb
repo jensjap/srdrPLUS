@@ -3,7 +3,7 @@ class PublishingMailer < ApplicationMailer
     @title = title
     @name_of_pub_type = name_of_pub_type
     @id = id
-    email = 'bryant_smith@brown.edu'
+    email = 'SRDR@AHRQ.hhs.gov'
     mail(to: email, subject: "Publishing requested")
   end
 
