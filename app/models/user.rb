@@ -150,6 +150,10 @@ class User < ApplicationRecord
     end
   end
 
+  def admin?
+    user_type.user_type == 'Admin'
+  end
+
   private
 
   def ensure_profile_username_uniqueness
