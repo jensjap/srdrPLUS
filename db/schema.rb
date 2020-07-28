@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_10_142920) do
+ActiveRecord::Schema.define(version: 2020_07_27_205431) do
 
   create_table "abstrackr_settings", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "profile_id"
@@ -562,6 +562,13 @@ ActiveRecord::Schema.define(version: 2020_07_10_142920) do
     t.index ["projects_users_role_id"], name: "index_extractions_on_projects_users_role_id"
   end
 
+  create_table "extractions_extraction_forms_projects_section_followup_fields", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "extractions_extraction_forms_projects_section_id"
+    t.bigint "followup_field_id"
+    t.index ["extractions_extraction_forms_projects_section_id"], name: "index_eefpsff_followup_fields_on_extraction_id"
+    t.index ["followup_field_id"], name: "index_eefpsff_on_followup_field_id"
+  end
+
   create_table "extractions_extraction_forms_projects_sections", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "extraction_id"
     t.integer "extraction_forms_projects_section_id"
@@ -642,6 +649,13 @@ ActiveRecord::Schema.define(version: 2020_07_10_142920) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["name"], name: "index_file_types_on_name", unique: true
+  end
+
+  create_table "followup_fields", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "question_row_columns_question_row_column_option_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["question_row_columns_question_row_column_option_id"], name: "index_followup_fields_on_qrcqrco_id"
   end
 
   create_table "frequencies", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

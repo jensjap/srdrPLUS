@@ -3,8 +3,15 @@
   - option = f.object
 
   .field
-    = link_to_remove_association 'Remove', f, class: 'float-right'
+    = link_to_remove_association 'Remove', f, class: 'float-right', style: 'font-weight:bold; color:#cc4b37 !important;'
     = f.hidden_field :question_row_column_option_id, value: 1
     = f.input :name, label: 'Answer Choice',
               as: :string,
-              wrapper: 'horizontal_form'
+              wrapper: 'horizontal_form',
+              input_html: { style: 'margin-bottom: 0;' }
+
+    - if ['checkbox', 'radio'].include? option.question_row_column.question_row_column_type.name
+      .row
+        .columns.medium-offset-3.medium-9
+          .float-right
+            = f.input :includes_followup, as: :boolean, label: 'Include Followup Question', wrapper_html: { class: 'followup-checkbox' }

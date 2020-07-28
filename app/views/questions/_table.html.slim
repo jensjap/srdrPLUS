@@ -50,13 +50,22 @@
                         .where(question_row_column_option: QuestionRowColumnOption.find_by(name: 'answer_choice')).length > 1)
 
                       = link_to 'Remove', option, method: :delete, data: { confirm: t('confirm') },
-                                                  class: 'float-right'
+                                                  class: 'float-right',
+                                                  style: 'font-weight:bold; color:#cc4b37 !important;'
 
                     = qrcqrco_f.input :name,
                                       label: option.question_row_column_option.label,
                                       as: option.question_row_column_option.field_type,
                                       input_html: { title: option.question_row_column_option.description },
-                                      wrapper: 'horizontal_form'
+                                      wrapper: 'horizontal_form',
+                                      input_html: { style: 'margin-bottom: 0;' }
+
+                    - if ['checkbox', 'radio'].include? option.question_row_column.question_row_column_type.name
+                      .row
+                        .columns.medium-offset-3.medium-9
+                          .float-right
+                            = qrcqrco_f.input :includes_followup, as: :boolean, label: 'Include Followup Question', wrapper_html: { class: 'followup-checkbox' }
+
 
                 .links
                   = link_to_add_association qrc_f,

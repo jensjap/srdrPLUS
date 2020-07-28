@@ -27,6 +27,7 @@ class QuestionRowColumnsQuestionRowColumnOption < ApplicationRecord
   belongs_to :question_row_column_option, inverse_of: :question_row_columns_question_row_column_options
 
   has_one :suggestion, as: :suggestable, dependent: :destroy
+  has_one :followup_field, dependent: :destroy
 
   has_many :dependencies, as: :prerequisitable, dependent: :destroy
 
@@ -42,6 +43,9 @@ class QuestionRowColumnsQuestionRowColumnOption < ApplicationRecord
   delegate :question,                 to: :question_row_column
   delegate :question_row,             to: :question_row_column
   delegate :question_row_column_type, to: :question_row_column
+
+  def includes_followup
+  end
 
   private
 
