@@ -562,13 +562,6 @@ ActiveRecord::Schema.define(version: 2020_07_27_205431) do
     t.index ["projects_users_role_id"], name: "index_extractions_on_projects_users_role_id"
   end
 
-  create_table "extractions_extraction_forms_projects_section_followup_fields", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.bigint "extractions_extraction_forms_projects_section_id"
-    t.bigint "followup_field_id"
-    t.index ["extractions_extraction_forms_projects_section_id"], name: "index_eefpsff_followup_fields_on_extraction_id"
-    t.index ["followup_field_id"], name: "index_eefpsff_on_followup_field_id"
-  end
-
   create_table "extractions_extraction_forms_projects_sections", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "extraction_id"
     t.integer "extraction_forms_projects_section_id"
@@ -584,6 +577,17 @@ ActiveRecord::Schema.define(version: 2020_07_27_205431) do
     t.index ["extraction_id", "extraction_forms_projects_section_id", "extractions_extraction_forms_projects_section_id", "deleted_at"], name: "index_eefps_on_e_id_efps_id_eefps_id_deleted_at"
     t.index ["extraction_id"], name: "index_eefps_on_e_id"
     t.index ["extractions_extraction_forms_projects_section_id"], name: "index_eefps_on_eefps_id"
+  end
+
+  create_table "extractions_extraction_forms_projects_sections_followup_fields", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "extractions_extraction_forms_projects_section_id"
+    t.bigint "followup_field_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.datetime "deleted_at"
+    t.index ["deleted_at"], name: "index_eefpsff_followup_fields_on_deleted_at"
+    t.index ["extractions_extraction_forms_projects_section_id"], name: "index_eefpsff_followup_fields_on_extraction_id"
+    t.index ["followup_field_id"], name: "index_eefpsff_on_followup_field_id"
   end
 
   create_table "extractions_extraction_forms_projects_sections_type1_row_columns", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -655,6 +659,8 @@ ActiveRecord::Schema.define(version: 2020_07_27_205431) do
     t.bigint "question_row_columns_question_row_column_option_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "deleted_at"
+    t.index ["deleted_at"], name: "index_followup_fields_on_deleted_at"
     t.index ["question_row_columns_question_row_column_option_id"], name: "index_followup_fields_on_qrcqrco_id"
   end
 

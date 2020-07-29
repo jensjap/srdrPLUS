@@ -45,6 +45,19 @@ class QuestionRowColumnsQuestionRowColumnOption < ApplicationRecord
   delegate :question_row_column_type, to: :question_row_column
 
   def includes_followup
+    return self.followup_field.present?
+  end
+
+  def includes_followup=(val)
+    if val and not self.followup_field.present?
+      deleted_field = FollowupField.where(question_row_columns_question_row_column_option_id: self.id).only_deleted.first
+      if deleted_field.present?
+        deleted_field.restore :recursive => true
+      else
+        self.build_followup_field.save
+    elsif not val and self.followup_field.present?
+      self.followup_field.destroy.save
+    end
   end
 
   private
