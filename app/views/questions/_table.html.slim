@@ -62,9 +62,8 @@
                             = link_to 'Remove', option, method: :delete, data: { confirm: t('confirm') },
                                                       class: 'float-right',
                                                       style: 'font-weight:bold; color:#cc4b37 !important;'
-                        - if ['checkbox', 'radio'].include? option.question_row_column.question_row_column_type.name
-                          .float-left
-                            = qrcqrco_f.input :includes_followup, as: :boolean, :input_html => { :checked => qrcqrco_f.object.includes_followup }, label: 'Include Followup Question', wrapper_html: { class: 'followup-checkbox' }
+                        .float-left.followup_container
+                          = qrcqrco_f.input :includes_followup, as: :boolean, :input_html => { :checked => qrcqrco_f.object.includes_followup }, label: 'Include Followup Question', wrapper_html: { class: 'followup-checkbox' }
 
                 .links
                   = link_to_add_association qrc_f,

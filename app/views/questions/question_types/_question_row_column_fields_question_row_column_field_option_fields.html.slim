@@ -13,6 +13,5 @@
       .columns.medium-offset-3.medium-9
         .float-right
           = link_to_remove_association 'Remove', f, class: 'float-right', style: 'font-weight:bold; color:#cc4b37 !important;'
-        - if ['checkbox', 'radio'].include? option.question_row_column.question_row_column_type.name
-          .float-left
-            = f.input :includes_followup, as: :boolean, label: 'Include Followup Question', wrapper_html: { class: 'followup-checkbox' }
+        .float-left.followup_container
+          = f.input :includes_followup, as: :boolean, label: 'Include Followup Question', wrapper_html: { class: 'followup-checkbox' }
