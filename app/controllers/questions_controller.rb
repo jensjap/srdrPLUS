@@ -178,7 +178,7 @@ class QuestionsController < ApplicationController
                 key_questions_project_ids: [],
                 question_rows_attributes: [:id, :name, question_row_columns_attributes:
                                            [:id, :question_row_column_type_id, :name, question_row_columns_question_row_column_options_attributes:
-                                            [:id, :_destroy, :question_row_column_option_id, :name]]]
+                                            [:id, :_destroy, :question_row_column_option_id, :name, :includes_followup]]]
                )
     end
 
