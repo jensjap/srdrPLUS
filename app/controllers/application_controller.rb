@@ -24,6 +24,7 @@ class ApplicationController < ActionController::Base
   before_action :set_paper_trail_whodunnit
   before_action :set_layout_style
   before_action :set_exit_disclaimer_message
+  before_action :set_raven_context
 
   def authorize(*args)
     return true if Rails.env.test?
@@ -51,6 +52,11 @@ class ApplicationController < ActionController::Base
 
     def set_time_zone(&block)
       Time.use_zone(current_user.profile.time_zone, &block)
+    end
+
+    def set_raven_context
+      Raven.user_context(id: session[:current_user_id]) # or anything else in session
+      Raven.extra_context(params: params.to_unsafe_h, url: request.url)
     end
 
   protected
