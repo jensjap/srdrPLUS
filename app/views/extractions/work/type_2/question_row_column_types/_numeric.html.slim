@@ -15,16 +15,19 @@
   - if ActiveModel::Type::Boolean.new.cast(qrc.field_validation_value_for(:additional_char))
     .column.medium-4
       / Special char is one of the following: ~, <, >, ≤, ≥
-      - eefps_qrcf_special = ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField.find_or_create_by!( \
-        extractions_extraction_forms_projects_sections_type1: t1.blank? \
-        ? nil \
-        : ExtractionsExtractionFormsProjectsSectionsType1.find_by!( \
-          extractions_extraction_forms_projects_section: eefps.link_to_type1,
-          type1: t1),
-        extractions_extraction_forms_projects_section: eefps,
-        question_row_column_field: qrc.question_row_column_fields.first)
+      - eefps_qrcf_special = @eefps_qrcf_dict[eefps.id][qrc.question_row_column_fields.first.id][t1&.id]
+      - if not eefps_qrcf_special
+        - eefps_qrcf_special = ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField.find_or_create_by!( \
+          extractions_extraction_forms_projects_sections_type1: t1.blank? \
+          ? nil \
+          : eefps.link_to_type1.extractions_extraction_forms_projects_sections_type1s.select{|el| el.type1_id == t1.id},
+          extractions_extraction_forms_projects_section: eefps,
+          question_row_column_field: qrc.question_row_column_fields.first)
 
-      - record = Record.find_or_create_by!(recordable: eefps_qrcf_special)
+      - record = @records_dict[eefps_qrcf_special.id]
+      - if not record
+        - record = Record.find_or_create_by(recordable: eefps_qrcf_special)
+
       = simple_form_for(record, remote: true, namespace: "record_#{record.id.to_s}", html: { data: { 'abide': '', 'live-validate': true } }) do |f|
         = f.error_notification
 
@@ -42,16 +45,19 @@
     / We handle the creation of the second question_row_column_fields in model/question_row_column :after_save callback.
     /- byebug if qrc.question_row_column_fields.length < 2
     /- qrc.question_row_column_fields.create if qrc.question_row_column_fields.lenght < 2
-    - eefps_qrcf = ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField.find_or_create_by!( \
-      extractions_extraction_forms_projects_sections_type1: t1.blank? \
-      ? nil \
-      : ExtractionsExtractionFormsProjectsSectionsType1.find_by!( \
-        extractions_extraction_forms_projects_section: eefps.link_to_type1,
-        type1: t1),
-      extractions_extraction_forms_projects_section: eefps,
-      question_row_column_field: qrc.question_row_column_fields.second)
+    - eefps_qrcf = @eefps_qrcf_dict[eefps.id][qrc.question_row_column_fields.first.id][t1&.id]
+    - if not eefps_qrcf
+      - eefps_qrcf = ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField.find_or_create_by!( \
+        extractions_extraction_forms_projects_sections_type1: t1.blank? \
+        ? nil \
+        : eefps.link_to_type1.extractions_extraction_forms_projects_sections_type1s.select{|el| el.type1_id == t1.id},
+        extractions_extraction_forms_projects_section: eefps,
+        question_row_column_field: qrc.question_row_column_fields.second)
 
-    - record = Record.find_or_create_by!(recordable: eefps_qrcf)
+    - record = @records_dict[eefps_qrcf.id]
+    - if not record
+      - record = Record.find_or_create_by(recordable: eefps_qrcf)
+
     = simple_form_for(record, remote: true, namespace: "record_#{record.id.to_s}", html: { data: { 'abide': '', 'live-validate': true } }) do |f|
       = f.error_notification
 

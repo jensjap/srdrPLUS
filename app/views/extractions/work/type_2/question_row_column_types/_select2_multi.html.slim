@@ -8,21 +8,24 @@
   eefps.
 
 .column.row
-  - eefps_qrcf = ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField.find_or_create_by(\
-    extractions_extraction_forms_projects_sections_type1: t1.blank?\
-    ? nil\
-    : ExtractionsExtractionFormsProjectsSectionsType1.find_by!(\
-      extractions_extraction_forms_projects_section: eefps.link_to_type1,
-      type1: t1),
-    extractions_extraction_forms_projects_section: eefps,
-    question_row_column_field: qrc.question_row_column_fields.first)
+  - eefps_qrcf = @eefps_qrcf_dict[eefps.id][qrc.question_row_column_fields.first.id][t1&.id]
+  - if not eefps_qrcf
+    - eefps_qrcf = ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField.find_or_create_by( \
+      extractions_extraction_forms_projects_sections_type1: t1.blank? \
+      ? nil \
+      : eefps.link_to_type1.extractions_extraction_forms_projects_sections_type1s.select{|el| el.type1_id == t1.id},
+      extractions_extraction_forms_projects_section: eefps,
+      question_row_column_field: qrc.question_row_column_fields.first)
 
-  - record = Record.find_or_create_by(recordable: eefps_qrcf)
+  - record = @records_dict[eefps_qrcf.id]
+  - if not record
+    - record = Record.find_or_create_by(recordable: eefps_qrcf)
+
   = simple_form_for(eefps_qrcf, remote: true, namespace: "record_#{record.id.to_s}", html: { data: { 'abide': '', 'live-validate': true } }) do |f|
     = f.error_notification
 
     - options = qrc.question_row_columns_question_row_column_options.\
-      where(question_row_column_option_id: 1).\
+      select{|opt| opt.question_row_column_option_id == 1}.\
       collect { |opt| [opt.name, opt.id, { 'data-prereq': "prereq-#{ opt.class }-#{ opt.id }" }] }
     = f.association :question_row_columns_question_row_column_options, include_blank: false,
       label: false,

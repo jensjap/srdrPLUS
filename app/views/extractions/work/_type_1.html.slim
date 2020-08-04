@@ -1,11 +1,4 @@
-- eefps = ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by!( \
-  extraction: @extraction,
-  extraction_forms_projects_section: efps,
-  link_to_type1: efps.link_to_type1.nil? \
-    ? nil \
-    : ExtractionsExtractionFormsProjectsSection.find_by!( \
-      extraction: @extraction,
-      extraction_forms_projects_section: efps.link_to_type1))
+- eefps = @eefps_by_efps_dict[efps.id].first
 
 .section-header
   h4 = section_name
