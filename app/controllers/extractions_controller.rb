@@ -263,16 +263,26 @@ class ExtractionsController < ApplicationController
       @eefps_qrcf_dict ||= {}
       @records_dict ||= {}
       extraction.extractions_extraction_forms_projects_sections.each do |eefps|
-        eefps.extractions_extraction_forms_projects_sections_question_row_column_fields.each do |eefps_qrcf|
+        eefps.extractions_extraction_forms_projects_sections_question_row_column_fields.includes([:records, :extractions_extraction_forms_projects_sections_type1]).each do |eefps_qrcf|
           @eefps_qrcf_dict[[eefps.id,eefps_qrcf.question_row_column_field_id,eefps_qrcf.extractions_extraction_forms_projects_sections_type1&.type1_id].to_s] = eefps_qrcf
-          @records_dict[eefps_qrcf.id] = Record.find_or_create_by(recordable: eefps_qrcf)
+          if eefps_qrcf.records.blank?
+            @records_dict[eefps_qrcf.id] = Record.find_or_create_by(recordable: eefps_qrcf)
+          else
+            @records_dict[eefps_qrcf.id] = eefps_qrcf.records.first
+          end
         end
       end
     end
 
+    
     def update_eefps_by_extraction_and_efps_dict(extraction)
       @eefps_by_extraction_and_efps_dict ||= {}
-      @eefps_by_extraction_and_efps_dict[extraction.id] = extraction.extractions_extraction_forms_projects_sections.includes({link_to_type1: [{extraction_forms_projects_section: :section}, :type1s, {extractions_extraction_forms_projects_sections_type1s: [:type1_type, :type1]}]}, {statusing: :status}).group_by(&:extraction_forms_projects_section_id)
+      @eefpst1_by_eefps_and_t1_dict ||= {}
+      eefps_relation = extraction.extractions_extraction_forms_projects_sections.includes({link_to_type1: [{extraction_forms_projects_section: :section}, :type1s, {extractions_extraction_forms_projects_sections_type1s: [:type1_type, :type1, {extractions_extraction_forms_projects_sections_type1_rows: :population_name}]}]}, {statusing: :status})
+      @eefps_by_extraction_and_efps_dict[extraction.id] = eefps_relation.group_by(&:extraction_forms_projects_section_id)
+      eefps_relation.each do |eefps|
+        @eefpst1_by_eefps_and_t1_dict[eefps.id] = eefps.extractions_extraction_forms_projects_sections_type1s.includes(extractions_extraction_forms_projects_sections_type1_rows: :population_name).group_by(&:type1_id)
+      end
     end
 
     def set_eefps_by_efps_dict

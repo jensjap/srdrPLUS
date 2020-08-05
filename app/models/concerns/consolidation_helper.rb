@@ -33,13 +33,14 @@ module ConsolidationHelper
         #we need to do type1 sections first
         t1_eefps = extraction.extractions_extraction_forms_projects_sections.
           joins(:extraction_forms_projects_section).
+          includes(extractions_extraction_forms_projects_sections_type1s: [{extractions_extraction_forms_projects_sections_type1_rows: [{result_statistic_sections: [:comparisons, {result_statistic_sections_measures: [:tps_comparisons_rssms, :comparisons_arms_rssms, {tps_arms_rssms: [:timepoint, {extractions_extraction_forms_projects_sections_type1: :extractions_extraction_forms_projects_section}]}, :wacs_bacs_rssms]}]}, :extractions_extraction_forms_projects_sections_type1_row_columns]}, :type1]).
           where(extraction_forms_projects_sections:
                 {extraction_forms_projects_section_type_id: 1})
 
         #Type 1 sections
         t1_eefps.each do |eefps|
           efps_id = eefps.extraction_forms_projects_section_id.to_s
-          eefps_t1s = eefps.extractions_extraction_forms_projects_sections_type1s.includes(:type1)
+          eefps_t1s = eefps.extractions_extraction_forms_projects_sections_type1s
           eefps_t1s.each do |eefps_t1|
             type1 = eefps_t1.type1
             type1_id = type1.id.to_s
@@ -128,7 +129,7 @@ module ConsolidationHelper
                       next if tps_arms_rssm.timepoint.blank?
 
                       tp_name_id = tps_arms_rssm.timepoint.timepoint_name_id.to_s
-                      arm_efps_id = tps_arms_rssm.extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_section.extraction_forms_projects_section.id
+                      arm_efps_id = tps_arms_rssm.extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_section.extraction_forms_projects_section_id
                       arm_name_id = tps_arms_rssm.extractions_extraction_forms_projects_sections_type1.type1_id
                       record_name = tps_arms_rssm.records.first.name
                       is_baseline = tps_arms_rssm.timepoint.is_baseline
