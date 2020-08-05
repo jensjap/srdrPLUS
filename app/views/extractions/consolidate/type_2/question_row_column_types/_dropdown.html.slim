@@ -26,7 +26,7 @@
 
     - options = qrc. \
       question_row_columns_question_row_column_options. \
-      where(question_row_column_option_id: 1). \
+      select{|opt| opt.question_row_column_option_id == 1}. \
       collect { |opt| [opt.name, opt.id, { 'data-prereq': "prereq-#{ opt.class }-#{ opt.id }" }] }
     = f.input :name, label: false, disabled: true,
       collection: options,

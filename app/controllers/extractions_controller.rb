@@ -186,8 +186,10 @@ class ExtractionsController < ApplicationController
     @consolidated_extraction.auto_consolidate(@extractions)
 
     update_record_helper_dictionaries @consolidated_extraction
+    update_eefps_by_extraction_and_efps_dict @consolidated_extraction
     @extractions.each do |extraction|
       update_record_helper_dictionaries extraction
+      update_eefps_by_extraction_and_efps_dict extraction
     end
 
     add_breadcrumb 'edit project',    edit_project_path(@project)
@@ -231,7 +233,7 @@ class ExtractionsController < ApplicationController
 
     def set_extractions
       @extractions = policy_scope(Extraction).
-        includes(projects_users_role: { projects_user: { user: :profile } }).
+        includes({projects_users_role: { projects_user: { user: :profile } }}, {extractions_extraction_forms_projects_sections: [{link_to_type1: [{extraction_forms_projects_section: :section}, :type1s, {extractions_extraction_forms_projects_sections_type1s: [:type1_type, :type1]}]}, {statusing: :status}]}).
         where(id: extraction_ids_params)
     end
 
@@ -266,6 +268,11 @@ class ExtractionsController < ApplicationController
           @records_dict[eefps_qrcf.id] = Record.find_or_create_by(recordable: eefps_qrcf)
         end
       end
+    end
+
+    def update_eefps_by_extraction_and_efps_dict(extraction)
+      @eefps_by_extraction_and_efps_dict ||= {}
+      @eefps_by_extraction_and_efps_dict[extraction.id] = extraction.extractions_extraction_forms_projects_sections.includes({link_to_type1: [{extraction_forms_projects_section: :section}, :type1s, {extractions_extraction_forms_projects_sections_type1s: [:type1_type, :type1]}]}, {statusing: :status}).group_by(&:extraction_forms_projects_section_id)
     end
 
     def set_eefps_by_efps_dict
