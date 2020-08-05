@@ -33,7 +33,18 @@ module ConsolidationHelper
         #we need to do type1 sections first
         t1_eefps = extraction.extractions_extraction_forms_projects_sections.
           joins(:extraction_forms_projects_section).
-          includes(extractions_extraction_forms_projects_sections_type1s: [{extractions_extraction_forms_projects_sections_type1_rows: [{result_statistic_sections: [:comparisons, {result_statistic_sections_measures: [:tps_comparisons_rssms, :comparisons_arms_rssms, {tps_arms_rssms: [:timepoint, {extractions_extraction_forms_projects_sections_type1: :extractions_extraction_forms_projects_section}]}, :wacs_bacs_rssms]}]}, :extractions_extraction_forms_projects_sections_type1_row_columns]}, :type1]).
+          includes(extractions_extraction_forms_projects_sections_type1s: [
+            {extractions_extraction_forms_projects_sections_type1_rows: [
+              {result_statistic_sections: [
+                {comparisons: {comparate_groups: {comparates: {comparable_element: :comparable}}}}, 
+                {result_statistic_sections_measures: [
+                  {tps_comparisons_rssms: [:timepoint, :records, comparison: {comparate_groups: {comparates: {comparable_element: :comparable}}}]}, 
+                  {comparisons_arms_rssms: [{comparison: {comparate_groups: {comparates: {comparable_element: :comparable}}}}, 
+                                            {extractions_extraction_forms_projects_sections_type1: [:extractions_extraction_forms_projects_section]}, :records]}, 
+                  {tps_arms_rssms: [:records, :timepoint, {extractions_extraction_forms_projects_sections_type1: :extractions_extraction_forms_projects_section}]}, 
+                  {wacs_bacs_rssms: [:records, {wac: {comparate_groups: {comparates: {comparable_element: :comparable}}}}, 
+                                               {bac: {comparate_groups: {comparates: {comparable_element: :comparable}}}}]}]}]}, 
+              :extractions_extraction_forms_projects_sections_type1_row_columns]}, :type1]).
           where(extraction_forms_projects_sections:
                 {extraction_forms_projects_section_type_id: 1})
 
@@ -180,7 +191,7 @@ module ConsolidationHelper
                       #next if comparisons_arms_rssm.timepoint.blank?
 
                       comparison_name = comparisons_arms_rssm.comparison.tokenize
-                      arm_efps_id = comparisons_arms_rssm.extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_section.extraction_forms_projects_section.id
+                      arm_efps_id = comparisons_arms_rssm.extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_section.extraction_forms_projects_section_id
                       arm_name_id = comparisons_arms_rssm.extractions_extraction_forms_projects_sections_type1.type1_id
                       record_name = comparisons_arms_rssm.records.first.name
 
@@ -227,6 +238,7 @@ module ConsolidationHelper
         # now type2 sections
         eefps_t2 = extraction.extractions_extraction_forms_projects_sections.
           joins(:extraction_forms_projects_section).
+          includes({extractions_extraction_forms_projects_sections_question_row_column_fields: [:records, :question_row_column_field, :extractions_extraction_forms_projects_sections_type1]}).
           where(extraction_forms_projects_sections:
                 {extraction_forms_projects_section_type_id: 2})
 
@@ -255,10 +267,10 @@ module ConsolidationHelper
 
 
             t1_id = eefps_qrcf.extractions_extraction_forms_projects_sections_type1.present? ?
-                         eefps_qrcf.extractions_extraction_forms_projects_sections_type1.type1.id.to_s : nil
+                         eefps_qrcf.extractions_extraction_forms_projects_sections_type1.type1_id.to_s : nil
 
             t1_type_id = ( eefps_qrcf.extractions_extraction_forms_projects_sections_type1.present? and
-                           eefps_qrcf.extractions_extraction_forms_projects_sections_type1.type1_type.present? ) ?
+                           eefps_qrcf.extractions_extraction_forms_projects_sections_type1.type1_type_id.present? ) ?
                            eefps_qrcf.extractions_extraction_forms_projects_sections_type1.type1_type_id.to_s : nil
 
             record_name = eefps_qrcf.records.first.name
@@ -474,6 +486,7 @@ module ConsolidationHelper
         end
       end
 
+      self_eefps_relation = self.extractions_extraction_forms_projects_sections.includes(:extractions_extraction_forms_projects_sections_type1s, extractions_extraction_forms_projects_sections_question_row_column_fields: :records)
       # this is where we go down records hash and create the records for questions
       r_hash.each do |efps_id, r_efps_hash|
         r_efps_hash.each do |linked_efps_id, r_efps_linkedefps_hash|
@@ -482,20 +495,22 @@ module ConsolidationHelper
               r_efps_linkedefps_t1_t1t_hash.each do |qrcf_id, r_efps_linkedefps_t1_t1t_qrcf_hash|
                 r_efps_linkedefps_t1_t1t_qrcf_hash.each do |record_name, r_es|
                   if r_es.uniq.length == extractions.length
-                    linked_eefps = linked_efps_id.present? ? self.extractions_extraction_forms_projects_sections.find_by(extraction_forms_projects_section_id: linked_efps_id) : nil
-                    eefps = self.extractions_extraction_forms_projects_sections.
-                      find_by(extraction_forms_projects_section_id: efps_id,
-                      link_to_type1: linked_eefps )
-                    qrcf = QuestionRowColumnField.find(qrcf_id)
+                    linked_eefps = linked_efps_id.present? ? self_eefps_relation.select{|x| x.extraction_forms_projects_section_id == linked_efps_id.to_i}.first : nil
+                    eefps = self_eefps_relation.
+                      select{|x| x.extraction_forms_projects_section_id == efps_id.to_i and
+                      x.link_to_type1 == linked_eefps }.first
                     # what if type1 is nil
-                    t1 = t1_id.present? ? Type1.find(t1_id) : nil
-                    t1_type = t1_type_id.present? ? Type1Type.find(t1_type_id) : nil
-                    eefps_t1 = t1.present? ? ExtractionsExtractionFormsProjectsSectionsType1.find_by(extractions_extraction_forms_projects_section: linked_eefps, type1: t1, type1_type: t1_type) : nil
+                    t1_type_id_i = t1_type_id.present? ? t1_type_id.to_i : nil
+                    eefps_t1 = t1_id.present? ? linked_eefps.extractions_extraction_forms_projects_sections_type1s.select{|x| x.type1_id == t1_id.to_i and x.type1_type_id == t1_type_id_i}.first : nil
                     #we want  to change find_or_create_by into  find_by asap
-                    eefps_qrcf = ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField.find_or_create_by(extractions_extraction_forms_projects_section: eefps, extractions_extraction_forms_projects_sections_type1: eefps_t1,  question_row_column_field: qrcf)
-                    record = Record.find_or_create_by(recordable: eefps_qrcf, recordable_type: eefps_qrcf.class.name)
-                    if (record.name.nil? or record.name == "") and not (record_name == nil or record_name == "")
-                      record.update( name: record_name.dup.to_s )
+                    eefps_qrcf = eefps.extractions_extraction_forms_projects_sections_question_row_column_fields.select{|x| x.extractions_extraction_forms_projects_sections_type1_id == eefps_t1&.id and x.question_row_column_field_id == qrcf_id.to_i}.first
+                    if eefps_qrcf.records.blank?
+                      record = Record.create(recordable: eefps_qrcf, name: record_name.dup )
+                    else
+                      record = eefps_qrcf.records.first
+                    end
+                    if record_name.present? and record.name != record_name
+                      record.update( name: record_name.dup )
                     end
                   end
                 end
