@@ -457,6 +457,8 @@ GEM
       activemodel (>= 5)
       elasticsearch (>= 6)
       hashie
+    sentry-raven (2.13.0)
+      faraday (>= 0.7.6, < 1.0)
     shellany (0.0.1)
     sidekiq (5.2.5)
       connection_pool (~> 2.2, >= 2.2.2)
@@ -591,6 +593,7 @@ DEPENDENCIES
   sass-rails (~> 5.0)
   searchjoy
   searchkick
+  sentry-raven
   sidekiq
   sidekiq-cron (~> 1.1)
   simple_form
