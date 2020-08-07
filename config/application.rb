@@ -23,3 +23,10 @@ module SrdrPLUS
     #config.active_job.queue_name_prefix = "srdrPLUS_#{ Rails.env }"
   end
 end
+
+if Rails.env.production?
+  Raven.configure do |config|
+    config.sanitize_fields = Rails.application.config.filter_parameters.map(&:to_s)
+    config.dsn = Rails.application.credentials.dig(:sentry)
+  end
+end

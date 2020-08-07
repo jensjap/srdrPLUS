@@ -178,3 +178,6 @@ gem "dropzonejs-rails"
 
 # for things like cloning questions (extraction forms maybe?)
 gem "amoeba"
+
+# full-stack error tracking system
+gem "sentry-raven"
