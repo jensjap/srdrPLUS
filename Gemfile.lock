@@ -146,6 +146,10 @@ GEM
       countries (~> 3.0)
       sort_alphabetical (~> 1.0)
     crass (1.0.6)
+    database_cleaner (1.8.5)
+    database_cleaner-active_record (1.8.0)
+      activerecord
+      database_cleaner (~> 1.8.0)
     declarative (0.0.10)
     declarative-option (0.1.0)
     devise (4.7.1)
@@ -550,6 +554,7 @@ DEPENDENCIES
   cocoon
   coffee-rails (~> 4.2)
   country_select
+  database_cleaner-active_record
   devise
   dotenv-rails
   dropzonejs-rails

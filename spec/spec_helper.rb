@@ -15,7 +15,25 @@
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 RSpec.configure do |config|
   # Load Required Seed Data
-  config.before(:suite) { Rails.application.load_seed }
+  config.before(:suite) do
+    DatabaseCleaner.strategy = :transaction
+    DatabaseCleaner.clean_with(:truncation)
+    # and disable callbacks
+    Searchkick.disable_callbacks
+    Rails.application.load_seed
+  end
+
+  config.around(:each) do |example|
+    DatabaseCleaner.cleaning do
+      example.run
+    end
+  end
+
+  config.around(:each, search: true) do |example|
+    Searchkick.callbacks(nil) do
+      example.run
+    end
+  end
 
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
