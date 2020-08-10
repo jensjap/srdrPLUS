@@ -188,6 +188,7 @@ Rails.application.routes.draw do
 
                 member do
                   post 'add_comparison'
+                  delete 'remove_comparison'
                   get  'consolidate'
                   get  'manage_measures', constraints: { format: 'js' }
                 end
