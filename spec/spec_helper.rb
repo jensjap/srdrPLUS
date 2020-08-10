@@ -18,6 +18,10 @@ RSpec.configure do |config|
   config.before(:suite) do
     DatabaseCleaner.strategy = :transaction
     DatabaseCleaner.clean_with(:truncation)
+
+    # reindex models
+    Project.reindex
+
     # and disable callbacks
     Searchkick.disable_callbacks
     Rails.application.load_seed
