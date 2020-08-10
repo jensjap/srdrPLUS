@@ -81,13 +81,13 @@ class Record < ApplicationRecord
     case self.recordable
     when ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField
       case self.recordable.question_row_column_field.question_row_column.question_row_column_type.name
-      when 'text'
+      when QuestionRowColumnType::TEXT
         min_length = self.recordable.question_row_column_field.question_row_column.field_validation_value_for(:min_length).to_i
         max_length = self.recordable.question_row_column_field.question_row_column.field_validation_value_for(:max_length).to_i
         if self.persisted? && self.name.length > 0 && (self.name.length < min_length || self.name.length > max_length)
           errors.add(:length, "must be between #{ min_length.to_s } and #{ max_length.to_s }")
         end
-      when 'numeric'
+      when QuestionRowColumnType::NUMERIC
         # First check that we aren't trying to validate any of the ~, <, >, ≤, ≥ special characters.
         if self.recordable.question_row_column_field.question_row_column.question_row_column_fields.second == self.recordable.question_row_column_field
           unless (self.name =~ /\A[-+]?[0-9]*\.?[0-9]+\z/) || self.name != ''
@@ -116,6 +116,6 @@ class Record < ApplicationRecord
       else
         extraction = recordable.result_statistic_section.extraction
       end
-      extraction.extraction_checksum.update( is_stale: true ) 
+      extraction.extraction_checksum.update( is_stale: true )
     end
 end
