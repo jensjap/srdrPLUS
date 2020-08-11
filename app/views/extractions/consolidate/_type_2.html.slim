@@ -16,14 +16,7 @@
           of the consolidator.
         tr
           - @extractions.each_with_index do |extraction, idx|
-            - eefps = ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by( \
-              extraction: extraction,
-              extraction_forms_projects_section: efps,
-              link_to_type1: efps.link_to_type1.nil? \
-                ? nil \
-                : ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by!( \
-                  extraction: extraction,
-                  extraction_forms_projects_section: efps.link_to_type1))
+            - eefps = @eefps_by_extraction_and_efps_dict[extraction.id][efps.id].first
 
             - linked_section = eefps.link_to_type1
 
@@ -34,14 +27,7 @@
             - else
               th
 
-          - eefps = ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by( \
-            extraction: @consolidated_extraction,
-            extraction_forms_projects_section: efps,
-            link_to_type1: efps.link_to_type1.nil? \
-              ? nil \
-              : ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by!( \
-                extraction: @consolidated_extraction,
-                extraction_forms_projects_section: efps.link_to_type1))
+          - eefps = @eefps_by_extraction_and_efps_dict[@consolidated_extraction.id][efps.id].first
 
           - linked_section = eefps.link_to_type1
 
@@ -72,15 +58,7 @@
                 - @head_to_head.dig(efp.id, efps.link_to_type1.id, :all_type1s).each do |t1|
                   tr
                     - @extractions.each_with_index do |extraction, idx|
-                      - eefps = ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by( \
-                        extraction: extraction,
-                        extraction_forms_projects_section: efps,
-                        link_to_type1: efps.link_to_type1.nil? \
-                          ? nil \
-                          : ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by!( \
-                            extraction: extraction,
-                            extraction_forms_projects_section: efps.link_to_type1))
-
+                      - eefps = @eefps_by_extraction_and_efps_dict[extraction.id][efps.id].first
                       - linked_section = eefps.link_to_type1
 
                       - unless linked_section && eefps.link_to_type1.type1s.blank?
@@ -98,15 +76,7 @@
                           td style='vertical-align: top;'
                             h6 style='text-decoration: line-through;' = linked_section.extraction_forms_projects_section.section.name.singularize + ': ' + t1.name_and_description
 
-                    - eefps = ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by( \
-                      extraction: @consolidated_extraction,
-                      extraction_forms_projects_section: efps,
-                      link_to_type1: efps.link_to_type1.nil? \
-                        ? nil \
-                        : ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by!( \
-                          extraction: @consolidated_extraction,
-                          extraction_forms_projects_section: efps.link_to_type1))
-
+                    - eefps = @eefps_by_extraction_and_efps_dict[@consolidated_extraction.id][efps.id].first
                     - linked_section = eefps.link_to_type1
 
                     - unless linked_section && eefps.link_to_type1.type1s.blank?
@@ -126,15 +96,7 @@
                   - next if (t1.name.eql?("Total") && t1.description.eql?("All #{ linked_section.extraction_forms_projects_section.section.name } combined"))
                   tr
                     - @extractions.each_with_index do |extraction, idx|
-                      - eefps = ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by( \
-                        extraction: extraction,
-                        extraction_forms_projects_section: efps,
-                        link_to_type1: efps.link_to_type1.nil? \
-                          ? nil \
-                          : ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by!( \
-                            extraction: extraction,
-                            extraction_forms_projects_section: efps.link_to_type1))
-
+                      - eefps = @eefps_by_extraction_and_efps_dict[extraction.id][efps.id].first
                       - linked_section = eefps.link_to_type1
 
                       - unless linked_section && eefps.link_to_type1.type1s.blank?
@@ -152,15 +114,7 @@
                           td style='vertical-align: top;'
                             h6 style='text-decoration: line-through;' = linked_section.extraction_forms_projects_section.section.name.singularize + ': ' + t1.name_and_description
 
-                    - eefps = ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by( \
-                      extraction: @consolidated_extraction,
-                      extraction_forms_projects_section: efps,
-                      link_to_type1: efps.link_to_type1.nil? \
-                        ? nil \
-                        : ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by!( \
-                          extraction: @consolidated_extraction,
-                          extraction_forms_projects_section: efps.link_to_type1))
-
+                    - eefps = @eefps_by_extraction_and_efps_dict[@consolidated_extraction.id][efps.id].first
                     - linked_section = eefps.link_to_type1
 
                     - unless linked_section && eefps.link_to_type1.type1s.blank?
@@ -185,15 +139,7 @@
                   - next unless (t1.name.eql?("Total") && t1.description.eql?("All #{ linked_section.extraction_forms_projects_section.section.name } combined"))
                   tr
                     - @extractions.each_with_index do |extraction, idx|
-                      - eefps = ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by( \
-                        extraction: extraction,
-                        extraction_forms_projects_section: efps,
-                        link_to_type1: efps.link_to_type1.nil? \
-                          ? nil \
-                          : ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by!( \
-                            extraction: extraction,
-                            extraction_forms_projects_section: efps.link_to_type1))
-
+                      - eefps = @eefps_by_extraction_and_efps_dict[extraction.id][efps.id].first
                       - linked_section = eefps.link_to_type1
 
                       - unless linked_section && eefps.link_to_type1.type1s.blank?
@@ -211,15 +157,7 @@
                           td style='vertical-align: top;'
                             h6 style='text-decoration: line-through;' = linked_section.extraction_forms_projects_section.section.name.singularize + ': ' + t1.name_and_description
 
-                    - eefps = ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by( \
-                      extraction: @consolidated_extraction,
-                      extraction_forms_projects_section: efps,
-                      link_to_type1: efps.link_to_type1.nil? \
-                        ? nil \
-                        : ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by!( \
-                          extraction: @consolidated_extraction,
-                          extraction_forms_projects_section: efps.link_to_type1))
-
+                    - eefps = @eefps_by_extraction_and_efps_dict[@consolidated_extraction.id][efps.id].first
                     - linked_section = eefps.link_to_type1
 
                     - unless linked_section && eefps.link_to_type1.type1s.blank?
@@ -241,14 +179,7 @@
               - else
                 tr
                   - @extractions.each_with_index do |extraction, idx|
-                    - eefps = ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by( \
-                      extraction: extraction,
-                      extraction_forms_projects_section: efps,
-                      link_to_type1: efps.link_to_type1.nil? \
-                        ? nil \
-                        : ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by!( \
-                          extraction: extraction,
-                          extraction_forms_projects_section: efps.link_to_type1))
+                    - eefps = @eefps_by_extraction_and_efps_dict[extraction.id][efps.id].first
 
                     td style='border: 2px solid #{ color_array[0] };'
                       div style="height: 55px;"
@@ -258,14 +189,7 @@
                         eefps: eefps,
                         display_only: true
 
-                  - eefps = ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by( \
-                    extraction: @consolidated_extraction,
-                    extraction_forms_projects_section: efps,
-                    link_to_type1: efps.link_to_type1.nil? \
-                      ? nil \
-                      : ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by!( \
-                        extraction: @consolidated_extraction,
-                        extraction_forms_projects_section: efps.link_to_type1))
+                  - eefps = @eefps_by_extraction_and_efps_dict[@consolidated_extraction.id][efps.id].first
 
                   td
                     div id="consolidation-dropdown" style="height: 55px;"
@@ -281,14 +205,7 @@
           - else
             tr
               - @extractions.each_with_index do |extraction, idx|
-                - eefps = ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by( \
-                  extraction: extraction,
-                  extraction_forms_projects_section: efps,
-                  link_to_type1: efps.link_to_type1.nil? \
-                    ? nil \
-                    : ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by!( \
-                      extraction: extraction,
-                      extraction_forms_projects_section: efps.link_to_type1))
+                - eefps = @eefps_by_extraction_and_efps_dict[extraction.id][efps.id].first
 
                 td style='border: 2px solid #{ color_array[0] };'
                   div style="height: 55px;"
@@ -298,14 +215,7 @@
                     eefps: eefps,
                     display_only: true
 
-              - eefps = ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by( \
-                extraction: @consolidated_extraction,
-                extraction_forms_projects_section: efps,
-                link_to_type1: efps.link_to_type1.nil? \
-                  ? nil \
-                  : ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by!( \
-                    extraction: @consolidated_extraction,
-                    extraction_forms_projects_section: efps.link_to_type1))
+              - eefps = @eefps_by_extraction_and_efps_dict[@consolidated_extraction.id][efps.id].first
 
               td
                 div id="consolidation-dropdown" style="height: 55px;"

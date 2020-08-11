@@ -40,7 +40,9 @@
             td = distance_of_time_in_words_to_now(sd_meta_datum.updated_at) + ' ago'
             td = link_to('View', sd_meta_datum)
             td = link_to "Work", edit_sd_meta_datum_path(sd_meta_datum.id), class: "sd-meta-data-index-edit"
-            - if sd_meta_datum.publishing.nil? && sd_meta_datum.check_publishing_eligibility.blank?
+            - if !sd_meta_datum.all_sections_complete?
+              td
+            - elsif sd_meta_datum.publishing.nil? && sd_meta_datum.check_publishing_eligibility.blank?
               td = link_to("Publish", publishings_create_path(type: :sd_meta_datum, id: sd_meta_datum.id), class: "sd-meta-data-index-request-publish", method: :post)
             - elsif sd_meta_datum.publishing.nil?
               td
@@ -51,7 +53,9 @@
                   h6 Tabs with missing fields:
                   - sd_meta_datum.check_publishing_eligibility.each do |error|
                     div = error
-            - else
+            - elsif sd_meta_datum.publishing.approval.present?
+              td = "Published"
+            - else sd_meta_datum.publishing.approval.present?
               td = "Request under review"
             td = link_to 'Destroy', sd_meta_datum_path(sd_meta_datum), data: { confirm: 'Are you sure? This will destroy the link you have created between a report and a project in SRDR. It will also destroy everything you have entered for this project in SRDR 2.0.' }, method: :delete, class: "sd-meta-data-index-delete"
   .column.row

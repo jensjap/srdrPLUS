@@ -1,0 +1,19 @@
+- if @approved_publishings.blank?
+
+  h4 No approved publications found.
+
+- else
+  table
+    thead
+      tr
+        th width="200" Name
+        th width="50" Type
+        th width="150" Date of Publication
+        th width="50"
+    tbody
+      - @approved_publishings.each do |pr|
+        tr
+          td = pr.publishable.display
+          td = pr.name_of_pub_type
+          td = pr.approval.created_at
+          td = link_to 'View', sd_meta_datum_path(pr.publishable_id), class: 'btn-link'

@@ -11,6 +11,7 @@ document.addEventListener 'turbolinks:load', ->
     ###########################
     # Hide unnecessary options.
     multiSelect = ['Checkbox (select multiple)', 'Dropdown (select one)', 'Radio (select one)', 'Select one (with write-in option)', 'Select multiple (with write-in option)']
+    allowsFollowup = ['Checkbox (select multiple)', 'Radio (select one)']
 
     $('.fieldset').on 'change', ->
       that = $(this)
@@ -21,6 +22,10 @@ document.addEventListener 'turbolinks:load', ->
       if _value in multiSelect
         that.find('.field-options.field-option-type-answer_choice').show()
         that.find('.links').show()
+        if _value in allowsFollowup
+          that.find('.followup_container').css('visibility', 'visible')
+        else
+          that.find('.followup_container').css('visibility', 'hidden')
 
       else if _value == 'Text Field (alphanumeric)'  # Text.
         that.find('.field-options.field-option-type-min_length').show()

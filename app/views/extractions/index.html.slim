@@ -52,7 +52,7 @@
                       = extraction.projects_users_role.handle
                     .projects-users-role-select.hide
                       = simple_form_for extraction, remote: true do |e_f|
-                        = e_f.association :projects_users_role, label: false, collection: @projects_users_roles, label_method: :handle, input_html: { class: "select2" }, selected: extraction.projects_users_role.id
+                        = e_f.association :projects_users_role, label: false, collection: @projects_users_roles, label_method: :handle, input_html: { class: "index-extractions-select2" }, selected: extraction.projects_users_role.id
 
               td[data-sort="#{ progress_meter_width }"]
                 .success.progress data-allow-html="true" data-tooltip="" title="#{ tooltip_text }"

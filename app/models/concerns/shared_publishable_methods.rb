@@ -25,6 +25,10 @@ module SharedPublishableMethods
     def request_publishing
       publishings.create(user: User.current)
     end
+
+    def display
+      raise "Must define display method in publishable model."
+    end
   end
 
   class_methods do
