@@ -2,6 +2,7 @@
 module SeedData
   def self.extended(object)
     object.instance_exec do
+      return unless UserType.all.count == 0
       # Turn off paper_trail.
       PaperTrail.enabled = false
 
