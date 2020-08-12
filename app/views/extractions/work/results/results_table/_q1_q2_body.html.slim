@@ -4,7 +4,7 @@
     - if print_tp_name
       tr
         td rowspan="#{ [dsc_rss.result_statistic_sections_measures.length, bac_rss.result_statistic_sections_measures.length].max + 1 }"
-          div style="transform: rotate(270deg); font-weight: bold; text-align: center" = tp.timepoint_name.pretty_print_export_header
+          div style="font-weight: bold; text-align: center" = tp.timepoint_name.pretty_print_export_header
         - print_tp_name = false
 
     - else

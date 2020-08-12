@@ -3,11 +3,11 @@
   - for row_cnt in -1..[wac_rss.result_statistic_sections_measures.length, net_rss.result_statistic_sections_measures.length].max - 1 do
     - if print_wac_name
       tr
-        td.bg-lightgreen.vertical rowspan="#{ [wac_rss.result_statistic_sections_measures.length, net_rss.result_statistic_sections_measures.length].max + 1 }"
-          div
-            div style='text-align: center; font-weight: bold;' = (wac.comparate_groups.first&.comparates || []).map { |c| c.comparable_element.comparable.label_with_baseline_indicator }.join('<br>')
-            div style='text-align: center;' vs.
-            div style='text-align: center; font-weight: bold;' = (wac.comparate_groups.second&.comparates || []).map { |c| c.comparable_element.comparable.label_with_baseline_indicator }.join('<br>')
+        td.bg-lightgreen rowspan="#{ [wac_rss.result_statistic_sections_measures.length, net_rss.result_statistic_sections_measures.length].max + 1 }"
+          div style='text-align: center; font-weight: bold;'
+            div = (wac.comparate_groups.first&.comparates || []).map { |c| c.comparable_element.comparable.label_with_baseline_indicator }.join('<br>')
+            div vs.
+            div = (wac.comparate_groups.second&.comparates || []).map { |c| c.comparable_element.comparable.label_with_baseline_indicator }.join('<br>')
         - print_wac_name = false
 
     - else
@@ -65,4 +65,3 @@ tr
           render_options: { locals: { rss: wac_rss, comparison: :wac } } do
           i.fi-plus>
           | Add Comparison
-
