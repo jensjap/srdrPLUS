@@ -33,13 +33,25 @@ module ConsolidationHelper
         #we need to do type1 sections first
         t1_eefps = extraction.extractions_extraction_forms_projects_sections.
           joins(:extraction_forms_projects_section).
+          includes(extractions_extraction_forms_projects_sections_type1s: [
+            {extractions_extraction_forms_projects_sections_type1_rows: [
+              {result_statistic_sections: [
+                {comparisons: {comparate_groups: {comparates: {comparable_element: :comparable}}}}, 
+                {result_statistic_sections_measures: [
+                  {tps_comparisons_rssms: [:timepoint, :records, comparison: {comparate_groups: {comparates: {comparable_element: :comparable}}}]}, 
+                  {comparisons_arms_rssms: [{comparison: {comparate_groups: {comparates: {comparable_element: :comparable}}}}, 
+                                            {extractions_extraction_forms_projects_sections_type1: [:extractions_extraction_forms_projects_section]}, :records]}, 
+                  {tps_arms_rssms: [:records, :timepoint, {extractions_extraction_forms_projects_sections_type1: :extractions_extraction_forms_projects_section}]}, 
+                  {wacs_bacs_rssms: [:records, {wac: {comparate_groups: {comparates: {comparable_element: :comparable}}}}, 
+                                               {bac: {comparate_groups: {comparates: {comparable_element: :comparable}}}}]}]}]}, 
+              :extractions_extraction_forms_projects_sections_type1_row_columns]}, :type1]).
           where(extraction_forms_projects_sections:
                 {extraction_forms_projects_section_type_id: 1})
 
         #Type 1 sections
         t1_eefps.each do |eefps|
           efps_id = eefps.extraction_forms_projects_section_id.to_s
-          eefps_t1s = eefps.extractions_extraction_forms_projects_sections_type1s.includes(:type1)
+          eefps_t1s = eefps.extractions_extraction_forms_projects_sections_type1s
           eefps_t1s.each do |eefps_t1|
             type1 = eefps_t1.type1
             type1_id = type1.id.to_s
@@ -128,7 +140,7 @@ module ConsolidationHelper
                       next if tps_arms_rssm.timepoint.blank?
 
                       tp_name_id = tps_arms_rssm.timepoint.timepoint_name_id.to_s
-                      arm_efps_id = tps_arms_rssm.extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_section.extraction_forms_projects_section.id
+                      arm_efps_id = tps_arms_rssm.extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_section.extraction_forms_projects_section_id
                       arm_name_id = tps_arms_rssm.extractions_extraction_forms_projects_sections_type1.type1_id
                       record_name = tps_arms_rssm.records.first.name
                       is_baseline = tps_arms_rssm.timepoint.is_baseline
@@ -179,7 +191,7 @@ module ConsolidationHelper
                       #next if comparisons_arms_rssm.timepoint.blank?
 
                       comparison_name = comparisons_arms_rssm.comparison.tokenize
-                      arm_efps_id = comparisons_arms_rssm.extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_section.extraction_forms_projects_section.id
+                      arm_efps_id = comparisons_arms_rssm.extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_section.extraction_forms_projects_section_id
                       arm_name_id = comparisons_arms_rssm.extractions_extraction_forms_projects_sections_type1.type1_id
                       record_name = comparisons_arms_rssm.records.first.name
 
@@ -226,6 +238,7 @@ module ConsolidationHelper
         # now type2 sections
         eefps_t2 = extraction.extractions_extraction_forms_projects_sections.
           joins(:extraction_forms_projects_section).
+          includes({extractions_extraction_forms_projects_sections_question_row_column_fields: [:records, :question_row_column_field, :extractions_extraction_forms_projects_sections_type1]}).
           where(extraction_forms_projects_sections:
                 {extraction_forms_projects_section_type_id: 2})
 
@@ -254,10 +267,10 @@ module ConsolidationHelper
 
 
             t1_id = eefps_qrcf.extractions_extraction_forms_projects_sections_type1.present? ?
-                         eefps_qrcf.extractions_extraction_forms_projects_sections_type1.type1.id.to_s : nil
+                         eefps_qrcf.extractions_extraction_forms_projects_sections_type1.type1_id.to_s : nil
 
             t1_type_id = ( eefps_qrcf.extractions_extraction_forms_projects_sections_type1.present? and
-                           eefps_qrcf.extractions_extraction_forms_projects_sections_type1.type1_type.present? ) ?
+                           eefps_qrcf.extractions_extraction_forms_projects_sections_type1.type1_type_id.present? ) ?
                            eefps_qrcf.extractions_extraction_forms_projects_sections_type1.type1_type_id.to_s : nil
 
             record_name = eefps_qrcf.records.first.name
@@ -277,10 +290,10 @@ module ConsolidationHelper
       t1_hash.each do |efps_id, t1_efps_hash|
         t1_efps_hash.each do |type1_id, t1_es|
           if t1_es.length == extractions.length
-            eefps = self.extractions_extraction_forms_projects_sections.find_by!(extraction_forms_projects_section_id: efps_id)
+            eefps = self.extractions_extraction_forms_projects_sections.find_by(extraction_forms_projects_section_id: efps_id)
             type1 = Type1.find(type1_id)
 
-            eefps_t1 = ExtractionsExtractionFormsProjectsSectionsType1.find_or_create_by!(
+            eefps_t1 = ExtractionsExtractionFormsProjectsSectionsType1.find_or_create_by(
               extractions_extraction_forms_projects_section: eefps,
               type1: type1 )
 
@@ -288,7 +301,7 @@ module ConsolidationHelper
             p_hash[efps_id][type1_id].each do |population_name_id, p_es|
               if p_es.length == extractions.length
                 population_name = PopulationName.find(population_name_id)
-                eefps_t1_row = ExtractionsExtractionFormsProjectsSectionsType1Row.find_or_create_by!(
+                eefps_t1_row = ExtractionsExtractionFormsProjectsSectionsType1Row.find_or_create_by(
                   extractions_extraction_forms_projects_sections_type1: eefps_t1,
                   population_name: population_name )
 
@@ -296,7 +309,7 @@ module ConsolidationHelper
                   tp_bl_hash.each do |is_baseline, t_es|
                     if t_es.length == extractions.length
                       timepoint_name = TimepointName.find(tp_name_id)
-                      ExtractionsExtractionFormsProjectsSectionsType1RowColumn.find_or_create_by!(
+                      ExtractionsExtractionFormsProjectsSectionsType1RowColumn.find_or_create_by(
                         extractions_extraction_forms_projects_sections_type1_row: eefps_t1_row,
                         is_baseline: is_baseline, #should this be true in some cases?
                         timepoint_name: timepoint_name )
@@ -326,22 +339,22 @@ module ConsolidationHelper
                         clone_comp = Comparison.create
                         clone_comp.result_statistic_sections << rss
                         master_comp.comparate_groups.each do |old_comparate_group|
-                          new_comparate_group = ComparateGroup.create!(comparison: clone_comp)
+                          new_comparate_group = ComparateGroup.create(comparison: clone_comp)
                           old_comparate_group.comparates.each do |old_comparate|
                             old_comparable_element = old_comparate.comparable_element
                             old_comparable = old_comparable_element.comparable
                             if old_comparable.instance_of? ExtractionsExtractionFormsProjectsSectionsType1
                               comp_t1 = old_comparable.type1
                               comp_efps = old_comparable.extractions_extraction_forms_projects_section.extraction_forms_projects_section
-                              comp_eefps = self.extractions_extraction_forms_projects_sections.find_by!(extraction_forms_projects_section: comp_efps)
-                              comp_eefps_t1 = ExtractionsExtractionFormsProjectsSectionsType1.find_by!(extractions_extraction_forms_projects_section: comp_eefps, type1: comp_t1)
-                              new_comparable_element = ComparableElement.create!(comparable: comp_eefps_t1, comparable_type: 'ExtractionsExtractionFormsProjectsSectionsType1')
-                              new_comparate = Comparate.create!(comparate_group: new_comparate_group, comparable_element: new_comparable_element)
+                              comp_eefps = self.extractions_extraction_forms_projects_sections.find_by(extraction_forms_projects_section: comp_efps)
+                              comp_eefps_t1 = ExtractionsExtractionFormsProjectsSectionsType1.find_by(extractions_extraction_forms_projects_section: comp_eefps, type1: comp_t1)
+                              new_comparable_element = ComparableElement.create(comparable: comp_eefps_t1, comparable_type: 'ExtractionsExtractionFormsProjectsSectionsType1')
+                              new_comparate = Comparate.create(comparate_group: new_comparate_group, comparable_element: new_comparable_element)
                             elsif old_comparable.instance_of? ExtractionsExtractionFormsProjectsSectionsType1RowColumn
                               comp_tn = old_comparable.timepoint_name
-                              comp_eefps_t1_row_column = ExtractionsExtractionFormsProjectsSectionsType1RowColumn.find_by!(extractions_extraction_forms_projects_sections_type1_row: eefps_t1_row, timepoint_name: comp_tn)
-                              new_comparable_element = ComparableElement.create!(comparable: comp_eefps_t1_row_column, comparable_type: 'ExtractionsExtractionFormsProjectsSectionsType1RowColumn')
-                              new_comparate = Comparate.create!(comparate_group: new_comparate_group, comparable_element: new_comparable_element)
+                              comp_eefps_t1_row_column = ExtractionsExtractionFormsProjectsSectionsType1RowColumn.find_by(extractions_extraction_forms_projects_sections_type1_row: eefps_t1_row, timepoint_name: comp_tn)
+                              new_comparable_element = ComparableElement.create(comparable: comp_eefps_t1_row_column, comparable_type: 'ExtractionsExtractionFormsProjectsSectionsType1RowColumn')
+                              new_comparate = Comparate.create(comparate_group: new_comparate_group, comparable_element: new_comparable_element)
                             end
                           end
                         end
@@ -358,7 +371,7 @@ module ConsolidationHelper
                     end
 
 
-                    rssm = ResultStatisticSectionsMeasure.find_or_create_by!(result_statistic_section_id: rss.id, measure_id: measure_id)
+                    rssm = ResultStatisticSectionsMeasure.find_or_create_by(result_statistic_section_id: rss.id, measure_id: measure_id)
                     rssm_id = rssm.id.to_s
                     rss.result_statistic_sections_measures << rssm
 
@@ -372,16 +385,16 @@ module ConsolidationHelper
                             three_tp_t1efps_hash.each do |t1_id, ex_arr|
                               if ex_arr.length == extractions.length
                                 tp_name = TimepointName.find(tp_name_id)
-                                tp = ExtractionsExtractionFormsProjectsSectionsType1RowColumn.find_by!(extractions_extraction_forms_projects_sections_type1_row: eefps_t1_row, timepoint_name: tp_name, is_baseline: is_baseline)
-                                t1_eefps = ExtractionsExtractionFormsProjectsSection.find_by!(extraction: self, extraction_forms_projects_section_id: t1_efps_id)
-                                t1 = ExtractionsExtractionFormsProjectsSectionsType1.find_by!(extractions_extraction_forms_projects_section: t1_eefps, type1_id: t1_id)
-                                tps_arms_rssm = TpsArmsRssm.find_or_create_by!(result_statistic_sections_measure: rssm, timepoint: tp, extractions_extraction_forms_projects_sections_type1: t1)
+                                tp = ExtractionsExtractionFormsProjectsSectionsType1RowColumn.find_by(extractions_extraction_forms_projects_sections_type1_row: eefps_t1_row, timepoint_name: tp_name, is_baseline: is_baseline)
+                                t1_eefps = ExtractionsExtractionFormsProjectsSection.find_by(extraction: self, extraction_forms_projects_section_id: t1_efps_id)
+                                t1 = ExtractionsExtractionFormsProjectsSectionsType1.find_by(extractions_extraction_forms_projects_section: t1_eefps, type1_id: t1_id)
+                                tps_arms_rssm = TpsArmsRssm.find_or_create_by(result_statistic_sections_measure: rssm, timepoint: tp, extractions_extraction_forms_projects_sections_type1: t1)
 
                                 result_r_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][tp_name_id][is_baseline][t1_efps_id][t1_id].each do |record_name, record_ex_arr|
                                   if record_ex_arr.length == extractions.length
-                                    record = Record.find_or_create_by!(recordable: tps_arms_rssm, recordable_type: 'TpsArmsRssm')
+                                    record = Record.find_or_create_by(recordable: tps_arms_rssm, recordable_type: 'TpsArmsRssm')
                                     if record.name.nil? or record.name == ""
-                                      record.update!( name: record_name )
+                                      record.update( name: record_name )
                                     end
                                   end
                                 end
@@ -399,14 +412,14 @@ module ConsolidationHelper
                           three_tp_bl_hash.each do |comparison_name, ex_arr|
                             if ex_arr.length == extractions.length
                               tp_name = TimepointName.find(tp_name_id)
-                              tp = ExtractionsExtractionFormsProjectsSectionsType1RowColumn.find_by!(extractions_extraction_forms_projects_sections_type1_row: eefps_t1_row, timepoint_name: tp_name, is_baseline: is_baseline)
+                              tp = ExtractionsExtractionFormsProjectsSectionsType1RowColumn.find_by(extractions_extraction_forms_projects_sections_type1_row: eefps_t1_row, timepoint_name: tp_name, is_baseline: is_baseline)
                               comparison = cloned_c_hash[comparison_name]
-                              tps_comparisons_rssm = TpsComparisonsRssm.find_or_create_by!(result_statistic_sections_measure: rssm, timepoint: tp, comparison: comparison)
+                              tps_comparisons_rssm = TpsComparisonsRssm.find_or_create_by(result_statistic_sections_measure: rssm, timepoint: tp, comparison: comparison)
                               result_r_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][tp_name_id][is_baseline][comparison_name].each do |record_name, record_ex_arr|
                                 if record_ex_arr.length == extractions.length
-                                  record = Record.find_or_create_by!(recordable: tps_comparisons_rssm, recordable_type: 'TpsComparisonsRssm')
+                                  record = Record.find_or_create_by(recordable: tps_comparisons_rssm, recordable_type: 'TpsComparisonsRssm')
                                   if record.name.nil? or record.name == ""
-                                    record.update!( name: record_name )
+                                    record.update( name: record_name )
                                   end
                                 end
                               end
@@ -424,16 +437,16 @@ module ConsolidationHelper
                             if ex_arr.length == extractions.length
                               comparison = cloned_c_hash[comparison_name]
 
-                              t1_eefps = ExtractionsExtractionFormsProjectsSection.find_by!(extraction: self, extraction_forms_projects_section_id: t1_efps_id)
+                              t1_eefps = ExtractionsExtractionFormsProjectsSection.find_by(extraction: self, extraction_forms_projects_section_id: t1_efps_id)
                               t1_name = Type1.find(t1_id)
-                              t1 = ExtractionsExtractionFormsProjectsSectionsType1.find_by!(extractions_extraction_forms_projects_section: t1_eefps, type1: t1_name)
+                              t1 = ExtractionsExtractionFormsProjectsSectionsType1.find_by(extractions_extraction_forms_projects_section: t1_eefps, type1: t1_name)
 
-                              comparisons_arms_rssm = ComparisonsArmsRssm.find_or_create_by!(result_statistic_sections_measure: rssm, comparison: comparison, extractions_extraction_forms_projects_sections_type1: t1)
+                              comparisons_arms_rssm = ComparisonsArmsRssm.find_or_create_by(result_statistic_sections_measure: rssm, comparison: comparison, extractions_extraction_forms_projects_sections_type1: t1)
                               result_r_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][comparison_name][t1_efps_id][t1_id].each do |record_name, record_ex_arr|
                                 if record_ex_arr.length == extractions.length
-                                  record = Record.find_or_create_by!( recordable: comparisons_arms_rssm, recordable_type: 'ComparisonsArmsRssm' )
+                                  record = Record.find_or_create_by( recordable: comparisons_arms_rssm, recordable_type: 'ComparisonsArmsRssm' )
                                   if record.name.nil? or record.name == ""
-                                    record.update!( name: record_name )
+                                    record.update( name: record_name )
                                   end
                                 end
                               end
@@ -450,12 +463,12 @@ module ConsolidationHelper
                             wac = cloned_c_hash[wac_name]
                             bac = cloned_c_hash[bac_name]
 
-                            wacs_bacs_rssm = WacsBacsRssm.find_or_create_by!(result_statistic_sections_measure: rssm, wac: wac, bac: bac)
+                            wacs_bacs_rssm = WacsBacsRssm.find_or_create_by(result_statistic_sections_measure: rssm, wac: wac, bac: bac)
                             result_r_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][wac_name][bac_name].each do |record_name, record_ex_arr|
                               if record_ex_arr.length == extractions.length
-                                record = Record.find_or_create_by!( recordable: wacs_bacs_rssm, recordable_type: 'WacsBacsRssm' )
+                                record = Record.find_or_create_by( recordable: wacs_bacs_rssm, recordable_type: 'WacsBacsRssm' )
                                 if record.name.nil? or record.name == ""
-                                  record.update!( name: record_name )
+                                  record.update( name: record_name )
                                 end
                               end
                             end
@@ -473,6 +486,7 @@ module ConsolidationHelper
         end
       end
 
+      self_eefps_relation = self.extractions_extraction_forms_projects_sections.includes(:extractions_extraction_forms_projects_sections_type1s, extractions_extraction_forms_projects_sections_question_row_column_fields: :records)
       # this is where we go down records hash and create the records for questions
       r_hash.each do |efps_id, r_efps_hash|
         r_efps_hash.each do |linked_efps_id, r_efps_linkedefps_hash|
@@ -481,20 +495,22 @@ module ConsolidationHelper
               r_efps_linkedefps_t1_t1t_hash.each do |qrcf_id, r_efps_linkedefps_t1_t1t_qrcf_hash|
                 r_efps_linkedefps_t1_t1t_qrcf_hash.each do |record_name, r_es|
                   if r_es.uniq.length == extractions.length
-                    linked_eefps = linked_efps_id.present? ? self.extractions_extraction_forms_projects_sections.find_by!(extraction_forms_projects_section_id: linked_efps_id) : nil
-                    eefps = self.extractions_extraction_forms_projects_sections.
-                      find_by!(extraction_forms_projects_section_id: efps_id,
-                      link_to_type1: linked_eefps )
-                    qrcf = QuestionRowColumnField.find(qrcf_id)
+                    linked_eefps = linked_efps_id.present? ? self_eefps_relation.select{|x| x.extraction_forms_projects_section_id == linked_efps_id.to_i}.first : nil
+                    eefps = self_eefps_relation.
+                      select{|x| x.extraction_forms_projects_section_id == efps_id.to_i and
+                      x.link_to_type1 == linked_eefps }.first
                     # what if type1 is nil
-                    t1 = t1_id.present? ? Type1.find(t1_id) : nil
-                    t1_type = t1_type_id.present? ? Type1Type.find(t1_type_id) : nil
-                    eefps_t1 = t1.present? ? ExtractionsExtractionFormsProjectsSectionsType1.find_by!(extractions_extraction_forms_projects_section: linked_eefps, type1: t1, type1_type: t1_type) : nil
+                    t1_type_id_i = t1_type_id.present? ? t1_type_id.to_i : nil
+                    eefps_t1 = t1_id.present? ? linked_eefps.extractions_extraction_forms_projects_sections_type1s.select{|x| x.type1_id == t1_id.to_i and x.type1_type_id == t1_type_id_i}.first : nil
                     #we want  to change find_or_create_by into  find_by asap
-                    eefps_qrcf = ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField.find_or_create_by!(extractions_extraction_forms_projects_section: eefps, extractions_extraction_forms_projects_sections_type1: eefps_t1,  question_row_column_field: qrcf)
-                    record = Record.find_or_create_by!(recordable: eefps_qrcf, recordable_type: eefps_qrcf.class.name)
-                    if (record.name.nil? or record.name == "") and not (record_name == nil or record_name == "")
-                      record.update!( name: record_name.dup.to_s )
+                    eefps_qrcf = eefps.extractions_extraction_forms_projects_sections_question_row_column_fields.select{|x| x.extractions_extraction_forms_projects_sections_type1_id == eefps_t1&.id and x.question_row_column_field_id == qrcf_id.to_i}.first
+                    if eefps_qrcf.records.blank?
+                      record = Record.create(recordable: eefps_qrcf, name: record_name.dup )
+                    else
+                      record = eefps_qrcf.records.first
+                    end
+                    if record_name.present? and record.name != record_name
+                      record.update( name: record_name.dup )
                     end
                   end
                 end

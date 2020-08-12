@@ -26,14 +26,27 @@
       button.button.updated-at.active   type="button" data-sort-order="updated-at" Updated at
       button.button.created-at.disabled type="button" data-sort-order="created-at" Created at
 
-/! Project list.
 .column.row#project-list
-  = render "projects/index/project_list"
+  ul class="tabs" data-tabs='' id="project-tabs"
+    li class="tabs-title is-active"
+      a href="#pub-drafts-panel" aria-selected="true" Drafts
+    li class="tabs-title"
+      a data-tabs-target="pub-requests-panel" href="#pub-requests-panel" Publication Requests
+    li class="tabs-title"
+      a data-tabs-target="pub-approved-panel" href="#pub-approved-panel" Published
 
-/! Row with pagination and legend.
-.row
-  /.column.medium-5
-    = render "projects/index/legend"
+.column.row
+  div class="tabs-content" data-tabs-content="project-tabs"
+    div class="tabs-panel is-active" id="pub-drafts-panel"
+      = render "projects/index/project_list"
+      /! Row with pagination and legend.
+      .row
+        /.column.medium-5
+          = render "projects/index/legend"
 
-  .float-left.medium-12.pagination
+        .float-left.medium-12.pagination
     = paginate @projects, remote: true
+    div class="tabs-panel" id="pub-requests-panel"
+      = render "projects/index/unapproved_publishings"
+    div class="tabs-panel" id="pub-approved-panel"
+      = render "projects/index/approved_publishings"

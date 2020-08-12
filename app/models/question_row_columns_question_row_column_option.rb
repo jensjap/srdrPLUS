@@ -27,6 +27,7 @@ class QuestionRowColumnsQuestionRowColumnOption < ApplicationRecord
   belongs_to :question_row_column_option, inverse_of: :question_row_columns_question_row_column_options
 
   has_one :suggestion, as: :suggestable, dependent: :destroy
+  has_one :followup_field, dependent: :destroy
 
   has_many :dependencies, as: :prerequisitable, dependent: :destroy
 
@@ -42,6 +43,24 @@ class QuestionRowColumnsQuestionRowColumnOption < ApplicationRecord
   delegate :question,                 to: :question_row_column
   delegate :question_row,             to: :question_row_column
   delegate :question_row_column_type, to: :question_row_column
+
+  def includes_followup
+    return self.followup_field.present?
+  end
+
+  def includes_followup=(bool)
+    bool = ActiveModel::Type::Boolean.new.cast bool
+    if bool and not self.followup_field.present?
+      deleted_field = FollowupField.where(question_row_columns_question_row_column_option_id: self.id).only_deleted.first
+      if deleted_field.present?
+        deleted_field.restore :recursive => true
+      else
+        self.build_followup_field.save
+      end
+    elsif not bool and self.followup_field.present?
+      self.followup_field.destroy.save
+    end
+  end
 
   private
 

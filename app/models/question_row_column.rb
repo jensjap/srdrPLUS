@@ -44,8 +44,7 @@ class QuestionRowColumn < ApplicationRecord
 
   def field_validation_value_for(name)
     question_row_columns_question_row_column_options
-      .joins(:question_row_column_option)
-      .find_by(question_row_column_options: { name: name })
+      .where(question_row_column_options: { name: name })
       .name
   end
 

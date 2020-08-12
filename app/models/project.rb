@@ -143,7 +143,7 @@ class Project < ApplicationRecord
   end
 
   def publication_requested_at
-    if self.publishing.present? 
+    if self.publishing.present?
       return self.publishing.created_at
     end
     return nil
@@ -318,6 +318,10 @@ class Project < ApplicationRecord
       KeyQuestionsProject.find_or_create_by project: self, key_question: kq
     end
     #super(attributes)
+  end
+
+  def display
+    name
   end
 
   private
