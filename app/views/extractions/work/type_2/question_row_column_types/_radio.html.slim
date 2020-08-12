@@ -27,11 +27,14 @@
     - options = qrc. \
       question_row_columns_question_row_column_options. \
       select{|opt| opt.question_row_column_option_id == 1}. \
-      collect { |opt| [opt.name, opt.id, { 'data-prereq': "prereq-#{ opt.class }-#{ opt.id }" }] }
+      collect { |opt| [opt.name, opt.id, { 'data-prereq': "prereq-#{ opt.class }-#{ opt.id }", 'data-radio-remove-id': record.id }] }
     = f.input :name, label: false, as: :radio_buttons,
       collection: options,
       class: 'form-control'
     div id="record-id-#{ record.id.to_s }" class='record-info' style='opacity: 0;' = 'Saved!'
+
+  div
+    button type="button" class="danger button tiny radio-deselector-btn" data-radio-remove-id="#{record.id}" Clear Selections
 
     /.form-actions
       = f.button :submit, 'Save'

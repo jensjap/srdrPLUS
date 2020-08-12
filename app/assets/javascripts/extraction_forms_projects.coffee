@@ -100,15 +100,11 @@ document.addEventListener 'turbolinks:load', ->
     $( '#extraction_forms_projects_sections_type1_timepoint_name_ids' ).select2
       minimumInputLength: 0
 
-    $(document).on "click", "input:radio", (e) ->
-      radioElement = $(this);
-      if radioElement.is(".check-marker")
-        radioElement.prop("checked", false).removeClass("check-marker");
-        radioElement.trigger("change");
-        return;
-
-      $("input:radio[name='"+radioElement.prop("name")+"'].check-marker").removeClass("check-marker");
-      radioElement.addClass("check-marker");
+    $(document).on "click", ".radio-deselector-btn", (e) ->
+      dataRadioRemoveId = $(e.target).data('radio-remove-id')
+      radioElements = $("*[data-radio-remove-id='#{dataRadioRemoveId}']")
+      radioElements.removeAttr('checked')
+      $(radioElements[0]).trigger("change");
 
 #    $( '.preview-button' ).on 'click', ( event ) ->
 #      if event.target.hasAttribute( 'disabled' )
