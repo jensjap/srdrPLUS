@@ -99,10 +99,9 @@ module ConsolidationHelper
 
               eefps_t1_row.extractions_extraction_forms_projects_sections_type1_row_columns.each do |eefps_t1_row_column|
                 tp_name_id = eefps_t1_row_column.timepoint_name_id.to_s
-                is_baseline = false
                 tp_hash[efps_id][type1_id][population_name_id][tp_name_id] ||= {}
-                tp_hash[efps_id][type1_id][population_name_id][tp_name_id][is_baseline] ||= []
-                tp_hash[efps_id][type1_id][population_name_id][tp_name_id][is_baseline] << extraction.id
+                tp_hash[efps_id][type1_id][population_name_id][tp_name_id][:data] ||= []
+                tp_hash[efps_id][type1_id][population_name_id][tp_name_id][:data] << extraction.id
               end
 
               eefps_t1_row.result_statistic_sections.each do |rss|
@@ -143,22 +142,21 @@ module ConsolidationHelper
                       arm_efps_id = tps_arms_rssm.extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_section.extraction_forms_projects_section_id
                       arm_name_id = tps_arms_rssm.extractions_extraction_forms_projects_sections_type1.type1_id
                       record_name = tps_arms_rssm.records.first.name
-                      is_baseline = false
 
                       # this is for matching the three way join record, tps_arms_rssms
                       three_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][tp_name_id] ||= {}
-                      three_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][tp_name_id][is_baseline] ||= {}
-                      three_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][tp_name_id][is_baseline][arm_efps_id] ||= {}
-                      three_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][tp_name_id][is_baseline][arm_efps_id][arm_name_id] ||= []
-                      three_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][tp_name_id][is_baseline][arm_efps_id][arm_name_id] << extraction.id
+                      three_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][tp_name_id][:data] ||= {}
+                      three_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][tp_name_id][:data][arm_efps_id] ||= {}
+                      three_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][tp_name_id][:data][arm_efps_id][arm_name_id] ||= []
+                      three_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][tp_name_id][:data][arm_efps_id][arm_name_id] << extraction.id
 
                       # this is for matching the record entry
                       result_r_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][tp_name_id] ||= {}
-                      result_r_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][tp_name_id][is_baseline] ||= {}
-                      result_r_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][tp_name_id][is_baseline][arm_efps_id] ||= {}
-                      result_r_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][tp_name_id][is_baseline][arm_efps_id][arm_name_id] ||= {}
-                      result_r_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][tp_name_id][is_baseline][arm_efps_id][arm_name_id][record_name] ||= []
-                      result_r_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][tp_name_id][is_baseline][arm_efps_id][arm_name_id][record_name] << extraction.id
+                      result_r_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][tp_name_id][:data] ||= {}
+                      result_r_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][tp_name_id][:data][arm_efps_id] ||= {}
+                      result_r_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][tp_name_id][:data][arm_efps_id][arm_name_id] ||= {}
+                      result_r_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][tp_name_id][:data][arm_efps_id][arm_name_id][record_name] ||= []
+                      result_r_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][tp_name_id][:data][arm_efps_id][arm_name_id][record_name] << extraction.id
                     end
 
                   when "2"
@@ -168,20 +166,19 @@ module ConsolidationHelper
                       next if tps_comparisons_rssm.timepoint.blank?
 
                       tp_name_id = tps_comparisons_rssm.timepoint.timepoint_name_id
-                      is_baseline = false
                       comparison_name = tps_comparisons_rssm.comparison.tokenize
                       record_name = tps_comparisons_rssm.records.first.name
 
                       three_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][tp_name_id] ||= {}
-                      three_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][tp_name_id][is_baseline] ||= {}
-                      three_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][tp_name_id][is_baseline][comparison_name] ||= []
-                      three_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][tp_name_id][is_baseline][comparison_name] << extraction.id
+                      three_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][tp_name_id][:data] ||= {}
+                      three_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][tp_name_id][:data][comparison_name] ||= []
+                      three_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][tp_name_id][:data][comparison_name] << extraction.id
 
                       result_r_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][tp_name_id] ||= {}
-                      result_r_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][tp_name_id][is_baseline] ||= {}
-                      result_r_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][tp_name_id][is_baseline][comparison_name] ||= {}
-                      result_r_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][tp_name_id][is_baseline][comparison_name][record_name] ||= []
-                      result_r_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][tp_name_id][is_baseline][comparison_name][record_name] << extraction.id
+                      result_r_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][tp_name_id][:data] ||= {}
+                      result_r_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][tp_name_id][:data][comparison_name] ||= {}
+                      result_r_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][tp_name_id][:data][comparison_name][record_name] ||= []
+                      result_r_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][tp_name_id][:data][comparison_name][record_name] << extraction.id
                     end
 
                   when "3"
@@ -306,12 +303,11 @@ module ConsolidationHelper
                   population_name: population_name )
 
                 tp_hash[efps_id][type1_id][population_name_id].each do |tp_name_id, tp_bl_hash|
-                  tp_bl_hash.each do |is_baseline, t_es|
+                  tp_bl_hash.each do |data_key, t_es|
                     if t_es.length == extractions.length
                       timepoint_name = TimepointName.find(tp_name_id)
                       ExtractionsExtractionFormsProjectsSectionsType1RowColumn.find_or_create_by(
                         extractions_extraction_forms_projects_sections_type1_row: eefps_t1_row,
-                        is_baseline: is_baseline, #should this be true in some cases?
                         timepoint_name: timepoint_name )
                     end
                   end
@@ -380,17 +376,17 @@ module ConsolidationHelper
                     #TpsArmsRssm
                     when "1"
                       three_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id].each do |tp_name_id, three_tp_hash|
-                        three_tp_hash.each do |is_baseline, three_tp_bl_hash|
+                        three_tp_hash.each do |data_key, three_tp_bl_hash|
                           three_tp_bl_hash.each do |t1_efps_id, three_tp_t1efps_hash|
                             three_tp_t1efps_hash.each do |t1_id, ex_arr|
                               if ex_arr.length == extractions.length
                                 tp_name = TimepointName.find(tp_name_id)
-                                tp = ExtractionsExtractionFormsProjectsSectionsType1RowColumn.find_by(extractions_extraction_forms_projects_sections_type1_row: eefps_t1_row, timepoint_name: tp_name, is_baseline: is_baseline)
+                                tp = ExtractionsExtractionFormsProjectsSectionsType1RowColumn.find_by(extractions_extraction_forms_projects_sections_type1_row: eefps_t1_row, timepoint_name: tp_name)
                                 t1_eefps = ExtractionsExtractionFormsProjectsSection.find_by(extraction: self, extraction_forms_projects_section_id: t1_efps_id)
                                 t1 = ExtractionsExtractionFormsProjectsSectionsType1.find_by(extractions_extraction_forms_projects_section: t1_eefps, type1_id: t1_id)
                                 tps_arms_rssm = TpsArmsRssm.find_or_create_by(result_statistic_sections_measure: rssm, timepoint: tp, extractions_extraction_forms_projects_sections_type1: t1)
 
-                                result_r_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][tp_name_id][is_baseline][t1_efps_id][t1_id].each do |record_name, record_ex_arr|
+                                result_r_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][tp_name_id][:data][t1_efps_id][t1_id].each do |record_name, record_ex_arr|
                                   if record_ex_arr.length == extractions.length
                                     record = Record.find_or_create_by(recordable: tps_arms_rssm, recordable_type: 'TpsArmsRssm')
                                     if record.name.nil? or record.name == ""
@@ -408,14 +404,14 @@ module ConsolidationHelper
                     #TpsComparisonsRssm
                     when "2"
                       three_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id].each do |tp_name_id, three_tp_hash|
-                        three_tp_hash.each do |is_baseline, three_tp_bl_hash|
+                        three_tp_hash.each do |data_key, three_tp_bl_hash|
                           three_tp_bl_hash.each do |comparison_name, ex_arr|
                             if ex_arr.length == extractions.length
                               tp_name = TimepointName.find(tp_name_id)
-                              tp = ExtractionsExtractionFormsProjectsSectionsType1RowColumn.find_by(extractions_extraction_forms_projects_sections_type1_row: eefps_t1_row, timepoint_name: tp_name, is_baseline: is_baseline)
+                              tp = ExtractionsExtractionFormsProjectsSectionsType1RowColumn.find_by(extractions_extraction_forms_projects_sections_type1_row: eefps_t1_row, timepoint_name: tp_name)
                               comparison = cloned_c_hash[comparison_name]
                               tps_comparisons_rssm = TpsComparisonsRssm.find_or_create_by(result_statistic_sections_measure: rssm, timepoint: tp, comparison: comparison)
-                              result_r_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][tp_name_id][is_baseline][comparison_name].each do |record_name, record_ex_arr|
+                              result_r_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][tp_name_id][:data][comparison_name].each do |record_name, record_ex_arr|
                                 if record_ex_arr.length == extractions.length
                                   record = Record.find_or_create_by(recordable: tps_comparisons_rssm, recordable_type: 'TpsComparisonsRssm')
                                   if record.name.nil? or record.name == ""

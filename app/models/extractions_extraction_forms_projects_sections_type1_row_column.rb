@@ -27,7 +27,7 @@ class ExtractionsExtractionFormsProjectsSectionsType1RowColumn < ApplicationReco
 
   delegate :extraction, to: :extractions_extraction_forms_projects_sections_type1_row
 
-  def label_with_baseline_indicator
+  def label_with_optional_unit
     text  = "#{ timepoint_name.name }"
     text += " #{ timepoint_name.unit }" if timepoint_name.unit.present?
     return text
