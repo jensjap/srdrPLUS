@@ -1,5 +1,5 @@
 module ConsolidationHelper
-  extend ActiveSupport::Concern 
+  extend ActiveSupport::Concern
   included do
     # The point is to go through all the extractions and find what they have in common.
     # Anything they have in common can be copied to the consolidated extraction (self).
@@ -36,14 +36,14 @@ module ConsolidationHelper
           includes(extractions_extraction_forms_projects_sections_type1s: [
             {extractions_extraction_forms_projects_sections_type1_rows: [
               {result_statistic_sections: [
-                {comparisons: {comparate_groups: {comparates: {comparable_element: :comparable}}}}, 
+                {comparisons: {comparate_groups: {comparates: {comparable_element: :comparable}}}},
                 {result_statistic_sections_measures: [
-                  {tps_comparisons_rssms: [:timepoint, :records, comparison: {comparate_groups: {comparates: {comparable_element: :comparable}}}]}, 
-                  {comparisons_arms_rssms: [{comparison: {comparate_groups: {comparates: {comparable_element: :comparable}}}}, 
-                                            {extractions_extraction_forms_projects_sections_type1: [:extractions_extraction_forms_projects_section]}, :records]}, 
-                  {tps_arms_rssms: [:records, :timepoint, {extractions_extraction_forms_projects_sections_type1: :extractions_extraction_forms_projects_section}]}, 
-                  {wacs_bacs_rssms: [:records, {wac: {comparate_groups: {comparates: {comparable_element: :comparable}}}}, 
-                                               {bac: {comparate_groups: {comparates: {comparable_element: :comparable}}}}]}]}]}, 
+                  {tps_comparisons_rssms: [:timepoint, :records, comparison: {comparate_groups: {comparates: {comparable_element: :comparable}}}]},
+                  {comparisons_arms_rssms: [{comparison: {comparate_groups: {comparates: {comparable_element: :comparable}}}},
+                                            {extractions_extraction_forms_projects_sections_type1: [:extractions_extraction_forms_projects_section]}, :records]},
+                  {tps_arms_rssms: [:records, :timepoint, {extractions_extraction_forms_projects_sections_type1: :extractions_extraction_forms_projects_section}]},
+                  {wacs_bacs_rssms: [:records, {wac: {comparate_groups: {comparates: {comparable_element: :comparable}}}},
+                                               {bac: {comparate_groups: {comparates: {comparable_element: :comparable}}}}]}]}]},
               :extractions_extraction_forms_projects_sections_type1_row_columns]}, :type1]).
           where(extraction_forms_projects_sections:
                 {extraction_forms_projects_section_type_id: 1})
@@ -99,7 +99,7 @@ module ConsolidationHelper
 
               eefps_t1_row.extractions_extraction_forms_projects_sections_type1_row_columns.each do |eefps_t1_row_column|
                 tp_name_id = eefps_t1_row_column.timepoint_name_id.to_s
-                is_baseline = eefps_t1_row_column.is_baseline
+                is_baseline = false
                 tp_hash[efps_id][type1_id][population_name_id][tp_name_id] ||= {}
                 tp_hash[efps_id][type1_id][population_name_id][tp_name_id][is_baseline] ||= []
                 tp_hash[efps_id][type1_id][population_name_id][tp_name_id][is_baseline] << extraction.id
@@ -143,7 +143,7 @@ module ConsolidationHelper
                       arm_efps_id = tps_arms_rssm.extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_section.extraction_forms_projects_section_id
                       arm_name_id = tps_arms_rssm.extractions_extraction_forms_projects_sections_type1.type1_id
                       record_name = tps_arms_rssm.records.first.name
-                      is_baseline = tps_arms_rssm.timepoint.is_baseline
+                      is_baseline = false
 
                       # this is for matching the three way join record, tps_arms_rssms
                       three_hash[efps_id][type1_id][population_name_id][rss_type_id][measure_id][tp_name_id] ||= {}
@@ -168,7 +168,7 @@ module ConsolidationHelper
                       next if tps_comparisons_rssm.timepoint.blank?
 
                       tp_name_id = tps_comparisons_rssm.timepoint.timepoint_name_id
-                      is_baseline = tps_comparisons_rssm.timepoint.is_baseline
+                      is_baseline = false
                       comparison_name = tps_comparisons_rssm.comparison.tokenize
                       record_name = tps_comparisons_rssm.records.first.name
 

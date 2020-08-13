@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_27_205431) do
+ActiveRecord::Schema.define(version: 2020_08_13_091406) do
 
   create_table "abstrackr_settings", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "profile_id"
@@ -593,7 +593,6 @@ ActiveRecord::Schema.define(version: 2020_07_27_205431) do
   create_table "extractions_extraction_forms_projects_sections_type1_row_columns", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "extractions_extraction_forms_projects_sections_type1_row_id"
     t.integer "timepoint_name_id"
-    t.boolean "is_baseline", default: false
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
