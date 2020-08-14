@@ -127,27 +127,21 @@ class ExtractionsController < ApplicationController
 
     @key_questions_projects_array_for_select = @project.key_questions_projects_array_for_select
 
-    if @extraction_forms_projects.first.extraction_forms_project_type.eql? ExtractionFormsProjectType::STANDARD
-      # If a specific 'Outcome' is requested we load it here.
-      @eefpst1s = ExtractionsExtractionFormsProjectsSectionsType1
-        .by_section_name_and_extraction_id_and_extraction_forms_project_id('Outcomes',
-                                                                           @extraction.id,
-                                                                           @extraction_forms_projects.first.id)
-
-    elsif @extraction_forms_projects.first.extraction_forms_project_type.eql? ExtractionFormsProjectType::DIAGNOSTIC_TEST
-      # If a specific 'Outcome' is requested we load it here.
+    if @extraction_forms_projects.first.extraction_forms_project_type.eql? ExtractionFormsProjectType::DIAGNOSTIC_TEST
       @eefpst1s = ExtractionsExtractionFormsProjectsSectionsType1
         .by_section_name_and_extraction_id_and_extraction_forms_project_id('Diagnostic Tests',
                                                                            @extraction.id,
                                                                            @extraction_forms_projects.first.id)
-
     else
-      raise "Unkown ExtractionFormsProjectType"
+      @eefpst1s = ExtractionsExtractionFormsProjectsSectionsType1
+        .by_section_name_and_extraction_id_and_extraction_forms_project_id('Outcomes',
+                                                                           @extraction.id,
+                                                                           @extraction_forms_projects.first.id)
     end
 
+    # If a specific 'Outcome' is requested we load it here.
     if params[:eefpst1_id].present?
       @eefpst1 = ExtractionsExtractionFormsProjectsSectionsType1.find(params[:eefpst1_id])
-
     # Otherwise we choose the first 'Outcome' in the extraction to display.
     else
       @eefpst1 = @eefpst1s.first
