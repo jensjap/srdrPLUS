@@ -24,6 +24,16 @@ tr
             render_options: { locals: { rss: bac_rss, comparison: :bac } } do
             i.fi-plus>
             | Add Comparison
+    .anova-comparison
+      = simple_form_for bac_rss, url: add_comparison_result_statistic_section_path(bac_rss), method: :post, remote: true do |f|
+        = f.input :comparison_type, as: :hidden, input_html: { value: :bac }
+        .links.add-anova style='display: none;'
+          = link_to_add_association f, :comparisons, \
+            class: 'button tiny', \
+            partial: 'result_statistic_sections/edit/anova_fields', \
+            render_options: { locals: { comparison: :bac } } do
+            i.fi-plus>
+            | Add ANOVA
 
 tr
   th.vertical
