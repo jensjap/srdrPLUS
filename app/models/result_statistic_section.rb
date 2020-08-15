@@ -14,6 +14,8 @@ class ResultStatisticSection < ApplicationRecord
   acts_as_paranoid
   has_paper_trail
 
+  attr_accessor :comparison_type
+
   after_create :create_default_measures
 
   scope :standard_type_rsss, -> { where(result_statistic_section_type_id: [1, 2, 3, 4]) }

@@ -3,8 +3,8 @@
   - for row_cnt in -1..[dsc_rss.result_statistic_sections_measures.length, bac_rss.result_statistic_sections_measures.length].max - 1 do
     - if print_tp_name
       tr
-        td.vertical rowspan="#{ [dsc_rss.result_statistic_sections_measures.length, bac_rss.result_statistic_sections_measures.length].max + 1 }"
-          div = tp.timepoint_name.pretty_print_export_header
+        td rowspan="#{ [dsc_rss.result_statistic_sections_measures.length, bac_rss.result_statistic_sections_measures.length].max + 1 }"
+          div style="font-weight: bold; text-align: center" = tp.timepoint_name.pretty_print_export_header
         - print_tp_name = false
 
     - else
@@ -56,4 +56,3 @@
             td.bg-lightblue
 
   - print_tp_name = true
-

@@ -10,6 +10,9 @@
 #
 
 class ExtractionFormsProjectType < ApplicationRecord
+  STANDARD = 'Standard'.freeze
+  DIAGNOSTIC_TEST = 'Diagnostic Test'.freeze
+
   acts_as_paranoid
   has_paper_trail
 
