@@ -23,7 +23,10 @@
         - options << [opt.name, opt.id, { 'data-prereq': "prereq-#{ opt.class }-#{ opt.id }" }]
         - if opt.followup_field.present?
           - followups << opt.followup_field
+<<<<<<< HEAD
 
+=======
+>>>>>>> master
     = f.input :name, label: false, as: :check_boxes,
       collection: options,
       checked: record.name.present? ? JSON.parse(record.name) : [],

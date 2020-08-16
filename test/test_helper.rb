@@ -14,6 +14,12 @@ require 'rails/test_help'
 require 'minitest/rails/capybara'
 require 'seed_data_helper'
 
+# reindex models
+Project.reindex
+
+# and disable callbacks
+Searchkick.disable_callbacks
+
 class ActiveSupport::TestCase
   # Makes available #sign_in and #sign_out
   include Devise::Test::IntegrationHelpers

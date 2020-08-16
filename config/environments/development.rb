@@ -47,8 +47,8 @@ Rails.application.configure do
 
   config.action_mailer.smtp_settings = {
     address: "smtp.sendgrid.net",
-    user_name: Rails.application.credentials[:sendgrid][:username] || "",
-    password: Rails.application.credentials[:sendgrid][:password] || "",
+    user_name: Rails.application.credentials.dig(:sendgrid, :username) || "",
+    password: Rails.application.credentials.dig(:sendgrid, :password) || "",
     port: 587,
     tls: false,
   }

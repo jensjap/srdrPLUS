@@ -3,30 +3,33 @@
   - for row_cnt in -1..[wac_rss.result_statistic_sections_measures.length, net_rss.result_statistic_sections_measures.length].max - 1 do
     - if print_wac_name
       tr
-        td.bg-lightgreen.vertical rowspan="#{ [wac_rss.result_statistic_sections_measures.length, net_rss.result_statistic_sections_measures.length].max + 1 }"
-          div
-            div style='text-align: center; font-weight: bold;' = (wac.comparate_groups.first&.comparates || []).map { |c| c.comparable_element.comparable.label_with_baseline_indicator }.join('<br>')
-            div style='text-align: center;' vs.
-            div style='text-align: center; font-weight: bold;' = (wac.comparate_groups.second&.comparates || []).map { |c| c.comparable_element.comparable.label_with_baseline_indicator }.join('<br>')
+        td.bg-lightgreen rowspan="#{ [wac_rss.result_statistic_sections_measures.length, net_rss.result_statistic_sections_measures.length].max + 1 }"
+          div style='text-align: center; font-weight: bold;'
+            div = (wac.comparate_groups.first&.comparates || []).map { |c| c.comparable_element.comparable.label_with_baseline_indicator }.join('<br>')
+            div vs.
+            div = (wac.comparate_groups.second&.comparates || []).map { |c| c.comparable_element.comparable.label_with_baseline_indicator }.join('<br>')
         - print_wac_name = false
 
     - else
       tr
         td.bg-lightgreen.freeze = wac_rss.result_statistic_sections_measures[row_cnt].try(:measure).try(:name)
         - @arms.each do |arm|
-          td.bg-lightgreen
-            - record = ComparisonsArmsRssm.find_record(comparison=wac, extractions_extraction_forms_projects_sections_type1=arm, result_statistic_sections_measure=wac_rss.result_statistic_sections_measures[row_cnt])
-            = simple_form_for(record,
-              remote: true,
-              html: { data: { 'abide': '', 'live-validate': true } }) do |f|
-              = f.input :name,
-                as: :string,
-                label: false,
-                required: false,
-                class: 'form-control',
-                wrapper_html: { style: 'padding-bottom: 0;' },
-                input_html: { style: 'margin-bottom: 0;' }
-              div id="record-id-#{ record.id.to_s }" class='record-info' style='opacity: 0;' = 'Saved!'
+          - if wac_rss.result_statistic_sections_measures[row_cnt].present?
+              td.bg-lightgreen
+                - record = ComparisonsArmsRssm.find_record(comparison=wac, extractions_extraction_forms_projects_sections_type1=arm, result_statistic_sections_measure=wac_rss.result_statistic_sections_measures[row_cnt])
+                = simple_form_for(record,
+                  remote: true,
+                  html: { data: { 'abide': '', 'live-validate': true } }) do |f|
+                  = f.input :name,
+                    as: :string,
+                    label: false,
+                    required: false,
+                    class: 'form-control',
+                    wrapper_html: { style: 'padding-bottom: 0;' },
+                    input_html: { style: 'margin-bottom: 0;' }
+                  div id="record-id-#{ record.id.to_s }" class='record-info' style='opacity: 0;' = 'Saved!'
+          - else
+            td.bg-lightgreen.freeze
 
         td.bg-lightpink.freeze = net_rss.result_statistic_sections_measures[row_cnt].try(:measure).try(:name)
         - if bac_rss.comparisons.blank?
@@ -36,7 +39,7 @@
           - bac_rss.comparisons.each do |bac|
             - if net_rss.result_statistic_sections_measures[row_cnt].present?
               td.bg-lightpink
-                - record = WacsBacsRssm.find_record(wac=wac, bac=bac, result_statistic_sections_measure=bac_rss.result_statistic_sections_measures[row_cnt])
+                - record = WacsBacsRssm.find_record(wac=wac, bac=bac, result_statistic_sections_measure=net_rss.result_statistic_sections_measures[row_cnt])
                 = simple_form_for(record,
                   remote: true,
                   html: { data: { 'abide': '', 'live-validate': true } }) do |f|
@@ -65,4 +68,3 @@ tr
           render_options: { locals: { rss: wac_rss, comparison: :wac } } do
           i.fi-plus>
           | Add Comparison
-
