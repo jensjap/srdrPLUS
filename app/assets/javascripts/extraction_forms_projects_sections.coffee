@@ -164,8 +164,8 @@ document.addEventListener 'turbolinks:load', ->
         # Turn off dependencies on itself..
         prereqOff( prereq )
         # ..and those surrounding it but within the closest table.
-        that.closest( 'table' ).find( 'input[data-prereq],option[data-prereq]' ).each ( idx ) ->
-          prereq = $( this ).data( 'prereq' )
+        that.closest( 'table' ).find( 'textarea[data-prereq],input[data-prereq],option[data-prereq]' ).each ( idx ) ->
+          #prereq = $( this ).data( 'prereq' )
           prereqOff( prereq )
           return  # END that.closest( 'table' ).find( 'input[data-prereq],option[data-prereq]' ).each ( idx ) ->
         return  # END turnPrereqOffSelfAndDescendants = ( prereq, that ) ->
@@ -174,7 +174,7 @@ document.addEventListener 'turbolinks:load', ->
         # Turn on dependencies on itself...
         prereqOn( prereq )
         # ..and those surrounding it but within the closest table.
-        that.closest( 'table' ).find( 'input[data-prereq],option[data-prereq]' ).each ( idx ) ->
+        that.closest( 'table' ).find( 'textarea[data-prereq],input[data-prereq],option[data-prereq]' ).each ( idx ) ->
           prereq = $( this ).data( 'prereq' )
           prereqOn( prereq )
           return  # END that.closest( 'table' ).find( 'input[data-prereq],option[data-prereq]' ).each ( idx ) ->
@@ -244,7 +244,7 @@ document.addEventListener 'turbolinks:load', ->
 
       ##########################################################################
       # Check whether dependencies are fulfilled and change classes accordingly.
-      $( '#preview .card input,select' ).on 'change keyup', ( e ) ->
+      $( '#preview .card input, #preview .card select, #preview .card textarea' ).on 'change keyup', ( e ) ->
         e.preventDefault()
 
         that   = $( this )
@@ -257,9 +257,10 @@ document.addEventListener 'turbolinks:load', ->
         if active && $( '.' + prereq ).length
           turnPrereqOffSelfAndDescendants( prereq, that )
 
+
         else
           noneActiveAndPrereq = true
-          that.closest( 'table' ).find( 'input,select' ).each ( idx ) ->
+          that.closest( 'table' ).find( 'input,select,textarea' ).each ( idx ) ->
             that   = $( this )
             result = subroutine( that )
             active = result.active
@@ -277,7 +278,7 @@ document.addEventListener 'turbolinks:load', ->
 
         return  # END $( '#preview .card input,select' ).on 'change keyup', ( e ) ->
 
-      $( 'input' ).trigger( 'change' )
+      $( 'input,select,textarea' ).trigger( 'change' )
 
       #################################################################################
       # Make all cards visible that require at least one of the key questions selected.

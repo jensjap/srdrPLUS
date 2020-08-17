@@ -15,6 +15,8 @@
 //= require sortable-rails-jquery
 //= require activestorage
 //= require foundation-datepicker.min
+//= require tether.min
+//= require dropzone
 
 // require assignments
 // require author
@@ -51,8 +53,6 @@
 // require static_pages
 // require tasks
 // require teams
-
-//= require dropzone
 
 //= require_tree .
 

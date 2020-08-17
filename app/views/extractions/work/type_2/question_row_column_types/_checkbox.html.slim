@@ -12,23 +12,42 @@
   - if not record
     - record = Record.find_or_create_by(recordable: eefps_qrcf)
 
+  - options = []
+  - followups = []
+  - qrc. \
+    question_row_columns_question_row_column_options. \
+    select{|opt| opt.question_row_column_option_id == 1}.each do |opt|
+      - options << [opt.name, opt.id, { 'data-attach-source': "question_row_columns_question_row_column_option_#{opt.id.to_s}", 'data-prereq': "prereq-#{ opt.class }-#{ opt.id }" }]
+      - if opt.followup_field.present?
+        - eefpst1 = t1.blank? \
+            ? nil \
+            : eefps.link_to_type1.extractions_extraction_forms_projects_sections_type1s.select{|el| el.type1_id == t1.id}.first
+        - eefps_ff = opt.followup_field.extractions_extraction_forms_projects_sections_followup_fields.\
+          select{|x| x.extractions_extraction_forms_projects_sections_type1 == eefpst1 && x.extractions_extraction_forms_projects_section_id == eefps.id}.first
+        - if eefps_ff.blank?
+          - eefps_ff = ExtractionsExtractionFormsProjectsSectionsFollowupField.find_or_create_by followup_field: opt.followup_field,
+            extractions_extraction_forms_projects_section_id: eefps.id,
+            extractions_extraction_forms_projects_sections_type1: eefpst1
+        - followups << ["prereq-#{ opt.class }-#{ opt.id }", "question_row_columns_question_row_column_option_#{opt.id.to_s}", eefps_ff]
+
   = simple_form_for(record, remote: true, namespace: "record_#{record.id.to_s}", html: { data: { 'abide': '', 'live-validate': true } }) do |f|
     = f.error_notification
-
-    - options = []
-    - followups = []
-    - qrc. \
-      question_row_columns_question_row_column_options. \
-      select{|opt| opt.question_row_column_option_id == 1}.each do |opt|
-        - options << [opt.name, opt.id, { 'data-prereq': "prereq-#{ opt.class }-#{ opt.id }" }]
-        - if opt.followup_field.present?
-          - followups << opt.followup_field
     = f.input :name, label: false, as: :check_boxes,
       collection: options,
       checked: record.name.present? ? JSON.parse(record.name) : [],
       class: 'form-control'
-    f.simple_fields
+    
     div id="record-id-#{ record.id.to_s }" class='record-info' style='opacity: 0;' = 'Saved!'
+
+  - for prereq_text, attach_target, eefps_ff in followups
+    - record = eefps_ff.records.first
+    - if not record
+      - record = Record.find_or_create_by(recordable: eefps_ff)
+
+    .attach-me.hide [class="#{prereq_text}" data-attach-target=attach_target]
+      = simple_form_for(record, remote: true, namespace: "record_#{record.id.to_s}", html: { data: { 'abide': '', 'live-validate': true } }) do |f|
+          = f.input :name, as: :string, label: false, required: false, input_html: { style: 'margin-bottom: 0;' }
+          div id="record-id-#{ record.id.to_s }" class='record-info' style='opacity: 0;' = 'Saved!'
 
     /.form-actions
       = f.button :submit, 'Save'

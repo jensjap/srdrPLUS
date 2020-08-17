@@ -7,6 +7,19 @@ document.addEventListener 'turbolinks:load', ->
   return unless $( '.extractions' ).length > 0
 
   do ->
+    ## ATTACH ME
+
+    $( '.attach-me' ).each () ->
+      tether = new Tether({
+        element: this,
+        target: "label[for='" + ( $( "[data-attach-source='" + this.getAttribute('data-attach-target') + "']" )[0].id ) + "']",
+        attachment: "top right",
+        targetAttachment: "top right",
+      })
+      tether.position();
+    $( '.attach-me' ).removeClass('hide')
+
+
     ## SELECT2 INITIALIZATION FOR EXTRACTION INDEX
     $( '.index-extractions-select2' ).select2()
     
