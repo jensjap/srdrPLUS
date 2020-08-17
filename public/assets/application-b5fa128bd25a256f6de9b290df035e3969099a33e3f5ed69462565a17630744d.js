@@ -50302,6 +50302,13 @@ function __guardMethod__(obj, methodName, transform) {
       $('#extraction_forms_projects_sections_type1_timepoint_name_ids').select2({
         minimumInputLength: 0
       });
+      $(document).on("click", ".radio-deselector-btn", function(e) {
+        var dataRadioRemoveId, radioElements;
+        dataRadioRemoveId = $(e.target).data('radio-remove-id');
+        radioElements = $("*[data-radio-remove-id='" + dataRadioRemoveId + "']");
+        radioElements.removeAttr('checked');
+        return $(radioElements[0]).trigger("change");
+      });
     })();
   });
 
@@ -50557,6 +50564,12 @@ function __guardMethod__(obj, methodName, transform) {
     }
     (function() {
       var add_change_listeners_to_questions, apply_coloring, apply_consolidation_dropdown, dt, get_extractor_names, get_number_of_extractions, get_question_type, get_question_value, shift_down;
+      $('.index-extractions-select2').select2();
+      $('.new-extraction-select2').select2();
+      $('.new-extraction-select2-multi').select2({
+        multiple: 'true',
+        placeholder: '-- Select citation to be extracted --'
+      });
       $('.consolidation-select2').select2();
       $('.consolidation-select2-multi').select2({
         multiple: 'true'
@@ -51432,8 +51445,9 @@ function __guardMethod__(obj, methodName, transform) {
       return;
     }
     (function() {
-      var hideHeaders, multiSelect;
+      var allowsFollowup, hideHeaders, multiSelect;
       multiSelect = ['Checkbox (select multiple)', 'Dropdown (select one)', 'Radio (select one)', 'Select one (with write-in option)', 'Select multiple (with write-in option)'];
+      allowsFollowup = ['Checkbox (select multiple)', 'Radio (select one)'];
       $('.fieldset').on('change', function() {
         var _value, that;
         that = $(this);
@@ -51442,7 +51456,12 @@ function __guardMethod__(obj, methodName, transform) {
         _value = that.find('select').children(':selected').text();
         if (indexOf.call(multiSelect, _value) >= 0) {
           that.find('.field-options.field-option-type-answer_choice').show();
-          return that.find('.links').show();
+          that.find('.links').show();
+          if (indexOf.call(allowsFollowup, _value) >= 0) {
+            return that.find('.followup_container').css('visibility', 'visible');
+          } else {
+            return that.find('.followup_container').css('visibility', 'hidden');
+          }
         } else if (_value === 'Text Field (alphanumeric)') {
           that.find('.field-options.field-option-type-min_length').show();
           return that.find('.field-options.field-option-type-max_length').show();
