@@ -55,7 +55,6 @@
 
                     .row style='margin-bottom: 0.7rem;'
                       .columns.medium-offset-3.medium-9
-<<<<<<< HEAD
                         - if (option.question_row_column_option_id == 1)
                           - if (option.question_row_column.question_row_columns_question_row_column_options\
                             .where(question_row_column_option: QuestionRowColumnOption.find_by(name: 'answer_choice')).length > 1)
@@ -65,17 +64,6 @@
                                                         style: 'font-weight:bold; color:#cc4b37 !important;'
                           .float-left.followup_container
                             = qrcqrco_f.input :includes_followup, as: :boolean, :input_html => { :checked => qrcqrco_f.object.includes_followup }, label: 'Include Followup Question', wrapper_html: { class: 'followup-checkbox' }
-=======
-                        - if (option.question_row_column_option_id == 1) &&\
-                          (option.question_row_column.question_row_columns_question_row_column_options\
-                            .where(question_row_column_option: QuestionRowColumnOption.find_by(name: 'answer_choice')).length > 1)
-                          .float-right
-                            = link_to 'Remove', option, method: :delete, data: { confirm: t('confirm') },
-                                                      class: 'float-right',
-                                                      style: 'font-weight:bold; color:#cc4b37 !important;'
-                        .float-left.followup_container
-                          = qrcqrco_f.input :includes_followup, as: :boolean, :input_html => { :checked => qrcqrco_f.object.includes_followup }, label: 'Include Followup Question', wrapper_html: { class: 'followup-checkbox' }
->>>>>>> master
 
                 .links
                   = link_to_add_association qrc_f,

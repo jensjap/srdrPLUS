@@ -111,7 +111,8 @@ class Record < ApplicationRecord
   #    UpdateExtractionChecksumJob.set(wait: 2.minute).perform_later(time_now.to_i, self.id)
       extraction = nil
       case recordable.class.name
-      when 'ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField'
+      when 'ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField',
+        'ExtractionsExtractionFormsProjectsSectionsFollowupField'
         extraction = recordable.extraction
       else
         extraction = recordable.result_statistic_section.extraction
