@@ -11,6 +11,10 @@ class ResultStatisticSectionPolicy < ApplicationPolicy
     project_consolidator?
   end
 
+  def remove_comparison?
+    project_consolidator?
+  end
+
   def consolidate?
     project_consolidator?
   end
