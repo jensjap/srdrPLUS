@@ -5,7 +5,6 @@
 #  id                                                          :integer          not null, primary key
 #  extractions_extraction_forms_projects_sections_type1_row_id :integer
 #  timepoint_name_id                                           :integer
-#  is_baseline                                                 :boolean          default(FALSE)
 #  deleted_at                                                  :datetime
 #  created_at                                                  :datetime         not null
 #  updated_at                                                  :datetime         not null
@@ -16,7 +15,6 @@ class ExtractionsExtractionFormsProjectsSectionsType1RowColumn < ApplicationReco
   acts_as_paranoid
   has_paper_trail
 
-  after_commit :ensure_only_one_baseline
   after_commit :ensure_timepoints_across_populations, on: [:create, :update]
   after_commit :set_extraction_stale, on: [:create, :update, :destroy]
 
@@ -29,10 +27,9 @@ class ExtractionsExtractionFormsProjectsSectionsType1RowColumn < ApplicationReco
 
   delegate :extraction, to: :extractions_extraction_forms_projects_sections_type1_row
 
-  def label_with_baseline_indicator
+  def label_with_optional_unit
     text  = "#{ timepoint_name.name }"
     text += " #{ timepoint_name.unit }" if timepoint_name.unit.present?
-    text += " (Baseline)" if is_baseline
     return text
   end
 
@@ -62,16 +59,7 @@ class ExtractionsExtractionFormsProjectsSectionsType1RowColumn < ApplicationReco
   private
 
     def set_extraction_stale
-      self.extraction.extraction_checksum.update( is_stale: true ) 
-    end
-
-    def ensure_only_one_baseline
-      return false unless extractions_extraction_forms_projects_sections_type1_row.extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_section.section.name == 'Outcomes'
-      if is_baseline
-        extractions_extraction_forms_projects_sections_type1_row.extractions_extraction_forms_projects_sections_type1_row_columns.each do |tp|
-          tp.update_attribute(:is_baseline, false) unless tp == self
-        end
-      end
+      self.extraction.extraction_checksum.update( is_stale: true )
     end
 
     def ensure_timepoints_across_populations

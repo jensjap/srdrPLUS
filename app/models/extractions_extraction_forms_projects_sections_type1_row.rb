@@ -81,7 +81,7 @@ class ExtractionsExtractionFormsProjectsSectionsType1Row < ApplicationRecord
   private
 
     def set_extraction_stale
-      self.extraction.extraction_checksum.update( is_stale: true ) 
+      self.extraction.extraction_checksum.update( is_stale: true )
     end
 
     def create_default_result_statistic_sections
@@ -109,7 +109,6 @@ class ExtractionsExtractionFormsProjectsSectionsType1Row < ApplicationRecord
       if self.extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_sections_type1_rows.first.extractions_extraction_forms_projects_sections_type1_row_columns.count == 0
 
         # If this is the first/only row then we default to creating (arbitrarily) 1 column.
-        #self.extractions_extraction_forms_projects_sections_type1_row_columns.create(timepoint_name: TimepointName.first, is_baseline: true)
 
       else
 
@@ -120,7 +119,7 @@ class ExtractionsExtractionFormsProjectsSectionsType1Row < ApplicationRecord
           .extractions_extraction_forms_projects_sections_type1_rows
           .first
           .extractions_extraction_forms_projects_sections_type1_row_columns.each do |eefpst1rc|
-            self.extractions_extraction_forms_projects_sections_type1_row_columns.create(timepoint_name: eefpst1rc.timepoint_name, is_baseline: eefpst1rc.is_baseline)
+            self.extractions_extraction_forms_projects_sections_type1_row_columns.create(timepoint_name: eefpst1rc.timepoint_name)
           end
 
       end
