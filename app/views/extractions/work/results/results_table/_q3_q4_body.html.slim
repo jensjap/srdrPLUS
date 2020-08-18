@@ -3,8 +3,9 @@
   - for row_cnt in -1..[wac_rss.result_statistic_sections_measures.length, net_rss.result_statistic_sections_measures.length].max - 1 do
     - if print_wac_name
       tr
-        td.bg-lightgreen.vertical rowspan="#{ [wac_rss.result_statistic_sections_measures.length, net_rss.result_statistic_sections_measures.length].max + 1 }"
-          div
+        td.bg-lightgreen rowspan="#{ [wac_rss.result_statistic_sections_measures.length, net_rss.result_statistic_sections_measures.length].max + 1 }"
+          div style="position: relative;"
+            div = link_to('x', "/result_statistic_sections/#{wac_rss.id}/remove_comparison?comparison_id=#{wac.id}", class: 'remove-comparison-button', method: :delete, remote: true, data: { confirm: "Are you sure you want to delete this?" })
             div style='text-align: center; font-weight: bold;' = (wac.comparate_groups.first&.comparates || []).map { |c| c.comparable_element.comparable.label_with_optional_unit }.join('<br>')
             div style='text-align: center;' vs.
             div style='text-align: center; font-weight: bold;' = (wac.comparate_groups.second&.comparates || []).map { |c| c.comparable_element.comparable.label_with_optional_unit }.join('<br>')
