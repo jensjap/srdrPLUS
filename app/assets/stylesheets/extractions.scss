@@ -111,3 +111,11 @@ button.suggestion-list-button {
     background-color: lavender !important;
   }
 }
+
+.extractions.work, .extractions.consolidate {
+  .checkbox, .radio {
+    label {
+      display: inline;
+    }
+  }
+}

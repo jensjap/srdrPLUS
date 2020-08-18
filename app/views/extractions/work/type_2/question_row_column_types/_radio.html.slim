@@ -21,13 +21,26 @@
   - if not record
     - record = Record.find_or_create_by(recordable: eefps_qrcf)
 
+  - options = []
+  - followups = []
+  - qrc. \
+    question_row_columns_question_row_column_options. \
+    select{|opt| opt.question_row_column_option_id == 1}.each do |opt|
+      - options << [opt.name, opt.id, { 'data-attach-source': "question_row_columns_question_row_column_option_#{opt.id.to_s}", 'data-prereq': "prereq-#{ opt.class }-#{ opt.id }", 'data-radio-remove-id': record.id }]
+      - if opt.followup_field.present?
+        - eefpst1 = t1.blank? \
+            ? nil \
+            : eefps.link_to_type1.extractions_extraction_forms_projects_sections_type1s.select{|el| el.type1_id == t1.id}.first
+        - eefps_ff = opt.followup_field.extractions_extraction_forms_projects_sections_followup_fields.\
+          select{|x| x.extractions_extraction_forms_projects_sections_type1 == eefpst1 && x.extractions_extraction_forms_projects_section_id == eefps.id}.first
+        - if eefps_ff.blank?
+          - eefps_ff = ExtractionsExtractionFormsProjectsSectionsFollowupField.find_or_create_by followup_field: opt.followup_field,
+            extractions_extraction_forms_projects_section_id: eefps.id,
+            extractions_extraction_forms_projects_sections_type1: eefpst1
+        - followups << ["prereq-#{ opt.class }-#{ opt.id }", "question_row_columns_question_row_column_option_#{opt.id.to_s}", eefps_ff]
+
   = simple_form_for(record, namespace: "record_#{record.id.to_s}", remote: true, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
     = f.error_notification
-
-    - options = qrc. \
-      question_row_columns_question_row_column_options. \
-      select{|opt| opt.question_row_column_option_id == 1}. \
-      collect { |opt| [opt.name, opt.id, { 'data-prereq': "prereq-#{ opt.class }-#{ opt.id }", 'data-radio-remove-id': record.id }] }
     = f.input :name, label: false, as: :radio_buttons,
       collection: options,
       class: 'form-control'
@@ -35,6 +48,7 @@
 
   div
     button type="button" class="danger button tiny radio-deselector-btn" data-radio-remove-id="#{record.id}" Clear Selections
-
+  
+  = render 'extractions/shared/type_2/followup_fields', followups: followups
     /.form-actions
       = f.button :submit, 'Save'
