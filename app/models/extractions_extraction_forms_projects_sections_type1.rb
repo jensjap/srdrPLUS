@@ -187,7 +187,7 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
   private
 
     def set_extraction_stale
-      self.extraction.extraction_checksum.update( is_stale: true ) 
+      self.extraction.extraction_checksum.update( is_stale: true )
     end
 
     # Do not overwrite existing entries but associate to one that already exists or create a new one.
@@ -233,13 +233,12 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
         timepoint_name_ids = []
 
         first_row.extractions_extraction_forms_projects_sections_type1_row_columns.each do |c|
-          timepoint_name_ids << [c.timepoint_name.id, c.is_baseline]
+          timepoint_name_ids << c.timepoint_name.id
         end
 
         rest_rows.each do |r|
           r.extractions_extraction_forms_projects_sections_type1_row_columns.each_with_index do |rc, idx|
-            rc.update(timepoint_name_id: timepoint_name_ids[idx][0])
-            rc.update(is_baseline: timepoint_name_ids[idx][1])
+            rc.update(timepoint_name_id: timepoint_name_ids[idx])
           end
         end
       end
