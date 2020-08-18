@@ -39,15 +39,7 @@
     
     div id="record-id-#{ record.id.to_s }" class='record-info' style='opacity: 0;' = 'Saved!'
 
-  - for prereq_text, attach_target, eefps_ff in followups
-    - record = eefps_ff.records.first
-    - if not record
-      - record = Record.find_or_create_by(recordable: eefps_ff)
-
-    .attach-me.hide [class="#{prereq_text}" data-attach-target=attach_target]
-      = simple_form_for(record, remote: true, namespace: "record_#{record.id.to_s}", html: { data: { 'abide': '', 'live-validate': true } }) do |f|
-          = f.input :name, as: :string, label: false, required: false, input_html: { style: 'margin-bottom: 0;' }
-          div id="record-id-#{ record.id.to_s }" class='record-info' style='opacity: 0;' = 'Saved!'
+  = render 'extractions/shared/type_2/followup_fields', followups: followups
 
     /.form-actions
       = f.button :submit, 'Save'

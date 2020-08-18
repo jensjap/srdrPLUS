@@ -7,6 +7,18 @@ document.addEventListener 'turbolinks:load', ->
 
   do ->
     if $( '.extraction_forms_projects.build, .extraction_forms_projects_sections, .extractions' ).length > 0
+      ## ATTACH FOLLOWUPS
+      $( '.attach-me' ).each () ->
+        tether = new Tether({
+          element: this,
+          target: "label[for='" + ( $( "[data-attach-source='" + this.getAttribute('data-attach-target') + "']" )[0].id ) + "']",
+          attachment: "center left",
+          targetAttachment: "center right",
+          offset: '-9px -10px'
+        })
+        tether.position();
+      $( '.attach-me' ).removeClass('hide')
+
       ###############################################
       # Set the field to display from the result set.
       formatResultSelection = ( result, container ) ->
@@ -257,7 +269,6 @@ document.addEventListener 'turbolinks:load', ->
         if active && $( '.' + prereq ).length
           turnPrereqOffSelfAndDescendants( prereq, that )
 
-
         else
           noneActiveAndPrereq = true
           that.closest( 'table' ).find( 'input,select,textarea' ).each ( idx ) ->
@@ -278,7 +289,8 @@ document.addEventListener 'turbolinks:load', ->
 
         return  # END $( '#preview .card input,select' ).on 'change keyup', ( e ) ->
 
-      $( 'input,select,textarea' ).trigger( 'change' )
+      if $( '.extractions' ).length > 0
+        $( 'input,select,textarea' ).trigger( 'change' )
 
       #################################################################################
       # Make all cards visible that require at least one of the key questions selected.
