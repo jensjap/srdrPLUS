@@ -51605,7 +51605,7 @@ function __guardMethod__(obj, methodName, transform) {
         $('.nested-fields > .comparate-groups').find('.nested-fields.comparates').first().after($('<div style="text-align: center; font-weight: normal;">vs.</div>'));
         if ($('.wac-comparate-fields').length === 2) {
           $('.wac-comparate-fields:eq(1)').find('select option').filter(function() {
-            return this.text.includes('(Baseline)');
+            return this.text.includes('Baseline');
           }).attr('selected', true);
         }
         $('.links.add-anova a').click();
