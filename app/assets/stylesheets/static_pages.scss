@@ -634,6 +634,20 @@
   margin-top: 40px;
 }
 
+.user-description .small.subheader {
+  font-size: 16px;
+}
+
+.testimonial-box {
+  .small.subheader {
+    font-size: 0.9em;
+  }
+  span {
+    font-family: 'Noto Sans';
+    font-style: italic;
+  }
+}
+
 .Recently-published {
   padding-top: 100px;
 
@@ -651,15 +665,12 @@
     text-align: center;
     color: #1c1819;
   }
-  h4 {
+  span {
     text-align: center;
     font-weight: bold;
     font-family: sans-serif;
   }
-  h5 {
-    font-family: Halant;
-  }
-  h6 {
+  .small {
     color: #56585f;
     font-size: 0.9em;
   }
@@ -692,7 +703,7 @@
     color: white;
   }
 
-  h6 {
+  .button {
     a {
       color: black;
     }
@@ -821,18 +832,16 @@
     line-height: normal;
   }
 
-  h5 {
-    font-family: Halant;
-    font-size: 1.1em;
-    font-weight: bold;
-    padding: 0;
-    margin: 0;
-    position: relative;
-    left: 12px;
+  span {
+    font-size: 1rem;
   }
 
-  h6 {
+  span .subtitle {
     color: #414247;
+    font-size: 1rem;
+    line-height: 1.4;
+    margin-top: 0;
+    margin-bottom: 0.5rem;
   }
 }
 
@@ -843,6 +852,16 @@
   box-shadow: 0 20px 40px 0 rgba(0, 0, 0, 0.15);
   background-color: #ffffff;
   margin-bottom: 6px;
+
+  span {
+    font-family: Halant;
+    font-size: 1.1em;
+    font-weight: bold;
+    padding: 0;
+    margin: 0;
+    position: relative;
+    left: 12px;
+  }
 
   img {
     margin-left: 12px;
