@@ -34,7 +34,7 @@
     div id="record-id-#{ record.id.to_s }" class='record-info' style='opacity: 0;' = 'Saved!'
 
   div
-    button type="button" class="danger button tiny radio-deselector-btn" data-radio-remove-id="#{record.id}" Clear Selections
+    button type="button" class="button tiny radio-deselector-btn" style="background-color: grey;" data-radio-remove-id="#{record.id}" Clear Selection
 
     /.form-actions
       = f.button :submit, 'Save'

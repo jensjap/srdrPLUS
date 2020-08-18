@@ -28,7 +28,7 @@ document.addEventListener 'turbolinks:load', ->
 
         if $( '.wac-comparate-fields' ).length == 2
           $( '.wac-comparate-fields:eq(1)' ).find( 'select option' ).filter( ->
-            return this.text.includes( '(Baseline)' )
+            return this.text.includes('Baseline')
           ).attr('selected', true)
 
         $( '.links.add-anova a' ).click()
