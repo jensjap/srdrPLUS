@@ -25,7 +25,10 @@ class ExtractionsController < ApplicationController
       if @project.consolidators.include? current_user
         @citation_groups = @project.citation_groups
       else
-        @citation_groups = []
+        @citation_groups = {
+          citations_project_count: 0,
+          citations_projects: [],
+        }
       end
     end
 
@@ -279,7 +282,7 @@ class ExtractionsController < ApplicationController
       end
     end
 
-    
+
     def update_eefps_by_extraction_and_efps_dict(extraction)
       @eefps_by_extraction_and_efps_dict ||= {}
       @eefpst1_by_eefps_and_t1_dict ||= {}
