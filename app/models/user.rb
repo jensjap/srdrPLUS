@@ -80,7 +80,7 @@ class User < ApplicationRecord
   has_many :tags, through: :taggings, dependent: :destroy
 
   def highest_role_in_project(project)
-    Role.joins(projects_users: :user).where(projects_users: { user: self, project: project }).first.try(:name)
+    Role.joins(:projects_users).where(projects_users: { user: self, project: project }).first.try(:name)
   end
 
   def handle
