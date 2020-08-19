@@ -9,7 +9,7 @@
         th[width="16%"]
 
     tbody
-      - @citation_groups[:citations_projects].each do |key, val|
+      - @citation_groups.present? && @citation_groups[:citations_projects].each do |key, val|
         - next if val[:extractions].length < 2
         tr
           /td = val[:citation_id]
@@ -47,10 +47,9 @@
                 consolidate_project_extractions_path(extraction_ids: val[:extractions].pluck(:id)),
                 style: 'margin-bottom: 0; background-color: #1986c7 !important;',
                 class: 'button tiny')
-      - if @citation_groups[:citations_project_count] < 1
+      - if @citation_groups.present? && @citation_groups[:citations_project_count] < 1
         tr
           td No comparisons found.
           td
           td
           td
-
