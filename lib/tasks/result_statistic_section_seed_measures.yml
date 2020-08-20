@@ -10,8 +10,8 @@
 # Adverse Event -> Cat
 #
 # type1_types: [categorical, continuous]: [default, available, false]
----
--
+--- 
+- 
   name: "Total (N analyzed)"
   provider_names: ~
   result_statistic_section_types:
@@ -19,7 +19,7 @@
   type1_types:
     categorical: default
     continuous: default
--
+- 
   name: Events
   provider_names: ~
   result_statistic_section_types:
@@ -27,7 +27,7 @@
   type1_types:
     categorical: default
     continuous: false
--
+- 
   name: "No events"
   provider_names: ~
   result_statistic_section_types:
@@ -35,7 +35,7 @@
   type1_types:
     categorical: available
     continuous: false
--
+- 
   name: Percentage
   provider_names: ~
   result_statistic_section_types:
@@ -43,7 +43,7 @@
   type1_types:
     categorical: default
     continuous: false
--
+- 
   name: Proportion
   provider_names: ~
   result_statistic_section_types:
@@ -51,7 +51,7 @@
   type1_types:
     categorical: available
     continuous: false
--
+- 
   name: "Incidence Rate (per 1000)"
   provider_names: ~
   result_statistic_section_types:
@@ -59,7 +59,7 @@
   type1_types:
     categorical: available
     continuous: false
--
+- 
   name: "Incidence Rate (per 10,000)"
   provider_names: ~
   result_statistic_section_types:
@@ -67,7 +67,7 @@
   type1_types:
     categorical: available
     continuous: false
--
+- 
   name: "Incidence Rate (per 100,000)"
   provider_names: ~
   result_statistic_section_types:
@@ -75,7 +75,7 @@
   type1_types:
     categorical: available
     continuous: false
--
+- 
   name: Mean
   provider_names: ~
   result_statistic_section_types:
@@ -83,7 +83,39 @@
   type1_types:
     categorical: false
     continuous: default
--
+- 
+  name: SD
+  provider_names: ~
+  result_statistic_section_types:
+    - "Descriptive Statistics"
+  type1_types:
+    categorical: false
+    continuous: default
+- 
+  name: SE
+  provider_names: ~
+  result_statistic_section_types:
+    - "Descriptive Statistics"
+  type1_types:
+    categorical: false
+    continuous: available
+- 
+  name: "95% CI low"
+  provider_names: ~
+  result_statistic_section_types:
+    - "Descriptive Statistics"
+  type1_types:
+    categorical: false
+    continuous: available
+- 
+  name: "95% CI high"
+  provider_names: ~
+  result_statistic_section_types:
+    - "Descriptive Statistics"
+  type1_types:
+    categorical: false
+    continuous: available
+- 
   name: Median
   provider_names: ~
   result_statistic_section_types:
@@ -91,71 +123,39 @@
   type1_types:
     categorical: false
     continuous: available
--
+- 
   name: "25th percentile"
-  provider_names: Median
+  provider_names: ~
   result_statistic_section_types:
     - "Descriptive Statistics"
   type1_types:
     categorical: false
     continuous: available
--
+- 
   name: "75th percentile"
-  provider_names: Median
+  provider_names: ~
   result_statistic_section_types:
     - "Descriptive Statistics"
   type1_types:
     categorical: false
     continuous: available
--
-  name: SD
-  provider_names: Mean
-  result_statistic_section_types:
-    - "Descriptive Statistics"
-  type1_types:
-    categorical: false
-    continuous: default
--
-  name: SE
-  provider_names: Mean
-  result_statistic_section_types:
-    - "Descriptive Statistics"
-  type1_types:
-    categorical: false
-    continuous: available
--
-  name: "95% CI low"
-  provider_names: Mean
-  result_statistic_section_types:
-    - "Descriptive Statistics"
-  type1_types:
-    categorical: false
-    continuous: available
--
-  name: "95% CI high"
-  provider_names: Mean
-  result_statistic_section_types:
-    - "Descriptive Statistics"
-  type1_types:
-    categorical: false
-    continuous: available
--
+- 
   name: Minimum
-  provider_names: Median
+  provider_names: ~
   result_statistic_section_types:
     - "Descriptive Statistics"
   type1_types:
     categorical: false
     continuous: available
--
+- 
   name: Maximum
-  provider_names: Median
+  provider_names: ~
   result_statistic_section_types:
     - "Descriptive Statistics"
   type1_types:
     categorical: false
     continuous: available
--
+- 
   name: Note
   provider_names: ~
   result_statistic_section_types:
@@ -163,7 +163,7 @@
   type1_types:
     categorical: available
     continuous: available
--
+- 
   name: "Mean Difference (MD)"
   provider_names: ~
   result_statistic_section_types:
@@ -172,7 +172,7 @@
   type1_types:
     categorical: false
     continuous: default
--
+- 
   name: "95% CI low (MD)"
   provider_names: "Mean Difference (MD)"
   result_statistic_section_types:
@@ -181,7 +181,7 @@
   type1_types:
     categorical: false
     continuous: default
--
+- 
   name: "95% CI high (MD)"
   provider_names: "Mean Difference (MD)"
   result_statistic_section_types:
@@ -190,7 +190,7 @@
   type1_types:
     categorical: false
     continuous: default
--
+- 
   name: "SD (MD)"
   provider_names: "Mean Difference (MD)"
   result_statistic_section_types:
@@ -199,7 +199,7 @@
   type1_types:
     categorical: false
     continuous: default
--
+- 
   name: "p value (MD)"
   provider_names: "Mean Difference (MD)"
   result_statistic_section_types:
@@ -208,7 +208,7 @@
   type1_types:
     categorical: false
     continuous: default
--
+- 
   name: "Mean Difference, Adjusted (adjMD)"
   provider_names: "Mean Difference, Adjusted (adjRD)"
   result_statistic_section_types:
@@ -217,7 +217,7 @@
   type1_types:
     categorical: false
     continuous: available
--
+- 
   name: "95% CI low (adjMD)"
   provider_names: "Mean Difference, Adjusted (adjMD)"
   result_statistic_section_types:
@@ -226,7 +226,7 @@
   type1_types:
     categorical: false
     continuous: available
--
+- 
   name: "95% CI high (adjMD)"
   provider_names: "Mean Difference, Adjusted (adjMD)"
   result_statistic_section_types:
@@ -235,7 +235,7 @@
   type1_types:
     categorical: false
     continuous: available
--
+- 
   name: "SD (adjMD)"
   provider_names: "Mean Difference, Adjusted (adjMD)"
   result_statistic_section_types:
@@ -244,7 +244,7 @@
   type1_types:
     categorical: false
     continuous: available
--
+- 
   name: "p value (adjMD)"
   provider_names: "Mean Difference, Adjusted (adjMD)"
   result_statistic_section_types:
@@ -253,7 +253,7 @@
   type1_types:
     categorical: false
     continuous: available
--
+- 
   name: "Adjusted for (adjMD): "
   provider_names: "Mean Difference, Adjusted (adjMD)"
   result_statistic_section_types:
@@ -262,7 +262,7 @@
   type1_types:
     categorical: false
     continuous: available
--
+- 
   name: "Median Difference"
   provider_names: ~
   result_statistic_section_types:
@@ -271,7 +271,7 @@
   type1_types:
     categorical: false
     continuous: available
--
+- 
   name: "25th %ile (Median Difference)"
   provider_names: "Median Difference"
   result_statistic_section_types:
@@ -280,7 +280,7 @@
   type1_types:
     categorical: false
     continuous: available
--
+- 
   name: "75th %ile (Median Difference)"
   provider_names: "Median Difference"
   result_statistic_section_types:
@@ -289,7 +289,7 @@
   type1_types:
     categorical: false
     continuous: available
--
+- 
   name: "Odds Ratio (OR)"
   provider_names: ~
   result_statistic_section_types:
@@ -298,7 +298,7 @@
   type1_types:
     categorical: default
     continuous: false
--
+- 
   name: "95% CI low (OR)"
   provider_names: "Odds Ratio (OR)"
   result_statistic_section_types:
@@ -307,7 +307,7 @@
   type1_types:
     categorical: default
     continuous: false
--
+- 
   name: "95% CI high (OR)"
   provider_names: "Odds Ratio (OR)"
   result_statistic_section_types:
@@ -316,7 +316,7 @@
   type1_types:
     categorical: default
     continuous: false
--
+- 
   name: "Odds Ratio, Adjusted (adjOR)"
   provider_names: ~
   result_statistic_section_types:
@@ -325,7 +325,7 @@
   type1_types:
     categorical: available
     continuous: false
--
+- 
   name: "95% CI low (adjOR)"
   provider_names: "Odds Ratio, Adjusted (adjOR)"
   result_statistic_section_types:
@@ -334,7 +334,7 @@
   type1_types:
     categorical: available
     continuous: false
--
+- 
   name: "95% CI high (adjOR)"
   provider_names: "Odds Ratio, Adjusted (adjOR)"
   result_statistic_section_types:
@@ -343,7 +343,7 @@
   type1_types:
     categorical: available
     continuous: false
--
+- 
   name: "Risk Ratio (RR)"
   provider_names: ~
   result_statistic_section_types:
@@ -352,7 +352,7 @@
   type1_types:
     categorical: available
     continuous: false
--
+- 
   name: "95% CI low (RR)"
   provider_names: "Risk Ratio (RR)"
   result_statistic_section_types:
@@ -361,7 +361,7 @@
   type1_types:
     categorical: available
     continuous: false
--
+- 
   name: "95% CI high (RR)"
   provider_names: "Risk Ratio (RR)"
   result_statistic_section_types:
@@ -370,7 +370,7 @@
   type1_types:
     categorical: available
     continuous: false
--
+- 
   name: "Risk Ratio, Adjusted (adjRR)"
   provider_names: ~
   result_statistic_section_types:
@@ -379,7 +379,7 @@
   type1_types:
     categorical: available
     continuous: false
--
+- 
   name: "95% CI low (adjRR)"
   provider_names: "Risk Ratio, Adjusted (adjRR)"
   result_statistic_section_types:
@@ -388,7 +388,7 @@
   type1_types:
     categorical: available
     continuous: false
--
+- 
   name: "95% CI high (adjRR)"
   provider_names: "Risk Ratio, Adjusted (adjRR)"
   result_statistic_section_types:
@@ -397,7 +397,7 @@
   type1_types:
     categorical: available
     continuous: false
--
+- 
   name: "Incidence Rate Ratio (IRR)"
   provider_names: ~
   result_statistic_section_types:
@@ -406,7 +406,7 @@
   type1_types:
     categorical: available
     continuous: false
--
+- 
   name: "95% CI low (IRR)"
   provider_names: "Incidence Rate Ratio (IRR)"
   result_statistic_section_types:
@@ -415,7 +415,7 @@
   type1_types:
     categorical: available
     continuous: false
--
+- 
   name: "95% CI high (IRR)"
   provider_names: "Incidence Rate Ratio (IRR)"
   result_statistic_section_types:
@@ -424,7 +424,7 @@
   type1_types:
     categorical: available
     continuous: false
--
+- 
   name: "Incidence Rate Ratio, Adjusted (adjIRR)"
   provider_names: ~
   result_statistic_section_types:
@@ -433,7 +433,7 @@
   type1_types:
     categorical: available
     continuous: false
--
+- 
   name: "95% CI low (adjIRR)"
   provider_names: "Incidence Rate Ratio, Adjusted (adjIRR)"
   result_statistic_section_types:
@@ -442,7 +442,7 @@
   type1_types:
     categorical: available
     continuous: false
--
+- 
   name: "95% CI high (adjIRR)"
   provider_names: "Incidence Rate Ratio, Adjusted (adjIRR)"
   result_statistic_section_types:
@@ -451,7 +451,7 @@
   type1_types:
     categorical: available
     continuous: false
--
+- 
   name: "Hazard Ratio (HR)"
   provider_names: ~
   result_statistic_section_types:
@@ -460,7 +460,7 @@
   type1_types:
     categorical: available
     continuous: false
--
+- 
   name: "95% CI low (HR)"
   provider_names: "Hazard Ratio (HR)"
   result_statistic_section_types:
@@ -469,7 +469,7 @@
   type1_types:
     categorical: available
     continuous: false
--
+- 
   name: "95% CI high (HR)"
   provider_names: "Hazard Ratio (HR)"
   result_statistic_section_types:
@@ -478,7 +478,7 @@
   type1_types:
     categorical: available
     continuous: false
--
+- 
   name: "Hazard Ratio, Adjusted (adjHR)"
   provider_names: ~
   result_statistic_section_types:
@@ -487,7 +487,7 @@
   type1_types:
     categorical: available
     continuous: false
--
+- 
   name: "95% CI low (adjHR)"
   provider_names: "Hazard Ratio, Adjusted (adjHR)"
   result_statistic_section_types:
@@ -496,7 +496,7 @@
   type1_types:
     categorical: available
     continuous: false
--
+- 
   name: "95% CI high (adjHR)"
   provider_names: "Hazard Ratio, Adjusted (adjHR)"
   result_statistic_section_types:
@@ -505,7 +505,7 @@
   type1_types:
     categorical: available
     continuous: false
--
+- 
   name: "Risk Difference (RD)"
   provider_names: ~
   result_statistic_section_types:
@@ -514,7 +514,7 @@
   type1_types:
     categorical: available
     continuous: false
--
+- 
   name: "95% CI low (RD)"
   provider_names: "Risk Difference (RD)"
   result_statistic_section_types:
@@ -523,7 +523,7 @@
   type1_types:
     categorical: available
     continuous: false
--
+- 
   name: "95% CI high (RD)"
   provider_names: "Risk Difference (RD)"
   result_statistic_section_types:
@@ -532,7 +532,7 @@
   type1_types:
     categorical: available
     continuous: false
--
+- 
   name: "Risk Difference, Adjusted (adjRD)"
   provider_names: ~
   result_statistic_section_types:
@@ -541,7 +541,7 @@
   type1_types:
     categorical: available
     continuous: false
--
+- 
   name: "95% CI low (adjRD)"
   provider_names: "Risk Difference, Adjusted (adjRD)"
   result_statistic_section_types:
@@ -550,7 +550,7 @@
   type1_types:
     categorical: available
     continuous: false
--
+- 
   name: "95% CI high (adjRD)"
   provider_names: "Risk Difference, Adjusted (adjRD)"
   result_statistic_section_types:
@@ -559,7 +559,7 @@
   type1_types:
     categorical: available
     continuous: false
--
+- 
   name: "Net Mean Difference (NMD)"
   provider_names: ~
   result_statistic_section_types:
@@ -567,7 +567,7 @@
   type1_types:
     categorical: false
     continuous: default
--
+- 
   name: "95% CI low (NMD)"
   provider_names: "Net Mean Difference (NMD)"
   result_statistic_section_types:
@@ -575,7 +575,7 @@
   type1_types:
     categorical: false
     continuous: default
--
+- 
   name: "95% CI high (NMD)"
   provider_names: "Net Mean Difference (NMD)"
   result_statistic_section_types:
@@ -583,7 +583,7 @@
   type1_types:
     categorical: false
     continuous: default
--
+- 
   name: "SD (NMD)"
   provider_names: "Net Mean Difference (NMD)"
   result_statistic_section_types:
@@ -591,7 +591,7 @@
   type1_types:
     categorical: false
     continuous: default
--
+- 
   name: "P value (NMD)"
   provider_names: "Net Mean Difference (NMD)"
   result_statistic_section_types:
@@ -599,7 +599,7 @@
   type1_types:
     categorical: false
     continuous: default
--
+- 
   name: "Net Mean Difference, Adjusted (adjNMD)"
   provider_names: ~
   result_statistic_section_types:
@@ -607,7 +607,7 @@
   type1_types:
     categorical: false
     continuous: available
--
+- 
   name: "95% CI low (adjNMD)"
   provider_names: "Net Mean Difference, Adjusted (adjNMD)"
   result_statistic_section_types:
@@ -615,7 +615,7 @@
   type1_types:
     categorical: false
     continuous: available
--
+- 
   name: "95% CI high (adjNMD)"
   provider_names: "Net Mean Difference, Adjusted (adjNMD)"
   result_statistic_section_types:
@@ -623,7 +623,7 @@
   type1_types:
     categorical: false
     continuous: available
--
+- 
   name: "SD (adjNMD)"
   provider_names: "Net Mean Difference, Adjusted (adjNMD)"
   result_statistic_section_types:
@@ -631,7 +631,7 @@
   type1_types:
     categorical: false
     continuous: available
--
+- 
   name: "P value (adjNMD)"
   provider_names: "Net Mean Difference, Adjusted (adjNMD)"
   result_statistic_section_types:
@@ -639,7 +639,7 @@
   type1_types:
     categorical: false
     continuous: available
--
+- 
   name: "Adjusted for (adjNMD): "
   provider_names: "Net Mean Difference, Adjusted (adjNMD)"
   result_statistic_section_types:
@@ -647,7 +647,7 @@
   type1_types:
     categorical: false
     continuous: available
--
+- 
   name: "# of participants recruited"
   provider_names: ~
   result_statistic_section_types:
@@ -655,7 +655,7 @@
   type1_types:
     categorical: default
     continuous: default
--
+- 
   name: "# not receiving Index test"
   provider_names: ~
   result_statistic_section_types:
@@ -663,7 +663,7 @@
   type1_types:
     categorical: default
     continuous: default
--
+- 
   name: "# not receiving Reference test"
   provider_names: ~
   result_statistic_section_types:
@@ -671,7 +671,7 @@
   type1_types:
     categorical: default
     continuous: default
--
+- 
   name: "% of participants recruited"
   provider_names: ~
   result_statistic_section_types:
@@ -679,7 +679,7 @@
   type1_types:
     categorical: default
     continuous: default
--
+- 
   name: "% not receiving Index test"
   provider_names: ~
   result_statistic_section_types:
@@ -687,7 +687,7 @@
   type1_types:
     categorical: default
     continuous: default
--
+- 
   name: "% not receiving Reference test"
   provider_names: ~
   result_statistic_section_types:
@@ -695,3 +695,4 @@
   type1_types:
     categorical: default
     continuous: default
+
