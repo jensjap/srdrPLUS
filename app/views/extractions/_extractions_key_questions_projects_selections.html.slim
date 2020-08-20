@@ -1,0 +1,3 @@
+div id="extractions-key-questions-projects-selections"
+  = simple_form_for @extraction, :url => "/extractions/#{@extraction.id}/update_kqp_selections", method: :put, remote: true, html: { id: 'extractions-key-questions-projects-selections-form' } do |f|
+    = f.association :extractions_key_questions_projects_selections, as: :check_boxes, collection: f.object.project.key_questions_projects.map { |kqp| [kqp.key_question.name, kqp.id, { class: 'kqp-selector', 'data-kqp-selection-id': kqp.id }] }, :checked => @extraction.extractions_key_questions_projects_selections.map(&:key_questions_project_id), 'data-id' => ->(item){ item[1] }
