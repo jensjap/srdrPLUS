@@ -277,24 +277,30 @@ document.addEventListener 'turbolinks:load', ->
 
         return  # END $( '#preview .card input,select' ).on 'change keyup', ( e ) ->
 
+      updateCards = () ->
+        # Hide all questions first.
+        $( '.card' ).addClass( 'hide' )
+
+        # Go over each key question checkbox and reveal question if its key question
+        # prerequisite is checked.
+        $( '.kqp-selector' ).each ->
+          that = $( this )
+          isChecked = that.prop( 'checked' )
+          if isChecked
+            kqId = that.attr( 'data-kqp-selection-id' )
+            $( '.card.kqreq-'+kqId ).removeClass( 'hide' )
+
       $( 'input' ).trigger( 'change' )
 
       #################################################################################
       # Make all cards visible that require at least one of the key questions selected.
       $( '.key-question-selector input[type="checkbox"]' ).on 'change', ( e ) ->
         e.preventDefault()
+        updateCards()
+        $('#extractions-key-questions-projects-selections-form').submit()
 
-        # Hide all questions first.
-        $( '.card' ).addClass( 'hide' )
-
-        # Go over each key question checkbox and reveal question if its key question
-        # prerequisite is checked.
-        $( this ).parents( '#preview, .content' ).find( '.key-question-selector input[type="checkbox"]' ).each ->
-          that = $( this )
-          isChecked = that.prop( 'checked' )
-          if isChecked
-            kqId = that.attr( 'id' )
-            $( '.card.kqreq-'+kqId ).removeClass( 'hide' )
+      $(document).ready ->
+        updateCards()
 
     return  # END do ->
 
