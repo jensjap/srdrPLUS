@@ -16,9 +16,7 @@ class ExtractionsController < ApplicationController
   # GET /projects/1/extractions
   # GET /projects/1/extractions.json
   def index
-    @is_leader = false
     if @project.leaders.include? current_user
-      @is_leader = false
       @extractions = @project.extractions
       @projects_users_roles = ProjectsUsersRole.joins(:projects_user).where(projects_users: { project: @project })
       @citation_groups = @project.citation_groups
@@ -27,7 +25,10 @@ class ExtractionsController < ApplicationController
       if @project.consolidators.include? current_user
         @citation_groups = @project.citation_groups
       else
-        @citation_groups = []
+        @citation_groups = {
+          citations_project_count: 0,
+          citations_projects: [],
+        }
       end
     end
 

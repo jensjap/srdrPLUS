@@ -4,6 +4,6 @@ class QuestionRowColumnPolicy < ApplicationPolicy
   end
 
   def answer_choices?
-    project_consolidator?
+    project_contributor?
   end
 end
