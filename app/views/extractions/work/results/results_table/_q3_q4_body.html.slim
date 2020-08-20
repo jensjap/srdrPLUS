@@ -18,7 +18,7 @@
       tr class="#{tr_group_class}"
         - wac_rssm = wac_rss.result_statistic_sections_measures.left_outer_joins(measure: :result_statistic_section_types_measures).reorder('result_statistic_section_types_measures.id asc').distinct
         td.bg-lightgreen.freeze = wac_rssm[row_cnt].try(:measure).try(:name)
-        - @arms.each do |arm|
+        - @arms.sort_by { |eefpst1| eefpst1.ordering.position }.each do |arm|
           - if wac_rssm[row_cnt].present?
               td.bg-lightgreen
                 - record = ComparisonsArmsRssm.find_record(comparison=wac, extractions_extraction_forms_projects_sections_type1=arm, result_statistic_sections_measure=wac_rssm[row_cnt])

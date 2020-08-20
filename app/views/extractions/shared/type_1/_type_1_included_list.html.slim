@@ -12,7 +12,7 @@
           th Populations
           th Timepoints
 
-    tbody.orderable-list orderable-url="#{ update_positions_api_v1_orderings_url }"
+    tbody.orderable-list force-reload="true" orderable-url="#{ update_positions_api_v1_orderings_url }"
       - eefps.eefpst1s_without_total.each do |eefpst1|
         tr.orderable-item [ position="#{ eefpst1.ordering.position }" ordering-id="#{ eefpst1.ordering.id }" ]
           - if section_name == 'Outcomes'
