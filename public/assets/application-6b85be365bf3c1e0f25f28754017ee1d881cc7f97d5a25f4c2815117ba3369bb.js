@@ -50316,7 +50316,7 @@ function __guardMethod__(obj, methodName, transform) {
 (function() {
   document.addEventListener('turbolinks:load', function() {
     (function() {
-      var formatResult, formatResultSelection, prereqOff, prereqOn, subroutine, turnPrereqOffSelfAndDescendants, turnPrereqOnSelfAndDescendants;
+      var formatResult, formatResultSelection, prereqOff, prereqOn, subroutine, turnPrereqOffSelfAndDescendants, turnPrereqOnSelfAndDescendants, updateCards;
       if ($('.extraction_forms_projects.build, .extraction_forms_projects_sections, .extractions').length > 0) {
         formatResultSelection = function(result, container) {
           return result.text;
@@ -50532,19 +50532,26 @@ function __guardMethod__(obj, methodName, transform) {
             }
           }
         });
-        $('input').trigger('change');
-        $('.key-question-selector input[type="checkbox"]').on('change', function(e) {
-          e.preventDefault();
+        updateCards = function() {
           $('.card').addClass('hide');
-          return $(this).parents('#preview, .content').find('.key-question-selector input[type="checkbox"]').each(function() {
+          return $('.kqp-selector').each(function() {
             var isChecked, kqId, that;
             that = $(this);
             isChecked = that.prop('checked');
             if (isChecked) {
-              kqId = that.attr('id');
+              kqId = that.attr('data-kqp-selection-id');
               return $('.card.kqreq-' + kqId).removeClass('hide');
             }
           });
+        };
+        $('input').trigger('change');
+        $('.key-question-selector input[type="checkbox"]').on('change', function(e) {
+          e.preventDefault();
+          updateCards();
+          return $('#extractions-key-questions-projects-selections-form').submit();
+        });
+        $(document).ready(function() {
+          return updateCards();
         });
       }
     })();
@@ -52609,7 +52616,7 @@ toastr.options = {
 
 Dropzone.autoDiscover = false;
 
-/// GLOBAL function TO SEND ASYNC FORMS  
+/// GLOBAL function TO SEND ASYNC FORMS
 function send_async_form(form) {
   var formData = new FormData(form);
 
@@ -52669,6 +52676,7 @@ document.addEventListener( 'turbolinks:load', function() {
     for (let orderable_list of Array.from( $( scope ).find( '.orderable-list' ))) {
       //# CHANGE THIS
       const ajax_url = $( '.orderable-list' ).attr( 'orderable-url' );
+      const forceRestart = $( '.orderable-list' ).attr( 'force-reload' );
       let saved_state = null;
 
       //# helper method for converting class name into camel case
@@ -52708,8 +52716,12 @@ document.addEventListener( 'turbolinks:load', function() {
               }
               // then save state
               saved_state = $( orderable_list ).sortable( "toArray" );
-
-              return toastr.success( 'Positions successfully updated' );
+              if (forceRestart) {
+                toastr.success( 'Positions successfully updated. Reloading page to apply changes.' );
+                location.reload();
+              } else {
+                toastr.success( 'Positions successfully updated' );
+              }
             },
           error( data ) {
               $( orderable_list ).sortable( 'sort', saved_state );
@@ -52762,9 +52774,8 @@ document.addEventListener( 'turbolinks:load', function() {
       $outer_form.submit()
     })
   }
-  
+
 } );
 document.addEventListener( 'turbolinks:before-cache', function() {
   $( '.reveal' ).foundation( 'close' )
 } );
-
