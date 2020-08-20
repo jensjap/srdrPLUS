@@ -85,7 +85,7 @@
     continuous: default
 - 
   name: SD
-  provider_names: ~
+  provider_names: Mean
   result_statistic_section_types:
     - "Descriptive Statistics"
   type1_types:
@@ -93,7 +93,7 @@
     continuous: default
 - 
   name: SE
-  provider_names: ~
+  provider_names: Mean
   result_statistic_section_types:
     - "Descriptive Statistics"
   type1_types:
@@ -101,7 +101,7 @@
     continuous: available
 - 
   name: "95% CI low"
-  provider_names: ~
+  provider_names: Mean
   result_statistic_section_types:
     - "Descriptive Statistics"
   type1_types:
@@ -109,7 +109,7 @@
     continuous: available
 - 
   name: "95% CI high"
-  provider_names: ~
+  provider_names: Mean
   result_statistic_section_types:
     - "Descriptive Statistics"
   type1_types:
@@ -125,7 +125,7 @@
     continuous: available
 - 
   name: "25th percentile"
-  provider_names: ~
+  provider_names: Median
   result_statistic_section_types:
     - "Descriptive Statistics"
   type1_types:
@@ -133,7 +133,7 @@
     continuous: available
 - 
   name: "75th percentile"
-  provider_names: ~
+  provider_names: Median
   result_statistic_section_types:
     - "Descriptive Statistics"
   type1_types:
@@ -141,7 +141,7 @@
     continuous: available
 - 
   name: Minimum
-  provider_names: ~
+  provider_names: Median
   result_statistic_section_types:
     - "Descriptive Statistics"
   type1_types:
@@ -149,7 +149,7 @@
     continuous: available
 - 
   name: Maximum
-  provider_names: ~
+  provider_names: Median
   result_statistic_section_types:
     - "Descriptive Statistics"
   type1_types:
