@@ -218,9 +218,11 @@ document.addEventListener( 'turbolinks:load', function() {
               }
               // then save state
               saved_state = $( orderable_list ).sortable( "toArray" );
-              toastr.success( 'Positions successfully updated' );
               if (forceRestart) {
+                toastr.success( 'Positions successfully updated. Reloading page to apply changes.' );
                 location.reload();
+              } else {
+                toastr.success( 'Positions successfully updated' );
               }
             },
           error( data ) {
