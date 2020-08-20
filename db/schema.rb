@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_13_091406) do
+ActiveRecord::Schema.define(version: 2020_08_18_072318) do
 
   create_table "abstrackr_settings", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "profile_id"
@@ -630,6 +630,15 @@ ActiveRecord::Schema.define(version: 2020_08_13_091406) do
     t.index ["type1_type_id", "extractions_extraction_forms_projects_section_id", "type1_id", "active"], name: "index_eefpst1_on_t1t_id_eefps_id_t1_id_active", unique: true
     t.index ["type1_type_id", "extractions_extraction_forms_projects_section_id", "type1_id", "deleted_at"], name: "index_eefpst1_on_t1t_id_eefps_id_t1_id_deleted_at", unique: true
     t.index ["type1_type_id"], name: "index_eefpst1_on_t1t_id"
+  end
+
+  create_table "extractions_key_questions_projects_selections", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "extraction_id"
+    t.bigint "key_questions_project_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["extraction_id"], name: "index_ekqps_on_extractions_id"
+    t.index ["key_questions_project_id"], name: "index_ekqps_on_key_questions_projects_id"
   end
 
   create_table "extractions_projects_users_roles", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

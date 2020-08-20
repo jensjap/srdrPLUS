@@ -5,7 +5,7 @@ class ExtractionsController < ApplicationController
   include ExtractionsControllerHelpers
 
   before_action :set_project, only: [:index, :new, :create, :comparison_tool, :compare, :consolidate, :edit_type1_across_extractions]
-  before_action :set_extraction, only: [:show, :edit, :update, :destroy, :work]
+  before_action :set_extraction, only: [:show, :edit, :update, :destroy, :work, :update_kqp_selections]
   before_action :set_extractions, only: [:consolidate, :edit_type1_across_extractions]
   before_action :ensure_extraction_form_structure, only: [:consolidate, :work]
   before_action :set_eefps_by_efps_dict, only: [:work]
@@ -103,6 +103,17 @@ class ExtractionsController < ApplicationController
         format.html { render :edit }
         format.json { render json: @extraction.errors, status: :unprocessable_entity }
         format.js
+      end
+    end
+  end
+
+  def update_kqp_selections
+    respond_to do |format|
+      format.js do
+        @extraction.extractions_key_questions_projects_selections.destroy_all
+        params[:extraction][:extractions_key_questions_projects_selection_ids].each do |kqp_id|
+          @extraction.extractions_key_questions_projects_selections.create(key_questions_project_id: kqp_id) if kqp_id.present?
+        end
       end
     end
   end
@@ -281,7 +292,6 @@ class ExtractionsController < ApplicationController
         end
       end
     end
-
 
     def update_eefps_by_extraction_and_efps_dict(extraction)
       @eefps_by_extraction_and_efps_dict ||= {}
