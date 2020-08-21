@@ -39,25 +39,25 @@ class SimpleExportJob < ApplicationJob
       build_project_information_section(p, @project, highlight, wrap)
 
       # Type 1s - compact format.
-#      build_type1_sections_compact(p, @project, highlight, wrap)
+      build_type1_sections_compact(p, @project, highlight, wrap)
 
       # Type 1s - wide format.
-      build_type1_sections_wide(p, @project, highlight, wrap)
+#      build_type1_sections_wide(p, @project, highlight, wrap)
 
       # Type 2s - compact format.
-#      build_type2_sections_compact(p, @project, highlight, wrap)
+      build_type2_sections_compact(p, @project, highlight, wrap)
 
       # Type 2s - wide format.
-      build_type2_sections_wide(p, @project, highlight, wrap)
+#      build_type2_sections_wide(p, @project, highlight, wrap)
 
       # Results - compact format.
-#      build_result_sections_compact(p, @project, highlight, wrap)
+      build_result_sections_compact(p, @project, highlight, wrap)
 
       # Results - wide format.
-      build_result_sections_wide(p, @project, highlight, wrap)
+#      build_result_sections_wide(p, @project, highlight, wrap)
 
       # Default sample 3D pie chart.
-      build_sample_3d_pie_chart(p)
+#      build_sample_3d_pie_chart(p)
 
       f_name = 'tmp/simple_exports/project_' + @project.id.to_s + '_' + Time.now.strftime('%s') + '.xlsx'
       if p.serialize(f_name)
@@ -123,6 +123,8 @@ class SimpleExportJob < ApplicationJob
 
           ExportMailer.notify_simple_export_completion(exported_item.id).deliver_later
         end
+      else
+        raise "Unable to serialize"
       end
     end
   end
