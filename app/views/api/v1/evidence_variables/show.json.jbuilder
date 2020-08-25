@@ -3,6 +3,7 @@ json.set! :id, @evidence_variable.id.to_s
 json.set! :meta do
   json.set! :versionId, '1'
 end
+json.set! :url_index, "http://srdrPLUS.ahrq.gov/api/v1/evidence_variables"
 json.set! :url, "http://srdrPLUS.ahrq.gov/api/v1/evidence_variables/#{ @evidence_variable.id }.json"
 json.set! :name, "#{ @evidence_variable.type1.name } at #{ @timepoint_name } #{ @timepoint_unit }"
 json.set! :title, "#{ @evidence_variable.type1.name } at #{ @timepoint_name } #{ @timepoint_unit }"
