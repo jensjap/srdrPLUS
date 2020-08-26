@@ -115,29 +115,54 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
   end
 
   def eefpst1s_only_total
-    type1 = Type1.find_or_create_by(name: "Total", description: "All #{ extraction_forms_projects_section.link_to_type1.present? ? extraction_forms_projects_section.link_to_type1.section.name : extraction_forms_projects_section.section.name } combined")
+    type1 = Type1.find_or_create_by(
+      name: "Total",
+      description: "All #{extraction_forms_projects_section.link_to_type1.present? ?
+        extraction_forms_projects_section.link_to_type1.section.name :
+        extraction_forms_projects_section.section.name} combined"
+    )
     type1s << type1 unless type1s.include? type1
-    [extractions_extraction_forms_projects_sections_type1s.joins(:type1).find_by(type1s: { name: 'Total', description: "All #{ extraction_forms_projects_section.link_to_type1.present? ? extraction_forms_projects_section.link_to_type1.section.name : extraction_forms_projects_section.section.name } combined" })]
+    sort_by_their_orderings(
+      [
+        extractions_extraction_forms_projects_sections_type1s.
+          joins(:type1).
+          find_by(
+            type1s: {
+              name: 'Total',
+              description: "All #{extraction_forms_projects_section.link_to_type1.present? ?
+                extraction_forms_projects_section.link_to_type1.section.name :
+                extraction_forms_projects_section.section.name} combined"
+            }
+          )
+      ]
+    )
   end
 
   def eefpst1s_without_total
-    extractions_extraction_forms_projects_sections_type1s
-      .includes(:type1_type, :type1)
-      .to_a
-      .delete_if { |efpst1| efpst1.type1==Type1.find_by(name: 'Total', description: "All #{ extraction_forms_projects_section.link_to_type1.present? ? extraction_forms_projects_section.link_to_type1.section.name : extraction_forms_projects_section.section.name } combined") }
+    sort_by_their_orderings(
+      extractions_extraction_forms_projects_sections_type1s
+        .includes(:type1_type, :type1)
+        .to_a
+        .delete_if { |eefpst1| eefpst1.type1 == Type1.find_by(name: 'Total', description: "All #{ extraction_forms_projects_section.link_to_type1.present? ? extraction_forms_projects_section.link_to_type1.section.name : extraction_forms_projects_section.section.name } combined") }
+    )
   end
 
   def eefpst1s_with_total
-    type1 = Type1.find_or_create_by(name: "Total", description: "All #{ extraction_forms_projects_section.link_to_type1.present? ? extraction_forms_projects_section.link_to_type1.section.name : extraction_forms_projects_section.section.name } combined")
+    type1 = Type1.find_or_create_by(
+      name: "Total",
+      description: "All #{extraction_forms_projects_section.link_to_type1.present? ?
+        extraction_forms_projects_section.link_to_type1.section.name :
+        extraction_forms_projects_section.section.name} combined"
+    )
     type1s << type1 unless type1s.include? type1
-    ab = extractions_extraction_forms_projects_sections_type1s
+    eefpst1s = extractions_extraction_forms_projects_sections_type1s
       .includes(:type1_type, :type1)
       .to_a
-      .delete_if { |efpst1| efpst1.type1==Type1.find_by(name: 'Total', description: "All #{ extraction_forms_projects_section.link_to_type1.present? ? extraction_forms_projects_section.link_to_type1.section.name : extraction_forms_projects_section.section.name } combined") }
+      .delete_if { |eefpst1| eefpst1.type1 == Type1.find_by(name: 'Total', description: "All #{ extraction_forms_projects_section.link_to_type1.present? ? extraction_forms_projects_section.link_to_type1.section.name : extraction_forms_projects_section.section.name } combined") }
       .push(extractions_extraction_forms_projects_sections_type1s.joins(:type1).find_by(type1s: { name: 'Total', description: "All #{ extraction_forms_projects_section.link_to_type1.present? ? extraction_forms_projects_section.link_to_type1.section.name : extraction_forms_projects_section.section.name } combined" }))
-    raise if ab.any?(&:nil?)
+    raise if eefpst1s.any?(&:nil?)
 
-    return ab
+    return sort_by_their_orderings(eefpst1s)
   end
 
   # Do not create duplicate Type1 entries.
@@ -210,4 +235,21 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
 #      end
 #    end
 #  end
+  private
+    def sort_by_their_orderings(eefpst1s)
+      max_position = eefpst1s.map { |eefpst1| eefpst1.ordering.position }.max
+
+      eefpst1s.sort_by do |eefpst1|
+        if eefpst1.type1 == Type1.find_by(
+          name: 'Total',
+          description: "All #{extraction_forms_projects_section.link_to_type1.present? ?
+            extraction_forms_projects_section.link_to_type1.section.name :
+            extraction_forms_projects_section.section.name} combined"
+        )
+          max_position + 1
+        else
+          eefpst1.ordering.position
+        end
+      end
+    end
 end
