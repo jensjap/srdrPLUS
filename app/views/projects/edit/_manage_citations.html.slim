@@ -114,7 +114,7 @@ div.row
               = f.input :projects_user_id, as: :hidden, input_html: { value: projects_user.id }
               = f.input :import_type_id, as: :hidden, input_html: { value: ImportType.find_by(name: 'Citation').id }
               = simple_fields_for new_import.imported_files.build do |i_f|
-                #fileDropzone.dropzone name='mainFileUploader'
+                #fileDropzone.dropzone name='mainFileUploader' dropzone-path="#{new_project_import_path @project}"
                   .fallback
                     = i_f.input :file_type_id, as: :select, required: true, collection: FileType.all, selected: FileType.first.id
                     = i_f.input :content, as: :file, label: 'Citation File'

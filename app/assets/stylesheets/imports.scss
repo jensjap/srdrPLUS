@@ -1,0 +1,34 @@
+.imports.new {
+  .import-columns-panel {
+    border: 1px solid;
+    height: 15rem;
+    overflow: scroll;
+
+    .import-columns-row {
+      height: 7rem;
+      margin: 0.5rem 0.5rem 1rem 0.5rem;
+      .top, .bottom  {
+        height: 3rem;
+        display: flex;
+        flex-direction: row;
+        overflow: scroll;
+      }
+      .top  {
+        background-color: aliceblue;
+      }
+      .bottom {
+        background-color: lavender;
+      }
+      .filename {
+        height: 1rem;
+        font-weight: bold;
+      }
+      .import-column {
+        background-color: grey;
+        margin: 0.3rem;
+        min-width: 5rem;
+        height: 2rem;
+      }
+    }
+  }
+}

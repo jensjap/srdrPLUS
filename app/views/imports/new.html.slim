@@ -1,0 +1,75 @@
+.column
+  .row
+    h3
+      |New Import
+    h4 = @project.name
+    
+.row
+  .column.medium-3
+    = simple_form_for(@import) do |f|
+      = f.input :import_type, as: :hidden, input_html: { value: ImportType.first }
+      = f.simple_fields_for(@imported_file) do |i_f|
+        = f.input :content, as: :file
+      = f.submit
+  .column.medium-9
+    .import-columns-panel
+      .import-columns-row
+        .filename
+          | Design Details
+        .top
+          .import-column
+          .import-column
+          .import-column
+          .import-column
+          .import-column
+          .import-column
+          .import-column
+          .import-column
+          .import-column
+          .import-column
+          .import-column
+          .import-column
+          .import-column
+          .import-column
+          .import-column
+          .import-column
+          .import-column
+          .import-column
+          .import-column
+        .bottom
+          .import-target
+          .import-target
+          .import-target
+          .import-target
+      .import-columns-row
+        .filename
+          | Outcome Details
+        .top
+          .import-column
+          .import-column
+          .import-column
+          .import-column
+          .import-column
+          .import-column
+          .import-column
+          .import-column
+          .import-column
+          .import-column
+          .import-column
+          .import-column
+          .import-column
+          .import-column
+          .import-column
+          .import-column
+          .import-column
+          .import-column
+          .import-column
+        .bottom
+          .import-target
+          .import-target
+          .import-target
+          .import-target
+      .import-columns-row
+
+
+  

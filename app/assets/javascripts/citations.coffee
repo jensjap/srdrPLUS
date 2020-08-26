@@ -26,7 +26,7 @@ document.addEventListener 'turbolinks:load', ->
 
     #### FILE DROPZONE
     Dropzone.options.fileDropzone = {
-      url: "/imports",
+      url: $('#fileDropzone').attr('dropzone-path'),
       autoProcessQueue: true,
       uploadMultiple: false,
 

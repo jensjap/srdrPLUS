@@ -1,6 +1,9 @@
 class ImportsController < ApplicationController
+  before_action :set_project
+
   def new
-    @import = ImportedFile.new
+    @import = Import.new projects_user: @projects_user
+    @imported_file = ImportedFile.new import: @import
   end
 
   def create
@@ -21,4 +24,10 @@ class ImportsController < ApplicationController
       end
     end
   end
+
+  private
+    def set_project
+      @project = Project.find params[:project_id]
+      @projects_user = ProjectsUser.find_by project: @project, user: current_user
+    end
 end

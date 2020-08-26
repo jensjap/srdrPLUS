@@ -156,7 +156,6 @@ Rails.application.routes.draw do
         get 'labeled'
         get 'unlabeled'
       end
-
     end
 
     resources :screening_options
@@ -253,6 +252,8 @@ Rails.application.routes.draw do
       post 'export_citation_labels'
       post 'export_to_gdrive'
     end
+
+    resources :imports, only: [:new]
   end
 
   root to: 'static_pages#home'
@@ -270,7 +271,7 @@ Rails.application.routes.draw do
   resources :degrees, only: [:index]
   resources :organizations, only: [:index]
   resources :sections, only: [:index]
-  resources :imports, only: [:new, :create]
+  resources :imports, only: [:create]
 
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end
