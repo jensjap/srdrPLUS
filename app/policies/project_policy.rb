@@ -1,4 +1,100 @@
 class ProjectPolicy < ApplicationPolicy
+  FULL_PARAMS = [
+    :citation_file,
+    :name,
+    :description,
+    :attribution,
+    :methodology_description,
+    :prospero,
+    :doi,
+    :notes,
+    :funding_source,
+    {
+      tasks_attributes: [
+        :id,
+        :name,
+        :num_assigned,
+        :task_type_id,
+        projects_users_role_ids: []
+      ]
+    },
+    {
+      citations_attributes: [
+        :id,
+        :name,
+        :abstract,
+        :pmid,
+        :refman,
+        :citation_type_id,
+        :page_number_start,
+        :page_number_end,
+        :_destroy,
+        authors_citations_attributes: [
+          { author_attributes: :name },
+          { ordering_attributes: :position },
+          :_destroy
+        ],
+        author_ids: [],
+        keyword_ids: [],
+        journal_attributes: [
+          :id,
+          :name,
+          :volume,
+          :issue,
+          :publication_date
+        ]
+      ]
+    },
+    {
+      citations_projects_attributes: [
+        :id,
+        :_destroy,
+        :citation_id,
+        :project_id,
+        citation_attributes: [
+          :id,
+          :_destroy,
+          :name
+          ]
+      ]
+    },
+    {
+      key_questions_projects_attributes: [
+        :id,
+        :position
+      ]
+    },
+    { key_questions_attributes: [:name] },
+    {
+      projects_users_attributes: [
+        :id,
+        :_destroy,
+        :user_id,
+        role_ids: [],
+        imports_attributes: [
+          :import_type_id, {
+            imported_files_attributes: [
+              :id,
+              :file_type_id,
+              :content,
+              section: [:name],
+              key_question: [:name]
+            ]
+          }
+        ]
+      ]
+    },
+    {
+      screening_options_attributes: [
+        :id,
+        :_destroy,
+        :project_id,
+        :label_type_id,
+        :screening_option_type_id
+      ]
+    }
+  ]
+
   class Scope < ApplicationPolicy::Scope
     def resolve
       return scope.all if Rails.env.test?
@@ -11,7 +107,7 @@ class ProjectPolicy < ApplicationPolicy
   end
 
   def update?
-    project_leader?
+    project_contributor?
   end
 
   def destroy?
@@ -60,5 +156,16 @@ class ProjectPolicy < ApplicationPolicy
 
   def create_full_text_screening_extraction_form?
     project_leader?
+  end
+
+  def permitted_attributes
+    if project_leader?
+      FULL_PARAMS
+    elsif project_contributor?
+      [
+        { citations_projects_attributes: [:id, :citation_id] },
+        { citations_attributes: [:id, :name, :abstract, :pmid, :refman, :citation_type_id, :page_number_start, :page_number_end, authors_citations_attributes: [{ author_attributes: :name }, { ordering_attributes: :position }], keyword_ids:[], journal_attributes: [ :id, :name, :volume, :issue, :publication_date]] }
+      ]
+    end
   end
 end
