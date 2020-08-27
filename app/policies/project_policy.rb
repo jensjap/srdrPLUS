@@ -158,6 +158,10 @@ class ProjectPolicy < ApplicationPolicy
     project_leader?
   end
 
+  def assign_extraction_to_any_user?
+    project_leader?
+  end
+
   def permitted_attributes
     if project_leader?
       FULL_PARAMS
