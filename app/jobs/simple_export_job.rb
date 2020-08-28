@@ -57,7 +57,7 @@ class SimpleExportJob < ApplicationJob
       build_result_sections_wide(p, @project, highlight, wrap)
 
       # Default sample 3D pie chart.
-      build_sample_3d_pie_chart(p)
+#      build_sample_3d_pie_chart(p)
 
       f_name = 'tmp/simple_exports/project_' + @project.id.to_s + '_' + Time.now.strftime('%s') + '.xlsx'
       if p.serialize(f_name)
@@ -123,6 +123,8 @@ class SimpleExportJob < ApplicationJob
 
           ExportMailer.notify_simple_export_completion(exported_item.id).deliver_later
         end
+      else
+        raise "Unable to serialize"
       end
     end
   end

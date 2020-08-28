@@ -4,7 +4,7 @@ li = link_to('Dashboard', projects_path)
 
   - project = @project || @extraction.try(:project) || @extraction_forms_project.try(:project) || @question.try(:project) || @extraction_forms_projects_section.project
 
-  li
+  li aria-expanded="false"
     a href='#' Project
     ul.menu
       b Tools
@@ -49,7 +49,7 @@ li = link_to('Dashboard', projects_path)
       li = link_to t('.extractions'),         project_extractions_path(project),                         title: t('.manage_extractions')
       /li = link_to 'Completed Extractions',              '#'
 
-li
+li aria-expanded="false"
   a href='#' = current_user.profile.last_name.present? ? current_user.profile.last_name : 'Menu'
   ul.menu style="width: 350px;"
     b User

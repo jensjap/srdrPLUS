@@ -43,6 +43,8 @@ Rails.application.routes.draw do
   apipie
   namespace :api do
     namespace :v1 do
+      resources :evidence_variables, only: [:index, :show]
+
       resources :keywords, only: [:index]
       resources :users, only: [:index]
       resources :authors, only: [:index]
@@ -171,6 +173,7 @@ Rails.application.routes.draw do
 
       member do
         get 'work'
+        put 'update_kqp_selections'
         get 'change_outcome_in_results_section', constraints: { format: 'js' }
       end
 

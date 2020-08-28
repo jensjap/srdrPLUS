@@ -5,7 +5,7 @@ module RoleChecker
   AUDITOR = 'Auditor'.freeze
 
   def get_highest_role
-    @highest_role = user.highest_role_in_project(record)
+    @highest_role ||= user.highest_role_in_project(record)
   end
 
   def project_leader?
