@@ -40,7 +40,7 @@ blockquote
               / by_type1 && include_total
               - if efps.extraction_forms_projects_section_option.by_type1
                 - if efps.extraction_forms_projects_section_option.include_total
-                  - linked_section.eefpst1s_with_total.sort_by { |eefptst1| eefptst1.ordering.position }.map(&:type1).each do |t1|
+                  - linked_section.eefpst1s_with_total.map(&:type1).each do |t1|
                     fieldset.fieldset
                       legend style="font-weight: bold;" data-allow-html="true" data-tooltip="" title='#{linked_section.extraction_forms_projects_section.section.name.singularize + ": " + t1.name + "<br>" + "Description: " + t1.description}'
                         = t1.name
@@ -52,7 +52,7 @@ blockquote
 
                 / by_type1 && !include_total
                 - else
-                  - linked_section.eefpst1s_without_total.sort_by { |eefptst1| eefptst1.ordering.position }.map(&:type1).uniq.each do |t1|
+                  - linked_section.eefpst1s_without_total.map(&:type1).uniq.each do |t1|
                     fieldset.fieldset
                       legend style="font-weight: bold;" data-allow-html="true" data-tooltip="" title='#{linked_section.extraction_forms_projects_section.section.name.singularize + ": " + t1.name + "<br>" + "Description: " + t1.description}'
                         = t1.name
@@ -65,7 +65,7 @@ blockquote
               / !by_type1 && include_total
               - else
                 - if efps.extraction_forms_projects_section_option.include_total
-                  - linked_section.eefpst1s_only_total.sort_by { |eefptst1| eefptst1.ordering.position }.map(&:type1).each do |t1|
+                  - linked_section.eefpst1s_only_total.map(&:type1).each do |t1|
                     fieldset.fieldset
                       legend style="font-weight: bold;" data-allow-html="true" data-tooltip="" title='#{linked_section.extraction_forms_projects_section.section.name.singularize + ": " + t1.name + "<br>" + "Description: " + t1.description}'
                         = t1.name
