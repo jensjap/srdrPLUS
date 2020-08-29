@@ -1,33 +1,58 @@
 .imports.new {
-  .import-columns-panel {
+  #import-columns-panel {
     border: 1px solid;
     height: 15rem;
     overflow: scroll;
 
     .import-columns-row {
-      height: 7rem;
       margin: 0.5rem 0.5rem 1rem 0.5rem;
-      .top, .bottom  {
-        height: 3rem;
+      .headers {
+        overflow: scroll;
+        .top, .bottom  {
+          height: 3rem;
+          width: max-content;
+          display: flex;
+          flex-direction: row;
+          overflow: visible;
+        }
+        .top  {
+          background-color: aliceblue;
+        }
+        .bottom {
+          background-color: lavender;
+        }
+      }
+
+      .sheet-name {
         display: flex;
         flex-direction: row;
-        overflow: scroll;
-      }
-      .top  {
-        background-color: aliceblue;
-      }
-      .bottom {
-        background-color: lavender;
-      }
-      .filename {
-        height: 1rem;
         font-weight: bold;
+        align-items: flex-end;
+        margin-bottom: 1vh;
+        select {
+          margin-left: 1vw;
+          margin-bottom: 0;
+          width: 10vw;
+        }
       }
+      .import-column, .header-column {
+        margin: 0.3rem;
+        min-width: 8rem;
+        padding: 1rem 0.4rem 1rem 0.4rem;
+        height: 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+      }
+
       .import-column {
         background-color: grey;
-        margin: 0.3rem;
-        min-width: 5rem;
-        height: 2rem;
+      }
+      .header-column {
+        background-color: hotpink;
       }
     }
   }

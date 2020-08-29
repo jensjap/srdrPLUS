@@ -5,7 +5,6 @@
 //= require init
 
 //= require jquery.turbolinks
-//= require datatables
 //= require foundation
 //= require toastr_rails
 //= require cocoon
@@ -15,6 +14,9 @@
 //= require sortable-rails-jquery
 //= require activestorage
 //= require foundation-datepicker.min
+//= require jquery.form.min.js
+//= require levenshtein.min.js
+//= require xlsx.mini.js
 
 // require assignments
 // require author
