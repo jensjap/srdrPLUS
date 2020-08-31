@@ -16,6 +16,8 @@
 //= require foundation-datepicker.min
 //= require jquery.form.min.js
 //= require levenshtein.min.js
+//= require draggable/droppable.js
+//= require draggable/plugins.js
 //= require xlsx.mini.js
 
 // require assignments

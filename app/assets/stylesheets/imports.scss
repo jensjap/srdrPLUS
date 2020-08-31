@@ -1,7 +1,7 @@
 .imports.new {
   #import-columns-panel {
     border: 1px solid;
-    height: 15rem;
+    height: 30rem;
     overflow: scroll;
 
     .import-columns-row {
@@ -35,10 +35,8 @@
           width: 10vw;
         }
       }
-      .import-column, .header-column {
-        margin: 0.3rem;
+      .is-droppable, .header-column {
         min-width: 8rem;
-        padding: 1rem 0.4rem 1rem 0.4rem;
         height: 2rem;
         display: flex;
         align-items: center;
@@ -48,11 +46,35 @@
         white-space: nowrap;
       }
 
+      .header-column {
+        margin: 0.3rem;
+      }
+
       .import-column {
+        min-width: 8rem;
+        height: 2rem;
+        margin: 0.3rem;
+        padding: 0;
+        overflow: hidden;
+      }
+
+      .is-droppable {
+        cursor: grab;
         background-color: grey;
       }
+      .import-column {
+        background-color: transparent;
+      }
+      .is-droppable.draggable-source--is-dragging {
+        background-color: transparent;
+        border: 2px dashed black;
+      }
+
       .header-column {
         background-color: hotpink;
+      }
+      #draggable-live-region {
+        border: none;
       }
     }
   }
