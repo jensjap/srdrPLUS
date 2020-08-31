@@ -20,7 +20,7 @@ document.addEventListener 'turbolinks:load', ->
             current_row_elem = add_row( sheet_name )
             current_row_elem.attr 'id', 'sheet-row-' + cur_index
             header = []
-            columnCount = XLSX.utils.decode_range(ws['!ref']).e.c + 1
+            columnCount = XLSX.utils.decode_range(ws['!ref']).e.c
             for i in [0..columnCount]
               col_let = XLSX.utils.encode_col(i)
               h = ws[col_let + "1"]
