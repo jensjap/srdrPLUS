@@ -10,7 +10,7 @@ gem 'rails', '~> 5.2.0'
 # Use mysql as the database for Active Record
 gem 'mysql2', '>= 0.3.18', '< 0.5'
 # Use Puma as the app server
-gem 'puma', '~> 3.0'
+gem 'puma', '~> 3.12'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'
 # Use Uglifier as compressor for JavaScript assets
@@ -47,7 +47,7 @@ end
 group :test do
   gem 'minitest-rails-capybara'
   gem 'simplecov', require: false
-  gem 'minitest-byebug'
+  gem 'database_cleaner-active_record'
 end
 
 group :development do
@@ -181,3 +181,6 @@ gem "dropzonejs-rails"
 
 # for things like cloning questions (extraction forms maybe?)
 gem "amoeba"
+
+# full-stack error tracking system
+gem "sentry-raven"

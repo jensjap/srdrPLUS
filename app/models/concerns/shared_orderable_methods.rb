@@ -19,6 +19,7 @@ module SharedOrderableMethods
     end
 
     def position=(new_position)
+      return if self.ordering.position == new_position
       self.ordering.update(position: new_position) unless self.ordering.nil?
     end
   end

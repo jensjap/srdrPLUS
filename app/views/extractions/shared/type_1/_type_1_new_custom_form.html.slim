@@ -56,7 +56,7 @@ h5 Add New #{ section_name }
                   partial: 'extractions_extraction_forms_projects_sections_type1s/population_fields' do
                   i.fi-plus>
                   | Add Population
-            = pop_form.simple_fields_for(:extractions_extraction_forms_projects_sections_type1_row_columns, pop_form.object.extractions_extraction_forms_projects_sections_type1_row_columns.build({ is_baseline: true, timepoint_name_attributes: { name: 'Baseline' } })) do |tp_form|
+            = pop_form.simple_fields_for(:extractions_extraction_forms_projects_sections_type1_row_columns, pop_form.object.extractions_extraction_forms_projects_sections_type1_row_columns.build({ timepoint_name_attributes: { name: 'Baseline' } })) do |tp_form|
               #timepoints style='margin: 1rem 0 1rem 0;'
                 h5 Timepoints
                 table

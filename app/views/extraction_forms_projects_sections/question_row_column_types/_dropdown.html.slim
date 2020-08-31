@@ -1,7 +1,7 @@
 / Find QuestionRowColumnFieldsQuestionRowColumnFieldOptions with QuestionRowColumnFieldOption 'answer_choice'
 - select_options = qrc.question_row_columns_question_row_column_options\
-                      .where(question_row_column_option_id: 1)
+                      .select{ |x| x.question_row_column_option_id == 1 }.map { |qrcqrco| [qrcqrco.name, qrcqrco.id, { 'data-prereq': "prereq-#{ qrcqrco.class }-#{ qrcqrco.id }" }] }
 
 = select_tag('dropdown-' + qrc.id.to_s,
-             options_for_select(select_options.map { |qrcqrco| [qrcqrco.name, qrcqrco.id, { 'data-prereq': "prereq-#{ qrcqrco.class }-#{ qrcqrco.id }" }] }),
+             options_for_select(select_options),
              include_blank: '-- Select --')

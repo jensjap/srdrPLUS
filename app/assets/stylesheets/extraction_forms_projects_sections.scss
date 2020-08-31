@@ -4,14 +4,14 @@
 
 div[class*=' prereq-'] {
   opacity: 0.5;
+  cursor: not-allowed;
+}
+
+div[class*=' prereq-'] * {
   -webkit-user-select: none;
   -khtml-user-select: none;
   -moz-user-select: none;
   -o-user-select: none;
   user-select: none;
-  cursor: not-allowed;
-
-  input, select {
-    pointer-events: none;
-  }
+  pointer-events: none;
 }

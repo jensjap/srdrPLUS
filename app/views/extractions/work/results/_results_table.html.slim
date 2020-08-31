@@ -9,7 +9,7 @@
     - @arms = ExtractionsExtractionFormsProjectsSectionsType1.by_section_name_and_extraction_id_and_extraction_forms_project_id(\
         'Arms',
         @extraction.id,
-        eefpst1r.extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_section.extraction_forms_projects_section.extraction_forms_project.id)
+        eefpst1r.extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_section.extraction_forms_projects_section.extraction_forms_project.id).reject { |efpst1| efpst1.type1 == Type1.find_by(name: 'Total', description: "All Arms combined") }
 
     .table-fixed-headers
       table.unstriped style='overflow: scroll;'
@@ -25,4 +25,3 @@
 
         tbody
           = render "extractions/work/results/results_table/q3_q4_body", bac_rss: bac_rss, wac_rss: wac_rss, net_rss: net_rss
-

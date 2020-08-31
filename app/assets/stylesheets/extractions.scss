@@ -111,3 +111,32 @@ button.suggestion-list-button {
     background-color: lavender !important;
   }
 }
+
+
+.extractions.work, .extractions.consolidate {
+  .checkbox, .radio {
+    label {
+      display: inline;
+    }
+  }
+}
+
+.remove-comparison-button {
+  position: absolute;
+  border: 1px solid grey;
+  padding: 0px 5px;
+  font-weight: 900;
+  background-color: white;
+  border-radius: 3px;
+  color: black;
+  right: 0px;
+  top: 0px;
+}
+
+.tr-group-top {
+  border-top: 2px solid !important;
+}
+
+.tr-group-bottom {
+  border-bottom: 2px solid !important;
+}

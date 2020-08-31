@@ -2,8 +2,8 @@
   nil,
   data: { prereq: "prereq-#{ qrc.class }-#{ qrc.id }" },
   min: qrc.question_row_columns_question_row_column_options\
-          .find_by(question_row_column_option_id: 4)\
+          .where(question_row_column_option_id: 4)\
           .name,
   max: qrc.question_row_columns_question_row_column_options\
-          .find_by(question_row_column_option_id: 5)\
+          .where(question_row_column_option_id: 5)\
           .name)

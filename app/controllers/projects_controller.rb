@@ -54,21 +54,33 @@ class ProjectsController < ApplicationController
                                               .where(project_id: project_ids)
                                               .group_by(&:project_id)
                                               .map{|k,v| [k, v.length.to_s]}.to_h
-    @projects_projects_user_counts         = ProjectsUser.where(project_id: project_ids)
+    @projects_projects_user_counts         = ProjectsUser
+                                              .where(project_id: project_ids)
                                               .group_by(&:project_id)
                                               .map{|k,v| [k, v.length.to_s]}.to_h
-    @projects_extraction_counts            = Extraction.where(project_id: project_ids)
+    @projects_extraction_counts            = Extraction
+                                              .where(project_id: project_ids)
                                               .group_by(&:project_id)
                                               .map{|k,v| [k, v.length.to_s]}.to_h
-    @sd_meta_data_counts                   = SdMetaDatum.where(project_id: project_ids)
+    @projects_extraction_forms_project_ids = ExtractionFormsProject
+                                              .where(project_id: project_ids)
+                                              .group_by(&:project_id)
+    @sd_meta_data_counts                   = SdMetaDatum
+                                              .where(project_id: project_ids)
                                               .group_by(&:project_id)
                                               .map{|k,v| [k, v.length.to_s]}.to_h
-    @projects_extraction_forms_project_ids = ExtractionFormsProject.where(project_id: project_ids)
-                                              .group_by(&:project_id)
 
     @projects_lead_or_with_key_questions   = ProjectsUsersRole.where(projects_user: ProjectsUser.where(project_id: project_ids, user_id: current_user), role: Role.where(name: 'Leader')).includes(projects_user: { project: [ :key_questions_projects ] }).map{ |pur| [pur.project.id, pur.project.key_questions_projects.present?] }.to_h
 
     @projects_lead_or_with_key_questions.default = false
+
+    @unapproved_publishings = Publishing.unapproved
+    @approved_publishings = Publishing.approved
+
+    unless current_user.admin?
+      @unapproved_publishings = @unapproved_publishings.where(user: current_user)
+      @approved_publishings = @approved_publishings.where(user: current_user)
+    end
   end
 
   # GET /projects/1
@@ -178,17 +190,21 @@ class ProjectsController < ApplicationController
                                               .where(project_id: project_ids)
                                               .group_by(&:project_id)
                                               .map{|k,v| [k, v.length.to_s]}.to_h
-    @projects_projects_user_counts         = ProjectsUser.where(project_id: project_ids)
+    @projects_projects_user_counts         = ProjectsUser
                                               .where(project_id: project_ids)
                                               .group_by(&:project_id)
                                               .map{|k,v| [k, v.length.to_s]}.to_h
-    @projects_extraction_counts            = Extraction.where(project_id: project_ids)
+    @projects_extraction_counts            = Extraction
                                               .where(project_id: project_ids)
                                               .group_by(&:project_id)
                                               .map{|k,v| [k, v.length.to_s]}.to_h
-    @projects_extraction_forms_project_ids = ExtractionFormsProject.where(project_id: project_ids)
+    @projects_extraction_forms_project_ids = ExtractionFormsProject
                                               .where(project_id: project_ids)
                                               .group_by(&:project_id)
+    @sd_meta_data_counts                   = SdMetaDatum
+                                              .where(project_id: project_ids)
+                                              .group_by(&:project_id)
+                                              .map{|k,v| [k, v.length.to_s]}.to_h
 
     @projects_lead_or_with_key_questions   = ProjectsUsersRole.where(projects_user: ProjectsUser.where(project_id: project_ids, user_id: current_user), role: Role.where(name: 'Leader')).includes(projects_user: { project: [ :key_questions_projects ] }).map{ |pur| [pur.project.id, pur.project.key_questions_projects.present?] }.to_h
 
@@ -341,8 +357,8 @@ class ProjectsController < ApplicationController
 
   def gdrive_params
     #params.permit( :kqp_ids => [], :payload => [ :column_name, :type, { :export_ids => [] } ] )
-    params.permit(:kqp_ids => [], 
-                  :columns => [:name, :type, 
+    params.permit(:kqp_ids => [],
+                  :columns => [:name, :type,
                                { :export_items => [:export_id, :type, :extraction_forms_projects_section_id] }])
   end
 

@@ -4,9 +4,10 @@ class ResultStatisticSectionsController < ApplicationController
 
   before_action :skip_policy_scope
 
-  before_action :set_result_statistic_section, only: [:edit, :update, :add_comparison, :consolidate]
-  before_action :set_arms, only: [:edit, :update, :add_comparison, :consolidate]
+  before_action :set_result_statistic_section, only: [:edit, :update, :add_comparison, :remove_comparison, :consolidate]
+  before_action :set_arms, only: [:edit, :update, :add_comparison, :remove_comparison, :consolidate]
   before_action :set_extractions, only: [:consolidate]
+  before_action :set_result_statistic_section_associate_data, only: [:update, :add_comparison, :remove_comparison]
   #!!! Birol: don't think this is working...where is comparables set?
   #before_action :set_comparisons_measures, only: [:edit]
 
@@ -29,18 +30,7 @@ class ResultStatisticSectionsController < ApplicationController
         format.html { redirect_to edit_result_statistic_section_path(@result_statistic_section),
                       notice: t('success') }
         format.json { render :show, status: :ok, location: @result_statistic_section }
-        format.js do
-          @eefpst1 = @result_statistic_section
-            .population
-            .extractions_extraction_forms_projects_sections_type1
-          @extraction                = @result_statistic_section.extraction
-          @project                   = @result_statistic_section.project
-          @extraction_forms_projects = @project.extraction_forms_projects
-          @eefpst1s                  = ExtractionsExtractionFormsProjectsSectionsType1
-            .by_section_name_and_extraction_id_and_extraction_forms_project_id('Outcomes',
-                                                                               @extraction.id,
-                                                                               @extraction_forms_projects.first.id)
-        end
+        format.js { }
       else
         format.html { render :edit }
         format.json { render json: @result_statistic_section.errors, status: :unprocessable_entity }
@@ -49,38 +39,27 @@ class ResultStatisticSectionsController < ApplicationController
   end
 
   def add_comparison
-    # This is required because in the NET Change section we have both types of comparisons; BAC and WAC. So in order to create the comparison
-    # in the correct section we use a hidden form input :comparison_type.
-    if params[:result_statistic_section]['comparison_type'] == 'bac'
-      temp_result_statistic_section = @result_statistic_section.population.result_statistic_sections.find_by(result_statistic_section_type_id: 2)
-    elsif params[:result_statistic_section]['comparison_type'] == 'wac'
-      temp_result_statistic_section = @result_statistic_section.population.result_statistic_sections.find_by(result_statistic_section_type_id: 3)
-    elsif params[:result_statistic_section]['comparison_type'] == 'diagnostic_test'
-      temp_result_statistic_section = @result_statistic_section.population.result_statistic_sections.find_by(result_statistic_section_type_id: 5)
-    end
-
     respond_to do |format|
       if temp_result_statistic_section.update(result_statistic_section_params)
         format.html { redirect_to edit_result_statistic_section_path(@result_statistic_section),
                       notice: t('success') }
         format.json { render :show, status: :ok, location: @result_statistic_section }
-        format.js do
-          @eefpst1 = @result_statistic_section
-            .population
-            .extractions_extraction_forms_projects_sections_type1
-          @extraction                = @result_statistic_section.extraction
-          @project                   = @result_statistic_section.project
-          @extraction_forms_projects = @project.extraction_forms_projects
-          @eefpst1s                  = ExtractionsExtractionFormsProjectsSectionsType1
-            .by_section_name_and_extraction_id_and_extraction_forms_project_id('Outcomes',
-                                                                               @extraction.id,
-                                                                               @extraction_forms_projects.first.id)
-        end
+        format.js { }
       else
         format.html do
           flash[:alert] = 'Invalid comparison'
           render :edit
         end
+        format.json { render json: @result_statistic_section.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  def remove_comparison
+    respond_to do |format|
+      if Comparison.find(params[:comparison_id]).destroy
+        format.js { render :add_comparison }
+      else
         format.json { render json: @result_statistic_section.errors, status: :unprocessable_entity }
       end
     end
@@ -174,6 +153,7 @@ class ResultStatisticSectionsController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def result_statistic_section_params
       params.require(:result_statistic_section).permit(
+        :comparison_type,
         measures_attributes: [:id, :name, :_destroy],
         measure_ids: [],
         result_statistic_sections_measures_attributes: [measure_attributes: [:id, :name]],
@@ -199,5 +179,32 @@ class ResultStatisticSectionsController < ApplicationController
 
     def extraction_ids_params
       params.require(:extraction_ids)
+    end
+
+    def set_result_statistic_section_associate_data
+      @eefpst1 = @result_statistic_section.
+        population.
+        extractions_extraction_forms_projects_sections_type1
+      @extraction = @result_statistic_section.extraction
+      @project = @result_statistic_section.project
+      @extraction_forms_projects = @project.extraction_forms_projects
+      @eefpst1s = ExtractionsExtractionFormsProjectsSectionsType1.
+        by_section_name_and_extraction_id_and_extraction_forms_project_id(
+          'Outcomes',
+          @extraction.id,
+          @extraction_forms_projects.first.id
+        )
+    end
+
+    def temp_result_statistic_section
+      # This is required because in the NET Change section we have both types of comparisons; BAC and WAC. So in order to create the comparison
+      # in the correct section we use a hidden form input :comparison_type.
+      if params[:result_statistic_section]['comparison_type'] == 'bac'
+        @result_statistic_section.population.result_statistic_sections.find_by(result_statistic_section_type_id: 2)
+      elsif params[:result_statistic_section]['comparison_type'] == 'wac'
+        @result_statistic_section.population.result_statistic_sections.find_by(result_statistic_section_type_id: 3)
+      elsif params[:result_statistic_section]['comparison_type'] == 'diagnostic_test'
+        @result_statistic_section.population.result_statistic_sections.find_by(result_statistic_section_type_id: 5)
+      end
     end
 end

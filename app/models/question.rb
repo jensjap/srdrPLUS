@@ -102,23 +102,26 @@ class Question < ApplicationRecord
 
     #!!! May need to rethink this.
     def ensure_matrix_column_headers
-      if ['Custom', 'Matrix'].include? self.question_type
-
-        first_row = self.question_rows.first
-        rest_rows = self.question_rows[1..-1]
-
-        column_headers = []
-
-        first_row.question_row_columns.each do |c|
-          column_headers << c.name
+      if self.question_rows.count == 0
+        self.question_rows.new
+        new_qrc = self.question_rows.first.question_row_columns.new(question_row_column_type: QuestionRowColumnType.find_by(name: 'text'))
+        QuestionRowColumnOption.all.each do |opt|
+          new_qrc.question_row_column_options << opt
         end
+      end
+      first_row = self.question_rows.first
+      rest_rows = self.question_rows[1..-1]
 
-        rest_rows.each do |r|
-          r.question_row_columns.each_with_index do |rc, idx|
-            rc.update(name: column_headers[idx])
-          end
+      column_headers = []
+
+      first_row.question_row_columns.each do |c|
+        column_headers << c.name
+      end
+
+      rest_rows.each do |r|
+        r.question_row_columns.each_with_index do |rc, idx|
+          rc.update(name: column_headers[idx])
         end
-
       end
     end
 end

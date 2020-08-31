@@ -59,11 +59,16 @@ class ExtractionFormsProjectsController < ApplicationController
     @key_questions_projects = @extraction_forms_project.project.key_questions_projects.includes(:key_question)
     @key_questions_projects_array_for_select = @extraction_forms_project.project.key_questions_projects_array_for_select
     @extraction_forms_projects_sections = @extraction_forms_project.extraction_forms_projects_sections
-      .includes([:extraction_forms_projects_section_type,
+      .includes([{ extraction_forms_projects_sections_type1s: [:timepoint_names, :ordering] },
+                 :extraction_forms_projects_section_type,
+                 { link_to_type1: :type1s },
                  :section,
                  :type1s,
-                 { questions: [:dependencies,
-                               { question_rows: [:question_row_columns] }] }])
+                 { questions: [:dependencies, :ordering,
+                               { question_rows: [ { question_row_columns: [:question_row_column_fields, 
+                                                                           :question_row_column_type, 
+                                                                           :question_row_columns_question_row_column_options] }] },
+                               { key_questions_projects: [ :key_question ] }] }])
     add_breadcrumb 'my projects',  :projects_path
     add_breadcrumb 'edit project', edit_project_path(@extraction_forms_project.project)
     add_breadcrumb 'builder',      :build_extraction_forms_project_path

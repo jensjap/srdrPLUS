@@ -28,7 +28,7 @@ class ProjectsUsersRole < ApplicationRecord
   has_one :project, through: :projects_user
 
   has_many :assignments, dependent: :destroy, inverse_of: :projects_users_role
-  has_many :extractions, dependent: :destroy, inverse_of: :projects_users_role
+  has_many :extractions, inverse_of: :projects_users_role
 
   has_many :projects_users_roles_teams
   has_many :teams, through: :projects_users_roles_teams, dependent: :destroy
@@ -37,6 +37,8 @@ class ProjectsUsersRole < ApplicationRecord
   has_many :tags, through: :taggings, dependent: :destroy
 
   has_many :notes, dependent: :destroy, inverse_of: :projects_users_role
+
+  before_destroy :reassign_extraction
 
   def handle
     profile = self.projects_user.user.profile
@@ -65,4 +67,17 @@ class ProjectsUsersRole < ApplicationRecord
   def handle
     "#{ user.profile.username || user.email } (#{ role.name })"
   end
+
+  private
+    def reassign_extraction
+      extractions.each do |extraction|
+        new_assignee = ProjectsUsersRole.
+          joins(:projects_user).
+          where(projects_users: { project: extraction.project }, role_id: 1).
+          where.
+          not(id: self.id).
+          first
+        extraction.update!(projects_users_role: new_assignee)
+      end
+    end
 end

@@ -1,17 +1,21 @@
 class ResultStatisticSectionPolicy < ApplicationPolicy
   def edit?
-    project_consolidator?
+    project_contributor?
   end
 
   def update?
-    project_consolidator?
+    project_contributor?
   end
 
   def add_comparison?
-    project_consolidator?
+    project_contributor?
+  end
+
+  def remove_comparison?
+    project_contributor?
   end
 
   def consolidate?
-    project_consolidator?
+    project_contributor?
   end
 end

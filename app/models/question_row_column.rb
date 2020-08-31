@@ -45,8 +45,8 @@ class QuestionRowColumn < ApplicationRecord
   def field_validation_value_for(name)
     question_row_columns_question_row_column_options
       .joins(:question_row_column_option)
-      .find_by(question_row_column_options: { name: name })
-      .name
+      .where(question_row_column_options: { name: name })
+      .first.name
   end
 
   private
@@ -66,8 +66,8 @@ class QuestionRowColumn < ApplicationRecord
     end
 
     def ensure_question_row_column_fields
-      if self.question_row_column_type.name == "Numeric"  # Numeric requires 2 fields.
-        self.question_row_column_fields.create if self.question_row_column_fields.length < 2
+      if self.question_row_column_type.name == QuestionRowColumnType::NUMERIC  # Numeric requires 2 fields.
+        self.question_row_column_fields.create! while self.question_row_column_fields.length < 2
       end
     end
 end

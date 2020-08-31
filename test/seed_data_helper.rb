@@ -2,6 +2,7 @@
 module SeedData
   def self.extended(object)
     object.instance_exec do
+      return unless UserType.all.count == 0
       # Turn off paper_trail.
       PaperTrail.enabled = false
 
@@ -1124,15 +1125,15 @@ module SeedData
       # Seed QuestionRowColumnType.
       QuestionRowColumnType.create(
         [
-          { name: 'text' },
-          { name: 'numeric' },
-          { name: 'numeric_range' },
-          { name: 'scientific' },
-          { name: 'checkbox' },
-          { name: 'dropdown' },
-          { name: 'radio' },
-          { name: 'select2_single' },
-          { name: 'select2_multi' }
+          { name: QuestionRowColumnType::TEXT },
+          { name: QuestionRowColumnType::NUMERIC },
+          { name: QuestionRowColumnType::NUMERIC_RANGE },
+          { name: QuestionRowColumnType::SCIENTIFIC },
+          { name: QuestionRowColumnType::CHECKBOX },
+          { name: QuestionRowColumnType::DROPDOWN },
+          { name: QuestionRowColumnType::RADIO },
+          { name: QuestionRowColumnType::SELECT2_SINGLE },
+          { name: QuestionRowColumnType::SELECT2_MULTI }
         ]
       )
 

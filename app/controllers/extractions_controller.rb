@@ -4,10 +4,11 @@ class ExtractionsController < ApplicationController
 
   include ExtractionsControllerHelpers
 
-  before_action :set_project, only: [:index, :new, :create, :comparison_tool, :compare, :consolidate]
-  before_action :set_extraction, only: [:show, :edit, :update, :destroy, :work]
+  before_action :set_project, only: [:index, :new, :create, :comparison_tool, :compare, :consolidate, :edit_type1_across_extractions]
+  before_action :set_extraction, only: [:show, :edit, :update, :destroy, :work, :update_kqp_selections]
   before_action :set_extractions, only: [:consolidate, :edit_type1_across_extractions]
   before_action :ensure_extraction_form_structure, only: [:consolidate, :work]
+  before_action :set_eefps_by_efps_dict, only: [:work]
 
   before_action :skip_policy_scope, except: [:compare, :consolidate, :edit_type1_across_extractions]
   before_action :skip_authorization, only: [:index, :show]
@@ -15,9 +16,7 @@ class ExtractionsController < ApplicationController
   # GET /projects/1/extractions
   # GET /projects/1/extractions.json
   def index
-    @is_leader = false
     if @project.leaders.include? current_user
-      @is_leader = false
       @extractions = @project.extractions
       @projects_users_roles = ProjectsUsersRole.joins(:projects_user).where(projects_users: { project: @project })
       @citation_groups = @project.citation_groups
@@ -26,7 +25,10 @@ class ExtractionsController < ApplicationController
       if @project.consolidators.include? current_user
         @citation_groups = @project.citation_groups
       else
-        @citation_groups = []
+        @citation_groups = {
+          citations_project_count: 0,
+          citations_projects: [],
+        }
       end
     end
 
@@ -105,6 +107,17 @@ class ExtractionsController < ApplicationController
     end
   end
 
+  def update_kqp_selections
+    respond_to do |format|
+      format.js do
+        @extraction.extractions_key_questions_projects_selections.destroy_all
+        params[:extraction][:extractions_key_questions_projects_selection_ids].each do |kqp_id|
+          @extraction.extractions_key_questions_projects_selections.create(key_questions_project_id: kqp_id) if kqp_id.present?
+        end
+      end
+    end
+  end
+
   # DELETE /extractions/1
   # DELETE /extractions/1.json
   def destroy
@@ -122,21 +135,31 @@ class ExtractionsController < ApplicationController
     @project = @extraction.project
     authorize(@project, policy_class: ExtractionPolicy)
 
-    @extraction_forms_projects = @project.extraction_forms_projects
+    set_extraction_forms_projects
+
     @key_questions_projects_array_for_select = @project.key_questions_projects_array_for_select
 
+    if @extraction_forms_projects.first.extraction_forms_project_type.eql? ExtractionFormsProjectType::DIAGNOSTIC_TEST
+      @eefpst1s = ExtractionsExtractionFormsProjectsSectionsType1
+        .by_section_name_and_extraction_id_and_extraction_forms_project_id('Diagnostic Tests',
+                                                                           @extraction.id,
+                                                                           @extraction_forms_projects.first.id)
+    else
+      @eefpst1s = ExtractionsExtractionFormsProjectsSectionsType1
+        .by_section_name_and_extraction_id_and_extraction_forms_project_id('Outcomes',
+                                                                           @extraction.id,
+                                                                           @extraction_forms_projects.first.id)
+    end
+
     # If a specific 'Outcome' is requested we load it here.
-    @eefpst1s = ExtractionsExtractionFormsProjectsSectionsType1
-      .by_section_name_and_extraction_id_and_extraction_forms_project_id('Outcomes',
-                                                                         @extraction.id,
-                                                                         @extraction_forms_projects.first.id)
     if params[:eefpst1_id].present?
       @eefpst1 = ExtractionsExtractionFormsProjectsSectionsType1.find(params[:eefpst1_id])
-
     # Otherwise we choose the first 'Outcome' in the extraction to display.
     else
       @eefpst1 = @eefpst1s.first
     end
+
+    update_record_helper_dictionaries @extraction
 
     add_breadcrumb 'edit project', edit_project_path(@project)
     add_breadcrumb 'extractions',  project_extractions_path(@project)
@@ -173,12 +196,20 @@ class ExtractionsController < ApplicationController
   def consolidate
     authorize(@project, policy_class: ExtractionPolicy)
 
-    @extraction_forms_projects = @project.extraction_forms_projects
+    set_extraction_forms_projects
+
     @consolidated_extraction   = @project.consolidated_extraction(@extractions.first.citations_project_id, current_user.id)
     @head_to_head              = head_to_head(@extraction_forms_projects, @extractions)
     @preselected_eefpst1       = params[:eefpst1_id].present? ? ExtractionsExtractionFormsProjectsSectionsType1.find(params[:eefpst1_id]) : nil
     @consolidated_extraction.ensure_extraction_form_structure
     @consolidated_extraction.auto_consolidate(@extractions)
+
+    update_record_helper_dictionaries @consolidated_extraction
+    update_eefps_by_extraction_and_efps_dict @consolidated_extraction
+    @extractions.each do |extraction|
+      update_record_helper_dictionaries extraction
+      update_eefps_by_extraction_and_efps_dict extraction
+    end
 
     add_breadcrumb 'edit project',    edit_project_path(@project)
     add_breadcrumb 'extractions',     :project_extractions_path
@@ -188,7 +219,7 @@ class ExtractionsController < ApplicationController
 
   # GET /projects/1/extractions/edit_type1_across_extractions
   def edit_type1_across_extractions
-    authorize(@extraction.project, policy_class: ExtractionPolicy)
+    authorize(@project, policy_class: ExtractionPolicy)
 
     @type1       = Type1.find(params[:type1_id])
     @efps        = ExtractionFormsProjectsSection.find(params[:efps_id])
@@ -221,7 +252,7 @@ class ExtractionsController < ApplicationController
 
     def set_extractions
       @extractions = policy_scope(Extraction).
-        includes(projects_users_role: { projects_user: { user: :profile } }).
+        includes({projects_users_role: { projects_user: { user: :profile } }}, {extractions_extraction_forms_projects_sections: [{link_to_type1: [{extraction_forms_projects_section: :section}, :type1s, {extractions_extraction_forms_projects_sections_type1s: [:type1_type, :type1]}]}, {statusing: :status}]}).
         where(id: extraction_ids_params)
     end
 
@@ -245,5 +276,38 @@ class ExtractionsController < ApplicationController
 
     def extraction_ids_params
       params.require(:extraction_ids)
+    end
+
+    def update_record_helper_dictionaries(extraction)
+      @eefps_qrcf_dict ||= {}
+      @records_dict ||= {}
+      extraction.extractions_extraction_forms_projects_sections.each do |eefps|
+        eefps.extractions_extraction_forms_projects_sections_question_row_column_fields.includes([:records, :extractions_extraction_forms_projects_sections_type1]).each do |eefps_qrcf|
+          @eefps_qrcf_dict[[eefps.id,eefps_qrcf.question_row_column_field_id,eefps_qrcf.extractions_extraction_forms_projects_sections_type1&.type1_id].to_s] = eefps_qrcf
+          if eefps_qrcf.records.blank?
+            @records_dict[eefps_qrcf.id] = Record.find_or_create_by(recordable: eefps_qrcf)
+          else
+            @records_dict[eefps_qrcf.id] = eefps_qrcf.records.first
+          end
+        end
+      end
+    end
+
+    def update_eefps_by_extraction_and_efps_dict(extraction)
+      @eefps_by_extraction_and_efps_dict ||= {}
+      @eefpst1_by_eefps_and_t1_dict ||= {}
+      eefps_relation = extraction.extractions_extraction_forms_projects_sections.includes({link_to_type1: [{extraction_forms_projects_section: :section}, :type1s, {extractions_extraction_forms_projects_sections_type1s: [:type1_type, :type1, {extractions_extraction_forms_projects_sections_type1_rows: :population_name}]}]}, {statusing: :status})
+      @eefps_by_extraction_and_efps_dict[extraction.id] = eefps_relation.group_by(&:extraction_forms_projects_section_id)
+      eefps_relation.each do |eefps|
+        @eefpst1_by_eefps_and_t1_dict[eefps.id] = eefps.extractions_extraction_forms_projects_sections_type1s.includes(extractions_extraction_forms_projects_sections_type1_rows: :population_name).group_by(&:type1_id)
+      end
+    end
+
+    def set_eefps_by_efps_dict
+      @eefps_by_efps_dict ||= @extraction.extractions_extraction_forms_projects_sections.includes({link_to_type1: [{extraction_forms_projects_section: :section}, :type1s, {extractions_extraction_forms_projects_sections_type1s: [:type1_type, :type1]}]}, {statusing: :status}).group_by(&:extraction_forms_projects_section_id)
+    end
+
+    def set_extraction_forms_projects
+      @extraction_forms_projects = @project.extraction_forms_projects.includes( extraction_forms_projects_sections: [:extraction_forms_projects_section_option, :extraction_forms_projects_section_type, :section, :type1s, {questions: [:dependencies, :key_questions_projects, {question_rows: [{question_row_columns: [:question_row_column_type, :question_row_column_fields, {question_row_columns_question_row_column_options: [:followup_field]}]}]}]}])
     end
 end

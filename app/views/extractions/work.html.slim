@@ -2,7 +2,7 @@
 - provide(:project_title, @extraction.project.name)
 
 div style='margin-left: 62px;'
-  h5 
+  h5
     = "Assigned to "
     span style="font-weight: bold"
       = @extraction.user.handle
@@ -14,12 +14,7 @@ div style= 'margin: 1.2rem 62px 1.2rem 62px ; background-color: Lavender; border
 .key-question-selector style='margin-left: 31px;'
   h5 Select Key Question(s):
   .grid-y
-    - @key_questions_projects_array_for_select.each do |kqp|
-      .cell.grid-x
-        .cell.shrink style='margin-right: 0.5rem;'
-          = check_box_tag kqp[1], 1, true
-        .cell.auto
-          = label_tag kqp[1], kqp[0]
+    = render 'extractions/extractions_key_questions_projects_selections'
 
 hr
 

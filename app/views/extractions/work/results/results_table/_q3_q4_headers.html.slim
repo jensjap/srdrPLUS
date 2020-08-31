@@ -14,7 +14,7 @@ tr
 tr
   th.bg-lightgreen.vertical
   th.bg-lightgreen.freeze
-  - @arms.each do |arm|
+  - @arms.sort_by { |eefpst1| eefpst1.ordering.position }.each do |arm|
     th.bg-lightgreen = arm.type1.name
 
   th.bg-lightpink.freeze
@@ -37,4 +37,3 @@ tr
           span.has-tip.tip-right data-tooltip='' aria-haspopup='true' data-options='show_on:small' title="Description: Analysis of variance"
             | All Arms (ANOVA)
           br
-

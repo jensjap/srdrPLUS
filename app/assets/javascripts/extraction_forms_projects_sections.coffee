@@ -7,6 +7,18 @@ document.addEventListener 'turbolinks:load', ->
 
   do ->
     if $( '.extraction_forms_projects.build, .extraction_forms_projects_sections, .extractions' ).length > 0
+      ## ATTACH FOLLOWUPS
+      $( '.attach-me' ).each () ->
+        tether = new Tether({
+          element: this,
+          target: "label[for='" + ( $( "[data-attach-source='" + this.getAttribute('data-attach-target') + "']" )[0].id ) + "']",
+          attachment: "center left",
+          targetAttachment: "center right",
+          offset: '-9px -10px'
+        })
+        tether.position();
+      $( '.attach-me' ).removeClass('hide')
+
       ###############################################
       # Set the field to display from the result set.
       formatResultSelection = ( result, container ) ->
@@ -164,8 +176,8 @@ document.addEventListener 'turbolinks:load', ->
         # Turn off dependencies on itself..
         prereqOff( prereq )
         # ..and those surrounding it but within the closest table.
-        that.closest( 'table' ).find( 'input[data-prereq],option[data-prereq]' ).each ( idx ) ->
-          prereq = $( this ).data( 'prereq' )
+        that.closest( 'table' ).find( 'textarea[data-prereq],input[data-prereq],option[data-prereq]' ).each ( idx ) ->
+          #prereq = $( this ).data( 'prereq' )
           prereqOff( prereq )
           return  # END that.closest( 'table' ).find( 'input[data-prereq],option[data-prereq]' ).each ( idx ) ->
         return  # END turnPrereqOffSelfAndDescendants = ( prereq, that ) ->
@@ -174,7 +186,7 @@ document.addEventListener 'turbolinks:load', ->
         # Turn on dependencies on itself...
         prereqOn( prereq )
         # ..and those surrounding it but within the closest table.
-        that.closest( 'table' ).find( 'input[data-prereq],option[data-prereq]' ).each ( idx ) ->
+        that.closest( 'table' ).find( 'textarea[data-prereq],input[data-prereq],option[data-prereq]' ).each ( idx ) ->
           prereq = $( this ).data( 'prereq' )
           prereqOn( prereq )
           return  # END that.closest( 'table' ).find( 'input[data-prereq],option[data-prereq]' ).each ( idx ) ->
@@ -244,7 +256,7 @@ document.addEventListener 'turbolinks:load', ->
 
       ##########################################################################
       # Check whether dependencies are fulfilled and change classes accordingly.
-      $( '#preview .card input,select' ).on 'change keyup', ( e ) ->
+      $( '#preview .card input, #preview .card select, #preview .card textarea' ).on 'change keyup', ( e ) ->
         e.preventDefault()
 
         that   = $( this )
@@ -259,7 +271,7 @@ document.addEventListener 'turbolinks:load', ->
 
         else
           noneActiveAndPrereq = true
-          that.closest( 'table' ).find( 'input,select' ).each ( idx ) ->
+          that.closest( 'table' ).find( 'input,select,textarea' ).each ( idx ) ->
             that   = $( this )
             result = subroutine( that )
             active = result.active
@@ -277,24 +289,30 @@ document.addEventListener 'turbolinks:load', ->
 
         return  # END $( '#preview .card input,select' ).on 'change keyup', ( e ) ->
 
+      updateCards = () ->
+        # Hide all questions first.
+        $( '.card' ).addClass( 'hide' )
+
+        # Go over each key question checkbox and reveal question if its key question
+        # prerequisite is checked.
+        $( '.kqp-selector' ).each ->
+          that = $( this )
+          isChecked = that.prop( 'checked' )
+          if isChecked
+            kqId = that.attr( 'data-kqp-selection-id' )
+            $( '.card.kqreq-'+kqId ).removeClass( 'hide' )
+
       $( 'input' ).trigger( 'change' )
 
       #################################################################################
       # Make all cards visible that require at least one of the key questions selected.
       $( '.key-question-selector input[type="checkbox"]' ).on 'change', ( e ) ->
         e.preventDefault()
+        updateCards()
+        $('#extractions-key-questions-projects-selections-form').submit()
 
-        # Hide all questions first.
-        $( '.card' ).addClass( 'hide' )
-
-        # Go over each key question checkbox and reveal question if its key question
-        # prerequisite is checked.
-        $( this ).parents( '#preview, .content' ).find( '.key-question-selector input[type="checkbox"]' ).each ->
-          that = $( this )
-          isChecked = that.prop( 'checked' )
-          if isChecked
-            kqId = that.attr( 'id' )
-            $( '.card.kqreq-'+kqId ).removeClass( 'hide' )
+      $(document).ready ->
+        updateCards()
 
     return  # END do ->
 

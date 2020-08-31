@@ -80,17 +80,7 @@ class User < ApplicationRecord
   has_many :tags, through: :taggings, dependent: :destroy
 
   def highest_role_in_project(project)
-    begin
-      self
-        .projects_users_roles
-        .where('projects_user_id in ( ? )', self.projects_users.select(:id).where(project: project))
-        .order(id: :asc)
-        .first  # Higher roles have lower id.
-        .role
-        .name
-    rescue
-      false
-    end
+    Role.joins(:projects_users).where(projects_users: { user: self, project: project }).first.try(:name)
   end
 
   def handle
@@ -148,6 +138,10 @@ class User < ApplicationRecord
       user.expires_at = auth.credentials.expires_at
       user.refresh_token = auth.credentials.refresh_token
     end
+  end
+
+  def admin?
+    user_type.user_type == 'Admin'
   end
 
   private

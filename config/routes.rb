@@ -2,7 +2,8 @@ require 'sidekiq/web'
 
 Rails.application.routes.draw do
   post 'publishings/create'
-  delete 'publishings/destroy'
+  delete 'publishings/:id', to: 'publishings#destroy', as: 'publishings_destroy'
+  post 'publishings/:id/approve', to: 'publishings#approve', as: 'publishings_approve'
 
   resources :project_report_links, only: [:index, :view] do
     get 'new_query_form'
@@ -42,6 +43,8 @@ Rails.application.routes.draw do
   apipie
   namespace :api do
     namespace :v1 do
+      resources :evidence_variables, only: [:index, :show]
+
       resources :keywords, only: [:index]
       resources :users, only: [:index]
       resources :authors, only: [:index]
@@ -170,6 +173,7 @@ Rails.application.routes.draw do
 
       member do
         get 'work'
+        put 'update_kqp_selections'
         get 'change_outcome_in_results_section', constraints: { format: 'js' }
       end
 
@@ -188,6 +192,7 @@ Rails.application.routes.draw do
 
                 member do
                   post 'add_comparison'
+                  delete 'remove_comparison'
                   get  'consolidate'
                   get  'manage_measures', constraints: { format: 'js' }
                 end

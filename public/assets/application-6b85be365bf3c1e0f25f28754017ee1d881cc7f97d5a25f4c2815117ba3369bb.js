@@ -50302,6 +50302,13 @@ function __guardMethod__(obj, methodName, transform) {
       $('#extraction_forms_projects_sections_type1_timepoint_name_ids').select2({
         minimumInputLength: 0
       });
+      $(document).on("click", ".radio-deselector-btn", function(e) {
+        var dataRadioRemoveId, radioElements;
+        dataRadioRemoveId = $(e.target).data('radio-remove-id');
+        radioElements = $("*[data-radio-remove-id='" + dataRadioRemoveId + "']");
+        radioElements.removeAttr('checked');
+        return $(radioElements[0]).trigger("change");
+      });
     })();
   });
 
@@ -50309,7 +50316,7 @@ function __guardMethod__(obj, methodName, transform) {
 (function() {
   document.addEventListener('turbolinks:load', function() {
     (function() {
-      var formatResult, formatResultSelection, prereqOff, prereqOn, subroutine, turnPrereqOffSelfAndDescendants, turnPrereqOnSelfAndDescendants;
+      var formatResult, formatResultSelection, prereqOff, prereqOn, subroutine, turnPrereqOffSelfAndDescendants, turnPrereqOnSelfAndDescendants, updateCards;
       if ($('.extraction_forms_projects.build, .extraction_forms_projects_sections, .extractions').length > 0) {
         formatResultSelection = function(result, container) {
           return result.text;
@@ -50525,19 +50532,26 @@ function __guardMethod__(obj, methodName, transform) {
             }
           }
         });
-        $('input').trigger('change');
-        $('.key-question-selector input[type="checkbox"]').on('change', function(e) {
-          e.preventDefault();
+        updateCards = function() {
           $('.card').addClass('hide');
-          return $(this).parents('#preview, .content').find('.key-question-selector input[type="checkbox"]').each(function() {
+          return $('.kqp-selector').each(function() {
             var isChecked, kqId, that;
             that = $(this);
             isChecked = that.prop('checked');
             if (isChecked) {
-              kqId = that.attr('id');
+              kqId = that.attr('data-kqp-selection-id');
               return $('.card.kqreq-' + kqId).removeClass('hide');
             }
           });
+        };
+        $('input').trigger('change');
+        $('.key-question-selector input[type="checkbox"]').on('change', function(e) {
+          e.preventDefault();
+          updateCards();
+          return $('#extractions-key-questions-projects-selections-form').submit();
+        });
+        $(document).ready(function() {
+          return updateCards();
         });
       }
     })();
@@ -50557,6 +50571,12 @@ function __guardMethod__(obj, methodName, transform) {
     }
     (function() {
       var add_change_listeners_to_questions, apply_coloring, apply_consolidation_dropdown, dt, get_extractor_names, get_number_of_extractions, get_question_type, get_question_value, shift_down;
+      $('.index-extractions-select2').select2();
+      $('.new-extraction-select2').select2();
+      $('.new-extraction-select2-multi').select2({
+        multiple: 'true',
+        placeholder: '-- Select citation to be extracted --'
+      });
       $('.consolidation-select2').select2();
       $('.consolidation-select2-multi').select2({
         multiple: 'true'
@@ -51432,8 +51452,9 @@ function __guardMethod__(obj, methodName, transform) {
       return;
     }
     (function() {
-      var hideHeaders, multiSelect;
+      var allowsFollowup, hideHeaders, multiSelect;
       multiSelect = ['Checkbox (select multiple)', 'Dropdown (select one)', 'Radio (select one)', 'Select one (with write-in option)', 'Select multiple (with write-in option)'];
+      allowsFollowup = ['Checkbox (select multiple)', 'Radio (select one)'];
       $('.fieldset').on('change', function() {
         var _value, that;
         that = $(this);
@@ -51442,7 +51463,12 @@ function __guardMethod__(obj, methodName, transform) {
         _value = that.find('select').children(':selected').text();
         if (indexOf.call(multiSelect, _value) >= 0) {
           that.find('.field-options.field-option-type-answer_choice').show();
-          return that.find('.links').show();
+          that.find('.links').show();
+          if (indexOf.call(allowsFollowup, _value) >= 0) {
+            return that.find('.followup_container').css('visibility', 'visible');
+          } else {
+            return that.find('.followup_container').css('visibility', 'hidden');
+          }
         } else if (_value === 'Text Field (alphanumeric)') {
           that.find('.field-options.field-option-type-min_length').show();
           return that.find('.field-options.field-option-type-max_length').show();
@@ -51586,7 +51612,7 @@ function __guardMethod__(obj, methodName, transform) {
         $('.nested-fields > .comparate-groups').find('.nested-fields.comparates').first().after($('<div style="text-align: center; font-weight: normal;">vs.</div>'));
         if ($('.wac-comparate-fields').length === 2) {
           $('.wac-comparate-fields:eq(1)').find('select option').filter(function() {
-            return this.text.includes('(Baseline)');
+            return this.text.includes('Baseline');
           }).attr('selected', true);
         }
         $('.links.add-anova a').click();
@@ -52590,7 +52616,7 @@ toastr.options = {
 
 Dropzone.autoDiscover = false;
 
-/// GLOBAL function TO SEND ASYNC FORMS  
+/// GLOBAL function TO SEND ASYNC FORMS
 function send_async_form(form) {
   var formData = new FormData(form);
 
@@ -52650,6 +52676,7 @@ document.addEventListener( 'turbolinks:load', function() {
     for (let orderable_list of Array.from( $( scope ).find( '.orderable-list' ))) {
       //# CHANGE THIS
       const ajax_url = $( '.orderable-list' ).attr( 'orderable-url' );
+      const forceRestart = $( '.orderable-list' ).attr( 'force-reload' );
       let saved_state = null;
 
       //# helper method for converting class name into camel case
@@ -52689,8 +52716,12 @@ document.addEventListener( 'turbolinks:load', function() {
               }
               // then save state
               saved_state = $( orderable_list ).sortable( "toArray" );
-
-              return toastr.success( 'Positions successfully updated' );
+              if (forceRestart) {
+                toastr.success( 'Positions successfully updated. Reloading page to apply changes.' );
+                location.reload();
+              } else {
+                toastr.success( 'Positions successfully updated' );
+              }
             },
           error( data ) {
               $( orderable_list ).sortable( 'sort', saved_state );
@@ -52743,9 +52774,8 @@ document.addEventListener( 'turbolinks:load', function() {
       $outer_form.submit()
     })
   }
-  
+
 } );
 document.addEventListener( 'turbolinks:before-cache', function() {
   $( '.reveal' ).foundation( 'close' )
 } );
-

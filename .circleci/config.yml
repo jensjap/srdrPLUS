@@ -12,6 +12,10 @@ jobs:
           BUNDLE_PATH: vendor/bundle
           RAILS_ENV: test
           MYSQL_USER: root
+          SRDRPLUS_DATABASE_USERNAME: root
+          SRDRPLUS_DATABASE_PASSWORD: password
+          SRDRPLUS_DATABASE_SCHEMA: srdrPLUS_development
+          SRDRPLUS_DATABASE_HOST: 127.0.0.1
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
@@ -23,7 +27,7 @@ jobs:
           MYSQL_ALLOW_EMPTY_PASSWORD: yes
           MYSQL_DATABASE: srdrPLUS_test
           MYSQL_ROOT_HOST: 127.0.0.1
-          MYSQL_ROOT_PASSWORD: ''
+          MYSQL_ROOT_PASSWORD: password
           MYSQL_USER: root
 
       # Install elastic search
@@ -43,6 +47,12 @@ jobs:
 
       - run:
           name: install dependencies
+          command: |
+            gem update --system
+            gem install bundler
+
+      - run:
+          name: install more dependencies
           command: |
             bundle install --jobs=4 --retry=3 --path vendor/bundle
 

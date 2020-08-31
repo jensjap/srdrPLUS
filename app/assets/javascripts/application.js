@@ -15,6 +15,8 @@
 //= require sortable-rails-jquery
 //= require activestorage
 //= require foundation-datepicker.min
+//= require tether.min
+//= require dropzone
 
 // require assignments
 // require author
@@ -51,8 +53,6 @@
 // require static_pages
 // require tasks
 // require teams
-
-//= require dropzone
 
 //= require_tree .
 
@@ -118,7 +118,7 @@ toastr.options = {
 
 Dropzone.autoDiscover = false;
 
-/// GLOBAL function TO SEND ASYNC FORMS  
+/// GLOBAL function TO SEND ASYNC FORMS
 function send_async_form(form) {
   var formData = new FormData(form);
 
@@ -178,6 +178,7 @@ document.addEventListener( 'turbolinks:load', function() {
     for (let orderable_list of Array.from( $( scope ).find( '.orderable-list' ))) {
       //# CHANGE THIS
       const ajax_url = $( '.orderable-list' ).attr( 'orderable-url' );
+      const forceRestart = $( '.orderable-list' ).attr( 'force-reload' );
       let saved_state = null;
 
       //# helper method for converting class name into camel case
@@ -217,8 +218,12 @@ document.addEventListener( 'turbolinks:load', function() {
               }
               // then save state
               saved_state = $( orderable_list ).sortable( "toArray" );
-
-              return toastr.success( 'Positions successfully updated' );
+              if (forceRestart) {
+                toastr.success( 'Positions successfully updated. Reloading page to apply changes.' );
+                location.reload();
+              } else {
+                toastr.success( 'Positions successfully updated' );
+              }
             },
           error( data ) {
               $( orderable_list ).sortable( 'sort', saved_state );
@@ -271,9 +276,8 @@ document.addEventListener( 'turbolinks:load', function() {
       $outer_form.submit()
     })
   }
-  
+
 } );
 document.addEventListener( 'turbolinks:before-cache', function() {
   $( '.reveal' ).foundation( 'close' )
 } );
-

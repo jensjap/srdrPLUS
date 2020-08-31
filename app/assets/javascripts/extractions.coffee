@@ -7,6 +7,14 @@ document.addEventListener 'turbolinks:load', ->
   return unless $( '.extractions' ).length > 0
 
   do ->
+    ## SELECT2 INITIALIZATION FOR EXTRACTION INDEX
+    $( '.index-extractions-select2' ).select2()
+    
+    ## SELECT2 INITIALIZATION FOR NEW EXTRACTION
+    $( '.new-extraction-select2' ).select2()
+    $( '.new-extraction-select2-multi' ).select2( multiple: 'true', placeholder: '-- Select citation to be extracted --' )
+
+    ## SELECT2 INITIALIZATION FOR CONSOLIDATION
     $( '.consolidation-select2' ).select2()
     $( '.consolidation-select2-multi' ).select2( multiple: 'true' )
 

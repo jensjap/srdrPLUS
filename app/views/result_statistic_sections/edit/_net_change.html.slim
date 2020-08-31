@@ -54,9 +54,9 @@
       - @result_statistic_section.population.within_arm_comparisons_section.comparisons.each do |wac|
         tr
           td
-            div style='text-align: center; font-weight: bold;' == wac.comparate_groups.first.comparates.map { |c| c.comparable_element.comparable.label_with_baseline_indicator }.join('<br>')
+            div style='text-align: center; font-weight: bold;' == wac.comparate_groups.first.comparates.map { |c| c.comparable_element.comparable.label_with_optional_unit }.join('<br>')
             div style='text-align: center;' vs.
-            div style='text-align: center; font-weight: bold;' == wac.comparate_groups.second.comparates.map { |c| c.comparable_element.comparable.label_with_baseline_indicator }.join('<br>')
+            div style='text-align: center; font-weight: bold;' == wac.comparate_groups.second.comparates.map { |c| c.comparable_element.comparable.label_with_optional_unit }.join('<br>')
 
           - @result_statistic_section.population.between_arm_comparisons_section.comparisons.each do |bac|
             td

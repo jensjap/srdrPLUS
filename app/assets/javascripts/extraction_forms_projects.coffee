@@ -42,7 +42,7 @@ document.addEventListener 'turbolinks:load', ->
         timepoints = []
         tableRow.find( 'td[data-timepoints=""] ul li' ).each ->
           timepoints.push({ name: $( this ).data( 'tp-name' ), unit: $( this ).data( 'tp-unit' ) })
-          
+
         #type1Units = tableRow.children( 'td[data-t1-units=""]' ).text()
 
         # Find and fill the last input pair.
@@ -54,7 +54,7 @@ document.addEventListener 'turbolinks:load', ->
         inputFields.find( 'select[data-t1-type-input=""]' ).val( type1Type )
         inputFields.find( 'input[data-t1-name-input=""]' ).val( type1Name )
         inputFields.find( 'textarea[data-t1-description-input=""]' ).val( type1Desc )
-        
+
         $('#timepoints-node tr')[1..].each ->
           $( this ).find( 'td.remove-tp-link a' ).trigger( 'click' )
 
@@ -99,6 +99,12 @@ document.addEventListener 'turbolinks:load', ->
 
     $( '#extraction_forms_projects_sections_type1_timepoint_name_ids' ).select2
       minimumInputLength: 0
+
+    $(document).on "click", ".radio-deselector-btn", (e) ->
+      dataRadioRemoveId = $(e.target).data('radio-remove-id')
+      radioElements = $("*[data-radio-remove-id='#{dataRadioRemoveId}']")
+      radioElements.removeAttr('checked')
+      $(radioElements[0]).trigger("change");
 
 #    $( '.preview-button' ).on 'click', ( event ) ->
 #      if event.target.hasAttribute( 'disabled' )

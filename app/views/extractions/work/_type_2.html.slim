@@ -1,13 +1,6 @@
-- eefps = ExtractionsExtractionFormsProjectsSection.includes(extraction_forms_projects_section: :section).find_by( \
-  extraction: @extraction,
-  extraction_forms_projects_section: efps,
-  link_to_type1: efps.link_to_type1.nil? \
-    ? nil \
-    : ExtractionsExtractionFormsProjectsSection.find_by!( \
-      extraction: @extraction,
-      extraction_forms_projects_section: efps.link_to_type1))
-
+- eefps = @eefps_by_efps_dict[efps.id].first
 - linked_section = eefps.link_to_type1
+
 .section-header
   h4 = section_name
   = render 'shared/statusing_form.html.slim', statusing: eefps.statusing, status_name: eefps.statusing.status.name
@@ -19,7 +12,7 @@ blockquote
 /- if linked_section && linked_section.type1s.blank?
 /- if (linked_section && eefps.extraction_forms_projects_section.extraction_forms_projects_section_option.by_type1 && linked_section.eefpst1_without_total_arm.blank?) ||\
   (linked_section && !eefps.extraction_forms_projects_section.extraction_forms_projects_section_option.include_total && linked_section.eefpst1_without_total_arm.blank?)
-- if linked_section && eefps.extraction_forms_projects_section.extraction_forms_projects_section_option.by_type1 && linked_section.eefpst1s_without_total.blank?
+- if linked_section && efps.extraction_forms_projects_section_option.by_type1 && linked_section.eefpst1s_without_total.blank?
     h5 style='color: red;' You must add #{ linked_section.extraction_forms_projects_section.section.name } before extracting into this section.
 
 - else
@@ -27,11 +20,11 @@ blockquote
     / Questions that have prerequisites get classes of the form 'prereq-<type>-<id>' which are disabled while these classes are present.
       Listeners are attached on form fields which trigger on change and remove class from any element that has the 'prereq-<type>-<id>'.
       Once all 'prereq-<type>-<id>' classes are removed the question is enabled.
-    - prereq = q.dependencies.collect { |d| d.prerequisitable_type + '-' + d.prerequisitable_id.to_s }.collect { |h| "prereq-#{h}" }.join(' ')
+    - prereq = q.dependencies.map { |d| d.prerequisitable_type + '-' + d.prerequisitable_id.to_s }.map { |h| "prereq-#{h}" }.join(' ')
 
     / Questions are only visible when the key question for which the question was designed is selected. We therefore assign classes to the
       card so that we can filter it, similar to the prerequisite method
-    - kqreq = q.key_questions_projects.collect { |kqp| "kqreq-#{ kqp.id }" }.join(' ')
+    - kqreq = q.key_questions_projects.map { |kqp| "kqreq-#{ kqp.id }" }.join(' ')
 
     .card class='#{ prereq } #{ kqreq }'
       .card-divider
@@ -45,9 +38,9 @@ blockquote
             / Linked section.
             - if linked_section
               / by_type1 && include_total
-              - if eefps.extraction_forms_projects_section.extraction_forms_projects_section_option.by_type1
-                - if eefps.extraction_forms_projects_section.extraction_forms_projects_section_option.include_total
-                  - linked_section.eefpst1s_with_total.collect(&:type1).each do |t1|
+              - if efps.extraction_forms_projects_section_option.by_type1
+                - if efps.extraction_forms_projects_section_option.include_total
+                  - linked_section.eefpst1s_with_total.map(&:type1).each do |t1|
                     fieldset.fieldset
                       legend style="font-weight: bold;" data-allow-html="true" data-tooltip="" title='#{linked_section.extraction_forms_projects_section.section.name.singularize + ": " + t1.name + "<br>" + "Description: " + t1.description}'
                         = t1.name
@@ -59,7 +52,7 @@ blockquote
 
                 / by_type1 && !include_total
                 - else
-                  - linked_section.type1s.where.not(name: 'Total', description: "All #{ linked_section.extraction_forms_projects_section.section.name } combined").uniq.each do |t1|
+                  - linked_section.eefpst1s_without_total.map(&:type1).uniq.each do |t1|
                     fieldset.fieldset
                       legend style="font-weight: bold;" data-allow-html="true" data-tooltip="" title='#{linked_section.extraction_forms_projects_section.section.name.singularize + ": " + t1.name + "<br>" + "Description: " + t1.description}'
                         = t1.name
@@ -71,8 +64,8 @@ blockquote
 
               / !by_type1 && include_total
               - else
-                - if eefps.extraction_forms_projects_section.extraction_forms_projects_section_option.include_total
-                  - linked_section.eefpst1s_only_total.collect(&:type1).each do |t1|
+                - if efps.extraction_forms_projects_section_option.include_total
+                  - linked_section.eefpst1s_only_total.map(&:type1).each do |t1|
                     fieldset.fieldset
                       legend style="font-weight: bold;" data-allow-html="true" data-tooltip="" title='#{linked_section.extraction_forms_projects_section.section.name.singularize + ": " + t1.name + "<br>" + "Description: " + t1.description}'
                         = t1.name

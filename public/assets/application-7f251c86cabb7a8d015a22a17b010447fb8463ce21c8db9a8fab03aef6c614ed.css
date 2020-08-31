@@ -5201,6 +5201,29 @@ span.select2-container {
 button.suggestion-list-button:hover {
   background-color: lavender !important;
 }
+
+/* line 115, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/extractions.scss */
+.remove-comparison-button {
+  position: absolute;
+  border: 1px solid grey;
+  padding: 0px 5px;
+  font-weight: 900;
+  background-color: white;
+  border-radius: 3px;
+  color: black;
+  right: 0px;
+  top: 0px;
+}
+
+/* line 127, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/extractions.scss */
+.tr-group-top {
+  border-top: 2px solid !important;
+}
+
+/* line 131, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/extractions.scss */
+.tr-group-bottom {
+  border-bottom: 2px solid !important;
+}
 /**
  * Foundation for Sites by ZURB
  * Version 6.5.3
@@ -26675,14 +26698,29 @@ body.sd_meta_data .sd-meta-data-index-edit {
 }
 
 /* line 637, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+.user-description .small.subheader {
+  font-size: 16px;
+}
+
+/* line 642, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+.testimonial-box .small.subheader {
+  font-size: 0.9em;
+}
+/* line 645, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+.testimonial-box span {
+  font-family: 'Noto Sans';
+  font-style: italic;
+}
+
+/* line 651, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .Recently-published {
   padding-top: 100px;
 }
-/* line 640, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 654, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .Recently-published .cell {
   padding: 20px;
 }
-/* line 643, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 657, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .Recently-published h1 {
   font-family: Halant;
   font-size: 48px;
@@ -26694,32 +26732,28 @@ body.sd_meta_data .sd-meta-data-index-edit {
   text-align: center;
   color: #1c1819;
 }
-/* line 654, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
-.Recently-published h4 {
+/* line 668, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+.Recently-published span {
   text-align: center;
   font-weight: bold;
   font-family: sans-serif;
 }
-/* line 659, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
-.Recently-published h5 {
-  font-family: Halant;
-}
-/* line 662, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
-.Recently-published h6 {
+/* line 673, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+.Recently-published .small {
   color: #56585f;
   font-size: 0.9em;
 }
-/* line 666, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 677, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .Recently-published .bold {
   font-weight: bold;
 }
-/* line 669, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 680, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .Recently-published .summary {
   color: black;
   line-height: 1.5;
 }
 
-/* line 675, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 686, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .recent-project {
   margin-bottom: 30px;
   background: white;
@@ -26728,7 +26762,7 @@ body.sd_meta_data .sd-meta-data-index-edit {
           box-shadow: 0 20px 40px 0 rgba(0, 0, 0, 0.15);
 }
 
-/* line 682, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 693, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .join-the-professionals, .join-2 {
   height: 256px;
   background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB3aWR0aD0iMTQ0MCIgaGVpZ2h0PSIyNTYiIHZpZXdCb3g9IjAgMCAxNDQwIDI1NiI%2BCiAgICA8ZGVmcz4KICAgICAgICA8cGF0aCBpZD0iYSIgZD0iTTAgMy4wMDhBMy4wMDIgMy4wMDIgMCAwIDEgMy4wMDUgMEgxNDQwdjI1NkgzLjAwNUEzLjAwNyAzLjAwNyAwIDAgMSAwIDI1Mi45OTJWMy4wMDh6Ii8%2BCiAgICA8L2RlZnM%2BCiAgICA8ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPgogICAgICAgIDxwYXRoIGZpbGw9IiMyODI4MjgiIGQ9Ik0tMzAtOTY3aDE1MDB2MjA2N0gtMzB6Ii8%2BCiAgICAgICAgPGc%2BCiAgICAgICAgICAgIDxtYXNrIGlkPSJiIiBmaWxsPSIjZmZmIj4KICAgICAgICAgICAgICAgIDx1c2UgeGxpbms6aHJlZj0iI2EiLz4KICAgICAgICAgICAgPC9tYXNrPgogICAgICAgICAgICA8dXNlIGZpbGw9IiM0QzBEN0QiIHhsaW5rOmhyZWY9IiNhIi8%2BCiAgICAgICAgICAgIDxwYXRoIGZpbGw9IiM1RTI1OEEiIGQ9Ik00MDAuNTEgMzUuMDYySDIyMi41NzJ2LTE3NS44NjRjMC03LjI4Ny01Ljk3OS0xMy4xOS0xMy4zNDMtMTMuMTk4SDg0LjZjLTcuMzcxIDAtMTMuMzQzIDUuOTExLTEzLjM0MyAxMy4xOThMNzEuMjUgMzUuMDc3bC0xNzcuOS0uMDA3Yy03LjA3NiAwLTEzLjM0MyA2LjE5NS0xMy4zNSAxMy4xOTh2MTIzLjIxYTEzLjA3OCAxMy4wNzggMCAwIDAgMy45MSA5LjMzMiAxMy40MDcgMTMuNDA3IDAgMCAwIDkuNDQgMy44NTlINzEuMjU3djE3NS45MTVjMCAzLjQ5NCAxLjQwNiA2Ljg1NyAzLjkxIDkuMzMyYTEzLjQ0IDEzLjQ0IDAgMCAwIDkuNDQgMy44NjZoMTI0LjYxNmExMy40NyAxMy40NyAwIDAgMCA5LjQ1NS0zLjg4IDEzLjEyMSAxMy4xMjEgMCAwIDAgMy44OTUtOS4zMThWMTg0LjY3NmwxNzcuOTMtLjAwN2MzLjY4MSAwIDcuMDE3LTEuNDcxIDkuNDQtMy44NTlhMTMuMDc5IDEzLjA3OSAwIDAgMCAzLjkxLTkuMzRsLjAwNy0xMjMuMjFjMC03LjI4Ni01Ljk3Mi0xMy4xOS0xMy4zNS0xMy4xOTh6TTc5MC4yNTUtMjMuNDY5aC04OC45NjhWLTExMS40YzAtMy42NDMtMi45OS02LjU5NS02LjY3Mi02LjU5OUg2MzIuM2MtMy42ODYgMC02LjY3MSAyLjk1Ni02LjY3MSA2LjZsLS4wMDQgODcuOTM4LTg4Ljk1LS4wMDNjLTMuNTM4IDAtNi42NzEgMy4wOTctNi42NzUgNi41OTl2NjEuNjA1YTYuNTM5IDYuNTM5IDAgMCAwIDEuOTU1IDQuNjY2IDYuNzA0IDYuNzA0IDAgMCAwIDQuNzIgMS45M2g4OC45NTR2ODcuOTU3YzAgMS43NDcuNzAzIDMuNDI5IDEuOTU1IDQuNjY2YTYuNzIgNi43MiAwIDAgMCA0LjcyIDEuOTMzaDYyLjMwOGE2LjczNSA2LjczNSAwIDAgMCA0LjcyNy0xLjk0IDYuNTYgNi41NiAwIDAgMCAxLjk0OC00LjY2VjUxLjMzOWw4OC45NjQtLjAwNGMxLjg0MSAwIDMuNTA5LS43MzUgNC43Mi0xLjkyOWE2LjU0IDYuNTQgMCAwIDAgMS45NTUtNC42N2wuMDA0LTYxLjYwNWMwLTMuNjQzLTIuOTg2LTYuNTk1LTYuNjc1LTYuNTk5ek0xNDQ3LjI1NSAxNDQuNTMxaC04OC45NjhWNTYuNmMwLTMuNjQzLTIuOTktNi41OTUtNi42NzItNi41OTlIMTI4OS4zYy0zLjY4NiAwLTYuNjcxIDIuOTU2LTYuNjcxIDYuNmwtLjAwNCA4Ny45MzgtODguOTUtLjAwM2MtMy41MzggMC02LjY3MSAzLjA5Ny02LjY3NSA2LjU5OXY2MS42MDVhNi41MzkgNi41MzkgMCAwIDAgMS45NTUgNC42NjYgNi43MDQgNi43MDQgMCAwIDAgNC43MiAxLjkzaDg4Ljk1NHY4Ny45NTdjMCAxLjc0Ny43MDMgMy40MjkgMS45NTUgNC42NjZhNi43MiA2LjcyIDAgMCAwIDQuNzIgMS45MzNoNjIuMzA4YTYuNzM1IDYuNzM1IDAgMCAwIDQuNzI3LTEuOTQgNi41NiA2LjU2IDAgMCAwIDEuOTQ4LTQuNjZ2LTg3Ljk1M2w4OC45NjQtLjAwNGMxLjg0MSAwIDMuNTA5LS43MzUgNC43Mi0xLjkyOWE2LjU0IDYuNTQgMCAwIDAgMS45NTUtNC42N2wuMDA0LTYxLjYwNWMwLTMuNjQzLTIuOTg2LTYuNTk1LTYuNjc1LTYuNTk5eiIgbWFzaz0idXJsKCNiKSIvPgogICAgICAgIDwvZz4KICAgIDwvZz4KPC9zdmc%2BCg%3D%3D);
@@ -26737,40 +26771,40 @@ body.sd_meta_data .sd-meta-data-index-edit {
           background-size: 100%;
   text-align: center;
 }
-/* line 689, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 700, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .join-the-professionals h1, .join-2 h1 {
   font-family: Halant;
   font-weight: bold;
   color: white;
 }
-/* line 696, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
-.join-the-professionals h6 a, .join-2 h6 a {
+/* line 707, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+.join-the-professionals .button a, .join-2 .button a {
   color: black;
 }
-/* line 701, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 712, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .join-the-professionals .button, .join-2 .button {
   background-color: #fdd835;
   font-weight: bold;
 }
 
-/* line 708, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 719, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .join-2 .button {
   background-color: #f0f0f0;
 }
 
-/* line 713, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 724, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .get-started {
   font-size: 18px;
   border-radius: 3px;
   background-color: #4c0d7d;
   font-weight: bold;
 }
-/* line 719, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 730, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .get-started a:visited {
   color: white;
 }
 
-/* line 724, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 735, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .button.learn-more {
   font-size: 18px;
   font-weight: bold;
@@ -26779,12 +26813,12 @@ body.sd_meta_data .sd-meta-data-index-edit {
   background-color: white;
   margin-left: 10px;
 }
-/* line 732, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 743, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .button.learn-more a:visited {
   color: #414247;
 }
 
-/* line 737, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 748, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .stock-image-placeholder-1 {
   width: 280px;
   height: 186px;
@@ -26796,7 +26830,7 @@ body.sd_meta_data .sd-meta-data-index-edit {
   border-radius: 3px;
 }
 
-/* line 747, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 758, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .stock-image-placeholder-2 {
   top: -50px;
   left: 125px;
@@ -26808,18 +26842,18 @@ body.sd_meta_data .sd-meta-data-index-edit {
   border-radius: 3px;
 }
 
-/* line 757, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 768, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .how-you-title {
   font-weight: bold;
   font-family: 'Halant';
 }
 
-/* line 762, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 773, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .user-description {
   padding-bottom: 20px;
 }
 
-/* line 766, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 777, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .testimonial-box {
   text-align: center;
   padding-bottom: 30px;
@@ -26828,76 +26862,74 @@ body.sd_meta_data .sd-meta-data-index-edit {
           box-shadow: 0 20px 40px 0 rgba(0, 0, 0, 0.15);
   background-color: #ffffff;
 }
-/* line 774, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 785, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .testimonial-box h4 {
   font-weight: bold;
 }
-/* line 778, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 789, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .testimonial-box h6 {
   font-size: 0.9em;
 }
-/* line 782, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 793, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .testimonial-box h7 {
   font-family: 'Noto Sans';
   font-style: italic;
 }
 
-/* line 788, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 799, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .testimonial-rows {
   margin-bottom: 120px;
 }
 
-/* line 792, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 803, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .testimonial-row {
   padding-top: 120px;
 }
 
-/* line 796, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 807, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .testimonial-left {
   margin-right: 30px;
   margin-bottom: 100px;
 }
 
-/* line 803, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 814, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .testimonial-picture {
   position: relative;
   top: -62px;
   margin-bottom: -62px;
 }
 
-/* line 809, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 820, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .features-box {
   padding-top: 100px;
   background-color: #dee1e8;
 }
 
-/* line 814, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 825, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .feature-box {
   padding-bottom: 100px;
 }
-/* line 817, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 828, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .feature-box h1 {
   font-family: Halant;
   font-size: 2.5em;
   font-weight: bold;
   line-height: normal;
 }
-/* line 824, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
-.feature-box h5 {
-  font-family: Halant;
-  font-size: 1.1em;
-  font-weight: bold;
-  padding: 0;
-  margin: 0;
-  position: relative;
-  left: 12px;
+/* line 835, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+.feature-box span {
+  font-size: 1rem;
 }
-/* line 834, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
-.feature-box h6 {
+/* line 839, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+.feature-box span .subtitle {
   color: #414247;
+  font-size: 1rem;
+  line-height: 1.4;
+  margin-top: 0;
+  margin-bottom: 0.5rem;
 }
 
-/* line 839, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 848, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .sub-feature-box {
   margin-left: 35px;
   height: 78px;
@@ -26907,39 +26939,49 @@ body.sd_meta_data .sd-meta-data-index-edit {
   background-color: #ffffff;
   margin-bottom: 6px;
 }
-/* line 847, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 856, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+.sub-feature-box span {
+  font-family: Halant;
+  font-size: 1.1em;
+  font-weight: bold;
+  padding: 0;
+  margin: 0;
+  position: relative;
+  left: 12px;
+}
+/* line 866, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .sub-feature-box img {
   margin-left: 12px;
   margin-right: 12px;
 }
 
-/* line 853, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 872, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .v3 {
   background-color: white;
 }
-/* line 854, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 873, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .v3 .Rectangle-2 {
   border-radius: 3px;
   -webkit-box-shadow: 0 20px 40px 0 rgba(0, 0, 0, 0.15);
           box-shadow: 0 20px 40px 0 rgba(0, 0, 0, 0.15);
   background-color: #ffffff;
 }
-/* line 860, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 879, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .v3 .hero-background {
   background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABaAAAAIuCAIAAADG3zi5AAAACXBIWXMAAAsTAAALEwEAmpwYAAAGAGlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS42LWMxNDUgNzkuMTYzNDk5LCAyMDE4LzA4LzEzLTE2OjQwOjIyICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyIgeG1sbnM6cGhvdG9zaG9wPSJodHRwOi8vbnMuYWRvYmUuY29tL3Bob3Rvc2hvcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RFdnQ9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZUV2ZW50IyIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ0MgMjAxOSAoTWFjaW50b3NoKSIgeG1wOkNyZWF0ZURhdGU9IjIwMTktMDMtMDRUMTE6NDk6MjQrMDg6MDAiIHhtcDpNb2RpZnlEYXRlPSIyMDE5LTAzLTA1VDA4OjQyOjE1KzA4OjAwIiB4bXA6TWV0YWRhdGFEYXRlPSIyMDE5LTAzLTA1VDA4OjQyOjE1KzA4OjAwIiBkYzpmb3JtYXQ9ImltYWdlL3BuZyIgcGhvdG9zaG9wOkNvbG9yTW9kZT0iMyIgcGhvdG9zaG9wOklDQ1Byb2ZpbGU9InNSR0IgSUVDNjE5NjYtMi4xIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOmY1MmFmN2MyLTk4ZGYtNDg2My1iZDcwLWU4YWY3MWYyNzYxZCIgeG1wTU06RG9jdW1lbnRJRD0iYWRvYmU6ZG9jaWQ6cGhvdG9zaG9wOmRhNzM2Yjk3LWFhMTMtZjY0Ni04ZTg0LTY5OTgwNjYzOGU2NiIgeG1wTU06T3JpZ2luYWxEb2N1bWVudElEPSJ4bXAuZGlkOmM3MTBlMTM2LWY5YTQtNDIyYS05NDFlLTc5NzViZmE1ZWRlNiI%2BIDx4bXBNTTpIaXN0b3J5PiA8cmRmOlNlcT4gPHJkZjpsaSBzdEV2dDphY3Rpb249ImNyZWF0ZWQiIHN0RXZ0Omluc3RhbmNlSUQ9InhtcC5paWQ6YzcxMGUxMzYtZjlhNC00MjJhLTk0MWUtNzk3NWJmYTVlZGU2IiBzdEV2dDp3aGVuPSIyMDE5LTAzLTA0VDExOjQ5OjI0KzA4OjAwIiBzdEV2dDpzb2Z0d2FyZUFnZW50PSJBZG9iZSBQaG90b3Nob3AgQ0MgMjAxOSAoTWFjaW50b3NoKSIvPiA8cmRmOmxpIHN0RXZ0OmFjdGlvbj0ic2F2ZWQiIHN0RXZ0Omluc3RhbmNlSUQ9InhtcC5paWQ6ZjUyYWY3YzItOThkZi00ODYzLWJkNzAtZThhZjcxZjI3NjFkIiBzdEV2dDp3aGVuPSIyMDE5LTAzLTA1VDA4OjQyOjE1KzA4OjAwIiBzdEV2dDpzb2Z0d2FyZUFnZW50PSJBZG9iZSBQaG90b3Nob3AgQ0MgMjAxOSAoTWFjaW50b3NoKSIgc3RFdnQ6Y2hhbmdlZD0iLyIvPiA8L3JkZjpTZXE%2BIDwveG1wTU06SGlzdG9yeT4gPC9yZGY6RGVzY3JpcHRpb24%2BIDwvcmRmOlJERj4gPC94OnhtcG1ldGE%2BIDw%2FeHBhY2tldCBlbmQ9InIiPz4lnbFgAAAW6klEQVR4nO3d0XLcRnqG4e4GZkhaXieVVO4qt5Q7Tiq1u7ZEcoDuHNgVWxQtipQs4Bs8z4HKJ676i0OCwMvuRv3Pv%2F1XyfTTv9%2FNp3nrKTi4Mbae4FvpS3%2B4X7aegkPra3%2F84JvwS93cnbYeATiWd%2F9yu%2FUIAC9oWw8AAAAA8LUEDgAAACCewAEAAADEEzgAAACAeAIHAAAAEE%2FgAAAAAOIJHAAAAEA8gQMAAACIJ3AAAAAA8QQOAAAAIJ7AAQAAAMQTOAAAAIB4AgcAAAAQT%2BAAAAAA4gkcAAAAQDyBAwAAAIgncAAAAADxBA4AAAAgnsABAAAAxBM4AAAAgHgCBwAAABBP4AAAAADiCRwAAABAPIEDAAAAiCdwAAAAAPEEDgAAACCewAEAAADEEzgAAACAeAIHAAAAEE%2FgAAAAAOIJHAAAAEA8gQMAAACIJ3AAAAAA8QQOAAAAIJ7AAQAAAMQTOAAAAIB4AgcAAAAQT%2BAAAAAA4gkcAAAAQDyBAwAAAIgncAAAAADxBA4AAAAgnsABAAAAxBM4AAAAgHgCBwAAABBP4AAAAADiCRwAAABAPIEDAAAAiCdwAAAAAPEEDgAAACCewAEAAADEEzgAAACAeAIHAAAAEE%2FgAAAAAOIJHAAAAEA8gQMAAACIJ3AAAAAA8QQOAAAAIJ7AAQAAAMQTOAAAAIB4AgcAAAAQT%2BAAAAAA4gkcAAAAQDyBAwAAAIgncAAAAADxBA4AAAAgnsABAAAAxBM4AAAAgHgCBwAAABBP4AAAAADiCRwAAABAPIEDAAAAiCdwAAAAAPEEDgAAACCewAEAAADEm3%2F6tx%2B2nuGNpkmdgW%2BmTe3m7rT1FBzaKOPm7rz1FDFaq2%2F4v2opfYwyxhijr6Ovo%2FfxzWcDANjEPJ%2BnrWcAdqCWNr3leQm%2BlVpr8U34Cm8ME6189EXu61iXvlzWviodAEC2eesBAIDNtKm2aTrdTKOPx4d1fdQ5AIBUdnkAAKW2enM33%2F54nk%2FuDQCASG5iAIDftKne%2FHC6%2B%2FFcbWAFANIIHADAR9pU797dTLMjUQCAJAIHAPBUreX23fnkJHIAIIfAAQA873w3n%2B%2BcRw4AZBA4AIA%2FdTpP5xvrOACAAAIHAPA5p9t58moVAGD33K8AAC%2B4uTu15sxRAGDXBA4A4AW1lpt3p62nAAD4HIEDAHhZa9VLVeDIRh9bjwDwAoEDAPgip9u52qcCRzWGwAHsncABAHyRWsvJG1XgqNalbz0CwAsEDgDgS83nubp3gENaLgIHsHduUgCAL1VrmSY3D3BEY%2B2O4QB2zj0KAPAK08kuFTiiUcrjh2XrKQA%2BR%2BAAAF5hmpuTRuGYlmV1EgewZwIHAPAKtZZ2kjjgoB7eX3rXOICdEjgAgNeZJrtU4KDGGPe%2FXPrqMA5gjwQOAOB1mk0qcGCjj%2FufH9bLuvUgAE8JHAAQqG6ZGOokcMChjVLu31%2Fuf3lcV9tVgB2Ztx4AAHi9TZeH103zCrAT69LXnx9rq%2FOptanVWmutpdq98l2NrRPTNNdS%2FFII0L%2F7CcGbXAsEDgAA4I1GH5eHtRQ7VjbQ%2B7g8bPzu3n%2F9j3fNsr7dW5f%2B9%2F%2F%2BZespvgdbVACA17GAA2AP%2BqIrwUcEDgAAgDze2AtPCBwAEMo6CoDj6msfw4kn8BGBAwBCDYUD4KjG4k298AmBAwBC1WERB8AhLZdu9QZ8SuAAgGDe2ApwNOuyrt%2F9lZ8QQeAAgGBjDIdxABzHuq7LRd2A581bDwAAfI36h%2F%2BwXhngio3l0q3dgM8QOADgCljEAXDFxrL0fhlDyIbPEjgA4Gr8uojjj%2F%2F%2BVfrwJ8QMU2tOIsxTxzj4%2BzFq8SRfRimjjDH6Ono%2F%2FFcDvozAAQDXpH7y71%2Ficn%2Fwx68Y9abWZoFPmN7H5cGPGMCrOWQUAAAAiCdwAAAAAPEEDgAAACCewAEAAADEEzgAAACAeAIHAAAAEE%2FgAAAAAOIJHAAAAEA8gQMAAACIJ3AAAAAA8QQOAAAAIJ7AAQAAAMQTOAAAAIB4AgcAAAAQT%2BAAAAAA4gkcAAAAQDyBAwAAAIgncAAAAADxBA4AAAAgnsABAAAAxBM4AAAAgHgCBwAAABBP4AAAAADiCRwAAABAPIEDAAAAiCdwAAAAAPEEDgAAACDevPUAAABAsFprbaW2WmsttdSt5%2BF7qtUHzo4IHAAAwGvV1kqdamueb4G9EDgAAIBXaHOdJlvdgd0ROAAAgC%2FSpjpNtdiVAOySwAEAALyg1jqdmrIB7JnAAQAAfE5tdT7ZkwLsncABAAD8qTa1abZyAwggcAAAAM%2Bb5tomdQPIYKUZAADwjDbV5m0pQA4XLAAA4KnayjR7WACS2KICAAB85Nd3pmw9BcDruGwBAAAfmU7NwRtAHIEDAAD4XW21yhtAIIEDAAD43eRgUSCTixcAAPCb1mr1iABkcvUCAAB%2B02a7U4BUAgcAAFBKKbUWx28AuQQOAACglFLqpG4AwQQOAACglFIcvwFEcwkDAABKqbV5OACSuYYBAACl2Z4ChBM4AAAATwZAPJcxAACg1GIJB5BN4AAAAIq%2BAaQTOAAAAH0DiCdwAAAAReIA0gkcAABAKXVsPQHAVxE4AAAAgHgCBwAAABBP4AAAAADiCRwAAABAPIEDAAAAiCdwAAAAAPEEDgAAACCewAEAAADEEzgAAACAeAIHAAAAEE%2FgAAAAAOIJHAAAAEA8gQMAAACIJ3AAAAAA8QQOAAAAIJ7AAQAAAMQTOAAAAIB4AgcAAAAQT%2BAAAAAA4gkcAAAAQDyBAwAAAIgncAAAAADxBA4AAAAgnsABAAAAxBM4AAAAgHgCBwAAABBP4AAAAADiCRwAAABAPIEDAAAAiCdwAAAAAPEEDgAAACCewAEAAADEEzgAAACAeAIHAAAAEE%2FgAAAAAOIJHAAAAEA8gQMAAACIJ3AAAAAA8QQOAAAAIJ7AAQAAAMQTOAAAAIB4AgcAAAAQT%2BAAAAAA4gkcAAAAQDyBAwAAAIgncAAAAADxBA4AAAAgnsABAAAAxBM4AAAAgHgCBwAAABBP4AAAAADiCRwAAABAPIEDAAAAiCdwAAAAAPEEDgAAACCewAEAAADEEzgAAACAeAIHAAAAEE%2FgAAAAAOIJHAAAAEA8gQMAAACIJ3AAAAAA8QQOAAAAIJ7AAQAAAMQTOAAAAIB4AgcAAAAQT%2BAAAAAA4gkcAAAAQDyBAwAAAIgncAAAAADxBA4AAAAgnsABAAAAxBM4AAAAgHgCBwAAABBP4AAAAADiCRwAAABAPIEDAAAAiCdwAAAAAPEEDgAAACCewAEAAADEEzgAAACAeAIHAAAAEE%2FgAAAAAOIJHAAAAEA8gQMAAACIJ3AAAAAA8QQOAAAAIJ7AAQAAAMQTOAAAAIB4AgcAAAAQT%2BAAAAAA4gkcAAAAQDyBAwAAAIgncAAAAADxBA4AAAAgnsABAAAAxBM4AAAAgHgCBwAAABBP4AAAAADiCRwAAABAPIEDAACANxlbDwB%2FIHAAAADwFn0oHAFGP8rHJHAAAADwFsd5co62rkf5mAQOAAAA3mJd161H4GXLcpSPSeAAAADgLZbHvvUIvOxyv2w9wncicAAAAPAWvfe%2Bahy7tjyux%2FmMBA4AAADe6P7D49Yj8Dkffj7QByRwAAAA8EbrpS%2BXoxzxEOdyv1wej7I%2FpQgcAAAAfI37Xx6716nsz7r0n%2F9%2Bv%2FUU35XAAQAAwNuNMd7%2FfN8P8y7SCOva%2F%2Fm%2FH8Y41ocicAAAAPBVxjre%2F%2FPeXpWduDws%2F%2Fif98c5W%2FT%2FzVsPAAAAQLwxxoefH%2BbzdHN7apM%2FpW9jXfv7fzxcHg507sYfCRwAAAB8G8vjuj6ubW7zaZpOU2u11Fq3nuqqjdFLX%2FvlcX28X5ZLL%2BVY21L%2BSOAAAADgmxmlrEtfl14%2BXLaeZTO9j%2FVyuB0im7NwCAAAAIgncAAAAADxBA4AAAAgnsABAHC96nGPmstVhwMZAd5C4AAAuFrDCXeBxpClAN5C4AAAuFqelBMJHABvI3AAAFytdbWEI8%2B6ChwAbyFwAABcrdEdwxFnjO4jA3gLgQMA4IqNdfG0nGRZLLoBeKN5FL%2Fz9quWWpyivWd%2BeuDbGaNWP1Q5bu7mrUfgi9U6n1rZzS3FKKWMUUYZY%2FTuVvSpfvEVAXgjdye7Norf%2BsBxOFUvSZ0sAk0yRmm7%2BcRqKaX%2BWlvqVMooY6ylr90loJSyXBY3fwBvJnAAAFy53kcppbW9LOL4o1pqnUqbplFKX3pf%2B34Wm3xn69rtJwL4GruJ%2BQAA%2FGV6HztfI1FLmeZ2Os%2F7DDF%2Ftb725XHdegqAbFZwAAAcQl9HaTtdx%2FG7WqZTa6Osl3XfQeabqWVcLn11tijAV7OCAwDgKHofa8JpF7WW%2BTzXA9yo9rU%2F3C%2FqBsA3YQUHAMCBjFHWtddSaqu11lpLqft8L9iYz9N66X3d43BvVmsZffQx%2Btr7Wsb%2BaxNADoEDAOBwRimjj32GjSfW3pcHh1MA8LIDrPwDACDWfJrm07T1FAAEEDgAANi1083UZnetALzArwoAAHZtlHK%2BmevO3%2F8CwNYEDgAAdq%2BW863D4wD4HIEDAIAAtVWHcQDwGQIHAAAZ5pvJNhUA%2FozAAQBAjOlsEQcAzxM4AACIMZ%2BnYhUHAM8ROAAASDLZpwLAcwQOAACStNkuFQCeIXAAAJBkmtzBAvAMvx4AAIhSS5vtUgHgKYEDAIAw02SXCgBPCRwAAISp7mEB%2BIRfDgAAhKnVFhUAnhI4AAAIU5vAAcBTAgcAAGHkDQA%2BJXAAABBmbD0AADskcAAAAADxBA4AAAAgnsABAAAAxBM4AAAAgHgCBwAAABBP4AAAAADiCRwAAABAPIEDAAAAiCdwAAAAAPEEDgAAACCewAEAAADEEzgAAACAeAIHAAAAEE%2FgAAAAAOIJHAAAAEA8gQMAAACIJ3AAAAAA8QQOAAAAIJ7AAQAAAMQTOAAAAIB4AgcA8Epj6wEAAD4hcAAArzMUDgBgfwQOAOCV9A0AYH8EDgDgdXpXOACA3RE4AIDXGQIHALA%2FAgcA8DrrInAAALsjcAAArzBGGb1vPQUAwFMCBwDwCn2xQQUA2COBAwB4hXWxfAMA2COBAwD4UmOUvgocAMAeCRwAwJdaHlf7UwCAfRI4AIAvMvpYL%2BvWUwAAPE%2FgAAC%2ByMXyDQBgxwQOAOBlfR2OFwUA9kzgAABeMsrj%2FWXrIQAAPkfgAABe8PjhMuxOAQD2TeAAAD7ncr%2BsXd4AAPZO4AAA%2FtTyuC6O3gAAEsxbDwAA7NIol4dF3QAAUggcAMBTo4%2FH%2B6XbmQIA5BA4AICPrEu%2FPCxOFQUAsggcAMBv%2Btovj2tftQ0AII%2FAAQCUsY7LZV2duAEAxBI4AOC4%2BjLWta9LH3akAADh5h77t5o6tVq3HgKuxRhlrKlXA95mlOIiejSjlDLKGGOMMvrovcsaAMDVmB%2Ful61neKObu1Od3JzDtzHWnns1AAAAaFsPAAAAAPC1BA4AAAAgnsABAAAAxBM4AAAAgHgCBwAAABBP4AAAAADiCRwAAABAPIEDAAAAiCdwAAAAAPEEDgAAACCewAEAAADEEzgAAACAeAIHAAAAEE%2FgAAAAAOIJHAAAAEA8gQMAAACIJ3AAAAAA8QQOAAAAIJ7AAQAAAMQTOAAAAIB4AgcAAAAQT%2BAAAAAA4gkcAAAAQDyBAwAAAIgncAAAAADxBA4AAAAgnsABAAAAxBM4AAAAgHgCBwAAABBP4AAAAADiCRwAAABAPIEDAAAAiCdwAAAAAPEEDgAAACCewAEAAADEEzgAAACAeAIHAAAAEE%2FgAAAAAOIJHAAAAEA8gQMAAACIJ3AAAAAA8QQOAAAAIJ7AAQAAAMQTOAAAAIB4AgcAAAAQT%2BAAAAAA4gkcAAAAQDyBAwAAAIgncAAAAADxBA4AAAAgnsABAAAAxBM4AAAAgHgCBwAAABBP4AAAAADiCRwAAABAPIEDAAAAiCdwAAAAAPEEDgAAACCewAEAAADEEzgAAACAeAIHAAAAEE%2FgAAAAAOIJHAAAAEA8gQMAAACIJ3AAAAAA8QQOAAAAIJ7AAQAAAMQTOAAAAIB4AgcAAAAQT%2BAAAAAA4s1bDwAAAPCMWko7TfPcptPUaq2tbj3Rlet9jD7WtS%2BPy7r0rceBVxM4AACA3Tmdp%2FPtuU2ixvfTWi2tTnM738y9j4f3j8tl3XooeAWBAwAA2JFa6%2B2783yath7k0Fqrdz%2FeLJf1%2FpfHMcbW48AXcQYHAACwF3WqP%2FztVt3Yifk0%2FfDTbbM5iBACBwAAsAu11h9%2BvLUtZVd%2BXcpRfSYkEDgAAIBduH13tlhgh9rUbn84bz0FvEzgAAAAtjedmp0puzWf52n28Mje%2BR4FAAC2d3NrjcCu3dz5gNg7gQMAANhYa9UCgZ2b5mYDETvnIgIAAGxsPtucEsDHxM4JHAAAwMamyZNzgDZ5fmTXfIMCAAAbq%2FY%2BJLBFhZ0TOAAAgI216sk5QK2eH9k136AAAMDGhr4RoY6tJ4DPETgAAACAeAIHAAAAEE%2FgAAAAAOIJHAAAAEA8gQMAAACIJ3AAAAAA8QQOAAAAIJ7AAQAAAMQTOAAAAIB4AgcAAAAQT%2BAAAAAA4gkcAAAAQDyBAwAAAIgncAAAAADxBA4AAAAgnsABAAAAxBM4AAAAgHgCBwAAABBP4AAAAADiCRwAAABAPIEDAAAAiCdwAAAAAPEEDgAAACCewAEAAADEEzgAAACAeAIHAAAAEE%2FgAAAAAOIJHAAAAEA8gQMAAACIJ3AAAAAA8QQOAAAAIJ7AAQAAAMQTOAAAAIB4AgcAAAAQT%2BAAAAAA4gkcAAAAQDyBAwAAAIgncAAAAADxBA4AAAAgnsABAAAAxBM4AAAAgHgCBwAAABBP4AAAAADiCRwAAABAPIEDAAAAiCdwAAAAAPEEDgAAACCewAEAAADEEzgAAACAeAIHAAAAEE%2FgAAAAAOIJHAAAAEC8eesBAIAdGrXWUkstZZRSa916HjYwth7g86azP9R9Y37S4RtqrdaTy9T3JnAAAL%2BptZT660PO7885nngOa%2BcfffM0DuxbbS5T35vAAQCUUkprde9PtAAAf07gAICjq83KdAAgnsABAMdVW5E2AIDrIHAAwDGN1po9KQDA1RA4AOB46qjN0e4AwFUROADgWGqtdap7fwUoAMAr%2BesNABxLa%2BoGAHCFBA4AOJA21SFvAADXSOAAgKNozZmiAMDVEjgA4BBard6ZAgBcMYEDAK5fLX7nAwBXzs0OAFy%2FanMKAHDtBA4AuHK1FptTAICrJ3AAwJWrVd4AAK6fwAEAV83yDQDgGAQOALhmVm8AAAchcADAFRv2pwAAByFwAMDVUjcAgOMQOADgeukbAMBhCBwAcLUs4AAAjkPgAIDrNRQOAOAoBA4AuF6WcAAAhyFwAMAVG1sPAADwnQgcAAAAQDyBAwAAAIgncAAAAADxBA4AAAAgnsABAAAAxBM4AAAAgHgCBwAAABBP4AAAAADiCRwAAABAPIEDAAAAiCdwAAAAAPEEDgAAACCewAEAAADEEzgAAACAeAIHAAAAEE%2FgAAAAAOIJHAAAAEA8gQMAAACIJ3AAAAAA8QQOAAAAIJ7AAQAAAMQTOAAAAIB4AgcAAAAQT%2BAAAAAA4gkcAAAAQDyBAwCAMHXrAQDYIYEDAIAwY2w9AQD7I3AAAJCmKhwAPCVwAAAQxgoOAD4lcAAAkKYrHAA8JXAAABBG3wDgUwIHAABhRu9bjwDA7ggcAABEGWXoGwB8QuAAACDJWOUNAJ4hcAAAkKQ7gQOA5wgcAADkGEPgAOBZ%2FwfrNCSBRUyfmgAAAABJRU5ErkJggg%3D%3D);
 }
-/* line 866, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 885, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .v3 .hero-background .cell {
   padding: 5em 0;
   text-align: center;
 }
 @media print, screen and (min-width: 40em) {
-  /* line 866, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+  /* line 885, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
   .v3 .hero-background .cell {
     text-align: left;
   }
 }
-/* line 877, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 896, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .v3 .hero-background .cell .Get-started-now {
   font-family: Halant;
   font-size: 32px;
@@ -26964,7 +27006,7 @@ body.sd_meta_data .sd-meta-data-index-edit {
       -ms-flex-pack: center;
           justify-content: center;
 }
-/* line 895, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 914, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .v3 .SRDR-Moving-system {
   font-family: Halant;
   font-size: 64px;
@@ -26975,7 +27017,7 @@ body.sd_meta_data .sd-meta-data-index-edit {
   letter-spacing: normal;
   color: #ffffff;
 }
-/* line 906, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 925, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .v3 .SRDR-is-a-free-pow {
   font-family: 'Noto Sans';
   font-size: 20px;
@@ -29042,7 +29084,7 @@ textarea {
 /* line 557, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .preview-button {
   border-radius: 0;
-  background-color: #006aaa;
+  background-color: #016BAB;
   padding: 0.4rem;
   z-index: 1000;
 }
@@ -29058,7 +29100,7 @@ textarea {
 
 /* line 573, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .create-button {
-  background-color: #1986c7 !important;
+  background-color: #016BAB !important;
 }
 
 /* line 577, /Users/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
