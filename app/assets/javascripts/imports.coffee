@@ -67,7 +67,7 @@ document.addEventListener 'turbolinks:load', ->
       return new_row_elem
 
     add_srdr_headers = ( type_name, row_elem ) ->
-      headers_to_add = types_columns_dict[type_name]
+      headers_to_add = types_columns_dict[type_name].map((x) -> x)
       sheet_name = $(row_elem).find('sheet-name').text()
       current_mapping[sheet_name] = {}
       cur_index = 0
