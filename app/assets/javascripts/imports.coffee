@@ -93,6 +93,10 @@ document.addEventListener 'turbolinks:load', ->
                 min_index = cur_index
                 min_edit_distance = cur_edit_distance
                 headers_to_add.push(existing_srdr_header)
+                $cur_dropzone.html('')
+                $cur_dropzone.removeClass('draggable-dropzone--occupied')
+              else
+
 
             else
               min_index = cur_index
