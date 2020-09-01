@@ -1,0 +1,5 @@
+class SImportJob < ApplicationJob
+
+
+  
+end

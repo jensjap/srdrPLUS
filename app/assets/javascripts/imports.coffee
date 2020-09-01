@@ -1,10 +1,30 @@
 document.addEventListener 'turbolinks:load', ->
   do ->
-    types_columns_dict = { "Type 1": ["a", "b", "c"],\
-                            "Type 2": ["d","e"],\
-                            "Results": ["f", "g", "h", "hh"] }
-
+    types_columns_dict = { "Arm Details": [ "Arm Name",\
+                                            "Arm Description",\
+                                            "CitationId",\
+                                            "Included",\
+                                            "Refman",\
+                                            "Pmid",\
+                                            "UserAssigned",\
+                                            "StudyTitle",\
+                                            "PublicationDate",\
+                                            "Author" ],\
+                            "Design Details": [ "CitationId",\
+                                                "Included",\
+                                                "Refman",\
+                                                "Pmid",\
+                                                "UserAssigned",\
+                                                "StudyTitle",\
+                                                "PublicationDate",\
+                                                "Author" ],\
+                            "Results": [  "CitationId",\
+                                          "Included",\
+                                          "Refman",\
+                                          "Pmid" ] }
+ 
     current_mapping = {}
+    workbook = undefined
 
     if $( '.imports.new' ).length > 0
       $( 'input[type="file"]' ).on 'change', () ->
@@ -36,7 +56,7 @@ document.addEventListener 'turbolinks:load', ->
             add_srdr_headers( $( current_type_select ).find('option:selected').text(), current_row_elem )
             apply_droppable( current_row_elem )
             cur_index += 1
-        reader.readAsArrayBuffer(filedata);
+        reader.readAsArrayBuffer(filedata)
       
     add_header = ( row_elem, header_name ) ->
       cutoff_limit = 14
@@ -57,10 +77,10 @@ document.addEventListener 'turbolinks:load', ->
       type_select.on 'change', () ->
         add_srdr_headers( $(this).find('option:selected').text(), new_row_elem )
 
-      new_row_elem.append( $('<div></div>').addClass( 'sheet-name' ).text( sheet_name ).append( type_select ) )
+      new_row_elem.append( $('<div></div>').addClass( 'sheet-name' ).append( $('<span></span>').text( sheet_name ) ).append( type_select ) )
       headers_elem = $('<div></div>').addClass( 'headers' )
-      headers_elem.append( $('<div></div>').addClass( 'top' ) )
       headers_elem.append( $('<div></div>').addClass( 'bottom' ) )
+      headers_elem.append( $('<div></div>').addClass( 'top' ) )
       new_row_elem.append( headers_elem )
       $( '#import-columns-panel' ).append( new_row_elem )
       current_mapping[sheet_name] = {}
@@ -68,7 +88,7 @@ document.addEventListener 'turbolinks:load', ->
 
     add_srdr_headers = ( type_name, row_elem ) ->
       headers_to_add = types_columns_dict[type_name].map((x) -> x)
-      sheet_name = $(row_elem).find('sheet-name').text()
+      sheet_name = get_sheet_name(row_elem)
       current_mapping[sheet_name] = {}
       cur_index = 0
 
@@ -96,14 +116,13 @@ document.addEventListener 'turbolinks:load', ->
                 $cur_dropzone.html('')
                 $cur_dropzone.removeClass('draggable-dropzone--occupied')
               else
-
-
+                ##  ?????
             else
               min_index = cur_index
               min_edit_distance = cur_edit_distance
           cur_index += 1
         $( row_elem ).find( '.top' ).find( '.import-column[index="' + min_index + '"]').addClass('draggable-dropzone--occupied').append($('<div></div>').addClass('is-droppable').text( srdr_header ))
-        current_mapping[sheet_name][srdr_header] = min_index
+        current_mapping[sheet_name][srdr_header] = "" + min_index
       return row_elem
 
     select_closest_type = ( sheet_name, select_elem ) ->
@@ -122,3 +141,22 @@ document.addEventListener 'turbolinks:load', ->
 
     apply_droppable = ( row_elem ) ->
       droppable = new Droppable.default( $( row_elem ).find( '.headers .top' ).toArray(), { draggable: '.is-droppable', dropzone: '#' + $( row_elem ).attr( 'id' ) + ' .headers .top .import-column', plugins: [] })
+
+      sheet_name = get_sheet_name ( row_elem )
+      droppable.on 'droppable:stop', (evt) ->
+        srdr_header = $( evt.dropzone ).find( '.is-droppable' ).text()
+        current_mapping[sheet_name][srdr_header] = $( evt.dropzone ).attr( 'index' )
+        console.log current_mapping
+
+    get_sheet_name = ( row_elem ) -> return $(row_elem).find('.sheet-name span').text()
+
+    # update_file_headers = () ->
+    #   workbook
+
+    #   for sheet_name, sheet_dict of current_mapping
+    #     for srdr_header, index of sheet_dict
+
+
+    #   XLSX.write(wb, {bookType:type, bookSST:true, type: 'base64'}) :
+    #   XLSX.writeFile(wb, fn || ('test.' + (type || 'xlsx')));
+    #   reader.readAsArrayBuffer(filedata)

@@ -6,9 +6,11 @@
     
 .row
   .column.medium-3
-    = simple_form_for(@import) do |f|
-      = f.input :import_type, as: :hidden, input_html: { value: ImportType.find_by(name: 'Project') }
+    = simple_form_for(@import, remote: true, authenticity_token: true) do |f|
+      = f.input :projects_user_id, as: :hidden, input_html: { value: @projects_user.id }
+      = f.input :import_type_id, as: :hidden, input_html: { value: ImportType.find_by( name: 'Project' ).id }
       = f.simple_fields_for(@imported_file) do |i_f|
+        = f.input :file_type_id, as: :hidden, input_html: { value: FileType.find_by( name: '.xlsx' ).id }
         = f.input :content, as: :file
       = f.submit
   .column.medium-9
