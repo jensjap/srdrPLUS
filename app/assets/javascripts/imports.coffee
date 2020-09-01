@@ -18,7 +18,7 @@ document.addEventListener 'turbolinks:load', ->
                                                 "StudyTitle",\
                                                 "PublicationDate",\
                                                 "Author" ],\
-                            "Results": [  "CitationId",\
+                            "Study Results": [  "CitationId",\
                                           "Included",\
                                           "Refman",\
                                           "Pmid" ] }
@@ -106,9 +106,10 @@ document.addEventListener 'turbolinks:load', ->
           header_text = $( import_column ).attr( 'full-header' )
           cur_edit_distance = Levenshtein.get( srdr_header, header_text )
           $cur_dropzone = $( row_elem ).find( '.top' ).find( '.import-column[index="' + cur_index + '"]')
+          console.log( $cur_dropzone.find('.is-droppable').length, $cur_dropzone.hasClass('draggable-dropzone--occupied'))
           if cur_edit_distance < min_edit_distance
             if $cur_dropzone.hasClass('draggable-dropzone--occupied')
-              existing_srdr_header = $cur_dropzone.find('.is-droppable').text()
+              existing_srdr_header = $cur_dropzone.find('.is-droppable').first().text()
               if Levenshtein.get( srdr_header, header_text ) < Levenshtein.get( existing_srdr_header, header_text )
                 min_index = cur_index
                 min_edit_distance = cur_edit_distance
