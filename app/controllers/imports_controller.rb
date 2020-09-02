@@ -4,14 +4,18 @@ class ImportsController < ApplicationController
   end
 
   def create
-    import_hash = { import_type_id: params['import_type_id'],
-                    projects_user_id: params['projects_user_id'],
-                    imported_files_attributes: 
-                      [ { content: (params['file'] || params['content']),
-                               file_type_id: params['file_type_id'] } ]
-                  }
-                          
+    import_hash = {
+      import_type_id: params['import_type_id'],
+      projects_user_id: params['projects_user_id'],
+      imported_files_attributes: [
+        {
+          content: (params['file'] || params['content']),
+          file_type_id: params['file_type_id']
+        }
+      ]
+    }
     @import = Import.new(import_hash)
+    authorize(@import.project, policy_class: ImportPolicy)
 
     respond_to do |format|
       if @import.save
