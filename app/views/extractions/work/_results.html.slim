@@ -18,7 +18,7 @@
 
     .section-header
       h4 = section_name
-      - eefps = @eefps_by_efps_dict[efps.id].first
+      - eefps = @eefpst1.extractions_extraction_forms_projects_section
       = render 'shared/statusing_form.html.slim', statusing: eefps.statusing, status_name: eefps.statusing.status.name
     blockquote
       | The results section is where you enter numerical data, comparisons, etc.
