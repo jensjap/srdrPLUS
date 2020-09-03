@@ -18,7 +18,7 @@
 
     .section-header
       h4 = section_name
-      - eefps = @eefpst1.extractions_extraction_forms_projects_section
+      - eefps = @extraction.extractions_extraction_forms_projects_sections.joins(:extraction_forms_projects_section => [:extraction_forms_projects_section_type]).find_by(:extraction_forms_projects_sections => { :extraction_forms_projects_section_type => ExtractionFormsProjectsSectionType.find_by(name: 'Results') })
       = render 'shared/statusing_form.html.slim', statusing: eefps.statusing, status_name: eefps.statusing.status.name
     blockquote
       | The results section is where you enter numerical data, comparisons, etc.
