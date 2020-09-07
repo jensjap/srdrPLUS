@@ -13,6 +13,14 @@ def build_type2_sections_compact(p, project, highlight, wrap, kq_ids=[])
           # Every row represents an extraction.
           project.extractions.each do |extraction|
             eefps = section.extractions_extraction_forms_projects_sections.find_by(extraction: extraction, extraction_forms_projects_section: section)
+
+
+            byebug
+
+
+
+
+
           end  # project.extractions.each do |extraction|
         end  # END p.workbook.add_worksheet(name: "#{ section.section.name.truncate(21) } - compact") do |sheet|
       end  # END if section.extraction_forms_projects_section_type_id == 2
