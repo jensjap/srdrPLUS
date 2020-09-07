@@ -37,6 +37,11 @@ class Users::RegistrationsController < Devise::RegistrationsController
   #   super
   # end
 
+  def api_key_reset
+    current_user.regenerate_api_key
+    redirect_to edit_user_registration_path
+  end
+
   # protected
 
   # If you have extra params to permit, append them to the sanitizer.

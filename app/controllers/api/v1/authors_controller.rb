@@ -1,4 +1,4 @@
-class Api::V1::AuthorsController < ApplicationController
+class Api::V1::AuthorsController < Api::V1::BaseController
   before_action :skip_policy_scope, :skip_authorization
 
   PAGE_SIZE = 30
