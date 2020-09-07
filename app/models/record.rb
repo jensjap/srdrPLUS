@@ -82,22 +82,39 @@ class Record < ApplicationRecord
     when ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField
       case self.recordable.question_row_column_field.question_row_column.question_row_column_type.name
       when QuestionRowColumnType::TEXT
-        min_length = self.recordable.question_row_column_field.question_row_column.field_validation_value_for(:min_length).to_i
-        max_length = self.recordable.question_row_column_field.question_row_column.field_validation_value_for(:max_length).to_i
-        if self.persisted? && self.name.length > 0 && (self.name.length < min_length || self.name.length > max_length)
-          errors.add(:length, "must be between #{ min_length.to_s } and #{ max_length.to_s }")
+        min_length = self.recordable.question_row_column_field.question_row_column.field_validation_value_for(:min_length)
+        max_length = self.recordable.question_row_column_field.question_row_column.field_validation_value_for(:max_length)
+        min_length = min_length.blank? ? nil : min_length.to_i
+        max_length = max_length.blank? ? nil : max_length.to_i
+
+        if self.persisted? && self.name.present?
+          if min_length && max_length && (self.name.length < min_length || self.name.length > max_length)
+            errors.add(:length, "must be between #{ min_length.to_s } and #{ max_length.to_s } characters")
+          elsif min_length && self.name.length < min_length
+            errors.add(:length, "must be greater than or equal to #{ min_length.to_s } characters")
+          elsif max_length && self.name.length > max_length
+            errors.add(:length, "must be less than or equal to #{ max_length.to_s } characters")
+          end
         end
       when QuestionRowColumnType::NUMERIC
         # First check that we aren't trying to validate any of the ~, <, >, ≤, ≥ special characters.
         if self.recordable.question_row_column_field.question_row_column.question_row_column_fields.second == self.recordable.question_row_column_field
-          unless (self.name =~ /\A[-+]?[0-9]*\.?[0-9]+\z/) || self.name != ''
+          unless (self.name =~ /\A[-+]?[0-9]*\.?[0-9]+\z/) || self.name.blank?
             errors.add(:value, 'Must be numeric')
           end
+          min_value = self.recordable.question_row_column_field.question_row_column.field_validation_value_for(:min_value)
+          max_value = self.recordable.question_row_column_field.question_row_column.field_validation_value_for(:max_value)
+          min_value = min_value.blank? ? nil : min_value.to_i
+          max_value = max_value.blank? ? nil : max_value.to_i
 
-          min_value = self.recordable.question_row_column_field.question_row_column.field_validation_value_for(:min_value).to_i
-          max_value = self.recordable.question_row_column_field.question_row_column.field_validation_value_for(:max_value).to_i
-          if self.persisted? && (self.name.to_i < min_value || self.name.to_i > max_value)
-            errors.add(:value, "must be numeric and between #{ min_value.to_s } and #{ max_value.to_s }")
+          if self.persisted? && self.name.present?
+            if min_value && max_value && (self.name.to_i < min_value || self.name.to_i > max_value)
+              errors.add(:value, "must be numeric and between #{ min_value.to_s } and #{ max_value.to_s }")
+            elsif min_value && self.name.to_i < min_value
+              errors.add(:value, "must be numeric and greater or equal to #{ min_value.to_s }")
+            elsif max_value && self.name.to_i > max_value
+              errors.add(:value, "must be numeric and less than or equal to #{ max_value.to_s }")
+            end
           end
         end
       end
@@ -111,7 +128,8 @@ class Record < ApplicationRecord
   #    UpdateExtractionChecksumJob.set(wait: 2.minute).perform_later(time_now.to_i, self.id)
       extraction = nil
       case recordable.class.name
-      when 'ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField'
+      when 'ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField',
+        'ExtractionsExtractionFormsProjectsSectionsFollowupField'
         extraction = recordable.extraction
       else
         extraction = recordable.result_statistic_section.extraction

@@ -20,6 +20,7 @@ class ImportsController < ApplicationController
                   }
                           
     @import = Import.new(import_hash)
+    authorize(@import.project, policy_class: ImportPolicy)
 
     respond_to do |format|
       if @import.save

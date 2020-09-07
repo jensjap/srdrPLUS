@@ -3579,15 +3579,16 @@ table#efp-type1-list tbody tr:hover {
 /* line 5, /Users/birol/Projects/srdr+/app/assets/stylesheets/extraction_forms_projects_sections.scss */
 div[class*=' prereq-'] {
   opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* line 10, /Users/birol/Projects/srdr+/app/assets/stylesheets/extraction_forms_projects_sections.scss */
+div[class*=' prereq-'] * {
   -webkit-user-select: none;
   -moz-user-select: none;
   -o-user-select: none;
   -ms-user-select: none;
       user-select: none;
-  cursor: not-allowed;
-}
-/* line 14, /Users/birol/Projects/srdr+/app/assets/stylesheets/extraction_forms_projects_sections.scss */
-div[class*=' prereq-'] input, div[class*=' prereq-'] select {
   pointer-events: none;
 }
 /**
@@ -5202,7 +5203,12 @@ button.suggestion-list-button:hover {
   background-color: lavender !important;
 }
 
-/* line 115, /Users/birol/Projects/srdr+/app/assets/stylesheets/extractions.scss */
+/* line 118, /Users/birol/Projects/srdr+/app/assets/stylesheets/extractions.scss */
+.extractions.work .checkbox label, .extractions.work .radio label, .extractions.consolidate .checkbox label, .extractions.consolidate .radio label {
+  display: inline;
+}
+
+/* line 124, /Users/birol/Projects/srdr+/app/assets/stylesheets/extractions.scss */
 .remove-comparison-button {
   position: absolute;
   border: 1px solid grey;
@@ -5215,12 +5221,12 @@ button.suggestion-list-button:hover {
   top: 0px;
 }
 
-/* line 127, /Users/birol/Projects/srdr+/app/assets/stylesheets/extractions.scss */
+/* line 136, /Users/birol/Projects/srdr+/app/assets/stylesheets/extractions.scss */
 .tr-group-top {
   border-top: 2px solid !important;
 }
 
-/* line 131, /Users/birol/Projects/srdr+/app/assets/stylesheets/extractions.scss */
+/* line 140, /Users/birol/Projects/srdr+/app/assets/stylesheets/extractions.scss */
 .tr-group-bottom {
   border-bottom: 2px solid !important;
 }

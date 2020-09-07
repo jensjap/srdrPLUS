@@ -342,17 +342,11 @@ class ProjectsController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def project_params
-    params.require(:project)
-      .permit(:name, :description, :attribution, :methodology_description,
-              :prospero, :doi, :notes, :funding_source,
-              { tasks_attributes: [:id, :name, :num_assigned, :task_type_id, projects_users_role_ids: []] },
-              { citations_attributes: [:id, :name, :abstract, :pmid, :refman, :citation_type_id, :_destroy, author_ids: [], keyword_ids: [], journal_attributes: [:id, :name, :volume, :issue, :publication_date]] },
-              { citations_projects_attributes: [:id, :_destroy, :citation_id, :project_id,
-                                               citation_attributes: [:id, :_destroy, :name]] },
-              { key_questions_projects_attributes: [:id, :position] },
-              { key_questions_attributes: [:name] },
-              { projects_users_attributes: [:id, :_destroy, :user_id, role_ids: [], imports_attributes: [ :import_type_id, { imported_files_attributes: [:id, :file_type_id, :content, section: [:name], key_question: [:name]] }]] },
-              { screening_options_attributes: [:id, :_destroy, :project_id, :label_type_id, :screening_option_type_id] })
+    if action_name != 'create'
+      params.require(:project).permit(policy(@project).permitted_attributes)
+    else
+      params.require(:project).permit(*ProjectPolicy::FULL_PARAMS)
+    end
   end
 
   def gdrive_params
@@ -363,6 +357,7 @@ class ProjectsController < ApplicationController
   end
 
   def save_without_sections_if_imported_files_params_exist(project)
+    @project = project
     if project_params[:projects_users_attributes].present?
       project.create_empty = true
       if not project.save

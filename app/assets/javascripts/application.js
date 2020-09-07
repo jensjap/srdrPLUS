@@ -14,11 +14,12 @@
 //= require sortable-rails-jquery
 //= require activestorage
 //= require foundation-datepicker.min
-//= require jquery.form.min.js
 //= require levenshtein.min.js
 //= require draggable/droppable.js
 //= require draggable/plugins.js
 //= require xlsx.mini.js
+//= require tether.min
+//= require dropzone
 
 // require assignments
 // require author
@@ -55,8 +56,6 @@
 // require static_pages
 // require tasks
 // require teams
-
-//= require dropzone
 
 //= require_tree .
 
@@ -261,7 +260,7 @@ document.addEventListener( 'turbolinks:load', function() {
   ////################################################
   // State Toggler for EEFPS
   if ( $( 'body.extractions.work' ).length > 0 ) {
-    $( '.status-switch' ).on( 'click', function () {
+    $( 'body' ).on( 'click', '.status-switch', function () {
       var $outer_form = $( this ).parents( 'form' )
       var $outer_input = $outer_form.find( 'select' )
       var draft_id = $outer_form.find( 'option' ).filter(function () { return $(this).html() == "Draft"; }).val()

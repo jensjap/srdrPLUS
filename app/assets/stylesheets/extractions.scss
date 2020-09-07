@@ -112,6 +112,15 @@ button.suggestion-list-button {
   }
 }
 
+
+.extractions.work, .extractions.consolidate {
+  .checkbox, .radio {
+    label {
+      display: inline;
+    }
+  }
+}
+
 .remove-comparison-button {
   position: absolute;
   border: 1px solid grey;
