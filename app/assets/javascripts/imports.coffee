@@ -25,12 +25,12 @@ document.addEventListener 'turbolinks:load', ->
  
     current_mapping = {}
     workbook = undefined
+    filedata = undefined
 
     if $( '.imports.new' ).length > 0
       $( 'input[type="file"]' ).on 'change', () ->
         $('#import-columns-panel').html ''
         filedata = $(this)[0].files[0]
-        #workbook = XLSX.read(filedata)
         reader = new FileReader()
         reader.onload = (e) ->
           data = new Uint8Array(e.target.result);
@@ -106,7 +106,6 @@ document.addEventListener 'turbolinks:load', ->
           header_text = $( import_column ).attr( 'full-header' )
           cur_edit_distance = Levenshtein.get( srdr_header, header_text )
           $cur_dropzone = $( row_elem ).find( '.top' ).find( '.import-column[index="' + cur_index + '"]')
-          console.log( $cur_dropzone.find('.is-droppable').length, $cur_dropzone.hasClass('draggable-dropzone--occupied'))
           if cur_edit_distance < min_edit_distance
             if $cur_dropzone.hasClass('draggable-dropzone--occupied')
               existing_srdr_header = $cur_dropzone.find('.is-droppable').first().text()
@@ -151,13 +150,103 @@ document.addEventListener 'turbolinks:load', ->
 
     get_sheet_name = ( row_elem ) -> return $(row_elem).find('.sheet-name span').text()
 
-    # update_file_headers = () ->
-    #   workbook
+    update_file_headers = () ->
+      if workbook != undefined
+        for sheet_name, sheet_dict of current_mapping
+          ws = workbook['Sheets'][sheet_name]
+          for srdr_header, index of sheet_dict
+            console.log srdr_header
+            console.log XLSX.utils.encode_col(index) + "1"
+            console.log  ws[XLSX.utils.encode_col(index) + "1"]
+            ws[XLSX.utils.encode_col(index) + "1"].t = 's'
+            ws[XLSX.utils.encode_col(index) + "1"].v = srdr_header
+            ws[XLSX.utils.encode_col(index) + "1"].w = undefined
 
-    #   for sheet_name, sheet_dict of current_mapping
-    #     for srdr_header, index of sheet_dict
+        b = new Blob([s2ab(XLSX.write(workbook, {bookType:'xlsx', type:'binary'}))], { type: "application/octet-stream"})
+        return new File([b], filedata.name)
+      else
+        return undefined
+        console.log 'workbook not set'
+
+    #### FILE DROPZONE
+    Dropzone.options.fileDropzone = {
+      url: $('#fileDropzone').attr('dropzone-path'),
+      autoProcessQueue: false,
+      uploadMultiple: false,
+      maxFiles: 1,
+
+      init: ()->
+        wrapperThis = this
+        this.on('addedfile', (file) ->
+          filedata = file
+          $('#import-columns-panel').html ''
+          reader = new FileReader()
+          reader.onload = (e) ->
+            data = new Uint8Array(e.target.result);
+            workbook = XLSX.read(data, {type: 'array'})
+            cur_index = 0
+            for sheet_name, ws of workbook['Sheets']
+              current_row_elem = add_row( sheet_name )
+              current_row_elem.attr 'id', 'sheet-row-' + cur_index
+              header = []
+              columnCount = XLSX.utils.decode_range(ws['!ref']).e.c
+              for i in [0..columnCount]
+                col_let = XLSX.utils.encode_col(i)
+                h = ws[col_let + "1"]
+                if h != undefined
+                  header[i] = h.v
+                  add_header( current_row_elem, h.v )
+                else
+                  # WHAT TO DO WITH EMPTY HEADERS
+                  header[i] = undefined
+                  add_header( current_row_elem, "" )
+              current_type_select = $( current_row_elem ).find( '.section-type-select' )
+              select_closest_type( sheet_name, current_type_select )
+              add_srdr_headers( $( current_type_select ).find('option:selected').text(), current_row_elem )
+              apply_droppable( current_row_elem )
+              cur_index += 1
+          reader.readAsArrayBuffer(filedata)
+          this.removeFile(file)
+          console.log(filedata)
+        )
+    }
+
+    new Dropzone( '#fileDropzone' )
+
+    $('.create-button' ).on('click', () -> 
+      fd = new FormData()
+      fd.append("content", update_file_headers())
+      fd.append("projects_user_id", $("#dropzone-div input[name='import[projects_user_id]']").val())
+      fd.append("import_type_id", $("#dropzone-div input[name='import[import_type_id]']").val())
+      fd.append("file_type_id", $("#dropzone-div input[name='import[file_type_id]']").val())
+      fd.append("authenticity_token", $("#dropzone-div input[name='authenticity_token']").val())
+
+      console.log fd
+      $.ajax({ 
+        url: $('#fileDropzone').attr('dropzone-path'),
+        method: 'post',
+        data: fd,
+        processData: false,
+        contentType: false,
+        success: () ->
+          toastr.success('Excel file successfully uploaded. You will be notified by email when citaion import finishes.')
+          filedata = undefined
+          $('#import-columns-panel').html ''
+        ,
+        error: () ->
+          toastr.error('ERROR: Cannot upload Excel file.')
+      })
+    )
 
 
-    #   XLSX.write(wb, {bookType:type, bookSST:true, type: 'base64'}) :
-    #   XLSX.writeFile(wb, fn || ('test.' + (type || 'xlsx')));
-    #   reader.readAsArrayBuffer(filedata)
+    s2ab = (s) ->
+      buf = new ArrayBuffer(s.length)
+      #convert s to arrayBuffer
+      view = new Uint8Array(buf)
+      #create uint8array as viewer
+      i = 0
+      while i < s.length
+        view[i] = s.charCodeAt(i) & 0xFF
+        i++
+      #convert to octet
+      buf
