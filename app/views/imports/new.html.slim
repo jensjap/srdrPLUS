@@ -1,26 +1,30 @@
-.column
-  .row
+.row
+  .column
     h3
       |New Import
     h4 = @project.name
     
 .row
-  .column.medium-9
-    #import-columns-panel
-  .column.medium-3
-    .row
-      #dropzone-div
-        = simple_form_for(@import, remote: true, authenticity_token: true) do |f|
-          .form-inputs
-            = f.input :projects_user_id, as: :hidden, input_html: { value: @projects_user.id }
-            = f.input :import_type_id, as: :hidden, input_html: { value: ImportType.find_by(name: 'Citation').id }
-            = f.simple_fields_for(@imported_file) do |i_f|
-              = f.input :file_type_id, as: :hidden, input_html: { value: FileType.find_by( name: '.xlsx' ).id }
-              #fileDropzone.dropzone name='mainFileUploader' dropzone-path="#{imports_path}"
-                .fallback
-                  = i_f.input :content, as: :file, label: 'Excel File'
-                  .form-actions
-                    = f.button :submit, 'Upload file', class:"small", id:"submit-all"
-    .row
-      .button.create-button
-        | Submit File
+  .column
+    #import-panel-container.hide
+      .row
+        #import-columns-panel
+      .row
+        .float-left
+          .button.discard-button
+            | Discard
+        .float-right
+          .button.create-button
+            | Confirm
+  #dropzone-div
+    = simple_form_for(@import, remote: true, authenticity_token: true) do |f|
+      .form-inputs
+        = f.input :projects_user_id, as: :hidden, input_html: { value: @projects_user.id }
+        = f.input :import_type_id, as: :hidden, input_html: { value: ImportType.find_by(name: 'Citation').id }
+        = f.simple_fields_for(@imported_file) do |i_f|
+          = f.input :file_type_id, as: :hidden, input_html: { value: FileType.find_by( name: '.xlsx' ).id }
+          #fileDropzone.dropzone name='mainFileUploader' dropzone-path="#{imports_path}"
+            .fallback
+              = i_f.input :content, as: :file, label: 'Excel File'
+              .form-actions
+                = f.button :submit, 'Upload file', class:"small", id:"submit-all"
