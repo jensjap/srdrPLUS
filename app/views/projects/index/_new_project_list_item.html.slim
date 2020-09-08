@@ -57,9 +57,11 @@ a.accordion-title href="#"
     .grid-x.grid-padding-x
       .cell.auto
         = link_to "Edit Project", edit_project_path(project), class: "button expanded"
-      .cell.auto
+      /.cell.auto
         - efp_id = @projects_extraction_forms_project_ids[project.id]
         = link_to "Build Extraction Form", build_extraction_forms_project_path(efp_id, anchor: "panel-tab-#{ efp_id }"), class: "button expanded#{ @projects_lead_or_with_key_questions[project.id] ? '' : ' disabled'}"
+      .cell.auto
+        = link_to "Import Project Data", new_project_import_path(project), class: "button expanded"
       /.cell.auto
         = link_to "List Extractions", project_extractions_path(project), class: "button expanded"
       .cell.auto

@@ -19,7 +19,10 @@
     .import-columns-row {
       margin: 0.5rem 0.5rem 2.8rem 0.5rem;
       .headers {
+        padding: 0.3rem 0.4rem 0.2rem 0.4rem;
+        border-radius: 1rem;
         overflow: scroll;
+        background-color: aliceblue;
         .top, .bottom  {
           width: max-content;
           display: flex;
@@ -28,11 +31,14 @@
         }
         .top  {
           height: 4rem;
-          background-color: aliceblue;
+          &:focus {
+            outline: none;
+          }
         }
         .bottom {
-          height: 1.4rem;
-          background-color: aliceblue;
+          height: 1.8rem;
+          padding-bottom: 0.2rem;
+          padding-top: 0.2rem;
         }
       }
 
@@ -60,6 +66,7 @@
       }
 
       .header-column {
+        font-size: 1rem;
         min-width: 10rem;
         height: 1rem;
         margin: 0.2rem 0.3rem 0.2rem 0.3rem;
@@ -72,6 +79,9 @@
         color: white;
         background-color: #78658c;
         border-radius: 1rem;
+        &:focus {
+          outline: none;
+        }
       }
 
       .import-column {

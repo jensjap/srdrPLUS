@@ -110,7 +110,6 @@ document.addEventListener 'turbolinks:load', ->
       filedata = undefined
       $('#import-columns-panel').html ''
       
-      
     add_header = ( row_elem, header_name ) ->
       cutoff_limit = 14
       short_header_name = header_name
