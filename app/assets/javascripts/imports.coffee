@@ -216,6 +216,8 @@ document.addEventListener 'turbolinks:load', ->
             ws[XLSX.utils.encode_col(index) + "1"].v = srdr_header
             ws[XLSX.utils.encode_col(index) + "1"].w = undefined
 
+        #if confirm("Do you want to download fixed file?")
+        #  XLSX.writeFile(workbook, "fixed_" + filedata.name)
         b = new Blob([s2ab(XLSX.write(workbook, {bookType:'xlsx', type:'binary'}))], { type: "application/octet-stream"})
         return new File([b], filedata.name)
       else
