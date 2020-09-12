@@ -12,6 +12,6 @@ class Api::V1::BaseController < ApplicationController
     end
 
     def api_key
-      request.headers['api-key']
+      request.headers['api-key'] || request.params['api_key']
     end
 end
