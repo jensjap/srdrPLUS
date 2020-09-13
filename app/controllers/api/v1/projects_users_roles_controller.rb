@@ -1,4 +1,4 @@
-class Api::V1::ProjectsUsersRolesController < ApplicationController
+class Api::V1::ProjectsUsersRolesController < Api::V1::BaseController
   before_action :skip_policy_scope, only: [:index]
 
   # GET /authors.json

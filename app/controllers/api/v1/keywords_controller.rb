@@ -1,4 +1,4 @@
-class Api::V1::KeywordsController < ApplicationController
+class Api::V1::KeywordsController < Api::V1::BaseController
   PAGE_SIZE = 30
 
   before_action :skip_policy_scope, :skip_authorization

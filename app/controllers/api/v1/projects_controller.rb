@@ -66,13 +66,11 @@ module Api
         end
 
         def project_params
-          params.require(:project)
-            .permit(:citation_file, :name, :description, :attribution, :methodology_description,
-                    :prospero, :doi, :notes, :funding_source,
-                    { tasks_attributes: [:id, :name, :num_assigned, :task_type_id, projects_users_role_ids:[]]},
-                    { citations_attributes: [:id, :name, :abstract, :pmid, :refman, :citation_type_id, :page_number_start, :page_number_end, :_destroy, authors_citations_attributes: [{ author_attributes: :name }, { ordering_attributes: :position }, :_destroy], keyword_ids:[], journal_attributes: [ :id, :name, :volume, :issue, :publication_date]] },
-                    citations_projects_attributes: [ :id, :_destroy, :citation_id, :project_id,
-                                                    citation_attributes: [:id, :_destroy, :name]])
+          if action_name != 'create'
+            params.require(:project).permit(policy(@project).permitted_attributes)
+          else
+            params.require(:project).permit(*ProjectPolicy::FULL_PARAMS)
+          end
         end
     end
   end
