@@ -585,9 +585,10 @@ ActiveRecord::Schema.define(version: 2020_09_07_042926) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "deleted_at"
-    t.index ["deleted_at"], name: "index_eefpsff_followup_fields_on_deleted_at"
+    t.bigint "extractions_extraction_forms_projects_sections_type1_id"
+    t.boolean "active"
+    t.index ["extractions_extraction_forms_projects_section_id", "extractions_extraction_forms_projects_sections_type1_id", "followup_field_id", "active"], name: "index_eefpsff_on_eefps_eefpst1_ff_id", unique: true
     t.index ["extractions_extraction_forms_projects_section_id"], name: "index_eefpsff_followup_fields_on_extraction_id"
-    t.index ["followup_field_id"], name: "index_eefpsff_on_followup_field_id"
   end
 
   create_table "extractions_extraction_forms_projects_sections_type1_row_columns", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

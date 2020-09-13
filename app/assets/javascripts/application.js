@@ -5,7 +5,6 @@
 //= require init
 
 //= require jquery.turbolinks
-//= require datatables
 //= require foundation
 //= require toastr_rails
 //= require cocoon
@@ -15,6 +14,10 @@
 //= require sortable-rails-jquery
 //= require activestorage
 //= require foundation-datepicker.min
+//= require levenshtein.min.js
+//= require draggable/droppable.js
+//= require draggable/plugins.js
+//= require xlsx.mini.js
 //= require tether.min
 //= require dropzone
 

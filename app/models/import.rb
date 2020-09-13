@@ -46,7 +46,9 @@ class Import < ApplicationRecord
           case imported_file.file_type.name
             when ".json"
               JsonImportJob.perform_later(imported_file.id)
+            when ".xlsx"
             else
+
               ## NOT SUPPORTED, WHAT TO DO?
           end
       end

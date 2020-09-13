@@ -1,0 +1,113 @@
+.imports.new {
+  #dropzone-div {
+    height: 30rem;
+    font-size: 1.2rem;
+  }
+
+  .discard-button {
+    background-color: #dc7565;
+  }
+
+  #import-panel-container,#dropzone-div {
+    margin-top: 2rem;
+  }
+
+  #import-columns-panel {
+    height: 90%;
+    overflow: scroll;
+
+    .import-columns-row {
+      margin: 0.5rem 0.5rem 2.8rem 0.5rem;
+      .headers {
+        padding: 0.3rem 0.4rem 0.2rem 0.4rem;
+        border-radius: 1rem;
+        overflow: scroll;
+        background-color: aliceblue;
+        .top, .bottom  {
+          width: max-content;
+          display: flex;
+          flex-direction: row;
+          overflow: visible;
+        }
+        .top  {
+          height: 4rem;
+          &:focus {
+            outline: none;
+          }
+        }
+        .bottom {
+          height: 1.8rem;
+          padding-bottom: 0.2rem;
+          padding-top: 0.2rem;
+        }
+      }
+
+      .sheet-name {
+        font-size: 1rem;
+        display: flex;
+        flex-direction: row;
+        font-weight: bold;
+        align-items: flex-end;
+        margin-bottom: 1vh;
+        select {
+          margin-left: 1vw;
+          margin-bottom: 0;
+          width: 10vw;
+        }
+      }
+      .is-droppable, .header-column {
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+      }
+
+      .header-column {
+        font-size: 1rem;
+        min-width: 10rem;
+        height: 1rem;
+        margin: 0.2rem 0.3rem 0.2rem 0.3rem;
+      }
+
+      .is-droppable {
+        min-width: 9.2rem;
+        height: 2rem;
+        cursor: grab;
+        color: white;
+        background-color: #78658c;
+        border-radius: 1rem;
+        &:focus {
+          outline: none;
+        }
+      }
+
+      .import-column {
+        min-width: 10rem;
+        height: 2.8rem;
+        margin: 0.3rem;
+        padding: 0;
+        overflow: hidden;
+        background-color: transparent;
+        border: dashed #78658c 1.5px;
+        border-radius: 1.4rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .is-droppable.draggable-source--is-dragging {
+        opacity: 0.3;
+      }
+
+      .header-column {
+        background-color: transparent;
+      }
+      #draggable-live-region {
+        border: none;
+      }
+    }
+  }
+}
