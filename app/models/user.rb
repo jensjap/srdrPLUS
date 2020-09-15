@@ -38,6 +38,7 @@ class User < ApplicationRecord
       :last_sign_in_at, :current_sign_in_ip, :last_sign_in_ip]
 
   devise :omniauthable, :omniauth_providers => [:google_oauth2]
+  has_secure_token :api_key
 
   after_create :ensure_profile_username_uniqueness
   before_validation { self.user_type = UserType.where(user_type: 'Member').first if self.user_type.nil? }

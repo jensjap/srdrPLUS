@@ -34,6 +34,10 @@ Rails.application.routes.draw do
     unlocks: 'users/unlocks'
   }
 
+  devise_scope :user do 
+    post '/users/api_key_reset' => 'users/registrations#api_key_reset'
+  end
+
   authenticate :admin do
     mount RailsAdmin::Engine => '/admin', as: 'rails_admin'
     mount Searchjoy::Engine, at: "searchjoy"
