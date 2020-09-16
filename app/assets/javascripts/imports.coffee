@@ -24,6 +24,7 @@ document.addEventListener 'turbolinks:load', ->
                                           "Pmid" ] }
  
     current_mapping = {}
+    current_sheet_name_mapping = {}
     workbook = undefined
     filedata = undefined
 
@@ -40,6 +41,7 @@ document.addEventListener 'turbolinks:load', ->
           this.on('addedfile', (file) ->
             filedata = file
             $('#import-columns-panel').html ''
+            $('#import-tabs-panel').html ''
             reader = new FileReader()
             reader.onload = (e) ->
               data = new Uint8Array(e.target.result);
@@ -109,9 +111,10 @@ document.addEventListener 'turbolinks:load', ->
       workbook = undefined
       filedata = undefined
       $('#import-columns-panel').html ''
+      $('#import-tabs-panel').html ''
       
     add_header = ( row_elem, header_name ) ->
-      cutoff_limit = 14
+      cutoff_limit = 160
       short_header_name = header_name
       if header_name.length > cutoff_limit
         short_header_name = header_name.slice(0,cutoff_limit) + "..."
@@ -129,13 +132,34 @@ document.addEventListener 'turbolinks:load', ->
 
       type_select.on 'change', () ->
         add_srdr_headers( $(this).find('option:selected').text(), new_row_elem )
+        current_sheet_name_mapping[sheet_name] = $(this).find('option:selected').text()
 
-      new_row_elem.append( $('<div></div>').addClass( 'sheet-name' ).append( $('<span></span>').text( sheet_name ) ).append( type_select ) )
+      new_row_elem.append( $('<div></div>').addClass( 'sheet-name' ).append( $('<span></span>').text( sheet_name ).addClass('hide') ).append( type_select ) )
       headers_elem = $('<div></div>').addClass( 'headers' )
-      headers_elem.append( $('<div></div>').addClass( 'bottom' ) )
       headers_elem.append( $('<div></div>').addClass( 'top' ) )
+      headers_elem.append( $('<div></div>').addClass( 'bottom' ) )
       new_row_elem.append( headers_elem )
       $( '#import-columns-panel' ).append( new_row_elem )
+
+      new_tab_elem = $( '<div></div>' ).addClass( 'import-columns-tab' ).attr('sheet-name',sheet_name).text(sheet_name)
+      if $( '.import-columns-tab' ).length == 0
+        new_tab_elem.addClass 'selected'
+        new_tab_elem.on 'click', () ->
+          $( '#import-columns-panel' ).css( 'border-radius', '0 1rem 1rem 1rem' )
+          $( '.import-columns-row' ).addClass 'hide'
+          new_row_elem.removeClass 'hide'
+          $( '.import-columns-tab.selected' ).removeClass 'selected' 
+          new_tab_elem.addClass 'selected'
+      else
+        new_row_elem.addClass 'hide'
+        new_tab_elem.on 'click', () ->
+          $( '#import-columns-panel' ).css( 'border-radius', '1rem' )
+          $( '.import-columns-row' ).addClass 'hide'
+          new_row_elem.removeClass 'hide'
+          $( '.import-columns-tab.selected' ).removeClass 'selected' 
+          new_tab_elem.addClass 'selected'
+
+      $( '#import-tabs-panel' ).append( new_tab_elem )
       current_mapping[sheet_name] = {}
       return new_row_elem
 
@@ -195,6 +219,7 @@ document.addEventListener 'turbolinks:load', ->
             min_edit_distance = cur_edit_distance
           cur_index += 1
 
+      current_sheet_name_mapping[sheet_name] = type_names[min_index]
       $( select_elem ).find( 'option:contains("' + type_names[min_index] + '")').prop('selected', true)
 
     apply_droppable = ( row_elem ) ->
@@ -209,15 +234,24 @@ document.addEventListener 'turbolinks:load', ->
 
     update_file_headers = () ->
       if workbook != undefined
+        i = 0
+        sheet_name_d = {}
         for sheet_name, sheet_dict of current_mapping
           ws = workbook['Sheets'][sheet_name]
+          if current_sheet_name_mapping[sheet_name] of sheet_name_d
+            current_sheet_name_mapping[sheet_name] = current_sheet_name_mapping[sheet_name] + ' ' + sheet_name_d[current_sheet_name_mapping[sheet_name]]
+            sheet_name_d[current_sheet_name_mapping[sheet_name]] += 1
+          else
+            sheet_name_d[current_sheet_name_mapping[sheet_name]] = 2
+          workbook['SheetNames'][''+i] = current_sheet_name_mapping[sheet_name]
           for srdr_header, index of sheet_dict
             ws[XLSX.utils.encode_col(index) + "1"].t = 's'
             ws[XLSX.utils.encode_col(index) + "1"].v = srdr_header
             ws[XLSX.utils.encode_col(index) + "1"].w = undefined
+          i+=1
 
         #if confirm("Do you want to download fixed file?")
-        #  XLSX.writeFile(workbook, "fixed_" + filedata.name)
+        XLSX.writeFile(workbook, "fixed_" + filedata.name)
         b = new Blob([s2ab(XLSX.write(workbook, {bookType:'xlsx', type:'binary'}))], { type: "application/octet-stream"})
         return new File([b], filedata.name)
       else
