@@ -10,10 +10,10 @@ json.set! :title, "#{ @evidence_variable.type1.name } at #{ @timepoint_name } #{
 json.set! :status, "active"
 json.set! :date, @evidence_variable.created_at
 json.set! :description, "#{ @evidence_variable.type1.name } at #{ @timepoint_name } #{ @timepoint_unit }"
-json.set! :characteristicCombination, "union"
-json.set! :characteristic do
+#json.set! :characteristicCombination, "union"
+json.set! :characteristic, Jbuilder.new.array!(['']) do
   json.set! :description, "#{ @evidence_variable.type1.name }"
-  json.set! :definitionCodeableConcept do
+  json.set! :definitionCodeableConcept, Jbuilder.new.array!(['']) do
     json.set! :coding do
       json.set! :system, "http://snomed.info/sct"
       json.set! :code, "419099009"
@@ -23,11 +23,16 @@ json.set! :characteristic do
   json.set! :exclude, false
   json.set! :timeFromStart do
     json.set! :quanity do
-      json.set! :value, @timepoint_name
-      json.set! :comparator, "="
-      json.set! :unit, @timepoint_unit
-      json.set! :system, "http://unitsofmeasure.org"
-      json.set! :code, "u"
+      if @timepoint_name.eql? "Baseline"
+        json.set! :value, "0"
+        json.set! :comparator, "="
+      else
+        json.set! :value, @timepoint_name
+        json.set! :comparator, "="
+        json.set! :unit, @timepoint_unit
+        json.set! :system, "http://unitsofmeasure.org"
+        json.set! :code, "u"
+      end
     end
   end
 end
