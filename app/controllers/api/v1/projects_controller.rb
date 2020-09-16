@@ -12,14 +12,15 @@ module Api
 
       def_param_group :project do
         param :project, Hash, required: true, action_aware: true do
-          param :name,           String, 'Name of the project'
-          param :funding_source, String, 'Who funds this project'
-          param :prospero,       String, 'Prospero ID'
-          param :doi,            String, 'Document Object Identifier'
-          param :description,    String, 'Long description of project'
-          param :attribution,    String, 'Project attribution'
-          param :methodology,    String, 'Methodology description'
-          param :notes,          String, 'Project notes'
+          param :name,              String, 'Name of the project'
+          param :funding_source,    String, 'Who funds this project'
+          param :prospero,          String, 'Prospero ID'
+          param :doi,               String, 'Document Object Identifier'
+          param :description,       String, 'Long description of project'
+          param :attribution,       String, 'Project attribution'
+          param :authors_of_report, String, 'Authors of Report'
+          param :methodology,       String, 'Methodology description'
+          param :notes,             String, 'Project notes'
         end
       end
 
