@@ -40,6 +40,7 @@ document.addEventListener 'turbolinks:load', ->
           this.on('addedfile', (file) ->
             filedata = file
             $('#import-columns-panel').html ''
+            $('#import-tabs-panel').html ''
             reader = new FileReader()
             reader.onload = (e) ->
               data = new Uint8Array(e.target.result);
@@ -109,6 +110,7 @@ document.addEventListener 'turbolinks:load', ->
       workbook = undefined
       filedata = undefined
       $('#import-columns-panel').html ''
+      $('#import-tabs-panel').html ''
       
     add_header = ( row_elem, header_name ) ->
       cutoff_limit = 14
@@ -130,12 +132,32 @@ document.addEventListener 'turbolinks:load', ->
       type_select.on 'change', () ->
         add_srdr_headers( $(this).find('option:selected').text(), new_row_elem )
 
-      new_row_elem.append( $('<div></div>').addClass( 'sheet-name' ).append( $('<span></span>').text( sheet_name ) ).append( type_select ) )
+      new_row_elem.append( $('<div></div>').addClass( 'sheet-name' ).append( $('<span></span>').text( sheet_name ).addClass('hide') ).append( type_select ) )
       headers_elem = $('<div></div>').addClass( 'headers' )
-      headers_elem.append( $('<div></div>').addClass( 'bottom' ) )
       headers_elem.append( $('<div></div>').addClass( 'top' ) )
+      headers_elem.append( $('<div></div>').addClass( 'bottom' ) )
       new_row_elem.append( headers_elem )
       $( '#import-columns-panel' ).append( new_row_elem )
+
+      new_tab_elem = $( '<div></div>' ).addClass( 'import-columns-tab' ).attr('sheet-name',sheet_name).text(sheet_name)
+      if $( '.import-columns-tab' ).length == 0
+        new_tab_elem.addClass 'selected'
+        new_tab_elem.on 'click', () ->
+          $( '#import-columns-panel' ).css( 'border-radius', '0 1rem 1rem 1rem' )
+          $( '.import-columns-row' ).addClass 'hide'
+          new_row_elem.removeClass 'hide'
+          $( '.import-columns-tab.selected' ).removeClass 'selected' 
+          new_tab_elem.addClass 'selected'
+      else
+        new_row_elem.addClass 'hide'
+        new_tab_elem.on 'click', () ->
+          $( '#import-columns-panel' ).css( 'border-radius', '1rem' )
+          $( '.import-columns-row' ).addClass 'hide'
+          new_row_elem.removeClass 'hide'
+          $( '.import-columns-tab.selected' ).removeClass 'selected' 
+          new_tab_elem.addClass 'selected'
+
+      $( '#import-tabs-panel' ).append( new_tab_elem )
       current_mapping[sheet_name] = {}
       return new_row_elem
 

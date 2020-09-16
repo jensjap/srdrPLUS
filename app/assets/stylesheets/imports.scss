@@ -8,35 +8,59 @@
     background-color: #dc7565;
   }
 
+  #import-tabs-panel {
+    display: flex;
+    flex-direction: row;
+    .import-columns-tab {
+      border-radius: 0.5rem 0.5rem 0 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 2rem;
+      margin: 0 0.5rem 0 0;
+      padding: 0 0.8rem 0 0.8rem;
+      font-size: 0.9rem;
+      font-weight: bold;
+      &.selected {
+        background-color: aliceblue;
+      }
+    }
+  }
+
   #import-panel-container,#dropzone-div {
     margin-top: 2rem;
   }
 
   #import-columns-panel {
+    border-radius: 0 1rem 1rem 1rem;
+    background-color: aliceblue;
+    width: max-content;
     height: 90%;
     overflow: scroll;
+    display: flex;
+    flex-direction: row;
 
     .import-columns-row {
+      width: max-content;
+      height: max-content;
       margin: 0.5rem 0.5rem 2.8rem 0.5rem;
       .headers {
         padding: 0.3rem 0.4rem 0.2rem 0.4rem;
-        border-radius: 1rem;
         overflow: scroll;
-        background-color: aliceblue;
+        display: flex;
+        flex-direction: row;
         .top, .bottom  {
           width: max-content;
           display: flex;
-          flex-direction: row;
+          flex-direction: column;
           overflow: visible;
         }
         .top  {
-          height: 4rem;
           &:focus {
             outline: none;
           }
         }
         .bottom {
-          height: 1.8rem;
           padding-bottom: 0.2rem;
           padding-top: 0.2rem;
         }
@@ -48,6 +72,7 @@
         flex-direction: row;
         font-weight: bold;
         align-items: flex-end;
+        margin-top: 1vh;
         margin-bottom: 1vh;
         select {
           margin-left: 1vw;
@@ -58,21 +83,22 @@
       .is-droppable, .header-column {
         font-weight: bold;
         display: flex;
-        align-items: center;
-        justify-content: center;
         text-overflow: ellipsis;
         overflow: hidden;
         white-space: nowrap;
       }
 
       .header-column {
+        align-items: center;
         font-size: 1rem;
         min-width: 10rem;
-        height: 1rem;
-        margin: 0.2rem 0.3rem 0.2rem 0.3rem;
+        height: 2.8rem;
+        margin: 0.3rem;
       }
 
       .is-droppable {
+        align-items: center;
+        justify-content: center;
         min-width: 9.2rem;
         height: 2rem;
         cursor: grab;
