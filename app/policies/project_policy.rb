@@ -4,6 +4,7 @@ class ProjectPolicy < ApplicationPolicy
     :name,
     :description,
     :attribution,
+    :authors_of_report,
     :methodology_description,
     :prospero,
     :doi,

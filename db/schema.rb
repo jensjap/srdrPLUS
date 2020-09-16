@@ -1018,6 +1018,7 @@ ActiveRecord::Schema.define(version: 2020_09_16_161928) do
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.text "authors_of_report"
     t.index ["deleted_at"], name: "index_projects_on_deleted_at"
   end
 

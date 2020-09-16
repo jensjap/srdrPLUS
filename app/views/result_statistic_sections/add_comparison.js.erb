@@ -1,4 +1,5 @@
 ( function() {
+  toastr.info('<%= notice %>')
   $( '#results-panel' ).html( "<%= j( render partial: 'extractions/work/results' ) %>" ).foundation();
 
   var bind_record_saving_mechanism;
