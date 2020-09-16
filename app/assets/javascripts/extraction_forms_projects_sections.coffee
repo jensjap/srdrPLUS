@@ -296,10 +296,15 @@ document.addEventListener 'turbolinks:load', ->
         # Go over each key question checkbox and reveal question if its key question
         # prerequisite is checked.
         $( '.kqp-selector' ).each ->
-          that = $( this )
-          isChecked = that.prop( 'checked' )
+          that = $(this)
+          isChecked = $(this).prop('checked')
+          kqId = $(this).attr('data-kqp-selection-id')
+
+          $("[data-kqp-selection-id=#{kqId}]").each ->
+            if $(this) != that
+              $(this).prop('checked', isChecked);
+
           if isChecked
-            kqId = that.attr( 'data-kqp-selection-id' )
             $( '.card.kqreq-'+kqId ).removeClass( 'hide' )
 
       $( 'input' ).trigger( 'change' )
