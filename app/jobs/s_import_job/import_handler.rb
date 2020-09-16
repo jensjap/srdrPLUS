@@ -93,7 +93,6 @@ class ImportHandler
   # @params [Array] Possible header strings
   # @return [Array of Hash]
   def _parse_data(worksheet, header_search=[])  #{{{2
-    debugger
     raw_data = worksheet.extract_data
     if raw_data.length==0
       @listOf_errors << "Workbook might be empty."
