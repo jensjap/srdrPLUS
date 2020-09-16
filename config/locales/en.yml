@@ -51,6 +51,7 @@ en:
   name: Name
   topic_description: Topic Description
   attribution: Attribution
+  authors_of_report: Authors of Report
   methodology_description: Methodology Description
   prospero_id: Prospero Registration ID
   doi: Document Object ID (DOI)
