@@ -24,6 +24,9 @@ class ImportsController < ApplicationController
 
     respond_to do |format|
       if @import.save
+
+        SImportJob.perform_now(current_user.id, @import.id)
+
         format.json { render :json => @import, status: :ok }
         format.html { redirect_to new_project_import_path(@import.projects_user.project), notice: t('success') }
       else

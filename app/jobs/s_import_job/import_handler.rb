@@ -1,5 +1,5 @@
-require 'rubyXL'
-require 's_import_job/worksheet_section'
+require "rubyXL"
+require "s_import_job/worksheet_section"
 
 class ImportHandler
   attr_reader :project_id, :data, :listOf_errors, :listOf_errors_processing_rows
@@ -50,7 +50,7 @@ class ImportHandler
   end
 
   def process_workbook
-    @wb.workbook.each do |ws|
+    @wb.worksheets.each do |ws|
       headers, data = _parse_data(ws)
       case ws.sheet_name
       when 'Design Details'
@@ -93,6 +93,7 @@ class ImportHandler
   # @params [Array] Possible header strings
   # @return [Array of Hash]
   def _parse_data(worksheet, header_search=[])  #{{{2
+    debugger
     raw_data = worksheet.extract_data
     if raw_data.length==0
       @listOf_errors << "Workbook might be empty."
