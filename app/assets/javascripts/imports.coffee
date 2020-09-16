@@ -24,6 +24,7 @@ document.addEventListener 'turbolinks:load', ->
                                           "Pmid" ] }
  
     current_mapping = {}
+    current_sheet_name_mapping = {}
     workbook = undefined
     filedata = undefined
 
@@ -113,7 +114,7 @@ document.addEventListener 'turbolinks:load', ->
       $('#import-tabs-panel').html ''
       
     add_header = ( row_elem, header_name ) ->
-      cutoff_limit = 14
+      cutoff_limit = 160
       short_header_name = header_name
       if header_name.length > cutoff_limit
         short_header_name = header_name.slice(0,cutoff_limit) + "..."
@@ -131,6 +132,7 @@ document.addEventListener 'turbolinks:load', ->
 
       type_select.on 'change', () ->
         add_srdr_headers( $(this).find('option:selected').text(), new_row_elem )
+        current_sheet_name_mapping[sheet_name] = $(this).find('option:selected').text()
 
       new_row_elem.append( $('<div></div>').addClass( 'sheet-name' ).append( $('<span></span>').text( sheet_name ).addClass('hide') ).append( type_select ) )
       headers_elem = $('<div></div>').addClass( 'headers' )
@@ -217,6 +219,7 @@ document.addEventListener 'turbolinks:load', ->
             min_edit_distance = cur_edit_distance
           cur_index += 1
 
+      current_sheet_name_mapping[sheet_name] = type_names[min_index]
       $( select_elem ).find( 'option:contains("' + type_names[min_index] + '")').prop('selected', true)
 
     apply_droppable = ( row_elem ) ->
@@ -231,15 +234,27 @@ document.addEventListener 'turbolinks:load', ->
 
     update_file_headers = () ->
       if workbook != undefined
+        console.log workbook
+        i = 0
+        sheet_name_d = {}
         for sheet_name, sheet_dict of current_mapping
           ws = workbook['Sheets'][sheet_name]
+          console.log current_sheet_name_mapping[sheet_name]
+          if current_sheet_name_mapping[sheet_name] of sheet_name_d
+            current_sheet_name_mapping[sheet_name] = current_sheet_name_mapping[sheet_name] + ' ' + sheet_name_d[current_sheet_name_mapping[sheet_name]]
+            sheet_name_d[current_sheet_name_mapping[sheet_name]] += 1
+          else
+            sheet_name_d[current_sheet_name_mapping[sheet_name]] = 2
+          workbook['SheetNames'][''+i] = current_sheet_name_mapping[sheet_name]
           for srdr_header, index of sheet_dict
             ws[XLSX.utils.encode_col(index) + "1"].t = 's'
             ws[XLSX.utils.encode_col(index) + "1"].v = srdr_header
             ws[XLSX.utils.encode_col(index) + "1"].w = undefined
+          i+=1
 
+        console.log workbook
         #if confirm("Do you want to download fixed file?")
-        #  XLSX.writeFile(workbook, "fixed_" + filedata.name)
+        XLSX.writeFile(workbook, "fixed_" + filedata.name)
         b = new Blob([s2ab(XLSX.write(workbook, {bookType:'xlsx', type:'binary'}))], { type: "application/octet-stream"})
         return new File([b], filedata.name)
       else
