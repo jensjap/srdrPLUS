@@ -167,8 +167,6 @@ class ExtractionFormsProjectsSection < ApplicationRecord
           # Make it a dropdown.
           qrc.update(question_row_column_type_id: 1)
         else
-          q.question_rows.create(name: "Notes/Comments:")
-
           # Set field type.
           qrc = q.question_rows.first.question_row_columns.first
           # Make it a dropdown.
