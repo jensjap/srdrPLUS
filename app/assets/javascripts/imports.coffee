@@ -234,12 +234,10 @@ document.addEventListener 'turbolinks:load', ->
 
     update_file_headers = () ->
       if workbook != undefined
-        console.log workbook
         i = 0
         sheet_name_d = {}
         for sheet_name, sheet_dict of current_mapping
           ws = workbook['Sheets'][sheet_name]
-          console.log current_sheet_name_mapping[sheet_name]
           if current_sheet_name_mapping[sheet_name] of sheet_name_d
             current_sheet_name_mapping[sheet_name] = current_sheet_name_mapping[sheet_name] + ' ' + sheet_name_d[current_sheet_name_mapping[sheet_name]]
             sheet_name_d[current_sheet_name_mapping[sheet_name]] += 1
@@ -252,7 +250,6 @@ document.addEventListener 'turbolinks:load', ->
             ws[XLSX.utils.encode_col(index) + "1"].w = undefined
           i+=1
 
-        console.log workbook
         #if confirm("Do you want to download fixed file?")
         XLSX.writeFile(workbook, "fixed_" + filedata.name)
         b = new Blob([s2ab(XLSX.write(workbook, {bookType:'xlsx', type:'binary'}))], { type: "application/octet-stream"})
