@@ -65,6 +65,12 @@
           padding-bottom: 0.2rem;
           padding-top: 0.2rem;
         }
+        .palette {
+          position: relative;
+          span {
+            position: absolute;
+          }
+        }
       }
 
       .sheet-name {
@@ -106,6 +112,7 @@
         color: white;
         background-color: #78658c;
         border-radius: 1rem;
+        z-index: 100;
         &:focus {
           outline: none;
         }

@@ -136,6 +136,8 @@ document.addEventListener 'turbolinks:load', ->
 
       new_row_elem.append( $('<div></div>').addClass( 'sheet-name' ).append( $('<span></span>').text( sheet_name ).addClass('hide') ).append( type_select ) )
       headers_elem = $('<div></div>').addClass( 'headers' )
+
+      headers_elem.append( $('<div></div>').addClass( 'palette' ) )
       headers_elem.append( $('<div></div>').addClass( 'top' ) )
       headers_elem.append( $('<div></div>').addClass( 'bottom' ) )
       new_row_elem.append( headers_elem )
@@ -173,13 +175,15 @@ document.addEventListener 'turbolinks:load', ->
         alert("There are fewer Excel columns than what is required for this type of section.")
         return
 
+      $( row_elem ).find( '.palette' ).html('')
       $( row_elem ).find( '.top' ).html('')
-      for import_column in [0..$( row_elem ).find( '.header-column' ).length]
+      for import_column in [0..$( row_elem ).find( '.header-column' ).length-1]
         $( row_elem ).find( '.top' ).append( $( '<div></div>' ).addClass( 'import-column' ).attr('index', cur_index) ) 
         cur_index += 1
 
       while headers_to_add.length > 0
         srdr_header = headers_to_add.pop(0)
+        $( row_elem ).find( '.palette' ).append( $( '<div></div>' ).addClass( 'import-column' ).append( $('<span></span>').text( srdr_header ) ) )
         min_edit_distance = Number.POSITIVE_INFINITY
         min_index = 0 
         cur_index = 0
@@ -223,10 +227,14 @@ document.addEventListener 'turbolinks:load', ->
       $( select_elem ).find( 'option:contains("' + type_names[min_index] + '")').prop('selected', true)
 
     apply_droppable = ( row_elem ) ->
-      droppable = new Droppable.default( $( row_elem ).find( '.headers .top' ).toArray(), { draggable: '.is-droppable', dropzone: '#' + $( row_elem ).attr( 'id' ) + ' .headers .top .import-column', plugins: [] })
+      droppable = new Droppable.default( $( row_elem ).find( '.headers .top, .headers .palette' ).toArray(), { draggable: '.is-droppable', dropzone: '#' + $( row_elem ).attr( 'id' ) + ' .headers .top .import-column, #' + $( row_elem ).attr( 'id' ) + ' .headers .palette .import-column', plugins: [] })
 
       sheet_name = get_sheet_name ( row_elem )
+        
       droppable.on 'droppable:stop', (evt) ->
+        if $( evt.dropzone ).parents( '.palette' ).length > 0
+          delete current_mapping[sheet_name][srdr_header]
+          return
         srdr_header = $( evt.dropzone ).find( '.is-droppable' ).text()
         current_mapping[sheet_name][srdr_header] = $( evt.dropzone ).attr( 'index' )
 
@@ -244,6 +252,7 @@ document.addEventListener 'turbolinks:load', ->
           else
             sheet_name_d[current_sheet_name_mapping[sheet_name]] = 2
           workbook['SheetNames'][''+i] = current_sheet_name_mapping[sheet_name]
+          workbook['Sheets'][current_sheet_name_mapping[sheet_name]] = workbook['Sheets'][sheet_name]
           for srdr_header, index of sheet_dict
             ws[XLSX.utils.encode_col(index) + "1"].t = 's'
             ws[XLSX.utils.encode_col(index) + "1"].v = srdr_header
