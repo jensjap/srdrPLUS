@@ -163,27 +163,45 @@ class ExtractionFormsProjectsSection < ApplicationRecord
         # if there are no options, then this quality dimension is a text question
         if qdq.quality_dimension_options.empty?
           # Set field type.
-          qrc = q.question_rows.first.question_row_columns.first
+          qrc_1 = q.question_rows.first.question_row_columns.first
           # Make it a dropdown.
-          qrc.update(question_row_column_type_id: 1)
+          qrc_1.update(question_row_column_type_id: 1)
+
         else
-          # Set field type.
-          qrc = q.question_rows.first.question_row_columns.first
-          # Make it a dropdown.
-          qrc.update(question_row_column_type_id: 6)
+          qr_1 = q.question_rows.first
+          qr_1.update(name: 'Rating')
+
+          # Set field type (dropdown) for first for cell 1x1:
+          qrc_1 = qr_1.question_row_columns.first
+          qrc_1.update(question_row_column_type_id: 6)
+
+          q.question_rows.build
+
+          qr_2 = q.question_rows.second
+          qr_2.update(name: 'Notes/Comments:')
+          qr_2.question_row_columns.build
+
+          qrc_2 = qr_2.question_row_columns.first
+          qrc_2.update(question_row_column_type_id: 1)
+
+          QuestionRowColumnOption.all.each do |qrco|
+            QuestionRowColumnsQuestionRowColumnOption.create(
+              question_row_column: qrc_2,
+              question_row_column_option: qrco
+            )
+          end
 
           # Iterate through options and add them.
           first = true
           qdq.quality_dimension_options.each do |qdo|
             if first
-              qrcqrco = qrc.question_row_columns_question_row_column_options.where(question_row_column_option_id: 1).first
+              qrcqrco = qrc_1.question_row_columns_question_row_column_options.where(question_row_column_option_id: 1).first
               qrcqrco.update(name: qdo.name)
-
 
               first = false
             else
               qrcqrco = QuestionRowColumnsQuestionRowColumnOption.create(
-                  question_row_column_id: qrc.id,
+                  question_row_column_id: qrc_1.id,
                   question_row_column_option_id: 1,
                   name: qdo.name
               )

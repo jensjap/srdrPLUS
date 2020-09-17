@@ -43,10 +43,11 @@ class QuestionRowColumn < ApplicationRecord
   delegate :question_type, to: :question_row
 
   def field_validation_value_for(name)
-    question_row_columns_question_row_column_options
-      .joins(:question_row_column_option)
-      .where(question_row_column_options: { name: name })
-      .first.name
+    return QuestionRowColumnsQuestionRowColumnOption
+      .find_or_create_by!(
+        question_row_column: self,
+        question_row_column_option: QuestionRowColumnOption.find_by(name: name)
+    )
   end
 
   private
