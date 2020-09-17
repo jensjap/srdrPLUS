@@ -12,6 +12,9 @@
             label
               b = t1_name
             / Let's remove the currently displayed outcomes from the @eefpst1s so it doesn't show in the possible selections.
-            - @eefpst1s.left_joins(:type1_type).where(t1_name == "Uncategorized" ? { type1_type_id: nil } : { type1_types: { name: t1_name } }).where.not(id: @eefpst1.id).each do |eefpst1|
-              li[style='font-size: larger;'] = link_to "- #{eefpst1.type1_name_and_description}", change_outcome_in_results_section_extraction_path(eefpst1_id: eefpst1.id), remote: true, class: 'change-outcome-link'
+            - @eefpst1s.left_joins(:type1_type).where(t1_name == "Uncategorized" ? { type1_type_id: nil } : { type1_types: { name: t1_name } }).each do |eefpst1|
+              li[style='font-size: larger;'] = link_to "- #{eefpst1.type1_name_and_description} [#{eefpst1.statusing.status.name}]", change_outcome_in_results_section_extraction_path(eefpst1_id: eefpst1.id), remote: true, class: 'change-outcome-link', id: "eefpst1-#{eefpst1.id}"
           hr
+h6
+  b Outcome Status
+= render 'shared/statusing_form.html.slim', statusing: @eefpst1.statusing, status_name: @eefpst1.statusing.status.name
