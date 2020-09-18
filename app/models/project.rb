@@ -323,6 +323,10 @@ class Project < ApplicationRecord
   def display
     name
   end
+  
+  def check_publishing_eligibility
+    []
+  end
 
   private
 

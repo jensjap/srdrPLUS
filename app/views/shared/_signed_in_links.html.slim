@@ -37,6 +37,10 @@ li = link_to('Dashboard', projects_path)
         a#export-modal-button[data-open="export-modal-#{ project.id.to_s }"] = 'Export'
 
       li = link_to t('comparison_tool'),    comparison_tool_project_extractions_path(project),    title: t('.compare_extractions')
+      - if project.publishing.present?
+        li style="cursor: not-allowed;" = link_to 'Publication has been requested', '#', title: t('request_publication'), class: 'disabled'
+      - else
+        li = link_to t('request_publication'), publishings_create_path(type: Publishing::PROJECT, id: project.id), title: t('request_publication'), method: :post
       b Navigation
       li = link_to t('.project_information'), edit_project_path(project) + '#panel-project-information', title: t('.project_information')
       li = link_to t('.key_questions'),       edit_project_path(project) + '#panel-key-questions',       title: t('.key_questions')

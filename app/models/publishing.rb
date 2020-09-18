@@ -28,10 +28,13 @@ class Publishing < ApplicationRecord
   has_one :approval, as: :approvable, dependent: :destroy
 
   SD_META_DATUM = 'SdMetaDatum'.freeze
+  PROJECT = 'Project'.freeze
 
   def name_of_pub_type
     if publishable_type == SD_META_DATUM
       "SR360"
+    elsif publishable_type == PROJECT
+      "Project"
     end
   end
 end

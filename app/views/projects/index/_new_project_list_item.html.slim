@@ -53,7 +53,7 @@ a.accordion-title href="#"
                 span.label.warning Date Publishing Requested:
                 .callout
                   = project.publishing.created_at.in_time_zone(current_user.profile.time_zone).strftime("%b %-d, %Y - %l:%M %P") + \
-                         " (by: #{ publishing.user.profile.first_name })"
+                         " (by: #{ project.publishing.user.profile.first_name })"
     .grid-x.grid-padding-x
       .cell.auto
         = link_to "Edit Project", edit_project_path(project), class: "button expanded"
@@ -79,6 +79,8 @@ a.accordion-title href="#"
             label for="gsheets-radio-#{project.id.to_s}"
               | Google Sheets
           = link_to "Export Project Data", export_project_path(project, export_type_name: '.xlsx'), method: :post, class: "button expanded start-export-button"
+      .cell.auto
+        = link_to t('request_publication'), publishings_create_path(type: Publishing::PROJECT, id: project.id), title: t('request_publication'), method: :post, class: "button expanded"
 
 
       .cell.auto
