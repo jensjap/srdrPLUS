@@ -21,7 +21,7 @@ class PublishingsController < ApplicationController
           publishing.name_of_pub_type, 
           publishing.id, 
           @publishable_record.id
-        ).deliver_now
+        ).deliver_later
       PublishingMailer.
         notify_publisher_of_request(
           current_user.email, 
@@ -29,7 +29,7 @@ class PublishingsController < ApplicationController
           publishing.name_of_pub_type, 
           publishing.id, 
           @publishable_record.id
-        ).deliver_now
+        ).deliver_later
       flash[:success] = "Success! Your request is received. We will inform you once the record is public."
     end
 
