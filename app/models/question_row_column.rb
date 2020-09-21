@@ -15,7 +15,7 @@ class QuestionRowColumn < ApplicationRecord
   acts_as_paranoid
   has_paper_trail
 
-  after_create :associate_default_question_row_column_type
+  after_create :create_default_question_row_column_options
   after_create :create_default_question_row_column_field
 
   after_save :ensure_question_row_column_fields
@@ -52,16 +52,14 @@ class QuestionRowColumn < ApplicationRecord
 
   private
 
-    def associate_default_question_row_column_type
-      # it is possible that this callback no longer serves a purpose after changes to other callbacks -Birol
-      if not self.question_row_column_type.present?
-        self.question_row_column_type = QuestionRowColumnType.find_by(name: 'text')
-        self.save
+    def create_default_question_row_column_options
+      QuestionRowColumnOption.all.each do |opt|
+        self.question_row_column_options << opt
       end
     end
 
     def create_default_question_row_column_field
-      if not self.question_row_column_fields.present?
+      unless self.question_row_column_fields.present?
         self.question_row_column_fields.create
       end
     end

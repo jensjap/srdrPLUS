@@ -184,13 +184,6 @@ class ExtractionFormsProjectsSection < ApplicationRecord
           qrc_2 = qr_2.question_row_columns.first
           qrc_2.update(question_row_column_type_id: 1)
 
-          QuestionRowColumnOption.all.each do |qrco|
-            QuestionRowColumnsQuestionRowColumnOption.create(
-              question_row_column: qrc_2,
-              question_row_column_option: qrco
-            )
-          end
-
           # Iterate through options and add them.
           first = true
           qdq.quality_dimension_options.each do |qdo|
