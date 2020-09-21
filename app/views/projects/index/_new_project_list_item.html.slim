@@ -80,7 +80,12 @@ a.accordion-title href="#"
               | Google Sheets
           = link_to "Export Project Data", export_project_path(project, export_type_name: '.xlsx'), method: :post, class: "button expanded start-export-button"
       .cell.auto
-        = link_to t('request_publication'), publishings_create_path(type: Publishing::PROJECT, id: project.id), title: t('request_publication'), method: :post, class: "button expanded"
+        - if project.publishing.present? && project.publishing.approval.present?
+          = link_to 'Project has been published', '#', title: 'Project has been published', class: "button expanded disabled"
+        - elsif project.publishing.present?
+          = link_to 'Cancel publication request', publishings_destroy_path(project.publishing.publishable_id), title: 'Cancel publication request', data: { confirm: 'Are you sure?' }, method: :delete, class: "button expanded"
+        - else
+          = link_to t('request_publication'), publishings_create_path(type: Publishing::PROJECT, id: project.id), title: t('request_publication'), method: :post, class: "button expanded"
 
 
       .cell.auto
