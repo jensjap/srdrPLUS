@@ -64,8 +64,8 @@ class Extraction < ApplicationRecord
 #  end
 
   def ensure_extraction_form_structure
-    self.project.extraction_forms_projects.each do |efp|
-      efp.extraction_forms_projects_sections.each do |efps|
+    self.project.extraction_forms_projects.includes([:extraction_forms_projects_sections, :extraction_form]).each do |efp|
+      efp.extraction_forms_projects_sections.includes([:link_to_type1]).each do |efps|
         ExtractionsExtractionFormsProjectsSection.find_or_create_by!(
           extraction: self,
           extraction_forms_projects_section: efps,

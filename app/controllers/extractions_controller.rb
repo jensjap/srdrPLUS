@@ -246,7 +246,7 @@ class ExtractionsController < ApplicationController
 
     def set_extraction
       @extraction = Extraction.
-        includes(projects_users_role: { projects_user: :project }).
+        includes(projects_users_role: :projects_user).
         find(params[:id])
         #.includes(key_questions_projects: [:key_question, extraction_forms_projects_section: [:extractions_extraction_forms_projects_sections, :extraction_forms_projects_section_type]])
     end
@@ -309,6 +309,6 @@ class ExtractionsController < ApplicationController
     end
 
     def set_extraction_forms_projects
-      @extraction_forms_projects = @project.extraction_forms_projects.includes( extraction_forms_projects_sections: [:extraction_forms_projects_section_option, :extraction_forms_projects_section_type, :section, :type1s, {questions: [:dependencies, :key_questions_projects, {question_rows: [{question_row_columns: [:question_row_column_type, :question_row_column_fields, {question_row_columns_question_row_column_options: [:followup_field]}]}]}]}])
+      @extraction_forms_projects = @project.extraction_forms_projects.includes( extraction_forms_projects_sections: [:extraction_forms_projects_section_option, :extraction_forms_projects_section_type, :section, {questions: [:dependencies, :key_questions_projects, {question_rows: [{question_row_columns: [:question_row_column_type, :question_row_column_fields, {question_row_columns_question_row_column_options: [:followup_field]}]}]}]}])
     end
 end
