@@ -14,9 +14,10 @@
 /! Row for toggler => sort by updated at or created at.
 .row.project-controls
   .column.medium-8
-    = simple_form_for 'project', url: '/projects', method: :get do |f|
-      = f.input :project_status, as: :hidden, input_html: { value: @project_status }
-      = f.input :q, label: false, input_html: { value: @query }, required: false, placeholder: 'Search'
+    - if @project_status.blank?
+      = simple_form_for 'project', url: '/projects', method: :get do |f|
+        = f.input :project_status, as: :hidden, input_html: { value: @project_status }
+        = f.input :q, label: false, input_html: { value: @query }, required: false, placeholder: 'Search'
   .column.medium-4
     .toggle-sort-order.show-for-large
       = link_to 'Updated at', projects_path({ o: 'updated-at' }.merge(@params)), class: "button updated-at #{params[:o].nil? || params[:o] == 'updated-at' ? 'disabled' : ''}"
