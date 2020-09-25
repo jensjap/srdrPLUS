@@ -18,8 +18,6 @@ class ProjectsController < ApplicationController
     'created-at': { created_at: :desc },
   }.stringify_keys
 
-  PER_PAGE = 20
-
   # GET /projects
   # GET /projects.json
   def index
@@ -321,76 +319,86 @@ class ProjectsController < ApplicationController
   def setup_instance_variables
     @query = params[:q]
     @order = params[:o] || "updated-at"
+    @project_status = params[:project_status]
+    @params = params.permit(:q, :project_status).to_h
 
-    @projects = policy_scope(Project).
-      includes(
-        publishing: [{ user: :profile },
-        approval: [{ user: :profile }]]
-      ).
-      by_name_description_and_query(@query).
-      order(SORT[@order]).
-      page(params[:page])
+    if @project_status == nil
+      @projects = policy_scope(Project).
+        includes(publishing: [{ user: :profile }, approval: [{ user: :profile }]]).
+        by_name_description_and_query(@query).
+        page(params[:page])
 
-    @draft, @pending, @published = [[], [], []]
-    @projects.each do |project|
-      if project.publishing.present? && project.publishing.approval.present?
-        @published << project
-      elsif project.publishing.present?
-        @pending << project
-      else
-        @draft << project
+      if @project_status == nil
+        @projects = @projects.draft
+      elsif @project_status == 'pending'
+        @projects = @projects.pending
+      elsif @project_status == 'published'
+        @projects = @projects.published
       end
-    end
 
-    project_ids = @projects.pluck(:id)
-    @projects_key_questions_project_counts = KeyQuestionsProject.
-      where(project_id: project_ids).
-      group(:project_id).
-      count
+      @draft, @pending, @published = [[], [], []]
+      @projects.each do |project|
+        if project.publishing.present? && project.publishing.approval.present?
+          @published << project
+        elsif project.publishing.present?
+          @pending << project
+        else
+          @draft << project
+        end
+      end
 
-    @projects_citations_project_counts = CitationsProject.
-      where(project_id: project_ids).
-      group(:project_id).
-      count
+      project_ids = @projects.pluck(:id)
+      @projects_key_questions_project_counts = KeyQuestionsProject.
+        where(project_id: project_ids).
+        group(:project_id).
+        count
 
-    @projects_projects_user_counts = ProjectsUser.
-      where(project_id: project_ids).
-      group(:project_id).
-      count
+      @projects_citations_project_counts = CitationsProject.
+        where(project_id: project_ids).
+        group(:project_id).
+        count
 
-    @projects_extraction_counts = Extraction.
-      where(project_id: project_ids).
-      group(:project_id).
-      count
+      @projects_projects_user_counts = ProjectsUser.
+        where(project_id: project_ids).
+        group(:project_id).
+        count
 
-    @projects_extraction_forms_project_ids = ExtractionFormsProject.
-      where(project_id: project_ids).
-      group_by(&:project_id)
+      @projects_extraction_counts = Extraction.
+        where(project_id: project_ids).
+        group(:project_id).
+        count
 
-    @sd_meta_data_counts = SdMetaDatum.
-      where(project_id: project_ids).
-      group(:project_id).
-      count
+      @projects_extraction_forms_project_ids = ExtractionFormsProject.
+        where(project_id: project_ids).
+        group_by(&:project_id)
 
-    @projects_lead_or_with_key_questions = ProjectsUsersRole.
-      where(projects_user: ProjectsUser.
-        where(
-          project_id: project_ids,
-          user_id: current_user
-        ),
-        role: Role.where(name: 'Leader')
-      ).includes(projects_user: { project: [ :key_questions_projects ] }).
-      map { |pur| [pur.project.id, pur.project.key_questions_projects.present?] }.
-      to_h
+      @sd_meta_data_counts = SdMetaDatum.
+        where(project_id: project_ids).
+        group(:project_id).
+        count
 
-    @projects_lead_or_with_key_questions.default = false
+      @projects_lead_or_with_key_questions = ProjectsUsersRole.
+        where(projects_user: ProjectsUser.
+          where(
+            project_id: project_ids,
+            user_id: current_user
+          ),
+          role: Role.where(name: 'Leader')
+        ).includes(projects_user: { project: [ :key_questions_projects ] }).
+        map { |pur| [pur.project.id, pur.project.key_questions_projects.present?] }.
+        to_h
 
-    if current_user.admin?
-      @unapproved_publishings = Publishing.unapproved
-      @approved_publishings = Publishing.approved
-    else
+      @projects_lead_or_with_key_questions.default = false
+    elsif @project_status == 'pending'
+      @unapproved_publishings = Publishing.unapproved.page(params[:page])
+      @unapproved_publishings = @unapproved_publishings.order(:created_at) if params[:o].nil? || params[:o] == 'created-at'
+      @unapproved_publishings = @unapproved_publishings.order(:updated_at) if params[:o] == 'updated-at'
       @unapproved_publishings = @unapproved_publishings.where(user: current_user)
-      @approved_publishings = @approved_publishings.where(user: current_user)
+    elsif @project_status == 'published'
+      @approved_publishings = Publishing.approved.page(params[:page])
+      @approved_publishings = @approved_publishings.order(:created_at) if params[:o].nil? || params[:o] == 'created-at'
+      @approved_publishings = @approved_publishings.order(:updated_at) if params[:o] == 'updated-at'
+      @approved_publishings = @approved_publishings.where(user: current_user) unless current_user.admin?
     end
   end
 end
