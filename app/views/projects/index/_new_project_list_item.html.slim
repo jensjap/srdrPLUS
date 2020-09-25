@@ -83,10 +83,9 @@ a.accordion-title href="#"
         - if project.publishing.present? && project.publishing.approval.present?
           = link_to 'Project has been published', '#', title: 'Project has been published', class: "button expanded disabled"
         - elsif project.publishing.present?
-          = link_to 'Cancel publication request', publishings_destroy_path(project.publishing.publishable_id), title: 'Cancel publication request', data: { confirm: 'Are you sure?' }, method: :delete, class: "button expanded"
+          = link_to 'Cancel publication request', publishing_path(project.publishing.publishable_id), title: 'Cancel publication request', data: { confirm: 'Are you sure?' }, method: :delete, class: "button expanded"
         - else
-          = link_to t('request_publication'), publishings_create_path(type: Publishing::PROJECT, id: project.id), title: t('request_publication'), method: :post, class: "button expanded"
-
+          = link_to t('request_publication'), new_publishing_path(type: Project.to_s, id: project.id), title: t('request_publication'), class: "button expanded"
 
       .cell.auto
         = link_to "Delete Project", confirm_deletion_project_path(project), method: :get, class: "alert button expanded", remote: true

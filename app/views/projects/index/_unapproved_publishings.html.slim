@@ -25,9 +25,7 @@
               = link_to 'View', sd_meta_datum_path(pr.publishable_id), class: 'btn-link'
             - elsif pr.publishable.class == Project
               = link_to 'View', project_path(pr.publishable_id), class: 'btn-link'
-          - if current_user.admin? && pr.publishable.class == SdMetaDatum
-            td = link_to 'Approve', publishings_approve_path(id: pr.publishable_id, type: Publishing::SD_META_DATUM), class: 'btn-link', method: :post
-          - elsif current_user.admin? && pr.publishable.class == Project
-            td = link_to 'Approve', publishings_approve_path(id: pr.publishable_id, type: Publishing::PROJECT), class: 'btn-link', method: :post
+          - if current_user.admin?
+            td = link_to 'Approve', publishings_approve_path(id: pr.publishable_id, type: pr.publishable.class.to_s), class: 'btn-link', method: :post, data: { confirm: 'Are you sure?' }
           - else
-            td = link_to 'Cancel', publishings_destroy_path(pr.publishable_id), class: 'btn-link', data: { confirm: 'Are you sure?' }, method: :delete
+            td = link_to 'Cancel', publishing_path(pr.publishable_id), class: 'btn-link', data: { confirm: 'Are you sure?' }, method: :delete

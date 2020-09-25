@@ -1,8 +1,7 @@
 require 'sidekiq/web'
 
 Rails.application.routes.draw do
-  post 'publishings/create'
-  delete 'publishings/:id', to: 'publishings#destroy', as: 'publishings_destroy'
+  resources :publishings, only: [:new, :create, :destroy]
   post 'publishings/:id/approve', to: 'publishings#approve', as: 'publishings_approve'
 
   resources :project_report_links, only: [:index, :view] do

@@ -40,9 +40,9 @@ li = link_to('Dashboard', projects_path)
       - if project.publishing.present? && project.publishing.approval.present?
         li style="cursor: not-allowed;" = link_to 'Publication has been published', '#', title: 'Publication has been published', class: 'disabled'
       - elsif project.publishing.present?
-        li = link_to 'Cancel publication request', publishings_destroy_path(project.publishing.publishable_id), data: { confirm: 'Are you sure?' }, method: :delete, title: 'Cancel publication request'
+        li = link_to 'Cancel publication request', publishing_path(project.publishing.publishable_id), data: { confirm: 'Are you sure?' }, method: :delete, title: 'Cancel publication request'
       - else
-        li = link_to t('request_publication'), publishings_create_path(type: Publishing::PROJECT, id: project.id), title: t('request_publication'), method: :post
+        li = link_to t('request_publication'), new_publishing_path(type: Publishing::PROJECT, id: project.id), title: t('request_publication')
       b Navigation
       li = link_to t('.project_information'), edit_project_path(project) + '#panel-project-information', title: t('.project_information')
       li = link_to t('.key_questions'),       edit_project_path(project) + '#panel-key-questions',       title: t('.key_questions')

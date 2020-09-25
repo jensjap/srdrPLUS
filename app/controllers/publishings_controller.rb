@@ -1,9 +1,22 @@
 class PublishingsController < ApplicationController
-  before_action :set_publishable_record, only: [:create, :approve]
+  before_action :set_publishable_record, only: [:new, :create, :approve]
   before_action :set_publishing, only: [:approve, :destroy]
 
+  def new
+    if @publishable_record && @publishable_record.publishing.present?
+      flash[:notice] = "Publishing request has already been received."
+      return redirect_to '/projects'
+    end
+    if @publishable_record && @publishable_record.publishing && @publishable_record.publishing.approval.present?
+      flash[:notice] = "This request has already been approved."
+      return redirect_to '/projects'
+    end
+    @publishing = Publishing.new(publishable: @publishable_record)
+    authorize(@publishing)
+  end
+
   def create
-    unless @publishable_record && @publishable_record.publishing.nil?
+    unless @publishable_record
       flash[:error] = "Invalid record to publish."
       return redirect_to '/projects'
     end
@@ -11,23 +24,25 @@ class PublishingsController < ApplicationController
     errors = @publishable_record.check_publishing_eligibility
     if errors.present?
       flash[:errors] = "Some required fields are missing. Please go to the record to fill out all required fields: #{errors.join(', ')}"
-    elsif @publishing.present?
+    elsif @publishable_record.publishing.present?
+      flash[:notice] = "Your request has already been received."
+    elsif @publishable_record.publishing.present? && @publishable_record.publishing.approval.present?
       flash[:notice] = "Your request has already been received."
     else
       publishing = Publishing.create(publishable: @publishable_record, user: current_user)
       PublishingMailer.
         notify_admin_of_request(
-          publishing.publishable.display, 
-          publishing.name_of_pub_type, 
-          publishing.id, 
+          publishing.publishable.display,
+          publishing.name_of_pub_type,
+          publishing.id,
           @publishable_record.id
         ).deliver_later
       PublishingMailer.
         notify_publisher_of_request(
-          current_user.email, 
-          publishing.publishable.display, 
-          publishing.name_of_pub_type, 
-          publishing.id, 
+          current_user.email,
+          publishing.publishable.display,
+          publishing.name_of_pub_type,
+          publishing.id,
           @publishable_record.id
         ).deliver_later
       flash[:success] = "Success! Your request is received. We will inform you once the record is public."
@@ -71,9 +86,9 @@ class PublishingsController < ApplicationController
     def set_publishable_record
       publishable_type = params[:type]
 
-      if publishable_type == Publishing::SD_META_DATUM
+      if publishable_type == SdMetaDatum.to_s
         @publishable_record = SdMetaDatum.find(params[:id])
-      elsif publishable_type == Publishing::PROJECT
+      elsif publishable_type == Project.to_s
         @publishable_record = Project.find(params[:id])
       end
     end
