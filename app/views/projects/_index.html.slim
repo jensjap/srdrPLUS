@@ -13,14 +13,10 @@
 
 /! Row for toggler => sort by updated at or created at.
 .row.project-controls
-
   .column.medium-8
-    .project-filter.input-group.searchbar
-      .input-group-button
-        button.button.search
-          i.fi-magnifying-glass
-      = search_field_tag "project-filter", nil, class: "search-field", placeholder: "Filter by Name or Description"
-
+    = simple_form_for 'project', url: '/projects', method: :get do |f|
+      = f.input :project_status, as: :hidden, input_html: { value: @project_status }
+      = f.input :q, label: false, input_html: { value: @query }, required: false, placeholder: 'Search'
   .column.medium-4
     .toggle-sort-order.show-for-large
       = link_to 'Updated at', projects_path({ o: 'updated-at' }.merge(@params)), class: "button updated-at #{params[:o].nil? || params[:o] == 'updated-at' ? 'disabled' : ''}"
@@ -29,7 +25,7 @@
 .column.row#project-list
   ul class="tabs" id="project-tabs"
     li class="tabs-title"
-      a href="/projects" aria-selected="#{@project_status == nil ? 'true' : ' false'}" Drafts
+      a href="/projects" aria-selected="#{@project_status.blank? ? 'true' : ' false'}" Drafts
     li class="tabs-title"
       a href="/projects?project_status=pending" aria-selected="#{@project_status == 'pending' ? 'true' : 'false'}" Publication Requests
     li class="tabs-title"
@@ -37,7 +33,7 @@
 
 .column.row
   div
-    - if @project_status == nil
+    - if @project_status.blank?
       div
         = render "projects/index/project_list"
       div

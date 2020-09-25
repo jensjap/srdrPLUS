@@ -317,35 +317,17 @@ class ProjectsController < ApplicationController
 
 
   def setup_instance_variables
-    @query = params[:q]
+    @query = params.dig(:project, :q)
     @order = params[:o] || "updated-at"
-    @project_status = params[:project_status]
-    @params = params.permit(:q, :project_status).to_h
+    @project_status = params.dig(:project, :project_status) || params[:project_status]
+    @params = { q: @query, project_status: @project_status }
 
-    if @project_status == nil
+    if @project_status.blank?
       @projects = policy_scope(Project).
+        draft.
         includes(publishing: [{ user: :profile }, approval: [{ user: :profile }]]).
         by_name_description_and_query(@query).
         page(params[:page])
-
-      if @project_status == nil
-        @projects = @projects.draft
-      elsif @project_status == 'pending'
-        @projects = @projects.pending
-      elsif @project_status == 'published'
-        @projects = @projects.published
-      end
-
-      @draft, @pending, @published = [[], [], []]
-      @projects.each do |project|
-        if project.publishing.present? && project.publishing.approval.present?
-          @published << project
-        elsif project.publishing.present?
-          @pending << project
-        else
-          @draft << project
-        end
-      end
 
       project_ids = @projects.pluck(:id)
       @projects_key_questions_project_counts = KeyQuestionsProject.
@@ -391,13 +373,13 @@ class ProjectsController < ApplicationController
       @projects_lead_or_with_key_questions.default = false
     elsif @project_status == 'pending'
       @unapproved_publishings = Publishing.unapproved.page(params[:page])
-      @unapproved_publishings = @unapproved_publishings.order(:created_at) if params[:o].nil? || params[:o] == 'created-at'
-      @unapproved_publishings = @unapproved_publishings.order(:updated_at) if params[:o] == 'updated-at'
-      @unapproved_publishings = @unapproved_publishings.where(user: current_user)
+      @unapproved_publishings = @unapproved_publishings.order(:updated_at) if params[:o].nil? || params[:o] == 'updated-at'
+      @unapproved_publishings = @unapproved_publishings.order(:created_at) if params[:o] == 'created-at'
+      @unapproved_publishings = @unapproved_publishings.where(user: current_user) unless current_user.admin?
     elsif @project_status == 'published'
       @approved_publishings = Publishing.approved.page(params[:page])
-      @approved_publishings = @approved_publishings.order(:created_at) if params[:o].nil? || params[:o] == 'created-at'
-      @approved_publishings = @approved_publishings.order(:updated_at) if params[:o] == 'updated-at'
+      @approved_publishings = @approved_publishings.order(:updated_at) if params[:o].nil? || params[:o] == 'updated-at'
+      @approved_publishings = @approved_publishings.order(:created_at) if params[:o] == 'created-at'
       @approved_publishings = @approved_publishings.where(user: current_user) unless current_user.admin?
     end
   end
