@@ -1,7 +1,11 @@
 class QuestionsController < ApplicationController
-  before_action :set_extraction_forms_projects_section, only: [:new, :create]
-  before_action :set_question, only: [:edit, :update, :destroy, :add_column, :add_row,
-                                      :dependencies, :toggle_dependency, :duplicate]
+  before_action :set_extraction_forms_projects_section, only: [
+    :new, :create
+  ]
+  before_action :set_question, only: [
+    :edit, :update, :destroy, :add_column, :add_row, :dependencies,
+    :toggle_dependency, :duplicate
+  ]
   before_action :skip_policy_scope
 
   #before_action :ensure_matrix_type, only: [:add_column, :add_row]
@@ -13,7 +17,7 @@ class QuestionsController < ApplicationController
     add_breadcrumb 'my projects',  :projects_path
     add_breadcrumb 'edit project', edit_project_path(@extraction_forms_projects_section.project)
     add_breadcrumb 'builder',      build_extraction_forms_project_path(@extraction_forms_projects_section.extraction_forms_project,
-                                                                       anchor: "panel-tab-#{ @extraction_forms_projects_section.id }")
+      anchor: "panel-tab-#{ @extraction_forms_projects_section.id }")
     add_breadcrumb "new #{ @question.extraction_forms_projects_section.section.name.downcase } question",
       new_extraction_forms_projects_section_question_path
   end
@@ -23,7 +27,7 @@ class QuestionsController < ApplicationController
     add_breadcrumb 'my projects',  :projects_path
     add_breadcrumb 'edit project', edit_project_path(@question.project)
     add_breadcrumb 'builder',      build_extraction_forms_project_path(@question.extraction_forms_project,
-                                                                       anchor: "panel-tab-#{ @question.extraction_forms_projects_section.id }")
+      anchor: "panel-tab-#{ @question.extraction_forms_projects_section.id }")
     add_breadcrumb 'question details', edit_question_path
   end
 
@@ -32,12 +36,12 @@ class QuestionsController < ApplicationController
   def create
     @question = @extraction_forms_projects_section.questions.new(question_params)
 
-    # !!! Check for params 'q_type' and build values based on the type.
+    #!!! Check for params 'q_type' and build values based on the type.
 
     respond_to do |format|
       if @question.save
         format.html { redirect_to edit_question_path(@question),
-                                                      notice: t('success') }
+          notice: t('success') }
         format.json { render :show, status: :created, location: @question }
       else
         format.html { render :new }
@@ -52,7 +56,7 @@ class QuestionsController < ApplicationController
     respond_to do |format|
       if @question.update(question_patch_params)
         format.html { redirect_to build_extraction_forms_project_path(@question.extraction_forms_project,
-                                                                      anchor: "panel-tab-#{ @question.extraction_forms_projects_section.id }"), notice: t('success') }
+          anchor: "panel-tab-#{ @question.extraction_forms_projects_section.id }"), notice: t('success') }
         format.js   { head :no_content }
         format.json { render :show, status: :ok, location: @question }
       else
@@ -68,9 +72,13 @@ class QuestionsController < ApplicationController
   def destroy
     @question.destroy
     respond_to do |format|
-      format.html { redirect_to build_extraction_forms_project_path(@question.extraction_forms_project,
-                                                                    anchor: "panel-tab-#{ @question.extraction_forms_projects_section.id }"),
-                                                                    notice: t('removed') }
+      format.html {
+        redirect_to build_extraction_forms_project_path(
+          @question.extraction_forms_project,
+          anchor: "panel-tab-#{ @question.extraction_forms_projects_section.id }"
+        ),
+        notice: t('removed')
+      }
       format.json { head :no_content }
     end
   end
@@ -116,7 +124,7 @@ class QuestionsController < ApplicationController
     add_breadcrumb 'my projects',  :projects_path
     add_breadcrumb 'edit project', edit_project_path(@question.project)
     add_breadcrumb 'builder',      build_extraction_forms_project_path(@question.extraction_forms_project,
-                                                                       anchor: "panel-tab-#{ @question.extraction_forms_projects_section.id }")
+      anchor: "panel-tab-#{ @question.extraction_forms_projects_section.id }")
     add_breadcrumb 'question details', edit_question_path(@duplicated_question)
     redirect_to edit_question_path(@duplicated_question), notice: t('success')
   end
