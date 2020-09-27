@@ -106,7 +106,7 @@ class Question < ApplicationRecord
     end
 
     #!!! May need to rethink this.
-    #    Who is actually responsible for this concern. Question,
+    #    Who is actually responsible for this concern: Question,
     #    QuestionRow or QuestionRowColumn.
     def ensure_matrix_column_headers
       first_row = self.question_rows.first

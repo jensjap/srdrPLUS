@@ -32,7 +32,7 @@ class QuestionRow < ApplicationRecord
   private
 
     def create_default_question_row_columns
-      if self.question.question_rows.first.question_row_columns.count == 0
+      if self.question.question_rows.first.question_row_columns.length == 0
         # If this is the first/only row in the matrix then we default to creating
         # (arbitrarily) 1 column.
         self.question_row_columns.create(

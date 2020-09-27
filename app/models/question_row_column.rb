@@ -38,23 +38,25 @@ class QuestionRowColumn < ApplicationRecord
   #accepts_nested_attributes_for :question_row_column_fields
   accepts_nested_attributes_for :question_row_columns_question_row_column_options, allow_destroy: true
 
-
   delegate :question,      to: :question_row
   delegate :question_type, to: :question_row
 
   def field_validation_value_for(name)
     return QuestionRowColumnsQuestionRowColumnOption
-      .find_or_create_by!(
+      .find_by!(
         question_row_column: self,
         question_row_column_option: QuestionRowColumnOption.find_by(name: name)
-    )
+    ).name
   end
 
   private
 
     def create_default_question_row_column_options
       QuestionRowColumnOption.all.each do |opt|
-        self.question_row_column_options << opt
+        self.question_row_columns_question_row_column_options.create(
+          question_row_column: self,
+          question_row_column_option: opt
+        )
       end
     end
 
