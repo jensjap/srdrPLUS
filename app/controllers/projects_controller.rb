@@ -320,7 +320,7 @@ class ProjectsController < ApplicationController
     @query = params.dig(:project, :q)
     @order = params[:o] || "updated-at"
     @project_status = params.dig(:project, :project_status) || params[:project_status]
-    @params = { q: @query, project_status: @project_status }
+    @params = { project: { q: @query }, project_status: @project_status }
 
     if @project_status.blank?
       @projects = policy_scope(Project).
