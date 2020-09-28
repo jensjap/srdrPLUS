@@ -2,9 +2,8 @@
 class PublishingPreview < ActionMailer::Preview
   def notify_admin_of_request
     PublishingMailer.notify_admin_of_request(
-      'Comparative Effectiveness of Ma
-      nagement Strategies For Gastroesophageal Reflux Disease', 
-      'SR360', 
+      'Comparative Effectiveness of Management Strategies For Gastroesophageal Reflux Disease',
+      'SR360',
       1,
       2
     )
@@ -12,9 +11,9 @@ class PublishingPreview < ActionMailer::Preview
 
   def notify_publisher_of_request
     PublishingMailer.notify_publisher_of_request(
-      'test@example.com', 
-      'Comparative Effectiveness of Management Strategies For Gastroesophageal Reflux Disease', 
-      'SR360', 
+      'test@example.com',
+      'Comparative Effectiveness of Management Strategies For Gastroesophageal Reflux Disease',
+      'SR360',
       1,
       2
     )
@@ -22,9 +21,9 @@ class PublishingPreview < ActionMailer::Preview
 
   def notify_publisher_of_approval
     PublishingMailer.notify_publisher_of_approval(
-      'test@example.com', 
-      'Comparative Effectiveness of Management Strategies For Gastroesophageal Reflux Disease', 
-      'SR360', 
+      'test@example.com',
+      'Comparative Effectiveness of Management Strategies For Gastroesophageal Reflux Disease',
+      'SR360',
       1,
       2
     )
