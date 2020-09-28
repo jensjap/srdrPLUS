@@ -13,8 +13,8 @@ json.set! :description, "#{ @evidence_variable.type1.name } at #{ @timepoint_nam
 #json.set! :characteristicCombination, "union"
 json.set! :characteristic, Jbuilder.new.array!(['']) do
   json.set! :description, "#{ @evidence_variable.type1.name }"
-  json.set! :definitionCodeableConcept, Jbuilder.new.array!(['']) do
-    json.set! :coding do
+  json.set! :definitionCodeableConcept do
+    json.set! :coding, Jbuilder.new.array!(['']) do
       json.set! :system, "http://snomed.info/sct"
       json.set! :code, "419099009"
       json.set! :display, "xxxxx"
