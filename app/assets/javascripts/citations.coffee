@@ -313,6 +313,7 @@ document.addEventListener 'turbolinks:load', ->
         # submit form when "Save Citation" button is clicked
         $( insertedItem ).find( '.save-citation' ).on 'click', () ->
           $( '#citations-form' ).submit()
+          $('.cancel-button').click()
 
       # reload the citations after a form submission ( probably overkill )
       $( '#citations-form' ).bind "ajax:success", ( status ) ->
