@@ -18,6 +18,7 @@ class Question < ApplicationRecord
   acts_as_paranoid
   has_paper_trail
 
+  after_create :create_default_question_row
   after_save :ensure_matrix_column_headers
 
   before_validation -> { set_ordering_scoped_by(:extraction_forms_projects_section_id) }, on: :create
@@ -100,15 +101,14 @@ class Question < ApplicationRecord
 
   private
 
+    def create_default_question_row
+      self.question_rows.create
+    end
+
     #!!! May need to rethink this.
+    #    Who is actually responsible for this concern: Question,
+    #    QuestionRow or QuestionRowColumn.
     def ensure_matrix_column_headers
-      if self.question_rows.count == 0
-        self.question_rows.new
-        new_qrc = self.question_rows.first.question_row_columns.new(question_row_column_type: QuestionRowColumnType.find_by(name: 'text'))
-        QuestionRowColumnOption.all.each do |opt|
-          new_qrc.question_row_column_options << opt
-        end
-      end
       first_row = self.question_rows.first
       rest_rows = self.question_rows[1..-1]
 
