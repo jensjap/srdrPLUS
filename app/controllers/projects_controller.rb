@@ -372,12 +372,22 @@ class ProjectsController < ApplicationController
 
       @projects_lead_or_with_key_questions.default = false
     elsif @project_status == 'pending'
-      @unapproved_publishings = Publishing.unapproved.page(params[:page])
+      @unapproved_publishings = Publishing.
+        joins('left join projects ON publishings.publishable_id = projects.id').
+        joins('left join sd_meta_data ON sd_meta_data.id = publishings.publishable_id').
+        where("projects.name LIKE ? OR sd_meta_data.report_title LIKE ?", "%#{@query}%", "%#{@query}%").
+        unapproved.
+        page(params[:page])
       @unapproved_publishings = @unapproved_publishings.order(:updated_at) if params[:o].nil? || params[:o] == 'updated-at'
       @unapproved_publishings = @unapproved_publishings.order(:created_at) if params[:o] == 'created-at'
       @unapproved_publishings = @unapproved_publishings.where(user: current_user) unless current_user.admin?
     elsif @project_status == 'published'
-      @approved_publishings = Publishing.approved.page(params[:page])
+      @approved_publishings = Publishing.
+        joins('left join projects ON publishings.publishable_id = projects.id').
+        joins('left join sd_meta_data ON sd_meta_data.id = publishings.publishable_id').
+        where("projects.name LIKE ? OR sd_meta_data.report_title LIKE ?", "%#{@query}%", "%#{@query}%").
+        approved.
+        page(params[:page])
       @approved_publishings = @approved_publishings.order(:updated_at) if params[:o].nil? || params[:o] == 'updated-at'
       @approved_publishings = @approved_publishings.order(:created_at) if params[:o] == 'created-at'
       @approved_publishings = @approved_publishings.where(user: current_user) unless current_user.admin?
