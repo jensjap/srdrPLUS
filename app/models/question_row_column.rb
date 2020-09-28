@@ -15,7 +15,7 @@ class QuestionRowColumn < ApplicationRecord
   acts_as_paranoid
   has_paper_trail
 
-  after_create :associate_default_question_row_column_type
+  after_create :create_default_question_row_column_options
   after_create :create_default_question_row_column_field
 
   after_save :ensure_question_row_column_fields
@@ -38,29 +38,30 @@ class QuestionRowColumn < ApplicationRecord
   #accepts_nested_attributes_for :question_row_column_fields
   accepts_nested_attributes_for :question_row_columns_question_row_column_options, allow_destroy: true
 
-
   delegate :question,      to: :question_row
   delegate :question_type, to: :question_row
 
   def field_validation_value_for(name)
-    question_row_columns_question_row_column_options
-      .joins(:question_row_column_option)
-      .where(question_row_column_options: { name: name })
-      .first.name
+    return QuestionRowColumnsQuestionRowColumnOption
+      .find_by!(
+        question_row_column: self,
+        question_row_column_option: QuestionRowColumnOption.find_by(name: name)
+    ).name
   end
 
   private
 
-    def associate_default_question_row_column_type
-      # it is possible that this callback no longer serves a purpose after changes to other callbacks -Birol
-      if not self.question_row_column_type.present?
-        self.question_row_column_type = QuestionRowColumnType.find_by(name: 'text')
-        self.save
+    def create_default_question_row_column_options
+      QuestionRowColumnOption.all.each do |opt|
+        self.question_row_columns_question_row_column_options.create(
+          question_row_column: self,
+          question_row_column_option: opt
+        )
       end
     end
 
     def create_default_question_row_column_field
-      if not self.question_row_column_fields.present?
+      unless self.question_row_column_fields.present?
         self.question_row_column_fields.create
       end
     end

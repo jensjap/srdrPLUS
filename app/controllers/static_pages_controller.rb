@@ -11,7 +11,13 @@ class StaticPagesController < ApplicationController
       redirect_to(controller: 'projects', action: 'index')
       return
     end
-    @recently_published_projects = HTTParty.get('https://srdr.ahrq.gov/projects/api_index_published')
+
+    begin
+      @recently_published_projects = HTTParty.get('https://srdr.ahrq.gov/projects/api_index_published')
+    rescue
+      @recently_published_projects = nil
+    end
+
     case cookies[:layout_style].to_i
     when 1
       render 'home_v1'
