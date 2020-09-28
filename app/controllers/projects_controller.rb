@@ -45,6 +45,13 @@ class ProjectsController < ApplicationController
       .includes(publishing: [{ user: :profile }, approval: [{ user: :profile }]])
       .by_query(@query).order(SORT[@order]).page(params[:page])
 
+    # This fixes an issue
+    # Unless I actually force the query by accessing last, "pluck :id" returns wrong set of ids
+    @draft.last
+    @pending.last
+    @published.last
+    @projects.last
+
     project_ids = (@projects.pluck(:id) +  @published.pluck(:id) +  @pending.pluck(:id) +  @draft.pluck(:id)).uniq
     @projects_key_questions_project_counts = KeyQuestionsProject
                                               .where(project_id: project_ids)
