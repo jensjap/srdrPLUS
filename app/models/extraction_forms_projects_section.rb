@@ -161,13 +161,7 @@ class ExtractionFormsProjectsSection < ApplicationRecord
         end
 
         # if there are no options, then this quality dimension is a text question
-        if qdq.quality_dimension_options.empty?
-          # Set field type.
-          qrc_1 = q.question_rows.first.question_row_columns.first
-          # Make it a dropdown.
-          qrc_1.update(question_row_column_type_id: 1)
-
-        else
+        if qdq.quality_dimension_options
           qr_1 = q.question_rows.first
           qr_1.update(name: 'Rating')
 
@@ -175,14 +169,7 @@ class ExtractionFormsProjectsSection < ApplicationRecord
           qrc_1 = qr_1.question_row_columns.first
           qrc_1.update(question_row_column_type_id: 6)
 
-          q.question_rows.build
-
-          qr_2 = q.question_rows.second
-          qr_2.update(name: 'Notes/Comments:')
-          qr_2.question_row_columns.build
-
-          qrc_2 = qr_2.question_row_columns.first
-          qrc_2.update(question_row_column_type_id: 1)
+          q.question_rows.create(name: 'Notes/Comments:')
 
           # Iterate through options and add them.
           first = true
