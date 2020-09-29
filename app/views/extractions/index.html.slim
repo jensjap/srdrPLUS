@@ -2,7 +2,10 @@
 
 .column.row
   - efp = @project.extraction_forms_projects.first
-  h2 = link_to 'go to extraction form builder ->', build_extraction_forms_project_path(efp, anchor: "panel-tab-#{ efp.extraction_forms_projects_sections.first.id }"), { style: 'float: right; font-size: 0.4em;' }
+  - if @project.key_questions.present?
+    h2 = link_to 'go to extraction form builder ->', build_extraction_forms_project_path(efp, anchor: "panel-tab-#{ efp.extraction_forms_projects_sections.first.id }"), { style: 'float: right; font-size: 0.4em;' }
+  - else
+    h2 = link_to 'go to extraction form builder ->', '#', style: 'float: right; font-size: 0.4em;', onClick: "alert('Please add at least one Key Question first')"
 
 .row
   .column.medium-12
@@ -65,9 +68,14 @@
               /td = link_to t('edit'), edit_extraction_path(extraction)
               td = link_to t('destroy'), extraction, style: 'font-weight:bold;color:#cc4b37 !important;', data: { confirm: 'Are you sure?' }, method: :delete
 .column.row
-  = link_to new_project_extraction_path, class: 'button create-button create-extraction-button' do
-    i.fi-plus>
-    = t('.create')
+  - if @project.key_questions.present?
+    = link_to new_project_extraction_path, class: 'button create-button create-extraction-button' do
+      i.fi-plus>
+      = t('.create')
+  - else
+    = link_to '#', class: 'button create-button create-extraction-button', onClick: "alert('Please add at least one Key Question first')" do
+      i.fi-plus>
+      = t('.create')
 
 - if @project.leaders.include?(current_user) or @project.consolidators.include? current_user
   .row
