@@ -16,7 +16,7 @@ class Publishing < ApplicationRecord
   include SharedApprovableMethods
   include SharedParanoiaMethods
 
-  attr_accessor :terms_agreement
+  attr_accessor :terms_agreement, :guidelines_agreement
 
   scope :unapproved, -> () { left_outer_joins(:approval).where(approvals: { id: nil }) }
   scope :approved, -> () { joins(:approval) }
