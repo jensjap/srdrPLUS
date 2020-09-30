@@ -5,7 +5,7 @@ class PublishingPreview < ActionMailer::Preview
       'Comparative Effectiveness of Management Strategies For Gastroesophageal Reflux Disease',
       'SR360',
       1,
-      2
+      1
     )
   end
 
@@ -15,7 +15,7 @@ class PublishingPreview < ActionMailer::Preview
       'Comparative Effectiveness of Management Strategies For Gastroesophageal Reflux Disease',
       'SR360',
       1,
-      2
+      1
     )
   end
 
@@ -25,7 +25,7 @@ class PublishingPreview < ActionMailer::Preview
       'Comparative Effectiveness of Management Strategies For Gastroesophageal Reflux Disease',
       'SR360',
       1,
-      2
+      1
     )
   end
 end

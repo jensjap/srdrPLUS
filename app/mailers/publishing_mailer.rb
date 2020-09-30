@@ -5,6 +5,7 @@ class PublishingMailer < ApplicationMailer
     @record_id = record_id
     @publishing_id = publishing_id
     email = 'SRDR@AHRQ.hhs.gov'
+    set_controller
     mail(to: email, subject: "Publishing requested")
   end
 
@@ -13,6 +14,7 @@ class PublishingMailer < ApplicationMailer
     @name_of_pub_type = name_of_pub_type
     @record_id = record_id
     @publishing_id = publishing_id
+    set_controller
     mail(to: email, subject: "Thank you for your submission")
   end
 
@@ -21,6 +23,17 @@ class PublishingMailer < ApplicationMailer
     @name_of_pub_type = name_of_pub_type
     @record_id = record_id
     @publishing_id = publishing_id
+    set_controller
     mail(to: email, subject: "Your publication request has been approved")
   end
+
+  private
+    def set_controller
+      case @name_of_pub_type
+      when 'SR360'
+        @controller = 'sd_meta_data'
+      when 'Project'
+        @controller = 'projects'
+      end
+    end
 end

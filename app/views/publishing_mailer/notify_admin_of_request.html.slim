@@ -4,4 +4,4 @@ p = "Title: #{@title}"
 p = "Record ID: #{@record_id}"
 p = "Record Type: #{@name_of_pub_type}"
 p = "Publishing ID: #{@publishing_id}"
-p = link_to 'See pending requests', url_for(:host => root_url, :controller => "projects", :action => "index"), target: :_blank
+p = link_to 'See pending requests', url_for(:host => root_url, :controller => "projects", :action => "index", params: { project_status: 'pending' }), target: :_blank

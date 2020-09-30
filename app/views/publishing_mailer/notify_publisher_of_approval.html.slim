@@ -4,3 +4,5 @@ p = "Title: #{@title}"
 p = "Record ID: #{@record_id}"
 p = "Record Type: #{@name_of_pub_type}"
 p = "Publishing ID: #{@publishing_id}"
+p = link_to "Visit #{@name_of_pub_type}", url_for(:host => root_url, :controller => @controller, :action => "show", :id => @record_id), target: :_blank
+p = link_to "Visit Approved Publications", url_for(:host => root_url, :controller => "projects", :action => "index", params: { project_status: 'published' }), target: :_blank
