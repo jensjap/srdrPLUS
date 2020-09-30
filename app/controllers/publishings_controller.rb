@@ -1,6 +1,6 @@
 class PublishingsController < ApplicationController
-  before_action :set_publishable_record, only: [:new, :create, :approve]
-  before_action :set_publishing, only: [:approve, :destroy]
+  before_action :set_publishable_record, only: [:new, :create, :approve, :rescind_approval]
+  before_action :set_publishing, only: [:approve, :rescind_approval, :destroy]
 
   def new
     if @publishable_record && @publishable_record.publishing.present?
@@ -63,6 +63,23 @@ class PublishingsController < ApplicationController
     else
       Approval.create!(approvable: @publishing, user: current_user)
       flash[:success] = "The publication has been approved!"
+    end
+
+    return redirect_to '/projects'
+  end
+
+  def rescind_approval
+    return render body: nil, :status => :bad_request unless @publishable_record
+
+    if !current_user.admin?
+      flash[:error] = "You are not authorized to approve this publication."
+    elsif @publishing.nil?
+      flash[:error] = "Publishing not found."
+    elsif @publishing.approval.nil?
+      flash[:error] = "Publishing hasn't been approved."
+    else
+      @publishing.approval.destroy
+      flash[:success] = "The publication approval has been rescinded!"
     end
 
     return redirect_to '/projects'
