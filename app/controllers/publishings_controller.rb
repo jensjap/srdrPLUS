@@ -48,7 +48,7 @@ class PublishingsController < ApplicationController
       flash[:success] = "Success! Your request is received. We will inform you once the record is public."
     end
 
-    return redirect_to '/projects'
+    return redirect_to '/projects?project_status=pending'
   end
 
   def approve
@@ -65,7 +65,7 @@ class PublishingsController < ApplicationController
       flash[:success] = "The publication has been approved!"
     end
 
-    return redirect_to '/projects'
+    return redirect_to '/projects?project_status=published'
   end
 
   def rescind_approval
@@ -82,7 +82,7 @@ class PublishingsController < ApplicationController
       flash[:success] = "The publication approval has been rescinded!"
     end
 
-    return redirect_to '/projects'
+    return redirect_to '/projects?project_status=pending'
   end
 
   def destroy
