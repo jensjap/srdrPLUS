@@ -252,7 +252,7 @@ class ExtractionsController < ApplicationController
 
     def set_extractions
       @extractions = policy_scope(Extraction).
-        includes({projects_users_role: { projects_user: { user: :profile } }}, {extractions_extraction_forms_projects_sections: [{link_to_type1: [{extraction_forms_projects_section: :section}, :type1s, {extractions_extraction_forms_projects_sections_type1s: [:type1_type, :type1]}]}, {statusing: :status}]}).
+        includes({projects_users_role: { projects_user: { user: :profile } }}, {extractions_extraction_forms_projects_sections: [{link_to_type1: [{extraction_forms_projects_section: :section}]}, {statusing: :status}]}).
         where(id: extraction_ids_params)
     end
 

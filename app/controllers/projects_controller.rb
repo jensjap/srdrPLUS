@@ -230,9 +230,7 @@ class ProjectsController < ApplicationController
   # Use callbacks to share common setup or constraints between actions.
   def set_project
     @project = Project.
-      includes(:key_questions_projects).
-      includes(:key_questions).
-      includes(publishing: [{ user: :profile }, approval: [{ user: :profile }]]).
+      includes(publishing: [approval: [{ user: :profile }]]).
       find(params[:id])
   end
 
