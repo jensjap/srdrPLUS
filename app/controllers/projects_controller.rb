@@ -229,11 +229,11 @@ class ProjectsController < ApplicationController
 
   # Use callbacks to share common setup or constraints between actions.
   def set_project
-    @project = Project.includes(:extraction_forms)
-                      .includes(:key_questions_projects)
-                      .includes(:key_questions)
-                      .includes(publishing: [{ user: :profile }, approval: [{ user: :profile }]])
-                      .find(params[:id])
+    @project = Project.
+      includes(:key_questions_projects).
+      includes(:key_questions).
+      includes(publishing: [{ user: :profile }, approval: [{ user: :profile }]]).
+      find(params[:id])
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.

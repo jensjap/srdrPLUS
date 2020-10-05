@@ -211,7 +211,7 @@ class Project < ApplicationRecord
     citation_groups[:citations_projects] = Hash.new
     citation_groups[:citations_project_ids] = Array.new
     citation_groups[:citations_project_count] = 0
-    self.extractions.includes({ citations_project: [:citation] }, :extraction_checksum).each do |e|
+    self.extractions.includes({ citations_project: [:citation] }).each do |e|
       if citation_groups[:citations_projects].keys.include? e.citations_project_id
         citation_groups[:citations_projects][e.citations_project_id][:extractions] << e
 

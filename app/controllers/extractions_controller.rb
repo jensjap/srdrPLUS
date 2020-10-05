@@ -239,8 +239,7 @@ class ExtractionsController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_project
       @project = Project.
-        includes(extraction_forms_projects: { extraction_forms_projects_sections: { extractions_extraction_forms_projects_sections: :extraction } }).
-        includes(extractions: { extractions_extraction_forms_projects_sections: { extraction_forms_projects_section: :extraction_forms_project } }).
+        includes(:extraction_forms_projects).
         find(params[:project_id])
     end
 
