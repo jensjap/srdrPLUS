@@ -7,3 +7,26 @@
         =< link_to "https://srdr.ahrq.gov/projects/published", target: '_blank', data: { confirm: @exit_disclaimer  } do
           |Published Projects
           i.fas.fa-external-link-alt.fa-sm<
+  .grid-x.align-center-middle.Recently-published
+    .cell.medium-9
+      h1 Recently Updated Projects
+    - Project.published.each do |project|
+      .cell.medium-9.recent-project
+        .grid-x.grid-padding-x.grid-padding-y
+          .cell.medium-4
+            .small = "Published on #{ project.publishing.created_at.to_datetime.strftime("%B %d, %Y") }"
+            span.bold = project.name
+            .small
+              |
+                #{ project.citations.count } Studies &bull; #{ project.key_questions.count } Key Questions &bull; #{ project.extractions.count } Extraction Forms
+            .small = "(Last updated on #{ project.updated_at.to_datetime.strftime("%B %d, %Y") })"
+          .cell.medium-8
+            .small.summary Objectives: #{ project.description }
+            .small.bold = link_to projects_path(project), target: '_blank', data: { confirm: @exit_disclaimer } do
+              |READ MORE
+              i.fas.fa-external-link-alt.fa-sm<
+
+    .cell.medium-9
+      h4 = link_to 'https://srdr.ahrq.gov/projects/published', target: '_blank', data: { confirm: @exit_disclaimer } do
+        |SEE MORE PROJECTS
+        i.fas.fa-external-link-alt.fa-sm<

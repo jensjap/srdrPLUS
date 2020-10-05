@@ -16,6 +16,8 @@ class Publishing < ApplicationRecord
   include SharedApprovableMethods
   include SharedParanoiaMethods
 
+  attr_accessor :terms_agreement, :guidelines_agreement
+
   scope :unapproved, -> () { left_outer_joins(:approval).where(approvals: { id: nil }) }
   scope :approved, -> () { joins(:approval) }
 
@@ -27,11 +29,11 @@ class Publishing < ApplicationRecord
 
   has_one :approval, as: :approvable, dependent: :destroy
 
-  SD_META_DATUM = 'SdMetaDatum'.freeze
-
   def name_of_pub_type
-    if publishable_type == SD_META_DATUM
+    if publishable_type == SdMetaDatum.to_s
       "SR360"
+    elsif publishable_type == Project.to_s
+      "Project"
     end
   end
 end

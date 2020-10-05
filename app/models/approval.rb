@@ -28,10 +28,10 @@ class Approval < ApplicationRecord
   private
     def notify_publisher
       publishing = self.approvable
-      type = publishing.name_of_pub_type
       email_of_publisher = publishing.user.email
-      id = publishing.publishable_id
       title = publishing.publishable.display
-      PublishingMailer.notify_publisher_of_approval(email_of_publisher, title, type, id).deliver_later
+      type = publishing.name_of_pub_type
+      publishing_id = publishing.id
+      PublishingMailer.notify_publisher_of_approval(email_of_publisher, title, type, publishing_id, publishing.publishable.id).deliver_later
     end
 end

@@ -324,6 +324,10 @@ class Project < ApplicationRecord
     name
   end
 
+  def check_publishing_eligibility
+    []
+  end
+
   private
 
   def process_list_of_pmids(listOf_pmids)
