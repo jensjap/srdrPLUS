@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_07_042926) do
+ActiveRecord::Schema.define(version: 2020_09_16_161928) do
 
   create_table "abstrackr_settings", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "profile_id"
@@ -585,7 +585,10 @@ ActiveRecord::Schema.define(version: 2020_09_07_042926) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "deleted_at"
+    t.boolean "active"
+    t.bigint "extractions_extraction_forms_projects_sections_type1_id"
     t.index ["deleted_at"], name: "index_eefpsff_followup_fields_on_deleted_at"
+    t.index ["extractions_extraction_forms_projects_section_id", "extractions_extraction_forms_projects_sections_type1_id", "followup_field_id", "active"], name: "index_eefpsff_on_eefps_eefpst1_ff_id", unique: true
     t.index ["extractions_extraction_forms_projects_section_id"], name: "index_eefpsff_followup_fields_on_extraction_id"
     t.index ["followup_field_id"], name: "index_eefpsff_on_followup_field_id"
   end
@@ -1015,6 +1018,7 @@ ActiveRecord::Schema.define(version: 2020_09_07_042926) do
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.text "authors_of_report"
     t.index ["deleted_at"], name: "index_projects_on_deleted_at"
   end
 

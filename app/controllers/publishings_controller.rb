@@ -11,7 +11,7 @@ class PublishingsController < ApplicationController
     if errors.present?
       flash[:errors] = "Some required fields are missing. Please go to the SR 360 record to fill out all required fields: #{errors.join(', ')}"
     else
-      @publishable_model.publishing = Publishing.create(user: current_user)
+      publishing = Publishing.create(publishable: @publishable_model, user: current_user)
       PublishingMailer.notify_admin_of_request(publishing.publishable.display, publishing.name_of_pub_type, publishing.id).deliver_later
       PublishingMailer.notify_publisher_of_request(current_user.email, publishing.publishable.display, publishing.name_of_pub_type, publishing.id).deliver_later
       flash[:success] = "Success! Your request is received. We will inform you once the SR 360 for this project is public."

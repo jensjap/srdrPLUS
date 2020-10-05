@@ -20,6 +20,7 @@ de:
   name: Name
   topic_description: Themenbeschreibung
   attribution: Zuordnung
+  authors_of_report: Autoren des Berichts
   methodology_description: Methodische Beschreibung
   prospero_id: Prospero Registrierungs-ID
   doi: Dokument-Objekt-ID

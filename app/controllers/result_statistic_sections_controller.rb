@@ -44,13 +44,14 @@ class ResultStatisticSectionsController < ApplicationController
         format.html { redirect_to edit_result_statistic_section_path(@result_statistic_section),
                       notice: t('success') }
         format.json { render :show, status: :ok, location: @result_statistic_section }
-        format.js { }
+        format.js { flash.now[:notice] = 'Comparison added' }
       else
         format.html do
           flash[:alert] = 'Invalid comparison'
           render :edit
         end
         format.json { render json: @result_statistic_section.errors, status: :unprocessable_entity }
+        format.js { flash.now[:notice] = 'Invalid comparison' }
       end
     end
   end

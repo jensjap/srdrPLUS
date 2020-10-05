@@ -20,6 +20,9 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
   include SharedParanoiaMethods
   include SharedOrderableMethods
 
+  has_one :statusing, as: :statusable, dependent: :destroy
+  has_one :status, through: :statusing
+
   acts_as_paranoid column: :active, sentinel_value: true
   has_paper_trail
 
@@ -72,6 +75,7 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
 
   has_many :extractions_extraction_forms_projects_sections_type1_rows,                 dependent: :destroy, inverse_of: :extractions_extraction_forms_projects_sections_type1
   has_many :extractions_extraction_forms_projects_sections_question_row_column_fields, dependent: :destroy, inverse_of: :extractions_extraction_forms_projects_sections_type1
+  has_many :extractions_extraction_forms_projects_sections_followup_fields, dependent: :destroy, inverse_of: :extractions_extraction_forms_projects_sections_type1
   has_many :tps_arms_rssms,                                                            dependent: :destroy, inverse_of: :extractions_extraction_forms_projects_sections_type1
   has_many :comparisons_arms_rssms,                                                    dependent: :destroy, inverse_of: :extractions_extraction_forms_projects_sections_type1
 
@@ -182,7 +186,15 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
 
     return return_data
   end
-
+  
+  def statusing
+    super || create_default_draft_status
+  end
+  
+  def status
+    super || create_default_draft_status.status
+  end
+  
   private
 
     def set_extraction_stale
@@ -241,5 +253,9 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
           end
         end
       end
+    end
+
+    def create_default_draft_status
+      create_statusing(status: Status.find_by(name: 'Draft'))
     end
 end

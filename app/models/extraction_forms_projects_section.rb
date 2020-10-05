@@ -161,31 +161,27 @@ class ExtractionFormsProjectsSection < ApplicationRecord
         end
 
         # if there are no options, then this quality dimension is a text question
-        if qdq.quality_dimension_options.empty?
-          # Set field type.
-          qrc = q.question_rows.first.question_row_columns.first
-          # Make it a dropdown.
-          qrc.update(question_row_column_type_id: 1)
-        else
-          q.question_rows.create(name: "Notes/Comments:")
+        if qdq.quality_dimension_options
+          qr_1 = q.question_rows.first
+          qr_1.update(name: 'Rating')
 
-          # Set field type.
-          qrc = q.question_rows.first.question_row_columns.first
-          # Make it a dropdown.
-          qrc.update(question_row_column_type_id: 6)
+          # Set field type (dropdown) for first for cell 1x1:
+          qrc_1 = qr_1.question_row_columns.first
+          qrc_1.update(question_row_column_type_id: 6)
+
+          q.question_rows.create(name: 'Notes/Comments:')
 
           # Iterate through options and add them.
           first = true
           qdq.quality_dimension_options.each do |qdo|
             if first
-              qrcqrco = qrc.question_row_columns_question_row_column_options.where(question_row_column_option_id: 1).first
+              qrcqrco = qrc_1.question_row_columns_question_row_column_options.where(question_row_column_option_id: 1).first
               qrcqrco.update(name: qdo.name)
-
 
               first = false
             else
               qrcqrco = QuestionRowColumnsQuestionRowColumnOption.create(
-                  question_row_column_id: qrc.id,
+                  question_row_column_id: qrc_1.id,
                   question_row_column_option_id: 1,
                   name: qdo.name
               )

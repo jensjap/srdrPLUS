@@ -366,7 +366,7 @@ class SearchesController < ApplicationController
         new_project_ids = []
 
         @project_outcome_search_argument.each do |outcome_name|
-          outcomes = Type1.where(name: arm_name)
+          outcomes = Type1.where(name: outcome_name)
           outcomes.each do |outcome|
             outcome.extractions_extraction_forms_projects_sections.each do |eefps|
               project_id = eefps.extraction.project.id
