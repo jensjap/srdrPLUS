@@ -50,13 +50,7 @@ Rails.application.configure do
 
   config.action_mailer.delivery_method = :smtp
 
-  config.action_mailer.smtp_settings = {
-    address: "smtp.sendgrid.net",
-    user_name: Rails.application.credentials.dig(:sendgrid, :username) || "",
-    password: Rails.application.credentials.dig(:sendgrid, :password) || "",
-    port: 587,
-    tls: false,
-  }
+  config.action_mailer.smtp_settings = { :address => '127.0.0.1', :port => 1025 }
 
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log
