@@ -168,6 +168,7 @@
             .cell.medium-4
               - if rp[1]['publication_requested_at'].present?
                 .small = "First published on #{ rp[1]['publication_requested_at'].to_datetime.strftime("%B %d, %Y") }"
+                .small = "Last edited on #{ rp[1]['updated_at'].to_datetime.strftime("%B %d, %Y") }"
               span.bold = rp[1]['title']
               .small
                 |
