@@ -244,11 +244,12 @@ class ExtractionsController < ApplicationController
     end
 
     def set_extraction
+      #Extraction.first.extractions_extraction_forms_projects_sections.first.extractions_extraction_forms_projects_sections_type1s.first
       @extraction = Extraction.
         includes(projects_users_role: :projects_user).
         includes(project: { key_questions_projects: :key_question }).
+        includes(extractions_extraction_forms_projects_sections: { extractions_extraction_forms_projects_sections_type1s: [:ordering, { extractions_extraction_forms_projects_sections_type1_rows: [:population_name, :extractions_extraction_forms_projects_sections_type1_row_columns, { extractions_extraction_forms_projects_sections_type1_row_columns: :timepoint_name }] }] }).
         find(params[:id])
-        #.includes(key_questions_projects: [:key_question, extraction_forms_projects_section: [:extractions_extraction_forms_projects_sections, :extraction_forms_projects_section_type]])
     end
 
     def set_extractions
