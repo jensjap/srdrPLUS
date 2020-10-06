@@ -1,23 +1,19 @@
-.row
-  .column
-    h3
-      |New Import
-    h4 = @project.name
+.row.columns
+  h3
+    |New Import
+  h4 = @project.name
     
 .row
-  .column
-    #import-panel-container.hide
-      .row
-        #import-tabs-panel
-      .row
-        #import-columns-panel
-      .row
-        .float-left
-          .button.discard-button
-            | Discard
-        .float-right
-          .button.create-button
-            | Confirm
+  .columns.medium-2#palette-container
+  .columns.medium-10#import-panel-container.hide
+    #import-tabs-panel
+    #import-columns-panel
+    .float-left
+      .button.discard-button
+        | Discard
+    .float-right
+      .button.create-button
+        | Confirm
   #dropzone-div
     = simple_form_for(@import, remote: true, authenticity_token: true) do |f|
       .form-inputs

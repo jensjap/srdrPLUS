@@ -15,8 +15,7 @@
 //= require activestorage
 //= require foundation-datepicker.min
 //= require levenshtein.min.js
-//= require draggable/droppable.js
-//= require draggable/plugins.js
+//= require draggable/draggable.bundle.js
 //= require xlsx.mini.js
 //= require tether.min
 //= require dropzone

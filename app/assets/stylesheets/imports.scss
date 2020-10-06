@@ -1,4 +1,55 @@
 .imports.new {
+  .is-droppable, .header-column {
+    font-weight: bold;
+    display: flex;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  .header-column {
+    align-items: center;
+    font-size: 1rem;
+    min-width: 10rem;
+    min-height: 2.8rem;
+    max-height: 2.8rem;
+    margin: 0.3rem;
+  }
+
+  .is-droppable {
+    align-items: center;
+    justify-content: center;
+    min-width: 9.2rem;
+    height: 2rem;
+    cursor: grab;
+    color: white;
+    background-color: #78658c;
+    border-radius: 1rem;
+    z-index: 100;
+    &:focus {
+      outline: none;
+    }
+  }
+
+  .import-column {
+    min-width: 10rem;
+    max-height: 2.8rem;
+    min-height: 2.8rem;
+    margin: 0.3rem;
+    padding: 0;
+    overflow: hidden;
+    background-color: transparent;
+    border: dashed #78658c 1.5px;
+    border-radius: 1.4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .is-droppable.draggable-source--is-dragging {
+    opacity: 0.3;
+  }
+
   #dropzone-div {
     height: 30rem;
     font-size: 1.2rem;
@@ -28,15 +79,30 @@
     }
   }
 
-  #import-panel-container,#dropzone-div {
+  #palette-container,#import-panel-container,#dropzone-div {
     margin-top: 2rem;
+  }
+
+  #palette-container {
+    .palette {
+      min-height: max-content;
+      max-height: max-content;
+      border: dashed #78658c 1.5px;
+      border-radius: 1.4rem;
+      .import-column {
+        border: none;
+        position: relative;
+        span {
+          position: absolute;
+        }
+      }
+    }
   }
 
   #import-columns-panel {
     border-radius: 0 1rem 1rem 1rem;
     background-color: #deecf9;
     width: max-content;
-    height: 90%;
     overflow: scroll;
     display: flex;
     flex-direction: row;
@@ -47,6 +113,7 @@
       margin: 0.5rem 0.5rem 2.8rem 0.5rem;
       .headers {
         padding: 0.3rem 0.4rem 0.2rem 0.4rem;
+        max-height: 75vh;
         overflow: scroll;
         display: flex;
         flex-direction: row;
@@ -65,12 +132,6 @@
           padding-bottom: 0.2rem;
           padding-top: 0.2rem;
         }
-        .palette {
-          position: relative;
-          span {
-            position: absolute;
-          }
-        }
       }
 
       .sheet-name {
@@ -87,55 +148,6 @@
           width: max-content;
         }
       }
-      .is-droppable, .header-column {
-        font-weight: bold;
-        display: flex;
-        text-overflow: ellipsis;
-        overflow: hidden;
-        white-space: nowrap;
-      }
-
-      .header-column {
-        align-items: center;
-        font-size: 1rem;
-        min-width: 10rem;
-        height: 2.8rem;
-        margin: 0.3rem;
-      }
-
-      .is-droppable {
-        align-items: center;
-        justify-content: center;
-        min-width: 9.2rem;
-        height: 2rem;
-        cursor: grab;
-        color: white;
-        background-color: #78658c;
-        border-radius: 1rem;
-        z-index: 100;
-        &:focus {
-          outline: none;
-        }
-      }
-
-      .import-column {
-        min-width: 10rem;
-        height: 2.8rem;
-        margin: 0.3rem;
-        padding: 0;
-        overflow: hidden;
-        background-color: transparent;
-        border: dashed #78658c 1.5px;
-        border-radius: 1.4rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-
-      .is-droppable.draggable-source--is-dragging {
-        opacity: 0.3;
-      }
-
       .header-column {
         background-color: transparent;
       }

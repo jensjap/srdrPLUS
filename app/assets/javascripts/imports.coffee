@@ -48,7 +48,7 @@ document.addEventListener 'turbolinks:load', ->
               workbook = XLSX.read(data, {type: 'array'})
               cur_index = 0
               for sheet_name, ws of workbook['Sheets']
-                current_row_elem = add_row( sheet_name )
+                [current_row_elem, palette_elem] = add_row( sheet_name )
                 current_row_elem.attr 'id', 'sheet-row-' + cur_index
                 header = []
                 columnCount = XLSX.utils.decode_range(ws['!ref']).e.c
@@ -64,8 +64,8 @@ document.addEventListener 'turbolinks:load', ->
                     add_header( current_row_elem, "" )
                 current_type_select = $( current_row_elem ).find( '.section-type-select' )
                 select_closest_type( sheet_name, current_type_select )
-                add_srdr_headers( $( current_type_select ).find('option:selected').text(), current_row_elem )
-                apply_droppable( current_row_elem )
+                add_srdr_headers( $( current_type_select ).find('option:selected').text(), current_row_elem, palette_elem )
+                apply_droppable( current_row_elem, palette_elem )
                 cur_index += 1
             reader.readAsArrayBuffer(filedata)
             this.removeFile(file)
@@ -123,6 +123,9 @@ document.addEventListener 'turbolinks:load', ->
       return new_header_elem
 
     add_row = ( sheet_name ) ->
+      palette_elem = $('<div></div>').addClass( 'palette' )
+      $( '#palette-container' ).append( palette_elem )
+
       new_row_elem = $( '<div></div>' ).addClass( 'import-columns-row' )
       type_select = $('<select></select>').addClass( 'section-type-select' )
       for type_name, type_columns of types_columns_dict #needs revision
@@ -131,13 +134,12 @@ document.addEventListener 'turbolinks:load', ->
           type_select.append( type_option )
 
       type_select.on 'change', () ->
-        add_srdr_headers( $(this).find('option:selected').text(), new_row_elem )
+        add_srdr_headers( $(this).find('option:selected').text(), new_row_elem, palette_elem )
         current_sheet_name_mapping[sheet_name] = $(this).find('option:selected').text()
 
       new_row_elem.append( $('<div></div>').addClass( 'sheet-name' ).append( $('<span></span>').text( sheet_name ).addClass('hide') ).append( type_select ) )
       headers_elem = $('<div></div>').addClass( 'headers' )
 
-      headers_elem.append( $('<div></div>').addClass( 'palette' ) )
       headers_elem.append( $('<div></div>').addClass( 'top' ) )
       headers_elem.append( $('<div></div>').addClass( 'bottom' ) )
       new_row_elem.append( headers_elem )
@@ -149,23 +151,28 @@ document.addEventListener 'turbolinks:load', ->
         new_tab_elem.on 'click', () ->
           $( '#import-columns-panel' ).css( 'border-radius', '0 1rem 1rem 1rem' )
           $( '.import-columns-row' ).addClass 'hide'
+          $( '.palette' ).addClass 'hide'
           new_row_elem.removeClass 'hide'
+          palette_elem.removeClass 'hide'
           $( '.import-columns-tab.selected' ).removeClass 'selected' 
           new_tab_elem.addClass 'selected'
       else
+        palette_elem.addClass 'hide'
         new_row_elem.addClass 'hide'
         new_tab_elem.on 'click', () ->
           $( '#import-columns-panel' ).css( 'border-radius', '1rem' )
           $( '.import-columns-row' ).addClass 'hide'
+          $( '.palette' ).addClass 'hide'
           new_row_elem.removeClass 'hide'
+          palette_elem.removeClass 'hide'
           $( '.import-columns-tab.selected' ).removeClass 'selected' 
           new_tab_elem.addClass 'selected'
 
       $( '#import-tabs-panel' ).append( new_tab_elem )
       current_mapping[sheet_name] = {}
-      return new_row_elem
+      return [new_row_elem, palette_elem]
 
-    add_srdr_headers = ( type_name, row_elem ) ->
+    add_srdr_headers = ( type_name, row_elem, palette_elem ) ->
       headers_to_add = types_columns_dict[type_name].map((x) -> x)
       sheet_name = get_sheet_name(row_elem)
       current_mapping[sheet_name] = {}
@@ -175,7 +182,7 @@ document.addEventListener 'turbolinks:load', ->
         alert("There are fewer Excel columns than what is required for this type of section.")
         return
 
-      $( row_elem ).find( '.palette' ).html('')
+      $( palette_elem ).html('')
       $( row_elem ).find( '.top' ).html('')
       for import_column in [0..$( row_elem ).find( '.header-column' ).length-1]
         $( row_elem ).find( '.top' ).append( $( '<div></div>' ).addClass( 'import-column' ).attr('index', cur_index) ) 
@@ -183,7 +190,7 @@ document.addEventListener 'turbolinks:load', ->
 
       while headers_to_add.length > 0
         srdr_header = headers_to_add.pop(0)
-        $( row_elem ).find( '.palette' ).append( $( '<div></div>' ).addClass( 'import-column' ).append( $('<span></span>').text( srdr_header ) ) )
+        $( palette_elem ).append( $( '<div></div>' ).addClass( 'import-column' ).attr( 'srdr-header', srdr_header ).append( $('<span></span>').text( srdr_header ) ) )
         min_edit_distance = Number.POSITIVE_INFINITY
         min_index = 0 
         cur_index = 0
@@ -206,7 +213,15 @@ document.addEventListener 'turbolinks:load', ->
               min_index = cur_index
               min_edit_distance = cur_edit_distance
           cur_index += 1
-        $( row_elem ).find( '.top' ).find( '.import-column[index="' + min_index + '"]').addClass('draggable-dropzone--occupied').append($('<div></div>').addClass('is-droppable').text( srdr_header ))
+        droppable_elem = $('<div></div>').addClass('is-droppable').text( srdr_header )
+        $( row_elem ).find( '.top' ).find( '.import-column[index="' + min_index + '"]').addClass('draggable-dropzone--occupied').append( droppable_elem )
+        droppable_elem.dblclick () ->
+          $this = $( this )
+          $this.parent().removeClass 'draggable-dropzone--occupied'
+          $this.detach()
+          target_elem = $( palette_elem ).find( '.import-column[srdr-header="' + $this.text() + '"]' )
+          target_elem.append( $this )
+          target_elem.addClass 'draggable-dropzone--occupied'
         current_mapping[sheet_name][srdr_header] = "" + min_index
       return row_elem
 
@@ -226,16 +241,24 @@ document.addEventListener 'turbolinks:load', ->
       current_sheet_name_mapping[sheet_name] = type_names[min_index]
       $( select_elem ).find( 'option:contains("' + type_names[min_index] + '")').prop('selected', true)
 
-    apply_droppable = ( row_elem ) ->
-      droppable = new Droppable.default( $( row_elem ).find( '.headers .top, .headers .palette' ).toArray(), { draggable: '.is-droppable', dropzone: '#' + $( row_elem ).attr( 'id' ) + ' .headers .top .import-column, #' + $( row_elem ).attr( 'id' ) + ' .headers .palette .import-column', plugins: [] })
+    apply_droppable = ( row_elem, palette_elem ) ->
+      droppable = new Draggable.Droppable( $( row_elem ).find( '.headers .top' ).toArray().concat(palette_elem.toArray()), { draggable: '.is-droppable', dropzone: '#' + $( row_elem ).attr( 'id' ) + ' .headers .top .import-column, #palette-container .palette .import-column', plugins: [] })
 
       sheet_name = get_sheet_name ( row_elem )
         
       droppable.on 'droppable:stop', (evt) ->
+        srdr_header = $( evt.dropzone ).find( '.is-droppable' ).text()
+        target_elem = $( palette_elem ).find( '.import-column[srdr-header="' + srdr_header + '"]' )
+        origin_elem = $( evt.dragEvent.originalSource )
         if $( evt.dropzone ).parents( '.palette' ).length > 0
           delete current_mapping[sheet_name][srdr_header]
+          requestAnimationFrame( () ->
+            origin_elem.parent().removeClass('draggable-dropzone--occupied')
+            origin_elem.detach()
+            target_elem.append( origin_elem )
+            target_elem.addClass('draggable-dropzone--occupied')
+          )
           return
-        srdr_header = $( evt.dropzone ).find( '.is-droppable' ).text()
         current_mapping[sheet_name][srdr_header] = $( evt.dropzone ).attr( 'index' )
 
     get_sheet_name = ( row_elem ) -> return $(row_elem).find('.sheet-name span').text()
