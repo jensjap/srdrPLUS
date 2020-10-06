@@ -250,7 +250,7 @@ document.addEventListener 'turbolinks:load', ->
         srdr_header = $( evt.dropzone ).find( '.is-droppable' ).text()
         target_elem = $( palette_elem ).find( '.import-column[srdr-header="' + srdr_header + '"]' )
         origin_elem = $( evt.dragEvent.originalSource )
-        if $( evt.dropzone ).parents( '.palette' ).length > 0
+        if $( evt.dropzone ).parents( '.palette' ).length > 0 and origin_elem.parents( '.palette' ).length == 0
           delete current_mapping[sheet_name][srdr_header]
           requestAnimationFrame( () ->
             origin_elem.parent().removeClass('draggable-dropzone--occupied')
