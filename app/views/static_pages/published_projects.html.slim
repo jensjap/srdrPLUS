@@ -10,7 +10,7 @@
   .grid-x.align-center-middle.Recently-published
     .cell.medium-9
       h1 Recently Updated Projects
-    - Project.published.each do |project|
+    - Project.includes([:publishing]).published.each do |project|
       .cell.medium-9.recent-project
         .grid-x.grid-padding-x.grid-padding-y
           .cell.medium-4
