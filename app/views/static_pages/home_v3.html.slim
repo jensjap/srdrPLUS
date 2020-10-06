@@ -63,7 +63,7 @@
       .grid-x.align-center-middle.user-description
         .cell.small-2
           = image_tag 'icon-guideline-developers.svg', class: 'float-center', alt: ''
-        .cell.small-8 
+        .cell.small-8
           h4.how-you-title Guideline Developers
           .small.subheader Use SRDR+ for accessing data related to systematic reviews when producing guidelines and recommendation statements for their constituencies.
       .grid-x.align-center-middle.user-description
@@ -167,7 +167,7 @@
           .grid-x.grid-padding-x.grid-padding-y
             .cell.medium-4
               - if rp[1]['publication_requested_at'].present?
-                .small = "Published on #{ rp[1]['publication_requested_at'].to_datetime.strftime("%B %d, %Y") }"
+                .small = "First published on #{ rp[1]['publication_requested_at'].to_datetime.strftime("%B %d, %Y") }"
               span.bold = rp[1]['title']
               .small
                 |

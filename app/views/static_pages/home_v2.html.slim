@@ -40,7 +40,7 @@
                 figure.orbit-figure
                   .grid-x.grid-padding-x.grid-padding-y
                     .cell.medium-4
-                      h6 = "Published on #{ rp[1]['publication_requested_at'].to_datetime.strftime("%B %d, %Y") }"
+                      h6 = "First published on #{ rp[1]['publication_requested_at'].to_datetime.strftime("%B %d, %Y") }"
                       h5.bold = rp[1]['title']
                       h6
                         |
@@ -169,45 +169,6 @@
             = image_tag 'icon-use-data.png', alt: ''
           .cell.medium-10
             h5 Use study data in your own systematic review.
-
-  /.grid-x.align-center.Recently-published
-    .cell.medium-9
-      h1 Recently published projects
-    .cell.medium-9.recent-project
-      .grid-x.grid-padding-x.grid-padding-y
-        .cell.medium-4
-          h6 Published on Nov 19, 2018
-          h5.bold Stroke Prevention in Patients With Atrial Fibrillation: A Systematic Review Update
-          h6
-            |
-             147 Studies &bull; 2 Key Questions &bull; 2 Extraction Forms
-        .cell.medium-8
-          h6.summary Objectives: This review updates previous reviews regarding the optimal risk stratification tools for stroke and bleeding prediction and treatment options for stroke prevention. Data Sources: We searched PubMed®, Embase®, and the Cochrane Database of Systematic Reviews for relevant English-language comparative studies published from January 1, 2000, to February 14, 2018. Review Methods: Two investigators screened each abstract and …text article for inclusion, abstracted data, rated quality and applicability, and graded evidence. When possible, random-effects models were used to compute summary estimates of effects.
-          h6.bold = link_to 'READ MORE', '#'
-    .cell.medium-9.recent-project
-      .grid-x.grid-padding-x.grid-padding-y
-        .cell.medium-4
-          h6 Published on Mar 02, 2018
-          h5.bold Breastfeeding Programs and Policies, Breastfeeding Uptake, and Maternal Health Outcomes in Developed Countries
-          h6
-            |
-             185 Studies &bull; 3 Key Questions &bull; 1 Extraction Forms
-        .cell.medium-8
-          h6.summary The goal of this project is to summarize the effectiveness of community, workplace, and health care system–based programs and policies aimed at supporting and promoting breastfeeding and determine the association between breastfeedding and maternal health.
-          h6.bold = link_to 'READ MORE', '#'
-    .cell.medium-9.recent-project
-      .grid-x.grid-padding-x.grid-padding-y
-        .cell.medium-4
-          h6 Published on Jul 11, 2017
-          h5.bold Nonsurgical Treatments for Urinary Incontinence in Adult Women: A Systematic Review Update
-          h6
-            |
-             106 Studies &bull; 1 Key Questions &bull; 1 Extraction Forms
-        .cell.medium-8
-          h6.summary SR of nonsurgical interventions for stress, urgency, and mixed urinary incontinence in women (excluding neuropathic UI and children). Network meta-analysis of "urinary incontinence outcomes" ("cure", improvement, and satisfaction with the level of incontinence achieved). Qualitative review of quality of life outcomes. Summary of adverse events. This is an update of a 2012 review done by the Minnesota EPC. Available data from eligible…
-          h6.bold = link_to 'READ MORE', '#'
-    .cell.medium-9
-      h4 = link_to raw("SEE MORE PROJECTS &rarr;"), '#'
 
   .grid-x.align-center.align-middle.join-2
     .cell.medium-9
