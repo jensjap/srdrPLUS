@@ -246,6 +246,7 @@ class ExtractionsController < ApplicationController
     def set_extraction
       @extraction = Extraction.
         includes(projects_users_role: :projects_user).
+        includes(project: { key_questions_projects: :key_question }).
         find(params[:id])
         #.includes(key_questions_projects: [:key_question, extraction_forms_projects_section: [:extractions_extraction_forms_projects_sections, :extraction_forms_projects_section_type]])
     end
@@ -304,7 +305,7 @@ class ExtractionsController < ApplicationController
     end
 
     def set_eefps_by_efps_dict
-      @eefps_by_efps_dict ||= @extraction.extractions_extraction_forms_projects_sections.includes({link_to_type1: [{extraction_forms_projects_section: :section}, :type1s, {extractions_extraction_forms_projects_sections_type1s: [:type1_type, :type1]}]}, {statusing: :status}).group_by(&:extraction_forms_projects_section_id)
+      @eefps_by_efps_dict ||= @extraction.extractions_extraction_forms_projects_sections.includes({statusing: :status}).group_by(&:extraction_forms_projects_section_id)
     end
 
     def set_extraction_forms_projects
