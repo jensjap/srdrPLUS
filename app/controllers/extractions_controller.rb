@@ -247,7 +247,19 @@ class ExtractionsController < ApplicationController
       @extraction = Extraction.
         includes(projects_users_role: :projects_user).
         includes(project: { key_questions_projects: :key_question }).
-        includes(extractions_extraction_forms_projects_sections: { extractions_extraction_forms_projects_sections_type1s: [:ordering, { extractions_extraction_forms_projects_sections_type1_rows: [:population_name, :extractions_extraction_forms_projects_sections_type1_row_columns, { extractions_extraction_forms_projects_sections_type1_row_columns: :timepoint_name }, { result_statistic_sections: { result_statistic_sections_measures: :measure } }] }] }).
+        includes(extractions_extraction_forms_projects_sections: {
+          extractions_extraction_forms_projects_sections_type1s: [
+            :ordering,
+            {
+              extractions_extraction_forms_projects_sections_type1_rows: [
+                :population_name,
+                :extractions_extraction_forms_projects_sections_type1_row_columns,
+                { extractions_extraction_forms_projects_sections_type1_row_columns: :timepoint_name },
+                { result_statistic_sections: { result_statistic_sections_measures: :measure } }
+              ]
+            }
+          ]
+        }).
         find(params[:id])
     end
 
