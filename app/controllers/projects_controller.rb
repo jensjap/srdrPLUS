@@ -229,11 +229,9 @@ class ProjectsController < ApplicationController
 
   # Use callbacks to share common setup or constraints between actions.
   def set_project
-    @project = Project.includes(:extraction_forms)
-                      .includes(:key_questions_projects)
-                      .includes(:key_questions)
-                      .includes(publishing: [{ user: :profile }, approval: [{ user: :profile }]])
-                      .find(params[:id])
+    @project = Project.
+      includes(publishing: :approval).
+      find(params[:id])
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.
@@ -373,6 +371,7 @@ class ProjectsController < ApplicationController
       @projects_lead_or_with_key_questions.default = false
     elsif @project_status == 'pending'
       @unapproved_publishings = Publishing.
+        includes([:publishable]).
         joins('left join projects ON publishings.publishable_id = projects.id').
         joins('left join sd_meta_data ON sd_meta_data.id = publishings.publishable_id').
         where("projects.name LIKE ? OR sd_meta_data.report_title LIKE ?", "%#{@query}%", "%#{@query}%").
@@ -383,6 +382,8 @@ class ProjectsController < ApplicationController
       @unapproved_publishings = @unapproved_publishings.where(user: current_user) unless current_user.admin?
     elsif @project_status == 'published'
       @approved_publishings = Publishing.
+        includes([:publishable]).
+        preload(:approval).
         joins('left join projects ON publishings.publishable_id = projects.id').
         joins('left join sd_meta_data ON sd_meta_data.id = publishings.publishable_id').
         where("projects.name LIKE ? OR sd_meta_data.report_title LIKE ?", "%#{@query}%", "%#{@query}%").

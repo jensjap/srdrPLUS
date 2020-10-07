@@ -19,7 +19,7 @@
               td = citation.authors_citations.map{ |ac| [ac.ordering.position, ac.author.name] }.sort{ |a,b| (a[0] || 0) <=> (b[0] || 0) }.map{|a| a[1]}.join('; ')
               td = citation.try(:name)
               = form_project.simple_fields_for :citations_projects, @citations_projects_dict[citation.id] do |sf_cp|
-                td = sf_cp.check_box :_destroy
+                td = sf_cp.check_box :_destroy, id: "sf_cp-#{citation.id}"
 
     #delete-citations-submit-row
       .float-right
@@ -71,7 +71,7 @@ div.row
           / NOTE: Using CitationsProject.first as the collection looks odd,
           /       but it immediately gets replaced by citations fetched from server
           /       and link_to_remove_associaton javascript works properly.
-          = f.simple_fields_for :citations_projects, CitationsProject.first do |c_p_f|
+          = f.simple_fields_for :citations_projects, CitationsProject.first, include_id: false do |c_p_f|
             = render 'projects/edit/citations_project_fields', f: c_p_f
       #leyleyley
   div.columns.medium-3

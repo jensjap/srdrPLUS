@@ -1,4 +1,4 @@
-= simple_form_for(@project, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
+= simple_form_for(@project, html: { id: "project-id-#{@project.id}", data: { 'abide': '', 'live-validate': true } }) do |f|
   = f.error_notification
 
   .alert.callout data-abide-error='' style='display: none;'
