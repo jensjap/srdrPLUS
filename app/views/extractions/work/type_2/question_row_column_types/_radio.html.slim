@@ -38,7 +38,7 @@
             extractions_extraction_forms_projects_section_id: eefps.id
         - followups << ["prereq-#{ opt.class }-#{ opt.id }", "question_row_columns_question_row_column_option_#{opt.id.to_s}", eefps_ff]
 
-  = simple_form_for(record, namespace: "record_#{record.id.to_s}", remote: true, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
+  = simple_form_for(record, namespace: "record_#{record.id.to_s}", remote: true, html: { data: { 'abide': '', 'live-validate': true, prereq: "prereq-#{ qrc.class }-#{ qrc.id }" } }) do |f|
     = f.error_notification
     = f.input :name, label: false, as: :radio_buttons,
       collection: options,
@@ -47,7 +47,7 @@
 
   div
     button type="button" class="button tiny radio-deselector-btn" style="background-color: grey;" data-radio-remove-id="#{record.id}" Clear Selection
-  
+
   = render 'extractions/shared/type_2/followup_fields', followups: followups
     /.form-actions
       = f.button :submit, 'Save'
