@@ -22,7 +22,7 @@ json.set! :characteristic, Jbuilder.new.array!(['']) do
   end
   json.set! :exclude, false
   json.set! :timeFromStart do
-    json.set! :quanity do
+    json.set! :quantity do
       if @timepoint_name.eql? "Baseline"
         json.set! :value, "0"
         json.set! :comparator, "="
