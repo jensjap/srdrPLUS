@@ -1,18 +1,1 @@
-( function() {
-  let order = "<%= @order %>";
-  // Options to be passed into mark to highlight.
-  let options = {
-    'separateWordSearch': false,
-    'wildcards': 'enabled'
-  };
-
-  // Use this string to help find which button to disable or make active.
-  let notOrder = order === 'updated-at' ? 'created-at' : 'updated-at';
-
-  $( '#project-list' ).html( "<%= escape_javascript( render partial: 'projects/index/project_list', locals: { projects: @projects } ) %>" ).foundation();
-  $( 'div.pagination' ).html( "<%= escape_javascript( paginate @projects, remote: true ) %>" );
-  $( '.accordion-title, .accordion-content' ).mark( "<%= raw(@query) %>", options );
-
-  $( '.toggle-sort-order button.button.' + order ).removeClass( 'disabled' ).addClass( 'active' ).blur();
-  $( '.toggle-sort-order button.button.' + notOrder ).removeClass( 'active' ).addClass( 'disabled' ).blur();
-} )();
+$('some_element').replaceWith('<%= j render 'index' %>');

@@ -1,11 +1,8 @@
-doctype html
-html
-  head
-    meta content='text/html; charset=UTF-8' http-equiv='Content-Type'
-
-  body
-    h1 Thank you for your request.
-    p Your publishing request for the following has been received and is currently under review.
-    p = "Ttitle: #{@title}"
-    p = "Type: #{@name_of_pub_type}"
-    p = "ID: #{@id}"
+h1 Thank you for your request.
+p Your publishing request for the following has been received and is currently under review.
+p = "Title: #{@title}"
+p = "Record ID: #{@record_id}"
+p = "Record Type: #{@name_of_pub_type}"
+p = "Publishing ID: #{@publishing_id}"
+p = link_to "Visit #{@name_of_pub_type}", url_for(:host => root_url, :controller => @controller, :action => "show", :id => @record_id), target: :_blank
+p = link_to "Visit Pending Publications", url_for(:host => root_url, :controller => "projects", :action => "index", params: { project_status: 'pending' }), target: :_blank

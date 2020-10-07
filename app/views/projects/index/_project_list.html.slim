@@ -4,18 +4,6 @@
 
 - else
   ul.accordion data-accordion='' data-multi-expand='false' data-allow-all-closed='true'
-    - @draft.each do |project|
+    - @projects.each do |project|
       li.accordion-item data-accordion-item=''
         = render 'projects/index/new_project_list_item', project: project
-  - if @pending.present?
-    h3 Pending Publication
-    ul.accordion data-accordion='' data-multi-expand='false' data-allow-all-closed='true'
-      - @pending.each do |project|
-        li.publishing-requested.accordion-item data-accordion-item=''
-          = render 'projects/index/new_project_list_item', project: project
-  - if @published.present?
-    h3 Published
-    ul.accordion data-accordion='' data-multi-expand='false' data-allow-all-closed='true'
-      - @published.each do |project|
-        li.publishing-approved.accordion-item data-accordion-item=''
-          = render 'projects/index/new_project_list_item', project: project
