@@ -214,6 +214,10 @@ GEM
       representable (~> 3.0)
       retriable (>= 2.0, < 4.0)
       signet (~> 0.10)
+    google-protobuf (3.13.0)
+    google-protobuf (3.13.0-universal-darwin)
+    googleapis-common-protos-types (1.0.5)
+      google-protobuf (~> 3.11)
     googleauth (0.9.0)
       faraday (~> 0.12)
       jwt (>= 1.4, < 3.0)
@@ -223,6 +227,12 @@ GEM
       signet (~> 0.7)
     groupdate (4.1.1)
       activesupport (>= 4.2)
+    grpc (1.28.0)
+      google-protobuf (~> 3.11)
+      googleapis-common-protos-types (~> 1.0)
+    grpc (1.28.0-universal-darwin)
+      google-protobuf (~> 3.11)
+      googleapis-common-protos-types (~> 1.0)
     guard (2.15.0)
       formatador (>= 0.2.4)
       listen (>= 2.7, < 4.0)
@@ -317,6 +327,10 @@ GEM
     mysql2 (0.4.10)
     nenv (0.3.0)
     nested_form (0.3.2)
+    newrelic-infinite_tracing (6.13.1)
+      grpc (~> 1.28.0)
+      newrelic_rpm (= 6.13.1)
+    newrelic_rpm (6.13.1)
     nio4r (2.3.1)
     nokogiri (1.10.9)
       mini_portile2 (~> 2.4.0)
@@ -577,6 +591,8 @@ DEPENDENCIES
   listen (~> 3.0.5)
   minitest-rails-capybara
   mysql2 (>= 0.3.18, < 0.5)
+  newrelic-infinite_tracing
+  newrelic_rpm
   omniauth
   omniauth-google-oauth2
   paper_trail

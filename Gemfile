@@ -181,3 +181,7 @@ gem "amoeba"
 
 # full-stack error tracking system
 gem "sentry-raven"
+
+# observability platform
+gem 'newrelic_rpm'
+gem 'newrelic-infinite_tracing'
