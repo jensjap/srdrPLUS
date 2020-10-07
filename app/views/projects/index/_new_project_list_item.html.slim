@@ -59,7 +59,10 @@ a.accordion-title href="#"
         = link_to "Edit Project", edit_project_path(project), class: "button expanded"
       .cell.auto
         - efp_id = @projects_extraction_forms_project_ids[project.id]
-        = link_to "Build Extraction Form", build_extraction_forms_project_path(efp_id, anchor: "panel-tab-#{ efp_id }"), class: "button expanded#{ @projects_lead_or_with_key_questions[project.id] ? '' : ' disabled'}"
+        - if @projects_lead_or_with_key_questions[project.id]
+          = link_to "Build Extraction Form", build_extraction_forms_project_path(efp_id, anchor: "panel-tab-#{ efp_id }"), class: "button expanded"
+        - else
+          div class="button expanded" onClick="alert('Please add at least one Key Question first')" Build Extraction Form
       /.cell.auto
         = link_to "List Extractions", project_extractions_path(project), class: "button expanded"
       .cell.auto

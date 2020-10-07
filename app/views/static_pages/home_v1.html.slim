@@ -142,6 +142,7 @@ h1.Create-your-systemat.text-center.professionals-title Leading professionals lo
         .grid-x.grid-padding-x.grid-padding-y
           .cell.medium-4
             h6 = "First published on #{ rp[1]['publication_requested_at'].to_datetime.strftime("%B %d, %Y") }"
+            h6 = "Last edited on #{ rp[1]['updated_at'].to_datetime.strftime("%B %d, %Y") }"
             h5.bold = rp[1]['title']
             h6
               |
