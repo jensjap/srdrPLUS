@@ -15,3 +15,18 @@ div[class*=' prereq-'] * {
   user-select: none;
   pointer-events: none;
 }
+
+
+div[class*=' off-prereq-'] {
+  opacity: initial;
+  cursor: initial;
+}
+
+div[class*=' off-prereq-'] * {
+  -webkit-user-select: initial;
+  -khtml-user-select: initial;
+  -moz-user-select: initial;
+  -o-user-select: initial;
+  user-select: initial;
+  pointer-events: initial;
+}
