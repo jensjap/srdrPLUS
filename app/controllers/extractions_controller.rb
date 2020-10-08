@@ -239,21 +239,33 @@ class ExtractionsController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_project
       @project = Project.
-        includes(extraction_forms_projects: { extraction_forms_projects_sections: { extractions_extraction_forms_projects_sections: :extraction } }).
-        includes(extractions: { extractions_extraction_forms_projects_sections: { extraction_forms_projects_section: :extraction_forms_project } }).
+        includes(:extraction_forms_projects).
         find(params[:project_id])
     end
 
     def set_extraction
       @extraction = Extraction.
-        includes(projects_users_role: { projects_user: :project }).
+        includes(projects_users_role: :projects_user).
+        includes(project: { key_questions_projects: :key_question }).
+        includes(extractions_extraction_forms_projects_sections: {
+          extractions_extraction_forms_projects_sections_type1s: [
+            :ordering,
+            {
+              extractions_extraction_forms_projects_sections_type1_rows: [
+                :population_name,
+                :extractions_extraction_forms_projects_sections_type1_row_columns,
+                { extractions_extraction_forms_projects_sections_type1_row_columns: :timepoint_name },
+                { result_statistic_sections: { result_statistic_sections_measures: :measure } }
+              ]
+            }
+          ]
+        }).
         find(params[:id])
-        #.includes(key_questions_projects: [:key_question, extraction_forms_projects_section: [:extractions_extraction_forms_projects_sections, :extraction_forms_projects_section_type]])
     end
 
     def set_extractions
       @extractions = policy_scope(Extraction).
-        includes({projects_users_role: { projects_user: { user: :profile } }}, {extractions_extraction_forms_projects_sections: [{link_to_type1: [{extraction_forms_projects_section: :section}, :type1s, {extractions_extraction_forms_projects_sections_type1s: [:type1_type, :type1]}]}, {statusing: :status}]}).
+        includes({projects_users_role: { projects_user: { user: :profile } }}, {extractions_extraction_forms_projects_sections: [{link_to_type1: [{extraction_forms_projects_section: :section}]}, {statusing: :status}]}).
         where(id: extraction_ids_params)
     end
 
@@ -305,7 +317,7 @@ class ExtractionsController < ApplicationController
     end
 
     def set_eefps_by_efps_dict
-      @eefps_by_efps_dict ||= @extraction.extractions_extraction_forms_projects_sections.includes({link_to_type1: [{extraction_forms_projects_section: :section}, :type1s, {extractions_extraction_forms_projects_sections_type1s: [:type1_type, :type1]}]}, {statusing: :status}).group_by(&:extraction_forms_projects_section_id)
+      @eefps_by_efps_dict ||= @extraction.extractions_extraction_forms_projects_sections.includes({statusing: :status}).group_by(&:extraction_forms_projects_section_id)
     end
 
     def set_extraction_forms_projects
@@ -314,7 +326,6 @@ class ExtractionsController < ApplicationController
           :extraction_forms_projects_section_option,
           :extraction_forms_projects_section_type,
           :section,
-          :type1s,
           { questions: [
             :dependencies,
             :key_questions_projects,

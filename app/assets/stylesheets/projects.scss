@@ -603,3 +603,7 @@ a.add-task-button {
 }
 
 // END Colored triangles on the project index page.
+
+input:checked ~ .switch-hidden {
+  background: #016BAB;
+}

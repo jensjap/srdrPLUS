@@ -1,9 +1,9 @@
 require 'sidekiq/web'
 
 Rails.application.routes.draw do
-  post 'publishings/create'
-  delete 'publishings/:id', to: 'publishings#destroy', as: 'publishings_destroy'
+  resources :publishings, only: [:new, :create, :destroy]
   post 'publishings/:id/approve', to: 'publishings#approve', as: 'publishings_approve'
+  post 'publishings/:id/rescind_approval', to: 'publishings#rescind_approval', as: 'rescind_approval'
 
   resources :project_report_links, only: [:index, :view] do
     get 'new_query_form'
@@ -34,7 +34,7 @@ Rails.application.routes.draw do
     unlocks: 'users/unlocks'
   }
 
-  devise_scope :user do 
+  devise_scope :user do
     post '/users/api_key_reset' => 'users/registrations#api_key_reset'
   end
 
@@ -93,6 +93,7 @@ Rails.application.routes.draw do
         resources :extractions, only: [:index]
         resources :extraction_forms_projects do
           resources :extraction_forms_projects_sections, only: [:index, :show] do
+            post 'toggle_hiding', to: 'extraction_forms_projects_sections#toggle_hiding'
             resources :type1s, only: [:index]
           end
         end

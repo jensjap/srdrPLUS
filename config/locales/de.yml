@@ -37,6 +37,8 @@ de:
   greet: Guten Tag
   blank: Kann nicht leer sein
   confirm: Sind Sie sicher?
+  request_publication: Veröffentlichung anfordern
+  comparison_tool: 
   extraction_forms_projects:
     form:
       save: Extraktionsformular speichern

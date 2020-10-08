@@ -26,6 +26,12 @@ class Api::V1::ExtractionFormsProjectsSectionsController < Api::V1::BaseControll
     respond_with @extraction_forms_projects_section
   end
 
+  def toggle_hiding
+    efps_id = params[:extraction_forms_projects_section_id]
+    efps = ExtractionFormsProjectsSection.find(efps_id)
+    efps.update(hidden: !efps.hidden)
+  end
+
   private
 
     def set_extraction_forms_project
