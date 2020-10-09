@@ -341,5 +341,6 @@ class ExtractionsController < ApplicationController
           }
         ]
       )
+      @panel_tab_id = params['panel-tab'] || @extraction_forms_projects.first.extraction_forms_projects_sections.first.id
     end
 end
