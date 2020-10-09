@@ -2,6 +2,9 @@
 
 .table-scroll
   table
+    col style="width:45%"
+    col style="width:45%"
+    col style="width:10%"
     thead
       tr
         - if section_name == 'Outcomes'
@@ -34,10 +37,11 @@
                 - eefpst1.extractions_extraction_forms_projects_sections_type1_rows.first.extractions_extraction_forms_projects_sections_type1_row_columns.each do |tp|
                   li = tp.timepoint_name.name + (tp.timepoint_name.unit.present? ? " (#{ tp.timepoint_name.unit })" : '')
 
-          td = link_to edit_extractions_extraction_forms_projects_sections_type1_path(eefpst1) do
-            i.fi-pencil>
-            | Edit
+          td 
+            div = link_to edit_extractions_extraction_forms_projects_sections_type1_path(eefpst1) do
+              i.fi-pencil>
+              | Edit
 
-          td = link_to eefpst1, data: { confirm: 'Are you sure?' }, method: :delete do
-            i.fi-trash>
-            | Remove
+            div = link_to eefpst1, data: { confirm: 'Are you sure?' }, method: :delete do
+              i.fi-trash>
+              | Remove

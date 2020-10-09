@@ -166,23 +166,20 @@
                                       i.fi-x> style='color: red;'
                                       = timepoint_name.pretty_print_export_header
 
-  .toggle-consolidated-extraction-link-medium-4-0-hide.columns.medium-4 style='border: 2px solid #410093;'
+  .toggle-consolidated-extraction-link-medium-4-0-hide.columns.medium-4
     - eefps = @eefps_by_extraction_and_efps_dict[@consolidated_extraction.id][efps.id].first
 
-    .column.row
-      = render 'extractions/shared/type_1/type_1_included_list',
-        extraction: @consolidated_extraction,
-        section_name: section_name,
-        eefps: eefps
+    .row
+      .column
+        = render 'extractions/shared/type_1/type_1_included_list',
+          extraction: @consolidated_extraction,
+          section_name: section_name,
+          eefps: eefps
 
-    .column.row
-      = render 'extractions/shared/type_1/type_1_example_list',
-        extraction: @consolidated_extraction,
-        section_name: section_name,
-        eefps: eefps
-
-    .column.row
-      = render 'extractions/shared/type_1/type_1_new_custom_form',
-        extraction: @consolidated_extraction,
-        section_name: section_name,
-        eefps: eefps
+    hr
+    .row
+      .column
+        = render 'extractions/shared/type_1/type_1_new_custom_form',
+          extraction: @consolidated_extraction,
+          section_name: section_name,
+          eefps: eefps
