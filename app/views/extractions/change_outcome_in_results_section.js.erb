@@ -1,5 +1,9 @@
 ( function() {
-  $( '#results-panel' ).html( "<%= j( render 'extractions/work/results', efp: @extraction_forms_projects.first) %>" ).foundation();
+  <% if @extraction.consolidated %> 
+      $( '#results-panel' ).html( "<%= j( render 'extractions/consolidate/results', efp: @extraction_forms_projects.first) %>" ).foundation();
+  <% else %>
+    $( '#results-panel' ).html( "<%= j( render 'extractions/work/results', efp: @extraction_forms_projects.first) %>" ).foundation();
+  <% end %>
 
   var bind_record_saving_mechanism;
   bind_record_saving_mechanism = function() {

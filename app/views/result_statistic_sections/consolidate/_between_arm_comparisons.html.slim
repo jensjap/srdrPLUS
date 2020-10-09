@@ -25,7 +25,7 @@
               = link_to_add_association f, :comparisons,
                 class: 'button tiny',
                 partial: 'result_statistic_sections/edit/comparison_fields',
-                render_options: { locals: { comparison: :bac } } do
+                render_options: { locals: { comparison: :bac, rss: @result_statistic_section } } do
                 i.fi-plus>
                 | Add Comparison
 
