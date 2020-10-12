@@ -172,6 +172,8 @@ class ExtractionsController < ApplicationController
       format.js do
         @eefpst1                   = ExtractionsExtractionFormsProjectsSectionsType1.find(params[:eefpst1_id])
         @extraction                = @eefpst1.extraction
+        @consolidated_extraction   = @extraction
+        @extractions               = Extraction.where(citations_project: @extraction.citations_project).where.not(id: @extraction.id)
         @project                   = @extraction.project
         @extraction_forms_projects = @project.extraction_forms_projects
         @eefpst1s                  = ExtractionsExtractionFormsProjectsSectionsType1
@@ -201,7 +203,12 @@ class ExtractionsController < ApplicationController
 
     @consolidated_extraction   = @project.consolidated_extraction(@extractions.first.citations_project_id, current_user.id)
     @head_to_head              = head_to_head(@extraction_forms_projects, @extractions)
-    @preselected_eefpst1       = params[:eefpst1_id].present? ? ExtractionsExtractionFormsProjectsSectionsType1.find(params[:eefpst1_id]) : nil
+    @eefpst1s                  = ExtractionsExtractionFormsProjectsSectionsType1
+                                 .by_section_name_and_extraction_id_and_extraction_forms_project_id('Outcomes',
+                                                                           @consolidated_extraction.id,
+                                                                           @extraction_forms_projects.first.id)
+    @eefpst1                   = params[:eefpst1_id].present? ? ExtractionsExtractionFormsProjectsSectionsType1.find(params[:eefpst1_id]) : @eefpst1s.first
+
     @consolidated_extraction.ensure_extraction_form_structure
     @consolidated_extraction.auto_consolidate(@extractions)
 

@@ -1502,33 +1502,33 @@ module SeedDataExtended
           when 0
             Task.create!(
               num_assigned: 100,
-              task_type:    @perpetual,
-              project:      p
+              task_type_id:    @perpetual.id,
+              project_id:      p.id
             )
           when 1
             pilot_size = rand(100)
             Task.create!(
               num_assigned: pilot_size,
-              task_type:    @pilot,
-              project:      p
+              task_type_id:    @pilot.id,
+              project_id:      p.id
             )
             Task.create!(
               num_assigned: 100 - pilot_size,
-              task_type:    @perpetual,
-              project:      p
+              task_type_id:    @perpetual.id,
+              project_id:      p.id
             )
 
           when 2
             advanced_size = rand(100)
             Task.create!(
               num_assigned: advanced_size,
-              task_type:    @advanced,
-              project:      p
+              task_type_id:    @advanced.id,
+              project_id:      p.id
             )
             Task.create!(
               num_assigned: 100 - advanced_size,
-              task_type:    @advanced,
-              project:      p
+              task_type_id:    @advanced.id,
+              project_id:      p.id
             )
           end
 
@@ -1541,19 +1541,19 @@ module SeedDataExtended
                   date_assigned: DateTime.now,
                   date_due: Date.today + 7,
                   projects_users_role: ProjectsUsersRole.find_by({ projects_user: ProjectsUser.find_by({ user: @screener_1, project: p }), role: Role.where(name: 'Contributor') }),
-                  task: t
+                  task_id: t.id
                 },
                 {
                   date_assigned: DateTime.now,
                   date_due: Date.today + 7,
                   projects_users_role: ProjectsUsersRole.find_by({ projects_user: ProjectsUser.find_by({ user: @screener_2, project: p }), role: Role.where(name: 'Contributor') }),
-                  task: t
+                  task_id: t.id
                 },
                 {
                   date_assigned: DateTime.now,
                   date_due: Date.today + 7,
                   projects_users_role: ProjectsUsersRole.find_by({ projects_user: ProjectsUser.find_by({ user: @screener_3, project: p }), role: Role.where(name: 'Contributor') }),
-                  task: t
+                  task_id: t.id
                 }
               ])
             when 'Advanced'
@@ -1563,7 +1563,7 @@ module SeedDataExtended
                     date_assigned: DateTime.now,
                     date_due: Date.today + 7,
                     projects_users_role: ProjectsUsersRole.find_by({ projects_user: ProjectsUser.find_by({ user: s, project: p }), role: Role.where(name: 'Contributor') }),
-                    task: t
+                    task_id: t.id
                   }
                 )
               end
