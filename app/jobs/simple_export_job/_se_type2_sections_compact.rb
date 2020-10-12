@@ -153,9 +153,9 @@ def set_qrc_column_header(header_row, i)
     header_row[i].value
   rescue Exception => e
     if i.even?
-      header_row.add_cell '[row name] x [col name]'
+      header_row.add_cell 'Cell Descriptor\r\n[row name] x [col name]'
     else
       header_row.add_cell 'Value'
-    end  # END if i.odd?
+    end  # END if i.even?
   end  # END begin
 end

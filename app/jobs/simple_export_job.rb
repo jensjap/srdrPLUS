@@ -51,10 +51,10 @@ class SimpleExportJob < ApplicationJob
 #      build_type2_sections_wide(p, @project, highlight, wrap)
 
       # Results - compact format.
-      build_result_sections_compact(p, @project, highlight, wrap)
+#      build_result_sections_compact(p, @project, highlight, wrap)
 
       # Results - wide format.
-#      build_result_sections_wide(p, @project, highlight, wrap)
+      build_result_sections_wide(p, @project, highlight, wrap)
 
       # Default sample 3D pie chart.
 #      build_sample_3d_pie_chart(p)
