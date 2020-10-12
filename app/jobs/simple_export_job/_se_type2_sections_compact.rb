@@ -13,6 +13,7 @@ def build_type2_sections_compact(p, project, highlight, wrap, kq_ids=[])
           # For each sheet we create a SheetInfo object.
           sheet_info = SheetInfo.new
 
+=begin
           # Extractions can span multiple rows.
           project.extractions.each do |extraction|
             # Create base for extraction information.
@@ -40,7 +41,7 @@ def build_type2_sections_compact(p, project, highlight, wrap, kq_ids=[])
             # type1 via eefps.link_to_type1.extractions_extraction_forms_projects_sections_type1s.
             # Otherwise we proceed with eefpst1s set to a custom Struct that responds
             # to :id, type1: :id.
-            eefpst1s = (eefps.extraction_forms_projects_section.extraction_forms_projects_section_option.by_type1 and eefps.link_to_type1.present?) ? 
+            eefpst1s = (eefps.extraction_forms_projects_section.extraction_forms_projects_section_option.by_type1 and eefps.link_to_type1.present?) ?
               eefps.link_to_type1.extractions_extraction_forms_projects_sections_type1s :
               [Struct.new(:id, :type1).new(nil, Struct.new(:id).new(nil))]
 
@@ -69,10 +70,84 @@ def build_type2_sections_compact(p, project, highlight, wrap, kq_ids=[])
               end  # questions.each do |q|
             end  # eefps.type1s.each do |eefpst1|
           end  # project.extractions.each do |extraction|
+=end
 
-          # Start printing rows to the spreadsheet. First the basic headers:
-          #['Extraction ID', 'Username', 'Citation ID', 'Citation Name', 'RefMan', 'PMID']
-          header_row = sheet.add_row sheet_info.header_info.concat ['Arm Name', 'Arm Description', 'Question Text', 'Question Description', 'Question Options', 'Question Answer Value']
+          # First the basic headers:
+          # ['Extraction ID', 'Username', 'Citation ID', 'Citation Name', 'RefMan', 'PMID']
+          header_elements = sheet_info.header_info
+
+          # Add additional columns to capture the link_to_type1 name and description.
+          if efps.link_to_type1
+            header_elements = header_elements.concat [
+              "#{ efps.link_to_type1.section.name.singularize } Name",
+              "#{ efps.link_to_type1.section.name.singularize } Description"
+            ]
+          end
+
+          header_row = sheet.add_row header_elements
+
+          # Get all questions in this efps by key_questions requested.
+          if kq_ids.present?
+            questions = efps.questions.joins(:key_questions_projects_questions)
+              .where(
+                key_questions_projects_questions: {
+                  key_questions_project: KeyQuestionsProject.where(project: project, key_question_id: kq_ids)
+                } )
+          else
+            questions = efps.questions.joins(:key_questions_projects_questions)
+              .where(
+                key_questions_projects_questions: {
+                  key_questions_project: KeyQuestionsProject.where(project: project)
+                } )
+          end
+          questions.distinct.order(id: :asc)
+
+          # Iterate over each extraction in the project.
+          project.extractions.each do |extraction|
+            eefps = efps.extractions_extraction_forms_projects_sections.find_by(
+              extraction: extraction,
+              extraction_forms_projects_section: efps)
+
+            if efps.link_to_type1.present?
+              eefps.link_to_type1.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
+                questions.each do |question|
+                  sheet.add_row [
+                    extraction.id,
+                    extraction.user.profile.username,
+                    extraction.citation.id,
+                    extraction.citation.name,
+                    extraction.citation.refman,
+                    extraction.citation.pmid,
+                    eefpst1.type1.name,
+                    eefpst1.type1.description
+                  ]
+                end
+              end
+            else
+              eefpst1 = nil
+              questions.each do |question|
+                sheet.add_row [
+                  extraction.id,
+                  extraction.user.profile.username,
+                  extraction.citation.id,
+                  extraction.citation.name,
+                  extraction.citation.refman,
+                  extraction.citation.pmid
+                ]
+              end
+            end
+          end
+
+
+=begin
+          .concat [
+            "#{ efps.section.name.singularize } Name",
+            "#{ efps.section.name.singularize } Description",
+            'Question Text',
+            'Question Description',
+            'Question Options',
+            'Question Answer Value'
+          ]
 
           # Now we add the extraction rows.
           sheet_info.extractions.each do |key, extraction|
@@ -89,7 +164,7 @@ def build_type2_sections_compact(p, project, highlight, wrap, kq_ids=[])
             # type1 via eefps.link_to_type1.extractions_extraction_forms_projects_sections_type1s.
             # Otherwise we proceed with eefpst1s set to a custom Struct that responds
             # to :id, type1: :id.
-            eefpst1s = (eefps.extraction_forms_projects_section.extraction_forms_projects_section_option.by_type1 and eefps.link_to_type1.present?) ? 
+            eefpst1s = (eefps.extraction_forms_projects_section.extraction_forms_projects_section_option.by_type1 and eefps.link_to_type1.present?) ?
               eefps.link_to_type1.extractions_extraction_forms_projects_sections_type1s :
               [Struct.new(:id, :type1).new(nil, Struct.new(:id).new(nil))]
 
@@ -131,6 +206,7 @@ def build_type2_sections_compact(p, project, highlight, wrap, kq_ids=[])
             end  # END if eefpst1s.is_a? Struct
 
           end  # END sheet_info.extractions.each do |key, extraction|
+=end
 
           # Re-apply the styling for the new cells in the header row before closing the sheet.
           sheet.column_widths nil
