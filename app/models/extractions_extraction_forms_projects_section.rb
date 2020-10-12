@@ -92,15 +92,15 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
       end
       return text_arr.join ', '
 
-    when 6, 7, 8
+    when 6, 7, 8  # Dropdown, Radio, Select2_single.
       text = ''
       Record.where(recordable: recordables).pluck(:name).each do |opt_id|
         # opt_id can be nil here for questions that have not been answered.
         # Protect by casting to zero and check.
         text += qrc.question_row_columns_question_row_column_options.find(opt_id.to_i).name + "\r" unless opt_id.to_i.zero?
       end
-      return text
-    when 9
+      return text.chop
+    when 9  # Select2_multi.
       text = ''
       ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnFieldsQuestionRowColumnsQuestionRowColumnOption.includes(:question_row_columns_question_row_column_option).where(extractions_extraction_forms_projects_sections_question_row_column_field: recordables).each do |eefpsqrcfqrcqrco|
         opt_id = eefpsqrcfqrcqrco.question_row_columns_question_row_column_option.name

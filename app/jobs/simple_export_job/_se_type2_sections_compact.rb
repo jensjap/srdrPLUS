@@ -1,5 +1,8 @@
 require 'simple_export_job/sheet_info'
 
+COL_CNT_WITHOUT_LINK_TO_TYPE1 = 8
+COL_CNT_WITH_LINK_TO_TYPE1    = 10
+
 def build_type2_sections_compact(p, project, highlight, wrap, kq_ids=[])
   project.extraction_forms_projects.each do |efp|
     efp.extraction_forms_projects_sections.each do |efps|
@@ -13,70 +16,12 @@ def build_type2_sections_compact(p, project, highlight, wrap, kq_ids=[])
           # For each sheet we create a SheetInfo object.
           sheet_info = SheetInfo.new
 
-=begin
-          # Extractions can span multiple rows.
-          project.extractions.each do |extraction|
-            # Create base for extraction information.
-            sheet_info.new_extraction_info(extraction)
-
-            # Collect basic information about the extraction.
-            sheet_info.set_extraction_info(
-              extraction_id: extraction.id,
-              username: extraction.projects_users_role.projects_user.user.profile.username,
-              citation_id: extraction.citations_project.citation.id,
-              citation_name: extraction.citations_project.citation.name,
-              refman: extraction.citations_project.citation.refman,
-              pmid: extraction.citations_project.citation.pmid)
-
-            eefps = efps.extractions_extraction_forms_projects_sections.find_by(
-              extraction: extraction,
-              extraction_forms_projects_section: efps)
-
-            # Iterate over each of the questions that are associated with this particular # extraction's
-            # extraction_forms_projects_section and collect name and description.
-            questions = efps.questions.joins(:key_questions_projects_questions)
-              .where(key_questions_projects_questions: { key_questions_project: KeyQuestionsProject.where(project: project, key_question_id: kq_ids) }).distinct.order(id: :asc)
-
-            # If this section is linked we have to iterate through each occurrence of
-            # type1 via eefps.link_to_type1.extractions_extraction_forms_projects_sections_type1s.
-            # Otherwise we proceed with eefpst1s set to a custom Struct that responds
-            # to :id, type1: :id.
-            eefpst1s = (eefps.extraction_forms_projects_section.extraction_forms_projects_section_option.by_type1 and eefps.link_to_type1.present?) ?
-              eefps.link_to_type1.extractions_extraction_forms_projects_sections_type1s :
-              [Struct.new(:id, :type1).new(nil, Struct.new(:id).new(nil))]
-
-            eefpst1s.each do |eefpst1|
-              questions.each do |q|
-                q.question_rows.each do |qr|
-                  qr.question_row_columns.each do |qrc|
-                    sheet_info.add_question_row_column(
-                      extraction_id: extraction.id,
-                      section_name: efps.section.name.singularize,
-                      type1_id: eefpst1.type1.id,
-                      question_id: q.id,
-                      question_name: q.name,
-                      question_description: q.description,
-                      question_row_id: qr.id,
-                      question_row_name: qr.name,
-                      question_row_column_id: qrc.id,
-                      question_row_column_name: qrc.name,
-                      question_row_column_options: qrc
-                      .question_row_columns_question_row_column_options
-                      .where(question_row_column_option_id: 1)
-                      .pluck(:id, :name),
-                      eefps_qrfc_values: eefps.eefps_qrfc_values(eefpst1.id, qrc))
-                  end  # qr.question_row_columns.each do |qrc|
-                end  # q.question_rows.each do |qr|
-              end  # questions.each do |q|
-            end  # eefps.type1s.each do |eefpst1|
-          end  # project.extractions.each do |extraction|
-=end
-
           # First the basic headers:
           # ['Extraction ID', 'Username', 'Citation ID', 'Citation Name', 'RefMan', 'PMID']
           header_elements = sheet_info.header_info
 
-          # Add additional columns to capture the link_to_type1 name and description.
+          # Add additional column headers to capture the link_to_type1 name and description
+          # if link_to_type1 is present and add to header_elements.
           if efps.link_to_type1
             header_elements = header_elements.concat [
               "#{ efps.link_to_type1.section.name.singularize } Name",
@@ -84,34 +29,27 @@ def build_type2_sections_compact(p, project, highlight, wrap, kq_ids=[])
             ]
           end
 
+          # Add question text and instruction column headers to header_elements.
+          header_elements.concat ['Question Text', 'Instructions']
+
+          # Instantiate proper header Axlsx::Row element.
           header_row = sheet.add_row header_elements
 
-          # Get all questions in this efps by key_questions requested.
-          if kq_ids.present?
-            questions = efps.questions.joins(:key_questions_projects_questions)
-              .where(
-                key_questions_projects_questions: {
-                  key_questions_project: KeyQuestionsProject.where(project: project, key_question_id: kq_ids)
-                } )
-          else
-            questions = efps.questions.joins(:key_questions_projects_questions)
-              .where(
-                key_questions_projects_questions: {
-                  key_questions_project: KeyQuestionsProject.where(project: project)
-                } )
-          end
-          questions.distinct.order(id: :asc)
+          # Collect distinct list of questions.
+          questions = fetch_questions(project, kq_ids, efps)
 
           # Iterate over each extraction in the project.
           project.extractions.each do |extraction|
             eefps = efps.extractions_extraction_forms_projects_sections.find_by(
               extraction: extraction,
-              extraction_forms_projects_section: efps)
+              extraction_forms_projects_section: efps
+            )
 
+            # If link_to_type1 is present we need to iterate each question for every type1 present in the extraction.
             if efps.link_to_type1.present?
               eefps.link_to_type1.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
                 questions.each do |question|
-                  sheet.add_row [
+                  new_row = [
                     extraction.id,
                     extraction.user.profile.username,
                     extraction.citation.id,
@@ -119,94 +57,40 @@ def build_type2_sections_compact(p, project, highlight, wrap, kq_ids=[])
                     extraction.citation.refman,
                     extraction.citation.pmid,
                     eefpst1.type1.name,
-                    eefpst1.type1.description
+                    eefpst1.type1.description,
+                    question.name,
+                    question.description
                   ]
-                end
-              end
+                  new_row = new_row.concat(build_qrc_components_for_question(eefps, eefpst1.id, question))
+                  sheet.add_row new_row
+
+                  # Adjust column headers for each qrc component.
+                  adjust_header_row_to_account_for_qrc_components(header_row, new_row, true)
+                end  # END questions.each do |question|
+              end  # END eefps.link_to_type1.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
+
+            # If no link is present we only need it once and use eefpst1 with value nil.
             else
               eefpst1 = nil
               questions.each do |question|
-                sheet.add_row [
+                new_row = [
                   extraction.id,
                   extraction.user.profile.username,
                   extraction.citation.id,
                   extraction.citation.name,
                   extraction.citation.refman,
-                  extraction.citation.pmid
+                  extraction.citation.pmid,
+                  question.name,
+                  question.description
                 ]
-              end
-            end
-          end
-
-
-=begin
-          .concat [
-            "#{ efps.section.name.singularize } Name",
-            "#{ efps.section.name.singularize } Description",
-            'Question Text',
-            'Question Description',
-            'Question Options',
-            'Question Answer Value'
-          ]
-
-          # Now we add the extraction rows.
-          sheet_info.extractions.each do |key, extraction|
-            eefps = efps.extractions_extraction_forms_projects_sections.find_by(
-              extraction: Extraction.find(extraction[:extraction_info][:extraction_id]),
-              extraction_forms_projects_section: efps)
-
-            # Iterate over each of the questions that are associated with this particular # extraction's
-            # extraction_forms_projects_section and collect name and description.
-            questions = efps.questions.joins(:key_questions_projects_questions)
-              .where(key_questions_projects_questions: { key_questions_project: KeyQuestionsProject.where(project: project, key_question_id: kq_ids) }).distinct.order(id: :asc)
-
-            # If this section is linked we have to iterate through each occurrence of
-            # type1 via eefps.link_to_type1.extractions_extraction_forms_projects_sections_type1s.
-            # Otherwise we proceed with eefpst1s set to a custom Struct that responds
-            # to :id, type1: :id.
-            eefpst1s = (eefps.extraction_forms_projects_section.extraction_forms_projects_section_option.by_type1 and eefps.link_to_type1.present?) ?
-              eefps.link_to_type1.extractions_extraction_forms_projects_sections_type1s :
-              [Struct.new(:id, :type1).new(nil, Struct.new(:id).new(nil))]
-
-            if eefpst1s.first.is_a? Struct
-              efps.questions.each do |question|
-                new_row = []
-                new_row << extraction[:extraction_info][:extraction_id]
-                new_row << extraction[:extraction_info][:username]
-                new_row << extraction[:extraction_info][:citation_id]
-                new_row << extraction[:extraction_info][:citation_name]
-                new_row << extraction[:extraction_info][:refman]
-                new_row << extraction[:extraction_info][:pmid]
-                new_row << 'Total'
-                new_row << ''
-                new_row << question.name
-                new_row << question.description
-                new_row << ([5, 6, 7, 8, 9].include?(question.question_rows.first.question_row_columns.first.question_row_column_type.id) ?
-                  question.question_rows.first.question_row_columns.first.question_row_columns_question_row_column_options.where(question_row_column_option_id: 1).collect(&:name) :
-                  "")
-                eefpsqrcf = ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField.find_by(
-                  extractions_extraction_forms_projects_section: eefps,
-                  question_row_column_field: question.question_rows.first.question_row_columns.first.question_row_column_fields.first
-                )
-                new_row << (eefpsqrcf.nil? ? "" : eefpsqrcf.records.first.name)
-
+                new_row = new_row.concat(build_qrc_components_for_question(eefps, eefpst1, question))
                 sheet.add_row new_row
+
+                # Adjust column headers for each qrc component.
+                adjust_header_row_to_account_for_qrc_components(header_row, new_row, false)
               end  # END questions.each do |question|
-
-            else
-              eefpst1s.each do |eefpst1|
-                eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |eefpst1r|
-                  eefpst1r.extractions_extraction_forms_projects_sections_type1_row_columns.each do |eefpst1rc|
-
-                    #!!!
-
-                  end  # END eefpst1r.extractions_extraction_forms_projects_sections_type1_row_columns.each do |eefpst1rc|
-                end  # END eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |eefpst1r|
-              end  # END eefpst1s.each do |eefpst1|
-            end  # END if eefpst1s.is_a? Struct
-
-          end  # END sheet_info.extractions.each do |key, extraction|
-=end
+            end  # END if efps.link_to_type1.present?
+          end  # END project.extractions.each do |extraction|
 
           # Re-apply the styling for the new cells in the header row before closing the sheet.
           sheet.column_widths nil
@@ -215,4 +99,63 @@ def build_type2_sections_compact(p, project, highlight, wrap, kq_ids=[])
       end  # END if efps.extraction_forms_projects_section_type_id == 2
     end  # END efp.extraction_forms_projects_sections.each do |efps|
   end  # END project.extraction_forms_projects.each do |efp|
+end
+
+def fetch_questions(project, kq_ids, efps)
+  # Get all questions in this efps by key_questions requested.
+  if kq_ids.present?
+    questions = efps.questions.joins(:key_questions_projects_questions)
+      .where(
+        key_questions_projects_questions: {
+          key_questions_project: KeyQuestionsProject.where(project: project, key_question_id: kq_ids)
+        } )
+  else
+    questions = efps.questions.joins(:key_questions_projects_questions)
+      .where(
+        key_questions_projects_questions: {
+          key_questions_project: KeyQuestionsProject.where(project: project)
+        } )
+  end
+
+  return questions.distinct.order(id: :asc)
+end
+
+def build_qrc_components_for_question(eefps, eefpst1_id, question)
+  qrc_components = []
+  question.question_rows.each_with_index do |qr, row_idx|
+    qr.question_row_columns.each_with_index do |qrc, col_idx|
+      qrc_components = qrc_components.concat [
+        "[#{ qr.name.present? ? qr.name : '--' }] x [#{ qrc.name.present? ? qrc.name : '--' }]",
+        eefps.eefps_qrfc_values(eefpst1_id, qrc)
+      ]
+    end  # END qr.question_row_columns.each_with_index do |qrc, col_idx|
+  end  # END question.question_rows.each_with_index do |qr, row_idx|
+
+  return qrc_components
+end
+
+def adjust_header_row_to_account_for_qrc_components(header_row, new_row, link_to_type1_present)
+  if link_to_type1_present
+    for i in COL_CNT_WITH_LINK_TO_TYPE1..new_row.length-1
+      set_qrc_column_header(header_row, i)
+    end  # END for i in COL_CNT_WITH_LINK_TO_TYPE1..new_row.length-1
+
+  else
+    for i in COL_CNT_WITHOUT_LINK_TO_TYPE1..new_row.length-1
+      set_qrc_column_header(header_row, i)
+    end
+
+  end  # END if link_to_type1_present
+end
+
+def set_qrc_column_header(header_row, i)
+  begin
+    header_row[i].value
+  rescue Exception => e
+    if i.even?
+      header_row.add_cell '[row name] x [col name]'
+    else
+      header_row.add_cell 'Value'
+    end  # END if i.odd?
+  end  # END begin
 end
