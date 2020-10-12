@@ -256,7 +256,8 @@ document.addEventListener 'turbolinks:load', ->
 
       ##########################################################################
       # Check whether dependencies are fulfilled and change classes accordingly.
-      $( '#preview .card input, #preview .card select, #preview .card textarea' ).on 'change keyup', ( e ) ->
+      relevantIDsClasses = '#preview .card input, #preview .card select, #preview .card textarea'
+      $( relevantIDsClasses ).on 'change keyup dependencies:update', ( e ) ->
         e.preventDefault()
 
         that   = $( this )
@@ -288,6 +289,7 @@ document.addEventListener 'turbolinks:load', ->
             turnPrereqOnSelfAndDescendants( prereq, that )
 
         return  # END $( '#preview .card input,select' ).on 'change keyup', ( e ) ->
+      $( relevantIDsClasses ).trigger( "dependencies:update" );
 
       updateCards = () ->
         # Hide all questions first.
