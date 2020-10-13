@@ -17,7 +17,7 @@ class ResultStatisticSectionsController < ApplicationController
     add_breadcrumb 'extractions',  project_extractions_path(@result_statistic_section.extraction.project)
     add_breadcrumb 'work',         work_extraction_path(@result_statistic_section.extraction,
                                                           params: { eefpst1_id: @result_statistic_section.population.extractions_extraction_forms_projects_sections_type1_id },
-                                                          anchor: "panel-tab-#{ @result_statistic_section.eefps_result.id }")
+                                                          'panel-tab': @result_statistic_section.eefps_result.id)
     add_breadcrumb @result_statistic_section.result_statistic_section_type.name.downcase,
       :edit_result_statistic_section_path
   end

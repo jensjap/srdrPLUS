@@ -13,7 +13,7 @@ class RecordsController < ApplicationController
         end
       else
         format.html { redirect_to work_extraction_path(@record.recordable.extraction,
-                                                       anchor: "panel-tab-#{ @record.recordable.extractions_extraction_forms_projects_section.id.to_s }"),
+                                                       'panel-tab': @record.recordable.extractions_extraction_forms_projects_section.id.to_s),
                                   alert: t('failure') + ' ' + @record.errors.full_messages.to_s }
         format.json { render json: @record.errors, status: :unprocessable_entity }
         format.js do
