@@ -4,4 +4,3 @@ namespace :extraction_tasks do
     ExtractionsExtractionFormsProjectsSection.left_joins( extraction_forms_projects_section: { extraction_forms_project: :extraction_forms_project_type } ).where(extraction_forms_projects_section: { extraction_forms_project: { extraction_forms_project_types: { name: "Citation Screening Extraction Form" } } }).destroy_all
   end
 end
-

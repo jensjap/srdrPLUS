@@ -90,7 +90,8 @@
                 i.fi-plus>
                 | Add Within-Arm Comparison
       tr
-        td = simple_form_for @result_statistic_section do |f|
-          = f.association :measures
+        td = link_to '(edit measures)', manage_measures_result_statistic_section_path(rss_id: @result_statistic_section.id, extraction_ids: @extractions.map{|x| x.id}), remote: true
 
-          = f.submit
+.reveal#manage-measures-modal.large data-reveal='' style='min-height: 80vh'
+  button.close-button data-close='' aria-label='Close modal' type='button'
+    span aria-hidden='true' &times;
