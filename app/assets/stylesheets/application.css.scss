@@ -596,5 +596,9 @@ textarea {
 }
 
 .row {
-  max-width: 100%;
+  max-width: max(90%, 1200px);
+}
+
+.grid-container {
+  max-width: unset;
 }
