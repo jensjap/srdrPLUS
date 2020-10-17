@@ -158,7 +158,7 @@
             .cell.medium-10
               span Use study data in your own systematic review.
 
-  - if @recently_published_projects
+  - if @recently_published_projects.present?
     .grid-x.align-center-middle.Recently-published
       .cell.medium-9
         h1 Recently published projects
@@ -175,12 +175,12 @@
                   #{ rp[1]['number_of_studies'] } Studies &bull; #{ rp[1]['number_of_key_questions'] } Key Questions &bull; #{ rp[1]['number_of_extraction_forms'] } Extraction Forms
             .cell.medium-8
               .small.summary Objectives: #{ rp[1]['description'].blank? ? 'None Provided' : rp[1]['description'] }
-              .small.bold = link_to rp[1]['url'], target: '_blank', data: { confirm: @exit_disclaimer } do
+              .small.bold = link_to rp[1]['url'], target: '_blank' do
                 |READ MORE
                 i.fas.fa-external-link-alt.fa-sm<
 
       .cell.medium-9
-        h4 = link_to 'https://srdr.ahrq.gov/projects/published', target: '_blank', data: { confirm: @exit_disclaimer } do
+        h4 = link_to 'https://srdr.ahrq.gov/projects/published', target: '_blank' do
           |SEE MORE PROJECTS
           i.fas.fa-external-link-alt.fa-sm<
 

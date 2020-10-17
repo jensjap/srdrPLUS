@@ -26,7 +26,7 @@
 
     - options = qrc.question_row_columns_question_row_column_options.\
       select{|opt| opt.question_row_column_option_id == 1}.\
-      collect { |opt| [opt.name, opt.id, { 'data-prereq': "prereq-#{ opt.class }-#{ opt.id }" }] }
+      collect { |opt| [opt.name, opt.id, { 'data-prereq': "prereq-#{ opt.class }-#{ opt.id }", prereq: "prereq-#{ qrc.class }-#{ qrc.id }" }] }
     = f.input :name, label: false,
       collection: options,
       input_html: { class: 'select2 form-control' },
