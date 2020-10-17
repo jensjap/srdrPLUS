@@ -25,11 +25,11 @@
 .column.row#project-list
   ul class="tabs" id="project-tabs"
     li class="tabs-title"
-      a href="/projects" aria-selected="#{@project_status.blank? ? 'true' : ' false'}" Drafts
+      = link_to 'Drafts', projects_path(@params.merge(project_status: nil)), 'aria-selected': @project_status.blank? ? 'true' : ' false'
     li class="tabs-title"
-      a href="/projects?project_status=pending" aria-selected="#{@project_status == 'pending' ? 'true' : 'false'}" Publication Requests
+      = link_to 'Publication Requests', projects_path(@params.merge(project_status: 'pending')), 'aria-selected': @project_status == 'pending' ? 'true' : 'false'
     li class="tabs-title"
-      a href="projects?project_status=published" aria-selected="#{@project_status == 'published' ? 'true' : 'false'}" Published
+      = link_to 'Published', projects_path(@params.merge(project_status: 'published')), 'aria-selected': @project_status == 'published' ? 'true' : 'false'
 
 .column.row
   div
