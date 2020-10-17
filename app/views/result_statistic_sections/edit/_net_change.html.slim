@@ -96,4 +96,4 @@
 
 = link_to 'Back', work_extraction_path(@result_statistic_section.extraction,
   params: { eefpst1_id: @result_statistic_section.population.extractions_extraction_forms_projects_sections_type1_id },
-  anchor: "panel-tab-#{ @result_statistic_section.eefps_result.id }")
+  'panel-tab': @result_statistic_section.eefps_result.id)

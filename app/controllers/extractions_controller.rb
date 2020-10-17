@@ -96,7 +96,7 @@ class ExtractionsController < ApplicationController
     respond_to do |format|
       if @extraction.update(extraction_params)
         format.html { redirect_to work_extraction_path(@extraction,
-                                                       anchor: "panel-tab-#{ params[:extraction][:extraction_forms_projects_section_id] }"),
+                                                       'panel-tab': params[:extraction][:extraction_forms_projects_section_id]),
                                                        notice: t('success') }
         format.json { render :show, status: :ok, location: @extraction }
         format.js
@@ -348,5 +348,6 @@ class ExtractionsController < ApplicationController
           }
         ]
       )
+      @panel_tab_id = params['panel-tab'] || @extraction_forms_projects.first.extraction_forms_projects_sections.first.id.to_s
     end
 end

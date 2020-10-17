@@ -12,9 +12,9 @@ class ExtractionsExtractionFormsProjectsSectionsType1sController < ApplicationCo
     add_breadcrumb 'edit project', edit_project_path(@project)
     add_breadcrumb 'extractions',  project_extractions_path(@project)
     add_breadcrumb 'work',         work_extraction_path(@extractions_extraction_forms_projects_sections_type1.extraction,
-                                                        anchor: "panel-tab-#{ @extractions_extraction_forms_projects_sections_type1
+                                                        'panel-tab': @extractions_extraction_forms_projects_sections_type1
                                                           .extractions_extraction_forms_projects_section
-                                                          .extraction_forms_projects_section.id }")
+                                                          .extraction_forms_projects_section.id)
     add_breadcrumb @extractions_extraction_forms_projects_sections_type1.type1.name, edit_extractions_extraction_forms_projects_sections_type1_path
   end
 
@@ -33,9 +33,9 @@ class ExtractionsExtractionFormsProjectsSectionsType1sController < ApplicationCo
     respond_to do |format|
       if @extractions_extraction_forms_projects_sections_type1.update(extractions_extraction_forms_projects_sections_type1_params)
         format.html { redirect_to work_extraction_path(@extractions_extraction_forms_projects_sections_type1.extraction,
-                                                       anchor: "panel-tab-#{ @extractions_extraction_forms_projects_sections_type1
+                                                       'panel-tab': @extractions_extraction_forms_projects_sections_type1
                                                                .extractions_extraction_forms_projects_section
-                                                               .extraction_forms_projects_section.id }"),
+                                                               .extraction_forms_projects_section.id),
                                                        notice: t('success') }
         format.json { head :no_content }
         format.js {}
@@ -58,10 +58,10 @@ class ExtractionsExtractionFormsProjectsSectionsType1sController < ApplicationCo
       format.html { redirect_to work_extraction_path(@extractions_extraction_forms_projects_sections_type1
                                                        .extractions_extraction_forms_projects_section
                                                        .extraction,
-                                                     anchor: "panel-tab-#{ @extractions_extraction_forms_projects_sections_type1
+                                                     'panel-tab': @extractions_extraction_forms_projects_sections_type1
                                                              .extractions_extraction_forms_projects_section
                                                              .extraction_forms_projects_section
-                                                             .id }"),
+                                                             .id),
                                                      notice: t('removed') }
       format.json { head :no_content }
     end

@@ -9,13 +9,14 @@ class ExtractionsExtractionFormsProjectsSectionsController < ApplicationControll
       if @extractions_extraction_forms_projects_section.update(extractions_extraction_forms_projects_section_params)
         format.html do
           if params[:extractions_extraction_forms_projects_section].has_key? :extraction_ids
-            redirect_to consolidate_project_extractions_path(@extractions_extraction_forms_projects_section.project, 
+            redirect_to consolidate_project_extractions_path(@extractions_extraction_forms_projects_section.project,
               extraction_ids: params[:extractions_extraction_forms_projects_section][:extraction_ids],
               anchor: "panel-tab-#{ @extractions_extraction_forms_projects_section.extraction_forms_projects_section.id.to_s }"),
               notice: t('success')
           else
-            redirect_to work_extraction_path(@extractions_extraction_forms_projects_section.extraction,
-              anchor: "panel-tab-#{ @extractions_extraction_forms_projects_section.extraction_forms_projects_section.id.to_s }"),
+            redirect_to work_extraction_path(
+              @extractions_extraction_forms_projects_section.extraction,
+              "panel-tab": @extractions_extraction_forms_projects_section.extraction_forms_projects_section.id.to_s),
               notice: t('success')
           end
         end
@@ -30,9 +31,11 @@ class ExtractionsExtractionFormsProjectsSectionsController < ApplicationControll
         end
       else
         format.html {
-          redirect_to work_extraction_path(@extractions_extraction_forms_projects_section.extraction,
-            anchor: "panel-tab-#{ @extractions_extraction_forms_projects_section.id.to_s }"),
-            alert: t('failure')
+          redirect_to work_extraction_path(
+            @extractions_extraction_forms_projects_section.extraction,
+            "panel-tab": @extractions_extraction_forms_projects_section.extraction_forms_projects_section.id.to_s
+          ),
+          alert: t('failure')
         }
         format.json {
           render json: @extractions_extraction_forms_projects_section.errors, status: :unprocessable_entity
