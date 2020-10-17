@@ -500,11 +500,16 @@ module ConsolidationHelper
                     eefps_t1 = t1_id.present? ? linked_eefps.extractions_extraction_forms_projects_sections_type1s.select{|x| x.type1_id == t1_id.to_i and x.type1_type_id == t1_type_id_i}.first : nil
                     #we want  to change find_or_create_by into  find_by asap
                     eefps_qrcf = eefps.extractions_extraction_forms_projects_sections_question_row_column_fields.select{|x| x.extractions_extraction_forms_projects_sections_type1_id == eefps_t1&.id and x.question_row_column_field_id == qrcf_id.to_i}.first
+                    if eefps_qrcf.blank?
+                      eefps_qrcf = ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField.create(extractions_extraction_forms_projects_section: eefps, extractions_extraction_forms_projects_sections_type1_id: eefps_t1&.id, question_row_column_field_id: qrcf_id.to_i)
+                    end
+
                     if eefps_qrcf.records.blank?
-                      record = Record.create(recordable: eefps_qrcf, name: record_name.dup )
+                      record = Record.create( recordable: eefps_qrcf )
                     else
                       record = eefps_qrcf.records.first
                     end
+
                     if record_name.present? and record.name != record_name
                       record.update( name: record_name.dup )
                     end
