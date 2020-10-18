@@ -1,4 +1,9 @@
 Rails.application.configure do
+  config.after_initialize do
+    Bullet.enable = true
+    Bullet.console = true
+  end
+
   # Store files locally.
   config.active_storage.service = :local
 
@@ -37,7 +42,7 @@ Rails.application.configure do
   config.active_storage.service = :local
 
   # Do care if the mailer can't send.
-  config.action_mailer.raise_delivery_errors = true
+  config.action_mailer.raise_delivery_errors = false
 
   config.action_mailer.perform_caching = false
 

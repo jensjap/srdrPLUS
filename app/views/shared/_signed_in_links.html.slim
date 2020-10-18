@@ -37,6 +37,12 @@ li = link_to('Dashboard', projects_path)
         a#export-modal-button[data-open="export-modal-#{ project.id.to_s }"] = 'Export'
 
       li = link_to t('comparison_tool'),    comparison_tool_project_extractions_path(project),    title: t('.compare_extractions')
+      - if project.publishing.present? && project.publishing.approval.present?
+        li style="cursor: not-allowed;" = link_to 'Publication has been published', '#', title: 'Publication has been published', class: 'disabled'
+      - elsif project.publishing.present?
+        li = link_to 'Cancel publication request', publishing_path(project.publishing.publishable_id), data: { confirm: 'Are you sure?' }, method: :delete, title: 'Cancel publication request'
+      - else
+        li = link_to t('request_publication'), new_publishing_path(type: Project.to_s, id: project.id), title: t('request_publication')
       b Navigation
       li = link_to t('.project_information'), edit_project_path(project) + '#panel-project-information', title: t('.project_information')
       li = link_to t('.key_questions'),       edit_project_path(project) + '#panel-key-questions',       title: t('.key_questions')

@@ -41,7 +41,11 @@
                         tr
                           - if i == 0
                             td.extractor-name = extraction.user.profile.username
-                          td = TpsArmsRssm.find_record_by_extraction(extraction, a, @result_statistic_section, tp, rssm).name
+                          - tar_record = TpsArmsRssm.find_record_by_extraction(extraction, a, @result_statistic_section, tp, rssm)
+                          - if tar_record
+                            td = tar_record.name
+                          - else
+                            td
 
                       tr
                         - if i == 0
@@ -54,7 +58,8 @@
                             = f.button :submit, 'Save'
 
       tr
-        td = simple_form_for @result_statistic_section do |f|
-          = f.association :measures
+        td = link_to '(edit measures)', manage_measures_result_statistic_section_path(rss_id: @result_statistic_section.id, extraction_ids: @extractions.map{|x| x.id}), remote: true
 
-          = f.submit
+.reveal#manage-measures-modal.large data-reveal='' style='min-height: 80vh'
+  button.close-button data-close='' aria-label='Close modal' type='button'
+    span aria-hidden='true' &times;

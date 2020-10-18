@@ -1,10 +1,11 @@
+- section_name = section_name.present? ? section_name : 'Results'
 / Need to ensure that all type1s are matching, including Populations and Timepoints.
 - if @consolidated_extraction.results_section_ready_for_extraction?
-
-  = render 'extractions/consolidate/results/results_section_content',
-    extraction: @consolidated_extraction,
-    efp: efp,
-    section_name: section_name
+  #results-panel
+    = render 'extractions/consolidate/results/results_section_content',
+      extraction: @consolidated_extraction,
+      efp: efp,
+      section_name: section_name
 
 - else
 

@@ -595,3 +595,14 @@ textarea {
   color:    rgb(192, 192, 192) !important;
 }
 
+.row {
+  max-width: max(90%, 1200px);
+}
+
+.grid-container {
+  max-width: unset;
+}
+
+textarea {
+  min-height: 1.5em;
+}

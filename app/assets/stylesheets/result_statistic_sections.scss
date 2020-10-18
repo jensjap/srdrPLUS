@@ -6,6 +6,12 @@
   font-weight: bold;
 }
 
+table.consolidated-data-table {
+  tr {
+    height: 2em;
+  }
+}
+
 form.dirty {
   input, textarea {
     background-color: lightyellow !important;

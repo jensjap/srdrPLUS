@@ -9,4 +9,4 @@
 
 .column.row
   = link_to 'Back', work_extraction_path(@extractions_extraction_forms_projects_sections_type1.extraction,
-    anchor: "panel-tab-#{ @extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_section.extraction_forms_projects_section.id }")
+    'panel-tab': @extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_section.extraction_forms_projects_section.id)

@@ -1,0 +1,50 @@
+- provide(:title, "Project List")
+
+/! Modal for project deletion.
+#modal-project-delete.reveal.large data-reveal=""
+
+/! Row with content header and filter input field.
+.column.row
+  .title-heading
+    h2 My Projects
+    = link_to new_project_path, class: "button secondary create-button" do
+      i.fi-plus>
+      = t(".create")
+
+/! Row for toggler => sort by updated at or created at.
+.row.project-controls
+  .column.medium-8
+    = simple_form_for 'project', url: '/projects', method: :get do |f|
+      = f.input :project_status, as: :hidden, input_html: { value: @project_status }
+      = f.input :q, label: false, input_html: { value: @query }, required: false, placeholder: 'Search'
+  .column.medium-4
+    .toggle-sort-order.show-for-large
+      = link_to 'Updated at', projects_path({ o: 'updated-at' }.merge(@params)), class: "button updated-at #{params[:o].nil? || params[:o] == 'updated-at' ? 'disabled' : ''}"
+      = link_to 'Created at', projects_path({ o: 'created-at' }.merge(@params)), class: "button created-at #{params[:o] == 'created-at' ? 'disabled' : ''}"
+
+.column.row#project-list
+  ul class="tabs" id="project-tabs"
+    li class="tabs-title"
+      = link_to 'Drafts', projects_path(@params.merge(project_status: nil)), 'aria-selected': @project_status.blank? ? 'true' : ' false'
+    li class="tabs-title"
+      = link_to 'Publication Requests', projects_path(@params.merge(project_status: 'pending')), 'aria-selected': @project_status == 'pending' ? 'true' : 'false'
+    li class="tabs-title"
+      = link_to 'Published', projects_path(@params.merge(project_status: 'published')), 'aria-selected': @project_status == 'published' ? 'true' : 'false'
+
+.column.row
+  div
+    - if @project_status.blank?
+      div
+        = render "projects/index/project_list"
+      div
+        = paginate(@projects, params: @params, theme: 'foundation')
+    - elsif @project_status == 'pending'
+      div
+        = render "projects/index/unapproved_publishings"
+      div
+        = paginate(@unapproved_publishings, params: @params, theme: 'foundation')
+    - elsif @project_status == 'published'
+      div
+        = render "projects/index/approved_publishings"
+      div
+        = paginate(@approved_publishings, params: @params, theme: 'foundation')

@@ -1,21 +1,15 @@
 - provide(:title, "#{ action_name } #{ controller_name }".titleize)
 
-.column.row
+#spinner-modal.reveal.large data-reveal='' data-options='closeOnClick:false;closeOnEsc:false;'
+  .spinner.float-left
+  h2 Please wait for page to reload..
 
+#edit-type1-modal.large.reveal data-reveal=''
 
+#preview.work
+  = render 'extractions/shared/extraction_forms_project_tab_links'
 
-
-
-  #spinner-modal.reveal.large data-reveal='' data-options='closeOnClick:false;closeOnEsc:false;'
-    .spinner.float-left
-    h2 Please wait for page to reload..
-
-  #edit-type1-modal.large.reveal data-reveal=''
-
-  #preview.column.row.work
-    = render 'extractions/shared/extraction_forms_project_tab_links'
-
-    = render 'extractions/shared/extraction_forms_project_tab_content'
+  = render 'extractions/shared/extraction_forms_project_tab_content'
 
 = link_to 'Back',
   comparison_tool_project_extractions_path(@project),
