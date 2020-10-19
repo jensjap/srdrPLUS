@@ -652,6 +652,26 @@ td {
   position: relative;
 }
 
-input, textarea, table {
+input, textarea, table, select, [type='text'], [type='password'], [type='date'], [type='datetime'], [type='datetime-local'], [type='month'], [type='week'], [type='email'], [type='number'], [type='search'], [type='tel'], [type='time'], [type='url'], [type='color'] {
   margin: 0;
+}
+
+ul {
+  margin-bottom: 0;
+}
+
+.card-divider {
+  background:rgba($color: #F8F8FF, $alpha: 0.75);
+}
+
+thead {
+  background: rgba($color: #f8f8f8, $alpha: 0.75)
+}
+
+tbody {
+  background: rgba($color: #fefefe, $alpha: 0.75);
+}
+
+tbody tr:nth-child(even) {
+  background: rgba($color: #f1f1f1, $alpha: 0.75);
 }

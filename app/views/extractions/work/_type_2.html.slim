@@ -26,7 +26,7 @@ blockquote
       card so that we can filter it, similar to the prerequisite method
     - kqreq = q.key_questions_projects.map { |kqp| "kqreq-#{ kqp.id }" }.join(' ')
 
-    .card class='#{ prereq } #{ kqreq }'
+    .card class='#{prereq} #{kqreq}' style="background-color: #{color(idx)}"
       .card-divider
         h5 #{ (idx + 1).to_s }. #{ q.name }
         .description style='white-space: pre-wrap;' #{ q.description }
