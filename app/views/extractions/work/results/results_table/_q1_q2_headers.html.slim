@@ -1,16 +1,16 @@
 tr
-  th.vertical
-  th.freeze
-  th colspan="#{ @arms.length }"
+  th.vertical style="width: 200px;"
+  th.freeze style="width: 250px;"
+  th colspan="#{ @arms.length }" style="width: #{@arms.length * 150}px;"
     | Descriptive Statistics
     br
     = link_to '(edit measures)', manage_measures_result_statistic_section_path(rss_id: dsc_rss.id), remote: true
-  th.bg-lightblue.freeze
-  th.bg-lightblue colspan="#{ bac_rss.comparisons.length }"
+  th.bg-lightblue.freeze style="width: 250px;"
+  th.bg-lightblue colspan="#{ bac_rss.comparisons.length }" style="width: #{bac_rss.comparisons.length * 150}px;"
     | Between Arm Comparisons
     br
     = link_to '(edit measures)', manage_measures_result_statistic_section_path(rss_id: bac_rss.id), remote: true
-  th
+  th style="width: 200px;"
     .bac-comparison
       = simple_form_for bac_rss,
         url: add_comparison_result_statistic_section_path(bac_rss),
