@@ -124,10 +124,29 @@ def build_qrc_components_for_question(eefps, eefpst1_id, question)
   qrc_components = []
   question.question_rows.each_with_index do |qr, row_idx|
     qr.question_row_columns.each_with_index do |qrc, col_idx|
-      qrc_components = qrc_components.concat [
-        "[#{ qr.name.present? ? qr.name : '--' }] x [#{ qrc.name.present? ? qrc.name : '--' }]",
-        eefps.eefps_qrfc_values(eefpst1_id, qrc)
-      ]
+
+      if (qr.name.present? && qrc.name.present?)
+        qrc_components = qrc_components.concat [
+          "[#{ qr.name }] x [#{ qrc.name }]",
+          eefps.eefps_qrfc_values(eefpst1_id, qrc)
+        ]
+      elsif (qr.name.present? && qrc.name.blank?)
+        qrc_components = qrc_components.concat [
+          "[#{ qr.name }]",
+          eefps.eefps_qrfc_values(eefpst1_id, qrc)
+        ]
+      elsif (qr.name.blank? && qrc.name.present?)
+        qrc_components = qrc_components.concat [
+          "[#{ qrc.name }]",
+          eefps.eefps_qrfc_values(eefpst1_id, qrc)
+        ]
+      else
+        qrc_components = qrc_components.concat [
+          "",
+          eefps.eefps_qrfc_values(eefpst1_id, qrc)
+        ]
+      end
+
     end  # END qr.question_row_columns.each_with_index do |qrc, col_idx|
   end  # END question.question_rows.each_with_index do |qr, row_idx|
 
@@ -153,7 +172,7 @@ def set_qrc_column_header(header_row, i)
     header_row[i].value
   rescue Exception => e
     if i.even?
-      header_row.add_cell 'Cell Descriptor\r\n[row name] x [col name]'
+      header_row.add_cell 'Cell Descriptor'
     else
       header_row.add_cell 'Value'
     end  # END if i.even?
