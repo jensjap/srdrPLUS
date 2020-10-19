@@ -314,7 +314,7 @@ pre.debug_dump {
 
   td, th {
     border-radius: 2px;
-    min-width: 8em;
+    min-width: 11em;
     border: 1px solid grey;
   }
 
@@ -605,4 +605,48 @@ textarea {
 
 textarea {
   min-height: 1.5em;
+}
+
+.card-divider, .card-section {
+  padding: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+}
+
+label {
+  font-size: 1rem;
+  line-height: normal;
+}
+
+label > [type='checkbox'], label > [type='radio'] {
+  margin-bottom: 0;
+}
+
+div.checkbox, div.radio {
+  margin-bottom: 4px;
+}
+
+.question-row-column {
+  vertical-align: top;
+}
+
+thead th {
+  text-align: center;
+  font-size: 18px;
+}
+
+tr td:first-child {
+  text-align: center;
+  font-size: 18px;
+  width: 11em;
+}
+
+.overlay-parent {
+  position: relative;
+}
+
+input, textarea, table {
+  margin: 0;
 }

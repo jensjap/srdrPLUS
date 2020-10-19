@@ -41,8 +41,8 @@ blockquote
               - if efps.extraction_forms_projects_section_option.by_type1
                 - if efps.extraction_forms_projects_section_option.include_total
                   - linked_section.eefpst1s_with_total.map(&:type1).each do |t1|
-                    fieldset.fieldset
-                      legend style="font-weight: bold;" data-allow-html="true" data-tooltip="" title='#{linked_section.extraction_forms_projects_section.section.name.singularize + ": " + t1.name + "<br>" + "Description: " + t1.description}'
+                    div
+                      h5 style="font-weight: bold;" data-allow-html="true" data-tooltip="" title='#{linked_section.extraction_forms_projects_section.section.name.singularize + ": " + t1.name + "<br>" + "Description: " + t1.description}'
                         = t1.name
                       = render 'extractions/shared/type_2/question_fields',
                         q: q,
@@ -53,8 +53,8 @@ blockquote
                 / by_type1 && !include_total
                 - else
                   - linked_section.eefpst1s_without_total.map(&:type1).uniq.each do |t1|
-                    fieldset.fieldset
-                      legend style="font-weight: bold;" data-allow-html="true" data-tooltip="" title='#{linked_section.extraction_forms_projects_section.section.name.singularize + ": " + t1.name + "<br>" + "Description: " + t1.description}'
+                    div
+                      h5 style="font-weight: bold;" data-allow-html="true" data-tooltip="" title='#{linked_section.extraction_forms_projects_section.section.name.singularize + ": " + t1.name + "<br>" + "Description: " + t1.description}'
                         = t1.name
                       = render 'extractions/shared/type_2/question_fields',
                         q: q,
@@ -66,8 +66,8 @@ blockquote
               - else
                 - if efps.extraction_forms_projects_section_option.include_total
                   - linked_section.eefpst1s_only_total.map(&:type1).each do |t1|
-                    fieldset.fieldset
-                      legend style="font-weight: bold;" data-allow-html="true" data-tooltip="" title='#{linked_section.extraction_forms_projects_section.section.name.singularize + ": " + t1.name + "<br>" + "Description: " + t1.description}'
+                    div
+                      h5 style="font-weight: bold;" data-allow-html="true" data-tooltip="" title='#{linked_section.extraction_forms_projects_section.section.name.singularize + ": " + t1.name + "<br>" + "Description: " + t1.description}'
                         = t1.name
                       = render 'extractions/shared/type_2/question_fields',
                         q: q,
@@ -77,8 +77,8 @@ blockquote
 
                 / !by_type1 && !include_total
                 - else
-                  fieldset.fieldset
-                    legend
+                  div
+                    div
                     = render 'extractions/shared/type_2/question_fields',
                       q: q,
                       t1: nil,
@@ -88,124 +88,10 @@ blockquote
             / Not linked
             - else
               / !by_type1 && !include_total
-              fieldset.fieldset
-                legend
+              div
+                div
                 = render 'extractions/shared/type_2/question_fields',
                   q: q,
                   t1: nil,
                   eefps: eefps,
                   display_only: false
-
-
-
-
-
-
-
-/            - if linked_section && (eefps.extraction_forms_projects_section.extraction_forms_projects_section_option.by_type1\
-              || eefps.extraction_forms_projects_section.section.name.eql?("Sample Characteristics"))
-              / Sample Characteristics may display with total arm.
-              - if eefps.extraction_forms_projects_section.section.name.eql?("Sample Characteristics")
-                - if eefps.extraction_forms_projects_section.extraction_forms_projects_section_option.include_total
-                  - linked_section.type1s_with_total_arm.each do |t1|
-                    fieldset.fieldset
-                      legend
-                        = linked_section.extraction_forms_projects_section.section.name.singularize + ': ' + t1.name
-                        br
-                        = 'Description: ' + t1.description
-                      = render 'extractions/shared/type_2/question_fields',
-                        q: q,
-                        t1: t1,
-                        eefps: eefps,
-                        display_only: false
-                - else
-                  - linked_section.type1s.where.not(name: 'Total', description: 'All interventions combined').each do |t1|
-                    fieldset.fieldset
-                      legend
-                        = linked_section.extraction_forms_projects_section.section.name.singularize + ': ' + t1.name
-                        br
-                        = 'Description: ' + t1.description
-                      = render 'extractions/shared/type_2/question_fields',
-                        q: q,
-                        t1: t1,
-                        eefps: eefps,
-                        display_only: false
-              - else
-                - linked_section.type1s.where.not(name: 'Total', description: 'All interventions combined').each do |t1|
-                  fieldset.fieldset
-                    legend
-                      = linked_section.extraction_forms_projects_section.section.name.singularize + ': ' + t1.name
-                      br
-                      = 'Description: ' + t1.description
-                    = render 'extractions/shared/type_2/question_fields',
-                      q: q,
-                      t1: t1,
-                      eefps: eefps,
-                      display_only: false
-            - else
-              - if eefps.extraction_forms_projects_section.extraction_forms_projects_section_option.include_total
-                - linked_section.type1s_with_total_arm.each do |t1|
-                  fieldset.fieldset
-                    legend
-                      = linked_section.extraction_forms_projects_section.section.name.singularize + ': ' + t1.name
-                      br
-                      = 'Description: ' + t1.description
-                    = render 'extractions/shared/type_2/question_fields',
-                      q: q,
-                      t1: t1,
-                      eefps: eefps,
-                      display_only: false
-              - else
-                fieldset.fieldset
-                  legend
-                    = render 'extractions/shared/type_2/question_fields',
-                      q: q,
-                      t1: nil,
-                      eefps: eefps,
-                      display_only: false
-
-
-
-/  h5 = section_name
-  blockquote
-    | Please answer the questions to the best of your ability. If you require clarification, please consult the project lead.
-    cite Friendly Helper
-  - efps.questions.each_with_index do |q, idx|
-    / Questions that have prerequisites get classes of the form 'prereq-<type>-<id>' which are disabled while these classes are present.
-      Listeners are attached on form fields which trigger on change and remove class from any element that has the 'prereq-<type>-<id>'.
-      Once all 'prereq-<type>-<id>' classes are removed the question is enabled.
-    - prereq = q.dependencies.collect { |d| d.prerequisitable_type + '-' + d.prerequisitable_id.to_s }.collect { |h| "prereq-#{h}" }.join(' ')
-    / Questions are only visible when the key question for which the question was designed is selected. We therefore assign classes to the
-      card so that we can filter it, similar to the prerequisite method
-    - kqreq = q.key_questions_projects.collect { |kqp| "kqreq-#{ kqp.id }" }.join(' ')
-    .card class='#{ prereq } #{ kqreq }'
-      .card-divider
-        h5 #{ (idx + 1).to_s }. #{ q.name }
-        .description style='white-space: pre-wrap;' #{ q.description }
-      .card-section
-        .table-scroll
-          #step-two
-            - if linked_section
-              - linked_section.type1s.each do |t1|
-                fieldset.fieldset
-                  legend
-                    = linked_section.extraction_forms_projects_section.section.name.singularize + ': ' + t1.name
-                    br
-                    = 'Description: ' + t1.description
-                  = render 'extractions/work/question_fields',
-                    q: q,
-                    t1: t1,
-                    section_name: section_name,
-                    efp: efp,
-                    efps: efps,
-                    eefps: eefps
-            - else
-              fieldset.fieldset
-                legend
-                = render 'extractions/work/question_fields',
-                  q: q,
-                  t1: nil,
-                  section_name: section_name,
-                  efp: efp,
-                  efps: efps,
-                  eefps: eefps
