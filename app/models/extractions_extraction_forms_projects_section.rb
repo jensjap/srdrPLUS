@@ -90,27 +90,36 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
           end
         end
       end
-      return text_arr.join(', ').chop
+      return text_arr.join(', ')
 
     when 6, 7, 8  # Dropdown, Radio, Select2_single.
       text = ''
+      text_arr = []
       Record.where(recordable: recordables).pluck(:name).each do |opt_id|
         # opt_id can be nil here for questions that have not been answered.
         # Protect by casting to zero and check.
         text += qrc.question_row_columns_question_row_column_options.find(opt_id.to_i).name + "\r" unless opt_id.to_i.zero?
+        text_arr << qrc.question_row_columns_question_row_column_options.find(opt_id.to_i).name unless opt_id.to_i.zero?
       end
-      return text.chop
+      #return text.strip
+      return text_arr.join(', ')
+
     when 9  # Select2_multi.
       text = ''
+      text_arr = []
       ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnFieldsQuestionRowColumnsQuestionRowColumnOption.includes(:question_row_columns_question_row_column_option).where(extractions_extraction_forms_projects_sections_question_row_column_field: recordables).each do |eefpsqrcfqrcqrco|
         opt_id = eefpsqrcfqrcqrco.question_row_columns_question_row_column_option.name
         # opt_id can be nil here for questions that have not been answered.
         # Protect by casting to zero and check.
         text += qrc.question_row_columns_question_row_column_options.find(opt_id.to_i).name + "\r" unless opt_id.to_i.zero?
+        text_arr << qrc.question_row_columns_question_row_column_options.find(opt_id.to_i).name unless opt_id.to_i.zero?
       end
-      return text.chop
+      #return text.strip
+      return text_arr.join(', ')
+
     else
-      return Record.where(recordable: recordables).pluck(:name).join('\r').chop
+      return Record.where(recordable: recordables).pluck(:name).compact.join(', ')
+
     end
   end
 
