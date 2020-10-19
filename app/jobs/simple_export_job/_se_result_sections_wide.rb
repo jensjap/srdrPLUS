@@ -90,10 +90,11 @@ def build_result_sections_wide(p, project, highlight, wrap)
                                 outcome_id: eefpst1_outcome.type1.id,
                                 outcome_name: eefpst1_outcome.type1.name,
                                 outcome_description: eefpst1_outcome.type1.description,
+                                outcome_type: eefpst1_outcome.type1_type.name,
                                 population_id: eefpst1r.population_name.id,
                                 population_name: eefpst1r.population_name.name,
                                 population_description: eefpst1r.population_name.description,
-                                result_statistic_section_id: result_statistic_section.result_statistic_section_type.id,
+                                result_statistic_section_type_id: result_statistic_section.result_statistic_section_type.id,
                                 result_statistic_section_type_name: result_statistic_section.result_statistic_section_type.name,
                                 row_id: eefpst1rc.timepoint_name.id,             # timepoint_id       Note: Changing this to row and col so we
                                 row_name: eefpst1rc.timepoint_name.name,         # timepoint_name            can use the same names later.
@@ -121,10 +122,11 @@ def build_result_sections_wide(p, project, highlight, wrap)
                               outcome_id: eefpst1_outcome.type1.id,
                               outcome_name: eefpst1_outcome.type1.name,
                               outcome_description: eefpst1_outcome.type1.description,
+                              outcome_type: eefpst1_outcome.type1_type.name,
                               population_id: eefpst1r.population_name.id,
                               population_name: eefpst1r.population_name.name,
                               population_description: eefpst1r.population_name.description,
-                              result_statistic_section_id: result_statistic_section.result_statistic_section_type.id,
+                              result_statistic_section_type_id: result_statistic_section.result_statistic_section_type.id,
                               result_statistic_section_type_name: result_statistic_section.result_statistic_section_type.name,
                               row_id: eefpst1rc.timepoint_name.id,     # timepoint_id
                               row_name: eefpst1rc.timepoint_name.name, # timepoint_name
@@ -150,10 +152,11 @@ def build_result_sections_wide(p, project, highlight, wrap)
                                 outcome_id: eefpst1_outcome.type1.id,
                                 outcome_name: eefpst1_outcome.type1.name,
                                 outcome_description: eefpst1_outcome.type1.description,
+                                outcome_type: eefpst1_outcome.type1_type.name,
                                 population_id: eefpst1r.population_name.id,
                                 population_name: eefpst1r.population_name.name,
                                 population_description: eefpst1r.population_name.description,
-                                result_statistic_section_id: result_statistic_section.result_statistic_section_type.id,
+                                result_statistic_section_type_id: result_statistic_section.result_statistic_section_type.id,
                                 result_statistic_section_type_name: result_statistic_section.result_statistic_section_type.name,
                                 row_id: wac.id,                                 # wac_id
                                 col_id: eefpst1_arm.type1.id,                   # arm_id
@@ -181,10 +184,11 @@ def build_result_sections_wide(p, project, highlight, wrap)
                               outcome_id: eefpst1_outcome.type1.id,
                               outcome_name: eefpst1_outcome.type1.name,
                               outcome_description: eefpst1_outcome.type1.description,
+                              outcome_type: eefpst1_outcome.type1_type.name,
                               population_id: eefpst1r.population_name.id,
                               population_name: eefpst1r.population_name.name,
                               population_description: eefpst1r.population_name.description,
-                              result_statistic_section_id: result_statistic_section.result_statistic_section_type.id,
+                              result_statistic_section_type_id: result_statistic_section.result_statistic_section_type.id,
                               result_statistic_section_type_name: result_statistic_section.result_statistic_section_type.name,
                               row_id: wac.id, # wac_id
                               col_id: bac.id, # bac_id
@@ -211,7 +215,7 @@ def build_result_sections_wide(p, project, highlight, wrap)
             # Try to find the column that matches the identifier.
             found, column_idx = nil
             found, column_idx = _find_column_idx_with_value(header_row,
-              "[Outcome ID: #{ rssm[:outcome_id] }][Population ID: #{ rssm[:population_id] }][RSS Type ID: #{ rssm[:result_statistic_section_id] }][Row ID: #{ rssm[:row_id] }][Col ID: #{ rssm[:col_id] }][Measure ID: #{ rssm[:measure_id] }]")
+              "[Outcome ID: #{ rssm[:outcome_id] }][Population ID: #{ rssm[:population_id] }][RSS Type ID: #{ rssm[:result_statistic_section_type_id] }][Row ID: #{ rssm[:row_id] }][Col ID: #{ rssm[:col_id] }][Measure ID: #{ rssm[:measure_id] }]")
 
             # Append to the header if this is new.
             unless found
@@ -237,7 +241,7 @@ def build_result_sections_wide(p, project, highlight, wrap)
 #              comment  = '.'
 #              comment += "\rDescription: \"#{ qrc[:question_description] }\"" if qrc[:question_description].present?
 #              comment += "\rAnswer choices: #{ qrc[:question_row_column_options] }" if qrc[:question_row_column_options].first.present?
-              new_cell = header_row.add_cell "#{ title }\r[Outcome ID: #{ rssm[:outcome_id] }][Population ID: #{ rssm[:population_id] }][RSS Type ID: #{ rssm[:result_statistic_section_id] }][Row ID: #{ rssm[:row_id] }][Col ID: #{ rssm[:col_id] }][Measure ID: #{ rssm[:measure_id] }]"
+              new_cell = header_row.add_cell "#{ title }\r[Outcome ID: #{ rssm[:outcome_id] }][Population ID: #{ rssm[:population_id] }][RSS Type ID: #{ rssm[:result_statistic_section_type_id] }][Row ID: #{ rssm[:row_id] }][Col ID: #{ rssm[:col_id] }][Measure ID: #{ rssm[:measure_id] }]"
 #              sheet.add_comment ref: new_cell, author: 'Export AI', text: comment, visible: false if (qrc[:question_description].present? || qrc[:question_row_column_options].first.present?)
             end  # unless found
           end  # sheet_info.rssms.each do |rssm|
@@ -257,11 +261,11 @@ def build_result_sections_wide(p, project, highlight, wrap)
               # Try to find the column that matches the identifier.
               found, column_idx = nil
               found, column_idx = _find_column_idx_with_value(header_row,
-                "[Outcome ID: #{ rssm[:outcome_id] }][Population ID: #{ rssm[:population_id] }][RSS Type ID: #{ rssm[:result_statistic_section_id] }][Row ID: #{ rssm[:row_id] }][Col ID: #{ rssm[:col_id] }][Measure ID: #{ rssm[:measure_id] }]")
+                "[Outcome ID: #{ rssm[:outcome_id] }][Population ID: #{ rssm[:population_id] }][RSS Type ID: #{ rssm[:result_statistic_section_type_id] }][Row ID: #{ rssm[:row_id] }][Col ID: #{ rssm[:col_id] }][Measure ID: #{ rssm[:measure_id] }]")
 
               # Something is wrong if it wasn't found.
               unless found
-                raise RuntimeError, "Error: Could not find header row: [Outcome ID: #{ rssm[:outcome_id] }][Population ID: #{ rssm[:population_id] }][RSS Type ID: #{ rssm[:result_statistic_section_id] }][Row ID: #{ rssm[:row_id] }][Col ID: #{ rssm[:col_id] }][Measure ID: #{ rssm[:measure_id] }]"
+                raise RuntimeError, "Error: Could not find header row: [Outcome ID: #{ rssm[:outcome_id] }][Population ID: #{ rssm[:population_id] }][RSS Type ID: #{ rssm[:result_statistic_section_type_id] }][Row ID: #{ rssm[:row_id] }][Col ID: #{ rssm[:col_id] }][Measure ID: #{ rssm[:measure_id] }]"
               end
 
               new_row[column_idx] = rssm[:rssm_values]
