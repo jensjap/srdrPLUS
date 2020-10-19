@@ -41,6 +41,10 @@ class ExtractionFormsProject < ApplicationRecord
   #    .distinct
   #}
 
+  scope :standard_types, -> { where(extraction_forms_project_type: ExtractionFormsProjectType.find_by_name(ExtractionFormsProjectType::STANDARD)) }
+  scope :diagnostic_test_types, -> { where(extraction_forms_project_type: ExtractionFormsProjectType.find_by_name(ExtractionFormsProjectType::DIAGNOSTIC_TEST)) }
+  scope :mini_extraction_types, -> { where(extraction_forms_project_type: ExtractionFormsProjectType.find_by_name(ExtractionFormsProjectType::MINI_EXTRACTION)) }
+
   after_create :create_default_sections, unless: :create_empty
   after_create :create_default_arms, unless: :create_empty
 

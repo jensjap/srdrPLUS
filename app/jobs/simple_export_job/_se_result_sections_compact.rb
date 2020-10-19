@@ -66,9 +66,7 @@ def build_result_sections_compact(p, project, highlight, wrap)
           #
           # To uniquely identify a data value we therefore need:
           # OutcomeID, PopulationID, RowID, ColumnID, MeasureID
-
           eefps_outcomes.each do |eefps_outcome|
-
             eefps_outcome.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1_outcome|  # Outcome.
               eefpst1_outcome.extractions_extraction_forms_projects_sections_type1_rows.each do |eefpst1r|  # Population
                 eefpst1r.result_statistic_sections.each do |result_statistic_section|  # Result Statistic Section Quadrant

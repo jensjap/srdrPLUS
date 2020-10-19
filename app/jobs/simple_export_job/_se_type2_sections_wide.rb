@@ -1,11 +1,14 @@
 require 'simple_export_job/sheet_info'
 
+
+
+
 def build_type2_sections_wide(p, project, highlight, wrap, kq_ids=[])
   # Type2 (Questions) are associated to Key Questions and we export by the KQ's selected.
   # If no KQ's array is passed in, we assume to export all.
   kq_ids = project.key_questions.pluck(:id) if kq_ids.blank?
 
-  project.extraction_forms_projects.each do |efp|
+  project.extraction_forms_projects.standard_types.each do |efp|
     efp.extraction_forms_projects_sections.each do |efps|
 
       # If this is a type2 section then we proceed.
@@ -44,7 +47,7 @@ def build_type2_sections_wide(p, project, highlight, wrap, kq_ids=[])
             # type1 via eefps.link_to_type1.extractions_extraction_forms_projects_sections_type1s.
             # Otherwise we proceed with eefpst1s set to a custom Struct that responds
             # to :id, type1: :id.
-            eefpst1s = (eefps.extraction_forms_projects_section.extraction_forms_projects_section_option.by_type1 and eefps.link_to_type1.present?) ? 
+            eefpst1s = (eefps.extraction_forms_projects_section.extraction_forms_projects_section_option.by_type1 and eefps.link_to_type1.present?) ?
               eefps.link_to_type1.extractions_extraction_forms_projects_sections_type1s :
               [Struct.new(:id, :type1).new(nil, Struct.new(:id).new(nil))]
 

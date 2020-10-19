@@ -4,7 +4,11 @@ COL_CNT_WITHOUT_LINK_TO_TYPE1 = 8
 COL_CNT_WITH_LINK_TO_TYPE1    = 10
 
 def build_type2_sections_compact(p, project, highlight, wrap, kq_ids=[])
-  project.extraction_forms_projects.each do |efp|
+
+
+
+
+  project.extraction_forms_projects.standard_types.each do |efp|
     efp.extraction_forms_projects_sections.each do |efps|
 
       # If this is a type2 section then we proceed.
@@ -30,7 +34,7 @@ def build_type2_sections_compact(p, project, highlight, wrap, kq_ids=[])
           end
 
           # Add question text and instruction column headers to header_elements.
-          header_elements.concat ['Question Text', 'Instructions']
+          header_elements.concat ['Question Text']
 
           # Instantiate proper header Axlsx::Row element.
           header_row = sheet.add_row header_elements
@@ -58,8 +62,7 @@ def build_type2_sections_compact(p, project, highlight, wrap, kq_ids=[])
                     extraction.citation.pmid,
                     eefpst1.type1.name,
                     eefpst1.type1.description,
-                    question.name,
-                    question.description
+                    question.name
                   ]
                   new_row = new_row.concat(build_qrc_components_for_question(eefps, eefpst1.id, question))
                   sheet.add_row new_row
@@ -80,8 +83,7 @@ def build_type2_sections_compact(p, project, highlight, wrap, kq_ids=[])
                   extraction.citation.name,
                   extraction.citation.refman,
                   extraction.citation.pmid,
-                  question.name,
-                  question.description
+                  question.name
                 ]
                 new_row = new_row.concat(build_qrc_components_for_question(eefps, eefpst1, question))
                 sheet.add_row new_row
@@ -101,6 +103,8 @@ def build_type2_sections_compact(p, project, highlight, wrap, kq_ids=[])
   end  # END project.extraction_forms_projects.each do |efp|
 end
 
+# Type2 (Questions) are associated to Key Questions and we export by the KQ's selected.
+# If no KQ's array is passed in, we assume to export all.
 def fetch_questions(project, kq_ids, efps)
   # Get all questions in this efps by key_questions requested.
   if kq_ids.present?
