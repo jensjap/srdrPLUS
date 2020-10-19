@@ -1,6 +1,12 @@
 - section_name = section_name.singularize
-
-h5 Add New #{ section_name }
+.row
+  .column.small-6.medium-5.large-2
+    h5 Add New #{ section_name }
+  .column.small-6.medium-7.large-10
+    = render 'extractions/shared/type_1/type_1_example_list',
+    extraction: @extraction,
+    section_name: section_name,
+    eefps: eefps
 
 = simple_form_for(eefps, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
   .alert.callout data-abide-error='' style='display: none;'
@@ -9,7 +15,7 @@ h5 Add New #{ section_name }
       ' Please correct the errors below.
 
   / We need to know whether this are sending this from a work or consolidate action for eefps/update.js to load the correct partials.
-  - if @extractions.present? 
+  - if @extractions.present?
     = f.hidden_field :action, value: :consolidate
     = f.hidden_field :extraction_ids, value: @extractions.map{|x| x.id}
   - else
@@ -89,10 +95,5 @@ h5 Add New #{ section_name }
           label_method: :select_label
 
   .grid-x
-    .cell.shrink style='margin-right: 0.5rem;'
-      = render 'extractions/shared/type_1/type_1_example_list',
-        extraction: @extraction,
-        section_name: section_name,
-        eefps: eefps
-    .cell.auto.form-actions
+    .cell.auto.form-actions style="margin-top: 1rem;"
       = f.button :submit, 'Save'

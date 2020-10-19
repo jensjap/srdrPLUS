@@ -14,15 +14,15 @@
       col style="width:45%"
       col style="width:45%"
       col style="width:10%"
-    thead
+    thead style="background: initial; border: none;"
       tr
         - if section_name == 'Outcomes'
-          th Type
-        th = section_name.eql?('Outcomes') ? 'Domain' : "#{section_name.singularize} Name"
-        th = section_name.eql?('Outcomes') ? 'Specific Measurement' : "#{section_name.singularize} Description"
+          th style="border: none;" Type
+        th style="border: none;" = section_name.eql?('Outcomes') ? 'Domain' : "#{section_name.singularize} Name"
+        th style="border: none;" = section_name.eql?('Outcomes') ? 'Specific Measurement' : "#{section_name.singularize} Description"
         - if section_name == 'Outcomes'
-          th Populations
-          th Timepoints
+          th style="border: none;" Populations
+          th style="border: none;" Timepoints
 
     tbody.orderable-list force-reload="true" orderable-url="#{ update_positions_api_v1_orderings_url }"
       - eefps.eefpst1s_without_total.each do |eefpst1|
@@ -46,7 +46,7 @@
                 - eefpst1.extractions_extraction_forms_projects_sections_type1_rows.first.extractions_extraction_forms_projects_sections_type1_row_columns.each do |tp|
                   li = tp.timepoint_name.name + (tp.timepoint_name.unit.present? ? " (#{ tp.timepoint_name.unit })" : '')
 
-          td 
+          td
             div = link_to edit_extractions_extraction_forms_projects_sections_type1_path(eefpst1) do
               i.fi-pencil>
               | Edit

@@ -648,6 +648,13 @@ td {
   width: 11em;
 }
 
+table.unstriped tbody tr td:first-child {
+  text-align: center;
+  vertical-align: middle;
+  font-size: 18px;
+  width: 11em;
+}
+
 .overlay-parent {
   position: relative;
 }
@@ -674,4 +681,12 @@ tbody {
 
 tbody tr:nth-child(even) {
   background: rgba($color: #f1f1f1, $alpha: 0.75);
+}
+
+.button {
+  margin: 0rem;
+}
+
+.table-fixed-headers td {
+  position: relative;
 }
