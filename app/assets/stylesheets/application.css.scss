@@ -637,8 +637,13 @@ thead th {
   font-size: 18px;
 }
 
-tr td:first-child {
+td {
+  vertical-align: top;
+}
+
+.clean-table table tr td:first-child {
   text-align: center;
+  vertical-align: middle;
   font-size: 18px;
   width: 11em;
 }
