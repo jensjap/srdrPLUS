@@ -12,7 +12,7 @@
     - else
       tr class="#{tr_group_class}"
         - dsc_rssm = dsc_rss.result_statistic_sections_measures.left_outer_joins(measure: :result_statistic_section_types_measures).reorder('result_statistic_section_types_measures.id asc').distinct
-        td.freeze = dsc_rssm[row_cnt].try(:measure).try(:name)
+        td.freeze style="z-index: 1000;" = dsc_rssm[row_cnt].try(:measure).try(:name)
         - @arms.sort_by { |eefpst1| eefpst1.ordering.position }.each do |arm|
           - if dsc_rssm[row_cnt].try(:measure).try(:name)
             td
