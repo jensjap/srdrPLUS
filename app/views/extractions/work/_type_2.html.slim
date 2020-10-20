@@ -26,7 +26,7 @@ blockquote
       card so that we can filter it, similar to the prerequisite method
     - kqreq = q.key_questions_projects.map { |kqp| "kqreq-#{ kqp.id }" }.join(' ')
 
-    .card class='#{prereq} #{kqreq}' style="background-color: #{color(idx)}"
+    .card class='#{prereq} #{kqreq}' style="box-shadow: 6px 8px 12px 2px #bbbbbb;"
       .card-divider
         h5 #{ (idx + 1).to_s }. #{ q.name }
         .description style='white-space: pre-wrap;' #{ q.description }
@@ -40,8 +40,8 @@ blockquote
               / by_type1 && include_total
               - if efps.extraction_forms_projects_section_option.by_type1
                 - if efps.extraction_forms_projects_section_option.include_total
-                  - linked_section.eefpst1s_with_total.map(&:type1).each do |t1|
-                    div
+                  - linked_section.eefpst1s_with_total.map(&:type1).each_with_index do |t1, idx|
+                    div style="background: #{t1.name == 'Total' ? 'LightSalmon' : color(idx)}"
                       h5 style="font-weight: bold;" data-allow-html="true" data-tooltip="" title='#{linked_section.extraction_forms_projects_section.section.name.singularize + ": " + t1.name + "<br>" + "Description: " + t1.description}'
                         = t1.name
                       = render 'extractions/shared/type_2/question_fields',
@@ -52,8 +52,8 @@ blockquote
 
                 / by_type1 && !include_total
                 - else
-                  - linked_section.eefpst1s_without_total.map(&:type1).uniq.each do |t1|
-                    div
+                  - linked_section.eefpst1s_without_total.map(&:type1).uniq.each_with_index do |t1, idx|
+                    div style="background: #{color(idx)}"
                       h5 style="font-weight: bold;" data-allow-html="true" data-tooltip="" title='#{linked_section.extraction_forms_projects_section.section.name.singularize + ": " + t1.name + "<br>" + "Description: " + t1.description}'
                         = t1.name
                       = render 'extractions/shared/type_2/question_fields',
@@ -65,8 +65,8 @@ blockquote
               / !by_type1 && include_total
               - else
                 - if efps.extraction_forms_projects_section_option.include_total
-                  - linked_section.eefpst1s_only_total.map(&:type1).each do |t1|
-                    div
+                  - linked_section.eefpst1s_only_total.map(&:type1).each_with_index do |t1, idx|
+                    div style="background: #{t1.name == 'Total' ? 'LightSalmon' : color(idx)}"
                       h5 style="font-weight: bold;" data-allow-html="true" data-tooltip="" title='#{linked_section.extraction_forms_projects_section.section.name.singularize + ": " + t1.name + "<br>" + "Description: " + t1.description}'
                         = t1.name
                       = render 'extractions/shared/type_2/question_fields',
