@@ -12,12 +12,12 @@
             .SRDR-is-a-free-pow SRDR+ is a free, powerful, easy to use tool for data extraction, management, and archival during systematic reviews.
           .cell.medium-5 style="background-color: white; border-radius: 3px; box-shadow: 0 20px 40px 0 rgba(0, 0, 0, 0.15); padding: 0px;"
             ul.tabs#login-box[data-tabs data-match-height='true']
-              li.tabs-title style='width: 50%'
-                a href='#existing-user-panel' Login
               li.tabs-title.is-active style='width: 50%'
+                a href='#existing-user-panel' Login
+              li.tabs-title style='width: 50%'
                 a href='#new-user-panel' Register
             .tabs-content data-tabs-content='login-box'
-              .tabs-panel#existing-user-panel.align-middle style='padding: 33px;'
+              .tabs-panel.is-active#existing-user-panel.align-middle style='padding: 33px;'
                 .Get-started-now
                   span.text-style-1 Already have an account?
                 = simple_form_for(:user, namespace: 'login', url: new_user_session_path, html: { data: { 'abide': '' } }) do |f|
@@ -34,7 +34,7 @@
                   .form-actions
                     = f.button :submit, "Sign In", class: "sign-in-button"
 
-              .tabs-panel.is-active#new-user-panel style='padding: 33px;'
+              .tabs-panel#new-user-panel style='padding: 33px;'
                 .Get-started-now
                   span.text-style-1 Get started now.
                 = simple_form_for(User.new, as: :user, url: registration_path(:user), html: { data: { 'abide': '' } }) do |f|
