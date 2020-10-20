@@ -1,9 +1,7 @@
-a.accordion-title href="#"
+a.accordion-title href="#" style="padding: 0.5rem;"
   div
     = project.name
-  div
-    / This dynamically switches between created_at and updated_at.
-    small = "#{ @order.split("-").first } " + t("time_prefix") + time_ago_in_words(project.send(@order.underscore).in_time_zone(current_user.profile.time_zone)) + t("ago")
+    small = " (#{ @order.split("-").first } " + t("time_prefix") + time_ago_in_words(project.send(@order.underscore).in_time_zone(current_user.profile.time_zone)) + t("ago") + ')  '
 
 .accordion-content.grid-container data-tab-content=""
   .grid-y

@@ -2,15 +2,17 @@
   <% @statusing.errors.full_messages.each do |msg| %>
     toastr.error('<%= msg[1] %>', '<%= msg[0] %>');
   <% end %>
-<% end %> 
+<% end %>
 
 <% if @statusing.status.name == 'Draft' %>
   $('.status-switch[statusing-id="<%=@statusing.id.to_s%>"]').removeClass('waiting completed');
   $('.status-switch[statusing-id="<%=@statusing.id.to_s%>"]').addClass('draft');
+  $('#eefpst1-<%= @statusing.statusable.id %>').removeClass('outcome-completed')
 <% elsif @statusing.status.name == 'Completed' %>
   $('.status-switch[statusing-id="<%=@statusing.id.to_s%>"]').removeClass('waiting draft');
   $('.status-switch[statusing-id="<%=@statusing.id.to_s%>"]').addClass('completed');
-<% end %> 
+  $('#eefpst1-<%= @statusing.statusable.id %>').addClass('outcome-completed')
+<% end %>
 
 $('.status-switch[statusing-id="<%=@statusing.id.to_s%>"] span.status-label').html( "<%= @statusing.status.name %>")
 
