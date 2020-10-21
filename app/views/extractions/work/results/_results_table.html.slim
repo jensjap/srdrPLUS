@@ -11,7 +11,7 @@
         @extraction.id,
         eefpst1r.extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_section.extraction_forms_projects_section.extraction_forms_project.id).reject { |efpst1| efpst1.type1 == Type1.find_by(name: 'Total', description: "All Arms combined") }
 
-    .table-fixed-headers
+    .table-fixed-headers.results-table
       table.unstriped style='overflow: scroll; table-layout: fixed;'
         caption = eefpst1r.population_name.name
         thead
