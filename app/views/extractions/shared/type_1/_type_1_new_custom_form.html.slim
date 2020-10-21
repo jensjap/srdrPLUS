@@ -8,7 +8,9 @@
     section_name: section_name,
     eefps: eefps
 
-= simple_form_for(eefps, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
+= simple_form_for(eefps, remote: true, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
+  - if section_name == 'Outcome'
+    = f.hidden_field :update_type, value: :work
   .alert.callout data-abide-error='' style='display: none;'
     p
       i.fi-alert>
