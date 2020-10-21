@@ -24,7 +24,7 @@
                 - record = ComparisonsArmsRssm.find_record(comparison=wac, extractions_extraction_forms_projects_sections_type1=arm, result_statistic_sections_measure=wac_rssm[row_cnt])
                 = simple_form_for(record,
                   remote: true,
-                  html: { data: { 'abide': '', 'live-validate': true } }) do |f|
+                  html: { autocomplete: 'off', data: { 'abide': '', 'live-validate': true } }) do |f|
                   = f.input :name,
                     as: :string,
                     label: false,
@@ -48,7 +48,7 @@
                 - record = WacsBacsRssm.find_record(wac=wac, bac=bac, result_statistic_sections_measure=net_rssm[row_cnt])
                 = simple_form_for(record,
                   remote: true,
-                  html: { data: { 'abide': '', 'live-validate': true } }) do |f|
+                  html: { autocomplete: 'off', data: { 'abide': '', 'live-validate': true } }) do |f|
                   = f.input :name,
                     as: :string,
                     label: false,
@@ -65,7 +65,7 @@
 
 tr
   td
-    = simple_form_for wac_rss, url: add_comparison_result_statistic_section_path(wac_rss), remote: true, method: :post do |f|
+    = simple_form_for wac_rss, url: add_comparison_result_statistic_section_path(wac_rss), remote: true, method: :post, html: { autocomplete: 'off' } do |f|
       = f.input :comparison_type, as: :hidden, input_html: { value: :wac }
       .links.add-comparison
         = link_to_add_association f, :comparisons, \

@@ -19,7 +19,7 @@
               - record = TpsArmsRssm.find_record(timepoint=tp, extractions_extraction_forms_projects_sections_type1=arm, result_statistic_sections_measure=dsc_rssm[row_cnt])
               = simple_form_for(record,
                 remote: true,
-                html: { data: { 'abide': '', 'live-validate': true } }) do |f|
+                html: { autocomplete: 'off', data: { 'abide': '', 'live-validate': true } }) do |f|
                 = f.input :name,
                   as: :string,
                   label: false,
@@ -40,7 +40,7 @@
                 - record = TpsComparisonsRssm.find_record(timepoint=tp, comparison=bac, result_statistic_sections_measure=bac_rssm[row_cnt])
                 = simple_form_for(record,
                   remote: true,
-                  html: { data: { 'abide': '', 'live-validate': true } }) do |f|
+                  html: { autocomplete: 'off', data: { 'abide': '', 'live-validate': true } }) do |f|
                   = f.input :name,
                     as: :string,
                     label: false,

@@ -14,7 +14,7 @@ tr
     .bac-comparison
       = simple_form_for bac_rss,
         url: add_comparison_result_statistic_section_path(bac_rss),
-        remote: true, method: :post do |f|
+        remote: true, method: :post, html: { autocomplete: 'off' } do |f|
 
         = f.input :comparison_type, as: :hidden, input_html: { value: :bac }
         .links.add-comparison
@@ -25,7 +25,7 @@ tr
             i.fi-plus>
             | Add Comparison
     .anova-comparison
-      = simple_form_for bac_rss, url: add_comparison_result_statistic_section_path(bac_rss), method: :post, remote: true do |f|
+      = simple_form_for bac_rss, url: add_comparison_result_statistic_section_path(bac_rss), method: :post, remote: true, html: { autocomplete: 'off' } do |f|
         = f.input :comparison_type, as: :hidden, input_html: { value: :bac }
         .links.add-anova style='display: none;'
           = link_to_add_association f, :comparisons, \
