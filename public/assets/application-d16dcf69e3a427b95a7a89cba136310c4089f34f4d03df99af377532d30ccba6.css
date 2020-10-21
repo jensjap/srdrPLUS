@@ -5226,31 +5226,33 @@ button.suggestion-list-button:hover {
 
 /* line 124, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/extractions.scss */
 .remove-comparison-button {
-  position: absolute;
   border: 1px solid grey;
   padding: 0px 5px;
   font-weight: 900;
   background-color: white;
   border-radius: 3px;
   color: black;
-  right: 0px;
-  top: 0px;
+  z-index: 5;
 }
 
-/* line 136, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/extractions.scss */
+/* line 134, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/extractions.scss */
 .tr-group-top {
   border-top: 2px solid !important;
 }
 
-/* line 140, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/extractions.scss */
+/* line 138, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/extractions.scss */
 .tr-group-bottom {
   border-bottom: 2px solid !important;
 }
 
-/* line 144, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/extractions.scss */
+/* line 142, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/extractions.scss */
 .outcome-completed {
   color: green;
-  font-weight: bold;
+}
+
+/* line 146, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/extractions.scss */
+.results-table td {
+  border-right: 1px solid black;
 }
 /**
  * Foundation for Sites by ZURB
@@ -29276,7 +29278,7 @@ div.checkbox, div.radio {
 /* line 660, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 thead th {
   text-align: center;
-  font-size: 18px;
+  font-size: 16px;
 }
 
 /* line 665, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
@@ -29288,7 +29290,7 @@ td {
 .clean-table table tr td:first-child {
   text-align: center;
   vertical-align: middle;
-  font-size: 18px;
+  font-size: 16px;
   width: 11em;
 }
 
@@ -29296,7 +29298,7 @@ td {
 table.unstriped tbody tr td:first-child {
   text-align: center;
   vertical-align: middle;
-  font-size: 18px;
+  font-size: 16px;
   width: 11em;
 }
 
