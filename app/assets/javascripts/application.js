@@ -279,6 +279,12 @@ document.addEventListener( 'turbolinks:load', function() {
   }
 
 } );
-document.addEventListener( 'turbolinks:before-cache', function() {
+
+document.addEventListener('turbolinks:before-cache', function() {
   $( '.reveal' ).foundation( 'close' )
-} );
+  $('#loading-indicator').show()
+});
+
+document.addEventListener("turbolinks:load", function() {
+  $('#loading-indicator').hide()
+})
