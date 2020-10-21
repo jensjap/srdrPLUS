@@ -186,3 +186,6 @@ gem "sentry-raven"
 # observability platform
 gem 'newrelic_rpm'
 gem 'newrelic-infinite_tracing'
+
+# Limit request rates
+gem 'rack-attack'
