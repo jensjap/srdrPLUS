@@ -1,19 +1,5 @@
 - section_name = section_name.singularize
-.row
-  .column.small-6.medium-5.large-2
-    h5 Add New #{ section_name }
-  .column.small-6.medium-7.large-10
-    = render 'extractions/shared/type_1/type_1_example_list',
-    extraction: @extraction,
-    section_name: section_name,
-    eefps: eefps
-
 = simple_form_for(eefps, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
-  .alert.callout data-abide-error='' style='display: none;'
-    p
-      i.fi-alert>
-      ' Please correct the errors below.
-
   / We need to know whether this are sending this from a work or consolidate action for eefps/update.js to load the correct partials.
   - if @extractions.present?
     = f.hidden_field :action, value: :consolidate
@@ -21,10 +7,20 @@
   - else
     = f.hidden_field :action, value: :work
 
-  = f.simple_fields_for(:extractions_extraction_forms_projects_sections_type1s,
-    f.object.extractions_extraction_forms_projects_sections_type1s.build) do |sf_eefpst1|
+  = f.simple_fields_for(:extractions_extraction_forms_projects_sections_type1s, f.object.extractions_extraction_forms_projects_sections_type1s.build) do |sf_eefpst1|
     .row
-      .columns.medium-12.form-inputs class="new-type1-fields-#{ eefps.id.to_s }"
+
+      .column.small-6.form-inputs class="new-type1-fields-#{ eefps.id.to_s }"
+        h5
+          span style="margin-right: 10px;" Add New #{ section_name }
+          = render 'extractions/shared/type_1/type_1_example_list',
+            extraction: @extraction,
+            section_name: section_name,
+            eefps: eefps
+        .alert.callout data-abide-error='' style='display: none;'
+          p
+            i.fi-alert>
+            ' Please correct the errors below.
         - if section_name.eql? 'Outcome'
           = sf_eefpst1.association :type1_type,
             required: true,
@@ -40,60 +36,51 @@
           = sf_t1.input :description,\
             label: section_name.eql?('Outcome') ? 'Specific Measurement' : 'Description',\
             input_html: { rows: 2 }, input_html: { 'data-t1-description-input' => '' }
-
         - if section_name.eql? 'Outcome'
           = sf_eefpst1.input :units, input_html: { 'data-t1-units-input' => '' }
 
-        - if section_name.eql? 'Outcome'
-          br
-          = sf_eefpst1.simple_fields_for(:extractions_extraction_forms_projects_sections_type1_rows, sf_eefpst1.object.extractions_extraction_forms_projects_sections_type1_rows.build({ population_name_attributes: { name: 'All Participants', description: 'All patients enrolled in this study.' } })) do |pop_form|
-            #populations style='margin: 1rem 0 1rem 0;'
-              h5 Populations
+      .column.small-6 style="border-left: #e2e2e2 1px solid;"
+        = sf_eefpst1.simple_fields_for(:extractions_extraction_forms_projects_sections_type1_rows, sf_eefpst1.object.extractions_extraction_forms_projects_sections_type1_rows.build({ population_name_attributes: { name: 'All Participants', description: 'All patients enrolled in this study.' } })) do |pop_form|
+          #populations style='margin: 1rem 0 1rem 0;'
+            h5 Populations
+            table
+              thead
+                tr
+                  th Delete
+                  th Name
+                  th Description
+              tbody#populations-node
+                = render 'extractions_extraction_forms_projects_sections_type1s/population_fields', f: pop_form
+            .links
+              = link_to_add_association sf_eefpst1,
+                :extractions_extraction_forms_projects_sections_type1_rows,
+                class: 'add-population-link',
+                'data-association-insertion-node': 'tbody#populations-node',
+                'data-association-insertion-method': 'append',
+                partial: 'extractions_extraction_forms_projects_sections_type1s/population_fields' do
+                i.fi-plus>
+                | Add Population
+          = pop_form.simple_fields_for(:extractions_extraction_forms_projects_sections_type1_row_columns, pop_form.object.extractions_extraction_forms_projects_sections_type1_row_columns.build({ timepoint_name_attributes: { name: 'Baseline' } })) do |tp_form|
+            #timepoints style='margin: 1rem 0 1rem 0;'
+              h5 Timepoints
               table
                 thead
                   tr
                     th Delete
                     th Name
-                    th Description
-                tbody#populations-node
-                  = render 'extractions_extraction_forms_projects_sections_type1s/population_fields', f: pop_form
+                    th Unit
+                tbody#timepoints-node
+                  = render 'extractions_extraction_forms_projects_sections_type1s/timepoint_fields', f: tp_form
               .links
-                = link_to_add_association sf_eefpst1,
-                  :extractions_extraction_forms_projects_sections_type1_rows,
-                  class: 'add-population-link',
-                  'data-association-insertion-node': 'tbody#populations-node',
+                = link_to_add_association pop_form,
+                  :extractions_extraction_forms_projects_sections_type1_row_columns,
+                  class: 'add-timepoint-link',
+                  'data-association-insertion-node': 'tbody#timepoints-node',
                   'data-association-insertion-method': 'append',
-                  partial: 'extractions_extraction_forms_projects_sections_type1s/population_fields' do
+                  partial: 'extractions_extraction_forms_projects_sections_type1s/timepoint_fields' do
                   i.fi-plus>
-                  | Add Population
-            = pop_form.simple_fields_for(:extractions_extraction_forms_projects_sections_type1_row_columns, pop_form.object.extractions_extraction_forms_projects_sections_type1_row_columns.build({ timepoint_name_attributes: { name: 'Baseline' } })) do |tp_form|
-              #timepoints style='margin: 1rem 0 1rem 0;'
-                h5 Timepoints
-                table
-                  thead
-                    tr
-                      th Delete
-                      th Name
-                      th Unit
-
-                  tbody#timepoints-node
-                    = render 'extractions_extraction_forms_projects_sections_type1s/timepoint_fields', f: tp_form
-                .links
-                  = link_to_add_association pop_form,
-                    :extractions_extraction_forms_projects_sections_type1_row_columns,
-                    class: 'add-timepoint-link',
-                    'data-association-insertion-node': 'tbody#timepoints-node',
-                    'data-association-insertion-method': 'append',
-                    partial: 'extractions_extraction_forms_projects_sections_type1s/timepoint_fields' do
-                    i.fi-plus>
-                    | Add Timepoint
-
-      /- if section_name.eql? 'Outcome'
-        = sf_eefpst1.association :timepoint_names,
-          including_blank: false,
-          label: "Suggest Timepoint(s) to associate with this #{ section_name }. If you cannot find an existing Timepoint to associate, #{ link_to_add_association('click here', sf_eefpst1, :timepoint_names, partial: 'extraction_forms_projects/build/type1/timepoint_name_fields') } to create a new one.".html_safe,
-          label_method: :select_label
-
-  .grid-x
-    .cell.auto.form-actions style="margin-top: 1rem;"
-      = f.button :submit, 'Save'
+                  | Add Timepoint
+    .row
+      .column
+        .cell.auto.form-actions style="text-align: right; margin-top: 1rem;"
+          = f.button :submit, 'Save'
