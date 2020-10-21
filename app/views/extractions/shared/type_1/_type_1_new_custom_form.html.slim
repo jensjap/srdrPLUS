@@ -1,5 +1,5 @@
 - section_name = section_name.singularize
-= simple_form_for(eefps, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
+= simple_form_for(eefps, remote: true, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
   / We need to know whether this are sending this from a work or consolidate action for eefps/update.js to load the correct partials.
   - if @extractions.present?
     = f.hidden_field :action, value: :consolidate

@@ -21,6 +21,19 @@ class ExtractionFormsProjectsSection < ApplicationRecord
   acts_as_paranoid column: :active, sentinel_value: true
   has_paper_trail
 
+  scope :in_standard_extraction, -> {
+    joins(:extraction_forms_project)
+    .where(extraction_forms_projects: { extraction_forms_project_type: ExtractionFormsProjectType.find_by_name(ExtractionFormsProjectType::STANDARD) })
+  }
+  scope :in_diagnostic_test_extraction,  -> {
+    joins(:extraction_forms_project)
+    .where(extraction_forms_projects: { extraction_forms_project_type: ExtractionFormsProjectType.find_by_name(ExtractionFormsProjectType::DIAGNOSTIC_TEST) })
+  }
+  scope :in_mini_extraction, -> {
+    joins(:extraction_forms_project)
+    .where(extraction_forms_projects: { extraction_forms_project_type: ExtractionFormsProjectType.find_by_name(ExtractionFormsProjectType::MINI_EXTRACTION) })
+  }
+
   after_commit :mark_as_deleted_or_restore_extraction_forms_projects_section_option
   after_create :create_extraction_forms_projects_section_option
 

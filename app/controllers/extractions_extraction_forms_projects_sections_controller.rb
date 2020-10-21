@@ -24,10 +24,15 @@ class ExtractionsExtractionFormsProjectsSectionsController < ApplicationControll
           render :show, status: :ok, location: @extractions_extraction_forms_projects_section
         }
         format.js do
-          @action                = params[:extractions_extraction_forms_projects_section][:action]
-          @extraction            = @extractions_extraction_forms_projects_section.extraction
-          @linked_type2_sections = @extractions_extraction_forms_projects_section.link_to_type2s
-          @results_eefps         = @extraction.find_eefps_by_section_type('Results')
+          if params[:extractions_extraction_forms_projects_section][:action] == 'work'
+            @consolidated_extraction = @extractions_extraction_forms_projects_section.extraction
+            render '/extractions_extraction_forms_projects_sections/work_update'
+          else
+            @action                = params[:extractions_extraction_forms_projects_section][:action]
+            @extraction            = @extractions_extraction_forms_projects_section.extraction
+            @linked_type2_sections = @extractions_extraction_forms_projects_section.link_to_type2s
+            @results_eefps         = @extraction.find_eefps_by_section_type('Results')
+          end
         end
       else
         format.html {
