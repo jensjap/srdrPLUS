@@ -8,38 +8,46 @@ def build_type1_sections_compact(p, project, highlight, wrap)
       if section.extraction_forms_projects_section_type_id == 1
 
         # Add a new sheet.
-        p.workbook.add_worksheet(name: "#{ section.section.name.truncate(21) }" + ' - compact') do |sheet|
+        p.workbook.add_worksheet(name: "#{ section.section.name.truncate(21) }" + ' - long') do |sheet|
 
           # Some prep work:
           last_col_idx  = 0
-          header_row = sheet.add_row ['Extraction ID', 'Citation ID', 'Citation Name', 'RefMan', 'PMID']
+          header_row = sheet.add_row [
+            'Extraction ID',
+            'User Name',
+            'Citation ID',
+            'Citation Name',
+            'RefMan',
+            'PMID',
+            "#{ section.section.name.singularize } Name",
+            "#{ section.section.name.singularize } Description"
+          ]
 
           # Every row represents an extraction.
           project.extractions.each do |extraction|
-            eefps = section.extractions_extraction_forms_projects_sections.find_by(extraction: extraction, extraction_forms_projects_section: section)
+            eefps = section.extractions_extraction_forms_projects_sections.find_by(
+              extraction: extraction,
+              extraction_forms_projects_section: section
+            )
 
-            new_row = []
-            new_row << extraction.id.to_s
-            new_row << extraction.citations_project.citation.id.to_s
-            new_row << extraction.citations_project.citation.name
-            new_row << extraction.citations_project.citation.refman.to_s
-            new_row << extraction.citations_project.citation.pmid.to_s
-            eefps.extractions_extraction_forms_projects_sections_type1s.each do |type1|
-              for i in 1..eefps.extractions_extraction_forms_projects_sections_type1s.length
-                if (i * 2) > last_col_idx
-                  header_row.add_cell("#{ section.section.name } Name: #{ i.to_s }")
-                  header_row.add_cell("#{ section.section.name } Description: #{ i.to_s }")
+            eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
 
-                  last_col_idx += 2
-                end
-              end
-              new_row.concat [type1.type1.name, type1.type1.description]
-            end
+              new_row = []
+              new_row << extraction.id.to_s
+              new_row << extraction.user.profile.username
+              new_row << extraction.citations_project.citation.id.to_s
+              new_row << extraction.citations_project.citation.name
+              new_row << extraction.citations_project.citation.refman.to_s
+              new_row << extraction.citations_project.citation.pmid.to_s
+              new_row << eefpst1.type1.name
+              new_row << eefpst1.type1.description
 
-            sheet.add_row new_row
+              sheet.add_row new_row
+            end  # END eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
           end  # END project.extractions.each do |extraction|
 
           # Re-apply the styling for the new cells in the header row before closing the sheet.
+          sheet.column_widths nil, nil, nil, nil, nil, nil, nil, nil
           header_row.style = highlight
         end  # END p.workbook.add_worksheet(name: "#{ section.section.name.truncate(21) }" + ' - compact') do |sheet|
       end  # END if section.extraction_forms_projects_section_type_id == 1

@@ -12,7 +12,7 @@
         eefpst1r.extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_section.extraction_forms_projects_section.extraction_forms_project.id).reject { |efpst1| efpst1.type1 == Type1.find_by(name: 'Total', description: "All Arms combined") }
 
     .table-fixed-headers
-      table.unstriped style='overflow: scroll;'
+      table.unstriped style='overflow: scroll; table-layout: fixed;'
         caption = eefpst1r.population_name.name
         thead
           = render "extractions/work/results/results_table/q1_q2_headers", dsc_rss: dsc_rss, bac_rss: bac_rss

@@ -13,11 +13,6 @@ class ProjectsController < ApplicationController
                                       :import_pubmed, :import_endnote, :import_ris, :next_assignment,
                                     ]
 
-  SORT = {
-    'updated-at': { updated_at: :desc },
-    'created-at': { created_at: :desc },
-  }.stringify_keys
-
   # GET /projects
   # GET /projects.json
   def index
@@ -133,7 +128,7 @@ class ProjectsController < ApplicationController
 
   def export
     authorize(@project)
-    SimpleExportJob.perform_later(current_user.id, @project.id, export_type_name)
+    SimpleExportJob.perform_later(current_user.id, @project.id, export_type_name_params)
     flash[:success] = "Export request submitted for project '#{@project.name}'. You will be notified by email of its completion."
 
     # redirect_to edit_project_path(@project)
@@ -284,7 +279,7 @@ class ProjectsController < ApplicationController
     params.require(:project).permit(:citation_files => [])
   end
 
-  def export_type_name
+  def export_type_name_params
     params.require(:export_type_name)
   end
 
@@ -326,6 +321,9 @@ class ProjectsController < ApplicationController
         includes(publishing: [{ user: :profile }, approval: [{ user: :profile }]]).
         by_name_description_and_query(@query).
         page(params[:page])
+
+      @projects = @projects.order(updated_at: :desc) if params[:o].nil? || params[:o] == 'updated-at'
+      @projects = @projects.order(created_at: :desc) if params[:o] == 'created-at'
 
       project_ids = @projects.pluck(:id)
       @projects_key_questions_project_counts = KeyQuestionsProject.
@@ -377,8 +375,8 @@ class ProjectsController < ApplicationController
         where("projects.name LIKE ? OR sd_meta_data.report_title LIKE ?", "%#{@query}%", "%#{@query}%").
         unapproved.
         page(params[:page])
-      @unapproved_publishings = @unapproved_publishings.order(:updated_at) if params[:o].nil? || params[:o] == 'updated-at'
-      @unapproved_publishings = @unapproved_publishings.order(:created_at) if params[:o] == 'created-at'
+      @unapproved_publishings = @unapproved_publishings.order(updated_at: :desc) if params[:o].nil? || params[:o] == 'updated-at'
+      @unapproved_publishings = @unapproved_publishings.order(created_at: :desc) if params[:o] == 'created-at'
       @unapproved_publishings = @unapproved_publishings.where(user: current_user) unless current_user.admin?
     elsif @project_status == 'published'
       @approved_publishings = Publishing.
@@ -389,8 +387,8 @@ class ProjectsController < ApplicationController
         where("projects.name LIKE ? OR sd_meta_data.report_title LIKE ?", "%#{@query}%", "%#{@query}%").
         approved.
         page(params[:page])
-      @approved_publishings = @approved_publishings.order(:updated_at) if params[:o].nil? || params[:o] == 'updated-at'
-      @approved_publishings = @approved_publishings.order(:created_at) if params[:o] == 'created-at'
+      @approved_publishings = @approved_publishings.order(updated_at: :desc) if params[:o].nil? || params[:o] == 'updated-at'
+      @approved_publishings = @approved_publishings.order(created_at: :desc) if params[:o] == 'created-at'
       @approved_publishings = @approved_publishings.where(user: current_user) unless current_user.admin?
     end
   end

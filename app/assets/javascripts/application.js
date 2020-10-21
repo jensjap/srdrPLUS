@@ -17,6 +17,7 @@
 //= require foundation-datepicker.min
 //= require tether.min
 //= require dropzone
+//= require ahrq_foresee_qa_survey
 
 // require assignments
 // require author
