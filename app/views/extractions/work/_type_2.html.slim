@@ -26,10 +26,11 @@ blockquote
       card so that we can filter it, similar to the prerequisite method
     - kqreq = q.key_questions_projects.map { |kqp| "kqreq-#{ kqp.id }" }.join(' ')
 
-    .card class='#{prereq} #{kqreq}' style="box-shadow: 6px 8px 12px 2px #bbbbbb;"
+    .card class='#{prereq} #{kqreq}' style="box-shadow: 6px 8px 20px 0px #d8d6d6; margin-bottom: 1.5rem;"
       .card-divider
         h5 #{ (idx + 1).to_s }. #{ q.name }
-        .description style='white-space: pre-wrap;' #{ q.description }
+        .description style='white-space: pre-wrap;'
+          em = q.description
 
       .card-section
         .table-scroll
