@@ -205,10 +205,10 @@ def build_result_sections_compact(p, project, highlight, wrap)
           end  # eefps_outcomes.each do |eefps_outcome|
         end  # project.extractions.each do |extraction|
 
-        ws_desc = p.workbook.add_worksheet(name: "Desc. Statistics - compact")
-        ws_bac  = p.workbook.add_worksheet(name: "BAC Comparisons - compact")
-        ws_wac  = p.workbook.add_worksheet(name: "WAC Comparisons - compact")
-        ws_net  = p.workbook.add_worksheet(name: "NET Differences - compact")
+        ws_desc = p.workbook.add_worksheet(name: "Desc. Statistics - long")
+        ws_bac  = p.workbook.add_worksheet(name: "BAC Comparisons - long")
+        ws_wac  = p.workbook.add_worksheet(name: "WAC Comparisons - long")
+        ws_net  = p.workbook.add_worksheet(name: "NET Differences - long")
 
         # Start printing rows to the sheets. First the basic headers:
         #['Extraction ID', 'Username', 'Citation ID', 'Citation Name', 'RefMan', 'PMID']

@@ -8,7 +8,7 @@ def build_type1_sections_compact(p, project, highlight, wrap)
       if section.extraction_forms_projects_section_type_id == 1
 
         # Add a new sheet.
-        p.workbook.add_worksheet(name: "#{ section.section.name.truncate(21) }" + ' - compact') do |sheet|
+        p.workbook.add_worksheet(name: "#{ section.section.name.truncate(21) }" + ' - long') do |sheet|
 
           # Some prep work:
           last_col_idx  = 0

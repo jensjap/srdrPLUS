@@ -26,6 +26,7 @@ class SimpleExportJob < ApplicationJob
 
     @user             = User.find args.first
     @project          = Project.find args.second
+    @export_type      = args.third
 
     Rails.logger.debug "#{ self.class.name }: Working on project: #{ @project.name }"
 
@@ -38,30 +39,21 @@ class SimpleExportJob < ApplicationJob
       # Sheet with basic project information.
       build_project_information_section(p, @project, highlight, wrap)
 
-      # Type 1s - compact format.
-      build_type1_sections_compact(p, @project, highlight, wrap)
+      if /wide/ =~ @export_type
+        build_type1_sections_wide(p, @project, highlight, wrap)
+        build_type2_sections_wide(p, @project, highlight, wrap)
+        build_result_sections_wide(p, @project, highlight, wrap)
 
-      # Type 1s - wide format.
-#      build_type1_sections_wide(p, @project, highlight, wrap)
+      else
+        build_type1_sections_compact(p, @project, highlight, wrap)
+        build_type2_sections_compact(p, @project, highlight, wrap)
+        build_result_sections_compact(p, @project, highlight, wrap)
 
-      # Type 2s - compact format.
-      build_type2_sections_compact(p, @project, highlight, wrap)
-
-      # Type 2s - wide format.
-#      build_type2_sections_wide(p, @project, highlight, wrap)
-
-      # Results - compact format.
-      build_result_sections_compact(p, @project, highlight, wrap)
-
-      # Results - wide format.
-#      build_result_sections_wide(p, @project, highlight, wrap)
-
-      # Default sample 3D pie chart.
-#      build_sample_3d_pie_chart(p)
+      end
 
       f_name = 'tmp/simple_exports/project_' + @project.id.to_s + '_' + Time.now.strftime('%s') + '.xlsx'
       if p.serialize(f_name)
-        export_type  = ExportType.find_by name: args.third
+        export_type  = ExportType.find_by(name: @export_type[0..4])
         case export_type.name
         when '.xlsx'
           exported_item = ExportedItem.create! projects_user: ProjectsUser.find_by( project: @project, user: @user), export_type: export_type
