@@ -314,7 +314,7 @@ pre.debug_dump {
 
   td, th {
     border-radius: 2px;
-    min-width: 8em;
+    min-width: 11em;
     border: 1px solid grey;
   }
 
@@ -629,4 +629,87 @@ textarea {
   margin-top: -25px;
   border-radius: 6px;
   background-image: url("/assets/spinner.gif");
+
+.card-divider, .card-section {
+  padding: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+}
+
+label {
+  font-size: 1rem;
+  line-height: normal;
+}
+
+label > [type='checkbox'], label > [type='radio'] {
+  margin-bottom: 0;
+}
+
+div.checkbox, div.radio {
+  margin-bottom: 4px;
+}
+
+.question-row-column {
+  vertical-align: top;
+}
+
+thead th {
+  text-align: center;
+  font-size: 18px;
+}
+
+td {
+  vertical-align: top;
+}
+
+.clean-table table tr td:first-child {
+  text-align: center;
+  vertical-align: middle;
+  font-size: 18px;
+  width: 11em;
+}
+
+table.unstriped tbody tr td:first-child {
+  text-align: center;
+  vertical-align: middle;
+  font-size: 18px;
+  width: 11em;
+}
+
+.overlay-parent {
+  position: relative;
+}
+
+input, textarea, table, select, [type='text'], [type='password'], [type='date'], [type='datetime'], [type='datetime-local'], [type='month'], [type='week'], [type='email'], [type='number'], [type='search'], [type='tel'], [type='time'], [type='url'], [type='color'] {
+  margin: 0;
+}
+
+ul {
+  margin-bottom: 0;
+}
+
+.card-divider {
+  background:rgba($color: #F8F8FF, $alpha: 0.75);
+}
+
+thead {
+  background: rgba($color: #f8f8f8, $alpha: 0.75)
+}
+
+tbody {
+  background: rgba($color: #fefefe, $alpha: 0.75);
+}
+
+tbody tr:nth-child(even) {
+  background: rgba($color: #f1f1f1, $alpha: 0.75);
+}
+
+.button {
+  margin: 0rem;
+}
+
+.table-fixed-headers td {
+  position: relative;
 }

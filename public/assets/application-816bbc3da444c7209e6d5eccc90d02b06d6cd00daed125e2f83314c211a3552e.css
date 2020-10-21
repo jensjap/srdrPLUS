@@ -5246,6 +5246,12 @@ button.suggestion-list-button:hover {
 .tr-group-bottom {
   border-bottom: 2px solid !important;
 }
+
+/* line 144, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/extractions.scss */
+.outcome-completed {
+  color: green;
+  font-weight: bold;
+}
 /**
  * Foundation for Sites by ZURB
  * Version 6.5.3
@@ -23543,6 +23549,16 @@ table.dependency-table th {
 .record-info {
   color: #4C0D7D;
   min-height: 1.5em;
+  position: absolute;
+  text-align: center;
+  top: 3px;
+  left: calc(50% - 20px);
+  background: white;
+  border-radius: 10px;
+  padding: 5px;
+  border: 1px solid;
+  pointer-events: none;
+  z-index: 1000;
 }
 /* line 5, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/result_statistic_sections.scss */
 .add-comparison {
@@ -23563,13 +23579,13 @@ body {
   background-color: #fff;
   color: #333;
   margin: 33px;
-  font-size: 13px;
+  font-size: 16px;
   line-height: 18px;
 }
 
 /* line 10, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/scaffolds.scss */
 p, ol, ul, td {
-  font-size: 13px;
+  font-size: 16px;
   line-height: 18px;
 }
 
@@ -27056,6 +27072,10 @@ body.sd_meta_data .sd-meta-data-index-edit {
   letter-spacing: normal;
   color: #dee1e8;
 }
+/* line 935, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+.v3 .grid-container {
+  max-width: 1200px;
+}
 /*
  * This is a manifest file that'll be compiled into application.css, which will include all the files
  * listed below.
@@ -28835,7 +28855,7 @@ pre.debug_dump {
 /* line 316, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .table-scroll table td, .table-scroll table th {
   border-radius: 2px;
-  min-width: 8em;
+  min-width: 11em;
   border: 1px solid grey;
 }
 /* line 322, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
@@ -29194,6 +29214,109 @@ textarea {
 /* line 607, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 textarea {
   min-height: 1.5em;
+}
+
+/* line 611, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+.card-divider, .card-section {
+  padding: 0;
+}
+
+/* line 615, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+}
+
+/* line 619, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+label {
+  font-size: 1rem;
+  line-height: normal;
+}
+
+/* line 624, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+label > [type='checkbox'], label > [type='radio'] {
+  margin-bottom: 0;
+}
+
+/* line 628, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+div.checkbox, div.radio {
+  margin-bottom: 4px;
+}
+
+/* line 632, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+.question-row-column {
+  vertical-align: top;
+}
+
+/* line 636, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+thead th {
+  text-align: center;
+  font-size: 18px;
+}
+
+/* line 641, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+td {
+  vertical-align: top;
+}
+
+/* line 645, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+.clean-table table tr td:first-child {
+  text-align: center;
+  vertical-align: middle;
+  font-size: 18px;
+  width: 11em;
+}
+
+/* line 652, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+table.unstriped tbody tr td:first-child {
+  text-align: center;
+  vertical-align: middle;
+  font-size: 18px;
+  width: 11em;
+}
+
+/* line 659, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+.overlay-parent {
+  position: relative;
+}
+
+/* line 663, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+input, textarea, table, select, [type='text'], [type='password'], [type='date'], [type='datetime'], [type='datetime-local'], [type='month'], [type='week'], [type='email'], [type='number'], [type='search'], [type='tel'], [type='time'], [type='url'], [type='color'] {
+  margin: 0;
+}
+
+/* line 667, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+ul {
+  margin-bottom: 0;
+}
+
+/* line 671, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+.card-divider {
+  background: rgba(248, 248, 255, 0.75);
+}
+
+/* line 675, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+thead {
+  background: rgba(248, 248, 248, 0.75);
+}
+
+/* line 679, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+tbody {
+  background: rgba(254, 254, 254, 0.75);
+}
+
+/* line 683, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+tbody tr:nth-child(even) {
+  background: rgba(241, 241, 241, 0.75);
+}
+
+/* line 687, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+.button {
+  margin: 0rem;
+}
+
+/* line 691, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+.table-fixed-headers td {
+  position: relative;
 }
 /* line 1, /home/jensjap/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/toastr_rails-2.1.3/app/assets/styleseets/toastr.scss */
 .toast-title {

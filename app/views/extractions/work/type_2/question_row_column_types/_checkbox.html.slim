@@ -1,4 +1,4 @@
-.column.row
+.column.row class="overlay-parent"
   - eefps_qrcf = @eefps_qrcf_dict[[eefps.id,qrc.question_row_column_fields.first.id,t1&.id].to_s]
   - if not eefps_qrcf
     - eefps_qrcf = ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField.find_or_create_by( \
