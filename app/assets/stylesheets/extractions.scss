@@ -122,15 +122,13 @@ button.suggestion-list-button {
 }
 
 .remove-comparison-button {
-  position: absolute;
   border: 1px solid grey;
   padding: 0px 5px;
   font-weight: 900;
   background-color: white;
   border-radius: 3px;
   color: black;
-  right: 0px;
-  top: 0px;
+  z-index: 5;
 }
 
 .tr-group-top {
@@ -143,5 +141,8 @@ button.suggestion-list-button {
 
 .outcome-completed {
   color: green;
-  font-weight: bold;
+}
+
+.results-table td {
+  border-right: 1px solid black;
 }

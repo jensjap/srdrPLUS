@@ -12,14 +12,14 @@
     - else
       tr class="#{tr_group_class}"
         - dsc_rssm = dsc_rss.result_statistic_sections_measures.left_outer_joins(measure: :result_statistic_section_types_measures).reorder('result_statistic_section_types_measures.id asc').distinct
-        td.freeze style="z-index: 1000;" = dsc_rssm[row_cnt].try(:measure).try(:name)
+        td.freeze style="z-index: 100;" = dsc_rssm[row_cnt].try(:measure).try(:name)
         - @arms.sort_by { |eefpst1| eefpst1.ordering.position }.each do |arm|
           - if dsc_rssm[row_cnt].try(:measure).try(:name)
             td
               - record = TpsArmsRssm.find_record(timepoint=tp, extractions_extraction_forms_projects_sections_type1=arm, result_statistic_sections_measure=dsc_rssm[row_cnt])
               = simple_form_for(record,
                 remote: true,
-                html: { data: { 'abide': '', 'live-validate': true } }) do |f|
+                html: { autocomplete: 'off', data: { 'abide': '', 'live-validate': true } }) do |f|
                 = f.input :name,
                   as: :string,
                   label: false,
@@ -40,7 +40,7 @@
                 - record = TpsComparisonsRssm.find_record(timepoint=tp, comparison=bac, result_statistic_sections_measure=bac_rssm[row_cnt])
                 = simple_form_for(record,
                   remote: true,
-                  html: { data: { 'abide': '', 'live-validate': true } }) do |f|
+                  html: { autocomplete: 'off', data: { 'abide': '', 'live-validate': true } }) do |f|
                   = f.input :name,
                     as: :string,
                     label: false,

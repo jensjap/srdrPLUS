@@ -24,7 +24,7 @@ class ExtractionsExtractionFormsProjectsSectionsController < ApplicationControll
           render :show, status: :ok, location: @extractions_extraction_forms_projects_section
         }
         format.js do
-          if params[:extractions_extraction_forms_projects_section][:update_type] == 'work'
+          if params[:extractions_extraction_forms_projects_section][:action] == 'work'
             @consolidated_extraction = @extractions_extraction_forms_projects_section.extraction
             render '/extractions_extraction_forms_projects_sections/work_update'
           else
