@@ -9,7 +9,7 @@ document.addEventListener 'turbolinks:load', ->
   do ->
     ## SELECT2 INITIALIZATION FOR EXTRACTION INDEX
     $( '.index-extractions-select2' ).select2()
-    
+
     ## SELECT2 INITIALIZATION FOR NEW EXTRACTION
     $( '.new-extraction-select2' ).select2()
     $( '.new-extraction-select2-multi' ).select2( multiple: 'true', placeholder: '-- Select citation to be extracted --' )
@@ -68,81 +68,11 @@ document.addEventListener 'turbolinks:load', ->
         $( this ).closest( '.projects-users-role' ).find( '.projects-users-role-label' ).removeClass( 'hide' )
         $( this ).closest( '.projects-users-role' ).attr( 'dropdown-active', 'false' )
 
-      #################################################
-      ## Listeners to change citation sort mode between title, year, author and pmid 
-      shift_down = false
-      $( 'body.extractions.index' ).on 'keydown', ( event ) ->
-        if event.shiftKey
-          shift_down = true
-      $( 'body.extractions.index' ).on 'keyup', ( event ) ->
-        shift_down = false
-
-      $( '.extractions-list .citation-handle-header, .comparisons-list .citation-handle-header' ).click () ->
-        if ( not shift_down ) and $( this ).data( 'sort-direction' ) == 'asc'
-          $( this ).data( 'sort-direction', 'desc' )
-          return
-
-        if shift_down and $( this ).data( 'sort-direction' ) == 'desc'
-          $( this ).data( 'sort-direction', 'asc' )
-          return
-
-        if $( this ).data( 'sort-mode' ) == 'author'
-          if shift_down
-            $( this ).data( 'sort-direction', 'desc' )
-            $( this ).html( 'Citation (Sorted by Publication Year)' )
-            new_sort_mode = 'year'
-          else
-            $( this ).data( 'sort-direction', 'asc' )
-            $( this ).html( 'Citation (Sorted by PMID)' )
-            new_sort_mode = 'pmid'
-        else if $( this ).data( 'sort-mode' ) == 'pmid'
-          if shift_down
-            $( this ).data( 'sort-direction', 'desc' )
-            $( this ).html( 'Citation (Sorted by First Author)' )
-            new_sort_mode = 'author'
-          else
-            $( this ).data( 'sort-direction', 'asc' )
-            $( this ).html( 'Citation (Sorted by Title)' )
-            new_sort_mode = 'name'
-        else if $( this ).data( 'sort-mode' ) == 'name'
-          if shift_down
-            $( this ).data( 'sort-direction', 'desc' )
-            $( this ).html( 'Citation (Sorted by PMID)' )
-            new_sort_mode = 'pmid'
-          else
-            $( this ).data( 'sort-direction', 'asc' )
-            $( this ).html( 'Citation (Sorted by Publication Year)' )
-            new_sort_mode = 'year'
-        else
-          if shift_down
-            $( this ).data( 'sort-direction', 'desc' )
-            $( this ).html( 'Citation (Sorted by Title)' )
-            new_sort_mode = 'name'
-          else
-            $( this ).data( 'sort-direction', 'asc' )
-            $( this ).html( 'Citation (Sorted by First Author)' )
-            new_sort_mode = 'author'
-
-        $( this ).data( 'sort-mode', new_sort_mode )
-
-        if new_sort_mode == 'pmid'
-          $( 'td.citation-handle' ).each () ->
-            $( this ).attr( 'data-sort', $( this ).attr( 'data-pmid' ) )
-        else if new_sort_mode == 'name'
-          $( 'td.citation-handle' ).each () ->
-            $( this ).attr( 'data-sort', $( this ).attr( 'data-name' ) )
-        else if new_sort_mode == 'year'
-          $( 'td.citation-handle' ).each () ->
-            $( this ).attr( 'data-sort', $( this ).attr( 'data-year' ) )
-        else
-          $( 'td.citation-handle' ).each () ->
-            $( this ).attr( 'data-sort', $( this ).attr( 'data-author' ) )
-
       # DataTables for Extractions List
       dt = $( 'table.extractions-list' ).DataTable({
              "paging": false,
              "info": false,
-             "columnDefs": [{ "orderable": false, "targets": [3,4] }]
+             "columnDefs": [{ "orderable": false, "targets": [6, 7] }]
            })
       dt.rows( { page:'current' } ).invalidate()
       dt.draw()
