@@ -14,6 +14,16 @@
   .column.medium-12
     div style='display: flex; flex-direction: row;'
       h4 Extractions
+    div
+      - if @project.key_questions.present?
+        = link_to new_project_extraction_path, class: 'button create-button create-extraction-button' do
+          i.fi-plus>
+          = t('.create')
+      - else
+        = link_to '#', class: 'button create-button create-extraction-button', onClick: "alert('Please add at least one Key Question first')" do
+          i.fi-plus>
+          = t('.create')
+
     table.extractions-list
       thead
         tr
