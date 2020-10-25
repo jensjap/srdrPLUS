@@ -5254,6 +5254,21 @@ button.suggestion-list-button:hover {
 .results-table td {
   border-right: 1px solid black;
 }
+
+/* line 150, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/extractions.scss */
+.green {
+  color: green !important;
+}
+
+/* line 154, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/extractions.scss */
+.bold {
+  font-weight: bold !important;
+}
+
+/* line 158, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/extractions.scss */
+.checkmarked:after {
+  content: "\2713";
+}
 /**
  * Foundation for Sites by ZURB
  * Version 6.5.3
@@ -29241,7 +29256,7 @@ textarea {
   margin-left: -25px;
   margin-top: -25px;
   border-radius: 6px;
-  background-image: url("/spinner.gif");
+  background-image: url("/assets/spinner-408939465d33f6d9c1c9cbd3a8a84381008be94f9fd91eff4034efed48a6371c.gif");
 }
 
 /* line 635, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */

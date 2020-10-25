@@ -50604,7 +50604,7 @@ function __guardMethod__(obj, methodName, transform) {
       return;
     }
     (function() {
-      var add_change_listeners_to_questions, apply_coloring, apply_consolidation_dropdown, dt, get_extractor_names, get_number_of_extractions, get_question_type, get_question_value, shift_down;
+      var add_change_listeners_to_questions, apply_coloring, apply_consolidation_dropdown, dt, get_extractor_names, get_number_of_extractions, get_question_type, get_question_value;
       $('.index-extractions-select2').select2();
       $('.new-extraction-select2').select2();
       $('.new-extraction-select2-multi').select2({
@@ -50652,92 +50652,13 @@ function __guardMethod__(obj, methodName, transform) {
           $(this).closest('.projects-users-role').find('.projects-users-role-label').removeClass('hide');
           return $(this).closest('.projects-users-role').attr('dropdown-active', 'false');
         });
-        shift_down = false;
-        $('body.extractions.index').on('keydown', function(event) {
-          if (event.shiftKey) {
-            return shift_down = true;
-          }
-        });
-        $('body.extractions.index').on('keyup', function(event) {
-          return shift_down = false;
-        });
-        $('.extractions-list .citation-handle-header, .comparisons-list .citation-handle-header').click(function() {
-          var new_sort_mode;
-          if ((!shift_down) && $(this).data('sort-direction') === 'asc') {
-            $(this).data('sort-direction', 'desc');
-            return;
-          }
-          if (shift_down && $(this).data('sort-direction') === 'desc') {
-            $(this).data('sort-direction', 'asc');
-            return;
-          }
-          if ($(this).data('sort-mode') === 'author') {
-            if (shift_down) {
-              $(this).data('sort-direction', 'desc');
-              $(this).html('Citation (Sorted by Publication Year)');
-              new_sort_mode = 'year';
-            } else {
-              $(this).data('sort-direction', 'asc');
-              $(this).html('Citation (Sorted by PMID)');
-              new_sort_mode = 'pmid';
-            }
-          } else if ($(this).data('sort-mode') === 'pmid') {
-            if (shift_down) {
-              $(this).data('sort-direction', 'desc');
-              $(this).html('Citation (Sorted by First Author)');
-              new_sort_mode = 'author';
-            } else {
-              $(this).data('sort-direction', 'asc');
-              $(this).html('Citation (Sorted by Title)');
-              new_sort_mode = 'name';
-            }
-          } else if ($(this).data('sort-mode') === 'name') {
-            if (shift_down) {
-              $(this).data('sort-direction', 'desc');
-              $(this).html('Citation (Sorted by PMID)');
-              new_sort_mode = 'pmid';
-            } else {
-              $(this).data('sort-direction', 'asc');
-              $(this).html('Citation (Sorted by Publication Year)');
-              new_sort_mode = 'year';
-            }
-          } else {
-            if (shift_down) {
-              $(this).data('sort-direction', 'desc');
-              $(this).html('Citation (Sorted by Title)');
-              new_sort_mode = 'name';
-            } else {
-              $(this).data('sort-direction', 'asc');
-              $(this).html('Citation (Sorted by First Author)');
-              new_sort_mode = 'author';
-            }
-          }
-          $(this).data('sort-mode', new_sort_mode);
-          if (new_sort_mode === 'pmid') {
-            return $('td.citation-handle').each(function() {
-              return $(this).attr('data-sort', $(this).attr('data-pmid'));
-            });
-          } else if (new_sort_mode === 'name') {
-            return $('td.citation-handle').each(function() {
-              return $(this).attr('data-sort', $(this).attr('data-name'));
-            });
-          } else if (new_sort_mode === 'year') {
-            return $('td.citation-handle').each(function() {
-              return $(this).attr('data-sort', $(this).attr('data-year'));
-            });
-          } else {
-            return $('td.citation-handle').each(function() {
-              return $(this).attr('data-sort', $(this).attr('data-author'));
-            });
-          }
-        });
         dt = $('table.extractions-list').DataTable({
           "paging": false,
           "info": false,
           "columnDefs": [
             {
               "orderable": false,
-              "targets": [3, 4]
+              "targets": [6, 7]
             }
           ]
         });
