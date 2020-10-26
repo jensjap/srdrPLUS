@@ -5,7 +5,7 @@ class StatusingsController < ApplicationController
   def update
     @statusing.update statusing_params
     respond_to do |format|
-      format.js 
+      format.js
     end
   end
 

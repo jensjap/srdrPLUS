@@ -1,9 +1,7 @@
-a.accordion-title href="#"
+a.accordion-title href="#" style="padding: 0.5rem;"
   div
     = project.name
-  div
-    / This dynamically switches between created_at and updated_at.
-    small = "#{ @order.split("-").first } " + t("time_prefix") + time_ago_in_words(project.send(@order.underscore).in_time_zone(current_user.profile.time_zone)) + t("ago")
+    small = " (#{ @order.split("-").first } " + t("time_prefix") + time_ago_in_words(project.send(@order.underscore).in_time_zone(current_user.profile.time_zone)) + t("ago") + ')  '
 
 .accordion-content.grid-container data-tab-content=""
   .grid-y
@@ -15,25 +13,25 @@ a.accordion-title href="#"
     .cell
       .grid-x.grid-padding-x
         .cell.auto
-          - pu_count = @projects_projects_user_counts[project.id] || " 0"
-          - pu_title = (pu_count + (pu_count == "1" ? " Member" : " Members"))
+          - pu_count = @projects_projects_user_counts[project.id]
+          - pu_title = pu_count == 1 ? "#{pu_count} Member" : "#{pu_count || 0} Members"
           h5 = link_to pu_title, edit_project_path(project) + '#panel-projects-users', title: t('.members_and_roles')
         .cell.auto
-          - kqp_count = @projects_key_questions_project_counts[project.id] || " 0"
-          - kqp_title = (kqp_count + (kqp_count == "1" ? " Key Question" : " Key Questions"))
-          h5 = link_to kqp_title, edit_project_path(project) + '#panel-key-questions',       title: t('.key_questions')
+          - kqp_count = @projects_key_questions_project_counts[project.id]
+          - kqp_title = kqp_count == 1 ? "#{kqp_count} Key Question" : "#{kqp_count || 0} Key Questions"
+          h5 = link_to kqp_title, edit_project_path(project) + '#panel-key-questions', title: t('.key_questions')
         .cell.auto
-          - cp_count = @projects_citations_project_counts[project.id] || " 0"
-          - cp_title = (cp_count + (cp_count == "1" ? " Citation" : " Citations"))
+          - cp_count = @projects_citations_project_counts[project.id]
+          - cp_title = cp_count == 1 ? "#{cp_count} Citation" : "#{cp_count || 0} Citations"
           h5 = link_to cp_title, project_citations_path(project), title: t('manage_citations')
         .cell.auto
-          - e_count = @projects_extraction_counts[project.id] || " 0"
-          - e_title = (e_count + (e_count == "1" ? " Extraction" : " Extractions"))
+          - e_count = @projects_extraction_counts[project.id]
+          - e_title = e_count == 1 ? "#{e_count} Extraction" : "#{e_count || 0} Extractions"
           h5 = link_to e_title, project_extractions_path(project), title: t('manage_extractions')
         .cell.auto
-          - e_count = @sd_meta_data_counts[project.id] || " 0"
-          - e_title = (e_count + (e_count == "1" ? " SR-360 Item" : " SR-360 Items"))
-          h5 = link_to e_title, project_sd_meta_data_path(project), title: t('manage_extractions')
+          - sd_count = @sd_meta_data_counts[project.id]
+          - sd_title = sd_count == 1 ? "#{sd_count} SR-360 Item" : "#{sd_count || 0} SR-360 Items"
+          h5 = link_to sd_title, project_sd_meta_data_path(project), title: t('manage_extractions')
         /.cell.auto
           span.label Date Created:
           .callout = project.created_at.in_time_zone(current_user.profile.time_zone).strftime("%b %-d, %Y - %l:%M %P")
@@ -57,13 +55,16 @@ a.accordion-title href="#"
     .grid-x.grid-padding-x
       .cell.auto
         = link_to "Edit Project", edit_project_path(project), class: "button expanded"
-      /.cell.auto
-        - efp_id = @projects_extraction_forms_project_ids[project.id]
-        = link_to "Build Extraction Form", build_extraction_forms_project_path(efp_id, anchor: "panel-tab-#{ efp_id }"), class: "button expanded#{ @projects_lead_or_with_key_questions[project.id] ? '' : ' disabled'}"
+
+      .cell.auto
+        - if @projects_lead_or_with_key_questions[project.id]
+          = link_to "Build Extraction Form", build_extraction_forms_project_path(project.extraction_forms_projects.first.id, anchor: "panel-tab-#{ project.extraction_forms_projects.first.id }"), class: "button expanded"
+        - else
+          div class="button expanded" onClick="alert('Please add at least one Key Question first')" Build Extraction Form
+
       .cell.auto
         = link_to "Import Project Data", new_project_import_path(project), class: "button expanded"
-      /.cell.auto
-        = link_to "List Extractions", project_extractions_path(project), class: "button expanded"
+
       .cell.auto
         a.button.expanded#export-modal-button[data-open="export-modal-#{project.id.to_s}"]
           | Export Project Data
@@ -71,20 +72,40 @@ a.accordion-title href="#"
         .reveal[data-reveal='' id="export-modal-#{project.id.to_s}"]
           a[data-close='' style='float: right; font-size: large;']
             |×
+
           fieldset
             legend[style='font-size: large;']
-              | Select export type:
-            input[class='export-type-radio' type='radio' name="export-type-#{project.id.to_s}" value="#{export_project_path(project, export_type_name: '.xlsx')}" checked='' id="xlsx-radio-#{project.id.to_s}"]
-            label for="xlsx-radio-#{project.id.to_s}"
-              | Microsoft Excel (.xlsx)
-            input[class='export-type-radio' type='radio' name='export-type-#{project.id.to_s}' value=value="#{export_project_path(project, export_type_name: 'Google Sheets')}" id="gsheets-radio-#{project.id.to_s}"]
+              | Select export types:
+
+            input[class='export-type-radio' type='radio' name="export-type-#{project.id.to_s}" value="#{export_project_path(project, export_type_name: '.xlsx long')}" checked='' id="xlsx-long-radio-#{project.id.to_s}"]
+            label for="xlsx-long-radio-#{project.id.to_s}"
+              | Microsoft Excel - long format (.xlsx)
+
+            br
+
+            input[class='export-type-radio' type='radio' name="export-type-#{project.id.to_s}" value="#{export_project_path(project, export_type_name: '.xlsx wide')}" id="xlsx-wide-radio-#{project.id.to_s}"]
+            label for="xlsx-wide-radio-#{project.id.to_s}"
+              | Microsoft Excel - wide format (.xlsx)
+
+            br
+
+            input[class='export-type-radio' type='radio' name="export-type-#{project.id.to_s}" value="#{export_project_path(project, export_type_name: 'Google Sheets')}" id="gsheets-radio-#{project.id.to_s}"]
             label for="gsheets-radio-#{project.id.to_s}"
               | Google Sheets
+
           = link_to "Export Project Data", export_project_path(project, export_type_name: '.xlsx'), method: :post, class: "button expanded start-export-button"
 
+      .cell.auto
+        - if project.publishing.present? && project.publishing.approval.present?
+          = link_to 'Project has been published', '#', title: 'Project has been published', class: "button expanded disabled"
+        - elsif project.publishing.present?
+          = link_to 'Cancel publication request', publishing_path(project.publishing.publishable_id), title: 'Cancel publication request', data: { confirm: 'Are you sure?' }, method: :delete, class: "button expanded"
+        - else
+          = link_to t('request_publication'), new_publishing_path(type: Project.to_s, id: project.id), title: t('request_publication'), class: "button expanded"
 
       .cell.auto
         = link_to "Delete Project", confirm_deletion_project_path(project), method: :get, class: "alert button expanded", remote: true
+
       .reveal.grid-x[data-reveal id="gdrive-export-modal-#{project.id.to_s}"]
         .cell.auto
           = link_to "Sign In to Google", user_google_oauth2_omniauth_authorize_path, method: :get, class: "button"

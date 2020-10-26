@@ -1,5 +1,4 @@
 .column.row
-
   - if current_user.profile.advanced_mode && efps.extraction_forms_projects_section_type.name != 'Key Questions'
 
     h4 #{ efps.section.name }
@@ -13,9 +12,22 @@
       li
         = link_to 'Remove Section', efps, method: :delete, data: { confirm: t('confirm') }, class: 'button tiny alert'
 
-    hr
+  h4 Display Section
+  div.switch#hide-switch
+    = simple_form_for(Statusing.new, url: api_v1_extraction_forms_projects_section_toggle_hiding_path(efps.id), remote: true, method: :post, html: { id: "hide-form-#{efps.id}" }) do |f|
+      = f.input_field :status_id, checked: !efps.hidden , as: :boolean, boolean_style: :inline, class: 'switch-input', id: "status-id-#{efps.id}", name: "status-id-#{efps.id}"
+      label.switch-paddle.switch-hidden for="status-id-#{efps.id}"
+        span.show-for-sr Hide section
+        span.switch-active aria-hidden="true" Yes
+        span.switch-inactive aria-hidden="true" No
+  hr
 
 .column.row.efps-container[data-efps-id="#{efps.id.to_s}"]
 
   == render 'extraction_forms_projects/build/' + efps.extraction_forms_projects_section_type.name.parameterize.underscore,
     efps: efps
+
+javascript:
+  $("#status-id-#{efps.id}").on('click', function() {
+    $("#hide-form-#{efps.id}").submit();
+  })

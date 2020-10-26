@@ -19,6 +19,7 @@
 //= require xlsx.mini.js
 //= require tether.min
 //= require dropzone
+//= require ahrq_foresee_qa_survey
 
 // require assignments
 // require author
@@ -280,6 +281,12 @@ document.addEventListener( 'turbolinks:load', function() {
   }
 
 } );
-document.addEventListener( 'turbolinks:before-cache', function() {
+
+document.addEventListener('turbolinks:before-cache', function() {
   $( '.reveal' ).foundation( 'close' )
-} );
+  $('#loading-indicator').show()
+});
+
+document.addEventListener("turbolinks:load", function() {
+  $('#loading-indicator').hide()
+})

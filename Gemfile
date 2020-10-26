@@ -61,6 +61,7 @@ group :development do
   gem 'spring-watcher-listen', '~> 2.0.0'
   # Annotate Models
   gem 'annotate', '~> 2.7', '>= 2.7.4'
+  gem 'bullet'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
@@ -185,3 +186,10 @@ gem "amoeba"
 
 # full-stack error tracking system
 gem "sentry-raven"
+
+# observability platform
+gem 'newrelic_rpm'
+gem 'newrelic-infinite_tracing'
+
+# Limit request rates
+gem 'rack-attack'

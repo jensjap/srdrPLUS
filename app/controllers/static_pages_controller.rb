@@ -13,9 +13,19 @@ class StaticPagesController < ApplicationController
     end
 
     begin
-      @recently_published_projects = HTTParty.get('https://srdr.ahrq.gov/projects/api_index_published')
+      url = 'https://srdr.ahrq.gov/projects/api_index_published'
+      redis = Redis.new
+      if cached_response = redis.get("GET:#{url}")
+        unparsed_response = cached_response
+      else
+        unparsed_response = HTTParty.get(url).body
+        redis.setex("GET:#{url}", 60 * 30, unparsed_response)
+      end
+      @recently_published_projects = JSON.
+        parse(unparsed_response).
+        sort_by { |a| -DateTime.parse(a[1]['publication_requested_at']).to_i }
     rescue
-      @recently_published_projects = nil
+      @recently_published_projects = []
     end
 
     case cookies[:layout_style].to_i

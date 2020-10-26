@@ -1,20 +1,27 @@
 - section_name = section_name.singularize
 
-h5 Add New #{ section_name }
-
-= simple_form_for(eefps, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
-  .alert.callout data-abide-error='' style='display: none;'
-    p
-      i.fi-alert>
-      ' Please correct the errors below.
-
+= simple_form_for(eefps, remote: section_name == 'Outcome', html: { autocomplete: 'off', data: { 'abide': '', 'live-validate': true } }) do |f|
   / We need to know whether this are sending this from a work or consolidate action for eefps/update.js to load the correct partials.
-  = f.hidden_field :action, value: @extractions.present? ? :consolidate : :work
+  - if @extractions.present?
+    = f.hidden_field :action, value: :consolidate
+    = f.hidden_field :extraction_ids, value: @extractions.map{|x| x.id}
+  - else
+    = f.hidden_field :action, value: :work
 
-  = f.simple_fields_for(:extractions_extraction_forms_projects_sections_type1s,
-    f.object.extractions_extraction_forms_projects_sections_type1s.build) do |sf_eefpst1|
+  = f.simple_fields_for(:extractions_extraction_forms_projects_sections_type1s, f.object.extractions_extraction_forms_projects_sections_type1s.build) do |sf_eefpst1|
     .row
-      .columns.medium-12.form-inputs class="new-type1-fields-#{ eefps.id.to_s }"
+
+      .column.small-6.form-inputs class="new-type1-fields-#{ eefps.id.to_s }"
+        h5
+          span style="margin-right: 10px;" Add New #{ section_name }
+          = render 'extractions/shared/type_1/type_1_example_list',
+            extraction: @extraction,
+            section_name: section_name,
+            eefps: eefps
+        .alert.callout data-abide-error='' style='display: none;'
+          p
+            i.fi-alert>
+            ' Please correct the errors below.
         - if section_name.eql? 'Outcome'
           = sf_eefpst1.association :type1_type,
             required: true,
@@ -30,12 +37,11 @@ h5 Add New #{ section_name }
           = sf_t1.input :description,\
             label: section_name.eql?('Outcome') ? 'Specific Measurement' : 'Description',\
             input_html: { rows: 2 }, input_html: { 'data-t1-description-input' => '' }
-
         - if section_name.eql? 'Outcome'
           = sf_eefpst1.input :units, input_html: { 'data-t1-units-input' => '' }
 
-        - if section_name.eql? 'Outcome'
-          br
+      - if section_name.eql? 'Outcome'
+        .column.small-6 style="border-left: #e2e2e2 1px solid;"
           = sf_eefpst1.simple_fields_for(:extractions_extraction_forms_projects_sections_type1_rows, sf_eefpst1.object.extractions_extraction_forms_projects_sections_type1_rows.build({ population_name_attributes: { name: 'All Participants', description: 'All patients enrolled in this study.' } })) do |pop_form|
             #populations style='margin: 1rem 0 1rem 0;'
               h5 Populations
@@ -65,7 +71,6 @@ h5 Add New #{ section_name }
                       th Delete
                       th Name
                       th Unit
-
                   tbody#timepoints-node
                     = render 'extractions_extraction_forms_projects_sections_type1s/timepoint_fields', f: tp_form
                 .links
@@ -77,18 +82,7 @@ h5 Add New #{ section_name }
                     partial: 'extractions_extraction_forms_projects_sections_type1s/timepoint_fields' do
                     i.fi-plus>
                     | Add Timepoint
-
-      /- if section_name.eql? 'Outcome'
-        = sf_eefpst1.association :timepoint_names,
-          including_blank: false,
-          label: "Suggest Timepoint(s) to associate with this #{ section_name }. If you cannot find an existing Timepoint to associate, #{ link_to_add_association('click here', sf_eefpst1, :timepoint_names, partial: 'extraction_forms_projects/build/type1/timepoint_name_fields') } to create a new one.".html_safe,
-          label_method: :select_label
-
-  .grid-x
-    .cell.shrink style='margin-right: 0.5rem;'
-      = render 'extractions/shared/type_1/type_1_example_list',
-        extraction: @extraction,
-        section_name: section_name,
-        eefps: eefps
-    .cell.auto.form-actions
-      = f.button :submit, 'Save'
+    .row
+      .column
+        .cell.auto.form-actions style="text-align: right; margin-top: 1rem;"
+          = f.button :submit, 'Save'

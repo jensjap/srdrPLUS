@@ -43,7 +43,7 @@
             - if !sd_meta_datum.all_sections_complete?
               td
             - elsif sd_meta_datum.publishing.nil? && sd_meta_datum.check_publishing_eligibility.blank?
-              td = link_to("Publish", publishings_create_path(type: :sd_meta_datum, id: sd_meta_datum.id), class: "sd-meta-data-index-request-publish", method: :post)
+              td = link_to("Publish", publishings_path(id: sd_meta_datum.id, type: sd_meta_datum.class.to_s), class: "sd-meta-data-index-request-publish", method: :post)
             - elsif sd_meta_datum.publishing.nil?
               td
                 div data-open="publish-sd-meta-datum-errors-modal-#{sd_meta_datum.id}" style="color: #410b6c;" class="sd-meta-data-index-request-publish" = "Publish"

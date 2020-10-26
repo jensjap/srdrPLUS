@@ -9,11 +9,11 @@
 
 / Note: Numeric will always have 2 question_row_column_fields for every question_row_column. One for the
     special character ~, <, >, ≤, ≥ and another for the numerical value.
-
-.row
+- addtl_chars = ActiveModel::Type::Boolean.new.cast(qrc.field_validation_value_for(:additional_char))
+.column.row class="overlay-parent"
   / If user chose to allow additional char then make this input field available.
-  - if ActiveModel::Type::Boolean.new.cast(qrc.field_validation_value_for(:additional_char))
-    .column.medium-4
+  - if addtl_chars
+    .column.medium-1 style="padding: 0;"
       / Special char is one of the following: ~, <, >, ≤, ≥
       - eefps_qrcf_special = @eefps_qrcf_dict[[eefps.id,qrc.question_row_column_fields.first.id,t1&.id].to_s]
 
@@ -42,7 +42,7 @@
         /.form-actions
           = f.button :submit, 'Save'
 
-  .column.medium-8
+  .column class="#{addtl_chars ? 'medium-11' : ''}" style="padding: 0;"
     / We handle the creation of the second question_row_column_fields in model/question_row_column :after_save callback.
     /- byebug if qrc.question_row_column_fields.length < 2
     /- qrc.question_row_column_fields.create if qrc.question_row_column_fields.lenght < 2

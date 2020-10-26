@@ -1,16 +1,20 @@
-ul.tabs.vertical id="extraction-forms-projects-#{ efp.id.to_s }-vertical-tabs" data-deep-link='true' data-update-history='true' data-tabs=''
-  - is_first = true
-  - efp.extraction_forms_projects_sections.includes(:section).each do |efps|
+ul.tabs.vertical id="extraction-forms-projects-#{ efp.id.to_s }-vertical-tabs"
+  - efp.extraction_forms_projects_sections.includes(:section).reject { |efps| efps.hidden }.each do |efps|
     - section_name = efps.section.name
-    - if is_first
-      li.tabs-title.is-active aria-selected="true"
+    - eefps_id = efps.extractions_extraction_forms_projects_sections.where(extraction_id: @extraction.id).first.try(:id)
+    - efps_link_url = (action_name.eql?("consolidate") ? request.original_url + "&panel-tab=#{ efps.id.to_s }" : "?panel-tab=#{ efps.id.to_s }")
+    - completed = Statusing.find_by(statusable_id: eefps_id).try(:status).try(:name) == 'Completed'
+
+    - if @panel_tab_id == efps.id.to_s
+      li.tabs-title style="background: lightgray;"
         = link_to section_name,
-          "#panel-tab-#{ efps.id.to_s }",
-          title: section_name
-      - is_first = false
+          efps_link_url,
+          title: section_name,
+          class: "tab-title-#{eefps_id} #{completed ? 'green bold checkmarked' : ''}"
 
     - else
       li.tabs-title
         = link_to section_name,
-          "#panel-tab-#{ efps.id.to_s }",
-          title: section_name
+          efps_link_url,
+          title: section_name,
+          class: "tab-title-#{eefps_id} #{completed ? 'green bold checkmarked' : ''}"

@@ -7,7 +7,7 @@
   might be better to just use .find_by! since we are assured of the existence of the
   eefps.
 
-.column.row
+.column.row class="overlay-parent"
   - eefps_qrcf = @eefps_qrcf_dict[[eefps.id,qrc.question_row_column_fields.first.id,t1&.id].to_s]
   - if not eefps_qrcf
     - eefps_qrcf = ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField.find_or_create_by( \
@@ -21,7 +21,7 @@
   - if not record
     - record = Record.find_or_create_by(recordable: eefps_qrcf)
 
-  = simple_form_for(eefps_qrcf, remote: true, namespace: "record_#{record.id.to_s}", html: { data: { 'abide': '', 'live-validate': true } }) do |f|
+  = simple_form_for(eefps_qrcf, remote: true, namespace: "record_#{record.id.to_s}", html: { data: { 'abide': '', 'live-validate': true, prereq: "prereq-#{ qrc.class }-#{ qrc.id }" } }) do |f|
     = f.error_notification
 
     - options = qrc.question_row_columns_question_row_column_options.\

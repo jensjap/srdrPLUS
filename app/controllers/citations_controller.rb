@@ -66,7 +66,7 @@ class CitationsController < ApplicationController
     #  .group('citations.id')
     #  .where(:projects => { :id => @project.id }).all
     #@labels = Label.where(:user_id => current_user.id).where(:citations_project_id => [@project.citations_projects]).all
-    @citations = @project.citations.includes(:journal, authors_citations: [:ordering, :author]).order(:id)
+    @citations = @project.citations.includes(authors_citations: [:ordering, :author]).order(:id)
     @citations_projects_dict = @project.citations_projects.map{|cp| [cp.citation_id, cp]}.to_h
     @key_questions_projects_array_for_select = @project.key_questions_projects_array_for_select
 
@@ -104,7 +104,7 @@ class CitationsController < ApplicationController
 
     def citation_params
       params.require(:citation)
-          .permit(:name, :citation_type_id, :pmid, :refman, :abstract, :page_number_start, :page_number_end, :_destroy, 
+          .permit(:name, :citation_type_id, :pmid, :refman, :abstract, :page_number_start, :page_number_end, :_destroy,
             journal_attributes: [:id, :name, :publication_date, :issue, :volume, :_destroy],
             authors_citations_attributes: [:id, { author_attributes: :name }, { ordering_attributes: :position }, :_destroy],
             keywords_attributes: [:id, :name, :_destroy],

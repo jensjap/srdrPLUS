@@ -122,15 +122,13 @@ button.suggestion-list-button {
 }
 
 .remove-comparison-button {
-  position: absolute;
   border: 1px solid grey;
   padding: 0px 5px;
   font-weight: 900;
   background-color: white;
   border-radius: 3px;
   color: black;
-  right: 0px;
-  top: 0px;
+  z-index: 5;
 }
 
 .tr-group-top {
@@ -139,4 +137,24 @@ button.suggestion-list-button {
 
 .tr-group-bottom {
   border-bottom: 2px solid !important;
+}
+
+.outcome-completed {
+  color: green;
+}
+
+.results-table td {
+  border-right: 1px solid black;
+}
+
+.green {
+  color: green !important;
+}
+
+.bold {
+  font-weight: bold !important;
+}
+
+.checkmarked:after {
+  content: "\2713";
 }

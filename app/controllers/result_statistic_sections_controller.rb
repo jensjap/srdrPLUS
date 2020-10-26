@@ -17,7 +17,7 @@ class ResultStatisticSectionsController < ApplicationController
     add_breadcrumb 'extractions',  project_extractions_path(@result_statistic_section.extraction.project)
     add_breadcrumb 'work',         work_extraction_path(@result_statistic_section.extraction,
                                                           params: { eefpst1_id: @result_statistic_section.population.extractions_extraction_forms_projects_sections_type1_id },
-                                                          anchor: "panel-tab-#{ @result_statistic_section.eefps_result.id }")
+                                                          'panel-tab': @result_statistic_section.eefps_result.id)
     add_breadcrumb @result_statistic_section.result_statistic_section_type.name.downcase,
       :edit_result_statistic_section_path
   end
@@ -27,8 +27,16 @@ class ResultStatisticSectionsController < ApplicationController
   def update
     respond_to do |format|
       if @result_statistic_section.update(result_statistic_section_params)
-        format.html { redirect_to edit_result_statistic_section_path(@result_statistic_section),
-                      notice: t('success') }
+        format.html do |format|
+          if params[:result_statistic_section].has_key? :extraction_ids
+            redirect_to consolidate_result_statistic_section_path(@result_statistic_section, 
+              extraction_ids: params[:result_statistic_section][:extraction_ids]),
+              notice: t('success')
+          else
+            redirect_to edit_result_statistic_section_path(@result_statistic_section),
+                    notice: t('success')
+          end
+        end
         format.json { render :show, status: :ok, location: @result_statistic_section }
         format.js { }
       else
@@ -86,6 +94,9 @@ class ResultStatisticSectionsController < ApplicationController
   def manage_measures
     respond_to do |format|
       format.js do
+        if params[:extraction_ids].present?
+          @extraction_ids = params[:extraction_ids]
+        end
         @result_statistic_section = ResultStatisticSection.find(params[:rss_id])
         @result_statistic_section.result_statistic_sections_measures.build.build_measure
         @options = @result_statistic_section

@@ -5,7 +5,14 @@ class RecordsController < ApplicationController
   # PATCH/PUT /records/1.json
   def update
     respond_to do |format|
-      if @record.update(record_params)
+      begin
+        return_val = @record.update(record_params)
+        error_message = @record.errors.full_messages.to_s
+      rescue
+        return_val = false
+        error_message = 'Cannot save value'
+      end
+      if return_val
         format.html { redirect_to edit_result_statistic_section_path(@record.recordable.result_statistic_section), notice: t('success') }
         format.json { render :show, status: :ok, location: @record }
         format.js do
@@ -13,11 +20,11 @@ class RecordsController < ApplicationController
         end
       else
         format.html { redirect_to work_extraction_path(@record.recordable.extraction,
-                                                       anchor: "panel-tab-#{ @record.recordable.extractions_extraction_forms_projects_section.id.to_s }"),
-                                  alert: t('failure') + ' ' + @record.errors.full_messages.to_s }
+                                                       'panel-tab': @record.recordable.extractions_extraction_forms_projects_section.id.to_s),
+                                  alert: t('failure') + ' ' + error_message }
         format.json { render json: @record.errors, status: :unprocessable_entity }
         format.js do
-          @info = [false, @record.errors.full_messages.first, 'red']
+          @info = [false, error_message, 'red']
         end
       end
     end

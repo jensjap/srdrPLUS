@@ -1,6 +1,6 @@
 .tabs-content.vertical data-tabs-content="extraction-forms-projects-#{ efp.id.to_s }-vertical-tabs"
   - is_first = true
-  - efp.extraction_forms_projects_sections.each do |efps|
+  - efp.extraction_forms_projects_sections.where(id: @panel_tab_id).reject { |efps| efps.hidden }.each do |efps|
     - section_name = efps.section.name
     - if is_first
       .tabs-panel.is-active id="panel-tab-#{ efps.id.to_s }"

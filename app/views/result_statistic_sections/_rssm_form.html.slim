@@ -2,7 +2,10 @@ button.close-button data-close='' aria-label='Close modal' type='button'
   span aria-hidden='true' &times;
 
 h4 Please select measures to be included from the list below:
-= simple_form_for @result_statistic_section, remote: true do |f|
+= simple_form_for @result_statistic_section, remote: (if @extraction_ids.blank? then true else false end) do |f|
+  - if @extraction_ids.present?
+    = f.hidden_field :extraction_ids, value: @extraction_ids
+
   table.dependence-selector
     caption Measures
 

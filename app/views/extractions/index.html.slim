@@ -1,24 +1,38 @@
+#loading-indicator
+  #spinner
+
 - provide(:title, 'List of Extractions')
 
 .column.row
   - efp = @project.extraction_forms_projects.first
-  h2 = link_to 'go to extraction form builder ->', build_extraction_forms_project_path(efp, anchor: "panel-tab-#{ efp.extraction_forms_projects_sections.first.id }"), { style: 'float: right; font-size: 0.4em;' }
+  - if @project.key_questions.present?
+    h2 = link_to 'go to extraction form builder ->', build_extraction_forms_project_path(efp, anchor: "panel-tab-#{ efp.extraction_forms_projects_sections.first.id }"), { style: 'float: right; font-size: 0.4em;' }
+  - else
+    h2 = link_to 'go to extraction form builder ->', '#', style: 'float: right; font-size: 0.4em;', onClick: "alert('Please add at least one Key Question first')"
 
 .row
   .column.medium-12
     div style='display: flex; flex-direction: row;'
       h4 Extractions
+    div
+      - if @project.key_questions.present?
+        = link_to new_project_extraction_path, class: 'button create-button create-extraction-button' do
+          i.fi-plus>
+          = t('.create')
+      - else
+        = link_to '#', class: 'button create-button create-extraction-button', onClick: "alert('Please add at least one Key Question first')" do
+          i.fi-plus>
+          = t('.create')
+
     table.extractions-list
       thead
         tr
+          th Title
+          th Pub Year
+          th PMID
+          th First Author
           - if @project.leaders.include? current_user
-            th.citation-handle-header[width="50%" data-sort-mode="name" data-sort-direction="asc"]
-              | Citation (Sorted by Title)
             th width="30%" Assigned User
-          - else
-            th.citation-handle-header[width="80%" data-sort-mode="name" data-sort-direction="asc"]
-              | Citation (Sorted by Title)
-          /th Role
           th width="10%" Progress
           th width="5%"
           th width="5%"
@@ -47,9 +61,12 @@
               - else
                 - tooltip_text = "<span style='font-weight: bold;'>Complete!</span>"
 
-              td.citation-handle[data-sort="#{ name }" data-pmid="#{ pmid }" data-name="#{ name }" data-year="#{ year }" data-author="#{ first_author }"] = link_to citation_handle.html_safe, citation_path(citation, project_id: @project.id)
+              td data-sort="#{name}" = link_to name, citation_path(citation, project_id: @project.id)
+              td = year
+              td = pmid
+              td = first_author
               - if @project.leaders.include? current_user
-                td data-sort="#{ extraction.projects_users_role.handle }"
+                td
                   .projects-users-role dropdown-active='false'
                     span.projects-users-role-label data-extraction-id="#{ extraction.id.to_s }"
                       = extraction.projects_users_role.handle
@@ -57,7 +74,7 @@
                       = simple_form_for extraction, remote: true do |e_f|
                         = e_f.association :projects_users_role, label: false, collection: @projects_users_roles, label_method: :handle, input_html: { class: "index-extractions-select2" }, selected: extraction.projects_users_role.id
 
-              td[data-sort="#{ progress_meter_width }"]
+              td data-sort="#{ progress_meter_width }"
                 .success.progress data-allow-html="true" data-tooltip="" title="#{ tooltip_text }"
                   .progress-meter style="width: #{ progress_meter_width }%;"
               /td = extraction.projects_users_role.role.name
@@ -65,9 +82,14 @@
               /td = link_to t('edit'), edit_extraction_path(extraction)
               td = link_to t('destroy'), extraction, style: 'font-weight:bold;color:#cc4b37 !important;', data: { confirm: 'Are you sure?' }, method: :delete
 .column.row
-  = link_to new_project_extraction_path, class: 'button create-button create-extraction-button' do
-    i.fi-plus>
-    = t('.create')
+  - if @project.key_questions.present?
+    = link_to new_project_extraction_path, class: 'button create-button create-extraction-button' do
+      i.fi-plus>
+      = t('.create')
+  - else
+    = link_to '#', class: 'button create-button create-extraction-button', onClick: "alert('Please add at least one Key Question first')" do
+      i.fi-plus>
+      = t('.create')
 
 - if @project.leaders.include?(current_user) or @project.consolidators.include? current_user
   .row

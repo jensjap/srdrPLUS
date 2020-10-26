@@ -1,3 +1,4 @@
+/*
 ( function() {
   let order = "<%= @order %>";
   // Options to be passed into mark to highlight.
@@ -16,3 +17,6 @@
   $( '.toggle-sort-order button.button.' + order ).removeClass( 'disabled' ).addClass( 'active' ).blur();
   $( '.toggle-sort-order button.button.' + notOrder ).removeClass( 'active' ).addClass( 'disabled' ).blur();
 } )();
+*/
+
+$('some_element').replaceWith('<%= j render 'index' %>');

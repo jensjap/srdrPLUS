@@ -12,6 +12,7 @@
 class ExtractionFormsProjectType < ApplicationRecord
   STANDARD = 'Standard'.freeze
   DIAGNOSTIC_TEST = 'Diagnostic Test'.freeze
+  MINI_EXTRACTION = 'Citation Screening Extraction Form'.freeze
 
   acts_as_paranoid
   has_paper_trail

@@ -8,24 +8,39 @@ class ExtractionsExtractionFormsProjectsSectionsController < ApplicationControll
     respond_to do |format|
       if @extractions_extraction_forms_projects_section.update(extractions_extraction_forms_projects_section_params)
         format.html do
-          redirect_to work_extraction_path(@extractions_extraction_forms_projects_section.extraction,
-            anchor: "panel-tab-#{ @extractions_extraction_forms_projects_section.extraction_forms_projects_section.id.to_s }"),
-            notice: t('success')
+          if params[:extractions_extraction_forms_projects_section].has_key? :extraction_ids
+            redirect_to consolidate_project_extractions_path(@extractions_extraction_forms_projects_section.project,
+              extraction_ids: params[:extractions_extraction_forms_projects_section][:extraction_ids],
+              anchor: "panel-tab-#{ @extractions_extraction_forms_projects_section.extraction_forms_projects_section.id.to_s }"),
+              notice: t('success')
+          else
+            redirect_to work_extraction_path(
+              @extractions_extraction_forms_projects_section.extraction,
+              "panel-tab": @extractions_extraction_forms_projects_section.extraction_forms_projects_section.id.to_s),
+              notice: t('success')
+          end
         end
         format.json {
           render :show, status: :ok, location: @extractions_extraction_forms_projects_section
         }
         format.js do
-          @action                = params[:extractions_extraction_forms_projects_section][:action]
-          @extraction            = @extractions_extraction_forms_projects_section.extraction
-          @linked_type2_sections = @extractions_extraction_forms_projects_section.link_to_type2s
-          @results_eefps         = @extraction.find_eefps_by_section_type('Results')
+          if params[:extractions_extraction_forms_projects_section][:action] == 'work'
+            @consolidated_extraction = @extractions_extraction_forms_projects_section.extraction
+            render '/extractions_extraction_forms_projects_sections/work_update'
+          else
+            @action                = params[:extractions_extraction_forms_projects_section][:action]
+            @extraction            = @extractions_extraction_forms_projects_section.extraction
+            @linked_type2_sections = @extractions_extraction_forms_projects_section.link_to_type2s
+            @results_eefps         = @extraction.find_eefps_by_section_type('Results')
+          end
         end
       else
         format.html {
-          redirect_to work_extraction_path(@extractions_extraction_forms_projects_section.extraction,
-            anchor: "panel-tab-#{ @extractions_extraction_forms_projects_section.id.to_s }"),
-            alert: t('failure')
+          redirect_to work_extraction_path(
+            @extractions_extraction_forms_projects_section.extraction,
+            "panel-tab": @extractions_extraction_forms_projects_section.extraction_forms_projects_section.id.to_s
+          ),
+          alert: t('failure')
         }
         format.json {
           render json: @extractions_extraction_forms_projects_section.errors, status: :unprocessable_entity

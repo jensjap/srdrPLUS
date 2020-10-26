@@ -65,8 +65,8 @@ class ExtractionFormsProjectsController < ApplicationController
                  :section,
                  :type1s,
                  { questions: [:dependencies, :ordering,
-                               { question_rows: [ { question_row_columns: [:question_row_column_fields, 
-                                                                           :question_row_column_type, 
+                               { question_rows: [ { question_row_columns: [:question_row_column_fields,
+                                                                           :question_row_column_type,
                                                                            :question_row_columns_question_row_column_options] }] },
                                { key_questions_projects: [ :key_question ] }] }])
     add_breadcrumb 'my projects',  :projects_path

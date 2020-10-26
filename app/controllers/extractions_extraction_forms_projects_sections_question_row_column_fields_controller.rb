@@ -7,15 +7,17 @@ class ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnFieldsControlle
     respond_to do |format|
       if @eefps_qrcf.update(eefps_qrcf_params)
         format.html { redirect_to work_extraction_path(@eefps_qrcf.extractions_extraction_forms_projects_section.extraction,
-                                                       anchor: "panel-tab-#{ @eefps_qrcf.extractions_extraction_forms_projects_section.id.to_s }"),
+                                                       'panel-tab': @eefps_qrcf.extractions_extraction_forms_projects_section.id.to_s),
                                   notice: t('success') }
         format.json { render :show, status: :ok, location: @eefps_qrcf }
         format.js do
           @info = [true, 'Saved!', '#410093']
         end
       else
-        format.html { redirect_to work_extraction_path(@eefps_qrcf.extractions_extraction_forms_projects_section.extraction,
-                                                       anchor: "panel-tab-#{ @eefps_qrcf.extractions_extraction_forms_projects_section.id.to_s }"),
+        format.html { redirect_to work_extraction_path(
+          @eefps_qrcf.extractions_extraction_forms_projects_section.extraction,
+          'panel-tab': @eefps_qrcf.extractions_extraction_forms_projects_section.id.to_s,
+        ),
                                   notice: t('success') }
         format.json { render json: @eefps_qrcf.errors, status: :unprocessable_entity }
         format.js do

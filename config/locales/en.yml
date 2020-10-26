@@ -82,6 +82,7 @@ en:
   blank: Cannot be blank
   confirm: Are you sure?
   comparison_tool: Comparison Tool
+  request_publication: Request publication
   extractions:
     index:
       create: Create Extraction
