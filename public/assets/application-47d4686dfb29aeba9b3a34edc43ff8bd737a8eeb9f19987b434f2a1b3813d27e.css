@@ -19548,6 +19548,255 @@ a.thumbnail image {
   -webkit-animation-delay: 700ms !important;
           animation-delay: 700ms !important;
 }
+/* line 2, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/imports.scss */
+.imports.new .is-droppable, .imports.new .header-column {
+  font-weight: bold;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+/* line 10, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/imports.scss */
+.imports.new .header-column {
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  font-size: 1rem;
+  min-width: 10rem;
+  min-height: 2.8rem;
+  max-height: 2.8rem;
+  margin: 0.3rem;
+}
+/* line 19, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/imports.scss */
+.imports.new .is-droppable {
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  min-width: 9.2rem;
+  height: 2rem;
+  cursor: -webkit-grab;
+  cursor: grab;
+  color: white;
+  background-color: #78658c;
+  border-radius: 1rem;
+  z-index: 100;
+}
+/* line 29, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/imports.scss */
+.imports.new .is-droppable:focus {
+  outline: none;
+}
+/* line 34, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/imports.scss */
+.imports.new .import-column {
+  min-width: 10rem;
+  max-height: 2.8rem;
+  min-height: 2.8rem;
+  margin: 0.3rem;
+  padding: 0;
+  overflow: hidden;
+  background-color: transparent;
+  border: dashed #78658c 1.5px;
+  border-radius: 1.4rem;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+/* line 49, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/imports.scss */
+.imports.new .is-droppable.draggable-source--is-dragging {
+  opacity: 0.3;
+}
+/* line 53, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/imports.scss */
+.imports.new #dropzone-div {
+  height: 30rem;
+  font-size: 1.2rem;
+}
+/* line 58, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/imports.scss */
+.imports.new .discard-button {
+  background-color: #dc7565;
+}
+/* line 62, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/imports.scss */
+.imports.new #import-tabs-panel {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: row;
+      -ms-flex-direction: row;
+          flex-direction: row;
+}
+/* line 65, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/imports.scss */
+.imports.new #import-tabs-panel .import-columns-tab {
+  cursor: pointer;
+  border-radius: 0.5rem 0.5rem 0 0;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  height: 2rem;
+  margin: 0 0.5rem 0 0;
+  padding: 0 0.8rem 0 0.8rem;
+  font-size: 0.9rem;
+  font-weight: bold;
+}
+/* line 76, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/imports.scss */
+.imports.new #import-tabs-panel .import-columns-tab.selected {
+  background-color: #deecf9;
+}
+/* line 82, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/imports.scss */
+.imports.new #palette-container, .imports.new #import-panel-container, .imports.new #dropzone-div {
+  margin-top: 2rem;
+}
+/* line 87, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/imports.scss */
+.imports.new #palette-container .palette {
+  min-height: -webkit-max-content;
+  min-height: -moz-max-content;
+  min-height: max-content;
+  max-height: -webkit-max-content;
+  max-height: -moz-max-content;
+  max-height: max-content;
+  border: dashed #78658c 1.5px;
+  border-radius: 1.4rem;
+}
+/* line 92, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/imports.scss */
+.imports.new #palette-container .palette .import-column {
+  border: none;
+  position: relative;
+}
+/* line 95, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/imports.scss */
+.imports.new #palette-container .palette .import-column span {
+  position: absolute;
+}
+/* line 102, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/imports.scss */
+.imports.new #import-columns-panel {
+  border-radius: 0 1rem 1rem 1rem;
+  background-color: #deecf9;
+  width: -webkit-max-content;
+  width: -moz-max-content;
+  width: max-content;
+  overflow: scroll;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: row;
+      -ms-flex-direction: row;
+          flex-direction: row;
+}
+/* line 110, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/imports.scss */
+.imports.new #import-columns-panel .import-columns-row {
+  width: -webkit-max-content;
+  width: -moz-max-content;
+  width: max-content;
+  height: -webkit-max-content;
+  height: -moz-max-content;
+  height: max-content;
+  margin: 0.5rem 0.5rem 2.8rem 0.5rem;
+}
+/* line 114, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/imports.scss */
+.imports.new #import-columns-panel .import-columns-row .headers {
+  padding: 0.3rem 0.4rem 0.2rem 0.4rem;
+  max-height: 75vh;
+  overflow: scroll;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: row;
+      -ms-flex-direction: row;
+          flex-direction: row;
+}
+/* line 120, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/imports.scss */
+.imports.new #import-columns-panel .import-columns-row .headers .top, .imports.new #import-columns-panel .import-columns-row .headers .bottom {
+  width: -webkit-max-content;
+  width: -moz-max-content;
+  width: max-content;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  overflow: visible;
+}
+/* line 127, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/imports.scss */
+.imports.new #import-columns-panel .import-columns-row .headers .top:focus {
+  outline: none;
+}
+/* line 131, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/imports.scss */
+.imports.new #import-columns-panel .import-columns-row .headers .bottom {
+  padding-bottom: 0.2rem;
+  padding-top: 0.2rem;
+}
+/* line 137, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/imports.scss */
+.imports.new #import-columns-panel .import-columns-row .sheet-name {
+  font-size: 1rem;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: row;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  font-weight: bold;
+  -webkit-box-align: end;
+  -webkit-align-items: flex-end;
+      -ms-flex-align: end;
+          align-items: flex-end;
+  margin-top: 1vh;
+  margin-bottom: 1vh;
+}
+/* line 145, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/imports.scss */
+.imports.new #import-columns-panel .import-columns-row .sheet-name select {
+  margin-left: 1vw;
+  margin-bottom: 0;
+  width: -webkit-max-content;
+  width: -moz-max-content;
+  width: max-content;
+}
+/* line 151, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/imports.scss */
+.imports.new #import-columns-panel .import-columns-row .header-column {
+  background-color: transparent;
+}
+/* line 154, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/imports.scss */
+.imports.new #import-columns-panel .import-columns-row #draggable-live-region {
+  border: none;
+}
 /* line 5, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/project_report_links.scss */
 .field-option-column-title {
   cursor: copy;
