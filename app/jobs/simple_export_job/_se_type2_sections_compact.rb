@@ -1,7 +1,7 @@
 require 'simple_export_job/sheet_info'
 
-COL_CNT_WITHOUT_LINK_TO_TYPE1 = 7
-COL_CNT_WITH_LINK_TO_TYPE1    = 9
+COL_CNT_WITHOUT_LINK_TO_TYPE1 = 10
+COL_CNT_WITH_LINK_TO_TYPE1    = 12
 
 def build_type2_sections_compact(p, project, highlight, wrap, kq_ids=[], print_empty_row=false)
 
@@ -22,8 +22,8 @@ def build_type2_sections_compact(p, project, highlight, wrap, kq_ids=[], print_e
         sheet_info = SheetInfo.new
 
         # First the basic headers:
-        # ['Extraction ID', 'Username', 'Citation ID', 'Citation Name', 'RefMan', 'PMID']
         header_elements = sheet_info.header_info
+        header_elements = header_elements.concat(['Key Questions'])
 
         # Add additional column headers to capture the link_to_type1 name and description
         # if link_to_type1 is present and add to header_elements.
@@ -61,6 +61,9 @@ def build_type2_sections_compact(p, project, highlight, wrap, kq_ids=[], print_e
                   extraction.citation.name,
                   extraction.citation.refman,
                   extraction.citation.pmid,
+                  extraction.citation.authors.collect(&:name).join(', '),
+                  extraction.citation.try(:journal).try(:publication_date).to_s,
+                  question.key_questions_projects_questions.collect(&:key_questions_project).collect(&:key_question).collect(&:name).join(', ').to_s,
                   eefpst1.type1.name,
                   eefpst1.type1.description,
                   question.name
@@ -89,6 +92,9 @@ def build_type2_sections_compact(p, project, highlight, wrap, kq_ids=[], print_e
                 extraction.citation.name,
                 extraction.citation.refman,
                 extraction.citation.pmid,
+                extraction.citation.authors.collect(&:name).join(', '),
+                extraction.citation.try(:journal).try(:publication_date).to_s,
+                question.key_questions_projects_questions.collect(&:key_questions_project).collect(&:key_question).collect(&:name).join(', ').to_s,
                 question.name
               ]
 
@@ -190,7 +196,7 @@ def set_qrc_column_header(header_row, i)
   begin
     header_row[i].value
   rescue Exception => e
-    if i.odd?
+    if i.even?
       header_row.add_cell 'Cell Descriptor'
     else
       header_row.add_cell 'Value'

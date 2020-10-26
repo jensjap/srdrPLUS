@@ -16,7 +16,7 @@ class SheetInfo
   attr_reader :header_info, :extractions, :type1s, :populations, :timepoints, :question_row_columns, :rssms
 
   def initialize
-    @header_info            = ['Extraction ID', 'Username', 'Citation ID', 'Citation Name', 'RefMan', 'PMID']
+    @header_info            = ['Extraction ID', 'Username', 'Citation ID', 'Citation Name', 'RefMan', 'PMID', 'Authors', 'Publication Date']
     @extractions            = Hash.new
     @type1s                 = Set.new
     @populations            = Set.new

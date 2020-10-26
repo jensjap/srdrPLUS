@@ -12,16 +12,17 @@ def build_type1_sections_compact(p, project, highlight, wrap)
 
           # Some prep work:
           last_col_idx  = 0
-          header_row = sheet.add_row [
-            'Extraction ID',
-            'User Name',
-            'Citation ID',
-            'Citation Name',
-            'RefMan',
-            'PMID',
+
+          # For each sheet we create a SheetInfo object.
+          sheet_info = SheetInfo.new
+
+          # Build header row.
+          header_elements = sheet_info.header_info
+          header_elements = header_elements.concat([
             "#{ section.section.name.singularize } Name",
             "#{ section.section.name.singularize } Description"
-          ]
+          ])
+          header_row = sheet.add_row header_elements
 
           # Every row represents an extraction.
           project.extractions.each do |extraction|
@@ -39,6 +40,8 @@ def build_type1_sections_compact(p, project, highlight, wrap)
               new_row << extraction.citations_project.citation.name
               new_row << extraction.citations_project.citation.refman.to_s
               new_row << extraction.citations_project.citation.pmid.to_s
+              new_row << extraction.citations_project.citation.authors.collect(&:name).join(', ')
+              new_row << extraction.citations_project.citation.journal.publication_date.to_s
               new_row << eefpst1.type1.name
               new_row << eefpst1.type1.description
 

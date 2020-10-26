@@ -37,10 +37,12 @@ def build_result_sections_compact(p, project, highlight, wrap, print_empty_row=f
           sheet_info.set_extraction_info(
             extraction_id: extraction.id,
             username: extraction.projects_users_role.projects_user.user.profile.username,
-            citation_id: extraction.citations_project.citation.id,
-            citation_name: extraction.citations_project.citation.name,
-            refman: extraction.citations_project.citation.refman,
-            pmid: extraction.citations_project.citation.pmid)
+            citation_id: extraction.citation.id,
+            citation_name: extraction.citation.name,
+            authors: extraction.citation.authors.collect(&:name).join(', '),
+            publication_date: extraction.citation.try(:journal).try(:publication_date).to_s,
+            refman: extraction.citation.refman,
+            pmid: extraction.citation.pmid)
 
           eefps = efps.extractions_extraction_forms_projects_sections.find_by(
             extraction: extraction,
@@ -234,6 +236,8 @@ def build_result_sections_compact(p, project, highlight, wrap, print_empty_row=f
             new_row << extraction[:extraction_info][:citation_name]
             new_row << extraction[:extraction_info][:refman]
             new_row << extraction[:extraction_info][:pmid]
+            new_row << extraction[:extraction_info][:authors]
+            new_row << extraction[:extraction_info][:publication_date]
 
             case rssm[:result_statistic_section_type_id]
             when 1
