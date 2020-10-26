@@ -11,13 +11,14 @@ class SImportJob < ApplicationJob
   def perform(*args)
     Rails.logger.info "#{ self.class.name }: I'm performing SImportJob with arguments: #{ args.inspect }"
 
-    @user = User.find_by_id(args[0].to_i)
-    @import = Import.find_by_id(args[1].to_i)
+    @user          = User.find_by_id(args[0].to_i)
+    @import        = Import.find_by_id(args[1].to_i)
+    @projects_user = @import.projects_user
 
-    content = @import.imported_files.first.content
+    content   = @import.imported_files.first.content
     file_path = process_content(content)
 
-    ih = ImportHandler.new(@user.id, @import.project.id)
+    ih = ImportHandler.new(@user.id, @import.project.id, @projects_user.id)
     ih.set_workbook(file_path)
 
     # Validate the workbook.

@@ -14,11 +14,11 @@ class ImportsController < ApplicationController
 
     import_hash = { import_type_id: import_type_id,
                     projects_user_id: projects_user_id,
-                    imported_files_attributes: 
+                    imported_files_attributes:
                       [ { content: content,
                                file_type_id: file_type_id } ]
                   }
-                          
+
     @import = Import.new(import_hash)
     authorize(@import.project, policy_class: ImportPolicy)
 
@@ -44,7 +44,7 @@ class ImportsController < ApplicationController
       end
     end
   end
-  
+
   private
     def set_project
       @project = Project.find params[:project_id]

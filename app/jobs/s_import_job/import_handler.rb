@@ -1,16 +1,17 @@
 require "rubyXL"
-require "s_import_job/worksheet_section"
+require "s_import_job/sections/design_details"
 
 class ImportHandler
   attr_reader :project_id, :data, :listOf_errors, :listOf_errors_processing_rows
 
-  def initialize(u_id, p_id, force=false)  #{{{2
+  def initialize(u_id, p_id, pu_id, force=false)  #{{{2
     @listOf_errors                      = Array.new
     @listOf_errors_processing_rows      = Array.new
     @listOf_errors_processing_questions = Array.new
     @listOf_email_recipients            = Array.new
     @user_id                            = u_id
     @project_id                         = p_id
+    @projects_user_id                   = pu_id
     @local_file_path                    = nil
     @wb                                 = nil
     @headers                            = nil
@@ -52,33 +53,34 @@ class ImportHandler
   def process_workbook
     @wb.worksheets.each do |ws|
       headers, data = _parse_data(ws)
+
       case ws.sheet_name
       when 'Design Details'
-        worksheet = DesignDetails.new(headers, data)
+        worksheet = DesignDetails.new(@project_id, @projects_user_id, ws.sheet_name, headers, data)
       when 'Arms'
-        worksheet = Arms.new(headers, data)
+        worksheet = Arms.new(@project_id, @projects_user_id, headers, ws.sheet_name, data)
       when 'Arm Details'
-        worksheet = ArmDetails.new(headers, data)
+        worksheet = ArmDetails.new(@project_id, @projects_user_id, ws.sheet_name, headers, data)
       when 'Outcomes'
-        worksheet = Outcomes.new(headers, data)
+        worksheet = Outcomes.new(@project_id, @projects_user_id, ws.sheet_name, headers, data)
       when 'Outcome Details'
-        worksheet = OutcomeDetails.new(headers, data)
+        worksheet = OutcomeDetails.new(@project_id, @projects_user_id, ws.sheet_name, headers, data)
       when 'Baseline Characteristics'
-        worksheet = BaselineCharacteristics.new(headers, data)
+        worksheet = BaselineCharacteristics.new(@project_id, @projects_user_id, ws.sheet_name, headers, data)
       when 'Results'
-        worksheet = Results.new(headers, data)
+        worksheet = Results.new(@project_id, @projects_user_id, ws.sheet_name, headers, data)
       else
         if _guess_type(headers) == "Type 1"
-          worksheet = GenericType1.new(headers, data)
+          worksheet = GenericType1.new(@project_id, @projects_user_id, ws.sheet_name, headers, data)
         elsif _guess_type(headers) == "Type 2"
-          worksheet = GenericType2.new(headers, data)
+          worksheet = GenericType2.new(@project_id, @projects_user_id, ws.sheet_name, headers, data)
         else
-          worksheet = GenericResults.new(headers, data)
-        end
-      end
+          worksheet = GenericResults.new(@project_id, @projects_user_id, ws.sheet_name, headers, data)
+        end  # END if _guess_type(headers) == "Type 1"
+      end  # END case ws.sheet_name
 
       @listOf_errors_processing_rows << [worksheet.worksheet_type, worksheet.process_rows]
-    end
+    end  # END @wb.worksheets.each do |ws|
   end
 
   def add_email_recipient(email)  #{{{2
@@ -131,7 +133,7 @@ class ImportHandler
       if key.is_a? String
         key = CGI.unescapeHTML(key).strip
       end
-      transformed_header_row[key] = key
+      transformed_header_row[key.downcase] = key
     end
 
     return transformed_header_row
@@ -154,7 +156,7 @@ class ImportHandler
           c = CGI.unescapeHTML(c).strip
         end
 
-        key = headers[ind]
+        key = headers[ind].downcase
         if key.is_a? String
           key = CGI.unescapeHTML(key).strip
         end

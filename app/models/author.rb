@@ -11,6 +11,7 @@
 
 class Author < ApplicationRecord
   include SharedQueryableMethods
+
   has_many :authors_citations, dependent: :destroy
   has_many :citations, through: :authors_citations
 

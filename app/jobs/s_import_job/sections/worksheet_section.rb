@@ -1,7 +1,10 @@
 class WorksheetSection
-  def initialize(headers, data)
-    @headers = headers
-    @data    = data
+  def initialize(project_id, projects_user_id, section_name, headers, data)
+    @project_id       = project_id
+    @projects_user_id = projects_user_id
+    @section_name     = section_name
+    @headers          = headers
+    @data             = data
   end
 
   #!!!
