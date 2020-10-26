@@ -628,7 +628,7 @@ textarea {
   margin-left: -25px;
   margin-top: -25px;
   border-radius: 6px;
-  background-image: url("/spinner.gif");
+  background-image: url(asset_path('spinner.gif'));
 }
 
 .card-divider, .card-section {

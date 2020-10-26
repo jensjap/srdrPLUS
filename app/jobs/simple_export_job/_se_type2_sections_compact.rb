@@ -3,7 +3,7 @@ require 'simple_export_job/sheet_info'
 COL_CNT_WITHOUT_LINK_TO_TYPE1 = 7
 COL_CNT_WITH_LINK_TO_TYPE1    = 9
 
-def build_type2_sections_compact(p, project, highlight, wrap, kq_ids=[])
+def build_type2_sections_compact(p, project, highlight, wrap, kq_ids=[], print_empty_row=false)
 
 
 
@@ -65,11 +65,16 @@ def build_type2_sections_compact(p, project, highlight, wrap, kq_ids=[])
                   eefpst1.type1.description,
                   question.name
                 ]
-                new_row = new_row.concat(build_qrc_components_for_question(eefps, eefpst1.id, question))
-                sheet.add_row new_row
 
-                # Adjust column headers for each qrc component.
-                adjust_header_row_to_account_for_qrc_components(header_row, new_row, true)
+                has_values, qrc_components = build_qrc_components_for_question(eefps, eefpst1.id, question)
+                new_row = new_row.concat(qrc_components)
+
+                if (has_values || print_empty_row)
+                  # Add row to the sheet.
+                  sheet.add_row new_row
+                  # Adjust column headers for each qrc component.
+                  adjust_header_row_to_account_for_qrc_components(header_row, new_row, true)
+                end  # END if has_values
               end  # END questions.each do |question|
             end  # END eefps.link_to_type1.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
 
@@ -86,11 +91,16 @@ def build_type2_sections_compact(p, project, highlight, wrap, kq_ids=[])
                 extraction.citation.pmid,
                 question.name
               ]
-              new_row = new_row.concat(build_qrc_components_for_question(eefps, eefpst1, question))
-              sheet.add_row new_row
 
-              # Adjust column headers for each qrc component.
-              adjust_header_row_to_account_for_qrc_components(header_row, new_row, false)
+              has_values, qrc_components = build_qrc_components_for_question(eefps, eefpst1, question)
+              new_row = new_row.concat(qrc_components)
+
+              if (has_values || print_empty_row)
+                # Add row to the sheet.
+                sheet.add_row new_row
+                # Adjust column headers for each qrc component.
+                adjust_header_row_to_account_for_qrc_components(header_row, new_row, false)
+              end  # END if has_values
             end  # END questions.each do |question|
           end  # END if efps.link_to_type1.present?
         end  # END project.extractions.each do |extraction|
@@ -126,35 +136,40 @@ end
 
 def build_qrc_components_for_question(eefps, eefpst1_id, question)
   qrc_components = []
+  has_values = false
+
   question.question_rows.each_with_index do |qr, row_idx|
     qr.question_row_columns.each_with_index do |qrc, col_idx|
+
+      value = eefps.eefps_qrfc_values(eefpst1_id, qrc)
+      has_values = value.present? unless has_values.present?
 
       if (qr.name.present? && qrc.name.present?)
         qrc_components = qrc_components.concat [
           "[#{ qr.name }] x [#{ qrc.name }]",
-          eefps.eefps_qrfc_values(eefpst1_id, qrc)
+          value
         ]
       elsif (qr.name.present? && qrc.name.blank?)
         qrc_components = qrc_components.concat [
           "[#{ qr.name }]",
-          eefps.eefps_qrfc_values(eefpst1_id, qrc)
+          value
         ]
       elsif (qr.name.blank? && qrc.name.present?)
         qrc_components = qrc_components.concat [
           "[#{ qrc.name }]",
-          eefps.eefps_qrfc_values(eefpst1_id, qrc)
+          value
         ]
       else
         qrc_components = qrc_components.concat [
           "",
-          eefps.eefps_qrfc_values(eefpst1_id, qrc)
+          value
         ]
       end
 
     end  # END qr.question_row_columns.each_with_index do |qrc, col_idx|
   end  # END question.question_rows.each_with_index do |qr, row_idx|
 
-  return qrc_components
+  return has_values, qrc_components
 end
 
 def adjust_header_row_to_account_for_qrc_components(header_row, new_row, link_to_type1_present)

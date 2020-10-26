@@ -1,6 +1,6 @@
 require 'simple_export_job/sheet_info'
 
-def build_result_sections_compact(p, project, highlight, wrap)
+def build_result_sections_compact(p, project, highlight, wrap, print_empty_row=false)
   project.extraction_forms_projects.each do |efp|
     efp.extraction_forms_projects_sections.each do |efps|
 
@@ -247,7 +247,9 @@ def build_result_sections_compact(p, project, highlight, wrap)
               new_row << rssm[:measure_name]
               new_row << rssm[:rssm_values]
 
-              ws_desc.add_row new_row
+              if (rssm[:rssm_values].present? || print_empty_row)
+                ws_desc.add_row new_row
+              end
 
             when 2
               new_row << rssm[:outcome_name]
@@ -260,7 +262,9 @@ def build_result_sections_compact(p, project, highlight, wrap)
               new_row << rssm[:measure_name]
               new_row << rssm[:rssm_values]
 
-              ws_bac.add_row new_row
+              if (rssm[:rssm_values].present? || print_empty_row)
+                ws_bac.add_row new_row
+              end
 
             when 3
               new_row << rssm[:outcome_name]
@@ -272,7 +276,9 @@ def build_result_sections_compact(p, project, highlight, wrap)
               new_row << rssm[:measure_name]
               new_row << rssm[:rssm_values]
 
-              ws_wac.add_row new_row
+              if (rssm[:rssm_values].present? || print_empty_row)
+                ws_wac.add_row new_row
+              end
 
             when 4
               new_row << rssm[:outcome_name]
@@ -284,7 +290,9 @@ def build_result_sections_compact(p, project, highlight, wrap)
               new_row << rssm[:measure_name]
               new_row << rssm[:rssm_values]
 
-              ws_net.add_row new_row
+              if (rssm[:rssm_values].present? || print_empty_row)
+                ws_net.add_row new_row
+              end
 
             end
 

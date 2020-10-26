@@ -40,7 +40,7 @@ blockquote
             - if linked_section
               / by_type1 && include_total
               - if efps.extraction_forms_projects_section_option.by_type1
-                - if efps.extraction_forms_projects_section_option.include_total
+                - if efps.extraction_forms_projects_section_option.include_total && linked_section.eefpst1s_without_total.count > 1
                   - linked_section.eefpst1s_with_total.map(&:type1).each_with_index do |t1, idx|
                     div style="background: #{t1.name == 'Total' ? 'LightSalmon' : color(idx)}"
                       h5 style="font-weight: bold;" data-allow-html="true" data-tooltip="" title='#{linked_section.extraction_forms_projects_section.section.name.singularize + ": " + t1.name + "<br>" + "Description: " + t1.description}'
@@ -96,3 +96,7 @@ blockquote
                   t1: nil,
                   eefps: eefps,
                   display_only: false
+
+.section-header style="margin: 20px 0;"
+  h4 = section_name
+  = render 'shared/statusing_form.html.slim', statusing: eefps.statusing, status_name: eefps.statusing.status.name

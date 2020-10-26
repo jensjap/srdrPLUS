@@ -1,20 +1,20 @@
 - provide(:title, t(".extract_data"))
 - provide(:project_title, @extraction.project.name)
 
-div style='margin-left: 62px;'
+div style='margin-left: 34px;'
   h5
     = "Assigned to "
     span style="font-weight: bold"
       = @extraction.user.handle
 
-div style='margin: 1.2rem 62px 1.2rem 62px ; background-color: Lavender; border: solid 1px; border-color: #bbb6dd; padding: 1rem; width: auto;'
+div style='margin: 0 34px; border-color: #bbb6dd; padding: 0; width: auto;'
   h6 style='margin: 0;'
     = @extraction.citation.handle.split("\n").join(" - ")
 
-div style='margin: 1.2rem 62px 1.2rem 62px; padding: 0; width: auto;'
+div style='margin: 0 34px; padding: 0; width: auto;'
   ul.key-question-selector class="accordion" data-toggle='' data-accordion='' data-allow-all-closed='true'
     li class="accordion-item" data-accordion-item=''
-      a href="#" class="accordion-title" Select Key Question(s):
+      a href="#" class="accordion-title" style="padding: 10px;" Select Key Question(s):
       div class="accordion-content" data-tab-content=''
         .grid-y
           = render 'extractions/extractions_key_questions_projects_selections'

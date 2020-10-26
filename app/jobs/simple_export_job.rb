@@ -3,6 +3,7 @@ require 'simple_export_job/_se_type1_sections_compact'
 require 'simple_export_job/_se_type1_sections_wide'
 require 'simple_export_job/_se_type2_sections_compact'
 require 'simple_export_job/_se_type2_sections_wide'
+require 'simple_export_job/_se_type2_sections_wide_srdr_style'
 require 'simple_export_job/_se_result_sections_compact'
 require 'simple_export_job/_se_result_sections_wide'
 require 'simple_export_job/_se_sample_3d_pie_chart'
@@ -42,6 +43,7 @@ class SimpleExportJob < ApplicationJob
       if /wide/ =~ @export_type
         build_type1_sections_wide(p, @project, highlight, wrap)
         build_type2_sections_wide(p, @project, highlight, wrap)
+        #build_type2_sections_wide_srdr_style(p, @project, highlight, wrap)
         build_result_sections_wide(p, @project, highlight, wrap)
 
       else

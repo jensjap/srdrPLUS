@@ -146,3 +146,15 @@ button.suggestion-list-button {
 .results-table td {
   border-right: 1px solid black;
 }
+
+.green {
+  color: green !important;
+}
+
+.bold {
+  font-weight: bold !important;
+}
+
+.checkmarked:after {
+  content: "\2713";
+}
