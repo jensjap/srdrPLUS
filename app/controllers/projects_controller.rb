@@ -67,10 +67,17 @@ class ProjectsController < ApplicationController
 
     respond_to do |format|
       if @project.update(project_params)
-        format.html {
-          redirect_back(fallback_location: edit_project_path(@project, anchor: "panel-project-information"),
-                        notice: t("success") + " #{make_undo_link}")
-        }
+        format.html do
+          redirect_path = params.try(:[], :project).try(:[], :redirect_path)
+          if redirect_path.present?
+            redirect_to(redirect_path, notice: t("success") + " #{make_undo_link}")
+          else
+            redirect_back(
+              fallback_location: edit_project_path(@project, anchor: "panel-project-information"),
+              notice: t("success") + " #{make_undo_link}"
+            )
+          end
+        end
         format.json { render :show, status: :ok, location: @project }
         format.js { render :show, status: :ok, location: @project }
       else

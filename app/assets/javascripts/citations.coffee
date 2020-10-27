@@ -1,13 +1,16 @@
 document.addEventListener 'turbolinks:load', ->
 
   do ->
+    $('#citations-table').DataTable({
+      "columnDefs": [{ "orderable": false, "targets": [4, 5] }]
+    })
 
 ######### CITATION MANAGEMENT
     ##### CHECK WHICH CONTROLLER ACTION THIS PAGE CORRESPONDS TO
     ##### ONLY RUN THIS CODE IF WE ARE IN INDEX CITATIONS PAGE
     if $( 'body.citations.index' ).length == 0
       return
-      
+
     $( '#delete-citations-select-all' ).change ( e )->
       e.preventDefault()
       if $( this ).prop('checked')
@@ -40,7 +43,7 @@ document.addEventListener 'turbolinks:load', ->
           pubmed_type_id = $( "#dropzone-div input#pubmed-file-type-id" ).val()
 
           file_extension = file.name.split('.').pop()
-          file_type_id = switch 
+          file_type_id = switch
             when file_extension == 'ris' then ris_type_id
             when file_extension == 'csv' then csv_type_id
             when file_extension == 'enw' then endnote_type_id
@@ -152,67 +155,6 @@ document.addEventListener 'turbolinks:load', ->
 
       return
 
-    ## Method to populate citations list dynamically using ajax calls to api/v1/projects/:id/citations.json
-    append_citations = ( page ) ->
-      $.ajax $( '#citations-url' ).text(),
-        type: 'GET'
-        dataType: 'json'
-        data: { page : page }
-        error: (jqXHR, textStatus, errorThrown) ->
-          toastr.error( 'Could not get citations' )
-        success: (data, textStatus, jqXHR) ->
-          to_add = []
-          $( "#citations-count" ).html( data[ 'pagination' ][ 'total_count' ] )
-          for c in data[ 'results' ]
-            citation_journal = ''
-            citation_journal_date = ''
-
-            if 'journal' of c
-              citation_journal = c[ 'journal' ][ 'name' ]
-              citation_journal_date = ' (' + c[ 'journal' ][ 'publication_date' ] + ')'
-
-            to_add.push { 'citation-title': c[ 'name' ],\
-              'citation-abstract': c[ 'abstract' ],\
-              'citation-journal': citation_journal,\
-              'citation-journal-date': citation_journal_date,\
-              'citation-authors': ( c[ 'authors' ].map( ( author ) -> author[ 'name' ] ) ).join( ', ' ),\
-              'citation-numbers': ( c[ 'pmid' ] || 'N/A' ),\
-              'citations-project-id': c[ 'citations_project_id' ] }
-
-          if page == 1
-            citationList.clear()
-
-          citationList.add to_add, ( items ) ->
-            list_index = ( page - 1 ) * items.length
-            for item in items
-              list_index_string = list_index.toString()
-              $( '<input type="hidden" value="' + \
-                  item.values()[ 'citations-project-id' ] + \
-                  '" name="project[citations_projects_attributes][' + \
-                  list_index_string + \
-                  '][id]" id="project_citations_projects_attributes_' + \
-                  list_index_string + '_id">' ).insertBefore( item.elm )
-              $( item.elm ).find( '#project_citations_projects_attributes_0__destroy' )[ 0 ].outerHTML = \
-                  '<input type="hidden" name="project[citations_projects_attributes][' + \
-                  list_index_string + \
-                  '][_destroy]" id="project_citations_projects_attributes_' + \
-                  list_index_string + \
-                  '__destroy" value="false">'
-
-              list_index++
-            citationList.reIndex()
-            Foundation.reInit( $( '#citations-projects-list' ) )
-
-          if data[ 'pagination' ][ 'more' ] == true
-            append_citations(  page + 1 )
-          else
-            citationList.sort( $( '#sort-select' ).val(), { order: $( '#sort-button' ).attr( 'sort-order' ), alphabet: undefined, insensitive: true, sortFunction: undefined } )
-
-    # start pulling citations
-    append_citations( 1 )
-    # initialize ListJs
-    citationList = new List( 'citations', list_options )
-
     ##### LISTENERS
     if not $( '#citations').attr( 'listeners-exist' )
       ## handler for selecting input type
@@ -233,19 +175,6 @@ document.addEventListener 'turbolinks:load', ->
           $( this ).closest( '.simple_form' ).find( '.form-actions' ).show()
         else
           $( this ).closest( '.simple_form' ).find( '.form-actions' ).hide()
-
-      # handler for sorting citations
-      $( '#sort-button' ).on 'click', () ->
-        if $( this ).attr( 'sort-order' ) == 'desc'
-          $( this ).attr( 'sort-order', 'asc' )
-          $( this ).html( 'ASCENDING' )
-        else
-          $( this ).attr( 'sort-order', 'desc' )
-          $( this ).html( 'DESCENDING' )
-        citationList.sort( $( '#sort-select' ).val(), { order: $( this ).attr( 'sort-order' ), alphabet: undefined, insensitive: true, sortFunction: undefined } )
-
-      $( '#sort-select' ).on "change", () ->
-        citationList.sort( $( this ).val(), { order: $( '#sort-button' ).attr( 'sort-order' ), alphabet: undefined, insensitive: true, sortFunction: undefined } )
 
       # cocoon listeners
       # Note: some of the animations don't work well together and are disabled for now
@@ -314,17 +243,6 @@ document.addEventListener 'turbolinks:load', ->
         $( insertedItem ).find( '.save-citation' ).on 'click', () ->
           $( '#citations-form' ).submit()
           $('.cancel-button').click()
-
-      # reload the citations after a form submission ( probably overkill )
-      $( '#citations-form' ).bind "ajax:success", ( status ) ->
-        append_citations( 1 )
-        toastr.success('Save successful!')
-        $( '.cancel-button' ).click()
-      $( '#citations-form' ).bind "ajax:error", ( status ) ->
-        append_citations( 1 )
-        toastr.error('Could not save changes')
-
-      #$( '.add-authors-citation' ).on 'click', () ->
 
       $( '#citations' ).attr( 'listeners-exist', 'true' )
     return  # END do ->
