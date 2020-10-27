@@ -4,9 +4,6 @@ require 'simple_export_job/sheet_info'
 
 
 def build_type2_sections_wide(p, project, highlight, wrap, kq_ids=[])
-  # Type2 (Questions) are associated to Key Questions and we export by the KQ's selected.
-  # If no KQ's array is passed in, we assume to export all.
-  kq_ids = project.key_questions.pluck(:id) if kq_ids.blank?
 
   # The main extraction form is always the first efp.
   efp = project.extraction_forms_projects.first

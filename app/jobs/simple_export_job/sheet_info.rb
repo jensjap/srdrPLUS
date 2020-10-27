@@ -76,8 +76,4 @@ class SheetInfo
     dup.delete(:rssm_values)
     @rssms << dup
   end
-
-  def add_kq_selection(key_questions)
-    @key_question_selections << key_questions unless @key_question_selections.include? key_questions
-  end
 end

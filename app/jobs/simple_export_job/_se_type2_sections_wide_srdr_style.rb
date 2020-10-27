@@ -4,9 +4,6 @@ require 'simple_export_job/sheet_info'
 
 
 def build_type2_sections_wide_srdr_style(p, project, highlight, wrap, kq_ids=[], print_empty_row=false)
-  # Type2 (Questions) are associated to Key Questions and we export by the KQ's selected.
-  # If no KQ's array is passed in, we assume to export all.
-  kq_ids = project.key_questions.pluck(:id) if kq_ids.blank?
 
   # The main extraction form is always the first efp.
   efp = project.extraction_forms_projects.first
@@ -26,6 +23,10 @@ def build_type2_sections_wide_srdr_style(p, project, highlight, wrap, kq_ids=[],
           # Create base for extraction information.
           sheet_info.new_extraction_info(extraction)
 
+          # Collect distinct list of questions based off the key questions selected for this extraction.
+          kq_ids_by_extraction = fetch_kq_selection(extraction, kq_ids)
+          questions = fetch_questions(project, kq_ids_by_extraction, efps)
+
           # Collect basic information about the extraction.
           sheet_info.set_extraction_info(
             extraction_id: extraction.id,
@@ -35,14 +36,12 @@ def build_type2_sections_wide_srdr_style(p, project, highlight, wrap, kq_ids=[],
             authors: extraction.citation.authors.collect(&:name).join(', '),
             publication_date: extraction.citation.try(:journal).try(:publication_date).to_s,
             refman: extraction.citation.refman,
-            pmid: extraction.citation.pmid)
+            pmid: extraction.citation.pmid,
+            kq_selection: KeyQuestion.where(id: kq_ids_by_extraction).collect(&:name).map(&:strip).join("\x0D\x0A"))
 
-          eefps = efps.extractions_extraction_forms_projects_sections.find_or_create_by(
+          eefps = efps.extractions_extraction_forms_projects_sections.find_by!(
             extraction: extraction,
             extraction_forms_projects_section: efps)
-
-          # Collect distinct list of questions.
-          questions = fetch_questions(project, kq_ids, efps)
 
           # If this section is linked we have to iterate through each occurrence of
           # type1 via eefps.link_to_type1.extractions_extraction_forms_projects_sections_type1s.
@@ -56,10 +55,6 @@ def build_type2_sections_wide_srdr_style(p, project, highlight, wrap, kq_ids=[],
             questions.each do |q|
               q.question_rows.each do |qr|
                 qr.question_row_columns.each do |qrc|
-                  # Collect unique key_question combinations.
-                  key_question_selection = q.key_questions_projects_questions.collect(&:key_questions_project).collect(&:key_question).collect(&:name).join(', ').to_s
-                  sheet_info.add_kq_selection(key_question_selection)
-
                   sheet_info.add_question_row_column(
                     extraction_id: extraction.id,
                     section_name: efps.section.name.singularize,
@@ -78,7 +73,6 @@ def build_type2_sections_wide_srdr_style(p, project, highlight, wrap, kq_ids=[],
                     .question_row_columns_question_row_column_options
                     .where(question_row_column_option_id: 1)
                     .pluck(:id, :name),
-                    key_question_selection: key_question_selection,
                     eefps_qrfc_values: eefps.eefps_qrfc_values(eefpst1.id, qrc))
                 end  # qr.question_row_columns.each do |qrc|
               end  # q.question_rows.each do |qr|
@@ -151,40 +145,40 @@ def build_type2_sections_wide_srdr_style(p, project, highlight, wrap, kq_ids=[],
             [Struct.new(:id, :type1).new(nil, Struct.new(:id, :name, :description).new(nil))]
 
           eefpst1s.each do |eefpst1|
-            sheet_info.key_question_selections.each do |kq_selection|
+            # If no kq is selected we should skip this row.
+            next if extraction[:extraction_info][:kq_selection].blank?
 
-              new_row = []
-              new_row << extraction[:extraction_info][:extraction_id]
-              new_row << extraction[:extraction_info][:username]
-              new_row << extraction[:extraction_info][:citation_id]
-              new_row << extraction[:extraction_info][:citation_name]
-              new_row << extraction[:extraction_info][:refman]
-              new_row << extraction[:extraction_info][:pmid]
-              new_row << extraction[:extraction_info][:authors]
-              new_row << extraction[:extraction_info][:publication_date]
-              new_row << kq_selection
-              new_row << eefpst1.type1.name
-              new_row << eefpst1.type1.description
+            new_row = []
+            new_row << extraction[:extraction_info][:extraction_id]
+            new_row << extraction[:extraction_info][:username]
+            new_row << extraction[:extraction_info][:citation_id]
+            new_row << extraction[:extraction_info][:citation_name]
+            new_row << extraction[:extraction_info][:refman]
+            new_row << extraction[:extraction_info][:pmid]
+            new_row << extraction[:extraction_info][:authors]
+            new_row << extraction[:extraction_info][:publication_date]
+            new_row << extraction[:extraction_info][:kq_selection]
+            new_row << eefpst1.type1.name
+            new_row << eefpst1.type1.description
 
-              # Add question information.
-              extraction[:question_row_columns].each do |qrc|
-                if (qrc[:eefpst1_id].eql?(eefpst1.id) && qrc[:key_question_selection].eql?(kq_selection))
+            # Add question information.
+            extraction[:question_row_columns].each do |qrc|
+              if qrc[:eefpst1_id].eql?(eefpst1.id)
 
-                  # Try to find the column that matches the identifier.
-                  found, column_idx = nil
-                  found, column_idx = _find_column_idx_with_value(header_row, "[Question ID: #{ qrc[:question_id] }][Field ID: #{ qrc[:question_row_id] }x#{ qrc[:question_row_column_id] }]")
+                # Try to find the column that matches the identifier.
+                found, column_idx = nil
+                found, column_idx = _find_column_idx_with_value(header_row, "[Question ID: #{ qrc[:question_id] }][Field ID: #{ qrc[:question_row_id] }x#{ qrc[:question_row_column_id] }]")
 
-                  # Something is wrong if it wasn't found.
-                  unless found
-                    raise RuntimeError, "Error: Could not find header row: [Question ID: #{ qrc[:question_id] }][Field ID: #{ qrc[:question_row_id] }x#{ qrc[:question_row_column_id] }]"
-                  end
+                # Something is wrong if it wasn't found.
+                unless found
+                  raise RuntimeError, "Error: Could not find header row: [Question ID: #{ qrc[:question_id] }][Field ID: #{ qrc[:question_row_id] }x#{ qrc[:question_row_column_id] }]"
+                end
 
-                  new_row[column_idx] = qrc[:eefps_qrfc_values]
-                end  # END if qrc[:type1_id].eql?(eefpst1.id)
-              end  # END extraction[:question_row_columns].each do |qrc|
+                new_row[column_idx] = qrc[:eefps_qrfc_values]
+              end  # END if qrc[:type1_id].eql?(eefpst1.id)
+            end  # END extraction[:question_row_columns].each do |qrc|
 
-              sheet.add_row new_row
-            end  # END sheet_info.key_question_selections.each do |kq_selection|
+            sheet.add_row new_row
           end  # END eefpst1s.each do |eefpst1|
         end  # sheet_info.extractions.each do |key, extraction|
 
@@ -196,23 +190,30 @@ def build_type2_sections_wide_srdr_style(p, project, highlight, wrap, kq_ids=[],
   end  # END efp.extraction_forms_projects_sections.each do |efps|
 end
 
+# If no KQ's array is passed in, we export based on extraction.extractions_key_questions_projects_selections.
+# Note - jjap - 10-27-2020: This is counter to the design decision to let each question pick its
+#   own set of key questions. Doing it this way is akin to picking key questions based on the
+#   EFP...which means we should be able to create multiple EFPs just like in SRDR.
+def fetch_kq_selection(extraction, kq_ids)
+  if kq_ids.blank?
+    kq_ids = extraction
+      .extractions_key_questions_projects_selections
+      .order(key_questions_project_id: :asc)
+      .collect(&:key_questions_project)
+      .collect(&:key_question_id)
+  end
+
+  return kq_ids
+end
+
 # Type2 (Questions) are associated to Key Questions and we export by the KQ's selected.
-# If no KQ's array is passed in, we assume to export all.
 def fetch_questions(project, kq_ids, efps)
   # Get all questions in this efps by key_questions requested.
-  if kq_ids.present?
-    questions = efps.questions.joins(:key_questions_projects_questions)
-      .where(
-        key_questions_projects_questions: {
-          key_questions_project: KeyQuestionsProject.where(project: project, key_question_id: kq_ids)
-        } )
-  else
-    questions = efps.questions.joins(:key_questions_projects_questions)
-      .where(
-        key_questions_projects_questions: {
-          key_questions_project: KeyQuestionsProject.where(project: project)
-        } )
-  end
+  questions = efps.questions.joins(:key_questions_projects_questions)
+    .where(
+      key_questions_projects_questions: {
+        key_questions_project: KeyQuestionsProject.where(project: project, key_question_id: kq_ids)
+      } )
 
   return questions.distinct.order(id: :asc)
 end
