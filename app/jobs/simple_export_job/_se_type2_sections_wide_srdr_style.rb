@@ -30,10 +30,12 @@ def build_type2_sections_wide_srdr_style(p, project, highlight, wrap, kq_ids=[],
           sheet_info.set_extraction_info(
             extraction_id: extraction.id,
             username: extraction.projects_users_role.projects_user.user.profile.username,
-            citation_id: extraction.citations_project.citation.id,
-            citation_name: extraction.citations_project.citation.name,
-            refman: extraction.citations_project.citation.refman,
-            pmid: extraction.citations_project.citation.pmid)
+            citation_id: extraction.citation.id,
+            citation_name: extraction.citation.name,
+            authors: extraction.citation.authors.collect(&:name).join(', '),
+            publication_date: extraction.citation.try(:journal).try(:publication_date).to_s,
+            refman: extraction.citation.refman,
+            pmid: extraction.citation.pmid)
 
           eefps = efps.extractions_extraction_forms_projects_sections.find_or_create_by(
             extraction: extraction,
@@ -54,6 +56,10 @@ def build_type2_sections_wide_srdr_style(p, project, highlight, wrap, kq_ids=[],
             questions.each do |q|
               q.question_rows.each do |qr|
                 qr.question_row_columns.each do |qrc|
+                  # Collect unique key_question combinations.
+                  key_question_selection = q.key_questions_projects_questions.collect(&:key_questions_project).collect(&:key_question).collect(&:name).join(', ').to_s
+                  sheet_info.add_kq_selection(key_question_selection)
+
                   sheet_info.add_question_row_column(
                     extraction_id: extraction.id,
                     section_name: efps.section.name.singularize,
@@ -72,6 +78,7 @@ def build_type2_sections_wide_srdr_style(p, project, highlight, wrap, kq_ids=[],
                     .question_row_columns_question_row_column_options
                     .where(question_row_column_option_id: 1)
                     .pluck(:id, :name),
+                    key_question_selection: key_question_selection,
                     eefps_qrfc_values: eefps.eefps_qrfc_values(eefpst1.id, qrc))
                 end  # qr.question_row_columns.each do |qrc|
               end  # q.question_rows.each do |qr|
@@ -80,8 +87,8 @@ def build_type2_sections_wide_srdr_style(p, project, highlight, wrap, kq_ids=[],
         end  # project.extractions.each do |extraction|
 
         # First the basic headers:
-        # ['Extraction ID', 'Username', 'Citation ID', 'Citation Name', 'RefMan', 'PMID']
         header_elements = sheet_info.header_info
+        header_elements = header_elements.concat(['Key Questions'])
 
         # Add additional column headers to capture the link_to_type1 name and description
         # if link_to_type1 is present and add to header_elements.
@@ -144,34 +151,40 @@ def build_type2_sections_wide_srdr_style(p, project, highlight, wrap, kq_ids=[],
             [Struct.new(:id, :type1).new(nil, Struct.new(:id, :name, :description).new(nil))]
 
           eefpst1s.each do |eefpst1|
+            sheet_info.key_question_selections.each do |kq_selection|
 
-            new_row = []
-            new_row << extraction[:extraction_info][:extraction_id]
-            new_row << extraction[:extraction_info][:username]
-            new_row << extraction[:extraction_info][:citation_id]
-            new_row << extraction[:extraction_info][:citation_name]
-            new_row << extraction[:extraction_info][:refman]
-            new_row << extraction[:extraction_info][:pmid]
-            new_row << eefpst1.type1.name
-            new_row << eefpst1.type1.description
+              new_row = []
+              new_row << extraction[:extraction_info][:extraction_id]
+              new_row << extraction[:extraction_info][:username]
+              new_row << extraction[:extraction_info][:citation_id]
+              new_row << extraction[:extraction_info][:citation_name]
+              new_row << extraction[:extraction_info][:refman]
+              new_row << extraction[:extraction_info][:pmid]
+              new_row << extraction[:extraction_info][:authors]
+              new_row << extraction[:extraction_info][:publication_date]
+              new_row << kq_selection
+              new_row << eefpst1.type1.name
+              new_row << eefpst1.type1.description
 
-            # Add question information.
-            extraction[:question_row_columns].each do |qrc|
-              if qrc[:eefpst1_id].eql?(eefpst1.id)
-                # Try to find the column that matches the identifier.
-                found, column_idx = nil
-                found, column_idx = _find_column_idx_with_value(header_row, "[Question ID: #{ qrc[:question_id] }][Field ID: #{ qrc[:question_row_id] }x#{ qrc[:question_row_column_id] }]")
+              # Add question information.
+              extraction[:question_row_columns].each do |qrc|
+                if (qrc[:eefpst1_id].eql?(eefpst1.id) && qrc[:key_question_selection].eql?(kq_selection))
 
-                # Something is wrong if it wasn't found.
-                unless found
-                  raise RuntimeError, "Error: Could not find header row: [Question ID: #{ qrc[:question_id] }][Field ID: #{ qrc[:question_row_id] }x#{ qrc[:question_row_column_id] }]"
-                end
+                  # Try to find the column that matches the identifier.
+                  found, column_idx = nil
+                  found, column_idx = _find_column_idx_with_value(header_row, "[Question ID: #{ qrc[:question_id] }][Field ID: #{ qrc[:question_row_id] }x#{ qrc[:question_row_column_id] }]")
 
-                new_row[column_idx] = qrc[:eefps_qrfc_values]
-              end  # END if qrc[:type1_id].eql?(eefpst1.id)
-            end  # END extraction[:question_row_columns].each do |qrc|
+                  # Something is wrong if it wasn't found.
+                  unless found
+                    raise RuntimeError, "Error: Could not find header row: [Question ID: #{ qrc[:question_id] }][Field ID: #{ qrc[:question_row_id] }x#{ qrc[:question_row_column_id] }]"
+                  end
 
-            sheet.add_row new_row
+                  new_row[column_idx] = qrc[:eefps_qrfc_values]
+                end  # END if qrc[:type1_id].eql?(eefpst1.id)
+              end  # END extraction[:question_row_columns].each do |qrc|
+
+              sheet.add_row new_row
+            end  # END sheet_info.key_question_selections.each do |kq_selection|
           end  # END eefpst1s.each do |eefpst1|
         end  # sheet_info.extractions.each do |key, extraction|
 

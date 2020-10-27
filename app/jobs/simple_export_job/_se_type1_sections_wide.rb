@@ -22,10 +22,12 @@ def build_type1_sections_wide(p, project, highlight, wrap)
             sheet_info.set_extraction_info(
               extraction_id: extraction.id,
               username: extraction.projects_users_role.projects_user.user.profile.username,
-              citation_id: extraction.citations_project.citation.id,
-              citation_name: extraction.citations_project.citation.name,
-              refman: extraction.citations_project.citation.refman,
-              pmid: extraction.citations_project.citation.pmid)
+              citation_id: extraction.citation.id,
+              citation_name: extraction.citation.name,
+              authors: extraction.citation.authors.collect(&:name).join(', '),
+              publication_date: extraction.citation.try(:journal).try(:publication_date).to_s,
+              refman: extraction.citation.refman,
+              pmid: extraction.citation.pmid)
 
             eefps = efps.extractions_extraction_forms_projects_sections.find_or_create_by(
               extraction: extraction,
@@ -58,7 +60,6 @@ def build_type1_sections_wide(p, project, highlight, wrap)
           end  # END project.extractions.each do |extraction|
 
           # Start printing rows to the spreadsheet. First the basic headers:
-          #['Extraction ID', 'Username', 'Citation ID', 'Citation Name', 'RefMan', 'PMID']
           header_row = sheet.add_row sheet_info.header_info
 
           # Next continue the header row by adding all type1s together.
@@ -109,6 +110,8 @@ def build_type1_sections_wide(p, project, highlight, wrap)
             new_row << extraction[:extraction_info][:citation_name]
             new_row << extraction[:extraction_info][:refman]
             new_row << extraction[:extraction_info][:pmid]
+            new_row << extraction[:extraction_info][:authors]
+            new_row << extraction[:extraction_info][:publication_date]
 
             # We choose the order of the columns we want to add here.
             # This is a bit arbitrary but we choose: type1s > populations > timepoints

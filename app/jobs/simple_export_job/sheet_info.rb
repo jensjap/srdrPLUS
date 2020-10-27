@@ -13,16 +13,17 @@ end
 # One list is kept as a master list. Those are on SheetInfo.type1s, SheetInfo.populations, and SheetInfo.timepoints.
 # Another is kept for each extraction.
 class SheetInfo
-  attr_reader :header_info, :extractions, :type1s, :populations, :timepoints, :question_row_columns, :rssms
+  attr_reader :header_info, :extractions, :key_question_selections, :type1s, :populations, :timepoints, :question_row_columns, :rssms
 
   def initialize
-    @header_info            = ['Extraction ID', 'Username', 'Citation ID', 'Citation Name', 'RefMan', 'PMID', 'Authors', 'Publication Date']
-    @extractions            = Hash.new
-    @type1s                 = Set.new
-    @populations            = Set.new
-    @timepoints             = Set.new
-    @question_row_columns   = Set.new
-    @rssms                  = Set.new
+    @header_info             = ['Extraction ID', 'Username', 'Citation ID', 'Citation Name', 'RefMan', 'PMID', 'Authors', 'Publication Date']
+    @key_question_selections = Array.new
+    @extractions             = Hash.new
+    @type1s                  = Set.new
+    @populations             = Set.new
+    @timepoints              = Set.new
+    @question_row_columns    = Set.new
+    @rssms                   = Set.new
   end
 
   def new_extraction_info(extraction)
@@ -74,5 +75,9 @@ class SheetInfo
     dup.delete(:extraction_id)
     dup.delete(:rssm_values)
     @rssms << dup
+  end
+
+  def add_kq_selection(key_questions)
+    @key_question_selections << key_questions unless @key_question_selections.include? key_questions
   end
 end

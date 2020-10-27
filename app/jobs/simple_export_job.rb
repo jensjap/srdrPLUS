@@ -42,8 +42,8 @@ class SimpleExportJob < ApplicationJob
 
       if /wide/ =~ @export_type
         build_type1_sections_wide(p, @project, highlight, wrap)
-        build_type2_sections_wide(p, @project, highlight, wrap)
-        #build_type2_sections_wide_srdr_style(p, @project, highlight, wrap)
+#        build_type2_sections_wide(p, @project, highlight, wrap)
+        build_type2_sections_wide_srdr_style(p, @project, highlight, wrap)
         build_result_sections_wide(p, @project, highlight, wrap)
 
       else

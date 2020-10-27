@@ -30,10 +30,12 @@ def build_type2_sections_wide(p, project, highlight, wrap, kq_ids=[])
           sheet_info.set_extraction_info(
             extraction_id: extraction.id,
             username: extraction.projects_users_role.projects_user.user.profile.username,
-            citation_id: extraction.citations_project.citation.id,
-            citation_name: extraction.citations_project.citation.name,
-            refman: extraction.citations_project.citation.refman,
-            pmid: extraction.citations_project.citation.pmid)
+            citation_id: extraction.citation.id,
+            citation_name: extraction.citation.name,
+            authors: extraction.citation.authors.collect(&:name).join(', '),
+            publication_date: extraction.citation.try(:journal).try(:publication_date).to_s,
+            refman: extraction.citation.refman,
+            pmid: extraction.citation.pmid)
 
           eefps = efps.extractions_extraction_forms_projects_sections.find_or_create_by(
             extraction: extraction,
@@ -71,6 +73,7 @@ def build_type2_sections_wide(p, project, highlight, wrap, kq_ids=[])
                     .question_row_columns_question_row_column_options
                     .where(question_row_column_option_id: 1)
                     .pluck(:id, :name),
+                    key_questions: q.key_questions_projects_questions.collect(&:key_questions_project).collect(&:key_question).collect(&:name).join(', ').to_s,
                     eefps_qrfc_values: eefps.eefps_qrfc_values(eefpst1.id, qrc))
                 end  # qr.question_row_columns.each do |qrc|
               end  # q.question_rows.each do |qr|
@@ -78,9 +81,10 @@ def build_type2_sections_wide(p, project, highlight, wrap, kq_ids=[])
           end  # eefps.type1s.each do |eefpst1|
         end  # project.extractions.each do |extraction|
 
-        # Start printing rows to the spreadsheet. First the basic headers:
-        #['Extraction ID', 'Username', 'Citation ID', 'Citation Name', 'RefMan', 'PMID']
-        header_row = sheet.add_row sheet_info.header_info
+        # First the basic headers:
+        header_elements = sheet_info.header_info
+        header_elements = header_elements.concat(["Key Questions"])
+        header_row = sheet.add_row(header_elements)
 
         # Next continue the header row by adding all type2s together.
         sheet_info.question_row_columns.each do |qrc|
@@ -129,6 +133,9 @@ def build_type2_sections_wide(p, project, highlight, wrap, kq_ids=[])
           new_row << extraction[:extraction_info][:citation_name]
           new_row << extraction[:extraction_info][:refman]
           new_row << extraction[:extraction_info][:pmid]
+          new_row << extraction[:extraction_info][:authors]
+          new_row << extraction[:extraction_info][:publication_date]
+          new_row << extraction[:extraction_info][:key_questions]
 
           # Add question information.
           extraction[:question_row_columns].each do |qrc|
