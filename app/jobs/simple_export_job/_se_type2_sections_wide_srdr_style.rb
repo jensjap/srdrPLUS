@@ -140,9 +140,10 @@ def build_type2_sections_wide_srdr_style(p, project, highlight, wrap, kq_ids=[],
             extraction_forms_projects_section: efps)
 
           # If link_to_type1 is present we need to iterate each question for every type1 present in the extraction.
-          eefpst1s = (eefps.extraction_forms_projects_section.extraction_forms_projects_section_option.by_type1 and eefps.link_to_type1.present?) ?
-            eefps.link_to_type1.extractions_extraction_forms_projects_sections_type1s :
-            [Struct.new(:id, :type1).new(nil, Struct.new(:id, :name, :description).new(nil))]
+          eefpst1s = _fetch_eefpst1s(eefps)
+#          eefpst1s = (eefps.extraction_forms_projects_section.extraction_forms_projects_section_option.by_type1 and eefps.link_to_type1.present?) ?
+#            eefps.link_to_type1.extractions_extraction_forms_projects_sections_type1s :
+#            [Struct.new(:id, :type1).new(nil, Struct.new(:id, :name, :description).new(nil))]
 
           eefpst1s.each do |eefpst1|
             # If no kq is selected we should skip this row.
@@ -216,4 +217,20 @@ def fetch_questions(project, kq_ids, efps)
       } )
 
   return questions.distinct.order(id: :asc)
+end
+
+# Also make sure total is last in the list.
+def _fetch_eefpst1s(eefps)
+  if (eefps.extraction_forms_projects_section.extraction_forms_projects_section_option.by_type1 and eefps.link_to_type1.present?)
+    eefpst1s = eefps.link_to_type1.extractions_extraction_forms_projects_sections_type1s.reorder(type1_id: :asc).to_a
+    _total_eefpst1 = eefpst1s.select { |eefpst1| eefpst1.type1_id.eql?(100) }
+    eefpst1s_without_total = eefpst1s.delete_if { |eefpst1| eefpst1.type1_id.eql?(100) }
+    eefpst1s = eefpst1s_without_total.concat(_total_eefpst1)
+
+  else
+    eefpst1s = [Struct.new(:id, :type1).new(nil, Struct.new(:id, :name, :description).new(nil))]
+
+  end
+
+  return eefpst1s
 end
