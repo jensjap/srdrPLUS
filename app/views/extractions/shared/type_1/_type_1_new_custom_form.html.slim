@@ -33,7 +33,8 @@
           = sf_t1.input :name,\
             label: section_name.eql?('Outcome') ? 'Domain' : 'Name',\
             required: true,\
-            hint: 'Name can\'t be blank', input_html: { 'data-t1-name-input' => '' }
+            hint: 'Name can\'t be blank', input_html: { 'data-t1-name-input' => '', class: 'suggestedChoices' },
+            collection: eefps.type1s_suggested_by_project_leads.map(&:type1).map(&:name)
           = sf_t1.input :description,\
             label: section_name.eql?('Outcome') ? 'Specific Measurement' : 'Description',\
             input_html: { rows: 2 }, input_html: { 'data-t1-description-input' => '' }

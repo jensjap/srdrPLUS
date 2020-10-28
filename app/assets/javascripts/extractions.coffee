@@ -411,6 +411,10 @@ document.addEventListener 'turbolinks:load', ->
       apply_coloring( )
       apply_consolidation_dropdown( )
 
+      $(".suggestedChoices").select2({
+        tags: true
+      });
+
     return  # END do ->
 
   return  # END document.addEventListener 'turbolinks:load', ->
