@@ -79,8 +79,16 @@ class ExtractionsController < ApplicationController
 
     respond_to do |format|
       begin
-        lsof_extractions.map{ |e| e.save }
-        format.html { redirect_to project_extractions_url(@project), notice: 'Extractions was successfully created.' }
+        lsof_extractions.map { |e| e.save }
+        format.html do
+          if lsof_extractions.length == 0
+            redirect_to project_extractions_url(@project), notice: 'Please select a citation.'
+          elsif lsof_extractions.count == 1
+            redirect_to work_extraction_path(lsof_extractions.first), notice: 'Extraction was successfully created.'
+          else
+            redirect_to project_extractions_url(@project), notice: 'Extractions were successfully created.'
+          end
+        end
         format.json { render :show, status: :created, location: @extraction }
       rescue
         format.html { render :new }

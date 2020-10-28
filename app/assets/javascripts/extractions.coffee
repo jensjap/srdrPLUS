@@ -70,21 +70,44 @@ document.addEventListener 'turbolinks:load', ->
 
       # DataTables for Extractions List
       dt = $( 'table.extractions-list' ).DataTable({
-             "paging": false,
              "info": false,
-             "columnDefs": [{ "orderable": false, "targets": [6, 7] }]
+             "columnDefs": [{ "orderable": false, "targets": "_all" }]
            })
-      dt.rows( { page:'current' } ).invalidate()
       dt.draw()
 
+      last_col = 0
+      $('table.extractions-list').on('click', '.table-sortable', (e) ->
+        element = $(this)
+        col = element.data('sorting-col')
+
+        if (element.hasClass('sorting'))
+          dt.order([col, 'asc']).draw();
+          element.removeClass('sorting')
+          element.addClass('sorting_asc')
+        else if (element.hasClass('sorting_asc'))
+          dt.order([col, 'desc']).draw();
+          element.removeClass('sorting_asc')
+          element.addClass('sorting_desc')
+        else if (element.hasClass('sorting_desc'))
+          dt.order([6, 'desc']).draw();
+          element.removeClass('sorting_desc')
+          element.addClass('sorting')
+          $('[data-sorting-col=6]').removeClass('sorting_desc')
+        if (last_col != col)
+          $("[data-sorting-col=#{last_col}]").addClass('sorting')
+        last_col = col
+      )
+      dt.order([6, 'desc']).draw();
+      $('[data-sorting-col=6]').removeClass('sorting_desc')
+
       # DataTables for Comparisons List
-      dt = $( 'table.comparisons-list' ).DataTable({
+      dtComparisonList = $( 'table.comparisons-list' ).DataTable({
              "paging": false,
              "info": false,
              "columnDefs": [{ "orderable": false, "targets": [3] }]
            })
-      dt.rows( { page:'current' } ).invalidate()
-      dt.draw()
+      dtComparisonList.rows( { page:'current' } ).invalidate()
+      dtComparisonList.draw()
 
     if $( 'body.extractions.work' ).length > 0
       #################################################
