@@ -100,9 +100,6 @@ a.accordion-title href="#" style="padding: 0.5rem;"
         - else
           = link_to t('request_publication'), new_publishing_path(type: Project.to_s, id: project.id), title: t('request_publication'), class: "button expanded"
 
-      .cell.auto
-        = link_to "Delete Project", confirm_deletion_project_path(project), method: :get, class: "alert button expanded", remote: true
-
       .reveal.grid-x[data-reveal id="gdrive-export-modal-#{project.id.to_s}"]
         .cell.auto
           = link_to "Sign In to Google", user_google_oauth2_omniauth_authorize_path, method: :get, class: "button"
