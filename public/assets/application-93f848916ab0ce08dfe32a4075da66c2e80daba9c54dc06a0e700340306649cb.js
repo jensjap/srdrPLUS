@@ -50141,7 +50141,10 @@ function __guardMethod__(obj, methodName, transform) {
       return;
     }
     (function() {
-      var post;
+      var post, suggestedChoices;
+      suggestedChoices = $(".suggestedChoices").select2({
+        tags: true
+      });
       post = function(path, params, method) {
         var form, hiddenField, key;
         method = method || 'post';
@@ -50177,7 +50180,7 @@ function __guardMethod__(obj, methodName, transform) {
           efpsId = $(this).data('sectionId');
           inputFields = $('.new-type1-fields-' + efpsId).last();
           inputFields.find('select[data-t1-type-input=""]').val(type1Type);
-          inputFields.find('input[data-t1-name-input=""]').val(type1Name);
+          $('.suggestedChoices').val(type1Name).trigger('change');
           inputFields.find('textarea[data-t1-description-input=""]').val(type1Desc);
           $('#timepoints-node tr').slice(1).each(function() {
             return $(this).find('td.remove-tp-link a').trigger('click');
