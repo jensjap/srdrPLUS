@@ -70,7 +70,6 @@ document.addEventListener 'turbolinks:load', ->
 
       # DataTables for Extractions List
       dt = $( 'table.extractions-list' ).DataTable({
-             "paging": false,
              "info": false,
              "columnDefs": [{ "orderable": false, "targets": "_all" }]
            })
