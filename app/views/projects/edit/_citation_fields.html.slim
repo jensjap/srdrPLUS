@@ -28,7 +28,7 @@
                   |-
                 = f.input :page_number_end, label: false, required: false, wrapper_html: { class: "page-number-end" }
 
-    .bottom-row
+    .bottom-row.m-10
       .number-column.bottom-column
         = f.input :refman, as: :integer, required: false
         = f.association :citation_type, label: 'Citation Type', selected: 1
@@ -45,7 +45,7 @@
         /= f.association :authors, collection: [], label: 'Authors', wrapper_html: { class: "AUTHORS" }
       .bottom-column
         /= f.association :keywords, collection: [], label: 'Keywords', wrapper_html: { class: "KEYWORDS" }
-    .buttons-row
+    .buttons-row.m-10
       .save-citation.button.success.small
         | Save Citation
       = link_to_remove_association 'Cancel', f, class: 'button alert small cancel-button'

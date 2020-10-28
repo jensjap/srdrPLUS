@@ -25,7 +25,6 @@ li.accordion-item.citation-row.nested-fields data-accordion-item=''
 
     .row.edit-citation-row.column
       = link_to_remove_association 'Delete', f, class: 'button alert small remove-button', data: { confirm: 'Are you sure you want to delete this citation?' }
-      /= link_to_remove_association f, class: 'remove-button' do 
+      /= link_to_remove_association f, class: 'remove-button' do
         i.fi-trash>
     /= f.label @citation_dict[f.object.citation_id].name , class: 'citation-label'
-
