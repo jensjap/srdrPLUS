@@ -15,20 +15,22 @@ javascript:
     let submittable = true;
     if ($('li.select2-selection__choice').length == 0) return false;
 
-    existing_pmids.every(function(pmid) {
-      $('li.select2-selection__choice').each(function() {
-        let that = this;
-        let option_text = $(that).html();
+    $('li.select2-selection__choice').each(function() {
+      let that = this;
+      let option_text = $(that).html();
+
+      existing_pmids.every(function(pmid) {
         if (option_text.includes(pmid)) {
           if (confirm('This extraction for this citation already exists.  Create anyway?')) {
             $('#create-extraction-form').submit();
-          } else {
-            submittable = false
-            return false
           }
+          submittable = false
+          return false
         }
+
+        return submittable
       })
-      if (!submittable) return false;
     })
+
     if (submittable) $('#create-extraction-form').submit();
   });
