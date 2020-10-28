@@ -1,18 +1,10 @@
-.tabs-content.vertical data-tabs-content="extraction-forms-projects-#{ efp.id.to_s }-vertical-tabs"
-  - is_first = true
-  - efp.extraction_forms_projects_sections.where(id: @panel_tab_id).reject { |efps| efps.hidden }.each do |efps|
-    - section_name = efps.section.name
-    - if is_first
-      .tabs-panel.is-active id="panel-tab-#{ efps.id.to_s }"
-        = render "extractions/#{ action_name }/#{ efps.extraction_forms_projects_section_type.name.parameterize.underscore }",
-          section_name: section_name,
-          efp: efp,
-          efps: efps
-      - is_first = false
-
-    - else
-      .tabs-panel id="panel-tab-#{ efps.id.to_s }"
-        = render "extractions/#{ action_name }/#{ efps.extraction_forms_projects_section_type.name.parameterize.underscore }",
-          section_name: section_name,
-          efp: efp,
-          efps: efps
+- if @panel_tab_id == 'keyquestions'
+  = render 'extractions/extractions_key_questions_projects_selections', original: false
+- else
+  .tabs-content.vertical data-tabs-content="extraction-forms-projects-#{efp.id.to_s}-vertical-tabs"
+    - efps = efp.extraction_forms_projects_sections.find_by(id: @panel_tab_id)
+    .tabs-panel.is-active id="panel-tab-#{efp.id.to_s}"
+      = render "extractions/#{action_name}/#{efps.extraction_forms_projects_section_type.name.parameterize.underscore}",
+        section_name: efps.section.name,
+        efp: efp,
+        efps: efps

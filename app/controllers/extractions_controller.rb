@@ -348,6 +348,6 @@ class ExtractionsController < ApplicationController
           }
         ]
       )
-      @panel_tab_id = params['panel-tab'] || @extraction_forms_projects.first.extraction_forms_projects_sections.first.id.to_s
+      @panel_tab_id = params['panel-tab'] || 'keyquestions'
     end
 end
