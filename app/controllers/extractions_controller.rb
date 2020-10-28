@@ -49,6 +49,7 @@ class ExtractionsController < ApplicationController
     @projects_users_roles = ProjectsUsersRole.joins(:projects_user).where(projects_users: { project: @project })
     @projects_users_roles = @projects_users_roles.where(projects_users: { user: current_user }) unless policy(@project).assign_extraction_to_any_user?
     @current_projects_users_role = ProjectsUsersRole.joins(:projects_user).where(projects_users: { user: current_user, project: @project }).order(role_id: :asc).first
+    @existing_pmids =@project.extractions.map(&:citation).compact.map(&:pmid).join('-')
 
     authorize(@extraction.project, policy_class: ExtractionPolicy)
 
