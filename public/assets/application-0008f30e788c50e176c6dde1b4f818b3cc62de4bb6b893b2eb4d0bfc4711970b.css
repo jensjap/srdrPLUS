@@ -29361,6 +29361,17 @@ tbody tr:nth-child(even) {
 .table-fixed-headers td {
   position: relative;
 }
+
+/* line 719, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+.mx-10 {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+/* line 724, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+.m-10 {
+  margin: 10px;
+}
 /* line 1, /home/jensjap/.rbenv/versions/2.4.1/lib/ruby/gems/2.4.0/gems/toastr_rails-2.1.3/app/assets/styleseets/toastr.scss */
 .toast-title {
   font-weight: bold;
