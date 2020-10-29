@@ -2,7 +2,11 @@ document.addEventListener 'turbolinks:load', ->
 
   do ->
     $('#citations-table').DataTable({
-      "columnDefs": [{ "orderable": false, "targets": [4, 5] }]
+      "columnDefs": [{ "orderable": false, "targets": [4, 5] }],
+      "lengthMenu": [[50, 100, 500, -1], [50, 100, 500, "All"]],
+      "pagingType": "full_numbers",
+      "stateSave": true,
+      "stateDuration": 0,
     })
 
 ######### CITATION MANAGEMENT

@@ -22,11 +22,13 @@ div.row style="margin: 0;"
               tr
                 td style="text-align: center;" = citation.try(:pmid)
                 td style="text-align: center;" = citation.try(:refman)
-                td = citation.authors_citations.map{ |ac| [ac.ordering.position, ac.author.name] }.sort{ |a,b| (a[0] || 0) <=> (b[0] || 0) }.map{|a| a[1]}.join('; ')
-                td = citation.try(:name)
+                td
+                  div style="overflow: hidden; height: 18px;" = citation.authors_citations.map { |ac| [ac.ordering.position, ac.author.name] }.sort { |a,b| (a[0] || 0) <=> (b[0] || 0) }.map { |a| a[1] }.join('; ')
+                td
+                  div style="overflow: hidden; height: 18px;" = citation.try(:name)
                 td style="text-align: center;" = link_to 'Edit', edit_citation_path(citation, project_id: @project.id)
                 = form_project.simple_fields_for :citations_projects, @citations_projects_dict[citation.id] do |sf_cp|
-                  td style="text-align: center;" = sf_cp.check_box :_destroy, id: "sf_cp-#{citation.id}"
+                  td style="text-align: center;" = sf_cp.check_box :_destroy, id: "sf_cp-#{citation.id}", style: "margin: 0"
 
       #delete-citations-submit-row.m-10
         .float-right

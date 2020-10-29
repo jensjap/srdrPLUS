@@ -14,7 +14,7 @@
   .column.medium-12
     div style='display: flex; flex-direction: row;'
       h4 Extractions
-    div
+    div style="margin-bottom: 10px;"
       - if @project.key_questions.present?
         = link_to new_project_extraction_path, class: 'button create-button create-extraction-button' do
           i.fi-plus>
@@ -62,7 +62,8 @@
               td = first_author
               td = year
               td = pmid
-              td data-sort="#{name}" = link_to name, citation_path(citation, project_id: @project.id)
+              td data-sort="#{name}"
+                div style="overflow: hidden; height: 18px;" = link_to name, citation_path(citation, project_id: @project.id)
               - if @project.leaders.include? current_user
                 td
                   .projects-users-role dropdown-active='false'
