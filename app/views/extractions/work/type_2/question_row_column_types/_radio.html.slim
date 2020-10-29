@@ -35,7 +35,7 @@
         - if eefps_ff.blank?
           - eefps_ff = ExtractionsExtractionFormsProjectsSectionsFollowupField.find_or_create_by followup_field: opt.followup_field,
             extractions_extraction_forms_projects_section_id: eefps.id,
-            extractions_extraction_forms_projects_sections_type1_id: eefpst1.id
+            extractions_extraction_forms_projects_sections_type1_id: eefpst1.try(:id)
         - followups << ["prereq-#{ opt.class }-#{ opt.id }", "attach_target_#{eefps_ff.id.to_s}", eefps_ff]
         - options << [opt.name, opt.id, { 'data-attach-source': "attach_target_#{eefps_ff.id.to_s}", 'data-prereq': "prereq-#{ opt.class }-#{ opt.id }", 'data-radio-remove-id': record.id }]
       - else
