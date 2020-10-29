@@ -5269,6 +5269,11 @@ button.suggestion-list-button:hover {
 .checkmarked:after {
   content: "\2713";
 }
+
+/* line 162, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/extractions.scss */
+.tabs-title > a:hover {
+  background: initial !important;
+}
 /**
  * Foundation for Sites by ZURB
  * Version 6.5.3

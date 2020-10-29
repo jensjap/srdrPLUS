@@ -49864,7 +49864,11 @@ function __guardMethod__(obj, methodName, transform) {
             "orderable": false,
             "targets": [4, 5]
           }
-        ]
+        ],
+        "lengthMenu": [[50, 100, 500, -1], [50, 100, 500, "All"]],
+        "pagingType": "full_numbers",
+        "stateSave": true,
+        "stateDuration": 0
       });
       if ($('body.citations.index').length === 0) {
         return;
@@ -50566,13 +50570,16 @@ function __guardMethod__(obj, methodName, transform) {
           return $(this).closest('.projects-users-role').attr('dropdown-active', 'false');
         });
         dt = $('table.extractions-list').DataTable({
-          "info": false,
           "columnDefs": [
             {
               "orderable": false,
               "targets": "_all"
             }
-          ]
+          ],
+          "lengthMenu": [[50, 100, 500, -1], [50, 100, 500, "All"]],
+          "pagingType": "full_numbers",
+          "stateSave": true,
+          "stateDuration": 0
         });
         dt.draw();
         last_col = 0;
