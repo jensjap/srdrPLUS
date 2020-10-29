@@ -6,7 +6,7 @@
 .column.row
   - efp = @project.extraction_forms_projects.first
   - if @project.key_questions.present?
-    h2 = link_to 'go to extraction form builder ->', build_extraction_forms_project_path(efp, anchor: "panel-tab-#{ efp.extraction_forms_projects_sections.first.id }"), { style: 'float: right; font-size: 0.4em;' }
+    h2 = link_to 'go to extraction form builder ->', build_extraction_forms_project_path(efp, anchor: "panel-tab-#{ efp.default_section_id }"), { style: 'float: right; font-size: 0.4em;' }
   - else
     h2 = link_to 'go to extraction form builder ->', '#', style: 'float: right; font-size: 0.4em;', onClick: "alert('Please add at least one Key Question first')"
 
