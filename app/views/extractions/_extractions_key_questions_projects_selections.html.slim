@@ -1,7 +1,7 @@
 - extraction = action_name.eql?('work') ? @extraction : @consolidated_extraction
 
 h4 Select Key Questions Addressed
-div id="extractions-key-questions-projects-selections" class="key-question-selector"
+div#extractions-key-questions-projects-selections.key-question-selector
   = simple_form_for extraction,
                     :url => "/extractions/#{ extraction.id }/update_kqp_selections",
                     method: :put,
