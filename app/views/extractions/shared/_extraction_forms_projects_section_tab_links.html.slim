@@ -1,8 +1,8 @@
 ul.tabs.vertical id="extraction-forms-projects-#{efp.id.to_s}-vertical-tabs"
   li.tabs-title style="#{@panel_tab_id == 'keyquestions' ? 'background: lightgray;' : ''}"
-    = link_to 'Key Questions Addressed',
+    = link_to 'Key Questions',
       action_name.eql?("consolidate") ? request.original_url + "&panel-tab=keyquestions" : "?panel-tab=keyquestions",
-      title: "Key Questions Addressed"
+      title: "Key Questions"
 
   - efp.extraction_forms_projects_sections.includes(:section).reject { |efps| efps.hidden }.each do |efps|
     - section_name = efps.section.name
