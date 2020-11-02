@@ -35,7 +35,7 @@ class CitationsProject < ApplicationRecord
                                           .limit(count) }
 
   belongs_to :citation, inverse_of: :citations_projects
-  belongs_to :project, inverse_of: :citations_projects
+  belongs_to :project, inverse_of: :citations_projects, touch: true
 
   has_one :prediction, dependent: :destroy
   has_one :priority, dependent: :destroy
