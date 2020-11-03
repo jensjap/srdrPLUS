@@ -122,6 +122,16 @@ class ResultStatisticSectionsController < ApplicationController
           ] unless @options.collect { |opt| opt.second }.include?(measure.id)
         end
 
+        @result_statistic_section.other_related_measures.each do |measure|
+          @options <<
+          [
+            measure.name,
+            measure.id,
+            @result_statistic_section.measures.include?(measure) ? { 'data-selected' => '' } : '',
+            ''
+          ] unless @options.collect { |opt| opt.second }.include?(measure.id)
+        end
+
         @options.uniq!
 
         # Create a dictionary that carries as keys the id of a provider measure and values an Array of options.
