@@ -3,6 +3,7 @@ button.close-button data-close='' aria-label='Close modal' type='button'
 
 h4 Please select measures to be included from the list below:
 = simple_form_for @result_statistic_section, remote: (if @extraction_ids.blank? then true else false end) do |f|
+  = f.hidden_field :measure_ids, :multiple => true, :value => ''
   - if @extraction_ids.present?
     = f.hidden_field :extraction_ids, value: @extraction_ids
 
@@ -63,4 +64,3 @@ javascript:
     // Set the "Adjusted for:" selection to the _checked value.
     $( $( 'td label:contains("Adjusted for:")' ).find( 'input' )[0] ).prop( 'checked', _checked )
   } )
-

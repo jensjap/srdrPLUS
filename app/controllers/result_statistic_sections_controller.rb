@@ -29,7 +29,7 @@ class ResultStatisticSectionsController < ApplicationController
       if @result_statistic_section.update(result_statistic_section_params)
         format.html do |format|
           if params[:result_statistic_section].has_key? :extraction_ids
-            redirect_to consolidate_result_statistic_section_path(@result_statistic_section, 
+            redirect_to consolidate_result_statistic_section_path(@result_statistic_section,
               extraction_ids: params[:result_statistic_section][:extraction_ids]),
               notice: t('success')
           else
