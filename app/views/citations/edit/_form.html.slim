@@ -1,5 +1,6 @@
 .column.row
   = simple_form_for(@citation, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
+    = f.hidden_field :project_id, value: params[:project_id]
     = f.error_notification
     = f.input :name, label: 'Citation Title', autofocus: true
     = f.input :abstract, as: :text
@@ -11,28 +12,16 @@
       = j_f.input :volume
       = j_f.input :issue
       = j_f.input :publication_date
+    label
+      | Authors
+    div style="padding-left: 10px;"
+      #author-list
+        = f.simple_fields_for :authors_citations do |a_c|
+          = render 'projects/edit/citations/ac_fields', f: a_c
+        = link_to_add_association 'Add Author', f, :authors_citations, partial:'projects/edit/citations/ac_fields', 'data-association-insertion-node' => '#author-list', :wrap_object => Proc.new { |authors_citation| authors_citation.build_author; authors_citation }
 
-    = f.simple_fields_for :authors do |a_f|
-      = a_f.input :name, label: 'Author', wrapper_html: { id: "buttoned-input" }
-      .float-right
-        = link_to_remove_association 'remove author', a_f
-    .column.row
-      = link_to_add_association 'Add Author', f, :authors, partial: 'citations/edit/author_fields'
-
-    = f.simple_fields_for :keywords do |k_f|
-      = k_f.input :name, label: 'Keyword', wrapper_html: { id: "buttoned-input" }
-      .float-right
-        = link_to_remove_association 'remove keyword', k_f
-    .column.row
-      = link_to_add_association 'Add Keyword', f, :keywords, partial: 'citations/edit/keyword_fields'
-
-    .row
-      .form-actions
-        = f.button :submit
-        - if existing_citation
-          .float-right
-            /= link_to 'Delete Citation', citations_path, method: :delete, class: "alert button"
-
-/.column.row
-  = link_to 'Back', citations_path
-
+        .row.m-10
+          .form-actions
+            = f.button :submit
+            - if existing_citation
+              .float-right

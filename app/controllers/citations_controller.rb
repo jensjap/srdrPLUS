@@ -29,18 +29,30 @@ class CitationsController < ApplicationController
   end
 
   def update
+    project_id = params.try(:[], :citation).try(:[], :project_id)
     respond_to do |format|
       if @citation.update(citation_params)
-        format.html { redirect_to edit_citation_path(@citation), notice: 'Citation was successfully updated.' }
+        format.html do
+          if project_id.present?
+            redirect_to project_citations_path(project_id), notice: 'Citation was successfully updated.'
+          else
+            redirect_to edit_citation_path(@citation), notice: 'Citation was successfully updated.'
+          end
+        end
         format.json { render :show, status: :ok, location: @citation }
       else
-        format.html { render :edit }
+        format.html { redirect_to(edit_citation_path(@citation), alert: 'There was an issue') }
         format.json { render json: @citation.errors, status: :unprocessable_entity }
       end
     end
   end
 
   def edit
+    if params[:project_id]
+      add_breadcrumb 'edit project', edit_project_path(params[:project_id])
+      add_breadcrumb 'citations', project_citations_path(params[:project_id])
+    end
+    add_breadcrumb 'citation'
   end
 
   def destroy
@@ -105,8 +117,9 @@ class CitationsController < ApplicationController
     def citation_params
       params.require(:citation)
           .permit(:name, :citation_type_id, :pmid, :refman, :abstract, :page_number_start, :page_number_end, :_destroy,
+            citations_attributes: [:id, :name, :_destroy],
             journal_attributes: [:id, :name, :publication_date, :issue, :volume, :_destroy],
-            authors_citations_attributes: [:id, { author_attributes: :name }, { ordering_attributes: :position }, :_destroy],
+            authors_citations_attributes: [:id, :name, :_destroy, { author_attributes: [:name, :id, :_destroy] }, { ordering_attributes: :position }],
             keywords_attributes: [:id, :name, :_destroy],
             labels_attributes: [:id, :value, :_destroy])
     end

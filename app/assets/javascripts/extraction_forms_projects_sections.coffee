@@ -14,7 +14,7 @@ document.addEventListener 'turbolinks:load', ->
           target: "label[for='" + ( $( "[data-attach-source='" + this.getAttribute('data-attach-target') + "']" )[0].id ) + "']",
           attachment: "center left",
           targetAttachment: "center right",
-          offset: '-9px -10px'
+          offset: '-1px -10px'
         })
         tether.position();
       $( '.attach-me' ).removeClass('hide')

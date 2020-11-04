@@ -49,6 +49,7 @@ class ExtractionsController < ApplicationController
     @projects_users_roles = ProjectsUsersRole.joins(:projects_user).where(projects_users: { project: @project })
     @projects_users_roles = @projects_users_roles.where(projects_users: { user: current_user }) unless policy(@project).assign_extraction_to_any_user?
     @current_projects_users_role = ProjectsUsersRole.joins(:projects_user).where(projects_users: { user: current_user, project: @project }).order(role_id: :asc).first
+    @existing_pmids =@project.extractions.map(&:citation).compact.map(&:pmid).join('-')
 
     authorize(@extraction.project, policy_class: ExtractionPolicy)
 
@@ -78,8 +79,16 @@ class ExtractionsController < ApplicationController
 
     respond_to do |format|
       begin
-        lsof_extractions.map{ |e| e.save }
-        format.html { redirect_to project_extractions_url(@project), notice: 'Extractions was successfully created.' }
+        lsof_extractions.map { |e| e.save }
+        format.html do
+          if lsof_extractions.length == 0
+            redirect_to project_extractions_url(@project), notice: 'Please select a citation.'
+          elsif lsof_extractions.count == 1
+            redirect_to work_extraction_path(lsof_extractions.first), notice: 'Extraction was successfully created.'
+          else
+            redirect_to project_extractions_url(@project), notice: 'Extractions were successfully created.'
+          end
+        end
         format.json { render :show, status: :created, location: @extraction }
       rescue
         format.html { render :new }
@@ -348,6 +357,6 @@ class ExtractionsController < ApplicationController
           }
         ]
       )
-      @panel_tab_id = params['panel-tab'] || @extraction_forms_projects.first.extraction_forms_projects_sections.first.id.to_s
+      @panel_tab_id = params['panel-tab'] || 'keyquestions'
     end
 end

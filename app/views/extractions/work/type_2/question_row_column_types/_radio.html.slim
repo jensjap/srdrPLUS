@@ -26,7 +26,6 @@
   - qrc. \
     question_row_columns_question_row_column_options. \
     select{|opt| opt.question_row_column_option_id == 1}.each do |opt|
-      - options << [opt.name, opt.id, { 'data-attach-source': "question_row_columns_question_row_column_option_#{opt.id.to_s}", 'data-prereq': "prereq-#{ opt.class }-#{ opt.id }", 'data-radio-remove-id': record.id }]
       - if opt.followup_field.present?
         - eefpst1 = t1.blank? \
             ? nil \
@@ -35,8 +34,13 @@
           select{|x| x.extractions_extraction_forms_projects_sections_type1 == eefpst1 && x.extractions_extraction_forms_projects_section_id == eefps.id}.first
         - if eefps_ff.blank?
           - eefps_ff = ExtractionsExtractionFormsProjectsSectionsFollowupField.find_or_create_by followup_field: opt.followup_field,
-            extractions_extraction_forms_projects_section_id: eefps.id
-        - followups << ["prereq-#{ opt.class }-#{ opt.id }", "question_row_columns_question_row_column_option_#{opt.id.to_s}", eefps_ff]
+            extractions_extraction_forms_projects_section_id: eefps.id,
+            extractions_extraction_forms_projects_sections_type1_id: eefpst1.try(:id)
+        - followups << ["prereq-#{ opt.class }-#{ opt.id }", "attach_target_#{eefps_ff.id.to_s}", eefps_ff]
+        - options << [opt.name, opt.id, { 'data-attach-source': "attach_target_#{eefps_ff.id.to_s}", 'data-prereq': "prereq-#{ opt.class }-#{ opt.id }", 'data-radio-remove-id': record.id }]
+      - else
+        - options << [opt.name, opt.id, { 'data-prereq': "prereq-#{ opt.class }-#{ opt.id }" }]
+
 
   = simple_form_for(record, namespace: "record_#{record.id.to_s}", remote: true, html: { data: { 'abide': '', 'live-validate': true, prereq: "prereq-#{ qrc.class }-#{ qrc.id }" } }) do |f|
     = f.error_notification

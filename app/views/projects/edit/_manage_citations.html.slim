@@ -1,79 +1,41 @@
-#delete-citations-modal.reveal.large data-reveal=""
-  = simple_form_for @project do |form_project|
-    #delete-citations-inner
-      table
-        thead
-          tr
-            th Accession No.
-            th RefID
-            th Authors
-            th Title
-            th Delete?
+- if @project.has_duplicate_citations?
+  div.row style="margin: 0;"
+    div.columns.medium-12
+      = link_to " (Dedupe citations in this project)", dedupe_citations_project_path(@project), method: :POST
 
-        tbody
-          - @citations.each do |citation|
-            tr
-              td = citation.try(:pmid)
-              td = citation.try(:refman)
-              /td = citation.authors_citations.order(position: :asc).map{ |ca| ca.author.name }.join(', ')
-              td = citation.authors_citations.map{ |ac| [ac.ordering.position, ac.author.name] }.sort{ |a,b| (a[0] || 0) <=> (b[0] || 0) }.map{|a| a[1]}.join('; ')
-              td = citation.try(:name)
-              = form_project.simple_fields_for :citations_projects, @citations_projects_dict[citation.id] do |sf_cp|
-                td = sf_cp.check_box :_destroy, id: "sf_cp-#{citation.id}"
-
-    #delete-citations-submit-row
-      .float-right
-        input#delete-citations-select-all[type="checkbox"]
-        label[for='delete-citations-select-all'] = 'Select All'
-        = form_project.submit 'Delete Selected Citations', class: "button alert float-right"
-
-#citations-header[style="font-size: 1rem;margin-bottom:1.5rem;color:#410093;"]
-  span> id="citations-count" 0
-  |citations in this project
-  - if @project.has_duplicate_citations?
-    = link_to " (Dedupe citations in this project)", dedupe_citations_project_path(@project), method: :POST
-
-div.row
+div.row style="margin: 0;"
   div.columns.medium-9
-    = simple_form_for( @project,
-                       remote: true,
-                       url: api_v1_project_path(@project, format: :json),
-                       html: { id: 'citations-form' } ) do |f|
-      = f.error_notification
-      #citations
-        #citations-url.hide
-          = api_v1_project_citations_url @project.id
+    = simple_form_for @project do |form_project|
+      #delete-citations-inner
+        table#citations-table
+          thead
+            tr
+              th Accession No.
+              th RefID
+              th Authors
+              th Title
+              th Edit
+              th Delete?
 
-        #search-div
-          #search-box.input
-              input.search type="text" placeholder='Search'
-          #sort-button.button.secondary.small[sort-order="desc"]
-            | DESCENDING
-          select id='sort-select'
-            option[value='citation-numbers'] PMID
-            option[value='citation-title'] Title
-            option[value='citation-authors'] Authors
-            option[value='citation-journal'] Journal
-            option[value='citation-journal-date'] Year
+          tbody
+            - @citations.each do |citation|
+              tr
+                td style="text-align: center;" = citation.try(:pmid)
+                td style="text-align: center;" = citation.try(:refman)
+                td
+                  div style="overflow: hidden; height: 18px;" = citation.authors_citations.map { |ac| [ac.ordering.position, ac.author.name] }.sort { |a,b| (a[0] || 0) <=> (b[0] || 0) }.map { |a| a[1] }.join('; ')
+                td
+                  div style="overflow: hidden; height: 18px;" = citation.try(:name)
+                td style="text-align: center;" = link_to 'Edit', edit_citation_path(citation, project_id: @project.id)
+                = form_project.simple_fields_for :citations_projects, @citations_projects_dict[citation.id] do |sf_cp|
+                  td style="text-align: center;" = sf_cp.check_box :_destroy, id: "sf_cp-#{citation.id}", style: "margin: 0"
 
-        #insert-citation-div[ style="margin-bottom: 1rem;" ]
-          = link_to_add_association 'Add Citation', f, :citations_projects, partial: 'projects/edit/added_citations_project_fields', 'data-association-insertion-node' => '#cp-insertion-node', 'data-association-insertion-method' => 'prepend'
-          '&nbsp;|
-          = link_to_add_association 'Create New Citation', f, :citations, partial: 'projects/edit/citation_fields', 'data-association-insertion-node' => '#cp-insertion-node', 'data-association-insertion-method' => 'prepend'
-          '&nbsp;|
-          = link_to "Delete Citations", "javascript:;", data: { open: "delete-citations-modal" }
+      #delete-citations-submit-row.m-10
+        .float-right
+          input#delete-citations-select-all.m-10 type="checkbox"
+          label.m-10 for='delete-citations-select-all' = 'Select All'
+          = form_project.submit 'Delete Selected Citations', class: "button alert float-right"
 
-        #cp-insertion-node
-        ul.accordion.list.form-inputs data-accordion='' data-multi-expand='false' data-allow-all-closed='true' id='citations-projects-list'
-          /= f.simple_fields_for :citations_projects, @citations_projects do |c_p_f|
-            = render 'projects/edit/citations_project_fields', f: c_p_f
-
-          / NOTE: Using CitationsProject.first as the collection looks odd,
-          /       but it immediately gets replaced by citations fetched from server
-          /       and link_to_remove_associaton javascript works properly.
-          = f.simple_fields_for :citations_projects, CitationsProject.first, include_id: false do |c_p_f|
-            = render 'projects/edit/citations_project_fields', f: c_p_f
-      #leyleyley
   div.columns.medium-3
     div#top-anchor(data-sticky-container)
       div.sticky(data-sticky data-top-anchor="top-anchor" data-btm-anchor="leyleyley" data-margin-bottom="0" data-check-every="0")
@@ -120,3 +82,16 @@ div.row
                     = i_f.input :content, as: :file, label: 'Citation File'
                     .form-actions
                       = f.button :submit, 'Upload file', class:"small", id:"submit-all"
+
+div.row style="margin: 10px 0 0 0;"
+  div.columns.medium-12
+    = simple_form_for( @project,
+                       url: project_path(@project),
+                       html: { id: 'citations-form' } ) do |f|
+      = f.error_notification
+      = f.hidden_field :redirect_path, value: project_citations_path(@project)
+
+      div
+        = link_to_add_association 'Add Citation', f, :citations_projects, partial: 'projects/edit/added_citations_project_fields'
+        '&nbsp;|
+        = link_to_add_association 'Create New Citation', f, :citations, partial: 'projects/edit/citation_fields'

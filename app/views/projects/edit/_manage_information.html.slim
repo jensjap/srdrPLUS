@@ -1,3 +1,6 @@
+/! Modal for project deletion.
+#modal-project-delete.reveal.large data-reveal=""
+
 = simple_form_for(@project, html: { id: "project-id-#{@project.id}", data: { 'abide': '', 'live-validate': true } }) do |f|
   = f.error_notification
 
@@ -19,5 +22,8 @@
     = f.input :notes, label: t('notes'), input_html: { rows: 8 }
     = f.input :funding_source, label: t('funding_source')
 
-  .form-actions
-    = f.button :submit, t('save_changes')
+  .row style="margin-top: 10px;"
+    .column.small-6
+      = f.button :submit, t('save_changes')
+    .column.small-6 style="text-align: right;"
+      = link_to "Delete Project", confirm_deletion_project_path(@project), method: :get, class: "alert button", remote: true
