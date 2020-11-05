@@ -16,7 +16,7 @@ def build_type2_sections_compact(p, project, highlight, wrap, kq_ids=[], print_e
     if efps.extraction_forms_projects_section_type_id == 2
 
       # Add a new sheet.
-      p.workbook.add_worksheet(name: "#{ efps.section.name.truncate(21) } - long") do |sheet|
+      p.workbook.add_worksheet(name: "#{ efps.section.name.truncate(21) }") do |sheet|
 
         # For each sheet we create a SheetInfo object.
         sheet_info = SheetInfo.new
@@ -114,7 +114,7 @@ def build_type2_sections_compact(p, project, highlight, wrap, kq_ids=[], print_e
         # Re-apply the styling for the new cells in the header row before closing the sheet.
         sheet.column_widths nil
         header_row.style = highlight
-      end  # END p.workbook.add_worksheet(name: "#{ efps.section.name.truncate(21) } - long") do |sheet|
+      end  # END p.workbook.add_worksheet(name: "#{ efps.section.name.truncate(21) }") do |sheet|
     end  # END if efps.extraction_forms_projects_section_type_id == 2
   end  # END efp.extraction_forms_projects_sections.each do |efps|
 end

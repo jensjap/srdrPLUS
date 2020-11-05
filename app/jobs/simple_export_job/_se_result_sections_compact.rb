@@ -207,10 +207,10 @@ def build_result_sections_compact(p, project, highlight, wrap, print_empty_row=f
           end  # eefps_outcomes.each do |eefps_outcome|
         end  # project.extractions.each do |extraction|
 
-        ws_desc = p.workbook.add_worksheet(name: "Desc. Statistics - long")
-        ws_bac  = p.workbook.add_worksheet(name: "BAC Comparisons - long")
-        ws_wac  = p.workbook.add_worksheet(name: "WAC Comparisons - long")
-        ws_net  = p.workbook.add_worksheet(name: "NET Differences - long")
+        ws_desc = p.workbook.add_worksheet(name: "Desc. Statistics")
+        ws_bac  = p.workbook.add_worksheet(name: "BAC Comparisons")
+        ws_wac  = p.workbook.add_worksheet(name: "WAC Comparisons")
+        ws_net  = p.workbook.add_worksheet(name: "NET Differences")
 
         # Start printing rows to the sheets. First the basic headers:
         #['Extraction ID', 'Username', 'Citation ID', 'Citation Name', 'RefMan', 'PMID']
