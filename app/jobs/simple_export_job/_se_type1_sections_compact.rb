@@ -41,7 +41,7 @@ def build_type1_sections_compact(p, project, highlight, wrap)
               new_row << extraction.citations_project.citation.refman.to_s
               new_row << extraction.citations_project.citation.pmid.to_s
               new_row << extraction.citations_project.citation.authors.collect(&:name).join(', ')
-              new_row << extraction.citations_project.citation.journal.publication_date.to_s
+              new_row << extraction.citations_project.citation.journal.get_publication_year
               new_row << eefpst1.type1.name
               new_row << eefpst1.type1.description
 

@@ -13,7 +13,7 @@ def build_type2_sections_wide_srdr_style(p, project, highlight, wrap, kq_ids=[],
     if efps.extraction_forms_projects_section_type_id == 2
 
       # Add a new sheet.
-      p.workbook.add_worksheet(name: "#{ efps.section.name.truncate(24) } - SRDR") do |sheet|
+      p.workbook.add_worksheet(name: "#{ efps.section.name.truncate(24) }") do |sheet|
 
         # For each sheet we create a SheetInfo object.
         sheet_info = SheetInfo.new
@@ -34,7 +34,7 @@ def build_type2_sections_wide_srdr_style(p, project, highlight, wrap, kq_ids=[],
             citation_id: extraction.citation.id,
             citation_name: extraction.citation.name,
             authors: extraction.citation.authors.collect(&:name).join(', '),
-            publication_date: extraction.citation.try(:journal).try(:publication_date).to_s,
+            publication_date: extraction.citation.try(:journal).try(:get_publication_year),
             refman: extraction.citation.refman,
             pmid: extraction.citation.pmid,
             kq_selection: KeyQuestion.where(id: kq_ids_by_extraction).collect(&:name).map(&:strip).join("\x0D\x0A"))
@@ -186,7 +186,7 @@ def build_type2_sections_wide_srdr_style(p, project, highlight, wrap, kq_ids=[],
         # Re-apply the styling for the new cells in the header row before closing the sheet.
         sheet.column_widths 16, 16, 16, 50, 16, 16
         header_row.style = highlight
-      end  # END p.workbook.add_worksheet(name: "#{ efps.section.name.truncate(24) } - wide") do |sheet|
+      end  # END p.workbook.add_worksheet(name: "#{ efps.section.name.truncate(24) }") do |sheet|
     end  # END if efps.extraction_forms_projects_section_type_id == 2
   end  # END efp.extraction_forms_projects_sections.each do |efps|
 end

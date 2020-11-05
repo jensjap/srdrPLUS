@@ -62,7 +62,7 @@ def build_type2_sections_compact(p, project, highlight, wrap, kq_ids=[], print_e
                   extraction.citation.refman,
                   extraction.citation.pmid,
                   extraction.citation.authors.collect(&:name).join(', '),
-                  extraction.citation.try(:journal).try(:publication_date).to_s,
+                  extraction.citation.try(:journal).try(:get_publication_year),
                   question.key_questions_projects_questions.collect(&:key_questions_project).collect(&:key_question).collect(&:name).join(', ').to_s,
                   eefpst1.type1.name,
                   eefpst1.type1.description,

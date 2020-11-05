@@ -40,7 +40,7 @@ def build_result_sections_compact(p, project, highlight, wrap, print_empty_row=f
             citation_id: extraction.citation.id,
             citation_name: extraction.citation.name,
             authors: extraction.citation.authors.collect(&:name).join(', '),
-            publication_date: extraction.citation.try(:journal).try(:publication_date).to_s,
+            publication_date: extraction.citation.try(:journal).try(:get_publication_year),
             refman: extraction.citation.refman,
             pmid: extraction.citation.pmid)
 
