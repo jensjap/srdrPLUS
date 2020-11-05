@@ -50145,10 +50145,7 @@ function __guardMethod__(obj, methodName, transform) {
       return;
     }
     (function() {
-      var post, suggestedChoices;
-      suggestedChoices = $(".suggestedChoices").select2({
-        tags: true
-      });
+      var post;
       post = function(path, params, method) {
         var form, hiddenField, key;
         method = method || 'post';
@@ -50184,7 +50181,7 @@ function __guardMethod__(obj, methodName, transform) {
           efpsId = $(this).data('sectionId');
           inputFields = $('.new-type1-fields-' + efpsId).last();
           inputFields.find('select[data-t1-type-input=""]').val(type1Type);
-          $('.suggestedChoices').val(type1Name).trigger('change');
+          inputFields.find('input[data-t1-name-input=""]').val(type1Name);
           inputFields.find('textarea[data-t1-description-input=""]').val(type1Desc);
           $('#timepoints-node tr').slice(1).each(function() {
             return $(this).find('td.remove-tp-link a').trigger('click');
@@ -50957,9 +50954,6 @@ function __guardMethod__(obj, methodName, transform) {
         add_change_listeners_to_questions();
         apply_coloring();
         apply_consolidation_dropdown();
-        $(".suggestedChoices").select2({
-          tags: true
-        });
       }
     })();
   });
@@ -51038,7 +51032,9 @@ function __guardMethod__(obj, methodName, transform) {
         },
         templateResult: formatTimepoint,
         templateSelection: formatTimepointSelection
-      });
+      }, $(".dropdown_with_writein").select2({
+        tags: true
+      }));
     })();
   });
 
