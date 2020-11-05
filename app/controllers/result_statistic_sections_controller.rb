@@ -38,7 +38,13 @@ class ResultStatisticSectionsController < ApplicationController
           end
         end
         format.json { render :show, status: :ok, location: @result_statistic_section }
-        format.js {}
+        format.js do
+          @result_statistic_section.measures.each do |measure|
+            @result_statistic_section.related_result_statistic_sections.each do |rss|
+              rss.measures << measure unless rss.measures.include?(measure)
+            end
+          end
+        end
       else
         format.html { render :edit }
         format.json { render json: @result_statistic_section.errors, status: :unprocessable_entity }
@@ -112,7 +118,7 @@ class ResultStatisticSectionsController < ApplicationController
             ]
         end
 
-        @result_statistic_section.other_related_measures.each do |measure|
+        @result_statistic_section.related_measures.each do |measure|
           next if @options.any? { |_, measure_id, _| measure_id == measure.id }
           @options << [
             measure.name,

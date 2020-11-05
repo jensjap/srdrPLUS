@@ -56,7 +56,7 @@ class ResultStatisticSection < ApplicationRecord
     population.extractions_extraction_forms_projects_sections_type1_row_columns
   end
 
-  def other_related_measures
+  def related_measures
     Measure.
       joins(result_statistic_sections: { population: { extractions_extraction_forms_projects_sections_type1: { extractions_extraction_forms_projects_section: :extraction  }}}).
       where(extractions_extraction_forms_projects_sections: { extraction_id: extraction.id }).
@@ -68,6 +68,18 @@ class ResultStatisticSection < ApplicationRecord
           }
         }
       })
+  end
+
+  def related_result_statistic_sections
+    self.class.
+    joins(population: { extractions_extraction_forms_projects_sections_type1: { extractions_extraction_forms_projects_section: :extraction } }).
+    where(population: { extractions_extraction_forms_projects_sections_type1: { extractions_extraction_forms_projects_sections: { extraction_id: extraction.id } } }).
+    where(result_statistic_section_type_id: result_statistic_section_type_id).
+    where(population: {
+      extractions_extraction_forms_projects_sections_type1s: {
+        type1_type_id: population.extractions_extraction_forms_projects_sections_type1.type1_type
+      }
+    })
   end
 
   # Making the assumption that the result section is always last.
