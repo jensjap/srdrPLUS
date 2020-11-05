@@ -19,7 +19,7 @@ class Task < ApplicationRecord
   has_paper_trail
 
   belongs_to :task_type
-  belongs_to :project
+  belongs_to :project, touch: true
 
   has_many :assignments, dependent: :destroy
   has_many :projects_users_roles, through: :assignments
