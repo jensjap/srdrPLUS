@@ -67,7 +67,7 @@ class ResultStatisticSection < ApplicationRecord
             type1_type_id: population.extractions_extraction_forms_projects_sections_type1.type1_type
           }
         }
-      })
+      }).order(id: :asc)
   end
 
   def related_result_statistic_sections
@@ -79,7 +79,7 @@ class ResultStatisticSection < ApplicationRecord
       extractions_extraction_forms_projects_sections_type1s: {
         type1_type_id: population.extractions_extraction_forms_projects_sections_type1.type1_type
       }
-    })
+    }).order(id: :asc)
   end
 
   # Making the assumption that the result section is always last.

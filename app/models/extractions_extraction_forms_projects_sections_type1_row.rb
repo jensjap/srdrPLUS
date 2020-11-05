@@ -95,6 +95,14 @@ class ExtractionsExtractionFormsProjectsSectionsType1Row < ApplicationRecord
         { result_statistic_section_type: ResultStatisticSectionType.find_or_create_by(name: 'Diagnostic Test 2x2 Table') },
         { result_statistic_section_type: ResultStatisticSectionType.find_or_create_by(name: 'Diagnostic Test Test Accuracy Metrics') },
       ])
+      result_statistic_sections.each do |rss|
+        latest_rss = rss.related_result_statistic_sections[-2]
+        if latest_rss
+          latest_rss.measures.each do |measure|
+            rss.measures << measure unless rss.measures.include?(measure)
+          end
+        end
+      end
     end
 
     def create_default_type1_row_columns
