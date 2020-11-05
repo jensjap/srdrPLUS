@@ -1,5 +1,5 @@
 .table-container results-table-eefpst1-id="#{ @eefpst1.id.to_s  }" style="min-height: 60vh; max-height: 80vh; overflow: scroll;"
-
+  - counter_index = 10000
   / Each population:
   - @eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |eefpst1r|
     - dsc_rss = eefpst1r.result_statistic_sections.where(result_statistic_section_type_id: 1).first
@@ -18,10 +18,12 @@
           = render "extractions/work/results/results_table/q1_q2_headers", dsc_rss: dsc_rss, bac_rss: bac_rss
 
         tbody
-          = render "extractions/work/results/results_table/q1_q2_body", dsc_rss: dsc_rss, bac_rss: bac_rss
+          = render "extractions/work/results/results_table/q1_q2_body", dsc_rss: dsc_rss, bac_rss: bac_rss, counter_index: counter_index
+          - counter_index += (dsc_rss.timepoints.count * @arms.count + dsc_rss.timepoints.count * bac_rss.comparisons.count + 1) * 1000
 
         thead
           = render "extractions/work/results/results_table/q3_q4_headers", bac_rss: bac_rss, wac_rss: wac_rss, net_rss: net_rss
 
         tbody
-          = render "extractions/work/results/results_table/q3_q4_body", bac_rss: bac_rss, wac_rss: wac_rss, net_rss: net_rss
+          = render "extractions/work/results/results_table/q3_q4_body", bac_rss: bac_rss, wac_rss: wac_rss, net_rss: net_rss, counter_index: counter_index
+          - counter_index += (wac_rss.comparisons.count * @arms.count + wac_rss.comparisons.count * bac_rss.comparisons.count + 1) * 1000

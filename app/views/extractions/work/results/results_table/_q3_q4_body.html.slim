@@ -1,5 +1,8 @@
+- tab_indices = {}
+- counter = counter_index
 - print_wac_name = true
-- wac_rss.comparisons.each do |wac|
+- wac_rss.comparisons.each_with_index do |wac, wac_index|
+  - wac_counter = 1000 * wac_index
   - max_row_cnt = [wac_rss.result_statistic_sections_measures.length, net_rss.result_statistic_sections_measures.length].max - 1
   - for row_cnt in -1..max_row_cnt do
     - tr_group_class = row_cnt == 0 ? 'tr-group-top' : row_cnt == max_row_cnt ? 'tr-group-bottom' : ''
@@ -23,6 +26,11 @@
           - if wac_rssm[row_cnt].present?
               td.bg-lightgreen
                 - record = ComparisonsArmsRssm.find_record(comparison=wac, extractions_extraction_forms_projects_sections_type1=arm, result_statistic_sections_measure=wac_rssm[row_cnt])
+                - if tab_indices["#{wac.id}:wac:#{arm.id}"]
+                  - tab_indices["#{wac.id}:wac:#{arm.id}"] += 1
+                - else
+                  - tab_indices["#{wac.id}:wac:#{arm.id}"] = counter
+                  - counter += 1000
                 = simple_form_for(record,
                   remote: true,
                   html: { autocomplete: 'off', data: { 'abide': '', 'live-validate': true } }) do |f|
@@ -32,7 +40,7 @@
                     required: false,
                     class: 'form-control',
                     wrapper_html: { style: 'padding-bottom: 0;' },
-                    input_html: { style: 'margin-bottom: 0;' }
+                    input_html: { style: 'margin-bottom: 0;', tabindex: tab_indices["#{wac.id}:wac:#{arm.id}"] }
                   div id="record-id-#{ record.id.to_s }" class='record-info' style='opacity: 0;' = 'Saved!'
           - else
             td.bg-lightgreen.freeze
@@ -47,6 +55,11 @@
             - if net_rssm[row_cnt].present?
               td.bg-lightpink
                 - record = WacsBacsRssm.find_record(wac=wac, bac=bac, result_statistic_sections_measure=net_rssm[row_cnt])
+                - if tab_indices["#{wac.id}:bac_comparison:#{bac.id}"]
+                  - tab_indices["#{wac.id}:bac_comparison:#{bac.id}"] += 1
+                - else
+                  - tab_indices["#{wac.id}:bac_comparison:#{bac.id}"] = counter
+                  - counter += 1000
                 = simple_form_for(record,
                   remote: true,
                   html: { autocomplete: 'off', data: { 'abide': '', 'live-validate': true } }) do |f|
@@ -56,7 +69,7 @@
                     required: false,
                     class: 'form-control',
                     wrapper_html: { style: 'padding-bottom: 0;' },
-                    input_html: { style: 'margin-bottom: 0;' }
+                    input_html: { style: 'margin-bottom: 0;', tabindex: tab_indices["#{wac.id}:bac_comparison:#{bac.id}"] }
                   div id="record-id-#{ record.id.to_s }" class='record-info' style='opacity: 0;' = 'Saved!'
 
             - else
@@ -75,3 +88,4 @@ tr
           render_options: { locals: { rss: wac_rss, comparison: :wac } } do
           i.fi-plus>
           | Add Comparison
+  - counter += 1000
