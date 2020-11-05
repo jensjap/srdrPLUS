@@ -214,10 +214,10 @@ def build_result_sections_compact(p, project, highlight, wrap, print_empty_row=f
 
         # Start printing rows to the sheets. First the basic headers:
         #['Extraction ID', 'Username', 'Citation ID', 'Citation Name', 'RefMan', 'PMID']
-        ws_desc_header = ws_desc.add_row(sheet_info.header_info + ['Outcome', 'Outcome Description', 'Outcome Type', 'Population', 'Timepoint', 'Timepoint Unit', 'Arm',            'Measure', 'Value'])
-        ws_bac_header  = ws_bac.add_row(sheet_info.header_info +  ['Outcome', 'Outcome Description', 'Outcome Type', 'Population', 'Timepoint', 'Timepoint Unit', 'BAC Comparator', 'Measure', 'Value'])
-        ws_wac_header  = ws_wac.add_row(sheet_info.header_info +  ['Outcome', 'Outcome Description', 'Outcome Type', 'Population', 'WAC Comparator',              'Arm',            'Measure', 'Value'])
-        ws_net_header  = ws_net.add_row(sheet_info.header_info +  ['Outcome', 'Outcome Description', 'Outcome Type', 'Population', 'WAC Comparator',              'BAC Comparator', 'Measure', 'Value'])
+        ws_desc_header = ws_desc.add_row(sheet_info.header_info + ['Outcome', 'Outcome Description', 'Outcome Type', 'Population', 'Digest', 'Timepoint', 'Timepoint Unit', 'Arm',            'Measure', 'Value'])
+        ws_bac_header  = ws_bac.add_row(sheet_info.header_info +  ['Outcome', 'Outcome Description', 'Outcome Type', 'Population', 'Digest', 'Timepoint', 'Timepoint Unit', 'BAC Comparator', 'Measure', 'Value'])
+        ws_wac_header  = ws_wac.add_row(sheet_info.header_info +  ['Outcome', 'Outcome Description', 'Outcome Type', 'Population', 'Digest', 'WAC Comparator',              'Arm',            'Measure', 'Value'])
+        ws_net_header  = ws_net.add_row(sheet_info.header_info +  ['Outcome', 'Outcome Description', 'Outcome Type', 'Population', 'Digest', 'WAC Comparator',              'BAC Comparator', 'Measure', 'Value'])
 
         ws_desc_header.style = highlight
         ws_bac_header.style  = highlight
@@ -245,6 +245,7 @@ def build_result_sections_compact(p, project, highlight, wrap, print_empty_row=f
               new_row << rssm[:outcome_description]
               new_row << rssm[:outcome_type]
               new_row << rssm[:population_name]
+              new_row << md5_digest(extraction, rssm)
               new_row << rssm[:row_name]
               new_row << rssm[:row_unit]
               new_row << rssm[:col_name]
@@ -260,6 +261,7 @@ def build_result_sections_compact(p, project, highlight, wrap, print_empty_row=f
               new_row << rssm[:outcome_description]
               new_row << rssm[:outcome_type]
               new_row << rssm[:population_name]
+              new_row << md5_digest(extraction, rssm)
               new_row << rssm[:row_name]
               new_row << rssm[:row_unit]
               new_row << rssm[:col_name]
@@ -275,6 +277,7 @@ def build_result_sections_compact(p, project, highlight, wrap, print_empty_row=f
               new_row << rssm[:outcome_description]
               new_row << rssm[:outcome_type]
               new_row << rssm[:population_name]
+              new_row << md5_digest(extraction, rssm)
               new_row << rssm[:row_name]
               new_row << rssm[:col_name]
               new_row << rssm[:measure_name]
@@ -289,6 +292,7 @@ def build_result_sections_compact(p, project, highlight, wrap, print_empty_row=f
               new_row << rssm[:outcome_description]
               new_row << rssm[:outcome_type]
               new_row << rssm[:population_name]
+              new_row << md5_digest(extraction, rssm)
               new_row << rssm[:row_name]
               new_row << rssm[:col_name]
               new_row << rssm[:measure_name]
@@ -306,4 +310,21 @@ def build_result_sections_compact(p, project, highlight, wrap, print_empty_row=f
       end  # END if efps.extraction_forms_projects_section_type_id == 3
     end  # END efp.extraction_forms_projects_sections.each do |efps|
   end  # END project.extraction_forms_projects.each do |efp|
+end
+
+def md5_digest(extraction, rssm)
+  signature_string = extraction[:extraction_info][:extraction_id].to_s\
+    + extraction[:extraction_info][:username].to_s\
+    + extraction[:extraction_info][:citation_id].to_s\
+    + extraction[:extraction_info][:citation_name].to_s\
+    + extraction[:extraction_info][:refman].to_s\
+    + extraction[:extraction_info][:pmid].to_s\
+    + extraction[:extraction_info][:authors].to_s\
+    + extraction[:extraction_info][:publication_date].to_s\
+    + rssm[:outcome_name].to_s\
+    + rssm[:outcome_description].to_s\
+    + rssm[:outcome_type].to_s\
+    + rssm[:population_name].to_s
+
+  Digest::MD5.hexdigest(signature_string)
 end
