@@ -23,7 +23,6 @@ def build_type2_sections_compact(p, project, highlight, wrap, kq_ids=[], print_e
 
         # First the basic headers:
         header_elements = sheet_info.header_info
-        header_elements = header_elements.concat(['Key Questions'])
 
         # Add additional column headers to capture the link_to_type1 name and description
         # if link_to_type1 is present and add to header_elements.
@@ -45,6 +44,9 @@ def build_type2_sections_compact(p, project, highlight, wrap, kq_ids=[], print_e
 
         # Iterate over each extraction in the project.
         project.extractions.each do |extraction|
+          # Collect distinct list of questions based off the key questions selected for this extraction.
+          kq_ids_by_extraction = fetch_kq_selection(extraction, kq_ids)
+
           eefps = efps.extractions_extraction_forms_projects_sections.find_by(
             extraction: extraction,
             extraction_forms_projects_section: efps
@@ -54,20 +56,19 @@ def build_type2_sections_compact(p, project, highlight, wrap, kq_ids=[], print_e
           if efps.link_to_type1.present?
             eefps.link_to_type1.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
               questions.each do |question|
-                new_row = [
-                  extraction.id,
-                  extraction.user.profile.username,
-                  extraction.citation.id,
-                  extraction.citation.name,
-                  extraction.citation.refman,
-                  extraction.citation.pmid,
-                  extraction.citation.authors.collect(&:name).join(', '),
-                  extraction.citation.try(:journal).try(:get_publication_year),
-                  question.key_questions_projects_questions.collect(&:key_questions_project).collect(&:key_question).collect(&:name).join(', ').to_s,
-                  eefpst1.type1.name,
-                  eefpst1.type1.description,
-                  question.name
-                ]
+                new_row = []
+                new_row << extraction.id
+                new_row << extraction.user.profile.username
+                new_row << extraction.citation.id
+                new_row << extraction.citation.name
+                new_row << extraction.citation.refman
+                new_row << extraction.citation.pmid
+                new_row << extraction.citation.authors.collect(&:name).join(', ')
+                new_row << extraction.citation.try(:journal).try(:get_publication_year)
+                new_row << KeyQuestion.where(id: kq_ids_by_extraction).collect(&:name).map(&:strip).join("\x0D\x0A")
+                new_row << eefpst1.type1.name
+                new_row << eefpst1.type1.description
+                new_row << question.name
 
                 has_values, qrc_components = build_qrc_components_for_question(eefps, eefpst1.id, question)
                 new_row = new_row.concat(qrc_components)
@@ -85,18 +86,17 @@ def build_type2_sections_compact(p, project, highlight, wrap, kq_ids=[], print_e
           else
             eefpst1 = nil
             questions.each do |question|
-              new_row = [
-                extraction.id,
-                extraction.user.profile.username,
-                extraction.citation.id,
-                extraction.citation.name,
-                extraction.citation.refman,
-                extraction.citation.pmid,
-                extraction.citation.authors.collect(&:name).join(', '),
-                extraction.citation.try(:journal).try(:publication_date).to_s,
-                question.key_questions_projects_questions.collect(&:key_questions_project).collect(&:key_question).collect(&:name).join(', ').to_s,
-                question.name
-              ]
+              new_row = []
+              new_row << extraction.id
+              new_row << extraction.user.profile.username
+              new_row << extraction.citation.id
+              new_row << extraction.citation.name
+              new_row << extraction.citation.refman
+              new_row << extraction.citation.pmid
+              new_row << extraction.citation.authors.collect(&:name).join(', ')
+              new_row << extraction.citation.try(:journal).try(:publication_date).to_s
+              new_row << KeyQuestion.where(id: kq_ids_by_extraction).collect(&:name).map(&:strip).join("\x0D\x0A")
+              new_row << question.name
 
               has_values, qrc_components = build_qrc_components_for_question(eefps, eefpst1, question)
               new_row = new_row.concat(qrc_components)

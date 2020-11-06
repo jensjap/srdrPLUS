@@ -1,6 +1,6 @@
 require 'simple_export_job/sheet_info'
 
-def build_type1_sections_wide(p, project, highlight, wrap)
+def build_type1_sections_wide(p, project, highlight, wrap, kq_ids=[])
   project.extraction_forms_projects.each do |efp|
     efp.extraction_forms_projects_sections.each do |efps|
 
@@ -15,6 +15,9 @@ def build_type1_sections_wide(p, project, highlight, wrap)
 
           # Every row represents an extraction.
           project.extractions.each do |extraction|
+            # Collect distinct list of questions based off the key questions selected for this extraction.
+            kq_ids_by_extraction = fetch_kq_selection(extraction, kq_ids)
+
             # Create base for extraction information.
             sheet_info.new_extraction_info(extraction)
 
@@ -27,7 +30,8 @@ def build_type1_sections_wide(p, project, highlight, wrap)
               authors: extraction.citation.authors.collect(&:name).join(', '),
               publication_date: extraction.citation.try(:journal).try(:get_publication_year),
               refman: extraction.citation.refman,
-              pmid: extraction.citation.pmid)
+              pmid: extraction.citation.pmid,
+              kq_selection: KeyQuestion.where(id: kq_ids_by_extraction).collect(&:name).map(&:strip).join("\x0D\x0A"))
 
             eefps = efps.extractions_extraction_forms_projects_sections.find_or_create_by(
               extraction: extraction,
@@ -112,6 +116,7 @@ def build_type1_sections_wide(p, project, highlight, wrap)
             new_row << extraction[:extraction_info][:pmid]
             new_row << extraction[:extraction_info][:authors]
             new_row << extraction[:extraction_info][:publication_date]
+            new_row << extraction[:extraction_info][:kq_selection]
 
             # We choose the order of the columns we want to add here.
             # This is a bit arbitrary but we choose: type1s > populations > timepoints

@@ -86,7 +86,7 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
 
           qrcqrco = qrc.question_row_columns_question_row_column_options.find_by(id: opt_id.to_i)
           if qrcqrco.present? and not opt_id.to_i.zero?
-            text_arr << qrcqrco.name
+            text_arr << (qrcqrco.name.present? ? qrcqrco.name : (qrcqrco.nil? ? '' : 'X'))
           end
         end
       end

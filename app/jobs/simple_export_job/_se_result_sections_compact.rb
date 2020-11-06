@@ -1,6 +1,6 @@
 require 'simple_export_job/sheet_info'
 
-def build_result_sections_compact(p, project, highlight, wrap, print_empty_row=false)
+def build_result_sections_compact(p, project, highlight, wrap, kq_ids=[], print_empty_row=false)
   project.extraction_forms_projects.each do |efp|
     efp.extraction_forms_projects_sections.each do |efps|
 
@@ -12,6 +12,8 @@ def build_result_sections_compact(p, project, highlight, wrap, print_empty_row=f
 
         # Build SheetInfo object by extraction.
         project.extractions.each do |extraction|
+          # Collect distinct list of questions based off the key questions selected for this extraction.
+          kq_ids_by_extraction = fetch_kq_selection(extraction, kq_ids)
 
           #!!! We can probably use scope for this.
           # Find all eefps that are Outcomes.
@@ -42,7 +44,8 @@ def build_result_sections_compact(p, project, highlight, wrap, print_empty_row=f
             authors: extraction.citation.authors.collect(&:name).join(', '),
             publication_date: extraction.citation.try(:journal).try(:get_publication_year),
             refman: extraction.citation.refman,
-            pmid: extraction.citation.pmid)
+            pmid: extraction.citation.pmid,
+            kq_selection: KeyQuestion.where(id: kq_ids_by_extraction).collect(&:name).map(&:strip).join("\x0D\x0A"))
 
           eefps = efps.extractions_extraction_forms_projects_sections.find_by(
             extraction: extraction,
@@ -238,6 +241,7 @@ def build_result_sections_compact(p, project, highlight, wrap, print_empty_row=f
             new_row << extraction[:extraction_info][:pmid]
             new_row << extraction[:extraction_info][:authors]
             new_row << extraction[:extraction_info][:publication_date]
+            new_row << extraction[:extraction_info][:kq_selection]
 
             case rssm[:result_statistic_section_type_id]
             when 1

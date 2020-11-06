@@ -82,7 +82,6 @@ def build_type2_sections_wide_srdr_style(p, project, highlight, wrap, kq_ids=[],
 
         # First the basic headers:
         header_elements = sheet_info.header_info
-        header_elements = header_elements.concat(['Key Questions'])
 
         # Add additional column headers to capture the link_to_type1 name and description
         # if link_to_type1 is present and add to header_elements.
@@ -141,10 +140,6 @@ def build_type2_sections_wide_srdr_style(p, project, highlight, wrap, kq_ids=[],
 
           # If link_to_type1 is present we need to iterate each question for every type1 present in the extraction.
           eefpst1s = _fetch_eefpst1s(eefps)
-#          eefpst1s = (eefps.extraction_forms_projects_section.extraction_forms_projects_section_option.by_type1 and eefps.link_to_type1.present?) ?
-#            eefps.link_to_type1.extractions_extraction_forms_projects_sections_type1s :
-#            [Struct.new(:id, :type1).new(nil, Struct.new(:id, :name, :description).new(nil))]
-
           eefpst1s.each do |eefpst1|
             # If no kq is selected we should skip this row.
             next if extraction[:extraction_info][:kq_selection].blank?
@@ -189,22 +184,6 @@ def build_type2_sections_wide_srdr_style(p, project, highlight, wrap, kq_ids=[],
       end  # END p.workbook.add_worksheet(name: "#{ efps.section.name.truncate(24) }") do |sheet|
     end  # END if efps.extraction_forms_projects_section_type_id == 2
   end  # END efp.extraction_forms_projects_sections.each do |efps|
-end
-
-# If no KQ's array is passed in, we export based on extraction.extractions_key_questions_projects_selections.
-# Note - jjap - 10-27-2020: This is counter to the design decision to let each question pick its
-#   own set of key questions. Doing it this way is akin to picking key questions based on the
-#   EFP...which means we should be able to create multiple EFPs just like in SRDR.
-def fetch_kq_selection(extraction, kq_ids)
-  if kq_ids.blank?
-    kq_ids = extraction
-      .extractions_key_questions_projects_selections
-      .order(key_questions_project_id: :asc)
-      .collect(&:key_questions_project)
-      .collect(&:key_question_id)
-  end
-
-  return kq_ids
 end
 
 # Type2 (Questions) are associated to Key Questions and we export by the KQ's selected.

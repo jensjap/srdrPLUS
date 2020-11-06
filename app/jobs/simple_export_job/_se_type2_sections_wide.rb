@@ -70,7 +70,7 @@ def build_type2_sections_wide(p, project, highlight, wrap, kq_ids=[])
                     .question_row_columns_question_row_column_options
                     .where(question_row_column_option_id: 1)
                     .pluck(:id, :name),
-                    key_questions: q.key_questions_projects_questions.collect(&:key_questions_project).collect(&:key_question).collect(&:name).join(', ').to_s,
+                    key_questions: q.key_questions_projects_questions.collect(&:key_questions_project).collect(&:key_question).collect(&:name).map(&:strip).join("\x0D\x0A"),
                     eefps_qrfc_values: eefps.eefps_qrfc_values(eefpst1.id, qrc))
                 end  # qr.question_row_columns.each do |qrc|
               end  # q.question_rows.each do |qr|
