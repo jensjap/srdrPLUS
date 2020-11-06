@@ -17,7 +17,7 @@
       | Microsoft Excel - wide format (.xlsx)
     br
 
-    input[class='export-type-radio' type='radio' name="export-type-#{project.id.to_s}" value="#{export_project_path(project, export_type_name: 'legacy')}" id="xlsx-legacy-radio-#{project.id.to_s}"]
+    input[class='export-type-radio' type='radio' name="export-type-#{project.id.to_s}" value="#{export_project_path(project, export_type_name: '.xlsx legacy')}" id="xlsx-legacy-radio-#{project.id.to_s}"]
     label for="xlsx-legacy-radio-#{project.id.to_s}"
       | Microsoft Excel - legacy format (.xlsx)
 
