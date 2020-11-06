@@ -74,8 +74,12 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
     recordables = extractions_extraction_forms_projects_sections_question_row_column_fields
       .where(extractions_extraction_forms_projects_sections_type1_id: eefpst1_id,
              question_row_column_field: qrc.question_row_column_fields)
+      .order(id: :asc)
 
     case qrc.question_row_column_type_id
+    when 1  # Textbox.
+      return Record.where(recordable: recordables.last).pluck(:name).compact.join(', ')
+
     when 5  # Checkbox.
       text_arr = []
       Record.where(recordable: recordables).pluck(:name).each do |opt_ids|
