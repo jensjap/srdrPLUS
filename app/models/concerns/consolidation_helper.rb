@@ -30,25 +30,10 @@ module ConsolidationHelper
       result_r_hash = {}
 
       extractions.each do |extraction|
-        #we need to do type1 sections first
-        t1_eefps = extraction.extractions_extraction_forms_projects_sections.
-          joins(:extraction_forms_projects_section).
-          includes(extractions_extraction_forms_projects_sections_type1s: [
-            {extractions_extraction_forms_projects_sections_type1_rows: [
-              {result_statistic_sections: [
-                {comparisons: {comparate_groups: {comparates: {comparable_element: :comparable}}}},
-                {result_statistic_sections_measures: [
-                  {tps_comparisons_rssms: [:timepoint, :records, comparison: {comparate_groups: {comparates: {comparable_element: :comparable}}}]},
-                  {comparisons_arms_rssms: [{comparison: {comparate_groups: {comparates: {comparable_element: :comparable}}}},
-                                            {extractions_extraction_forms_projects_sections_type1: [:extractions_extraction_forms_projects_section]}, :records]},
-                  {tps_arms_rssms: [:records, :timepoint, {extractions_extraction_forms_projects_sections_type1: :extractions_extraction_forms_projects_section}]},
-                  {wacs_bacs_rssms: [:records, {wac: {comparate_groups: {comparates: {comparable_element: :comparable}}}},
-                                               {bac: {comparate_groups: {comparates: {comparable_element: :comparable}}}}]}]}]},
-              :extractions_extraction_forms_projects_sections_type1_row_columns]}, :type1]).
-          where(extraction_forms_projects_sections:
-                {extraction_forms_projects_section_type_id: 1})
+        # Type1 sections.
+        t1_eefps = get_type1_sections_in_extraction(extraction)
 
-        #Type 1 sections
+        # Iterate over type1 eefpss.
         t1_eefps.each do |eefps|
           efps_id = eefps.extraction_forms_projects_section_id.to_s
           eefps_t1s = eefps.extractions_extraction_forms_projects_sections_type1s
@@ -232,15 +217,11 @@ module ConsolidationHelper
           end
         end
 
-        # now type2 sections
-        eefps_t2 = extraction.extractions_extraction_forms_projects_sections.
-          joins(:extraction_forms_projects_section).
-          includes({extractions_extraction_forms_projects_sections_question_row_column_fields: [:records, :question_row_column_field, :extractions_extraction_forms_projects_sections_type1]}).
-          where(extraction_forms_projects_sections:
-                {extraction_forms_projects_section_type_id: 2})
+        # Type2 sections.
+        t2_eefps = get_type2_sections_in_extraction(extraction)
 
-        #iterate over type2 eefpss
-        eefps_t2.each do |eefps|
+        # Iterate over type2 eefpss.
+        t2_eefps.each do |eefps|
           if (eefps.link_to_type1.present? and not eefps.extraction_forms_projects_section.extraction_forms_projects_section_option.by_type1) or
              (not eefps.link_to_type1.present? and eefps.extraction_forms_projects_section.extraction_forms_projects_section_option.by_type1)
             next
@@ -281,7 +262,6 @@ module ConsolidationHelper
           end
         end
       end
-
 
       #create the same type1 in self
       t1_hash.each do |efps_id, t1_efps_hash|
@@ -520,10 +500,55 @@ module ConsolidationHelper
           end
         end
       end
+    end  # def auto_consolidate(extractions)
 
+    def get_type1_sections_in_extraction(extraction)
+      return extraction.extractions_extraction_forms_projects_sections
+        .joins(:extraction_forms_projects_section)
+        .includes(extractions_extraction_forms_projects_sections_type1s: [
+          { extractions_extraction_forms_projects_sections_type1_rows: [
+            { result_statistic_sections: [
+              { comparisons: { comparate_groups: { comparates: { comparable_element: :comparable } } } },
+              { result_statistic_sections_measures: [
+                { tps_comparisons_rssms: [
+                  :timepoint,
+                  :records,
+                  comparison: { comparate_groups: { comparates: { comparable_element: :comparable } } }]
+                },
+                { comparisons_arms_rssms: [
+                  { comparison: { comparate_groups: { comparates: { comparable_element: :comparable } } } },
+                  { extractions_extraction_forms_projects_sections_type1: [:extractions_extraction_forms_projects_section] },
+                  :records]
+                },
+                { tps_arms_rssms: [
+                  :records,
+                  :timepoint,
+                  { extractions_extraction_forms_projects_sections_type1: :extractions_extraction_forms_projects_section }]
+                },
+                { wacs_bacs_rssms: [
+                  :records,
+                  { wac: { comparate_groups: { comparates: { comparable_element: :comparable } } } },
+                  { bac: { comparate_groups: { comparates: { comparable_element: :comparable } } } }]
+                }]
+              }]
+            },
+            :extractions_extraction_forms_projects_sections_type1_row_columns]
+          },
+          :type1])
+        .where(extraction_forms_projects_sections: { extraction_forms_projects_section_type_id: 1 })
     end
-  end
+
+    def get_type2_sections_in_extraction(extraction)
+        return extraction.extractions_extraction_forms_projects_sections
+          .joins(:extraction_forms_projects_section)
+          .includes({ extractions_extraction_forms_projects_sections_question_row_column_fields: [
+            :records,
+            :question_row_column_field,
+            :extractions_extraction_forms_projects_sections_type1] })
+          .where(extraction_forms_projects_sections: { extraction_forms_projects_section_type_id: 2 })
+    end
+  end  # included do
 
   class_methods do
-  end
+  end  # class_methods do
 end
