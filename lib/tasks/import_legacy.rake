@@ -8,6 +8,8 @@ namespace(:db) do
   namespace(:import_legacy) do
     desc "import legacy projects"
     task :projects => :environment do 
+      initialize_variables
+
       projects = db.query("SELECT * FROM projects")
       projects.each do |project_hash|
         migrate_legacy_srdr_project project_hash
@@ -15,12 +17,23 @@ namespace(:db) do
       end
     end
     
-    @efps_type_1 = ExtractionFormsProjectsSectionType.find_by(name: 'Type 1')
-    @efps_type_2 = ExtractionFormsProjectsSectionType.find_by(name: 'Type 2')
-    @efps_type_results = ExtractionFormsProjectsSectionType.find_by(name: 'Results')
-    @efps_type_4 = ExtractionFormsProjectsSectionType.find_by(name: 'Type 4')
-    @efp_type_1 = ExtractionFormsProjectType.find_by
-    
+    def initialize_variables
+      @efps_type_1 = ExtractionFormsProjectsSectionType.find_by(name: 'Type 1')
+      @efps_type_2 = ExtractionFormsProjectsSectionType.find_by(name: 'Type 2')
+      @efps_type_results = ExtractionFormsProjectsSectionType.find_by(name: 'Results')
+      @efps_type_4 = ExtractionFormsProjectsSectionType.find_by(name: 'Type 4')
+      @efp_type_standard = ExtractionFormsProjectType.find_by(name: 'Standard')
+      @efp_type_diagnostic = ExtractionFormsProjectType.find_by(name: 'Diagnostic Test')
+      @srdr_to_srdrplus_project_dict = {}
+    end
+
+    def get_srdrplus_project srdr_project_id
+      @srdr_to_srdrplus_project_dict[srdr_project_id]
+    end
+
+    def set_srdrplus_project srdr_project_id, srdrplus_project
+      @srdr_to_srdrplus_project_dict[srdr_project_id] = srdrplus_project
+    end
 
     def migrate_legacy_srdr_project project_hash
       # DO I WANT TO CREATE USERS? probably no
@@ -32,20 +45,25 @@ namespace(:db) do
       project_id = project_hash["id"]
       project_name = project_hash["title"]
       project_description = project_hash["description"]
-      is_project_diagnostic = if project_hash["is_diagnostic"] == 1 then true else false end
+      efp_type = get_project_type
 
       #TODO What to do with publications ?, is_public means published in SRDR
-      @srdrplus_project = Project.new name: project_name, description: project_description
-      @srdrplus_project.save #need to save, because i want the default efp
-      @srdrplus_project.extraction_forms_projects.first.extraction_forms_projects_sections.destroy_all #need to delete default sections
+      srdrplus_project = Project.new name: project_name, description: project_description
+      srdrplus_project.save #need to save, because i want the default efp
+      srdrplus_project.extraction_forms_projects.first.extraction_forms_projects_sections.destroy_all #need to delete default sections
+      set_srdrplus_project project_id, srdrplus_project
 
       # Extraction Forms Migration
       efs = db.query "SELECT * FROM extraction_forms where project_id=#{project_id}"
-      if is_project_diagnostic
-        @srdrplus_project.extraction_forms_projects.update name: "Diagnostic Test"
-        migrate_extraction_forms_as_standard_efp efs
-      else
+
+      efp_type = get_efp_type efs
+      if efp_type == false
+        return
+      elsif efp_type == @efp_type_diagnostic
+        @srdrplus_project.extraction_forms_projects.update(extraction_forms_project_type: efp_type)
         migrate_extraction_forms_as_diagnostic_efp efs
+      else
+        migrate_extraction_forms_as_standard_efp efs
       end
 
       studies_hash = db.query "SELECT * FROM studies where project_id=#{project_id}"
@@ -67,10 +85,15 @@ namespace(:db) do
 
       efs.each do |ef|
         ef_sections = db.query "SELECT * FROM extraction_form_sections where extraction_form_id=#{ef["id"]}"
+
+        @arms_efps = nil
+        @outcomes_efps = nil
+        @adverse_events_efps = nil
+        @diagnostic_tets_efps = nil
+
         ef_sections.each do |ef_section|
           case ef_section.section_name
           when "arms"
-            
             @extraction_forms_projects_sections << efps
             if adverse_events_efps.present? then adverse_events_efps.link_to_type1 = efps end
           when "outcomes"
@@ -127,6 +150,25 @@ namespace(:db) do
 
     def split_authors_string authors_string
       []
+    end
+
+    def get_efp_type efs
+      has_diagnostic = false
+      has_standard = false
+      efs.each do |ef_hash|
+        if ef_hash["is_diagnostic"] == 1
+          has_diagnostic = true
+        else
+          has_standard = true
+        end
+      end
+      if has_diagnostic and has_standard
+        return false
+      elsif has_diagnostic
+        return @efp_type_diagnostic
+      else
+        return @efp_type_standard
+      end
     end
   end
 end
