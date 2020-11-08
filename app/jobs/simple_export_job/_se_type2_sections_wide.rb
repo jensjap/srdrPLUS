@@ -26,6 +26,7 @@ def build_type2_sections_wide(p, project, highlight, wrap, kq_ids=[])
           # Collect basic information about the extraction.
           sheet_info.set_extraction_info(
             extraction_id: extraction.id,
+            consolidated: extraction.consolidated.to_s,
             username: extraction.projects_users_role.projects_user.user.profile.username,
             citation_id: extraction.citation.id,
             citation_name: extraction.citation.name,
@@ -125,6 +126,7 @@ def build_type2_sections_wide(p, project, highlight, wrap, kq_ids=[])
         sheet_info.extractions.each do |key, extraction|
           new_row = []
           new_row << extraction[:extraction_info][:extraction_id]
+          new_row << extraction[:extraction_info][:consolidated]
           new_row << extraction[:extraction_info][:username]
           new_row << extraction[:extraction_info][:citation_id]
           new_row << extraction[:extraction_info][:citation_name]
