@@ -1,0 +1,38 @@
+.reveal[data-reveal='' id="export-modal-#{ project.id.to_s }"]
+  a[data-close='' style='float: right; font-size: large;']
+    |×
+
+  fieldset
+    legend[style='font-size: large;']
+      | Export SRDR+ Data. Select type:
+
+    input[class='export-type-radio' type='radio' name="export-type-#{project.id.to_s}" value="#{export_project_path(project, export_type_name: '.xlsx long')}" checked='' id="xlsx-long-radio-#{project.id.to_s}"]
+    label for="xlsx-long-radio-#{project.id.to_s}"
+      | Microsoft Excel - long format (.xlsx)
+
+    br
+
+    input[class='export-type-radio' type='radio' name="export-type-#{project.id.to_s}" value="#{export_project_path(project, export_type_name: '.xlsx wide')}" id="xlsx-wide-radio-#{project.id.to_s}"]
+    label for="xlsx-wide-radio-#{project.id.to_s}"
+      | Microsoft Excel - wide format (.xlsx)
+    br
+
+    input[class='export-type-radio' type='radio' name="export-type-#{project.id.to_s}" value="#{export_project_path(project, export_type_name: '.xlsx legacy')}" id="xlsx-legacy-radio-#{project.id.to_s}"]
+    label for="xlsx-legacy-radio-#{project.id.to_s}"
+      | Microsoft Excel - legacy format (.xlsx)
+
+    br
+
+    input[class='export-type-radio' type='radio' name="export-type-#{project.id.to_s}" value="#{export_project_path(project, export_type_name: 'Google Sheets')}" id="gsheets-radio-#{project.id.to_s}"]
+    label for="gsheets-radio-#{project.id.to_s}"
+      | Google Sheets
+
+    = link_to "Export Project Data", export_project_path(project, export_type_name: '.xlsx'), method: :post, class: "button expanded start-export-button"
+
+    hr
+
+    fieldset
+      legend[style='font-size: large;']
+        |Export Citation Screening Labels:
+
+    = link_to "Export Project Citation Labels", export_citation_labels_project_path(project, export_type_name: '.csv'), method: :post, class: 'button expanded start-citation-labels-export-button'

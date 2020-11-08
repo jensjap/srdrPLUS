@@ -70,6 +70,11 @@ class ExtractionFormsProject < ApplicationRecord
     self.extraction_form.name
   end
 
+  # Use first section by default.
+  def default_section_id
+    self.extraction_forms_projects_sections.try(:first).try(:id)
+  end
+
   private
 
     def create_default_sections

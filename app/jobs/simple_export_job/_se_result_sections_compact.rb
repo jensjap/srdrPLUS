@@ -1,6 +1,6 @@
 require 'simple_export_job/sheet_info'
 
-def build_result_sections_compact(p, project, highlight, wrap, print_empty_row=false)
+def build_result_sections_compact(p, project, highlight, wrap, kq_ids=[], print_empty_row=false)
   project.extraction_forms_projects.each do |efp|
     efp.extraction_forms_projects_sections.each do |efps|
 
@@ -12,6 +12,8 @@ def build_result_sections_compact(p, project, highlight, wrap, print_empty_row=f
 
         # Build SheetInfo object by extraction.
         project.extractions.each do |extraction|
+          # Collect distinct list of questions based off the key questions selected for this extraction.
+          kq_ids_by_extraction = fetch_kq_selection(extraction, kq_ids)
 
           #!!! We can probably use scope for this.
           # Find all eefps that are Outcomes.
@@ -36,11 +38,15 @@ def build_result_sections_compact(p, project, highlight, wrap, print_empty_row=f
           # Collect basic information about the extraction.
           sheet_info.set_extraction_info(
             extraction_id: extraction.id,
+            consolidated: extraction.consolidated.to_s,
             username: extraction.projects_users_role.projects_user.user.profile.username,
-            citation_id: extraction.citations_project.citation.id,
-            citation_name: extraction.citations_project.citation.name,
-            refman: extraction.citations_project.citation.refman,
-            pmid: extraction.citations_project.citation.pmid)
+            citation_id: extraction.citation.id,
+            citation_name: extraction.citation.name,
+            authors: extraction.citation.authors.collect(&:name).join(', '),
+            publication_date: extraction.citation.try(:journal).try(:get_publication_year),
+            refman: extraction.citation.refman,
+            pmid: extraction.citation.pmid,
+            kq_selection: KeyQuestion.where(id: kq_ids_by_extraction).collect(&:name).map(&:strip).join("\x0D\x0A"))
 
           eefps = efps.extractions_extraction_forms_projects_sections.find_by(
             extraction: extraction,
@@ -205,17 +211,17 @@ def build_result_sections_compact(p, project, highlight, wrap, print_empty_row=f
           end  # eefps_outcomes.each do |eefps_outcome|
         end  # project.extractions.each do |extraction|
 
-        ws_desc = p.workbook.add_worksheet(name: "Desc. Statistics - long")
-        ws_bac  = p.workbook.add_worksheet(name: "BAC Comparisons - long")
-        ws_wac  = p.workbook.add_worksheet(name: "WAC Comparisons - long")
-        ws_net  = p.workbook.add_worksheet(name: "NET Differences - long")
+        ws_desc = p.workbook.add_worksheet(name: "Desc. Statistics")
+        ws_bac  = p.workbook.add_worksheet(name: "BAC Comparisons")
+        ws_wac  = p.workbook.add_worksheet(name: "WAC Comparisons")
+        ws_net  = p.workbook.add_worksheet(name: "NET Differences")
 
         # Start printing rows to the sheets. First the basic headers:
         #['Extraction ID', 'Username', 'Citation ID', 'Citation Name', 'RefMan', 'PMID']
-        ws_desc_header = ws_desc.add_row(sheet_info.header_info + ['Outcome', 'Outcome Description', 'Outcome Type', 'Population', 'Timepoint', 'Timepoint Unit', 'Arm',            'Measure', 'Value'])
-        ws_bac_header  = ws_bac.add_row(sheet_info.header_info +  ['Outcome', 'Outcome Description', 'Outcome Type', 'Population', 'Timepoint', 'Timepoint Unit', 'BAC Comparator', 'Measure', 'Value'])
-        ws_wac_header  = ws_wac.add_row(sheet_info.header_info +  ['Outcome', 'Outcome Description', 'Outcome Type', 'Population', 'WAC Comparator',              'Arm',            'Measure', 'Value'])
-        ws_net_header  = ws_net.add_row(sheet_info.header_info +  ['Outcome', 'Outcome Description', 'Outcome Type', 'Population', 'WAC Comparator',              'BAC Comparator', 'Measure', 'Value'])
+        ws_desc_header = ws_desc.add_row(sheet_info.header_info + ['Outcome', 'Outcome Description', 'Outcome Type', 'Population', 'Digest', 'Timepoint', 'Timepoint Unit', 'Arm',            'Measure', 'Value'])
+        ws_bac_header  = ws_bac.add_row(sheet_info.header_info +  ['Outcome', 'Outcome Description', 'Outcome Type', 'Population', 'Digest', 'Timepoint', 'Timepoint Unit', 'BAC Comparator', 'Measure', 'Value'])
+        ws_wac_header  = ws_wac.add_row(sheet_info.header_info +  ['Outcome', 'Outcome Description', 'Outcome Type', 'Population', 'Digest', 'WAC Comparator',              'Arm',            'Measure', 'Value'])
+        ws_net_header  = ws_net.add_row(sheet_info.header_info +  ['Outcome', 'Outcome Description', 'Outcome Type', 'Population', 'Digest', 'WAC Comparator',              'BAC Comparator', 'Measure', 'Value'])
 
         ws_desc_header.style = highlight
         ws_bac_header.style  = highlight
@@ -229,11 +235,15 @@ def build_result_sections_compact(p, project, highlight, wrap, print_empty_row=f
 
             new_row = []
             new_row << extraction[:extraction_info][:extraction_id]
+            new_row << extraction[:extraction_info][:consolidated]
             new_row << extraction[:extraction_info][:username]
             new_row << extraction[:extraction_info][:citation_id]
             new_row << extraction[:extraction_info][:citation_name]
             new_row << extraction[:extraction_info][:refman]
             new_row << extraction[:extraction_info][:pmid]
+            new_row << extraction[:extraction_info][:authors]
+            new_row << extraction[:extraction_info][:publication_date]
+            new_row << extraction[:extraction_info][:kq_selection]
 
             case rssm[:result_statistic_section_type_id]
             when 1
@@ -241,6 +251,7 @@ def build_result_sections_compact(p, project, highlight, wrap, print_empty_row=f
               new_row << rssm[:outcome_description]
               new_row << rssm[:outcome_type]
               new_row << rssm[:population_name]
+              new_row << md5_digest(extraction, rssm)
               new_row << rssm[:row_name]
               new_row << rssm[:row_unit]
               new_row << rssm[:col_name]
@@ -256,6 +267,7 @@ def build_result_sections_compact(p, project, highlight, wrap, print_empty_row=f
               new_row << rssm[:outcome_description]
               new_row << rssm[:outcome_type]
               new_row << rssm[:population_name]
+              new_row << md5_digest(extraction, rssm)
               new_row << rssm[:row_name]
               new_row << rssm[:row_unit]
               new_row << rssm[:col_name]
@@ -271,6 +283,7 @@ def build_result_sections_compact(p, project, highlight, wrap, print_empty_row=f
               new_row << rssm[:outcome_description]
               new_row << rssm[:outcome_type]
               new_row << rssm[:population_name]
+              new_row << md5_digest(extraction, rssm)
               new_row << rssm[:row_name]
               new_row << rssm[:col_name]
               new_row << rssm[:measure_name]
@@ -285,6 +298,7 @@ def build_result_sections_compact(p, project, highlight, wrap, print_empty_row=f
               new_row << rssm[:outcome_description]
               new_row << rssm[:outcome_type]
               new_row << rssm[:population_name]
+              new_row << md5_digest(extraction, rssm)
               new_row << rssm[:row_name]
               new_row << rssm[:col_name]
               new_row << rssm[:measure_name]
@@ -302,4 +316,22 @@ def build_result_sections_compact(p, project, highlight, wrap, print_empty_row=f
       end  # END if efps.extraction_forms_projects_section_type_id == 3
     end  # END efp.extraction_forms_projects_sections.each do |efps|
   end  # END project.extraction_forms_projects.each do |efp|
+end
+
+def md5_digest(extraction, rssm)
+  signature_string = extraction[:extraction_info][:extraction_id].to_s\
+    + extraction[:extraction_info][:consolidated].to_s\
+    + extraction[:extraction_info][:username].to_s\
+    + extraction[:extraction_info][:citation_id].to_s\
+    + extraction[:extraction_info][:citation_name].to_s\
+    + extraction[:extraction_info][:refman].to_s\
+    + extraction[:extraction_info][:pmid].to_s\
+    + extraction[:extraction_info][:authors].to_s\
+    + extraction[:extraction_info][:publication_date].to_s\
+    + rssm[:outcome_name].to_s\
+    + rssm[:outcome_description].to_s\
+    + rssm[:outcome_type].to_s\
+    + rssm[:population_name].to_s
+
+  Digest::MD5.hexdigest(signature_string)
 end

@@ -1,7 +1,7 @@
 require 'simple_export_job/sheet_info'
 
-COL_CNT_WITHOUT_LINK_TO_TYPE1 = 7
-COL_CNT_WITH_LINK_TO_TYPE1    = 9
+COL_CNT_WITHOUT_LINK_TO_TYPE1 = 10
+COL_CNT_WITH_LINK_TO_TYPE1    = 12
 
 def build_type2_sections_compact(p, project, highlight, wrap, kq_ids=[], print_empty_row=false)
 
@@ -16,13 +16,12 @@ def build_type2_sections_compact(p, project, highlight, wrap, kq_ids=[], print_e
     if efps.extraction_forms_projects_section_type_id == 2
 
       # Add a new sheet.
-      p.workbook.add_worksheet(name: "#{ efps.section.name.truncate(21) } - long") do |sheet|
+      p.workbook.add_worksheet(name: "#{ efps.section.name.truncate(21) }") do |sheet|
 
         # For each sheet we create a SheetInfo object.
         sheet_info = SheetInfo.new
 
         # First the basic headers:
-        # ['Extraction ID', 'Username', 'Citation ID', 'Citation Name', 'RefMan', 'PMID']
         header_elements = sheet_info.header_info
 
         # Add additional column headers to capture the link_to_type1 name and description
@@ -45,6 +44,9 @@ def build_type2_sections_compact(p, project, highlight, wrap, kq_ids=[], print_e
 
         # Iterate over each extraction in the project.
         project.extractions.each do |extraction|
+          # Collect distinct list of questions based off the key questions selected for this extraction.
+          kq_ids_by_extraction = fetch_kq_selection(extraction, kq_ids)
+
           eefps = efps.extractions_extraction_forms_projects_sections.find_by(
             extraction: extraction,
             extraction_forms_projects_section: efps
@@ -54,17 +56,20 @@ def build_type2_sections_compact(p, project, highlight, wrap, kq_ids=[], print_e
           if efps.link_to_type1.present?
             eefps.link_to_type1.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
               questions.each do |question|
-                new_row = [
-                  extraction.id,
-                  extraction.user.profile.username,
-                  extraction.citation.id,
-                  extraction.citation.name,
-                  extraction.citation.refman,
-                  extraction.citation.pmid,
-                  eefpst1.type1.name,
-                  eefpst1.type1.description,
-                  question.name
-                ]
+                new_row = []
+                new_row << extraction.id
+                new_row << extraction.consolidated.to_s
+                new_row << extraction.user.profile.username
+                new_row << extraction.citation.id
+                new_row << extraction.citation.name
+                new_row << extraction.citation.refman
+                new_row << extraction.citation.pmid
+                new_row << extraction.citation.authors.collect(&:name).join(', ')
+                new_row << extraction.citation.try(:journal).try(:get_publication_year)
+                new_row << KeyQuestion.where(id: kq_ids_by_extraction).collect(&:name).map(&:strip).join("\x0D\x0A")
+                new_row << eefpst1.type1.name
+                new_row << eefpst1.type1.description
+                new_row << question.name
 
                 has_values, qrc_components = build_qrc_components_for_question(eefps, eefpst1.id, question)
                 new_row = new_row.concat(qrc_components)
@@ -82,15 +87,18 @@ def build_type2_sections_compact(p, project, highlight, wrap, kq_ids=[], print_e
           else
             eefpst1 = nil
             questions.each do |question|
-              new_row = [
-                extraction.id,
-                extraction.user.profile.username,
-                extraction.citation.id,
-                extraction.citation.name,
-                extraction.citation.refman,
-                extraction.citation.pmid,
-                question.name
-              ]
+              new_row = []
+              new_row << extraction.id
+              new_row << extraction.consolidated.to_s
+              new_row << extraction.user.profile.username
+              new_row << extraction.citation.id
+              new_row << extraction.citation.name
+              new_row << extraction.citation.refman
+              new_row << extraction.citation.pmid
+              new_row << extraction.citation.authors.collect(&:name).join(', ')
+              new_row << extraction.citation.try(:journal).try(:publication_date).to_s
+              new_row << KeyQuestion.where(id: kq_ids_by_extraction).collect(&:name).map(&:strip).join("\x0D\x0A")
+              new_row << question.name
 
               has_values, qrc_components = build_qrc_components_for_question(eefps, eefpst1, question)
               new_row = new_row.concat(qrc_components)
@@ -108,7 +116,7 @@ def build_type2_sections_compact(p, project, highlight, wrap, kq_ids=[], print_e
         # Re-apply the styling for the new cells in the header row before closing the sheet.
         sheet.column_widths nil
         header_row.style = highlight
-      end  # END p.workbook.add_worksheet(name: "#{ efps.section.name.truncate(21) } - long") do |sheet|
+      end  # END p.workbook.add_worksheet(name: "#{ efps.section.name.truncate(21) }") do |sheet|
     end  # END if efps.extraction_forms_projects_section_type_id == 2
   end  # END efp.extraction_forms_projects_sections.each do |efps|
 end
@@ -190,7 +198,7 @@ def set_qrc_column_header(header_row, i)
   begin
     header_row[i].value
   rescue Exception => e
-    if i.odd?
+    if i.even?
       header_row.add_cell 'Cell Descriptor'
     else
       header_row.add_cell 'Value'

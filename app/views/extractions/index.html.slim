@@ -6,7 +6,7 @@
 .column.row
   - efp = @project.extraction_forms_projects.first
   - if @project.key_questions.present?
-    h2 = link_to 'go to extraction form builder ->', build_extraction_forms_project_path(efp, anchor: "panel-tab-#{ efp.extraction_forms_projects_sections.first.id }"), { style: 'float: right; font-size: 0.4em;' }
+    h2 = link_to 'go to extraction form builder ->', build_extraction_forms_project_path(efp, anchor: "panel-tab-#{ efp.default_section_id }"), { style: 'float: right; font-size: 0.4em;' }
   - else
     h2 = link_to 'go to extraction form builder ->', '#', style: 'float: right; font-size: 0.4em;', onClick: "alert('Please add at least one Key Question first')"
 
@@ -14,7 +14,7 @@
   .column.medium-12
     div style='display: flex; flex-direction: row;'
       h4 Extractions
-    div
+    div style="margin-bottom: 10px;"
       - if @project.key_questions.present?
         = link_to new_project_extraction_path, class: 'button create-button create-extraction-button' do
           i.fi-plus>
@@ -27,15 +27,14 @@
     table.extractions-list
       thead
         tr
-          th Title
-          th Pub Year
-          th PMID
-          th First Author
-          - if @project.leaders.include? current_user
-            th width="30%" Assigned User
-          th width="10%" Progress
-          th width="5%"
-          th width="5%"
+          th.table-sortable.sorting data-sorting-col="0" width="200px" First Author
+          th.table-sortable.sorting data-sorting-col="1" width="80px" Pub Year
+          th.table-sortable.sorting data-sorting-col="2" width="100px" PMID
+          th.table-sortable.sorting data-sorting-col="3" Title
+          th.table-sortable.sorting data-sorting-col="4" width="200px" Assigned User
+          th.table-sortable.sorting data-sorting-col="5" width="50px" Progress
+          th data-sorting-col="6" width="50px"
+          th width="50px"
 
       tbody
         - if @extractions.unconsolidated.blank?
@@ -48,23 +47,23 @@
 
         - else
           - @extractions.unconsolidated.includes([{ extractions_extraction_forms_projects_sections: [:status, { extraction_forms_projects_section: :section }] }, { projects_users_role: [{ projects_user: { user: :profile } }, :role] },{ citations_project: :citation }]).each do |extraction|
+            - citation = extraction.citations_project.citation
+            - first_author = citation.first_author
+            - pmid = citation.pmid.to_s
+            - year = citation.year
+            - name = citation.name.truncate(70)
+            - citation_handle = first_author + ', ' + year + ', ' + pmid + '<br />' + name
+            - progress_meter_width = ((extraction.extractions_extraction_forms_projects_sections.map{ |eefps| eefps.status.name == 'Completed' ? 1 : 0 }.sum.to_f * 100) / extraction.extractions_extraction_forms_projects_sections.length).round.to_s
+            - if extraction.extractions_extraction_forms_projects_sections.any? { |eefps| eefps.status.name != 'Completed' }
+              - tooltip_text = "<span style='font-weight: bold;'>Incomplete Sections:</span><br>" + (extraction.extractions_extraction_forms_projects_sections.map{ |eefps| eefps.status.name != 'Completed' ? eefps.section.name : "" } - [""]).join('<br>')
+            - else
+              - tooltip_text = "<span style='font-weight: bold;'>Complete!</span>"
             tr
-              - citation = extraction.citations_project.citation
-              - first_author = citation.first_author
-              - year = citation.year
-              - pmid = citation.pmid.to_s
-              - name = citation.name.truncate(70)
-              - citation_handle = first_author + ', ' + year + ', ' + pmid + '<br />' + name
-              - progress_meter_width = ((extraction.extractions_extraction_forms_projects_sections.map{ |eefps| eefps.status.name == 'Completed' ? 1 : 0 }.sum.to_f * 100) / extraction.extractions_extraction_forms_projects_sections.length).round.to_s
-              - if extraction.extractions_extraction_forms_projects_sections.any? { |eefps| eefps.status.name != 'Completed' }
-                - tooltip_text = "<span style='font-weight: bold;'>Incomplete Sections:</span><br>" + (extraction.extractions_extraction_forms_projects_sections.map{ |eefps| eefps.status.name != 'Completed' ? eefps.section.name : "" } - [""]).join('<br>')
-              - else
-                - tooltip_text = "<span style='font-weight: bold;'>Complete!</span>"
-
-              td data-sort="#{name}" = link_to name, citation_path(citation, project_id: @project.id)
+              td = first_author
               td = year
               td = pmid
-              td = first_author
+              td data-sort="#{name}"
+                div style="overflow: hidden; height: 18px;" = link_to name, citation_path(citation, project_id: @project.id)
               - if @project.leaders.include? current_user
                 td
                   .projects-users-role dropdown-active='false'
@@ -73,12 +72,14 @@
                     .projects-users-role-select.hide
                       = simple_form_for extraction, remote: true do |e_f|
                         = e_f.association :projects_users_role, label: false, collection: @projects_users_roles, label_method: :handle, input_html: { class: "index-extractions-select2" }, selected: extraction.projects_users_role.id
+              - else
+                td = extraction.projects_users_role.handle
 
               td data-sort="#{ progress_meter_width }"
                 .success.progress data-allow-html="true" data-tooltip="" title="#{ tooltip_text }"
                   .progress-meter style="width: #{ progress_meter_width }%;"
               /td = extraction.projects_users_role.role.name
-              td = link_to t('work'), work_extraction_path(extraction), style: 'font-weight:bold;'
+              td data-sort="#{extraction.updated_at.to_i}" = link_to t('work'), work_extraction_path(extraction), style: 'font-weight:bold;'
               /td = link_to t('edit'), edit_extraction_path(extraction)
               td = link_to t('destroy'), extraction, style: 'font-weight:bold;color:#cc4b37 !important;', data: { confirm: 'Are you sure?' }, method: :delete
 .column.row

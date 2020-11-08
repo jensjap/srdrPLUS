@@ -62,7 +62,7 @@ class SdMetaDatum < ApplicationRecord
 
   default_scope { order(id: :desc) }
 
-  belongs_to :project, inverse_of: :sd_meta_data, optional: true
+  belongs_to :project, inverse_of: :sd_meta_data, optional: true, touch: true
   belongs_to :review_type, inverse_of: :sd_meta_data, optional: true
 
   has_many :sd_key_questions, -> { ordered }, inverse_of: :sd_meta_datum, dependent: :destroy

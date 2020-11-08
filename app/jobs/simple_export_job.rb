@@ -43,17 +43,23 @@ class SimpleExportJob < ApplicationJob
       if /wide/ =~ @export_type
         build_type1_sections_wide(p, @project, highlight, wrap)
         build_type2_sections_wide(p, @project, highlight, wrap)
-        #build_type2_sections_wide_srdr_style(p, @project, highlight, wrap)
         build_result_sections_wide(p, @project, highlight, wrap)
+        f_name = 'tmp/simple_exports/project_' + @project.id.to_s + '_' + Time.now.strftime('%s') + '_wide.xlsx'
+
+      elsif /legacy/ =~ @export_type
+        build_type1_sections_wide(p, @project, highlight, wrap)
+        build_type2_sections_wide_srdr_style(p, @project, highlight, wrap)
+        build_result_sections_compact(p, @project, highlight, wrap)
+        f_name = 'tmp/simple_exports/project_' + @project.id.to_s + '_' + Time.now.strftime('%s') + '_legacy.xlsx'
 
       else
         build_type1_sections_compact(p, @project, highlight, wrap)
         build_type2_sections_compact(p, @project, highlight, wrap)
         build_result_sections_compact(p, @project, highlight, wrap)
+        f_name = 'tmp/simple_exports/project_' + @project.id.to_s + '_' + Time.now.strftime('%s') + '_long.xlsx'
 
       end
 
-      f_name = 'tmp/simple_exports/project_' + @project.id.to_s + '_' + Time.now.strftime('%s') + '.xlsx'
       if p.serialize(f_name)
         export_type  = ExportType.find_by(name: @export_type[0..4])
         case export_type.name

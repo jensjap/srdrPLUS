@@ -11,13 +11,14 @@ div style='margin: 0 34px; border-color: #bbb6dd; padding: 0; width: auto;'
   h6 style='margin: 0;'
     = @extraction.citation.handle.split("\n").join(" - ")
 
-div style='margin: 0 34px; padding: 0; width: auto;'
-  ul.key-question-selector class="accordion" data-toggle='' data-accordion='' data-allow-all-closed='true'
-    li class="accordion-item" data-accordion-item=''
-      a href="#" class="accordion-title" style="padding: 10px;" Select Key Question(s):
-      div class="accordion-content" data-tab-content=''
-        .grid-y
-          = render 'extractions/extractions_key_questions_projects_selections'
+- unless @panel_tab_id == 'keyquestions'
+  div style='display: none;'
+    ul.key-question-selector class="accordion" data-toggle='' data-accordion='' data-allow-all-closed='true'
+      li class="accordion-item" data-accordion-item=''
+        a href="#" class="accordion-title" style="padding: 10px;" Select Key Question(s):
+        div class="accordion-content" data-tab-content=''
+          .grid-y
+            = render 'extractions/extractions_key_questions_projects_selections'
 
 hr
 

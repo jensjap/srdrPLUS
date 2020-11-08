@@ -74,51 +74,62 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
     recordables = extractions_extraction_forms_projects_sections_question_row_column_fields
       .where(extractions_extraction_forms_projects_sections_type1_id: eefpst1_id,
              question_row_column_field: qrc.question_row_column_fields)
+      .order(id: :asc)
 
     case qrc.question_row_column_type_id
+    when 1  # Textbox.
+      return Record.where(recordable: recordables.last).pluck(:name).compact.join("\x0D\x0A")
+
     when 5  # Checkbox.
       text_arr = []
       Record.where(recordable: recordables).pluck(:name).each do |opt_ids|
-        if opt_ids.nil? or opt_ids.length < 4 then next end
-        (opt_ids[2..-3].split('", "')-[""]).each do |opt_id|
+        if (opt_ids.nil? || opt_ids.length < 4) then next end
+
+        # There is some inconsistencies in how rails saves checkboxes.
+        # In some cases opt_ids is a string with a single number, in other cases
+        # we get something of the form "[\"\", \"118479\"]"
+        # We clean the string when needed and convert to an Array.
+        if opt_ids =~ /\"/
+          cleaned_opt_ids = opt_ids[2..-3].split('", "')-[""]
+        else
+          cleaned_opt_ids = [] << opt_ids
+        end
+        cleaned_opt_ids.each do |opt_id|
           # opt_id can be nil here for questions that have not been answered.
           # Protect by casting to zero and check.
 
           qrcqrco = qrc.question_row_columns_question_row_column_options.find_by(id: opt_id.to_i)
           if qrcqrco.present? and not opt_id.to_i.zero?
-            text_arr << qrcqrco.name
-          end
-        end
-      end
-      return text_arr.join(', ')
+            text_arr << (qrcqrco.name.present? ? qrcqrco.name : (qrcqrco.nil? ? '' : 'X'))
+          end  # if qrcqrco.present? and not opt_id.to_i.zero?
+        end  # (opt_ids[2..-3].split('", "')-[""]).each do |opt_id|
+      end  # Record.where(recordable: recordables).pluck(:name).each do |opt_ids|
+      return text_arr.join("\x0D\x0A")
 
     when 6, 7, 8  # Dropdown, Radio, Select2_single.
-      text = ''
       text_arr = []
       Record.where(recordable: recordables).pluck(:name).each do |opt_id|
         # opt_id can be nil here for questions that have not been answered.
         # Protect by casting to zero and check.
-        text += qrc.question_row_columns_question_row_column_options.find(opt_id.to_i).name + "\r" unless opt_id.to_i.zero?
         text_arr << qrc.question_row_columns_question_row_column_options.find(opt_id.to_i).name unless opt_id.to_i.zero?
       end
-      #return text.strip
-      return text_arr.join(', ')
+      return text_arr.join("\x0D\x0A")
 
     when 9  # Select2_multi.
-      text = ''
       text_arr = []
-      ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnFieldsQuestionRowColumnsQuestionRowColumnOption.includes(:question_row_columns_question_row_column_option).where(extractions_extraction_forms_projects_sections_question_row_column_field: recordables).each do |eefpsqrcfqrcqrco|
+      ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnFieldsQuestionRowColumnsQuestionRowColumnOption
+        .includes(:question_row_columns_question_row_column_option)
+        .where(extractions_extraction_forms_projects_sections_question_row_column_field: recordables).each do |eefpsqrcfqrcqrco|
+
         opt_id = eefpsqrcfqrcqrco.question_row_columns_question_row_column_option.name
         # opt_id can be nil here for questions that have not been answered.
         # Protect by casting to zero and check.
-        text += qrc.question_row_columns_question_row_column_options.find(opt_id.to_i).name + "\r" unless opt_id.to_i.zero?
-        text_arr << qrc.question_row_columns_question_row_column_options.find(opt_id.to_i).name unless opt_id.to_i.zero?
+        text_arr << opt_id unless opt_id.blank?
       end
-      #return text.strip
-      return text_arr.join(', ')
+      return text_arr.join("\x0D\x0A")
 
     else
-      return Record.where(recordable: recordables).pluck(:name).compact.join(', ')
+      return Record.where(recordable: recordables).pluck(:name).compact.join("\x0D\x0A")
 
     end
   end

@@ -1,6 +1,6 @@
 require 'simple_export_job/sheet_info'
 
-def build_type1_sections_wide(p, project, highlight, wrap)
+def build_type1_sections_wide(p, project, highlight, wrap, kq_ids=[])
   project.extraction_forms_projects.each do |efp|
     efp.extraction_forms_projects_sections.each do |efps|
 
@@ -8,24 +8,31 @@ def build_type1_sections_wide(p, project, highlight, wrap)
       if efps.extraction_forms_projects_section_type_id == 1
 
         # Add a new sheet.
-        p.workbook.add_worksheet(name: "#{ efps.section.name.truncate(24) }" + ' - wide') do |sheet|
+        p.workbook.add_worksheet(name: "#{ efps.section.name.truncate(24) }") do |sheet|
 
           # For each sheet we create a SheetInfo object.
           sheet_info = SheetInfo.new
 
           # Every row represents an extraction.
           project.extractions.each do |extraction|
+            # Collect distinct list of questions based off the key questions selected for this extraction.
+            kq_ids_by_extraction = fetch_kq_selection(extraction, kq_ids)
+
             # Create base for extraction information.
             sheet_info.new_extraction_info(extraction)
 
             # Collect basic information about the extraction.
             sheet_info.set_extraction_info(
               extraction_id: extraction.id,
+              consolidated: extraction.consolidated.to_s,
               username: extraction.projects_users_role.projects_user.user.profile.username,
-              citation_id: extraction.citations_project.citation.id,
-              citation_name: extraction.citations_project.citation.name,
-              refman: extraction.citations_project.citation.refman,
-              pmid: extraction.citations_project.citation.pmid)
+              citation_id: extraction.citation.id,
+              citation_name: extraction.citation.name,
+              authors: extraction.citation.authors.collect(&:name).join(', '),
+              publication_date: extraction.citation.try(:journal).try(:get_publication_year),
+              refman: extraction.citation.refman,
+              pmid: extraction.citation.pmid,
+              kq_selection: KeyQuestion.where(id: kq_ids_by_extraction).collect(&:name).map(&:strip).join("\x0D\x0A"))
 
             eefps = efps.extractions_extraction_forms_projects_sections.find_or_create_by(
               extraction: extraction,
@@ -58,7 +65,6 @@ def build_type1_sections_wide(p, project, highlight, wrap)
           end  # END project.extractions.each do |extraction|
 
           # Start printing rows to the spreadsheet. First the basic headers:
-          #['Extraction ID', 'Username', 'Citation ID', 'Citation Name', 'RefMan', 'PMID']
           header_row = sheet.add_row sheet_info.header_info
 
           # Next continue the header row by adding all type1s together.
@@ -104,11 +110,15 @@ def build_type1_sections_wide(p, project, highlight, wrap)
           sheet_info.extractions.each do |key, extraction|
             new_row = []
             new_row << extraction[:extraction_info][:extraction_id]
+            new_row << extraction[:extraction_info][:consolidated]
             new_row << extraction[:extraction_info][:username]
             new_row << extraction[:extraction_info][:citation_id]
             new_row << extraction[:extraction_info][:citation_name]
             new_row << extraction[:extraction_info][:refman]
             new_row << extraction[:extraction_info][:pmid]
+            new_row << extraction[:extraction_info][:authors]
+            new_row << extraction[:extraction_info][:publication_date]
+            new_row << extraction[:extraction_info][:kq_selection]
 
             # We choose the order of the columns we want to add here.
             # This is a bit arbitrary but we choose: type1s > populations > timepoints
@@ -163,7 +173,7 @@ def build_type1_sections_wide(p, project, highlight, wrap)
           # Re-apply the styling for the new cells in the header row before closing the sheet.
           sheet.column_widths 16, 16, 16, 50, 16, 16
           header_row.style = highlight
-        end  # END p.workbook.add_worksheet(name: "#{ efps.section.name.truncate(24) }" + ' - wide') do |sheet|
+        end  # END p.workbook.add_worksheet(name: "#{ efps.section.name.truncate(24) }") do |sheet|
       end  # END if efps.extraction_forms_projects_section_type_id == 1
     end  # END efp.extraction_forms_projects_sections.each do |efps|
   end  # END project.extraction_forms_projects.each do |efp|
