@@ -78,7 +78,7 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
 
     case qrc.question_row_column_type_id
     when 1  # Textbox.
-      return Record.where(recordable: recordables.last).pluck(:name).compact.join(', ')
+      return Record.where(recordable: recordables.last).pluck(:name).compact.join("\x0D\x0A")
 
     when 5  # Checkbox.
       text_arr = []
@@ -104,7 +104,7 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
           end  # if qrcqrco.present? and not opt_id.to_i.zero?
         end  # (opt_ids[2..-3].split('", "')-[""]).each do |opt_id|
       end  # Record.where(recordable: recordables).pluck(:name).each do |opt_ids|
-      return text_arr.join(', ')
+      return text_arr.join("\x0D\x0A")
 
     when 6, 7, 8  # Dropdown, Radio, Select2_single.
       text_arr = []
@@ -113,7 +113,7 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
         # Protect by casting to zero and check.
         text_arr << qrc.question_row_columns_question_row_column_options.find(opt_id.to_i).name unless opt_id.to_i.zero?
       end
-      return text_arr.join(', ')
+      return text_arr.join("\x0D\x0A")
 
     when 9  # Select2_multi.
       text_arr = []
@@ -126,10 +126,10 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
         # Protect by casting to zero and check.
         text_arr << opt_id unless opt_id.blank?
       end
-      return text_arr.join(', ')
+      return text_arr.join("\x0D\x0A")
 
     else
-      return Record.where(recordable: recordables).pluck(:name).compact.join(', ')
+      return Record.where(recordable: recordables).pluck(:name).compact.join("\x0D\x0A")
 
     end
   end

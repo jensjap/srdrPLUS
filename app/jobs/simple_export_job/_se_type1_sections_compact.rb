@@ -38,6 +38,7 @@ def build_type1_sections_compact(p, project, highlight, wrap, kq_ids=[])
 
               new_row = []
               new_row << extraction.id.to_s
+              new_row << extraction.consolidated.to_s
               new_row << extraction.user.profile.username
               new_row << extraction.citations_project.citation.id.to_s
               new_row << extraction.citations_project.citation.name

@@ -58,6 +58,7 @@ def build_type2_sections_compact(p, project, highlight, wrap, kq_ids=[], print_e
               questions.each do |question|
                 new_row = []
                 new_row << extraction.id
+                new_row << extraction.consolidated.to_s
                 new_row << extraction.user.profile.username
                 new_row << extraction.citation.id
                 new_row << extraction.citation.name
@@ -88,6 +89,7 @@ def build_type2_sections_compact(p, project, highlight, wrap, kq_ids=[], print_e
             questions.each do |question|
               new_row = []
               new_row << extraction.id
+              new_row << extraction.consolidated.to_s
               new_row << extraction.user.profile.username
               new_row << extraction.citation.id
               new_row << extraction.citation.name
