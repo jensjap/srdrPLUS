@@ -272,7 +272,13 @@ module ConsolidationHelper
 
             eefps_t1 = ExtractionsExtractionFormsProjectsSectionsType1.find_or_create_by(
               extractions_extraction_forms_projects_section: eefps,
-              type1: type1 )
+              type1: type1)
+
+            # Ensure eefpst1 has ordering.
+            unless eefps_t1.ordering.present?
+              eefps_t1.set_ordering_scoped_by(:extractions_extraction_forms_projects_section_id)
+              eefps_t1.save
+            end
 
             # population and timepoint creation
             p_hash[efps_id][type1_id].each do |population_name_id, p_es|
