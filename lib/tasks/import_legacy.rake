@@ -10,9 +10,17 @@ namespace(:db) do
     task :projects => :environment do 
       initialize_variables
 
-      projects = db.query("SELECT * FROM projects")
+      #projects = db.query("SELECT * FROM projects")
+      projects = db.query("SELECT * FROM projects LIMIT 5")
       projects.each do |project_hash|
-        migrate_legacy_srdr_project project_hash
+        begin
+          @legacy_project_id = project_hash["id"]
+          migrate_legacy_srdr_project project_hash
+        rescue => error
+          puts error
+          puts error.backtrace
+          @legacy_project_id = nil
+        end
         break#DELETE THIS 
       end
     end
@@ -45,7 +53,6 @@ namespace(:db) do
       project_id = project_hash["id"]
       project_name = project_hash["title"]
       project_description = project_hash["description"]
-      efp_type = get_project_type
 
       #TODO What to do with publications ?, is_public means published in SRDR
       srdrplus_project = Project.new name: project_name, description: project_description
@@ -55,12 +62,12 @@ namespace(:db) do
 
       # Extraction Forms Migration
       efs = db.query "SELECT * FROM extraction_forms where project_id=#{project_id}"
-
       efp_type = get_efp_type efs
+
       if efp_type == false
         return
       elsif efp_type == @efp_type_diagnostic
-        @srdrplus_project.extraction_forms_projects.update(extraction_forms_project_type: efp_type)
+        get_srdrplus_project(@legacy_project_id).extraction_forms_projects.update(extraction_forms_project_type: efp_type)
         migrate_extraction_forms_as_diagnostic_efp efs
       else
         migrate_extraction_forms_as_standard_efp efs
@@ -81,40 +88,85 @@ namespace(:db) do
     end
 
     def migrate_extraction_forms_as_standard_efp efs
-      combined_efp = @srdrplus_project.extraction_forms_projects.first
+      combined_efp = get_srdrplus_project(@legacy_project_id).extraction_forms_projects.first
 
       efs.each do |ef|
         ef_sections = db.query "SELECT * FROM extraction_form_sections where extraction_form_id=#{ef["id"]}"
 
-        @arms_efps = nil
-        @outcomes_efps = nil
-        @adverse_events_efps = nil
-        @diagnostic_tets_efps = nil
+        t1_efps = []
+        t2_efps = []
+        other_efps = []
+
+        arms_efps = nil
+        outcomes_efps = nil
+        adverse_events_efps = nil
+        diagnostic_tests_efps = nil
 
         ef_sections.each do |ef_section|
-          case ef_section.section_name
+          section = Section.find_or_create_by(name: ef_section["section_name"].titleize)
+          case ef_section["section_name"]
           when "arms"
-            @extraction_forms_projects_sections << efps
-            if adverse_events_efps.present? then adverse_events_efps.link_to_type1 = efps end
+            arms_efps = combined_efp.extraction_forms_projects_sections.create(section: section, extraction_forms_projects_section_type: @efps_type_1)
+            if adverse_events_efps.present? then adverse_events_efps.link_to_type1 = arms_efps end
           when "outcomes"
-            t1_efps << efps
-            outcomes_efps = efps
+            outcomes_efps = combined_efp.extraction_forms_projects_sections.create(section: section, extraction_forms_projects_section_type: @efps_type_1)
           when "diagnostic_tests"
-            t1_efps << efps
-            diagnostic_tests_efps = efps
+            diagnostic_tests_efps = combined_efp.extraction_forms_projects_sections.create(section: section, extraction_forms_projects_section_type: @efps_type_4)
           when "adverse"
-            efps.link_to_type1 = arms_efps
-            t1_efps << efps
-            efps.extraction_forms_projects_section_option = ExtractionFormsProjectsSectionOptionWrapper.new ef.adverse_event_display_arms, ef.adverse_event_display_total
-            adverse_events_efps = efps
-            t2_efps << ExtractionFormsProjectsSectionWrapper.new(s)
+            #efps.link_to_type1 = arms_efps
+            #t1_efps << efps
+            #efps.extraction_forms_projects_section_option = ExtractionFormsProjectsSectionOptionWrapper.create ef.adverse_event_display_arms, ef.adverse_event_display_total
+            #adverse_events_efps = efps
+            #t2_efps << ExtractionFormsProjectsSectionWrapper.new(s)
 
           when "quality", "arm_details","outcome_details", "quality_details", "diagnostic_test_details","design"
-            t2_efps << efps
+            section = Section.find_or_create_by(name: ef_section["section_name"].titleize)
+            t2_efps << combined_efp.extraction_forms_projects_sections.create(section: section, extraction_forms_projects_section_type: @efps_type_2)
+          when "results"
+            section = Section.find_or_create_by(name: ef_section["section_name"].titleize)
+            combined_efp.extraction_forms_projects_sections.create(section: section, extraction_forms_projects_section_type: @efps_type_2)
+
           else
-            other_efps << efps
+            #Baseline Characteristics
           end
-           
+        end
+
+        t2_efps.each do |efps|
+          efps.extraction_forms_projects_section_option.by_type1 = false
+          efps.extraction_forms_projects_section_option.include_total = false
+          case efps.section.name
+          when "Arm Details"
+            efsos = db.query("SELECT * FROM ef_section_options where section='arm_detail' AND extraction_form_id=#{ef["id"]}")
+            efsos.each do |efso|
+              if efso["by_arm"]
+                efps.link_to_type1 = arms_efps
+              end
+              efps.extraction_forms_projects_section_option.include_total = efso["by_arm"]
+              efps.extraction_forms_projects_section_option.include_total = efso["include_total"]
+            end
+          when "Outcome Details"
+            efsos = db.query("SELECT * FROM ef_section_options where section='outcome_detail' AND extraction_form_id=#{ef["id"]}")
+            efsos.each do |efso|
+              if efso["by_outcome"]
+                efps.link_to_type1 = outcomes_efps
+              end
+              efps.extraction_forms_projects_section_option.include_total = efso["by_outcome"]
+              efps.extraction_forms_projects_section_option.include_total = efso["include_total"]
+            end
+          when "Diagnostic Test Details"
+            efsos = db.query("SELECT * FROM ef_section_options where section='diagnostic_test' AND extraction_form_id=#{ef["id"]}")
+            efsos.each do |efso|
+              if efso["by_diagnostic_test"]
+                efps.link_to_type1 = diagnostic_tests_efps
+              end
+              efps.extraction_forms_projects_section_option.include_total = efso["by_diagnostic_test"]
+              efps.extraction_forms_projects_section_option.include_total = efso["include_total"]
+            end
+          when "Adverse"
+            #efps.link_to_type1 = adverse_events_efps
+            #efps.extraction_forms_projects_section_option = ExtractionFormsProjectsSectionOptionWrapper.new true, false
+          else
+          end
         end
         break
       end
