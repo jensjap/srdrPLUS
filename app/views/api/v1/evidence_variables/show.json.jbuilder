@@ -19,7 +19,7 @@ json.set! :characteristic, Jbuilder.new.array!(['']) do
     json.set! :coding, Jbuilder.new.array!(['']) do
       json.set! :system, "http://snomed.info/sct"
       json.set! :code, "419099009"
-      json.set! :display, "xxxxx"
+      json.set! :display, "Dead (finding)"
     end
   end
   json.set! :exclude, false
