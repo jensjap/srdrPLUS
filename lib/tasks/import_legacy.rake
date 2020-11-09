@@ -38,6 +38,7 @@ namespace(:db) do
     def reset_project_variables
       @srdr_to_srdrplus_project_dict = {}
       @srdr_to_srdrplus_key_questions_dict = {}
+      @default_projects_users_role = nil
     end
 
     def get_srdrplus_project srdr_project_id
@@ -59,7 +60,8 @@ namespace(:db) do
     def add_default_user_to_srdrplus_project srdrplus_project
       srdrplus_project.users << User.first
       srdrplus_project.projects_users.first.roles << Role.first
-      @default_projects_users_role
+
+      @default_projects_users_role = srdrplus_project.projects_users.first.projects_users_roles.first
     end
 
     def create_srdrplus_project project_hash
@@ -225,8 +227,8 @@ namespace(:db) do
                                             issue: primary_publication_hash["issue"],
                                             publication_date: primary_publication_hash["year"]
       end
-      new_citation = Citation.new name: primary_publication_hash["title"], 
-                                  abstract: primary_publication_hash["abstract"],
+      new_citation = Citation.new name: primary_publication_hash["title"] || "", 
+                                  abstract: primary_publication_hash["abstract"] || "",
                                   journal: journal
 
       #TODO import key_words (do they even exist in srdr)
