@@ -15,13 +15,14 @@ namespace(:db) do
       projects.each do |project_hash|
         begin
           @legacy_project_id = project_hash["id"]
+          reset_project_variables
           migrate_legacy_srdr_project project_hash
         rescue => error
           puts error
           puts error.backtrace
           @legacy_project_id = nil
+          reset_project_variables
         end
-        break#DELETE THIS 
       end
     end
     
@@ -32,7 +33,11 @@ namespace(:db) do
       @efps_type_4 = ExtractionFormsProjectsSectionType.find_by(name: 'Type 4')
       @efp_type_standard = ExtractionFormsProjectType.find_by(name: 'Standard')
       @efp_type_diagnostic = ExtractionFormsProjectType.find_by(name: 'Diagnostic Test')
+    end
+
+    def reset_project_variables
       @srdr_to_srdrplus_project_dict = {}
+      @srdr_to_srdrplus_key_questions_dict = {}
     end
 
     def get_srdrplus_project srdr_project_id
@@ -43,13 +48,21 @@ namespace(:db) do
       @srdr_to_srdrplus_project_dict[srdr_project_id] = srdrplus_project
     end
 
-    def migrate_legacy_srdr_project project_hash
-      # DO I WANT TO CREATE USERS? probably no
-      #purs = db.query "SELECT * FROM user_project_roles where project_id=#{project_hash["id"]}"
-      #purs.each do |pur|
-      #  break#DELETE THIS 
-      #end
+    def set_srdrplus_key_question srdr_key_question_id, srdrplus_key_question
+      @srdr_to_srdrplus_key_questions_dict[srdr_key_question_id] = srdrplus_key_question
+    end
 
+    def get_srdrplus_key_question srdr_key_question_id
+      @srdr_to_srdrplus_key_questions_dict[srdr_key_question_id]
+    end
+
+    def add_default_user_to_srdrplus_project srdrplus_project
+      srdrplus_project.users << User.first
+      srdrplus_project.projects_users.first.roles << Role.first
+      @default_projects_users_role
+    end
+
+    def create_srdrplus_project project_hash
       project_id = project_hash["id"]
       project_name = project_hash["title"]
       project_description = project_hash["description"]
@@ -58,10 +71,24 @@ namespace(:db) do
       srdrplus_project = Project.new name: project_name, description: project_description
       srdrplus_project.save #need to save, because i want the default efp
       srdrplus_project.extraction_forms_projects.first.extraction_forms_projects_sections.destroy_all #need to delete default sections
+
+      add_default_user_to_srdrplus_project srdrplus_project
+
       set_srdrplus_project project_id, srdrplus_project
+    end
+
+    def migrate_legacy_srdr_project project_hash
+      # DO I WANT TO CREATE USERS? probably no
+      #purs = db.query "SELECT * FROM user_project_roles where project_id=#{project_hash["id"]}"
+      #purs.each do |pur|
+      #  break#DELETE THIS 
+      #end
+
+      create_srdrplus_project project_hash
+      migrate_key_questions
 
       # Extraction Forms Migration
-      efs = db.query "SELECT * FROM extraction_forms where project_id=#{project_id}"
+      efs = db.query "SELECT * FROM extraction_forms where project_id=#{@legacy_project_id}"
       efp_type = get_efp_type efs
 
       if efp_type == false
@@ -73,17 +100,18 @@ namespace(:db) do
         migrate_extraction_forms_as_standard_efp efs
       end
 
-      studies_hash = db.query "SELECT * FROM studies where project_id=#{project_id}"
+      studies_hash = db.query "SELECT * FROM studies where project_id=#{@legacy_project_id}"
       studies_hash.each do |study_hash|
         study_id = study_hash["id"]
 
         primary_publications = db.query "SELECT * FROM primary_publications where study_id=#{study_id}"
         primary_publications.each do |primary_publication_hash|
           citation = migrate_primary_publication_as_citation primary_publication_hash 
-          migrate_study_as_extraction study_hash, citation.id
+          citations_project = CitationsProject.create citation: citation, project: get_srdrplus_project(@legacy_project_id)
+          migrate_study_as_extraction study_hash, citations_project.id
+          break
         end
 
-        break#DELETE THIS 
       end
     end
 
@@ -124,7 +152,7 @@ namespace(:db) do
             t2_efps << combined_efp.extraction_forms_projects_sections.create(section: section, extraction_forms_projects_section_type: @efps_type_2)
           when "results"
             section = Section.find_or_create_by(name: ef_section["section_name"].titleize)
-            combined_efp.extraction_forms_projects_sections.create(section: section, extraction_forms_projects_section_type: @efps_type_2)
+            combined_efp.extraction_forms_projects_sections.create(section: section, extraction_forms_projects_section_type: @efps_type_results)
 
           else
             #Baseline Characteristics
@@ -172,14 +200,36 @@ namespace(:db) do
       end
     end
 
-    def migrate_study_as_extraction study_hash, citation_id
+    def migrate_key_questions
+      kqs = db.query "SELECT * FROM key_questions where project_id=#{@legacy_project_id}"
+      srdrplus_project = get_srdrplus_project @legacy_project_id
+      kqs.each do |kq|
+        srdrplus_kq = KeyQuestion.find_or_create_by name: kq["question"]
+        srdrplus_kqp = KeyQuestionsProject.create key_question: srdrplus_kq, project: srdrplus_project
+        set_srdrplus_key_question kq["id"], srdrplus_kqp
+      end
+    end
+
+    def migrate_study_as_extraction study_hash, citations_project_id
+      extraction = Extraction.create(projects_users_role: @default_projects_users_role,
+                                     citations_project_id: citations_project_id,
+                                     consolidated: false,
+                                     project: get_srdrplus_project(@legacy_project_id))
       return
     end
 
     def migrate_primary_publication_as_citation primary_publication_hash
+      if primary_publication_hash["journal"]
+        journal = Journal.find_or_create_by name: primary_publication_hash["journal"],
+                                            volume: primary_publication_hash["volume"],
+                                            issue: primary_publication_hash["issue"],
+                                            publication_date: primary_publication_hash["year"]
+      end
       new_citation = Citation.new name: primary_publication_hash["title"], 
-                                  abstract: primary_publication_hash["abstract"]
+                                  abstract: primary_publication_hash["abstract"],
+                                  journal: journal
 
+      #TODO import key_words (do they even exist in srdr)
 
       #TODO separate authors
       #Author.new name: primary_publication_hash["author"]
