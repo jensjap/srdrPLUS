@@ -3,33 +3,33 @@
   p#warning.callout.alert
     ' Notice: Duplicate Key Question text detected. This is likely a mistake. Please correct below.
 
-.table-scroll
-
-  table.hover
-
-    thead
-      tr
-        th = t('key_question_text')
-        th = t('assigned')
-        th = t('date_created')
-        th = t('date_updated')
-
-    //orderable-table class is used for drag and drop
-    tbody.orderable-list orderable-url="#{ update_positions_api_v1_orderings_url }"
-      - @project.key_questions_projects.each do |kqp|
-        tr.orderable-item [ position="#{ kqp.ordering.position }" ordering-id="#{ kqp.ordering.id }" ]
-          td = kqp.key_question.name
-          td
-            - if kqp.extraction_forms_projects_section.present?
-              i.fi-check style='color: green;'
-          td = kqp.created_at.in_time_zone(current_user.profile.time_zone).strftime('%b %-d, %Y - %l:%M %P')
-          td = kqp.updated_at.in_time_zone(current_user.profile.time_zone).strftime('%b %-d, %Y - %l:%M %P')
-          td = link_to edit_key_questions_project_path(kqp) do
-            i.fi-pencil>
-            = t('edit')
-          td = link_to kqp, method: :delete, data: { confirm: t('confirm') } do
-            i.fi-trash>
-            = t('remove')
+div.divTable
+  div.orderable-list.divTableBody orderable-url="#{update_positions_api_v1_orderings_url}"
+    div.divTableRow.textCopy
+      div.divTableCell style="width: 30px;"
+      div.divTableCell style="font-weight: bold; text-align: center;"= t('key_question_text')
+      div.divTableCell style="font-weight: bold; text-align: center;"= t('assigned')
+      div.divTableCell style="font-weight: bold; text-align: center;"= t('date_created')
+      div.divTableCell style="font-weight: bold; text-align: center;"= t('date_updated')
+      div.divTableCell style="font-weight: bold; text-align: center;"
+      div.divTableCell style="font-weight: bold; text-align: center;"
+    - @project.key_questions_projects.each do |kqp|
+      div.divTableRow.orderable-item position="#{kqp.ordering.position}" ordering-id="#{kqp.ordering.id}"
+        div.divTableCell
+          i.fi-thumbnails style="cursor: move;"
+        div.divTableCell.textCopy
+          div = kqp.key_question.name
+        div.divTableCell.textCopy
+          - if kqp.extraction_forms_projects_section.present?
+            i.fi-check style='color: green;'
+        div.divTableCell.textCopy = kqp.created_at.in_time_zone(current_user.profile.time_zone).strftime('%b %-d, %Y - %l:%M %P')
+        div.divTableCell.textCopy = kqp.updated_at.in_time_zone(current_user.profile.time_zone).strftime('%b %-d, %Y - %l:%M %P')
+        div.divTableCell.textCopy = link_to edit_key_questions_project_path(kqp) do
+          i.fi-pencil>
+          = t('edit')
+        div.divTableCell.textCopy = link_to kqp, method: :delete, data: { confirm: t('confirm') } do
+          i.fi-trash>
+          = t('remove')
 
 hr
 

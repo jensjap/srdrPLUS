@@ -278,13 +278,35 @@ document.addEventListener( 'turbolinks:load', function() {
     })
   }
 
+  $('#loading-indicator').hide()
+
+  function selectText(element) {
+    if (/INPUT|TEXTAREA/i.test(element.tagName)) {
+      element.focus();
+      if (element.setSelectionRange) {
+        element.setSelectionRange(0, element.value.length);
+      } else {
+        element.select();
+      }
+      return;
+    }
+
+    if (window.getSelection) {
+      window.getSelection().selectAllChildren(element);
+    } else if (document.body.createTextRange) {
+      var range = document.body.createTextRange();
+      range.moveToElementText(element);
+      range.select();
+    }
+  }
+
+  $('.textCopy').on('click', function(event) {
+    selectText(event.target);
+  })
+
 } );
 
 document.addEventListener('turbolinks:before-cache', function() {
   $( '.reveal' ).foundation( 'close' )
   $('#loading-indicator').show()
 });
-
-document.addEventListener("turbolinks:load", function() {
-  $('#loading-indicator').hide()
-})
