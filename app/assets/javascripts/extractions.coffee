@@ -69,13 +69,18 @@ document.addEventListener 'turbolinks:load', ->
         $( this ).closest( '.projects-users-role' ).attr( 'dropdown-active', 'false' )
 
       # DataTables for Extractions List
-      dt = $( 'table.extractions-list' ).DataTable({
-             "columnDefs": [{ "orderable": false, "targets": "_all" }],
-             "lengthMenu": [[50, 100, 500, -1], [50, 100, 500, "All"]],
-             "pagingType": "full_numbers",
-             "stateSave": true,
-             "stateDuration": 0,
-           })
+      tableKey = window.location.pathname
+      dt = $('table.extractions-list').DataTable({
+        "columnDefs": [{ "orderable": false, "targets": "_all" }],
+        "lengthMenu": [[50, 100, 500, -1], [50, 100, 500, "All"]],
+        "pagingType": "full_numbers",
+        "stateSave": true,
+        "stateDuration": 0,
+        "stateSaveCallback": (settings, data) ->
+          localStorage.setItem('DataTables-' + tableKey, JSON.stringify(data))
+        "stateLoadCallback": (settings) ->
+          return JSON.parse(localStorage.getItem('DataTables-' + tableKey))
+      })
       dt.draw()
 
       last_col = 0
@@ -100,7 +105,6 @@ document.addEventListener 'turbolinks:load', ->
           $("[data-sorting-col=#{last_col}]").addClass('sorting')
         last_col = col
       )
-      dt.order([6, 'desc']).draw();
       $('[data-sorting-col=6]').removeClass('sorting_desc')
 
       # DataTables for Comparisons List
