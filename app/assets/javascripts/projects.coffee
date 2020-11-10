@@ -4,7 +4,7 @@
 
 document.addEventListener 'turbolinks:load', ->
 
-  return unless $( '.projects, .citations' ).length > 0
+  return unless $( '.projects, .citations, .extractions' ).length > 0
 
   do ->
     # Ajax call to filter the project list. We want to return a function here
