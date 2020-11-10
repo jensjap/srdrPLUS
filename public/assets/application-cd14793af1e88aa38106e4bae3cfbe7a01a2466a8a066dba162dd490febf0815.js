@@ -51189,7 +51189,7 @@ function __guardMethod__(obj, methodName, transform) {
 }).call(this);
 (function() {
   document.addEventListener('turbolinks:load', function() {
-    if (!($('.projects, .citations').length > 0)) {
+    if (!($('.projects, .citations, .extractions').length > 0)) {
       return;
     }
     (function() {
@@ -52536,6 +52536,22 @@ function get_valid_URL(string){
   }
 }
 
+document.addEventListener('turbolinks:before-cache', function() {
+  $( '.reveal' ).foundation( 'close' )
+  $('#loading-indicator').show()
+});
+
+document.addEventListener("turbolinks:load", function() {
+  $('#loading-indicator').hide()
+});
+
+// Attach NIH autocomplete for UCUM (Unified Code for Units of Measure) to any input field with class 'ucum'.
+$( document ).on( 'cocoon:after-insert', function(e, insertedItem, originalEvent) {
+  var _a = $( insertedItem ).find( '.ucum' );
+  new Def.Autocompleter.Search(_a[0], 'https://clinicaltables.nlm.nih.gov/api/ucum/v3/search', { tableFormat: true, valueCols: [0], colHeaders: ['Code', 'Name'] });
+});
+
+// Wait for DOM ready:
 document.addEventListener( 'turbolinks:load', function() {
   $( document ).foundation();
 
@@ -52554,6 +52570,11 @@ document.addEventListener( 'turbolinks:load', function() {
     }
     return;
   };
+
+  // Attach NIH autocomplete for UCUM (Unified Code for Units of Measure) to any input field with class 'ucum'.
+  $( '.ucum' ).each(function() {
+    new Def.Autocompleter.Search(this, 'https://clinicaltables.nlm.nih.gov/api/ucum/v3/search', { tableFormat: true, valueCols: [0], colHeaders: ['Code', 'Name'] });
+  });
 
 //  $( '#options' )
 //    .on('cocoon:before-insert', function(e,task_to_be_added) {
@@ -52673,13 +52694,3 @@ document.addEventListener( 'turbolinks:load', function() {
   }
 
 } );
-
-document.addEventListener('turbolinks:before-cache', function() {
-  $( '.reveal' ).foundation( 'close' )
-  $('#loading-indicator').show()
-});
-
-document.addEventListener("turbolinks:load", function() {
-  $('#loading-indicator').hide()
-})
-;
