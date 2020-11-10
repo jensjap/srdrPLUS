@@ -240,7 +240,12 @@ document.addEventListener( 'turbolinks:load', function() {
       //# save state when dragging starts
       const on_start =  e  => saved_state = $( orderable_list ).sortable( 'toArray' );
 
-      $( orderable_list ).sortable({ onUpdate: on_update, onStart: on_start });
+      $(orderable_list).sortable({ onUpdate: on_update, onStart: on_start });
+
+      if ($('.sort-handle').length > 0) {
+        $(orderable_list).sortable( "option", "handle", ".sort-handle" );
+      }
+
       saved_state = $( orderable_list ).sortable( 'toArray' );
     }
   }
