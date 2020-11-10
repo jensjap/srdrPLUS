@@ -4,7 +4,7 @@ h4 List of Suggested #{ section_name }s
 
 .table-scroll
   table#efp-type1-list.hover style='width: 99%;'
-    col
+    col style="width: 1%"
     - if section_name.eql?('Outcome')
       col
     col
@@ -15,19 +15,20 @@ h4 List of Suggested #{ section_name }s
 
     thead
       tr
-        th
+        th style="min-width: 0; width: 10px;"
         - if section_name.eql?('Outcome')
           th Type
         th = section_name.eql?('Outcome') ? 'Domain' : 'Name'
         th = section_name.eql?('Outcome') ? 'Specific Measurement' : 'Description'
         - if section_name.eql?('Outcome')
           th Timepoint(s)
+        th
 
     tbody.orderable-list orderable-url="#{ update_positions_api_v1_orderings_url }"
       - efps.extraction_forms_projects_sections_type1s_without_total_arm.each do |efpst1|
         tr.orderable-item [ position="#{ efpst1.ordering.position }" ordering-id="#{ efpst1.ordering.id }" ]
-          td
-            .grippy
+          td.sort-handle style="min-width: 0; width: 10px;"
+            i.fi-thumbnails style="cursor: move;"
           - if section_name.eql? 'Outcome'
             td = efpst1.type1_type.try(:name)
           td = efpst1.type1.name
@@ -40,7 +41,7 @@ h4 List of Suggested #{ section_name }s
                   - efpst1.timepoint_names.each do |tn|
                     li = tn.pretty_print_export_header
 
-          td 
+          td
             .utilities
               = link_to edit_extraction_forms_projects_sections_type1_path(efpst1) do
                 i.fi-pencil>

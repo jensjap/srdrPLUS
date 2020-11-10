@@ -179,7 +179,6 @@ document.addEventListener( 'turbolinks:load', function() {
     for (let orderable_list of Array.from( $( scope ).find( '.orderable-list' ))) {
       //# CHANGE THIS
       const ajax_url = $( '.orderable-list' ).attr( 'orderable-url' );
-      const forceRestart = $( '.orderable-list' ).attr( 'force-reload' );
       let saved_state = null;
 
       //# helper method for converting class name into camel case
@@ -219,12 +218,7 @@ document.addEventListener( 'turbolinks:load', function() {
               }
               // then save state
               saved_state = $( orderable_list ).sortable( "toArray" );
-              if (forceRestart) {
-                toastr.success( 'Positions successfully updated. Reloading page to apply changes.' );
-                location.reload();
-              } else {
-                toastr.success( 'Positions successfully updated' );
-              }
+              toastr.success( 'Positions successfully updated' );
             },
           error( data ) {
               $( orderable_list ).sortable( 'sort', saved_state );
