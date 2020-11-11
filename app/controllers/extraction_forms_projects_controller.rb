@@ -31,7 +31,7 @@ class ExtractionFormsProjectsController < ApplicationController
     respond_to do |format|
       if @extraction_forms_project.update(extraction_forms_project_params)
         format.html { redirect_to build_extraction_forms_project_path(@extraction_forms_project,
-                                                                      anchor: "panel-tab-#{ @extraction_forms_project.extraction_forms_projects_sections.first.id }"),
+                                                                      'panel-tab': @extraction_forms_project.extraction_forms_projects_sections.first.id),
                       notice: t('success') }
         format.js   {}
         format.json { render :show, status: :ok, location: @extraction_forms_project }
@@ -56,19 +56,24 @@ class ExtractionFormsProjectsController < ApplicationController
 
   # GET /extraction_forms_projects/1/build
   def build
+    @panel_tab = (params['panel-tab'].present? && params['panel-tab']) || @extraction_forms_project.extraction_forms_projects_sections.first.try(:id)
     @key_questions_projects = @extraction_forms_project.project.key_questions_projects.includes(:key_question)
     @key_questions_projects_array_for_select = @extraction_forms_project.project.key_questions_projects_array_for_select
-    @extraction_forms_projects_sections = @extraction_forms_project.extraction_forms_projects_sections
-      .includes([{ extraction_forms_projects_sections_type1s: [:timepoint_names, :ordering] },
-                 :extraction_forms_projects_section_type,
-                 { link_to_type1: :type1s },
-                 :section,
-                 :type1s,
-                 { questions: [:dependencies, :ordering,
-                               { question_rows: [ { question_row_columns: [:question_row_column_fields,
-                                                                           :question_row_column_type,
-                                                                           :question_row_columns_question_row_column_options] }] },
-                               { key_questions_projects: [ :key_question ] }] }])
+    @extraction_forms_projects_sections = @extraction_forms_project.
+      extraction_forms_projects_sections.
+      includes(
+        [{ extraction_forms_projects_sections_type1s: [:timepoint_names, :ordering] },
+          :extraction_forms_projects_section_type,
+          { link_to_type1: :type1s },
+          :section,
+          :type1s,
+          { questions: [
+            :dependencies,
+            :ordering,
+            { question_rows: [ { question_row_columns: [:question_row_column_fields, :question_row_column_type, :question_row_columns_question_row_column_options] }] },
+            { key_questions_projects: [ :key_question ] }
+          ]}
+        ])
     add_breadcrumb 'my projects',  :projects_path
     add_breadcrumb 'edit project', edit_project_path(@extraction_forms_project.project)
     add_breadcrumb 'builder',      :build_extraction_forms_project_path
