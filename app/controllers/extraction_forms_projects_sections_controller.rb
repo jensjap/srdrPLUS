@@ -19,9 +19,13 @@ class ExtractionFormsProjectsSectionsController < ApplicationController
 
     respond_to do |format|
       if @extraction_forms_projects_section.save
-        format.html { redirect_to build_extraction_forms_project_path(@extraction_forms_project,
-                                                                      'panel-tab': @extraction_forms_projects_section.id),
-                      notice: t('success') }
+        format.html do
+          @extraction_forms_project.project.extractions.each { |extraction| extraction.ensure_extraction_form_structure }
+          redirect_to build_extraction_forms_project_path(
+            @extraction_forms_project,
+            'panel-tab': @extraction_forms_projects_section.id
+          ), notice: t('success')
+        end
         format.json { render :show, status: :created, location: @extraction_forms_projects_section }
       else
         format.html { render :new }

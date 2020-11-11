@@ -56,7 +56,8 @@
             - year = citation.year
             - name = citation.name.truncate(70)
             - citation_handle = first_author + ', ' + year + ', ' + pmid + '<br />' + name
-            - progress_meter_width = ((extraction.extractions_extraction_forms_projects_sections.map{ |eefps| eefps.status.name == 'Completed' ? 1 : 0 }.sum.to_f * 100) / extraction.extractions_extraction_forms_projects_sections.length).round.to_s
+            - eefps_count = extraction.extractions_extraction_forms_projects_sections.length
+            - progress_meter_width = (extraction.extractions_extraction_forms_projects_sections.inject(0) { |sum, eefps| sum + (eefps.status.name == 'Completed' ? 100.0 : 0) } / (eefps_count == 0 ? 1 : eefps_count)).round.to_s
             - if extraction.extractions_extraction_forms_projects_sections.any? { |eefps| eefps.status.name != 'Completed' }
               - tooltip_text = "<span style='font-weight: bold;'>Incomplete Sections:</span><br>" + (extraction.extractions_extraction_forms_projects_sections.map{ |eefps| eefps.status.name != 'Completed' ? eefps.section.name : "" } - [""]).join('<br>')
             - else
