@@ -66,8 +66,11 @@ class ProjectsController < ApplicationController
     authorize(@project)
 
     respond_to do |format|
-      if @project.update(project_params)
-        format.html do
+      format.html do
+        if no_leader?
+          flash[:alert] = 'Must have at least one leader'
+          redirect_to(edit_project_path(@project, anchor: "panel-projects-users"))
+        elsif @project.update(project_params)
           redirect_path = params.try(:[], :project).try(:[], :redirect_path)
           if redirect_path.present?
             redirect_to(redirect_path, notice: t("success") + " #{make_undo_link}")
@@ -77,13 +80,26 @@ class ProjectsController < ApplicationController
               notice: t("success") + " #{make_undo_link}"
             )
           end
+        else
+          flash.now[:alert] = @project.errors.full_messages.join(" - ")
+          render :edit
         end
-        format.json { render :show, status: :ok, location: @project }
-        format.js { render :show, status: :ok, location: @project }
-      else
-        format.html { render :edit }
-        format.json { render json: @project.errors, status: :unprocessable_entity }
-        format.js { render json: @project.errors, status: :unprocessable_entity }
+      end
+
+      format.json do
+        if @project.update(project_params)
+          render :show, status: :ok, location: @project
+        else
+          render json: @project.errors, status: :unprocessable_entity
+        end
+      end
+
+      format.js do
+        if @project.update(project_params)
+          render :show, status: :ok, location: @project
+        else
+          render json: @project.errors, status: :unprocessable_entity
+        end
       end
     end
   end
@@ -398,5 +414,11 @@ class ProjectsController < ApplicationController
       @approved_publishings = @approved_publishings.order(created_at: :desc) if params[:o] == 'created-at'
       @approved_publishings = @approved_publishings.where(user: current_user) unless current_user.admin?
     end
+  end
+
+  def no_leader?
+    project_params[:projects_users_attributes] &&
+      project_params[:projects_users_attributes].values.any? { |key| key[:role_ids] } &&
+      project_params[:projects_users_attributes].values.map { |pua| pua[:role_ids] }.flatten.none? { |role_id| role_id == '1' }
   end
 end

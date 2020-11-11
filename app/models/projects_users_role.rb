@@ -77,7 +77,7 @@ class ProjectsUsersRole < ApplicationRecord
           where.
           not(id: self.id).
           first
-        extraction.update!(projects_users_role: new_assignee)
+        extraction.update!(projects_users_role: new_assignee) if new_assignee
       end
     end
 end
