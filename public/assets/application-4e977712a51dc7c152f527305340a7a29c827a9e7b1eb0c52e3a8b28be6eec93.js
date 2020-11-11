@@ -49929,7 +49929,8 @@ function __guardMethod__(obj, methodName, transform) {
             return wrapperThis.removeFile(file);
           });
           return this.on('error', function(file, error_message) {
-            return toastr.error('ERROR: Cannot upload citation file.');
+            toastr.error("ERROR: Cannot upload citation file. " + error_message);
+            return wrapperThis.removeFile(file);
           });
         }
       };
