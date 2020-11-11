@@ -74,11 +74,12 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
     recordables = extractions_extraction_forms_projects_sections_question_row_column_fields
       .where(extractions_extraction_forms_projects_sections_type1_id: eefpst1_id,
              question_row_column_field: qrc.question_row_column_fields)
-      .order(id: :asc)
+
+#debugger if (qrc.question_row.id.eql?(10989) && qrc.id.eql?(14007) && extraction.id.eql?(2494))
 
     case qrc.question_row_column_type_id
-    when 1  # Textbox.
-      return Record.where(recordable: recordables.last).pluck(:name).compact.join("\x0D\x0A")
+    when 1, 2  # Textbox, Numeric.
+      return Record.where(recordable: recordables).order(updated_at: :desc).pluck(:name).first.try(:strip)
 
     when 5  # Checkbox.
       text_arr = []
@@ -113,19 +114,16 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
       return text_arr.join("\x0D\x0A")
 
     when 6, 7, 8  # Dropdown, Radio, Select2_single.
-      text_arr = []
-      Record.where(recordable: recordables.last).pluck(:name).each do |opt_id|
-        # opt_id can be nil here for questions that have not been answered.
-        # Protect by casting to zero and check.
-        begin
-          text_arr << qrc.question_row_columns_question_row_column_options.find(opt_id.to_i).name unless opt_id.to_i.zero?
-        rescue Exception => e
-          #!!! This can happen when records are created and then the answer options are deleted or question type changes altogether.
-          #    Need to decide what to do here.
-          next
-        end
+      opt_id = Record.where(recordable: recordables).order(updated_at: :desc).pluck(:name).first
+      # opt_id can be nil here for questions that have not been answered.
+      # Protect by casting to zero and check.
+      begin
+        text_arr = qrc.question_row_columns_question_row_column_options.find(opt_id.to_i).name unless opt_id.to_i.zero?
+      rescue Exception => e
+        #!!! This can happen when records are created and then the answer options are deleted or question type changes altogether.
+        #    Need to decide what to do here.
       end
-      return text_arr.join("\x0D\x0A")
+      return text_arr.try(:strip)
 
     when 9  # Select2_multi.
       text_arr = []
@@ -144,7 +142,7 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
       return text_arr.join("\x0D\x0A")
 
     else
-      return Record.where(recordable: recordables).pluck(:name).compact.join("\x0D\x0A")
+      return Record.where(recordable: recordables).pluck(:name).join("\x0D\x0A")
 
     end
   end
