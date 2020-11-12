@@ -1,12 +1,19 @@
 document.addEventListener 'turbolinks:load', ->
 
   do ->
+
+    tableKey = window.location.pathname
+
     $('#citations-table').DataTable({
       "columnDefs": [{ "orderable": false, "targets": [4, 5] }],
       "lengthMenu": [[50, 100, 500, -1], [50, 100, 500, "All"]],
       "pagingType": "full_numbers",
       "stateSave": true,
       "stateDuration": 0,
+      "stateSaveCallback": (settings, data) ->
+        localStorage.setItem('DataTables-' + tableKey, JSON.stringify(data))
+      "stateLoadCallback": (settings) ->
+        return JSON.parse(localStorage.getItem('DataTables-'+ tableKey))
     })
 
 ######### CITATION MANAGEMENT
