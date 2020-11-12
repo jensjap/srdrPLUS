@@ -65,7 +65,8 @@ document.addEventListener 'turbolinks:load', ->
           wrapperThis.removeFile(file)
         )
         this.on('error', (file, error_message) ->
-          toastr.error('ERROR: Cannot upload citation file.')
+          toastr.error("ERROR: Cannot upload citation file. #{ error_message }")
+          wrapperThis.removeFile(file)
         )
     }
 

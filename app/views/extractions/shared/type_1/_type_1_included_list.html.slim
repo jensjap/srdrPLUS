@@ -28,9 +28,15 @@
 
     tbody.orderable-list orderable-url="#{ update_positions_api_v1_orderings_url }"
       - eefps.eefpst1s_without_total.each do |eefpst1|
-        tr.orderable-item [ position="#{ eefpst1.ordering.position }" ordering-id="#{ eefpst1.ordering.id }" ]
+        - bgcolor = ''
+        - if eefpst1.type1_type && eefpst1.type1_type.name == 'Categorical'
+          - bgcolor = '#eeeeff'
+        - elsif eefpst1.type1_type && eefpst1.type1_type.name == 'Continuous'
+          - bgcolor = '#ccf5de'
+        tr.orderable-item position="#{eefpst1.ordering.position}" ordering-id="#{eefpst1.ordering.id}" style="background-color: #{bgcolor}"
           td.sort-handle style="min-width: 0; width: 10px;"
             i.fi-thumbnails style="cursor: move;"
+
           - if section_name == 'Outcomes'
             td = eefpst1.type1_type.present? ? eefpst1.type1_type.name : ''
             td = eefpst1.type1.name
