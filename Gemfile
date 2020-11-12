@@ -189,3 +189,5 @@ gem 'newrelic-infinite_tracing'
 
 # Limit request rates
 gem 'rack-attack'
+
+gem 'rack-mini-profiler'
