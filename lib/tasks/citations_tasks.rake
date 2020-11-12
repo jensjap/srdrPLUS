@@ -15,13 +15,14 @@ namespace :citations_tasks do
       cps_to_delete.each do |cp|
         # Also delete Citation if there's only 1 citations_project entry
         citation = cp.citation
-        cps = CitationsProject.where(citation_id: cp.id)
+        cps = CitationsProject.where(citation_id: citation.id)
         if cps.length > 1
           puts "Warning: more than 1 CitationsProject found - deleting CitationsProject with id #{ cp.id } only"
           cp.destroy
         else
           puts "Info: only 1 CitationsProject found - deleting Citation with id #{ citation.id } and CitationProject with id #{ cp.id }"
           citation.destroy
+          cp.destroy
         end
       end
     else
