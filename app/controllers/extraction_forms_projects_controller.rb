@@ -56,7 +56,7 @@ class ExtractionFormsProjectsController < ApplicationController
 
   # GET /extraction_forms_projects/1/build
   def build
-    @panel_tab = (params['panel-tab'].present? && params['panel-tab']) || @extraction_forms_project.extraction_forms_projects_sections.first.try(:id)
+    @panel_tab = (params['panel-tab'].present? && params['panel-tab']) || @extraction_forms_project.default_section_id.to_s
     @key_questions_projects = @extraction_forms_project.project.key_questions_projects.includes(:key_question)
     @key_questions_projects_array_for_select = @extraction_forms_project.project.key_questions_projects_array_for_select
     @extraction_forms_projects_sections = @extraction_forms_project.
