@@ -137,7 +137,7 @@ class Project < ApplicationRecord
   end
 
   def key_questions_projects_array_for_select
-    self.key_questions_projects.map { |kqp| [kqp.key_question.name, kqp.id] }
+    self.key_questions_projects.includes(:key_question).map { |kqp| [kqp.key_question.name, kqp.id] }
   end
 
   def publication_requested_at

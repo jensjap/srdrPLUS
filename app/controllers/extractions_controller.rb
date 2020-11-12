@@ -358,6 +358,7 @@ class ExtractionsController < ApplicationController
 
     def set_extraction_forms_projects
       @extraction_forms_projects = @project.extraction_forms_projects.includes(
+        :extraction_form,
         extraction_forms_projects_sections: [
           :extraction_forms_projects_section_option,
           :extraction_forms_projects_section_type,
