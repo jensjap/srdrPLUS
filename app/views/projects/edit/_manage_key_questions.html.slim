@@ -9,6 +9,7 @@
 
     thead
       tr
+        th style="min-width: 0; width: 10px;"
         th = t('key_question_text')
         th = t('assigned')
         th = t('date_created')
@@ -18,6 +19,8 @@
     tbody.orderable-list orderable-url="#{ update_positions_api_v1_orderings_url }"
       - @project.key_questions_projects.each do |kqp|
         tr.orderable-item [ position="#{ kqp.ordering.position }" ordering-id="#{ kqp.ordering.id }" ]
+          td.sort-handle style="min-width: 0; width: 10px;"
+            i.fi-thumbnails style="cursor: move;"
           td = kqp.key_question.name
           td
             - if kqp.extraction_forms_projects_section.present?

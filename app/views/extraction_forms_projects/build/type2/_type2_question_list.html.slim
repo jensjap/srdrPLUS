@@ -1,7 +1,7 @@
 .ef-preview-container.reveal[data-reveal="" id="unique-ef-preview-container-id-#{efps.id}"]
   .preview-content
     = render(partial: "extraction_forms_projects_sections/preview", locals: { extraction_forms_projects_section: efps })
-    
+
 .button.preview-button.float-right[data-open="unique-ef-preview-container-id-#{efps.id}"] = 'Preview'
 
 h4 #{ efps.section.name.titleize } Question List
@@ -32,8 +32,8 @@ h4 #{ efps.section.name.titleize } Question List
         - efps.ensure_sequential_questions
         - efps.questions.each do |q|
           tr.orderable-item [ position="#{ q.ordering.position }" ordering-id="#{ q.ordering.id }" ]
-            td
-              .grippy
+            td.sort-handle style="min-width: 0; width: 10px;"
+              i.fi-thumbnails style="cursor: move;"
             td = q.ordering.position
             td
               ul#dependencies
