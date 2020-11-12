@@ -37,7 +37,7 @@
           th width="50px"
 
       tbody
-        - if @extractions.unconsolidated.blank?
+        - if @extractions.blank?
           tr
             td No extractions found.
             td
@@ -49,7 +49,7 @@
             td
 
         - else
-          - @extractions.unconsolidated.includes([{ extractions_extraction_forms_projects_sections: [:status, { extraction_forms_projects_section: :section }] }, { projects_users_role: [{ projects_user: { user: :profile } }, :role] },{ citations_project: :citation }]).each do |extraction|
+          - @extractions.each do |extraction|
             - citation = extraction.citations_project.citation
             - first_author = citation.first_author
             - pmid = citation.pmid.to_s

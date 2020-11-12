@@ -16,12 +16,22 @@ class ExtractionsController < ApplicationController
   # GET /projects/1/extractions
   # GET /projects/1/extractions.json
   def index
+    @extractions = @project.
+      extractions.
+      unconsolidated.
+      includes([
+        { extractions_extraction_forms_projects_sections: [:status, { extraction_forms_projects_section: :section }] },
+        { projects_users_role: [{ projects_user: { user: :profile } }, :role] },
+        { citations_project: :citation }
+      ])
+
     if @project.leaders.include? current_user
-      @extractions = @project.extractions
-      @projects_users_roles = ProjectsUsersRole.joins(:projects_user).where(projects_users: { project: @project })
+      @projects_users_roles = ProjectsUsersRole.
+        includes([{ projects_user: { user: :profile } }, :role]).
+        where(projects_users: { project: @project })
       @citation_groups = @project.citation_groups
     else
-      @extractions = @project.extractions.joins(projects_users_role: :projects_user).where(projects_users_role: { projects_users: { user_id: current_user.id } })
+      @extractions.where(projects_users_role: { projects_users: { user_id: current_user.id } })
       if @project.consolidators.include? current_user
         @citation_groups = @project.citation_groups
       else
@@ -281,7 +291,17 @@ class ExtractionsController < ApplicationController
 
     def set_extractions
       @extractions = policy_scope(Extraction).
-        includes({projects_users_role: { projects_user: { user: :profile } }}, {extractions_extraction_forms_projects_sections: [{link_to_type1: [{extraction_forms_projects_section: :section}]}, {statusing: :status}]}).
+        includes(
+          {
+            projects_users_role: { projects_user: { user: :profile } }
+          },
+          {
+            extractions_extraction_forms_projects_sections: [{ link_to_type1: [{ extraction_forms_projects_section: :section }] }, { statusing: :status }]
+          },
+          {
+            citation: :journal
+          },
+        ).
         where(id: extraction_ids_params)
     end
 
