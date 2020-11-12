@@ -49857,7 +49857,8 @@ function __guardMethod__(obj, methodName, transform) {
 (function() {
   document.addEventListener('turbolinks:load', function() {
     (function() {
-      var fetch_from_pubmed, list_options, populate_citation_fields;
+      var fetch_from_pubmed, list_options, populate_citation_fields, tableKey;
+      tableKey = window.location.pathname;
       $('#citations-table').DataTable({
         "columnDefs": [
           {
@@ -49868,7 +49869,13 @@ function __guardMethod__(obj, methodName, transform) {
         "lengthMenu": [[50, 100, 500, -1], [50, 100, 500, "All"]],
         "pagingType": "full_numbers",
         "stateSave": true,
-        "stateDuration": 0
+        "stateDuration": 0,
+        "stateSaveCallback": function(settings, data) {
+          return localStorage.setItem('DataTables-' + tableKey, JSON.stringify(data));
+        },
+        "stateLoadCallback": function(settings) {
+          return JSON.parse(localStorage.getItem('DataTables-' + tableKey));
+        }
       });
       if ($('body.citations.index').length === 0) {
         return;
@@ -50519,7 +50526,7 @@ function __guardMethod__(obj, methodName, transform) {
       return;
     }
     (function() {
-      var add_change_listeners_to_questions, apply_coloring, apply_consolidation_dropdown, dt, dtComparisonList, get_extractor_names, get_number_of_extractions, get_question_type, get_question_value, last_col;
+      var add_change_listeners_to_questions, apply_coloring, apply_consolidation_dropdown, dt, dtComparisonList, get_extractor_names, get_number_of_extractions, get_question_type, get_question_value, last_col, tableKey;
       $('.index-extractions-select2').select2();
       $('.new-extraction-select2').select2();
       $('.new-extraction-select2-multi').select2({
@@ -50567,6 +50574,7 @@ function __guardMethod__(obj, methodName, transform) {
           $(this).closest('.projects-users-role').find('.projects-users-role-label').removeClass('hide');
           return $(this).closest('.projects-users-role').attr('dropdown-active', 'false');
         });
+        tableKey = window.location.pathname;
         dt = $('table.extractions-list').DataTable({
           "columnDefs": [
             {
@@ -50577,7 +50585,13 @@ function __guardMethod__(obj, methodName, transform) {
           "lengthMenu": [[50, 100, 500, -1], [50, 100, 500, "All"]],
           "pagingType": "full_numbers",
           "stateSave": true,
-          "stateDuration": 0
+          "stateDuration": 0,
+          "stateSaveCallback": function(settings, data) {
+            return localStorage.setItem('DataTables-' + tableKey, JSON.stringify(data));
+          },
+          "stateLoadCallback": function(settings) {
+            return JSON.parse(localStorage.getItem('DataTables-' + tableKey));
+          }
         });
         dt.draw();
         last_col = 0;
@@ -50604,7 +50618,6 @@ function __guardMethod__(obj, methodName, transform) {
           }
           return last_col = col;
         });
-        dt.order([6, 'desc']).draw();
         $('[data-sorting-col=6]').removeClass('sorting_desc');
         dtComparisonList = $('table.comparisons-list').DataTable({
           "paging": false,
@@ -52595,7 +52608,6 @@ document.addEventListener( 'turbolinks:load', function() {
     for (let orderable_list of Array.from( $( scope ).find( '.orderable-list' ))) {
       //# CHANGE THIS
       const ajax_url = $( '.orderable-list' ).attr( 'orderable-url' );
-      const forceRestart = $( '.orderable-list' ).attr( 'force-reload' );
       let saved_state = null;
 
       //# helper method for converting class name into camel case
@@ -52635,12 +52647,7 @@ document.addEventListener( 'turbolinks:load', function() {
               }
               // then save state
               saved_state = $( orderable_list ).sortable( "toArray" );
-              if (forceRestart) {
-                toastr.success( 'Positions successfully updated. Reloading page to apply changes.' );
-                location.reload();
-              } else {
-                toastr.success( 'Positions successfully updated' );
-              }
+              toastr.success( 'Positions successfully updated' );
             },
           error( data ) {
               $( orderable_list ).sortable( 'sort', saved_state );
@@ -52656,7 +52663,12 @@ document.addEventListener( 'turbolinks:load', function() {
       //# save state when dragging starts
       const on_start =  e  => saved_state = $( orderable_list ).sortable( 'toArray' );
 
-      $( orderable_list ).sortable({ onUpdate: on_update, onStart: on_start });
+      $(orderable_list).sortable({ onUpdate: on_update, onStart: on_start });
+
+      if ($('.sort-handle').length > 0) {
+        $(orderable_list).sortable( "option", "handle", ".sort-handle" );
+      }
+
       saved_state = $( orderable_list ).sortable( 'toArray' );
     }
   }
