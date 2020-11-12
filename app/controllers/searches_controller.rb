@@ -139,7 +139,14 @@ class SearchesController < ApplicationController
       if @search[:projects_search]['after(1i)'].present? && @search[:projects_search]['after(1i)'].present? && @search[:projects_search]['after(1i)'].present?
         datestring = "#{ @search[:projects_search]['after(1i)'] }-#{ @search[:projects_search]['after(2i)'] }-#{ @search[:projects_search]['after(3i)'] }"
       end
-      @project_after_search_argument = datestring.to_date
+
+      begin
+        @project_after_search_argument = datestring.to_date
+      rescue ArgumentError
+        flash[:error] = 'Invalid date: please enter a valid and complete date.'
+        return redirect_to new_search_path
+      end
+
       if @project_after_search_argument.present?
         new_project_ids = []
 
@@ -159,7 +166,14 @@ class SearchesController < ApplicationController
       if @search[:projects_search]['before(1i)'].present? && @search[:projects_search]['before(1i)'].present? && @search[:projects_search]['before(1i)'].present?
         datestring = "#{ @search[:projects_search]['before(1i)'] }-#{ @search[:projects_search]['before(2i)'] }-#{ @search[:projects_search]['before(3i)'] }"
       end
-      @project_before_search_argument = datestring.to_date
+
+      begin
+        @project_before_search_argument = datestring.to_date
+      rescue ArgumentError
+        flash[:error] = 'Invalid date: please enter a valid and complete date.'
+        return redirect_to new_search_path
+      end
+
       if @project_before_search_argument.present?
         new_project_ids = []
 
