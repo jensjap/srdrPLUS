@@ -20,10 +20,10 @@ def build_result_sections_compact(p, project, highlight, wrap, kq_ids=[], print_
 
         # Start printing rows to the sheets. First the basic headers:
         #['Extraction ID', 'Username', 'Citation ID', 'Citation Name', 'RefMan', 'PMID']
-        ws_desc_header = ws_desc.add_row(sheet_info.header_info + ['Outcome', 'Outcome Description', 'Outcome Type', 'Population', 'Digest', 'Timepoint', 'Timepoint Unit', 'Arm',            'Measure', 'Value'])
-        ws_bac_header  = ws_bac.add_row(sheet_info.header_info +  ['Outcome', 'Outcome Description', 'Outcome Type', 'Population', 'Digest', 'Timepoint', 'Timepoint Unit', 'BAC Comparator', 'Measure', 'Value'])
-        ws_wac_header  = ws_wac.add_row(sheet_info.header_info +  ['Outcome', 'Outcome Description', 'Outcome Type', 'Population', 'Digest', 'WAC Comparator',              'Arm',            'Measure', 'Value'])
-        ws_net_header  = ws_net.add_row(sheet_info.header_info +  ['Outcome', 'Outcome Description', 'Outcome Type', 'Population', 'Digest', 'WAC Comparator',              'BAC Comparator', 'Measure', 'Value'])
+        ws_desc_header = ws_desc.add_row(sheet_info.header_info + ['Outcome', 'Outcome Description', 'Outcome Type', 'Population', 'Digest', 'Timepoint', 'Timepoint Unit', 'Arm',            'Arm Description', 'Measure', 'Value'])
+        ws_bac_header  = ws_bac.add_row(sheet_info.header_info +  ['Outcome', 'Outcome Description', 'Outcome Type', 'Population', 'Digest', 'Timepoint', 'Timepoint Unit', 'BAC Comparator',                    'Measure', 'Value'])
+        ws_wac_header  = ws_wac.add_row(sheet_info.header_info +  ['Outcome', 'Outcome Description', 'Outcome Type', 'Population', 'Digest', 'WAC Comparator',              'Arm',            'Arm Description', 'Measure', 'Value'])
+        ws_net_header  = ws_net.add_row(sheet_info.header_info +  ['Outcome', 'Outcome Description', 'Outcome Type', 'Population', 'Digest', 'WAC Comparator',              'BAC Comparator',                    'Measure', 'Value'])
 
         ws_desc_header.style = highlight
         ws_bac_header.style  = highlight
@@ -57,6 +57,7 @@ def build_result_sections_compact(p, project, highlight, wrap, kq_ids=[], print_
               new_row << rssm[:row_name]
               new_row << rssm[:row_unit]
               new_row << rssm[:col_name]
+              new_row << rssm[:col_description]
               new_row << rssm[:measure_name]
               new_row << rssm[:rssm_values]
 
@@ -88,6 +89,7 @@ def build_result_sections_compact(p, project, highlight, wrap, kq_ids=[], print_
               new_row << md5_digest(extraction, rssm)
               new_row << rssm[:row_name]
               new_row << rssm[:col_name]
+              new_row << rssm[:col_description]
               new_row << rssm[:measure_name]
               new_row << rssm[:rssm_values]
 
@@ -110,9 +112,7 @@ def build_result_sections_compact(p, project, highlight, wrap, kq_ids=[], print_
                 ws_net.add_row new_row
               end
 
-            end
-
-
+            end  # case rssm[:result_statistic_section_type_id]
           end  # END extraction[:rssms].each do |rssm|
         end  # END sheet_info.extractions.each do |key, extraction|
       end  # END if efps.extraction_forms_projects_section_type_id == 3
