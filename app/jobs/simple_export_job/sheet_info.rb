@@ -251,6 +251,7 @@ class SheetInfo
       populations:          [],
       timepoints:           [],
       question_row_columns: [],
+      rss_columns:          {},
       rssms:                [] }
   end
 
@@ -288,10 +289,23 @@ class SheetInfo
   end
 
   def add_rssm(params)
+    # For Ian's special request, we collect rssms per arm/bac comparator as well
+    add_rssm_params_for_legacy(params)
+
+    # Add full params hash to @extractions[:extraction_id][:rssms] array.
     @extractions[params[:extraction_id]][:rssms] << params
     dup = params.deep_dup
     dup.delete(:extraction_id)
     dup.delete(:rssm_values)
     @rssms << dup
+  end
+
+  def add_rssm_params_for_legacy(params)
+    @extractions[params[:extraction_id]][:rss_columns][params[:result_statistic_section_type_id]] = {} unless @extractions[params[:extraction_id]][:rss_columns].has_key? params[:result_statistic_section_type_id]
+    @extractions[params[:extraction_id]][:rss_columns][params[:result_statistic_section_type_id]][params[:outcome_id]] = {} unless @extractions[params[:extraction_id]][:rss_columns][params[:result_statistic_section_type_id]].has_key? params[:outcome_id]
+    @extractions[params[:extraction_id]][:rss_columns][params[:result_statistic_section_type_id]][params[:outcome_id]][params[:population_id]] = {} unless @extractions[params[:extraction_id]][:rss_columns][params[:result_statistic_section_type_id]][params[:outcome_id]].has_key? params[:population_id]
+    @extractions[params[:extraction_id]][:rss_columns][params[:result_statistic_section_type_id]][params[:outcome_id]][params[:population_id]][params[:row_id]] = {} unless @extractions[params[:extraction_id]][:rss_columns][params[:result_statistic_section_type_id]][params[:outcome_id]][params[:population_id]].has_key? params[:row_id]
+    @extractions[params[:extraction_id]][:rss_columns][params[:result_statistic_section_type_id]][params[:outcome_id]][params[:population_id]][params[:row_id]][params[:col_id]] = [] unless @extractions[params[:extraction_id]][:rss_columns][params[:result_statistic_section_type_id]][params[:outcome_id]][params[:population_id]][params[:row_id]].has_key? params[:col_id]
+    @extractions[params[:extraction_id]][:rss_columns][params[:result_statistic_section_type_id]][params[:outcome_id]][params[:population_id]][params[:row_id]][params[:col_id]] << params
   end
 end
