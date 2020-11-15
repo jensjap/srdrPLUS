@@ -292,7 +292,8 @@ namespace(:db) do
                                                                          question_row_column: question_row_column
               answer_dict[qf["option_text"]] = qrcqrco.id
 
-              if qf["has_subquestion"]
+              if qf["has_subquestion"] == 1
+                p qf["has_subquestion"] 
                 FollowupField.create question_row_columns_question_row_column_option: qrcqrco
               end
             end
