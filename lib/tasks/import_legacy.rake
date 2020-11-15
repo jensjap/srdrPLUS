@@ -11,7 +11,7 @@ namespace(:db) do
       initialize_variables
 
       #projects = db.query("SELECT * FROM projects")
-      projects = db.query("SELECT * FROM projects LIMIT 5")
+      projects = db.query("SELECT * FROM projects WHERE id=7 LIMIT 5")
       projects.each do |project_hash|
         begin
           @legacy_project_id = project_hash["id"]
@@ -33,6 +33,25 @@ namespace(:db) do
       @efps_type_4 = ExtractionFormsProjectsSectionType.find_by(name: 'Type 4')
       @efp_type_standard = ExtractionFormsProjectType.find_by(name: 'Standard')
       @efp_type_diagnostic = ExtractionFormsProjectType.find_by(name: 'Diagnostic Test')
+
+      @qrc_type_text = QuestionRowColumnType.find_by(name: 'text')
+      @qrc_type_numeric = QuestionRowColumnType.find_by(name: 'numeric')
+      @qrc_type_numeric_range = QuestionRowColumnType.find_by(name: 'numeric_range')
+      @qrc_type_scientific = QuestionRowColumnType.find_by(name: 'scientific')
+      @qrc_type_checkbox = QuestionRowColumnType.find_by(name: 'checkbox')
+      @qrc_type_dropdown = QuestionRowColumnType.find_by(name: 'dropdown')
+      @qrc_type_radio = QuestionRowColumnType.find_by(name: 'radio')
+      @qrc_type_select2_single = QuestionRowColumnType.find_by(name: 'select2_single')
+      @qrc_type_select2_multi = QuestionRowColumnType.find_by(name: 'select2_multi')
+
+      @qrco_answer_choice = QuestionRowColumnOption.find_by(name: 'answer_choice')
+      @qrco_min_length = QuestionRowColumnOption.find_by(name: 'min_length')
+      @qrco_max_length = QuestionRowColumnOption.find_by(name: 'max_length')
+      @qrco_additional_char = QuestionRowColumnOption.find_by(name: 'additional_char')
+      @qrco_min_value = QuestionRowColumnOption.find_by(name: 'min_value')
+      @qrco_max_value = QuestionRowColumnOption.find_by(name: 'max_value')
+      @qrco_coefficient = QuestionRowColumnOption.find_by(name: 'coefficient')
+      @qrco_exponent = QuestionRowColumnOption.find_by(name: 'exponent')
     end
 
     def reset_project_variables
@@ -96,7 +115,7 @@ namespace(:db) do
       if efp_type == false
         return
       elsif efp_type == @efp_type_diagnostic
-        get_srdrplus_project(@legacy_project_id).extraction_forms_projects.update(extraction_forms_project_type: efp_type)
+        get_srdrplus_project(@legacy_project_id).extraction_forms_projects.first.update(extraction_forms_project_type: efp_type)
         migrate_extraction_forms_as_diagnostic_efp efs
       else
         migrate_extraction_forms_as_standard_efp efs
@@ -174,6 +193,8 @@ namespace(:db) do
               efps.extraction_forms_projects_section_option.include_total = efso["by_arm"]
               efps.extraction_forms_projects_section_option.include_total = efso["include_total"]
             end
+
+            migrate_questions efps, ef["id"], 'arm_detail'
           when "Outcome Details"
             efsos = db.query("SELECT * FROM ef_section_options where section='outcome_detail' AND extraction_form_id=#{ef["id"]}")
             efsos.each do |efso|
@@ -183,6 +204,7 @@ namespace(:db) do
               efps.extraction_forms_projects_section_option.include_total = efso["by_outcome"]
               efps.extraction_forms_projects_section_option.include_total = efso["include_total"]
             end
+            migrate_questions efps, ef["id"], 'outcome_detail'
           when "Diagnostic Test Details"
             efsos = db.query("SELECT * FROM ef_section_options where section='diagnostic_test' AND extraction_form_id=#{ef["id"]}")
             efsos.each do |efso|
@@ -192,14 +214,106 @@ namespace(:db) do
               efps.extraction_forms_projects_section_option.include_total = efso["by_diagnostic_test"]
               efps.extraction_forms_projects_section_option.include_total = efso["include_total"]
             end
+            migrate_questions efps, ef["id"], 'diagnostic_test_detail'
           when "Adverse"
             #efps.link_to_type1 = adverse_events_efps
             #efps.extraction_forms_projects_section_option = ExtractionFormsProjectsSectionOptionWrapper.new true, false
+          when "Design"
+            migrate_questions efps, ef["id"], 'design_detail'
+          when "Quality"
+          when "Baseline"
+
           else
           end
         end
         break
       end
+    end
+
+    def get_questions table_root, ef_id
+      db.query "SELECT * FROM #{table_root}s where extraction_form_id=#{ef_id} ORDER BY question_number ASC"
+    end
+
+    def get_question_fields table_root, ef_id
+      qs = db.query "SELECT * FROM #{table_root}s where extraction_form_id=#{ef_id} ORDER BY question_number ASC"
+      q_ids_string = qs.map{|q| q["id"]}.join ","
+
+      if q_ids_string.present?
+        return db.query "SELECT * FROM #{table_root}_fields where #{table_root}_id IN (#{q_ids_string}) ORDER BY row_number ASC"
+      else
+        return []
+      end
+    end
+
+    def get_data_points table_root, ef_id
+      db.query "SELECT * FROM #{table_root}_data_points where extraction_form_id=#{ef_id}"
+    end
+
+    def migrate_questions efps, ef_id, table_root
+      legacy_questions = get_questions table_root, ef_id
+      legacy_question_fields = get_question_fields table_root, ef_id
+      legacy_data_points = get_data_points table_root, ef_id
+
+      legacy_questions.each do |q|
+        legacy_question_id = q["id"]
+        name = q["question"]
+        description = q["instruction"]
+        question_type = q["field_type"]
+        include_other = q["include_other_as_option"]
+        is_matrix = q["is_matrix"]
+        question = Question.create name: name,
+                                   description: description,
+                                   extraction_forms_projects_section: efps
+
+        case question_type
+        when "text"
+        when "checkbox"
+          p "Type: " + question_type
+          p "Project: " + question.project.name
+          p "Question: " + question.name
+          question_row_column = question.question_rows.first.question_row_columns.first
+          question_row_column.update question_row_column_type: @qrc_type_checkbox
+          
+          answer_dict = {}
+          legacy_question_fields.select{|qf| qf["#{table_root}_id"] == legacy_question_id}.each do |qf|
+            if qf["row_number"] == -1
+              qrcqrco = QuestionRowColumnsQuestionRowColumnOption.create name: "Other (please specify):",
+                                                                         question_row_column_option: @qrco_answer_choice,
+                                                                         question_row_column: question_row_column
+              FollowupField.create question_row_columns_question_row_column_option: qrcqrco
+
+              legacy_data_points.select{|dp| dp["#{table_root}_field_id"] == qf["id"]}.each do |dp|
+                migrate_data_point dp
+                break
+              end
+            else
+              qrcqrco = QuestionRowColumnsQuestionRowColumnOption.create name: qf["option_text"],
+                                                                         question_row_column_option: @qrco_answer_choice,
+                                                                         question_row_column: question_row_column
+              answer_dict[qf["option_text"]] = qrcqrco.id
+
+              if qf["has_subquestion"]
+                FollowupField.create question_row_columns_question_row_column_option: qrcqrco
+              end
+            end
+          end
+          legacy_data_points.select{|dp| dp["#{table_root}_field_id"] == q["id"]}.each do |dp|  ### BIG QUESTION MARK ABOUT FIELD IDs
+            if dp["subquestion_value"].present?
+            end
+            migrate_data_point dp
+          end
+
+        when "radio"
+        when "matrix_select"
+        when "matrix_radio"
+        when "select"
+        when "matrix_checkbox"
+        else
+        end
+      end
+    end
+
+    def migrate_data_point dp
     end
 
     def migrate_key_questions
