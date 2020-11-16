@@ -146,29 +146,31 @@ class ExtractionsController < ApplicationController
 
     set_extraction_forms_projects
 
-    @key_questions_projects_array_for_select = @project.key_questions_projects_array_for_select
+    unless @panel_tab_id == 'keyquestions'
+      @key_questions_projects_array_for_select = @project.key_questions_projects_array_for_select
 
-    if @extraction_forms_projects.first.extraction_forms_project_type.eql? ExtractionFormsProjectType::DIAGNOSTIC_TEST
-      @eefpst1s = ExtractionsExtractionFormsProjectsSectionsType1
-        .by_section_name_and_extraction_id_and_extraction_forms_project_id('Diagnostic Tests',
-                                                                           @extraction.id,
-                                                                           @extraction_forms_projects.first.id)
-    else
-      @eefpst1s = ExtractionsExtractionFormsProjectsSectionsType1
-        .by_section_name_and_extraction_id_and_extraction_forms_project_id('Outcomes',
-                                                                           @extraction.id,
-                                                                           @extraction_forms_projects.first.id)
+      if @extraction_forms_projects.first.extraction_forms_project_type.eql? ExtractionFormsProjectType::DIAGNOSTIC_TEST
+        @eefpst1s = ExtractionsExtractionFormsProjectsSectionsType1
+          .by_section_name_and_extraction_id_and_extraction_forms_project_id('Diagnostic Tests',
+                                                                            @extraction.id,
+                                                                            @extraction_forms_projects.first.id)
+      else
+        @eefpst1s = ExtractionsExtractionFormsProjectsSectionsType1
+          .by_section_name_and_extraction_id_and_extraction_forms_project_id('Outcomes',
+                                                                            @extraction.id,
+                                                                            @extraction_forms_projects.first.id)
+      end
+
+      # If a specific 'Outcome' is requested we load it here.
+      if params[:eefpst1_id].present?
+        @eefpst1 = ExtractionsExtractionFormsProjectsSectionsType1.find(params[:eefpst1_id])
+      # Otherwise we choose the first 'Outcome' in the extraction to display.
+      else
+        @eefpst1 = @eefpst1s.first
+      end
+
+      update_record_helper_dictionaries @extraction
     end
-
-    # If a specific 'Outcome' is requested we load it here.
-    if params[:eefpst1_id].present?
-      @eefpst1 = ExtractionsExtractionFormsProjectsSectionsType1.find(params[:eefpst1_id])
-    # Otherwise we choose the first 'Outcome' in the extraction to display.
-    else
-      @eefpst1 = @eefpst1s.first
-    end
-
-    update_record_helper_dictionaries @extraction
 
     add_breadcrumb 'edit project', edit_project_path(@project)
     add_breadcrumb 'extractions',  project_extractions_path(@project)
@@ -258,23 +260,16 @@ class ExtractionsController < ApplicationController
     end
 
     def set_extraction
-      @extraction = Extraction.
-        includes(projects_users_role: :projects_user).
-        includes(project: { key_questions_projects: :key_question }).
-        includes(extractions_extraction_forms_projects_sections: {
-          extractions_extraction_forms_projects_sections_type1s: [
-            :ordering,
-            {
-              extractions_extraction_forms_projects_sections_type1_rows: [
-                :population_name,
-                :extractions_extraction_forms_projects_sections_type1_row_columns,
-                { extractions_extraction_forms_projects_sections_type1_row_columns: :timepoint_name },
-                { result_statistic_sections: { result_statistic_sections_measures: :measure } }
-              ]
-            }
-          ]
-        }).
-        find(params[:id])
+      @panel_tab_id = params['panel-tab'] || 'keyquestions'
+
+      if @panel_tab_id == 'keyquestions'
+        @extraction = Extraction.
+          find(params[:id])
+      else
+        @extraction = Extraction.
+          includes(:extractions_extraction_forms_projects_sections, { projects_users_role: :projects_user }).
+          find(params[:id])
+      end
     end
 
     def set_extractions
@@ -319,7 +314,12 @@ class ExtractionsController < ApplicationController
       @eefps_qrcf_dict ||= {}
       @records_dict ||= {}
       extraction.extractions_extraction_forms_projects_sections.each do |eefps|
-        eefps.extractions_extraction_forms_projects_sections_question_row_column_fields.includes([:records, :extractions_extraction_forms_projects_sections_type1]).each do |eefps_qrcf|
+        eefps.
+        extractions_extraction_forms_projects_sections_question_row_column_fields.
+        includes([
+          :records,
+          :extractions_extraction_forms_projects_sections_type1
+        ]).each do |eefps_qrcf|
           @eefps_qrcf_dict[[eefps.id,eefps_qrcf.question_row_column_field_id,eefps_qrcf.extractions_extraction_forms_projects_sections_type1&.type1_id].to_s] = eefps_qrcf
           if eefps_qrcf.records.blank?
             @records_dict[eefps_qrcf.id] = Record.find_or_create_by(recordable: eefps_qrcf)
@@ -341,31 +341,18 @@ class ExtractionsController < ApplicationController
     end
 
     def set_eefps_by_efps_dict
-      @eefps_by_efps_dict ||= @extraction.extractions_extraction_forms_projects_sections.includes({statusing: :status}).group_by(&:extraction_forms_projects_section_id)
+      @eefps_by_efps_dict ||= @extraction.extractions_extraction_forms_projects_sections.group_by(&:extraction_forms_projects_section_id)
     end
 
     def set_extraction_forms_projects
-      @extraction_forms_projects = @project.extraction_forms_projects.includes(
-        :extraction_form,
-        extraction_forms_projects_sections: [
-          :extraction_forms_projects_section_option,
-          :extraction_forms_projects_section_type,
-          :section,
-          { questions: [
-            :dependencies,
-            :key_questions_projects,
-            { question_rows: [
-              { question_row_columns: [
-                :question_row_column_type,
-                :question_row_column_fields,
-                { question_row_columns_question_row_column_options: [
-                  :followup_field]
-                }]
-              }]
-            }]
-          }
-        ]
-      )
-      @panel_tab_id = params['panel-tab'] || 'keyquestions'
+      if @panel_tab_id == 'keyquestions'
+        @extraction_forms_projects = @project.extraction_forms_projects.includes(
+          :extraction_form
+        )
+      else
+        @extraction_forms_projects = @project.extraction_forms_projects.includes(
+          :extraction_form
+        )
+      end
     end
 end

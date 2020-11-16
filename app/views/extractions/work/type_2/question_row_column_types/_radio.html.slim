@@ -24,7 +24,7 @@
   - options = []
   - followups = []
   - qrc. \
-    question_row_columns_question_row_column_options. \
+    question_row_columns_question_row_column_options.includes(:followup_field). \
     select{|opt| opt.question_row_column_option_id == 1}.each do |opt|
       - if opt.followup_field.present?
         - eefpst1 = t1.blank? \

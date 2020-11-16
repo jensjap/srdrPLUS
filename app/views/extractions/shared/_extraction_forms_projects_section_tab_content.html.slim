@@ -3,7 +3,7 @@
 
 - else
   .tabs-content.vertical data-tabs-content="extraction-forms-projects-#{efp.id.to_s}-vertical-tabs"
-    - efp.extraction_forms_projects_sections.where(id: @panel_tab_id).reject { |efps| efps.hidden }.each do | efps|
+    - efp.extraction_forms_projects_sections.includes(questions: [{ key_questions_projects_questions: :key_questions_project }, :key_questions_projects, :dependencies]).where(id: @panel_tab_id).reject { |efps| efps.hidden }.each do | efps|
       .tabs-panel.is-active id="panel-tab-#{efp.id.to_s}"
         = render "extractions/#{action_name}/#{efps.extraction_forms_projects_section_type.name.parameterize.underscore}",
           section_name: efps.section.name,

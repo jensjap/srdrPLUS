@@ -66,7 +66,7 @@ class Extraction < ApplicationRecord
   def ensure_extraction_form_structure
     # self.project.extraction_forms_projects.includes([:extraction_forms_projects_sections, :extraction_form]).each do |efp|
     # NOTE This method assumes that self is not a mini-extraction
-    efp = self.project.extraction_forms_projects.includes([:extraction_forms_projects_sections, :extraction_form]).first
+    efp = self.project.extraction_forms_projects.includes([:extraction_form]).first
     efp.extraction_forms_projects_sections.includes([:link_to_type1]).each do |efps|
       ExtractionsExtractionFormsProjectsSection.find_or_create_by!(
         extraction: self,
