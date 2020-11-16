@@ -115,7 +115,7 @@ class Citation < ApplicationRecord
   end
 
   def first_author
-    return authors_citations.includes(:ordering).order('orderings.position asc').first&.author&.name || ''
+    @fa ||= authors_citations.includes(:ordering, { citation: :authors}).order('orderings.position asc').first&.citation&.authors&.first.name || ''
   end
 
   # Citation information in one line.

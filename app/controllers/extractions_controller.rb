@@ -20,26 +20,15 @@ class ExtractionsController < ApplicationController
       extractions.
       unconsolidated.
       includes([
-        { extractions_extraction_forms_projects_sections: [:status, { extraction_forms_projects_section: :section }] },
-        { projects_users_role: [{ projects_user: { user: :profile } }, :role] },
-        { citations_project: :citation }
+        { citations_project: { citation: [:journal, :authors, { authors_citations: :ordering }] } },
+        { extractions_extraction_forms_projects_sections: [:status] },
+        { projects_users_role: [{ projects_user: { user: :profile } }, :role] }
       ])
 
     if @project.leaders.include? current_user
       @projects_users_roles = ProjectsUsersRole.
         includes([{ projects_user: { user: :profile } }, :role]).
         where(projects_users: { project: @project })
-      @citation_groups = @project.citation_groups
-    else
-      @extractions.where(projects_users_role: { projects_users: { user_id: current_user.id } })
-      if @project.consolidators.include? current_user
-        @citation_groups = @project.citation_groups
-      else
-        @citation_groups = {
-          citations_project_count: 0,
-          citations_projects: [],
-        }
-      end
     end
 
     add_breadcrumb 'edit project', edit_project_path(@project)
@@ -265,7 +254,6 @@ class ExtractionsController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_project
       @project = Project.
-        includes(:extraction_forms_projects).
         find(params[:project_id])
     end
 
