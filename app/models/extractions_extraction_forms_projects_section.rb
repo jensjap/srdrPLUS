@@ -158,6 +158,7 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
     sort_by_their_orderings(
       [
         extractions_extraction_forms_projects_sections_type1s.
+          includes(:ordering).
           joins(:type1).
           find_by(
             type1s: {
@@ -174,7 +175,7 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
   def eefpst1s_without_total
     sort_by_their_orderings(
       extractions_extraction_forms_projects_sections_type1s
-        .includes(:type1_type, :type1)
+        .includes(:type1_type, :type1, :ordering)
         .to_a
         .delete_if { |eefpst1| eefpst1.type1 == Type1.find_by(name: 'Total', description: "All #{ extraction_forms_projects_section.link_to_type1.present? ? extraction_forms_projects_section.link_to_type1.section.name : extraction_forms_projects_section.section.name } combined") }
     )
@@ -192,7 +193,7 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
       .includes(:type1_type, :type1)
       .to_a
       .delete_if { |eefpst1| eefpst1.type1 == Type1.find_by(name: 'Total', description: "All #{ extraction_forms_projects_section.link_to_type1.present? ? extraction_forms_projects_section.link_to_type1.section.name : extraction_forms_projects_section.section.name } combined") }
-      .push(extractions_extraction_forms_projects_sections_type1s.joins(:type1).find_by(type1s: { name: 'Total', description: "All #{ extraction_forms_projects_section.link_to_type1.present? ? extraction_forms_projects_section.link_to_type1.section.name : extraction_forms_projects_section.section.name } combined" }))
+      .push(extractions_extraction_forms_projects_sections_type1s.includes(:ordering).joins(:type1).find_by(type1s: { name: 'Total', description: "All #{ extraction_forms_projects_section.link_to_type1.present? ? extraction_forms_projects_section.link_to_type1.section.name : extraction_forms_projects_section.section.name } combined" }))
     raise if eefpst1s.any?(&:nil?)
 
     return sort_by_their_orderings(eefpst1s)
