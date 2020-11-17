@@ -9,20 +9,239 @@ def _find_column_idx_with_value(row, value)
   return [false, row.cells.length]
 end
 
+# If no KQ's array is passed in, we export based on extraction.extractions_key_questions_projects_selections.
+# Note - jjap - 10-27-2020: This is counter to the design decision to let each question pick its
+#   own set of key questions. Doing it this way is akin to picking key questions based on the
+#   EFP...which means we should be able to create multiple EFPs just like in SRDR.
+def fetch_kq_selection(extraction, kq_ids)
+  if kq_ids.blank?
+    kq_ids = extraction
+      .extractions_key_questions_projects_selections
+      .order(key_questions_project_id: :asc)
+      .collect(&:key_questions_project)
+      .collect(&:key_question_id)
+  end
+
+  return kq_ids
+end
+
+def populate_sheet_info_with_extractions_results_data(sheet_info, project, kq_ids, efp, efps)
+  project.extractions.each do |extraction|
+    # Collect distinct list of questions based off the key questions selected for this extraction.
+    kq_ids_by_extraction = fetch_kq_selection(extraction, kq_ids)
+
+    #!!! We can probably use scope for this.
+    # Find all eefps that are Outcomes.
+    efps_outcomes = efp.extraction_forms_projects_sections
+      .joins(:section)
+      .where(sections: { name: 'Outcomes' })
+    eefps_outcomes = ExtractionsExtractionFormsProjectsSection.where(
+      extraction: extraction,
+      extraction_forms_projects_section: efps_outcomes)
+
+    # Find all eefps that are Arms.
+    efps_arms = efp.extraction_forms_projects_sections
+      .joins(:section)
+      .where(sections: { name: 'Arms' })
+    eefps_arms = ExtractionsExtractionFormsProjectsSection.where(
+      extraction: extraction,
+      extraction_forms_projects_section: efps_arms)
+
+    # Create base for extraction information.
+    sheet_info.new_extraction_info(extraction)
+
+    # Collect basic information about the extraction.
+    sheet_info.set_extraction_info(
+      extraction_id: extraction.id,
+      consolidated: extraction.consolidated.to_s,
+      username: extraction.projects_users_role.projects_user.user.profile.username,
+      citation_id: extraction.citation.id,
+      citation_name: extraction.citation.name,
+      authors: extraction.citation.authors.collect(&:name).join(', '),
+      publication_date: extraction.citation.try(:journal).try(:get_publication_year),
+      refman: extraction.citation.refman,
+      pmid: extraction.citation.pmid,
+      kq_selection: KeyQuestion.where(id: kq_ids_by_extraction).collect(&:name).map(&:strip).join("\x0D\x0A"))
+
+    eefps = efps.extractions_extraction_forms_projects_sections.find_by(
+      extraction: extraction,
+      extraction_forms_projects_section: efps)
+
+    # Each Outcome has multiple Populations, which in turn has 4 result
+    # statistic quadrants . We iterate over each of the results statistic
+    # quadrants:
+    #   - (q1) Descriptive (DSC)
+    #   - (q2) Between Arm Comparison (BAC)
+    #   - (q3) Within Arm Comparison (WAC)
+    #   - (q4) Net Change (NET)
+    # Each quadrant has rows and columns and within each row/column cell
+    # there's a list of measures.
+    #
+    # Total number of columns in export =
+    #   Outcomes x
+    #   Populations x
+    #   ( (Timepoints x Arms x q1-Measures) +
+    #     (Timepoints x BAC  x q2-Measures) +
+    #     (   WAC     x Arms x q3-Measures) +
+    #     (   WAC     x BAC  x q4-Measures) )
+    #
+    # To uniquely identify a data value we therefore need:
+    # OutcomeID, PopulationID, RowID, ColumnID, MeasureID
+    eefps_outcomes.each do |eefps_outcome|
+      eefps_outcome.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1_outcome|  # Outcome.
+        eefpst1_outcome.extractions_extraction_forms_projects_sections_type1_rows.each do |eefpst1r|  # Population
+          eefpst1r.result_statistic_sections.each do |result_statistic_section|  # Result Statistic Section Quadrant
+
+            case result_statistic_section.result_statistic_section_type_id
+            when 1  # Descriptive Statistics - Timepoint x Arm x q1-Measure.
+              eefpst1r.extractions_extraction_forms_projects_sections_type1_row_columns.each do |eefpst1rc|  # Timepoint
+                eefps_arms.each do |eefps_arm|  # Arm
+                  eefps_arm.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1_arm|
+                    result_statistic_section.result_statistic_sections_measures.each do |rssm|  # q1-Measure
+
+                      sheet_info.add_rssm(
+                        extraction_id: extraction.id,
+                        section_name: efps.section.name.singularize,
+                        outcome_id: eefpst1_outcome.type1.id,
+                        outcome_name: eefpst1_outcome.type1.name,
+                        outcome_description: eefpst1_outcome.type1.description,
+                        outcome_type: eefpst1_outcome.try(:type1_type).try(:name),
+                        population_id: eefpst1r.population_name.id,
+                        population_name: eefpst1r.population_name.name,
+                        population_description: eefpst1r.population_name.description,
+                        result_statistic_section_type_id: result_statistic_section.result_statistic_section_type.id,
+                        result_statistic_section_type_name: result_statistic_section.result_statistic_section_type.name,
+                        row_id: eefpst1rc.timepoint_name.id,             # timepoint_id       Note: Changing this to row and col so we
+                        row_name: eefpst1rc.timepoint_name.name,         # timepoint_name            can use the same names later.
+                        row_unit: eefpst1rc.timepoint_name.unit,         # timepoint_unit
+                        col_id: eefpst1_arm.type1.id,                    # arm_id
+                        col_name: eefpst1_arm.type1.name,                # arm_name
+                        col_description: eefpst1_arm.type1.description,  # arm_description
+                        measure_id: rssm.measure.id,
+                        measure_name: rssm.measure.name,
+                        rssm_values: eefpst1_arm.tps_arms_rssms_values(eefpst1rc.id, rssm))
+
+                    end  # result_statistic_section.result_statistic_sections_measures.each do |rssm|  # q1-Measure
+                  end  # eefps_arm.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1_arm|
+                end  # eefps_arms.each do |eefps_arm|
+              end  # eefpst1r.extractions_extraction_forms_projects_sections_type1_row_columns.each do |eefpst1rc|  # Timepoint
+
+            when 2  # Between Arm Comparisons - Timepoint x BAC x q2-Measure.
+              eefpst1r.extractions_extraction_forms_projects_sections_type1_row_columns.each do |eefpst1rc|  # Timepoint
+                result_statistic_section.comparisons.each do |bac|
+                  result_statistic_section.result_statistic_sections_measures.each do |rssm|  # q2-Measure
+
+                    sheet_info.add_rssm(
+                      extraction_id: extraction.id,
+                      section_name: efps.section.name.singularize,
+                      outcome_id: eefpst1_outcome.type1.id,
+                      outcome_name: eefpst1_outcome.type1.name,
+                      outcome_description: eefpst1_outcome.type1.description,
+                      outcome_type: eefpst1_outcome.try(:type1_type).try(:name),
+                      population_id: eefpst1r.population_name.id,
+                      population_name: eefpst1r.population_name.name,
+                      population_description: eefpst1r.population_name.description,
+                      result_statistic_section_type_id: result_statistic_section.result_statistic_section_type.id,
+                      result_statistic_section_type_name: result_statistic_section.result_statistic_section_type.name,
+                      row_id: eefpst1rc.timepoint_name.id,      # timepoint_id
+                      row_name: eefpst1rc.timepoint_name.name,  # timepoint_name
+                      row_unit: eefpst1rc.timepoint_name.unit,  # timepoint_unit
+                      col_id: bac.id,                           # comparison_id
+                      col_name: bac.pretty_print_export_header, # comparison name
+                      measure_id: rssm.measure.id,
+                      measure_name: rssm.measure.name,
+                      rssm_values: bac.tps_comparisons_rssms_values(eefpst1rc.id, rssm))
+
+                  end  # result_statistic_section.result_statistic_sections_measures.each do |rssm|  # q2-Measure
+                end  # result_statistic_section.comparisons.each do |bac|
+              end  # eefpst1r.extractions_extraction_forms_projects_sections_type1_row_columns.each do |eefpst1rc|  # Timepoint
+
+            when 3  # Within Arm Comparisons - WAC x Arm x q3-Measure.
+              result_statistic_section.comparisons.each do |wac|
+                eefps_arms.each do |eefps_arm|  # Arm
+                  eefps_arm.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1_arm|
+                    result_statistic_section.result_statistic_sections_measures.each do |rssm|  # q3-Measure
+
+                      sheet_info.add_rssm(
+                        extraction_id: extraction.id,
+                        section_name: efps.section.name.singularize,
+                        outcome_id: eefpst1_outcome.type1.id,
+                        outcome_name: eefpst1_outcome.type1.name,
+                        outcome_description: eefpst1_outcome.type1.description,
+                        outcome_type: eefpst1_outcome.try(:type1_type).try(:name),
+                        population_id: eefpst1r.population_name.id,
+                        population_name: eefpst1r.population_name.name,
+                        population_description: eefpst1r.population_name.description,
+                        result_statistic_section_type_id: result_statistic_section.result_statistic_section_type.id,
+                        result_statistic_section_type_name: result_statistic_section.result_statistic_section_type.name,
+                        row_id: wac.id,                                 # wac_id
+                        row_name: wac.pretty_print_export_header,       # comparison name
+                        col_id: eefpst1_arm.type1.id,                   # arm_id
+                        col_name: eefpst1_arm.type1.name,               # arm_name
+                        col_description: eefpst1_arm.type1.description, # arm_description
+                        measure_id: rssm.measure.id,
+                        measure_name: rssm.measure.name,
+                        rssm_values: wac.comparisons_arms_rssms_values(eefpst1_arm.id, rssm))
+
+                    end  # result_statistic_section.result_statistic_sections_measures.each do |rssm|  # q3-Measure
+                  end  # eefps_arm.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1_arm|
+                end  # eefps_arms.each do |eefps_arm|  # Arm
+              end  # result_statistic_section.comparisons.each do |wac|
+
+            when 4  # Net Change - WAC x BAC x q4-Measure.
+              bac_section = result_statistic_section.population.between_arm_comparisons_section
+              wac_section = result_statistic_section.population.within_arm_comparisons_section
+              bac_section.comparisons.each do |bac|
+                wac_section.comparisons.each do |wac|
+                  result_statistic_section.result_statistic_sections_measures.each do |rssm|  # q4-Measure
+
+                    sheet_info.add_rssm(
+                      extraction_id: extraction.id,
+                      section_name: efps.section.name.singularize,
+                      outcome_id: eefpst1_outcome.type1.id,
+                      outcome_name: eefpst1_outcome.type1.name,
+                      outcome_description: eefpst1_outcome.type1.description,
+                      outcome_type: eefpst1_outcome.try(:type1_type).try(:name),
+                      population_id: eefpst1r.population_name.id,
+                      population_name: eefpst1r.population_name.name,
+                      population_description: eefpst1r.population_name.description,
+                      result_statistic_section_type_id: result_statistic_section.result_statistic_section_type.id,
+                      result_statistic_section_type_name: result_statistic_section.result_statistic_section_type.name,
+                      row_id: wac.id,                            # wac_id
+                      row_name: wac.pretty_print_export_header,  # wac comparison name
+                      col_id: bac.id,                            # bac_id
+                      col_name: bac.pretty_print_export_header,  # bac comparison name
+                      measure_id: rssm.measure.id,
+                      measure_name: rssm.measure.name,
+                      rssm_values: wac.wacs_bacs_rssms_values(bac.id, rssm))
+
+                  end  # result_statistic_section.result_statistic_sections_measures.each do |rssm|  # q4-Measure
+                end  # wac_section.comparisons.each do |wac|
+              end  # bac_section.comparisons.each do |bac|
+            end  # case result_statistic_section.result_statistic_section_type_id
+          end  # eefpst1r.result_statistic_sections.each do |result_statistic_section|  # Result Statistic Section Quadrant
+        end  # eefpst1_outcome.extractions_extraction_forms_projects_sections_type1_rows.each do |eefpst1r|  # Population
+      end  # eefps_outcome.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1_outcome|  # Outcome.
+    end  # eefps_outcomes.each do |eefps_outcome|
+  end  # project.extractions.each do |extraction|
+end
+
+
 # We keep several dictionaries here. They all track the same information such as type1s, populations and timepoints.
 # One list is kept as a master list. Those are on SheetInfo.type1s, SheetInfo.populations, and SheetInfo.timepoints.
 # Another is kept for each extraction.
 class SheetInfo
-  attr_reader :header_info, :extractions, :type1s, :populations, :timepoints, :question_row_columns, :rssms
+  attr_reader :header_info, :extractions, :key_question_selections, :type1s, :populations, :timepoints, :question_row_columns, :rssms
 
   def initialize
-    @header_info            = ['Extraction ID', 'Username', 'Citation ID', 'Citation Name', 'RefMan', 'PMID']
-    @extractions            = Hash.new
-    @type1s                 = Set.new
-    @populations            = Set.new
-    @timepoints             = Set.new
-    @question_row_columns   = Set.new
-    @rssms                  = Set.new
+    @header_info             = ['Extraction ID', 'Consolidated', 'Username', 'Citation ID', 'Citation Name', 'RefMan', 'PMID', 'Authors', 'Publication Date', 'Key Questions']
+    @key_question_selections = Array.new
+    @extractions             = Hash.new
+    @type1s                  = Set.new
+    @populations             = Set.new
+    @timepoints              = Set.new
+    @question_row_columns    = Set.new
+    @rssms                   = Set.new
   end
 
   def new_extraction_info(extraction)
@@ -32,6 +251,7 @@ class SheetInfo
       populations:          [],
       timepoints:           [],
       question_row_columns: [],
+      rss_columns:          {},
       rssms:                [] }
   end
 
@@ -69,10 +289,23 @@ class SheetInfo
   end
 
   def add_rssm(params)
+    # For Ian's special request, we collect rssms per arm/bac comparator as well
+    add_rssm_params_for_legacy(params)
+
+    # Add full params hash to @extractions[:extraction_id][:rssms] array.
     @extractions[params[:extraction_id]][:rssms] << params
     dup = params.deep_dup
     dup.delete(:extraction_id)
     dup.delete(:rssm_values)
     @rssms << dup
+  end
+
+  def add_rssm_params_for_legacy(params)
+    @extractions[params[:extraction_id]][:rss_columns][params[:result_statistic_section_type_id]] = {} unless @extractions[params[:extraction_id]][:rss_columns].has_key? params[:result_statistic_section_type_id]
+    @extractions[params[:extraction_id]][:rss_columns][params[:result_statistic_section_type_id]][params[:outcome_id]] = {} unless @extractions[params[:extraction_id]][:rss_columns][params[:result_statistic_section_type_id]].has_key? params[:outcome_id]
+    @extractions[params[:extraction_id]][:rss_columns][params[:result_statistic_section_type_id]][params[:outcome_id]][params[:population_id]] = {} unless @extractions[params[:extraction_id]][:rss_columns][params[:result_statistic_section_type_id]][params[:outcome_id]].has_key? params[:population_id]
+    @extractions[params[:extraction_id]][:rss_columns][params[:result_statistic_section_type_id]][params[:outcome_id]][params[:population_id]][params[:row_id]] = {} unless @extractions[params[:extraction_id]][:rss_columns][params[:result_statistic_section_type_id]][params[:outcome_id]][params[:population_id]].has_key? params[:row_id]
+    @extractions[params[:extraction_id]][:rss_columns][params[:result_statistic_section_type_id]][params[:outcome_id]][params[:population_id]][params[:row_id]][params[:col_id]] = [] unless @extractions[params[:extraction_id]][:rss_columns][params[:result_statistic_section_type_id]][params[:outcome_id]][params[:population_id]][params[:row_id]].has_key? params[:col_id]
+    @extractions[params[:extraction_id]][:rss_columns][params[:result_statistic_section_type_id]][params[:outcome_id]][params[:population_id]][params[:row_id]][params[:col_id]] << params
   end
 end

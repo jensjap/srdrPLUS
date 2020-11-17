@@ -1,6 +1,6 @@
 require 'simple_export_job/sheet_info'
 
-def build_type1_sections_compact(p, project, highlight, wrap)
+def build_type1_sections_compact(p, project, highlight, wrap, kq_ids=[])
   project.extraction_forms_projects.each do |ef|
     ef.extraction_forms_projects_sections.each do |section|
 
@@ -8,23 +8,27 @@ def build_type1_sections_compact(p, project, highlight, wrap)
       if section.extraction_forms_projects_section_type_id == 1
 
         # Add a new sheet.
-        p.workbook.add_worksheet(name: "#{ section.section.name.truncate(21) }" + ' - long') do |sheet|
+        p.workbook.add_worksheet(name: "#{ section.section.name.truncate(21) }") do |sheet|
 
           # Some prep work:
           last_col_idx  = 0
-          header_row = sheet.add_row [
-            'Extraction ID',
-            'User Name',
-            'Citation ID',
-            'Citation Name',
-            'RefMan',
-            'PMID',
+
+          # For each sheet we create a SheetInfo object.
+          sheet_info = SheetInfo.new
+
+          # Build header row.
+          header_elements = sheet_info.header_info
+          header_elements = header_elements.concat([
             "#{ section.section.name.singularize } Name",
             "#{ section.section.name.singularize } Description"
-          ]
+          ])
+          header_row = sheet.add_row header_elements
 
           # Every row represents an extraction.
           project.extractions.each do |extraction|
+            # Collect distinct list of questions based off the key questions selected for this extraction.
+            kq_ids_by_extraction = fetch_kq_selection(extraction, kq_ids)
+
             eefps = section.extractions_extraction_forms_projects_sections.find_by(
               extraction: extraction,
               extraction_forms_projects_section: section
@@ -34,11 +38,15 @@ def build_type1_sections_compact(p, project, highlight, wrap)
 
               new_row = []
               new_row << extraction.id.to_s
+              new_row << extraction.consolidated.to_s
               new_row << extraction.user.profile.username
               new_row << extraction.citations_project.citation.id.to_s
               new_row << extraction.citations_project.citation.name
               new_row << extraction.citations_project.citation.refman.to_s
               new_row << extraction.citations_project.citation.pmid.to_s
+              new_row << extraction.citations_project.citation.authors.collect(&:name).join(', ')
+              new_row << extraction.citations_project.citation.journal.get_publication_year
+              new_row << KeyQuestion.where(id: kq_ids_by_extraction).collect(&:name).map(&:strip).join("\x0D\x0A")
               new_row << eefpst1.type1.name
               new_row << eefpst1.type1.description
 
@@ -49,7 +57,7 @@ def build_type1_sections_compact(p, project, highlight, wrap)
           # Re-apply the styling for the new cells in the header row before closing the sheet.
           sheet.column_widths nil, nil, nil, nil, nil, nil, nil, nil
           header_row.style = highlight
-        end  # END p.workbook.add_worksheet(name: "#{ section.section.name.truncate(21) }" + ' - compact') do |sheet|
+        end  # END p.workbook.add_worksheet(name: "#{ section.section.name.truncate(21) }") do |sheet|
       end  # END if section.extraction_forms_projects_section_type_id == 1
     end  # END ef.extraction_forms_projects_sections.each do |section|
   end  # END project.extraction_forms_projects.each do |ef|

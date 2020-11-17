@@ -29,7 +29,7 @@ class ResultStatisticSectionsController < ApplicationController
       if @result_statistic_section.update(result_statistic_section_params)
         format.html do |format|
           if params[:result_statistic_section].has_key? :extraction_ids
-            redirect_to consolidate_result_statistic_section_path(@result_statistic_section, 
+            redirect_to consolidate_result_statistic_section_path(@result_statistic_section,
               extraction_ids: params[:result_statistic_section][:extraction_ids]),
               notice: t('success')
           else
@@ -38,7 +38,13 @@ class ResultStatisticSectionsController < ApplicationController
           end
         end
         format.json { render :show, status: :ok, location: @result_statistic_section }
-        format.js { }
+        format.js do
+          @result_statistic_section.measures.each do |measure|
+            @result_statistic_section.related_result_statistic_sections.each do |rss|
+              rss.measures << measure unless rss.measures.include?(measure)
+            end
+          end
+        end
       else
         format.html { render :edit }
         format.json { render json: @result_statistic_section.errors, status: :unprocessable_entity }
@@ -112,14 +118,14 @@ class ResultStatisticSectionsController < ApplicationController
             ]
         end
 
-        @result_statistic_section.measures.each do |measure|
-          @options <<
-          [
+        @result_statistic_section.related_measures.each do |measure|
+          next if @options.any? { |_, measure_id, _| measure_id == measure.id }
+          @options << [
             measure.name,
             measure.id,
-            { 'data-selected' => '' },
+            @result_statistic_section.measures.include?(measure) ? { 'data-selected' => '' } : '',
             ''
-          ] unless @options.collect { |opt| opt.second }.include?(measure.id)
+          ]
         end
 
         @options.uniq!

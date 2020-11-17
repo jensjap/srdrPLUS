@@ -8,59 +8,35 @@ li = link_to('Dashboard', projects_path)
     a href='#' Project
     ul.menu
       b Tools
-      /li = link_to t('.dashboard'),         '#'
       li = link_to t('.members_and_roles'), edit_project_path(project) + '#panel-projects-users', title: t('.members_and_roles')
-      /li = link_to t('.screening_options'), project_screening_options_path(@project || @extraction.try(:project) || @extraction_forms_project.project), title: t('manage_screening_options')
-      /li = link_to t('export'),             export_project_path(@project || @extraction.try(:project) || @extraction_forms_project.project), method: :post,          title: t('request_export')
       li
-        .reveal[data-reveal='' id="export-modal-#{ project.id.to_s }"]
-          a[data-close='' style='float: right; font-size: large;']
-            |×
-          fieldset
-            legend[style='font-size: large;']
-              |Export extraction data: Select type
-            input[class='export-type-radio' type='radio' name="export-type-#{ project.id.to_s }" value="#{ export_project_path(project, export_type_name: '.xlsx') }" checked='' id="xlsx-radio-#{ project.id.to_s }"]
-            label for="xlsx-radio-#{ project.id.to_s }"
-              |Microsoft Excel (.xlsx)
-            input[class='export-type-radio' type='radio' name='export-type-#{ project.id.to_s }' value="#{ export_project_path(project, export_type_name: 'Google Sheets') }" id="gsheets-radio-#{ project.id.to_s }"]
-            label for="gsheets-radio-#{ project.id.to_s }"
-              |Google Sheets
-          = link_to "Export Project Data", export_project_path(project, export_type_name: '.xlsx'), method: :post, class: "button expanded start-export-button"
-
-          hr
-
-          fieldset
-            legend[style='font-size: large;']
-              |Export labels:
-          = link_to "Export Project Citation Labels", export_citation_labels_project_path(project, export_type_name: '.csv'), method: :post, class: 'button expanded start-citation-labels-export-button'
-
-        a#export-modal-button[data-open="export-modal-#{ project.id.to_s }"] = 'Export'
+        a#export-modal-button[data-open="export-modal-#{ project.id.to_s }"] = 'Export Data'
+        = render partial: 'shared/select_export_type', locals: { project: project }
 
       li = link_to t('comparison_tool'),    comparison_tool_project_extractions_path(project),    title: t('.compare_extractions')
       - if project.publishing.present? && project.publishing.approval.present?
         li style="cursor: not-allowed;" = link_to 'Publication has been published', '#', title: 'Publication has been published', class: 'disabled'
+
       - elsif project.publishing.present?
         li = link_to 'Cancel publication request', publishing_path(project.publishing.publishable_id), data: { confirm: 'Are you sure?' }, method: :delete, title: 'Cancel publication request'
+
       - else
         li = link_to t('request_publication'), new_publishing_path(type: Project.to_s, id: project.id), title: t('request_publication')
+
       b Navigation
       li = link_to t('.project_information'), edit_project_path(project) + '#panel-project-information', title: t('.project_information')
       li = link_to t('.key_questions'),       edit_project_path(project) + '#panel-key-questions',       title: t('.key_questions')
       - if (project).leaders.include? current_user
         li = link_to t('.tasks'),               project_tasks_path(project), title: t('manage_tasks')
+
       li = link_to t('.citations'),           project_citations_path(project), title: t('manage_citations')
       li = link_to t('.screen'),              next_assignment_project_path(project)
-      /li = link_to 'Excluded Citations',                 '#'
-      /li = link_to 'Included Citations and Assignments', '#'
       li = link_to t('.extractions'),         project_extractions_path(project),                         title: t('.manage_extractions')
-      /li = link_to 'Completed Extractions',              '#'
 
 li aria-expanded="false"
   a href='#' = current_user.profile.last_name.present? ? current_user.profile.last_name : 'Menu'
   ul.menu style="width: 350px;"
     b User
-    //li = link_to 'Submit Project-Report Links', sd_meta_data_path
-    //li = link_to 'Query Project-Report Links', project_report_links_path
     li = link_to 'Settings', edit_user_registration_path
     li = link_to 'Profile', profile_path
     li = link_to 'About', about_path

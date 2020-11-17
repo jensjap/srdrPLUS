@@ -1,7 +1,6 @@
 = simple_form_for([@extractions_extraction_forms_projects_section,
   @extractions_extraction_forms_projects_sections_type1], html: { data: { 'abide': '' } }) do |f|
   = f.error_notification
-
   .form-inputs
     .row.column
       - if @extractions_extraction_forms_projects_sections_type1\
@@ -9,13 +8,21 @@
         = f.association :type1_type, label: 'Type of Outcome'
         #type1s
           = f.simple_fields_for(:type1) do |type1_form|
-            = type1_form.input :name, label: 'Domain'
+            = type1_form.input :name, label: 'Domain',
+              collection: @extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_section.type1s_suggested_by_project_leads.map(&:type1).map(&:name) + [type1_form.object.try(:name)],
+              input_html: { class: 'dropdown_with_writein' },
+              selected: type1_form.object.try(:name)
+
             = type1_form.input :description, label: 'Specific Measurement'
         = f.input :units
       - else
         #type1s
           = f.simple_fields_for(:type1) do |type1_form|
-            = type1_form.input :name
+            = type1_form.input :name,
+              collection: @extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_section.type1s_suggested_by_project_leads.map(&:type1).map(&:name) + [type1_form.object.try(:name)],
+              input_html: { class: 'dropdown_with_writein' },
+              selected: type1_form.object.try(:name)
+
             = type1_form.input :description
 
     - if @extractions_extraction_forms_projects_sections_type1\

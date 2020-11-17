@@ -4,9 +4,6 @@ require 'simple_export_job/sheet_info'
 
 
 def build_type2_sections_wide_srdr_style(p, project, highlight, wrap, kq_ids=[], print_empty_row=false)
-  # Type2 (Questions) are associated to Key Questions and we export by the KQ's selected.
-  # If no KQ's array is passed in, we assume to export all.
-  kq_ids = project.key_questions.pluck(:id) if kq_ids.blank?
 
   # The main extraction form is always the first efp.
   efp = project.extraction_forms_projects.first
@@ -16,7 +13,7 @@ def build_type2_sections_wide_srdr_style(p, project, highlight, wrap, kq_ids=[],
     if efps.extraction_forms_projects_section_type_id == 2
 
       # Add a new sheet.
-      p.workbook.add_worksheet(name: "#{ efps.section.name.truncate(24) } - SRDR") do |sheet|
+      p.workbook.add_worksheet(name: "#{ efps.section.name.truncate(24) }") do |sheet|
 
         # For each sheet we create a SheetInfo object.
         sheet_info = SheetInfo.new
@@ -26,21 +23,26 @@ def build_type2_sections_wide_srdr_style(p, project, highlight, wrap, kq_ids=[],
           # Create base for extraction information.
           sheet_info.new_extraction_info(extraction)
 
+          # Collect distinct list of questions based off the key questions selected for this extraction.
+          kq_ids_by_extraction = fetch_kq_selection(extraction, kq_ids)
+          questions = fetch_questions(project, kq_ids_by_extraction, efps)
+
           # Collect basic information about the extraction.
           sheet_info.set_extraction_info(
             extraction_id: extraction.id,
+            consolidated: extraction.consolidated.to_s,
             username: extraction.projects_users_role.projects_user.user.profile.username,
-            citation_id: extraction.citations_project.citation.id,
-            citation_name: extraction.citations_project.citation.name,
-            refman: extraction.citations_project.citation.refman,
-            pmid: extraction.citations_project.citation.pmid)
+            citation_id: extraction.citation.id,
+            citation_name: extraction.citation.name,
+            authors: extraction.citation.authors.collect(&:name).join(', '),
+            publication_date: extraction.citation.try(:journal).try(:get_publication_year),
+            refman: extraction.citation.refman,
+            pmid: extraction.citation.pmid,
+            kq_selection: KeyQuestion.where(id: kq_ids_by_extraction).collect(&:name).map(&:strip).join("\x0D\x0A"))
 
-          eefps = efps.extractions_extraction_forms_projects_sections.find_or_create_by(
+          eefps = efps.extractions_extraction_forms_projects_sections.find_by!(
             extraction: extraction,
             extraction_forms_projects_section: efps)
-
-          # Collect distinct list of questions.
-          questions = fetch_questions(project, kq_ids, efps)
 
           # If this section is linked we have to iterate through each occurrence of
           # type1 via eefps.link_to_type1.extractions_extraction_forms_projects_sections_type1s.
@@ -80,7 +82,6 @@ def build_type2_sections_wide_srdr_style(p, project, highlight, wrap, kq_ids=[],
         end  # project.extractions.each do |extraction|
 
         # First the basic headers:
-        # ['Extraction ID', 'Username', 'Citation ID', 'Citation Name', 'RefMan', 'PMID']
         header_elements = sheet_info.header_info
 
         # Add additional column headers to capture the link_to_type1 name and description
@@ -139,25 +140,29 @@ def build_type2_sections_wide_srdr_style(p, project, highlight, wrap, kq_ids=[],
             extraction_forms_projects_section: efps)
 
           # If link_to_type1 is present we need to iterate each question for every type1 present in the extraction.
-          eefpst1s = (eefps.extraction_forms_projects_section.extraction_forms_projects_section_option.by_type1 and eefps.link_to_type1.present?) ?
-            eefps.link_to_type1.extractions_extraction_forms_projects_sections_type1s :
-            [Struct.new(:id, :type1).new(nil, Struct.new(:id, :name, :description).new(nil))]
-
+          eefpst1s = _fetch_eefpst1s(eefps)
           eefpst1s.each do |eefpst1|
+            # If no kq is selected we should skip this row.
+            next if extraction[:extraction_info][:kq_selection].blank?
 
             new_row = []
             new_row << extraction[:extraction_info][:extraction_id]
+            new_row << extraction[:extraction_info][:consolidated]
             new_row << extraction[:extraction_info][:username]
             new_row << extraction[:extraction_info][:citation_id]
             new_row << extraction[:extraction_info][:citation_name]
             new_row << extraction[:extraction_info][:refman]
             new_row << extraction[:extraction_info][:pmid]
+            new_row << extraction[:extraction_info][:authors]
+            new_row << extraction[:extraction_info][:publication_date]
+            new_row << extraction[:extraction_info][:kq_selection]
             new_row << eefpst1.type1.name
             new_row << eefpst1.type1.description
 
             # Add question information.
             extraction[:question_row_columns].each do |qrc|
               if qrc[:eefpst1_id].eql?(eefpst1.id)
+
                 # Try to find the column that matches the identifier.
                 found, column_idx = nil
                 found, column_idx = _find_column_idx_with_value(header_row, "[Question ID: #{ qrc[:question_id] }][Field ID: #{ qrc[:question_row_id] }x#{ qrc[:question_row_column_id] }]")
@@ -178,28 +183,36 @@ def build_type2_sections_wide_srdr_style(p, project, highlight, wrap, kq_ids=[],
         # Re-apply the styling for the new cells in the header row before closing the sheet.
         sheet.column_widths 16, 16, 16, 50, 16, 16
         header_row.style = highlight
-      end  # END p.workbook.add_worksheet(name: "#{ efps.section.name.truncate(24) } - wide") do |sheet|
+      end  # END p.workbook.add_worksheet(name: "#{ efps.section.name.truncate(24) }") do |sheet|
     end  # END if efps.extraction_forms_projects_section_type_id == 2
   end  # END efp.extraction_forms_projects_sections.each do |efps|
 end
 
 # Type2 (Questions) are associated to Key Questions and we export by the KQ's selected.
-# If no KQ's array is passed in, we assume to export all.
 def fetch_questions(project, kq_ids, efps)
   # Get all questions in this efps by key_questions requested.
-  if kq_ids.present?
-    questions = efps.questions.joins(:key_questions_projects_questions)
-      .where(
-        key_questions_projects_questions: {
-          key_questions_project: KeyQuestionsProject.where(project: project, key_question_id: kq_ids)
-        } )
-  else
-    questions = efps.questions.joins(:key_questions_projects_questions)
-      .where(
-        key_questions_projects_questions: {
-          key_questions_project: KeyQuestionsProject.where(project: project)
-        } )
-  end
+  questions = efps.questions.joins(:key_questions_projects_questions)
+    .where(
+      key_questions_projects_questions: {
+        key_questions_project: KeyQuestionsProject.where(project: project, key_question_id: kq_ids)
+      } )
 
   return questions.distinct.order(id: :asc)
+end
+
+# Also make sure total is last in the list.
+def _fetch_eefpst1s(eefps)
+  if (eefps.extraction_forms_projects_section.extraction_forms_projects_section_option.by_type1 and eefps.link_to_type1.present?)
+    eefpst1s = eefps.link_to_type1.extractions_extraction_forms_projects_sections_type1s.ordered.to_a
+
+    _total_eefpst1 = eefpst1s.select { |eefpst1| eefpst1.type1_id.eql?(100) }
+    eefpst1s_without_total = eefpst1s.delete_if { |eefpst1| eefpst1.type1_id.eql?(100) }
+    eefpst1s = eefpst1s_without_total.concat(_total_eefpst1)
+
+  else
+    eefpst1s = [Struct.new(:id, :type1).new(nil, Struct.new(:id, :name, :description).new(nil))]
+
+  end
+
+  return eefpst1s
 end

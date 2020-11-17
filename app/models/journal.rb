@@ -14,4 +14,14 @@
 
 class Journal < ApplicationRecord
   belongs_to :citation, optional: true
+
+  def get_publication_year
+  	begin
+  	  datetime_object = self.publication_date.to_date
+  	rescue
+  	  datetime_object = DateTime.strptime(self.publication_date, '%Y')
+  	end
+
+  	return datetime_object.strftime('%Y')
+  end
 end

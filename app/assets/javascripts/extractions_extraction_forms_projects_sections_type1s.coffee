@@ -57,6 +57,10 @@ document.addEventListener 'turbolinks:load', ->
       templateResult: formatTimepoint
       templateSelection: formatTimepointSelection
 
+      $(".dropdown_with_writein").select2({
+        tags: true
+      });
+
     return  # END do ->
 
   return  # END document.addEventListener 'turbolinks:load', ->

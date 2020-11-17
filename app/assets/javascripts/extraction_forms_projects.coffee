@@ -7,10 +7,6 @@ document.addEventListener 'turbolinks:load', ->
 
   do ->
 
-    suggestedChoices = $(".suggestedChoices").select2({
-      tags: true
-    });
-
     post = (path, params, method) ->
       method = method or 'post'
       # Set method to post by default if not specified.
@@ -56,7 +52,7 @@ document.addEventListener 'turbolinks:load', ->
 
         # Can't use .text() on form input/textarea -_-.
         inputFields.find( 'select[data-t1-type-input=""]' ).val( type1Type )
-        $('.suggestedChoices').val(type1Name).trigger('change');
+        inputFields.find( 'input[data-t1-name-input=""]' ).val( type1Name )
         inputFields.find( 'textarea[data-t1-description-input=""]' ).val( type1Desc )
 
         $('#timepoints-node tr')[1..].each ->
