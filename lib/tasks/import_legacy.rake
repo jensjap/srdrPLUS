@@ -11,7 +11,7 @@ namespace(:db) do
       initialize_variables
 
       #projects = db.query("SELECT * FROM projects")
-      projects = db.query("SELECT * FROM projects WHERE id=7 LIMIT 5")
+      projects = db.query("SELECT * FROM projects WHERE id>516 LIMIT 3")
       projects.each do |project_hash|
         begin
           @legacy_project_id = project_hash["id"]
@@ -116,7 +116,7 @@ namespace(:db) do
         return
       elsif efp_type == @efp_type_diagnostic
         get_srdrplus_project(@legacy_project_id).extraction_forms_projects.first.update(extraction_forms_project_type: efp_type)
-        migrate_extraction_forms_as_diagnostic_efp efs
+        #migrate_extraction_forms_as_diagnostic_efp efs
       else
         migrate_extraction_forms_as_standard_efp efs
       end
@@ -141,6 +141,7 @@ namespace(:db) do
 
       efs.each do |ef|
         ef_sections = db.query "SELECT * FROM extraction_form_sections where extraction_form_id=#{ef["id"]}"
+        ef_key_questions = db.query "SELECT * FROM extraction_form_key_questions where extraction_form_id=#{ef["id"]}"
 
         t1_efps = []
         t2_efps = []
@@ -156,7 +157,7 @@ namespace(:db) do
           case ef_section["section_name"]
           when "arms"
             arms_efps = combined_efp.extraction_forms_projects_sections.create(section: section, extraction_forms_projects_section_type: @efps_type_1)
-            if adverse_events_efps.present? then adverse_events_efps.link_to_type1 = arms_efps end
+            if adverse_events_efps.present? then adverse_events_efps.update(link_to_type1:arms_efps) end
           when "outcomes"
             outcomes_efps = combined_efp.extraction_forms_projects_sections.create(section: section, extraction_forms_projects_section_type: @efps_type_1)
           when "diagnostic_tests"
@@ -181,45 +182,45 @@ namespace(:db) do
         end
 
         t2_efps.each do |efps|
-          efps.extraction_forms_projects_section_option.by_type1 = false
-          efps.extraction_forms_projects_section_option.include_total = false
+          efps.extraction_forms_projects_section_option.update by_type1: false
+          efps.extraction_forms_projects_section_option.update include_total: false
           case efps.section.name
           when "Arm Details"
             efsos = db.query("SELECT * FROM ef_section_options where section='arm_detail' AND extraction_form_id=#{ef["id"]}")
             efsos.each do |efso|
-              if efso["by_arm"]
+              if efso["by_arm"] == 1
                 efps.link_to_type1 = arms_efps
               end
-              efps.extraction_forms_projects_section_option.include_total = efso["by_arm"]
-              efps.extraction_forms_projects_section_option.include_total = efso["include_total"]
+              efps.extraction_forms_projects_section_option.update by_type1: (if efso["by_arm"] == 1 then true else false end)
+              efps.extraction_forms_projects_section_option.update include_total: (if efso["include_total"] == 1 then true else false end)
             end
 
-            migrate_questions efps, ef["id"], 'arm_detail'
+            migrate_questions efps, ef["id"], 'arm_detail', ef_key_questions
           when "Outcome Details"
             efsos = db.query("SELECT * FROM ef_section_options where section='outcome_detail' AND extraction_form_id=#{ef["id"]}")
             efsos.each do |efso|
-              if efso["by_outcome"]
-                efps.link_to_type1 = outcomes_efps
+              if efso["by_outcome"] == 1
+                efps.update link_to_type1: outcomes_efps
               end
-              efps.extraction_forms_projects_section_option.include_total = efso["by_outcome"]
-              efps.extraction_forms_projects_section_option.include_total = efso["include_total"]
+              efps.extraction_forms_projects_section_option.update by_type1: (if efso["by_outcome"] == 1 then true else false end)
+              efps.extraction_forms_projects_section_option.update include_total: (if efso["include_total"] == 1 then true else false end)
             end
-            migrate_questions efps, ef["id"], 'outcome_detail'
+            migrate_questions efps, ef["id"], 'outcome_detail', ef_key_questions
           when "Diagnostic Test Details"
             efsos = db.query("SELECT * FROM ef_section_options where section='diagnostic_test' AND extraction_form_id=#{ef["id"]}")
             efsos.each do |efso|
               if efso["by_diagnostic_test"]
-                efps.link_to_type1 = diagnostic_tests_efps
+                efps.update link_to_type1: diagnostic_tests_efps
               end
-              efps.extraction_forms_projects_section_option.include_total = efso["by_diagnostic_test"]
-              efps.extraction_forms_projects_section_option.include_total = efso["include_total"]
+              efps.extraction_forms_projects_section_option.update by_type1: (if efso["by_diagnostic_test"] == 1 then true else false end)
+              efps.extraction_forms_projects_section_option.update include_total: (if efso["include_total"] == 1 then true else false end)
             end
-            migrate_questions efps, ef["id"], 'diagnostic_test_detail'
+            migrate_questions efps, ef["id"], 'diagnostic_test_detail', ef_key_questions
           when "Adverse"
             #efps.link_to_type1 = adverse_events_efps
             #efps.extraction_forms_projects_section_option = ExtractionFormsProjectsSectionOptionWrapper.new true, false
           when "Design"
-            migrate_questions efps, ef["id"], 'design_detail'
+            migrate_questions efps, ef["id"], 'design_detail', ef_key_questions
           when "Quality"
           when "Baseline"
 
@@ -249,7 +250,7 @@ namespace(:db) do
       db.query "SELECT * FROM #{table_root}_data_points where extraction_form_id=#{ef_id}"
     end
 
-    def migrate_questions efps, ef_id, table_root
+    def migrate_questions efps, ef_id, table_root, ef_key_questions
       legacy_questions = get_questions table_root, ef_id
       legacy_question_fields = get_question_fields table_root, ef_id
       legacy_data_points = get_data_points table_root, ef_id
@@ -265,56 +266,166 @@ namespace(:db) do
                                    description: description,
                                    extraction_forms_projects_section: efps
 
+        ef_key_questions.each do |kq|
+          KeyQuestionsProjectsQuestion.create! key_questions_project: get_srdrplus_key_question(kq["key_question_id"]),
+                                               question: question
+        end
+
+        q_fields = legacy_question_fields.select{|qf| qf["#{table_root}_id"] == legacy_question_id}
+        q_fields = (q_fields.select{|qf| qf["row_number"] != -1} + q_fields.select{|qf| qf["row_number"] == -1})
+        q_data_points = legacy_data_points.select{|dp| dp["#{table_root}_field_id"] == q["id"]}
+
         case question_type
         when "text"
         when "checkbox"
-          p "Type: " + question_type
-          p "Project: " + question.project.name
-          p "Question: " + question.name
-          question_row_column = question.question_rows.first.question_row_columns.first
-          question_row_column.update question_row_column_type: @qrc_type_checkbox
-          
-          answer_dict = {}
-          legacy_question_fields.select{|qf| qf["#{table_root}_id"] == legacy_question_id}.each do |qf|
-            if qf["row_number"] == -1
-              qrcqrco = QuestionRowColumnsQuestionRowColumnOption.create name: "Other (please specify):",
-                                                                         question_row_column_option: @qrco_answer_choice,
-                                                                         question_row_column: question_row_column
-              FollowupField.create question_row_columns_question_row_column_option: qrcqrco
-
-              legacy_data_points.select{|dp| dp["#{table_root}_field_id"] == qf["id"]}.each do |dp|
-                migrate_data_point dp
-                break
-              end
-            else
-              qrcqrco = QuestionRowColumnsQuestionRowColumnOption.create name: qf["option_text"],
-                                                                         question_row_column_option: @qrco_answer_choice,
-                                                                         question_row_column: question_row_column
-              answer_dict[qf["option_text"]] = qrcqrco.id
-
-              if qf["has_subquestion"] == 1
-                p qf["has_subquestion"] 
-                FollowupField.create question_row_columns_question_row_column_option: qrcqrco
-              end
-            end
-          end
-          legacy_data_points.select{|dp| dp["#{table_root}_field_id"] == q["id"]}.each do |dp|  ### BIG QUESTION MARK ABOUT FIELD IDs
-            if dp["subquestion_value"].present?
-            end
-            migrate_data_point dp
-          end
-
+          migrate_multiple_choice_question question, @qrc_type_checkbox, q, q_fields, q_data_points, table_root
         when "radio"
-        when "matrix_select"
-        when "matrix_radio"
+          migrate_multiple_choice_question question, @qrc_type_radio, q, q_fields, q_data_points, table_root
         when "select"
+          migrate_multiple_choice_question question, @qrc_type_dropdown, q, q_fields, q_data_points, table_root
+        when "matrix_select"
+          migrate_matrix_dropdown_question question, q, q_data_points, table_root
+        when "matrix_radio"
+          migrate_multi_row_question question, @qrc_type_radio, q, q_fields, q_data_points, table_root
         when "matrix_checkbox"
+          migrate_multi_row_question question, @qrc_type_checkbox, q, q_fields, q_data_points, table_root
         else
         end
       end
     end
 
-    def migrate_data_point dp
+    def migrate_multiple_choice_question question, question_type, legacy_question, fields_of_legacy_question, data_points_of_legacy_question, table_root
+      question_row_column = question.question_rows.first.question_row_columns.first
+      question_row_column.update question_row_column_type: question_type
+      
+      question_row_column.question_row_columns_question_row_column_options.where(question_row_column_option: @qrco_answer_choice).destroy_all
+      fields_of_legacy_question.each do |qf|
+        if qf["row_number"] == -1
+          qrcqrco = QuestionRowColumnsQuestionRowColumnOption.create name: "Other (please specify):",
+                                                                     question_row_column_option: @qrco_answer_choice,
+                                                                     question_row_column: question_row_column
+          ff = FollowupField.create question_row_columns_question_row_column_option: qrcqrco
+        else
+          if qf["has_subquestion"] == 1
+            qrcqrco = QuestionRowColumnsQuestionRowColumnOption.create name: qf["option_text"]+"..."+qf["subquestion"],
+                                                                       question_row_column_option: @qrco_answer_choice,
+                                                                       question_row_column: question_row_column
+            FollowupField.create question_row_columns_question_row_column_option: qrcqrco
+          else
+            qrcqrco = QuestionRowColumnsQuestionRowColumnOption.create name: qf["option_text"],
+                                                                       question_row_column_option: @qrco_answer_choice,
+                                                                       question_row_column: question_row_column
+          end
+        end
+        data_points_of_legacy_question.select{|dp| dp["#{table_root}_id=#{qf["id"]}"]}.each do |dp|
+          queue_qrcqrco_data_point dp, qrcqrco
+        end
+      end
+    end
+
+    def migrate_multi_row_question question, question_type, legacy_question, fields_of_legacy_question, data_points_of_legacy_question, table_root
+      r_farr = db.query "SELECT * FROM #{table_root}_fields WHERE #{table_root}_id=#{legacy_question["id"]} and column_number=0 ORDER BY row_number ASC"
+      c_farr = db.query "SELECT * FROM #{table_root}_fields WHERE #{table_root}_id=#{legacy_question["id"]} and row_number=0 ORDER BY column_number ASC"
+
+      qr = question.question_rows.first
+      qrc = qr.question_row_columns.first
+      _is_first = true
+
+      (r_farr.select{|rf| rf["row_number"] != -1} + r_farr.select{|rf| rf["row_number"] == -1}).each do |rf|
+        if _is_first
+          _is_first = false
+        else
+          qr = QuestionRow.create question: question
+          qrc = qr.question_row_columns.first
+        end
+
+        if rf["row_number"] == -1
+          qr.update name: "Other (please specify):"
+        else
+          qrc.update question_row_column_type: question_type
+          qr.update name: rf["option_text"]
+        end
+
+        qrc.question_row_columns_question_row_column_options.where(question_row_column_option: @qrco_answer_choice).destroy_all
+        c_farr.each do |cf|
+          qrcqrco = QuestionRowColumnsQuestionRowColumnOption.create name: cf["option_text"],
+                                                                     question_row_column_option: @qrco_answer_choice,
+                                                                     question_row_column: qrc
+        end
+
+        data_points_of_legacy_question.select{|dp| dp["row_field_id=#{rf["id"]}"]}.each do |dp|
+          queue_qrcf_data_point dp, qrc.question_row_column_fields.first
+        end
+      end
+    end
+    
+    def migrate_matrix_dropdown_question question, legacy_question, data_points_of_legacy_question, table_root
+      p "Project: " + question.project.name
+      p "Question: " + question.name
+      r_farr = db.query "SELECT * FROM #{table_root}_fields WHERE #{table_root}_id=#{legacy_question["id"]} and column_number=0 ORDER BY row_number ASC"
+      c_farr = db.query "SELECT * FROM #{table_root}_fields WHERE #{table_root}_id=#{legacy_question["id"]} and row_number=0 ORDER BY column_number ASC"
+
+      qr = question.question_rows.first
+      qrc = qr.question_row_columns.first
+      _is_first = true
+
+      (r_farr.select{|rf| rf["row_number"] != -1} + r_farr.select{|rf| rf["row_number"] == -1}).each do |rf|
+        if _is_first
+          _is_first = false
+        else
+          qr = QuestionRow.create question: question
+          qrc = qr.question_row_columns.first
+        end
+
+        if rf["row_number"] == -1
+          qr.update name: "Other (please specify):"
+        else
+          qr.update name: rf["option_text"]
+        end
+
+        _is_first_2 = true
+        c_farr.each do |cf|
+          if _is_first_2
+            _is_first_2 = false
+          else
+            qrc = QuestionRowColumn.create question_row: qr
+          end
+
+          matrix_dropdown_options = db.query "SELECT * FROM matrix_dropdown_options WHERE row_id=#{rf["id"]} and column_id=#{cf["id"]} ORDER BY option_number"
+
+          dropdown_options = []
+          other_name = ""
+
+          p matrix_dropdown_options.count
+          return
+          matrix_dropdown_options.each do |op|
+            dropdown_options << op
+          end
+
+          if not dropdown_options.empty?
+            qrc.update question_row_column_type: @qrc_type_dropdown
+            qrc.question_row_columns_question_row_column_options.where(question_row_column_option: @qrco_answer_choice).destroy_all
+            dropdown_options.each do |op|
+              qrcqrco = QuestionRowColumnsQuestionRowColumnOption.create name: op,
+                                                                         question_row_column_option: @qrco_answer_choice,
+                                                                         question_row_column: qrc
+              if op["option_text"].downcase == 'other'
+                FollowupField.create question_row_columns_question_row_column_option: qrcqrco
+              end
+            end
+          end
+        end
+
+        data_points_of_legacy_question.select{|dp| dp["row_field_id=#{rf["id"]}"]}.each do |dp|
+          queue_qrcf_data_point dp, qrc.question_row_column_fields.first
+        end
+      end
+    end
+
+    def queue_qrcf_data_point dp, qrcf
+    end
+
+    def queue_qrcqrco_data_point dp, qrcqrco
     end
 
     def migrate_key_questions
