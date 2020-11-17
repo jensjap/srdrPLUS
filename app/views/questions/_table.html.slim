@@ -31,10 +31,7 @@
                 / Let's disable some question types for now...they are unstable.
                 = qrc_f.association :question_row_column_type, label: 'Field Type',
                                                                       include_blank: false,
-                                                                      collection: ['Text Field (alphanumeric)', 'Numeric Field (numeric)',\
-                                                                        'Checkbox (select multiple)', 'Dropdown (select one)', 'Radio (select one)',\
-                                                                        'Select one (with write-in option)', 'Select multiple (with write-in option)']\
-                                                                        .zip(QuestionRowColumnType.where(id: [1, 2, 5, 6, 7, 8, 9]).pluck(:id)),
+                                                                      collection: DEFAULT_QRC_TYPES,
                                                                       wrapper: 'horizontal_form'
                                                                       /disabled: QuestionRowColumnType.where(id: [3, 4, 8, 9]).pluck(:id)
 
@@ -57,7 +54,7 @@
                       .columns.medium-offset-3.medium-9
                         - if (option.question_row_column_option_id == 1)
                           - if (option.question_row_column.question_row_columns_question_row_column_options\
-                            .where(question_row_column_option: QuestionRowColumnOption.find_by(name: 'answer_choice')).length > 1)
+                            .select{|qrcqrco| qrcqrco.question_row_column_option == ANSWER_CHOICE_QRCO}.length > 1)
                             .float-right
                               = link_to 'Remove', option, method: :delete, data: { confirm: t('confirm') },
                                                         class: 'float-right',

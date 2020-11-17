@@ -139,7 +139,7 @@ class QuestionsController < ApplicationController
 
     def set_question
       @question = Question.includes(question_rows: [
-        { question_row_columns: [ :question_row_column_options, :question_row_column_fields] }])
+        { question_row_columns: [ {question_row_columns_question_row_column_options: [:followup_field]}, :question_row_column_options, :question_row_column_fields] }])
           .find(params[:id])
       authorize(@question.project, policy_class: QuestionPolicy)
     end

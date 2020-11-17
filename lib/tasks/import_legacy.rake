@@ -372,9 +372,10 @@ namespace(:db) do
       (r_farr.select{|rf| rf["row_number"] != -1} + r_farr.select{|rf| rf["row_number"] == -1}).each do |rf|
         if _is_first
           _is_first = false
+          qr.question_row_columns.destroy_all
         else
           qr = QuestionRow.create question: question
-          qrc = qr.question_row_columns.first
+          qr.question_row_columns.destroy_all
         end
 
         if rf["row_number"] == -1
@@ -383,23 +384,16 @@ namespace(:db) do
           qr.update name: rf["option_text"]
         end
 
-        _is_first_2 = true
         c_farr.each do |cf|
-          if _is_first_2
-            _is_first_2 = false
-          else
-            qrc = QuestionRowColumn.create question_row: qr
-          end
+          qrc = QuestionRowColumn.create question_row: qr, name: cf["option_text"]
 
           matrix_dropdown_options = db.query "SELECT * FROM matrix_dropdown_options WHERE row_id=#{rf["id"]} and column_id=#{cf["id"]} ORDER BY option_number"
 
           dropdown_options = []
           other_name = ""
 
-          p matrix_dropdown_options.count
-          return
           matrix_dropdown_options.each do |op|
-            dropdown_options << op
+            dropdown_options << op["option_text"]
           end
 
           if not dropdown_options.empty?
@@ -409,7 +403,7 @@ namespace(:db) do
               qrcqrco = QuestionRowColumnsQuestionRowColumnOption.create name: op,
                                                                          question_row_column_option: @qrco_answer_choice,
                                                                          question_row_column: qrc
-              if op["option_text"].downcase == 'other'
+              if op.downcase == 'other'
                 FollowupField.create question_row_columns_question_row_column_option: qrcqrco
               end
             end
