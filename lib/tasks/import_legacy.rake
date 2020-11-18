@@ -11,7 +11,8 @@ namespace(:db) do
       initialize_variables
 
       #projects = db.query("SELECT * FROM projects")
-      projects = db.query("SELECT * FROM projects WHERE id>516 LIMIT 3")
+      projects = db.query("SELECT * FROM projects WHERE id=159")
+      #projects = db.query("SELECT * FROM projects WHERE id>516 LIMIT 3")
       projects.each do |project_hash|
         begin
           @legacy_project_id = project_hash["id"]
@@ -52,6 +53,12 @@ namespace(:db) do
       @qrco_max_value = QuestionRowColumnOption.find_by(name: 'max_value')
       @qrco_coefficient = QuestionRowColumnOption.find_by(name: 'coefficient')
       @qrco_exponent = QuestionRowColumnOption.find_by(name: 'exponent')
+
+      @type1_types = {"Categorical" => Type1Type.find_by(name: "Categorical"),
+                      "Continuous" => Type1Type.find_by(name: "Continuous"),
+                      "Time to Event" => Type1Type.find_by(name: "Time to Event"),
+                      1 => Type1Type.find_by(name: "Index Test"), #?????????
+                      2 => Type1Type.find_by(name: "Reference Test")}#?????????
     end
 
     def reset_project_variables
@@ -156,12 +163,36 @@ namespace(:db) do
           section = Section.find_or_create_by(name: ef_section["section_name"].titleize)
           case ef_section["section_name"]
           when "arms"
-            arms_efps = combined_efp.extraction_forms_projects_sections.create(section: section, extraction_forms_projects_section_type: @efps_type_1)
+            arms_efps = combined_efp.extraction_forms_projects_sections.create(section: section, 
+                                                                               extraction_forms_projects_section_type: @efps_type_1)
             if adverse_events_efps.present? then adverse_events_efps.update(link_to_type1:arms_efps) end
+
+            ef_arms = db.query "SELECT * FROM extraction_form_arms where extraction_form_id=#{ef["id"]}"
+            ef_arms.each do |ef_arm|
+              type1 = Type1.find_or_create_by name: ef_arm["name"], description: ef_arm["description"]
+              ExtractionFormsProjectsSectionsType1.create extraction_forms_projects_section: arms_efps, type1: type1
+            end
           when "outcomes"
-            outcomes_efps = combined_efp.extraction_forms_projects_sections.create(section: section, extraction_forms_projects_section_type: @efps_type_1)
+            outcomes_efps = combined_efp.extraction_forms_projects_sections.create(section: section, 
+                                                                                   extraction_forms_projects_section_type: @efps_type_1)
+            ef_outcomes = db.query "SELECT * FROM extraction_form_outcome_names where extraction_form_id=#{ef["id"]}"
+            ef_outcomes.each do |ef_outcome|
+              type1 = Type1.find_or_create_by name: ef_outcome["title"], description: ef_outcome["note"]
+              type1_type = @type1_types[ef_outcome["outcome_type"]]
+              ExtractionFormsProjectsSectionsType1.create extraction_forms_projects_section: outcomes_efps, 
+                                                          type1: type1, 
+                                                          type1_type: type1_type
+            end
           when "diagnostic_tests"
             diagnostic_tests_efps = combined_efp.extraction_forms_projects_sections.create(section: section, extraction_forms_projects_section_type: @efps_type_4)
+            ef_diagnostic_tests = db.query "SELECT * FROM extraction_form_outcome_names where extraction_form_id=#{ef["id"]}"
+            ef_diagnostic_tests.each do |ef_diagnostic_test|
+              type1 = Type1.find_or_create_by name: ef_diagnostic_test["title"], description: ef_diagnostic_test["description"]
+              type1_type = @type1_types[ef_diagnostic_test["test_type"]]
+              ExtractionFormsProjectsSectionsType1.create extraction_forms_projects_section: diagnostic_tests_efps, 
+                                                          type1: type1, 
+                                                          type1_type: type1_type
+            end
           when "adverse"
             #efps.link_to_type1 = arms_efps
             #t1_efps << efps
