@@ -1,11 +1,3 @@
-# Place all the behaviors and hooks related to the matching controller here.
-# All this logic will automatically be available in application.js.
-# You can use CoffeeScript in this file: http://coffeescript.org/
-
-# Place all the behaviors and hooks related to the matching controller here.
-# All this logic will automatically be available in application.js.
-# You can use CoffeeScript in this file: http://coffeescript.org/
-
 class Caretkeeper
   @save_caret_position: () ->
     Caretkeeper.focused_elem_id = document.activeElement.id
@@ -290,9 +282,6 @@ apply_all_select2 =() ->
     , 100)
 
   Select2Helper.copy_sd_outcome_names()
-#  $( '.sd-select2' ).on 'select2:open', ( e ) ->
-#    $( '.select2-container' ).mouseleave ( e ) ->
-#      $( '.select2-container').find('.select2-results__option--highlighted').removeClass('select2-results__option--highlighted')
 
 add_form_listeners =( form ) ->
   $form = $( form )
@@ -300,8 +289,6 @@ add_form_listeners =( form ) ->
   formId = $form.attr( 'id' )
 
   $form.find( 'select, input[type="file"], input.fdp' ).on 'change', ( e ) ->
-#    if !!$(e.target).val()
-#      StatusChecker.remove_highlights()
     e.preventDefault()
     # Mark form as 'dirty'.
     $form.addClass( 'dirty' )
@@ -334,17 +321,6 @@ add_form_listeners =( form ) ->
     # Mark form as 'dirty'.
     $form.addClass( 'dirty' )
     Timekeeper.create_timer_for_form $form[0], 750
-
-#  $form.focusout ( e ) ->
-#    #if $( document.activeElement ).is('*:not(input[type="text"],input[type="text"], textarea)')
-#    #  console.log ( document.activeElement )
-#    if $form.is( '.dirty' )
-#      Timekeeper.create_timer_for_form $form[0], 750
-#
-#  $form.focusin ( e ) ->
-#    #if $( document.activeElement ).is('input[type="search"], input[type="text"], textarea')
-#    if $( document.activeElement ).is('input[type="text"], textarea')
-#      Timekeeper.clear_timer_for_form( $form[0] )
 
 bind_srdr20_saving_mechanism = () ->
   $( 'form.sd-form' ).each ( i, form ) ->

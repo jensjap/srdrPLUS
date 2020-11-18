@@ -1,5 +1,4 @@
 document.addEventListener 'DOMContentLoaded', ->
-
   return unless $( '.tasks' ).length > 0
 
   do ->

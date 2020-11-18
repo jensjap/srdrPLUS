@@ -111,8 +111,21 @@ $( document ).on( 'cocoon:after-insert', function(e, insertedItem, originalEvent
 
 // Wait for DOM ready:
 document.addEventListener('DOMContentLoaded', function() {
-  $('#loading-indicator').hide()
-  $( document ).foundation();
+  // Initialize foundation for navbar and any non-section foundation JS
+  $(document).foundation();
+  $('#loading-indicator').hide();
+
+  if ($( '.extractions.work' ).length > 0) return
+  documentCode();
+})
+
+document.addEventListener('extractionSectionLoaded', function() {
+  documentCode();
+})
+
+let documentCode = function() {
+  // Initialize foundation again to apply foundation JS within the sections
+  Foundation.reflow($('.ajax-section'));
 
   // Check for dirty forms.
   window.onbeforeunload = function (e) {
@@ -231,5 +244,4 @@ document.addEventListener('DOMContentLoaded', function() {
       $outer_form.submit()
     })
   }
-
-} );
+}

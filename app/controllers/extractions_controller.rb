@@ -146,35 +146,44 @@ class ExtractionsController < ApplicationController
 
     set_extraction_forms_projects
 
-    unless @panel_tab_id == 'keyquestions'
-      @key_questions_projects_array_for_select = @project.key_questions_projects_array_for_select
-
-      if @extraction_forms_projects.first.extraction_forms_project_type.eql? ExtractionFormsProjectType::DIAGNOSTIC_TEST
-        @eefpst1s = ExtractionsExtractionFormsProjectsSectionsType1
-          .by_section_name_and_extraction_id_and_extraction_forms_project_id('Diagnostic Tests',
-                                                                            @extraction.id,
-                                                                            @extraction_forms_projects.first.id)
-      else
-        @eefpst1s = ExtractionsExtractionFormsProjectsSectionsType1
-          .by_section_name_and_extraction_id_and_extraction_forms_project_id('Outcomes',
-                                                                            @extraction.id,
-                                                                            @extraction_forms_projects.first.id)
+    respond_to do |format|
+      format.html do
+        add_breadcrumb 'edit project', edit_project_path(@project)
+        add_breadcrumb 'extractions',  project_extractions_path(@project)
+        add_breadcrumb 'work',         :work_extraction_path
       end
 
-      # If a specific 'Outcome' is requested we load it here.
-      if params[:eefpst1_id].present?
-        @eefpst1 = ExtractionsExtractionFormsProjectsSectionsType1.find(params[:eefpst1_id])
-      # Otherwise we choose the first 'Outcome' in the extraction to display.
-      else
-        @eefpst1 = @eefpst1s.first
-      end
+      format.js do
+        @load_js = params['load-js']
+        @ajax_section_loading_index = params['ajax-section-loading-index']
+        @efp = ExtractionFormsProject.find(params[:efp_id])
+        unless @panel_tab_id == 'keyquestions'
+          @key_questions_projects_array_for_select = @project.key_questions_projects_array_for_select
 
-      update_record_helper_dictionaries @extraction
+          if @extraction_forms_projects.first.extraction_forms_project_type.eql? ExtractionFormsProjectType::DIAGNOSTIC_TEST
+            @eefpst1s = ExtractionsExtractionFormsProjectsSectionsType1
+              .by_section_name_and_extraction_id_and_extraction_forms_project_id('Diagnostic Tests',
+                                                                                @extraction.id,
+                                                                                @extraction_forms_projects.first.id)
+          else
+            @eefpst1s = ExtractionsExtractionFormsProjectsSectionsType1
+              .by_section_name_and_extraction_id_and_extraction_forms_project_id('Outcomes',
+                                                                                @extraction.id,
+                                                                                @extraction_forms_projects.first.id)
+          end
+
+          # If a specific 'Outcome' is requested we load it here.
+          if params[:eefpst1_id].present?
+            @eefpst1 = ExtractionsExtractionFormsProjectsSectionsType1.find(params[:eefpst1_id])
+          # Otherwise we choose the first 'Outcome' in the extraction to display.
+          else
+            @eefpst1 = @eefpst1s.first
+          end
+
+          update_record_helper_dictionaries @extraction
+        end
+      end
     end
-
-    add_breadcrumb 'edit project', edit_project_path(@project)
-    add_breadcrumb 'extractions',  project_extractions_path(@project)
-    add_breadcrumb 'work',         :work_extraction_path
   end
 
   def change_outcome_in_results_section

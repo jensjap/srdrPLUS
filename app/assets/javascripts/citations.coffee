@@ -1,7 +1,5 @@
 document.addEventListener 'DOMContentLoaded', ->
-
   do ->
-
     tableKey = window.location.pathname
 
     $('#citations-table').DataTable({
@@ -257,6 +255,3 @@ document.addEventListener 'DOMContentLoaded', ->
           $('.cancel-button').click()
 
       $( '#citations' ).attr( 'listeners-exist', 'true' )
-    return  # END do ->
-
-  return  # END document.addEventListener 'DOMContentLoaded', ->
