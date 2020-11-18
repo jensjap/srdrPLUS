@@ -53,6 +53,7 @@ class Extraction < ApplicationRecord
   has_many :extractions_projects_users_roles, dependent: :destroy, inverse_of: :extraction
 
   has_many :extractions_key_questions_projects_selections, dependent: :destroy
+  has_many :key_questions_projects, through: :extractions_key_questions_projects_selections
 
   delegate :citation, to: :citations_project
   delegate :user, to: :projects_users_role
