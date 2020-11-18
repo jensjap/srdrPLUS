@@ -1,4 +1,4 @@
-document.addEventListener 'turbolinks:load', ->
+document.addEventListener 'DOMContentLoaded', ->
 
   do ->
 
@@ -259,4 +259,4 @@ document.addEventListener 'turbolinks:load', ->
       $( '#citations' ).attr( 'listeners-exist', 'true' )
     return  # END do ->
 
-  return  # END document.addEventListener 'turbolinks:load', ->
+  return  # END document.addEventListener 'DOMContentLoaded', ->

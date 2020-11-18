@@ -58,6 +58,6 @@ bind_record_saving_mechanism = () ->
     while $(this).outerHeight() < @scrollHeight + parseFloat($(this).css('borderTopWidth')) + parseFloat($(this).css('borderBottomWidth'))
       $(this).height $(this).height() + 1
 
-document.addEventListener 'turbolinks:load', ->
+document.addEventListener 'DOMContentLoaded', ->
   do ->
     bind_record_saving_mechanism()

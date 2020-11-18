@@ -2,7 +2,7 @@
 # All this logic will automatically be available in application.js.
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
-document.addEventListener 'turbolinks:load', ->
+document.addEventListener 'DOMContentLoaded', ->
 
   return unless $( '.extractions.work' ).length > 0
 
@@ -184,7 +184,3 @@ document.addEventListener 'turbolinks:load', ->
     result_section_coloring()
     result_section_dropdowning()
     add_change_listeners_to_results_section()
-
-    return # END do ->
-
-  return # END turbolinks:load

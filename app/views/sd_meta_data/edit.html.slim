@@ -9,8 +9,6 @@
 .column.row#complete-form
   = render 'sd_meta_data/form/form'
 
-= render 'sd_meta_data/form/form_js'
-
 #systematic_review_report_pdf_container
 
 javascript:
@@ -19,5 +17,4 @@ javascript:
     offCanvasRightReportHtml_iframe.src = "#{ @report_html_path }"
   }
   initPage(); //this triggers the loading at the time the script is full
-  document.addEventListener('turbolinks:load', initPage); //this set the trigger for page changes
-
+  document.addEventListener('DOMContentLoaded', initPage); //this set the trigger for page changes

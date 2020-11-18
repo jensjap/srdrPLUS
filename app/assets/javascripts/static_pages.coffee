@@ -2,7 +2,7 @@
 # All this logic will automatically be available in application.js.
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
-document.addEventListener 'turbolinks:load', ->
+document.addEventListener 'DOMContentLoaded', ->
 
   return unless $( '.static_pages' ).length > 0
 
@@ -37,7 +37,3 @@ document.addEventListener 'turbolinks:load', ->
     ).on 'sticky.zf.unstuckfrom:top', ->
       $( '#signup-link-id' ).removeClass 'glow'
       return
-
-    return # END do ->
-
-  return # END turbolinks:load

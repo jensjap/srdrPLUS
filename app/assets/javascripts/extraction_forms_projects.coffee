@@ -1,7 +1,7 @@
 # Place all the behaviors and hooks related to the matching controller here.
 # All this logic will automatically be available in application.js.
 # You can use CoffeeScript in this file: http://coffeescript.org/
-document.addEventListener 'turbolinks:load', ->
+document.addEventListener 'DOMContentLoaded', ->
 
   return unless $( '.extraction_forms_projects, .extractions' ).length > 0
 
@@ -114,4 +114,4 @@ document.addEventListener 'turbolinks:load', ->
 #        method: 'GET'
 #      return
     return  # END do ->
-  return  # END document.addEventListener 'turbolinks:load', ->
+  return  # END document.addEventListener 'DOMContentLoaded', ->

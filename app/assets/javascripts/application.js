@@ -1,10 +1,8 @@
 //= require jquery
 //= require jquery_ujs
-//= require turbolinks
 //= require datatables
 //= require init
 
-//= require jquery.turbolinks
 //= require datatables
 //= require foundation
 //= require toastr_rails
@@ -104,11 +102,6 @@ function get_valid_URL(string){
   }
 }
 
-document.addEventListener('turbolinks:before-cache', function() {
-  $( '.reveal' ).foundation( 'close' )
-  $('#loading-indicator').show()
-});
-
 // Attach NIH autocomplete for UCUM (Unified Code for Units of Measure) to any input field with class 'ucum'.
 $( document ).on( 'cocoon:after-insert', function(e, insertedItem, originalEvent) {
   $( '.ucum' ).each(function() {
@@ -117,7 +110,7 @@ $( document ).on( 'cocoon:after-insert', function(e, insertedItem, originalEvent
 });
 
 // Wait for DOM ready:
-document.addEventListener('turbolinks:load', function() {
+document.addEventListener('DOMContentLoaded', function() {
   $('#loading-indicator').hide()
   $( document ).foundation();
 

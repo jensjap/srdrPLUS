@@ -2,7 +2,7 @@
 # All this logic will automatically be available in application.js.
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
-document.addEventListener 'turbolinks:load', ->
+document.addEventListener 'DOMContentLoaded', ->
 
   return unless $( '.questions, .extractions, .extraction_forms_projects.build' ).length > 0
 
@@ -90,7 +90,3 @@ document.addEventListener 'turbolinks:load', ->
           $( '#add_row_button' ).click()
           return
       return false
-
-    return # END do ->
-
-  return # END turbolinks:load
