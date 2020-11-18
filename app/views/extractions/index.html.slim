@@ -51,7 +51,7 @@
         - else
           - @extractions.each do |extraction|
             - citation = extraction.citations_project.citation
-            - first_author = citation.authors_citations.sort_by { |ac| ac.ordering.position }&.first&.citation&.authors&.first.name || ''
+            - first_author = citation.authors_citations.sort_by { |ac| ac.ordering.position }&.first&.citation&.authors&.first&.name || ''
             - pmid = citation.pmid.to_s
             - year = citation.year
             - name = citation.name.truncate(70)
