@@ -316,24 +316,45 @@ def build_data_row(rss_cols, header)
   data_row = []
 
   # We generalize the naming of Arm or Comparison by calling it rss column or just col.
-  # cnt_col tells us how many times we need to repeat the sequence ['Col Name', 'Col Description', 'Measure', 'Measure', ...]
+  # cnt_col is the number of rss columns
   cnt_col = rss_cols.length
-  idx_start_of_data = find_index_of_data_start(header)
+  found, idx_start_of_data = find_index_of_cell_with_value(header)
+  length_of_data_header = header.length - (idx_start_of_data)
+  length_of_each_col_group = length_of_data_header/cnt_col
+  length_of_identifiers = header.length - length_of_data_header
 
-  rss_cols.each_with_index do |idx, col|
+  rss_cols.each_with_index do |col, idx|
+    col_id = col[0]
+    col[1].each do |rssm|
+      # Note...this will retrieve the first occurence...we will add multiples of col-group size to find the correct location.
+      found, m_idx = find_index_of_cell_with_value(header, rssm[:measure_name])
+      if found
+        debugger if ((m_idx - length_of_identifiers) + (length_of_each_col_group*idx)) < 0
+        data_row[(m_idx - length_of_identifiers) + (length_of_each_col_group*idx)] = rssm[:rssm_values]
+
+        # For rss types 1 and 3 we need to add Arm Description
+        if [1, 3].include? rssm[:result_statistic_section_type_id]
+          data_row[0 + (length_of_each_col_group*idx)] = rssm[:col_name]
+          data_row[1 + (length_of_each_col_group*idx)] = rssm[:col_description]
+
+        else
+          data_row[0 + (length_of_each_col_group*idx)] = rssm[:col_name]
+
+        end
+      end
+    end
   end
 
-  return []
+  return data_row
 end
 
-def find_index_of_data_start(row, value=nil)
+def find_index_of_cell_with_value(row, value=nil)
   row.cells.each do |cell|
     if value.present?
-      regexp = Regexp.new value
-      return [true, cell.index] if cell.value.match regexp
+      return [true, cell.index] if cell.value.eql? value
 
     else
-      return [true, cell.index] if cell.value.match /^Arm Name 1$|^Comparison 1$/
+      return [true, cell.index] if cell.value.match /^Arm Name 1$|^Comparison Name 1$/
 
     end
   end
