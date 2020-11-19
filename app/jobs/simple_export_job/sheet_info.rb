@@ -224,6 +224,10 @@ def populate_sheet_info_with_extractions_results_data(sheet_info, project, kq_id
       end  # eefps_outcome.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1_outcome|  # Outcome.
     end  # eefps_outcomes.each do |eefps_outcome|
   end  # project.extractions.each do |extraction|
+
+  # Used to populate data headers in the results statistics sections
+  # These have the form ['Arm Name 1', 'Arm Description 1', 'Measure 1', 'Measure 2', 'Arm Name 2', ...]
+  sheet_info.find_measures_for_each_section_per_rss_column
 end
 
 
@@ -235,6 +239,8 @@ class SheetInfo
 
   def initialize
     @header_info             = ['Extraction ID', 'Consolidated', 'Username', 'Citation ID', 'Citation Name', 'RefMan', 'PMID', 'Authors', 'Publication Date', 'Key Questions']
+    # @data_header_hash key structure rss_type_id > outcome_type > col_id > rssm
+    @data_header_hash        = Hash.new
     @key_question_selections = Array.new
     @extractions             = Hash.new
     @type1s                  = Set.new
@@ -252,6 +258,7 @@ class SheetInfo
       timepoints:           [],
       question_row_columns: [],
       rss_columns:          {},
+      sorted_rssms_2:       {},
       rssms:                [] }
   end
 
@@ -291,6 +298,7 @@ class SheetInfo
   def add_rssm(params)
     # For Ian's special request, we collect rssms per arm/bac comparator as well
     add_rssm_params_for_legacy(params)
+    add_rssm_params_for_legacy_2(params)
 
     # Add full params hash to @extractions[:extraction_id][:rssms] array.
     @extractions[params[:extraction_id]][:rssms] << params
@@ -307,5 +315,74 @@ class SheetInfo
     @extractions[params[:extraction_id]][:rss_columns][params[:result_statistic_section_type_id]][params[:outcome_id]][params[:population_id]][params[:row_id]] = {} unless @extractions[params[:extraction_id]][:rss_columns][params[:result_statistic_section_type_id]][params[:outcome_id]][params[:population_id]].has_key? params[:row_id]
     @extractions[params[:extraction_id]][:rss_columns][params[:result_statistic_section_type_id]][params[:outcome_id]][params[:population_id]][params[:row_id]][params[:col_id]] = [] unless @extractions[params[:extraction_id]][:rss_columns][params[:result_statistic_section_type_id]][params[:outcome_id]][params[:population_id]][params[:row_id]].has_key? params[:col_id]
     @extractions[params[:extraction_id]][:rss_columns][params[:result_statistic_section_type_id]][params[:outcome_id]][params[:population_id]][params[:row_id]][params[:col_id]] << params
+  end
+
+  def add_rssm_params_for_legacy_2(params)
+    # extraction_id > sorted_rssms_2 > rss_type_id > outcome_type > outcome_id > population_id > row_id > col_id > rssm
+    @extractions[params[:extraction_id]][:sorted_rssms_2][params[:result_statistic_section_type_id]] = {} unless @extractions[params[:extraction_id]][:sorted_rssms_2].has_key? params[:result_statistic_section_type_id]
+    @extractions[params[:extraction_id]][:sorted_rssms_2][params[:result_statistic_section_type_id]][params[:outcome_type]] = {} unless @extractions[params[:extraction_id]][:sorted_rssms_2][params[:result_statistic_section_type_id]].has_key? params[:outcome_type]
+    @extractions[params[:extraction_id]][:sorted_rssms_2][params[:result_statistic_section_type_id]][params[:outcome_type]][params[:outcome_id]] = {} unless @extractions[params[:extraction_id]][:sorted_rssms_2][params[:result_statistic_section_type_id]][params[:outcome_type]].has_key? params[:outcome_id]
+    @extractions[params[:extraction_id]][:sorted_rssms_2][params[:result_statistic_section_type_id]][params[:outcome_type]][params[:outcome_id]][params[:population_id]] = {} unless @extractions[params[:extraction_id]][:sorted_rssms_2][params[:result_statistic_section_type_id]][params[:outcome_type]][params[:outcome_id]].has_key? params[:population_id]
+    @extractions[params[:extraction_id]][:sorted_rssms_2][params[:result_statistic_section_type_id]][params[:outcome_type]][params[:outcome_id]][params[:population_id]][params[:row_id]] = {} unless @extractions[params[:extraction_id]][:sorted_rssms_2][params[:result_statistic_section_type_id]][params[:outcome_type]][params[:outcome_id]][params[:population_id]].has_key? params[:row_id]
+    @extractions[params[:extraction_id]][:sorted_rssms_2][params[:result_statistic_section_type_id]][params[:outcome_type]][params[:outcome_id]][params[:population_id]][params[:row_id]][params[:col_id]] = [] unless @extractions[params[:extraction_id]][:sorted_rssms_2][params[:result_statistic_section_type_id]][params[:outcome_type]][params[:outcome_id]][params[:population_id]][params[:row_id]].has_key? params[:col_id]
+    @extractions[params[:extraction_id]][:sorted_rssms_2][params[:result_statistic_section_type_id]][params[:outcome_type]][params[:outcome_id]][params[:population_id]][params[:row_id]][params[:col_id]] << params
+  end
+
+  # Sort rssm into @data_header_hash.
+  # @data_header_hash key structure rss_type_id > outcome_type > col_id > rssm
+  # Each section has different rss_column mappings:
+  # Descriptive Statistics - column = Arms
+  # BAC Statistics         - column = BAC Comparisons
+  # WAC Statistics         - column = Arms
+  # Net Difference         - column = BAC Comparisons
+  def find_measures_for_each_section_per_rss_column
+    @extractions.each do |extraction_id, v0|
+      v0[:sorted_rssms_2].each do |rss_type_id, v1|
+        v1.each do |outcome_type, v2|
+          v2.each do |outcome_id, v3|
+            v3.each do |population_id, v4|
+              v4.each do |row_id, v5|
+                v5.each do |col_id, rssms|
+                  rssms.each do |rssm|
+                    @data_header_hash[rss_type_id] = {} unless @data_header_hash.has_key? rss_type_id
+                    @data_header_hash[rss_type_id][outcome_type] = {} unless @data_header_hash[rss_type_id].has_key? outcome_type
+                    @data_header_hash[rss_type_id][outcome_type][col_id] = [] unless @data_header_hash[rss_type_id][outcome_type].has_key? col_id
+                    @data_header_hash[rss_type_id][outcome_type][col_id] << rssm[:measure_name]
+                  end  # rssms.each do |rssm|
+                end  # v5.each do |col_id, rssms|
+              end  # v4.each do |row_id, v5|
+            end  # v3.each do |population_id, v4|
+          end  # v2.each do |outcome_id, v3|
+        end  # v1.each do |outcome_type, v2|
+      end  # v0[:sorted_rssms_2].each do |rss_type_id, v1|
+    end  # @extractions.each do |extraction_id, v0|
+  end
+
+  def data_headers(section_id, outcome_type, col_name)
+    return_array = []
+    cnt_col = 0
+    set_measures = Set.new
+
+    @data_header_hash.try(:[], section_id).try(:[], outcome_type).try(:keys).to_a.each do |key|
+      cnt_col = cnt_col + 1
+      @data_header_hash[section_id][outcome_type][key].each do |measure_name|
+        set_measures << measure_name
+      end  #
+    end  #
+
+    cnt_col.times do |i|
+      return_array << "#{ col_name } Name #{ i+1 }"
+
+      # Only Descriptive Statistics and WAC Comparison sections deal with Arms as the rss columns, therefore description only applies to them.
+      if [1, 3].include? section_id
+        return_array << "#{ col_name } Description #{ i+1 }"
+      end
+
+      set_measures.each do |m|
+        return_array << m
+      end
+    end
+
+    return_array
   end
 end
