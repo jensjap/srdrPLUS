@@ -348,6 +348,13 @@ class SheetInfo
                     @data_header_hash[rss_type_id][outcome_type] = {} unless @data_header_hash[rss_type_id].has_key? outcome_type
                     @data_header_hash[rss_type_id][outcome_type][col_id] = [] unless @data_header_hash[rss_type_id][outcome_type].has_key? col_id
                     @data_header_hash[rss_type_id][outcome_type][col_id] << rssm[:measure_name]
+
+                    @data_header_hash[:max_col] = {} unless @data_header_hash.has_key? :max_col
+                    @data_header_hash[:max_col][rss_type_id] = {} unless @data_header_hash[:max_col].has_key? rss_type_id
+                    @data_header_hash[:max_col][rss_type_id][outcome_type] = {} unless @data_header_hash[:max_col][rss_type_id].has_key? outcome_type
+                    @data_header_hash[:max_col][rss_type_id][outcome_type][:max_col] = 0 unless @data_header_hash[:max_col][rss_type_id][outcome_type].has_key?(:max_col)
+                    max_col = v5.length
+                    @data_header_hash[:max_col][rss_type_id][outcome_type][:max_col] = max_col if (@data_header_hash[:max_col][rss_type_id][outcome_type][:max_col] < max_col)
                   end  # rssms.each do |rssm|
                 end  # v5.each do |col_id, rssms|
               end  # v4.each do |row_id, v5|
@@ -360,15 +367,14 @@ class SheetInfo
 
   def data_headers(section_id, outcome_type, col_name)
     return_array = []
-    cnt_col = 0
+    cnt_col = @data_header_hash.try(:[], :max_col).try(:[], section_id).try(:[], outcome_type).try(:[], :max_col)
     set_measures = Set.new
 
     @data_header_hash.try(:[], section_id).try(:[], outcome_type).try(:keys).to_a.each do |key|
-      cnt_col = cnt_col + 1
       @data_header_hash[section_id][outcome_type][key].each do |measure_name|
         set_measures << measure_name
-      end  #
-    end  #
+      end  # @data_header_hash[section_id][outcome_type][key].each do |measure_name|
+    end  # @data_header_hash.try(:[], section_id).try(:[], outcome_type).try(:keys).to_a.each do |key|
 
     cnt_col.times do |i|
       return_array << "#{ col_name } Name #{ i+1 }"
@@ -383,6 +389,7 @@ class SheetInfo
       end
     end
 
+debugger
     return_array
   end
 end

@@ -329,7 +329,6 @@ def build_data_row(rss_cols, header)
       # Note...this will retrieve the first occurence...we will add multiples of col-group size to find the correct location.
       found, m_idx = find_index_of_cell_with_value(header, rssm[:measure_name])
       if found
-        debugger if ((m_idx - length_of_identifiers) + (length_of_each_col_group*idx)) < 0
         data_row[(m_idx - length_of_identifiers) + (length_of_each_col_group*idx)] = rssm[:rssm_values]
 
         # For rss types 1 and 3 we need to add Arm Description
