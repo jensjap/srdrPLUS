@@ -235,7 +235,7 @@ end
 # One list is kept as a master list. Those are on SheetInfo.type1s, SheetInfo.populations, and SheetInfo.timepoints.
 # Another is kept for each extraction.
 class SheetInfo
-  attr_reader :header_info, :extractions, :key_question_selections, :type1s, :populations, :timepoints, :question_row_columns, :rssms
+  attr_reader :header_info, :extractions, :key_question_selections, :type1s, :populations, :timepoints, :question_row_columns, :rssms, :data_header_hash
 
   def initialize
     @header_info             = ['Extraction ID', 'Consolidated', 'Username', 'Citation ID', 'Citation Name', 'RefMan', 'PMID', 'Authors', 'Publication Date', 'Key Questions']
@@ -389,7 +389,18 @@ class SheetInfo
       end
     end
 
-debugger
+    # Housekeeping for later:
+    # Keep track of how many measures there are per section/outcome_type.
+    # When section type is 1 or 3 we need to add 2 more to the count because the column groups include Arm Name and Arm Description.
+    # Otherwise we only add 1 to the count because the column group will include Comparison Name only.
+    if [1, 3].include? section_id
+      @data_header_hash.try(:[], :max_col).try(:[], section_id).try(:[], outcome_type)[:no_of_measures] = set_measures.length + 2
+
+    else
+      @data_header_hash.try(:[], :max_col).try(:[], section_id).try(:[], outcome_type)[:no_of_measures] = set_measures.length + 1
+
+    end
+
     return_array
   end
 end

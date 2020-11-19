@@ -93,11 +93,11 @@ def build_result_sections_wide_srdr_style_2(p, project, highlight, wrap, kq_ids=
                     new_row << rssm[:row_unit]
 
                     if rssm[:outcome_type].eql? "Continuous"
-                      new_row.concat(build_data_row(rss_cols, desc_cont_header))
+                      new_row.concat(build_data_row(rss_cols, desc_cont_header, sheet_info))
                       ws_descriptive_statistics_continuous_outcomes.add_row(new_row)
 
                     elsif rssm[:outcome_type].eql? "Categorical"
-                      new_row.concat(build_data_row(rss_cols, desc_cat_header))
+                      new_row.concat(build_data_row(rss_cols, desc_cat_header, sheet_info))
                       ws_descriptive_statistics_categorical_outcomes.add_row(new_row)
 
                     else
@@ -115,11 +115,11 @@ def build_result_sections_wide_srdr_style_2(p, project, highlight, wrap, kq_ids=
                     new_row << rssm[:row_unit]
 
                     if rssm[:outcome_type].eql? "Continuous"
-                      new_row.concat(build_data_row(rss_cols, bac_cont_header))
+                      new_row.concat(build_data_row(rss_cols, bac_cont_header, sheet_info))
                       ws_bac_statistics_continuous_outcomes.add_row(new_row)
 
                     elsif rssm[:outcome_type].eql? "Categorical"
-                      new_row.concat(build_data_row(rss_cols, bac_cat_header))
+                      new_row.concat(build_data_row(rss_cols, bac_cat_header, sheet_info))
                       ws_bac_statistics_categorical_outcomes.add_row(new_row)
 
                     else
@@ -136,7 +136,7 @@ def build_result_sections_wide_srdr_style_2(p, project, highlight, wrap, kq_ids=
                     new_row << rssm[:row_name]
 
                     if rssm[:outcome_type].eql? "Continuous"
-                      new_row.concat(build_data_row(rss_cols, wac_header))
+                      new_row.concat(build_data_row(rss_cols, wac_header, sheet_info))
                       ws_wac_statistics.add_row(new_row)
 
                     else
@@ -153,7 +153,7 @@ def build_result_sections_wide_srdr_style_2(p, project, highlight, wrap, kq_ids=
                     new_row << rssm[:row_name]
 
                     if rssm[:outcome_type].eql? "Continuous"
-                      new_row.concat(build_data_row(rss_cols, net_header))
+                      new_row.concat(build_data_row(rss_cols, net_header, sheet_info))
                       ws_net_statistics.add_row(new_row)
 
                     else
@@ -310,7 +310,7 @@ def build_result_sections_wide_srdr_style_2(p, project, highlight, wrap, kq_ids=
   end  # END project.extraction_forms_projects.each do |efp|
 end
 
-def build_data_row(rss_cols, header)
+def build_data_row(rss_cols, header, sheet_info)
   # data_row is just the portion of the row that is below the headers:
   # ['Arm Name 1', 'Arm Description 1', 'Measure 1', 'Measure 2', 'Arm Name 2', 'Arm Description 2', 'Measure 1', ...]
   data_row = []
@@ -320,12 +320,14 @@ def build_data_row(rss_cols, header)
   cnt_col = rss_cols.length
   found, idx_start_of_data = find_index_of_cell_with_value(header)
   length_of_data_header = header.length - (idx_start_of_data)
-  length_of_each_col_group = length_of_data_header/cnt_col
   length_of_identifiers = header.length - length_of_data_header
 
   rss_cols.each_with_index do |col, idx|
     col_id = col[0]
     col[1].each do |rssm|
+      # Fetch the length of each of the data rss column groups.
+      length_of_each_col_group = sheet_info.data_header_hash.try(:[], :max_col).try(:[], rssm[:result_statistic_section_type_id]).try(:[], rssm[:outcome_type]).try(:[], :no_of_measures)
+
       # Note...this will retrieve the first occurence...we will add multiples of col-group size to find the correct location.
       found, m_idx = find_index_of_cell_with_value(header, rssm[:measure_name])
       if found
@@ -337,10 +339,15 @@ def build_data_row(rss_cols, header)
           data_row[1 + (length_of_each_col_group*idx)] = rssm[:col_description]
 
         else
-          data_row[0 + (length_of_each_col_group*idx)] = rssm[:col_name]
+          data_row[0 + ((1 + length_of_each_col_group)*idx)] = rssm[:col_name]
 
         end
-      end
+
+      else
+        debugger
+        raise "Failed to find measure column."
+
+      end  # if found
     end
   end
 
