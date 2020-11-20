@@ -385,7 +385,10 @@ class SheetInfo
       end
 
       set_measures.each do |m|
-        return_array << m
+        # Since case-insensitive sets are not a thing, we create a new set with all elements downcased and then check against a downcased m,
+        # whether to include it or not.
+        downcased_return_array = Set.new return_array.map(&:downcase)
+        return_array << m unless (downcased_return_array.include?(m.downcase))
       end
     end
 
