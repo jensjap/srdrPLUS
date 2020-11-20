@@ -3,7 +3,10 @@ ul#vertical-tabs.tabs.vertical class=('orderable-list' if current_user.profile.a
   - @extraction_forms_projects_sections.each do |efps|
     li.tabs-title.orderable-item position="#{ efps.ordering.position }" ordering-id="#{ efps.ordering.id }" style="background: #{efps.id.to_s == @panel_tab ? 'lightgrey' : 'initial'}"
       - section = efps.section.name
-      = link_to section, build_extraction_forms_project_path(@extraction_forms_project, 'panel-tab': efps.id.to_s), title: section
+      = link_to build_extraction_forms_project_path(@extraction_forms_project, 'panel-tab': efps.id.to_s), title: section do
+        - if current_user.profile.advanced_mode
+          i class="fa fa-arrows" style="padding-right: 5px;"
+        = section
 
 - if current_user.profile.advanced_mode
   = link_to new_extraction_forms_project_extraction_forms_projects_section_path(@extraction_forms_project), { class: 'button tiny secondary float-right' } do

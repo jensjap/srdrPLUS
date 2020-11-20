@@ -32,8 +32,8 @@ h4 #{ efps.section.name.titleize } Question List
         - efps.ensure_sequential_questions
         - efps.questions.each do |q|
           tr.orderable-item [ position="#{ q.ordering.position }" ordering-id="#{ q.ordering.id }" ]
-            td.sort-handle style="min-width: 0; width: 10px;"
-              i.fi-thumbnails style="cursor: move;"
+            td.sort-handle style="min-width: 0; vertical-align: middle; width: 10px; cursor: pointer;"
+              i class="fa fa-arrows"
             td = q.ordering.position
             td
               ul#dependencies

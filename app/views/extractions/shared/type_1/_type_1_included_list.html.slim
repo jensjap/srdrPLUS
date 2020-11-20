@@ -34,9 +34,8 @@
         - elsif eefpst1.type1_type && eefpst1.type1_type.name == 'Continuous'
           - bgcolor = '#ccf5de'
         tr.orderable-item position="#{eefpst1.ordering.position}" ordering-id="#{eefpst1.ordering.id}" style="background-color: #{bgcolor}"
-          td.sort-handle style="min-width: 0; width: 10px;"
-            i.fi-thumbnails style="cursor: move;"
-
+          td.sort-handle style="min-width: 0; vertical-align: middle; width: 10px; cursor: pointer;"
+            i class="fa fa-arrows"
           - if section_name == 'Outcomes'
             td = eefpst1.type1_type.present? ? eefpst1.type1_type.name : ''
             td = eefpst1.type1.name
