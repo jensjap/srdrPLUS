@@ -260,7 +260,8 @@ end
 def find_index_of_cell_with_value(row, value=nil)
   row.cells.each do |cell|
     if value.present?
-      return [true, cell.index] if cell.value.eql? value
+      return [true, cell.index] if cell.value.eql?(value)
+      return [true, cell.index] if cell.value.downcase.eql?(value.downcase)
 
     else
       return [true, cell.index] if cell.value.match /^Arm Name 1$|^Comparison Name 1$/
