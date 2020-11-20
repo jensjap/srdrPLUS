@@ -372,7 +372,9 @@ class SheetInfo
 
     @data_header_hash.try(:[], section_id).try(:[], outcome_type).try(:keys).to_a.each do |key|
       @data_header_hash[section_id][outcome_type][key].each do |measure_name|
-        set_measures << measure_name
+        # Since case-insensitive sets are not a thing, we create a new array with all elements downcased and
+        # then check against a downcased measures_name, whether to include it or not.
+        set_measures << measure_name unless (set_measures.to_a.map(&:downcase).include?(measure_name.downcase))
       end  # @data_header_hash[section_id][outcome_type][key].each do |measure_name|
     end  # @data_header_hash.try(:[], section_id).try(:[], outcome_type).try(:keys).to_a.each do |key|
 
@@ -385,10 +387,7 @@ class SheetInfo
       end
 
       set_measures.each do |m|
-        # Since case-insensitive sets are not a thing, we create a new set with all elements downcased and then check against a downcased m,
-        # whether to include it or not.
-        downcased_return_array = Set.new return_array.map(&:downcase)
-        return_array << m unless (downcased_return_array.include?(m.downcase))
+        return_array << m
       end
     end
 

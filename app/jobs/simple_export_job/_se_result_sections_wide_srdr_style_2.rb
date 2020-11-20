@@ -168,12 +168,46 @@ def build_result_sections_wide_srdr_style_2(p, project, highlight, wrap, kq_ids=
           end  # extraction[:rss_columns].each do |rss_type_id, outcomes|
         end  # sheet_info.extractions.each do |e_key, extraction|
 
+        # Style header row.
         desc_cont_header.style = highlight
         desc_cat_header.style  = highlight
         bac_cont_header.style  = highlight
         bac_cat_header.style   = highlight
         wac_header.style  = highlight
         net_header.style  = highlight
+
+        # Set styles for each worksheet.
+        style_dscoo1, style_dscoo2, style_dscoo3, style_dscoo4 = set_ws_styles(ws_descriptive_statistics_continuous_outcomes)
+        style_dscao1, style_dscao2, style_dscao3, style_dscao4 = set_ws_styles(ws_descriptive_statistics_categorical_outcomes)
+        style_bscoo1, style_bscoo2, style_bscoo3, style_bscoo4 = set_ws_styles(ws_bac_statistics_continuous_outcomes)
+        style_bscao1, style_bscao2, style_bscao3, style_bscao4 = set_ws_styles(ws_bac_statistics_categorical_outcomes)
+        style_wacst1, style_wacst2, style_wacst3, style_wacst4 = set_ws_styles(ws_wac_statistics)
+        style_netst1, style_netst2, style_netst3, style_netst4 = set_ws_styles(ws_net_statistics)
+
+        style_data_columns_in_worksheet(
+          sheet_info.data_header_hash.try(:[], :max_col).try(:[], 1).try(:[], "Continuous").try(:[], :no_of_measures),
+          ws_descriptive_statistics_continuous_outcomes,
+          style_dscoo1, style_dscoo2, style_dscoo3, style_dscoo4)
+        style_data_columns_in_worksheet(
+          sheet_info.data_header_hash.try(:[], :max_col).try(:[], 1).try(:[], "Categorical").try(:[], :no_of_measures),
+          ws_descriptive_statistics_categorical_outcomes,
+          style_dscao1, style_dscao2, style_dscao3, style_dscao4)
+        style_data_columns_in_worksheet(
+          sheet_info.data_header_hash.try(:[], :max_col).try(:[], 2).try(:[], "Continuous").try(:[], :no_of_measures),
+          ws_bac_statistics_continuous_outcomes,
+          style_bscoo1, style_bscoo2, style_bscoo3, style_bscoo4)
+        style_data_columns_in_worksheet(
+          sheet_info.data_header_hash.try(:[], :max_col).try(:[], 2).try(:[], "Categorical").try(:[], :no_of_measures),
+          ws_bac_statistics_categorical_outcomes,
+          style_bscao1, style_bscao2, style_bscao3, style_bscao4)
+        style_data_columns_in_worksheet(
+          sheet_info.data_header_hash.try(:[], :max_col).try(:[], 3).try(:[], "Continuous").try(:[], :no_of_measures),
+          ws_wac_statistics,
+          style_wacst1, style_wacst2, style_wacst3, style_wacst4)
+        style_data_columns_in_worksheet(
+          sheet_info.data_header_hash.try(:[], :max_col).try(:[], 4).try(:[], "Continuous").try(:[], :no_of_measures),
+          ws_net_statistics,
+          style_netst1, style_netst2, style_netst3, style_netst4)
 
       end  # END if efps.extraction_forms_projects_section_type_id == 3
     end  # END efp.extraction_forms_projects_sections.each do |efps|
@@ -209,12 +243,11 @@ def build_data_row(rss_cols, header, sheet_info)
           data_row[1 + (length_of_each_col_group*idx)] = rssm[:col_description]
 
         else
-          data_row[0 + ((1 + length_of_each_col_group)*idx)] = rssm[:col_name]
+          data_row[0 + (length_of_each_col_group*idx)] = rssm[:col_name]
 
         end
 
       else
-        debugger
         raise "Failed to find measure column."
 
       end  # if found
@@ -236,4 +269,41 @@ def find_index_of_cell_with_value(row, value=nil)
   end
 
   return [false, row.cells.length]
+end
+
+def style_data_columns_in_worksheet(col_grp_size, ws, style1, style2, style3, style4)
+  style_array      = [style1, style2, style3, style4]
+  found, start_idx = find_index_of_cell_with_value(ws.rows[0], 'Arm Name 1')
+  found, start_idx = find_index_of_cell_with_value(ws.rows[0], 'Comparison Name 1') unless found
+  end_idx          = ws.rows[0].length
+
+  no_of_col_groups = (end_idx - start_idx)/col_grp_size
+  no_of_col_groups.times do |n|
+    n_add = n*col_grp_size
+
+    case n%4
+    when 0
+      ws.col_style(((n_add + start_idx)..(n_add + start_idx + col_grp_size - 1)), style_array[0], options={})
+
+    when 1
+      ws.col_style(((n_add + start_idx)..(n_add + start_idx + col_grp_size - 1)), style_array[1], options={})
+
+    when 2
+      ws.col_style(((n_add + start_idx)..(n_add + start_idx + col_grp_size - 1)), style_array[2], options={})
+
+    when 3
+      ws.col_style(((n_add + start_idx)..(n_add + start_idx + col_grp_size - 1)), style_array[3], options={})
+
+    end
+  end
+end
+
+def set_ws_styles(ws)
+  # From https://paletton.com/#uid=7001q0kiCFn8GVde7NVmtwSqXtg
+  style1 = ws.styles.add_style(:bg_color => "FFBABA", :border => { :style => :thin, :color => '808080' })
+  style2 = ws.styles.add_style(:bg_color => "FFF3BA", :border => { :style => :thin, :color => '808080' })
+  style3 = ws.styles.add_style(:bg_color => "C5B7F1", :border => { :style => :thin, :color => '808080' })
+  style4 = ws.styles.add_style(:bg_color => "B3F6B3", :border => { :style => :thin, :color => '808080' })
+
+  return style1, style2, style3, style4
 end
