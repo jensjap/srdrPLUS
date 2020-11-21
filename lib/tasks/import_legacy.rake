@@ -65,6 +65,25 @@ namespace(:db) do
       @srdr_to_srdrplus_project_dict = {}
       @srdr_to_srdrplus_key_questions_dict = {}
       @default_projects_users_role = nil
+      @data_points_queue = {}
+      @t1_efps_dict = {}
+    end
+
+    def set_t1_efps t1_name, efps
+      @t1_efps_dict[t1_name] = efps
+    end
+
+    def get_t1_efps t1_name
+      @t1_efps_dict[t1_name]
+    end
+
+    def queue_data_point dp, qrcf, question_type
+      @data_points_queue[dp["study_id"]] ||= []
+      @data_points_queue[dp["study_id"]] << {dp: dp, qrcf: qrcf, question_type: question_type}
+    end
+    
+    def get_data_point_queue_for_study study_id
+      @data_points_queue[study_id]
     end
 
     def get_srdrplus_project srdr_project_id
@@ -139,7 +158,6 @@ namespace(:db) do
           migrate_study_as_extraction study_hash, citations_project.id
           break
         end
-
       end
     end
 
@@ -165,6 +183,7 @@ namespace(:db) do
           when "arms"
             arms_efps = combined_efp.extraction_forms_projects_sections.create(section: section, 
                                                                                extraction_forms_projects_section_type: @efps_type_1)
+            set_t1_efps "arms", arms_efps
             if adverse_events_efps.present? then adverse_events_efps.update(link_to_type1:arms_efps) end
 
             ef_arms = db.query "SELECT * FROM extraction_form_arms where extraction_form_id=#{ef["id"]}"
@@ -175,6 +194,7 @@ namespace(:db) do
           when "outcomes"
             outcomes_efps = combined_efp.extraction_forms_projects_sections.create(section: section, 
                                                                                    extraction_forms_projects_section_type: @efps_type_1)
+            set_t1_efps "outcomes", outcomes_efps
             ef_outcomes = db.query "SELECT * FROM extraction_form_outcome_names where extraction_form_id=#{ef["id"]}"
             ef_outcomes.each do |ef_outcome|
               type1 = Type1.find_or_create_by name: ef_outcome["title"], description: ef_outcome["note"]
@@ -185,6 +205,7 @@ namespace(:db) do
             end
           when "diagnostic_tests"
             diagnostic_tests_efps = combined_efp.extraction_forms_projects_sections.create(section: section, extraction_forms_projects_section_type: @efps_type_4)
+            set_t1_efps "diagnostic_tests", diagnostic_tests_efps
             ef_diagnostic_tests = db.query "SELECT * FROM extraction_form_outcome_names where extraction_form_id=#{ef["id"]}"
             ef_diagnostic_tests.each do |ef_diagnostic_test|
               type1 = Type1.find_or_create_by name: ef_diagnostic_test["title"], description: ef_diagnostic_test["description"]
@@ -308,6 +329,11 @@ namespace(:db) do
 
         case question_type
         when "text"
+          qrcf = question.question_rows.first.question_row_columns.first.question_row_column_fields.first 
+
+          q_data_points.each do |dp|
+            queue_data_point dp, qrcf, question_type
+          end
         when "checkbox"
           migrate_multiple_choice_question question, @qrc_type_checkbox, q, q_fields, q_data_points, table_root
         when "radio"
@@ -331,10 +357,12 @@ namespace(:db) do
       
       question_row_column.question_row_columns_question_row_column_options.where(question_row_column_option: @qrco_answer_choice).destroy_all
       fields_of_legacy_question.each do |qf|
+        qrcqrco = nil
         if qf["row_number"] == -1
           qrcqrco = QuestionRowColumnsQuestionRowColumnOption.create name: "Other (please specify):",
                                                                      question_row_column_option: @qrco_answer_choice,
                                                                      question_row_column: question_row_column
+          p qf["option_text"]
           ff = FollowupField.create question_row_columns_question_row_column_option: qrcqrco
         else
           if qf["has_subquestion"] == 1
@@ -348,8 +376,10 @@ namespace(:db) do
                                                                        question_row_column: question_row_column
           end
         end
+        set_srdrplus_answer_choice qf["id"], qrcqrco
+
         data_points_of_legacy_question.select{|dp| dp["#{table_root}_id=#{qf["id"]}"]}.each do |dp|
-          queue_qrcqrco_data_point dp, qrcqrco
+          queue_data_point dp, qrcf, question_type
         end
       end
     end
@@ -391,8 +421,6 @@ namespace(:db) do
     end
     
     def migrate_matrix_dropdown_question question, legacy_question, data_points_of_legacy_question, table_root
-      p "Project: " + question.project.name
-      p "Question: " + question.name
       r_farr = db.query "SELECT * FROM #{table_root}_fields WHERE #{table_root}_id=#{legacy_question["id"]} and column_number=0 ORDER BY row_number ASC"
       c_farr = db.query "SELECT * FROM #{table_root}_fields WHERE #{table_root}_id=#{legacy_question["id"]} and row_number=0 ORDER BY column_number ASC"
 
@@ -447,12 +475,6 @@ namespace(:db) do
       end
     end
 
-    def queue_qrcf_data_point dp, qrcf
-    end
-
-    def queue_qrcqrco_data_point dp, qrcqrco
-    end
-
     def migrate_key_questions
       kqs = db.query "SELECT * FROM key_questions where project_id=#{@legacy_project_id}"
       srdrplus_project = get_srdrplus_project @legacy_project_id
@@ -468,8 +490,99 @@ namespace(:db) do
                                      citations_project_id: citations_project_id,
                                      consolidated: false,
                                      project: get_srdrplus_project(@legacy_project_id))
-      return
+
+      #set_srdrplus_extraction study_hash["id"], extraction
+      migrate_study_data study_hash["id"], extraction
     end
+
+    def migrate_type1_data study_id, extraction
+      arms = db.query "SELECT * FROM arms where study_id=#{study_id}"
+      outcomes = db.query "SELECT * FROM outcomes where study_id=#{study_id}"
+      diagnostic_tests = db.query "SELECT * FROM diagnostic_tests where study_id=#{study_id}"
+      adverse_events = db.query "SELECT * FROM adverse_events where study_id=#{study_id}"
+      
+      arms.each do |arm|
+        t1 = Type1.find_or_create_by name: arm["title"], 
+                                     description: arm["description"]
+
+        eefps = ExtractionsExtractionFormsProjectsSection.find_or_create_by extraction: extraction,
+                                                                            extraction_forms_projects_section: get_t1_efps("arms")
+        eefps_t1 = ExtractionsExtractionFormsProjectsSectionsType1.find_or_create_by extractions_extraction_forms_projects_section: eefps, type1: t1
+      end
+
+      outcomes.each do |outcome|
+        t1 = Type1.find_or_create_by name: outcomes["title"], 
+                                     description: outcomes["description"]
+
+        eefps = ExtractionsExtractionFormsProjectsSection.find_or_create_by extraction: extraction,
+                                                                            extraction_forms_projects_section: get_t1_efps("outcomes")
+        eefps_t1 = ExtractionsExtractionFormsProjectsSectionsType1.find_or_create_by extractions_extraction_forms_projects_section: eefps, type1: t1, type1_type: @type1_types[outcome["outcome_type"]]
+      end
+      diagnostic_tests.each do |diagnostic_test|
+        t1 = Type1.find_or_create_by name: diagnostic_test["title"], 
+                                     description: diagnostic_test["description"]
+
+        eefps = ExtractionsExtractionFormsProjectsSection.find_or_create_by extraction: extraction,
+                                                                            extraction_forms_projects_section: get_t1_efps("diagnostic_tests")
+        eefps_t1 = ExtractionsExtractionFormsProjectsSectionsType1.find_or_create_by extractions_extraction_forms_projects_section: eefps, type1: t1, type1_type: @type1_types[diagnostic_test["test_type"]]
+      end
+      adverse_events.each do |adverse_event|
+        t1 = Type1.find_or_create_by name: adverse_event["title"], 
+                                     description: adverse_event["description"]
+        ## TODO: Adverse Event stuff
+      end
+    end
+
+    def migrate_study_data study_id, extraction
+      get_data_point_queue_for_study(study_id).each do |q_item|
+        dp = q_item[:dp]
+        qrcf = q_item[:qrcf]
+        question_type = q_item[:question_type]
+
+        if dp.key? "arm_detail_field_id"
+          linked_type1 = get_t1_efps "arms"
+        elsif dp.key? "design_detail_field_id"
+        elsif dp.key? "outcome_detail_field_id"
+          linked_type1 = get_t1_efps "outcomes"
+        elsif dp.key? "diagnostic_test_detail_field_id"
+          linked_type1 = get_t1_efps "diagnostic_tests"
+        elsif dp.key? "baseline_characteristic_field_id"
+        elsif dp.key? "adverse_event_field_id"
+          linked_type1 = get_t1_efps "adverse_events"
+        else
+        end
+
+        linked_eefps = ExtractionsExtractionFormsProjectsSection.find_or_create_by 
+          extraction: extraction,
+          extraction_forms_projects_section: linked_type1
+
+        eefps = ExtractionsExtractionFormsProjectsSection.find_or_create_by 
+          extraction: extraction,
+          extraction_forms_projects_section: qrcf.question.extraction_forms_projects_section,
+          link_to_type1: linked_eefps
+
+        eefps_qrcf = ExtractionsExtractionFormsProjectsSectionQuestionRowColumnField.find_or_create_by 
+          extractions_extraction_forms_projects_section: eefps,
+          question_row_column_field: qrcf,
+          extractions_extraction_forms_projects_sections_type1: 
+
+          #question_row_column_field: qrcf,
+        case question_type
+        when @qrc_type_text
+          dp_model.where(field_column => q.id).each do |dp|
+            qrc.data_points << DataPointWrapper.new(dp)
+          end
+
+        when "checkbox"
+        when "radio"
+        when "select"
+        when "matrix_checkbox"
+        when "matrix_radio"
+        when "matrix_select"
+        end
+      end
+    end
+
 
     def migrate_primary_publication_as_citation primary_publication_hash
       if primary_publication_hash["journal"]
