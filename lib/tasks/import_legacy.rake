@@ -83,6 +83,8 @@ namespace(:db) do
     end
     
     def get_data_point_queue_for_study study_id
+      p @data_points_queue
+      @data_points_queue[study_id] ||= []
       @data_points_queue[study_id]
     end
 
@@ -376,7 +378,6 @@ namespace(:db) do
                                                                        question_row_column: question_row_column
           end
         end
-        set_srdrplus_answer_choice qf["id"], qrcqrco
 
         data_points_of_legacy_question.select{|dp| dp["#{table_root}_id=#{qf["id"]}"]}.each do |dp|
           queue_data_point dp, qrcf, question_type
@@ -505,26 +506,58 @@ namespace(:db) do
         t1 = Type1.find_or_create_by name: arm["title"], 
                                      description: arm["description"]
 
-        eefps = ExtractionsExtractionFormsProjectsSection.find_or_create_by extraction: extraction,
-                                                                            extraction_forms_projects_section: get_t1_efps("arms")
-        eefps_t1 = ExtractionsExtractionFormsProjectsSectionsType1.find_or_create_by extractions_extraction_forms_projects_section: eefps, type1: t1
+        eefps = ExtractionsExtractionFormsProjectsSection.find_or_create_by \
+          extraction: extraction,
+          extraction_forms_projects_section: get_t1_efps("arms")
+        eefps_t1 = ExtractionsExtractionFormsProjectsSectionsType1.find_or_create_by \
+          extractions_extraction_forms_projects_section: eefps, 
+          type1: t1
       end
 
       outcomes.each do |outcome|
         t1 = Type1.find_or_create_by name: outcomes["title"], 
                                      description: outcomes["description"]
 
-        eefps = ExtractionsExtractionFormsProjectsSection.find_or_create_by extraction: extraction,
-                                                                            extraction_forms_projects_section: get_t1_efps("outcomes")
-        eefps_t1 = ExtractionsExtractionFormsProjectsSectionsType1.find_or_create_by extractions_extraction_forms_projects_section: eefps, type1: t1, type1_type: @type1_types[outcome["outcome_type"]]
+        eefps = ExtractionsExtractionFormsProjectsSection.find_or_create_by \
+          extraction: extraction,
+          extraction_forms_projects_section: get_t1_efps("outcomes")
+        eefps_t1 = ExtractionsExtractionFormsProjectsSectionsType1.find_or_create_by \
+          extractions_extraction_forms_projects_section: eefps, 
+          type1: t1, 
+          type1_type: @type1_types[outcome["outcome_type"]]
+
+        subgroups = db.query "SELECT * FROM outcome_subgroups where outcome_id=#{outcome["id"]}"
+        eefst1r = nil
+        subgroups.each do |subgroup|
+          population_name = PopulationName.find_or_create_by \
+            name: subgroup["title"], 
+            description: subgroup["description"]
+          eefst1r = ExtractionsExtractionFormsProjectsSectionsType1Row.find_or_create_by \
+            extractions_extraction_forms_projects_sections_type1: eefps_t1, 
+            population_name: population_name
+        end
+
+        timepoints = db.query "SELECT * FROM outcome_timepoints where outcome_id=#{outcome["id"]}"
+        timepoints.each do |timepoint|
+          timepoint_name = TimepointName.find_or_create_by \
+            name: timepoint["title"], 
+            description: timepoint["description"]
+          ExtractionsExtractionFormsProjectsSectionsType1Row.find_or_create_by \
+            extractions_extraction_forms_projects_sections_type1_row: eefst1r, 
+            timepoint_name: timepoint_name
+        end
       end
       diagnostic_tests.each do |diagnostic_test|
         t1 = Type1.find_or_create_by name: diagnostic_test["title"], 
                                      description: diagnostic_test["description"]
 
-        eefps = ExtractionsExtractionFormsProjectsSection.find_or_create_by extraction: extraction,
-                                                                            extraction_forms_projects_section: get_t1_efps("diagnostic_tests")
-        eefps_t1 = ExtractionsExtractionFormsProjectsSectionsType1.find_or_create_by extractions_extraction_forms_projects_section: eefps, type1: t1, type1_type: @type1_types[diagnostic_test["test_type"]]
+        eefps = ExtractionsExtractionFormsProjectsSection.find_or_create_by \
+          extraction: extraction,
+          extraction_forms_projects_section: get_t1_efps("diagnostic_tests")
+        eefps_t1 = ExtractionsExtractionFormsProjectsSectionsType1.find_or_create_by \
+          extractions_extraction_forms_projects_section: eefps, \
+          type1: t1, \
+          type1_type: @type1_types[diagnostic_test["test_type"]]
       end
       adverse_events.each do |adverse_event|
         t1 = Type1.find_or_create_by name: adverse_event["title"], 
@@ -552,19 +585,19 @@ namespace(:db) do
         else
         end
 
-        linked_eefps = ExtractionsExtractionFormsProjectsSection.find_or_create_by 
+        linked_eefps = ExtractionsExtractionFormsProjectsSection.find_or_create_by \
           extraction: extraction,
           extraction_forms_projects_section: linked_type1
 
-        eefps = ExtractionsExtractionFormsProjectsSection.find_or_create_by 
+        eefps = ExtractionsExtractionFormsProjectsSection.find_or_create_by \
           extraction: extraction,
           extraction_forms_projects_section: qrcf.question.extraction_forms_projects_section,
           link_to_type1: linked_eefps
 
-        eefps_qrcf = ExtractionsExtractionFormsProjectsSectionQuestionRowColumnField.find_or_create_by 
+        eefps_qrcf = ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField.find_or_create_by \
           extractions_extraction_forms_projects_section: eefps,
           question_row_column_field: qrcf,
-          extractions_extraction_forms_projects_sections_type1: 
+          extractions_extraction_forms_projects_sections_type1: nil #TODO
 
           #question_row_column_field: qrcf,
         case question_type
