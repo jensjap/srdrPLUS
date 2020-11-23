@@ -1,5 +1,5 @@
 document.addEventListener 'DOMContentLoaded', ->
-  return if $( '.extractions.work' ).length > 0
+  return if $('body.extractions.work').length > 0
   documentCode()
 
 document.addEventListener 'extractionSectionLoaded', ->
