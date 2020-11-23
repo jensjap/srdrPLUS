@@ -11,8 +11,11 @@ namespace(:db) do
       initialize_variables
 
       #projects = db.query("SELECT * FROM projects")
-      projects = db.query("SELECT * FROM projects WHERE id=159")
+      #projects = db.query("SELECT * FROM projects WHERE id=159")
+      #projects = db.query("SELECT * FROM projects WHERE id=520")
       #projects = db.query("SELECT * FROM projects WHERE id>516 LIMIT 3")
+      projects = db.query("SELECT * FROM projects WHERE id>1006 LIMIT 3")
+
       projects.each do |project_hash|
         begin
           @legacy_project_id = project_hash["id"]
@@ -27,6 +30,10 @@ namespace(:db) do
       end
     end
     
+    def migration_user
+      User.first.freeze
+    end
+
     def initialize_variables
       @efps_type_1 = ExtractionFormsProjectsSectionType.find_by(name: 'Type 1')
       @efps_type_2 = ExtractionFormsProjectsSectionType.find_by(name: 'Type 2')
@@ -67,13 +74,24 @@ namespace(:db) do
       @default_projects_users_role = nil
       @data_points_queue = {}
       @t1_efps_dict = {}
+      @eefspt1_dict = {}
     end
 
-    def set_t1_efps t1_name, efps
+    def set_eefpst1 t1_name, t1_id, eefpst1
+      @t1_efps_dict[t1_name] ||= {}
+      @t1_efps_dict[t1_name][t1_id] = eefpst1
+    end
+
+    def get_eefpst1 t1_name, t1_id
+      @t1_efps_dict[t1_name] ||= {}
+      @t1_efps_dict[t1_name][t1_id]
+    end
+
+    def set_efps t1_name, efps
       @t1_efps_dict[t1_name] = efps
     end
 
-    def get_t1_efps t1_name
+    def get_efps t1_name
       @t1_efps_dict[t1_name]
     end
 
@@ -83,7 +101,6 @@ namespace(:db) do
     end
     
     def get_data_point_queue_for_study study_id
-      p @data_points_queue
       @data_points_queue[study_id] ||= []
       @data_points_queue[study_id]
     end
@@ -105,7 +122,7 @@ namespace(:db) do
     end
 
     def add_default_user_to_srdrplus_project srdrplus_project
-      srdrplus_project.users << User.first
+      srdrplus_project.users << migration_user
       srdrplus_project.projects_users.first.roles << Role.first
 
       @default_projects_users_role = srdrplus_project.projects_users.first.projects_users_roles.first
@@ -185,21 +202,23 @@ namespace(:db) do
           when "arms"
             arms_efps = combined_efp.extraction_forms_projects_sections.create(section: section, 
                                                                                extraction_forms_projects_section_type: @efps_type_1)
-            set_t1_efps "arms", arms_efps
+            set_efps "arms", arms_efps
             if adverse_events_efps.present? then adverse_events_efps.update(link_to_type1:arms_efps) end
 
             ef_arms = db.query "SELECT * FROM extraction_form_arms where extraction_form_id=#{ef["id"]}"
             ef_arms.each do |ef_arm|
               type1 = Type1.find_or_create_by name: ef_arm["name"], description: ef_arm["description"]
+              Suggestion.find_or_create_by suggestable: type1 , user: migration_user
               ExtractionFormsProjectsSectionsType1.create extraction_forms_projects_section: arms_efps, type1: type1
             end
           when "outcomes"
             outcomes_efps = combined_efp.extraction_forms_projects_sections.create(section: section, 
                                                                                    extraction_forms_projects_section_type: @efps_type_1)
-            set_t1_efps "outcomes", outcomes_efps
+            set_efps "outcomes", outcomes_efps
             ef_outcomes = db.query "SELECT * FROM extraction_form_outcome_names where extraction_form_id=#{ef["id"]}"
             ef_outcomes.each do |ef_outcome|
               type1 = Type1.find_or_create_by name: ef_outcome["title"], description: ef_outcome["note"]
+              Suggestion.find_or_create_by suggestable: type1 , user: migration_user
               type1_type = @type1_types[ef_outcome["outcome_type"]]
               ExtractionFormsProjectsSectionsType1.create extraction_forms_projects_section: outcomes_efps, 
                                                           type1: type1, 
@@ -207,10 +226,13 @@ namespace(:db) do
             end
           when "diagnostic_tests"
             diagnostic_tests_efps = combined_efp.extraction_forms_projects_sections.create(section: section, extraction_forms_projects_section_type: @efps_type_4)
-            set_t1_efps "diagnostic_tests", diagnostic_tests_efps
+            set_efps "diagnostic_tests", diagnostic_tests_efps
             ef_diagnostic_tests = db.query "SELECT * FROM extraction_form_outcome_names where extraction_form_id=#{ef["id"]}"
             ef_diagnostic_tests.each do |ef_diagnostic_test|
               type1 = Type1.find_or_create_by name: ef_diagnostic_test["title"], description: ef_diagnostic_test["description"]
+
+              Suggestion.find_or_create_by suggestable: type1, user: migration_user
+
               type1_type = @type1_types[ef_diagnostic_test["test_type"]]
               ExtractionFormsProjectsSectionsType1.create extraction_forms_projects_section: diagnostic_tests_efps, 
                                                           type1: type1, 
@@ -236,17 +258,17 @@ namespace(:db) do
         end
 
         t2_efps.each do |efps|
-          efps.extraction_forms_projects_section_option.update by_type1: false
-          efps.extraction_forms_projects_section_option.update include_total: false
+          efps.extraction_forms_projects_section_option.update by_type1: false, include_total: false
           case efps.section.name
           when "Arm Details"
             efsos = db.query("SELECT * FROM ef_section_options where section='arm_detail' AND extraction_form_id=#{ef["id"]}")
             efsos.each do |efso|
               if efso["by_arm"] == 1
-                efps.link_to_type1 = arms_efps
+                efps.update link_to_type1: arms_efps
               end
-              efps.extraction_forms_projects_section_option.update by_type1: (if efso["by_arm"] == 1 then true else false end)
-              efps.extraction_forms_projects_section_option.update include_total: (if efso["include_total"] == 1 then true else false end)
+              efps.extraction_forms_projects_section_option.update \
+                by_type1: (if efso["by_arm"] == 1 then true else false end), 
+                include_total: (if efso["include_total"] == 1 then true else false end)
             end
 
             migrate_questions efps, ef["id"], 'arm_detail', ef_key_questions
@@ -256,8 +278,9 @@ namespace(:db) do
               if efso["by_outcome"] == 1
                 efps.update link_to_type1: outcomes_efps
               end
-              efps.extraction_forms_projects_section_option.update by_type1: (if efso["by_outcome"] == 1 then true else false end)
-              efps.extraction_forms_projects_section_option.update include_total: (if efso["include_total"] == 1 then true else false end)
+              efps.extraction_forms_projects_section_option.update \
+                by_type1: (if efso["by_outcome"] == 1 then true else false end),
+                include_total: (if efso["include_total"] == 1 then true else false end)
             end
             migrate_questions efps, ef["id"], 'outcome_detail', ef_key_questions
           when "Diagnostic Test Details"
@@ -266,8 +289,9 @@ namespace(:db) do
               if efso["by_diagnostic_test"]
                 efps.update link_to_type1: diagnostic_tests_efps
               end
-              efps.extraction_forms_projects_section_option.update by_type1: (if efso["by_diagnostic_test"] == 1 then true else false end)
-              efps.extraction_forms_projects_section_option.update include_total: (if efso["include_total"] == 1 then true else false end)
+              efps.extraction_forms_projects_section_option.update \
+                by_type1: (if efso["by_diagnostic_test"] == 1 then true else false end), 
+                include_total: (if efso["include_total"] == 1 then true else false end)
             end
             migrate_questions efps, ef["id"], 'diagnostic_test_detail', ef_key_questions
           when "Adverse"
@@ -321,8 +345,8 @@ namespace(:db) do
                                    extraction_forms_projects_section: efps
 
         ef_key_questions.each do |kq|
-          KeyQuestionsProjectsQuestion.create! key_questions_project: get_srdrplus_key_question(kq["key_question_id"]),
-                                               question: question
+          KeyQuestionsProjectsQuestion.create key_questions_project: get_srdrplus_key_question(kq["key_question_id"]),
+                                              question: question
         end
 
         q_fields = legacy_question_fields.select{|qf| qf["#{table_root}_id"] == legacy_question_id}
@@ -493,6 +517,7 @@ namespace(:db) do
                                      project: get_srdrplus_project(@legacy_project_id))
 
       #set_srdrplus_extraction study_hash["id"], extraction
+      migrate_type1_data study_hash["id"], extraction
       migrate_study_data study_hash["id"], extraction
     end
 
@@ -505,26 +530,30 @@ namespace(:db) do
       arms.each do |arm|
         t1 = Type1.find_or_create_by name: arm["title"], 
                                      description: arm["description"]
+        Suggestion.find_or_create_by suggestable: t1, user: migration_user
 
         eefps = ExtractionsExtractionFormsProjectsSection.find_or_create_by \
           extraction: extraction,
-          extraction_forms_projects_section: get_t1_efps("arms")
+          extraction_forms_projects_section: get_efps("arms")
         eefps_t1 = ExtractionsExtractionFormsProjectsSectionsType1.find_or_create_by \
           extractions_extraction_forms_projects_section: eefps, 
           type1: t1
+        set_eefpst1 "arm", arm["id"], eefps_t1
       end
 
       outcomes.each do |outcome|
-        t1 = Type1.find_or_create_by name: outcomes["title"], 
-                                     description: outcomes["description"]
+        t1 = Type1.find_or_create_by name: outcome["title"], 
+                                     description: outcome["description"]
+        Suggestion.find_or_create_by suggestable: t1, user: migration_user
 
         eefps = ExtractionsExtractionFormsProjectsSection.find_or_create_by \
           extraction: extraction,
-          extraction_forms_projects_section: get_t1_efps("outcomes")
+          extraction_forms_projects_section: get_efps("outcomes")
         eefps_t1 = ExtractionsExtractionFormsProjectsSectionsType1.find_or_create_by \
           extractions_extraction_forms_projects_section: eefps, 
           type1: t1, 
           type1_type: @type1_types[outcome["outcome_type"]]
+        set_eefpst1 "outcome", outcome["id"], eefps_t1
 
         subgroups = db.query "SELECT * FROM outcome_subgroups where outcome_id=#{outcome["id"]}"
         eefst1r = nil
@@ -540,9 +569,9 @@ namespace(:db) do
         timepoints = db.query "SELECT * FROM outcome_timepoints where outcome_id=#{outcome["id"]}"
         timepoints.each do |timepoint|
           timepoint_name = TimepointName.find_or_create_by \
-            name: timepoint["title"], 
-            description: timepoint["description"]
-          ExtractionsExtractionFormsProjectsSectionsType1Row.find_or_create_by \
+            name: timepoint["number"], 
+            unit: timepoint["time_unit"]
+          ExtractionsExtractionFormsProjectsSectionsType1RowColumn.find_or_create_by \
             extractions_extraction_forms_projects_sections_type1_row: eefst1r, 
             timepoint_name: timepoint_name
         end
@@ -550,18 +579,21 @@ namespace(:db) do
       diagnostic_tests.each do |diagnostic_test|
         t1 = Type1.find_or_create_by name: diagnostic_test["title"], 
                                      description: diagnostic_test["description"]
+        Suggestion.find_or_create_by suggestable: t1, user: migration_user
 
         eefps = ExtractionsExtractionFormsProjectsSection.find_or_create_by \
           extraction: extraction,
-          extraction_forms_projects_section: get_t1_efps("diagnostic_tests")
+          extraction_forms_projects_section: get_efps("diagnostic_tests")
         eefps_t1 = ExtractionsExtractionFormsProjectsSectionsType1.find_or_create_by \
           extractions_extraction_forms_projects_section: eefps, \
           type1: t1, \
           type1_type: @type1_types[diagnostic_test["test_type"]]
+        set_eefpst1 "diagnostic_test", diagnostic_test["id"], eefps_t1
       end
       adverse_events.each do |adverse_event|
         t1 = Type1.find_or_create_by name: adverse_event["title"], 
                                      description: adverse_event["description"]
+        Suggestion.find_or_create_by suggestable: t1, user: migration_user
         ## TODO: Adverse Event stuff
       end
     end
@@ -572,40 +604,44 @@ namespace(:db) do
         qrcf = q_item[:qrcf]
         question_type = q_item[:question_type]
 
-        if dp.key? "arm_detail_field_id"
-          linked_type1 = get_t1_efps "arms"
-        elsif dp.key? "design_detail_field_id"
-        elsif dp.key? "outcome_detail_field_id"
-          linked_type1 = get_t1_efps "outcomes"
-        elsif dp.key? "diagnostic_test_detail_field_id"
-          linked_type1 = get_t1_efps "diagnostic_tests"
-        elsif dp.key? "baseline_characteristic_field_id"
-        elsif dp.key? "adverse_event_field_id"
-          linked_type1 = get_t1_efps "adverse_events"
-        else
+        eefpst1 = nil
+        linked_eefps = nil
+        if qrcf.question.extraction_forms_projects_section.extraction_forms_projects_section_option.by_type1
+          if dp.key? "arm_detail_field_id"
+            linked_type1_efps = get_efps "arms"
+            eefpst1 = get_eefpst1 "arm", dp["arm_id"] 
+          elsif dp.key? "design_detail_field_id"
+          elsif dp.key? "outcome_detail_field_id"
+            linked_type1_efps = get_efps "outcomes"
+            eefpst1 = get_eefpst1 "outcome", dp["outcome_id"] 
+          elsif dp.key? "diagnostic_test_detail_field_id"
+            linked_type1_efps = get_efps "diagnostic_tests"
+            eefpst1 = get_eefpst1 "diagnostic_test", dp["diagnostic_test_id"] 
+          elsif dp.key? "baseline_characteristic_field_id"
+          elsif dp.key? "adverse_event_field_id"
+            linked_type1_efps = get_efps "adverse_events"
+          else
+          end
+          linked_eefps = ExtractionsExtractionFormsProjectsSection.find_or_create_by! \
+            extraction: extraction,
+            extraction_forms_projects_section: linked_type1_efps
         end
 
-        linked_eefps = ExtractionsExtractionFormsProjectsSection.find_or_create_by \
-          extraction: extraction,
-          extraction_forms_projects_section: linked_type1
 
-        eefps = ExtractionsExtractionFormsProjectsSection.find_or_create_by \
+        eefps = ExtractionsExtractionFormsProjectsSection.find_or_create_by! \
           extraction: extraction,
           extraction_forms_projects_section: qrcf.question.extraction_forms_projects_section,
           link_to_type1: linked_eefps
 
-        eefps_qrcf = ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField.find_or_create_by \
+        eefps_qrcf = ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField.find_or_create_by! \
           extractions_extraction_forms_projects_section: eefps,
           question_row_column_field: qrcf,
-          extractions_extraction_forms_projects_sections_type1: nil #TODO
+          extractions_extraction_forms_projects_sections_type1: eefpst1
 
           #question_row_column_field: qrcf,
         case question_type
-        when @qrc_type_text
-          dp_model.where(field_column => q.id).each do |dp|
-            qrc.data_points << DataPointWrapper.new(dp)
-          end
-
+        when "text"
+          Record.find_or_create_by! recordable: eefps_qrcf, name: dp["value"]
         when "checkbox"
         when "radio"
         when "select"
