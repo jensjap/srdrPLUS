@@ -21,18 +21,22 @@ a#toggle-sections-link.button.tiny style='margin-left: 31px;'
           = render 'extractions/shared/extraction_forms_projects_section_tab_links',
             efp: efp
         .toggle-sections-link-medium-10-12.column.medium-10.ajax-section
-          div id="ajax-section-loading-index-#{idx}"
-            div class="lds-grid"
-              div
-              div
-              div
-              div
-              div
-              div
-              div
-              div
-              div
-            = link_to('Load Section', work_extraction_path(@extraction.id, 'panel-tab': @panel_tab_id, efp_id: efp.id, 'ajax-section-loading-index': idx, 'load-js': idx == 0), class: 'section-reload-button', remote: true, style: 'visibility: hidden')
+          - if action_name == 'consolidate'
+            = render "extractions/shared/extraction_forms_projects_section_tab_content",
+              efp: efp
+          - else
+            div id="ajax-section-loading-index-#{idx}"
+              div class="lds-grid"
+                div
+                div
+                div
+                div
+                div
+                div
+                div
+                div
+                div
+              = link_to('Load Section', work_extraction_path(@extraction.id, 'panel-tab': @panel_tab_id, efp_id: efp.id, 'ajax-section-loading-index': idx, 'load-js': idx == 0), class: 'section-reload-button', remote: true, style: 'visibility: hidden')
 
 javascript:
   $('.section-reload-button').click()

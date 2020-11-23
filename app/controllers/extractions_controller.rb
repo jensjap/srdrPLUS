@@ -217,6 +217,7 @@ class ExtractionsController < ApplicationController
   # GET /projects/1/extractions/consolidate
   def consolidate
     authorize(@project, policy_class: ExtractionPolicy)
+    @panel_tab_id = params['panel-tab'] || 'keyquestions'
 
     set_extraction_forms_projects
 
@@ -289,10 +290,7 @@ class ExtractionsController < ApplicationController
           },
           {
             extractions_extraction_forms_projects_sections: [{ link_to_type1: [{ extraction_forms_projects_section: :section }] }, { statusing: :status }]
-          },
-          {
-            citation: :journal
-          },
+          }
         ).
         where(id: extraction_ids_params)
     end
