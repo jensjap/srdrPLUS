@@ -13,8 +13,9 @@ namespace(:db) do
       #projects = db.query("SELECT * FROM projects")
       #projects = db.query("SELECT * FROM projects WHERE id=159")
       #projects = db.query("SELECT * FROM projects WHERE id=520")
+      projects = db.query("SELECT * FROM projects WHERE id=697")
       #projects = db.query("SELECT * FROM projects WHERE id>516 LIMIT 3")
-      projects = db.query("SELECT * FROM projects WHERE id>1006 LIMIT 3")
+      #projects = db.query("SELECT * FROM projects WHERE id>1006 LIMIT 3")
 
       projects.each do |project_hash|
         begin
@@ -73,36 +74,54 @@ namespace(:db) do
       @srdr_to_srdrplus_key_questions_dict = {}
       @default_projects_users_role = nil
       @data_points_queue = {}
-      @t1_efps_dict = {}
+      @efps_dict = {}
       @eefspt1_dict = {}
+      @qrcqrco_dict = {}
+    end
+
+    def set_qrcqrco question_id, option_text, qrcqrco
+      @qrcqrco_dict[question_id] ||= {}
+      @qrcqrco_dict[question_id][option_text] = qrcqrco.id
+    end
+
+    def get_qrcqrco question_id, option_text
+      @qrcqrco_dict[question_id] ||= {}
+      @qrcqrco_dict[question_id][option_text]
     end
 
     def set_eefpst1 t1_name, t1_id, eefpst1
-      @t1_efps_dict[t1_name] ||= {}
-      @t1_efps_dict[t1_name][t1_id] = eefpst1
+      @eefspt1_dict[t1_name] ||= {}
+      @eefspt1_dict[t1_name][t1_id] = eefpst1
     end
 
     def get_eefpst1 t1_name, t1_id
-      @t1_efps_dict[t1_name] ||= {}
-      @t1_efps_dict[t1_name][t1_id]
+      @eefspt1_dict[t1_name] ||= {}
+      @eefspt1_dict[t1_name][t1_id]
     end
 
     def set_efps t1_name, efps
-      @t1_efps_dict[t1_name] = efps
+      @efps_dict[t1_name] = efps
     end
 
     def get_efps t1_name
-      @t1_efps_dict[t1_name]
+      @efps_dict[t1_name]
     end
 
-    def queue_data_point dp, qrcf, question_type
-      @data_points_queue[dp["study_id"]] ||= []
-      @data_points_queue[dp["study_id"]] << {dp: dp, qrcf: qrcf, question_type: question_type}
+    def queue_data_point dp, qrcf
+      study_id = dp["study_id"]
+      question_type = qrcf.question_row_column.question_row_column_type
+
+      @data_points_queue[study_id] ||= {}
+      @data_points_queue[study_id][qrcf.id] ||= {data_points: [], qrcf: qrcf, question_type: question_type}
+      @data_points_queue[study_id][qrcf.id][:data_points] << dp
     end
     
     def get_data_point_queue_for_study study_id
-      @data_points_queue[study_id] ||= []
-      @data_points_queue[study_id]
+      if @data_points_queue.key? study_id
+        return @data_points_queue[study_id]
+      else
+        return {}
+      end
     end
 
     def get_srdrplus_project srdr_project_id
@@ -351,14 +370,14 @@ namespace(:db) do
 
         q_fields = legacy_question_fields.select{|qf| qf["#{table_root}_id"] == legacy_question_id}
         q_fields = (q_fields.select{|qf| qf["row_number"] != -1} + q_fields.select{|qf| qf["row_number"] == -1})
-        q_data_points = legacy_data_points.select{|dp| dp["#{table_root}_field_id"] == q["id"]}
+        q_data_points = legacy_data_points
 
         case question_type
         when "text"
           qrcf = question.question_rows.first.question_row_columns.first.question_row_column_fields.first 
 
-          q_data_points.each do |dp|
-            queue_data_point dp, qrcf, question_type
+          q_data_points.select{|dp| dp["#{table_root}_field_id"] == q["id"]}.each do |dp|
+            queue_data_point dp, qrcf
           end
         when "checkbox"
           migrate_multiple_choice_question question, @qrc_type_checkbox, q, q_fields, q_data_points, table_root
@@ -388,7 +407,6 @@ namespace(:db) do
           qrcqrco = QuestionRowColumnsQuestionRowColumnOption.create name: "Other (please specify):",
                                                                      question_row_column_option: @qrco_answer_choice,
                                                                      question_row_column: question_row_column
-          p qf["option_text"]
           ff = FollowupField.create question_row_columns_question_row_column_option: qrcqrco
         else
           if qf["has_subquestion"] == 1
@@ -403,8 +421,11 @@ namespace(:db) do
           end
         end
 
-        data_points_of_legacy_question.select{|dp| dp["#{table_root}_id=#{qf["id"]}"]}.each do |dp|
-          queue_data_point dp, qrcf, question_type
+        set_qrcqrco question.id, qrcqrco.name, qrcqrco
+
+        dps = data_points_of_legacy_question.select{|dp| dp["#{table_root}_field_id"]==legacy_question["id"]}
+        dps.each do |dp|
+          queue_data_point dp, question_row_column.question_row_column_fields.first
         end
       end
     end
@@ -495,7 +516,6 @@ namespace(:db) do
         end
 
         data_points_of_legacy_question.select{|dp| dp["row_field_id=#{rf["id"]}"]}.each do |dp|
-          queue_qrcf_data_point dp, qrc.question_row_column_fields.first
         end
       end
     end
@@ -599,55 +619,92 @@ namespace(:db) do
     end
 
     def migrate_study_data study_id, extraction
-      get_data_point_queue_for_study(study_id).each do |q_item|
-        dp = q_item[:dp]
+      get_data_point_queue_for_study(study_id).each do |q_id, q_item|
         qrcf = q_item[:qrcf]
+        question = qrcf.question
         question_type = q_item[:question_type]
-
-        eefpst1 = nil
-        linked_eefps = nil
+        data_points = q_item[:data_points]
         if qrcf.question.extraction_forms_projects_section.extraction_forms_projects_section_option.by_type1
-          if dp.key? "arm_detail_field_id"
-            linked_type1_efps = get_efps "arms"
-            eefpst1 = get_eefpst1 "arm", dp["arm_id"] 
-          elsif dp.key? "design_detail_field_id"
-          elsif dp.key? "outcome_detail_field_id"
-            linked_type1_efps = get_efps "outcomes"
-            eefpst1 = get_eefpst1 "outcome", dp["outcome_id"] 
-          elsif dp.key? "diagnostic_test_detail_field_id"
-            linked_type1_efps = get_efps "diagnostic_tests"
-            eefpst1 = get_eefpst1 "diagnostic_test", dp["diagnostic_test_id"] 
-          elsif dp.key? "baseline_characteristic_field_id"
-          elsif dp.key? "adverse_event_field_id"
-            linked_type1_efps = get_efps "adverse_events"
-          else
+          eefpst1 = nil
+          linked_eefps = nil
+          table_root = nil
+          data_points[0..0].each do |dp|
+            linked_type1_efps = nil
+            if dp.key? "arm_detail_field_id"
+              table_root = "arm"
+              linked_type1_efps = get_efps "arms"
+            elsif dp.key? "design_detail_field_id"
+              table_root = "design"
+            elsif dp.key? "outcome_detail_field_id"
+              table_root = "outcome"
+              linked_type1_efps = get_efps "outcomes"
+            elsif dp.key? "diagnostic_test_detail_field_id"
+              table_root = "diagnostic_test"
+              linked_type1_efps = get_efps "diagnostic_tests"
+            elsif dp.key? "baseline_characteristic_field_id"
+              table_root = "baseline_characteristic"
+            elsif dp.key? "adverse_event_field_id"
+              table_root = "adverse_event"
+              linked_type1_efps = get_efps "adverse_events"
+            else
+            end
+            linked_eefps = ExtractionsExtractionFormsProjectsSection.find_or_create_by \
+              extraction: extraction,
+              extraction_forms_projects_section: linked_type1_efps
           end
-          linked_eefps = ExtractionsExtractionFormsProjectsSection.find_or_create_by! \
+
+          eefps = ExtractionsExtractionFormsProjectsSection.find_or_create_by \
             extraction: extraction,
-            extraction_forms_projects_section: linked_type1_efps
-        end
+            extraction_forms_projects_section: qrcf.question.extraction_forms_projects_section,
+            link_to_type1: linked_eefps
 
+          adict = {}
+          data_points.each do |dp|
+            eefpst1 = get_eefpst1 table_root, dp[table_root + "_id"] 
+            adict[eefpst1&.id] ||= []
+            adict[eefpst1&.id] << dp["value"]
+          end
 
-        eefps = ExtractionsExtractionFormsProjectsSection.find_or_create_by! \
-          extraction: extraction,
-          extraction_forms_projects_section: qrcf.question.extraction_forms_projects_section,
-          link_to_type1: linked_eefps
+          adict.each do |eefpst1_id, values|
+            eefps_qrcf = ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField.find_or_create_by \
+              extractions_extraction_forms_projects_section: eefps,
+              question_row_column_field: qrcf,
+              extractions_extraction_forms_projects_sections_type1_id: eefpst1_id
 
-        eefps_qrcf = ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField.find_or_create_by! \
-          extractions_extraction_forms_projects_section: eefps,
-          question_row_column_field: qrcf,
-          extractions_extraction_forms_projects_sections_type1: eefpst1
+            case question_type
+            when @qrc_type_text
+              Record.find_or_create_by! recordable: eefps_qrcf, name: values.first
+            when @qrc_type_checkbox
+              Record.find_or_create_by! recordable: eefps_qrcf, name: "[" + (values.map{|v| get_qrcqrco(question.id, v)} - [nil]).join(", ") + "]"
+            when @qrc_type_radio, @qrc_type_dropdown
+              Record.find_or_create_by! recordable: eefps_qrcf, name: get_qrcqrco(question.id, values.first) || ""
+            else
+              p q_item
+            end
+          end
+        else
+          eefps = ExtractionsExtractionFormsProjectsSection.find_or_create_by \
+            extraction: extraction,
+            extraction_forms_projects_section: qrcf.question.extraction_forms_projects_section,
+            link_to_type1: nil
 
-          #question_row_column_field: qrcf,
-        case question_type
-        when "text"
-          Record.find_or_create_by! recordable: eefps_qrcf, name: dp["value"]
-        when "checkbox"
-        when "radio"
-        when "select"
-        when "matrix_checkbox"
-        when "matrix_radio"
-        when "matrix_select"
+          eefps_qrcf = ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField.find_or_create_by \
+            extractions_extraction_forms_projects_section: eefps,
+            question_row_column_field: qrcf,
+            extractions_extraction_forms_projects_sections_type1: nil
+
+          case question_type
+          when @qrc_type_text
+            Record.find_or_create_by recordable: eefps_qrcf, name: data_points.first["value"]
+          when @qrc_type_checkbox
+            record_name = "[" + (data_points.map{|dp| get_qrcqrco(question.id, dp["value"]).to_s} - [nil]).join(", ") + "]"
+            Record.find_or_create_by recordable: eefps_qrcf, name: record_name
+          when @qrc_type_radio, @qrc_type_dropdown
+            record_name = get_qrcqrco(question.id, data_points.first["value"]).to_s || ""
+            Record.find_or_create_by recordable: eefps_qrcf, name: record_name
+          else
+            p q_item
+          end
         end
       end
     end
@@ -658,7 +715,7 @@ namespace(:db) do
         journal = Journal.find_or_create_by name: primary_publication_hash["journal"],
                                             volume: primary_publication_hash["volume"],
                                             issue: primary_publication_hash["issue"],
-                                            publication_date: primary_publication_hash["year"]
+                                            publication_date: primary_publication_hash["year"] || ""
       end
       new_citation = Citation.new name: primary_publication_hash["title"] || "", 
                                   abstract: primary_publication_hash["abstract"] || "",
