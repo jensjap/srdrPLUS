@@ -13,9 +13,9 @@ namespace(:db) do
       #projects = db.query("SELECT * FROM projects")
       #projects = db.query("SELECT * FROM projects WHERE id=159")
       #projects = db.query("SELECT * FROM projects WHERE id=520")
-      projects = db.query("SELECT * FROM projects WHERE id=697")
+      #projects = db.query("SELECT * FROM projects WHERE id=697")
       #projects = db.query("SELECT * FROM projects WHERE id>516 LIMIT 3")
-      #projects = db.query("SELECT * FROM projects WHERE id>1006 LIMIT 3")
+      projects = db.query("SELECT * FROM projects WHERE id>1006 LIMIT 3")
 
       projects.each do |project_hash|
         begin
@@ -675,9 +675,11 @@ namespace(:db) do
             when @qrc_type_text
               Record.find_or_create_by! recordable: eefps_qrcf, name: values.first
             when @qrc_type_checkbox
-              Record.find_or_create_by! recordable: eefps_qrcf, name: "[" + (values.map{|v| get_qrcqrco(question.id, v)} - [nil]).join(", ") + "]"
+              record_name = "[" + (data_points.map{|dp| get_qrcqrco(question.id, dp["value"]).to_s} - [nil]).join(", ") + "]"
+              Record.find_or_create_by recordable: eefps_qrcf, name: record_name
             when @qrc_type_radio, @qrc_type_dropdown
-              Record.find_or_create_by! recordable: eefps_qrcf, name: get_qrcqrco(question.id, values.first) || ""
+              record_name = get_qrcqrco(question.id, data_points.first["value"]).to_s || ""
+              Record.find_or_create_by recordable: eefps_qrcf, name: record_name
             else
               p q_item
             end
