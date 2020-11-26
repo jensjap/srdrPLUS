@@ -15,7 +15,6 @@ class Section < ApplicationRecord
   include SharedSuggestableMethods
 
   acts_as_paranoid
-  has_paper_trail
 
   scope :default_sections, -> { where(default: true) }
 

@@ -25,7 +25,6 @@ class Project < ApplicationRecord
   attr_accessor :create_empty
 
   acts_as_paranoid
-  has_paper_trail
   searchkick
 
   paginates_per 8

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_29_033924) do
+ActiveRecord::Schema.define(version: 2020_11_26_034053) do
 
   create_table "abstrackr_settings", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "profile_id"
@@ -1884,28 +1884,6 @@ ActiveRecord::Schema.define(version: 2020_09_29_033924) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["unlock_token"], name: "index_users_on_unlock_token", unique: true
     t.index ["user_type_id"], name: "index_users_on_user_type_id"
-  end
-
-  create_table "version_associations", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "version_id"
-    t.string "foreign_key_name", null: false
-    t.integer "foreign_key_id"
-    t.string "foreign_type"
-    t.index ["foreign_key_name", "foreign_key_id", "foreign_type"], name: "index_version_associations_on_foreign_key"
-    t.index ["version_id"], name: "index_version_associations_on_version_id"
-  end
-
-  create_table "versions", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
-    t.string "item_type", limit: 191, null: false
-    t.integer "item_id", null: false
-    t.string "event", null: false
-    t.string "whodunnit"
-    t.text "object", limit: 4294967295
-    t.datetime "created_at"
-    t.text "object_changes", limit: 4294967295
-    t.integer "transaction_id"
-    t.index ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id"
-    t.index ["transaction_id"], name: "index_versions_on_transaction_id"
   end
 
   create_table "wacs_bacs_rssms", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

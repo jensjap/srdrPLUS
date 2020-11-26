@@ -17,7 +17,6 @@ class KeyQuestionsProject < ApplicationRecord
   include SharedOrderableMethods
 
   acts_as_paranoid column: :active, sentinel_value: true
-  has_paper_trail
 
   before_validation -> { set_ordering_scoped_by(:extraction_forms_projects_section_id) }, on: :create
 

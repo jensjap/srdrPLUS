@@ -32,7 +32,6 @@ class ExtractionFormsProject < ApplicationRecord
   attr_accessor :create_empty
 
   acts_as_paranoid column: :active, sentinel_value: true
-  has_paper_trail
 
   # Get all ExtractionFormsProject items that are linked to a particular Extraction.
   #scope :by_extraction, -> (extraction_id) {
