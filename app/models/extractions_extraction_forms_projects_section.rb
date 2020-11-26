@@ -17,7 +17,6 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
   include SharedProcessTokenMethods
 
   acts_as_paranoid column: :active, sentinel_value: true
-  has_paper_trail
 
   #!!! Doesn't work
 #  scope :result_type_sections, -> () {

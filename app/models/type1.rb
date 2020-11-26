@@ -15,7 +15,6 @@ class Type1 < ApplicationRecord
   include SharedSuggestableMethods
 
   acts_as_paranoid
-  has_paper_trail
 
   default_scope { order(:id) }
 

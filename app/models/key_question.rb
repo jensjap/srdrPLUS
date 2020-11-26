@@ -14,7 +14,6 @@ class KeyQuestion < ApplicationRecord
   include SharedQueryableMethods
 
   acts_as_paranoid
-  has_paper_trail
 
   after_create :record_suggestor
 

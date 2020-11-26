@@ -13,7 +13,6 @@
 # Temporarily calling it ExtractionsExtractionFormsProjectsSectionsType1Row. This is meant to be Outcome Population.
 class ExtractionsExtractionFormsProjectsSectionsType1Row < ApplicationRecord
   acts_as_paranoid
-  has_paper_trail
 
   # We need to create the four ResultStatisticSections:
   #   - Descriptive Statistics

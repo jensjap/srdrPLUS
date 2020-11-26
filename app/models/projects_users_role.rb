@@ -15,7 +15,6 @@ class ProjectsUsersRole < ApplicationRecord
   include SharedParanoiaMethods
 
   acts_as_paranoid column: :active, sentinel_value: true
-  has_paper_trail
 
   scope :by_project, -> (project) { joins(projects_user: :project).where(projects_users: { project: project.id } ) }
 

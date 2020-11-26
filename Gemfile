@@ -93,7 +93,6 @@ gem 'rails_admin', '~> 1.3.0'
 gem 'toastr_rails'
 
 # Versioning of models + soft-delete.
-gem 'paper_trail'
 gem 'paranoia', '~>2.2'
 
 # Create lots of data.

@@ -20,7 +20,6 @@ class Citation < ApplicationRecord
   include SharedProcessTokenMethods
 
   acts_as_paranoid
-  has_paper_trail
   searchkick
 
   belongs_to :citation_type, optional: true

@@ -34,8 +34,6 @@
 
 class User < ApplicationRecord
   acts_as_paranoid
-  has_paper_trail ignore: [:sign_in_count, :current_sign_in_at,
-      :last_sign_in_at, :current_sign_in_ip, :last_sign_in_ip]
 
   devise :omniauthable, :omniauth_providers => [:google_oauth2]
   has_secure_token :api_key

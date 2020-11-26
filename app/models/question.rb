@@ -16,7 +16,6 @@ class Question < ApplicationRecord
   include SharedSuggestableMethods
 
   acts_as_paranoid
-  has_paper_trail
 
   after_create :create_default_question_row
   after_save :ensure_matrix_column_headers

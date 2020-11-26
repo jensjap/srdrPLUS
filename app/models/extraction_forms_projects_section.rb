@@ -19,7 +19,6 @@ class ExtractionFormsProjectsSection < ApplicationRecord
   include SharedParanoiaMethods
 
   acts_as_paranoid column: :active, sentinel_value: true
-  has_paper_trail
 
   scope :in_standard_extraction, -> {
     joins(:extraction_forms_project)

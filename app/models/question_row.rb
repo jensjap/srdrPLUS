@@ -12,7 +12,6 @@
 
 class QuestionRow < ApplicationRecord
   acts_as_paranoid
-  has_paper_trail
 
   after_create :create_default_question_row_columns
 

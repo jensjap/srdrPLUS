@@ -29,7 +29,6 @@ describe ProjectPolicy, type: :controller do
     it { should_not permit(:edit) }
     it { should_not permit(:update) }
     it { should_not permit(:destroy) }
-    it { should_not permit(:undo) }
     it { should_not permit(:export) }
     it { should_not permit(:import_csv) }
     it { should_not permit(:import_pubmed) }
@@ -43,7 +42,6 @@ describe ProjectPolicy, type: :controller do
     it { should permit(:edit) }
     it { should permit(:update) }
     it { should permit(:destroy) }
-    it { should permit(:undo) }
     it { should permit(:export) }
     it { should permit(:import_csv) }
     it { should permit(:import_pubmed) }
@@ -57,7 +55,6 @@ describe ProjectPolicy, type: :controller do
     it { should_not permit(:edit) }
     it { should_not permit(:update) }
     it { should_not permit(:destroy) }
-    it { should_not permit(:undo) }
     it { should permit(:export) }
     it { should_not permit(:import_csv) }
     it { should_not permit(:import_pubmed) }
@@ -71,7 +68,6 @@ describe ProjectPolicy, type: :controller do
     it { should_not permit(:edit) }
     it { should_not permit(:update) }
     it { should_not permit(:destroy) }
-    it { should_not permit(:undo) }
     it { should permit(:export) }
     it { should_not permit(:import_csv) }
     it { should_not permit(:import_pubmed) }
@@ -85,7 +81,6 @@ describe ProjectPolicy, type: :controller do
     it { should_not permit(:edit) }
     it { should_not permit(:update) }
     it { should_not permit(:destroy) }
-    it { should_not permit(:undo) }
     it { should_not permit(:export) }
     it { should_not permit(:import_csv) }
     it { should_not permit(:import_pubmed) }

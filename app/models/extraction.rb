@@ -16,7 +16,6 @@ class Extraction < ApplicationRecord
   include ConsolidationHelper
 
   acts_as_paranoid
-  has_paper_trail
 
   #!!! We can't implement this without ensuring integrity of the extraction form. It is possible that the database
   #    is rendered inconsistent if a project lead changes links between type1 and type2 after this hook is called.
