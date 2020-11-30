@@ -40,9 +40,15 @@ def build_type2_sections_wide_srdr_style(p, project, highlight, wrap, kq_ids=[],
             pmid: extraction.citation.pmid,
             kq_selection: KeyQuestion.where(id: kq_ids_by_extraction).collect(&:name).map(&:strip).join("\x0D\x0A"))
 
-          eefps = efps.extractions_extraction_forms_projects_sections.find_by!(
+          eefps = efps.extractions_extraction_forms_projects_sections.find_or_create_by!(
             extraction: extraction,
-            extraction_forms_projects_section: efps)
+            link_to_type1: efps.link_to_type1.nil? ?
+              nil :
+              ExtractionsExtractionFormsProjectsSection.find_or_create_by!(
+                extraction: extraction,
+                extraction_forms_projects_section: efps.link_to_type1
+              )
+          )
 
           # If this section is linked we have to iterate through each occurrence of
           # type1 via eefps.link_to_type1.extractions_extraction_forms_projects_sections_type1s.
