@@ -14,8 +14,9 @@ namespace(:db) do
       #projects = db.query("SELECT * FROM projects WHERE id=159")
       #projects = db.query("SELECT * FROM projects WHERE id=520")
       #projects = db.query("SELECT * FROM projects WHERE id=697")
+      projects = db.query("SELECT * FROM projects WHERE id in (16);")
       #projects = db.query("SELECT * FROM projects WHERE id>516 LIMIT 3")
-      projects = db.query("SELECT * FROM projects WHERE id>1006 LIMIT 3")
+      #projects = db.query("SELECT * FROM projects WHERE id>1006 LIMIT 3")
 
       projects.each do |project_hash|
         begin
@@ -79,14 +80,18 @@ namespace(:db) do
       @qrcqrco_dict = {}
     end
 
-    def set_qrcqrco question_id, option_text, qrcqrco
-      @qrcqrco_dict[question_id] ||= {}
-      @qrcqrco_dict[question_id][option_text] = qrcqrco.id
+    def set_qrcqrco qrc_id, option_text, qrcqrco
+      @qrcqrco_dict[qrc_id] ||= {}
+      @qrcqrco_dict[qrc_id][option_text] = qrcqrco.id
     end
 
-    def get_qrcqrco question_id, option_text
-      @qrcqrco_dict[question_id] ||= {}
-      @qrcqrco_dict[question_id][option_text]
+    def get_qrcqrco qrc_id, option_text
+      if @qrcqrco_dict.key? qrc_id
+        @qrcqrco_dict[qrc_id][option_text]
+      else
+        p question_id, option_text
+        return nil
+      end
     end
 
     def set_eefpst1 t1_name, t1_id, eefpst1
@@ -113,7 +118,9 @@ namespace(:db) do
 
       @data_points_queue[study_id] ||= {}
       @data_points_queue[study_id][qrcf.id] ||= {data_points: [], qrcf: qrcf, question_type: question_type}
-      @data_points_queue[study_id][qrcf.id][:data_points] << dp
+      if not @data_points_queue[study_id][qrcf.id][:data_points].include? dp
+        @data_points_queue[study_id][qrcf.id][:data_points] << dp
+      end
     end
     
     def get_data_point_queue_for_study study_id
@@ -185,7 +192,8 @@ namespace(:db) do
         migrate_extraction_forms_as_standard_efp efs
       end
 
-      studies_hash = db.query "SELECT * FROM studies where project_id=#{@legacy_project_id}"
+      #studies_hash = db.query "SELECT * FROM studies where project_id=#{@legacy_project_id}" TODO uncomment
+      studies_hash = db.query "SELECT * FROM studies where project_id=#{@legacy_project_id} and id=2685" #TODO DELETE
       studies_hash.each do |study_hash|
         study_id = study_hash["id"]
 
@@ -219,7 +227,7 @@ namespace(:db) do
           section = Section.find_or_create_by(name: ef_section["section_name"].titleize)
           case ef_section["section_name"]
           when "arms"
-            arms_efps = combined_efp.extraction_forms_projects_sections.create(section: section, 
+            arms_efps = combined_efp.extraction_forms_projects_sections.find_or_create_by(section: section, 
                                                                                extraction_forms_projects_section_type: @efps_type_1)
             set_efps "arms", arms_efps
             if adverse_events_efps.present? then adverse_events_efps.update(link_to_type1:arms_efps) end
@@ -231,7 +239,7 @@ namespace(:db) do
               ExtractionFormsProjectsSectionsType1.create extraction_forms_projects_section: arms_efps, type1: type1
             end
           when "outcomes"
-            outcomes_efps = combined_efp.extraction_forms_projects_sections.create(section: section, 
+            outcomes_efps = combined_efp.extraction_forms_projects_sections.find_or_create_by(section: section, 
                                                                                    extraction_forms_projects_section_type: @efps_type_1)
             set_efps "outcomes", outcomes_efps
             ef_outcomes = db.query "SELECT * FROM extraction_form_outcome_names where extraction_form_id=#{ef["id"]}"
@@ -244,7 +252,7 @@ namespace(:db) do
                                                           type1_type: type1_type
             end
           when "diagnostic_tests"
-            diagnostic_tests_efps = combined_efp.extraction_forms_projects_sections.create(section: section, extraction_forms_projects_section_type: @efps_type_4)
+            diagnostic_tests_efps = combined_efp.extraction_forms_projects_sections.find_or_create_by(section: section, extraction_forms_projects_section_type: @efps_type_4)
             set_efps "diagnostic_tests", diagnostic_tests_efps
             ef_diagnostic_tests = db.query "SELECT * FROM extraction_form_outcome_names where extraction_form_id=#{ef["id"]}"
             ef_diagnostic_tests.each do |ef_diagnostic_test|
@@ -266,10 +274,10 @@ namespace(:db) do
 
           when "quality", "arm_details","outcome_details", "quality_details", "diagnostic_test_details","design"
             section = Section.find_or_create_by(name: ef_section["section_name"].titleize)
-            t2_efps << combined_efp.extraction_forms_projects_sections.create(section: section, extraction_forms_projects_section_type: @efps_type_2)
+            t2_efps << combined_efp.extraction_forms_projects_sections.find_or_create_by(section: section, extraction_forms_projects_section_type: @efps_type_2)
           when "results"
             section = Section.find_or_create_by(name: ef_section["section_name"].titleize)
-            combined_efp.extraction_forms_projects_sections.create(section: section, extraction_forms_projects_section_type: @efps_type_results)
+            combined_efp.extraction_forms_projects_sections.find_or_create_by(section: section, extraction_forms_projects_section_type: @efps_type_results)
 
           else
             #Baseline Characteristics
@@ -324,7 +332,6 @@ namespace(:db) do
           else
           end
         end
-        break
       end
     end
 
@@ -421,7 +428,7 @@ namespace(:db) do
           end
         end
 
-        set_qrcqrco question.id, qrcqrco.name, qrcqrco
+        set_qrcqrco question_row_column.id, qrcqrco.name, qrcqrco
 
         dps = data_points_of_legacy_question.select{|dp| dp["#{table_root}_field_id"]==legacy_question["id"]}
         dps.each do |dp|
@@ -458,10 +465,11 @@ namespace(:db) do
           qrcqrco = QuestionRowColumnsQuestionRowColumnOption.create name: cf["option_text"],
                                                                      question_row_column_option: @qrco_answer_choice,
                                                                      question_row_column: qrc
+          set_qrcqrco qrc.id, qrcqrco.name, qrcqrco
         end
 
-        data_points_of_legacy_question.select{|dp| dp["row_field_id=#{rf["id"]}"]}.each do |dp|
-          queue_qrcf_data_point dp, qrc.question_row_column_fields.first
+        data_points_of_legacy_question.select{|dp| dp["row_field_id"] == rf["id"]}.each do |dp|
+          queue_data_point dp, qrc.question_row_column_fields.first
         end
       end
     end
@@ -470,13 +478,12 @@ namespace(:db) do
       r_farr = db.query "SELECT * FROM #{table_root}_fields WHERE #{table_root}_id=#{legacy_question["id"]} and column_number=0 ORDER BY row_number ASC"
       c_farr = db.query "SELECT * FROM #{table_root}_fields WHERE #{table_root}_id=#{legacy_question["id"]} and row_number=0 ORDER BY column_number ASC"
 
-      qr = question.question_rows.first
-      qrc = qr.question_row_columns.first
       _is_first = true
 
       (r_farr.select{|rf| rf["row_number"] != -1} + r_farr.select{|rf| rf["row_number"] == -1}).each do |rf|
         if _is_first
           _is_first = false
+          qr = question.question_rows.first
           qr.question_row_columns.destroy_all
         else
           qr = QuestionRow.create question: question
@@ -490,7 +497,9 @@ namespace(:db) do
         end
 
         c_farr.each do |cf|
-          qrc = QuestionRowColumn.create question_row: qr, name: cf["option_text"]
+          qrc = QuestionRowColumn.create question_row: qr,
+                                         name: cf["option_text"],
+                                         question_row_column_type: @qrc_type_dropdown
 
           matrix_dropdown_options = db.query "SELECT * FROM matrix_dropdown_options WHERE row_id=#{rf["id"]} and column_id=#{cf["id"]} ORDER BY option_number"
 
@@ -505,13 +514,15 @@ namespace(:db) do
             qrc.update question_row_column_type: @qrc_type_dropdown
             qrc.question_row_columns_question_row_column_options.where(question_row_column_option: @qrco_answer_choice).destroy_all
             dropdown_options.each do |op|
-              qrcqrco = QuestionRowColumnsQuestionRowColumnOption.create name: op,
+              qrcqrco = QuestionRowColumnsQuestionRowColumnOption.create! name: op,
                                                                          question_row_column_option: @qrco_answer_choice,
                                                                          question_row_column: qrc
               if op.downcase == 'other'
                 FollowupField.create question_row_columns_question_row_column_option: qrcqrco
               end
             end
+          else
+            qrc.update question_row_column_type: @qrc_type_text
           end
         end
 
@@ -621,6 +632,7 @@ namespace(:db) do
     def migrate_study_data study_id, extraction
       get_data_point_queue_for_study(study_id).each do |q_id, q_item|
         qrcf = q_item[:qrcf]
+        qrc_id = qrcf.question_row_column.id
         question = qrcf.question
         question_type = q_item[:question_type]
         data_points = q_item[:data_points]
@@ -673,12 +685,12 @@ namespace(:db) do
 
             case question_type
             when @qrc_type_text
-              Record.find_or_create_by! recordable: eefps_qrcf, name: values.first
+              Record.find_or_create_by recordable: eefps_qrcf, name: values.first
             when @qrc_type_checkbox
-              record_name = "[" + (data_points.map{|dp| get_qrcqrco(question.id, dp["value"]).to_s} - [nil]).join(", ") + "]"
+              record_name = "[" + (values.map{|dp| get_qrcqrco(qrc_id, dp).to_s} - [nil, "", " "]).join(", ") + "]"
               Record.find_or_create_by recordable: eefps_qrcf, name: record_name
             when @qrc_type_radio, @qrc_type_dropdown
-              record_name = get_qrcqrco(question.id, data_points.first["value"]).to_s || ""
+              record_name = get_qrcqrco(qrc_id, values.first).to_s || ""
               Record.find_or_create_by recordable: eefps_qrcf, name: record_name
             else
               p q_item
@@ -699,11 +711,13 @@ namespace(:db) do
           when @qrc_type_text
             Record.find_or_create_by recordable: eefps_qrcf, name: data_points.first["value"]
           when @qrc_type_checkbox
-            record_name = "[" + (data_points.map{|dp| get_qrcqrco(question.id, dp["value"]).to_s} - [nil]).join(", ") + "]"
+            record_name = "[" + (data_points.map{|dp| get_qrcqrco(qrc_id, dp["value"]).to_s} - [nil, "", " "]).join(", ") + "]"
+
             Record.find_or_create_by recordable: eefps_qrcf, name: record_name
           when @qrc_type_radio, @qrc_type_dropdown
-            record_name = get_qrcqrco(question.id, data_points.first["value"]).to_s || ""
-            Record.find_or_create_by recordable: eefps_qrcf, name: record_name
+            record_name = get_qrcqrco(qrc_id, data_points.first["value"]).to_s || ""
+            r = Record.find_or_create_by recordable: eefps_qrcf, name: record_name
+            p r
           else
             p q_item
           end
