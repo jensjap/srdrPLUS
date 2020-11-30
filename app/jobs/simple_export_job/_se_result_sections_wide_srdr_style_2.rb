@@ -278,6 +278,9 @@ def style_data_columns_in_worksheet(col_grp_size, ws, style1, style2, style3, st
   found, start_idx = find_index_of_cell_with_value(ws.rows[0], 'Comparison Name 1') unless found
   end_idx          = ws.rows[0].length
 
+  # Return if there are no styles to apply.
+  return unless (col_grp_size.present? && found.present? && start_idx.present? && end_idx.present?)
+
   no_of_col_groups = (end_idx - start_idx)/col_grp_size
   no_of_col_groups.times do |n|
     n_add = n*col_grp_size
