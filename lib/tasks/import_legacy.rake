@@ -517,6 +517,7 @@ namespace(:db) do
               qrcqrco = QuestionRowColumnsQuestionRowColumnOption.create! name: op,
                                                                          question_row_column_option: @qrco_answer_choice,
                                                                          question_row_column: qrc
+              set_qrcqrco qrc.id, qrcqrco.name, qrcqrco
               if op.downcase == 'other'
                 FollowupField.create question_row_columns_question_row_column_option: qrcqrco
               end
@@ -524,9 +525,9 @@ namespace(:db) do
           else
             qrc.update question_row_column_type: @qrc_type_text
           end
-        end
-
-        data_points_of_legacy_question.select{|dp| dp["row_field_id=#{rf["id"]}"]}.each do |dp|
+          data_points_of_legacy_question.select{|dp| dp["column_field_id"] == cf["id"] && dp["row_field_id"] == rf["id"]}.each do |dp|
+            queue_data_point dp, qrc.question_row_column_fields.first
+          end
         end
       end
     end
