@@ -51926,6 +51926,18 @@ let documentCode = function() {
 
       $(orderable_list).sortable({ onUpdate: on_update, onStart: on_start });
 
+      document.addEventListener('drag', (event) => {
+        let y = $(window).scrollTop();
+        let eventY = event.clientY;
+
+        if (eventY >= 10 && eventY < 50) {
+          $(window).scrollTop(y - 10);
+        } else if (eventY > window.innerHeight + window.scrollY - 200) {
+          $(window).scrollTop(y + 10);
+        }
+      })
+
+
       if ($('.sort-handle').length > 0) {
         $(orderable_list).sortable( "option", "handle", ".sort-handle" );
       }
