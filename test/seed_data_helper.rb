@@ -3,8 +3,6 @@ module SeedData
   def self.extended(object)
     object.instance_exec do
       return unless UserType.all.count == 0
-      # Turn off paper_trail.
-      PaperTrail.enabled = false
 
       # UserTypes.
       UserType.create!([
@@ -1218,9 +1216,6 @@ module SeedData
       # Seed Extraction Forms.
       @ef1 = ExtractionForm.create(name: 'ef1')
 
-      # Turn on paper_trail.
-      PaperTrail.enabled = true
-
     end
   end
 end
@@ -1253,9 +1248,6 @@ module SeedDataExtended
       ]
 
       object.instance_exec do
-        # Turn off paper_trail.
-        PaperTrail.enabled = false
-
         # Seed Key Questions.
         @kq1 = KeyQuestion.create!(name: 'kq1')
         @kq2 = KeyQuestion.create!(name: 'kq2')
@@ -1606,8 +1598,6 @@ module SeedDataExtended
           label.labels_reasons << LabelsReason.create({ reason: reason, projects_users_role: label.project.projects_users_roles.all.sample })
         end
 
-        # Turn on paper_trail.
-        PaperTrail.enabled = true
       end
     end
   end

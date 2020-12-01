@@ -15,7 +15,6 @@ class Record < ApplicationRecord
   include SharedProcessTokenMethods
 
   acts_as_paranoid
-  has_paper_trail
 
   #after_commit :set_extraction_stale, on: [:create, :update, :destroy]
   after_commit :set_extraction_stale, on: [:update]

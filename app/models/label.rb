@@ -13,14 +13,13 @@
 
 class Label < ApplicationRecord
   acts_as_paranoid
-  has_paper_trail
 
-  scope :last_updated, -> ( projects_users_role, offset, count ) { 
+  scope :last_updated, -> ( projects_users_role, offset, count ) {
                                                 where( projects_users_role: projects_users_role )
                                                 .order( updated_at: :desc )
                                                 .distinct
                                                 .offset( offset )
-                                                .limit( count ) }  
+                                                .limit( count ) }
   belongs_to :citations_project
   belongs_to :projects_users_role
   belongs_to :label_type

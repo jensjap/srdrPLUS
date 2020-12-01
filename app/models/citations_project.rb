@@ -17,7 +17,6 @@ class CitationsProject < ApplicationRecord
   include SharedParanoiaMethods
 
   acts_as_paranoid column: :active, sentinel_value: true
-  has_paper_trail
 
   #paginates_per 25
 

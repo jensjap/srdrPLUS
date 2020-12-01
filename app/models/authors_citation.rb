@@ -23,5 +23,4 @@ class AuthorsCitation < ApplicationRecord
   accepts_nested_attributes_for :ordering
 
   acts_as_paranoid
-  has_paper_trail
-end
+  end
