@@ -366,6 +366,9 @@ class SheetInfo
   end
 
   def data_headers(section_id, outcome_type, col_name)
+    # Return if this section/outcome_type combination doesn't apply.
+    return [] if @data_header_hash.try(:[], section_id).try(:[], outcome_type).nil?
+
     return_array = []
     cnt_col = @data_header_hash.try(:[], :max_col).try(:[], section_id).try(:[], outcome_type).try(:[], :max_col)
     set_measures = Set.new
