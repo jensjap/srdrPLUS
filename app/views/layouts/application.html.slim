@@ -19,8 +19,8 @@ html class='no-js' lang='en'
     / Roboto Font Family
     = stylesheet_link_tag    'application', 'https://fonts.googleapis.com/css?family=Noto+Sans|Roboto&display=swap'
 
-    = stylesheet_link_tag    'application', 'data-turbolinks-track' => 'reload'
-    = javascript_include_tag 'application', 'data-turbolinks-track' => 'reload'
+    = stylesheet_link_tag    'application'
+    = javascript_include_tag 'application'
 
     / Select2 4.0.13
     = stylesheet_link_tag 'https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css'
@@ -32,9 +32,7 @@ html class='no-js' lang='en'
     link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32"
     link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16"
 
-  - turbo_links_excluded_controllers = %w(project_report_links)
-
-  body class="#{controller_name} #{action_name}" data-turbolinks="#{turbo_links_excluded_controllers.include?(controller_name) ? 'false' : 'true'}"
+  body class="#{controller_name} #{action_name}"
     = Gon::Base.render_data(camelCase: true)
     = render 'shared/noscript'
 
@@ -72,8 +70,6 @@ html class='no-js' lang='en'
       p Browser does not support iframes. Please update your browser to for a better viewing experience.
 
     = render 'toastr_rails/flash'
-  / = stylesheet_link_tag    'application', 'data-turbolinks-track' => 'reload'
-  / = javascript_include_tag 'application', 'data-turbolinks-track' => 'reload'
 
 / NIH UCUM Autocomplete
 script src='https://clinicaltables.nlm.nih.gov/autocomplete-lhc-versions/17.0.2/autocomplete-lhc.min.js'

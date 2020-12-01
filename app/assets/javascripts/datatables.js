@@ -28,11 +28,7 @@
 
 $.extend( $.fn.dataTable.defaults, {
   responsive: true,
-  pagingType: 'full',
-  //dom:
-  //  "<'row'<'col-sm-4 text-left'f><'right-action col-sm-8 text-right'<'buttons'B> <'select-info'> >>" +
-  //  "<'row'<'dttb col-12 px-0'tr>>" +
-  //  "<'row'<'col-sm-12 table-footer'lip>>"
+  pagingType: 'full'
 });
 
 
@@ -46,20 +42,8 @@ $(document).on('preInit.dt', function(e, settings) {
   }
 });
 
-
-// init on turbolinks load
-$(document).on('turbolinks:load', function() {
+$(document).on('DOMContentLoaded', function() {
   if (!$.fn.DataTable.isDataTable("table[id^=dttb-]")) {
     $("table[id^=dttb-]").DataTable();
-  }
-});
-
-// turbolinks cache fix
-$(document).on('turbolinks:before-cache', function() {
-  var dataTable = $($.fn.dataTable.tables(true)).DataTable();
-  if (dataTable !== null) {
-    dataTable.clear();
-    dataTable.destroy();
-    return dataTable = null;
   }
 });

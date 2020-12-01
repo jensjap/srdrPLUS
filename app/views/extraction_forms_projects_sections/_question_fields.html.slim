@@ -4,12 +4,12 @@ table.hover
 
     tr
       th
-      - for qrc in q.question_rows.first.question_row_columns
+      - for qrc in q.question_rows.includes(:question_row_columns).first.question_row_columns
         th style='font-weight: normal;' = qrc.name
 
   tbody
 
-    - for qr in q.question_rows
+    - for qr in q.question_rows.includes(:question_row_columns)
 
       tr
         td = qr.name

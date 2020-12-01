@@ -7,11 +7,11 @@
     thead
       tr
         th
-        - q.question_rows.first.question_row_columns.each do |qrc|
+        - q.question_rows.includes(:question_row_columns).first.question_row_columns.each do |qrc|
           th style='font-weight: bold;' = qrc.name
 
     tbody
-      - q.question_rows.each do |qr|
+      - q.question_rows.includes(question_row_columns: :question_row_column_type).each do |qr|
         tr
           td = qr.name
           - for qrc in qr.question_row_columns

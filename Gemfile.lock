@@ -270,9 +270,6 @@ GEM
       rails-dom-testing (>= 1, < 3)
       railties (>= 4.2.0)
       thor (>= 0.14, < 2.0)
-    jquery-turbolinks (2.1.0)
-      railties (>= 3.1.0)
-      turbolinks
     jquery-ui-rails (5.0.5)
       railties (>= 3.2.16)
     json (2.3.1)
@@ -536,9 +533,6 @@ GEM
     thread_safe (0.3.6)
     tilt (2.0.9)
     toastr_rails (2.1.3)
-    turbolinks (5.2.0)
-      turbolinks-source (~> 5.2)
-    turbolinks-source (5.2.0)
     tzinfo (1.2.7)
       thread_safe (~> 0.1)
     uber (0.1.0)
@@ -595,7 +589,6 @@ DEPENDENCIES
   jbuilder (~> 2.5)
   jquery-datatables
   jquery-rails
-  jquery-turbolinks
   kaminari
   listen (~> 3.0.5)
   minitest-rails-capybara
@@ -632,7 +625,6 @@ DEPENDENCIES
   spring
   spring-watcher-listen (~> 2.0.0)
   toastr_rails
-  turbolinks (~> 5)
   tzinfo-data
   uglifier (>= 1.3.0)
   web-console!
