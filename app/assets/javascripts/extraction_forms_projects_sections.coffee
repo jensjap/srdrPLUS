@@ -208,24 +208,15 @@ documentCode = ->
     # Disable elements that don't have their prereq's met
     #######################################################
 
-    prereqOff = (prereq) ->
-      $('.' + prereq).removeClass(prereq).addClass('off-' + prereq)
-
-    prereqOn = (prereq) ->
-      $('.off-' + prereq).removeClass('off-' + prereq).addClass(prereq)
-
-    subroutine = (that) ->
-      # Find whether or not what triggered this is active or inactive,
-      # meaning whether they have value or not.
-      # For checkbox and radio we determine active based on :checked status.
-      active = that.is(':checked')
-
-      # Anything else we get the value to determine whether it's active.
-      if not active && not that.is('input[type="checkbox"]') && not that.is('input[type="radio"]')
-        active = that.val()
-
-      # Find the data-prereq value.
+    findActivePrereq = (that) ->
       prereq = that.data('prereq')
+
+      if that.is('input[type="checkbox"]') || that.is('input[type="radio"]')
+        active = that.is(':checked')
+      else if that.is('option')
+        active = that.is(':selected')
+      else
+        active = !!that.val()
 
       # For dropdown and select2 data-prereq value is on :selected.
       if not prereq
@@ -237,53 +228,33 @@ documentCode = ->
             # If we find even one that is a prereq for someone we use it.
             if $('.' + temp).length || $('.off-' + temp).length
               prereq = temp
-            return
         else
           prereq = that.find(':selected').data('prereq')
 
-      return {
-        active: active
-        prereq: prereq
-      }
-
-    turnPrereqOffSelfAndDescendants = (prereq, that) ->
-      prereqOff(prereq)
-      that.closest('table').find('textarea[data-prereq],input[data-prereq],option[data-prereq]').each (idx) ->
-        prereqOff(prereq)
-
-    turnPrereqOnSelfAndDescendants = (prereq, that) ->
-      prereqOn(prereq)
-      that.closest('table').find('textarea[data-prereq],input[data-prereq],option[data-prereq]').each (idx) ->
-        prereq = $(this).data('prereq')
-        prereqOn(prereq)
+      return { active, prereq }
 
     # Check whether dependencies are fulfilled and change classes accordingly.
     relevantIDsClasses = '#preview .card input, #preview .card select, #preview .card textarea'
 
     $(relevantIDsClasses).on 'change keyup dependencies:update', (e) ->
       e.preventDefault()
+      e.stopPropagation()
 
-      that = $(this)
-      { active, prereq } = subroutine(that)
+      preReqLookup = {}
+      $("input[data-prereq],option[data-prereq]").each (idx, element) ->
+        { active, prereq } = findActivePrereq($(element))
 
-      # Test if this was a prereq somewhere...if it was we need to look around
-      # within the table to find all the others, leave it alone otherwise.
-      if active && $('.' + prereq).length
-        turnPrereqOffSelfAndDescendants(prereq, that)
-      else
-        noneActiveAndPrereq = true
-        that.closest('table').find('input,select,textarea').each (idx) ->
-          that   = $(this)
-          result = subroutine(that)
-          active = result.active
-          prereq = result.prereq
+        if preReqLookup[prereq] == undefined
+          preReqLookup[prereq] = active
+        else if active && preReqLookup[prereq] == false
+          preReqLookup[prereq] = active
 
-          # Turn off dependencies if the field is active and it is someone's prereq.
-          if active && $('.off-' + prereq).length
-            noneActiveAndPrereq = false
-            return false
+        return true
 
-        if noneActiveAndPrereq
-          turnPrereqOnSelfAndDescendants(prereq, that)
+      Object.keys(preReqLookup).forEach (prereq) ->
+        if preReqLookup[prereq]
+          $('.' + prereq).removeClass(prereq).addClass('off-' + prereq)
+        else
+          $('.off-' + prereq).removeClass('off-' + prereq).addClass(prereq)
 
     $(relevantIDsClasses).trigger("dependencies:update");
