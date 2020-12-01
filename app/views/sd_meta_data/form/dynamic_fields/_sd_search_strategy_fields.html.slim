@@ -1,4 +1,5 @@
 .nested-fields
+  i class="fa fa-arrows" style="padding-right: 5px; cursor: pointer;"
   div class="text-right"
     = link_to_remove_association "remove search strategy", f, data: { confirm: "This will remove this search strategy, and any input entered into it. Are you sure?" }
   = f.association :sd_search_database, include_blank: true, label: 'Database (Required)', input_html: { class: "sd_search_database sd-select2" }

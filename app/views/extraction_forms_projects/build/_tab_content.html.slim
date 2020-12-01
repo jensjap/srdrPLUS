@@ -1,7 +1,7 @@
-.tabs-content.vertical data-tabs-content='vertical-tabs'
+.tabs-content.vertical
 
-  - @extraction_forms_projects_sections.each do |efps|
+  - @extraction_forms_projects_sections.where(id: @panel_tab).each do |efps|
 
-    .tabs-panel id="panel-tab-#{ efps.id.to_s }"
+    .tabs-panel.is-active id="panel-tab-#{ efps.id.to_s }"
 
       == render 'extraction_forms_projects/build/extraction_forms_projects_section', efps: efps

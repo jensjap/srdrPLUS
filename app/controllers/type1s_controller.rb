@@ -22,16 +22,16 @@ class Type1sController < ApplicationController
           @extraction_forms_projects_section.type1s << @type1
         rescue ActiveRecord::RecordInvalid => e
           format.html { redirect_to build_extraction_forms_project_path(@extraction_forms_projects_section.extraction_forms_project,
-                                                                        anchor: "panel-tab-#{ @extraction_forms_projects_section.id }"),
+                                                                        'panel-tab': @extraction_forms_projects_section.id),
                                                                         alert: e }
         end
         format.html { redirect_to build_extraction_forms_project_path(@extraction_forms_projects_section.extraction_forms_project,
-                                                                      anchor: "panel-tab-#{ @extraction_forms_projects_section.id }"),
+                                                                      'panel-tab': @extraction_forms_projects_section.id),
                                                                       notice: t('success') }
         format.json { render :show, status: :created, location: @type1 }
       else
         format.html { redirect_to build_extraction_forms_project_path(@extraction_forms_projects_section.extraction_forms_project,
-                                                                      anchor: "panel-tab-#{ @extraction_forms_projects_section.id }"),
+                                                                      'panel-tab': @extraction_forms_projects_section.id),
                                                                       alert: t('failure') }
         format.json { render json: @type1.errors, status: :unprocessable_entity }
       end
@@ -44,7 +44,7 @@ class Type1sController < ApplicationController
     respond_to do |format|
       if @type1.update(type1_params)
         format.html { redirect_to build_extraction_forms_project_path(@type1.extraction_forms_projects_section.extraction_forms_project,
-                                                                      anchor: "panel-tab-#{ @type1.extraction_forms_projects_section.id }"),
+                                                                      'panel-tab': @type1.extraction_forms_projects_section.id),
                                                                       notice: t('success') }
         format.json { render :show, status: :ok, location: @type1 }
       else
@@ -60,7 +60,7 @@ class Type1sController < ApplicationController
 #    @type1.destroy
 #    respond_to do |format|
 #      format.html { redirect_to build_extraction_forms_project_path(@type1.extraction_forms_projects_section.extraction_forms_project,
-#                                                                    anchor: "panel-tab-#{ @type1.extraction_forms_projects_section.id }"),
+#                                                                    'panel-tab': @type1.extraction_forms_projects_section.id),
 #                                                                    notice: t('removed') }
 #      format.json { head :no_content }
 #    end

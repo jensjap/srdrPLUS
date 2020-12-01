@@ -6,7 +6,7 @@
 .column.row
   - efp = @project.extraction_forms_projects.first
   - if @project.key_questions.present?
-    h2 = link_to 'go to extraction form builder ->', build_extraction_forms_project_path(efp, anchor: "panel-tab-#{ efp.default_section_id }"), { style: 'float: right; font-size: 0.4em;' }
+    h2 = link_to 'go to extraction form builder ->', build_extraction_forms_project_path(efp, 'panel-tab': efp.default_section_id), { style: 'float: right; font-size: 0.4em;' }
   - else
     h2 = link_to 'go to extraction form builder ->', '#', style: 'float: right; font-size: 0.4em;', onClick: "alert('Please add at least one Key Question first')"
 
@@ -37,7 +37,7 @@
           th width="50px"
 
       tbody
-        - if @extractions.unconsolidated.blank?
+        - if @extractions.blank?
           tr
             td No extractions found.
             td
@@ -49,14 +49,15 @@
             td
 
         - else
-          - @extractions.unconsolidated.includes([{ extractions_extraction_forms_projects_sections: [:status, { extraction_forms_projects_section: :section }] }, { projects_users_role: [{ projects_user: { user: :profile } }, :role] },{ citations_project: :citation }]).each do |extraction|
+          - @extractions.each do |extraction|
             - citation = extraction.citations_project.citation
-            - first_author = citation.first_author
+            - first_author = citation.authors_citations.sort_by { |ac| ac.ordering.position }&.first&.citation&.authors&.first&.name || ''
             - pmid = citation.pmid.to_s
             - year = citation.year
             - name = citation.name.truncate(70)
             - citation_handle = first_author + ', ' + year + ', ' + pmid + '<br />' + name
-            - progress_meter_width = ((extraction.extractions_extraction_forms_projects_sections.map{ |eefps| eefps.status.name == 'Completed' ? 1 : 0 }.sum.to_f * 100) / extraction.extractions_extraction_forms_projects_sections.length).round.to_s
+            - eefps_count = extraction.extractions_extraction_forms_projects_sections.length
+            - progress_meter_width = (extraction.extractions_extraction_forms_projects_sections.inject(0) { |sum, eefps| sum + (eefps.status.name == 'Completed' ? 100.0 : 0) } / (eefps_count == 0 ? 1 : eefps_count)).round.to_s
             - if extraction.extractions_extraction_forms_projects_sections.any? { |eefps| eefps.status.name != 'Completed' }
               - tooltip_text = "<span style='font-weight: bold;'>Incomplete Sections:</span><br>" + (extraction.extractions_extraction_forms_projects_sections.map{ |eefps| eefps.status.name != 'Completed' ? eefps.section.name : "" } - [""]).join('<br>')
             - else
@@ -94,44 +95,3 @@
     = link_to '#', class: 'button create-button create-extraction-button', onClick: "alert('Please add at least one Key Question first')" do
       i.fi-plus>
       = t('.create')
-
-- if @project.leaders.include?(current_user) or @project.consolidators.include? current_user
-  .row
-    .column.medium-12
-      h4 Comparison Tool
-      = render 'extractions/consolidate/form.html.slim'
-      /table
-        thead
-          tr
-            - if @project.leaders.include? current_user
-              th width="50%"
-                | Citation
-              th width="30%" Assigned User
-            - else
-              th width="80%"
-                | Citation
-            /th Role
-            th width="10%"
-            th width="5%"
-            /th
-            th width="5%"
-
-        tbody
-          - if @extractions.consolidated.blank?
-            tr
-              td No extractions found.
-
-          - else
-            - @extractions.consolidated.includes(citations_project: :citation).each do |extraction|
-              tr
-                td = link_to extraction.try(:citations_project).try(:citation).try(:name),\
-                  consolidate_project_extractions_path(\
-                  extraction_ids: @citation_groups[:citations_projects][extraction.citations_project_id][:extraction_ids])
-                td = extraction.projects_users_role.handle
-                td
-                /td = extraction.projects_users_role.role.name
-                td = link_to t('work'),\
-                  consolidate_project_extractions_path(\
-                  extraction_ids: @citation_groups[:citations_projects][extraction.citations_project_id][:extraction_ids])
-                /td = link_to t('edit'), edit_extraction_path(extraction)
-                td = link_to t('destroy'), extraction, data: { confirm: 'Are you sure?' }, method: :delete

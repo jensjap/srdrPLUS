@@ -144,6 +144,7 @@ class ExtractionFormsProjectsSection < ApplicationRecord
 
   def extraction_forms_projects_sections_type1s_without_total_arm
     extraction_forms_projects_sections_type1s
+      .includes(:type1, :ordering, :type1_type, :extraction_forms_projects_sections_type1s_timepoint_names, :timepoint_names)
       .to_a
       .delete_if { |efpst| efpst.type1.name == "Total" && efpst.type1.description == "All #{ link_to_type1.present? ? link_to_type1.section.name : section.name } combined" }
   end

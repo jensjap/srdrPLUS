@@ -19,9 +19,13 @@ class ExtractionFormsProjectsSectionsController < ApplicationController
 
     respond_to do |format|
       if @extraction_forms_projects_section.save
-        format.html { redirect_to build_extraction_forms_project_path(@extraction_forms_project,
-                                                                      anchor: "panel-tab-#{ @extraction_forms_projects_section.id }"),
-                      notice: t('success') }
+        format.html do
+          @extraction_forms_project.project.extractions.each { |extraction| extraction.ensure_extraction_form_structure }
+          redirect_to build_extraction_forms_project_path(
+            @extraction_forms_project,
+            'panel-tab': @extraction_forms_projects_section.id
+          ), notice: t('success')
+        end
         format.json { render :show, status: :created, location: @extraction_forms_projects_section }
       else
         format.html { render :new }
@@ -37,7 +41,7 @@ class ExtractionFormsProjectsSectionsController < ApplicationController
       @errors = @extraction_forms_projects_section.errors
       if @extraction_forms_projects_section.update(extraction_forms_projects_section_params)
         format.html { redirect_to build_extraction_forms_project_path(@extraction_forms_projects_section.extraction_forms_project,
-                                                                      anchor: "panel-tab-#{ @extraction_forms_projects_section.id }"),
+                                                                      'panel-tab': @extraction_forms_projects_section.id),
                       notice: t('success') }
         format.json { render :show, status: :ok, location: @extraction_forms_projects_section }
         format.js {}
@@ -53,10 +57,9 @@ class ExtractionFormsProjectsSectionsController < ApplicationController
     @extraction_forms_projects_section.destroy
     respond_to do |format|
       format.html { redirect_to build_extraction_forms_project_path(
-                                  @extraction_forms_project,
-                                  anchor: @extraction_forms_project.extraction_forms_projects_sections.blank? ?
-                                          nil : "panel-tab-#{ @extraction_forms_project.extraction_forms_projects_sections.first.id }"),
-                    notice: t('removed') }
+                    @extraction_forms_project, 'panel-tab': @extraction_forms_project.extraction_forms_projects_sections.blank? ?
+                      nil : @extraction_forms_project.extraction_forms_projects_sections.first.id
+                  ), notice: t('removed') }
       format.json { head :no_content }
     end
   end
@@ -67,7 +70,7 @@ class ExtractionFormsProjectsSectionsController < ApplicationController
 
     @extraction_forms_projects_section.type1s.destroy(Type1.find(dissociate_type1_params[1]))
     redirect_to build_extraction_forms_project_path(@extraction_forms_projects_section.extraction_forms_project,
-                                                    anchor: "panel-tab-#{ @extraction_forms_projects_section.id }"),
+                                                    'panel-tab': @extraction_forms_projects_section.id),
                                                     notice: t('success')
   end
 
@@ -77,11 +80,11 @@ class ExtractionFormsProjectsSectionsController < ApplicationController
     if @extraction_forms_projects_section.section.name == 'Risk of Bias Assessment'
       ExtractionFormsProjectsSection.add_quality_dimension_by_questions_or_section(params.require([:id, :a_qdqId]))
       redirect_to build_extraction_forms_project_path(@extraction_forms_projects_section.extraction_forms_project,
-                                                      anchor: "panel-tab-#{ @extraction_forms_projects_section.id }"),
+                                                      'panel-tab': @extraction_forms_projects_section.id),
                                                       notice: t('success')
     else
       redirect_to build_extraction_forms_project_path(@extraction_forms_projects_section.extraction_forms_project,
-                                                      anchor: "panel-tab-#{ @extraction_forms_projects_section.id }"),
+                                                      'panel-tab': @extraction_forms_projects_section.id),
                                                       alert: t('failure')
     end
   end

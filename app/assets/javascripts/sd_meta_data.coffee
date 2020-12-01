@@ -1,11 +1,3 @@
-# Place all the behaviors and hooks related to the matching controller here.
-# All this logic will automatically be available in application.js.
-# You can use CoffeeScript in this file: http://coffeescript.org/
-
-# Place all the behaviors and hooks related to the matching controller here.
-# All this logic will automatically be available in application.js.
-# You can use CoffeeScript in this file: http://coffeescript.org/
-
 class Caretkeeper
   @save_caret_position: () ->
     Caretkeeper.focused_elem_id = document.activeElement.id
@@ -21,18 +13,18 @@ class Caretkeeper
 class Timekeeper
   @_timer_dict: {}
 
-  @clear_timer_for_form: ( form ) -> 
+  @clear_timer_for_form: ( form ) ->
     formId = form.getAttribute( 'id' )
     if formId of @_timer_dict
       clearTimeout( @_timer_dict[formId] )
 
-  @create_timer_for_form: ( form, duration ) -> 
+  @create_timer_for_form: ( form, duration ) ->
     Timekeeper.clear_timer_for_form( form )
     formId = form.getAttribute( 'id' )
-    @_timer_dict[ formId ] = setTimeout -> 
+    @_timer_dict[ formId ] = setTimeout ->
       validate_and_send_async_form( form )
     , duration
-    @_timer_dict[ formId ] 
+    @_timer_dict[ formId ]
 
 class StatusChecker
   restore_highlights: false
@@ -109,7 +101,7 @@ class StatusChecker
       if not $('#status-check-modal').is(':visible')
         return
       code = e.keyCode || e.which;
-      if code in [13] 
+      if code in [13]
         $( '#confirm-status-switch' ).click()
         return
     $( document ).on 'click', '.status-switch', ->
@@ -123,7 +115,7 @@ class StatusChecker
           $('#status-check-modal').foundation("open")
         else
           updateSectionFlag this
-        
+
       return
     $( document ).on 'click', '#abort-status-switch', ->
       $('#status-check-modal').foundation("close");
@@ -145,7 +137,7 @@ class Collapser
       $parent.find( '.not-collapsed-icon' ).removeClass( 'hide' )
       $parent.find( '.collapsed-icon' ).addClass( 'hide' )
       $( 'textarea' ).each () ->
-        this.style.height = this.scrollHeight + "px" 
+        this.style.height = this.scrollHeight + "px"
 
       Collapser._state_dict[$parent.find( '.collapse-content' ).data('result-item-id')] = false
     $( '.not-collapsed-icon' ).on 'click', ->
@@ -162,7 +154,7 @@ class Collapser
         $parent.find( '.not-collapsed-icon' ).removeClass( 'hide' )
         $parent.find( '.collapsed-icon' ).addClass( 'hide' )
         $( 'textarea' ).each () ->
-          this.style.height = this.scrollHeight + "px" 
+          this.style.height = this.scrollHeight + "px"
 
 class Select2Helper
   @copy_sd_outcome_names: ( ) ->
@@ -172,7 +164,7 @@ class Select2Helper
         sd_outcome_option_set.add( option_elem.text )
     $( '.sd-outcome-select2' ).each ( i, select2_elem ) ->
       sd_outcome_option_set.forEach ( key, option_text, sd_outcome_option_set ) ->
-        if not $( select2_elem ).find("option[value='" + option_text + "']").length 
+        if not $( select2_elem ).find("option[value='" + option_text + "']").length
           newOption = new Option( option_text, option_text, false, false)
           $( select2_elem ).append( newOption ).trigger( 'change.select2' )
 
@@ -199,7 +191,7 @@ validate_form_inputs = ( form ) ->
     is_input_valid = true
     if not (input_val == "")
       if input_val.includes( ' ' )
-        $input_elem.parents('div.input').addClass( 'invalid-url' ) 
+        $input_elem.parents('div.input').addClass( 'invalid-url' )
         is_input_valid = false
       else
         valid_href = get_valid_URL( input_val )
@@ -207,7 +199,7 @@ validate_form_inputs = ( form ) ->
           https_appended_val = "https://" + input_val
           valid_href = get_valid_URL( https_appended_val )
           if not valid_href
-            $input_elem.parents('div.input').addClass( 'invalid-url' ) 
+            $input_elem.parents('div.input').addClass( 'invalid-url' )
             is_input_valid = false
           else
             #$input_elem.val( valid_href )
@@ -270,19 +262,15 @@ apply_all_select2 =() ->
   $(".sd_picods_key_question").select2({ placeholder: "-- Select Key Question(s) --" })
 
   $( '.apply-select2' ).select2
-    selectOnClose: true, 
-    allowClear: true, 
+    selectOnClose: true,
+    allowClear: true,
     placeholder: '-- Select or type other value --'
-  $( '.apply-select2' ).on 'turbolinks:before-cache', () ->
-    $( '.apply-select2' ).select2 'destroy'
 
   $( '.sd-outcome-select2' ).select2
     tags: true,
     allowClear: true,
     selectOnClose: true,
     placeholder: '-- Select or type other value --'
-  $( '.sd-outcome-select2' ).on 'turbolinks:before-cache', () ->
-    $( '.sd-outcome-select2' ).select2 'destroy'
 
   $('.sd-select2, .apply-select2, .sd-outcome-select2').on 'select2:unselecting', ( e ) ->
     $(this).on 'select2:opening', ( event ) ->
@@ -292,11 +280,8 @@ apply_all_select2 =() ->
     setTimeout( () ->
       sel.off('select2:opening');
     , 100)
-  
+
   Select2Helper.copy_sd_outcome_names()
-#  $( '.sd-select2' ).on 'select2:open', ( e ) ->
-#    $( '.select2-container' ).mouseleave ( e ) ->
-#      $( '.select2-container').find('.select2-results__option--highlighted').removeClass('select2-results__option--highlighted')
 
 add_form_listeners =( form ) ->
   $form = $( form )
@@ -304,8 +289,6 @@ add_form_listeners =( form ) ->
   formId = $form.attr( 'id' )
 
   $form.find( 'select, input[type="file"], input.fdp' ).on 'change', ( e ) ->
-#    if !!$(e.target).val()
-#      StatusChecker.remove_highlights()
     e.preventDefault()
     # Mark form as 'dirty'.
     $form.addClass( 'dirty' )
@@ -339,17 +322,6 @@ add_form_listeners =( form ) ->
     $form.addClass( 'dirty' )
     Timekeeper.create_timer_for_form $form[0], 750
 
-#  $form.focusout ( e ) ->
-#    #if $( document.activeElement ).is('*:not(input[type="text"],input[type="text"], textarea)')
-#    #  console.log ( document.activeElement )
-#    if $form.is( '.dirty' )
-#      Timekeeper.create_timer_for_form $form[0], 750
-#
-#  $form.focusin ( e ) ->
-#    #if $( document.activeElement ).is('input[type="search"], input[type="text"], textarea')
-#    if $( document.activeElement ).is('input[type="text"], textarea')
-#      Timekeeper.clear_timer_for_form( $form[0] )
-
 bind_srdr20_saving_mechanism = () ->
   $( 'form.sd-form' ).each ( i, form ) ->
     add_form_listeners( form )
@@ -360,7 +332,7 @@ bind_srdr20_saving_mechanism = () ->
       Collapser.restore_states()
       apply_all_select2()
       $( 'textarea' ).each () ->
-        this.style.height = this.scrollHeight + "px" 
+        this.style.height = this.scrollHeight + "px"
       Select2Helper.copy_sd_outcome_names()
       $( '.reveal' ).foundation()
   $( '.infoDiv' ).first().on 'sd:replaced-html-content', ( e ) ->
@@ -417,7 +389,7 @@ initializeSwitches = ->
     $( elem ).removeClass( 'to-be-checked' )
   return
 
-document.addEventListener 'turbolinks:load', ->
+document.addEventListener 'DOMContentLoaded', ->
   do ->
     return if $('body.sd_meta_data.edit').length == 0
     StatusChecker.initialize_listeners()
@@ -427,19 +399,4 @@ document.addEventListener 'turbolinks:load', ->
     bind_srdr20_saving_mechanism()
     apply_all_select2()
     $( 'textarea' ).each () ->
-      this.style.height = this.scrollHeight + "px" 
-
-document.addEventListener 'turbolinks:before-cache', ->
-  do ->
-  $("#sd_meta_datum_funding_source_ids").select2 'destroy'
-  $("#sd_meta_datum_key_question_type_ids").select2 'destroy'
-  $(".sd_search_database").select2 'destroy'
-  $(".key_question_type").select2 'destroy'
-  $(".sd_picods_type").select2 'destroy'
-  $(".review_type").select2 'destroy'
-  $(".data_analysis_level").select2 'destroy'
-  $(".sd_picods_key_question").select2 'destroy'
-  $( '.apply-select2' ).select2 'destroy'
-  $( '.apply-select2' ).select2 'destroy'
-  $( '.sd-outcome-select2' ).select2 'destroy'
-  return  # END document.addEventListener 'turbolinks:before-cache', ->
+      this.style.height = this.scrollHeight + "px"

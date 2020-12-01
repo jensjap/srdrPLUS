@@ -79,7 +79,7 @@ class CitationsController < ApplicationController
     #  .where(:projects => { :id => @project.id }).all
     #@labels = Label.where(:user_id => current_user.id).where(:citations_project_id => [@project.citations_projects]).all
     @citations = @project.citations.includes(authors_citations: [:ordering, :author]).order(:id)
-    @citations_projects_dict = @project.citations_projects.map{|cp| [cp.citation_id, cp]}.to_h
+    @citations_projects_dict = @project.citations_projects.map { |cp| [cp.citation_id, cp] }.to_h
     @key_questions_projects_array_for_select = @project.key_questions_projects_array_for_select
 
     #@project.teams.build
@@ -106,7 +106,7 @@ class CitationsController < ApplicationController
 
     #a helper method that sets the current citation from id to be used with callbacks
     def set_project
-      @project = Project.find(params[:project_id])
+      @project = Project.includes(citations_projects: :citation).find(params[:project_id])
     end
 
     def set_citation
