@@ -4,17 +4,19 @@
   table
     col style="width: 1%"
     - if section_name == 'Outcomes'
-      col style="width:10%"
-      col style="width:30%"
-      col style="width:30%"
-      col style="width:10%"
-      col style="width:10%"
-      col style="width:10%"
+      col style="width: 10%;"
+      col style="width: 30%;"
+      col style="width: 25%;"
+      col style="width: 10%;"
+      col style="width: 10%;"
+      col style="width: 10%;"
+      col style="width: 5%;"
 
     - else
       col style="width:45%"
       col style="width:45%"
       col style="width:10%"
+
     thead style="background: initial; border: none;"
       tr
         th style="border: none; min-width: 0; width: 10px;"
@@ -25,6 +27,8 @@
         - if section_name == 'Outcomes'
           th style="border: none;" Populations
           th style="border: none;" Timepoints
+          th style="border: none;" FHIR Format
+          th style="border: none;"
 
     tbody.orderable-list orderable-url="#{ update_positions_api_v1_orderings_url }"
       - eefps.eefpst1s_without_total.each do |eefpst1|
@@ -51,10 +55,16 @@
               ul
                 - eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |pop|
                   li = pop.population_name.name
+
             td
               ul
                 - eefpst1.extractions_extraction_forms_projects_sections_type1_rows.first.extractions_extraction_forms_projects_sections_type1_row_columns.each do |tp|
                   li = tp.timepoint_name.name + (tp.timepoint_name.unit.present? ? " (#{ tp.timepoint_name.unit })" : '')
+
+            td
+              ul
+                li = link_to 'JSON', api_v1_evidence_variable_path(eefpst1, format: :json), target: '_blank'
+                li = link_to 'ODV', "https://computablepublishing.com/outcome-definition-viewer/?srdr#{ eefpst1.id }", target: '_blank', data: { confirm: @exit_disclaimer }
 
           td
             div = link_to edit_extractions_extraction_forms_projects_sections_type1_path(eefpst1) do
