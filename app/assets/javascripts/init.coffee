@@ -4,5 +4,5 @@ App.init = ->
   # An example of loading on page to page loads.
   #$( "a, span, i, div" ).tooltip()
 
-$( document ).on "turbolinks:load", ->
+$( document ).on "DOMContentLoaded", ->
   App.init()

@@ -1,9 +1,11 @@
-# Place all the behaviors and hooks related to the matching controller here.
-# All this logic will automatically be available in application.js.
-# You can use CoffeeScript in this file: http://coffeescript.org/
+document.addEventListener 'DOMContentLoaded', ->
+  return if $('body.extractions.work').length > 0
+  documentCode()
 
-bind_record_saving_mechanism = () ->
+document.addEventListener 'extractionSectionLoaded', ->
+  documentCode()
 
+documentCode = () ->
   timers = {}
 
   submitForm = ( form ) ->
@@ -57,7 +59,3 @@ bind_record_saving_mechanism = () ->
     # the following will help the text expand as typing takes place
     while $(this).outerHeight() < @scrollHeight + parseFloat($(this).css('borderTopWidth')) + parseFloat($(this).css('borderBottomWidth'))
       $(this).height $(this).height() + 1
-
-document.addEventListener 'turbolinks:load', ->
-  do ->
-    bind_record_saving_mechanism()

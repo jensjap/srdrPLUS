@@ -17,7 +17,6 @@ class ResultStatisticSectionsMeasure < ApplicationRecord
   include SharedParanoiaMethods
 
   acts_as_paranoid column: :active, sentinel_value: true
-  has_paper_trail
 
   after_commit :set_extraction_stale, on: [:create, :update, :destroy]
 

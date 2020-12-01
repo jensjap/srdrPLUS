@@ -1,0 +1,6 @@
+$("#ajax-section-loading-index-<%= @ajax_section_loading_index %>").replaceWith("<%= j(render 'extractions/shared/extraction_forms_projects_section_tab_content', efp: @efp) %>");
+<% if @load_js == 'true' %>
+  let event = document.createEvent('HTMLEvents');
+  event.initEvent('extractionSectionLoaded', true, true);
+  document.dispatchEvent(event);
+<% end %>

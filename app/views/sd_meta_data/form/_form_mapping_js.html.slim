@@ -235,7 +235,7 @@ javascript:
     postMappings();
   });
 
-  $(document).on("turbolinks:load", function() {
+  $(document).on("DOMContentLoaded", function() {
     initialize();
     //setTimeout(function(){ reportMissingKqs(); }, 500);
   });

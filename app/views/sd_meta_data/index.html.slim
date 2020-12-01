@@ -122,11 +122,6 @@ javascript:
     allowClear: true
   })
 
-  $( document ).on( 'turbolinks:before-cache', function(){
-    $('#report-create').select2('destroy')
-    $('#project-create').select2('destroy')
-  })
-
   $( '#report-radio-select' ).on('click', function(){
     $( '#report-select-div' ).removeClass('hide');
     $( '#report-upload-div' ).addClass('hide');
@@ -138,9 +133,6 @@ javascript:
   });
 
   $('#create-new-sd-meta-datum').on('click', function(e) {
-    // back button fix
-    //Turbolinks.visit("#{project_report_links_url}")
-
     if ($('#report-select-div.hide').length == 0) {
       var project_id = $('#project-create').val();
       var report_accession_id = $('#report-create').val();

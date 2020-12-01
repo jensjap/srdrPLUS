@@ -12,7 +12,6 @@
 
 class Comparate < ApplicationRecord
   acts_as_paranoid
-  has_paper_trail
 
   after_commit :set_extraction_stale, on: [:create, :update, :destroy]
 
@@ -25,7 +24,7 @@ class Comparate < ApplicationRecord
 
     def set_extraction_stale
       self.comparate_group.comparison.comparisons_result_statistic_sections.each do |crss|
-        crss.result_statistic_section.population.extraction.extraction_checksum.update( is_stale: true ) 
+        crss.result_statistic_section.population.extraction.extraction_checksum.update( is_stale: true )
       end
     end
 end

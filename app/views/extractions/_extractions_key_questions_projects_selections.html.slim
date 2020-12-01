@@ -10,6 +10,6 @@ div#extractions-key-questions-projects-selections.key-question-selector
     = f.association :extractions_key_questions_projects_selections,
                     label: false,
                     as: :check_boxes,
-                    collection: f.object.project.key_questions_projects.map { |kqp| [kqp.key_question.name, kqp.id, { class: 'kqp-selector', 'data-kqp-selection-id': kqp.id }] },
+                    collection: f.object.project.key_questions_projects.includes(:key_question).map { |kqp| [kqp.key_question.name, kqp.id, { class: 'kqp-selector', 'data-kqp-selection-id': kqp.id }] },
                     :checked => extraction.extractions_key_questions_projects_selections.map(&:key_questions_project_id),
                     'data-id' => -> (item) { item[1] }

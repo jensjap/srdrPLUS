@@ -11,7 +11,6 @@
 class ProjectsUsersTermGroupsColor < ApplicationRecord
   include SharedProcessTokenMethods
   acts_as_paranoid
-  has_paper_trail
 
   belongs_to :projects_user
   belongs_to :term_groups_color

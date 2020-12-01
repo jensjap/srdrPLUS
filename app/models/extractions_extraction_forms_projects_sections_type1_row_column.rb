@@ -13,7 +13,6 @@
 # Temporarily calling it ExtractionsExtractionFormsProjectsSectionsType1RowColumn. This is meant to be Outcome Timepoint.
 class ExtractionsExtractionFormsProjectsSectionsType1RowColumn < ApplicationRecord
   acts_as_paranoid
-  has_paper_trail
 
   after_commit :ensure_timepoints_across_populations, on: [:create, :update]
   after_commit :set_extraction_stale, on: [:create, :update, :destroy]

@@ -11,7 +11,7 @@ class ExtractionsExtractionFormsProjectsSectionsController < ApplicationControll
           if params[:extractions_extraction_forms_projects_section].has_key? :extraction_ids
             redirect_to consolidate_project_extractions_path(@extractions_extraction_forms_projects_section.project,
               extraction_ids: params[:extractions_extraction_forms_projects_section][:extraction_ids],
-              anchor: "panel-tab-#{ @extractions_extraction_forms_projects_section.extraction_forms_projects_section.id.to_s }"),
+              'panel-tab': @extractions_extraction_forms_projects_section.extraction_forms_projects_section.id.to_s),
               notice: t('success')
           else
             redirect_to work_extraction_path(
