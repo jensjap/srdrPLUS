@@ -19,7 +19,10 @@ documentCode = ->
         targetAttachment: "center right",
         offset: '-1px -10px'
       })
-      tether.position();
+      setTimeout ( ->
+        tether.position()
+      ), 50
+      return true
     $('.attach-me').removeClass('hide')
 
     #######################################################
