@@ -1,8 +1,8 @@
 Rails.application.configure do
-  config.after_initialize do
-    Bullet.enable = true
-    Bullet.console = true
-  end
+  # config.after_initialize do
+  #   Bullet.enable = true
+  #   Bullet.console = true
+  # end
 
   # Store files locally.
   config.active_storage.service = :local
@@ -36,7 +36,7 @@ Rails.application.configure do
   end
 
   # Set default url options.
-  config.action_mailer.default_url_options = { host: "localhost", port: 3000 }
+  config.action_mailer.default_url_options = { host: "http://localhost", port: 3000 }
 
   # Store uploaded files on the local file system (see config/storage.yml for options)
   config.active_storage.service = :local

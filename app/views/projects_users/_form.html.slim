@@ -1,11 +1,11 @@
-  tr.nested-fields
-    td style="width: 50%;"
-      = f.association :user, collection: @project.users, label_method: :handle
+tr.nested-fields
+  td style="width: 50%;"
+    = f.association :user, collection: @project.users, label_method: :handle, label: false
 
-    td style="width: 40%;"
-      = f.association :roles, label: false, required: false, as: :check_boxes
+  td#user-role-checkboxes colspan="4" style="width: 40%;"
+    = f.association :roles, label: false, required: false, as: :check_boxes, collection: Role.all.map { |role| ['', role.id]}, :input_html => { :class => "myclass" }
 
-    td style="width: 10%;"
-      div style="float: right;"
-        .links
-          = link_to_remove_association 'Remove', f
+  td style="width: 10%;"
+    div style="display: flex; align-items: center; justify-content: space-around;"
+      .links
+        = link_to_remove_association 'Remove', f

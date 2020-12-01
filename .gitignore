@@ -61,3 +61,4 @@ app/jobs/import_jobs/srdrplus.code-workspace
 Procfile
 
 node_modules/
+public/packs/

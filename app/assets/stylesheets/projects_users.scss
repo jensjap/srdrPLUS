@@ -1,0 +1,19 @@
+// Place all the styles related to the projects_users_role controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+#user-role-checkboxes > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+#member-roles-table {
+  td {
+    padding: 20px;
+  }
+
+  th, td {
+    border: 1px solid black;
+  }
+}
