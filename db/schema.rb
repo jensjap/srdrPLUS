@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_11_26_034053) do
+ActiveRecord::Schema.define(version: 2020_12_01_073722) do
 
   create_table "abstrackr_settings", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "profile_id"
@@ -1792,6 +1792,8 @@ ActiveRecord::Schema.define(version: 2020_11_26_034053) do
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "isValidUCUM", default: false
+    t.boolean "isValidUCUMTested", default: false
     t.index ["deleted_at"], name: "index_timepoint_names_on_deleted_at"
   end
 

@@ -11,9 +11,13 @@
 #
 
 class TimepointName < ApplicationRecord
+  SERVICE_ADDRESS = "https://ucum.nlm.nih.gov/ucum-service/v1/isValidUCUM/".freeze
+
   include SharedQueryableMethods
 
   acts_as_paranoid
+
+  after_create :test_isValidUCUM
 
   has_many :extractions_extraction_forms_projects_sections_type1_row_columns, dependent: :destroy, inverse_of: :timepoint_name
 
@@ -35,5 +39,20 @@ class TimepointName < ApplicationRecord
       text  = "#{ name }"
       text += " (#{ unit })" if unit.present?
       return text
+    end
+
+    def test_isValidUCUM
+      url = SERVICE_ADDRESS + CGI.escape(self.unit)
+      begin
+        resp = HTTParty.get(url).body
+        self.isValidUCUM = ActiveModel::Type::Boolean.new.cast(resp)
+        self.isValidUCUMTested = true
+        self.save
+
+      rescue Exception => e
+        self.isValidUCUMTested = false
+        self.save
+
+      end
     end
 end
