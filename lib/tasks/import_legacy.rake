@@ -78,6 +78,20 @@ namespace(:db) do
       @efps_dict = {}
       @eefspt1_dict = {}
       @qrcqrco_dict = {}
+      @followup_dict = {qrc_to_ff: {}, qrcqrco_to_ff: {}}
+    end
+
+    def set_followup_field qrcqrco
+      @followup_dict[:qrcqrco_to_ff][qrcqrco.id] = qrcqrco.followup_field
+      @followup_dict[:qrc_to_ff][qrcqrco.question_row_column.id] = qrcqrco.followup_field
+    end
+
+    def get_ff_by_qrcqrco qrcqrco_id
+      @followup_dict[:qrcqrco_to_ff][qrcqrco_id]
+    end
+
+    def get_ff_by_qrc qrc_id
+      @followup_dict[:qrc_to_ff][qrc_id]
     end
 
     def set_qrcqrco qrc_id, option_text, qrcqrco
@@ -193,7 +207,7 @@ namespace(:db) do
       end
 
       #studies_hash = db.query "SELECT * FROM studies where project_id=#{@legacy_project_id}" TODO uncomment
-      studies_hash = db.query "SELECT * FROM studies where project_id=#{@legacy_project_id} and id=2685" #TODO DELETE
+      studies_hash = db.query "SELECT * FROM studies where project_id=#{@legacy_project_id} and id in (2685, 11809, 18019, 18020, 54440, 55502)" #TODO DELETE
       studies_hash.each do |study_hash|
         study_id = study_hash["id"]
 
@@ -415,20 +429,23 @@ namespace(:db) do
                                                                      question_row_column_option: @qrco_answer_choice,
                                                                      question_row_column: question_row_column
           ff = FollowupField.create question_row_columns_question_row_column_option: qrcqrco
+          set_followup_field qrcqrco
+          set_qrcqrco question_row_column.id, "Other (please specify):", qrcqrco
         else
           if qf["has_subquestion"] == 1
             qrcqrco = QuestionRowColumnsQuestionRowColumnOption.create name: qf["option_text"]+"..."+qf["subquestion"],
                                                                        question_row_column_option: @qrco_answer_choice,
                                                                        question_row_column: question_row_column
             FollowupField.create question_row_columns_question_row_column_option: qrcqrco
+            set_followup_field qrcqrco
+            set_qrcqrco question_row_column.id, qf["option_text"], qrcqrco
           else
             qrcqrco = QuestionRowColumnsQuestionRowColumnOption.create name: qf["option_text"],
                                                                        question_row_column_option: @qrco_answer_choice,
                                                                        question_row_column: question_row_column
+            set_qrcqrco question_row_column.id, qrcqrco.name, qrcqrco
           end
         end
-
-        set_qrcqrco question_row_column.id, qrcqrco.name, qrcqrco
 
         dps = data_points_of_legacy_question.select{|dp| dp["#{table_root}_field_id"]==legacy_question["id"]}
         dps.each do |dp|
@@ -514,17 +531,24 @@ namespace(:db) do
             qrc.update question_row_column_type: @qrc_type_dropdown
             qrc.question_row_columns_question_row_column_options.where(question_row_column_option: @qrco_answer_choice).destroy_all
             dropdown_options.each do |op|
-              qrcqrco = QuestionRowColumnsQuestionRowColumnOption.create! name: op,
+              qrcqrco = QuestionRowColumnsQuestionRowColumnOption.create name: op,
                                                                          question_row_column_option: @qrco_answer_choice,
                                                                          question_row_column: qrc
               set_qrcqrco qrc.id, qrcqrco.name, qrcqrco
-              if op.downcase == 'other'
-                FollowupField.create question_row_columns_question_row_column_option: qrcqrco
-              end
             end
           else
             qrc.update question_row_column_type: @qrc_type_text
           end
+
+          if legacy_question["include_other_as_option"] == 1
+            qrcqrco = QuestionRowColumnsQuestionRowColumnOption.create name: "Other (please specify)",
+                                                                       question_row_column_option: @qrco_answer_choice,
+                                                                       question_row_column: qrc
+            set_qrcqrco qrc.id, qrcqrco.name, qrcqrco
+            FollowupField.create question_row_columns_question_row_column_option: qrcqrco
+            set_followup_field qrcqrco
+          end
+
           data_points_of_legacy_question.select{|dp| dp["column_field_id"] == cf["id"] && dp["row_field_id"] == rf["id"]}.each do |dp|
             queue_data_point dp, qrc.question_row_column_fields.first
           end
@@ -596,6 +620,8 @@ namespace(:db) do
           eefst1r = ExtractionsExtractionFormsProjectsSectionsType1Row.find_or_create_by \
             extractions_extraction_forms_projects_sections_type1: eefps_t1, 
             population_name: population_name
+
+          migrate_results_data subgroup, eefpst1r
         end
 
         timepoints = db.query "SELECT * FROM outcome_timepoints where outcome_id=#{outcome["id"]}"
@@ -628,6 +654,10 @@ namespace(:db) do
         Suggestion.find_or_create_by suggestable: t1, user: migration_user
         ## TODO: Adverse Event stuff
       end
+    end
+
+    def migrate_results_data legacy_subgroup, legacy_outcome, eefspt1r
+
     end
 
     def migrate_study_data study_id, extraction
@@ -675,10 +705,10 @@ namespace(:db) do
           data_points.each do |dp|
             eefpst1 = get_eefpst1 table_root, dp[table_root + "_id"] 
             adict[eefpst1&.id] ||= []
-            adict[eefpst1&.id] << dp["value"]
+            adict[eefpst1&.id] << dp
           end
 
-          adict.each do |eefpst1_id, values|
+          adict.each do |eefpst1_id, dps|
             eefps_qrcf = ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField.find_or_create_by \
               extractions_extraction_forms_projects_section: eefps,
               question_row_column_field: qrcf,
@@ -686,13 +716,44 @@ namespace(:db) do
 
             case question_type
             when @qrc_type_text
-              Record.find_or_create_by recordable: eefps_qrcf, name: values.first
+              Record.find_or_create_by recordable: eefps_qrcf, name: dps.first["value"]
             when @qrc_type_checkbox
-              record_name = "[" + (values.map{|dp| get_qrcqrco(qrc_id, dp).to_s} - [nil, "", " "]).join(", ") + "]"
+              record_name = "[" + (dps.map{|dp| get_qrcqrco(qrc_id, dp["value"]).to_s} - [nil, "", " "]).join(", ") + "]"
               Record.find_or_create_by recordable: eefps_qrcf, name: record_name
+              dps.each do |dp|
+                ff = get_ff_by_qrcqrco get_qrcqrco(qrc_id, dp["value"])
+                if ff.present? and dp["subquestion_value"]
+                  eefps_ff = ExtractionsExtractionFormsProjectsSectionsFollowupField.find_or_create_by! \
+                    extractions_extraction_forms_projects_section: eefps,
+                    followup_field: ff,
+                    extractions_extraction_forms_projects_sections_type1_id: eefpst1_id
+                  Record.find_or_create_by! recordable: eefps_ff, name: dps.first["subquestion_value"]
+                end
+              end
             when @qrc_type_radio, @qrc_type_dropdown
-              record_name = get_qrcqrco(qrc_id, values.first).to_s || ""
-              Record.find_or_create_by recordable: eefps_qrcf, name: record_name
+              qrcqrco_id = get_qrcqrco(qrc_id, dps.first["value"])
+              if qrcqrco_id.present?
+                Record.find_or_create_by recordable: eefps_qrcf, name: qrcqrco_id.to_s
+                ff = get_ff_by_qrcqrco qrcqrco_id
+                if ff.present? and dps.first["subquestion_value"].present?
+                  eefps_ff = ExtractionsExtractionFormsProjectsSectionsFollowupField.find_or_create_by! \
+                    extractions_extraction_forms_projects_section: eefps,
+                    followup_field: ff,
+                    extractions_extraction_forms_projects_sections_type1_id: eefpst1_id
+                  Record.find_or_create_by! recordable: eefps_ff, name: dps.first["subquestion_value"]
+                end
+              else
+                ff = get_ff_by_qrc qrc_id
+                other_qrcqrco_id = get_qrcqrco(qrc_id, "Other (please specify)").to_s
+                if ff.present? and other_qrcqrco_id.present? and dps.first["value"].present?
+                  eefps_ff = ExtractionsExtractionFormsProjectsSectionsFollowupField.find_or_create_by \
+                    extractions_extraction_forms_projects_section: eefps,
+                    followup_field: ff,
+                    extractions_extraction_forms_projects_sections_type1_id: eefpst1_id
+                  Record.find_or_create_by recordable: eefps_qrcf, name: other_qrcqrco_id
+                  Record.find_or_create_by recordable: eefps_ff, name: dps.first["value"]
+                end
+              end
             else
               p q_item
             end
@@ -713,19 +774,39 @@ namespace(:db) do
             Record.find_or_create_by recordable: eefps_qrcf, name: data_points.first["value"]
           when @qrc_type_checkbox
             record_name = "[" + (data_points.map{|dp| get_qrcqrco(qrc_id, dp["value"]).to_s} - [nil, "", " "]).join(", ") + "]"
-
+            data_points.each do |dp|
+              ff = get_ff_by_qrcqrco get_qrcqrco(qrc_id, dp["value"])
+              if ff.present? and dp["subquestion_value"]
+                eefps_ff = ExtractionsExtractionFormsProjectsSectionsFollowupField.find_or_create_by! \
+                  extractions_extraction_forms_projects_section: eefps,
+                  followup_field: ff,
+                  extractions_extraction_forms_projects_sections_type1_id: nil
+                Record.find_or_create_by! recordable: eefps_ff, name: dp["subquestion_value"]
+              end
+            end
             Record.find_or_create_by recordable: eefps_qrcf, name: record_name
           when @qrc_type_radio, @qrc_type_dropdown
-            record_name = get_qrcqrco(qrc_id, data_points.first["value"]).to_s || ""
-            r = Record.find_or_create_by recordable: eefps_qrcf, name: record_name
-            p r
+            record_name = get_qrcqrco(qrc_id, data_points.first["value"]).to_s
+            if record_name.present?
+              Record.find_or_create_by recordable: eefps_qrcf, name: record_name
+            else
+              ff = get_ff_by_qrc qrc_id
+              other_qrcqrco_id = get_qrcqrco(qrc_id, "Other (please specify)").to_s
+              if ff.present? and other_qrcqrco_id.present? and data_points.first["value"].present?
+                eefps_ff = ExtractionsExtractionFormsProjectsSectionsFollowupField.find_or_create_by \
+                  extractions_extraction_forms_projects_section: eefps,
+                  followup_field: ff,
+                  extractions_extraction_forms_projects_sections_type1_id: nil
+                Record.find_or_create_by recordable: eefps_qrcf, name: other_qrcqrco_id
+                Record.find_or_create_by recordable: eefps_ff, name: data_points.first["value"]
+              end
+            end
           else
             p q_item
           end
         end
       end
     end
-
 
     def migrate_primary_publication_as_citation primary_publication_hash
       if primary_publication_hash["journal"]
@@ -748,6 +829,7 @@ namespace(:db) do
     end
 
     def migrate_secondary_publication_as_citation secondary_publication_hash
+      #TODO 
     end
 
     def migrate_author_string_as_separate_authors authors_string
@@ -760,6 +842,7 @@ namespace(:db) do
     end
 
     def split_authors_string authors_string
+      #TODO 
       []
     end
 
