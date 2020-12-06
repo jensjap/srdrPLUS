@@ -68,6 +68,11 @@ namespace(:db) do
                       "Time to Event" => Type1Type.find_by(name: "Time to Event"),
                       1 => Type1Type.find_by(name: "Index Test"), #?????????
                       2 => Type1Type.find_by(name: "Reference Test")}#?????????
+
+      @rss_type_descriptive = ResultStatisticSectionType.find_by(name: "Descriptive Statistics")
+      @rss_type_between = ResultStatisticSectionType.find_by(name: "Between Arm Comparisons")
+      @rss_type_within = ResultStatisticSectionType.find_by(name: "Within Arm Comparisons")
+      @rss_type_net = ResultStatisticSectionType.find_by(name: "NET Change")
     end
 
     def reset_project_variables
@@ -79,6 +84,15 @@ namespace(:db) do
       @eefspt1_dict = {}
       @qrcqrco_dict = {}
       @followup_dict = {qrc_to_ff: {}, qrcqrco_to_ff: {}}
+      @tp_dict = {}
+    end
+
+    def set_tp tp_id, tp
+      @tp_dict[tp_id] = tp
+    end
+
+    def get_tp tp_id
+      @tp_dict[tp_id.to_i]
     end
 
     def set_followup_field qrcqrco
@@ -115,7 +129,7 @@ namespace(:db) do
 
     def get_eefpst1 t1_name, t1_id
       @eefspt1_dict[t1_name] ||= {}
-      @eefspt1_dict[t1_name][t1_id]
+      @eefspt1_dict[t1_name][t1_id.to_i]
     end
 
     def set_efps t1_name, efps
@@ -207,7 +221,7 @@ namespace(:db) do
       end
 
       #studies_hash = db.query "SELECT * FROM studies where project_id=#{@legacy_project_id}" TODO uncomment
-      studies_hash = db.query "SELECT * FROM studies where project_id=#{@legacy_project_id} and id in (2685, 11809, 18019, 18020, 54440, 55502)" #TODO DELETE
+      studies_hash = db.query "SELECT * FROM studies where project_id=#{@legacy_project_id} and id in (2184, 2224,2249,2253,2254,2169,2170,2171,2172)" #TODO DELETE
       studies_hash.each do |study_hash|
         study_id = study_hash["id"]
 
@@ -583,7 +597,7 @@ namespace(:db) do
       diagnostic_tests = db.query "SELECT * FROM diagnostic_tests where study_id=#{study_id}"
       adverse_events = db.query "SELECT * FROM adverse_events where study_id=#{study_id}"
       
-      arms.each do |arm|
+      arms.each_with_index do |arm, ix|
         t1 = Type1.find_or_create_by name: arm["title"], 
                                      description: arm["description"]
         Suggestion.find_or_create_by suggestable: t1, user: migration_user
@@ -594,10 +608,12 @@ namespace(:db) do
         eefps_t1 = ExtractionsExtractionFormsProjectsSectionsType1.find_or_create_by \
           extractions_extraction_forms_projects_section: eefps, 
           type1: t1
+        if eefps_t1.ordering.nil? then Ordering.find_or_create_by(orderable: eefps_t1, position: ix+1) else eefps_t1.ordering.update(position: ix+1) end
         set_eefpst1 "arm", arm["id"], eefps_t1
       end
 
-      outcomes.each do |outcome|
+      results_data_queue = []
+      outcomes.each_with_index do |outcome, ix|
         t1 = Type1.find_or_create_by name: outcome["title"], 
                                      description: outcome["description"]
         Suggestion.find_or_create_by suggestable: t1, user: migration_user
@@ -610,31 +626,41 @@ namespace(:db) do
           type1: t1, 
           type1_type: @type1_types[outcome["outcome_type"]]
         set_eefpst1 "outcome", outcome["id"], eefps_t1
+        if eefps_t1.ordering.nil? then Ordering.find_or_create_by(orderable: eefps_t1, position: ix+1) else eefps_t1.ordering.update(position: ix+1) end
 
+        eefps_t1.extractions_extraction_forms_projects_sections_type1_rows.destroy_all
+
+        eefpst1r = nil
         subgroups = db.query "SELECT * FROM outcome_subgroups where outcome_id=#{outcome["id"]}"
-        eefst1r = nil
         subgroups.each do |subgroup|
           population_name = PopulationName.find_or_create_by \
             name: subgroup["title"], 
             description: subgroup["description"]
-          eefst1r = ExtractionsExtractionFormsProjectsSectionsType1Row.find_or_create_by \
+          eefpst1r = ExtractionsExtractionFormsProjectsSectionsType1Row.find_or_create_by \
             extractions_extraction_forms_projects_sections_type1: eefps_t1, 
             population_name: population_name
-
-          migrate_results_data subgroup, eefpst1r
+          results_data_queue << [subgroup, outcome, eefpst1r]
         end
+
+        eefpst1r.extractions_extraction_forms_projects_sections_type1_row_columns.destroy_all
 
         timepoints = db.query "SELECT * FROM outcome_timepoints where outcome_id=#{outcome["id"]}"
         timepoints.each do |timepoint|
           timepoint_name = TimepointName.find_or_create_by \
             name: timepoint["number"], 
             unit: timepoint["time_unit"]
-          ExtractionsExtractionFormsProjectsSectionsType1RowColumn.find_or_create_by \
-            extractions_extraction_forms_projects_sections_type1_row: eefst1r, 
+          tp = ExtractionsExtractionFormsProjectsSectionsType1RowColumn.find_or_create_by \
+            extractions_extraction_forms_projects_sections_type1_row: eefpst1r, 
             timepoint_name: timepoint_name
+          set_tp timepoint["id"], tp
         end
       end
-      diagnostic_tests.each do |diagnostic_test|
+
+      results_data_queue.each do |subgroup, outcome, eefpst1r|
+        migrate_results_data subgroup, outcome, eefpst1r
+      end
+
+      diagnostic_tests.each_with_index do |diagnostic_test, ix|
         t1 = Type1.find_or_create_by name: diagnostic_test["title"], 
                                      description: diagnostic_test["description"]
         Suggestion.find_or_create_by suggestable: t1, user: migration_user
@@ -647,6 +673,7 @@ namespace(:db) do
           type1: t1, \
           type1_type: @type1_types[diagnostic_test["test_type"]]
         set_eefpst1 "diagnostic_test", diagnostic_test["id"], eefps_t1
+        if eefps_t1.ordering.nil? then Ordering.find_or_create_by(orderable: eefps_t1, position: ix+1) else eefps_t1.ordering.update(position: ix+1) end
       end
       adverse_events.each do |adverse_event|
         t1 = Type1.find_or_create_by name: adverse_event["title"], 
@@ -656,8 +683,120 @@ namespace(:db) do
       end
     end
 
-    def migrate_results_data legacy_subgroup, legacy_outcome, eefspt1r
+    def migrate_results_data legacy_subgroup, legacy_outcome, eefpst1r
+      outcome_data_entries = db.query "SELECT * FROM outcome_data_entries where outcome_id=#{legacy_outcome["id"]} and subgroup_id=#{legacy_subgroup["id"]}"
+      bac_arr = db.query "SELECT * FROM comparisons where outcome_id=#{legacy_outcome["id"]} and subgroup_id=#{legacy_subgroup["id"]} and within_or_between='between'"
+      wac_arr = db.query "SELECT * FROM comparisons where outcome_id=#{legacy_outcome["id"]} and subgroup_id=#{legacy_subgroup["id"]} and within_or_between='within'"
 
+      rss_d = eefpst1r.result_statistic_sections.find_or_create_by!(result_statistic_section_type: @rss_type_descriptive)
+      rss_b = eefpst1r.result_statistic_sections.find_or_create_by!(result_statistic_section_type: @rss_type_between)
+      rss_w = eefpst1r.result_statistic_sections.find_or_create_by!(result_statistic_section_type: @rss_type_within)
+      eefpst1r.result_statistic_sections.find_or_create_by!(result_statistic_section_type: @rss_type_net).result_statistic_sections_measures.destroy_all
+      rss_d.result_statistic_sections_measures.destroy_all
+      rss_b.result_statistic_sections_measures.destroy_all
+      rss_w.result_statistic_sections_measures.destroy_all
+
+      outcome_data_entries.each do |ode|
+        outcome_measures = db.query "SELECT * FROM outcome_measures where outcome_data_entry_id=#{ode["id"]}"
+        outcome_measures.each do |om|
+          rssm = ResultStatisticSectionsMeasure.find_or_create_by measure: Measure.find_or_create_by!(name: om["title"]),
+                                                                  result_statistic_section: rss_d
+          tp = get_tp ode["timepoint_id"]
+
+          outcome_data_points = db.query "SELECT * FROM outcome_data_points where outcome_measure_id=#{om["id"]}"
+          outcome_data_points.each do |odp|
+            record_name = odp["value"]
+            arm_eefpst1 = get_eefpst1 'arm', odp["arm_id"]
+
+            if arm_eefpst1.present? and tp.present?
+              tar = TpsArmsRssm.find_or_create_by extractions_extraction_forms_projects_sections_type1: arm_eefpst1,
+                                                  result_statistic_sections_measure: rssm,
+                                                  timepoint: tp
+              Record.find_or_create_by(recordable: tar, name: odp["value"])
+            else
+              byebug
+            end
+          end
+        end
+      end
+
+      wac_arr.each do |wac|
+        comp_dict = {}
+
+        comp_arr = db.query "SELECT * FROM comparators where comparison_id=#{wac["id"]}"
+        comp_arr.each do |comp|
+          if comp["comparator"] == ""
+            new_comparison = Comparison.create! is_anova: false
+          elsif comp["comparator"] == "000" 
+            #TODO can this actually happen?
+            new_comparison = Comparison.create! is_anova: true
+          else
+            new_comparison = Comparison.create! is_anova: false
+            tparr = comp["comparator"].split("_").map{|tp_id| get_tp(tp_id) }.uniq - [nil]
+            tparr.each do |tp|
+              cg = ComparateGroup.create! comparison: new_comparison
+              ce = ComparableElement.create! comparable: tp
+              comparate = Comparate.create! comparate_group: cg, comparable_element: ce
+            end
+          end
+          ComparisonsResultStatisticSection.find_or_create_by! comparison: new_comparison, result_statistic_section: rss_w
+          comp_dict[comp["id"]] = new_comparison
+        end
+
+        comp_measures = db.query "SELECT * FROM comparison_measures where comparison_id=#{wac["id"]}"
+        comp_measures.each do |cm| 
+          rssm = ResultStatisticSectionsMeasure.find_or_create_by! measure: Measure.find_or_create_by!(name: cm["title"]),
+                                                                  result_statistic_section: rss_w
+
+          comp_dps = db.query "SELECT * FROM comparison_data_points where comparison_measure_id=#{cm["id"]}"
+          comp_dps.each do |comp_dp|
+            eefpst1 = get_eefpst1("arm", comp_dp["arm_id"])
+            car = ComparisonsArmsRssm.find_or_create_by! comparison: comp_dict[comp_dp["comparator_id"]], 
+                                                        extractions_extraction_forms_projects_sections_type1: eefpst1,
+                                                        result_statistic_sections_measure: rssm
+            r = Record.find_or_create_by! recordable: car, name: comp_dp["value"]
+            p r
+          end
+        end
+      end
+      bac_arr.each do |bac|
+        comp_dict = {}
+
+        comp_arr = db.query "SELECT * FROM comparators where comparison_id=#{bac["id"]}"
+        comp_arr.each do |comp|
+          if comp["comparator"] == ""
+            new_comparison = Comparison.create! is_anova: false
+          elsif comp["comparator"] == "000" 
+            new_comparison = Comparison.create! is_anova: true
+          else
+            new_comparison = Comparison.create! is_anova: false
+            armarr = comp["comparator"].split("_").map{|arm_id| get_eefpst1("arm", arm_id)}.uniq - [nil]
+
+            armarr.each do |eefpst1|
+              cg = ComparateGroup.create! comparison: new_comparison
+              ce = ComparableElement.create! comparable: eefpst1
+              comparate = Comparate.create! comparate_group: cg, comparable_element: ce
+            end
+          end
+          ComparisonsResultStatisticSection.find_or_create_by! comparison: new_comparison, result_statistic_section: rss_b
+          comp_dict[comp["id"]] = new_comparison
+        end
+
+        comp_measures = db.query "SELECT * FROM comparison_measures where comparison_id=#{bac["id"]}"
+        comp_measures.each do |cm| 
+          rssm = ResultStatisticSectionsMeasure.find_or_create_by! measure: Measure.find_or_create_by!(name: cm["title"]),
+                                                                  result_statistic_section: rss_b
+
+          comp_dps = db.query "SELECT * FROM comparison_data_points where comparison_measure_id=#{cm["id"]}"
+          comp_dps.each do |comp_dp|
+            tp = get_tp(bac["group_id"])
+            tcr = TpsComparisonsRssm.find_or_create_by! comparison: comp_dict[comp_dp["comparator_id"]], 
+                                                        timepoint: tp,
+                                                        result_statistic_sections_measure: rssm
+            Record.find_or_create_by! recordable: tcr, name: comp_dp["value"]
+          end
+        end
+      end
     end
 
     def migrate_study_data study_id, extraction
@@ -723,11 +862,11 @@ namespace(:db) do
               dps.each do |dp|
                 ff = get_ff_by_qrcqrco get_qrcqrco(qrc_id, dp["value"])
                 if ff.present? and dp["subquestion_value"]
-                  eefps_ff = ExtractionsExtractionFormsProjectsSectionsFollowupField.find_or_create_by! \
+                  eefps_ff = ExtractionsExtractionFormsProjectsSectionsFollowupField.find_or_create_by \
                     extractions_extraction_forms_projects_section: eefps,
                     followup_field: ff,
                     extractions_extraction_forms_projects_sections_type1_id: eefpst1_id
-                  Record.find_or_create_by! recordable: eefps_ff, name: dps.first["subquestion_value"]
+                  Record.find_or_create_by recordable: eefps_ff, name: dps.first["subquestion_value"]
                 end
               end
             when @qrc_type_radio, @qrc_type_dropdown
@@ -736,11 +875,11 @@ namespace(:db) do
                 Record.find_or_create_by recordable: eefps_qrcf, name: qrcqrco_id.to_s
                 ff = get_ff_by_qrcqrco qrcqrco_id
                 if ff.present? and dps.first["subquestion_value"].present?
-                  eefps_ff = ExtractionsExtractionFormsProjectsSectionsFollowupField.find_or_create_by! \
+                  eefps_ff = ExtractionsExtractionFormsProjectsSectionsFollowupField.find_or_create_by \
                     extractions_extraction_forms_projects_section: eefps,
                     followup_field: ff,
                     extractions_extraction_forms_projects_sections_type1_id: eefpst1_id
-                  Record.find_or_create_by! recordable: eefps_ff, name: dps.first["subquestion_value"]
+                  Record.find_or_create_by recordable: eefps_ff, name: dps.first["subquestion_value"]
                 end
               else
                 ff = get_ff_by_qrc qrc_id
@@ -777,11 +916,11 @@ namespace(:db) do
             data_points.each do |dp|
               ff = get_ff_by_qrcqrco get_qrcqrco(qrc_id, dp["value"])
               if ff.present? and dp["subquestion_value"]
-                eefps_ff = ExtractionsExtractionFormsProjectsSectionsFollowupField.find_or_create_by! \
+                eefps_ff = ExtractionsExtractionFormsProjectsSectionsFollowupField.find_or_create_by \
                   extractions_extraction_forms_projects_section: eefps,
                   followup_field: ff,
                   extractions_extraction_forms_projects_sections_type1_id: nil
-                Record.find_or_create_by! recordable: eefps_ff, name: dp["subquestion_value"]
+                Record.find_or_create_by recordable: eefps_ff, name: dp["subquestion_value"]
               end
             end
             Record.find_or_create_by recordable: eefps_qrcf, name: record_name
