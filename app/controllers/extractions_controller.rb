@@ -160,7 +160,7 @@ class ExtractionsController < ApplicationController
         unless @panel_tab_id == 'keyquestions'
           @key_questions_projects_array_for_select = @project.key_questions_projects_array_for_select
 
-          if @extraction_forms_projects.first.extraction_forms_project_type.eql? ExtractionFormsProjectType::DIAGNOSTIC_TEST
+          if @extraction_forms_projects.first.extraction_forms_project_type.name.eql? ExtractionFormsProjectType::DIAGNOSTIC_TEST
             @eefpst1s = ExtractionsExtractionFormsProjectsSectionsType1
               .by_section_name_and_extraction_id_and_extraction_forms_project_id('Diagnostic Tests',
                                                                                 @extraction.id,

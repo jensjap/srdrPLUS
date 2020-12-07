@@ -14,7 +14,7 @@ namespace(:db) do
       #projects = db.query("SELECT * FROM projects WHERE id=159")
       #projects = db.query("SELECT * FROM projects WHERE id=520")
       #projects = db.query("SELECT * FROM projects WHERE id=697")
-      projects = db.query("SELECT * FROM projects WHERE id in (16);")
+      projects = db.query("SELECT * FROM projects where id>16 limit 30")
       #projects = db.query("SELECT * FROM projects WHERE id>516 LIMIT 3")
       #projects = db.query("SELECT * FROM projects WHERE id>1006 LIMIT 3")
 
@@ -213,15 +213,11 @@ namespace(:db) do
 
       if efp_type == false
         return
-      elsif efp_type == @efp_type_diagnostic
-        get_srdrplus_project(@legacy_project_id).extraction_forms_projects.first.update(extraction_forms_project_type: efp_type)
-        #migrate_extraction_forms_as_diagnostic_efp efs
-      else
-        migrate_extraction_forms_as_standard_efp efs
       end
-
+      get_srdrplus_project(@legacy_project_id).extraction_forms_projects.first.update(extraction_forms_project_type: efp_type)
+      migrate_extraction_forms_as_standard_efp efs
       #studies_hash = db.query "SELECT * FROM studies where project_id=#{@legacy_project_id}" TODO uncomment
-      studies_hash = db.query "SELECT * FROM studies where project_id=#{@legacy_project_id} and id in (2184, 2224,2249,2253,2254,2169,2170,2171,2172)" #TODO DELETE
+      studies_hash = db.query "SELECT * FROM studies where project_id=#{@legacy_project_id}" #TODO DELETE
       studies_hash.each do |study_hash|
         study_id = study_hash["id"]
 
@@ -244,7 +240,6 @@ namespace(:db) do
 
         t1_efps = []
         t2_efps = []
-        other_efps = []
 
         arms_efps = nil
         outcomes_efps = nil
@@ -660,6 +655,7 @@ namespace(:db) do
         migrate_results_data subgroup, outcome, eefpst1r
       end
 
+      diagnostic_results_data_queue = []
       diagnostic_tests.each_with_index do |diagnostic_test, ix|
         t1 = Type1.find_or_create_by name: diagnostic_test["title"], 
                                      description: diagnostic_test["description"]
@@ -674,7 +670,25 @@ namespace(:db) do
           type1_type: @type1_types[diagnostic_test["test_type"]]
         set_eefpst1 "diagnostic_test", diagnostic_test["id"], eefps_t1
         if eefps_t1.ordering.nil? then Ordering.find_or_create_by(orderable: eefps_t1, position: ix+1) else eefps_t1.ordering.update(position: ix+1) end
+
+        eefps_t1.extractions_extraction_forms_projects_sections_type1_rows.destroy_all
+
+        eefpst1r = nil
+        thresholds = db.query "SELECT * FROM diagnostic_test_thresholds where diagnostic_test_id=#{diagnostic_test["id"]}"
+
+        thresholds.each do |threshold|
+          population_name = PopulationName.find_or_create_by! \
+            name: threshold["threshold"]
+          eefpst1r = ExtractionsExtractionFormsProjectsSectionsType1Row.find_or_create_by! \
+            extractions_extraction_forms_projects_sections_type1: eefps_t1, 
+            population_name: population_name
+          diagnostic_results_data_queue << [threshold, diagnostic_test, eefpst1r]
+        end
       end
+
+      diagnostic_results_data_queue.each do |diagnostic_results_data_queue|
+      end
+
       adverse_events.each do |adverse_event|
         t1 = Type1.find_or_create_by name: adverse_event["title"], 
                                      description: adverse_event["description"]
@@ -688,10 +702,10 @@ namespace(:db) do
       bac_arr = db.query "SELECT * FROM comparisons where outcome_id=#{legacy_outcome["id"]} and subgroup_id=#{legacy_subgroup["id"]} and within_or_between='between'"
       wac_arr = db.query "SELECT * FROM comparisons where outcome_id=#{legacy_outcome["id"]} and subgroup_id=#{legacy_subgroup["id"]} and within_or_between='within'"
 
-      rss_d = eefpst1r.result_statistic_sections.find_or_create_by!(result_statistic_section_type: @rss_type_descriptive)
-      rss_b = eefpst1r.result_statistic_sections.find_or_create_by!(result_statistic_section_type: @rss_type_between)
-      rss_w = eefpst1r.result_statistic_sections.find_or_create_by!(result_statistic_section_type: @rss_type_within)
-      eefpst1r.result_statistic_sections.find_or_create_by!(result_statistic_section_type: @rss_type_net).result_statistic_sections_measures.destroy_all
+      rss_d = eefpst1r.result_statistic_sections.find_or_create_by(result_statistic_section_type: @rss_type_descriptive)
+      rss_b = eefpst1r.result_statistic_sections.find_or_create_by(result_statistic_section_type: @rss_type_between)
+      rss_w = eefpst1r.result_statistic_sections.find_or_create_by(result_statistic_section_type: @rss_type_within)
+      eefpst1r.result_statistic_sections.find_or_create_by(result_statistic_section_type: @rss_type_net).result_statistic_sections_measures.destroy_all
       rss_d.result_statistic_sections_measures.destroy_all
       rss_b.result_statistic_sections_measures.destroy_all
       rss_w.result_statistic_sections_measures.destroy_all
@@ -699,7 +713,7 @@ namespace(:db) do
       outcome_data_entries.each do |ode|
         outcome_measures = db.query "SELECT * FROM outcome_measures where outcome_data_entry_id=#{ode["id"]}"
         outcome_measures.each do |om|
-          rssm = ResultStatisticSectionsMeasure.find_or_create_by measure: Measure.find_or_create_by!(name: om["title"]),
+          rssm = ResultStatisticSectionsMeasure.find_or_create_by measure: Measure.find_or_create_by(name: om["title"]),
                                                                   result_statistic_section: rss_d
           tp = get_tp ode["timepoint_id"]
 
@@ -726,35 +740,35 @@ namespace(:db) do
         comp_arr = db.query "SELECT * FROM comparators where comparison_id=#{wac["id"]}"
         comp_arr.each do |comp|
           if comp["comparator"] == ""
-            new_comparison = Comparison.create! is_anova: false
+            new_comparison = Comparison.create is_anova: false
           elsif comp["comparator"] == "000" 
             #TODO can this actually happen?
-            new_comparison = Comparison.create! is_anova: true
+            new_comparison = Comparison.create is_anova: true
           else
-            new_comparison = Comparison.create! is_anova: false
+            new_comparison = Comparison.create is_anova: false
             tparr = comp["comparator"].split("_").map{|tp_id| get_tp(tp_id) }.uniq - [nil]
             tparr.each do |tp|
-              cg = ComparateGroup.create! comparison: new_comparison
-              ce = ComparableElement.create! comparable: tp
-              comparate = Comparate.create! comparate_group: cg, comparable_element: ce
+              cg = ComparateGroup.create comparison: new_comparison
+              ce = ComparableElement.create comparable: tp
+              comparate = Comparate.create comparate_group: cg, comparable_element: ce
             end
           end
-          ComparisonsResultStatisticSection.find_or_create_by! comparison: new_comparison, result_statistic_section: rss_w
+          ComparisonsResultStatisticSection.find_or_create_by comparison: new_comparison, result_statistic_section: rss_w
           comp_dict[comp["id"]] = new_comparison
         end
 
         comp_measures = db.query "SELECT * FROM comparison_measures where comparison_id=#{wac["id"]}"
         comp_measures.each do |cm| 
-          rssm = ResultStatisticSectionsMeasure.find_or_create_by! measure: Measure.find_or_create_by!(name: cm["title"]),
+          rssm = ResultStatisticSectionsMeasure.find_or_create_by measure: Measure.find_or_create_by(name: cm["title"]),
                                                                   result_statistic_section: rss_w
 
           comp_dps = db.query "SELECT * FROM comparison_data_points where comparison_measure_id=#{cm["id"]}"
           comp_dps.each do |comp_dp|
             eefpst1 = get_eefpst1("arm", comp_dp["arm_id"])
-            car = ComparisonsArmsRssm.find_or_create_by! comparison: comp_dict[comp_dp["comparator_id"]], 
+            car = ComparisonsArmsRssm.find_or_create_by comparison: comp_dict[comp_dp["comparator_id"]], 
                                                         extractions_extraction_forms_projects_sections_type1: eefpst1,
                                                         result_statistic_sections_measure: rssm
-            r = Record.find_or_create_by! recordable: car, name: comp_dp["value"]
+            r = Record.find_or_create_by recordable: car, name: comp_dp["value"]
             p r
           end
         end
@@ -765,35 +779,35 @@ namespace(:db) do
         comp_arr = db.query "SELECT * FROM comparators where comparison_id=#{bac["id"]}"
         comp_arr.each do |comp|
           if comp["comparator"] == ""
-            new_comparison = Comparison.create! is_anova: false
+            new_comparison = Comparison.create is_anova: false
           elsif comp["comparator"] == "000" 
-            new_comparison = Comparison.create! is_anova: true
+            new_comparison = Comparison.create is_anova: true
           else
-            new_comparison = Comparison.create! is_anova: false
+            new_comparison = Comparison.create is_anova: false
             armarr = comp["comparator"].split("_").map{|arm_id| get_eefpst1("arm", arm_id)}.uniq - [nil]
 
             armarr.each do |eefpst1|
-              cg = ComparateGroup.create! comparison: new_comparison
-              ce = ComparableElement.create! comparable: eefpst1
-              comparate = Comparate.create! comparate_group: cg, comparable_element: ce
+              cg = ComparateGroup.create comparison: new_comparison
+              ce = ComparableElement.create comparable: eefpst1
+              comparate = Comparate.create comparate_group: cg, comparable_element: ce
             end
           end
-          ComparisonsResultStatisticSection.find_or_create_by! comparison: new_comparison, result_statistic_section: rss_b
+          ComparisonsResultStatisticSection.find_or_create_by comparison: new_comparison, result_statistic_section: rss_b
           comp_dict[comp["id"]] = new_comparison
         end
 
         comp_measures = db.query "SELECT * FROM comparison_measures where comparison_id=#{bac["id"]}"
         comp_measures.each do |cm| 
-          rssm = ResultStatisticSectionsMeasure.find_or_create_by! measure: Measure.find_or_create_by!(name: cm["title"]),
+          rssm = ResultStatisticSectionsMeasure.find_or_create_by measure: Measure.find_or_create_by(name: cm["title"]),
                                                                   result_statistic_section: rss_b
 
           comp_dps = db.query "SELECT * FROM comparison_data_points where comparison_measure_id=#{cm["id"]}"
           comp_dps.each do |comp_dp|
             tp = get_tp(bac["group_id"])
-            tcr = TpsComparisonsRssm.find_or_create_by! comparison: comp_dict[comp_dp["comparator_id"]], 
+            tcr = TpsComparisonsRssm.find_or_create_by comparison: comp_dict[comp_dp["comparator_id"]], 
                                                         timepoint: tp,
                                                         result_statistic_sections_measure: rssm
-            Record.find_or_create_by! recordable: tcr, name: comp_dp["value"]
+            Record.find_or_create_by recordable: tcr, name: comp_dp["value"]
           end
         end
       end
