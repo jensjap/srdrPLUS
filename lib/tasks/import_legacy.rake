@@ -350,8 +350,11 @@ namespace(:db) do
           when "Design"
             migrate_questions efps, ef["id"], 'design_detail', ef_key_questions
           when "Quality"
-          when "Baseline"
+            qdf_arr = db.query("SELECT * FROM quality_dimension_fields where extraction_form_id=#{ef["id"]}")
+            qrf_arr = db.query("SELECT * FROM quality_rating_fields where extraction_form_id=#{ef["id"]}")
 
+            migrate_quality_questions efps, ef["id"], qdf_arr, qrf_arr, ef_key_questions
+          when "Baseline"
           else
           end
         end
@@ -375,6 +378,117 @@ namespace(:db) do
 
     def get_data_points table_root, ef_id
       db.query "SELECT * FROM #{table_root}_data_points where extraction_form_id=#{ef_id}"
+    end
+
+    def get_qdf_dropdown_options(quality_dimension)
+      qd_text = quality_dimension["title"]
+      
+      output_array = []	
+      fn = File.dirname(File.expand_path(__FILE__)) + '/legacy_quality_dimensions.yml'
+      dimensions_file = YAML::load(File.open(fn))
+      output_array << ["", ""]
+      
+      finished = false
+      if (defined?(dimensions_file) && !dimensions_file.nil?)
+        # go through quality_dimensions.yml
+        dimensions_file.each do |section|
+          if defined?(section['dimensions']) && !section['dimensions'].nil?
+            section['dimensions'].each do |dimension|
+              if !finished			
+                # test if dimension['question'] equals first part of @qd_text
+                if defined?(dimension['question']) && !dimension['question'].nil? && (qd_text.starts_with?(dimension['question']))
+                  if !dimension['options'].nil?
+                    dimension['options'].each do |option|
+                      output_array << [option['option'], option['option']]
+                    end
+                    output_array << ["Other...","other"]
+                  end
+                  finished = true
+                end # end compare question and yml question	
+              end # end finished
+            end #end section.each
+          end #end 
+        end
+      end
+      # if not finished (no match found), create a default array
+      if (!finished)
+        output_array << ["Yes", "Yes"]								
+        output_array << ["No", "No"]								
+        output_array << ["Unsure", "Unsure"]								
+        output_array << ["No Data", "No Data"]								
+        output_array << ["Not Applicable", "Not Applicable"]
+        output_array << ["Other...","other"]
+      end
+      return output_array
+    end
+
+    def migrate_quality_questions efps, ef_id, qdf_arr, qrf_arr, ef_key_questions
+      qdf_arr.each do |qdf|
+        options_arr = get_qdf_dropdown_options qdf
+
+        qdf_title = qdf["title"]
+        qdf_title =~ /(.*) \[(.*)\]$/
+
+        name = $1 || qdf_title
+        description = qdf["field_notes"]
+
+        question = Question.create! name: name,
+                                   description: description,
+                                   extraction_forms_projects_section: efps
+        ef_key_questions.each do |kq|
+          KeyQuestionsProjectsQuestion.create! key_questions_project: get_srdrplus_key_question(kq["key_question_id"]),
+                                              question: question
+        end
+
+        question.question_rows.first.update! name: "Value:"
+        question.question_rows.create! name: "Notes:"
+
+        values_qrc = question.question_rows.first.question_row_columns.first
+        values_qrc.update! question_row_column_type: @qrc_type_dropdown
+
+        options_arr.each do |o|
+          qrcqrco = QuestionRowColumnsQuestionRowColumnOption.find_or_create_by! question_row_column: values_qrc,
+                                                                       question_row_column_option: @qrco_answer_choice,
+                                                                       name: o[0]
+
+          set_qrcqrco values_qrc.id, o[0], qrcqrco
+
+          if o[0] != "Other..."
+            qrcqrco = QuestionRowColumnsQuestionRowColumnOption.find_or_create_by! question_row_column: values_qrc,
+                                                                         question_row_column_option: @qrco_answer_choice,
+                                                                         name: "Other (please specify):"
+
+            set_qrcqrco values_qrc.id, o[0], qrcqrco
+
+            ff = FollowupField.create! question_row_columns_question_row_column_option: qrcqrco
+            set_followup_field qrcqrco
+          end
+        end
+      end
+
+      qrf_name = "Adjust Quality Rating for (Key Questions: #{ef_key_questions.map{|ef_kq| get_srdrplus_key_question(ef_kq["key_question_id"]).ordering.position.to_s}.join(", ")})"
+      qrf_question = Question.create name: qrf_name,
+                                 description: "",
+                                 extraction_forms_projects_section: efps
+
+      qrf_question.question_rows.create name: "Quality Guideline Used:"
+      rating_qrc = QuestionRowColumn.create question_row: qrf_question.question_rows.first, 
+                                            name: "Select Current Overall Rating:"
+      rating_qrc.update question_row_column_type: @qrc_type_dropdown
+      qrf_question.question_rows.create name: "Notes on this Rating:"
+
+      ef_key_questions.each do |kq|
+        KeyQuestionsProjectsQuestion.create key_questions_project: get_srdrplus_key_question(kq["key_question_id"]),
+                                            question: qrf_question
+      end
+      
+      qrf_arr.each do |qrf|
+        qrcqrco = QuestionRowColumnsQuestionRowColumnOption.find_or_create_by! question_row_column: rating_qrc,
+                                                                     question_row_column_option: @qrco_answer_choice,
+                                                                     name: qrf["rating_item"]
+
+        set_qrcqrco rating_qrc.id, qrf["rating_item"], qrcqrco
+      end
     end
 
     def migrate_questions efps, ef_id, table_root, ef_key_questions
@@ -568,9 +682,11 @@ namespace(:db) do
     def migrate_key_questions
       kqs = db.query "SELECT * FROM key_questions where project_id=#{@legacy_project_id}"
       srdrplus_project = get_srdrplus_project @legacy_project_id
-      kqs.each do |kq|
+      kqs.each_with_index do |kq,ix|
         srdrplus_kq = KeyQuestion.find_or_create_by name: kq["question"]
         srdrplus_kqp = KeyQuestionsProject.create key_question: srdrplus_kq, project: srdrplus_project
+        srdrplus_kqp.ordering.update! position: ix+1
+
         set_srdrplus_key_question kq["id"], srdrplus_kqp
       end
     end
