@@ -1,4 +1,4 @@
-document.addEventListener 'turbolinks:load', ->
+document.addEventListener 'DOMContentLoaded', ->
   do ->
     types_columns_dict = { "Arm Details": [ "Arm Name",\
                                             "Arm Description",\
@@ -22,7 +22,7 @@ document.addEventListener 'turbolinks:load', ->
                                           "Included",\
                                           "Refman",\
                                           "Pmid" ] }
- 
+
     current_mapping = {}
     current_sheet_name_mapping = {}
     workbook = undefined
@@ -76,7 +76,7 @@ document.addEventListener 'turbolinks:load', ->
 
       new Dropzone( '#fileDropzone' )
 
-      $('.create-button').on('click', () -> 
+      $('.create-button').on('click', () ->
         fd = new FormData()
         fd.append("content", update_file_headers())
         fd.append("projects_user_id", $("#dropzone-div input[name='import[projects_user_id]']").val())
@@ -84,7 +84,7 @@ document.addEventListener 'turbolinks:load', ->
         fd.append("file_type_id", $("#dropzone-div input[name='import[file_type_id]']").val())
         fd.append("authenticity_token", $("#dropzone-div input[name='authenticity_token']").val())
 
-        $.ajax({ 
+        $.ajax({
           url: $('#fileDropzone').attr('dropzone-path'),
           method: 'post',
           data: fd,
@@ -112,7 +112,7 @@ document.addEventListener 'turbolinks:load', ->
       filedata = undefined
       $('#import-columns-panel').html ''
       $('#import-tabs-panel').html ''
-      
+
     add_header = ( row_elem, header_name ) ->
       cutoff_limit = 160
       short_header_name = header_name
@@ -154,7 +154,7 @@ document.addEventListener 'turbolinks:load', ->
           $( '.palette' ).addClass 'hide'
           new_row_elem.removeClass 'hide'
           palette_elem.removeClass 'hide'
-          $( '.import-columns-tab.selected' ).removeClass 'selected' 
+          $( '.import-columns-tab.selected' ).removeClass 'selected'
           new_tab_elem.addClass 'selected'
       else
         palette_elem.addClass 'hide'
@@ -165,7 +165,7 @@ document.addEventListener 'turbolinks:load', ->
           $( '.palette' ).addClass 'hide'
           new_row_elem.removeClass 'hide'
           palette_elem.removeClass 'hide'
-          $( '.import-columns-tab.selected' ).removeClass 'selected' 
+          $( '.import-columns-tab.selected' ).removeClass 'selected'
           new_tab_elem.addClass 'selected'
 
       $( '#import-tabs-panel' ).append( new_tab_elem )
@@ -185,14 +185,14 @@ document.addEventListener 'turbolinks:load', ->
       $( palette_elem ).html('')
       $( row_elem ).find( '.top' ).html('')
       for import_column in [0..$( row_elem ).find( '.header-column' ).length-1]
-        $( row_elem ).find( '.top' ).append( $( '<div></div>' ).addClass( 'import-column' ).attr('index', cur_index) ) 
+        $( row_elem ).find( '.top' ).append( $( '<div></div>' ).addClass( 'import-column' ).attr('index', cur_index) )
         cur_index += 1
 
       while headers_to_add.length > 0
         srdr_header = headers_to_add.pop(0)
         $( palette_elem ).append( $( '<div></div>' ).addClass( 'import-column' ).attr( 'srdr-header', srdr_header ).append( $('<span></span>').text( srdr_header ) ) )
         min_edit_distance = Number.POSITIVE_INFINITY
-        min_index = 0 
+        min_index = 0
         cur_index = 0
         for import_column in $( row_elem ).find( '.header-column' )
           header_text = $( import_column ).attr( 'full-header' )
@@ -245,7 +245,7 @@ document.addEventListener 'turbolinks:load', ->
       droppable = new Draggable.Droppable( $( row_elem ).find( '.headers .top' ).toArray().concat(palette_elem.toArray()), { draggable: '.is-droppable', dropzone: '#' + $( row_elem ).attr( 'id' ) + ' .headers .top .import-column, #palette-container .palette .import-column', plugins: [] })
 
       sheet_name = get_sheet_name ( row_elem )
-        
+
       droppable.on 'droppable:stop', (evt) ->
         srdr_header = $( evt.dropzone ).find( '.is-droppable' ).text()
         target_elem = $( palette_elem ).find( '.import-column[srdr-header="' + srdr_header + '"]' )
