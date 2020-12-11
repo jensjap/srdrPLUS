@@ -7,16 +7,19 @@ class ImportsController < ApplicationController
   end
 
   def create
-    unless _check_valid_file_type(params['file'])
-      @import = Struct.new(:errors).new(nil)
-      @import.errors = "Invalid file format"
-      respond_to do |format|
-        format.json { render :json => @import.errors.to_json, status: :unprocessable_entity }
+    import_type_id = params['import_type_id'] || params['import']['import_type_id']
+    if import_type_id.eql?("3")
+      imported_file = params['file']
+      unless _check_valid_file_type(imported_file)
+        @import = Struct.new(:errors).new(nil)
+        @import.errors = "Invalid file format"
+        respond_to do |format|
+          format.json { render :json => @import.errors.to_json, status: :unprocessable_entity }
+        end
+        return
       end
-      return
     end
 
-    import_type_id = params['import_type_id'] || params['import']['import_type_id']
     projects_user_id = params['projects_user_id'] || params['import']['projects_user_id']
     content = params['file'] || params['content'] || params['import']['content']
     file_type_id = params['file_type_id'] || params['import']['file_type_id']
