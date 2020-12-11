@@ -1,6 +1,6 @@
 li = link_to('Dashboard', projects_path)
 
-- if (controller_name.eql?('projects') && not(action_name.eql?('index')) && not(action_name.eql?('new'))) || controller_name.eql?('assignments') || controller_name.eql?('extractions') || controller_name.eql?('extraction_forms_projects') || (controller_name.eql?('citations') && action_name.eql?('index')) || (controller_name.eql?('tasks') && action_name.eql?('index')) || (controller_name.eql?('screening_options') && action_name.eql?('index')) ||  (controller_name.eql?('questions') && (action_name.eql?('dependencies') || action_name.eql?('edit'))) || (controller_name.eql?('extractions_extraction_forms_projects_sections_type1s') && action_name.eql?('edit')) || (controller_name.eql?('extraction_forms_projects_sections') && action_name.eql?('preview'))
+- if (controller_name.eql?('projects') && not(action_name.eql?('index')) && not(action_name.eql?('new'))) || controller_name.eql?('assignments') || controller_name.eql?('extractions') || controller_name.eql?('extraction_forms_projects') || (controller_name.eql?('citations') && action_name.eql?('index')) || (controller_name.eql?('tasks') && action_name.eql?('index')) || (controller_name.eql?('screening_options') && action_name.eql?('index')) ||  (controller_name.eql?('questions') && (action_name.eql?('dependencies') || action_name.eql?('edit'))) || (controller_name.eql?('extractions_extraction_forms_projects_sections_type1s') && action_name.eql?('edit')) || (controller_name.eql?('extraction_forms_projects_sections') && action_name.eql?('preview')) || (controller_name.eql?('imports') && action_name.eql?('new'))
 
   - project = @project || @extraction.try(:project) || @extraction_forms_project.try(:project) || @question.try(:project) || @extraction_forms_projects_section.project
 
@@ -9,6 +9,7 @@ li = link_to('Dashboard', projects_path)
     ul.menu
       b Tools
       li = link_to t('.members_and_roles'), edit_project_path(project) + '#panel-projects-users', title: t('.members_and_roles')
+      li = link_to 'Import Data', new_project_import_path(project)
       li
         a#export-modal-button[data-open="export-modal-#{ project.id.to_s }"] = 'Export Data'
         = render partial: 'shared/select_export_type', locals: { project: project }
