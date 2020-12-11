@@ -1,5 +1,4 @@
-document.addEventListener 'turbolinks:load', ->
-
+document.addEventListener 'DOMContentLoaded', ->
   return unless $( '.tasks' ).length > 0
 
   do ->
@@ -12,7 +11,3 @@ document.addEventListener 'turbolinks:load', ->
       else
         $( '.task_num_assigned' ).show()
         $( '#task_num_assigned' ).val('')
-
-    return # END do ->
-
-  return # END turbolinks:load

@@ -7,17 +7,30 @@ class ImportsController < ApplicationController
   end
 
   def create
+    unless _check_valid_file_type(params['file'])
+      @import = Struct.new(:errors).new(nil)
+      @import.errors = "Invalid file format"
+      respond_to do |format|
+        format.json { render :json => @import.errors.to_json, status: :unprocessable_entity }
+      end
+      return
+    end
+
     import_type_id = params['import_type_id'] || params['import']['import_type_id']
     projects_user_id = params['projects_user_id'] || params['import']['projects_user_id']
     content = params['file'] || params['content'] || params['import']['content']
     file_type_id = params['file_type_id'] || params['import']['file_type_id']
 
-    import_hash = { import_type_id: import_type_id,
-                    projects_user_id: projects_user_id,
-                    imported_files_attributes:
-                      [ { content: content,
-                               file_type_id: file_type_id } ]
-                  }
+    import_hash = {
+      import_type_id: import_type_id,
+      projects_user_id: projects_user_id,
+      imported_files_attributes: [
+        {
+          content: content,
+          file_type_id: file_type_id
+        }
+      ]
+    }
 
     @import = Import.new(import_hash)
     authorize(@import.project, policy_class: ImportPolicy)
@@ -50,4 +63,9 @@ class ImportsController < ApplicationController
       @project = Project.find params[:project_id]
       @projects_user = ProjectsUser.find_by project: @project, user: current_user
     end
+end
+
+def _check_valid_file_type(file)
+  extension = file.original_filename.match(/(\.[a-z]+$)/i)[0]
+  return ['.ris', '.csv', '.txt', '.enw'].include?(extension)
 end

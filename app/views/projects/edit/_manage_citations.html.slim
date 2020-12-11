@@ -38,7 +38,7 @@ div.row style="margin: 0;"
 
   div.columns.medium-3
     div#top-anchor(data-sticky-container)
-      div.sticky(data-sticky data-top-anchor="top-anchor" data-btm-anchor="leyleyley" data-margin-bottom="0" data-check-every="0")
+      div.sticky(data-sticky data-top-anchor="top-anchor" data-btm-anchor="btm-anchor" data-margin-top="5" data-check-every="0")
 
         - projects_user = ProjectsUser.find_by user: current_user, project: @project
         - new_import = projects_user.imports.build
@@ -83,7 +83,7 @@ div.row style="margin: 0;"
                     .form-actions
                       = f.button :submit, 'Upload file', class:"small", id:"submit-all"
 
-div.row style="margin: 10px 0 0 0;"
+div.row#btm-anchor style="margin: 10px 0 0 0;"
   div.columns.medium-12
     = simple_form_for( @project,
                        url: project_path(@project),

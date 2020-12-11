@@ -11,7 +11,6 @@
 
 class ResultStatisticSectionType < ApplicationRecord
   acts_as_paranoid
-  has_paper_trail
 
   TYPE_NAMES = %w(Descriptive BAC WAC NET).freeze
 

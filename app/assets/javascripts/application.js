@@ -1,10 +1,9 @@
 //= require jquery
 //= require jquery_ujs
-//= require turbolinks
 //= require datatables
 //= require init
 
-//= require jquery.turbolinks
+//= require datatables
 //= require foundation
 //= require toastr_rails
 //= require cocoon
@@ -21,45 +20,7 @@
 //= require dropzone
 //= require ahrq_foresee_qa_survey
 
-// require assignments
-// require author
-// require cable
-// require citations
-// require extraction_forms_projects
-// require extraction_forms_projects_sections
-// require extraction_forms_projects_sections_type1s
-// require extractions
-// require extractions_extraction_forms_projects_sections_question_row_column_fields
-// require extractions_extraction_forms_projects_sections_type1_row_columns
-// require extractions_extraction_forms_projects_sections_type1_rows
-// require extractions_extraction_forms_projects_sections_type1s
-// require forms
-// require invitations
-// require journal
-// require key_questions
-// require keywords
-// require labels
-// require organizations
-// require profiles
-// require project_report_links
-// require projects
-// require projects_users_roles
-// require questions
-// require records
-// require result_statistic_sections
-// require screening_options
-// require sd_key_questions
-// require sd_meta_data
-// require sd_picods_types
-// require sd_search_databases
-// require searches
-// require static_pages
-// require tasks
-// require teams
-
 //= require_tree .
-
-//$(function(){ $( document ).foundation(); });
 
 'use strict';
 
@@ -144,8 +105,30 @@ function get_valid_URL(string){
   }
 }
 
-document.addEventListener( 'turbolinks:load', function() {
-  $( document ).foundation();
+// Attach NIH autocomplete for UCUM (Unified Code for Units of Measure) to any input field with class 'ucum'.
+$( document ).on( 'cocoon:after-insert', function(e, insertedItem, originalEvent) {
+  $( '.ucum' ).each(function() {
+    new Def.Autocompleter.Search(this, 'https://clinicaltables.nlm.nih.gov/api/ucum/v3/search', { tableFormat: true, valueCols: [0], colHeaders: ['Code', 'Name'] });
+  });
+});
+
+// Wait for DOM ready:
+document.addEventListener('DOMContentLoaded', function() {
+  // Initialize foundation for navbar and any non-section foundation JS
+  $(document).foundation();
+  $('#loading-indicator').hide();
+
+  if ($( '.extractions.work' ).length > 0) return
+  documentCode();
+})
+
+document.addEventListener('extractionSectionLoaded', function() {
+  documentCode();
+})
+
+let documentCode = function() {
+  // Initialize foundation again to apply foundation JS within the sections
+  Foundation.reflow($('.ajax-section'));
 
   // Check for dirty forms.
   window.onbeforeunload = function (e) {
@@ -163,25 +146,15 @@ document.addEventListener( 'turbolinks:load', function() {
     return;
   };
 
-//  $( '#options' )
-//    .on('cocoon:before-insert', function(e,task_to_be_added) {
-//      task_to_be_added.fadeIn('slow');
-//    })
-//    .on('cocoon:after-insert', function(e, added_task) {
-//      // e.g. set the background of inserted task
-//      added_task.css("background","red");
-//    })
-//    .on('cocoon:before-remove', function(e, task) {
-//      // allow some time for the animation to complete
-//      $(this).data('remove-timeout', 1000);
-//      task.fadeOut('slow');
-//    });
+  // Attach NIH autocomplete for UCUM (Unified Code for Units of Measure) to any input field with class 'ucum'.
+  $( '.ucum' ).each(function() {
+    new Def.Autocompleter.Search(this, 'https://clinicaltables.nlm.nih.gov/api/ucum/v3/search', { tableFormat: true, valueCols: [0], colHeaders: ['Code', 'Name'] });
+  });
 
   function initialize_orderable_element( scope ) {
     for (let orderable_list of Array.from( $( scope ).find( '.orderable-list' ))) {
       //# CHANGE THIS
       const ajax_url = $( '.orderable-list' ).attr( 'orderable-url' );
-      const forceRestart = $( '.orderable-list' ).attr( 'force-reload' );
       let saved_state = null;
 
       //# helper method for converting class name into camel case
@@ -221,12 +194,7 @@ document.addEventListener( 'turbolinks:load', function() {
               }
               // then save state
               saved_state = $( orderable_list ).sortable( "toArray" );
-              if (forceRestart) {
-                toastr.success( 'Positions successfully updated. Reloading page to apply changes.' );
-                location.reload();
-              } else {
-                toastr.success( 'Positions successfully updated' );
-              }
+              toastr.success( 'Positions successfully updated' );
             },
           error( data ) {
               $( orderable_list ).sortable( 'sort', saved_state );
@@ -242,7 +210,24 @@ document.addEventListener( 'turbolinks:load', function() {
       //# save state when dragging starts
       const on_start =  e  => saved_state = $( orderable_list ).sortable( 'toArray' );
 
-      $( orderable_list ).sortable({ onUpdate: on_update, onStart: on_start });
+      $(orderable_list).sortable({ onUpdate: on_update, onStart: on_start });
+
+      document.addEventListener('drag', (event) => {
+        let y = $(window).scrollTop();
+        let eventY = event.clientY;
+
+        if (eventY >= 10 && eventY < 50) {
+          $(window).scrollTop(y - 10);
+        } else if (eventY > window.innerHeight + window.scrollY - 200) {
+          $(window).scrollTop(y + 10);
+        }
+      })
+
+
+      if ($('.sort-handle').length > 0) {
+        $(orderable_list).sortable( "option", "handle", ".sort-handle" );
+      }
+
       saved_state = $( orderable_list ).sortable( 'toArray' );
     }
   }
@@ -251,11 +236,6 @@ document.addEventListener( 'turbolinks:load', function() {
   $( document ).on( 'srdr:content-loaded', function( e ) {
     initialize_orderable_element( e.target );
   } );
-
-  //$( "select.select2" ).select2();
-  //$( "select.select2_multi" ).select2({
-  //  multiple: 'true'
-  //});
 
   ////################################################
   // State Toggler for EEFPS
@@ -279,14 +259,4 @@ document.addEventListener( 'turbolinks:load', function() {
       $outer_form.submit()
     })
   }
-
-} );
-
-document.addEventListener('turbolinks:before-cache', function() {
-  $( '.reveal' ).foundation( 'close' )
-  $('#loading-indicator').show()
-});
-
-document.addEventListener("turbolinks:load", function() {
-  $('#loading-indicator').hide()
-})
+}

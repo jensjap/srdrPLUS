@@ -24,7 +24,7 @@
   - options = []
   - followups = []
   - qrc. \
-    question_row_columns_question_row_column_options. \
+    question_row_columns_question_row_column_options.includes(:followup_field). \
     select{|opt| opt.question_row_column_option_id == 1}.each do |opt|
       - if opt.followup_field.present?
         - eefpst1 = t1.blank? \
@@ -39,7 +39,7 @@
         - followups << ["prereq-#{ opt.class }-#{ opt.id }", "attach_target_#{eefps_ff.id.to_s}", eefps_ff]
         - options << [opt.name, opt.id, { 'data-attach-source': "attach_target_#{eefps_ff.id.to_s}", 'data-prereq': "prereq-#{ opt.class }-#{ opt.id }", 'data-radio-remove-id': record.id }]
       - else
-        - options << [opt.name, opt.id, { 'data-prereq': "prereq-#{ opt.class }-#{ opt.id }" }]
+        - options << [opt.name, opt.id, { 'data-prereq': "prereq-#{ opt.class }-#{ opt.id }", 'data-radio-remove-id': record.id }]
 
 
   = simple_form_for(record, namespace: "record_#{record.id.to_s}", remote: true, html: { data: { 'abide': '', 'live-validate': true, prereq: "prereq-#{ qrc.class }-#{ qrc.id }" } }) do |f|

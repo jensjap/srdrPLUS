@@ -11,7 +11,6 @@
 
 class ComparateGroup < ApplicationRecord
   acts_as_paranoid
-  has_paper_trail
 
   belongs_to :comparison, inverse_of: :comparate_groups
 

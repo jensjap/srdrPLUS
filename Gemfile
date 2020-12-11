@@ -5,12 +5,12 @@ git_source(:github) do |repo_name|
   "https://github.com/#{repo_name}.git"
 end
 
-gem 'rails', '~> 5.2.0'
+gem 'rails', '~> 5.2.4.4'
 
 # Use mysql as the database for Active Record
 gem 'mysql2', '>= 0.3.18', '< 0.5'
 # Use Puma as the app server
-gem 'puma', '~> 3.12'
+gem 'puma', '~> 5.0.4'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'
 # Use Uglifier as compressor for JavaScript assets
@@ -22,11 +22,8 @@ gem 'coffee-rails', '~> 4.2'
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
-gem 'jquery-turbolinks'
-# Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
-gem 'turbolinks', '~> 5'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
-gem 'jbuilder', '~> 2.5'
+gem 'jbuilder', '~> 2.10.1'
 # Use Redis adapter to run Action Cable in production
 # gem 'redis', '~> 3.0'
 # Use ActiveModel has_secure_password
@@ -93,7 +90,6 @@ gem 'rails_admin', '~> 1.3.0'
 gem 'toastr_rails'
 
 # Versioning of models + soft-delete.
-gem 'paper_trail'
 gem 'paranoia', '~>2.2'
 
 # Create lots of data.
@@ -193,3 +189,5 @@ gem 'newrelic-infinite_tracing'
 
 # Limit request rates
 gem 'rack-attack'
+
+gem 'rack-mini-profiler'

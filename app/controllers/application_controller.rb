@@ -21,10 +21,15 @@ class ApplicationController < ActionController::Base
   before_action :authenticate_user!
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :set_current_user
-  before_action :set_paper_trail_whodunnit
   before_action :set_layout_style
   before_action :set_exit_disclaimer_message
   before_action :set_raven_context
+
+  before_action do
+    if current_user && current_user == User.find_by(email: Rails.application.credentials[:admin_email])
+      Rack::MiniProfiler.authorize_request
+    end
+  end
 
   def authorize(*args)
     return true if Rails.env.test?

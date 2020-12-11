@@ -14,25 +14,29 @@ a#toggle-sections-link.button.tiny style='margin-left: 31px;'
       i.fi-arrow-left
 
 .tabs-content data-tabs-content='extraction-forms-projects-tabs'
-  - is_first = true
-  - @extraction_forms_projects.each do |efp|
-    - if is_first
-      .tabs-panel.is-active id="panel-extraction-forms-project-#{ efp.id.to_s }"
-        .row.expanded
-          .toggle-sections-link-medium-2-0-hide.column.medium-2
-            = render 'extractions/shared/extraction_forms_projects_section_tab_links',
-              efp: efp
-          .toggle-sections-link-medium-10-12.column.medium-10
+  - @extraction_forms_projects.each_with_index do |efp, idx|
+    div id="panel-extraction-forms-project-#{ efp.id.to_s }" class="tabs-panel #{idx == 0 ? 'is-active' : ''}"
+      .row.expanded
+        .toggle-sections-link-medium-2-0-hide.column.medium-2
+          = render 'extractions/shared/extraction_forms_projects_section_tab_links',
+            efp: efp
+        .toggle-sections-link-medium-10-12.column.medium-10.ajax-section
+          - if action_name == 'consolidate'
             = render "extractions/shared/extraction_forms_projects_section_tab_content",
               efp: efp
-      - is_first = false
+          - else
+            div id="ajax-section-loading-index-#{idx}"
+              div class="lds-grid"
+                div
+                div
+                div
+                div
+                div
+                div
+                div
+                div
+                div
+              = link_to('Load Section', work_extraction_path(@extraction.id, 'panel-tab': @panel_tab_id, efp_id: efp.id, 'ajax-section-loading-index': idx, 'load-js': idx == 0), class: 'section-reload-button', remote: true, style: 'visibility: hidden')
 
-    - else
-      .tabs-panel id="panel-extraction-forms-project-#{ efp.id.to_s }"
-        .row.expanded
-          .toggle-sections-link-medium-2-0-hide.column.medium-2
-            = render 'extractions/shared/extraction_forms_projects_section_tab_links',
-              efp: efp
-          .toggle-sections-link-medium-10-12.column.medium-10
-            = render "extractions/shared/extraction_forms_projects_section_tab_content",
-              efp: efp
+javascript:
+  $('.section-reload-button').click()

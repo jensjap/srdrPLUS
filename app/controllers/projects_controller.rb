@@ -50,7 +50,7 @@ class ProjectsController < ApplicationController
       if save_without_sections_if_imported_files_params_exist @project
         format.html {
           redirect_to edit_project_path(@project),
-                      notice: t("success") + " #{make_undo_link}"
+                      notice: t("success")
         }
         format.json { render :show, status: :created, location: @project }
       else
@@ -66,24 +66,40 @@ class ProjectsController < ApplicationController
     authorize(@project)
 
     respond_to do |format|
-      if @project.update(project_params)
-        format.html do
+      format.html do
+        if no_leader?
+          flash[:alert] = 'Must have at least one leader'
+          redirect_to(edit_project_path(@project, anchor: "panel-projects-users"))
+        elsif @project.update(project_params)
           redirect_path = params.try(:[], :project).try(:[], :redirect_path)
           if redirect_path.present?
-            redirect_to(redirect_path, notice: t("success") + " #{make_undo_link}")
+            redirect_to(redirect_path, notice: t("success"))
           else
             redirect_back(
               fallback_location: edit_project_path(@project, anchor: "panel-project-information"),
-              notice: t("success") + " #{make_undo_link}"
+              notice: t("success")
             )
           end
+        else
+          flash.now[:alert] = @project.errors.full_messages.join(" - ")
+          render :edit
         end
-        format.json { render :show, status: :ok, location: @project }
-        format.js { render :show, status: :ok, location: @project }
-      else
-        format.html { render :edit }
-        format.json { render json: @project.errors, status: :unprocessable_entity }
-        format.js { render json: @project.errors, status: :unprocessable_entity }
+      end
+
+      format.json do
+        if @project.update(project_params)
+          render :show, status: :ok, location: @project
+        else
+          render json: @project.errors, status: :unprocessable_entity
+        end
+      end
+
+      format.js do
+        if @project.update(project_params)
+          render :show, status: :ok, location: @project
+        else
+          render json: @project.errors, status: :unprocessable_entity
+        end
       end
     end
   end
@@ -104,32 +120,9 @@ class ProjectsController < ApplicationController
     respond_to do |format|
       format.html {
         redirect_to projects_url,
-                    notice: t("removed") + " #{make_undo_link}"
+                    notice: t("removed")
       }
       format.json { head :no_content }
-    end
-  end
-
-  def undo
-    @project_version = PaperTrail::Version.find_by_id(params[:id])
-    authorize(@project_version.item)
-
-    begin
-      if @project_version.reify
-        @project_version.reify.save
-      else
-        # For undoing the create action
-        @project_version.item.destroy
-      end
-      flash[:success] = "Undid that! #{make_redo_link}"
-    rescue
-      flash[:alert] = "Failed undoing the action..."
-    ensure
-      if Project.where(id: @project_version.item.id).present?
-        redirect_to edit_project_path(@project_version.item, anchor: "panel-information")
-      else
-        redirect_to projects_path
-      end
     end
   end
 
@@ -290,21 +283,6 @@ class ProjectsController < ApplicationController
     params.require(:export_type_name)
   end
 
-  def make_undo_link
-    #!!! This is wrong. Just because there's an older version doesn't mean we should be able to revert to it.
-    #    This could have been called when Assignment was created.
-    return ""
-
-    if @project.versions.present?
-      view_context.link_to "<u><strong>Undo that please!</strong></u>".html_safe, undo_project_path(@project.versions.last), method: :post
-    end
-  end
-
-  def make_redo_link
-    params[:redo] == "true" ? link = "<u><strong>Undo that please!</strong></u>".html_safe : link = "<u><strong>Redo that please!</strong></u>".html_safe
-    view_context.link_to link, undo_project_path(@project_version.next, redo: !params[:redo]), method: :post
-  end
-
   # def import_project_from_json(project, f)
   #   JsonImportJob.perform_later(current_user.id, project.id, f[:json_file].path)
   #   flash[:success] = "Import request submitted for project '#{ project.name }'. You will be notified by email of its completion."
@@ -398,5 +376,11 @@ class ProjectsController < ApplicationController
       @approved_publishings = @approved_publishings.order(created_at: :desc) if params[:o] == 'created-at'
       @approved_publishings = @approved_publishings.where(user: current_user) unless current_user.admin?
     end
+  end
+
+  def no_leader?
+    project_params[:projects_users_attributes] &&
+      project_params[:projects_users_attributes].values.any? { |key| key[:role_ids] } &&
+      project_params[:projects_users_attributes].values.map { |pua| pua[:role_ids] }.flatten.none? { |role_id| role_id == '1' }
   end
 end

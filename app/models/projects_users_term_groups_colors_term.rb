@@ -10,7 +10,6 @@
 
 class ProjectsUsersTermGroupsColorsTerm < ApplicationRecord
   acts_as_paranoid
-  has_paper_trail
 
   #validate :terms_should_be_unique_to_projects_user
 

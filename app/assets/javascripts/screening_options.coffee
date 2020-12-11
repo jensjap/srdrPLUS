@@ -1,4 +1,4 @@
-document.addEventListener 'turbolinks:load', ->
+document.addEventListener 'DOMContentLoaded', ->
 
   return unless $( 'body.projects.edit' ).length > 0
   do ->
@@ -54,7 +54,3 @@ document.addEventListener 'turbolinks:load', ->
 
       $( '.options-table .require-button' ).on( 'click', require_option_handler )
       $( '.options-table .switch input' ).on( 'change', switch_option_handler )
-
-    return # END do ->
-
-  return # END turbolinks:load

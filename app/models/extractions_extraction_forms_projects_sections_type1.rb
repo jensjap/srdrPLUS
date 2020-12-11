@@ -24,7 +24,6 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
   has_one :status, through: :statusing
 
   acts_as_paranoid column: :active, sentinel_value: true
-  has_paper_trail
 
   after_commit :set_extraction_stale, on: [:create, :update, :destroy]
 
@@ -186,15 +185,15 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
 
     return return_data
   end
-  
+
   def statusing
     super || create_default_draft_status
   end
-  
+
   def status
     super || create_default_draft_status.status
   end
-  
+
   private
 
     def set_extraction_stale

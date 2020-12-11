@@ -93,7 +93,7 @@ class ResultStatisticSectionsController < ApplicationController
         project_id: @project.id,
         extraction_ids: @extractions.map(&:id),
         params: { eefpst1_id: @result_statistic_section.population.extractions_extraction_forms_projects_sections_type1_id },
-        anchor: "panel-tab-#{ @result_statistic_section.eefps_result.id }")
+        'panel-tab': @result_statistic_section.eefps_result.id)
     add_breadcrumb quadrant_name.downcase, consolidate_result_statistic_section_path(extraction_ids: @extractions.map(&:id))
   end
 

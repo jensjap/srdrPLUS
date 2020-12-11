@@ -25,7 +25,6 @@ class Project < ApplicationRecord
   attr_accessor :create_empty
 
   acts_as_paranoid
-  has_paper_trail
   searchkick
 
   paginates_per 8
@@ -137,7 +136,7 @@ class Project < ApplicationRecord
   end
 
   def key_questions_projects_array_for_select
-    self.key_questions_projects.map { |kqp| [kqp.key_question.name, kqp.id] }
+    self.key_questions_projects.includes(:key_question).map { |kqp| [kqp.key_question.name, kqp.id] }
   end
 
   def publication_requested_at
@@ -209,7 +208,7 @@ class Project < ApplicationRecord
     citation_groups[:citations_projects] = Hash.new
     citation_groups[:citations_project_ids] = Array.new
     citation_groups[:citations_project_count] = 0
-    self.extractions.includes({ citations_project: [:citation] }).each do |e|
+    self.extractions.includes([{ citations_project: [{ citation: :journal }] }, :extraction_checksum]).each do |e|
       if citation_groups[:citations_projects].keys.include? e.citations_project_id
         citation_groups[:citations_projects][e.citations_project_id][:extractions] << e
 

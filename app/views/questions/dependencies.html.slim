@@ -53,9 +53,9 @@ h2 #{ @question.ordering.position }. #{ @question.name }
 
 .column.row
   = link_to 'Save and Finalize', build_extraction_forms_project_path(@extraction_forms_projects_section.extraction_forms_project,
-                                                        anchor: "panel-tab-#{ @extraction_forms_projects_section.id }"),
+                                                        'panel-tab': @extraction_forms_projects_section.id),
                                  class: 'button'
 
 .column.row
   = link_to 'Back', build_extraction_forms_project_path(@extraction_forms_projects_section.extraction_forms_project,
-                                                        anchor: "panel-tab-#{ @extraction_forms_projects_section.id }")
+                                                        'panel-tab': @extraction_forms_projects_section.id)

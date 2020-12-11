@@ -11,7 +11,6 @@
 
 class Comparison < ApplicationRecord
   acts_as_paranoid
-  has_paper_trail
 
   belongs_to :result_statistic_section, inverse_of: :comparisons, optional: true
 

@@ -14,7 +14,6 @@ class Degree < ApplicationRecord
   include SharedSuggestableMethods
 
   acts_as_paranoid
-  has_paper_trail
 
   after_create :record_suggestor
 
@@ -34,4 +33,3 @@ class Degree < ApplicationRecord
       raise 'You should NEVER delete a Degree.'
     end
 end
-

@@ -16,7 +16,6 @@ class Author < ApplicationRecord
   has_many :citations, through: :authors_citations
 
   acts_as_paranoid
-  has_paper_trail
 
   def initials
     *rest, last = self.name.split

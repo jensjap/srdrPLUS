@@ -6,6 +6,8 @@ require 'simple_export_job/_se_type2_sections_wide'
 require 'simple_export_job/_se_type2_sections_wide_srdr_style'
 require 'simple_export_job/_se_result_sections_compact'
 require 'simple_export_job/_se_result_sections_wide'
+require 'simple_export_job/_se_result_sections_wide_srdr_style'
+require 'simple_export_job/_se_result_sections_wide_srdr_style_2'
 require 'simple_export_job/_se_sample_3d_pie_chart'
 
 require 'google/api_client/client_secrets.rb'
@@ -49,7 +51,8 @@ class SimpleExportJob < ApplicationJob
       elsif /legacy/ =~ @export_type
         build_type1_sections_wide(p, @project, highlight, wrap)
         build_type2_sections_wide_srdr_style(p, @project, highlight, wrap)
-        build_result_sections_compact(p, @project, highlight, wrap)
+        #build_result_sections_wide_srdr_style(p, @project, highlight, wrap)
+        build_result_sections_wide_srdr_style_2(p, @project, highlight, wrap)
         f_name = 'tmp/simple_exports/project_' + @project.id.to_s + '_' + Time.now.strftime('%s') + '_legacy.xlsx'
 
       else

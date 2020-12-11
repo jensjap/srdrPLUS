@@ -1,10 +1,12 @@
+host, port = ActionMailer::Base.default_url_options.values_at :host, :port
+
 json.set! :resourceType, "EvidenceVariable"
 json.set! :id, @evidence_variable.id.to_s
 json.set! :meta do
   json.set! :versionId, '1'
 end
-json.set! :url_index, "http://srdrPLUS.ahrq.gov/api/v1/evidence_variables"
-json.set! :url, "http://srdrPLUS.ahrq.gov/api/v1/evidence_variables/#{ @evidence_variable.id }.json"
+json.set! :url_index, "#{ host }:#{ port }/api/v1/evidence_variables"
+json.set! :url, "#{ host }:#{ port }/api/v1/evidence_variables/#{ @evidence_variable.id }.json"
 json.set! :name, "#{ @evidence_variable.type1.name } at #{ @timepoint_name } #{ @timepoint_unit }"
 json.set! :title, "#{ @evidence_variable.type1.name } at #{ @timepoint_name } #{ @timepoint_unit }"
 json.set! :status, "active"
@@ -17,7 +19,7 @@ json.set! :characteristic, Jbuilder.new.array!(['']) do
     json.set! :coding, Jbuilder.new.array!(['']) do
       json.set! :system, "http://snomed.info/sct"
       json.set! :code, "419099009"
-      json.set! :display, "xxxxx"
+      json.set! :display, "Dead (finding)"
     end
   end
   json.set! :exclude, false

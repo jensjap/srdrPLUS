@@ -254,7 +254,6 @@ Rails.application.routes.draw do
     end
 
     member do
-      post 'undo'
       post 'export'
       post 'export_citation_labels'
       post 'export_to_gdrive'

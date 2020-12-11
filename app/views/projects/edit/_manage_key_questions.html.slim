@@ -9,6 +9,7 @@
 
     thead
       tr
+        th style="min-width: 0; width: 10px;"
         th = t('key_question_text')
         th = t('assigned')
         th = t('date_created')
@@ -18,6 +19,8 @@
     tbody.orderable-list orderable-url="#{ update_positions_api_v1_orderings_url }"
       - @project.key_questions_projects.each do |kqp|
         tr.orderable-item [ position="#{ kqp.ordering.position }" ordering-id="#{ kqp.ordering.id }" ]
+          td.sort-handle style="min-width: 0; vertical-align: middle; width: 10px; cursor: pointer;"
+            i class="fa fa-arrows"
           td = kqp.key_question.name
           td
             - if kqp.extraction_forms_projects_section.present?
@@ -43,4 +46,4 @@ h6 = t('create_key_question')
 
 - if @project.key_questions.present?
   - efp = @project.extraction_forms_projects.first
-  = link_to 'Build Extraction Form', build_extraction_forms_project_path(efp.id, anchor: "panel-tab-#{ efp.default_section_id }"), class: 'button', style: 'float: right'
+  = link_to 'Build Extraction Form', build_extraction_forms_project_path(efp.id, 'panel-tab': efp.default_section_id), class: 'button', style: 'float: right'

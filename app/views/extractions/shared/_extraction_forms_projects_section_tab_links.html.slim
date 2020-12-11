@@ -1,14 +1,17 @@
 ul.tabs.vertical id="extraction-forms-projects-#{efp.id.to_s}-vertical-tabs"
   li.tabs-title style="#{@panel_tab_id == 'keyquestions' ? 'background: lightgray;' : ''}"
     = link_to 'Key Questions',
-      action_name.eql?("consolidate") ? request.original_url + "&panel-tab=keyquestions" : "?panel-tab=keyquestions",
+      action_name.eql?("consolidate") ?\
+        request.original_url.gsub(/&panel-tab=[0-9]+$|&panel-tab=keyquestions$/, '') + "&panel-tab=keyquestions" :\
+        "?panel-tab=keyquestions",
       title: "Key Questions"
 
   - efp.extraction_forms_projects_sections.includes(:section).reject { |efps| efps.hidden }.each do |efps|
     - section_name = efps.section.name
     - extraction = @extraction || @consolidated_extraction
     - eefps_id = efps.extractions_extraction_forms_projects_sections.where(extraction_id: extraction.id).first.try(:id)
-    - efps_link_url = (action_name.eql?("consolidate") ? request.original_url + "&panel-tab=#{ efps.id.to_s }" : "?panel-tab=#{ efps.id.to_s }")
+    - request_original_url = request.original_url.gsub(/&panel-tab=[0-9]+$|&panel-tab=keyquestions$/, '')
+    - efps_link_url = (action_name.eql?("consolidate") ? (request_original_url + "&panel-tab=#{ efps.id.to_s }") : ("?panel-tab=#{ efps.id.to_s }"))
     - completed = Statusing.find_by(statusable_id: eefps_id).try(:status).try(:name) == 'Completed'
 
     - if @panel_tab_id == efps.id.to_s

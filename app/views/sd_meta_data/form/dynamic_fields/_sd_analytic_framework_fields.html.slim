@@ -1,6 +1,5 @@
 .nested-fields
-  div style="text-align: right; margin-bottom: 10px;"
-    i class="fi-thumbnails" style="cursor: grab;"
+  i class="fa fa-arrows" style="cursor: pointer; padding-right: 5px;"
   div draggable="true" ondragstart="event.preventDefault(); event.stopPropagation();"
     div class="text-right"
       = link_to_remove_association "remove framework", f, data: { confirm: "This will remove associated descriptions and pictures.  Are you sure?" }
