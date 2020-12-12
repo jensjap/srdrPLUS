@@ -3,7 +3,7 @@ module Api
     class TermsController < BaseController
       before_action :set_projects_users_term_groups_color, only: [ :index ]
 
-      api :GET, '/v1/projects_users_term_groups_colors/:id/terms', 'List of terms belonging to a particular projects_users_term_groups_color'
+      # api :GET, '/v1/projects_users_term_groups_colors/:id/terms', 'List of terms belonging to a particular projects_users_term_groups_color'
       def index
         page          = ( params[ :page ] || 1 ).to_i
         page_size     = 100

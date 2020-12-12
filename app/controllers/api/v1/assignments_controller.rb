@@ -6,8 +6,8 @@ module Api
 
       helper_method :highlight_terms
 
-      api :GET, '/v1/assignments/:id/screen', 'List of citations to screen'
-      formats [:json]
+      # api :GET, '/v1/assignments/:id/screen', 'List of citations to screen'
+      # formats [:json]
       def screen
         @unlabeled_citations_projects = CitationsProject.
           unlabeled( @assignment.project, params[:count] ).
@@ -60,9 +60,8 @@ module Api
         render 'screen.json'
       end
 
-      api :GET, '/v1/assignments/:id/history', 'List of citations that the user has most recently labeled and the  labels themselves'
-      formats [:json]
-
+      # api :GET, '/v1/assignments/:id/history', 'List of citations that the user has most recently labeled and the  labels themselves'
+      # formats [:json]
       def history
         count = params[:count] || 100
         offset = params[:offset] || 0
