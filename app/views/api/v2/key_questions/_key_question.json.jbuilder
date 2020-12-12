@@ -1,0 +1,1 @@
+json.merge! key_question.attributes

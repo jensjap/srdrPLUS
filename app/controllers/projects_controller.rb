@@ -38,7 +38,7 @@ class ProjectsController < ApplicationController
 
   # GET /projects/1/edit
   def edit
-    # authorize(@project)
+    authorize(@project)
     add_breadcrumb "edit project", :edit_project_path
   end
 

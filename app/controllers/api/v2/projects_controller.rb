@@ -1,12 +1,18 @@
 class Api::V2::ProjectsController < Api::V2::BaseController
   before_action :set_project, only: [:show, :update, :destroy]
 
-  before_action :skip_authorization, only: [:index, :show, :create]
-  before_action :skip_policy_scope
+  #before_action :skip_authorization, only: [:index, :show, :create]
+  #before_action :skip_policy_scope
 
   SORT = {  'updated-at': { updated_at: :desc },
             'created-at': { created_at: :desc }
   }.stringify_keys
+
+  resource_description do
+    short 'Projects'
+    formats [:json]
+    deprecated false
+  end
 
   def_param_group :project do
     param :project, Hash, required: true, action_aware: true do
@@ -22,34 +28,32 @@ class Api::V2::ProjectsController < Api::V2::BaseController
     end
   end
 
-  api :GET, '/v2/projects', 'List of projects'
-  formats [:json]
+  api :GET, '/v2/projects.json', 'List of projects. Requires API Key.'
   def index
     @projects = current_user.projects
       .includes(:extraction_forms)
       .includes(:key_questions)
       .includes(publishing: [{ user: :profile }, approval: [{ user: :profile }]])
-      .by_query(@query).order(SORT[@order]).page(params[:page])
   end
 
-  api :GET, '/v2/projects/:id', 'Show project by id'
-  formats [:json]
+  api :GET, '/v2/projects/:id.json', 'Display complete project meta data. Requires API Key.'
   def show
-    respond_with @project
+    authorize(@project)
+    #respond_with @project
   end
 
-  api :POST, '/v2/projects', 'Create project'
+  api :POST, '/v2/projects', 'Create new project. Requires API Key.'
   param_group :project
-  formats ['json']
+  formats []
   def create
     @project = Project.new(project_params)
     flash[:notice] = 'Project was successfully created.' if @project.save
     respond_with @project
   end
 
-  api :POST, '/v2/projects/:id', 'Update project'
+  api :POST, '/v2/projects/:id', 'Update project information. Requires API Key.'
   param_group :project
-  formats ['json']
+  formats []
   def update
     authorize(@project, policy_class: ProjectPolicy)
 

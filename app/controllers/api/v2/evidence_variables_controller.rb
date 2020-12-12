@@ -3,7 +3,7 @@ class Api::V2::EvidenceVariablesController < Api::V2::BaseController
 
   resource_description do
     short 'Outcome Definitions'
-    formats ['json']
+    formats [:json]
     deprecated false
   end
 
@@ -16,7 +16,6 @@ class Api::V2::EvidenceVariablesController < Api::V2::BaseController
       .joins(extractions_extraction_forms_projects_section: [extraction_forms_projects_section: :section])
       .where('sections.name=?', "Outcomes")
       .all
-    render 'index.json'
   end
 
   api :GET, '/v2/evidence_variables/:id.json', 'Individual Outcome Definition. FHIR formatted evidence variable. See http://build.fhir.org/evidencevariable.html for full description. Requires API Key.'
