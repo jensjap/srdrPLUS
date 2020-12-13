@@ -7,6 +7,10 @@ class ExtractionPolicy < ApplicationPolicy
     end
   end
 
+  def show?
+    project_consolidator?
+  end
+
   def new?
     part_of_project?
   end

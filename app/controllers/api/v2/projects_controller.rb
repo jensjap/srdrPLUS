@@ -9,7 +9,7 @@ class Api::V2::ProjectsController < Api::V2::BaseController
   }.stringify_keys
 
   resource_description do
-    short 'Projects'
+    short 'End-points describing SRDR+ Projects.'
     formats [:json]
   end
 
@@ -28,6 +28,7 @@ class Api::V2::ProjectsController < Api::V2::BaseController
   end
 
   api :GET, '/v2/projects.json', 'List of projects. Requires API Key.'
+  param_group :paginate, Api::V2::BaseController
   def index
     @projects = current_user.projects
       .includes(:extraction_forms)
@@ -36,8 +37,9 @@ class Api::V2::ProjectsController < Api::V2::BaseController
   end
 
   api :GET, '/v2/projects/:id.json', 'Display complete project meta data. Requires API Key.'
+  param_group :resource_id, Api::V2::BaseController
   def show
-    authorize(@project)
+    authorize(@project, policy_class: ProjectPolicy)
     #respond_with @project
   end
 

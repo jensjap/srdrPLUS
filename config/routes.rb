@@ -111,6 +111,9 @@ Rails.application.routes.draw do
         resources :projects_users_roles, only: [:index]
       end  # END resources :projects, shallow: true do
 
+      resources :extractions, only: [:show]
+      resources :extraction_forms_projects_sections, only: [:show]
+      resources :key_questions, only: [:show]
       resources :questions, only: [:show]
     end  # END namespace :v2 do
   end  # END namespace :api do

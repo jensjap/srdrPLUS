@@ -1,0 +1,20 @@
+class Api::V2::ExtractionsController < Api::V2::BaseController
+  before_action :set_extraction, only: [:show]
+
+  resource_description do
+    short 'End-points describing Extractions within an SRDR+ Project.'
+    formats [:json]
+  end
+
+  api :GET, '/v2/extractions/:id.json', 'Returns meta information about a specific extraction.'
+  param_group :resource_id, Api::V2::BaseController
+  def show
+    @project = @extraction.project
+    authorize(@project, policy_class: ExtractionPolicy)
+  end
+
+  private
+    def set_extraction
+      @extraction = Extraction.find(params[:id])
+    end
+end
