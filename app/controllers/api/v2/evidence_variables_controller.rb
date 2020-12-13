@@ -46,13 +46,13 @@ class Api::V2::EvidenceVariablesController < Api::V2::BaseController
   api :GET, '/v2/evidence_variables/:id.json', 'Individual Outcome Definition. FHIR formatted evidence variable. See http://build.fhir.org/evidencevariable.html for full description. Requires API Key.'
   param_group :resource_id, Api::V2::BaseController
   returns desc: 'FHIR formatted Outcome Definition.' do
-    property :resourceType, String
-    property :id, Integer
+    property :resourceType, String, desc: 'Resource type description.'
+    property :id, Integer, desc: 'Resource ID.'
     property :meta, Hash do
-      property :versionId, Integer
+      property :versionId, Integer, desc: 'Version ID.'
     end
-    property :url_index, String
-    property :url, String
+    property :url_index, String, desc: 'URL where index is found.'
+    property :url, String, desc: 'URL where indidvidual record is found.'
     property :name, String
     property :title, String
     property :status, String
