@@ -46,66 +46,73 @@ Rails.application.routes.draw do
 
   apipie
   namespace :api do
-    %w[v1 v2].each do |space|
-      namespace space do
-        resources :evidence_variables, only: [:index, :show]
+    namespace :v1 do
+      resources :evidence_variables, only: [:index, :show]
 
-        resources :keywords, only: [:index]
-        resources :users, only: [:index]
-        resources :authors, only: [:index]
-        resources :colors, only: [:index]
-        resources :keywords, only: [:index]
+      resources :keywords, only: [:index]
+      resources :users, only: [:index]
+      resources :authors, only: [:index]
+      resources :colors, only: [:index]
+      resources :keywords, only: [:index]
+      resources :terms, only: [:index]
+      resources :timepoint_names, only: [:index]
+
+      resources :labels_reasons, only: [:create, :destroy]
+      resources :projects_users_term_groups_colors, only: [:create, :update, :destroy] do
         resources :terms, only: [:index]
-        resources :timepoint_names, only: [:index]
+      end
+      resources :projects_users_term_groups_colors_terms, only: [:create, :destroy]
+      resources :taggings, only: [:create, :destroy]
 
-        resources :labels_reasons, only: [:create, :destroy]
-        resources :projects_users_term_groups_colors, only: [:create, :update, :destroy] do
-          resources :terms, only: [:index]
+      resources :notes, only: [:create, :update, :destroy]
+
+      resources :assignments do
+        resources :reasons, only: [:index]
+        resources :tags, only: [:index]
+        resources :projects_users_term_groups_colors, only: [:create, :index]
+      end
+
+      resources :citations, only: [:index] do
+        collection do
+          get 'titles'
         end
-        resources :projects_users_term_groups_colors_terms, only: [:create, :destroy]
-        resources :taggings, only: [:create, :destroy]
+      end
 
-        resources :notes, only: [:create, :update, :destroy]
-
+      resources :projects, shallow: true do
+        resources :projects_users_roles, only: [:index]
         resources :assignments do
-          resources :reasons, only: [:index]
-          resources :tags, only: [:index]
-          resources :projects_users_term_groups_colors, only: [:create, :index]
+          get 'screen', on: :member
+          get 'history', on: :member
         end
-
         resources :citations, only: [:index] do
           collection do
-            get 'titles'
+            get 'labeled'
+            get 'unlabeled'
           end
         end
+        resources :extractions, only: [:index]
+        resources :extraction_forms_projects do
+          resources :extraction_forms_projects_sections, only: [:index, :show] do
+            post 'toggle_hiding', to: 'extraction_forms_projects_sections#toggle_hiding'
+            resources :type1s, only: [:index]
+          end
+        end
+      end
+      resources :orderings do
+        collection do
+          patch 'update_positions'
+        end
+      end
+    end  # END namespace :v1 do
 
-        resources :projects, shallow: true do
-          resources :projects_users_roles, only: [:index]
-          resources :assignments do
-            get 'screen', on: :member
-            get 'history', on: :member
-          end
-          resources :citations, only: [:index] do
-            collection do
-              get 'labeled'
-              get 'unlabeled'
-            end
-          end
-          resources :extractions, only: [:index]
-          resources :extraction_forms_projects do
-            resources :extraction_forms_projects_sections, only: [:index, :show] do
-              post 'toggle_hiding', to: 'extraction_forms_projects_sections#toggle_hiding'
-              resources :type1s, only: [:index]
-            end
-          end
-        end
-        resources :orderings do
-          collection do
-            patch 'update_positions'
-          end
-        end
-      end  # END namespace space do
-    end  # END %w[v1 v2].each do |space|
+    namespace :v2 do
+      resources :evidence_variables, only: [:index, :show]
+      resources :projects, shallow: true do
+        resources :projects_users_roles, only: [:index]
+      end  # END resources :projects, shallow: true do
+
+      resources :questions, only: [:show]
+    end  # END namespace :v2 do
   end  # END namespace :api do
 
   resources :assignments do

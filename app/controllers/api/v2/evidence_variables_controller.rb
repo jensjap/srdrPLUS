@@ -4,7 +4,6 @@ class Api::V2::EvidenceVariablesController < Api::V2::BaseController
   resource_description do
     short 'Outcome Definitions'
     formats [:json]
-    deprecated false
   end
 
   api :GET, '/v2/evidence_variables.json', 'Full list of Outcome definitions. Requires API Key.'

@@ -11,7 +11,6 @@ class Api::V2::ProjectsController < Api::V2::BaseController
   resource_description do
     short 'Projects'
     formats [:json]
-    deprecated false
   end
 
   def_param_group :project do

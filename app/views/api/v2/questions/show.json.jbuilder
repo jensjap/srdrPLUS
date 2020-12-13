@@ -1,0 +1,1 @@
+json.partial! 'api/v2/questions/question', locals: { question: @question }
