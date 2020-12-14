@@ -33,11 +33,10 @@ class Api::V2::EvidenceVariablesController < Api::V2::BaseController
       @page = page.to_i
       if per_page.present?
         @per_page = per_page.to_i
-        @evidence_variables = evidence_variables_tmp.page(@page).per(@per_page)
       else
         @per_page = 10
-        @evidence_variables = evidence_variables_tmp.page(@page).per(@per_page)
       end
+      @evidence_variables = evidence_variables_tmp.page(@page).per(@per_page)
     else
       @evidence_variables = evidence_variables_tmp.all
     end

@@ -51,10 +51,25 @@ class Api::V2::ProjectsController < Api::V2::BaseController
     end
   end
   def index
-    @projects = current_user.projects
+    page     = params[:page]
+    per_page = params[:per_page]
+    projects_tmp = current_user.projects
       .includes(:extraction_forms)
       .includes(:key_questions)
       .includes(publishing: [{ user: :profile }, approval: [{ user: :profile }]])
+
+    if page.present?
+      @is_paginated = true
+      @page = page.to_i
+      if per_page.present?
+        @per_page = per_page.to_i
+      else
+        @per_page = 10
+      end
+      @projects = projects_tmp.page(@page).per(@per_page)
+    else
+      @projects = projects_tmp.all
+    end
   end
 
   api :GET, '/v2/projects/:id.json', 'Display complete project meta data. Requires API Key.'
