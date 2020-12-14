@@ -10,19 +10,20 @@ namespace(:db) do
     task :projects => :environment do 
       initialize_variables
 
-      #projects = db.query("SELECT * FROM projects")
-      projects = db.query("SELECT * FROM projects WHERE id=12")
-      #projects = db.query("SELECT * FROM projects WHERE id=520")
-      #projects = db.query("SELECT * FROM projects WHERE id=697")
-      #projects = db.query("SELECT * FROM projects where id>16 limit 30")
-      #projects = db.query("SELECT * FROM projects WHERE id>516 LIMIT 3")
-      #projects = db.query("SELECT * FROM projects WHERE id>1006 LIMIT 3")
+      if ENV['pids'].present?
+        pids = ENV['pids'].split(",")
+        projects = db.query("SELECT * FROM projects WHERE id in (#{pids.join(',')})")
+      else
+        projects = db.query("SELECT * FROM projects")
+      end
 
       projects.each do |project_hash|
         begin
           @legacy_project_id = project_hash["id"]
           reset_project_variables
           migrate_legacy_srdr_project project_hash
+          p "Source Project:"
+          ap project_hash
         rescue => error
           puts error
           puts error.backtrace
@@ -119,7 +120,6 @@ namespace(:db) do
       if @qrcqrco_dict.key? qrc_id
         @qrcqrco_dict[qrc_id][option_text]
       else
-        p question_id, option_text
         return nil
       end
     end
@@ -866,12 +866,14 @@ namespace(:db) do
         end
       end
 
+      comp_dedup_dict = {}
+      comp_dict = {}
       wac_arr.each do |wac|
-        comp_dict = {}
-
         comp_arr = db.query "SELECT * FROM comparators where comparison_id=#{wac["id"]}"
         comp_arr.each do |comp|
-          if comp["comparator"] == ""
+          if comp_dedup_dict.key? comp["comparator"]
+            new_comparison = comp_dedup_dict[comp["comparator"]]
+          elsif comp["comparator"] == ""
             new_comparison = Comparison.create is_anova: false
           elsif comp["comparator"] == "000" 
             #TODO can this actually happen?
@@ -886,6 +888,7 @@ namespace(:db) do
             end
           end
           ComparisonsResultStatisticSection.find_or_create_by comparison: new_comparison, result_statistic_section: rss_w
+          comp_dedup_dict[comp["comparator"]] = new_comparison
           comp_dict[comp["id"]] = new_comparison
         end
 
@@ -904,12 +907,15 @@ namespace(:db) do
           end
         end
       end
-      bac_arr.each do |bac|
-        comp_dict = {}
 
+      comp_dedup_dict = {}
+      comp_dict = {}
+      bac_arr.each do |bac|
         comp_arr = db.query "SELECT * FROM comparators where comparison_id=#{bac["id"]}"
         comp_arr.each do |comp|
-          if comp["comparator"] == ""
+          if comp_dedup_dict.key? comp["comparator"]
+            new_comparison = comp_dedup_dict[comp["comparator"]]
+          elsif comp["comparator"] == ""
             new_comparison = Comparison.create is_anova: false
           elsif comp["comparator"] == "000" 
             new_comparison = Comparison.create is_anova: true
@@ -924,6 +930,7 @@ namespace(:db) do
             end
           end
           ComparisonsResultStatisticSection.find_or_create_by comparison: new_comparison, result_statistic_section: rss_b
+          comp_dedup_dict[comp["comparator"]] = new_comparison
           comp_dict[comp["id"]] = new_comparison
         end
 
@@ -1033,7 +1040,7 @@ namespace(:db) do
         Record.find_or_create_by! recordable: notes_eefps_qrcf, name: dp["notes"]
         Record.find_or_create_by! recordable: guideline_eefps_qrcf, name: dp["guideline_used"]
         if qrcqrco_id.present?
-          Record.find_or_create_by! recordable: values_eefps_qrcf, name: qrcqrco_id.to_s
+          Record.find_or_create_by! recordable: rating_eefps_qrcf, name: qrcqrco_id.to_s
         end
       end
     end
