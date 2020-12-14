@@ -13,6 +13,15 @@
 #
 
 class QuestionRowColumnOption < ApplicationRecord
+  ANSWER_CHOICE   = 'answer_choice'.freeze
+  MIN_LENGTH      = 'min_length'.freeze
+  MAX_LENGTH      = 'max_length'.freeze
+  ADDITIONAL_CHAR = 'additional_char'.freeze
+  MIN_VALUE       = 'min_value'.freeze
+  MAX_VALUE       = 'max_value'.freeze
+  COEFFICIENT     = 'coefficient'.freeze
+  EXPONENT        = 'exponent'.freeze
+
   acts_as_paranoid
 
   has_many :question_row_columns_question_row_column_options, dependent: :destroy, inverse_of: :question_row_column_option

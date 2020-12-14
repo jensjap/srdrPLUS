@@ -103,6 +103,10 @@ class ProjectPolicy < ApplicationPolicy
     end
   end
 
+  def show?
+    project_contributor?
+  end
+
   def edit?
     project_leader?
   end

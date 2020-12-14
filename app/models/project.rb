@@ -128,7 +128,10 @@ class Project < ApplicationRecord
   end
 
   def duplicate_key_question?
-    self.key_questions.pluck(:name).uniq.length < self.key_questions.length
+    kqps = self.key_questions_projects
+    if kqps.present?
+      return kqps.map(&:key_question).map(&:id).uniq.length < kqps.length
+    end
   end
 
   def duplicate_extraction_form?
