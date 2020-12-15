@@ -49,7 +49,7 @@ module Api
         respond_with @project
       end
 
-      api :POST, '/v1/projects/:id', 'update project'
+      api :POST, '/v1/projects/:id', 'Update project'
       param_group :project
       formats ['json']
       def update

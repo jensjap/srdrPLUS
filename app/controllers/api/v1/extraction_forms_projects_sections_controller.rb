@@ -12,16 +12,16 @@ class Api::V1::ExtractionFormsProjectsSectionsController < Api::V1::BaseControll
     end
   end
 
-  api :GET, '/v1/extraction_forms_projects/:extraction_forms_project_id/extraction_forms_projects_sections',
-    'List of sections by extraction form id'
-  formats [:json]
+  # api :GET, '/v1/extraction_forms_projects/:extraction_forms_project_id/extraction_forms_projects_sections',
+  #   'List of sections by extraction form id'
+  # formats [:json]
   def index
     @extraction_forms_projects_sections = @extraction_forms_project.extraction_forms_projects_sections
     respond_with @extraction_forms_projects_sections
   end
 
-  api :GET, '/v1/extraction_forms_projects_sections/:id', 'Show section by id'
-  param_group :extraction_forms_project_section
+  # api :GET, '/v1/extraction_forms_projects_sections/:id', 'Show section by id'
+  # param_group :extraction_forms_project_section
   def show
     respond_with @extraction_forms_projects_section
   end

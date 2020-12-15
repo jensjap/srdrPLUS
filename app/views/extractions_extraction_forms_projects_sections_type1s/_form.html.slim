@@ -5,7 +5,7 @@
     .row.column
       - if @extractions_extraction_forms_projects_sections_type1\
         .extractions_extraction_forms_projects_section.extraction_forms_projects_section.section.name == 'Outcomes'
-        = f.association :type1_type, label: 'Type of Outcome'
+        = f.association :type1_type, label: 'Type of Outcome', required: true
         #type1s
           = f.simple_fields_for(:type1) do |type1_form|
             = type1_form.input :name, label: 'Domain',

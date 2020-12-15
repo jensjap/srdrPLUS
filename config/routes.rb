@@ -103,8 +103,20 @@ Rails.application.routes.draw do
           patch 'update_positions'
         end
       end
-    end
-  end
+    end  # END namespace :v1 do
+
+    namespace :v2 do
+      resources :evidence_variables, only: [:index, :show]
+      resources :projects, shallow: true do
+        resources :projects_users_roles, only: [:index]
+      end  # END resources :projects, shallow: true do
+
+      resources :extractions, only: [:show]
+      resources :extraction_forms_projects_sections, only: [:show]
+      resources :key_questions, only: [:show]
+      resources :questions, only: [:show]
+    end  # END namespace :v2 do
+  end  # END namespace :api do
 
   resources :assignments do
     get 'screen', on: :member

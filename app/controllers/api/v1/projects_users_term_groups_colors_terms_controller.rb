@@ -3,13 +3,13 @@ module Api
     class ProjectsUsersTermGroupsColorsTermsController < BaseController
       before_action :set_putgct, only: [:destroy]
 
-      api :DESTROY, '/v1/projects_users_term_groups_colors_terms/:id', 'Deletes specified projects_users_term_groups_colors_term'
+      # api :DESTROY, '/v1/projects_users_term_groups_colors_terms/:id', 'Deletes specified projects_users_term_groups_colors_term'
       def destroy
         @putgct.destroy
         head :no_content
       end
 
-      api :POST, '/v1/projects_users_term_groups_colors_terms', 'Creates a new projects_users_term_groups_colors_term with specified projects_users_term_groups_color and term'
+      # api :POST, '/v1/projects_users_term_groups_colors_terms', 'Creates a new projects_users_term_groups_colors_term with specified projects_users_term_groups_color and term'
       def create
         #term = Term.where(id: putgct_params[:term_id]).first
         #if term.nil?
@@ -24,7 +24,7 @@ module Api
         render json: { id: @putgct.id }
       end
 
-      api :PATCH, '/v1/projects_users_term_groups_colors/:id', 'Updates specified projects_users_term_groups_color with a new term'
+      # api :PATCH, '/v1/projects_users_term_groups_colors/:id', 'Updates specified projects_users_term_groups_color with a new term'
       def update
         term = Term.where(id: putgct_params[:term_id]).first
         if term.nil?

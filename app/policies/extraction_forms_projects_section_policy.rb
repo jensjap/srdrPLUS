@@ -1,4 +1,8 @@
 class ExtractionFormsProjectsSectionPolicy < ApplicationPolicy
+  def show?
+    project_consolidator?
+  end
+
   def new?
     project_consolidator?
   end

@@ -3,8 +3,8 @@ module Api
     class TagsController < BaseController
       before_action :set_assignment, :skip_policy_scope, :skip_authorization, only: [ :index ]
 
-      api :GET, '/v1/projects_users/:id/tags', 'List of tags a user has created'
-      formats [:json]
+      # api :GET, '/v1/projects_users/:id/tags', 'List of tags a user has created'
+      # formats [:json]
       def index
         page          = ( params[ :page ] || 1 ).to_i
         page_size     = 100
