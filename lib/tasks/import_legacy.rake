@@ -24,6 +24,8 @@ namespace(:db) do
           migrate_legacy_srdr_project project_hash
           p "Source Project:"
           ap project_hash
+          p "Target Project"
+          ap get_srdrplus_project(@legacy_project_id)
         rescue => error
           puts error
           puts error.backtrace
@@ -296,15 +298,15 @@ namespace(:db) do
             #efps.extraction_forms_projects_section_option = ExtractionFormsProjectsSectionOptionWrapper.create ef.adverse_event_display_arms, ef.adverse_event_display_total
             #adverse_events_efps = efps
             #t2_efps << ExtractionFormsProjectsSectionWrapper.new(s)
-
-          when "quality", "arm_details","outcome_details", "quality_details", "diagnostic_test_details","design"
+            #TODO
+          when "quality", "arm_details","outcome_details", "quality_details", "diagnostic_test_details","design", "baselines"
             section = Section.find_or_create_by(name: ef_section["section_name"].titleize)
             t2_efps << combined_efp.extraction_forms_projects_sections.find_or_create_by(section: section, extraction_forms_projects_section_type: @efps_type_2)
           when "results"
             section = Section.find_or_create_by(name: ef_section["section_name"].titleize)
             combined_efp.extraction_forms_projects_sections.find_or_create_by(section: section, extraction_forms_projects_section_type: @efps_type_results)
-
           else
+            #TODO
             #Baseline Characteristics
           end
         end
@@ -356,8 +358,10 @@ namespace(:db) do
             qrf_arr = db.query("SELECT * FROM quality_rating_fields where extraction_form_id=#{ef["id"]}")
 
             migrate_quality_questions efps, ef["id"], qdf_arr, qrf_arr, ef_key_questions
-          when "Baseline"
+          when "Baselines"
+            migrate_questions efps, ef["id"], 'baseline_characteristic', ef_key_questions
           else
+            #TODO log this event
           end
         end
       end
@@ -860,7 +864,8 @@ namespace(:db) do
                                                   timepoint: tp
               Record.find_or_create_by(recordable: tar, name: odp["value"])
             else
-              byebug
+              #byebug
+              #TODO log this event
             end
           end
         end
@@ -1074,6 +1079,7 @@ namespace(:db) do
             table_root = "adverse_event"
             linked_type1_efps = get_efps "adverse_events"
           else
+            #TODO log this event
           end
           linked_eefps = ExtractionsExtractionFormsProjectsSection.find_or_create_by \
             extraction: extraction,
@@ -1139,6 +1145,7 @@ namespace(:db) do
               end
             end
           else
+            #TODO log this event
             p q_item
           end
         end
@@ -1186,6 +1193,7 @@ namespace(:db) do
             end
           end
         else
+          #TODO log this event
           p q_item
         end
       end
