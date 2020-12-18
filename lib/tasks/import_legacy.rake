@@ -11,11 +11,23 @@ namespace(:db) do
       initialize_variables
 
       if ENV['pids'].present?
-        pids = ENV['pids'].split(",")
-        projects = db.query("SELECT * FROM projects WHERE id in (#{pids.join(',')})")
+        pids = ENV['pids'].split(",").map{|x| x.to_i}
       else
         projects = db.query("SELECT * FROM projects")
+        pids = projects.pluck("id").map{|x| x.to_i}
       end
+
+      if ENV['max_pid'].present?
+        max_pid = ENV['max_pid'].to_i
+        pids = pids.select{|x| max_pid >= x}
+      end
+
+      if ENV['min_pid'].present?
+        min_pid = ENV['min_pid'].to_i
+        pids = pids.select{|x| x >= min_pid}
+      end
+
+      projects = db.query("SELECT * FROM projects WHERE id in (#{pids.join(',')})")
 
       projects.each do |project_hash|
         begin
@@ -29,6 +41,8 @@ namespace(:db) do
         rescue => error
           puts error
           puts error.backtrace
+          Rails.logger.debug "Error with legacy SRDR project: #{@legacy_project_id}"
+          Rails.logger.debug error.backtrace
           @legacy_project_id = nil
           reset_project_variables
         end
@@ -141,7 +155,11 @@ namespace(:db) do
     end
 
     def get_efps t1_name
-      @efps_dict[t1_name]
+      if @efps_dict.key? t1_name
+        @efps_dict[t1_name]
+      else
+        byebug
+      end
     end
 
     def queue_data_point dp, qrcf, dp_type=nil
@@ -190,9 +208,20 @@ namespace(:db) do
       project_id = project_hash["id"]
       project_name = project_hash["title"]
       project_description = project_hash["description"]
+      methodology_description = project_hash["methodology"]
+      prospero = project_hash["prospero_id"]
+      notes = project_hash["notes"]
+      doi = project_hash["doi_id"]
+      funding_source = project_hash["funding_source"]
 
       #TODO What to do with publications ?, is_public means published in SRDR
-      srdrplus_project = Project.new name: project_name, description: project_description
+      srdrplus_project = Project.new name: project_name, 
+                                     description: project_description,
+                                     methodology_description: methodology_description,
+                                     notes: notes,
+                                     doi: doi,
+                                     funding_source: funding_source
+
       srdrplus_project.save #need to save, because i want the default efp
       srdrplus_project.extraction_forms_projects.first.extraction_forms_projects_sections.destroy_all #need to delete default sections
 
@@ -220,8 +249,7 @@ namespace(:db) do
       end
       get_srdrplus_project(@legacy_project_id).extraction_forms_projects.first.update(extraction_forms_project_type: efp_type)
       migrate_extraction_forms_as_standard_efp efs
-      #studies_hash = db.query "SELECT * FROM studies where project_id=#{@legacy_project_id}" TODO uncomment
-      studies_hash = db.query "SELECT * FROM studies where project_id=#{@legacy_project_id}" #TODO DELETE
+      studies_hash = db.query "SELECT * FROM studies where project_id=#{@legacy_project_id}"
       studies_hash.each do |study_hash|
         study_id = study_hash["id"]
 
@@ -278,7 +306,7 @@ namespace(:db) do
                                                           type1: type1, 
                                                           type1_type: type1_type
             end
-          when "diagnostic_tests"
+          when "diagnostics"
             diagnostic_tests_efps = combined_efp.extraction_forms_projects_sections.find_or_create_by(section: section, extraction_forms_projects_section_type: @efps_type_4)
             set_efps "diagnostic_tests", diagnostic_tests_efps
             ef_diagnostic_tests = db.query "SELECT * FROM extraction_form_outcome_names where extraction_form_id=#{ef["id"]}"
@@ -306,8 +334,8 @@ namespace(:db) do
             section = Section.find_or_create_by(name: ef_section["section_name"].titleize)
             combined_efp.extraction_forms_projects_sections.find_or_create_by(section: section, extraction_forms_projects_section_type: @efps_type_results)
           else
-            #TODO
-            #Baseline Characteristics
+            Rails.logger.debug "Unknown section name:"
+            Rails.logger.debug ef_section.to_yaml
           end
         end
 
@@ -361,7 +389,8 @@ namespace(:db) do
           when "Baselines"
             migrate_questions efps, ef["id"], 'baseline_characteristic', ef_key_questions
           else
-            #TODO log this event
+            Rails.logger.debug "Unknown section name:"
+            Rails.logger.debug efps.section.to_yaml
           end
         end
       end
@@ -458,12 +487,6 @@ namespace(:db) do
 
         options_arr.each do |o|
           if not o[0].present? then next end
-          qrcqrco = QuestionRowColumnsQuestionRowColumnOption.find_or_create_by! question_row_column: values_qrc,
-                                                                       question_row_column_option: @qrco_answer_choice,
-                                                                       name: o[0]
-
-          set_qrcqrco values_qrc.id, o[0], qrcqrco
-
           if o[0] == "Other..."
             qrcqrco = QuestionRowColumnsQuestionRowColumnOption.find_or_create_by! question_row_column: values_qrc,
                                                                          question_row_column_option: @qrco_answer_choice,
@@ -473,6 +496,12 @@ namespace(:db) do
 
             ff = FollowupField.create! question_row_columns_question_row_column_option: qrcqrco
             set_followup_field qrcqrco
+          else
+            qrcqrco = QuestionRowColumnsQuestionRowColumnOption.find_or_create_by! question_row_column: values_qrc,
+                                                                         question_row_column_option: @qrco_answer_choice,
+                                                                         name: o[0]
+
+            set_qrcqrco values_qrc.id, o[0], qrcqrco
           end
         end
 
@@ -766,24 +795,26 @@ namespace(:db) do
         subgroups.each do |subgroup|
           population_name = PopulationName.find_or_create_by \
             name: subgroup["title"], 
-            description: subgroup["description"]
+            description: subgroup["description"] || ""
           eefpst1r = ExtractionsExtractionFormsProjectsSectionsType1Row.find_or_create_by \
             extractions_extraction_forms_projects_sections_type1: eefps_t1, 
             population_name: population_name
           results_data_queue << [subgroup, outcome, eefpst1r]
         end
 
-        eefpst1r.extractions_extraction_forms_projects_sections_type1_row_columns.destroy_all
+        if eefpst1r.present?
+          eefpst1r.extractions_extraction_forms_projects_sections_type1_row_columns.destroy_all
 
-        timepoints = db.query "SELECT * FROM outcome_timepoints where outcome_id=#{outcome["id"]}"
-        timepoints.each do |timepoint|
-          timepoint_name = TimepointName.find_or_create_by \
-            name: timepoint["number"], 
-            unit: timepoint["time_unit"]
-          tp = ExtractionsExtractionFormsProjectsSectionsType1RowColumn.find_or_create_by \
-            extractions_extraction_forms_projects_sections_type1_row: eefpst1r, 
-            timepoint_name: timepoint_name
-          set_tp timepoint["id"], tp
+          timepoints = db.query "SELECT * FROM outcome_timepoints where outcome_id=#{outcome["id"]}"
+          timepoints.each do |timepoint|
+            timepoint_name = TimepointName.find_or_create_by \
+              name: timepoint["number"], 
+              unit: timepoint["time_unit"]
+            tp = ExtractionsExtractionFormsProjectsSectionsType1RowColumn.find_or_create_by \
+              extractions_extraction_forms_projects_sections_type1_row: eefpst1r, 
+              timepoint_name: timepoint_name
+            set_tp timepoint["id"], tp
+          end
         end
       end
 
@@ -814,7 +845,8 @@ namespace(:db) do
 
         thresholds.each do |threshold|
           population_name = PopulationName.find_or_create_by! \
-            name: threshold["threshold"]
+            name: threshold["threshold"],
+            description: ""
           eefpst1r = ExtractionsExtractionFormsProjectsSectionsType1Row.find_or_create_by! \
             extractions_extraction_forms_projects_sections_type1: eefps_t1, 
             population_name: population_name
@@ -862,10 +894,10 @@ namespace(:db) do
               tar = TpsArmsRssm.find_or_create_by extractions_extraction_forms_projects_sections_type1: arm_eefpst1,
                                                   result_statistic_sections_measure: rssm,
                                                   timepoint: tp
-              Record.find_or_create_by(recordable: tar, name: odp["value"])
+              Record.find_or_create_by recordable: tar, name: odp["value"] || ""
             else
-              #byebug
-              #TODO log this event
+              Rails.logger.debug "Cannot find necessary references to create data record:"
+              Rails.logger.debug odp.to_yaml
             end
           end
         end
@@ -905,10 +937,15 @@ namespace(:db) do
           comp_dps = db.query "SELECT * FROM comparison_data_points where comparison_measure_id=#{cm["id"]}"
           comp_dps.each do |comp_dp|
             eefpst1 = get_eefpst1("arm", comp_dp["arm_id"])
-            car = ComparisonsArmsRssm.find_or_create_by comparison: comp_dict[comp_dp["comparator_id"]], 
-                                                        extractions_extraction_forms_projects_sections_type1: eefpst1,
-                                                        result_statistic_sections_measure: rssm
-            Record.find_or_create_by recordable: car, name: comp_dp["value"]
+            if eefpst1.present? and comp_dict[comp_dp["comparator_id"]].present?
+              car = ComparisonsArmsRssm.find_or_create_by comparison: comp_dict[comp_dp["comparator_id"]], 
+                                                          extractions_extraction_forms_projects_sections_type1: eefpst1,
+                                                          result_statistic_sections_measure: rssm
+              Record.find_or_create_by recordable: car, name: comp_dp["value"] || ""
+            else
+              Rails.logger.debug "Cannot find necessary references to create data record:"
+              Rails.logger.debug comp_dp.to_yaml
+            end
           end
         end
       end
@@ -947,10 +984,15 @@ namespace(:db) do
           comp_dps = db.query "SELECT * FROM comparison_data_points where comparison_measure_id=#{cm["id"]}"
           comp_dps.each do |comp_dp|
             tp = get_tp(bac["group_id"])
-            tcr = TpsComparisonsRssm.find_or_create_by comparison: comp_dict[comp_dp["comparator_id"]], 
-                                                        timepoint: tp,
-                                                        result_statistic_sections_measure: rssm
-            Record.find_or_create_by recordable: tcr, name: comp_dp["value"]
+            if tp.present? and comp_dict[comp_dp["comparator_id"]].present?
+              tcr = TpsComparisonsRssm.find_or_create_by comparison: comp_dict[comp_dp["comparator_id"]], 
+                                                          timepoint: tp,
+                                                          result_statistic_sections_measure: rssm
+              Record.find_or_create_by recordable: tcr, name: comp_dp["value"] || ""
+            else
+              Rails.logger.debug "Cannot find necessary references to create data record:"
+              Rails.logger.debug comp_dp.to_yaml
+            end
           end
         end
       end
@@ -993,7 +1035,7 @@ namespace(:db) do
 
       data_points.each do |dp|
         qrcqrco_id = get_qrcqrco(values_qrcf.question_row_column.id, dp["value"])
-        Record.find_or_create_by recordable: notes_eefps_qrcf, name: dp["notes"]
+        Record.find_or_create_by recordable: notes_eefps_qrcf, name: dp["notes"] || ""
         if qrcqrco_id.present?
           Record.find_or_create_by recordable: values_eefps_qrcf, name: qrcqrco_id.to_s
         else
@@ -1005,7 +1047,7 @@ namespace(:db) do
               followup_field: ff,
               extractions_extraction_forms_projects_sections_type1_id: nil
             Record.find_or_create_by recordable: values_eefps_qrcf, name: other_qrcqrco_id
-            Record.find_or_create_by recordable: eefps_ff, name: dp["value"]
+            Record.find_or_create_by recordable: eefps_ff, name: dp["value"] || ""
           end
         end
       end
@@ -1042,8 +1084,8 @@ namespace(:db) do
 
       data_points.each do |dp|
         qrcqrco_id = get_qrcqrco(rating_qrcf.question_row_column.id, dp["current_overall_rating"])
-        Record.find_or_create_by! recordable: notes_eefps_qrcf, name: dp["notes"]
-        Record.find_or_create_by! recordable: guideline_eefps_qrcf, name: dp["guideline_used"]
+        Record.find_or_create_by! recordable: notes_eefps_qrcf, name: dp["notes"] || ""
+        Record.find_or_create_by! recordable: guideline_eefps_qrcf, name: dp["guideline_used"] || ""
         if qrcqrco_id.present?
           Record.find_or_create_by! recordable: rating_eefps_qrcf, name: qrcqrco_id.to_s
         end
@@ -1079,7 +1121,8 @@ namespace(:db) do
             table_root = "adverse_event"
             linked_type1_efps = get_efps "adverse_events"
           else
-            #TODO log this event
+            Rails.logger.debug "Unsupported data point:"
+            Rails.logger.debug dp.to_yaml
           end
           linked_eefps = ExtractionsExtractionFormsProjectsSection.find_or_create_by \
             extraction: extraction,
@@ -1106,7 +1149,7 @@ namespace(:db) do
 
           case question_type
           when @qrc_type_text
-            Record.find_or_create_by recordable: eefps_qrcf, name: dps.first["value"]
+            Record.find_or_create_by recordable: eefps_qrcf, name: dps.first["value"] || ""
           when @qrc_type_checkbox
             record_name = "[" + (dps.map{|dp| get_qrcqrco(qrc_id, dp["value"]).to_s} - [nil, "", " "]).join(", ") + "]"
             Record.find_or_create_by recordable: eefps_qrcf, name: record_name
@@ -1117,7 +1160,7 @@ namespace(:db) do
                   extractions_extraction_forms_projects_section: eefps,
                   followup_field: ff,
                   extractions_extraction_forms_projects_sections_type1_id: eefpst1_id
-                Record.find_or_create_by recordable: eefps_ff, name: dps.first["subquestion_value"]
+                Record.find_or_create_by recordable: eefps_ff, name: dps.first["subquestion_value"] || ""
               end
             end
           when @qrc_type_radio, @qrc_type_dropdown
@@ -1130,7 +1173,7 @@ namespace(:db) do
                   extractions_extraction_forms_projects_section: eefps,
                   followup_field: ff,
                   extractions_extraction_forms_projects_sections_type1_id: eefpst1_id
-                Record.find_or_create_by recordable: eefps_ff, name: dps.first["subquestion_value"]
+                Record.find_or_create_by recordable: eefps_ff, name: dps.first["subquestion_value"] || ""
               end
             else
               ff = get_ff_by_qrc qrc_id
@@ -1141,12 +1184,12 @@ namespace(:db) do
                   followup_field: ff,
                   extractions_extraction_forms_projects_sections_type1_id: eefpst1_id
                 Record.find_or_create_by recordable: eefps_qrcf, name: other_qrcqrco_id
-                Record.find_or_create_by recordable: eefps_ff, name: dps.first["value"]
+                Record.find_or_create_by recordable: eefps_ff, name: dps.first["value"] || ""
               end
             end
           else
-            #TODO log this event
-            p q_item
+            Rails.logger.debug "Unsupported question type: #{question_type.try :name}"
+            Rails.logger.debug q_item.to_yaml
           end
         end
       else
@@ -1162,7 +1205,7 @@ namespace(:db) do
 
         case question_type
         when @qrc_type_text
-          Record.find_or_create_by recordable: eefps_qrcf, name: data_points.first["value"]
+          Record.find_or_create_by recordable: eefps_qrcf, name: data_points.first["value"] || ""
         when @qrc_type_checkbox
           record_name = "[" + (data_points.map{|dp| get_qrcqrco(qrc_id, dp["value"]).to_s} - [nil, "", " "]).join(", ") + "]"
           data_points.each do |dp|
@@ -1172,7 +1215,7 @@ namespace(:db) do
                 extractions_extraction_forms_projects_section: eefps,
                 followup_field: ff,
                 extractions_extraction_forms_projects_sections_type1_id: nil
-              Record.find_or_create_by recordable: eefps_ff, name: dp["subquestion_value"]
+              Record.find_or_create_by recordable: eefps_ff, name: dp["subquestion_value"] || ""
             end
           end
           Record.find_or_create_by recordable: eefps_qrcf, name: record_name
@@ -1189,12 +1232,12 @@ namespace(:db) do
                 followup_field: ff,
                 extractions_extraction_forms_projects_sections_type1_id: nil
               Record.find_or_create_by recordable: eefps_qrcf, name: other_qrcqrco_id
-              Record.find_or_create_by recordable: eefps_ff, name: data_points.first["value"]
+              Record.find_or_create_by recordable: eefps_ff, name: data_points.first["value"] || ""
             end
           end
         else
-          #TODO log this event
-          p q_item
+          Rails.logger.debug "Unsupported question type: #{question_type.try :name}"
+          Rails.logger.debug q_item.to_yaml
         end
       end
     end
