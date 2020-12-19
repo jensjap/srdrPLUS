@@ -220,7 +220,8 @@ namespace(:db) do
                                      methodology_description: methodology_description,
                                      notes: notes,
                                      doi: doi,
-                                     funding_source: funding_source
+                                     funding_source: funding_source,
+                                     prospero: prospero
 
       srdrplus_project.save #need to save, because i want the default efp
       srdrplus_project.extraction_forms_projects.first.extraction_forms_projects_sections.destroy_all #need to delete default sections
@@ -473,8 +474,14 @@ namespace(:db) do
                                    description: description,
                                    extraction_forms_projects_section: efps
         ef_key_questions.each do |kq|
-          KeyQuestionsProjectsQuestion.create! key_questions_project: get_srdrplus_key_question(kq["key_question_id"]),
-                                              question: question
+          kqp = get_srdrplus_key_question(kq["key_question_id"])
+          if kqp.present?
+            KeyQuestionsProjectsQuestion.create! key_questions_project: kqp,
+                                                 question: question
+          else
+            Rails.logger.debug "Missing extraction form key question:"
+            Rails.logger.debug kq.to_yaml
+          end
         end
 
         question.question_rows.first.update! name: "Value:"
@@ -510,7 +517,7 @@ namespace(:db) do
         end
       end
 
-      qrf_name = "Adjust Quality Rating (for Key Questions: #{ef_key_questions.map{|ef_kq| get_srdrplus_key_question(ef_kq["key_question_id"]).ordering.position.to_s}.join(", ")})"
+      qrf_name = "Adjust Quality Rating (for Key Questions: #{(ef_key_questions.map{|ef_kq| get_srdrplus_key_question(ef_kq["key_question_id"]).try(:ordering).try(:position).to_s}-[""]).join(", ")})"
       qrf_question = Question.create name: qrf_name,
                                  description: "",
                                  extraction_forms_projects_section: efps
