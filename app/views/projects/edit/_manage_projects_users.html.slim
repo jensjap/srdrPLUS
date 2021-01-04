@@ -1,16 +1,19 @@
 = simple_form_for(@project, html: { 'abide': '', 'live-validate': true }) do |f|
-  .form-inputs style="display:inline-block"
+  .form-inputs style="display: inline-block;"
     table.hover style="table-layout: fixed;"
       thead
         tr
-          th width="30%"rowspan="2" USER
-          th width="60%"colspan="4"
+          th width="150px;"
+          th width="400px;" colspan="4"
             div class="button tiny" data-open="member-roles-modal" See Role Definitions
-          th width="10%"
+          th width="100px;"
+          th
         tr
+          th User
           - Role.all.each do |role|
-            th width="15%" = role.name
-          th width="10%"
+            th = role.name
+          th
+          th
       tbody#projects-users-table
         = f.simple_fields_for :projects_users do |pu_f|
           = render 'projects_users/form', f: pu_f
@@ -19,7 +22,7 @@
   .form-actions
     = f.button :submit, 'Save changes'
 
-div class="reveal" id="member-roles-modal" data-reveal="" style="width: initial; max-width: 60%;"
+div class="reveal" id="member-roles-modal" data-reveal="" style="width: initial; max-width: 60%; height: 95vh;"
   table#member-roles-table style="margin-top: 30px; text-align: center; border-spacing: 10px;"
     thead
       tr
