@@ -49584,7 +49584,7 @@ function __guardMethod__(obj, methodName, transform) {
   });
 
   documentCode = function() {
-    var formatResult, formatResultSelection, prereqOff, prereqOn, relevantIDsClasses, subroutine, turnPrereqOffSelfAndDescendants, turnPrereqOnSelfAndDescendants, updateCards;
+    var findActivePrereq, formatResult, formatResultSelection, relevantIDsClasses, updateCards;
     if ($('.extraction_forms_projects.build, .extraction_forms_projects_sections, .extractions').length > 0) {
       $('.attach-me').each(function() {
         var tether;
@@ -49595,7 +49595,10 @@ function __guardMethod__(obj, methodName, transform) {
           targetAttachment: "center right",
           offset: '-1px -10px'
         });
-        return tether.position();
+        setTimeout((function() {
+          return tether.position();
+        }), 50);
+        return true;
       });
       $('.attach-me').removeClass('hide');
       formatResultSelection = function(result, container) {
@@ -49690,58 +49693,6 @@ function __guardMethod__(obj, methodName, transform) {
         templateResult: formatResult,
         templateSelection: formatResultSelection
       });
-      prereqOff = function(prereq) {
-        var _on;
-        _on = $('.' + prereq);
-        if (_on.length) {
-          _on.removeClass(prereq).addClass('off-' + prereq);
-        }
-      };
-      prereqOn = function(prereq) {
-        var _off;
-        _off = $('.off-' + prereq);
-        if (_off.length) {
-          _off.removeClass('off-' + prereq).addClass(prereq);
-        }
-      };
-      subroutine = function(that) {
-        var active, prereq;
-        active = that.is(':checked');
-        if (!active && !that.is('input[type="checkbox"]') && !that.is('input[type="radio"]')) {
-          active = that.val();
-        }
-        prereq = that.data('prereq');
-        if (!prereq) {
-          if ($.isArray(active)) {
-            that.find(':selected').each(function() {
-              var temp;
-              temp = $(this).data('prereq');
-              if ($('.' + temp).length || $('.off-' + temp).length) {
-                prereq = temp;
-              }
-            });
-          } else {
-            prereq = that.find(':selected').data('prereq');
-          }
-        }
-        return {
-          active: active,
-          prereq: prereq
-        };
-      };
-      turnPrereqOffSelfAndDescendants = function(prereq, that) {
-        prereqOff(prereq);
-        that.closest('table').find('textarea[data-prereq],input[data-prereq],option[data-prereq]').each(function(idx) {
-          prereqOff(prereq);
-        });
-      };
-      turnPrereqOnSelfAndDescendants = function(prereq, that) {
-        prereqOn(prereq);
-        that.closest('table').find('textarea[data-prereq],input[data-prereq],option[data-prereq]').each(function(idx) {
-          prereq = $(this).data('prereq');
-          prereqOn(prereq);
-        });
-      };
       $('#preview .card input[type="text"]').on('input', function(e) {
         var currentValue, that;
         e.preventDefault();
@@ -49785,34 +49736,6 @@ function __guardMethod__(obj, methodName, transform) {
           return $(this).data('previous-value', $(this).is(':checked'));
         });
       });
-      relevantIDsClasses = '#preview .card input, #preview .card select, #preview .card textarea';
-      $(relevantIDsClasses).on('change keyup dependencies:update', function(e) {
-        var active, noneActiveAndPrereq, prereq, result, that;
-        e.preventDefault();
-        that = $(this);
-        result = subroutine(that);
-        active = result.active;
-        prereq = result.prereq;
-        if (active && $('.' + prereq).length) {
-          turnPrereqOffSelfAndDescendants(prereq, that);
-        } else {
-          noneActiveAndPrereq = true;
-          that.closest('table').find('input,select,textarea').each(function(idx) {
-            that = $(this);
-            result = subroutine(that);
-            active = result.active;
-            prereq = result.prereq;
-            if (active && $('.off-' + prereq).length) {
-              noneActiveAndPrereq = false;
-              return false;
-            }
-          });
-          if (noneActiveAndPrereq) {
-            turnPrereqOnSelfAndDescendants(prereq, that);
-          }
-        }
-      });
-      $(relevantIDsClasses).trigger("dependencies:update");
       updateCards = function() {
         $('.card').addClass('hide');
         return $('.kqp-selector').each(function() {
@@ -49836,9 +49759,62 @@ function __guardMethod__(obj, methodName, transform) {
         updateCards();
         return $('#extractions-key-questions-projects-selections-form').submit();
       });
-      return $(document).ready(function() {
+      $(document).ready(function() {
         return updateCards();
       });
+      findActivePrereq = function(that) {
+        var active, prereq;
+        prereq = that.data('prereq');
+        if (that.is('input[type="checkbox"]') || that.is('input[type="radio"]')) {
+          active = that.is(':checked');
+        } else if (that.is('option')) {
+          active = that.is(':selected');
+        } else {
+          active = !!that.val();
+        }
+        if (!prereq) {
+          if ($.isArray(active)) {
+            that.find(':selected').each(function() {
+              var temp;
+              temp = $(this).data('prereq');
+              if ($('.' + temp).length || $('.off-' + temp).length) {
+                return prereq = temp;
+              }
+            });
+          } else {
+            prereq = that.find(':selected').data('prereq');
+          }
+        }
+        return {
+          active: active,
+          prereq: prereq
+        };
+      };
+      relevantIDsClasses = '#preview .card input, #preview .card select, #preview .card textarea';
+      $(relevantIDsClasses).on('change keyup dependencies:update', function(e) {
+        var preReqLookup;
+        e.preventDefault();
+        e.stopPropagation();
+        preReqLookup = {};
+        $("input[data-prereq],option[data-prereq]").each(function(idx, element) {
+          var active, prereq, ref;
+          ref = findActivePrereq($(element)), active = ref.active, prereq = ref.prereq;
+          if (preReqLookup[prereq] === void 0) {
+            preReqLookup[prereq] = active;
+          } else if (active && preReqLookup[prereq] === false) {
+            preReqLookup[prereq] = active;
+          }
+          return true;
+        });
+        return Object.keys(preReqLookup).forEach(function(prereq) {
+          if (preReqLookup[prereq]) {
+            return $('.' + prereq).removeClass(prereq).addClass('off-' + prereq);
+          } else {
+            return $('.off-' + prereq).removeClass('off-' + prereq).addClass(prereq);
+          }
+        });
+      });
+      return $(relevantIDsClasses).trigger("dependencies:update");
     }
   };
 
