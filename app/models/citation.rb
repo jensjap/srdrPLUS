@@ -107,7 +107,7 @@ class Citation < ApplicationRecord
 #  end
 
   def year
-    if not journal then return '' end
+    if journal.nil? or journal.publication_date.nil? then return '' end
     year_match = journal.publication_date.match(/[1-2][0-9][0-9][0-9]/)
     if year_match then return year_match[0] end
     return journal.publication_date
