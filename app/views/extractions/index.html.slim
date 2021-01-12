@@ -54,7 +54,7 @@
             - first_author = citation.authors_citations.sort_by { |ac| ac.ordering.position }&.first&.citation&.authors&.first&.name || ''
             - pmid = citation.pmid.to_s
             - year = citation.year
-            - name = citation.name.truncate(70)
+            - name = citation.name.to_s.truncate(70)
             - citation_handle = first_author + ', ' + year + ', ' + pmid + '<br />' + name
             - eefps_count = extraction.extractions_extraction_forms_projects_sections.length
             - progress_meter_width = (extraction.extractions_extraction_forms_projects_sections.inject(0) { |sum, eefps| sum + (eefps.status.name == 'Completed' ? 100.0 : 0) } / (eefps_count == 0 ? 1 : eefps_count)).round.to_s
