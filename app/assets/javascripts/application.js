@@ -72,9 +72,7 @@ toastr.options = {
   'hideMethod': 'slideUp',
   'closeMethod': 'slideUp',
   'hideDuration': '10',
-  'closeDuration': '10',
-  'timeOut': '1200',
-  'extendedTimeOut': '4000'
+  'closeDuration': '10'
 };
 
 Dropzone.autoDiscover = false;
