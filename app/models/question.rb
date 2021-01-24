@@ -18,6 +18,7 @@ class Question < ApplicationRecord
   acts_as_paranoid
 
   after_create :create_default_question_row
+  after_create :associate_kqs
   after_save :ensure_matrix_column_headers
 
   before_validation -> { set_ordering_scoped_by(:extraction_forms_projects_section_id) }, on: :create
@@ -99,6 +100,12 @@ class Question < ApplicationRecord
   end
 
   private
+
+    # By default we associate all key_questions_projects to the question.
+    def associate_kqs
+      self.key_questions_projects << self.project.key_questions_projects
+      self.save
+    end
 
     def create_default_question_row
       self.question_rows.create
