@@ -11,9 +11,11 @@
 #
 
 class QuestionRow < ApplicationRecord
+  attr_accessor :skip_callbacks
+
   acts_as_paranoid
 
-  after_create :create_default_question_row_columns
+  after_create :create_default_question_row_columns, unless: :skip_callbacks
 
   belongs_to :question, inverse_of: :question_rows
 
@@ -25,7 +27,9 @@ class QuestionRow < ApplicationRecord
 
   amoeba do
     enable
-    clone [:question_row_columns]
+    customize(lambda { |original, cloned|
+      cloned.skip_callbacks = true
+    })
   end
 
   private

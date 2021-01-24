@@ -12,12 +12,14 @@
 #
 
 class QuestionRowColumn < ApplicationRecord
+  attr_accessor :skip_callbacks
+
   acts_as_paranoid
 
-  after_create :create_default_question_row_column_options
-  after_create :create_default_question_row_column_field
+  after_create :create_default_question_row_column_options, unless: :skip_callbacks
+  after_create :create_default_question_row_column_field, unless: :skip_callbacks
 
-  after_save :ensure_question_row_column_fields
+  after_save :ensure_question_row_column_fields, unless: :skip_callbacks
 
   belongs_to :question_row,             inverse_of: :question_row_columns
   belongs_to :question_row_column_type, inverse_of: :question_row_columns
@@ -31,7 +33,9 @@ class QuestionRowColumn < ApplicationRecord
 
   amoeba do
     enable
-    clone [:question_row_columns_question_row_column_options, :question_row_column_fields]
+    customize(lambda { |original, cloned|
+      cloned.skip_callbacks = true
+    })
   end
 
   #accepts_nested_attributes_for :question_row_column_fields
