@@ -50545,6 +50545,13 @@ function __guardMethod__(obj, methodName, transform) {
       $('.search-field').toggleClass('expand-search');
       $('#project-filter').focus();
     });
+    $('.export-type-radio').each(function(e) {
+      var export_button, link_string;
+      if ($(this).is(':checked')) {
+        export_button = $(this).parents('.reveal').find('.start-export-button');
+        return link_string = $(export_button).attr('href', $(this).val());
+      }
+    });
     $('.export-type-radio').on('change', function(e) {
       var export_button, link_string;
       if ($(this).is(':checked')) {
