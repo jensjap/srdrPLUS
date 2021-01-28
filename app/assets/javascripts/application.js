@@ -144,13 +144,17 @@ let documentCode = function() {
 
   // Attach NIH autocomplete for UCUM (Unified Code for Units of Measure) to any input field with class 'ucum'.
   $( '.ucum' ).each(function() {
-    new Def.Autocompleter.Search(this, 'https://clinicaltables.nlm.nih.gov/api/ucum/v3/search', { tableFormat: true, valueCols: [0], colHeaders: ['Code', 'Name'] });
+    new Def.Autocompleter.Search(
+      this,
+      'https://clinicaltables.nlm.nih.gov/api/ucum/v3/search',
+      { tableFormat: true, valueCols: [0], colHeaders: ['Code', 'Name'] }
+    );
   });
 
   function initialize_orderable_element( scope ) {
     for (let orderable_list of Array.from( $( scope ).find( '.orderable-list' ))) {
       //# CHANGE THIS
-      const ajax_url = $( '.orderable-list' ).attr( 'orderable-url' );
+      const ajax_url = $( orderable_list ).attr( 'orderable-url' );
       let saved_state = null;
 
       //# helper method for converting class name into camel case
@@ -159,7 +163,7 @@ let documentCode = function() {
       ;
 
       //# send updated positions to the server
-      const send_positions = function( ) {
+      const send_positions = function() {
         let positions = [];
         for (let element of Array.from($( orderable_list ).find( '.orderable-item' ))) {
           positions.push( $( element ).attr( 'position' ) );
@@ -182,31 +186,60 @@ let documentCode = function() {
           dataType: 'script',
           data: params,
           success( data ) {
-              // if successful, update positions
-              let idx = 0;
-              for (let element of Array.from($( orderable_list ).find( '.orderable-item' ))) {
-                $( element ).attr( 'position', positions[ idx ] );
-                idx++;
-              }
-              // then save state
-              saved_state = $( orderable_list ).sortable( "toArray" );
-              toastr.success( 'Positions successfully updated' );
-            },
-          error( data ) {
-              $( orderable_list ).sortable( 'sort', saved_state );
-
-              return toastr.error( 'ERROR: Cannot save new position' );
+            // if successful, update positions
+            let idx = 0;
+            for (let element of Array.from($( orderable_list ).find( '.orderable-item' ))) {
+              $( element ).attr( 'position', positions[ idx ] );
+              idx++;
             }
+            // then save state
+            saved_state = $( orderable_list ).sortable( "toArray" );
+            return toastr.success( 'Positions successfully updated' );
+          },
+          error( data ) {
+            $( orderable_list ).sortable( 'sort', saved_state );
+            return toastr.error( 'ERROR: Cannot save new position due to a server error.');
+          }
         });
       };
 
       //# update handler for sortable list
-      const on_update =  e  => send_positions( );
+      const on_update =  e  => {
+        if ( ensure_valid_order( e ) == true ) {
+          send_positions();
+        } else {
+          toastr.error( 'ERROR: Cannot save new positions. A dependency is preventing the new ordering from being saved. Please remove the conflicting dependecy and try again.' );
+        }
+      };
 
       //# save state when dragging starts
-      const on_start =  e  => saved_state = $( orderable_list ).sortable( 'toArray' );
+      const on_start =  e  => {
+        saved_state = $( orderable_list ).sortable( 'toArray' );
+      };
 
-      $(orderable_list).sortable({ onUpdate: on_update, onStart: on_start });
+      const ensure_valid_order =  e  => {
+        // Keep a running list of ordering ids that that questions are dependent on.
+        let lsof_data_dependent_ordering_ids = new Array();
+        let valid_order = true
+        $( e.target ).find( '.orderable-item' ).each( ( idx, el ) => {
+          // Only run this code if orderable-item has potential dependencies.
+          if (typeof $( el ).data( 'dependent' ) !== 'undefined') {
+            lsof_data_dependent_ordering_ids.push( $( el ).data( 'dependent' ) );
+            lsof_data_dependent_ordering_ids = lsof_data_dependent_ordering_ids.flat();
+            for (const id of lsof_data_dependent_ordering_ids) {
+              // If current orderable-item has an ordering-id that is in the lsof_data_dependent_ordering_ids,
+              // then something went wrong and we do not have a valid_order.
+              if ( id == $( el ).attr( 'ordering-id' ) ) {
+                valid_order = false;
+              }
+            }
+          }
+        } );
+
+        return valid_order;
+      }
+
+      $( orderable_list ).sortable({ onUpdate: on_update, onStart: on_start });
 
       document.addEventListener('drag', (event) => {
         let y = $(window).scrollTop();
