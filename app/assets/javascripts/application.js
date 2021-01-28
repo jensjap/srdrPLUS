@@ -163,7 +163,7 @@ let documentCode = function() {
       ;
 
       //# send updated positions to the server
-      const send_positions = function() {
+      const send_positions = function( drop_conflicting_dependencies=false ) {
         let positions = [];
         for (let element of Array.from($( orderable_list ).find( '.orderable-item' ))) {
           positions.push( $( element ).attr( 'position' ) );
@@ -171,7 +171,7 @@ let documentCode = function() {
         positions = positions.sort();
         //class_name = camel2snake $( '.orderable-item' ).first().attr( 'orderable-type' )
         let idx = 0;
-        let params = { orderings: [ ] };
+        let params = { drop_conflicting_dependencies: drop_conflicting_dependencies, orderings: [ ] };
         for (let element of Array.from($( orderable_list ).find( '.orderable-item' ))) {
           const ordering_id = $( element ).attr( 'ordering-id' );
           // how do we make this part generic
@@ -205,10 +205,18 @@ let documentCode = function() {
 
       //# update handler for sortable list
       const on_update =  e  => {
+        let overwrite_dependencies;
+
         if ( ensure_valid_order( e ) == true ) {
           send_positions();
         } else {
-          toastr.error( 'ERROR: Cannot save new positions. A dependency is preventing the new ordering from being saved. Please remove the conflicting dependecy and try again.' );
+          overwrite_dependencies = confirm( 'The system detected a problem due to re-ordering of the questions. Would you like to proceed regardless?' )
+          if ( overwrite_dependencies == true ) {
+            send_positions( true );
+            toastr.warning( 'WARNING: You have chosen to re-order despite a dependency conflict. Please reconsider re-ordering.' );
+          } else {
+            toastr.warning( 'WARNING: Cannot save new positions. A dependency is preventing the new ordering from being saved. Please refresh the page to update the ordering. You may remove the conflicting dependencies manually to try again.' );
+          }
         }
       };
 
