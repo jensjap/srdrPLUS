@@ -158,11 +158,12 @@ let documentCode = function() {
     let savedState = null;
 
     // Send current order to server and save.
-    const sendPositions = ( orderable, dropConflictingDependencies=false ) => {
+    const sendPositions = ( orderable, dropConflictingDependencies=false, lsofOrderingsToRemoveDependencies=[] ) => {
       let positions = [];
       let params = {
         drop_conflicting_dependencies: dropConflictingDependencies,
-        orderings: []
+        orderings: [],
+        lsof_orderings_to_remove_dependencies: lsofOrderingsToRemoveDependencies
       };
 
       const elements = Array.from( $( orderable ).find( '.orderable-item' ) );
@@ -196,24 +197,27 @@ let documentCode = function() {
 
     const ensureValidOrder = ( e ) => {
       // Keep a running list of ordering ids that that questions are dependent on.
-      let lsof_data_dependent_ordering_ids = new Array();
-      let valid_order = true
-      $( e.item ).parent('.orderable-list').find( '.orderable-item' ).each( ( idx, el ) => {
+      let lsofDataDependentOrderingIds      = new Array();
+      let lsofOrderingsToRemoveDependencies = new Array();
+      let lsofOrderableItemsInReverse       = new Array();
+      let validOrder = true  // Assume order is valid. Not all orderable things have dependencies.
+
+      lsofOrderableItemsInReverse = $( e.item ).parent('.orderable-list').find( '.orderable-item' ).get().reverse()
+      $( lsofOrderableItemsInReverse ).each( ( idx, el ) => {
         // Only run this code if orderable-item has potential dependencies.
         if (typeof $( el ).data( 'dependent' ) !== 'undefined') {
-          lsof_data_dependent_ordering_ids.push( $( el ).data( 'dependent' ) );
-          lsof_data_dependent_ordering_ids = lsof_data_dependent_ordering_ids.flat();
-          for (const id of lsof_data_dependent_ordering_ids) {
-            // If current orderable-item has an ordering-id that is in the lsof_data_dependent_ordering_ids,
-            // then something went wrong and we do not have a valid_order.
-            if ( id == $( el ).attr( 'ordering-id' ) ) {
-              valid_order = false;
+          for (let i=idx+1; i < lsofOrderableItemsInReverse.length; i++ ) {
+            if ( $( lsofOrderableItemsInReverse[i] ).data( 'dependent' ).map( x => x.toString() ).includes( $( el ).attr( 'ordering-id' ) ) ) {
+              validOrder = false;
+              lsofOrderingsToRemoveDependencies.push( $( lsofOrderableItemsInReverse[i] ).attr( 'ordering-id' ) );
             }
           }
         }
       } );
-
-      return valid_order;
+      return {
+        validOrder,
+        lsofOrderingsToRemoveDependencies
+      };
     };
 
     const sortSortableByListItemPosition = ( sortable ) => {
@@ -244,13 +248,14 @@ let documentCode = function() {
       sort: true,
       onUpdate: ( e ) => {
         let overwrite_dependencies;
+        let { validOrder, lsofOrderingsToRemoveDependencies } = ensureValidOrder( e );
 
-        if ( ensureValidOrder( e ) == true ) {
-          sendPositions( orderable );
+        if ( validOrder == true ) {
+          sendPositions( orderable, false );
         } else {
           overwrite_dependencies = confirm( 'The system detected a problem due to re-ordering of the questions. Would you like to proceed regardless?' )
           if ( overwrite_dependencies == true ) {
-            sendPositions( orderable, true );
+            sendPositions( orderable, true, lsofOrderingsToRemoveDependencies );
             toastr.warning( 'WARNING: You have chosen to re-order despite a dependency conflict. Please reconsider re-ordering.' );
           } else {
             toastr.warning( 'WARNING: Cannot save new positions. A dependency is preventing the new ordering from being saved. Please refresh the page to update the ordering. You may remove the conflicting dependencies manually to try again.' );

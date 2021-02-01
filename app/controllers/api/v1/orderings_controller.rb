@@ -16,7 +16,7 @@ module Api
 
       private
         def orderings_params
-          params.permit(:drop_conflicting_dependencies, orderings: [:id, :position])
+          params.permit(:drop_conflicting_dependencies, :lsof_orderings_to_remove_dependencies, orderings: [:id, :position])
         end
     end
   end
