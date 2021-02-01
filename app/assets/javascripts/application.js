@@ -162,8 +162,8 @@ let documentCode = function() {
       let positions = [];
       let params = {
         drop_conflicting_dependencies: dropConflictingDependencies,
-        orderings: [],
-        lsof_orderings_to_remove_dependencies: lsofOrderingsToRemoveDependencies
+        lsof_orderings_to_remove_dependencies: lsofOrderingsToRemoveDependencies,
+        orderings: []
       };
 
       const elements = Array.from( $( orderable ).find( '.orderable-item' ) );
@@ -253,10 +253,10 @@ let documentCode = function() {
         if ( validOrder == true ) {
           sendPositions( orderable, false );
         } else {
-          overwrite_dependencies = confirm( 'The system detected a problem due to re-ordering of the questions. Would you like to proceed regardless?' )
+          overwrite_dependencies = confirm( 'The system detected a problem with dependencies due to re-ordering of the questions. Would you like to proceed regardless and have the system remove the conflicting dependencies for you?' )
           if ( overwrite_dependencies == true ) {
             sendPositions( orderable, true, lsofOrderingsToRemoveDependencies );
-            toastr.warning( 'WARNING: You have chosen to re-order despite a dependency conflict. Please reconsider re-ordering.' );
+            toastr.warning( 'WARNING: You have chosen to re-order despite a dependency conflict. Conflicting dependencies have been automatically removed, please check the dependency structure.' );
           } else {
             toastr.warning( 'WARNING: Cannot save new positions. A dependency is preventing the new ordering from being saved. Please refresh the page to update the ordering. You may remove the conflicting dependencies manually to try again.' );
           }
