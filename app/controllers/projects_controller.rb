@@ -283,11 +283,6 @@ class ProjectsController < ApplicationController
     params.require(:export_type_name)
   end
 
-  # def import_project_from_json(project, f)
-  #   JsonImportJob.perform_later(current_user.id, project.id, f[:json_file].path)
-  #   flash[:success] = "Import request submitted for project '#{ project.name }'. You will be notified by email of its completion."
-  # end
-
   # def import_project_from_distiller(project)
   #   DistillerImportJob.perform_later(current_user.id, project.id)
   #   flash[:success] = "Import request submitted for project '#{ project.name }'. You will be notified by email of its completion."

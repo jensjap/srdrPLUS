@@ -38,5 +38,5 @@ end
 
 def _check_valid_file_type(file)
   extension = file.original_filename.match(/(\.[a-z]+$)/i)[0]
-  return ['.ris', '.csv', '.txt', '.enw'].include?(extension)
+  return ['.ris', '.csv', '.txt', '.enw', '.json'].include?(extension)
 end

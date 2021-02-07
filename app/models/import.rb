@@ -39,6 +39,8 @@ class Import < ApplicationRecord
               EnlImportJob.perform_later(imported_file.id)
             when "PubMed"
               PubmedImportJob.perform_later(imported_file.id)
+            when ".json"
+              JsonImportJob.perform_now(imported_file.id)
             else
               ## NOT SUPPORTED, WHAT TO DO?
           end

@@ -71,6 +71,7 @@ div.row style="margin: 0;"
           input#csv-file-type-id.hide value="#{ FileType.find_by(name: '.csv').id }"
           input#endnote-file-type-id.hide value="#{ FileType.find_by(name: '.enl').id }"
           input#pubmed-file-type-id.hide value="#{ FileType.find_by(name: 'PubMed').id }"
+          input#json-file-type-id.hide value="#{ FileType.find_by(name: '.json').id }"
           = simple_form_for new_import, authenticity_token: true do |f|
             .form-inputs
               = f.input :projects_user_id, as: :hidden, input_html: { value: projects_user.id }

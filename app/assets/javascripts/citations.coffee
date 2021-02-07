@@ -50,12 +50,14 @@ document.addEventListener 'DOMContentLoaded', ->
           csv_type_id = $( "#dropzone-div input#csv-file-type-id" ).val()
           endnote_type_id = $( "#dropzone-div input#endnote-file-type-id" ).val()
           pubmed_type_id = $( "#dropzone-div input#pubmed-file-type-id" ).val()
+          json_type_id = $( "#dropzone-div input#json-file-type-id" ).val()
 
           file_extension = file.name.split('.').pop()
           file_type_id = switch
             when file_extension == 'ris' then ris_type_id
             when file_extension == 'csv' then csv_type_id
             when file_extension == 'enw' then endnote_type_id
+            when file_extension == 'json' then json_type_id
             else pubmed_type_id
 
           formData.append("authenticity_token", $("#dropzone-div input[name='authenticity_token']").val())
