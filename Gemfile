@@ -117,6 +117,10 @@ gem 'sidekiq'
 gem 'axlsx', git: 'https://github.com/randym/axlsx.git'
 gem 'axlsx_rails'
 
+# Spreadsheet reading.
+gem 'rubyXL', '~> 1.2.10'
+gem 'zip'
+
 # Searching with Elasticsearch.
 gem 'searchkick'
 gem 'searchjoy'

@@ -1,0 +1,159 @@
+.imports.new {
+  .is-droppable, .header-column {
+    font-weight: bold;
+    display: flex;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  .header-column {
+    align-items: center;
+    font-size: 1rem;
+    min-width: 10rem;
+    min-height: 2.8rem;
+    max-height: 2.8rem;
+    margin: 0.3rem;
+  }
+
+  .is-droppable {
+    align-items: center;
+    justify-content: center;
+    min-width: 9.2rem;
+    height: 2rem;
+    cursor: grab;
+    color: white;
+    background-color: #78658c;
+    border-radius: 1rem;
+    z-index: 100;
+    &:focus {
+      outline: none;
+    }
+  }
+
+  .import-column {
+    min-width: 10rem;
+    max-height: 2.8rem;
+    min-height: 2.8rem;
+    margin: 0.3rem;
+    padding: 0;
+    overflow: hidden;
+    background-color: transparent;
+    border: dashed #78658c 1.5px;
+    border-radius: 1.4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .is-droppable.draggable-source--is-dragging {
+    opacity: 0.3;
+  }
+
+  #dropzone-div {
+    height: 30rem;
+    font-size: 1.2rem;
+  }
+
+  .discard-button {
+    background-color: #dc7565;
+  }
+
+  #import-tabs-panel {
+    display: flex;
+    flex-direction: row;
+    .import-columns-tab {
+      cursor: pointer;
+      border-radius: 0.5rem 0.5rem 0 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 2rem;
+      margin: 0 0.5rem 0 0;
+      padding: 0 0.8rem 0 0.8rem;
+      font-size: 0.9rem;
+      font-weight: bold;
+      &.selected {
+        background-color: #deecf9;
+      }
+    }
+  }
+
+  #palette-container,#import-panel-container,#dropzone-div {
+    margin-top: 2rem;
+  }
+
+  #palette-container {
+    .palette {
+      min-height: max-content;
+      max-height: max-content;
+      border: dashed #78658c 1.5px;
+      border-radius: 1.4rem;
+      .import-column {
+        border: none;
+        position: relative;
+        span {
+          position: absolute;
+        }
+      }
+    }
+  }
+
+  #import-columns-panel {
+    border-radius: 0 1rem 1rem 1rem;
+    background-color: #deecf9;
+    width: max-content;
+    overflow: scroll;
+    display: flex;
+    flex-direction: row;
+
+    .import-columns-row {
+      width: max-content;
+      height: max-content;
+      margin: 0.5rem 0.5rem 2.8rem 0.5rem;
+      .headers {
+        padding: 0.3rem 0.4rem 0.2rem 0.4rem;
+        max-height: 75vh;
+        overflow: scroll;
+        display: flex;
+        flex-direction: row;
+        .top, .bottom  {
+          width: max-content;
+          display: flex;
+          flex-direction: column;
+          overflow: visible;
+        }
+        .top  {
+          &:focus {
+            outline: none;
+          }
+        }
+        .bottom {
+          padding-bottom: 0.2rem;
+          padding-top: 0.2rem;
+        }
+      }
+
+      .sheet-name {
+        font-size: 1rem;
+        display: flex;
+        flex-direction: row;
+        font-weight: bold;
+        align-items: flex-end;
+        margin-top: 1vh;
+        margin-bottom: 1vh;
+        select {
+          margin-left: 1vw;
+          margin-bottom: 0;
+          width: max-content;
+        }
+      }
+      .header-column {
+        background-color: transparent;
+      }
+      #draggable-live-region {
+        border: none;
+      }
+    }
+  }
+}

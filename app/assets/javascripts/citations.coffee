@@ -38,7 +38,7 @@ document.addEventListener 'DOMContentLoaded', ->
 
     #### FILE DROPZONE
     Dropzone.options.fileDropzone = {
-      url: "/imports",
+      url: $('#fileDropzone').attr('dropzone-path'),
       autoProcessQueue: true,
       uploadMultiple: false,
 

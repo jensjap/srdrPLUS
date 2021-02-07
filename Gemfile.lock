@@ -459,6 +459,7 @@ GEM
     rspec-support (3.8.0)
     rspec_junit_formatter (0.4.1)
       rspec-core (>= 2, < 4, != 2.12.0)
+    rubyXL (1.2.10)
     rubyzip (1.3.0)
     sass (3.7.3)
       sass-listen (~> 4.0.0)
@@ -549,6 +550,7 @@ GEM
     websocket-extensions (0.1.5)
     xpath (3.2.0)
       nokogiri (~> 1.8)
+    zip (2.0.2)
 
 PLATFORMS
   ruby
@@ -614,6 +616,7 @@ DEPENDENCIES
   responders
   rspec-rails
   rspec_junit_formatter
+  rubyXL (~> 1.2.10)
   sass-rails (~> 5.0)
   searchjoy
   searchkick
@@ -630,6 +633,7 @@ DEPENDENCIES
   tzinfo-data
   uglifier (>= 1.3.0)
   web-console!
+  zip
 
 BUNDLED WITH
    2.1.4
