@@ -45,6 +45,9 @@ namespace(:db) do
           Rails.logger.debug error.backtrace
           @legacy_project_id = nil
           reset_project_variables
+
+          #TODO write problematic project source ids to file
+          #TODO write problematic project target ids to file
         end
       end
     end
