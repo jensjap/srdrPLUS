@@ -44,7 +44,7 @@ document.addEventListener 'DOMContentLoaded', ->
 
       init: ()->
         wrapperThis = this
-
+        that = this
         this.on('sending', (file, xhr, formData) ->
           ris_type_id = $( "#dropzone-div input#ris-file-type-id" ).val()
           csv_type_id = $( "#dropzone-div input#csv-file-type-id" ).val()
@@ -52,11 +52,22 @@ document.addEventListener 'DOMContentLoaded', ->
           pubmed_type_id = $( "#dropzone-div input#pubmed-file-type-id" ).val()
 
           file_extension = file.name.split('.').pop()
-          file_type_id = switch
-            when file_extension == 'ris' then ris_type_id
-            when file_extension == 'csv' then csv_type_id
-            when file_extension == 'enw' then endnote_type_id
-            else pubmed_type_id
+          switch
+            when file_extension == 'ris'
+              file_type_id = ris_type_id
+              file_type_name = "RIS File"
+            when file_extension == 'csv'
+              file_type_id = csv_type_id
+              file_type_name = "Comma Separated File"
+            when file_extension == 'enw'
+              file_type_id = endnote_type_id
+              file_type_name = "EndNote File"
+            else
+              file_type_id = pubmed_type_id
+              file_type_name = "PubMed ID List"
+
+          if not confirm("This looks like a " + file_type_name + ". Do you wish to continue?")
+            that.removeFile(file);
 
           formData.append("authenticity_token", $("#dropzone-div input[name='authenticity_token']").val())
           formData.append("projects_user_id", $("#dropzone-div").find("#import_projects_user_id").val())
