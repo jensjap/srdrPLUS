@@ -30,9 +30,11 @@ module SeedData
 
       #ImportType.
       ImportType.create!([
-        { name: 'Distiller' },
+        { name: 'Distiller References' },
+        { name: 'Distiller Section' },
         { name: 'Citation' },
-        { name: 'Project' }
+        { name: 'Project' },
+        { name: 'Distiller' }
       ])
 
       #FileType.
