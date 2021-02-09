@@ -6,7 +6,7 @@ document.addEventListener 'extractionSectionLoaded', ->
   documentCode()
 
 documentCode = ->
-  return unless $( '.projects, .citations, .extractions' ).length > 0
+  return unless $( '.projects, .citations, .extractions, .build' ).length > 0
   # Ajax call to filter the project list. We want to return a function here
   # to prevent it from being called immediately. Wrapper is to allow passing
   # param without immediate function invocation.
@@ -45,6 +45,12 @@ documentCode = ->
     $( '#project-filter' ).focus()
     return
 
+  # Iterate over each option and if any of them are "checked" go ahead and use that value.
+  $( '.export-type-radio' ).each ( e ) ->
+    if $( this ).is ':checked'
+      export_button = $( this ).parents('.reveal').find( '.start-export-button' )
+      link_string = $( export_button ).attr( 'href', $( this ).val() )
+  # Update the option on change.
   $( '.export-type-radio' ).on 'change', ( e ) ->
     if $( this ).is ':checked'
       export_button = $( this ).parents('.reveal').find( '.start-export-button' )

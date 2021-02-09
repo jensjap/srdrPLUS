@@ -1,7 +1,11 @@
 namespace :quality_dimension_tasks do
   desc "Add quality dimensions from quality_dimensions.yml to quality_dimension_sections table."
   task add_quality_dimensions: [:environment] do
+    puts 'Parsing ./lib/tasks/quality_dimensions.yml'
     qd_yml = YAML.load_file('./lib/tasks/quality_dimensions.yml')
+    puts '..finished'
+
+    puts 'Building questions..'
     qd_yml.each do |section_group|
       section_group_title       = section_group['section-group-title']
       qdsg = QualityDimensionSectionGroup.find_or_create_by(
@@ -58,6 +62,8 @@ namespace :quality_dimension_tasks do
     end
     # All your magic here
     # Any valid Ruby code is allowed
+
+    puts '..done!'
   end
 
   desc "Clear Quality Dimension Question table"
@@ -65,6 +71,9 @@ namespace :quality_dimension_tasks do
     puts "Clearing Quality Dimension Question table"
     QualityDimensionQuestion.transaction do
       QualityDimensionQuestion.destroy_all
+    end
+    QualityDimensionSection.transaction do
+      QualityDimensionSection.destroy_all
     end
     puts "Finished clearing Question table"
   end

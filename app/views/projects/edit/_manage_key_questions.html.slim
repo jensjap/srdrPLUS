@@ -40,7 +40,7 @@ h6 = t('create_key_question')
 
 = simple_form_for(KeyQuestionsProject.new(project: @project), url: project_key_questions_projects_path(@project),
                                                               html: { 'abide': '', 'live-validate': true },
-                                                              remote: true) do |f|
+                                                              remote: false) do |f|
 
   == render 'key_questions_projects/form', f: f
 

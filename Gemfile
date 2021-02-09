@@ -187,3 +187,5 @@ gem 'newrelic-infinite_tracing'
 gem 'rack-attack'
 
 gem 'rack-mini-profiler'
+
+gem 'foreman'

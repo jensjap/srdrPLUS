@@ -1,4 +1,4 @@
 class ApplicationMailer < ActionMailer::Base
-  default from: 'support@srdrPLUS.com'
+  default from: 'SRDR@AHRQ.hhs.gov'
   layout 'mailer'
 end

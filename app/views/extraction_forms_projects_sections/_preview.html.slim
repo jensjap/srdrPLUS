@@ -37,7 +37,9 @@
           #step-two
 
             - if extraction_forms_projects_section.link_to_type1.present?
-              - extraction_forms_projects_section.link_to_type1.extraction_forms_projects_sections_type1s.includes(:type1).collect(&:type1).each do |t1|
+              - type1s = extraction_forms_projects_section.link_to_type1.extraction_forms_projects_sections_type1s.includes(:type1).collect(&:type1).delete_if { |t1| t1.id.eql?(100) }
+              - if type1s.present?
+                - t1 = type1s.first
                 = t1.name + ':'
                 == render 'extraction_forms_projects_sections/question_fields', q: q, t1: t1
 

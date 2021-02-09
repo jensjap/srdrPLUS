@@ -15,10 +15,13 @@ class Question < ApplicationRecord
   include SharedOrderableMethods
   include SharedSuggestableMethods
 
+  attr_accessor :skip_callbacks
+
   acts_as_paranoid
 
-  after_create :create_default_question_row
-  after_save :ensure_matrix_column_headers
+  after_create :create_default_question_row, unless: :skip_callbacks
+  after_create :associate_kqs
+  after_save :ensure_matrix_column_headers, unless: :skip_callbacks
 
   before_validation -> { set_ordering_scoped_by(:extraction_forms_projects_section_id) }, on: :create
 
@@ -48,10 +51,13 @@ class Question < ApplicationRecord
     enable
     prepend :name => "Copy of '"
     append :name => "'"
-    clone [:question_rows]
-    #dependencies, orderings are polymorphic, not supported by amoeba
-    #dependencies should not be copied anyway
-    exclude_association [:ordering, :dependencies]
+    exclude_association :ordering
+    exclude_association :dependencies
+    exclude_association :key_questions_projects_questions
+
+    customize(lambda { |original, cloned|
+      cloned.skip_callbacks = true
+    })
   end
 
   # Returns the question type based on how many how many rows/columns/answer choices the question has.
@@ -99,6 +105,12 @@ class Question < ApplicationRecord
   end
 
   private
+
+    # By default we associate all key_questions_projects to the question.
+    def associate_kqs
+      self.key_questions_projects << self.project.key_questions_projects
+      self.save
+    end
 
     def create_default_question_row
       self.question_rows.create

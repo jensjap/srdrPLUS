@@ -73,8 +73,7 @@ toastr.options = {
   'closeMethod': 'slideUp',
   'hideDuration': '10',
   'closeDuration': '10',
-  'timeOut': '1200',
-  'extendedTimeOut': '4000'
+  'timeOut': '0',
 };
 
 Dropzone.autoDiscover = false;
@@ -145,94 +144,169 @@ let documentCode = function() {
 
   // Attach NIH autocomplete for UCUM (Unified Code for Units of Measure) to any input field with class 'ucum'.
   $( '.ucum' ).each(function() {
-    new Def.Autocompleter.Search(this, 'https://clinicaltables.nlm.nih.gov/api/ucum/v3/search', { tableFormat: true, valueCols: [0], colHeaders: ['Code', 'Name'] });
+    new Def.Autocompleter.Search(
+      this,
+      'https://clinicaltables.nlm.nih.gov/api/ucum/v3/search',
+      { tableFormat: true, valueCols: [0], colHeaders: ['Code', 'Name'] }
+    );
   });
 
-  function initialize_orderable_element( scope ) {
-    for (let orderable_list of Array.from( $( scope ).find( '.orderable-list' ))) {
-      //# CHANGE THIS
-      const ajax_url = $( '.orderable-list' ).attr( 'orderable-url' );
-      let saved_state = null;
+  //#######################################################################################
+  // Attaching SortableJS to .orderable-list (some orderable-items are <li> and some <tr>).
+  const attachOrderable = ( orderable ) => {
+    const ajax_url = $( orderable ).attr( 'orderable-url' );
+    let savedState = null;
 
-      //# helper method for converting class name into camel case
-      const camel2snake =  s  =>
-        s.replace( /(?:^|\.?)([A-Z])/g, ( x, y ) => `_${y.toLowerCase()}`).replace(/^_/, '')
-      ;
-
-      //# send updated positions to the server
-      const send_positions = function( ) {
-        let positions = [];
-        for (let element of Array.from($( orderable_list ).find( '.orderable-item' ))) {
-          positions.push( $( element ).attr( 'position' ) );
-        }
-        positions = positions.sort();
-        //class_name = camel2snake $( '.orderable-item' ).first().attr( 'orderable-type' )
-        let idx = 0;
-        let params = { orderings: [ ] };
-        for (let element of Array.from($( orderable_list ).find( '.orderable-item' ))) {
-          const ordering_id = $( element ).attr( 'ordering-id' );
-          // how do we make this part generic
-          params.orderings.push({ id: ordering_id, position: positions[ idx ] });
-          idx++;
-        }
-
-        // save current state
-        $.ajax({
-          type: 'PATCH',
-          url: ajax_url,
-          dataType: 'script',
-          data: params,
-          success( data ) {
-              // if successful, update positions
-              let idx = 0;
-              for (let element of Array.from($( orderable_list ).find( '.orderable-item' ))) {
-                $( element ).attr( 'position', positions[ idx ] );
-                idx++;
-              }
-              // then save state
-              saved_state = $( orderable_list ).sortable( "toArray" );
-              toastr.success( 'Positions successfully updated' );
-            },
-          error( data ) {
-              $( orderable_list ).sortable( 'sort', saved_state );
-
-              return toastr.error( 'ERROR: Cannot save new position' );
-            }
-        });
+    // Send current order to server and save.
+    const sendPositions = ( orderable, dropConflictingDependencies=false, lsofOrderingsToRemoveDependencies=[] ) => {
+      let positions = [];
+      let params = {
+        drop_conflicting_dependencies: dropConflictingDependencies,
+        lsof_orderings_to_remove_dependencies: lsofOrderingsToRemoveDependencies,
+        orderings: []
       };
 
-      //# update handler for sortable list
-      const on_update =  e  => send_positions( );
+      const elements = Array.from( $( orderable ).find( '.orderable-item' ) );
 
-      //# save state when dragging starts
-      const on_start =  e  => saved_state = $( orderable_list ).sortable( 'toArray' );
-
-      $(orderable_list).sortable({ onUpdate: on_update, onStart: on_start });
-
-      document.addEventListener('drag', (event) => {
-        let y = $(window).scrollTop();
-        let eventY = event.clientY;
-
-        if (eventY >= 10 && eventY < 50) {
-          $(window).scrollTop(y - 10);
-        } else if (eventY > window.innerHeight + window.scrollY - 200) {
-          $(window).scrollTop(y + 10);
-        }
-      })
-
-
-      if ($('.sort-handle').length > 0) {
-        $(orderable_list).sortable( "option", "handle", ".sort-handle" );
+      for ( let i=0; i < elements.length; i++ ) {
+        params.orderings.push( { id: $( elements[i] ).attr( 'ordering-id' ), position: ( i ) } )
       }
 
-      saved_state = $( orderable_list ).sortable( 'toArray' );
-    }
-  }
+      $.ajax({
+        type: 'PATCH',
+        url: ajax_url,
+        dataType: 'script',
+        data: params,
+        success( data ) {
+          // if successful, update positions
+          let idx = 0;
+          for ( let element of Array.from( $( orderable ).find( '.orderable-item' ) ) ) {
+            $( element ).attr( 'position', positions[ idx ] );
+            idx++;
+          }
+          // then save state
+          savedState = $( orderable ).sortable( "toArray" );
+          return toastr.success( 'Positions successfully updated' );
+        },
+        error( data ) {
+          $( orderable ).sortable( 'sort', savedState );
+          return toastr.error( 'ERROR: Cannot save new position due to a server error.');
+        }
+      });
+    };
 
-  initialize_orderable_element( document );
-  $( document ).on( 'srdr:content-loaded', function( e ) {
-    initialize_orderable_element( e.target );
+    const ensureValidOrder = ( e ) => {
+      // Keep a running list of ordering ids that that questions are dependent on.
+      let lsofDataDependentOrderingIds      = new Array();
+      let lsofOrderingsToRemoveDependencies = new Array();
+      let lsofOrderableItemsInReverse       = new Array();
+      let validOrder = true  // Assume order is valid. Not all orderable things have dependencies.
+
+      lsofOrderableItemsInReverse = $( e.item ).parent('.orderable-list').find( '.orderable-item' ).get().reverse()
+      $( lsofOrderableItemsInReverse ).each( ( idx, el ) => {
+        // Only run this code if orderable-item has potential dependencies.
+        if (typeof $( el ).data( 'dependent' ) !== 'undefined') {
+          for (let i=idx+1; i < lsofOrderableItemsInReverse.length; i++ ) {
+            if ( $( lsofOrderableItemsInReverse[i] ).data( 'dependent' ).map( x => x.toString() ).includes( $( el ).attr( 'ordering-id' ) ) ) {
+              validOrder = false;
+              lsofOrderingsToRemoveDependencies.push( $( lsofOrderableItemsInReverse[i] ).attr( 'ordering-id' ) );
+            }
+          }
+        }
+      } );
+      return {
+        validOrder,
+        lsofOrderingsToRemoveDependencies
+      };
+    };
+
+    const sortSortableByListItemPosition = ( sortable ) => {
+      let list = $( sortable[0].el );
+      let listItems = list.find( 'tr' ).sort( function( a, b ) {
+        return $( a ).attr( 'position' ) - $( b ).attr( 'position' );
+      } );
+
+      // List items can be <li> elements and sometimes they are <tr> elements
+      // in tables.
+      if ( listItems.length > 0 ) {
+        list.find( 'tr' ).remove();
+        list.append( listItems );
+      } else {
+        listItems = list.find( 'li' ).sort( function( a, b ) {
+          return $( a ).attr( 'position' ) - $( b ).attr( 'position' );
+        } );
+        if ( listItems.length > 0 ) {
+          list.find( 'li' ).remove();
+          list.append( listItems );
+        }
+      }
+      return false;
+    };
+
+    // Create Sortable object.
+    let _sortable = new Sortable(orderable, {
+      sort: true,
+      onUpdate: ( e ) => {
+        let overwrite_dependencies;
+        let { validOrder, lsofOrderingsToRemoveDependencies } = ensureValidOrder( e );
+
+        if ( validOrder == true ) {
+          sendPositions( orderable, false );
+        } else {
+          overwrite_dependencies = confirm( 'The system detected a problem with dependencies due to re-ordering of the questions. Would you like to proceed regardless and have the system remove the conflicting dependencies for you?' )
+          if ( overwrite_dependencies == true ) {
+            sendPositions( orderable, true, lsofOrderingsToRemoveDependencies );
+            toastr.warning( 'WARNING: You have chosen to re-order despite a dependency conflict. Conflicting dependencies have been automatically removed, please check the dependency structure.' );
+          } else {
+            toastr.warning( 'WARNING: Cannot save new positions. A dependency is preventing the new ordering from being saved. Please refresh the page to update the ordering. You may remove the conflicting dependencies manually to try again.' );
+          }
+        }
+      },
+      onStart: ( e ) => {
+        savedState = $( e.item ).parent( '.orderable-list' ).sortable( 'toArray' );
+      },
+      store: {
+        /**
+         * Get the order of elements. Called once during initialization.
+         * @param   {Sortable}  sortable
+         * @returns {Array}
+         */
+        get: function (sortable) {
+          var order = localStorage.getItem(sortable.options.group.name);
+          return order ? order.split('|') : [];
+        },
+
+        /**
+         * Save the order of elements. Called onEnd (when the item is dropped).
+         * @param {Sortable}  sortable
+         */
+        set: function (sortable) {
+          var order = sortable.toArray();
+          localStorage.setItem(sortable.options.group.name, order.join('|'));
+        }
+      }
+    } );
+
+    sortSortableByListItemPosition( $( _sortable ) );
+  };
+
+  // Find all orderable-lists: create Sortable object and prepare for saving to server.
+  $( '.orderable-list' ).each( ( idx, ol_el ) => {
+    attachOrderable( ol_el );
   } );
+
+  //// ################################################
+  // Make sure window is in view when scrolling.
+  document.addEventListener('drag', (event) => {
+    let y = $(window).scrollTop();
+    let eventY = event.clientY;
+
+    if (eventY >= 10 && eventY < 50) {
+      $(window).scrollTop(y - 10);
+    } else if (eventY > window.innerHeight + window.scrollY - 200) {
+      $(window).scrollTop(y + 10);
+    }
+  })
 
   ////################################################
   // State Toggler for EEFPS

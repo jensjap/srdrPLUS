@@ -9,6 +9,14 @@ module Api
           end
         end
 
+        if (ActiveModel::Type::Boolean.new.cast(orderings_params[:drop_conflicting_dependencies]))
+          Ordering.transaction do
+            orderings_params['lsof_orderings_to_remove_dependencies'].each do |ordering_id|
+              Ordering.find(ordering_id).orderable.dependencies.destroy_all
+            end
+          end
+        end
+
         respond_to do |format|
           format.json { head :ok }
         end
@@ -16,7 +24,11 @@ module Api
 
       private
         def orderings_params
-          params.permit(orderings:[:id, :position])
+          params.permit(
+            :drop_conflicting_dependencies,
+            lsof_orderings_to_remove_dependencies: [],
+            orderings: [:id, :position]
+          )
         end
     end
   end

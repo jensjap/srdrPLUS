@@ -96,7 +96,7 @@
                 - @head_to_head.dig(efp.id, efps.id, type1.id, :unique_population_names).each do |population_name|
                   li.accordion-item data-accordion-item=''
 
-                    - if @head_to_head.dig(efp.id, efps.id, type1.id, :population_names, population_name.id, :timepoint_names).all? { |timepoint_name_id, values| values[:eefpst1rcs].length.eql?(@extractions.length) }
+                    - if (@head_to_head.dig(efp.id, efps.id, type1.id, :population_names, population_name.id, :timepoint_names).present? && @head_to_head.dig(efp.id, efps.id, type1.id, :population_names, population_name.id, :timepoint_names).all? { |timepoint_name_id, values| values[:eefpst1rcs].length.eql?(@extractions.length) })
                       a.accordion-title.populations href='#' title="Description: #{ population_name.description }" style='color: green;' = population_name.name_and_description
                     - else
                       a.accordion-title.populations href='#' title="Description: #{ population_name.description }" style='color: red;' = population_name.name_and_description
@@ -137,7 +137,7 @@
                                 th Extracted by #{ extraction.user.profile.username } (Extraction ID: #{ extraction.id })
 
                           tbody
-                            - @head_to_head.dig(efp.id, efps.id, type1.id, :population_names, population_name.id, :unique_timepoint_names).each do |timepoint_name|
+                            - @head_to_head.dig(efp.id, efps.id, type1.id, :population_names, population_name.id, :unique_timepoint_names).to_a.each do |timepoint_name|
                               tr
                                 - @extractions.each do |extraction|
                                   - eefps = @eefps_by_extraction_and_efps_dict[extraction.id][efps.id].first
