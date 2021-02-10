@@ -107,6 +107,7 @@ Rails.application.routes.draw do
 
     namespace :v2 do
       resources :evidence_variables, only: [:index, :show]
+      get :public_projects, to: 'projects#public_projects'
       resources :projects, shallow: true do
         resources :projects_users_roles, only: [:index]
       end  # END resources :projects, shallow: true do
