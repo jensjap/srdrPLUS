@@ -10,6 +10,11 @@
 #
 
 class Role < ApplicationRecord
+  LEADER       = 'Leader'.freeze
+  CONSOLIDATOR = 'Consolidator'.freeze
+  CONTRIBUTOR  = 'Contributor'.freeze
+  AUDITOR      = 'Auditor'.freeze
+
   acts_as_paranoid
 
   has_many :projects_users_roles, dependent: :destroy, inverse_of: :role

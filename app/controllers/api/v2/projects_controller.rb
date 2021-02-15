@@ -43,6 +43,35 @@ class Api::V2::ProjectsController < Api::V2::BaseController
     property :roles, Array, array_of: String
   end
 
+  api :GET, '/v2/public_projects.json', 'List of all public projects. Requires API Key.'
+  param_group :paginate, Api::V2::BaseController
+  returns desc: 'Returns array of Hash. Each Hash contains project information.' do
+    property :projects, Array do
+      param_group :project
+    end
+  end
+  def public_projects
+    page     = params[:page]
+    per_page = params[:per_page]
+    projects_tmp = Project.published
+      .includes(:extraction_forms)
+      .includes(:key_questions)
+      .includes(publishing: [{ user: :profile }, approval: [{ user: :profile }]])
+
+    if page.present?
+      @is_paginated = true
+      @page = page.to_i
+      if per_page.present?
+        @per_page = per_page.to_i
+      else
+        @per_page = 10
+      end
+      @projects = projects_tmp.page(@page).per(@per_page)
+    else
+      @projects = projects_tmp.all
+    end
+  end
+
   api :GET, '/v2/projects.json', 'List of projects. Requires API Key.'
   param_group :paginate, Api::V2::BaseController
   returns desc: 'Returns array of Hash. Each Hash contains project information.' do

@@ -117,6 +117,10 @@ gem 'sidekiq'
 gem 'caxlsx'
 gem 'caxlsx_rails'
 
+# Spreadsheet reading.
+gem 'rubyXL', '~> 1.2.10'
+gem 'zip-zip'
+
 # Searching with Elasticsearch.
 gem 'searchkick'
 gem 'searchjoy'
