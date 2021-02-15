@@ -1,4 +1,4 @@
-require 's_import_job/worksheet_section'
+require 's_import_job/sections/worksheet_section'
 
 #!!!
 class OutcomeDetails < WorksheetSection
