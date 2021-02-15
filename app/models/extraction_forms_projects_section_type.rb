@@ -13,7 +13,7 @@ class ExtractionFormsProjectsSectionType < ApplicationRecord
   TYPE1   = 'Type 1'.freeze
   TYPE2   = 'Type 2'.freeze
   RESULTS = 'Results'.freeze
-  TYPE3   = 'Type 4'.freeze
+  TYPE4   = 'Type 4'.freeze
 
   acts_as_paranoid
 
