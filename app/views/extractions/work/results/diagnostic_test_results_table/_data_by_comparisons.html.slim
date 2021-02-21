@@ -18,7 +18,12 @@
       timepoint: timepoint,
       comparison: comparison
 
-    = render 'extractions/work/results/diagnostic_test_results_table/2x2_table_and_test_accuracy_metrics',
+    = render 'extractions/work/results/diagnostic_test_results_table/2x2_table',
       rss: eefpst1r.result_statistic_sections.diagnostic_test_type_rsss.third,
+      timepoint: timepoint,
+      comparison: comparison
+
+    = render 'extractions/work/results/diagnostic_test_results_table/test_accuracy_metrics',
+      rss: eefpst1r.result_statistic_sections.diagnostic_test_type_rsss.fourth,
       timepoint: timepoint,
       comparison: comparison
