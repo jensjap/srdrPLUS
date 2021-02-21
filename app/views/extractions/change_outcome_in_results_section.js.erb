@@ -25,14 +25,14 @@
       }
       return timers[formId] = setTimeout(submitForm($form), 750);
     });
-    $('form.edit_record input, form.edit_record textarea').each(function() {
-      var results;
-      results = [];
-      while ($(this).outerHeight() < this.scrollHeight + parseFloat($(this).css('borderTopWidth')) + parseFloat($(this).css('borderBottomWidth'))) {
-        results.push($(this).height($(this).height() + 1));
-      }
-      return results;
-    });
+    // $('form.edit_record input, form.edit_record textarea').each(function() {
+    //   var results;
+    //   results = [];
+    //   while ($(this).outerHeight() < this.scrollHeight + parseFloat($(this).css('borderTopWidth')) + parseFloat($(this).css('borderBottomWidth'))) {
+    //     results.push($(this).height($(this).height() + 1));
+    //   }
+    //   return results;
+    // });
     return $('form.edit_record input, form.edit_record textarea').keyup(function(e) {
       var $form, code, formId, results;
       e.preventDefault();
@@ -48,9 +48,9 @@
       }
       timers[formId] = setTimeout(submitForm($form), 750);
       results = [];
-      while ($(this).outerHeight() < this.scrollHeight + parseFloat($(this).css('borderTopWidth')) + parseFloat($(this).css('borderBottomWidth'))) {
-        results.push($(this).height($(this).height() + 1));
-      }
+      // while ($(this).outerHeight() < this.scrollHeight + parseFloat($(this).css('borderTopWidth')) + parseFloat($(this).css('borderBottomWidth'))) {
+      //   results.push($(this).height($(this).height() + 1));
+      // }
       return results;
     });
   };

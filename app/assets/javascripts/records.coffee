@@ -28,11 +28,11 @@ documentCode = () ->
       clearTimeout( timers[formId] )
     timers[formId] = setTimeout( submitForm( $form ), 750 )
 
-
+  #!!! jens-2021-02-20: Crashes some work forms (infinite loop).
   # Autogrow Text Field to fit the content.
-  $( 'form.edit_record input, form.edit_record textarea' ).each () ->
-    while $(this).outerHeight() < @scrollHeight + parseFloat($(this).css('borderTopWidth')) + parseFloat($(this).css('borderBottomWidth'))
-      $(this).height $(this).height() + 1
+  # $( 'form.edit_record input, form.edit_record textarea' ).each () ->
+  #   while $(this).outerHeight() < @scrollHeight + parseFloat($(this).css('borderTopWidth')) + parseFloat($(this).css('borderBottomWidth'))
+  #     $(this).height $(this).height() + 1
 
   # Text Field.
   $( 'form.edit_record input, form.edit_record textarea' ).keyup ( e ) ->
@@ -56,6 +56,7 @@ documentCode = () ->
       clearTimeout( timers[formId] )
     timers[formId] = setTimeout( submitForm( $form ), 750 )
 
+    #!!! jens-2021-02-20: Crashes some work forms (infinite loop).
     # the following will help the text expand as typing takes place
-    while $(this).outerHeight() < @scrollHeight + parseFloat($(this).css('borderTopWidth')) + parseFloat($(this).css('borderBottomWidth'))
-      $(this).height $(this).height() + 1
+    # while $(this).outerHeight() < @scrollHeight + parseFloat($(this).css('borderTopWidth')) + parseFloat($(this).css('borderBottomWidth'))
+    #   $(this).height $(this).height() + 1

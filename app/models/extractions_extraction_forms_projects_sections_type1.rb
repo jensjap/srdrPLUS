@@ -227,7 +227,9 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
     #
     # We only need this to run for consolidated extractions. Once default populations and timepoints are present we update their names in ensure_matrix_column_headers.
     def create_default_type1_rows
-      if self.extractions_extraction_forms_projects_section.extraction_forms_projects_section.section.name == 'Outcomes'
+      if ( (self.extractions_extraction_forms_projects_section.extraction_forms_projects_section.section.name == 'Outcomes') ||
+           (self.extractions_extraction_forms_projects_section.extraction_forms_projects_section.section.name == 'Diagnoses')
+         )
         if self.extractions_extraction_forms_projects_sections_type1_rows.blank?
           self.extractions_extraction_forms_projects_sections_type1_rows.create(population_name: PopulationName.first)
         end
@@ -235,7 +237,9 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
     end
 
     def ensure_matrix_column_headers
-      if self.extractions_extraction_forms_projects_section.extraction_forms_projects_section.section.name == 'Outcomes'
+      if ( (self.extractions_extraction_forms_projects_section.extraction_forms_projects_section.section.name == 'Outcomes') ||
+           (self.extractions_extraction_forms_projects_section.extraction_forms_projects_section.section.name == 'Diagnoses')
+         )
 
         first_row = self.extractions_extraction_forms_projects_sections_type1_rows.first
         rest_rows = self.extractions_extraction_forms_projects_sections_type1_rows[1..-1]

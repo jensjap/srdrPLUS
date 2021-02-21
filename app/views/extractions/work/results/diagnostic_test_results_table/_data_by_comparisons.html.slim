@@ -4,11 +4,21 @@
     span vs.
     =< comparison.comparate_groups.second.comparable_elements.map { |comparable_e| comparable_e.comparable.type1.short_name_and_description }
 
-  = render 'extractions/work/results/diagnostic_test_results_table/descriptive_statistics',
-    rss: rss,
-    timepoint: timepoint,
-    comparison: comparison
+  / Need the following tables to repeat for each Timepoint
+  - eefpst1r.extractions_extraction_forms_projects_sections_type1_row_columns.each do |timepoint|
+    h4 = timepoint.label_with_optional_unit
 
-  = render 'extractions/work/results/diagnostic_test_results_table/special_area_for_AUC_and_qStar'
+    = render 'extractions/work/results/diagnostic_test_results_table/descriptive_statistics',
+      rss: eefpst1r.result_statistic_sections.diagnostic_test_type_rsss.first,
+      timepoint: timepoint,
+      comparison: comparison
 
-  = render 'extractions/work/results/diagnostic_test_results_table/2x2_table_and_test_accuracy_metrics'
+    = render 'extractions/work/results/diagnostic_test_results_table/special_area_for_AUC_and_qStar',
+      rss: eefpst1r.result_statistic_sections.diagnostic_test_type_rsss.second,
+      timepoint: timepoint,
+      comparison: comparison
+
+    = render 'extractions/work/results/diagnostic_test_results_table/2x2_table_and_test_accuracy_metrics',
+      rss: eefpst1r.result_statistic_sections.diagnostic_test_type_rsss.third,
+      timepoint: timepoint,
+      comparison: comparison
