@@ -68348,16 +68348,8 @@ function __guardMethod__(obj, methodName, transform) {
       }
       return timers[formId] = setTimeout(submitForm($form), 750);
     });
-    $('form.edit_record input, form.edit_record textarea').each(function() {
-      var results;
-      results = [];
-      while ($(this).outerHeight() < this.scrollHeight + parseFloat($(this).css('borderTopWidth')) + parseFloat($(this).css('borderBottomWidth'))) {
-        results.push($(this).height($(this).height() + 1));
-      }
-      return results;
-    });
     return $('form.edit_record input, form.edit_record textarea').keyup(function(e) {
-      var $form, code, formId, results;
+      var $form, code, formId;
       e.preventDefault();
       code = e.keyCode || e.which;
       if (code === 9 || code === 16 || code === 18 || code === 37 || code === 38 || code === 39 || code === 40 || code === 91) {
@@ -68369,12 +68361,7 @@ function __guardMethod__(obj, methodName, transform) {
       if (formId in timers) {
         clearTimeout(timers[formId]);
       }
-      timers[formId] = setTimeout(submitForm($form), 750);
-      results = [];
-      while ($(this).outerHeight() < this.scrollHeight + parseFloat($(this).css('borderTopWidth')) + parseFloat($(this).css('borderBottomWidth'))) {
-        results.push($(this).height($(this).height() + 1));
-      }
-      return results;
+      return timers[formId] = setTimeout(submitForm($form), 750);
     });
   };
 
