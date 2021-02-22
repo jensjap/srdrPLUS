@@ -195,10 +195,19 @@ class ExtractionsController < ApplicationController
         @extractions               = Extraction.where(citations_project: @extraction.citations_project).where.not(id: @extraction.id)
         @project                   = @extraction.project
         @extraction_forms_projects = @project.extraction_forms_projects
-        @eefpst1s                  = ExtractionsExtractionFormsProjectsSectionsType1
-          .by_section_name_and_extraction_id_and_extraction_forms_project_id('Outcomes',
-                                                                             @extraction.id,
-                                                                             @extraction_forms_projects.first.id)
+        if @extraction_forms_projects.first.extraction_forms_project_type.eql?(ExtractionFormsProjectType.find_by(name: ExtractionFormsProjectType::STANDARD))
+          @eefpst1s = ExtractionsExtractionFormsProjectsSectionsType1
+            .by_section_name_and_extraction_id_and_extraction_forms_project_id('Outcomes',
+                                                                               @extraction.id,
+                                                                               @extraction_forms_projects.first.id)
+        elsif @extraction_forms_projects.first.extraction_forms_project_type.eql?(ExtractionFormsProjectType.find_by(name: ExtractionFormsProjectType::DIAGNOSTIC_TEST))
+          @eefpst1s = ExtractionsExtractionFormsProjectsSectionsType1
+            .by_section_name_and_extraction_id_and_extraction_forms_project_id('Diagnoses',
+                                                                               @extraction.id,
+                                                                               @extraction_forms_projects.first.id)
+        else
+          next
+        end
       end
     end
   end

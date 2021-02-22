@@ -14,14 +14,3 @@ table
           = simple_form_for(record, remote: true) do |f|
             = f.input :name, as: :string, label: false, class: 'form-control', wrapper_html: { style: 'padding-bottom: 0;' }, input_html: { style: 'margin-bottom: 0;' }
             div id="record-id-#{ record.id.to_s }" class='record-info' style='opacity: 0;' = 'Saved!'
-  /tbody
-    -debugger
-    /- @diagnostic_tests.each do |diagnostic_test|
-      tr
-        td = diagnostic_test.type1.name
-        td
-          = simple_form_for(:a) do |f|
-            = f.input :name, label: false
-        td
-          = simple_form_for(:a) do |f|
-            = f.input :name, label: false
