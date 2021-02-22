@@ -851,14 +851,14 @@
   type1_types:
     nil: default
 -
-  name: "Disease (+), Total"
+  name: "Total, Disease (+)"
   provider_names: ~
   result_statistic_section_types:
     - "Diagnostic Test 2x2 Table"
   type1_types:
     nil: default
 -
-  name: "Disease (-), Total"
+  name: "Total, Disease (-)"
   provider_names: ~
   result_statistic_section_types:
     - "Diagnostic Test 2x2 Table"
