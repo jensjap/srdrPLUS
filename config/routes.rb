@@ -109,6 +109,9 @@ Rails.application.routes.draw do
       resources :evidence_variables, only: [:index, :show]
       get :public_projects, to: 'projects#public_projects'
       resources :projects, shallow: true do
+        member do
+          post :import_citations_fhir_json
+        end
         resources :projects_users_roles, only: [:index]
       end  # END resources :projects, shallow: true do
 

@@ -29,12 +29,10 @@ class CitationFhirImporter
     if citation.present?
       @project.citations << citation
     else
-      Citation.transaction do
-        citation = Citation.find_or_create_by(citation_hash)
-        @project.citations_projects << CitationsProject.create(
-          citation: citation,
-          project: @project)
-      end
+      citation = Citation.find_or_create_by(citation_hash)
+      @project.citations_projects << CitationsProject.create(
+        citation: citation,
+        project: @project)
     end
 
     journal = Journal.find_or_create_by(journal_hash)

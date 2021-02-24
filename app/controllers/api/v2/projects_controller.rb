@@ -1,8 +1,14 @@
+require 'import_jobs/json_import_job/_citation_fhir_importer'
+
 class Api::V2::ProjectsController < Api::V2::BaseController
-  before_action :set_project, only: [:show, :update, :destroy]
+  before_action :set_project, only: [:show, :update, :destroy, :import_citations_fhir_json]
 
   #before_action :skip_authorization, only: [:index, :show, :create]
   #before_action :skip_policy_scope
+
+  # Make an exception here. The API is still secured due to requirement for
+  # providing an API key.
+  skip_before_action :verify_authenticity_token, only: [:import_citations_fhir_json]
 
   SORT = {  'updated-at': { updated_at: :desc },
             'created-at': { created_at: :desc }
@@ -151,6 +157,20 @@ class Api::V2::ProjectsController < Api::V2::BaseController
     @project.update(project_params)
     flash[:notice] = 'Project was successfully updated.' if @project.save
     respond_with @project
+  end
+
+  api :POST, '/v2/projects/:id/import_citations_fhir_json', 'Upload citations as FHIR formatted JSON file. Requires API Key.'
+  formats [:json]
+  def import_citations_fhir_json
+    json = JSON.parse(request.body.read())
+    json.each do |citation_json|
+      citation_fhir_importer = CitationFhirImporter.new(@project.id, citation_json)
+      citation_fhir_importer.run
+    end
+
+    respond_to do |format|
+      format.json { render json: { status: :created } }
+    end
   end
 
   private
