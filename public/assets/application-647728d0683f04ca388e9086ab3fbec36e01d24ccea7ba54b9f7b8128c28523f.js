@@ -66428,11 +66428,12 @@ function __guardMethod__(obj, methodName, transform) {
           var wrapperThis;
           wrapperThis = this;
           this.on('sending', function(file, xhr, formData) {
-            var csv_type_id, endnote_type_id, file_extension, file_type_id, pubmed_type_id, ris_type_id;
+            var csv_type_id, endnote_type_id, file_extension, file_type_id, json_type_id, pubmed_type_id, ris_type_id;
             ris_type_id = $("#dropzone-div input#ris-file-type-id").val();
             csv_type_id = $("#dropzone-div input#csv-file-type-id").val();
             endnote_type_id = $("#dropzone-div input#endnote-file-type-id").val();
             pubmed_type_id = $("#dropzone-div input#pubmed-file-type-id").val();
+            json_type_id = $("#dropzone-div input#json-file-type-id").val();
             file_extension = file.name.split('.').pop();
             file_type_id = (function() {
               switch (false) {
@@ -66442,6 +66443,8 @@ function __guardMethod__(obj, methodName, transform) {
                   return csv_type_id;
                 case file_extension !== 'enw':
                   return endnote_type_id;
+                case file_extension !== 'json':
+                  return json_type_id;
                 default:
                   return pubmed_type_id;
               }
