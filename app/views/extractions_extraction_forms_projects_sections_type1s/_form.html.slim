@@ -1,10 +1,15 @@
+- section_name = @extractions_extraction_forms_projects_sections_type1 \
+  .extractions_extraction_forms_projects_section \
+  .extraction_forms_projects_section \
+  .section \
+  .name
+
 = simple_form_for([@extractions_extraction_forms_projects_section,
   @extractions_extraction_forms_projects_sections_type1], html: { data: { 'abide': '' } }) do |f|
   = f.error_notification
   .form-inputs
     .row.column
-      - if @extractions_extraction_forms_projects_sections_type1\
-        .extractions_extraction_forms_projects_section.extraction_forms_projects_section.section.name == 'Outcomes'
+      - if section_name.eql?('Outcomes')
         = f.association :type1_type, label: 'Type of Outcome', required: true
         #type1s
           = f.simple_fields_for(:type1) do |type1_form|
@@ -25,8 +30,7 @@
 
             = type1_form.input :description
 
-    - if @extractions_extraction_forms_projects_sections_type1\
-      .extractions_extraction_forms_projects_section.extraction_forms_projects_section.section.name == 'Outcomes'
+    - if ['Outcomes', 'Diagnoses'].include?(section_name)
       .row
         .columns.medium-6
           h4 Populations

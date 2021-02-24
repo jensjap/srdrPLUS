@@ -64,7 +64,7 @@ a.accordion-title href="#" style="padding: 0.5rem;"
       .cell.auto
         = link_to "Edit Project", edit_project_path(project), class: "button expanded"
 
-      .cell.auto
+      .cell.auto'
         - efp_id = @projects_extraction_forms_project_ids[project.id]
         - if @projects_lead_or_with_key_questions[project.id]
           = link_to "Build Extraction Form", build_extraction_forms_project_path(efp_id, 'panel-tab': @projects_extraction_forms_project_ids[project.id].first.default_section_id), class: "button expanded"

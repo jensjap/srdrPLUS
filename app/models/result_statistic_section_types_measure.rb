@@ -22,7 +22,7 @@ class ResultStatisticSectionTypesMeasure < ApplicationRecord
 
   belongs_to :result_statistic_section_type, inverse_of: :result_statistic_section_types_measures
   belongs_to :measure,                       inverse_of: :result_statistic_section_types_measures
-  belongs_to :type1_type,                    inverse_of: :result_statistic_section_types_measures
+  belongs_to :type1_type,                    inverse_of: :result_statistic_section_types_measures, optional: true
   belongs_to :provider_measure,
     class_name: 'ResultStatisticSectionTypesMeasure',
     foreign_key: 'result_statistic_section_types_measure_id',

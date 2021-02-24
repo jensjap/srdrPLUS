@@ -17,7 +17,8 @@ class ComparisonsController < ApplicationController
   end
 
   private
-  def comparison_params
-    params.require(:comparison).permit(:result_statistic_section_id)
-  end
+
+    def comparison_params
+      params.require(:comparison).permit(:result_statistic_section_id)
+    end
 end

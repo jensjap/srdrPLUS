@@ -2,18 +2,15 @@ table
   caption Special area for AUC and Q*
   thead
     tr
-      th Test
-      th Area under the curve
-      th Q*
+      th Measure
+      th
 
   tbody
-    - @diagnostic_tests.each do |diagnostic_test|
+    - rss.result_statistic_sections_measures.each do |rssm|
       tr
-        td = diagnostic_test.type1.name
+        td = rssm.measure.name
         td
-          = simple_form_for(:a) do |f|
-            = f.input :name, label: false
-        td
-          = simple_form_for(:a) do |f|
-            = f.input :name, label: false
-
+          - record = TpsComparisonsRssm.find_record(timepoint=timepoint, comparison=comparison, result_statistic_sections_measure=rssm)
+          = simple_form_for(record, remote: true) do |f|
+            = f.input :name, as: :string, label: false, class: 'form-control', wrapper_html: { style: 'padding-bottom: 0;' }, input_html: { style: 'margin-bottom: 0;' }
+            div id="record-id-#{ record.id.to_s }" class='record-info' style='opacity: 0;' = 'Saved!'

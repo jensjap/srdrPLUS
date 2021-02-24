@@ -40,7 +40,7 @@ class Import < ApplicationRecord
             when "PubMed"
               PubmedImportJob.perform_later(imported_file.id)
             when ".json"
-              CitationFhirImportJob.perform_now(imported_file.id)
+              CitationFhirImportJob.perform_later(imported_file.id)
             else
               ## NOT SUPPORTED, WHAT TO DO?
           end
@@ -48,7 +48,9 @@ class Import < ApplicationRecord
           case imported_file.file_type.name
             when ".json"
               JsonImportJob.perform_later(imported_file.id)
+            when ".xlsx"
             else
+
               ## NOT SUPPORTED, WHAT TO DO?
           end
       end

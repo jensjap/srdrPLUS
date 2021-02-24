@@ -10,6 +10,13 @@
 #
 
 class Type1Type < ApplicationRecord
+  CATEGORICAL   = "Categorical".freeze
+  CONTINUOUS    = "Continuous".freeze
+  TIME_TO_EVENT = "Time to Event".freeze
+  ADVERSE_EVENT = "Adverse Event".freeze
+  INDEX_TEST    = "Index Test".freeze
+  REFERENCE_TEST = "Reference Test".freeze
+
   scope :outcome_types, -> { where("name in (?)", ['Categorical', 'Continuous']) }
   scope :diagnostic_test_types, -> { where("name in (?)", ['Index Test', 'Reference Test']) }
 

@@ -98,7 +98,9 @@ def get_row_hash(cit_h, key_counter)
   if cit_h['JO'].present? then j_h['name'] = cit_h['JO'].strip end
   if cit_h['PY'].present? then j_h['publication_date'] = cit_h['PY'].strip end
   if cit_h['Y1'].present? then j_h['publication_date'] = cit_h['Y1'].strip end
-  if cit_h['VL'].present? then j_h['volume'] = cit_h['VL'].strip end
+  if cit_h.has_key?('VL')
+    cit_h['VL'].is_a?(Array) ? (j_h['volume'] = cit_h['VL'].join(" ")) : (j_h['volume'] = cit_h['VL'].try(:strip))
+  end
   if cit_h['IS'].present? then j_h['issue'] = cit_h['IS'].strip end
   row_h['journal_attributes'] = j_h
 

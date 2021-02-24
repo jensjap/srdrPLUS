@@ -9,5 +9,9 @@
 #
 
 class CitationType < ApplicationRecord
+  PRIMARY   = 'Primary'.freeze
+  SECONDARY = 'Secondary'.freeze
+  ABSTRACKR = 'Abstrackr'.freeze
+
   has_many :citations
 end
