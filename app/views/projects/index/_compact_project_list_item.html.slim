@@ -3,107 +3,60 @@ div style="padding: 0.4rem; font-weight: bold;"
   small = " (#{ @order.split("-").first } " + t("time_prefix") + time_ago_in_words(project.send(@order.underscore).in_time_zone(current_user.profile.time_zone)) + t("ago") + ')  '
 
 .grid-container style="padding-left: 0; border: 0.4rem;"
-  .grid-y
-    /.cell
-      .grid-x.grid-padding-x
-        .cell
-          span.label Description:
-          .callout.description = project.description
+  .grid-x.grid-padding-x.grid-margin-x
+    .cell.medium-9.grid-x.grid-margin-x
+      .cell.auto
+        - pu_count = @projects_projects_user_counts[project.id]
+        - pu_title = "Members (#{pu_count || 0})"
+        a = link_to pu_title, edit_project_path(project) + '#panel-projects-users', title: t('.members_and_roles'), style: "text-decoration:underline;"
+
+      .cell.auto
+        - kqp_count = @projects_key_questions_project_counts[project.id]
+        - kqp_title = "Key Questions (#{kqp_count || 0})"
+        a = link_to kqp_title, edit_project_path(project) + '#panel-key-questions', title: t('.key_questions', style: "text-decoration:underline;"), style: "text-decoration:underline;"
+
+      .cell.auto
+        - cp_count = @projects_citations_project_counts[project.id]
+        - cp_title = "Citations (#{cp_count || 0})"
+        a = link_to cp_title, project_citations_path(project), title: t('manage_citations'), style: "text-decoration:underline;"
+        .button.tiny style="margin: 0 0.5rem 0 0.5rem; padding:0.1rem 0.2rem 0.1rem 0.2rem;"
+          / TODO this link needs to go to a separate create citation page
+          a = link_to "+", project_citations_path(project), title: t('manage_citations'), style:"color: white; font-size: 1rem;"
+
+      .cell.auto
+        - e_count = @projects_extraction_counts[project.id]
+        - e_title = "Extractions (#{e_count || 0})"
+        a = link_to e_title, project_extractions_path(project), title: t('manage_extractions'), style: "text-decoration:underline;"
+        .button.tiny style="margin: 0 0.5rem 0 0.5rem; padding:0.1rem 0.2rem 0.1rem 0.2rem;"
+          / TODO this link needs to go to a separate create citation page
+          a = link_to "+", new_project_extraction_path(project), title: t('manage_extractions'), style:"color: white; font-size: 1rem;"
+
+    .cell.medium-3.grid-x.grid-margin-x
+      .cell.medium-3
+        a#export-modal-button[data-open="export-modal-#{ project.id.to_s }" style="text-decoration:underline;"] Export
+        = render partial: 'shared/select_export_type', locals: { project: project }
+      .cell.medium-6
+        - if project.publishing.present? && project.publishing.approval.present?
+          = link_to 'Project has been published', '#', title: 'Project has been published', style: "text-decoration:underline;"
+        - elsif project.publishing.present?
+          = link_to 'Cancel publication request', publishing_path(project.publishing.publishable_id), title: 'Cancel publication request', data: { confirm: 'Are you sure?' }, method: :delete, style: "text-decoration:underline;"
+        - else
+          = link_to t('request_publication'), new_publishing_path(type: Project.to_s, id: project.id), title: t('request_publication'), style: "text-decoration:underline;"
+      .cell.medium-3
+        - sd_title = "SR-360"
+        a = link_to sd_title, project_sd_meta_data_path(project), title: t('manage_extractions'), style: "text-decoration:underline;"
+
+  - if project.publishing.present?
     .cell
       .grid-x.grid-padding-x
-        .cell.medium-6.grid-x.grid-margin-x
+        - if project.publishing.approved?
           .cell.auto
-            - pu_count = @projects_projects_user_counts[project.id]
-            - pu_title = "Members (#{pu_count || 0})"
-            a = link_to pu_title, edit_project_path(project) + '#panel-projects-users', title: t('.members_and_roles'), style: "text-decoration:underline;"
+            span.label.success Date Published:
+            .callout = project.publishing.created_at.in_time_zone(current_user.profile.time_zone).strftime("%b %-d, %Y - %l:%M %P")
 
-          .cell.auto
-            - kqp_count = @projects_key_questions_project_counts[project.id]
-            - kqp_title = "Key Questions (#{kqp_count || 0})"
-            a = link_to kqp_title, edit_project_path(project) + '#panel-key-questions', title: t('.key_questions', style: "text-decoration:underline;"), style: "text-decoration:underline;"
-
-          .cell.auto
-            - cp_count = @projects_citations_project_counts[project.id]
-            - cp_title = "Citations (#{cp_count || 0})"
-            a = link_to cp_title, project_citations_path(project), title: t('manage_citations'), style: "text-decoration:underline;"
-            .button.tiny style="margin: 0 0.5rem 0 0.5rem; padding:0.1rem 0.2rem 0.1rem 0.2rem;"
-              / TODO this link needs to go to a separate create citation page
-              a = link_to "+", project_citations_path(project), title: t('manage_citations'), style:"color: white; font-size: 1rem;"
-
-          .cell.auto
-            - e_count = @projects_extraction_counts[project.id]
-            - e_title = "Extractions (#{e_count || 0})"
-            a = link_to e_title, project_extractions_path(project), title: t('manage_extractions'), style: "text-decoration:underline;"
-            .button.tiny style="margin: 0 0.5rem 0 0.5rem; padding:0.1rem 0.2rem 0.1rem 0.2rem;"
-              / TODO this link needs to go to a separate create citation page
-              a = link_to "+", new_project_extraction_path(project), title: t('manage_extractions'), style:"color: white; font-size: 1rem;"
-
-        .cell.auto
-
-        .cell.medium-3.grid-x.grid-margin-x
-          .cell.medium-3
-            a#export-modal-button[data-open="export-modal-#{ project.id.to_s }" style="text-decoration:underline;"] Export
-            = render partial: 'shared/select_export_type', locals: { project: project }
-          .cell.medium-6
-            - if project.publishing.present? && project.publishing.approval.present?
-              = link_to 'Project has been published', '#', title: 'Project has been published', style: "text-decoration:underline;"
-            - elsif project.publishing.present?
-              = link_to 'Cancel publication request', publishing_path(project.publishing.publishable_id), title: 'Cancel publication request', data: { confirm: 'Are you sure?' }, method: :delete, style: "text-decoration:underline;"
-            - else
-              = link_to t('request_publication'), new_publishing_path(type: Project.to_s, id: project.id), title: t('request_publication'), style: "text-decoration:underline;"
-          .cell.medium-3
-            - sd_title = "SR-360"
-            a = link_to sd_title, project_sd_meta_data_path(project), title: t('manage_extractions'), style: "text-decoration:underline;"
-
-        /.cell.auto
-          span.label Date Created:
-          .callout = project.created_at.in_time_zone(current_user.profile.time_zone).strftime("%b %-d, %Y - %l:%M %P")
-
-        /.cell.auto
-          span.label Date Updated:
-          .callout = project.updated_at.in_time_zone(current_user.profile.time_zone).strftime("%b %-d, %Y - %l:%M %P")
-
-      - if project.publishing.present?
-        .cell
-          .grid-x.grid-padding-x
-            - if project.publishing.approved?
-              .cell.auto
-                span.label.success Date Published:
-                .callout = project.publishing.created_at.in_time_zone(current_user.profile.time_zone).strftime("%b %-d, %Y - %l:%M %P")
-
-            - else
-              .cell.auto
-                span.label.warning Date Publishing Requested:
-                .callout
-                  = project.publishing.created_at.in_time_zone(current_user.profile.time_zone).strftime("%b %-d, %Y - %l:%M %P") + \
-                         " (by: #{ project.publishing.user.profile.first_name })"
-
-    /.grid-x.grid-padding-x
-      .cell.auto
-        = link_to "Edit Project", edit_project_path(project), class: "button expanded"
-
-      .cell.auto
-        - efp_id = @projects_extraction_forms_project_ids[project.id]
-        - if @projects_lead_or_with_key_questions[project.id]
-          = link_to "Build Extraction Form", build_extraction_forms_project_path(efp_id, 'panel-tab': @projects_extraction_forms_project_ids[project.id].first.default_section_id), class: "button expanded"
         - else
-          div class="button expanded" onClick="alert('Please add at least one Key Question first')" Build Extraction Form
-
-      .cell.auto
-        a.button.expanded#export-modal-button[data-open="export-modal-#{ project.id.to_s }"] Export Data
-        = render partial: 'shared/select_export_type', locals: { project: project }
-
-      .cell.auto
-        - if project.publishing.present? && project.publishing.approval.present?
-          = link_to 'Project has been published', '#', title: 'Project has been published', class: "button expanded disabled"
-        - elsif project.publishing.present?
-          = link_to 'Cancel publication request', publishing_path(project.publishing.publishable_id), title: 'Cancel publication request', data: { confirm: 'Are you sure?' }, method: :delete, class: "button expanded"
-        - else
-          = link_to t('request_publication'), new_publishing_path(type: Project.to_s, id: project.id), title: t('request_publication'), class: "button expanded"
-
-      .reveal.grid-x[data-reveal id="gdrive-export-modal-#{project.id.to_s}"]
-        .cell.auto
-          = link_to "Sign In to Google", user_google_oauth2_omniauth_authorize_path, method: :get, class: "button"
-        .cell.auto
-          = link_to "Export to Google Drive", export_to_gdrive_project_path(project), method: :post, class: "button"
-
+          .cell.auto
+            span.label.warning Date Publishing Requested:
+            .callout
+              = project.publishing.created_at.in_time_zone(current_user.profile.time_zone).strftime("%b %-d, %Y - %l:%M %P") + \
+                     " (by: #{ project.publishing.user.profile.first_name })"
