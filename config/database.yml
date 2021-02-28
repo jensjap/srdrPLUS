@@ -56,3 +56,15 @@ production:
   database: <%= ENV['SRDRPLUS_DATABASE_SCHEMA'] %>
   username: <%= ENV['SRDRPLUS_DATABASE_USERNAME'] %>
   password: <%= ENV['SRDRPLUS_DATABASE_PASSWORD'] %>
+
+
+# for importing legacy srdr data
+legacy_production:
+  adapter: mysql2
+  database: srdr_production
+  pool: 5
+  timeout: 5000
+  encoding: utf8
+  username: root
+  password:
+  host: localhost
