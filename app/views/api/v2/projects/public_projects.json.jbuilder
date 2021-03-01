@@ -1,3 +1,3 @@
 json.projects @projects,
-  partial: 'api/v2/projects/project',
+  partial: 'api/v2/projects/public_project',
   as: :project
