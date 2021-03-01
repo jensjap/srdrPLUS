@@ -232,6 +232,7 @@ namespace(:db) do
       funding_source           = project_hash["funding_source"]
       is_public                = project_hash["is_public"]
       publication_requested_at = project_hash["publication_requested_at"]
+      updated_at               = project_hash["updated_at"]
 
       #TODO What to do with publications ?, is_public means published in SRDR
       srdrplus_project = Project.new name: project_name,
@@ -243,7 +244,7 @@ namespace(:db) do
                                      prospero: prospero
 
       srdrplus_project.save #need to save, because i want the default efp
-      make_srdrplus_project_public(srdrplus_project, publication_requested_at) if is_public
+      make_srdrplus_project_public(srdrplus_project, publication_requested_at, updated_at) if is_public
       srdrplus_project.extraction_forms_projects.first.extraction_forms_projects_sections.destroy_all #need to delete default sections
 
       add_default_user_to_srdrplus_project srdrplus_project
@@ -251,8 +252,9 @@ namespace(:db) do
       set_srdrplus_project project_id, srdrplus_project
     end
 
-    def make_srdrplus_project_public(srdrplus_project, publication_requested_at)
+    def make_srdrplus_project_public(srdrplus_project, publication_requested_at, updated_at)
       publishing = srdrplus_project.create_publishing(user: migration_user)
+      publishing.created_at = updated_at if updated_at.present?
       publishing.created_at = publication_requested_at if publication_requested_at.present?
       publishing.save
       approval   = publishing.create_approval(user: migration_user)
