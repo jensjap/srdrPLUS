@@ -7,13 +7,13 @@ end
 namespace(:db) do
   namespace(:import_legacy) do
     desc "import legacy projects"
-    task :projects => :environment do 
+    task :projects => :environment do
       initialize_variables
 
       if ENV['pids'].present?
         pids = ENV['pids'].split(",").map{|x| x.to_i}
       else
-        projects = db.query("SELECT * FROM projects")
+        projects = db.query("SELECT * FROM projects where is_public is TRUE")
         pids = projects.pluck("id").map{|x| x.to_i}
       end
 
@@ -27,6 +27,7 @@ namespace(:db) do
         pids = pids.select{|x| x >= min_pid}
       end
 
+      puts "Working on the following project ids: #{ pids.join(', ') }"
       projects = db.query("SELECT * FROM projects WHERE id in (#{pids.join(',')})")
 
       projects.each do |project_hash|
@@ -51,9 +52,22 @@ namespace(:db) do
         end
       end
     end
-    
+
+    @user = nil
+
     def migration_user
-      User.first.freeze
+      if @user
+        return @user
+      else
+        @user = User.find_by(email: "migration_service_account@local.host")
+        return @user if @user
+        @user = User.create(email: "migration_service_account@local.host", password: ENV['SRDRPLUS_MIGRATION_SERVICE_ACCOUNT_PASSWORD'])
+        if @user.valid?
+          return @user
+        else
+          raise 'Migration Service Account not found; Unable to create.'
+        end
+      end
     end
 
     def initialize_variables
@@ -175,7 +189,7 @@ namespace(:db) do
         @data_points_queue[study_id][qrcf.id][:data_points] << dp
       end
     end
-    
+
     def get_data_point_queue_for_study study_id
       if @data_points_queue.key? study_id
         return @data_points_queue[study_id]
@@ -208,17 +222,19 @@ namespace(:db) do
     end
 
     def create_srdrplus_project project_hash
-      project_id = project_hash["id"]
-      project_name = project_hash["title"]
-      project_description = project_hash["description"]
-      methodology_description = project_hash["methodology"]
-      prospero = project_hash["prospero_id"]
-      notes = project_hash["notes"]
-      doi = project_hash["doi_id"]
-      funding_source = project_hash["funding_source"]
+      project_id               = project_hash["id"]
+      project_name             = project_hash["title"]
+      project_description      = project_hash["description"]
+      methodology_description  = project_hash["methodology"]
+      prospero                 = project_hash["prospero_id"]
+      notes                    = project_hash["notes"]
+      doi                      = project_hash["doi_id"]
+      funding_source           = project_hash["funding_source"]
+      is_public                = project_hash["is_public"]
+      publication_requested_at = project_hash["publication_requested_at"]
 
       #TODO What to do with publications ?, is_public means published in SRDR
-      srdrplus_project = Project.new name: project_name, 
+      srdrplus_project = Project.new name: project_name,
                                      description: project_description,
                                      methodology_description: methodology_description,
                                      notes: notes,
@@ -227,6 +243,7 @@ namespace(:db) do
                                      prospero: prospero
 
       srdrplus_project.save #need to save, because i want the default efp
+      make_srdrplus_project_public(srdrplus_project, publication_requested_at) if is_public
       srdrplus_project.extraction_forms_projects.first.extraction_forms_projects_sections.destroy_all #need to delete default sections
 
       add_default_user_to_srdrplus_project srdrplus_project
@@ -234,11 +251,18 @@ namespace(:db) do
       set_srdrplus_project project_id, srdrplus_project
     end
 
+    def make_srdrplus_project_public(srdrplus_project, publication_requested_at)
+      publishing = srdrplus_project.create_publishing(user: migration_user)
+      publishing.created_at = publication_requested_at if publication_requested_at.present?
+      publishing.save
+      approval   = publishing.create_approval(user: migration_user)
+    end
+
     def migrate_legacy_srdr_project project_hash
       # DO I WANT TO CREATE USERS? probably no
       #purs = db.query "SELECT * FROM user_project_roles where project_id=#{project_hash["id"]}"
       #purs.each do |pur|
-      #  break#DELETE THIS 
+      #  break#DELETE THIS
       #end
 
       create_srdrplus_project project_hash
@@ -259,7 +283,7 @@ namespace(:db) do
 
         primary_publications = db.query "SELECT * FROM primary_publications where study_id=#{study_id}"
         primary_publications.each do |primary_publication_hash|
-          citation = migrate_primary_publication_as_citation primary_publication_hash 
+          citation = migrate_primary_publication_as_citation primary_publication_hash
           citations_project = CitationsProject.create citation: citation, project: get_srdrplus_project(@legacy_project_id)
           migrate_study_as_extraction study_hash, citations_project.id
           break
@@ -286,7 +310,7 @@ namespace(:db) do
           section = Section.find_or_create_by(name: ef_section["section_name"].titleize)
           case ef_section["section_name"]
           when "arms"
-            arms_efps = combined_efp.extraction_forms_projects_sections.find_or_create_by(section: section, 
+            arms_efps = combined_efp.extraction_forms_projects_sections.find_or_create_by(section: section,
                                                                                extraction_forms_projects_section_type: @efps_type_1)
             set_efps "arms", arms_efps
             if adverse_events_efps.present? then adverse_events_efps.update(link_to_type1:arms_efps) end
@@ -298,7 +322,7 @@ namespace(:db) do
               ExtractionFormsProjectsSectionsType1.create extraction_forms_projects_section: arms_efps, type1: type1
             end
           when "outcomes"
-            outcomes_efps = combined_efp.extraction_forms_projects_sections.find_or_create_by(section: section, 
+            outcomes_efps = combined_efp.extraction_forms_projects_sections.find_or_create_by(section: section,
                                                                                    extraction_forms_projects_section_type: @efps_type_1)
             set_efps "outcomes", outcomes_efps
             ef_outcomes = db.query "SELECT * FROM extraction_form_outcome_names where extraction_form_id=#{ef["id"]}"
@@ -306,8 +330,8 @@ namespace(:db) do
               type1 = Type1.find_or_create_by name: ef_outcome["title"], description: ef_outcome["note"]
               Suggestion.find_or_create_by suggestable: type1 , user: migration_user
               type1_type = @type1_types[ef_outcome["outcome_type"]]
-              ExtractionFormsProjectsSectionsType1.create extraction_forms_projects_section: outcomes_efps, 
-                                                          type1: type1, 
+              ExtractionFormsProjectsSectionsType1.create extraction_forms_projects_section: outcomes_efps,
+                                                          type1: type1,
                                                           type1_type: type1_type
             end
           when "diagnostics"
@@ -320,8 +344,8 @@ namespace(:db) do
               Suggestion.find_or_create_by suggestable: type1, user: migration_user
 
               type1_type = @type1_types[ef_diagnostic_test["test_type"]]
-              ExtractionFormsProjectsSectionsType1.create extraction_forms_projects_section: diagnostic_tests_efps, 
-                                                          type1: type1, 
+              ExtractionFormsProjectsSectionsType1.create extraction_forms_projects_section: diagnostic_tests_efps,
+                                                          type1: type1,
                                                           type1_type: type1_type
             end
           when "adverse"
@@ -353,7 +377,7 @@ namespace(:db) do
                 efps.update link_to_type1: arms_efps
               end
               efps.extraction_forms_projects_section_option.update \
-                by_type1: (if efso["by_arm"] == 1 then true else false end), 
+                by_type1: (if efso["by_arm"] == 1 then true else false end),
                 include_total: (if efso["include_total"] == 1 then true else false end)
             end
 
@@ -376,7 +400,7 @@ namespace(:db) do
                 efps.update link_to_type1: diagnostic_tests_efps
               end
               efps.extraction_forms_projects_section_option.update \
-                by_type1: (if efso["by_diagnostic_test"] == 1 then true else false end), 
+                by_type1: (if efso["by_diagnostic_test"] == 1 then true else false end),
                 include_total: (if efso["include_total"] == 1 then true else false end)
             end
             migrate_questions efps, ef["id"], 'diagnostic_test_detail', ef_key_questions
@@ -421,19 +445,19 @@ namespace(:db) do
 
     def get_qdf_dropdown_options(quality_dimension)
       qd_text = quality_dimension["title"]
-      
-      output_array = []	
+
+      output_array = []
       fn = File.dirname(File.expand_path(__FILE__)) + '/legacy_quality_dimensions.yml'
       dimensions_file = YAML::load(File.open(fn))
       output_array << ["", ""]
-      
+
       finished = false
       if (defined?(dimensions_file) && !dimensions_file.nil?)
         # go through quality_dimensions.yml
         dimensions_file.each do |section|
           if defined?(section['dimensions']) && !section['dimensions'].nil?
             section['dimensions'].each do |dimension|
-              if !finished			
+              if !finished
                 # test if dimension['question'] equals first part of @qd_text
                 if defined?(dimension['question']) && !dimension['question'].nil? && (qd_text.starts_with?(dimension['question']))
                   if !dimension['options'].nil?
@@ -443,18 +467,18 @@ namespace(:db) do
                     output_array << ["Other...","other"]
                   end
                   finished = true
-                end # end compare question and yml question	
+                end # end compare question and yml question
               end # end finished
             end #end section.each
-          end #end 
+          end #end
         end
       end
       # if not finished (no match found), create a default array
       if (!finished)
-        output_array << ["Yes", "Yes"]								
-        output_array << ["No", "No"]								
-        output_array << ["Unsure", "Unsure"]								
-        output_array << ["No Data", "No Data"]								
+        output_array << ["Yes", "Yes"]
+        output_array << ["No", "No"]
+        output_array << ["Unsure", "Unsure"]
+        output_array << ["No Data", "No Data"]
         output_array << ["Not Applicable", "Not Applicable"]
         output_array << ["Other...","other"]
       end
@@ -536,7 +560,7 @@ namespace(:db) do
         KeyQuestionsProjectsQuestion.create key_questions_project: get_srdrplus_key_question(kq["key_question_id"]),
                                             question: qrf_question
       end
-      
+
       qrf_arr.each do |qrf|
         qrcqrco = QuestionRowColumnsQuestionRowColumnOption.find_or_create_by! question_row_column: rating_qrc,
                                                                      question_row_column_option: @qrco_answer_choice,
@@ -577,7 +601,7 @@ namespace(:db) do
 
         case question_type
         when "text"
-          qrcf = question.question_rows.first.question_row_columns.first.question_row_column_fields.first 
+          qrcf = question.question_rows.first.question_row_columns.first.question_row_column_fields.first
 
           q_data_points.select{|dp| dp["#{table_root}_field_id"] == q["id"]}.each do |dp|
             queue_data_point dp, qrcf
@@ -602,7 +626,7 @@ namespace(:db) do
     def migrate_multiple_choice_question question, question_type, legacy_question, fields_of_legacy_question, data_points_of_legacy_question, table_root
       question_row_column = question.question_rows.first.question_row_columns.first
       question_row_column.update question_row_column_type: question_type
-      
+
       question_row_column.question_row_columns_question_row_column_options.where(question_row_column_option: @qrco_answer_choice).destroy_all
       fields_of_legacy_question.each do |qf|
         qrcqrco = nil
@@ -672,7 +696,7 @@ namespace(:db) do
         end
       end
     end
-    
+
     def migrate_matrix_dropdown_question question, legacy_question, data_points_of_legacy_question, table_root
       r_farr = db.query "SELECT * FROM #{table_root}_fields WHERE #{table_root}_id=#{legacy_question["id"]} and column_number=0 ORDER BY row_number ASC"
       c_farr = db.query "SELECT * FROM #{table_root}_fields WHERE #{table_root}_id=#{legacy_question["id"]} and row_number=0 ORDER BY column_number ASC"
@@ -766,9 +790,9 @@ namespace(:db) do
       outcomes = db.query "SELECT * FROM outcomes where study_id=#{study_id}"
       diagnostic_tests = db.query "SELECT * FROM diagnostic_tests where study_id=#{study_id}"
       adverse_events = db.query "SELECT * FROM adverse_events where study_id=#{study_id}"
-      
+
       arms.each_with_index do |arm, ix|
-        t1 = Type1.find_or_create_by name: arm["title"], 
+        t1 = Type1.find_or_create_by name: arm["title"],
                                      description: arm["description"]
         Suggestion.find_or_create_by suggestable: t1, user: migration_user
 
@@ -776,7 +800,7 @@ namespace(:db) do
           extraction: extraction,
           extraction_forms_projects_section: get_efps("arms")
         eefps_t1 = ExtractionsExtractionFormsProjectsSectionsType1.find_or_create_by \
-          extractions_extraction_forms_projects_section: eefps, 
+          extractions_extraction_forms_projects_section: eefps,
           type1: t1
         if eefps_t1.ordering.nil? then Ordering.find_or_create_by(orderable: eefps_t1, position: ix+1) else eefps_t1.ordering.update(position: ix+1) end
         set_eefpst1 "arm", arm["id"], eefps_t1
@@ -784,7 +808,7 @@ namespace(:db) do
 
       results_data_queue = []
       outcomes.each_with_index do |outcome, ix|
-        t1 = Type1.find_or_create_by name: outcome["title"], 
+        t1 = Type1.find_or_create_by name: outcome["title"],
                                      description: outcome["description"]
         Suggestion.find_or_create_by suggestable: t1, user: migration_user
 
@@ -792,8 +816,8 @@ namespace(:db) do
           extraction: extraction,
           extraction_forms_projects_section: get_efps("outcomes")
         eefps_t1 = ExtractionsExtractionFormsProjectsSectionsType1.find_or_create_by \
-          extractions_extraction_forms_projects_section: eefps, 
-          type1: t1, 
+          extractions_extraction_forms_projects_section: eefps,
+          type1: t1,
           type1_type: @type1_types[outcome["outcome_type"]]
         set_eefpst1 "outcome", outcome["id"], eefps_t1
         if eefps_t1.ordering.nil? then Ordering.find_or_create_by(orderable: eefps_t1, position: ix+1) else eefps_t1.ordering.update(position: ix+1) end
@@ -804,10 +828,10 @@ namespace(:db) do
         subgroups = db.query "SELECT * FROM outcome_subgroups where outcome_id=#{outcome["id"]}"
         subgroups.each do |subgroup|
           population_name = PopulationName.find_or_create_by \
-            name: subgroup["title"], 
+            name: subgroup["title"],
             description: subgroup["description"] || ""
           eefpst1r = ExtractionsExtractionFormsProjectsSectionsType1Row.find_or_create_by \
-            extractions_extraction_forms_projects_sections_type1: eefps_t1, 
+            extractions_extraction_forms_projects_sections_type1: eefps_t1,
             population_name: population_name
           results_data_queue << [subgroup, outcome, eefpst1r]
         end
@@ -818,10 +842,10 @@ namespace(:db) do
           timepoints = db.query "SELECT * FROM outcome_timepoints where outcome_id=#{outcome["id"]}"
           timepoints.each do |timepoint|
             timepoint_name = TimepointName.find_or_create_by \
-              name: timepoint["number"], 
+              name: timepoint["number"],
               unit: timepoint["time_unit"]
             tp = ExtractionsExtractionFormsProjectsSectionsType1RowColumn.find_or_create_by \
-              extractions_extraction_forms_projects_sections_type1_row: eefpst1r, 
+              extractions_extraction_forms_projects_sections_type1_row: eefpst1r,
               timepoint_name: timepoint_name
             set_tp timepoint["id"], tp
           end
@@ -834,7 +858,7 @@ namespace(:db) do
 
       diagnostic_results_data_queue = []
       diagnostic_tests.each_with_index do |diagnostic_test, ix|
-        t1 = Type1.find_or_create_by name: diagnostic_test["title"], 
+        t1 = Type1.find_or_create_by name: diagnostic_test["title"],
                                      description: diagnostic_test["description"]
         Suggestion.find_or_create_by suggestable: t1, user: migration_user
 
@@ -858,7 +882,7 @@ namespace(:db) do
             name: threshold["threshold"],
             description: ""
           eefpst1r = ExtractionsExtractionFormsProjectsSectionsType1Row.find_or_create_by! \
-            extractions_extraction_forms_projects_sections_type1: eefps_t1, 
+            extractions_extraction_forms_projects_sections_type1: eefps_t1,
             population_name: population_name
           diagnostic_results_data_queue << [threshold, diagnostic_test, eefpst1r]
         end
@@ -868,7 +892,7 @@ namespace(:db) do
       end
 
       adverse_events.each do |adverse_event|
-        t1 = Type1.find_or_create_by name: adverse_event["title"], 
+        t1 = Type1.find_or_create_by name: adverse_event["title"],
                                      description: adverse_event["description"]
         Suggestion.find_or_create_by suggestable: t1, user: migration_user
         ## TODO: Adverse Event stuff
@@ -922,7 +946,7 @@ namespace(:db) do
             new_comparison = comp_dedup_dict[comp["comparator"]]
           elsif comp["comparator"] == ""
             new_comparison = Comparison.create is_anova: false
-          elsif comp["comparator"] == "000" 
+          elsif comp["comparator"] == "000"
             #TODO can this actually happen?
             new_comparison = Comparison.create is_anova: true
           else
@@ -940,7 +964,7 @@ namespace(:db) do
         end
 
         comp_measures = db.query "SELECT * FROM comparison_measures where comparison_id=#{wac["id"]}"
-        comp_measures.each do |cm| 
+        comp_measures.each do |cm|
           rssm = ResultStatisticSectionsMeasure.find_or_create_by measure: Measure.find_or_create_by(name: cm["title"]),
                                                                   result_statistic_section: rss_w
 
@@ -948,7 +972,7 @@ namespace(:db) do
           comp_dps.each do |comp_dp|
             eefpst1 = get_eefpst1("arm", comp_dp["arm_id"])
             if eefpst1.present? and comp_dict[comp_dp["comparator_id"]].present?
-              car = ComparisonsArmsRssm.find_or_create_by comparison: comp_dict[comp_dp["comparator_id"]], 
+              car = ComparisonsArmsRssm.find_or_create_by comparison: comp_dict[comp_dp["comparator_id"]],
                                                           extractions_extraction_forms_projects_sections_type1: eefpst1,
                                                           result_statistic_sections_measure: rssm
               Record.find_or_create_by recordable: car, name: comp_dp["value"] || ""
@@ -969,7 +993,7 @@ namespace(:db) do
             new_comparison = comp_dedup_dict[comp["comparator"]]
           elsif comp["comparator"] == ""
             new_comparison = Comparison.create is_anova: false
-          elsif comp["comparator"] == "000" 
+          elsif comp["comparator"] == "000"
             new_comparison = Comparison.create is_anova: true
           else
             new_comparison = Comparison.create is_anova: false
@@ -987,7 +1011,7 @@ namespace(:db) do
         end
 
         comp_measures = db.query "SELECT * FROM comparison_measures where comparison_id=#{bac["id"]}"
-        comp_measures.each do |cm| 
+        comp_measures.each do |cm|
           rssm = ResultStatisticSectionsMeasure.find_or_create_by measure: Measure.find_or_create_by(name: cm["title"]),
                                                                   result_statistic_section: rss_b
 
@@ -995,7 +1019,7 @@ namespace(:db) do
           comp_dps.each do |comp_dp|
             tp = get_tp(bac["group_id"])
             if tp.present? and comp_dict[comp_dp["comparator_id"]].present?
-              tcr = TpsComparisonsRssm.find_or_create_by comparison: comp_dict[comp_dp["comparator_id"]], 
+              tcr = TpsComparisonsRssm.find_or_create_by comparison: comp_dict[comp_dp["comparator_id"]],
                                                           timepoint: tp,
                                                           result_statistic_sections_measure: rssm
               Record.find_or_create_by recordable: tcr, name: comp_dp["value"] || ""
@@ -1146,7 +1170,7 @@ namespace(:db) do
 
         adict = {}
         data_points.each do |dp|
-          eefpst1 = get_eefpst1 table_root, dp[table_root + "_id"] 
+          eefpst1 = get_eefpst1 table_root, dp[table_root + "_id"]
           adict[eefpst1&.id] ||= []
           adict[eefpst1&.id] << dp
         end
@@ -1259,7 +1283,7 @@ namespace(:db) do
                                             issue: primary_publication_hash["issue"],
                                             publication_date: primary_publication_hash["year"] || ""
       end
-      new_citation = Citation.new name: primary_publication_hash["title"] || "", 
+      new_citation = Citation.new name: primary_publication_hash["title"] || "",
                                   abstract: primary_publication_hash["abstract"] || "",
                                   journal: journal
 
@@ -1273,7 +1297,7 @@ namespace(:db) do
     end
 
     def migrate_secondary_publication_as_citation secondary_publication_hash
-      #TODO 
+      #TODO
     end
 
     def migrate_author_string_as_separate_authors authors_string
@@ -1286,7 +1310,7 @@ namespace(:db) do
     end
 
     def split_authors_string authors_string
-      #TODO 
+      #TODO
       []
     end
 
