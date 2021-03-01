@@ -66428,27 +66428,37 @@ function __guardMethod__(obj, methodName, transform) {
           var wrapperThis;
           wrapperThis = this;
           this.on('sending', function(file, xhr, formData) {
-            var csv_type_id, endnote_type_id, file_extension, file_type_id, json_type_id, pubmed_type_id, ris_type_id;
+            var csv_type_id, endnote_type_id, file_extension, file_type_id, file_type_name, json_type_id, pubmed_type_id, ris_type_id;
             ris_type_id = $("#dropzone-div input#ris-file-type-id").val();
             csv_type_id = $("#dropzone-div input#csv-file-type-id").val();
             endnote_type_id = $("#dropzone-div input#endnote-file-type-id").val();
             pubmed_type_id = $("#dropzone-div input#pubmed-file-type-id").val();
             json_type_id = $("#dropzone-div input#json-file-type-id").val();
             file_extension = file.name.split('.').pop();
-            file_type_id = (function() {
-              switch (false) {
-                case file_extension !== 'ris':
-                  return ris_type_id;
-                case file_extension !== 'csv':
-                  return csv_type_id;
-                case file_extension !== 'enw':
-                  return endnote_type_id;
-                case file_extension !== 'json':
-                  return json_type_id;
-                default:
-                  return pubmed_type_id;
-              }
-            })();
+            switch (false) {
+              case file_extension !== 'ris':
+                file_type_id = ris_type_id;
+                file_type_name = "RIS File";
+                break;
+              case file_extension !== 'csv':
+                file_type_id = csv_type_id;
+                file_type_name = "Comma Separated File";
+                break;
+              case file_extension !== 'enw':
+                file_type_id = endnote_type_id;
+                file_type_name = "EndNote File";
+                break;
+              case file_extension !== 'json':
+                file_type_id = json_type_id;
+                file_type_name = "JSON File";
+                break;
+              default:
+                file_type_id = pubmed_type_id;
+                file_type_name = "PubMed ID List";
+            }
+            if (!confirm("This looks like a " + file_type_name + ". Do you wish to continue?")) {
+              wrapperThis.removeFile(file);
+            }
             formData.append("authenticity_token", $("#dropzone-div input[name='authenticity_token']").val());
             formData.append("projects_user_id", $("#dropzone-div").find("#import_projects_user_id").val());
             formData.append("import_type_id", $("#dropzone-div").find("#import_import_type_id").val());
