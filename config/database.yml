@@ -61,10 +61,10 @@ production:
 # for importing legacy srdr data
 legacy_production:
   adapter: mysql2
-  database: srdr_production
-  pool: 5
-  timeout: 5000
   encoding: utf8
+  pool: 5
   username: root
-  password:
+  password: <%= ENV['SRDR_LEGACY_DATABASE_PASSWORD'] %>
+  database: <%= ENV['SRDR_LEGACY_DATABASE_SCHEMA'] %>
   host: localhost
+  reconnect: true
