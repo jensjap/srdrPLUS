@@ -9,5 +9,5 @@
         = render 'projects/index/new_project_list_item', project: project
   ul style="list-style-type: none; margin: 0;"
     - @projects.each_with_index do |project, ix|
-      li style="padding: 0.3rem; margin: 0; background-color: #{if ix % 2 == 0 then "lavender" else "transparent"}"
+      li style="padding: 1rem; margin: 0; background-color: #{if ix % 2 == 0 then 'lavender' else 'transparent'}"
         = render 'projects/index/compact_project_list_item', project: project

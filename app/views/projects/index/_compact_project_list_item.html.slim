@@ -1,10 +1,36 @@
+scss:
+  .project-item-menu {
+    visibility: hidden;
+    direction: rtl;
+    display: ruby;
+    padding: 8px;
+    margin-top: 2px;
+    margin-left: -214px;
+    text-align: left;
+    z-index: 1;
+    position: absolute;
+    width: auto;
+    background-color: white;
+    border: 1px solid grey;
+    border-radius: 4px;
+    ul {
+      list-style: none;
+      margin-left: 0px;
+    }
+  }
+
+  button + .project-item-menu:active,
+  button:focus + .project-item-menu {
+    visibility: visible;
+  }
+
 div style="padding: 0.4rem; font-weight: bold;"
   = project.name
   small = " (#{ @order.split("-").first } " + t("time_prefix") + time_ago_in_words(project.send(@order.underscore).in_time_zone(current_user.profile.time_zone)) + t("ago") + ')  '
 
 .grid-container style="padding-left: 0; border: 0.4rem;"
   .grid-x.grid-padding-x.grid-margin-x
-    .cell.medium-9.grid-x.grid-margin-x
+    .cell.medium-7.grid-x.grid-margin-x
       .cell.auto
         - pu_count = @projects_projects_user_counts[project.id]
         - pu_title = "Members (#{pu_count || 0})"
@@ -31,11 +57,11 @@ div style="padding: 0.4rem; font-weight: bold;"
           / TODO this link needs to go to a separate create citation page
           a = link_to "+", new_project_extraction_path(project), title: t('manage_extractions'), style:"color: white; font-size: 1rem;"
 
-    .cell.medium-3.grid-x.grid-margin-x
+    .cell.medium-5.grid-x style="text-align: center;"
       .cell.medium-3
-        a#export-modal-button[data-open="export-modal-#{ project.id.to_s }" style="text-decoration:underline;"] Export
+        a#export-modal-button[data-open="export-modal-#{ project.id.to_s }" style="text-decoration:underline;"] = t('export')
         = render partial: 'shared/select_export_type', locals: { project: project }
-      .cell.medium-6
+      .cell.medium-4
         - if project.publishing.present? && project.publishing.approval.present?
           = link_to 'Project has been published', '#', title: 'Project has been published', style: "text-decoration:underline;"
         - elsif project.publishing.present?
@@ -45,6 +71,14 @@ div style="padding: 0.4rem; font-weight: bold;"
       .cell.medium-3
         - sd_title = "SR-360"
         a = link_to sd_title, project_sd_meta_data_path(project), title: t('manage_extractions'), style: "text-decoration:underline;"
+      - if project.leaders.include? current_user
+        .cell.medium-2 style="margin-top: -6px;"
+          button.button.tiny
+            i.fi-list-thumbnails
+          nav.project-item-menu
+            ul
+              li = link_to 'Edit Project Information', edit_project_path(project)
+              li = link_to 'Edit Extraction Form', build_extraction_forms_project_path(project.extraction_forms_projects.first)
 
   - if project.publishing.present?
     .cell

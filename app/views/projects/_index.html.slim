@@ -36,15 +36,18 @@
     - if @project_status.blank?
       div
         = render "projects/index/project_list"
+      br
       div
         = paginate(@projects, params: @params, theme: 'foundation')
     - elsif @project_status == 'pending'
       div
         = render "projects/index/unapproved_publishings"
+      br
       div
         = paginate(@unapproved_publishings, params: @params, theme: 'foundation')
     - elsif @project_status == 'published'
       div
         = render "projects/index/approved_publishings"
+      br
       div
         = paginate(@approved_publishings, params: @params, theme: 'foundation')

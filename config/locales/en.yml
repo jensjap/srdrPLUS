@@ -30,6 +30,7 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
+  export: Export
   submit: Submit
   create_extraction_form: Create Extraction Form
   build: Build
@@ -165,6 +166,9 @@ en:
         confirm: Are you sure you want to remove this key questions?
     index:
       create: Create Project
+      compact_project_list_item:
+        members_and_roles: Member(s) and Role(s)
+        key_questions: Key Question(s)
   errors:
     messages:
       taken: We are sorry, but the value you are attempting to use is allowed only once and has already been used
