@@ -248,7 +248,7 @@ def build_data_row(rss_cols, header, sheet_info)
         end
 
       else
-        raise "Failed to find measure column."
+        next
 
       end  # if found
     end
