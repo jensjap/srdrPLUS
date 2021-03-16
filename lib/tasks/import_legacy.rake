@@ -244,7 +244,7 @@ namespace(:db) do
                                      prospero: prospero
 
       srdrplus_project.save #need to save, because i want the default efp
-      make_srdrplus_project_public(srdrplus_project, publication_requested_at, updated_at) if is_public
+      make_srdrplus_project_public(srdrplus_project, publication_requested_at, updated_at) if is_public.eql?(1)
       srdrplus_project.extraction_forms_projects.first.extraction_forms_projects_sections.destroy_all #need to delete default sections
 
       add_default_user_to_srdrplus_project srdrplus_project
