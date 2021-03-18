@@ -3,6 +3,51 @@
     .grid-x.align-center.align-middle
       .cell.medium-6.Hero-Message
         br
+        h1.FHIR-formatted-citations SRDR+ Presents New Importing Capability for FHIR-formatted Citation Files for Systematic Reviews
+        h2.Ian-Saldanha-March.subheader
+          = image_tag("photo-team-ian.png", size: "128x128", alt: 'Image of Iam Saldanha', class: "isaldanh_photo_png")
+          span style="font-size: 1.5em;"  Ian Saldanha | March 5, 2021
+
+  .grid-container.blog
+    .grid-x.align-center.align-middle
+      .cell.medium-6
+        br
+        p Supported by AHRQ, the #{ link_to('Systematic Review Data Repository Plus (SRDR+)', root_url) } is working towards eventually becoming the first FHIR-enabled platform for conducting and sharing the results of systematic reviews. As part of this work, handling citations of included studies in systematic reviews just got easier!
+
+        p Study-related citation information (author names, article titles, page numbers, and other identifying information) is crucial for identifying studies and referencing them in systematic review reports.
+
+        p Once researchers are ready to screen and extract data from eligible studies, they must first import their citations into platforms, such as SRDR+. Citation files can take the form of a variety of file formats.
+
+        p For the purposes of screening and subsequent data extraction, SRDR+ is now capable of importing citations saved in the following file formats: Research Information Systems (.ris), comma-separated values (.csv), a list of PubMed IDs (.txt), EndNote file (.enw), and the newly supported, HL7 FHIR file format.
+
+        p The HL7 FHIR file format is a brand new standard, developed by the #{ link_to('HL7 Fast Healthcare Interoperability Resources (FHIR) endeavor', 'https://www.hl7.org/fhir/overview.html') }, which defines how healthcare information can be exchanged #{ link_to('between', 'https://www.healthit.gov/sites/default/files/2019-08/ONCFHIRFSWhatIsFHIR.pdf') } different computer systems regardless of how the information is stored within those systems. Furthermore, healthcare information saved in the HL7 FHIR file format is secured in such a way that only those with a need and assigned privileges to access the information are allowed to.
+
+        p We anticipate that the HL7 FHIR file format will eventually become widespread in the field of evidence synthesis.
+
+        p #{ link_to('PICO Portal', 'https://picoportal.net/') } is an example of a systematic review platform that is now supporting the HL7 FHIR file format. SRDR+ users will be happy to know that they can now seamlessly import citation data from such platforms directly into SRDR+, where they can then continue working on their systematic reviews.
+
+        p Give it a shot! Try importing citations using the HL7 FHIR file format and let us know how it’s going. Contact us on this blog, via email (#{ mail_to('srdr@ahrq.hhs.gov') }), or via our #{ link_to('Twitter page', 'https://twitter.com/SRDRPlus') }!
+
+        p The Systematic Review Data Repository Plus is funded by the Agency for Healthcare Research and Quality (AHRQ). Authors of this blog post are solely responsible for its content, which does not necessarily represent the views of AHRQ or the U.S. Department of Health and Human Services (DHHS). Readers should not interpret any statement in this blog post as an official position of AHRQ or of DHHS.
+
+        p.title
+        br
+        br
+          strong Ian Saldanha, MBBS, MPH, PhD
+          .subheader style="margin: 0;" SRDR Director
+          .subheader style="margin: 0;" Assistant Professor, Brown Evidence-based Practice Center
+          .subheader style="margin: 0;" Brown University School of Public Health
+
+        br
+        meta name="keywords" content="Evidence synthesis, Systematic reviews, Importing, File formats, FHIR, Screening, Data extraction, SRDR+"
+
+hr
+
+.blog
+  .hero
+    .grid-x.align-center.align-middle
+      .cell.medium-6.Hero-Message
+        br
         h1.The-newly-updated-Sy The newly updated Systematic Review Data Repository Plus (SRDR+)
         h2.Ian-Saldanha-March.subheader
           = image_tag("photo-team-ian.png", size: "128x128", alt: 'Image of Iam Saldanha', class: "isaldanh_photo_png")
@@ -11,6 +56,7 @@
   .grid-container.blog
     .grid-x.align-center.align-middle
       .cell.medium-6
+        br
         p A lot of human capital and monetary resources are spent conducting systematic reviews. At the same time, there has been strong momentum towards promoting open science and data sharing. Technology can help us realize these ideals and improve the efficiency of the systematic review enterprise. A particularly inefficient systematic review step is data extraction from primary studies. Data extraction can be improved, for both doers and users of systematic reviews, through a data system that is robust, user-friendly, and amenable to sharing.
 
         p
