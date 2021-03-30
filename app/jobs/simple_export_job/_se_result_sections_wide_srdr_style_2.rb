@@ -101,7 +101,7 @@ def build_result_sections_wide_srdr_style_2(p, project, highlight, wrap, kq_ids=
                       ws_descriptive_statistics_categorical_outcomes.add_row(new_row)
 
                     else
-                      raise 'Unknown outcome_type'
+                      next
 
                     end
 
@@ -123,7 +123,7 @@ def build_result_sections_wide_srdr_style_2(p, project, highlight, wrap, kq_ids=
                       ws_bac_statistics_categorical_outcomes.add_row(new_row)
 
                     else
-                      raise 'Unknown outcome_type'
+                      next
 
                     end
 
