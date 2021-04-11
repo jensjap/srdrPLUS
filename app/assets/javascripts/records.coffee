@@ -35,14 +35,8 @@ documentCode = () ->
   #     $(this).height $(this).height() + 1
 
   # Text Field.
-  $( 'form.edit_record input, form.edit_record textarea' ).keyup ( e ) ->
+  $( 'form.edit_record input, form.edit_record textarea' ).on 'input', ( e ) ->
     e.preventDefault()
-
-    # Ignore 'keyup' for a list of keys.
-    code = e.keyCode || e.which;
-    # 9: tab; 16: shift; 37: left-arrow; 38: up-arrow; 39: right-arrow; 40: down-arrow; 18: option; 91: cmd
-    if code in [9, 16, 18, 37, 38, 39, 40, 91]
-      return
 
     $form = $( this ).closest( 'form' )
 
