@@ -35,22 +35,30 @@ documentCode = () ->
   #     $(this).height $(this).height() + 1
 
   # Text Field.
-  $( 'form.edit_record input, form.edit_record textarea' ).on 'input', ( e ) ->
+  $( document ).on 'input propertychange', 'form.edit_record input, form.edit_record textarea', ( e ) ->
     e.preventDefault()
 
-    $form = $( this ).closest( 'form' )
+    valueChanged = false
 
-    # Use this to keep track of the different timers.
-    formId = $form.attr( 'id' )
+    if e.type == 'propertychange'
+      valueChanged = e.originalEvent.propertyName == 'value'
+    else
+      valueChanged = true
 
-    # Mark form as 'dirty'.
-    $form.addClass( 'dirty' )
+    if valueChanged
+      $form = $( this ).closest( 'form' )
 
-    if formId of timers
-      clearTimeout( timers[formId] )
-    timers[formId] = setTimeout( submitForm( $form ), 750 )
+      # Use this to keep track of the different timers.
+      formId = $form.attr( 'id' )
 
-    #!!! jens-2021-02-20: Crashes some work forms (infinite loop).
-    # the following will help the text expand as typing takes place
-    # while $(this).outerHeight() < @scrollHeight + parseFloat($(this).css('borderTopWidth')) + parseFloat($(this).css('borderBottomWidth'))
-    #   $(this).height $(this).height() + 1
+      # Mark form as 'dirty'.
+      $form.addClass( 'dirty' )
+
+      if formId of timers
+        clearTimeout( timers[formId] )
+      timers[formId] = setTimeout( submitForm( $form ), 750 )
+
+      #!!! jens-2021-02-20: Crashes some work forms (infinite loop).
+      # the following will help the text expand as typing takes place
+      # while $(this).outerHeight() < @scrollHeight + parseFloat($(this).css('borderTopWidth')) + parseFloat($(this).css('borderBottomWidth'))
+      #   $(this).height $(this).height() + 1
