@@ -106,3 +106,4 @@ documentCode = ->
     radioElements = $("*[data-radio-remove-id='#{dataRadioRemoveId}']")
     radioElements.removeAttr('checked')
     $(radioElements[0]).trigger("change");
+    $(radioElements[0]).trigger("input");
