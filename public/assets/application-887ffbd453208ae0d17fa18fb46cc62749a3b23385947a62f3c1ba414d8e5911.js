@@ -66791,7 +66791,8 @@ function __guardMethod__(obj, methodName, transform) {
       dataRadioRemoveId = $(e.target).data('radio-remove-id');
       radioElements = $("*[data-radio-remove-id='" + dataRadioRemoveId + "']");
       radioElements.removeAttr('checked');
-      return $(radioElements[0]).trigger("change");
+      $(radioElements[0]).trigger("change");
+      return $(radioElements[0]).trigger("input");
     });
   };
 
@@ -68350,31 +68351,43 @@ function __guardMethod__(obj, methodName, transform) {
         return form.submit();
       };
     };
-    $('form.edit_extractions_extraction_forms_projects_sections_question_row_column_field select, form.edit_record select, form.edit_record input[type="checkbox"], form.edit_record input[type="radio"], form.edit_record input[type="number"]').change(function(e) {
-      var $form, formId;
+    $(document).on('input propertychange', 'form.edit_extractions_extraction_forms_projects_sections_question_row_column_field select, form.edit_record select, form.edit_record input[type="checkbox"], form.edit_record input[type="radio"], form.edit_record input[type="number"]', function(e) {
+      var $form, formId, valueChanged;
       e.preventDefault();
-      $form = $(this).closest('form');
-      formId = $form.attr('id');
-      $form.addClass('dirty');
-      if (formId in timers) {
-        clearTimeout(timers[formId]);
+      valueChanged = false;
+      if (e.type === 'propertychange') {
+        valueChanged = e.originalEvent.propertyName === 'value';
+      } else {
+        valueChanged = true;
       }
-      return timers[formId] = setTimeout(submitForm($form), 750);
+      if (valueChanged) {
+        $form = $(this).closest('form');
+        formId = $form.attr('id');
+        $form.addClass('dirty');
+        if (formId in timers) {
+          clearTimeout(timers[formId]);
+        }
+        return timers[formId] = setTimeout(submitForm($form), 750);
+      }
     });
-    return $('form.edit_record input, form.edit_record textarea').keyup(function(e) {
-      var $form, code, formId;
+    return $(document).on('input propertychange', 'form.edit_record input, form.edit_record textarea', function(e) {
+      var $form, formId, valueChanged;
       e.preventDefault();
-      code = e.keyCode || e.which;
-      if (code === 9 || code === 16 || code === 18 || code === 37 || code === 38 || code === 39 || code === 40 || code === 91) {
-        return;
+      valueChanged = false;
+      if (e.type === 'propertychange') {
+        valueChanged = e.originalEvent.propertyName === 'value';
+      } else {
+        valueChanged = true;
       }
-      $form = $(this).closest('form');
-      formId = $form.attr('id');
-      $form.addClass('dirty');
-      if (formId in timers) {
-        clearTimeout(timers[formId]);
+      if (valueChanged) {
+        $form = $(this).closest('form');
+        formId = $form.attr('id');
+        $form.addClass('dirty');
+        if (formId in timers) {
+          clearTimeout(timers[formId]);
+        }
+        return timers[formId] = setTimeout(submitForm($form), 750);
       }
-      return timers[formId] = setTimeout(submitForm($form), 750);
     });
   };
 
