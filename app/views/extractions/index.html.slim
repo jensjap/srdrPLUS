@@ -27,13 +27,13 @@
     table.extractions-list
       thead
         tr
-          th.table-sortable.sorting data-sorting-col="0" width="200px" First Author
-          th.table-sortable.sorting data-sorting-col="1" width="80px" Pub Year
-          th.table-sortable.sorting data-sorting-col="2" width="100px" PMID
-          th.table-sortable.sorting data-sorting-col="3" Title
-          th.table-sortable.sorting data-sorting-col="4" width="200px" Assigned User
-          th.table-sortable.sorting data-sorting-col="5" width="50px" Progress
-          th data-sorting-col="6" width="50px"
+          th data-sorting-col="0" width="50px"
+          th.table-sortable.sorting data-sorting-col="1" width="200px" First Author
+          th.table-sortable.sorting data-sorting-col="2" width="80px" Pub Year
+          th.table-sortable.sorting data-sorting-col="3" width="100px" PMID
+          th.table-sortable.sorting data-sorting-col="4" Title
+          th.table-sortable.sorting data-sorting-col="5" width="200px" Assigned User
+          th.table-sortable.sorting data-sorting-col="6" width="50px" Progress
           th width="50px"
 
       tbody
@@ -63,6 +63,7 @@
             - else
               - tooltip_text = "<span style='font-weight: bold;'>Complete!</span>"
             tr
+              td data-sort="#{extraction.updated_at.to_i}" = link_to t('work'), work_extraction_path(extraction), style: 'font-weight:bold;'
               td = first_author
               td = year
               td = pmid
@@ -83,7 +84,6 @@
                 .success.progress data-allow-html="true" data-tooltip="" title="#{ tooltip_text }"
                   .progress-meter style="width: #{ progress_meter_width }%;"
               /td = extraction.projects_users_role.role.name
-              td data-sort="#{extraction.updated_at.to_i}" = link_to t('work'), work_extraction_path(extraction), style: 'font-weight:bold;'
               /td = link_to t('edit'), edit_extraction_path(extraction)
               td = link_to t('destroy'), extraction, style: 'font-weight:bold;color:#cc4b37 !important;', data: { confirm: 'Are you sure?' }, method: :delete
 .column.row

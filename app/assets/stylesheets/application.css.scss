@@ -19,7 +19,7 @@
  *= require foundation-datepicker.min
  */
 
-@import 'settings';
+@import "settings";
 //@import "font-awesome";
 
 // Cocoon.
@@ -82,18 +82,18 @@ body {
 a {
   color: $primary-color;
 
-//  &:visited {
-//    color: $primary-color;
-//  }
-//
-//  &:hover {
-//    color: $primary-color;
-//    background-color: transparent;
-//  }
+  //  &:visited {
+  //    color: $primary-color;
+  //  }
+  //
+  //  &:hover {
+  //    color: $primary-color;
+  //    background-color: transparent;
+  //  }
 
-//  &.button {
-//    color: $white !important;
-//  }
+  //  &.button {
+  //    color: $white !important;
+  //  }
 
   &.disabled {
     pointer-events: none;
@@ -107,7 +107,8 @@ a.button.remove-link {
   transition: all 0.35s ease-in-out;
   margin-bottom: 5px;
 
-  &:hover, &:focus {
+  &:hover,
+  &:focus {
     color: red !important;
     background-color: transparent;
     border: 1px solid red;
@@ -230,7 +231,6 @@ ul.menu.vertical.submenu.is-dropdown-submenu {
   &.toast-bottom-full-width {
     top: auto;
   }
-
 }
 // END Toastr
 
@@ -306,7 +306,8 @@ pre.debug_dump {
 .table-scroll table {
   width: 100%;
 
-  td, th {
+  td,
+  th {
     border-radius: 2px;
     min-width: 11em;
     border: 1px solid grey;
@@ -341,17 +342,21 @@ a.accordion-title.populations {
 
 // Spinner.
 .spinner {
-    border: 16px solid #f3f3f3; /* Light grey */
-    border-top: 16px solid #3498db; /* Blue */
-    border-radius: 50%;
-    width: 120px;
-    height: 120px;
-    animation: spin 2s linear infinite;
+  border: 16px solid #f3f3f3; /* Light grey */
+  border-top: 16px solid #3498db; /* Blue */
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  animation: spin 2s linear infinite;
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 // END Spinner.
 
@@ -369,7 +374,13 @@ a.accordion-title.populations {
   border: 1px solid grey;
   width: 40%;
   &.active {
-    background: repeating-linear-gradient(45deg, #eacfff, #fff 10px, #fff 10px, #fff 20px);
+    background: repeating-linear-gradient(
+      45deg,
+      #eacfff,
+      #fff 10px,
+      #fff 10px,
+      #fff 20px
+    );
   }
 }
 // END Results section nav table.
@@ -394,12 +405,12 @@ a.accordion-title.populations {
 
 .top-bar-2 {
   background-color: white;
-    ul {
-      background-color: white;
-    }
-    a {
-      color: black !important;
-    }
+  ul {
+    background-color: white;
+  }
+  a {
+    color: black !important;
+  }
 }
 
 .is-dropdown-submenu > li:hover {
@@ -421,7 +432,8 @@ a.accordion-title.populations {
       top: 0;
       z-index: 2;
     }
-    th, td {
+    th,
+    td {
       margin: 0;
       padding: 0;
       background-clip: padding-box;
@@ -449,10 +461,10 @@ a.accordion-title.populations {
         z-index: 1;
       }
       &.vertical > div {
-        -moz-transform: rotate(-90.0deg);  /* FF3.5+ */
-        -o-transform: rotate(-90.0deg);  /* Opera 10.5 */
-        -webkit-transform: rotate(-90.0deg);  /* Saf3.1+, Chrome */
-        filter:  progid:DXImageTransform.Microsoft.BasicImage(rotation=0.083);  /* IE6,IE7 */
+        -moz-transform: rotate(-90deg); /* FF3.5+ */
+        -o-transform: rotate(-90deg); /* Opera 10.5 */
+        -webkit-transform: rotate(-90deg); /* Saf3.1+, Chrome */
+        filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=0.083); /* IE6,IE7 */
         -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=0.083)"; /* IE8 */
         margin-left: -10em;
         margin-right: -10em;
@@ -467,7 +479,8 @@ a.accordion-title.populations {
   }
 }
 
-body.extractions.work, body.sd_meta_data.edit {
+body.extractions.work,
+body.sd_meta_data.edit {
   .status-switch {
     cursor: pointer;
     border-radius: 0.4rem;
@@ -502,7 +515,7 @@ body.extractions.work, body.sd_meta_data.edit {
     background: #fefefe;
     -webkit-transition: all 0.25s ease-out;
     transition: all 0.25s ease-out;
-    content: '';
+    content: "";
   }
 
   .status-switch.completed::after {
@@ -516,9 +529,9 @@ body.extractions.work, body.sd_meta_data.edit {
       left: 0.4rem;
     }
   }
-//  .status-switch.waiting {
-//    background-color: blue;
-//  }
+  //  .status-switch.waiting {
+  //    background-color: blue;
+  //  }
 }
 
 .progress {
@@ -528,17 +541,17 @@ body.extractions.work, body.sd_meta_data.edit {
 
 // Select2 overflow fixes
 .select2-container--default {
-  display: table!important;
-  table-layout: fixed!important;
+  display: table !important;
+  table-layout: fixed !important;
 }
 
 li.select2-selection__choice {
-    max-width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis; //use this if you want to shorten
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis; //use this if you want to shorten
 }
 ul.select2-selection__rendered {
-    padding-right: 12px !important; //overrides select2 style
+  padding-right: 12px !important; //overrides select2 style
 }
 
 // There is an annoying textarea resizing issue and I cannot find the cause
@@ -549,7 +562,7 @@ textarea {
 
 .preview-button {
   border-radius: 0;
-  background-color: #016BAB;
+  background-color: #016bab;
   padding: 0.4rem;
   z-index: 1000;
 
@@ -557,36 +570,43 @@ textarea {
     background-color: grey !important;
   }
 
-  &:hover, &:focus {
+  &:hover,
+  &:focus {
     background-color: #1388ce;
     cursor: pointer !important;
   }
 }
 
 .create-button {
-  background-color: #016BAB !important;
+  background-color: #016bab !important;
 }
 
-::-webkit-input-placeholder { /* WebKit, Blink, Edge */
-  color:    rgb(192, 192, 192) !important;
+::-webkit-input-placeholder {
+  /* WebKit, Blink, Edge */
+  color: rgb(192, 192, 192) !important;
 }
-:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
-  color:    rgb(192, 192, 192) !important;
-  opacity:  1;
+:-moz-placeholder {
+  /* Mozilla Firefox 4 to 18 */
+  color: rgb(192, 192, 192) !important;
+  opacity: 1;
 }
-::-moz-placeholder { /* Mozilla Firefox 19+ */
-  color:    rgb(192, 192, 192) !important;
-  opacity:  1;
+::-moz-placeholder {
+  /* Mozilla Firefox 19+ */
+  color: rgb(192, 192, 192) !important;
+  opacity: 1;
 }
-:-ms-input-placeholder { /* Internet Explorer 10-11 */
-  color:    rgb(192, 192, 192) !important;
+:-ms-input-placeholder {
+  /* Internet Explorer 10-11 */
+  color: rgb(192, 192, 192) !important;
 }
-::-ms-input-placeholder { /* Microsoft Edge */
-  color:    rgb(192, 192, 192) !important;
+::-ms-input-placeholder {
+  /* Microsoft Edge */
+  color: rgb(192, 192, 192) !important;
 }
 
-::placeholder { /* Most modern browsers support this now. */
-  color:    rgb(192, 192, 192) !important;
+::placeholder {
+  /* Most modern browsers support this now. */
+  color: rgb(192, 192, 192) !important;
 }
 
 .row {
@@ -610,7 +630,7 @@ textarea {
   bottom: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0, 0, 0, 0.5);
 }
 
 #spinner {
@@ -622,14 +642,20 @@ textarea {
   margin-left: -25px;
   margin-top: -25px;
   border-radius: 6px;
-  background-image: url(asset_path('spinner.gif'));
+  background-image: url(asset_path("spinner.gif"));
 }
 
-.card-divider, .card-section {
+.card-divider,
+.card-section {
   padding: 0;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   margin: 0;
 }
 
@@ -638,11 +664,13 @@ label {
   line-height: normal;
 }
 
-label > [type='checkbox'], label > [type='radio'] {
+label > [type="checkbox"],
+label > [type="radio"] {
   margin-bottom: 0;
 }
 
-div.checkbox, div.radio {
+div.checkbox,
+div.radio {
   margin-bottom: 4px;
 }
 
@@ -677,7 +705,24 @@ table.unstriped tbody tr td:first-child {
   position: relative;
 }
 
-input, textarea, table, select, [type='text'], [type='password'], [type='date'], [type='datetime'], [type='datetime-local'], [type='month'], [type='week'], [type='email'], [type='number'], [type='search'], [type='tel'], [type='time'], [type='url'], [type='color'] {
+input,
+textarea,
+table,
+select,
+[type="text"],
+[type="password"],
+[type="date"],
+[type="datetime"],
+[type="datetime-local"],
+[type="month"],
+[type="week"],
+[type="email"],
+[type="number"],
+[type="search"],
+[type="tel"],
+[type="time"],
+[type="url"],
+[type="color"] {
   margin: 0;
 }
 
@@ -686,19 +731,7 @@ ul {
 }
 
 .card-divider {
-  background:rgba($color: #F8F8FF, $alpha: 0.75);
-}
-
-thead {
-  background: rgba($color: #f8f8f8, $alpha: 0.75)
-}
-
-tbody {
-  background: rgba($color: #fefefe, $alpha: 0.75);
-}
-
-tbody tr:nth-child(even) {
-  background: rgba($color: #f1f1f1, $alpha: 0.75);
+  background: rgba($color: #f8f8ff, $alpha: 0.75);
 }
 
 .button {
