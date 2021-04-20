@@ -152,17 +152,19 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
 
       # Check for followup_field and append if present.
       qrcqrco = qrc.question_row_columns_question_row_column_options.find_by(id: opt_id.to_i)
-      if qrcqrco.followup_field.present?
-        tmp_ff_value =
-          ' [Follow-up: ' +
-          qrcqrco
-            .followup_field
-            .extractions_extraction_forms_projects_sections_followup_fields
-            .map(&:records)
-            .flatten
-            .map(&:name)
-            .join(', ') +
-          ']'
+      if qrcqrco.present?
+        if qrcqrco.followup_field.present?
+          tmp_ff_value =
+            ' [Follow-up: ' +
+            qrcqrco
+              .followup_field
+              .extractions_extraction_forms_projects_sections_followup_fields
+              .map(&:records)
+              .flatten
+              .map(&:name)
+              .join(', ') +
+            ']'
+        end
       end
       return (tmp_value + tmp_ff_value).try(:strip)
 
