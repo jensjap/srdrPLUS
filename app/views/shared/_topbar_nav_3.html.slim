@@ -57,11 +57,10 @@
                     | Account
                     i.fi-torso style="padding-left: 5px"
                   ul.menu style="width: 350px;"
-                    b User
+                    h6
+                      b = current_user.email
                     li = link_to 'Settings', edit_user_registration_path
                     li = link_to 'Profile', profile_path
-                    li = link_to 'About', about_path
-                    b Actions
                     li = link_to 'Logout', destroy_user_session_path, :method => :delete
 
               - else
