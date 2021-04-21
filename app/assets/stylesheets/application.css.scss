@@ -750,3 +750,23 @@ ul {
 .m-10 {
   margin: 10px;
 }
+
+.project-info-header {
+  border-top: 1px solid white;
+  border-bottom: 1px solid white;
+  padding-left: 15px;
+  background: purple;
+  color: white;
+}
+
+ul.submenu {
+  background: rgb(143, 2, 143);
+}
+
+li.submenu {
+}
+
+li.submenu a {
+  color: white;
+  font-weight: bold;
+}

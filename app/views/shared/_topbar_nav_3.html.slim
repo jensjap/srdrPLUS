@@ -14,17 +14,22 @@
                   = image_tag('brand.png', alt: 'srdrPLUS - Home', size: '200x50')
 
           .top-bar-right
-            ul.dropdown.menu data-dropdown-menu=""
-              li = link_to root_path do
-                i.fi-home style="font-size: 1.5em;"
-                |  Home
+            ul.dropdown.menu.icons.icon-right data-dropdown-menu=""
+              - if user_signed_in?
+                = render "shared/signed_in_links"
 
               li = link_to new_search_path, title: "Search Published Projects" do
+                | Search
                 i.fi-magnifying-glass
-                |  Search
+
+              li = link_to(t(".blog"), blog_path)
+
+              li = link_to("Published Projects", published_projects_path)
 
               li aria-expanded="false"
-                = link_to("About", about_path)
+                = link_to(about_path) do
+                  | About
+                  i class="fi-list"
                 ul.menu
                   li = link_to(t(".contact"), contact_path)
                   li = link_to(t(".cite"), citing_path)
@@ -32,7 +37,9 @@
                   /li = link_to(t(".help"), help_path)
 
               li aria-expanded="false"
-                = link_to('Tutorials', '#')
+                = link_to('#') do
+                  | Help
+                  i class="fi-list"
                 ul.menu style='min-width: 450px'
                     li = link_to('User Guide', 'https://srdr.s3.amazonaws.com/uploads/04-12-2021/SRDR%2B+User+Guide+-+4-12-21.pdf', target: '_blank')
                     li = link_to('Extracting Data', 'https://srdrplus.s3.amazonaws.com/SRDR%2B+Data+Extraction+Tutorial+-+2-20-20.pdf', target: '_blank')
@@ -43,14 +50,59 @@
                     li = link_to('Importing Structured Data from DistillerSR', 'https://srdrplus.s3.amazonaws.com/Importing+Structured+Data+from+DistillerSR+into+SRDR%2B.pdf', target: '_blank')
                     /br
                     /li = link_to('Download Import Templates', 'https://srdrplus.s3.amazonaws.com/Import+Templates.zip', target: '_blank')
-              li = link_to(t(".blog"), blog_path)
-              li = link_to("Resources", resources_path)
-              li = link_to("Published Projects", published_projects_path)
 
               - if user_signed_in?
-                = render "shared/signed_in_links"
+                li aria-expanded="false"
+                  a href='#'
+                    | Account
+                    i.fi-torso style="padding-left: 5px"
+                  ul.menu style="width: 350px;"
+                    b User
+                    li = link_to 'Settings', edit_user_registration_path
+                    li = link_to 'Profile', profile_path
+                    li = link_to 'About', about_path
+                    b Actions
+                    li = link_to 'Logout', destroy_user_session_path, :method => :delete
 
               - else
                 li = link_to "Login", new_user_session_path
                 li = link_to new_user_registration_path do
                   strong id="signup-link-id" Sign Up
+- if (controller_name.eql?('projects') && not(action_name.eql?('index')) && not(action_name.eql?('new'))) || controller_name.eql?('assignments') || controller_name.eql?('extractions') || controller_name.eql?('extraction_forms_projects') || (controller_name.eql?('citations') && action_name.eql?('index')) || (controller_name.eql?('tasks') && action_name.eql?('index')) || (controller_name.eql?('screening_options') && action_name.eql?('index')) ||  (controller_name.eql?('questions') && (action_name.eql?('dependencies') || action_name.eql?('edit'))) || (controller_name.eql?('extractions_extraction_forms_projects_sections_type1s') && action_name.eql?('edit')) || (controller_name.eql?('extraction_forms_projects_sections') && action_name.eql?('preview')) || (controller_name.eql?('imports') && action_name.eql?('new'))
+  - project = @project || @extraction.try(:project) || @extraction_forms_project.try(:project) || @question.try(:project) || @extraction_forms_projects_section.project
+  div
+    h6.project-info-header = "Project ID##{project.id}: #{project.name}"
+    ul.submenu class="menu"
+      li.submenu
+        a href="#{edit_project_path(project)}#panel-project-information" Project Info
+      li.submenu
+        a href="#{edit_project_path(project)}#panel-key-questions" Key Questions
+      li.submenu
+        a href="#{edit_project_path(project)}#panel-projects-users" Member(s) & Role(s)
+      - if project.key_questions.present?
+        - efp = project.extraction_forms_projects.first
+        li.submenu
+          a href="#{build_extraction_forms_project_path(efp.id, 'panel-tab': efp.default_section_id)}" Extractions Form Builder
+      - else
+        li.submenu
+          = link_to 'Extractions Form Builder', '#', data: { confirm: 'You must add at least one key question first.' }
+      li.submenu
+        a href="#{project_tasks_path(project)}" Tasks
+      li.submenu
+        a href="#{project_citations_path(project)}" Citations
+      li.submenu
+        a href="#{next_assignment_project_path(project)}" Screen
+      li.submenu
+        a href="#{project_extractions_path(project)}" Extractions
+      li.submenu
+        a href="#{new_project_import_path(project)}" Import Data
+      li.submenu
+        a href="#{edit_project_path(project)}" Export Data
+      li.submenu
+        a href="#{comparison_tool_project_extractions_path(project)}" Comparison Tool
+      - if project.publishing.present? && project.publishing.approval.present?
+        li.submenu style="cursor: not-allowed;" = link_to 'Publication has been published', '#', title: 'Publication has been published', class: 'disabled'
+      - elsif project.publishing.present?
+        li.submenu = link_to 'Cancel publication request', publishing_path(project.publishing.publishable_id), data: { confirm: 'Are you sure?' }, method: :delete, title: 'Cancel publication request'
+      - else
+        li.submenu = link_to "Request Publication", new_publishing_path(type: Project.to_s, id: project.id), title: "Request Publication"
