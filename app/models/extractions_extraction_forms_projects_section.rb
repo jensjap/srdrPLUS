@@ -74,8 +74,6 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
       .where(extractions_extraction_forms_projects_sections_type1_id: eefpst1_id,
              question_row_column_field: qrc.question_row_column_fields)
 
-#debugger if (qrc.question_row.id.eql?(10989) && qrc.id.eql?(14007) && extraction.id.eql?(2494))
-
     case qrc.question_row_column_type_id
     when 1, 2  # Textbox, Numeric.
       return Record.where(recordable: recordables).order(updated_at: :desc).pluck(:name).first.try(:strip)
@@ -101,7 +99,34 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
           qrcqrco = qrc.question_row_columns_question_row_column_options.find_by(id: opt_id.to_i)
           if qrcqrco.present? and not opt_id.to_i.zero?
             begin
-              text_arr << (qrcqrco.name.present? ? qrcqrco.name : (qrcqrco.nil? ? '' : 'X'))
+              tmp_value = ''
+              tmp_ff_value = ''
+              if qrcqrco.name.present?
+                tmp_value = qrcqrco.name
+              else
+                if qrcqrco.nil?
+                  tmp_value = ''
+                else
+                  tmp_value = 'X'
+                end
+              end
+
+              # Check for followup_field and append if present.
+              if qrcqrco.followup_field.present?
+                tmp_ff_value =
+                  ' [Follow-up: ' +
+                  qrcqrco
+                    .followup_field
+                    .extractions_extraction_forms_projects_sections_followup_fields
+                    .map(&:records)
+                    .flatten
+                    .map(&:name)
+                    .join(', ') +
+                  ']'
+              end
+
+              text_arr << tmp_value + tmp_ff_value
+
             rescue Exception => e
                #!!! This can happen when records are created and then the answer options are deleted or question type changes altogether.
                #    Need to decide what to do here.
@@ -113,16 +138,35 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
       return text_arr.join("\x0D\x0A")
 
     when 6, 7, 8  # Dropdown, Radio, Select2_single.
+      tmp_value = ''
+      tmp_ff_value = ''
       opt_id = Record.where(recordable: recordables).order(updated_at: :desc).pluck(:name).first
       # opt_id can be nil here for questions that have not been answered.
       # Protect by casting to zero and check.
       begin
-        text_arr = qrc.question_row_columns_question_row_column_options.find(opt_id.to_i).name unless opt_id.to_i.zero?
+        tmp_value = qrc.question_row_columns_question_row_column_options.find(opt_id.to_i).name unless opt_id.to_i.zero?
       rescue Exception => e
         #!!! This can happen when records are created and then the answer options are deleted or question type changes altogether.
         #    Need to decide what to do here.
       end
-      return text_arr.try(:strip)
+
+      # Check for followup_field and append if present.
+      qrcqrco = qrc.question_row_columns_question_row_column_options.find_by(id: opt_id.to_i)
+      if qrcqrco.present?
+        if qrcqrco.followup_field.present?
+          tmp_ff_value =
+            ' [Follow-up: ' +
+            qrcqrco
+              .followup_field
+              .extractions_extraction_forms_projects_sections_followup_fields
+              .map(&:records)
+              .flatten
+              .map(&:name)
+              .join(', ') +
+            ']'
+        end
+      end
+      return (tmp_value + tmp_ff_value).try(:strip)
 
     when 9  # Select2_multi.
       text_arr = []

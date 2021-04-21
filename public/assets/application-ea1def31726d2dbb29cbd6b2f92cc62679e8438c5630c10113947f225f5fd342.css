@@ -5125,7 +5125,7 @@ div[class*=' off-prereq-'] * {
 /* line 22, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/extractions.scss */
 .consolidate li.accordion-item.is-active a.accordion-title {
   font-weight: bold;
-  color: #4C0D7D;
+  color: #4c0d7d;
 }
 /* line 23, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/extractions.scss */
 .consolidate li.accordion-item.is-active a.accordion-title th {
@@ -5152,7 +5152,7 @@ div[class*=' off-prereq-'] * {
 }
 /* line 50, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/extractions.scss */
 .consolidate .edit-type1-link:hover {
-  color: #4C0D7D;
+  color: #4c0d7d;
   font-weight: bold;
   text-decoration: none;
 }
@@ -14000,7 +14000,7 @@ h6, .h6 {
 /* line 371, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/typography/_base.scss */
 a {
   line-height: inherit;
-  color: #4C0D7D;
+  color: #4c0d7d;
   text-decoration: none;
   cursor: pointer;
 }
@@ -14699,7 +14699,7 @@ select[multiple] {
   line-height: 1;
   text-align: center;
   cursor: pointer;
-  background-color: #4C0D7D;
+  background-color: #4c0d7d;
   color: #fefefe;
 }
 /* line 202, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/util/_mixins.scss */
@@ -14708,7 +14708,7 @@ select[multiple] {
 }
 /* line 153, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_button.scss */
 .button:hover, .button:focus {
-  background-color: #33124B;
+  background-color: #33124b;
   color: #fefefe;
 }
 /* line 271, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_button.scss */
@@ -14732,7 +14732,7 @@ select[multiple] {
 }
 /* line 304, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_button.scss */
 .button.primary {
-  background-color: #4C0D7D;
+  background-color: #4c0d7d;
   color: #fefefe;
 }
 /* line 153, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_button.scss */
@@ -14742,7 +14742,7 @@ select[multiple] {
 }
 /* line 304, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_button.scss */
 .button.secondary {
-  background-color: #33124B;
+  background-color: #33124b;
   color: #fefefe;
 }
 /* line 153, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_button.scss */
@@ -14787,7 +14787,7 @@ select[multiple] {
 }
 /* line 211, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_button.scss */
 .button.disabled, .button.disabled:hover, .button.disabled:focus, .button[disabled], .button[disabled]:hover, .button[disabled]:focus {
-  background-color: #4C0D7D;
+  background-color: #4c0d7d;
   color: #fefefe;
 }
 /* line 325, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_button.scss */
@@ -14797,7 +14797,7 @@ select[multiple] {
 }
 /* line 211, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_button.scss */
 .button.disabled.primary, .button.disabled.primary:hover, .button.disabled.primary:focus, .button[disabled].primary, .button[disabled].primary:hover, .button[disabled].primary:focus {
-  background-color: #4C0D7D;
+  background-color: #4c0d7d;
   color: #fefefe;
 }
 /* line 325, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_button.scss */
@@ -14807,7 +14807,7 @@ select[multiple] {
 }
 /* line 211, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_button.scss */
 .button.disabled.secondary, .button.disabled.secondary:hover, .button.disabled.secondary:focus, .button[disabled].secondary, .button[disabled].secondary:hover, .button[disabled].secondary:focus {
-  background-color: #33124B;
+  background-color: #33124b;
   color: #fefefe;
 }
 /* line 325, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_button.scss */
@@ -14842,8 +14842,8 @@ select[multiple] {
 }
 /* line 333, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_button.scss */
 .button.hollow {
-  border: 1px solid #4C0D7D;
-  color: #4C0D7D;
+  border: 1px solid #4c0d7d;
+  color: #4c0d7d;
 }
 /* line 161, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_button.scss */
 .button.hollow, .button.hollow:hover, .button.hollow:focus {
@@ -14860,13 +14860,13 @@ select[multiple] {
 }
 /* line 189, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_button.scss */
 .button.hollow:hover.disabled, .button.hollow:hover[disabled], .button.hollow:focus.disabled, .button.hollow:focus[disabled] {
-  border: 1px solid #4C0D7D;
-  color: #4C0D7D;
+  border: 1px solid #4c0d7d;
+  color: #4c0d7d;
 }
 /* line 338, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_button.scss */
 .button.hollow.primary {
-  border: 1px solid #4C0D7D;
-  color: #4C0D7D;
+  border: 1px solid #4c0d7d;
+  color: #4c0d7d;
 }
 /* line 186, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_button.scss */
 .button.hollow.primary:hover, .button.hollow.primary:focus {
@@ -14875,13 +14875,13 @@ select[multiple] {
 }
 /* line 189, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_button.scss */
 .button.hollow.primary:hover.disabled, .button.hollow.primary:hover[disabled], .button.hollow.primary:focus.disabled, .button.hollow.primary:focus[disabled] {
-  border: 1px solid #4C0D7D;
-  color: #4C0D7D;
+  border: 1px solid #4c0d7d;
+  color: #4c0d7d;
 }
 /* line 338, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_button.scss */
 .button.hollow.secondary {
-  border: 1px solid #33124B;
-  color: #33124B;
+  border: 1px solid #33124b;
+  color: #33124b;
 }
 /* line 186, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_button.scss */
 .button.hollow.secondary:hover, .button.hollow.secondary:focus {
@@ -14890,8 +14890,8 @@ select[multiple] {
 }
 /* line 189, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_button.scss */
 .button.hollow.secondary:hover.disabled, .button.hollow.secondary:hover[disabled], .button.hollow.secondary:focus.disabled, .button.hollow.secondary:focus[disabled] {
-  border: 1px solid #33124B;
-  color: #33124B;
+  border: 1px solid #33124b;
+  color: #33124b;
 }
 /* line 338, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_button.scss */
 .button.hollow.success {
@@ -14940,8 +14940,8 @@ select[multiple] {
 }
 /* line 347, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_button.scss */
 .button.clear {
-  border: 1px solid #4C0D7D;
-  color: #4C0D7D;
+  border: 1px solid #4c0d7d;
+  color: #4c0d7d;
 }
 /* line 161, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_button.scss */
 .button.clear, .button.clear:hover, .button.clear:focus {
@@ -14958,8 +14958,8 @@ select[multiple] {
 }
 /* line 189, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_button.scss */
 .button.clear:hover.disabled, .button.clear:hover[disabled], .button.clear:focus.disabled, .button.clear:focus[disabled] {
-  border: 1px solid #4C0D7D;
-  color: #4C0D7D;
+  border: 1px solid #4c0d7d;
+  color: #4c0d7d;
 }
 /* line 352, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_button.scss */
 .button.clear, .button.clear.disabled, .button.clear[disabled], .button.clear:hover, .button.clear:hover.disabled, .button.clear:hover[disabled], .button.clear:focus, .button.clear:focus.disabled, .button.clear:focus[disabled] {
@@ -14967,8 +14967,8 @@ select[multiple] {
 }
 /* line 358, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_button.scss */
 .button.clear.primary {
-  border: 1px solid #4C0D7D;
-  color: #4C0D7D;
+  border: 1px solid #4c0d7d;
+  color: #4c0d7d;
 }
 /* line 186, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_button.scss */
 .button.clear.primary:hover, .button.clear.primary:focus {
@@ -14977,8 +14977,8 @@ select[multiple] {
 }
 /* line 189, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_button.scss */
 .button.clear.primary:hover.disabled, .button.clear.primary:hover[disabled], .button.clear.primary:focus.disabled, .button.clear.primary:focus[disabled] {
-  border: 1px solid #4C0D7D;
-  color: #4C0D7D;
+  border: 1px solid #4c0d7d;
+  color: #4c0d7d;
 }
 /* line 363, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_button.scss */
 .button.clear.primary, .button.clear.primary.disabled, .button.clear.primary[disabled], .button.clear.primary:hover, .button.clear.primary:hover.disabled, .button.clear.primary:hover[disabled], .button.clear.primary:focus, .button.clear.primary:focus.disabled, .button.clear.primary:focus[disabled] {
@@ -14986,8 +14986,8 @@ select[multiple] {
 }
 /* line 358, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_button.scss */
 .button.clear.secondary {
-  border: 1px solid #33124B;
-  color: #33124B;
+  border: 1px solid #33124b;
+  color: #33124b;
 }
 /* line 186, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_button.scss */
 .button.clear.secondary:hover, .button.clear.secondary:focus {
@@ -14996,8 +14996,8 @@ select[multiple] {
 }
 /* line 189, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_button.scss */
 .button.clear.secondary:hover.disabled, .button.clear.secondary:hover[disabled], .button.clear.secondary:focus.disabled, .button.clear.secondary:focus[disabled] {
-  border: 1px solid #33124B;
-  color: #33124B;
+  border: 1px solid #33124b;
+  color: #33124b;
 }
 /* line 363, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_button.scss */
 .button.clear.secondary, .button.clear.secondary.disabled, .button.clear.secondary[disabled], .button.clear.secondary:hover, .button.clear.secondary:hover.disabled, .button.clear.secondary:hover[disabled], .button.clear.secondary:focus, .button.clear.secondary:focus.disabled, .button.clear.secondary:focus[disabled] {
@@ -15078,15 +15078,15 @@ select[multiple] {
 }
 /* line 385, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_button.scss */
 .button.dropdown.hollow::after, .button.dropdown.clear::after {
-  border-top-color: #4C0D7D;
+  border-top-color: #4c0d7d;
 }
 /* line 391, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_button.scss */
 .button.dropdown.hollow.primary::after, .button.dropdown.clear.primary::after {
-  border-top-color: #4C0D7D;
+  border-top-color: #4c0d7d;
 }
 /* line 391, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_button.scss */
 .button.dropdown.hollow.secondary::after, .button.dropdown.clear.secondary::after {
-  border-top-color: #33124B;
+  border-top-color: #33124b;
 }
 /* line 391, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_button.scss */
 .button.dropdown.hollow.success::after, .button.dropdown.clear.success::after {
@@ -15141,7 +15141,7 @@ a.button:hover, a.button:focus {
   border-bottom: 0;
   font-size: 1.125rem;
   line-height: 1;
-  color: #4C0D7D;
+  color: #4c0d7d;
 }
 /* line 94, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_accordion.scss */
 :last-child:not(.is-active) > .accordion-title {
@@ -15214,7 +15214,7 @@ a.button:hover, a.button:focus {
   content: '';
   border-bottom-width: 0;
   border-top-style: solid;
-  border-color: #4C0D7D transparent transparent;
+  border-color: #4c0d7d transparent transparent;
   position: absolute;
   top: 50%;
   margin-top: -3px;
@@ -15268,7 +15268,7 @@ a.button:hover, a.button:focus {
   content: '';
   border-bottom-width: 0;
   border-top-style: solid;
-  border-color: #4C0D7D transparent transparent;
+  border-color: #4c0d7d transparent transparent;
   top: 0;
   bottom: 0;
   margin: auto;
@@ -15304,17 +15304,17 @@ a.button:hover, a.button:focus {
   border-radius: 50%;
   font-size: 0.6rem;
   text-align: center;
-  background: #4C0D7D;
+  background: #4c0d7d;
   color: #fefefe;
 }
 /* line 57, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_badge.scss */
 .badge.primary {
-  background: #4C0D7D;
+  background: #4c0d7d;
   color: #fefefe;
 }
 /* line 57, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_badge.scss */
 .badge.secondary {
-  background: #33124B;
+  background: #33124b;
   color: #fefefe;
 }
 /* line 57, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_badge.scss */
@@ -15365,7 +15365,7 @@ a.button:hover, a.button:focus {
 }
 /* line 101, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_breadcrumbs.scss */
 .breadcrumbs a {
-  color: #4C0D7D;
+  color: #4c0d7d;
 }
 /* line 104, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_breadcrumbs.scss */
 .breadcrumbs a:hover {
@@ -15478,7 +15478,7 @@ a.button:hover, a.button:focus {
 }
 /* line 216, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_button-group.scss */
 .button-group.primary .button {
-  background-color: #4C0D7D;
+  background-color: #4c0d7d;
   color: #fefefe;
 }
 /* line 153, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_button.scss */
@@ -15488,7 +15488,7 @@ a.button:hover, a.button:focus {
 }
 /* line 216, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_button-group.scss */
 .button-group.secondary .button {
-  background-color: #33124B;
+  background-color: #33124b;
   color: #fefefe;
 }
 /* line 153, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_button.scss */
@@ -15955,12 +15955,12 @@ a.button:hover, a.button:focus {
 }
 /* line 440, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_menu.scss */
 .menu .is-active > a {
-  background: #4C0D7D;
+  background: #4c0d7d;
   color: #fefefe;
 }
 /* line 446, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_menu.scss */
 .menu .active > a {
-  background: #4C0D7D;
+  background: #4c0d7d;
   color: #fefefe;
 }
 /* line 452, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_menu.scss */
@@ -16145,7 +16145,7 @@ a.button:hover, a.button:focus {
   content: '';
   border-right-width: 0;
   border-left-style: solid;
-  border-color: transparent transparent transparent #4C0D7D;
+  border-color: transparent transparent transparent #4c0d7d;
   position: absolute;
   top: 50%;
   margin-top: -6px;
@@ -16160,7 +16160,7 @@ a.button:hover, a.button:focus {
   content: '';
   border-right-width: 0;
   border-left-style: solid;
-  border-color: transparent transparent transparent #33124B;
+  border-color: transparent transparent transparent #33124b;
   right: 1rem;
   left: auto;
 }
@@ -16173,7 +16173,7 @@ a.button:hover, a.button:focus {
   content: '';
   border-left-width: 0;
   border-right-style: solid;
-  border-color: transparent #33124B transparent transparent;
+  border-color: transparent #33124b transparent transparent;
   right: auto;
   left: 1rem;
 }
@@ -16186,7 +16186,7 @@ a.button:hover, a.button:focus {
   content: '';
   border-left-width: 0;
   border-right-style: solid;
-  border-color: transparent #4C0D7D transparent transparent;
+  border-color: transparent #4c0d7d transparent transparent;
   display: inline-block;
   vertical-align: middle;
   margin-right: 0.75rem;
@@ -16256,7 +16256,7 @@ a.button:hover, a.button:focus {
   content: '';
   border-bottom-width: 0;
   border-top-style: solid;
-  border-color: #33124B transparent transparent;
+  border-color: #33124b transparent transparent;
   right: 5px;
   left: auto;
   margin-top: 0px;
@@ -16272,7 +16272,7 @@ a.button:hover, a.button:focus {
 /* line 160, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_dropdown-menu.scss */
 .dropdown.menu > li.is-active > a {
   background: transparent;
-  color: #4C0D7D;
+  color: #4c0d7d;
 }
 /* line 165, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_dropdown-menu.scss */
 .no-js .dropdown.menu ul {
@@ -16311,7 +16311,7 @@ a.button:hover, a.button:focus {
   content: '';
   border-left-width: 0;
   border-right-style: solid;
-  border-color: transparent #33124B transparent transparent;
+  border-color: transparent #33124b transparent transparent;
   right: auto;
   left: 5px;
 }
@@ -16324,7 +16324,7 @@ a.button:hover, a.button:focus {
   content: '';
   border-right-width: 0;
   border-left-style: solid;
-  border-color: transparent transparent transparent #33124B;
+  border-color: transparent transparent transparent #33124b;
 }
 @media print, screen and (min-width: 40em) {
   /* line 85, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_dropdown-menu.scss */
@@ -16353,7 +16353,7 @@ a.button:hover, a.button:focus {
     content: '';
     border-bottom-width: 0;
     border-top-style: solid;
-    border-color: #33124B transparent transparent;
+    border-color: #33124b transparent transparent;
     right: 5px;
     left: auto;
     margin-top: 0px;
@@ -16386,7 +16386,7 @@ a.button:hover, a.button:focus {
     content: '';
     border-left-width: 0;
     border-right-style: solid;
-    border-color: transparent #33124B transparent transparent;
+    border-color: transparent #33124b transparent transparent;
     right: auto;
     left: 5px;
   }
@@ -16399,7 +16399,7 @@ a.button:hover, a.button:focus {
     content: '';
     border-right-width: 0;
     border-left-style: solid;
-    border-color: transparent transparent transparent #33124B;
+    border-color: transparent transparent transparent #33124b;
   }
 }
 @media print, screen and (min-width: 64em) {
@@ -16429,7 +16429,7 @@ a.button:hover, a.button:focus {
     content: '';
     border-bottom-width: 0;
     border-top-style: solid;
-    border-color: #33124B transparent transparent;
+    border-color: #33124b transparent transparent;
     right: 5px;
     left: auto;
     margin-top: 0px;
@@ -16462,7 +16462,7 @@ a.button:hover, a.button:focus {
     content: '';
     border-left-width: 0;
     border-right-style: solid;
-    border-color: transparent #33124B transparent transparent;
+    border-color: transparent #33124b transparent transparent;
     right: auto;
     left: 5px;
   }
@@ -16475,7 +16475,7 @@ a.button:hover, a.button:focus {
     content: '';
     border-right-width: 0;
     border-left-style: solid;
-    border-color: transparent transparent transparent #33124B;
+    border-color: transparent transparent transparent #33124b;
   }
 }
 /* line 192, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_dropdown-menu.scss */
@@ -16550,7 +16550,7 @@ a.button:hover, a.button:focus {
   content: '';
   border-left-width: 0;
   border-right-style: solid;
-  border-color: transparent #33124B transparent transparent;
+  border-color: transparent #33124b transparent transparent;
   right: auto;
   left: 5px;
 }
@@ -16563,7 +16563,7 @@ a.button:hover, a.button:focus {
   content: '';
   border-right-width: 0;
   border-left-style: solid;
-  border-color: transparent transparent transparent #33124B;
+  border-color: transparent transparent transparent #33124b;
 }
 /* line 264, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_dropdown-menu.scss */
 .is-dropdown-submenu .is-dropdown-submenu {
@@ -16617,17 +16617,17 @@ a.button:hover, a.button:focus {
   line-height: 1;
   white-space: nowrap;
   cursor: default;
-  background: #4C0D7D;
+  background: #4c0d7d;
   color: #fefefe;
 }
 /* line 58, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_label.scss */
 .label.primary {
-  background: #4C0D7D;
+  background: #4c0d7d;
   color: white;
 }
 /* line 58, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_label.scss */
 .label.secondary {
-  background: #33124B;
+  background: #33124b;
   color: white;
 }
 /* line 58, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_label.scss */
@@ -17521,7 +17521,7 @@ a.button:hover, a.button:focus {
 /* line 165, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_pagination.scss */
 .pagination .current {
   padding: 0.1875rem 0.625rem;
-  background: #4C0D7D;
+  background: #4c0d7d;
   color: #fefefe;
   cursor: default;
 }
@@ -17567,11 +17567,11 @@ a.button:hover, a.button:focus {
 }
 /* line 47, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_progress-bar.scss */
 .progress.primary .progress-meter {
-  background-color: #4C0D7D;
+  background-color: #4c0d7d;
 }
 /* line 47, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_progress-bar.scss */
 .progress.secondary .progress-meter {
-  background-color: #33124B;
+  background-color: #33124b;
 }
 /* line 47, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_progress-bar.scss */
 .progress.success .progress-meter {
@@ -17592,7 +17592,7 @@ a.button:hover, a.button:focus {
   display: block;
   width: 0%;
   height: 100%;
-  background-color: #4C0D7D;
+  background-color: #4c0d7d;
   border-radius: 4px;
 }
 
@@ -17659,7 +17659,7 @@ a.button:hover, a.button:focus {
   width: 1.4rem;
   height: 1.4rem;
   border-radius: 4px;
-  background-color: #4C0D7D;
+  background-color: #4c0d7d;
   -webkit-transition: all 0.2s ease-in-out;
   transition: all 0.2s ease-in-out;
   -ms-touch-action: manipulation;
@@ -17940,7 +17940,7 @@ input + .switch-paddle {
 }
 /* line 127, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_switch.scss */
 input:checked ~ .switch-paddle {
-  background: #4C0D7D;
+  background: #4c0d7d;
 }
 /* line 130, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_switch.scss */
 input:checked ~ .switch-paddle::after {
@@ -18056,7 +18056,7 @@ table {
 thead,
 tbody,
 tfoot {
-  border: 1px solid #f1f1f1;
+  border: 1px solid #e5e5e5;
   background-color: #fefefe;
 }
 
@@ -18068,13 +18068,13 @@ caption {
 
 /* line 125, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_table.scss */
 thead {
-  background: #f8f8f8;
+  background: #f1f1f1;
   color: #0a0a0a;
 }
 
 /* line 131, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_table.scss */
 tfoot {
-  background: #f1f1f1;
+  background: #e5e5e5;
   color: #0a0a0a;
 }
 
@@ -18102,7 +18102,7 @@ tbody td {
 /* line 87, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_table.scss */
 tbody tr:nth-child(even) {
   border-bottom: 0;
-  background-color: #f1f1f1;
+  background-color: #e5e5e5;
 }
 
 /* line 168, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_table.scss */
@@ -18112,7 +18112,7 @@ table.unstriped tbody {
 /* line 103, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_table.scss */
 table.unstriped tbody tr {
   border-bottom: 0;
-  border-bottom: 1px solid #f1f1f1;
+  border-bottom: 1px solid #e5e5e5;
   background-color: #fefefe;
 }
 
@@ -18146,11 +18146,11 @@ table.scroll {
 
 /* line 221, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_table.scss */
 table.hover thead tr:hover {
-  background-color: #f3f3f3;
+  background-color: #ececec;
 }
 /* line 228, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_table.scss */
 table.hover tfoot tr:hover {
-  background-color: #ececec;
+  background-color: #e0e0e0;
 }
 /* line 235, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_table.scss */
 table.hover tbody tr:hover {
@@ -18158,7 +18158,7 @@ table.hover tbody tr:hover {
 }
 /* line 243, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_table.scss */
 table.hover:not(.unstriped) tr:nth-of-type(even):hover {
-  background-color: #ececec;
+  background-color: #dfdfdf;
 }
 
 /* line 323, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_table.scss */
@@ -18201,7 +18201,7 @@ table.hover:not(.unstriped) tr:nth-of-type(even):hover {
 
 /* line 165, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_tabs.scss */
 .tabs.primary {
-  background: #4C0D7D;
+  background: #4c0d7d;
 }
 /* line 168, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_tabs.scss */
 .tabs.primary > li > a {
@@ -18222,7 +18222,7 @@ table.hover:not(.unstriped) tr:nth-of-type(even):hover {
   padding: 1.25rem 1.5rem;
   font-size: 0.875rem;
   line-height: 1;
-  color: #4C0D7D;
+  color: #4c0d7d;
 }
 /* line 202, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/util/_mixins.scss */
 [data-whatinput='mouse'] .tabs-title > a {
@@ -18236,7 +18236,7 @@ table.hover:not(.unstriped) tr:nth-of-type(even):hover {
 /* line 102, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_tabs.scss */
 .tabs-title > a:focus, .tabs-title > a[aria-selected='true'] {
   background: #e6e6e6;
-  color: #4C0D7D;
+  color: #4c0d7d;
 }
 
 /* line 182, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_tabs.scss */
@@ -18298,7 +18298,7 @@ a.thumbnail image {
 /* line 38, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_title-bar.scss */
 .title-bar {
   padding: 0.5rem;
-  background: #4C0D7D;
+  background: #4c0d7d;
   color: #fefefe;
 }
 /* line 170, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/util/_mixins.scss */
@@ -18476,7 +18476,7 @@ a.thumbnail image {
 /* line 47, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_top-bar.scss */
 .top-bar,
 .top-bar ul {
-  background-color: #4C0D7D;
+  background-color: #4c0d7d;
 }
 /* line 60, /home/jensjap/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/foundation-rails-6.5.3.0/vendor/assets/scss/components/_top-bar.scss */
 .top-bar input {
@@ -21702,21 +21702,21 @@ mark {
 }
 /* line 55, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/projects.scss */
 .project-controls .toggle-sort-order button.active {
-  background-color: #4C0D7D;
+  background-color: #4c0d7d;
   cursor: not-allowed;
 }
 /* line 60, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/projects.scss */
 .project-controls .toggle-sort-order button.disabled {
   opacity: 0.9;
-  border: solid 1px #4C0D7D;
+  border: solid 1px #4c0d7d;
   background-color: transparent;
-  color: #4C0D7D;
+  color: #4c0d7d;
   cursor: pointer;
 }
 /* line 67, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/projects.scss */
 .project-controls .toggle-sort-order button.disabled:hover {
-  background-color: #33124B;
-  border-color: #33124B;
+  background-color: #33124b;
+  border-color: #33124b;
   color: white;
   opacity: 1;
 }
@@ -21744,11 +21744,11 @@ mark {
 /* line 105, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/projects.scss */
 #project-list li.accordion-item.is-active a.accordion-title {
   font-weight: bold;
-  color: #4C0D7D;
+  color: #4c0d7d;
 }
 /* line 109, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/projects.scss */
 #project-list li.accordion-item.is-active a.accordion-title small {
-  color: #4C0D7D;
+  color: #4c0d7d;
 }
 /* line 114, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/projects.scss */
 #project-list li.accordion-item.is-active div.accordion-content {
@@ -22222,7 +22222,7 @@ a.citation-label {
   width: 300px;
   height: 365px;
   border-radius: 5px;
-  border: solid 1px #4C0D7D;
+  border: solid 1px #4c0d7d;
   background-color: #F7F3F9;
   display: -webkit-box;
   display: -webkit-flex;
@@ -22278,7 +22278,7 @@ a.citation-label {
 /* line 531, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/projects.scss */
 .task-title {
   font-size: 25px;
-  color: #4C0D7D;
+  color: #4c0d7d;
   margin-top: 20px;
   margin-bottom: 20px;
 }
@@ -22305,7 +22305,7 @@ a.add-task-button .fi-plus {
 }
 /* line 554, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/projects.scss */
 a.add-task-button .fi-plus:hover {
-  color: #33124B;
+  color: #33124b;
 }
 
 /* line 561, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/projects.scss */
@@ -23952,17 +23952,18 @@ table.dependency-table th {
   }
 }
 
-/* line 7, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/records.scss */
+/* line 5, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/records.scss */
 .record-info {
-  color: #4C0D7D;
+  color: #4c0d7d;
   min-height: 1.5em;
   position: absolute;
   text-align: center;
-  top: 3px;
-  left: calc(50% - 20px);
+  top: 0;
+  right: calc(100%);
+  min-width: 100px;
   background: white;
   border-radius: 10px;
-  padding: 5px;
+  padding: 2px;
   border: 1px solid;
   pointer-events: none;
   z-index: 1000;
@@ -26637,6 +26638,25 @@ body.sd_meta_data .sd-meta-data-index-edit {
 }
 
 /* line 186, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+.blog .hero.enhancement {
+  height: 300px;
+}
+
+/* line 190, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+.Enhancements-to-SRDR {
+  width: 790px;
+  height: 160px;
+  font-family: Halant;
+  font-size: 48px;
+  font-weight: bold;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: 1.17;
+  letter-spacing: normal;
+  color: #ffffff;
+}
+
+/* line 203, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .The-newly-updated-Sy {
   width: 790px;
   height: 168px;
@@ -26650,13 +26670,13 @@ body.sd_meta_data .sd-meta-data-index-edit {
   color: #ffffff;
 }
 
-/* line 199, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 216, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .isaldanh_photo_png {
   width: 64px;
   height: 64px;
 }
 
-/* line 204, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 221, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .Ian-Saldanha-March {
   font-family: 'Noto Sans';
   font-size: 16px;
@@ -26668,20 +26688,20 @@ body.sd_meta_data .sd-meta-data-index-edit {
   color: #dee1e8;
 }
 
-/* line 217, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 234, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .blog p {
   margin-left: 0;
   margin-right: 0;
   font-size: 21px;
   line-height: 1.58;
 }
-/* line 223, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 240, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .blog p.title {
   margin-bottom: -30px;
 }
 
 @media screen and (max-width: 39.99875em) {
-  /* line 230, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+  /* line 247, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
   .elicit-registration a.button {
     position: relative;
     top: -8px;
@@ -26725,17 +26745,17 @@ body.sd_meta_data .sd-meta-data-index-edit {
             box-shadow: 0 0 -20px #c4a300;
   }
 }
-/* line 244, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 261, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .glow {
   -webkit-animation: glowing 5000ms infinite;
           animation: glowing 5000ms infinite;
   background-color: #fdd835;
-  color: #4C0D7D;
+  color: #4c0d7d;
   border-radius: 3px;
   padding: 5px;
 }
 
-/* line 252, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 269, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .The-Easy-Systematic, .The-Easy-Systematic-2 {
   font-family: Halant;
   font-size: 48px;
@@ -26747,12 +26767,12 @@ body.sd_meta_data .sd-meta-data-index-edit {
   color: #ffffff;
 }
 
-/* line 263, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 280, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .The-Easy-Systematic-2 {
   color: black;
 }
 
-/* line 267, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 284, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .Systematic-Reviews-Made {
   font-family: Halant;
   font-size: 48px;
@@ -26763,7 +26783,7 @@ body.sd_meta_data .sd-meta-data-index-edit {
   letter-spacing: normal;
 }
 
-/* line 277, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 294, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .Its-100-free-powe, .Its-100-free-powe-2 {
   font-size: 20px;
   font-weight: normal;
@@ -26774,12 +26794,12 @@ body.sd_meta_data .sd-meta-data-index-edit {
   color: #dee1e8;
 }
 
-/* line 287, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 304, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .Its-100-free-powe-2 {
   color: #414247;
 }
 
-/* line 291, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 308, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .Free-Powerful {
   font-size: 20px;
   font-weight: normal;
@@ -26790,7 +26810,7 @@ body.sd_meta_data .sd-meta-data-index-edit {
   color: #4a4a4a;
 }
 
-/* line 301, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 318, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .Rectangle {
   padding-left: 40px !important;
   padding-right: 40px !important;
@@ -26801,7 +26821,7 @@ body.sd_meta_data .sd-meta-data-index-edit {
   background-color: #ffffff;
 }
 
-/* line 315, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 332, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .hero {
   height: 525px;
   background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABaAAAAIuCAIAAADG3zi5AAAACXBIWXMAAAsTAAALEwEAmpwYAAAGAGlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS42LWMxNDUgNzkuMTYzNDk5LCAyMDE4LzA4LzEzLTE2OjQwOjIyICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyIgeG1sbnM6cGhvdG9zaG9wPSJodHRwOi8vbnMuYWRvYmUuY29tL3Bob3Rvc2hvcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RFdnQ9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZUV2ZW50IyIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ0MgMjAxOSAoTWFjaW50b3NoKSIgeG1wOkNyZWF0ZURhdGU9IjIwMTktMDMtMDRUMTE6NDk6MjQrMDg6MDAiIHhtcDpNb2RpZnlEYXRlPSIyMDE5LTAzLTA1VDA4OjQyOjE1KzA4OjAwIiB4bXA6TWV0YWRhdGFEYXRlPSIyMDE5LTAzLTA1VDA4OjQyOjE1KzA4OjAwIiBkYzpmb3JtYXQ9ImltYWdlL3BuZyIgcGhvdG9zaG9wOkNvbG9yTW9kZT0iMyIgcGhvdG9zaG9wOklDQ1Byb2ZpbGU9InNSR0IgSUVDNjE5NjYtMi4xIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOmY1MmFmN2MyLTk4ZGYtNDg2My1iZDcwLWU4YWY3MWYyNzYxZCIgeG1wTU06RG9jdW1lbnRJRD0iYWRvYmU6ZG9jaWQ6cGhvdG9zaG9wOmRhNzM2Yjk3LWFhMTMtZjY0Ni04ZTg0LTY5OTgwNjYzOGU2NiIgeG1wTU06T3JpZ2luYWxEb2N1bWVudElEPSJ4bXAuZGlkOmM3MTBlMTM2LWY5YTQtNDIyYS05NDFlLTc5NzViZmE1ZWRlNiI%2BIDx4bXBNTTpIaXN0b3J5PiA8cmRmOlNlcT4gPHJkZjpsaSBzdEV2dDphY3Rpb249ImNyZWF0ZWQiIHN0RXZ0Omluc3RhbmNlSUQ9InhtcC5paWQ6YzcxMGUxMzYtZjlhNC00MjJhLTk0MWUtNzk3NWJmYTVlZGU2IiBzdEV2dDp3aGVuPSIyMDE5LTAzLTA0VDExOjQ5OjI0KzA4OjAwIiBzdEV2dDpzb2Z0d2FyZUFnZW50PSJBZG9iZSBQaG90b3Nob3AgQ0MgMjAxOSAoTWFjaW50b3NoKSIvPiA8cmRmOmxpIHN0RXZ0OmFjdGlvbj0ic2F2ZWQiIHN0RXZ0Omluc3RhbmNlSUQ9InhtcC5paWQ6ZjUyYWY3YzItOThkZi00ODYzLWJkNzAtZThhZjcxZjI3NjFkIiBzdEV2dDp3aGVuPSIyMDE5LTAzLTA1VDA4OjQyOjE1KzA4OjAwIiBzdEV2dDpzb2Z0d2FyZUFnZW50PSJBZG9iZSBQaG90b3Nob3AgQ0MgMjAxOSAoTWFjaW50b3NoKSIgc3RFdnQ6Y2hhbmdlZD0iLyIvPiA8L3JkZjpTZXE%2BIDwveG1wTU06SGlzdG9yeT4gPC9yZGY6RGVzY3JpcHRpb24%2BIDwvcmRmOlJERj4gPC94OnhtcG1ldGE%2BIDw%2FeHBhY2tldCBlbmQ9InIiPz4lnbFgAAAW6klEQVR4nO3d0XLcRnqG4e4GZkhaXieVVO4qt5Q7Tiq1u7ZEcoDuHNgVWxQtipQs4Bs8z4HKJ676i0OCwMvuRv3Pv%2F1XyfTTv9%2FNp3nrKTi4Mbae4FvpS3%2B4X7aegkPra3%2F84JvwS93cnbYeATiWd%2F9yu%2FUIAC9oWw8AAAAA8LUEDgAAACCewAEAAADEEzgAAACAeAIHAAAAEE%2FgAAAAAOIJHAAAAEA8gQMAAACIJ3AAAAAA8QQOAAAAIJ7AAQAAAMQTOAAAAIB4AgcAAAAQT%2BAAAAAA4gkcAAAAQDyBAwAAAIgncAAAAADxBA4AAAAgnsABAAAAxBM4AAAAgHgCBwAAABBP4AAAAADiCRwAAABAPIEDAAAAiCdwAAAAAPEEDgAAACCewAEAAADEEzgAAACAeAIHAAAAEE%2FgAAAAAOIJHAAAAEA8gQMAAACIJ3AAAAAA8QQOAAAAIJ7AAQAAAMQTOAAAAIB4AgcAAAAQT%2BAAAAAA4gkcAAAAQDyBAwAAAIgncAAAAADxBA4AAAAgnsABAAAAxBM4AAAAgHgCBwAAABBP4AAAAADiCRwAAABAPIEDAAAAiCdwAAAAAPEEDgAAACCewAEAAADEEzgAAACAeAIHAAAAEE%2FgAAAAAOIJHAAAAEA8gQMAAACIJ3AAAAAA8QQOAAAAIJ7AAQAAAMQTOAAAAIB4AgcAAAAQT%2BAAAAAA4gkcAAAAQDyBAwAAAIgncAAAAADxBA4AAAAgnsABAAAAxBM4AAAAgHgCBwAAABBP4AAAAADiCRwAAABAPIEDAAAAiCdwAAAAAPEEDgAAACCewAEAAADEm3%2F6tx%2B2nuGNpkmdgW%2BmTe3m7rT1FBzaKOPm7rz1FDFaq2%2F4v2opfYwyxhijr6Ovo%2FfxzWcDANjEPJ%2BnrWcAdqCWNr3leQm%2BlVpr8U34Cm8ME6189EXu61iXvlzWviodAEC2eesBAIDNtKm2aTrdTKOPx4d1fdQ5AIBUdnkAAKW2enM33%2F54nk%2FuDQCASG5iAIDftKne%2FHC6%2B%2FFcbWAFANIIHADAR9pU797dTLMjUQCAJAIHAPBUreX23fnkJHIAIIfAAQA873w3n%2B%2BcRw4AZBA4AIA%2FdTpP5xvrOACAAAIHAPA5p9t58moVAGD33K8AAC%2B4uTu15sxRAGDXBA4A4AW1lpt3p62nAAD4HIEDAHhZa9VLVeDIRh9bjwDwAoEDAPgip9u52qcCRzWGwAHsncABAHyRWsvJG1XgqNalbz0CwAsEDgDgS83nubp3gENaLgIHsHduUgCAL1VrmSY3D3BEY%2B2O4QB2zj0KAPAK08kuFTiiUcrjh2XrKQA%2BR%2BAAAF5hmpuTRuGYlmV1EgewZwIHAPAKtZZ2kjjgoB7eX3rXOICdEjgAgNeZJrtU4KDGGPe%2FXPrqMA5gjwQOAOB1mk0qcGCjj%2FufH9bLuvUgAE8JHAAQqG6ZGOokcMChjVLu31%2Fuf3lcV9tVgB2Ztx4AAHi9TZeH103zCrAT69LXnx9rq%2FOptanVWmutpdq98l2NrRPTNNdS%2FFII0L%2F7CcGbXAsEDgAA4I1GH5eHtRQ7VjbQ%2B7g8bPzu3n%2F9j3fNsr7dW5f%2B9%2F%2F%2BZespvgdbVACA17GAA2AP%2BqIrwUcEDgAAgDze2AtPCBwAEMo6CoDj6msfw4kn8BGBAwBCDYUD4KjG4k298AmBAwBC1WERB8AhLZdu9QZ8SuAAgGDe2ApwNOuyrt%2F9lZ8QQeAAgGBjDIdxABzHuq7LRd2A581bDwAAfI36h%2F%2BwXhngio3l0q3dgM8QOADgCljEAXDFxrL0fhlDyIbPEjgA4Gr8uojjj%2F%2F%2BVfrwJ8QMU2tOIsxTxzj4%2BzFq8SRfRimjjDH6Ono%2F%2FFcDvozAAQDXpH7y71%2Ficn%2Fwx68Y9abWZoFPmN7H5cGPGMCrOWQUAAAAiCdwAAAAAPEEDgAAACCewAEAAADEEzgAAACAeAIHAAAAEE%2FgAAAAAOIJHAAAAEA8gQMAAACIJ3AAAAAA8QQOAAAAIJ7AAQAAAMQTOAAAAIB4AgcAAAAQT%2BAAAAAA4gkcAAAAQDyBAwAAAIgncAAAAADxBA4AAAAgnsABAAAAxBM4AAAAgHgCBwAAABBP4AAAAADiCRwAAABAPIEDAAAAiCdwAAAAAPEEDgAAACDevPUAAABAsFprbaW2WmsttdSt5%2BF7qtUHzo4IHAAAwGvV1kqdamueb4G9EDgAAIBXaHOdJlvdgd0ROAAAgC%2FSpjpNtdiVAOySwAEAALyg1jqdmrIB7JnAAQAAfE5tdT7ZkwLsncABAAD8qTa1abZyAwggcAAAAM%2Bb5tomdQPIYKUZAADwjDbV5m0pQA4XLAAA4KnayjR7WACS2KICAAB85Nd3pmw9BcDruGwBAAAfmU7NwRtAHIEDAAD4XW21yhtAIIEDAAD43eRgUSCTixcAAPCb1mr1iABkcvUCAAB%2B02a7U4BUAgcAAFBKKbUWx28AuQQOAACglFLqpG4AwQQOAACglFIcvwFEcwkDAABKqbV5OACSuYYBAACl2Z4ChBM4AAAATwZAPJcxAACg1GIJB5BN4AAAAIq%2BAaQTOAAAAH0DiCdwAAAAReIA0gkcAABAKXVsPQHAVxE4AAAAgHgCBwAAABBP4AAAAADiCRwAAABAPIEDAAAAiCdwAAAAAPEEDgAAACCewAEAAADEEzgAAACAeAIHAAAAEE%2FgAAAAAOIJHAAAAEA8gQMAAACIJ3AAAAAA8QQOAAAAIJ7AAQAAAMQTOAAAAIB4AgcAAAAQT%2BAAAAAA4gkcAAAAQDyBAwAAAIgncAAAAADxBA4AAAAgnsABAAAAxBM4AAAAgHgCBwAAABBP4AAAAADiCRwAAABAPIEDAAAAiCdwAAAAAPEEDgAAACCewAEAAADEEzgAAACAeAIHAAAAEE%2FgAAAAAOIJHAAAAEA8gQMAAACIJ3AAAAAA8QQOAAAAIJ7AAQAAAMQTOAAAAIB4AgcAAAAQT%2BAAAAAA4gkcAAAAQDyBAwAAAIgncAAAAADxBA4AAAAgnsABAAAAxBM4AAAAgHgCBwAAABBP4AAAAADiCRwAAABAPIEDAAAAiCdwAAAAAPEEDgAAACCewAEAAADEEzgAAACAeAIHAAAAEE%2FgAAAAAOIJHAAAAEA8gQMAAACIJ3AAAAAA8QQOAAAAIJ7AAQAAAMQTOAAAAIB4AgcAAAAQT%2BAAAAAA4gkcAAAAQDyBAwAAAIgncAAAAADxBA4AAAAgnsABAAAAxBM4AAAAgHgCBwAAABBP4AAAAADiCRwAAABAPIEDAAAAiCdwAAAAAPEEDgAAACCewAEAAADEEzgAAACAeAIHAAAAEE%2FgAAAAAOIJHAAAAEA8gQMAAACIJ3AAAAAA8QQOAAAAIJ7AAQAAAMQTOAAAAIB4AgcAAAAQT%2BAAAAAA4gkcAAAAQDyBAwAAAIgncAAAAADxBA4AAAAgnsABAAAAxBM4AAAAgHgCBwAAABBP4AAAAADiCRwAAABAPIEDAACANxlbDwB%2FIHAAAADwFn0oHAFGP8rHJHAAAADwFsd5co62rkf5mAQOAAAA3mJd161H4GXLcpSPSeAAAADgLZbHvvUIvOxyv2w9wncicAAAAPAWvfe%2Bahy7tjyux%2FmMBA4AAADe6P7D49Yj8Dkffj7QByRwAAAA8EbrpS%2BXoxzxEOdyv1wej7I%2FpQgcAAAAfI37Xx6716nsz7r0n%2F9%2Bv%2FUU35XAAQAAwNuNMd7%2FfN8P8y7SCOva%2F%2Fm%2FH8Y41ocicAAAAPBVxjre%2F%2FPeXpWduDws%2F%2Fif98c5W%2FT%2FzVsPAAAAQLwxxoefH%2BbzdHN7apM%2FpW9jXfv7fzxcHg507sYfCRwAAAB8G8vjuj6ubW7zaZpOU2u11Fq3nuqqjdFLX%2FvlcX28X5ZLL%2BVY21L%2BSOAAAADgmxmlrEtfl14%2BXLaeZTO9j%2FVyuB0im7NwCAAAAIgncAAAAADxBA4AAAAgnsABAHC96nGPmstVhwMZAd5C4AAAuFrDCXeBxpClAN5C4AAAuFqelBMJHABvI3AAAFytdbWEI8%2B6ChwAbyFwAABcrdEdwxFnjO4jA3gLgQMA4IqNdfG0nGRZLLoBeKN5FL%2Fz9quWWpyivWd%2BeuDbGaNWP1Q5bu7mrUfgi9U6n1rZzS3FKKWMUUYZY%2FTuVvSpfvEVAXgjdye7Norf%2BsBxOFUvSZ0sAk0yRmm7%2BcRqKaX%2BWlvqVMooY6ylr90loJSyXBY3fwBvJnAAAFy53kcppbW9LOL4o1pqnUqbplFKX3pf%2B34Wm3xn69rtJwL4GruJ%2BQAA%2FGV6HztfI1FLmeZ2Os%2F7DDF%2Ftb725XHdegqAbFZwAAAcQl9HaTtdx%2FG7WqZTa6Osl3XfQeabqWVcLn11tijAV7OCAwDgKHofa8JpF7WW%2BTzXA9yo9rU%2F3C%2FqBsA3YQUHAMCBjFHWtddSaqu11lpLqft8L9iYz9N66X3d43BvVmsZffQx%2Btr7Wsb%2BaxNADoEDAOBwRimjj32GjSfW3pcHh1MA8LIDrPwDACDWfJrm07T1FAAEEDgAANi1083UZnetALzArwoAAHZtlHK%2BmevO3%2F8CwNYEDgAAdq%2BW863D4wD4HIEDAIAAtVWHcQDwGQIHAAAZ5pvJNhUA%2FozAAQBAjOlsEQcAzxM4AACIMZ%2BnYhUHAM8ROAAASDLZpwLAcwQOAACStNkuFQCeIXAAAJBkmtzBAvAMvx4AAIhSS5vtUgHgKYEDAIAw02SXCgBPCRwAAISp7mEB%2BIRfDgAAhKnVFhUAnhI4AAAIU5vAAcBTAgcAAGHkDQA%2BJXAAABBmbD0AADskcAAAAADxBA4AAAAgnsABAAAAxBM4AAAAgHgCBwAAABBP4AAAAADiCRwAAABAPIEDAAAAiCdwAAAAAPEEDgAAACCewAEAAADEEzgAAACAeAIHAAAAEE%2FgAAAAAOIJHAAAAEA8gQMAAACIJ3AAAAAA8QQOAAAAIJ7AAQAAAMQTOAAAAIB4AgcA8Epj6wEAAD4hcAAArzMUDgBgfwQOAOCV9A0AYH8EDgDgdXpXOACA3RE4AIDXGQIHALA%2FAgcA8DrrInAAALsjcAAArzBGGb1vPQUAwFMCBwDwCn2xQQUA2COBAwB4hXWxfAMA2COBAwD4UmOUvgocAMAeCRwAwJdaHlf7UwCAfRI4AIAvMvpYL%2BvWUwAAPE%2FgAAC%2ByMXyDQBgxwQOAOBlfR2OFwUA9kzgAABeMsrj%2FWXrIQAAPkfgAABe8PjhMuxOAQD2TeAAAD7ncr%2BsXd4AAPZO4AAA%2FtTyuC6O3gAAEsxbDwAA7NIol4dF3QAAUggcAMBTo4%2FH%2B6XbmQIA5BA4AICPrEu%2FPCxOFQUAsggcAMBv%2Btovj2tftQ0AII%2FAAQCUsY7LZV2duAEAxBI4AOC4%2BjLWta9LH3akAADh5h77t5o6tVq3HgKuxRhlrKlXA95mlOIiejSjlDLKGGOMMvrovcsaAMDVmB%2Ful61neKObu1Od3JzDtzHWnns1AAAAaFsPAAAAAPC1BA4AAAAgnsABAAAAxBM4AAAAgHgCBwAAABBP4AAAAADiCRwAAABAPIEDAAAAiCdwAAAAAPEEDgAAACCewAEAAADEEzgAAACAeAIHAAAAEE%2FgAAAAAOIJHAAAAEA8gQMAAACIJ3AAAAAA8QQOAAAAIJ7AAQAAAMQTOAAAAIB4AgcAAAAQT%2BAAAAAA4gkcAAAAQDyBAwAAAIgncAAAAADxBA4AAAAgnsABAAAAxBM4AAAAgHgCBwAAABBP4AAAAADiCRwAAABAPIEDAAAAiCdwAAAAAPEEDgAAACCewAEAAADEEzgAAACAeAIHAAAAEE%2FgAAAAAOIJHAAAAEA8gQMAAACIJ3AAAAAA8QQOAAAAIJ7AAQAAAMQTOAAAAIB4AgcAAAAQT%2BAAAAAA4gkcAAAAQDyBAwAAAIgncAAAAADxBA4AAAAgnsABAAAAxBM4AAAAgHgCBwAAABBP4AAAAADiCRwAAABAPIEDAAAAiCdwAAAAAPEEDgAAACCewAEAAADEEzgAAACAeAIHAAAAEE%2FgAAAAAOIJHAAAAEA8gQMAAACIJ3AAAAAA8QQOAAAAIJ7AAQAAAMQTOAAAAIB4AgcAAAAQT%2BAAAAAA4s1bDwAAAPCMWko7TfPcptPUaq2tbj3Rlet9jD7WtS%2BPy7r0rceBVxM4AACA3Tmdp%2FPtuU2ixvfTWi2tTnM738y9j4f3j8tl3XooeAWBAwAA2JFa6%2B2783yath7k0Fqrdz%2FeLJf1%2FpfHMcbW48AXcQYHAACwF3WqP%2FztVt3Yifk0%2FfDTbbM5iBACBwAAsAu11h9%2BvLUtZVd%2BXcpRfSYkEDgAAIBduH13tlhgh9rUbn84bz0FvEzgAAAAtjedmp0puzWf52n28Mje%2BR4FAAC2d3NrjcCu3dz5gNg7gQMAANhYa9UCgZ2b5mYDETvnIgIAAGxsPtucEsDHxM4JHAAAwMamyZNzgDZ5fmTXfIMCAAAbq%2FY%2BJLBFhZ0TOAAAgI216sk5QK2eH9k136AAAMDGhr4RoY6tJ4DPETgAAACAeAIHAAAAEE%2FgAAAAAOIJHAAAAEA8gQMAAACIJ3AAAAAA8QQOAAAAIJ7AAQAAAMQTOAAAAIB4AgcAAAAQT%2BAAAAAA4gkcAAAAQDyBAwAAAIgncAAAAADxBA4AAAAgnsABAAAAxBM4AAAAgHgCBwAAABBP4AAAAADiCRwAAABAPIEDAAAAiCdwAAAAAPEEDgAAACCewAEAAADEEzgAAACAeAIHAAAAEE%2FgAAAAAOIJHAAAAEA8gQMAAACIJ3AAAAAA8QQOAAAAIJ7AAQAAAMQTOAAAAIB4AgcAAAAQT%2BAAAAAA4gkcAAAAQDyBAwAAAIgncAAAAADxBA4AAAAgnsABAAAAxBM4AAAAgHgCBwAAABBP4AAAAADiCRwAAABAPIEDAAAAiCdwAAAAAPEEDgAAACCewAEAAADEEzgAAACAeAIHAAAAEE%2FgAAAAAOIJHAAAAEC8eesBAIAdGrXWUkstZZRSa916HjYwth7g86azP9R9Y37S4RtqrdaTy9T3JnAAAL%2BptZT660PO7885nngOa%2BcfffM0DuxbbS5T35vAAQCUUkprde9PtAAAf07gAICjq83KdAAgnsABAMdVW5E2AIDrIHAAwDGN1po9KQDA1RA4AOB46qjN0e4AwFUROADgWGqtdap7fwUoAMAr%2BesNABxLa%2BoGAHCFBA4AOJA21SFvAADXSOAAgKNozZmiAMDVEjgA4BBard6ZAgBcMYEDAK5fLX7nAwBXzs0OAFy%2FanMKAHDtBA4AuHK1FptTAICrJ3AAwJWrVd4AAK6fwAEAV83yDQDgGAQOALhmVm8AAAchcADAFRv2pwAAByFwAMDVUjcAgOMQOADgeukbAMBhCBwAcLUs4AAAjkPgAIDrNRQOAOAoBA4AuF6WcAAAhyFwAMAVG1sPAADwnQgcAAAAQDyBAwAAAIgncAAAAADxBA4AAAAgnsABAAAAxBM4AAAAgHgCBwAAABBP4AAAAADiCRwAAABAPIEDAAAAiCdwAAAAAPEEDgAAACCewAEAAADEEzgAAACAeAIHAAAAEE%2FgAAAAAOIJHAAAAEA8gQMAAACIJ3AAAAAA8QQOAAAAIJ7AAQAAAMQTOAAAAIB4AgcAAAAQT%2BAAAAAA4gkcAAAAQDyBAwCAMHXrAQDYIYEDAIAwY2w9AQD7I3AAAJCmKhwAPCVwAAAQxgoOAD4lcAAAkKYrHAA8JXAAABBG3wDgUwIHAABhRu9bjwDA7ggcAABEGWXoGwB8QuAAACDJWOUNAJ4hcAAAkKQ7gQOA5wgcAADkGEPgAOBZ%2FwfrNCSBRUyfmgAAAABJRU5ErkJggg%3D%3D);
@@ -26810,18 +26830,18 @@ body.sd_meta_data .sd-meta-data-index-edit {
           background-size: 100%;
   padding-top: 30px;
 }
-/* line 322, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 339, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .hero .Hero-Message {
   padding-left: 5px;
 }
 
-/* line 327, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 344, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .hero-2 {
   color: black;
   background-image: unset;
 }
 
-/* line 333, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 350, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .Search-review-datas {
   font-family: Halant;
   font-size: 24px;
@@ -26836,42 +26856,42 @@ body.sd_meta_data .sd-meta-data-index-edit {
   margin-bottom: 32px;
 }
 
-/* line 347, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 364, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .Search-review-datas .text-style-1 {
   color: #33124b;
 }
 
-/* line 351, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 368, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 #login-box {
   border-radius: 3px 3px 0 0;
   border: none;
   background-color: #e6e6e6;
 }
-/* line 355, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 372, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 #login-box .tabs-title {
   text-align: center;
 }
-/* line 358, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 375, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 #login-box .tabs-title.is-active a {
   border-radius: 3px 3px 0 0;
   background-color: white;
 }
-/* line 362, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 379, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 #login-box .tabs-title:not(.is-active) > a:hover {
   border-radius: 3px 3px 0 0;
   background-color: #efefef;
 }
 
-/* line 367, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 384, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .tabs-content {
   border-radius: 0 0 3px 3px;
 }
 
-/* line 372, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 389, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 #new_user, #existing-user-panel form {
   text-align: center;
 }
-/* line 373, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 390, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 #new_user ::-webkit-input-placeholder, #existing-user-panel form ::-webkit-input-placeholder {
   color: #9e9e9e;
 }
@@ -26884,11 +26904,11 @@ body.sd_meta_data .sd-meta-data-index-edit {
 #new_user ::placeholder, #existing-user-panel form ::placeholder {
   color: #9e9e9e;
 }
-/* line 379, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 396, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 #new_user .small-centered, #existing-user-panel form .small-centered {
   padding-top: 50px;
 }
-/* line 383, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 400, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 #new_user label, #existing-user-panel form label {
   text-align: left;
   font-family: Roboto, Helvetica, sans-serif;
@@ -26900,36 +26920,36 @@ body.sd_meta_data .sd-meta-data-index-edit {
   letter-spacing: normal;
   color: #1c1819;
 }
-/* line 395, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 412, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 #new_user #user_email, #existing-user-panel form #user_email {
   border-radius: 3px;
   -webkit-box-shadow: inset 0 1px 3px 0 rgba(0, 0, 0, 0.13);
           box-shadow: inset 0 1px 3px 0 rgba(0, 0, 0, 0.13);
   background-color: #ffffff;
 }
-/* line 401, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 418, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 #new_user #user_password, #existing-user-panel form #user_password {
   border-radius: 3px;
   -webkit-box-shadow: inset 0 1px 3px 0 rgba(0, 0, 0, 0.13);
           box-shadow: inset 0 1px 3px 0 rgba(0, 0, 0, 0.13);
   background-color: #ffffff;
 }
-/* line 407, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 424, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 #new_user .Rectangle-141, #existing-user-panel form .Rectangle-141 {
   border-radius: 3px;
   background-color: #fdd835;
 }
-/* line 412, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 429, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 #new_user .sign-up-button, #existing-user-panel form .sign-up-button {
   background-color: #fdd835;
   color: #33124b;
 }
-/* line 417, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 434, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 #new_user .sign-in-button, #existing-user-panel form .sign-in-button {
   background-color: #1986c7;
   color: white;
 }
-/* line 422, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 439, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 #new_user input.button[type='submit'], #existing-user-panel form input.button[type='submit'] {
   margin-top: 1rem;
   border-radius: 3px;
@@ -26942,7 +26962,7 @@ body.sd_meta_data .sd-meta-data-index-edit {
   text-align: center;
 }
 @media screen and (min-width: 64em) {
-  /* line 435, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+  /* line 452, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
   #new_user input.button[type='submit'], #existing-user-panel form input.button[type='submit'] {
     border-radius: 3px;
     font-size: 18px;
@@ -26955,7 +26975,7 @@ body.sd_meta_data .sd-meta-data-index-edit {
   }
 }
 
-/* line 448, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 465, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .Rectangle-2v2 {
   padding-top: 72px;
   padding-bottom: 72px;
@@ -26966,7 +26986,7 @@ body.sd_meta_data .sd-meta-data-index-edit {
           box-shadow: 0 20px 40px 0 rgba(0, 0, 0, 0.15);
   background-color: #ffffff;
 }
-/* line 459, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 476, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .Rectangle-2v2 .read-more {
   font-family: AvenirNext;
   font-size: 14px;
@@ -26978,7 +26998,7 @@ body.sd_meta_data .sd-meta-data-index-edit {
   text-align: center;
   color: #5e258a;
 }
-/* line 471, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 488, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .Rectangle-2v2 .See-how-you-can-work {
   font-family: Halant;
   font-size: 48px;
@@ -26991,7 +27011,7 @@ body.sd_meta_data .sd-meta-data-index-edit {
   color: #1c1819;
   margin-bottom: 30px;
 }
-/* line 484, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 501, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .Rectangle-2v2 h3.text-center {
   font-family: Halant;
   font-size: 24px;
@@ -27004,7 +27024,7 @@ body.sd_meta_data .sd-meta-data-index-edit {
   color: #1c1819;
 }
 
-/* line 497, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 514, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .Rectangle-2 {
   padding-top: 72px;
   padding-bottom: 72px;
@@ -27015,7 +27035,7 @@ body.sd_meta_data .sd-meta-data-index-edit {
           box-shadow: 0 20px 40px 0 rgba(0, 0, 0, 0.15);
   background-color: #ffffff;
 }
-/* line 510, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 527, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .Rectangle-2 .read-more {
   font-family: AvenirNext;
   font-size: 14px;
@@ -27027,7 +27047,7 @@ body.sd_meta_data .sd-meta-data-index-edit {
   text-align: center;
   color: #5e258a;
 }
-/* line 522, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 539, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .Rectangle-2 .See-how-you-can-work {
   font-family: Halant;
   font-size: 48px;
@@ -27040,7 +27060,7 @@ body.sd_meta_data .sd-meta-data-index-edit {
   color: #1c1819;
   margin-bottom: 30px;
 }
-/* line 535, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 552, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .Rectangle-2 h3.text-center {
   font-family: Halant;
   font-size: 24px;
@@ -27053,7 +27073,7 @@ body.sd_meta_data .sd-meta-data-index-edit {
   color: #1c1819;
 }
 
-/* line 548, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 565, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .Rectangle-3 {
   margin-top: 50px;
   margin-bottom: 85px;
@@ -27065,7 +27085,7 @@ body.sd_meta_data .sd-meta-data-index-edit {
           box-shadow: 0 20px 40px 0 rgba(0, 0, 0, 0.15);
   background-color: #ffffff;
 }
-/* line 558, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 575, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .Rectangle-3 .read-more {
   font-family: AvenirNext;
   font-size: 14px;
@@ -27077,7 +27097,7 @@ body.sd_meta_data .sd-meta-data-index-edit {
   text-align: center;
   color: #5e258a;
 }
-/* line 570, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 587, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .Rectangle-3 .See-how-you-can-work {
   font-family: Halant;
   font-size: 48px;
@@ -27090,7 +27110,7 @@ body.sd_meta_data .sd-meta-data-index-edit {
   color: #1c1819;
   margin-bottom: 30px;
 }
-/* line 583, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 600, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .Rectangle-3 h3.text-center {
   font-family: Halant;
   font-size: 24px;
@@ -27103,7 +27123,7 @@ body.sd_meta_data .sd-meta-data-index-edit {
   color: #1c1819;
 }
 
-/* line 596, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 613, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .Create-your-systemat {
   font-family: Halant;
   font-size: 48px;
@@ -27116,7 +27136,7 @@ body.sd_meta_data .sd-meta-data-index-edit {
   color: #1c1819;
 }
 
-/* line 608, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 625, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .SRDR-has-a-variety {
   font-size: 20px;
   font-weight: normal;
@@ -27129,7 +27149,7 @@ body.sd_meta_data .sd-meta-data-index-edit {
   margin-bottom: 20px;
 }
 
-/* line 620, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 637, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .Build-electronic-ext {
   font-family: Halant;
   font-size: 20px;
@@ -27141,7 +27161,7 @@ body.sd_meta_data .sd-meta-data-index-edit {
   color: #1c1819;
 }
 
-/* line 631, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 648, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .Feature-Lorem-ips {
   font-family: 'Noto Sans';
   font-size: 16px;
@@ -27153,7 +27173,7 @@ body.sd_meta_data .sd-meta-data-index-edit {
   color: grey;
 }
 
-/* line 642, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 659, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .placeholder-snapshot {
   width: 585px;
   display: block;
@@ -27162,30 +27182,30 @@ body.sd_meta_data .sd-meta-data-index-edit {
   margin-top: 40px;
 }
 
-/* line 650, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 667, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .user-description .small.subheader {
   font-size: 16px;
 }
 
-/* line 655, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 672, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .testimonial-box .small.subheader {
   font-size: 0.9em;
 }
-/* line 658, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 675, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .testimonial-box span {
   font-family: 'Noto Sans';
   font-style: italic;
 }
 
-/* line 664, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 681, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .Recently-published {
   padding-top: 100px;
 }
-/* line 667, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 684, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .Recently-published .cell {
   padding: 20px;
 }
-/* line 670, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 687, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .Recently-published h1 {
   font-family: Halant;
   font-size: 48px;
@@ -27197,28 +27217,28 @@ body.sd_meta_data .sd-meta-data-index-edit {
   text-align: center;
   color: #1c1819;
 }
-/* line 681, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 698, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .Recently-published span {
   text-align: center;
   font-weight: bold;
   font-family: sans-serif;
 }
-/* line 686, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 703, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .Recently-published .small {
   color: #56585f;
   font-size: 0.9em;
 }
-/* line 690, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 707, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .Recently-published .bold {
   font-weight: bold;
 }
-/* line 693, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 710, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .Recently-published .summary {
   color: black;
   line-height: 1.5;
 }
 
-/* line 699, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 716, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .recent-project {
   margin-bottom: 30px;
   background: white;
@@ -27227,7 +27247,7 @@ body.sd_meta_data .sd-meta-data-index-edit {
           box-shadow: 0 20px 40px 0 rgba(0, 0, 0, 0.15);
 }
 
-/* line 706, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 723, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .join-the-professionals, .join-2 {
   height: 256px;
   background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB3aWR0aD0iMTQ0MCIgaGVpZ2h0PSIyNTYiIHZpZXdCb3g9IjAgMCAxNDQwIDI1NiI%2BCiAgICA8ZGVmcz4KICAgICAgICA8cGF0aCBpZD0iYSIgZD0iTTAgMy4wMDhBMy4wMDIgMy4wMDIgMCAwIDEgMy4wMDUgMEgxNDQwdjI1NkgzLjAwNUEzLjAwNyAzLjAwNyAwIDAgMSAwIDI1Mi45OTJWMy4wMDh6Ii8%2BCiAgICA8L2RlZnM%2BCiAgICA8ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPgogICAgICAgIDxwYXRoIGZpbGw9IiMyODI4MjgiIGQ9Ik0tMzAtOTY3aDE1MDB2MjA2N0gtMzB6Ii8%2BCiAgICAgICAgPGc%2BCiAgICAgICAgICAgIDxtYXNrIGlkPSJiIiBmaWxsPSIjZmZmIj4KICAgICAgICAgICAgICAgIDx1c2UgeGxpbms6aHJlZj0iI2EiLz4KICAgICAgICAgICAgPC9tYXNrPgogICAgICAgICAgICA8dXNlIGZpbGw9IiM0QzBEN0QiIHhsaW5rOmhyZWY9IiNhIi8%2BCiAgICAgICAgICAgIDxwYXRoIGZpbGw9IiM1RTI1OEEiIGQ9Ik00MDAuNTEgMzUuMDYySDIyMi41NzJ2LTE3NS44NjRjMC03LjI4Ny01Ljk3OS0xMy4xOS0xMy4zNDMtMTMuMTk4SDg0LjZjLTcuMzcxIDAtMTMuMzQzIDUuOTExLTEzLjM0MyAxMy4xOThMNzEuMjUgMzUuMDc3bC0xNzcuOS0uMDA3Yy03LjA3NiAwLTEzLjM0MyA2LjE5NS0xMy4zNSAxMy4xOTh2MTIzLjIxYTEzLjA3OCAxMy4wNzggMCAwIDAgMy45MSA5LjMzMiAxMy40MDcgMTMuNDA3IDAgMCAwIDkuNDQgMy44NTlINzEuMjU3djE3NS45MTVjMCAzLjQ5NCAxLjQwNiA2Ljg1NyAzLjkxIDkuMzMyYTEzLjQ0IDEzLjQ0IDAgMCAwIDkuNDQgMy44NjZoMTI0LjYxNmExMy40NyAxMy40NyAwIDAgMCA5LjQ1NS0zLjg4IDEzLjEyMSAxMy4xMjEgMCAwIDAgMy44OTUtOS4zMThWMTg0LjY3NmwxNzcuOTMtLjAwN2MzLjY4MSAwIDcuMDE3LTEuNDcxIDkuNDQtMy44NTlhMTMuMDc5IDEzLjA3OSAwIDAgMCAzLjkxLTkuMzRsLjAwNy0xMjMuMjFjMC03LjI4Ni01Ljk3Mi0xMy4xOS0xMy4zNS0xMy4xOTh6TTc5MC4yNTUtMjMuNDY5aC04OC45NjhWLTExMS40YzAtMy42NDMtMi45OS02LjU5NS02LjY3Mi02LjU5OUg2MzIuM2MtMy42ODYgMC02LjY3MSAyLjk1Ni02LjY3MSA2LjZsLS4wMDQgODcuOTM4LTg4Ljk1LS4wMDNjLTMuNTM4IDAtNi42NzEgMy4wOTctNi42NzUgNi41OTl2NjEuNjA1YTYuNTM5IDYuNTM5IDAgMCAwIDEuOTU1IDQuNjY2IDYuNzA0IDYuNzA0IDAgMCAwIDQuNzIgMS45M2g4OC45NTR2ODcuOTU3YzAgMS43NDcuNzAzIDMuNDI5IDEuOTU1IDQuNjY2YTYuNzIgNi43MiAwIDAgMCA0LjcyIDEuOTMzaDYyLjMwOGE2LjczNSA2LjczNSAwIDAgMCA0LjcyNy0xLjk0IDYuNTYgNi41NiAwIDAgMCAxLjk0OC00LjY2VjUxLjMzOWw4OC45NjQtLjAwNGMxLjg0MSAwIDMuNTA5LS43MzUgNC43Mi0xLjkyOWE2LjU0IDYuNTQgMCAwIDAgMS45NTUtNC42N2wuMDA0LTYxLjYwNWMwLTMuNjQzLTIuOTg2LTYuNTk1LTYuNjc1LTYuNTk5ek0xNDQ3LjI1NSAxNDQuNTMxaC04OC45NjhWNTYuNmMwLTMuNjQzLTIuOTktNi41OTUtNi42NzItNi41OTlIMTI4OS4zYy0zLjY4NiAwLTYuNjcxIDIuOTU2LTYuNjcxIDYuNmwtLjAwNCA4Ny45MzgtODguOTUtLjAwM2MtMy41MzggMC02LjY3MSAzLjA5Ny02LjY3NSA2LjU5OXY2MS42MDVhNi41MzkgNi41MzkgMCAwIDAgMS45NTUgNC42NjYgNi43MDQgNi43MDQgMCAwIDAgNC43MiAxLjkzaDg4Ljk1NHY4Ny45NTdjMCAxLjc0Ny43MDMgMy40MjkgMS45NTUgNC42NjZhNi43MiA2LjcyIDAgMCAwIDQuNzIgMS45MzNoNjIuMzA4YTYuNzM1IDYuNzM1IDAgMCAwIDQuNzI3LTEuOTQgNi41NiA2LjU2IDAgMCAwIDEuOTQ4LTQuNjZ2LTg3Ljk1M2w4OC45NjQtLjAwNGMxLjg0MSAwIDMuNTA5LS43MzUgNC43Mi0xLjkyOWE2LjU0IDYuNTQgMCAwIDAgMS45NTUtNC42N2wuMDA0LTYxLjYwNWMwLTMuNjQzLTIuOTg2LTYuNTk1LTYuNjc1LTYuNTk5eiIgbWFzaz0idXJsKCNiKSIvPgogICAgICAgIDwvZz4KICAgIDwvZz4KPC9zdmc%2BCg%3D%3D);
@@ -27236,40 +27256,40 @@ body.sd_meta_data .sd-meta-data-index-edit {
           background-size: 100%;
   text-align: center;
 }
-/* line 713, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 730, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .join-the-professionals h1, .join-2 h1 {
   font-family: Halant;
   font-weight: bold;
   color: white;
 }
-/* line 720, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 737, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .join-the-professionals .button a, .join-2 .button a {
   color: black;
 }
-/* line 725, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 742, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .join-the-professionals .button, .join-2 .button {
   background-color: #fdd835;
   font-weight: bold;
 }
 
-/* line 732, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 749, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .join-2 .button {
   background-color: #f0f0f0;
 }
 
-/* line 737, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 754, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .get-started {
   font-size: 18px;
   border-radius: 3px;
   background-color: #4c0d7d;
   font-weight: bold;
 }
-/* line 743, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 760, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .get-started a:visited {
   color: white;
 }
 
-/* line 748, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 765, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .button.learn-more {
   font-size: 18px;
   font-weight: bold;
@@ -27278,12 +27298,12 @@ body.sd_meta_data .sd-meta-data-index-edit {
   background-color: white;
   margin-left: 10px;
 }
-/* line 756, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 773, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .button.learn-more a:visited {
   color: #414247;
 }
 
-/* line 761, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 778, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .stock-image-placeholder-1 {
   width: 280px;
   height: 186px;
@@ -27295,7 +27315,7 @@ body.sd_meta_data .sd-meta-data-index-edit {
   border-radius: 3px;
 }
 
-/* line 771, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 788, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .stock-image-placeholder-2 {
   top: -50px;
   left: 125px;
@@ -27307,18 +27327,18 @@ body.sd_meta_data .sd-meta-data-index-edit {
   border-radius: 3px;
 }
 
-/* line 781, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 798, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .how-you-title {
   font-weight: bold;
   font-family: 'Halant';
 }
 
-/* line 786, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 803, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .user-description {
   padding-bottom: 20px;
 }
 
-/* line 790, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 807, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .testimonial-box {
   text-align: center;
   padding-bottom: 30px;
@@ -27327,65 +27347,65 @@ body.sd_meta_data .sd-meta-data-index-edit {
           box-shadow: 0 20px 40px 0 rgba(0, 0, 0, 0.15);
   background-color: #ffffff;
 }
-/* line 798, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 815, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .testimonial-box h4 {
   font-weight: bold;
 }
-/* line 802, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 819, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .testimonial-box h6 {
   font-size: 0.9em;
 }
-/* line 806, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 823, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .testimonial-box h7 {
   font-family: 'Noto Sans';
   font-style: italic;
 }
 
-/* line 812, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 829, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .testimonial-rows {
   margin-bottom: 120px;
 }
 
-/* line 816, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 833, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .testimonial-row {
   padding-top: 120px;
 }
 
-/* line 820, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 837, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .testimonial-left {
   margin-right: 30px;
   margin-bottom: 100px;
 }
 
-/* line 827, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 844, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .testimonial-picture {
   position: relative;
   top: -62px;
   margin-bottom: -62px;
 }
 
-/* line 833, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 850, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .features-box {
   padding-top: 100px;
   background-color: #dee1e8;
 }
 
-/* line 838, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 855, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .feature-box {
   padding-bottom: 100px;
 }
-/* line 841, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 858, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .feature-box h1 {
   font-family: Halant;
   font-size: 2.5em;
   font-weight: bold;
   line-height: normal;
 }
-/* line 848, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 865, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .feature-box span {
   font-size: 1rem;
 }
-/* line 852, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 869, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .feature-box span .subtitle {
   color: #414247;
   font-size: 1rem;
@@ -27394,7 +27414,7 @@ body.sd_meta_data .sd-meta-data-index-edit {
   margin-bottom: 0.5rem;
 }
 
-/* line 861, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 878, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .sub-feature-box {
   margin-left: 35px;
   height: 78px;
@@ -27404,7 +27424,7 @@ body.sd_meta_data .sd-meta-data-index-edit {
   background-color: #ffffff;
   margin-bottom: 6px;
 }
-/* line 869, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 886, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .sub-feature-box span {
   font-family: Halant;
   font-size: 1.1em;
@@ -27414,39 +27434,39 @@ body.sd_meta_data .sd-meta-data-index-edit {
   position: relative;
   left: 12px;
 }
-/* line 879, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 896, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .sub-feature-box img {
   margin-left: 12px;
   margin-right: 12px;
 }
 
-/* line 885, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 902, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .v3 {
   background-color: white;
 }
-/* line 886, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 903, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .v3 .Rectangle-2 {
   border-radius: 3px;
   -webkit-box-shadow: 0 20px 40px 0 rgba(0, 0, 0, 0.15);
           box-shadow: 0 20px 40px 0 rgba(0, 0, 0, 0.15);
   background-color: #ffffff;
 }
-/* line 892, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 909, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .v3 .hero-background {
   background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABaAAAAIuCAIAAADG3zi5AAAACXBIWXMAAAsTAAALEwEAmpwYAAAGAGlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS42LWMxNDUgNzkuMTYzNDk5LCAyMDE4LzA4LzEzLTE2OjQwOjIyICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyIgeG1sbnM6cGhvdG9zaG9wPSJodHRwOi8vbnMuYWRvYmUuY29tL3Bob3Rvc2hvcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RFdnQ9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZUV2ZW50IyIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ0MgMjAxOSAoTWFjaW50b3NoKSIgeG1wOkNyZWF0ZURhdGU9IjIwMTktMDMtMDRUMTE6NDk6MjQrMDg6MDAiIHhtcDpNb2RpZnlEYXRlPSIyMDE5LTAzLTA1VDA4OjQyOjE1KzA4OjAwIiB4bXA6TWV0YWRhdGFEYXRlPSIyMDE5LTAzLTA1VDA4OjQyOjE1KzA4OjAwIiBkYzpmb3JtYXQ9ImltYWdlL3BuZyIgcGhvdG9zaG9wOkNvbG9yTW9kZT0iMyIgcGhvdG9zaG9wOklDQ1Byb2ZpbGU9InNSR0IgSUVDNjE5NjYtMi4xIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOmY1MmFmN2MyLTk4ZGYtNDg2My1iZDcwLWU4YWY3MWYyNzYxZCIgeG1wTU06RG9jdW1lbnRJRD0iYWRvYmU6ZG9jaWQ6cGhvdG9zaG9wOmRhNzM2Yjk3LWFhMTMtZjY0Ni04ZTg0LTY5OTgwNjYzOGU2NiIgeG1wTU06T3JpZ2luYWxEb2N1bWVudElEPSJ4bXAuZGlkOmM3MTBlMTM2LWY5YTQtNDIyYS05NDFlLTc5NzViZmE1ZWRlNiI%2BIDx4bXBNTTpIaXN0b3J5PiA8cmRmOlNlcT4gPHJkZjpsaSBzdEV2dDphY3Rpb249ImNyZWF0ZWQiIHN0RXZ0Omluc3RhbmNlSUQ9InhtcC5paWQ6YzcxMGUxMzYtZjlhNC00MjJhLTk0MWUtNzk3NWJmYTVlZGU2IiBzdEV2dDp3aGVuPSIyMDE5LTAzLTA0VDExOjQ5OjI0KzA4OjAwIiBzdEV2dDpzb2Z0d2FyZUFnZW50PSJBZG9iZSBQaG90b3Nob3AgQ0MgMjAxOSAoTWFjaW50b3NoKSIvPiA8cmRmOmxpIHN0RXZ0OmFjdGlvbj0ic2F2ZWQiIHN0RXZ0Omluc3RhbmNlSUQ9InhtcC5paWQ6ZjUyYWY3YzItOThkZi00ODYzLWJkNzAtZThhZjcxZjI3NjFkIiBzdEV2dDp3aGVuPSIyMDE5LTAzLTA1VDA4OjQyOjE1KzA4OjAwIiBzdEV2dDpzb2Z0d2FyZUFnZW50PSJBZG9iZSBQaG90b3Nob3AgQ0MgMjAxOSAoTWFjaW50b3NoKSIgc3RFdnQ6Y2hhbmdlZD0iLyIvPiA8L3JkZjpTZXE%2BIDwveG1wTU06SGlzdG9yeT4gPC9yZGY6RGVzY3JpcHRpb24%2BIDwvcmRmOlJERj4gPC94OnhtcG1ldGE%2BIDw%2FeHBhY2tldCBlbmQ9InIiPz4lnbFgAAAW6klEQVR4nO3d0XLcRnqG4e4GZkhaXieVVO4qt5Q7Tiq1u7ZEcoDuHNgVWxQtipQs4Bs8z4HKJ676i0OCwMvuRv3Pv%2F1XyfTTv9%2FNp3nrKTi4Mbae4FvpS3%2B4X7aegkPra3%2F84JvwS93cnbYeATiWd%2F9yu%2FUIAC9oWw8AAAAA8LUEDgAAACCewAEAAADEEzgAAACAeAIHAAAAEE%2FgAAAAAOIJHAAAAEA8gQMAAACIJ3AAAAAA8QQOAAAAIJ7AAQAAAMQTOAAAAIB4AgcAAAAQT%2BAAAAAA4gkcAAAAQDyBAwAAAIgncAAAAADxBA4AAAAgnsABAAAAxBM4AAAAgHgCBwAAABBP4AAAAADiCRwAAABAPIEDAAAAiCdwAAAAAPEEDgAAACCewAEAAADEEzgAAACAeAIHAAAAEE%2FgAAAAAOIJHAAAAEA8gQMAAACIJ3AAAAAA8QQOAAAAIJ7AAQAAAMQTOAAAAIB4AgcAAAAQT%2BAAAAAA4gkcAAAAQDyBAwAAAIgncAAAAADxBA4AAAAgnsABAAAAxBM4AAAAgHgCBwAAABBP4AAAAADiCRwAAABAPIEDAAAAiCdwAAAAAPEEDgAAACCewAEAAADEEzgAAACAeAIHAAAAEE%2FgAAAAAOIJHAAAAEA8gQMAAACIJ3AAAAAA8QQOAAAAIJ7AAQAAAMQTOAAAAIB4AgcAAAAQT%2BAAAAAA4gkcAAAAQDyBAwAAAIgncAAAAADxBA4AAAAgnsABAAAAxBM4AAAAgHgCBwAAABBP4AAAAADiCRwAAABAPIEDAAAAiCdwAAAAAPEEDgAAACCewAEAAADEm3%2F6tx%2B2nuGNpkmdgW%2BmTe3m7rT1FBzaKOPm7rz1FDFaq2%2F4v2opfYwyxhijr6Ovo%2FfxzWcDANjEPJ%2BnrWcAdqCWNr3leQm%2BlVpr8U34Cm8ME6189EXu61iXvlzWviodAEC2eesBAIDNtKm2aTrdTKOPx4d1fdQ5AIBUdnkAAKW2enM33%2F54nk%2FuDQCASG5iAIDftKne%2FHC6%2B%2FFcbWAFANIIHADAR9pU797dTLMjUQCAJAIHAPBUreX23fnkJHIAIIfAAQA873w3n%2B%2BcRw4AZBA4AIA%2FdTpP5xvrOACAAAIHAPA5p9t58moVAGD33K8AAC%2B4uTu15sxRAGDXBA4A4AW1lpt3p62nAAD4HIEDAHhZa9VLVeDIRh9bjwDwAoEDAPgip9u52qcCRzWGwAHsncABAHyRWsvJG1XgqNalbz0CwAsEDgDgS83nubp3gENaLgIHsHduUgCAL1VrmSY3D3BEY%2B2O4QB2zj0KAPAK08kuFTiiUcrjh2XrKQA%2BR%2BAAAF5hmpuTRuGYlmV1EgewZwIHAPAKtZZ2kjjgoB7eX3rXOICdEjgAgNeZJrtU4KDGGPe%2FXPrqMA5gjwQOAOB1mk0qcGCjj%2FufH9bLuvUgAE8JHAAQqG6ZGOokcMChjVLu31%2Fuf3lcV9tVgB2Ztx4AAHi9TZeH103zCrAT69LXnx9rq%2FOptanVWmutpdq98l2NrRPTNNdS%2FFII0L%2F7CcGbXAsEDgAA4I1GH5eHtRQ7VjbQ%2B7g8bPzu3n%2F9j3fNsr7dW5f%2B9%2F%2F%2BZespvgdbVACA17GAA2AP%2BqIrwUcEDgAAgDze2AtPCBwAEMo6CoDj6msfw4kn8BGBAwBCDYUD4KjG4k298AmBAwBC1WERB8AhLZdu9QZ8SuAAgGDe2ApwNOuyrt%2F9lZ8QQeAAgGBjDIdxABzHuq7LRd2A581bDwAAfI36h%2F%2BwXhngio3l0q3dgM8QOADgCljEAXDFxrL0fhlDyIbPEjgA4Gr8uojjj%2F%2F%2BVfrwJ8QMU2tOIsxTxzj4%2BzFq8SRfRimjjDH6Ono%2F%2FFcDvozAAQDXpH7y71%2Ficn%2Fwx68Y9abWZoFPmN7H5cGPGMCrOWQUAAAAiCdwAAAAAPEEDgAAACCewAEAAADEEzgAAACAeAIHAAAAEE%2FgAAAAAOIJHAAAAEA8gQMAAACIJ3AAAAAA8QQOAAAAIJ7AAQAAAMQTOAAAAIB4AgcAAAAQT%2BAAAAAA4gkcAAAAQDyBAwAAAIgncAAAAADxBA4AAAAgnsABAAAAxBM4AAAAgHgCBwAAABBP4AAAAADiCRwAAABAPIEDAAAAiCdwAAAAAPEEDgAAACDevPUAAABAsFprbaW2WmsttdSt5%2BF7qtUHzo4IHAAAwGvV1kqdamueb4G9EDgAAIBXaHOdJlvdgd0ROAAAgC%2FSpjpNtdiVAOySwAEAALyg1jqdmrIB7JnAAQAAfE5tdT7ZkwLsncABAAD8qTa1abZyAwggcAAAAM%2Bb5tomdQPIYKUZAADwjDbV5m0pQA4XLAAA4KnayjR7WACS2KICAAB85Nd3pmw9BcDruGwBAAAfmU7NwRtAHIEDAAD4XW21yhtAIIEDAAD43eRgUSCTixcAAPCb1mr1iABkcvUCAAB%2B02a7U4BUAgcAAFBKKbUWx28AuQQOAACglFLqpG4AwQQOAACglFIcvwFEcwkDAABKqbV5OACSuYYBAACl2Z4ChBM4AAAATwZAPJcxAACg1GIJB5BN4AAAAIq%2BAaQTOAAAAH0DiCdwAAAAReIA0gkcAABAKXVsPQHAVxE4AAAAgHgCBwAAABBP4AAAAADiCRwAAABAPIEDAAAAiCdwAAAAAPEEDgAAACCewAEAAADEEzgAAACAeAIHAAAAEE%2FgAAAAAOIJHAAAAEA8gQMAAACIJ3AAAAAA8QQOAAAAIJ7AAQAAAMQTOAAAAIB4AgcAAAAQT%2BAAAAAA4gkcAAAAQDyBAwAAAIgncAAAAADxBA4AAAAgnsABAAAAxBM4AAAAgHgCBwAAABBP4AAAAADiCRwAAABAPIEDAAAAiCdwAAAAAPEEDgAAACCewAEAAADEEzgAAACAeAIHAAAAEE%2FgAAAAAOIJHAAAAEA8gQMAAACIJ3AAAAAA8QQOAAAAIJ7AAQAAAMQTOAAAAIB4AgcAAAAQT%2BAAAAAA4gkcAAAAQDyBAwAAAIgncAAAAADxBA4AAAAgnsABAAAAxBM4AAAAgHgCBwAAABBP4AAAAADiCRwAAABAPIEDAAAAiCdwAAAAAPEEDgAAACCewAEAAADEEzgAAACAeAIHAAAAEE%2FgAAAAAOIJHAAAAEA8gQMAAACIJ3AAAAAA8QQOAAAAIJ7AAQAAAMQTOAAAAIB4AgcAAAAQT%2BAAAAAA4gkcAAAAQDyBAwAAAIgncAAAAADxBA4AAAAgnsABAAAAxBM4AAAAgHgCBwAAABBP4AAAAADiCRwAAABAPIEDAAAAiCdwAAAAAPEEDgAAACCewAEAAADEEzgAAACAeAIHAAAAEE%2FgAAAAAOIJHAAAAEA8gQMAAACIJ3AAAAAA8QQOAAAAIJ7AAQAAAMQTOAAAAIB4AgcAAAAQT%2BAAAAAA4gkcAAAAQDyBAwAAAIgncAAAAADxBA4AAAAgnsABAAAAxBM4AAAAgHgCBwAAABBP4AAAAADiCRwAAABAPIEDAACANxlbDwB%2FIHAAAADwFn0oHAFGP8rHJHAAAADwFsd5co62rkf5mAQOAAAA3mJd161H4GXLcpSPSeAAAADgLZbHvvUIvOxyv2w9wncicAAAAPAWvfe%2Bahy7tjyux%2FmMBA4AAADe6P7D49Yj8Dkffj7QByRwAAAA8EbrpS%2BXoxzxEOdyv1wej7I%2FpQgcAAAAfI37Xx6716nsz7r0n%2F9%2Bv%2FUU35XAAQAAwNuNMd7%2FfN8P8y7SCOva%2F%2Fm%2FH8Y41ocicAAAAPBVxjre%2F%2FPeXpWduDws%2F%2Fif98c5W%2FT%2FzVsPAAAAQLwxxoefH%2BbzdHN7apM%2FpW9jXfv7fzxcHg507sYfCRwAAAB8G8vjuj6ubW7zaZpOU2u11Fq3nuqqjdFLX%2FvlcX28X5ZLL%2BVY21L%2BSOAAAADgmxmlrEtfl14%2BXLaeZTO9j%2FVyuB0im7NwCAAAAIgncAAAAADxBA4AAAAgnsABAHC96nGPmstVhwMZAd5C4AAAuFrDCXeBxpClAN5C4AAAuFqelBMJHABvI3AAAFytdbWEI8%2B6ChwAbyFwAABcrdEdwxFnjO4jA3gLgQMA4IqNdfG0nGRZLLoBeKN5FL%2Fz9quWWpyivWd%2BeuDbGaNWP1Q5bu7mrUfgi9U6n1rZzS3FKKWMUUYZY%2FTuVvSpfvEVAXgjdye7Norf%2BsBxOFUvSZ0sAk0yRmm7%2BcRqKaX%2BWlvqVMooY6ylr90loJSyXBY3fwBvJnAAAFy53kcppbW9LOL4o1pqnUqbplFKX3pf%2B34Wm3xn69rtJwL4GruJ%2BQAA%2FGV6HztfI1FLmeZ2Os%2F7DDF%2Ftb725XHdegqAbFZwAAAcQl9HaTtdx%2FG7WqZTa6Osl3XfQeabqWVcLn11tijAV7OCAwDgKHofa8JpF7WW%2BTzXA9yo9rU%2F3C%2FqBsA3YQUHAMCBjFHWtddSaqu11lpLqft8L9iYz9N66X3d43BvVmsZffQx%2Btr7Wsb%2BaxNADoEDAOBwRimjj32GjSfW3pcHh1MA8LIDrPwDACDWfJrm07T1FAAEEDgAANi1083UZnetALzArwoAAHZtlHK%2BmevO3%2F8CwNYEDgAAdq%2BW863D4wD4HIEDAIAAtVWHcQDwGQIHAAAZ5pvJNhUA%2FozAAQBAjOlsEQcAzxM4AACIMZ%2BnYhUHAM8ROAAASDLZpwLAcwQOAACStNkuFQCeIXAAAJBkmtzBAvAMvx4AAIhSS5vtUgHgKYEDAIAw02SXCgBPCRwAAISp7mEB%2BIRfDgAAhKnVFhUAnhI4AAAIU5vAAcBTAgcAAGHkDQA%2BJXAAABBmbD0AADskcAAAAADxBA4AAAAgnsABAAAAxBM4AAAAgHgCBwAAABBP4AAAAADiCRwAAABAPIEDAAAAiCdwAAAAAPEEDgAAACCewAEAAADEEzgAAACAeAIHAAAAEE%2FgAAAAAOIJHAAAAEA8gQMAAACIJ3AAAAAA8QQOAAAAIJ7AAQAAAMQTOAAAAIB4AgcA8Epj6wEAAD4hcAAArzMUDgBgfwQOAOCV9A0AYH8EDgDgdXpXOACA3RE4AIDXGQIHALA%2FAgcA8DrrInAAALsjcAAArzBGGb1vPQUAwFMCBwDwCn2xQQUA2COBAwB4hXWxfAMA2COBAwD4UmOUvgocAMAeCRwAwJdaHlf7UwCAfRI4AIAvMvpYL%2BvWUwAAPE%2FgAAC%2ByMXyDQBgxwQOAOBlfR2OFwUA9kzgAABeMsrj%2FWXrIQAAPkfgAABe8PjhMuxOAQD2TeAAAD7ncr%2BsXd4AAPZO4AAA%2FtTyuC6O3gAAEsxbDwAA7NIol4dF3QAAUggcAMBTo4%2FH%2B6XbmQIA5BA4AICPrEu%2FPCxOFQUAsggcAMBv%2Btovj2tftQ0AII%2FAAQCUsY7LZV2duAEAxBI4AOC4%2BjLWta9LH3akAADh5h77t5o6tVq3HgKuxRhlrKlXA95mlOIiejSjlDLKGGOMMvrovcsaAMDVmB%2Ful61neKObu1Od3JzDtzHWnns1AAAAaFsPAAAAAPC1BA4AAAAgnsABAAAAxBM4AAAAgHgCBwAAABBP4AAAAADiCRwAAABAPIEDAAAAiCdwAAAAAPEEDgAAACCewAEAAADEEzgAAACAeAIHAAAAEE%2FgAAAAAOIJHAAAAEA8gQMAAACIJ3AAAAAA8QQOAAAAIJ7AAQAAAMQTOAAAAIB4AgcAAAAQT%2BAAAAAA4gkcAAAAQDyBAwAAAIgncAAAAADxBA4AAAAgnsABAAAAxBM4AAAAgHgCBwAAABBP4AAAAADiCRwAAABAPIEDAAAAiCdwAAAAAPEEDgAAACCewAEAAADEEzgAAACAeAIHAAAAEE%2FgAAAAAOIJHAAAAEA8gQMAAACIJ3AAAAAA8QQOAAAAIJ7AAQAAAMQTOAAAAIB4AgcAAAAQT%2BAAAAAA4gkcAAAAQDyBAwAAAIgncAAAAADxBA4AAAAgnsABAAAAxBM4AAAAgHgCBwAAABBP4AAAAADiCRwAAABAPIEDAAAAiCdwAAAAAPEEDgAAACCewAEAAADEEzgAAACAeAIHAAAAEE%2FgAAAAAOIJHAAAAEA8gQMAAACIJ3AAAAAA8QQOAAAAIJ7AAQAAAMQTOAAAAIB4AgcAAAAQT%2BAAAAAA4s1bDwAAAPCMWko7TfPcptPUaq2tbj3Rlet9jD7WtS%2BPy7r0rceBVxM4AACA3Tmdp%2FPtuU2ixvfTWi2tTnM738y9j4f3j8tl3XooeAWBAwAA2JFa6%2B2783yath7k0Fqrdz%2FeLJf1%2FpfHMcbW48AXcQYHAACwF3WqP%2FztVt3Yifk0%2FfDTbbM5iBACBwAAsAu11h9%2BvLUtZVd%2BXcpRfSYkEDgAAIBduH13tlhgh9rUbn84bz0FvEzgAAAAtjedmp0puzWf52n28Mje%2BR4FAAC2d3NrjcCu3dz5gNg7gQMAANhYa9UCgZ2b5mYDETvnIgIAAGxsPtucEsDHxM4JHAAAwMamyZNzgDZ5fmTXfIMCAAAbq%2FY%2BJLBFhZ0TOAAAgI216sk5QK2eH9k136AAAMDGhr4RoY6tJ4DPETgAAACAeAIHAAAAEE%2FgAAAAAOIJHAAAAEA8gQMAAACIJ3AAAAAA8QQOAAAAIJ7AAQAAAMQTOAAAAIB4AgcAAAAQT%2BAAAAAA4gkcAAAAQDyBAwAAAIgncAAAAADxBA4AAAAgnsABAAAAxBM4AAAAgHgCBwAAABBP4AAAAADiCRwAAABAPIEDAAAAiCdwAAAAAPEEDgAAACCewAEAAADEEzgAAACAeAIHAAAAEE%2FgAAAAAOIJHAAAAEA8gQMAAACIJ3AAAAAA8QQOAAAAIJ7AAQAAAMQTOAAAAIB4AgcAAAAQT%2BAAAAAA4gkcAAAAQDyBAwAAAIgncAAAAADxBA4AAAAgnsABAAAAxBM4AAAAgHgCBwAAABBP4AAAAADiCRwAAABAPIEDAAAAiCdwAAAAAPEEDgAAACCewAEAAADEEzgAAACAeAIHAAAAEE%2FgAAAAAOIJHAAAAEC8eesBAIAdGrXWUkstZZRSa916HjYwth7g86azP9R9Y37S4RtqrdaTy9T3JnAAAL%2BptZT660PO7885nngOa%2BcfffM0DuxbbS5T35vAAQCUUkprde9PtAAAf07gAICjq83KdAAgnsABAMdVW5E2AIDrIHAAwDGN1po9KQDA1RA4AOB46qjN0e4AwFUROADgWGqtdap7fwUoAMAr%2BesNABxLa%2BoGAHCFBA4AOJA21SFvAADXSOAAgKNozZmiAMDVEjgA4BBard6ZAgBcMYEDAK5fLX7nAwBXzs0OAFy%2FanMKAHDtBA4AuHK1FptTAICrJ3AAwJWrVd4AAK6fwAEAV83yDQDgGAQOALhmVm8AAAchcADAFRv2pwAAByFwAMDVUjcAgOMQOADgeukbAMBhCBwAcLUs4AAAjkPgAIDrNRQOAOAoBA4AuF6WcAAAhyFwAMAVG1sPAADwnQgcAAAAQDyBAwAAAIgncAAAAADxBA4AAAAgnsABAAAAxBM4AAAAgHgCBwAAABBP4AAAAADiCRwAAABAPIEDAAAAiCdwAAAAAPEEDgAAACCewAEAAADEEzgAAACAeAIHAAAAEE%2FgAAAAAOIJHAAAAEA8gQMAAACIJ3AAAAAA8QQOAAAAIJ7AAQAAAMQTOAAAAIB4AgcAAAAQT%2BAAAAAA4gkcAAAAQDyBAwCAMHXrAQDYIYEDAIAwY2w9AQD7I3AAAJCmKhwAPCVwAAAQxgoOAD4lcAAAkKYrHAA8JXAAABBG3wDgUwIHAABhRu9bjwDA7ggcAABEGWXoGwB8QuAAACDJWOUNAJ4hcAAAkKQ7gQOA5wgcAADkGEPgAOBZ%2FwfrNCSBRUyfmgAAAABJRU5ErkJggg%3D%3D);
 }
-/* line 898, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 915, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .v3 .hero-background .cell {
   padding: 5em 0;
   text-align: center;
 }
 @media print, screen and (min-width: 40em) {
-  /* line 898, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+  /* line 915, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
   .v3 .hero-background .cell {
     text-align: left;
   }
 }
-/* line 909, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 926, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .v3 .hero-background .cell .Get-started-now {
   font-family: Halant;
   font-size: 32px;
@@ -27471,7 +27491,7 @@ body.sd_meta_data .sd-meta-data-index-edit {
       -ms-flex-pack: center;
           justify-content: center;
 }
-/* line 927, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 944, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .v3 .SRDR-Moving-system {
   font-family: Halant;
   font-size: 64px;
@@ -27482,7 +27502,7 @@ body.sd_meta_data .sd-meta-data-index-edit {
   letter-spacing: normal;
   color: #ffffff;
 }
-/* line 938, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 955, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .v3 .SRDR-is-a-free-pow {
   font-family: 'Noto Sans';
   font-size: 20px;
@@ -27493,7 +27513,7 @@ body.sd_meta_data .sd-meta-data-index-edit {
   letter-spacing: normal;
   color: #dee1e8;
 }
-/* line 948, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
+/* line 965, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .v3 .grid-container {
   max-width: 1200px;
 }
@@ -29067,7 +29087,7 @@ body {
 
 /* line 83, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 a {
-  color: #4C0D7D;
+  color: #4c0d7d;
 }
 /* line 99, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 a.disabled {
@@ -29091,111 +29111,111 @@ a.button.remove-link:hover, a.button.remove-link:focus {
   opacity: 1;
 }
 
-/* line 120, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 121, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .title-heading h2 {
   float: left;
 }
-/* line 124, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 125, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .title-heading a.button.secondary {
   float: right;
   margin-top: 1.1em;
 }
 
-/* line 130, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 131, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 body div.top-bar {
   padding: 3px 3px 6px 3px;
 }
-/* line 133, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 134, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 body div.top-bar .top-bar-right {
   margin-top: 9px;
 }
-/* line 136, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 137, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 body div.top-bar .top-bar-right a.button {
   border: 1px solid white;
   border-radius: 20px;
   margin-left: 5px;
 }
 @media screen and (max-width: 39.99875em) {
-  /* line 136, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+  /* line 137, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
   body div.top-bar .top-bar-right a.button {
     margin-top: 10px;
   }
 }
-/* line 147, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 148, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 body div.top-bar a {
   font-size: 1.1em;
   color: #fefefe;
 }
-/* line 151, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 152, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 body div.top-bar a:hover {
   border-radius: 2px;
-  background-color: #33124B;
+  background-color: #33124b;
 }
 
-/* line 158, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 159, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .error {
   color: red;
 }
 
-/* line 166, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 167, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 ul hr {
   width: 80%;
   margin: 0;
 }
 
-/* line 171, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 172, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 ul.menu.vertical.submenu.is-dropdown-submenu {
   background-color: white;
   border-color: #cacaca;
   padding: 10px 10px 0 30px;
 }
-/* line 177, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 178, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 ul.menu.vertical.submenu.is-dropdown-submenu li.title {
   font-weight: bold;
-  color: #33124B;
+  color: #33124b;
   padding: 4px 0 0 4px;
 }
-/* line 183, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 184, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 ul.menu.vertical.submenu.is-dropdown-submenu li:last-child {
   margin-bottom: 15px;
 }
 
-/* line 189, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 190, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .contain-in-viewport {
   overflow: scroll;
   max-height: 95vh;
 }
 
-/* line 199, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 200, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .pagination .current a {
   color: #fefefe;
 }
 
 @media screen and (max-width: 39.99875em) {
-  /* line 209, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+  /* line 210, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
   .no-js .top-bar {
     display: none;
   }
 }
 @media print, screen and (min-width: 40em) {
-  /* line 215, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+  /* line 216, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
   .no-js .title-bar {
     display: none;
   }
 }
 
-/* line 224, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 225, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 #toast-container div.toast {
   opacity: 1;
 }
-/* line 228, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 229, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 #toast-container.toast-bottom-right, #toast-container.toast-bottom-left, #toast-container.toast-bottom-center, #toast-container.toast-bottom-full-width {
   top: auto;
 }
 
 /* line 239, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 pre.debug_dump {
-  background-color: #4C0D7D;
+  background-color: #4c0d7d;
   border: 1px solid gray;
   color: yellow;
   margin: 10px;
@@ -29256,7 +29276,7 @@ pre.debug_dump {
 
 /* line 299, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .form-inputs label {
-  color: #4C0D7D;
+  color: #4c0d7d;
 }
 /* line 302, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .form-inputs label.required abbr {
@@ -29268,40 +29288,41 @@ pre.debug_dump {
   width: 100%;
 }
 /* line 310, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
-.table-scroll table td, .table-scroll table th {
+.table-scroll table td,
+.table-scroll table th {
   border-radius: 2px;
   min-width: 11em;
   border: 1px solid grey;
 }
-/* line 316, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 317, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .table-scroll table.consolidate .missing-value {
   margin-bottom: 3px;
   border: 1.2px solid red;
   min-height: 18px;
 }
 
-/* line 323, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 324, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .column.row.footer, .row.footer.columns {
   min-height: 300px;
-  background-color: #4C0D7D;
+  background-color: #4c0d7d;
 }
 
-/* line 328, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 329, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .off-canvas-content {
   min-height: -webkit-fill-available;
 }
 
-/* line 334, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 335, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 #extraction-forms-projects-tabs {
   display: none;
 }
 
-/* line 338, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 339, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 a.accordion-title.populations {
   font-size: 1em;
 }
 
-/* line 344, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 345, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .spinner {
   border: 16px solid #f3f3f3;
   /* Light grey */
@@ -29335,18 +29356,18 @@ a.accordion-title.populations {
             transform: rotate(360deg);
   }
 }
-/* line 369, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 374, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .results-nav-table td {
   border: 1px solid grey;
   width: 40%;
 }
-/* line 372, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 377, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .results-nav-table td.active {
   background: -webkit-repeating-linear-gradient(45deg, #eacfff, #fff 10px, #fff 10px, #fff 20px);
   background: repeating-linear-gradient(45deg, #eacfff, #fff 10px, #fff 10px, #fff 20px);
 }
 
-/* line 378, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 389, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .menubar {
   background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABaAAAABaCAIAAADB82ZHAAAACXBIWXMAAAsTAAALEwEAmpwYAAAGAGlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS42LWMxNDUgNzkuMTYzNDk5LCAyMDE4LzA4LzEzLTE2OjQwOjIyICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyIgeG1sbnM6cGhvdG9zaG9wPSJodHRwOi8vbnMuYWRvYmUuY29tL3Bob3Rvc2hvcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RFdnQ9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZUV2ZW50IyIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ0MgMjAxOSAoTWFjaW50b3NoKSIgeG1wOkNyZWF0ZURhdGU9IjIwMTktMDMtMDRUMTE6NDk6MjQrMDg6MDAiIHhtcDpNb2RpZnlEYXRlPSIyMDE5LTAzLTA1VDA4OjQxOjUxKzA4OjAwIiB4bXA6TWV0YWRhdGFEYXRlPSIyMDE5LTAzLTA1VDA4OjQxOjUxKzA4OjAwIiBkYzpmb3JtYXQ9ImltYWdlL3BuZyIgcGhvdG9zaG9wOkNvbG9yTW9kZT0iMyIgcGhvdG9zaG9wOklDQ1Byb2ZpbGU9InNSR0IgSUVDNjE5NjYtMi4xIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjc2OWQxNDFmLWIxOGYtNGFkYS04YjJjLTY3MDBmNzlhODM0OCIgeG1wTU06RG9jdW1lbnRJRD0iYWRvYmU6ZG9jaWQ6cGhvdG9zaG9wOmIzYjIzYmEzLTkyNmEtZmE0Mi05OThmLTU0ZmY0NzFlOTU1MyIgeG1wTU06T3JpZ2luYWxEb2N1bWVudElEPSJ4bXAuZGlkOmFkNWQwZmM1LWEwMWItNDU5NS04NGE5LTQzYjdkN2U2MjhlMiI%2BIDx4bXBNTTpIaXN0b3J5PiA8cmRmOlNlcT4gPHJkZjpsaSBzdEV2dDphY3Rpb249ImNyZWF0ZWQiIHN0RXZ0Omluc3RhbmNlSUQ9InhtcC5paWQ6YWQ1ZDBmYzUtYTAxYi00NTk1LTg0YTktNDNiN2Q3ZTYyOGUyIiBzdEV2dDp3aGVuPSIyMDE5LTAzLTA0VDExOjQ5OjI0KzA4OjAwIiBzdEV2dDpzb2Z0d2FyZUFnZW50PSJBZG9iZSBQaG90b3Nob3AgQ0MgMjAxOSAoTWFjaW50b3NoKSIvPiA8cmRmOmxpIHN0RXZ0OmFjdGlvbj0ic2F2ZWQiIHN0RXZ0Omluc3RhbmNlSUQ9InhtcC5paWQ6NzY5ZDE0MWYtYjE4Zi00YWRhLThiMmMtNjcwMGY3OWE4MzQ4IiBzdEV2dDp3aGVuPSIyMDE5LTAzLTA1VDA4OjQxOjUxKzA4OjAwIiBzdEV2dDpzb2Z0d2FyZUFnZW50PSJBZG9iZSBQaG90b3Nob3AgQ0MgMjAxOSAoTWFjaW50b3NoKSIgc3RFdnQ6Y2hhbmdlZD0iLyIvPiA8L3JkZjpTZXE%2BIDwveG1wTU06SGlzdG9yeT4gPC9yZGY6RGVzY3JpcHRpb24%2BIDwvcmRmOlJERj4gPC94OnhtcG1ldGE%2BIDw%2FeHBhY2tldCBlbmQ9InIiPz4pv2gpAAAD7klEQVR4nO3dzW4cRRiG0f6qqmcmNo4hKFtY8pPc%2F1VlYwmiAPYMiyywIxJsFLv7dZ9zBZ9Go%2F55uqurfvn511dXby7e%2FziOL6YoL79%2FMeax9BRs2mk6LT3CV3O8Pv7x4XrpKdi04%2FXNnx9ulp4CnpvdflSrpafgYY6n41%2BOh4S4fH3ee1t6Cv7DzfXx6t3vS0%2FxFMarq7ff%2FfbT0mNApJrqOTUOWFi5BwMA4P9rF%2B9%2FWHoGyKVuAAAArMKIW5kCAACsRLXaH%2Bax661V67XZhz%2BbfQuxrE9J0Ed9%2B%2Fp86Smegm9YAAAAD9ZHO7vYz3s3FLB%2B1fomKpzjEQAA8AA1TYeL%2FeF8t4kbJiCHwAEAANxXtfrm8uDFDWCFrJgCAADuSd0A1kvgAAAA7uXspY9uAOvl8AQAz8rHjQymqtam02nrC%2BRrmja%2BpXf1jf8AkVqr3b4vPcW%2FaL0dzualpwD4LIEDAJ6H6qP63OrWZoW19b7x0bZ%2FBXUj0amqrfF%2FezjfLz0CwJcIHAAQr7Uau156BvBoWt%2FKNpNALoEDALL1XvOunzb%2BngLwyPpY46oZgNsEDgAI1kcbc7cKAXhsfbY7AbB2jlMAkKr1GrNnqsBTaBbBAasncABApJpq7NQN4Ims87unALcJHAAQ6ZMNUwAANk7gAIA8NVUfTuIAAP9wbQQAecpXwgEA7hI4ACBP787gAAB3uDwCgDxlOwMAgLsEDgDIo28AAHxC4ACARAoHAMAdAgcAAAAQT%2BAAAAAA4gkcAAAAQDyBAwAAAIgncAAAAADxBA4AAAAgnsABAAAAxBM4AAAAgHgCBwAAABBP4AAAAADiCRwAAABAPIEDAAAAiCdwAAAAAPEEDgAAACCewAEAAADEEzgAAACAeAIHAAAAEE%2FgAAAAAOIJHAAAAEA8gQMAAACIJ3AAAAAA8QQOAAAAIJ7AAQAAAMQTOAAAAIB4AgcAAAAQT%2BAAAAAA4gkcAAAAQDyBAwAAAIgncAAAAADxBA4AAAAgnsABAAAAxBM4AAAAgHgCBwAAABBP4AAAAADiCRwAAABAPIEDAAAAiCdwAAAAAPEEDgAAACCewAEAAADEEzgAAACAeAIHAAAAEE%2FgAAAAAOIJHAAAAEA8gQMAAACIJ3AAAAAA8QQOAAAAIJ7AAQAAAMQTOAAAAIB4AgcAAAAQT%2BAAAAAA4gkcAAAAQDyBAwAAAIgncAAAAADxBA4AAAAgnsABAAAAxBM4AAAAgHgCBwAAABBP4AAAAADiCRwAAABAPIEDAAAAiCdwAAAAAPEEDgAAACCewAEAAADEEzgAAACAeAIHAAAAEE%2FgAAAAAOIJHAAAAEC8vwE7njHPehCMGAAAAABJRU5ErkJggg%3D%3D);
   background-repeat: no-repeat;
@@ -29356,53 +29377,54 @@ a.accordion-title.populations {
   margin: 0;
 }
 
-/* line 386, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 397, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .menubar-2 {
   background-color: white;
 }
 
-/* line 391, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 402, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .top-bar ul {
   background-color: unset;
 }
 
-/* line 396, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 407, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .top-bar-2 {
   background-color: white;
 }
-/* line 398, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 409, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .top-bar-2 ul {
   background-color: white;
 }
-/* line 401, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 412, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .top-bar-2 a {
   color: black !important;
 }
 
-/* line 406, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 417, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .is-dropdown-submenu > li:hover {
   background: #dee1e8;
 }
 
-/* line 410, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 421, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .dropdown .is-dropdown-submenu a {
   color: black;
 }
 
-/* line 414, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 425, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .dropdown.menu > li.is-dropdown-submenu-parent > a {
   color: white;
 }
 
-/* line 420, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 431, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .table-fixed-headers table thead {
   position: -webkit-sticky;
   position: sticky;
   top: 0;
   z-index: 2;
 }
-/* line 425, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
-.table-fixed-headers table th, .table-fixed-headers table td {
+/* line 436, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+.table-fixed-headers table th,
+.table-fixed-headers table td {
   margin: 0;
   padding: 0;
   background-clip: padding-box;
@@ -29410,20 +29432,24 @@ a.accordion-title.populations {
   min-width: 200px;
   height: 20px;
 }
-/* line 432, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
-.table-fixed-headers table th.bg-lightblue, .table-fixed-headers table td.bg-lightblue {
+/* line 444, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+.table-fixed-headers table th.bg-lightblue,
+.table-fixed-headers table td.bg-lightblue {
   background-color: lightblue;
 }
-/* line 435, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
-.table-fixed-headers table th.bg-lightgreen, .table-fixed-headers table td.bg-lightgreen {
+/* line 447, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+.table-fixed-headers table th.bg-lightgreen,
+.table-fixed-headers table td.bg-lightgreen {
   background-color: lightgreen;
 }
-/* line 438, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
-.table-fixed-headers table th.bg-lightpink, .table-fixed-headers table td.bg-lightpink {
+/* line 450, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+.table-fixed-headers table th.bg-lightpink,
+.table-fixed-headers table td.bg-lightpink {
   background-color: lightpink;
 }
-/* line 441, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
-.table-fixed-headers table th.vertical, .table-fixed-headers table td.vertical {
+/* line 453, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+.table-fixed-headers table th.vertical,
+.table-fixed-headers table td.vertical {
   font-weight: bold;
   text-align: center;
   white-space: nowrap;
@@ -29435,8 +29461,9 @@ a.accordion-title.populations {
   left: 0;
   z-index: 1;
 }
-/* line 452, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
-.table-fixed-headers table th.vertical > div, .table-fixed-headers table td.vertical > div {
+/* line 464, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+.table-fixed-headers table th.vertical > div,
+.table-fixed-headers table td.vertical > div {
   -moz-transform: rotate(-90deg);
   /* FF3.5+ */
   -o-transform: rotate(-90deg);
@@ -29450,8 +29477,9 @@ a.accordion-title.populations {
   margin-left: -10em;
   margin-right: -10em;
 }
-/* line 461, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
-.table-fixed-headers table th.freeze, .table-fixed-headers table td.freeze {
+/* line 473, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+.table-fixed-headers table th.freeze,
+.table-fixed-headers table td.freeze {
   position: -webkit-sticky;
   position: sticky;
   left: 65px;
@@ -29459,8 +29487,9 @@ a.accordion-title.populations {
   font-weight: bold;
 }
 
-/* line 472, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
-body.extractions.work .status-switch, body.sd_meta_data.edit .status-switch {
+/* line 485, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+body.extractions.work .status-switch,
+body.sd_meta_data.edit .status-switch {
   cursor: pointer;
   border-radius: 0.4rem;
   background-color: grey;
@@ -29473,8 +29502,9 @@ body.extractions.work .status-switch, body.sd_meta_data.edit .status-switch {
   width: 5.5rem;
   position: relative;
 }
-/* line 483, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
-body.extractions.work .status-switch .status-label, body.sd_meta_data.edit .status-switch .status-label {
+/* line 496, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+body.extractions.work .status-switch .status-label,
+body.sd_meta_data.edit .status-switch .status-label {
   -webkit-transition-delay: 0.1s;
           transition-delay: 0.1s;
   -webkit-transition: all 0.2s ease;
@@ -29485,8 +29515,9 @@ body.extractions.work .status-switch .status-label, body.sd_meta_data.edit .stat
   font-size: 1.1rem;
   left: 2.4rem;
 }
-/* line 493, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
-body.extractions.work .status-switch::after, body.sd_meta_data.edit .status-switch::after {
+/* line 506, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+body.extractions.work .status-switch::after,
+body.sd_meta_data.edit .status-switch::after {
   border-radius: 0.2rem;
   position: absolute;
   top: 0.3rem;
@@ -29499,106 +29530,109 @@ body.extractions.work .status-switch::after, body.sd_meta_data.edit .status-swit
   background: #fefefe;
   -webkit-transition: all 0.25s ease-out;
   transition: all 0.25s ease-out;
-  content: '';
+  content: "";
 }
-/* line 509, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
-body.extractions.work .status-switch.completed::after, body.sd_meta_data.edit .status-switch.completed::after {
+/* line 522, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+body.extractions.work .status-switch.completed::after,
+body.sd_meta_data.edit .status-switch.completed::after {
   left: 6.1rem;
 }
-/* line 513, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
-body.extractions.work .status-switch.completed, body.sd_meta_data.edit .status-switch.completed {
+/* line 526, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+body.extractions.work .status-switch.completed,
+body.sd_meta_data.edit .status-switch.completed {
   background-color: #1cd05f;
   width: 7.9rem;
 }
-/* line 516, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
-body.extractions.work .status-switch.completed .status-label, body.sd_meta_data.edit .status-switch.completed .status-label {
+/* line 529, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+body.extractions.work .status-switch.completed .status-label,
+body.sd_meta_data.edit .status-switch.completed .status-label {
   left: 0.4rem;
 }
 
-/* line 525, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 538, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .progress {
   margin-bottom: 0;
   width: 90%;
 }
 
-/* line 531, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 544, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .select2-container--default {
   display: table !important;
   table-layout: fixed !important;
 }
 
-/* line 536, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 549, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 li.select2-selection__choice {
   max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-/* line 541, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 554, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 ul.select2-selection__rendered {
   padding-right: 12px !important;
 }
 
-/* line 547, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 560, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 textarea {
   resize: vertical !important;
 }
 
-/* line 551, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 564, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .preview-button {
   border-radius: 0;
-  background-color: #016BAB;
+  background-color: #016bab;
   padding: 0.4rem;
   z-index: 1000;
 }
-/* line 557, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 570, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .preview-button.disabled {
   background-color: grey !important;
 }
-/* line 561, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 574, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .preview-button:hover, .preview-button:focus {
   background-color: #1388ce;
   cursor: pointer !important;
 }
 
-/* line 567, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 581, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .create-button {
-  background-color: #016BAB !important;
+  background-color: #016bab !important;
 }
 
-/* line 571, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 585, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 ::-webkit-input-placeholder {
   /* WebKit, Blink, Edge */
   color: silver !important;
 }
 
-/* line 574, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 589, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 :-moz-placeholder {
   /* Mozilla Firefox 4 to 18 */
   color: silver !important;
   opacity: 1;
 }
 
-/* line 578, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 594, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 ::-moz-placeholder {
   /* Mozilla Firefox 19+ */
   color: silver !important;
   opacity: 1;
 }
 
-/* line 582, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 599, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 :-ms-input-placeholder {
   /* Internet Explorer 10-11 */
   color: silver !important;
 }
 
-/* line 585, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 603, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 ::-ms-input-placeholder {
   /* Microsoft Edge */
   color: silver !important;
 }
 
-/* line 589, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 608, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 ::-webkit-input-placeholder {
   /* Most modern browsers support this now. */
   color: silver !important;
@@ -29616,22 +29650,22 @@ textarea {
   color: silver !important;
 }
 
-/* line 593, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 613, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .row {
   max-width: max(90%, 1200px);
 }
 
-/* line 597, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 617, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .grid-container {
   max-width: unset;
 }
 
-/* line 601, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 621, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 textarea {
   min-height: 1.5em;
 }
 
-/* line 605, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 625, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 #loading-indicator {
   position: fixed;
   z-index: 200;
@@ -29644,7 +29678,7 @@ textarea {
   background: rgba(0, 0, 0, 0.5);
 }
 
-/* line 617, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 637, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 #spinner {
   position: fixed;
   width: 64px;
@@ -29657,49 +29691,57 @@ textarea {
   background-image: url("/assets/spinner-408939465d33f6d9c1c9cbd3a8a84381008be94f9fd91eff4034efed48a6371c.gif");
 }
 
-/* line 629, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
-.card-divider, .card-section {
+/* line 649, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+.card-divider,
+.card-section {
   padding: 0;
 }
 
-/* line 633, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
-h1, h2, h3, h4, h5, h6 {
+/* line 654, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   margin: 0;
 }
 
-/* line 637, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 663, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 label {
   font-size: 1rem;
   line-height: normal;
 }
 
-/* line 642, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
-label > [type='checkbox'], label > [type='radio'] {
+/* line 668, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+label > [type="checkbox"],
+label > [type="radio"] {
   margin-bottom: 0;
 }
 
-/* line 646, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
-div.checkbox, div.radio {
+/* line 673, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+div.checkbox,
+div.radio {
   margin-bottom: 4px;
 }
 
-/* line 650, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 678, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .question-row-column {
   vertical-align: top;
 }
 
-/* line 654, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 682, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 thead th {
   text-align: center;
   font-size: 16px;
 }
 
-/* line 659, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 687, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 td {
   vertical-align: top;
 }
 
-/* line 663, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 691, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .clean-table table tr td:first-child {
   text-align: center;
   vertical-align: middle;
@@ -29707,7 +29749,7 @@ td {
   width: 11em;
 }
 
-/* line 670, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 698, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 table.unstriped tbody tr td:first-child {
   text-align: center;
   vertical-align: middle;
@@ -29715,58 +29757,60 @@ table.unstriped tbody tr td:first-child {
   width: 11em;
 }
 
-/* line 677, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 705, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .overlay-parent {
   position: relative;
 }
 
-/* line 681, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
-input, textarea, table, select, [type='text'], [type='password'], [type='date'], [type='datetime'], [type='datetime-local'], [type='month'], [type='week'], [type='email'], [type='number'], [type='search'], [type='tel'], [type='time'], [type='url'], [type='color'] {
+/* line 709, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+input,
+textarea,
+table,
+select,
+[type="text"],
+[type="password"],
+[type="date"],
+[type="datetime"],
+[type="datetime-local"],
+[type="month"],
+[type="week"],
+[type="email"],
+[type="number"],
+[type="search"],
+[type="tel"],
+[type="time"],
+[type="url"],
+[type="color"] {
   margin: 0;
 }
 
-/* line 685, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 730, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 ul {
   margin-bottom: 0;
 }
 
-/* line 689, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 734, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .card-divider {
   background: rgba(248, 248, 255, 0.75);
 }
 
-/* line 693, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
-thead {
-  background: rgba(248, 248, 248, 0.75);
-}
-
-/* line 697, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
-tbody {
-  background: rgba(254, 254, 254, 0.75);
-}
-
-/* line 701, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
-tbody tr:nth-child(even) {
-  background: rgba(241, 241, 241, 0.75);
-}
-
-/* line 705, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 738, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .button {
   margin: 0rem;
 }
 
-/* line 709, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 742, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .table-fixed-headers td {
   position: relative;
 }
 
-/* line 713, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 746, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .mx-10 {
   margin-left: 10px;
   margin-right: 10px;
 }
 
-/* line 718, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 751, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .m-10 {
   margin: 10px;
 }

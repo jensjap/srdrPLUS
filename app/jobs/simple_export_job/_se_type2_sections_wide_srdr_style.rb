@@ -77,9 +77,9 @@ def build_type2_sections_wide_srdr_style(p, project, highlight, wrap, kq_ids=[],
                     question_row_column_id: qrc.id,
                     question_row_column_name: qrc.name,
                     question_row_column_options: qrc
-                    .question_row_columns_question_row_column_options
-                    .where(question_row_column_option_id: 1)
-                    .pluck(:id, :name),
+                      .question_row_columns_question_row_column_options
+                      .where(question_row_column_option_id: 1)
+                      .pluck(:id, :name),
                     eefps_qrfc_values: eefps.eefps_qrfc_values(eefpst1.id, qrc))
                 end  # qr.question_row_columns.each do |qrc|
               end  # q.question_rows.each do |qr|
