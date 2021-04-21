@@ -7,11 +7,6 @@ class StaticPagesController < ApplicationController
   }.stringify_keys
 
   def home
-    if current_user.present?
-      redirect_to(controller: 'projects', action: 'index')
-      return
-    end
-
     begin
       url = 'https://srdr.ahrq.gov/projects/api_index_published'
       redis = Redis.new
