@@ -58,7 +58,7 @@ html class='no-js' lang='en'
           = render "shared/topbar_nav_#{ cookies[:layout_style] }"
 
           .content
-            .breadcrumbs = render_breadcrumbs tag: :li, separator: ''
+            / .breadcrumbs = render_breadcrumbs tag: :li, separator: ''
             - if content_for(:project_title)
               div style='margin-left: 2rem;'
                 h3 = yield(:project_title)
