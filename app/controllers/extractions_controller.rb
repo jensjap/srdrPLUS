@@ -29,6 +29,7 @@ class ExtractionsController < ApplicationController
       @projects_users_roles = ProjectsUsersRole.
         includes([{ projects_user: { user: :profile } }, :role]).
         where(projects_users: { project: @project })
+      @projects_users_roles = @projects_users_roles.sort_by { |pur| pur.role_id }.uniq { |pur| pur.user }
     end
 
     add_breadcrumb 'edit project', edit_project_path(@project)
