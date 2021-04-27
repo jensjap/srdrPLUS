@@ -6,11 +6,13 @@
   table
     thead
       tr
-        th width="200" Name
+        th width="150" Name
         th width="50" Type
         th width="100" Date of Submission
-        th width="50" View
-        th width="50"
+        th width="25" View
+        - if current_user.admin?
+          th width="75" Edit
+        th width="25"
     tbody
       - @unapproved_publishings.each do |pr|
         tr
@@ -25,10 +27,14 @@
               = link_to 'View', sd_meta_datum_path(pr.publishable_id), class: 'btn-link'
             - elsif pr.publishable.class == Project
               = link_to 'View', project_path(pr.publishable_id), class: 'btn-link'
-              | &nbsp; | &nbsp;
               - if current_user.admin?
-                = link_to 'View Extractions', project_extractions_path(pr.publishable), class: 'btn-link'
+                td
+                  = link_to 'Project Info', edit_project_path(pr.publishable), class: 'btn-link'
+                  | &nbsp; | &nbsp;
+                  = link_to 'Extr. Form', build_extraction_forms_project_path(pr.publishable.extraction_forms_projects.first), class: 'btn-link'
+                  | &nbsp; | &nbsp;
+                  = link_to 'Extractions', project_extractions_path(pr.publishable), class: 'btn-link'
           - if current_user.admin?
-            td = link_to 'Approve', publishings_approve_path(id: pr.publishable_id, type: pr.publishable.class.to_s), class: 'btn-link', method: :post, data: { confirm: 'Are you sure?' }
+            td = link_to 'Approve', publishings_approve_path(id: pr.publishable_id, type: pr.publishable.class.to_s), class: 'btn-link', method: :post, data: { confirm: "You are about to approve:\n\n#{pr.publishable.display}\n\nProceed?" }
           - else
-            td = link_to 'Cancel', publishing_path(pr.publishable_id), class: 'btn-link', data: { confirm: 'Are you sure?' }, method: :delete
+            td = link_to 'Cancel', publishing_path(pr.publishable_id), class: 'btn-link', data: { confirm: "You are about to cancel the publication request for:\n\n#{pr.publishable.display}\n\nProceed?" }, method: :delete
