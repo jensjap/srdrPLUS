@@ -108,7 +108,7 @@ class ProjectPolicy < ApplicationPolicy
   end
 
   def edit?
-    project_leader?
+    project_leader? || @user.admin?
   end
 
   def update?

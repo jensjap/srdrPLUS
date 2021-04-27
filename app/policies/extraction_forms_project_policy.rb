@@ -16,6 +16,6 @@ class ExtractionFormsProjectPolicy < ApplicationPolicy
   end
 
   def build?
-    project_leader?
+    project_leader? || @user.admin?
   end
 end
