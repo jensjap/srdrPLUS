@@ -6,12 +6,13 @@
   table
     thead
       tr
-        th width="200" Name
+        th width="150" Name
         th width="50" Type
         th width="150" Date of Publication
-        th width="50"
+        th width="25" View
         - if current_user.admin?
-          th width="50"
+          th width="75" Edit
+          th width="25"
     tbody
       - @approved_publishings.each do |ap|
         tr
@@ -21,6 +22,14 @@
           - if ap.publishable.class == SdMetaDatum
             td = link_to 'View', sd_meta_datum_path(ap.publishable_id), class: 'btn-link'
           - elsif ap.publishable.class == Project
-            td = link_to 'View', project_path(ap.publishable_id), class: 'btn-link'
+            td
+              = link_to 'View', project_path(ap.publishable_id), class: 'btn-link'
+            - if current_user.admin?
+              td
+                = link_to 'Project Info', edit_project_path(ap.publishable), class: 'btn-link'
+                | &nbsp; | &nbsp;
+                = link_to 'Extr. Form', build_extraction_forms_project_path(ap.publishable.extraction_forms_projects.first), class: 'btn-link'
+                | &nbsp; | &nbsp;
+                = link_to 'Extractions', project_extractions_path(ap.publishable), class: 'btn-link'
           - if current_user.admin?
-            td = link_to 'Rescind Approval', rescind_approval_path(ap.publishable_id, type: ap.publishable.class.to_s), class: 'btn-link', method: :post
+            td = link_to 'Rescind Approval', rescind_approval_path(ap.publishable_id, type: ap.publishable.class.to_s), class: 'btn-link', method: :post, data: { confirm: "You are about to rescind approval for:\n\n#{ap.publishable.display}\n\nProceed?" }

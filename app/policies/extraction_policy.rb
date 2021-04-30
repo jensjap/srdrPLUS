@@ -32,7 +32,7 @@ class ExtractionPolicy < ApplicationPolicy
   end
 
   def work?
-    project_contributor?
+    project_contributor? || @user.admin?
   end
 
   def comparison_tool?
