@@ -85,7 +85,7 @@
                   .progress-meter style="width: #{ progress_meter_width }%;"
               /td = extraction.projects_users_role.role.name
               /td = link_to t('edit'), edit_extraction_path(extraction)
-              td = link_to t('destroy'), extraction, style: 'font-weight:bold;color:#cc4b37 !important;', data: { confirm: 'Are you sure?' }, method: :delete
+              td = link_to t('destroy'), extraction, style: 'font-weight:bold;color:#cc4b37 !important;', data: { confirm: "Warning! You are about to delete extraction:\n\n#{first_author} - #{year} - #{pmid}\n#{name}\n\nThis action cannot be undone. Proceed anyway?" }, method: :delete
 .column.row
   - if @project.key_questions.present?
     = link_to new_project_extraction_path, class: 'button create-button create-extraction-button' do
