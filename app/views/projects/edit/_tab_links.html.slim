@@ -1,29 +1,10 @@
 ul#project-tabs.tabs data-deep-link='true' data-update-history='true' data-tabs=''
 
-  li.tabs-title.is-active
+  li.tabs-title.is-active.hide
     = link_to t('.project_information'), '#panel-project-information', title: t('.project_information')
 
-  li.tabs-title
+  li.tabs-title.hide
     = link_to t('.key_questions'), '#panel-key-questions', title: t('.key_questions')
 
-  li.tabs-title
+  li.tabs-title.hide
     = link_to t('.members_and_roles') , '#panel-projects-users', title: t('.members_and_roles')
-
-/  li.tabs-title
-    = link_to t('.project_options') , '#panel-project-options', title: t('.project_options')
-
-/  li.tabs-title
-    = link_to t('.citation_screening_extraction_form') , '#panel-citation-screening-extraction-form', title: t('.citation_screening_extraction_form')
-
-/  li.tabs-title
-    = link_to t('citations'), '#panel-citations', title: 'Manage Citation(s)'
-
-/  li.tabs-title
-    = link_to t('tasks'), '#panel-tasks', title: 'Manage Task(s)'
-
-/  - if @project.key_questions_projects.blank?
-    li.tabs-title
-      = link_to t('extraction_forms'), '#panel-extraction-form', title: 'Create Key Questions first', disabled: true, class: 'disabled'
-  - else
-    li.tabs-title
-      = link_to t('extraction_forms'), '#panel-extraction-form', title: 'Manage Extraction Form(s)'
