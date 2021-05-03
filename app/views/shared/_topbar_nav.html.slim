@@ -10,7 +10,7 @@
           .top-bar-left
             ul.dropdown.menu data-dropdown-menu=""
               li.menu-text
-                = link_to root_path
+                = link_to root_path(no_redirect: true)
                   = image_tag('brand.png', alt: 'srdrPLUS - Home', size: '200x50')
 
           .top-bar-right
@@ -74,10 +74,6 @@
     ul.submenu class="menu"
       li.submenu
         a href="#{edit_project_path(project)}#panel-project-information" Project Info
-      li.submenu
-        a href="#{edit_project_path(project)}#panel-key-questions" Key Questions
-      li.submenu
-        a href="#{edit_project_path(project)}#panel-projects-users" Member(s) & Role(s)
       - if project.key_questions.present?
         - efp = project.extraction_forms_projects.first
         li.submenu
@@ -86,15 +82,9 @@
         li.submenu
           = link_to 'Extractions Form Builder', '#', data: { confirm: 'You must add at least one key question first.' }
       li.submenu
-        a href="#{project_tasks_path(project)}" Tasks
-      li.submenu
         a href="#{project_citations_path(project)}" Citations
       li.submenu
-        a href="#{next_assignment_project_path(project)}" Screen
-      li.submenu
         a href="#{project_extractions_path(project)}" Extractions
-      li.submenu
-        a href="#{new_project_import_path(project)}" Import Data
       li.submenu
         a href="#{edit_project_path(project)}" Export Data
       li.submenu
