@@ -71,9 +71,18 @@
   - project = @project || @extraction.try(:project) || @extraction_forms_project.try(:project) || @question.try(:project) || @extraction_forms_projects_section.project
   div
     h5.project-info-header = "Project ID##{project.id}: #{project.name}"
-    ul.submenu class="menu"
-      li.submenu
-        a href="#{edit_project_path(project)}#panel-project-information" Project Info
+    ul.submenu.dropdown.menu data-dropdown-menu=""
+      li.submenu aria-expanded="false"
+        = link_to('#') do
+          | Project Details	&nbsp;
+          i class="fi-list"
+        ul.menu
+          li
+            a href="#{edit_project_path(project)}#panel-project-information" Project Info
+          li
+            a href="#{edit_project_path(project)}#panel-key-questions" Key Questions
+          li
+            a href="#{edit_project_path(project)}#panel-projects-users" Member(s) & Role(s)
       - if project.key_questions.present?
         - efp = project.extraction_forms_projects.first
         li.submenu
@@ -81,8 +90,17 @@
       - else
         li.submenu
           = link_to 'Extractions Form Builder', '#', data: { confirm: 'You must add at least one key question first.' }
-      li.submenu
-        a href="#{project_citations_path(project)}" Citations
+      li.submenu aria-expanded="false"
+        = link_to('#') do
+          | Citation Details &nbsp;
+          i class="fi-list"
+        ul.menu
+          li
+            a href="#{project_citations_path(project)}" Citations
+          li
+            a href="#{project_tasks_path(project)}" Tasks
+          li
+            a href="#{next_assignment_project_path(project)}" Screen
       li.submenu
         a href="#{project_extractions_path(project)}" Extractions
       li.submenu

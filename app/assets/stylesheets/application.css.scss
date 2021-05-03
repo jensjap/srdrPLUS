@@ -767,7 +767,11 @@ li.submenu {
   border-right: 1px white solid;
 }
 
-li.submenu a {
+li.submenu > a {
   color: white;
   font-weight: bold;
+}
+
+ul.dropdown li ul li:hover {
+  background: lightgrey;
 }
