@@ -5,7 +5,7 @@
 #  id                            :integer          not null, primary key
 #  question_row_column_id        :integer
 #  question_row_column_option_id :integer
-#  name                          :text(65535)
+#  name                          :text(16777215)
 #  deleted_at                    :datetime
 #  active                        :boolean
 #  created_at                    :datetime         not null

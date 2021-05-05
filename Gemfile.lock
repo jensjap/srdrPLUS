@@ -69,9 +69,9 @@ GEM
       public_suffix (>= 2.0.2, < 4.0)
     amoeba (3.1.0)
       activerecord (>= 3.2.6)
-    annotate (2.7.5)
+    annotate (3.1.1)
       activerecord (>= 3.2, < 7.0)
-      rake (>= 10.4, < 13.0)
+      rake (>= 10.4, < 14.0)
     apipie-rails (0.5.15)
       rails (>= 4.1)
     arel (9.0.0)
@@ -557,7 +557,7 @@ PLATFORMS
 
 DEPENDENCIES
   amoeba
-  annotate (~> 2.7, >= 2.7.4)
+  annotate
   apipie-rails
   autoprefixer-rails
   awesome_print

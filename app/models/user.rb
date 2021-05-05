@@ -30,6 +30,7 @@
 #  expires_at             :integer
 #  expires                :boolean
 #  refresh_token          :string(255)
+#  api_key                :string(255)
 #
 
 class User < ApplicationRecord

@@ -3,7 +3,7 @@
 # Table name: sd_meta_data_queries
 #
 #  id               :bigint           not null, primary key
-#  query_text       :text(65535)
+#  query_text       :text(16777215)
 #  sd_meta_datum_id :bigint
 #  projects_user_id :bigint
 #  created_at       :datetime         not null

@@ -2,12 +2,14 @@
 #
 # Table name: timepoint_names
 #
-#  id         :integer          not null, primary key
-#  name       :string(255)
-#  unit       :string(255)      default(""), not null
-#  deleted_at :datetime
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
+#  id                :integer          not null, primary key
+#  name              :string(255)
+#  unit              :string(255)      default(""), not null
+#  deleted_at        :datetime
+#  created_at        :datetime         not null
+#  updated_at        :datetime         not null
+#  isValidUCUM       :boolean          default(FALSE)
+#  isValidUCUMTested :boolean          default(FALSE)
 #
 
 class TimepointName < ApplicationRecord

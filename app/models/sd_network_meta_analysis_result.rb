@@ -3,7 +3,7 @@
 # Table name: sd_network_meta_analysis_results
 #
 #  id                :bigint           not null, primary key
-#  name              :text(65535)
+#  name              :text(16777215)
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
 #  sd_result_item_id :bigint
