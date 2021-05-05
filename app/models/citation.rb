@@ -11,8 +11,11 @@
 #  refman            :string(255)
 #  pmid              :string(255)
 #  abstract          :binary(65535)
-#  page_number_start :integer
-#  page_number_end   :integer
+#  page_number_start :string(255)
+#  page_number_end   :string(255)
+#  registry_number   :string(255)
+#  doi               :string(255)
+#  other             :string(255)
 #
 
 class Citation < ApplicationRecord
