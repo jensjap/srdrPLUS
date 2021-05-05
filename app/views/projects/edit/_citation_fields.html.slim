@@ -1,7 +1,11 @@
 .nested-fields.citation-fields.added-item
   .citation-inputs
     .accession-number
-      = f.input :pmid, as: :integer, label: 'Accession Number', required: false
+      |Accession Number
+      span data-tooltip="" tabindex="1" title="e.g. Pubmed ID, Cochrane, MBASE, etc."
+        | &nbsp;
+        i class="fi-info"
+      = f.input :pmid, label: false, as: :integer, required: false
       .pmid-checkbox
         a#is-pmid style='display: inline-block;'
           | Fetch from Pubmed
