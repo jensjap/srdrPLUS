@@ -340,6 +340,7 @@ documentCode = ->
                           $( td_elem ).find( 'textarea' ).val( new_value )
                           ## auto save expects keyup for textfield
                           $( td_elem ).find( 'textarea' ).trigger( 'keyup' )
+                          $( td_elem ).find( 'textarea' ).trigger( 'input' )
 
                         when "numeric"
                           new_sign = new_value.split( "&&&&&" )[ 0 ]
@@ -347,9 +348,11 @@ documentCode = ->
 
                           $( td_elem ).find( 'select' ).val( new_sign )
                           $( td_elem ).find( 'select' ).trigger( 'change' )
+                          $( td_elem ).find( 'select' ).trigger( 'input' )
 
                           $( td_elem ).find( 'input[type="number"]' ).val( new_val )
                           $( td_elem ).find( 'input[type="number"]' ).trigger( 'keyup' )
+                          $( td_elem ).find( 'input[type="number"]' ).trigger( 'input' )
 
                         when "checkbox"
                           cb_arr = if new_value.length > 0 then new_value.split( "&&" ) else []
@@ -359,11 +362,13 @@ documentCode = ->
                             else
                               $( input_elem ).prop( 'checked', false )
                             $( input_elem ).trigger( 'change' )
+                            $( input_elem ).trigger( 'input' )
 
                         when "dropdown"
                           select_elem = $( td_elem ).find( 'select' )
                           $( select_elem ).val( new_value )
                           $( select_elem ).trigger( 'change' )
+                          $( select_elem ).trigger( 'input' )
 
                         when "radio_buttons"
                           $( td_elem ).find( 'input.radio_buttons' ).each ( rb_index, rb_input ) ->
@@ -375,6 +380,7 @@ documentCode = ->
                               $( rb_input ).prop( 'checked', false )
 
                             $( rb_input ).trigger( 'change' )
+                            $( rb_input ).trigger( 'input' )
                         else
               apply_coloring( )
 
