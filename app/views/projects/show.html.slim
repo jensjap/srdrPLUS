@@ -56,10 +56,12 @@ div class="max-w-full mx-auto py-12 sm:px-6 lg:px-8"
                     svg class="flex-shrink-0 h-5 w-5 text-gray-400" aria-hidden="true" fill="currentColor" viewbox=("0 0 20 20") xmlns="http://www.w3.org/2000/svg"
                       path clip-rule="evenodd" d=("M8 4a3 3 0 00-3 3v4a5 5 0 0010 0V7a1 1 0 112 0v4a7 7 0 11-14 0V7a5 5 0 0110 0v4a3 3 0 11-6 0V7a1 1 0 012 0v4a1 1 0 102 0V7a3 3 0 00-3-3z") fill-rule="evenodd" /
                     span class="ml-2 flex-1 w-0 truncate"
-                      | Project Data
+                      | XLSX Project Data
                   div class="ml-4 flex-shrink-0"
-                    a class="font-medium text-indigo-600 hover:text-indigo-500" href="#"
-                      | Request Download
+                    - if current_user
+                      = link_to "Export", export_project_path(@project, export_type_name: '.xlsx'), method: :post, class: "font-medium text-indigo-600 hover:text-indigo-500"
+                    - else
+                      = link_to "Export", new_user_session_path(redirect_path: request.fullpath), class: "font-medium text-indigo-600 hover:text-indigo-500"
 
 .grid-container
   .grid-y.grid-padding-y
