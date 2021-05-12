@@ -10,4 +10,8 @@ module ProjectsHelper
       return raw(html)
     end
   end
+
+  def empty_or_na(attribute)
+    attribute.present? ? attribute : 'N/A'
+  end
 end
