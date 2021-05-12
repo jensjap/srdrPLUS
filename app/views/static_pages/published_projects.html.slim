@@ -22,7 +22,7 @@
             .small = "(Last updated on #{ project.updated_at.to_datetime.strftime("%B %d, %Y") })"
           .cell.medium-8
             .small.summary Objectives: #{ project.description }
-            .small.bold = link_to projects_path(project), target: '_blank', data: { confirm: @exit_disclaimer } do
+            .small.bold = link_to project_path(project) do
               |READ MORE
               i.fas.fa-external-link-alt.fa-sm<
 
