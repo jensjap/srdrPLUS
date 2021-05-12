@@ -1,32 +1,33 @@
 .grid-container.fluid
-  .grid-x.align-center
-    .cell.medium-12
-      h1 Published Projects
-      p
-        |Please follow this link to a list of
-        =< link_to "https://srdr.ahrq.gov/projects/published", target: '_blank', data: { confirm: @exit_disclaimer  } do
-          |Published Projects
-          i.fas.fa-external-link-alt.fa-sm<
   .grid-x.align-center-middle.Recently-published
     .cell.medium-9
       h1 Recently Updated Projects
-    - Project.includes([:publishing]).published.each do |project|
-      .cell.medium-9.recent-project
-        .grid-x.grid-padding-x.grid-padding-y
-          .cell.medium-4
-            .small = "Published on #{ project.publishing.created_at.to_datetime.strftime("%B %d, %Y") }"
-            span.bold = project.name
-            .small
-              |
-                #{ project.citations.count } Studies &bull; #{ project.key_questions.count } Key Questions &bull; #{ project.extractions.count } Extraction Forms
-            .small = "(Last updated on #{ project.updated_at.to_datetime.strftime("%B %d, %Y") })"
-          .cell.medium-8
-            .small.summary Objectives: #{ project.description }
-            .small.bold = link_to public_data_path(type: 'project', id: project.id) do
-              |READ MORE
-              i.fas.fa-external-link-alt.fa-sm<
-
+  .grid-x.align-center-middle.Recently-published
     .cell.medium-9
-      h4 = link_to 'https://srdr.ahrq.gov/projects/published', target: '_blank', data: { confirm: @exit_disclaimer } do
-        |SEE MORE PROJECTS
-        i.fas.fa-external-link-alt.fa-sm<
+      ul.tabs data-tabs="true" id="projects-tabs"
+        li class="tabs-title is-active"
+          a data-tabs-target="panel1" href="#panel1" aria-selected="true" SRDR+ Projects
+        li class="tabs-title"
+          a data-tabs-target="panel2" href="#panel2" SRDR Projects
+
+      div class="tabs-content" data-tabs-content="projects-tabs"
+        div class="tabs-panel is-active" id="panel1"
+          - Project.includes([:publishing]).published.each do |project|
+            .cell.medium-12.recent-project
+              .grid-x.grid-padding-x.grid-padding-y
+                .cell.medium-4
+                  .small = "Published on #{ project.publishing.created_at.to_datetime.strftime("%B %d, %Y") }"
+                  span.bold = project.name
+                  .small
+                    |
+                      #{ project.citations.count } Studies &bull; #{ project.key_questions.count } Key Questions &bull; #{ project.extractions.count } Extraction Forms
+                  .small = "(Last updated on #{ project.updated_at.to_datetime.strftime("%B %d, %Y") })"
+                .cell.medium-8
+                  .small.summary Objectives: #{ project.description }
+                  .small.bold = link_to public_data_path(type: 'project', id: project.id) do
+                    |READ MORE
+                    i.fas.fa-external-link-alt.fa-sm<
+        div class="tabs-panel" id="panel2"
+          h4 = link_to 'https://srdr.ahrq.gov/projects/published', target: '_blank', data: { confirm: @exit_disclaimer } do
+            | Go to SRDR Projects
+            i.fas.fa-external-link-alt.fa-sm<
