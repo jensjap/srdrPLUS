@@ -64,7 +64,7 @@ div class="max-w-full mx-auto py-12 sm:px-6 lg:px-8"
 .grid-container
   .grid-y.grid-padding-y
     .cell
-      - if policy(@project).edit?
+      - if controller.class == ProjectsController && policy(@project).edit?
         = link_to 'Edit', edit_project_path(@project)
         '  |
       = link_to 'Back', projects_path

@@ -104,7 +104,7 @@ class ProjectPolicy < ApplicationPolicy
   end
 
   def show?
-    project_contributor? || @user.admin? || record.public?
+    project_contributor? || @user.admin?
   end
 
   def edit?
