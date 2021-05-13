@@ -4,6 +4,7 @@
   .form-inputs
     = f.association :projects_users_role, label: "Select User",   collection: @projects_users_roles, label_method: :handle, input_html: { class: "new-extraction-select2" }, selected: @current_projects_users_role.id
     = f.input :citation, require: true, label: "Select Citation", collection: @citations, label_method: :label_method, input_html: { class: "new-extraction-select2-multi", multiple: true }
+    div#citations-project-id data-project-id="#{@project.id}"
 
   .form-actions
     = f.button :submit, class: 'create-button create-extraction-button', label: t('.create'), id: 'create-extraction-form-submit-button', type: 'button'

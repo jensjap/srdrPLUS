@@ -13,7 +13,20 @@ documentCode = ->
 
   ## SELECT2 INITIALIZATION FOR NEW EXTRACTION
   $( '.new-extraction-select2' ).select2()
-  $( '.new-extraction-select2-multi' ).select2( multiple: 'true', placeholder: '-- Select citation to be extracted --' )
+  $( '.new-extraction-select2-multi' ).select2(
+    multiple: 'true',
+    placeholder: '-- Select citation to be extracted --',
+    ajax: {
+      url: '/api/v1/citations/project_citations_query',
+      dataType: 'json',
+      delay: 250,
+      data: (params) ->
+        {
+          q: params.term,
+          project_id: $('#citations-project-id').data('project-id')
+        }
+    }
+  )
 
   ## SELECT2 INITIALIZATION FOR CONSOLIDATION
   $( '.consolidation-select2' ).select2()

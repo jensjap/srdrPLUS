@@ -75,6 +75,7 @@ Rails.application.routes.draw do
       resources :citations, only: [:index] do
         collection do
           get 'titles'
+          get 'project_citations_query'
         end
       end
 
