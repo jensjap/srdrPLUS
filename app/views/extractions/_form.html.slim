@@ -9,7 +9,7 @@
     = f.button :submit, class: 'create-button create-extraction-button', label: t('.create'), id: 'create-extraction-form-submit-button', type: 'button'
 
 javascript:
-  let existing_pmids = "#{@existing_pmids}".split("-").filter(function (el) { return el != '' });
+  let existing_pmids = "#{@existing_pmids}".split("//$$//").filter(function (el) { return el != '' });
 
   $("#create-extraction-form-submit-button").on('click', function(e) {
     let submittable = true;
