@@ -47,3 +47,5 @@ h6 = t('create_key_question')
 - if @project.key_questions.present?
   - efp = @project.extraction_forms_projects.first
   = link_to 'Build Extraction Form', build_extraction_forms_project_path(efp.id, 'panel-tab': efp.default_section_id), class: 'button', style: 'float: right'
+- else
+  div.button style='float: right; opacity: 0.25;' onclick="alert('You must add at least one key question first.')" Build Extraction Form
