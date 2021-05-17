@@ -193,3 +193,5 @@ gem 'rack-attack'
 gem 'rack-mini-profiler'
 
 gem 'foreman'
+
+gem 'ahoy_matey'
