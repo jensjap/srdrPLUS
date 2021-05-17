@@ -11,8 +11,8 @@
   infoDiv.css( 'color', "<%= @info[2] %>" );
 
   // Animate @info message.
-  infoDiv.show().animate( { opacity: 1 } );
+  infoDiv.show().animate( { opacity: 0.4 } );
   <% if @info[0] %>
-    infoDiv.show().delay( 2000 ).animate( { opacity: 0 } );
+    infoDiv.show().delay( 500 ).animate( { opacity: 0 } );
   <% end %>
 } )();

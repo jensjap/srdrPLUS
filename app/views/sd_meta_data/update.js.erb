@@ -16,8 +16,8 @@
     $('.dirty').removeClass('dirty');
     $( '.preview-button' ).removeAttr( 'disabled' );
 
-    infoDiv.show().animate( { opacity: 1 } );
-    infoDiv.show().delay( 2000 ).animate( { opacity: 0 } );
+    infoDiv.show().animate( { opacity: 0.4 } );
+    infoDiv.show().delay( 500 ).animate( { opacity: 0 } );
 
     <% if @report_title_updated %>
       location.reload();
