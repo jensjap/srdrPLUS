@@ -329,7 +329,7 @@ GEM
       grpc (~> 1.28.0)
       newrelic_rpm (= 6.13.1)
     newrelic_rpm (6.13.1)
-    nio4r (2.5.5)
+    nio4r (2.5.7)
     nokogiri (1.11.4)
       mini_portile2 (~> 2.5.0)
       racc (~> 1.4)
@@ -365,7 +365,7 @@ GEM
       coderay (~> 1.1.0)
       method_source (~> 0.9.0)
     public_suffix (3.0.3)
-    puma (5.0.4)
+    puma (5.3.1)
       nio4r (~> 2.0)
     pundit (2.0.1)
       activesupport (>= 3.0.0)
@@ -603,7 +603,7 @@ DEPENDENCIES
   omniauth-google-oauth2
   paranoia (~> 2.2)
   passenger
-  puma (~> 5.0.4)
+  puma (~> 5.3.1)
   pundit
   rack-attack
   rack-cors
