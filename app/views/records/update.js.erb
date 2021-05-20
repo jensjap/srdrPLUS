@@ -11,6 +11,11 @@
   infoDiv.css( 'color', "<%= @info[2] %>" );
 
   // Animate @info message.
-  infoDiv.show().animate( { opacity: 1 } );
-  infoDiv.show().delay( 2000 ).animate( { opacity: 0 } );
+  infoDiv.css( 'z-index', '1000' );
+  infoDiv.show().animate( { opacity: 0.4 } );
+  infoDiv.show().delay( 500 ).animate( { opacity: 0 } );
+  infoDiv.delay(10).queue(function (next) {
+     $(this).css('z-index', '-1000');
+     next();
+  });
 } )();

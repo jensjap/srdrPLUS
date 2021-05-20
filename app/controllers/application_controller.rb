@@ -21,7 +21,6 @@ class ApplicationController < ActionController::Base
   before_action :authenticate_user!
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :set_current_user
-  before_action :set_layout_style
   before_action :set_exit_disclaimer_message
   before_action :set_raven_context
 
@@ -74,13 +73,6 @@ class ApplicationController < ActionController::Base
       added_attrs = [:username, :email, :password, :password_confirmation, :remember_me]
       devise_parameter_sanitizer.permit :sign_up, keys: added_attrs
       devise_parameter_sanitizer.permit :account_update, keys: added_attrs
-    end
-
-    def set_layout_style
-      #session[:layout_style] = Random.rand 1..2
-      #cookies[:layout_style] = Random.rand 1..2 unless cookies[:layout_style]
-      #cookies[:layout_style] ||= Random.rand 1..1
-      cookies[:layout_style] ||= 3
     end
 
     def set_exit_disclaimer_message

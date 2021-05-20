@@ -7,11 +7,6 @@ class StaticPagesController < ApplicationController
   }.stringify_keys
 
   def home
-    if current_user.present?
-      redirect_to(controller: 'projects', action: 'index')
-      return
-    end
-
     begin
       url = 'https://srdr.ahrq.gov/projects/api_index_published'
       redis = Redis.new
@@ -28,16 +23,7 @@ class StaticPagesController < ApplicationController
       @recently_published_projects = []
     end
 
-    case cookies[:layout_style].to_i
-    when 1
-      render 'home_v1'
-    when 2
-      render 'home_v2'
-    when 3
-      render 'home_v3'
-    else
-      render 'home'
-    end
+    return redirect_to(projects_path) if current_user && !params[:no_redirect]
   end
 
   def help

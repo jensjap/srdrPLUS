@@ -67393,14 +67393,17 @@ function __guardMethod__(obj, methodName, transform) {
                         switch (c_dict[arm_row_id][cell_id][tr_id][td_id]["question_type"]) {
                           case "text":
                             $(td_elem).find('textarea').val(new_value);
-                            return $(td_elem).find('textarea').trigger('keyup');
+                            $(td_elem).find('textarea').trigger('keyup');
+                            return $(td_elem).find('textarea').trigger('input');
                           case "numeric":
                             new_sign = new_value.split("&&&&&")[0];
                             new_val = new_value.split("&&&&&").pop();
                             $(td_elem).find('select').val(new_sign);
                             $(td_elem).find('select').trigger('change');
+                            $(td_elem).find('select').trigger('input');
                             $(td_elem).find('input[type="number"]').val(new_val);
-                            return $(td_elem).find('input[type="number"]').trigger('keyup');
+                            $(td_elem).find('input[type="number"]').trigger('keyup');
+                            return $(td_elem).find('input[type="number"]').trigger('input');
                           case "checkbox":
                             cb_arr = new_value.length > 0 ? new_value.split("&&") : [];
                             return $(td_elem).find('input.check_boxes').each(function(input_id, input_elem) {
@@ -67410,12 +67413,14 @@ function __guardMethod__(obj, methodName, transform) {
                               } else {
                                 $(input_elem).prop('checked', false);
                               }
-                              return $(input_elem).trigger('change');
+                              $(input_elem).trigger('change');
+                              return $(input_elem).trigger('input');
                             });
                           case "dropdown":
                             select_elem = $(td_elem).find('select');
                             $(select_elem).val(new_value);
-                            return $(select_elem).trigger('change');
+                            $(select_elem).trigger('change');
+                            return $(select_elem).trigger('input');
                           case "radio_buttons":
                             return $(td_elem).find('input.radio_buttons').each(function(rb_index, rb_input) {
                               if (rb_input.value === new_value) {
@@ -67423,7 +67428,8 @@ function __guardMethod__(obj, methodName, transform) {
                               } else {
                                 $(rb_input).prop('checked', false);
                               }
-                              return $(rb_input).trigger('change');
+                              $(rb_input).trigger('change');
+                              return $(rb_input).trigger('input');
                             });
                         }
                       }
