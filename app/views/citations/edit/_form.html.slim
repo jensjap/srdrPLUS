@@ -1,17 +1,36 @@
 .column.row
+  br
   = simple_form_for(@citation, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
     = f.hidden_field :project_id, value: params[:project_id]
     = f.error_notification
-    = f.input :name, label: 'Citation Title', autofocus: true
+    |Accession Number
+    span data-tooltip="" tabindex="1" title="e.g. Pubmed ID, Cochrane, MBASE, etc."
+      | &nbsp;
+      i class="fi-info"
+    = f.input :accession_number, label: false, autofocus: true
+    = f.input :name, label: 'Title'
     = f.input :abstract, as: :text
     = f.association :citation_type, label: 'Citation Type', selected: 1
+    br
+    h5 Journal
+    = f.simple_fields_for :journal do |j_f|
+      = j_f.input :name, label: 'Name', required: false
+      = j_f.input :volume, required: false
+      = j_f.input :issue, required: false
+      = j_f.input :publication_date, required: false
+    h6 Page Numbers
+    .row
+      .columns.small-6
+        = f.input :page_number_start, label: false
+      .columns.small-6
+        = f.input :page_number_end, label: false
+    br
+    h5 System Numbers
     = f.input :pmid, label: 'Pubmed ID'
     = f.input :refman, label: 'Reference Manager ID'
-    = f.simple_fields_for :journal do |j_f|
-      = j_f.input :name, label: 'Journal Name'
-      = j_f.input :volume
-      = j_f.input :issue
-      = j_f.input :publication_date
+    = f.input :registry_number, label: 'Registry Number'
+    = f.input :doi, label: 'DOI'
+    = f.input :other, label: 'Other'
     label
       | Authors
     div style="padding-left: 10px;"

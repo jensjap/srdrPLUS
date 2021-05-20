@@ -16,6 +16,7 @@
 #  registry_number   :string(255)
 #  doi               :string(255)
 #  other             :string(255)
+#  accession_number  :string(255)
 #
 
 class Citation < ApplicationRecord
