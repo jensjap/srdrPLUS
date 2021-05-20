@@ -117,7 +117,7 @@ class CitationsController < ApplicationController
 
     def citation_params
       params.require(:citation)
-          .permit(:accession_number, :name, :citation_type_id, :pmid, :refman, :doi, :other, :abstract, :page_number_start, :page_number_end, :_destroy,
+          .permit(:accession_number, :name, :citation_type_id, :pmid, :registry_number, :refman, :doi, :other, :abstract, :page_number_start, :page_number_end, :_destroy,
             citations_attributes: [:id, :name, :_destroy],
             journal_attributes: [:id, :name, :publication_date, :issue, :volume, :_destroy],
             authors_citations_attributes: [:id, :name, :_destroy, { author_attributes: [:name, :id, :_destroy] }, { ordering_attributes: :position }],
