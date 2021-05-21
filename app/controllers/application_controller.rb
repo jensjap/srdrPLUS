@@ -40,7 +40,11 @@ class ApplicationController < ActionController::Base
   end
 
   def after_sign_in_path_for(resource)
-    projects_path
+    if redirect_path.present?
+      redirect_path
+    else
+      projects_path
+    end
   end
 
   def after_sign_out_path_for(resource)
@@ -48,6 +52,10 @@ class ApplicationController < ActionController::Base
   end
 
   private
+
+    def redirect_path
+      params[:user][:redirect_path]
+    end
 
     def user_not_authorized(exception)
       flash[:alert] = 'You are not authorized to perform this action.'

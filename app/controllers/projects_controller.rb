@@ -29,6 +29,7 @@ class ProjectsController < ApplicationController
   # GET /projects/1
   # GET /projects/1.json
   def show
+    authorize(@project)
   end
 
   # GET /projects/new
@@ -131,6 +132,7 @@ class ProjectsController < ApplicationController
     SimpleExportJob.perform_later(current_user.id, @project.id, export_type_name_params)
     flash[:success] = "Export request submitted for project '#{@project.name}'. You will be notified by email of its completion."
 
+    ahoy.track 'Export', { project_id: @project.id, export_type_name_params: export_type_name_params }
     # redirect_to edit_project_path(@project)
     redirect_to request.referer
   end

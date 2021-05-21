@@ -104,7 +104,7 @@ class ProjectPolicy < ApplicationPolicy
   end
 
   def show?
-    project_contributor?
+    project_contributor? || @user.admin?
   end
 
   def edit?
@@ -124,7 +124,7 @@ class ProjectPolicy < ApplicationPolicy
   end
 
   def export?
-    project_contributor?
+    project_contributor? || @record.public?
   end
 
   def import_csv?

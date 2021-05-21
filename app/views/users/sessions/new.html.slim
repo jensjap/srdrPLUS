@@ -8,9 +8,9 @@
         = f.input :login, placeholder: 'email or username', required: false, autofocus: true
         = f.input :password, placeholder: 'password', required: false
         = f.input :remember_me, as: :boolean if devise_mapping.rememberable?
+        = f.hidden_field :redirect_path, value: params[:redirect_path]
 
       .form-actions
         = f.button :submit, "Log in"
 
     = render "users/shared/links"
-
