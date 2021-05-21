@@ -1,124 +1,191 @@
-- provide(:no_overlay_nav, true)
+.announcement_container
+  = render 'static_pages/announcements'
 
-.row
-  section.column
-    h2 Welcome to the Systematic Review Data Repository PLUS&trade;
-    .hide-for-medium
-      p style='margin-top: 0;' The Systematic Review Data Repository (SRDR) is a powerful and easy-to-use tool for
-        the extraction and management of data for systematic review or meta-analysis. It is
-        also an open and searchable archive of systematic reviews and its corresponding data.
-    .hide-for-small-only
-      p style='margin: 0;' The newly updated Systematic Review Data Repository Plus (SRDR+), a free, powerful, and easy-to-use tool for data management for systematic reviews and meta-analyses.
-      p style='margin: 0;' SRDR+ is also an open and searchable archive of systematic review data.
+.v3
+  .grid-x.grid-center-middle.hero-background
+    .cell.small-12
+      .grid-container
+        .grid-x.grid-center-middle
+          .cell.medium-7
+            .SRDR-Moving-system SRDR+:
+            .SRDR-Moving-system Moving systematic reviews forward.
+            .SRDR-is-a-free-pow SRDR+ is a free, powerful, easy to use tool for data extraction, management, and archival during systematic reviews.
+          - unless current_user
+            .cell.medium-5 style="background-color: white; border-radius: 3px; box-shadow: 0 20px 40px 0 rgba(0, 0, 0, 0.15); padding: 0px;"
+              ul.tabs#login-box[data-tabs data-match-height='true']
+                li.tabs-title.is-active style='width: 50%'
+                  a href='#existing-user-panel' Login
+                li.tabs-title style='width: 50%'
+                  a href='#new-user-panel' Register
+              .tabs-content data-tabs-content='login-box'
+                .tabs-panel.is-active#existing-user-panel.align-middle style='padding: 33px;'
+                  .Get-started-now
+                    span.text-style-1 Already have an account?
+                  = simple_form_for(:user, namespace: 'login', url: new_user_session_path, html: { data: { 'abide': '' } }) do |f|
+                    .alert.callout data-abide-error='' style='display: none;'
+                      p
+                        i.fi-alert>
+                        ' Please correct the errors below.
 
-  section.column.elicit-registration style='text-align: center; margin-top: 40px;'
-    - if user_signed_in?
-      = link_to 'My Projects', projects_path, class: 'button large'
+                    .form-inputs style='margin-top: 1rem;'
+                      = f.input :login, placeholder: 'Email or Username', required: true, autofocus: true
+                      = f.input :password, placeholder: 'Password', required: true
+                      /= f.input :remember_me, as: :boolean if devise_mapping.rememberable?
 
-    - else
-      .row
-        .column.small-centered
-          h3 Are you new to SRDR?
+                    .form-actions
+                      = f.button :submit, "Sign In", class: "sign-in-button"
 
-      .row
-        .column.small-centered
-          = link_to 'Sign Up', new_user_registration_path, class: 'button large', style: 'text-decoration: none;'
+                .tabs-panel#new-user-panel style='padding: 33px;'
+                  .Get-started-now
+                    span.text-style-1 Get started now.
+                  = simple_form_for(User.new, as: :user, url: registration_path(:user), html: { data: { 'abide': '' } }) do |f|
+                    .alert.callout data-abide-error='' style='display: none;'
+                      p
+                        i.fi-alert>
+                        ' Please correct the errors below.
 
-      .row
-        .column.small-centered
-          p style='margin: 0 0 33px 33px' Register an account and become acquainted with the SRDR system.
+                    .form-inputs style='margin-top: 1rem;'
+                      = f.input :email, placeholder: 'Email', required: true, hint: 'Email must have the following format: example@domain.edu', autofocus: true
+                      = f.input :password, placeholder: 'Password', required: true, hint: ("Password must contain a minium of #{ @minimum_password_length } characters." if @minimum_password_length),
+                        input_html: { data: { validator: 'minimum_length', minimum_length: "#{ @minimum_password_length }" } }
 
-  section.column
-    #completed-projects
-      h4 Recently Published projects
+                    .form-actions
+                      = f.button :submit, "Create an Account", class: "sign-up-button"
 
-      .callout
-        span.float-right.success.label Published
-        h4
-          a href='https://srdr.ahrq.gov/projects/1153' target='_blank' Nonsurgical Treatments for Urinary Incontinence in Adult Women: A Systematic Review Update
-        br
-        b> Statistics:
-        | 106 Studies, 1 Key Question, 1 Extraction Form
-        br
-        b> Date Published:
-        | Jul 11, 2017 01:28PM
-        br
-        b> Description:
-        | SR of nonsurgical interventions for stress, urgency, and mixed urinary incontinence in women (excluding
-          neuropathic UI and children). Network meta-analysis of "urinary incontinence outcomes" ("cure", improvement,
-          and satisfaction with the level of incontinence achieved). Qualitative review of quality of life outcomes.
-          Summary of adverse events. This is an update of a 2012 review done by the Minnesota EPC. Available data from
-          eligible studies included in the prior review are uploaded as separate files.
+  .grid-x.align-center-middle
+    .cell.medium-9.Rectangle-2
+      h2.See-how-you-can-work See how you can work with SRDR+
+      .grid-x.align-center-middle.user-description
+        .cell.small-2
+          = image_tag 'icon-researchers.svg', class: 'float-center', alt: ''
+        .cell.small-8
+          h4.how-you-title Researchers
+          .small.subheader Use SRDR+ as a free platform for extracting, archiving, and sharing data during systematic reviews and accessing shared data related to systematic reviews.
+      .grid-x.align-center-middle.user-description
+        .cell.small-2
+          = image_tag 'icon-guideline-developers.svg', class: 'float-center', alt: ''
+        .cell.small-8
+          h4.how-you-title Guideline Developers
+          .small.subheader Use SRDR+ for accessing data related to systematic reviews when producing guidelines and recommendation statements for their constituencies.
+      .grid-x.align-center-middle.user-description
+        .cell.small-2
+          = image_tag 'icon-educators.svg', class: 'float-center', alt: ''
+        .cell.small-8
+          h4.how-you-title Educators & Librarians
+          .small.subheader Use SRDR+ for instructing students and trainees in the best practices related to research methodology and evaluation.
+      .grid-x.align-center-middle.user-description
+        .cell.small-2
+          = image_tag 'icon-clinicians.svg', class: 'float-center', alt: ''
+        .cell.small-8
+          h4.how-you-title Clinicians
+          .small.subheader Use SRDR+ for quick reference to study data that are relevant to clinical questions based on systematic reviews.
+      .grid-x.align-center-middle.user-description
+        .cell.small-2
+          = image_tag 'icon-policymakers.svg', class: 'float-center', alt: ''
+        .cell.small-8
+          h4.how-you-title Policymakers
+          .small.subheader Use SRDR+ for quick reference to study data that are relevant to policy questions or recommendations based on systematic reviews.
 
-      .callout
-        .float-right.success.label Published
-        h4
-          a href='https://srdr.ahrq.gov/projects/1153' target='_blank' Stroke Prevention in Patients With Atrial Fibrillation: A Systematic Review Update
-        br
-        b> Statistics:
-        | 185 Studies, 3 Key Questions, 1 Extraction Form
-        br
-        b> Date Published:
-        | May 02, 2018 03:41PM
-        br
-        b> Description:
-        | Objectives: This review updates previous reviews regarding the optimal risk stratification tools for stroke
-          and bleeding prediction and treatment options for stroke prevention. Data Sources: We searched PubMed®,
-          Embase®, and the Cochrane Database of Systematic Reviews for relevant English-language comparative studies
-          published from January 1, 2000, to February 14, 2018. Review Methods: Two investigators screened each abstract
-          and full-text article for inclusion, abstracted data, rated quality and applicability, and graded evidence.
-          When possible, random-effects models were used to compute summary estimates of effects.
+  h1.Create-your-systemat.text-center.professionals-title Leading professionals love SRDR+
 
-      .callout
-        span.float-right.success.label Published
-        h4
-          a href='https://srdr.ahrq.gov/projects/1302' target='_blank' Breastfeeding Programs and Policies, Breastfeeding Uptake, and Maternal Health Outcomes in Developed Countries
-        br
-        b> Statistics:
-        | 147 Studies, 2 Key Questions, 2 Extraction Forms
-        br
-        b> Date Published:
-        | Nov 19, 2018 04:13PM
-        br
-        b> Description:
-        | The goal of this project is to summarize the effectiveness of community, workplace, and health care system–based
-          programs and policies aimed at supporting and promoting breastfeeding and determine the association between
-          breastfeedding and maternal health.
+  .grid-container
+    .grid-x.align-center-middle.grid-padding-x.testimonial-row
+      .cell.medium-5.testimonial-box.testimonial-left
+        = image_tag 'testimonial-matthias-perleth.png', class: 'float-center testimonial-picture', alt: 'Image of Matthias Perleth'
+        h4.how-you-title Mathias Perleth, MPH
+        .small.subheader Board Treasurer, International Network of Agencies for Health Technology Assessment [INAHTA], Germany
+        span “In my regard, SRDR is among the most relevant developments in recent years!”
+      .cell.medium-5.testimonial-box.testimonial-left
+        = image_tag 'testimonial-christine-clifford.png', class: 'float-center testimonial-picture', alt: 'Image of Christine Clifford'
+        h4.how-you-title Christine Clifford, MHP
+        .small.subheader Project Director, Eunice Kennedy Shriver Center, University of Massachusetts Medical School, USA
+        span “I like SRDR’s use of the Tabs and the separation by topic area of the Tabs; it allows for focus on sections of a paper at a time. SRDR is powerful and adaptable, provides a way to standardize diverse results, and provides structure.“
+    .grid-x.align-center-middle.grid-padding-x.testimonial-row
+      .cell.medium-5.testimonial-box.testimonial-left
+        = image_tag 'testimonial-tianjing-li.png', class: 'float-center testimonial-picture', alt: 'Image of Tianjing Li'
+        h4.how-you-title Tianjing Li, MD, MHS, PhD
+        .small.subheader Director, Cochrane Eyes and Vision United States Satellite, Associate Professor, Johns Hopkins Bloomberg School of Public Health, USA
+        span “SRDR is one of the few data systems designed specifically for producing and archiving systematic reviews with the intention to share the data with the public. It’s extremely flexible and it allows users to design their forms (and data items on the forms) in a way that best suit their needs and workflow.”
+      .cell.medium-5.testimonial-box.testimonial-left
+        = image_tag 'testimonial-james-scott-parrott.png', class: 'float-center testimonial-picture', alt: 'Image of James Scott Parrott'
+        h4.how-you-title James Scott Parrott, PhD
+        .small.subheader Professor, Rutgers University School of Health Professions, USA
+        span “The structure of SRDR lends itself well to teaching metacognitive processes associated with linking the discrete steps of the evidence analysis process. Another benefit is the flexibility of SRDR to handle diagnostic accuracy as well as etiology, treatment, and prognosis questions during systematic reviews.”
 
-      .callout
-        span.float-right.success.label Published
-        h4
-          a href='https://srdr.ahrq.gov/projects/871' target='_blank' Systematic Review of Treatments for Basal Cell and Squamous Cell Carcinoma of the Skin
-        br
-        b> Statistics:
-        | 69 Studies, 1 Key Question, 1 Extraction Form
-        br
-        b> Date Published:
-        | Nov 07, 2018 04:30PM
-        br
-        b> Description:
-        | None Provided
+  .grid-x.align-center-middle.features-box
+    .cell.medium-9
+      .grid-x.align-center-middle.feature-box
+        .cell.medium-5
+          h1 Create your systematic review project today
+          span SRDR+ has a variety of features that make it the best place to conduct systematic reviews.
+        .cell.medium-7
+          .grid-x.align-center-middle.sub-feature-box.align-middle
+            .cell.medium-2
+              = image_tag 'icon-extraction-form.png', alt: ''
+            .cell.medium-10
+              span Build electronic data extraction forms
+          .grid-x.align-center-middle.sub-feature-box.align-middle
+            .cell.medium-2
+              = image_tag 'icon-include-studies.png', alt: ''
+            .cell.medium-10
+              span Extract and compare data
+          .grid-x.align-center-middle.sub-feature-box.align-middle
+            .cell.medium-2
+              = image_tag 'icon-collaboration.png', alt: ''
+            .cell.medium-10
+              span Collaborate with your team
+          .grid-x.align-center-middle.sub-feature-box.align-middle
+            .cell.medium-2
+              = image_tag 'icon-export.png', alt: ''
+            .cell.medium-10
+              span Customize exports of your datasets
+      .grid-x.align-center-middle.feature-box
+        .cell.medium-5
+          h1 Access study data from published systematic reviews today.
+        .cell.medium-7
+          .grid-x.align-center-middle.sub-feature-box.align-middle
+            .cell.medium-2
+              = image_tag 'icon-brose-topic.png', alt: ''
+            .cell.medium-10
+              span Browse topics with available study data.
+          .grid-x.align-center-middle.sub-feature-box.align-middle
+            .cell.medium-2
+              = image_tag 'icon-download-data.png', alt: ''
+            .cell.medium-10
+              span Download study data
+          .grid-x.align-center-middle.sub-feature-box.align-middle
+            .cell.medium-2
+              = image_tag 'icon-use-data.png', alt: ''
+            .cell.medium-10
+              span Use study data in your own systematic review.
 
-      .callout
-        span.float-right.success.label Published
-        h4
-          a href='https://srdr.ahrq.gov/projects/1373' target='_blank' Diet-Related Fibers and Human Health Outcomes, Version 4.1
-        br
-        b> Statistics:
-        | 1100 Studies, 1 Key Question, 1 Extraction Form
-        br
-        b> Date Published:
-        | Oct 23, 2018 07:12PM
-        br
-        b> Description:
-        | The objectives of this database are to: 1. Systematically compile and provide access to primary, English-language,
-          peer-reviewed science linking dietary fiber intake in humans to one or more of 10 potential health benefits 2.
-          Provvide researchers with a tool to understand how different fibers are characterized in studies 3. Facilitate
-          researchers in identifying gaps in the current research 4. Create a database to serve as a starting foundation of
-          primary human literature for conducting evidence-based reviews and meta-analyses 5. Efficiently assist researchers
-          in identifying fibers of interest. This database should serve as a foundation for future work. Specific inclusion
-          and exclusion criteria, detailed in the user manual, were applied in determining database eligibility; thus, this
-          database is not intended to serve as a sole source for identifying all possible fiber literature for the purposes
-          of conducting a meta-analysis or systematic review. This database contains Population, Intervention, Comparator,
-          and Outcome (PICO) data to help users formulate and narrow the focus of their research question. It is expected
-          that secondary searches will be conducted to augment this database.
+  - if @recently_published_projects.present?
+    .grid-x.align-center-middle.Recently-published
+      .cell.medium-9
+        h1 Recently published projects
+      - @recently_published_projects.each do |rp|
+        .cell.medium-9.recent-project
+          .grid-x.grid-padding-x.grid-padding-y
+            .cell.medium-4
+              - if rp[1]['publication_requested_at'].present?
+                .small = "First published on #{ rp[1]['publication_requested_at'].to_datetime.strftime("%B %d, %Y") }"
+                .small = "Last edited on #{ rp[1]['updated_at'].to_datetime.strftime("%B %d, %Y") }"
+              span.bold = rp[1]['title']
+              .small
+                |
+                  #{ rp[1]['number_of_studies'] } Studies &bull; #{ rp[1]['number_of_key_questions'] } Key Questions &bull; #{ rp[1]['number_of_extraction_forms'] } Extraction Forms
+            .cell.medium-8
+              .small.summary Objectives: #{ rp[1]['description'].blank? ? 'None Provided' : rp[1]['description'] }
+              .small.bold = link_to rp[1]['url'], target: '_blank' do
+                |READ MORE
+                i.fas.fa-external-link-alt.fa-sm<
+
+      .cell.medium-9
+        h4 = link_to 'https://srdr.ahrq.gov/projects/published', target: '_blank' do
+          |SEE MORE PROJECTS
+          i.fas.fa-external-link-alt.fa-sm<
+
+  .grid-x.align-center-middle.align-middle.join-the-professionals
+    .cell.medium-9
+        h1 Join thousands of professionals
+        .button = link_to 'TRY SRDR+ NOW', new_user_registration_path
