@@ -61,6 +61,15 @@ class Citation < ApplicationRecord
     super
   end
 
+  def accession_number_alts
+    (pmid.present? && pmid) ||
+    (registry_number.present? && registry_number) ||
+    (refman.present? && refman) ||
+    (accession_number.present? && accession_number) ||
+    (doi.present? && doi) ||
+    (other.present? && other)
+  end
+
 #  def authors_citations_attributes=(attributes)
 #    attributes.sort_by{|k,v| v[:ordering_attributes][:position]}.each do |key, attribute_collection|
 #      ActiveRecord::Base.transaction do

@@ -24,6 +24,10 @@ class ProjectPolicy < ApplicationPolicy
         :id,
         :name,
         :abstract,
+        :accession_number,
+        :registry_number,
+        :doi,
+        :other,
         :pmid,
         :refman,
         :citation_type_id,
@@ -169,7 +173,7 @@ class ProjectPolicy < ApplicationPolicy
     elsif project_contributor?
       [
         { citations_projects_attributes: [:id, :citation_id] },
-        { citations_attributes: [:id, :name, :abstract, :pmid, :refman, :citation_type_id, :page_number_start, :page_number_end, authors_citations_attributes: [{ author_attributes: :name }, { ordering_attributes: :position }], keyword_ids:[], journal_attributes: [ :id, :name, :volume, :issue, :publication_date]] }
+        { citations_attributes: [:id, :name, :abstract, :accession_number, :pmid, :refman, :registry_number, :doi, :other, :citation_type_id, :page_number_start, :page_number_end, authors_citations_attributes: [{ author_attributes: :name }, { ordering_attributes: :position }], keyword_ids:[], journal_attributes: [ :id, :name, :volume, :issue, :publication_date]] }
       ]
     end
   end

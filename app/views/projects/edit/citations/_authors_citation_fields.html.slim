@@ -1,7 +1,7 @@
-.nested-fields.authors-citation
+.nested-fields.authors-citation style="margin-bottom: 0;"
   = f.simple_fields_for :author_attributes do |a_f|
     = a_f.input :name, label: false, input_html: { class: 'author-name' }
-    
+
   = f.simple_fields_for :ordering_attributes do |o_f|
     = o_f.input :position, as: :hidden, input_html: { class: 'author-position' }
-  = link_to_remove_association '✖', f, class: 'alert small remove-authors-citation'
+  = link_to_remove_association 'Remove', f, class: 'alert small remove-authors-citation'
