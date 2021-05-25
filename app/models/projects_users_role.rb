@@ -39,22 +39,6 @@ class ProjectsUsersRole < ApplicationRecord
 
   before_destroy :reassign_extraction
 
-  def handle
-    profile = self.projects_user.user.profile
-    ret_value = ""
-    if (profile.present? && [profile.first_name, profile.middle_name, profile.last_name].any?(&:present?))
-      ret_value += "#{ profile.first_name } "  if profile.first_name.present?
-      ret_value += "#{ profile.middle_name } " if profile.middle_name.present?
-      ret_value += "#{ profile.last_name } "   if profile.last_name.present?
-      ret_value += "(#{ self.role.name })"
-      return ret_value
-    elsif (profile.present? && profile.username.present?)
-      return "#{ profile.username } (#{ self.role.name })"
-    else
-      return "#{ user.email } (#{ self.role.name })"
-    end
-  end
-
   delegate :project, to: :projects_user
   delegate :user, to: :projects_user
 
