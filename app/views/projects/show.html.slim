@@ -1,10 +1,15 @@
-div class="max-w-full mx-auto py-12 sm:px-6 lg:px-8"
-  div class="max-w-7xl mx-auto"
+div class="max-w-full mx-auto py-6 sm:px-6 lg:px-8"
+  div class="max-w-7xl mx-auto space-y-6"
+    h1 class="text-3xl font-medium text-warm-gray-900" = empty_or_na(@project.name)
     div class="bg-white shadow overflow-hidden sm:rounded-lg"
-      div class="px-4 py-5 sm:px-6"
-        h1 class="text-3xl leading-6 font-medium text-gray-900" = empty_or_na(@project.name)
+      div class="px-4 py-5 sm:px-6 bg-purple-900"
+        h1 class="text-md font-bold leading-6 font-medium text-white" Project Summary Title and Description
       div class="border-t border-gray-200 px-4 py-5 sm:p-0"
         dl class="sm:divide-y sm:divide-gray-200"
+          div class="py-4 sm:py-5 sm:grid sm:grid-cols-1 sm:gap-4 sm:px-6"
+            dt class="text-sm font-medium text-gray-500"
+              | Title
+            dd class="mt-1 text-gray-900 sm:mt-0 sm:col-span-2" = empty_or_na(@project.name)
           div class="py-4 sm:py-5 sm:grid sm:grid-cols-1 sm:gap-4 sm:px-6"
             dt class="text-sm font-medium text-gray-500"
               | Description
@@ -37,17 +42,23 @@ div class="max-w-full mx-auto py-12 sm:px-6 lg:px-8"
             dt class="text-sm font-medium text-gray-500"
               | Funding Source
             dd class="mt-1 text-gray-900 sm:mt-0 sm:col-span-2" = empty_or_na(@project.funding_source)
+    div class="bg-white shadow overflow-hidden sm:rounded-lg"
+      div class="px-4 py-5 sm:px-6 bg-purple-900"
+        h1 class="text-md font-bold leading-6 font-medium text-white" Key Questions
+      - @project.key_questions.each_with_index do |kq, idx|
+        div class="border-t border-gray-200 px-4 py-5 sm:p-0"
+          dl class="sm:divide-y sm:divide-gray-200"
+            div class="py-4 sm:py-5 sm:grid sm:grid-cols-1 sm:gap-4 sm:px-6"
+              dt class="text-sm font-medium text-gray-500" = idx + 1
+              dd class="mt-1 text-gray-900 sm:mt-0 sm:col-span-2" = kq.name
+    div class="bg-white shadow overflow-hidden sm:rounded-lg"
+      div class="px-4 py-5 sm:px-6 bg-purple-900"
+        h1 class="text-md font-bold leading-6 font-medium text-white" Downloadable Data Content
+      div class="border-t border-gray-200 px-4 py-5 sm:p-0"
+        dl class="sm:divide-y sm:divide-gray-200"
           div class="py-4 sm:py-5 sm:grid sm:grid-cols-1 sm:gap-4 sm:px-6"
             dt class="text-sm font-medium text-gray-500"
-              | Key Questions
-            dd class="mt-1 text-gray-900 sm:mt-0 sm:col-span-2"
-              ol class="list-decimal pl-4"
-                - @project.key_questions.each do |kq|
-                  li = kq.name
-
-          div class="py-4 sm:py-5 sm:grid sm:grid-cols-1 sm:gap-4 sm:px-6"
-            dt class="text-sm font-medium text-gray-500"
-              | Download
+              | Files
             dd class="mt-1 text-gray-900 sm:mt-0 sm:col-span-2"
               ul class="border border-gray-200 rounded-md divide-y divide-gray-200"
                 li class="pl-3 pr-4 py-3 flex items-center justify-between"
@@ -62,7 +73,6 @@ div class="max-w-full mx-auto py-12 sm:px-6 lg:px-8"
                       = link_to "Export", export_project_path(@project, export_type_name: '.xlsx'), method: :post, class: "font-medium text-indigo-600 hover:text-indigo-500"
                     - else
                       = link_to "Export", new_user_session_path(redirect_path: request.fullpath), class: "font-medium text-indigo-600 hover:text-indigo-500"
-
 .grid-container
   .grid-y.grid-padding-y
     .cell
