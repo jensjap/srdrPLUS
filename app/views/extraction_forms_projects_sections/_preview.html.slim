@@ -2,15 +2,16 @@
 
 #preview.column.row
 
-  .key-question-selector
-    h4 Select Key Question to work on
-    .grid-y
-      - @key_questions_projects_array_for_select.each do |kqp|
-        .cell.grid-x
-          .cell.shrink style='margin-right: 0.5rem;'
-            = check_box_tag kqp.second, kqp.second, true, 'data-kqp-selection-id': kqp.second, class: 'kqp-selector'
-          .cell.auto
-            = label_tag kqp.second, kqp.first
+  - unless controller_name = 'public_data'
+    .key-question-selector
+      h4 Select Key Question to work on
+      .grid-y
+        - @key_questions_projects_array_for_select.each do |kqp|
+          .cell.grid-x
+            .cell.shrink style='margin-right: 0.5rem;'
+              = check_box_tag kqp.second, kqp.second, true, 'data-kqp-selection-id': kqp.second, class: 'kqp-selector'
+            .cell.auto
+              = label_tag kqp.second, kqp.first
 
   - extraction_forms_projects_section.questions.each_with_index do |q, idx|
 

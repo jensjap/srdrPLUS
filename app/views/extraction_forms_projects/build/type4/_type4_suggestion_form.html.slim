@@ -1,28 +1,29 @@
 - section_name = efps.section.name.titleize.singularize
 
-h5 Add #{ section_name } Suggestion
-= simple_form_for(efps) do |f|
-  = f.simple_fields_for(:extraction_forms_projects_sections_type1s,
-    f.object.extraction_forms_projects_sections_type1s.build) do |sf_efpst1|
-    .form-inputs class="new-type1-fields-#{ efps.id.to_s }"
-      = sf_efpst1.association :type1_type,
-        collection: Type1Type.diagnostic_test_types,
-        required: true,
-        label: "Select Type of Suggested #{ section_name }"
-      = sf_efpst1.simple_fields_for(:type1, sf_efpst1.object.build_type1) do |sf_t1|
-        = sf_t1.input :name,        label: 'Title', required: true, hint: 'Name can\'t be blank'
-        = sf_t1.input :description, label: 'Description', input_html: { rows: 2 }
+- unless controller_name == 'public_data'
+  h5 Add #{ section_name } Suggestion
+  = simple_form_for(efps) do |f|
+    = f.simple_fields_for(:extraction_forms_projects_sections_type1s,
+      f.object.extraction_forms_projects_sections_type1s.build) do |sf_efpst1|
+      .form-inputs class="new-type1-fields-#{ efps.id.to_s }"
+        = sf_efpst1.association :type1_type,
+          collection: Type1Type.diagnostic_test_types,
+          required: true,
+          label: "Select Type of Suggested #{ section_name }"
+        = sf_efpst1.simple_fields_for(:type1, sf_efpst1.object.build_type1) do |sf_t1|
+          = sf_t1.input :name,        label: 'Title', required: true, hint: 'Name can\'t be blank'
+          = sf_t1.input :description, label: 'Description', input_html: { rows: 2 }
 
-    .links
-      = link_to_add_association sf_efpst1,
-        :extraction_forms_projects_sections_type1_rows,
-        class: 'add-population-link',
-        partial: 'extraction_forms_projects_sections_type1_rows/threshold_fields' do
-        i.fi-plus>
-        | Add Threshold
+      .links
+        = link_to_add_association sf_efpst1,
+          :extraction_forms_projects_sections_type1_rows,
+          class: 'add-population-link',
+          partial: 'extraction_forms_projects_sections_type1_rows/threshold_fields' do
+          i.fi-plus>
+          | Add Threshold
 
-  .form-actions
-    = f.button :submit, 'Save'
+    .form-actions
+      = f.button :submit, 'Save'
 
 h5 Index Tests
 table

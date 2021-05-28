@@ -4,6 +4,7 @@ class PublicDataController < ApplicationController
 
   def show
     render @template
+    return render :file => "#{Rails.root}/public/404", :layout => false, :status => :not_found unless @project && @project.public?
   end
 
   private
@@ -12,11 +13,14 @@ class PublicDataController < ApplicationController
 
       case params[:type]
       when 'project'
-        record = Project.find(id)
-        @project = record
-        @template = '/projects/show.html.slim'
+        @project = Project.find(id)
+        @template = '/public_data/project.html.slim'
+      when 'extraction_form'
+        @efp = ExtractionFormsProject.find(id)
+        @project = @efp.project
+        @template = '/public_data/extraction_form.html.slim'
+      when 'extraction'
+        # todo
       end
-
-      return render :file => "#{Rails.root}/public/404", :layout => false, :status => :not_found unless record && record.public?
     end
 end
