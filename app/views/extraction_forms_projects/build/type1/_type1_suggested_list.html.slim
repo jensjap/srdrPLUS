@@ -22,13 +22,18 @@
           th Type
         th = section_name.eql?('Outcome') ? 'Domain' : 'Name'
         th = section_name.eql?('Outcome') ? 'Specific Measurement' : 'Description'
-        - if section_name.eql?('Outcome')
-          th Timepoint(s)
+        - unless controller_name == 'public_data'
+          - if section_name.eql?('Outcome')
+            th Timepoint(s)
         - unless controller_name == 'public_data'
           th
 
     tbody class="#{controller_name == 'public_data' ? '' : 'orderable-list'}" orderable-url="#{ update_positions_api_v1_orderings_url }"
-      - efps.extraction_forms_projects_sections_type1s_without_total_arm.each do |efpst1|
+      - if controller_name == 'public_data'
+        - efpst1s = efps.extractions_extraction_forms_projects_sections.map(&:extractions_extraction_forms_projects_sections_type1s_without_total_arm).flatten.uniq { |eefpst1| eefpst1.type1 }
+      - else
+        - efpst1s = efps.extraction_forms_projects_sections_type1s_without_total_arm
+      - efpst1s.each do |efpst1|
         tr.orderable-item [ position="#{ efpst1.ordering.position }" ordering-id="#{ efpst1.ordering.id }" ]
           - unless controller_name == 'public_data'
             td.sort-handle style="min-width: 0; vertical-align: middle; width: 10px; cursor: pointer;"
@@ -36,14 +41,14 @@
           - if section_name.eql? 'Outcome'
             td = efpst1.type1_type.try(:name)
           td = efpst1.type1.name
-
           td style='white-space: pre-wrap' = efpst1.type1.description
-          - if section_name.eql? 'Outcome'
-            td
-              - if efpst1.timepoint_names.present?
-                ul
-                  - efpst1.timepoint_names.each do |tn|
-                    li = tn.pretty_print_export_header
+          - unless controller_name == 'public_data'
+            - if section_name.eql? 'Outcome'
+              td
+                - if efpst1.timepoint_names.present?
+                  ul
+                    - efpst1.timepoint_names.each do |tn|
+                      li = tn.pretty_print_export_header
           - unless controller_name == 'public_data'
             td
               .utilities

@@ -60,6 +60,12 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
   delegate :project,           to: :extraction
   delegate :section,           to: :extraction_forms_projects_section
 
+  def extractions_extraction_forms_projects_sections_type1s_without_total_arm
+    extractions_extraction_forms_projects_sections_type1s
+      .to_a
+      .delete_if { |efpst| efpst.type1.name == "Total" && efpst.type1.description == "All #{ link_to_type1.present? ? link_to_type1.section.name : section.name } combined" }
+  end
+
   def type1s_suggested_by_project_leads
     extraction_forms_projects_section
       .extraction_forms_projects_sections_type1s
