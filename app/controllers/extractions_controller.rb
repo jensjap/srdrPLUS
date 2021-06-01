@@ -362,14 +362,6 @@ class ExtractionsController < ApplicationController
     end
 
     def set_extraction_forms_projects
-      if @panel_tab_id == 'keyquestions'
-        @extraction_forms_projects = @project.extraction_forms_projects.includes(
-          :extraction_form
-        )
-      else
-        @extraction_forms_projects = @project.extraction_forms_projects.includes(
-          :extraction_form
-        )
-      end
+      @extraction_forms_projects = @project.extraction_forms_projects.includes(:extraction_form)
     end
 end
