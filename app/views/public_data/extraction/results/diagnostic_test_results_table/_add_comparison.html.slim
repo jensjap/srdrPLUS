@@ -1,0 +1,14 @@
+.diagnostic-test-comparison
+  - diagnostic_test_descriptive_rss = eefpst1r.result_statistic_sections.diagnostic_test_type_rsss.first
+  = simple_form_for(diagnostic_test_descriptive_rss,
+    url: add_comparison_result_statistic_section_path(diagnostic_test_descriptive_rss),
+    remote: true, method: :post) do |f|
+
+    = f.input :comparison_type, as: :hidden, input_html: { value: :diagnostic_test }
+    .links.add-comparison
+      = link_to_add_association f, :comparisons,
+        class: 'button tiny',
+        partial: 'result_statistic_sections/edit/diagnostic_test/comparison_fields',
+        render_options: { locals: { rss: diagnostic_test_descriptive_rss, comparison: :diagnostic_test } } do
+        i.fi-plus>
+        | Add Comparison

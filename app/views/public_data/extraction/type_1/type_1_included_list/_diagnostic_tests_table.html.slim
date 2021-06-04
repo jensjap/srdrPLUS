@@ -1,0 +1,57 @@
+- index_tests     = eefps.extractions_extraction_forms_projects_sections_type1s.where(type1_type: Type1Type.find_by(name: Type1Type::INDEX_TEST))
+- reference_tests = eefps.extractions_extraction_forms_projects_sections_type1s.where(type1_type: Type1Type.find_by(name: Type1Type::REFERENCE_TEST))
+table
+  col style="width: 45%;"
+  col style="width: 45%;"
+  col style="width: 10%;"
+
+  thead style="background: initial; border: none;"
+    tr
+      th style="border: none;" Index Tests
+      th style="border: none;" Description
+      th style="border: none;"
+
+  tbody
+    - index_tests.each do |it|
+      tr
+        td = it.type1.name
+        td = it.type1.description
+        td
+          div = link_to edit_extractions_extraction_forms_projects_sections_type1_path(it) do
+            i.fi-pencil>
+            | Edit
+
+          div = link_to it, data: { confirm: 'Are you sure?' }, method: :delete do
+            i.fi-trash>
+            | Remove
+
+br
+br
+br
+
+table
+  col style="width: 45%;"
+  col style="width: 45%;"
+  col style="width: 10%;"
+
+  thead style="background: initial; border: none;"
+    tr
+      th style="border: none;" Reference Tests
+      th style="border: none;" Description
+      th style="border: none;"
+
+  tbody
+    - reference_tests.each do |rt|
+      tr
+        td = rt.type1.name
+        td = rt.type1.description
+        td
+          div = link_to edit_extractions_extraction_forms_projects_sections_type1_path(rt) do
+            i.fi-pencil>
+            | Edit
+
+          div = link_to rt, data: { confirm: 'Are you sure?' }, method: :delete do
+            i.fi-trash>
+            | Remove
+
+/#!!! todo: need to define thresholds for each type of test.

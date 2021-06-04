@@ -1,0 +1,18 @@
+/ Notes/reminder:
+/ @eefpst1 -> Diagnosis
+/ @eefpst1.extractions_extraction_forms_projects_sections_type1_rows -> population
+
+- @eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |eefpst1r|
+  /#!!! this should give each Diagnostic Test and their corresponding Thresholds as options for the collection.
+  - @diagnostic_tests = ExtractionsExtractionFormsProjectsSectionsType1.by_section_name_and_extraction_id_and_extraction_forms_project_id(\
+    'Diagnostic Tests',
+    @extraction.id,
+    eefpst1r.extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_section.extraction_forms_projects_section.extraction_forms_project.id)
+
+  h4 Population: #{ eefpst1r.population_name.name }
+
+  = render 'extractions/work/results/diagnostic_test_results_table/add_comparison', eefpst1r: eefpst1r
+
+  = render 'extractions/work/results/diagnostic_test_results_table/data_by_comparisons',
+    rss: eefpst1r.result_statistic_sections.diagnostic_test_type_rsss.first,
+    eefpst1r: eefpst1r

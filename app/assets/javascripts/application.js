@@ -104,6 +104,10 @@ function get_valid_URL(string){
   }
 }
 
+function autoResize(el) {
+  $(el).height(el.scrollHeight);
+}
+
 // Attach NIH autocomplete for UCUM (Unified Code for Units of Measure) to any input field with class 'ucum'.
 $( document ).on( 'cocoon:after-insert', function(e, insertedItem, originalEvent) {
   $( '.ucum' ).each(function() {
@@ -333,4 +337,8 @@ let documentCode = function() {
       $outer_form.submit()
     })
   }
+
+  $('textarea.resize-to-fit').each(function() {
+    autoResize(this)
+  })
 }

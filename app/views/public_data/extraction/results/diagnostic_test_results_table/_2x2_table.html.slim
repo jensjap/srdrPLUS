@@ -1,0 +1,35 @@
+table
+  caption 2X2 Table
+  thead
+    tr
+      th
+      th Disease (+)
+      th Disease (-)
+      th Total
+
+  tbody
+    / We split rss.result_statistic_sections_measures into
+    / 3 groups of 3 each to build our 2x2 table as such:
+    /
+    / |         | Disease (+) | Disease (-) | Total |
+    / |Test (+) |             |             |       |
+    / |Test (-) |             |             |       |
+    / |Total    |             |             |       |
+
+    - _rssm_grps = rss.result_statistic_sections_measures.each_slice(3).to_a
+    - _row_header_helper = { 0 => 'Test (+)', 1 => 'Test (-)', 2 => 'Total' }
+    - _rssm_grps.each_with_index do |rssm_grp, idx|
+      tr
+        td = _row_header_helper[idx]
+        - rssm_grp.each do |rssm|
+          td
+            - record = TpsComparisonsRssm.find_record(timepoint=timepoint,
+              comparison=comparison,
+              result_statistic_sections_measure=rssm)
+            = simple_form_for(record, remote: true) do |f|
+              = f.input :name, as: :string, label: false,
+                class: 'form-control',
+                wrapper_html: { style: 'padding-bottom: 0;' },
+                input_html: { title: "#{ record.recordable.result_statistic_sections_measure.measure.name }",
+                              style: 'margin-bottom: 0;' }
+              div id="record-id-#{ record.id.to_s }" class='record-info' style='opacity: 0;' = 'Saved!'

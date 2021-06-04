@@ -1,0 +1,75 @@
+- tab_indices = {}
+- counter = counter_index
+- print_tp_name = true
+- dsc_rss.timepoints.each_with_index do |tp, tp_index|
+  - tp_counter = 1000 * tp_index
+  - max_row_cnt = [dsc_rss.result_statistic_sections_measures.length, bac_rss.result_statistic_sections_measures.length].max - 1
+  - for row_cnt in -1..max_row_cnt do
+    - tr_group_class = row_cnt == 0 ? 'tr-group-top' : row_cnt == max_row_cnt ? 'tr-group-bottom' : ''
+    - if print_tp_name
+      tr class="#{tr_group_class}"
+        td rowspan="#{ [dsc_rss.result_statistic_sections_measures.length, bac_rss.result_statistic_sections_measures.length].max + 1 }"
+          div style="font-weight: bold; text-align: center" = tp.timepoint_name.pretty_print_export_header
+        - print_tp_name = false
+
+    - else
+      tr class="#{tr_group_class}"
+        - dsc_rssm = dsc_rss.result_statistic_sections_measures.left_outer_joins(measure: :result_statistic_section_types_measures).reorder('result_statistic_section_types_measures.id asc').distinct
+        td.freeze style="z-index: 100;" = dsc_rssm[row_cnt].try(:measure).try(:name)
+        - @arms.sort_by { |eefpst1| eefpst1.ordering.position }.each do |arm|
+          - if dsc_rssm[row_cnt].try(:measure).try(:name)
+            td
+              - record = TpsArmsRssm.find_record(timepoint=tp, extractions_extraction_forms_projects_sections_type1=arm, result_statistic_sections_measure=dsc_rssm[row_cnt])
+              - if tab_indices["#{tp.id}:arm:#{arm.id}"]
+                - tab_indices["#{tp.id}:arm:#{arm.id}"] += 1
+              - else
+                - tab_indices["#{tp.id}:arm:#{arm.id}"] = counter
+                - counter += 1000
+              = simple_form_for(record,
+                remote: true,
+                html: { autocomplete: 'off', data: { 'abide': '', 'live-validate': true } }) do |f|
+                = f.input :name,
+                  as: :string,
+                  label: false,
+                  required: false,
+                  class: 'form-control',
+                  wrapper_html: { style: 'padding-bottom: 0;' },
+                  input_html: { style: 'margin-bottom: 0;', tabindex: tab_indices["#{tp.id}:arm:#{arm.id}"] }
+                div id="record-id-#{ record.id.to_s }" class='record-info' style='opacity: 0;' = 'Saved!'
+
+          - else
+            td
+        - bac_rssm = bac_rss.result_statistic_sections_measures.left_outer_joins(measure: :result_statistic_section_types_measures).reorder('result_statistic_section_types_measures.id asc').distinct
+        - if bac_rssm[row_cnt].try(:measure).try(:name)
+          td.bg-lightblue.freeze style="text-align: center;" = bac_rssm[row_cnt].measure.name
+          - if bac_rss.comparisons.present?
+            - bac_rss.comparisons.each do |bac|
+              td.bg-lightblue
+                - record = TpsComparisonsRssm.find_record(timepoint=tp, comparison=bac, result_statistic_sections_measure=bac_rssm[row_cnt])
+                - if tab_indices["#{tp.id}:bac:#{bac.id}"]
+                  - tab_indices["#{tp.id}:bac:#{bac.id}"] += 1
+                - else
+                  - tab_indices["#{tp.id}:bac:#{bac.id}"] = counter
+                  - counter += 1000
+                = simple_form_for(record,
+                  remote: true,
+                  html: { autocomplete: 'off', data: { 'abide': '', 'live-validate': true } }) do |f|
+                  = f.input :name,
+                    as: :string,
+                    label: false,
+                    required: false,
+                    class: 'form-control',
+                    wrapper_html: { style: 'padding-bottom: 0;' },
+                    input_html: { style: 'margin-bottom: 0;', tabindex: tab_indices["#{tp.id}:bac:#{bac.id}"] }
+                  div id="record-id-#{ record.id.to_s }" class='record-info' style='opacity: 0;' = 'Saved!'
+
+          - else
+            td.bg-lightblue.freeze
+
+        - else
+          td.bg-lightblue
+          - bac_rss.comparisons.each do |bac|
+            td.bg-lightblue
+
+  - print_tp_name = true
+  - counter += 1000

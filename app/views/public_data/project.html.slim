@@ -1,4 +1,4 @@
-div class="max-w-full mx-auto py-6 sm:px-6 lg:px-8"
+div#printableArea class="max-w-full mx-auto py-6 sm:px-6 lg:px-8"
   div class="max-w-7xl mx-auto space-y-6"
     h1 class="text-3xl font-medium text-warm-gray-900" = empty_or_na(@project.name)
 
@@ -109,10 +109,5 @@ div class="max-w-full mx-auto py-6 sm:px-6 lg:px-8"
                       = link_to "Export", export_project_path(@project, export_type_name: '.xlsx'), method: :post, class: "font-medium text-indigo-600 hover:text-indigo-500"
                     - else
                       = link_to "Export", new_user_session_path(redirect_path: request.fullpath), class: "font-medium text-indigo-600 hover:text-indigo-500"
-.grid-container
-  .grid-y.grid-padding-y
-    .cell
-      - if controller.class == ProjectsController && policy(@project).edit?
-        = link_to 'Edit', edit_project_path(@project)
-        '  |
-      = link_to 'Back', projects_path
+
+    button.button onClick="printPrintableArea()" Print Data

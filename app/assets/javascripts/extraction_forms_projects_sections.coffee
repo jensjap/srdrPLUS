@@ -6,8 +6,7 @@ document.addEventListener 'extractionSectionLoaded', ->
   documentCode()
 
 documentCode = ->
-  if $( '.extraction_forms_projects.build, .extraction_forms_projects_sections, .extractions' ).length > 0
-
+  if $( 'body.public_data.show, .extraction_forms_projects.build, .extraction_forms_projects_sections, .extractions' ).length > 0
     #######################################################
     # ATTACH FOLLOWUPS
     #######################################################
@@ -177,6 +176,7 @@ documentCode = ->
     # HIDING IRRELEVANT QUESTIONS
     #######################################################
     updateCards = () ->
+      return if $( 'body.public_data.show' ).length > 0
       # Hide all questions first.
       $( '.card' ).addClass( 'hide' )
 

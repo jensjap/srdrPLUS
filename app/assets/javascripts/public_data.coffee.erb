@@ -1,0 +1,31 @@
+# Place all the behaviors and hooks related to the matching controller here.
+# All this logic will automatically be available in application.js.
+# You can use CoffeeScript in this file: http://coffeescript.org/
+
+printPrintableArea = () ->
+  mywindow = window.open('', 'PRINT', 'height=800,width=1200')
+  mywindow.document.write '<html><head><title>' + document.title + '</title>'
+  mywindow.document.write '<style></style>'
+  $('style').each () ->
+    mywindow.document.write '<style media="all">'
+    mywindow.document.write $(this).html()
+    mywindow.document.write '</style>'
+
+  $('link').each () ->
+    href = $(this).attr("href")
+    mywindow.document.write '<link rel="stylesheet" media="all" href="<%= Rails.env.development? ? 'http://localhost:3000' : 'https://srdrplus.ahrq.gov' %>'
+    mywindow.document.write href
+    mywindow.document.write '" >'
+
+  mywindow.document.write '</head><body >'
+  mywindow.document.write '<h1>' + document.title + '</h1>'
+  mywindow.document.write document.getElementById('printableArea').innerHTML
+  mywindow.document.write '</body></html>'
+  mywindow.document.close()
+  # necessary for IE >= 10
+  mywindow.focus()
+  # necessary for IE >= 10*/
+  mywindow.print()
+  true
+
+window.printPrintableArea = printPrintableArea

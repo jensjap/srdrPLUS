@@ -1,0 +1,30 @@
+/ This is the first outcome that is attached to this Extraction. We show populations and the corresponding links to:
+/   - descriptive statistics
+/   - between arm comparisons
+/   - within arm comparisons
+/   - net change
+ul#results-table-tabs.tabs data-deep-link='true' data-update-history='true' data-tabs=''
+  - is_first = true
+  - eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |eefpst1r|
+    - if is_first
+      li.tabs-title class="is-active"
+        = link_to eefpst1r.population_name.name.titleize, "#panel-population-#{ eefpst1r.id }", title: eefpst1r.population_name.name.titleize, 'aria-selected' => true
+
+      - is_first = false
+
+    - else
+      li.tabs-title
+        = link_to eefpst1r.population_name.name.titleize, "#panel-population-#{ eefpst1r.id }", title: eefpst1r.population_name.name.titleize
+
+.tabs-content data-tabs-content='results-table-tabs'
+  - is_first = true
+  - eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |eefpst1r|
+    - if is_first
+      .tabs-panel id="panel-population-#{ eefpst1r.id }" class="is-active"
+        = render 'extractions/work/results/results_populations_data_links', eefpst1r: eefpst1r
+
+      - is_first = false
+
+    - else
+      .tabs-panel id="panel-population-#{ eefpst1r.id }"
+        = render 'extractions/work/results/results_populations_data_links', eefpst1r: eefpst1r

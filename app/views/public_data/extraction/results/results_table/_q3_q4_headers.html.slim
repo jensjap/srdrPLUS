@@ -1,0 +1,39 @@
+tr
+  th.bg-lightgreen.vertical
+  th.bg-lightgreen.freeze
+  th.bg-lightgreen colspan="#{ @arms.length }"
+    | Within Arm Comparisons
+    br
+    = link_to '(edit measures)', manage_measures_result_statistic_section_path(rss_id: wac_rss.id), remote: true
+  th.bg-lightpink.freeze
+  th.bg-lightpink colspan="#{ bac_rss.comparisons.length }"
+    | Net Comparisons
+    br
+    = link_to '(edit measures)', manage_measures_result_statistic_section_path(rss_id: net_rss.id), remote: true
+
+tr
+  th.bg-lightgreen.vertical
+  th.bg-lightgreen.freeze
+  - @arms.sort_by { |eefpst1| eefpst1.ordering.position }.each do |arm|
+    th.bg-lightgreen = arm.type1.name
+
+  th.bg-lightpink.freeze
+  - bac_rss.comparisons.each do |bac|
+    th.bg-lightpink
+      - if not bac.is_anova
+        div style='padding-top: 15px;'
+          - bac.comparate_groups.first&.comparates&.each do |c|
+            span.has-tip.tip-right data-tooltip='' aria-haspopup='true' data-options='show_on:small' title="Description: #{ c.comparable_element.comparable.type1.description }"
+              = c.comparable_element.comparable.type1.short_name_and_description
+            br
+        div style='font-weight: normal;' vs.
+        div style='padding-bottom: 15px;'
+          - bac.comparate_groups.second&.comparates&.each do |c|
+            span.has-tip.tip-right data-tooltip='' aria-haspopup='true' data-options='show_on:small' title="Description: #{ c.comparable_element.comparable.type1.description }"
+              = c.comparable_element.comparable.type1.short_name_and_description
+            br
+      - else
+        div
+          span.has-tip.tip-right data-tooltip='' aria-haspopup='true' data-options='show_on:small' title="Description: Analysis of variance"
+            | All Arms (ANOVA)
+          br

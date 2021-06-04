@@ -1,0 +1,31 @@
+- section_name = efps.section.name.titleize.singularize
+
+h5 Index Tests
+table
+  thead
+    tr
+      th Name
+      th Description
+      th Thresholds
+
+  tbody
+    - efps.extraction_forms_projects_sections_type1s.where('type1_type_id = 5').each do |efpst1|
+      tr
+        td = efpst1.type1.name
+        td = efpst1.type1.description
+        td = efpst1.extraction_forms_projects_sections_type1_rows.collect(&:population_name).collect(&:name).join(', ')
+
+h5 Reference Tests
+table
+  thead
+    tr
+      th Name
+      th Description
+      th Thresholds
+
+  tbody
+    - efps.extraction_forms_projects_sections_type1s.where('type1_type_id = 6').each do |efpst1|
+      tr
+        td = efpst1.type1.name
+        td = efpst1.type1.description
+        td = efpst1.extraction_forms_projects_sections_type1_rows.collect(&:population_name).collect(&:name).join(', ')

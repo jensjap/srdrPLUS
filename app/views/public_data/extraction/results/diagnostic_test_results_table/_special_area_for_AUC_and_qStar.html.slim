@@ -1,0 +1,16 @@
+table
+  caption Special area for AUC and Q*
+  thead
+    tr
+      th Measure
+      th
+
+  tbody
+    - rss.result_statistic_sections_measures.each do |rssm|
+      tr
+        td = rssm.measure.name
+        td
+          - record = TpsComparisonsRssm.find_record(timepoint=timepoint, comparison=comparison, result_statistic_sections_measure=rssm)
+          = simple_form_for(record, remote: true) do |f|
+            = f.input :name, as: :string, label: false, class: 'form-control', wrapper_html: { style: 'padding-bottom: 0;' }, input_html: { style: 'margin-bottom: 0;' }
+            div id="record-id-#{ record.id.to_s }" class='record-info' style='opacity: 0;' = 'Saved!'
