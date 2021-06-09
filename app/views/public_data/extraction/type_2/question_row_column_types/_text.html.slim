@@ -21,7 +21,7 @@
   - if not record
     - record = Record.find_or_create_by(recordable: eefps_qrcf)
 
-  = simple_form_for(record, url: '/', namespace: "record_#{record.id.to_s}", remote: true, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
+  = simple_form_for(record, url: '/', namespace: "record_#{record.id.to_s}", html: { data: { 'abide': '', 'live-validate': true } }) do |f|
     = f.error_notification
 
     = f.input :name, label: false, required: false, disabled: true, class: 'form-control',

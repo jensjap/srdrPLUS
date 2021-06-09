@@ -2,47 +2,13 @@
 - efp = @extraction.extraction_forms_projects_sections.first.extraction_forms_project
 - extraction_forms_project_type = efp.extraction_forms_project_type
 
-- if extraction_forms_project_type.id.eql?(1) && @extraction.results_section_ready_for_extraction?
-  #results-panel
-    .reveal#manage-measures-modal.large data-reveal='' style='min-height: 80vh'
-      button.close-button data-close='' aria-label='Close modal' type='button'
-        span aria-hidden='true' &times;
-
-
-    = render 'shared/extractions/work/results/outcome_selector'
-
-    = render 'extractions/work/results/results_table'
-
-    .section-header style="margin: 20px 0;"
-      h4 = section_name
-      - eefps = @extraction.extractions_extraction_forms_projects_sections.joins(:extraction_forms_projects_section => [:extraction_forms_projects_section_type]).find_by(:extraction_forms_projects_sections => { :extraction_forms_projects_section_type => ExtractionFormsProjectsSectionType.find_by(name: 'Results') })
-      = render 'shared/statusing_form.html.slim', statusing: eefps.statusing, status_name: eefps.statusing.status.name
-
-/ Diagnostic Test extraction and at least one Outcome.
-- elsif extraction_forms_project_type.id.eql?(2) && @extraction.results_section_ready_for_extraction?
-  #results-panel
-    .reveal#manage-measures-modal.large data-reveal='' style='min-height: 80vh'
-      button.close-button data-close='' aria-label='Close modal' type='button'
-        span aria-hidden='true' &times;
-
-    .section-header
-      h4 = section_name
-      - eefps = @extraction.extractions_extraction_forms_projects_sections.joins(:extraction_forms_projects_section => [:extraction_forms_projects_section_type]).find_by(:extraction_forms_projects_sections => { :extraction_forms_projects_section_type => ExtractionFormsProjectsSectionType.find_by(name: 'Results') })
-      = render 'shared/statusing_form.html.slim', statusing: eefps.statusing, status_name: eefps.statusing.status.name
-    blockquote
-      | The results section is where you enter numerical data, comparisons, etc.
-
-    = render 'shared/extractions/work/results/outcome_selector'
-
-    = render 'extractions/work/results/diagnostic_test_results_table'
-
-    .section-header style="margin: 20px 0;"
-      h4 = section_name
-      - eefps = @extraction.extractions_extraction_forms_projects_sections.joins(:extraction_forms_projects_section => [:extraction_forms_projects_section_type]).find_by(:extraction_forms_projects_sections => { :extraction_forms_projects_section_type => ExtractionFormsProjectsSectionType.find_by(name: 'Results') })
-      = render 'shared/statusing_form.html.slim', statusing: eefps.statusing, status_name: eefps.statusing.status.name
-
-- elsif extraction_forms_project_type.id.eql?(1)
-  h5 style='color: red;' This is a Standard extraction. You must add Arms and Outcomes before extracting into this section.
-
-- elsif extraction_forms_project_type.id.eql?(2)
-  h5 style='color: red;' This is a Diagnostic Test extraction. You must enter at least one Diagnostic Test and one Diagnosis.
+- @eefpst1s.includes(:type1_type).map{ |eefpst1| eefpst1.type1_type&.name || "Uncategorized" }.uniq.sort.each do |t1_name|
+  h1.text-2xl = "#{t1_name}"
+  hr
+  - @eefpst1s.left_joins(:type1_type).where(t1_name == "Uncategorized" ? { type1_type_id: nil } : { type1_types: { name: t1_name } }).each do |eefpst1|
+    div.m-8
+      h2.text-xl = "#{eefpst1.type1_name_and_description}"
+      - if extraction_forms_project_type.id.eql?(1) && @extraction.results_section_ready_for_extraction?
+        = render 'public_data/extraction/results/results_table', eefpst1: eefpst1
+      - elsif extraction_forms_project_type.id.eql?(2) && @extraction.results_section_ready_for_extraction?
+        = render 'public_data/extraction/results/diagnostic_test_results_table', eefpst1: eefpst1

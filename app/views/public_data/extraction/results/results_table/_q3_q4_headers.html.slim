@@ -1,20 +1,16 @@
 tr
   th.bg-lightgreen.vertical
   th.bg-lightgreen.freeze
-  th.bg-lightgreen colspan="#{ @arms.length }"
+  th.bg-lightgreen colspan="#{ arms.length }"
     | Within Arm Comparisons
-    br
-    = link_to '(edit measures)', manage_measures_result_statistic_section_path(rss_id: wac_rss.id), remote: true
   th.bg-lightpink.freeze
   th.bg-lightpink colspan="#{ bac_rss.comparisons.length }"
     | Net Comparisons
-    br
-    = link_to '(edit measures)', manage_measures_result_statistic_section_path(rss_id: net_rss.id), remote: true
 
 tr
   th.bg-lightgreen.vertical
   th.bg-lightgreen.freeze
-  - @arms.sort_by { |eefpst1| eefpst1.ordering.position }.each do |arm|
+  - arms.sort_by { |eefpst1| eefpst1.ordering.position }.each do |arm|
     th.bg-lightgreen = arm.type1.name
 
   th.bg-lightpink.freeze

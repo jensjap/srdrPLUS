@@ -10,8 +10,6 @@
       tr class="#{tr_group_class}"
         td.bg-lightgreen rowspan="#{ [wac_rss.result_statistic_sections_measures.length, net_rss.result_statistic_sections_measures.length].max + 1 }"
           div style="position: relative;"
-            div style="position: absolute; top: 0; right: 0;"
-              = link_to('x', "/result_statistic_sections/#{wac_rss.id}/remove_comparison?comparison_id=#{wac.id}", class: 'remove-comparison-button', method: :delete, remote: true, data: { confirm: "Are you sure you want to delete this?" })
             div style='text-align: center; font-weight: bold;' = (wac.comparate_groups.first&.comparates || []).map { |c| c.comparable_element.comparable.label_with_optional_unit }.join('<br>')
             div style='text-align: center;' vs.
             div style='text-align: center; font-weight: bold;' = (wac.comparate_groups.second&.comparates || []).map { |c| c.comparable_element.comparable.label_with_optional_unit }.join('<br>')
@@ -22,7 +20,7 @@
       tr class="#{tr_group_class}"
         - wac_rssm = wac_rss.result_statistic_sections_measures.left_outer_joins(measure: :result_statistic_section_types_measures).reorder('result_statistic_section_types_measures.id asc').distinct
         td.bg-lightgreen.freeze style="z-index: 100;" = wac_rssm[row_cnt].try(:measure).try(:name)
-        - @arms.sort_by { |eefpst1| eefpst1.ordering.position }.each do |arm|
+        - arms.sort_by { |eefpst1| eefpst1.ordering.position }.each do |arm|
           - if wac_rssm[row_cnt].present?
               td.bg-lightgreen
                 - record = ComparisonsArmsRssm.find_record(comparison=wac, extractions_extraction_forms_projects_sections_type1=arm, result_statistic_sections_measure=wac_rssm[row_cnt])
@@ -32,9 +30,10 @@
                   - tab_indices["#{wac.id}:wac:#{arm.id}"] = counter
                   - counter += 1000
                 = simple_form_for(record,
-                  remote: true,
+                  url: '/',
                   html: { autocomplete: 'off', data: { 'abide': '', 'live-validate': true } }) do |f|
                   = f.input :name,
+                    disabled: true,
                     as: :string,
                     label: false,
                     required: false,
@@ -61,9 +60,10 @@
                   - tab_indices["#{wac.id}:bac_comparison:#{bac.id}"] = counter
                   - counter += 1000
                 = simple_form_for(record,
-                  remote: true,
+                  url: '/',
                   html: { autocomplete: 'off', data: { 'abide': '', 'live-validate': true } }) do |f|
                   = f.input :name,
+                    disabled: true,
                     as: :string,
                     label: false,
                     required: false,
@@ -77,15 +77,4 @@
 
   - print_wac_name = true
 
-tr
-  td
-    = simple_form_for wac_rss, url: add_comparison_result_statistic_section_path(wac_rss), remote: true, method: :post, html: { autocomplete: 'off' } do |f|
-      = f.input :comparison_type, as: :hidden, input_html: { value: :wac }
-      .links.add-comparison
-        = link_to_add_association f, :comparisons, \
-          class: 'button tiny', \
-          partial: 'result_statistic_sections/edit/comparison_fields', \
-          render_options: { locals: { rss: wac_rss, comparison: :wac } } do
-          i.fi-plus>
-          | Add Comparison
-  - counter += 1000
+- counter += 1000

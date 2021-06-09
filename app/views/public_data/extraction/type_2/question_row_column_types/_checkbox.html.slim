@@ -30,7 +30,7 @@
       - else
         - options << [opt.name, opt.id, { 'data-prereq': "prereq-#{ opt.class }-#{ opt.id }" }]
 
-  = simple_form_for(record, url: '/', remote: true, namespace: "record_#{record.id.to_s}", html: { data: { 'abide': '', 'live-validate': true, prereq: "prereq-#{ qrc.class }-#{ qrc.id }" } }) do |f|
+  = simple_form_for(record, url: '/', namespace: "record_#{record.id.to_s}", html: { data: { 'abide': '', 'live-validate': true, prereq: "prereq-#{ qrc.class }-#{ qrc.id }" } }) do |f|
     = f.error_notification
     = f.input :name, label: false, as: :check_boxes, disabled: true,
       collection: options,

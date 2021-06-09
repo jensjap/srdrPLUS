@@ -1,7 +1,6 @@
 - rss.comparisons.each do |comparison|
   h5 Comparison:
   h4
-    => link_to('x', "/result_statistic_sections/#{ rss.id}/remove_comparison?comparison_id=#{ comparison.id }", class: 'remove-comparison-button', method: :delete, remote: true, data: { confirm: "Are you sure you want to delete this?" })
     => comparison.comparate_groups.first.comparable_elements.map { |comparable_e| comparable_e.comparable.type1.short_name_and_description }
     span vs.
     =< comparison.comparate_groups.second.comparable_elements.map { |comparable_e| comparable_e.comparable.type1.short_name_and_description }
@@ -13,26 +12,26 @@
 
     .row
       .column.medium-6
-        = render 'extractions/work/results/diagnostic_test_results_table/descriptive_statistics',
+        = render 'public_data/extraction/results/diagnostic_test_results_table/descriptive_statistics',
           rss: eefpst1r.result_statistic_sections.diagnostic_test_type_rsss.first,
           timepoint: timepoint,
           comparison: comparison
 
       .column.medium-6
-        = render 'extractions/work/results/diagnostic_test_results_table/special_area_for_AUC_and_qStar',
+        = render 'public_data/extraction/results/diagnostic_test_results_table/special_area_for_AUC_and_qStar',
           rss: eefpst1r.result_statistic_sections.diagnostic_test_type_rsss.second,
           timepoint: timepoint,
           comparison: comparison
 
     .row
       .column.medium-6
-        = render 'extractions/work/results/diagnostic_test_results_table/2x2_table',
+        = render 'public_data/extraction/results/diagnostic_test_results_table/2x2_table',
           rss: eefpst1r.result_statistic_sections.diagnostic_test_type_rsss.third,
           timepoint: timepoint,
           comparison: comparison
 
       .column.medium-6
-        = render 'extractions/work/results/diagnostic_test_results_table/test_accuracy_metrics',
+        = render 'public_data/extraction/results/diagnostic_test_results_table/test_accuracy_metrics',
           rss: eefpst1r.result_statistic_sections.diagnostic_test_type_rsss.fourth,
           timepoint: timepoint,
           comparison: comparison

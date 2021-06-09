@@ -26,10 +26,9 @@ table
             - record = TpsComparisonsRssm.find_record(timepoint=timepoint,
               comparison=comparison,
               result_statistic_sections_measure=rssm)
-            = simple_form_for(record, remote: true) do |f|
-              = f.input :name, as: :string, label: false,
+            = simple_form_for(record, url: '/') do |f|
+              = f.input :name, disabled: true, as: :string, label: false,
                 class: 'form-control',
                 wrapper_html: { style: 'padding-bottom: 0;' },
                 input_html: { title: "#{ record.recordable.result_statistic_sections_measure.measure.name }",
                               style: 'margin-bottom: 0;' }
-              div id="record-id-#{ record.id.to_s }" class='record-info' style='opacity: 0;' = 'Saved!'

@@ -27,7 +27,7 @@
       - record = @records_dict[eefps_qrcf_special.id]
       - if not record
         - record = Record.find_or_create_by(recordable: eefps_qrcf_special)
-      = simple_form_for(record, url: '/', remote: true, namespace: "record_#{record.id.to_s}", html: { data: { 'abide': '', 'live-validate': true } }) do |f|
+      = simple_form_for(record, url: '/', namespace: "record_#{record.id.to_s}", html: { data: { 'abide': '', 'live-validate': true } }) do |f|
         = f.error_notification
 
         = f.input :name, label: false, disabled: true,
@@ -52,7 +52,7 @@
     - record = @records_dict[eefps_qrcf.id]
     - if not record
       - record = Record.find_or_create_by(recordable: eefps_qrcf)
-    = simple_form_for(record, url: '/', remote: true, namespace: "record_#{record.id.to_s}", html: { data: { 'abide': '', 'live-validate': true } }) do |f|
+    = simple_form_for(record, url: '/', namespace: "record_#{record.id.to_s}", html: { data: { 'abide': '', 'live-validate': true } }) do |f|
       = f.error_notification
 
       = f.input :name, as: :numeric, label: false, disabled: true,

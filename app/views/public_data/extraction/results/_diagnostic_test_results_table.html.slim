@@ -11,8 +11,6 @@
 
   h4 Population: #{ eefpst1r.population_name.name }
 
-  = render 'extractions/work/results/diagnostic_test_results_table/add_comparison', eefpst1r: eefpst1r
-
-  = render 'extractions/work/results/diagnostic_test_results_table/data_by_comparisons',
+  = render 'public_data/extraction/results/diagnostic_test_results_table/data_by_comparisons',
     rss: eefpst1r.result_statistic_sections.diagnostic_test_type_rsss.first,
     eefpst1r: eefpst1r
