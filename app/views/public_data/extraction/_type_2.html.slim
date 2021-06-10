@@ -1,11 +1,12 @@
 - eefps = @eefps_by_efps_dict[efps.id].first
 - linked_section = eefps.link_to_type1
+- questions = efps.questions
 
-- if linked_section && efps.extraction_forms_projects_section_option.by_type1 && linked_section.eefpst1s_without_total.blank?
-    h5 style='color: red;' You must add #{ linked_section.extraction_forms_projects_section.section.name } before extracting into this section.
+- if questions.empty?
+    div N/A
 
 - else
-  - efps.questions.each_with_index do |q, idx|
+  - questions.each_with_index do |q, idx|
     / Questions that have prerequisites get classes of the form 'prereq-<type>-<id>' which are disabled while these classes are present.
       Listeners are attached on form fields which trigger on change and remove class from any element that has the 'prereq-<type>-<id>'.
       Once all 'prereq-<type>-<id>' classes are removed the question is enabled.

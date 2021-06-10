@@ -2,6 +2,11 @@
 - efp = @extraction.extraction_forms_projects_sections.first.extraction_forms_project
 - extraction_forms_project_type = efp.extraction_forms_project_type
 
+- t1_names = @eefpst1s.includes(:type1_type).map{ |eefpst1| eefpst1.type1_type&.name || "Uncategorized" }.uniq.sort
+
+- if t1_names.empty?
+  div N/A
+
 - @eefpst1s.includes(:type1_type).map{ |eefpst1| eefpst1.type1_type&.name || "Uncategorized" }.uniq.sort.each do |t1_name|
   h1.text-2xl = "#{t1_name}"
   hr

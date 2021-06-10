@@ -1,38 +1,40 @@
 - index_tests     = eefps.extractions_extraction_forms_projects_sections_type1s.where(type1_type: Type1Type.find_by(name: Type1Type::INDEX_TEST))
 - reference_tests = eefps.extractions_extraction_forms_projects_sections_type1s.where(type1_type: Type1Type.find_by(name: Type1Type::REFERENCE_TEST))
-table
-  col style="width: 45%;"
-  col style="width: 45%;"
-  col style="width: 10%;"
 
-  thead style="background: initial; border: none;"
-    tr
-      th style="border: none;" Index Tests
-      th style="border: none;" Description
+- if index_tests.empty? && reference_tests.empty?
+  div N/A
+- else
+  table
+    col style="width: 45%;"
+    col style="width: 45%;"
+    col style="width: 10%;"
 
-  tbody
-    - index_tests.each do |it|
+    thead style="background: initial; border: none;"
       tr
-        td = it.type1.name
-        td = it.type1.description
+        th style="border: none;" Index Tests
+        th style="border: none;" Description
 
-br
-br
-br
+    tbody
+      - index_tests.each do |it|
+        tr
+          td = it.type1.name
+          td = it.type1.description
 
-table
-  col style="width: 45%;"
-  col style="width: 45%;"
-  col style="width: 10%;"
+  br
+  br
+  br
 
-  thead style="background: initial; border: none;"
-    tr
-      th style="border: none;" Reference Tests
-      th style="border: none;" Description
-      th style="border: none;"
+  table
+    col style="width: 45%;"
+    col style="width: 45%;"
 
-  tbody
-    - reference_tests.each do |rt|
+    thead style="background: initial; border: none;"
       tr
-        td = rt.type1.name
-        td = rt.type1.description
+        th style="border: none;" Reference Tests
+        th style="border: none;" Description
+
+    tbody
+      - reference_tests.each do |rt|
+        tr
+          td = rt.type1.name
+          td = rt.type1.description

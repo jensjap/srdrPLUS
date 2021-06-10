@@ -1,4 +1,8 @@
-- rss.comparisons.each do |comparison|
+- comparisons = rss.comparisons
+
+- if comparisons.empty?
+  div N/A
+- comparisons.each do |comparison|
   h5 Comparison:
   h4
     => comparison.comparate_groups.first.comparable_elements.map { |comparable_e| comparable_e.comparable.type1.short_name_and_description }

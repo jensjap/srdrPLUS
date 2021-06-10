@@ -1,9 +1,12 @@
 /h5 #{ section_name } that are included in this Extraction
+- eefpst1s_without_total = eefps.eefpst1s_without_total
 
 #outcomes-table.table-scroll
   - if section_name.eql? 'Diagnostic Tests'
-    = render 'extractions/shared/type_1/type_1_included_list/diagnostic_tests_table', eefps: eefps
+    = render 'public_data/extraction/type_1/type_1_included_list/diagnostic_tests_table', eefps: eefps
 
+  - elsif eefpst1s_without_total.empty?
+    div N/A
   - else
     table
       - if ['Outcomes', 'Diagnoses'].include? section_name
@@ -30,7 +33,7 @@
             th style="border: none;" FHIR Format
 
       tbody
-        - eefps.eefpst1s_without_total.each do |eefpst1|
+        - eefpst1s_without_total.each do |eefpst1|
           - bgcolor = ''
           - if eefpst1.type1_type && eefpst1.type1_type.name == 'Categorical'
             - bgcolor = '#eeeeff'
