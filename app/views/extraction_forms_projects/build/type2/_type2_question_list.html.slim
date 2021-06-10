@@ -1,90 +1,87 @@
-- if controller_name == 'public_data'
-  = render(partial: "extraction_forms_projects_sections/preview", locals: { extraction_forms_projects_section: efps })
-- else
-  .ef-preview-container.reveal[data-reveal="" id="unique-ef-preview-container-id-#{efps.id}"]
-    .preview-content
-      = render(partial: "extraction_forms_projects_sections/preview", locals: { extraction_forms_projects_section: efps })
+.ef-preview-container.reveal[data-reveal="" id="unique-ef-preview-container-id-#{efps.id}"]
+  .preview-content
+    = render(partial: "extraction_forms_projects_sections/preview", locals: { extraction_forms_projects_section: efps })
 
-  .button.preview-button.float-right[data-open="unique-ef-preview-container-id-#{efps.id}"] = 'Preview'
+.button.preview-button.float-right[data-open="unique-ef-preview-container-id-#{efps.id}"] = 'Preview'
 
-  h4 #{ efps.section.name.titleize } Question List
+h4 #{ efps.section.name.titleize } Question List
 
-  .column.row
+.column.row
 
-    .table-scroll style='width: 99%;'
+  .table-scroll style='width: 99%;'
 
-      table#efp-question-list.hover style='width: 100%;'
-        col.handle-col
-        col
-        col
-        col
-        col
-        col
-        col
-        thead
-          tr
-            th
-            th Position
-            th Dependency
-            th Key Questions
-            th Question Text
-            th Instructions
-            th
+    table#efp-question-list.hover style='width: 100%;'
+      col.handle-col
+      col
+      col
+      col
+      col
+      col
+      col
+      thead
+        tr
+          th
+          th Position
+          th Dependency
+          th Key Questions
+          th Question Text
+          th Instructions
+          th
 
-        tbody.orderable-list orderable-url="#{ update_positions_api_v1_orderings_url }"
-          - efps.ensure_sequential_questions
-          - efps.questions.each do |q|
-            / data-dependent attribute is an array of ordering ids that this orderable-item depends on.
-            / It is illegal to move an orderable-item infront of any of its dependencies.
-            tr.orderable-item [ position="#{ q.ordering.position }" ordering-id="#{ q.ordering.id }" data-dependent="[#{ q.dependencies.collect { |d| d.prerequisitable.question.ordering.id }.join(',') }]" ]
-              td.sort-handle style="min-width: 0; vertical-align: middle; width: 10px; cursor: pointer;"
-                i class="fa fa-arrows"
-              td = q.ordering.position
-              td
-                ul#dependencies
-                  - for d in q.dependencies
-                    li = 'Question Position: ' + d.prerequisitable.question.ordering.position.to_s
+      tbody.orderable-list orderable-url="#{ update_positions_api_v1_orderings_url }"
+        - efps.ensure_sequential_questions
+        - efps.questions.each do |q|
+          / data-dependent attribute is an array of ordering ids that this orderable-item depends on.
+          / It is illegal to move an orderable-item infront of any of its dependencies.
+          tr.orderable-item [ position="#{ q.ordering.position }" ordering-id="#{ q.ordering.id }" data-dependent="[#{ q.dependencies.collect { |d| d.prerequisitable.question.ordering.id }.join(',') }]" ]
+            td.sort-handle style="min-width: 0; vertical-align: middle; width: 10px; cursor: pointer;"
+              i class="fa fa-arrows"
+            td = q.ordering.position
+            td
+              ul#dependencies
+                - for d in q.dependencies
+                  li = 'Question Position: ' + d.prerequisitable.question.ordering.position.to_s
 
-                    - if d.prerequisitable.question.question_type == 'Matrix'
-                      / Checkbox, Dropdown, Radio, Select2_Single, Select2_Multi.
-                      - if [5, 6, 7, 8, 9].include? d.prerequisitable.question_row_column_type.id
-                        li = '- Cell: (' + d.prerequisitable.question_row.name.to_s + ' x ' + d.prerequisitable.question_row_column.name.to_s + ')'
-                        li = '- Option: ' + d.prerequisitable.name
+                  - if d.prerequisitable.question.question_type == 'Matrix'
+                    / Checkbox, Dropdown, Radio, Select2_Single, Select2_Multi.
+                    - if [5, 6, 7, 8, 9].include? d.prerequisitable.question_row_column_type.id
+                      li = '- Cell: (' + d.prerequisitable.question_row.name.to_s + ' x ' + d.prerequisitable.question_row_column.name.to_s + ')'
+                      li = '- Option: ' + d.prerequisitable.name
 
-                      / Text, Numeric, Numeric_Range, Scientific.
-                      - else
-                        li = '- Cell: (' + d.prerequisitable.question_row.name.to_s + ' x ' + d.prerequisitable.name.to_s + ')'
-
+                    / Text, Numeric, Numeric_Range, Scientific.
                     - else
-                      / Checkbox, Dropdown, Radio, Select2_Single, Select2_Multi.
-                      - if [5, 6, 7, 8, 9].include? d.prerequisitable.question_row_column_type.id
-                        li = '- Option: ' + d.prerequisitable.name
+                      li = '- Cell: (' + d.prerequisitable.question_row.name.to_s + ' x ' + d.prerequisitable.name.to_s + ')'
 
-                      / Text, Numeric, Numeric_Range, Scientific.
-                      - else
+                  - else
+                    / Checkbox, Dropdown, Radio, Select2_Single, Select2_Multi.
+                    - if [5, 6, 7, 8, 9].include? d.prerequisitable.question_row_column_type.id
+                      li = '- Option: ' + d.prerequisitable.name
 
-              td
-                ul#key_questions
+                    / Text, Numeric, Numeric_Range, Scientific.
+                    - else
 
-                  - q.key_questions_projects.each do |kqp|
-                    li = kqp.key_question.name
+            td
+              ul#key_questions
 
-              td = q.name
-              td style='white-space: pre-wrap;' = q.description
-              td
-                .utilities
-                  = link_to edit_question_path(q) do
-                    i.fi-pencil>
-                    = t('edit')
+                - q.key_questions_projects.each do |kqp|
+                  li = kqp.key_question.name
 
-                  = link_to dependencies_question_path(q) do
-                      i.fi-link>
-                      | Dependencies
+            td = q.name
+            td style='white-space: pre-wrap;' = q.description
+            td
+              .utilities
+                = link_to edit_question_path(q) do
+                  i.fi-pencil>
+                  = t('edit')
 
-                  = link_to duplicate_question_path(q), method: :post do
-                    i.fi-page-copy>
-                    = 'Duplicate'
+                = link_to dependencies_question_path(q) do
+                    i.fi-link>
+                    | Dependencies
 
-                  = link_to q, method: :delete, data: { confirm: t('confirm') } do
-                    i.fi-trash>
-                    = t('remove')
+                = link_to duplicate_question_path(q), method: :post do
+                  i.fi-page-copy>
+                  = 'Duplicate'
+
+                = link_to q, method: :delete, data: { confirm: t('confirm') } do
+                  i.fi-trash>
+                  = t('remove')

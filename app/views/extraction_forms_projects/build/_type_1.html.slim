@@ -1,10 +1,11 @@
-- unless controller_name == 'public_data'
-  .column.row
-    = render 'extraction_forms_projects/build/type1/type1_friendly_helper_message', efps: efps
+.column.row
+  = render 'extraction_forms_projects/build/type1/type1_friendly_helper_message', efps: efps
 
 .column.row
   = render 'extraction_forms_projects/build/type1/type1_suggested_list', efps: efps
 
-- unless controller_name == 'public_data'
-  .column.row
-    = render 'extraction_forms_projects/build/type1/type1_suggestion_form', efps: efps
+/.column.row
+  = render 'extraction_forms_projects/build/type1/type1_example_list', efps: efps
+
+.column.row
+  = render 'extraction_forms_projects/build/type1/type1_suggestion_form', efps: efps

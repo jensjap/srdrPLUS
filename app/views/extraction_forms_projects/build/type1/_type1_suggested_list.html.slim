@@ -1,10 +1,9 @@
 - section_name = efps.section.name.titleize.singularize
 
-- unless controller_name == 'public_data'
-  h4 List of Suggested #{ section_name }s
+h4 List of Suggested #{ section_name }s
 
 .table-scroll
-  table id="#{controller_name == 'public_data' ? '' : 'efp-type1-list'}" class='hover' style='width: 99%;'
+  table#efp-type1-list.hover style='width: 99%;'
     col style="width: 1%"
     - if section_name.eql?('Outcome')
       col
@@ -16,46 +15,38 @@
 
     thead
       tr
-        - unless controller_name == 'public_data'
-          th style="min-width: 0; width: 10px;"
+        th style="min-width: 0; width: 10px;"
         - if section_name.eql?('Outcome')
           th Type
         th = section_name.eql?('Outcome') ? 'Domain' : 'Name'
         th = section_name.eql?('Outcome') ? 'Specific Measurement' : 'Description'
-        - unless controller_name == 'public_data'
-          - if section_name.eql?('Outcome')
-            th Timepoint(s)
-        - unless controller_name == 'public_data'
-          th
+        - if section_name.eql?('Outcome')
+          th Timepoint(s)
+        th
 
-    tbody class="#{controller_name == 'public_data' ? '' : 'orderable-list'}" orderable-url="#{ update_positions_api_v1_orderings_url }"
-      - if controller_name == 'public_data'
-        - efpst1s = efps.extractions_extraction_forms_projects_sections.map(&:extractions_extraction_forms_projects_sections_type1s_without_total_arm).flatten.uniq { |eefpst1| eefpst1.type1 }
-      - else
-        - efpst1s = efps.extraction_forms_projects_sections_type1s_without_total_arm
-      - efpst1s.each do |efpst1|
+    tbody.orderable-list orderable-url="#{ update_positions_api_v1_orderings_url }"
+      - efps.extraction_forms_projects_sections_type1s_without_total_arm.each do |efpst1|
         tr.orderable-item [ position="#{ efpst1.ordering.position }" ordering-id="#{ efpst1.ordering.id }" ]
-          - unless controller_name == 'public_data'
-            td.sort-handle style="min-width: 0; vertical-align: middle; width: 10px; cursor: pointer;"
-              i class="fa fa-arrows"
+          td.sort-handle style="min-width: 0; vertical-align: middle; width: 10px; cursor: pointer;"
+            i class="fa fa-arrows"
           - if section_name.eql? 'Outcome'
             td = efpst1.type1_type.try(:name)
           td = efpst1.type1.name
-          td style='white-space: pre-wrap' = efpst1.type1.description
-          - unless controller_name == 'public_data'
-            - if section_name.eql? 'Outcome'
-              td
-                - if efpst1.timepoint_names.present?
-                  ul
-                    - efpst1.timepoint_names.each do |tn|
-                      li = tn.pretty_print_export_header
-          - unless controller_name == 'public_data'
-            td
-              .utilities
-                = link_to edit_extraction_forms_projects_sections_type1_path(efpst1) do
-                  i.fi-pencil>
-                  = t('edit')
 
-                = link_to extraction_forms_projects_section_dissociate_type1_path(efps, type1_id: efpst1.type1_id), method: :delete, data: { confirm: t('confirm') } do
-                  i.fi-trash>
-                  = t('remove')
+          td style='white-space: pre-wrap' = efpst1.type1.description
+          - if section_name.eql? 'Outcome'
+            td
+              - if efpst1.timepoint_names.present?
+                ul
+                  - efpst1.timepoint_names.each do |tn|
+                    li = tn.pretty_print_export_header
+
+          td
+            .utilities
+              = link_to edit_extraction_forms_projects_sections_type1_path(efpst1) do
+                i.fi-pencil>
+                = t('edit')
+
+              = link_to extraction_forms_projects_section_dissociate_type1_path(efps, type1_id: efpst1.type1_id), method: :delete, data: { confirm: t('confirm') } do
+                i.fi-trash>
+                = t('remove')
