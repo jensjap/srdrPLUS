@@ -11,7 +11,7 @@ div#printableArea class="max-w-full mx-auto py-6 sm:px-6 lg:px-8"
           dl class="sm:divide-y sm:divide-gray-200"
             div class="py-4 sm:py-5 sm:grid sm:grid-cols-1 sm:gap-4 sm:px-6"
               div class="mt-1 text-gray-900 sm:mt-0 sm:col-span-2"
-                == render 'extraction_forms_projects/build/' + efps.extraction_forms_projects_section_type.name.parameterize.underscore, efps: efps
+                == render 'public_data/extraction_form/' + efps.extraction_forms_projects_section_type.name.parameterize.underscore, efps: efps
 
     button.button onClick="printPrintableArea()"
       i.fi-print  Print Data

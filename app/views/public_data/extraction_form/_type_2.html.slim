@@ -1,0 +1,33 @@
+- efps.questions.each_with_index do |q, idx|
+
+  / Questions that have prerequisites get classes of the form 'prereq-<type>-<id>' which are disabled while these classes are present.
+    Listeners are attached on form fields which trigger on change and remove class from any element that has the 'prereq-<type>-<id>'.
+    Once all 'prereq-<type>-<id>' classes are removed, the question is enabled.
+  - prereq = q.dependencies.collect { |d| d.prerequisitable_type + '-' + d.prerequisitable_id.to_s }.collect { |p| "prereq-#{ p }" }.join(' ')
+
+  / Questions are only visible when the key question for which the question was designed is selected. We therefore assign classes to the
+    card so that we can filter it, similar to the prerequisite method
+  - kqreq = q.key_questions_projects.collect { |kqp| "kqreq-#{ kqp.id }" }.join(' ')
+
+  .card class='#{ prereq } #{ kqreq }'
+
+    .card-divider
+
+      h5 #{ (idx + 1).to_s }. #{ q.name }
+      .description style='white-space: pre-wrap;' #{ q.description }
+
+    .card-section
+
+      .table-scroll.clean-table
+
+        #step-two
+
+          - if efps.link_to_type1.present?
+            - type1s = efps.link_to_type1.extraction_forms_projects_sections_type1s.includes(:type1).collect(&:type1).delete_if { |t1| t1.id.eql?(100) }
+            - if type1s.present?
+              - t1 = type1s.first
+              = t1.name + ':'
+              == render 'public_data/extraction_form/type2/question_fields', q: q, t1: t1
+
+          - else
+            == render 'public_data/extraction_form/type2/question_fields', q: q, t1: nil

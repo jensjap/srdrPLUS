@@ -1,0 +1,13 @@
+table style='margin: 0;'
+  thead
+  tbody
+    tr
+      td
+        = number_field_tag('before_decimal_point-' + qrc.id.to_s,
+          nil,
+          data: { prereq: "prereq-#{ qrc.class }-#{ qrc.id }" })
+      td To
+      td
+        = number_field_tag('after_decimal_point-' + qrc.id.to_s,
+          nil,
+          data: { prereq: "prereq-#{ qrc.class }-#{ qrc.id }" })
