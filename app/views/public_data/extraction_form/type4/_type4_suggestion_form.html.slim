@@ -1,29 +1,35 @@
-h5 Index Tests
-table
-  thead
-    tr
-      th Name
-      th Description
-      th Thresholds
+- type5 = efps.extraction_forms_projects_sections_type1s.where('type1_type_id = 5')
+- type6 = efps.extraction_forms_projects_sections_type1s.where('type1_type_id = 6')
 
-  tbody
-    - efps.extraction_forms_projects_sections_type1s.where('type1_type_id = 5').each do |efpst1|
+- if type5.empty? && type6.empty?
+  div N/A
+- else
+  h5 Index Tests
+  table
+    thead
       tr
-        td = efpst1.type1.name
-        td = efpst1.type1.description
-        td = efpst1.extraction_forms_projects_sections_type1_rows.collect(&:population_name).collect(&:name).join(', ')
+        th Name
+        th Description
+        th Thresholds
 
-h5 Reference Tests
-table
-  thead
-    tr
-      th Name
-      th Description
-      th Thresholds
+    tbody
+      - type5.each do |efpst1|
+        tr
+          td = efpst1.type1.name
+          td = efpst1.type1.description
+          td = efpst1.extraction_forms_projects_sections_type1_rows.collect(&:population_name).collect(&:name).join(', ')
 
-  tbody
-    - efps.extraction_forms_projects_sections_type1s.where('type1_type_id = 6').each do |efpst1|
+  h5 Reference Tests
+  table
+    thead
       tr
-        td = efpst1.type1.name
-        td = efpst1.type1.description
-        td = efpst1.extraction_forms_projects_sections_type1_rows.collect(&:population_name).collect(&:name).join(', ')
+        th Name
+        th Description
+        th Thresholds
+
+    tbody
+      - type6.each do |efpst1|
+        tr
+          td = efpst1.type1.name
+          td = efpst1.type1.description
+          td = efpst1.extraction_forms_projects_sections_type1_rows.collect(&:population_name).collect(&:name).join(', ')
