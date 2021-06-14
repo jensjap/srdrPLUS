@@ -1,9 +1,14 @@
 / Find QuestionRowColumnFieldsQuestionRowColumnFieldOptions with QuestionRowColumnFieldOption 'answer_choice'
-- select_options = qrc.question_row_columns_question_row_column_options\
-                      .where(question_row_column_option_id: 1)
+div.pb-1.text-sm Multiple Choice
+- qrc.question_row_columns_question_row_column_options\
+                      .select{ |x| x.question_row_column_option_id == 1 }.each do |qrcqrco|
 
-= select_tag('dropdown-' + qrc.id.to_s,
-  options_for_select(select_options.map { |qrcqrco| [qrcqrco.name, qrcqrco.id, { 'data-prereq': "prereq-#{ qrcqrco.class }-#{ qrcqrco.id }" }] }),
-  class: 'select2',
-  multiple: true,
-  include_blank: '-- Select --')
+  = check_box_tag('checkbox-' + qrc.id.to_s,
+    nil,
+    false,
+    data: { prereq: "prereq-#{ qrcqrco.class }-#{ qrcqrco.id }" })
+
+  =< qrcqrco.name
+  =< text_field_tag('Follow up', nil, style: "display: inline-block; width: 140px;") if qrcqrco.includes_followup
+
+  br
