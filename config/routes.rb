@@ -1,6 +1,8 @@
 require 'sidekiq/web'
 
 Rails.application.routes.draw do
+  get 'public_data', to: 'public_data#show'
+
   resources :publishings, only: [:new, :create, :destroy]
   post 'publishings/:id/approve', to: 'publishings#approve', as: 'publishings_approve'
   post 'publishings/:id/rescind_approval', to: 'publishings#rescind_approval', as: 'rescind_approval'

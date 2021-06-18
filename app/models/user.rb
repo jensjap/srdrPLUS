@@ -79,6 +79,9 @@ class User < ApplicationRecord
   has_many :taggings, through: :projects_users, dependent: :destroy
   has_many :tags, through: :taggings, dependent: :destroy
 
+  has_many :visits, class_name: "Ahoy::Visit"
+  has_many :events, class_name: "Ahoy::Event"
+
   def highest_role_in_project(project)
     Role.joins(:projects_users).where(projects_users: { user: self, project: project }).first.try(:name)
   end
