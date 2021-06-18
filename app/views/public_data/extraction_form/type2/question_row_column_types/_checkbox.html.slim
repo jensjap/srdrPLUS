@@ -1,0 +1,14 @@
+/ Iterate through all QuestionRowColumnFieldsQuestionRowColumnFieldOptions with QuestionRowColumnFieldOption 'answer_choice'
+div.pb-1.text-sm Multiple Choice
+- qrc.question_row_columns_question_row_column_options\
+                      .select{ |x| x.question_row_column_option_id == 1 }.each do |qrcqrco|
+
+  = check_box_tag('checkbox-' + qrc.id.to_s,
+    nil,
+    false,
+    data: { prereq: "prereq-#{ qrcqrco.class }-#{ qrcqrco.id }" })
+
+  =< qrcqrco.name
+  =< text_field_tag('Follow up', nil, style: "display: inline-block; width: 140px;") if qrcqrco.includes_followup
+
+  br

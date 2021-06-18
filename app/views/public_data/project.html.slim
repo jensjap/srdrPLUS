@@ -1,0 +1,114 @@
+div#printableArea class="max-w-full mx-auto py-6 sm:px-6 lg:px-8"
+  div class="max-w-7xl mx-auto space-y-6"
+    h1 class="text-3xl font-medium text-warm-gray-900" = empty_or_na(@project.name)
+
+    div class="bg-white shadow overflow-hidden sm:rounded-lg"
+      div class="px-4 py-5 sm:px-6 bg-purple-900"
+        h1 class="text-md font-bold leading-6 font-medium text-white" Project Summary Title and Description
+      div class="border-t border-gray-200 px-4 py-5 sm:p-0"
+        dl class="sm:divide-y sm:divide-gray-200"
+          div class="py-4 sm:py-5 sm:grid sm:grid-cols-1 sm:gap-4 sm:px-6"
+            dt class="text-sm font-medium text-gray-500"
+              | Title
+            dd class="mt-1 text-gray-900 sm:mt-0 sm:col-span-2" = empty_or_na(@project.name)
+          div class="py-4 sm:py-5 sm:grid sm:grid-cols-1 sm:gap-4 sm:px-6"
+            dt class="text-sm font-medium text-gray-500"
+              | Description
+            dd class="mt-1 text-gray-900 sm:mt-0 sm:col-span-2" = empty_or_na(@project.description)
+          div class="py-4 sm:py-5 sm:grid sm:grid-cols-1 sm:gap-4 sm:px-6"
+            dt class="text-sm font-medium text-gray-500"
+              | Attribution
+            dd class="mt-1 text-gray-900 sm:mt-0 sm:col-span-2" = empty_or_na(@project.attribution)
+          div class="py-4 sm:py-5 sm:grid sm:grid-cols-1 sm:gap-4 sm:px-6"
+            dt class="text-sm font-medium text-gray-500"
+              | Authors of Report
+            dd class="mt-1 text-gray-900 sm:mt-0 sm:col-span-2" = empty_or_na(@project.authors_of_report)
+          div class="py-4 sm:py-5 sm:grid sm:grid-cols-1 sm:gap-4 sm:px-6"
+            dt class="text-sm font-medium text-gray-500"
+              | Methodology description
+            dd class="mt-1 text-gray-900 sm:mt-0 sm:col-span-2" = empty_or_na(@project.methodology_description)
+          div class="py-4 sm:py-5 sm:grid sm:grid-cols-1 sm:gap-4 sm:px-6"
+            dt class="text-sm font-medium text-gray-500"
+              | PROSPERO
+            dd class="mt-1 text-gray-900 sm:mt-0 sm:col-span-2" = empty_or_na(@project.prospero)
+          div class="py-4 sm:py-5 sm:grid sm:grid-cols-1 sm:gap-4 sm:px-6"
+            dt class="text-sm font-medium text-gray-500"
+              | DOI
+            dd class="mt-1 text-gray-900 sm:mt-0 sm:col-span-2" = empty_or_na(@project.doi)
+          div class="py-4 sm:py-5 sm:grid sm:grid-cols-1 sm:gap-4 sm:px-6"
+            dt class="text-sm font-medium text-gray-500"
+              | Notes
+            dd class="mt-1 text-gray-900 sm:mt-0 sm:col-span-2" = empty_or_na(@project.notes)
+          div class="py-4 sm:py-5 sm:grid sm:grid-cols-1 sm:gap-4 sm:px-6"
+            dt class="text-sm font-medium text-gray-500"
+              | Funding Source
+            dd class="mt-1 text-gray-900 sm:mt-0 sm:col-span-2" = empty_or_na(@project.funding_source)
+
+    div class="bg-white shadow overflow-hidden sm:rounded-lg"
+      div class="px-4 py-5 sm:px-6 bg-purple-900"
+        h1 class="text-md font-bold leading-6 font-medium text-white" Key Questions
+      - @project.key_questions.each_with_index do |kq, idx|
+        div class="border-t border-gray-200 px-4 py-5 sm:p-0"
+          dl class="sm:divide-y sm:divide-gray-200"
+            div class="py-4 sm:py-5 sm:grid sm:grid-cols-1 sm:gap-4 sm:px-6"
+              / dt class="text-sm font-medium text-gray-500" =
+              dd class="mt-1 text-gray-900 sm:mt-0 sm:col-span-2" = "#{idx + 1}. #{kq.name}"
+
+    div class="bg-white shadow overflow-hidden sm:rounded-lg"
+      div class="px-4 py-5 sm:px-6 bg-purple-900"
+        h1 class="text-md font-bold leading-6 font-medium text-white" Associated Extraction Forms
+      div class="border-t border-gray-200 px-4 py-5 sm:p-0"
+        dl class="sm:divide-y sm:divide-gray-200"
+          table class="table-auto"
+            thead
+              tr
+                th Type
+            tbody
+              - @project.extraction_forms_projects.each do |extraction_form_project|
+                tr
+                  td = link_to extraction_form_project.extraction_forms_project_type.name, "/public_data?id=#{extraction_form_project.id}&type=extraction_form"
+
+    div class="bg-white shadow overflow-hidden sm:rounded-lg"
+      div class="px-4 py-5 sm:px-6 bg-purple-900"
+        h1 class="text-md font-bold leading-6 font-medium text-white" Associated Studies (each link opens a new tab)
+      div class="border-t border-gray-200 px-4 py-5 sm:p-0"
+        dl class="sm:divide-y sm:divide-gray-200"
+          table class="table-auto"
+            thead
+              tr
+                th Title
+                th Authors
+                th Year
+            tbody
+              - @project.extractions.each do |extraction|
+                - citation = extraction.citation
+                tr
+                  td = link_to citation.name, "/public_data?id=#{extraction.id}&type=extraction"
+                  td = citation.authors_citations.sort_by { |ac| [ac.ordering.position, ac.author.name] }.map(&:author).map(&:name).join('; ')
+                  td = citation.try(:journal).try(:publication_date)
+
+    div class="bg-white shadow overflow-hidden sm:rounded-lg"
+      div class="px-4 py-5 sm:px-6 bg-purple-900"
+        h1 class="text-md font-bold leading-6 font-medium text-white" Downloadable Data Content
+      div class="border-t border-gray-200 px-4 py-5 sm:p-0"
+        dl class="sm:divide-y sm:divide-gray-200"
+          div class="py-4 sm:py-5 sm:grid sm:grid-cols-1 sm:gap-4 sm:px-6"
+            dt class="text-sm font-medium text-gray-500"
+              | Files
+            dd class="mt-1 text-gray-900 sm:mt-0 sm:col-span-2"
+              ul class="border border-gray-200 rounded-md divide-y divide-gray-200"
+                li class="pl-3 pr-4 py-3 flex items-center justify-between"
+                  div class="w-0 flex-1 flex items-center"
+                    /! Heroicon name: solid/paper-clip
+                    svg class="flex-shrink-0 h-5 w-5 text-gray-400" aria-hidden="true" fill="currentColor" viewbox=("0 0 20 20") xmlns="http://www.w3.org/2000/svg"
+                      path clip-rule="evenodd" d=("M8 4a3 3 0 00-3 3v4a5 5 0 0010 0V7a1 1 0 112 0v4a7 7 0 11-14 0V7a5 5 0 0110 0v4a3 3 0 11-6 0V7a1 1 0 012 0v4a1 1 0 102 0V7a3 3 0 00-3-3z") fill-rule="evenodd" /
+                    span class="ml-2 flex-1 w-0 truncate"
+                      | XLSX Project Data
+                  div class="ml-4 flex-shrink-0"
+                    - if current_user
+                      = link_to "Export", export_project_path(@project, export_type_name: '.xlsx'), method: :post, class: "font-medium text-indigo-600 hover:text-indigo-500"
+                    - else
+                      = link_to "Export", new_user_session_path(redirect_path: request.fullpath), class: "font-medium text-indigo-600 hover:text-indigo-500"
+
+    button.button onClick="printPrintableArea()"
+      i.fi-print  Print Data

@@ -1,0 +1,19 @@
+div#printableArea class="max-w-full mx-auto py-6 sm:px-6 lg:px-8"
+  div class="max-w-7xl mx-auto space-y-6"
+    h1 class="text-3xl font-medium text-warm-gray-900" = "Extraction form for project: #{empty_or_na(@project.name)}"
+    - @extraction_forms_projects.each_with_index do |efp|
+      - efp.extraction_forms_projects_sections.includes(questions: [{ key_questions_projects_questions: :key_questions_project }, :key_questions_projects, :dependencies]).reject { |efps| efps.hidden }.each do | efps|
+        div class="bg-white shadow overflow-hidden sm:rounded-lg"
+          div class="px-4 py-5 sm:px-6 bg-purple-900"
+            h1 class="text-md font-bold leading-6 font-medium text-white" = efps.section.name
+          div class="border-t border-gray-200 px-4 py-5 sm:p-0"
+            dl class="sm:divide-y sm:divide-gray-200"
+              div class="py-4 sm:py-5 sm:grid sm:grid-cols-1 sm:gap-4 sm:px-6"
+                div class="mt-1 text-gray-900 sm:mt-0 sm:col-span-2"
+                  = render "public_data/extraction/#{efps.extraction_forms_projects_section_type.name.parameterize.underscore}",
+                    section_name: efps.section.name,
+                    efp: efp,
+                    efps: efps
+
+    button.button onClick="printPrintableArea()"
+      i.fi-print  Print Data

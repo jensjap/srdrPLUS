@@ -21,7 +21,10 @@
                   .small
                     |
                       #{ project.citations.count } Studies &bull; #{ project.key_questions.count } Key Questions &bull; #{ project.extractions.count } Extraction Forms
-                  .small = "(Last updated on #{ project.updated_at.to_datetime.strftime("%B %d, %Y") })"
+                  .small
+                    = "Project created on #{ project.created_at.to_datetime.strftime("%B %d, %Y") } "
+                    br
+                    = "Last updated on #{ project.updated_at.to_datetime.strftime("%B %d, %Y") }"
                 .cell.medium-8
                   .small.summary Objectives: #{ project.description }
                   .small.bold = link_to public_data_path(type: 'project', id: project.id) do

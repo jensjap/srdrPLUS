@@ -1,0 +1,33 @@
+/ Note: The reason we traverse back up on eefps on the line:
+  ```
+    extractions_extraction_forms_projects_section: eefps.link_to_type1,
+  ```
+  is because if we tried to ExtractionsExtractionFormsProjectsSectionsType1.find_or_create_by
+  using the current eefps (which is the type2 section, we'd be finding the wrong object. It
+  might be better to just use .find_by! since we are assured of the existence of the
+  eefps.
+
+.column.row.overlay-parent
+  - eefps_qrcf = @eefps_qrcf_dict[[eefps.id,qrc.question_row_column_fields.first.id,t1&.id].to_s]
+  - if not eefps_qrcf
+    - eefps_qrcf = ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField.find_or_create_by( \
+      extractions_extraction_forms_projects_sections_type1: t1.blank? \
+      ? nil \
+      : eefps.link_to_type1.extractions_extraction_forms_projects_sections_type1s.select{|el| el.type1_id == t1.id}.first,
+      extractions_extraction_forms_projects_section: eefps,
+      question_row_column_field: qrc.question_row_column_fields.first)
+
+  - record = @records_dict[eefps_qrcf.id]
+  - if not record
+    - record = Record.find_or_create_by(recordable: eefps_qrcf)
+
+  = simple_form_for(record, url: '/', namespace: "record_#{record.id.to_s}", html: { data: { 'abide': '', 'live-validate': true } }) do |f|
+    = f.error_notification
+
+    = f.input :name, label: false, required: false, disabled: true, class: 'form-control',
+      pattern: ".{0}|.{#{ qrc.field_validation_value_for(:min_length) },#{ qrc.field_validation_value_for(:max_length) }}",
+      data: { prereq: "prereq-#{ qrc.class }-#{ qrc.id }" },
+      input_html: { \
+        title: "Constraints: Blank OR between #{ qrc.field_validation_value_for(:min_length) } and #{ qrc.field_validation_value_for(:max_length) } chars", \
+        class: 'resize-to-fit' \
+      }

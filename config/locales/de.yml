@@ -22,7 +22,7 @@ de:
   attribution: Zuordnung
   authors_of_report: Autoren des Berichts
   methodology_description: Methodische Beschreibung
-  prospero_id: Prospero Registrierungs-ID
+  prospero_id: PROSPERO Registrierungs-ID
   doi: Dokument-Objekt-ID
   notes: Anmerkungen
   funding_source: Finanzierungsquelle
@@ -38,7 +38,7 @@ de:
   blank: Kann nicht leer sein
   confirm: Sind Sie sicher?
   request_publication: Veröffentlichung anfordern
-  comparison_tool: 
+  comparison_tool:
   extraction_forms_projects:
     form:
       save: Extraktionsformular speichern

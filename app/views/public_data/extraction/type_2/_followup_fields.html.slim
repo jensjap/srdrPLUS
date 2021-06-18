@@ -1,0 +1,6 @@
+- for prereq_text, attach_target, eefps_ff in followups
+  - record = eefps_ff.records.first
+  - if record
+    .attach-me.hide [class="#{prereq_text}" data-attach-target=attach_target]
+      = simple_form_for(record, url: '/', namespace: "record_#{record.id.to_s}", html: { data: { 'abide': '', 'live-validate': true } }) do |f|
+          = f.input :name, disabled: true, as: :string, label: false, required: false, input_html: { style: 'margin-bottom: 0;' }

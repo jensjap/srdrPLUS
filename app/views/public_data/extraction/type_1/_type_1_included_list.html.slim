@@ -1,0 +1,67 @@
+/h5 #{ section_name } that are included in this Extraction
+- eefpst1s_without_total = eefps.eefpst1s_without_total
+
+#outcomes-table.table-scroll
+  - if section_name.eql? 'Diagnostic Tests'
+    = render 'public_data/extraction/type_1/type_1_included_list/diagnostic_tests_table', eefps: eefps
+
+  - elsif eefpst1s_without_total.empty?
+    div N/A
+  - else
+    table
+      - if ['Outcomes', 'Diagnoses'].include? section_name
+        col style="width: 10%;"
+        col style="width: 30%;"
+        col style="width: 25%;"
+        col style="width: 10%;"
+        col style="width: 10%;"
+
+      - else
+        col style="width:45%"
+        col style="width:45%"
+
+      thead style="background: initial; border: none;"
+        tr
+          - if section_name == 'Outcomes'
+            th style="border: none;" Type
+          th style="border: none;" = section_name.eql?('Outcomes') ? 'Domain' : "#{section_name.singularize} Name"
+          th style="border: none;" = section_name.eql?('Outcomes') ? 'Specific Measurement' : "#{section_name.singularize} Description"
+          - if ['Outcomes', 'Diagnoses'].include? section_name
+            th style="border: none;" Populations
+            th style="border: none;" Timepoints
+
+      tbody
+        - eefpst1s_without_total.each do |eefpst1|
+          - bgcolor = ''
+          - if eefpst1.type1_type && eefpst1.type1_type.name == 'Categorical'
+            - bgcolor = '#eeeeff'
+          - elsif eefpst1.type1_type && eefpst1.type1_type.name == 'Continuous'
+            - bgcolor = '#ccf5de'
+          tr style="background-color: #{bgcolor}"
+            - if section_name == 'Outcomes'
+              td = eefpst1.type1_type.present? ? eefpst1.type1_type.name : ''
+              td = eefpst1.type1.name
+
+            - else
+              td = eefpst1.type1.name
+
+            td = eefpst1.type1.description
+
+            - if ['Outcomes', 'Diagnoses'].include? section_name
+              td
+                ul
+                  - if eefpst1.extractions_extraction_forms_projects_sections_type1_rows.present?
+                    - eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |pop|
+                      li = pop.population_name.name
+
+                  - else
+                    li No populations
+
+              td
+                ul
+                  - if eefpst1.extractions_extraction_forms_projects_sections_type1_rows.try(:first).try(:extractions_extraction_forms_projects_sections_type1_row_columns).present?
+                    - eefpst1.extractions_extraction_forms_projects_sections_type1_rows.first.extractions_extraction_forms_projects_sections_type1_row_columns.each do |tp|
+                      li = tp.timepoint_name.name + (tp.timepoint_name.unit.present? ? " (#{ tp.timepoint_name.unit })" : '')
+
+                  - else
+                    li No Timepoints

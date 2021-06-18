@@ -59,10 +59,6 @@
   }
 }
 
-.clean-table table tr td:first-child {
-  font-weight: bold;
-}
-
 .section-header {
   display: flex;
   flex-direction: row;
@@ -113,7 +109,7 @@ button.suggestion-list-button {
 }
 
 
-.extractions.work, .extractions.consolidate {
+.public_data.show, .extractions.work, .extractions.consolidate {
   .checkbox, .radio {
     label {
       display: inline;

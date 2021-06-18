@@ -120,6 +120,19 @@ class Project < ApplicationRecord
   accepts_nested_attributes_for :imports, allow_destroy: true
   accepts_nested_attributes_for :imported_files, allow_destroy: true
 
+  def type1s_used_by_projects_extractions(extraction_forms_projects_section_id)
+    Type1.
+      joins([{ extractions_extraction_forms_projects_sections_type1s: [{ extractions_extraction_forms_projects_section: [{ extraction: :project }] }] }]).
+      where({
+        extractions_extraction_forms_projects_sections_type1s: {
+          extractions_extraction_forms_projects_section: {
+              extractions: { project: self }
+          },
+          extractions_extraction_forms_projects_sections: { extraction_forms_projects_section: extraction_forms_projects_section_id }
+        }
+      })
+  end
+
   def screening_teams
     teams.where(team_type: TeamType.find_by(name: "Citation Screening Team")).or(teams.where(team_type: TeamType.find_by(name: "Citation Screening Blacklist")))
   end

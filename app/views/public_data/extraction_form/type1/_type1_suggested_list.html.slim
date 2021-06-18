@@ -1,0 +1,32 @@
+- section_name = efps.section.name.titleize.singularize
+- efpst1s = efps.extractions_extraction_forms_projects_sections.map(&:extractions_extraction_forms_projects_sections_type1s_without_total_arm).flatten.uniq { |eefpst1| eefpst1.type1 }
+
+- if efpst1s.empty?
+  div N/A
+- else
+  .table-scroll
+    table class='hover' style='width: 99%;'
+      col style="width: 1%"
+      - if section_name.eql?('Outcome')
+        col
+      col
+      col
+      - if section_name.eql?('Outcome')
+        col
+      col
+
+      thead
+        tr
+          - if section_name.eql?('Outcome')
+            th Type
+          th = section_name.eql?('Outcome') ? 'Domain' : 'Name'
+          th = section_name.eql?('Outcome') ? 'Specific Measurement' : 'Description'
+
+      tbody
+        - sorted_efpst1s = section_name == 'Outcome' ? efpst1s.sort_by { |efpst1| [efpst1.type1_type.try(:name).to_s, efpst1.type1.name, efpst1.type1.description].map(&:downcase) } : efpst1s.sort_by { |efpst1| [efpst1.type1.name, efpst1.type1.description].map(&:downcase) }
+        - sorted_efpst1s.each do |efpst1|
+          tr
+            - if section_name.eql? 'Outcome'
+              td = efpst1.type1_type.try(:name)
+            td = efpst1.type1.name
+            td style='white-space: pre-wrap' = efpst1.type1.description

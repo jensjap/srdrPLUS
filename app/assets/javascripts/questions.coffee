@@ -6,7 +6,7 @@ document.addEventListener 'extractionSectionLoaded', ->
   documentCode()
 
 documentCode = ->
-  return unless $( '.questions, .extractions, .extraction_forms_projects.build' ).length > 0
+  return unless $( 'body.public_data.show, .questions, .extractions, .extraction_forms_projects.build' ).length > 0
 
   ###########################
   # Hide unnecessary options.

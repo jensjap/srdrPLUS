@@ -1,0 +1,88 @@
+- eefps = @eefps_by_efps_dict[efps.id].first
+- linked_section = eefps.link_to_type1
+- questions = efps.questions
+
+- if questions.empty?
+    div N/A
+
+- else
+  - questions.each_with_index do |q, idx|
+    / Questions that have prerequisites get classes of the form 'prereq-<type>-<id>' which are disabled while these classes are present.
+      Listeners are attached on form fields which trigger on change and remove class from any element that has the 'prereq-<type>-<id>'.
+      Once all 'prereq-<type>-<id>' classes are removed the question is enabled.
+    - prereq = q.dependencies.map { |d| d.prerequisitable_type + '-' + d.prerequisitable_id.to_s }.map { |h| "prereq-#{h}" }.join(' ')
+
+    / Questions are only visible when the key question for which the question was designed is selected. We therefore assign classes to the
+      card so that we can filter it, similar to the prerequisite method
+    - kqreq = q.key_questions_projects.map { |kqp| "kqreq-#{ kqp.id }" }.join(' ')
+
+    .card class='#{prereq} #{kqreq}' style="box-shadow: 6px 8px 20px 0px #d8d6d6; margin-bottom: 1.5rem;"
+      .card-divider
+        h5.font-black.text-lg.pb-1 #{ (idx + 1).to_s }. #{ q.name }
+        .description style='white-space: pre-wrap;'
+          em = q.description
+
+      .card-section
+        .table-scroll
+          #step-two
+
+            / Linked section.
+            - if linked_section
+              / by_type1 && include_total
+              - if efps.extraction_forms_projects_section_option.by_type1
+                - if efps.extraction_forms_projects_section_option.include_total && linked_section.eefpst1s_without_total.count > 1
+                  - linked_section.eefpst1s_with_total.map(&:type1).each_with_index do |t1, idx|
+                    div style="background: #{t1.name == 'Total' ? 'LightSalmon' : color(idx)}"
+                      h5 style="font-weight: bold;" data-allow-html="true" data-tooltip="" title='#{linked_section.extraction_forms_projects_section.section.name.singularize + ": " + t1.name + "<br>" + "Description: " + t1.description}'
+                        = t1.name
+                      = render 'public_data/extraction/type_2/question_fields',
+                        q: q,
+                        t1: t1,
+                        eefps: eefps,
+                        display_only: false
+
+                / by_type1 && !include_total
+                - else
+                  - linked_section.eefpst1s_without_total.map(&:type1).uniq.each_with_index do |t1, idx|
+                    div style="background: #{color(idx)}"
+                      h5 style="font-weight: bold;" data-allow-html="true" data-tooltip="" title='#{linked_section.extraction_forms_projects_section.section.name.singularize + ": " + t1.name + "<br>" + "Description: " + t1.description}'
+                        = t1.name
+                      = render 'public_data/extraction/type_2/question_fields',
+                        q: q,
+                        t1: t1,
+                        eefps: eefps,
+                        display_only: false
+
+              / !by_type1 && include_total
+              - else
+                - if efps.extraction_forms_projects_section_option.include_total
+                  - linked_section.eefpst1s_only_total.map(&:type1).each_with_index do |t1, idx|
+                    div style="background: #{t1.name == 'Total' ? 'LightSalmon' : color(idx)}"
+                      h5 style="font-weight: bold;" data-allow-html="true" data-tooltip="" title='#{linked_section.extraction_forms_projects_section.section.name.singularize + ": " + t1.name + "<br>" + "Description: " + t1.description}'
+                        = t1.name
+                      = render 'public_data/extraction/type_2/question_fields',
+                        q: q,
+                        t1: t1,
+                        eefps: eefps,
+                        display_only: false
+
+                / !by_type1 && !include_total
+                - else
+                  div
+                    div
+                    = render 'public_data/extraction/type_2/question_fields',
+                      q: q,
+                      t1: nil,
+                      eefps: eefps,
+                      display_only: false
+
+            / Not linked
+            - else
+              / !by_type1 && !include_total
+              div
+                div
+                = render 'public_data/extraction/type_2/question_fields',
+                  q: q,
+                  t1: nil,
+                  eefps: eefps,
+                  display_only: false
