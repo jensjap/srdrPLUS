@@ -1,50 +1,59 @@
 .nested-fields.citation-fields.added-item
   .citation-inputs
     .accession-number
-      = f.input :pmid, as: :integer, label: 'Accession Number', required: false
+      |Accession Number
+      span data-tooltip="" tabindex="1" title="e.g. Pubmed ID, Cochrane, MBASE, etc."
+        | &nbsp;
+        i class="fi-info"
+      = f.input :accession_number, label: false, required: false
       .pmid-checkbox
         a#is-pmid style='display: inline-block;'
           | Fetch from Pubmed
     = f.input :name, placeholder: 'New Citation', label: 'Title', required: true, wrapper_html: { class: "citation-name" }
     = f.input :abstract, as: :text, placeholder: 'Abstract goes here', required: false, wrapper_html: { class: "citation-abstract" }
-
-    .middle-row
+    = f.association :citation_type, label: 'Citation Type', selected: 1
+    br
+    .grid-x
       = f.simple_fields_for :journal_attributes do |j_f|
-        .journal-info
-          label
-            |Journal
-          .name-year
-            = j_f.input :name, label: "Name", required: false, wrapper_html: { class: "journal-name" }
-            = j_f.input :publication_date, label: "Year", required: false, wrapper_html: { class: "journal-year" }
-          .volume-issue-page-numbers
-            = j_f.input :volume, label: "Volume", required: false, wrapper_html: { class: "journal-volume" }
-            = j_f.input :issue, label: "Issue", required: false, wrapper_html: { class: "journal-issue" }
-            .page-numbers
-              label
-                |Page Numbers
-              div
-                = f.input :page_number_start, label: false, required: false, wrapper_html: { class: "page-number-start" }
-                h4
-                  |-
-                = f.input :page_number_end, label: false, required: false, wrapper_html: { class: "page-number-end" }
-
-    .bottom-row.m-10
-      .number-column.bottom-column
-        = f.input :refman, as: :integer, required: false
-        = f.association :citation_type, label: 'Citation Type', selected: 1
-      .bottom-column
-        = f.simple_fields_for :authors_citations do |a_c|
-          = render 'projects/edit/citations/authors_citation_fields', f: a_c
-        /a.add-authors-citation
-          | Add Author
-        #AUTHORS
-          label
-            | Authors
-        = link_to_add_association 'Add Author', f, :authors_citations, partial:'projects/edit/citations/authors_citation_fields', 'data-association-insertion-node' => '#AUTHORS', 'data-association-insertion-method' => 'append', class: 'add-author'
-
-        /= f.association :authors, collection: [], label: 'Authors', wrapper_html: { class: "AUTHORS" }
-      .bottom-column
-        /= f.association :keywords, collection: [], label: 'Keywords', wrapper_html: { class: "KEYWORDS" }
+        .small-12
+          h5 Journal
+        .small-12
+          = j_f.input :name, label: "Name", required: false, wrapper_html: { class: "journal-name" }
+        .small-4
+          = j_f.input :issue, label: "Issue", required: false, wrapper_html: { class: "journal-issue" }
+        .small-4
+          = j_f.input :volume, label: "Volume", required: false, wrapper_html: { class: "journal-volume" }
+        .small-4
+          = j_f.input :publication_date, label: "Pub Year", required: false, wrapper_html: { class: "journal-year" }
+    .grid-x
+      .small-12
+        h6 Page Numbers
+      .small-6
+        = f.input :page_number_start, label: false, required: false, wrapper_html: { class: "page-number-start" }
+      .small-6
+        = f.input :page_number_end, label: false, required: false, wrapper_html: { class: "page-number-end" }
+      .small-12 style="margin-top: 20px;"
+        h5 System Numbers
+      .small-12
+        = f.input :pmid, label: 'Pubmed ID'
+      .small-12
+        = f.input :refman, label: 'Reference Manager ID'
+      .small-12
+        = f.input :registry_number, label: 'Registry Number'
+      .small-12
+        = f.input :doi, label: 'DOI'
+      .small-12
+        = f.input :other, label: 'Other'
+    .grid-x
+      .small-12 style="margin-top: 20px;"
+        h5 Authors
+    .grid-x
+      #AUTHORS.small-12
+    br
+    .grid-x
+      .small-12
+        = link_to_add_association 'Add Author', f, :authors_citations, partial:'projects/edit/citations/authors_citation_fields', 'data-association-insertion-node' => '#AUTHORS', 'data-association-insertion-method' => 'append', :wrap_object => Proc.new { |authors_citation| authors_citation.build_author; authors_citation }, class: 'add-author'
+    br
     .buttons-row.m-10
       .save-citation.button.success.small
         | Save Citation

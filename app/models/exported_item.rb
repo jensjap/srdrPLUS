@@ -5,7 +5,7 @@
 #  id               :bigint           not null, primary key
 #  projects_user_id :integer
 #  export_type_id   :bigint
-#  external_url     :text(65535)
+#  external_url     :text(16777215)
 #  deleted_at       :datetime
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
