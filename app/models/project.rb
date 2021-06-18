@@ -4,16 +4,17 @@
 #
 #  id                      :integer          not null, primary key
 #  name                    :string(255)
-#  description             :text(65535)
-#  attribution             :text(65535)
-#  methodology_description :text(65535)
+#  description             :text(16777215)
+#  attribution             :text(16777215)
+#  methodology_description :text(16777215)
 #  prospero                :string(255)
 #  doi                     :string(255)
-#  notes                   :text(65535)
+#  notes                   :text(16777215)
 #  funding_source          :string(255)
 #  deleted_at              :datetime
 #  created_at              :datetime         not null
 #  updated_at              :datetime         not null
+#  authors_of_report       :text(16777215)
 #
 
 class Project < ApplicationRecord

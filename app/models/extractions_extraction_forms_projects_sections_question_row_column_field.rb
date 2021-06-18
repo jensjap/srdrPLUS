@@ -6,7 +6,7 @@
 #  extractions_extraction_forms_projects_sections_type1_id :integer
 #  extractions_extraction_forms_projects_section_id        :integer
 #  question_row_column_field_id                            :integer
-#  name                                                    :text(65535)
+#  name                                                    :text(16777215)
 #  deleted_at                                              :datetime
 #  active                                                  :boolean
 #  created_at                                              :datetime         not null

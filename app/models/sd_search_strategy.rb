@@ -6,8 +6,8 @@
 #  sd_meta_datum_id      :integer
 #  sd_search_database_id :integer
 #  date_of_search        :string(255)
-#  search_limits         :text(65535)
-#  search_terms          :text(65535)
+#  search_limits         :text(16777215)
+#  search_terms          :text(16777215)
 #  created_at            :datetime         not null
 #  updated_at            :datetime         not null
 #

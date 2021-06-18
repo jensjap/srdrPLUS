@@ -3,7 +3,7 @@
 # Table name: funding_sources
 #
 #  id         :integer          not null, primary key
-#  name       :text(65535)
+#  name       :text(16777215)
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #

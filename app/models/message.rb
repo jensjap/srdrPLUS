@@ -5,7 +5,7 @@
 #  id              :integer          not null, primary key
 #  message_type_id :integer
 #  name            :string(255)
-#  description     :text(65535)
+#  description     :text(16777215)
 #  start_at        :datetime
 #  end_at          :datetime
 #  deleted_at      :datetime

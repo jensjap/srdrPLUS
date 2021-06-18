@@ -57,7 +57,7 @@ group :development do
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
   # Annotate Models
-  gem 'annotate', '~> 2.7', '>= 2.7.4'
+  gem 'annotate'
   gem 'bullet'
 end
 
@@ -195,3 +195,6 @@ gem 'rack-mini-profiler'
 gem 'foreman'
 
 gem 'ahoy_matey'
+
+# Easy maintenance mode.
+gem 'turnout'

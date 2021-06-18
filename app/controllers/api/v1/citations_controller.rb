@@ -50,4 +50,37 @@ class Api::V1::CitationsController < Api::V1::BaseController
     @citations                = total_arr[ offset .. offset + page_size - 1 ]
     @more                     = offset + @citations.length < @total_count
   end
+
+  def project_citations_query
+    project_id = params[:project_id]
+    query = params[:q].try(:downcase)
+
+    citation_pool = Project.includes(citations: :authors).find_by(id: project_id).citations || []
+
+    if query.present?
+      citation_hash_pool = citation_pool.inject({}) do |citation_pool, citation|
+        citation_title_words = (citation.name || '').split(/\@+/)
+        fuzzy_winner = FuzzyMatch.new([citation.pmid, citation.refman, citation.first_author] + citation_title_words).find(query) || ''
+        citation_pool[citation] = fuzzy_winner
+        citation_pool
+      end
+
+      citation_matches = []
+
+      10.times do
+        fuzzy_grand_winner = FuzzyMatch.new(citation_hash_pool.values).find(query)
+
+        round_matches = citation_hash_pool.select { |citation, fuzzy_winner| fuzzy_winner == fuzzy_grand_winner }.keys
+        citation_matches += round_matches
+        round_matches.each { |round_match| citation_hash_pool.delete(round_match) }
+      end
+
+    else
+      citation_matches = citation_pool
+    end
+
+    citation_results = citation_matches.map { |citation| { id: citation.id, text: citation.label_method } }
+
+    render json: { results: citation_results }
+  end
 end

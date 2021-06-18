@@ -4,7 +4,7 @@
 #
 #  id               :integer          not null, primary key
 #  sd_meta_datum_id :integer
-#  name             :text(65535)
+#  name             :text(16777215)
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
 #

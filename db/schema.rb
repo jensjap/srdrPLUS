@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_05_17_161737) do
+ActiveRecord::Schema.define(version: 2021_05_20_073418) do
 
   create_table "abstrackr_settings", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_as_cs", force: :cascade do |t|
     t.integer "profile_id"
@@ -193,6 +193,7 @@ ActiveRecord::Schema.define(version: 2021_05_17_161737) do
     t.string "registry_number"
     t.string "doi"
     t.string "other"
+    t.string "accession_number"
     t.index ["citation_type_id"], name: "index_citations_on_citation_type_id"
     t.index ["deleted_at"], name: "index_citations_on_deleted_at"
   end
@@ -784,8 +785,8 @@ ActiveRecord::Schema.define(version: 2021_05_17_161737) do
 
   create_table "journals", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_as_cs ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "citation_id"
-    t.integer "volume"
-    t.integer "issue"
+    t.string "volume"
+    t.string "issue"
     t.string "name", limit: 1000
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

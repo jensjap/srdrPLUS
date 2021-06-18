@@ -11,6 +11,7 @@
 #  active                                    :boolean
 #  created_at                                :datetime         not null
 #  updated_at                                :datetime         not null
+#  hidden                                    :boolean          default(FALSE)
 #
 
 class ExtractionFormsProjectsSection < ApplicationRecord

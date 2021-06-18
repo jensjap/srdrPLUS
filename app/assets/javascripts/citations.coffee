@@ -142,11 +142,14 @@ document.addEventListener 'DOMContentLoaded', ->
           else
             journal[ 'year' ] = ''
 
-          citation_hash = { name: name ,     \
-                            abstract: abstract, \
-                            authors: authors,  \
-                            keywords: keywords, \
-                            journal: journal }
+          citation_hash = {
+            pmid: pmid,
+            name: name,
+            abstract: abstract,
+            authors: authors,
+            keywords: keywords,
+            journal: journal
+          }
           populate_citation_fields citation_hash
 
     populate_citation_fields = ( citation ) ->
@@ -156,6 +159,7 @@ document.addEventListener 'DOMContentLoaded', ->
       $( '.citation-fields' ).find( '.journal-volume input' ).val citation[ 'journal' ][ 'vol' ]
       $( '.citation-fields' ).find( '.journal-issue input' ).val citation[ 'journal' ][ 'issue' ]
       $( '.citation-fields' ).find( '.journal-year input' ).val citation[ 'journal' ][ 'year' ]
+      $( '.citation-fields' ).find( '.project_citations_pmid input' ).val citation[ 'pmid' ]
 
 
       #$( '.citation-fields' ).find( '.AUTHORS input' ).val citation[ 'authors' ][ 0 ]
@@ -245,7 +249,7 @@ document.addEventListener 'DOMContentLoaded', ->
           $( insertedItem ).find('.journal-year input').val(null)
 
           ## fetch citations using value in "Accession Number"
-          fetch_from_pubmed $( '.project_citations_pmid input' ).val()
+          fetch_from_pubmed $( '.project_citations_accession_number input' ).val()
 
         $( insertedItem ).find( '#AUTHORS' ).on 'cocoon:after-insert cocoon:after-remove', ( e, insertedItem ) ->
           new_position = 1

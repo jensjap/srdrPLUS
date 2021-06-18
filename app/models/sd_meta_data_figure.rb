@@ -6,6 +6,7 @@
 #  sd_figurable_id   :bigint
 #  sd_figurable_type :string(255)
 #  p_type            :string(255)
+#  alt_text          :text(16777215)
 #
 
 class SdMetaDataFigure < ApplicationRecord

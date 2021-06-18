@@ -4,8 +4,8 @@
 #
 #  id               :integer          not null, primary key
 #  citation_id      :integer
-#  volume           :integer
-#  issue            :integer
+#  volume           :string(255)
+#  issue            :string(255)
 #  name             :string(1000)
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
