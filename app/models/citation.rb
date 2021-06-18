@@ -157,6 +157,6 @@ class Citation < ApplicationRecord
   def label_method
     pmid.present? ?
       "<#{first_author}> <PMID: #{pmid}>" :
-      name
+      "<#{first_author}> #{name}"
   end
 end
