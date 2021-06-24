@@ -1,8 +1,11 @@
 .grid-container.fluid
   .grid-x.align-center-middle.Recently-published
     .cell.medium-9
-      h1 Recently Updated Projects
-  .grid-x.align-center-middle.Recently-published
+      h1 Recently Published Projects
+  .grid-x.align-center-middle
+    .cell.medium-9 style="text-align: center; padding-bottom: 30px;"
+      = link_to 'Search for more Projects', '/searches/new', class: 'button'
+  .grid-x.align-center-middle
     .cell.medium-9
       ul.tabs data-tabs="true" id="projects-tabs"
         li class="tabs-title is-active"
