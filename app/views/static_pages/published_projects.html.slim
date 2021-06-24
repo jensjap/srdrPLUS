@@ -12,7 +12,7 @@
 
       div class="tabs-content" data-tabs-content="projects-tabs"
         div class="tabs-panel is-active" id="panel1"
-          - Project.includes([:publishing]).published.each do |project|
+          - @projects.each do |project|
             .cell.medium-12.recent-project
               .grid-x.grid-padding-x.grid-padding-y
                 .cell.medium-4
