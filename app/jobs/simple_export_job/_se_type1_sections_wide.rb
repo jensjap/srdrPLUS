@@ -9,6 +9,7 @@ def build_type1_sections_wide(p, project, highlight, wrap, kq_ids=[])
 
         # Add a new sheet.
         p.workbook.add_worksheet(name: "#{ efps.section.name.truncate(24) }") do |sheet|
+          sheet_name = "#{ efps.section.name.truncate(24) }"
 
           # For each sheet we create a SheetInfo object.
           sheet_info = SheetInfo.new
@@ -46,7 +47,8 @@ def build_type1_sections_wide(p, project, highlight, wrap, kq_ids=[])
                 section_name: efps.section.name.singularize,
                 id: eefpst1.type1.id,
                 name: eefpst1.type1.name,
-                description: eefpst1.type1.description)
+                description: eefpst1.type1.description,
+                units: eefpst1.units)
               eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |pop|
                 sheet_info.add_population(
                   extraction_id: extraction.id,
@@ -75,8 +77,14 @@ def build_type1_sections_wide(p, project, highlight, wrap, kq_ids=[])
 
             # Append to the header if this is new.
             unless found
-              header_row.add_cell "Name\r[#{ type1[:section_name] } ID: #{ type1[:id] }]"
-              header_row.add_cell "Description\r[#{ type1[:section_name] } ID: #{ type1[:id] }]"
+              if sheet_name.eql?("Outcomes")
+                header_row.add_cell "Domain\r[#{ type1[:section_name] } ID: #{ type1[:id] }]"
+                header_row.add_cell "Specific Measurement\r[#{ type1[:section_name] } ID: #{ type1[:id] }]"
+                header_row.add_cell "Units\r[#{ type1[:section_name] } ID: #{ type1[:id] }]"
+              else
+                header_row.add_cell "Name\r[#{ type1[:section_name] } ID: #{ type1[:id] }]"
+                header_row.add_cell "Description\r[#{ type1[:section_name] } ID: #{ type1[:id] }]"
+              end
             end
           end  # sheet_info.type1s.each do |type1|
 
@@ -136,6 +144,7 @@ def build_type1_sections_wide(p, project, highlight, wrap, kq_ids=[])
 
               new_row[column_idx]     = type1[:name]
               new_row[column_idx + 1] = type1[:description]
+              new_row[column_idx + 2] = type1[:units] if sheet_name.eql?("Outcomes")
             end  # extraction[:type1s].each do |type1|
 
             extraction[:populations].each do |pop|
