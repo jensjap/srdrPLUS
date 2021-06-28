@@ -128,7 +128,7 @@ class ResultStatisticSectionsController < ApplicationController
           ]
         end
 
-        @options.uniq!
+        @options.uniq! { |option| [option[0], option[1]] }
 
         # Create a dictionary that carries as keys the id of a provider measure and values an Array of options.
         @dict_of_dependencies = Hash.new { |hash, key| hash[key] = [] }
