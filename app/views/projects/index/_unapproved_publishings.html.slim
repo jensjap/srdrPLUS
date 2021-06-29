@@ -1,5 +1,9 @@
-- if @unapproved_publishings.blank?
+- if current_user.admin?
+  - viewable_publishings = @unapproved_publishings
+- else
+  - viewable_publishings = @unapproved_publishings.select { |pub| pub.project? ? pub.publishable.users.include?(current_user) : pub.publishable.project.users.include?(current_user) }
 
+- if viewable_publishings.blank?
   h4 No pending publications found.
 
 - else
@@ -9,32 +13,28 @@
         th width="150" Name
         th width="50" Type
         th width="100" Date of Submission
-        th width="25" View
-        - if current_user.admin?
-          th width="75" Edit
+        th width="75" View
         th width="25"
     tbody
-      - @unapproved_publishings.each do |pr|
+      - viewable_publishings.each do |pr|
         tr
           td
             = pr.publishable.display
-          td
+          td style="text-align: center;"
             = pr.name_of_pub_type
-          td
+          td style="text-align: center;"
             = pr.created_at
-          td
+          td style="text-align: center;"
             - if pr.publishable.class == SdMetaDatum
               = link_to 'View', sd_meta_datum_path(pr.publishable_id), class: 'btn-link'
             - elsif pr.publishable.class == Project
-              = link_to 'View', project_path(pr.publishable_id), class: 'btn-link'
+              = link_to 'Project Info', edit_project_path(pr.publishable), class: 'btn-link'
               - if current_user.admin?
-                td
-                  = link_to 'Project Info', edit_project_path(pr.publishable), class: 'btn-link'
-                  | &nbsp; | &nbsp;
-                  = link_to 'Extr. Form', build_extraction_forms_project_path(pr.publishable.extraction_forms_projects.first), class: 'btn-link'
-                  | &nbsp; | &nbsp;
-                  = link_to 'Extractions', project_extractions_path(pr.publishable), class: 'btn-link'
+                | &nbsp; | &nbsp;
+                = link_to 'Extr. Form', build_extraction_forms_project_path(pr.publishable.extraction_forms_projects.first), class: 'btn-link'
+                | &nbsp; | &nbsp;
+                = link_to 'Extractions', project_extractions_path(pr.publishable), class: 'btn-link'
           - if current_user.admin?
-            td = link_to 'Approve', publishings_approve_path(id: pr.publishable_id, type: pr.publishable.class.to_s), class: 'btn-link', method: :post, data: { confirm: "You are about to approve:\n\n#{pr.publishable.display}\n\nProceed?" }
+            td style="text-align: center;" = link_to 'Approve', publishings_approve_path(id: pr.publishable_id, type: pr.publishable.class.to_s), class: 'btn-link', method: :post, data: { confirm: "You are about to approve:\n\n#{pr.publishable.display}\n\nProceed?" }
           - else
-            td = link_to 'Cancel', publishing_path(pr.publishable_id), class: 'btn-link', data: { confirm: "You are about to cancel the publication request for:\n\n#{pr.publishable.display}\n\nProceed?" }, method: :delete
+            td style="text-align: center;" = link_to 'Cancel', publishing_path(pr.publishable_id), class: 'btn-link', data: { confirm: "You are about to cancel the publication request for:\n\n#{pr.publishable.display}\n\nProceed?" }, method: :delete

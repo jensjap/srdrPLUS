@@ -28,6 +28,14 @@ class Publishing < ApplicationRecord
 
   has_one :approval, as: :approvable, dependent: :destroy
 
+  def project?
+    publishable_type == Project.to_s
+  end
+
+  def sd_meta_datum?
+    publishable_type == SdMetaDatum.to_s
+  end
+
   def name_of_pub_type
     if publishable_type == SdMetaDatum.to_s
       "SR360"
