@@ -515,10 +515,11 @@ GEM
     sentry-raven (3.1.2)
       faraday (>= 1.0)
     shellany (0.0.1)
-    sidekiq (6.2.1)
-      connection_pool (>= 2.2.2)
-      rack (~> 2.0)
-      redis (>= 4.2.0)
+    sidekiq (5.2.5)
+      connection_pool (~> 2.2, >= 2.2.2)
+      rack (>= 1.5.0)
+      rack-protection (>= 1.5.0)
+      redis (>= 3.3.5, < 5)
     sidekiq-cron (1.2.0)
       fugit (~> 1.1)
       sidekiq (>= 4.2.1)
@@ -666,7 +667,7 @@ DEPENDENCIES
   searchjoy
   searchkick
   sentry-raven
-  sidekiq
+  sidekiq (= 5.2.5)
   sidekiq-cron (~> 1.1)
   simple_form
   simplecov
