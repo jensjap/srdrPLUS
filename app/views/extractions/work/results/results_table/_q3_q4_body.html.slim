@@ -78,12 +78,13 @@
   - print_wac_name = true
 
 tr
-  td
+  td style="padding: 30px"
     = simple_form_for wac_rss, url: add_comparison_result_statistic_section_path(wac_rss), remote: true, method: :post, html: { autocomplete: 'off' } do |f|
       = f.input :comparison_type, as: :hidden, input_html: { value: :wac }
       .links.add-comparison
         = link_to_add_association f, :comparisons, \
           class: 'button tiny', \
+          style: 'margin: 0;', \
           partial: 'result_statistic_sections/edit/comparison_fields', \
           render_options: { locals: { rss: wac_rss, comparison: :wac } } do
           i.fi-plus>
