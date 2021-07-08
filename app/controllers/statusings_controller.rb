@@ -3,9 +3,17 @@ class StatusingsController < ApplicationController
 
   # PATCH /extractions_extraction_forms_projects_sections/1/statusing.js
   def update
-    @statusing.update statusing_params
+
     respond_to do |format|
-      format.js
+      format.js do
+        if !policy(@statusing.project).update?
+          @info = [true, 'You are not authorized to make changes', 'red']
+        elsif @statusing.update(statusing_params)
+          @info = [true, 'Saved!', '#410093']
+        else
+          @info = [false, 'An error occured.  Changes have not been saved.', 'red']
+        end
+      end
     end
   end
 

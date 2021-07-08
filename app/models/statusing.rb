@@ -17,4 +17,6 @@ class Statusing < ApplicationRecord
   belongs_to :status, inverse_of: :statusings
 
   validates :statusable, :status, presence: true
+
+  delegate :project, to: :statusable
 end
