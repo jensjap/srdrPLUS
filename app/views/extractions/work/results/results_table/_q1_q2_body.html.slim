@@ -39,10 +39,10 @@
 
           - else
             td
-        - bac_rssm = bac_rss.result_statistic_sections_measures.left_outer_joins(measure: :result_statistic_section_types_measures).reorder('result_statistic_section_types_measures.id asc').distinct
-        - if bac_rssm[row_cnt].try(:measure).try(:name)
-          td.bg-lightblue.freeze style="text-align: center;" = bac_rssm[row_cnt].measure.name
-          - if bac_rss.comparisons.present?
+        - if bac_rss.comparisons.present?
+          - bac_rssm = bac_rss.result_statistic_sections_measures.left_outer_joins(measure: :result_statistic_section_types_measures).reorder('result_statistic_section_types_measures.id asc').distinct
+          - if bac_rssm[row_cnt].try(:measure).try(:name)
+            td.bg-lightblue.freeze style="text-align: center;" = bac_rssm[row_cnt].measure.name
             - bac_rss.comparisons.each do |bac|
               td.bg-lightblue
                 - record = TpsComparisonsRssm.find_record(timepoint=tp, comparison=bac, result_statistic_sections_measure=bac_rssm[row_cnt])
@@ -62,14 +62,6 @@
                     wrapper_html: { style: 'padding-bottom: 0;' },
                     input_html: { style: 'margin-bottom: 0;', tabindex: tab_indices["#{tp.id}:bac:#{bac.id}"] }
                   div id="record-id-#{ record.id.to_s }" class='record-info' style='opacity: 0;' = 'Saved!'
-
-          - else
-            td.bg-lightblue.freeze
-
-        - else
-          td.bg-lightblue
-          - bac_rss.comparisons.each do |bac|
-            td.bg-lightblue
 
   - print_tp_name = true
   - counter += 1000

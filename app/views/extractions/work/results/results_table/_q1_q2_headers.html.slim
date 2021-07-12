@@ -5,11 +5,12 @@ tr
     | Descriptive Statistics
     br
     = link_to '(edit measures)', manage_measures_result_statistic_section_path(rss_id: dsc_rss.id), remote: true
-  th.bg-lightblue.freeze style="width: 250px;"
-  th.bg-lightblue colspan="#{ bac_rss.comparisons.length }" style="width: #{[bac_rss.comparisons.length, 1].max * 150}px;"
-    | Between Arm Comparisons
-    br
-    = link_to '(edit measures)', manage_measures_result_statistic_section_path(rss_id: bac_rss.id), remote: true
+  - if bac_rss.comparisons.present?
+    th.bg-lightblue.freeze style="width: 250px;"
+    th.bg-lightblue colspan="#{ bac_rss.comparisons.length }" style="width: #{[bac_rss.comparisons.length, 1].max * 150}px;"
+      | Between Arm Comparisons
+      br
+      = link_to '(edit measures)', manage_measures_result_statistic_section_path(rss_id: bac_rss.id), remote: true
   th style="width: 200px; padding: 30px;"
     .bac-comparison style="padding: 10px;"
       = simple_form_for bac_rss,
@@ -41,31 +42,28 @@ tr
   - @arms.sort_by { |eefpst1| eefpst1.ordering.position }.each do |arm|
     th = arm.type1.name
 
-  th.bg-lightblue.freeze
-  - if bac_rss.comparisons.blank?
-    th.bg-lightblue
-
-  - else
-    - bac_rss.comparisons.each do |bac|
-      th.bg-lightblue style="position: relative;"
-        - if not bac.is_anova
-          br
-          div style="position: absolute; top: 0; right: 0;" = link_to('x', "/result_statistic_sections/#{bac_rss.id}/remove_comparison?comparison_id=#{bac.id}", class: 'remove-comparison-button', method: :delete, remote: true, data: { confirm: "Are you sure you want to delete this?" })
-          div
-            - bac.comparate_groups.first&.comparates&.each do |c|
-              span.has-tip.tip-right data-tooltip='' aria-haspopup='true' data-options='show_on:small' title="Description: #{ c.comparable_element.comparable.type1.description }"
-                = c.comparable_element.comparable.type1.short_name_and_description
-              br
-          div style='font-weight: normal;' vs.
-          div
-            - bac.comparate_groups.second&.comparates&.each do |c|
-              span.has-tip.tip-right data-tooltip='' aria-haspopup='true' data-options='show_on:small' title="Description: #{ c.comparable_element.comparable.type1.description }"
-                = c.comparable_element.comparable.type1.short_name_and_description
-              br
-        - else
-          br
-          div style="position: absolute; top: 0; right: 0;" = link_to('x', "/result_statistic_sections/#{bac_rss.id}/remove_comparison?comparison_id=#{bac.id}", class: 'remove-comparison-button', method: :delete, remote: true, data: { confirm: "Are you sure you want to delete this?" })
-          div
-            span.has-tip.tip-right data-tooltip='' aria-haspopup='true' data-options='show_on:small' title="Description: Analysis of variance"
-              | All Arms (ANOVA)
+  - if bac_rss.comparisons.present?
+    th.bg-lightblue.freeze
+      - bac_rss.comparisons.each do |bac|
+        th.bg-lightblue style="position: relative;"
+          - if not bac.is_anova
             br
+            div style="position: absolute; top: 0; right: 0;" = link_to('x', "/result_statistic_sections/#{bac_rss.id}/remove_comparison?comparison_id=#{bac.id}", class: 'remove-comparison-button', method: :delete, remote: true, data: { confirm: "Are you sure you want to delete this?" })
+            div
+              - bac.comparate_groups.first&.comparates&.each do |c|
+                span.has-tip.tip-right data-tooltip='' aria-haspopup='true' data-options='show_on:small' title="Description: #{ c.comparable_element.comparable.type1.description }"
+                  = c.comparable_element.comparable.type1.short_name_and_description
+                br
+            div style='font-weight: normal;' vs.
+            div
+              - bac.comparate_groups.second&.comparates&.each do |c|
+                span.has-tip.tip-right data-tooltip='' aria-haspopup='true' data-options='show_on:small' title="Description: #{ c.comparable_element.comparable.type1.description }"
+                  = c.comparable_element.comparable.type1.short_name_and_description
+                br
+          - else
+            br
+            div style="position: absolute; top: 0; right: 0;" = link_to('x', "/result_statistic_sections/#{bac_rss.id}/remove_comparison?comparison_id=#{bac.id}", class: 'remove-comparison-button', method: :delete, remote: true, data: { confirm: "Are you sure you want to delete this?" })
+            div
+              span.has-tip.tip-right data-tooltip='' aria-haspopup='true' data-options='show_on:small' title="Description: Analysis of variance"
+                | All Arms (ANOVA)
+              br
