@@ -1,9 +1,8 @@
 class ExportMailer < ApplicationMailer
   def notify_simple_export_completion(exported_item_id)
     @exported_item = ExportedItem.find exported_item_id
-    @user    = @exported_item.projects_user.user
-    @project = @exported_item.projects_user.project
-    mail(to: @user.email, subject: 'You have a notification from srdrPLUS')
+    @project = @exported_item.project
+    mail(to: @exported_item.user_email, subject: 'You have a notification from srdrPLUS')
   end
 
   def notify_simple_export_failure(user_id, project_id, message)

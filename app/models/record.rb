@@ -3,7 +3,7 @@
 # Table name: records
 #
 #  id              :integer          not null, primary key
-#  name            :text(16777215)
+#  name            :text(65535)
 #  recordable_type :string(255)
 #  recordable_id   :integer
 #  deleted_at      :datetime
