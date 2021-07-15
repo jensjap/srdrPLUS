@@ -23,7 +23,7 @@
           th = section_name.eql?('Outcome') ? 'Specific Measurement' : 'Description'
 
       tbody
-        - sorted_efpst1s = section_name == 'Outcome' ? efpst1s.sort_by { |efpst1| [efpst1.type1_type.try(:name).to_s, efpst1.type1.name, efpst1.type1.description].map(&:downcase) } : efpst1s.sort_by { |efpst1| [efpst1.type1.name, efpst1.type1.description].map(&:downcase) }
+        - sorted_efpst1s = section_name == 'Outcome' ? efpst1s.sort_by { |efpst1| [efpst1.type1_type.try(:name), efpst1.type1.name, efpst1.type1.description].map { |efpst1_description| efpst1_description.try(:downcase).to_s } } : efpst1s.sort_by { |efpst1| [efpst1.type1.name, efpst1.type1.description].map { |efpst1_description| efpst1_description.try(:downcase).to_s } }
         - sorted_efpst1s.each do |efpst1|
           tr
             - if section_name.eql? 'Outcome'
