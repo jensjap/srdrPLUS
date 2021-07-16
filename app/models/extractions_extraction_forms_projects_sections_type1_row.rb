@@ -28,7 +28,7 @@ class ExtractionsExtractionFormsProjectsSectionsType1Row < ApplicationRecord
 
   has_many :comparable_elements, as: :comparable, dependent: :destroy
 
-  has_many :extractions_extraction_forms_projects_sections_type1_row_columns, dependent: :destroy, inverse_of: :extractions_extraction_forms_projects_sections_type1_row
+  has_many :extractions_extraction_forms_projects_sections_type1_row_columns, dependent: :delete_all, inverse_of: :extractions_extraction_forms_projects_sections_type1_row
 
   has_many :result_statistic_sections, dependent: :destroy, inverse_of: :population, foreign_key: 'population_id'
 

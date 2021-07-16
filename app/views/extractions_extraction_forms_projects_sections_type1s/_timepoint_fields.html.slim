@@ -1,4 +1,4 @@
-tr.nested-fields
+tr.nested-fields.timepoint-nested-fields removed="false"
   = f.simple_fields_for(:timepoint_name, f.object.timepoint_name || f.object.build_timepoint_name) do |tn_form|
     td.remove-tp-link[style='font-size: x-large;'] = link_to_remove_association '✖', f
     /td.field = f.check_box :_destroy
