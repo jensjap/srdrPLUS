@@ -108,11 +108,11 @@ class ProjectPolicy < ApplicationPolicy
   end
 
   def show?
-    project_contributor? || @user.admin?
+    project_auditor? || @user.admin?
   end
 
   def edit?
-    project_leader? || @user.admin?
+    project_auditor? || @user.admin?
   end
 
   def update?
@@ -124,11 +124,11 @@ class ProjectPolicy < ApplicationPolicy
   end
 
   def export_to_gdrive?
-    project_contributor?
+    project_auditor?
   end
 
   def export?
-    project_contributor? || @record.public?
+    project_auditor? || @record.public?
   end
 
   def import_csv?

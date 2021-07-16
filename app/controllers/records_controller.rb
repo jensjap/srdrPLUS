@@ -6,12 +6,19 @@ class RecordsController < ApplicationController
   def update
     respond_to do |format|
       begin
-        return_val = @record.update(record_params)
-        error_message = @record.errors.full_messages.to_s
+        authorized = policy(@record.project).update?
+        if authorized
+          return_val = @record.update(record_params)
+          error_message = @record.errors.full_messages.to_s
+        else
+          return_val = false
+          error_message = 'You are not authorized to make changes'
+        end
       rescue
         return_val = false
         error_message = 'Cannot save value'
       end
+
       if return_val
         format.html { redirect_to edit_result_statistic_section_path(@record.recordable.result_statistic_section), notice: t('success') }
         format.json { render :show, status: :ok, location: @record }
@@ -24,7 +31,7 @@ class RecordsController < ApplicationController
                                   alert: t('failure') + ' ' + error_message }
         format.json { render json: @record.errors, status: :unprocessable_entity }
         format.js do
-          @info = [false, error_message, 'red']
+          @info = [!authorized, error_message, 'red']
         end
       end
     end
