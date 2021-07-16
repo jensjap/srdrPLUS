@@ -45,12 +45,9 @@
           - else
             td.bg-lightgreen.freeze
 
-        - net_rssm = net_rss.result_statistic_sections_measures.left_outer_joins(measure: :result_statistic_section_types_measures).reorder('result_statistic_section_types_measures.id asc').distinct
-        td.bg-lightpink.freeze style="text-align: center;" = net_rssm[row_cnt].try(:measure).try(:name)
-        - if bac_rss.comparisons.blank?
-          td.bg-lightpink.freeze
-
-        - else
+        - if bac_rss.comparisons.present?
+          - net_rssm = net_rss.result_statistic_sections_measures.left_outer_joins(measure: :result_statistic_section_types_measures).reorder('result_statistic_section_types_measures.id asc').distinct
+          td.bg-lightpink.freeze style="text-align: center;" = net_rssm[row_cnt].try(:measure).try(:name)
           - bac_rss.comparisons.each do |bac|
             - if net_rssm[row_cnt].present?
               td.bg-lightpink
@@ -72,18 +69,16 @@
                     input_html: { style: 'margin-bottom: 0;', tabindex: tab_indices["#{wac.id}:bac_comparison:#{bac.id}"] }
                   div id="record-id-#{ record.id.to_s }" class='record-info' style='opacity: 0;' = 'Saved!'
 
-            - else
-              td.bg-lightpink.freeze
-
   - print_wac_name = true
 
 tr
-  td
+  td style="padding: 30px"
     = simple_form_for wac_rss, url: add_comparison_result_statistic_section_path(wac_rss), remote: true, method: :post, html: { autocomplete: 'off' } do |f|
       = f.input :comparison_type, as: :hidden, input_html: { value: :wac }
       .links.add-comparison
         = link_to_add_association f, :comparisons, \
           class: 'button tiny', \
+          style: 'margin: 0;', \
           partial: 'result_statistic_sections/edit/comparison_fields', \
           render_options: { locals: { rss: wac_rss, comparison: :wac } } do
           i.fi-plus>
