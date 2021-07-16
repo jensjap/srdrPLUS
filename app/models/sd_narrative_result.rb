@@ -3,11 +3,11 @@
 # Table name: sd_narrative_results
 #
 #  id                                :bigint           not null, primary key
-#  narrative_results                 :text(16777215)
+#  narrative_results                 :text(65535)
 #  created_at                        :datetime         not null
 #  updated_at                        :datetime         not null
-#  narrative_results_by_population   :text(16777215)
-#  narrative_results_by_intervention :text(16777215)
+#  narrative_results_by_population   :text(65535)
+#  narrative_results_by_intervention :text(65535)
 #  sd_result_item_id                 :bigint
 #
 

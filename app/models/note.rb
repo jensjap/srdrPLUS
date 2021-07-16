@@ -5,7 +5,7 @@
 #  id                     :integer          not null, primary key
 #  notable_type           :string(255)
 #  notable_id             :integer
-#  value                  :text(16777215)
+#  value                  :text(65535)
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
 #  projects_users_role_id :integer

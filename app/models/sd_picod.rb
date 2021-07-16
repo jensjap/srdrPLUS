@@ -4,18 +4,18 @@
 #
 #  id                     :integer          not null, primary key
 #  sd_meta_datum_id       :integer
-#  name                   :text(16777215)
+#  name                   :text(65535)
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
-#  population             :text(16777215)
-#  interventions          :text(16777215)
-#  comparators            :text(16777215)
-#  outcomes               :text(16777215)
-#  study_designs          :text(16777215)
-#  settings               :text(16777215)
+#  population             :text(65535)
+#  interventions          :text(65535)
+#  comparators            :text(65535)
+#  outcomes               :text(65535)
+#  study_designs          :text(65535)
+#  settings               :text(65535)
 #  data_analysis_level_id :bigint
-#  timing                 :text(16777215)
-#  other_elements         :text(16777215)
+#  timing                 :text(65535)
+#  other_elements         :text(65535)
 #
 
 class SdPicod < ApplicationRecord

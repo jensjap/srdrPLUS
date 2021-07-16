@@ -54,7 +54,7 @@ class ApplicationController < ActionController::Base
   private
 
     def redirect_path
-      params[:user][:redirect_path]
+      params.dig(:user, :redirect_path)
     end
 
     def user_not_authorized(exception)

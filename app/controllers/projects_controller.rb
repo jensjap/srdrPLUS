@@ -1,6 +1,8 @@
 class ProjectsController < ApplicationController
   add_breadcrumb "my projects", :projects_path
 
+  skip_before_action :authenticate_user!, only: [:export]
+
   before_action :set_project, only: [
                                 :show, :edit, :update, :destroy, :export, :export_to_gdrive, :import_csv,
                                 :import_pubmed, :import_endnote, :import_ris, :next_assignment,
@@ -128,12 +130,16 @@ class ProjectsController < ApplicationController
   end
 
   def export
-    authorize(@project)
-    SimpleExportJob.perform_later(current_user.id, @project.id, export_type_name_params)
-    flash[:success] = "Export request submitted for project '#{@project.name}'. You will be notified by email of its completion."
+    authenticate_user! unless current_user || email = helpers.valid_email(params[:email])
 
-    ahoy.track 'Export', { project_id: @project.id, export_type_name_params: export_type_name_params }
-    # redirect_to edit_project_path(@project)
+    if @project.public? || authorize(@project)
+      SimpleExportJob.perform_now(current_user ? current_user.email : email, @project.id, export_type_name_params)
+      ahoy.track 'Export', { project_id: @project.id, export_type_name_params: export_type_name_params }
+      flash[:success] = "Export request submitted for project '#{@project.name}'. You will be notified by email of its completion."
+    else
+      flash[:error] = "You are not authorized to export this project."
+    end
+
     redirect_to request.referer
   end
 

@@ -27,7 +27,7 @@ class SimpleExportJob < ApplicationJob
     # Do something later
     Rails.logger.debug "#{ self.class.name }: I'm performing my job with arguments: #{ args.inspect }"
 
-    @user             = User.find args.first
+    @user_email       = args.first
     @project          = Project.find args.second
     @export_type      = args.third
 
@@ -67,7 +67,7 @@ class SimpleExportJob < ApplicationJob
         export_type  = ExportType.find_by(name: @export_type[0..4])
         case export_type.name
         when '.xlsx'
-          exported_item = ExportedItem.create! projects_user: ProjectsUser.find_by( project: @project, user: @user), export_type: export_type
+          exported_item = ExportedItem.create! project: @project, user_email: @user_email, export_type: export_type
 
           exported_item.file.attach io: File.open(f_name), filename: f_name
           # Notify the user that the export is ready for download.
@@ -122,7 +122,7 @@ class SimpleExportJob < ApplicationJob
           puts "File Id: #{file.id}"
           puts "File Link: #{file.web_view_link}"
 
-          exported_item = ExportedItem.create! projects_user: ProjectsUser.find_by( project: @project, user: @user), export_type: export_type, external_url: file.web_view_link
+          exported_item = ExportedItem.create! project: @project, user_email: @user_email, export_type: export_type, external_url: file.web_view_link
 
           ExportMailer.notify_simple_export_completion(exported_item.id).deliver_later
         end

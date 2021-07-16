@@ -8,18 +8,18 @@
 #  date_of_last_search                         :datetime
 #  date_of_publication_to_srdr                 :datetime
 #  date_of_publication_full_report             :datetime
-#  authors_conflict_of_interest_of_full_report :text(16777215)
-#  protocol_link                               :text(16777215)
-#  full_report_link                            :text(16777215)
-#  structured_abstract_link                    :text(16777215)
-#  key_messages_link                           :text(16777215)
-#  abstract_summary_link                       :text(16777215)
-#  evidence_summary_link                       :text(16777215)
-#  disposition_of_comments_link                :text(16777215)
-#  srdr_data_link                              :text(16777215)
-#  most_previous_version_srdr_link             :text(16777215)
-#  most_previous_version_full_report_link      :text(16777215)
-#  overall_purpose_of_review                   :text(16777215)
+#  authors_conflict_of_interest_of_full_report :text(65535)
+#  protocol_link                               :text(65535)
+#  full_report_link                            :text(65535)
+#  structured_abstract_link                    :text(65535)
+#  key_messages_link                           :text(65535)
+#  abstract_summary_link                       :text(65535)
+#  evidence_summary_link                       :text(65535)
+#  disposition_of_comments_link                :text(65535)
+#  srdr_data_link                              :text(65535)
+#  most_previous_version_srdr_link             :text(65535)
+#  most_previous_version_full_report_link      :text(65535)
+#  overall_purpose_of_review                   :text(65535)
 #  state                                       :string(255)      default("DRAFT"), not null
 #  created_at                                  :datetime         not null
 #  updated_at                                  :datetime         not null
@@ -31,16 +31,16 @@
 #  section_flag_5                              :boolean          default(FALSE), not null
 #  section_flag_6                              :boolean          default(FALSE), not null
 #  report_accession_id                         :string(255)
-#  authors                                     :text(16777215)
+#  authors                                     :text(65535)
 #  section_flag_7                              :boolean          default(FALSE), not null
 #  prospero_link                               :string(255)
 #  review_type_id                              :bigint
-#  stakeholders_key_informants                 :text(16777215)
-#  stakeholders_technical_experts              :text(16777215)
-#  stakeholders_peer_reviewers                 :text(16777215)
-#  stakeholders_others                         :text(16777215)
+#  stakeholders_key_informants                 :text(65535)
+#  stakeholders_technical_experts              :text(65535)
+#  stakeholders_peer_reviewers                 :text(65535)
+#  stakeholders_others                         :text(65535)
 #  section_flag_8                              :boolean          default(FALSE), not null
-#  organization                                :text(16777215)
+#  organization                                :text(65535)
 #
 
 class SdMetaDatum < ApplicationRecord
