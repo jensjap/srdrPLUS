@@ -93,3 +93,23 @@
       .column
         .cell.auto.form-actions style="text-align: right; margin-top: 1rem;"
           = f.button :submit, 'Save'
+
+javascript:
+  $(document).ready(function() {
+    $('#timepoints').on("cocoon:before-remove", function(event, elementToBeRemoved) {
+      if ($('.timepoint-nested-fields[removed="false"]').length == 1) {
+        alert('You must keep at least one timepoint')
+        event.preventDefault()
+      } else {
+        $(elementToBeRemoved).attr('removed', 'true')
+      }
+    })
+    $('#populations').on("cocoon:before-remove", function(event, elementToBeRemoved) {
+      if ($('.population-nested-fields[removed="false"]').length == 1) {
+        alert('You must keep at least one population')
+        event.preventDefault()
+      } else {
+        $(elementToBeRemoved).attr('removed', 'true')
+      }
+    })
+  });

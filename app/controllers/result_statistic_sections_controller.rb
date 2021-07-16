@@ -73,7 +73,10 @@ class ResultStatisticSectionsController < ApplicationController
   def remove_comparison
     respond_to do |format|
       if Comparison.find(params[:comparison_id]).destroy
-        format.js { render :add_comparison }
+        format.js do
+          flash.now[:notice] = ' Comparison removed'
+          render :add_comparison
+        end
       else
         format.json { render json: @result_statistic_section.errors, status: :unprocessable_entity }
       end

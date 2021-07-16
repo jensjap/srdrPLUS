@@ -365,7 +365,6 @@ class ProjectsController < ApplicationController
         page(params[:page])
       @unapproved_publishings = @unapproved_publishings.order(updated_at: :desc) if params[:o].nil? || params[:o] == 'updated-at'
       @unapproved_publishings = @unapproved_publishings.order(created_at: :desc) if params[:o] == 'created-at'
-      @unapproved_publishings = @unapproved_publishings.where(user: current_user) unless current_user.admin?
     elsif @project_status == 'published'
       @approved_publishings = Publishing.
         includes([:publishable]).
@@ -377,7 +376,6 @@ class ProjectsController < ApplicationController
         page(params[:page])
       @approved_publishings = @approved_publishings.order(updated_at: :desc) if params[:o].nil? || params[:o] == 'updated-at'
       @approved_publishings = @approved_publishings.order(created_at: :desc) if params[:o] == 'created-at'
-      @approved_publishings = @approved_publishings.where(user: current_user) unless current_user.admin?
     end
   end
 

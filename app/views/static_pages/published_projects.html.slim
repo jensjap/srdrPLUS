@@ -1,8 +1,11 @@
 .grid-container.fluid
   .grid-x.align-center-middle.Recently-published
     .cell.medium-9
-      h1 Recently Updated Projects
-  .grid-x.align-center-middle.Recently-published
+      h1 Recently Published Projects
+  .grid-x.align-center-middle
+    .cell.medium-9 style="text-align: center; padding-bottom: 30px;"
+      = link_to 'Search for more Projects', '/searches/new', class: 'button'
+  .grid-x.align-center-middle
     .cell.medium-9
       ul.tabs data-tabs="true" id="projects-tabs"
         li class="tabs-title is-active"
@@ -12,7 +15,7 @@
 
       div class="tabs-content" data-tabs-content="projects-tabs"
         div class="tabs-panel is-active" id="panel1"
-          - Project.includes([:publishing]).published.each do |project|
+          - @projects.each do |project|
             .cell.medium-12.recent-project
               .grid-x.grid-padding-x.grid-padding-y
                 .cell.medium-4

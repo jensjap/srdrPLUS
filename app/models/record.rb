@@ -120,6 +120,25 @@ class Record < ApplicationRecord
     end
   end
 
+  def project
+    case recordable_type
+    when 'ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField'
+      recordable.project
+    when 'TpsArmsRssm'
+      recordable.extractions_extraction_forms_projects_sections_type1.project
+    when 'TpsComparisonsRssm'
+      recordable.result_statistic_sections_measure.result_statistic_section.project
+    when 'ComparisonsArmsRssm'
+      recordable.extractions_extraction_forms_projects_sections_type1.project
+    when 'WacsBacsRssm'
+      recordable.result_statistic_section.project
+    when 'ExtractionsExtractionFormsProjectsSectionsFollowupField'
+      recordable.extractions_extraction_forms_projects_section.project
+    else
+      nil
+    end
+  end
+
   private
 
     def set_extraction_stale
