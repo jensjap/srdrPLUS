@@ -133,7 +133,7 @@ class ProjectsController < ApplicationController
     authenticate_user! unless current_user || email = helpers.valid_email(params[:email])
 
     if @project.public? || authorize(@project)
-      SimpleExportJob.perform_now(current_user ? current_user.email : email, @project.id, export_type_name_params)
+      SimpleExportJob.perform_later(current_user ? current_user.email : email, @project.id, export_type_name_params)
       ahoy.track 'Export', { project_id: @project.id, export_type_name_params: export_type_name_params }
       flash[:success] = "Export request submitted for project '#{@project.name}'. You will be notified by email of its completion."
     else
