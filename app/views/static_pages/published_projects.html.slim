@@ -19,7 +19,7 @@
             .cell.medium-12.recent-project
               .grid-x.grid-padding-x.grid-padding-y
                 .cell.medium-4
-                  .small = "Published on #{ project.publishing.created_at.to_datetime.strftime("%B %d, %Y") }"
+                  .small = "Published on #{ project.publishing.approval.created_at.to_datetime.strftime("%B %d, %Y") }"
                   span.bold = project.name
                   .small
                     |

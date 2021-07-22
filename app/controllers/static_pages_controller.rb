@@ -45,6 +45,6 @@ class StaticPagesController < ApplicationController
   end
 
   def published_projects
-    @projects = Project.joins([publishing: :approval]).order('approvals.created_at DESC')
+    @projects = Project.joins([publishing: :approval]).order('approvals.created_at DESC').limit(25)
   end
 end
