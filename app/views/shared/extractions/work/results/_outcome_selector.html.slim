@@ -6,7 +6,7 @@
       button.button.has-dropdown data-toggle='outcome-dropdown' style='margin-bottom: 0 !important; padding: 0.5rem; background-color: #1986c7 !important; border-radius: 0;'
         => @eefpst1.type1_name_and_description + ' ▾'
     - if @eefpst1s.where.not(id: @eefpst1.id).length > 0
-      .dropdown-pane#outcome-dropdown data-dropdown='' data-hover='true' data-hover-pane='true' style="z-index: 1000; width: initial; min-width: 600px; max-height: 600px; overflow: auto;"
+      .dropdown-pane#outcome-dropdown data-dropdown='' data-hover='true' data-hover-pane='true' style="z-index: 10000; width: initial; min-width: 600px; max-height: 600px; overflow: auto;"
         - is_first = true
         - @eefpst1s.includes(:type1_type).map{ |eefpst1| eefpst1.type1_type&.name || "Uncategorized" }.uniq.sort.each do |t1_name|
           - if is_first
