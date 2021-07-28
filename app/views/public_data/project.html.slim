@@ -111,7 +111,7 @@ div#printableArea class="max-w-full mx-auto py-6 sm:px-6 lg:px-8"
                       form method="POST" action="/projects/#{@project.id}/export"
                         input name="authenticity_token" type="hidden" value="#{form_authenticity_token}"
                         input name="export_type_name" type="hidden" value=".xlsx"
-                        input name="email" placeholder="your@email.com" class="border border-gray-200 rounded-md px-4 py-3 mx-4" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" required="true"
+                        input name="email" placeholder="your@email.com" class="border border-gray-200 rounded-md px-4 py-3 mx-4" pattern="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$" required="true"
                         input type="submit" value="Email Export" class="button"
 
     button.button onClick="printPrintableArea()"
