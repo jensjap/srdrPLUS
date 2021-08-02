@@ -8,12 +8,12 @@ json.projects_users_term_groups_colors do
       json.id putgc.term_groups_color.id
       json.term_group do
         json.id putgc.term_groups_color.term_group.id
-        json.name putgc.term_groups_color.term_group.name
+        json.name sanitize(putgc.term_groups_color.term_group.name)
       end
-      json.color do 
+      json.color do
         json.id putgc.term_groups_color.color.id
-        json.name putgc.term_groups_color.color.name
-        json.hex_code putgc.term_groups_color.color.hex_code
+        json.name sanitize(putgc.term_groups_color.color.name)
+        json.hex_code sanitize(putgc.term_groups_color.color.hex_code)
       end
     end
   end
