@@ -5,6 +5,6 @@ end
 json.results do
   json.array!(@keywords) do |keyword|
     json.id keyword.id
-    json.text keyword.name
+    json.text sanitize(keyword.name)
   end
 end

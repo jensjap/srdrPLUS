@@ -5,7 +5,7 @@ end
 json.results do
   json.array!(@authors) do |author|
     json.id author.id
-    json.text author.name
+    json.text sanitize(author.name)
   end
 end
 
