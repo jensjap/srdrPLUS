@@ -29,7 +29,7 @@ documentCode = ->
     # Set the field to display from the result set.
     #######################################################
     formatResultSelection = ( result, container ) ->
-      result.text
+      $('<p>' + result.text + '</p>').text()
 
     # Markup result.
     formatResult = ( result ) ->

@@ -176,7 +176,7 @@ validate_and_send_async_form = ( form ) ->
 
 # Set the field to display from the result set.
 formatResultSelection = ( result, container ) ->
-  result.text
+  $('<p>' + result.text + '</p>').text()
 
 # returns validation status of form
 # also adds the class invalid to form inputs failing validation
