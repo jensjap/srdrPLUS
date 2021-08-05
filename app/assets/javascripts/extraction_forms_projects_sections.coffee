@@ -28,8 +28,17 @@ documentCode = ->
     # SELECT2
     # Set the field to display from the result set.
     #######################################################
+
+    restrictedCharacters =
+      '<': '&lt;'
+      '>': '&gt;'
+
+    escapeRestrictedCharacters = (string) ->
+      String(string).replace /[<>]/g, (s) ->
+        restrictedCharacters[s]
+
     formatResultSelection = ( result, container ) ->
-      $('<p>' + result.text + '</p>').text()
+      escapeRestrictedCharacters(result.text)
 
     # Markup result.
     formatResult = ( result ) ->

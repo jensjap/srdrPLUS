@@ -4,9 +4,17 @@ document.addEventListener 'DOMContentLoaded', ->
 
   do ->
 
+    restrictedCharacters =
+      '<': '&lt;'
+      '>': '&gt;'
+
+    escapeRestrictedCharacters = (string) ->
+      String(string).replace /[<>]/g, (s) ->
+        restrictedCharacters[s]
+
     # Set the field to display from the result set.
     formatResultSelection = ( result, container ) ->
-      $('<p>' + result.text + '</p>').text()
+      escapeRestrictedCharacters(result.text)
 
     # Markup result.
     formatResult = ( result ) ->

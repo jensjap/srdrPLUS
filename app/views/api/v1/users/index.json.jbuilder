@@ -5,7 +5,7 @@ end
 json.results do
   json.array!(@users) do |user|
     json.id user.id
-    json.text "#{sanitize(user.profile.username)} (#{user.email})"
+    json.text "#{CGI.escapeHTML(user.profile.username)} (#{user.email})"
   end
 end
 

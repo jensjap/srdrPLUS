@@ -3,7 +3,7 @@ json.incomplete_results false
 json.items do
   json.array!(@data_analysis_levels) do |data_analysis_level|
     json.id data_analysis_level.id
-    json.name sanitize(data_analysis_level.name)
+    json.name CGI.escapeHTML(data_analysis_level.name)
   end
 end
 

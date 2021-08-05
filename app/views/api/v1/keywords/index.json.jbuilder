@@ -5,6 +5,6 @@ end
 json.results do
   json.array!(@keywords) do |keyword|
     json.id keyword.id
-    json.text sanitize(keyword.name)
+    json.text CGI.escapeHTML(keyword.name)
   end
 end

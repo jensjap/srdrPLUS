@@ -3,6 +3,6 @@ json.incomplete_results false
 json.items do
   json.array!(@funding_sources) do |funding_source|
     json.id funding_source.id
-    json.name sanitize(funding_source.name)
+    json.name CGI.escapeHTML(funding_source.name)
   end
 end

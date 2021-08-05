@@ -3,7 +3,7 @@ json.incomplete_results false
 json.items do
   json.array!(@review_types) do |review_type|
     json.id review_type.id
-    json.name sanitize(review_type.name)
+    json.name CGI.escapeHTML(review_type.name)
   end
 end
 
