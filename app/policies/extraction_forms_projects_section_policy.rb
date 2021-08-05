@@ -4,23 +4,23 @@ class ExtractionFormsProjectsSectionPolicy < ApplicationPolicy
   end
 
   def new?
-    project_consolidator?
+    project_leader?
   end
 
   def edit?
-    project_consolidator?
+    project_leader?
   end
 
   def create?
-    project_consolidator?
+    project_leader?
   end
 
   def update?
-    project_consolidator?
+    project_leader?
   end
 
   def destroy?
-    project_consolidator?
+    project_leader?
   end
 
   def preview?

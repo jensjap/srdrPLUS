@@ -3,6 +3,7 @@ class PublishingsController < ApplicationController
   before_action :set_publishing, only: [:approve, :rescind_approval, :destroy]
 
   def new
+    authorize(@project, policy_class: PublishingPolicy)
     if @publishable_record && @publishable_record.publishing.present?
       flash[:notice] = "Publishing request has already been received."
       return redirect_to '/projects'
@@ -12,7 +13,6 @@ class PublishingsController < ApplicationController
       return redirect_to '/projects'
     end
     @publishing = Publishing.new(publishable: @publishable_record)
-    authorize(@publishing)
   end
 
   def create
@@ -20,6 +20,7 @@ class PublishingsController < ApplicationController
       flash[:error] = "Invalid record to publish."
       return redirect_to '/projects'
     end
+    authorize(@project, policy_class: PublishingPolicy)
 
     errors = @publishable_record.check_publishing_eligibility
     if errors.present?
@@ -105,8 +106,10 @@ class PublishingsController < ApplicationController
 
       if publishable_type == SdMetaDatum.to_s
         @publishable_record = SdMetaDatum.find(params[:id])
+        @project = @publishable_record.project
       elsif publishable_type == Project.to_s
         @publishable_record = Project.find(params[:id])
+        @project = @publishable_record
       end
     end
 end

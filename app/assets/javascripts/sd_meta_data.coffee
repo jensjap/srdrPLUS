@@ -174,9 +174,17 @@ validate_and_send_async_form = ( form ) ->
   $( '.preview-button' ).attr( 'disabled', '' )
   send_async_form( form )
 
+restrictedCharacters =
+  '<': '&lt;'
+  '>': '&gt;'
+
+escapeRestrictedCharacters = (string) ->
+  String(string).replace /[<>]/g, (s) ->
+    restrictedCharacters[s]
+
 # Set the field to display from the result set.
 formatResultSelection = ( result, container ) ->
-  result.text
+  escapeRestrictedCharacters(result.text)
 
 # returns validation status of form
 # also adds the class invalid to form inputs failing validation

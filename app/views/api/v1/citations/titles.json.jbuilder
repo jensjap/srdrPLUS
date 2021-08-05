@@ -5,7 +5,7 @@ end
 json.results do
   json.array!(@citations) do |citation|
     json.id citation.id
-    json.text citation.name
+    json.text CGI.escapeHTML(citation.name)
   end
 end
 

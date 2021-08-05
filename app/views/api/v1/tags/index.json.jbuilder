@@ -5,7 +5,7 @@ end
 json.results do
   json.array!( @tags ) do |tag|
     json.id tag.id
-    json.text tag.name
+    json.text CGI.escapeHTML(tag.name)
   end
 end
 
