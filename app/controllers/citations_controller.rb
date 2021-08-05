@@ -29,6 +29,7 @@ class CitationsController < ApplicationController
   end
 
   def update
+    authorize_access
     project_id = params.try(:[], :citation).try(:[], :project_id)
     respond_to do |format|
       if @citation.update(citation_params)
@@ -48,6 +49,7 @@ class CitationsController < ApplicationController
   end
 
   def edit
+    authorize_access
     @citation.build_journal unless @citation.journal.present?
     if params[:project_id]
       add_breadcrumb 'edit project', edit_project_path(params[:project_id])
@@ -57,6 +59,7 @@ class CitationsController < ApplicationController
   end
 
   def destroy
+    authorize_access
     @citation.destroy
     respond_to do |format|
       format.html { redirect_to citations_url, notice: t('removed') }
@@ -123,5 +126,12 @@ class CitationsController < ApplicationController
             authors_citations_attributes: [:id, :name, :_destroy, { author_attributes: [:name, :id, :_destroy] }, { ordering_attributes: :position }],
             keywords_attributes: [:id, :name, :_destroy],
             labels_attributes: [:id, :value, :_destroy])
+    end
+
+    def authorize_access
+      if (current_user.projects & @citation.projects).empty?
+        flash[:error] = "You are not authorized to update this citation"
+        return redirect_to(request.referrer || root_path)
+      end
     end
 end
