@@ -68,11 +68,10 @@ class SimpleExportJob < ApplicationJob
         case export_type.name
         when '.xlsx'
           exported_item = ExportedItem.create! project: @project, user_email: @user_email, export_type: export_type
-
           exported_item.file.attach io: File.open(f_name), filename: f_name
           # Notify the user that the export is ready for download.
           if exported_item.file.attached?
-            exported_item.external_url = exported_item.file.service_url
+            exported_item.external_url = Rails.application.routes.default_url_options[:host] + Rails.application.routes.url_helpers.rails_blob_path(exported_item.file, only_path: true)
             exported_item.save!
             ExportMailer.notify_simple_export_completion(exported_item.id).deliver_later
           else
