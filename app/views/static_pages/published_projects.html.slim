@@ -33,6 +33,7 @@
                   .small.bold = link_to public_data_path(type: 'project', id: project.id) do
                     |READ MORE
                     i.fas.fa-external-link-alt.fa-sm<
+          .cell.medium-12.mt-4 = paginate(@projects, theme: 'foundation')
         div class="tabs-panel" id="panel2"
           h4 = link_to 'https://srdr.ahrq.gov/projects/published', target: '_blank', data: { confirm: @exit_disclaimer } do
             | Go to SRDR Projects
