@@ -64,9 +64,8 @@ class SimpleExportJob < ApplicationJob
       end
 
       if p.serialize(f_name)
-        export_type  = ExportType.find_by(name: @export_type[0..4])
-        case export_type.name
-        when '.xlsx'
+        if /xlsx/ =~ @export_type
+          export_type  = ExportType.find_by(name: ".xlsx")
           exported_item = ExportedItem.create! project: @project, user_email: @user_email, export_type: export_type
           exported_item.file.attach io: File.open(f_name), filename: f_name
           # Notify the user that the export is ready for download.
@@ -77,7 +76,9 @@ class SimpleExportJob < ApplicationJob
           else
             raise "Cannot attach exported file"
           end
-        when 'Google Sheets'
+
+        elsif /Google Sheets/ =~ @export_type
+          export_type  = ExportType.find_by(name: "Google Sheets")
           drive_service = Google::Apis::DriveV3::DriveService.new
          #service.authorization = secrets.to_authorization
           drive_service.authorization = ::Google::Auth::ServiceAccountCredentials.new( token_credential_uri: Google::Auth::ServiceAccountCredentials::TOKEN_CRED_URI,
@@ -124,10 +125,81 @@ class SimpleExportJob < ApplicationJob
           exported_item = ExportedItem.create! project: @project, user_email: @user_email, export_type: export_type, external_url: file.web_view_link
 
           ExportMailer.notify_simple_export_completion(exported_item.id).deliver_later
-        end
+
+        else
+          raise "Unknown ExportType."
+
+        end  # if /xlsx/ =~ @export_type
+
       else
         raise "Unable to serialize"
-      end
-    end
-  end
-end
+
+      end  # if p.serialize(f_name)
+
+      #   export_type  = ExportType.find_by(name: @export_type[0..4])
+      #   case export_type.name
+      #   when '.xlsx'
+      #     exported_item = ExportedItem.create! project: @project, user_email: @user_email, export_type: export_type
+      #     exported_item.file.attach io: File.open(f_name), filename: f_name
+      #     # Notify the user that the export is ready for download.
+      #     if exported_item.file.attached?
+      #       exported_item.external_url = Rails.application.routes.default_url_options[:host] + Rails.application.routes.url_helpers.rails_blob_path(exported_item.file, only_path: true)
+      #       exported_item.save!
+      #       ExportMailer.notify_simple_export_completion(exported_item.id).deliver_later
+      #     else
+      #       raise "Cannot attach exported file"
+      #     end
+      #   when 'Google Sheets'
+      #     drive_service = Google::Apis::DriveV3::DriveService.new
+      #    #service.authorization = secrets.to_authorization
+      #     drive_service.authorization = ::Google::Auth::ServiceAccountCredentials.new( token_credential_uri: Google::Auth::ServiceAccountCredentials::TOKEN_CRED_URI,
+      #                                     audience: Google::Auth::ServiceAccountCredentials::TOKEN_CRED_URI,
+      #                                     scope: 'https://www.googleapis.com/auth/drive',
+      #                                     issuer: Rails.application.credentials[:google_service_account][:client_email],
+      #                                     signing_key: OpenSSL::PKey::RSA.new(Rails.application.credentials[:google_service_account][:private_key]))
+
+      #     callback = lambda do |res, err|
+      #       if err
+      #         # Handle error...
+      #         puts err.body
+      #       else
+      #         puts "Permission ID: #{res.id}"
+      #       end
+      #     end
+
+      #     ## This metadata specifies resulting file name and what it should be converted into (in this case 'Google Sheets')
+      #     ## BELOW IS THE FOLDER ID, IT SHOULD BE IN A CONFIG FILE, I DON'T KNOW WHICH -BIROL
+      #     file_metadata = {
+      #         parents: ["1ch4FAcY8yjnlyDtYnxj0mRWh4hWoIvtB"],
+      #         name: @project.name,
+      #         mime_type: 'application/vnd.google-apps.spreadsheet'
+      #     }
+      #     ## Here we specify what should server return (only the file id in this case), file location and the filetype (in this case 'xlsx')
+      #     file = drive_service.create_file(file_metadata,
+      #                                      fields: 'id, webViewLink',
+      #                                      upload_source: f_name,
+      #                                      content_type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+      #     domain_permission = {
+      #         type: 'anyone',
+      #         role: 'reader'
+      #     }
+
+      #     drive_service.create_permission(file.id,
+      #                               domain_permission,
+      #                               fields: 'id',
+      #                               &callback)
+
+
+      #     puts "File Id: #{file.id}"
+      #     puts "File Link: #{file.web_view_link}"
+
+      #     exported_item = ExportedItem.create! project: @project, user_email: @user_email, export_type: export_type, external_url: file.web_view_link
+
+      #     ExportMailer.notify_simple_export_completion(exported_item.id).deliver_later
+      #   end
+      # else
+      #   raise "Unable to serialize"
+      # end
+    end  # Axlsx::Package.new do |p|
+  end  # def perform(*args)
+end  # class SimpleExportJob < ApplicationJob
