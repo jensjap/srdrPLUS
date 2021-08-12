@@ -46,8 +46,8 @@
 
                     .form-inputs style='margin-top: 1rem;'
                       = f.input :email, placeholder: 'Email', required: true, hint: 'Email must have the following format: example@domain.edu', autofocus: true
-                      = f.input :password, placeholder: 'Password', required: true, hint: ("Password must contain a minium of #{ @minimum_password_length } characters." if @minimum_password_length),
-                        input_html: { data: { validator: 'minimum_length', minimum_length: "#{ @minimum_password_length }" } }
+                      = f.input :password, placeholder: "Password (Must contain a minimum of 6 characters)", required: true,
+                        input_html: { minlength: 6 }
 
                     .form-actions
                       = f.button :submit, "Create an Account", class: "sign-up-button"
