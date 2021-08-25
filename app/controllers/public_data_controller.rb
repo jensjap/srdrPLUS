@@ -3,8 +3,11 @@ class PublicDataController < ApplicationController
   skip_before_action :authenticate_user!
 
   def show
-    render @template
-    return render :file => "#{Rails.root}/public/404", :layout => false, :status => :not_found unless @project && @project.public?
+    if @project && @project.public?
+      render @template
+    else
+      return render :file => "#{Rails.root}/public/404", :layout => false, :status => :not_found
+    end
   end
 
   private
