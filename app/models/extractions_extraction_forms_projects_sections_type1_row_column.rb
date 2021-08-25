@@ -22,6 +22,8 @@ class ExtractionsExtractionFormsProjectsSectionsType1RowColumn < ApplicationReco
   belongs_to :extractions_extraction_forms_projects_sections_type1_row, inverse_of: :extractions_extraction_forms_projects_sections_type1_row_columns
   belongs_to :timepoint_name,                                           inverse_of: :extractions_extraction_forms_projects_sections_type1_row_columns
 
+  has_many :tps_arms_rssms, dependent: :destroy, foreign_key: 'timepoint_id'
+
   accepts_nested_attributes_for :timepoint_name, reject_if: :all_blank
 
   delegate :extraction, to: :extractions_extraction_forms_projects_sections_type1_row

@@ -152,6 +152,6 @@ class Record < ApplicationRecord
       else
         extraction = recordable.result_statistic_section.extraction
       end
-      extraction.extraction_checksum.update( is_stale: true )
+      extraction.extraction_checksum.update( is_stale: true ) unless extraction.deleted?
     end
 end

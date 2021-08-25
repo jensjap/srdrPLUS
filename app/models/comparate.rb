@@ -24,7 +24,7 @@ class Comparate < ApplicationRecord
 
     def set_extraction_stale
       self.comparate_group.comparison.comparisons_result_statistic_sections.each do |crss|
-        crss.result_statistic_section.population.extraction.extraction_checksum.update( is_stale: true )
+        crss.result_statistic_section.population.extraction.extraction_checksum.update( is_stale: true ) unless crss.result_statistic_section.population.extraction.deleted?
       end
     end
 end
