@@ -371,7 +371,9 @@ class ProjectsController < ApplicationController
         preload(:approval).
         joins('left join projects ON publishings.publishable_id = projects.id').
         joins('left join sd_meta_data ON sd_meta_data.id = publishings.publishable_id').
-        where("projects.name LIKE ? OR sd_meta_data.report_title LIKE ?", "%#{@query}%", "%#{@query}%").
+        joins("INNER JOIN `projects_users` ON `projects`.`id` = `projects_users`.`project_id`").
+        where("`projects`.`deleted_at` IS NULL AND `projects_users`.`active` = TRUE AND `projects_users`.`user_id` = ?", current_user.id.to_s).
+        where("projects.name LIKE ? OR sd_meta_data.report_title LIKE ?", "%#{ @query }%", "%#{ @query }%").
         approved.
         page(params[:page])
       @approved_publishings = @approved_publishings.order(updated_at: :desc) if params[:o].nil? || params[:o] == 'updated-at'
