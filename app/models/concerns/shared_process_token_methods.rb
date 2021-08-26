@@ -15,7 +15,7 @@ module SharedProcessTokenMethods
     def save_resource_name_with_token(resource, token, originating_record = nil, joint_class = nil)
       ActiveRecord::Base.transaction do
         token.gsub!(/<<<(.+?)>>>/) { |new_id|
-          resource.update(name: $1)
+          resource.update(name: $1.gsub("<", "").gsub(">", ""))
           new_id = resource.id
 
           joint_record = nil
