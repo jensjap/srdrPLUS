@@ -1,7 +1,7 @@
 require 'simple_export_job/sheet_info'
 
-def build_result_sections_wide_srdr_style_2(p, project, highlight, wrap, kq_ids=[], print_empty_row=false)
-  project.extraction_forms_projects.each do |efp|
+def build_result_sections_wide_srdr_style_2(kq_ids=[], print_empty_row=false)
+  @project.extraction_forms_projects.each do |efp|
     efp.extraction_forms_projects_sections.each do |efps|
 
       # If this is a results section then we proceed.
@@ -11,15 +11,15 @@ def build_result_sections_wide_srdr_style_2(p, project, highlight, wrap, kq_ids=
         sheet_info = SheetInfo.new
 
         # Build SheetInfo object by extraction.
-        populate_sheet_info_with_extractions_results_data(sheet_info, project, kq_ids, efp, efps)
+        populate_sheet_info_with_extractions_results_data(sheet_info, kq_ids, efp, efps)
 
         # Create and name worksheets.
-        ws_descriptive_statistics_continuous_outcomes   = p.workbook.add_worksheet(name: "Continuous - Desc. Statistics")
-        ws_descriptive_statistics_categorical_outcomes  = p.workbook.add_worksheet(name: "Categorical - Desc. Statistics")
-        ws_bac_statistics_continuous_outcomes  = p.workbook.add_worksheet(name: "Continuous - BAC Comparisons")
-        ws_bac_statistics_categorical_outcomes = p.workbook.add_worksheet(name: "Categorical - BAC Comparisons")
-        ws_wac_statistics = p.workbook.add_worksheet(name: "WAC Comparisons")
-        ws_net_statistics = p.workbook.add_worksheet(name: "NET Differences")
+        ws_descriptive_statistics_continuous_outcomes   = @p.workbook.add_worksheet(name: "Continuous - Desc. Statistics")
+        ws_descriptive_statistics_categorical_outcomes  = @p.workbook.add_worksheet(name: "Categorical - Desc. Statistics")
+        ws_bac_statistics_continuous_outcomes  = @p.workbook.add_worksheet(name: "Continuous - BAC Comparisons")
+        ws_bac_statistics_categorical_outcomes = @p.workbook.add_worksheet(name: "Categorical - BAC Comparisons")
+        ws_wac_statistics = @p.workbook.add_worksheet(name: "WAC Comparisons")
+        ws_net_statistics = @p.workbook.add_worksheet(name: "NET Differences")
 
         # Start printing rows to the sheets. First the basic headers:
         #   Categorical populations only apply to Desc. Statistics and BAC Comparisons.
@@ -169,12 +169,12 @@ def build_result_sections_wide_srdr_style_2(p, project, highlight, wrap, kq_ids=
         end  # sheet_info.extractions.each do |e_key, extraction|
 
         # Style header row.
-        desc_cont_header.style = highlight
-        desc_cat_header.style  = highlight
-        bac_cont_header.style  = highlight
-        bac_cat_header.style   = highlight
-        wac_header.style  = highlight
-        net_header.style  = highlight
+        desc_cont_header.style = @highlight
+        desc_cat_header.style  = @highlight
+        bac_cont_header.style  = @highlight
+        bac_cat_header.style   = @highlight
+        wac_header.style  = @highlight
+        net_header.style  = @highlight
 
         # Set styles for each worksheet.
         style_dscoo1, style_dscoo2, style_dscoo3, style_dscoo4 = set_ws_styles(ws_descriptive_statistics_continuous_outcomes)
@@ -211,7 +211,7 @@ def build_result_sections_wide_srdr_style_2(p, project, highlight, wrap, kq_ids=
 
       end  # END if efps.extraction_forms_projects_section_type_id == 3
     end  # END efp.extraction_forms_projects_sections.each do |efps|
-  end  # END project.extraction_forms_projects.each do |efp|
+  end  # END @project.extraction_forms_projects.each do |efp|
 end
 
 def build_data_row(rss_cols, header, sheet_info)

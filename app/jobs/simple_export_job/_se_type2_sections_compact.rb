@@ -3,20 +3,16 @@ require 'simple_export_job/sheet_info'
 COL_CNT_WITHOUT_LINK_TO_TYPE1 = 10
 COL_CNT_WITH_LINK_TO_TYPE1    = 12
 
-def build_type2_sections_compact(p, project, highlight, wrap, kq_ids=[], print_empty_row=false)
-
-
-
-
+def build_type2_sections_compact(kq_ids=[], print_empty_row=false)
   # The main extraction form is always the first efp.
-  efp = project.extraction_forms_projects.first
+  efp = @project.extraction_forms_projects.first
   efp.extraction_forms_projects_sections.each do |efps|
 
     # If this is a type2 section then we proceed.
     if efps.extraction_forms_projects_section_type_id == 2
 
       # Add a new sheet.
-      p.workbook.add_worksheet(name: "#{ efps.section.name.truncate(21) }") do |sheet|
+      @p.workbook.add_worksheet(name: "#{ efps.section.name.truncate(21) }") do |sheet|
 
         # For each sheet we create a SheetInfo object.
         sheet_info = SheetInfo.new
@@ -40,10 +36,10 @@ def build_type2_sections_compact(p, project, highlight, wrap, kq_ids=[], print_e
         header_row = sheet.add_row header_elements
 
         # Collect distinct list of questions.
-        questions = fetch_questions(project, kq_ids, efps)
+        questions = fetch_questions(kq_ids, efps)
 
-        # Iterate over each extraction in the project.
-        project.extractions.each do |extraction|
+        # Iterate over each extraction in the @project.
+        @project.extractions.each do |extraction|
           # Collect distinct list of questions based off the key questions selected for this extraction.
           kq_ids_by_extraction = fetch_kq_selection(extraction, kq_ids)
 
@@ -111,31 +107,31 @@ def build_type2_sections_compact(p, project, highlight, wrap, kq_ids=[], print_e
               end  # END if has_values
             end  # END questions.each do |question|
           end  # END if efps.link_to_type1.present?
-        end  # END project.extractions.each do |extraction|
+        end  # END @project.extractions.each do |extraction|
 
         # Re-apply the styling for the new cells in the header row before closing the sheet.
         sheet.column_widths nil
-        header_row.style = highlight
-      end  # END p.workbook.add_worksheet(name: "#{ efps.section.name.truncate(21) }") do |sheet|
+        header_row.style = @highlight
+      end  # END @p.workbook.add_worksheet(name: "#{ efps.section.name.truncate(21) }") do |sheet|
     end  # END if efps.extraction_forms_projects_section_type_id == 2
   end  # END efp.extraction_forms_projects_sections.each do |efps|
 end
 
 # Type2 (Questions) are associated to Key Questions and we export by the KQ's selected.
 # If no KQ's array is passed in, we assume to export all.
-def fetch_questions(project, kq_ids, efps)
+def fetch_questions(kq_ids, efps)
   # Get all questions in this efps by key_questions requested.
   if kq_ids.present?
     questions = efps.questions.joins(:key_questions_projects_questions)
       .where(
         key_questions_projects_questions: {
-          key_questions_project: KeyQuestionsProject.where(project: project, key_question_id: kq_ids)
+          key_questions_project: KeyQuestionsProject.where(project: @project, key_question_id: kq_ids)
         } )
   else
     questions = efps.questions.joins(:key_questions_projects_questions)
       .where(
         key_questions_projects_questions: {
-          key_questions_project: KeyQuestionsProject.where(project: project)
+          key_questions_project: KeyQuestionsProject.where(project: @project)
         } )
   end
 

@@ -1,20 +1,20 @@
 require 'simple_export_job/sheet_info'
 
-def build_result_sections_wide(p, project, highlight, wrap, kq_ids=[])
-  project.extraction_forms_projects.each do |efp|
+def build_result_sections_wide(kq_ids=[])
+  @project.extraction_forms_projects.each do |efp|
     efp.extraction_forms_projects_sections.each do |efps|
 
       # If this is a result section then we proceed.
       if efps.extraction_forms_projects_section_type_id == 3
 
         # Add a new sheet.
-        p.workbook.add_worksheet(name: "#{ efps.section.name.truncate(24) }") do |sheet|
+        @p.workbook.add_worksheet(name: "#{ efps.section.name.truncate(24) }") do |sheet|
 
           # For each sheet we create a SheetInfo object.
           sheet_info = SheetInfo.new
 
           # Every row represents an extraction.
-          populate_sheet_info_with_extractions_results_data(sheet_info, project, kq_ids, efp, efps)
+          populate_sheet_info_with_extractions_results_data(sheet_info, kq_ids, efp, efps)
 
           # Start printing rows to the spreadsheet. First the basic headers:
           #['Extraction ID', 'Username', 'Citation ID', 'Citation Name', 'RefMan', 'PMID']
@@ -91,9 +91,9 @@ def build_result_sections_wide(p, project, highlight, wrap, kq_ids=[])
 
           # Re-apply the styling for the new cells in the header row before closing the sheet.
           sheet.column_widths 16, 16, 16, 50, 16, 16
-          header_row.style = highlight
-        end  # END p.workbook.add_worksheet(name: "#{ efps.section.name.truncate(24) }") do |sheet|
+          header_row.style = @highlight
+        end  # END @p.workbook.add_worksheet(name: "#{ efps.section.name.truncate(24) }") do |sheet|
       end  # END if efps.extraction_forms_projects_section_type_id == 3
     end  # END efp.extraction_forms_projects_sections.each do |efps|
-  end  # END project.extraction_forms_projects.each do |efp|
+  end  # END @project.extraction_forms_projects.each do |efp|
 end

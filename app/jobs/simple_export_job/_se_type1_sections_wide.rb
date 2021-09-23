@@ -1,21 +1,21 @@
 require 'simple_export_job/sheet_info'
 
-def build_type1_sections_wide(p, project, highlight, wrap, kq_ids=[])
-  project.extraction_forms_projects.each do |efp|
+def build_type1_sections_wide(kq_ids=[])
+  @project.extraction_forms_projects.each do |efp|
     efp.extraction_forms_projects_sections.each do |efps|
 
       # If this is a type1 section then we proceed.
       if efps.extraction_forms_projects_section_type_id == 1
 
         # Add a new sheet.
-        p.workbook.add_worksheet(name: "#{ efps.section.name.truncate(24) }") do |sheet|
+        @p.workbook.add_worksheet(name: "#{ efps.section.name.truncate(24) }") do |sheet|
           sheet_name = "#{ efps.section.name.truncate(24) }"
 
           # For each sheet we create a SheetInfo object.
           sheet_info = SheetInfo.new
 
           # Every row represents an extraction.
-          project.extractions.each do |extraction|
+          @project.extractions.each do |extraction|
             # Collect distinct list of questions based off the key questions selected for this extraction.
             kq_ids_by_extraction = fetch_kq_selection(extraction, kq_ids)
 
@@ -64,7 +64,7 @@ def build_type1_sections_wide(p, project, highlight, wrap, kq_ids=[])
                 end  # pop.extractions_extraction_forms_projects_sections_type1_row_columns.each do |tp|
               end  # eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |pop|
             end  # eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
-          end  # END project.extractions.each do |extraction|
+          end  # END @project.extractions.each do |extraction|
 
           # Start printing rows to the spreadsheet. First the basic headers:
           header_row = sheet.add_row sheet_info.header_info
@@ -181,9 +181,9 @@ def build_type1_sections_wide(p, project, highlight, wrap, kq_ids=[])
 
           # Re-apply the styling for the new cells in the header row before closing the sheet.
           sheet.column_widths 16, 16, 16, 50, 16, 16
-          header_row.style = highlight
-        end  # END p.workbook.add_worksheet(name: "#{ efps.section.name.truncate(24) }") do |sheet|
+          header_row.style = @highlight
+        end  # END @p.workbook.add_worksheet(name: "#{ efps.section.name.truncate(24) }") do |sheet|
       end  # END if efps.extraction_forms_projects_section_type_id == 1
     end  # END efp.extraction_forms_projects_sections.each do |efps|
-  end  # END project.extraction_forms_projects.each do |efp|
+  end  # END @project.extraction_forms_projects.each do |efp|
 end

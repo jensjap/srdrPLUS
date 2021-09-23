@@ -1,25 +1,22 @@
 require 'simple_export_job/sheet_info'
 
-
-
-
-def build_type2_sections_wide(p, project, highlight, wrap, kq_ids=[])
+def build_type2_sections_wide(kq_ids=[])
 
   # The main extraction form is always the first efp.
-  efp = project.extraction_forms_projects.first
+  efp = @project.extraction_forms_projects.first
   efp.extraction_forms_projects_sections.each do |efps|
 
     # If this is a type2 section then we proceed.
     if efps.extraction_forms_projects_section_type_id == 2
 
       # Add a new sheet.
-      p.workbook.add_worksheet(name: "#{ efps.section.name.truncate(24) }") do |sheet|
+      @p.workbook.add_worksheet(name: "#{ efps.section.name.truncate(24) }") do |sheet|
 
         # For each sheet we create a SheetInfo object.
         sheet_info = SheetInfo.new
 
         # Every row represents an extraction.
-        project.extractions.each do |extraction|
+        @project.extractions.each do |extraction|
           # Create base for extraction information.
           sheet_info.new_extraction_info(extraction)
 
@@ -42,7 +39,7 @@ def build_type2_sections_wide(p, project, highlight, wrap, kq_ids=[])
           # Iterate over each of the questions that are associated with this particular # extraction's
           # extraction_forms_projects_section and collect name and description.
           questions = efps.questions.joins(:key_questions_projects_questions)
-            .where(key_questions_projects_questions: { key_questions_project: KeyQuestionsProject.where(project: project, key_question_id: kq_ids) }).distinct.order(id: :asc)
+            .where(key_questions_projects_questions: { key_questions_project: KeyQuestionsProject.where(project: @project, key_question_id: kq_ids) }).distinct.order(id: :asc)
 
           # If this section is linked we have to iterate through each occurrence of
           # type1 via eefps.link_to_type1.extractions_extraction_forms_projects_sections_type1s.
@@ -77,7 +74,7 @@ def build_type2_sections_wide(p, project, highlight, wrap, kq_ids=[])
               end  # q.question_rows.each do |qr|
             end  # questions.each do |q|
           end  # eefps.type1s.each do |eefpst1|
-        end  # project.extractions.each do |extraction|
+        end  # @project.extractions.each do |extraction|
 
         # First the basic headers:
         header_elements = sheet_info.header_info
@@ -156,8 +153,8 @@ def build_type2_sections_wide(p, project, highlight, wrap, kq_ids=[])
 
         # Re-apply the styling for the new cells in the header row before closing the sheet.
         sheet.column_widths 16, 16, 16, 50, 16, 16
-        header_row.style = highlight
-      end  # END p.workbook.add_worksheet(name: "#{ efps.section.name.truncate(24) }") do |sheet|
+        header_row.style = @highlight
+      end  # END @p.workbook.add_worksheet(name: "#{ efps.section.name.truncate(24) }") do |sheet|
     end  # END if efps.extraction_forms_projects_section_type_id == 2
   end  # END efp.extraction_forms_projects_sections.each do |efps|
 end

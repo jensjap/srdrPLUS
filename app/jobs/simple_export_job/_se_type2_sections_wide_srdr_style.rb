@@ -1,31 +1,28 @@
 require 'simple_export_job/sheet_info'
 
-
-
-
-def build_type2_sections_wide_srdr_style(p, project, highlight, wrap, kq_ids=[], print_empty_row=false)
+def build_type2_sections_wide_srdr_style(kq_ids=[], print_empty_row=false)
 
   # The main extraction form is always the first efp.
-  efp = project.extraction_forms_projects.first
+  efp = @project.extraction_forms_projects.first
   efp.extraction_forms_projects_sections.each do |efps|
 
     # If this is a type2 section then we proceed.
     if efps.extraction_forms_projects_section_type_id == 2
 
       # Add a new sheet.
-      p.workbook.add_worksheet(name: "#{ efps.section.name.truncate(24) }") do |sheet|
+      @p.workbook.add_worksheet(name: "#{ efps.section.name.truncate(24) }") do |sheet|
 
         # For each sheet we create a SheetInfo object.
         sheet_info = SheetInfo.new
 
         # Every row represents an extraction.
-        project.extractions.each do |extraction|
+        @project.extractions.each do |extraction|
           # Create base for extraction information.
           sheet_info.new_extraction_info(extraction)
 
           # Collect distinct list of questions based off the key questions selected for this extraction.
           kq_ids_by_extraction = fetch_kq_selection(extraction, kq_ids)
-          questions = fetch_questions(project, kq_ids_by_extraction, efps)
+          questions = fetch_questions(kq_ids_by_extraction, efps)
 
           # Collect basic information about the extraction.
           sheet_info.set_extraction_info(
@@ -85,7 +82,7 @@ def build_type2_sections_wide_srdr_style(p, project, highlight, wrap, kq_ids=[],
               end  # q.question_rows.each do |qr|
             end  # questions.each do |q|
           end  # eefps.type1s.each do |eefpst1|
-        end  # project.extractions.each do |extraction|
+        end  # @project.extractions.each do |extraction|
 
         # First the basic headers:
         header_elements = sheet_info.header_info
@@ -188,19 +185,19 @@ def build_type2_sections_wide_srdr_style(p, project, highlight, wrap, kq_ids=[],
 
         # Re-apply the styling for the new cells in the header row before closing the sheet.
         sheet.column_widths 16, 16, 16, 50, 16, 16
-        header_row.style = highlight
-      end  # END p.workbook.add_worksheet(name: "#{ efps.section.name.truncate(24) }") do |sheet|
+        header_row.style = @highlight
+      end  # END @p.workbook.add_worksheet(name: "#{ efps.section.name.truncate(24) }") do |sheet|
     end  # END if efps.extraction_forms_projects_section_type_id == 2
   end  # END efp.extraction_forms_projects_sections.each do |efps|
 end
 
 # Type2 (Questions) are associated to Key Questions and we export by the KQ's selected.
-def fetch_questions(project, kq_ids, efps)
+def fetch_questions(kq_ids, efps)
   # Get all questions in this efps by key_questions requested.
   questions = efps.questions.joins(:key_questions_projects_questions)
     .where(
       key_questions_projects_questions: {
-        key_questions_project: KeyQuestionsProject.where(project: project, key_question_id: kq_ids)
+        key_questions_project: KeyQuestionsProject.where(project: @project, key_question_id: kq_ids)
       } )
 
   return questions.distinct.order(id: :asc)

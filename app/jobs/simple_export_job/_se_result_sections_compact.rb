@@ -1,7 +1,7 @@
 require 'simple_export_job/sheet_info'
 
-def build_result_sections_compact(p, project, highlight, wrap, kq_ids=[], print_empty_row=false)
-  project.extraction_forms_projects.each do |efp|
+def build_result_sections_compact(kq_ids=[], print_empty_row=false)
+  @project.extraction_forms_projects.each do |efp|
     efp.extraction_forms_projects_sections.each do |efps|
 
       # If this is a results section then we proceed.
@@ -11,12 +11,12 @@ def build_result_sections_compact(p, project, highlight, wrap, kq_ids=[], print_
         sheet_info = SheetInfo.new
 
         # Build SheetInfo object by extraction.
-        populate_sheet_info_with_extractions_results_data(sheet_info, project, kq_ids, efp, efps)
+        populate_sheet_info_with_extractions_results_data(sheet_info, kq_ids, efp, efps)
 
-        ws_desc = p.workbook.add_worksheet(name: "Desc. Statistics")
-        ws_bac  = p.workbook.add_worksheet(name: "BAC Comparisons")
-        ws_wac  = p.workbook.add_worksheet(name: "WAC Comparisons")
-        ws_net  = p.workbook.add_worksheet(name: "NET Differences")
+        ws_desc = @p.workbook.add_worksheet(name: "Desc. Statistics")
+        ws_bac  = @p.workbook.add_worksheet(name: "BAC Comparisons")
+        ws_wac  = @p.workbook.add_worksheet(name: "WAC Comparisons")
+        ws_net  = @p.workbook.add_worksheet(name: "NET Differences")
 
         # Start printing rows to the sheets. First the basic headers:
         #['Extraction ID', 'Username', 'Citation ID', 'Citation Name', 'RefMan', 'PMID']
@@ -25,10 +25,10 @@ def build_result_sections_compact(p, project, highlight, wrap, kq_ids=[], print_
         ws_wac_header  = ws_wac.add_row(sheet_info.header_info +  ['Outcome', 'Outcome Description', 'Outcome Type', 'Population', 'Digest', 'WAC Comparator',              'Arm',            'Arm Description', 'Measure', 'Value'])
         ws_net_header  = ws_net.add_row(sheet_info.header_info +  ['Outcome', 'Outcome Description', 'Outcome Type', 'Population', 'Digest', 'WAC Comparator',              'BAC Comparator',                    'Measure', 'Value'])
 
-        ws_desc_header.style = highlight
-        ws_bac_header.style  = highlight
-        ws_wac_header.style  = highlight
-        ws_net_header.style  = highlight
+        ws_desc_header.style = @highlight
+        ws_bac_header.style  = @highlight
+        ws_wac_header.style  = @highlight
+        ws_net_header.style  = @highlight
 
         # We iterate each extraction and its rssms. Print a new line in the proper sheet 1 line per rssm.
 
@@ -117,7 +117,7 @@ def build_result_sections_compact(p, project, highlight, wrap, kq_ids=[], print_
         end  # END sheet_info.extractions.each do |key, extraction|
       end  # END if efps.extraction_forms_projects_section_type_id == 3
     end  # END efp.extraction_forms_projects_sections.each do |efps|
-  end  # END project.extraction_forms_projects.each do |efp|
+  end  # END @project.extraction_forms_projects.each do |efp|
 end
 
 def md5_digest(extraction, rssm)
