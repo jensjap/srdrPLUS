@@ -5,60 +5,57 @@ def build_type1_sections_compact(kq_ids=[])
     ef.extraction_forms_projects_sections.each do |section|
 
       # If this is a type1 section then we proceed.
-      if section.extraction_forms_projects_section_type_id == 1
+      next unless section.extraction_forms_projects_section_type_id == 1
 
-        # Add a new sheet.
-        @p.workbook.add_worksheet(name: "#{ section.section.name.truncate(21) }") do |sheet|
+      # Add a new sheet.
+      @p.workbook.add_worksheet(name: "#{section.section.name.try(:truncate, 21)}") do |sheet|
 
-          # Some prep work:
-          last_col_idx  = 0
+        # For each sheet we create a SheetInfo object.
+        sheet_info = SheetInfo.new
 
-          # For each sheet we create a SheetInfo object.
-          sheet_info = SheetInfo.new
+        # Build header row.
+        header_elements = sheet_info.header_info
+        header_elements = header_elements.concat([
+          "#{section.section.name.try(:singularize)} Name",
+          "#{section.section.name.try(:singularize)} Description"
+        ])
+        header_row = sheet.add_row header_elements
 
-          # Build header row.
-          header_elements = sheet_info.header_info
-          header_elements = header_elements.concat([
-            "#{ section.section.name.singularize } Name",
-            "#{ section.section.name.singularize } Description"
-          ])
-          header_row = sheet.add_row header_elements
+        # Every row represents an extraction.
+        @project.extractions.each do |extraction|
+          # Collect distinct list of questions based off the key questions selected for this extraction.
+          kq_ids_by_extraction = fetch_kq_selection(extraction, kq_ids)
 
-          # Every row represents an extraction.
-          @project.extractions.each do |extraction|
-            # Collect distinct list of questions based off the key questions selected for this extraction.
-            kq_ids_by_extraction = fetch_kq_selection(extraction, kq_ids)
+          eefps = section.extractions_extraction_forms_projects_sections.find_by(
+            extraction: extraction,
+            extraction_forms_projects_section: section
+          )
 
-            eefps = section.extractions_extraction_forms_projects_sections.find_by(
-              extraction: extraction,
-              extraction_forms_projects_section: section
-            )
+          eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
 
-            eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
+            new_row = []
+            new_row << extraction.id.to_s
+            new_row << extraction.consolidated.to_s
+            new_row << extraction.user.try(:profile).try(:username)
+            new_row << extraction.citations_project.citation.id.to_s
+            new_row << extraction.citations_project.citation.name
+            new_row << extraction.citations_project.citation.refman.to_s
+            new_row << extraction.citations_project.citation.pmid.to_s
+            new_row << extraction.citations_project.citation.authors.collect(&:name).join(', ')
+            new_row << extraction.citations_project.citation.journal.get_publication_year
+            new_row << KeyQuestion.where(id: kq_ids_by_extraction).collect(&:name).map(&:strip).join("\x0D\x0A")
+            new_row << eefpst1.type1.name
+            new_row << eefpst1.type1.description
 
-              new_row = []
-              new_row << extraction.id.to_s
-              new_row << extraction.consolidated.to_s
-              new_row << extraction.user.profile.username
-              new_row << extraction.citations_project.citation.id.to_s
-              new_row << extraction.citations_project.citation.name
-              new_row << extraction.citations_project.citation.refman.to_s
-              new_row << extraction.citations_project.citation.pmid.to_s
-              new_row << extraction.citations_project.citation.authors.collect(&:name).join(', ')
-              new_row << extraction.citations_project.citation.journal.get_publication_year
-              new_row << KeyQuestion.where(id: kq_ids_by_extraction).collect(&:name).map(&:strip).join("\x0D\x0A")
-              new_row << eefpst1.type1.name
-              new_row << eefpst1.type1.description
+            sheet.add_row new_row
+          end  # END eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
+        end  # END @project.extractions.each do |extraction|
 
-              sheet.add_row new_row
-            end  # END eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
-          end  # END @project.extractions.each do |extraction|
+        # Re-apply the styling for the new cells in the header row before closing the sheet.
+        sheet.column_widths nil, nil, nil, nil, nil, nil, nil, nil
+        header_row.style = @highlight
+      end  # END @p.workbook.add_worksheet(name: "#{ section.section.name.truncate(21) }") do |sheet|
 
-          # Re-apply the styling for the new cells in the header row before closing the sheet.
-          sheet.column_widths nil, nil, nil, nil, nil, nil, nil, nil
-          header_row.style = @highlight
-        end  # END @p.workbook.add_worksheet(name: "#{ section.section.name.truncate(21) }") do |sheet|
-      end  # END if section.extraction_forms_projects_section_type_id == 1
     end  # END ef.extraction_forms_projects_sections.each do |section|
   end  # END @project.extraction_forms_projects.each do |ef|
 end
