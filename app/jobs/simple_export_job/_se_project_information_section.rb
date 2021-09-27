@@ -16,10 +16,10 @@ def build_project_information_section
     sheet.add_row ['Username', 'First Name', 'Middle Name', 'Last Name', 'Email', 'Extraction ID']
     @project.members.each do |user|
       sheet.add_row [
-        user.profile.username,
-        user.profile.first_name,
-        user.profile.middle_name,
-        user.profile.last_name,
+        user.try(:profile).try(:username),
+        user.try(:profile).try(:first_name),
+        user.try(:profile).try(:middle_name),
+        user.try(:profile).try(:last_name),
         user.email,
         Extraction.by_project_and_user(@project.id, user.id).pluck(:id)
       ]
