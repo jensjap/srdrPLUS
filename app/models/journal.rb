@@ -16,12 +16,20 @@ class Journal < ApplicationRecord
   belongs_to :citation, optional: true
 
   def get_publication_year
-    begin
-      datetime_object = self.publication_date.to_date
+    get_year_through_date || get_year_through_date_time || ''
+  end
+
+  private
+
+    def get_year_through_date
+      self.publication_date.to_date.strftime('%Y')
     rescue
-      datetime_object = DateTime.strptime(self.publication_date, '%Y')
+      nil
     end
 
-    return datetime_object.blank? ? "" : datetime_object.strftime('%Y')
-  end
+    def get_year_through_date_time
+      DateTime.strptime(self.publication_date, '%Y').strftime('%Y')
+    rescue
+      nil
+    end
 end
