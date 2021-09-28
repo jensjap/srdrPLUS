@@ -26,7 +26,7 @@
   - qrc. \
     question_row_columns_question_row_column_options.includes(:followup_field). \
     select{|opt| opt.question_row_column_option_id == 1}.each do |opt|
-      - if opt.followup_field.present?
+      - if false  # opt.followup_field.present?
         - eefpst1 = t1.blank? \
             ? nil \
             : eefps.link_to_type1.extractions_extraction_forms_projects_sections_type1s.select{|el| el.type1_id == t1.id}.first
