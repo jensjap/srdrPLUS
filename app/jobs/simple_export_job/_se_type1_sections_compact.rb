@@ -8,7 +8,7 @@ def build_type1_sections_compact(kq_ids=[])
       next unless section.extraction_forms_projects_section_type_id == 1
 
       # Add a new sheet.
-      @p.workbook.add_worksheet(name: "#{section.section.name.try(:truncate, 21)}") do |sheet|
+      @p.workbook.add_worksheet(name: section.section.name.try(:truncate, 21)) do |sheet|
 
         # For each sheet we create a SheetInfo object.
         sheet_info = SheetInfo.new
@@ -42,7 +42,7 @@ def build_type1_sections_compact(kq_ids=[])
             new_row << extraction.citations_project.citation.refman.to_s
             new_row << extraction.citations_project.citation.pmid.to_s
             new_row << extraction.citations_project.citation.authors.collect(&:name).join(', ')
-            new_row << extraction.citations_project.citation.journal.get_publication_year
+            new_row << extraction.citations_project.citation.try(:journal).try(:get_publication_year)
             new_row << KeyQuestion.where(id: kq_ids_by_extraction).collect(&:name).map(&:strip).join("\x0D\x0A")
             new_row << eefpst1.type1.name
             new_row << eefpst1.type1.description
