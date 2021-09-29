@@ -82,21 +82,22 @@ class User < ApplicationRecord
   has_many :visits, class_name: "Ahoy::Visit"
   has_many :events, class_name: "Ahoy::Event"
 
+  delegate :username, to: :profile, allow_nil: true
+  delegate :first_name, to: :profile, allow_nil: true
+  delegate :middle_name, to: :profile, allow_nil: true
+  delegate :last_name, to: :profile, allow_nil: true
+
   def highest_role_in_project(project)
     Role.joins(:projects_users).where(projects_users: { user: self, project: project }).first.try(:name)
   end
 
   def handle
-    ret_value = ""
-    if (profile.present? && [profile.first_name, profile.middle_name, profile.last_name].any?(&:present?))
-      ret_value += "#{ profile.first_name } "  if profile.first_name.present?
-      ret_value += "#{ profile.middle_name } " if profile.middle_name.present?
-      ret_value += "#{ profile.last_name } "   if profile.last_name.present?
-      return ret_value
-    elsif (profile.present? && profile.username.present?)
-      return profile.username
+    if [first_name, middle_name, last_name].any?(&:present?)
+      [first_name, middle_name, last_name].compact.join(' ')
+    elsif username.present?
+      username
     else
-      return email
+      email
     end
   end
 

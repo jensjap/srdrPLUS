@@ -55,7 +55,8 @@ class Extraction < ApplicationRecord
   has_many :key_questions_projects, through: :extractions_key_questions_projects_selections
 
   delegate :citation, to: :citations_project
-  delegate :user, to: :projects_users_role
+  delegate :user, to: :projects_users_role, allow_nil: true
+  delegate :username, to: :user, allow_nil: true
 
 #  def to_builder
 #    Jbuilder.new do |extraction|

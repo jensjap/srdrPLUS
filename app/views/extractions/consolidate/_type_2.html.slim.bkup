@@ -1,16 +1,16 @@
 - color_array = ['lightblue', 'lightseagreen', 'lightskyblue', 'lightgrey']
 
 .row.column
-  h5 = 'Extractions by users: ' + @extractions.map { |e| e.user.profile.username }.join(', ')
+  h5 = 'Extractions by users: ' + @extractions.map { |e| e.username }.join(', ')
 
   .table-scroll.clean-table
     table
       thead
         tr
           - @extractions.each_with_index do |extraction, idx|
-            th style='border: 4px solid #{ color_array[0] }' extractor-name='#{ extraction.user.profile.username }' By #{ extraction.user.profile.username }
+            th style='border: 4px solid #{ color_array[0] }' extractor-name='#{ extraction.username }' By #{ extraction.username }
 
-          th extractor-name='Consolidated' By #{ @consolidated_extraction.user.profile.username } (Consolidated Extraction)
+          th extractor-name='Consolidated' By #{ @consolidated_extraction.username } (Consolidated Extraction)
 
         / This row represents the extraction information header. It is composed of the username of the extractors + the username
           of the consolidator.

@@ -151,7 +151,7 @@ class CustomExporter
             rss = eefpst1r.result_statistic_sections.where(result_statistic_section_type: @type_dict[export_item['type']])&.first
             rescue
 		p current_combination
-	    end 
+	    end
             arm_comp = current_combination[4]
             tp_comp = current_combination[5]
             process_results(rich_text, rss,[export_item['export_id']], arm_eefpst1, outcome_eefpst1, eefpst1r, eefpst1rc, arm_comp, tp_comp)
@@ -170,7 +170,7 @@ class CustomExporter
   end
 
   def get_username
-    @user.profile.username
+    @user.username
   end
 
   def get_inclusion_dictionary

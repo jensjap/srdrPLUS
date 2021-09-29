@@ -64,7 +64,7 @@
                       - @extractions.each do |extraction|
                         tr
                           - if i == 0
-                            td.extractor-name = extraction.user.profile.username
+                            td.extractor-name = extraction.username
                           td Mock Value
                           /td = WacsBacsRssm.find_record_by_extraction(extraction, a, @result_statistic_section, tp, rssm).name
 

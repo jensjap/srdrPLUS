@@ -14,7 +14,7 @@ json.project do
       json.set! pu.user.id do
         json.email pu.user.email
         json.profile do
-          json.username pu.user.profile.username
+          json.username pu.user.username
           json.first_name pu.user.profile.first_name
           json.middle_name pu.user.profile.middle_name
           json.last_name pu.user.profile.last_name

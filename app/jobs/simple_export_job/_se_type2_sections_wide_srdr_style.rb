@@ -28,7 +28,7 @@ def build_type2_sections_wide_srdr_style(kq_ids=[], print_empty_row=false)
           sheet_info.set_extraction_info(
             extraction_id: extraction.id,
             consolidated: extraction.consolidated.to_s,
-            username: extraction.projects_users_role.projects_user.user.profile.username,
+            username: extraction.projects_users_role.projects_user.user.username,
             citation_id: extraction.citation.id,
             citation_name: extraction.citation.name,
             authors: extraction.citation.authors.collect(&:name).join(', '),

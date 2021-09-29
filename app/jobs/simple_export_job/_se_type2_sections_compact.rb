@@ -9,111 +9,111 @@ def build_type2_sections_compact(kq_ids=[], print_empty_row=false)
   efp.extraction_forms_projects_sections.each do |efps|
 
     # If this is a type2 section then we proceed.
-    if efps.extraction_forms_projects_section_type_id == 2
+    next unless efps.extraction_forms_projects_section_type_id == 2
 
-      # Add a new sheet.
-      @p.workbook.add_worksheet(name: "#{ efps.section.name.truncate(21) }") do |sheet|
+    # Add a new sheet.
+    @p.workbook.add_worksheet(name: efps.section.name.try(:truncate, 21)) do |sheet|
 
-        # For each sheet we create a SheetInfo object.
-        sheet_info = SheetInfo.new
+      # For each sheet we create a SheetInfo object.
+      sheet_info = SheetInfo.new
 
-        # First the basic headers:
-        header_elements = sheet_info.header_info
+      # First the basic headers:
+      header_elements = sheet_info.header_info
 
-        # Add additional column headers to capture the link_to_type1 name and description
-        # if link_to_type1 is present and add to header_elements.
-        if efps.link_to_type1
-          header_elements = header_elements.concat [
-            "#{ efps.link_to_type1.section.name.singularize } Name",
-            "#{ efps.link_to_type1.section.name.singularize } Description"
-          ]
-        end
+      # Add additional column headers to capture the link_to_type1 name and description
+      # if link_to_type1 is present and add to header_elements.
+      if efps.link_to_type1
+        header_elements = header_elements.concat [
+          "#{ efps.link_to_type1.section.name.singularize } Name",
+          "#{ efps.link_to_type1.section.name.singularize } Description"
+        ]
+      end
 
-        # Add question text and instruction column headers to header_elements.
-        header_elements.concat ['Question Text']
+      # Add question text and instruction column headers to header_elements.
+      header_elements.concat ['Question Text']
 
-        # Instantiate proper header Axlsx::Row element.
-        header_row = sheet.add_row header_elements
+      # Instantiate proper header Axlsx::Row element.
+      header_row = sheet.add_row header_elements
 
-        # Collect distinct list of questions.
-        questions = fetch_questions(kq_ids, efps)
+      # Collect distinct list of questions.
+      questions = fetch_questions(kq_ids, efps)
 
-        # Iterate over each extraction in the @project.
-        @project.extractions.each do |extraction|
-          # Collect distinct list of questions based off the key questions selected for this extraction.
-          kq_ids_by_extraction = fetch_kq_selection(extraction, kq_ids)
+      # Iterate over each extraction in the @project.
+      @project.extractions.each do |extraction|
+        # Collect distinct list of questions based off the key questions selected for this extraction.
+        kq_ids_by_extraction = fetch_kq_selection(extraction, kq_ids)
 
-          eefps = efps.extractions_extraction_forms_projects_sections.find_by(
-            extraction: extraction,
-            extraction_forms_projects_section: efps
-          )
+        eefps = efps.extractions_extraction_forms_projects_sections.find_by(
+          extraction: extraction,
+          extraction_forms_projects_section: efps
+        )
 
-          # If link_to_type1 is present we need to iterate each question for every type1 present in the extraction.
-          if efps.link_to_type1.present?
-            eefps.link_to_type1.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
-              questions.each do |question|
-                new_row = []
-                new_row << extraction.id
-                new_row << extraction.consolidated.to_s
-                new_row << extraction.user.profile.username
-                new_row << extraction.citation.id
-                new_row << extraction.citation.name
-                new_row << extraction.citation.refman
-                new_row << extraction.citation.pmid
-                new_row << extraction.citation.authors.collect(&:name).join(', ')
-                new_row << extraction.citation.try(:journal).try(:get_publication_year)
-                new_row << KeyQuestion.where(id: kq_ids_by_extraction).collect(&:name).map(&:strip).join("\x0D\x0A")
-                new_row << eefpst1.type1.name
-                new_row << eefpst1.type1.description
-                new_row << question.name
-
-                has_values, qrc_components = build_qrc_components_for_question(eefps, eefpst1.id, question)
-                new_row = new_row.concat(qrc_components)
-
-                if (has_values || print_empty_row)
-                  # Add row to the sheet.
-                  sheet.add_row new_row
-                  # Adjust column headers for each qrc component.
-                  adjust_header_row_to_account_for_qrc_components(header_row, new_row, true)
-                end  # END if has_values
-              end  # END questions.each do |question|
-            end  # END eefps.link_to_type1.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
-
-          # If no link is present we only need it once and use eefpst1 with value nil.
-          else
-            eefpst1 = nil
+        # If link_to_type1 is present we need to iterate each question for every type1 present in the extraction.
+        if efps.link_to_type1.present?
+          eefps.try(:link_to_type1).try(:extractions_extraction_forms_projects_sections_type1s).try(:each) do |eefpst1|
             questions.each do |question|
               new_row = []
               new_row << extraction.id
               new_row << extraction.consolidated.to_s
-              new_row << extraction.user.profile.username
+              new_row << extraction.username
               new_row << extraction.citation.id
               new_row << extraction.citation.name
               new_row << extraction.citation.refman
               new_row << extraction.citation.pmid
               new_row << extraction.citation.authors.collect(&:name).join(', ')
-              new_row << extraction.citation.try(:journal).try(:publication_date).to_s
+              new_row << extraction.citation.try(:journal).try(:get_publication_year)
               new_row << KeyQuestion.where(id: kq_ids_by_extraction).collect(&:name).map(&:strip).join("\x0D\x0A")
+              new_row << eefpst1.type1.name
+              new_row << eefpst1.type1.description
               new_row << question.name
 
-              has_values, qrc_components = build_qrc_components_for_question(eefps, eefpst1, question)
+              has_values, qrc_components = build_qrc_components_for_question(eefps, eefpst1.id, question)
               new_row = new_row.concat(qrc_components)
 
               if (has_values || print_empty_row)
                 # Add row to the sheet.
                 sheet.add_row new_row
                 # Adjust column headers for each qrc component.
-                adjust_header_row_to_account_for_qrc_components(header_row, new_row, false)
+                adjust_header_row_to_account_for_qrc_components(header_row, new_row, true)
               end  # END if has_values
             end  # END questions.each do |question|
-          end  # END if efps.link_to_type1.present?
-        end  # END @project.extractions.each do |extraction|
+          end  # END eefps.link_to_type1.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
 
-        # Re-apply the styling for the new cells in the header row before closing the sheet.
-        sheet.column_widths nil
-        header_row.style = @highlight
-      end  # END @p.workbook.add_worksheet(name: "#{ efps.section.name.truncate(21) }") do |sheet|
-    end  # END if efps.extraction_forms_projects_section_type_id == 2
+        # If no link is present we only need it once and use eefpst1 with value nil.
+        else
+          eefpst1 = nil
+          questions.each do |question|
+            new_row = []
+            new_row << extraction.id
+            new_row << extraction.consolidated.to_s
+            new_row << extraction.username
+            new_row << extraction.citation.id
+            new_row << extraction.citation.name
+            new_row << extraction.citation.refman
+            new_row << extraction.citation.pmid
+            new_row << extraction.citation.authors.collect(&:name).join(', ')
+            new_row << extraction.citation.try(:journal).try(:publication_date).to_s
+            new_row << KeyQuestion.where(id: kq_ids_by_extraction).collect(&:name).map(&:strip).join("\x0D\x0A")
+            new_row << question.name
+
+            has_values, qrc_components = build_qrc_components_for_question(eefps, eefpst1, question)
+            new_row = new_row.concat(qrc_components)
+
+            if (has_values || print_empty_row)
+              # Add row to the sheet.
+              sheet.add_row new_row
+              # Adjust column headers for each qrc component.
+              adjust_header_row_to_account_for_qrc_components(header_row, new_row, false)
+            end  # END if has_values
+          end  # END questions.each do |question|
+        end  # END if efps.link_to_type1.present?
+      end  # END @project.extractions.each do |extraction|
+
+      # Re-apply the styling for the new cells in the header row before closing the sheet.
+      sheet.column_widths nil
+      header_row.style = @highlight
+    end  # END @p.workbook.add_worksheet(name: "#{ efps.section.name.truncate(21) }") do |sheet|
+
   end  # END efp.extraction_forms_projects_sections.each do |efps|
 end
 

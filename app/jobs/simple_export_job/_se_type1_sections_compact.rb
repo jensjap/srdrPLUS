@@ -36,7 +36,7 @@ def build_type1_sections_compact(kq_ids=[])
             new_row = []
             new_row << extraction.id.to_s
             new_row << extraction.consolidated.to_s
-            new_row << extraction.user.try(:profile).try(:username)
+            new_row << extraction.username
             new_row << extraction.citations_project.citation.id.to_s
             new_row << extraction.citations_project.citation.name
             new_row << extraction.citations_project.citation.refman.to_s
