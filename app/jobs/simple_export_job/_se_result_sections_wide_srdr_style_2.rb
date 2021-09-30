@@ -5,7 +5,7 @@ def build_result_sections_wide_srdr_style_2(kq_ids=[], print_empty_row=false)
     efp.extraction_forms_projects_sections.each do |efps|
 
       # If this is a results section then we proceed.
-      if efps.extraction_forms_projects_section_type_id == 3
+      next unless efps.extraction_forms_projects_section_type_id == 3
 
         # Create SheetInfo object for results sections.
         sheet_info = SheetInfo.new
@@ -209,7 +209,6 @@ def build_result_sections_wide_srdr_style_2(kq_ids=[], print_empty_row=false)
           ws_net_statistics,
           style_netst1, style_netst2, style_netst3, style_netst4)
 
-      end  # END if efps.extraction_forms_projects_section_type_id == 3
     end  # END efp.extraction_forms_projects_sections.each do |efps|
   end  # END @project.extraction_forms_projects.each do |efp|
 end
