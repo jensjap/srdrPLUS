@@ -39,7 +39,7 @@ def build_result_sections_wide(p, project)
             # Collect basic information about the extraction.
             sheet_info.set_extraction_info(
                 extraction_id: extraction.id,
-                username: extraction.projects_users_role.projects_user.user.username,
+                username: extraction.username,
                 citation_id: extraction.citations_project.citation.id,
                 citation_name: extraction.citations_project.citation.name,
                 refman: extraction.citations_project.citation.refman,
