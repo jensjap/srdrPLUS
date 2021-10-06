@@ -19,7 +19,7 @@
     select { |opt| opt.question_row_column_option_id == 1 }.each do |opt|
       - if opt.followup_field.present?
         - eefpst1 = t1.blank? ? nil : eefps.link_to_type1.extractions_extraction_forms_projects_sections_type1s.select { |el| el.type1_id == t1.id }.first
-        - eefps_ff = opt.followup_field.extractions_extraction_forms_projects_sections_followup_fields.select { \
+        - eefps_ff = opt.followup_field.extractions_extraction_forms_projects_sections_followup_fields.includes(:extractions_extraction_forms_projects_sections_type1).select { \
           |x| (x.extractions_extraction_forms_projects_sections_type1 == eefpst1) && (x.extractions_extraction_forms_projects_section_id == eefps.id) }.first
         - if eefps_ff.blank?
           - eefps_ff = ExtractionsExtractionFormsProjectsSectionsFollowupField.find_or_create_by followup_field: opt.followup_field,
