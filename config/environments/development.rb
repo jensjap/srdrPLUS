@@ -1,8 +1,8 @@
 Rails.application.configure do
-  # config.after_initialize do
-  #   Bullet.enable = true
-  #   Bullet.console = true
-  # end
+  config.after_initialize do
+    Bullet.enable = true
+    Bullet.bullet_logger = true
+  end
 
   # Store files locally.
   config.active_storage.service = :local
