@@ -94,6 +94,8 @@ class Extraction < ApplicationRecord
   # a) Extraction contains Diagnostic Tests
   # b) Extraction contains Diagnoses
   def results_section_ready_for_extraction?
+    return false if self.extraction_forms_projects_sections.blank?
+
     efp_type_id = self.extraction_forms_projects_sections.first.extraction_forms_project.extraction_forms_project_type_id
     if efp_type_id.eql?(1)
       return ExtractionsExtractionFormsProjectsSectionsType1
