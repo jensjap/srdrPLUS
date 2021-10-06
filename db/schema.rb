@@ -87,7 +87,7 @@ ActiveRecord::Schema.define(version: 2021_10_04_064311) do
     t.bigint "visit_id"
     t.bigint "user_id"
     t.string "name"
-    t.json "properties"
+    t.text "properties", limit: 4294967295, collation: "utf8mb4_bin"
     t.datetime "time"
     t.index ["name", "time"], name: "index_ahoy_events_on_name_and_time"
     t.index ["user_id"], name: "index_ahoy_events_on_user_id"
@@ -159,7 +159,7 @@ ActiveRecord::Schema.define(version: 2021_10_04_064311) do
   end
 
   create_table "authors", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC", force: :cascade do |t|
-    t.string "name", collation: "utf8_general_ci"
+    t.string "name", collation: "utf8mb3_general_ci"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "deleted_at"
@@ -183,12 +183,12 @@ ActiveRecord::Schema.define(version: 2021_10_04_064311) do
 
   create_table "citations", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "citation_type_id"
-    t.string "name", limit: 500, collation: "utf8_general_ci"
+    t.string "name", limit: 500, collation: "utf8mb3_general_ci"
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "refman", collation: "utf8_general_ci"
-    t.string "pmid", collation: "utf8_general_ci"
+    t.string "refman", collation: "utf8mb3_general_ci"
+    t.string "pmid", collation: "utf8mb3_general_ci"
     t.binary "abstract"
     t.string "page_number_start"
     t.string "page_number_end"
@@ -479,7 +479,7 @@ ActiveRecord::Schema.define(version: 2021_10_04_064311) do
     t.index ["extraction_id"], name: "index_extraction_checksums_on_extraction_id"
   end
 
-  create_table "extraction_forms", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_bin", force: :cascade do |t|
+  create_table "extraction_forms", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin", force: :cascade do |t|
     t.string "name"
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
@@ -797,10 +797,10 @@ ActiveRecord::Schema.define(version: 2021_10_04_064311) do
     t.integer "citation_id"
     t.string "volume"
     t.string "issue"
-    t.string "name", limit: 1000, collation: "utf8_general_ci"
+    t.string "name", limit: 1000, collation: "utf8mb3_general_ci"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "publication_date", collation: "utf8_general_ci"
+    t.string "publication_date", collation: "utf8mb3_general_ci"
     t.index ["citation_id"], name: "index_journals_on_citation_id"
   end
 
@@ -811,7 +811,7 @@ ActiveRecord::Schema.define(version: 2021_10_04_064311) do
   end
 
   create_table "key_questions", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC", force: :cascade do |t|
-    t.text "name", collation: "utf8_bin"
+    t.text "name", collation: "utf8mb3_bin"
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -998,7 +998,7 @@ ActiveRecord::Schema.define(version: 2021_10_04_064311) do
   end
 
   create_table "organizations", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC", force: :cascade do |t|
-    t.string "name", collation: "utf8_general_ci"
+    t.string "name", collation: "utf8mb3_general_ci"
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -1839,7 +1839,7 @@ ActiveRecord::Schema.define(version: 2021_10_04_064311) do
   end
 
   create_table "terms", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC", force: :cascade do |t|
-    t.string "name", collation: "utf8_general_ci"
+    t.string "name", collation: "utf8mb3_general_ci"
   end
 
   create_table "timepoint_names", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
@@ -2125,11 +2125,9 @@ ActiveRecord::Schema.define(version: 2021_10_04_064311) do
   add_foreign_key "teams", "team_types"
   add_foreign_key "term_groups_colors", "colors"
   add_foreign_key "term_groups_colors", "term_groups"
-  add_foreign_key "tps_arms_rssms", "extractions_extraction_forms_projects_sections_type1_row_columns", column: "timepoint_id"
   add_foreign_key "tps_arms_rssms", "extractions_extraction_forms_projects_sections_type1s"
   add_foreign_key "tps_arms_rssms", "result_statistic_sections_measures"
   add_foreign_key "tps_comparisons_rssms", "comparisons"
-  add_foreign_key "tps_comparisons_rssms", "extractions_extraction_forms_projects_sections_type1_row_columns", column: "timepoint_id"
   add_foreign_key "tps_comparisons_rssms", "result_statistic_sections_measures"
   add_foreign_key "users", "user_types"
   add_foreign_key "wacs_bacs_rssms", "result_statistic_sections_measures"
