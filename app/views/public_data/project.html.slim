@@ -64,7 +64,7 @@ div#printableArea class="max-w-full mx-auto py-6 sm:px-6 lg:px-8"
               tr
                 th Type
             tbody
-              - @project.extraction_forms_projects.each do |extraction_form_project|
+              - @project.extraction_forms_projects.includes([:extraction_forms_project_type]).each do |extraction_form_project|
                 tr
                   td = link_to extraction_form_project.extraction_forms_project_type.name, "/public_data?id=#{extraction_form_project.id}&type=extraction_form"
 
@@ -80,11 +80,11 @@ div#printableArea class="max-w-full mx-auto py-6 sm:px-6 lg:px-8"
                 th Authors
                 th Year
             tbody
-              - @project.extractions.each do |extraction|
+              - @project.extractions.includes(citations_project: { citation: :journal }).each do |extraction|
                 - citation = extraction.citation
                 tr
                   td = link_to citation.name, "/public_data?id=#{extraction.id}&type=extraction"
-                  td = citation.authors_citations.sort_by { |ac| [ac.ordering.position, ac.author.name] }.map(&:author).map(&:name).join('; ')
+                  td = citation.authors_citations.includes([:ordering, :author]).sort_by { |ac| [ac.ordering.position, ac.author.name] }.map(&:author).map(&:name).join('; ')
                   td = citation.try(:journal).try(:publication_date)
 
     div class="bg-white shadow overflow-hidden sm:rounded-lg"
