@@ -12,7 +12,7 @@ Rails.application.routes.draw do
     post 'options_form'
   end
 
-  resources :searches, only: [:new, :create]
+  resources :searches, only: [:index]
   resources :funding_sources, only: [:index]
   resources :sd_picods_types, only: [:index]
   resources :key_question_types, only: [:index]
