@@ -10,7 +10,7 @@ gem 'rails', '~> 5.2.4.4'
 # Use mysql as the database for Active Record
 gem 'mysql2', '>= 0.3.18', '< 0.5'
 # Use Puma as the app server
-gem 'puma', '~> 5.3.1'
+gem 'puma', '~> 5.5.1'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'
 # Use Uglifier as compressor for JavaScript assets
@@ -181,16 +181,17 @@ gem "dropzonejs-rails"
 gem "amoeba"
 
 # full-stack error tracking system
-gem "sentry-raven"
+gem "sentry-ruby"
+gem "sentry-sidekiq"
 
 # observability platform
-gem 'newrelic_rpm'
-gem 'newrelic-infinite_tracing'
+# gem 'newrelic_rpm'
+# gem 'newrelic-infinite_tracing'
 
 # Limit request rates
 gem 'rack-attack'
 
-gem 'rack-mini-profiler'
+# gem 'rack-mini-profiler'
 
 gem 'foreman'
 

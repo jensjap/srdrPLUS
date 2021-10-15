@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_07_15_063400) do
+ActiveRecord::Schema.define(version: 2021_10_04_064311) do
 
   create_table "abstrackr_settings", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
     t.integer "profile_id"
@@ -47,6 +47,7 @@ ActiveRecord::Schema.define(version: 2021_07_15_063400) do
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
     t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
+    t.index ["record_id"], name: "index_active_storage_attachments_on_record_id"
     t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
   end
 
@@ -86,7 +87,7 @@ ActiveRecord::Schema.define(version: 2021_07_15_063400) do
     t.bigint "visit_id"
     t.bigint "user_id"
     t.string "name"
-    t.json "properties"
+    t.text "properties", limit: 4294967295, collation: "utf8mb4_bin"
     t.datetime "time"
     t.index ["name", "time"], name: "index_ahoy_events_on_name_and_time"
     t.index ["user_id"], name: "index_ahoy_events_on_user_id"
@@ -158,7 +159,7 @@ ActiveRecord::Schema.define(version: 2021_07_15_063400) do
   end
 
   create_table "authors", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC", force: :cascade do |t|
-    t.string "name", collation: "utf8_general_ci"
+    t.string "name", collation: "utf8mb3_general_ci"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "deleted_at"
@@ -169,6 +170,7 @@ ActiveRecord::Schema.define(version: 2021_07_15_063400) do
     t.integer "citation_id", null: false
     t.integer "author_id", null: false
     t.datetime "deleted_at"
+    t.index ["author_id"], name: "index_authors_citations_on_author_id"
     t.index ["citation_id", "author_id"], name: "index_authors_citations_on_citation_id_and_author_id"
     t.index ["deleted_at"], name: "index_authors_citations_on_deleted_at"
   end
@@ -181,12 +183,12 @@ ActiveRecord::Schema.define(version: 2021_07_15_063400) do
 
   create_table "citations", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "citation_type_id"
-    t.string "name", limit: 500, collation: "utf8_general_ci"
+    t.string "name", limit: 500, collation: "utf8mb3_general_ci"
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "refman", collation: "utf8_general_ci"
-    t.string "pmid", collation: "utf8_general_ci"
+    t.string "refman", collation: "utf8mb3_general_ci"
+    t.string "pmid", collation: "utf8mb3_general_ci"
     t.binary "abstract"
     t.string "page_number_start"
     t.string "page_number_end"
@@ -202,6 +204,7 @@ ActiveRecord::Schema.define(version: 2021_07_15_063400) do
     t.integer "citation_id", null: false
     t.integer "keyword_id", null: false
     t.index ["citation_id", "keyword_id"], name: "index_citations_keywords_on_citation_id_and_keyword_id"
+    t.index ["keyword_id"], name: "index_citations_keywords_on_keyword_id"
   end
 
   create_table "citations_projects", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
@@ -476,7 +479,7 @@ ActiveRecord::Schema.define(version: 2021_07_15_063400) do
     t.index ["extraction_id"], name: "index_extraction_checksums_on_extraction_id"
   end
 
-  create_table "extraction_forms", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_bin", force: :cascade do |t|
+  create_table "extraction_forms", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin", force: :cascade do |t|
     t.string "name"
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
@@ -639,6 +642,7 @@ ActiveRecord::Schema.define(version: 2021_07_15_063400) do
     t.index ["deleted_at"], name: "index_eefpsff_followup_fields_on_deleted_at"
     t.index ["extractions_extraction_forms_projects_section_id", "extractions_extraction_forms_projects_sections_type1_id", "followup_field_id", "active"], name: "index_eefpsff_on_eefps_eefpst1_ff_id", unique: true
     t.index ["extractions_extraction_forms_projects_section_id"], name: "index_eefpsff_followup_fields_on_extraction_id"
+    t.index ["extractions_extraction_forms_projects_sections_type1_id"], name: "eefpst1_index"
     t.index ["followup_field_id"], name: "index_eefpsff_on_followup_field_id"
   end
 
@@ -762,6 +766,7 @@ ActiveRecord::Schema.define(version: 2021_07_15_063400) do
     t.integer "key_question_id"
     t.integer "import_id"
     t.index ["file_type_id"], name: "index_imported_files_on_file_type_id"
+    t.index ["import_id"], name: "index_imported_files_on_import_id"
     t.index ["key_question_id"], name: "index_imported_files_on_key_question_id"
     t.index ["section_id"], name: "index_imported_files_on_section_id"
   end
@@ -771,6 +776,8 @@ ActiveRecord::Schema.define(version: 2021_07_15_063400) do
     t.integer "projects_user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["import_type_id"], name: "index_imports_on_import_type_id"
+    t.index ["projects_user_id"], name: "index_imports_on_projects_user_id"
   end
 
   create_table "invitations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
@@ -790,10 +797,10 @@ ActiveRecord::Schema.define(version: 2021_07_15_063400) do
     t.integer "citation_id"
     t.string "volume"
     t.string "issue"
-    t.string "name", limit: 1000, collation: "utf8_general_ci"
+    t.string "name", limit: 1000, collation: "utf8mb3_general_ci"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "publication_date", collation: "utf8_general_ci"
+    t.string "publication_date", collation: "utf8mb3_general_ci"
     t.index ["citation_id"], name: "index_journals_on_citation_id"
   end
 
@@ -804,7 +811,7 @@ ActiveRecord::Schema.define(version: 2021_07_15_063400) do
   end
 
   create_table "key_questions", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC", force: :cascade do |t|
-    t.text "name", collation: "utf8_bin"
+    t.text "name", collation: "utf8mb3_bin"
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -944,6 +951,7 @@ ActiveRecord::Schema.define(version: 2021_07_15_063400) do
     t.datetime "revoked_at"
     t.string "scopes"
     t.index ["application_id"], name: "fk_rails_b4b53e07b8"
+    t.index ["resource_owner_id"], name: "index_oauth_access_grants_on_resource_owner_id"
     t.index ["token"], name: "index_oauth_access_grants_on_token", unique: true
   end
 
@@ -990,7 +998,7 @@ ActiveRecord::Schema.define(version: 2021_07_15_063400) do
   end
 
   create_table "organizations", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC", force: :cascade do |t|
-    t.string "name", collation: "utf8_general_ci"
+    t.string "name", collation: "utf8mb3_general_ci"
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -1522,6 +1530,8 @@ ActiveRecord::Schema.define(version: 2021_07_15_063400) do
     t.text "stakeholders_others"
     t.boolean "section_flag_8", default: false, null: false
     t.text "organization"
+    t.index ["project_id"], name: "index_sd_meta_data_on_project_id"
+    t.index ["report_accession_id"], name: "index_sd_meta_data_on_report_accession_id"
     t.index ["review_type_id"], name: "index_sd_meta_data_on_review_type_id"
   end
 
@@ -1829,7 +1839,7 @@ ActiveRecord::Schema.define(version: 2021_07_15_063400) do
   end
 
   create_table "terms", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC", force: :cascade do |t|
-    t.string "name", collation: "utf8_general_ci"
+    t.string "name", collation: "utf8mb3_general_ci"
   end
 
   create_table "timepoint_names", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
@@ -2115,11 +2125,9 @@ ActiveRecord::Schema.define(version: 2021_07_15_063400) do
   add_foreign_key "teams", "team_types"
   add_foreign_key "term_groups_colors", "colors"
   add_foreign_key "term_groups_colors", "term_groups"
-  add_foreign_key "tps_arms_rssms", "extractions_extraction_forms_projects_sections_type1_row_columns", column: "timepoint_id"
   add_foreign_key "tps_arms_rssms", "extractions_extraction_forms_projects_sections_type1s"
   add_foreign_key "tps_arms_rssms", "result_statistic_sections_measures"
   add_foreign_key "tps_comparisons_rssms", "comparisons"
-  add_foreign_key "tps_comparisons_rssms", "extractions_extraction_forms_projects_sections_type1_row_columns", column: "timepoint_id"
   add_foreign_key "tps_comparisons_rssms", "result_statistic_sections_measures"
   add_foreign_key "users", "user_types"
   add_foreign_key "wacs_bacs_rssms", "result_statistic_sections_measures"

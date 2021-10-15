@@ -22,7 +22,7 @@ class ApplicationController < ActionController::Base
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :set_current_user
   before_action :set_exit_disclaimer_message
-  before_action :set_raven_context
+  before_action :set_sentry_context
 
   before_action do
     if current_user && current_user == User.find_by(email: Rails.application.credentials[:admin_email])
@@ -66,9 +66,10 @@ class ApplicationController < ActionController::Base
       Time.use_zone(current_user.profile.time_zone, &block)
     end
 
-    def set_raven_context
-      Raven.user_context(id: session[:current_user_id]) # or anything else in session
-      Raven.extra_context(params: params.to_unsafe_h, url: request.url)
+    def set_sentry_context
+      return unless Rails.env.production?
+      Sentry.set_user(id: session[:current_user_id]) # or anything else in session
+      Sentry.set_extras(params: params.to_unsafe_h, url: request.url)
     end
 
   protected
