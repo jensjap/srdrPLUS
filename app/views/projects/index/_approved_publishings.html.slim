@@ -10,10 +10,12 @@
   table
     thead
       tr
-        th width="150" Name
+        th width="100" Name
         th width="50" Type
-        th width="150" Date of Publication
-        th width="75" View
+        th width="25" Creation Date
+        th width="25" Publication Requested On
+        th width="25" Date of Publication
+        th width="100" View
         - if current_user.admin?
           th width="25"
     tbody
@@ -21,7 +23,9 @@
         tr
           td = ap.publishable.display
           td style="text-align: center;" = ap.name_of_pub_type
-          td style="text-align: center;" = ap.approval.created_at
+          td style="text-align: center;" = ap.publishable.created_at.strftime("%m-%d-%y")
+          td style="text-align: center;" = ap.created_at.strftime("%m-%d-%y")
+          td style="text-align: center;" = ap.approval.created_at.strftime("%m-%d-%y")
           td style="text-align: center;"
             - if ap.publishable.class == SdMetaDatum
               = link_to 'View', sd_meta_datum_path(ap.publishable_id), class: 'btn-link'
