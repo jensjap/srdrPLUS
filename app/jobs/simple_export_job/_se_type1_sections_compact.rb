@@ -8,7 +8,7 @@ def build_type1_sections_compact(kq_ids=[])
       next unless section.extraction_forms_projects_section_type_id == 1
 
       # Add a new sheet.
-      @p.workbook.add_worksheet(name: section.section.name.try(:truncate, 21)) do |sheet|
+      @p.workbook.add_worksheet(name: ensure_unique_sheet_name(section.section.name.try(:truncate, 21))) do |sheet|
 
         # For each sheet we create a SheetInfo object.
         sheet_info = SheetInfo.new

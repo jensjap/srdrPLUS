@@ -1,3 +1,26 @@
+RESERVED_WORKSHEET_NAMES = [
+  "Desc. Statistics",
+  "BAC Comparisons",
+  "WAC Comparisons",
+  "NET Differences",
+  "Continuous - Desc. Statistics",
+  "Categorical - Desc. Statistics",
+  "Continuous - BAC Comparisons",
+  "Categorical - BAC Comparisons",
+  "WAC Comparisons",
+  "NET Differences"
+].freeze
+
+def ensure_unique_sheet_name(name)
+  counter = 0
+  candidate_name = name
+  while @p.workbook.worksheets.any? {|worksheet| worksheet.name == candidate_name} || RESERVED_WORKSHEET_NAMES.include?(candidate_name)
+    counter += 1
+    candidate_name = "#{name}_#{counter}"
+  end
+  candidate_name
+end
+
 # Attempt to find the column index in the given row for a cell that starts with given value.
 #
 # returns (Boolean, Idx)

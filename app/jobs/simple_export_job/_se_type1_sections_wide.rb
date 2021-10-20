@@ -9,7 +9,7 @@ def build_type1_sections_wide(kq_ids=[])
 
       # Add a new sheet.
       sheet_name = efps.section.name.truncate(24)
-      @p.workbook.add_worksheet(name: sheet_name) do |sheet|
+      @p.workbook.add_worksheet(name: ensure_unique_sheet_name(sheet_name)) do |sheet|
 
         # For each sheet we create a SheetInfo object.
         sheet_info = SheetInfo.new

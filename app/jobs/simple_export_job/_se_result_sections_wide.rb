@@ -8,7 +8,7 @@ def build_result_sections_wide(kq_ids=[])
       next unless efps.extraction_forms_projects_section_type_id == 3
 
       # Add a new sheet.
-      @p.workbook.add_worksheet(name: "#{ efps.section.name.truncate(24) }") do |sheet|
+      @p.workbook.add_worksheet(name: ensure_unique_sheet_name(efps.section.name.truncate(24))) do |sheet|
 
         # For each sheet we create a SheetInfo object.
         sheet_info = SheetInfo.new

@@ -10,7 +10,7 @@ def build_type2_sections_wide_srdr_style(kq_ids=[], print_empty_row=false)
     next unless efps.extraction_forms_projects_section_type_id == 2
 
     # Add a new sheet.
-    @p.workbook.add_worksheet(name: efps.section.name.try(:truncate, 24)) do |sheet|
+    @p.workbook.add_worksheet(name: ensure_unique_sheet_name(efps.section.name.try(:truncate, 24))) do |sheet|
 
       # For each sheet we create a SheetInfo object.
       sheet_info = SheetInfo.new
