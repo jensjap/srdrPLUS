@@ -31,7 +31,7 @@ def build_type1_sections_compact(kq_ids=[])
             extraction_forms_projects_section: section
           )
 
-          eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
+          eefps.try(:extractions_extraction_forms_projects_sections_type1s).try(:each) do |eefpst1|
 
             new_row = []
             new_row << extraction.id.to_s
