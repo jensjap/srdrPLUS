@@ -8,7 +8,7 @@ class ExportMailer < ApplicationMailer
   def notify_simple_export_failure(user_email, project_id, message)
     @project = Project.find project_id
     @message = message
-    mail(to: user_email, subject: 'You have a notification from srdrPLUS')
+    mail(to: user_email, subject: 'You have a notification from srdrPLUS (export failure)')
   end
 
   def notify_gsheets_export_completion(user_id, project_id, google_link)
