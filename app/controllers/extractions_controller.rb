@@ -287,7 +287,17 @@ class ExtractionsController < ApplicationController
           find(params[:id])
       else
         @extraction = Extraction.
-          includes(:extractions_extraction_forms_projects_sections, { projects_users_role: :projects_user }).
+          includes(
+            extractions_extraction_forms_projects_sections: {
+              extractions_extraction_forms_projects_sections_question_row_column_fields: [
+                :records,
+                :extractions_extraction_forms_projects_sections_type1,
+                :extractions_extraction_forms_projects_sections_question_row_column_fields_question_row_columns_question_row_column_options,
+                :question_row_columns_question_row_column_options
+              ]
+            },
+            projects_users_role: :projects_user
+          ).
           find(params[:id])
       end
     end
@@ -333,10 +343,7 @@ class ExtractionsController < ApplicationController
       extraction.extractions_extraction_forms_projects_sections.each do |eefps|
         eefps.
         extractions_extraction_forms_projects_sections_question_row_column_fields.
-        includes([
-          :records,
-          :extractions_extraction_forms_projects_sections_type1
-        ]).each do |eefps_qrcf|
+        each do |eefps_qrcf|
           @eefps_qrcf_dict[[eefps.id,eefps_qrcf.question_row_column_field_id,eefps_qrcf.extractions_extraction_forms_projects_sections_type1&.type1_id].to_s] = eefps_qrcf
           if eefps_qrcf.records.blank?
             @records_dict[eefps_qrcf.id] = Record.find_or_create_by(recordable: eefps_qrcf)

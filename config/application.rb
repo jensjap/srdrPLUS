@@ -25,9 +25,12 @@ module SrdrPLUS
 end
 
 if Rails.env.production?
-  Raven.configure do |config|
-    config.sanitize_fields = Rails.application.config.filter_parameters.map(&:to_s)
+  Sentry.init do |config|
     config.dsn = Rails.application.credentials.dig(:sentry)
+    filter = ActionDispatch::Http::ParameterFilter.new(Rails.application.config.filter_parameters)
+    config.before_send = lambda do |event, hint|
+      filter.filter(event.to_hash)
+    end
   end
 end
 
