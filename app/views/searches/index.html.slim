@@ -1,0 +1,58 @@
+- if params[:projects_search].present? || params[:citations_search].present?
+  .max-w-6xl.mx-auto.px-4.sm:px-6.lg:px-8
+    h1.text-3xl.my-4 Search Results
+    ul.space-y-3 style="list-style: disc; list-style-position: outside;"
+      - if params[:projects_search].present?
+        - if @projects.empty?
+          li No results
+        - @projects.each do |p|
+          li = link_to p.name, "/public_data?id=#{p.id}&type=project", target: :_blank
+        .mt-4 = paginate(@projects, params: {}, theme: 'foundation')
+      - if params[:citations_search].present?
+        - if @citations_projects.empty?
+          li No results
+        - @citations_projects.each do |cp|
+          li = link_to "#{ cp.citation.name } (Project: #{ cp.project.name })", "/public_data?id=#{cp.project.id}&type=project"
+        .mt-4 = paginate(@citations_projects, params: {}, theme: 'foundation')
+
+.max-w-6xl.mx-auto.px-4.sm:px-6.lg:px-8
+  h1.text-3xl.mt-6 Search Criteria
+  ul#search-tabs.tabs data-deep-link='true' data-update-history='true' data-tabs=''
+    li.tabs-title class=(params[:citations_search].nil? ? 'is-active' : '')
+      = link_to 'Projects', '#panel-projects-search', title: 'Search for projects'
+
+    li.tabs-title class=(params[:citations_search].present? ? 'is-active' : '')
+      = link_to 'Citations', '#panel-citations-search', title: 'Search for citations'
+
+  .tabs-content data-tabs-content='search-tabs'
+
+    #panel-projects-search.tabs-panel class=(params[:citations_search].nil? ? 'is-active' : '')
+      = simple_form_for :projects_search, defaults: { required: false }, url: searches_path, method: :get do |f|
+        = f.input :name, input_html: { value: params.dig(:projects_search, :name) }
+        = f.input :description, input_html: { value: params.dig(:projects_search, :description) }
+        = f.input :attribution, input_html: { value: params.dig(:projects_search, :attribution) }
+        = f.input :authors_of_report, input_html: { value: params.dig(:projects_search, :authors_of_report) }
+        = f.input :methodology_description, input_html: { value: params.dig(:projects_search, :methodology_description) }
+        = f.input :prospero, input_html: { value: params.dig(:projects_search, :prospero) }
+        = f.input :doi, label: 'DOI', input_html: { value: params.dig(:projects_search, :doi) }
+        = f.input :notes, input_html: { value: params.dig(:projects_search, :notes) }
+        = f.input :funding_source, input_html: { value: params.dig(:projects_search, :funding_source) }
+
+        = f.input :member, label: 'Member', input_html: { value: params.dig(:projects_search, :member) }
+        = f.input :after, label: 'Created After', as: :date, html5: true, input_html: { value: params.dig(:projects_search, :after) }
+        = f.input :before, label: 'Created Before', as: :date, html5: true, input_html: { value: params.dig(:projects_search, :before) }
+        = f.input :arm, label: "Arm Name", input_html: { value: params.dig(:projects_search, :arm) }
+        = f.input :outcome, label: "Outcome Name", input_html: { value: params.dig(:projects_search, :outcome) }
+
+        .my-4 = f.button :submit, 'Search'
+
+    #panel-citations-search.tabs-panel class=(params[:citations_search].present? ? 'is-active' : '')
+      = simple_form_for :citations_search, defaults: { required: false }, url: searches_path, method: :get do |f|
+        .label-group
+          = f.input :name, input_html: { value: params.dig(:citations_search, :name) }
+          = f.input :refman, label: 'RefMan', input_html: { value: params.dig(:citations_search, :refman) }
+          = f.input :pmid, label: 'PMID', input_html: { value: params.dig(:citations_search, :pmid) }
+          = f.input :abstract, input_html: { value: params.dig(:citations_search, :abstract) }
+
+          .my-4 = f.button :submit, 'Search'
+
