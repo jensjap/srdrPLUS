@@ -27,7 +27,6 @@ def build_type1_sections_compact(kq_ids=[])
           kq_ids_by_extraction = fetch_kq_selection(extraction, kq_ids)
 
           eefps = section.extractions_extraction_forms_projects_sections.
-            includes(extractions_extraction_forms_projects_sections_type1s: :type1).
             find_by(
               extraction: extraction,
               extraction_forms_projects_section: section
