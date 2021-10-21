@@ -24,12 +24,6 @@ class ApplicationController < ActionController::Base
   before_action :set_exit_disclaimer_message
   before_action :set_sentry_context
 
-  before_action do
-    if current_user && current_user == User.find_by(email: Rails.application.credentials[:admin_email])
-      Rack::MiniProfiler.authorize_request
-    end
-  end
-
   def authorize(*args)
     return true if Rails.env.test?
     super(*args)
