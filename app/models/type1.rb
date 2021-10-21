@@ -41,18 +41,24 @@ class Type1 < ApplicationRecord
   validates :description, uniqueness: { scope: :name }
 
   def name_and_description
-    text  = name
-    text += " (#{ description })" if description.present?
-    return text
+    if name.present? && description.present?
+      "#{name} (#{description})"
+    elsif name.present?
+      name
+    else
+      ""
+    end
   end
 
   def short_name_and_description
-    if description.length < 10
-      return name_and_description
+    if description.present? && description.length < 10
+      name_and_description
+    elsif name.present? && description.present?
+      "#{name} (#{description.truncate(16, separator: /\s/)})"
+    elsif name.present?
+      name
     else
-      text  = name
-      text += " (#{ description.truncate(16, separator: /\s/) })" if description.present?
-      return text
+      ""
     end
   end
 
