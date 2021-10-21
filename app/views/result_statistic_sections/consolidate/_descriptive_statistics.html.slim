@@ -40,7 +40,7 @@
                       - @extractions.each do |extraction|
                         tr
                           - if i == 0
-                            td.extractor-name = extraction.user.profile.username
+                            td.extractor-name = extraction.username
                           - tar_record = TpsArmsRssm.find_record_by_extraction(extraction, a, @result_statistic_section, tp, rssm)
                           - if tar_record
                             td = tar_record.name

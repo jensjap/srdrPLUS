@@ -48,7 +48,7 @@ class ProjectsUsersRole < ApplicationRecord
   end
 
   def handle
-    "#{ user.profile.username || user.email } (#{ role.name })"
+    "#{ user.username || user.email } (#{ role.name })"
   end
 
   private

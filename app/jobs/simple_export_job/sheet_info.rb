@@ -1,3 +1,26 @@
+RESERVED_WORKSHEET_NAMES = [
+  "Desc. Statistics",
+  "BAC Comparisons",
+  "WAC Comparisons",
+  "NET Differences",
+  "Continuous - Desc. Statistics",
+  "Categorical - Desc. Statistics",
+  "Continuous - BAC Comparisons",
+  "Categorical - BAC Comparisons",
+  "WAC Comparisons",
+  "NET Differences"
+].freeze
+
+def ensure_unique_sheet_name(name)
+  counter = 0
+  candidate_name = name
+  while @p.workbook.worksheets.any? {|worksheet| worksheet.name == candidate_name} || RESERVED_WORKSHEET_NAMES.include?(candidate_name)
+    counter += 1
+    candidate_name = "#{name}_#{counter}"
+  end
+  candidate_name
+end
+
 # Attempt to find the column index in the given row for a cell that starts with given value.
 #
 # returns (Boolean, Idx)
@@ -25,8 +48,8 @@ def fetch_kq_selection(extraction, kq_ids)
   return kq_ids
 end
 
-def populate_sheet_info_with_extractions_results_data(sheet_info, project, kq_ids, efp, efps)
-  project.extractions.each do |extraction|
+def populate_sheet_info_with_extractions_results_data(sheet_info, kq_ids, efp, efps)
+  @project.extractions.each do |extraction|
     # Collect distinct list of questions based off the key questions selected for this extraction.
     kq_ids_by_extraction = fetch_kq_selection(extraction, kq_ids)
 
@@ -54,7 +77,7 @@ def populate_sheet_info_with_extractions_results_data(sheet_info, project, kq_id
     sheet_info.set_extraction_info(
       extraction_id: extraction.id,
       consolidated: extraction.consolidated.to_s,
-      username: extraction.projects_users_role.projects_user.user.profile.username,
+      username: extraction.username,
       citation_id: extraction.citation.id,
       citation_name: extraction.citation.name,
       authors: extraction.citation.authors.collect(&:name).join(', '),
@@ -223,7 +246,7 @@ def populate_sheet_info_with_extractions_results_data(sheet_info, project, kq_id
         end  # eefpst1_outcome.extractions_extraction_forms_projects_sections_type1_rows.each do |eefpst1r|  # Population
       end  # eefps_outcome.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1_outcome|  # Outcome.
     end  # eefps_outcomes.each do |eefps_outcome|
-  end  # project.extractions.each do |extraction|
+  end  # @project.extractions.each do |extraction|
 
   # Used to populate data headers in the results statistics sections
   # These have the form ['Arm Name 1', 'Arm Description 1', 'Measure 1', 'Measure 2', 'Arm Name 2', ...]
