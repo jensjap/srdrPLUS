@@ -15,7 +15,15 @@ class SimpleExportJob < ApplicationJob
   def perform(*args)
     Axlsx::Package.new do |p|
       @user_email = args.first
-      @project = Project.find args.second
+      @project = Project.
+        includes(
+          :extractions, {
+            extraction_forms_projects: {
+              extraction_forms_projects_sections: :section
+            }
+          }
+        ).
+        find(args.second)
       @export_type = args.third
       @p = p
       @p.use_shared_strings = true
