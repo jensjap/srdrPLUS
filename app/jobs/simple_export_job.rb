@@ -16,13 +16,20 @@ class SimpleExportJob < ApplicationJob
     Axlsx::Package.new do |p|
       @user_email = args.first
       @project = Project.
-        includes(
-          :extractions, {
-            extraction_forms_projects: {
-              extraction_forms_projects_sections: :section
-            }
+        includes({
+          extractions: {
+            citations_project: { citation: [:authors, :journal] }
+          },
+          extraction_forms_projects: {
+            extraction_forms_projects_sections: [
+              :section,
+              :extraction_forms_projects_section_option,
+              extractions_extraction_forms_projects_sections: {
+                extractions_extraction_forms_projects_sections_type1s: :type1
+              }
+            ]
           }
-        ).
+        }).
         find(args.second)
       @export_type = args.third
       @p = p
