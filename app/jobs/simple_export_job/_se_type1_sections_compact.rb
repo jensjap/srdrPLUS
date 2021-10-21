@@ -26,11 +26,10 @@ def build_type1_sections_compact(kq_ids=[])
           # Collect distinct list of questions based off the key questions selected for this extraction.
           kq_ids_by_extraction = fetch_kq_selection(extraction, kq_ids)
 
-          eefps = section.extractions_extraction_forms_projects_sections.
-            find_by(
-              extraction: extraction,
-              extraction_forms_projects_section: section
-            )
+          eefps = section.extractions_extraction_forms_projects_sections.find_by(
+            extraction: extraction,
+            extraction_forms_projects_section: section
+          )
 
           eefps.try(:extractions_extraction_forms_projects_sections_type1s).try(:each) do |eefpst1|
 

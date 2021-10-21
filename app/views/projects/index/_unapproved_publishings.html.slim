@@ -10,20 +10,21 @@
   table
     thead
       tr
-        th width="150" Name
+        th width="100" Name
         th width="50" Type
-        th width="100" Date of Submission
-        th width="75" View
+        th width="25" Creation Date
+        th width="25" Publication Requested On
+        th width="25" Date of Publication
+        th width="100" View
         th width="25"
     tbody
       - viewable_publishings.each do |pr|
         tr
-          td
-            = pr.publishable.display
-          td style="text-align: center;"
-            = pr.name_of_pub_type
-          td style="text-align: center;"
-            = pr.created_at
+          td = pr.publishable.display
+          td style="text-align: center;" = pr.name_of_pub_type
+          td style="text-align: center;" = pr.publishable.created_at.strftime("%m-%d-%y")
+          td style="text-align: center;" = pr.created_at.strftime("%m-%d-%y")
+          td style="text-align: center;" -
           td style="text-align: center;"
             - if pr.publishable.class == SdMetaDatum
               = link_to 'View', sd_meta_datum_path(pr.publishable_id), class: 'btn-link'
