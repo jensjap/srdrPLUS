@@ -66,9 +66,26 @@ def populate_sheet_info_with_extractions_results_data(sheet_info, kq_ids, efp, e
     efps_arms = efp.extraction_forms_projects_sections
       .joins(:section)
       .where(sections: { name: 'Arms' })
-    eefps_arms = ExtractionsExtractionFormsProjectsSection.where(
-      extraction: extraction,
-      extraction_forms_projects_section: efps_arms)
+    eefps_arms = ExtractionsExtractionFormsProjectsSection.
+      includes({
+        extractions_extraction_forms_projects_sections_type1s: [
+          :type1,
+          {
+            extractions_extraction_forms_projects_sections_type1_rows: [
+              :population_name,
+              {
+                result_statistic_sections: [
+                  :result_statistic_section_type,
+                  :comparisons,
+                  { result_statistic_sections_measures: :measure }
+                ],
+                extractions_extraction_forms_projects_sections_type1_row_columns: :timepoint_name
+              },
+            ]
+          }
+        ]
+      }).
+      where(extraction: extraction, extraction_forms_projects_section: efps_arms)
 
     # Create base for extraction information.
     sheet_info.new_extraction_info(extraction)
