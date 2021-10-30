@@ -1,0 +1,2 @@
+class MeshDescriptor < ApplicationRecord
+end
