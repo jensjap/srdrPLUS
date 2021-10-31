@@ -62,6 +62,7 @@ class Api::V2::ProjectsController < Api::V2::BaseController
     projects_tmp = Project.published
       .includes(:extraction_forms)
       .includes(:key_questions)
+      .includes(:mesh_descriptors)
       .includes(publishing: [{ user: :profile }, approval: [{ user: :profile }]])
 
     if page.present?
