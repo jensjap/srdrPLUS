@@ -170,3 +170,34 @@ documentCode = ->
     allowClear: true,
     placeholder: '-- Select or type other --'
   )
+
+  #### MeSH DESCRIPTORS DROPDOWN SELECT2 MULTI-SELECT
+  formatMeSHDescriptor = ( result ) ->
+    if result.loading
+      return result.text
+    markup = '<div class="select2-mesh-descriptor-search-result">'
+    markup += '<span>'
+    markup += result.text
+    markup += '</span>'
+    markup += '<br />'
+    markup += '<span>'
+    markup += '<a href="' + result.resource + '" target="_blank">Link to NLM MeSH Descriptor</a>'
+    markup += '</span>'
+    markup += '</div>'
+    markup
+
+  $( '.projects.edit' ).find( '#project_mesh_descriptor_ids' ).select2
+    ajax:
+      delay: 500
+      url: "/api/v2/mesh_descriptors.json"
+      dataType: "json"
+      data: ( params ) ->
+        q: params.term
+        page: params.page || 1
+        per_page: params.per_page || 10
+    minimumInputLength: 1
+    closeOnSelect: false
+    allowClear: true
+    templateResult: formatMeSHDescriptor
+    escapeMarkup: ( markup ) ->
+      markup

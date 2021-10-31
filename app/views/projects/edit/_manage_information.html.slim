@@ -16,11 +16,19 @@
     = f.input :authors_of_report, label: t('authors_of_report'), input_html: { rows: 4 }
     - methodology_options = ["Systematic Review", "Technical Brief", "Rapid Review", "Evidence Map", ""]
     - if not methodology_options.include? f.object.methodology_description then methodology_options << f.object.methodology_description
-    = f.input :methodology_description, as: :select, selected: f.object.methodology_description, collection: methodology_options, label: t('methodology_description'), input_html: { id: "project_method_description_select2", rows: 4 }
+    = f.input :methodology_description,
+      as: :select,
+      selected: f.object.methodology_description,
+      collection: methodology_options,
+      label: t('methodology_description'),
+      input_html: { id: "project_method_description_select2", rows: 4 }
     = f.input :prospero, label: t('prospero_id')
     = f.input :doi, label: t('doi')
     = f.input :notes, label: t('notes'), input_html: { rows: 8 }
     = f.input :funding_source, label: t('funding_source')
+    = f.association :mesh_descriptors,
+      label: "Mesh Terms",
+      input_html: { rows: 10 }
 
   .row style="margin-top: 10px;"
     .column.small-6

@@ -109,6 +109,7 @@ Rails.application.routes.draw do
     end  # END namespace :v1 do
 
     namespace :v2 do
+      resources :mesh_descriptors, only: [:index]
       resources :evidence_variables, only: [:index, :show]
       get :public_projects, to: 'projects#public_projects'
       resources :projects, shallow: true do

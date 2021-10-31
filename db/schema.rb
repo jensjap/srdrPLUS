@@ -907,6 +907,7 @@ ActiveRecord::Schema.define(version: 2021_10_30_182024) do
 
   create_table "mesh_descriptors", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
     t.text "name"
+    t.text "resource_uri"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

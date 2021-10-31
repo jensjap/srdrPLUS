@@ -104,6 +104,10 @@ class Project < ApplicationRecord
   has_many :sd_meta_data
   has_many :imports, through: :projects_users, dependent: :destroy
   has_many :imported_files, through: :imports, dependent: :destroy
+
+  has_many :mesh_descriptors_projects, dependent: :destroy
+  has_many :mesh_descriptors, through: :mesh_descriptors_projects
+
   validates :name, presence: true
 
   #accepts_nested_attributes_for :extraction_forms_projects, reject_if: :all_blank, allow_destroy: true
