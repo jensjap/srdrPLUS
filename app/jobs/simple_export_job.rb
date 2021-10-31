@@ -9,6 +9,7 @@ class SimpleExportJob < ApplicationJob
   queue_as :default
 
   rescue_from(StandardError) do |exception|
+    Sentry.capture_exception(exception) if Rails.env.production?
     ExportMailer.notify_simple_export_failure(arguments.first, arguments.second, exception.message).deliver_later
   end
 
