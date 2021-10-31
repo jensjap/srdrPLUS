@@ -11,6 +11,9 @@ class ProjectPolicy < ApplicationPolicy
     :notes,
     :funding_source,
     {
+      mesh_descriptor_ids: []
+    },
+    {
       tasks_attributes: [
         :id,
         :name,
