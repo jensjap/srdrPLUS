@@ -69303,7 +69303,7 @@ function __guardMethod__(obj, methodName, transform) {
       markup += '</span>';
       markup += '<br />';
       markup += '<span>';
-      markup += '<a href="' + result.resource + '" target="_blank">Link to NLM MeSH Descriptor</a>';
+      markup += '<a href="' + result.resource + '" target="_blank" data-confirm="' + gon.exit_disclaimer + '">Link to NLM MeSH Descriptor</a>';
       markup += '</span>';
       markup += '</div>';
       return markup;
