@@ -119,16 +119,9 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
 
               # Check for followup_field and append if present.
               if qrcqrco.followup_field.present?
-                tmp_ff_value =
-                  ' [Follow-up: ' +
-                  qrcqrco
-                    .followup_field
-                    .extractions_extraction_forms_projects_sections_followup_fields
-                    .map(&:records)
-                    .flatten
-                    .map(&:name)
-                    .join(', ') +
-                  ']'
+                extraction_id = self.extraction.id
+                eefpsff = qrcqrco.followup_field.extractions_extraction_forms_projects_sections_followup_fields.filter { |r| r.extraction.id == extraction_id }
+                tmp_ff_value = "[Follow-up: #{eefpsff.map(&:records).flatten.map(&:name).join(', ')}]"
               end
 
               text_arr << tmp_value + tmp_ff_value
@@ -160,16 +153,9 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
       qrcqrco = qrc.question_row_columns_question_row_column_options.find_by(id: opt_id.to_i)
       if qrcqrco.present?
         if qrcqrco.followup_field.present?
-          tmp_ff_value =
-            ' [Follow-up: ' +
-            qrcqrco
-              .followup_field
-              .extractions_extraction_forms_projects_sections_followup_fields
-              .map(&:records)
-              .flatten
-              .map(&:name)
-              .join(', ') +
-            ']'
+          extraction_id = self.extraction.id
+          eefpsff = qrcqrco.followup_field.extractions_extraction_forms_projects_sections_followup_fields.filter { |r| r.extraction.id == extraction_id }
+          tmp_ff_value = "[Follow-up: #{eefpsff.map(&:records).flatten.map(&:name).join(', ')}]"
         end
       end
       return (tmp_value + tmp_ff_value).try(:strip)
