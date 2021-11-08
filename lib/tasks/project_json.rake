@@ -1,5 +1,6 @@
 require 'json'
 require 'tasks/helpers/json_importers'
+require 'rubyXL'
 
 include JsonImporters
 
@@ -82,7 +83,6 @@ namespace :project_json do
       ### create project importer
     end
 
-
     #if ENV['file'].nil? then raise 'No file provided. Usage: file=<file_path>' end
 
     #projects_hash.each do |pid, phash|
@@ -92,6 +92,67 @@ namespace :project_json do
     #if Project.find_by( id: phash['id'], name: phash['name'], description: phash['description'] ).present?
     #  raise 'Project already exists in srdrPLUS'
     #end
-
   end
+
+  desc "Fixes published projects \"published_at\" dates by using project id 1324."
+  task fix_published_at_dates: :environment do
+    data = {}
+    month_to_decimal_map = {
+      "January"   => 1,
+      "February"  => 2,
+      "March"     => 3,
+      "April"     => 4,
+      "May"       => 5,
+      "June"      => 6,
+      "July"      => 7,
+      "August"    => 8,
+      "September" => 9,
+      "October"   => 10,
+      "November"  => 11,
+      "December"  => 12,
+    }
+    excel_column_dict = {}
+    excel_column_dict[:title] = 6  # Column G
+    excel_column_dict[:name_on_published_projects_page] = 9  # Column J
+    excel_column_dict[:last_updated_at_year] = 10  # Column K
+    excel_column_dict[:published_at_month] = 11  # Column L
+    excel_column_dict[:published_at_year] = 12  # Column M
+    excel_column_dict[:created_at_month] = 32  # Column AG
+    excel_column_dict[:created_at_year] = 33  # Column AH
+
+    filename = File.join(Rails.root, "tmp", "project-1324-1832.xlsx")
+    workbook = RubyXL::Parser.parse(filename)
+    worksheet = workbook.worksheets[2]
+    worksheet.each_with_index do |row, index|
+      next if index.eql? 0
+      data[index] = {
+        row: index,
+        title: row[excel_column_dict[:title]].value,
+        name_on_published_projects_page: row[excel_column_dict[:name_on_published_projects_page]].value,
+        updated_at_year: row[excel_column_dict[:last_updated_at_year]].value.gsub("'", "").to_i,
+        published_at_month: month_to_decimal_map[row[excel_column_dict[:published_at_month]].value].to_i,
+        published_at_year: row[excel_column_dict[:published_at_year]].value.to_i,
+        created_at_month: month_to_decimal_map[row[excel_column_dict[:created_at_month]].value.gsub("SUBVALUE()", "").strip].to_i,
+        created_at_year: row[excel_column_dict[:created_at_year]].value.gsub("SUBVALUE()", "").to_i
+      }
+
+      p = Project.where("name LIKE ?", "%#{ data[index][:title] }%")
+      p = Project.where("name LIKE ?", "%#{ data[index][:name_on_published_projects_page] }%") if p.blank?
+      if p.blank?
+        puts "ERROR: Could not find " + data[index][:title]
+        next
+      end
+      p = p.first
+      puts "SUCCESS! Found Project: " + p.name
+      p.created_at = DateTime.new(data[index][:created_at_year], data[index][:created_at_month])
+      p.updated_at = DateTime.new(data[index][:updated_at_year])
+      p.save
+
+      publishing = p.publishing
+      if publishing.present?
+        publishing.approval.created_at = DateTime.new(data[index][:published_at_year], data[index][:published_at_month])
+        publishing.approval.save
+      end
+    end  # worksheet.each_with_index do |row, index|
+  end  # task fix_published_at_dates: :environment do
 end
