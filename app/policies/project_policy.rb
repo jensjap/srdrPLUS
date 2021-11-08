@@ -106,7 +106,11 @@ class ProjectPolicy < ApplicationPolicy
   class Scope < ApplicationPolicy::Scope
     def resolve
       return scope.all if Rails.env.test?
-      scope.joins(:projects_users).where('projects_users.user_id = ?', user.id)
+      if user.admin?
+        scope.all
+      else
+        scope.joins(:projects_users).where('projects_users.user_id = ?', user.id)
+      end
     end
   end
 
