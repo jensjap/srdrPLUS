@@ -2,6 +2,6 @@
   = f.input :name, label: section_name.eql?('Outcome') ? 'Domain' : 'Name', required: true, hint: 'Name can\'t be blank', autofocus: true
   - if section_name.eql? 'Outcome'
     = f.association :type1_type, label: 'Suggested Type'
-  = f.input :description, label: section_name.eql?('Outcome') ? 'Specific Measurement' : 'Description', input_html: { rows: 2 }
+  = f.input :description, label: section_name.eql?('Outcome') ? 'Specific measurement (i.e., tool/definition/specific outcome)' : 'Description', input_html: { rows: 2 }
 
   = link_to_remove_association 'Remove fields', f

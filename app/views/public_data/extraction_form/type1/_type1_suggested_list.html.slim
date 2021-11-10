@@ -22,7 +22,7 @@ ExtractionFormsProjectsSection
           - if section_name.eql?('Outcome')
             th Type
           th = section_name.eql?('Outcome') ? 'Domain' : 'Name'
-          th = section_name.eql?('Outcome') ? 'Specific Measurement' : 'Description'
+          th = section_name.eql?('Outcome') ? 'Specific measurement (i.e., tool/definition/specific outcome)' : 'Description'
 
       tbody
         - sorted_suggested_efpst1s = section_name == 'Outcome' ? suggested_efpst1s.sort_by { |efpst1| [efpst1.type1_type.try(:name).to_s, efpst1.type1.name, efpst1.type1.description].map(&:downcase) } : suggested_efpst1s.sort_by { |efpst1| [efpst1.type1.name, efpst1.type1.description].map(&:downcase) }

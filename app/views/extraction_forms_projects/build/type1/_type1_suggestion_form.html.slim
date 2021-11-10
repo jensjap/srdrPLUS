@@ -20,8 +20,8 @@ h4 Add #{ section_name } Suggestion
           label: "Suggest Type of #{ section_name }"
 
       = sf_efpst1.simple_fields_for(:type1, sf_efpst1.object.build_type1) do |sf_t1|
-        = sf_t1.input :name,        label: section_name.eql?('Outcome') ? 'Suggest Domain'               : 'Name', required: true, hint: 'Name can\'t be blank'
-        = sf_t1.input :description, label: section_name.eql?('Outcome') ? 'Suggest Specific Measurement' : 'Description', input_html: { rows: 2 }
+        = sf_t1.input :name,        label: section_name.eql?('Outcome') ? 'Suggest Domain' : 'Name', required: true, hint: 'Name can\'t be blank'
+        = sf_t1.input :description, label: section_name.eql?('Outcome') ? 'Suggest Specific measurement (i.e., tool/definition/specific outcome)' : 'Description', input_html: { rows: 2 }
 
       - if section_name.eql? 'Outcome'
         = sf_efpst1.association :timepoint_names,

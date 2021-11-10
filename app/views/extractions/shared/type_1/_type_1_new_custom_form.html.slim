@@ -42,7 +42,7 @@
             required: true,\
             hint: 'Name can\'t be blank', input_html: { 'data-t1-name-input' => ''}
           = sf_t1.input :description,\
-            label: section_name.eql?('Outcome') ? 'Specific Measurement' : 'Description',\
+            label: section_name.eql?('Outcome') ? 'Specific measurement (i.e., tool/definition/specific outcome)' : 'Description',\
             input_html: { rows: 2 }, input_html: { 'data-t1-description-input' => '' }
         - if section_name.eql? 'Outcome'
           = sf_eefpst1.input :units, input_html: { 'data-t1-units-input' => '' }

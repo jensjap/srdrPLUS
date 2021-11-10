@@ -25,7 +25,7 @@
           - if section_name == 'Outcomes'
             th style="border: none;" Type
           th style="border: none;" = section_name.eql?('Outcomes') ? 'Domain' : "#{section_name.singularize} Name"
-          th style="border: none;" = section_name.eql?('Outcomes') ? 'Specific Measurement' : "#{section_name.singularize} Description"
+          th style="border: none;" = section_name.eql?('Outcomes') ? 'Specific measurement (i.e., tool/definition/specific outcome)' : "#{section_name.singularize} Description"
           - if ['Outcomes', 'Diagnoses'].include? section_name
             th style="border: none;" Populations
             th style="border: none;" Timepoints
