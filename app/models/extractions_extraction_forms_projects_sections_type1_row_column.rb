@@ -18,11 +18,13 @@ class ExtractionsExtractionFormsProjectsSectionsType1RowColumn < ApplicationReco
   after_commit :set_extraction_stale, on: [:create, :update, :destroy]
 
   after_destroy :remove_timepoints_across_populations
+  before_destroy :remove_wac
 
   belongs_to :extractions_extraction_forms_projects_sections_type1_row, inverse_of: :extractions_extraction_forms_projects_sections_type1_row_columns
   belongs_to :timepoint_name,                                           inverse_of: :extractions_extraction_forms_projects_sections_type1_row_columns
 
   has_many :tps_arms_rssms, dependent: :destroy, foreign_key: 'timepoint_id'
+  has_one :comparable_element, as: :comparable
 
   accepts_nested_attributes_for :timepoint_name, reject_if: :all_blank
 
@@ -84,6 +86,13 @@ class ExtractionsExtractionFormsProjectsSectionsType1RowColumn < ApplicationReco
         eefpst1r.extractions_extraction_forms_projects_sections_type1_row_columns.where(
           timepoint_name: self.timepoint_name
         ).map { |eefpst1rc| eefpst1rc.try(:destroy) }
+      end
+    end
+
+    def remove_wac
+      if self.try(:comparable_element)
+        wac = self.try(:comparable_element).comparates.first.comparate_group.comparison
+        wac.destroy
       end
     end
 end
