@@ -25,18 +25,20 @@
                 i.fi-asterisk<> style="color: #006aaa"
                 |Consolidation in Progress
               td
-                = link_to('Resume',
-                  consolidate_project_extractions_path(extraction_ids: val[:extractions].pluck(:id)),
-                  style: 'margin-bottom:0; color:#006aaa; font-weight:bold;')
+                - if @project.members.include?(current_user)
+                  = link_to('Resume',
+                    consolidate_project_extractions_path(extraction_ids: val[:extractions].pluck(:id)),
+                    style: 'margin-bottom:0; color:#006aaa; font-weight:bold;')
 
             - else
               td
                 i.fi-alert> style="color: #c527c0;"
                 | Differences Detected
               td
-                = link_to('Consolidate Extractions',
-                  consolidate_project_extractions_path(extraction_ids: val[:extractions].pluck(:id)),
-                  style: 'margin-bottom:0; color:#c527c0; font-weight:bold;')
+                - if @project.members.include?(current_user)
+                  = link_to('Consolidate Extractions',
+                    consolidate_project_extractions_path(extraction_ids: val[:extractions].pluck(:id)),
+                    style: 'margin-bottom:0; color:#c527c0; font-weight:bold;')
 
           - else
             td

@@ -36,7 +36,7 @@ class ExtractionPolicy < ApplicationPolicy
   end
 
   def comparison_tool?
-    project_consolidator?
+    project_consolidator? || @user.admin?
   end
 
   def consolidate?
