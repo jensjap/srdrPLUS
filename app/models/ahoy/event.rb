@@ -6,7 +6,7 @@
 #  visit_id   :bigint
 #  user_id    :bigint
 #  name       :string(255)
-#  properties :json
+#  properties :text(4294967295)
 #  time       :datetime
 #
 class Ahoy::Event < ApplicationRecord

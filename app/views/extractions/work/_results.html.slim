@@ -21,7 +21,7 @@
       - eefps = @extraction.extractions_extraction_forms_projects_sections.joins(:extraction_forms_projects_section => [:extraction_forms_projects_section_type]).find_by(:extraction_forms_projects_sections => { :extraction_forms_projects_section_type => ExtractionFormsProjectsSectionType.find_by(name: 'Results') })
       = render 'shared/statusing_form.html.slim', statusing: eefps.statusing, status_name: eefps.statusing.status.name
     blockquote
-      | The results section is where you enter numerical data, comparisons, etc.
+      | #{efps.helper_message.present? ? efps.helper_message : "The results section is where you enter numerical data, comparisons, etc."}
 
     = render 'shared/extractions/work/results/outcome_selector'
 
@@ -44,7 +44,7 @@
       - eefps = @extraction.extractions_extraction_forms_projects_sections.joins(:extraction_forms_projects_section => [:extraction_forms_projects_section_type]).find_by(:extraction_forms_projects_sections => { :extraction_forms_projects_section_type => ExtractionFormsProjectsSectionType.find_by(name: 'Results') })
       = render 'shared/statusing_form.html.slim', statusing: eefps.statusing, status_name: eefps.statusing.status.name
     blockquote
-      | The results section is where you enter numerical data, comparisons, etc.
+      | #{efps.helper_message.present? ? efps.helper_message : "The results section is where you enter numerical data, comparisons, etc."}
 
     = render 'shared/extractions/work/results/outcome_selector'
 
