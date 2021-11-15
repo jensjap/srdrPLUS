@@ -506,11 +506,451 @@
             - option: "Unpredictable"
     - section:
       id: 2
+      section-title: "The RoB 2.0 Tool (cluster randomize, parallel group trials)"
+      section-description: ""
+      dimensions:
+        - dimension: #dimension 1
+          id: 43
+          question: "1a.1 Was the allocation sequence random?"
+          description: "Yes, if a random component was used in the sequence generation process such as using a computer generated random numbers, referring to a random number table, minimization, coin tossing; shuffling cards or envelopes; throwing dice; or drawing of lots. Minimization may be implemented without a random element, and this is considered to be equivalent to being random. No, if the sequence is non-random, such that it is either likely to introduce confounding, or is predictable or difficult to conceal, e.g. alternation, methods based on dates (of birth or admission) or patient record numbers, allocation decision made by clinicians or participants, based on the availability of the intervention, or any other systematic or haphazard method. If the only information about randomization methods is to state that the study is randomized, then this signalling question should generally be answered as “No information”. There may be situations in which a judgement is made to answer Probably No or Probably Yes. For example, if the study was large, conducted by an independent trials unit or carried out for regulatory purposes, then it may be reasonable to assume that the sequence was random. Alternatively, if other (contemporary) trials by the same investigator team have clearly used non-random sequences, it might be reasonable to assume that the current study was done using similar methods. Similarly, if participants and personnel are all unaware of intervention assignments throughout/during the trial (blinding or masking), this may be an indicator that the allocation process was also concealed, but this will not necessarily always be the case. If the allocation sequence was clearly concealed but there is no information about how the sequence was generated, it will often be reasonable to assume that the sequence was random (although this will not necessarily always be the case)."
+          options:
+            - option: "Y"
+            - option: "PY"
+            - option: "PN"
+            - option: "N"
+            - option: "NI"
+        - dimension: #dimension 2
+          id: 44
+          question: "1a.2 Is it likely that the allocation sequence was subverted?"
+          description: "Processes of randomizing clusters vary. It is important first to consider carefully whether there are any ways in which the allocation could potentially have been subverted (deliberately tampered with so that clusters end up in a group they were not supposed to be randomized to if the randomization was conducted properly). This will usually include a consideration of whether any individuals were aware of any potential allocations prior to those allocations being made. However, although subversion may be possible, it is often the case that in cluster randomized trials those who could subvert the randomization have less motivation and/or knowledge to do so (see text for further explanation), so a judgement must be made as to whether this is likely."
+          options:
+            - option: "Y"
+            - option: "PY"
+            - option: "PN"
+            - option: "N"
+            - option: "NI"
+        - dimension: #dimension 3
+          id: 45
+          question: "1a.3 Were there baseline imbalances that suggest a problem with the randomization process?"
+          description: "Imbalances in numbers of clusters or stratification factors or other cluster characteristics are usually the best evidence of problems with the randomization process, but such problems are relatively unusual as explained in 1a.2. On the other hand, due to the small numbers of clusters randomized in most cluster randomized trials, chance imbalances in either cluster or participant characteristics are more common than in individually-randomized trials and can sometimes appear substantial. As for the tool for individually-randomized trials, chance imbalances should not be highlighted here, and neither should imbalances that are due to identification/recruitment bias (which are assessed in Domain 1b). Answer No if no imbalances are apparent or if any observed imbalances are compatible with chance Answer Yes only if there is clear evidence of imbalances that appear to be due to problems with randomization. In some circumstances, it may be reasonable to answer Yes/Probably yes (rather than, No information) when there is a surprising lack of information on baseline characteristics when such information could reasonably be expected to be available/reported. If there is no information about cluster characteristics record, No information. The answer to this question should not be used to influence answers to questions 1a.1 or 1a.2. For example, if the trial has large baseline imbalances, but authors report adequate randomization methods, questions 1a.1 and 1a.2 should still be answered on the basis of the reported adequate methods, and any concerns about the imbalance should be raised in the answer to the question 1a.3 and reflected in the domain-level risk of bias judgement)."
+          options:
+            - option: "Y"
+            - option: "PY"
+            - option: "PN"
+            - option: "N"
+            - option: "NI"
+        - dimension: #dimension 4
+          id: 46
+          question: "Risk-of-bias judgement"
+          description: "See Figure 1. Suggested Algorithm for reaching risk of bias judgments for bias arising from the randomization process, link: https://www.riskofbias.info/welcome/rob-2-0-tool/archive-rob-2-0-cluster-randomized-trials-2016 "
+          options:
+            - option: "Low risk"
+            - option: "High risk"
+            - option: "Some concerns"
+        - dimension: #dimension 5
+          id: 47
+          question: "Optional: What is the predicted direction of bias arising from the randomization process?"
+          description: "If the likely direction of bias can be predicted, it is helpful to state this. The direction might be characterized either as being towards (or away from) the null, or as being in favour of one of the interventions."
+          options:
+            - option: "NA"
+            - option: "Favours experimental"
+            - option: "Favours comparator"
+            - option: "Towards null"
+            - option: "Away from null"
+            - option: "Unpredictable"
+        - dimension: #dimension 6
+          id: 48
+          question: "1b.1 Were all the individual participants identified before randomization of clusters (and if the trial specifically recruited patients were they all recruited before randomization of clusters)?"
+          description: "Answer Yes if participants were identified and recruited prior to the clusters being randomized or if individual participants were not recruited at all but were identified prior to randomization. In these cases identification/recruitment bias is not possible. Answer No if either identification or recruitment of participants (or both) takes place after randomization. Also answer No if some participants are identified and/or recruited before and some after randomization as the potential for bias still exists in these trials."
+          options:
+            - option: "Y"
+            - option: "PY"
+            - option: "PN"
+            - option: "N"
+            - option: "NI"
+        - dimension: #dimension 7
+          id: 49
+          question: "1b.2 If N/PN/NI to 1b.1: Is it likely that selection of individual participants was affected by knowledge of the intervention?"
+          description: "Answer Yes if those recruiting individuals are aware of cluster allocation prior to recruitment and are likely to consciously or subconsciously have differentially recruited in the trial arms; if some of those being recruited are aware of cluster allocation prior to their own recruitment and this is likely to have differentially affected recruitment in the trial arms; if those identifying potential participants (when recruitment is to take place subsequently) or those identifying actual participants (when there is no subsequent recruitment) are aware of cluster allocation and are likely to have consciously or subconsciously differentially include potential individual participants in different trial arms. Answer No if all of the following (as relevant depending on the trial) are unaware of cluster allocation at recruitment: (1) those identifying actual participants, (2) those identifying potential participants, (3) those recruiting and (4) potential participants themselves."
+          dependencies:
+            - question:
+              id: 48
+              options:
+                - option: "N"
+                - option: "PN"
+                - option: "NI"
+          options:
+            - option: "NA"
+            - option: "Y"
+            - option: "PY"
+            - option: "PN"
+            - option: "N"
+            - option: "NI"
+        - dimension: #dimension 8
+          id: 50
+          question: "1b.3 Were there baseline imbalances that suggest differential identification or recruitment of individual participants between arms?"
+          description: "As for signalling question 1a.3, imbalances that are compatible with chance should not be highlighted here. Imbalances due to differential identification or recruitment of participants are more common in cluster randomized trials than imbalances due to problems with randomization. Such imbalances are usually in the numbers of participants recruited into each arm or, less commonly, in the characteristics of such individuals. If there is a noticeable imbalance and imbalance due to the randomization process and due to identification/recruitment of individuals are both possible a judgement will need to be made about which is the most likely cause of any imbalance or whether they are both likely."
+          options:
+            - option: "Y"
+            - option: "PY"
+            - option: "PN"
+            - option: "N"
+            - option: "NI"
+        - dimension: #dimension 9
+          id: 51
+          question: "Risk-of-bias judgement"
+          description: "See Figure 2. Suggested Algorithm for reaching risk of bias judgments for bias arising from the timing of identification and recruitment of participants in a cluster-randomized trial, link: https://www.riskofbias.info/welcome/rob-2-0-tool/archive-rob-2-0-cluster-randomized-trials-2016 "
+          options:
+            - option: "Low risk"
+            - option: "High risk"
+            - option: "Some concerns"       
+        - dimension: #dimension 10
+          id: 52
+          question: "Optional: What is the predicted direction of bias arising from the randomization process?"
+          description: "If the likely direction of bias can be predicted, it is helpful to state this. The direction might be characterized either as being towards (or away from) the null, or as being in favour of one of the interventions."
+          options:
+            - option: "NA"
+            - option: "Favours experimental"
+            - option: "Favours comparator"
+            - option: "Towards null"
+            - option: "Away from null"
+            - option: "Unpredictable"        
+        - dimension: #dimension 11
+          id: 53
+          question: "2.1a Were participants aware that they were in a trial?"
+          description: "In cluster randomized trials it is possible for participants to know they are receiving an intervention or that they are in a study but not that they are in a trial. Thus they may not know that other evaluations are being evaluated or what these interventions are. This makes it impossible for them to cause deviations from the intended interventions beyond what would be expected in usual practice."
+          options:
+            - option: "Y"
+            - option: "PY"
+            - option: "PN"
+            - option: "N"
+            - option: "NI"
+        - dimension: #dimension 12
+          id: 54
+          question: "2.1b If Y/PY/NI to 2.1a: Were participants aware of their assigned intervention during the trial?"
+          description: "Cluster randomized trials frequently involve multifaceted interventions. Answer Yes if participants were aware of any part of the allocated intervention during the trial."
+          dependencies:
+            - question:
+              id: 53
+              options:
+                - option: "Y"
+                - option: "PY"
+                - option: "NI"
+          options:
+            - option: "NA"
+            - option: "Y"
+            - option: "PY"
+            - option: "PN"
+            - option: "N"
+            - option: "NI"
+        - dimension: #dimension 13
+          id: 55
+          question: "2.2 Were carers and trial personnel aware of participants' assigned intervention during the trial?"
+          description: "If those involved in caring for participants or making decisions about their health care are aware of the assigned intervention, then implementation of the intended intervention, or administration of additional co-interventions, may differ between the assigned intervention groups. Masking carers and trial personnel, which is most commonly achieved through use of a placebo, may prevent such differences."
+          options:
+            - option: "Y"
+            - option: "PY"
+            - option: "PN"
+            - option: "N"
+            - option: "NI"
+        - dimension: #dimension 14
+          id: 56
+          question: "2.3 If Y/PY/NI to 2.1 or 2.2: Were there deviations from the intended intervention beyond what would be expected in usual practice?"
+          description: "When interest focusses on the effect of assignment to intervention, it is important to distinguish between: (a) deviations that happen in usual practice following the intervention and so are part of the intended intervention (for example, cessation of an exercise programme for health related issues); and (b) deviations from intended intervention that arise due to expectations of a difference between intervention and comparator (for example because participants feel ‘unlucky’ to have been assigned to the comparator group and therefore seek the active intervention, or components of it, or other interventions). We use the term “usual practice” to refer to the usual course of events in a non-trial context. Because deviations that arise due to expectations of a difference between intervention and comparator are not part of usual practice, they may lead to biased effect estimates that do not reflect what would happen to participants assigned to the interventions in practice. Deviations from the intended intervention that arise due to expectations of a difference between intervention and comparator are rarely reported in cluster randomized trials and may, in fact, occur rarely. This is likely to be partly because it is very often the case in these trials that those who might have the opportunity to introduce deviations will not have any inclination to deliberately affect the results of the trial by doing so. In addition the more complex the intervention, the more difficult it might be to practically identify such deviations. The answer “No information” will therefore be appropriate in many cases, but “Probably yes” should be used if it seems likely that such deviations occurred."
+          dependencies:
+            - question:
+              id: 53
+              options:
+                - option: "Y"
+                - option: "PY"
+                - option: "NI"
+            - question:
+              id: 55
+              options:
+                - option: "Y"
+                - option: "PY"
+                - option: "NI"          
+          options:
+            - option: "NA"
+            - option: "Y"
+            - option: "PY"
+            - option: "PN"
+            - option: "N"
+            - option: "NI"
+        - dimension: #dimension 15
+          id: 57
+          question: "2.4 If Y/PY to 2.3: Were these deviations from intended intervention unbalanced between groups and likely to have affected the outcome?"
+          description: "Deviations from intended interventions that do not reflect usual practice will be important if they affect the outcome, but not otherwise. Furthermore, bias will arise only if there is imbalance in the deviations across the two groups."
+          dependencies:
+            - question:
+              id: 56
+              options:
+                - option: "Y"
+                - option: "PY"      
+          options:
+            - option: "NA"
+            - option: "Y"
+            - option: "PY"
+            - option: "PN"
+            - option: "N"
+            - option: "NI"
+        - dimension: #dimension 16
+          id: 58
+          question: "2.5a Were any clusters analysed in a group different from the one to which they were assigned?"
+          description: "This question addresses one of the fundamental aspects of an “intention-to-treat” approach to the trial analysis: that clusters are analysed in the groups to which they were assigned through randomization. If some groups did not receive or implement their assigned intervention, and such clusters were analysed according to intervention received, then the balance between intervention groups created by randomization is lost."
+          options:
+            - option: "Y"
+            - option: "PY"
+            - option: "PN"
+            - option: "N"
+            - option: "NI"
+        - dimension: #dimension 17
+          id: 59
+          question: "2.5b In some cluster randomized trials it may not be possible to ascertain the original cluster that individuals were in."
+          description: "In some cluster randomized trials it may not be possible to ascertain the original cluster that individuals were in. This could happen, for example, when clusters split or merge or participants are not recruited and outcomes are collected from routine data. In this case a judgement will need to be made about whether the answer to this question is PY or NI"
+          options:
+            - option: "Y"
+            - option: "PY"
+            - option: "PN"
+            - option: "N"
+            - option: "NI"
+        - dimension: #dimension 18
+          id: 60
+          question: "2.6. If Y/PY/NI to 2.5: Was there potential for a substantial impact (on the estimated effect of intervention) of analysing participants in the wrong group?"
+          description: "Risk of bias will be high in a randomized trial in which sufficiently many clusters or participants were analysed in the wrong intervention group that there could have been a substantial impact on the results. There is potential for a substantial impact if more than 5% of participants were analysed in the wrong group, but for rare events there could be an impact for a smaller proportion."
+          dependencies:
+            - question:
+              id: 58
+              options:
+                - option: "Y"
+                - option: "PY"             
+                - option: "NI"
+          options:
+            - option: "NA"
+            - option: "Y"
+            - option: "PY"
+            - option: "PN"
+            - option: "N"
+            - option: "NI"
+        - dimension: #dimension 19
+          id: 61
+          question: "Risk-of-bias judgement"
+          description: "See Figure 3. Suggested Algorithm for reaching risk for bias due to deviations from intended interventions (effect of assignment intervention), link: https://www.riskofbias.info/welcome/rob-2-0-tool/archive-rob-2-0-cluster-randomized-trials-2016 "
+          options:
+            - option: "Low"
+            - option: "High"
+            - option: "Some concerns"
+        - dimension: #dimension 20
+          id: 62
+          question: "Optional: What is the predicted direction of bias due to deviations from intended interventions?"
+          description: "If the likely direction of bias can be predicted, it is helpful to state this. The direction might be characterized either as being towards (or away from) the null, or as being in favour of one of the interventions."
+          options:
+            - option: "NA"
+            - option: "Favours experimental"
+            - option: "Favours comparator"
+            - option: "Towards null"
+            - option: "Away from null"
+            - option: "Unpredictable"
+        - dimension: #dimension 21
+          id: 63
+          question: "3.1a Were outcome data available for all, or nearly all, clusters randomized?"
+          description: "The appropriate study population for an analysis of the intention to treat effect is all randomized patients. Note that imputed data should be regarded as missing data, and not considered as “outcome data” in the context of this question. Nearly All, (equivalently, a low or modest amount of missing data) should be interpreted as “enough to be confident of the findings”, and a suitable proportion depends on the context. For continuous outcomes, availability of data from 95% (or possibly 90%) of the participants would often be sufficient. For dichotomous outcomes, the proportion required is directly linked to the risk of the event. If the observed number of events is much greater than the number of participants with missing outcome data, the bias would necessarily be small."
+          options:
+            - option: "Y"
+            - option: "PY"
+            - option: "PN"
+            - option: "N"
+            - option: "NI"
+        - dimension: #dimension 22
+          id: 64
+          question: "3.1b Were outcome data available for all, or nearly all, participants within clusters?"
+          description: "The issues here are broadly as for question 3.1a In cluster-randomized trials there may be particular complexities when clusters merge, split, or disappear."
+          options:
+            - option: "Y"
+            - option: "PY"
+            - option: "PN"
+            - option: "N"
+            - option: "NI"
+        - dimension: #dimension 23
+          id: 65
+          question: "3.2 If N/PN/NI to 3.1a or 3.1b: Are the proportions of missing outcome data and reasons for missing outcome data similar across intervention groups?"
+          description: "Similar (with regard to proportion and reasons for missing outcome data) includes some minor degree of discrepancy across intervention groups as expected by chance. Assessment of comparability of reasons for missingness requires the reasons to be reported."
+          dependencies:
+            - question:
+              id: 63
+              options:
+                - option: "N"
+                - option: "PN"
+                - option: "NI"
+            - question:
+              id: 64
+              options:
+                - option: "N"
+                - option: "PN"
+                - option: "NI"
+          options:
+            - option: "NA"
+            - option: "Y"
+            - option: "PY"
+            - option: "PN"
+            - option: "N"
+            - option: "NI"
+        - dimension: #dimension 24
+          id: 66
+          question: "3.3 If N/PN/NI to 3.1a or 3.1b: Is there evidence that results were robust to the presence of missing outcome data?"
+          description: "Evidence for robustness may come from how missing data were handled in the analysis and whether sensitivity analyses were performed by the trial investigators, or from additional analyses performed by the systematic reviewers."
+          dependencies:
+            - question:
+              id: 63
+              options:
+                - option: "N"
+                - option: "PN"
+                - option: "NI"
+            - question:
+              id: 64
+              options:
+                - option: "N"
+                - option: "PN"
+                - option: "NI"
+          options:
+            - option: "NA"
+            - option: "Y"
+            - option: "PY"
+            - option: "PN"
+            - option: "N"
+            - option: "NI"    
+        - dimension: #dimension 25
+          id: 67
+          question: "Risk-of-bias judgement"
+          description: "See Figure 4. Suggested algorithm for reaching risk of bias judgments for bias due to missing outcome data, link: https://www.riskofbias.info/welcome/rob-2-0-tool/archive-rob-2-0-cluster-randomized-trials-2016"
+          options:
+            - option: "Low risk"
+            - option: "High risk"
+            - option: "Some concerns"       
+        - dimension: #dimension 26
+          id: 68
+          question: "Optional: What is the predicted direction of bias due to missing outcome data?"
+          description: "If the likely direction of bias can be predicted, it is helpful to state this. The direction might be characterized either as being towards (or away from) the null, or as being in favour of one of the interventions."
+          options:
+            - option: "NA"
+            - option: "Favours experimental"
+            - option: "Favours comparator"
+            - option: "Towards null"
+            - option: "Away from null"
+            - option: "Unpredictable"        
+        - dimension: #dimension 27
+          id: 69
+          question: "4.1a Were outcome assessors aware that a trial was taking place?"
+          description: "This question largely applies to studies in which participants report their outcomes themselves, for example in a questionnaire. The participant is then the outcome assessor. In individually randomized trials self-assessment may be influenced by assignment if participants are aware of their assignment. In cluster randomized trials, if participants are not aware that they are in a trial then their self-assessment cannot be affected by assignment regardless of whether they are aware of the intervention they receive or not."
+          options:
+            - option: "Y"
+            - option: "PY"
+            - option: "PN"
+            - option: "N"
+            - option: "NI"
+        - dimension: #dimension 28
+          id: 70
+          question: "4.1b If Y/PY/NI to 4.1: Were outcome assessors aware of the intervention received by study participants?"
+          description: "Enter No if outcome assessors were blinded to intervention status. In studies where participants report their outcomes themselves (i.e., participant-reported outcome), the outcome assessor is the study participant. In cases where outcomes are collected using routine data, the outcome assessor is the individual responsible for extracting the data."
+          dependencies:
+            - question:
+              id: 69
+              options:
+                - option: "Y"
+                - option: "PY"
+                - option: "NI"      
+          options:
+            - option: "NA"
+            - option: "Y"
+            - option: "PY"
+            - option: "PN"
+            - option: "N"
+            - option: "NI"
+        - dimension: #dimension 29
+          id: 71
+          question: "4.2 If Y/PY/NI to 4.1: Was the assessment of the outcome likely to be influenced by knowledge of intervention received?"
+          description: "Knowledge of the assigned intervention may impact on participant-reported outcomes (such as level of pain), observer-reported outcomes involving some judgement, and intervention provider decision outcomes, while not impacting on other outcomes such as observer reported outcomes not involving judgement such as all-cause mortality. In many circumstances the assessment of observer reported outcomes not involving judgement such as all-cause mortality might be considered to be unbiased, even if outcome assessors were aware of intervention assignments."
+          dependencies:
+            - question:
+              id: 69
+              options:
+                - option: "Y"
+                - option: "PY"
+                - option: "NI"      
+          options:
+            - option: "NA"
+            - option: "Y"
+            - option: "PY"
+            - option: "PN"
+            - option: "N"
+            - option: "NI"
+        - dimension: #dimension 30
+          id: 72
+          question: "Risk-of-bias judgement"
+          description: "See Figure 5. Suggested algorithm for reaching risk of bias judgments for bias in measurement of the outcome, link: https://www.riskofbias.info/welcome/rob-2-0-tool/archive-rob-2-0-cluster-randomized-trials-2016"
+          options:
+            - option: "Low risk"
+            - option: "High risk"
+            - option: "Some concerns"       
+        - dimension: #dimension 31
+          id: 73
+          question: "Optional: What is the predicted direction of bias due to measurement of the outcome?"
+          description: "If the likely direction of bias can be predicted, it is helpful to state this. The direction might be characterized either as being towards (or away from) the null, or as being in favour of one of the interventions."
+          options:
+            - option: "NA"
+            - option: "Favours experimental"
+            - option: "Favours comparator"
+            - option: "Towards null"
+            - option: "Away from null"
+            - option: "Unpredictable"       
+        - dimension: #dimension 32
+          id: 74
+          question: "Signalling Question - Are the reported outcome data likely to have been selected, on the basis of the results, from..."
+          description:
+          options:
+        - dimension: #dimension 33
+          id: 75
+          question: "5.1 ... multiple outcome measurements (e.g. scales, definitions, time points) within the outcome domain?"
+          description: "A particular outcome domain (i.e. a true state or endpoint of interest) may be measured in multiple ways. For example, the domain pain may be measured using multiple scales (e.g. a visual analogue scale and the McGill Pain Questionnaire), each at multiple time points (e.g. 3, 6 and 12 weeks post-treatment). If multiple measurements were made, but only one or a subset is reported on the basis of the results (e.g. statistical significance), there is a high risk of bias in the fully reported result. A response of Yes/Probably yes is reasonable if: There is clear evidence (usually through examination of a trial protocol or statistical analysis plan) that a domain was measured in multiple ways, but data for only one or a subset of measures is fully reported (without justification), and the fully reported result is likely to have been selected on the basis of the results. Selection on the basis of the results arises from a desire for findings to be newsworthy, sufficiently noteworthy to merit publication, or to confirm a prior hypothesis. For example, trialists who have a preconception or vested interest in showing that an experimental intervention is beneficial may be inclined to selectively report outcome measurements that are favourable to the experimental intervention. A response of No/Probably no is reasonable if: There is clear evidence (usually through examination of a trial protocol or statistical analysis plan) that all reported results for the outcome domain correspond to all intended outcome measurements or there is only one possible way in which the outcome domain can be measured (hence there is no opportunity to select from multiple measures) or outcome measurements are inconsistent across different reports on the same trial, but the trialists have provided the reason for the inconsistency and it is not related to the nature of the results. A response of No Information is reasonable if: Analysis intentions are not available, or the analysis intentions are not reported in sufficient detail to enable an assessment, and there is more than one way in which the outcome domain could have been measured."
+          options:
+            - option: "Y"
+            - option: "PY"
+            - option: "PN"
+            - option: "N"
+            - option: "NI"    
+        - dimension: #dimension 34
+          id: 76
+          question: "5.2 ... multiple analyses of the data?"
+          description: "A particular outcome domain may be analysed in multiple ways. Examples include: unadjusted and adjusted models; final value vs change from baseline vs analysis of covariance; transformations of variables; conversion of continuously scaled outcome to categorical data with different cut-points; different sets of covariates for adjustment; different strategies for dealing with missing data. Application of multiple methods generates multiple effect estimates for a specific outcome domain. If multiple estimates are generated but only one or a subset is reported on the basis of the results (e.g. statistical significance), there is a high risk of bias in the fully reported result. A response of Yes/Probably yes is reasonable if: There is clear evidence (usually through examination of a trial protocol or statistical analysis plan) that a domain was analysed in multiple ways, but data for only one or a subset of analyses is fully reported (without justification), and the fully reported result is likely to have been selected on the basis of the results. Selection on the basis of the results arises from a desire for findings to be newsworthy, sufficiently noteworthy to merit publication, or to confirm a prior hypothesis. For example, trialists who have a preconception or vested interest in showing that an experimental intervention is beneficial may be inclined to selectively report analyses that are favourable to the experimental intervention. A response of No/Probably no is reasonable if: There is clear evidence (usually through examination of a trial protocol or statistical analysis plan) that all reported results for the outcome domain correspond to all intended analyses. or There is only one possible way in which the outcome domain can be analysed (hence there is no opportunity to select from multiple analyses). or Analyses are inconsistent across different reports on the same trial, but the trialists have provided the reason for the inconsistency and it is not related to the nature of the results. A response of “No information” is reasonable if: Analysis intentions are not available, or the analysis intentions are not reported in sufficient detail to enable an assessment, and there is more than one way in which the outcome domain could have been analysed."
+          options:
+            - option: "Y"
+            - option: "PY"
+            - option: "PN"
+            - option: "N"
+            - option: "NI"    
+        - dimension: #dimension 35
+          id: 77
+          question: "Risk-of-bias judgement"
+          description: "See Figure 6. Suggested algorithm for reaching risk of bias in selection of the reported result, link: https://www.riskofbias.info/welcome/rob-2-0-tool/archive-rob-2-0-cluster-randomized-trials-2016"
+          options:
+            - option: "Low risk"
+            - option: "High risk"
+            - option: "Some concerns"       
+        - dimension: #dimension 36
+          id: 78
+          question: "Overall Risk-of-bias judgement, Optional: What is the overall predicted direction of bias for this outcome?"
+          description: "See Table 1. Reaching an overall risk of bias judgment for a specific outcome, link: https://www.riskofbias.info/welcome/rob-2-0-tool/archive-rob-2-0-cluster-randomized-trials-2016. If the likely direction of bias can be predicted, it is helpful to state this. The direction might be characterized either as being towards (or away from) the null, or as being in favour of one of the interventions."
+          options:
+            - option: "Low risk"
+            - option: "High risk"
+            - option: "Some concerns"      
+    - section:
+      id: 3
       section-title: "Cochrane ROB"
       section-description: "The Cochrane risk of bias items are adapted from the Cochrane Back Review Group 2011 (https://back.cochrane.org/sites/back.cochrane.org/files/uploads/PDF/ROB%20criteria_Aug2011.pdf)"
       dimensions:
         - dimension: #dimension 1
-          id: 43
+          id: 79
           question: "Random sequence generation (selection bias): Selection bias (biased allocation to interventions) due to inadequate generation of a randomized sequence"
           description: "There is a low risk of selection bias if the investigators describe a random component in the sequence  generation process such as: referring to a random number table, using a computer random number generator, coin tossing, shuffling cards or envelopes, throwing dice, drawing of lots, minimization  (minimization may be implemented without a random element, and this is considered to be equivalent to being random). There is a high risk of selection bias if the investigators describe a non-random component in the  sequence generation process, such as: sequence generated by odd or even date of birth, date (or day) of  admission, hospital or clinic record number; or allocation by judgement of the clinician, preference of  the participant, results of a laboratory test or a series of tests, or availability of the intervention."
           options:
@@ -518,7 +958,7 @@
             - option: "Unclear"
             - option: "High"
         - dimension: #dimension 2
-          id: 44
+          id: 80
           question: "Allocation concealment (selection bias): Selection bias (biased allocation to interventions) due to inadequate concealment of allocations prior to assignment"
           description: "There is a low risk of selection bias if the participants and investigators enrolling participants could not foresee assignment because one of the following, or an equivalent method, was used to conceal allocation: central allocation (including telephone, web-based and pharmacy-controlled randomization); sequentially numbered drug containers of identical appearance; or sequentially numbered, opaque, sealed envelopes. There is a high risk of bias if participants or investigators enrolling participants could possibly foresee assignments and thus introduce selection bias, such as allocation based on: using an open random allocation schedule (e.g. a list of random numbers); assignment envelopes were used without appropriate safeguards (e.g. if envelopes were unsealed or non-opaque or not sequentially numbered); alternation or rotation; date of birth; case record number; or other explicitly unconcealed procedures."
           options:
@@ -526,7 +966,7 @@
             - option: "Unclear"
             - option: "High"
         - dimension: #dimension 3
-          id: 45
+          id: 81
           question: "Blinding of participants and personnel: Performance bias due to knowledge of the allocated interventions by participants during the study"
           description: "There is a low risk of performance bias if blinding of participants and key studding personnel was ensured and it was unlikely that the blinding could have been broken; or if there was no blinding or incomplete blinding, but the review authors judge that the outcome is not likely to be influenced by lack of blinding."
           options:
@@ -534,7 +974,7 @@
             - option: "Unclear"
             - option: "High"
         - dimension: #dimension 4
-          id: 46
+          id: 82
           question: "Blinding of outcome assessor (detection bias): Detection bias due to knowledge of the allocated interventions by outcome assessors"
           description: "There is low risk of detection bias if the blinding of the outcome assessment was ensured and it was unlikely that the blinding could have been broken; or if there was no blinding or incomplete blinding, but the review authors judge that the outcome is not likely to be influenced by lack of blinding.; or: >> for patient-reported outcomes in which the patient was the outcome assessor (e.g., pain, disability): there is a low risk of bias for outcome assessors if there is a low risk of bias for participant blinding. >> for outcome criteria that are clinical or therapeutic events that will be determined by the interaction between patients and care providers (e.g., co-interventions, length of hospitalization, treatment failure), in which the care provider is the outcome assessor: there is a low risk of bias for outcome assessors if there is a low risk of bias for care providers. >> for outcome criteria that are assessed from data from medical forms: there is a low risk of bias if the treatment or adverse effects of the treatment could not be noticed in the extracted data."
           options:
@@ -542,7 +982,7 @@
             - option: "Unclear"
             - option: "High"
         - dimension: #dimension 5
-          id: 47
+          id: 83
           question: "Incomplete outcome data (attrition bias): Attrition bias due to amount, nature or handling of incomplete outcome data"
           description: "There is a low risk of attrition bias if there were no missing outcome data; reasons for missing outcome data were unlikely to be related to the true outcome (for survival data, censoring unlikely to be introducing bias); missing outcome data were balanced in numbers, with similar reasons for missing data across groups (The percentage of withdrawals and drop-outs should not exceed 20% for short-term follow-up and 30% for long-term follow-up and should not lead to substantial bias. Note: these percentages are commonly used but arbitrary, not supported by the literature); missing data were imputed using appropriate methods. For dichotomous outcome data, the proportion of missing outcomes compared with the observed event risk was not enough to have a clinically relevant impact on the intervention effect estimate. For continuous outcome data, the plausible effect size (difference in means or standardized difference in means) among missing outcomes were not enough to have a clinically relevant impact on observed effect size. Note: if drop-outs are very large, imputation using even ‘acceptable’ methods may still suggest a high risk of bias."
           options:
@@ -550,7 +990,7 @@
             - option: "Unclear"
             - option: "High"
         - dimension: #dimension 6
-          id: 48
+          id: 84
           question: "Selective Reporting (reporting bias): Reporting bias due to selective outcome reporting"
           description: "There is low risk of reporting bias if the study protocol is available and all of the study’s pre-specified (primary and secondary) outcomes that are of interest in the review have been reported in the pre-specified way, or if the study protocol is not available but it is clear that the published reports include all expected outcome, including those that were pre-specified (convincing text of this nature may be uncommon). There is a high risk of reporting bias if not all of the study’s pre-specified primary outcomes have been reported; one or more primary outcomes is reported using measurements, analysis methods or subsets of the data (e.g. subscales) that were not pre-specified; one or more reported primary outcomes were not pre-specified (unless clear justification for their reporting is provided, such as an unexpected adverse effect); one or more outcomes of interest in the review are reported incompletely so that they cannot be entered in a meta-analysis; the study report fails to include results for a key outcome that would be expected to have been reported for such a study."
           options:
@@ -558,7 +998,7 @@
             - option: "Unclear"
             - option: "High"
         - dimension: #dimension 7
-          id: 49
+          id: 85
           question: "Intention-to-treat-analysis: Bias due to incomplete reporting and analysis according to group allocation"
           description: "There is low risk of bias if all randomized patients were reported/analyzed in the group to which they were allocated by randomization."
           options:
@@ -566,69 +1006,69 @@
             - option: "Unclear"
             - option: "High"
         - dimension: #dimension 8
-          id: 50
+          id: 86
           question: "Other Bias: Bias due to problems not covered elsewhere in the table. If yes, describe them in the Notes."
           description: "There is a low risk of bias if the study appears to be free of other sources of bias not addressed elsewhere"
           options:
             - option: "Low"
             - option: "High"
         - dimension:
-          id: 51
+          id: 87
           question: "Describe:"
           description: ""
           dependencies:
             - question:
-              id: 50
+              id: 86
               options:
                 - option: "High"
           options:
     - section:
-      id: 3
+      id: 4
       section-title: "Jadad Controlled Clinical Trials 17:1-12 (1996)"
       section-description: ""
       dimensions:
         - dimension: #dimension 1
-          id: 52
+          id: 88
           question: "Method to generate sequence of randomization described?"
           description: "A method to generate the sequence of randomization will be regarded as appropriate if it allowed each study participant to have the same chance of receiving each intervention and the investigators could not predict which treatment was next. Methods of allocation using date of birth, date of admission, hospital numbers, or alternation should be not regarded as appropriate."
           options:
             - option: "Yes"
             - option: "No"
         - dimension: #dimension 2
-          id: 53
+          id: 89
           question: "Method to generate sequence of randomization adequate?"
           description: ""
           options:
             - option: "Yes"
             - option: "No"
         - dimension: #dimension 3
-          id: 54
+          id: 90
           question: "Method of double blinding described?"
           description: ""
           options:
             - option: "Yes"
             - option: "No"
         - dimension: #dimension 4
-          id: 55
+          id: 91
           question: "Method of double blinding adequate?"
           description: "A study must be regarded as double blind if the word 'double blind' is used. The method will be regarded as appropriate if it is stated that neither the person doing the assessments nor the study participant could identify the intervention being assessed, or if in the absence of such a statement the use of active placebos, identical placebos, or dummies is mentioned."
           options:
             - option: "Yes"
             - option: "No"
         - dimension: #dimension 5
-          id: 56
+          id: 92
           question: "Was there a description of withdrawals and dropouts?"
           description: "Participants who were included in the study but did not complete the observation period or who were not included in the analysis must be described. The number and the reasons for withdrawal in each group must be stated. If there were no withdrawals, it should be stated in the article. If there is no statement on withdrawals, this item must be given no points."
           options:
             - option: "Yes"
             - option: "No"
     - section:
-      id: 4
+      id: 5
       section-title: "Schulz KF JAMA 1995; 273:408-12: Allocation Concealment"
       section-description: ""
       dimensions:
         - dimension: #dimension 1
-          id: 57
+          id: 93
           question: "Was the treatment allocation concealed?"
           description: ""
           options:
@@ -640,12 +1080,12 @@
   section-group-title: "Nonrandomized Studies"
   sections:
     - section:
-      id: 5
+      id: 6
       section-title: "The Risk of Bias In Non-randomized Studies–of Interventions (ROBINS-I) assessment tool (Cohort-type studies)"
       section-description: ""
       dimensions:
         - dimension: #dimension 1
-          id: 58
+          id: 94
           question: "1.1 Is there potential for confounding of the effect of intervention in this study?"
           description: "In rare situations, such as when studying harms that are very unlikely to be related to factors that influence treatment decisions, no confounding is expected and the study can be considered to be at low risk of bias due to confounding, equivalent to a fully randomized trial. There is no NI (No information) option for this signalling question. If N/PN to 1.1: the study can be considered to be at low risk of bias due to confounding and no further signalling questions need be considered. If Y/PY to 1.1: determine whether there is a need to assess time-varying confounding:"
           options:
@@ -654,12 +1094,12 @@
             - option: "PN"
             - option: "N"
         - dimension: #dimension 2
-          id: 59
+          id: 95
           question: "1.2 Was the analysis based on splitting participants’ follow up time according to intervention received?"
           description: "If participants could switch between intervention groups then associations between intervention and outcome may be biased by time-varying confounding. This occurs when prognostic factors influence switches between intended interventions. If N/PN, answer questions relating to baseline confounding (1.4 to 1.6). If Y/PY, proceed to question 1.3."
           dependencies:
             - question:
-              id: 58
+              id: 94
               options:
                 - option: "Y"
                 - option: "PY"
@@ -671,17 +1111,17 @@
             - option: "N"
             - option: "NI"
         - dimension: #dimension 3
-          id: 60
+          id: 96
           question: "1.3 Were intervention discontinuations or switches likely to be related to factors that are prognostic for the outcome?"
           description: "If intervention switches are unrelated to the outcome, for example when the outcome is an unexpected harm, then time-varying confounding will not be present and only control for baseline confounding is required."
           dependencies:
             - question:
-              id: 58
+              id: 94
               options:
                 - option: "Y"
                 - option: "PY"
             - question:
-              id: 59
+              id: 95
               options:
                 - option: "Y"
                 - option: "PY"
@@ -693,17 +1133,17 @@
             - option: "N"
             - option: "NI"
         - dimension: #dimension 4
-          id: 61
+          id: 97
           question: "1.4. Did the authors use an appropriate analysis method that controlled for all the important confounding domains?"
           description: "Appropriate methods to control for measured confounders include stratification, regression, matching, standardization, and inverse probability weighting. They may control for individual variables or for the estimated propensity score. Inverse probability weighting is based on a function of the propensity score. Each method depends on the assumption that there is no unmeasured or residual confounding."
           dependencies:
             - question:
-              id: 59
+              id: 95
               options:
                 - option: "N"
                 - option: "PN"
             - question:
-              id: 60
+              id: 96
               options:
                 - option: "N"
                 - option: "PN"
@@ -715,22 +1155,22 @@
             - option: "N"
             - option: "NI"
         - dimension: #dimension 5
-          id: 62
+          id: 98
           question: "1.5. If Y/PY to 1.4: Were confounding domains that were controlled for measured validly and reliably by the variables available in this study?"
           description: "Appropriate control of confounding requires that the variables adjusted for are valid and reliable measures of the confounding domains. For some topics, a list of valid and reliable measures of confounding domains will be specified in the review protocol but for others such a list may not be available. Study authors may cite references to support the use of a particular measure. If authors control for confounding variables with no indication of their validity or reliability pay attention to the subjectivity of the measure. Subjective measures (e.g. based on self-report) may have lower validity and reliability than objective measures such as lab findings."
           dependencies:
             - question:
-              id: 59
+              id: 95
               options:
                 - option: "N"
                 - option: "PN"
             - question:
-              id: 60
+              id: 96
               options:
                 - option: "N"
                 - option: "PN"
             - question:
-              id: 61
+              id: 97
               options:
                 - option: "Y"
                 - option: "PY"
@@ -742,17 +1182,17 @@
             - option: "N"
             - option: "NI"
         - dimension: #dimension 6
-          id: 63
+          id: 99
           question: "1.6. Did the authors control for any post-intervention variables that could have been affected by the intervention?"
           description: "Controlling for post-intervention variables that are affected by intervention is not appropriate. Controlling for mediating variables estimates the direct effect of intervention and may introduce bias. Controlling for common effects of intervention and outcome introduces bias."
           dependencies:
             - question:
-              id: 59
+              id: 95
               options:
                 - option: "N"
                 - option: "PN"
             - question:
-              id: 60
+              id: 96
               options:
                 - option: "N"
                 - option: "PN"
@@ -764,12 +1204,12 @@
             - option: "N"
             - option: "NI"
         - dimension: #dimension 7
-          id: 64
+          id: 100
           question: "1.7. Did the authors use an appropriate analysis method that adjusted for all the important confounding domains and for time-varying confounding?"
           description: "Adjustment for time-varying confounding is necessary to estimate the effect of starting and adhering to intervention, in both randomized trials and NRSI. Appropriate methods include those based on inverse probability weighting. Standard regression models that include time-updated confounders may be problematic if time-varying confounding is present."
           dependencies:
             - question:
-              id: 60
+              id: 96
               options:
                 - option: "Y"
                 - option: "PY"
@@ -781,17 +1221,17 @@
             - option: "N"
             - option: "NI"
         - dimension: #dimension 8
-          id: 65
+          id: 101
           question: "1.8. If Y/PY to 1.7: Were confounding domains that were adjusted for measured validly and reliably by the variables available in this study?"
           description: "See 1.5 above"
           dependencies:
             - question:
-              id: 60
+              id: 96
               options:
                 - option: "Y"
                 - option: "PY"
             - question:
-              id: 64
+              id: 100
               options:
                 - option: "Y"
                 - option: "PY"
@@ -803,7 +1243,7 @@
             - option: "N"
             - option: "NI"
         - dimension: #dimension 9
-          id: 66
+          id: 102
           question: "Optional: What is the predicted direction of bias due to confounding?"
           description: "Can the true effect estimate be predicted to be greater or less than the estimated effect in the study because one or more of the important confounding domains was not controlled for? Answering this question will be based on expert knowledge and results in other studies and therefore can only be completed after all of the studies in the body of evidence have been reviewed. Consider the potential effect of each of the unmeasured domains and whether all important confounding domains not controlled for in the analysis would be likely to change the estimate in the same direction, or if one important confounding domain that was not controlled for in the analysis is likely to have a dominant impact."
           options:
@@ -816,7 +1256,7 @@
             - option: "Favors comparator"
             - option: "Unpredictable"
         - dimension: #dimension 10
-          id: 67
+          id: 103
           question: "2.1. Was selection of participants into the study (or into the analysis) based on participant characteristics observed after the start of intervention?"
           description: "This domain is concerned only with selection into the study based on participant characteristics observed after the start of intervention. Selection based on characteristics observed before the start of intervention can be addressed by controlling for imbalances between experimental intervention and comparator groups in baseline characteristics that are prognostic for the outcome (baseline confounding). If N/PN to 2.1: go to 2.4"
           options:
@@ -826,12 +1266,12 @@
             - option: "N"
             - option: "NI"
         - dimension: #dimension 11
-          id: 68
+          id: 104
           question: "2.2. If Y/PY to 2.1: Were the post-intervention variables that influenced selection likely to be associated with intervention?"
           description: "Selection bias occurs when selection is related to an effect of either intervention or a cause of intervention and an effect of either the outcome or a cause of the outcome. Therefore, the result is at risk of selection bias if selection into the study is related to both the intervention and the outcome."
           dependencies:
             - question:
-              id: 67
+              id: 103
               options:
                 - option: "Y"
                 - option: "PY"
@@ -843,12 +1283,12 @@
             - option: "N"
             - option: "NI"
         - dimension: #dimension 12
-          id: 69
+          id: 105
           question: "2.3 If Y/PY to 2.2:  Were the post-intervention variables that influenced selection likely to be influenced by the outcome or a cause of the outcome?"
           description: ""
           dependencies:
             - question:
-              id: 68
+              id: 104
               options:
                 - option: "Y"
                 - option: "PY"
@@ -860,12 +1300,12 @@
             - option: "N"
             - option: "NI"
         - dimension: #dimension 13
-          id: 70
+          id: 106
           question: "2.4. Do start of follow-up and start of intervention coincide for most participants?"
           description: "If participants are not followed from the start of the intervention then a period of follow up has been excluded, and individuals who experienced the outcome soon after intervention will be missing from analyses. This problem may occur when prevalent, rather than new (incident), users of the intervention are included in analyses."
           dependencies:
             - question:
-              id: 67
+              id: 103
               options:
                 - option: "N"
                 - option: "PN"
@@ -876,22 +1316,22 @@
             - option: "N"
             - option: "NI"
         - dimension: #dimension 14
-          id: 71
+          id: 107
           question: "2.5. If Y/PY to 2.2 and 2.3, or N/PN to 2.4: Were adjustment techniques used that are likely to correct for the presence of selection biases?"
           description: "It is in principle possible to correct for selection biases, for example by using inverse  probability  weights  to  create  a  pseudo-population  in  which  the selection  bias  has  been  removed,  or  by  modelling  the distributions  of  the missing  participants  or  follow  up  times  and  outcome  events  and  including them  using  missing  data  methodology.  However  such  methods  are  rarely used and the answer to this question will usually be ‘No’."
           dependencies:
             - question:
-              id: 68
+              id: 104
               options:
                 - option: "Y"
                 - option: "PY"
             - question:
-              id: 69
+              id: 105
               options:
                 - option: "Y"
                 - option: "PY"
             - question:
-              id: 70
+              id: 106
               options:
                 - option: "N"
                 - option: "PN"
@@ -903,7 +1343,7 @@
             - option: "N"
             - option: "NI"
         - dimension: #dimension 15
-          id: 72
+          id: 108
           question: "Optional: What is the predicted direction of bias due to selection of participants into the study?"
           description: "If the likely direction of bias can be predicted, it is helpful to state this. The direction might be characterized either as being towards (or away from) the null, or as being in favour of one of the interventions."
           options:
@@ -917,7 +1357,7 @@
             - option: "Away from null"
             - option: "Unpredictable"
         - dimension: #dimension 16
-          id: 73
+          id: 109
           question: "3.1 Were intervention groups clearly defined?"
           description: "A pre-requisite for an appropriate comparison of interventions is that the interventions are well defined. Ambiguity in the definition may lead to bias in the classification of participants. For individual-level interventions, criteria for considering individuals to have received each intervention should be clear and explicit, covering issues such as type, setting, dose, frequency, intensity and/or timing of intervention. For population-level interventions (e.g. measures to control air pollution), the question relates to whether the population is clearly defined, and the answer is likely to be ‘Yes’"
           options:
@@ -927,7 +1367,7 @@
             - option: "N"
             - option: "NI"
         - dimension: #dimension 17
-          id: 74
+          id: 110
           question: "3.2 Was the information used to define intervention groups recorded at the start of the intervention?"
           description: "In general, if information about interventions received is available from sources that could not have been affected by subsequent outcomes, then differential misclassification of intervention status is unlikely. Collection of the information at the time of the intervention makes it easier to avoid such misclassification. For population-level interventions (e.g. measures to control air pollution), the answer to this question is likely to be ‘Yes’."
           options:
@@ -937,7 +1377,7 @@
             - option: "N"
             - option: "NI"
         - dimension: #dimension 18
-          id: 75
+          id: 111
           question: "3.3 Could classification of intervention status have been affected by knowledge of the outcome or risk of the outcome?"
           description: "Collection of the information at the time of the intervention may not be sufficient to avoid bias. The way in which the data are collected for the purposes of the NRSI should also avoid misclassification."
           options:
@@ -947,7 +1387,7 @@
             - option: "N"
             - option: "NI"
         - dimension: #dimension 19
-          id: 76
+          id: 112
           question: "Optional: What is the predicted direction of bias due to measurement of outcomes or interventions?"
           description: "If the likely direction of bias can be predicted, it is helpful to state this. The direction might be characterized either as being towards (or away from) the null, or as being in favour of one of the interventions."
           options:
@@ -961,7 +1401,7 @@
             - option: "Away from null"
             - option: "Unpredictable"
         - dimension: #dimension 20
-          id: 77
+          id: 113
           question: "4.1. Were there deviations from the intended intervention beyond what would be expected in usual practice?"
           description: "Deviations  that  happen  in  usual  practice  following  the  intervention  (for example, cessation of a drug intervention because of acute toxicity) are part of the intended intervention and therefore do not lead to bias in the effect of assignment to intervention. Deviations   may   arise   due   to   expectations   of   a   difference   between intervention and comparator (for example because participants feel unlucky to have been assigned to the comparator group and therefore seek the active intervention, or components of it, or other interventions). Such deviations are not  part of usual practice, so may  lead to biased effect  estimates. However these are not expected in observational studies of individuals in routine care."
           options:
@@ -971,12 +1411,12 @@
             - option: "N"
             - option: "NI"
         - dimension: #dimension 21
-          id: 78
+          id: 114
           question: "4.2. If Y/PY to 4.1: Were these deviations from intended intervention unbalanced between groups and likely to have affected the outcome?"
           description: "Deviations from intended interventions that do not reflect usual practice will be important if they affect the outcome, but not otherwise. Furthermore, bias will arise only if there is imbalance in the deviations across the two groups."
           dependencies:
             - question:
-              id: 77
+              id: 113
               options:
                 - option: "Y"
                 - option: "PY"
@@ -988,7 +1428,7 @@
             - option: "N"
             - option: "NI"
         - dimension: #dimension 22
-          id: 79
+          id: 115
           question: "4.3. Were important co-interventions balanced across intervention groups?"
           description: "Risk of bias will be higher if unplanned co-interventions were implemented in a way that would bias the estimated effect of intervention. Co-interventions will be important if they affect the outcome, but not otherwise. Bias will arise only if there is imbalance in such co-interventions between the intervention groups. Consider the co-interventions, including any pre-specified co-interventions, that are likely to affect the outcome and to have been administered in this study. Consider whether these co-interventions are balanced between intervention groups."
           options:
@@ -998,7 +1438,7 @@
             - option: "N"
             - option: "NI"
         - dimension: #dimension 23
-          id: 80
+          id: 116
           question: "4.4. Was the intervention implemented successfully for most participants?"
           description: "Risk of bias will be higher if the intervention was not implemented as intended by, for example, the health care professionals delivering care during the trial. Consider whether implementation of the intervention was successful for most participants."
           options:
@@ -1008,7 +1448,7 @@
             - option: "N"
             - option: "NI"
         - dimension: #dimension 24
-          id: 81
+          id: 117
           question: "4.5. Did study participants adhere to the assigned intervention regimen?"
           description: "Risk of bias will be higher if participants did not adhere to the intervention as intended. Lack of adherence includes imperfect compliance, cessation of intervention, crossovers to the comparator intervention and switches to another active intervention. Consider available information on the proportion of study participants who continued with their assigned intervention throughout follow up, and answer ‘No’ or ‘Probably No’ if this proportion is high enough to raise concerns. Answer ‘Yes’ for studies of interventions that are administered once, so that imperfect adherence is not possible."
           options:
@@ -1018,22 +1458,22 @@
             - option: "N"
             - option: "NI"
         - dimension: #dimension 25
-          id: 82
+          id: 118
           question: "4.6. If N/PN to 4.3, 4.4 or 4.5: Was an appropriate analysis used to estimate the effect of starting and adhering to the intervention?"
           description: "It is possible to conduct an analysis that corrects for some types of deviation from the intended intervention. Examples of appropriate analysis strategies include inverse probability weighting or instrumental variable estimation. It is possible that a paper reports such an analysis without reporting information on the deviations from intended intervention, but it would be hard to judge such an analysis to be appropriate in the absence of such information. Specialist advice may be needed to assess studies that used these approaches. If everyone in one group received a co-intervention, adjustments cannot be made to overcome this."
           dependencies:
             - question:
-              id: 79
+              id: 115
               options:
                 - option: "N"
                 - option: "PN"
             - question:
-              id: 80
+              id: 116
               options:
                 - option: "N"
                 - option: "PN"
             - question:
-              id: 81
+              id: 117
               options:
                 - option: "N"
                 - option: "PN"
@@ -1045,7 +1485,7 @@
             - option: "N"
             - option: "NI"
         - dimension: #dimension 26
-          id: 83
+          id: 119
           question: "Optional: What is the predicted direction of bias due to deviations from the intended interventions?"
           description: "If the likely direction of bias can be predicted, it is helpful to state this. The direction might be characterized either as being towards (or away from) the null, or as being in favour of one of the interventions."
           options:
@@ -1059,7 +1499,7 @@
             - option: "Away from null"
             - option: "Unpredictable"
         - dimension: #dimension 27
-          id: 84
+          id: 120
           question: "5.1 Were outcome data available for all, or nearly all, participants?"
           description: "‘Nearly all’ should be interpreted as ‘enough to be confident of the findings’, and a suitable proportion depends on the context. In some situations, availability of data from 95% (or possibly 90%) of the participants may be sufficient, providing that events of interest are reasonably common in both intervention groups. One aspect of this is that review authors would ideally try and locate an analysis plan for the study."
           options:
@@ -1069,7 +1509,7 @@
             - option: "N"
             - option: "NI"
         - dimension: #dimension 28
-          id: 85
+          id: 121
           question: "5.2 Were participants excluded due to missing data on intervention status?"
           description: "Missing intervention status may be a problem. This requires that the intended study sample is clear, which it may not be in practice."
           options:
@@ -1079,7 +1519,7 @@
             - option: "N"
             - option: "NI"
         - dimension: #dimension 29
-          id: 86
+          id: 122
           question: "5.3 Were participants excluded due to missing data on other variables needed for the analysis?"
           description: "This question relates particularly to participants excluded from the analysis because of missing information on confounders that were controlled for in the analysis."
           options:
@@ -1089,22 +1529,22 @@
             - option: "N"
             - option: "NI"
         - dimension: #dimension 30
-          id: 87
+          id: 123
           question: "5.4 If PN/N to 5.1, orY/PY to 5.2 or 5.3: Are the proportion of participants and reasons for missing data similar across interventions?"
           description: "This aims to elicit whether either (i) differential proportion of missing observations or (ii) differences in reasons for missing observations could substantially impact on our ability to answer the question being addressed. ‘Similar’ includes some minor degree of discrepancy across intervention groups as expected by chance."
           dependencies:
             - question:
-              id: 84
+              id: 120
               options:
                 - option: "N"
                 - option: "PN"
             - question:
-              id: 85
+              id: 121
               options:
                 - option: "Y"
                 - option: "PY"
             - question:
-              id: 86
+              id: 122
               options:
                 - option: "Y"
                 - option: "PY"
@@ -1116,22 +1556,22 @@
             - option: "N"
             - option: "NI"
         - dimension: #dimension 31
-          id: 88
+          id: 124
           question: "5.5 If PN/N to 5.1, orY/PY to 5.2 or 5.3: Is there evidence that results were robust to the presence of missing data?"
           description: "Evidence for robustness may come from how missing data were handled in the analysis and whether sensitivity analyses were performed by the investigators, or occasionally from additional analyses performed by the systematic reviewers. It is important to assess whether assumptions employed in analyses are clear and plausible. Both content knowledge and statistical expertise will often be required for this.  For instance, use of a statistical method such as multiple imputation does not guarantee an appropriate answer. Review authors should seek naïve (complete-case) analyses for comparison, and clear differences between complete-case and multiple imputation-based findings should lead to careful assessment of the validity of the methods used. "
           dependencies:
             - question:
-              id: 84
+              id: 120
               options:
                 - option: "N"
                 - option: "PN"
             - question:
-              id: 85
+              id: 121
               options:
                 - option: "Y"
                 - option: "PY"
             - question:
-              id: 86
+              id: 122
               options:
                 - option: "Y"
                 - option: "PY"
@@ -1143,7 +1583,7 @@
             - option: "N"
             - option: "NI"
         - dimension: #dimension 32
-          id: 89
+          id: 125
           question: "Optional: What is the predicted direction of bias due to missing data?"
           description: "If the likely direction of bias can be predicted, it is helpful to state this. The direction might be characterized either as being towards (or away from) the null, or as being in favour of one of the interventions."
           options:
@@ -1157,7 +1597,7 @@
             - option: "Away from null"
             - option: "Unpredictable"
         - dimension: #dimension 33
-          id: 90
+          id: 126
           question: "6.1 Could the outcome measure have been influenced by knowledge of the intervention received?"
           description: "Some outcome measures involve negligible assessor judgment, e.g. all-cause mortality or non-repeatable automated laboratory assessments. Risk of bias due to measurement of these outcomes would be expected to be low."
           options:
@@ -1167,7 +1607,7 @@
             - option: "N"
             - option: "NI"
         - dimension: #dimension 34
-          id: 91
+          id: 127
           question: "6.2 Were outcome assessors aware of the intervention received by study participants?"
           description: "If outcome assessors were blinded to intervention status, the answer to this question would be ‘No’. In other situations, outcome assessors may be unaware of the interventions being received by participants despite there being no active blinding by the study investigators; the answer this question would then also be‘No’.  In studies where participants report their outcomes themselves, for example in a questionnaire, the outcome assessor is the study participant. In an observational study, the answer to this question will usually be ‘Yes’ when the participants report their outcomes themselves."
           options:
@@ -1177,7 +1617,7 @@
             - option: "N"
             - option: "NI"
         - dimension: #dimension 35
-          id: 92
+          id: 128
           question: "6.3 Were the methods of outcome assessment comparable across intervention groups?"
           description: "Comparable assessment methods (i.e. data collection) would involve the same outcome detection methods and thresholds, same time point, same definition, and same measurements."
           options:
@@ -1187,7 +1627,7 @@
             - option: "N"
             - option: "NI"
         - dimension: #dimension 36
-          id: 93
+          id: 129
           question: "6.4 Were any systematic errors in measurement of the outcome related to intervention received?"
           description: "This question refers to differential misclassification of outcomes. Systematic errors in measuring the outcome, if present, could cause bias if they are related to intervention or to a confounder of the intervention-outcome relationship. This will usually be due either to outcome assessors being aware of the intervention received or to non-comparability of outcome assessment methods, but there are examples of differential misclassification arising despite these controls being in place."
           options:
@@ -1197,7 +1637,7 @@
             - option: "N"
             - option: "NI"
         - dimension: #dimension 37
-          id: 94
+          id: 130
           question: "Optional: What is the predicted direction of bias due to measurement of outcomes?"
           description: "If the likely direction of bias can be predicted, it is helpful to state this. The direction might be characterized either as being towards (or away from) the null, or as being in favour of one of the interventions."
           options:
@@ -1211,7 +1651,7 @@
             - option: "Away from null"
             - option: "Unpredictable"
         - dimension: #dimension 38
-          id: 95
+          id: 131
           question: "7.1. ... multiple outcome measurements within the outcome domain?"
           description: "For a specified outcome domain, it is possible to generate multiple effect estimates for different measurements. If multiple measurements were made, but only one or a subset is reported, there is a risk of selective reporting on the basis of results."
           options:
@@ -1221,7 +1661,7 @@
             - option: "N"
             - option: "NI"
         - dimension: #dimension 39
-          id: 96
+          id: 132
           question: "7.2 ... multiple analyses of the intervention-outcome relationship?"
           description: "Because of the limitations of using data from non-randomized studies for analyses of effectiveness (need to control confounding, substantial missing data, etc), analysts may implement different analytic methods to address these limitations. Examples include unadjusted and adjusted models; use of final value vs change from baseline vs analysis of covariance; different transformations of variables; a continuously scaled outcome converted to categorical data with different cut-points; different sets of covariates used for adjustment; and different analytic strategies for dealing with missing data. Application of such methods generates multiple estimates of the effect of the intervention versus the comparator on the outcome. If the analyst does not pre-specify the methods to be applied, and multiple estimates are generated but only one or a subset is reported, there is a risk of selective reporting on the basis of results."
           options:
@@ -1231,7 +1671,7 @@
             - option: "N"
             - option: "NI"
         - dimension: #dimension 40
-          id: 97
+          id: 133
           question: "7.3 ... different subgroups?"
           description: "Particularly with large cohorts often available from routine data sources, it is possible to generate multiple effect estimates for different subgroups or simply to omit varying proportions of the original cohort.  If multiple estimates are generated but only one or a subset is reported, there is a risk of selective reporting on the basis of results."
           options:
@@ -1241,7 +1681,7 @@
             - option: "N"
             - option: "NI"
         - dimension: #dimension 41
-          id: 98
+          id: 134
           question: "Optional: What is the predicted direction of bias due to selection of the reported result?"
           description: "If the likely direction of bias can be predicted, it is helpful to state this. The direction might be characterized either as being towards (or away from) the null, or as being in favour of one of the interventions."
           options:
@@ -1255,7 +1695,7 @@
             - option: "Away from null"
             - option: "Unpredictable"
         - dimension: #dimension 42
-          id: 99
+          id: 135
           question: "Optional: What is the overall predicted direction of bias for this outcome?"
           description: ""
           options:
@@ -1269,12 +1709,12 @@
             - option: "Away from null"
             - option: "Unpredictable"
     - section:
-      id: 6
+      id: 7
       section-title: "Modified Newcastle-Ottawa Quality Assessment Scale - Case Control Studies"
       section-description: "Note: A study can be awarded a maximum of one star for each numbered item within the Selection and Exposure categories. A maximum of two stars can be given for Comparability."
       dimensions:
         - dimension:  #dimension 1
-          id: 100
+          id: 136
           question: "Is the case definition adequate?"
           description: ""
           options:
@@ -1282,14 +1722,14 @@
             - option: "Yes, based on self reports"
             - option: "No description"
         - dimension:  #dimension 2
-          id: 101
+          id: 137
           question: "Representativeness of the cases"
           description: ""
           options:
             - option: "All eligible cases with outcome of interest over a defined period of time, all cases in a defined catchment area, all cases in a defined team/competition/sport, or a random sample of those cases*"
             - option: "Potential for selection biases or not stated"
         - dimension:  #dimension 3
-          id: 102
+          id: 138
           question: "Selection of Controls"
           description: ""
           options:
@@ -1297,21 +1737,21 @@
             - option: "Controls were selected from a different source population"
             - option: "No description"
         - dimension:  #dimension 4
-          id: 103
+          id: 139
           question: "Definition of Controls"
           description: ""
           options:
             - option: "If cases are first occurrence of injury of interest, then it must explicitly state that controls have no history of this outcome. If cases have new (not necessarily first) occurrence of specific injury, then controls with previous occurrences of outcome of interest should not be excluded*"
             - option: "No description of injury history"
         - dimension:  #dimension 5
-          id: 104
+          id: 140
           question: "Comparability of cases and controls on the basis of the design or analysis"
           description: "Note: Cases and controls must be matched in the design and/or confounders must be adjusted for in the analysis. Alone statements of no differences between groups or that differences were not statistically significant are not sufficient."
           options:
             - option: "Study controls for previous injury*"
             - option: "Study controls for age*"
         - dimension:  #dimension 6
-          id: 105
+          id: 141
           question: "Ascertainment of exposure"
           options:
             - option: "Structured injury data (e.g. record completed by medical staff)*"
@@ -1320,14 +1760,14 @@
             - option: "Written self report or medical record (unstructured data) only"
             - option: "No description"
         - dimension:  #dimension 7
-          id: 106
+          id: 142
           question: "Same method of ascertainment for cases and controls"
           description: ""
           options:
             - option: "Yes*"
             - option: "No"
         - dimension:  #dimension 8
-          id: 107
+          id: 143
           question: "Non-Response rate"
           description: ""
           options:
@@ -1335,19 +1775,19 @@
             - option: "Non respondents described"
             - option: "Rate different and no designation"
     - section:
-      id: 7
+      id: 8
       section-title: "Modified Newcastle-Ottawa Quality Assessment Scale - Cohort Studies"
       section-description: "Note: A study can be awarded a maximum of one star for each numbered item within the Selection and Exposure categories. A maximum of two stars can be given for Comparability."
       dimensions:
         - dimension:  #dimension 1
-          id: 108
+          id: 144
           question: "Representativeness of the exposed cohort"
           description: ""
           options:
             - option: "Consecutive eligible participants were selected, participants were randomly selected, or all participants were invited to participate from the source population*"
             - option: "Potential for selection biases or not stated"
         - dimension: #dimension 2
-          id: 109
+          id: 145
           question: "Selection of the non exposed cohort"
           description: ""
           options:
@@ -1355,7 +1795,7 @@
             - option: "Selected from a different source population"
             - option: "No description"
         - dimension:  #dimension 3
-          id: 110
+          id: 146
           question: "Ascertainment of exposure"
           description: ""
           options:
@@ -1364,21 +1804,21 @@
             - option: "Written self report"
             - option: "No description"
         - dimension:  #dimension 4
-          id: 111
+          id: 147
           question: "Demonstration that outcome of interest was not present at the start of the study"
           description: ""
           options:
             - option: "Yes*"
             - option: "No or not explicitly stated"
         - dimension:  #dimension 5
-          id: 112
+          id: 148
           question: "Comparability of cohorts on the basis of the design or analysis"
           description: "Note: Exposed and non-exposed individuals must be matched in the design and/or confounders must be adjusted for in the analysis. Alone statements of no differences between groups or that differences were not statistically significant are not sufficient."
           options:
             - option: "Study controls for previous injury*"
             - option: "Study controls for age*"
         - dimension:  #dimension 6
-          id: 113
+          id: 149
           question: "Assessment of outcome"
           description: ""
           options:
@@ -1387,14 +1827,14 @@
             - option: "Self report with no reference to original structured injury data or imaging"
             - option: "No description"
         - dimension:  #dimension 7
-          id: 114
+          id: 150
           question: "Was follow-up long enough for outcomes to occur"
           description: ""
           options:
             - option: "Yes (>=3 months)*"
             - option: "No (<3 months)"
         - dimension:  #dimension 8
-          id: 115
+          id: 151
           question: "Adequacy of follow up of cohorts"
           description: ""
           options:
@@ -1403,12 +1843,12 @@
             - option: "Follow up rate <85% and no description of those lost provided"
             - option: "No statement"
     - section:
-      id: 8
+      id: 9
       section-title: "EPC Common Dimensions"
       section-description: ""
       dimensions:
         - dimension: #dimension 1
-          id: 116
+          id: 152
           question: "Appropriate randomization technique"
           description: ""
           options:
@@ -1417,7 +1857,7 @@
             - option: "No Data"
             - option: "Not Applicable"
         - dimension: #dimension 2
-          id: 117
+          id: 153
           question: "Allocation concealment"
           description: ""
           options:
@@ -1426,14 +1866,14 @@
             - option: "No Data"
             - option: "Not Applicable"
         - dimension: #dimension 3
-          id: 118
+          id: 154
           question: "Dropout rate <20 percent"
           description: ""
           options:
             - option: "Yes"
             - option: "No"
         - dimension: #dimension 4
-          id: 119
+          id: 155
           question: "Blinded patient"
           description: ""
           options:
@@ -1441,7 +1881,7 @@
             - option: "No"
             - option: "No Data"
         - dimension: #dimension 5
-          id: 120
+          id: 156
           question: "Blinded outcome assessment"
           description: ""
           options:
@@ -1449,7 +1889,7 @@
             - option: "No"
             - option: "No Data"
         - dimension: #dimension 6
-          id: 121
+          id: 157
           question: "Intention to treat analysis"
           description: ""
           options:
@@ -1457,14 +1897,14 @@
             - option: "No"
             - option: "No Data"
         - dimension: #dimension 7
-          id: 122
+          id: 158
           question: "Appropriate statistical analysis"
           description: ""
           options:
             - option: "Yes"
             - option: "No"
         - dimension: #dimension 8
-          id: 123
+          id: 159
           question: "If multicenter, was this accounted for in analysis?"
           description: ""
           options:
@@ -1472,7 +1912,7 @@
             - option: "No"
             - option: "Not Applicable"
         - dimension: #dimension 9
-          id: 124
+          id: 160
           question: "Were potential confounders properly accounted for?"
           description: ""
           options:
@@ -1481,42 +1921,42 @@
             - option: "No Data"
             - option: "Not Applicable"
         - dimension: #dimension 10
-          id: 125
+          id: 161
           question: "Clear reporting with no discrepancies"
           description: ""
           options:
             - option: "Yes"
             - option: "No"
         - dimension: #dimension 11
-          id: 126
+          id: 162
           question: "Were eligibility criteria clear?"
           description: ""
           options:
             - option: "Yes"
             - option: "No"
         - dimension: #dimension 12
-          id: 127
+          id: 163
           question: "Was selection bias likely?"
           description: ""
           options:
             - option: "Yes"
             - option: "No"
         - dimension: #dimension 13
-          id: 128
+          id: 164
           question: "Were interventions adequately described?"
           description: ""
           options:
             - option: "Yes"
             - option: "No"
         - dimension: #dimension 14
-          id: 129
+          id: 165
           question: "Were the outcomes fully defined?"
           description: ""
           options:
             - option: "Yes"
             - option: "No"
         - dimension: #dimension 15
-          id: 130
+          id: 166
           question: "Did the analyses account for compliance?"
           description: ""
           options:
@@ -1524,12 +1964,12 @@
             - option: "No"
             - option: "Not Applicable"
     - section:
-      id: 9
+      id: 10
       section-title: "McMaster Quality Assessment Scale for Harms (McHarm)"
       section-description: ""
       dimensions:
         - dimension: #dimension 1
-          id: 131
+          id: 167
           question: "Were the harms PRE-DEFINED using standardized or precise definitions"
           description: "Harms can be defined as the totality of adverse consequences of an intervention or therapy. Harms are the opposite of benefits, against which they are directly compared. The balance between the benefit(s) and harm(s) of an intervention (i.e. drug or surgery) is ideally used to determine its efficacy or effectiveness. Pre-defined indicates that the harms that were expected are explicitly defined prior to the collection of these expected events. For example, if bleeding is listed as a harmful event, the criteria by which they determine the bleeding (i.e. body location, type, or amount of blood loss that counts as an event, etc) should be specified. Standardized classification of harms can be derived from any of the following: 1) reference to standard terminology or classifications of harms from a recognized external organization(s)(such as government regulatory or health agencies. Examples of standardized terminology for harms includes, WHO-ART, MEDra, HTA report on the Measurement and Monitoring of Surgical Adverse Events); 2) previously explicitly defined classifications of harms in the literature, or; 3) based on pre-specified clinical criteria, or; 4) pre-specified laboratory test (may not need to have a specific cut-off level specified in all cases). In some instances only some of the harms identified in a study will be precisely defined. In this case, there must be some judgement if the nature of the harms not pre-defined."
           options:
@@ -1537,7 +1977,7 @@
             - option: "No"
             - option: "Unsure"
         - dimension: #dimension 2
-          id: 132
+          id: 168
           question: "Were SERIOUS events precisely defined"
           description: "Studies should ALWAYS define what they mean by serious events, even if the authors state that NO serious events occurred (or if serious events are NOT expected). Serious event: This is one that is fatal or life threatening, or lead to hospitalization or disability. A serious event might be significant enough to lead to important changes in the way the intervention (drug or surgery) is administered either in dose, population, or the need for continued monitoring of consent forms. This is especially true of reactions, which in their most severe form threaten life or function."
           options:
@@ -1545,7 +1985,7 @@
             - option: "No"
             - option: "Unsure"
         - dimension: #dimension 3
-          id: 133
+          id: 169
           question: "Were SEVERE events precisely defined"
           description: "Studies should ALWAYS define what they mean by severe events, even if the author(s) state that NO severe events occurred (or if severe events are NOT expected). Severe event: These should be specified explicitly (for example the difference between moderate versus severe events)."
           options:
@@ -1553,7 +1993,7 @@
             - option: "No"
             - option: "Unsure"
         - dimension: #dimension 4
-          id: 134
+          id: 170
           question: "Were the number of DEATHS in each study group specified OR were the reason(s) for not specifying them given"
           description: "1) In the instance where death is not an expected harm for the particular intervention, the author(s) should specify the following: a) indicate that NO deaths occurred; b) provide rationale for not reporting the number of deaths (i.e. that none occurred). 2) In the case where there is a combined outcome that includes death with some other outcome (for example stroke or death combined, non-fatal myocardial infarction and death combined), do not consider the composite outcome as if it were death alone. Ideally to meet this criterion the deaths should be separate. 3) Be aware that the ideal situation is where all deaths (regardless of whether attribution to a specific cause is possible) are reported (i.e. the total number of deaths)."
           options:
@@ -1561,7 +2001,7 @@
             - option: "No"
             - option: "Unsure"
         - dimension: #dimension 5
-          id: 135
+          id: 171
           question: "Was the mode of harms collection specified as ACTIVE"
           description: "Active ascertainment of harms indicates: a) that participants are asked about the occurrence of specific harms in structured questionnaires or interviews or pre-defined laboratory or diagnostic tests, usually performed at pre-specified time intervals; b) that the potential occurrence of harmful events are collected at pre-specified intervals; for example, the occurrence of post-operative complications were evaluated on a daily basis within 30 days of the surgery. These events are potentially expected harms as a result of the intervention."
           options:
@@ -1569,7 +2009,7 @@
             - option: "No"
             - option: "Unsure"
         - dimension: #dimension 6
-          id: 136
+          id: 172
           question: "Was the mode of harms collection specified as PASSIVE"
           description: "Passive ascertainment of harms occurs when study participants spontaneously report (on their own initiative) or are allowed to report harmful events not probed with active ascertainment. In some studies, laboratory or diagnostic tests are only ordered if a particular event is suspected. For example, a study participant is suspected of having a stroke based on clinical presentation; the authors would indicate that brain imaging tests would then be ordered to confirm the presence of absence of the stroke. In the situation where subjects are undergoing active surveillance (standardized questionnaires, or interviews, or diaries) there are opportunities for spontaneous reporting of unexpected harms."
           options:
@@ -1577,7 +2017,7 @@
             - option: "No"
             - option: "Unsure"
         - dimension: #dimension 7
-          id: 137
+          id: 173
           question: "Did the study specify WHO collected the harms"
           description: "A study must specify who collected or ascertained the harm. In some instances a study may indicate that the clinical details for the harms event is given to an external clinical audit committee, whose responsibility it is to determine the type and severity of the event. Although they have not necessarily specified who collected the clinical data sent to the external committee, the ascertainment of the harms event would be sufficient to allow a yes rating for this quality criteria"
           options:
@@ -1585,7 +2025,7 @@
             - option: "No"
             - option: "Unsure"
         - dimension: #dimension 8
-          id: 138
+          id: 174
           question: "Did the study specify the TRAINING or BACKGROUND of who ascertained the harms"
           description: "Training can imply any instructions given to persons ascertaining the harms specific to the study. Background indicates the professional or occupational designation of the person collecting the harms. For example, 1) physician, nurses, or other health professional, or 2) a study research assistant was specified as the background of the person who ascertained the presence or absence of the harm. In some studies it will indicate that the clinical data for the harm is sent to a clinical audit committee; typically the data sent concerns diagnostic or laboratory tests. In this instance we can assume that the committee was comprised of health professionals (likely physicians) who were adequately trained to determine the nature of the harms event."
           options:
@@ -1593,7 +2033,7 @@
             - option: "No"
             - option: "Unsure"
         - dimension: #dimension 9
-          id: 139
+          id: 175
           question: "Did the study specify the TIMING and FREQUENCY of collection of the harms"
           description: "The time interval when harms were collected should be specified as should the frequency (how often) with which harms were collected during the study. This question may indicate the duration of study follow-up."
           options:
@@ -1601,7 +2041,7 @@
             - option: "No"
             - option: "Unsure"
         - dimension: #dimension 10
-          id: 140
+          id: 176
           question: "Did the author(s) use STANDARD scale(s) or checklist(s) for harms collection"
           description: "Standard scales or checklists are those that have at least one of the following: a) Established reliability and validity (specified in the text); b) Are very widely used within the discipline (may have to check the reference list for the scale). In the instance where the methods indicate that a NEW scale or checklist was developed for the study specifically, the author(s) must explicitly specify the CONTENT of the new scale or checklist in sufficient detail (for example, the body systems evaluated, or the specific tests or questions included.)"
           options:
@@ -1609,7 +2049,7 @@
             - option: "No"
             - option: "Unsure"
         - dimension: #dimension 11
-          id: 141
+          id: 177
           question: "Did the authors specify if the harms reported encompass ALL the events collected or a selected SAMPLE"
           description: "For example, let us assume that ALL the harms reported in a study totalled to 10 different types of events. If the study reports only 5 of the 10 collected events, then this should be specified."
           options:
@@ -1617,7 +2057,7 @@
             - option: "No"
             - option: "Unsure"
         - dimension: #dimension 12
-          id: 142
+          id: 178
           question: "Was the NUMBER of participants that withdrew or were lost to follow-up specified for each study group"
           description: "Relative to the original number of subjects that were enrolled in the study, not all participants will complete the study for one of the following reasons: 1) Withdrawal indicates that the participants did not complete the treatment due to a variety of reasons such as they could not tolerate the treatment due to experiencing harmful events, or they were unable to comply with the treatment: a) Some studies will not specify the reasons for participants withdrawal but will indicate the total number; b) Some studies will specify the total number of withdrawals and the numbers for each specific reason that participants withdrew from the study. Although the means by which author(s) attribute the reasons for withdrawal may not always be reproducible or free of bias, it is important that the total numbers of withdrawals are specified. 2) Loss to follow-up indicates participants that cannot be traced or contacted to determine important endpoints. We require that the study specify the numbers for both of these reasons to meet the intent of this quality item."
           options:
@@ -1625,7 +2065,7 @@
             - option: "No"
             - option: "Unsure"
         - dimension: #dimension 13
-          id: 143
+          id: 179
           question: "Was the TOTAL NUMBER of participants affected by harms specified for each study arm"
           description: "This TOTAL numbers of participants affected must include the participants that: 1) Experienced harms and were not lost to follow-up or withdrew from the study; 2) Withdrew from the study specifically because of harmful events. If no subjects withdrew because of harmful events, the author(s) must state this explicitly. The number of harmful events can be expressed as a rate and can include events per unit of person time."
           options:
@@ -1633,7 +2073,7 @@
             - option: "No"
             - option: "Unsure"
         - dimension: #dimension 14
-          id: 144
+          id: 180
           question: "Did the author(s) specify the NUMBER for each TYPE of harmful event for each study group"
           description: "For example, if the study reported 3 types of harmful events (nausea, vomiting, and bleeding); for each of these events the frequency should be reported for each study group."
           options:
@@ -1641,7 +2081,7 @@
             - option: "No"
             - option: "Unsure"
         - dimension: #dimension 15
-          id: 145
+          id: 181
           question: "Did the author(s) specify the type of analyses undertaken for harms data"
           description: "The study should specify how the author(s) dealt with issues related to the analysis of the harms. For example, how events may have been categorized, or how recurrent events were tabulated, or timing issues (repeated measures), or any statistical techniques in the analysis. Statistical analyses can include a variety of approaches. Typically, descriptive presentation of the harms events is shown and a comparison between groups (for example with a Fischers Exact Test, students t-test) is undertaken. More sophisticated analyses can include multivariate analyses (for example regression and survival analysis) that attempt to evaluate which factors predict the harms. This type of analysis is seen typically when the outcome of harm is one of the primary study outcomes. Often variables that have the potential to influence the occurrence of harms can be evaluated with covariate analysis. For example, covariates such as age and gender can be evaluated in such an analysis to detect their potential to act as confounders for the harms."
           options:
@@ -2145,3 +2585,4 @@
             - option: "Risk: Low"
             - option: "Risk: High"
             - option: "Unclear"
+
