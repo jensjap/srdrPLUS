@@ -12,6 +12,7 @@
 #  created_at                                :datetime         not null
 #  updated_at                                :datetime         not null
 #  hidden                                    :boolean          default(FALSE)
+#  helper_message                            :string(255)
 #
 
 class ExtractionFormsProjectsSection < ApplicationRecord

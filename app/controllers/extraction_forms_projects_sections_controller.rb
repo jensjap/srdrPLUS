@@ -108,6 +108,7 @@ class ExtractionFormsProjectsSectionsController < ApplicationController
         .permit(:extraction_forms_projects_section_type_id,
                 :section_id,
                 :extraction_forms_projects_section_id,
+                :helper_message,
                 key_questions_project_ids: [],
                 extraction_forms_projects_section_option_attributes: [:id, :by_type1, :include_total],
                 extraction_forms_projects_sections_type1s_attributes: [

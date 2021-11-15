@@ -6,7 +6,7 @@
   = render 'shared/statusing_form.html.slim', statusing: eefps.statusing, status_name: eefps.statusing.status.name
 
 blockquote
-  | Please answer the questions to the best of your ability. If you require clarification, please consult the project lead.
+  | #{efps.helper_message.present? ? efps.helper_message : "Please answer the questions to the best of your ability. If you require clarification, please consult the project lead."}
   cite Friendly Helper
 
 /- if linked_section && linked_section.type1s.blank?
