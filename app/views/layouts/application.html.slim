@@ -44,7 +44,7 @@ html class='no-js' lang='en'
 
     - else
       .off-canvas-wrapper
-        - if (controller_name.eql?('projects') && not(action_name.eql?('index')) && not(action_name.eql?('new'))) || controller_name.eql?('extractions') || controller_name.eql?('extraction_forms_projects') || (controller_name.eql?('citations') && action_name.eql?('index')) || (controller_name.eql?('tasks') && action_name.eql?('index'))
+        - if (controller_name.eql?('projects') && not(action_name.eql?('index')) && not(action_name.eql?('new'))) && not(action_name.eql?('data_audit')) || controller_name.eql?('extractions') || controller_name.eql?('extraction_forms_projects') || (controller_name.eql?('citations') && action_name.eql?('index')) || (controller_name.eql?('tasks') && action_name.eql?('index'))
           .off-canvas.position-right#offCanvasNav data-off-canvas=''
             = render 'shared/sidebar_nav'
 

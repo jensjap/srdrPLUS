@@ -296,6 +296,9 @@ class ProjectsController < ApplicationController
   #   flash[:success] = "Import request submitted for project '#{ project.name }'. You will be notified by email of its completion."
   # end
 
+  # Display project audit based on criterias collected by team.
+  def data_audit
+  end
 
   def setup_instance_variables
     @query = params.dig(:project, :q)
