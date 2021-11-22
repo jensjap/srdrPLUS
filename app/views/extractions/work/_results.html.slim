@@ -1,5 +1,10 @@
 - section_name = section_name.present? ? section_name : 'Results'
 - efp = @extraction.extraction_forms_projects_sections.first.extraction_forms_project
+- eefps = @extraction.extractions_extraction_forms_projects_sections \
+          .joins(:extraction_forms_projects_section => [:extraction_forms_projects_section_type]) \
+          .find_by(:extraction_forms_projects_sections => { :extraction_forms_projects_section_type => ExtractionFormsProjectsSectionType \
+                                                                                                       .find_by(name: 'Results') })
+- efps = eefps.extraction_forms_projects_section
 - extraction_forms_project_type = efp.extraction_forms_project_type
 
 / If at least one Outcome is present, make extraction form type selector available.
@@ -18,7 +23,6 @@
 
     .section-header
       h4 = section_name
-      - eefps = @extraction.extractions_extraction_forms_projects_sections.joins(:extraction_forms_projects_section => [:extraction_forms_projects_section_type]).find_by(:extraction_forms_projects_sections => { :extraction_forms_projects_section_type => ExtractionFormsProjectsSectionType.find_by(name: 'Results') })
       = render 'shared/statusing_form.html.slim', statusing: eefps.statusing, status_name: eefps.statusing.status.name
     blockquote
       | #{efps.helper_message.present? ? efps.helper_message : "The results section is where you enter numerical data, comparisons, etc."}
@@ -29,7 +33,6 @@
 
     .section-header style="margin: 20px 0;"
       h4 = section_name
-      - eefps = @extraction.extractions_extraction_forms_projects_sections.joins(:extraction_forms_projects_section => [:extraction_forms_projects_section_type]).find_by(:extraction_forms_projects_sections => { :extraction_forms_projects_section_type => ExtractionFormsProjectsSectionType.find_by(name: 'Results') })
       = render 'shared/statusing_form.html.slim', statusing: eefps.statusing, status_name: eefps.statusing.status.name
 
 / Diagnostic Test extraction and at least one Outcome.
@@ -41,7 +44,6 @@
 
     .section-header
       h4 = section_name
-      - eefps = @extraction.extractions_extraction_forms_projects_sections.joins(:extraction_forms_projects_section => [:extraction_forms_projects_section_type]).find_by(:extraction_forms_projects_sections => { :extraction_forms_projects_section_type => ExtractionFormsProjectsSectionType.find_by(name: 'Results') })
       = render 'shared/statusing_form.html.slim', statusing: eefps.statusing, status_name: eefps.statusing.status.name
     blockquote
       | #{efps.helper_message.present? ? efps.helper_message : "The results section is where you enter numerical data, comparisons, etc."}
@@ -52,7 +54,6 @@
 
     .section-header style="margin: 20px 0;"
       h4 = section_name
-      - eefps = @extraction.extractions_extraction_forms_projects_sections.joins(:extraction_forms_projects_section => [:extraction_forms_projects_section_type]).find_by(:extraction_forms_projects_sections => { :extraction_forms_projects_section_type => ExtractionFormsProjectsSectionType.find_by(name: 'Results') })
       = render 'shared/statusing_form.html.slim', statusing: eefps.statusing, status_name: eefps.statusing.status.name
 
 - elsif extraction_forms_project_type.id.eql?(1)
