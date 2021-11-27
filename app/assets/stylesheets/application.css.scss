@@ -479,7 +479,12 @@ a.accordion-title.populations {
   }
 }
 
+form.edit_statusing {
+  margin-left: 15px;
+}
+
 body.extractions.work,
+body.extractions.comparison_tool,
 body.sd_meta_data.edit {
   .status-switch {
     cursor: pointer;
@@ -487,7 +492,8 @@ body.sd_meta_data.edit {
     background-color: grey;
     font-weight: bold;
     padding: 0.3rem 0.3rem 0.3rem 0.3rem;
-    margin-left: 1rem;
+    margin-left: auto;
+    margin-right: auto;
     transition: all 0.3s ease;
     height: 2.1rem;
     width: 5.5rem;
@@ -497,15 +503,16 @@ body.sd_meta_data.edit {
       transition: all 0.2s ease;
       color: white;
       position: absolute;
-      top: 0.45rem;
+      //top: 0.45rem;
       font-size: 1.1rem;
       left: 2.4rem;
+      padding-top: 2px;
     }
   }
   .status-switch::after {
     border-radius: 0.2rem;
     position: absolute;
-    top: 0.3rem;
+    //top: 0.3rem;
     left: 0.35rem;
     display: block;
     width: 1.5rem;
@@ -519,12 +526,12 @@ body.sd_meta_data.edit {
   }
 
   .status-switch.completed::after {
-    left: 6.1rem;
+    left: 7.1rem;
   }
 
   .status-switch.completed {
     background-color: #1cd05f;
-    width: 7.9rem;
+    width: 8.9rem;
     .status-label {
       left: 0.4rem;
     }
