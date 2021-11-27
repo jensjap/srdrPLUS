@@ -7,5 +7,16 @@
 #
 
 class Status < ApplicationRecord
+  @@DRAFT     = 1
+  @@COMPLETED = 2
+
   has_many :statusings, inverse_of: :status
+
+  def self.DRAFT
+    self.find(@@DRAFT)
+  end
+
+  def self.COMPLETED
+    self.find(@@COMPLETED)
+  end
 end

@@ -45,6 +45,8 @@ class Extraction < ApplicationRecord
   belongs_to :projects_users_role, inverse_of: :extractions
 
   has_one :extraction_checksum, dependent: :destroy, inverse_of: :extraction
+  has_one :statusing, as: :statusable, dependent: :destroy
+  has_one :status, through: :statusing
 
   has_many :extractions_extraction_forms_projects_sections, dependent: :destroy, inverse_of: :extraction
   has_many :extraction_forms_projects_sections, through: :extractions_extraction_forms_projects_sections, dependent: :destroy

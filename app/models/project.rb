@@ -226,8 +226,9 @@ class Project < ApplicationRecord
   # }
   def citation_groups
     citation_groups = Hash.new
-    citation_groups[:citations_projects] = Hash.new
-    citation_groups[:citations_project_ids] = Array.new
+    citation_groups[:citations_projects]      = Hash.new
+    citation_groups[:consolidations]          = Hash.new
+    citation_groups[:citations_project_ids]   = Array.new
     citation_groups[:citations_project_count] = 0
     self.extractions.includes([{ citations_project: [{ citation: :journal }] }, :extraction_checksum]).each do |e|
       if citation_groups[:citations_projects].keys.include? e.citations_project_id
@@ -260,8 +261,12 @@ class Project < ApplicationRecord
         citation_groups[:citations_projects][e.citations_project_id][:consolidated_status] = e.consolidated
       end
 
-      # Remove the consolidated extraction from the list of extractions.
-      citation_groups[:citations_projects][e.citations_project_id][:extractions].delete(e) if e.consolidated
+      # Move the consolidated extraction from the list of extractions into [Array] of consolidations.
+      if e.consolidated
+        citation_groups[:consolidations][e.citations_project_id] = e
+        citation_groups[:citations_projects][e.citations_project_id][:consolidated_extraction] = e
+        citation_groups[:citations_projects][e.citations_project_id][:extractions].delete(e)
+      end
     end
 
     return citation_groups
