@@ -17,8 +17,8 @@
               - citation_handle = citations_project_info[:citation_info] + '<br />' + citations_project_info[:citation_name_long].truncate(70)
               td title=citations_project_info[:citation_name_long] = link_to citation_handle.html_safe, citation_path(citations_project_info[:citation_id])
               td
+                - consolidation.status = Status.DRAFT if consolidation.status.blank?
                 = render 'shared/statusing_form.html.slim', statusing: consolidation.statusing, status_name: consolidation.statusing.status.name
-              /td style="text-align: center;" = citations_project_info[:consolidated_extraction].status.eql?(Status.COMPLETED) ? "Completed" : "Draft"
 
 hr
 br
@@ -39,9 +39,11 @@ br
       tbody
         - @citation_groups[:citations_projects].each do |key, val|
           - next if val[:extractions].length < 2
-          - next if @citation_groups[:consolidations].has_key?(val[:citations_project_id]) && @citation_groups[:consolidations][val[:citations_project_id]].status.eql?(Status.COMPLETED)
+          /- next if @citation_groups[:consolidations].has_key?(val[:citations_project_id]) && @citation_groups[:consolidations][val[:citations_project_id]].status.eql?(Status.COMPLETED)
+          - consolidation_complete = @citation_groups[:consolidations].has_key?(val[:citations_project_id]) && @citation_groups[:consolidations][val[:citations_project_id]].status.eql?(Status.COMPLETED)
+          - hide = consolidation_complete ? "hide" : ""
 
-          tr
+          tr class="#{ hide }" data-statusable-id="#{ @citation_groups[:consolidations].fetch(key, nil).try(:id) }"
             - citation_handle = val[:citation_info] + '<br />' + val[:citation_name_long].truncate(70)
             td title=val[:citation_name_long] = link_to citation_handle.html_safe, citation_path(val[:citation_id])
             td = val[:extractions].length.to_s

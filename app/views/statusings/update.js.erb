@@ -11,6 +11,7 @@
   $('.tab-title-<%= @statusing.statusable.id %>').removeClass('green');
   $('.tab-title-<%= @statusing.statusable.id %>').removeClass('bold');
   $('.tab-title-<%= @statusing.statusable.id %>').removeClass('checkmarked');
+  $( 'tr[data-statusable-id=<%= @statusing.statusable.id %>]' ).removeClass( 'hide' );
 <% elsif @statusing.status.name == 'Completed' %>
   $('.status-switch[statusing-id="<%=@statusing.id.to_s%>"]').removeClass('waiting draft');
   $('.status-switch[statusing-id="<%=@statusing.id.to_s%>"]').addClass('completed');
@@ -18,6 +19,7 @@
   $('.tab-title-<%= @statusing.statusable.id %>').addClass('green');
   $('.tab-title-<%= @statusing.statusable.id %>').addClass('bold');
   $('.tab-title-<%= @statusing.statusable.id %>').addClass('checkmarked');
+  $( 'tr[data-statusable-id=<%= @statusing.statusable.id %>]' ).addClass( 'hide' );
 <% end %>
 
 $('.status-switch[statusing-id="<%=@statusing.id.to_s%>"] span.status-label').html( "<%= @statusing.status.name %>")

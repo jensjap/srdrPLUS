@@ -1,4 +1,8 @@
 - color_array = ['lightblue', 'lightseagreen', 'lightskyblue', 'lightgrey']
+- consolidated_eefps = @eefps_by_extraction_and_efps_dict[@consolidated_extraction.id][efps.id].first
+
+.grid-x
+  .cell.small-1 = render 'shared/statusing_form.html.slim', statusing: consolidated_eefps.statusing, status_name: consolidated_eefps.statusing.status.name
 
 .row.column
   h5 = 'Extractions by users: ' + @extractions.map { |e| e.username }.join(', ')

@@ -1,3 +1,8 @@
+- consolidated_eefps = @eefps_by_extraction_and_efps_dict[@consolidated_extraction.id][efps.id].first
+
+.grid-x
+  .cell.small-1 = render 'shared/statusing_form.html.slim', statusing: consolidated_eefps.statusing, status_name: consolidated_eefps.statusing.status.name
+
 - section_name = section_name.present? ? section_name : 'Results'
 / Need to ensure that all type1s are matching, including Populations and Timepoints.
 - if @consolidated_extraction.results_section_ready_for_extraction?

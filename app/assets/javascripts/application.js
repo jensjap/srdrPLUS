@@ -317,7 +317,7 @@ let documentCode = function() {
 
   ////################################################
   // State Toggler for EEFPS
-  if ( $( 'body.extractions.work, body.extractions.comparison_tool' ).length > 0 ) {
+  if ( $( 'body.extractions.work, body.extractions.comparison_tool, body.extractions.consolidate' ).length > 0 ) {
     $( 'body' ).on( 'click', '.status-switch', function () {
       var $outer_form = $( this ).parents( 'form' )
       var $outer_input = $outer_form.find( 'select' )

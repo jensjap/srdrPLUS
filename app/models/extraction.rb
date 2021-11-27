@@ -25,6 +25,7 @@ class Extraction < ApplicationRecord
   #                   to ensure consistency?
   after_create :ensure_extraction_form_structure
   after_create :create_default_arms
+  after_create :create_default_status
 
   # create checksums without delay after create and update, since extractions/index would be incorrect.
   after_create do |extraction|
@@ -140,5 +141,9 @@ class Extraction < ApplicationRecord
 #      .joins(extraction_forms_projects_section: :section)
 #      .find_by(sections: { name: "Arms" }
 #    ).type1s << Type1.find_or_create_by(name: 'Total', description: 'All interventions combined')
+  end
+
+  def create_default_status
+    self.status = Status.DRAFT if self.statusing.blank?
   end
 end
