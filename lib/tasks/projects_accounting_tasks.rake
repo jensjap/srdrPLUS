@@ -22,12 +22,36 @@ namespace :projects_accounting_tasks do
     b_found_active_extraction = false
     @projects_with_extractions += 1 if project.extractions.count > 0
     project.extractions.each do |extraction|
-      break if b_found_active_extraction 
+      break if b_found_active_extraction
       if extraction.results_section_ready_for_extraction?
         b_found_active_extraction = true
         @projects_with_extractions_ready_for_extraction += 1
       end  # if extraction.results_section_ready_for_extraction?
     end  # project.extractions.each do |extraction|
   end  # def check_if_project_is_active(project)
-end  # namespace :projects_tasks do
 
+  desc "Create quick list of projects and the number of exports requested via Ahoy Event counts."
+  task :count_exports_per_project, [] => [:environment] do |t, args|
+    export_stats = Hash.new { |h,k| h[k] = {} }
+    project_ids  = Array.new
+    Ahoy::Event.where_event("Export").all.each do |export_event|
+      # A bit unsafe due to eval call but this should be internally run code and no user input.
+      project_id = eval(export_event.properties).fetch(:project_id)
+      project_ids << project_id
+      unless export_stats.has_key?(project_id)
+        export_stats[project_id][:export_count] = 0
+        export_stats[project_id][:name] = Project.where(id: project_id)&.first&.name
+      end
+      export_stats[project_id][:export_count] += 1
+    end
+
+    print_export_stats(export_stats)
+  end
+
+  def print_export_stats(export_stats)
+    puts "project id,name,export count"
+    export_stats.each do |k, v|
+      puts "#{ k.to_s },\"#{ v.fetch(:name) }\",#{ v.fetch(:export_count).to_s }"
+    end
+  end
+end  # namespace :projects_tasks do
