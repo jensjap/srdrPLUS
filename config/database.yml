@@ -63,8 +63,8 @@ legacy_production:
   adapter: mysql2
   encoding: utf8
   pool: 5
-  username: root
-  password: <%= ENV['SRDR_LEGACY_DATABASE_PASSWORD'] %>
+  host: <%= ENV['SRDRPLUS_DATABASE_HOST'] %>
   database: <%= ENV['SRDR_LEGACY_DATABASE_SCHEMA'] %>
-  host: localhost
+  username: <%= ENV['SRDRPLUS_DATABASE_USERNAME'] %>
+  password: <%= ENV['SRDRPLUS_DATABASE_PASSWORD'] %>
   reconnect: true
