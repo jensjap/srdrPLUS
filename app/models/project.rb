@@ -47,6 +47,7 @@ class Project < ApplicationRecord
   has_many :extractions, dependent: :destroy, inverse_of: :project
   has_many :teams, dependent: :destroy
 
+  has_one :data_audit, dependent: :destroy
   has_one :publishing, as: :publishable, dependent: :destroy
   # NOTE
   # I think we are using polymorphism incorrectly above. I think what we want is for each project to have at most one

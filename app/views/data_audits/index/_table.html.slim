@@ -1,0 +1,50 @@
+.table-scroll
+  table
+    thead
+      tr
+        th Project ID
+        th Project Name
+        th Date Published
+        th Time from Creation to Publication
+        th EPC (Y/N)
+        th EPC
+        th Non-EPC
+        th # KQs
+        th # Studies
+        th # Extractions
+        th # Consolidated Extractions
+        th How was the data captured?
+        th _% Extractions with no Data
+        th _% Extractions with Unstructured Data
+        th Distiller with Results?
+        th Single or Multiple Extraction (with or without Consolidation)
+        th _SR360 Created?
+        th Notes
+
+    tbody
+      - @projects.each do |project|
+        - published_at = project&.publishing&.approval&.created_at
+        tr
+          td = project.id
+          td = project.name
+          td = published_at
+          - if published_at.present? && project.created_at.present?
+            td = (published_at - project.created_at).to_i
+
+          - else
+            td N/A
+
+          td = select_tag('epc_yn', options_for_select(['Yes', 'No'].collect.with_index { |c, idx| [c, idx] }), prompt: "-- Select --")
+          td = text_field_tag('epc_name')
+          td = text_field_tag('non_epc_name')
+          td = project.key_questions.count
+          td = project.studies.count
+          td = project.extractions.reject { |extraction| extraction.consolidated }.count
+          td = project.extractions.reject { |extraction| !extraction.consolidated }.count
+          td = text_field_tag('data_capture_method')
+          td = text_field_tag('percent_extraction_no_data')
+          td = text_field_tag('percent_extraction_unstructured_data')
+          td = select_tag('dist_w_results_ynna', options_for_select(['Yes', 'No', 'N/A'].collect.with_index { |c, idx| [c, idx] }), prompt: "-- Select --")
+          td = select_tag('single_multiple_extraction', options_for_select(['Single', 'Multiple Extraction w/ Consolidation', 'Multiple Extraction w/o Consolidation'].collect.with_index { |c, idx| [c, idx] }), prompt: "-- Select --")
+          td = select_tag('sr360', options_for_select(['Yes', 'No'].collect.with_index { |c, idx| [c, idx] }), prompt: "-- Select --")
+          td = text_area_tag('notes')
