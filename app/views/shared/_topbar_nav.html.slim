@@ -67,7 +67,18 @@
                 li = link_to "Login", new_user_session_path
                 li = link_to new_user_registration_path do
                   strong id="signup-link-id" Sign Up
-- if (controller_name.eql?('projects') && not(action_name.eql?('index')) && not(action_name.eql?('new'))) && not(action_name.eql?('data_audit')) || controller_name.eql?('assignments') || controller_name.eql?('extractions') || controller_name.eql?('extraction_forms_projects') || (controller_name.eql?('citations') && action_name.eql?('index')) || (controller_name.eql?('tasks') && action_name.eql?('index')) || (controller_name.eql?('screening_options') && action_name.eql?('index')) ||  (controller_name.eql?('questions') && (action_name.eql?('dependencies') || action_name.eql?('edit'))) || (controller_name.eql?('extractions_extraction_forms_projects_sections_type1s') && action_name.eql?('edit')) || (controller_name.eql?('extraction_forms_projects_sections') && action_name.eql?('preview')) || (controller_name.eql?('imports') && action_name.eql?('new')) || (controller.class == PublishingsController && @publishable_record.class == Project && controller.action_name == 'new')
+- if (controller_name.eql?('projects') && not(action_name.eql?('index')) && not(action_name.eql?('new'))) \
+    || controller_name.eql?('assignments') \
+    || controller_name.eql?('extractions') \
+    || controller_name.eql?('extraction_forms_projects') \
+    || (controller_name.eql?('citations') && action_name.eql?('index')) \
+    || (controller_name.eql?('tasks') && action_name.eql?('index')) \
+    || (controller_name.eql?('screening_options') && action_name.eql?('index')) \
+    || (controller_name.eql?('questions') && (action_name.eql?('dependencies') || action_name.eql?('edit'))) \
+    || (controller_name.eql?('extractions_extraction_forms_projects_sections_type1s') && action_name.eql?('edit')) \
+    || (controller_name.eql?('extraction_forms_projects_sections') && action_name.eql?('preview')) \
+    || (controller_name.eql?('imports') && action_name.eql?('new')) \
+    || (controller.class == PublishingsController && @publishable_record.class == Project && controller.action_name == 'new')
   - project = @project || @extraction.try(:project) || @extraction_forms_project.try(:project) || @question.try(:project) || @extraction_forms_projects_section.try(:project) || @publishable_record
   div style="margin-bottom: 10px;"
     h5.project-info-header = "Project ID##{project.id}: #{project.name}"
