@@ -129,6 +129,70 @@ class Extraction < ApplicationRecord
       .find_by(sections: { name: section_name })
   end
 
+  def has_data?
+    type1_eefpss = Extraction.get_type1_sections_in_extraction(self)
+    Extraction.get_type2_sections_in_extraction(self).each do |type2_eefps|
+      type2_eefps.extractions_extraction_forms_projects_sections_question_row_column_fields.each do |eefps_qrcf|
+        type1_eefpss.each do |type1_eefps|
+          type1_eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
+            values = type2_eefps.eefps_qrfc_values(eefpst1.id, eefps_qrcf.question_row_column_field.question_row_column)
+            return true if values.present?
+          end
+        end
+        values = type2_eefps.eefps_qrfc_values(nil, eefps_qrcf.question_row_column_field.question_row_column)
+        return true if values.present?
+      end
+    end
+
+    return false
+  end
+
+  def self.get_type1_sections_in_extraction(extraction)
+    return extraction.extractions_extraction_forms_projects_sections
+      .joins(:extraction_forms_projects_section)
+      .includes(extractions_extraction_forms_projects_sections_type1s: [
+        { extractions_extraction_forms_projects_sections_type1_rows: [
+          { result_statistic_sections: [
+            { comparisons: { comparate_groups: { comparates: { comparable_element: :comparable } } } },
+            { result_statistic_sections_measures: [
+              { tps_comparisons_rssms: [
+                :timepoint,
+                :records,
+                comparison: { comparate_groups: { comparates: { comparable_element: :comparable } } }]
+              },
+              { comparisons_arms_rssms: [
+                { comparison: { comparate_groups: { comparates: { comparable_element: :comparable } } } },
+                { extractions_extraction_forms_projects_sections_type1: [:extractions_extraction_forms_projects_section] },
+                :records]
+              },
+              { tps_arms_rssms: [
+                :records,
+                :timepoint,
+                { extractions_extraction_forms_projects_sections_type1: :extractions_extraction_forms_projects_section }]
+              },
+              { wacs_bacs_rssms: [
+                :records,
+                { wac: { comparate_groups: { comparates: { comparable_element: :comparable } } } },
+                { bac: { comparate_groups: { comparates: { comparable_element: :comparable } } } }]
+              }]
+            }]
+          },
+          :extractions_extraction_forms_projects_sections_type1_row_columns]
+        },
+        :type1])
+      .where(extraction_forms_projects_sections: { extraction_forms_projects_section_type_id: 1 })
+  end
+
+  def self.get_type2_sections_in_extraction(extraction)
+      return extraction.extractions_extraction_forms_projects_sections
+        .joins(:extraction_forms_projects_section)
+        .includes({ extractions_extraction_forms_projects_sections_question_row_column_fields: [
+          :records,
+          :question_row_column_field,
+          :extractions_extraction_forms_projects_sections_type1] })
+        .where(extraction_forms_projects_sections: { extraction_forms_projects_section_type_id: 2 })
+  end
+
   private
 
   def create_default_arms

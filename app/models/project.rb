@@ -347,6 +347,15 @@ class Project < ApplicationRecord
     []
   end
 
+  def pct_extractions_with_no_data
+    no_extractions_with_data = extractions.count do |extraction|
+      extraction.has_data?
+    end
+
+    return 0 if extractions.count.eql?(0)
+    return ((extractions.count.to_f - no_extractions_with_data) / extractions.count * 100).round(1).to_s + "%"
+  end
+
   private
 
   def process_list_of_pmids(listOf_pmids)
