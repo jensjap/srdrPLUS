@@ -24,40 +24,5 @@
 
     tbody
       - @projects.each do |project|
-        - data_audit = project.data_audit
-        - published_at = project&.publishing&.approval&.created_at
-        tr
-          = form_with(model: data_audit) do |f|
-            td = project.id
-            td = project.name
-            td = published_at
-            - if published_at.present? && project.created_at.present?
-              td = (published_at - project.created_at).to_i
-
-            - else
-              td N/A
-
-            td = f.check_box :epc_source
-            /td = select_tag('epc_yn', options_for_select(['Yes',
-                                                          'No'].collect.with_index { |c, idx| [c, idx] }), prompt: "-- Select --")
-            td = text_field_tag('epc_name')
-            td = text_field_tag('non_epc_name')
-            td = project.key_questions.count
-            td = project.studies.count
-            td = project.extractions.reject { |extraction| extraction.consolidated }.count
-            td = project.extractions.reject { |extraction| !extraction.consolidated }.count
-            td = text_field_tag('data_capture_method')
-            td = project.pct_extractions_with_no_data
-            td = text_field_tag('pct_extraction_unstructured_data')
-            td = select_tag('dist_w_results_ynna',
-                            options_for_select(['Yes',
-                                                'No',
-                                                'N/A'].collect.with_index { |c, idx| [c, idx] }), prompt: "-- Select --")
-            td = select_tag('single_multiple_extraction',
-                            options_for_select(['Single',
-                                                'Multiple Extraction w/ Consolidation',
-                                                'Multiple Extraction w/o Consolidation'].collect.with_index { |c, idx| [c, idx] }),
-                            prompt: "-- Select --")
-            td = project.sd_meta_data.present?
-            td = text_area_tag('notes')
-            td = f.submit
+        tr id="data-audit-row_project-id-#{ project.id }"
+          = render 'data_audits/index/form', project: project

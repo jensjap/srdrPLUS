@@ -163,8 +163,9 @@ Rails.application.routes.draw do
 
   get 'sd_key_questions/:id/fuzzy_match', to: 'sd_key_questions#fuzzy_match'
 
-  resources :data_audits, only: [:index, :create, :update]
+  resources :data_audits, only: [:index, :update]
   resources :projects, concerns: :paginatable, shallow: true do
+    resource :data_audit, only: [:create]
     resources :sd_meta_data
     resources :teams, concerns: :invitable, only: [:create, :update, :destroy]
     member do

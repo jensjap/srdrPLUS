@@ -1,0 +1,35 @@
+- data_audit = project.data_audit
+- published_at = project&.publishing&.approval&.created_at
+= form_with(model: data_audit,
+            url: data_audit.persisted? ? data_audit_path(data_audit) : project_data_audit_path(project),
+            local: false) do |f|
+  td = project.id
+  td = project.name
+  td = published_at
+  - if published_at.present? && project.created_at.present?
+    td = (published_at - project.created_at).to_i
+
+  - else
+    td N/A
+
+  td = f.check_box :epc_source
+  td = f.text_field :epc_name
+  td = f.text_field :non_epc_name
+  td = project.key_questions.count
+  td = project.studies.count
+  td = project.extractions.reject { |extraction| extraction.consolidated }.count
+  td = project.extractions.reject { |extraction| !extraction.consolidated }.count
+  td = f.text_field :capture_method
+  td = project.pct_extractions_with_no_data
+  td = f.text_field :pct_extractions_with_unstructured_data
+  td = f.select :distiller_w_results,
+                DataAudit::DISTILLER_W_RESULTS_OPTIONS,
+                selected: data_audit.distiller_w_results,
+                prompt: "-- Select --"
+  td = f.select :single_multiple_w_consolidation,
+                DataAudit::SINGLE_MULTIPLE_W_CONSOLIDATION,
+                selected: data_audit.single_multiple_w_consolidation,
+                prompt: "-- Select --"
+  td = project.sd_meta_data.present?
+  td = f.text_area :notes
+  td = f.submit nil, class: 'button'
