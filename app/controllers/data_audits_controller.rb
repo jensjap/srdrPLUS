@@ -1,4 +1,5 @@
 class DataAuditsController < ApplicationController
+  before_action :check_admin
   before_action :set_project, only: [:create]
   before_action :set_data_audit, only: [:update]
 
@@ -37,6 +38,13 @@ class DataAuditsController < ApplicationController
   end
 
   private
+    def check_admin
+      unless current_user.admin?
+        flash[:error] = "You are not authorized to perform this action."
+        redirect_to '/'
+      end
+    end
+
     def set_project
       @project = Project.find(params[:project_id])
     end
