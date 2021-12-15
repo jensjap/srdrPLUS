@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_12_15_005200) do
+ActiveRecord::Schema.define(version: 2021_12_15_173700) do
 
   create_table "abstrackr_settings", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
     t.integer "profile_id"
@@ -359,6 +359,8 @@ ActiveRecord::Schema.define(version: 2021_12_15_005200) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "pct_extractions_with_unstructured_data"
+    t.integer "project_id"
+    t.index ["project_id"], name: "index_data_audits_on_project_id"
   end
 
   create_table "degrees", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
