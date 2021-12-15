@@ -1,0 +1,7 @@
+( function() {
+  if ('<%= @info[0] %>' === 'true') {
+    toastr.success('<%= @info[1] %>');
+  } else {
+    toastr.error('<%= @info[1] %>');
+  }
+} )();

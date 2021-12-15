@@ -1,0 +1,12 @@
+.grid-container
+  .grid-x
+    .cell
+      = form_with(url: data_audits_path, method: :get) do |form|
+        = form.label :query, 'Fetch Statistics for Project ID:'
+        = form.text_field :query
+        = form.submit 'Query'
+
+.grid-container style="padding-top: 2em;"
+  .grid-x
+    .cell
+      = render 'data_audits/index/table'

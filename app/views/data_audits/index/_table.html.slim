@@ -1,0 +1,28 @@
+.table-scroll
+  table
+    thead
+      tr
+        th Project ID
+        th Project Name
+        th Date Published
+        th Time from Creation to Publication
+        th EPC (Y/N)
+        th EPC
+        th Non-EPC
+        th # KQs
+        th # Studies
+        th # Extractions
+        th # Consolidated Extractions
+        th How was the data captured?
+        th % Extractions with no Data
+        th % Extractions with Unstructured Data
+        th Distiller with Results?
+        th Single or Multiple Extraction (with or without Consolidation)
+        th SR360 Created?
+        th Notes
+        th Submit
+
+    tbody
+      - @projects.each do |project|
+        tr id="data-audit-row_project-id-#{ project.id }"
+          = render 'data_audits/index/form', project: project

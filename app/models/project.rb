@@ -47,6 +47,7 @@ class Project < ApplicationRecord
   has_many :extractions, dependent: :destroy, inverse_of: :project
   has_many :teams, dependent: :destroy
 
+  has_one :data_audit, dependent: :destroy
   has_one :publishing, as: :publishable, dependent: :destroy
   # NOTE
   # I think we are using polymorphism incorrectly above. I think what we want is for each project to have at most one
@@ -349,6 +350,15 @@ class Project < ApplicationRecord
 
   def check_publishing_eligibility
     []
+  end
+
+  def pct_extractions_with_no_data
+    no_extractions_with_data = extractions.count do |extraction|
+      extraction.has_data?
+    end
+
+    return 0 if extractions.count.eql?(0)
+    return ((extractions.count.to_f - no_extractions_with_data) / extractions.count * 100).round(1).to_s + "%"
   end
 
   private

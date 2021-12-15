@@ -1,0 +1,11 @@
+( function() {
+  $( '#data-audit-row_project-id-<%= @project.id %>' )
+    .html( '<%= escape_javascript( render partial: "data_audits/index/form",
+                                          locals: { project: @project } ) %>' )
+    .foundation();
+  if ('<%= @info[0] %>' === 'true') {
+    toastr.success('<%= @info[1] %>');
+  } else {
+    toastr.error('<%= @info[1] %>');
+  }
+} )();
