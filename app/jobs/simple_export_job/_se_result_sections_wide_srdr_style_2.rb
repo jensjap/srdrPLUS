@@ -9,9 +9,7 @@ def build_result_sections_wide_srdr_style_2(kq_ids=[], print_empty_row=false)
 
         # Create SheetInfo object for results sections.
         sheet_info = SheetInfo.new
-
-        # Build SheetInfo object by extraction.
-        populate_sheet_info_with_extractions_results_data(sheet_info, kq_ids, efp, efps)
+        sheet_info.populate!(:results, kq_ids, efp, efps)
 
         # Create and name worksheets.
         ws_descriptive_statistics_continuous_outcomes   = @p.workbook.add_worksheet(name: "Continuous - Desc. Statistics")

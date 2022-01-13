@@ -13,65 +13,7 @@ def build_type1_sections_wide(kq_ids=[])
 
         # For each sheet we create a SheetInfo object.
         sheet_info = SheetInfo.new
-
-        # Every row represents an extraction.
-        @project.extractions.each do |extraction|
-          # Collect distinct list of questions based off the key questions selected for this extraction.
-          kq_ids_by_extraction = fetch_kq_selection(extraction, kq_ids)
-
-          # Create base for extraction information.
-          sheet_info.new_extraction_info(extraction)
-
-          # Collect basic information about the extraction.
-          sheet_info.set_extraction_info(
-            extraction_id: extraction.id,
-            consolidated: extraction.consolidated.to_s,
-            username: extraction.username,
-            citation_id: extraction.citation.id,
-            citation_name: extraction.citation.name,
-            authors: extraction.citation.authors.collect(&:name).join(', '),
-            publication_date: extraction.citation.try(:journal).try(:get_publication_year),
-            refman: extraction.citation.refman,
-            pmid: extraction.citation.pmid,
-            kq_selection: KeyQuestion.where(id: kq_ids_by_extraction).collect(&:name).map(&:strip).join("\x0D\x0A")
-          )
-
-          eefps = efps.extractions_extraction_forms_projects_sections.find_or_create_by(
-            extraction: extraction,
-            extraction_forms_projects_section: efps
-          )
-
-          # Iterate over each of the type1s that are associated with this particular # extraction's
-          # extraction_forms_projects_section and collect type1, population, and timepoint information.
-          eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
-            sheet_info.add_type1(
-              extraction_id: extraction.id,
-              section_name: efps.section.try(:name).try(:singularize),
-              id: eefpst1.type1.id,
-              name: eefpst1.type1.name,
-              description: eefpst1.type1.description,
-              units: eefpst1.units
-            )
-
-            eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |pop|
-              sheet_info.add_population(
-                extraction_id: extraction.id,
-                id: pop.population_name.id,
-                name: pop.population_name.name,
-                description: pop.population_name.description
-              )
-
-              pop.extractions_extraction_forms_projects_sections_type1_row_columns.each do |tp|
-                sheet_info.add_timepoint(
-                  extraction_id: extraction.id,
-                  id: tp.timepoint_name.id,
-                  name: tp.timepoint_name.name,
-                  unit: tp.timepoint_name.unit
-                )
-              end  # pop.extractions_extraction_forms_projects_sections_type1_row_columns.each do |tp|
-            end  # eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |pop|
-          end  # eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
-        end  # END @project.extractions.each do |extraction|
+        sheet_info.populate!(:type1, kq_ids, efp, efps)
 
         # Start printing rows to the spreadsheet. First the basic headers:
         header_row = sheet.add_row sheet_info.header_info
@@ -193,4 +135,8 @@ def build_type1_sections_wide(kq_ids=[])
 
     end  # END efp.extraction_forms_projects_sections.each do |efps|
   end  # END @project.extraction_forms_projects.each do |efp|
+end
+
+def fill_sheet_info(sheet_info)
+
 end

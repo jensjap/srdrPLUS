@@ -448,4 +448,123 @@ class SheetInfo
 
     return_array
   end
+
+  def populate!(type, kq_ids, efp, efps)
+    return populate_sheet_info_with_extractions_results_data(self, kq_ids, efp, efps) if type == :results
+
+    # Every row represents an extraction.
+    @project.extractions.each do |extraction|
+      # Collect distinct list of questions based off the key questions selected for this extraction.
+      kq_ids_by_extraction = fetch_kq_selection(extraction, kq_ids)
+
+      # Create base for extraction information.
+      self.new_extraction_info(extraction)
+
+      if type == :type2
+        # Collect distinct list of questions based off the key questions selected for this extraction.
+        kq_ids_by_extraction = fetch_kq_selection(extraction, kq_ids)
+        questions = fetch_questions(kq_ids_by_extraction, efps)
+      end
+
+      # Collect basic information about the extraction.
+      self.set_extraction_info(
+        extraction_id: extraction.id,
+        consolidated: extraction.consolidated.to_s,
+        username: extraction.username,
+        citation_id: extraction.citation.id,
+        citation_name: extraction.citation.name,
+        authors: extraction.citation.authors.collect(&:name).join(', '),
+        publication_date: extraction.citation.try(:journal).try(:get_publication_year),
+        refman: extraction.citation.refman,
+        pmid: extraction.citation.pmid,
+        kq_selection: KeyQuestion.where(id: kq_ids_by_extraction).collect(&:name).map(&:strip).join("\x0D\x0A")
+      )
+
+      if type == :type1
+        eefps = efps.extractions_extraction_forms_projects_sections.find_or_create_by(
+          extraction: extraction,
+          extraction_forms_projects_section: efps
+        )
+
+        # Iterate over each of the type1s that are associated with this particular # extraction's
+        # extraction_forms_projects_section and collect type1, population, and timepoint information.
+        eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
+          self.add_type1(
+            extraction_id: extraction.id,
+            section_name: efps.section.try(:name).try(:singularize),
+            id: eefpst1.type1.id,
+            name: eefpst1.type1.name,
+            description: eefpst1.type1.description,
+            units: eefpst1.units
+          )
+
+          eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |pop|
+            self.add_population(
+              extraction_id: extraction.id,
+              id: pop.population_name.id,
+              name: pop.population_name.name,
+              description: pop.population_name.description
+            )
+
+            pop.extractions_extraction_forms_projects_sections_type1_row_columns.each do |tp|
+              self.add_timepoint(
+                extraction_id: extraction.id,
+                id: tp.timepoint_name.id,
+                name: tp.timepoint_name.name,
+                unit: tp.timepoint_name.unit
+              )
+            end  # pop.extractions_extraction_forms_projects_sections_type1_row_columns.each do |tp|
+          end  # eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |pop|
+        end  # eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
+
+      elsif type == :type2
+        eefps = efps.extractions_extraction_forms_projects_sections.find_or_create_by!(
+          extraction: extraction,
+          link_to_type1: efps.link_to_type1.nil? ?
+            nil :
+            ExtractionsExtractionFormsProjectsSection.find_or_create_by!(
+              extraction: extraction,
+              extraction_forms_projects_section: efps.link_to_type1
+            )
+        )
+
+        # If this section is linked we have to iterate through each occurrence of
+        # type1 via eefps.link_to_type1.extractions_extraction_forms_projects_sections_type1s.
+        # Otherwise we proceed with eefpst1s set to a custom Struct that responds
+        # to :id, type1: :id.
+        eefpst1s = (eefps.extraction_forms_projects_section.try(:extraction_forms_projects_section_option).try(:by_type1) &&
+          eefps.link_to_type1.present?) ?
+            eefps.link_to_type1.extractions_extraction_forms_projects_sections_type1s :
+            [Struct.new(:id, :type1).new(nil, Struct.new(:id, :name, :description).new(nil))]
+
+        eefpst1s.each do |eefpst1|
+          questions.each do |q|
+            q.question_rows.each do |qr|
+              qr.question_row_columns.each do |qrc|
+                self.add_question_row_column(
+                  extraction_id: extraction.id,
+                  section_name: efps.section.name.try(:singularize),
+                  eefpst1_id: eefpst1.id,
+                  type1_id: eefpst1.type1.id,
+                  type1_name: eefpst1.type1.name,
+                  type1_description: eefpst1.type1.description,
+                  question_id: q.id,
+                  question_name: q.name,
+                  question_description: q.description,
+                  question_row_id: qr.id,
+                  question_row_name: qr.name,
+                  question_row_column_id: qrc.id,
+                  question_row_column_name: qrc.name,
+                  question_row_column_options: qrc
+                    .question_row_columns_question_row_column_options
+                    .where(question_row_column_option_id: 1)
+                    .pluck(:id, :name),
+                  eefps_qrfc_values: eefps.eefps_qrfc_values(eefpst1.id, qrc))
+              end  # qr.question_row_columns.each do |qrc|
+            end  # q.question_rows.each do |qr|
+          end  # questions.each do |q|
+        end  # eefps.type1s.each do |eefpst1|
+      end
+    end  # END @project.extractions.each do |extraction|
+  end
 end

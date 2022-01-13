@@ -14,76 +14,7 @@ def build_type2_sections_wide_srdr_style(kq_ids=[], print_empty_row=false)
 
       # For each sheet we create a SheetInfo object.
       sheet_info = SheetInfo.new
-
-      # Every row represents an extraction.
-      @project.extractions.each do |extraction|
-        # Create base for extraction information.
-        sheet_info.new_extraction_info(extraction)
-
-        # Collect distinct list of questions based off the key questions selected for this extraction.
-        kq_ids_by_extraction = fetch_kq_selection(extraction, kq_ids)
-        questions = fetch_questions(kq_ids_by_extraction, efps)
-
-        # Collect basic information about the extraction.
-        sheet_info.set_extraction_info(
-          extraction_id: extraction.id,
-          consolidated: extraction.consolidated.to_s,
-          username: extraction.username,
-          citation_id: extraction.citation.id,
-          citation_name: extraction.citation.name,
-          authors: extraction.citation.authors.collect(&:name).join(', '),
-          publication_date: extraction.citation.try(:journal).try(:get_publication_year),
-          refman: extraction.citation.refman,
-          pmid: extraction.citation.pmid,
-          kq_selection: KeyQuestion.where(id: kq_ids_by_extraction).collect(&:name).map(&:strip).join("\x0D\x0A"))
-
-        eefps = efps.extractions_extraction_forms_projects_sections.find_or_create_by!(
-          extraction: extraction,
-          link_to_type1: efps.link_to_type1.nil? ?
-            nil :
-            ExtractionsExtractionFormsProjectsSection.find_or_create_by!(
-              extraction: extraction,
-              extraction_forms_projects_section: efps.link_to_type1
-            )
-        )
-
-        # If this section is linked we have to iterate through each occurrence of
-        # type1 via eefps.link_to_type1.extractions_extraction_forms_projects_sections_type1s.
-        # Otherwise we proceed with eefpst1s set to a custom Struct that responds
-        # to :id, type1: :id.
-        eefpst1s = (eefps.extraction_forms_projects_section.try(:extraction_forms_projects_section_option).try(:by_type1) &&
-          eefps.link_to_type1.present?) ?
-            eefps.link_to_type1.extractions_extraction_forms_projects_sections_type1s :
-            [Struct.new(:id, :type1).new(nil, Struct.new(:id, :name, :description).new(nil))]
-
-        eefpst1s.each do |eefpst1|
-          questions.each do |q|
-            q.question_rows.each do |qr|
-              qr.question_row_columns.each do |qrc|
-                sheet_info.add_question_row_column(
-                  extraction_id: extraction.id,
-                  section_name: efps.section.name.try(:singularize),
-                  eefpst1_id: eefpst1.id,
-                  type1_id: eefpst1.type1.id,
-                  type1_name: eefpst1.type1.name,
-                  type1_description: eefpst1.type1.description,
-                  question_id: q.id,
-                  question_name: q.name,
-                  question_description: q.description,
-                  question_row_id: qr.id,
-                  question_row_name: qr.name,
-                  question_row_column_id: qrc.id,
-                  question_row_column_name: qrc.name,
-                  question_row_column_options: qrc
-                    .question_row_columns_question_row_column_options
-                    .where(question_row_column_option_id: 1)
-                    .pluck(:id, :name),
-                  eefps_qrfc_values: eefps.eefps_qrfc_values(eefpst1.id, qrc))
-              end  # qr.question_row_columns.each do |qrc|
-            end  # q.question_rows.each do |qr|
-          end  # questions.each do |q|
-        end  # eefps.type1s.each do |eefpst1|
-      end  # @project.extractions.each do |extraction|
+      sheet_info.populate!(:type2, kq_ids, efp, efps)
 
       # First the basic headers:
       header_elements = sheet_info.header_info
