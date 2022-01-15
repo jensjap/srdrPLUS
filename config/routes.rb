@@ -281,7 +281,7 @@ Rails.application.routes.draw do
       post 'export_to_gdrive'
     end
 
-    resources :imports, only: [:new]
+    resources :imports, only: [:index, :new]
   end
 
   root to: 'static_pages#home'
