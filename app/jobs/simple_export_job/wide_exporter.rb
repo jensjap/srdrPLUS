@@ -1,6 +1,4 @@
-require 'simple_export_job/sheet_info'
 require 'simple_export_job/exporter_base'
-
 require 'simple_export_job/section_templates/type1_sections_wide'
 require 'simple_export_job/section_templates/type2_sections_wide'
 require 'simple_export_job/section_templates/result_sections_wide'
