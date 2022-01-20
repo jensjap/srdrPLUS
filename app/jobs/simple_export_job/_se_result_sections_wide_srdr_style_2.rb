@@ -12,12 +12,12 @@ def build_result_sections_wide_srdr_style_2(kq_ids=[], print_empty_row=false)
         sheet_info.populate!(:results, kq_ids, efp, efps)
 
         # Create and name worksheets.
-        ws_descriptive_statistics_continuous_outcomes   = @p.workbook.add_worksheet(name: "Continuous - Desc. Statistics")
-        ws_descriptive_statistics_categorical_outcomes  = @p.workbook.add_worksheet(name: "Categorical - Desc. Statistics")
-        ws_bac_statistics_continuous_outcomes  = @p.workbook.add_worksheet(name: "Continuous - BAC Comparisons")
-        ws_bac_statistics_categorical_outcomes = @p.workbook.add_worksheet(name: "Categorical - BAC Comparisons")
-        ws_wac_statistics = @p.workbook.add_worksheet(name: "WAC Comparisons")
-        ws_net_statistics = @p.workbook.add_worksheet(name: "NET Differences")
+        ws_descriptive_statistics_continuous_outcomes   = @package.workbook.add_worksheet(name: "Continuous - Desc. Statistics")
+        ws_descriptive_statistics_categorical_outcomes  = @package.workbook.add_worksheet(name: "Categorical - Desc. Statistics")
+        ws_bac_statistics_continuous_outcomes  = @package.workbook.add_worksheet(name: "Continuous - BAC Comparisons")
+        ws_bac_statistics_categorical_outcomes = @package.workbook.add_worksheet(name: "Categorical - BAC Comparisons")
+        ws_wac_statistics = @package.workbook.add_worksheet(name: "WAC Comparisons")
+        ws_net_statistics = @package.workbook.add_worksheet(name: "NET Differences")
 
         # Start printing rows to the sheets. First the basic headers:
         #   Categorical populations only apply to Desc. Statistics and BAC Comparisons.

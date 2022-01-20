@@ -10,7 +10,7 @@ def build_type2_sections_wide_srdr_style(kq_ids=[], print_empty_row=false)
     next unless efps.extraction_forms_projects_section_type_id == 2
 
     # Add a new sheet.
-    @p.workbook.add_worksheet(name: ensure_unique_sheet_name(efps.section.name.try(:truncate, 24))) do |sheet|
+    @package.workbook.add_worksheet(name: ensure_unique_sheet_name(efps.section.name.try(:truncate, 24))) do |sheet|
 
       # For each sheet we create a SheetInfo object.
       sheet_info = SheetInfo.new
@@ -35,7 +35,7 @@ def build_type2_sections_wide_srdr_style(kq_ids=[], print_empty_row=false)
       sheet_info.question_row_columns.each do |qrc|
         # Try to find the column that matches the identifier.
         found, column_idx = nil
-        found, column_idx = _find_column_idx_with_value(header_row,
+        found, column_idx = SheetInfo.find_column_idx_with_value(header_row,
           "[Question ID: #{ qrc[:question_id] }][Field ID: #{ qrc[:question_row_id] }x#{ qrc[:question_row_column_id] }]")
 
         # Append to the header if this is new.
@@ -100,7 +100,7 @@ def build_type2_sections_wide_srdr_style(kq_ids=[], print_empty_row=false)
 
               # Try to find the column that matches the identifier.
               found, column_idx = nil
-              found, column_idx = _find_column_idx_with_value(header_row, "[Question ID: #{ qrc[:question_id] }][Field ID: #{ qrc[:question_row_id] }x#{ qrc[:question_row_column_id] }]")
+              found, column_idx = SheetInfo.find_column_idx_with_value(header_row, "[Question ID: #{ qrc[:question_id] }][Field ID: #{ qrc[:question_row_id] }x#{ qrc[:question_row_column_id] }]")
 
               # Something is wrong if it wasn't found.
               unless found
@@ -118,7 +118,7 @@ def build_type2_sections_wide_srdr_style(kq_ids=[], print_empty_row=false)
       # Re-apply the styling for the new cells in the header row before closing the sheet.
       sheet.column_widths 16, 16, 16, 50, 16, 16
       header_row.style = @highlight
-    end  # END @p.workbook.add_worksheet(name: "#{ efps.section.name.truncate(24) }") do |sheet|
+    end  # END @package.workbook.add_worksheet(name: "#{ efps.section.name.truncate(24) }") do |sheet|
 
   end  # END efp.extraction_forms_projects_sections.each do |efps|
 end

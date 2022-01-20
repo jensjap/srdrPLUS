@@ -1,5 +1,6 @@
 Dir[File.join(__dir__, 'simple_export_job', '_*.rb')].each { |file| require file }
 
+require 'simple_export_job/legacy_exporter'
 require 'google/api_client/client_secrets.rb'
 require 'google/apis/drive_v3'
 
@@ -14,7 +15,7 @@ class SimpleExportJob < ApplicationJob
   end
 
   def perform(*args)
-    Axlsx::Package.new do |p|
+    Axlsx::Package.new do |package|
       @user_email = args.first
       @project = Project.
         includes({
@@ -33,24 +34,23 @@ class SimpleExportJob < ApplicationJob
         }).
         find(args.second)
       @export_type = args.third
-      @p = p
-      @p.use_shared_strings = true
-      @p.use_autowidth = true
-      @highlight = @p.workbook.styles.add_style bg_color: 'C7EECF', fg_color: '09600B', sz: 14, font_name: 'Calibri (Body)', alignment: { wrap_text: true }
-      @wrap = @p.workbook.styles.add_style alignment: { wrap_text: true }
+      @package = package
+      @package.use_shared_strings = true
+      @package.use_autowidth = true
+      @highlight = @package.workbook.styles.add_style bg_color: 'C7EECF', fg_color: '09600B', sz: 14, font_name: 'Calibri (Body)', alignment: { wrap_text: true }
+      @wrap = @package.workbook.styles.add_style alignment: { wrap_text: true }
 
       Rails.logger.debug "#{ self.class.name }: I'm performing my job with arguments: #{ args.inspect }"
       Rails.logger.debug "#{ self.class.name }: Working on project: #{ @project.name }"
 
-      # Sheet with basic project information.
-      build_project_information_section
-      build_all_other_sections
-      raise "Unable to serialize" unless @p.serialize(@f_name)
+      # Generate XLSX with basic project information.
+      filename = generate_xlsx
+      raise "Unable to serialize" unless @package.serialize(filename)
 
       if /xlsx/ =~ @export_type
-        create_email_export
+        create_email_export(filename)
       elsif /Google Sheets/ =~ @export_type
-        create_gdrive_export
+        create_gdrive_export(filename)
       else
         raise "Unknown ExportType."
       end
@@ -60,29 +60,72 @@ class SimpleExportJob < ApplicationJob
   end
 
   private
-    def build_all_other_sections
+    def generate_xlsx
+      if /legacy/ =~ @export_type
+        exporter = LegacyExporter.new(@package, @project, @highlight, @wrap)
+        exporter.build!
+        return 'tmp/simple_exports/project_' + @project.id.to_s + '_' + Time.now.strftime('%s') + '_legacy.xlsx'
+      else
+        build_project_information_section
+        return build_all_other_sections_and_generate_filename
+      end
+    end
+
+    def build_project_information_section
+      # Sheet with basic project information.
+      @package.workbook.add_worksheet(name: 'Project Information') do |sheet|
+        sheet.add_row ['Project Information:'],                                     style: [@highlight]
+        sheet.add_row ['Name',                    @project.name]
+        sheet.add_row ['Description',             @project.description],             style: [@wrap]
+        sheet.add_row ['Attribution',             @project.attribution]
+        sheet.add_row ['Methodology Description', @project.methodology_description]
+        sheet.add_row ['Prospero',                @project.prospero],                types: [nil, :string]
+        sheet.add_row ['DOI',                     @project.doi],                     types: [nil, :string]
+        sheet.add_row ['Notes',                   @project.notes]
+        sheet.add_row ['Funding Source',          @project.funding_source]
+
+        # Project member list.
+        sheet.add_row ['Project Member List:'],                                     style: [@highlight]
+        sheet.add_row ['Username', 'First Name', 'Middle Name', 'Last Name', 'Email', 'Extraction ID']
+        @project.members.each do |user|
+          sheet.add_row [
+            user.username,
+            user.first_name,
+            user.middle_name,
+            user.last_name,
+            user.email,
+            Extraction.by_project_and_user(@project.id, user.id).pluck(:id)
+          ]
+        end
+
+        # Re-apply the styling for the new cells before closing the sheet.
+        sheet.column_widths nil
+      end
+    end
+
+    def build_all_other_sections_and_generate_filename
       if /wide/ =~ @export_type
         build_type1_sections_wide
         build_type2_sections_wide
         build_result_sections_wide
-        @f_name = 'tmp/simple_exports/project_' + @project.id.to_s + '_' + Time.now.strftime('%s') + '_wide.xlsx'
-      elsif /legacy/ =~ @export_type
-        build_type1_sections_wide
-        build_type2_sections_wide_srdr_style
-        build_result_sections_wide_srdr_style_2
-        @f_name = 'tmp/simple_exports/project_' + @project.id.to_s + '_' + Time.now.strftime('%s') + '_legacy.xlsx'
+        return 'tmp/simple_exports/project_' + @project.id.to_s + '_' + Time.now.strftime('%s') + '_wide.xlsx'
+      # elsif /legacy/ =~ @export_type
+      #   # build_type1_sections_wide
+      #   build_type2_sections_wide_srdr_style
+      #   # build_result_sections_wide_srdr_style_2
+      #   return 'tmp/simple_exports/project_' + @project.id.to_s + '_' + Time.now.strftime('%s') + '_legacy.xlsx'
       else
         build_type1_sections_compact
         build_type2_sections_compact
         build_result_sections_compact
-        @f_name = 'tmp/simple_exports/project_' + @project.id.to_s + '_' + Time.now.strftime('%s') + '_long.xlsx'
+        return 'tmp/simple_exports/project_' + @project.id.to_s + '_' + Time.now.strftime('%s') + '_long.xlsx'
       end
     end
 
-    def create_email_export
-      export_type = ExportType.find_by(name: ".xlsx")
-      @exported_item = ExportedItem.create! project: @project, user_email: @user_email, export_type: export_type
-      @exported_item.file.attach io: File.open(@f_name), filename: @f_name
+    def create_email_export(filename)
+      @export_type = ExportType.find_by(name: ".xlsx")
+      @exported_item = ExportedItem.create! project: @project, user_email: @user_email, export_type: @export_type
+      @exported_item.file.attach io: File.open(filename), filename: filename
       # Notify the user that the export is ready for download.
       if @exported_item.file.attached?
         @exported_item.external_url = Rails.application.routes.default_url_options[:host] + Rails.application.routes.url_helpers.rails_blob_path(@exported_item.file, only_path: true)
@@ -92,8 +135,8 @@ class SimpleExportJob < ApplicationJob
       end
     end
 
-    def create_gdrive_export
-      export_type  = ExportType.find_by(name: "Google Sheets")
+    def create_gdrive_export(filename)
+      @export_type  = ExportType.find_by(name: "Google Sheets")
       drive_service = Google::Apis::DriveV3::DriveService.new
       drive_service.authorization = ::Google::Auth::ServiceAccountCredentials.new( token_credential_uri: Google::Auth::ServiceAccountCredentials::TOKEN_CRED_URI,
                                       audience: Google::Auth::ServiceAccountCredentials::TOKEN_CRED_URI,
@@ -120,7 +163,7 @@ class SimpleExportJob < ApplicationJob
       ## Here we specify what should server return (only the file id in this case), file location and the filetype (in this case 'xlsx')
       file = drive_service.create_file(file_metadata,
                                         fields: 'id, webViewLink',
-                                        upload_source: @f_name,
+                                        upload_source: filename,
                                         content_type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
       domain_permission = {
           type: 'anyone',
@@ -135,6 +178,6 @@ class SimpleExportJob < ApplicationJob
       puts "File Id: #{file.id}"
       puts "File Link: #{file.web_view_link}"
 
-      @exported_item = ExportedItem.create! project: @project, user_email: @user_email, export_type: export_type, external_url: file.web_view_link
+      @exported_item = ExportedItem.create! project: @project, user_email: @user_email, export_type: @export_type, external_url: file.web_view_link
     end
 end

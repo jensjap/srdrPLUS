@@ -8,7 +8,7 @@ def build_type1_sections_compact(kq_ids=[])
       next unless section.extraction_forms_projects_section_type_id == 1
 
       # Add a new sheet.
-      @p.workbook.add_worksheet(name: ensure_unique_sheet_name(section.section.name.try(:truncate, 21))) do |sheet|
+      @package.workbook.add_worksheet(name: ensure_unique_sheet_name(section.section.name.try(:truncate, 21))) do |sheet|
 
         # For each sheet we create a SheetInfo object.
         sheet_info = SheetInfo.new
@@ -24,7 +24,7 @@ def build_type1_sections_compact(kq_ids=[])
         # Every row represents an extraction.
         @project.extractions.each do |extraction|
           # Collect distinct list of questions based off the key questions selected for this extraction.
-          kq_ids_by_extraction = fetch_kq_selection(extraction, kq_ids)
+          kq_ids_by_extraction = SheetInfo.fetch_kq_selection(extraction, kq_ids)
 
           eefps = section.extractions_extraction_forms_projects_sections.find_by(
             extraction: extraction,
@@ -54,7 +54,7 @@ def build_type1_sections_compact(kq_ids=[])
         # Re-apply the styling for the new cells in the header row before closing the sheet.
         sheet.column_widths nil, nil, nil, nil, nil, nil, nil, nil
         header_row.style = @highlight
-      end  # END @p.workbook.add_worksheet(name: "#{ section.section.name.truncate(21) }") do |sheet|
+      end  # END @package.workbook.add_worksheet(name: "#{ section.section.name.truncate(21) }") do |sheet|
 
     end  # END ef.extraction_forms_projects_sections.each do |section|
   end  # END @project.extraction_forms_projects.each do |ef|

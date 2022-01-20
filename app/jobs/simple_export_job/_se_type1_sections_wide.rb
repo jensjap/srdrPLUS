@@ -9,7 +9,7 @@ def build_type1_sections_wide(kq_ids=[])
 
       # Add a new sheet.
       sheet_name = efps.section.name.truncate(24)
-      @p.workbook.add_worksheet(name: ensure_unique_sheet_name(sheet_name)) do |sheet|
+      @package.workbook.add_worksheet(name: ensure_unique_sheet_name(sheet_name)) do |sheet|
 
         # For each sheet we create a SheetInfo object.
         sheet_info = SheetInfo.new
@@ -22,7 +22,7 @@ def build_type1_sections_wide(kq_ids=[])
         sheet_info.type1s.each do |type1|
           # Try to find the column that matches the identifier.
           found, column_idx = nil
-          found, column_idx = _find_column_idx_with_value(header_row, "[#{ type1[:section_name] } ID: #{ type1[:id] }]")
+          found, column_idx = SheetInfo.find_column_idx_with_value(header_row, "[#{ type1[:section_name] } ID: #{ type1[:id] }]")
 
           # Append to the header if this is new.
           unless found
@@ -41,7 +41,7 @@ def build_type1_sections_wide(kq_ids=[])
         sheet_info.populations.each do |pop|
           # Try to find the column that matches the identifier.
           found, column_idx = nil
-          found, column_idx = _find_column_idx_with_value(header_row, "[Population ID: #{ pop[:id] }]")
+          found, column_idx = SheetInfo.find_column_idx_with_value(header_row, "[Population ID: #{ pop[:id] }]")
 
           # Append to the header if this is new.
           unless found
@@ -54,7 +54,7 @@ def build_type1_sections_wide(kq_ids=[])
         sheet_info.timepoints.each do |tp|
           # Try to find the column that matches the identifier.
           found, column_idx = nil
-          found, column_idx = _find_column_idx_with_value(header_row, "[Timepoint ID: #{ tp[:id] }]")
+          found, column_idx = SheetInfo.find_column_idx_with_value(header_row, "[Timepoint ID: #{ tp[:id] }]")
 
           # Append to the header if this is new.
           unless found
@@ -84,7 +84,7 @@ def build_type1_sections_wide(kq_ids=[])
           extraction[:type1s].each do |type1|
             # Try to find the column that matches the identifier.
             found, column_idx = nil
-            found, column_idx = _find_column_idx_with_value(header_row, "[#{ type1[:section_name] } ID: #{ type1[:id] }]")
+            found, column_idx = SheetInfo.find_column_idx_with_value(header_row, "[#{ type1[:section_name] } ID: #{ type1[:id] }]")
 
             # Something is wrong if it wasn't found.
             unless found
@@ -99,7 +99,7 @@ def build_type1_sections_wide(kq_ids=[])
           extraction[:populations].each do |pop|
             # Try to find the column that matches the identifier.
             found, column_idx = nil
-            found, column_idx = _find_column_idx_with_value(header_row, "[Population ID: #{ pop[:id] }]")
+            found, column_idx = SheetInfo.find_column_idx_with_value(header_row, "[Population ID: #{ pop[:id] }]")
 
             # Something is wrong if it wasn't found.
             unless found
@@ -113,7 +113,7 @@ def build_type1_sections_wide(kq_ids=[])
           extraction[:timepoints].each do |tp|
             # Try to find the column that matches the identifier.
             found, column_idx = nil
-            found, column_idx = _find_column_idx_with_value(header_row, "[Timepoint ID: #{ tp[:id] }]")
+            found, column_idx = SheetInfo.find_column_idx_with_value(header_row, "[Timepoint ID: #{ tp[:id] }]")
 
             # Something is wrong if it wasn't found.
             unless found
@@ -131,12 +131,8 @@ def build_type1_sections_wide(kq_ids=[])
         # Re-apply the styling for the new cells in the header row before closing the sheet.
         sheet.column_widths 16, 16, 16, 50, 16, 16
         header_row.style = @highlight
-      end  # END @p.workbook.add_worksheet(name: "#{ efps.section.name.truncate(24) }") do |sheet|
+      end  # END @package.workbook.add_worksheet(name: "#{ efps.section.name.truncate(24) }") do |sheet|
 
     end  # END efp.extraction_forms_projects_sections.each do |efps|
   end  # END @project.extraction_forms_projects.each do |efp|
-end
-
-def fill_sheet_info(sheet_info)
-
 end

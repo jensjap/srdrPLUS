@@ -13,10 +13,10 @@ def build_result_sections_compact(kq_ids=[], print_empty_row=false)
       # Build SheetInfo object by extraction.
       populate_sheet_info_with_extractions_results_data(sheet_info, kq_ids, efp, efps)
 
-      ws_desc = @p.workbook.add_worksheet(name: "Desc. Statistics")
-      ws_bac  = @p.workbook.add_worksheet(name: "BAC Comparisons")
-      ws_wac  = @p.workbook.add_worksheet(name: "WAC Comparisons")
-      ws_net  = @p.workbook.add_worksheet(name: "NET Differences")
+      ws_desc = @package.workbook.add_worksheet(name: "Desc. Statistics")
+      ws_bac  = @package.workbook.add_worksheet(name: "BAC Comparisons")
+      ws_wac  = @package.workbook.add_worksheet(name: "WAC Comparisons")
+      ws_net  = @package.workbook.add_worksheet(name: "NET Differences")
 
       # Start printing rows to the sheets. First the basic headers:
       #['Extraction ID', 'Username', 'Citation ID', 'Citation Name', 'RefMan', 'PMID']

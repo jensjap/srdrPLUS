@@ -210,7 +210,7 @@ def build_result_sections_wide(p, project)
           sheet_info.rssms.each do |rssm|
             # Try to find the column that matches the identifier.
             found, column_idx = nil
-            found, column_idx = _find_column_idx_with_value(header_row,
+            found, column_idx = SheetInfo.find_column_idx_with_value(header_row,
                                                             "[Outcome ID: #{ rssm[:outcome_id] }][Population ID: #{ rssm[:population_id] }][RSS Type ID: #{ rssm[:result_statistic_section_id] }][Row ID: #{ rssm[:row_id] }][Col ID: #{ rssm[:col_id] }][Measure ID: #{ rssm[:measure_id] }]")
 
             # Append to the header if this is new.
@@ -256,7 +256,7 @@ def build_result_sections_wide(p, project)
             extraction[:rssms].each do |rssm|
               # Try to find the column that matches the identifier.
               found, column_idx = nil
-              found, column_idx = _find_column_idx_with_value(header_row,
+              found, column_idx = SheetInfo.find_column_idx_with_value(header_row,
                                                               "[Outcome ID: #{ rssm[:outcome_id] }][Population ID: #{ rssm[:population_id] }][RSS Type ID: #{ rssm[:result_statistic_section_id] }][Row ID: #{ rssm[:row_id] }][Col ID: #{ rssm[:col_id] }][Measure ID: #{ rssm[:measure_id] }]")
 
               # Something is wrong if it wasn't found.
