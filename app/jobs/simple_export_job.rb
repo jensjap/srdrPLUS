@@ -1,6 +1,7 @@
-Dir[File.join(__dir__, 'simple_export_job', '_*.rb')].each { |file| require file }
-
 require 'simple_export_job/legacy_exporter'
+require 'simple_export_job/wide_exporter'
+require 'simple_export_job/compact_exporter'
+
 require 'google/api_client/client_secrets.rb'
 require 'google/apis/drive_v3'
 
@@ -44,7 +45,7 @@ class SimpleExportJob < ApplicationJob
       Rails.logger.debug "#{ self.class.name }: Working on project: #{ @project.name }"
 
       # Generate XLSX with basic project information.
-      filename = generate_xlsx
+      filename = generate_xlsx_and_filename
       raise "Unable to serialize" unless @package.serialize(filename)
 
       if /xlsx/ =~ @export_type
@@ -60,64 +61,18 @@ class SimpleExportJob < ApplicationJob
   end
 
   private
-    def generate_xlsx
-      if /legacy/ =~ @export_type
+    def generate_xlsx_and_filename
+      if /wide/ =~ @export_type
+        exporter = WideExporter.new(@package, @project, @highlight, @wrap)
+        exporter.build!
+        return 'tmp/simple_exports/project_' + @project.id.to_s + '_' + Time.now.strftime('%s') + '_wide.xlsx'
+      elsif /legacy/ =~ @export_type
         exporter = LegacyExporter.new(@package, @project, @highlight, @wrap)
         exporter.build!
         return 'tmp/simple_exports/project_' + @project.id.to_s + '_' + Time.now.strftime('%s') + '_legacy.xlsx'
       else
-        build_project_information_section
-        return build_all_other_sections_and_generate_filename
-      end
-    end
-
-    def build_project_information_section
-      # Sheet with basic project information.
-      @package.workbook.add_worksheet(name: 'Project Information') do |sheet|
-        sheet.add_row ['Project Information:'],                                     style: [@highlight]
-        sheet.add_row ['Name',                    @project.name]
-        sheet.add_row ['Description',             @project.description],             style: [@wrap]
-        sheet.add_row ['Attribution',             @project.attribution]
-        sheet.add_row ['Methodology Description', @project.methodology_description]
-        sheet.add_row ['Prospero',                @project.prospero],                types: [nil, :string]
-        sheet.add_row ['DOI',                     @project.doi],                     types: [nil, :string]
-        sheet.add_row ['Notes',                   @project.notes]
-        sheet.add_row ['Funding Source',          @project.funding_source]
-
-        # Project member list.
-        sheet.add_row ['Project Member List:'],                                     style: [@highlight]
-        sheet.add_row ['Username', 'First Name', 'Middle Name', 'Last Name', 'Email', 'Extraction ID']
-        @project.members.each do |user|
-          sheet.add_row [
-            user.username,
-            user.first_name,
-            user.middle_name,
-            user.last_name,
-            user.email,
-            Extraction.by_project_and_user(@project.id, user.id).pluck(:id)
-          ]
-        end
-
-        # Re-apply the styling for the new cells before closing the sheet.
-        sheet.column_widths nil
-      end
-    end
-
-    def build_all_other_sections_and_generate_filename
-      if /wide/ =~ @export_type
-        build_type1_sections_wide
-        build_type2_sections_wide
-        build_result_sections_wide
-        return 'tmp/simple_exports/project_' + @project.id.to_s + '_' + Time.now.strftime('%s') + '_wide.xlsx'
-      # elsif /legacy/ =~ @export_type
-      #   # build_type1_sections_wide
-      #   build_type2_sections_wide_srdr_style
-      #   # build_result_sections_wide_srdr_style_2
-      #   return 'tmp/simple_exports/project_' + @project.id.to_s + '_' + Time.now.strftime('%s') + '_legacy.xlsx'
-      else
-        build_type1_sections_compact
-        build_type2_sections_compact
-        build_result_sections_compact
+        exporter = CompactExporter.new(@package, @project, @highlight, @wrap)
+        exporter.build!
         return 'tmp/simple_exports/project_' + @project.id.to_s + '_' + Time.now.strftime('%s') + '_long.xlsx'
       end
     end
