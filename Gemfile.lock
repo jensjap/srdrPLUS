@@ -439,7 +439,7 @@ GEM
     rb-fsevent (0.11.0)
     rb-inotify (0.10.1)
       ffi (~> 1.0)
-    redis (4.3.1)
+    redis (4.5.1)
     ref_parsers (0.2.1)
     regexp_parser (2.1.1)
     representable (3.1.1)
@@ -507,11 +507,10 @@ GEM
       sentry-ruby-core (~> 4.7.0)
       sidekiq (>= 3.0)
     shellany (0.0.1)
-    sidekiq (5.2.5)
-      connection_pool (~> 2.2, >= 2.2.2)
-      rack (>= 1.5.0)
-      rack-protection (>= 1.5.0)
-      redis (>= 3.3.5, < 5)
+    sidekiq (6.4.0)
+      connection_pool (>= 2.2.2)
+      rack (~> 2.0)
+      redis (>= 4.2.0)
     sidekiq-cron (1.2.0)
       fugit (~> 1.1)
       sidekiq (>= 4.2.1)
@@ -657,7 +656,7 @@ DEPENDENCIES
   searchkick
   sentry-ruby
   sentry-sidekiq
-  sidekiq (= 5.2.5)
+  sidekiq (= 6.4.0)
   sidekiq-cron (~> 1.1)
   simple_form
   simplecov
