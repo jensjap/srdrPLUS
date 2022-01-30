@@ -138,6 +138,14 @@ class ProjectPolicy < ApplicationPolicy
     project_auditor? || @record.public?
   end
 
+  def export_assignment_list?
+    project_leader?
+  end
+
+  def import_assignment_list?
+    project_leader?
+  end
+
   def import_csv?
     project_leader?
   end

@@ -4,16 +4,17 @@ class ProjectsController < ApplicationController
   skip_before_action :authenticate_user!, only: [:export]
 
   before_action :set_project, only: [
-                                :show, :edit, :update, :destroy, :export, :export_to_gdrive, :import_csv,
-                                :import_pubmed, :import_endnote, :import_ris, :next_assignment,
-                                :confirm_deletion, :dedupe_citations, :create_citation_screening_extraction_form, :create_full_text_screening_extraction_form,
-                              ]
+    :show, :edit, :update, :destroy, :export, :export_to_gdrive,
+    :export_assignment_list, :import_assignment_list,
+    :import_csv, :import_pubmed, :import_endnote, :import_ris, :next_assignment,
+    :confirm_deletion, :dedupe_citations, :create_citation_screening_extraction_form,
+    :create_full_text_screening_extraction_form]
 
-  before_action :skip_authorization, only: [:index, :edit, :show, :filter, :export, :export_to_gdrive, :new, :create]
+  before_action :skip_authorization, only: [
+    :index, :edit, :show, :filter, :export, :export_to_gdrive, :new, :create]
   before_action :skip_policy_scope, except: [
-                                      :index, :show, :edit, :update, :destroy, :filter, :export, :export_to_gdrive, :import_csv,
-                                      :import_pubmed, :import_endnote, :import_ris, :next_assignment,
-                                    ]
+    :index, :show, :edit, :update, :destroy, :filter, :export, :export_to_gdrive, :import_csv,
+    :import_pubmed, :import_endnote, :import_ris, :next_assignment]
 
   # GET /projects
   # GET /projects.json
@@ -151,6 +152,31 @@ class ProjectsController < ApplicationController
     redirect_to edit_project_path(@project)
   end
 
+  def export_assignment_list
+    authorize(@project)
+    assignment_list = ExportAssignmentListJob.perform_now(@project.id)
+    file_name = "Extraction Assignment List - Project ID #{ @project.id.to_s }.xlsx"
+    send_data(assignment_list.to_stream().read, filename: file_name)
+  end
+
+  def import_assignment_list
+    authorize(@project)
+    file = params['file']
+    debugger
+    unless _check_valid_file_extension(file)
+      @import = Struct.new(:errors).new(nil)
+      @import.errors = "Invalid file format"
+      respond_to do |format|
+        format.json { render :json => @import.errors.to_json, status: :unprocessable_entity }
+      end
+
+      return
+    end
+    import_type_id = ImportType.find_by(name: ImportType::ASSIGNMENTS).id
+    imported_files = import_params[:imported_files]
+    ImportAssignmentListJob.perform_now(@project.id, imported_files)
+  end
+
   def import_ris
     authorize(@project)
     @project.citation_files.attach(citation_import_params[:citation_files])
@@ -244,6 +270,10 @@ class ProjectsController < ApplicationController
     else
       params.require(:project).permit(*ProjectPolicy::FULL_PARAMS)
     end
+  end
+
+  def import_params
+    params.require(:import).permit(:imported_files)
   end
 
   def gdrive_params
@@ -388,5 +418,10 @@ class ProjectsController < ApplicationController
     project_params[:projects_users_attributes] &&
       project_params[:projects_users_attributes].values.any? { |key| key[:role_ids] } &&
       project_params[:projects_users_attributes].values.map { |pua| pua[:role_ids] }.flatten.none? { |role_id| role_id == '1' }
+  end
+
+  def _check_valid_file_extension(file)
+    extension = file.original_filename.match(/(\.[a-z]+$)/i)[0]
+    return ['.xlsx'].include?(extension)
   end
 end

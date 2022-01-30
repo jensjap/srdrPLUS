@@ -1,4 +1,12 @@
+.grid-container
+  .grid-x
+    .cell.small-6
+      = link_to 'Export Assignment List', export_assignment_list_project_path(@project), method: :post, class: 'button'
 
+    .cell.small-6
+      = simple_form_for(@import, url: import_assignment_list_project_path(@project)) do |f|
+        = f.file_field :imported_files, multiple: true, direct_upload: true
+        = f.submit
 
 .column.row
   = link_to t('show'), @project
