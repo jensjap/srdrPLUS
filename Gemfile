@@ -199,3 +199,5 @@ gem 'ahoy_matey'
 
 # Easy maintenance mode.
 gem 'turnout'
+
+gem 'roo'
