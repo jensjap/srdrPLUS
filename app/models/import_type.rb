@@ -14,5 +14,5 @@ class ImportType < ApplicationRecord
   CITATION             = 'Citation'.freeze
   PROJECT              = 'Project'.freeze
   DISTILLER            = 'Distiller'.freeze
-  ASSIGNMENTS          = 'Assignments'.freeze
+  ASSIGNMENTS_MAPPINGS = 'Assignments and Mappings'.freeze
 end

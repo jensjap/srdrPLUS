@@ -161,20 +161,55 @@ class ProjectsController < ApplicationController
 
   def import_assignments_and_mappings
     authorize(@project)
-    file = params['file']
-    debugger
+    file = import_assignments_and_mappings_params[:imported_file][:content]
     unless _check_valid_file_extension(file)
       @import = Struct.new(:errors).new(nil)
       @import.errors = "Invalid file format"
       respond_to do |format|
         format.json { render :json => @import.errors.to_json, status: :unprocessable_entity }
       end
-
       return
     end
-    import_type_id = ImportType.find_by(name: ImportType::ASSIGNMENTS).id
-    imported_files = import_params[:imported_files]
-    ImportAssignmentListJob.perform_now(@project.id, imported_files)
+
+    # Verify that we are importing Assignments and Mappings.
+    import_type_id = import_assignments_and_mappings_params[:import_type_id].to_i
+    unless import_type_id.eql?(ImportType.find_by(name: ImportType::ASSIGNMENTS_MAPPINGS).id)
+      @import = Struct.new(:errors).new(nil)
+      @import.errors = "Invalid Import Type -- you are not importing user Assignments and Mappings."
+      respond_to do |format|
+        format.json { render :json => @import.errors.to_json, status: :unprocessable_entity }
+      end
+      return
+    end
+
+    projects_user_id = import_assignments_and_mappings_params[:projects_user_id].to_i
+    file_type_id = import_assignments_and_mappings_params[:imported_file][:file_type_id].to_i
+
+    import_hash = {
+      import_type_id: import_type_id,
+      projects_user_id: projects_user_id,
+      imported_files_attributes: [
+        {
+          content: file,
+          file_type_id: file_type_id
+        }
+      ]
+    }
+
+    @import = Import.new(import_hash)
+    authorize(@import.project, policy_class: ImportPolicy)
+
+    respond_to do |format|
+      if @import.save
+        flash[:success] = "Import request of Assignments and Mappings submitted for project '#{ @project.name }'. You will be notified by email of its completion."
+        format.json { render :json => @import, status: :ok }
+        format.html { redirect_to project_imports_path(@project) }
+      else
+        flash[:error] = "Error encountered. Unable to process import request of Assignments and Mappings submitted for project '#{ @project.name }'."
+        format.json { render :json => @import.errors, status: :unprocessable_entity }
+        format.html { redirect_to project_imports_path(@project) }
+      end
+    end
   end
 
   def import_ris
@@ -273,7 +308,7 @@ class ProjectsController < ApplicationController
   end
 
   def import_params
-    params.require(:import).permit(:imported_files)
+    params.require(:import).permit(imported_files: [])
   end
 
   def gdrive_params
@@ -319,6 +354,10 @@ class ProjectsController < ApplicationController
 
   def export_type_name_params
     params.require(:export_type_name)
+  end
+
+  def import_assignments_and_mappings_params
+    params.require(:import).permit(:projects_user_id, :import_type_id, imported_file: [:file_type_id, :content])
   end
 
   # def import_project_from_distiller(project)

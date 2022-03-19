@@ -29,30 +29,36 @@ class Import < ApplicationRecord
 
     for imported_file in self.imported_files
       case self.import_type.name
-        when "Citation"
-          case imported_file.file_type.name
-            when ".ris"
-              RisImportJob.perform_later(imported_file.id)
-            when ".csv"
-              CsvImportJob.perform_later(imported_file.id)
-            when ".enl"
-              EnlImportJob.perform_later(imported_file.id)
-            when "PubMed"
-              PubmedImportJob.perform_later(imported_file.id)
-            when ".json"
-              CitationFhirImportJob.perform_later(imported_file.id)
-            else
-              ## NOT SUPPORTED, WHAT TO DO?
-          end
-        when "Project"
-          case imported_file.file_type.name
-            when ".json"
-              JsonImportJob.perform_later(imported_file.id)
-            when ".xlsx"
-            else
-
-              ## NOT SUPPORTED, WHAT TO DO?
-          end
+      when "Citation"
+        case imported_file.file_type.name
+        when ".ris"
+          RisImportJob.perform_later(imported_file.id)
+        when ".csv"
+          CsvImportJob.perform_later(imported_file.id)
+        when ".enl"
+          EnlImportJob.perform_later(imported_file.id)
+        when "PubMed"
+          PubmedImportJob.perform_later(imported_file.id)
+        when ".json"
+          CitationFhirImportJob.perform_later(imported_file.id)
+        else
+          ## NOT SUPPORTED, WHAT TO DO?
+        end
+      when "Project"
+        case imported_file.file_type.name
+        when ".json"
+          JsonImportJob.perform_later(imported_file.id)
+        when ".xlsx"
+          # Nothing?
+        else
+          ## NOT SUPPORTED, WHAT TO DO?
+        end
+      when "Assignments and Mappings"
+        case imported_file.file_type.name
+        when ".xlsx"
+          #!!! Make this perform_later in production!!!
+          ImportAssignmentsAndMappingsJob.perform_now(imported_file.id)
+        end
       end
     end
   end
