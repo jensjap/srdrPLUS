@@ -5,7 +5,7 @@ class ProjectsController < ApplicationController
 
   before_action :set_project, only: [
     :show, :edit, :update, :destroy, :export, :export_to_gdrive,
-    :export_assignment_list, :import_assignment_list,
+    :export_assignments_and_mappings, :import_assignments_and_mappings,
     :import_csv, :import_pubmed, :import_endnote, :import_ris, :next_assignment,
     :confirm_deletion, :dedupe_citations, :create_citation_screening_extraction_form,
     :create_full_text_screening_extraction_form]
@@ -152,14 +152,14 @@ class ProjectsController < ApplicationController
     redirect_to edit_project_path(@project)
   end
 
-  def export_assignment_list
+  def export_assignments_and_mappings
     authorize(@project)
-    assignment_list = ExportAssignmentListJob.perform_now(@project.id)
+    assignment_list = ExportAssignmentsAndMappingsJob.perform_now(@project.id)
     file_name = "Extraction Assignment List - Project ID #{ @project.id.to_s }.xlsx"
     send_data(assignment_list.to_stream().read, filename: file_name)
   end
 
-  def import_assignment_list
+  def import_assignments_and_mappings
     authorize(@project)
     file = params['file']
     debugger

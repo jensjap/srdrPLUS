@@ -279,8 +279,8 @@ Rails.application.routes.draw do
       post 'export'
       post 'export_citation_labels'
       post 'export_to_gdrive'
-      post 'export_assignment_list'
-      post 'import_assignment_list'
+      get  'export_assignments_and_mappings'
+      post 'import_assignments_and_mappings'
     end
 
     resources :imports, only: [:index, :new]
