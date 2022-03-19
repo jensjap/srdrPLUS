@@ -83,9 +83,6 @@ class Project < ApplicationRecord
     -> { ordered },
     through: :extraction_forms_projects_sections
 
-  has_many :projects_studies, dependent: :destroy, inverse_of: :project
-  has_many :studies, through: :projects_studies, dependent: :destroy
-
   has_many :projects_users, dependent: :destroy, inverse_of: :project
   has_many :projects_users_roles, through: :projects_users, dependent: :destroy
   has_many :users, through: :projects_users, dependent: :destroy
