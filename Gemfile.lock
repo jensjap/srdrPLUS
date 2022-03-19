@@ -473,7 +473,9 @@ GEM
     rspec_junit_formatter (0.4.1)
       rspec-core (>= 2, < 4, != 2.12.0)
     ruby2_keywords (0.0.4)
-    rubyXL (1.2.10)
+    rubyXL (3.4.22)
+      nokogiri (>= 1.10.8)
+      rubyzip (>= 1.3.0)
     rubyzip (2.3.2)
     safely_block (0.3.0)
       errbase (>= 0.1.1)
@@ -651,7 +653,7 @@ DEPENDENCIES
   responders
   rspec-rails
   rspec_junit_formatter
-  rubyXL (~> 1.2.10)
+  rubyXL
   sass-rails (~> 5.0)
   searchjoy
   searchkick

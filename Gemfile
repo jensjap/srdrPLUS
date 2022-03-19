@@ -118,7 +118,7 @@ gem 'caxlsx'
 gem 'caxlsx_rails'
 
 # Spreadsheet reading.
-gem 'rubyXL', '~> 1.2.10'
+gem 'rubyXL'
 gem 'zip-zip'
 
 # Searching with Elasticsearch.
