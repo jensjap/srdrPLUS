@@ -268,6 +268,36 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
 
   # Find appropriate EEFPS and add type1.
   def _add_type1_to_extraction(extraction, ws_name, type1_name, type1_description)
+    efps = @project.extraction_forms_projects_sections.joins(:section).where(sections: { name: ws_name }).first
+    eefps = ExtractionsExtractionFormsProjectsSection.find_by(extraction: extraction, extraction_forms_projects_section: efps)
+    n_hash = {"extractions_extraction_forms_projects_sections_type1s_attributes"=>
+               {"0"=>
+                 {"type1_attributes"=>
+                   {"name"=>type1_name, "description"=>type1_description}
+                 }
+               }
+             }
+
+    eefps.update(n_hash) if ws_name.eql?('Arms')
+
+
+    # potentially add into type1s table
+    # how do we add into suggestions table?
+    # add into extractions_extraction_forms_projects_sections_type1s table
+    # need insert into orderings table
+
+    # this is params sent to eefps controller:
+    # Parameters: {
+    # "utf8"=>"✓",
+    # "authenticity_token"=>"Cgzup9N3RkJV1Zn9Q2GfPb+BdT195g4Rri0io4hL/gEFN6ZxZC5m3+fDW3MPKlGarj6rDZg4pFDPXWMKkC6sXA==", 
+    # "extractions_extraction_forms_projects_section"=>{
+    #   "action"=>"work", 
+    #   "extractions_extraction_forms_projects_sections_type1s_attributes"=>{"0"=>{"type1_attributes"=>{"name"=>"testing", "description"=>"123"}}}
+    # }, 
+    # "id"=>"299951"}
+
+    # Arms efps: @project.extraction_forms_projects_sections.joins(:section).where(sections: { name: "arms" })
+
   end  # def _add_type1_to_extraction(extraction, ws_name, type1_name, type1_description)
 
 end  # class ImportAssignmentsAndMappingsJob < ApplicationJob
