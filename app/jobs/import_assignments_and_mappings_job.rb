@@ -3,34 +3,90 @@ require 'rubyXL/convenience_methods'
 
 class ImportAssignmentsAndMappingsJob < ApplicationJob
   queue_as :default
-
+  
   def perform(*args)
     @dict_errors   = {}
     @wb_worksheets = {}
     @imported_file = ImportedFile.find(args.first)
     @project       = Project.find(@imported_file.project.id)
-
+    
     buffer = @imported_file
-      .content
-      .download
+    .content
+    .download
     _parse_workbook(buffer)
     _sort_out_worksheets
-
-    if @dict_errors[:wb_errors].blank?
-      _process_workbook_citation_references_section
-      _process_generic_type1_sections
-      _process_outcomes_section
-    end  # if @dict_errors[:wb_errors].blank?
+    _process_worksheets if @dict_errors[:wb_errors].blank?
   end  # def perform(*args)
-
+  
   private
+  
+  def _parse_workbook(buffer)
+    begin
+      @wb = RubyXL::Parser.parse_buffer(buffer)
+      @dict_errors[:parse_error] = nil
+    rescue RuntimeError => e
+      @dict_errors[:parse_error] = e
+    end
+  end  # def _parse_workbook(args)
+  
+  # Build a dictionary with all worksheets.
+  # Two keys are unique: [:outcomes, :workbook_citation_references].
+  # The rest of the key-value pairs refer to generic type 1 sections,
+  # including 'Arms' section. Generic type 1 section just map
+  # User emails with citations, type 1 name and type 1 description.
+  #
+  # @wb_worksheets
+  def _sort_out_worksheets
+    # Iterate over worksheets.
+    @wb.worksheets.each do |ws|
+      case ws.sheet_name
+      when "Outcomes"
+        @wb_worksheets[:outcomes].present? \
+          ? @wb_worksheets[:outcomes] << ws \
+          : @wb_worksheets[:outcomes] = [ws]
 
-  def _process_outcomes_section
-  end  # def _process_outcomes_section
+      when "Workbook Citation References"
+        @wb_worksheets[:workbook_citation_references].present? \
+          ? @wb_worksheets[:workbook_citation_references] << ws \
+          : @wb_worksheets[:workbook_citation_references] = [ws]
 
-  def _process_generic_type1_sections
-  end  # def _process_generic_type1_sections
+      else
+        @wb_worksheets[ws.sheet_name].present? \
+          ? @wb_worksheets[ws.sheet_name] << ws \
+          : @wb_worksheets[ws.sheet_name] = [ws]
 
+      end  # case ws.sheet_name
+    end  # @wb.worksheets.each do |ws|
+
+    # Check for problems. For example multiple worksheets with the same name.
+    @wb_worksheets.each do |ws_name, lsof_ws|
+      if lsof_ws.length > 1
+        @dict_errors[:wb_errors].present? \
+          ? nil \
+          : @dict_errors[:wb_errors] = ["Workbook contains worksheets with duplicate names"]
+        @dict_errors[:wb_errors_details].present? \
+          ? @dict_errors[:wb_errors_details] << "Workbook contains worksheet \"#{ ws_name }\" multiple times." \
+          : @dict_errors[:wb_errors_details] = ["Workbook contains worksheet \"#{ ws_name }\" multiple times."]
+      end  # if lsof_ws.length > 1
+    end  # @wb_worksheets.each do |ws_name, lsof_ws|
+  end  # def _sort_out_worksheets
+  
+  def _process_worksheets
+    @wb_worksheets.each do |ws_name, ws|
+      case ws_name
+      when :workbook_citation_references
+        _process_workbook_citation_references_section
+      when :outcomes
+        _process_outcomes_section
+      else
+        _process_generic_type1_sections
+      end  # case ws_name
+    end  # @wb_worksheets.each do |ws|
+  end  # def _process_worksheets
+
+  # Builds a dictionary using Workbook Citation Reference ID as key for faster Citation lookup.
+  # 
+  # @dict_citation_references
   def _process_workbook_citation_references_section
     @dict_citation_references = {}
     # We can assume the first is the only one. If there were multiple @dict_errors[:wb_errors]
@@ -78,48 +134,10 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
 
     return nil
   end  # def _find_citation_in_db(row)
-
-  def _sort_out_worksheets
-    # Iterate over worksheets.
-    @wb.worksheets.each do |ws|
-      case ws.sheet_name
-      when "Outcomes"
-        @wb_worksheets[:outcomes].present? \
-          ? @wb_worksheets[:outcomes] << ws \
-          : @wb_worksheets[:outcomes] = [ws]
-
-      when "Workbook Citation References"
-        @wb_worksheets[:workbook_citation_references].present? \
-          ? @wb_worksheets[:workbook_citation_references] << ws \
-          : @wb_worksheets[:workbook_citation_references] = [ws]
-
-      else
-        @wb_worksheets[ws.sheet_name].present? \
-          ? @wb_worksheets[ws.sheet_name] << ws \
-          : @wb_worksheets[ws.sheet_name] = [ws]
-
-      end  # case ws.sheet_name
-    end  # @wb.worksheets.each do |ws|
-
-    # Check for problems. For example multiple worksheets with the same name.
-    @wb_worksheets.each do |ws_name, lsof_ws|
-      if lsof_ws.length > 1
-        @dict_errors[:wb_errors].present? \
-          ? nil \
-          : @dict_errors[:wb_errors] = ["Workbook contains worksheets with duplicate names"]
-        @dict_errors[:wb_errors_details].present? \
-          ? @dict_errors[:wb_errors_details] << "Workbook contains worksheet \"#{ ws_name }\" multiple times." \
-          : @dict_errors[:wb_errors_details] = ["Workbook contains worksheet \"#{ ws_name }\" multiple times."]
-      end  # if lsof_ws.length > 1
-    end  # @wb_worksheets.each do |ws_name, lsof_ws|
-  end  # def _sort_out_worksheets
-
-  def _parse_workbook(buffer)
-    begin
-      @wb = RubyXL::Parser.parse_buffer(buffer)
-      @dict_errors[:parse_error] = nil
-    rescue RuntimeError => e
-      @dict_errors[:parse_error] = e
-    end
-  end  # def _parse_workbook(args)
+  
+  def _process_outcomes_section
+  end  # def _process_outcomes_section
+  
+  def _process_generic_type1_sections
+  end  # def _process_generic_type1_sections
 end
