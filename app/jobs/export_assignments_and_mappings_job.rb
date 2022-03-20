@@ -58,9 +58,9 @@ class ExportAssignmentsAndMappingsJob < ApplicationJob
     @ws_outcomes.add_row [
       "User Email",
       "Workbook Citation Reference ID",
-      "Outcome Type",
       "Outcome Name",
       "Outcome Specific Measurement",
+      "Outcome Type",
       "Population Name",
       "Population Description",
       "Timepoint Name",

@@ -3,6 +3,9 @@ require 'rubyXL/convenience_methods'
 
 class ImportAssignmentsAndMappingsJob < ApplicationJob
   queue_as :default
+
+  @@LEADER_ROLE      = Role.find_by(name: Role::LEADER)
+  @@CONTRIBUTOR_ROLE = Role.find_by(name: Role::CONTRIBUTOR)
   
   def perform(*args)
     @dict_errors   = {}
@@ -78,17 +81,10 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
     # we would not have continued.
     _process_workbook_citation_references_section(@wb_worksheets[:workbook_citation_references].first)
 
-    # Now process the rest...skipping :workbook_citation_references.
-    @wb_worksheets.each do |ws_name, ws|
-      case ws_name
-      when :workbook_citation_references
-        next
-      when :outcomes
-        _process_outcomes_section(ws.first)
-      else
-        _process_generic_type1_sections(ws.first)
-      end  # case ws_name
-    end  # @wb_worksheets.each do |ws|
+    # Now process the rest...note that we skip :workbook_citation_references.
+    @wb_worksheets.except(:workbook_citation_references).each do |ws_name, ws|
+      _process_type1_sections(ws_name, ws.first)
+    end  # @wb_worksheets.except(:workbook_citation_references).each do |ws_name, ws|
   end  # def _process_worksheets
 
   # Builds a dictionary using Workbook Citation Reference ID as key for faster Citation lookup.
@@ -141,10 +137,137 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
     return nil
   end  # def _find_citation_in_db(row)
   
-  def _process_outcomes_section(ws)
-    debugger
+  def _process_type1_sections(ws_name, ws)
+    sheet_data = ws.sheet_data
+    sheet_data.rows[1..-1].each do |row|
+      user_email        = row[0]&.value
+      lsof_citation_ids = row[1]&.value.to_s.split(',').map(&:to_i)
+      type1_name        = row[2]&.value
+      type1_description = row[3]&.value
+      
+      # Additional processing for "Outcomes" section.
+      if ws_name.eql?(:outcomes)
+        outcome_type           = row[4]&.value
+        population_name        = row[5]&.value
+        population_description = row[6]&.value
+        timepoint_name         = row[7]&.value
+        timepoint_unit         = row[8]&.value
+        successful, e = _process_row(
+          ws_name,
+          user_email,
+          lsof_citation_ids,
+          type1_name,
+          type1_description,
+          outcome_type,
+          population_name,
+          population_description,
+          timepoint_name,
+          timepoint_unit
+        )
+        
+      else
+        successful, e = _process_row(
+          ws_name,
+          user_email,
+          lsof_citation_ids,
+          type1_name,
+          type1_description
+        )
+      end  # if ws_name.eql?(:outcomes)
+
+      unless successful
+        @dict_errors[:row_processing_errors].present? \
+          ? @dict_errors[:row_processing_errors] << "Error: \"#{ e }\", row: [#{ user_email }, #{ lsof_citation_ids }], while processing row in worksheet: #{ ws_name }" \
+          : @dict_errors[:row_processing_errors] = ["Error: \"#{ e }\", row: [#{ user_email }, #{ lsof_citation_ids }], while processing row in worksheet: #{ ws_name }"]
+      end  # if successful
+    end  # sheet_data.rows.each do |row|
   end  # def _process_outcomes_section
+
+  def _process_row(ws_name, email, wb_citation_ids, type1_name, type1_description,
+    outcome_type=nil, population_name=nil, population_description=nil,
+    timepoint_name=nil, timepoint_unit=nil)
+
+    user = User.find_by(email: email)
+    return false, "Unable to retrieve user." unless user.present?
+
+    wb_citation_ids.each do |wb_citation_id|
+      # Retrieve citation.
+      citation = _retrieve_full_citation_record_from_db(wb_citation_id)
+      return false, "Unable to retrieve citation for wb citation id #{ wb_citation_id }." unless citation.present?
+
+      # find_or_create extraction.
+      extraction = _retrieve_extraction_record(user, citation)
+      return false, "Unable to retrieve extraction for wb citation id #{ wb_citation_id }" unless extraction.present?
+      # Toggle all KQs for the extraction to true.
+      _toggle_true_all_kqs_for_extraction(extraction)
+
+      # find_or_create type 1.
+      _add_type1_to_extraction(extraction, ws_name, type1_name, type1_description)
+    end  # wb_citation_ids.each do |wb_citation_id|
   
-  def _process_generic_type1_sections(ws)
-  end  # def _process_generic_type1_sections
-end
+    return true, nil
+  end  # def _process_row(email, wb_citation_ids, type1_name, ..., timepoint_unit=nil)
+
+  def _retrieve_full_citation_record_from_db(wb_citation_id)
+    citation = nil
+    wb_citation = @dict_citation_references[wb_citation_id]
+    begin
+      citation = Citation.find(wb_citation["citation_id"])
+    rescue ActiveRecord::RecordNotFound=> exception
+      citation = Citation.find_by(name: wb_citation["citation_name"])
+    ensure
+      return citation
+    end
+  end  # def _retrieve_full_citation_record_from_db(wb_citation_id)
+
+  def _retrieve_extraction_record(user, citation)
+      # CitationsProject object should exist, otherwise it would not have been
+      # part of the template.
+      citations_project = CitationsProject.find_or_create_by(
+        citation: citation,
+        project: @project
+      )
+
+      # Find ProjectsUsersRole with Contributor role.
+      pu  = ProjectsUser.find_or_create_by(
+        project: @project,
+        user: user
+      )
+
+      # If this user is not a Contributor then make him one.
+      pur = ProjectsUsersRole.find_by(
+        projects_user: pu,
+        role: @@LEADER_ROLE
+      )
+      unless pur.present?
+        pur = ProjectsUsersRole.find_or_create_by(
+          projects_user: pu,
+          role: @@CONTRIBUTOR_ROLE
+        )
+      end  # unless pur.present?
+
+      # Find or create Extraction.
+      extraction = Extraction.find_or_create_by(
+        project: @project,
+        citations_project: citations_project,
+        projects_users_role: pur,
+        consolidated: false
+      )
+
+      return extraction
+  end  # def _retrieve_extraction_record(user_id, citation_id)
+
+  def _toggle_true_all_kqs_for_extraction(extraction)
+    @project.key_questions_projects.each do |kqp|
+      ExtractionsKeyQuestionsProjectsSelection.find_or_create_by(
+        extraction: extraction,
+        key_questions_project: kqp
+      )
+    end  # @project.key_quesetions_projects.each do |kqp|
+  end  # def _toggle_true_all_kqs_for_extraction(extraction)
+
+  # Find appropriate EEFPS and add type1.
+  def _add_type1_to_extraction(extraction, ws_name, type1_name, type1_description)
+  end  # def _add_type1_to_extraction(extraction, ws_name, type1_name, type1_description)
+
+end  # class ImportAssignmentsAndMappingsJob < ApplicationJob
