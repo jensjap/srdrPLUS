@@ -70,15 +70,23 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
   end  # def _sort_out_worksheets
   
   def _process_worksheets
+    # Since all other sections will reference the 'Workbook Citation References' section,
+    # we need to build its dictionary first.
+    #
+    # We can assume the first in the lsof workbook_citation_references is the only one.
+    # If there were multiple @dict_errors[:wb_errors] would not have been blank and
+    # we would not have continued.
+    _process_workbook_citation_references_section(@wb_worksheets[:workbook_citation_references].first)
+
+    # Now process the rest...skipping :workbook_citation_references.
     @wb_worksheets.each do |ws_name, ws|
       case ws_name
       when :workbook_citation_references
-        _process_workbook_citation_references_section
-        debugger
+        next
       when :outcomes
-        _process_outcomes_section
+        _process_outcomes_section(ws.first)
       else
-        _process_generic_type1_sections
+        _process_generic_type1_sections(ws.first)
       end  # case ws_name
     end  # @wb_worksheets.each do |ws|
   end  # def _process_worksheets
@@ -86,11 +94,8 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
   # Builds a dictionary using Workbook Citation Reference ID as key for faster Citation lookup.
   # 
   # @dict_citation_references
-  def _process_workbook_citation_references_section
+  def _process_workbook_citation_references_section(ws)
     @dict_citation_references = {}
-    # We can assume the first is the only one. If there were multiple @dict_errors[:wb_errors]
-    # would not have been blank and we would not have continued.
-    ws = @wb_worksheets[:workbook_citation_references].first
     header_row = ws.sheet_data.rows[0]
     data_rows  = ws.sheet_data.rows[1..-1]
     data_rows.each do |row|
@@ -134,9 +139,9 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
     return nil
   end  # def _find_citation_in_db(row)
   
-  def _process_outcomes_section
+  def _process_outcomes_section(ws)
   end  # def _process_outcomes_section
   
-  def _process_generic_type1_sections
+  def _process_generic_type1_sections(ws)
   end  # def _process_generic_type1_sections
 end
