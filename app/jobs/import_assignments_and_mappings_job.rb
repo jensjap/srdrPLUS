@@ -105,7 +105,7 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
           ? @dict_errors[:ws_errors] << "Duplicate Workbook Citation Reference Key detected. Key value: #{ wb_citation_reference_id }" \
           : @dict_errors[:ws_errors] = ["Duplicate Workbook Citation Reference Key detected. Key value: #{ wb_citation_reference_id }"]
       else
-        pmid          = row[1]&.value.to_i
+        pmid          = row[1]&.value
         citation_name = row[2]&.value
         refman        = row[3]&.value
         authors       = row[4]&.value
@@ -121,16 +121,18 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
   end  # def _process_workbook_citation_references_section
 
   def _find_citation_id_in_db(row)
-    pmid          = row[1]&.value.to_i
+    pmid          = row[1]&.value
     citation_name = row[2]&.value
     refman        = row[3]&.value
     authors       = row[4]&.value
 
-    citation = Citation.find_by(pmid: pmid)
-    return citation.id if citation.present?
+    if pmid.present?
+      return Citation.find_by(pmid: pmid)&.id
+    end  # if pmid.present?
 
-    citation = Citation.find_by(name: citation_name)
-    return citation.id if citation.present?
+    if citation_name.present?
+      return Citation.find_by(name: citation_name)&.id
+    end  # if citation_name.present?
 
     @dict_errors[:ws_errors].present? \
       ? @dict_errors[:ws_errors] << "Unable to match Citation record to row: #{ row.cells.map(&:value) }" \
@@ -140,6 +142,7 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
   end  # def _find_citation_in_db(row)
   
   def _process_outcomes_section(ws)
+    debugger
   end  # def _process_outcomes_section
   
   def _process_generic_type1_sections(ws)
