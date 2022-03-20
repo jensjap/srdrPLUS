@@ -278,7 +278,9 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
                }
              }
 
-    eefps.update(n_hash) if ws_name.eql?('Arms')
+    if eefps.present?
+      eefps.update(n_hash) unless ws_name.eql?(:outcomes)
+    end
 
 
     # potentially add into type1s table
