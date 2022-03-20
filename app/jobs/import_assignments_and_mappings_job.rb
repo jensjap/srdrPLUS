@@ -6,21 +6,21 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
 
   @@LEADER_ROLE      = Role.find_by(name: Role::LEADER)
   @@CONTRIBUTOR_ROLE = Role.find_by(name: Role::CONTRIBUTOR)
-  
+
   def perform(*args)
     @dict_errors   = {}
     @wb_worksheets = {}
     @imported_file = ImportedFile.find(args.first)
     @project       = Project.find(@imported_file.project.id)
-    
+
     buffer = @imported_file.content.download
     _parse_workbook(buffer)
     _sort_out_worksheets
     _process_worksheets if @dict_errors[:wb_errors].blank?
   end  # def perform(*args)
-  
+
   private
-  
+
   def _parse_workbook(buffer)
     begin
       @wb = RubyXL::Parser.parse_buffer(buffer)
@@ -29,7 +29,7 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
       @dict_errors[:parse_error] = e
     end
   end  # def _parse_workbook(args)
-  
+
   # Build a dictionary with all worksheets.
   # Two keys are unique: [:outcomes, :workbook_citation_references].
   # The rest of the key-value pairs refer to generic type 1 sections,
@@ -71,7 +71,7 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
       end  # if lsof_ws.length > 1
     end  # @wb_worksheets.each do |ws_name, lsof_ws|
   end  # def _sort_out_worksheets
-  
+
   def _process_worksheets
     # Since all other sections will reference the 'Workbook Citation References' section,
     # we need to build its dictionary first.
@@ -88,7 +88,7 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
   end  # def _process_worksheets
 
   # Builds a dictionary using Workbook Citation Reference ID as key for faster Citation lookup.
-  # 
+  #
   # @dict_citation_references
   def _process_workbook_citation_references_section(ws)
     @dict_citation_references = {}
@@ -136,7 +136,7 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
 
     return nil
   end  # def _find_citation_in_db(row)
-  
+
   def _process_type1_sections(ws_name, ws)
     sheet_data = ws.sheet_data
     sheet_data.rows[1..-1].each do |row|
@@ -144,7 +144,7 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
       lsof_citation_ids = row[1]&.value.to_s.split(',').map(&:to_i)
       type1_name        = row[2]&.value
       type1_description = row[3]&.value
-      
+
       # Additional processing for "Outcomes" section.
       if ws_name.eql?(:outcomes)
         outcome_type           = row[4]&.value
@@ -164,7 +164,7 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
           timepoint_name,
           timepoint_unit
         )
-        
+
       else
         successful, e = _process_row(
           ws_name,
@@ -204,7 +204,7 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
       # find_or_create type 1.
       _add_type1_to_extraction(extraction, ws_name, type1_name, type1_description)
     end  # wb_citation_ids.each do |wb_citation_id|
-  
+
     return true, nil
   end  # def _process_row(email, wb_citation_ids, type1_name, ..., timepoint_unit=nil)
 
@@ -289,11 +289,11 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
     # this is params sent to eefps controller:
     # Parameters: {
     # "utf8"=>"✓",
-    # "authenticity_token"=>"Cgzup9N3RkJV1Zn9Q2GfPb+BdT195g4Rri0io4hL/gEFN6ZxZC5m3+fDW3MPKlGarj6rDZg4pFDPXWMKkC6sXA==", 
+    # "authenticity_token"=>"Cgzup9N3RkJV1Zn9Q2GfPb+BdT195g4Rri0io4hL/gEFN6ZxZC5m3+fDW3MPKlGarj6rDZg4pFDPXWMKkC6sXA==",
     # "extractions_extraction_forms_projects_section"=>{
-    #   "action"=>"work", 
+    #   "action"=>"work",
     #   "extractions_extraction_forms_projects_sections_type1s_attributes"=>{"0"=>{"type1_attributes"=>{"name"=>"testing", "description"=>"123"}}}
-    # }, 
+    # },
     # "id"=>"299951"}
 
     # Arms efps: @project.extraction_forms_projects_sections.joins(:section).where(sections: { name: "arms" })
