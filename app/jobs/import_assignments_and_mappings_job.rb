@@ -10,9 +10,7 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
     @imported_file = ImportedFile.find(args.first)
     @project       = Project.find(@imported_file.project.id)
     
-    buffer = @imported_file
-    .content
-    .download
+    buffer = @imported_file.content.download
     _parse_workbook(buffer)
     _sort_out_worksheets
     _process_worksheets if @dict_errors[:wb_errors].blank?
@@ -76,6 +74,7 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
       case ws_name
       when :workbook_citation_references
         _process_workbook_citation_references_section
+        debugger
       when :outcomes
         _process_outcomes_section
       else
@@ -101,7 +100,7 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
           ? @dict_errors[:ws_errors] << "Duplicate Workbook Citation Reference Key detected. Key value: #{ wb_citation_reference_id }" \
           : @dict_errors[:ws_errors] = ["Duplicate Workbook Citation Reference Key detected. Key value: #{ wb_citation_reference_id }"]
       else
-        pmid          = row[1]&.value
+        pmid          = row[1]&.value.to_i
         citation_name = row[2]&.value
         refman        = row[3]&.value
         authors       = row[4]&.value
@@ -117,7 +116,7 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
   end  # def _process_workbook_citation_references_section
 
   def _find_citation_id_in_db(row)
-    pmid          = row[1]&.value
+    pmid          = row[1]&.value.to_i
     citation_name = row[2]&.value
     refman        = row[3]&.value
     authors       = row[4]&.value

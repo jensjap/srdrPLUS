@@ -155,7 +155,7 @@ class ProjectsController < ApplicationController
   def export_assignments_and_mappings
     authorize(@project)
     assignment_list = ExportAssignmentsAndMappingsJob.perform_now(@project.id)
-    file_name = "Extraction Assignment List - Project ID #{ @project.id.to_s }.xlsx"
+    file_name = "Assignments and Mappings Template - Project ID #{ @project.id.to_s }.xlsx"
     send_data(assignment_list.to_stream().read, filename: file_name)
   end
 
