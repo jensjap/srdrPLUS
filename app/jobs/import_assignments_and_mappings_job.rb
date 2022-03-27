@@ -1,5 +1,6 @@
 require 'rubyXL'
 require 'rubyXL/convenience_methods'
+require 'date'
 require "import_jobs/_pubmed_citation_importer"
 
 class ImportAssignmentsAndMappingsJob < ApplicationJob
@@ -7,6 +8,9 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
 
   @@LEADER_ROLE      = Role.find_by(name: Role::LEADER)
   @@CONTRIBUTOR_ROLE = Role.find_by(name: Role::CONTRIBUTOR)
+  @@TYPE1_TYPE       = {
+    "Categorical" => 1,
+    "Continuous" => 2 }
 
   def perform(*args)
     @dict_header_index_lookup = {}
@@ -287,7 +291,26 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
     end  # @lsof_type1_section_names.each do |type1_section_name|
   end  # def _process_assignments_and_mappings_extraction_data(user_email, data)
 
+  # Params:
+
   def _insert_outcome_type1_data(user, citation, type1_section_name, data)
+    extraction = _retrieve_extraction_record(user, citation)
+    _toggle_true_all_kqs_for_extraction(extraction) if extraction.present?
+    data[type1_section_name].each do |lsof_type1_info|
+      # Reminder:
+      #   lsof_type1_info = [
+      #     ["Type 1 Name", "Type 1 Description"],
+      #     ["Type 2 Name", "Type 2 Description"],
+      #     ...]
+      _add_outcome_type1_to_extraction(
+        extraction,
+        type1_section_name,
+        lsof_type1_info[0],
+        lsof_type1_info[1],
+        @@TYPE1_TYPE[lsof_type1_info[2]],
+        data["Populations"],
+        data["Timepoints"]) unless lsof_type1_info[0].blank?
+    end  # data[type1_section_name].each do |lsof_type1_info|
   end  # def _insert_outcome_type1_data(user, citation, type1_section_name, data)
 
   def _insert_generic_type1_data(user, citation, type1_section_name, data)
@@ -353,6 +376,23 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
   end  # def _toggle_true_all_kqs_for_extraction(extraction)
 
   # Find appropriate EEFPS and add type1.
+  #
+  # This is the params hash sent to eefps controller:
+  #   Parameters: {
+  #   "utf8"=>"✓",
+  #   "authenticity_token"=>"Cgzup9N3RkJV1Zn9Q2GfPb+BdT195g4Rri0io4hL/gEFN6ZxZC5m3+fDW3MPKlGarj6rDZg4pFDPXWMKkC6sXA==",
+  #   "extractions_extraction_forms_projects_section"=>{
+  #     "action"=>"work",
+  #     "extractions_extraction_forms_projects_sections_type1s_attributes"=>{
+  #       "0"=>{
+  #         "type1_attributes"=>{
+  #           "name"=>"testing",
+  #           "description"=>"123"
+  #         }
+  #       }
+  #     }
+  #   },
+  #   "id"=>"299951"}
   def _add_generic_type1_to_extraction(extraction, type1_section_name, type1_name, type1_description)
     efps = @project
       .extraction_forms_projects_sections
@@ -361,34 +401,219 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
       .first
     eefps = ExtractionsExtractionFormsProjectsSection
       .find_by(extraction: extraction, extraction_forms_projects_section: efps)
-    n_hash = {"extractions_extraction_forms_projects_sections_type1s_attributes"=>
-               {"0"=>
-                 {"type1_attributes"=>
-                   {"name"=>type1_name, "description"=>type1_description}
-                 }
-               }
-             }
+    n_hash = {
+      "extractions_extraction_forms_projects_sections_type1s_attributes"=>{
+        "0"=>{
+          "type1_attributes"=>{
+            "name"=>type1_name,
+            "description"=>type1_description
+          }
+        }
+      }
+    }
 
     if eefps.present?
       eefps.update(n_hash) unless type1_section_name.eql?("Outcomes")
     end
-
-    # potentially add into type1s table
-    # how do we add into suggestions table?
-    # add into extractions_extraction_forms_projects_sections_type1s table
-    # need insert into orderings table
-
-    # This is the params hash sent to eefps controller:
-    # Parameters: {
-    # "utf8"=>"✓",
-    # "authenticity_token"=>"Cgzup9N3RkJV1Zn9Q2GfPb+BdT195g4Rri0io4hL/gEFN6ZxZC5m3+fDW3MPKlGarj6rDZg4pFDPXWMKkC6sXA==",
-    # "extractions_extraction_forms_projects_section"=>{
-    #   "action"=>"work",
-    #   "extractions_extraction_forms_projects_sections_type1s_attributes"=>{"0"=>{"type1_attributes"=>{"name"=>"testing", "description"=>"123"}}}
-    # },
-    # "id"=>"299951"}
-
-    # Arms efps: @project.extraction_forms_projects_sections.joins(:section).where(sections: { name: "arms" })
-
   end  # def _add_generic_type1_to_extraction(extraction, type1_section_name, type1_name, type1_description)
+
+  def _add_outcome_type1_to_extraction(
+    extraction,
+    type1_section_name,
+    type1_name,
+    type1_description,
+    type1_type_id,
+    lsof_populations,
+    lsof_timepoints)
+
+    efps = @project
+      .extraction_forms_projects_sections
+      .joins(:section)
+      .where(sections: { name: type1_section_name })
+      .first
+    eefps = ExtractionsExtractionFormsProjectsSection
+      .find_by(extraction: extraction, extraction_forms_projects_section: efps)
+    n_hash = {
+      "extractions_extraction_forms_projects_sections_type1s_attributes"=>{
+        "0"=>{
+          "type1_type_id"=>type1_type_id,
+          "type1_attributes"=>{
+            "name"=>type1_name,
+            "description"=>type1_description
+          },
+          "units"=>""
+        }
+      }
+    } unless type1_name.blank?
+
+    # Reminder:
+    #   lsof_populations = [
+    #     ["Population Name 1", "Population 1 Description"],
+    #     ["Population Name 2", "Population 2 Description"],
+    #     ...]
+    lsof_populations.each_with_index do |population_info, idx|
+      next if population_info[0].eql?("All Participants")
+      n_hash \
+        ["extractions_extraction_forms_projects_sections_type1s_attributes"] \
+        ["0"] \
+        ["extractions_extraction_forms_projects_sections_type1_rows_attributes"] =
+          {} unless n_hash \
+            ["extractions_extraction_forms_projects_sections_type1s_attributes"] \
+            ["0"].has_key?("extractions_extraction_forms_projects_sections_type1_rows_attributes")
+      n_hash \
+        ["extractions_extraction_forms_projects_sections_type1s_attributes"] \
+        ["0"] \
+        ["extractions_extraction_forms_projects_sections_type1_rows_attributes"]["#{ DateTime.now.strftime('%Q').to_i + idx }"] = {
+          "_destroy"=>"false",
+          "population_name_attributes"=>{
+            "name"=>population_info[0].to_s,
+            "description"=>population_info[1].to_s
+          }
+        } unless population_info[0].blank?
+    end  # lsof_populations.each do |population_info, idx|
+
+    n_hash \
+      ["extractions_extraction_forms_projects_sections_type1s_attributes"] \
+      ["0"] \
+      ["extractions_extraction_forms_projects_sections_type1_rows_attributes"]["#{ DateTime.now.strftime('%Q').to_i + 1000 }"] = {
+        "_destroy"=>"false",
+        "population_name_attributes"=>{
+          "name"=>"All Participants",
+          "description"=>"All patients enrolled in this study.",
+          "id"=>"1"
+        }
+      }
+
+    # Reminder:
+    #   lsof_timepoints = [
+    #     ["Timepoints Name 1", "Timepoints 1 Unit"],
+    #     ["Timepoints Name 2", "Timepoints 2 Unit"],
+    #     ...]
+    lsof_timepoints.each_with_index do |timepoint_info, idx|
+      next if timepoint_info[0].eql?("Baseline")
+      n_hash \
+        ["extractions_extraction_forms_projects_sections_type1s_attributes"] \
+        ["0"] \
+        ["extractions_extraction_forms_projects_sections_type1_rows_attributes"] =
+          {} unless n_hash \
+            ["extractions_extraction_forms_projects_sections_type1s_attributes"] \
+            ["0"].has_key?("extractions_extraction_forms_projects_sections_type1_rows_attributes")
+      n_hash \
+        ["extractions_extraction_forms_projects_sections_type1s_attributes"] \
+        ["0"] \
+        ["extractions_extraction_forms_projects_sections_type1_rows_attributes"] \
+        ["0"] =
+          {} unless n_hash \
+            ["extractions_extraction_forms_projects_sections_type1s_attributes"] \
+            ["0"] \
+            ["extractions_extraction_forms_projects_sections_type1_rows_attributes"].has_key?("0")
+      n_hash \
+        ["extractions_extraction_forms_projects_sections_type1s_attributes"] \
+        ["0"] \
+        ["extractions_extraction_forms_projects_sections_type1_rows_attributes"] \
+        ["0"] \
+        ["extractions_extraction_forms_projects_sections_type1_row_columns_attributes"] =
+          {} unless n_hash \
+            ["extractions_extraction_forms_projects_sections_type1s_attributes"] \
+            ["0"] \
+            ["extractions_extraction_forms_projects_sections_type1_rows_attributes"] \
+            ["0"].has_key?("extractions_extraction_forms_projects_sections_type1_row_columns_attributes")
+      n_hash \
+        ["extractions_extraction_forms_projects_sections_type1s_attributes"] \
+        ["0"] \
+        ["extractions_extraction_forms_projects_sections_type1_rows_attributes"] \
+        ["0"] \
+        ["extractions_extraction_forms_projects_sections_type1_row_columns_attributes"]["#{ DateTime.now.strftime('%Q').to_i + idx }"] = {
+          "_destroy"=>"false",
+          "timepoint_name_attributes"=>{
+            "name"=>timepoint_info[0].to_s,
+            "unit"=>timepoint_info[1].to_s
+          }
+        } unless timepoint_info[0].blank?
+    end  # lsof_timepoints.each_with_index do |timepoint_info, idx|
+
+    n_hash \
+      ["extractions_extraction_forms_projects_sections_type1s_attributes"] \
+      ["0"] \
+      ["extractions_extraction_forms_projects_sections_type1_rows_attributes"] \
+      ["0"] \
+      ["extractions_extraction_forms_projects_sections_type1_row_columns_attributes"]["#{ DateTime.now.strftime('%Q').to_i + 1001 }"] = {
+        "_destroy"=>"false",
+        "timepoint_name_attributes"=>{
+          "name"=>"Baseline",
+          "unit"=>"",
+          "id"=>"1"
+        }
+      }
+
+    if eefps.present?
+      eefps.update(n_hash) if type1_section_name.eql?("Outcomes")
+    end
+
+    #Parameters: {
+    #  "utf8"=>"✓",
+    #  "extractions_extraction_forms_projects_section"=>{
+    #    "action"=>"work",
+    #    "extractions_extraction_forms_projects_sections_type1s_attributes"=>{
+    #      "0"=>{
+    #        "type1_type_id"=>"1",
+    #        "type1_attributes"=>{
+    #          "name"=>"outcome 1",
+    #          "description"=>"blah"
+    #        },
+    #        "units"=>"123",
+    #        "extractions_extraction_forms_projects_sections_type1_rows_attributes"=>{
+    #          "0"=>{
+    #            "_destroy"=>"false",
+    #            "population_name_attributes"=>{
+    #              "name"=>"All Participants",
+    #              "description"=>"All patients enrolled in this study.",
+    #              "id"=>"1"
+    #            },
+    #            "extractions_extraction_forms_projects_sections_type1_row_columns_attributes"=>{
+    #              "0"=>{
+    #                "_destroy"=>"false",
+    #                "timepoint_name_attributes"=>{
+    #                  "name"=>"Baseline",
+    #                  "unit"=>"",
+    #                  "id"=>"1"
+    #                }
+    #              },
+    #              "1648393818427"=>{
+    #                "_destroy"=>"false",
+    #                "timepoint_name_attributes"=>{
+    #                  "name"=>"1",
+    #                  "unit"=>"a"
+    #                }
+    #              },
+    #              "1648393823841"=>{
+    #                "_destroy"=>"false",
+    #                "timepoint_name_attributes"=>{
+    #                  "name"=>"2",
+    #                  "unit"=>"a"
+    #                }
+    #              }
+    #            }
+    #          },
+    #          "1648393808266"=>{
+    #            "_destroy"=>"false",
+    #            "population_name_attributes"=>{
+    #              "name"=>"Male",
+    #              "description"=>"123"
+    #            }
+    #          },
+    #          "1648393813971"=>{
+    #            "_destroy"=>"false",
+    #            "population_name_attributes"=>{
+    #              "name"=>"Female",
+    #              "description"=>"123"
+    #            }
+    #          }
+    #        }
+    #      }
+    #    }
+    #  },
+    #  "id"=>"300346"
+    #}
+  end  # def _add_outcome_type1_to_extraction(extraction, type1_section_name, type1_name, type1_description, type1_type_id, lsof_populations, lsof_timepoints)
 end  # class ImportAssignmentsAndMappingsJob < ApplicationJob
