@@ -18,6 +18,8 @@ class ExportAssignmentsAndMappingsJob < ApplicationJob
     end  # END Axlsx::Package.new do |package|
   end  # END def perform(*args)
 
+  private
+
   def _create_worksheets(p)
     # Assignments and Mappings Worksheet.
     #   All Type 1 information is collected here. Consider grouping rows by
