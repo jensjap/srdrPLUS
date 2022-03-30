@@ -90,7 +90,11 @@ class SimpleImportJob
     def find_eefps_by_sheet_name_and_extraction_id(extraction_id, sheet_name)
       ExtractionsExtractionFormsProjectsSection.
         joins(extraction_forms_projects_section: :section).
-        where(extraction_id: extraction_id, extraction_forms_projects_section: { sections: { name: sheet_name } }).first
+        where(
+          extraction_id: extraction_id,
+          extraction_forms_projects_section: { sections: { name: sheet_name } }
+        ).
+        first
     end
 
     def find_qrcf_by_qrc_id(qrc_id)
@@ -110,7 +114,14 @@ class SimpleImportJob
     end
 
     def type2_sheet_names
-      # ['Design Details', 'Arm Details', 'Sample Characteristics', 'Risk of Bias - RCTs', 'Risk of Bias - NRCSs', 'Risk of Bias - SGSs']
+      # [
+      #   'Design Details',
+      #   'Arm Details',
+      #   'Sample Characteristics',
+      #   'Risk of Bias - RCTs',
+      #   'Risk of Bias - NRCSs',
+      #   'Risk of Bias - SGSs'
+      # ]
       ['Design Details']
     end
 
@@ -142,7 +153,12 @@ class SimpleImportJob
           record.update!
           @update_record[:type1and2] += 1
         else
-          @errors << { sheet_name: @current_sheet_name, row: @current_row, column: @current_column, error: constraint_errors }
+          @errors << {
+            sheet_name: @current_sheet_name,
+            row: @current_row,
+            column: @current_column,
+            error: constraint_errors
+          }
         end
       end
     end
@@ -152,16 +168,29 @@ class SimpleImportJob
       qrcqrco_ids = []
       answers.each do |answer|
         only_answer = answer.match(/(^.*)(?=\[Follow-up:)/).try(:captures).try(:first).try(:strip) || answer
-        qrcqrco = eefpsqrcf.question_row_column_field.question_row_column.question_row_columns_question_row_column_options.find_by(name: only_answer)
+        qrcqrco = eefpsqrcf.
+          question_row_column_field.
+          question_row_column.
+          question_row_columns_question_row_column_options.
+          find_by(name: only_answer)
         if qrcqrco.present?
           qrcqrco_ids << qrcqrco.id.to_s
 
-          only_ff_answers = answer.match(/(?<=\[Follow\-up: )(.*)(?=\])/).try(:captures).try(:first).try { |captures| captures.split(",").map(&:strip)} || []
+          only_ff_answers = answer.
+            match(/(?<=\[Follow\-up: )(.*)(?=\])/).
+            try(:captures).
+            try(:first).
+            try { |captures| captures.split(",").map(&:strip)} || []
           if !only_ff_answers.empty? && qrcqrco.present?
             create_followup_fields(only_ff_answers, eefpsqrcf, qrcqrco)
           end
         else
-          @errors << { sheet_name: @current_sheet_name, row: @current_row, column: @current_column, error: "cell contains invalid option: #{only_answer}" }
+          @errors << {
+            sheet_name: @current_sheet_name,
+            row: @current_row,
+            column: @current_column,
+            error: "cell contains invalid option: #{only_answer}"
+          }
         end
       end
       record = find_or_create_record_by_eefpsqrfc(eefpsqrcf)
@@ -176,20 +205,41 @@ class SimpleImportJob
 
     def update_record_type_6_7_8(eefpsqrcf, answer)
       return if answer == '' || answer.nil?
-      only_answer = answer.match(/(^.*)(?=\[Follow-up:)/).try(:captures).try(:first).try(:strip) || answer
+      only_answer = answer.
+        match(/(^.*)(?=\[Follow-up:)/).
+        try(:captures).
+        try(:first).
+        try(:strip) || answer
 
       record = find_or_create_record_by_eefpsqrfc(eefpsqrcf)
-      qrcqrco = eefpsqrcf.question_row_column_field.question_row_column.question_row_columns_question_row_column_options.find_by(name: only_answer)
+      qrcqrco = eefpsqrcf.
+        question_row_column_field.
+        question_row_column.
+        question_row_columns_question_row_column_options.
+        find_by(name: only_answer)
       if qrcqrco.present? && qrcqrco.id.to_s != record.name
         record.update!(name: qrcqrco.id.to_s)
         @update_record[:type6and7and8] += 1
       elsif qrcqrco.nil?
-        @errors << { sheet_name: @current_sheet_name, row: @current_row, column: @current_column, error: "cell contains invalid option: #{answer}" }
+        @errors << {
+          sheet_name: @current_sheet_name,
+          row: @current_row,
+          column: @current_column,
+          error: "cell contains invalid option: #{answer}"
+        }
       end
 
-      only_ff_answers = answer.match(/(?<=\[Follow\-up: )(.*)(?=\])/).try(:captures).try(:first).try { |captures| captures.split(",").map(&:strip)} || []
-      question_row_column_type_id = eefpsqrcf.question_row_column_field.question_row_column.question_row_column_type_id
-      if !only_ff_answers.empty? && qrcqrco.present? && (question_row_column_type_id == 6 || question_row_column_type_id == 7)
+      only_ff_answers = answer.
+        match(/(?<=\[Follow\-up: )(.*)(?=\])/).
+        try(:captures).
+        try(:first).
+        try { |captures| captures.split(",").
+        map(&:strip)} || []
+      qrct_id = eefpsqrcf.
+        question_row_column_field.
+        question_row_column.
+        question_row_column_type_id
+      if !only_ff_answers.empty? && qrcqrco.present? && (qrct_id == 6 || qrct_id == 7)
         create_followup_fields(only_ff_answers, eefpsqrcf, qrcqrco)
       end
     end
@@ -203,13 +253,19 @@ class SimpleImportJob
           name: only_answer
         )
         if qrcqrco.nil?
-          @errors << { sheet_name: @current_sheet_name, row: @current_row, column: @current_column, error: "cell contains invalid option: #{only_answer}" }
+          @errors << {
+            sheet_name: @current_sheet_name,
+            row: @current_row,
+            column: @current_column,
+            error: "cell contains invalid option: #{only_answer}"
+          }
           next
         end
-        ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnFieldsQuestionRowColumnsQuestionRowColumnOption.find_or_create_by!(
-          question_row_columns_question_row_column_option: qrcqrco,
-          extractions_extraction_forms_projects_sections_question_row_column_field: eefpsqrcf
-        )
+        ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnFieldsQuestionRowColumnsQuestionRowColumnOption.
+          find_or_create_by!(
+            question_row_columns_question_row_column_option: qrcqrco,
+            extractions_extraction_forms_projects_sections_question_row_column_field: eefpsqrcf
+          )
         @update_record[:type9] += 1
       end
 
