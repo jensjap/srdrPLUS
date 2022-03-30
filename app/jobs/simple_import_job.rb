@@ -12,6 +12,15 @@ class SimpleImportJob
     'Key Questions'
   ]
 
+  TYPE2_SHEET_NAMES = {
+    'Design Details' => { column_offset: 11, arms_by_rows: false },
+    'Arm Details' => { column_offset: 13, arms_by_rows: true },
+    'Sample Characteristics' => { column_offset: 13, arms_by_rows: true },
+    'Risk of Bias - RCTs' => { column_offset: 11, arms_by_rows: false },
+    'Risk of Bias - NRCSs' => { column_offset: 11, arms_by_rows: false },
+    'Risk of Bias - SGSs' => { column_offset: 11, arms_by_rows: false }
+  }
+
   attr_reader :xlsx, :sheet_names
 
   def initialize(filepath)
@@ -48,30 +57,36 @@ class SimpleImportJob
   end
 
   def process_type2_sections
-    type2_sheet_names.each do |type2_sheet_name|
-      if @sheet_names.include?(type2_sheet_name)
-        puts "processing: #{type2_sheet_name}"
-        @current_sheet_name = type2_sheet_name
-        process_type2_section(type2_sheet_name)
-        @current_sheet_name = nil
-      end
+    TYPE2_SHEET_NAMES.each do |type2_sheet_name, settings|
+      next unless @sheet_names.include?(type2_sheet_name)
+      puts "processing: #{type2_sheet_name}"
+      @current_sheet_name = type2_sheet_name
+      process_type2_section(type2_sheet_name, settings)
+      @current_sheet_name = nil
     end
   end
 
-  def process_type2_section(sheet_name)
+  def process_type2_section(sheet_name, settings)
     sheet = get_sheet(sheet_name)
-    qrc_ids = sheet.row(1)[10..-1].map{ |header| header.split("\n")[1][/(?<=x)(.*?)(?=\])/m, 1] }
+    column_offset = settings[:column_offset]
+    arms_by_rows = settings[:arms_by_rows]
+
+    qrc_ids = sheet.
+      row(1)[(column_offset - 1)..-1].
+      map{ |header| header.split("\n")[1][/(?<=x)(.*?)(?=\])/m, 1] }
 
     sheet.each_with_index do |row, row_index|
       next if row_index == 0
       @current_row = row_index + 1
       extraction_id = row[0]
-      dirty_answers = row[10..-1]
+      dirty_answers = row[(column_offset - 1)..-1]
+      arm_name = settings[:arms_by_rows] ? row[column_offset - 3].to_s.strip : nil
+      arm_description = settings[:arms_by_rows] ? row[column_offset - 2].to_s.strip : nil
       dirty_answers.each_with_index do |dirty_answer, column_index|
-        @current_column = column_index + 11
+        @current_column = column_index + column_offset
         qrc_id = qrc_ids[column_index]
         clean_answer = dirty_answer.to_s.strip
-        update_records(extraction_id, sheet_name, qrc_id, clean_answer)
+        update_records(extraction_id, sheet_name, qrc_id, clean_answer, arms_by_rows, arm_name, arm_description)
       end
     end
     @current_row, @current_column = nil
@@ -109,26 +124,28 @@ class SimpleImportJob
       )
     end
 
+    def find_or_create_eefpsqrcf_by_eefps_and_qrcf_and_arm_name(eefps, qrcf, arm_name, arm_description)
+      type1 = Type1.find_by(name: arm_name, description: arm_description)
+      eefpst1 = ExtractionsExtractionFormsProjectsSectionsType1.
+        find_by(type1: type1, extractions_extraction_forms_projects_section: eefps.link_to_type1)
+
+      ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField.find_or_create_by!(
+        extractions_extraction_forms_projects_section: eefps,
+        question_row_column_field: qrcf,
+        extractions_extraction_forms_projects_sections_type1: eefpst1
+      )
+    end
+
     def find_or_create_record_by_eefpsqrfc(eefpsqrcf)
       Record.find_or_create_by!(recordable: eefpsqrcf)
     end
 
-    def type2_sheet_names
-      # [
-      #   'Design Details',
-      #   'Arm Details',
-      #   'Sample Characteristics',
-      #   'Risk of Bias - RCTs',
-      #   'Risk of Bias - NRCSs',
-      #   'Risk of Bias - SGSs'
-      # ]
-      ['Design Details']
-    end
-
-    def update_records(extraction_id, sheet_name, qrc_id, answer)
+    def update_records(extraction_id, sheet_name, qrc_id, answer, arms_by_rows, arm_name, arm_description)
       eefps = find_eefps_by_sheet_name_and_extraction_id(extraction_id, sheet_name)
       qrcf = find_qrcf_by_qrc_id(qrc_id)
-      eefpsqrcf = find_or_create_eefpsqrcf_by_eefps_and_qrcf(eefps, qrcf)
+      eefpsqrcf = arms_by_rows ?
+        find_or_create_eefpsqrcf_by_eefps_and_qrcf_and_arm_name(eefps, qrcf, arm_name, arm_description) :
+          find_or_create_eefpsqrcf_by_eefps_and_qrcf(eefps, qrcf)
 
       case eefpsqrcf.question_row_column_field.question_row_column.question_row_column_type_id
       when 1, 2 # text, numeric
@@ -150,7 +167,7 @@ class SimpleImportJob
         record.name = answer
         constraint_errors = record.check_constraints
         if constraint_errors.nil?
-          record.update!
+          record.save!
           @update_record[:type1and2] += 1
         else
           @errors << {
