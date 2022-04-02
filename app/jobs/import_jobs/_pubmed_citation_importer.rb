@@ -1,13 +1,39 @@
 def import_citations_from_pubmed_file(imported_file)
   pmid_arr = imported_file.content.download.split("\n").map{|pmid| pmid.strip}
-  import_citations_from_pubmed_array imported_file.project, pmid_arr
+  import_citations_from_pubmed_array(imported_file.project, pmid_arr)
 end
 
 def import_citations_from_pubmed_array(project, pubmed_id_array)
-  key_counter = 0
-  primary_id = CitationType.find_by( name: 'Primary' ).id
+  # Separate PMID into known and unknown.
+  #   Known:   a record already exists in citations table.
+  #   Unknown: no record exists in citations table.
+  known_citation_records   = []
+  unknown_citation_records = []
 
-  h_arr = []
+  pubmed_id_array.each do |pmid|
+    citation = Citation.find_by(pmid: pmid)
+    if citation
+      known_citation_records << citation
+    else
+      unknown_citation_records << pmid
+    end
+  end  # pubmed_id_array.each do |pmid|
+
+  known_citation_records.map { |citation| project.citations << citation }
+
+  if unknown_citation_records.length > 0
+    h_arr = _fetch_info_from_pubmed(unknown_citation_records)
+    h_arr.map { |h_citation| project.citations << Citation.create!(h_citation) } unless h_arr.blank?
+  end
+end  # def import_citations_from_pubmed_array(project, pubmed_id_array)
+
+private
+
+def _fetch_info_from_pubmed(pubmed_id_array)
+  key_counter = 0
+  primary_id  = CitationType.find_by( name: 'Primary' ).id
+  h_arr       = []
+
   Bio::PubMed.efetch( pubmed_id_array ).each do |cit_txt|
     row_h = {}
     cit_h = Bio::MEDLINE.new( cit_txt ).pubmed
@@ -59,11 +85,7 @@ def import_citations_from_pubmed_array(project, pubmed_id_array)
     row_h[ 'journal_attributes' ] = j_h
 
     h_arr << row_h
+  end  # Bio::PubMed.efetch( pubmed_id_array ).each do |cit_txt|
 
-    if h_arr.length >= CITATION_BATCH_SIZE
-      project.citations << Citation.create(h_arr)
-      h_arr = []
-    end
-  end
-  #project.citations << Citation.create!( h_arr )
-end
+  return h_arr
+end  # def _fetch_info_from_pubmed(pubmed_id_array)
