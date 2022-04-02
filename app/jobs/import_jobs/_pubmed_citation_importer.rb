@@ -61,7 +61,7 @@ def import_citations_from_pubmed_array(project, pubmed_id_array)
     h_arr << row_h
 
     if h_arr.length >= CITATION_BATCH_SIZE
-      project.citations << Citation.find_or_create_by(h_arr)
+      project.citations << Citation.create(h_arr)
       h_arr = []
     end
   end
