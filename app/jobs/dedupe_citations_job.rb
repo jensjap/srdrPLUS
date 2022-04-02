@@ -8,9 +8,10 @@ class DedupeCitationsJob < ApplicationJob
     # This takes care of citations that have been added to the project
     # multiple times.
     @project.citations_projects
-      .group(:citation_id, :project_id)
-      .having("count(*) > 1")
-      .each do |cp|
+      .group_by { |x| x.citation_id }
+      .select { |k, v| v.size > 1 }
+      .each do |cp_id, lsof_cp|
+      cp = lsof_cp.first
       Rails.logger.debug "Removing duplicate instances of #{ cp }"
       cp.dedupe
     end
