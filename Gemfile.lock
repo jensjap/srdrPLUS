@@ -337,7 +337,7 @@ GEM
     multi_json (1.15.0)
     multi_xml (0.6.0)
     multipart-post (2.1.1)
-    mysql2 (0.4.10)
+    mysql2 (0.5.3)
     nenv (0.3.0)
     nested_form (0.3.2)
     nio4r (2.5.8)
@@ -637,7 +637,7 @@ DEPENDENCIES
   kaminari
   listen (~> 3.0.5)
   minitest-rails-capybara
-  mysql2 (>= 0.3.18, < 0.5)
+  mysql2 (>= 0.3.18, < 0.6)
   omniauth
   omniauth-google-oauth2
   paranoia (~> 2.2)
