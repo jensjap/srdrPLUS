@@ -34,7 +34,8 @@ module SeedData
         { name: 'Distiller Section' },
         { name: 'Citation' },
         { name: 'Project' },
-        { name: 'Distiller' }
+        { name: 'Distiller' },
+        { name: 'Assignments and Mappings'}
       ])
 
       #FileType.
@@ -1224,7 +1225,7 @@ end
 
 # Sample Data.
 module SeedDataExtended
-  unless Rails.env.test?
+  if Rails.env.test?
     def self.extended(object)
       project_titles = [
         ['Definition of Treatment-Resistant Depression in the Medicare Population', 'The purpose of this technology assessment is to review the current definitions of treatment-resistant depression (TRD), to assess how closely current TRD treatment studies fit the most common definition, and to suggest how to improove TRD treatment research.'],
