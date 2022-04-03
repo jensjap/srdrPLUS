@@ -124,6 +124,7 @@ module Type2SectionsWideSRDRStyle
     end  # END efp.extraction_forms_projects_sections.each do |efps|
   end
 
+  #!!! Moved into sheet_info_modules.rb...we should remove this later.
   # Type2 (Questions) are associated to Key Questions and we export by the KQ's selected.
   def fetch_questions(kq_ids, efps)
     # Get all questions in this efps by key_questions requested.
@@ -133,7 +134,7 @@ module Type2SectionsWideSRDRStyle
           key_questions_project: KeyQuestionsProject.where(project: @project, key_question_id: kq_ids)
         } )
 
-    return questions.distinct.order(id: :asc)
+    return questions.order(id: :asc).uniq
   end
 
   # Also make sure total is last in the list.
