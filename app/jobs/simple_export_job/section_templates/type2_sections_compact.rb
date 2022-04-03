@@ -136,7 +136,7 @@ module Type2SectionsCompact
           } )
     end
 
-    return questions.distinct.order(id: :asc)
+    return questions.order(id: :asc).uniq
   end
 
   def build_qrc_components_for_question(eefps, eefpst1_id, question)
