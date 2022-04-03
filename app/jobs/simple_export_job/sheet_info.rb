@@ -195,7 +195,7 @@ class SheetInfo
       if type == :type2
         # Collect distinct list of questions based off the key questions selected for this extraction.
         kq_ids_by_extraction = SheetInfo.fetch_kq_selection(extraction, kq_ids)
-        questions = fetch_questions(kq_ids_by_extraction, efps)
+        questions = SheetInfo.fetch_questions(@project.id, kq_ids_by_extraction, efps)
       end
 
       # Collect basic information about the extraction.

@@ -25,4 +25,19 @@ module SheetInfoModule
 
     return kq_ids
   end
+
+  # Type2 (Questions) are associated to Key Questions and we export by the KQ's selected.
+  def fetch_questions(project_id, kq_ids, efps)
+    # Get all questions in this efps by key_questions requested.
+    questions = efps
+      .questions
+      .joins(:key_questions_projects_questions)
+      .where(
+        key_questions_projects_questions: {
+          key_questions_project: KeyQuestionsProject.where(project_id: project_id, key_question_id: kq_ids)
+        }
+      )
+
+    return questions.order(id: :asc).uniq
+  end
 end
