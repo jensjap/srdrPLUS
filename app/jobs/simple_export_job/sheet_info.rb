@@ -306,38 +306,76 @@ class SheetInfo
       kq_ids_by_extraction = SheetInfo.fetch_kq_selection(extraction, kq_ids)
 
       #!!! We can probably use scope for this.
-      # Find all eefps that are Outcomes.
-      efps_outcomes = efp.extraction_forms_projects_sections
-        .joins(:section)
-        .where(sections: { name: 'Outcomes' })
-      eefps_outcomes = ExtractionsExtractionFormsProjectsSection.where(
-        extraction: extraction,
-        extraction_forms_projects_section: efps_outcomes)
+      case efp.extraction_forms_project_type_id
+      when 1
+        # Find all eefps that are Outcomes.
+        efps_outcomes = efp.extraction_forms_projects_sections
+          .joins(:section)
+          .where(sections: { name: 'Outcomes' })
+        eefps_outcomes = ExtractionsExtractionFormsProjectsSection.where(
+          extraction: extraction,
+          extraction_forms_projects_section: efps_outcomes)
 
-      # Find all eefps that are Arms.
-      efps_arms = efp.extraction_forms_projects_sections
-        .joins(:section)
-        .where(sections: { name: 'Arms' })
-      eefps_arms = ExtractionsExtractionFormsProjectsSection.
-        includes({
-          extractions_extraction_forms_projects_sections_type1s: [
-            :type1,
-            {
-              extractions_extraction_forms_projects_sections_type1_rows: [
-                :population_name,
-                {
-                  result_statistic_sections: [
-                    :result_statistic_section_type,
-                    :comparisons,
-                    { result_statistic_sections_measures: :measure }
-                  ],
-                  extractions_extraction_forms_projects_sections_type1_row_columns: :timepoint_name
-                },
-              ]
-            }
-          ]
-        }).
-        where(extraction: extraction, extraction_forms_projects_section: efps_arms)
+        # Find all eefps that are Arms.
+        efps_arms = efp.extraction_forms_projects_sections
+          .joins(:section)
+          .where(sections: { name: 'Arms' })
+        eefps_arms = ExtractionsExtractionFormsProjectsSection.
+          includes({
+            extractions_extraction_forms_projects_sections_type1s: [
+              :type1,
+              {
+                extractions_extraction_forms_projects_sections_type1_rows: [
+                  :population_name,
+                  {
+                    result_statistic_sections: [
+                      :result_statistic_section_type,
+                      :comparisons,
+                      { result_statistic_sections_measures: :measure }
+                    ],
+                    extractions_extraction_forms_projects_sections_type1_row_columns: :timepoint_name
+                  },
+                ]
+              }
+            ]
+          }).where(extraction: extraction, extraction_forms_projects_section: efps_arms)
+
+      when 2
+        efps_outcomes = efp.extraction_forms_projects_sections
+          .joins(:section)
+          .where(sections: { name: 'Diagnoses' })
+        eefps_outcomes = ExtractionsExtractionFormsProjectsSection.where(
+          extraction: extraction,
+          extraction_forms_projects_section: efps_outcomes)
+
+        # Find all eefps that are Arms.
+        efps_arms = efp.extraction_forms_projects_sections
+          .joins(:section)
+          .where(sections: { name: 'Diagnostic Tests' })
+        eefps_arms = ExtractionsExtractionFormsProjectsSection.
+          includes({
+            extractions_extraction_forms_projects_sections_type1s: [
+              :type1,
+              {
+                extractions_extraction_forms_projects_sections_type1_rows: [
+                  :population_name,
+                  {
+                    result_statistic_sections: [
+                      :result_statistic_section_type,
+                      :comparisons,
+                      { result_statistic_sections_measures: :measure }
+                    ],
+                    extractions_extraction_forms_projects_sections_type1_row_columns: :timepoint_name
+                  },
+                ]
+              }
+            ]
+          }).where(extraction: extraction, extraction_forms_projects_section: efps_arms)
+
+      else
+        raise "SheetInfo: Unknown ExtractionFormsProjectType"
+
+      end  # case efp.extraction_forms_project_type_id
 
       # Create base for extraction information.
       sheet_info.new_extraction_info(extraction)

@@ -72,7 +72,7 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
       .includes(:timepoint_names, :type1, type1: { suggestion: { user: :profile } })
       .where.not(type1: self.type1s)
       .where.not(type1s: { name: 'Total', description: "All #{ extraction_forms_projects_section.link_to_type1.present? ? extraction_forms_projects_section.link_to_type1.section.name : extraction_forms_projects_section.section.name } combined" })
-      .distinct
+      .uniq
   end
 
   def eefps_qrfc_values(eefpst1_id, qrc)
