@@ -36,8 +36,14 @@
                       = f.button :submit, "Sign In", class: "sign-in-button"
 
                 .tabs-panel#new-user-panel style='padding: 33px;'
+                  div style="border: solid 1px black; padding: 5px; width: 200px; margin-left: auto;"
+                    p Form Approved
+                    p OMB No. 0935-0244
+                    p Exp. Date 10/31/2022
+
                   .Get-started-now
                     span.text-style-1 Get started now.
+
                   = simple_form_for(User.new, as: :user, url: registration_path(:user), html: { data: { 'abide': '' } }) do |f|
                     .alert.callout data-abide-error='' style='display: none;'
                       p
@@ -189,3 +195,10 @@
     .cell.medium-9
         h1 Join thousands of professionals
         .button = link_to 'TRY SRDR+ NOW', new_user_registration_path
+
+  .grid-x.align-center-middle.align-middle
+    .cell.medium-9
+      br/
+      p Public reporting burden for this collection of information is estimated to average 2 minutes per response, the estimated time required to complete the survey. An agency may not conduct or sponsor, and a person is not required to respond to, a collection of information unless it displays a currently valid OMB control number. Send comments regarding this burden estimate or any other aspect of this collection of information, including suggestions for reducing this burden, to: AHRQ Reports Clearance Officer Attention: PRA, Paperwork Reduction Project (0935-0244) AHRQ, 5600 Fishers Lane, # 07W41A, Rockville, MD 20857.
+      br/
+      p Your responses will be kept confidential to the extent permitted by law, including AHRQ’s confidentiality statute, 42 USC 299c-3(c).
