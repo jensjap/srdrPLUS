@@ -111,7 +111,7 @@ gem 'responders'
 gem 'apipie-rails'
 
 # Background jobs.
-gem 'sidekiq', '5.2.5'
+gem 'sidekiq', '6.4.0'
 
 # Spreadsheet generation.
 gem 'caxlsx'
