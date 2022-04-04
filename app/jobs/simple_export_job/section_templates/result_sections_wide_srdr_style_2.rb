@@ -361,22 +361,22 @@ module ResultSectionsWideSRDRStyle2
     # Start printing rows to the sheets. First the basic headers:
     @ws_descriptive_statistics.add_row(
       @sheet_info.header_info +
-      ['Diagnosis', 'Diagnosis Description', 'Population', 'Population Description', 'Digest', 'Timepoint', 'Timepoint Unit', "Comparison"] +
+      ['Diagnosis', 'Diagnosis Description', 'Population', 'Population Description', 'Timepoint', 'Timepoint Unit', "Comparison"] +
       _lsof_measures_in_rss(:descriptive_statistics)
     )
     @ws_special_area_for_auc_and_q_star.add_row(
       @sheet_info.header_info +
-      ['Diagnosis', 'Diagnosis Description', 'Population', 'Population Description', 'Digest', 'Timepoint', 'Timepoint Unit', "Comparison"] +
+      ['Diagnosis', 'Diagnosis Description', 'Population', 'Population Description', 'Timepoint', 'Timepoint Unit', "Comparison"] +
       _lsof_measures_in_rss(:special_area_for_auc_and_q_star)
     )
     @ws_2x2_table.add_row(
       @sheet_info.header_info +
-      ['Diagnosis', 'Diagnosis Description', 'Population', 'Population Description', 'Digest', 'Timepoint', 'Timepoint Unit', "Comparison"] +
+      ['Diagnosis', 'Diagnosis Description', 'Population', 'Population Description', 'Timepoint', 'Timepoint Unit', "Comparison"] +
       _lsof_measures_in_rss(:_2x2_table)
     )
     @ws_test_accuracy_metrics.add_row(
       @sheet_info.header_info +
-      ['Diagnosis', 'Diagnosis Description', 'Population', 'Population Description', 'Digest', 'Timepoint', 'Timepoint Unit', "Comparison"] +
+      ['Diagnosis', 'Diagnosis Description', 'Population', 'Population Description', 'Timepoint', 'Timepoint Unit', "Comparison"] +
       _lsof_measures_in_rss(:test_accuracy_metrics)
     )
   end  # def _print_da_results_headers
@@ -437,7 +437,7 @@ module ResultSectionsWideSRDRStyle2
           rss = population.result_statistic_sections.diagnostic_test_type_rsss.first
           rss.comparisons.each do |comparison|
             population.extractions_extraction_forms_projects_sections_type1_row_columns.each do |timepoint|
-              _print_data_row(eefpst1_diagnosis, population, comparison, timepoint)
+              _print_data_row(extraction, eefpst1_diagnosis, population, comparison, timepoint)
             end  # population.extractions_extraction_forms_projects_sections_type1_row_columns.each do |timepoint|
           end  # rss.comparisons.each do |comparison|
         end  # eefpst1_diagnosis.extractions_extraction_forms_projects_sections_type1_rows.each do |population|
@@ -445,8 +445,8 @@ module ResultSectionsWideSRDRStyle2
     end  # @project.extractions.each do |extraction|
   end  # def _print_da_results_data
 
-  def _print_data_row(eefpst1_diagnosis, population, comparison, timepoint)
-    row_identifiers = _build_row_identifier
+  def _print_data_row(extraction, eefpst1_diagnosis, population, comparison, timepoint)
+    row_identifiers = _build_row_identifier(extraction, eefpst1_diagnosis, population, timepoint, comparison)
     diagnostic_test_type_rsss = population.result_statistic_sections.diagnostic_test_type_rsss
 
     # Descriptive Statistics.
@@ -466,10 +466,31 @@ module ResultSectionsWideSRDRStyle2
     @ws_test_accuracy_metrics.add_row(row_identifiers + records.map(&:name))
   end  # def _print_data_row(eefpst1_diagnosis, population, comparison, timepoint)
 
-  def _build_row_identifier
-    #!!!
-    return [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18]
-  end  # def _build_row_identifier
+  def _build_row_identifier(extraction, diagnosis, population, timepoint, comparison)
+    lsof_identifiers = []
+    lsof_identifiers << extraction.id
+    lsof_identifiers << extraction.consolidated.to_s
+    lsof_identifiers << extraction.user.handle
+    lsof_identifiers << extraction.citation.id
+    lsof_identifiers << extraction.citation.name
+    lsof_identifiers << extraction.citation.refman
+    lsof_identifiers << extraction.citation.pmid
+    lsof_identifiers << extraction.citation.authors.map(&:name).join(', ')
+    lsof_identifiers << extraction.citation.year
+    # This is very slow but we already made this look up table.
+    @sheet_info.extractions.each do |ext|
+      lsof_identifiers << ext[1][:extraction_info][:kq_selection] if ext[0].eql?(extraction.id)
+    end  # @sheet_info.extractions.each do |ext|
+    lsof_identifiers << diagnosis.type1.name
+    lsof_identifiers << diagnosis.type1.description
+    lsof_identifiers << population.population_name.name
+    lsof_identifiers << population.population_name.description
+    lsof_identifiers << timepoint.timepoint_name.name
+    lsof_identifiers << timepoint.timepoint_name.unit
+    lsof_identifiers << comparison.pretty_print_export_header
+
+    return lsof_identifiers
+  end  # def _build_row_identifier(extraction, eefpst1_diagnosis, population, timepoint, comparison)
 
   def _fetch_records(rss, timepoint, comparison)
     lsof_values = []
