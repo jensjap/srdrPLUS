@@ -9,16 +9,16 @@ module ResultSectionsWideSRDRStyle2
         next unless efps.extraction_forms_projects_section_type_id == 3
 
         # Create SheetInfo object for results sections.
-        sheet_info = SheetInfo.new(@project)
-        sheet_info.populate!(:results, kq_ids, efp, efps)
+        @sheet_info = SheetInfo.new(@project)
+        @sheet_info.populate!(:results, kq_ids, efp, efps)
 
         # There are two types of Extractions: Standard and Diagnostic Test
         case efps.extraction_forms_project.extraction_forms_project_type_id
         when 1
-          _export_standard_ef_results(sheet_info)
+          _export_standard_ef_results
 
         when 2
-          _export_diagnostic_test_ef_results(sheet_info)
+          _export_diagnostic_test_ef_results
 
         else
           raise "ResultSectionsWideSRDRStyle2: Unknown ExtractionFormsProjectType"
@@ -28,7 +28,7 @@ module ResultSectionsWideSRDRStyle2
     end  # END @project.extraction_forms_projects.each do |efp|
   end
 
-  def _export_standard_ef_results(sheet_info)
+  def _export_standard_ef_results
     # Create and name worksheets.
     ws_descriptive_statistics_continuous_outcomes  = @package.workbook.add_worksheet(name: "Continuous - Desc. Statistics")
     ws_descriptive_statistics_categorical_outcomes = @package.workbook.add_worksheet(name: "Categorical - Desc. Statistics")
@@ -41,37 +41,37 @@ module ResultSectionsWideSRDRStyle2
     #   Categorical populations only apply to Desc. Statistics and BAC Comparisons.
     #   WAC and Net Differences only apply to Continuous.
     desc_cont_header = ws_descriptive_statistics_continuous_outcomes.add_row(
-      sheet_info.header_info +
+      @sheet_info.header_info +
       ['Outcome', 'Outcome Description', 'Outcome Type', 'Population', 'Digest', 'Timepoint', 'Timepoint Unit'] +
-      sheet_info.data_headers(1, "Continuous", "Arm")
+      @sheet_info.data_headers(1, "Continuous", "Arm")
     )
     desc_cat_header = ws_descriptive_statistics_categorical_outcomes.add_row(
-      sheet_info.header_info +
+      @sheet_info.header_info +
       ['Outcome', 'Outcome Description', 'Outcome Type', 'Population', 'Digest', 'Timepoint', 'Timepoint Unit'] +
-      sheet_info.data_headers(1, "Categorical", "Arm")
+      @sheet_info.data_headers(1, "Categorical", "Arm")
     )
     bac_cont_header = ws_bac_statistics_continuous_outcomes.add_row(
-      sheet_info.header_info +
+      @sheet_info.header_info +
       ['Outcome', 'Outcome Description', 'Outcome Type', 'Population', 'Digest', 'Timepoint', 'Timepoint Unit'] +
-      sheet_info.data_headers(2, "Continuous", "Comparison")
+      @sheet_info.data_headers(2, "Continuous", "Comparison")
     )
     bac_cat_header = ws_bac_statistics_categorical_outcomes.add_row(
-      sheet_info.header_info +
+      @sheet_info.header_info +
       ['Outcome', 'Outcome Description', 'Outcome Type', 'Population', 'Digest', 'Timepoint', 'Timepoint Unit'] +
-      sheet_info.data_headers(2, "Categorical", "Comparison")
+      @sheet_info.data_headers(2, "Categorical", "Comparison")
     )
     wac_header = ws_wac_statistics.add_row(
-      sheet_info.header_info +
+      @sheet_info.header_info +
       ['Outcome', 'Outcome Description', 'Outcome Type', 'Population', 'Digest', 'WAC Comparator'] +
-      sheet_info.data_headers(3, "Continuous", "Arm")
+      @sheet_info.data_headers(3, "Continuous", "Arm")
     )
     net_header = ws_net_statistics.add_row(
-      sheet_info.header_info +
+      @sheet_info.header_info +
       ['Outcome', 'Outcome Description', 'Outcome Type', 'Population', 'Digest', 'WAC Comparator'] +
-      sheet_info.data_headers(4, "Continuous", "Comparison")
+      @sheet_info.data_headers(4, "Continuous", "Comparison")
     )
 
-    sheet_info.extractions.each do |e_key, extraction|
+    @sheet_info.extractions.each do |e_key, extraction|
       # Column refers to the columns in the results quadrants.
       #
       #   Desc statistics: (Timepoints x Arms): column => Arms
@@ -109,11 +109,11 @@ module ResultSectionsWideSRDRStyle2
                 new_row << rssm[:row_unit]
 
                 if rssm[:outcome_type].eql? "Continuous"
-                  new_row.concat(build_data_row(rss_cols, desc_cont_header, sheet_info))
+                  new_row.concat(build_data_row(rss_cols, desc_cont_header))
                   ws_descriptive_statistics_continuous_outcomes.add_row(new_row)
 
                 elsif rssm[:outcome_type].eql? "Categorical"
-                  new_row.concat(build_data_row(rss_cols, desc_cat_header, sheet_info))
+                  new_row.concat(build_data_row(rss_cols, desc_cat_header))
                   ws_descriptive_statistics_categorical_outcomes.add_row(new_row)
 
                 else
@@ -131,11 +131,11 @@ module ResultSectionsWideSRDRStyle2
                 new_row << rssm[:row_unit]
 
                 if rssm[:outcome_type].eql? "Continuous"
-                  new_row.concat(build_data_row(rss_cols, bac_cont_header, sheet_info))
+                  new_row.concat(build_data_row(rss_cols, bac_cont_header))
                   ws_bac_statistics_continuous_outcomes.add_row(new_row)
 
                 elsif rssm[:outcome_type].eql? "Categorical"
-                  new_row.concat(build_data_row(rss_cols, bac_cat_header, sheet_info))
+                  new_row.concat(build_data_row(rss_cols, bac_cat_header))
                   ws_bac_statistics_categorical_outcomes.add_row(new_row)
 
                 else
@@ -152,7 +152,7 @@ module ResultSectionsWideSRDRStyle2
                 new_row << rssm[:row_name]
 
                 if rssm[:outcome_type].eql? "Continuous"
-                  new_row.concat(build_data_row(rss_cols, wac_header, sheet_info))
+                  new_row.concat(build_data_row(rss_cols, wac_header))
                   ws_wac_statistics.add_row(new_row)
 
                 else
@@ -169,7 +169,7 @@ module ResultSectionsWideSRDRStyle2
                 new_row << rssm[:row_name]
 
                 if rssm[:outcome_type].eql? "Continuous"
-                  new_row.concat(build_data_row(rss_cols, net_header, sheet_info))
+                  new_row.concat(build_data_row(rss_cols, net_header))
                   ws_net_statistics.add_row(new_row)
 
                 else
@@ -182,7 +182,7 @@ module ResultSectionsWideSRDRStyle2
           end  # populations.each do |population_id, rss_rows|
         end  # outcomes.each do |outcome_id, populations|
       end  # extraction[:rss_columns].each do |rss_type_id, outcomes|
-    end  # sheet_info.extractions.each do |e_key, extraction|
+    end  # @sheet_info.extractions.each do |e_key, extraction|
 
     # Style header row.
     desc_cont_header.style = @highlight
@@ -201,32 +201,32 @@ module ResultSectionsWideSRDRStyle2
     style_netst1, style_netst2, style_netst3, style_netst4 = set_ws_styles(ws_net_statistics)
 
     style_data_columns_in_worksheet(
-      sheet_info.data_header_hash.try(:[], :max_col).try(:[], 1).try(:[], "Continuous").try(:[], :no_of_measures),
+      @sheet_info.data_header_hash.try(:[], :max_col).try(:[], 1).try(:[], "Continuous").try(:[], :no_of_measures),
       ws_descriptive_statistics_continuous_outcomes,
       style_dscoo1, style_dscoo2, style_dscoo3, style_dscoo4)
     style_data_columns_in_worksheet(
-      sheet_info.data_header_hash.try(:[], :max_col).try(:[], 1).try(:[], "Categorical").try(:[], :no_of_measures),
+      @sheet_info.data_header_hash.try(:[], :max_col).try(:[], 1).try(:[], "Categorical").try(:[], :no_of_measures),
       ws_descriptive_statistics_categorical_outcomes,
       style_dscao1, style_dscao2, style_dscao3, style_dscao4)
     style_data_columns_in_worksheet(
-      sheet_info.data_header_hash.try(:[], :max_col).try(:[], 2).try(:[], "Continuous").try(:[], :no_of_measures),
+      @sheet_info.data_header_hash.try(:[], :max_col).try(:[], 2).try(:[], "Continuous").try(:[], :no_of_measures),
       ws_bac_statistics_continuous_outcomes,
       style_bscoo1, style_bscoo2, style_bscoo3, style_bscoo4)
     style_data_columns_in_worksheet(
-      sheet_info.data_header_hash.try(:[], :max_col).try(:[], 2).try(:[], "Categorical").try(:[], :no_of_measures),
+      @sheet_info.data_header_hash.try(:[], :max_col).try(:[], 2).try(:[], "Categorical").try(:[], :no_of_measures),
       ws_bac_statistics_categorical_outcomes,
       style_bscao1, style_bscao2, style_bscao3, style_bscao4)
     style_data_columns_in_worksheet(
-      sheet_info.data_header_hash.try(:[], :max_col).try(:[], 3).try(:[], "Continuous").try(:[], :no_of_measures),
+      @sheet_info.data_header_hash.try(:[], :max_col).try(:[], 3).try(:[], "Continuous").try(:[], :no_of_measures),
       ws_wac_statistics,
       style_wacst1, style_wacst2, style_wacst3, style_wacst4)
     style_data_columns_in_worksheet(
-      sheet_info.data_header_hash.try(:[], :max_col).try(:[], 4).try(:[], "Continuous").try(:[], :no_of_measures),
+      @sheet_info.data_header_hash.try(:[], :max_col).try(:[], 4).try(:[], "Continuous").try(:[], :no_of_measures),
       ws_net_statistics,
       style_netst1, style_netst2, style_netst3, style_netst4)
-  end  # def _export_standard_ef_type
+  end  # def _export_standard_ef_results
 
-  def build_data_row(rss_cols, header, sheet_info)
+  def build_data_row(rss_cols, header)
     # data_row is just the portion of the row that is below the headers:
     # ['Arm Name 1', 'Arm Description 1', 'Measure 1', 'Measure 2', 'Arm Name 2', 'Arm Description 2', 'Measure 1', ...]
     data_row = []
@@ -242,7 +242,7 @@ module ResultSectionsWideSRDRStyle2
       col_id = col[0]
       col[1].each do |rssm|
         # Fetch the length of each of the data rss column groups.
-        length_of_each_col_group = sheet_info.data_header_hash.try(:[], :max_col).try(:[], rssm[:result_statistic_section_type_id]).try(:[], rssm[:outcome_type]).try(:[], :no_of_measures)
+        length_of_each_col_group = @sheet_info.data_header_hash.try(:[], :max_col).try(:[], rssm[:result_statistic_section_type_id]).try(:[], rssm[:outcome_type]).try(:[], :no_of_measures)
 
         # Note...this will retrieve the first occurence...we will add multiples of col-group size to find the correct location.
         found, m_idx = find_index_of_cell_with_value(header, rssm[:measure_name])
@@ -342,9 +342,9 @@ module ResultSectionsWideSRDRStyle2
     Digest::MD5.hexdigest(signature_string)
   end
 
-  def _export_diagnostic_test_ef_results(sheet_info)
+  def _export_diagnostic_test_ef_results
     _add_da_results_worksheets
-    _print_da_results_headers(sheet_info)
+    _print_da_results_headers
     _print_da_results_data
 
   end  # def _export_diagnostic_test_ef_results
@@ -357,29 +357,29 @@ module ResultSectionsWideSRDRStyle2
     @ws_test_accuracy_metrics           = @package.workbook.add_worksheet(name: "Test Accuracy Metrics")
   end  # def _add_da_results_worksheets
 
-  def _print_da_results_headers(sheet_info)
+  def _print_da_results_headers
     # Start printing rows to the sheets. First the basic headers:
     @ws_descriptive_statistics.add_row(
-      sheet_info.header_info +
+      @sheet_info.header_info +
       ['Diagnosis', 'Diagnosis Description', 'Population', 'Population Description', 'Digest', 'Timepoint', 'Timepoint Unit', "Comparison"] +
       _lsof_measures_in_rss(:descriptive_statistics)
     )
     @ws_special_area_for_auc_and_q_star.add_row(
-      sheet_info.header_info +
+      @sheet_info.header_info +
       ['Diagnosis', 'Diagnosis Description', 'Population', 'Population Description', 'Digest', 'Timepoint', 'Timepoint Unit', "Comparison"] +
       _lsof_measures_in_rss(:special_area_for_auc_and_q_star)
     )
     @ws_2x2_table.add_row(
-      sheet_info.header_info +
+      @sheet_info.header_info +
       ['Diagnosis', 'Diagnosis Description', 'Population', 'Population Description', 'Digest', 'Timepoint', 'Timepoint Unit', "Comparison"] +
       _lsof_measures_in_rss(:_2x2_table)
     )
     @ws_test_accuracy_metrics.add_row(
-      sheet_info.header_info +
+      @sheet_info.header_info +
       ['Diagnosis', 'Diagnosis Description', 'Population', 'Population Description', 'Digest', 'Timepoint', 'Timepoint Unit', "Comparison"] +
       _lsof_measures_in_rss(:test_accuracy_metrics)
     )
-  end  # def _print_da_results_headers(sheet_info)
+  end  # def _print_da_results_headers
 
   # Diagnostic Test Results are different from Standard Extraction.
   #   The measurements are always the same. There's currently no customization permitted.
