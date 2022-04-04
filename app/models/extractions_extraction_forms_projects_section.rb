@@ -95,8 +95,10 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
         # We clean the string when needed and convert to an Array.
         if opt_ids =~ /\"/
           cleaned_opt_ids = opt_ids[2..-3].split('", "')-[""]
+
         else
-          cleaned_opt_ids = [] << opt_ids
+          cleaned_opt_ids = opt_ids.scan(/\d+/)
+
         end
         cleaned_opt_ids.each do |opt_id|
           # opt_id can be nil here for questions that have not been answered.
