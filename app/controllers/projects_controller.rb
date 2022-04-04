@@ -339,7 +339,7 @@ class ProjectsController < ApplicationController
 
       @sd_meta_data_counts = SdMetaDatum.
         where(project_id: project_ids).
-        group(:project_id).
+        group_by(&:project_id).
         count
 
       @projects_lead_or_with_key_questions = ProjectsUsersRole.
