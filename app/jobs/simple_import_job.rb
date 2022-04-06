@@ -21,6 +21,15 @@ class SimpleImportJob
     'Risk of Bias - SGSs' => { column_offset: 11, arms_by_rows: false }
   }
 
+  RESULTS_SHEET_NAMES = [
+    'Continuous - Desc. Statistics',
+    'Categorical - Desc. Statistics',
+    'Continuous - BAC Comparisons',
+    'Categorical - BAC Comparisons',
+    'WAC Comparisons',
+    'NET Differences'
+  ]
+
   attr_reader :xlsx, :sheet_names
 
   def initialize(filepath)
@@ -33,8 +42,14 @@ class SimpleImportJob
       type5: 0,
       type6and7and8: 0,
       type9: 0,
-      typeothers: 0
+      typeothers: 0,
+      tps_arms_rssm: 0,
+      tps_comparisons_rssm: 0,
+      comparisons_arms_rssm: 0,
+      wacs_bacs_rssm: 0
     }
+    process_type2_sections
+    process_results_sections
   end
 
   def valid_default_headers?
@@ -86,21 +101,76 @@ class SimpleImportJob
         @current_column = column_index + column_offset
         qrc_id = qrc_ids[column_index]
         clean_answer = dirty_answer.to_s.strip
-        update_records(extraction_id, sheet_name, qrc_id, clean_answer, arms_by_rows, arm_name, arm_description)
+        update_type2_section_record(extraction_id, sheet_name, qrc_id, clean_answer, arms_by_rows, arm_name, arm_description)
       end
     end
     @current_row, @current_column = nil
-    puts "=" * 150
-    puts "=" * 150
-    p @update_record
-    @errors.each do |e|
-      pp e
+  end
+
+  def process_results_sections
+    RESULTS_SHEET_NAMES.each do |results_section_name|
+      next unless @sheet_names.include?(results_section_name)
+      puts "processing: #{results_section_name}"
+      @current_sheet_name = results_section_name
+      process_results_section(results_section_name)
+      @current_sheet_name = nil
     end
-    puts "=" * 150
-    puts "=" * 150
+  end
+
+  def process_results_section(sheet_name)
+    sheet = get_sheet(sheet_name)
+    column_offset = 18
+    arm_interval = find_arms_interval(sheet.row(1))
+    measures = sheet.row(1)[column_offset..-1][2..(arm_interval ? arm_interval - 1 : -1)]
+
+    sheet.each_with_index do |row, row_index|
+      next if row_index == 0
+      @current_row = row_index + 1
+
+      oc_name, oc_desc = row[10, 11].map { |raw| raw.to_s.strip }
+      pop_name, pop_desc = row[13, 14].map { |raw| raw.to_s.strip }
+      tp_name, tp_unit = row[16, 17].map { |raw| raw.to_s.strip }
+      all_dirty_arms = row[column_offset..-1]
+      dirty_arms_groups = arm_interval ? all_dirty_arms.in_groups_of(arm_interval) : [all_dirty_arms]
+
+      dirty_arms_groups.each do |dirty_arms_group|
+        arm_name = dirty_arms_group[0].to_s.strip
+        arm_desc = dirty_arms_group[1].to_s.strip
+        dirty_arms_group[2..-1].each_with_index do |dirty_answer, column_index|
+          @current_column = column_index + column_offset + 2
+          msr_name = measures[column_index]
+          clean_answer = dirty_answer.to_s.strip
+          update_results_section_records(clean_answer, msr_name, tp_name, tp_unit, pop_name, pop_desc, arm_name, arm_desc, oc_name, oc_desc)
+        end
+      end
+    end
+    @current_row, @current_column = nil
   end
 
   private
+
+    def find_arms_interval(header_row)
+      arm2_index = header_row.index('Arm Name 2')
+      arm2_index ? arm2_index - header_row.index('Arm Name 1') : nil
+    end
+
+    def find_tps_arms_rssm(msr_name, tp_name, tp_unit, pop_name, pop_desc, arm_name, arm_desc, oc_name, oc_desc)
+      TpsArmsRssm.
+        joins({
+          result_statistic_sections_measure: :measure,
+          extractions_extraction_forms_projects_sections_type1: :type1,
+          timepoint: [:timepoint_name, extractions_extraction_forms_projects_sections_type1_row: [
+            :population_name,
+            { extractions_extraction_forms_projects_sections_type1: :type1 }]
+          ]
+        }).
+        where("measures.name = ?", msr_name).
+        where("timepoint_names.name = ? AND timepoint_names.unit = ?", tp_name, tp_unit).
+        where("population_names.name = ? AND population_names.description = ?", pop_name, pop_desc).
+        where(extractions_extraction_forms_projects_sections_type1s: { type1s: { name: arm_name, description: arm_desc } }).
+        where("type1s_extractions_extraction_forms_projects_sections_type1s.name = ? AND type1s_extractions_extraction_forms_projects_sections_type1s.description = ?", oc_name, oc_desc).
+        first
+    end
 
     def find_eefps_by_sheet_name_and_extraction_id(extraction_id, sheet_name)
       ExtractionsExtractionFormsProjectsSection.
@@ -140,7 +210,23 @@ class SimpleImportJob
       Record.find_or_create_by!(recordable: eefpsqrcf)
     end
 
-    def update_records(extraction_id, sheet_name, qrc_id, answer, arms_by_rows, arm_name, arm_description)
+    def update_results_section_records(clean_answer, msr_name, tp_name, tp_unit, pop_name, pop_desc, arm_name, arm_desc, oc_name, oc_desc)
+      tps_arms_rssm = find_tps_arms_rssm(msr_name, tp_name, tp_unit, pop_name, pop_desc, arm_name, arm_desc, oc_name, oc_desc)
+
+      if tps_arms_rssm && record = tps_arms_rssm.records.first
+        record.update!(name: clean_answer) unless record.name == clean_answer
+        @update_record[:tps_arms_rssm] += 1
+      else
+        @errors << {
+          sheet_name: @current_sheet_name,
+          row: @current_row,
+          column: @current_column,
+          error: "unable to locate tps_arms_rssm"
+        }
+      end
+    end
+
+    def update_type2_section_record(extraction_id, sheet_name, qrc_id, answer, arms_by_rows, arm_name, arm_description)
       eefps = find_eefps_by_sheet_name_and_extraction_id(extraction_id, sheet_name)
       qrcf = find_qrcf_by_qrc_id(qrc_id)
       eefpsqrcf = arms_by_rows ?
