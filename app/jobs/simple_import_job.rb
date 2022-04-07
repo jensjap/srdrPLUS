@@ -25,9 +25,9 @@ class SimpleImportJob
     'Continuous - Desc. Statistics',
     'Categorical - Desc. Statistics',
     'Continuous - BAC Comparisons',
-    'Categorical - BAC Comparisons'
-    # 'WAC Comparisons',
-    # 'NET Differences'
+    'Categorical - BAC Comparisons',
+    'WAC Comparisons',
+    'NET Differences'
   ]
 
   attr_reader :xlsx, :sheet_names
@@ -118,7 +118,7 @@ class SimpleImportJob
       when 'Continuous - BAC Comparisons', 'Categorical - BAC Comparisons'
         process_results_q2_section(results_section_name)
       when 'WAC Comparisons'
-
+        process_results_q3_section(results_section_name)
       when 'NET Differences'
 
       end
@@ -187,6 +187,34 @@ class SimpleImportJob
     @current_row, @current_column = nil
   end
 
+  def process_results_q3_section(sheet_name)
+    sheet = get_sheet(sheet_name)
+    column_offset = 17
+    arm_interval = find_sub_section_intervals(sheet.row(1), 'Arm Name')
+    measures = sheet.row(1)[column_offset..-1][2..(arm_interval ? arm_interval - 1 : -1)]
+
+    sheet.each_with_index do |row, row_index|
+      next if row_index == 0
+      @current_row = row_index + 1
+
+      comparison_id = row[16].match(/(?<=\[ID: )(\d*)(?=\])/).try(:captures).try(:first).try(:to_i)
+      all_dirty_arms = row[column_offset..-1]
+      dirty_arms_groups = arm_interval ? all_dirty_arms.in_groups_of(arm_interval) : [all_dirty_arms]
+
+      dirty_arms_groups.each do |dirty_arms_group|
+        arm_name = dirty_arms_group[0].to_s.strip
+        arm_desc = dirty_arms_group[1].to_s.strip
+        dirty_arms_group[2..-1].each_with_index do |dirty_answer, column_index|
+          @current_column = column_index + column_offset + 2
+          msr_name = measures[column_index]
+          clean_answer = dirty_answer.to_s.strip
+          update_results_q3_section_record(clean_answer, msr_name, comparison_id, arm_name, arm_desc)
+        end
+      end
+    end
+    @current_row, @current_column = nil
+  end
+
   private
 
     def find_tps_comparisons_rssm(comparison_id, msr_name, tp_name, tp_unit, pop_name, pop_desc, oc_name, oc_desc)
@@ -203,6 +231,18 @@ class SimpleImportJob
         where("timepoint_names.name = ? AND timepoint_names.unit = ?", tp_name, tp_unit).
         where("population_names.name = ? AND population_names.description = ?", pop_name, pop_desc).
         where("type1s.name = ? AND type1s.description = ?", oc_name, oc_desc).
+        first
+    end
+
+    def find_comparisons_arms_rssm(comparison_id, msr_name, arm_name, arm_desc)
+      ComparisonsArmsRssm.
+        joins({
+          result_statistic_sections_measure: :measure,
+          extractions_extraction_forms_projects_sections_type1: :type1
+        }).
+        where(comparison_id: comparison_id).
+        where("measures.name = ?", msr_name).
+        where(extractions_extraction_forms_projects_sections_type1s: { type1s: { name: arm_name, description: arm_desc } }).
         first
     end
 
@@ -295,6 +335,22 @@ class SimpleImportJob
           row: @current_row,
           column: @current_column,
           error: "unable to locate tps_comparisons_rssm"
+        }
+      end
+    end
+
+    def update_results_q3_section_record(clean_answer, msr_name, comparison_id, arm_name, arm_desc)
+      comparisons_arms_rssm = find_comparisons_arms_rssm(comparison_id, msr_name, arm_name, arm_desc)
+
+      if comparisons_arms_rssm && record = comparisons_arms_rssm.records.first
+        record.update!(name: clean_answer) unless record.name == clean_answer
+        @update_record[:comparisons_arms_rssm] += 1
+      else
+        @errors << {
+          sheet_name: @current_sheet_name,
+          row: @current_row,
+          column: @current_column,
+          error: "unable to locate comparisons_arms_rssm"
         }
       end
     end
