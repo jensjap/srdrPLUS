@@ -33,9 +33,14 @@ class SimpleImportJob
   attr_reader :xlsx, :sheet_names
 
   def initialize(filepath)
-    start = Time.new
     @xlsx = Roo::Excelx.new(filepath)
     @sheet_names = @xlsx.sheets
+  end
+
+  def display_process(sheet_name)
+    start = Time.new
+    puts "processing: #{sheet_name}"
+    @current_sheet_name = sheet_name
     @errors = []
     @update_record = {
       type1and2: 0,
@@ -48,13 +53,20 @@ class SimpleImportJob
       comparisons_arms_rssm: 0,
       wacs_bacs_rssm: 0
     }
+
+    yield
+
+    p @update_record
+    p @errors
+    p @errors.count
+
+    @current_sheet_name = nil
+    p "Elapsed: #{Time.new - start}"
+  end
+
+  def process_all
     process_type2_sections
     process_results_sections
-    @errors.each do |error|
-      pp error
-    end
-
-    pp @update_record
   end
 
   def valid_default_headers?
@@ -79,10 +91,9 @@ class SimpleImportJob
   def process_type2_sections
     TYPE2_SHEET_NAMES.each do |type2_sheet_name, settings|
       next unless @sheet_names.include?(type2_sheet_name)
-      puts "processing: #{type2_sheet_name}"
-      @current_sheet_name = type2_sheet_name
-      process_type2_section(type2_sheet_name, settings)
-      @current_sheet_name = nil
+      display_process(type2_sheet_name) do
+        process_type2_section(type2_sheet_name, settings)
+      end
     end
   end
 
@@ -115,19 +126,20 @@ class SimpleImportJob
   def process_results_sections
     RESULTS_SHEET_NAMES.each do |results_section_name|
       next unless @sheet_names.include?(results_section_name)
-      puts "processing: #{results_section_name}"
+
       @current_sheet_name = results_section_name
-      case results_section_name
-      when 'Continuous - Desc. Statistics', 'Categorical - Desc. Statistics'
-        process_results_q1_section(results_section_name)
-      when 'Continuous - BAC Comparisons', 'Categorical - BAC Comparisons'
-        process_results_q2_section(results_section_name)
-      when 'WAC Comparisons'
-        process_results_q3_section(results_section_name)
-      when 'NET Differences'
-        process_results_q4_section(results_section_name)
+      display_process(results_section_name) do
+        case results_section_name
+        when 'Continuous - Desc. Statistics', 'Categorical - Desc. Statistics'
+          process_results_q1_section(results_section_name)
+        when 'Continuous - BAC Comparisons', 'Categorical - BAC Comparisons'
+          process_results_q2_section(results_section_name)
+        when 'WAC Comparisons'
+          process_results_q3_section(results_section_name)
+        when 'NET Differences'
+          process_results_q4_section(results_section_name)
+        end
       end
-      @current_sheet_name = nil
     end
   end
 
@@ -147,11 +159,11 @@ class SimpleImportJob
       all_dirty_arms = row[column_offset..-1]
       dirty_arms_groups = arm_interval ? all_dirty_arms.in_groups_of(arm_interval) : [all_dirty_arms]
 
-      dirty_arms_groups.each do |dirty_arms_group|
+      dirty_arms_groups.each_with_index do |dirty_arms_group, group_index|
         arm_name = dirty_arms_group[0].to_s.strip
         arm_desc = dirty_arms_group[1].to_s.strip
         dirty_arms_group[2..-1].each_with_index do |dirty_answer, column_index|
-          @current_column = column_index + column_offset + 2
+          @current_column = column_offset + (group_index * arm_interval.to_i) + column_index + 3
           msr_name = measures[column_index]
           clean_answer = dirty_answer.to_s.strip
           update_results_q1_section_record(clean_answer, msr_name, tp_name, tp_unit, pop_name, pop_desc, arm_name, arm_desc, oc_name, oc_desc)
@@ -177,12 +189,12 @@ class SimpleImportJob
       all_dirty_comparisons = row[column_offset..-1]
       dirty_comparisons_groups = comparison_interval ? all_dirty_comparisons.in_groups_of(comparison_interval) : [all_dirty_comparisons]
 
-      dirty_comparisons_groups.each do |dirty_comparisons_group|
+      dirty_comparisons_groups.each_with_index do |dirty_comparisons_group, group_index|
         next if dirty_comparisons_group[0].nil?
         comparison_id = dirty_comparisons_group[0].match(/(?<=\[ID: )(\d*)(?=\])/).try(:captures).try(:first).try(:to_i)
 
         dirty_comparisons_group[1..-1].each_with_index do |dirty_answer, column_index|
-          @current_column = column_index + column_offset + 1
+          @current_column = column_offset + (group_index * comparison_interval.to_i) + column_index + 2
           msr_name = measures[column_index]
           clean_answer = dirty_answer.to_s.strip
           update_results_q2_section_record(clean_answer, msr_name, tp_name, tp_unit, pop_name, pop_desc, comparison_id, oc_name, oc_desc)
@@ -206,11 +218,11 @@ class SimpleImportJob
       all_dirty_arms = row[column_offset..-1]
       dirty_arms_groups = arm_interval ? all_dirty_arms.in_groups_of(arm_interval) : [all_dirty_arms]
 
-      dirty_arms_groups.each do |dirty_arms_group|
+      dirty_arms_groups.each_with_index do |dirty_arms_group, group_index|
         arm_name = dirty_arms_group[0].to_s.strip
         arm_desc = dirty_arms_group[1].to_s.strip
         dirty_arms_group[2..-1].each_with_index do |dirty_answer, column_index|
-          @current_column = column_index + column_offset + 2
+          @current_column = column_offset + (group_index * arm_interval.to_i) + column_index + 3
           msr_name = measures[column_index]
           clean_answer = dirty_answer.to_s.strip
           update_results_q3_section_record(clean_answer, msr_name, comparison_id, arm_name, arm_desc)
@@ -233,12 +245,12 @@ class SimpleImportJob
       dirty_comparisons_groups = comparison_interval ? all_dirty_comparisons.in_groups_of(comparison_interval) : [all_dirty_comparisons]
       wac_id = row[column_offset - 1].match(/(?<=\[ID: )(\d*)(?=\])/).try(:captures).try(:first).try(:to_i)
 
-      dirty_comparisons_groups.each do |dirty_comparisons_group|
+      dirty_comparisons_groups.each_with_index do |dirty_comparisons_group, group_index|
         next if dirty_comparisons_group[0].nil?
         bac_id = dirty_comparisons_group[0].match(/(?<=\[ID: )(\d*)(?=\])/).try(:captures).try(:first).try(:to_i)
 
         dirty_comparisons_group[1..-1].each_with_index do |dirty_answer, column_index|
-          @current_column = column_index + column_offset + 1
+          @current_column = column_offset + (group_index * comparison_interval.to_i) + column_index + 2
           msr_name = measures[column_index]
           clean_answer = dirty_answer.to_s.strip
           update_results_q4_section_record(clean_answer, msr_name, wac_id, bac_id)
@@ -249,6 +261,24 @@ class SimpleImportJob
   end
 
   private
+
+    def find_tps_arms_rssm(msr_name, tp_name, tp_unit, pop_name, pop_desc, arm_name, arm_desc, oc_name, oc_desc)
+      TpsArmsRssm.
+        joins({
+          result_statistic_sections_measure: :measure,
+          extractions_extraction_forms_projects_sections_type1: :type1,
+          timepoint: [:timepoint_name, extractions_extraction_forms_projects_sections_type1_row: [
+            :population_name,
+            { extractions_extraction_forms_projects_sections_type1: :type1 }]
+          ]
+        }).
+        where("measures.name = ?", msr_name).
+        where("timepoint_names.name = ? AND timepoint_names.unit = ?", tp_name, tp_unit).
+        where("population_names.name = ? AND population_names.description = ?", pop_name, pop_desc).
+        where(extractions_extraction_forms_projects_sections_type1s: { type1s: { name: arm_name, description: arm_desc } }).
+        where("type1s_extractions_extraction_forms_projects_sections_type1s.name = ? AND type1s_extractions_extraction_forms_projects_sections_type1s.description = ?", oc_name, oc_desc).
+        first
+    end
 
     def find_tps_comparisons_rssm(comparison_id, msr_name, tp_name, tp_unit, pop_name, pop_desc, oc_name, oc_desc)
       TpsComparisonsRssm.
@@ -287,29 +317,6 @@ class SimpleImportJob
         where(wac_id: wac_id).
         where(bac_id: bac_id).
         where("measures.name = ?", msr_name).
-        first
-    end
-
-    def find_sub_section_intervals(header_row, delimiter)
-      section_2_index = header_row.index("#{delimiter} 2")
-      section_2_index ? section_2_index - header_row.index("#{delimiter} 1") : nil
-    end
-
-    def find_tps_arms_rssm(msr_name, tp_name, tp_unit, pop_name, pop_desc, arm_name, arm_desc, oc_name, oc_desc)
-      TpsArmsRssm.
-        joins({
-          result_statistic_sections_measure: :measure,
-          extractions_extraction_forms_projects_sections_type1: :type1,
-          timepoint: [:timepoint_name, extractions_extraction_forms_projects_sections_type1_row: [
-            :population_name,
-            { extractions_extraction_forms_projects_sections_type1: :type1 }]
-          ]
-        }).
-        where("measures.name = ?", msr_name).
-        where("timepoint_names.name = ? AND timepoint_names.unit = ?", tp_name, tp_unit).
-        where("population_names.name = ? AND population_names.description = ?", pop_name, pop_desc).
-        where(extractions_extraction_forms_projects_sections_type1s: { type1s: { name: arm_name, description: arm_desc } }).
-        where("type1s_extractions_extraction_forms_projects_sections_type1s.name = ? AND type1s_extractions_extraction_forms_projects_sections_type1s.description = ?", oc_name, oc_desc).
         first
     end
 
@@ -355,8 +362,10 @@ class SimpleImportJob
       tps_arms_rssm = find_tps_arms_rssm(msr_name, tp_name, tp_unit, pop_name, pop_desc, arm_name, arm_desc, oc_name, oc_desc)
 
       if tps_arms_rssm && record = tps_arms_rssm.records.first
-        record.update!(name: clean_answer) unless record.name == clean_answer
-        @update_record[:tps_arms_rssm] += 1
+        unless record.name == clean_answer
+          record.update!(name: clean_answer)
+          @update_record[:tps_arms_rssm] += 1
+        end
       else
         @errors << {
           sheet_name: @current_sheet_name,
@@ -371,8 +380,10 @@ class SimpleImportJob
       tps_comparisons_rssm = find_tps_comparisons_rssm(comparison_id, msr_name, tp_name, tp_unit, pop_name, pop_desc, oc_name, oc_desc)
 
       if tps_comparisons_rssm && record = tps_comparisons_rssm.records.first
-        record.update!(name: clean_answer) unless record.name == clean_answer
-        @update_record[:tps_comparisons_rssm] += 1
+        unless record.name == clean_answer
+          record.update!(name: clean_answer)
+          @update_record[:tps_comparisons_rssm] += 1
+        end
       else
         @errors << {
           sheet_name: @current_sheet_name,
@@ -387,8 +398,10 @@ class SimpleImportJob
       comparisons_arms_rssm = find_comparisons_arms_rssm(comparison_id, msr_name, arm_name, arm_desc)
 
       if comparisons_arms_rssm && record = comparisons_arms_rssm.records.first
-        record.update!(name: clean_answer) unless record.name == clean_answer
-        @update_record[:comparisons_arms_rssm] += 1
+        unless record.name == clean_answer
+          record.update!(name: clean_answer)
+          @update_record[:comparisons_arms_rssm] += 1
+        end
       else
         @errors << {
           sheet_name: @current_sheet_name,
@@ -403,8 +416,10 @@ class SimpleImportJob
       wacs_bacs_rssm = find_wacs_bacs_rssm(msr_name, wac_id, bac_id)
 
       if wacs_bacs_rssm && record = wacs_bacs_rssm.records.first
-        record.update!(name: clean_answer) unless record.name == clean_answer
-        @update_record[:wacs_bacs_rssm] += 1
+        unless record.name == clean_answer
+          record.update!(name: clean_answer)
+          @update_record[:wacs_bacs_rssm] += 1
+        end
       else
         @errors << {
           sheet_name: @current_sheet_name,
@@ -588,5 +603,10 @@ class SimpleImportJob
           record.update(name: only_ff_answer)
         end
       end
+    end
+
+    def find_sub_section_intervals(header_row, delimiter)
+      section_2_index = header_row.index("#{delimiter} 2")
+      section_2_index ? section_2_index - header_row.index("#{delimiter} 1") : nil
     end
 end
