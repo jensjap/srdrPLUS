@@ -50,6 +50,11 @@ class SimpleImportJob
     }
     process_type2_sections
     process_results_sections
+    @errors.each do |error|
+      pp error
+    end
+
+    pp @update_record
   end
 
   def valid_default_headers?
@@ -120,7 +125,7 @@ class SimpleImportJob
       when 'WAC Comparisons'
         process_results_q3_section(results_section_name)
       when 'NET Differences'
-
+        process_results_q4_section(results_section_name)
       end
       @current_sheet_name = nil
     end
@@ -215,6 +220,34 @@ class SimpleImportJob
     @current_row, @current_column = nil
   end
 
+  def process_results_q4_section(sheet_name)
+    sheet = get_sheet(sheet_name)
+    column_offset = 17
+    comparison_interval = find_sub_section_intervals(sheet.row(1), 'Comparison Name')
+    measures = sheet.row(1)[column_offset..-1][1..(comparison_interval ? comparison_interval - 1 : -1)]
+    sheet.each_with_index do |row, row_index|
+      next if row_index == 0
+      @current_row = row_index + 1
+
+      all_dirty_comparisons = row[column_offset..-1]
+      dirty_comparisons_groups = comparison_interval ? all_dirty_comparisons.in_groups_of(comparison_interval) : [all_dirty_comparisons]
+      wac_id = row[column_offset - 1].match(/(?<=\[ID: )(\d*)(?=\])/).try(:captures).try(:first).try(:to_i)
+
+      dirty_comparisons_groups.each do |dirty_comparisons_group|
+        next if dirty_comparisons_group[0].nil?
+        bac_id = dirty_comparisons_group[0].match(/(?<=\[ID: )(\d*)(?=\])/).try(:captures).try(:first).try(:to_i)
+
+        dirty_comparisons_group[1..-1].each_with_index do |dirty_answer, column_index|
+          @current_column = column_index + column_offset + 1
+          msr_name = measures[column_index]
+          clean_answer = dirty_answer.to_s.strip
+          update_results_q4_section_record(clean_answer, msr_name, wac_id, bac_id)
+        end
+      end
+    end
+    @current_row, @current_column = nil
+  end
+
   private
 
     def find_tps_comparisons_rssm(comparison_id, msr_name, tp_name, tp_unit, pop_name, pop_desc, oc_name, oc_desc)
@@ -243,6 +276,17 @@ class SimpleImportJob
         where(comparison_id: comparison_id).
         where("measures.name = ?", msr_name).
         where(extractions_extraction_forms_projects_sections_type1s: { type1s: { name: arm_name, description: arm_desc } }).
+        first
+    end
+
+    def find_wacs_bacs_rssm(msr_name, wac_id, bac_id)
+      WacsBacsRssm.
+        joins({
+          result_statistic_sections_measure: :measure,
+        }).
+        where(wac_id: wac_id).
+        where(bac_id: bac_id).
+        where("measures.name = ?", msr_name).
         first
     end
 
@@ -351,6 +395,22 @@ class SimpleImportJob
           row: @current_row,
           column: @current_column,
           error: "unable to locate comparisons_arms_rssm"
+        }
+      end
+    end
+
+    def update_results_q4_section_record(clean_answer, msr_name, wac_id, bac_id)
+      wacs_bacs_rssm = find_wacs_bacs_rssm(msr_name, wac_id, bac_id)
+
+      if wacs_bacs_rssm && record = wacs_bacs_rssm.records.first
+        record.update!(name: clean_answer) unless record.name == clean_answer
+        @update_record[:wacs_bacs_rssm] += 1
+      else
+        @errors << {
+          sheet_name: @current_sheet_name,
+          row: @current_row,
+          column: @current_column,
+          error: "unable to locate wacs_bacs_rssm"
         }
       end
     end
