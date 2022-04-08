@@ -37,9 +37,13 @@ class SimpleImportJob
     @sheet_names = @xlsx.sheets
   end
 
+  def logger
+    @logger ||= Logger.new("#{Rails.root}/log/simple_import_job.log")
+  end
+
   def display_process(sheet_name)
     start = Time.new
-    puts "processing: #{sheet_name}"
+    logger.info("processing: #{sheet_name}")
     @current_sheet_name = sheet_name
     @errors = []
     @update_record = {
@@ -56,12 +60,12 @@ class SimpleImportJob
 
     yield
 
-    p @update_record
-    p @errors
-    p @errors.count
+    logger.info(@update_record)
+    logger.info(@errors)
+    logger.info(@errors.count)
 
     @current_sheet_name = nil
-    p "Elapsed: #{Time.new - start}"
+    logger.info("Elapsed: #{Time.new - start}")
   end
 
   def process_all
@@ -111,12 +115,12 @@ class SimpleImportJob
       @current_row = row_index + 1
       extraction_id = row[0]
       dirty_answers = row[(column_offset - 1)..-1]
-      arm_name = settings[:arms_by_rows] ? row[column_offset - 3].to_s.strip : nil
-      arm_description = settings[:arms_by_rows] ? row[column_offset - 2].to_s.strip : nil
+      arm_name = settings[:arms_by_rows] ? row[column_offset - 3].to_s.dup : nil
+      arm_description = settings[:arms_by_rows] ? row[column_offset - 2].to_s.dup : nil
       dirty_answers.each_with_index do |dirty_answer, column_index|
         @current_column = column_index + column_offset
         qrc_id = qrc_ids[column_index]
-        clean_answer = dirty_answer.to_s.strip
+        clean_answer = dirty_answer.to_s.dup
         update_type2_section_record(extraction_id, sheet_name, qrc_id, clean_answer, arms_by_rows, arm_name, arm_description)
       end
     end
@@ -153,20 +157,22 @@ class SimpleImportJob
       next if row_index == 0
       @current_row = row_index + 1
 
-      oc_name, oc_desc = row[10, 11].map { |raw| raw.to_s.strip }
-      pop_name, pop_desc = row[13, 14].map { |raw| raw.to_s.strip }
-      tp_name, tp_unit = row[16, 17].map { |raw| raw.to_s.strip }
+      oc_name, oc_desc = row[10, 11].map { |raw| raw.to_s.dup }
+      pop_name, pop_desc = row[13, 14].map { |raw| raw.to_s.dup }
+      tp_name, tp_unit = row[16, 17].map { |raw| raw.to_s.dup }
       all_dirty_arms = row[column_offset..-1]
       dirty_arms_groups = arm_interval ? all_dirty_arms.in_groups_of(arm_interval) : [all_dirty_arms]
+      extraction_id = row[0].to_i
 
       dirty_arms_groups.each_with_index do |dirty_arms_group, group_index|
-        arm_name = dirty_arms_group[0].to_s.strip
-        arm_desc = dirty_arms_group[1].to_s.strip
+        arm_name = dirty_arms_group[0].to_s.dup
+        arm_desc = dirty_arms_group[1].to_s.dup
         dirty_arms_group[2..-1].each_with_index do |dirty_answer, column_index|
+          next if dirty_arms_group[0].nil?
           @current_column = column_offset + (group_index * arm_interval.to_i) + column_index + 3
           msr_name = measures[column_index]
-          clean_answer = dirty_answer.to_s.strip
-          update_results_q1_section_record(clean_answer, msr_name, tp_name, tp_unit, pop_name, pop_desc, arm_name, arm_desc, oc_name, oc_desc)
+          clean_answer = dirty_answer.to_s.dup
+          update_results_q1_section_record(clean_answer, msr_name, tp_name, tp_unit, pop_name, pop_desc, arm_name, arm_desc, oc_name, oc_desc, extraction_id)
         end
       end
     end
@@ -183,9 +189,9 @@ class SimpleImportJob
       next if row_index == 0
       @current_row = row_index + 1
 
-      oc_name, oc_desc = row[10, 11].map { |raw| raw.to_s.strip }
-      pop_name, pop_desc = row[13, 14].map { |raw| raw.to_s.strip }
-      tp_name, tp_unit = row[16, 17].map { |raw| raw.to_s.strip }
+      oc_name, oc_desc = row[10, 11].map { |raw| raw.to_s.dup }
+      pop_name, pop_desc = row[13, 14].map { |raw| raw.to_s.dup }
+      tp_name, tp_unit = row[16, 17].map { |raw| raw.to_s.dup }
       all_dirty_comparisons = row[column_offset..-1]
       dirty_comparisons_groups = comparison_interval ? all_dirty_comparisons.in_groups_of(comparison_interval) : [all_dirty_comparisons]
 
@@ -196,7 +202,7 @@ class SimpleImportJob
         dirty_comparisons_group[1..-1].each_with_index do |dirty_answer, column_index|
           @current_column = column_offset + (group_index * comparison_interval.to_i) + column_index + 2
           msr_name = measures[column_index]
-          clean_answer = dirty_answer.to_s.strip
+          clean_answer = dirty_answer.to_s.dup
           update_results_q2_section_record(clean_answer, msr_name, tp_name, tp_unit, pop_name, pop_desc, comparison_id, oc_name, oc_desc)
         end
       end
@@ -214,18 +220,22 @@ class SimpleImportJob
       next if row_index == 0
       @current_row = row_index + 1
 
+      oc_name, oc_desc = row[10, 11].map { |raw| raw.to_s.dup }
+      pop_name, pop_desc = row[13, 14].map { |raw| raw.to_s.dup }
       comparison_id = row[16].match(/(?<=\[ID: )(\d*)(?=\])/).try(:captures).try(:first).try(:to_i)
       all_dirty_arms = row[column_offset..-1]
       dirty_arms_groups = arm_interval ? all_dirty_arms.in_groups_of(arm_interval) : [all_dirty_arms]
+      extraction_id = row[0].to_i
 
       dirty_arms_groups.each_with_index do |dirty_arms_group, group_index|
-        arm_name = dirty_arms_group[0].to_s.strip
-        arm_desc = dirty_arms_group[1].to_s.strip
+        next if dirty_arms_group[0].nil?
+        arm_name = dirty_arms_group[0].to_s.dup
+        arm_desc = dirty_arms_group[1].to_s.dup
         dirty_arms_group[2..-1].each_with_index do |dirty_answer, column_index|
           @current_column = column_offset + (group_index * arm_interval.to_i) + column_index + 3
           msr_name = measures[column_index]
-          clean_answer = dirty_answer.to_s.strip
-          update_results_q3_section_record(clean_answer, msr_name, comparison_id, arm_name, arm_desc)
+          clean_answer = dirty_answer.to_s.dup
+          update_results_q3_section_record(clean_answer, msr_name, comparison_id, arm_name, arm_desc, extraction_id, pop_name, pop_desc, oc_name, oc_desc)
         end
       end
     end
@@ -244,6 +254,8 @@ class SimpleImportJob
       all_dirty_comparisons = row[column_offset..-1]
       dirty_comparisons_groups = comparison_interval ? all_dirty_comparisons.in_groups_of(comparison_interval) : [all_dirty_comparisons]
       wac_id = row[column_offset - 1].match(/(?<=\[ID: )(\d*)(?=\])/).try(:captures).try(:first).try(:to_i)
+      oc_name, oc_desc = row[10, 11].map { |raw| raw.to_s.dup }
+      pop_name, pop_desc = row[13, 14].map { |raw| raw.to_s.dup }
 
       dirty_comparisons_groups.each_with_index do |dirty_comparisons_group, group_index|
         next if dirty_comparisons_group[0].nil?
@@ -252,8 +264,8 @@ class SimpleImportJob
         dirty_comparisons_group[1..-1].each_with_index do |dirty_answer, column_index|
           @current_column = column_offset + (group_index * comparison_interval.to_i) + column_index + 2
           msr_name = measures[column_index]
-          clean_answer = dirty_answer.to_s.strip
-          update_results_q4_section_record(clean_answer, msr_name, wac_id, bac_id)
+          clean_answer = dirty_answer.to_s.dup
+          update_results_q4_section_record(clean_answer, msr_name, wac_id, bac_id, pop_name, pop_desc, oc_name, oc_desc)
         end
       end
     end
@@ -262,62 +274,132 @@ class SimpleImportJob
 
   private
 
-    def find_tps_arms_rssm(msr_name, tp_name, tp_unit, pop_name, pop_desc, arm_name, arm_desc, oc_name, oc_desc)
-      TpsArmsRssm.
-        joins({
-          result_statistic_sections_measure: :measure,
-          extractions_extraction_forms_projects_sections_type1: :type1,
-          timepoint: [:timepoint_name, extractions_extraction_forms_projects_sections_type1_row: [
+    def find_tps_arms_rssm(msr_name, tp_name, tp_unit, pop_name, pop_desc, arm_name, arm_desc, oc_name, oc_desc, extraction_id)
+      eefpst1rc = ExtractionsExtractionFormsProjectsSectionsType1RowColumn.
+        joins(
+          :timepoint_name,
+          extractions_extraction_forms_projects_sections_type1_row: [
             :population_name,
-            { extractions_extraction_forms_projects_sections_type1: :type1 }]
+            { extractions_extraction_forms_projects_sections_type1: :type1 }
           ]
-        }).
-        where("measures.name = ?", msr_name).
-        where("timepoint_names.name = ? AND timepoint_names.unit = ?", tp_name, tp_unit).
+        ).
         where("population_names.name = ? AND population_names.description = ?", pop_name, pop_desc).
-        where(extractions_extraction_forms_projects_sections_type1s: { type1s: { name: arm_name, description: arm_desc } }).
-        where("type1s_extractions_extraction_forms_projects_sections_type1s.name = ? AND type1s_extractions_extraction_forms_projects_sections_type1s.description = ?", oc_name, oc_desc).
+        where("type1s.name = ? AND type1s.description = ?", oc_name, oc_desc).
+        where("timepoint_names.name = ? AND timepoint_names.unit = ?", tp_name, tp_unit).
         first
+
+      rsst = ResultStatisticSectionType.find_by(name: 'Descriptive Statistics')
+      rss = ResultStatisticSection.find_or_create_by!(
+        result_statistic_section_type: rsst,
+        population: eefpst1rc.extractions_extraction_forms_projects_sections_type1_row
+      )
+      measure = Measure.find_by(name: msr_name)
+      rssm = ResultStatisticSectionsMeasure.find_or_create_by!(
+        result_statistic_section: rss,
+        measure: measure
+      )
+      eefpst1 = ExtractionsExtractionFormsProjectsSectionsType1.
+        joins(:type1).
+        joins(extractions_extraction_forms_projects_section: :extraction).
+        where("type1s.name = ? AND type1s.description = ?", arm_name, arm_desc).
+        where("extractions.id = ?", extraction_id).
+        first
+
+      TpsArmsRssm.find_or_create_by!(
+        extractions_extraction_forms_projects_sections_type1: eefpst1,
+        result_statistic_sections_measure: rssm,
+        timepoint: eefpst1rc
+      )
     end
 
     def find_tps_comparisons_rssm(comparison_id, msr_name, tp_name, tp_unit, pop_name, pop_desc, oc_name, oc_desc)
-      TpsComparisonsRssm.
-        joins({
-          result_statistic_sections_measure: :measure,
-          timepoint: [:timepoint_name, extractions_extraction_forms_projects_sections_type1_row: [
+      eefpst1rc = ExtractionsExtractionFormsProjectsSectionsType1RowColumn.
+        joins(
+          :timepoint_name,
+          extractions_extraction_forms_projects_sections_type1_row: [
             :population_name,
-            { extractions_extraction_forms_projects_sections_type1: :type1 }]
+            { extractions_extraction_forms_projects_sections_type1: :type1 }
           ]
-        }).
-        where(comparison_id: comparison_id).
-        where("measures.name = ?", msr_name).
+        ).
+        where("population_names.name = ? AND population_names.description = ?", pop_name, pop_desc).
+        where("type1s.name = ? AND type1s.description = ?", oc_name, oc_desc).
         where("timepoint_names.name = ? AND timepoint_names.unit = ?", tp_name, tp_unit).
+        first
+      rsst = ResultStatisticSectionType.find_by(name: 'Between Arm Comparisons')
+      rss = ResultStatisticSection.find_or_create_by!(
+        result_statistic_section_type: rsst,
+        population: eefpst1rc.extractions_extraction_forms_projects_sections_type1_row
+      )
+      measure = Measure.find_by(name: msr_name)
+      rssm = ResultStatisticSectionsMeasure.find_or_create_by!(
+        result_statistic_section: rss,
+        measure: measure
+      )
+      TpsComparisonsRssm.find_or_create_by!(
+        comparison_id: comparison_id,
+        result_statistic_sections_measure: rssm,
+        timepoint: eefpst1rc
+      )
+    end
+
+    def find_comparisons_arms_rssm(comparison_id, msr_name, arm_name, arm_desc, pop_name, pop_desc, oc_name, oc_desc, extraction_id)
+      eefpst1r = ExtractionsExtractionFormsProjectsSectionsType1Row.
+        joins(
+          :population_name,
+          { extractions_extraction_forms_projects_sections_type1: :type1 }
+        ).
         where("population_names.name = ? AND population_names.description = ?", pop_name, pop_desc).
         where("type1s.name = ? AND type1s.description = ?", oc_name, oc_desc).
         first
+      eefpst1 = ExtractionsExtractionFormsProjectsSectionsType1.
+        joins(:type1).
+        joins(extractions_extraction_forms_projects_section: :extraction).
+        where("type1s.name = ? AND type1s.description = ?", arm_name, arm_desc).
+        where("extractions.id = ?", extraction_id).
+        first
+
+      rsst = ResultStatisticSectionType.find_by(name: 'Within Arm Comparisons')
+      rss = ResultStatisticSection.find_or_create_by!(
+        result_statistic_section_type: rsst,
+        population: eefpst1r
+      )
+      measure = Measure.find_by(name: msr_name)
+      rssm = ResultStatisticSectionsMeasure.find_or_create_by!(
+        result_statistic_section: rss,
+        measure: measure
+      )
+
+      ComparisonsArmsRssm.find_or_create_by!(
+        comparison_id: comparison_id,
+        extractions_extraction_forms_projects_sections_type1: eefpst1,
+        result_statistic_sections_measure: rssm
+      )
     end
 
-    def find_comparisons_arms_rssm(comparison_id, msr_name, arm_name, arm_desc)
-      ComparisonsArmsRssm.
-        joins({
-          result_statistic_sections_measure: :measure,
-          extractions_extraction_forms_projects_sections_type1: :type1
-        }).
-        where(comparison_id: comparison_id).
-        where("measures.name = ?", msr_name).
-        where(extractions_extraction_forms_projects_sections_type1s: { type1s: { name: arm_name, description: arm_desc } }).
+    def find_wacs_bacs_rssm(wac_id, bac_id, msr_name, pop_name, pop_desc, oc_name, oc_desc)
+      eefpst1r = ExtractionsExtractionFormsProjectsSectionsType1Row.
+        joins(
+          :population_name,
+          { extractions_extraction_forms_projects_sections_type1: :type1 }
+        ).
+        where("population_names.name = ? AND population_names.description = ?", pop_name, pop_desc).
+        where("type1s.name = ? AND type1s.description = ?", oc_name, oc_desc).
         first
-    end
-
-    def find_wacs_bacs_rssm(msr_name, wac_id, bac_id)
-      WacsBacsRssm.
-        joins({
-          result_statistic_sections_measure: :measure,
-        }).
-        where(wac_id: wac_id).
-        where(bac_id: bac_id).
-        where("measures.name = ?", msr_name).
-        first
+      rsst = ResultStatisticSectionType.find_by(name: 'Net Change')
+      rss = ResultStatisticSection.find_or_create_by!(
+        result_statistic_section_type: rsst,
+        population: eefpst1r
+      )
+      measure = Measure.find_by(name: msr_name)
+      rssm = ResultStatisticSectionsMeasure.find_or_create_by!(
+        result_statistic_section: rss,
+        measure: measure
+      )
+      WacsBacsRssm.find_or_create_by!(
+        wac_id: wac_id,
+        bac_id: bac_id,
+        result_statistic_sections_measure: rssm
+      )
     end
 
     def find_eefps_by_sheet_name_and_extraction_id(extraction_id, sheet_name)
@@ -358,76 +440,71 @@ class SimpleImportJob
       Record.find_or_create_by!(recordable: eefpsqrcf)
     end
 
-    def update_results_q1_section_record(clean_answer, msr_name, tp_name, tp_unit, pop_name, pop_desc, arm_name, arm_desc, oc_name, oc_desc)
-      tps_arms_rssm = find_tps_arms_rssm(msr_name, tp_name, tp_unit, pop_name, pop_desc, arm_name, arm_desc, oc_name, oc_desc)
+    def update_results_q1_section_record(clean_answer, msr_name, tp_name, tp_unit, pop_name, pop_desc, arm_name, arm_desc, oc_name, oc_desc, extraction_id)
+      tps_arms_rssm = find_tps_arms_rssm(msr_name, tp_name, tp_unit, pop_name, pop_desc, arm_name, arm_desc, oc_name, oc_desc, extraction_id)
+      record = Record.find_or_create_by!(recordable: tps_arms_rssm)
 
-      if tps_arms_rssm && record = tps_arms_rssm.records.first
-        unless record.name == clean_answer
-          record.update!(name: clean_answer)
-          @update_record[:tps_arms_rssm] += 1
-        end
-      else
-        @errors << {
-          sheet_name: @current_sheet_name,
-          row: @current_row,
-          column: @current_column,
-          error: "unable to locate tps_arms_rssm"
-        }
+      unless record.name == clean_answer
+        record.update!(name: clean_answer)
+        @update_record[:tps_arms_rssm] += 1
       end
+    rescue => err
+      @errors << {
+        sheet_name: @current_sheet_name,
+        row: @current_row,
+        column: @current_column,
+        error:  err.to_s
+      }
     end
 
     def update_results_q2_section_record(clean_answer, msr_name, tp_name, tp_unit, pop_name, pop_desc, comparison_id, oc_name, oc_desc)
       tps_comparisons_rssm = find_tps_comparisons_rssm(comparison_id, msr_name, tp_name, tp_unit, pop_name, pop_desc, oc_name, oc_desc)
+      record = Record.find_or_create_by!(recordable: tps_comparisons_rssm)
 
-      if tps_comparisons_rssm && record = tps_comparisons_rssm.records.first
-        unless record.name == clean_answer
-          record.update!(name: clean_answer)
-          @update_record[:tps_comparisons_rssm] += 1
-        end
-      else
-        @errors << {
-          sheet_name: @current_sheet_name,
-          row: @current_row,
-          column: @current_column,
-          error: "unable to locate tps_comparisons_rssm"
-        }
+      unless record.name == clean_answer
+        record.update!(name: clean_answer)
+        @update_record[:tps_comparisons_rssm] += 1
       end
+    rescue => err
+      @errors << {
+        sheet_name: @current_sheet_name,
+        row: @current_row,
+        column: @current_column,
+        error:  err.to_s
+      }
     end
 
-    def update_results_q3_section_record(clean_answer, msr_name, comparison_id, arm_name, arm_desc)
-      comparisons_arms_rssm = find_comparisons_arms_rssm(comparison_id, msr_name, arm_name, arm_desc)
-
-      if comparisons_arms_rssm && record = comparisons_arms_rssm.records.first
-        unless record.name == clean_answer
-          record.update!(name: clean_answer)
-          @update_record[:comparisons_arms_rssm] += 1
-        end
-      else
-        @errors << {
-          sheet_name: @current_sheet_name,
-          row: @current_row,
-          column: @current_column,
-          error: "unable to locate comparisons_arms_rssm"
-        }
+    def update_results_q3_section_record(clean_answer, msr_name, comparison_id, arm_name, arm_desc, extraction_id, pop_name, pop_desc, oc_name, oc_desc)
+      comparisons_arms_rssm = find_comparisons_arms_rssm(comparison_id, msr_name, arm_name, arm_desc, pop_name, pop_desc, oc_name, oc_desc, extraction_id)
+      record = Record.find_or_create_by!(recordable: comparisons_arms_rssm)
+      unless record.name == clean_answer
+        record.update!(name: clean_answer)
+        @update_record[:comparisons_arms_rssm] += 1
       end
+    rescue => err
+      @errors << {
+        sheet_name: @current_sheet_name,
+        row: @current_row,
+        column: @current_column,
+        error:  err.to_s
+      }
     end
 
-    def update_results_q4_section_record(clean_answer, msr_name, wac_id, bac_id)
-      wacs_bacs_rssm = find_wacs_bacs_rssm(msr_name, wac_id, bac_id)
+    def update_results_q4_section_record(clean_answer, msr_name, wac_id, bac_id, pop_name, pop_desc, oc_name, oc_desc)
+      wacs_bacs_rssm = find_wacs_bacs_rssm(wac_id, bac_id, msr_name, pop_name, pop_desc, oc_name, oc_desc)
+      record = Record.find_or_create_by!(recordable: wacs_bacs_rssm)
 
-      if wacs_bacs_rssm && record = wacs_bacs_rssm.records.first
-        unless record.name == clean_answer
-          record.update!(name: clean_answer)
-          @update_record[:wacs_bacs_rssm] += 1
-        end
-      else
-        @errors << {
-          sheet_name: @current_sheet_name,
-          row: @current_row,
-          column: @current_column,
-          error: "unable to locate wacs_bacs_rssm"
-        }
+      unless record.name == clean_answer
+        record.update!(name: clean_answer)
+        @update_record[:wacs_bacs_rssm] += 1
       end
+    rescue => err
+      @errors << {
+        sheet_name: @current_sheet_name,
+        row: @current_row,
+        column:  @current_column,
+        error: err.to_s
+      }
     end
 
     def update_type2_section_record(extraction_id, sheet_name, qrc_id, answer, arms_by_rows, arm_name, arm_description)
@@ -474,7 +551,7 @@ class SimpleImportJob
       answers = answer.split("\n")
       qrcqrco_ids = []
       answers.each do |answer|
-        only_answer = answer.match(/(^.*)(?=\[Follow-up:)/).try(:captures).try(:first).try(:strip) || answer
+        only_answer = answer.match(/(^.*)(?=\[Follow-up:)/).try(:captures).try(:first).try(:dup) || answer
         qrcqrco = eefpsqrcf.
           question_row_column_field.
           question_row_column.
@@ -487,7 +564,7 @@ class SimpleImportJob
             match(/(?<=\[Follow\-up: )(.*)(?=\])/).
             try(:captures).
             try(:first).
-            try { |captures| captures.split(",").map(&:strip)} || []
+            try { |captures| captures.split(",").map(&:dup)} || []
           if !only_ff_answers.empty? && qrcqrco.present?
             create_followup_fields(only_ff_answers, eefpsqrcf, qrcqrco)
           end
@@ -516,7 +593,7 @@ class SimpleImportJob
         match(/(^.*)(?=\[Follow-up:)/).
         try(:captures).
         try(:first).
-        try(:strip) || answer
+        try(:dup) || answer
 
       record = find_or_create_record_by_eefpsqrfc(eefpsqrcf)
       qrcqrco = eefpsqrcf.
@@ -541,7 +618,7 @@ class SimpleImportJob
         try(:captures).
         try(:first).
         try { |captures| captures.split(",").
-        map(&:strip)} || []
+        map(&:dup)} || []
       qrct_id = eefpsqrcf.
         question_row_column_field.
         question_row_column.
@@ -552,7 +629,7 @@ class SimpleImportJob
     end
 
     def update_record_type_9(eefpsqrcf, answer)
-      only_answers = answer.try { |asw| asw.split("\n").map { |a| a.try(:strip) } } || []
+      only_answers = answer.try { |asw| asw.split("\n").map { |a| a.try(:dup) } } || []
       only_answers.each do |only_answer|
         qrcqrco = QuestionRowColumnsQuestionRowColumnOption.find_by(
           question_row_column: eefpsqrcf.question_row_column_field.question_row_column,
@@ -600,7 +677,7 @@ class SimpleImportJob
             extractions_extraction_forms_projects_section: eefpsqrcf.extractions_extraction_forms_projects_section
           )
           record = Record.find_or_create_by!(recordable: eefpsff)
-          record.update(name: only_ff_answer)
+          record.update!(name: only_ff_answer)
         end
       end
     end
