@@ -122,7 +122,11 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
               # Check for followup_field and append if present.
               if qrcqrco.followup_field.present?
                 extraction_id = self.extraction.id
-                eefpsff = qrcqrco.followup_field.extractions_extraction_forms_projects_sections_followup_fields.filter { |r| r.extraction.id == extraction_id }
+                eefpsff = qrcqrco
+                  .followup_field
+                  .extractions_extraction_forms_projects_sections_followup_fields
+                  .joins(:extractions_extraction_forms_projects_section)
+                  .where(extractions_extraction_forms_projects_sections: { extraction: extraction })
                 tmp_ff_value = "[Follow-up: #{eefpsff.map(&:records).flatten.map(&:name).join(', ')}]"
               end
 
@@ -156,7 +160,11 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
       if qrcqrco.present?
         if qrcqrco.followup_field.present?
           extraction_id = self.extraction.id
-          eefpsff = qrcqrco.followup_field.extractions_extraction_forms_projects_sections_followup_fields.filter { |r| r.extraction.id == extraction_id }
+          eefpsff = qrcqrco
+            .followup_field
+            .extractions_extraction_forms_projects_sections_followup_fields
+            .joins(:extractions_extraction_forms_projects_section)
+            .where(extractions_extraction_forms_projects_sections: { extraction: extraction })
           tmp_ff_value = "[Follow-up: #{eefpsff.map(&:records).flatten.map(&:name).join(', ')}]"
         end
       end
