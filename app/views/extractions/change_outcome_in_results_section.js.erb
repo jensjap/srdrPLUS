@@ -1,5 +1,5 @@
 ( function() {
-  <% if @extraction.consolidated %> 
+  <% if @extraction.consolidated %>
       $( '#results-panel' ).html( "<%= j( render 'extractions/consolidate/results', efp: @extraction_forms_projects.first) %>" ).foundation();
   <% else %>
     $( '#results-panel' ).html( "<%= j( render 'extractions/work/results', efp: @extraction_forms_projects.first) %>" ).foundation();

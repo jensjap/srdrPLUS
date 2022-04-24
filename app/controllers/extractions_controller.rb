@@ -193,7 +193,13 @@ class ExtractionsController < ApplicationController
         @eefpst1                   = ExtractionsExtractionFormsProjectsSectionsType1.find(params[:eefpst1_id])
         @extraction                = @eefpst1.extraction
         @consolidated_extraction   = @extraction
+        update_record_helper_dictionaries(@consolidated_extraction)
+        update_eefps_by_extraction_and_efps_dict(@consolidated_extraction)
         @extractions               = Extraction.where(citations_project: @extraction.citations_project).where.not(id: @extraction.id)
+        @extractions.each do |extraction|
+          update_record_helper_dictionaries(extraction)
+          update_eefps_by_extraction_and_efps_dict(extraction)
+        end
         @project                   = @extraction.project
         @extraction_forms_projects = @project.extraction_forms_projects
         if @extraction_forms_projects.first.extraction_forms_project_type.eql?(ExtractionFormsProjectType.find_by(name: ExtractionFormsProjectType::STANDARD))

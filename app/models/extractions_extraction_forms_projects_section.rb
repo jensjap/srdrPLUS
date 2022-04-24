@@ -72,7 +72,7 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
       .includes(:timepoint_names, :type1, type1: { suggestion: { user: :profile } })
       .where.not(type1: self.type1s)
       .where.not(type1s: { name: 'Total', description: "All #{ extraction_forms_projects_section.link_to_type1.present? ? extraction_forms_projects_section.link_to_type1.section.name : extraction_forms_projects_section.section.name } combined" })
-      .distinct
+      .uniq
   end
 
   def eefps_qrfc_values(eefpst1_id, qrc)
@@ -95,8 +95,10 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
         # We clean the string when needed and convert to an Array.
         if opt_ids =~ /\"/
           cleaned_opt_ids = opt_ids[2..-3].split('", "')-[""]
+
         else
-          cleaned_opt_ids = [] << opt_ids
+          cleaned_opt_ids = opt_ids.scan(/\d+/)
+
         end
         cleaned_opt_ids.each do |opt_id|
           # opt_id can be nil here for questions that have not been answered.
@@ -120,7 +122,11 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
               # Check for followup_field and append if present.
               if qrcqrco.followup_field.present?
                 extraction_id = self.extraction.id
-                eefpsff = qrcqrco.followup_field.extractions_extraction_forms_projects_sections_followup_fields.filter { |r| r.extraction.id == extraction_id }
+                eefpsff = qrcqrco
+                  .followup_field
+                  .extractions_extraction_forms_projects_sections_followup_fields
+                  .joins(:extractions_extraction_forms_projects_section)
+                  .where(extractions_extraction_forms_projects_sections: { extraction: extraction })
                 tmp_ff_value = "[Follow-up: #{eefpsff.map(&:records).flatten.map(&:name).join(', ')}]"
               end
 
@@ -154,7 +160,11 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
       if qrcqrco.present?
         if qrcqrco.followup_field.present?
           extraction_id = self.extraction.id
-          eefpsff = qrcqrco.followup_field.extractions_extraction_forms_projects_sections_followup_fields.filter { |r| r.extraction.id == extraction_id }
+          eefpsff = qrcqrco
+            .followup_field
+            .extractions_extraction_forms_projects_sections_followup_fields
+            .joins(:extractions_extraction_forms_projects_section)
+            .where(extractions_extraction_forms_projects_sections: { extraction: extraction })
           tmp_ff_value = "[Follow-up: #{eefpsff.map(&:records).flatten.map(&:name).join(', ')}]"
         end
       end

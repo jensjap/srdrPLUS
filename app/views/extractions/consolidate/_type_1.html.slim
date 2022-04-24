@@ -10,7 +10,7 @@
 
     ul.accordion.consolidate data-accordion='' data-multi-expand='true' data-allow-all-closed='true'
       - @head_to_head.dig(efp.id, efps.id, :all_type1s).each do |type1|
-        - type1_found_cnt = @head_to_head.dig(efp.id, efps.id, type1.id, :eefpst1s).length
+        - type1_found_cnt = @head_to_head.dig(efp.id, efps.id, type1.id, :eefpst1s).try(:length) || 0
         - type1_omnipresent = type1_found_cnt.eql? @extractions.length
 
         li.accordion-item data-accordion-item=''
