@@ -894,7 +894,7 @@ namespace(:db) do
       end
 
       adverse_events.each do |adverse_event|
-        t1 = Type1.find_or_create_by name: adverse_event["title"],
+        t1 = Type1.find_or_create_by name: adverse_event["title"]&.truncate(255),
                                      description: adverse_event["description"]
         Suggestion.find_or_create_by suggestable: t1, user: migration_user
         ## TODO: Adverse Event stuff

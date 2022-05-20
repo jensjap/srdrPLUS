@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_03_20_033939) do
+ActiveRecord::Schema.define(version: 2022_04_08_072608) do
 
   create_table "abstrackr_settings", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
     t.integer "profile_id"
@@ -349,7 +349,7 @@ ActiveRecord::Schema.define(version: 2022_03_20_033939) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "data_audits", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin", force: :cascade do |t|
+  create_table "data_audits", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
     t.boolean "epc_source"
     t.string "epc_name"
     t.string "non_epc_name"
@@ -1338,6 +1338,7 @@ ActiveRecord::Schema.define(version: 2022_03_20_033939) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["deleted_at"], name: "index_records_on_deleted_at"
+    t.index ["recordable_id"], name: "index_records_on_recordable_id"
     t.index ["recordable_type", "recordable_id"], name: "index_records_on_recordable_type_and_recordable_id"
   end
 
