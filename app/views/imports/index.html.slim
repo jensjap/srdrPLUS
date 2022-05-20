@@ -1,0 +1,42 @@
+.grid-container
+  .grid-x
+    .cell.small-12
+      H1 Step 1
+      = link_to 'Export Assignments and Mappings Template', export_assignments_and_mappings_project_path(@project), class: 'button'
+
+    /.cell.small-6
+      = simple_form_for(@import, url: import_assignments_and_mappings_project_path(@project)) do |f|
+        = f.file_field :imported_files, multiple: true, direct_upload: true
+        = f.submit
+
+  br/
+  br/
+  hr
+  br/
+  br/
+
+  .grid-x 
+    .cell.small-12
+      H1 Step 2
+      #dropzone-div
+        /input#ris-file-type-id.hide value="#{ FileType.find_by(name: '.ris').id }"
+        /input#csv-file-type-id.hide value="#{ FileType.find_by(name: '.csv').id }"
+        /input#endnote-file-type-id.hide value="#{ FileType.find_by(name: '.enl').id }"
+        /input#pubmed-file-type-id.hide value="#{ FileType.find_by(name: 'PubMed').id }"
+        /input#json-file-type-id.hide value="#{ FileType.find_by(name: '.json').id }"
+        = simple_form_for(@import, url: import_assignments_and_mappings_project_path(@project), remote: true, authenticity_token: true) do |f|
+          .form-inputs
+            = f.input :projects_user_id, as: :hidden, input_html: { value: @projects_user.id }
+            = f.input :import_type_id, as: :hidden, input_html: { value: ImportType.find_by(name: ImportType::ASSIGNMENTS_MAPPINGS).id }
+            = f.simple_fields_for @import.imported_files.build do |i_f|
+              #fileDropzone.dropzone name='mainFileUploader' dropzone-path="#{ imports_path }"
+                .fallback
+                  = i_f.input :file_type_id, as: :hidden, required: true, input_html: { value: FileType.find_by(name: FileType::XLSX).id }
+                  = i_f.input :content, as: :file, label: 'Assignments and Mappings File'
+                  .form-actions
+                    = f.button :submit, 'Upload file', class:"small", id:"submit-all"
+
+.column.row
+  = link_to t('show'), @project
+  '  |
+  = link_to t('back'), projects_path

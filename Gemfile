@@ -8,7 +8,7 @@ end
 gem 'rails', '~> 5.2.4.4'
 
 # Use mysql as the database for Active Record
-gem 'mysql2', '>= 0.3.18', '< 0.5'
+gem 'mysql2', '>= 0.3.18', '< 0.6'
 # Use Puma as the app server
 gem 'puma', '~> 5.6.4'
 # Use SCSS for stylesheets
@@ -118,7 +118,7 @@ gem 'caxlsx'
 gem 'caxlsx_rails'
 
 # Spreadsheet reading.
-gem 'rubyXL', '~> 1.2.10'
+gem 'rubyXL'
 gem 'zip-zip'
 
 # Searching with Elasticsearch.

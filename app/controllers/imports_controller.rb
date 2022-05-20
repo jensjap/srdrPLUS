@@ -1,5 +1,10 @@
 class ImportsController < ApplicationController
-  before_action :set_project, only: [:new]
+  before_action :set_project, only: [:index, :new]
+
+  def index
+    @import = @projects_user.imports.build
+    @imported_file = ImportedFile.new import: @import
+  end
 
   def new
     @import = Import.new projects_user: @projects_user

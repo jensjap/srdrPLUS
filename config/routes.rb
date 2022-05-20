@@ -279,9 +279,11 @@ Rails.application.routes.draw do
       post 'export'
       post 'export_citation_labels'
       post 'export_to_gdrive'
+      get  'export_assignments_and_mappings'
+      post 'import_assignments_and_mappings'
     end
 
-    resources :imports, only: [:new]
+    resources :imports, only: [:index, :new]
   end
 
   root to: 'static_pages#home'

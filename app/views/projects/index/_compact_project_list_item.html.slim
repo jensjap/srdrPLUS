@@ -76,6 +76,7 @@ div style="padding: 0.4rem; font-weight: bold;"
           i.fi-list-thumbnails
         nav.project-item-menu style="margin: 0 !important; right: 0;"
           ul
+            li style="margin: 10px 0 10px 0" = link_to "Import Tools", project_imports_path(project), title: 'Import Tools'
             li style="margin: 10px 0 10px 0" = link_to t('request_publication'), new_publishing_path(type: Project.to_s, id: project.id), title: t('request_publication')
             li style="margin: 10px 0 10px 0" = link_to "SR-360", project_sd_meta_data_path(project), title: 'SR-360'
 

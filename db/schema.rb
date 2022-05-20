@@ -198,6 +198,7 @@ ActiveRecord::Schema.define(version: 2022_04_08_072608) do
     t.string "accession_number"
     t.index ["citation_type_id"], name: "index_citations_on_citation_type_id"
     t.index ["deleted_at"], name: "index_citations_on_deleted_at"
+    t.index ["pmid"], name: "index_citations_on_pmid"
   end
 
   create_table "citations_keywords", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
@@ -1109,21 +1110,6 @@ ActiveRecord::Schema.define(version: 2022_04_08_072608) do
     t.index ["deleted_at"], name: "index_projects_on_deleted_at"
   end
 
-  create_table "projects_studies", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
-    t.integer "project_id"
-    t.integer "study_id"
-    t.datetime "deleted_at"
-    t.boolean "active"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["active"], name: "index_ps_on_active"
-    t.index ["deleted_at"], name: "index_ps_on_deleted_at"
-    t.index ["project_id", "study_id", "active"], name: "index_ps_on_p_id_s_id_active"
-    t.index ["project_id", "study_id", "deleted_at"], name: "index_ps_on_p_id_s_id_deleted_at"
-    t.index ["project_id"], name: "index_projects_studies_on_project_id"
-    t.index ["study_id"], name: "index_projects_studies_on_study_id"
-  end
-
   create_table "projects_users", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
     t.integer "project_id"
     t.integer "user_id"
@@ -1775,13 +1761,6 @@ ActiveRecord::Schema.define(version: 2022_04_08_072608) do
     t.index ["statusable_type", "statusable_id"], name: "index_statusings_on_statusable_type_and_statusable_id"
   end
 
-  create_table "studies", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
-    t.string "name"
-    t.datetime "deleted_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "suggestions", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
     t.string "suggestable_type"
     t.integer "suggestable_id"
@@ -2087,8 +2066,6 @@ ActiveRecord::Schema.define(version: 2022_04_08_072608) do
   add_foreign_key "priorities", "citations_projects"
   add_foreign_key "profiles", "organizations"
   add_foreign_key "profiles", "users"
-  add_foreign_key "projects_studies", "projects"
-  add_foreign_key "projects_studies", "studies"
   add_foreign_key "projects_users", "projects"
   add_foreign_key "projects_users", "users"
   add_foreign_key "projects_users_roles", "projects_users"
