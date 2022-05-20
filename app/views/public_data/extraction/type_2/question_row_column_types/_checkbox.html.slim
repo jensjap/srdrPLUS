@@ -4,7 +4,11 @@
     - eefps_qrcf = ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField.find_or_create_by( \
       extractions_extraction_forms_projects_sections_type1: t1.blank? \
       ? nil \
-      : eefps.link_to_type1.extractions_extraction_forms_projects_sections_type1s.select{|el| el.type1_id == t1.id}.first,
+      : eefps \
+        .link_to_type1 \
+        .extractions_extraction_forms_projects_sections_type1s \
+        .where(type1_id: t1.id) \
+        .first,
       extractions_extraction_forms_projects_section: eefps,
       question_row_column_field: qrc.question_row_column_fields.first)
 
@@ -14,21 +18,34 @@
 
   - options = []
   - followups = []
-  - qrc. \
-    question_row_columns_question_row_column_options.includes(:followup_field). \
-    select { |opt| opt.question_row_column_option_id == 1 }.each do |opt|
-      - if opt.followup_field.present?
-        - eefpst1 = t1.blank? ? nil : eefps.link_to_type1.extractions_extraction_forms_projects_sections_type1s.select { |el| el.type1_id == t1.id }.first
-        - eefps_ff = opt.followup_field.extractions_extraction_forms_projects_sections_followup_fields.includes(:extractions_extraction_forms_projects_sections_type1).select { \
-          |x| (x.extractions_extraction_forms_projects_sections_type1 == eefpst1) && (x.extractions_extraction_forms_projects_section_id == eefps.id) }.first
-        - if eefps_ff.blank?
-          - eefps_ff = ExtractionsExtractionFormsProjectsSectionsFollowupField.find_or_create_by followup_field: opt.followup_field,
-            extractions_extraction_forms_projects_section_id: eefps.id,
-            extractions_extraction_forms_projects_sections_type1_id: eefpst1.try(:id)
-        - followups << ["prereq-#{ opt.class }-#{ opt.id }", "attach_target_#{eefps_ff.id.to_s}", eefps_ff]
-        - options << [opt.name, opt.id, { 'data-attach-source': "attach_target_#{eefps_ff.id.to_s}", 'data-prereq': "prereq-#{ opt.class }-#{ opt.id }" }]
-      - else
-        - options << [opt.name, opt.id, { 'data-prereq': "prereq-#{ opt.class }-#{ opt.id }" }]
+  - qrc \
+    .question_row_columns_question_row_column_options \
+    .where(question_row_column_option_id: 1) \
+    .includes(:followup_field) \
+    .each do |opt|
+    - if opt.followup_field.present?
+      - eefpst1 = t1.blank? \
+        ? nil \
+        : eefps \
+          .link_to_type1 \
+          .extractions_extraction_forms_projects_sections_type1s \
+          .where(type1_id: t1.id) \
+          .first
+      - eefps_ff = opt \
+        .followup_field \
+        .extractions_extraction_forms_projects_sections_followup_fields \
+        .includes(:extractions_extraction_forms_projects_sections_type1) \
+        .where(extractions_extraction_forms_projects_sections_type1: eefpst1) \
+        .where(extractions_extraction_forms_projects_section_id: eefps.id) \
+        .first
+      - if eefps_ff.blank?
+        - eefps_ff = ExtractionsExtractionFormsProjectsSectionsFollowupField.find_or_create_by followup_field: opt.followup_field,
+          extractions_extraction_forms_projects_section_id: eefps.id,
+          extractions_extraction_forms_projects_sections_type1_id: eefpst1.try(:id)
+      - followups << ["prereq-#{ opt.class }-#{ opt.id }", "attach_target_#{eefps_ff.id.to_s}", eefps_ff]
+      - options << [opt.name, opt.id, { 'data-attach-source': "attach_target_#{eefps_ff.id.to_s}", 'data-prereq': "prereq-#{ opt.class }-#{ opt.id }" }]
+    - else
+      - options << [opt.name, opt.id, { 'data-prereq': "prereq-#{ opt.class }-#{ opt.id }" }]
 
   = simple_form_for(record, url: '/', namespace: "record_#{record.id.to_s}", html: { data: { 'abide': '', 'live-validate': true, prereq: "prereq-#{ qrc.class }-#{ qrc.id }" } }) do |f|
     = f.error_notification
