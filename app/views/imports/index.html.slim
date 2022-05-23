@@ -1,8 +1,8 @@
-.grid-container
+.grid-container.mx-8.mt-8
   .grid-x
     .cell.small-12
-      H1 Step 1
-      = link_to 'Export Assignments and Mappings Template', export_assignments_and_mappings_project_path(@project), class: 'button'
+      h1.text-xl Step 1 - Export Assignments and Mappings Template
+      = link_to 'Get Export', export_assignments_and_mappings_project_path(@project), class: 'button'
 
     /.cell.small-6
       = simple_form_for(@import, url: import_assignments_and_mappings_project_path(@project)) do |f|
@@ -15,9 +15,9 @@
   br/
   br/
 
-  .grid-x 
+  .grid-x
     .cell.small-12
-      H1 Step 2
+      h1.text-xl Step 2 - Import Assignments and Mappings
       #dropzone-div
         /input#ris-file-type-id.hide value="#{ FileType.find_by(name: '.ris').id }"
         /input#csv-file-type-id.hide value="#{ FileType.find_by(name: '.csv').id }"
@@ -34,9 +34,43 @@
                   = i_f.input :file_type_id, as: :hidden, required: true, input_html: { value: FileType.find_by(name: FileType::XLSX).id }
                   = i_f.input :content, as: :file, label: 'Assignments and Mappings File'
                   .form-actions
-                    = f.button :submit, 'Upload file', class:"small", id:"submit-all"
+                    = f.button :submit, 'Upload file', class:"medium", id:"submit-all"
 
-.column.row
-  = link_to t('show'), @project
-  '  |
-  = link_to t('back'), projects_path
+  br/
+  br/
+  hr
+  br/
+  br/
+
+  .grid-x
+    .cell.small-12
+      h1.text-xl Step 3 - Export Project Data
+      = link_to "Get Export", export_project_path(@project, export_type_name: '.xlsx legacy'), method: :post, class: "button"
+
+  br/
+  br/
+  hr
+  br/
+  br/
+
+  .grid-x
+    .cell.small-12
+      h1.text-xl Step 4 - Import Project Data
+      div
+        = simple_form_for(@import, url: simple_import_project_path(@project), remote: true, authenticity_token: true) do |f|
+          .form-inputs
+            = f.input :projects_user_id, as: :hidden, input_html: { value: @projects_user.id }
+            = f.input :import_type_id, as: :hidden, input_html: { value: ImportType.find_by(name: ImportType::PROJECT).id }
+            = f.simple_fields_for @import.imported_files.build do |i_f|
+              .dropzone
+                .fallback
+                  = i_f.input :file_type_id, as: :hidden, required: true, input_html: { value: FileType.find_by(name: FileType::XLSX).id }
+                  = i_f.input :content, as: :file, label: 'Project File', input_html: { id: 'import-project-file' }
+                  .form-actions
+                    = f.button :submit, 'Upload file', class:"medium"
+
+  .grid-x.mt-8
+    .cell.small-12
+      = link_to t('show'), @project
+      '  |
+      = link_to t('back'), projects_path

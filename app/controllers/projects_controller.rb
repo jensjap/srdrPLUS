@@ -5,7 +5,7 @@ class ProjectsController < ApplicationController
 
   before_action :set_project, only: [
     :show, :edit, :update, :destroy, :export, :export_to_gdrive,
-    :export_assignments_and_mappings, :import_assignments_and_mappings,
+    :export_assignments_and_mappings, :import_assignments_and_mappings, :simple_import,
     :import_csv, :import_pubmed, :import_endnote, :import_ris, :next_assignment,
     :confirm_deletion, :dedupe_citations, :create_citation_screening_extraction_form,
     :create_full_text_screening_extraction_form]
@@ -206,6 +206,58 @@ class ProjectsController < ApplicationController
         format.html { redirect_to project_imports_path(@project) }
       else
         flash[:error] = "Error encountered. Unable to process import request of Assignments and Mappings submitted for project '#{ @project.name }'."
+        format.json { render :json => @import.errors, status: :unprocessable_entity }
+        format.html { redirect_to project_imports_path(@project) }
+      end
+    end
+  end
+
+  def simple_import
+    authorize(@project)
+    file = import_assignments_and_mappings_params[:imported_file][:content]
+    unless _check_valid_file_extension(file)
+      @import = Struct.new(:errors).new(nil)
+      @import.errors = "Invalid file format"
+      respond_to do |format|
+        format.json { render :json => @import.errors.to_json, status: :unprocessable_entity }
+      end
+      return
+    end
+
+    import_type_id = import_assignments_and_mappings_params[:import_type_id].to_i
+    unless import_type_id.eql?(ImportType.find_by(name: ImportType::PROJECT).id)
+      @import = Struct.new(:errors).new(nil)
+      @import.errors = "Invalid Import Type -- you are not importing a project."
+      respond_to do |format|
+        format.json { render :json => @import.errors.to_json, status: :unprocessable_entity }
+      end
+      return
+    end
+
+    projects_user_id = import_assignments_and_mappings_params[:projects_user_id].to_i
+    file_type_id = import_assignments_and_mappings_params[:imported_file][:file_type_id].to_i
+
+    import_hash = {
+      import_type_id: import_type_id,
+      projects_user_id: projects_user_id,
+      imported_files_attributes: [
+        {
+          content: file,
+          file_type_id: file_type_id
+        }
+      ]
+    }
+
+    @import = Import.new(import_hash)
+    authorize(@import.project, policy_class: ImportPolicy)
+
+    respond_to do |format|
+      if @import.save
+        flash[:success] = "Import request of project '#{ @project.name }'. You will be notified by email of its completion."
+        format.json { render :json => @import, status: :ok }
+        format.html { redirect_to project_imports_path(@project) }
+      else
+        flash[:error] = "Error encountered. Unable to process import request of project '#{ @project.name }'."
         format.json { render :json => @import.errors, status: :unprocessable_entity }
         format.html { redirect_to project_imports_path(@project) }
       end

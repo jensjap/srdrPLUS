@@ -146,6 +146,10 @@ class ProjectPolicy < ApplicationPolicy
     project_leader?
   end
 
+  def simple_import?
+    project_leader?
+  end
+
   def import_csv?
     project_leader?
   end
