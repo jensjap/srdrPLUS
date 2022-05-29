@@ -6,4 +6,8 @@ class ImportPolicy < ApplicationPolicy
   def import_assignments_and_mappings?
     project_leader?
   end
+
+  def simple_import?
+    project_leader?
+  end
 end

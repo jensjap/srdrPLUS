@@ -1,4 +1,4 @@
-class SimpleImportJob
+class SimpleImportJob < ApplicationJob
   DEFAULT_HEADERS = [
     'Extraction ID',
     'Consolidated',
@@ -32,9 +32,21 @@ class SimpleImportJob
 
   attr_reader :xlsx, :sheet_names
 
-  def initialize(filepath)
-    @xlsx = Roo::Excelx.new(filepath)
+  def perform(imported_file_id)
+    imported_file = ImportedFile.find(imported_file_id)
+    file = File.open("tmp/#{SecureRandom::uuid}.xlsx", "wb")
+    file.write(imported_file.content.download)
+
+    @xlsx = Roo::Excelx.new(file.path)
     @sheet_names = @xlsx.sheets
+    self.process_all
+
+    ImportMailer.notify_import_completion(imported_file.id).deliver_later
+  rescue StandardError => e
+    ImportMailer.notify_import_failure(imported_file.id, e.message).deliver_later
+  ensure
+    file.close
+    File.delete(file.path)
   end
 
   def logger

@@ -49,7 +49,7 @@ class Import < ApplicationRecord
         when ".json"
           JsonImportJob.perform_later(imported_file.id)
         when ".xlsx"
-          # Nothing?
+          SimpleImportJob.perform_later(imported_file.id)
         else
           ## NOT SUPPORTED, WHAT TO DO?
         end

@@ -281,6 +281,7 @@ Rails.application.routes.draw do
       post 'export_to_gdrive'
       get  'export_assignments_and_mappings'
       post 'import_assignments_and_mappings'
+      post 'simple_import'
     end
 
     resources :imports, only: [:index, :new]
