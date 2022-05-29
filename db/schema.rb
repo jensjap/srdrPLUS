@@ -349,7 +349,7 @@ ActiveRecord::Schema.define(version: 2022_04_08_072608) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "data_audits", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
+  create_table "data_audits", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin", force: :cascade do |t|
     t.boolean "epc_source"
     t.string "epc_name"
     t.string "non_epc_name"
