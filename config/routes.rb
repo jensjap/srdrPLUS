@@ -41,7 +41,7 @@ Rails.application.routes.draw do
   end
 
   authenticate :admin do
-    mount RailsAdmin::Engine => '/admin', as: 'rails_admin'
+    # mount RailsAdmin::Engine => '/admin', as: 'rails_admin'
     mount Searchjoy::Engine, at: "searchjoy"
     mount Sidekiq::Web => '/sidekiq'
   end
