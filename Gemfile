@@ -1,170 +1,168 @@
-source 'https://rubygems.org'
+source "https://rubygems.org"
 
 git_source(:github) do |repo_name|
   repo_name = "#{repo_name}/#{repo_name}" unless repo_name.include?("/")
   "https://github.com/#{repo_name}.git"
 end
 
-gem 'rails', '~> 6.1.6'
+gem "rails", "~> 6.1.6"
 
 # Use mysql as the database for Active Record
-gem 'mysql2'
+gem "mysql2"
 # Use Puma as the app server
-gem 'puma', '~> 5.6.4'
+gem "puma", "~> 5.6.4"
 # Use SCSS for stylesheets
-gem 'sass-rails', '~> 5.0'
+gem "sass-rails", "~> 5.0"
 # Use Uglifier as compressor for JavaScript assets
-gem 'uglifier', '>= 1.3.0'
+gem "uglifier", ">= 1.3.0"
 # Use CoffeeScript for .coffee assets and views
-gem 'coffee-rails', '~> 4.2'
+gem "coffee-rails", "~> 4.2"
 # See https://github.com/rails/execjs#readme for more supported runtimes
 # gem 'therubyracer', platforms: :ruby
 
 # Use jquery as the JavaScript library
-gem 'jquery-rails'
+gem "jquery-rails"
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
-gem 'jbuilder', '~> 2.10.1'
+gem "jbuilder", "~> 2.10.1"
 # Use Redis adapter to run Action Cable in production
 # gem 'redis', '~> 3.0'
 # Use ActiveModel has_secure_password
-gem 'bcrypt', '~> 3.1.7'
+gem "bcrypt", "~> 3.1.7"
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
-  gem 'byebug', platform: :mri
-  gem 'factory_bot_rails'
-  gem 'rspec-rails'
+  gem "byebug", platform: :mri
+  gem "factory_bot_rails"
+  gem "rspec-rails"
   gem "rspec_junit_formatter"
-  gem 'dotenv-rails'
+  gem "dotenv-rails"
 end
 
 group :test do
-  gem 'minitest-rails-capybara'
-  gem 'simplecov', require: false
-  gem 'database_cleaner-active_record'
+  gem "minitest-rails-capybara"
+  gem "simplecov", require: false
+  gem "database_cleaner-active_record"
 end
 
 group :development do
   # Access an IRB console on exception pages or by using <%= console %> anywhere in the code.
-  gem 'web-console', '~> 3.7.0'
-  gem 'guard'
-  gem 'guard-minitest'
-  gem 'listen', '~> 3.0.5'
+  gem "web-console", "~> 3.7.0"
+  gem "guard"
+  gem "guard-minitest"
+  gem "listen", "~> 3.0.5"
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
-  gem 'spring'
-  gem 'spring-watcher-listen', '~> 2.0.0'
+  gem "spring"
+  gem "spring-watcher-listen", "~> 2.0.0"
   # Annotate Models
-  gem 'annotate'
-  gem 'bullet'
+  gem "annotate"
+  gem "bullet"
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
-gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
-
+gem "tzinfo-data", platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 ## Non-default gems.
 
 # Use Zurb Foundation as Front-End Framework
-gem 'foundation-rails'
-gem 'autoprefixer-rails'
-gem 'foundation-icons-sass-rails'
+gem "foundation-rails"
+gem "autoprefixer-rails"
+gem "foundation-icons-sass-rails"
 
 # Prettier templates.
-gem 'slim-rails'
+gem "slim-rails"
 
 # Simplified forms.
-gem 'simple_form'
-gem 'country_select'
-gem 'cocoon'
+gem "simple_form"
+gem "country_select"
+gem "cocoon"
 
 # Authentication.
-gem 'devise'
-gem 'omniauth'
-gem 'remotipart', github: 'mshibuya/remotipart'
-# gem 'rails_admin', '~> 3.0'
+gem "devise"
+gem "omniauth"
+gem "remotipart", github: "mshibuya/remotipart"
 
 # Flash messages.
-gem 'toastr_rails'
+gem "toastr_rails"
 
 # Versioning of models + soft-delete.
-gem 'paranoia', '~>2.2'
+gem "paranoia", "~>2.2"
 
 # Create lots of data.
-gem 'faker', github: 'stympy/faker'
+gem "faker", github: "stympy/faker"
 
 # Access ruby data in JavaScript.
-gem 'gon'
+gem "gon"
 
 # Pagination.
-gem 'kaminari'
+gem "kaminari"
 
 # CORS.
-gem 'rack-cors'
+gem "rack-cors"
 
 # Help DRY up code.
-gem 'responders'
+gem "responders"
 
 # Api documentation.
-gem 'apipie-rails'
+gem "apipie-rails"
 
 # Background jobs.
-gem 'sidekiq', '6.4.0'
+gem "sidekiq", "6.4.0"
 
 # Spreadsheet generation.
-gem 'caxlsx'
-gem 'caxlsx_rails'
+gem "caxlsx"
+gem "caxlsx_rails"
 
 # Spreadsheet reading.
-gem 'rubyXL', '~> 1.2.10'
-gem 'zip-zip'
+gem "rubyXL", "~> 1.2.10"
+gem "zip-zip"
 
 # Searching with Elasticsearch.
-gem 'searchkick'
-gem 'searchjoy'
+gem "searchkick"
+gem "searchjoy"
 
-gem 'passenger'
+gem "passenger"
 
 # bioruby for pubmed queries.
-gem 'bio'
+gem "bio"
 
 # for parsing ris files.
-gem 'ref_parsers', '~> 0.2.0'
+gem "ref_parsers", "~> 0.2.0"
 
 # breadcrumbs.
-gem 'breadcrumbs_on_rails'
+gem "breadcrumbs_on_rails"
 
 # authorizations.
-gem 'pundit'
+gem "pundit"
 
 # List reordering, Drag & Drop.
-gem 'sortable-rails'
+gem "sortable-rails"
 
 # Simple calls to external API.
-gem 'httparty'
+gem "httparty"
 
 # New for Rails 5.2.
-gem 'bootsnap'
+gem "bootsnap"
 
 # Access to AWS S3 Cloud Storage.
-gem 'aws-sdk-s3', require: false
+gem "aws-sdk-s3", require: false
 
 # Access Google sheets programmatically
-gem 'google-api-client'
+gem "google-api-client"
 
 # Allows periodic background jobs
-gem 'sidekiq-cron', '~> 1.1'
+gem "sidekiq-cron", "~> 1.1"
 
 # For making sortable searchable tables
-gem 'jquery-datatables'
+gem "jquery-datatables"
 
 # Formatted console logs
-gem 'awesome_print'
+gem "awesome_print"
 
 # Fuzzy Match
-gem 'fuzzy_match'
+gem "fuzzy_match"
 
 # Font Awesome Icons
 #gem 'font-awesome-rails'
@@ -189,15 +187,15 @@ gem "sentry-sidekiq"
 # gem 'newrelic-infinite_tracing'
 
 # Limit request rates
-gem 'rack-attack'
+gem "rack-attack"
 
 # gem 'rack-mini-profiler'
 
-gem 'foreman'
+gem "foreman"
 
-gem 'ahoy_matey'
+gem "ahoy_matey"
 
 # Easy maintenance mode.
-gem 'turnout'
+gem "turnout"
 
 # gem 'sassc-rails'
