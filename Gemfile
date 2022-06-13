@@ -25,7 +25,7 @@ gem "jquery-rails"
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem "jbuilder", "~> 2.10.1"
 # Use Redis adapter to run Action Cable in production
-# gem 'redis', '~> 3.0'
+gem 'redis'
 # Use ActiveModel has_secure_password
 gem "bcrypt", "~> 3.1.7"
 
@@ -109,7 +109,7 @@ gem "responders"
 gem "apipie-rails"
 
 # Background jobs.
-gem "sidekiq", "6.4.0"
+gem "sidekiq"
 
 # Spreadsheet generation.
 gem "caxlsx"
@@ -153,7 +153,7 @@ gem "aws-sdk-s3", require: false
 gem "google-api-client"
 
 # Allows periodic background jobs
-gem "sidekiq-cron", "~> 1.1"
+gem "sidekiq-cron"
 
 # For making sortable searchable tables
 gem "jquery-datatables"
@@ -198,4 +198,4 @@ gem "ahoy_matey"
 # Easy maintenance mode.
 gem "turnout"
 
-# gem 'sassc-rails'
+gem 'net-smtp', require: false
