@@ -541,6 +541,8 @@ GEM
       activesupport (>= 5.2)
       sprockets (>= 3.0.0)
     strscan (3.0.3)
+    tailwindcss-rails (2.0.8-x86_64-linux)
+      railties (>= 6.0.0)
     temple (0.8.2)
     thor (1.2.1)
     tilt (2.0.10)
@@ -652,6 +654,7 @@ DEPENDENCIES
   sortable-rails
   spring
   spring-watcher-listen (~> 2.0.0)
+  tailwindcss-rails (~> 2.0)
   toastr_rails
   turnout
   tzinfo-data

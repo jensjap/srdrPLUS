@@ -201,3 +201,4 @@ gem "ahoy_matey"
 gem "turnout"
 
 gem 'net-smtp', require: false
+gem "tailwindcss-rails", "~> 2.0"
