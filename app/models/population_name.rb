@@ -19,21 +19,19 @@ class PopulationName < ApplicationRecord
 
   def name_and_description
     text  = name
-    text += " (#{ description })" if description.present?
-    return text
+    text += " (#{description})" if description.present?
+    text
   end
 
   def short_name_and_description
     text  = name
-    text += " (#{ description.truncate(16, separator: /\s/) })" if description.present?
-    return text
+    text += " (#{description.truncate(16, separator: /\s/)})" if description.present?
+    text
   end
 
-  private
-
-    def select_label
-      text  = "#{ name }"
-      text += " (#{ description })" if description.present?
-      return text
-    end
+  def select_label
+    text  = "#{name}"
+    text += " (#{description})" if description.present?
+    text
+  end
 end
