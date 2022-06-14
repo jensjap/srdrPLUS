@@ -23,7 +23,7 @@
 
     .section-header
       h4 = section_name
-      = render 'shared/statusing_form.html.slim', statusing: eefps.statusing, status_name: eefps.statusing.status.name
+      = render 'shared/statusing_form', statusing: eefps.statusing, status_name: eefps.statusing.status.name
     blockquote
       | #{efps.helper_message.present? ? efps.helper_message : "The results section is where you enter numerical data, comparisons, etc."}
 
@@ -33,7 +33,7 @@
 
     .section-header style="margin: 20px 0;"
       h4 = section_name
-      = render 'shared/statusing_form.html.slim', statusing: eefps.statusing, status_name: eefps.statusing.status.name
+      = render 'shared/statusing_form', statusing: eefps.statusing, status_name: eefps.statusing.status.name
 
 / Diagnostic Test extraction and at least one Outcome.
 - elsif extraction_forms_project_type.id.eql?(2) && @extraction.results_section_ready_for_extraction?
@@ -44,7 +44,7 @@
 
     .section-header
       h4 = section_name
-      = render 'shared/statusing_form.html.slim', statusing: eefps.statusing, status_name: eefps.statusing.status.name
+      = render 'shared/statusing_form', statusing: eefps.statusing, status_name: eefps.statusing.status.name
     blockquote
       | #{efps.helper_message.present? ? efps.helper_message : "The results section is where you enter numerical data, comparisons, etc."}
 
@@ -54,7 +54,7 @@
 
     .section-header style="margin: 20px 0;"
       h4 = section_name
-      = render 'shared/statusing_form.html.slim', statusing: eefps.statusing, status_name: eefps.statusing.status.name
+      = render 'shared/statusing_form', statusing: eefps.statusing, status_name: eefps.statusing.status.name
 
 - elsif extraction_forms_project_type.id.eql?(1)
   h5 style='color: red;' This is a Standard extraction. You must add Arms and Outcomes before extracting into this section.

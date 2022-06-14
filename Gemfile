@@ -5,7 +5,7 @@ git_source(:github) do |repo_name|
   "https://github.com/#{repo_name}.git"
 end
 
-gem "rails", "~> 6.1.6"
+gem "rails", "~> 7.0.3"
 
 # Use mysql as the database for Active Record
 gem "mysql2"
@@ -121,6 +121,8 @@ gem "zip-zip"
 
 # Searching with Elasticsearch.
 gem "searchkick"
+gem "elasticsearch"
+
 gem "searchjoy"
 
 gem "passenger"

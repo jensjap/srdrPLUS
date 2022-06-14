@@ -16,7 +16,7 @@ class ExtractionFormsProjectType < ApplicationRecord
 
   acts_as_paranoid
 
-  has_many :extraction_forms_projects, dependent: :destroy, inverse_of: :extraction_form_type
+  has_many :extraction_forms_projects, dependent: :destroy, inverse_of: :extraction_forms_project_type
 
   validates :name, presence: true, uniqueness: { case_sensitive: false }
 end
