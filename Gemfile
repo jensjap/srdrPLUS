@@ -29,9 +29,6 @@ gem 'redis'
 # Use ActiveModel has_secure_password
 gem 'bcrypt', '~> 3.1.7'
 
-# Use Capistrano for deployment
-# gem 'capistrano-rails', group: :development
-
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
@@ -40,7 +37,6 @@ end
 
 group :test do
   gem 'database_cleaner-active_record'
-  gem 'minitest-rails-capybara'
   gem 'simplecov', require: false
 end
 
@@ -115,7 +111,7 @@ gem 'rubyXL', '~> 1.2.10'
 gem 'zip-zip'
 
 # Searching with Elasticsearch.
-gem 'elasticsearch'
+gem 'elasticsearch', '< 7.14'
 gem 'searchkick'
 
 gem 'searchjoy'
