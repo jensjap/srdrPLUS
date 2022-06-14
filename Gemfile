@@ -6,28 +6,67 @@ git_source(:github) do |repo_name|
 end
 
 gem 'rails', '~> 7.0.3'
-
-# Use mysql as the database for Active Record
-gem 'mysql2'
-# Use Puma as the app server
-gem 'puma'
-# Use SCSS for stylesheets
-gem 'sass-rails', '~> 5.0'
-# Use Uglifier as compressor for JavaScript assets
-gem 'uglifier', '>= 1.3.0'
-# Use CoffeeScript for .coffee assets and views
-gem 'coffee-rails', '~> 4.2'
-# See https://github.com/rails/execjs#readme for more supported runtimes
-# gem 'therubyracer', platforms: :ruby
-
-# Use jquery as the JavaScript library
-gem 'jquery-rails'
-# Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
+gem 'mysql2' # Use mysql as the database for Active Record
+gem 'puma' # Use Puma as the app server
+gem 'sass-rails', '~> 5.0' # Use SCSS for stylesheets
+gem 'uglifier', '>= 1.3.0' # Use Uglifier as compressor for JavaScript assets
+gem 'coffee-rails', '~> 4.2' # Use CoffeeScript for .coffee assets and views
+gem 'jquery-rails' # Use jquery as the JavaScript library
 gem 'jbuilder', '~> 2.10.1'
-# Use Redis adapter to run Action Cable in production
 gem 'redis'
-# Use ActiveModel has_secure_password
 gem 'bcrypt', '~> 3.1.7'
+gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby] # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
+gem 'autoprefixer-rails' # Use Zurb Foundation as Front-End Framework
+gem 'foundation-icons-sass-rails' # Use Zurb Foundation as Front-End Framework
+gem 'foundation-rails' # Use Zurb Foundation as Front-End Framework
+gem 'slim-rails'
+gem 'cocoon'
+gem 'country_select'
+gem 'simple_form'
+gem 'devise'
+gem 'omniauth'
+gem 'remotipart', github: 'mshibuya/remotipart'
+gem 'toastr_rails'
+gem 'paranoia', '~>2.2'
+gem 'faker', github: 'stympy/faker'
+gem 'gon' # Access ruby data in JavaScript.
+gem 'kaminari' # Pagination.
+gem 'rack-cors' # CORS.
+gem 'responders' # Help DRY up code.
+gem 'apipie-rails' # Api documentation.
+gem 'sidekiq' # Background jobs.
+gem 'caxlsx' # Spreadsheet generation.
+gem 'caxlsx_rails' # Spreadsheet generation.
+gem 'rubyXL', '~> 1.2.10' # Spreadsheet reading.
+gem 'zip-zip' # Spreadsheet reading.
+gem 'elasticsearch', '< 7.14'
+gem 'searchkick'
+gem 'searchjoy'
+gem 'passenger'
+gem 'bio' # bioruby for pubmed queries.
+gem 'ref_parsers', '~> 0.2.0' # for parsing ris files.
+gem 'breadcrumbs_on_rails' # breadcrumbs.
+gem 'pundit' # authorizations.
+gem 'sortable-rails' # List reordering, Drag & Drop.
+gem 'httparty' # Simple calls to external API.
+gem 'bootsnap' # New for Rails 5.2.
+gem 'aws-sdk-s3', require: false # Access to AWS S3 Cloud Storage.
+gem 'google-api-client' # Access Google sheets programmatically
+gem 'sidekiq-cron' # Allows periodic background jobs
+gem 'jquery-datatables' # For making sortable searchable tables
+gem 'fuzzy_match' # Fuzzy Match
+gem 'omniauth-google-oauth2'
+gem 'googleauth'
+gem 'dropzonejs-rails' # Allows users to drop files to upload
+gem 'amoeba' # for things like cloning questions (extraction forms maybe?)
+gem 'sentry-ruby' # full-stack error tracking system
+gem 'sentry-sidekiq' # full-stack error tracking system
+gem 'rack-attack' # Limit request rates
+gem 'foreman'
+gem 'ahoy_matey'
+gem 'net-smtp', require: false
+gem 'tailwindcss-rails', '~> 2.0'
+gem 'turnout' # Easy maintenance mode
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
@@ -44,144 +83,7 @@ group :development do
   gem 'bullet'
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
-
-  # Annotate Models
   gem 'annotate'
-
-  # Formatted console logs
   gem 'awesome_print'
+  gem 'active_record_doctor'
 end
-
-# Windows does not include zoneinfo files, so bundle the tzinfo-data gem
-gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
-
-## Non-default gems.
-
-# Use Zurb Foundation as Front-End Framework
-gem 'autoprefixer-rails'
-gem 'foundation-icons-sass-rails'
-gem 'foundation-rails'
-
-# Prettier templates.
-gem 'slim-rails'
-
-# Simplified forms.
-gem 'cocoon'
-gem 'country_select'
-gem 'simple_form'
-
-# Authentication.
-gem 'devise'
-gem 'omniauth'
-gem 'remotipart', github: 'mshibuya/remotipart'
-
-# Flash messages.
-gem 'toastr_rails'
-
-# Versioning of models + soft-delete.
-gem 'paranoia', '~>2.2'
-
-# Create lots of data.
-gem 'faker', github: 'stympy/faker'
-
-# Access ruby data in JavaScript.
-gem 'gon'
-
-# Pagination.
-gem 'kaminari'
-
-# CORS.
-gem 'rack-cors'
-
-# Help DRY up code.
-gem 'responders'
-
-# Api documentation.
-gem 'apipie-rails'
-
-# Background jobs.
-gem 'sidekiq'
-
-# Spreadsheet generation.
-gem 'caxlsx'
-gem 'caxlsx_rails'
-
-# Spreadsheet reading.
-gem 'rubyXL', '~> 1.2.10'
-gem 'zip-zip'
-
-# Searching with Elasticsearch.
-gem 'elasticsearch', '< 7.14'
-gem 'searchkick'
-
-gem 'searchjoy'
-
-gem 'passenger'
-
-# bioruby for pubmed queries.
-gem 'bio'
-
-# for parsing ris files.
-gem 'ref_parsers', '~> 0.2.0'
-
-# breadcrumbs.
-gem 'breadcrumbs_on_rails'
-
-# authorizations.
-gem 'pundit'
-
-# List reordering, Drag & Drop.
-gem 'sortable-rails'
-
-# Simple calls to external API.
-gem 'httparty'
-
-# New for Rails 5.2.
-gem 'bootsnap'
-
-# Access to AWS S3 Cloud Storage.
-gem 'aws-sdk-s3', require: false
-
-# Access Google sheets programmatically
-gem 'google-api-client'
-
-# Allows periodic background jobs
-gem 'sidekiq-cron'
-
-# For making sortable searchable tables
-gem 'jquery-datatables'
-
-# Fuzzy Match
-gem 'fuzzy_match'
-
-# Allows us to authenticate via Google's servers, so we can create google exports
-gem 'omniauth-google-oauth2'
-
-gem 'googleauth'
-
-# Allows users to drop files to upload
-gem 'dropzonejs-rails'
-
-# for things like cloning questions (extraction forms maybe?)
-gem 'amoeba'
-
-# full-stack error tracking system
-gem 'sentry-ruby'
-gem 'sentry-sidekiq'
-
-# observability platform
-# gem 'newrelic_rpm'
-# gem 'newrelic-infinite_tracing'
-
-# Limit request rates
-gem 'rack-attack'
-
-gem 'foreman'
-
-gem 'ahoy_matey'
-
-# Easy maintenance mode.
-gem 'turnout'
-
-gem 'net-smtp', require: false
-gem 'tailwindcss-rails', '~> 2.0'

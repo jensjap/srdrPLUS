@@ -59,6 +59,8 @@ GEM
       erubi (~> 1.4)
       rails-dom-testing (~> 2.0)
       rails-html-sanitizer (~> 1.1, >= 1.2.0)
+    active_record_doctor (1.9.0)
+      activerecord (>= 4.2.0)
     activejob (7.0.3)
       activesupport (= 7.0.3)
       globalid (>= 0.3.6)
@@ -528,6 +530,7 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
+  active_record_doctor
   ahoy_matey
   amoeba
   annotate
