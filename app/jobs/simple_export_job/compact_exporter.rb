@@ -1,12 +1,7 @@
-require 'simple_export_job/exporter_base'
-require 'simple_export_job/section_templates/type1_sections_compact'
-require 'simple_export_job/section_templates/type2_sections_compact'
-require 'simple_export_job/section_templates/result_sections_compact'
-
-class CompactExporter < ExporterBase
-  include Type1SectionsCompact
-  include Type2SectionsCompact
-  include ResultSectionsCompact
+class SimpleExportJob::CompactExporter < SimpleExportJob::ExporterBase
+  include SimpleExportJob::SectionTemplates::Type1SectionsCompact
+  include SimpleExportJob::SectionTemplates::Type2SectionsCompact
+  include SimpleExportJob::SectionTemplates::ResultSectionsCompact
 
   def build!
     build_project_information_section

@@ -1,10 +1,8 @@
-require 'simple_export_job/sheet_info_module'
-
 # We keep several dictionaries here. They all track the same information such as type1s, populations and timepoints.
 # One list is kept as a master list. Those are on SheetInfo.type1s, SheetInfo.populations, and SheetInfo.timepoints.
 # Another is kept for each extraction.
-class SheetInfo
-  extend SheetInfoModule
+class SimpleExportJob::SheetInfo
+  include SimpleExportJob::SheetInfoModule
 
   attr_reader :header_info, :extractions, :key_question_selections, :type1s, :populations, :timepoints, :question_row_columns, :rssms, :data_header_hash
 

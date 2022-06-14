@@ -55,6 +55,7 @@ gem 'jquery-datatables' # For making sortable searchable tables
 gem 'jquery-rails' # Use jquery as the JavaScript library
 gem 'kaminari' # Pagination.
 gem 'mysql2' # Use mysql as the database for Active Record
+gem 'net-ftp'
 gem 'net-smtp', require: false
 gem 'omniauth'
 gem 'omniauth-google-oauth2'

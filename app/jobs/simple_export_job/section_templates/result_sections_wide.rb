@@ -1,6 +1,4 @@
-require 'simple_export_job/sheet_info'
-
-module ResultSectionsWide
+module SimpleExportJob::SectionTemplates::ResultSectionsWide
   def build_result_sections_wide(kq_ids=[])
     @project.extraction_forms_projects.each do |efp|
       efp.extraction_forms_projects_sections.each do |efps|
@@ -12,7 +10,7 @@ module ResultSectionsWide
         @package.workbook.add_worksheet(name: ensure_unique_sheet_name(efps.section.name.truncate(24))) do |sheet|
 
           # For each sheet we create a SheetInfo object.
-          sheet_info = SheetInfo.new(@project)
+          sheet_info = SimpleExportJob::SheetInfo.new(@project)
 
           # Every row represents an extraction.
           sheet_info.populate_sheet_info_with_extractions_results_data(sheet_info, kq_ids, efp, efps)
@@ -25,7 +23,7 @@ module ResultSectionsWide
           sheet_info.rssms.each do |rssm|
             # Try to find the column that matches the identifier.
             found, column_idx = nil
-            found, column_idx = SheetInfo.find_column_idx_with_value(header_row,
+            found, column_idx = SimpleExportJob::SheetInfo.find_column_idx_with_value(header_row,
               "[Outcome ID: #{ rssm[:outcome_id] }][Population ID: #{ rssm[:population_id] }][RSS Type ID: #{ rssm[:result_statistic_section_type_id] }][Row ID: #{ rssm[:row_id] }][Col ID: #{ rssm[:col_id] }][Measure ID: #{ rssm[:measure_id] }]")
 
             # Append to the header if this is new.
@@ -75,7 +73,7 @@ module ResultSectionsWide
             extraction[:rssms].each do |rssm|
               # Try to find the column that matches the identifier.
               found, column_idx = nil
-              found, column_idx = SheetInfo.find_column_idx_with_value(header_row,
+              found, column_idx = SimpleExportJob::SheetInfo.find_column_idx_with_value(header_row,
                 "[Outcome ID: #{ rssm[:outcome_id] }][Population ID: #{ rssm[:population_id] }][RSS Type ID: #{ rssm[:result_statistic_section_type_id] }][Row ID: #{ rssm[:row_id] }][Col ID: #{ rssm[:col_id] }][Measure ID: #{ rssm[:measure_id] }]")
 
               # Something is wrong if it wasn't found.

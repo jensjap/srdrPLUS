@@ -1,4 +1,4 @@
-module SheetInfoModule
+module SimpleExportJob::SheetInfoModule
   # Attempt to find the column index in the given row for a cell that starts with given value.
   #
   # returns (Boolean, Idx)
@@ -7,7 +7,7 @@ module SheetInfoModule
       return [true, cell.index] if cell.value.end_with?(value)
     end
 
-    return [false, row.cells.length]
+    [false, row.cells.length]
   end
 
   # If no KQ's array is passed in, we export based on extraction.extractions_key_questions_projects_selections.
@@ -17,27 +17,27 @@ module SheetInfoModule
   def fetch_kq_selection(extraction, kq_ids)
     if kq_ids.blank?
       kq_ids = extraction
-        .extractions_key_questions_projects_selections
-        .order(key_questions_project_id: :asc)
-        .collect(&:key_questions_project)
-        .collect(&:key_question_id)
+               .extractions_key_questions_projects_selections
+               .order(key_questions_project_id: :asc)
+               .collect(&:key_questions_project)
+               .collect(&:key_question_id)
     end
 
-    return kq_ids
+    kq_ids
   end
 
   # Type2 (Questions) are associated to Key Questions and we export by the KQ's selected.
   def fetch_questions(project_id, kq_ids, efps)
     # Get all questions in this efps by key_questions requested.
     questions = efps
-      .questions
-      .joins(:key_questions_projects_questions)
-      .where(
-        key_questions_projects_questions: {
-          key_questions_project: KeyQuestionsProject.where(project_id: project_id, key_question_id: kq_ids)
-        }
-      )
+                .questions
+                .joins(:key_questions_projects_questions)
+                .where(
+                  key_questions_projects_questions: {
+                    key_questions_project: KeyQuestionsProject.where(project_id:, key_question_id: kq_ids)
+                  }
+                )
 
-    return questions.order(id: :asc).uniq
+    questions.order(id: :asc).uniq
   end
 end

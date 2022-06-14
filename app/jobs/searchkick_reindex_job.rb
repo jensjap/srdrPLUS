@@ -6,9 +6,8 @@ class SearchkickReindexJob < ApplicationJob
     puts exception.message
   end
 
-  def perform(*args)
-    Project.reindex  
-    Citation.reindex  
+  def perform(*_args)
+    Project.reindex
+    Citation.reindex
   end
 end
-
