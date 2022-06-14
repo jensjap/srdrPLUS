@@ -59,6 +59,7 @@ app/jobs/import_jobs/srdrplus.code-workspace
 
 # We want to ignore Procfile and require users to create their own from sample_Procfile
 Procfile
+Procfile.dev
 
 node_modules/
 public/packs/
