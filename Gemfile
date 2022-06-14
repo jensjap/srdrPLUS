@@ -42,6 +42,7 @@ gem 'devise'
 gem 'dropzonejs-rails' # Allows users to drop files to upload
 gem 'elasticsearch', '< 7.14'
 gem 'faker', github: 'stympy/faker'
+gem 'font-awesome-rails'
 gem 'foreman'
 gem 'foundation-icons-sass-rails' # Use Zurb Foundation as Front-End Framework
 gem 'foundation-rails' # Use Zurb Foundation as Front-End Framework
