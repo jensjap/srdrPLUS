@@ -53,7 +53,8 @@ module SimpleExportJob::SectionTemplates::Type1SectionsWide
           sheet_info.timepoints.each do |tp|
             # Try to find the column that matches the identifier.
             found, column_idx = nil
-            found, column_idx = SheetInfo.find_column_idx_with_value(header_row, "[Timepoint ID: #{tp[:id]}]")
+            found, column_idx = SimpleExportJob::SheetInfo.find_column_idx_with_value(header_row,
+                                                                                      "[Timepoint ID: #{tp[:id]}]")
 
             # Append to the header if this is new.
             unless found
@@ -83,8 +84,8 @@ module SimpleExportJob::SectionTemplates::Type1SectionsWide
             extraction[:type1s].each do |type1|
               # Try to find the column that matches the identifier.
               found, column_idx = nil
-              found, column_idx = SheetInfo.find_column_idx_with_value(header_row,
-                                                                       "[#{type1[:section_name]} ID: #{type1[:id]}]")
+              found, column_idx = SimpleExportJob::SheetInfo.find_column_idx_with_value(header_row,
+                                                                                        "[#{type1[:section_name]} ID: #{type1[:id]}]")
 
               # Something is wrong if it wasn't found.
               raise "Error: Could not find header row: [#{type1[:section_name]} ID: #{type1[:id]}]" unless found
@@ -97,7 +98,8 @@ module SimpleExportJob::SectionTemplates::Type1SectionsWide
             extraction[:populations].each do |pop|
               # Try to find the column that matches the identifier.
               found, column_idx = nil
-              found, column_idx = SheetInfo.find_column_idx_with_value(header_row, "[Population ID: #{pop[:id]}]")
+              found, column_idx = SimpleExportJob::SheetInfo.find_column_idx_with_value(header_row,
+                                                                                        "[Population ID: #{pop[:id]}]")
 
               # Something is wrong if it wasn't found.
               raise "Error: Could not find header row: [#{type1[:section_name]} ID: #{type1[:id]}]" unless found
@@ -109,7 +111,8 @@ module SimpleExportJob::SectionTemplates::Type1SectionsWide
             extraction[:timepoints].each do |tp|
               # Try to find the column that matches the identifier.
               found, column_idx = nil
-              found, column_idx = SheetInfo.find_column_idx_with_value(header_row, "[Timepoint ID: #{tp[:id]}]")
+              found, column_idx = SimpleExportJob::SheetInfo.find_column_idx_with_value(header_row,
+                                                                                        "[Timepoint ID: #{tp[:id]}]")
 
               # Something is wrong if it wasn't found.
               raise "Error: Could not find header row: [#{type1[:section_name]} ID: #{type1[:id]}]" unless found

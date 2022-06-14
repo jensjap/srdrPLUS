@@ -1,4 +1,4 @@
-class CitationFhirImporter
+class ImportJobs::JsonImportJob::CitationFhirImporter
   def initialize(project_id, citation)
     @project       = Project.find project_id
     @citation_json = citation
