@@ -1,61 +1,62 @@
-h1 Set Dependencies
-h2 #{ @question.ordering.position }. #{ @question.name }
+div class="mx-8"
+  h1 class="text-2xl" Set Dependencies
+  h2 class="text-xl" #{ @question.ordering.position }. #{ @question.name }
 
-- @other_extraction_forms_projects_section_questions.each_with_index do |q, idx|
+  - @other_extraction_forms_projects_section_questions.each_with_index do |q, idx|
 
-  /- if @question.ordering.position > q.ordering.position
+    /- if @question.ordering.position > q.ordering.position
 
-  .card
+    .card
 
-    .card-divider
+      .card-divider
 
-      h5 #{ (idx + 1).to_s }. #{ q.name }
-      h6 Description: #{ q.description }
+        h5 #{ (idx + 1).to_s }. #{ q.name }
+        h6 Description: #{ q.description }
 
-    .card-section
+      .card-section
 
-      .table-scroll
+        .table-scroll
 
-        #step-two
+          #step-two
 
-          table.hover.dependency-table style='width: inherit !important;'
+            table.hover.dependency-table style='width: inherit !important;'
 
-            thead
-
-              tr
-                th
-                - for qrc in q.question_rows.first.question_row_columns
-                  th style='font-weight: normal;' = qrc.name
-
-            tbody
-
-              - for qr in q.question_rows
+              thead
 
                 tr
-                  td = qr.name
-                  - for qrc in qr.question_row_columns
-                    td
+                  th
+                  - for qrc in q.question_rows.first.question_row_columns
+                    th style='font-weight: normal;' = qrc.name
 
-                      / Checkbox, Dropdown, Radio, Select2_Single, Select2_Multi.
-                      - if [5, 6, 7, 8, 9].include? qrc.question_row_column_type_id
+              tbody
 
-                        - for qrcqrco in qrc.question_row_columns_question_row_column_options\
-                                            .where(question_row_column_option_id: 1)
+                - for qr in q.question_rows
 
-                          = qrcqrco.name
+                  tr
+                    td = qr.name
+                    - for qrc in qr.question_row_columns
+                      td
 
-                          = render 'question_row_column_fields', prerequisitable: qrcqrco
+                        / Checkbox, Dropdown, Radio, Select2_Single, Select2_Multi.
+                        - if [5, 6, 7, 8, 9].include? qrc.question_row_column_type_id
 
-                      / Text, Numeric, Numeric_Range, Scientific.
-                      - else
+                          - for qrcqrco in qrc.question_row_columns_question_row_column_options\
+                                              .where(question_row_column_option_id: 1)
 
-                        = render 'question_row_column_fields', prerequisitable: qrc
+                            = qrcqrco.name
 
-.column.row
-  = link_to 'Save and Finalize', build_extraction_forms_project_path(@extraction_forms_projects_section.extraction_forms_project,
-                                                        'panel-tab': @extraction_forms_projects_section.id),
-                                 class: 'button'
+                            = render 'question_row_column_fields', prerequisitable: qrcqrco
 
-.column.row
-  = link_to 'Back', build_extraction_forms_project_path(@extraction_forms_projects_section.extraction_forms_project,
-                                                        'panel-tab': @extraction_forms_projects_section.id)
+                        / Text, Numeric, Numeric_Range, Scientific.
+                        - else
+
+                          = render 'question_row_column_fields', prerequisitable: qrc
+
+  .column.row
+    = link_to 'Save and Finalize', build_extraction_forms_project_path(@extraction_forms_projects_section.extraction_forms_project,
+                                                          'panel-tab': @extraction_forms_projects_section.id),
+                                  class: 'button'
+
+  .column.row
+    = link_to 'Back', build_extraction_forms_project_path(@extraction_forms_projects_section.extraction_forms_project,
+                                                          'panel-tab': @extraction_forms_projects_section.id)

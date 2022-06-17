@@ -84,7 +84,7 @@
     h5.project-info-header = "Project ID##{project.id}: #{project.name}"
     ul.submenu.dropdown.menu data-dropdown-menu=""
       li.submenu aria-expanded="false" style="#{'background: #78608b' if controller.class == ProjectsController && controller.action_name == 'edit'}"
-        = link_to('#') do
+        = link_to('#', class: 'cursor-default border-y border-white') do
           | Project Details	&nbsp;
           i class="fi-list"
         ul.menu
@@ -97,32 +97,32 @@
       - if project.key_questions.present?
         - efp = project.extraction_forms_projects.first
         li.submenu style="#{'background: #78608b' if controller.class == ExtractionFormsProjectsController && controller.action_name == 'build'}"
-          a href="#{build_extraction_forms_project_path(efp.id, 'panel-tab': efp.default_section_id)}" Extractions Form Builder
+          a class="border-y border-white" href="#{build_extraction_forms_project_path(efp.id, 'panel-tab': efp.default_section_id)}" Extractions Form Builder
       - else
         li.submenu
           = link_to 'Extractions Form Builder', '#', data: { confirm: 'You must add at least one key question first.' }
       li.submenu aria-expanded="false" style="#{'background: #78608b' if (controller.class == CitationsController && controller.action_name == 'index') || (controller.class == TasksController && controller.action_name == 'index') || (controller.class == AssignmentsController && controller.action_name == 'screen')}"
-        = link_to('#') do
-          | Citation Details &nbsp;
+        = link_to('#', class: 'cursor-default border-y border-white') do
+          | Citation Manager &nbsp;
           i class="fi-list"
         ul.menu
           li
-            a href="#{project_citations_path(project)}" Citations
+            a href="#{project_citations_path(project)}" Citation Pool
           li
             a href="#{project_tasks_path(project)}" Tasks
           li
             a href="#{next_assignment_project_path(project)}" Screen
       li.submenu style="#{'background: #78608b' if controller.class == ExtractionsController && controller.action_name == 'index'}"
-        a href="#{project_extractions_path(project)}" Extractions
+        a class="border-y border-white" href="#{project_extractions_path(project)}" Extractions
       li.submenu
-        a#export-modal-button[data-open="export-modal-#{ project.id.to_s }"] = 'Export Data'
+        a id='export-modal-button[data-open="export-modal-#{ project.id.to_s }"]' class="border-y border-white" = 'Export Data'
         = render partial: 'shared/select_export_type', locals: { project: project }
       li.submenu style="#{'background: #78608b' if controller.class == ExtractionsController && controller.action_name == 'comparison_tool'}"
-        a href="#{comparison_tool_project_extractions_path(project)}" Comparison Tool
+        a class="border-y border-white" href="#{comparison_tool_project_extractions_path(project)}" Comparison Tool
       - if project.publishing.present? && project.publishing.approval.present?
-        li.submenu style="cursor: not-allowed;" = link_to 'Publication has been published', '#', title: 'Publication has been published', class: 'disabled'
+        li.submenu style="cursor: not-allowed;" = link_to 'Publication has been published', '#', title: 'Publication has been published', class: 'disabled border-y border-white'
       - elsif project.publishing.present?
-        li.submenu = link_to 'Cancel publication request', publishing_path(project.publishing.publishable_id), data: { confirm: 'Are you sure?' }, method: :delete, title: 'Cancel publication request'
+        li.submenu = link_to 'Cancel publication request', publishing_path(project.publishing.publishable_id), class: 'border-y border-white', data: { confirm: 'Are you sure?' }, method: :delete, title: 'Cancel publication request'
       - else
         li.submenu style="#{'background: #78608b' if controller.class == PublishingsController && controller.action_name == 'new'}"
-          = link_to "Request Publication", new_publishing_path(type: Project.to_s, id: project.id), title: "Request Publication"
+          = link_to "Request Publication", new_publishing_path(type: Project.to_s, id: project.id), title: "Request Publication", class: 'border-y border-white'
