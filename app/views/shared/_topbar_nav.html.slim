@@ -115,7 +115,7 @@
       li.submenu style="#{'background: #78608b' if controller.class == ExtractionsController && controller.action_name == 'index'}"
         a class="border-y border-white" href="#{project_extractions_path(project)}" Extractions
       li.submenu
-        a id='export-modal-button[data-open="export-modal-#{ project.id.to_s }"]' class="border-y border-white" = 'Export Data'
+        a id='export-modal-button' data-open="export-modal-#{ project.id.to_s }" class="border-y border-white" = 'Export Data'
         = render partial: 'shared/select_export_type', locals: { project: project }
       li.submenu style="#{'background: #78608b' if controller.class == ExtractionsController && controller.action_name == 'comparison_tool'}"
         a class="border-y border-white" href="#{comparison_tool_project_extractions_path(project)}" Comparison Tool
