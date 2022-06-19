@@ -32,7 +32,7 @@
                   i class="fi-list"
                 ul.menu style='min-width: 450px'
                   h6
-                    b Tutorials
+                    b Tutorials - PDF Guides
                     li = link_to('User Guide', 'https://srdrplus.s3.amazonaws.com/SRDR%2B+User+Guide+-+10-13-21_Final.pdf', target: '_blank')
                     li = link_to('Extracting Data', 'https://srdrplus.s3.amazonaws.com/SRDR%2B+Data+Extraction+Tutorial+-+10-13-21.pdf', target: '_blank')
                     /li = link_to('Importing Structured Data from Microsoft Excel', 'https://srdrplus.s3.amazonaws.com/Importing+Structured+Data+from+Microsoft+Excel+into+SRDR%2B.pdf', target: '_blank')
@@ -42,6 +42,12 @@
                     li = link_to('Importing Structured Data from DistillerSR', 'https://srdrplus.s3.amazonaws.com/Importing+Structured+Data+from+DistillerSR+into+SRDR%2B.pdf', target: '_blank')
                     /br
                     /li = link_to('Download Import Templates', 'https://srdrplus.s3.amazonaws.com/Import+Templates.zip', target: '_blank')
+                    b Tutorials - Video Guides
+                    li = link_to('Introduction to SRDR+ for Data Extraction of Systematic Reviews', 'https://youtu.be/aDxStZR3CGA', target: '_blank', data: { confirm: @exit_disclaimer })
+                    li = link_to('Setting up a new project and a project team in SRDR+', 'https://youtu.be/obdwdkfCVac', target: '_blank', data: { confirm: @exit_disclaimer })
+                    li = link_to('Adding and managing Citations in SRDR+', 'https://youtu.be/QPfXnDwyHX0', target: '_blank', data: { confirm: @exit_disclaimer })
+                    li = link_to('Adding and Managing Extractions in SRDR+', 'https://youtu.be/7jmM7elUSmU', target: '_blank', data: { confirm: @exit_disclaimer })
+                    li = link_to('Exporting data out of SRDR+', 'https://www.youtube.com/watch?v=vWXVhU3-XUY', target: '_blank', data: { confirm: @exit_disclaimer })
                   h6
                     b Resources
                     li = link_to(t(".cite"), citing_path)
