@@ -10,9 +10,8 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_06_11_065358) do
-
-  create_table "abstrackr_settings", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
+ActiveRecord::Schema[7.0].define(version: 2022_06_14_151542) do
+  create_table "abstrackr_settings", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
     t.boolean "journal_visible", default: true
@@ -356,7 +355,7 @@ ActiveRecord::Schema.define(version: 2022_06_11_065358) do
     t.datetime "updated_at", precision: nil, null: false
   end
 
-  create_table "data_audits", id: :integer, charset: "utf8mb3", force: :cascade do |t|
+  create_table "data_audits", id: :integer, charset: "utf8mb4", collation: "utf8mb4_bin", force: :cascade do |t|
     t.boolean "epc_source"
     t.string "epc_name"
     t.string "non_epc_name"
