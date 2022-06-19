@@ -3,7 +3,7 @@ require "application_responder"
 class ApplicationController < ActionController::Base
   # by default verify authorization and policy scope on all controller actions
   # use 'sp_authorization' and 'sp_policy_scope' wherever its not needed
-  include Pundit
+  include Pundit::Authorization
   # TODO: uncomment when controllers are set
   # after_action :verify_authorized, :verify_policy_scoped
 
@@ -23,11 +23,6 @@ class ApplicationController < ActionController::Base
   before_action :set_current_user
   before_action :set_exit_disclaimer_message
   before_action :set_sentry_context
-
-  def authorize(*args)
-    return true if Rails.env.test?
-    super(*args)
-  end
 
   def set_current_user
     User.current = current_user
