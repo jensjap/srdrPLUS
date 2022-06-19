@@ -156,7 +156,6 @@ class ProjectsController < ApplicationController
     @project.citation_files.attach(citation_import_params[:citation_files])
     RisImportJob.perform_later(current_user.id, @project.id, @project.citation_files.last.id)
     flash[:success] = "Import request submitted for project '#{@project.name}'. You will be notified by email of its completion."
-    #@project.import_citations_from_ris( citation_import_params[:citation_file] )
 
     redirect_to project_citations_path(@project)
   end
@@ -166,7 +165,6 @@ class ProjectsController < ApplicationController
     @project.citation_files.attach(citation_import_params[:citation_files])
     CsvImportJob.perform_later(current_user.id, @project.id, @project.citation_files.last.id)
     flash[:success] = "Import request submitted for project '#{@project.name}'. You will be notified by email of its completion."
-    #@project.import_citations_from_csv( citation_import_params[:citation_file] )
 
     redirect_to project_citations_path(@project)
   end
@@ -186,7 +184,6 @@ class ProjectsController < ApplicationController
     @project.citation_files.attach(citation_import_params[:citation_files])
     EnlImportJob.perform_later(current_user.id, @project.id, @project.citation_files.last.id)
     flash[:success] = "Import request submitted for project '#{@project.name}'. You will be notified by email of its completion."
-    #@project.import_citations_from_enl( citation_import_params[:citation_file] )
 
     redirect_to project_citations_path(@project)
   end

@@ -1,18 +1,15 @@
-require 'import_jobs/json_import_job/_citation_fhir_importer'
-
 class Api::V2::ProjectsController < Api::V2::BaseController
-  before_action :set_project, only: [:show, :update, :destroy, :import_citations_fhir_json]
+  before_action :set_project, only: %i[show update destroy import_citations_fhir_json]
 
-  #before_action :skip_authorization, only: [:index, :show, :create]
-  #before_action :skip_policy_scope
+  # before_action :skip_authorization, only: [:index, :show, :create]
+  # before_action :skip_policy_scope
 
   # Make an exception here. The API is still secured due to requirement for
-  # providing an API key.
+  # providing an API key.test_helper
   skip_before_action :verify_authenticity_token, only: [:import_citations_fhir_json]
 
   SORT = {  'updated-at': { updated_at: :desc },
-            'created-at': { created_at: :desc }
-  }.stringify_keys
+            'created-at': { created_at: :desc } }.stringify_keys
 
   resource_description do
     short 'End-points describing SRDR+ Projects.'
@@ -60,19 +57,19 @@ class Api::V2::ProjectsController < Api::V2::BaseController
     page     = params[:page]
     per_page = params[:per_page]
     projects_tmp = Project.published
-      .includes(:extraction_forms)
-      .includes(:key_questions)
-      .includes(:mesh_descriptors)
-      .includes(publishing: [{ user: :profile }, approval: [{ user: :profile }]])
+                          .includes(:extraction_forms)
+                          .includes(:key_questions)
+                          .includes(:mesh_descriptors)
+                          .includes(publishing: [{ user: :profile }, approval: [{ user: :profile }]])
 
     if page.present?
       @is_paginated = true
       @page = page.to_i
-      if per_page.present?
-        @per_page = per_page.to_i
-      else
-        @per_page = 10
-      end
+      @per_page = if per_page.present?
+                    per_page.to_i
+                  else
+                    10
+                  end
       @projects = projects_tmp.page(@page).per(@per_page)
     else
       @projects = projects_tmp.all
@@ -90,18 +87,18 @@ class Api::V2::ProjectsController < Api::V2::BaseController
     page     = params[:page]
     per_page = params[:per_page]
     projects_tmp = current_user.projects
-      .includes(:extraction_forms)
-      .includes(:key_questions)
-      .includes(publishing: [{ user: :profile }, approval: [{ user: :profile }]])
+                               .includes(:extraction_forms)
+                               .includes(:key_questions)
+                               .includes(publishing: [{ user: :profile }, approval: [{ user: :profile }]])
 
     if page.present?
       @is_paginated = true
       @page = page.to_i
-      if per_page.present?
-        @per_page = per_page.to_i
-      else
-        @per_page = 10
-      end
+      @per_page = if per_page.present?
+                    per_page.to_i
+                  else
+                    10
+                  end
       @projects = projects_tmp.page(@page).per(@per_page)
     else
       @projects = projects_tmp.all
@@ -160,12 +157,13 @@ class Api::V2::ProjectsController < Api::V2::BaseController
     respond_with @project
   end
 
-  api :POST, '/v2/projects/:id/import_citations_fhir_json', 'Upload citations as FHIR formatted JSON file. Requires API Key.'
+  api :POST, '/v2/projects/:id/import_citations_fhir_json',
+      'Upload citations as FHIR formatted JSON file. Requires API Key.'
   formats [:json]
   def import_citations_fhir_json
-    json = JSON.parse(request.body.read())
+    json = JSON.parse(request.body.read)
     json.each do |citation_json|
-      citation_fhir_importer = CitationFhirImporter.new(@project.id, citation_json)
+      citation_fhir_importer = ImportJobs::JsonImportJob::CitationFhirImporter.new(@project.id, citation_json)
       citation_fhir_importer.run
     end
 
@@ -176,15 +174,15 @@ class Api::V2::ProjectsController < Api::V2::BaseController
 
   private
 
-    def set_project
-      @project = Project.find(params[:id])
-    end
+  def set_project
+    @project = Project.find(params[:id])
+  end
 
-    def project_params
-      if action_name != 'create'
-        params.require(:project).permit(policy(@project).permitted_attributes)
-      else
-        params.require(:project).permit(*ProjectPolicy::FULL_PARAMS)
-      end
+  def project_params
+    if action_name != 'create'
+      params.require(:project).permit(policy(@project).permitted_attributes)
+    else
+      params.require(:project).permit(*ProjectPolicy::FULL_PARAMS)
     end
+  end
 end

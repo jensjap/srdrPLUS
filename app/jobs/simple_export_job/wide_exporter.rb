@@ -1,12 +1,7 @@
-require 'simple_export_job/exporter_base'
-require 'simple_export_job/section_templates/type1_sections_wide'
-require 'simple_export_job/section_templates/type2_sections_wide'
-require 'simple_export_job/section_templates/result_sections_wide'
-
-class WideExporter < ExporterBase
-  include Type1SectionsWide
-  include Type2SectionsWide
-  include ResultSectionsWide
+class SimpleExportJob::WideExporter < SimpleExportJob::ExporterBase
+  include SimpleExportJob::SectionTemplates::Type1SectionsWide
+  include SimpleExportJob::SectionTemplates::Type2SectionsWide
+  include SimpleExportJob::SectionTemplates::ResultSectionsWide
 
   def build!
     build_project_information_section

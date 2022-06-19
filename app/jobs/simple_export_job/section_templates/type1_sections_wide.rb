@@ -1,19 +1,15 @@
-require 'simple_export_job/sheet_info'
-
-module Type1SectionsWide
-  def build_type1_sections_wide(kq_ids=[])
+module SimpleExportJob::SectionTemplates::Type1SectionsWide
+  def build_type1_sections_wide(kq_ids = [])
     @project.extraction_forms_projects.each do |efp|
       efp.extraction_forms_projects_sections.each do |efps|
-
         # If this is a type1 section then we proceed.
         next unless efps.extraction_forms_projects_section_type_id == 1
 
         # Add a new sheet.
         sheet_name = efps.section.name.truncate(24)
         @package.workbook.add_worksheet(name: ensure_unique_sheet_name(sheet_name)) do |sheet|
-
           # For each sheet we create a SheetInfo object.
-          sheet_info = SheetInfo.new(@project)
+          sheet_info = SimpleExportJob::SheetInfo.new(@project)
           sheet_info.populate!(:type1, kq_ids, efp, efps)
 
           # Start printing rows to the spreadsheet. First the basic headers:
@@ -23,49 +19,52 @@ module Type1SectionsWide
           sheet_info.type1s.each do |type1|
             # Try to find the column that matches the identifier.
             found, column_idx = nil
-            found, column_idx = SheetInfo.find_column_idx_with_value(header_row, "[#{ type1[:section_name] } ID: #{ type1[:id] }]")
+            found, column_idx = SimpleExportJob::SheetInfo.find_column_idx_with_value(header_row,
+                                                                                      "[#{type1[:section_name]} ID: #{type1[:id]}]")
 
             # Append to the header if this is new.
             unless found
-              if sheet_name.eql?("Outcomes")
-                header_row.add_cell "Domain\r[#{ type1[:section_name] } ID: #{ type1[:id] }]"
-                header_row.add_cell "Specific Measurement\r[#{ type1[:section_name] } ID: #{ type1[:id] }]"
-                header_row.add_cell "Units\r[#{ type1[:section_name] } ID: #{ type1[:id] }]"
+              if sheet_name.eql?('Outcomes')
+                header_row.add_cell "Domain\r[#{type1[:section_name]} ID: #{type1[:id]}]"
+                header_row.add_cell "Specific Measurement\r[#{type1[:section_name]} ID: #{type1[:id]}]"
+                header_row.add_cell "Units\r[#{type1[:section_name]} ID: #{type1[:id]}]"
               else
-                header_row.add_cell "Name\r[#{ type1[:section_name] } ID: #{ type1[:id] }]"
-                header_row.add_cell "Description\r[#{ type1[:section_name] } ID: #{ type1[:id] }]"
+                header_row.add_cell "Name\r[#{type1[:section_name]} ID: #{type1[:id]}]"
+                header_row.add_cell "Description\r[#{type1[:section_name]} ID: #{type1[:id]}]"
               end
             end
-          end  # sheet_info.type1s.each do |type1|
+          end # sheet_info.type1s.each do |type1|
 
           # Then all the populations together.
           sheet_info.populations.each do |pop|
             # Try to find the column that matches the identifier.
             found, column_idx = nil
-            found, column_idx = SheetInfo.find_column_idx_with_value(header_row, "[Population ID: #{ pop[:id] }]")
+            found, column_idx = SimpleExportJob::SheetInfo.find_column_idx_with_value(header_row,
+                                                                                      "[Population ID: #{pop[:id]}]")
 
             # Append to the header if this is new.
             unless found
-              header_row.add_cell "Name\r[Population ID: #{ pop[:id] }]"
-              header_row.add_cell "Description\r[Population ID: #{ pop[:id] }]"
+              header_row.add_cell "Name\r[Population ID: #{pop[:id]}]"
+              header_row.add_cell "Description\r[Population ID: #{pop[:id]}]"
             end
-          end  # sheet_info.populations].each do |pop|
+          end # sheet_info.populations].each do |pop|
 
           # And finally all the timepoints together.
           sheet_info.timepoints.each do |tp|
             # Try to find the column that matches the identifier.
             found, column_idx = nil
-            found, column_idx = SheetInfo.find_column_idx_with_value(header_row, "[Timepoint ID: #{ tp[:id] }]")
+            found, column_idx = SimpleExportJob::SheetInfo.find_column_idx_with_value(header_row,
+                                                                                      "[Timepoint ID: #{tp[:id]}]")
 
             # Append to the header if this is new.
             unless found
-              header_row.add_cell "Name\r[Timepoint ID: #{ tp[:id] }]"
-              header_row.add_cell "Unit\r[Timepoint ID: #{ tp[:id] }]"
+              header_row.add_cell "Name\r[Timepoint ID: #{tp[:id]}]"
+              header_row.add_cell "Unit\r[Timepoint ID: #{tp[:id]}]"
             end
-          end  # sheet_info.timepoints.each do |tp|
+          end # sheet_info.timepoints.each do |tp|
 
           # Now we add the extraction rows.
-          sheet_info.extractions.each do |key, extraction|
+          sheet_info.extractions.each do |_key, extraction|
             new_row = []
             new_row << extraction[:extraction_info][:extraction_id]
             new_row << extraction[:extraction_info][:consolidated]
@@ -85,56 +84,52 @@ module Type1SectionsWide
             extraction[:type1s].each do |type1|
               # Try to find the column that matches the identifier.
               found, column_idx = nil
-              found, column_idx = SheetInfo.find_column_idx_with_value(header_row, "[#{ type1[:section_name] } ID: #{ type1[:id] }]")
+              found, column_idx = SimpleExportJob::SheetInfo.find_column_idx_with_value(header_row,
+                                                                                        "[#{type1[:section_name]} ID: #{type1[:id]}]")
 
               # Something is wrong if it wasn't found.
-              unless found
-                raise RuntimeError, "Error: Could not find header row: [#{ type1[:section_name] } ID: #{ type1[:id] }]"
-              end
+              raise "Error: Could not find header row: [#{type1[:section_name]} ID: #{type1[:id]}]" unless found
 
               new_row[column_idx]     = type1[:name]
               new_row[column_idx + 1] = type1[:description]
-              new_row[column_idx + 2] = type1[:units] if sheet_name.eql?("Outcomes")
-            end  # extraction[:type1s].each do |type1|
+              new_row[column_idx + 2] = type1[:units] if sheet_name.eql?('Outcomes')
+            end # extraction[:type1s].each do |type1|
 
             extraction[:populations].each do |pop|
               # Try to find the column that matches the identifier.
               found, column_idx = nil
-              found, column_idx = SheetInfo.find_column_idx_with_value(header_row, "[Population ID: #{ pop[:id] }]")
+              found, column_idx = SimpleExportJob::SheetInfo.find_column_idx_with_value(header_row,
+                                                                                        "[Population ID: #{pop[:id]}]")
 
               # Something is wrong if it wasn't found.
-              unless found
-                raise RuntimeError, "Error: Could not find header row: [#{ type1[:section_name] } ID: #{ type1[:id] }]"
-              end
+              raise "Error: Could not find header row: [#{type1[:section_name]} ID: #{type1[:id]}]" unless found
 
               new_row[column_idx]     = pop[:name]
               new_row[column_idx + 1] = pop[:description]
-            end  # extraction[:populations].each do |pop|
+            end # extraction[:populations].each do |pop|
 
             extraction[:timepoints].each do |tp|
               # Try to find the column that matches the identifier.
               found, column_idx = nil
-              found, column_idx = SheetInfo.find_column_idx_with_value(header_row, "[Timepoint ID: #{ tp[:id] }]")
+              found, column_idx = SimpleExportJob::SheetInfo.find_column_idx_with_value(header_row,
+                                                                                        "[Timepoint ID: #{tp[:id]}]")
 
               # Something is wrong if it wasn't found.
-              unless found
-                raise RuntimeError, "Error: Could not find header row: [#{ type1[:section_name] } ID: #{ type1[:id] }]"
-              end
+              raise "Error: Could not find header row: [#{type1[:section_name]} ID: #{type1[:id]}]" unless found
 
               new_row[column_idx]     = tp[:name]
               new_row[column_idx + 1] = tp[:unit]
-            end  # extraction[:timepoints].each do |tp|
+            end # extraction[:timepoints].each do |tp|
 
             # Done. Let's add the new row.
             sheet.add_row new_row
-          end  # sheet_info.extractions.each do |extraction|
+          end # sheet_info.extractions.each do |extraction|
 
           # Re-apply the styling for the new cells in the header row before closing the sheet.
           sheet.column_widths 16, 16, 16, 50, 16, 16
           header_row.style = @highlight
-        end  # END @package.workbook.add_worksheet(name: "#{ efps.section.name.truncate(24) }") do |sheet|
-
-      end  # END efp.extraction_forms_projects_sections.each do |efps|
+        end # END @package.workbook.add_worksheet(name: "#{ efps.section.name.truncate(24) }") do |sheet|
+      end # END efp.extraction_forms_projects_sections.each do |efps|
     end  # END @project.extraction_forms_projects.each do |efp|
   end
 end

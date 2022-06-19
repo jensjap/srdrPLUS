@@ -20,6 +20,19 @@ class QuestionRowColumnType < ApplicationRecord
   SELECT2_SINGLE = 'select2_single'.freeze
   SELECT2_MULTI = 'select2_multi'.freeze
 
+  DEFAULT_QRC_TYPES = ['Text Field (alphanumeric)',
+    'Numeric Field (numeric)',
+    'Checkbox (select multiple)',
+    'Dropdown (select one)',
+    'Radio (select one)',
+    'Select one (with write-in option)',
+    'Select multiple (with write-in option)'
+  ].zip(QuestionRowColumnType.
+    where(id: [1, 2, 5, 6, 7, 8, 9]).
+    pluck(:id)).
+    freeze
+
+
   acts_as_paranoid
 
   has_many :question_row_columns, dependent: :destroy, inverse_of: :question_row_column_type

@@ -1,19 +1,59 @@
-require 'simple_export_job/sheet_info_module'
-
 # We keep several dictionaries here. They all track the same information such as type1s, populations and timepoints.
-# One list is kept as a master list. Those are on SheetInfo.type1s, SheetInfo.populations, and SheetInfo.timepoints.
+# One list is kept as a master list. Those are on SimpleExportJob::SheetInfo.type1s, SimpleExportJob::SheetInfo.populations, and SimpleExportJob::SheetInfo.timepoints.
 # Another is kept for each extraction.
-class SheetInfo
-  extend SheetInfoModule
+class SimpleExportJob::SheetInfo
+  attr_reader :header_info, :extractions, :key_question_selections, :type1s, :populations, :timepoints,
+              :question_row_columns, :rssms, :data_header_hash
 
-  attr_reader :header_info, :extractions, :key_question_selections, :type1s, :populations, :timepoints, :question_row_columns, :rssms, :data_header_hash
+  # Attempt to find the column index in the given row for a cell that starts with given value.
+  #
+  # returns (Boolean, Idx)
+  def self.find_column_idx_with_value(row, value)
+    row.cells.each do |cell|
+      return [true, cell.index] if cell.value.end_with?(value)
+    end
+
+    [false, row.cells.length]
+  end
+
+  # If no KQ's array is passed in, we export based on extraction.extractions_key_questions_projects_selections.
+  # Note - jjap - 10-27-2020: This is counter to the design decision to let each question pick its
+  #   own set of key questions. Doing it this way is akin to picking key questions based on the
+  #   EFP...which means we should be able to create multiple EFPs just like in SRDR.
+  def self.fetch_kq_selection(extraction, kq_ids)
+    if kq_ids.blank?
+      kq_ids = extraction
+               .extractions_key_questions_projects_selections
+               .order(key_questions_project_id: :asc)
+               .collect(&:key_questions_project)
+               .collect(&:key_question_id)
+    end
+
+    kq_ids
+  end
+
+  # Type2 (Questions) are associated to Key Questions and we export by the KQ's selected.
+  def self.fetch_questions(project_id, kq_ids, efps)
+    # Get all questions in this efps by key_questions requested.
+    questions = efps
+                .questions
+                .joins(:key_questions_projects_questions)
+                .where(
+                  key_questions_projects_questions: {
+                    key_questions_project: KeyQuestionsProject.where(project_id:, key_question_id: kq_ids)
+                  }
+                )
+
+    questions.order(id: :asc).uniq
+  end
 
   def initialize(project = nil)
-    @header_info             = ['Extraction ID', 'Consolidated', 'Username', 'Citation ID', 'Citation Name', 'RefMan', 'PMID', 'Authors', 'Publication Date', 'Key Questions']
+    @header_info             = ['Extraction ID', 'Consolidated', 'Username', 'Citation ID', 'Citation Name', 'RefMan',
+                                'PMID', 'Authors', 'Publication Date', 'Key Questions']
     # @data_header_hash key structure rss_type_id > outcome_type > col_id > rssm
-    @data_header_hash        = Hash.new
-    @key_question_selections = Array.new
-    @extractions             = Hash.new
+    @data_header_hash        = {}
+    @key_question_selections = []
+    @extractions             = {}
     @type1s                  = Set.new
     @populations             = Set.new
     @timepoints              = Set.new
@@ -25,13 +65,14 @@ class SheetInfo
   def new_extraction_info(extraction)
     @extractions[extraction.id] = {
       extraction_id: extraction.id,
-      type1s:               [],
-      populations:          [],
-      timepoints:           [],
+      type1s: [],
+      populations: [],
+      timepoints: [],
       question_row_columns: [],
-      rss_columns:          {},
-      sorted_rssms_2:       {},
-      rssms:                [] }
+      rss_columns: {},
+      sorted_rssms_2: {},
+      rssms: []
+    }
   end
 
   def set_extraction_info(params)
@@ -81,22 +122,55 @@ class SheetInfo
   end
 
   def add_rssm_params_for_legacy(params)
-    @extractions[params[:extraction_id]][:rss_columns][params[:result_statistic_section_type_id]] = {} unless @extractions[params[:extraction_id]][:rss_columns].has_key? params[:result_statistic_section_type_id]
-    @extractions[params[:extraction_id]][:rss_columns][params[:result_statistic_section_type_id]][params[:outcome_id]] = {} unless @extractions[params[:extraction_id]][:rss_columns][params[:result_statistic_section_type_id]].has_key? params[:outcome_id]
-    @extractions[params[:extraction_id]][:rss_columns][params[:result_statistic_section_type_id]][params[:outcome_id]][params[:population_id]] = {} unless @extractions[params[:extraction_id]][:rss_columns][params[:result_statistic_section_type_id]][params[:outcome_id]].has_key? params[:population_id]
-    @extractions[params[:extraction_id]][:rss_columns][params[:result_statistic_section_type_id]][params[:outcome_id]][params[:population_id]][params[:row_id]] = {} unless @extractions[params[:extraction_id]][:rss_columns][params[:result_statistic_section_type_id]][params[:outcome_id]][params[:population_id]].has_key? params[:row_id]
-    @extractions[params[:extraction_id]][:rss_columns][params[:result_statistic_section_type_id]][params[:outcome_id]][params[:population_id]][params[:row_id]][params[:col_id]] = [] unless @extractions[params[:extraction_id]][:rss_columns][params[:result_statistic_section_type_id]][params[:outcome_id]][params[:population_id]][params[:row_id]].has_key? params[:col_id]
+    unless @extractions[params[:extraction_id]][:rss_columns].has_key? params[:result_statistic_section_type_id]
+      @extractions[params[:extraction_id]][:rss_columns][params[:result_statistic_section_type_id]] =
+        {}
+    end
+    unless @extractions[params[:extraction_id]][:rss_columns][params[:result_statistic_section_type_id]].has_key? params[:outcome_id]
+      @extractions[params[:extraction_id]][:rss_columns][params[:result_statistic_section_type_id]][params[:outcome_id]] =
+        {}
+    end
+    unless @extractions[params[:extraction_id]][:rss_columns][params[:result_statistic_section_type_id]][params[:outcome_id]].has_key? params[:population_id]
+      @extractions[params[:extraction_id]][:rss_columns][params[:result_statistic_section_type_id]][params[:outcome_id]][params[:population_id]] =
+        {}
+    end
+    unless @extractions[params[:extraction_id]][:rss_columns][params[:result_statistic_section_type_id]][params[:outcome_id]][params[:population_id]].has_key? params[:row_id]
+      @extractions[params[:extraction_id]][:rss_columns][params[:result_statistic_section_type_id]][params[:outcome_id]][params[:population_id]][params[:row_id]] =
+        {}
+    end
+    unless @extractions[params[:extraction_id]][:rss_columns][params[:result_statistic_section_type_id]][params[:outcome_id]][params[:population_id]][params[:row_id]].has_key? params[:col_id]
+      @extractions[params[:extraction_id]][:rss_columns][params[:result_statistic_section_type_id]][params[:outcome_id]][params[:population_id]][params[:row_id]][params[:col_id]] =
+        []
+    end
     @extractions[params[:extraction_id]][:rss_columns][params[:result_statistic_section_type_id]][params[:outcome_id]][params[:population_id]][params[:row_id]][params[:col_id]] << params
   end
 
   def add_rssm_params_for_legacy_2(params)
     # extraction_id > sorted_rssms_2 > rss_type_id > outcome_type > outcome_id > population_id > row_id > col_id > rssm
-    @extractions[params[:extraction_id]][:sorted_rssms_2][params[:result_statistic_section_type_id]] = {} unless @extractions[params[:extraction_id]][:sorted_rssms_2].has_key? params[:result_statistic_section_type_id]
-    @extractions[params[:extraction_id]][:sorted_rssms_2][params[:result_statistic_section_type_id]][params[:outcome_type]] = {} unless @extractions[params[:extraction_id]][:sorted_rssms_2][params[:result_statistic_section_type_id]].has_key? params[:outcome_type]
-    @extractions[params[:extraction_id]][:sorted_rssms_2][params[:result_statistic_section_type_id]][params[:outcome_type]][params[:outcome_id]] = {} unless @extractions[params[:extraction_id]][:sorted_rssms_2][params[:result_statistic_section_type_id]][params[:outcome_type]].has_key? params[:outcome_id]
-    @extractions[params[:extraction_id]][:sorted_rssms_2][params[:result_statistic_section_type_id]][params[:outcome_type]][params[:outcome_id]][params[:population_id]] = {} unless @extractions[params[:extraction_id]][:sorted_rssms_2][params[:result_statistic_section_type_id]][params[:outcome_type]][params[:outcome_id]].has_key? params[:population_id]
-    @extractions[params[:extraction_id]][:sorted_rssms_2][params[:result_statistic_section_type_id]][params[:outcome_type]][params[:outcome_id]][params[:population_id]][params[:row_id]] = {} unless @extractions[params[:extraction_id]][:sorted_rssms_2][params[:result_statistic_section_type_id]][params[:outcome_type]][params[:outcome_id]][params[:population_id]].has_key? params[:row_id]
-    @extractions[params[:extraction_id]][:sorted_rssms_2][params[:result_statistic_section_type_id]][params[:outcome_type]][params[:outcome_id]][params[:population_id]][params[:row_id]][params[:col_id]] = [] unless @extractions[params[:extraction_id]][:sorted_rssms_2][params[:result_statistic_section_type_id]][params[:outcome_type]][params[:outcome_id]][params[:population_id]][params[:row_id]].has_key? params[:col_id]
+    unless @extractions[params[:extraction_id]][:sorted_rssms_2].has_key? params[:result_statistic_section_type_id]
+      @extractions[params[:extraction_id]][:sorted_rssms_2][params[:result_statistic_section_type_id]] =
+        {}
+    end
+    unless @extractions[params[:extraction_id]][:sorted_rssms_2][params[:result_statistic_section_type_id]].has_key? params[:outcome_type]
+      @extractions[params[:extraction_id]][:sorted_rssms_2][params[:result_statistic_section_type_id]][params[:outcome_type]] =
+        {}
+    end
+    unless @extractions[params[:extraction_id]][:sorted_rssms_2][params[:result_statistic_section_type_id]][params[:outcome_type]].has_key? params[:outcome_id]
+      @extractions[params[:extraction_id]][:sorted_rssms_2][params[:result_statistic_section_type_id]][params[:outcome_type]][params[:outcome_id]] =
+        {}
+    end
+    unless @extractions[params[:extraction_id]][:sorted_rssms_2][params[:result_statistic_section_type_id]][params[:outcome_type]][params[:outcome_id]].has_key? params[:population_id]
+      @extractions[params[:extraction_id]][:sorted_rssms_2][params[:result_statistic_section_type_id]][params[:outcome_type]][params[:outcome_id]][params[:population_id]] =
+        {}
+    end
+    unless @extractions[params[:extraction_id]][:sorted_rssms_2][params[:result_statistic_section_type_id]][params[:outcome_type]][params[:outcome_id]][params[:population_id]].has_key? params[:row_id]
+      @extractions[params[:extraction_id]][:sorted_rssms_2][params[:result_statistic_section_type_id]][params[:outcome_type]][params[:outcome_id]][params[:population_id]][params[:row_id]] =
+        {}
+    end
+    unless @extractions[params[:extraction_id]][:sorted_rssms_2][params[:result_statistic_section_type_id]][params[:outcome_type]][params[:outcome_id]][params[:population_id]][params[:row_id]].has_key? params[:col_id]
+      @extractions[params[:extraction_id]][:sorted_rssms_2][params[:result_statistic_section_type_id]][params[:outcome_type]][params[:outcome_id]][params[:population_id]][params[:row_id]][params[:col_id]] =
+        []
+    end
     @extractions[params[:extraction_id]][:sorted_rssms_2][params[:result_statistic_section_type_id]][params[:outcome_type]][params[:outcome_id]][params[:population_id]][params[:row_id]][params[:col_id]] << params
   end
 
@@ -108,33 +182,51 @@ class SheetInfo
   # WAC Statistics         - column = Arms
   # Net Difference         - column = BAC Comparisons
   def find_measures_for_each_section_per_rss_column
-    @extractions.each do |extraction_id, v0|
+    @extractions.each do |_extraction_id, v0|
       v0[:sorted_rssms_2].each do |rss_type_id, v1|
         v1.each do |outcome_type, v2|
-          v2.each do |outcome_id, v3|
-            v3.each do |population_id, v4|
-              v4.each do |row_id, v5|
+          v2.each do |_outcome_id, v3|
+            v3.each do |_population_id, v4|
+              v4.each do |_row_id, v5|
                 v5.each do |col_id, rssms|
                   rssms.each do |rssm|
                     @data_header_hash[rss_type_id] = {} unless @data_header_hash.has_key? rss_type_id
-                    @data_header_hash[rss_type_id][outcome_type] = {} unless @data_header_hash[rss_type_id].has_key? outcome_type
-                    @data_header_hash[rss_type_id][outcome_type][col_id] = [] unless @data_header_hash[rss_type_id][outcome_type].has_key? col_id
+                    unless @data_header_hash[rss_type_id].has_key? outcome_type
+                      @data_header_hash[rss_type_id][outcome_type] =
+                        {}
+                    end
+                    unless @data_header_hash[rss_type_id][outcome_type].has_key? col_id
+                      @data_header_hash[rss_type_id][outcome_type][col_id] =
+                        []
+                    end
                     @data_header_hash[rss_type_id][outcome_type][col_id] << rssm[:measure_name]
 
                     @data_header_hash[:max_col] = {} unless @data_header_hash.has_key? :max_col
-                    @data_header_hash[:max_col][rss_type_id] = {} unless @data_header_hash[:max_col].has_key? rss_type_id
-                    @data_header_hash[:max_col][rss_type_id][outcome_type] = {} unless @data_header_hash[:max_col][rss_type_id].has_key? outcome_type
-                    @data_header_hash[:max_col][rss_type_id][outcome_type][:max_col] = 0 unless @data_header_hash[:max_col][rss_type_id][outcome_type].has_key?(:max_col)
+                    unless @data_header_hash[:max_col].has_key? rss_type_id
+                      @data_header_hash[:max_col][rss_type_id] =
+                        {}
+                    end
+                    unless @data_header_hash[:max_col][rss_type_id].has_key? outcome_type
+                      @data_header_hash[:max_col][rss_type_id][outcome_type] =
+                        {}
+                    end
+                    unless @data_header_hash[:max_col][rss_type_id][outcome_type].has_key?(:max_col)
+                      @data_header_hash[:max_col][rss_type_id][outcome_type][:max_col] =
+                        0
+                    end
                     max_col = v5.length
-                    @data_header_hash[:max_col][rss_type_id][outcome_type][:max_col] = max_col if (@data_header_hash[:max_col][rss_type_id][outcome_type][:max_col] < max_col)
-                  end  # rssms.each do |rssm|
-                end  # v5.each do |col_id, rssms|
-              end  # v4.each do |row_id, v5|
-            end  # v3.each do |population_id, v4|
-          end  # v2.each do |outcome_id, v3|
-        end  # v1.each do |outcome_type, v2|
-      end  # v0[:sorted_rssms_2].each do |rss_type_id, v1|
-    end  # @extractions.each do |extraction_id, v0|
+                    if @data_header_hash[:max_col][rss_type_id][outcome_type][:max_col] < max_col
+                      @data_header_hash[:max_col][rss_type_id][outcome_type][:max_col] =
+                        max_col
+                    end
+                  end # rssms.each do |rssm|
+                end # v5.each do |col_id, rssms|
+              end # v4.each do |row_id, v5|
+            end # v3.each do |population_id, v4|
+          end # v2.each do |outcome_id, v3|
+        end # v1.each do |outcome_type, v2|
+      end # v0[:sorted_rssms_2].each do |rss_type_id, v1|
+    end # @extractions.each do |extraction_id, v0|
   end
 
   def data_headers(section_id, outcome_type, col_name)
@@ -149,17 +241,15 @@ class SheetInfo
       @data_header_hash[section_id][outcome_type][key].each do |measure_name|
         # Since case-insensitive sets are not a thing, we create a new array with all elements downcased and
         # then check against a downcased measures_name, whether to include it or not.
-        set_measures << measure_name unless (set_measures.to_a.map(&:downcase).include?(measure_name.downcase))
-      end  # @data_header_hash[section_id][outcome_type][key].each do |measure_name|
-    end  # @data_header_hash.try(:[], section_id).try(:[], outcome_type).try(:keys).to_a.each do |key|
+        set_measures << measure_name unless set_measures.to_a.map(&:downcase).include?(measure_name.downcase)
+      end # @data_header_hash[section_id][outcome_type][key].each do |measure_name|
+    end # @data_header_hash.try(:[], section_id).try(:[], outcome_type).try(:keys).to_a.each do |key|
 
     cnt_col.times do |i|
-      return_array << "#{ col_name } Name #{ i+1 }"
+      return_array << "#{col_name} Name #{i + 1}"
 
       # Only Descriptive Statistics and WAC Comparison sections deal with Arms as the rss columns, therefore description only applies to them.
-      if [1, 3].include? section_id
-        return_array << "#{ col_name } Description #{ i+1 }"
-      end
+      return_array << "#{col_name} Description #{i + 1}" if [1, 3].include? section_id
 
       set_measures.each do |m|
         return_array << m
@@ -171,10 +261,12 @@ class SheetInfo
     # When section type is 1 or 3 we need to add 2 more to the count because the column groups include Arm Name and Arm Description.
     # Otherwise we only add 1 to the count because the column group will include Comparison Name only.
     if [1, 3].include? section_id
-      @data_header_hash.try(:[], :max_col).try(:[], section_id).try(:[], outcome_type)[:no_of_measures] = set_measures.length + 2
+      @data_header_hash.try(:[], :max_col).try(:[], section_id).try(:[], outcome_type)[:no_of_measures] =
+        set_measures.length + 2
 
     else
-      @data_header_hash.try(:[], :max_col).try(:[], section_id).try(:[], outcome_type)[:no_of_measures] = set_measures.length + 1
+      @data_header_hash.try(:[], :max_col).try(:[], section_id).try(:[], outcome_type)[:no_of_measures] =
+        set_measures.length + 1
 
     end
 
@@ -187,19 +279,19 @@ class SheetInfo
     # Every row represents an extraction.
     @project.extractions.each do |extraction|
       # Collect distinct list of questions based off the key questions selected for this extraction.
-      kq_ids_by_extraction = SheetInfo.fetch_kq_selection(extraction, kq_ids)
+      kq_ids_by_extraction = SimpleExportJob::SheetInfo.fetch_kq_selection(extraction, kq_ids)
 
       # Create base for extraction information.
-      self.new_extraction_info(extraction)
+      new_extraction_info(extraction)
 
       if type == :type2
         # Collect distinct list of questions based off the key questions selected for this extraction.
-        kq_ids_by_extraction = SheetInfo.fetch_kq_selection(extraction, kq_ids)
-        questions = SheetInfo.fetch_questions(@project.id, kq_ids_by_extraction, efps)
+        kq_ids_by_extraction = SimpleExportJob::SheetInfo.fetch_kq_selection(extraction, kq_ids)
+        questions = SimpleExportJob::SheetInfo.fetch_questions(@project.id, kq_ids_by_extraction, efps)
       end
 
       # Collect basic information about the extraction.
-      self.set_extraction_info(
+      set_extraction_info(
         extraction_id: extraction.id,
         consolidated: extraction.consolidated.to_s,
         username: extraction.username,
@@ -214,14 +306,14 @@ class SheetInfo
 
       if type == :type1
         eefps = efps.extractions_extraction_forms_projects_sections.find_or_create_by(
-          extraction: extraction,
+          extraction:,
           extraction_forms_projects_section: efps
         )
 
         # Iterate over each of the type1s that are associated with this particular # extraction's
         # extraction_forms_projects_section and collect type1, population, and timepoint information.
         eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
-          self.add_type1(
+          add_type1(
             extraction_id: extraction.id,
             section_name: efps.section.try(:name).try(:singularize),
             id: eefpst1.type1.id,
@@ -231,7 +323,7 @@ class SheetInfo
           )
 
           eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |pop|
-            self.add_population(
+            add_population(
               extraction_id: extraction.id,
               id: pop.population_name.id,
               name: pop.population_name.name,
@@ -239,41 +331,45 @@ class SheetInfo
             )
 
             pop.extractions_extraction_forms_projects_sections_type1_row_columns.each do |tp|
-              self.add_timepoint(
+              add_timepoint(
                 extraction_id: extraction.id,
                 id: tp.timepoint_name.id,
                 name: tp.timepoint_name.name,
                 unit: tp.timepoint_name.unit
               )
-            end  # pop.extractions_extraction_forms_projects_sections_type1_row_columns.each do |tp|
-          end  # eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |pop|
-        end  # eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
+            end # pop.extractions_extraction_forms_projects_sections_type1_row_columns.each do |tp|
+          end # eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |pop|
+        end # eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
 
       elsif type == :type2
         eefps = efps.extractions_extraction_forms_projects_sections.find_or_create_by!(
-          extraction: extraction,
-          link_to_type1: efps.link_to_type1.nil? ?
-            nil :
-            ExtractionsExtractionFormsProjectsSection.find_or_create_by!(
-              extraction: extraction,
-              extraction_forms_projects_section: efps.link_to_type1
-            )
+          extraction:,
+          link_to_type1: if efps.link_to_type1.nil?
+                           nil
+                         else
+                           ExtractionsExtractionFormsProjectsSection.find_or_create_by!(
+                             extraction:,
+                             extraction_forms_projects_section: efps.link_to_type1
+                           )
+                         end
         )
 
         # If this section is linked we have to iterate through each occurrence of
         # type1 via eefps.link_to_type1.extractions_extraction_forms_projects_sections_type1s.
         # Otherwise we proceed with eefpst1s set to a custom Struct that responds
         # to :id, type1: :id.
-        eefpst1s = (eefps.extraction_forms_projects_section.try(:extraction_forms_projects_section_option).try(:by_type1) &&
-          eefps.link_to_type1.present?) ?
-            eefps.link_to_type1.extractions_extraction_forms_projects_sections_type1s :
-            [Struct.new(:id, :type1).new(nil, Struct.new(:id, :name, :description).new(nil))]
+        eefpst1s = if eefps.extraction_forms_projects_section.try(:extraction_forms_projects_section_option).try(:by_type1) &&
+                      eefps.link_to_type1.present?
+                     eefps.link_to_type1.extractions_extraction_forms_projects_sections_type1s
+                   else
+                     [Struct.new(:id, :type1).new(nil, Struct.new(:id, :name, :description).new(nil))]
+                   end
 
         eefpst1s.each do |eefpst1|
           questions.each do |q|
             q.question_rows.each do |qr|
               qr.question_row_columns.each do |qrc|
-                self.add_question_row_column(
+                add_question_row_column(
                   extraction_id: extraction.id,
                   section_name: efps.section.name.try(:singularize),
                   eefpst1_id: eefpst1.id,
@@ -291,91 +387,94 @@ class SheetInfo
                     .question_row_columns_question_row_column_options
                     .where(question_row_column_option_id: 1)
                     .pluck(:id, :name),
-                  eefps_qrfc_values: eefps.eefps_qrfc_values(eefpst1.id, qrc))
-              end  # qr.question_row_columns.each do |qrc|
-            end  # q.question_rows.each do |qr|
-          end  # questions.each do |q|
-        end  # eefps.type1s.each do |eefpst1|
+                  eefps_qrfc_values: eefps.eefps_qrfc_values(eefpst1.id, qrc)
+                )
+              end # qr.question_row_columns.each do |qrc|
+            end # q.question_rows.each do |qr|
+          end # questions.each do |q|
+        end # eefps.type1s.each do |eefpst1|
       end
-    end  # END @project.extractions.each do |extraction|
+    end # END @project.extractions.each do |extraction|
   end
 
   def populate_sheet_info_with_extractions_results_data(sheet_info, kq_ids, efp, efps)
     @project.extractions.each do |extraction|
       # Collect distinct list of questions based off the key questions selected for this extraction.
-      kq_ids_by_extraction = SheetInfo.fetch_kq_selection(extraction, kq_ids)
+      kq_ids_by_extraction = SimpleExportJob::SheetInfo.fetch_kq_selection(extraction, kq_ids)
 
-      #!!! We can probably use scope for this.
+      # !!! We can probably use scope for this.
       case efp.extraction_forms_project_type_id
       when 1
         # Find all eefps that are Outcomes.
         efps_outcomes = efp.extraction_forms_projects_sections
-          .joins(:section)
-          .where(sections: { name: 'Outcomes' })
+                           .joins(:section)
+                           .where(sections: { name: 'Outcomes' })
         eefps_outcomes = ExtractionsExtractionFormsProjectsSection.where(
-          extraction: extraction,
-          extraction_forms_projects_section: efps_outcomes)
+          extraction:,
+          extraction_forms_projects_section: efps_outcomes
+        )
 
         # Find all eefps that are Arms.
         efps_arms = efp.extraction_forms_projects_sections
-          .joins(:section)
-          .where(sections: { name: 'Arms' })
-        eefps_arms = ExtractionsExtractionFormsProjectsSection.
-          includes({
-            extractions_extraction_forms_projects_sections_type1s: [
-              :type1,
-              {
-                extractions_extraction_forms_projects_sections_type1_rows: [
-                  :population_name,
-                  {
-                    result_statistic_sections: [
-                      :result_statistic_section_type,
-                      :comparisons,
-                      { result_statistic_sections_measures: :measure }
-                    ],
-                    extractions_extraction_forms_projects_sections_type1_row_columns: :timepoint_name
-                  },
-                ]
-              }
-            ]
-          }).where(extraction: extraction, extraction_forms_projects_section: efps_arms)
+                       .joins(:section)
+                       .where(sections: { name: 'Arms' })
+        eefps_arms = ExtractionsExtractionFormsProjectsSection
+                     .includes({
+                                 extractions_extraction_forms_projects_sections_type1s: [
+                                   :type1,
+                                   {
+                                     extractions_extraction_forms_projects_sections_type1_rows: [
+                                       :population_name,
+                                       {
+                                         result_statistic_sections: [
+                                           :result_statistic_section_type,
+                                           :comparisons,
+                                           { result_statistic_sections_measures: :measure }
+                                         ],
+                                         extractions_extraction_forms_projects_sections_type1_row_columns: :timepoint_name
+                                       }
+                                     ]
+                                   }
+                                 ]
+                               }).where(extraction:, extraction_forms_projects_section: efps_arms)
 
       when 2
         efps_outcomes = efp.extraction_forms_projects_sections
-          .joins(:section)
-          .where(sections: { name: 'Diagnoses' })
+                           .joins(:section)
+                           .where(sections: { name: 'Diagnoses' })
         eefps_outcomes = ExtractionsExtractionFormsProjectsSection.where(
-          extraction: extraction,
-          extraction_forms_projects_section: efps_outcomes)
+          extraction:,
+          extraction_forms_projects_section: efps_outcomes
+        )
 
         # Find all eefps that are Arms.
         efps_arms = efp.extraction_forms_projects_sections
-          .joins(:section)
-          .where(sections: { name: 'Diagnostic Tests' })
-        eefps_arms = ExtractionsExtractionFormsProjectsSection.
-          includes({
-            extractions_extraction_forms_projects_sections_type1s: [
-              :type1,
-              {
-                extractions_extraction_forms_projects_sections_type1_rows: [
-                  :population_name,
-                  {
-                    result_statistic_sections: [
-                      :result_statistic_section_type,
-                      :comparisons,
-                      { result_statistic_sections_measures: :measure }
-                    ],
-                    extractions_extraction_forms_projects_sections_type1_row_columns: :timepoint_name
-                  },
-                ]
-              }
-            ]
-          }).where(extraction: extraction, extraction_forms_projects_section: efps_arms)
+                       .joins(:section)
+                       .where(sections: { name: 'Diagnostic Tests' })
+        eefps_arms = ExtractionsExtractionFormsProjectsSection
+                     .includes({
+                                 extractions_extraction_forms_projects_sections_type1s: [
+                                   :type1,
+                                   {
+                                     extractions_extraction_forms_projects_sections_type1_rows: [
+                                       :population_name,
+                                       {
+                                         result_statistic_sections: [
+                                           :result_statistic_section_type,
+                                           :comparisons,
+                                           { result_statistic_sections_measures: :measure }
+                                         ],
+                                         extractions_extraction_forms_projects_sections_type1_row_columns: :timepoint_name
+                                       }
+                                     ]
+                                   }
+                                 ]
+                               }).where(extraction:, extraction_forms_projects_section: efps_arms)
 
       else
-        raise "SheetInfo: Unknown ExtractionFormsProjectType"
+        raise 'SheetInfo: Unknown ExtractionFormsProjectType'
 
-      end  # case efp.extraction_forms_project_type_id
+      end # case efp.extraction_forms_project_type_id
 
       # Create base for extraction information.
       sheet_info.new_extraction_info(extraction)
@@ -391,11 +490,13 @@ class SheetInfo
         publication_date: extraction.citation.try(:journal).try(:get_publication_year),
         refman: extraction.citation.refman,
         pmid: extraction.citation.pmid,
-        kq_selection: KeyQuestion.where(id: kq_ids_by_extraction).collect(&:name).map(&:strip).join("\x0D\x0A"))
+        kq_selection: KeyQuestion.where(id: kq_ids_by_extraction).collect(&:name).map(&:strip).join("\x0D\x0A")
+      )
 
       eefps = efps.extractions_extraction_forms_projects_sections.find_by(
-        extraction: extraction,
-        extraction_forms_projects_section: efps)
+        extraction:,
+        extraction_forms_projects_section: efps
+      )
 
       # Each Outcome has multiple Populations, which in turn has 4 result
       # statistic quadrants . We iterate over each of the results statistic
@@ -418,17 +519,15 @@ class SheetInfo
       # To uniquely identify a data value we therefore need:
       # OutcomeID, PopulationID, RowID, ColumnID, MeasureID
       eefps_outcomes.each do |eefps_outcome|
-        eefps_outcome.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1_outcome|  # Outcome.
-          eefpst1_outcome.extractions_extraction_forms_projects_sections_type1_rows.each do |eefpst1r|  # Population
-            eefpst1r.result_statistic_sections.each do |result_statistic_section|  # Result Statistic Section Quadrant
-
+        eefps_outcome.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1_outcome| # Outcome.
+          eefpst1_outcome.extractions_extraction_forms_projects_sections_type1_rows.each do |eefpst1r| # Population
+            eefpst1r.result_statistic_sections.each do |result_statistic_section| # Result Statistic Section Quadrant
               case result_statistic_section.result_statistic_section_type_id
-              when 1  # Descriptive Statistics - Timepoint x Arm x q1-Measure.
-                eefpst1r.extractions_extraction_forms_projects_sections_type1_row_columns.each do |eefpst1rc|  # Timepoint
-                  eefps_arms.each do |eefps_arm|  # Arm
+              when 1 # Descriptive Statistics - Timepoint x Arm x q1-Measure.
+                eefpst1r.extractions_extraction_forms_projects_sections_type1_row_columns.each do |eefpst1rc| # Timepoint
+                  eefps_arms.each do |eefps_arm| # Arm
                     eefps_arm.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1_arm|
-                      result_statistic_section.result_statistic_sections_measures.each do |rssm|  # q1-Measure
-
+                      result_statistic_section.result_statistic_sections_measures.each do |rssm| # q1-Measure
                         sheet_info.add_rssm(
                           extraction_id: extraction.id,
                           section_name: efps.section.name.singularize,
@@ -449,18 +548,17 @@ class SheetInfo
                           col_description: eefpst1_arm.type1.description,  # arm_description
                           measure_id: rssm.measure.id,
                           measure_name: rssm.measure.name,
-                          rssm_values: eefpst1_arm.tps_arms_rssms_values(eefpst1rc.id, rssm))
+                          rssm_values: eefpst1_arm.tps_arms_rssms_values(eefpst1rc.id, rssm)
+                        )
+                      end # result_statistic_section.result_statistic_sections_measures.each do |rssm|  # q1-Measure
+                    end # eefps_arm.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1_arm|
+                  end # eefps_arms.each do |eefps_arm|
+                end # eefpst1r.extractions_extraction_forms_projects_sections_type1_row_columns.each do |eefpst1rc|  # Timepoint
 
-                      end  # result_statistic_section.result_statistic_sections_measures.each do |rssm|  # q1-Measure
-                    end  # eefps_arm.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1_arm|
-                  end  # eefps_arms.each do |eefps_arm|
-                end  # eefpst1r.extractions_extraction_forms_projects_sections_type1_row_columns.each do |eefpst1rc|  # Timepoint
-
-              when 2  # Between Arm Comparisons - Timepoint x BAC x q2-Measure.
-                eefpst1r.extractions_extraction_forms_projects_sections_type1_row_columns.each do |eefpst1rc|  # Timepoint
+              when 2 # Between Arm Comparisons - Timepoint x BAC x q2-Measure.
+                eefpst1r.extractions_extraction_forms_projects_sections_type1_row_columns.each do |eefpst1rc| # Timepoint
                   result_statistic_section.comparisons.each do |bac|
-                    result_statistic_section.result_statistic_sections_measures.each do |rssm|  # q2-Measure
-
+                    result_statistic_section.result_statistic_sections_measures.each do |rssm| # q2-Measure
                       sheet_info.add_rssm(
                         extraction_id: extraction.id,
                         section_name: efps.section.name.singularize,
@@ -480,18 +578,17 @@ class SheetInfo
                         col_name: bac.pretty_print_export_header, # comparison name
                         measure_id: rssm.measure.id,
                         measure_name: rssm.measure.name,
-                        rssm_values: bac.tps_comparisons_rssms_values(eefpst1rc.id, rssm))
+                        rssm_values: bac.tps_comparisons_rssms_values(eefpst1rc.id, rssm)
+                      )
+                    end # result_statistic_section.result_statistic_sections_measures.each do |rssm|  # q2-Measure
+                  end # result_statistic_section.comparisons.each do |bac|
+                end # eefpst1r.extractions_extraction_forms_projects_sections_type1_row_columns.each do |eefpst1rc|  # Timepoint
 
-                    end  # result_statistic_section.result_statistic_sections_measures.each do |rssm|  # q2-Measure
-                  end  # result_statistic_section.comparisons.each do |bac|
-                end  # eefpst1r.extractions_extraction_forms_projects_sections_type1_row_columns.each do |eefpst1rc|  # Timepoint
-
-              when 3  # Within Arm Comparisons - WAC x Arm x q3-Measure.
+              when 3 # Within Arm Comparisons - WAC x Arm x q3-Measure.
                 result_statistic_section.comparisons.each do |wac|
-                  eefps_arms.each do |eefps_arm|  # Arm
+                  eefps_arms.each do |eefps_arm| # Arm
                     eefps_arm.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1_arm|
-                      result_statistic_section.result_statistic_sections_measures.each do |rssm|  # q3-Measure
-
+                      result_statistic_section.result_statistic_sections_measures.each do |rssm| # q3-Measure
                         sheet_info.add_rssm(
                           extraction_id: extraction.id,
                           section_name: efps.section.name.singularize,
@@ -511,20 +608,19 @@ class SheetInfo
                           col_description: eefpst1_arm.type1.description, # arm_description
                           measure_id: rssm.measure.id,
                           measure_name: rssm.measure.name,
-                          rssm_values: wac.comparisons_arms_rssms_values(eefpst1_arm.id, rssm))
+                          rssm_values: wac.comparisons_arms_rssms_values(eefpst1_arm.id, rssm)
+                        )
+                      end # result_statistic_section.result_statistic_sections_measures.each do |rssm|  # q3-Measure
+                    end # eefps_arm.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1_arm|
+                  end # eefps_arms.each do |eefps_arm|  # Arm
+                end # result_statistic_section.comparisons.each do |wac|
 
-                      end  # result_statistic_section.result_statistic_sections_measures.each do |rssm|  # q3-Measure
-                    end  # eefps_arm.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1_arm|
-                  end  # eefps_arms.each do |eefps_arm|  # Arm
-                end  # result_statistic_section.comparisons.each do |wac|
-
-              when 4  # Net Change - WAC x BAC x q4-Measure.
+              when 4 # Net Change - WAC x BAC x q4-Measure.
                 bac_section = result_statistic_section.population.between_arm_comparisons_section
                 wac_section = result_statistic_section.population.within_arm_comparisons_section
                 bac_section.comparisons.each do |bac|
                   wac_section.comparisons.each do |wac|
-                    result_statistic_section.result_statistic_sections_measures.each do |rssm|  # q4-Measure
-
+                    result_statistic_section.result_statistic_sections_measures.each do |rssm| # q4-Measure
                       sheet_info.add_rssm(
                         extraction_id: extraction.id,
                         section_name: efps.section.name.singularize,
@@ -543,17 +639,17 @@ class SheetInfo
                         col_name: bac.pretty_print_export_header,  # bac comparison name
                         measure_id: rssm.measure.id,
                         measure_name: rssm.measure.name,
-                        rssm_values: wac.wacs_bacs_rssms_values(bac.id, rssm))
-
-                    end  # result_statistic_section.result_statistic_sections_measures.each do |rssm|  # q4-Measure
-                  end  # wac_section.comparisons.each do |wac|
-                end  # bac_section.comparisons.each do |bac|
-              end  # case result_statistic_section.result_statistic_section_type_id
-            end  # eefpst1r.result_statistic_sections.each do |result_statistic_section|  # Result Statistic Section Quadrant
-          end  # eefpst1_outcome.extractions_extraction_forms_projects_sections_type1_rows.each do |eefpst1r|  # Population
-        end  # eefps_outcome.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1_outcome|  # Outcome.
-      end  # eefps_outcomes.each do |eefps_outcome|
-    end  # @project.extractions.each do |extraction|
+                        rssm_values: wac.wacs_bacs_rssms_values(bac.id, rssm)
+                      )
+                    end # result_statistic_section.result_statistic_sections_measures.each do |rssm|  # q4-Measure
+                  end # wac_section.comparisons.each do |wac|
+                end # bac_section.comparisons.each do |bac|
+              end # case result_statistic_section.result_statistic_section_type_id
+            end # eefpst1r.result_statistic_sections.each do |result_statistic_section|  # Result Statistic Section Quadrant
+          end # eefpst1_outcome.extractions_extraction_forms_projects_sections_type1_rows.each do |eefpst1r|  # Population
+        end # eefps_outcome.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1_outcome|  # Outcome.
+      end # eefps_outcomes.each do |eefps_outcome|
+    end # @project.extractions.each do |extraction|
 
     # Used to populate data headers in the results statistics sections
     # These have the form ['Arm Name 1', 'Arm Description 1', 'Measure 1', 'Measure 2', 'Arm Name 2', ...]
