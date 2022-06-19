@@ -10,8 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_06_14_151542) do
-  create_table "abstrackr_settings", id: :integer, charset: "utf8mb3", force: :cascade do |t|
+ActiveRecord::Schema.define(version: 2022_06_11_065358) do
+
+  create_table "abstrackr_settings", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
     t.boolean "journal_visible", default: true
@@ -169,6 +170,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_14_151542) do
     t.datetime "updated_at", precision: nil, null: false
     t.datetime "deleted_at", precision: nil
     t.index ["deleted_at"], name: "index_authors_on_deleted_at"
+    t.index ["name"], name: "index_authors_on_name"
   end
 
   create_table "authors_citations", charset: "utf8mb3", force: :cascade do |t|
@@ -203,6 +205,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_14_151542) do
     t.string "accession_number"
     t.index ["citation_type_id"], name: "index_citations_on_citation_type_id"
     t.index ["deleted_at"], name: "index_citations_on_deleted_at"
+    t.index ["name"], name: "index_citations_on_name"
     t.index ["pmid"], name: "index_citations_on_pmid"
   end
 
