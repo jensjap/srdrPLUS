@@ -3,5 +3,7 @@
 # worker2: RAILS_ENV=production bundle exec sidekiq -q mailers
 
 # Development environment
+web: bin/rails server -p 3000
+css: bin/rails tailwindcss:watch
 worker1: bundle exec sidekiq -q default
 worker2: bundle exec sidekiq -q mailers

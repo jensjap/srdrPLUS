@@ -21,8 +21,8 @@ default: &default
 development:
   <<: *default
   database: <%= ENV['SRDRPLUS_DATABASE_SCHEMA'] %>
-#  variables:
-#    sql_mode: TRADITIONAL
+  # variables:
+  #   sql_mode: TRADITIONAL
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
@@ -56,7 +56,6 @@ production:
   database: <%= ENV['SRDRPLUS_DATABASE_SCHEMA'] %>
   username: <%= ENV['SRDRPLUS_DATABASE_USERNAME'] %>
   password: <%= ENV['SRDRPLUS_DATABASE_PASSWORD'] %>
-
 
 # for importing legacy srdr data
 legacy_production:

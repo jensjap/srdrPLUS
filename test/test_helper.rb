@@ -4,14 +4,13 @@
 if ENV['RAILS_ENV'] == 'test'
   require 'simplecov'
   SimpleCov.start do
-    add_filter '/.bundle/'  # We don't want to include bundled gems.
+    add_filter '/.bundle/' # We don't want to include bundled gems.
   end
 end
 
 ENV['RAILS_ENV'] ||= 'test'
-require File.expand_path('../../config/environment', __FILE__)
+require File.expand_path('../config/environment', __dir__)
 require 'rails/test_help'
-require 'minitest/rails/capybara'
 require 'seed_data_helper'
 
 # reindex models
@@ -43,7 +42,7 @@ class ActiveSupport::TestCase
   # Add more helper methods to be used by all tests here...
   def sign_in_as(user:, password:)
     post user_session_path \
-      'user[email]'    => user.email,
+      'user[email]' => user.email,
       'user[password]' => password
   end
 end

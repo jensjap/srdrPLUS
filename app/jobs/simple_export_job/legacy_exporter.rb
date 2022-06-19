@@ -1,12 +1,7 @@
-require 'simple_export_job/exporter_base'
-require 'simple_export_job/section_templates/type1_sections_wide'
-require 'simple_export_job/section_templates/type2_sections_wide_srdr_style'
-require 'simple_export_job/section_templates/result_sections_wide_srdr_style_2'
-
-class LegacyExporter < ExporterBase
-  include Type1SectionsWide
-  include Type2SectionsWideSRDRStyle
-  include ResultSectionsWideSRDRStyle2
+class SimpleExportJob::LegacyExporter < SimpleExportJob::ExporterBase
+  include SimpleExportJob::SectionTemplates::Type1SectionsWide
+  include SimpleExportJob::SectionTemplates::Type2SectionsWideSrdrStyle
+  include SimpleExportJob::SectionTemplates::ResultSectionsWideSrdrStyle2
 
   def build!
     build_project_information_section
