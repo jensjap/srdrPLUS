@@ -34,7 +34,7 @@
     </template>
     <div class="mb-4">
       <!-- prettier-ignore -->
-      <%= f.association(:projects_users_roles, required: true, collection: @project.projects_users_roles.to_h { |pur| [pur.handle, pur.id] }, input_html: { class: 'select2', multiple: 'multiple' } ) %>
+      <%= f.association(:projects_users_roles, label: 'Participants', required: true, collection: @project.projects_users_roles.to_h { |pur| [pur.handle, pur.id] }, input_html: { class: 'select2', multiple: 'multiple' } ) %>
     </div>
 
     <div class="grid grid-rows xl:grid-cols-4 gap-8 my-8">
@@ -243,7 +243,7 @@
     </div>
 
     <!-- prettier-ignore -->
-    <%= f.button :submit, class: '!mt-8' %>
+    <%= f.button :submit, 'Create Abstract Screening', class: '!mt-8', data: { confirm: "Please note that an Abstract Screening details cannot be modified after it's created. Continue?" } %>
     <% end %>
   </div>
 </div>

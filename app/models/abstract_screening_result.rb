@@ -15,5 +15,19 @@ class AbstractScreeningResult < ApplicationRecord
   belongs_to :abstract_screenings_projects_users_role
 
   has_one :citations_project, through: :abstract_screenings_citations_project
+  has_one :citation, through: :citations_project
   has_one :projects_users_role, through: :abstract_screenings_projects_users_role
+  has_one :projects_user, through: :projects_users_role
+  has_one :user, through: :projects_user
+
+  def readable_label
+    case label
+    when -1
+      'No'
+    when 0
+      'Maybe'
+    when 1
+      'Yes'
+    end
+  end
 end
