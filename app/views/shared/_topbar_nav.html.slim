@@ -75,6 +75,7 @@
                   strong id="signup-link-id" Sign Up
 - if (controller_name.eql?('projects') && not(action_name.eql?('index')) && not(action_name.eql?('new'))) \
     || controller_name.eql?('assignments') \
+    || controller_name.eql?('abstract_screenings') \
     || controller_name.eql?('extractions') \
     || controller_name.eql?('extraction_forms_projects') \
     || (controller_name.eql?('citations') && action_name.eql?('index')) \
@@ -85,7 +86,7 @@
     || (controller_name.eql?('extraction_forms_projects_sections') && action_name.eql?('preview')) \
     || (controller_name.eql?('imports') && action_name.eql?('new')) \
     || (controller.class == PublishingsController && @publishable_record.class == Project && controller.action_name == 'new')
-  - project = @project || @extraction.try(:project) || @extraction_forms_project.try(:project) || @question.try(:project) || @extraction_forms_projects_section.try(:project) || @publishable_record
+  - project = @project || @extraction.try(:project) || @extraction_forms_project.try(:project) || @question.try(:project) || @extraction_forms_projects_section.try(:project) || @abstract_screening.try(:project) || @publishable_record
   div style="margin-bottom: 10px;"
     h5.project-info-header = "Project ID##{project.id}: #{project.name}"
     ul.submenu.dropdown.menu data-dropdown-menu=""
@@ -115,9 +116,7 @@
           li
             a href="#{project_citations_path(project)}" Citation Pool
           li
-            a href="#{project_tasks_path(project)}" Tasks
-          li
-            a href="#{next_assignment_project_path(project)}" Screen
+            a href="#{project_abstract_screenings_path(project)}" Screenings
       li.submenu style="#{'background: #78608b' if controller.class == ExtractionsController && controller.action_name == 'index'}"
         a class="border-y border-white" href="#{project_extractions_path(project)}" Extractions
       li.submenu

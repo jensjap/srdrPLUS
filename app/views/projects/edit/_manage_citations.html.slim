@@ -14,6 +14,7 @@ div.row style="margin: 0;"
               th RefID
               th Authors
               th Title
+              th Status
               th Edit
               th Delete?
 
@@ -26,6 +27,8 @@ div.row style="margin: 0;"
                   div style="overflow: hidden; height: 18px;" = citation.authors_citations.map { |ac| [ac.ordering.position, ac.author.name] }.sort { |a,b| (a[0] || 0) <=> (b[0] || 0) }.map { |a| a[1] }.join('; ')
                 td
                   div style="overflow: hidden; height: 18px;" = citation.name
+                td
+                  div style="overflow: hidden; height: 18px;" = citation.citations_projects.first.screening_status
                 td style="text-align: center;" = link_to 'Edit', edit_citation_path(citation, project_id: @project.id)
                 = form_project.simple_fields_for :citations_projects, @citations_projects_dict[citation.id] do |sf_cp|
                   td style="text-align: center;" = sf_cp.check_box :_destroy, id: "sf_cp-#{citation.id}", style: "margin: 0"

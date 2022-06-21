@@ -1,0 +1,2 @@
+module AbstractScreeningsHelper
+end

@@ -11,6 +11,7 @@
 #  updated_at        :datetime         not null
 #  consensus_type_id :integer
 #  pilot_flag        :boolean
+#  screening_status  :string(255)
 #
 
 class CitationsProject < ApplicationRecord
@@ -18,20 +19,24 @@ class CitationsProject < ApplicationRecord
 
   acts_as_paranoid column: :active, sentinel_value: true
 
-  #paginates_per 25
+  # paginates_per 25
 
-  scope :unlabeled, -> ( project, count ) { includes( :citation => [{ :authors_citations => [:author] }, :keywords, :journal] )
-                                            .left_outer_joins(:labels)
-                                            .where( :labels => { :id => nil },
-                                                    :project_id => project.id )
-                                            .distinct
-                                            .limit(count) }
+  scope :unlabeled, lambda { |project, count|
+                      includes(citation: [{ authors_citations: [:author] }, :keywords, :journal])
+                        .left_outer_joins(:labels)
+                        .where(labels: { id: nil },
+                               project_id: project.id)
+                        .distinct
+                        .limit(count)
+                    }
 
-  scope :labeled, -> ( project, count ) { includes( { :citation => [{ :authors_citations => [:author] }, :keywords, :journal] , labels => [:reasons] } )
-                                          .joins(:labels)
-                                          .where(:project_id => project.id )
-                                          .distinct
-                                          .limit(count) }
+  scope :labeled, lambda { |project, count|
+                    includes({ :citation => [{ authors_citations: [:author] }, :keywords, :journal], labels => [:reasons] })
+                      .joins(:labels)
+                      .where(project_id: project.id)
+                      .distinct
+                      .limit(count)
+                  }
 
   belongs_to :citation, inverse_of: :citations_projects
   belongs_to :project, inverse_of: :citations_projects, touch: true
@@ -45,6 +50,8 @@ class CitationsProject < ApplicationRecord
   has_many :taggings, as: :taggable, dependent: :destroy
   has_many :tags, through: :taggings
 
+  has_and_belongs_to_many :abstract_screenings
+
   accepts_nested_attributes_for :citation, reject_if: :all_blank
 
   # We find all CitationsProject entries that have the exact same citation_id
@@ -53,12 +60,12 @@ class CitationsProject < ApplicationRecord
   # to the "Master CP"
   def dedupe
     citations_projects = CitationsProject.where(
-      citation_id: self.citation_id,
-      project_id: self.project_id
+      citation_id:,
+      project_id:
     ).to_a
     master_citations_project = citations_projects.shift
     citations_projects.each do |cp|
-      self.dedupe_update_associations(master_citations_project, cp)
+      dedupe_update_associations(master_citations_project, cp)
       cp.destroy
     end
   end

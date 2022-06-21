@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_06_14_151542) do
+ActiveRecord::Schema[7.0].define(version: 2022_06_21_030555) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -18,6 +18,50 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_14_151542) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.index ["profile_id"], name: "index_abstrackr_settings_on_profile_id"
+  end
+
+  create_table "abstract_screening_results", charset: "utf8mb3", force: :cascade do |t|
+    t.bigint "projects_users_role_id"
+    t.bigint "abstract_screening_id"
+    t.bigint "citations_project_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["abstract_screening_id"], name: "index_abstract_screening_results_on_abstract_screening_id"
+    t.index ["citations_project_id"], name: "index_abstract_screening_results_on_citations_project_id"
+    t.index ["projects_users_role_id"], name: "index_abstract_screening_results_on_projects_users_role_id"
+  end
+
+  create_table "abstract_screenings", charset: "utf8mb3", force: :cascade do |t|
+    t.bigint "project_id"
+    t.string "abstract_screening_type", default: "perpetual", null: false
+    t.boolean "yes_tag_required", default: false, null: false
+    t.boolean "no_tag_required", default: false, null: false
+    t.boolean "maybe_tag_required", default: false, null: false
+    t.boolean "yes_reason_required", default: false, null: false
+    t.boolean "no_reason_required", default: false, null: false
+    t.boolean "maybe_reason_required", default: false, null: false
+    t.boolean "yes_note_required", default: false, null: false
+    t.boolean "no_note_required", default: false, null: false
+    t.boolean "maybe_note_required", default: false, null: false
+    t.boolean "hide_author", default: false, null: false
+    t.boolean "hide_journal", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["project_id"], name: "index_abstract_screenings_on_project_id"
+  end
+
+  create_table "abstract_screenings_citations_projects", id: false, charset: "utf8mb3", force: :cascade do |t|
+    t.bigint "citations_project_id", null: false
+    t.bigint "abstract_screening_id", null: false
+    t.index ["abstract_screening_id"], name: "cpas_id_on_as_id"
+    t.index ["citations_project_id", "abstract_screening_id"], name: "cp_id_on_as_id", unique: true
+  end
+
+  create_table "abstract_screenings_projects_users_roles", id: false, charset: "utf8mb3", force: :cascade do |t|
+    t.bigint "projects_users_role_id", null: false
+    t.bigint "abstract_screening_id", null: false
+    t.index ["abstract_screening_id"], name: "puras_id_on_as_id"
+    t.index ["projects_users_role_id", "abstract_screening_id"], name: "pur_id_on_as_id", unique: true
   end
 
   create_table "action_types", id: :integer, charset: "utf8mb3", force: :cascade do |t|
@@ -169,6 +213,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_14_151542) do
     t.datetime "updated_at", precision: nil, null: false
     t.datetime "deleted_at", precision: nil
     t.index ["deleted_at"], name: "index_authors_on_deleted_at"
+    t.index ["name"], name: "index_authors_on_name"
   end
 
   create_table "authors_citations", charset: "utf8mb3", force: :cascade do |t|
@@ -203,6 +248,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_14_151542) do
     t.string "accession_number"
     t.index ["citation_type_id"], name: "index_citations_on_citation_type_id"
     t.index ["deleted_at"], name: "index_citations_on_deleted_at"
+    t.index ["name"], name: "index_citations_on_name"
     t.index ["pmid"], name: "index_citations_on_pmid"
   end
 
@@ -222,11 +268,13 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_14_151542) do
     t.datetime "updated_at", precision: nil, null: false
     t.integer "consensus_type_id"
     t.boolean "pilot_flag"
+    t.string "screening_status"
     t.index ["active"], name: "index_citations_projects_on_active"
     t.index ["citation_id"], name: "index_citations_projects_on_citation_id"
     t.index ["consensus_type_id"], name: "index_citations_projects_on_consensus_type_id"
     t.index ["deleted_at"], name: "index_citations_projects_on_deleted_at"
     t.index ["project_id"], name: "index_citations_projects_on_project_id"
+    t.index ["screening_status"], name: "index_citations_projects_on_screening_status"
   end
 
   create_table "citations_tasks", id: :integer, charset: "utf8mb3", force: :cascade do |t|

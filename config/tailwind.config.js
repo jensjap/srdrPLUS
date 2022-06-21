@@ -8,6 +8,12 @@ module.exports = {
   ],
   theme: {
     extend: {
+      colors: {
+        srdrpurple: {
+          DEFAULT: "#4c0d7d",
+          light: "#7438a4",
+        },
+      },
       fontFamily: {
         sans: ["Inter var", ...defaultTheme.fontFamily.sans],
       },
