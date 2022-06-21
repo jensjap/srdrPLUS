@@ -10,7 +10,7 @@
 #
 
 class Import < ApplicationRecord
-  after_create_commit :start_import_job
+  after_commit :start_import_job, on: :create
 
   belongs_to :import_type
   belongs_to :projects_user
@@ -57,7 +57,7 @@ class Import < ApplicationRecord
         case imported_file.file_type.name
         when ".xlsx"
           #!!! Make this perform_later in production!!!
-          ImportAssignmentsAndMappingsJob.perform_now(imported_file.id)
+          ImportAssignmentsAndMappingsJob.perform_later(imported_file.id)
         end
       end
     end

@@ -1,9 +1,11 @@
 require 'rubyXL'
 require 'rubyXL/convenience_methods'
-require 'date'
-require "import_jobs/_pubmed_citation_importer"
+#require 'date'
+#require "import_jobs/pubmed_citation_importer"
 
 class ImportAssignmentsAndMappingsJob < ApplicationJob
+  include ImportJobs::PubmedCitationImporter
+
   queue_as :default
 
   @@LEADER_ROLE      = Role.find_by(name: Role::LEADER)
@@ -511,7 +513,6 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
     eefps = ExtractionsExtractionFormsProjectsSection
       .find_by(extraction: extraction, extraction_forms_projects_section: efps)
 
-debugger
 
 
 
