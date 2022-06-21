@@ -25,8 +25,12 @@ class AbstractScreening < ApplicationRecord
   validates_presence_of :abstract_screening_type
 
   belongs_to :project
-  has_and_belongs_to_many :projects_users_roles
-  has_and_belongs_to_many :citations_projects
+  has_many :abstract_screenings_citations_projects
+  has_many :citations_projects, through: :abstract_screenings_citations_projects
+  has_many :abstract_screenings_projects_users_roles
+  has_many :projects_users_roles, through: :abstract_screenings_projects_users_roles
+
+  has_many :abstract_screening_results, dependent: :destroy, inverse_of: :abstract_screening
 
   def add_citations_from_pool(no_of_citations)
     return if no_of_citations.nil?

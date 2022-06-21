@@ -21,14 +21,15 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_21_030555) do
   end
 
   create_table "abstract_screening_results", charset: "utf8mb3", force: :cascade do |t|
-    t.bigint "projects_users_role_id"
     t.bigint "abstract_screening_id"
-    t.bigint "citations_project_id"
+    t.bigint "abstract_screenings_projects_users_role_id"
+    t.bigint "abstract_screenings_citations_project_id"
+    t.integer "label", limit: 1, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["abstract_screening_id"], name: "index_abstract_screening_results_on_abstract_screening_id"
-    t.index ["citations_project_id"], name: "index_abstract_screening_results_on_citations_project_id"
-    t.index ["projects_users_role_id"], name: "index_abstract_screening_results_on_projects_users_role_id"
+    t.index ["abstract_screenings_citations_project_id"], name: "asr_on_ascp"
+    t.index ["abstract_screenings_projects_users_role_id"], name: "asr_on_aspur"
   end
 
   create_table "abstract_screenings", charset: "utf8mb3", force: :cascade do |t|
@@ -50,18 +51,24 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_21_030555) do
     t.index ["project_id"], name: "index_abstract_screenings_on_project_id"
   end
 
-  create_table "abstract_screenings_citations_projects", id: false, charset: "utf8mb3", force: :cascade do |t|
-    t.bigint "citations_project_id", null: false
+  create_table "abstract_screenings_citations_projects", charset: "utf8mb3", force: :cascade do |t|
     t.bigint "abstract_screening_id", null: false
-    t.index ["abstract_screening_id"], name: "cpas_id_on_as_id"
+    t.bigint "citations_project_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["abstract_screening_id"], name: "ascp_on_as"
     t.index ["citations_project_id", "abstract_screening_id"], name: "cp_id_on_as_id", unique: true
+    t.index ["citations_project_id"], name: "ascp_on_cp"
   end
 
-  create_table "abstract_screenings_projects_users_roles", id: false, charset: "utf8mb3", force: :cascade do |t|
-    t.bigint "projects_users_role_id", null: false
+  create_table "abstract_screenings_projects_users_roles", charset: "utf8mb3", force: :cascade do |t|
     t.bigint "abstract_screening_id", null: false
-    t.index ["abstract_screening_id"], name: "puras_id_on_as_id"
-    t.index ["projects_users_role_id", "abstract_screening_id"], name: "pur_id_on_as_id", unique: true
+    t.bigint "projects_users_role_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["abstract_screening_id", "projects_users_role_id"], name: "pur_id_on_as_id", unique: true
+    t.index ["abstract_screening_id"], name: "aspur_on_as"
+    t.index ["projects_users_role_id"], name: "aspur_on_pur"
   end
 
   create_table "action_types", id: :integer, charset: "utf8mb3", force: :cascade do |t|

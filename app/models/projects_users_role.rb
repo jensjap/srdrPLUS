@@ -37,7 +37,8 @@ class ProjectsUsersRole < ApplicationRecord
 
   has_many :notes, dependent: :destroy, inverse_of: :projects_users_role
 
-  has_and_belongs_to_many :screenings
+  has_many :abstract_screening_projects_users_roles
+  has_many :abstract_screenings, through: :abstract_screening_projects_users_roles
 
   before_destroy :reassign_extraction
 

@@ -132,7 +132,8 @@
                     <%= as.projects_users_roles.count %> member(s)
                   </td>
                   <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                    <%= as.citations_projects.count %>
+                    <%= as.abstract_screening_type == 'perpetual' ? '∞' :
+                    as.citations_projects.count %>
                   </td>
                   <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                     3%<!-- todo replace placeholder -->
@@ -150,11 +151,13 @@
                     focus:ring-offset-2 sm:w-auto hover:no-underline
                     hover:text-white") %>
                     <br />
-                    <a
-                      href="#"
-                      class="inline-flex items-center justify-center rounded-md border border-transparent bg-srdrpurple px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-srdrpurple-light focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto hover:no-underline hover:text-white"
-                      >Show Results</a
-                    >
+                    <%= link_to('Show Results', abstract_screening_path(as),
+                    class: "inline-flex items-center justify-center rounded-md
+                    border border-transparent bg-srdrpurple px-4 py-2 my-4
+                    text-sm font-medium text-white shadow-sm
+                    hover:bg-srdrpurple-light focus:outline-none focus:ring-2
+                    focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto
+                    hover:no-underline hover:text-white") %>
                   </td>
                 </tr>
                 <% end %>

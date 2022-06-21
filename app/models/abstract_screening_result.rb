@@ -10,7 +10,10 @@
 #  updated_at             :datetime         not null
 #
 class AbstractScreeningResult < ApplicationRecord
-  belongs_to :projects_user_role
   belongs_to :abstract_screening
-  belongs_to :label
+  belongs_to :abstract_screenings_citations_project
+  belongs_to :abstract_screenings_projects_users_role
+
+  has_one :citations_project, through: :abstract_screenings_citations_project
+  has_one :projects_users_role, through: :abstract_screenings_projects_users_role
 end
