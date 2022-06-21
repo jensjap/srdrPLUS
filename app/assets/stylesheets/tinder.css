@@ -1,0 +1,95 @@
+.demo__card-cont {
+  position: relative;
+  width: 12rem;
+  height: 10rem;
+}
+.demo__card {
+  z-index: 2;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  transform-origin: 50% 100%;
+}
+.demo__card.reset {
+  transition: transform 0.3s;
+  transform: translateX(0) !important;
+}
+.demo__card.reset .demo__card__choice {
+  transition: opacity 0.3s;
+  opacity: 0 !important;
+}
+.demo__card.inactive {
+  transition: transform 0.3s;
+}
+.demo__card.to-left {
+  transform: translateX(-30rem) rotate(-30deg) !important;
+}
+.demo__card.to-right {
+  transform: translate(30rem) rotate(30deg) !important;
+}
+.demo__card.below {
+  z-index: 1;
+}
+.demo__card__top {
+  height: 10rem;
+}
+.demo__card__name {
+  text-align: center;
+  font-weight: bold;
+  color: #fff;
+}
+.demo__card__btm {
+  height: 11.5rem;
+  background: #fff;
+}
+.demo__card__we {
+  text-align: center;
+  line-height: 11.5rem;
+}
+.demo__card__choice {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+}
+/* .demo__card__choice:before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 2rem;
+  height: 2rem;
+  margin-left: -1rem;
+  color: #fff;
+  border-radius: 50%;
+  box-shadow: -2rem -3rem #fff, 2rem -3rem #fff;
+}
+.demo__card__choice:after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 4rem;
+  height: 1.5rem;
+  margin-left: -2rem;
+  border: 0.6rem solid #fff;
+  border-bottom: none;
+  border-top-left-radius: 1.5rem;
+  border-top-right-radius: 1.5rem;
+}
+.demo__card__choice.m--like:after {
+  transform: scaleY(-1);
+} */
+.demo__card__drag {
+  z-index: 5;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  cursor: grab;
+}
