@@ -163,7 +163,9 @@ Rails.application.routes.draw do
 
   resources :data_audits, only: %i[index update]
   resources :projects, concerns: :paginatable, shallow: true do
-    resources :abstract_screenings
+    resources :abstract_screenings do
+      get 'screening', to: 'abstract_screenings#screening'
+    end
     resource :data_audit, only: [:create]
     resources :sd_meta_data
     resources :teams, concerns: :invitable, only: %i[create update destroy]
@@ -292,6 +294,5 @@ Rails.application.routes.draw do
   resources :organizations, only: [:index]
   resources :sections, only: [:index]
   resources :imports, only: [:create]
-
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end
