@@ -56,7 +56,7 @@
       <%= f.association(:projects_users_roles, label: 'Participants', required: true, collection: @project.projects_users_roles.to_h { |pur| [pur.handle, pur.id] }, input_html: { id: 'participants', multiple: 'multiple' } ) %>
     </div>
 
-    <div class="grid grid-rows xl:grid-cols-4 gap-8 my-8">
+    <div class="grid grid-rows xl:grid-cols-4 gap-8 gap-x-12 my-8">
       <div class="flex items-center justify-between">
         <span class="flex-grow flex flex-col">
           <span class="text-sm font-medium text-gray-900"

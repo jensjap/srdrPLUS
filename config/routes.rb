@@ -164,7 +164,7 @@ Rails.application.routes.draw do
   resources :data_audits, only: %i[index update]
   resources :projects, concerns: :paginatable, shallow: true do
     resources :abstract_screenings do
-      get 'screening', to: 'abstract_screenings#screening'
+      get 'screen', to: 'abstract_screenings#screen'
     end
     resource :data_audit, only: [:create]
     resources :sd_meta_data

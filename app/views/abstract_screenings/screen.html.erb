@@ -5,22 +5,22 @@
   }
 </style>
 <div x-data="" id="abstrackr-wrapper">
-  <%= render 'abstract_screenings/screening/modal_weighing' %>
+  <%= render 'abstract_screenings/screen/modal_weighing' %>
   <div
     class="h-32 absolute inset-0 mt-0 overflow-y-hidden overflow-x-scroll bg-gray-300 flex flex-col justify-center"
   >
     <div class="mt-3">
       <h1 class="px-8 pb-2 text-base font-bold leading-none">
-        <%= render 'abstract_screenings/screening/dummy_title' %>
+        <%= render 'abstract_screenings/screen/dummy_title' %>
       </h1>
       <div class="px-8 text-sm no overflow-x-auto whitespace-nowrap">
-        <%= render 'abstract_screenings/screening/dummy_journal' %>
+        <%= render 'abstract_screenings/screen/dummy_journal' %>
       </div>
       <div class="horizontal-scroll-wrapper">
         <div
           class="horizontal-scroll-wrapper-item text-sm overflow-x-auto whitespace-nowrap"
         >
-          <%= render 'abstract_screenings/screening/dummy_authors' %>
+          <%= render 'abstract_screenings/screen/dummy_authors' %>
         </div>
       </div>
     </div>
@@ -34,17 +34,17 @@
           class="px-8 leading-loose weightable"
           @click="$store.global.toggle(); window.setTimeout(function () { document.getElementById('term').focus(); }, 0);"
         >
-          <%= render 'abstract_screenings/screening/dummy_body' %>
+          <%= render 'abstract_screenings/screen/dummy_body' %>
         </div>
         <div class="px-8 break-all leading-loose">
-          <%= render 'abstract_screenings/screening/dummy_keywords' %>
+          <%= render 'abstract_screenings/screen/dummy_keywords' %>
         </div>
         <div class="px-8 break-all leading-loose">
-          <%= render 'abstract_screenings/screening/dummy_id' %>
+          <%= render 'abstract_screenings/screen/dummy_id' %>
         </div>
       </div>
     </div>
   </div>
 
-  <%= render 'abstract_screenings/screening/swiper' %>
+  <%= render 'abstract_screenings/screen/swiper' %>
 </div>

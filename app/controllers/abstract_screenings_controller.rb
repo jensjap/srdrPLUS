@@ -29,7 +29,7 @@ class AbstractScreeningsController < ApplicationController
     @abstract_screening = AbstractScreening.find(params[:id])
   end
 
-  def screening
+  def screen
     @abstract_screening = AbstractScreening.find(params[:abstract_screening_id])
     render layout: 'abstrackr'
   end
