@@ -31,7 +31,27 @@ class AbstractScreeningsController < ApplicationController
 
   def screen
     @abstract_screening = AbstractScreening.find(params[:abstract_screening_id])
-    render layout: 'abstrackr'
+    @random_citation = if @abstract_screening.citations.empty?
+                         @abstract_screening.project.citations_projects.where(screening_status: nil).sample(1).first.citation
+                       else
+                         @abstract_screening.citations.sample
+                       end
+    respond_to do |format|
+      format.html do
+        render layout: 'abstrackr'
+      end
+
+      format.json do
+        render json: {
+          title: @random_citation.name,
+          journal: @random_citation.journal.name,
+          authors: @random_citation.author_map_string,
+          abstract: @random_citation.abstract,
+          keywords: @random_citation.keywords.map(&:name).join(','),
+          id: @random_citation.accession_number_alts
+        }
+      end
+    end
   end
 
   private

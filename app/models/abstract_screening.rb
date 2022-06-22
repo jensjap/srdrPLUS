@@ -27,6 +27,7 @@ class AbstractScreening < ApplicationRecord
   belongs_to :project
   has_many :abstract_screenings_citations_projects
   has_many :citations_projects, through: :abstract_screenings_citations_projects
+  has_many :citations, through: :citations_projects
   has_many :abstract_screenings_projects_users_roles
   has_many :projects_users_roles, through: :abstract_screenings_projects_users_roles
 

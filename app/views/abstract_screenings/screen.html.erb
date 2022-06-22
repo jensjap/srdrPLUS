@@ -4,23 +4,26 @@
     background: transparent; /* make scrollbar transparent */
   }
 </style>
-<div x-data="" id="abstrackr-wrapper">
+<div x-data id="abstrackr-wrapper">
   <%= render 'abstract_screenings/screen/modal_weighing' %>
   <div
     class="h-32 absolute inset-0 mt-0 overflow-y-hidden overflow-x-scroll bg-gray-300 flex flex-col justify-center"
   >
     <div class="mt-3">
-      <h1 class="px-8 pb-2 text-base font-bold leading-none">
-        <%= render 'abstract_screenings/screen/dummy_title' %>
-      </h1>
-      <div class="px-8 text-sm no overflow-x-auto whitespace-nowrap">
-        <%= render 'abstract_screenings/screen/dummy_journal' %>
+      <div class="horizontal-scroll-wrapper">
+        <h1
+          class="px-8 pb-2 text-base font-bold leading-none horizontal-scroll-wrapper-item overflow-x-auto whitespace-nowrap"
+          x-text="$store.global.citation.title"
+        ></h1>
+      </div>
+      <div class="px-8 text-sm overflow-x-auto whitespace-nowrap">
+        Journal: <span x-text="$store.global.citation.journal"></span>
       </div>
       <div class="horizontal-scroll-wrapper">
         <div
           class="horizontal-scroll-wrapper-item text-sm overflow-x-auto whitespace-nowrap"
         >
-          <%= render 'abstract_screenings/screen/dummy_authors' %>
+          Authors: <span x-text="$store.global.citation.authors"></span>
         </div>
       </div>
     </div>
@@ -33,18 +36,91 @@
         <div
           class="px-8 leading-loose weightable"
           @click="$store.global.toggle(); window.setTimeout(function () { document.getElementById('term').focus(); }, 0);"
-        >
-          <%= render 'abstract_screenings/screen/dummy_body' %>
-        </div>
-        <div class="px-8 break-all leading-loose">
-          <%= render 'abstract_screenings/screen/dummy_keywords' %>
-        </div>
-        <div class="px-8 break-all leading-loose">
-          <%= render 'abstract_screenings/screen/dummy_id' %>
-        </div>
+          x-text="$store.global.citation.abstract"
+        ></div>
+        <div
+          class="px-8 break-all leading-loose"
+          x-text="$store.global.citation.keywords"
+        ></div>
+        <div
+          class="px-8 break-all leading-loose"
+          x-text="$store.global.citation.id"
+        ></div>
       </div>
     </div>
   </div>
 
-  <%= render 'abstract_screenings/screen/swiper' %>
+  <div class="absolute bottom-0 left-0 right-0 bg-gray-300 h-40">
+    <div class="h-full w-full xl:w-1/2 m-auto">
+      <div class="grid grid-cols-3 h-full">
+        <div
+          class="bg-red-500 flex justify-center items-center"
+          @click="$store.global.fetchCitation()"
+        >
+          Reject
+        </div>
+        <div class="bg-blue-500 grid grid-rows-2">
+          <div
+            class="bg-yellow-500 flex justify-center items-center"
+            @click="$store.global.fetchCitation()"
+          >
+            Skip
+          </div>
+          <div
+            class="bg-purple-500 flex justify-center items-center"
+            @click="$store.global.fetchCitation()"
+          >
+            Back
+          </div>
+        </div>
+        <div
+          class="bg-green-500 flex justify-center items-center"
+          @click="$store.global.fetchCitation()"
+        >
+          Accept
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
+
+<script>
+  function prepareText() {
+    var p = $(".weightable");
+
+    p.html(function (index, oldHtml) {
+      return oldHtml.replace(
+        /\b(\w+?)\b/g,
+        `<span onClick="$('#term').val('$1')" class="word hover:bg-blue-200">$1</span>`
+      );
+    });
+  }
+  document.addEventListener("alpine:init", () => {
+    Alpine.store("global", {
+      modal: false,
+      citation: {
+        title: "",
+        journal: "",
+        authors: "",
+        abstract: "",
+        keywords: "",
+        id: "",
+      },
+
+      toggle() {
+        this.modal = !this.modal;
+      },
+
+      async fetchCitation() {
+        this.citation = await (
+          await fetch(
+            "/abstract_screenings/<%= params[:abstract_screening_id] %>/screen.json"
+          )
+        ).json();
+        await new Promise((resolve, reject) => setTimeout(resolve, 0));
+        prepareText();
+      },
+    });
+    Alpine.store("global").fetchCitation();
+  });
+</script>

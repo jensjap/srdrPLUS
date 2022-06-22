@@ -45,6 +45,7 @@
       if (pullDeltaX >= decisionVal) {
         $card.addClass("to-right");
         $("#last-result").text("Yes");
+        window.reload();
         console.log("right");
       } else if (pullDeltaX <= -decisionVal) {
         $card.addClass("to-left");
