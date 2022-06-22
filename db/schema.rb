@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_06_21_235557) do
+ActiveRecord::Schema[7.0].define(version: 2022_06_22_040212) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -89,6 +89,26 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_21_235557) do
     t.index ["abstract_screening_id", "projects_users_role_id"], name: "pur_id_on_as_id", unique: true
     t.index ["abstract_screening_id"], name: "aspur_on_as"
     t.index ["projects_users_role_id"], name: "aspur_on_pur"
+  end
+
+  create_table "abstract_screenings_reasons", charset: "utf8mb3", force: :cascade do |t|
+    t.bigint "abstract_screening_id", null: false
+    t.bigint "reason_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["abstract_screening_id", "reason_id"], name: "asr_as_on_r", unique: true
+    t.index ["abstract_screening_id"], name: "asr_on_as"
+    t.index ["reason_id"], name: "asr_on_r"
+  end
+
+  create_table "abstract_screenings_tags", charset: "utf8mb3", force: :cascade do |t|
+    t.bigint "abstract_screening_id", null: false
+    t.bigint "tag_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["abstract_screening_id", "tag_id"], name: "ast_as_on_t", unique: true
+    t.index ["abstract_screening_id"], name: "ast_on_as"
+    t.index ["tag_id"], name: "ast_on_t"
   end
 
   create_table "action_types", id: :integer, charset: "utf8mb3", force: :cascade do |t|

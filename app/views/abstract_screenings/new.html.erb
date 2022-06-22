@@ -34,7 +34,7 @@
     </template>
     <div class="mb-4">
       <!-- prettier-ignore -->
-      <%= f.association(:projects_users_roles, label: 'Participants', required: true, collection: @project.projects_users_roles.to_h { |pur| [pur.handle, pur.id] }, input_html: { class: 'select2', multiple: 'multiple' } ) %>
+      <%= f.association(:projects_users_roles, label: 'Participants', required: true, collection: @project.projects_users_roles.to_h { |pur| [pur.handle, pur.id] }, input_html: { id: 'participants', multiple: 'multiple' } ) %>
     </div>
 
     <div class="grid grid-rows xl:grid-cols-4 gap-8 my-8">
@@ -200,7 +200,7 @@
         />
       </div>
 
-      <div class="flex items-center justify-between">
+      <!-- <div class="flex items-center justify-between">
         <span class="flex-grow flex flex-col">
           <span class="text-sm font-medium text-gray-900"
             >Additional Options</span
@@ -209,6 +209,37 @@
             >Choose what information the screeners will be shown
           </span>
         </span>
+      </div> -->
+      <div class="flex items-center justify-between">
+        <span class="flex-grow flex flex-col">
+          <span class="text-sm font-medium text-gray-900"
+            >Only use predefined reasons</span
+          >
+          <span class="text-sm text-gray-500" id="availability-description"
+            >Screeners can only choose from the selection of reasons
+            below.</span
+          >
+        </span>
+        <input
+          type="checkbox"
+          name="abstract_screening[only_predefined_reasons]"
+          class="!m-auto bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        />
+      </div>
+      <div class="flex items-center justify-between">
+        <span class="flex-grow flex flex-col">
+          <span class="text-sm font-medium text-gray-900"
+            >Only use predefined tags</span
+          >
+          <span class="text-sm text-gray-500" id="availability-description"
+            >Screeners can only choose from the selection of tags below.</span
+          >
+        </span>
+        <input
+          type="checkbox"
+          name="abstract_screening[only_predefined_tags]"
+          class="!m-auto bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        />
       </div>
       <div class="flex items-center justify-between">
         <span class="flex-grow flex flex-col">
@@ -216,7 +247,7 @@
             >Hide Author Information</span
           >
           <span class="text-sm text-gray-500" id="availability-description"
-            >Screeners will not be shown citation authors.</span
+            >Screeners will not be shown author information of citations.</span
           >
         </span>
         <input
@@ -241,6 +272,15 @@
         />
       </div>
     </div>
+    <div class="mb-4">
+      <!-- prettier-ignore -->
+      <%= f.association(:reasons, label: 'Reasons', input_html: { id: 'reasons', multiple: 'multiple' } ) %>
+    </div>
+
+    <div class="mb-4">
+      <!-- prettier-ignore -->
+      <%= f.association(:tags, label: 'Tags', input_html: { id: 'tags', multiple: 'multiple' } ) %>
+    </div>
 
     <!-- prettier-ignore -->
     <%= f.button :submit, 'Create Abstract Screening', class: '!mt-8', data: { confirm: "Please note that an Abstract Screening details cannot be modified after it's created. Continue?" } %>
@@ -249,5 +289,39 @@
 </div>
 
 <script>
-  $(".select2").select2();
+  $("#participants").select2();
+  $("#reasons").select2({
+    tags: true,
+    createTag: function (params) {
+      console.log(params);
+      var term = $.trim(params.term);
+
+      if (term === "") {
+        return null;
+      }
+
+      return {
+        id: `_${term}`,
+        text: term,
+        newTag: true,
+      };
+    },
+  });
+  $("#tags").select2({
+    tags: true,
+    createTag: function (params) {
+      console.log(params);
+      var term = $.trim(params.term);
+
+      if (term === "") {
+        return null;
+      }
+
+      return {
+        id: `_${term}`,
+        text: term,
+        newTag: true,
+      };
+    },
+  });
 </script>

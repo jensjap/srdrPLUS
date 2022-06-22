@@ -71,7 +71,7 @@
           <div
             class="overflow-hidden shadow-sm ring-1 ring-black ring-opacity-5"
           >
-            <table class="min-w-full table-auto divide-y divide-gray-300">
+            <table class="w-full table-auto divide-y divide-gray-300">
               <thead class="bg-gray-50">
                 <tr>
                   <th
@@ -106,7 +106,19 @@
                   </th>
                   <th
                     scope="col"
-                    class="relative py-3.5 pl-3 pr-4 sm:pr-6 lg:pr-8"
+                    class="w-1/5 px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                  >
+                    Predefined Reasons
+                  </th>
+                  <th
+                    scope="col"
+                    class="w-1/5 px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                  >
+                    Predefined Tags
+                  </th>
+                  <th
+                    scope="col"
+                    class="relative w-1/6 py-3.5 pl-3 pr-4 sm:pr-6 lg:pr-8"
                   >
                     <span class="sr-only">Actions</span>
                   </th>
@@ -116,11 +128,11 @@
                 <% @project.abstract_screenings.each do |as| %>
                 <tr>
                   <td
-                    class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-500 sm:pl-6 lg:pl-8"
+                    class="py-4 pl-4 pr-3 text-sm font-medium text-gray-500 sm:pl-6 lg:pl-8"
                   >
                     <%= as.abstract_screening_type %>
                   </td>
-                  <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                  <td class="px-3 py-4 text-sm text-gray-500">
                     <!-- prettier-ignore -->
                     Tags required for: <%= as.tag_options.join(', ') %><br />
                     Reasons required for: <%= as.reason_options.join(', ') %><br />
@@ -128,15 +140,27 @@
                     Hide author: <%= as.hide_author %><br />
                     Hide journal: <%= as.hide_journal %><br />
                   </td>
-                  <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                  <td class="px-3 py-4 text-sm text-gray-500">
                     <%= as.projects_users_roles.count %> member(s)
                   </td>
-                  <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                  <td class="px-3 py-4 text-sm text-gray-500">
                     <%= as.abstract_screening_type == 'perpetual' ? '∞' :
                     as.citations_projects.count %>
                   </td>
-                  <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                  <td class="px-3 py-4 text-sm text-gray-500">
                     <%= as.abstract_screening_results.count %>
+                  </td>
+                  <td class="px-3 py-4 text-sm text-gray-500">
+                    <% as.reasons.map(&:name).each do |reason| %>
+                    <!-- prettier-ignore -->
+                    - <%= reason %><br />
+                    <% end %>
+                  </td>
+                  <td class="px-3 py-4 text-sm text-gray-500">
+                    <% as.tags.map(&:name).each do |tag| %>
+                    <!-- prettier-ignore -->
+                    - <%= tag %><br />
+                    <% end %>
                   </td>
 
                   <td
