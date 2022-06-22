@@ -52,6 +52,8 @@ class AbstractScreeningsController < ApplicationController
       :yes_note_required,
       :no_note_required,
       :maybe_note_required,
+      :only_predefined_reasons,
+      :only_predefined_tags,
       :hide_author,
       :hide_journal,
       projects_users_role_ids: [],

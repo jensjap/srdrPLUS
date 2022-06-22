@@ -12,6 +12,8 @@ class CreateAbstractScreenings < ActiveRecord::Migration[7.0]
       t.boolean :yes_note_required, null: false, default: false
       t.boolean :no_note_required, null: false, default: false
       t.boolean :maybe_note_required, null: false, default: false
+      t.boolean :only_predefined_reasons, null: false, default: false
+      t.boolean :only_predefined_tags, null: false, default: false
       t.boolean :hide_author, null: false, default: false
       t.boolean :hide_journal, null: false, default: false
       t.timestamps

@@ -64,6 +64,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_22_040212) do
     t.boolean "yes_note_required", default: false, null: false
     t.boolean "no_note_required", default: false, null: false
     t.boolean "maybe_note_required", default: false, null: false
+    t.boolean "only_predefined_reasons", default: false, null: false
+    t.boolean "only_predefined_tags", default: false, null: false
     t.boolean "hide_author", default: false, null: false
     t.boolean "hide_journal", default: false, null: false
     t.datetime "created_at", null: false
