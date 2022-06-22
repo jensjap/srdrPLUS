@@ -101,13 +101,13 @@
                     <%= asr.readable_label %>
                   </td>
                   <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                    <%= asr.citation.name %>
+                    <%= asr.reasons.map(&:name).join(', ') %>
                   </td>
                   <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                    <%= asr.citation.name %>
+                    <%= asr.tags.map(&:name).join(', ') %>
                   </td>
                   <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                    <%= asr.citation.name %>
+                    <%= asr.notes.map(&:value).join(', ') %>
                   </td>
 
                   <td

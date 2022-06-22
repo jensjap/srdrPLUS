@@ -20,6 +20,13 @@ class AbstractScreeningResult < ApplicationRecord
   has_one :projects_user, through: :projects_users_role
   has_one :user, through: :projects_user
 
+  has_many :abstract_screening_results_reasons
+  has_many :reasons, through: :abstract_screening_results_reasons
+  has_many :abstract_screening_results_tags
+  has_many :tags, through: :abstract_screening_results_tags
+
+  has_many :notes, as: :notable
+
   def readable_label
     case label
     when -1

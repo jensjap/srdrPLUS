@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_06_21_030555) do
+ActiveRecord::Schema[7.0].define(version: 2022_06_21_235557) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -30,6 +30,26 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_21_030555) do
     t.index ["abstract_screening_id"], name: "index_abstract_screening_results_on_abstract_screening_id"
     t.index ["abstract_screenings_citations_project_id"], name: "asr_on_ascp"
     t.index ["abstract_screenings_projects_users_role_id"], name: "asr_on_aspur"
+  end
+
+  create_table "abstract_screening_results_reasons", charset: "utf8mb3", force: :cascade do |t|
+    t.bigint "abstract_screening_result_id", null: false
+    t.bigint "reason_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["abstract_screening_result_id", "reason_id"], name: "asrr_asr_on_r", unique: true
+    t.index ["abstract_screening_result_id"], name: "asrr_on_asr"
+    t.index ["reason_id"], name: "asrr_on_r"
+  end
+
+  create_table "abstract_screening_results_tags", charset: "utf8mb3", force: :cascade do |t|
+    t.bigint "abstract_screening_result_id", null: false
+    t.bigint "tag_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["abstract_screening_result_id", "tag_id"], name: "asrt_asr_on_t", unique: true
+    t.index ["abstract_screening_result_id"], name: "asrt_on_asr"
+    t.index ["tag_id"], name: "asrt_on_t"
   end
 
   create_table "abstract_screenings", charset: "utf8mb3", force: :cascade do |t|
