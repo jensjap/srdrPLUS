@@ -3,7 +3,7 @@
   <!-- prettier-ignore -->
   <%= render 'abstract_screenings/screen/confirmation_modal' %>
   <!-- prettier-ignore -->
-  <%= render 'abstract_screenings/screen/close_button' %>
+  <%= render 'abstract_screenings/screen/menu' %>
   <div
     class="m-auto xl:w-1/2 h-32 absolute inset-0 mt-0 overflow-y-hidden bg-gray-300 flex flex-col justify-center"
   >
@@ -27,7 +27,7 @@
     </div>
   </div>
   <div
-    class="m-auto xl:w-1/2 h-auto block absolute inset-0 mt-32 mb-40 overflow-y-auto overflow-x-hidden bg-gray-100"
+    class="m-auto xl:w-1/2 h-auto block absolute inset-0 mt-32 mb-32 overflow-y-auto overflow-x-hidden bg-gray-100"
   >
     <div class="vertical-scroll-wrapper">
       <div class="vertical-scroll-wrapper-item">
@@ -49,44 +49,36 @@
   </div>
 
   <div
-    class="xl:w-1/2 m-auto absolute bottom-0 left-0 right-0 bg-gray-100 h-40"
+    class="xl:w-1/2 m-auto absolute bottom-0 left-0 right-0 bg-gray-100 h-32"
   >
-    <div class="h-full">
+    <div class="h-full text-white">
       <div class="grid grid-cols-3 h-full">
         <div
-          class="bg-gray-500 flex justify-center items-center rounded-tl-2xl"
-          @click=""
-        >
-          Reasons
-        </div>
-        <div class="bg-orange-500 flex justify-center items-center" @click="">
-          Tags
-        </div>
-        <div
-          class="bg-indigo-500 flex justify-center items-center rounded-tr-2xl"
-          @click=""
-        >
-          Notes
-        </div>
-        <div
-          class="bg-red-500 flex justify-center items-center"
+          class="cursor-pointer border-r-8 border-white bg-red-500 flex justify-center items-center rounded-tl-2xl"
           @click="$store.global.postLabel({ labelValue: -1 })"
         >
           Reject
         </div>
-        <div class="bg-blue-500 grid grid-rows-2">
+        <div class="grid grid-rows-2">
           <div
-            class="bg-yellow-500 flex justify-center items-center"
+            class="cursor-pointer border-b-4 border-white bg-gray-500 flex justify-center items-center"
             @click="$store.global.postLabel({ labelValue: 0 })"
           >
             Maybe
           </div>
-          <div class="bg-purple-500 flex justify-center items-center" @click="">
-            Back
+          <div
+            class="cursor-pointer border-t-2 border-white bg-srdrpurple flex justify-center items-center"
+            @click="$store.global.menu = !$store.global.menu"
+          >
+            <div class="space-y-2">
+              <div class="w-8 h-0.5 bg-white"></div>
+              <div class="w-8 h-0.5 bg-white"></div>
+              <div class="w-8 h-0.5 bg-white"></div>
+            </div>
           </div>
         </div>
         <div
-          class="bg-green-500 flex justify-center items-center"
+          class="cursor-pointer border-l-8 border-white bg-green-500 flex justify-center items-center rounded-tr-2xl"
           @click="$store.global.postLabel({ labelValue: 1 })"
         >
           Accept
@@ -109,6 +101,7 @@
   }
   document.addEventListener("alpine:init", () => {
     Alpine.store("global", {
+      menu: false,
       modal: false,
       citation: {
         abstract_screening_id: "",
