@@ -6,6 +6,10 @@
 </style>
 <div x-data id="abstrackr-wrapper">
   <%= render 'abstract_screenings/screen/modal_weighing' %>
+  <!-- prettier-ignore -->
+  <%= render 'abstract_screenings/screen/confirmation_modal' %>
+  <!-- prettier-ignore -->
+  <%= render 'abstract_screenings/screen/close_button' %>
   <div
     class="h-32 absolute inset-0 mt-0 overflow-y-hidden overflow-x-scroll bg-gray-300 flex flex-col justify-center"
   >
@@ -53,22 +57,13 @@
   <div class="absolute bottom-0 left-0 right-0 bg-gray-300 h-40">
     <div class="h-full w-full xl:w-1/2 m-auto">
       <div class="grid grid-cols-3 h-full">
-        <div
-          class="bg-gray-500 flex justify-center items-center"
-          @click="$store.global.postLabel()"
-        >
+        <div class="bg-gray-500 flex justify-center items-center" @click="">
           Reasons
         </div>
-        <div
-          class="bg-orange-500 flex justify-center items-center"
-          @click="$store.global.postLabel()"
-        >
+        <div class="bg-orange-500 flex justify-center items-center" @click="">
           Tags
         </div>
-        <div
-          class="bg-indigo-500 flex justify-center items-center"
-          @click="$store.global.postLabel()"
-        >
+        <div class="bg-indigo-500 flex justify-center items-center" @click="">
           Notes
         </div>
         <div
@@ -84,10 +79,7 @@
           >
             Skip
           </div>
-          <div
-            class="bg-purple-500 flex justify-center items-center"
-            @click="$store.global.postLabel({ labelValue: 0 })"
-          >
+          <div class="bg-purple-500 flex justify-center items-center" @click="">
             Back
           </div>
         </div>
@@ -126,9 +118,23 @@
         keywords: "",
         id: "",
       },
+      confirmationModal: false,
+      confirmationModalText: "",
+      confirmationModalTexts: {
+        "-1": "Rejected",
+        0: "Maybe",
+        1: "Accepted",
+      },
 
       toggle() {
         this.modal = !this.modal;
+      },
+
+      async showConfirmation(label) {
+        this.confirmationModalText = this.confirmationModalTexts[label];
+        this.confirmationModal = true;
+        await new Promise((resolve, reject) => setTimeout(resolve, 500));
+        this.confirmationModal = false;
       },
 
       async postLabel(labelData) {
@@ -145,7 +151,9 @@
             }),
           }
         );
-        this.citation = await response.json();
+        const citation = await response.json();
+        if (labelData) await this.showConfirmation(labelData.labelValue);
+        this.citation = citation;
         await new Promise((resolve, reject) => setTimeout(resolve, 0));
         prepareText();
       },

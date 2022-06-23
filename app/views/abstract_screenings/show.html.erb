@@ -10,19 +10,16 @@
       </div>
       <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
         <!-- prettier-ignore -->
-        <%= link_to('Delete Abstract Screening',
-        abstract_screening_path(@abstract_screening), method: :delete, class:
+        <%= link_to('Continue Abstract Screening',
+        abstract_screening_screen_path(@abstract_screening), class:
         "cursor-pointer inline-flex items-center justify-center rounded-md
-        border border-transparent bg-red-700 px-4 py-2 text-sm font-medium
-        text-white shadow-sm hover:bg-red-500 focus:outline-none focus:ring-2
+        border border-transparent bg-srdrpurple px-4 py-2 text-sm font-medium
+        text-white shadow-sm hover:bg-srdrpurple-light focus:outline-none focus:ring-2
         focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto hover:no-underline
-        hover:text-white", data: {
-          confirm:
-          "Destroy this abstract screening and all of its result labels?"
-        }) %>
+        hover:text-white") %>
       </div>
     </div>
-    <div class="mt-8 flex flex-col">
+    <div class="my-8 flex flex-col">
       <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
         <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
           <div
@@ -144,6 +141,25 @@
             </table>
           </div>
         </div>
+      </div>
+    </div>
+    <div class="sm:flex sm:items-center">
+      <div class="sm:flex-auto">
+        <h1 class="text-xl font-semibold text-gray-900">
+          Delete Abstract Screening
+        </h1>
+        <p class="mt-2 text-sm text-gray-700">
+          Please note that this cannot be undone.
+        </p>
+      </div>
+      <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
+        <%= link_to('Delete Abstract Screening',
+        abstract_screening_path(@abstract_screening), method: :delete, class:
+        "cursor-pointer inline-flex items-center justify-center rounded-md
+        border border-transparent bg-red-700 px-4 py-2 text-sm font-medium
+        text-white shadow-sm hover:bg-red-500 focus:outline-none focus:ring-2
+        focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto hover:no-underline
+        hover:text-white", data: { confirm: "Are you sure?" }) %>
       </div>
     </div>
   </div>
