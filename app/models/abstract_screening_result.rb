@@ -2,12 +2,13 @@
 #
 # Table name: abstract_screening_results
 #
-#  id                     :bigint           not null, primary key
-#  projects_users_role_id :bigint
-#  abstract_screening_id  :bigint
-#  citations_project_id   :bigint
-#  created_at             :datetime         not null
-#  updated_at             :datetime         not null
+#  id                                         :bigint           not null, primary key
+#  abstract_screening_id                      :bigint
+#  abstract_screenings_projects_users_role_id :bigint
+#  abstract_screenings_citations_project_id   :bigint
+#  label                                      :integer          not null
+#  created_at                                 :datetime         not null
+#  updated_at                                 :datetime         not null
 #
 class AbstractScreeningResult < ApplicationRecord
   belongs_to :abstract_screening

@@ -55,45 +55,45 @@
       <div class="grid grid-cols-3 h-full">
         <div
           class="bg-gray-500 flex justify-center items-center"
-          @click="$store.global.fetchCitation()"
+          @click="$store.global.postLabel()"
         >
           Reasons
         </div>
         <div
           class="bg-orange-500 flex justify-center items-center"
-          @click="$store.global.fetchCitation()"
+          @click="$store.global.postLabel()"
         >
           Tags
         </div>
         <div
           class="bg-indigo-500 flex justify-center items-center"
-          @click="$store.global.fetchCitation()"
+          @click="$store.global.postLabel()"
         >
           Notes
         </div>
         <div
           class="bg-red-500 flex justify-center items-center"
-          @click="$store.global.fetchCitation()"
+          @click="$store.global.postLabel({ labelValue: -1 })"
         >
           Reject
         </div>
         <div class="bg-blue-500 grid grid-rows-2">
           <div
             class="bg-yellow-500 flex justify-center items-center"
-            @click="$store.global.fetchCitation()"
+            @click="$store.global.postLabel({ labelValue: 0 })"
           >
             Skip
           </div>
           <div
             class="bg-purple-500 flex justify-center items-center"
-            @click="$store.global.fetchCitation()"
+            @click="$store.global.postLabel({ labelValue: 0 })"
           >
             Back
           </div>
         </div>
         <div
           class="bg-green-500 flex justify-center items-center"
-          @click="$store.global.fetchCitation()"
+          @click="$store.global.postLabel({ labelValue: 1 })"
         >
           Accept
         </div>
@@ -117,6 +117,8 @@
     Alpine.store("global", {
       modal: false,
       citation: {
+        abstract_screening_id: "",
+        abstract_screenings_citations_project_id: "",
         title: "",
         journal: "",
         authors: "",
@@ -129,16 +131,25 @@
         this.modal = !this.modal;
       },
 
-      async fetchCitation() {
-        this.citation = await (
-          await fetch(
-            "/abstract_screenings/<%= params[:abstract_screening_id] %>/screen.json"
-          )
-        ).json();
+      async postLabel(labelData) {
+        const response = await fetch(
+          "/abstract_screenings/<%= params[:abstract_screening_id] %>/label",
+          {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              data: { labelData, citation: this.citation },
+            }),
+          }
+        );
+        this.citation = await response.json();
         await new Promise((resolve, reject) => setTimeout(resolve, 0));
         prepareText();
       },
     });
-    Alpine.store("global").fetchCitation();
+    Alpine.store("global").postLabel();
   });
 </script>

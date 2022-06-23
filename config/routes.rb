@@ -165,6 +165,7 @@ Rails.application.routes.draw do
   resources :projects, concerns: :paginatable, shallow: true do
     resources :abstract_screenings do
       get 'screen', to: 'abstract_screenings#screen'
+      post 'label', to: 'abstract_screenings#label'
     end
     resource :data_audit, only: [:create]
     resources :sd_meta_data

@@ -1,5 +1,6 @@
 class AbstractScreeningsController < ApplicationController
   add_breadcrumb 'my projects', :projects_path
+  skip_before_action :verify_authenticity_token, only: [:label]
 
   before_action :set_project, only: %i[index new create]
   def index
@@ -36,22 +37,24 @@ class AbstractScreeningsController < ApplicationController
                        else
                          @abstract_screening.citations.sample
                        end
-    respond_to do |format|
-      format.html do
-        render layout: 'abstrackr'
-      end
+    render layout: 'abstrackr'
+  end
 
-      format.json do
-        render json: {
-          title: @random_citation.name,
-          journal: @random_citation.journal.name,
-          authors: @random_citation.author_map_string,
-          abstract: @random_citation.abstract,
-          keywords: @random_citation.keywords.map(&:name).join(','),
-          id: @random_citation.accession_number_alts
-        }
-      end
+  def label
+    label_preparations
+    payload = params[:data]
+    if payload[:labelData]
+      label = payload[:labelData][:labelValue]
+      abstract_screenings_citations_project_id = payload[:citation][:abstract_screenings_citations_project_id]
+      abstract_screening = @abstract_screening
+      abstract_screenings_projects_users_role_id = AbstractScreeningsProjectsUsersRole.where(abstract_screening:).first.id ## TODO: rethink user relationship
+      @abstract_screening
+        .abstract_screening_results
+        .create!(label:, abstract_screenings_citations_project_id:,
+                 abstract_screenings_projects_users_role_id:)
     end
+
+    render_label_json_data
   end
 
   def destroy
@@ -61,6 +64,26 @@ class AbstractScreeningsController < ApplicationController
   end
 
   private
+
+  def label_preparations
+    @abstract_screening = AbstractScreening.find(params[:abstract_screening_id])
+
+    @abstract_screenings_citations_project = @abstract_screening.abstract_screenings_citations_projects.sample
+    @random_citation = @abstract_screenings_citations_project.citation
+  end
+
+  def render_label_json_data
+    render json: {
+      abstract_screening_id: @abstract_screening.id,
+      abstract_screenings_citations_project_id: @abstract_screenings_citations_project.id,
+      title: @random_citation.name,
+      journal: @random_citation.journal.name,
+      authors: @random_citation.author_map_string,
+      abstract: @random_citation.abstract,
+      keywords: @random_citation.keywords.map(&:name).join(','),
+      id: @random_citation.accession_number_alts
+    }
+  end
 
   def set_project
     @project = Project.includes(citations_projects: :citation).find(params[:project_id])

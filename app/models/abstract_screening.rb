@@ -14,6 +14,8 @@
 #  yes_note_required       :boolean          default(FALSE), not null
 #  no_note_required        :boolean          default(FALSE), not null
 #  maybe_note_required     :boolean          default(FALSE), not null
+#  only_predefined_reasons :boolean          default(FALSE), not null
+#  only_predefined_tags    :boolean          default(FALSE), not null
 #  hide_author             :boolean          default(FALSE), not null
 #  hide_journal            :boolean          default(FALSE), not null
 #  created_at              :datetime         not null
