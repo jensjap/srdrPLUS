@@ -1,9 +1,3 @@
-<style>
-  ::-webkit-scrollbar {
-    width: 0px;
-    background: transparent; /* make scrollbar transparent */
-  }
-</style>
 <div x-data id="abstrackr-wrapper">
   <%= render 'abstract_screenings/screen/modal_weighing' %>
   <!-- prettier-ignore -->
@@ -11,12 +5,12 @@
   <!-- prettier-ignore -->
   <%= render 'abstract_screenings/screen/close_button' %>
   <div
-    class="h-32 absolute inset-0 mt-0 overflow-y-hidden overflow-x-scroll bg-gray-300 flex flex-col justify-center"
+    class="m-auto xl:w-1/2 h-32 absolute inset-0 mt-0 overflow-y-hidden bg-gray-300 flex flex-col justify-center"
   >
     <div class="mt-3">
       <div class="horizontal-scroll-wrapper">
         <h1
-          class="px-8 pb-2 text-base font-bold leading-none horizontal-scroll-wrapper-item overflow-x-auto whitespace-nowrap"
+          class="px-8 pb-2 text-base font-bold horizontal-scroll-wrapper-item overflow-x-auto whitespace-nowrap"
           x-text="$store.global.citation.title"
         ></h1>
       </div>
@@ -33,7 +27,7 @@
     </div>
   </div>
   <div
-    class="h-auto block absolute inset-0 mt-32 mb-40 overflow-y-auto overflow-x-hidden bg-gray-100"
+    class="m-auto xl:w-1/2 h-auto block absolute inset-0 mt-32 mb-40 overflow-y-auto overflow-x-hidden bg-gray-100"
   >
     <div class="vertical-scroll-wrapper">
       <div class="vertical-scroll-wrapper-item">
@@ -54,16 +48,24 @@
     </div>
   </div>
 
-  <div class="absolute bottom-0 left-0 right-0 bg-gray-300 h-40">
-    <div class="h-full w-full xl:w-1/2 m-auto">
+  <div
+    class="xl:w-1/2 m-auto absolute bottom-0 left-0 right-0 bg-gray-100 h-40"
+  >
+    <div class="h-full">
       <div class="grid grid-cols-3 h-full">
-        <div class="bg-gray-500 flex justify-center items-center" @click="">
+        <div
+          class="bg-gray-500 flex justify-center items-center rounded-tl-2xl"
+          @click=""
+        >
           Reasons
         </div>
         <div class="bg-orange-500 flex justify-center items-center" @click="">
           Tags
         </div>
-        <div class="bg-indigo-500 flex justify-center items-center" @click="">
+        <div
+          class="bg-indigo-500 flex justify-center items-center rounded-tr-2xl"
+          @click=""
+        >
           Notes
         </div>
         <div
@@ -77,7 +79,7 @@
             class="bg-yellow-500 flex justify-center items-center"
             @click="$store.global.postLabel({ labelValue: 0 })"
           >
-            Skip
+            Maybe
           </div>
           <div class="bg-purple-500 flex justify-center items-center" @click="">
             Back
