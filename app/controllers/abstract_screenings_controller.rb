@@ -28,6 +28,7 @@ class AbstractScreeningsController < ApplicationController
 
   def show
     @abstract_screening = AbstractScreening.find(params[:id])
+    @abstract_screening_results = @abstract_screening.abstract_screening_results.order(created_at: :desc).page(params[:page]).per(5)
   end
 
   def screen
