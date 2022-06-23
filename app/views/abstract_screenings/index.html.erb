@@ -2,13 +2,11 @@
   <!-- This example requires Tailwind CSS v2.0+ -->
   <div>
     <h3 class="text-xl leading-6 font-medium text-gray-900">
-      Citation Screening Pipeline (I - IV)
+      Citation Processing Pipeline (I - V)
     </h3>
-    <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-4">
+    <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-5">
       <div class="px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-6">
-        <dt class="text-sm font-medium text-gray-500 truncate">
-          I. Unprocessed
-        </dt>
+        <dt class="text-sm font-medium text-gray-500 truncate">I. Unhandled</dt>
         <dd class="mt-1 text-3xl font-semibold text-gray-900">
           <%= @up.count %>
         </dd>
@@ -16,7 +14,7 @@
 
       <div class="px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-6">
         <dt class="text-sm font-medium text-gray-500 truncate">
-          II. Abstract Screening
+          II. In Abstract Screening
         </dt>
         <dd class="mt-1 text-3xl font-semibold text-gray-900">
           <%= @as.count %>
@@ -25,7 +23,7 @@
 
       <div class="px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-6">
         <dt class="text-sm font-medium text-gray-500 truncate">
-          III. Full Text Screening
+          III. In Full Text Screening
         </dt>
         <dd class="mt-1 text-3xl font-semibold text-gray-900">
           <%= @fs.count %>
@@ -34,10 +32,18 @@
 
       <div class="px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-6">
         <dt class="text-sm font-medium text-gray-500 truncate">
-          IV. Data Extraction
+          IV. In Data Extraction
         </dt>
         <dd class="mt-1 text-3xl font-semibold text-gray-900">
           <%= @de.count %>
+        </dd>
+      </div>
+
+      <div class="px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-6">
+        <dt class="text-sm font-medium text-gray-500 truncate">V. Completed</dt>
+        <dd class="mt-1 text-3xl font-semibold text-gray-900">
+          0
+          <!-- TODO Placeholder -->
         </dd>
       </div>
     </dl>
@@ -125,11 +131,13 @@
                 </tr>
               </thead>
               <tbody class="divide-y divide-gray-200 bg-white">
-                <% if @project.abstract_screenings.empty? %>
+                <% if @abstract_screenings.empty? %>
                 <tr>
                   <td>No abstract screenings yet.</td>
                 </tr>
-                <% end %> <% @project.abstract_screenings.each do |as| %>
+                <% end %>
+                <!-- prettier-ignore -->
+                <% @abstract_screenings.each do |as| %>
                 <tr>
                   <td
                     class="py-4 pl-4 pr-3 text-sm font-medium text-gray-500 sm:pl-6 lg:pl-8"
@@ -196,6 +204,7 @@
             </table>
           </div>
         </div>
+        <%= paginate(@abstract_screenings, theme: 'foundation') %>
       </div>
     </div>
   </div>

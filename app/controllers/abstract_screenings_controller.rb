@@ -8,6 +8,7 @@ class AbstractScreeningsController < ApplicationController
     @as = @project.citations_projects.where(citations_projects: { screening_status: 'AS' })
     @fs = @project.citations_projects.where(citations_projects: { screening_status: 'FS' })
     @de = @project.citations_projects.where(citations_projects: { screening_status: 'DE' })
+    @abstract_screenings = @project.abstract_screenings.order(id: :desc).page(params[:page]).per(5)
   end
 
   def new
@@ -28,13 +29,22 @@ class AbstractScreeningsController < ApplicationController
 
   def show
     @abstract_screening = AbstractScreening.find(params[:id])
-    @abstract_screening_results = @abstract_screening.abstract_screening_results.order(created_at: :desc).page(params[:page]).per(5)
+    @abstract_screening_results = @abstract_screening
+                                  .abstract_screening_results
+                                  .order(created_at: :desc)
+                                  .page(params[:page])
+                                  .per(5)
   end
 
   def screen
     @abstract_screening = AbstractScreening.find(params[:abstract_screening_id])
     @random_citation = if @abstract_screening.citations.empty?
-                         @abstract_screening.project.citations_projects.where(screening_status: nil).sample(1).first.citation
+                         @abstract_screening
+                           .project.citations_projects
+                           .where(screening_status: nil)
+                           .sample(1)
+                           .first
+                           .citation
                        else
                          @abstract_screening.citations.sample
                        end
@@ -48,7 +58,10 @@ class AbstractScreeningsController < ApplicationController
       label = payload[:labelData][:labelValue]
       abstract_screenings_citations_project_id = payload[:citation][:abstract_screenings_citations_project_id]
       abstract_screening = @abstract_screening
-      abstract_screenings_projects_users_role_id = AbstractScreeningsProjectsUsersRole.where(abstract_screening:).first.id ## TODO: rethink user relationship
+      abstract_screenings_projects_users_role_id = AbstractScreeningsProjectsUsersRole
+                                                   .where(abstract_screening:)
+                                                   .first
+                                                   .id ## TODO: rethink user relationship
       @abstract_screening
         .abstract_screening_results
         .create!(label:, abstract_screenings_citations_project_id:,
