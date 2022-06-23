@@ -1,19 +1,19 @@
 #navigation
-  div data-sticky-container=""
+  div
     .title-bar data-hide-for="medium" data-responsive-toggle="responsive-menu"
-      button.menu-icon data-toggle="responsive-menu" type="button" Menu
+      button.menu-icon data-toggle="responsive-menu" type="button"
       .title-bar-title
 
     #responsive-menu.top-bar.expanded data-sticky="" data-options="marginTop:0" style="width:100%" data-top-anchor="131"
       .grid-x.align-center.menubar
-        .cell.medium-12
+        div class="cell medium-12 flex flex-col sm:flex-row items-center justify-between"
           .top-bar-left
             ul.dropdown.menu data-dropdown-menu=""
-              li.menu-text
+              li.menu-text style="padding: 0"
                 = link_to root_path(no_redirect: true)
-                  = image_tag('brand.png', alt: 'srdrPLUS - Home', size: '200x50')
+                  = image_tag('brand.png', alt: 'srdrPLUS - Home', size: '200x50', class: 'w-36')
 
-          .top-bar-right
+          div class="top-bar-right whitespace-nowrap mobile-overflow"
             ul.dropdown.menu.icons.icon-right data-dropdown-menu=""
               - if user_signed_in?
                 = render "shared/signed_in_links"
@@ -30,18 +30,12 @@
                 = link_to('#') do
                   | Help
                   i class="fi-list"
-                ul.menu style='min-width: 450px'
+                ul.menu.res-menu style='min-width: 450px'
                   h6
                     b Tutorials - PDF Guides
                     li = link_to('User Guide', 'https://srdrplus.s3.amazonaws.com/SRDR%2B+User+Guide+-+10-13-21_Final.pdf', target: '_blank')
                     li = link_to('Extracting Data', 'https://srdrplus.s3.amazonaws.com/SRDR%2B+Data+Extraction+Tutorial+-+10-13-21.pdf', target: '_blank')
-                    /li = link_to('Importing Structured Data from Microsoft Excel', 'https://srdrplus.s3.amazonaws.com/Importing+Structured+Data+from+Microsoft+Excel+into+SRDR%2B.pdf', target: '_blank')
-                      /ul.menu style='min-width: 450px'
-                        li = link_to('Importing Structured Data from Microsoft Excel into SRDR+', 'https://srdrplus.s3.amazonaws.com/Importing+Structured+Data+from+Microsoft+Excel+into+SRDR%2B.pdf', target: '_blank')
-                        li = link_to('Import Templates', 'https://srdrplus.s3.amazonaws.com/Import+Templates.zip', target: '_blank')
                     li = link_to('Importing Structured Data from DistillerSR', 'https://srdrplus.s3.amazonaws.com/Importing+Structured+Data+from+DistillerSR+into+SRDR%2B.pdf', target: '_blank')
-                    /br
-                    /li = link_to('Download Import Templates', 'https://srdrplus.s3.amazonaws.com/Import+Templates.zip', target: '_blank')
                     b Tutorials - Video Guides
                     li = link_to('Introduction to SRDR+ for Data Extraction of Systematic Reviews', 'https://youtu.be/aDxStZR3CGA', target: '_blank', data: { confirm: @exit_disclaimer })
                     li = link_to('Setting up a new project and a project team in SRDR+', 'https://youtu.be/obdwdkfCVac', target: '_blank', data: { confirm: @exit_disclaimer })
@@ -61,8 +55,8 @@
                 li aria-expanded="false"
                   a href='#'
                     | Account
-                    i.fi-torso style="padding-left: 5px"
-                  ul.menu style="width: 350px;"
+                    i class="fi-list" style="padding-left: 5px"
+                  ul.menu.res-menu style="width: 350px;"
                     h6
                       b = current_user.email
                     li = link_to 'Settings', edit_user_registration_path
@@ -87,14 +81,14 @@
     || (controller_name.eql?('imports') && action_name.eql?('new')) \
     || (controller.class == PublishingsController && @publishable_record.class == Project && controller.action_name == 'new')
   - project = @project || @extraction.try(:project) || @extraction_forms_project.try(:project) || @question.try(:project) || @extraction_forms_projects_section.try(:project) || @abstract_screening.try(:project) || @publishable_record
-  div style="margin-bottom: 10px;"
-    h5.project-info-header = "Project ID##{project.id}: #{project.name}"
-    ul.submenu.dropdown.menu data-dropdown-menu=""
+  div
+    h5 class="project-info-header whitespace-nowrap mobile-overflow" = "Project ID##{project.id}: #{project.name}"
+    ul class="submenu dropdown menu whitespace-nowrap mobile-overflow" data-dropdown-menu=""
       li.submenu aria-expanded="false" style="#{'background: #78608b' if controller.class == ProjectsController && controller.action_name == 'edit'}"
         = link_to('#', class: 'cursor-default border-y border-white') do
           | Project Details	&nbsp;
           i class="fi-list"
-        ul.menu
+        ul.menu.res-menu
           li
             a href="#{edit_project_path(project)}#panel-project-information" Project Info
           li
@@ -112,7 +106,7 @@
         = link_to('#', class: 'cursor-default border-y border-white') do
           | Citation Manager &nbsp;
           i class="fi-list"
-        ul.menu
+        ul.menu.res-menu
           li
             a href="#{project_citations_path(project)}" Citation Pool
           li

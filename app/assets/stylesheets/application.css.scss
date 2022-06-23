@@ -131,7 +131,7 @@ body div.top-bar {
   padding: 3px 3px 6px 3px;
 
   .top-bar-right {
-    margin-top: 9px;
+    // margin-top: 9px;
 
     a.button {
       border: 1px solid white;
@@ -782,4 +782,16 @@ li.submenu > a {
 
 ul.dropdown li ul li:hover {
   background: lightgrey;
+}
+
+@media (max-width: 640px) {
+  .res-menu {
+    left: 0 !important;
+    position: fixed !important;
+    top: inherit !important;
+  }
+  .mobile-overflow {
+    overflow-x: scroll;
+    overflow-y: visible;
+  }
 }
