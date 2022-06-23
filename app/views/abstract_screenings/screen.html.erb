@@ -54,6 +54,24 @@
     <div class="h-full w-full xl:w-1/2 m-auto">
       <div class="grid grid-cols-3 h-full">
         <div
+          class="bg-gray-500 flex justify-center items-center"
+          @click="$store.global.fetchCitation()"
+        >
+          Reasons
+        </div>
+        <div
+          class="bg-orange-500 flex justify-center items-center"
+          @click="$store.global.fetchCitation()"
+        >
+          Tags
+        </div>
+        <div
+          class="bg-indigo-500 flex justify-center items-center"
+          @click="$store.global.fetchCitation()"
+        >
+          Notes
+        </div>
+        <div
           class="bg-red-500 flex justify-center items-center"
           @click="$store.global.fetchCitation()"
         >

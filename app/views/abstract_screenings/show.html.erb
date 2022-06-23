@@ -9,12 +9,17 @@
         </p>
       </div>
       <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
-        <button
-          type="button"
-          class="cursor-pointer inline-flex items-center justify-center rounded-md border border-transparent bg-srdrpurple px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-srdrpurple-light focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto"
-        >
-          Add Participants
-        </button>
+        <!-- prettier-ignore -->
+        <%= link_to('Delete Abstract Screening',
+        abstract_screening_path(@abstract_screening), method: :delete, class:
+        "cursor-pointer inline-flex items-center justify-center rounded-md
+        border border-transparent bg-red-700 px-4 py-2 text-sm font-medium
+        text-white shadow-sm hover:bg-red-500 focus:outline-none focus:ring-2
+        focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto hover:no-underline
+        hover:text-white", data: {
+          confirm:
+          "Destroy this abstract screening and all of its result labels?"
+        }) %>
       </div>
     </div>
     <div class="mt-8 flex flex-col">
@@ -80,6 +85,11 @@
                 </tr>
               </thead>
               <tbody class="divide-y divide-gray-200 bg-white">
+                <% if @abstract_screening.abstract_screening_results.empty? %>
+                <tr>
+                  <td>No screening results yet</td>
+                </tr>
+                <% end %>
                 <!-- prettier-ignore -->
                 <% @abstract_screening.abstract_screening_results.each do |asr| %>
                 <tr>

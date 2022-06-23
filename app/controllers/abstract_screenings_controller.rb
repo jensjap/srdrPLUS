@@ -54,6 +54,12 @@ class AbstractScreeningsController < ApplicationController
     end
   end
 
+  def destroy
+    @abstract_screening = AbstractScreening.find(params[:id])
+    @abstract_screening.destroy
+    redirect_to project_abstract_screenings_path(@abstract_screening.project)
+  end
+
   private
 
   def set_project

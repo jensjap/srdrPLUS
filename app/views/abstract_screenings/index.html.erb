@@ -125,7 +125,11 @@
                 </tr>
               </thead>
               <tbody class="divide-y divide-gray-200 bg-white">
-                <% @project.abstract_screenings.each do |as| %>
+                <% if @project.abstract_screenings.empty? %>
+                <tr>
+                  <td>No abstract screenings yet.</td>
+                </tr>
+                <% end %> <% @project.abstract_screenings.each do |as| %>
                 <tr>
                   <td
                     class="py-4 pl-4 pr-3 text-sm font-medium text-gray-500 sm:pl-6 lg:pl-8"
