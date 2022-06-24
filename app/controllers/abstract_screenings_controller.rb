@@ -67,7 +67,12 @@ class AbstractScreeningsController < ApplicationController
     redirect_to project_abstract_screenings_path(@abstract_screening.project)
   end
 
-  def citation_lifecycle_management; end
+  def citation_lifecycle_management
+    @up = @project.citations_projects.where(citations_projects: { screening_status: nil })
+    @as = @project.citations_projects.where(citations_projects: { screening_status: 'AS' })
+    @fs = @project.citations_projects.where(citations_projects: { screening_status: 'FS' })
+    @de = @project.citations_projects.where(citations_projects: { screening_status: 'DE' })
+  end
 
   private
 

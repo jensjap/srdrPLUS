@@ -108,11 +108,11 @@
           i class="fi-list"
         ul.menu.res-menu
           li
-            a href="#{project_citations_path(project)}" Citation Pool Management
+            a href="#{project_citations_path(project)}" Pool
           li
             a href="#{project_abstract_screenings_path(project)}" Abstract Screenings
           li
-            a href="#{project_citation_lifecycle_management_path(project)}" Citation Lifecycle Management
+            a href="#{project_citation_lifecycle_management_path(project)}" Lifecycle Management
       li.submenu style="#{'background: #78608b' if controller.class == ExtractionsController && controller.action_name == 'index'}"
         a class="border-y border-white" href="#{project_extractions_path(project)}" Extractions
       li.submenu
