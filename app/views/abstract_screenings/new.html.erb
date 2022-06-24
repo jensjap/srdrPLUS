@@ -21,7 +21,7 @@
   <div class="sm:flex sm:items-center">
     <div class="sm:flex-auto">
       <h1 class="text-xl font-semibold text-gray-900">
-        Create New Abstract Screening Process
+        Create New Abstract Screening
       </h1>
       <p class="mt-2 text-sm text-gray-700">
         Setup an abstract screening process for your project members and pool of
@@ -39,7 +39,7 @@
     <template x-if="type != 'perpetual'">
       <div class="mb-4">
         <label for="no_of_citations"
-          >Maximum number of citations (1..1000) drawn from the citations
+          >Maximum number of citations (1..100,000) drawn from the citations
           pool:</label
         >
         <input
@@ -47,7 +47,7 @@
           id="no_of_citations"
           name="no_of_citations"
           min="1"
-          max="1000"
+          max="100000"
         />
       </div>
     </template>
@@ -329,7 +329,7 @@
     <template x-if="only_predefined_reasons">
       <div class="mb-4">
         <!-- prettier-ignore -->
-        <%= f.association(:reasons, label: 'Selected Reasons', input_html: { id: 'reasons', multiple: 'multiple' } ) %>
+        <%= f.association(:reasons, label: 'Selected Reasons', collection: [], input_html: { id: 'reasons', multiple: 'multiple' } ) %>
         <script>
           select2reasons();
         </script>
@@ -339,7 +339,7 @@
     <template x-if="only_predefined_tags">
       <div class="mb-4">
         <!-- prettier-ignore -->
-        <%= f.association(:tags, label: 'Selected Tags', input_html: { id: 'tags', multiple: 'multiple' } ) %>
+        <%= f.association(:tags, label: 'Selected Tags', collection: [], input_html: { id: 'tags', multiple: 'multiple' } ) %>
         <script>
           select2tags();
         </script>

@@ -22,7 +22,11 @@
 #  updated_at              :datetime         not null
 #
 class AbstractScreening < ApplicationRecord
-  ABSTRACTSCREENINGTYPES = { 'Perpetual': 'perpetual', 'Pilot': 'pilot' }.freeze
+  ABSTRACTSCREENINGTYPES = {
+    'Perpetual (Single)': 'single-perpetual',
+    'Perpetual (Double)': 'double-perpetual',
+    'Pilot': 'pilot'
+  }.freeze
 
   validates_presence_of :abstract_screening_type
 
