@@ -42,6 +42,10 @@ class Citation < ApplicationRecord
   accepts_nested_attributes_for :journal, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :labels, reject_if: :all_blank, allow_destroy: true
 
+  def abstract_screening_results
+    citations_projects.map(&:abstract_screenings).flatten.map(&:abstract_screening_results).flatten
+  end
+
   # Redundant?
   def abstract_utf8
     abstract = read_attribute(:abstract)

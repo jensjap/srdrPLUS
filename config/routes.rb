@@ -167,6 +167,7 @@ Rails.application.routes.draw do
       get 'screen', to: 'abstract_screenings#screen'
       post 'label', to: 'abstract_screenings#label'
     end
+    get 'citation_lifecycle_management', to: 'abstract_screenings#citation_lifecycle_management'
     resource :data_audit, only: [:create]
     resources :sd_meta_data
     resources :teams, concerns: :invitable, only: %i[create update destroy]

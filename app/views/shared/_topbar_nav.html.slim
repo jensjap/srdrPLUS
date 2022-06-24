@@ -104,13 +104,15 @@
           = link_to 'Extractions Form Builder', '#', data: { confirm: 'You must add at least one key question first.' }
       li.submenu aria-expanded="false" style="#{'background: #78608b' if (controller.class == CitationsController && controller.action_name == 'index') || (controller.class == TasksController && controller.action_name == 'index') || (controller.class == AssignmentsController && controller.action_name == 'screen')}"
         = link_to('#', class: 'cursor-default border-y border-white') do
-          | Citation Manager &nbsp;
+          | Citations &nbsp;
           i class="fi-list"
         ul.menu.res-menu
           li
-            a href="#{project_citations_path(project)}" Citation Pool
+            a href="#{project_citations_path(project)}" Citation Pool Management
           li
-            a href="#{project_abstract_screenings_path(project)}" Screenings
+            a href="#{project_abstract_screenings_path(project)}" Abstract Screenings
+          li
+            a href="#{project_citation_lifecycle_management_path(project)}" Citation Lifecycle Management
       li.submenu style="#{'background: #78608b' if controller.class == ExtractionsController && controller.action_name == 'index'}"
         a class="border-y border-white" href="#{project_extractions_path(project)}" Extractions
       li.submenu

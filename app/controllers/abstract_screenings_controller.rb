@@ -2,7 +2,7 @@ class AbstractScreeningsController < ApplicationController
   add_breadcrumb 'my projects', :projects_path
   skip_before_action :verify_authenticity_token, only: [:label]
 
-  before_action :set_project, only: %i[index new create]
+  before_action :set_project, only: %i[index new create citation_lifecycle_management]
   def index
     @up = @project.citations_projects.where(citations_projects: { screening_status: nil })
     @as = @project.citations_projects.where(citations_projects: { screening_status: 'AS' })
@@ -66,6 +66,8 @@ class AbstractScreeningsController < ApplicationController
     @abstract_screening.destroy
     redirect_to project_abstract_screenings_path(@abstract_screening.project)
   end
+
+  def citation_lifecycle_management; end
 
   private
 

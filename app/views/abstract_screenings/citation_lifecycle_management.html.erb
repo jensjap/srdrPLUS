@@ -1,0 +1,155 @@
+<div class="m-8">
+  <div class="px-4 sm:px-6 lg:px-8">
+    <div class="sm:flex sm:items-center">
+      <div class="sm:flex-auto">
+        <h1 class="text-xl font-semibold text-gray-900">
+          Citation Lifecycle Management
+        </h1>
+        <p class="mt-2 text-sm text-gray-700">
+          A list of all the users in your account including their name, title,
+          email and role.
+        </p>
+      </div>
+    </div>
+    <div class="my-8 flex flex-col">
+      <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
+        <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
+          <div
+            class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg"
+          >
+            <table class="min-w-full divide-y divide-gray-300">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th
+                    scope="col"
+                    class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
+                  >
+                    Citation Accession No.
+                  </th>
+                  <th
+                    scope="col"
+                    class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                  >
+                    Authors
+                  </th>
+                  <th
+                    scope="col"
+                    class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                  >
+                    Citation Title
+                  </th>
+                  <th
+                    scope="col"
+                    class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                  >
+                    Participants
+                  </th>
+                  <th
+                    scope="col"
+                    class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                  >
+                    Label
+                  </th>
+                  <th
+                    scope="col"
+                    class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                  >
+                    Reason(s)
+                  </th>
+                  <th
+                    scope="col"
+                    class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                  >
+                    Tag(s)
+                  </th>
+                  <th
+                    scope="col"
+                    class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                  >
+                    Note(s)
+                  </th>
+                  <th
+                    scope="col"
+                    class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                  >
+                    Status
+                  </th>
+                  <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
+                    <span class="sr-only">Edit</span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-200 bg-white">
+                <% if AbstractScreening.last.abstract_screening_results.empty?
+                %>
+                <tr>
+                  <td>No screening results yet</td>
+                </tr>
+                <% end %>
+                <!-- prettier-ignore -->
+                <% @project.citations.each do |citation| %>
+                <tr>
+                  <td class="py-4 pl-4 pr-3 text-sm text-gray-500 sm:pl-6">
+                    <%= citation.accession_number_alts %>
+                  </td>
+                  <td class="px-3 py-4 text-sm text-gray-500">
+                    <%= citation.author_map_string %>
+                  </td>
+                  <td class="px-3 py-4 text-sm text-gray-500">
+                    <%= citation.name %>
+                  </td>
+                  <td class="px-3 py-4 text-sm text-gray-500">
+                    <%=
+                    citation.abstract_screening_results.map(&:user).uniq.map(&:handle).join(",
+                    ") %>
+                  </td>
+                  <td class="px-3 py-4 text-sm text-gray-500">
+                    <%= citation.abstract_screening_results.map(&:label).join(",
+                    ") %>
+                  </td>
+                  <td class="px-3 py-4 text-sm text-gray-500">
+                    <%=
+                    citation.abstract_screening_results.map(&:reasons).flatten.map(&:reasons).map(&:name).join(",
+                    ") %>
+                  </td>
+                  <td class="px-3 py-4 text-sm text-gray-500">
+                    <%=
+                    citation.abstract_screening_results.map(&:reasons).flatten.map(&:tags).map(&:name).join(",
+                    ") %>
+                  </td>
+                  <td class="px-3 py-4 text-sm text-gray-500">
+                    <%=
+                    citation.abstract_screening_results.map(&:reasons).flatten.map(&:notes).map(&:name).join(",
+                    ") %>
+                  </td>
+                  <td class="px-3 py-4 text-sm text-gray-500">
+                    <%= citation.citations_projects.find_by(project:
+                    @project).screening_status %>
+                  </td>
+                  <td
+                    class="whitespace-nowrap relative py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6 flex flex-col"
+                  >
+                    <a
+                      href="#"
+                      class="m-auto hover:no-underline hover:text-white inline-flex items-center justify-center rounded-md border border-transparent bg-srdrpurple px-4 py-1 text-sm font-medium text-white shadow-sm hover:bg-srdrpurple-light focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto"
+                      >Promote</a
+                    ><br />
+                    <a
+                      href="#"
+                      class="m-auto hover:no-underline hover:text-white inline-flex items-center justify-center rounded-md border border-transparent bg-srdrpurple px-4 py-1 text-sm font-medium text-white shadow-sm hover:bg-srdrpurple-light focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto"
+                      >Demote</a
+                    >
+                  </td>
+                </tr>
+
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <%= paginate(AbstractScreening.last.abstract_screening_results.page(1),
+    theme: 'foundation') %>
+  </div>
+</div>
