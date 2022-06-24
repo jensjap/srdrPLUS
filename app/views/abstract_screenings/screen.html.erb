@@ -57,14 +57,36 @@
           class="cursor-pointer border-r-8 border-white bg-red-500 flex justify-center items-center rounded-tl-2xl"
           @click="$store.global.postLabel({ labelValue: -1 })"
         >
-          Reject
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-10 w-10"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+              clip-rule="evenodd"
+            />
+          </svg>
         </div>
         <div class="grid grid-rows-2">
           <div
             class="cursor-pointer border-b-4 border-white bg-gray-500 flex justify-center items-center"
             @click="$store.global.postLabel({ labelValue: 0 })"
           >
-            Maybe
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-10 w-10"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M10 2a1 1 0 011 1v1.323l3.954 1.582 1.599-.8a1 1 0 01.894 1.79l-1.233.616 1.738 5.42a1 1 0 01-.285 1.05A3.989 3.989 0 0115 15a3.989 3.989 0 01-2.667-1.019 1 1 0 01-.285-1.05l1.715-5.349L11 6.477V16h2a1 1 0 110 2H7a1 1 0 110-2h2V6.477L6.237 7.582l1.715 5.349a1 1 0 01-.285 1.05A3.989 3.989 0 015 15a3.989 3.989 0 01-2.667-1.019 1 1 0 01-.285-1.05l1.738-5.42-1.233-.617a1 1 0 01.894-1.788l1.599.799L9 4.323V3a1 1 0 011-1zm-5 8.274l-.818 2.552c.25.112.526.174.818.174.292 0 .569-.062.818-.174L5 10.274zm10 0l-.818 2.552c.25.112.526.174.818.174.292 0 .569-.062.818-.174L15 10.274z"
+                clip-rule="evenodd"
+              />
+            </svg>
           </div>
           <div
             class="cursor-pointer border-t-2 border-white bg-srdrpurple flex justify-center items-center"
@@ -81,7 +103,18 @@
           class="cursor-pointer border-l-8 border-white bg-green-500 flex justify-center items-center rounded-tr-2xl"
           @click="$store.global.postLabel({ labelValue: 1 })"
         >
-          Accept
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-10 w-10"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+              clip-rule="evenodd"
+            />
+          </svg>
         </div>
       </div>
     </div>
