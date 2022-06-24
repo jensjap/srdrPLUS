@@ -54,7 +54,7 @@
     <div class="h-full text-white">
       <div class="grid grid-cols-3 h-full">
         <div
-          class="cursor-pointer border-r-8 border-white bg-red-500 flex justify-center items-center rounded-tl-2xl"
+          class="cursor-pointer border-r-8 border-white bg-red-500 saturate-50 flex justify-center items-center rounded-tl-2xl"
           @click="$store.global.postLabel({ labelValue: -1 })"
         >
           <svg
@@ -72,7 +72,7 @@
         </div>
         <div class="grid grid-rows-2">
           <div
-            class="cursor-pointer border-b-4 border-white bg-gray-500 flex justify-center items-center"
+            class="cursor-pointer border-b-4 border-white bg-gray-500 saturate-50 flex justify-center items-center"
             @click="$store.global.postLabel({ labelValue: 0 })"
           >
             <svg
@@ -89,7 +89,7 @@
             </svg>
           </div>
           <div
-            class="cursor-pointer border-t-2 border-white bg-srdrpurple flex justify-center items-center"
+            class="cursor-pointer border-t-2 border-white bg-srdrpurple saturate-50 flex justify-center items-center"
             @click="$store.global.menu = !$store.global.menu"
           >
             <div class="space-y-2">
@@ -100,7 +100,7 @@
           </div>
         </div>
         <div
-          class="cursor-pointer border-l-8 border-white bg-green-500 flex justify-center items-center rounded-tr-2xl"
+          class="cursor-pointer border-l-8 border-white bg-green-500 saturate-50 flex justify-center items-center rounded-tr-2xl"
           @click="$store.global.postLabel({ labelValue: 1 })"
         >
           <svg
