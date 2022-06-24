@@ -37,17 +37,7 @@ class AbstractScreeningsController < ApplicationController
   end
 
   def screen
-    @abstract_screening = AbstractScreening.find(params[:abstract_screening_id])
-    @random_citation = if @abstract_screening.citations.empty?
-                         @abstract_screening
-                           .project.citations_projects
-                           .where(screening_status: nil)
-                           .sample(1)
-                           .first
-                           .citation
-                       else
-                         @abstract_screening.citations.sample
-                       end
+    label_preparations
     render layout: 'abstrackr'
   end
 
@@ -81,9 +71,21 @@ class AbstractScreeningsController < ApplicationController
 
   def label_preparations
     @abstract_screening = AbstractScreening.find(params[:abstract_screening_id])
-
-    @abstract_screenings_citations_project = @abstract_screening.abstract_screenings_citations_projects.sample
-    @random_citation = @abstract_screenings_citations_project.citation
+    @random_citation = @abstract_screening
+                       .project.citations_projects
+                       .where('screening_status = ? OR screening_status = ?', nil, 'AS')
+                       .sample
+                       .citation
+    @abstract_screenings_citations_project = @abstract_screening
+                                             .abstract_screenings_citations_projects
+                                             .find_or_create_by(
+                                               abstract_screening:
+                                                @abstract_screening,
+                                               citations_project:
+                                                 CitationsProject.find_by(
+                                                   project: @abstract_screening.project, citation: @random_citation
+                                                 )
+                                             )
   end
 
   def render_label_json_data
