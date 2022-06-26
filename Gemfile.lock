@@ -450,6 +450,9 @@ GEM
     searchkick (5.0.4)
       activemodel (>= 5.2)
       hashie
+    sentry-rails (5.3.1)
+      railties (>= 5.0)
+      sentry-ruby-core (~> 5.3.1)
     sentry-ruby (5.3.1)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       sentry-ruby-core (= 5.3.1)
@@ -602,6 +605,7 @@ DEPENDENCIES
   sass-rails (~> 5.0)
   searchjoy
   searchkick
+  sentry-rails
   sentry-ruby
   sentry-sidekiq
   sidekiq
