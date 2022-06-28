@@ -26,7 +26,7 @@ class AbstractScreeningResult < ApplicationRecord
   has_many :abstract_screening_results_tags
   has_many :tags, through: :abstract_screening_results_tags
 
-  has_many :notes, as: :notable
+  has_one :note, as: :notable
 
   def readable_label
     case label

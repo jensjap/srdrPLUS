@@ -1,0 +1,134 @@
+<div
+  class="relative z-10"
+  aria-labelledby="modal-title"
+  role="dialog"
+  aria-modal="true"
+  x-show="$store.screenStore.metaMenu"
+>
+  <div
+    class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
+    x-show="$store.screenStore.metaMenu"
+    x-transition:enter="ease-out duration-300"
+    x-transition:enter-start="opacity-0"
+    x-transition:enter-end="opacity-100"
+    x-transition:leave="ease-in duration-200"
+    x-transition:leave-start="opacity-100"
+    x-transition:leave-end="opacity-0"
+  ></div>
+
+  <div class="fixed z-10 inset-0 overflow-y-auto">
+    <div class="flex items-center justify-center min-h-full p-4 text-center">
+      <div
+        class="relative bg-white rounded-lg px-4 pt-5 pb-4 text-left shadow-xl transform transition-all w-full lg:w-1/3 h-[90vh] sm:mt-4 mb-8 sm:p-6"
+        x-show="$store.screenStore.metaMenu"
+        x-transition:enter="ease-out duration-300"
+        x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+        x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+        x-transition:leave="ease-in duration-200"
+        x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+        x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+      >
+        <button
+          type="button"
+          class="cursor-pointer z-10 absolute top-4 right-4 bg-gray-100 rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
+          @click="$store.screenStore.metaMenu = false"
+        >
+          <span class="sr-only">Close menu</span>
+          <!-- Heroicon name: outline/x -->
+          <svg
+            class="h-6 w-6"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            aria-hidden="true"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+
+        <div class="fixed inset-5 mb-24 overflow-y-scroll">
+          <template x-if="$store.screenStore.mustSelectReason()">
+            <div class="min-h-[100px]">
+              <h1 class="text-xl">*Reason</h1>
+              <hr class="m-0" />
+              <label for="notes" class="block text-sm text-gray-700"
+                >Select one reason</label
+              >
+              <div class="grid grid-rows sm:grid-cols-4 gap-4 mt-4 mb-8">
+                <template
+                  x-for="[key, value] in Object.entries($store.screenStore.reasons)"
+                >
+                  <span
+                    :class="value ? 'bg-green-800' : ''"
+                    @click="Object.keys($store.screenStore.reasons).forEach(v => $store.screenStore.reasons[v] = false); $store.screenStore.reasons[key] = !value"
+                    class="drop-shadow select-none cursor-pointer justify-center inline-flex items-center px-3 py-4 rounded-full text-sm bg-gray-700 text-white font-black"
+                    x-text="key"
+                  >
+                  </span>
+                </template>
+              </div>
+            </div>
+          </template>
+          <template x-if="$store.screenStore.mustSelectTag()">
+            <div class="min-h-[100px]">
+              <h1 class="text-xl">*Tags</h1>
+              <hr class="m-0" />
+              <label for="notes" class="block text-sm text-gray-700"
+                >Select one or more reasons</label
+              >
+              <div class="grid grid-rows sm:grid-cols-4 gap-4 mt-4 mb-8">
+                <template
+                  x-for="[key, value] in Object.entries($store.screenStore.tags)"
+                >
+                  <span
+                    :class="value ? 'bg-green-800' : ''"
+                    @click="$store.screenStore.tags[key] = !value"
+                    class="drop-shadow select-none cursor-pointer justify-center inline-flex items-center px-3 py-4 rounded-full text-sm bg-gray-700 text-white font-black"
+                    x-text="key"
+                  >
+                  </span>
+                </template>
+              </div>
+            </div>
+          </template>
+          <div class="min-h-[100px] mt-12">
+            <h1 class="text-xl">Notes</h1>
+            <hr class="m-0" />
+            <div>
+              <label for="notes" class="block text-sm text-gray-700"
+                >Optional write in notes</label
+              >
+              <div class="mt-1">
+                <textarea
+                  rows="4"
+                  name="notes"
+                  id="notes"
+                  x-model="$store.screenStore.notes"
+                  class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md p-2"
+                ></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="fixed bottom-0 h-24 mb-5 mx-5 left-0 right-0 flex flex-col justify-center items-center content-center"
+        >
+          <button
+            x-show="$store.screenStore.satisfyReasoning()"
+            type="button"
+            class="cursor-pointer justify-center m-auto w-full inline-flex items-center px-4 py-6 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-900 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            @click="$store.screenStore.postLabel(true)"
+          >
+            Submit
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

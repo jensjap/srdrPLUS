@@ -1,61 +1,64 @@
 <div x-data id="abstrackr-wrapper">
-  <%= render 'abstract_screenings/screen/modal_weighing' %>
+  <%= render 'abstract_screenings/screen/weighing_screen' %>
   <!-- prettier-ignore -->
   <%= render 'abstract_screenings/screen/confirmation_modal' %>
   <!-- prettier-ignore -->
   <%= render 'abstract_screenings/screen/menu' %>
+  <!-- prettier-ignore -->
+  <%= render 'abstract_screenings/screen/meta_menu' %>
   <div
-    class="m-auto xl:w-1/2 h-32 absolute inset-0 mt-0 overflow-y-hidden bg-gray-300 flex flex-col justify-center"
+    class="m-auto lg:w-1/2 h-32 absolute inset-0 mt-0 overflow-y-hidden bg-gray-300 flex flex-col justify-center"
   >
     <div class="mt-3">
       <div class="horizontal-scroll-wrapper">
         <h1
           class="px-8 text-base font-bold horizontal-scroll-wrapper-item overflow-x-auto whitespace-nowrap"
-          x-text="$store.global.citation.title"
+          x-text="$store.screenStore.citation.title"
         ></h1>
       </div>
       <div class="px-8 text-sm overflow-x-auto whitespace-nowrap">
-        Journal: <span x-text="$store.global.citation.journal"></span>
+        Journal: <span x-text="$store.screenStore.citation.journal"></span>
       </div>
       <div class="horizontal-scroll-wrapper">
         <div
           class="horizontal-scroll-wrapper-item text-sm overflow-x-auto whitespace-nowrap"
         >
-          Authors: <span x-text="$store.global.citation.authors"></span>
+          Authors: <span x-text="$store.screenStore.citation.authors"></span>
         </div>
       </div>
     </div>
   </div>
   <div
-    class="m-auto xl:w-1/2 h-auto block absolute inset-0 mt-32 mb-32 overflow-y-auto overflow-x-hidden bg-gray-100"
+    class="m-auto lg:w-1/2 h-auto block absolute inset-0 mt-32 mb-32 overflow-y-auto overflow-x-hidden bg-gray-100"
   >
     <div class="vertical-scroll-wrapper">
       <div class="vertical-scroll-wrapper-item">
         <div
           class="px-8 leading-loose weightable"
-          @click="$store.global.toggle(); window.setTimeout(function () { document.getElementById('term').focus(); }, 0);"
-          x-text="$store.global.citation.abstract"
+          @click="$store.screenStore.toggle(); window.setTimeout(function () { document.getElementById('term').focus(); }, 0);"
+          x-text="$store.screenStore.citation.abstract"
         ></div>
         <div
           class="px-8 break-all leading-loose"
-          x-text="$store.global.citation.keywords"
+          x-text="$store.screenStore.citation.keywords"
         ></div>
         <div
           class="px-8 break-all leading-loose"
-          x-text="$store.global.citation.id"
+          x-text="$store.screenStore.citation.id"
         ></div>
       </div>
     </div>
   </div>
 
   <div
-    class="xl:w-1/2 m-auto absolute bottom-0 left-0 right-0 bg-gray-100 h-32"
+    class="lg:w-1/2 m-auto absolute bottom-0 left-0 right-0 bg-gray-100 h-32"
   >
     <div class="h-full text-white">
       <div class="grid grid-cols-3 h-full">
         <div
-          class="cursor-pointer border-r-8 border-white bg-red-500 saturate-50 flex justify-center items-center rounded-tl-2xl"
-          @click="$store.global.postLabel({ labelValue: -1 })"
+          class="cursor-pointer border-r-8 bg-red-500 flex justify-center items-center rounded-tl-2xl"
+          @click="$store.screenStore.label_value = -1; if ($store.screenStore.requireReasoning()) { $store.screenStore.metaMenu = true } else { $store.screenStore.postLabel(true) }"
+          :class="($store.screenStore.label_value == -1 || $store.screenStore.label_value == null) ? '' : 'saturate-[0.35]'"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -72,8 +75,9 @@
         </div>
         <div class="grid grid-rows-2">
           <div
-            class="cursor-pointer border-b-4 border-white bg-gray-500 saturate-50 flex justify-center items-center"
-            @click="$store.global.postLabel({ labelValue: 0 })"
+            class="cursor-pointer border-b-4 bg-srdrpurple flex justify-center items-center"
+            @click="$store.screenStore.label_value = 0; if ($store.screenStore.requireReasoning()) { $store.screenStore.metaMenu = true } else { $store.screenStore.postLabel(true) }"
+            :class="($store.screenStore.label_value == 0 || $store.screenStore.label_value == null)? '' : 'saturate-[0.35]'"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -89,8 +93,8 @@
             </svg>
           </div>
           <div
-            class="cursor-pointer border-t-2 border-white bg-srdrpurple saturate-50 flex justify-center items-center"
-            @click="$store.global.menu = !$store.global.menu"
+            class="cursor-pointer border-t-2 bg-gray-500 flex justify-center items-center"
+            @click="$store.screenStore.menu = !$store.screenStore.menu"
           >
             <div class="space-y-2">
               <div class="w-8 h-0.5 bg-white"></div>
@@ -100,8 +104,9 @@
           </div>
         </div>
         <div
-          class="cursor-pointer border-l-8 border-white bg-green-500 saturate-50 flex justify-center items-center rounded-tr-2xl"
-          @click="$store.global.postLabel({ labelValue: 1 })"
+          class="cursor-pointer border-l-8 bg-green-500 flex justify-center items-center rounded-tr-2xl"
+          @click="$store.screenStore.label_value = 1; if ($store.screenStore.requireReasoning()) { $store.screenStore.metaMenu = true } else { $store.screenStore.postLabel(true) }"
+          :class="($store.screenStore.label_value == 1 || $store.screenStore.label_value == null)? '' : 'saturate-[0.35]'"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -133,9 +138,10 @@
     });
   }
   document.addEventListener("alpine:init", () => {
-    Alpine.store("global", {
-      menu: true,
+    Alpine.store("screenStore", {
+      menu: false,
       modal: false,
+      metaMenu: true,
       confirmationModal: false,
       confirmationModalText: "",
       confirmationModalTexts: {
@@ -156,19 +162,92 @@
       reasons: {},
       tags: {},
       notes: "",
+      options: {
+        yes_tag_required: null,
+        no_tag_required: null,
+        maybe_tag_required: null,
+        yes_reason_required: null,
+        no_reason_required: null,
+        maybe_reason_required: null,
+      },
+      label_value: null,
 
       toggle() {
-        this.modal = !this.modal;
+        this.weighingScreen = !this.weighingScreen;
+      },
+
+      requireReasoning() {
+        return (
+          (this.label_value == -1 &&
+            (this.options.no_tag_required ||
+              this.options.no_reason_required)) ||
+          (this.label_value == 0 &&
+            (this.options.maybe_tag_required ||
+              this.options.maybe_reason_required)) ||
+          (this.label_value == 1 &&
+            (this.options.yes_tag_required || this.options.yes_reason_required))
+        );
+      },
+
+      satisfyReasoning() {
+        let satisfactory = true;
+        const hasSomeReason = Object.keys(this.reasons).some(
+          (v) => this.reasons[v] == true
+        );
+        const hasSomeTag = Object.keys(this.tags).some(
+          (v) => this.tags[v] == true
+        );
+        if (this.label_value == -1) {
+          if (this.options.no_tag_required)
+            satisfactory = hasSomeTag && satisfactory;
+          if (this.options.no_reason_required)
+            satisfactory = hasSomeReason && satisfactory;
+        }
+        if (this.label_value == 0) {
+          if (this.options.maybe_tag_required)
+            satisfactory = hasSomeTag && satisfactory;
+          if (this.options.maybe_reason_required)
+            satisfactory = hasSomeReason && satisfactory;
+        }
+        if (this.label_value == 1) {
+          if (this.options.yes_tag_required)
+            satisfactory = hasSomeTag && satisfactory;
+          if (this.options.yes_reason_required)
+            satisfactory = hasSomeReason && satisfactory;
+        }
+
+        return satisfactory;
+      },
+
+      mustSelectReason() {
+        if (this.label_value == -1) {
+          return this.options.no_reason_required;
+        } else if (this.label_value == 0) {
+          return this.options.maybe_reason_required;
+        } else if (this.label_value == 1) {
+          return this.options.yes_reason_required;
+        }
+      },
+
+      mustSelectTag() {
+        if (this.label_value == -1) {
+          return this.options.no_tag_required;
+        } else if (this.label_value == 0) {
+          return this.options.maybe_tag_required;
+        } else if (this.label_value == 1) {
+          return this.options.yes_tag_required;
+        }
       },
 
       async showConfirmation(label) {
         this.confirmationModalText = this.confirmationModalTexts[label];
         this.confirmationModal = true;
-        await new Promise((resolve, reject) => setTimeout(resolve, 500));
+        await new Promise((resolve, reject) => setTimeout(resolve, 1000));
         this.confirmationModal = false;
       },
 
-      async postLabel(labelData) {
+      async postLabel(submit) {
+        this.metaMenu = false;
         const response = await fetch(
           "/abstract_screenings/<%= params[:abstract_screening_id] %>/label",
           {
@@ -178,20 +257,28 @@
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              data: { labelData, citation: this.citation },
+              data: {
+                label_value: this.label_value,
+                citation: this.citation,
+                reasons: this.reasons,
+                tags: this.tags,
+                notes: this.notes,
+              },
             }),
           }
         );
         const data = await response.json();
-        if (labelData) await this.showConfirmation(labelData.labelValue);
+        if (submit) await this.showConfirmation(this.label_value);
         this.citation = data.citation;
         this.reasons = data.reasons;
         this.tags = data.tags;
+        this.notes = data.notes;
+        this.options = data.options;
+        this.label_value = data.label_value;
         await new Promise((resolve, reject) => setTimeout(resolve, 0));
         prepareText();
-        // console.log(this);
       },
     });
-    Alpine.store("global").postLabel();
+    Alpine.store("screenStore").postLabel();
   });
 </script>

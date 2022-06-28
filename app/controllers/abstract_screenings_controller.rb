@@ -44,8 +44,8 @@ class AbstractScreeningsController < ApplicationController
   def label
     label_preparations
     payload = params[:data]
-    if payload[:labelData]
-      label = payload[:labelData][:labelValue]
+    if payload[:label_value]
+      label = payload[:label_value]
       abstract_screenings_citations_project_id = payload[:citation][:abstract_screenings_citations_project_id]
       abstract_screening = @abstract_screening
       abstract_screenings_projects_users_role_id = AbstractScreeningsProjectsUsersRole
@@ -97,22 +97,36 @@ class AbstractScreeningsController < ApplicationController
 
   def render_label_json_data
     render json: {
-      citation: { abstract_screening_id: @abstract_screening.id,
-                  abstract_screenings_citations_project_id: @abstract_screenings_citations_project.id,
-                  title: @random_citation.name,
-                  journal: @random_citation.journal.name,
-                  authors: @random_citation.author_map_string,
-                  abstract: @random_citation.abstract,
-                  keywords: @random_citation.keywords.map(&:name).join(','),
-                  id: @random_citation.accession_number_alts },
-      reasons: @abstract_screening.reasons.each_with_object({}) do |reason, hash|
-                 hash[reason.name] = false
-                 hash
-               end,
-      tags: @abstract_screening.tags.each_with_object({}) do |tag, hash|
-              hash[tag.name] = false
-              hash
-            end
+      citation: {
+        abstract_screening_id: @abstract_screening.id,
+        abstract_screenings_citations_project_id: @abstract_screenings_citations_project.id,
+        title: @random_citation.name,
+        journal: @abstract_screening.hide_journal ? '<hidden>' : @random_citation.journal.name,
+        authors: @abstract_screening.hide_author ? '<hidden>' : @random_citation.author_map_string,
+        abstract: @random_citation.abstract,
+        keywords: @random_citation.keywords.map(&:name).join(','),
+        id: @random_citation.accession_number_alts
+      },
+      reasons:
+        @abstract_screening.reasons.each_with_object({}) do |reason, hash|
+          hash[reason.name] = false
+          hash
+        end,
+      tags:
+        @abstract_screening.tags.each_with_object({}) do |tag, hash|
+          hash[tag.name] = false
+          hash
+        end,
+      notes: '',
+      options: {
+        yes_tag_required: @abstract_screening.yes_tag_required,
+        no_tag_required: @abstract_screening.no_tag_required,
+        maybe_tag_required: @abstract_screening.maybe_tag_required,
+        yes_reason_required: @abstract_screening.yes_reason_required,
+        no_reason_required: @abstract_screening.no_reason_required,
+        maybe_reason_required: @abstract_screening.maybe_reason_required
+      },
+      label_value: nil
     }
   end
 
