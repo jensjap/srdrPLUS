@@ -72,6 +72,7 @@ class AbstractScreeningsController < ApplicationController
     @as = @project.citations_projects.where(citations_projects: { screening_status: 'AS' })
     @fs = @project.citations_projects.where(citations_projects: { screening_status: 'FS' })
     @de = @project.citations_projects.where(citations_projects: { screening_status: 'DE' })
+    @citations = @project.citations.page(params[:page]).per(10)
   end
 
   private

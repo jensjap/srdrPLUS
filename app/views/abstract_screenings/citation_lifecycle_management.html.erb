@@ -68,7 +68,7 @@
     <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
       <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
         <div
-          class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg"
+          class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg mb-8"
         >
           <table class="min-w-full divide-y divide-gray-300">
             <thead class="bg-gray-50">
@@ -139,13 +139,13 @@
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-200 bg-white">
-              <% if @project.citations.empty? %>
+              <% if @citations.empty? %>
               <tr>
                 <td>No citations yet</td>
               </tr>
               <% end %>
               <!-- prettier-ignore -->
-              <% @project.citations.each do |citation| %>
+              <% @citations.each do |citation| %>
               <tr>
                 <td class="py-4 pl-4 pr-3 text-sm text-gray-500 sm:pl-6">
                   <%= citation.accession_number_alts %>
@@ -207,9 +207,8 @@
             </tbody>
           </table>
         </div>
+        <%= paginate(@citations, theme: 'foundation') %>
       </div>
     </div>
   </div>
-  <%= paginate(AbstractScreening.last.abstract_screening_results.page(1), theme:
-  'foundation') %>
 </div>
