@@ -139,9 +139,9 @@
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-200 bg-white">
-              <% if AbstractScreening.last.abstract_screening_results.empty? %>
+              <% if @project.citations.empty? %>
               <tr>
-                <td>No screening results yet</td>
+                <td>No citations yet</td>
               </tr>
               <% end %>
               <!-- prettier-ignore -->
