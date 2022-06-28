@@ -134,8 +134,15 @@
   }
   document.addEventListener("alpine:init", () => {
     Alpine.store("global", {
-      menu: false,
+      menu: true,
       modal: false,
+      confirmationModal: false,
+      confirmationModalText: "",
+      confirmationModalTexts: {
+        "-1": "Rejected",
+        0: "Maybe",
+        1: "Accepted",
+      },
       citation: {
         abstract_screening_id: "",
         abstract_screenings_citations_project_id: "",
@@ -146,13 +153,9 @@
         keywords: "",
         id: "",
       },
-      confirmationModal: false,
-      confirmationModalText: "",
-      confirmationModalTexts: {
-        "-1": "Rejected",
-        0: "Maybe",
-        1: "Accepted",
-      },
+      reasons: {},
+      tags: {},
+      notes: "",
 
       toggle() {
         this.modal = !this.modal;
@@ -179,11 +182,14 @@
             }),
           }
         );
-        const citation = await response.json();
+        const data = await response.json();
         if (labelData) await this.showConfirmation(labelData.labelValue);
-        this.citation = citation;
+        this.citation = data.citation;
+        this.reasons = data.reasons;
+        this.tags = data.tags;
         await new Promise((resolve, reject) => setTimeout(resolve, 0));
         prepareText();
+        // console.log(this);
       },
     });
     Alpine.store("global").postLabel();

@@ -97,14 +97,22 @@ class AbstractScreeningsController < ApplicationController
 
   def render_label_json_data
     render json: {
-      abstract_screening_id: @abstract_screening.id,
-      abstract_screenings_citations_project_id: @abstract_screenings_citations_project.id,
-      title: @random_citation.name,
-      journal: @random_citation.journal.name,
-      authors: @random_citation.author_map_string,
-      abstract: @random_citation.abstract,
-      keywords: @random_citation.keywords.map(&:name).join(','),
-      id: @random_citation.accession_number_alts
+      citation: { abstract_screening_id: @abstract_screening.id,
+                  abstract_screenings_citations_project_id: @abstract_screenings_citations_project.id,
+                  title: @random_citation.name,
+                  journal: @random_citation.journal.name,
+                  authors: @random_citation.author_map_string,
+                  abstract: @random_citation.abstract,
+                  keywords: @random_citation.keywords.map(&:name).join(','),
+                  id: @random_citation.accession_number_alts },
+      reasons: @abstract_screening.reasons.each_with_object({}) do |reason, hash|
+                 hash[reason.name] = false
+                 hash
+               end,
+      tags: @abstract_screening.tags.each_with_object({}) do |tag, hash|
+              hash[tag.name] = false
+              hash
+            end
     }
   end
 
