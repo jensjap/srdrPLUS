@@ -58,7 +58,7 @@
         <div
           class="cursor-pointer border-r-8 bg-red-500 flex justify-center items-center rounded-tl-2xl"
           @click="$store.screenStore.label_value = -1; if ($store.screenStore.requireReasoning()) { $store.screenStore.metaMenu = true } else { $store.screenStore.postLabel(true) }"
-          :class="($store.screenStore.label_value == -1 || $store.screenStore.label_value == null) ? '' : 'saturate-[0.35]'"
+          :class="($store.screenStore.label_value == -1 || $store.screenStore.label_value == null) ? '' : 'saturate-[0.1]'"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -77,7 +77,7 @@
           <div
             class="cursor-pointer border-b-4 bg-srdrpurple flex justify-center items-center"
             @click="$store.screenStore.label_value = 0; if ($store.screenStore.requireReasoning()) { $store.screenStore.metaMenu = true } else { $store.screenStore.postLabel(true) }"
-            :class="($store.screenStore.label_value == 0 || $store.screenStore.label_value == null)? '' : 'saturate-[0.35]'"
+            :class="($store.screenStore.label_value == 0 || $store.screenStore.label_value == null)? '' : 'saturate-[0.1]'"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -106,7 +106,7 @@
         <div
           class="cursor-pointer border-l-8 bg-green-500 flex justify-center items-center rounded-tr-2xl"
           @click="$store.screenStore.label_value = 1; if ($store.screenStore.requireReasoning()) { $store.screenStore.metaMenu = true } else { $store.screenStore.postLabel(true) }"
-          :class="($store.screenStore.label_value == 1 || $store.screenStore.label_value == null)? '' : 'saturate-[0.35]'"
+          :class="($store.screenStore.label_value == 1 || $store.screenStore.label_value == null)? '' : 'saturate-[0.1]'"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -169,6 +169,9 @@
         yes_reason_required: null,
         no_reason_required: null,
         maybe_reason_required: null,
+        yes_note_required: null,
+        no_note_required: null,
+        maybe_note_required: null,
       },
       label_value: null,
 
@@ -180,12 +183,16 @@
         return (
           (this.label_value == -1 &&
             (this.options.no_tag_required ||
-              this.options.no_reason_required)) ||
+              this.options.no_reason_required ||
+              this.options.no_note_required)) ||
           (this.label_value == 0 &&
             (this.options.maybe_tag_required ||
-              this.options.maybe_reason_required)) ||
+              this.options.maybe_reason_required ||
+              this.options.maybe_note_required)) ||
           (this.label_value == 1 &&
-            (this.options.yes_tag_required || this.options.yes_reason_required))
+            (this.options.yes_tag_required ||
+              this.options.yes_reason_required ||
+              this.options.yes_note_required))
         );
       },
 
@@ -197,23 +204,30 @@
         const hasSomeTag = Object.keys(this.tags).some(
           (v) => this.tags[v] == true
         );
+        const hasSomeNote = this.notes.length > 0;
         if (this.label_value == -1) {
           if (this.options.no_tag_required)
             satisfactory = hasSomeTag && satisfactory;
           if (this.options.no_reason_required)
             satisfactory = hasSomeReason && satisfactory;
+          if (this.options.no_note_required)
+            satisfactory = hasSomeNote && satisfactory;
         }
         if (this.label_value == 0) {
           if (this.options.maybe_tag_required)
             satisfactory = hasSomeTag && satisfactory;
           if (this.options.maybe_reason_required)
             satisfactory = hasSomeReason && satisfactory;
+          if (this.options.maybe_note_required)
+            satisfactory = hasSomeNote && satisfactory;
         }
         if (this.label_value == 1) {
           if (this.options.yes_tag_required)
             satisfactory = hasSomeTag && satisfactory;
           if (this.options.yes_reason_required)
             satisfactory = hasSomeReason && satisfactory;
+          if (this.options.yes_note_required)
+            satisfactory = hasSomeNote && satisfactory;
         }
 
         return satisfactory;
@@ -236,6 +250,16 @@
           return this.options.maybe_tag_required;
         } else if (this.label_value == 1) {
           return this.options.yes_tag_required;
+        }
+      },
+
+      mustEnterNotes() {
+        if (this.label_value == -1) {
+          return this.options.no_note_required;
+        } else if (this.label_value == 0) {
+          return this.options.maybe_note_required;
+        } else if (this.label_value == 1) {
+          return this.options.yes_note_required;
         }
       },
 

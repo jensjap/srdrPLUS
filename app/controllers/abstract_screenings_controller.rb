@@ -125,7 +125,10 @@ class AbstractScreeningsController < ApplicationController
         maybe_tag_required: @abstract_screening.maybe_tag_required,
         yes_reason_required: @abstract_screening.yes_reason_required,
         no_reason_required: @abstract_screening.no_reason_required,
-        maybe_reason_required: @abstract_screening.maybe_reason_required
+        maybe_reason_required: @abstract_screening.maybe_reason_required,
+        yes_note_required: @abstract_screening.yes_note_required,
+        no_note_required: @abstract_screening.no_note_required,
+        maybe_note_required: @abstract_screening.maybe_note_required
       },
       label_value: nil
     }

@@ -97,24 +97,26 @@
               </div>
             </div>
           </template>
-          <div class="min-h-[100px] mt-12">
-            <h1 class="text-xl">Notes</h1>
-            <hr class="m-0" />
-            <div>
-              <label for="notes" class="block text-sm text-gray-700"
-                >Optional write in notes</label
-              >
-              <div class="mt-1">
-                <textarea
-                  rows="4"
-                  name="notes"
-                  id="notes"
-                  x-model="$store.screenStore.notes"
-                  class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md p-2"
-                ></textarea>
+          <template x-if="$store.screenStore.mustEnterNotes()">
+            <div class="min-h-[100px]">
+              <h1 class="text-xl">*Notes</h1>
+              <hr class="m-0" />
+              <div>
+                <label for="notes" class="block text-sm text-gray-700"
+                  >Write in notes</label
+                >
+                <div class="mt-1">
+                  <textarea
+                    rows="4"
+                    name="notes"
+                    id="notes"
+                    x-model="$store.screenStore.notes"
+                    class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md p-2"
+                  ></textarea>
+                </div>
               </div>
             </div>
-          </div>
+          </template>
         </div>
         <div
           class="fixed bottom-0 h-24 mb-5 mx-5 left-0 right-0 flex flex-col justify-center items-center content-center"
