@@ -33,11 +33,18 @@
   >
     <div class="vertical-scroll-wrapper">
       <div class="vertical-scroll-wrapper-item">
-        <div
-          class="px-8 leading-loose weightable"
-          @click="$store.screenStore.toggle(); window.setTimeout(function () { document.getElementById('term').focus(); }, 0);"
-          x-text="$store.screenStore.citation.abstract"
-        ></div>
+        <div class="px-8 leading-loose weightable">
+          <template
+            x-for="word in ($store.screenStore.citation.abstract.split(/(\W)/))"
+          >
+            <span
+              x-text="word"
+              @click="if (word.length > 1) { $store.screenStore.toggle(); $store.screenStore.weightWord = word }"
+              :class="$store.screenStore.cssWordClass[$store.screenStore.word_weights[word.toLowerCase()]] + ' cursor-pointer'"
+            ></span>
+          </template>
+        </div>
+        <hr />
         <div
           class="px-8 break-all leading-loose"
           x-text="$store.screenStore.citation.keywords"
@@ -140,7 +147,7 @@
   document.addEventListener("alpine:init", () => {
     Alpine.store("screenStore", {
       menu: false,
-      modal: false,
+      weighingScreen: false,
       metaMenu: true,
       confirmationModal: false,
       confirmationModalText: "",
@@ -174,9 +181,20 @@
         maybe_note_required: null,
       },
       label_value: null,
+      word_weights: {},
+      weightWord: "",
+      cssWordClass: {
+        2: "text-green-500 font-black",
+        1: "text-green-500",
+        0: "",
+        "-1": "text-red-500",
+        "-2": "text-red-500 font-black",
+      },
 
-      toggle() {
+      async toggle() {
         this.weighingScreen = !this.weighingScreen;
+        await new Promise((resolve, reject) => setTimeout(resolve, 100));
+        document.getElementById("term").focus();
       },
 
       requireReasoning() {
@@ -270,6 +288,25 @@
         this.confirmationModal = false;
       },
 
+      async sendWw(word, weight) {
+        const response = await fetch(
+          "/abstract_screenings/<%= params[:abstract_screening_id] %>/create_word_weight",
+          {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              word,
+              weight,
+            }),
+          }
+        );
+        const data = await response.json();
+        this.word_weights = data;
+      },
+
       async postLabel(submit) {
         this.metaMenu = false;
         const response = await fetch(
@@ -299,8 +336,9 @@
         this.notes = data.notes;
         this.options = data.options;
         this.label_value = data.label_value;
+        this.word_weights = data.word_weights;
         await new Promise((resolve, reject) => setTimeout(resolve, 0));
-        prepareText();
+        console.log(this);
       },
     });
     Alpine.store("screenStore").postLabel();

@@ -1,8 +1,10 @@
 class AbstractScreeningsController < ApplicationController
   add_breadcrumb 'my projects', :projects_path
-  skip_before_action :verify_authenticity_token, only: [:label]
+  skip_before_action :verify_authenticity_token, only: %i[label create_word_weight]
 
   before_action :set_project, only: %i[index new create citation_lifecycle_management]
+  before_action :set_abstract_screening, only: %i[create_word_weight]
+
   def index
     @up = @project.citations_projects.where(citations_projects: { screening_status: nil })
     @as = @project.citations_projects.where(citations_projects: { screening_status: 'AS' })
@@ -47,18 +49,22 @@ class AbstractScreeningsController < ApplicationController
     if payload[:label_value]
       label = payload[:label_value]
       abstract_screenings_citations_project_id = payload[:citation][:abstract_screenings_citations_project_id]
-      abstract_screening = @abstract_screening
-      abstract_screenings_projects_users_role_id = AbstractScreeningsProjectsUsersRole
-                                                   .where(abstract_screening:)
-                                                   .first
-                                                   .id ## TODO: rethink user relationship
       @abstract_screening
         .abstract_screening_results
         .create!(label:, abstract_screenings_citations_project_id:,
-                 abstract_screenings_projects_users_role_id:)
+                 abstract_screenings_projects_users_role:)
     end
 
     render_label_json_data
+  end
+
+  def create_word_weight
+    weight = params[:weight]
+    word = params[:word].downcase
+
+    ww = WordWeight.find_or_initialize_by(word:, abstract_screenings_projects_users_role:)
+    ww.update(weight:)
+    render json: abstract_screenings_projects_users_role.word_weights_object
   end
 
   def destroy
@@ -77,6 +83,10 @@ class AbstractScreeningsController < ApplicationController
 
   private
 
+  def abstract_screenings_projects_users_role
+    AbstractScreeningsProjectsUsersRole.find_aspur(current_user, @abstract_screening)
+  end
+
   def label_preparations
     @abstract_screening = AbstractScreening.find(params[:abstract_screening_id])
     @random_citation = @abstract_screening
@@ -84,16 +94,17 @@ class AbstractScreeningsController < ApplicationController
                        .where('screening_status = ? OR screening_status = ?', nil, 'AS')
                        .sample
                        .citation
-    @abstract_screenings_citations_project = @abstract_screening
-                                             .abstract_screenings_citations_projects
-                                             .find_or_create_by(
-                                               abstract_screening:
-                                                @abstract_screening,
-                                               citations_project:
-                                                 CitationsProject.find_by(
-                                                   project: @abstract_screening.project, citation: @random_citation
-                                                 )
-                                             )
+    @abstract_screenings_citations_project =
+      @abstract_screening
+      .abstract_screenings_citations_projects
+      .find_or_create_by(
+        abstract_screening:
+         @abstract_screening,
+        citations_project:
+          CitationsProject.find_by(
+            project: @abstract_screening.project, citation: @random_citation
+          )
+      )
   end
 
   def render_label_json_data
@@ -130,12 +141,17 @@ class AbstractScreeningsController < ApplicationController
         no_note_required: @abstract_screening.no_note_required,
         maybe_note_required: @abstract_screening.maybe_note_required
       },
-      label_value: nil
+      label_value: nil,
+      word_weights: abstract_screenings_projects_users_role.word_weights_object
     }
   end
 
   def set_project
     @project = Project.includes(citations_projects: :citation).find(params[:project_id])
+  end
+
+  def set_abstract_screening
+    @abstract_screening = AbstractScreening.find(params[:abstract_screening_id])
   end
 
   def abstract_screening_params

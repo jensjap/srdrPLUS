@@ -41,7 +41,6 @@ class AbstractScreening < ApplicationRecord
   has_many :reasons, through: :abstract_screenings_reasons
   has_many :abstract_screenings_tags
   has_many :tags, through: :abstract_screenings_tags
-  accepts_nested_attributes_for :tags
 
   has_many :abstract_screening_results, dependent: :destroy, inverse_of: :abstract_screening
 

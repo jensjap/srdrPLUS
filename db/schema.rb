@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_06_22_040212) do
+ActiveRecord::Schema[7.0].define(version: 2022_06_28_122953) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -2036,6 +2036,16 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_22_040212) do
     t.index ["deleted_at"], name: "index_wacs_bacs_rssms_on_deleted_at"
     t.index ["result_statistic_sections_measure_id"], name: "index_wacs_bacs_rssms_on_result_statistic_sections_measure_id"
     t.index ["wac_id"], name: "index_wacs_bacs_rssms_on_wac_id"
+  end
+
+  create_table "word_weights", charset: "utf8mb3", force: :cascade do |t|
+    t.bigint "abstract_screenings_projects_users_role_id"
+    t.integer "weight", limit: 1, null: false
+    t.string "word", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["abstract_screenings_projects_users_role_id", "word"], name: "aspur_w", unique: true
+    t.index ["abstract_screenings_projects_users_role_id"], name: "asr_on_aspur"
   end
 
   add_foreign_key "abstrackr_settings", "profiles"

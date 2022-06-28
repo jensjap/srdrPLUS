@@ -166,6 +166,7 @@ Rails.application.routes.draw do
     resources :abstract_screenings do
       get 'screen', to: 'abstract_screenings#screen'
       post 'label', to: 'abstract_screenings#label'
+      post 'create_word_weight', to: 'abstract_screenings#create_word_weight'
     end
     get 'citation_lifecycle_management', to: 'abstract_screenings#citation_lifecycle_management'
     resource :data_audit, only: [:create]
