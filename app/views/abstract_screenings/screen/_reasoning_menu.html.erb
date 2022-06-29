@@ -174,7 +174,7 @@
                   </div>
                 </template>
                 <span
-                  @click="$store.screenStore.addReasonModal = { on: true, type: 'Reason' }; $nextTick(() => { $refs.newReasonInput.focus() })"
+                  @click="$store.screenStore.addReasonModal = { on: true, type: 'Reason' }; $nextTick(() => { $refs.newCustomValueInput.focus() })"
                   class="drop-shadow select-none cursor-pointer justify-center inline-flex items-center text-green-900 font-black"
                   x-show="!$store.screenStore.options.only_predefined_reasons"
                 >
@@ -248,7 +248,7 @@
                   </div>
                 </template>
                 <span
-                  @click="$store.screenStore.addReasonModal = { on: true, type: 'Tag' }; $nextTick(() => { $refs.newReasonInput.focus(); });"
+                  @click="$store.screenStore.addReasonModal = { on: true, type: 'Tag' }; $nextTick(() => { $refs.newCustomValueInput.focus(); });"
                   class="drop-shadow select-none cursor-pointer justify-center inline-flex items-center text-green-900 font-black"
                   x-show="!$store.screenStore.options.only_predefined_tags"
                 >

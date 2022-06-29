@@ -194,8 +194,7 @@
         "-1": "text-red-500",
         "-2": "text-red-500 font-black",
       },
-      newReason: "",
-      newTag: "",
+      newCustomValue: "",
 
       toggleWeighingScreen() {
         this.weighingScreen = !this.weighingScreen;
@@ -301,24 +300,24 @@
         );
       },
 
-      processNewReasoning() {
-        if (this.newReason.trim() == "") return;
+      processNewCustomValue() {
+        if (this.newCustomValue.trim() == "") return;
         this.addReasonModal.on = false;
         if (this.addReasonModal.type == "Reason") {
           this.turnOffAllReasons();
-          if (this.predefined_reasons[this.newReason] == undefined) {
-            this.custom_reasons[this.newReason] = true;
+          if (this.predefined_reasons[this.newCustomValue] == undefined) {
+            this.custom_reasons[this.newCustomValue] = true;
           } else {
-            this.predefined_reasons[this.newReason] = true;
+            this.predefined_reasons[this.newCustomValue] = true;
           }
         } else {
-          if (this.predefined_tags[this.newReason] == undefined) {
-            this.custom_tags[this.newReason] = true;
+          if (this.predefined_tags[this.newCustomValue] == undefined) {
+            this.custom_tags[this.newCustomValue] = true;
           } else {
-            this.predefined_tags[this.newReason] = true;
+            this.predefined_tags[this.newCustomValue] = true;
           }
         }
-        this.newReason = "";
+        this.newCustomValue = "";
       },
 
       async showConfirmation(label) {
