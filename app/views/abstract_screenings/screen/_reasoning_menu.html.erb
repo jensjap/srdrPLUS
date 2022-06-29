@@ -122,12 +122,34 @@
           class="fixed bottom-0 h-24 mb-5 mx-5 left-0 right-0 flex flex-col justify-center items-center content-center"
         >
           <button
-            x-show="$store.screenStore.satisfyReasoning()"
             type="button"
-            class="cursor-pointer justify-center m-auto w-full inline-flex items-center px-4 py-6 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-900 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-            @click="$store.screenStore.postLabel(true)"
+            class="cursor-pointer justify-center m-auto w-full h-20 inline-flex items-center border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-900 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            :class="$store.screenStore.satisfyReasoning() ? '' : 'cursor-not-allowed bg-gray-900 hover:bg-gray-700'"
+            @click="if ($store.screenStore.satisfyReasoning()) $store.screenStore.postLabel(true)"
           >
-            Submit
+            <template x-if="$store.screenStore.satisfyReasoning()">
+              <!-- Heroicon name: outline/check -->
+              <svg
+                class="h-16 w-16 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="2"
+                stroke="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M5 13l4 4L19 7"
+                />
+              </svg>
+            </template>
+            <template x-if="!$store.screenStore.satisfyReasoning()">
+              <span class="text-xl"
+                >Please fill in the required data above</span
+              >
+            </template>
           </button>
         </div>
       </div>
