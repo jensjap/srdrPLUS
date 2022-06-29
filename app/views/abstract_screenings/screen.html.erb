@@ -306,9 +306,17 @@
         this.addReasonModal.on = false;
         if (this.addReasonModal.type == "Reason") {
           this.turnOffAllReasons();
-          this.custom_reasons[this.newReason] = true;
+          if (this.predefined_reasons[this.newReason] == undefined) {
+            this.custom_reasons[this.newReason] = true;
+          } else {
+            this.predefined_reasons[this.newReason] = true;
+          }
         } else {
-          this.custom_tags[this.newReason] = true;
+          if (this.predefined_tags[this.newReason] == undefined) {
+            this.custom_tags[this.newReason] = true;
+          } else {
+            this.predefined_tags[this.newReason] = true;
+          }
         }
         this.newReason = "";
       },
