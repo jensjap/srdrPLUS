@@ -38,7 +38,7 @@
           >
             <span
               x-text="word"
-              @click="if (word.length > 1) { $store.screenStore.toggle(); $store.screenStore.wordWeight = word }"
+              @click="if (word.length > 1) { $store.screenStore.toggleWeighingScreen(); $store.screenStore.wordWeight = word }; $nextTick(() => { $refs.wordWeightInput.focus() })"
               :class="$store.screenStore.cssWordClass[$store.screenStore.word_weights[word.toLowerCase()]] + ' cursor-pointer'"
             ></span>
           </template>
@@ -193,10 +193,8 @@
       newReason: "",
       newTag: "",
 
-      async toggle() {
+      toggleWeighingScreen() {
         this.weighingScreen = !this.weighingScreen;
-        await new Promise((resolve, reject) => setTimeout(resolve, 100));
-        document.getElementById("term").focus();
       },
 
       requireReasoning() {
@@ -285,6 +283,18 @@
 
       turnOffAllReasons() {
         Object.keys(this.reasons).forEach((v) => (this.reasons[v] = false));
+      },
+
+      processNewReasoning() {
+        if (this.newReason.trim() == "") return;
+        this.addReasonModal.on = false;
+        if (this.addReasonModal.type == "Reason") {
+          this.turnOffAllReasons();
+          this.reasons[this.newReason] = true;
+        } else {
+          this.tags[this.newReason] = true;
+        }
+        this.newReason = "";
       },
 
       async showConfirmation(label) {

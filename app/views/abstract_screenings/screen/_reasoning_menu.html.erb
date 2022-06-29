@@ -53,6 +53,75 @@
         </button>
 
         <div class="fixed inset-5 mb-24 overflow-y-scroll">
+          <template x-if="$store.screenStore.label_value == -1">
+            <div class="mb-4">
+              <h1 class="text-2xl flex items-center">
+                Mark Rejected
+                <div
+                  class="bg-red-500 flex justify-center items-center rounded-full text-white mx-4"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-10 w-10 p-1"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                </div>
+              </h1>
+            </div>
+          </template>
+          <template x-if="$store.screenStore.label_value == 0">
+            <div class="mb-4">
+              <h1 class="text-2xl flex items-center">
+                Mark Maybe
+                <div
+                  class="bg-srdrpurple flex justify-center items-center rounded-full text-white mx-4"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-10 w-10 p-1"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M10 2a1 1 0 011 1v1.323l3.954 1.582 1.599-.8a1 1 0 01.894 1.79l-1.233.616 1.738 5.42a1 1 0 01-.285 1.05A3.989 3.989 0 0115 15a3.989 3.989 0 01-2.667-1.019 1 1 0 01-.285-1.05l1.715-5.349L11 6.477V16h2a1 1 0 110 2H7a1 1 0 110-2h2V6.477L6.237 7.582l1.715 5.349a1 1 0 01-.285 1.05A3.989 3.989 0 015 15a3.989 3.989 0 01-2.667-1.019 1 1 0 01-.285-1.05l1.738-5.42-1.233-.617a1 1 0 01.894-1.788l1.599.799L9 4.323V3a1 1 0 011-1zm-5 8.274l-.818 2.552c.25.112.526.174.818.174.292 0 .569-.062.818-.174L5 10.274zm10 0l-.818 2.552c.25.112.526.174.818.174.292 0 .569-.062.818-.174L15 10.274z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                </div>
+              </h1>
+            </div>
+          </template>
+          <template x-if="$store.screenStore.label_value == 1">
+            <div class="mb-4">
+              <h1 class="text-2xl flex items-center">
+                Mark Accepted
+                <div
+                  class="bg-green-500 flex justify-center items-center rounded-full text-white mx-4"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-10 w-10 p-1"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                </div>
+              </h1>
+            </div>
+          </template>
           <template x-if="$store.screenStore.mustSelectReason()">
             <div class="min-h-[100px]">
               <h1 class="text-xl">*Reason</h1>
@@ -73,7 +142,7 @@
                   </span>
                 </template>
                 <span
-                  @click="$store.screenStore.addReasonModal = { on: true, type: 'Reason' };"
+                  @click="$store.screenStore.addReasonModal = { on: true, type: 'Reason' }; $nextTick(() => { $refs.newReasonInput.focus() })"
                   class="drop-shadow select-none cursor-pointer justify-center inline-flex items-center text-green-900 font-black"
                 >
                   <svg
@@ -114,7 +183,7 @@
                   </span>
                 </template>
                 <span
-                  @click="$store.screenStore.addReasonModal = { on: true, type: 'Tag' };"
+                  @click="$store.screenStore.addReasonModal = { on: true, type: 'Tag' }; $nextTick(() => { $refs.newReasonInput.focus(); });"
                   class="drop-shadow select-none cursor-pointer justify-center inline-flex items-center text-green-900 font-black"
                 >
                   <svg

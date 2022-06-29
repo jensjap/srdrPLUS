@@ -36,9 +36,11 @@
             x-text="`Add ${$store.screenStore.addReasonModal.type}`"
           ></h1>
           <input
-            id="new-reason-input"
+            x-ref="newReasonInput"
             x-model="$store.screenStore.newReason"
+            placeholder="Enter here.."
             class="!h-10 !p-2 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+            @keydown.enter="$store.screenStore.processNewReasoning()"
           />
         </div>
         <div
@@ -47,7 +49,8 @@
           <button
             type="button"
             class="cursor-pointer w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-srdrpurple text-base font-medium text-white hover:bg-srdrpurple-light focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:col-start-2 sm:text-sm"
-            @click="$store.screenStore.addReasonModal.on = false; if ($store.screenStore.addReasonModal.type == 'Reason') { $store.screenStore.turnOffAllReasons(); $store.screenStore.reasons[$store.screenStore.newReason] = true } else { $store.screenStore.tags[$store.screenStore.newReason] = true }; $store.screenStore.newReason = ''"
+            :class="$store.screenStore.newReason.trim() == '' ? 'cursor-not-allowed bg-gray-700' : ''"
+            @click="$store.screenStore.processNewReasoning()"
             x-text="`Add ${$store.screenStore.addReasonModal.type}`"
           ></button>
           <button
