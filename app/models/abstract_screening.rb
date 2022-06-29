@@ -44,6 +44,20 @@ class AbstractScreening < ApplicationRecord
 
   has_many :abstract_screening_results, dependent: :destroy, inverse_of: :abstract_screening
 
+  def reasons_object
+    reasons.each_with_object({}) do |reason, hash|
+      hash[reason.name] = false
+      hash
+    end
+  end
+
+  def tags_object
+    tags.each_with_object({}) do |tag, hash|
+      hash[tag.name] = false
+      hash
+    end
+  end
+
   def add_citations_from_pool(no_of_citations)
     return if no_of_citations.nil?
 

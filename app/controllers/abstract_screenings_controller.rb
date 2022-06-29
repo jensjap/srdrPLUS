@@ -45,14 +45,28 @@ class AbstractScreeningsController < ApplicationController
 
   def label
     label_preparations
-    payload = params[:data]
+    strong_params = params
+                    .permit(
+                      data: [
+                        :label_value, :notes, {
+                          predefined_reasons: {}, custom_reasons: {}, predefined_tags: {},
+                          custom_tags: {}, citation: [:abstract_screenings_citations_project_id]
+                        }
+                      ]
+                    )
+    payload = strong_params[:data]
     if payload[:label_value]
       label = payload[:label_value]
       abstract_screenings_citations_project_id = payload[:citation][:abstract_screenings_citations_project_id]
-      @abstract_screening
-        .abstract_screening_results
-        .create!(label:, abstract_screenings_citations_project_id:,
-                 abstract_screenings_projects_users_role:)
+      abstract_screening_result = @abstract_screening
+                                  .abstract_screening_results
+                                  .create!(label:, abstract_screenings_citations_project_id:,
+                                           abstract_screenings_projects_users_role:)
+      abstract_screenings_projects_users_role.process_reasons(abstract_screening_result, payload[:predefined_reasons],
+                                                              payload[:custom_reasons])
+      abstract_screenings_projects_users_role.process_tags(abstract_screening_result, payload[:predefined_tags],
+                                                           payload[:custom_tags])
+      abstract_screening_result.create_note(value: payload[:notes])
     end
 
     render_label_json_data
@@ -119,16 +133,10 @@ class AbstractScreeningsController < ApplicationController
         keywords: @random_citation.keywords.map(&:name).join(','),
         id: @random_citation.accession_number_alts
       },
-      reasons:
-        @abstract_screening.reasons.each_with_object({}) do |reason, hash|
-          hash[reason.name] = false
-          hash
-        end,
-      tags:
-        @abstract_screening.tags.each_with_object({}) do |tag, hash|
-          hash[tag.name] = false
-          hash
-        end,
+      predefined_reasons: @abstract_screening.reasons_object,
+      predefined_tags: @abstract_screening.tags_object,
+      custom_reasons: abstract_screenings_projects_users_role.reasons_object,
+      custom_tags: abstract_screenings_projects_users_role.tags_object,
       notes: '',
       options: {
         yes_tag_required: @abstract_screening.yes_tag_required,
@@ -139,7 +147,9 @@ class AbstractScreeningsController < ApplicationController
         maybe_reason_required: @abstract_screening.maybe_reason_required,
         yes_note_required: @abstract_screening.yes_note_required,
         no_note_required: @abstract_screening.no_note_required,
-        maybe_note_required: @abstract_screening.maybe_note_required
+        maybe_note_required: @abstract_screening.maybe_note_required,
+        only_predefined_reasons: @abstract_screening.only_predefined_reasons,
+        only_predefined_tags: @abstract_screening.only_predefined_tags
       },
       label_value: nil,
       word_weights: abstract_screenings_projects_users_role.word_weights_object

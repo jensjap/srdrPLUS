@@ -131,19 +131,52 @@
               >
               <div class="grid grid-rows sm:grid-cols-4 gap-4 mt-4 mb-8">
                 <template
-                  x-for="[key, value] in Object.entries($store.screenStore.reasons)"
+                  x-for="[key, value] in Object.entries($store.screenStore.predefined_reasons)"
                 >
                   <span
                     :class="value ? 'bg-green-800' : ''"
-                    @click="$store.screenStore.turnOffAllReasons(); $store.screenStore.reasons[key] = !value"
-                    class="drop-shadow select-none cursor-pointer justify-center inline-flex items-center px-3 py-4 rounded-full text-sm bg-gray-700 text-white font-black"
+                    @click="$store.screenStore.turnOffAllReasons(); $store.screenStore.predefined_reasons[key] = !value"
+                    class="text-center drop-shadow select-none cursor-pointer justify-center inline-flex items-center px-3 py-4 rounded-full text-sm bg-gray-700 text-white font-black"
                     x-text="key"
                   >
                   </span>
                 </template>
+                <template
+                  x-for="[key, value] in Object.entries($store.screenStore.custom_reasons)"
+                >
+                  <div class="relative">
+                    <span
+                      :class="value ? 'bg-green-800' : ''"
+                      @click="$store.screenStore.turnOffAllReasons(); $store.screenStore.custom_reasons[key] = !value"
+                      class="w-full text-center drop-shadow select-none cursor-pointer justify-center inline-flex items-center px-3 py-4 rounded-full text-sm bg-gray-700 text-white font-black"
+                      x-text="key"
+                    >
+                    </span>
+                    <button
+                      type="button"
+                      class="cursor-pointer absolute top-0 right-0 flex-shrink-0 ml-0.5 h-4 w-4 rounded-full inline-flex items-center justify-center text-white bg-red-500"
+                      @click="delete $store.screenStore.custom_reasons[key]"
+                    >
+                      <span class="sr-only">Remove large option</span>
+                      <svg
+                        class="h-2 w-2"
+                        stroke="currentColor"
+                        fill="none"
+                        viewBox="0 0 8 8"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-width="1.5"
+                          d="M1 1l6 6m0-6L1 7"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                </template>
                 <span
                   @click="$store.screenStore.addReasonModal = { on: true, type: 'Reason' }; $nextTick(() => { $refs.newReasonInput.focus() })"
                   class="drop-shadow select-none cursor-pointer justify-center inline-flex items-center text-green-900 font-black"
+                  x-show="!$store.screenStore.options.only_predefined_reasons"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -172,19 +205,52 @@
               >
               <div class="grid grid-rows sm:grid-cols-4 gap-4 mt-4 mb-8">
                 <template
-                  x-for="[key, value] in Object.entries($store.screenStore.tags)"
+                  x-for="[key, value] in Object.entries($store.screenStore.predefined_tags)"
                 >
                   <span
                     :class="value ? 'bg-green-800' : ''"
-                    @click="$store.screenStore.tags[key] = !value"
-                    class="drop-shadow select-none cursor-pointer justify-center inline-flex items-center px-3 py-4 rounded-full text-sm bg-gray-700 text-white font-black"
+                    @click="$store.screenStore.predefined_tags[key] = !value"
+                    class="text-center drop-shadow select-none cursor-pointer justify-center inline-flex items-center px-3 py-4 rounded-full text-sm bg-gray-700 text-white font-black"
                     x-text="key"
                   >
                   </span>
                 </template>
+                <template
+                  x-for="[key, value] in Object.entries($store.screenStore.custom_tags)"
+                >
+                  <div class="relative">
+                    <span
+                      :class="value ? 'bg-green-800' : ''"
+                      @click="$store.screenStore.custom_tags[key] = !value"
+                      class="w-full text-center drop-shadow select-none cursor-pointer justify-center inline-flex items-center px-3 py-4 rounded-full text-sm bg-gray-700 text-white font-black"
+                      x-text="key"
+                    >
+                    </span>
+                    <button
+                      type="button"
+                      class="cursor-pointer absolute top-0 right-0 flex-shrink-0 ml-0.5 h-4 w-4 rounded-full inline-flex items-center justify-center text-white bg-red-500"
+                      @click="delete $store.screenStore.custom_tags[key]"
+                    >
+                      <span class="sr-only">Remove large option</span>
+                      <svg
+                        class="h-2 w-2"
+                        stroke="currentColor"
+                        fill="none"
+                        viewBox="0 0 8 8"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-width="1.5"
+                          d="M1 1l6 6m0-6L1 7"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                </template>
                 <span
                   @click="$store.screenStore.addReasonModal = { on: true, type: 'Tag' }; $nextTick(() => { $refs.newReasonInput.focus(); });"
                   class="drop-shadow select-none cursor-pointer justify-center inline-flex items-center text-green-900 font-black"
+                  x-show="!$store.screenStore.options.only_predefined_tags"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
