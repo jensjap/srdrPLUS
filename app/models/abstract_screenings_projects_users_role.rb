@@ -12,6 +12,10 @@ class AbstractScreeningsProjectsUsersRole < ApplicationRecord
   belongs_to :abstract_screening
   belongs_to :projects_users_role
   has_many :word_weights, dependent: :destroy, inverse_of: :abstract_screenings_projects_users_role
+  has_many :abstract_screenings_projects_users_role_tags, dependent: :destroy,
+                                                          inverse_of: :abstract_screenings_projects_users_role
+  has_many :abstract_screenings_projects_users_role_reasons, dependent: :destroy,
+                                                             inverse_of: :abstract_screenings_projects_users_role
 
   def self.find_aspur(user, abstract_screening)
     AbstractScreeningsProjectsUsersRole

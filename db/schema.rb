@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_06_28_122953) do
+ActiveRecord::Schema[7.0].define(version: 2022_06_29_040241) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -81,6 +81,24 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_28_122953) do
     t.index ["abstract_screening_id"], name: "ascp_on_as"
     t.index ["citations_project_id", "abstract_screening_id"], name: "cp_id_on_as_id", unique: true
     t.index ["citations_project_id"], name: "ascp_on_cp"
+  end
+
+  create_table "abstract_screenings_projects_users_role_reasons", charset: "utf8mb3", force: :cascade do |t|
+    t.bigint "abstract_screenings_projects_users_role_id"
+    t.bigint "reason_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["abstract_screenings_projects_users_role_id"], name: "aspurr_on_aspur"
+    t.index ["reason_id"], name: "aspurr_on_r"
+  end
+
+  create_table "abstract_screenings_projects_users_role_tags", charset: "utf8mb3", force: :cascade do |t|
+    t.bigint "abstract_screenings_projects_users_role_id"
+    t.bigint "tag_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["abstract_screenings_projects_users_role_id"], name: "aspurt_on_aspur"
+    t.index ["tag_id"], name: "aspurt_on_r"
   end
 
   create_table "abstract_screenings_projects_users_roles", charset: "utf8mb3", force: :cascade do |t|

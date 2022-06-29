@@ -1,11 +1,10 @@
 <div x-data id="abstrackr-wrapper">
+  <!-- prettier-ignore -->
   <%= render 'abstract_screenings/screen/weighing_screen' %>
-  <!-- prettier-ignore -->
   <%= render 'abstract_screenings/screen/confirmation_modal' %>
-  <!-- prettier-ignore -->
   <%= render 'abstract_screenings/screen/menu' %>
-  <!-- prettier-ignore -->
   <%= render 'abstract_screenings/screen/reasoning_menu' %>
+  <%= render 'abstract_screenings/screen/add_reasoning' %>
   <div
     class="m-auto lg:w-1/2 h-32 absolute inset-0 mt-0 overflow-y-hidden bg-gray-300 flex flex-col justify-center"
   >
@@ -148,7 +147,8 @@
     Alpine.store("screenStore", {
       menu: false,
       weighingScreen: false,
-      reasoningMenu: true,
+      reasoningMenu: false,
+      addReasonModal: { on: false, type: "" },
       confirmationModal: false,
       confirmationModalText: "",
       confirmationModalTexts: {
@@ -190,6 +190,8 @@
         "-1": "text-red-500",
         "-2": "text-red-500 font-black",
       },
+      newReason: "",
+      newTag: "",
 
       async toggle() {
         this.weighingScreen = !this.weighingScreen;
@@ -279,6 +281,10 @@
         } else if (this.label_value == 1) {
           return this.options.yes_note_required;
         }
+      },
+
+      turnOffAllReasons() {
+        Object.keys(this.reasons).forEach((v) => (this.reasons[v] = false));
       },
 
       async showConfirmation(label) {
