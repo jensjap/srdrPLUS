@@ -41,7 +41,7 @@
               <div class="mt-2">
                 <p class="text-sm text-gray-500">
                   <div class="mt-1">
-                    <input x-model="$store.screenStore.weightWord" name="term" id="term" class="text-center shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md">
+                    <input x-model="$store.screenStore.wordWeight" name="term" id="term" class="text-center shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md">
                   </div>
                 </p>
               </div>
@@ -49,7 +49,7 @@
           </div>
           <div class="mt-5 sm:mt-6">
             <button
-              @click="$store.screenStore.toggle(); $store.screenStore.sendWw($store.screenStore.weightWord, 2)"
+              @click="$store.screenStore.toggle(); $store.screenStore.sendWw($store.screenStore.wordWeight, 2)"
               type="button"
               class="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:text-sm"
             >
@@ -58,7 +58,7 @@
           </div>
           <div class="mt-5 sm:mt-6">
             <button
-              @click="$store.screenStore.toggle(); $store.screenStore.sendWw($store.screenStore.weightWord, 1)"
+              @click="$store.screenStore.toggle(); $store.screenStore.sendWw($store.screenStore.wordWeight, 1)"
               type="button"
               class="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-400 text-base font-medium text-white hover:bg-green-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-300 sm:text-sm"
             >
@@ -67,7 +67,7 @@
           </div>
           <div class="mt-5 sm:mt-6">
             <button
-              @click="$store.screenStore.toggle(); $store.screenStore.sendWw($store.screenStore.weightWord, 0)"
+              @click="$store.screenStore.toggle(); $store.screenStore.sendWw($store.screenStore.wordWeight, 0)"
               type="button"
               class="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-gray-600 text-base font-medium text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 sm:text-sm"
             >
@@ -76,7 +76,7 @@
           </div>
           <div class="mt-5 sm:mt-6">
             <button
-              @click="$store.screenStore.toggle(); $store.screenStore.sendWw($store.screenStore.weightWord, -1)"
+              @click="$store.screenStore.toggle(); $store.screenStore.sendWw($store.screenStore.wordWeight, -1)"
               type="button"
               class="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-400 text-base font-medium text-white hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-300 sm:text-sm"
             >
@@ -85,7 +85,7 @@
           </div>
           <div class="mt-5 sm:mt-6">
             <button
-              @click="$store.screenStore.toggle(); $store.screenStore.sendWw($store.screenStore.weightWord, -2)"
+              @click="$store.screenStore.toggle(); $store.screenStore.sendWw($store.screenStore.wordWeight, -2)"
               type="button"
               class="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:text-sm"
             >

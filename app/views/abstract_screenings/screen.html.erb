@@ -5,7 +5,7 @@
   <!-- prettier-ignore -->
   <%= render 'abstract_screenings/screen/menu' %>
   <!-- prettier-ignore -->
-  <%= render 'abstract_screenings/screen/meta_menu' %>
+  <%= render 'abstract_screenings/screen/reasoning_menu' %>
   <div
     class="m-auto lg:w-1/2 h-32 absolute inset-0 mt-0 overflow-y-hidden bg-gray-300 flex flex-col justify-center"
   >
@@ -39,7 +39,7 @@
           >
             <span
               x-text="word"
-              @click="if (word.length > 1) { $store.screenStore.toggle(); $store.screenStore.weightWord = word }"
+              @click="if (word.length > 1) { $store.screenStore.toggle(); $store.screenStore.wordWeight = word }"
               :class="$store.screenStore.cssWordClass[$store.screenStore.word_weights[word.toLowerCase()]] + ' cursor-pointer'"
             ></span>
           </template>
@@ -64,7 +64,7 @@
       <div class="grid grid-cols-3 h-full">
         <div
           class="cursor-pointer border-r-8 bg-red-500 flex justify-center items-center rounded-tl-2xl"
-          @click="$store.screenStore.label_value = -1; if ($store.screenStore.requireReasoning()) { $store.screenStore.metaMenu = true } else { $store.screenStore.postLabel(true) }"
+          @click="$store.screenStore.label_value = -1; if ($store.screenStore.requireReasoning()) { $store.screenStore.reasoningMenu = true } else { $store.screenStore.postLabel(true) }"
           :class="($store.screenStore.label_value == -1 || $store.screenStore.label_value == null) ? '' : 'saturate-[0.1]'"
         >
           <svg
@@ -83,7 +83,7 @@
         <div class="grid grid-rows-2">
           <div
             class="cursor-pointer border-b-4 bg-srdrpurple flex justify-center items-center"
-            @click="$store.screenStore.label_value = 0; if ($store.screenStore.requireReasoning()) { $store.screenStore.metaMenu = true } else { $store.screenStore.postLabel(true) }"
+            @click="$store.screenStore.label_value = 0; if ($store.screenStore.requireReasoning()) { $store.screenStore.reasoningMenu = true } else { $store.screenStore.postLabel(true) }"
             :class="($store.screenStore.label_value == 0 || $store.screenStore.label_value == null)? '' : 'saturate-[0.1]'"
           >
             <svg
@@ -112,7 +112,7 @@
         </div>
         <div
           class="cursor-pointer border-l-8 bg-green-500 flex justify-center items-center rounded-tr-2xl"
-          @click="$store.screenStore.label_value = 1; if ($store.screenStore.requireReasoning()) { $store.screenStore.metaMenu = true } else { $store.screenStore.postLabel(true) }"
+          @click="$store.screenStore.label_value = 1; if ($store.screenStore.requireReasoning()) { $store.screenStore.reasoningMenu = true } else { $store.screenStore.postLabel(true) }"
           :class="($store.screenStore.label_value == 1 || $store.screenStore.label_value == null)? '' : 'saturate-[0.1]'"
         >
           <svg
@@ -148,7 +148,7 @@
     Alpine.store("screenStore", {
       menu: false,
       weighingScreen: false,
-      metaMenu: true,
+      reasoningMenu: true,
       confirmationModal: false,
       confirmationModalText: "",
       confirmationModalTexts: {
@@ -182,7 +182,7 @@
       },
       label_value: null,
       word_weights: {},
-      weightWord: "",
+      wordWeight: "",
       cssWordClass: {
         2: "text-green-500 font-black",
         1: "text-green-500",
@@ -308,7 +308,7 @@
       },
 
       async postLabel(submit) {
-        this.metaMenu = false;
+        this.reasoningMenu = false;
         const response = await fetch(
           "/abstract_screenings/<%= params[:abstract_screening_id] %>/label",
           {
