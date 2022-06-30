@@ -6,11 +6,13 @@ class AbstractScreeningsController < ApplicationController
   before_action :set_abstract_screening, only: %i[create_word_weight]
 
   def index
-    @up = @project.citations_projects.where(citations_projects: { screening_status: nil })
-    @as = @project.citations_projects.where(citations_projects: { screening_status: 'AS' })
-    @fs = @project.citations_projects.where(citations_projects: { screening_status: 'FS' })
-    @de = @project.citations_projects.where(citations_projects: { screening_status: 'DE' })
-    @abstract_screenings = @project.abstract_screenings.order(id: :desc).page(params[:page]).per(5)
+    prepare_pipeline_stats
+    @abstract_screenings =
+      @project
+      .abstract_screenings
+      .order(id: :desc)
+      .page(params[:page])
+      .per(5)
   end
 
   def new
@@ -18,7 +20,8 @@ class AbstractScreeningsController < ApplicationController
   end
 
   def create
-    @abstract_screening = @project.abstract_screenings.new(abstract_screening_params)
+    @abstract_screening =
+      @project.abstract_screenings.new(abstract_screening_params)
     if @abstract_screening.save
       @abstract_screening.add_citations_from_pool(params[:no_of_citations])
       flash[:notice] = 'Screening was successfully created'
@@ -31,11 +34,12 @@ class AbstractScreeningsController < ApplicationController
 
   def show
     @abstract_screening = AbstractScreening.find(params[:id])
-    @abstract_screening_results = @abstract_screening
-                                  .abstract_screening_results
-                                  .order(created_at: :desc)
-                                  .page(params[:page])
-                                  .per(5)
+    @abstract_screening_results =
+      @abstract_screening
+      .abstract_screening_results
+      .order(created_at: :desc)
+      .page(params[:page])
+      .per(5)
   end
 
   def screen
@@ -45,27 +49,32 @@ class AbstractScreeningsController < ApplicationController
 
   def label
     label_preparations
-    strong_params = params
-                    .permit(
-                      data: [
-                        :label_value, :notes, {
-                          predefined_reasons: {}, custom_reasons: {}, predefined_tags: {},
-                          custom_tags: {}, citation: [:abstract_screenings_citations_project_id]
-                        }
-                      ]
-                    )
+    strong_params =
+      params
+      .permit(
+        data: [
+          :label_value, :notes, {
+            predefined_reasons: {}, custom_reasons: {}, predefined_tags: {},
+            custom_tags: {}, citation: [:abstract_screenings_citations_project_id]
+          }
+        ]
+      )
     payload = strong_params[:data]
     if payload[:label_value]
       label = payload[:label_value]
-      abstract_screenings_citations_project_id = payload[:citation][:abstract_screenings_citations_project_id]
-      abstract_screening_result = @abstract_screening
-                                  .abstract_screening_results
-                                  .create!(label:, abstract_screenings_citations_project_id:,
-                                           abstract_screenings_projects_users_role:)
-      abstract_screenings_projects_users_role.process_reasons(abstract_screening_result, payload[:predefined_reasons],
-                                                              payload[:custom_reasons])
-      abstract_screenings_projects_users_role.process_tags(abstract_screening_result, payload[:predefined_tags],
-                                                           payload[:custom_tags])
+      abstract_screenings_citations_project_id =
+        payload[:citation][:abstract_screenings_citations_project_id]
+      abstract_screening_result =
+        @abstract_screening
+        .abstract_screening_results
+        .create!(label:, abstract_screenings_citations_project_id:,
+                 abstract_screenings_projects_users_role:)
+      abstract_screenings_projects_users_role
+        .process_reasons(abstract_screening_result, payload[:predefined_reasons],
+                         payload[:custom_reasons])
+      abstract_screenings_projects_users_role
+        .process_tags(abstract_screening_result, payload[:predefined_tags],
+                      payload[:custom_tags])
       abstract_screening_result.create_note(value: payload[:notes])
     end
 
@@ -88,10 +97,7 @@ class AbstractScreeningsController < ApplicationController
   end
 
   def citation_lifecycle_management
-    @up = @project.citations_projects.where(citations_projects: { screening_status: nil })
-    @as = @project.citations_projects.where(citations_projects: { screening_status: 'AS' })
-    @fs = @project.citations_projects.where(citations_projects: { screening_status: 'FS' })
-    @de = @project.citations_projects.where(citations_projects: { screening_status: 'DE' })
+    prepare_pipeline_stats
     @citations = @project.citations.page(params[:page]).per(10)
   end
 
@@ -103,11 +109,12 @@ class AbstractScreeningsController < ApplicationController
 
   def label_preparations
     @abstract_screening = AbstractScreening.find(params[:abstract_screening_id])
-    @random_citation = @abstract_screening
-                       .project.citations_projects
-                       .where('screening_status = ? OR screening_status = ?', nil, 'AS')
-                       .sample
-                       .citation
+    @random_citation =
+      @abstract_screening
+      .project.citations_projects
+      .where('screening_status = ? OR screening_status = ?', nil, 'AS')
+      .sample
+      .citation
     @abstract_screenings_citations_project =
       @abstract_screening
       .abstract_screenings_citations_projects
@@ -206,5 +213,12 @@ class AbstractScreeningsController < ApplicationController
       reason == '' || reason[0] != '_' ? reason : Reason.find_or_create_by(name: reason[1..]).id
     end
     strong_params
+  end
+
+  def prepare_pipeline_stats
+    @up = @project.citations_projects.where(citations_projects: { screening_status: nil })
+    @as = @project.citations_projects.where(citations_projects: { screening_status: 'AS' })
+    @fs = @project.citations_projects.where(citations_projects: { screening_status: 'FS' })
+    @de = @project.citations_projects.where(citations_projects: { screening_status: 'DE' })
   end
 end
