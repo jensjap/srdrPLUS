@@ -320,6 +320,12 @@
         this.newCustomValue = "";
       },
 
+      deleteCustomValue(type, key) {
+        if (confirm(`Would you like to delete "${key}"?`)) {
+          delete this[type][key];
+        }
+      },
+
       async showConfirmation(label) {
         this.confirmationModalText = this.confirmationModalTexts[label];
         this.confirmationModal = true;

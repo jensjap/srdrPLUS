@@ -155,7 +155,7 @@
                     <button
                       type="button"
                       class="cursor-pointer absolute top-0 right-0 flex-shrink-0 ml-0.5 h-4 w-4 rounded-full inline-flex items-center justify-center text-white bg-red-500"
-                      @click="delete $store.screenStore.custom_reasons[key]"
+                      @click="$store.screenStore.deleteCustomValue('custom_reasons', key)"
                     >
                       <span class="sr-only">Remove large option</span>
                       <svg
@@ -229,7 +229,7 @@
                     <button
                       type="button"
                       class="cursor-pointer absolute top-0 right-0 flex-shrink-0 ml-0.5 h-4 w-4 rounded-full inline-flex items-center justify-center text-white bg-red-500"
-                      @click="delete $store.screenStore.custom_tags[key]"
+                      @click="$store.screenStore.deleteCustomValue('custom_tags', key)"
                     >
                       <span class="sr-only">Remove large option</span>
                       <svg
