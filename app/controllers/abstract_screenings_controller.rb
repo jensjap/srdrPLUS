@@ -43,23 +43,12 @@ class AbstractScreeningsController < ApplicationController
   end
 
   def screen
-    label_preparations
     render layout: 'abstrackr'
   end
 
   def label
     label_preparations
-    strong_params =
-      params
-      .permit(
-        data: [
-          :label_value, :notes, {
-            predefined_reasons: {}, custom_reasons: {}, predefined_tags: {},
-            custom_tags: {}, citation: [:abstract_screenings_citations_project_id]
-          }
-        ]
-      )
-    payload = strong_params[:data]
+    payload = label_params[:data]
     if payload[:label_value]
       label = payload[:label_value]
       abstract_screenings_citations_project_id =
@@ -169,6 +158,18 @@ class AbstractScreeningsController < ApplicationController
 
   def set_abstract_screening
     @abstract_screening = AbstractScreening.find(params[:abstract_screening_id])
+  end
+
+  def label_params
+    params
+      .permit(
+        data: [
+          :label_value, :notes, {
+            predefined_reasons: {}, custom_reasons: {}, predefined_tags: {},
+            custom_tags: {}, citation: [:abstract_screenings_citations_project_id]
+          }
+        ]
+      )
   end
 
   def abstract_screening_params
