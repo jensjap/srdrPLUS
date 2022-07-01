@@ -20,6 +20,7 @@ class AbstractScreeningsProjectsUsersRole < ApplicationRecord
   has_many :tags, through: :abstract_screenings_projects_users_role_tags
 
   def process_reasons(asr, predefined_reasons, custom_reasons)
+    asr.reasons.destroy_all
     predefined_reasons.merge(custom_reasons).each do |reason, included|
       next unless included
 
@@ -29,6 +30,7 @@ class AbstractScreeningsProjectsUsersRole < ApplicationRecord
   end
 
   def process_tags(asr, predefined_tags, custom_tags)
+    asr.tags.destroy_all
     predefined_tags.merge(custom_tags).each do |tag, included|
       next unless included
 

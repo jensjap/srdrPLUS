@@ -132,17 +132,21 @@
                     <%= asr.tags.map(&:name).join(', ') %>
                   </td>
                   <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                    <%= asr.note %>
+                    <%= asr&.note&.value %>
                   </td>
 
                   <td
                     class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6"
                   >
-                    <a
-                      href="#"
-                      class="hover:no-underline hover:text-white inline-flex items-center justify-center rounded-md border border-transparent bg-srdrpurple px-4 py-1 text-sm font-medium text-white shadow-sm hover:bg-srdrpurple-light focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto"
-                      >Screen Again</a
-                    >
+                    <%= link_to "Screen Again",
+                    abstract_screening_rescreen_path(asr.abstract_screening,
+                    abstract_screening_result_id: asr.id), class:
+                    'hover:no-underline hover:text-white inline-flex
+                    items-center justify-center rounded-md border
+                    border-transparent bg-srdrpurple px-4 py-1 text-sm
+                    font-medium text-white shadow-sm hover:bg-srdrpurple-light
+                    focus:outline-none focus:ring-2 focus:ring-indigo-500
+                    focus:ring-offset-2 sm:w-auto', method: :post %>
                   </td>
                 </tr>
 

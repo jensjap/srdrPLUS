@@ -195,6 +195,7 @@
         "-2": "text-red-500 font-black",
       },
       newCustomValue: "",
+      rescreen: null,
 
       toggleWeighingScreen() {
         this.weighingScreen = !this.weighingScreen;
@@ -371,6 +372,7 @@
                 custom_reasons: this.custom_reasons,
                 custom_tags: this.custom_tags,
                 notes: this.notes,
+                rescreen: this.rescreen,
               },
             }),
           }
@@ -386,6 +388,7 @@
         this.options = data.options;
         this.label_value = data.label_value;
         this.word_weights = data.word_weights;
+        this.rescreen = data.rescreen;
         await new Promise((resolve, reject) => setTimeout(resolve, 0));
       },
     });
