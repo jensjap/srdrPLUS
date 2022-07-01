@@ -1,6 +1,6 @@
 class AbstractScreeningsController < ApplicationController
   add_breadcrumb 'my projects', :projects_path
-  skip_before_action :verify_authenticity_token, only: %i[label create_word_weight]
+  skip_before_action :verify_authenticity_token, only: %i[label create_word_weight rescreen]
 
   before_action :set_project, only: %i[index new create citation_lifecycle_management]
   before_action :set_abstract_screening, only: %i[create_word_weight]
@@ -43,7 +43,26 @@ class AbstractScreeningsController < ApplicationController
   end
 
   def rescreen
-    session[:abstract_screening_result_id] = params[:abstract_screening_result_id]
+    @abstract_screening = AbstractScreening.find(params[:abstract_screening_id])
+    asr_id = params[:abstract_screening_result_id]
+    previous = params[:previous]
+
+    session[:abstract_screening_result_id] =
+      if asr_id != 'null' && previous
+        AbstractScreeningResult
+          .where(abstract_screenings_projects_users_role:)
+          .where('updated_at < ?', AbstractScreeningResult.find(asr_id).updated_at)
+          .order(updated_at: :desc)
+          .limit(1)&.first&.id || asr_id
+      elsif asr_id != 'null'
+        asr_id
+      else
+        AbstractScreeningResult
+          .where(abstract_screenings_projects_users_role:)
+          .order(updated_at: :desc)
+          .limit(1)&.first&.id
+      end
+    session.delete(:abstract_screening_result_id) if session[:abstract_screening_result_id].nil?
     redirect_to action: :screen
   end
 
@@ -65,6 +84,7 @@ class AbstractScreeningsController < ApplicationController
         .create!(label:, abstract_screenings_citations_project_id:,
                  abstract_screenings_projects_users_role:)
       abstract_screening_result.update(label:)
+      abstract_screening_result.touch
       abstract_screenings_projects_users_role
         .process_reasons(abstract_screening_result, payload[:predefined_reasons],
                          payload[:custom_reasons])
