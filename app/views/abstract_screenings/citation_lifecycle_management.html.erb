@@ -170,17 +170,17 @@
                 </td>
                 <td class="px-3 py-4 text-sm text-gray-500">
                   <%=
-                  citation.abstract_screening_results.map(&:reasons).flatten.map(&:reasons).map(&:name).join(",
+                  citation.abstract_screening_results.map(&:reasons).flatten.map(&:name).join(",
                   ") %>
                 </td>
                 <td class="px-3 py-4 text-sm text-gray-500">
                   <%=
-                  citation.abstract_screening_results.map(&:reasons).flatten.map(&:tags).map(&:name).join(",
+                  citation.abstract_screening_results.map(&:tags).flatten.map(&:name).join(",
                   ") %>
                 </td>
                 <td class="px-3 py-4 text-sm text-gray-500">
                   <%=
-                  citation.abstract_screening_results.map(&:reasons).flatten.map(&:notes).map(&:name).join(",
+                  citation.abstract_screening_results.map(&:note).compact.map(&:value).join(",
                   ") %>
                 </td>
                 <td class="px-3 py-4 text-sm text-gray-500">
