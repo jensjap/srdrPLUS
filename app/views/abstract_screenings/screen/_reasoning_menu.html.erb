@@ -134,9 +134,9 @@
                   x-for="[key, value] in Object.entries($store.screenStore.predefined_reasons)"
                 >
                   <span
-                    :class="value ? 'bg-green-800' : ''"
+                    :class="value ? 'bg-srdrpurple' : 'bg-gray-700'"
                     @click="$store.screenStore.turnOffAllReasons(); $store.screenStore.predefined_reasons[key] = !value"
-                    class="text-center drop-shadow select-none cursor-pointer justify-center inline-flex items-center px-3 py-4 rounded-full text-sm bg-gray-700 text-white font-black"
+                    class="text-center drop-shadow select-none cursor-pointer justify-center inline-flex items-center px-3 py-4 rounded-full text-sm text-white font-black"
                     x-text="key"
                   >
                   </span>
@@ -146,9 +146,9 @@
                 >
                   <div class="relative">
                     <span
-                      :class="value ? 'bg-green-800' : ''"
+                      :class="value ? 'bg-srdrpurple' : 'bg-gray-700'"
                       @click="$store.screenStore.turnOffAllReasons(); $store.screenStore.custom_reasons[key] = !value"
-                      class="w-full text-center drop-shadow select-none cursor-pointer justify-center inline-flex items-center px-3 py-4 rounded-full text-sm bg-gray-700 text-white font-black"
+                      class="w-full text-center drop-shadow select-none cursor-pointer justify-center inline-flex items-center px-3 py-4 rounded-full text-sm text-white font-black"
                       x-text="key"
                     >
                     </span>
@@ -208,9 +208,9 @@
                   x-for="[key, value] in Object.entries($store.screenStore.predefined_tags)"
                 >
                   <span
-                    :class="value ? 'bg-green-800' : ''"
+                    :class="value ? 'bg-srdrpurple' : 'bg-gray-700'"
                     @click="$store.screenStore.predefined_tags[key] = !value"
-                    class="text-center drop-shadow select-none cursor-pointer justify-center inline-flex items-center px-3 py-4 rounded-full text-sm bg-gray-700 text-white font-black"
+                    class="text-center drop-shadow select-none cursor-pointer justify-center inline-flex items-center px-3 py-4 rounded-full text-sm text-white font-black"
                     x-text="key"
                   >
                   </span>
@@ -220,9 +220,9 @@
                 >
                   <div class="relative">
                     <span
-                      :class="value ? 'bg-green-800' : ''"
+                      :class="value ? 'bg-srdrpurple' : 'bg-gray-700'"
                       @click="$store.screenStore.custom_tags[key] = !value"
-                      class="w-full text-center drop-shadow select-none cursor-pointer justify-center inline-flex items-center px-3 py-4 rounded-full text-sm bg-gray-700 text-white font-black"
+                      class="w-full text-center drop-shadow select-none cursor-pointer justify-center inline-flex items-center px-3 py-4 rounded-full text-sm text-white font-black"
                       x-text="key"
                     >
                     </span>
