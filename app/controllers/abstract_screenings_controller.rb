@@ -73,7 +73,7 @@ class AbstractScreeningsController < ApplicationController
   def label
     label_preparations
     payload = label_params[:data]
-    if payload[:label_value]
+    if payload[:label_value] || payload[:autosave]
       label = payload[:label_value]
       abstract_screenings_citations_project_id =
         payload[:citation][:abstract_screenings_citations_project_id]
@@ -138,10 +138,16 @@ class AbstractScreeningsController < ApplicationController
       @abstract_screenings_citations_project = @abstract_screening_result.abstract_screenings_citations_project
     else
       @abstract_screening = AbstractScreening.find(params[:abstract_screening_id])
+      @abstract_screening_result = AbstractScreeningResult.find_by(
+        label: nil,
+        abstract_screening: @abstract_screening,
+        abstract_screenings_projects_users_role:
+      )
       @random_citation =
+        @abstract_screening_result&.citation ||
         @abstract_screening
         .project.citations_projects
-        .where('screening_status = ? OR screening_status = ?', nil, 'AS')
+        .where('screening_status IS NULL')
         .sample
         .citation
       @abstract_screenings_citations_project =
@@ -155,6 +161,11 @@ class AbstractScreeningsController < ApplicationController
               project: @abstract_screening.project, citation: @random_citation
             )
         )
+
+      @abstract_screening_result ||= @abstract_screening
+                                     .abstract_screening_results
+                                     .create!(label: nil, abstract_screenings_citations_project: @abstract_screenings_citations_project,
+                                              abstract_screenings_projects_users_role:)
     end
   end
 
@@ -229,7 +240,7 @@ class AbstractScreeningsController < ApplicationController
     params
       .permit(
         data: [
-          :label_value, :notes, :rescreen, {
+          :autosave, :label_value, :notes, :rescreen, {
             predefined_reasons: {}, custom_reasons: {}, predefined_tags: {},
             custom_tags: {}, citation: [:abstract_screenings_citations_project_id]
           }

@@ -319,10 +319,11 @@
           }
         }
         this.newCustomValue = "";
+        this.postLabel(true, true);
       },
 
       deleteCustomValue(type, key) {
-        if (confirm(`Would you like to delete "${key}"?`)) {
+        if (confirm(`Would you like to delete "${key}" as a custom choice?`)) {
           delete this[type][key];
         }
       },
@@ -353,8 +354,10 @@
         this.word_weights = data;
       },
 
-      async postLabel(submit) {
-        this.reasoningMenu = false;
+      async postLabel(submit, autosave) {
+        if (submit && !autosave) {
+          this.reasoningMenu = false;
+        }
         const response = await fetch(
           "/abstract_screenings/<%= params[:abstract_screening_id] %>/label",
           {
@@ -365,7 +368,8 @@
             },
             body: JSON.stringify({
               data: {
-                label_value: this.label_value,
+                autosave: autosave,
+                label_value: autosave ? null : this.label_value,
                 citation: this.citation,
                 predefined_reasons: this.predefined_reasons,
                 predefined_tags: this.predefined_tags,
@@ -378,7 +382,10 @@
           }
         );
         const data = await response.json();
-        if (submit) await this.showConfirmation(this.label_value);
+        if (submit && !autosave) {
+          await this.showConfirmation(this.label_value);
+          this.label_value = data.label_value;
+        }
         this.citation = data.citation;
         this.predefined_reasons = data.predefined_reasons;
         this.predefined_tags = data.predefined_tags;
@@ -386,10 +393,8 @@
         this.custom_tags = data.custom_tags;
         this.notes = data.notes;
         this.options = data.options;
-        this.label_value = data.label_value;
         this.word_weights = data.word_weights;
         this.rescreen = data.rescreen;
-        await new Promise((resolve, reject) => setTimeout(resolve, 0));
       },
     });
     Alpine.store("screenStore").postLabel();

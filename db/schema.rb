@@ -24,7 +24,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_29_040241) do
     t.bigint "abstract_screening_id"
     t.bigint "abstract_screenings_projects_users_role_id"
     t.bigint "abstract_screenings_citations_project_id"
-    t.integer "label", limit: 1, null: false
+    t.integer "label", limit: 1
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["abstract_screening_id"], name: "index_abstract_screening_results_on_abstract_screening_id"
