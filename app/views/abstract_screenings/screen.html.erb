@@ -1,4 +1,4 @@
-<div x-data id="abstrackr-wrapper">
+<div x-data="screenStore" id="abstrackr-wrapper">
   <!-- prettier-ignore -->
   <%= render 'abstract_screenings/screen/weighing_screen' %>
   <%= render 'abstract_screenings/screen/confirmation_modal' %>
@@ -12,17 +12,17 @@
       <div class="horizontal-scroll-wrapper">
         <h1
           class="px-8 text-base font-bold horizontal-scroll-wrapper-item overflow-x-auto whitespace-nowrap"
-          x-text="$store.screenStore.citation.title"
+          x-text="citation.title"
         ></h1>
       </div>
       <div class="px-8 text-sm overflow-x-auto whitespace-nowrap">
-        Journal: <span x-text="$store.screenStore.citation.journal"></span>
+        Journal: <span x-text="citation.journal"></span>
       </div>
       <div class="horizontal-scroll-wrapper">
         <div
           class="horizontal-scroll-wrapper-item text-sm overflow-x-auto whitespace-nowrap"
         >
-          Authors: <span x-text="$store.screenStore.citation.authors"></span>
+          Authors: <span x-text="citation.authors"></span>
         </div>
       </div>
     </div>
@@ -33,25 +33,20 @@
     <div class="vertical-scroll-wrapper">
       <div class="vertical-scroll-wrapper-item">
         <div class="px-8 leading-loose weightable">
-          <template
-            x-for="word in ($store.screenStore.citation.abstract.split(/(\W)/))"
-          >
+          <template x-for="word in (citation.abstract.split(/(\W)/))">
             <span
               x-text="word"
-              @click="if (word.length > 1) { $store.screenStore.toggleWeighingScreen(); $store.screenStore.wordWeight = word }; $nextTick(() => { $refs.wordWeightInput.focus() })"
-              :class="$store.screenStore.cssWordClass[$store.screenStore.word_weights[word.toLowerCase()]] + ' cursor-pointer'"
+              @click="if (word.length > 1) { toggleWeighingScreen(); wordWeight = word }; $nextTick(() => { $refs.wordWeightInput.focus() })"
+              :class="cssWordClass[word_weights[word.toLowerCase()]] + ' cursor-pointer'"
             ></span>
           </template>
         </div>
         <hr />
         <div
           class="px-8 break-all leading-loose"
-          x-text="$store.screenStore.citation.keywords"
+          x-text="citation.keywords"
         ></div>
-        <div
-          class="px-8 break-all leading-loose"
-          x-text="$store.screenStore.citation.id"
-        ></div>
+        <div class="px-8 break-all leading-loose" x-text="citation.id"></div>
       </div>
     </div>
   </div>
@@ -63,8 +58,8 @@
       <div class="grid grid-cols-3 h-full">
         <div
           class="cursor-pointer border-r-8 bg-red-500 flex justify-center items-center rounded-tl-2xl"
-          @click="$store.screenStore.label_value = -1; if ($store.screenStore.requireReasoning()) { $store.screenStore.reasoningMenu = true } else { $store.screenStore.postLabel(true) }"
-          :class="($store.screenStore.label_value == -1 || $store.screenStore.label_value == null) ? '' : 'saturate-[0.1]'"
+          @click="label_value = -1; if (requireReasoning()) { reasoningMenu = true } else { postLabel(true) }"
+          :class="(label_value == -1 || label_value == null) ? '' : 'saturate-[0.1]'"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -82,8 +77,8 @@
         <div class="grid grid-rows-2">
           <div
             class="cursor-pointer border-b-4 bg-srdrpurple flex justify-center items-center"
-            @click="$store.screenStore.label_value = 0; if ($store.screenStore.requireReasoning()) { $store.screenStore.reasoningMenu = true } else { $store.screenStore.postLabel(true) }"
-            :class="($store.screenStore.label_value == 0 || $store.screenStore.label_value == null)? '' : 'saturate-[0.1]'"
+            @click="label_value = 0; if (requireReasoning()) { reasoningMenu = true } else { postLabel(true) }"
+            :class="(label_value == 0 || label_value == null)? '' : 'saturate-[0.1]'"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -100,7 +95,7 @@
           </div>
           <div
             class="cursor-pointer border-t-2 bg-gray-500 flex justify-center items-center"
-            @click="$store.screenStore.menu = !$store.screenStore.menu"
+            @click="menu = !menu"
           >
             <div class="space-y-2">
               <div class="w-8 h-0.5 bg-white"></div>
@@ -111,8 +106,8 @@
         </div>
         <div
           class="cursor-pointer border-l-8 bg-green-500 flex justify-center items-center rounded-tr-2xl"
-          @click="$store.screenStore.label_value = 1; if ($store.screenStore.requireReasoning()) { $store.screenStore.reasoningMenu = true } else { $store.screenStore.postLabel(true) }"
-          :class="($store.screenStore.label_value == 1 || $store.screenStore.label_value == null)? '' : 'saturate-[0.1]'"
+          @click="label_value = 1; if (requireReasoning()) { reasoningMenu = true } else { postLabel(true) }"
+          :class="(label_value == 1 || label_value == null)? '' : 'saturate-[0.1]'"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -144,7 +139,7 @@
     });
   }
   document.addEventListener("alpine:init", () => {
-    Alpine.store("screenStore", {
+    Alpine.data("screenStore", () => ({
       menu: false,
       weighingScreen: false,
       reasoningMenu: false,
@@ -196,6 +191,10 @@
       },
       newCustomValue: "",
       rescreen: null,
+
+      init() {
+        this.postLabel();
+      },
 
       toggleWeighingScreen() {
         this.weighingScreen = !this.weighingScreen;
@@ -396,7 +395,6 @@
         this.word_weights = data.word_weights;
         this.rescreen = data.rescreen;
       },
-    });
-    Alpine.store("screenStore").postLabel();
+    }));
   });
 </script>
