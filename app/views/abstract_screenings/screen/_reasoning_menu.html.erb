@@ -137,7 +137,7 @@
               >
                 <span
                   :class="value ? 'bg-srdrpurple' : 'bg-gray-700'"
-                  @click="turnOffAllReasons(); predefined_reasons[key] = !value; postLabel(true, true)"
+                  @click="turnOffAllReasons(); predefined_reasons[key] = !value; postLabel(false)"
                   class="text-center drop-shadow select-none cursor-pointer justify-center inline-flex items-center px-3 py-4 rounded-full text-sm text-white font-black"
                   x-text="key"
                 >
@@ -147,7 +147,7 @@
                 <div class="relative">
                   <span
                     :class="value ? 'bg-srdrpurple' : 'bg-gray-700'"
-                    @click="turnOffAllReasons(); custom_reasons[key] = !value; postLabel(true, true)"
+                    @click="turnOffAllReasons(); custom_reasons[key] = !value; postLabel(false)"
                     class="w-full text-center drop-shadow select-none cursor-pointer justify-center inline-flex items-center px-3 py-4 rounded-full text-sm text-white font-black"
                     x-text="key"
                   >
@@ -155,7 +155,7 @@
                   <button
                     type="button"
                     class="cursor-pointer absolute top-0 right-0 flex-shrink-0 ml-0.5 h-4 w-4 rounded-full inline-flex items-center justify-center text-white bg-red-500"
-                    @click="deleteCustomValue('custom_reasons', key); postLabel(true, true)"
+                    @click="deleteCustomValue('custom_reasons', key); postLabel(false)"
                   >
                     <span class="sr-only">Remove large option</span>
                     <svg
@@ -209,7 +209,7 @@
               <template x-for="[key, value] in Object.entries(predefined_tags)">
                 <span
                   :class="value ? 'bg-srdrpurple' : 'bg-gray-700'"
-                  @click="predefined_tags[key] = !value; postLabel(true, true)"
+                  @click="predefined_tags[key] = !value; postLabel(false)"
                   class="text-center drop-shadow select-none cursor-pointer justify-center inline-flex items-center px-3 py-4 rounded-full text-sm text-white font-black"
                   x-text="key"
                 >
@@ -219,7 +219,7 @@
                 <div class="relative">
                   <span
                     :class="value ? 'bg-srdrpurple' : 'bg-gray-700'"
-                    @click="custom_tags[key] = !value; postLabel(true, true)"
+                    @click="custom_tags[key] = !value; postLabel(false)"
                     class="w-full text-center drop-shadow select-none cursor-pointer justify-center inline-flex items-center px-3 py-4 rounded-full text-sm text-white font-black"
                     x-text="key"
                   >
@@ -227,7 +227,7 @@
                   <button
                     type="button"
                     class="cursor-pointer absolute top-0 right-0 flex-shrink-0 ml-0.5 h-4 w-4 rounded-full inline-flex items-center justify-center text-white bg-red-500"
-                    @click="deleteCustomValue('custom_tags', key); postLabel(true, true)"
+                    @click="deleteCustomValue('custom_tags', key); postLabel(false)"
                   >
                     <span class="sr-only">Remove large option</span>
                     <svg
@@ -284,7 +284,7 @@
                   id="notes"
                   x-model="notes"
                   class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md p-2"
-                  @input.debounce.500ms="postLabel(true, true)"
+                  @input.debounce.500ms="postLabel(false)"
                 ></textarea>
               </div>
             </div>
@@ -296,12 +296,12 @@
           <button
             type="button"
             class="cursor-pointer justify-center m-auto w-full h-20 inline-flex items-center border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-900 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-            :class="satisfyReasoning() ? '' : 'cursor-not-allowed bg-gray-900 hover:bg-gray-700'"
-            @click="if (satisfyReasoning()) postLabel(true)"
+            :class="satisfiesReasoning() ? '' : 'cursor-not-allowed bg-gray-900 hover:bg-gray-700'"
+            @click="if (satisfiesReasoning()) postLabel(true)"
           >
             <span
               class="text-xl"
-              x-text="satisfyReasoning() ? 'Submit' : 'Please fill in the required data above'"
+              x-text="satisfiesReasoning() ? 'Submit' : 'Please fill in the required data above'"
               >Please fill in the required data above</span
             >
           </button>

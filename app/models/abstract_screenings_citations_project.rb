@@ -11,5 +11,6 @@
 class AbstractScreeningsCitationsProject < ApplicationRecord
   belongs_to :abstract_screening
   belongs_to :citations_project
+  has_many :abstract_screening_results, dependent: :destroy, inverse_of: :abstract_screenings_citations_project
   has_one :citation, through: :citations_project
 end

@@ -4,7 +4,7 @@
 #
 #  id                      :bigint           not null, primary key
 #  project_id              :bigint
-#  abstract_screening_type :string(255)      default("perpetual"), not null
+#  abstract_screening_type :string(255)      default("single-perpetual"), not null
 #  yes_tag_required        :boolean          default(FALSE), not null
 #  no_tag_required         :boolean          default(FALSE), not null
 #  maybe_tag_required      :boolean          default(FALSE), not null
@@ -22,9 +22,11 @@
 #  updated_at              :datetime         not null
 #
 class AbstractScreening < ApplicationRecord
+  SINGLE_PERPETUAL = 'single-perpetual'.freeze
+  DOUBLE_PERPETUAL = 'double-perpetual'.freeze
   ABSTRACTSCREENINGTYPES = {
-    'Perpetual (Single)': 'single-perpetual',
-    'Perpetual (Double)': 'double-perpetual',
+    'Perpetual (Single)': SINGLE_PERPETUAL,
+    'Perpetual (Double)': DOUBLE_PERPETUAL,
     'Pilot': 'pilot'
   }.freeze
 

@@ -8,6 +8,29 @@
   <div
     class="m-auto lg:w-1/2 h-32 absolute inset-0 mt-0 overflow-y-hidden bg-gray-300 flex flex-col justify-center"
   >
+    <button
+      type="button"
+      class="cursor-pointer z-[5] absolute top-4 right-4 bg-gray-100 rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
+      @click="menu = !menu"
+    >
+      <span class="sr-only">Close menu</span>
+      <!-- Heroicon name: outline/x -->
+      <svg
+        class="h-6 w-6"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        aria-hidden="true"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M6 18L18 6M6 6l12 12"
+        />
+      </svg>
+    </button>
     <div class="mt-3">
       <div class="horizontal-scroll-wrapper">
         <h1
@@ -58,7 +81,7 @@
       <div class="grid grid-cols-3 h-full">
         <div
           class="cursor-pointer border-r-8 bg-red-500 flex justify-center items-center rounded-tl-2xl"
-          @click="label_value = -1; if (requireReasoning()) { reasoningMenu = true } else { postLabel(true) }"
+          @click="label_value = -1; if (requireReasoning()) { reasoningMenu = true } else { postLabel(false) }"
           :class="(label_value == -1 || label_value == null) ? '' : 'saturate-[0.1]'"
         >
           <svg
@@ -77,7 +100,7 @@
         <div class="grid grid-rows-2">
           <div
             class="cursor-pointer border-b-4 bg-srdrpurple flex justify-center items-center"
-            @click="label_value = 0; if (requireReasoning()) { reasoningMenu = true } else { postLabel(true) }"
+            @click="label_value = 0; if (requireReasoning()) { reasoningMenu = true } else { postLabel(false) }"
             :class="(label_value == 0 || label_value == null)? '' : 'saturate-[0.1]'"
           >
             <svg
@@ -95,7 +118,7 @@
           </div>
           <div
             class="cursor-pointer border-t-2 bg-gray-500 flex justify-center items-center"
-            @click="menu = !menu"
+            @click="label_value = null; reasoningMenu = !reasoningMenu"
           >
             <div class="space-y-2">
               <div class="w-8 h-0.5 bg-white"></div>
@@ -106,7 +129,7 @@
         </div>
         <div
           class="cursor-pointer border-l-8 bg-green-500 flex justify-center items-center rounded-tr-2xl"
-          @click="label_value = 1; if (requireReasoning()) { reasoningMenu = true } else { postLabel(true) }"
+          @click="label_value = 1; if (requireReasoning()) { reasoningMenu = true } else { postLabel(false) }"
           :class="(label_value == 1 || label_value == null)? '' : 'saturate-[0.1]'"
         >
           <svg
@@ -128,16 +151,6 @@
 </div>
 
 <script>
-  function prepareText() {
-    var p = $(".weightable");
-
-    p.html(function (index, oldHtml) {
-      return oldHtml.replace(
-        /\b(\w+?)\b/g,
-        `<span onClick="$('#term').val('$1')" class="word hover:bg-blue-200">$1</span>`
-      );
-    });
-  }
   document.addEventListener("alpine:init", () => {
     Alpine.data("screenStore", () => ({
       menu: false,
@@ -161,6 +174,7 @@
         keywords: "",
         id: "",
       },
+      abstract_screening_result_id: null,
       predefined_reasons: {},
       predefined_tags: {},
       custom_reasons: {},
@@ -193,7 +207,7 @@
       rescreen: null,
 
       init() {
-        this.postLabel();
+        this.postLabel(false);
       },
 
       toggleWeighingScreen() {
@@ -217,7 +231,7 @@
         );
       },
 
-      satisfyReasoning() {
+      satisfiesReasoning() {
         let satisfactory = true;
         const hasSomeReason = Object.keys({
           ...this.predefined_reasons,
@@ -318,7 +332,7 @@
           }
         }
         this.newCustomValue = "";
-        this.postLabel(true, true);
+        this.postLabel(false);
       },
 
       deleteCustomValue(type, key) {
@@ -353,8 +367,8 @@
         this.word_weights = data;
       },
 
-      async postLabel(submit, autosave) {
-        if (submit && !autosave) {
+      async postLabel(submit) {
+        if (submit) {
           this.reasoningMenu = false;
         }
         const response = await fetch(
@@ -367,9 +381,9 @@
             },
             body: JSON.stringify({
               data: {
-                autosave: autosave,
-                label_value: autosave ? null : this.label_value,
+                label_value: submit ? this.label_value : null,
                 citation: this.citation,
+                abstract_screening_result_id: this.abstract_screening_result_id,
                 predefined_reasons: this.predefined_reasons,
                 predefined_tags: this.predefined_tags,
                 custom_reasons: this.custom_reasons,
@@ -381,11 +395,16 @@
           }
         );
         const data = await response.json();
-        if (submit && !autosave) {
+        if (submit) {
           await this.showConfirmation(this.label_value);
-          this.label_value = data.label_value;
         }
+        this.label_value = submit
+          ? data.label_value
+          : data.rescreen
+          ? data.label_value
+          : this.label_value;
         this.citation = data.citation;
+        this.abstract_screening_result_id = data.abstract_screening_result_id;
         this.predefined_reasons = data.predefined_reasons;
         this.predefined_tags = data.predefined_tags;
         this.custom_reasons = data.custom_reasons;

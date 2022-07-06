@@ -6,7 +6,7 @@
 #  abstract_screening_id                      :bigint
 #  abstract_screenings_projects_users_role_id :bigint
 #  abstract_screenings_citations_project_id   :bigint
-#  label                                      :integer          not null
+#  label                                      :integer
 #  created_at                                 :datetime         not null
 #  updated_at                                 :datetime         not null
 #
@@ -27,6 +27,13 @@ class AbstractScreeningResult < ApplicationRecord
   has_many :tags, through: :abstract_screening_results_tags
 
   has_one :note, as: :notable
+
+  def self.find_unfinished_abstract_screening_result(abstract_screening, abstract_screenings_projects_users_role)
+    where(abstract_screening:)
+      .where(abstract_screenings_projects_users_role:)
+      .where('label IS NULL')
+      .first
+  end
 
   def readable_label
     case label

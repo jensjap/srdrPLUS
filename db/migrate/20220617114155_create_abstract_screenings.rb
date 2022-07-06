@@ -2,7 +2,7 @@ class CreateAbstractScreenings < ActiveRecord::Migration[7.0]
   def change
     create_table :abstract_screenings do |t|
       t.references :project
-      t.string :abstract_screening_type, null: false, default: 'perpetual'
+      t.string :abstract_screening_type, null: false, default: AbstractScreening::SINGLE_PERPETUAL
       t.boolean :yes_tag_required, null: false, default: false
       t.boolean :no_tag_required, null: false, default: false
       t.boolean :maybe_tag_required, null: false, default: false
