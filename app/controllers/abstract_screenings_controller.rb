@@ -4,8 +4,10 @@ class AbstractScreeningsController < ApplicationController
 
   before_action :set_project, only: %i[index new create citation_lifecycle_management]
   before_action :set_abstract_screening, only: %i[create_word_weight label]
+  after_action :verify_authorized
 
   def create
+    authorize(@project, policy_class: AbstractScreeningPolicy)
     @abstract_screening =
       @project.abstract_screenings.new(abstract_screening_params)
     if @abstract_screening.save
@@ -19,6 +21,7 @@ class AbstractScreeningsController < ApplicationController
   end
 
   def create_word_weight
+    authorize(@abstract_screening.project, policy_class: AbstractScreeningPolicy)
     weight = params[:weight]
     word = params[:word].downcase
 
@@ -28,21 +31,26 @@ class AbstractScreeningsController < ApplicationController
   end
 
   def citation_lifecycle_management
+    authorize(@project, policy_class: AbstractScreeningPolicy)
     prepare_pipeline_stats
     @citations = @project.citations.page(params[:page]).per(10)
   end
 
   def destroy
     @abstract_screening = AbstractScreening.find(params[:id])
+    authorize(@abstract_screening.project, policy_class: AbstractScreeningPolicy)
     @abstract_screening.destroy
     redirect_to project_abstract_screenings_path(@abstract_screening.project)
   end
 
   def index
+    authorize(@project, policy_class: AbstractScreeningPolicy)
     prepare_pipeline_stats
     @abstract_screenings =
-      @project
-      .abstract_screenings
+      policy_scope(@project,
+                   policy_scope_class: AbstractScreeningPolicy::Scope)
+    @abstract_screenings =
+      @abstract_screenings
       .order(id: :desc)
       .page(params[:page])
       .per(5)
@@ -54,6 +62,7 @@ class AbstractScreeningsController < ApplicationController
 
     @abstract_screening_result =
       AbstractScreeningResult.find_by(id: payload[:abstract_screening_result_id])
+    authorize(@abstract_screening_result, policy_class: AbstractScreeningPolicy)
     if @abstract_screening_result
       @abstract_screening_result.update(label: @label) if @label
       abstract_screenings_projects_users_role
@@ -77,6 +86,7 @@ class AbstractScreeningsController < ApplicationController
   end
 
   def new
+    authorize(@project, policy_class: AbstractScreeningPolicy)
     @abstract_screening = @project.abstract_screenings.new
   end
 
@@ -94,7 +104,7 @@ class AbstractScreeningsController < ApplicationController
           .order(updated_at: :desc)
           .limit(1)&.first&.id || asr_id
       elsif asr_id != 'null'
-        asr_id
+        AbstractScreeningResult.find(asr_id).user == current_user ? asr_id : nil
       else
         AbstractScreeningResult
           .where(abstract_screenings_projects_users_role:)
@@ -103,15 +113,20 @@ class AbstractScreeningsController < ApplicationController
           .limit(1)&.first&.id
       end
     session.delete(:abstract_screening_result_id) if session[:abstract_screening_result_id].nil?
+    authorize(AbstractScreeningResult.find(session[:abstract_screening_result_id]),
+              policy_class: AbstractScreeningPolicy)
     redirect_to action: :screen
   end
 
   def screen
+    authorize(AbstractScreening.find(params[:abstract_screening_id]),
+              policy_class: AbstractScreeningPolicy)
     render layout: 'abstrackr'
   end
 
   def show
     @abstract_screening = AbstractScreening.find(params[:id])
+    authorize(@abstract_screening.project, policy_class: AbstractScreeningPolicy)
     @abstract_screening_results =
       @abstract_screening
       .abstract_screening_results
