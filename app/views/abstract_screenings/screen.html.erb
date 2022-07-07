@@ -232,6 +232,7 @@
       },
 
       satisfiesReasoning() {
+        if (this.label_value == null) return false;
         let satisfactory = true;
         const hasSomeReason = Object.keys({
           ...this.predefined_reasons,
