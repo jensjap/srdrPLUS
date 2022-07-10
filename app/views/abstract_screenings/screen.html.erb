@@ -1,4 +1,8 @@
-<div x-data="screenStore" id="abstrackr-wrapper">
+<div
+  x-data="screenStore"
+  @keyup.escape.window="closeAllModals()"
+  id="abstrackr-wrapper"
+>
   <!-- prettier-ignore -->
   <%= render 'abstract_screenings/screen/weighing_screen' %>
   <%= render 'abstract_screenings/screen/confirmation_modal' %>
@@ -340,6 +344,13 @@
         if (confirm(`Would you like to delete "${key}" as a custom choice?`)) {
           delete this[type][key];
         }
+      },
+
+      closeAllModals() {
+        this.menu = false;
+        this.weighingScreen = false;
+        this.reasoningMenu = false;
+        this.addReasonModal.on = false;
       },
 
       async showConfirmation(label) {
