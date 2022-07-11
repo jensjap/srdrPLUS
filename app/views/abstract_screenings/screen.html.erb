@@ -85,7 +85,7 @@
       <div class="grid grid-cols-3 h-full">
         <div
           class="cursor-pointer border-r-8 bg-red-500 flex justify-center items-center rounded-tl-2xl"
-          @click="label_value = -1; if (requireReasoning()) { reasoningMenu = true } else { postLabel(false) }"
+          @click="label_value = -1; if (requireReasoning()) { reasoningMenu = true } else { postLabel(true) }"
           :class="(label_value == -1 || label_value == null) ? '' : 'saturate-[0.1]'"
         >
           <svg
@@ -104,7 +104,7 @@
         <div class="grid grid-rows-2">
           <div
             class="cursor-pointer border-b-4 bg-srdrpurple flex justify-center items-center"
-            @click="label_value = 0; if (requireReasoning()) { reasoningMenu = true } else { postLabel(false) }"
+            @click="label_value = 0; if (requireReasoning()) { reasoningMenu = true } else { postLabel(true) }"
             :class="(label_value == 0 || label_value == null)? '' : 'saturate-[0.1]'"
           >
             <svg
@@ -133,7 +133,7 @@
         </div>
         <div
           class="cursor-pointer border-l-8 bg-green-500 flex justify-center items-center rounded-tr-2xl"
-          @click="label_value = 1; if (requireReasoning()) { reasoningMenu = true } else { postLabel(false) }"
+          @click="label_value = 1; if (requireReasoning()) { reasoningMenu = true } else { postLabel(true) }"
           :class="(label_value == 1 || label_value == null)? '' : 'saturate-[0.1]'"
         >
           <svg

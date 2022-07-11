@@ -28,6 +28,14 @@ class AbstractScreeningResult < ApplicationRecord
 
   has_one :note, as: :notable
 
+  def self.users_previous_asr_id(asr_id, abstract_screenings_projects_users_role)
+    where(abstract_screenings_projects_users_role:)
+      .where('updated_at < ?', AbstractScreeningResult.find(asr_id).updated_at)
+      .where('label IS NOT NULL')
+      .order(updated_at: :desc)
+      .limit(1)&.first&.id
+  end
+
   def self.find_unfinished_abstract_screening_result(abstract_screening, abstract_screenings_projects_users_role)
     where(abstract_screening:)
       .where(abstract_screenings_projects_users_role:)
@@ -44,6 +52,7 @@ class AbstractScreeningResult < ApplicationRecord
       value: payload[:notes],
       projects_users_role: aspur.projects_users_role
     )
+    abstract_screening.evaluate_transition(self)
   end
 
   def readable_label

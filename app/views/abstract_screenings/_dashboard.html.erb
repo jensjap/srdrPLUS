@@ -1,0 +1,54 @@
+<div class="px-4 sm:px-6 lg:px-8 pt-8">
+  <div>
+    <h3 class="text-xl leading-6 font-medium text-gray-900">
+      Citation Processing Pipeline (I - V)
+    </h3>
+    <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-5">
+      <div class="px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-6">
+        <dt class="text-sm font-medium text-gray-500 truncate">
+          I. Citation Pool
+        </dt>
+        <dd class="mt-1 text-3xl font-semibold text-gray-900"><%= @up %></dd>
+      </div>
+
+      <div class="px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-6">
+        <dt class="text-sm font-medium text-gray-500 truncate">
+          II. In Abstract Screening
+        </dt>
+        <dd class="mt-1 text-3xl font-semibold text-gray-900">
+          <%= "#{@as} / #{@asr}" %>
+          <span class="text-xs font-extralight text-gray-500"
+            >(active / rejected)</span
+          >
+        </dd>
+      </div>
+
+      <div class="px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-6">
+        <dt class="text-sm font-medium text-gray-500 truncate">
+          III. In Full Text Screening
+        </dt>
+        <dd class="mt-1 text-3xl font-semibold text-gray-900">
+          <%= "#{@fs} / #{@fsr}" %>
+          <span class="text-xs font-extralight text-gray-500"
+            >(active / rejected)</span
+          >
+        </dd>
+      </div>
+
+      <div class="px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-6">
+        <dt class="text-sm font-medium text-gray-500 truncate">
+          IV. In Data Extraction
+        </dt>
+        <dd class="mt-1 text-3xl font-semibold text-gray-900"><%= @de %></dd>
+      </div>
+
+      <div class="px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-6">
+        <dt class="text-sm font-medium text-gray-500 truncate">V. Completed</dt>
+        <dd class="mt-1 text-3xl font-semibold text-gray-900">
+          0
+          <!-- TODO Placeholder -->
+        </dd>
+      </div>
+    </dl>
+  </div>
+</div>

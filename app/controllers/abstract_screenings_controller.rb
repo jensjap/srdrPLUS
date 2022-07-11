@@ -87,20 +87,9 @@ class AbstractScreeningsController < ApplicationController
 
     session[:abstract_screening_result_id] =
       if asr_id != 'null' && previous
-        AbstractScreeningResult
-          .where(abstract_screenings_projects_users_role:)
-          .where('updated_at < ?', AbstractScreeningResult.find(asr_id).updated_at)
-          .where('label IS NOT NULL')
-          .order(updated_at: :desc)
-          .limit(1)&.first&.id || asr_id
+        AbstractScreeningResult.users_previous_asr_id(asr_id, abstract_screenings_projects_users_role) || asr_id
       elsif asr_id != 'null'
         AbstractScreeningResult.find(asr_id).user == current_user ? asr_id : nil
-      else
-        AbstractScreeningResult
-          .where(abstract_screenings_projects_users_role:)
-          .where('label IS NOT NULL')
-          .order(updated_at: :desc)
-          .limit(1)&.first&.id
       end
     session.delete(:abstract_screening_result_id) if session[:abstract_screening_result_id].nil?
     authorize(AbstractScreeningResult.find(session[:abstract_screening_result_id]),
@@ -116,6 +105,8 @@ class AbstractScreeningsController < ApplicationController
 
   def show
     @abstract_screening = AbstractScreening.find(params[:id])
+    @project = @abstract_screening.project
+    prepare_pipeline_stats
     authorize(@abstract_screening.project, policy_class: AbstractScreeningPolicy)
     @abstract_screening_results =
       @abstract_screening
@@ -249,15 +240,27 @@ class AbstractScreeningsController < ApplicationController
     @up = @project
           .citations_projects
           .where(citations_projects: { screening_status: CitationsProject::CITATION_POOL })
+          .count
     @as = @project
           .citations_projects
           .where(citations_projects: { screening_status: CitationsProject::ABSTRACT_SCREENING })
+          .count
+    @asr = @project
+           .citations_projects
+           .where(citations_projects: { screening_status: CitationsProject::ABSTRACT_SCREENING_REJECTED })
+           .count
     @fs = @project
           .citations_projects
           .where(citations_projects: { screening_status: CitationsProject::FULLTEXT_SCREENING })
+          .count
+    @fsr = @project
+           .citations_projects
+           .where(citations_projects: { screening_status: CitationsProject::FULLTEXT_SCREENING_REJECTED })
+           .count
     @de = @project
           .citations_projects
           .where(citations_projects: { screening_status: CitationsProject::DATA_EXTRACTION })
+          .count
   end
 
   def render_label_json_data

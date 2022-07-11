@@ -24,10 +24,11 @@
 class AbstractScreening < ApplicationRecord
   SINGLE_PERPETUAL = 'single-perpetual'.freeze
   DOUBLE_PERPETUAL = 'double-perpetual'.freeze
+  PILOT = 'pilot'.freeze
   ABSTRACTSCREENINGTYPES = {
     'Perpetual (Single)': SINGLE_PERPETUAL,
     'Perpetual (Double)': DOUBLE_PERPETUAL,
-    'Pilot': 'pilot'
+    'Pilot': PILOT
   }.freeze
 
   validates_presence_of :abstract_screening_type
@@ -45,6 +46,24 @@ class AbstractScreening < ApplicationRecord
   has_many :tags, through: :abstract_screenings_tags
 
   has_many :abstract_screening_results, dependent: :destroy, inverse_of: :abstract_screening
+
+  def evaluate_transition(abstract_screening_result)
+    case abstract_screening_type
+    when SINGLE_PERPETUAL, PILOT
+      if abstract_screening_result.label == 1
+        abstract_screening_result.citations_project.update(screening_status: CitationsProject::FULLTEXT_SCREENING)
+      elsif abstract_screening_result.label == -1
+        abstract_screening_result.citations_project.update(screening_status: CitationsProject::ABSTRACT_SCREENING_REJECTED)
+      end
+    when DOUBLE_PERPETUAL
+      score = abstract_screening_result.citations_project.abstract_screening_results.sum(:label)
+      if score >= 2
+        abstract_screening_result.citations_project.update(screening_status: CitationsProject::FULLTEXT_SCREENING)
+      elsif score <= -2
+        abstract_screening_result.citations_project.update(screening_status: CitationsProject::ABSTRACT_SCREENING_REJECTED)
+      end
+    end
+  end
 
   def reasons_object
     reasons.each_with_object({}) do |reason, hash|
