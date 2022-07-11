@@ -19,24 +19,33 @@ class CitationsProject < ApplicationRecord
 
   acts_as_paranoid column: :active, sentinel_value: true
 
-  # paginates_per 25
+  CITATION_POOL = nil
+  ABSTRACT_SCREENING = 'AS'.freeze
+  ABSTRACT_SCREENING_REJECTED = 'ASR'.freeze
+  FULLTEXT_SCREENING = 'FS'.freeze
+  FULLTEXT_SCREENING_REJECTED = 'FSR'.freeze
+  DATA_EXTRACTION = 'DE'.freeze
+  COMPLETED = 'C'.freeze
 
-  scope :unlabeled, lambda { |project, count|
-                      includes(citation: [{ authors_citations: [:author] }, :keywords, :journal])
-                        .left_outer_joins(:labels)
-                        .where(labels: { id: nil },
-                               project_id: project.id)
-                        .distinct
-                        .limit(count)
-                    }
+  scope :unlabeled,
+        lambda { |project, count|
+          includes(citation: [{ authors_citations: [:author] }, :keywords, :journal])
+            .left_outer_joins(:labels)
+            .where(labels: { id: nil },
+                   project_id: project.id)
+            .distinct
+            .limit(count)
+        }
 
-  scope :labeled, lambda { |project, count|
-                    includes({ :citation => [{ authors_citations: [:author] }, :keywords, :journal], labels => [:reasons] })
-                      .joins(:labels)
-                      .where(project_id: project.id)
-                      .distinct
-                      .limit(count)
-                  }
+  scope :labeled,
+        lambda { |project, count|
+          includes({ :citation => [{ authors_citations: [:author] }, :keywords, :journal],
+                     labels => [:reasons] })
+            .joins(:labels)
+            .where(project_id: project.id)
+            .distinct
+            .limit(count)
+        }
 
   belongs_to :citation, inverse_of: :citations_projects
   belongs_to :project, inverse_of: :citations_projects, touch: true
@@ -45,6 +54,10 @@ class CitationsProject < ApplicationRecord
   has_one :priority, dependent: :destroy
 
   has_many :extractions, dependent: :destroy
+  has_many :abstract_screenings_citations_projects
+  has_many :abstract_screening_results, through: :abstract_screenings_citations_projects
+
+  # TODO
   has_many :labels, dependent: :destroy
   has_many :notes, as: :notable, dependent: :destroy
   has_many :taggings, as: :taggable, dependent: :destroy

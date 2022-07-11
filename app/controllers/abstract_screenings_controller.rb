@@ -58,29 +58,19 @@ class AbstractScreeningsController < ApplicationController
 
   def label
     payload = label_params[:data]
-    @label = payload[:label_value]
 
     @abstract_screening_result =
       AbstractScreeningResult.find_by(id: payload[:abstract_screening_result_id])
     authorize(@abstract_screening_result, policy_class: AbstractScreeningPolicy)
     if @abstract_screening_result
-      @abstract_screening_result.update(label: @label) if @label
-      abstract_screenings_projects_users_role
-        .process_reasons(@abstract_screening_result, payload[:predefined_reasons],
-                         payload[:custom_reasons])
-      abstract_screenings_projects_users_role
-        .process_tags(@abstract_screening_result, payload[:predefined_tags],
-                      payload[:custom_tags])
-      @abstract_screening_result&.note&.really_destroy!
-      @abstract_screening_result.create_note!(
-        value: payload[:notes],
-        projects_users_role: abstract_screenings_projects_users_role.projects_users_role
+      @abstract_screening_result.process_payload(
+        payload, abstract_screenings_projects_users_role
       )
       @abstract_screenings_citations_project = @abstract_screening_result.abstract_screenings_citations_project
       @random_citation = @abstract_screening_result.citation
     end
 
-    get_next_abstraction_screening_result if @abstract_screening_result.nil? || @label.present?
+    get_next_abstraction_screening_result if @abstract_screening_result.nil? || payload[:label_value].present?
 
     render_label_json_data
   end
@@ -206,7 +196,7 @@ class AbstractScreeningsController < ApplicationController
         .project.citations_projects
         .where('screening_status IS NULL')
         .sample
-      citations_project.update(screening_status: 'AS')
+      citations_project.update(screening_status: CitationsProject::ABSTRACT_SCREENING)
       @random_citation = citations_project.citation
 
       @abstract_screenings_citations_project =
@@ -233,7 +223,7 @@ class AbstractScreeningsController < ApplicationController
         .left_joins(:abstract_screening_results)
         .where(abstract_screening: @abstract_screening)
         .where(abstract_screening_results: { label: nil })
-        .where(citations_projects: { screening_status: 'AS' }).sample
+        .where(citations_projects: { screening_status: CitationsProject::ABSTRACT_SCREENING }).sample
       @abstract_screening_result =
         @abstract_screening
         .abstract_screening_results
@@ -256,10 +246,18 @@ class AbstractScreeningsController < ApplicationController
   end
 
   def prepare_pipeline_stats
-    @up = @project.citations_projects.where(citations_projects: { screening_status: nil })
-    @as = @project.citations_projects.where(citations_projects: { screening_status: 'AS' })
-    @fs = @project.citations_projects.where(citations_projects: { screening_status: 'FS' })
-    @de = @project.citations_projects.where(citations_projects: { screening_status: 'DE' })
+    @up = @project
+          .citations_projects
+          .where(citations_projects: { screening_status: CitationsProject::CITATION_POOL })
+    @as = @project
+          .citations_projects
+          .where(citations_projects: { screening_status: CitationsProject::ABSTRACT_SCREENING })
+    @fs = @project
+          .citations_projects
+          .where(citations_projects: { screening_status: CitationsProject::FULLTEXT_SCREENING })
+    @de = @project
+          .citations_projects
+          .where(citations_projects: { screening_status: CitationsProject::DATA_EXTRACTION })
   end
 
   def render_label_json_data

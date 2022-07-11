@@ -35,6 +35,17 @@ class AbstractScreeningResult < ApplicationRecord
       .first
   end
 
+  def process_payload(payload, aspur)
+    update(label: payload[:label_value]) if payload[:label_value]
+    aspur.process_reasons(self, payload[:predefined_reasons], payload[:custom_reasons])
+    aspur.process_tags(self, payload[:predefined_tags], payload[:custom_tags])
+    self&.note&.really_destroy!
+    create_note!(
+      value: payload[:notes],
+      projects_users_role: aspur.projects_users_role
+    )
+  end
+
   def readable_label
     case label
     when -1

@@ -63,9 +63,9 @@ class AbstractScreening < ApplicationRecord
   def add_citations_from_pool(no_of_citations)
     return if no_of_citations.nil?
 
-    cps = project.citations_projects.where(screening_status: nil).limit(no_of_citations)
+    cps = project.citations_projects.where(screening_status: CitationsProject::CITATION_POOL).limit(no_of_citations)
     citations_projects << cps
-    cps.update_all(screening_status: 'AS')
+    cps.update_all(screening_status: CitationsProject::ABSTRACT_SCREENING)
   end
 
   def tag_options
