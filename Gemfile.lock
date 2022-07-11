@@ -6,7 +6,7 @@ GIT
 
 GIT
   remote: https://github.com/stympy/faker.git
-  revision: 85016fe969c0ea6044def6192c169a9992747742
+  revision: 2333f9ee4a4e1d8329e19f9e4b07e927648add7c
   specs:
     faker (2.21.0)
       i18n (>= 1.8.11, < 2)
@@ -59,7 +59,7 @@ GEM
       erubi (~> 1.4)
       rails-dom-testing (~> 2.0)
       rails-html-sanitizer (~> 1.1, >= 1.2.0)
-    active_record_doctor (1.9.0)
+    active_record_doctor (1.10.0)
       activerecord (>= 4.2.0)
     activejob (7.0.3)
       activesupport (= 7.0.3)
@@ -99,7 +99,7 @@ GEM
       execjs (~> 2)
     awesome_print (1.9.2)
     aws-eventstream (1.2.0)
-    aws-partitions (1.602.0)
+    aws-partitions (1.603.0)
     aws-sdk-core (3.131.2)
       aws-eventstream (~> 1, >= 1.0.2)
       aws-partitions (~> 1, >= 1.525.0)
@@ -269,9 +269,10 @@ GEM
       mime-types (~> 3.0)
       multi_xml (>= 0.5.2)
     httpclient (2.8.3)
-    i18n (1.10.0)
+    i18n (1.11.0)
       concurrent-ruby (~> 1.0)
-    jbuilder (2.10.2)
+    jbuilder (2.11.5)
+      actionview (>= 5.0.0)
       activesupport (>= 5.0.0)
     jmespath (1.6.1)
     jquery-datatables (1.10.20)
@@ -570,7 +571,7 @@ DEPENDENCIES
   google-api-client
   googleauth
   httparty
-  jbuilder (~> 2.10.1)
+  jbuilder
   jquery-datatables
   jquery-rails
   kaminari

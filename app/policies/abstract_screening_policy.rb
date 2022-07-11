@@ -33,6 +33,10 @@ class AbstractScreeningPolicy < ApplicationPolicy
     part_of_project?
   end
 
+  def kpis?
+    part_of_project?
+  end
+
   def label?
     record.nil? || record.user == user
   end

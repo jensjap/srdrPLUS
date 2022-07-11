@@ -1,8 +1,8 @@
 class AbstractScreeningsController < ApplicationController
   add_breadcrumb 'my projects', :projects_path
-  skip_before_action :verify_authenticity_token, only: %i[label create_word_weight rescreen]
+  skip_before_action :verify_authenticity_token, only: %i[create_word_weight kpis label rescreen]
 
-  before_action :set_project, only: %i[index new create citation_lifecycle_management]
+  before_action :set_project, only: %i[index new create citation_lifecycle_management kpis]
   before_action :set_abstract_screening, only: %i[create_word_weight label]
   after_action :verify_authorized
 
@@ -32,8 +32,7 @@ class AbstractScreeningsController < ApplicationController
 
   def citation_lifecycle_management
     authorize(@project, policy_class: AbstractScreeningPolicy)
-    prepare_pipeline_stats
-    @citations = @project.citations.page(params[:page]).per(10)
+    @citations_projects = CitationsProject.includes(:citation).where(project: @project).page(params[:page]).per(10)
   end
 
   def destroy
@@ -45,7 +44,6 @@ class AbstractScreeningsController < ApplicationController
 
   def index
     authorize(@project, policy_class: AbstractScreeningPolicy)
-    prepare_pipeline_stats
     @abstract_screenings =
       policy_scope(@project,
                    policy_scope_class: AbstractScreeningPolicy::Scope)
@@ -54,6 +52,10 @@ class AbstractScreeningsController < ApplicationController
       .order(id: :desc)
       .page(params[:page])
       .per(5)
+  end
+
+  def kpis
+    authorize(@project, policy_class: AbstractScreeningPolicy)
   end
 
   def label
@@ -72,7 +74,7 @@ class AbstractScreeningsController < ApplicationController
 
     get_next_abstraction_screening_result if @abstract_screening_result.nil? || payload[:label_value].present?
 
-    render_label_json_data
+    prepare_json_label_data
   end
 
   def new
@@ -106,7 +108,6 @@ class AbstractScreeningsController < ApplicationController
   def show
     @abstract_screening = AbstractScreening.find(params[:id])
     @project = @abstract_screening.project
-    prepare_pipeline_stats
     authorize(@abstract_screening.project, policy_class: AbstractScreeningPolicy)
     @abstract_screening_results =
       @abstract_screening
@@ -143,7 +144,9 @@ class AbstractScreeningsController < ApplicationController
   end
 
   def abstract_screenings_projects_users_role
-    AbstractScreeningsProjectsUsersRole.find_aspur(current_user, @abstract_screening)
+    @abstract_screenings_projects_users_role ||=
+      AbstractScreeningsProjectsUsersRole.find_aspur(current_user,
+                                                     @abstract_screening)
   end
 
   def allow_new_reasons(strong_params)
@@ -185,7 +188,7 @@ class AbstractScreeningsController < ApplicationController
       citations_project =
         @abstract_screening
         .project.citations_projects
-        .where('screening_status IS NULL')
+        .where(screening_status: CitationsProject::CITATION_POOL)
         .sample
       citations_project.update(screening_status: CitationsProject::ABSTRACT_SCREENING)
       @random_citation = citations_project.citation
@@ -236,91 +239,29 @@ class AbstractScreeningsController < ApplicationController
       )
   end
 
-  def prepare_pipeline_stats
-    @up = @project
-          .citations_projects
-          .where(citations_projects: { screening_status: CitationsProject::CITATION_POOL })
-          .count
-    @as = @project
-          .citations_projects
-          .where(citations_projects: { screening_status: CitationsProject::ABSTRACT_SCREENING })
-          .count
-    @asr = @project
-           .citations_projects
-           .where(citations_projects: { screening_status: CitationsProject::ABSTRACT_SCREENING_REJECTED })
-           .count
-    @fs = @project
-          .citations_projects
-          .where(citations_projects: { screening_status: CitationsProject::FULLTEXT_SCREENING })
-          .count
-    @fsr = @project
-           .citations_projects
-           .where(citations_projects: { screening_status: CitationsProject::FULLTEXT_SCREENING_REJECTED })
-           .count
-    @de = @project
-          .citations_projects
-          .where(citations_projects: { screening_status: CitationsProject::DATA_EXTRACTION })
-          .count
-  end
-
-  def render_label_json_data
-    predefined_reasons = @abstract_screening.reasons_object
-    predefined_tags = @abstract_screening.tags_object
-    custom_reasons = abstract_screenings_projects_users_role.reasons_object
-    custom_tags = abstract_screenings_projects_users_role.tags_object
+  def prepare_json_label_data
+    @predefined_reasons = @abstract_screening.reasons_object
+    @predefined_tags = @abstract_screening.tags_object
+    @custom_reasons = abstract_screenings_projects_users_role.reasons_object
+    @custom_tags = abstract_screenings_projects_users_role.tags_object
 
     @abstract_screening_result&.reasons&.each do |reason|
       name = reason.name
-      if predefined_reasons.key?(name)
-        predefined_reasons[name] = true
+      if @predefined_reasons.key?(name)
+        @predefined_reasons[name] = true
       else
-        custom_reasons[name] = true
+        @custom_reasons[name] = true
       end
     end
 
     @abstract_screening_result&.tags&.each do |tag|
       name = tag.name
-      if predefined_tags.key?(name)
-        predefined_tags[name] = true
+      if @predefined_tags.key?(name)
+        @predefined_tags[name] = true
       else
-        custom_tags[name] = true
+        @custom_tags[name] = true
       end
     end
-
-    render json: {
-      predefined_reasons:,
-      predefined_tags:,
-      custom_reasons:,
-      custom_tags:,
-      notes: @abstract_screening_result.note&.value || '',
-      label_value: @abstract_screening_result.label,
-      word_weights: abstract_screenings_projects_users_role.word_weights_object,
-      rescreen: @asr_id,
-      abstract_screening_result_id: @abstract_screening_result.id,
-      citation: {
-        abstract_screening_id: @abstract_screening.id,
-        abstract_screenings_citations_project_id: @abstract_screenings_citations_project.id,
-        title: @random_citation.name,
-        journal: @abstract_screening.hide_journal ? '<hidden>' : @random_citation.journal.name,
-        authors: @abstract_screening.hide_author ? '<hidden>' : @random_citation.author_map_string,
-        abstract: @random_citation.abstract,
-        keywords: @random_citation.keywords.map(&:name).join(','),
-        id: @random_citation.accession_number_alts
-      },
-      options: {
-        yes_tag_required: @abstract_screening.yes_tag_required,
-        no_tag_required: @abstract_screening.no_tag_required,
-        maybe_tag_required: @abstract_screening.maybe_tag_required,
-        yes_reason_required: @abstract_screening.yes_reason_required,
-        no_reason_required: @abstract_screening.no_reason_required,
-        maybe_reason_required: @abstract_screening.maybe_reason_required,
-        yes_note_required: @abstract_screening.yes_note_required,
-        no_note_required: @abstract_screening.no_note_required,
-        maybe_note_required: @abstract_screening.maybe_note_required,
-        only_predefined_reasons: @abstract_screening.only_predefined_reasons,
-        only_predefined_tags: @abstract_screening.only_predefined_tags
-      }
-    }
   end
 
   def set_abstract_screening

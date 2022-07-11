@@ -335,7 +335,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_29_040241) do
     t.datetime "updated_at", precision: nil, null: false
     t.integer "consensus_type_id"
     t.boolean "pilot_flag"
-    t.string "screening_status"
+    t.string "screening_status", default: "CP", null: false
     t.index ["active"], name: "index_citations_projects_on_active"
     t.index ["citation_id"], name: "index_citations_projects_on_citation_id"
     t.index ["consensus_type_id"], name: "index_citations_projects_on_consensus_type_id"
@@ -1209,6 +1209,21 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_29_040241) do
     t.index ["deleted_at"], name: "index_projects_on_deleted_at"
   end
 
+  create_table "projects_studies", id: :integer, charset: "utf8mb3", force: :cascade do |t|
+    t.integer "project_id"
+    t.integer "study_id"
+    t.datetime "deleted_at", precision: nil
+    t.boolean "active"
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
+    t.index ["active"], name: "index_ps_on_active"
+    t.index ["deleted_at"], name: "index_ps_on_deleted_at"
+    t.index ["project_id", "study_id", "active"], name: "index_ps_on_p_id_s_id_active"
+    t.index ["project_id", "study_id", "deleted_at"], name: "index_ps_on_p_id_s_id_deleted_at"
+    t.index ["project_id"], name: "index_projects_studies_on_project_id"
+    t.index ["study_id"], name: "index_projects_studies_on_study_id"
+  end
+
   create_table "projects_users", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "project_id"
     t.integer "user_id"
@@ -1847,6 +1862,13 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_29_040241) do
     t.index ["statusable_type", "statusable_id", "status_id", "deleted_at"], name: "index_statusings_on_type_id_status_id_deleted_at_uniq", unique: true
   end
 
+  create_table "studies", id: :integer, charset: "utf8mb3", force: :cascade do |t|
+    t.string "name"
+    t.datetime "deleted_at", precision: nil
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
+  end
+
   create_table "suggestions", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.string "suggestable_type"
     t.integer "suggestable_id"
@@ -2162,6 +2184,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_29_040241) do
   add_foreign_key "priorities", "citations_projects"
   add_foreign_key "profiles", "organizations"
   add_foreign_key "profiles", "users"
+  add_foreign_key "projects_studies", "projects"
+  add_foreign_key "projects_studies", "studies"
   add_foreign_key "projects_users", "projects"
   add_foreign_key "projects_users", "users"
   add_foreign_key "projects_users_roles", "projects_users"

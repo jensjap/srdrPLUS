@@ -11,7 +11,7 @@
 #  updated_at        :datetime         not null
 #  consensus_type_id :integer
 #  pilot_flag        :boolean
-#  screening_status  :string(255)
+#  screening_status  :string(255)      default("CP"), not null
 #
 
 class CitationsProject < ApplicationRecord
@@ -19,13 +19,24 @@ class CitationsProject < ApplicationRecord
 
   acts_as_paranoid column: :active, sentinel_value: true
 
-  CITATION_POOL = nil
+  CITATION_POOL = 'CP'.freeze
   ABSTRACT_SCREENING = 'AS'.freeze
   ABSTRACT_SCREENING_REJECTED = 'ASR'.freeze
   FULLTEXT_SCREENING = 'FS'.freeze
   FULLTEXT_SCREENING_REJECTED = 'FSR'.freeze
   DATA_EXTRACTION = 'DE'.freeze
   COMPLETED = 'C'.freeze
+  SCREENING_STATUS_ORDER = [
+    CITATION_POOL,
+    ABSTRACT_SCREENING,
+    ABSTRACT_SCREENING_REJECTED,
+    FULLTEXT_SCREENING,
+    FULLTEXT_SCREENING_REJECTED,
+    DATA_EXTRACTION,
+    COMPLETED
+  ].freeze
+  DEMOTE = 'demote'.freeze
+  PROMOTE = 'promote'.freeze
 
   scope :unlabeled,
         lambda { |project, count|
@@ -81,6 +92,18 @@ class CitationsProject < ApplicationRecord
       dedupe_update_associations(master_citations_project, cp)
       cp.destroy
     end
+  end
+
+  def demote
+    index = SCREENING_STATUS_ORDER.index(screening_status)
+    new_index = index - 1 unless index.zero?
+    update(screening_status: SCREENING_STATUS_ORDER[new_index])
+  end
+
+  def promote
+    index = SCREENING_STATUS_ORDER.index(screening_status)
+    new_index = index + 1 unless index + 1 >= SCREENING_STATUS_ORDER.length
+    update(screening_status: SCREENING_STATUS_ORDER[new_index])
   end
 
   def self.dedupe_update_associations(master_cp, cp_to_remove)

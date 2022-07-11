@@ -129,7 +129,9 @@ Rails.application.routes.draw do
   end
   resources :authors
   resources :comparisons
-  # resources :citations, only: [:new, :create, :edit, :update, :destroy, :show]
+  resources :citations_projects, only: [] do
+    post 'update_evaluation', to: 'citations_projects#update_evaluation'
+  end
   resources :journals
   resources :keywords
   resources :labels
@@ -170,6 +172,7 @@ Rails.application.routes.draw do
       post 'create_word_weight', to: 'abstract_screenings#create_word_weight'
     end
     get 'citation_lifecycle_management', to: 'abstract_screenings#citation_lifecycle_management'
+    get 'kpis', to: 'abstract_screenings#kpis'
     resource :data_audit, only: [:create]
     resources :sd_meta_data
     resources :teams, concerns: :invitable, only: %i[create update destroy]

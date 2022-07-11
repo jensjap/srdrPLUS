@@ -52,7 +52,7 @@ gem 'gon' # Access ruby data in JavaScript.
 gem 'google-api-client' # Access Google sheets programmatically
 gem 'googleauth'
 gem 'httparty' # Simple calls to external API.
-gem 'jbuilder', '~> 2.10.1'
+gem 'jbuilder'
 gem 'jquery-datatables' # For making sortable searchable tables
 gem 'jquery-rails' # Use jquery as the JavaScript library
 gem 'kaminari' # Pagination.

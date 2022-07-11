@@ -1,4 +1,4 @@
-<div class="px-4 sm:px-6 lg:px-8 pt-8">
+<div class="px-4 sm:px-6 lg:px-8 pt-8" x-data="$store.dashboard">
   <div>
     <h3 class="text-xl leading-6 font-medium text-gray-900">
       Citation Processing Pipeline (I - V)
@@ -8,7 +8,12 @@
         <dt class="text-sm font-medium text-gray-500 truncate">
           I. Citation Pool
         </dt>
-        <dd class="mt-1 text-3xl font-semibold text-gray-900"><%= @up %></dd>
+        <dd
+          class="mt-1 text-3xl font-semibold text-gray-900"
+          x-text="$store.dashboard.kpis.up"
+        >
+          ..
+        </dd>
       </div>
 
       <div class="px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-6">
@@ -16,7 +21,10 @@
           II. In Abstract Screening
         </dt>
         <dd class="mt-1 text-3xl font-semibold text-gray-900">
-          <%= "#{@as} / #{@asr}" %>
+          <span
+            x-text="`${$store.dashboard.kpis.as} / ${$store.dashboard.kpis.asr}`"
+            >.. / ..</span
+          >
           <span class="text-xs font-extralight text-gray-500"
             >(active / rejected)</span
           >
@@ -28,7 +36,10 @@
           III. In Full Text Screening
         </dt>
         <dd class="mt-1 text-3xl font-semibold text-gray-900">
-          <%= "#{@fs} / #{@fsr}" %>
+          <span
+            x-text="`${$store.dashboard.kpis.fs} / ${$store.dashboard.kpis.fsr}`"
+            >.. / ..</span
+          >
           <span class="text-xs font-extralight text-gray-500"
             >(active / rejected)</span
           >
@@ -39,16 +50,54 @@
         <dt class="text-sm font-medium text-gray-500 truncate">
           IV. In Data Extraction
         </dt>
-        <dd class="mt-1 text-3xl font-semibold text-gray-900"><%= @de %></dd>
+        <dd
+          class="mt-1 text-3xl font-semibold text-gray-900"
+          x-text="$store.dashboard.kpis.de"
+        >
+          ..
+        </dd>
       </div>
 
       <div class="px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-6">
         <dt class="text-sm font-medium text-gray-500 truncate">V. Completed</dt>
-        <dd class="mt-1 text-3xl font-semibold text-gray-900">
-          0
-          <!-- TODO Placeholder -->
+        <dd
+          class="mt-1 text-3xl font-semibold text-gray-900"
+          x-text="$store.dashboard.kpis.c"
+        >
+          ..
         </dd>
       </div>
     </dl>
   </div>
 </div>
+
+<script>
+  document.addEventListener("alpine:init", () => {
+    Alpine.store("dashboard", {
+      kpis: {
+        up: "..",
+        as: "..",
+        asr: "..",
+        fs: "..",
+        fsr: "..",
+        de: "..",
+        c: "..",
+      },
+
+      init() {
+        this.fetch_kpis();
+      },
+
+      async fetch_kpis() {
+        const response = await fetch("/projects/<%= @project.id %>/kpis", {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        });
+        this.kpis = await response.json();
+      },
+    });
+  });
+</script>
