@@ -72,7 +72,7 @@ gem 'ref_parsers', '~> 0.2.0' # for parsing ris files.
 gem 'remotipart', github: 'mshibuya/remotipart'
 gem 'responders' # Help DRY up code.
 gem 'roo'
-gem 'rubyXL', '~> 1.2.10' # Spreadsheet reading.
+gem 'rubyXL' # Spreadsheet reading.
 gem 'sass-rails', '~> 5.0' # Use SCSS for stylesheets
 gem 'searchjoy'
 gem 'searchkick'
