@@ -11,7 +11,7 @@
 #  updated_at        :datetime         not null
 #  consensus_type_id :integer
 #  pilot_flag        :boolean
-#  screening_status  :string(255)      default("CP"), not null
+#  screening_status  :string(255)
 #
 
 class CitationsProject < ApplicationRecord
@@ -96,14 +96,18 @@ class CitationsProject < ApplicationRecord
 
   def demote
     index = SCREENING_STATUS_ORDER.index(screening_status)
-    new_index = index - 1 unless index.zero?
-    update(screening_status: SCREENING_STATUS_ORDER[new_index])
+    unless index.zero?
+      new_index = index - 1
+      update(screening_status: SCREENING_STATUS_ORDER[new_index])
+    end
   end
 
   def promote
     index = SCREENING_STATUS_ORDER.index(screening_status)
-    new_index = index + 1 unless index + 1 >= SCREENING_STATUS_ORDER.length
-    update(screening_status: SCREENING_STATUS_ORDER[new_index])
+    unless index + 1 >= 5
+      new_index = index + 1
+      update(screening_status: SCREENING_STATUS_ORDER[new_index])
+    end
   end
 
   def self.dedupe_update_associations(master_cp, cp_to_remove)

@@ -11,6 +11,8 @@
         <dd
           class="mt-1 text-3xl font-semibold text-gray-900"
           x-text="$store.dashboard.kpis.up"
+          :class="$store.dashboard.show.up ? '' : 'invisible'"
+          x-transition
         >
           ..
         </dd>
@@ -22,8 +24,17 @@
         </dt>
         <dd class="mt-1 text-3xl font-semibold text-gray-900">
           <span
-            x-text="`${$store.dashboard.kpis.as} / ${$store.dashboard.kpis.asr}`"
-            >.. / ..</span
+            x-text="$store.dashboard.kpis.as"
+            :class="$store.dashboard.show.as ? '' : 'invisible'"
+            x-transition
+            >..
+          </span>
+          /
+          <span
+            x-text="$store.dashboard.kpis.asr"
+            :class="$store.dashboard.show.asr ? '' : 'invisible'"
+            x-transition
+            >..</span
           >
           <span class="text-xs font-extralight text-gray-500"
             >(active / rejected)</span
@@ -37,8 +48,17 @@
         </dt>
         <dd class="mt-1 text-3xl font-semibold text-gray-900">
           <span
-            x-text="`${$store.dashboard.kpis.fs} / ${$store.dashboard.kpis.fsr}`"
-            >.. / ..</span
+            x-text="$store.dashboard.kpis.fs"
+            :class="$store.dashboard.show.fs ? '' : 'invisible'"
+            x-transition
+            >..
+          </span>
+          /
+          <span
+            x-text="$store.dashboard.kpis.fsr"
+            :class="$store.dashboard.show.fsr ? '' : 'invisible'"
+            x-transition
+            >..</span
           >
           <span class="text-xs font-extralight text-gray-500"
             >(active / rejected)</span
@@ -53,6 +73,8 @@
         <dd
           class="mt-1 text-3xl font-semibold text-gray-900"
           x-text="$store.dashboard.kpis.de"
+          :class="$store.dashboard.show.de ? '' : 'invisible'"
+          x-transition
         >
           ..
         </dd>
@@ -63,6 +85,8 @@
         <dd
           class="mt-1 text-3xl font-semibold text-gray-900"
           x-text="$store.dashboard.kpis.c"
+          :class="$store.dashboard.show.c ? '' : 'invisible'"
+          x-transition
         >
           ..
         </dd>
@@ -84,6 +108,16 @@
         c: "..",
       },
 
+      show: {
+        up: true,
+        as: true,
+        asr: true,
+        fs: true,
+        fsr: true,
+        de: true,
+        c: true,
+      },
+
       init() {
         this.fetch_kpis();
       },
@@ -98,6 +132,19 @@
         });
         this.kpis = await response.json();
       },
+    });
+  });
+
+  document.addEventListener("alpine:initialized", () => {
+    Object.keys(Alpine.store("dashboard").kpis).forEach(function (key) {
+      Alpine.store("dashboard").$watch("kpis." + key, (a, b) => {
+        if (a != b) {
+          Alpine.store("dashboard").show[key] = false;
+          setTimeout(() => {
+            Alpine.store("dashboard").show[key] = true;
+          }, 300);
+        }
+      });
     });
   });
 </script>

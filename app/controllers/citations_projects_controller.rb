@@ -3,11 +3,8 @@ class CitationsProjectsController < ApplicationController
 
   def update_evaluation
     citations_project = CitationsProject.find(params[:citations_project_id])
-    if params[:type] == CitationsProject::PROMOTE
-      citations_project.promote
-    elsif params[:type] == CitationsProject::DEMOTE
-      citations_project.demote
-    end
+    citations_project.promote if params[:type] == CitationsProject::PROMOTE
+    citations_project.demote if params[:type] == CitationsProject::DEMOTE
     render json: {
       citations_project_id: citations_project.id,
       screening_status: citations_project.screening_status
