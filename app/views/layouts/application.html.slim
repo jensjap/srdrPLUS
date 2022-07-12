@@ -6,13 +6,16 @@ html class='no-js' lang='en'
 
     title == content_for?(:title) ? yield(:title) : 'SRDR+'
 
-    script[async src="https://www.googletagmanager.com/gtag/js?id=UA-146336211-1"]
+    / Google Tag Manager
+    script[async src="https://www.googletagmanager.com/gtag/js?id=GTM-W4NX5V"]
     script
-      |  window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'UA-146336211-1');
+      | gtag = ->
+          window.dataLayer.push arguments
+          return
 
-    script[async src="https://www.googletagmanager.com/gtag/js?id=UA-76714758-1"]
-    script
-      |  window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'UA-76714758-1');
+        window.dataLayer = window.dataLayer or []
+        gtag 'js', new Date
+        gtag 'config', 'GTM-W4NX5V'
 
     script src="https://kit.fontawesome.com/a55e144d79.js" crossorigin="anonymous"
 
@@ -40,6 +43,10 @@ html class='no-js' lang='en'
   body class="#{controller_name} #{action_name}"
     = Gon::Base.render_data(camelCase: true)
     = render 'shared/noscript'
+
+    / Google Tag Manager (noscript)
+    noscript
+      iframe src="https://www.googletagmanager.com/ns.html?id=GTM-W4NX5V" height="0" width="0" style="display:none;visibility:hidden">
 
     iframe src="/ahrq_header.html" text="AHRQ Header" title="AHRQ Header" width="100%" frameborder="0" scrolling="no" seemless
       p Browser does not support iframes. Please update your browser to for a better viewing experience.
