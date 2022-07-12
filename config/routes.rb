@@ -3,11 +3,11 @@ require 'sidekiq/web'
 Rails.application.routes.draw do
   get 'public_data', to: 'public_data#show'
 
-  resources :publishings, only: [:new, :create, :destroy]
+  resources :publishings, only: %i[new create destroy]
   post 'publishings/:id/approve', to: 'publishings#approve', as: 'publishings_approve'
   post 'publishings/:id/rescind_approval', to: 'publishings#rescind_approval', as: 'rescind_approval'
 
-  resources :project_report_links, only: [:index, :view] do
+  resources :project_report_links, only: %i[index view] do
     get 'new_query_form'
     post 'options_form'
   end
@@ -21,10 +21,9 @@ Rails.application.routes.draw do
   resources :sd_key_questions, only: [:index] do
     get 'destroy_with_picodts', on: :member
   end
-  resources :sd_meta_data_queries, only: [:create, :update, :destroy]
+  resources :sd_meta_data_queries, only: %i[create update destroy]
   resources :review_types, only: [:index]
   resources :data_analysis_levels, only: [:index]
-
 
   devise_for :admins
   devise_for :users, controllers: {
@@ -41,15 +40,14 @@ Rails.application.routes.draw do
   end
 
   authenticate :admin do
-    mount RailsAdmin::Engine => '/admin', as: 'rails_admin'
-    mount Searchjoy::Engine, at: "searchjoy"
+    mount Searchjoy::Engine, at: 'searchjoy'
     mount Sidekiq::Web => '/sidekiq'
   end
 
   apipie
   namespace :api do
     namespace :v1 do
-      resources :evidence_variables, only: [:index, :show]
+      resources :evidence_variables, only: %i[index show]
 
       resources :keywords, only: [:index]
       resources :users, only: [:index]
@@ -59,19 +57,19 @@ Rails.application.routes.draw do
       resources :terms, only: [:index]
       resources :timepoint_names, only: [:index]
 
-      resources :labels_reasons, only: [:create, :destroy]
-      resources :projects_users_term_groups_colors, only: [:create, :update, :destroy] do
+      resources :labels_reasons, only: %i[create destroy]
+      resources :projects_users_term_groups_colors, only: %i[create update destroy] do
         resources :terms, only: [:index]
       end
-      resources :projects_users_term_groups_colors_terms, only: [:create, :destroy]
-      resources :taggings, only: [:create, :destroy]
+      resources :projects_users_term_groups_colors_terms, only: %i[create destroy]
+      resources :taggings, only: %i[create destroy]
 
-      resources :notes, only: [:create, :update, :destroy]
+      resources :notes, only: %i[create update destroy]
 
       resources :assignments do
         resources :reasons, only: [:index]
         resources :tags, only: [:index]
-        resources :projects_users_term_groups_colors, only: [:create, :index]
+        resources :projects_users_term_groups_colors, only: %i[create index]
       end
 
       resources :citations, only: [:index] do
@@ -95,7 +93,7 @@ Rails.application.routes.draw do
         end
         resources :extractions, only: [:index]
         resources :extraction_forms_projects do
-          resources :extraction_forms_projects_sections, only: [:index, :show] do
+          resources :extraction_forms_projects_sections, only: %i[index show] do
             post 'toggle_hiding', to: 'extraction_forms_projects_sections#toggle_hiding'
             resources :type1s, only: [:index]
           end
@@ -110,32 +108,32 @@ Rails.application.routes.draw do
 
     namespace :v2 do
       resources :mesh_descriptors, only: [:index]
-      resources :evidence_variables, only: [:index, :show]
+      resources :evidence_variables, only: %i[index show]
       get :public_projects, to: 'projects#public_projects'
       resources :projects, shallow: true do
         member do
           post :import_citations_fhir_json
         end
         resources :projects_users_roles, only: [:index]
-      end  # END resources :projects, shallow: true do
+      end # END resources :projects, shallow: true do
 
       resources :extractions, only: [:show]
       resources :extraction_forms_projects_sections, only: [:show]
       resources :key_questions, only: [:show]
       resources :questions, only: [:show]
-    end  # END namespace :v2 do
-  end  # END namespace :api do
+    end # END namespace :v2 do
+  end # END namespace :api do
 
   resources :assignments do
     get 'screen', on: :member
   end
   resources :authors
   resources :comparisons
-  #resources :citations, only: [:new, :create, :edit, :update, :destroy, :show]
+  # resources :citations, only: [:new, :create, :edit, :update, :destroy, :show]
   resources :journals
   resources :keywords
   resources :labels
-  #resources :tasks
+  # resources :tasks
   resources :records, only: [:update]
   resources :statusings, only: [:update]
 
@@ -163,14 +161,14 @@ Rails.application.routes.draw do
 
   get 'sd_key_questions/:id/fuzzy_match', to: 'sd_key_questions#fuzzy_match'
 
-  resources :data_audits, only: [:index, :update]
+  resources :data_audits, only: %i[index update]
   resources :projects, concerns: :paginatable, shallow: true do
     resource :data_audit, only: [:create]
     resources :sd_meta_data
-    resources :teams, concerns: :invitable, only: [:create, :update, :destroy]
+    resources :teams, concerns: :invitable, only: %i[create update destroy]
     member do
-      get  'confirm_deletion'
-      get  'next_assignment'
+      get 'confirm_deletion'
+      get 'next_assignment'
       post 'import_csv'
       post 'import_ris'
       post 'import_endnote'
@@ -190,7 +188,6 @@ Rails.application.routes.draw do
     resources :screening_options
     resources :tasks
     resources :extractions do
-
       collection do
         get 'comparison_tool'
         get 'consolidate'
@@ -205,8 +202,7 @@ Rails.application.routes.draw do
 
       resources :extractions_extraction_forms_projects_sections do
         resources :extractions_extraction_forms_projects_sections_question_row_column_fields, only: [:update]
-        resources :extractions_extraction_forms_projects_sections_type1s, only: [:edit, :update, :destroy] do
-
+        resources :extractions_extraction_forms_projects_sections_type1s, only: %i[edit update destroy] do
           member do
             get 'edit_timepoints'
             get 'edit_populations'
@@ -214,40 +210,35 @@ Rails.application.routes.draw do
 
           resources :extractions_extraction_forms_projects_sections_type1_rows, only: [:create] do
             resources :extractions_extraction_forms_projects_sections_type1_row_columns, only: [:create] do
-              resources :result_statistic_sections, only: [:edit, :update] do
-
+              resources :result_statistic_sections, only: %i[edit update] do
                 member do
                   post 'add_comparison'
                   delete 'remove_comparison'
-                  get  'consolidate'
-                  get  'manage_measures', constraints: { format: 'js' }
+                  get 'consolidate'
+                  get 'manage_measures', constraints: { format: 'js' }
                 end
-
               end
             end
           end
         end
       end
     end
-    resources :extraction_forms_projects, only: [:create, :edit, :update, :destroy] do
+    resources :extraction_forms_projects, only: %i[create edit update destroy] do
       get 'build', on: :member
-      resources :extraction_forms_projects_sections, only: [:new, :create, :edit, :update, :destroy] do
-
-        resources :extraction_forms_projects_sections_type1s, only: [:edit, :update]
+      resources :extraction_forms_projects_sections, only: %i[new create edit update destroy] do
+        resources :extraction_forms_projects_sections_type1s, only: %i[edit update]
 
         member do
           post 'add_quality_dimension'
         end
 
-        resources :questions, only: [:new, :create, :edit, :update, :destroy] do
-
+        resources :questions, only: %i[new create edit update destroy] do
           member do
             patch 'toggle_dependency'
-            post  'add_column'
-            post  'add_row'
-            get   'dependencies'
+            post 'add_column'
+            post 'add_row'
+            get 'dependencies'
             post 'duplicate'
-            #post 'duplicate'
           end
 
           resources :question_rows, only: [:destroy] do
@@ -265,11 +256,11 @@ Rails.application.routes.draw do
             end
           end
         end
-        resources :type1s, only: [:new, :create, :edit, :update, :destroy]
+        resources :type1s, only: %i[new create edit update destroy]
         delete 'dissociate_type1'
       end
     end
-    resources :key_questions_projects, only: [:create, :edit, :update, :destroy]
+    resources :key_questions_projects, only: %i[create edit update destroy]
 
     collection do
       get 'filter'
@@ -284,21 +275,21 @@ Rails.application.routes.draw do
       post 'simple_import'
     end
 
-    resources :imports, only: [:index, :new]
+    resources :imports, only: %i[index new]
   end
 
   root to: 'static_pages#home'
 
-  get 'about'              => 'static_pages#about'
-  get 'citing'             => 'static_pages#citing'
-  get 'contact'            => 'static_pages#contact'
-  get 'help'               => 'static_pages#help'
-  get 'usage'              => 'static_pages#usage'
-  get 'blog'               => 'static_pages#blog'
-  get 'resources'          => 'static_pages#resources'
+  get 'about' => 'static_pages#about'
+  get 'citing' => 'static_pages#citing'
+  get 'contact' => 'static_pages#contact'
+  get 'help' => 'static_pages#help'
+  get 'usage' => 'static_pages#usage'
+  get 'blog' => 'static_pages#blog'
+  get 'resources' => 'static_pages#resources'
   get 'published_projects' => 'static_pages#published_projects'
 
-  resource  :profile, only: [:show, :edit, :update]
+  resource :profile, only: %i[show edit update]
   resources :degrees, only: [:index]
   resources :organizations, only: [:index]
   resources :sections, only: [:index]

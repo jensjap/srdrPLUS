@@ -18,7 +18,7 @@
               td title=citations_project_info[:citation_name_long] = link_to citation_handle.html_safe, citation_path(citations_project_info[:citation_id])
               td
                 - consolidation.status = Status.DRAFT if consolidation.status.blank?
-                = render 'shared/statusing_form.html.slim', statusing: consolidation.statusing, status_name: consolidation.statusing.status.name
+                = render 'shared/statusing_form', statusing: consolidation.statusing, status_name: consolidation.statusing.status.name
 
 hr
 br

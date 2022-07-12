@@ -49,31 +49,29 @@ class Question < ApplicationRecord
 
   amoeba do
     enable
-    prepend :name => "Copy of '"
-    append :name => "'"
+    prepend name: "Copy of '"
+    append name: "'"
     exclude_association :ordering
     exclude_association :dependencies
     exclude_association :key_questions_projects_questions
 
-    customize(lambda { |original, cloned|
+    customize(lambda { |_original, cloned|
       cloned.skip_callbacks = true
     })
   end
 
   # Returns the question type based on how many how many rows/columns/answer choices the question has.
   def question_type
-    if self.question_rows.length == 1 && self.question_rows.first.question_row_columns.length == 1
-      return 'Single'
-    end
+    return 'Single' if question_rows.length == 1 && question_rows.first.question_row_columns.length == 1
 
-    return "Matrix"
+    'Matrix'
   end
 
   # Checks whether this is dependent on argument.
   #
   # (prerequisitable) -> Boolean
   def depends_on?(prerequisitable)
-    return self.dependencies.any? { |d| d.prerequisitable == prerequisitable }
+    dependencies.any? { |d| d.prerequisitable == prerequisitable }
   end
 
   # Toggle dependency.
@@ -81,58 +79,52 @@ class Question < ApplicationRecord
   # (prerequisitable) -> nil
   def toggle_dependency(prerequisitable)
     # Capture the deleted dependency.
-    dependency = self.dependencies.delete(self.dependencies.where(prerequisitable: prerequisitable))
+    dependency = dependencies.delete(dependencies.where(prerequisitable:))
 
     # If no dependency was deleted then we add it.
-    self.dependencies << Dependency.create(prerequisitable: prerequisitable) if dependency.blank?
+    dependencies << Dependency.create(prerequisitable:) if dependency.blank?
 
-    return nil
+    nil
   end
 
   def duplicate
+    duplicated_question = nil
     Question.transaction do
-      duplicated_question = self.amoeba_dup
+      duplicated_question = amoeba_dup
       duplicated_question.save
-      return duplicated_question
-      #duplicated_question = Question.new( name: self.name, description: self.description )
-      #duplicated_question.key_questions << self.key_questions
-
-      #self.question_rows.each do |question_row|
-      #  question_row.question_row_columns.each do |question_row_column|
-      #  end
-      #end
     end
+    duplicated_question
   end
 
   private
 
-    # By default we associate all key_questions_projects to the question.
-    def associate_kqs
-      self.key_questions_projects << self.project.key_questions_projects
-      self.save
+  # By default we associate all key_questions_projects to the question.
+  def associate_kqs
+    key_questions_projects << project.key_questions_projects
+    save
+  end
+
+  def create_default_question_row
+    question_rows.create
+  end
+
+  # !!! May need to rethink this.
+  #    Who is actually responsible for this concern: Question,
+  #    QuestionRow or QuestionRowColumn.
+  def ensure_matrix_column_headers
+    first_row = question_rows.first
+    rest_rows = question_rows[1..-1]
+
+    column_headers = []
+
+    first_row.question_row_columns.each do |c|
+      column_headers << c.name
     end
 
-    def create_default_question_row
-      self.question_rows.create
-    end
-
-    #!!! May need to rethink this.
-    #    Who is actually responsible for this concern: Question,
-    #    QuestionRow or QuestionRowColumn.
-    def ensure_matrix_column_headers
-      first_row = self.question_rows.first
-      rest_rows = self.question_rows[1..-1]
-
-      column_headers = []
-
-      first_row.question_row_columns.each do |c|
-        column_headers << c.name
+    rest_rows.each do |r|
+      r.question_row_columns.each_with_index do |rc, idx|
+        rc.update(name: column_headers[idx])
       end
-
-      rest_rows.each do |r|
-        r.question_row_columns.each_with_index do |rc, idx|
-          rc.update(name: column_headers[idx])
-        end
-      end
     end
+  end
 end

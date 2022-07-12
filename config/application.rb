@@ -12,23 +12,23 @@ module SrdrPLUS
     config.app_generators.scaffold_controller :responders_controller
 
     # Initialize configuration defaults for originally generated Rails version.
-    config.load_defaults 5.0
+    config.load_defaults 7.0
 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration can go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
 
     # Use a real queuing backend for Active Job (and separate queues per environment)
-    config.active_job.queue_adapter     = :sidekiq
-    #config.active_job.queue_name_prefix = "srdrPLUS_#{ Rails.env }"
+    config.active_job.queue_adapter = :sidekiq
+    # config.active_job.queue_name_prefix = "srdrPLUS_#{ Rails.env }"
   end
 end
 
 if Rails.env.production?
   Sentry.init do |config|
     config.dsn = Rails.application.credentials.dig(:sentry)
-    filter = ActionDispatch::Http::ParameterFilter.new(Rails.application.config.filter_parameters)
-    config.before_send = lambda do |event, hint|
+    filter = ActiveSupport::ParameterFilter.new(Rails.application.config.filter_parameters)
+    config.before_send = lambda do |event, _hint|
       filter.filter(event.to_hash)
     end
   end

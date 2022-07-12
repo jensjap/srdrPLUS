@@ -17,11 +17,11 @@ class PublicDataController < ApplicationController
       case params[:type]
       when 'project'
         @project = Project.find(id)
-        @template = '/public_data/project.html.slim'
+        @template = '/public_data/project'
       when 'extraction_form'
         @efp = ExtractionFormsProject.find(id)
         @project = @efp.project
-        @template = '/public_data/extraction_form.html.slim'
+        @template = '/public_data/extraction_form'
       when 'extraction'
         @extraction = Extraction.find(id)
         update_record_helper_dictionaries(@extraction)
@@ -51,7 +51,7 @@ class PublicDataController < ApplicationController
 
 
         @eefps_by_efps_dict ||= @extraction.extractions_extraction_forms_projects_sections.group_by(&:extraction_forms_projects_section_id)
-        @template = '/public_data/extraction.html.slim'
+        @template = '/public_data/extraction'
       end
     end
 

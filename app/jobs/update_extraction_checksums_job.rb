@@ -6,7 +6,7 @@ class UpdateExtractionChecksumsJob < ApplicationJob
     puts exception.message
   end
 
-  def perform(*args)
+  def perform(*_args)
     ExtractionChecksum.left_outer_joins(:extraction).where(extractions: { id: nil }).destroy_all
 
     ExtractionChecksum.where(is_stale: true).each do |extraction_checksum|
