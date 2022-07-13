@@ -8,14 +8,11 @@ html class='no-js' lang='en'
 
     / Google Tag Manager
     script[async src="https://www.googletagmanager.com/gtag/js?id=GTM-W4NX5V"]
-    script
-      | gtag = ->
-          window.dataLayer.push arguments
-          return
-
-        window.dataLayer = window.dataLayer or []
-        gtag 'js', new Date
-        gtag 'config', 'GTM-W4NX5V'
+    javascript:
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments)};
+      gtag('js', new Date());
+      gtag('config', 'GTM-W4NX5V');
 
     script src="https://kit.fontawesome.com/a55e144d79.js" crossorigin="anonymous"
 
