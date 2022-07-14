@@ -54,10 +54,9 @@
         />
       </div>
     </template>
-    <div class="mb-4">
-      <!-- prettier-ignore -->
+    <!-- <div class="mb-4">
       <%= f.association(:projects_users_roles, label: 'Participants', required: true, collection: @abstract_screening.project.projects_users_roles, label_method: :handle, selected: @abstract_screening.projects_users_roles.map(&:id), input_html: { id: 'participants', multiple: 'multiple' } ) %>
-    </div>
+    </div> -->
 
     <div class="grid grid-rows lg:grid-cols-4 gap-8 gap-x-12 my-8">
       <div class="flex items-center justify-between">
