@@ -20,19 +20,30 @@ class CitationsProject < ApplicationRecord
   acts_as_paranoid column: :active, sentinel_value: true
 
   CITATION_POOL = 'CP'.freeze
-  ABSTRACT_SCREENING = 'AS'.freeze
+  ABSTRACT_SCREENING_UNSCREENED = 'ASU'.freeze
+  ABSTRACT_SCREENING_PARTIALLY_SCREENED = 'ASPS'.freeze
   ABSTRACT_SCREENING_REJECTED = 'ASR'.freeze
-  FULLTEXT_SCREENING = 'FS'.freeze
-  FULLTEXT_SCREENING_REJECTED = 'FSR'.freeze
-  DATA_EXTRACTION = 'DE'.freeze
+  ABSTRACT_SCREENING_IN_CONFLICT = 'ASIC'.freeze
+  FULL_TEXT_UNSCREENED = 'FTU'.freeze
+  FULL_TEXT_PARTIALLY_SCREENED = 'FTPS'.freeze
+  FULL_TEXT_REJECTED = 'FTR'.freeze
+  FULL_TEXT_IN_CONFLICT = 'FTIC'.freeze
+  DATA_EXTRACTION_NOT_YET_EXTRACTED = 'DENYE'.freeze
+  DATA_EXTRACTION_IN_PROGRESS = 'DEIP'.freeze
   COMPLETED = 'C'.freeze
+
   SCREENING_STATUS_ORDER = [
     CITATION_POOL,
-    ABSTRACT_SCREENING,
+    ABSTRACT_SCREENING_UNSCREENED,
+    ABSTRACT_SCREENING_PARTIALLY_SCREENED,
     ABSTRACT_SCREENING_REJECTED,
-    FULLTEXT_SCREENING,
-    FULLTEXT_SCREENING_REJECTED,
-    DATA_EXTRACTION,
+    ABSTRACT_SCREENING_IN_CONFLICT,
+    FULL_TEXT_UNSCREENED,
+    FULL_TEXT_PARTIALLY_SCREENED,
+    FULL_TEXT_REJECTED,
+    FULL_TEXT_IN_CONFLICT,
+    DATA_EXTRACTION_NOT_YET_EXTRACTED,
+    DATA_EXTRACTION_IN_PROGRESS,
     COMPLETED
   ].freeze
   DEMOTE = 'demote'.freeze
@@ -96,17 +107,25 @@ class CitationsProject < ApplicationRecord
 
   def demote
     index = SCREENING_STATUS_ORDER.index(screening_status)
-    unless index.zero?
-      new_index = index - 1
-      update(screening_status: SCREENING_STATUS_ORDER[new_index])
+    case index
+    when 0
+      nil
+    when 1..4
+      update(screening_status: SCREENING_STATUS_ORDER[3])
+    when 5..8
+      update(screening_status: SCREENING_STATUS_ORDER[7])
+    when 9..10
+      update(screening_status: SCREENING_STATUS_ORDER[7])
     end
   end
 
   def promote
     index = SCREENING_STATUS_ORDER.index(screening_status)
-    unless index + 1 >= 5
-      new_index = index + 1
-      update(screening_status: SCREENING_STATUS_ORDER[new_index])
+    case index
+    when 0, 1..4
+      update(screening_status: SCREENING_STATUS_ORDER[5])
+    when 5..8
+      update(screening_status: SCREENING_STATUS_ORDER[9])
     end
   end
 

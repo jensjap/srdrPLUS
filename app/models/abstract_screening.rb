@@ -51,14 +51,14 @@ class AbstractScreening < ApplicationRecord
     case abstract_screening_type
     when SINGLE_PERPETUAL, PILOT
       if abstract_screening_result.label == 1
-        abstract_screening_result.citations_project.update(screening_status: CitationsProject::FULLTEXT_SCREENING)
+        abstract_screening_result.citations_project.update(screening_status: CitationsProject::FULL_TEXT_UNSCREENED)
       elsif abstract_screening_result.label == -1
         abstract_screening_result.citations_project.update(screening_status: CitationsProject::ABSTRACT_SCREENING_REJECTED)
       end
     when DOUBLE_PERPETUAL
       score = abstract_screening_result.citations_project.abstract_screening_results.sum(:label)
       if score >= 2
-        abstract_screening_result.citations_project.update(screening_status: CitationsProject::FULLTEXT_SCREENING)
+        abstract_screening_result.citations_project.update(screening_status: CitationsProject::FULL_TEXT_UNSCREENED)
       elsif score <= -2
         abstract_screening_result.citations_project.update(screening_status: CitationsProject::ABSTRACT_SCREENING_REJECTED)
       end
@@ -81,10 +81,12 @@ class AbstractScreening < ApplicationRecord
 
   def add_citations_from_pool(no_of_citations)
     return if no_of_citations.nil?
-
-    cps = project.citations_projects.where(screening_status: CitationsProject::CITATION_POOL).limit(no_of_citations)
-    citations_projects << cps
-    cps.update_all(screening_status: CitationsProject::ABSTRACT_SCREENING)
+    no_of_citations_to_add = no_of_citations - citations.count
+    if no_of_citations_to_add > 0
+      cps = project.citations_projects.where(screening_status: CitationsProject::CITATION_POOL).limit(no_of_citations_to_add)
+      citations_projects << cps
+      cps.update_all(screening_status: CitationsProject::ABSTRACT_SCREENING_UNSCREENED)
+    end
   end
 
   def tag_options

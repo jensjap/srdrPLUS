@@ -38,8 +38,17 @@ class AbstractScreeningsController < ApplicationController
   def destroy
     @abstract_screening = AbstractScreening.find(params[:id])
     authorize(@abstract_screening.project, policy_class: AbstractScreeningPolicy)
-    @abstract_screening.destroy
+    if @abstract_screening.project.abstract_screenings.first == @abstract_screening
+      flash[:error] = 'The default abstract screening cannot be deleted.'
+    else
+      @abstract_screening.destroy
+    end
     redirect_to project_abstract_screenings_path(@abstract_screening.project)
+  end
+
+  def edit
+    @abstract_screening = AbstractScreening.find(params[:id])
+    authorize(@abstract_screening.project, policy_class: AbstractScreeningPolicy)
   end
 
   def index
@@ -117,6 +126,20 @@ class AbstractScreeningsController < ApplicationController
       .per(5)
   end
 
+  def update
+    @abstract_screening = AbstractScreening.find(params[:id])
+    @project = @abstract_screening.project
+    authorize(@abstract_screening.project, policy_class: AbstractScreeningPolicy)
+    if @abstract_screening.update(abstract_screening_params)
+      @abstract_screening.add_citations_from_pool(params[:no_of_citations].to_i)
+      flash[:notice] = 'Screening was successfully updated'
+      redirect_to project_abstract_screenings_path(@project)
+    else
+      flash[:now] = @abstract_screening.errors.full_messages.join(',')
+      render :edit
+    end
+  end
+
   private
 
   def abstract_screening_params
@@ -190,7 +213,7 @@ class AbstractScreeningsController < ApplicationController
         .project.citations_projects
         .where(screening_status: CitationsProject::CITATION_POOL)
         .sample
-      citations_project.update(screening_status: CitationsProject::ABSTRACT_SCREENING)
+      citations_project.update(screening_status: CitationsProject::ABSTRACT_SCREENING_PARTIALLY_SCREENED)
       @random_citation = citations_project.citation
 
       @abstract_screenings_citations_project =
@@ -217,7 +240,7 @@ class AbstractScreeningsController < ApplicationController
         .left_joins(:abstract_screening_results)
         .where(abstract_screening: @abstract_screening)
         .where(abstract_screening_results: { label: nil })
-        .where(citations_projects: { screening_status: CitationsProject::ABSTRACT_SCREENING }).sample
+        .where(citations_projects: { screening_status: CitationsProject::ABSTRACT_SCREENING_PARTIALLY_SCREENED }).sample
       @abstract_screening_result =
         @abstract_screening
         .abstract_screening_results

@@ -1,0 +1,431 @@
+<div
+  class="px-4 sm:px-6 lg:px-8 pt-8"
+  x-data="{
+    type: '<%= @abstract_screening.abstract_screening_type %>',
+    allTag: <%= @abstract_screening.yes_tag_required && @abstract_screening.no_tag_required && @abstract_screening.maybe_tag_required %>,
+    allReason: <%= @abstract_screening.no_reason_required && @abstract_screening.maybe_reason_required %>,
+    allNote: <%= @abstract_screening.yes_note_required && @abstract_screening.no_note_required && @abstract_screening.maybe_note_required %>,
+    yesTag: <%= @abstract_screening.yes_tag_required %>,
+    noTag: <%= @abstract_screening.no_tag_required %>,
+    maybeTag: <%= @abstract_screening.maybe_tag_required %>,
+    yesReason: <%= @abstract_screening.yes_reason_required %>,
+    noReason: <%= @abstract_screening.no_reason_required %>,
+    maybeReason: <%= @abstract_screening.maybe_reason_required %>,
+    yesNote: <%= @abstract_screening.yes_note_required %>,
+    noNote: <%= @abstract_screening.no_note_required %>,
+    maybeNote: <%= @abstract_screening.maybe_note_required %>,
+    only_predefined_reasons: <%= @abstract_screening.only_predefined_reasons %>,
+    only_predefined_tags: <%= @abstract_screening.only_predefined_tags %>,
+    hide_author: <%= @abstract_screening.hide_author %>,
+    hide_journal: <%= @abstract_screening.hide_journal %>,
+  }"
+>
+  <div class="sm:flex sm:items-center">
+    <div class="sm:flex-auto">
+      <h1 class="text-xl font-semibold text-gray-900">
+        <%= params[:action] == 'new' ? 'Create New Abstract Screening' : 'Update
+        Abstract Screening' %>
+      </h1>
+      <p class="mt-2 text-sm text-gray-700">
+        Setup an abstract screening process for your project members and pool of
+        citations
+      </p>
+    </div>
+  </div>
+  <div class="flex flex-col w-full">
+    <!-- prettier-ignore -->
+    <%= simple_form_for([@project, @abstract_screening]) do |f| %>
+    <div class="mb-4">
+      <!-- prettier-ignore -->
+      <%= f.input :abstract_screening_type, as: :select, collection: AbstractScreening::ABSTRACTSCREENINGTYPES, default: 'perpetual', input_html: { 'x-model': 'type' }%>
+    </div>
+    <template x-if="type == 'pilot'">
+      <div class="mb-4">
+        <label for="no_of_citations"
+          >Maximum number of citations (1..100,000) drawn from the citations
+          pool:</label
+        >
+        <input
+          type="number"
+          id="no_of_citations"
+          name="no_of_citations"
+          min="1"
+          max="100000"
+        />
+      </div>
+    </template>
+    <div class="mb-4">
+      <!-- prettier-ignore -->
+      <%= f.association(:projects_users_roles, label: 'Participants', required: true, collection: @abstract_screening.project.projects_users_roles, label_method: :handle, selected: @abstract_screening.projects_users_roles.map(&:id), input_html: { id: 'participants', multiple: 'multiple' } ) %>
+    </div>
+
+    <div class="grid grid-rows lg:grid-cols-4 gap-8 gap-x-12 my-8">
+      <div class="flex items-center justify-between">
+        <input
+          type="checkbox"
+          :value="allTag"
+          @click="allTag = !allTag; yesTag = allTag; noTag = allTag; maybeTag = allTag"
+          class="!my-auto !mr-2 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        />
+        <span class="flex-grow flex flex-col">
+          <span class="text-sm font-medium text-gray-900"
+            >All Labels Require Tags</span
+          >
+          <span class="text-sm text-gray-500" id="availability-description"
+            >Screeners must always add a Tag
+          </span>
+        </span>
+      </div>
+      <div class="flex items-center justify-between">
+        <input
+          type="hidden"
+          value="false"
+          name="abstract_screening[yes_tag_required]"
+        />
+        <input
+          type="checkbox"
+          name="abstract_screening[yes_tag_required]"
+          :value="yesTag"
+          @click="yesTag = !yesTag; allTag = (yesTag && noTag && maybeTag)"
+          class="!my-auto !mr-2 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        />
+        <span class="flex-grow flex flex-col">
+          <span class="text-sm font-medium text-gray-900">Yes Labels</span>
+          <span class="text-sm text-gray-500" id="availability-description"
+            >Require Tags</span
+          >
+        </span>
+      </div>
+      <div class="flex items-center justify-between">
+        <input
+          type="hidden"
+          value="false"
+          name="abstract_screening[no_tag_required]"
+        />
+        <input
+          type="checkbox"
+          name="abstract_screening[no_tag_required]"
+          :value="noTag"
+          @click="noTag = !noTag; allTag = (yesTag && noTag && maybeTag)"
+          class="!my-auto !mr-2 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        />
+        <span class="flex-grow flex flex-col">
+          <span class="text-sm font-medium text-gray-900">No Labels</span>
+          <span class="text-sm text-gray-500" id="availability-description"
+            >Require Tags</span
+          >
+        </span>
+      </div>
+      <div class="flex items-center justify-between">
+        <input
+          type="hidden"
+          value="false"
+          name="abstract_screening[maybe_tag_required]"
+        />
+        <input
+          type="checkbox"
+          name="abstract_screening[maybe_tag_required]"
+          :value="maybeTag"
+          @click="maybeTag = !maybeTag; allTag = (yesTag && noTag && maybeTag)"
+          class="!my-auto !mr-2 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        />
+        <span class="flex-grow flex flex-col">
+          <span class="text-sm font-medium text-gray-900">Maybe Labels</span>
+          <span class="text-sm text-gray-500" id="availability-description"
+            >Require Tags</span
+          >
+        </span>
+      </div>
+
+      <div class="flex items-center justify-between">
+        <input
+          type="checkbox"
+          :value="allReason"
+          @click="allReason = !allReason; yesReason = allReason; noReason = allReason; maybeReason = allReason"
+          class="!my-auto !mr-2 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        />
+        <span class="flex-grow flex flex-col">
+          <span class="text-sm font-medium text-gray-900"
+            >All Labels Require Reasons</span
+          >
+          <span class="text-sm text-gray-500" id="availability-description"
+            >Screeners must always add a Reason
+          </span>
+        </span>
+      </div>
+      <div class="flex items-center justify-between">
+        <!--
+          <input type="hidden" value="false" name="abstract_screening[yes_reason_required]">
+          <input
+          type="checkbox"
+          name="abstract_screening[yes_reason_required]"
+          :value="yesReason"
+          @click="yesReason = !yesReason; allReason = (yesReason && noReason && maybeReason)"
+          class="!my-auto !mr-2 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        />
+        <span class="flex-grow flex flex-col">
+          <span class="text-sm font-medium text-gray-900"
+            >Yes Labels</span
+          >
+          <span class="text-sm text-gray-500" id="availability-description"
+            >Require Reasons</span
+          >
+        </span> -->
+      </div>
+      <div class="flex items-center justify-between">
+        <input
+          type="hidden"
+          value="false"
+          name="abstract_screening[no_reason_required]"
+        />
+        <input
+          type="checkbox"
+          name="abstract_screening[no_reason_required]"
+          :value="noReason"
+          @click="noReason = !noReason; allReason = (yesReason && noReason && maybeReason)"
+          class="!my-auto !mr-2 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        />
+        <span class="flex-grow flex flex-col">
+          <span class="text-sm font-medium text-gray-900">No Labels</span>
+          <span class="text-sm text-gray-500" id="availability-description"
+            >Require Reasons</span
+          >
+        </span>
+      </div>
+      <div class="flex items-center justify-between">
+        <input
+          type="hidden"
+          value="false"
+          name="abstract_screening[maybe_reason_required]"
+        />
+        <input
+          type="checkbox"
+          name="abstract_screening[maybe_reason_required]"
+          :value="maybeReason"
+          @click="maybeReason = !maybeReason; allReason = (yesReason && noReason && maybeReason)"
+          class="!my-auto !mr-2 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        />
+        <span class="flex-grow flex flex-col">
+          <span class="text-sm font-medium text-gray-900">Maybe Labels</span>
+          <span class="text-sm text-gray-500" id="availability-description"
+            >Require Reasons</span
+          >
+        </span>
+      </div>
+
+      <div class="flex items-center justify-between">
+        <input
+          type="checkbox"
+          :value="allNote"
+          @click="allNote = !allNote; yesNote = allNote; noNote = allNote; maybeNote = allNote"
+          class="!my-auto !mr-2 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        />
+        <span class="flex-grow flex flex-col">
+          <span class="text-sm font-medium text-gray-900"
+            >All Labels Require Notes</span
+          >
+          <span class="text-sm text-gray-500" id="availability-description"
+            >Screeners must always add a Note
+          </span>
+        </span>
+      </div>
+      <div class="flex items-center justify-between">
+        <input
+          type="hidden"
+          value="false"
+          name="abstract_screening[yes_note_required]"
+        />
+        <input
+          type="checkbox"
+          name="abstract_screening[yes_note_required]"
+          :value="yesNote"
+          @click="yesNote = !yesNote; allNote = (yesNote && noNote && maybeNote)"
+          class="!my-auto !mr-2 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        />
+        <span class="flex-grow flex flex-col">
+          <span class="text-sm font-medium text-gray-900">Yes Labels</span>
+          <span class="text-sm text-gray-500" id="availability-description"
+            >Require Notes</span
+          >
+        </span>
+      </div>
+      <div class="flex items-center justify-between">
+        <input
+          type="hidden"
+          value="false"
+          name="abstract_screening[no_note_required]"
+        />
+        <input
+          type="checkbox"
+          name="abstract_screening[no_note_required]"
+          :value="noNote"
+          @click="noNote = !noNote; allNote = (yesNote && noNote && maybeNote)"
+          class="!my-auto !mr-2 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        />
+        <span class="flex-grow flex flex-col">
+          <span class="text-sm font-medium text-gray-900">No Labels</span>
+          <span class="text-sm text-gray-500" id="availability-description"
+            >Require Notes</span
+          >
+        </span>
+      </div>
+      <div class="flex items-center justify-between">
+        <input
+          type="hidden"
+          value="false"
+          name="abstract_screening[maybe_note_required]"
+        />
+        <input
+          type="checkbox"
+          name="abstract_screening[maybe_note_required]"
+          :value="maybeNote"
+          @click="maybeNote = !maybeNote; allNote = (yesNote && noNote && maybeNote)"
+          class="!my-auto !mr-2 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        />
+        <span class="flex-grow flex flex-col">
+          <span class="text-sm font-medium text-gray-900">Maybe Labels</span>
+          <span class="text-sm text-gray-500" id="availability-description"
+            >Require Notes</span
+          >
+        </span>
+      </div>
+
+      <div class="flex items-center justify-between">
+        <input
+          type="hidden"
+          value="false"
+          name="abstract_screening[only_predefined_reasons]"
+        />
+        <input
+          type="checkbox"
+          name="abstract_screening[only_predefined_reasons]"
+          :value="only_predefined_reasons"
+          @click="only_predefined_reasons = !only_predefined_reasons"
+          class="!my-auto !mr-2 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        />
+        <span class="flex-grow flex flex-col">
+          <span class="text-sm font-medium text-gray-900"
+            >Exclusive reasons</span
+          >
+          <span class="text-sm text-gray-500" id="availability-description"
+            >Limit reasons to only the given list (prevent user from providing
+            other reasons)</span
+          >
+        </span>
+      </div>
+      <div class="flex items-center justify-between">
+        <input
+          type="hidden"
+          value="false"
+          name="abstract_screening[only_predefined_tags]"
+        />
+        <input
+          type="checkbox"
+          name="abstract_screening[only_predefined_tags]"
+          :value="only_predefined_tags"
+          @click="only_predefined_tags = !only_predefined_tags"
+          class="!my-auto !mr-2 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        />
+        <span class="flex-grow flex flex-col">
+          <span class="text-sm font-medium text-gray-900">Exclusive tags</span>
+          <span class="text-sm text-gray-500" id="availability-description"
+            >Limit tags to only the given list (prevent user from providing
+            other tags)</span
+          >
+        </span>
+      </div>
+      <div class="flex items-center justify-between">
+        <input
+          type="hidden"
+          value="false"
+          name="abstract_screening[hide_author]"
+        />
+        <input
+          type="checkbox"
+          name="abstract_screening[hide_author]"
+          :value="hide_author"
+          class="!my-auto !mr-2 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        />
+        <span class="flex-grow flex flex-col">
+          <span class="text-sm font-medium text-gray-900"
+            >Hide Author Information</span
+          >
+          <span class="text-sm text-gray-500" id="availability-description"
+            >Screeners will not be shown author information of citations</span
+          >
+        </span>
+      </div>
+      <div class="flex items-center justify-between">
+        <input
+          type="hidden"
+          value="false"
+          name="abstract_screening[hide_journal]"
+        />
+        <input
+          type="checkbox"
+          name="abstract_screening[hide_journal]"
+          :value="hide_journal"
+          class="!my-auto !mr-2 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        />
+        <span class="flex-grow flex flex-col">
+          <span class="text-sm font-medium text-gray-900"
+            >Hide Journal Information</span
+          >
+          <span class="text-sm text-gray-500" id="availability-description"
+            >Screeners will not be shown journal information of citations</span
+          >
+        </span>
+      </div>
+    </div>
+    <div class="mb-4">
+      <!-- prettier-ignore -->
+      <%= f.association(:reasons, label: 'Selected Reasons', collection: @abstract_screening.reasons, selected: @abstract_screening.reasons.map(&:id), input_html: { id: 'reasons', multiple: 'multiple' } ) %>
+    </div>
+
+    <div class="mb-4">
+      <!-- prettier-ignore -->
+      <%= f.association(:tags, label: 'Selected Tags', collection: @abstract_screening.tags, selected: @abstract_screening.tags.map(&:id), input_html: { id: 'tags', multiple: 'multiple' } ) %>
+    </div>
+
+    <!-- prettier-ignore -->
+    <%= f.button :submit, params[:action] == 'new' ? 'Create Abstract Screening' : 'Update Abstract Screening', class: '!my-8' %>
+    <% end %>
+  </div>
+</div>
+
+<script>
+  $("#participants").select2("");
+  $("#reasons").select2({
+    tags: true,
+    createTag: function (params) {
+      var term = $.trim(params.term);
+
+      if (term === "") {
+        return null;
+      }
+
+      return {
+        id: `_${term}`,
+        text: term,
+        newTag: true,
+      };
+    },
+  });
+
+  $("#tags").select2({
+    tags: true,
+    createTag: function (params) {
+      var term = $.trim(params.term);
+
+      if (term === "") {
+        return null;
+      }
+
+      return {
+        id: `_${term}`,
+        text: term,
+        newTag: true,
+      };
+    },
+  });
+</script>

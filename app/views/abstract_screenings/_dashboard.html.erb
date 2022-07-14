@@ -3,92 +3,214 @@
     <h3 class="text-xl leading-6 font-medium text-gray-900">
       Citation Processing Pipeline (I - V)
     </h3>
-    <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-5">
-      <div class="px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-6">
+    <dl class="mt-5 grid grid-cols-1 gap-3 lg:grid-cols-5">
+      <div class="px-4 py-5 bg-white shadow rounded-lg lg:p-6">
         <dt class="text-sm font-medium text-gray-500 truncate">
           I. Citation Pool
         </dt>
-        <dd
-          class="mt-1 text-3xl font-semibold text-gray-900"
-          x-text="$store.dashboard.kpis.up"
-          :class="$store.dashboard.show.up ? '' : 'invisible'"
-          x-transition
-        >
-          ..
+        <dd class="mt-1 font-semibold text-gray-900">
+          <div>
+            <span
+              x-text="$store.dashboard.kpis.cp"
+              :class="$store.dashboard.show.cp ? '' : 'invisible'"
+              x-transition
+            >
+              ..
+            </span>
+            <span class="text-xs font-extralight text-gray-500"
+              >citation pool</span
+            >
+          </div>
         </dd>
       </div>
 
-      <div class="px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-6">
+      <div class="px-4 py-5 bg-white shadow rounded-lg lg:p-6">
         <dt class="text-sm font-medium text-gray-500 truncate">
           II. In Abstract Screening
         </dt>
-        <dd class="mt-1 text-3xl font-semibold text-gray-900">
-          <span
-            x-text="$store.dashboard.kpis.as"
-            :class="$store.dashboard.show.as ? '' : 'invisible'"
-            x-transition
-            >..
-          </span>
-          /
-          <span
-            x-text="$store.dashboard.kpis.asr"
-            :class="$store.dashboard.show.asr ? '' : 'invisible'"
-            x-transition
-            >..</span
-          >
-          <span class="text-xs font-extralight text-gray-500"
-            >(active / rejected)</span
-          >
+        <dd class="mt-1 font-semibold text-gray-900">
+          <div>
+            <div>
+              <span
+                x-text="$store.dashboard.kpis.asu"
+                :class="$store.dashboard.show.asu ? '' : 'invisible'"
+                x-transition
+              >
+                ..
+              </span>
+              <span class="text-xs font-extralight text-gray-500"
+                >unscreened</span
+              >
+            </div>
+            <div>
+              <span
+                x-text="$store.dashboard.kpis.asps"
+                :class="$store.dashboard.show.asps ? '' : 'invisible'"
+                x-transition
+              >
+                ..
+              </span>
+              <span class="text-xs font-extralight text-gray-500"
+                >partially screened</span
+              >
+            </div>
+            <div>
+              <span
+                x-text="$store.dashboard.kpis.asr"
+                :class="$store.dashboard.show.asr ? '' : 'invisible'"
+                x-transition
+              >
+                ..
+              </span>
+              <span class="text-xs font-extralight text-gray-500"
+                >rejected</span
+              >
+            </div>
+            <div>
+              <span
+                x-text="$store.dashboard.kpis.asc"
+                :class="$store.dashboard.show.asc ? '' : 'invisible'"
+                x-transition
+              >
+                ..
+              </span>
+              <span class="text-xs font-extralight text-gray-500"
+                >in conflict</span
+              >
+            </div>
+            <div>
+              <span
+                x-text="$store.dashboard.kpis.asa"
+                :class="$store.dashboard.show.asa ? '' : 'invisible'"
+                x-transition
+              >
+                ..
+              </span>
+              <span class="text-xs font-extralight text-gray-500"
+                >accepted</span
+              >
+            </div>
+          </div>
         </dd>
       </div>
 
-      <div class="px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-6">
+      <div class="px-4 py-5 bg-white shadow rounded-lg lg:p-6">
         <dt class="text-sm font-medium text-gray-500 truncate">
           III. In Full Text Screening
         </dt>
-        <dd class="mt-1 text-3xl font-semibold text-gray-900">
-          <span
-            x-text="$store.dashboard.kpis.fs"
-            :class="$store.dashboard.show.fs ? '' : 'invisible'"
-            x-transition
-            >..
-          </span>
-          /
-          <span
-            x-text="$store.dashboard.kpis.fsr"
-            :class="$store.dashboard.show.fsr ? '' : 'invisible'"
-            x-transition
-            >..</span
-          >
-          <span class="text-xs font-extralight text-gray-500"
-            >(active / rejected)</span
-          >
+        <dd class="mt-1 font-semibold text-gray-900">
+          <div>
+            <div>
+              <span
+                x-text="$store.dashboard.kpis.ftu"
+                :class="$store.dashboard.show.ftu ? '' : 'invisible'"
+                x-transition
+              >
+                ..
+              </span>
+              <span class="text-xs font-extralight text-gray-500"
+                >unscreened</span
+              >
+            </div>
+            <div>
+              <span
+                x-text="$store.dashboard.kpis.ftps"
+                :class="$store.dashboard.show.ftps ? '' : 'invisible'"
+                x-transition
+              >
+                ..
+              </span>
+              <span class="text-xs font-extralight text-gray-500"
+                >partially screened</span
+              >
+            </div>
+            <div>
+              <span
+                x-text="$store.dashboard.kpis.ftr"
+                :class="$store.dashboard.show.ftr ? '' : 'invisible'"
+                x-transition
+              >
+                ..
+              </span>
+              <span class="text-xs font-extralight text-gray-500"
+                >rejected</span
+              >
+            </div>
+            <div>
+              <span
+                x-text="$store.dashboard.kpis.ftc"
+                :class="$store.dashboard.show.ftc ? '' : 'invisible'"
+                x-transition
+              >
+                ..
+              </span>
+              <span class="text-xs font-extralight text-gray-500"
+                >in conflict</span
+              >
+            </div>
+            <div>
+              <span
+                x-text="$store.dashboard.kpis.fta"
+                :class="$store.dashboard.show.fta ? '' : 'invisible'"
+                x-transition
+              >
+                ..
+              </span>
+              <span class="text-xs font-extralight text-gray-500"
+                >accepted</span
+              >
+            </div>
+          </div>
         </dd>
       </div>
 
-      <div class="px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-6">
+      <div class="px-4 py-5 bg-white shadow rounded-lg lg:p-6">
         <dt class="text-sm font-medium text-gray-500 truncate">
           IV. In Data Extraction
         </dt>
-        <dd
-          class="mt-1 text-3xl font-semibold text-gray-900"
-          x-text="$store.dashboard.kpis.de"
-          :class="$store.dashboard.show.de ? '' : 'invisible'"
-          x-transition
-        >
-          ..
+        <dd class="mt-1 font-semibold text-gray-900">
+          <div>
+            <div>
+              <span
+                x-text="$store.dashboard.kpis.denye"
+                :class="$store.dashboard.show.denye ? '' : 'invisible'"
+                x-transition
+              >
+                ..
+              </span>
+              <span class="text-xs font-extralight text-gray-500"
+                >not yet extracted</span
+              >
+            </div>
+            <div>
+              <span
+                x-text="$store.dashboard.kpis.deip"
+                :class="$store.dashboard.show.deip ? '' : 'invisible'"
+                x-transition
+              >
+                ..
+              </span>
+              <span class="text-xs font-extralight text-gray-500"
+                >in progress</span
+              >
+            </div>
+          </div>
         </dd>
       </div>
 
-      <div class="px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-6">
+      <div class="px-4 py-5 bg-white shadow rounded-lg lg:p-6">
         <dt class="text-sm font-medium text-gray-500 truncate">V. Completed</dt>
-        <dd
-          class="mt-1 text-3xl font-semibold text-gray-900"
-          x-text="$store.dashboard.kpis.c"
-          :class="$store.dashboard.show.c ? '' : 'invisible'"
-          x-transition
-        >
-          ..
+        <dd class="mt-1 font-semibold text-gray-900">
+          <div>
+            <span
+              x-text="$store.dashboard.kpis.c"
+              :class="$store.dashboard.show.c ? '' : 'invisible'"
+              x-transition
+            >
+              ..
+            </span>
+            <span class="text-xs font-extralight text-gray-500">complete</span>
+          </div>
         </dd>
       </div>
     </dl>
@@ -99,22 +221,36 @@
   document.addEventListener("alpine:init", () => {
     Alpine.store("dashboard", {
       kpis: {
-        up: "..",
-        as: "..",
+        cp: "..",
+        asu: "..",
+        asps: "..",
         asr: "..",
-        fs: "..",
-        fsr: "..",
-        de: "..",
+        asc: "..",
+        aac: "..",
+        ftu: "..",
+        ftps: "..",
+        ftr: "..",
+        ftc: "..",
+        fta: "..",
+        denye: "..",
+        deip: "..",
         c: "..",
       },
 
       show: {
-        up: true,
-        as: true,
+        cp: true,
+        asu: true,
+        asps: true,
         asr: true,
-        fs: true,
-        fsr: true,
-        de: true,
+        asc: true,
+        asa: true,
+        ftu: true,
+        ftps: true,
+        ftr: true,
+        ftc: true,
+        fta: true,
+        denye: true,
+        deip: true,
         c: true,
       },
 

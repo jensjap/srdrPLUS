@@ -41,8 +41,7 @@ class Project < ApplicationRecord
 
   after_create :create_default_extraction_form, unless: :create_empty
   after_create :create_empty_extraction_form, if: :create_empty
-  after_create :create_default_perpetual_task
-  after_create :create_default_member
+  after_create :create_default_perpetual_task, :create_default_member, :create_abstract_screening
 
   has_many :extractions, dependent: :destroy, inverse_of: :project
   has_many :teams, dependent: :destroy, inverse_of: :project
@@ -448,5 +447,9 @@ class Project < ApplicationRecord
         projects_user.save
       end
     end
+  end
+
+  def create_abstract_screening
+    abstract_screenings.create
   end
 end

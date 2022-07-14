@@ -29,6 +29,10 @@ class AbstractScreeningPolicy < ApplicationPolicy
     project_leader?
   end
 
+  def edit?
+    project_leader?
+  end
+
   def index?
     part_of_project?
   end
@@ -55,5 +59,9 @@ class AbstractScreeningPolicy < ApplicationPolicy
 
   def show?
     part_of_project?
+  end
+
+  def update?
+    project_leader?
   end
 end
