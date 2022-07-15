@@ -783,3 +783,7 @@ li.submenu > a {
 ul.dropdown li ul li:hover {
   background: lightgrey;
 }
+
+[x-cloak] {
+  display: none !important;
+}
