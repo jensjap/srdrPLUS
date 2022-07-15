@@ -14,9 +14,9 @@
             div.p-8.bg-white.ml-4 x-data="{ current_tab:'login' }"
               .sm:hidden
                 label.sr-only for="tabs" Select a tab
-                select#tabs.block.w-full.focus:ring-indigo-500.focus:border-indigo-500.border-gray-300.rounded-md name="tabs"
-                  option Login
-                  option Register
+                select#tabs.block.w-full.focus:ring-indigo-500.focus:border-indigo-500.border-gray-300.rounded-md @change="$event.target.value=='login' ? current_tab='login' : current_tab='register'; console.log($event.target.value)" name="tabs"
+                  option value='login'    Login
+                  option value='register' Register
               .hidden.sm:block
                 .border-b.border-gray-200
                   nav.-mb-px.flex aria-label="Tabs"
@@ -39,7 +39,9 @@
               div x-show="current_tab=='register'" x-cloak=""
                 div style="border: solid 1px black; padding: 5px; width: 200px; margin-left: auto;"
                   span Form Approved
+                  br
                   span OMB No. 0935-0244
+                  br
                   span Exp. Date 10/31/2022
                 .Get-started-now
                   span.text-style-1 Get started now.
