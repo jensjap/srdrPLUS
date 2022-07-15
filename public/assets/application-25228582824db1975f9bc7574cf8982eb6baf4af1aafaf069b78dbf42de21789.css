@@ -29683,6 +29683,11 @@ li.submenu > a {
 ul.dropdown li ul li:hover {
   background: lightgrey;
 }
+
+/* line 788, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+[x-cloak] {
+  display: none !important;
+}
 /* line 1, /home/jensjap/.rbenv/versions/3.1.2/lib/ruby/gems/3.1.0/gems/toastr_rails-2.1.3/app/assets/styleseets/toastr.scss */
 .toast-title {
   font-weight: bold;
