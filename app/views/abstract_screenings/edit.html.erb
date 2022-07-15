@@ -1,1 +1,3 @@
-<%= render 'form' %>
+<div x-data="{ url: '/abstract_screenings/<%= params[:id] %>/edit' }">
+  <%= render 'abstract_screenings/form/form' %>
+</div>

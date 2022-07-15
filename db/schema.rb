@@ -68,6 +68,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_29_040241) do
     t.boolean "only_predefined_tags", default: false, null: false
     t.boolean "hide_author", default: false, null: false
     t.boolean "hide_journal", default: false, null: false
+    t.boolean "exclusive_participants", default: false, null: false
+    t.boolean "default", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["project_id"], name: "index_abstract_screenings_on_project_id"

@@ -450,6 +450,6 @@ class Project < ApplicationRecord
   end
 
   def create_abstract_screening
-    abstract_screenings.create
+    abstract_screenings.create(default: true)
   end
 end

@@ -1,0 +1,18 @@
+json.type @abstract_screening.abstract_screening_type
+json.allTag @abstract_screening.yes_tag_required && @abstract_screening.no_tag_required && @abstract_screening.maybe_tag_required
+json.allReason @abstract_screening.no_reason_required && @abstract_screening.maybe_reason_required
+json.allNote @abstract_screening.yes_note_required && @abstract_screening.no_note_required && @abstract_screening.maybe_note_required
+json.yesTag @abstract_screening.yes_tag_required
+json.noTag @abstract_screening.no_tag_required
+json.maybeTag @abstract_screening.maybe_tag_required
+json.yesReason @abstract_screening.yes_reason_required
+json.noReason @abstract_screening.no_reason_required
+json.maybeReason @abstract_screening.maybe_reason_required
+json.yesNote @abstract_screening.yes_note_required
+json.noNote @abstract_screening.no_note_required
+json.maybeNote @abstract_screening.maybe_note_required
+json.only_predefined_reasons @abstract_screening.only_predefined_reasons
+json.only_predefined_tags @abstract_screening.only_predefined_tags
+json.hide_author @abstract_screening.hide_author
+json.hide_journal @abstract_screening.hide_journal
+json.exclusive_participants @abstract_screening.exclusive_participants
