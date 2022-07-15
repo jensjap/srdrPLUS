@@ -26,9 +26,9 @@ class AbstractScreening < ApplicationRecord
   DOUBLE_PERPETUAL = 'double-perpetual'.freeze
   PILOT = 'pilot'.freeze
   ABSTRACTSCREENINGTYPES = {
-    'Perpetual (Single)': SINGLE_PERPETUAL,
-    'Perpetual (Double)': DOUBLE_PERPETUAL,
-    'Pilot': PILOT
+    SINGLE_PERPETUAL => 'Perpetual (Single)',
+    DOUBLE_PERPETUAL => 'Perpetual (Double)',
+    PILOT => 'Pilot'
   }.freeze
 
   validates_presence_of :abstract_screening_type
@@ -81,6 +81,7 @@ class AbstractScreening < ApplicationRecord
 
   def add_citations_from_pool(no_of_citations)
     return if no_of_citations.nil?
+
     no_of_citations_to_add = no_of_citations - citations.count
     if no_of_citations_to_add > 0
       cps = project.citations_projects.where(screening_status: CitationsProject::CITATION_POOL).limit(no_of_citations_to_add)

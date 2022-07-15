@@ -14,11 +14,14 @@
   <div class="flex flex-col w-full">
     <!-- prettier-ignore -->
     <%= simple_form_for([@project, @abstract_screening]) do |f| %>
-    <div class="mb-4">
-      <!-- prettier-ignore -->
-      <%= f.input :abstract_screening_type, as: :select, collection: AbstractScreening::ABSTRACTSCREENINGTYPES, default: 'perpetual', input_html: { 'x-model': 'abstract_screening.type' }%>
+    <div
+      class="mt-8"
+      x-data="{ pns: 'abstract_screening', cns: 'abstract_screening_type', customInput: false, open: false }"
+    >
+      <div>Abstract Screening Type</div>
+      <%= render 'components/single_select' %>
     </div>
-    <template x-if="abstract_screening.type == 'pilot'">
+    <template x-if="abstract_screening.abstract_screening_type == 'pilot'">
       <div class="mb-4">
         <label for="no_of_citations"
           >Maximum number of citations (1..100,000) drawn from the citations
@@ -35,20 +38,14 @@
     </template>
 
     <div
+      class="mt-8"
       x-data="{ pns: 'abstract_screening', cns: 'projects_users_role_ids', customInput: false, open: false }"
     >
       <div>Participants</div>
-      <%= render 'abstract_screenings/form/multi_select' %>
+      <%= render 'components/multi_select' %>
     </div>
-    <!-- <div class="mb-4">
-      <%= f.association(:projects_users_roles, label: 'Participants', required:
-      true, collection: @abstract_screening.project.projects_users_roles,
-      label_method: :handle, selected:
-      @abstract_screening.projects_users_roles.map(&:id), input_html: { id:
-      'participants', multiple: 'multiple' } ) %>
-    </div> -->
 
-    <div class="grid grid-rows lg:grid-cols-4 gap-8 gap-x-12 my-8">
+    <div class="grid grid-rows lg:grid-cols-4 gap-8 gap-x-12 mt-8">
       <div
         class="flex items-center justify-between cursor-pointer"
         @click="abstract_screening.all_tag = !abstract_screening.all_tag; abstract_screening.yes_tag = abstract_screening.all_tag; abstract_screening.no_tag = abstract_screening.all_tag; abstract_screening.maybe_tag = abstract_screening.all_tag"
@@ -402,14 +399,21 @@
         </span>
       </div>
     </div>
-    <div class="mb-4">
-      <!-- prettier-ignore -->
-      <%= f.association(:reasons, label: 'Selected Reasons', collection: @abstract_screening.reasons, selected: @abstract_screening.reasons.map(&:id), input_html: { id: 'reasons', multiple: 'multiple' } ) %>
+
+    <div
+      class="mt-8"
+      x-data="{ pns: 'abstract_screening', cns: 'reason_ids', customInput: true, open: false }"
+    >
+      <div>Selected Reasons</div>
+      <%= render 'components/multi_select' %>
     </div>
 
-    <div class="mb-4">
-      <!-- prettier-ignore -->
-      <%= f.association(:tags, label: 'Selected Tags', collection: @abstract_screening.tags, selected: @abstract_screening.tags.map(&:id), input_html: { id: 'tags', multiple: 'multiple' } ) %>
+    <div
+      class="mt-8"
+      x-data="{ pns: 'abstract_screening', cns: 'tag_ids', customInput: true, open: false }"
+    >
+      <div>Selected Tags</div>
+      <%= render 'components/multi_select' %>
     </div>
 
     <!-- prettier-ignore -->
@@ -419,45 +423,13 @@
 </div>
 
 <script>
-  $("#participants").select2("");
-  $("#reasons").select2({
-    tags: true,
-    createTag: function (params) {
-      var term = $.trim(params.term);
-
-      if (term === "") {
-        return null;
-      }
-
-      return {
-        id: `_${term}`,
-        text: term,
-        newTag: true,
-      };
-    },
-  });
-
-  $("#tags").select2({
-    tags: true,
-    createTag: function (params) {
-      var term = $.trim(params.term);
-
-      if (term === "") {
-        return null;
-      }
-
-      return {
-        id: `_${term}`,
-        text: term,
-        newTag: true,
-      };
-    },
-  });
-
   document.addEventListener("alpine:init", () => {
     Alpine.data("form", () => ({
       abstract_screening: {
-        type: false,
+        abstract_screening_type: {
+          selection: { key: null, value: null },
+          options: [],
+        },
         all_tag: false,
         all_reason: false,
         all_note: false,
@@ -479,10 +451,19 @@
           selections: [],
           options: [],
         },
+        reason_ids: {
+          selections: [],
+          options: [],
+        },
+        tag_ids: {
+          selections: [],
+          options: [],
+        },
       },
 
       init() {
         this.initializeData();
+        console.log(this.abstract_screening);
       },
 
       async initializeData() {

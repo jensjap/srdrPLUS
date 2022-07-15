@@ -14,7 +14,7 @@
             <input type="hidden" :name="`${pns}[${cns}][]`" value="" />
             <template x-for="selection in $data[pns][cns].selections">
               <div
-                class="cursor-pointer flex justify-center items-center m-1 font-light py-1 px-2 rounded-full text-white bg-srdrpurple-light border border-purple-300 hover:text-purple-400"
+                class="cursor-pointer flex justify-center items-center m-1 font-light py-1 px-2 rounded-full text-white bg-srdrpurple border border-purple-300 hover:text-purple-400"
                 @click.stop="$data[pns][cns].selections = $data[pns][cns].selections.filter(s => s.key != selection.key); if ($data[pns][cns].selections.length == 0) { open = false }"
               >
                 <input
@@ -23,7 +23,7 @@
                   :value="selection.key"
                 />
                 <div
-                  class="text-xs font-normal leading-none max-w-full flex-initial"
+                  class="leading-none max-w-full flex-initial"
                   x-text="selection.value"
                 ></div>
                 <div class="flex flex-auto flex-row-reverse">
@@ -52,6 +52,7 @@
                 <input
                   placeholder=""
                   class="bg-transparent p-1 px-2 appearance-none outline-none h-full w-full text-gray-800"
+                  @keydown.enter.prevent="if (!$data[pns][cns].selections.some((s) => s.value == $el.value)) { $data[pns][cns].selections.push({ key: `_${$el.value}` , value: $el.value }) }; $el.value = ''"
                 />
               </div>
             </template>
