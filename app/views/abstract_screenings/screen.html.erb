@@ -253,6 +253,7 @@
       rescreen: null,
       processedTitle: [],
       processedAbstract: [],
+      disable_textarea_keywords_and_phrases: false,
 
       init() {
         this.postLabel(false);
@@ -426,6 +427,7 @@
       },
 
       async process_textarea_keywords_and_phrases() {
+        this.disable_textarea_keywords_and_phrases = true;
         const lines = this.textarea_keywords_and_phrases.split("\n");
         const unprocessable = [];
         for (const line of lines) {
@@ -445,6 +447,7 @@
           await this.sendWw(word, weight);
         }
         this.textarea_keywords_and_phrases = unprocessable.join("\n");
+        this.disable_textarea_keywords_and_phrases = false;
       },
 
       paste_textarea_keywords_and_phrases() {

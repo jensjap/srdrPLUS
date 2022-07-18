@@ -136,6 +136,7 @@
             class="box-border !p-4"
             x-model="textarea_keywords_and_phrases"
             @keyup.shift.enter.prevent="process_textarea_keywords_and_phrases"
+            :disabled="disable_textarea_keywords_and_phrases"
           ></textarea>
           <div class="flex justify-end">
             <button
