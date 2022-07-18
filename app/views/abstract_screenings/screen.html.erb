@@ -67,12 +67,12 @@
         <h1
           class="px-8 text-base font-bold horizontal-scroll-wrapper-item overflow-x-auto whitespace-nowrap"
         >
-          <template x-for="word in (citation.title.split(/(\W)/))">
+          <template x-for="word in processedTitle">
             <span
               class="cursor-pointer hover:bg-yellow-200"
-              x-text="word"
-              @click="weighWord(word)"
-              :class="cssWordClass[word_weights[word.toLowerCase()] && word_weights[word.toLowerCase()].weight]"
+              x-text="word.text"
+              @click="weighWord(word.text)"
+              :class="cssWordClass[word.weight]"
             ></span>
           </template>
         </h1>
@@ -99,12 +99,12 @@
           @mouseup="checkSelection()"
           @touchend="checkSelection()"
         >
-          <template x-for="word in (citation.abstract.split(/(\W)/))">
+          <template x-for="word in processedAbstract">
             <span
               class="cursor-pointer hover:bg-yellow-200"
-              x-text="word"
-              :class="cssWordClass[word_weights[word.toLowerCase()] && word_weights[word.toLowerCase()].weight]"
-              @click="weighWord(word)"
+              x-text="word.text"
+              :class="cssWordClass[word.weight]"
+              @click="weighWord(word.text)"
             ></span>
           </template>
         </div>
@@ -251,6 +251,8 @@
       textarea_keywords_and_phrases: "",
       newCustomValue: "",
       rescreen: null,
+      processedTitle: [],
+      processedAbstract: [],
 
       init() {
         this.postLabel(false);
@@ -414,13 +416,13 @@
       },
 
       weighWord(word) {
-        if (word.length > 0) {
-          this.toggleWeighingScreen();
+        if (word.length > 0 && word != " ") {
+          this.weighingScreen = true;
           this.wordWeight = word;
+          this.$nextTick(() => {
+            this.$refs.wordWeightInput.focus();
+          });
         }
-        this.$nextTick(() => {
-          this.$refs.wordWeightInput.focus();
-        });
       },
 
       async process_textarea_keywords_and_phrases() {
@@ -454,6 +456,51 @@
           .join("\n");
       },
 
+      processWeights(sourceKey, destinationKey) {
+        this[destinationKey] = [];
+        let head = 0;
+        let tail = 1;
+        while (this.citation[sourceKey].length > head) {
+          for (const word of Object.keys(this.word_weights)) {
+            const candidate = this.citation[sourceKey].slice(
+              head,
+              head + word.length
+            );
+            lowerCaseCandidate = candidate.toLowerCase();
+            if (lowerCaseCandidate in this.word_weights) {
+              this[destinationKey].push({
+                text: candidate,
+                weight: this.word_weights[lowerCaseCandidate].weight,
+              });
+              head += word.length;
+              tail = head + 1;
+            }
+          }
+          const partial = this.citation[sourceKey].slice(head, tail);
+          if (tail - head == 1 && !partial.match(/[a-z]|[A-Z]/)) {
+            this[destinationKey].push({ text: partial, weight: 0 });
+            head += 1;
+            tail = head + 1;
+          } else if (!this.citation[sourceKey][tail].match(/[a-z]|[A-Z]/)) {
+            if (partial in this.word_weights) {
+              this[destinationKey].push({
+                text: partial,
+                weight: this.word_weights[partial].weight,
+              });
+            } else {
+              this[destinationKey].push({
+                text: partial,
+                weight: 0,
+              });
+            }
+            head += partial.length;
+            tail = head + 1;
+          } else {
+            tail += 1;
+          }
+        }
+      },
+
       async showConfirmation(label) {
         this.confirmationModalText = this.confirmationModalTexts[label];
         this.confirmationModal = true;
@@ -480,6 +527,8 @@
         );
         const data = await response.json();
         this.word_weights = data;
+        this.processWeights("title", "processedTitle");
+        this.processWeights("abstract", "processedAbstract");
       },
 
       async postLabel(submit) {
@@ -528,6 +577,9 @@
         this.options = data.options;
         this.word_weights = data.word_weights;
         this.rescreen = data.rescreen;
+
+        this.processWeights("title", "processedTitle");
+        this.processWeights("abstract", "processedAbstract");
       },
     }));
   });
