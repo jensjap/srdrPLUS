@@ -1,9 +1,9 @@
 class AbstractScreeningsController < ApplicationController
   add_breadcrumb 'my projects', :projects_path
-  skip_before_action :verify_authenticity_token, only: %i[create_word_weight kpis label rescreen]
+  skip_before_action :verify_authenticity_token, only: %i[update_word_weight kpis label rescreen]
 
   before_action :set_project, only: %i[index new create citation_lifecycle_management kpis]
-  before_action :set_abstract_screening, only: %i[create_word_weight label]
+  before_action :set_abstract_screening, only: %i[update_word_weight label]
   after_action :verify_authorized
 
   def create
@@ -20,13 +20,18 @@ class AbstractScreeningsController < ApplicationController
     end
   end
 
-  def create_word_weight
+  def update_word_weight
     authorize(@abstract_screening.project, policy_class: AbstractScreeningPolicy)
     weight = params[:weight]
     word = params[:word].downcase
+    id = params[:id]
 
-    ww = WordWeight.find_or_initialize_by(word:, abstract_screenings_projects_users_role:)
-    ww.update(weight:)
+    ww = WordWeight.find_by(id:) || WordWeight.find_or_initialize_by(word:, abstract_screenings_projects_users_role:)
+    if params[:destroy]
+      ww.destroy
+    else
+      ww.update(weight:, word:)
+    end
     render json: abstract_screenings_projects_users_role.word_weights_object
   end
 

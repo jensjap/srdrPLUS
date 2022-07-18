@@ -5,6 +5,7 @@
 >
   <!-- prettier-ignore -->
   <%= render 'abstract_screenings/screen/weighing_screen' %>
+  <%= render 'abstract_screenings/screen/word_weight_menu' %>
   <%= render 'abstract_screenings/screen/confirmation_modal' %>
   <%= render 'abstract_screenings/screen/menu' %>
   <%= render 'abstract_screenings/screen/reasoning_menu' %>
@@ -35,12 +36,46 @@
         />
       </svg>
     </button>
+    <button
+      type="button"
+      class="cursor-pointer z-[5] absolute top-16 right-4 bg-gray-100 rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
+      @click="word_weight_menu = !word_weight_menu"
+    >
+      <span class="sr-only">Word weights</span>
+      <!-- Heroicon name: outline/x -->
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-6 w-6"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+        />
+      </svg>
+    </button>
     <div class="mt-3">
-      <div class="horizontal-scroll-wrapper">
+      <div
+        class="horizontal-scroll-wrapper"
+        @mouseup="checkSelection()"
+        @touchend="checkSelection()"
+      >
         <h1
           class="px-8 text-base font-bold horizontal-scroll-wrapper-item overflow-x-auto whitespace-nowrap"
-          x-text="citation.title"
-        ></h1>
+        >
+          <template x-for="word in (citation.title.split(/(\W)/))">
+            <span
+              class="cursor-pointer hover:bg-yellow-200"
+              x-text="word"
+              @click="weighWord(word)"
+              :class="cssWordClass[word_weights[word.toLowerCase()] && word_weights[word.toLowerCase()].weight]"
+            ></span>
+          </template>
+        </h1>
       </div>
       <div class="px-8 text-sm overflow-x-auto whitespace-nowrap">
         Journal: <span x-text="citation.journal"></span>
@@ -59,12 +94,17 @@
   >
     <div class="vertical-scroll-wrapper">
       <div class="vertical-scroll-wrapper-item">
-        <div class="px-8 leading-loose weightable">
+        <div
+          class="px-8 leading-loose"
+          @mouseup="checkSelection()"
+          @touchend="checkSelection()"
+        >
           <template x-for="word in (citation.abstract.split(/(\W)/))">
             <span
+              class="cursor-pointer hover:bg-yellow-200"
               x-text="word"
-              @click="if (word.length > 1) { toggleWeighingScreen(); wordWeight = word }; $nextTick(() => { $refs.wordWeightInput.focus() })"
-              :class="cssWordClass[word_weights[word.toLowerCase()]] + ' cursor-pointer'"
+              :class="cssWordClass[word_weights[word.toLowerCase()] && word_weights[word.toLowerCase()].weight]"
+              @click="weighWord(word)"
             ></span>
           </template>
         </div>
@@ -159,6 +199,7 @@
     Alpine.data("screenStore", () => ({
       menu: false,
       weighingScreen: false,
+      word_weight_menu: false,
       reasoningMenu: false,
       addReasonModal: { on: false, type: "" },
       confirmationModal: false,
@@ -207,6 +248,7 @@
         "-1": "text-red-500",
         "-2": "text-red-500 font-black",
       },
+      textarea_keywords_and_phrases: "",
       newCustomValue: "",
       rescreen: null,
 
@@ -353,6 +395,65 @@
         this.addReasonModal.on = false;
       },
 
+      checkSelection() {
+        const selection = window.getSelection().toString();
+        this.weighWord(selection);
+      },
+
+      update_word_weight(event, id, weight) {
+        const word = event.target.value;
+
+        if (word in this.word_weights && this.word_weights[word].id != id) {
+          event.target.classList.add("!text-red-600");
+          return;
+        } else {
+          event.target.classList.remove("!text-red-600");
+        }
+        this.sendWw(word, weight, id);
+        setTimeout(() => this.$focus.focus(event.target), 500);
+      },
+
+      weighWord(word) {
+        if (word.length > 0) {
+          this.toggleWeighingScreen();
+          this.wordWeight = word;
+        }
+        this.$nextTick(() => {
+          this.$refs.wordWeightInput.focus();
+        });
+      },
+
+      async process_textarea_keywords_and_phrases() {
+        const lines = this.textarea_keywords_and_phrases.split("\n");
+        const unprocessable = [];
+        for (const line of lines) {
+          const lineParts = line.split(" ");
+          const wordParts = lineParts.slice(0, -1);
+          const weight = parseInt(lineParts.slice(-1));
+          const word = wordParts.join(" ");
+          if (
+            word.length < 1 ||
+            weight === NaN ||
+            [2, 1, 0, -1, -2].indexOf(weight) === -1
+          ) {
+            unprocessable.push(line);
+            continue;
+          }
+
+          await this.sendWw(word, weight);
+        }
+        this.textarea_keywords_and_phrases = unprocessable.join("\n");
+      },
+
+      paste_textarea_keywords_and_phrases() {
+        this.textarea_keywords_and_phrases = Object.keys(this.word_weights)
+          .sort()
+          .map((word) => {
+            return word + " " + this.word_weights[word].weight;
+          })
+          .join("\n");
+      },
+
       async showConfirmation(label) {
         this.confirmationModalText = this.confirmationModalTexts[label];
         this.confirmationModal = true;
@@ -360,9 +461,9 @@
         this.confirmationModal = false;
       },
 
-      async sendWw(word, weight) {
+      async sendWw(word, weight, id, destroy) {
         const response = await fetch(
-          "/abstract_screenings/<%= params[:abstract_screening_id] %>/create_word_weight",
+          "/abstract_screenings/<%= params[:abstract_screening_id] %>/update_word_weight",
           {
             method: "POST",
             headers: {
@@ -372,6 +473,8 @@
             body: JSON.stringify({
               word,
               weight,
+              id,
+              destroy,
             }),
           }
         );

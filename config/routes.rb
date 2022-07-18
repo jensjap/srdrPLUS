@@ -169,7 +169,7 @@ Rails.application.routes.draw do
       post 'rescreen', to: 'abstract_screenings#rescreen'
       get 'screen', to: 'abstract_screenings#screen'
       post 'label', to: 'abstract_screenings#label'
-      post 'create_word_weight', to: 'abstract_screenings#create_word_weight'
+      post 'update_word_weight', to: 'abstract_screenings#update_word_weight'
     end
     get 'citation_lifecycle_management', to: 'abstract_screenings#citation_lifecycle_management'
     get 'kpis', to: 'abstract_screenings#kpis'

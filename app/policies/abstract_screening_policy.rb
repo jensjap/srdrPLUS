@@ -17,7 +17,7 @@ class AbstractScreeningPolicy < ApplicationPolicy
     project_leader?
   end
 
-  def create_word_weight?
+  def update_word_weight?
     part_of_project?
   end
 

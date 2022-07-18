@@ -64,7 +64,7 @@ class AbstractScreeningsProjectsUsersRole < ApplicationRecord
 
   def word_weights_object
     word_weights.each_with_object({}) do |ww, hash|
-      hash[ww.word] = ww.weight
+      hash[ww.word] = { weight: ww.weight, id: ww.id }
       hash
     end
   end
