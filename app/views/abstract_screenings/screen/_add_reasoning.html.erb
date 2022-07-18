@@ -30,6 +30,7 @@
         x-transition:leave="ease-in duration-200"
         x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
         x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+        @click.outside="addReasonModal.on = false"
       >
         <div>
           <h1 class="text-2xl mb-4" x-text="`Add ${addReasonModal.type}`"></h1>
@@ -48,13 +49,13 @@
             type="button"
             class="cursor-pointer w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-srdrpurple text-base font-medium text-white hover:bg-srdrpurple-light focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:col-start-2 sm:text-sm"
             :class="newCustomValue.trim() == '' ? 'cursor-not-allowed bg-gray-700' : ''"
-            @click="processNewCustomValue()"
+            @click.stop="processNewCustomValue()"
             x-text="`Add ${addReasonModal.type}`"
           ></button>
           <button
             type="button"
             class="cursor-pointer mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:col-start-1 sm:text-sm"
-            @click="addReasonModal.on = false"
+            @click.stop="addReasonModal.on = false"
           >
             Cancel
           </button>

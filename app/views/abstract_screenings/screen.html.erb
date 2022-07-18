@@ -392,10 +392,14 @@
       },
 
       closeAllModals() {
-        this.menu = false;
-        this.weighingScreen = false;
-        this.reasoningMenu = false;
-        this.addReasonModal.on = false;
+        if (this.addReasonModal.on) {
+          this.addReasonModal.on = false;
+        } else {
+          this.menu = false;
+          this.weighingScreen = false;
+          this.reasoningMenu = false;
+          this.word_weight_menu = false;
+        }
       },
 
       checkSelection() {
