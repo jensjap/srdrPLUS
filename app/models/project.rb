@@ -41,11 +41,13 @@ class Project < ApplicationRecord
 
   after_create :create_default_extraction_form, unless: :create_empty
   after_create :create_empty_extraction_form, if: :create_empty
-  after_create :create_default_perpetual_task, :create_default_member, :create_abstract_screening
+  after_create :create_default_perpetual_task, :create_default_member, :create_abstract_screening,
+               :create_fulltext_screening
 
   has_many :extractions, dependent: :destroy, inverse_of: :project
   has_many :teams, dependent: :destroy, inverse_of: :project
   has_many :abstract_screenings, dependent: :destroy, inverse_of: :project
+  has_many :fulltext_screenings, dependent: :destroy, inverse_of: :project
 
   has_one :data_audit, dependent: :destroy
   has_one :publishing, as: :publishable, dependent: :destroy
@@ -451,5 +453,9 @@ class Project < ApplicationRecord
 
   def create_abstract_screening
     abstract_screenings.create(default: true)
+  end
+
+  def create_fulltext_screening
+    fulltext_screenings.create(default: true)
   end
 end

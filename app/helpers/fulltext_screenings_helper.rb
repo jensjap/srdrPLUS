@@ -1,0 +1,2 @@
+module FulltextScreeningsHelper
+end

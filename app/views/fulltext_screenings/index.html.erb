@@ -1,0 +1,170 @@
+<div>
+  <%= render 'abstract_screenings/dashboard' %>
+
+  <div class="px-4 sm:px-6 lg:px-8 py-8">
+    <div class="sm:flex sm:items-center">
+      <div class="sm:flex-auto">
+        <h1 class="text-xl font-semibold text-gray-900">
+          Full-Text Screenings
+        </h1>
+        <p class="mt-2 text-sm text-gray-700">
+          Setup an fulltext screening process for your project members and pool
+          of citations
+        </p>
+      </div>
+      <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
+        <%= link_to('Create New Screening',
+        new_project_fulltext_screening_path(@project), class: "inline-flex
+        items-center justify-center rounded-md border border-transparent
+        bg-srdrpurple px-4 py-2 text-sm font-medium text-white shadow-sm
+        hover:bg-srdrpurple-light focus:outline-none focus:ring-2
+        focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto hover:no-underline
+        hover:text-white") %>
+      </div>
+    </div>
+    <div class="px-4 sm:px-6 lg:px-8">
+      <div class="mt-8 flex flex-col">
+        <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
+          <div class="inline-block min-w-full py-2 align-middle">
+            <div
+              class="overflow-hidden shadow-sm ring-1 ring-black ring-opacity-5"
+            >
+              <table class="w-full table-auto divide-y divide-gray-300">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th
+                      scope="col"
+                      class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6 lg:pl-8"
+                    >
+                      Type
+                    </th>
+                    <th
+                      scope="col"
+                      class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    >
+                      Options
+                    </th>
+                    <th
+                      scope="col"
+                      class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    >
+                      Participants
+                    </th>
+                    <th
+                      scope="col"
+                      class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    >
+                      No. of Citations
+                    </th>
+                    <th
+                      scope="col"
+                      class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    >
+                      No. of Labels
+                    </th>
+                    <th
+                      scope="col"
+                      class="w-1/5 px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    >
+                      Predefined Reasons
+                    </th>
+                    <th
+                      scope="col"
+                      class="w-1/5 px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    >
+                      Predefined Tags
+                    </th>
+                    <th
+                      scope="col"
+                      class="relative w-1/6 py-3.5 pl-3 pr-4 sm:pr-6 lg:pr-8"
+                    >
+                      <span class="sr-only">Actions</span>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200 bg-white">
+                  <% if @fulltext_screenings.empty? %>
+                  <tr>
+                    <td>No full-text screenings yet.</td>
+                  </tr>
+                  <% end %>
+                  <!-- prettier-ignore -->
+                  <% @fulltext_screenings.each do |fts| %>
+                  <tr>
+                    <td
+                      class="py-4 pl-4 pr-3 text-sm font-medium text-gray-500 sm:pl-6 lg:pl-8"
+                    >
+                      <%= fts.fulltext_screening_type %>
+                    </td>
+                    <td class="px-3 py-4 text-sm text-gray-500">
+                      <!-- prettier-ignore -->
+                      Tags required for: <%= fts.tag_options.join(', ') %><br />
+                      Reasons required for: <%= fts.reason_options.join(', ')
+                      %><br />
+                      Notes required for: <%= fts.note_options.join(', ') %><br />
+                      Only predefined reasons: <%= fts.only_predefined_reasons
+                      %><br />
+                      Only predefined tags: <%= fts.only_predefined_tags %><br />
+                      Hide author: <%= fts.hide_author %><br />
+                      Hide journal: <%= fts.hide_journal %><br />
+                    </td>
+                    <td class="px-3 py-4 text-sm text-gray-500">
+                      <%= fts.projects_users_roles.count %> member(s)
+                    </td>
+                    <td class="px-3 py-4 text-sm text-gray-500">
+                      <%= fts.fulltext_screening_type == 'perpetual' ? '∞' :
+                      fts.citations_projects.count %>
+                    </td>
+                    <td class="px-3 py-4 text-sm text-gray-500">
+                      <%= fts.fulltext_screening_results.count %>
+                    </td>
+                    <td class="px-3 py-4 text-sm text-gray-500">
+                      <% fts.reasons.map(&:name).each do |reason| %>
+                      <!-- prettier-ignore -->
+                      - <%= reason %><br />
+                      <% end %>
+                    </td>
+                    <td class="px-3 py-4 text-sm text-gray-500">
+                      <% fts.tags.map(&:name).each do |tag| %>
+                      <!-- prettier-ignore -->
+                      - <%= tag %><br />
+                      <% end %>
+                    </td>
+
+                    <td
+                      class="py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6 lg:pr-8"
+                    >
+                      <%= link_to('Continue Screening',
+                      fulltext_screening_screen_path(as), class: "w-full
+                      inline-flex items-center justify-center rounded-md border
+                      border-transparent bg-srdrpurple px-4 py-2 my-2 text-sm
+                      font-medium text-white shadow-sm hover:bg-srdrpurple-light
+                      focus:outline-none focus:ring-2 focus:ring-indigo-500
+                      focus:ring-offset-2 hover:no-underline hover:text-white")
+                      %> <%= link_to('Show Results',
+                      fulltext_screening_path(as), class: "w-full inline-flex
+                      items-center justify-center rounded-md border
+                      border-transparent bg-srdrpurple px-4 py-2 my-2 text-sm
+                      font-medium text-white shadow-sm hover:bg-srdrpurple-light
+                      focus:outline-none focus:ring-2 focus:ring-indigo-500
+                      focus:ring-offset-2 hover:no-underline hover:text-white")
+                      %> <%= link_to('Edit', edit_fulltext_screening_path(as),
+                      class: "w-full inline-flex items-center justify-center
+                      rounded-md border border-transparent bg-srdrpurple px-4
+                      py-2 my-2 text-sm font-medium text-white shadow-sm
+                      hover:bg-srdrpurple-light focus:outline-none focus:ring-2
+                      focus:ring-indigo-500 focus:ring-offset-2
+                      hover:no-underline hover:text-white") %>
+                    </td>
+                  </tr>
+                  <% end %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <%= paginate(@fulltext_screenings, theme: 'foundation') %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

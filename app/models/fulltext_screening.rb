@@ -1,10 +1,10 @@
 # == Schema Information
 #
-# Table name: abstract_screenings
+# Table name: fulltext_screenings
 #
 #  id                      :bigint           not null, primary key
 #  project_id              :bigint
-#  abstract_screening_type :string(255)      default("single-perpetual"), not null
+#  fulltext_screening_type :string(255)      default("single-perpetual"), not null
 #  yes_tag_required        :boolean          default(FALSE), not null
 #  no_tag_required         :boolean          default(FALSE), not null
 #  maybe_tag_required      :boolean          default(FALSE), not null
@@ -23,46 +23,46 @@
 #  created_at              :datetime         not null
 #  updated_at              :datetime         not null
 #
-class AbstractScreening < ApplicationRecord
+class FulltextScreening < ApplicationRecord
   SINGLE_PERPETUAL = 'single-perpetual'.freeze
   DOUBLE_PERPETUAL = 'double-perpetual'.freeze
   PILOT = 'pilot'.freeze
-  ABSTRACTSCREENINGTYPES = {
+  FULLTEXTSCREENINGTYPES = {
     SINGLE_PERPETUAL => 'Perpetual (Single)',
     DOUBLE_PERPETUAL => 'Perpetual (Double)',
     PILOT => 'Pilot'
   }.freeze
 
-  validates_presence_of :abstract_screening_type
+  validates_presence_of :fulltext_screening_type
 
   belongs_to :project
-  has_many :abstract_screenings_citations_projects
-  has_many :citations_projects, through: :abstract_screenings_citations_projects
+  has_many :fulltext_screenings_citations_projects
+  has_many :citations_projects, through: :fulltext_screenings_citations_projects
   has_many :citations, through: :citations_projects
-  has_many :abstract_screenings_projects_users_roles
-  has_many :projects_users_roles, through: :abstract_screenings_projects_users_roles
+  has_many :fulltext_screenings_projects_users_roles
+  has_many :projects_users_roles, through: :fulltext_screenings_projects_users_roles
 
-  has_many :abstract_screenings_reasons
-  has_many :reasons, through: :abstract_screenings_reasons
-  has_many :abstract_screenings_tags
-  has_many :tags, through: :abstract_screenings_tags
+  has_many :fulltext_screenings_reasons
+  has_many :reasons, through: :fulltext_screenings_reasons
+  has_many :fulltext_screenings_tags
+  has_many :tags, through: :fulltext_screenings_tags
 
-  has_many :abstract_screening_results, dependent: :destroy, inverse_of: :abstract_screening
+  has_many :fulltext_screening_results, dependent: :destroy, inverse_of: :fulltext_screening
 
-  def evaluate_transition(abstract_screening_result)
-    case abstract_screening_type
+  def evaluate_transition(fulltext_screening_result)
+    case fulltext_screening_type
     when SINGLE_PERPETUAL, PILOT
-      if abstract_screening_result.label == 1
-        abstract_screening_result.citations_project.update(screening_status: CitationsProject::FULLTEXT_SCREENING_UNSCREENED)
-      elsif abstract_screening_result.label == -1
-        abstract_screening_result.citations_project.update(screening_status: CitationsProject::ABSTRACT_SCREENING_REJECTED)
+      if fulltext_screening_result.label == 1
+        fulltext_screening_result.citations_project.update(screening_status: CitationsProject::FULLTEXT_SCREENING_UNSCREENED)
+      elsif fulltext_screening_result.label == -1
+        fulltext_screening_result.citations_project.update(screening_status: CitationsProject::FULLTEXT_SCREENING_REJECTED)
       end
     when DOUBLE_PERPETUAL
-      score = abstract_screening_result.citations_project.abstract_screening_results.sum(:label)
+      score = fulltext_screening_result.citations_project.fulltext_screening_results.sum(:label)
       if score >= 2
-        abstract_screening_result.citations_project.update(screening_status: CitationsProject::FULLTEXT_SCREENING_UNSCREENED)
+        fulltext_screening_result.citations_project.update(screening_status: CitationsProject::FULLTEXT_SCREENING_UNSCREENED)
       elsif score <= -2
-        abstract_screening_result.citations_project.update(screening_status: CitationsProject::ABSTRACT_SCREENING_REJECTED)
+        fulltext_screening_result.citations_project.update(screening_status: CitationsProject::FULLTEXT_SCREENING_REJECTED)
       end
     end
   end
@@ -88,7 +88,7 @@ class AbstractScreening < ApplicationRecord
     if no_of_citations_to_add > 0
       cps = project.citations_projects.where(screening_status: CitationsProject::CITATION_POOL).limit(no_of_citations_to_add)
       citations_projects << cps
-      cps.update_all(screening_status: CitationsProject::ABSTRACT_SCREENING_UNSCREENED)
+      cps.update_all(screening_status: CitationsProject::FULLTEXT_SCREENING_UNSCREENED)
     end
   end
 

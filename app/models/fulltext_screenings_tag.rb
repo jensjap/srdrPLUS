@@ -1,0 +1,14 @@
+# == Schema Information
+#
+# Table name: fulltext_screenings_tags
+#
+#  id                    :bigint           not null, primary key
+#  fulltext_screening_id :bigint           not null
+#  tag_id                :bigint           not null
+#  created_at            :datetime         not null
+#  updated_at            :datetime         not null
+#
+class FulltextScreeningsTag < ApplicationRecord
+  belongs_to :fulltext_screening
+  belongs_to :tag
+end

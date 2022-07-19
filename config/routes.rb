@@ -173,6 +173,10 @@ Rails.application.routes.draw do
     end
     get 'citation_lifecycle_management', to: 'abstract_screenings#citation_lifecycle_management'
     get 'kpis', to: 'abstract_screenings#kpis'
+
+    resources :fulltext_screenings do
+    end
+
     resource :data_audit, only: [:create]
     resources :sd_meta_data
     resources :teams, concerns: :invitable, only: %i[create update destroy]
