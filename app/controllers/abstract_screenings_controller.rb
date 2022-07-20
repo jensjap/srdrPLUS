@@ -46,6 +46,7 @@ class AbstractScreeningsController < ApplicationController
     if @abstract_screening.project.abstract_screenings.first == @abstract_screening
       flash[:error] = 'The default abstract screening cannot be deleted.'
     else
+      flash[:success] = 'Abstract screening was deleted.'
       @abstract_screening.destroy
     end
     redirect_to project_abstract_screenings_path(@abstract_screening.project)

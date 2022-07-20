@@ -81,7 +81,7 @@
     || (controller_name.eql?('extraction_forms_projects_sections') && action_name.eql?('preview')) \
     || (controller_name.eql?('imports') && action_name.eql?('new')) \
     || (controller.class == PublishingsController && @publishable_record.class == Project && controller.action_name == 'new')
-  - project = @project || @extraction.try(:project) || @extraction_forms_project.try(:project) || @question.try(:project) || @extraction_forms_projects_section.try(:project) || @abstract_screening.try(:project) || @publishable_record
+  - project = @project || @extraction.try(:project) || @extraction_forms_project.try(:project) || @question.try(:project) || @extraction_forms_projects_section.try(:project) || @abstract_screening.try(:project) || @fulltext_screening.try(:project) || @publishable_record
   div
     h5 class="project-info-header whitespace-nowrap mobile-overflow" = "Project ID##{project.id}: #{project.name}"
     ul class="submenu dropdown menu whitespace-nowrap mobile-overflow" data-dropdown-menu=""

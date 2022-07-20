@@ -1,0 +1,23 @@
+<div x-data="{ url: '/fulltext_screenings/<%= params[:id] %>/edit' }">
+  <%= render 'fulltext_screenings/form/form' %>
+</div>
+
+<div class="px-4 sm:px-6 lg:px-8 py-8 block lg:flex">
+  <div class="sm:flex-auto">
+    <h1 class="text-xl font-semibold text-gray-900">
+      Delete Fulltext Screening
+    </h1>
+    <p class="mt-2 text-sm text-gray-700">
+      Please note that this cannot be undone.
+    </p>
+  </div>
+  <div class="mt-4">
+    <%= link_to('Delete Fulltext Screening',
+    fulltext_screening_path(@fulltext_screening), method: :delete, class:
+    "cursor-pointer inline-flex items-center justify-center rounded-md border
+    border-transparent bg-red-700 px-4 py-2 text-sm font-medium text-white
+    shadow-sm hover:bg-red-500 focus:outline-none focus:ring-2
+    focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto hover:no-underline
+    hover:text-white", data: { confirm: "Are you sure?" }) %>
+  </div>
+</div>

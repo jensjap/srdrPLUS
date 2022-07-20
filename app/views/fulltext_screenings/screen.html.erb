@@ -1,0 +1,397 @@
+<div
+  x-data="screenStore"
+  @keyup.escape.window="closeAllModals()"
+  id="abstrackr-wrapper"
+>
+  <!-- prettier-ignore -->
+  <%= render 'fulltext_screenings/screen/confirmation_modal' %>
+  <%= render 'fulltext_screenings/screen/menu' %>
+  <%= render 'fulltext_screenings/screen/reasoning_menu' %>
+  <%= render 'fulltext_screenings/screen/add_reasoning' %>
+  <div
+    class="m-auto lg:w-1/2 h-32 absolute inset-0 mt-0 overflow-y-hidden bg-gray-300 flex flex-col justify-center"
+  >
+    <button
+      type="button"
+      class="cursor-pointer z-[5] absolute top-4 right-4 bg-gray-100 rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
+      @click="menu = !menu"
+    >
+      <span class="sr-only">Close menu</span>
+      <!-- Heroicon name: outline/x -->
+      <svg
+        class="h-6 w-6"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        aria-hidden="true"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M6 18L18 6M6 6l12 12"
+        />
+      </svg>
+    </button>
+    <div class="mt-3">
+      <div class="horizontal-scroll-wrapper">
+        <h1
+          class="px-8 text-base font-bold horizontal-scroll-wrapper-item overflow-x-auto whitespace-nowrap"
+          x-text="citation.title"
+        ></h1>
+      </div>
+      <div class="px-8 text-sm overflow-x-auto whitespace-nowrap">
+        Journal: <span x-text="citation.journal"></span>
+      </div>
+      <div class="horizontal-scroll-wrapper">
+        <div
+          class="horizontal-scroll-wrapper-item text-sm overflow-x-auto whitespace-nowrap"
+        >
+          Authors: <span x-text="citation.authors"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="m-auto lg:w-1/2 h-auto block absolute inset-0 mt-32 mb-32 overflow-y-auto overflow-x-hidden bg-gray-100"
+  >
+    <div class="vertical-scroll-wrapper">
+      <div class="vertical-scroll-wrapper-item">
+        <div class="px-8 leading-loose" x-text="citation.abstract"></div>
+        <hr />
+        <div
+          class="px-8 break-all leading-loose"
+          x-text="citation.keywords"
+        ></div>
+        <div class="px-8 break-all leading-loose" x-text="citation.id"></div>
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="lg:w-1/2 m-auto absolute bottom-0 left-0 right-0 bg-gray-100 h-32"
+  >
+    <div class="h-full text-white">
+      <div class="grid grid-cols-3 h-full">
+        <div
+          class="cursor-pointer border-r-8 bg-red-500 flex justify-center items-center rounded-tl-2xl"
+          @click="label_value = -1; if (requireReasoning()) { reasoningMenu = true } else { postLabel(true) }"
+          :class="(label_value == -1 || label_value == null) ? '' : 'saturate-[0.1]'"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-10 w-10"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+              clip-rule="evenodd"
+            />
+          </svg>
+        </div>
+        <div class="grid grid-rows-2">
+          <div
+            class="cursor-pointer border-b-4 bg-srdrpurple flex justify-center items-center"
+            @click="label_value = 0; if (requireReasoning()) { reasoningMenu = true } else { postLabel(true) }"
+            :class="(label_value == 0 || label_value == null)? '' : 'saturate-[0.1]'"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-10 w-10"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M10 2a1 1 0 011 1v1.323l3.954 1.582 1.599-.8a1 1 0 01.894 1.79l-1.233.616 1.738 5.42a1 1 0 01-.285 1.05A3.989 3.989 0 0115 15a3.989 3.989 0 01-2.667-1.019 1 1 0 01-.285-1.05l1.715-5.349L11 6.477V16h2a1 1 0 110 2H7a1 1 0 110-2h2V6.477L6.237 7.582l1.715 5.349a1 1 0 01-.285 1.05A3.989 3.989 0 015 15a3.989 3.989 0 01-2.667-1.019 1 1 0 01-.285-1.05l1.738-5.42-1.233-.617a1 1 0 01.894-1.788l1.599.799L9 4.323V3a1 1 0 011-1zm-5 8.274l-.818 2.552c.25.112.526.174.818.174.292 0 .569-.062.818-.174L5 10.274zm10 0l-.818 2.552c.25.112.526.174.818.174.292 0 .569-.062.818-.174L15 10.274z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </div>
+          <div
+            class="cursor-pointer border-t-2 bg-gray-500 flex justify-center items-center"
+            @click="label_value = null; reasoningMenu = !reasoningMenu"
+          >
+            <div class="space-y-2">
+              <div class="w-8 h-0.5 bg-white"></div>
+              <div class="w-8 h-0.5 bg-white"></div>
+              <div class="w-8 h-0.5 bg-white"></div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="cursor-pointer border-l-8 bg-green-500 flex justify-center items-center rounded-tr-2xl"
+          @click="label_value = 1; if (requireReasoning()) { reasoningMenu = true } else { postLabel(true) }"
+          :class="(label_value == 1 || label_value == null)? '' : 'saturate-[0.1]'"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-10 w-10"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+              clip-rule="evenodd"
+            />
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("alpine:init", () => {
+    Alpine.data("screenStore", () => ({
+      menu: false,
+      reasoningMenu: false,
+      addReasonModal: { on: false, type: "" },
+      confirmationModal: false,
+      confirmationModalText: "",
+      confirmationModalTexts: {
+        "-1": "Rejected",
+        0: "Maybe",
+        1: "Accepted",
+      },
+      citation: {
+        fulltext_screening_id: "",
+        fulltext_screenings_citations_project_id: "",
+        title: "",
+        journal: "",
+        authors: "",
+        abstract: "",
+        keywords: "",
+        id: "",
+      },
+      fulltext_screening_result_id: null,
+      predefined_reasons: {},
+      predefined_tags: {},
+      custom_reasons: {},
+      custom_tags: {},
+      notes: "",
+      options: {
+        yes_tag_required: null,
+        no_tag_required: null,
+        maybe_tag_required: null,
+        yes_reason_required: null,
+        no_reason_required: null,
+        maybe_reason_required: null,
+        yes_note_required: null,
+        no_note_required: null,
+        maybe_note_required: null,
+        only_predefined_reasons: null,
+        only_predefined_tags: null,
+      },
+      label_value: null,
+      newCustomValue: "",
+      rescreen: null,
+
+      init() {
+        this.postLabel(false);
+      },
+
+      toggleWeighingScreen() {
+        this.weighingScreen = !this.weighingScreen;
+      },
+
+      requireReasoning() {
+        return (
+          (this.label_value == -1 &&
+            (this.options.no_tag_required ||
+              this.options.no_reason_required ||
+              this.options.no_note_required)) ||
+          (this.label_value == 0 &&
+            (this.options.maybe_tag_required ||
+              this.options.maybe_reason_required ||
+              this.options.maybe_note_required)) ||
+          (this.label_value == 1 &&
+            (this.options.yes_tag_required ||
+              this.options.yes_reason_required ||
+              this.options.yes_note_required))
+        );
+      },
+
+      satisfiesReasoning() {
+        if (this.label_value == null) return false;
+        let satisfactory = true;
+        const hasSomeReason = Object.keys({
+          ...this.predefined_reasons,
+          ...this.custom_reasons,
+        }).some(
+          (v) =>
+            this.predefined_reasons[v] == true || this.custom_reasons[v] == true
+        );
+        const hasSomeTag = Object.keys({
+          ...this.predefined_tags,
+          ...this.custom_tags,
+        }).some(
+          (v) => this.predefined_tags[v] == true || this.custom_tags[v] == true
+        );
+        const hasSomeNote = this.notes.length > 0;
+        if (this.label_value == -1) {
+          if (this.options.no_tag_required)
+            satisfactory = hasSomeTag && satisfactory;
+          if (this.options.no_reason_required)
+            satisfactory = hasSomeReason && satisfactory;
+          if (this.options.no_note_required)
+            satisfactory = hasSomeNote && satisfactory;
+        }
+        if (this.label_value == 0) {
+          if (this.options.maybe_tag_required)
+            satisfactory = hasSomeTag && satisfactory;
+          if (this.options.maybe_reason_required)
+            satisfactory = hasSomeReason && satisfactory;
+          if (this.options.maybe_note_required)
+            satisfactory = hasSomeNote && satisfactory;
+        }
+        if (this.label_value == 1) {
+          if (this.options.yes_tag_required)
+            satisfactory = hasSomeTag && satisfactory;
+          if (this.options.yes_reason_required)
+            satisfactory = hasSomeReason && satisfactory;
+          if (this.options.yes_note_required)
+            satisfactory = hasSomeNote && satisfactory;
+        }
+
+        return satisfactory;
+      },
+
+      mustSelectReason() {
+        if (this.label_value == -1) {
+          return this.options.no_reason_required;
+        } else if (this.label_value == 0) {
+          return this.options.maybe_reason_required;
+        } else if (this.label_value == 1) {
+          return this.options.yes_reason_required;
+        }
+      },
+
+      mustSelectTag() {
+        if (this.label_value == -1) {
+          return this.options.no_tag_required;
+        } else if (this.label_value == 0) {
+          return this.options.maybe_tag_required;
+        } else if (this.label_value == 1) {
+          return this.options.yes_tag_required;
+        }
+      },
+
+      mustEnterNotes() {
+        if (this.label_value == -1) {
+          return this.options.no_note_required;
+        } else if (this.label_value == 0) {
+          return this.options.maybe_note_required;
+        } else if (this.label_value == 1) {
+          return this.options.yes_note_required;
+        }
+      },
+
+      turnOffAllReasons() {
+        Object.keys(this.predefined_reasons).forEach(
+          (v) => (this.predefined_reasons[v] = false)
+        );
+        Object.keys(this.custom_reasons).forEach(
+          (v) => (this.custom_reasons[v] = false)
+        );
+      },
+
+      processNewCustomValue() {
+        if (this.newCustomValue.trim() == "") return;
+        this.addReasonModal.on = false;
+        if (this.addReasonModal.type == "Reason") {
+          this.turnOffAllReasons();
+          if (this.predefined_reasons[this.newCustomValue] == undefined) {
+            this.custom_reasons[this.newCustomValue] = true;
+          } else {
+            this.predefined_reasons[this.newCustomValue] = true;
+          }
+        } else {
+          if (this.predefined_tags[this.newCustomValue] == undefined) {
+            this.custom_tags[this.newCustomValue] = true;
+          } else {
+            this.predefined_tags[this.newCustomValue] = true;
+          }
+        }
+        this.newCustomValue = "";
+        this.postLabel(false);
+      },
+
+      deleteCustomValue(type, key) {
+        if (confirm(`Would you like to delete "${key}" as a custom choice?`)) {
+          delete this[type][key];
+        }
+      },
+
+      closeAllModals() {
+        if (this.addReasonModal.on) {
+          this.addReasonModal.on = false;
+        } else {
+          this.menu = false;
+          this.weighingScreen = false;
+          this.reasoningMenu = false;
+          this.word_weight_menu = false;
+        }
+      },
+
+      async showConfirmation(label) {
+        this.confirmationModalText = this.confirmationModalTexts[label];
+        this.confirmationModal = true;
+        await new Promise((resolve, reject) => setTimeout(resolve, 1000));
+        this.confirmationModal = false;
+      },
+
+      async postLabel(submit) {
+        if (submit) {
+          this.reasoningMenu = false;
+        }
+        const response = await fetch(
+          "/fulltext_screenings/<%= params[:fulltext_screening_id] %>/label",
+          {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              data: {
+                label_value: submit ? this.label_value : null,
+                citation: this.citation,
+                fulltext_screening_result_id: this.fulltext_screening_result_id,
+                predefined_reasons: this.predefined_reasons,
+                predefined_tags: this.predefined_tags,
+                custom_reasons: this.custom_reasons,
+                custom_tags: this.custom_tags,
+                notes: this.notes,
+                rescreen: this.rescreen,
+              },
+            }),
+          }
+        );
+        const data = await response.json();
+        if (submit) {
+          await this.showConfirmation(this.label_value);
+        }
+        this.label_value = submit
+          ? data.label_value
+          : data.rescreen
+          ? data.label_value
+          : this.label_value;
+        this.citation = data.citation;
+        this.fulltext_screening_result_id = data.fulltext_screening_result_id;
+        this.predefined_reasons = data.predefined_reasons;
+        this.predefined_tags = data.predefined_tags;
+        this.custom_reasons = data.custom_reasons;
+        this.custom_tags = data.custom_tags;
+        this.notes = data.notes;
+        this.options = data.options;
+        this.word_weights = data.word_weights;
+        this.rescreen = data.rescreen;
+      },
+    }));
+  });
+</script>

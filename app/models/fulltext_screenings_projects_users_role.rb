@@ -56,7 +56,7 @@ class FulltextScreeningsProjectsUsersRole < ApplicationRecord
   end
 
   def self.find_aspur(user, fulltext_screening)
-    AbstractScreeningsProjectsUsersRole
+    FulltextScreeningsProjectsUsersRole
       .joins(projects_users_role: { projects_user: :user })
       .where(fulltext_screening:, projects_users_role: { projects_users: { user: } })
       .first

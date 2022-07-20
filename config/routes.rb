@@ -175,6 +175,9 @@ Rails.application.routes.draw do
     get 'kpis', to: 'abstract_screenings#kpis'
 
     resources :fulltext_screenings do
+      post 'rescreen', to: 'fulltext_screenings#rescreen'
+      get 'screen', to: 'fulltext_screenings#screen'
+      post 'label', to: 'fulltext_screenings#label'
     end
 
     resource :data_audit, only: [:create]

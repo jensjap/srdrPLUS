@@ -53,14 +53,14 @@ class FulltextScreening < ApplicationRecord
     case fulltext_screening_type
     when SINGLE_PERPETUAL, PILOT
       if fulltext_screening_result.label == 1
-        fulltext_screening_result.citations_project.update(screening_status: CitationsProject::FULLTEXT_SCREENING_UNSCREENED)
+        fulltext_screening_result.citations_project.update(screening_status: CitationsProject::DATA_EXTRACTION_NOT_YET_EXTRACTED)
       elsif fulltext_screening_result.label == -1
         fulltext_screening_result.citations_project.update(screening_status: CitationsProject::FULLTEXT_SCREENING_REJECTED)
       end
     when DOUBLE_PERPETUAL
       score = fulltext_screening_result.citations_project.fulltext_screening_results.sum(:label)
       if score >= 2
-        fulltext_screening_result.citations_project.update(screening_status: CitationsProject::FULLTEXT_SCREENING_UNSCREENED)
+        fulltext_screening_result.citations_project.update(screening_status: CitationsProject::DATA_EXTRACTION_NOT_YET_EXTRACTED)
       elsif score <= -2
         fulltext_screening_result.citations_project.update(screening_status: CitationsProject::FULLTEXT_SCREENING_REJECTED)
       end
