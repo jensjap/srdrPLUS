@@ -87,7 +87,7 @@ class AbstractScreeningsController < ApplicationController
       @random_citation = @abstract_screening_result.citation
     end
 
-    get_next_abstraction_screening_result if @abstract_screening_result.nil? || payload[:label_value].present?
+    get_next_abstract_screening_result if @abstract_screening_result.nil? || payload[:label_value].present?
 
     prepare_json_label_data
   end
@@ -198,7 +198,7 @@ class AbstractScreeningsController < ApplicationController
     strong_params
   end
 
-  def get_next_abstraction_screening_result
+  def get_next_abstract_screening_result
     @asr_id = session[:abstract_screening_result_id]
     if @asr_id
       session.delete(:abstract_screening_result_id)

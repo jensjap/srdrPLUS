@@ -87,7 +87,7 @@ class FulltextScreeningsController < ApplicationController
       @random_citation = @fulltext_screening_result.citation
     end
 
-    get_next_fulltextion_screening_result if @fulltext_screening_result.nil? || payload[:label_value].present?
+    get_next_fulltext_screening_result if @fulltext_screening_result.nil? || payload[:label_value].present?
 
     prepare_json_label_data
   end
@@ -198,7 +198,7 @@ class FulltextScreeningsController < ApplicationController
     strong_params
   end
 
-  def get_next_fulltextion_screening_result
+  def get_next_fulltext_screening_result
     @asr_id = session[:fulltext_screening_result_id]
     if @asr_id
       session.delete(:fulltext_screening_result_id)
@@ -217,7 +217,7 @@ class FulltextScreeningsController < ApplicationController
       citations_project =
         @fulltext_screening
         .project.citations_projects
-        .where(screening_status: CitationsProject::CITATION_POOL)
+        .where(screening_status: CitationsProject::FULLTEXT_SCREENING_UNSCREENED)
         .sample
       citations_project.update(screening_status: CitationsProject::FULLTEXT_SCREENING_PARTIALLY_SCREENED)
       @random_citation = citations_project.citation

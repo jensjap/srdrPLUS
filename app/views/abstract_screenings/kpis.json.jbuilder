@@ -1,10 +1,10 @@
 json.cp @project
   .citations_projects
   .count
-json.asu @project
+json.asu(@project.citations_projects.count - @project
   .citations_projects
-  .where(citations_projects: { screening_status: CitationsProject::ABSTRACT_SCREENING_UNSCREENED })
-  .count
+  .where.not(citations_projects: { screening_status: CitationsProject::CITATION_POOL })
+  .count)
 json.asps @project
   .citations_projects
   .where(citations_projects: { screening_status: CitationsProject::ABSTRACT_SCREENING_PARTIALLY_SCREENED })
@@ -21,7 +21,6 @@ json.asa @project
   .citations_projects
   .where(citations_projects: { screening_status:
     [
-      CitationsProject::FULLTEXT_SCREENING_UNSCREENED,
       CitationsProject::FULLTEXT_SCREENING_PARTIALLY_SCREENED,
       CitationsProject::FULLTEXT_SCREENING_REJECTED,
       CitationsProject::FULLTEXT_SCREENING_IN_CONFLICT,
@@ -30,10 +29,17 @@ json.asa @project
       CitationsProject::COMPLETED
     ] })
   .count
-json.ftu @project
+json.ftu(@project.citations_projects.count - @project
   .citations_projects
-  .where(citations_projects: { screening_status: CitationsProject::FULLTEXT_SCREENING_UNSCREENED })
-  .count
+  .where.not(citations_projects: { screening_status:
+    [
+      CitationsProject::CITATION_POOL,
+      CitationsProject::ABSTRACT_SCREENING_UNSCREENED,
+      CitationsProject::ABSTRACT_SCREENING_PARTIALLY_SCREENED,
+      CitationsProject::ABSTRACT_SCREENING_REJECTED,
+      CitationsProject::ABSTRACT_SCREENING_IN_CONFLICT
+    ] })
+  .count)
 json.ftps @project
   .citations_projects
   .where(citations_projects: { screening_status: CitationsProject::FULLTEXT_SCREENING_PARTIALLY_SCREENED })

@@ -88,7 +88,6 @@ class AbstractScreening < ApplicationRecord
     if no_of_citations_to_add > 0
       cps = project.citations_projects.where(screening_status: CitationsProject::CITATION_POOL).limit(no_of_citations_to_add)
       citations_projects << cps
-      cps.update_all(screening_status: CitationsProject::ABSTRACT_SCREENING_UNSCREENED)
     end
   end
 
