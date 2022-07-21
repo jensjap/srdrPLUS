@@ -11,7 +11,7 @@ class FulltextScreeningsController < ApplicationController
     @fulltext_screening =
       @project.fulltext_screenings.new(fulltext_screening_params)
     if @fulltext_screening.save
-      @fulltext_screening.add_citations_from_pool(params[:no_of_citations])
+      @fulltext_screening.add_citations_from_pool(params[:no_of_citations].to_i)
       flash[:notice] = 'Screening was successfully created'
       redirect_to project_fulltext_screenings_path(@project)
     else
@@ -40,10 +40,7 @@ class FulltextScreeningsController < ApplicationController
   def index
     authorize(@project, policy_class: FulltextScreeningPolicy)
     @fulltext_screenings =
-      policy_scope(@project,
-                   policy_scope_class: FulltextScreeningPolicy::Scope)
-    @fulltext_screenings =
-      @fulltext_screenings
+      policy_scope(@project, policy_scope_class: FulltextScreeningPolicy::Scope)
       .order(id: :desc)
       .page(params[:page])
       .per(5)
@@ -175,6 +172,13 @@ class FulltextScreeningsController < ApplicationController
   end
 
   def get_next_fulltext_screening_result
+    helpers.hello
+    # TODO
+    # If there's a asr_id, serve it
+    # If there is an unfinished result, serve it
+    # if it's single or double perpetual, find one from the open pool and change it's status to partially screened
+    # if it's a pilot, get one from the pilot pool
+
     @asr_id = session[:fulltext_screening_result_id]
     if @asr_id
       session.delete(:fulltext_screening_result_id)
@@ -215,14 +219,14 @@ class FulltextScreeningsController < ApplicationController
         .fulltext_screening_results
         .create!(label: nil, fulltext_screenings_citations_project: @fulltext_screenings_citations_project,
                  fulltext_screenings_projects_users_role:)
-    else
+    else # TODO: CHECK THIS LOGIC
       @fulltext_screenings_citations_project =
         FulltextScreeningsCitationsProject
         .joins(:fulltext_screening, :citations_project)
         .left_joins(:fulltext_screening_results)
         .where(fulltext_screening: @fulltext_screening)
         .where(fulltext_screening_results: { label: nil })
-        .where(citations_projects: { screening_status: CitationsProject::FULLTEXT_SCREENING_PARTIALLY_SCREENED }).sample
+        .where(citations_projects: { screening_status: CitationsProject::FULLTEXT_SCREENING_UNSCREENED }).sample
       @fulltext_screening_result =
         @fulltext_screening
         .fulltext_screening_results

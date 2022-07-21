@@ -11,7 +11,7 @@ class AbstractScreeningsController < ApplicationController
     @abstract_screening =
       @project.abstract_screenings.new(abstract_screening_params)
     if @abstract_screening.save
-      @abstract_screening.add_citations_from_pool(params[:no_of_citations])
+      @abstract_screening.add_citations_from_pool(params[:no_of_citations].to_i)
       flash[:notice] = 'Screening was successfully created'
       redirect_to project_abstract_screenings_path(@project)
     else
@@ -60,10 +60,7 @@ class AbstractScreeningsController < ApplicationController
   def index
     authorize(@project, policy_class: AbstractScreeningPolicy)
     @abstract_screenings =
-      policy_scope(@project,
-                   policy_scope_class: AbstractScreeningPolicy::Scope)
-    @abstract_screenings =
-      @abstract_screenings
+      policy_scope(@project, policy_scope_class: AbstractScreeningPolicy::Scope)
       .order(id: :desc)
       .page(params[:page])
       .per(5)
@@ -87,7 +84,7 @@ class AbstractScreeningsController < ApplicationController
       @random_citation = @abstract_screening_result.citation
     end
 
-    get_next_abstract_screening_result if @abstract_screening_result.nil? || payload[:label_value].present?
+    next_abstract_screening_result if @abstract_screening_result.nil? || payload[:label_value].present?
 
     prepare_json_label_data
   end
@@ -198,62 +195,18 @@ class AbstractScreeningsController < ApplicationController
     strong_params
   end
 
-  def get_next_abstract_screening_result
+  def next_abstract_screening_result
     @asr_id = session[:abstract_screening_result_id]
-    if @asr_id
-      session.delete(:abstract_screening_result_id)
-      @abstract_screening_result = AbstractScreeningResult.find(@asr_id)
-      @abstract_screening = @abstract_screening_result.abstract_screening
-      @random_citation = @abstract_screening_result.citation
-      @abstract_screenings_citations_project = @abstract_screening_result.abstract_screenings_citations_project
-    elsif @abstract_screening_result = AbstractScreeningResult.find_unfinished_abstract_screening_result(
-      @abstract_screening, abstract_screenings_projects_users_role
+    session.delete(:abstract_screening_result_id)
+    @abstract_screening_result = AbstractScreeningResult.next_abstract_screening_result(
+      abstract_screening: @abstract_screening,
+      abstract_screening_result: @abstract_screening_result,
+      asr_id: @asr_id,
+      abstract_screenings_projects_users_role:
     )
-      @abstract_screening = @abstract_screening_result.abstract_screening
-      @random_citation = @abstract_screening_result.citation
-      @abstract_screenings_citations_project = @abstract_screening_result.abstract_screenings_citations_project
-    elsif @abstract_screening.abstract_screening_type == AbstractScreening::SINGLE_PERPETUAL ||
-          @abstract_screening.abstract_screening_type == AbstractScreening::DOUBLE_PERPETUAL
-      citations_project =
-        @abstract_screening
-        .project.citations_projects
-        .where(screening_status: CitationsProject::CITATION_POOL)
-        .sample
-      citations_project.update(screening_status: CitationsProject::ABSTRACT_SCREENING_PARTIALLY_SCREENED)
-      @random_citation = citations_project.citation
-
-      @abstract_screenings_citations_project =
-        @abstract_screening
-        .abstract_screenings_citations_projects
-        .find_or_create_by(
-          abstract_screening:
-          @abstract_screening,
-          citations_project:
-            CitationsProject.find_by(
-              project: @abstract_screening.project, citation: @random_citation
-            )
-        )
-
-      @abstract_screening_result =
-        @abstract_screening
-        .abstract_screening_results
-        .create!(label: nil, abstract_screenings_citations_project: @abstract_screenings_citations_project,
-                 abstract_screenings_projects_users_role:)
-    else
-      @abstract_screenings_citations_project =
-        AbstractScreeningsCitationsProject
-        .joins(:abstract_screening, :citations_project)
-        .left_joins(:abstract_screening_results)
-        .where(abstract_screening: @abstract_screening)
-        .where(abstract_screening_results: { label: nil })
-        .where(citations_projects: { screening_status: CitationsProject::ABSTRACT_SCREENING_PARTIALLY_SCREENED }).sample
-      @abstract_screening_result =
-        @abstract_screening
-        .abstract_screening_results
-        .create!(label: nil, abstract_screenings_citations_project: @abstract_screenings_citations_project,
-                 abstract_screenings_projects_users_role:)
-      @random_citation = @abstract_screening_result.citation
-    end
+    @abstract_screening = @abstract_screening_result.abstract_screening
+    @abstract_screenings_citations_project = @abstract_screening_result.abstract_screenings_citations_project
+    @random_citation = @abstract_screening_result.citation
   end
 
   def label_params
