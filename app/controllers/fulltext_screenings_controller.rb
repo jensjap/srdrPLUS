@@ -1,9 +1,9 @@
 class FulltextScreeningsController < ApplicationController
   add_breadcrumb 'my projects', :projects_path
-  skip_before_action :verify_authenticity_token, only: %i[update_word_weight kpis label rescreen]
+  skip_before_action :verify_authenticity_token, only: %i[label rescreen]
 
-  before_action :set_project, only: %i[index new create citation_lifecycle_management kpis]
-  before_action :set_fulltext_screening, only: %i[update_word_weight label]
+  before_action :set_project, only: %i[index new create kpis]
+  before_action :set_fulltext_screening, only: %i[label]
   after_action :verify_authorized
 
   def create
@@ -18,26 +18,6 @@ class FulltextScreeningsController < ApplicationController
       flash[:now] = @fulltext_screening.errors.full_messages.join(',')
       render :new
     end
-  end
-
-  def update_word_weight
-    authorize(@fulltext_screening.project, policy_class: FulltextScreeningPolicy)
-    weight = params[:weight]
-    word = params[:word].downcase
-    id = params[:id]
-
-    ww = WordWeight.find_by(id:) || WordWeight.find_or_initialize_by(word:, fulltext_screenings_projects_users_role:)
-    if params[:destroy]
-      ww.destroy
-    else
-      ww.update(weight:, word:)
-    end
-    render json: fulltext_screenings_projects_users_role.word_weights_object
-  end
-
-  def citation_lifecycle_management
-    authorize(@project, policy_class: FulltextScreeningPolicy)
-    @citations_projects = CitationsProject.includes(:citation).where(project: @project).page(params[:page]).per(10)
   end
 
   def destroy
@@ -67,10 +47,6 @@ class FulltextScreeningsController < ApplicationController
       .order(id: :desc)
       .page(params[:page])
       .per(5)
-  end
-
-  def kpis
-    authorize(@project, policy_class: FulltextScreeningPolicy)
   end
 
   def label
