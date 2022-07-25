@@ -96,14 +96,15 @@ class AbstractScreeningsController < ApplicationController
 
   def rescreen
     @abstract_screening = AbstractScreening.find(params[:abstract_screening_id])
-    asr_id = params[:abstract_screening_result_id]
+    abstract_screening_result_id = params[:abstract_screening_result_id]
     previous = params[:previous]
 
     session[:abstract_screening_result_id] =
-      if asr_id != 'null' && previous
-        AbstractScreeningResult.users_previous_asr_id(asr_id, abstract_screenings_projects_users_role) || asr_id
-      elsif asr_id != 'null'
-        AbstractScreeningResult.find(asr_id).user == current_user ? asr_id : nil
+      if abstract_screening_result_id != 'null' && previous
+        AbstractScreeningResult.users_previous_abstract_screening_result_id(abstract_screening_result_id,
+                                                                            abstract_screenings_projects_users_role) || abstract_screening_result_id
+      elsif abstract_screening_result_id != 'null'
+        AbstractScreeningResult.find(abstract_screening_result_id).user == current_user ? abstract_screening_result_id : nil
       end
     session.delete(:abstract_screening_result_id) if session[:abstract_screening_result_id].nil?
     authorize(AbstractScreeningResult.find(session[:abstract_screening_result_id]),
@@ -196,12 +197,11 @@ class AbstractScreeningsController < ApplicationController
   end
 
   def next_abstract_screening_result
-    @asr_id = session[:abstract_screening_result_id]
+    @abstract_screening_result_id = session[:abstract_screening_result_id]
     session.delete(:abstract_screening_result_id)
     @abstract_screening_result = AbstractScreeningResult.next_abstract_screening_result(
       abstract_screening: @abstract_screening,
-      abstract_screening_result: @abstract_screening_result,
-      asr_id: @asr_id,
+      abstract_screening_result_id: @abstract_screening_result_id,
       abstract_screenings_projects_users_role:
     )
     @abstract_screening = @abstract_screening_result.abstract_screening

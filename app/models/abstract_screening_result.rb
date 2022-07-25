@@ -28,19 +28,12 @@ class AbstractScreeningResult < ApplicationRecord
 
   has_one :note, as: :notable
 
-  def self.users_previous_asr_id(asr_id, abstract_screenings_projects_users_role)
+  def self.users_previous_abstract_screening_result_id(abstract_screening_result_id, abstract_screenings_projects_users_role)
     where(abstract_screenings_projects_users_role:)
-      .where('updated_at < ?', AbstractScreeningResult.find(asr_id).updated_at)
+      .where('updated_at < ?', find(abstract_screening_result_id).updated_at)
       .where('label IS NOT NULL')
       .order(updated_at: :desc)
       .limit(1)&.first&.id
-  end
-
-  def self.find_unfinished_abstract_screening_result(abstract_screening, abstract_screenings_projects_users_role)
-    where(abstract_screening:)
-      .where(abstract_screenings_projects_users_role:)
-      .where('label IS NULL')
-      .first
   end
 
   def process_payload(payload, aspur)
@@ -66,18 +59,65 @@ class AbstractScreeningResult < ApplicationRecord
     end
   end
 
-  def self.find_by_asr(asr_id)
-    abstract_screening_result = AbstractScreeningResult.find(asr_id)
+  def self.create_draft_asr(
+    abstract_screening:,
+    abstract_screenings_citations_project:,
+    abstract_screenings_projects_users_role:
+  )
+    abstract_screening
+      .abstract_screening_results
+      .create!(
+        label: nil,
+        abstract_screenings_citations_project:,
+        abstract_screenings_projects_users_role:
+      )
   end
 
-  def self.find_by_perpetual(abstract_screening, abstract_screenings_projects_users_role)
+  def self.next_abstract_screening_result(
+    abstract_screening:,
+    abstract_screening_result_id:,
+    abstract_screenings_projects_users_role:
+  )
+    if abstract_screening_result_id
+      find_by(id: abstract_screening_result_id)
+    elsif abstract_screening_result = find_by_unfinished_abstract_screening_result(
+      abstract_screening, abstract_screenings_projects_users_role
+    )
+      abstract_screening_result
+    elsif abstract_screening.abstract_screening_type == AbstractScreening::SINGLE_PERPETUAL
+      find_by_single_perpetual(
+        abstract_screening,
+        abstract_screenings_projects_users_role
+      )
+    elsif abstract_screening.abstract_screening_type == AbstractScreening::DOUBLE_PERPETUAL
+      find_by_double_perpetual(
+        abstract_screening,
+        abstract_screenings_projects_users_role
+      )
+    else
+      find_by_pilot(
+        abstract_screening,
+        abstract_screenings_projects_users_role
+      )
+    end
+  end
+
+  def self.find_by_unfinished_abstract_screening_result(abstract_screening, abstract_screenings_projects_users_role)
+    where(abstract_screening:)
+      .where(abstract_screenings_projects_users_role:)
+      .where('label IS NULL')
+      .first
+  end
+
+  def self.find_by_single_perpetual(abstract_screening, abstract_screenings_projects_users_role)
     citations_project =
       abstract_screening
       .project
       .citations_projects
       .where(screening_status: CitationsProject::CITATION_POOL)
       .sample
-    random_citation = citations_project.citation
+    return nil unless citations_project
+
     citations_project.update(screening_status: CitationsProject::ABSTRACT_SCREENING_PARTIALLY_SCREENED)
 
     abstract_screenings_citations_project =
@@ -86,14 +126,46 @@ class AbstractScreeningResult < ApplicationRecord
       .find_or_create_by(
         abstract_screening:,
         citations_project:
-          CitationsProject.find_by(
-            project: abstract_screening.project, citation: random_citation
-          )
       )
-    abstract_screening
-      .abstract_screening_results
-      .create!(label: nil, abstract_screenings_citations_project:,
-               abstract_screenings_projects_users_role:)
+    create_draft_asr(
+      abstract_screening:,
+      abstract_screenings_citations_project:,
+      abstract_screenings_projects_users_role:
+    )
+  end
+
+  def self.find_by_double_perpetual(abstract_screening, abstract_screenings_projects_users_role)
+    citations_project =
+      abstract_screening
+      .project
+      .citations_projects
+      .joins(:abstract_screening_results)
+      .where(screening_status: CitationsProject::ABSTRACT_SCREENING_PARTIALLY_SCREENED)
+      .where.not(abstract_screening_results: { abstract_screenings_projects_users_role: :abstract_screenings_projects_users_role })
+      .sample
+
+    citations_project ||=
+      abstract_screening
+      .project
+      .citations_projects
+      .where(screening_status: CitationsProject::CITATION_POOL)
+      .sample
+    return nil unless citations_project
+
+    citations_project.update(screening_status: CitationsProject::ABSTRACT_SCREENING_PARTIALLY_SCREENED)
+
+    abstract_screenings_citations_project =
+      abstract_screening
+      .abstract_screenings_citations_projects
+      .find_or_create_by(
+        abstract_screening:,
+        citations_project:
+      )
+    create_draft_asr(
+      abstract_screening:,
+      abstract_screenings_citations_project:,
+      abstract_screenings_projects_users_role:
+    )
   end
 
   def self.find_by_pilot(abstract_screening, abstract_screenings_projects_users_role)
@@ -109,29 +181,12 @@ class AbstractScreeningResult < ApplicationRecord
                CitationsProject::ABSTRACT_SCREENING_UNSCREENED
              ] })
       .sample
-    abstract_screening
-      .abstract_screening_results
-      .create!(label: nil, abstract_screenings_citations_project:,
-               abstract_screenings_projects_users_role:)
-  end
+    return nil unless abstract_screenings_citations_project
 
-  def self.next_abstract_screening_result(
-    abstract_screening:,
-    abstract_screening_result:,
-    asr_id:,
-    abstract_screenings_projects_users_role:
-  )
-    if asr_id
-      find_by_asr(asr_id)
-    elsif abstract_screening_result = AbstractScreeningResult.find_unfinished_abstract_screening_result(
-      abstract_screening, abstract_screenings_projects_users_role
+    create_draft_asr(
+      abstract_screening:,
+      abstract_screenings_citations_project:,
+      abstract_screenings_projects_users_role:
     )
-      abstract_screening_result
-    elsif abstract_screening.abstract_screening_type == AbstractScreening::SINGLE_PERPETUAL ||
-          abstract_screening.abstract_screening_type == AbstractScreening::DOUBLE_PERPETUAL
-      find_by_perpetual(abstract_screening, abstract_screenings_projects_users_role)
-    else
-      find_by_pilot(abstract_screening, abstract_screenings_projects_users_role)
-    end
   end
 end
