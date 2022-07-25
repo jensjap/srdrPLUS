@@ -56,13 +56,17 @@
           </svg>
         </button>
         <div>
-          <h3 class="mb-4 sm:mb-8 text-2xl" id="modal-title">Highlight Term</h3>
+          <h3 class="mb-4 sm:mb-8 text-2xl" id="modal-title">
+            Highlight Term or Phrase
+          </h3>
           <div class="mt-2">
             <input
               x-ref="wordWeightInput"
               x-model="wordWeight"
+              x-on:input.debounce.500ms="checkLengthRestriction($event, 30)"
               name="term"
               id="term"
+              maxlength="30"
               class="mb-2 text-xl font-black text-center shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full border-gray-300 rounded-md h-10"
             />
           </div>
@@ -71,34 +75,34 @@
           <button
             @click="toggleWeighingScreen(); sendWw(wordWeight, 2)"
             type="button"
-            class="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:text-sm"
+            class="cursor-pointer inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:text-sm"
           >
-            +2
+            2
           </button>
         </div>
         <div class="mt-1 sm:mt-6">
           <button
             @click="toggleWeighingScreen(); sendWw(wordWeight, 1)"
             type="button"
-            class="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-400 text-base font-medium text-white hover:bg-green-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-300 sm:text-sm"
+            class="cursor-pointer inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-400 text-base font-medium text-white hover:bg-green-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-300 sm:text-sm"
           >
-            +1
+            1
           </button>
         </div>
         <div class="mt-1 sm:mt-6">
           <button
-            @click="toggleWeighingScreen(); sendWw(wordWeight, 0)"
+            @click="toggleWeighingScreen(); sendWw(wordWeight, 0, null, true)"
             type="button"
-            class="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-gray-600 text-base font-medium text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 sm:text-sm"
+            class="cursor-pointer inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-gray-600 text-base font-medium text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 sm:text-sm"
           >
-            0
+            0 (Remove)
           </button>
         </div>
         <div class="mt-1 sm:mt-6">
           <button
             @click="toggleWeighingScreen(); sendWw(wordWeight, -1)"
             type="button"
-            class="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-400 text-base font-medium text-white hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-300 sm:text-sm"
+            class="cursor-pointer inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-400 text-base font-medium text-white hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-300 sm:text-sm"
           >
             -1
           </button>
@@ -107,7 +111,7 @@
           <button
             @click="toggleWeighingScreen(); sendWw(wordWeight, -2)"
             type="button"
-            class="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:text-sm"
+            class="cursor-pointer inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:text-sm"
           >
             -2
           </button>

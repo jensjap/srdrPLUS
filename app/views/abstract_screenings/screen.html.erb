@@ -410,11 +410,14 @@
       update_word_weight(event, id, weight) {
         const word = event.target.value;
 
-        if (word in this.word_weights && this.word_weights[word].id != id) {
-          event.target.classList.add("!text-red-600");
+        if (
+          word.length == 0 ||
+          (word in this.word_weights && this.word_weights[word].id != id)
+        ) {
+          event.target.classList.add("!bg-red-500");
           return;
         } else {
-          event.target.classList.remove("!text-red-600");
+          event.target.classList.remove("!bg-red-500");
         }
         this.sendWw(word, weight, id);
         setTimeout(() => this.$focus.focus(event.target), 500);
@@ -430,6 +433,12 @@
         }
       },
 
+      checkLengthRestriction(event, maxLength) {
+        if (event.target.value.length >= maxLength) {
+          toastr.warning(`The input limit is ${maxLength}`);
+        }
+      },
+
       async process_textarea_keywords_and_phrases() {
         this.disable_textarea_keywords_and_phrases = true;
         const lines = this.textarea_keywords_and_phrases.split("\n");
@@ -441,6 +450,7 @@
           const word = wordParts.join(" ");
           if (
             word.length < 1 ||
+            word.length > 30 ||
             weight === NaN ||
             [2, 1, 0, -1, -2].indexOf(weight) === -1
           ) {
@@ -452,6 +462,9 @@
         }
         this.textarea_keywords_and_phrases = unprocessable.join("\n");
         this.disable_textarea_keywords_and_phrases = false;
+        if (unprocessable.length > 0) {
+          toastr.error("Some words or phrases could not be processed.");
+        }
       },
 
       paste_textarea_keywords_and_phrases() {
@@ -469,6 +482,7 @@
         let tail = 1;
         while (this.citation[sourceKey].length > head) {
           for (const word of Object.keys(this.word_weights)) {
+            if (word.length == 0) continue;
             const candidate = this.citation[sourceKey].slice(
               head,
               head + word.length
