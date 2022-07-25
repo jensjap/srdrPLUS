@@ -53,16 +53,25 @@ class FulltextScreening < ApplicationRecord
     case fulltext_screening_type
     when SINGLE_PERPETUAL, PILOT
       if fulltext_screening_result.label == 1
-        fulltext_screening_result.citations_project.update(screening_status: CitationsProject::DATA_EXTRACTION_NOT_YET_EXTRACTED)
+        fulltext_screening_result.citations_project.update(screening_status: CitationsProject::FULLTEXT_SCREENING_ACCEPTED)
       elsif fulltext_screening_result.label == -1
         fulltext_screening_result.citations_project.update(screening_status: CitationsProject::FULLTEXT_SCREENING_REJECTED)
+      else
+        fulltext_screening_result.citations_project.update(screening_status: CitationsProject::FULLTEXT_SCREENING_PARTIALLY_SCREENED)
       end
     when DOUBLE_PERPETUAL
-      score = fulltext_screening_result.citations_project.fulltext_screening_results.sum(:label)
-      if score >= 2
-        fulltext_screening_result.citations_project.update(screening_status: CitationsProject::DATA_EXTRACTION_NOT_YET_EXTRACTED)
-      elsif score <= -2
-        fulltext_screening_result.citations_project.update(screening_status: CitationsProject::FULLTEXT_SCREENING_REJECTED)
+      citations_project = fulltext_screening_result.citations_project
+      fulltext_screening_results = citations_project.fulltext_screening_results
+      count = fulltext_screening_results.count { |asr| !asr.label.nil? }
+      score = fulltext_screening_results.sum { |asr| asr.label.nil? ? 0 : asr.label }
+      if count >= 2 && count == score
+        citations_project.update(screening_status: CitationsProject::FULLTEXT_SCREENING_ACCEPTED)
+      elsif count >= 2 && count == -score
+        citations_project.update(screening_status: CitationsProject::FULLTEXT_SCREENING_REJECTED)
+      elsif count >= 2 && count != score
+        citations_project.update(screening_status: CitationsProject::FULLTEXT_SCREENING_IN_CONFLICT)
+      elsif count < 2
+        citations_project.update(screening_status: CitationsProject::FULLTEXT_SCREENING_PARTIALLY_SCREENED)
       end
     end
   end
@@ -85,10 +94,10 @@ class FulltextScreening < ApplicationRecord
     return if no_of_citations.nil?
 
     no_of_citations_to_add = no_of_citations - citations.count
-    if no_of_citations_to_add > 0
-      cps = project.citations_projects.where(screening_status: CitationsProject::CITATION_POOL).limit(no_of_citations_to_add)
-      citations_projects << cps
-    end
+    return unless no_of_citations_to_add.positive?
+
+    cps = project.citations_projects.where(screening_status: CitationsProject::CITATION_POOL).limit(no_of_citations_to_add)
+    citations_projects << cps
   end
 
   def tag_options

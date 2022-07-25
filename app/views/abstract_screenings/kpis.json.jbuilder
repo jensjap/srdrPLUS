@@ -19,15 +19,7 @@ json.asc @project
   .count
 json.asa @project
   .citations_projects
-  .where(citations_projects: { screening_status:
-    [
-      CitationsProject::FULLTEXT_SCREENING_PARTIALLY_SCREENED,
-      CitationsProject::FULLTEXT_SCREENING_REJECTED,
-      CitationsProject::FULLTEXT_SCREENING_IN_CONFLICT,
-      CitationsProject::DATA_EXTRACTION_NOT_YET_EXTRACTED,
-      CitationsProject::DATA_EXTRACTION_IN_PROGRESS,
-      CitationsProject::COMPLETED
-    ] })
+  .where(citations_projects: { screening_status: CitationsProject::ABSTRACT_SCREENING_ACCEPTED })
   .count
 json.ftu(@project.citations_projects.count - @project
   .citations_projects
@@ -54,12 +46,7 @@ json.ftc @project
   .count
 json.fta @project
   .citations_projects
-  .where(citations_projects: { screening_status:
-    [
-      CitationsProject::DATA_EXTRACTION_NOT_YET_EXTRACTED,
-      CitationsProject::DATA_EXTRACTION_IN_PROGRESS,
-      CitationsProject::COMPLETED
-    ] })
+  .where(citations_projects: { screening_status: CitationsProject::FULLTEXT_SCREENING_ACCEPTED })
   .count
 json.denye @project
   .citations_projects

@@ -66,10 +66,10 @@ class AbstractScreening < ApplicationRecord
       score = abstract_screening_results.sum { |asr| asr.label.nil? ? 0 : asr.label }
       if count >= 2 && count == score
         citations_project.update(screening_status: CitationsProject::ABSTRACT_SCREENING_ACCEPTED)
-      elsif count >= 2 && count != score
-        citations_project.update(screening_status: CitationsProject::ABSTRACT_SCREENING_IN_CONFLICT)
       elsif count >= 2 && count == -score
         citations_project.update(screening_status: CitationsProject::ABSTRACT_SCREENING_REJECTED)
+      elsif count >= 2 && count != score
+        citations_project.update(screening_status: CitationsProject::ABSTRACT_SCREENING_IN_CONFLICT)
       elsif count < 2
         citations_project.update(screening_status: CitationsProject::ABSTRACT_SCREENING_PARTIALLY_SCREENED)
       end
@@ -94,10 +94,10 @@ class AbstractScreening < ApplicationRecord
     return if no_of_citations.nil?
 
     no_of_citations_to_add = no_of_citations - citations.count
-    if no_of_citations_to_add > 0
-      cps = project.citations_projects.where(screening_status: CitationsProject::CITATION_POOL).limit(no_of_citations_to_add)
-      citations_projects << cps
-    end
+    return unless no_of_citations_to_add.positive?
+
+    cps = project.citations_projects.where(screening_status: CitationsProject::CITATION_POOL).limit(no_of_citations_to_add)
+    citations_projects << cps
   end
 
   def tag_options
