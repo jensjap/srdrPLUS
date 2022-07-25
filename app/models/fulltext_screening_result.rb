@@ -28,19 +28,12 @@ class FulltextScreeningResult < ApplicationRecord
 
   has_one :note, as: :notable
 
-  def self.users_previous_asr_id(asr_id, fulltext_screenings_projects_users_role)
+  def self.users_previous_fulltext_screening_result_id(fulltext_screening_result_id, fulltext_screenings_projects_users_role)
     where(fulltext_screenings_projects_users_role:)
-      .where('updated_at < ?', AbstractScreeningResult.find(asr_id).updated_at)
+      .where('updated_at < ?', find(fulltext_screening_result_id).updated_at)
       .where('label IS NOT NULL')
       .order(updated_at: :desc)
       .limit(1)&.first&.id
-  end
-
-  def self.find_unfinished_fulltext_screening_result(fulltext_screening, fulltext_screenings_projects_users_role)
-    where(fulltext_screening:)
-      .where(fulltext_screenings_projects_users_role:)
-      .where('label IS NULL')
-      .first
   end
 
   def process_payload(payload, aspur)
@@ -64,5 +57,136 @@ class FulltextScreeningResult < ApplicationRecord
     when 1
       'Yes'
     end
+  end
+
+  def self.create_draft_asr(
+    fulltext_screening:,
+    fulltext_screenings_citations_project:,
+    fulltext_screenings_projects_users_role:
+  )
+    fulltext_screening
+      .fulltext_screening_results
+      .create!(
+        label: nil,
+        fulltext_screenings_citations_project:,
+        fulltext_screenings_projects_users_role:
+      )
+  end
+
+  def self.next_fulltext_screening_result(
+    fulltext_screening:,
+    fulltext_screening_result_id:,
+    fulltext_screenings_projects_users_role:
+  )
+    if fulltext_screening_result_id
+      find_by(id: fulltext_screening_result_id)
+    elsif fulltext_screening_result = find_by_unfinished_fulltext_screening_result(
+      fulltext_screening, fulltext_screenings_projects_users_role
+    )
+      fulltext_screening_result
+    elsif fulltext_screening.fulltext_screening_type == AbstractScreening::SINGLE_PERPETUAL
+      find_by_single_perpetual(
+        fulltext_screening,
+        fulltext_screenings_projects_users_role
+      )
+    elsif fulltext_screening.fulltext_screening_type == AbstractScreening::DOUBLE_PERPETUAL
+      find_by_double_perpetual(
+        fulltext_screening,
+        fulltext_screenings_projects_users_role
+      )
+    else
+      find_by_pilot(
+        fulltext_screening,
+        fulltext_screenings_projects_users_role
+      )
+    end
+  end
+
+  def self.find_by_unfinished_fulltext_screening_result(fulltext_screening, fulltext_screenings_projects_users_role)
+    where(fulltext_screening:)
+      .where(fulltext_screenings_projects_users_role:)
+      .where('label IS NULL')
+      .first
+  end
+
+  def self.find_by_single_perpetual(fulltext_screening, fulltext_screenings_projects_users_role)
+    citations_project =
+      fulltext_screening
+      .project
+      .citations_projects
+      .where(screening_status: CitationsProject::CITATION_POOL)
+      .sample
+    return nil unless citations_project
+
+    citations_project.update(screening_status: CitationsProject::FULLTEXT_SCREENING_PARTIALLY_SCREENED)
+
+    fulltext_screenings_citations_project =
+      fulltext_screening
+      .fulltext_screenings_citations_projects
+      .find_or_create_by(
+        fulltext_screening:,
+        citations_project:
+      )
+    create_draft_asr(
+      fulltext_screening:,
+      fulltext_screenings_citations_project:,
+      fulltext_screenings_projects_users_role:
+    )
+  end
+
+  def self.find_by_double_perpetual(fulltext_screening, fulltext_screenings_projects_users_role)
+    citations_project =
+      fulltext_screening
+      .project
+      .citations_projects
+      .joins(:fulltext_screening_results)
+      .where(screening_status: CitationsProject::FULLTEXT_SCREENING_PARTIALLY_SCREENED)
+      .where.not(fulltext_screening_results: { fulltext_screenings_projects_users_role: :fulltext_screenings_projects_users_role })
+      .sample
+
+    citations_project ||=
+      fulltext_screening
+      .project
+      .citations_projects
+      .where(screening_status: CitationsProject::CITATION_POOL)
+      .sample
+    return nil unless citations_project
+
+    citations_project.update(screening_status: CitationsProject::FULLTEXT_SCREENING_PARTIALLY_SCREENED)
+
+    fulltext_screenings_citations_project =
+      fulltext_screening
+      .fulltext_screenings_citations_projects
+      .find_or_create_by(
+        fulltext_screening:,
+        citations_project:
+      )
+    create_draft_asr(
+      fulltext_screening:,
+      fulltext_screenings_citations_project:,
+      fulltext_screenings_projects_users_role:
+    )
+  end
+
+  def self.find_by_pilot(fulltext_screening, fulltext_screenings_projects_users_role)
+    fulltext_screenings_citations_project =
+      AbstractScreeningsCitationsProject
+      .joins(:fulltext_screening, :citations_project)
+      .left_joins(:fulltext_screening_results)
+      .where(fulltext_screening:)
+      .where(fulltext_screening_results: { label: nil })
+      .where(citations_projects: { screening_status: [
+               CitationsProject::CITATION_POOL,
+               CitationsProject::FULLTEXT_SCREENING_PARTIALLY_SCREENED,
+               CitationsProject::FULLTEXT_SCREENING_UNSCREENED
+             ] })
+      .sample
+    return nil unless fulltext_screenings_citations_project
+
+    create_draft_asr(
+      fulltext_screening:,
+      fulltext_screenings_citations_project:,
+      fulltext_screenings_projects_users_role:
+    )
   end
 end

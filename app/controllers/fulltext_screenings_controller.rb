@@ -60,7 +60,7 @@ class FulltextScreeningsController < ApplicationController
       @random_citation = @fulltext_screening_result.citation
     end
 
-    get_next_fulltext_screening_result if @fulltext_screening_result.nil? || payload[:label_value].present?
+    next_fulltext_screening_result if @fulltext_screening_result.nil? || payload[:label_value].present?
 
     prepare_json_label_data
   end
@@ -72,14 +72,15 @@ class FulltextScreeningsController < ApplicationController
 
   def rescreen
     @fulltext_screening = FulltextScreening.find(params[:fulltext_screening_id])
-    asr_id = params[:fulltext_screening_result_id]
+    fulltext_screening_result_id = params[:fulltext_screening_result_id]
     previous = params[:previous]
 
     session[:fulltext_screening_result_id] =
-      if asr_id != 'null' && previous
-        FulltextScreeningResult.users_previous_asr_id(asr_id, fulltext_screenings_projects_users_role) || asr_id
-      elsif asr_id != 'null'
-        FulltextScreeningResult.find(asr_id).user == current_user ? asr_id : nil
+      if fulltext_screening_result_id != 'null' && previous
+        FulltextScreeningResult.users_previous_fulltext_screening_result_id(fulltext_screening_result_id,
+                                                                            fulltext_screenings_projects_users_role) || fulltext_screening_result_id
+      elsif fulltext_screening_result_id != 'null'
+        FulltextScreeningResult.find(fulltext_screening_result_id).user == current_user ? fulltext_screening_result_id : nil
       end
     session.delete(:fulltext_screening_result_id) if session[:fulltext_screening_result_id].nil?
     authorize(FulltextScreeningResult.find(session[:fulltext_screening_result_id]),
@@ -171,69 +172,17 @@ class FulltextScreeningsController < ApplicationController
     strong_params
   end
 
-  def get_next_fulltext_screening_result
-    helpers.hello
-    # TODO
-    # If there's a asr_id, serve it
-    # If there is an unfinished result, serve it
-    # if it's single or double perpetual, find one from the open pool and change it's status to partially screened
-    # if it's a pilot, get one from the pilot pool
-
-    @asr_id = session[:fulltext_screening_result_id]
-    if @asr_id
-      session.delete(:fulltext_screening_result_id)
-      @fulltext_screening_result = FulltextScreeningResult.find(@asr_id)
-      @fulltext_screening = @fulltext_screening_result.fulltext_screening
-      @random_citation = @fulltext_screening_result.citation
-      @fulltext_screenings_citations_project = @fulltext_screening_result.fulltext_screenings_citations_project
-    elsif @fulltext_screening_result = FulltextScreeningResult.find_unfinished_fulltext_screening_result(
-      @fulltext_screening, fulltext_screenings_projects_users_role
+  def next_fulltext_screening_result
+    @fulltext_screening_result_id = session[:fulltext_screening_result_id]
+    session.delete(:fulltext_screening_result_id)
+    @fulltext_screening_result = FulltextScreeningResult.next_fulltext_screening_result(
+      fulltext_screening: @fulltext_screening,
+      fulltext_screening_result_id: @fulltext_screening_result_id,
+      fulltext_screenings_projects_users_role:
     )
-      @fulltext_screening = @fulltext_screening_result.fulltext_screening
-      @random_citation = @fulltext_screening_result.citation
-      @fulltext_screenings_citations_project = @fulltext_screening_result.fulltext_screenings_citations_project
-    elsif @fulltext_screening.fulltext_screening_type == FulltextScreening::SINGLE_PERPETUAL ||
-          @fulltext_screening.fulltext_screening_type == FulltextScreening::DOUBLE_PERPETUAL
-      citations_project =
-        @fulltext_screening
-        .project.citations_projects
-        .where(screening_status: CitationsProject::FULLTEXT_SCREENING_UNSCREENED)
-        .sample
-      citations_project.update(screening_status: CitationsProject::FULLTEXT_SCREENING_PARTIALLY_SCREENED)
-      @random_citation = citations_project.citation
-
-      @fulltext_screenings_citations_project =
-        @fulltext_screening
-        .fulltext_screenings_citations_projects
-        .find_or_create_by(
-          fulltext_screening:
-          @fulltext_screening,
-          citations_project:
-            CitationsProject.find_by(
-              project: @fulltext_screening.project, citation: @random_citation
-            )
-        )
-
-      @fulltext_screening_result =
-        @fulltext_screening
-        .fulltext_screening_results
-        .create!(label: nil, fulltext_screenings_citations_project: @fulltext_screenings_citations_project,
-                 fulltext_screenings_projects_users_role:)
-    else # TODO: CHECK THIS LOGIC
-      @fulltext_screenings_citations_project =
-        FulltextScreeningsCitationsProject
-        .joins(:fulltext_screening, :citations_project)
-        .left_joins(:fulltext_screening_results)
-        .where(fulltext_screening: @fulltext_screening)
-        .where(fulltext_screening_results: { label: nil })
-        .where(citations_projects: { screening_status: CitationsProject::FULLTEXT_SCREENING_UNSCREENED }).sample
-      @fulltext_screening_result =
-        @fulltext_screening
-        .fulltext_screening_results
-        .create!(label: nil, fulltext_screenings_citations_project: @fulltext_screenings_citations_project,
-                 fulltext_screenings_projects_users_role:)
-      @random_citation = @fulltext_screening_result.citation
-    end
+    @fulltext_screening = @fulltext_screening_result.fulltext_screening
+    @fulltext_screenings_citations_project = @fulltext_screening_result.fulltext_screenings_citations_project
+    @random_citation = @fulltext_screening_result.citation
   end
 
   def label_params
