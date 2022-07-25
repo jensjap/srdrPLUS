@@ -135,21 +135,21 @@ class AbstractScreeningResult < ApplicationRecord
   end
 
   def self.find_by_double_perpetual(abstract_screening, abstract_screenings_projects_users_role)
+    processed_citations_project_ids = abstract_screenings_projects_users_role.abstract_screening_results.map(&:citations_project).map(&:id)
     citations_project =
       abstract_screening
       .project
       .citations_projects
       .joins(:abstract_screening_results)
       .where(screening_status: CitationsProject::ABSTRACT_SCREENING_PARTIALLY_SCREENED)
-      .where.not(abstract_screening_results: { abstract_screenings_projects_users_role: :abstract_screenings_projects_users_role })
-      .sample
-
+      .where.not({ id: processed_citations_project_ids })
+      .first
     citations_project ||=
       abstract_screening
       .project
       .citations_projects
       .where(screening_status: CitationsProject::CITATION_POOL)
-      .sample
+      .first
     return nil unless citations_project
 
     citations_project.update(screening_status: CitationsProject::ABSTRACT_SCREENING_PARTIALLY_SCREENED)

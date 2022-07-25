@@ -5,7 +5,7 @@ json.custom_tags @custom_tags
 json.notes @abstract_screening_result.note&.value || ''
 json.label_value @abstract_screening_result.label
 json.word_weights @abstract_screenings_projects_users_role.word_weights_object
-json.rescreen @abstract_screening_result_id
+json.rescreen @abstract_screening_result.id
 json.abstract_screening_result_id @abstract_screening_result.id
 json.citation do
   json.abstract_screening_id @abstract_screening.id

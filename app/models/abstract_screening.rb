@@ -53,16 +53,25 @@ class AbstractScreening < ApplicationRecord
     case abstract_screening_type
     when SINGLE_PERPETUAL, PILOT
       if abstract_screening_result.label == 1
-        abstract_screening_result.citations_project.update(screening_status: CitationsProject::FULLTEXT_SCREENING_UNSCREENED)
+        abstract_screening_result.citations_project.update(screening_status: CitationsProject::ABSTRACT_SCREENING_ACCEPTED)
       elsif abstract_screening_result.label == -1
         abstract_screening_result.citations_project.update(screening_status: CitationsProject::ABSTRACT_SCREENING_REJECTED)
+      else
+        abstract_screening_result.citations_project.update(screening_status: CitationsProject::ABSTRACT_SCREENING_PARTIALLY_SCREENED)
       end
     when DOUBLE_PERPETUAL
-      score = abstract_screening_result.citations_project.abstract_screening_results.sum(:label)
-      if score >= 2
-        abstract_screening_result.citations_project.update(screening_status: CitationsProject::FULLTEXT_SCREENING_UNSCREENED)
-      elsif score <= -2
-        abstract_screening_result.citations_project.update(screening_status: CitationsProject::ABSTRACT_SCREENING_REJECTED)
+      citations_project = abstract_screening_result.citations_project
+      abstract_screening_results = citations_project.abstract_screening_results
+      count = abstract_screening_results.count { |asr| !asr.label.nil? }
+      score = abstract_screening_results.sum { |asr| asr.label.nil? ? 0 : asr.label }
+      if count >= 2 && count == score
+        citations_project.update(screening_status: CitationsProject::ABSTRACT_SCREENING_ACCEPTED)
+      elsif count >= 2 && count != score
+        citations_project.update(screening_status: CitationsProject::ABSTRACT_SCREENING_IN_CONFLICT)
+      elsif count >= 2 && count == -score
+        citations_project.update(screening_status: CitationsProject::ABSTRACT_SCREENING_REJECTED)
+      elsif count < 2
+        citations_project.update(screening_status: CitationsProject::ABSTRACT_SCREENING_PARTIALLY_SCREENED)
       end
     end
   end

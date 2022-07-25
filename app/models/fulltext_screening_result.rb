@@ -84,12 +84,12 @@ class FulltextScreeningResult < ApplicationRecord
       fulltext_screening, fulltext_screenings_projects_users_role
     )
       fulltext_screening_result
-    elsif fulltext_screening.fulltext_screening_type == AbstractScreening::SINGLE_PERPETUAL
+    elsif fulltext_screening.fulltext_screening_type == FulltextScreening::SINGLE_PERPETUAL
       find_by_single_perpetual(
         fulltext_screening,
         fulltext_screenings_projects_users_role
       )
-    elsif fulltext_screening.fulltext_screening_type == AbstractScreening::DOUBLE_PERPETUAL
+    elsif fulltext_screening.fulltext_screening_type == FulltextScreening::DOUBLE_PERPETUAL
       find_by_double_perpetual(
         fulltext_screening,
         fulltext_screenings_projects_users_role
@@ -135,21 +135,21 @@ class FulltextScreeningResult < ApplicationRecord
   end
 
   def self.find_by_double_perpetual(fulltext_screening, fulltext_screenings_projects_users_role)
+    processed_citations_project_ids = fulltext_screenings_projects_users_role.fulltext_screening_results.map(&:citations_project).map(&:id)
     citations_project =
       fulltext_screening
       .project
       .citations_projects
       .joins(:fulltext_screening_results)
       .where(screening_status: CitationsProject::FULLTEXT_SCREENING_PARTIALLY_SCREENED)
-      .where.not(fulltext_screening_results: { fulltext_screenings_projects_users_role: :fulltext_screenings_projects_users_role })
-      .sample
-
+      .where.not({ id: processed_citations_project_ids })
+      .first
     citations_project ||=
       fulltext_screening
       .project
       .citations_projects
       .where(screening_status: CitationsProject::CITATION_POOL)
-      .sample
+      .first
     return nil unless citations_project
 
     citations_project.update(screening_status: CitationsProject::FULLTEXT_SCREENING_PARTIALLY_SCREENED)
@@ -170,7 +170,7 @@ class FulltextScreeningResult < ApplicationRecord
 
   def self.find_by_pilot(fulltext_screening, fulltext_screenings_projects_users_role)
     fulltext_screenings_citations_project =
-      AbstractScreeningsCitationsProject
+      FulltextScreeningsCitationsProject
       .joins(:fulltext_screening, :citations_project)
       .left_joins(:fulltext_screening_results)
       .where(fulltext_screening:)

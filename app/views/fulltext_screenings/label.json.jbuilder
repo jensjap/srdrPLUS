@@ -4,7 +4,7 @@ json.custom_reasons @custom_reasons
 json.custom_tags @custom_tags
 json.notes @fulltext_screening_result.note&.value || ''
 json.label_value @fulltext_screening_result.label
-json.rescreen @abstract_screening_result_id
+json.rescreen @fulltext_screening.id
 json.fulltext_screening_result_id @fulltext_screening_result.id
 json.citation do
   json.fulltext_screening_id @fulltext_screening.id
