@@ -84,7 +84,9 @@ class AbstractScreeningsController < ApplicationController
       @random_citation = @abstract_screening_result.citation
     end
 
-    next_abstract_screening_result if @abstract_screening_result.nil? || payload[:label_value].present?
+    if (@abstract_screening_result.nil? || payload[:label_value].present?) && !next_abstract_screening_result
+      return render json: { noResults: true }
+    end
 
     prepare_json_label_data
   end
@@ -128,6 +130,7 @@ class AbstractScreeningsController < ApplicationController
       .order(created_at: :desc)
       .page(params[:page])
       .per(5)
+    flash.now[:notice] = 'There are no citations left to screen' if params[:screeningFinished]
   end
 
   def update
@@ -204,6 +207,8 @@ class AbstractScreeningsController < ApplicationController
       abstract_screening_result_id: @abstract_screening_result_id,
       abstract_screenings_projects_users_role:
     )
+    return nil unless @abstract_screening_result
+
     @abstract_screening = @abstract_screening_result.abstract_screening
     @abstract_screenings_citations_project = @abstract_screening_result.abstract_screenings_citations_project
     @random_citation = @abstract_screening_result.citation

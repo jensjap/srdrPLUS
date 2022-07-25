@@ -583,6 +583,10 @@
         if (submit) {
           await this.showConfirmation(this.label_value);
         }
+        if (data.noResults) {
+          return (window.location.href =
+            "<%= abstract_screening_path(params[:abstract_screening_id], screeningFinished: true) %>");
+        }
         this.label_value = submit
           ? data.label_value
           : data.rescreen

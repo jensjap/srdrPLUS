@@ -123,4 +123,10 @@ class AbstractScreening < ApplicationRecord
     reqs << 'Maybe' if maybe_note_required
     reqs
   end
+
+  def finished?
+    citations_projects.any? do |cp|
+      [CitationsProject::CITATION_POOL, CitationsProject::ABSTRACT_SCREENING_UNSCREENED].include?(cp.screening_status)
+    end
+  end
 end
