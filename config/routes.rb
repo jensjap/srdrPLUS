@@ -166,7 +166,7 @@ Rails.application.routes.draw do
   resources :data_audits, only: %i[index update]
   resources :projects, concerns: :paginatable, shallow: true do
     resources :abstract_screenings do
-      post 'rescreen', to: 'abstract_screenings#rescreen'
+      get 'rescreen', to: 'abstract_screenings#rescreen'
       get 'screen', to: 'abstract_screenings#screen'
       post 'label', to: 'abstract_screenings#label'
       post 'update_word_weight', to: 'abstract_screenings#update_word_weight'
@@ -175,7 +175,7 @@ Rails.application.routes.draw do
     get 'kpis', to: 'abstract_screenings#kpis'
 
     resources :fulltext_screenings do
-      post 'rescreen', to: 'fulltext_screenings#rescreen'
+      get 'rescreen', to: 'fulltext_screenings#rescreen'
       get 'screen', to: 'fulltext_screenings#screen'
       post 'label', to: 'fulltext_screenings#label'
     end
