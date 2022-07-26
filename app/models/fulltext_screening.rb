@@ -36,8 +36,8 @@ class FulltextScreening < ApplicationRecord
   validates_presence_of :fulltext_screening_type
 
   belongs_to :project
-  has_many :fulltext_screenings_citations_projects
-  has_many :citations_projects, through: :fulltext_screenings_citations_projects
+  has_many :citations_projects_fulltext_screenings
+  has_many :citations_projects, through: :citations_projects_fulltext_screenings
   has_many :citations, through: :citations_projects
   has_many :fulltext_screenings_projects_users_roles
   has_many :projects_users_roles, through: :fulltext_screenings_projects_users_roles
@@ -96,7 +96,7 @@ class FulltextScreening < ApplicationRecord
     no_of_citations_to_add = no_of_citations - citations.count
     return unless no_of_citations_to_add.positive?
 
-    cps = project.citations_projects.where(screening_status: CitationsProject::CITATION_POOL).limit(no_of_citations_to_add)
+    cps = project.citations_projects.where(screening_status: CitationsProject::ABSTRACT_SCREENING_ACCEPTED).limit(no_of_citations_to_add)
     citations_projects << cps
     cps.update_all(screening_status: CitationsProject::FULLTEXT_SCREENING_UNSCREENED)
   end

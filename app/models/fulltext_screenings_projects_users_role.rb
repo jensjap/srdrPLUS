@@ -20,6 +20,7 @@ class FulltextScreeningsProjectsUsersRole < ApplicationRecord
                                                              inverse_of: :fulltext_screenings_projects_users_role
   has_many :reasons, through: :fulltext_screenings_projects_users_role_reasons
   has_many :tags, through: :fulltext_screenings_projects_users_role_tags
+  has_many :fulltext_screening_results, dependent: :destroy, inverse_of: :fulltext_screenings_projects_users_role
 
   def process_reasons(asr, predefined_reasons, custom_reasons)
     asr.reasons.destroy_all

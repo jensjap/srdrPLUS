@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: fulltext_screenings_citations_projects
+# Table name: citations_projects_fulltext_screenings
 #
 #  id                    :bigint           not null, primary key
 #  fulltext_screening_id :bigint           not null
@@ -8,9 +8,9 @@
 #  created_at            :datetime         not null
 #  updated_at            :datetime         not null
 #
-class FulltextScreeningsCitationsProject < ApplicationRecord
+class CitationsProjectsFulltextScreening < ApplicationRecord
   belongs_to :fulltext_screening
   belongs_to :citations_project
-  has_many :fulltext_screening_results, dependent: :destroy, inverse_of: :fulltext_screenings_citations_project
+  has_many :fulltext_screening_results, dependent: :destroy, inverse_of: :citations_projects_fulltext_screening
   has_one :citation, through: :citations_project
 end

@@ -5,17 +5,17 @@
 #  id                                         :bigint           not null, primary key
 #  fulltext_screening_id                      :bigint
 #  fulltext_screenings_projects_users_role_id :bigint
-#  fulltext_screenings_citations_project_id   :bigint
+#  citations_projects_fulltext_screening_id   :bigint
 #  label                                      :integer
 #  created_at                                 :datetime         not null
 #  updated_at                                 :datetime         not null
 #
 class FulltextScreeningResult < ApplicationRecord
   belongs_to :fulltext_screening
-  belongs_to :fulltext_screenings_citations_project
+  belongs_to :citations_projects_fulltext_screening
   belongs_to :fulltext_screenings_projects_users_role
 
-  has_one :citations_project, through: :fulltext_screenings_citations_project
+  has_one :citations_project, through: :citations_projects_fulltext_screening
   has_one :citation, through: :citations_project
   has_one :projects_users_role, through: :fulltext_screenings_projects_users_role
   has_one :projects_user, through: :projects_users_role
@@ -61,14 +61,14 @@ class FulltextScreeningResult < ApplicationRecord
 
   def self.create_draft_asr(
     fulltext_screening:,
-    fulltext_screenings_citations_project:,
+    citations_projects_fulltext_screening:,
     fulltext_screenings_projects_users_role:
   )
     fulltext_screening
       .fulltext_screening_results
       .create!(
         label: nil,
-        fulltext_screenings_citations_project:,
+        citations_projects_fulltext_screening:,
         fulltext_screenings_projects_users_role:
       )
   end
@@ -120,16 +120,16 @@ class FulltextScreeningResult < ApplicationRecord
 
     citations_project.update(screening_status: CitationsProject::FULLTEXT_SCREENING_PARTIALLY_SCREENED)
 
-    fulltext_screenings_citations_project =
+    citations_projects_fulltext_screening =
       fulltext_screening
-      .fulltext_screenings_citations_projects
+      .citations_projects_fulltext_screenings
       .find_or_create_by(
         fulltext_screening:,
         citations_project:
       )
     create_draft_asr(
       fulltext_screening:,
-      fulltext_screenings_citations_project:,
+      citations_projects_fulltext_screening:,
       fulltext_screenings_projects_users_role:
     )
   end
@@ -140,7 +140,6 @@ class FulltextScreeningResult < ApplicationRecord
       fulltext_screening
       .project
       .citations_projects
-      .joins(:fulltext_screening_results)
       .where(screening_status: CitationsProject::FULLTEXT_SCREENING_PARTIALLY_SCREENED)
       .where.not({ id: processed_citations_project_ids })
       .first
@@ -148,44 +147,52 @@ class FulltextScreeningResult < ApplicationRecord
       fulltext_screening
       .project
       .citations_projects
-      .where(screening_status: CitationsProject::CITATION_POOL)
+      .where(screening_status: CitationsProject::ABSTRACT_SCREENING_ACCEPTED)
       .first
     return nil unless citations_project
 
     citations_project.update(screening_status: CitationsProject::FULLTEXT_SCREENING_PARTIALLY_SCREENED)
 
-    fulltext_screenings_citations_project =
+    citations_projects_fulltext_screening =
       fulltext_screening
-      .fulltext_screenings_citations_projects
+      .citations_projects_fulltext_screenings
       .find_or_create_by(
         fulltext_screening:,
         citations_project:
       )
     create_draft_asr(
       fulltext_screening:,
-      fulltext_screenings_citations_project:,
+      citations_projects_fulltext_screening:,
       fulltext_screenings_projects_users_role:
     )
   end
 
   def self.find_by_pilot(fulltext_screening, fulltext_screenings_projects_users_role)
-    fulltext_screenings_citations_project =
-      FulltextScreeningsCitationsProject
-      .joins(:fulltext_screening, :citations_project)
-      .left_joins(:fulltext_screening_results)
-      .where(fulltext_screening:)
-      .where(fulltext_screening_results: { label: nil })
-      .where(citations_projects: { screening_status: [
-               CitationsProject::CITATION_POOL,
-               CitationsProject::FULLTEXT_SCREENING_PARTIALLY_SCREENED,
-               CitationsProject::FULLTEXT_SCREENING_UNSCREENED
-             ] })
-      .sample
-    return nil unless fulltext_screenings_citations_project
+    processed_cp_ids = fulltext_screenings_projects_users_role.fulltext_screening_results.map(&:citations_project).map(&:id)
+    citations_project =
+      fulltext_screening
+      .citations_projects
+      .where(screening_status: CitationsProject::FULLTEXT_SCREENING_PARTIALLY_SCREENED)
+      .where.not({ id: processed_cp_ids })
+      .first
+    citations_project ||=
+      fulltext_screening
+      .citations_projects
+      .where(screening_status: CitationsProject::FULLTEXT_SCREENING_UNSCREENED)
+      .first
+    return nil unless citations_project
+
+    citations_projects_fulltext_screening =
+      fulltext_screening
+      .citations_projects_fulltext_screenings
+      .find_or_create_by(
+        fulltext_screening:,
+        citations_project:
+      )
 
     create_draft_asr(
       fulltext_screening:,
-      fulltext_screenings_citations_project:,
+      citations_projects_fulltext_screening:,
       fulltext_screenings_projects_users_role:
     )
   end

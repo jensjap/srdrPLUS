@@ -66,6 +66,8 @@ class CitationsProject < ApplicationRecord
   has_many :extractions, dependent: :destroy
   has_many :abstract_screenings_citations_projects
   has_many :abstract_screening_results, through: :abstract_screenings_citations_projects
+  has_many :citations_projects_fulltext_screenings
+  has_many :fulltext_screening_results, through: :citations_projects_fulltext_screenings
 
   # TODO
   has_many :labels, dependent: :destroy
@@ -74,6 +76,7 @@ class CitationsProject < ApplicationRecord
   has_many :tags, through: :taggings
 
   has_and_belongs_to_many :abstract_screenings
+  has_and_belongs_to_many :fulltext_screenings
 
   accepts_nested_attributes_for :citation, reject_if: :all_blank
 

@@ -135,14 +135,13 @@ class AbstractScreeningResult < ApplicationRecord
   end
 
   def self.find_by_double_perpetual(abstract_screening, abstract_screenings_projects_users_role)
-    processed_citations_project_ids = abstract_screenings_projects_users_role.abstract_screening_results.map(&:citations_project).map(&:id)
+    processed_cp_ids = abstract_screenings_projects_users_role.abstract_screening_results.map(&:citations_project).map(&:id)
     citations_project =
       abstract_screening
       .project
       .citations_projects
-      .joins(:abstract_screening_results)
       .where(screening_status: CitationsProject::ABSTRACT_SCREENING_PARTIALLY_SCREENED)
-      .where.not({ id: processed_citations_project_ids })
+      .where.not({ id: processed_cp_ids })
       .first
     citations_project ||=
       abstract_screening
@@ -169,19 +168,27 @@ class AbstractScreeningResult < ApplicationRecord
   end
 
   def self.find_by_pilot(abstract_screening, abstract_screenings_projects_users_role)
+    processed_cp_ids = abstract_screenings_projects_users_role.abstract_screening_results.map(&:citations_project).map(&:id)
+    citations_project =
+      abstract_screening
+      .citations_projects
+      .where(screening_status: CitationsProject::ABSTRACT_SCREENING_PARTIALLY_SCREENED)
+      .where.not({ id: processed_cp_ids })
+      .first
+    citations_project ||=
+      abstract_screening
+      .citations_projects
+      .where(screening_status: CitationsProject::CITATION_POOL)
+      .first
+    return nil unless citations_project
+
     abstract_screenings_citations_project =
-      AbstractScreeningsCitationsProject
-      .joins(:abstract_screening, :citations_project)
-      .left_joins(:abstract_screening_results)
-      .where(abstract_screening:)
-      .where(abstract_screening_results: { label: nil })
-      .where(citations_projects: { screening_status: [
-               CitationsProject::CITATION_POOL,
-               CitationsProject::ABSTRACT_SCREENING_PARTIALLY_SCREENED,
-               CitationsProject::ABSTRACT_SCREENING_UNSCREENED
-             ] })
-      .sample
-    return nil unless abstract_screenings_citations_project
+      abstract_screening
+      .abstract_screenings_citations_projects
+      .find_or_create_by(
+        abstract_screening:,
+        citations_project:
+      )
 
     create_draft_asr(
       abstract_screening:,

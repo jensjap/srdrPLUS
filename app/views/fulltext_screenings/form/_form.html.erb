@@ -21,7 +21,9 @@
       <div>Fulltext Screening Type</div>
       <%= render 'components/single_select' %>
     </div>
-    <template x-if="fulltext_screening.fulltext_screening_type == 'pilot'">
+    <template
+      x-if="fulltext_screening.fulltext_screening_type.selection.key == 'pilot'"
+    >
       <div class="mb-4">
         <label for="no_of_citations"
           >Maximum number of citations (1..100,000) drawn from the citations

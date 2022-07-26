@@ -8,7 +8,7 @@ json.rescreen @fulltext_screening.id
 json.fulltext_screening_result_id @fulltext_screening_result.id
 json.citation do
   json.fulltext_screening_id @fulltext_screening.id
-  json.fulltext_screenings_citations_project_id @fulltext_screenings_citations_project.id
+  json.citations_projects_fulltext_screening_id @citations_projects_fulltext_screening.id
   json.title @random_citation.name
   json.journal @fulltext_screening.hide_journal ? '<hidden>' : @random_citation.journal.name
   json.authors @fulltext_screening.hide_author ? '<hidden>' : @random_citation.author_map_string

@@ -346,6 +346,16 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_19_053506) do
     t.index ["screening_status"], name: "index_citations_projects_on_screening_status"
   end
 
+  create_table "citations_projects_fulltext_screenings", charset: "utf8mb3", force: :cascade do |t|
+    t.bigint "fulltext_screening_id", null: false
+    t.bigint "citations_project_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["citations_project_id", "fulltext_screening_id"], name: "cp_id_on_fts_id", unique: true
+    t.index ["citations_project_id"], name: "cpfts_on_cp"
+    t.index ["fulltext_screening_id"], name: "cpfts_on_fts"
+  end
+
   create_table "citations_tasks", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "citation_id"
     t.integer "task_id"
@@ -860,12 +870,12 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_19_053506) do
   create_table "fulltext_screening_results", charset: "utf8mb3", force: :cascade do |t|
     t.bigint "fulltext_screening_id"
     t.bigint "fulltext_screenings_projects_users_role_id"
-    t.bigint "fulltext_screenings_citations_project_id"
+    t.bigint "citations_projects_fulltext_screening_id"
     t.integer "label", limit: 1
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["citations_projects_fulltext_screening_id"], name: "ftsr_on_cpfts"
     t.index ["fulltext_screening_id"], name: "index_fulltext_screening_results_on_fulltext_screening_id"
-    t.index ["fulltext_screenings_citations_project_id"], name: "ftsr_on_ftscp"
     t.index ["fulltext_screenings_projects_users_role_id"], name: "ftsr_on_ftspur"
   end
 
@@ -910,16 +920,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_19_053506) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["project_id"], name: "index_fulltext_screenings_on_project_id"
-  end
-
-  create_table "fulltext_screenings_citations_projects", charset: "utf8mb3", force: :cascade do |t|
-    t.bigint "fulltext_screening_id", null: false
-    t.bigint "citations_project_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["citations_project_id", "fulltext_screening_id"], name: "cp_id_on_fts_id", unique: true
-    t.index ["citations_project_id"], name: "ftscp_on_cp"
-    t.index ["fulltext_screening_id"], name: "ftscp_on_fts"
   end
 
   create_table "fulltext_screenings_projects_users_role_reasons", charset: "utf8mb3", force: :cascade do |t|

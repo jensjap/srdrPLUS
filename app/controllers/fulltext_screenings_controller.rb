@@ -56,11 +56,13 @@ class FulltextScreeningsController < ApplicationController
       @fulltext_screening_result.process_payload(
         payload, fulltext_screenings_projects_users_role
       )
-      @fulltext_screenings_citations_project = @fulltext_screening_result.fulltext_screenings_citations_project
+      @citations_projects_fulltext_screening = @fulltext_screening_result.citations_projects_fulltext_screening
       @random_citation = @fulltext_screening_result.citation
     end
 
-    next_fulltext_screening_result if @fulltext_screening_result.nil? || payload[:label_value].present?
+    if (@fulltext_screening_result.nil? || payload[:label_value].present?) && !next_fulltext_screening_result
+      return render json: { noResults: true }
+    end
 
     prepare_json_label_data
   end
@@ -104,6 +106,7 @@ class FulltextScreeningsController < ApplicationController
       .order(created_at: :desc)
       .page(params[:page])
       .per(5)
+    flash.now[:notice] = 'There are no citations left to screen' if params[:screeningFinished]
   end
 
   def update
@@ -180,8 +183,10 @@ class FulltextScreeningsController < ApplicationController
       fulltext_screening_result_id: @fulltext_screening_result_id,
       fulltext_screenings_projects_users_role:
     )
+    return nil unless @fulltext_screening_result
+
     @fulltext_screening = @fulltext_screening_result.fulltext_screening
-    @fulltext_screenings_citations_project = @fulltext_screening_result.fulltext_screenings_citations_project
+    @citations_projects_fulltext_screening = @fulltext_screening_result.citations_projects_fulltext_screening
     @random_citation = @fulltext_screening_result.citation
   end
 
@@ -191,7 +196,7 @@ class FulltextScreeningsController < ApplicationController
         data: [
           :label_value, :notes, :fulltext_screening_result_id, :rescreen, {
             predefined_reasons: {}, custom_reasons: {}, predefined_tags: {},
-            custom_tags: {}, citation: [:fulltext_screenings_citations_project_id]
+            custom_tags: {}, citation: [:citations_projects_fulltext_screening_id]
           }
         ]
       )
