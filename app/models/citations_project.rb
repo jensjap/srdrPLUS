@@ -34,20 +34,6 @@ class CitationsProject < ApplicationRecord
   DATA_EXTRACTION_IN_PROGRESS = 'DEIP'.freeze
   COMPLETED = 'C'.freeze
 
-  SCREENING_STATUS_ORDER = [
-    CITATION_POOL,
-    ABSTRACT_SCREENING_UNSCREENED,
-    ABSTRACT_SCREENING_PARTIALLY_SCREENED,
-    ABSTRACT_SCREENING_REJECTED,
-    ABSTRACT_SCREENING_IN_CONFLICT,
-    FULLTEXT_SCREENING_UNSCREENED,
-    FULLTEXT_SCREENING_PARTIALLY_SCREENED,
-    FULLTEXT_SCREENING_REJECTED,
-    FULLTEXT_SCREENING_IN_CONFLICT,
-    DATA_EXTRACTION_NOT_YET_EXTRACTED,
-    DATA_EXTRACTION_IN_PROGRESS,
-    COMPLETED
-  ].freeze
   DEMOTE = 'demote'.freeze
   PROMOTE = 'promote'.freeze
 
@@ -107,30 +93,6 @@ class CitationsProject < ApplicationRecord
     end
   end
 
-  def demote
-    index = SCREENING_STATUS_ORDER.index(screening_status)
-    case index
-    when 0
-      nil
-    when 1..4
-      update(screening_status: SCREENING_STATUS_ORDER[3])
-    when 5..8
-      update(screening_status: SCREENING_STATUS_ORDER[7])
-    when 9..10
-      update(screening_status: SCREENING_STATUS_ORDER[7])
-    end
-  end
-
-  def promote
-    index = SCREENING_STATUS_ORDER.index(screening_status)
-    case index
-    when 0, 1..4
-      update(screening_status: SCREENING_STATUS_ORDER[5])
-    when 5..8
-      update(screening_status: SCREENING_STATUS_ORDER[9])
-    end
-  end
-
   def self.dedupe_update_associations(master_cp, cp_to_remove)
     cp_to_remove.extractions.each do |e|
       e.dup.update_attributes(citations_project_id: master_cp.id)
@@ -143,6 +105,72 @@ class CitationsProject < ApplicationRecord
     end
     cp_to_remove.taggings.each do |t|
       t.dup.update_attributes(taggable_id: master_cp.id)
+    end
+  end
+
+  def promote
+    case screening_status
+    when CITATION_POOL
+      update(screening_status: ABSTRACT_SCREENING_UNSCREENED)
+    when ABSTRACT_SCREENING_UNSCREENED
+      update(screening_status: ABSTRACT_SCREENING_PARTIALLY_SCREENED)
+    when ABSTRACT_SCREENING_PARTIALLY_SCREENED
+      update(screening_status: ABSTRACT_SCREENING_REJECTED)
+    when ABSTRACT_SCREENING_REJECTED
+      update(screening_status: ABSTRACT_SCREENING_IN_CONFLICT)
+    when ABSTRACT_SCREENING_IN_CONFLICT
+      update(screening_status: ABSTRACT_SCREENING_ACCEPTED)
+    when ABSTRACT_SCREENING_ACCEPTED
+      update(screening_status: FULLTEXT_SCREENING_UNSCREENED)
+    when FULLTEXT_SCREENING_UNSCREENED
+      update(screening_status: FULLTEXT_SCREENING_PARTIALLY_SCREENED)
+    when FULLTEXT_SCREENING_PARTIALLY_SCREENED
+      update(screening_status: FULLTEXT_SCREENING_REJECTED)
+    when FULLTEXT_SCREENING_REJECTED
+      update(screening_status: FULLTEXT_SCREENING_IN_CONFLICT)
+    when FULLTEXT_SCREENING_IN_CONFLICT
+      update(screening_status: FULLTEXT_SCREENING_ACCEPTED)
+    when FULLTEXT_SCREENING_ACCEPTED
+      update(screening_status: DATA_EXTRACTION_NOT_YET_EXTRACTED)
+    when DATA_EXTRACTION_NOT_YET_EXTRACTED
+      update(screening_status: DATA_EXTRACTION_IN_PROGRESS)
+    when DATA_EXTRACTION_IN_PROGRESS
+      update(screening_status: COMPLETED)
+    when COMPLETED
+      update(screening_status: COMPLETED)
+    end
+  end
+
+  def demote
+    case screening_status
+    when CITATION_POOL
+      update(screening_status: CITATION_POOL)
+    when ABSTRACT_SCREENING_UNSCREENED
+      update(screening_status: CITATION_POOL)
+    when ABSTRACT_SCREENING_PARTIALLY_SCREENED
+      update(screening_status: ABSTRACT_SCREENING_UNSCREENED)
+    when ABSTRACT_SCREENING_REJECTED
+      update(screening_status: ABSTRACT_SCREENING_PARTIALLY_SCREENED)
+    when ABSTRACT_SCREENING_IN_CONFLICT
+      update(screening_status: ABSTRACT_SCREENING_REJECTED)
+    when ABSTRACT_SCREENING_ACCEPTED
+      update(screening_status: ABSTRACT_SCREENING_IN_CONFLICT)
+    when FULLTEXT_SCREENING_UNSCREENED
+      update(screening_status: ABSTRACT_SCREENING_ACCEPTED)
+    when FULLTEXT_SCREENING_PARTIALLY_SCREENED
+      update(screening_status: FULLTEXT_SCREENING_UNSCREENED)
+    when FULLTEXT_SCREENING_REJECTED
+      update(screening_status: FULLTEXT_SCREENING_PARTIALLY_SCREENED)
+    when FULLTEXT_SCREENING_IN_CONFLICT
+      update(screening_status: FULLTEXT_SCREENING_REJECTED)
+    when FULLTEXT_SCREENING_ACCEPTED
+      update(screening_status: FULLTEXT_SCREENING_IN_CONFLICT)
+    when DATA_EXTRACTION_NOT_YET_EXTRACTED
+      update(screening_status: FULLTEXT_SCREENING_ACCEPTED)
+    when DATA_EXTRACTION_IN_PROGRESS
+      update(screening_status: DATA_EXTRACTION_NOT_YET_EXTRACTED)
+    when COMPLETED
+      update(screening_status: DATA_EXTRACTION_IN_PROGRESS)
     end
   end
 end

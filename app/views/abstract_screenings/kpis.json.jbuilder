@@ -1,9 +1,13 @@
-json.cp @project
+json.count(@project
   .citations_projects
-  .count
-json.asu(@project.citations_projects.count - @project
+  .count)
+json.cp(@project
   .citations_projects
-  .where.not(citations_projects: { screening_status: CitationsProject::CITATION_POOL })
+  .where(citations_projects: { screening_status: CitationsProject::CITATION_POOL })
+  .count)
+json.asu(@project
+  .citations_projects
+  .where(citations_projects: { screening_status: CitationsProject::ABSTRACT_SCREENING_UNSCREENED })
   .count)
 json.asps @project
   .citations_projects
@@ -21,16 +25,9 @@ json.asa @project
   .citations_projects
   .where(citations_projects: { screening_status: CitationsProject::ABSTRACT_SCREENING_ACCEPTED })
   .count
-json.ftu(@project.citations_projects.count - @project
+json.ftu(@project
   .citations_projects
-  .where.not(citations_projects: { screening_status:
-    [
-      CitationsProject::CITATION_POOL,
-      CitationsProject::ABSTRACT_SCREENING_UNSCREENED,
-      CitationsProject::ABSTRACT_SCREENING_PARTIALLY_SCREENED,
-      CitationsProject::ABSTRACT_SCREENING_REJECTED,
-      CitationsProject::ABSTRACT_SCREENING_IN_CONFLICT
-    ] })
+  .where(citations_projects: { screening_status: CitationsProject::FULLTEXT_SCREENING_UNSCREENED })
   .count)
 json.ftps @project
   .citations_projects

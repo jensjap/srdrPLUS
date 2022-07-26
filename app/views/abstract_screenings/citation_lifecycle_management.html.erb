@@ -101,59 +101,85 @@
                   <template x-for="citations_project in citations_projects">
                     <tr>
                       <td
-                        class="py-4 pl-4 pr-3 text-sm text-gray-500 sm:pl-6"
+                        class="pl-4 pr-3 text-sm text-gray-500 sm:pl-6"
                         x-text="citations_project.accession_number_alts"
                       ></td>
                       <td
-                        class="px-3 py-4 text-sm text-gray-500"
+                        class="px-3 text-sm text-gray-500"
                         x-text="citations_project.author_map_string"
                       ></td>
                       <td
-                        class="px-3 py-4 text-sm text-gray-500"
+                        class="px-3 text-sm text-gray-500"
                         x-text="citations_project.accession_number_alts"
                       ></td>
                       <td
-                        class="px-3 py-4 text-sm text-gray-500"
+                        class="px-3 text-sm text-gray-500"
                         x-text="citations_project.year"
                       ></td>
                       <td
-                        class="px-3 py-4 text-sm text-gray-500"
+                        class="px-3 text-sm text-gray-500"
                         x-text="citations_project.users"
                       ></td>
                       <td
-                        class="px-3 py-4 text-sm text-gray-500"
+                        class="px-3 text-sm text-gray-500"
                         x-text="citations_project.labels"
                       ></td>
                       <td
-                        class="px-3 py-4 text-sm text-gray-500"
+                        class="px-3 text-sm text-gray-500"
                         x-text="citations_project.reasons"
                       ></td>
                       <td
-                        class="px-3 py-4 text-sm text-gray-500"
+                        class="px-3 text-sm text-gray-500"
                         x-text="citations_project.tags"
                       ></td>
                       <td
-                        class="px-3 py-4 text-sm text-gray-500"
+                        class="px-3 text-sm text-gray-500"
                         x-text="citations_project.note"
                       ></td>
                       <td
-                        class="px-3 py-4 text-sm text-gray-500"
+                        class="px-3 text-sm text-gray-500"
                         x-text="citations_project.screening_status"
                       ></td>
                       <td
-                        class="whitespace-nowrap relative py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6 flex flex-col"
+                        class="whitespace-nowrap relative pl-3 pr-4 text-right text-sm font-medium sm:pr-6 flex"
                       >
                         <button
-                          class="cursor-pointer m-auto hover:no-underline hover:text-white inline-flex items-center justify-center rounded-md border border-transparent bg-srdrpurple px-4 py-1 text-sm font-medium text-white shadow-sm hover:bg-srdrpurple-light focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto"
-                          @click="update_evaluation(citations_project.citations_project_id, 'promote')"
-                        >
-                          Promote</button
-                        ><br />
-                        <button
-                          class="cursor-pointer m-auto hover:no-underline hover:text-white inline-flex items-center justify-center rounded-md border border-transparent bg-srdrpurple px-4 py-1 text-sm font-medium text-white shadow-sm hover:bg-srdrpurple-light focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto"
+                          class="cursor-pointer m-auto hover:no-underline hover:text-white inline-flex items-center justify-center rounded-md border border-transparent bg-srdrpurple text-sm font-medium text-white shadow-sm hover:bg-srdrpurple-light focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto"
                           @click="update_evaluation(citations_project.citations_project_id, 'demote')"
                         >
-                          Demote
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="h-6 w-6"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            stroke-width="2"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              d="M15 13l-3 3m0 0l-3-3m3 3V8m0 13a9 9 0 110-18 9 9 0 010 18z"
+                            />
+                          </svg>
+                        </button>
+                        <button
+                          class="cursor-pointer m-auto hover:no-underline hover:text-white inline-flex items-center justify-center rounded-md border border-transparent bg-srdrpurple text-sm font-medium text-white shadow-sm hover:bg-srdrpurple-light focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto"
+                          @click="update_evaluation(citations_project.citations_project_id, 'promote')"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="h-6 w-6"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            stroke-width="2"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              d="M9 11l3-3m0 0l3 3m-3-3v8m0-13a9 9 0 110 18 9 9 0 010-18z"
+                            />
+                          </svg>
                         </button>
                       </td>
                     </tr>
