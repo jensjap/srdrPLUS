@@ -1,7 +1,7 @@
 <div>
   <%= render 'dashboard' %>
 
-  <div class="px-4 sm:px-6 lg:px-8 py-8">
+  <div class="px-4 sm:px-6 lg:px-8 py-4">
     <div class="sm:flex sm:items-center">
       <div class="sm:flex-auto">
         <h1 class="text-xl font-semibold text-gray-900">Abstract Screenings</h1>
@@ -90,11 +90,11 @@
                   <% @abstract_screenings.each do |as| %>
                   <tr>
                     <td
-                      class="py-4 pl-4 pr-3 text-sm font-medium text-gray-500 sm:pl-6 lg:pl-8"
+                      class="pl-4 pr-3 text-sm font-medium text-gray-500 sm:pl-6 lg:pl-8"
                     >
                       <%= as.abstract_screening_type %>
                     </td>
-                    <td class="px-3 py-4 text-sm text-gray-500">
+                    <td class="px-3 text-sm text-gray-500">
                       <!-- prettier-ignore -->
                       Tags required for: <%= as.tag_options.join(', ') %><br />
                       Reasons required for: <%= as.reason_options.join(', ')
@@ -106,23 +106,23 @@
                       Hide author: <%= as.hide_author %><br />
                       Hide journal: <%= as.hide_journal %><br />
                     </td>
-                    <td class="px-3 py-4 text-sm text-gray-500">
+                    <td class="px-3 text-sm text-gray-500">
                       <%= as.projects_users_roles.count %> member(s)
                     </td>
-                    <td class="px-3 py-4 text-sm text-gray-500">
+                    <td class="px-3 text-sm text-gray-500">
                       <%= as.abstract_screening_type == 'perpetual' ? '∞' :
                       as.citations_projects.count %>
                     </td>
-                    <td class="px-3 py-4 text-sm text-gray-500">
+                    <td class="px-3 text-sm text-gray-500">
                       <%= as.abstract_screening_results.count %>
                     </td>
-                    <td class="px-3 py-4 text-sm text-gray-500">
+                    <td class="px-3 text-sm text-gray-500">
                       <% as.reasons.map(&:name).each do |reason| %>
                       <!-- prettier-ignore -->
                       - <%= reason %><br />
                       <% end %>
                     </td>
-                    <td class="px-3 py-4 text-sm text-gray-500">
+                    <td class="px-3 text-sm text-gray-500">
                       <% as.tags.map(&:name).each do |tag| %>
                       <!-- prettier-ignore -->
                       - <%= tag %><br />
@@ -130,21 +130,21 @@
                     </td>
 
                     <td
-                      class="py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6 lg:pr-8"
+                      class="pl-3 pr-4 text-right text-sm font-medium sm:pr-6 lg:pr-8"
                     >
                       <!-- prettier-ignore -->
                       <% if as.finished? %>
                         <%= link_to('Continue Screening',
                         abstract_screening_screen_path(as), class: "w-full
                         inline-flex items-center justify-center rounded-md border
-                        border-transparent bg-srdrpurple px-4 py-2 my-2
+                        border-transparent bg-srdrpurple px-4 py-2 my-1
                         text-center text-sm font-medium text-white shadow-sm
                         hover:bg-srdrpurple-light focus:outline-none focus:ring-2
                         focus:ring-indigo-500 focus:ring-offset-2
                         hover:no-underline hover:text-white") %>
                       <% else %>
                       <button
-                        class="w-full inline-flex mb-2 cursor-not-allowed saturate-[0.25] items-center justify-center rounded-md border border-transparent bg-srdrpurple px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-srdrpurple-light focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 hover:no-underline hover:text-white"
+                        class="w-full inline-flex mb-2 cursor-not-allowed saturate-[0.25] items-center justify-center rounded-md border border-transparent bg-srdrpurple px-4 py-2 tex1-sm font-medium text-white shadow-sm hover:bg-srdrpurple-light focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 hover:no-underline hover:text-white"
                       >
                         Screening Complete
                       </button>
@@ -153,14 +153,14 @@
                       <%= link_to('Show Results',
                       abstract_screening_path(as), class: "w-full inline-flex
                       items-center justify-center rounded-md border
-                      border-transparent bg-srdrpurple px-4 py-2 my-2
+                      border-transparent bg-srdrpurple px-4 py-2 my-1
                       text-center text-sm font-medium text-white shadow-sm
                       hover:bg-srdrpurple-light focus:outline-none focus:ring-2
                       focus:ring-indigo-500 focus:ring-offset-2
                       hover:no-underline hover:text-white") %> <%=
                       link_to('Edit', edit_abstract_screening_path(as), class:
                       "w-full inline-flex items-center justify-center rounded-md
-                      border border-transparent bg-srdrpurple px-4 py-2 my-2
+                      border border-transparent bg-srdrpurple px-4 py-2 my-1
                       text-center text-sm font-medium text-white shadow-sm
                       hover:bg-srdrpurple-light focus:outline-none focus:ring-2
                       focus:ring-indigo-500 focus:ring-offset-2

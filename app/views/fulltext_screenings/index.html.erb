@@ -1,7 +1,7 @@
 <div>
   <%= render 'abstract_screenings/dashboard' %>
 
-  <div class="px-4 sm:px-6 lg:px-8 py-8">
+  <div class="px-4 sm:px-6 lg:px-8 py-4">
     <div class="sm:flex sm:items-center">
       <div class="sm:flex-auto">
         <h1 class="text-xl font-semibold text-gray-900">
@@ -92,11 +92,11 @@
                   <% @fulltext_screenings.each do |fts| %>
                   <tr>
                     <td
-                      class="py-4 pl-4 pr-3 text-sm font-medium text-gray-500 sm:pl-6 lg:pl-8"
+                      class="pl-4 pr-3 text-sm font-medium text-gray-500 sm:pl-6 lg:pl-8"
                     >
                       <%= fts.fulltext_screening_type %>
                     </td>
-                    <td class="px-3 py-4 text-sm text-gray-500">
+                    <td class="px-3 text-sm text-gray-500">
                       <!-- prettier-ignore -->
                       Tags required for: <%= fts.tag_options.join(', ') %><br />
                       Reasons required for: <%= fts.reason_options.join(', ')
@@ -108,23 +108,23 @@
                       Hide author: <%= fts.hide_author %><br />
                       Hide journal: <%= fts.hide_journal %><br />
                     </td>
-                    <td class="px-3 py-4 text-sm text-gray-500">
+                    <td class="px-3 text-sm text-gray-500">
                       <%= fts.projects_users_roles.count %> member(s)
                     </td>
-                    <td class="px-3 py-4 text-sm text-gray-500">
+                    <td class="px-3 text-sm text-gray-500">
                       <%= fts.fulltext_screening_type == 'perpetual' ? '∞' :
                       fts.citations_projects.count %>
                     </td>
-                    <td class="px-3 py-4 text-sm text-gray-500">
+                    <td class="px-3 text-sm text-gray-500">
                       <%= fts.fulltext_screening_results.count %>
                     </td>
-                    <td class="px-3 py-4 text-sm text-gray-500">
+                    <td class="px-3 text-sm text-gray-500">
                       <% fts.reasons.map(&:name).each do |reason| %>
                       <!-- prettier-ignore -->
                       - <%= reason %><br />
                       <% end %>
                     </td>
-                    <td class="px-3 py-4 text-sm text-gray-500">
+                    <td class="px-3 text-sm text-gray-500">
                       <% fts.tags.map(&:name).each do |tag| %>
                       <!-- prettier-ignore -->
                       - <%= tag %><br />
@@ -132,26 +132,26 @@
                     </td>
 
                     <td
-                      class="py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6 lg:pr-8"
+                      class="pl-3 pr-4 text-right text-sm font-medium sm:pr-6 lg:pr-8"
                     >
                       <%= link_to('Continue Screening',
                       fulltext_screening_screen_path(fts), class: "w-full
                       inline-flex items-center justify-center rounded-md border
-                      border-transparent bg-srdrpurple px-4 py-2 my-2
+                      border-transparent bg-srdrpurple px-4 py-2 my-1
                       text-center text-sm font-medium text-white shadow-sm
                       hover:bg-srdrpurple-light focus:outline-none focus:ring-2
                       focus:ring-indigo-500 focus:ring-offset-2
                       hover:no-underline hover:text-white") %> <%= link_to('Show
                       Results', fulltext_screening_path(fts), class: "w-full
                       inline-flex items-center justify-center rounded-md border
-                      border-transparent bg-srdrpurple px-4 py-2 my-2
+                      border-transparent bg-srdrpurple px-4 py-2 my-1
                       text-center text-sm font-medium text-white shadow-sm
                       hover:bg-srdrpurple-light focus:outline-none focus:ring-2
                       focus:ring-indigo-500 focus:ring-offset-2
                       hover:no-underline hover:text-white") %> <%=
                       link_to('Edit', edit_fulltext_screening_path(fts), class:
                       "w-full inline-flex items-center justify-center rounded-md
-                      border border-transparent bg-srdrpurple px-4 py-2 my-2
+                      border border-transparent bg-srdrpurple px-4 py-2 my-1
                       text-center text-sm font-medium text-white shadow-sm
                       hover:bg-srdrpurple-light focus:outline-none focus:ring-2
                       focus:ring-indigo-500 focus:ring-offset-2
