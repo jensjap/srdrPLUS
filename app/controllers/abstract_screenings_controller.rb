@@ -37,7 +37,27 @@ class AbstractScreeningsController < ApplicationController
 
   def citation_lifecycle_management
     authorize(@project, policy_class: AbstractScreeningPolicy)
-    @citations_projects = CitationsProject.includes(:citation).where(project: @project).page(params[:page]).per(50)
+    @citations_projects =
+      CitationsProject
+      .includes(
+        [
+          :abstract_screenings_citations_projects,
+          { abstract_screening_results: [
+            :projects_user,
+            :abstract_screenings_projects_users_role,
+            :abstract_screening_results_tags,
+            :tags,
+            :note,
+            :abstract_screening_results_reasons,
+            :reasons,
+            { user: :profile }
+          ] },
+          { citation:
+            [:journal, {
+              authors_citations: %i[ordering author]
+            }] }
+        ]
+      ).where(project: @project).page(params[:page]).per(50)
   end
 
   def destroy
