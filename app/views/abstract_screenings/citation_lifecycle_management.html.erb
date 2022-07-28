@@ -243,13 +243,15 @@
       init() {
         this.fetch_citations_projects();
         this.$watch("query", (value, oldValue) => {
+          this.pagination.current_page = 1;
           this.pagination.query = value;
+          this.pagination.order_by = null;
+          this.pagination.sort = null;
           this.fetch_citations_projects();
         });
       },
 
       changeOrderBy(order_by) {
-        this.pagination.current_page = 1;
         if (this.pagination.order_by == order_by) {
           if (this.pagination.sort == "asc") {
             this.pagination.sort = "desc";

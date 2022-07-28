@@ -45,7 +45,7 @@ class AbstractScreeningsController < ApplicationController
       CitationsProject
       .search(
         @query,
-        where: { project_id: @project.id },
+        # where: { project_id: @project.id },
         order:,
         page: params[:page],
         per_page: 15
