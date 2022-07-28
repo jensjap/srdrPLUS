@@ -10,10 +10,12 @@
         <p class="mt-2 text-sm text-gray-700">Promote or demote citations.</p>
         <div class="relative">
           <input
-            autofocus
-            class="!p-4 text-center"
             x-model.debounce.500ms="query"
-            placeholder="Start searching here..."
+            @keyup.slash.window="$focus.focus($el)"
+            class="!p-4 text-center"
+            placeholder="To start searching, press '/'"
+            onfocus="this.placeholder = ''"
+            onblur="this.placeholder = 'To start searching, press \'/\''"
             type="search"
           />
           <div
