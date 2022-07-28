@@ -231,11 +231,11 @@
         if (this.pagination.order_by == order_by) {
           if (this.pagination.sort == "asc") {
             this.pagination.sort = "desc";
-          } else if (this.pagination.sort == "desc") {
-            this.pagination.sort = "asc";
           } else {
             this.pagination.sort = "asc";
           }
+        } else {
+          this.pagination.sort = "asc";
         }
         this.pagination.order_by = order_by;
         this.fetch_citations_projects();
