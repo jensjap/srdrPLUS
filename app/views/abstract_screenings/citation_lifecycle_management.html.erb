@@ -8,6 +8,23 @@
           Citation Lifecycle Management
         </h1>
         <p class="mt-2 text-sm text-gray-700">Promote or demote citations.</p>
+        <div class="relative">
+          <input
+            autofocus
+            class="!p-4 text-center"
+            x-model.debounce.500ms="query"
+            placeholder="Start searching here..."
+            type="search"
+          />
+          <div
+            x-show="query != ''"
+            x-cloak
+            @click="query = ''"
+            class="cursor-pointer absolute top-2 right-2"
+          >
+            Clear Results (X)
+          </div>
+        </div>
       </div>
     </div>
     <div class="my-4 flex flex-col">
@@ -209,6 +226,7 @@
   document.addEventListener("alpine:init", () => {
     Alpine.data("citation_lifecycle_management", () => ({
       citations_projects: null,
+      query: "",
       base_url:
         "/projects/<%= params[:project_id] %>/citation_lifecycle_management",
       pagination: {
@@ -224,6 +242,10 @@
 
       init() {
         this.fetch_citations_projects();
+        this.$watch("query", (value, oldValue) => {
+          this.pagination.query = value;
+          this.fetch_citations_projects();
+        });
       },
 
       changeOrderBy(order_by) {

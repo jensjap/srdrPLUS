@@ -5,7 +5,7 @@
   <li>
     <a rel="prev" @click="goToPage(pagination.prev_page)">‹ Prev</a>
   </li>
-  <li aria-hidden="true" class="ellipsis"></li>
+  <!-- <li aria-hidden="true" class="ellipsis"></li> -->
   <template x-for="i in pagination.total_pages">
     <span>
       <template x-if="pagination.current_page == i">
@@ -18,7 +18,7 @@
       </template>
     </span>
   </template>
-  <li aria-hidden="true" class="ellipsis"></li>
+  <!-- <li aria-hidden="true" class="ellipsis"></li> -->
   <li>
     <a rel="next" @click="goToPage(pagination.next_page)">Next ›</a>
   </li>
