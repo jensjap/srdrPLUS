@@ -11,3 +11,12 @@ json.citations_projects @citations_projects do |citations_project|
   json.note citations_project.abstract_screening_results.map(&:note).compact.map(&:value).join(', ')
   json.screening_status citations_project.screening_status
 end
+json.pagination do
+  json.prev_page @citations_projects.prev_page
+  json.current_page @citations_projects.current_page
+  json.next_page @citations_projects.next_page
+  json.total_pages @citations_projects.total_pages
+  json.query @query
+  json.order_by @order_by
+  json.sort @sort
+end

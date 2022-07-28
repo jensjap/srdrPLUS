@@ -21,61 +21,71 @@
                 <tr>
                   <th
                     scope="col"
-                    class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
+                    class="cursor-pointer py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
+                    @click="changeOrderBy('accession_number_alts')"
                   >
                     Accession No.
                   </th>
                   <th
                     scope="col"
-                    class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    @click="changeOrderBy('author_map_string')"
                   >
                     Authors
                   </th>
                   <th
                     scope="col"
-                    class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    @click="changeOrderBy('name')"
                   >
                     Title
                   </th>
                   <th
                     scope="col"
-                    class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    @click="changeOrderBy('year')"
                   >
                     Publication Date
                   </th>
                   <th
                     scope="col"
-                    class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    @click="changeOrderBy('users')"
                   >
                     Participants
                   </th>
                   <th
                     scope="col"
-                    class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    @click="changeOrderBy('labels')"
                   >
                     Label
                   </th>
                   <th
                     scope="col"
-                    class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    @click="changeOrderBy('reasons')"
                   >
                     Reason(s)
                   </th>
                   <th
                     scope="col"
-                    class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    @click="changeOrderBy('tags')"
                   >
                     Tag(s)
                   </th>
                   <th
                     scope="col"
-                    class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    @click="changeOrderBy('note')"
                   >
                     Note(s)
                   </th>
                   <th
                     scope="col"
-                    class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    @click="changeOrderBy('screening_status')"
                   >
                     Status
                   </th>
@@ -110,7 +120,7 @@
                       ></td>
                       <td
                         class="px-3 text-sm text-gray-500"
-                        x-text="citations_project.accession_number_alts"
+                        x-text="citations_project.name"
                       ></td>
                       <td
                         class="px-3 text-sm text-gray-500"
@@ -188,7 +198,7 @@
               </tbody>
             </table>
           </div>
-          <%= paginate(@citations_projects, theme: 'foundation') %>
+          <div><%= render '/components/pagination' %></div>
         </div>
       </div>
     </div>
@@ -199,24 +209,70 @@
   document.addEventListener("alpine:init", () => {
     Alpine.data("citation_lifecycle_management", () => ({
       citations_projects: null,
+      base_url:
+        "/projects/<%= params[:project_id] %>/citation_lifecycle_management",
+      pagination: {
+        base_url: this.base_url,
+        prev_page: "",
+        current_page: "",
+        next_page: "",
+        total_pages: "",
+        query: null,
+        order_by: null,
+        sort: null,
+      },
 
       init() {
         this.fetch_citations_projects();
       },
 
-      async fetch_citations_projects() {
-        const response = await fetch(
-          "/projects/<%= params[:project_id] %>/citation_lifecycle_management?page=<%= params[:page] %>",
-          {
-            method: "GET",
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
-            },
+      changeOrderBy(order_by) {
+        this.pagination.current_page = 1;
+        if (this.pagination.order_by == order_by) {
+          if (this.pagination.sort == "asc") {
+            this.pagination.sort = "desc";
+          } else if (this.pagination.sort == "desc") {
+            this.pagination.sort = "asc";
+          } else {
+            this.pagination.sort = "asc";
           }
-        );
+        }
+        this.pagination.order_by = order_by;
+        this.fetch_citations_projects();
+      },
+
+      goToPage(page) {
+        this.pagination.current_page = page;
+        this.fetch_citations_projects();
+      },
+
+      query_url() {
+        let url = this.base_url;
+        let params = [];
+        if (this.pagination.query) {
+          params.push("query=" + this.pagination.query);
+        }
+        if (this.pagination.order_by) {
+          params.push("order_by=" + this.pagination.order_by);
+        }
+        if (this.pagination.sort) {
+          params.push("sort=" + this.pagination.sort);
+        }
+        params.push(`page=${this.pagination.current_page}`);
+        return url + "?" + params.join("&");
+      },
+
+      async fetch_citations_projects() {
+        const response = await fetch(this.query_url(), {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        });
         const data = await response.json();
         this.citations_projects = data.citations_projects;
+        this.pagination = data.pagination;
       },
 
       async update_evaluation(citations_project_id, type) {

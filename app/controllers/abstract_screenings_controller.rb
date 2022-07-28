@@ -37,27 +37,19 @@ class AbstractScreeningsController < ApplicationController
 
   def citation_lifecycle_management
     authorize(@project, policy_class: AbstractScreeningPolicy)
+    @query = params[:query].present? ? params[:query] : '*'
+    @order_by = params[:order_by]
+    @sort = params[:sort].present? ? params[:sort] : 'asc'
+    order = @order_by.present? ? { @order_by => @sort } : {}
     @citations_projects =
       CitationsProject
-      .includes(
-        [
-          :abstract_screenings_citations_projects,
-          { abstract_screening_results: [
-            :projects_user,
-            :abstract_screenings_projects_users_role,
-            :abstract_screening_results_tags,
-            :tags,
-            :note,
-            :abstract_screening_results_reasons,
-            :reasons,
-            { user: :profile }
-          ] },
-          { citation:
-            [:journal, {
-              authors_citations: %i[ordering author]
-            }] }
-        ]
-      ).where(project: @project).page(params[:page]).per(50)
+      .search(
+        @query,
+        where: { project_id: @project.id },
+        order:,
+        page: params[:page],
+        per_page: 15
+      )
   end
 
   def destroy

@@ -15,6 +15,7 @@
 #
 
 class CitationsProject < ApplicationRecord
+  searchkick
   include SharedParanoiaMethods
 
   acts_as_paranoid column: :active, sentinel_value: true
@@ -69,7 +70,6 @@ class CitationsProject < ApplicationRecord
   has_many :citations_projects_fulltext_screenings
   has_many :fulltext_screening_results, through: :citations_projects_fulltext_screenings
 
-  # TODO
   has_many :labels, dependent: :destroy
   has_many :notes, as: :notable, dependent: :destroy
   has_many :taggings, as: :taggable, dependent: :destroy
@@ -175,5 +175,26 @@ class CitationsProject < ApplicationRecord
     when COMPLETED
       update(screening_status: DATA_EXTRACTION_IN_PROGRESS)
     end
+  end
+
+  def search_data
+    {
+      project_id:,
+      citations_project_id: id,
+      accession_number_alts: citation.accession_number_alts,
+      author_map_string: citation.author_map_string,
+      name: citation.name,
+      year: citation.year,
+      users: abstract_screening_results.map(&:user).uniq.map(&:handle).join(', '),
+      labels: abstract_screening_results.map(&:label).join(', '),
+      reasons: abstract_screening_results.map(&:reasons).flatten.map(&:name).join(', '),
+      tags: abstract_screening_results.map(&:tags).flatten.map(&:name).join(', '),
+      note: abstract_screening_results.map(&:note).compact.map(&:value).join(', '),
+      screening_status:
+    }
+  end
+
+  def should_index?
+    id < 10_000
   end
 end
