@@ -193,8 +193,4 @@ class CitationsProject < ApplicationRecord
       screening_status:
     }
   end
-
-  def should_index?
-    id < 10_000
-  end
 end
