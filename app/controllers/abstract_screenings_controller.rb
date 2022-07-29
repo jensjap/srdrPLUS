@@ -37,15 +37,15 @@ class AbstractScreeningsController < ApplicationController
 
   def citation_lifecycle_management
     authorize(@project, policy_class: AbstractScreeningPolicy)
-    @query = params[:query].present? ? params[:query] : '*'
-    @order_by = params[:order_by]
-    @sort = params[:sort].present? ? params[:sort] : 'asc'
-    @page = params[:page].present? ? params[:page].to_i : 1
-    per_page = 50
-    order = @order_by.present? ? { @order_by => @sort } : {}
     respond_to do |format|
       format.html
       format.json do
+        @query = params[:query].present? ? params[:query] : '*'
+        @order_by = params[:order_by]
+        @sort = params[:sort].present? ? params[:sort] : 'asc'
+        @page = params[:page].present? ? params[:page].to_i : 1
+        per_page = 15
+        order = @order_by.present? ? { @order_by => @sort } : {}
         @citations_projects = if @query == '*'
                                 CitationsProject
                                   .search(
