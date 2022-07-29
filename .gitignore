@@ -35,8 +35,6 @@
 # Redis
 dump.rdb
 
-.env
-
 # Don't track any .xlsx files.
 *.xlsx
 
