@@ -12,13 +12,20 @@
 class Author < ApplicationRecord
   include SharedQueryableMethods
 
+  after_commit :reindex_citations_projects
+
   has_many :authors_citations, dependent: :destroy
   has_many :citations, through: :authors_citations
+  has_many :citations_projects, through: :citations
 
   acts_as_paranoid
 
   def initials
-    *rest, last = self.name.split
-    (rest.map{ |e| e[0] } << last).reverse!.map(&:capitalize).join(' ')
+    *rest, last = name.split
+    (rest.map { |e| e[0] } << last).reverse!.map(&:capitalize).join(' ')
+  end
+
+  def reindex_citations_projects
+    citations_projects.each(&:reindex)
   end
 end

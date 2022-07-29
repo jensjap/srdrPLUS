@@ -11,6 +11,8 @@
 #  updated_at                                 :datetime         not null
 #
 class AbstractScreeningResult < ApplicationRecord
+  after_commit :reindex_citations_project
+
   belongs_to :abstract_screening
   belongs_to :abstract_screenings_citations_project
   belongs_to :abstract_screenings_projects_users_role
@@ -195,5 +197,9 @@ class AbstractScreeningResult < ApplicationRecord
       abstract_screenings_citations_project:,
       abstract_screenings_projects_users_role:
     )
+  end
+
+  def reindex_citations_project
+    citations_project.reindex
   end
 end

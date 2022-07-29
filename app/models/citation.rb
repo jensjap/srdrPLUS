@@ -26,6 +26,8 @@ class Citation < ApplicationRecord
   acts_as_paranoid
   searchkick
 
+  after_commit :reindex_citations_projects
+
   belongs_to :citation_type, optional: true
 
   has_one :journal, dependent: :destroy
@@ -173,5 +175,9 @@ class Citation < ApplicationRecord
     authors_citations.map do |ac|
       [ac.ordering.position, ac.author.name]
     end.sort { |a, b| (a[0] || 0) <=> (b[0] || 0) }.map { |a| a[1] }.join('; ')
+  end
+
+  def reindex_citations_projects
+    citations_projects.each(&:reindex)
   end
 end

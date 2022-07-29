@@ -18,6 +18,8 @@ class CitationsProject < ApplicationRecord
   searchkick
   include SharedParanoiaMethods
 
+  after_commit :reindex
+
   acts_as_paranoid column: :active, sentinel_value: true
 
   CITATION_POOL = 'CP'.freeze
