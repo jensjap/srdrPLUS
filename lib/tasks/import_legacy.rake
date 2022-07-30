@@ -435,7 +435,7 @@ namespace(:db) do
       q_ids_string = qs.map{|q| q["id"]}.join ","
 
       if q_ids_string.present?
-        return db.query "SELECT * FROM #{table_root}_fields where #{table_root}_id IN (#{q_ids_string}) ORDER BY row_number ASC"
+        return db.query "SELECT * FROM #{table_root}_fields where #{table_root}_id IN (#{q_ids_string}) ORDER BY `row_number` ASC"
       else
         return []
       end
@@ -663,8 +663,8 @@ namespace(:db) do
     end
 
     def migrate_multi_row_question question, question_type, legacy_question, fields_of_legacy_question, data_points_of_legacy_question, table_root
-      r_farr = db.query "SELECT * FROM #{table_root}_fields WHERE #{table_root}_id=#{legacy_question["id"]} and column_number=0 ORDER BY row_number ASC"
-      c_farr = db.query "SELECT * FROM #{table_root}_fields WHERE #{table_root}_id=#{legacy_question["id"]} and row_number=0 ORDER BY column_number ASC"
+      r_farr = db.query "SELECT * FROM #{table_root}_fields WHERE #{table_root}_id=#{legacy_question["id"]} and column_number=0 ORDER BY `row_number` ASC"
+      c_farr = db.query "SELECT * FROM #{table_root}_fields WHERE #{table_root}_id=#{legacy_question["id"]} and `row_number`=0 ORDER BY column_number ASC"
 
       qr = question.question_rows.first
       qrc = qr.question_row_columns.first
@@ -700,8 +700,8 @@ namespace(:db) do
     end
 
     def migrate_matrix_dropdown_question question, legacy_question, data_points_of_legacy_question, table_root
-      r_farr = db.query "SELECT * FROM #{table_root}_fields WHERE #{table_root}_id=#{legacy_question["id"]} and column_number=0 ORDER BY row_number ASC"
-      c_farr = db.query "SELECT * FROM #{table_root}_fields WHERE #{table_root}_id=#{legacy_question["id"]} and row_number=0 ORDER BY column_number ASC"
+      r_farr = db.query "SELECT * FROM #{table_root}_fields WHERE #{table_root}_id=#{legacy_question["id"]} and column_number=0 ORDER BY `row_number` ASC"
+      c_farr = db.query "SELECT * FROM #{table_root}_fields WHERE #{table_root}_id=#{legacy_question["id"]} and `row_number`=0 ORDER BY column_number ASC"
 
       _is_first = true
 
