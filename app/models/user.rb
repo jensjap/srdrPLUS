@@ -36,7 +36,7 @@
 class User < ApplicationRecord
   acts_as_paranoid
 
-  after_commit :reindex_citations_projects
+  # after_commit :reindex_citations_projects
 
   devise :omniauthable, omniauth_providers: [:google_oauth2]
   has_secure_token :api_key
@@ -147,9 +147,9 @@ class User < ApplicationRecord
     user_type.user_type == 'Admin'
   end
 
-  def reindex_citations_projects
-    citations_projects.each(&:reindex)
-  end
+  # def reindex_citations_projects
+  #   citations_projects.each(&:reindex)
+  # end
 
   private
 
