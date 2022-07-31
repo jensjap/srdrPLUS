@@ -139,8 +139,7 @@
                       ></td>
                       <td
                         class="px-3 text-sm text-gray-500"
-                        x-text="citations_project.name"
-                      ></td>
+                      ><a :href="'/citations/' + citations_project.citation_id" x-text="citations_project.name" target="_blank"</a></td>
                       <td
                         class="px-3 text-sm text-gray-500"
                         x-text="citations_project.year"
