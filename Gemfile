@@ -59,7 +59,6 @@ gem 'kaminari' # Pagination.
 gem 'mysql2' # Use mysql as the database for Active Record
 gem 'net-ftp'
 gem 'net-smtp', require: false
-gem 'oj', '~> 3.13'
 gem 'omniauth'
 gem 'omniauth-google-oauth2'
 gem 'paranoia', '~>2.2'
@@ -88,7 +87,6 @@ gem 'sortable-rails' # List reordering, Drag & Drop.
 gem 'tailwindcss-rails', '~> 2.0'
 gem 'toastr_rails'
 gem 'turnout' # Easy maintenance mode
-gem "typhoeus", "~> 1.4"
 gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby] # Windows does not include zoneinfo files
 gem 'uglifier', '>= 1.3.0' # Use Uglifier as compressor for JavaScript assets
 gem 'zip-zip' # Spreadsheet reading.
