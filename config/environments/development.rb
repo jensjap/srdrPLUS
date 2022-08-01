@@ -4,9 +4,6 @@ Rails.application.configure do
     Bullet.bullet_logger = true
   end
 
-  # Store files locally.
-  config.active_storage.service = :local
-
   # Settings specified here will take precedence over those in config/application.rb.
 
   # In the development environment your application's code is reloaded on

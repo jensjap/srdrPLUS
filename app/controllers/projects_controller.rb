@@ -154,7 +154,7 @@ class ProjectsController < ApplicationController
   def import_ris
     authorize(@project)
     @project.citation_files.attach(citation_import_params[:citation_files])
-    RisImportJob.set(wait: 1.minute).perform_later(current_user.id, @project.id, @project.citation_files.last.id)
+    RisImportJob.perform_later(current_user.id, @project.id, @project.citation_files.last.id)
     flash[:success] = "Import request submitted for project '#{@project.name}'. You will be notified by email of its completion."
 
     redirect_to project_citations_path(@project)
