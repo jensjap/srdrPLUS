@@ -42,7 +42,7 @@ class AbstractScreeningsController < ApplicationController
       format.json do
         @query = params[:query].present? ? params[:query] : '*'
         @order_by = params[:order_by]
-        @sort = params[:sort].present? ? params[:sort] : 'asc'
+        @sort = params[:sort].present? ? params[:sort] : nil
         @page = params[:page].present? ? params[:page].to_i : 1
         per_page = 15
         order = @order_by.present? ? { @order_by => @sort } : {}
