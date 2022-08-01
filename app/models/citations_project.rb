@@ -183,6 +183,7 @@ class CitationsProject < ApplicationRecord
     {
       project_id:,
       citations_project_id: id,
+      citation_id: citation.id,
       accession_number_alts: citation.accession_number_alts,
       author_map_string: citation.author_map_string,
       name: citation.name,
