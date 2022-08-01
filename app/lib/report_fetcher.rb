@@ -68,7 +68,7 @@ class ReportFetcher
     report_metas.each do |meta|
       accession_id = meta['Accession ID']
       unless File.exist?("#{PUBLIC_REPORTS_DIRECTORY}/#{accession_id}/TOC.html")
-        ConvertPdf2HtmlJob.set(wait: 5.seconds).perform_later(accession_id)
+        ConvertPdf2HtmlJob.set(wait: 1.minute).perform_later(accession_id)
       end
     end
   end

@@ -115,7 +115,7 @@ class SdMetaDataController < ApplicationController
       # accession_id = "sd_meta_datum_" + @sd_meta_datum.id.to_s
       # @report_html_path = "/reports/#{ accession_id }/TOC.html"
       # unless File.exists?("#{ Rails.root }/public/" + @report_html_path)
-      #   ConvertPdf2HtmlJob.set(wait: 5.seconds).perform_later(accession_id, @sd_meta_datum.id)
+      #   ConvertPdf2HtmlJob.set(wait: 1.minute).perform_later(accession_id, @sd_meta_datum.id)
       # end
       @report_html_path = rails_blob_path( @sd_meta_datum.report_file )
     end
