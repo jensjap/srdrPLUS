@@ -14,7 +14,7 @@
 class ImportedFile < ApplicationRecord
   validates :content, :presence => true
 
-  has_one_attached :content
+  has_one_attached :content, service: :amazon_citation_import
 
   belongs_to :import
   belongs_to :file_type
