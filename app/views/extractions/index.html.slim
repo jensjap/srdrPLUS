@@ -79,8 +79,8 @@
                     span.projects-users-role-label data-extraction-id="#{ extraction.id.to_s }"
                       = extraction.projects_users_role.handle
                     .projects-users-role-select.hide
-                      = simple_form_for extraction, remote: true do |e_f|
-                        = e_f.association :projects_users_role, label: false, collection: @projects_users_roles, label_method: :handle, input_html: { class: "index-extractions-select2" }, selected: extraction.projects_users_role.id
+                      = form_with model: extraction, html: { remote: true } do |e_f|
+                        = e_f.select :projects_users_role_id, @projects_users_roles.map { |pur| [pur.handle, pur.id] }, input_html: { class: "index-extractions-select2" }, selected: extraction.projects_users_role.id
               - else
                 td = extraction.projects_users_role.handle
 
