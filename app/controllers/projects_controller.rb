@@ -134,7 +134,7 @@ class ProjectsController < ApplicationController
     authenticate_user! unless current_user || email = helpers.valid_email(params[:email])
 
     if @project.public? || authorize(@project)
-      SimpleExportJob.perform_later(current_user ? current_user.email : email, @project.id, export_type_name_params)
+      SimpleExportJob.set(wait: 1.minute).perform_later(current_user ? current_user.email : email, @project.id, export_type_name_params)
       ahoy.track 'Export', { project_id: @project.id, export_type_name_params: export_type_name_params }
       flash[:success] = "Export request submitted for project '#{@project.name}'. You will be notified by email of its completion."
     else
@@ -146,7 +146,7 @@ class ProjectsController < ApplicationController
 
   def export_to_gdrive
     authorize(@project)
-    GsheetsExportJob.perform_later(current_user.id, @project.id, gdrive_params)
+    GsheetsExportJob.set(wait: 1.minute).perform_later(current_user.id, @project.id, gdrive_params)
     flash[:success] = "Export request submitted for project '#{@project.name}'. You will be notified by email of its completion."
 
     redirect_to edit_project_path(@project)
@@ -267,7 +267,7 @@ class ProjectsController < ApplicationController
   def import_ris
     authorize(@project)
     @project.citation_files.attach(citation_import_params[:citation_files])
-    RisImportJob.perform_later(current_user.id, @project.id, @project.citation_files.last.id)
+    RisImportJob.set(wait: 1.minute).perform_later(current_user.id, @project.id, @project.citation_files.last.id)
     flash[:success] = "Import request submitted for project '#{@project.name}'. You will be notified by email of its completion."
 
     redirect_to project_citations_path(@project)
@@ -276,7 +276,7 @@ class ProjectsController < ApplicationController
   def import_csv
     authorize(@project)
     @project.citation_files.attach(citation_import_params[:citation_files])
-    CsvImportJob.perform_later(current_user.id, @project.id, @project.citation_files.last.id)
+    CsvImportJob.set(wait: 1.minute).perform_later(current_user.id, @project.id, @project.citation_files.last.id)
     flash[:success] = "Import request submitted for project '#{@project.name}'. You will be notified by email of its completion."
 
     redirect_to project_citations_path(@project)
@@ -285,7 +285,7 @@ class ProjectsController < ApplicationController
   def import_pubmed
     authorize(@project)
     @project.citation_files.attach(citation_import_params[:citation_files])
-    PubmedImportJob.perform_later(current_user.id, @project.id, @project.citation_files.last.id)
+    PubmedImportJob.set(wait: 1.minute).perform_later(current_user.id, @project.id, @project.citation_files.last.id)
     flash[:success] = "Import request submitted for project '#{@project.name}'. You will be notified by email of its completion."
     #@project.import_citations_from_pubmed( citation_import_params[:citation_file] )
 
@@ -295,7 +295,7 @@ class ProjectsController < ApplicationController
   def import_endnote
     authorize(@project)
     @project.citation_files.attach(citation_import_params[:citation_files])
-    EnlImportJob.perform_later(current_user.id, @project.id, @project.citation_files.last.id)
+    EnlImportJob.set(wait: 1.minute).perform_later(current_user.id, @project.id, @project.citation_files.last.id)
     flash[:success] = "Import request submitted for project '#{@project.name}'. You will be notified by email of its completion."
 
     redirect_to project_citations_path(@project)
@@ -311,7 +311,7 @@ class ProjectsController < ApplicationController
 
   def dedupe_citations
     authorize(@project)
-    DedupeCitationsJob.perform_later(@project.id)
+    DedupeCitationsJob.set(wait: 1.minute).perform_later(@project.id)
     #@project.dedupe_citations
     flash[:success] = "Request to deduplicate citations has been received. Please come back later."
 
@@ -410,7 +410,7 @@ class ProjectsController < ApplicationController
   end
 
   # def import_project_from_distiller(project)
-  #   DistillerImportJob.perform_later(current_user.id, project.id)
+  #   DistillerImportJob.set(wait: 1.minute).perform_later(current_user.id, project.id)
   #   flash[:success] = "Import request submitted for project '#{ project.name }'. You will be notified by email of its completion."
   # end
 
