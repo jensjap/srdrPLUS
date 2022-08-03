@@ -26,6 +26,8 @@
 *.swn
 *.swm
 
+.env
+
 # DS_Store files.
 .DS_Store
 
