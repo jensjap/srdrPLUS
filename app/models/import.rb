@@ -42,20 +42,20 @@ class Import < ApplicationRecord
         when ".json"
           CitationFhirImportJob.set(wait: 1.minute).perform_later(imported_file.id)
         else
-              ## NOT SUPPORTED, WHAT TO DO?
+          ## NOT SUPPORTED, WHAT TO DO?
         end
       when "Project"
         case imported_file.file_type.name
         when ".json"
           JsonImportJob.set(wait: 1.minute).perform_later(imported_file.id)
         when ".xlsx"
+          SimpleImportJob.set(wait: 1.minute).perform_later(imported_file.id)
         else
           ## NOT SUPPORTED, WHAT TO DO?
         end
       when "Assignments and Mappings"
         case imported_file.file_type.name
         when ".xlsx"
-          #!!! Make this perform_later in production!!!
           ImportAssignmentsAndMappingsJob.set(wait: 1.minute).perform_later(imported_file.id)
         end  # case imported_file.file_type.name
       end  # case self.import_type.name
