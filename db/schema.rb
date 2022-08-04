@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_07_19_053506) do
+ActiveRecord::Schema[7.0].define(version: 2022_08_04_083545) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -277,7 +277,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_19_053506) do
   end
 
   create_table "authors", id: :integer, charset: "utf8mb4", collation: "utf8mb4_bin", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
-    t.string "name", collation: "utf8_general_ci"
+    t.string "name", collation: "utf8mb3_general_ci"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.datetime "deleted_at", precision: nil
@@ -302,12 +302,12 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_19_053506) do
 
   create_table "citations", id: :integer, charset: "utf8mb4", collation: "utf8mb4_bin", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "citation_type_id"
-    t.string "name", limit: 500, collation: "utf8_general_ci"
+    t.string "name", limit: 500, collation: "utf8mb3_general_ci"
     t.datetime "deleted_at", precision: nil
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.string "refman", collation: "utf8_general_ci"
-    t.string "pmid", collation: "utf8_general_ci"
+    t.string "refman", collation: "utf8mb3_general_ci"
+    t.string "pmid", collation: "utf8mb3_general_ci"
     t.binary "abstract"
     t.string "page_number_start"
     t.string "page_number_end"
@@ -342,6 +342,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_19_053506) do
     t.index ["citation_id"], name: "index_citations_projects_on_citation_id"
     t.index ["consensus_type_id"], name: "index_citations_projects_on_consensus_type_id"
     t.index ["deleted_at"], name: "index_citations_projects_on_deleted_at"
+    t.index ["project_id", "active"], name: "index_citations_projects_on_project_id_and_active", comment: "speeds up the my projects page when projects have a lot of citations_projects"
     t.index ["project_id"], name: "index_citations_projects_on_project_id"
     t.index ["screening_status"], name: "index_citations_projects_on_screening_status"
   end
@@ -622,7 +623,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_19_053506) do
     t.index ["extraction_id"], name: "index_extraction_checksums_on_extraction_id"
   end
 
-  create_table "extraction_forms", id: :integer, charset: "utf8mb3", collation: "utf8_bin", force: :cascade do |t|
+  create_table "extraction_forms", id: :integer, charset: "utf8mb3", collation: "utf8mb3_bin", force: :cascade do |t|
     t.string "name"
     t.datetime "deleted_at", precision: nil
     t.datetime "created_at", precision: nil, null: false
@@ -1031,10 +1032,10 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_19_053506) do
     t.integer "citation_id"
     t.string "volume"
     t.string "issue"
-    t.string "name", limit: 1000, collation: "utf8_general_ci"
+    t.string "name", limit: 1000, collation: "utf8mb3_general_ci"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.string "publication_date", collation: "utf8_general_ci"
+    t.string "publication_date", collation: "utf8mb3_general_ci"
     t.index ["citation_id"], name: "index_journals_on_citation_id"
   end
 
@@ -1045,7 +1046,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_19_053506) do
   end
 
   create_table "key_questions", id: :integer, charset: "utf8mb4", collation: "utf8mb4_bin", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
-    t.text "name", collation: "utf8_bin"
+    t.text "name", collation: "utf8mb3_bin"
     t.datetime "deleted_at", precision: nil
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
@@ -1245,7 +1246,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_19_053506) do
   end
 
   create_table "organizations", id: :integer, charset: "utf8mb4", collation: "utf8mb4_bin", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
-    t.string "name", collation: "utf8_general_ci"
+    t.string "name", collation: "utf8mb3_general_ci"
     t.datetime "deleted_at", precision: nil
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
@@ -2073,7 +2074,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_19_053506) do
   end
 
   create_table "terms", id: :integer, charset: "utf8mb4", collation: "utf8mb4_bin", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
-    t.string "name", collation: "utf8_general_ci"
+    t.string "name", collation: "utf8mb3_general_ci"
   end
 
   create_table "timepoint_names", id: :integer, charset: "utf8mb3", force: :cascade do |t|
