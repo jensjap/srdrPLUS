@@ -458,7 +458,7 @@
             continue;
           }
 
-          await this.sendWw(word, weight);
+          await this.sendWw(word, weight, null, weight === 0);
         }
         this.textarea_keywords_and_phrases = unprocessable.join("\n");
         this.disable_textarea_keywords_and_phrases = false;
