@@ -7,16 +7,14 @@
   <%= render 'abstract_screenings/screen/weighing_screen' %>
   <%= render 'abstract_screenings/screen/word_weight_menu' %>
   <%= render 'abstract_screenings/screen/confirmation_modal' %>
-  <%= render 'abstract_screenings/screen/menu' %>
   <%= render 'abstract_screenings/screen/reasoning_menu' %>
   <%= render 'abstract_screenings/screen/add_reasoning' %>
   <div
     class="m-auto lg:w-1/2 h-32 absolute inset-0 mt-0 overflow-y-hidden bg-gray-300 flex flex-col justify-center"
   >
-    <button
-      type="button"
+    <a
+      href="<%= abstract_screening_path(params[:abstract_screening_id]) %>"
       class="cursor-pointer z-[5] absolute top-4 right-4 bg-gray-100 rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
-      @click="menu = !menu"
     >
       <span class="sr-only">Close menu</span>
       <!-- Heroicon name: outline/x -->
@@ -35,7 +33,7 @@
           d="M6 18L18 6M6 6l12 12"
         />
       </svg>
-    </button>
+    </a>
     <button
       type="button"
       class="cursor-pointer z-[5] absolute top-16 right-4 bg-gray-100 rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
@@ -58,6 +56,25 @@
         />
       </svg>
     </button>
+    <a
+      x-bind:href="`/abstract_screenings/${citation.abstract_screening_id}/rescreen?abstract_screening_result_id=${rescreen}&previous=true`"
+      class="cursor-pointer z-[5] absolute top-4 right-16 bg-gray-100 rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-6 w-6"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M12.066 11.2a1 1 0 000 1.6l5.334 4A1 1 0 0019 16V8a1 1 0 00-1.6-.8l-5.333 4zM4.066 11.2a1 1 0 000 1.6l5.334 4A1 1 0 0011 16V8a1 1 0 00-1.6-.8l-5.334 4z"
+        />
+      </svg>
+    </a>
     <div class="mt-3">
       <div
         class="horizontal-scroll-wrapper"
@@ -197,7 +214,6 @@
 <script>
   document.addEventListener("alpine:init", () => {
     Alpine.data("screenStore", () => ({
-      menu: false,
       weighingScreen: false,
       word_weight_menu: false,
       reasoningMenu: false,
@@ -395,7 +411,6 @@
         if (this.addReasonModal.on) {
           this.addReasonModal.on = false;
         } else {
-          this.menu = false;
           this.weighingScreen = false;
           this.reasoningMenu = false;
           this.word_weight_menu = false;

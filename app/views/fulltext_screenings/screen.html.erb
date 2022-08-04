@@ -5,14 +5,13 @@
 >
   <!-- prettier-ignore -->
   <%= render 'fulltext_screenings/screen/confirmation_modal' %>
-  <%= render 'fulltext_screenings/screen/menu' %>
   <%= render 'fulltext_screenings/screen/reasoning_menu' %>
   <%= render 'fulltext_screenings/screen/add_reasoning' %>
   <div
     class="m-auto lg:w-1/2 h-32 absolute inset-0 mt-0 overflow-y-hidden bg-gray-300 flex flex-col justify-center"
   >
-    <button
-      type="button"
+    <a
+      href="<%= fulltext_screening_path(params[:fulltext_screening_id]) %>"
       class="cursor-pointer z-[5] absolute top-4 right-4 bg-gray-100 rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
       @click="menu = !menu"
     >
@@ -33,7 +32,26 @@
           d="M6 18L18 6M6 6l12 12"
         />
       </svg>
-    </button>
+    </a>
+    <a
+      x-bind:href="`/fulltext_screenings/${citation.fulltext_screening_id}/rescreen?fulltext_screening_result_id=${rescreen}&previous=true`"
+      class="cursor-pointer z-[5] absolute top-4 right-16 bg-gray-100 rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-6 w-6"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M12.066 11.2a1 1 0 000 1.6l5.334 4A1 1 0 0019 16V8a1 1 0 00-1.6-.8l-5.333 4zM4.066 11.2a1 1 0 000 1.6l5.334 4A1 1 0 0011 16V8a1 1 0 00-1.6-.8l-5.334 4z"
+        />
+      </svg>
+    </a>
     <div class="mt-3">
       <div class="horizontal-scroll-wrapper">
         <h1 class="px-8 text-base font-bold" x-text="citation.title"></h1>
@@ -147,7 +165,6 @@
 <script>
   document.addEventListener("alpine:init", () => {
     Alpine.data("screenStore", () => ({
-      menu: false,
       reasoningMenu: false,
       addReasonModal: { on: false, type: "" },
       confirmationModal: false,
@@ -330,7 +347,6 @@
         if (this.addReasonModal.on) {
           this.addReasonModal.on = false;
         } else {
-          this.menu = false;
           this.weighingScreen = false;
           this.reasoningMenu = false;
           this.word_weight_menu = false;
