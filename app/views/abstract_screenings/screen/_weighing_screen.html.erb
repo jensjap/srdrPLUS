@@ -63,10 +63,10 @@
             <input
               x-ref="wordWeightInput"
               x-model="wordWeight"
-              x-on:input.debounce.500ms="checkLengthRestriction($event, 30)"
+              x-on:input.debounce.500ms="checkLengthRestriction($event, 50)"
               name="term"
               id="term"
-              maxlength="30"
+              maxlength="50"
               class="mb-2 text-xl font-black text-center shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full border-gray-300 rounded-md h-10"
             />
           </div>

@@ -66,9 +66,9 @@
               <input
                 class="col-span-3 box-border !p-4"
                 type="text"
-                maxlength="30"
+                maxlength="50"
                 :value="word_weight"
-                x-on:input.debounce.500ms="checkLengthRestriction($event, 30); update_word_weight($event, word_weights[word_weight].id, word_weights[word_weight].weight)"
+                x-on:input.debounce.500ms="checkLengthRestriction($event, 50); update_word_weight($event, word_weights[word_weight].id, word_weights[word_weight].weight)"
               />
               <div
                 class="flex justify-center items-center rounded text-white cursor-pointer bg-green-600 hover:bg-green-700"
@@ -110,7 +110,7 @@
           <hr class="my-6 !text-red-600" />
           <div class="mb-4">
             <h2 class="text-base flex items-center">
-              Paste keyword or phrase (up to 30 characters long) with integer
+              Paste keyword or phrase (up to 50 characters long) with integer
               values 2 to -2 (one per line, e.g. "<strong
                 >clinical trial 2</strong
               >")
