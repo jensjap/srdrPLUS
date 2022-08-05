@@ -1218,6 +1218,10 @@ module SeedData
       # Seed Extraction Forms.
       @ef1 = ExtractionForm.create(name: 'ef1')
 
+      # Seed Default Status.
+      Status.find_or_create!(name: "Draft")
+      Status.find_or_create!(name: "Completed")
+
     end
   end
 end
