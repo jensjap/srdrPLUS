@@ -1,9 +1,21 @@
 #!/usr/bin/env bash
 
+# In dev we can use simple SMTP server
+# at http://127.0.0.1:1025.
+# MailCatcher also provides simple
+# front-end accessible
+# at http://127.0.0.1:1080
+if ! command -v mailcatcher &> /dev/null
+then
+  echo "Installing foreman..."
+  gem install mailcatcher
+fi
+
 if ! command -v foreman &> /dev/null
 then
   echo "Installing foreman..."
   gem install foreman
 fi
 
+mailcatcher
 foreman start -f Procfile.dev
