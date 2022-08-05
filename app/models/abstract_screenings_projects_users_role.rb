@@ -72,7 +72,7 @@ class AbstractScreeningsProjectsUsersRole < ApplicationRecord
             project_id: abstract_screening.project.id,
             user:
           )
-        )
+        ).first
       )
   end
 
