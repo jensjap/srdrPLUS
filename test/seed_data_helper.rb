@@ -1219,8 +1219,8 @@ module SeedData
       @ef1 = ExtractionForm.create(name: 'ef1')
 
       # Seed Default Status.
-      Status.find_or_create!(name: "Draft")
-      Status.find_or_create!(name: "Completed")
+      Status.find_or_create_by!(name: "Draft")
+      Status.find_or_create_by!(name: "Completed")
 
     end
   end
