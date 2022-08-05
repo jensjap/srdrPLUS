@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 # In dev we can use simple SMTP server
 # at http://127.0.0.1:1025.
 # MailCatcher also provides simple
@@ -17,5 +19,5 @@ then
   gem install foreman
 fi
 
-mailcatcher
+mailcatcher || echo "MailCatcher is already running.."
 foreman start -f Procfile.dev
