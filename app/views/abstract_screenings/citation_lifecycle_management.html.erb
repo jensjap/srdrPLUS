@@ -494,66 +494,66 @@
                 </tr>
               </thead>
               <tbody class="divide-y divide-gray-200 bg-white">
-                <template x-if="citations_projects == null">
+                <template x-if="results == null">
                   <tr>
                     <td>Loading..</td>
                   </tr>
                 </template>
                 <template
-                  x-if="citations_projects != null && citations_projects.length == 0"
+                  x-if="results != null && results.length == 0"
                 >
                   <tr>
                     <td>No citations</td>
                   </tr>
                 </template>
-                <template x-if="citations_projects != null">
-                  <template x-for="citations_project in citations_projects">
+                <template x-if="results != null">
+                  <template x-for="result in results">
                     <tr>
                       <td
                         class="pl-4 pr-3 text-sm text-gray-500 sm:pl-6"
-                        x-text="citations_project.accession_number_alts"
+                        x-text="result.accession_number_alts"
                       ></td>
                       <td
                         class="px-3 text-sm text-gray-500"
-                        x-text="citations_project.author_map_string"
+                        x-text="result.author_map_string"
                       ></td>
                       <td
                         class="px-3 text-sm text-gray-500"
-                      ><a :href="'/citations/' + citations_project.citation_id" x-text="citations_project.name" target="_blank"</a></td>
+                      ><a :href="'/citations/' + result.citation_id" x-text="result.name" target="_blank"</a></td>
                       <td
                         class="px-3 text-sm text-gray-500"
-                        x-text="citations_project.year"
+                        x-text="result.year"
                       ></td>
                       <td
                         class="px-3 text-sm text-gray-500"
-                        x-text="citations_project.users"
+                        x-text="result.users"
                       ></td>
                       <td
                         class="px-3 text-sm text-gray-500"
-                        x-text="citations_project.labels"
+                        x-text="result.labels"
                       ></td>
                       <td
                         class="px-3 text-sm text-gray-500"
-                        x-text="citations_project.reasons"
+                        x-text="result.reasons"
                       ></td>
                       <td
                         class="px-3 text-sm text-gray-500"
-                        x-text="citations_project.tags"
+                        x-text="result.tags"
                       ></td>
                       <td
                         class="px-3 text-sm text-gray-500"
-                        x-text="citations_project.note"
+                        x-text="result.note"
                       ></td>
                       <td
                         class="px-3 text-sm text-gray-500"
-                        x-text="citations_project.screening_status"
+                        x-text="result.screening_status"
                       ></td>
                       <td
                         class="whitespace-nowrap relative pl-3 pr-4 text-right text-sm font-medium sm:pr-6 flex"
                       >
                         <button
                           class="cursor-pointer hover:no-underline m-1 hover:text-white inline-flex items-center justify-center rounded-md bg-srdrpurple text-sm font-medium text-white shadow-sm hover:bg-srdrpurple-light"
-                          @click="update_evaluation(citations_project.citations_project_id, 'demote')"
+                          @click="update_evaluation(result.citations_project_id, 'demote')"
                         >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -572,7 +572,7 @@
                         </button>
                         <button
                           class="cursor-pointer hover:no-underline m-1 hover:text-white inline-flex items-center justify-center rounded-md border border-transparent bg-srdrpurple text-sm font-medium text-white shadow-sm hover:bg-srdrpurple-light"
-                          @click="update_evaluation(citations_project.citations_project_id, 'promote')"
+                          @click="update_evaluation(result.citations_project_id, 'promote')"
                         >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -606,7 +606,7 @@
 <script>
   document.addEventListener("alpine:init", () => {
     Alpine.data("citation_lifecycle_management", () => ({
-      citations_projects: null,
+      results: null,
       query: "",
       base_url:
         "/projects/<%= params[:project_id] %>/citation_lifecycle_management",
@@ -622,13 +622,13 @@
       },
 
       init() {
-        this.fetch_citations_projects();
+        this.fetch_results();
         this.$watch("query", (value, oldValue) => {
           this.pagination.current_page = 1;
           this.pagination.query = value;
           this.pagination.order_by = null;
           this.pagination.sort = null;
-          this.fetch_citations_projects();
+          this.fetch_results();
         });
       },
 
@@ -646,19 +646,19 @@
           this.pagination.sort = "asc";
           this.pagination.order_by = order_by;
         }
-        this.fetch_citations_projects();
+        this.fetch_results();
       },
 
       goToPage(page) {
         this.pagination.current_page = page;
-        this.fetch_citations_projects();
+        this.fetch_results();
       },
 
       query_url() {
         let url = this.base_url;
         let params = [];
         if (this.pagination.query) {
-          params.push("query=" + this.pagination.query);
+          params.push("query=" + escape(this.pagination.query));
         }
         if (this.pagination.order_by) {
           params.push("order_by=" + this.pagination.order_by);
@@ -670,7 +670,7 @@
         return url + "?" + params.join("&");
       },
 
-      async fetch_citations_projects() {
+      async fetch_results() {
         const response = await fetch(this.query_url(), {
           method: "GET",
           headers: {
@@ -679,9 +679,8 @@
           },
         });
         const data = await response.json();
-        this.citations_projects = data.citations_projects;
+        this.results = data.results;
         this.pagination = data.pagination;
-        console.log(this.pagination);
       },
 
       async update_evaluation(citations_project_id, type) {
@@ -696,8 +695,8 @@
           }
         );
         const data = await response.json();
-        for (let i = 0; i < this.citations_projects.length; i++) {
-          const citations_project = this.citations_projects[i];
+        for (let i = 0; i < this.results.length; i++) {
+          const citations_project = this.results[i];
           if (
             citations_project.citations_project_id == data.citations_project_id
           ) {

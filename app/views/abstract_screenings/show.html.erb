@@ -1,4 +1,4 @@
-<div>
+<div x-data="abstract_screening_results">
   <%= render 'dashboard' %>
 
   <div class="px-4 sm:px-6 lg:px-8 py-4">
@@ -37,7 +37,26 @@
         hover:text-white") %>
       </div>
     </div>
-    <div class="my-8 flex flex-col">
+    <div class="relative my-4">
+      <input
+        x-model.debounce.500ms="query"
+        @keyup.slash.window="$focus.focus($el)"
+        class="!p-4 text-center"
+        placeholder="To start searching, press '/'"
+        onfocus="this.placeholder = ''"
+        onblur="this.placeholder = 'To start searching, press \'/\''"
+        type="search"
+      />
+      <div
+        x-show="query != ''"
+        x-cloak
+        @click="query = ''"
+        class="cursor-pointer absolute top-2 right-2"
+      >
+        Clear Results (X)
+      </div>
+    </div>
+    <div class="mb-8 flex flex-col">
       <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
         <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
           <div
@@ -106,66 +125,156 @@
                 </tr>
               </thead>
               <tbody class="divide-y divide-gray-200 bg-white">
-                <% if @abstract_screening_results.empty? %>
-                <tr>
-                  <td>No screening results yet</td>
-                </tr>
-                <% end %>
-                <!-- prettier-ignore -->
-                <% @abstract_screening_results.each do |asr| %>
-                <tr>
-                  <td
-                    class="whitespace-nowrap pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"
-                  >
-                    <%= asr.citation.accession_number_alts %>
-                  </td>
-                  <td class="px-3 text-sm text-gray-500">
-                    <%= asr.citation.author_map_string %>
-                  </td>
-                  <td class="px-3 text-sm text-gray-500">
-                    <%= asr.citation.name %>
-                  </td>
-                  <td class="px-3 text-sm text-gray-500">
-                    <%= asr.citation.year %>
-                  </td>
-                  <td class="whitespace-nowrap px-3 text-sm text-gray-500">
-                    <%= asr.user.handle %>
-                  </td>
-                  <td
-                    class="font-bold whitespace-nowrap px-3 text-sm text-gray-500"
-                  >
-                    <%= asr.readable_label %>
-                  </td>
-                  <td class="whitespace-nowrap px-3 text-sm text-gray-500">
-                    <%= asr.reasons.map(&:name).join(', ') %>
-                  </td>
-                  <td class="whitespace-nowrap px-3 text-sm text-gray-500">
-                    <%= asr.tags.map(&:name).join(', ') %>
-                  </td>
-                  <td class="whitespace-nowrap px-3 text-sm text-gray-500">
-                    <%= asr&.note&.value %>
-                  </td>
-                  <td
-                    class="relative whitespace-nowrap pl-3 pr-4 text-right text-sm font-medium sm:pr-6"
-                  >
-                    <%= link_to "Screen Again",
-                    abstract_screening_rescreen_path(asr.abstract_screening,
-                    abstract_screening_result_id: asr.id), class:
-                    'hover:no-underline hover:text-white inline-flex
-                    items-center justify-center rounded-md border
-                    border-transparent bg-srdrpurple px-4 py-1 my-1 text-sm
-                    font-medium text-white shadow-sm hover:bg-srdrpurple-light
-                    focus:outline-none focus:ring-2 focus:ring-indigo-500
-                    focus:ring-offset-2 sm:w-auto' %>
-                  </td>
-                </tr>
-                <% end %>
+                <template x-if="results == null">
+                  <tr>
+                    <td>Loading..</td>
+                  </tr>
+                </template>
+                <template x-if="results != null && results.length == 0">
+                  <tr>
+                    <td>No citations</td>
+                  </tr>
+                </template>
+                <template x-if="results != null">
+                  <template x-for="result in results">
+                    <tr>
+                      <td
+                        class="whitespace-nowrap pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"
+                        x-text="result.accession_number_alts"
+                      ></td>
+                      <td
+                        class="px-3 text-sm text-gray-500"
+                        x-text="result.author_map_string"
+                      ></td>
+                      <td
+                        class="px-3 text-sm text-gray-500"
+                        x-text="result.name"
+                      ></td>
+                      <td
+                        class="px-3 text-sm text-gray-500"
+                        x-text="result.year"
+                      ></td>
+                      <td
+                        class="whitespace-nowrap px-3 text-sm text-gray-500"
+                        x-text="result.user"
+                      ></td>
+                      <td
+                        class="font-bold whitespace-nowrap px-3 text-sm text-gray-500"
+                        x-text="result.label"
+                      ></td>
+                      <td
+                        class="whitespace-nowrap px-3 text-sm text-gray-500"
+                        x-text="result.reasons"
+                      ></td>
+                      <td
+                        class="whitespace-nowrap px-3 text-sm text-gray-500"
+                        x-text="result.tags"
+                      ></td>
+                      <td
+                        class="whitespace-nowrap px-3 text-sm text-gray-500"
+                        x-text="result.note"
+                      ></td>
+                      <td
+                        class="relative whitespace-nowrap pl-3 pr-4 text-right text-sm font-medium sm:pr-6"
+                      >
+                        <a
+                          :href="`/abstract_screenings/${result.abstract_screening_id}/rescreen?abstract_screening_result_id=${result.id}`"
+                          class="hover:no-underline hover:text-white inline-flex items-center justify-center rounded-md border border-transparent bg-srdrpurple px-4 py-1 my-1 text-sm font-medium text-white shadow-sm hover:bg-srdrpurple-light focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto"
+                          >Screen Again</a
+                        >
+                      </td>
+                    </tr>
+                  </template>
+                </template>
               </tbody>
             </table>
           </div>
         </div>
       </div>
     </div>
-    <%= paginate(@abstract_screening_results, theme: 'foundation') %>
+    <div><%= render '/components/pagination' %></div>
   </div>
 </div>
+
+<script>
+  document.addEventListener("alpine:init", () => {
+    Alpine.data("abstract_screening_results", () => ({
+      results: null,
+      query: "",
+      base_url: "/abstract_screenings/<%= params[:id] %>",
+      pagination: {
+        base_url: this.base_url,
+        prev_page: "",
+        current_page: "",
+        next_page: "",
+        total_pages: "",
+        query: null,
+        order_by: null,
+        sort: null,
+      },
+
+      init() {
+        this.fetch_results();
+        this.$watch("query", (value, oldValue) => {
+          this.pagination.current_page = 1;
+          this.pagination.query = value;
+          this.pagination.order_by = null;
+          this.pagination.sort = null;
+          this.fetch_results();
+        });
+      },
+
+      changeOrderBy(order_by) {
+        if (this.pagination.order_by == order_by) {
+          if (this.pagination.sort == "asc") {
+            this.pagination.sort = "desc";
+          } else if (this.pagination.sort == "desc") {
+            this.pagination.order_by = null;
+            this.pagination.sort = null;
+          } else {
+            this.pagination.sort = "asc";
+          }
+        } else {
+          this.pagination.sort = "asc";
+          this.pagination.order_by = order_by;
+        }
+        this.fetch_results();
+      },
+
+      goToPage(page) {
+        this.pagination.current_page = page;
+        this.fetch_results();
+      },
+
+      query_url() {
+        let url = this.base_url;
+        let params = [];
+        if (this.pagination.query) {
+          params.push("query=" + escape(this.pagination.query));
+        }
+        if (this.pagination.order_by) {
+          params.push("order_by=" + this.pagination.order_by);
+        }
+        if (this.pagination.sort) {
+          params.push("sort=" + this.pagination.sort);
+        }
+        params.push(`page=${this.pagination.current_page}`);
+        return url + "?" + params.join("&");
+      },
+
+      async fetch_results() {
+        const response = await fetch(this.query_url(), {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        });
+        const data = await response.json();
+        this.results = data.results;
+        this.pagination = data.pagination;
+        console.log(data);
+      },
+    }));
+  });
+</script>

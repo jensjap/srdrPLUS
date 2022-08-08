@@ -46,113 +46,7 @@ class AbstractScreeningsController < ApplicationController
         @page = params[:page].present? ? params[:page].to_i : 1
         per_page = 15
         order = @order_by.present? ? { @order_by => @sort } : {}
-        @citations_projects = if @query == '*'
-                                CitationsProject
-                                  .search(
-                                    body: {
-                                      "query": { "bool":
-                                        {
-                                          "must": {
-                                            "match_all": {}
-                                          },
-                                          "filter": [{ "term": { "project_id": { "value": @project.id } } }]
-                                        } },
-                                      "sort": order,
-                                      "from": per_page * (@page - 1),
-                                      "size": per_page
-                                    }
-                                  )
-                              else
-                                CitationsProject
-                                  .search(
-                                    body: {
-                                      "query": {
-                                        "bool": {
-                                          "must": {
-                                            "bool": {
-                                              "should": [
-                                                {
-                                                  "dis_max": {
-                                                    "queries": [
-                                                      {
-                                                        "multi_match": {
-                                                          "query": @query,
-                                                          "boost": 10,
-                                                          "operator": 'and',
-                                                          "analyzer": 'searchkick_search',
-                                                          "fields": [
-                                                            '*.analyzed'
-                                                          ],
-                                                          "type": 'best_fields'
-                                                        }
-                                                      },
-                                                      {
-                                                        "multi_match": {
-                                                          "query": @query,
-                                                          "boost": 10,
-                                                          "operator": 'and',
-                                                          "analyzer": 'searchkick_search2',
-                                                          "fields": [
-                                                            '*.analyzed'
-                                                          ],
-                                                          "type": 'best_fields'
-                                                        }
-                                                      },
-                                                      {
-                                                        "multi_match": {
-                                                          "query": @query,
-                                                          "boost": 1,
-                                                          "operator": 'and',
-                                                          "analyzer": 'searchkick_search',
-                                                          "fuzziness": 1,
-                                                          "prefix_length": 0,
-                                                          "max_expansions": 3,
-                                                          "fuzzy_transpositions": true,
-                                                          "fields": [
-                                                            '*.analyzed'
-                                                          ],
-                                                          "type": 'best_fields'
-                                                        }
-                                                      },
-                                                      {
-                                                        "multi_match": {
-                                                          "query": @query,
-                                                          "boost": 1,
-                                                          "operator": 'and',
-                                                          "analyzer": 'searchkick_search2',
-                                                          "fuzziness": 1,
-                                                          "prefix_length": 0,
-                                                          "max_expansions": 3,
-                                                          "fuzzy_transpositions": true,
-                                                          "fields": [
-                                                            '*.analyzed'
-                                                          ],
-                                                          "type": 'best_fields'
-                                                        }
-                                                      }
-                                                    ]
-                                                  }
-                                                }
-                                              ]
-                                            }
-                                          },
-                                          "filter": [
-                                            {
-                                              "term": {
-                                                "project_id": {
-                                                  "value": @project.id
-                                                }
-                                              }
-                                            }
-                                          ]
-                                        }
-                                      },
-                                      "sort": order,
-                                      "from": per_page * (@page - 1),
-                                      "size": per_page
-                                    }
-                                  )
-                              end
+        @citations_projects = CitationsProjectSearchService.new(@project, @query, @page, per_page, order).elastic_search
         @total_pages = (@citations_projects.response['hits']['total']['value'] / per_page).ceil
         @es_hits = @citations_projects.response['hits']['hits'].map { |hit| hit['_source'] }
       end
@@ -243,13 +137,25 @@ class AbstractScreeningsController < ApplicationController
     @abstract_screening = AbstractScreening.find(params[:id])
     @project = @abstract_screening.project
     authorize(@abstract_screening.project, policy_class: AbstractScreeningPolicy)
-    @abstract_screening_results =
-      @abstract_screening
-      .abstract_screening_results
-      .order(created_at: :desc)
-      .page(params[:page])
-      .per(5)
-    flash.now[:notice] = 'There are no citations left to screen' if params[:screeningFinished]
+
+    respond_to do |format|
+      format.html do
+        flash.now[:notice] = 'There are no citations left to screen' if params[:screeningFinished]
+      end
+      format.json do
+        @query = params[:query].present? ? params[:query] : '*'
+        @order_by = params[:order_by]
+        @sort = params[:sort].present? ? params[:sort] : nil
+        @page = params[:page].present? ? params[:page].to_i : 1
+        per_page = 15
+        order = @order_by.present? ? { @order_by => @sort } : {}
+        @abstract_screening_results =
+          AbstractScreeningResultSearchService.new(@abstract_screening, @query, @page,
+                                                   per_page, order).elastic_search
+        @total_pages = (@abstract_screening_results.response['hits']['total']['value'] / per_page).ceil
+        @es_hits = @abstract_screening_results.response['hits']['hits'].map { |hit| hit['_source'] }
+      end
+    end
   end
 
   def update
