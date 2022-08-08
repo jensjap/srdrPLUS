@@ -56,11 +56,24 @@ class AbstractScreeningsProjectsUsersRole < ApplicationRecord
     end
   end
 
+  # AbstractScreeningsProjectsUsersRole is not always present since we allow anyone
+  # to start screening by default (see AbstractScreeningPolicy).
+  # In case ASPUR does not exist we initialize it here.
   def self.find_aspur(user, abstract_screening)
+    #AbstractScreeningsProjectsUsersRole
+    #  .joins(projects_users_role: { projects_user: :user })
+    #  .where(abstract_screening:, projects_users_role: { projects_users: { user: } })
+    #  .first
     AbstractScreeningsProjectsUsersRole
-      .joins(projects_users_role: { projects_user: :user })
-      .where(abstract_screening:, projects_users_role: { projects_users: { user: } })
-      .first
+      .find_or_initialize_by(
+        abstract_screening:,
+        projects_users_role: ProjectsUsersRole.where(
+          projects_user: ProjectsUser.find_by(
+            project_id: abstract_screening.project.id,
+            user:
+          )
+        ).first
+      )
   end
 
   def word_weights_object

@@ -1218,13 +1218,17 @@ module SeedData
       # Seed Extraction Forms.
       @ef1 = ExtractionForm.create(name: 'ef1')
 
+      # Seed Default Status.
+      Status.find_or_create_by!(name: "Draft")
+      Status.find_or_create_by!(name: "Completed")
+
     end
   end
 end
 
 # Sample Data.
 module SeedDataExtended
-  unless Rails.env.test?
+  unless Rails.env.production?
     def self.extended(object)
       project_titles = [
         ['Definition of Treatment-Resistant Depression in the Medicare Population', 'The purpose of this technology assessment is to review the current definitions of treatment-resistant depression (TRD), to assess how closely current TRD treatment studies fit the most common definition, and to suggest how to improove TRD treatment research.'],
@@ -1387,7 +1391,7 @@ module SeedDataExtended
 
         # Projects.
         project_titles.each do |n|
-          updated_at = Faker::Time.between(DateTime.now - 1000, DateTime.now - 1)
+          updated_at = Faker::Time.between(from: DateTime.now - 1000, to: DateTime.now - 1)
           User.current = User.first
           Project.create!(name:        n[0],
                           description: n[1],
@@ -1413,7 +1417,7 @@ module SeedDataExtended
 
         # Citations, Journals, Authors and Keywords
         200.times do |n|
-          updated_at = Faker::Time.between(DateTime.now - 1000, DateTime.now - 1)
+          updated_at = Faker::Time.between(from: DateTime.now - 1000, to: DateTime.now - 1)
           c = Citation.create!(
             name:           Faker::Lorem.sentence,
             pmid:           Faker::Number.number(10),
