@@ -13,7 +13,7 @@
 class Reason < ApplicationRecord
   acts_as_paranoid
 
-  after_commit :reindex_citations_projects
+  after_commit :reindex_citations_projects, :reindex_abstract_screening_results
 
   has_many :abstract_screening_results_reasons
   has_many :abstract_screening_results, through: :abstract_screening_results_reasons
@@ -33,5 +33,9 @@ class Reason < ApplicationRecord
 
   def reindex_citations_projects
     citations_projects.each(&:reindex)
+  end
+
+  def reindex_abstract_screening_results
+    abstract_screening_results.each(&:reindex)
   end
 end
