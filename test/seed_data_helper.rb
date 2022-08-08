@@ -1397,8 +1397,8 @@ module SeedDataExtended
                           description: n[1],
                           attribution: Faker::Creature::Cat.registry,
                           methodology_description: Faker::Movies::HarryPotter.quote,
-                          prospero:                Faker::Number.hexadecimal(12),
-                          doi:                     Faker::Number.hexadecimal(6),
+                          prospero:                Faker::Number.hexadecimal(digits: 12),
+                          doi:                     Faker::Number.hexadecimal(digits: 6),
                           notes:                   Faker::Movies::HarryPotter.book,
                           funding_source:          Faker::Book.publisher,
                           created_at:              updated_at - rand(1000).hours,
@@ -1420,8 +1420,8 @@ module SeedDataExtended
           updated_at = Faker::Time.between(from: DateTime.now - 1000, to: DateTime.now - 1)
           c = Citation.create!(
             name:           Faker::Lorem.sentence,
-            pmid:           Faker::Number.number(10),
-            refman:         Faker::Number.number(9),
+            pmid:           Faker::Number.number(digits: 10),
+            refman:         Faker::Number.number(digits: 9),
             abstract:       Faker::Lorem.paragraph,
             citation_type:  @citation_types.sample,
             created_at:     updated_at - rand(1000).hours,
@@ -1432,9 +1432,9 @@ module SeedDataExtended
           # Journals
           Journal.create!(
             name:              Faker::Music::RockBand.name,
-            publication_date:  Faker::Date.backward(10000),
-            volume:            Faker::Number.number(1),
-            issue:             Faker::Number.number(1),
+            publication_date:  Faker::Date.backward(days: 10000),
+            volume:            Faker::Number.number(digits: 1),
+            issue:             Faker::Number.number(digits: 1),
             citation:          c
           )
 
