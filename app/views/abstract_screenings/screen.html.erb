@@ -602,8 +602,6 @@
           return (window.location.href =
             "<%= abstract_screening_path(params[:abstract_screening_id], screeningFinished: true) %>");
         }
-        console.log(submit);
-        console.log(data.rescreen);
         this.label_value = submit ? data.label_value : this.label_value;
         this.citation = data.citation;
         this.abstract_screening_result_id = data.abstract_screening_result_id;
