@@ -44,7 +44,8 @@ class AbstractScreeningResult < ApplicationRecord
       label:,
       reasons: reasons.map(&:name).join(', '),
       tags: tags.map(&:name).join(', '),
-      note: note&.value || ''
+      note: note&.value || '',
+      updated_at:
     }
   end
 

@@ -10,6 +10,7 @@ json.results @es_hits do |es_hit|
   json.reasons                es_hit['reasons']
   json.tags                   es_hit['tags']
   json.note                   es_hit['note']
+  json.updated_at             es_hit['updated_at']
 end
 json.pagination do
   json.prev_page    @page == 1 ? 1 : @page - 1
