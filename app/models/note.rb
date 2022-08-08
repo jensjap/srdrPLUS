@@ -15,14 +15,17 @@
 class Note < ApplicationRecord
   acts_as_paranoid
 
-  after_commit :reindex_citations_project
+  after_commit :reindex_citations_project_and_abstract_screening_result
 
   belongs_to :projects_users_role
   belongs_to :notable, polymorphic: true
 
   delegate :project, to: :projects_users_role
 
-  def reindex_citations_project
-    notable.citations_project.reindex if notable.instance_of?(AbstractScreeningResult)
+  def reindex_citations_project_and_abstract_screening_result
+    return unless notable.instance_of?(AbstractScreeningResult)
+
+    notable.reindex
+    notable.citations_project.reindex
   end
 end

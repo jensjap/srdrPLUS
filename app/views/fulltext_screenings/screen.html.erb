@@ -395,11 +395,7 @@
           return (window.location.href =
             "<%= fulltext_screening_path(params[:fulltext_screening_id], screeningFinished: true) %>");
         }
-        this.label_value = submit
-          ? data.label_value
-          : data.rescreen
-          ? data.label_value
-          : this.label_value;
+        this.label_value = submit ? data.label_value : this.label_value;
         this.citation = data.citation;
         this.fulltext_screening_result_id = data.fulltext_screening_result_id;
         this.predefined_reasons = data.predefined_reasons;

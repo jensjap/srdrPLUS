@@ -1,4 +1,4 @@
-json.citations_projects @es_hits do |es_hit|
+json.results @es_hits do |es_hit|
   json.citations_project_id  es_hit['citations_project_id']
   json.citation_id           es_hit['citation_id']
   json.accession_number_alts es_hit['accession_number_alts']

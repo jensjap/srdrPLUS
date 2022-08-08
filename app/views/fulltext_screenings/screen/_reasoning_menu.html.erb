@@ -298,16 +298,11 @@
         >
           <button
             type="button"
-            class="cursor-pointer justify-center m-auto w-full h-20 inline-flex items-center border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-900 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            class="cursor-pointer justify-center m-auto w-full h-20 inline-flex items-center border border-transparent text-xl font-medium rounded-md shadow-sm text-white bg-green-900 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             :class="satisfiesReasoning() ? '' : 'cursor-not-allowed bg-gray-900 hover:bg-gray-700'"
             @click="if (satisfiesReasoning()) postLabel(true)"
-          >
-            <span
-              class="text-xl"
-              x-text="satisfiesReasoning() ? 'Submit' : 'Please fill in the required data above'"
-              >Please fill in the required data above</span
-            >
-          </button>
+            x-text="satisfiesReasoning() ? 'Submit' : 'Please fill in the required data above'"
+          ></button>
         </div>
       </div>
     </div>

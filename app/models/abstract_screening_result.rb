@@ -11,7 +11,9 @@
 #  updated_at                                 :datetime         not null
 #
 class AbstractScreeningResult < ApplicationRecord
-  after_commit :reindex_citations_project
+  searchkick
+
+  after_commit :reindex_citations_project, :reindex
 
   belongs_to :abstract_screening
   belongs_to :abstract_screenings_citations_project
@@ -29,6 +31,23 @@ class AbstractScreeningResult < ApplicationRecord
   has_many :tags, through: :abstract_screening_results_tags
 
   has_one :note, as: :notable
+
+  def search_data
+    {
+      id:,
+      abstract_screening_id:,
+      accession_number_alts: citation.accession_number_alts,
+      author_map_string: citation.author_map_string,
+      name: citation.name,
+      year: citation.year,
+      user: user.handle,
+      label:,
+      reasons: reasons.map(&:name).join(', '),
+      tags: tags.map(&:name).join(', '),
+      note: note&.value || '',
+      updated_at:
+    }
+  end
 
   def self.users_previous_abstract_screening_result_id(abstract_screening_result_id, abstract_screenings_projects_users_role)
     where(abstract_screenings_projects_users_role:)

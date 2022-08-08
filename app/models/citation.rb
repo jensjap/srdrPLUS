@@ -26,13 +26,14 @@ class Citation < ApplicationRecord
   acts_as_paranoid
   searchkick
 
-  after_commit :reindex_citations_projects
+  after_commit :reindex_citations_projects, :reindex_abstract_screening_results
 
   belongs_to :citation_type, optional: true
 
   has_one :journal, dependent: :destroy
 
   has_many :citations_projects, dependent: :destroy, inverse_of: :citation
+  has_many :abstract_screening_results, through: :citations_projects, dependent: :destroy, inverse_of: :citation
   has_many :projects, through: :citations_projects
   has_many :authors_citations, dependent: :destroy
   has_many :authors, through: :authors_citations
@@ -179,5 +180,9 @@ class Citation < ApplicationRecord
 
   def reindex_citations_projects
     citations_projects.each(&:reindex)
+  end
+
+  def reindex_abstract_screening_results
+    abstract_screening_results.each(&:reindex)
   end
 end
