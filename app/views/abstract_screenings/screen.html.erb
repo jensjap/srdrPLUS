@@ -218,6 +218,7 @@
       word_weight_menu: false,
       reasoningMenu: false,
       addReasonModal: { on: false, type: "" },
+      confirmationModalLabel: null,
       confirmationModal: false,
       confirmationModalText: "",
       confirmationModalTexts: {
@@ -225,6 +226,7 @@
         0: "Maybe",
         1: "Accepted",
       },
+      loading: false,
       citation: {
         abstract_screening_id: "",
         abstract_screenings_citations_project_id: "",
@@ -537,11 +539,23 @@
         }
       },
 
-      async showConfirmation(label) {
+      async awaitLoading(cb) {
+        if (this.loading) {
+          await new Promise((resolve, reject) => setTimeout(resolve, 50));
+          this.awaitLoading(cb);
+        } else {
+          cb();
+        }
+      },
+
+      showConfirmation(label) {
+        this.confirmationModalLabel = label;
         this.confirmationModalText = this.confirmationModalTexts[label];
         this.confirmationModal = true;
-        await new Promise((resolve, reject) => setTimeout(resolve, 1000));
-        this.confirmationModal = false;
+        setTimeout(
+          () => this.awaitLoading(() => (this.confirmationModal = false)),
+          1000
+        );
       },
 
       async sendWw(word, weight, id, destroy) {
@@ -570,7 +584,9 @@
       async postLabel(submit) {
         if (submit) {
           this.reasoningMenu = false;
+          this.showConfirmation(this.label_value);
         }
+        this.loading = true;
         const response = await fetch(
           "/abstract_screenings/<%= params[:abstract_screening_id] %>/label",
           {
@@ -595,9 +611,6 @@
           }
         );
         const data = await response.json();
-        if (submit) {
-          await this.showConfirmation(this.label_value);
-        }
         if (data.noResults) {
           return (window.location.href =
             "<%= abstract_screening_path(params[:abstract_screening_id], screeningFinished: true) %>");
@@ -616,6 +629,7 @@
 
         this.processWeights("title", "processedTitle");
         this.processWeights("abstract", "processedAbstract");
+        this.loading = false;
       },
     }));
   });

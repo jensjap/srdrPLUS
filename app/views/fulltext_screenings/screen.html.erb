@@ -167,6 +167,7 @@
     Alpine.data("screenStore", () => ({
       reasoningMenu: false,
       addReasonModal: { on: false, type: "" },
+      confirmationModalLabel: null,
       confirmationModal: false,
       confirmationModalText: "",
       confirmationModalTexts: {
@@ -174,6 +175,7 @@
         0: "Maybe",
         1: "Accepted",
       },
+      loading: false,
       citation: {
         fulltext_screening_id: "",
         citations_projects_fulltext_screening_id: "",
@@ -353,17 +355,31 @@
         }
       },
 
-      async showConfirmation(label) {
+      async awaitLoading(cb) {
+        if (this.loading) {
+          await new Promise((resolve, reject) => setTimeout(resolve, 50));
+          this.awaitLoading(cb);
+        } else {
+          cb();
+        }
+      },
+
+      showConfirmation(label) {
+        this.confirmationModalLabel = label;
         this.confirmationModalText = this.confirmationModalTexts[label];
         this.confirmationModal = true;
-        await new Promise((resolve, reject) => setTimeout(resolve, 1000));
-        this.confirmationModal = false;
+        setTimeout(
+          () => this.awaitLoading(() => (this.confirmationModal = false)),
+          1000
+        );
       },
 
       async postLabel(submit) {
         if (submit) {
           this.reasoningMenu = false;
+          this.showConfirmation(this.label_value);
         }
+        this.loading = true;
         const response = await fetch(
           "/fulltext_screenings/<%= params[:fulltext_screening_id] %>/label",
           {
@@ -388,9 +404,6 @@
           }
         );
         const data = await response.json();
-        if (submit) {
-          await this.showConfirmation(this.label_value);
-        }
         if (data.noResults) {
           return (window.location.href =
             "<%= fulltext_screening_path(params[:fulltext_screening_id], screeningFinished: true) %>");
@@ -406,6 +419,7 @@
         this.options = data.options;
         this.word_weights = data.word_weights;
         this.rescreen = data.rescreen;
+        this.loading = false;
       },
     }));
   });
