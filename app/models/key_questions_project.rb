@@ -17,6 +17,13 @@ class KeyQuestionsProject < ApplicationRecord
   include SharedOrderableMethods
 
   acts_as_paranoid column: :active, sentinel_value: true
+  before_destroy :really_destroy_children!
+  def really_destroy_children!
+    Ordering.with_deleted.where(orderable_type: self.class, orderable_id: id).each(&:really_destroy!)
+    key_questions_projects_questions.with_deleted.each do |child|
+      child.really_destroy!
+    end
+  end
 
   before_validation -> { set_ordering_scoped_by(:extraction_forms_projects_section_id) }, on: :create
 
@@ -27,7 +34,7 @@ class KeyQuestionsProject < ApplicationRecord
   has_one :ordering, as: :orderable, dependent: :destroy
 
   has_many :key_questions_projects_questions, dependent: :destroy, inverse_of: :key_questions_project
-  has_many :questions, through: :key_questions_projects_questions, dependent: :destroy
+  has_many :questions, through: :key_questions_projects_questions
 
   has_many :sd_key_questions_projects, inverse_of: :key_questions_project
   has_many :sd_key_questions, through: :sd_key_questions_projects

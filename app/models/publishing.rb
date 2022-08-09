@@ -18,10 +18,14 @@ class Publishing < ApplicationRecord
 
   attr_accessor :terms_agreement, :guidelines_agreement
 
-  scope :unapproved, -> () { left_outer_joins(:approval).where(approvals: { id: nil }) }
-  scope :approved, -> () { joins(:approval) }
+  scope :unapproved, -> { left_outer_joins(:approval).where(approvals: { id: nil }) }
+  scope :approved, -> { joins(:approval) }
 
   acts_as_paranoid column: :active, sentinel_value: true
+  before_destroy :really_destroy_children!
+  def really_destroy_children!
+    Publishing.with_deleted.where(publishable_type: self.class, publishable_id: id).each(&:really_destroy!)
+  end
 
   belongs_to :publishable, polymorphic: true
   belongs_to :user, inverse_of: :publishings
@@ -38,9 +42,9 @@ class Publishing < ApplicationRecord
 
   def name_of_pub_type
     if publishable_type == SdMetaDatum.to_s
-      "SR360"
+      'SR360'
     elsif publishable_type == Project.to_s
-      "Project"
+      'Project'
     end
   end
 end

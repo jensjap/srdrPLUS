@@ -12,6 +12,12 @@
 
 class ComparableElement < ApplicationRecord
   acts_as_paranoid
+  before_destroy :really_destroy_children!
+  def really_destroy_children!
+    comparates.with_deleted.each do |child|
+      child.really_destroy!
+    end
+  end
 
   after_destroy :destroy_comparisons
 
@@ -20,13 +26,13 @@ class ComparableElement < ApplicationRecord
   has_many :comparates, inverse_of: :comparable_element
   has_many :comparate_groups, through: :comparates
   has_many :comparisons, through: :comparate_groups
-  #!!! Birol: why is this has_one?
-  #has_one :comparate
-  #has_one :extractions_extraction_forms_projects_sections_type1s, :source => :comparable, :source_type => 'ExtractionsExtractionFormsProjectsSectionsType1'
+  # !!! Birol: why is this has_one?
+  # has_one :comparate
+  # has_one :extractions_extraction_forms_projects_sections_type1s, :source => :comparable, :source_type => 'ExtractionsExtractionFormsProjectsSectionsType1'
 
   private
 
-    def destroy_comparisons
-      self.comparisons.each(&:destroy)
-    end
+  def destroy_comparisons
+    comparisons.each(&:destroy)
+  end
 end

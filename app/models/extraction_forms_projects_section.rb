@@ -21,21 +21,45 @@ class ExtractionFormsProjectsSection < ApplicationRecord
   include SharedParanoiaMethods
 
   acts_as_paranoid column: :active, sentinel_value: true
+  before_destroy :really_destroy_children!
+  def really_destroy_children!
+    ExtractionFormsProjectsSectionOption.with_deleted.where(extraction_forms_projects_section_id: id).each(&:really_destroy!)
+    Ordering.with_deleted.where(orderable_type: self.class, orderable_id: id).each(&:really_destroy!)
+    ExtractionFormsProjectsSectionsType1
+      .with_deleted
+      .where(extraction_forms_projects_section_id: id)
+      .each(&:really_destroy!)
+    Question
+      .with_deleted
+      .where(extraction_forms_projects_section_id: id)
+      .each(&:really_destroy!)
 
-  scope :in_standard_extraction, -> {
-    joins(:extraction_forms_project)
-    .where(extraction_forms_projects: { extraction_forms_project_type: ExtractionFormsProjectType.find_by_name(ExtractionFormsProjectType::STANDARD) })
-  }
-  scope :in_diagnostic_test_extraction,  -> {
-    joins(:extraction_forms_project)
-    .where(extraction_forms_projects: { extraction_forms_project_type: ExtractionFormsProjectType.find_by_name(ExtractionFormsProjectType::DIAGNOSTIC_TEST) })
-  }
-  scope :in_mini_extraction, -> {
-    joins(:extraction_forms_project)
-    .where(extraction_forms_projects: { extraction_forms_project_type: ExtractionFormsProjectType.find_by_name(ExtractionFormsProjectType::MINI_EXTRACTION) })
-  }
+    extraction_forms_projects_section_type2s.with_deleted.each do |child|
+      child.really_destroy!
+    end
+    extractions_extraction_forms_projects_sections.with_deleted.each do |child|
+      child.really_destroy!
+    end
+    key_questions_projects.with_deleted.each do |child|
+      child.really_destroy!
+    end
+  end
 
+  scope :in_standard_extraction, lambda {
+    joins(:extraction_forms_project)
+      .where(extraction_forms_projects: { extraction_forms_project_type: ExtractionFormsProjectType.find_by_name(ExtractionFormsProjectType::STANDARD) })
+  }
+  scope :in_diagnostic_test_extraction, lambda {
+    joins(:extraction_forms_project)
+      .where(extraction_forms_projects: { extraction_forms_project_type: ExtractionFormsProjectType.find_by_name(ExtractionFormsProjectType::DIAGNOSTIC_TEST) })
+  }
+  scope :in_mini_extraction, lambda {
+    joins(:extraction_forms_project)
+      .where(extraction_forms_projects: { extraction_forms_project_type: ExtractionFormsProjectType.find_by_name(ExtractionFormsProjectType::MINI_EXTRACTION) })
+  }
+  ################################ CAUTION WHAT IS THIS FOR?
   after_commit :mark_as_deleted_or_restore_extraction_forms_projects_section_option
+  ################################
   after_create :create_extraction_forms_projects_section_option
 
   before_validation -> { set_ordering_scoped_by(:extraction_forms_project_id) }
@@ -43,37 +67,38 @@ class ExtractionFormsProjectsSection < ApplicationRecord
   belongs_to :extraction_forms_project,                inverse_of: :extraction_forms_projects_sections
   belongs_to :extraction_forms_projects_section_type,  inverse_of: :extraction_forms_projects_sections
   belongs_to :link_to_type1, class_name: 'ExtractionFormsProjectsSection',
-    foreign_key: 'extraction_forms_projects_section_id',
-    optional: true
+                             foreign_key: 'extraction_forms_projects_section_id',
+                             optional: true
   belongs_to :section, inverse_of: :extraction_forms_projects_sections
 
   has_one :extraction_forms_projects_section_option, dependent: :destroy
   has_one :ordering, as: :orderable, dependent: :destroy
 
   has_many :extraction_forms_projects_sections_type1s,
-    -> { ordered },
-    dependent: :destroy, inverse_of: :extraction_forms_projects_section
-  # Note: This might be a bug...it's returning too many type1s.
+           -> { ordered },
+           dependent: :destroy, inverse_of: :extraction_forms_projects_section
+  # NOTE: This might be a bug...it's returning too many type1s.
   has_many :type1s,
-    -> { joins(extraction_forms_projects_sections_type1s: :ordering) },
-    through: :extraction_forms_projects_sections_type1s, dependent: :destroy
+           -> { joins(extraction_forms_projects_sections_type1s: :ordering) },
+           through: :extraction_forms_projects_sections_type1s, dependent: :destroy
 
-  has_many :extraction_forms_projects_section_type2s, class_name:  'ExtractionFormsProjectsSection',
+  has_many :extraction_forms_projects_section_type2s, class_name: 'ExtractionFormsProjectsSection',
                                                       foreign_key: 'extraction_forms_projects_section_id'
 
-  has_many :extractions_extraction_forms_projects_sections, dependent: :destroy, inverse_of: :extraction_forms_projects_section
+  has_many :extractions_extraction_forms_projects_sections, dependent: :destroy,
+                                                            inverse_of: :extraction_forms_projects_section
   has_many :extractions, through: :extractions_extraction_forms_projects_sections, dependent: :destroy
 
   has_many :key_questions_projects, dependent: :nullify, inverse_of: :extraction_forms_projects_section
   has_many :key_questions, through: :key_questions_projects, dependent: :destroy
 
   has_many :questions,
-    -> { ordered },
-    dependent: :destroy, inverse_of: :extraction_forms_projects_section
+           -> { ordered },
+           dependent: :destroy, inverse_of: :extraction_forms_projects_section
 
   accepts_nested_attributes_for :extraction_forms_projects_sections_type1s, reject_if: :all_blank
   accepts_nested_attributes_for :extraction_forms_projects_section_option, reject_if: :all_blank
-  #accepts_nested_attributes_for :type1s, reject_if: :all_blank
+  # accepts_nested_attributes_for :type1s, reject_if: :all_blank
 
   delegate :project, to: :extraction_forms_project
 
@@ -82,7 +107,7 @@ class ExtractionFormsProjectsSection < ApplicationRecord
   validate :child_type
   validate :parent_type
 
-  #!!! This code is repeated in model/ExtractionsExtractionFormsProjectsSection.
+  # !!! This code is repeated in model/ExtractionsExtractionFormsProjectsSection.
   #    We should move it somewhere to share.
   #
   # Do not create duplicate Type1 entries.
@@ -101,12 +126,12 @@ class ExtractionFormsProjectsSection < ApplicationRecord
   #       type1, where type1 has neither name or nor description.
   def type1s_attributes=(attributes)
     attributes.each do |key, attribute_collection|
-      unless attribute_collection.has_key? 'id'
-        Type1.transaction do
-          type1 = Type1.find_or_create_by!(attribute_collection)
-          type1s << type1 unless type1s.include? type1
-          attributes[key]['id'] = type1.id.to_s
-        end
+      next if attribute_collection.has_key? 'id'
+
+      Type1.transaction do
+        type1 = Type1.find_or_create_by!(attribute_collection)
+        type1s << type1 unless type1s.include? type1
+        attributes[key]['id'] = type1.id.to_s
       end
     end
     super
@@ -119,18 +144,18 @@ class ExtractionFormsProjectsSection < ApplicationRecord
   end
 
   def section_label
-    self.section.name
+    section.name
   end
 
-  #!!! this isn't working.
+  # !!! this isn't working.
   def child_type
-#    errors[:base] << 'Child Type must be of Type 2' unless self.link_to_type1.present? &&
-#      self.extraction_forms_projects_section_type_id != 2
+    #    errors[:base] << 'Child Type must be of Type 2' unless self.link_to_type1.present? &&
+    #      self.extraction_forms_projects_section_type_id != 2
   end
 
   def parent_type
     errors[:base] << 'Parent Type must be of Type 1' unless link_to_type1.nil? ||
-      link_to_type1.extraction_forms_projects_section_type_id == 1
+                                                            link_to_type1.extraction_forms_projects_section_type_id == 1
   end
 
   def mark_as_deleted_or_restore_extraction_forms_projects_section_option
@@ -147,7 +172,7 @@ class ExtractionFormsProjectsSection < ApplicationRecord
     extraction_forms_projects_sections_type1s
       .includes(:type1, :ordering, :type1_type, :extraction_forms_projects_sections_type1s_timepoint_names, :timepoint_names)
       .to_a
-      .delete_if { |efpst| efpst.type1.name == "Total" && efpst.type1.description == "All #{ link_to_type1.present? ? link_to_type1.section.name : section.name } combined" }
+      .delete_if { |efpst| efpst.type1.name == 'Total' && efpst.type1.description == "All #{link_to_type1.present? ? link_to_type1.section.name : section.name} combined" }
   end
 
   def self.add_quality_dimension_by_questions_or_section(params)
@@ -156,9 +181,8 @@ class ExtractionFormsProjectsSection < ApplicationRecord
 
     return if lsof_qdq_ids.blank?
 
-    #wrap in transaction
+    # wrap in transaction
     ExtractionFormsProjectsSection.transaction do
-
       efps = ExtractionFormsProjectsSection.find(efps_id)
 
       # Iterate through the array of quality dimension question ids and add the question to the section.
@@ -196,25 +220,25 @@ class ExtractionFormsProjectsSection < ApplicationRecord
               first = false
             else
               qrcqrco = QuestionRowColumnsQuestionRowColumnOption.create(
-                  question_row_column_id: qrc_1.id,
-                  question_row_column_option_id: 1,
-                  name: qdo.name
+                question_row_column_id: qrc_1.id,
+                question_row_column_option_id: 1,
+                name: qdo.name
               )
             end
-            qdqqdo = QualityDimensionQuestionsQualityDimensionOption.find_by quality_dimension_question: qdq, quality_dimension_option: qdo
+            qdqqdo = QualityDimensionQuestionsQualityDimensionOption.find_by quality_dimension_question: qdq,
+                                                                             quality_dimension_option: qdo
             qrcqrco_id_dict[qdqqdo.id] = qrcqrco.id
-          end  # qdq.quality_dimension_options.each do |qdo|
+          end # qdq.quality_dimension_options.each do |qdo|
         end
         qdq.dependencies.each do |prereq|
           depen_arr << [q.id, prereq.prerequisitable_id]
         end
-      end  # lsof_qdq_ids.each do |qdq_id|
+      end # lsof_qdq_ids.each do |qdq_id|
       depen_arr.each do |q_id, prereq_id|
         Dependency.find_or_create_by! dependable_type: 'Question',
                                       dependable_id: q_id,
                                       prerequisitable_type: 'QuestionRowColumnsQuestionRowColumnOption',
                                       prerequisitable_id: qrcqrco_id_dict[prereq_id]
-
       end
     end  # ExtractionFormsProjectsSection.transaction do
   end

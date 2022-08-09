@@ -20,8 +20,14 @@ class Profile < ApplicationRecord
   include SharedProcessTokenMethods
 
   acts_as_paranoid
+  before_destroy :really_destroy_children!
+  def really_destroy_children!
+    degrees_profiles.with_deleted.each do |child|
+      child.really_destroy!
+    end
+  end
 
-#  after_restore :restore_relationships
+  #  after_restore :restore_relationships
   after_create :create_default_abstrackr_setting
 
   belongs_to :organization, inverse_of: :profiles, optional: true
@@ -32,16 +38,16 @@ class Profile < ApplicationRecord
   has_many :degrees_profiles, dependent: :destroy, inverse_of: :profile
   has_many :degrees, through: :degrees_profiles, dependent: :destroy
 
-  #accepts_nested_attributes_for :degrees, :allow_destroy => true, :reject_if => :all_blank
-  #accepts_nested_attributes_for :degrees_profiles, :allow_destroy => true, :reject_if => :all_blank
+  # accepts_nested_attributes_for :degrees, :allow_destroy => true, :reject_if => :all_blank
+  # accepts_nested_attributes_for :degrees_profiles, :allow_destroy => true, :reject_if => :all_blank
 
   validates :user, uniqueness: true
   validates :username,
-    :uniqueness => {
-      :case_sensitive => false
-    }
+            uniqueness: {
+              case_sensitive: false
+            }
   # Only allow letter, number, underscore and punctuation.
-  validates_format_of :username, with: /^[a-zA-Z0-9_+-\.]*$/, :multiline => true
+  validates_format_of :username, with: /^[a-zA-Z0-9_+-.]*$/, multiline: true
 
   validate :validate_username
 
@@ -61,13 +67,11 @@ class Profile < ApplicationRecord
 
   private
 
-    def validate_username
-      if User.where(email: username).exists?
-        errors.add(:username, 'Username already taken!')
-      end
-    end
+  def validate_username
+    errors.add(:username, 'Username already taken!') if User.where(email: username).exists?
+  end
 
-    def create_default_abstrackr_setting
-      self.create_abstrackr_setting( { authors_visible: true, journal_visible: true } )
-    end
+  def create_default_abstrackr_setting
+    create_abstrackr_setting({ authors_visible: true, journal_visible: true })
+  end
 end

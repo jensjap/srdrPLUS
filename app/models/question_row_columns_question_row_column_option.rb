@@ -18,6 +18,12 @@ class QuestionRowColumnsQuestionRowColumnOption < ApplicationRecord
   include SharedSuggestableMethods
 
   acts_as_paranoid column: :active, sentinel_value: true
+  before_destroy :really_destroy_children!
+  def really_destroy_children!
+    Suggestion.with_deleted.where(suggestable_type: self.class, suggestable_id: id).each(&:really_destroy!)
+    FollowupField.with_deleted.where(question_row_columns_question_row_column_option_id: id).each(&:really_destroy!)
+    Dependency.with_deleted.where(prerequisitable_type: self.class, prerequisitable_id: id).each(&:really_destroy!)
+  end
 
   after_create :set_default_values
   after_create :record_suggestor
@@ -31,11 +37,11 @@ class QuestionRowColumnsQuestionRowColumnOption < ApplicationRecord
   has_many :dependencies, as: :prerequisitable, dependent: :destroy
 
   has_many :extractions_extraction_forms_projects_sections_question_row_column_fields_question_row_columns_question_row_column_options,
-    dependent: :destroy,
-    inverse_of: :question_row_columns_question_row_column_option
+           dependent: :destroy,
+           inverse_of: :question_row_columns_question_row_column_option
   has_many :extractions_extraction_forms_projects_sections_question_row_column_fields,
-    through: :extractions_extraction_forms_projects_sections_question_row_column_fields_question_row_columns_question_row_column_options,
-    dependent: :destroy
+           through: :extractions_extraction_forms_projects_sections_question_row_column_fields_question_row_columns_question_row_column_options,
+           dependent: :destroy
 
   accepts_nested_attributes_for :question_row_column_option, allow_destroy: false
 
@@ -44,27 +50,27 @@ class QuestionRowColumnsQuestionRowColumnOption < ApplicationRecord
   delegate :question_row_column_type, to: :question_row_column
 
   def includes_followup
-    return self.followup_field.present?
+    followup_field.present?
   end
 
   def includes_followup=(bool)
     bool = ActiveModel::Type::Boolean.new.cast bool
-    if bool and not self.followup_field.present?
-      deleted_field = FollowupField.where(question_row_columns_question_row_column_option_id: self.id).only_deleted.first
+    if bool and !followup_field.present?
+      deleted_field = FollowupField.where(question_row_columns_question_row_column_option_id: id).only_deleted.first
       if deleted_field.present?
-        deleted_field.restore :recursive => true
+        deleted_field.restore recursive: true
       else
-        self.build_followup_field.save
+        build_followup_field.save
       end
-    elsif not bool and self.followup_field.present?
-      self.followup_field.destroy.save
+    elsif !bool and followup_field.present?
+      followup_field.destroy.save
     end
   end
 
   private
 
   def set_default_values
-    case self.question_row_column_option.name
+    case question_row_column_option.name
     when 'answer_choice'
       self.name      ||= ''
     when 'min_length'
@@ -85,6 +91,6 @@ class QuestionRowColumnsQuestionRowColumnOption < ApplicationRecord
       raise 'Unknown QuestionRowColumnOption'
     end
 
-    self.save
+    save
   end
 end
