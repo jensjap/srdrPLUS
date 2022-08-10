@@ -11,6 +11,7 @@
 #  updated_at        :datetime         not null
 #  consensus_type_id :integer
 #  pilot_flag        :boolean
+#  screening_status  :string(255)      default("CP"), not null
 #
 
 class CitationsProject < ApplicationRecord
