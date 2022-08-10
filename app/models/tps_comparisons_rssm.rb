@@ -29,7 +29,12 @@ class TpsComparisonsRssm < ApplicationRecord
 
   has_many :records, as: :recordable
 
-  delegate :extraction,                                    to: :extractions_extraction_forms_projects_sections_type1_row
+  # delegate :extraction, to: :extractions_extraction_forms_projects_sections_type1_row
+
+  def extraction
+    ExtractionsExtractionFormsProjectsSectionsType1Row.with_deleted.find_by(id: extractions_extraction_forms_projects_sections_type1_row_id).try(:extraction)
+  end
+
   delegate :extractions_extraction_forms_projects_section, to: :extractions_extraction_forms_projects_sections_type1_row
   delegate :result_statistic_section,                      to: :result_statistic_sections_measure
 

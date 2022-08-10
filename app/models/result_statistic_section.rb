@@ -64,7 +64,12 @@ class ResultStatisticSection < ApplicationRecord
   accepts_nested_attributes_for :result_statistic_sections_measures
   accepts_nested_attributes_for :measures
 
-  delegate :extraction, to: :population
+  # delegate :extraction, to: :population
+
+  def extraction
+    ExtractionsExtractionFormsProjectsSectionsType1Row.with_deleted.find_by(id: population_id).try(:extraction)
+  end
+
   delegate :project, to: :extraction
 
   def timepoints

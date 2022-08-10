@@ -37,7 +37,11 @@ class ExtractionsExtractionFormsProjectsSectionsType1RowColumn < ApplicationReco
 
   accepts_nested_attributes_for :timepoint_name, reject_if: :all_blank
 
-  delegate :extraction, to: :extractions_extraction_forms_projects_sections_type1_row
+  # delegate :extraction, to: :extractions_extraction_forms_projects_sections_type1_row
+
+  def extraction
+    ExtractionsExtractionFormsProjectsSectionsType1Row.with_deleted.find_by(id: extractions_extraction_forms_projects_sections_type1_row_id).try(:extraction)
+  end
 
   def label_with_optional_unit
     text  = "#{timepoint_name.name}"
@@ -71,7 +75,7 @@ class ExtractionsExtractionFormsProjectsSectionsType1RowColumn < ApplicationReco
   private
 
   def set_extraction_stale
-    extraction.extraction_checksum.update(is_stale: true) unless extraction.deleted?
+    extraction.extraction_checksum.update(is_stale: true) unless extraction.nil? || extraction.deleted?
   end
 
   def ensure_timepoints_across_populations

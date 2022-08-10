@@ -146,6 +146,6 @@ class Record < ApplicationRecord
                  else
                    recordable.result_statistic_section.extraction
                  end
-    extraction.extraction_checksum.update(is_stale: true) unless extraction.deleted?
+    extraction.extraction_checksum.update(is_stale: true) unless extraction.nil? || extraction.deleted?
   end
 end

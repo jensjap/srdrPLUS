@@ -26,5 +26,9 @@ class ExtractionsExtractionFormsProjectsSectionsFollowupField < ApplicationRecor
 
   has_many :records, as: :recordable
 
-  delegate :extraction, to: :extractions_extraction_forms_projects_section
+  # delegate :extraction, to: :extractions_extraction_forms_projects_section
+
+  def extraction
+    ExtractionsExtractionFormsProjectsSection.with_deleted.find_by(id: extractions_extraction_forms_projects_section_id).try(:extraction)
+  end
 end

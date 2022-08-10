@@ -58,7 +58,7 @@ class ExtractionFormsProjectsSection < ApplicationRecord
       .where(extraction_forms_projects: { extraction_forms_project_type: ExtractionFormsProjectType.find_by_name(ExtractionFormsProjectType::MINI_EXTRACTION) })
   }
   ################################ CAUTION WHAT IS THIS FOR?
-  after_commit :mark_as_deleted_or_restore_extraction_forms_projects_section_option
+  # after_commit :mark_as_deleted_or_restore_extraction_forms_projects_section_option
   ################################
   after_create :create_extraction_forms_projects_section_option
 

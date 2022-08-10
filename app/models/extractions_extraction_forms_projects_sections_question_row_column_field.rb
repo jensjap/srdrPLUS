@@ -42,8 +42,13 @@ class ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField < Applica
 
   has_many :records, as: :recordable
 
-  delegate :extraction, to: :extractions_extraction_forms_projects_section
-  delegate :project,    to: :extractions_extraction_forms_projects_section
+  # delegate :extraction, to: :extractions_extraction_forms_projects_section, allow_nil: true
+
+  def extraction
+    ExtractionsExtractionFormsProjectsSection.with_deleted.find_by(id: extractions_extraction_forms_projects_section_id).try(:extraction)
+  end
+
+  delegate :project, to: :extractions_extraction_forms_projects_section
 
   def question_row_columns_question_row_column_option_ids=(tokens)
     tokens.map do |token|

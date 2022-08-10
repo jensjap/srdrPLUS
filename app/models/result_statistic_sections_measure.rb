@@ -60,11 +60,15 @@ class ResultStatisticSectionsMeasure < ApplicationRecord
 
   accepts_nested_attributes_for :measure
 
-  delegate :extraction, to: :result_statistic_section
+  # delegate :extraction, to: :result_statistic_section
+
+  def extraction
+    ResultStatisticSection.with_deleted.find_by(id: result_statistic_section_id).try(:extraction)
+  end
 
   private
 
   def set_extraction_stale
-    extraction.extraction_checksum.update(is_stale: true) unless extraction.deleted?
+    extraction.extraction_checksum.update(is_stale: true) unless extraction.nil? || extraction.deleted?
   end
 end

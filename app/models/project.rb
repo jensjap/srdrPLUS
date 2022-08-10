@@ -128,7 +128,7 @@ class Project < ApplicationRecord
   has_many :tasks, dependent: :destroy, inverse_of: :project
   has_many :assignments, through: :tasks, dependent: :destroy
 
-  has_many :screening_options
+  has_many :screening_options, dependent: :destroy, inverse_of: :project
   has_many :screening_option_types, through: :screening_options
 
   has_many :sd_meta_data

@@ -115,8 +115,13 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
 
   delegate :citation,          to: :extractions_extraction_forms_projects_section
   delegate :citations_project, to: :extractions_extraction_forms_projects_section
-  delegate :extraction,        to: :extractions_extraction_forms_projects_section
-  delegate :project,           to: :extractions_extraction_forms_projects_section
+  # delegate :extraction,        to: :extractions_extraction_forms_projects_section
+
+  def extraction
+    ExtractionsExtractionFormsProjectsSection.with_deleted.find_by(id: extractions_extraction_forms_projects_section_id).try(:extraction)
+  end
+
+  delegate :project, to: :extractions_extraction_forms_projects_section
 
   validates :type1, uniqueness: { scope: %i[extractions_extraction_forms_projects_section type1_type] }
 
@@ -227,7 +232,7 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
   private
 
   def set_extraction_stale
-    extraction.extraction_checksum.update(is_stale: true) unless extraction.deleted?
+    extraction.extraction_checksum.update(is_stale: true) unless extraction.nil? || extraction.deleted?
   end
 
   # Do not overwrite existing entries but associate to one that already exists or create a new one.
