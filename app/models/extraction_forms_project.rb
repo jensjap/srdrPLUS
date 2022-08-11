@@ -63,7 +63,7 @@ class ExtractionFormsProject < ApplicationRecord
 
   belongs_to :extraction_forms_project_type, inverse_of: :extraction_forms_projects, optional: true
   belongs_to :extraction_form,               inverse_of: :extraction_forms_projects
-  belongs_to :project,                       inverse_of: :extraction_forms_projects, touch: true
+  belongs_to :project,                       inverse_of: :extraction_forms_projects # , touch: true
 
   has_many :extraction_forms_projects_sections,
            -> { ordered },

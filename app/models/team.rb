@@ -16,7 +16,7 @@ class Team < ApplicationRecord
   include SharedInvitableMethods
 
   belongs_to :team_type
-  belongs_to :project, touch: true
+  belongs_to :project # , touch: true
 
   has_one :coloring, as: :colorable
 

@@ -50,7 +50,7 @@ class Extraction < ApplicationRecord
   scope :consolidated,   -> { where(consolidated: true) }
   scope :unconsolidated, -> { where(consolidated: false) }
 
-  belongs_to :project,             inverse_of: :extractions, touch: true
+  belongs_to :project,             inverse_of: :extractions # , touch: true
   belongs_to :citations_project,   inverse_of: :extractions
   belongs_to :projects_users_role, inverse_of: :extractions
 

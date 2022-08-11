@@ -11,7 +11,7 @@
 #
 
 class ScreeningOption < ApplicationRecord
-    belongs_to :project, touch: true
-    belongs_to :label_type, optional: true
-    belongs_to :screening_option_type
+  belongs_to :project # , touch: true
+  belongs_to :label_type, optional: true
+  belongs_to :screening_option_type
 end
