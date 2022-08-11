@@ -1,4 +1,4 @@
-source "https://rubygems.org"
+source 'https://rubygems.org'
 
 git_source(:github) do |repo_name|
   repo_name = "#{repo_name}/#{repo_name}" unless repo_name.include?('/')
@@ -75,7 +75,7 @@ gem 'rubyXL', '~> 1.2.10' # Spreadsheet reading.
 gem 'sass-rails', '~> 5.0' # Use SCSS for stylesheets
 gem 'searchjoy'
 gem 'searchkick'
-gem "sentry-rails"
+gem 'sentry-rails'
 gem 'sentry-ruby' # full-stack error tracking system
 gem 'sentry-sidekiq' # full-stack error tracking system
 gem 'sidekiq' # Background jobs.
@@ -85,7 +85,6 @@ gem 'slim-rails'
 gem 'sortable-rails' # List reordering, Drag & Drop.
 gem 'tailwindcss-rails', '~> 2.0'
 gem 'toastr_rails'
-gem 'turnout' # Easy maintenance mode
 gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby] # Windows does not include zoneinfo files
 gem 'uglifier', '>= 1.3.0' # Use Uglifier as compressor for JavaScript assets
 gem 'zip-zip' # Spreadsheet reading.
