@@ -15,6 +15,7 @@ json.citation do
   json.abstract @random_citation.abstract
   json.keywords @random_citation.keywords.map(&:name).join(',')
   json.id @random_citation.accession_number_alts
+  json.journal_meta_info "#{@random_citation.author_map_string}\n#{@random_citation.journal.name}, #{@random_citation.year}; #{@random_citation.journal.volume} (#{@random_citation.journal.issue}): #{@random_citation.page_number_start}-#{@random_citation.page_number_end}. DOI: #{@random_citation.doi}. PMID: #{@random_citation.pmid}"
 end
 json.options do
   json.yes_tag_required @fulltext_screening.yes_tag_required

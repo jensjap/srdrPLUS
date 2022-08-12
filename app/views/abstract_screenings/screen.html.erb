@@ -75,7 +75,7 @@
         />
       </svg>
     </a>
-    <div class="mt-3">
+    <div class="mr-20">
       <div
         class="horizontal-scroll-wrapper"
         @mouseup="checkSelection()"
@@ -91,16 +91,6 @@
             ></span>
           </template>
         </h1>
-      </div>
-      <div class="px-8 text-sm overflow-x-auto whitespace-nowrap">
-        Journal: <span x-text="citation.journal"></span>
-      </div>
-      <div class="horizontal-scroll-wrapper">
-        <div
-          class="horizontal-scroll-wrapper-item text-sm overflow-x-auto whitespace-nowrap"
-        >
-          Authors: <span x-text="citation.authors"></span>
-        </div>
       </div>
     </div>
   </div>
@@ -129,6 +119,11 @@
           x-text="citation.keywords"
         ></div>
         <div class="px-8 break-all leading-loose" x-text="citation.id"></div>
+        <hr />
+        <div
+          class="px-8 break-all leading-loose"
+          x-text="citation.journal_meta_info"
+        ></div>
       </div>
     </div>
   </div>
@@ -236,6 +231,7 @@
         abstract: "",
         keywords: "",
         id: "",
+        journal_meta_info: "",
       },
       abstract_screening_result_id: null,
       predefined_reasons: {},
