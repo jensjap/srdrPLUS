@@ -515,6 +515,11 @@
             }
           }
           const partial = this.citation[sourceKey].slice(head, tail);
+          if (this.citation[sourceKey][tail] == undefined) {
+            head += 1;
+            tail = head + 1;
+            continue;
+          }
           if (tail - head == 1 && !partial.match(/[a-z]|[A-Z]/)) {
             this[destinationKey].push({ text: partial, weight: 0 });
             head += 1;
