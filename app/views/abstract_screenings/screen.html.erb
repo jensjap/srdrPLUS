@@ -4,13 +4,13 @@
   id="abstrackr-wrapper"
 >
   <!-- prettier-ignore -->
-  <%= render 'abstract_screenings/screen/weighing_screen' %>
-  <%= render 'abstract_screenings/screen/word_weight_menu' %>
-  <%= render 'abstract_screenings/screen/confirmation_modal' %>
   <%= render 'abstract_screenings/screen/reasoning_menu' %>
   <%= render 'abstract_screenings/screen/add_reasoning' %>
+  <%= render 'abstract_screenings/screen/word_weight_menu' %>
+  <%= render 'abstract_screenings/screen/weighing_screen' %>
+  <%= render 'abstract_screenings/screen/confirmation_modal' %>
   <div
-    class="m-auto lg:w-1/2 h-32 absolute inset-0 mt-0 overflow-y-hidden bg-gray-300 flex flex-col justify-center"
+    class="mx-auto lg:mx-0 lg:w-1/2 h-32 absolute inset-0 overflow-y-hidden bg-gray-300 flex flex-col justify-center"
   >
     <a
       href="<%= abstract_screening_path(params[:abstract_screening_id]) %>"
@@ -36,7 +36,7 @@
     </a>
     <button
       type="button"
-      class="cursor-pointer z-[5] absolute top-16 right-4 bg-gray-100 rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
+      :class="desktop ? 'hidden' : 'cursor-pointer z-[5] absolute top-16 right-4 bg-gray-100 rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500'"
       @click="word_weight_menu = !word_weight_menu"
     >
       <span class="sr-only">Word weights</span>
@@ -95,7 +95,8 @@
     </div>
   </div>
   <div
-    class="m-auto lg:w-1/2 h-auto block absolute inset-0 mt-32 mb-32 overflow-y-auto overflow-x-hidden bg-gray-100"
+    class="mx-auto lg:mx-0 lg:w-1/2 h-auto block absolute inset-0 mt-32 overflow-y-auto overflow-x-hidden bg-gray-100"
+    :class="desktop ? '' : 'mb-32'"
   >
     <div class="vertical-scroll-wrapper">
       <div class="vertical-scroll-wrapper-item">
@@ -129,7 +130,7 @@
   </div>
 
   <div
-    class="lg:w-1/2 m-auto absolute bottom-0 left-0 right-0 bg-gray-100 h-32"
+    :class="desktop ? 'hidden' : 'mx-auto lg:mx-0 lg:w-1/2 absolute bottom-0 left-0 right-0 bg-gray-100 h-32'"
   >
     <div class="h-full text-white">
       <div class="grid grid-cols-3 h-full">
@@ -209,6 +210,7 @@
 <script>
   document.addEventListener("alpine:init", () => {
     Alpine.data("screenStore", () => ({
+      desktop: false,
       weighingScreen: false,
       word_weight_menu: false,
       reasoningMenu: false,
@@ -271,6 +273,20 @@
 
       init() {
         this.postLabel(false);
+
+        const smallDevice = window.matchMedia("(min-width: 1024px)");
+        smallDevice.addListener(handleDeviceChange);
+        const that = this;
+        function handleDeviceChange(e) {
+          if (e.matches) {
+            that.desktop = true;
+            console.log("big");
+          } else {
+            console.log("small");
+            that.desktop = false;
+          }
+        }
+        handleDeviceChange(smallDevice);
       },
 
       toggleWeighingScreen() {
@@ -546,7 +562,6 @@
           if (a.tail - a.head < b.tail - b.head) return -1;
           return 0;
         });
-        console.log(matches);
         for (let i = 0; i < matches.length; i++) {
           let match = matches[i];
           for (let ii = match.head; ii < match.tail; ii++) {
