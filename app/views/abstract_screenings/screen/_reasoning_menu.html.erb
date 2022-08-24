@@ -17,8 +17,10 @@
     x-transition:leave-end="opacity-0"
   ></div>
 
-  <div :class="desktop ? '' : 'fixed z-10 inset-0 overflow-y-auto"'>
-    <div :class="desktop ? '' : 'flex items-center justify-center min-h-full p-4 text-center'">
+  <div :class="desktop ? '' : 'fixed z-10 inset-0 overflow-y-auto'">
+    <div
+      :class="desktop ? '' : 'flex items-center justify-center min-h-full p-4 text-center'"
+    >
       <div
         :class="desktop ? '' : 'relative bg-white rounded-lg px-4 pt-5 pb-4 text-left shadow-xl transform transition-all w-full lg:w-1/3 h-[90vh] sm:mt-4 sm:p-6'"
         x-show="desktop ||reasoningMenu"
@@ -54,7 +56,7 @@
           </svg>
         </button>
 
-        <div :class="desktop ? '' : 'fixed inset-5 mb-24 overflow-y-scroll"'>
+        <div :class="desktop ? '' : 'fixed inset-5 mb-24 overflow-y-scroll'">
           <template x-if="!desktop && label_value == -1">
             <div class="mb-4">
               <h1 class="text-2xl flex items-center">
@@ -305,14 +307,13 @@
             x-text="satisfiesReasoning() ? 'Submit' : 'Please fill in the required data above'"
           ></button>
         </div>
-
-
-
       </div>
     </div>
   </div>
 
-  <div class="border-l border-gray-600 fixed bottom-0 right-0 w-1/2 h-32 text-white">
+  <div
+    class="border-l border-gray-600 fixed bottom-0 right-0 w-1/2 h-32 text-white"
+  >
     <div class="grid grid-cols-3 h-full">
       <div
         class="cursor-pointer border-r-8 bg-red-500 flex justify-center items-center rounded-tl-2xl"
