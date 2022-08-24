@@ -23,7 +23,7 @@ class Import < ApplicationRecord
 
   def start_import_job
     if self.import_type.name == "Distiller"
-      DistillerImportJob.perform_later(self.id)
+      DistillerImportJob.set(wait: 1.minute).perform_later(self.id)
       return
     end
 
@@ -32,22 +32,22 @@ class Import < ApplicationRecord
         when "Citation"
           case imported_file.file_type.name
             when ".ris"
-              RisImportJob.perform_later(imported_file.id)
+              RisImportJob.set(wait: 1.minute).perform_later(imported_file.id)
             when ".csv"
-              CsvImportJob.perform_later(imported_file.id)
+              CsvImportJob.set(wait: 1.minute).perform_later(imported_file.id)
             when ".enl"
-              EnlImportJob.perform_later(imported_file.id)
+              EnlImportJob.set(wait: 1.minute).perform_later(imported_file.id)
             when "PubMed"
-              PubmedImportJob.perform_later(imported_file.id)
+              PubmedImportJob.set(wait: 1.minute).perform_later(imported_file.id)
             when ".json"
-              CitationFhirImportJob.perform_later(imported_file.id)
+              CitationFhirImportJob.set(wait: 1.minute).perform_later(imported_file.id)
             else
               ## NOT SUPPORTED, WHAT TO DO?
           end
         when "Project"
           case imported_file.file_type.name
             when ".json"
-              JsonImportJob.perform_later(imported_file.id)
+              JsonImportJob.set(wait: 1.minute).perform_later(imported_file.id)
             when ".xlsx"
             else
 

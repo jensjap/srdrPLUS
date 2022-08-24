@@ -1,5 +1,6 @@
 class RisImportJob < ApplicationJob
   include ImportJobs::RisCitationImporter
+
   queue_as :default
 
   def perform(*args)
