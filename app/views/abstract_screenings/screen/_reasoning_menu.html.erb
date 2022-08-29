@@ -127,10 +127,18 @@
             </div>
           </template>
           <div class="min-h-[100px]">
-            <h1
-              class="text-xl"
-              x-text="mustSelectReason() ? '*Reason' : 'Reason'"
-            ></h1>
+            <h2 class="flex justify-between">
+              <div class="text-xl">Reason</div>
+              <div
+                class="text-xs flex items-end gap-x-1 font-bold"
+                x-show="options.no_reason_required || !options.yes_reason_required || !options.maybe_reason_required"
+              ><div>
+                <span>Required for labels:</span>
+                <span :class="(label_value == -1 && !hasSomeReason()) ? 'text-red-600' : ''" x-show="options.no_reason_required">No</span>
+                <span :class="(label_value == 0 && !hasSomeReason()) ? 'text-red-600' : ''" x-show="options.maybe_reason_required">Maybe</span>
+                <span :class="(label_value == 1 && !hasSomeReason()) ? 'text-red-600' : ''" x-show="options.yes_reason_required">Yes</span>
+              </div>
+            </h2>
             <hr class="m-0" />
             <label for="notes" class="block text-sm text-gray-700"
               >Select up to one reason</label
@@ -184,11 +192,11 @@
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  class="h-10 w-10"
+                  class="h-8 w-8"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
-                  stroke-width="2"
+                  stroke-width="1"
                 >
                   <path
                     stroke-linecap="round"
@@ -201,13 +209,21 @@
           </div>
 
           <div class="min-h-[100px]">
-            <h1
-              class="text-xl"
-              x-text="mustSelectTag() ? '*Tags' : 'Tags'"
-            ></h1>
+            <h2 class="flex justify-between">
+              <div class="text-xl">Tags</div>
+              <div
+                class="text-xs flex items-end gap-x-1 font-bold"
+                x-show="options.no_tag_required || !options.yes_tag_required || !options.maybe_tag_required"
+              ><div>
+                <span>Required for labels:</span>
+                <span :class="(label_value == -1 && !hasSomeTag()) ? 'text-red-600' : ''" x-show="options.no_tag_required">No</span>
+                <span :class="(label_value == 0 && !hasSomeTag()) ? 'text-red-600' : ''" x-show="options.maybe_tag_required">Maybe</span>
+                <span :class="(label_value == 1 && !hasSomeTag()) ? 'text-red-600' : ''" x-show="options.yes_tag_required">Yes</span>
+              </div>
+            </h2>
             <hr class="m-0" />
             <label for="notes" class="block text-sm text-gray-700"
-              >Select reasons</label
+              >Select tags</label
             >
             <div class="grid grid-rows sm:grid-cols-6 gap-4 mt-4 mb-8">
               <template x-for="[key, value] in Object.entries(predefined_tags)">
@@ -256,11 +272,11 @@
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  class="h-10 w-10"
+                  class="h-8 w-8"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
-                  stroke-width="2"
+                  stroke-width="1"
                 >
                   <path
                     stroke-linecap="round"
@@ -272,10 +288,18 @@
             </div>
           </div>
           <div class="min-h-[100px]">
-            <h1
-              class="text-xl"
-              x-text="mustEnterNotes() ? '*Notes' : 'Notes'"
-            ></h1>
+            <h2 class="flex justify-between">
+              <div class="text-xl">Notes</div>
+              <div
+                class="text-xs flex items-end gap-x-1 font-bold"
+                x-show="options.no_note_required || !options.yes_note_required || !options.maybe_note_required"
+              ><div>
+                <span>Required for labels:</span>
+                <span :class="(label_value == -1 && !hasSomeNote()) ? 'text-red-600' : ''" x-show="options.no_note_required">No</span>
+                <span :class="(label_value == 0 && !hasSomeNote()) ? 'text-red-600' : ''" x-show="options.maybe_note_required">Maybe</span>
+                <span :class="(label_value == 1 && !hasSomeNote()) ? 'text-red-600' : ''" x-show="options.yes_note_required">Yes</span>
+              </div>
+            </h2>
             <hr class="m-0" />
             <div>
               <label for="notes" class="block text-sm text-gray-700"
@@ -317,7 +341,7 @@
     <div class="grid grid-cols-3 h-full">
       <div
         class="cursor-pointer border-r-8 bg-red-500 flex justify-center items-center rounded-tl-2xl"
-        @click="label_value = -1; if (satisfiesReasoning()) { postLabel(true) }"
+        @click="label_value = -1; if (satisfiesReasoning()) { postLabel(true) } else { toastr.warning('This label requires additional information.  Please see \'Required for labels\'.', '', { timeOut: 2000 }) }"
         :class="(label_value == -1 || label_value == null || desktop) ? '' : 'saturate-[0.1]'"
       >
         <svg
@@ -336,7 +360,7 @@
       <div :class="desktop ? 'grid grid-rows-1' : 'grid grid-rows-2'">
         <div
           class="cursor-pointer bg-srdrpurple flex justify-center items-center"
-          @click="label_value = 0; if (satisfiesReasoning()) { postLabel(true) }"
+          @click="label_value = 0; if (satisfiesReasoning()) { postLabel(true) } else { toastr.warning('This label requires additional information.  Please see \'Required for labels\'.', '', { timeOut: 2000 }) }"
           :class="(label_value == 0 || label_value == null || desktop)? '' : 'saturate-[0.1]'"
         >
           <svg
@@ -357,7 +381,7 @@
       </div>
       <div
         class="cursor-pointer border-l-8 bg-green-500 flex justify-center items-center rounded-tr-2xl"
-        @click="label_value = 1; if (satisfiesReasoning()) { postLabel(true) }"
+        @click="label_value = 1; if (satisfiesReasoning()) { postLabel(true) } else { toastr.warning('This label requires additional information.  Please see \'Required for labels\'.', '', { timeOut: 2000 }) }"
         :class="(label_value == 1 || label_value == null || desktop)? '' : 'saturate-[0.1]'"
       >
         <svg

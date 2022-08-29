@@ -280,9 +280,7 @@
         function handleDeviceChange(e) {
           if (e.matches) {
             that.desktop = true;
-            console.log("big");
           } else {
-            console.log("small");
             that.desktop = false;
           }
         }
@@ -310,79 +308,58 @@
         );
       },
 
-      satisfiesReasoning() {
-        if (this.label_value == null) return false;
-        let satisfactory = true;
-        const hasSomeReason = Object.keys({
+      hasSomeReason() {
+        return Object.keys({
           ...this.predefined_reasons,
           ...this.custom_reasons,
         }).some(
           (v) =>
             this.predefined_reasons[v] == true || this.custom_reasons[v] == true
         );
-        const hasSomeTag = Object.keys({
+      },
+
+      hasSomeTag() {
+        return Object.keys({
           ...this.predefined_tags,
           ...this.custom_tags,
         }).some(
           (v) => this.predefined_tags[v] == true || this.custom_tags[v] == true
         );
-        const hasSomeNote = this.notes.length > 0;
+      },
+
+      hasSomeNote() {
+        return this.notes.length > 0;
+      },
+
+      satisfiesReasoning() {
+        if (this.label_value == null) return false;
+        let satisfactory = true;
         if (this.label_value == -1) {
           if (this.options.no_tag_required)
-            satisfactory = hasSomeTag && satisfactory;
+            satisfactory = this.hasSomeTag() && satisfactory;
           if (this.options.no_reason_required)
-            satisfactory = hasSomeReason && satisfactory;
+            satisfactory = this.hasSomeReason() && satisfactory;
           if (this.options.no_note_required)
-            satisfactory = hasSomeNote && satisfactory;
+            satisfactory = this.hasSomeNote() && satisfactory;
         }
         if (this.label_value == 0) {
           if (this.options.maybe_tag_required)
-            satisfactory = hasSomeTag && satisfactory;
+            satisfactory = this.hasSomeTag() && satisfactory;
           if (this.options.maybe_reason_required)
-            satisfactory = hasSomeReason && satisfactory;
+            satisfactory = this.hasSomeReason() && satisfactory;
           if (this.options.maybe_note_required)
-            satisfactory = hasSomeNote && satisfactory;
+            satisfactory = this.hasSomeNote() && satisfactory;
         }
         if (this.label_value == 1) {
           if (this.options.yes_tag_required)
-            satisfactory = hasSomeTag && satisfactory;
+            satisfactory = this.hasSomeTag() && satisfactory;
           if (this.options.yes_reason_required)
-            satisfactory = hasSomeReason && satisfactory;
+            satisfactory = this.hasSomeReason() && satisfactory;
           if (this.options.yes_note_required)
-            satisfactory = hasSomeNote && satisfactory;
+            satisfactory = this.hasSomeNote() && satisfactory;
         }
 
         return satisfactory;
-      },
-
-      mustSelectReason() {
-        if (this.label_value == -1) {
-          return this.options.no_reason_required;
-        } else if (this.label_value == 0) {
-          return this.options.maybe_reason_required;
-        } else if (this.label_value == 1) {
-          return this.options.yes_reason_required;
-        }
-      },
-
-      mustSelectTag() {
-        if (this.label_value == -1) {
-          return this.options.no_tag_required;
-        } else if (this.label_value == 0) {
-          return this.options.maybe_tag_required;
-        } else if (this.label_value == 1) {
-          return this.options.yes_tag_required;
-        }
-      },
-
-      mustEnterNotes() {
-        if (this.label_value == -1) {
-          return this.options.no_note_required;
-        } else if (this.label_value == 0) {
-          return this.options.maybe_note_required;
-        } else if (this.label_value == 1) {
-          return this.options.yes_note_required;
-        }
       },
 
       turnOffAllReasons() {
