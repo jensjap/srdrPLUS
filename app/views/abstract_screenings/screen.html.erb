@@ -4,11 +4,16 @@
   id="abstrackr-wrapper"
 >
   <!-- prettier-ignore -->
-  <%= render 'abstract_screenings/screen/reasoning_menu' %>
   <%= render 'abstract_screenings/screen/add_reasoning' %>
-  <%= render 'abstract_screenings/screen/word_weight_menu' %>
   <%= render 'abstract_screenings/screen/weighing_screen' %>
   <%= render 'abstract_screenings/screen/confirmation_modal' %>
+  <div
+    :class="desktop ? 'top-0 bottom-32 border-l border-b border-gray-600 fixed p-4 left-1/2 right-0 overflow-y-scroll bg-white' : ''"
+  >
+    <!-- prettier-ignore -->
+    <%= render 'abstract_screenings/screen/reasoning_menu' %>
+    <%= render 'abstract_screenings/screen/word_weight_menu' %>
+  </div>
   <div
     class="mx-auto lg:mx-0 lg:w-1/2 h-32 absolute inset-0 overflow-y-hidden bg-gray-300 flex flex-col justify-center"
   >

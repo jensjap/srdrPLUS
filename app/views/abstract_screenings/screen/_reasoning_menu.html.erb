@@ -1,5 +1,5 @@
 <div
-  :class="desktop ? 'mb-32 border-l border-b border-gray-600 fixed p-4 left-1/2 right-0 top-1/4 bottom-0  overflow-y-scroll bg-white' : 'relative z-10'"
+  :class="desktop ? '' : 'relative z-10'"
   aria-labelledby="modal-title"
   role="dialog"
   aria-modal="true"
@@ -131,7 +131,7 @@
               <div class="text-xl">Reason</div>
               <div
                 class="text-xs flex items-end gap-x-1 font-bold"
-                x-show="options.no_reason_required || !options.yes_reason_required || !options.maybe_reason_required"
+                x-show="options.no_reason_required || options.yes_reason_required || options.maybe_reason_required"
               ><div>
                 <span>Required for labels:</span>
                 <span :class="(label_value == -1 && !hasSomeReason()) ? 'text-red-600' : ''" x-show="options.no_reason_required">No</span>
@@ -213,8 +213,8 @@
               <div class="text-xl">Tags</div>
               <div
                 class="text-xs flex items-end gap-x-1 font-bold"
-                x-show="options.no_tag_required || !options.yes_tag_required || !options.maybe_tag_required"
-              ><div>
+                x-show="options.no_tag_required || options.yes_tag_required || options.maybe_tag_required"
+             ><div>
                 <span>Required for labels:</span>
                 <span :class="(label_value == -1 && !hasSomeTag()) ? 'text-red-600' : ''" x-show="options.no_tag_required">No</span>
                 <span :class="(label_value == 0 && !hasSomeTag()) ? 'text-red-600' : ''" x-show="options.maybe_tag_required">Maybe</span>
@@ -292,7 +292,7 @@
               <div class="text-xl">Notes</div>
               <div
                 class="text-xs flex items-end gap-x-1 font-bold"
-                x-show="options.no_note_required || !options.yes_note_required || !options.maybe_note_required"
+                x-show="options.no_note_required || options.yes_note_required || options.maybe_note_required"
               ><div>
                 <span>Required for labels:</span>
                 <span :class="(label_value == -1 && !hasSomeNote()) ? 'text-red-600' : ''" x-show="options.no_note_required">No</span>
@@ -305,7 +305,7 @@
               <label for="notes" class="block text-sm text-gray-700"
                 >Write in notes</label
               >
-              <div class="mt-1">
+              <div class="mt-1 mb-8">
                 <textarea
                   rows="4"
                   columns="30"
