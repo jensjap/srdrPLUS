@@ -17,7 +17,6 @@ end
 group :development do
   gem 'active_record_doctor'
   gem 'annotate'
-  gem 'awesome_print'
   gem 'bullet'
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
@@ -28,6 +27,7 @@ gem 'amoeba' # for things like cloning questions (extraction forms maybe?)
 gem 'apipie-rails' # Api documentation.
 gem 'autoprefixer-rails' # Use Zurb Foundation as Front-End Framework
 gem 'aws-sdk-s3', require: false # Access to AWS S3 Cloud Storage.
+gem 'awesome_print'
 gem 'bcrypt', '~> 3.1.7'
 gem 'bio' # bioruby for pubmed queries.
 gem 'bootsnap' # New for Rails 5.2.
