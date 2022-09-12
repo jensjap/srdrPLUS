@@ -7,7 +7,6 @@ end
 
 group :development, :test do
   gem 'byebug'
-  gem 'dotenv-rails'
 end
 
 group :test do
@@ -39,6 +38,7 @@ gem 'cocoon'
 gem 'coffee-rails', '~> 4.2' # Use CoffeeScript for .coffee assets and views
 gem 'country_select'
 gem 'devise'
+gem 'dotenv-rails'
 gem 'dropzonejs-rails' # Allows users to drop files to upload
 gem 'elasticsearch', '< 7.14'
 gem 'faker', github: 'stympy/faker'
