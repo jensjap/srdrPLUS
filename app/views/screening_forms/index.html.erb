@@ -4,16 +4,19 @@
   @drop.prevent="alpineDrop()"
   @dragover.prevent="alpineDragover($event)"
 >
-  <div x-text="`Dragging=${dragging} Dropping=${dropping}`"></div>
-  <div class="py-2">
+  <div class="py-2 flex">
     <h1 class="text-2xl">Abstract Screening Form</h1>
-    <label for="name">Question</label>
-    <input id="name" name="name" type="text" />
-    <label for="description">Description</label>
-    <textarea name="description" id="description" rows="3"></textarea>
-    <button class="bg-srdrpurple text-white p-2 my-2">Create</button>
+    <button
+      @click="questions.push({ id: Math.random() * 10000, name: Math.random() * 10000, description: 'Good Description' })"
+      class="bg-srdrpurple text-white p-2 mx-4 cursor-pointer"
+    >
+      Add Question
+    </button>
   </div>
   <div class="py-2">
+    <template x-if="questions.length == 0">
+      <h2 class="text-base text-gray-500">Add a question to get started</h2>
+    </template>
     <template x-for="(question, index) in questions" :key="question.id">
       <div
         class="relative shadow-md rounded-md mb-8 border"
@@ -92,7 +95,7 @@
             </div>
             <div
               class="cursor-pointer absolute top-4 right-4"
-              @click="questions.splice(index, 1);"
+              @click="deleteQuestion(index)"
               draggable="true"
               @dragstart.prevent.stop
             >
@@ -117,9 +120,14 @@
             draggable="true"
             @dragstart.prevent.stop
           >
-            <input type="text" />
-            <input type="text" />
-            <input type="text" />
+            <template x-for="(row, row_index) in question.rows">
+              <div>
+                <div x-text="row.field_type"></div>
+                <template x-for="(option, option_index) in row.options">
+                  <div x-text="option"></div>
+                </template>
+              </div>
+            </template>
           </div>
         </div>
         <div
@@ -174,6 +182,15 @@
       },
       alpineDragover(event) {
         event.dataTransfer.dropEffect = "move";
+      },
+      deleteQuestion(index) {
+        if (
+          confirm(
+            `Are you sure you want to delete question: "${this.questions[index].name}"`
+          )
+        ) {
+          this.questions.splice(index, 1);
+        }
       },
     }));
   });
