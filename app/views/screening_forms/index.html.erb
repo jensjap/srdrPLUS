@@ -26,9 +26,32 @@
         @dragstart="dragging = index"
         @dragend="dragging = null"
       >
-        <div class="relative">
-          <div>
-            <div class="py-4 px-16" draggable="true" @dragstart.prevent.stop>
+        <div
+          class="absolute inset-0 opacity-50"
+          :class="dropping === index ? 'bg-blue-200' : ''"
+          x-show.transition="dragging !== null"
+          @dragenter.prevent="if (index !== dragging) { dropping = index }"
+          @dragleave="if (dropping === index) dropping = null"
+        ></div>
+        <div class="flex">
+          <div class="cursor-move w-8 pt-4 border-r border-gray-300">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="w-8 h-8"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9"
+              />
+            </svg>
+          </div>
+          <div class="grow" draggable="true" @dragstart.prevent.stop>
+            <div class="py-2 px-4">
               <template x-if="focusIndex != index || focusElement != 'name'">
                 <h2
                   class="text-lg cursor-pointer"
@@ -77,48 +100,8 @@
                 />
               </template>
             </div>
-            <div class="cursor-move absolute top-4 left-4">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                class="w-6 h-6"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9"
-                />
-              </svg>
-            </div>
             <div
-              class="cursor-pointer absolute top-4 right-4"
-              @click="deleteQuestion(index)"
-              draggable="true"
-              @dragstart.prevent.stop
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="#a10b00"
-                class="w-6 h-6"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
-                />
-              </svg>
-            </div>
-          </div>
-          <div
-            class="py-4 px-16 overflow-auto flex"
-            draggable="true"
-            @dragstart.prevent.stop
+            class="py-2 px-4 overflow-auto flex"
           >
             <template x-for="(row, row_index) in question.rows">
               <div>
@@ -129,15 +112,29 @@
               </div>
             </template>
           </div>
+          </div>
+          <div
+            class="w-8 px-2 pt-4 border-l border-gray-300"
+            draggable="true"
+            @dragstart.prevent.stop
+          >
+            <svg
+              @click="deleteQuestion(index)"
+              class="cursor-pointer w-4 h-4"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="#a10b00"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+              />
+            </svg>
+          </div>
         </div>
-        <div
-          class="absolute inset-0 opacity-50"
-          :class="dropping === index ? 'bg-blue-200' : ''"
-          x-show.transition="dragging !== null"
-          @dragenter.prevent="if (index !== dragging) { dropping = index }"
-          @dragleave="if (dropping === index) dropping = null"
-        ></div>
-      </div>
     </template>
   </div>
 </div>
