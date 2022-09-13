@@ -180,6 +180,8 @@ Rails.application.routes.draw do
       post 'label', to: 'fulltext_screenings#label'
     end
 
+    resources :screening_forms
+
     resource :data_audit, only: [:create]
     resources :sd_meta_data
     resources :teams, concerns: :invitable, only: %i[create update destroy]
@@ -308,5 +310,9 @@ Rails.application.routes.draw do
   resources :organizations, only: [:index]
   resources :sections, only: [:index]
   resources :imports, only: [:create]
+
+  resources :screening_forms, only: [] do
+    resources :sf_questions, shallow: true
+  end
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end

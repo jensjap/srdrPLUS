@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_08_04_083545) do
+ActiveRecord::Schema[7.0].define(version: 2022_09_13_041924) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -1640,6 +1640,14 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_04_083545) do
     t.index ["name"], name: "index_roles_on_name", unique: true
   end
 
+  create_table "screening_forms", charset: "utf8mb3", force: :cascade do |t|
+    t.bigint "project_id"
+    t.string "form_type", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["project_id"], name: "index_screening_forms_on_project_id"
+  end
+
   create_table "screening_option_types", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", precision: nil, null: false
@@ -1957,6 +1965,15 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_04_083545) do
     t.index ["default"], name: "index_sections_on_default"
     t.index ["deleted_at"], name: "index_sections_on_deleted_at"
     t.index ["name"], name: "index_sections_on_name", unique: true
+  end
+
+  create_table "sf_questions", charset: "utf8mb3", force: :cascade do |t|
+    t.bigint "screening_form_id"
+    t.string "name", null: false
+    t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["screening_form_id"], name: "index_sf_questions_on_screening_form_id"
   end
 
   create_table "statuses", charset: "utf8mb3", force: :cascade do |t|

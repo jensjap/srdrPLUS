@@ -1,0 +1,180 @@
+<div
+  x-data="screenStore"
+  class="p-8"
+  @drop.prevent="alpineDrop()"
+  @dragover.prevent="alpineDragover($event)"
+>
+  <div x-text="`Dragging=${dragging} Dropping=${dropping}`"></div>
+  <div class="py-2">
+    <h1 class="text-2xl">Abstract Screening Form</h1>
+    <label for="name">Question</label>
+    <input id="name" name="name" type="text" />
+    <label for="description">Description</label>
+    <textarea name="description" id="description" rows="3"></textarea>
+    <button class="bg-srdrpurple text-white p-2 my-2">Create</button>
+  </div>
+  <div class="py-2">
+    <template x-for="(question, index) in questions" :key="question.id">
+      <div
+        class="relative shadow-md rounded-md mb-8 border"
+        x-trap="focusIndex == index"
+        :class="dragging === index ? 'border-blue-600' : ''"
+        draggable="true"
+        @dragstart="dragging = index"
+        @dragend="dragging = null"
+      >
+        <div class="relative">
+          <div>
+            <div class="py-4 px-16" draggable="true" @dragstart.prevent.stop>
+              <template x-if="focusIndex != index || focusElement != 'name'">
+                <h2
+                  class="text-lg cursor-pointer"
+                  x-text="`${index + 1}. ${question.name}`"
+                  @click="focusIndex = index; focusElement = 'name'"
+                ></h2>
+              </template>
+              <template x-if="focusIndex == index && focusElement == 'name'">
+                <input
+                  class="text-lg"
+                  @blur="focusIndex = null; focusElement = null; questions[index].name = $el.value"
+                  @keyup.enter="focusIndex = null; focusElement = null; questions[index].name = $el.value"
+                  :value="question.name"
+                  type="text"
+                />
+              </template>
+
+              <template
+                x-if="focusIndex != index || focusElement != 'description'"
+              >
+                <p
+                  class="m-0 cursor-pointer"
+                  x-text="question.description"
+                  @click="focusIndex = index; focusElement = 'description'"
+                ></p>
+              </template>
+              <template
+                x-if="(focusIndex != index && focusElement != 'name') && (question.description == '' || question.description == null)"
+              >
+                <p
+                  class="m-0 cursor-pointer text-gray-400"
+                  @click="focusIndex = index; focusElement = 'description'"
+                >
+                  (add description)
+                </p>
+              </template>
+              <template
+                x-if="focusIndex == index && focusElement == 'description'"
+              >
+                <input
+                  class=""
+                  @blur="focusIndex = null; focusElement = null; questions[index].description = $el.value"
+                  @keyup.enter="focusIndex = null; focusElement = null; questions[index].description = $el.value"
+                  :value="question.description"
+                  type="text"
+                />
+              </template>
+            </div>
+            <div class="cursor-move absolute top-4 left-4">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="w-6 h-6"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9"
+                />
+              </svg>
+            </div>
+            <div
+              class="cursor-pointer absolute top-4 right-4"
+              @click="questions.splice(index, 1);"
+              draggable="true"
+              @dragstart.prevent.stop
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="#a10b00"
+                class="w-6 h-6"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                />
+              </svg>
+            </div>
+          </div>
+          <div
+            class="py-4 px-16 overflow-auto flex"
+            draggable="true"
+            @dragstart.prevent.stop
+          >
+            <input type="text" />
+            <input type="text" />
+            <input type="text" />
+          </div>
+        </div>
+        <div
+          class="absolute inset-0 opacity-50"
+          :class="dropping === index ? 'bg-blue-200' : ''"
+          x-show.transition="dragging !== null"
+          @dragenter.prevent="if (index !== dragging) { dropping = index }"
+          @dragleave="if (dropping === index) dropping = null"
+        ></div>
+      </div>
+    </template>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("alpine:init", () => {
+    Alpine.data("screenStore", () => ({
+      questions: [],
+      focusIndex: null,
+      focusElement: null,
+      dragging: null,
+      dropping: null,
+      async init() {
+        const response = await fetch(window.location.href, {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        });
+        const data = await response.json();
+        this.questions = data;
+      },
+      alpineDrop() {
+        if (this.dragging !== null && this.dropping !== null) {
+          if (this.dragging < this.dropping)
+            this.questions = [
+              ...this.questions.slice(0, this.dragging),
+              ...this.questions.slice(this.dragging + 1, this.dropping + 1),
+              this.questions[this.dragging],
+              ...this.questions.slice(this.dropping + 1),
+            ];
+          else
+            this.questions = [
+              ...this.questions.slice(0, this.dropping),
+              this.questions[this.dragging],
+              ...this.questions.slice(this.dropping, this.dragging),
+              ...this.questions.slice(this.dragging + 1),
+            ];
+        }
+        this.dropping = null;
+      },
+      alpineDragover(event) {
+        event.dataTransfer.dropEffect = "move";
+      },
+    }));
+  });
+</script>

@@ -71,6 +71,7 @@
     || controller_name.eql?('assignments') \
     || controller_name.eql?('abstract_screenings') \
     || controller_name.eql?('fulltext_screenings') \
+    || controller_name.eql?('screening_forms') \
     || controller_name.eql?('extractions') \
     || controller_name.eql?('extraction_forms_projects') \
     || (controller_name.eql?('citations') && action_name.eql?('index')) \
@@ -118,6 +119,11 @@
             a href="#{project_abstract_screenings_path(project)}" Abstract
           li
             a href="#{project_fulltext_screenings_path(project)}" Full-Text
+          b Forms
+          li
+            a href="#{project_screening_forms_path(project, form_type: 'abstract')}" Abstract Form
+          li
+            a href="#{project_screening_forms_path(project, form_type: 'full-text')}" Full-Text Form
       li.submenu style="#{'background: #78608b' if controller.class == ExtractionsController && controller.action_name == 'index'}"
         a class="border-y border-white" href="#{project_extractions_path(project)}" Extractions
       li.submenu
