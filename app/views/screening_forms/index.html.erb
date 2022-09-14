@@ -7,7 +7,7 @@
   <div class="py-2 flex">
     <h1 class="text-2xl">Abstract Screening Form</h1>
     <button
-      @click="questions.push({ id: Math.random() * 10000, name: Math.random() * 10000, description: 'Good Description' })"
+      @click="addQuestion()"
       class="bg-srdrpurple text-white p-2 mx-4 cursor-pointer"
     >
       Add Question
@@ -17,21 +17,24 @@
     <template x-if="questions.length == 0">
       <h2 class="text-base text-gray-500">Add a question to get started</h2>
     </template>
-    <template x-for="(question, index) in questions" :key="question.id">
+    <template
+      x-for="(question, question_index) in questions"
+      :key="question.id"
+    >
       <div
         class="relative shadow-md rounded-md mb-8 border"
-        x-trap="focusIndex == index"
-        :class="dragging === index ? 'border-blue-600' : ''"
+        x-trap="focusIndex == question_index"
+        :class="dragging === question_index ? 'border-blue-600' : ''"
         draggable="true"
-        @dragstart="dragging = index"
+        @dragstart="dragging = question_index"
         @dragend="dragging = null"
       >
         <div
           class="absolute inset-0 opacity-50"
-          :class="dropping === index ? 'bg-blue-200' : ''"
+          :class="dropping === question_index ? 'bg-blue-200' : ''"
           x-show.transition="dragging !== null"
-          @dragenter.prevent="if (index !== dragging) { dropping = index }"
-          @dragleave="if (dropping === index) dropping = null"
+          @dragenter.prevent="if (question_index !== dragging) { dropping = question_index }"
+          @dragleave="if (dropping === question_index) dropping = null"
         ></div>
         <div class="flex">
           <div class="cursor-move w-8 pt-4 border-r border-gray-300">
@@ -50,84 +53,210 @@
               />
             </svg>
           </div>
-          <div class="grow" draggable="true" @dragstart.prevent.stop>
+          <div
+            class="grow overflow-auto"
+            draggable="true"
+            @dragstart.prevent.stop
+          >
             <div class="py-2 px-4">
-              <template x-if="focusIndex != index || focusElement != 'name'">
+              <template
+                x-if="focusIndex != question_index || focusElement != 'name'"
+              >
                 <h2
                   class="text-lg cursor-pointer"
-                  x-text="`${index + 1}. ${question.name}`"
-                  @click="focusIndex = index; focusElement = 'name'"
+                  x-text="`${question_index + 1}. ${question.name}`"
+                  @click="focusIndex = question_index; focusElement = 'name'"
                 ></h2>
               </template>
-              <template x-if="focusIndex == index && focusElement == 'name'">
+              <template
+                x-if="focusIndex == question_index && focusElement == 'name'"
+              >
                 <input
                   class="text-lg"
-                  @blur="focusIndex = null; focusElement = null; questions[index].name = $el.value"
-                  @keyup.enter="focusIndex = null; focusElement = null; questions[index].name = $el.value"
+                  @blur="focusIndex = null; focusElement = null; questions[question_index].name = $el.value"
+                  @keyup.enter="focusIndex = null; focusElement = null; questions[question_index].name = $el.value"
                   :value="question.name"
                   type="text"
                 />
               </template>
 
               <template
-                x-if="focusIndex != index || focusElement != 'description'"
+                x-if="focusIndex != question_index || focusElement != 'description'"
               >
                 <p
                   class="m-0 cursor-pointer"
                   x-text="question.description"
-                  @click="focusIndex = index; focusElement = 'description'"
+                  @click="focusIndex = question_index; focusElement = 'description'"
                 ></p>
               </template>
               <template
-                x-if="(focusIndex != index && focusElement != 'name') && (question.description == '' || question.description == null)"
+                x-if="(focusIndex != question_index && focusElement != 'name') && (question.description == '' || question.description == null)"
               >
                 <p
                   class="m-0 cursor-pointer text-gray-400"
-                  @click="focusIndex = index; focusElement = 'description'"
+                  @click="focusIndex = question_index; focusElement = 'description'"
                 >
                   (add description)
                 </p>
               </template>
               <template
-                x-if="focusIndex == index && focusElement == 'description'"
+                x-if="focusIndex == question_index && focusElement == 'description'"
               >
                 <input
                   class=""
-                  @blur="focusIndex = null; focusElement = null; questions[index].description = $el.value"
-                  @keyup.enter="focusIndex = null; focusElement = null; questions[index].description = $el.value"
+                  @blur="focusIndex = null; focusElement = null; questions[question_index].description = $el.value"
+                  @keyup.enter="focusIndex = null; focusElement = null; questions[question_index].description = $el.value"
                   :value="question.description"
                   type="text"
                 />
               </template>
             </div>
             <div class="py-2 px-4 overflow-auto block">
-              <table class="table-auto border-separate border-spacing-1">
+              <table class="h-0 table-auto border-separate border-spacing-1">
                 <thead>
                   <tr>
                     <td></td>
-                    <template x-for="column in question.columns">
-                      <th x-text="column.title"></th>
+                    <template
+                      x-for="(column, column_index) in question.columns"
+                    >
+                      <th>
+                        <div class="flex justify-center items-center">
+                          <div class="grow" x-text="column.title"></div>
+                          <div
+                            @click="deleteColumn(question_index, column_index)"
+                            class="text-red-800 cursor-pointer p-2 border-l border-gray-300"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke-width="1.5"
+                              stroke="currentColor"
+                              class="w-4 h-4"
+                            >
+                              <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                              />
+                            </svg>
+                          </div>
+                        </div>
+                      </th>
                     </template>
                   </tr>
                 </thead>
                 <tbody>
-                  <template x-for="row_index in (question.rows.length)">
+                  <template x-for="row_one_index in (question.rows.length)">
                     <tr>
-                      <template x-if="row_index == 0">
-                        <td></td>
-                      </template>
-                      <template x-if="row_index != 0">
-                        <th x-text="question.rows[row_index - 1].title"></th>
-                      </template>
-                      <template x-for="column_index in question.columns.length">
-                        <td>
+                      <th>
+                        <div class="h-full flex justify-center items-center">
                           <div
-                            x-text="question.cells[row_index - 1][column_index - 1].field_type"
+                            class="grow"
+                            x-text="question.rows[row_one_index - 1].title"
                           ></div>
-                          <template
-                            x-for="option in question.cells[row_index - 1][column_index - 1].options"
+                          <div
+                            @click="deleteRow(question_index, row_one_index)"
+                            class="h-full text-red-800 cursor-pointer p-2 border-l border-gray-300"
                           >
-                            <div x-text="option"></div>
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke-width="1.5"
+                              stroke="currentColor"
+                              class="w-4 h-4"
+                            >
+                              <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                              />
+                            </svg>
+                          </div>
+                        </div>
+                      </th>
+
+                      <template
+                        x-for="column_one_index in question.columns.length"
+                      >
+                        <td>
+                          <template
+                            x-if="question.cells[row_one_index - 1][column_one_index - 1] !== null"
+                          >
+                            <div class="relative p-2">
+                              <div
+                                x-text="question.cells[row_one_index - 1][column_one_index - 1].field_type"
+                              ></div>
+                              <template
+                                x-for="option in question.cells[row_one_index - 1][column_one_index - 1].options"
+                              >
+                                <div x-text="option"></div>
+                              </template>
+                              <div
+                                @click="deleteCellField(question_index, row_one_index, column_one_index)"
+                                class="text-red-800 absolute top-0 right-0 cursor-pointer p-2"
+                              >
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  stroke-width="1.5"
+                                  stroke="currentColor"
+                                  class="w-4 h-4"
+                                >
+                                  <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                                  />
+                                </svg>
+                              </div>
+                            </div>
+                          </template>
+                          <template
+                            x-if="question.cells[row_one_index - 1][column_one_index - 1] === null"
+                          >
+                            <div class="p-2 flex flex-col justify-center">
+                              <span class="text-center font-bold text-gray-700"
+                                >Create Field</span
+                              >
+                              <span
+                                @click="question.cells[row_one_index - 1][column_one_index - 1] = { id: 1, field_type: 'text', min: 0, max: 255 }"
+                                class="cursor-pointer hover:text-gray-500 overflow-ellipsis whitespace-nowrap"
+                                >Text</span
+                              >
+                              <span
+                                @click="question.cells[row_one_index - 1][column_one_index - 1] = { id: 1, field_type: 'numeric', min: 0, max: 255, allow_equality_signs: true }"
+                                class="cursor-pointer hover:text-gray-500 overflow-ellipsis whitespace-nowrap"
+                                >Numeric</span
+                              >
+                              <span
+                                @click=""
+                                class="cursor-pointer hover:text-gray-500 overflow-ellipsis whitespace-nowrap"
+                                >Select Box (Multiple)</span
+                              >
+                              <span
+                                @click=""
+                                class="cursor-pointer hover:text-gray-500 overflow-ellipsis whitespace-nowrap"
+                                >Dropdown</span
+                              >
+                              <span
+                                @click=""
+                                class="cursor-pointer hover:text-gray-500 overflow-ellipsis whitespace-nowrap"
+                                >Radio</span
+                              >
+                              <span
+                                @click=""
+                                class="cursor-pointer hover:text-gray-500 overflow-ellipsis whitespace-nowrap"
+                                >Select One</span
+                              >
+                              <span
+                                @click=""
+                                class="cursor-pointer hover:text-gray-500 overflow-ellipsis whitespace-nowrap"
+                                >Select Multiple</span
+                              >
+                            </div>
                           </template>
                         </td>
                       </template>
@@ -138,8 +267,8 @@
             </div>
           </div>
           <div
-            class="w-8 px-2 pt-4 border-l border-gray-300 cursor-pointer"
-            @click="deleteQuestion(index)"
+            class="w-8 px-2 pt-4 border-l border-gray-300 cursor-pointer text-red-800 p-2"
+            @click="deleteQuestion(question_index)"
             draggable="true"
             @dragstart.prevent.stop
           >
@@ -149,7 +278,7 @@
               fill="none"
               viewBox="0 0 24 24"
               stroke-width="1.5"
-              stroke="#a10b00"
+              stroke="currentColor"
             >
               <path
                 stroke-linecap="round"
@@ -184,6 +313,14 @@
         this.questions = data;
         console.log(this.questions);
       },
+      addQuestion() {
+        this.questions.push({
+          id: Math.random() * 10000,
+          name: Math.random() * 10000,
+          description: "Good Description",
+        });
+        toastr.success("Question added succesfully!");
+      },
       drop() {
         if (this.dragging !== null && this.dropping !== null) {
           if (this.dragging < this.dropping)
@@ -206,13 +343,35 @@
       dragover(event) {
         event.dataTransfer.dropEffect = "move";
       },
-      deleteQuestion(index) {
+      deleteQuestion(question_index) {
         if (
           confirm(
-            `Are you sure you want to delete question: "${this.questions[index].name}"`
+            `Are you sure you want to delete question: "${this.questions[question_index].name}"`
           )
         ) {
-          this.questions.splice(index, 1);
+          this.questions.splice(question_index, 1);
+        }
+      },
+      deleteColumn(question_index, column_index) {
+        if (confirm(`Are you sure you want to delete this column?`)) {
+          this.questions[question_index].cells.forEach((row) => {
+            row.splice(column_index, 1);
+          });
+          this.questions[question_index].columns.splice(column_index, 1);
+        }
+      },
+      deleteRow(question_index, row_one_index) {
+        if (confirm(`Are you sure you want to delete this row?`)) {
+          this.questions[question_index].cells.splice(row_one_index - 1, 1);
+          this.questions[question_index].rows.splice(row_one_index - 1, 1);
+        }
+      },
+
+      deleteCellField(question_index, row_one_index, column_one_index) {
+        if (confirm(`Are you sure you want to delete this field?`)) {
+          this.questions[question_index].cells[row_one_index - 1][
+            column_one_index - 1
+          ] = null;
         }
       },
     }));
