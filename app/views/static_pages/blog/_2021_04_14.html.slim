@@ -1,0 +1,89 @@
+- content_for :title, content="Enhancements to SRDR+, the Next-Level Replacement For SRDR"
+
+ul.vertical.menu style="position: fixed; top: 600px; left: 20px; width: 260px;"
+  li
+    = link_to "SRDR+ as a Tool to Teach Evidence Synthesis Principles and Methods", blog_path(params: { date: '2021_08_26' })
+  li.is-active
+    = link_to "Enhancements to SRDR+, the Next-Level Replacement For SRDR",  blog_path(params: { date: '2021_04_14' })
+  li
+    = link_to "SRDR+ Presents New Importing Capability for FHIR-formatted Citation Files for Systematic Reviews",  blog_path(params: { date: '2021_03_05' })
+  li
+    = link_to "The newly updated Systematic Review Data Repository Plus (SRDR+)",  blog_path(params: { date: '2019_03_07' })
+
+.blog
+  .hero.enhancement
+    .grid-x.align-center.align-middle
+      .cell.medium-6.Hero-Message
+        br
+        h1.Enhancements-to-SRDR Enhancements to SRDR+, the Next-Level Replacement For SRDR
+        h2.Ian-Saldanha-March.subheader
+          = image_tag("photo-team-bryant.png", size: "128x128", alt: 'Image of Bryant Smith', class: "isaldanh_photo_png")
+          span style="font-size: 1.5em;"  Bryant Smith | April 14, 2021
+
+  .grid-container.blog
+    .grid-x.align-center.align-middle
+      .cell.medium-6
+        br
+        p #{ link_to('SRDR+', 'https://srdrplus.ahrq.gov', target: '_blank') } is a free, open source, online, collaborative platform for extracting systematic review data, archiving the data after the review is complete, and sharing the data with others (including other systematic reviewers, clinical guideline developers, healthcare professionals, patients and health policy makers).
+
+        p Over the last couple of years, we’ve made several improvements to SRDR+. The advancements made were, in large part, based on feedback from users who’ve used both SRDR+ and its predecessor (SRDR) regarding what they think are the main advantages of the newer platform. We summarize some of the main advancements below.
+
+        p <strong>SRDR+ allows safe and secure data extraction for various types of systematic reviews</strong><br />When data extractors are extracting data, they need not worry about losing unsaved extracted data. All data entered into SRDR+ forms are autosaved.
+
+        br
+
+        p <i>The autosave feature on SRDR+ is a major advantage. On SRDR, there were times where I lost a page of outcomes due to a malfunction in the "Save" button. SRDR+ is also a lot faster in loading tabs and processing data than SRDR.”</i>
+        p style="text-align: right;" Shivani Mehta, MPH candidate, Center for Evidence Synthesis in Health, Brown University School of Public Health
+
+        br
+
+        p <strong>SRDR+ extraction forms can be tailored to meet the needs of various types of projects</strong><br />We have made the data extraction form development capabilities in SRDR+ flexible so that the forms can be customized to various types of systematic reviews, such as those evaluating treatment effectiveness, diagnostic accuracy, and epidemiology. SRDR+ extraction forms support an array of question types, including text boxes, multiple-choice checkboxes, single-choice radio buttons, dropdown questions, and matrix formats. Entire sections of extraction forms can also now be added or removed.
+
+        p We’ve also introduced data field dependencies such that the platform allows subsequent questions to appear to data extractors based on responses to previous questions. Data field dependencies can be used for any question in any section of SRDR+ extraction forms.
+
+        p <i>“Building and customizing extraction forms on SRDR+ is much, much more intuitive than it was on SRDR. I love the ability to add extra columns and rows to any questions type. Also, allowing dependencies among questions is a wish come true – provides the ability to streamline extractions (not all analysts are great at knowing whether a question sometimes applies/sometimes not), and also allows for the use of multiple risk of bias tools (with a screener question at the beginning of the ROB tab).”</i>
+        p style="text-align: right;" James Scott Parrott, PhD, Professor, Rutgers University School of Professional Studies
+
+        br
+
+        p <strong>The new and improved Data Comparison Tool in SRDR+ is useful for teams that conduct dual independent data extraction of studies and thus need those data compared and adjudicated</strong><br />Comparison Tools shows users discrepancies between data extracted from multiple team members side-by-side and allows users to resolve those discrepancies efficiently.
+
+        p <i>“The comparison tool is worth the price of admission! It used to take me ages with SRDR to try to consolidate the data offline after first exporting it to Microsoft Excel. Now, with the consolidation tool, much more streamlined. I love, love, love this tool!”</i>
+        p style="text-align: right;" James Scott Parrott, PhD, Professor, Rutgers University School of Professional Studies
+
+        br
+
+        p <strong>The Outcomes section of SRDR+ allows for clear definition of Outcomes</strong><br />The structured approach that SRDR+ uses to define outcomes aligns with the outcome definition structure used by study registries such as #{ link_to('ClinicalTrials.gov', 'https://clinicaltrials.gov', target: '_blank', data: { confirm: @exit_disclaimer }) }. Defining outcomes on SRDR+ extraction forms clarifies the data extraction process, promotes consistency in how data are extracted, and helps to reduce bias and errors in the systematic review process.
+
+        p <i>“SRDR+ provides ample space and options to define and edit outcomes and their definitions, which is great!”</i>
+        p style="text-align: right;" Monika Reddy Bhuma, BDS, MPH, Research Associate, Center for Evidence Synthesis in Health, Brown University School of Public Health
+
+        br
+
+        p <strong>The Results section of SRDR+ Extraction Forms supports entry of outcome measure data for multiple time points and for comparisons within and between study arms</strong><br />Data extractors can choose from pre-existing outcomes or add new outcomes. This helps promote consistency in the data extraction process across what are typically multi-person data extraction teams.
+
+        p <i>The Between Arm Comparison section of SRDR+ allows for easy input of multiple comparisons, and more clearly distinguishes when two or more study arms are being compared.”</i>
+        p style="text-align: right;" Wangnan Cao, PhD, Research Associate, Center for Evidence Synthesis in Health, Brown University School of Public Health
+
+        br
+
+        p <strong>SRDR+ allows data export into Microsoft Excel or Google Sheets</strong><br />Individual sections of SRDR+ data extraction forms (e.g., Design, Sample Characteristics, Outcomes, Results) are exported as separate sheets in the same Excel file or Google Sheets document for easy handling, linking, and formatting for analyses.
+        p <i>“ I like the flexibility that SRDR+ provides for data exports. Having completed four meta-analyses using the long download formatting, I think that it works pretty well.”</i>
+        p style="text-align: right;" Scott Parrott, PhD, Professor, Rutgers University School of Professional Studies
+
+        br
+
+        p If you haven’t already done so, please give #{ link_to('SRDR+', 'https://srdrplus.ahrq.gov', target: '_blank') } a shot. If you have any questions, contact us on this blog, via email (#{ mail_to('srdr@ahrq.hhs.gov') }), or via our #{ link_to('Twitter page!', 'https://twitter.com/SRDRPlus', target: '_blank', data: { confirm: @exit_disclaimer }) }
+
+        p <u>Disclaimer</u>: The Systematic Review Data Repository Plus is funded by the Agency for Healthcare Research and Quality (AHRQ). Authors of this blog post are solely responsible for its content, which does not necessarily represent the views of AHRQ or the U.S. Department of Health and Human Services (DHHS). Readers should not interpret any statement in this blog post as an official position of AHRQ or of DHHS.
+
+        p.title
+        br
+        br
+          strong Bryant Smith, MPH, CPH
+          .subheader style="margin: 0;" SRDR Administrator
+          .subheader style="margin: 0;" Brown Evidence-based Practice Center
+          .subheader style="margin: 0;" Brown University School of Public Health
+
+        br
+        meta name="keywords" content="Evidence synthesis, Systematic reviews, Data extraction, Exporting data, SRDR+, SRDR+ extraction forms, Data field dependencies, Outcomes, Results, Data Comparison Tool"
