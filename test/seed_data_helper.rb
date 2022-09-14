@@ -1230,7 +1230,7 @@ end
 
 # Sample Data.
 module SeedDataExtended
-  if Rails.env.test?
+  unless Rails.env.production?
     def self.extended(object)
       project_titles = [
         ['Definition of Treatment-Resistant Depression in the Medicare Population', 'The purpose of this technology assessment is to review the current definitions of treatment-resistant depression (TRD), to assess how closely current TRD treatment studies fit the most common definition, and to suggest how to improove TRD treatment research.'],
