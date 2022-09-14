@@ -1,14 +1,17 @@
 - content_for :title, content="Enhancements to SRDR+, the Next-Level Replacement For SRDR"
 
-ul.vertical.menu style="position: fixed; top: 600px; left: 20px; width: 260px;"
-  li
-    = link_to "SRDR+ as a Tool to Teach Evidence Synthesis Principles and Methods", blog_path(params: { date: '2021_08_26' })
-  li.is-active
-    = link_to "Enhancements to SRDR+, the Next-Level Replacement For SRDR",  blog_path(params: { date: '2021_04_14' })
-  li
-    = link_to "SRDR+ Presents New Importing Capability for FHIR-formatted Citation Files for Systematic Reviews",  blog_path(params: { date: '2021_03_05' })
-  li
-    = link_to "The newly updated Systematic Review Data Repository Plus (SRDR+)",  blog_path(params: { date: '2019_03_07' })
+div style="position: fixed; top: 600px; left: 20px; width: 260px;"
+  h2 Blog Posts:
+  br/
+  ul.vertical.menu
+    li
+      = link_to "SRDR+ as a Tool to Teach Evidence Synthesis Principles and Methods", blog_path(params: { date: '2021_08_26' })
+    li.is-active
+      = link_to "Enhancements to SRDR+, the Next-Level Replacement For SRDR",  blog_path(params: { date: '2021_04_14' })
+    li
+      = link_to "SRDR+ Presents New Importing Capability for FHIR-formatted Citation Files for Systematic Reviews",  blog_path(params: { date: '2021_03_05' })
+    li
+      = link_to "The newly updated Systematic Review Data Repository Plus (SRDR+)",  blog_path(params: { date: '2019_03_07' })
 
 .blog
   .hero.enhancement
