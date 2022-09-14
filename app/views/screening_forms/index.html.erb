@@ -350,6 +350,7 @@
           )
         ) {
           this.questions.splice(question_index, 1);
+          toastr.success("Removed successfully!");
         }
       },
       deleteColumn(question_index, column_index) {
@@ -358,12 +359,14 @@
             row.splice(column_index, 1);
           });
           this.questions[question_index].columns.splice(column_index, 1);
+          toastr.success("Removed successfully!");
         }
       },
       deleteRow(question_index, row_one_index) {
         if (confirm(`Are you sure you want to delete this row?`)) {
           this.questions[question_index].cells.splice(row_one_index - 1, 1);
           this.questions[question_index].rows.splice(row_one_index - 1, 1);
+          toastr.success("Removed successfully!");
         }
       },
 
@@ -372,6 +375,7 @@
           this.questions[question_index].cells[row_one_index - 1][
             column_one_index - 1
           ] = null;
+          toastr.success("Removed successfully!");
         }
       },
     }));
