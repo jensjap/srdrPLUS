@@ -25,7 +25,9 @@
 .column.row#project-list
   ul class="tabs" id="project-tabs"
     li class="tabs-title"
-      = link_to 'Drafts', projects_path(@params.merge(project_status: nil)), 'aria-selected': @project_status.blank? ? 'true' : ' false'
+      = link_to 'All', projects_path(@params.merge(project_status: nil)), 'aria-selected': @project_status.blank? ? 'true' : ' false'
+    li class="tabs-title"
+      = link_to 'Drafts', projects_path(@params.merge(project_status: 'draft')), 'aria-selected': @project_status == 'draft' ? 'true' : ' false'
     li class="tabs-title"
       = link_to 'Publication Requests', projects_path(@params.merge(project_status: 'pending')), 'aria-selected': @project_status == 'pending' ? 'true' : 'false'
     li class="tabs-title"
@@ -34,6 +36,12 @@
 .column.row
   div
     - if @project_status.blank?
+      div
+        = render "projects/index/project_list"
+      br
+      div
+        = paginate(@projects, params: @params, theme: 'foundation')
+    - elsif @project_status == 'draft'
       div
         = render "projects/index/project_list"
       br

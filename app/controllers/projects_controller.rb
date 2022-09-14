@@ -422,6 +422,58 @@ class ProjectsController < ApplicationController
 
     if @project_status.blank?
       @projects = policy_scope(Project).
+        includes(publishing: [{ user: :profile }, approval: [{ user: :profile }]]).
+        by_name_description_and_query(@query).
+        page(params[:page])
+
+      @projects = @projects.order(updated_at: :desc) if params[:o].nil? || params[:o] == 'updated-at'
+      @projects = @projects.order(created_at: :desc) if params[:o] == 'created-at'
+
+      project_ids = @projects.pluck(:id)
+      @projects_key_questions_project_counts = KeyQuestionsProject.
+        where(project_id: project_ids).
+        group(:project_id).
+        count
+
+      @projects_citations_project_counts = CitationsProject.
+        where(project_id: project_ids).
+        group(:project_id).
+        count
+
+      @projects_projects_user_counts = ProjectsUser.
+        where(project_id: project_ids).
+        group(:project_id).
+        count
+
+      @projects_extraction_counts = Extraction.
+        where(project_id: project_ids).
+        group(:project_id).
+        count
+
+      @projects_extraction_forms_project_ids = ExtractionFormsProject.
+        where(project_id: project_ids).
+        group_by(&:project_id)
+
+      @sd_meta_data_counts = SdMetaDatum.
+        where(project_id: project_ids).
+        group_by(&:project_id).
+        count
+
+      @projects_lead_or_with_key_questions = ProjectsUsersRole.
+        where(projects_user: ProjectsUser.
+          where(
+            project_id: project_ids,
+            user_id: current_user
+          ),
+          role: Role.where(name: 'Leader')
+        ).includes(projects_user: { project: [ :key_questions_projects ] }).
+        map { |pur| [pur.project.id, pur.project.key_questions_projects.present?] }.
+        to_h
+
+      @projects_lead_or_with_key_questions.default = false
+
+    elsif @project_status == 'draft'
+      @projects = policy_scope(Project).
         draft.
         includes(publishing: [{ user: :profile }, approval: [{ user: :profile }]]).
         by_name_description_and_query(@query).
@@ -472,6 +524,7 @@ class ProjectsController < ApplicationController
         to_h
 
       @projects_lead_or_with_key_questions.default = false
+
     elsif @project_status == 'pending'
       @unapproved_publishings = Publishing.
         includes([:publishable]).
@@ -482,6 +535,7 @@ class ProjectsController < ApplicationController
         page(params[:page])
       @unapproved_publishings = @unapproved_publishings.order(updated_at: :desc) if params[:o].nil? || params[:o] == 'updated-at'
       @unapproved_publishings = @unapproved_publishings.order(created_at: :desc) if params[:o] == 'created-at'
+
     elsif @project_status == 'published'
       @approved_publishings = Publishing.
         includes([:publishable]).
