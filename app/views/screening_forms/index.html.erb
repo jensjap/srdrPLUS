@@ -1,8 +1,8 @@
 <div
   x-data="screenStore"
   class="p-8"
-  @drop.prevent="alpineDrop()"
-  @dragover.prevent="alpineDragover($event)"
+  @drop.prevent="drop()"
+  @dragover.prevent="dragover($event)"
 >
   <div class="py-2 flex">
     <h1 class="text-2xl">Abstract Screening Form</h1>
@@ -100,27 +100,51 @@
                 />
               </template>
             </div>
-            <div
-            class="py-2 px-4 overflow-auto flex"
-          >
-            <template x-for="(row, row_index) in question.rows">
-              <div>
-                <div x-text="row.field_type"></div>
-                <template x-for="(option, option_index) in row.options">
-                  <div x-text="option"></div>
-                </template>
-              </div>
-            </template>
-          </div>
+            <div class="py-2 px-4 overflow-auto block">
+              <table class="table-auto border-separate border-spacing-1">
+                <thead>
+                  <tr>
+                    <td></td>
+                    <template x-for="column in question.columns">
+                      <th x-text="column.title"></th>
+                    </template>
+                  </tr>
+                </thead>
+                <tbody>
+                  <template x-for="row_index in (question.rows.length)">
+                    <tr>
+                      <template x-if="row_index == 0">
+                        <td></td>
+                      </template>
+                      <template x-if="row_index != 0">
+                        <th x-text="question.rows[row_index - 1].title"></th>
+                      </template>
+                      <template x-for="column_index in question.columns.length">
+                        <td>
+                          <div
+                            x-text="question.cells[row_index - 1][column_index - 1].field_type"
+                          ></div>
+                          <template
+                            x-for="option in question.cells[row_index - 1][column_index - 1].options"
+                          >
+                            <div x-text="option"></div>
+                          </template>
+                        </td>
+                      </template>
+                    </tr>
+                  </template>
+                </tbody>
+              </table>
+            </div>
           </div>
           <div
-            class="w-8 px-2 pt-4 border-l border-gray-300"
+            class="w-8 px-2 pt-4 border-l border-gray-300 cursor-pointer"
+            @click="deleteQuestion(index)"
             draggable="true"
             @dragstart.prevent.stop
           >
             <svg
-              @click="deleteQuestion(index)"
-              class="cursor-pointer w-4 h-4"
+              class="w-4 h-4"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
@@ -135,6 +159,7 @@
             </svg>
           </div>
         </div>
+      </div>
     </template>
   </div>
 </div>
@@ -157,8 +182,9 @@
         });
         const data = await response.json();
         this.questions = data;
+        console.log(this.questions);
       },
-      alpineDrop() {
+      drop() {
         if (this.dragging !== null && this.dropping !== null) {
           if (this.dragging < this.dropping)
             this.questions = [
@@ -177,7 +203,7 @@
         }
         this.dropping = null;
       },
-      alpineDragover(event) {
+      dragover(event) {
         event.dataTransfer.dropEffect = "move";
       },
       deleteQuestion(index) {
