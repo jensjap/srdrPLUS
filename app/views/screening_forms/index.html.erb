@@ -129,7 +129,7 @@
                           ></div>
                           <div
                             @click="deleteColumn(question_index, column_index)"
-                            class="text-red-800 cursor-pointer p-2 border-l border-gray-300"
+                            class="text-red-900 cursor-pointer p-2 border-l border-gray-300"
                           >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
@@ -182,7 +182,7 @@
                           ></div>
                           <div
                             @click="deleteRow(question_index, row_one_index)"
-                            class="h-full text-red-800 cursor-pointer p-2 border-l border-gray-300"
+                            class="h-full text-red-900 cursor-pointer p-2 border-l border-gray-300"
                           >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
@@ -209,19 +209,23 @@
                           <template
                             x-if="question.cells[row_one_index - 1] !== undefined &&  question.cells[row_one_index - 1][column_one_index - 1] !== undefined && question.cells[row_one_index - 1][column_one_index - 1] !== null"
                           >
-                            <div class="relative p-2">
-                              <div
-                                class="mr-8"
-                                x-text="question.cells[row_one_index - 1][column_one_index - 1].field_type"
-                              ></div>
-                              <template
-                                x-for="option in question.cells[row_one_index - 1][column_one_index - 1].options"
-                              >
-                                <div x-text="option"></div>
-                              </template>
+                            <div
+                              class="flex justify-center items-center h-full"
+                            >
+                              <div class="h-full p-2 grow">
+                                <div
+                                  class="mr-8"
+                                  x-text="question.cells[row_one_index - 1][column_one_index - 1].field_type"
+                                ></div>
+                                <template
+                                  x-for="option in question.cells[row_one_index - 1][column_one_index - 1].options"
+                                >
+                                  <div x-text="option"></div>
+                                </template>
+                              </div>
                               <div
                                 @click="deleteCellField(question_index, row_one_index, column_one_index)"
-                                class="text-red-800 absolute top-0 right-0 cursor-pointer p-2"
+                                class="h-full text-red-900 cursor-pointer p-2 border-l border-gray-300"
                               >
                                 <svg
                                   xmlns="http://www.w3.org/2000/svg"
@@ -331,7 +335,7 @@
             </div>
           </div>
           <div
-            class="w-8 px-2 pt-4 border-l border-gray-300 cursor-pointer text-red-800 p-2"
+            class="w-8 px-2 pt-4 border-l border-gray-300 cursor-pointer text-red-900 p-2"
             @click="deleteQuestion(question_index)"
             draggable="true"
             @dragstart.prevent.stop
