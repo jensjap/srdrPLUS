@@ -23,7 +23,6 @@
     >
       <div
         class="relative shadow-md rounded-md mb-8 border"
-        x-trap="focusIndex == question_index"
         :class="dragging === question_index ? 'border-blue-600' : ''"
         draggable="true"
         @dragstart="dragging = question_index"
@@ -60,52 +59,53 @@
           >
             <div class="py-2 px-4">
               <template
-                x-if="focusIndex != question_index || focusElement != 'name'"
+                x-if="focusElement !== `question_name:${question_index}`"
               >
                 <h2
                   class="text-lg cursor-pointer"
                   x-text="`${question_index + 1}. ${question.name}`"
-                  @click="focusIndex = question_index; focusElement = 'name'"
+                  @click="focusElement = `question_name:${question_index}`"
                 ></h2>
               </template>
               <template
-                x-if="focusIndex == question_index && focusElement == 'name'"
+                x-if="focusElement === `question_name:${question_index}`"
               >
                 <input
+                  x-trap="focusElement === `question_name:${question_index}`"
                   class="text-lg"
-                  @blur="focusIndex = null; focusElement = null; questions[question_index].name = $el.value"
-                  @keyup.enter="focusIndex = null; focusElement = null; questions[question_index].name = $el.value"
+                  @blur="focusElement = null; questions[question_index].name = $el.value"
+                  @keyup.enter="focusElement = null; questions[question_index].name = $el.value"
                   :value="question.name"
                   type="text"
                 />
               </template>
 
               <template
-                x-if="focusIndex != question_index || focusElement != 'description'"
+                x-if="focusElement !== `question_description:${question_index}`"
               >
                 <p
                   class="m-0 cursor-pointer"
                   x-text="question.description"
-                  @click="focusIndex = question_index; focusElement = 'description'"
+                  @click="focusElement = `question_description:${question_index}`"
                 ></p>
               </template>
               <template
-                x-if="(focusIndex != question_index && focusElement != 'name') && (question.description == '' || question.description == null)"
+                x-if="(focusElement !== `question_description:${question_index}`) && (question.description == '' || question.description == null)"
               >
                 <p
                   class="m-0 cursor-pointer text-gray-400"
-                  @click="focusIndex = question_index; focusElement = 'description'"
+                  @click="focusElement = `question_description:${question_index}`"
                 >
                   (add description)
                 </p>
               </template>
               <template
-                x-if="focusIndex == question_index && focusElement == 'description'"
+                x-if="focusElement === `question_description:${question_index}`"
               >
                 <input
-                  class=""
-                  @blur="focusIndex = null; focusElement = null; questions[question_index].description = $el.value"
-                  @keyup.enter="focusIndex = null; focusElement = null; questions[question_index].description = $el.value"
+                  x-trap="focusElement === `question_description:${question_index}`"
+                  @blur="focusElement = null; questions[question_index].description = $el.value"
+                  @keyup.enter="focusElement = null; questions[question_index].description = $el.value"
                   :value="question.description"
                   type="text"
                 />
@@ -365,7 +365,6 @@
   document.addEventListener("alpine:init", () => {
     Alpine.data("screenStore", () => ({
       questions: [],
-      focusIndex: null,
       focusElement: null,
       dragging: null,
       dropping: null,
