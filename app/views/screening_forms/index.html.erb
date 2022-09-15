@@ -137,7 +137,9 @@
                           >
                             <input
                               x-trap="focusElement === `column:${column_index}`"
-                              class="text-lg"
+                              class="p-2 grow whitespace-nowrap text-center"
+                              oninput="this.style.width = (this.value.length) + 'ch';"
+                              onfocus="this.style.width = (this.value.length) + 'ch';"
                               @blur="focusElement = null; column.title = $el.value"
                               @keyup.enter="focusElement = null; column.title = $el.value"
                               :value="column.title"
@@ -191,11 +193,28 @@
                   <template x-for="row_one_index in (question.rows.length)">
                     <tr>
                       <th>
-                        <div class="h-full flex justify-center items-center">
-                          <div
-                            class="p-2 grow whitespace-nowrap"
-                            x-text="question.rows[row_one_index - 1] !== undefined && question.rows[row_one_index - 1].title"
-                          ></div>
+                        <div class="h-full flex justify-center items-start">
+                          <template
+                            x-if="focusElement !== `row:${row_one_index - 1}`"
+                          >
+                            <div
+                              class="p-2 grow whitespace-nowrap cursor-pointer"
+                              x-text="question.rows[row_one_index - 1] !== undefined && question.rows[row_one_index - 1].title"
+                              @click="focusElement = `row:${row_one_index - 1}`"
+                            ></div>
+                          </template>
+                          <template
+                            x-if="focusElement === `row:${row_one_index - 1}`"
+                            ><input
+                              x-trap="focusElement === `row:${row_one_index - 1}`"
+                              class="p-2 grow whitespace-nowrap text-center"
+                              oninput="this.style.width = (this.value.length) + 'ch';"
+                              onfocus="this.style.width = (this.value.length) + 'ch';"
+                              @blur="focusElement = null; question.rows[row_one_index - 1].title = $el.value"
+                              @keyup.enter="focusElement = null; question.rows[row_one_index - 1].title = $el.value"
+                              :value="question.rows[row_one_index - 1].title"
+                              type="text"
+                          /></template>
                           <div
                             @click="deleteRow(question_index, row_one_index)"
                             class="h-full text-red-900 cursor-pointer p-2 border-l border-gray-300"
