@@ -74,7 +74,7 @@
                   class="text-lg cursor-pointer text-gray-400"
                   @click="focusElement = `question_name:${question_index}`"
                 >
-                  add question
+                  click to add question
                 </h2>
               </template>
               <template
@@ -106,7 +106,7 @@
                   class="m-0 cursor-pointer text-gray-400"
                   @click="focusElement = `question_description:${question_index}`"
                 >
-                  add description
+                  click to add description
                 </p>
               </template>
               <template
@@ -149,7 +149,7 @@
                               class="p-2 grow whitespace-nowrap cursor-pointer text-gray-400"
                               @click="focusElement = `question:${question_index}:column:${column_index}`"
                             >
-                              add column header
+                              click to add column header
                             </div></template
                           >
                           <template
@@ -191,21 +191,7 @@
                       class="whitespace-nowrap cursor-pointer flex justify-between items-center h-full"
                       @click="addColumn(question_index)"
                     >
-                      <div>Add Column</div>
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke-width="1.5"
-                        stroke="currentColor"
-                        class="w-6 h-6"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                        />
-                      </svg>
+                      <div>Click to add column</div>
                     </th>
                   </tr>
                 </thead>
@@ -230,7 +216,7 @@
                               class="p-2 grow whitespace-nowrap cursor-pointer text-gray-400"
                               @click="focusElement = `question:${question_index}:row:${row_one_index - 1}`"
                             >
-                              add row header
+                              click to add row header
                             </div></template
                           >
                           <template
@@ -316,21 +302,9 @@
                               <div
                                 class="font-bold text-gray-700 flex justify-between items-center mb-2"
                               >
-                                <div>Create Field</div>
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  fill="none"
-                                  viewBox="0 0 24 24"
-                                  stroke-width="1.5"
-                                  stroke="currentColor"
-                                  class="w-6 h-6"
-                                >
-                                  <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                                  />
-                                </svg>
+                                <div class="whitespace-nowrap">
+                                  Click type to add field
+                                </div>
                               </div>
                               <span
                                 @click="question.cells[row_one_index - 1][column_one_index - 1] = { id: 1, field_type: 'text', options: [], restrictions: { min: 0, max: 255 } }"
@@ -378,21 +352,7 @@
                       class="whitespace-nowrap cursor-pointer flex justify-between items-center h-full"
                       @click="addRow(question_index)"
                     >
-                      <div>Add Row</div>
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke-width="1.5"
-                        stroke="currentColor"
-                        class="w-6 h-6"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                        />
-                      </svg>
+                      <div>Click to add row</div>
                     </th>
                   </tr>
                 </tbody>
@@ -447,8 +407,8 @@
       addQuestion() {
         this.questions.push({
           id: Math.random() * 10000,
-          name: Math.random() * 10000,
-          description: "Good Description",
+          name: "",
+          description: "",
           rows: [],
           columns: [],
           cells: [],
@@ -458,7 +418,7 @@
       addColumn(question_index) {
         this.questions[question_index].columns.push({
           id: 2,
-          title: "New Column",
+          title: "",
         });
         if (this.questions[question_index].rows.length == 0) {
           this.addRow(question_index);
@@ -470,7 +430,7 @@
       addRow(question_index) {
         this.questions[question_index].rows.push({
           id: 2,
-          title: "New Row",
+          title: "",
         });
         this.questions[question_index].cells.push(
           Array(this.questions[question_index].rows.length).fill(null)
