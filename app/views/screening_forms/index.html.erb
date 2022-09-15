@@ -112,7 +112,9 @@
               </template>
             </div>
             <div class="py-2 px-4 overflow-auto block">
-              <table class="h-0 table-auto border-separate border-spacing-1">
+              <table
+                class="h-0 w-0 table-auto border-separate border-spacing-1"
+              >
                 <thead>
                   <tr>
                     <td></td>
@@ -121,7 +123,10 @@
                     >
                       <th>
                         <div class="flex justify-center items-center">
-                          <div class="grow" x-text="column.title"></div>
+                          <div
+                            class="p-2 grow whitespace-nowrap"
+                            x-text="column.title"
+                          ></div>
                           <div
                             @click="deleteColumn(question_index, column_index)"
                             class="text-red-800 cursor-pointer p-2 border-l border-gray-300"
@@ -144,6 +149,26 @@
                         </div>
                       </th>
                     </template>
+                    <th
+                      class="whitespace-nowrap cursor-pointer flex justify-between items-center h-full"
+                      @click="addColumn(question_index)"
+                    >
+                      <div>Add Column</div>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke-width="1.5"
+                        stroke="currentColor"
+                        class="w-6 h-6"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                      </svg>
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -152,7 +177,7 @@
                       <th>
                         <div class="h-full flex justify-center items-center">
                           <div
-                            class="grow"
+                            class="p-2 grow whitespace-nowrap"
                             x-text="question.rows[row_one_index - 1].title"
                           ></div>
                           <div
@@ -186,6 +211,7 @@
                           >
                             <div class="relative p-2">
                               <div
+                                class="mr-8"
                                 x-text="question.cells[row_one_index - 1][column_one_index - 1].field_type"
                               ></div>
                               <template
@@ -218,41 +244,57 @@
                             x-if="question.cells[row_one_index - 1][column_one_index - 1] === null"
                           >
                             <div class="p-2 flex flex-col justify-center">
-                              <span class="text-center font-bold text-gray-700"
-                                >Create Field</span
+                              <div
+                                class="font-bold text-gray-700 flex justify-between items-center mb-2"
                               >
+                                <div>Create Field</div>
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  stroke-width="1.5"
+                                  stroke="currentColor"
+                                  class="w-6 h-6"
+                                >
+                                  <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                  />
+                                </svg>
+                              </div>
                               <span
-                                @click="question.cells[row_one_index - 1][column_one_index - 1] = { id: 1, field_type: 'text', min: 0, max: 255 }"
+                                @click="question.cells[row_one_index - 1][column_one_index - 1] = { id: 1, field_type: 'text', options: [], restrictions: { min: 0, max: 255 } }"
                                 class="cursor-pointer hover:text-gray-500 overflow-ellipsis whitespace-nowrap"
                                 >Text</span
                               >
                               <span
-                                @click="question.cells[row_one_index - 1][column_one_index - 1] = { id: 1, field_type: 'numeric', min: 0, max: 255, allow_equality_signs: true }"
+                                @click="question.cells[row_one_index - 1][column_one_index - 1] = { id: 1, field_type: 'numeric', options: [], restrictions: { min: 0, max: 255, allow_equality_signs: true } }"
                                 class="cursor-pointer hover:text-gray-500 overflow-ellipsis whitespace-nowrap"
                                 >Numeric</span
                               >
                               <span
-                                @click=""
+                                @click="question.cells[row_one_index - 1][column_one_index - 1] = { id: 1, field_type: 'checkbox', options: [] }"
                                 class="cursor-pointer hover:text-gray-500 overflow-ellipsis whitespace-nowrap"
-                                >Select Box (Multiple)</span
+                                >Checkbox (Multiple)</span
                               >
                               <span
-                                @click=""
+                                @click="question.cells[row_one_index - 1][column_one_index - 1] = { id: 1, field_type: 'dropdown', options: [] }"
                                 class="cursor-pointer hover:text-gray-500 overflow-ellipsis whitespace-nowrap"
                                 >Dropdown</span
                               >
                               <span
-                                @click=""
+                                @click="question.cells[row_one_index - 1][column_one_index - 1] = { id: 1, field_type: 'radio', options: [] }"
                                 class="cursor-pointer hover:text-gray-500 overflow-ellipsis whitespace-nowrap"
                                 >Radio</span
                               >
                               <span
-                                @click=""
+                                @click="question.cells[row_one_index - 1][column_one_index - 1] = { id: 1, field_type: 'select-one', options: [] }"
                                 class="cursor-pointer hover:text-gray-500 overflow-ellipsis whitespace-nowrap"
                                 >Select One</span
                               >
                               <span
-                                @click=""
+                                @click="question.cells[row_one_index - 1][column_one_index - 1] = { id: 1, field_type: 'select-multiple', options: [] }"
                                 class="cursor-pointer hover:text-gray-500 overflow-ellipsis whitespace-nowrap"
                                 >Select Multiple</span
                               >
@@ -262,6 +304,28 @@
                       </template>
                     </tr>
                   </template>
+                  <tr>
+                    <th
+                      class="whitespace-nowrap cursor-pointer flex justify-between items-center h-full"
+                      @click="addRow(question_index)"
+                    >
+                      <div>Add Row</div>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke-width="1.5"
+                        stroke="currentColor"
+                        class="w-6 h-6"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                      </svg>
+                    </th>
+                  </tr>
                 </tbody>
               </table>
             </div>
@@ -311,15 +375,42 @@
         });
         const data = await response.json();
         this.questions = data;
-        console.log(this.questions);
       },
       addQuestion() {
         this.questions.push({
           id: Math.random() * 10000,
           name: Math.random() * 10000,
           description: "Good Description",
+          rows: [],
+          columns: [],
+          cells: [],
         });
         toastr.success("Question added succesfully!");
+      },
+      addColumn(question_index) {
+        this.questions[question_index].columns.push({
+          id: 2,
+          title: "New Column",
+        });
+        if (this.questions[question_index].rows.length == 0) {
+          this.addRow(question_index);
+        }
+        this.questions[question_index].cells.forEach((cell) => {
+          cell.push(null);
+        });
+      },
+      addRow(question_index) {
+        console.log(this.questions[question_index]);
+        this.questions[question_index].rows.push({
+          id: 2,
+          title: "New Row",
+        });
+        this.questions[question_index].cells.push(
+          Array(this.questions[question_index].rows.length).fill(null)
+        );
+        if (this.questions[question_index].columns.length == 0) {
+          this.addColumn(question_index);
+        }
       },
       drop() {
         if (this.dragging !== null && this.dropping !== null) {
