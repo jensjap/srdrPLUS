@@ -123,10 +123,26 @@
                     >
                       <th>
                         <div class="flex justify-center items-center">
-                          <div
-                            class="p-2 grow whitespace-nowrap"
-                            x-text="column.title"
-                          ></div>
+                          <template
+                            x-if="focusElement !== `column:${column_index}`"
+                          >
+                            <div
+                              class="p-2 grow whitespace-nowrap cursor-pointer"
+                              x-text="column.title"
+                              @click="focusElement = `column:${column_index}`"
+                            ></div>
+                          </template>
+                          <template
+                            x-if="focusElement === `column:${column_index}`"
+                          >
+                            <input
+                              x-trap="focusElement === `column:${column_index}`"
+                              class="text-lg"
+                              @blur="focusElement = null; column.title = $el.value"
+                              @keyup.enter="focusElement = null; column.title = $el.value"
+                              :value="column.title"
+                              type="text"
+                          /></template>
                           <div
                             @click="deleteColumn(question_index, column_index)"
                             class="text-red-900 cursor-pointer p-2 border-l border-gray-300"
