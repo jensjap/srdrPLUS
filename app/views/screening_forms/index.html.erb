@@ -178,7 +178,7 @@
                         <div class="h-full flex justify-center items-center">
                           <div
                             class="p-2 grow whitespace-nowrap"
-                            x-text="question.rows[row_one_index - 1].title"
+                            x-text="question.rows[row_one_index - 1] !== undefined && question.rows[row_one_index - 1].title"
                           ></div>
                           <div
                             @click="deleteRow(question_index, row_one_index)"
@@ -207,7 +207,7 @@
                       >
                         <td>
                           <template
-                            x-if="question.cells[row_one_index - 1][column_one_index - 1] !== null"
+                            x-if="question.cells[row_one_index - 1] !== undefined &&  question.cells[row_one_index - 1][column_one_index - 1] !== undefined && question.cells[row_one_index - 1][column_one_index - 1] !== null"
                           >
                             <div class="relative p-2">
                               <div
@@ -241,7 +241,7 @@
                             </div>
                           </template>
                           <template
-                            x-if="question.cells[row_one_index - 1][column_one_index - 1] === null"
+                            x-if="question.cells[row_one_index - 1] !== undefined && question.cells[row_one_index - 1][column_one_index - 1] === null"
                           >
                             <div class="p-2 flex flex-col justify-center">
                               <div
@@ -400,7 +400,6 @@
         });
       },
       addRow(question_index) {
-        console.log(this.questions[question_index]);
         this.questions[question_index].rows.push({
           id: 2,
           title: "New Row",
