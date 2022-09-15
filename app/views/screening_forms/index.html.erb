@@ -59,13 +59,23 @@
           >
             <div class="py-2 px-4">
               <template
-                x-if="focusElement !== `question_name:${question_index}`"
+                x-if="focusElement !== `question_name:${question_index}` && (question.name != '' && question.name != null)"
               >
                 <h2
                   class="text-lg cursor-pointer"
                   x-text="`${question_index + 1}. ${question.name}`"
                   @click="focusElement = `question_name:${question_index}`"
                 ></h2>
+              </template>
+              <template
+                x-if="focusElement !== `question_name:${question_index}` && (question.name == '' || question.name == null)"
+              >
+                <h2
+                  class="text-lg cursor-pointer text-gray-400"
+                  @click="focusElement = `question_name:${question_index}`"
+                >
+                  add question
+                </h2>
               </template>
               <template
                 x-if="focusElement === `question_name:${question_index}`"
@@ -81,7 +91,7 @@
               </template>
 
               <template
-                x-if="focusElement !== `question_description:${question_index}`"
+                x-if="focusElement !== `question_description:${question_index}` && (question.description != '' && question.description != null)"
               >
                 <p
                   class="m-0 cursor-pointer"
@@ -96,7 +106,7 @@
                   class="m-0 cursor-pointer text-gray-400"
                   @click="focusElement = `question_description:${question_index}`"
                 >
-                  (add description)
+                  add description
                 </p>
               </template>
               <template
@@ -124,7 +134,7 @@
                       <th>
                         <div class="flex justify-center items-center">
                           <template
-                            x-if="focusElement !== `question:${question_index}:column:${column_index}`"
+                            x-if="focusElement !== `question:${question_index}:column:${column_index}` && (column.title != '' && column.title != null)"
                           >
                             <div
                               class="p-2 grow whitespace-nowrap cursor-pointer"
@@ -132,6 +142,16 @@
                               @click="focusElement = `question:${question_index}:column:${column_index}`"
                             ></div>
                           </template>
+                          <template
+                            x-if="focusElement !== `question:${question_index}:column:${column_index}` && (column.title == '' || column.title == null)"
+                          >
+                            <div
+                              class="p-2 grow whitespace-nowrap cursor-pointer text-gray-400"
+                              @click="focusElement = `question:${question_index}:column:${column_index}`"
+                            >
+                              add column header
+                            </div></template
+                          >
                           <template
                             x-if="focusElement === `question:${question_index}:column:${column_index}`"
                           >
@@ -195,7 +215,7 @@
                       <th>
                         <div class="h-full flex justify-center items-start">
                           <template
-                            x-if="focusElement !== `question:${question_index}:row:${row_one_index - 1}`"
+                            x-if="focusElement !== `question:${question_index}:row:${row_one_index - 1}` && (question.rows[row_one_index - 1].title != '' && question.rows[row_one_index - 1].title != null)"
                           >
                             <div
                               class="p-2 grow whitespace-nowrap cursor-pointer"
@@ -203,6 +223,16 @@
                               @click="focusElement = `question:${question_index}:row:${row_one_index - 1}`"
                             ></div>
                           </template>
+                          <template
+                            x-if="focusElement !== `question:${question_index}:row:${row_one_index - 1}` && (question.rows[row_one_index - 1].title == '' || question.rows[row_one_index - 1].title == null)"
+                          >
+                            <div
+                              class="p-2 grow whitespace-nowrap cursor-pointer text-gray-400"
+                              @click="focusElement = `question:${question_index}:row:${row_one_index - 1}`"
+                            >
+                              add row header
+                            </div></template
+                          >
                           <template
                             x-if="focusElement === `question:${question_index}:row:${row_one_index - 1}`"
                             ><input
