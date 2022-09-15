@@ -117,26 +117,26 @@
               >
                 <thead>
                   <tr>
-                    <td></td>
+                    <td class="!bg-transparent"></td>
                     <template
                       x-for="(column, column_index) in question.columns"
                     >
                       <th>
                         <div class="flex justify-center items-center">
                           <template
-                            x-if="focusElement !== `column:${column_index}`"
+                            x-if="focusElement !== `question:${question_index}:column:${column_index}`"
                           >
                             <div
                               class="p-2 grow whitespace-nowrap cursor-pointer"
                               x-text="column.title"
-                              @click="focusElement = `column:${column_index}`"
+                              @click="focusElement = `question:${question_index}:column:${column_index}`"
                             ></div>
                           </template>
                           <template
-                            x-if="focusElement === `column:${column_index}`"
+                            x-if="focusElement === `question:${question_index}:column:${column_index}`"
                           >
                             <input
-                              x-trap="focusElement === `column:${column_index}`"
+                              x-trap="focusElement === `question:${question_index}:column:${column_index}`"
                               class="p-2 grow whitespace-nowrap text-center"
                               oninput="this.style.width = (this.value.length) + 'ch';"
                               onfocus="this.style.width = (this.value.length) + 'ch';"
@@ -195,18 +195,18 @@
                       <th>
                         <div class="h-full flex justify-center items-start">
                           <template
-                            x-if="focusElement !== `row:${row_one_index - 1}`"
+                            x-if="focusElement !== `question:${question_index}:row:${row_one_index - 1}`"
                           >
                             <div
                               class="p-2 grow whitespace-nowrap cursor-pointer"
                               x-text="question.rows[row_one_index - 1] !== undefined && question.rows[row_one_index - 1].title"
-                              @click="focusElement = `row:${row_one_index - 1}`"
+                              @click="focusElement = `question:${question_index}:row:${row_one_index - 1}`"
                             ></div>
                           </template>
                           <template
-                            x-if="focusElement === `row:${row_one_index - 1}`"
+                            x-if="focusElement === `question:${question_index}:row:${row_one_index - 1}`"
                             ><input
-                              x-trap="focusElement === `row:${row_one_index - 1}`"
+                              x-trap="focusElement === `question:${question_index}:row:${row_one_index - 1}`"
                               class="p-2 grow whitespace-nowrap text-center"
                               oninput="this.style.width = (this.value.length) + 'ch';"
                               onfocus="this.style.width = (this.value.length) + 'ch';"
