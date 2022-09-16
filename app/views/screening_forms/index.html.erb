@@ -174,7 +174,7 @@
                           /></template>
                           <div
                             @click="deleteColumn(question_index, column_index)"
-                            class="text-red-900 cursor-pointer p-2 border-l border-gray-300"
+                            class="text-red-900 cursor-pointer p-2 border-l border-gray-300 hover:bg-red-100"
                           >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
@@ -240,7 +240,7 @@
                           /></template>
                           <div
                             @click="deleteRow(question_index, row_one_index)"
-                            class="h-full text-red-900 cursor-pointer p-2 border-l border-gray-300"
+                            class="h-full text-red-900 cursor-pointer p-2 border-l border-gray-300 hover:bg-red-100"
                           >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
@@ -271,19 +271,73 @@
                               class="flex justify-center items-center h-full"
                             >
                               <div class="h-full p-2 grow">
-                                <div
-                                  class="mr-8"
-                                  x-text="question.cells[row_one_index - 1][column_one_index - 1].field_type"
-                                ></div>
                                 <template
-                                  x-for="option in question.cells[row_one_index - 1][column_one_index - 1].options"
+                                  x-if="question.cells[row_one_index - 1][column_one_index - 1].field_type == 'text'"
                                 >
-                                  <div x-text="option"></div>
+                                  <div>
+                                    <h3 class="text-lg mb-2">Text Field</h3>
+                                    <label for="text-min"
+                                      >Min character length</label
+                                    >
+                                    <input
+                                      id="text-min"
+                                      name="min"
+                                      type="number"
+                                      value="1"
+                                    />
+                                    <label for="text-max"
+                                      >Max character length</label
+                                    >
+                                    <input
+                                      id="text-max"
+                                      name="max"
+                                      type="number"
+                                      value="255"
+                                    />
+                                  </div>
+                                </template>
+                                <template
+                                  x-if="question.cells[row_one_index - 1][column_one_index - 1].field_type == 'numeric'"
+                                >
+                                  <div>
+                                    <h3 class="text-lg mb-2">Numeric Field</h3>
+                                    <div
+                                      class="flex justify-between items-center"
+                                    >
+                                      <label for="numeric-equality"
+                                        >Allow ~, <, >, ≤, ≥</label
+                                      >
+                                      <input
+                                        id="numeric-equality"
+                                        name="equality"
+                                        type="checkbox"
+                                        class="!m-0"
+                                      />
+                                    </div>
+                                    <label for="numeric-min"
+                                      >Min value allowed</label
+                                    >
+                                    <input
+                                      id="numeric-min"
+                                      name="min"
+                                      type="number"
+                                      value="1"
+                                    />
+                                    <label for="numeric-max"
+                                      >Max value allowed</label
+                                    >
+                                    <input
+                                      id="numeric-max"
+                                      name="max"
+                                      type="number"
+                                      value="255"
+                                    />
+                                  </div>
                                 </template>
                               </div>
                               <div
                                 @click="deleteCellField(question_index, row_one_index, column_one_index)"
-                                class="h-full text-red-900 cursor-pointer p-2 border-l border-gray-300"
+                                class="h-full text-red-900 cursor-pointer p-2 border-l border-gray-300 hover:bg-red-100"
                               >
                                 <svg
                                   xmlns="http://www.w3.org/2000/svg"
@@ -314,12 +368,12 @@
                                 </div>
                               </div>
                               <span
-                                @click="question.cells[row_one_index - 1][column_one_index - 1] = { id: 1, field_type: 'text', options: [], restrictions: { min: 0, max: 255 } }"
+                                @click="question.cells[row_one_index - 1][column_one_index - 1] = { id: 1, field_type: 'text', options: [], min: 0, max: 255 }"
                                 class="cursor-pointer hover:text-gray-500 overflow-ellipsis whitespace-nowrap"
                                 >Text</span
                               >
                               <span
-                                @click="question.cells[row_one_index - 1][column_one_index - 1] = { id: 1, field_type: 'numeric', options: [], restrictions: { min: 0, max: 255, allow_equality_signs: true } }"
+                                @click="question.cells[row_one_index - 1][column_one_index - 1] = { id: 1, field_type: 'numeric', options: [], min: 0, max: 255, allow_equality_signs: true }"
                                 class="cursor-pointer hover:text-gray-500 overflow-ellipsis whitespace-nowrap"
                                 >Numeric</span
                               >
@@ -367,7 +421,7 @@
             </div>
           </div>
           <div
-            class="w-8 px-2 pt-4 border-l border-gray-300 cursor-pointer text-red-900 p-2"
+            class="w-8 px-2 pt-4 border-l border-gray-300 cursor-pointer text-red-900 p-2 hover:bg-red-100"
             @click="deleteQuestion(question_index)"
             draggable="true"
             @dragstart.prevent.stop
