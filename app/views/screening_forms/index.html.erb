@@ -352,7 +352,7 @@
                                       class="grow border-b-2 border-gray-300 whitespace-nowrap"
                                     >
                                       <template
-                                        x-for="option in question.cells[row_one_index - 1][column_one_index - 1].options"
+                                        x-for="(option, option_index) in question.cells[row_one_index - 1][column_one_index - 1].options"
                                         ><div class="flex justify-between">
                                           <div
                                             class="mr-5"
@@ -360,14 +360,14 @@
                                           ></div>
                                           <div class="flex">
                                             <label
-                                              class="mr-1 text-xs cursor-pointer"
+                                              class="text-xs cursor-pointer"
                                               >with follow-up
                                               <input
                                                 class="!m-0 cursor-pointer"
                                                 type="checkbox"
                                             /></label>
                                             <div
-                                              @click="deleteCellField(question_index, row_one_index, column_one_index)"
+                                              @click="if (confirm(`Are you sure you want to delete '${option.name}'`)) { question.cells[row_one_index - 1][column_one_index - 1].options.splice(option_index, 1) }"
                                               class="text-red-900 cursor-pointer ml-5"
                                             >
                                               <svg
@@ -394,7 +394,7 @@
                                         <input
                                           name="option"
                                           type="text"
-                                          @keyup.enter="question.cells[row_one_index - 1][column_one_index - 1].options.push({ name: $el.value, with_followup: false }); $el.value = ''"
+                                          @keyup.enter="if ($el.value === '') { return }; question.cells[row_one_index - 1][column_one_index - 1].options.push({ name: $el.value, with_followup: false }); $el.value = ''"
                                       /></label>
                                     </div>
                                   </div>
