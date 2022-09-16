@@ -399,6 +399,61 @@
                                     </div>
                                   </div>
                                 </template>
+                                <template
+                                  x-if="question.cells[row_one_index - 1][column_one_index - 1].field_type == 'dropdown'"
+                                >
+                                  <div
+                                    class="h-full flex flex-col justify-between"
+                                  >
+                                    <div
+                                      class="whitespace-nowrap border-b-2 border-gray-300"
+                                    >
+                                      Dropdown (single-choice)
+                                    </div>
+                                    <div
+                                      class="grow border-b-2 border-gray-300 whitespace-nowrap"
+                                    >
+                                      <template
+                                        x-for="(option, option_index) in question.cells[row_one_index - 1][column_one_index - 1].options"
+                                        ><div class="flex justify-between">
+                                          <div
+                                            class="mr-5"
+                                            x-text="option.name"
+                                          ></div>
+                                          <div class="flex">
+                                            <div
+                                              @click="if (confirm(`Are you sure you want to delete '${option.name}'`)) { question.cells[row_one_index - 1][column_one_index - 1].options.splice(option_index, 1) }"
+                                              class="text-red-900 cursor-pointer ml-5"
+                                            >
+                                              <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                                stroke-width="1.5"
+                                                stroke="currentColor"
+                                                class="w-4 h-4"
+                                              >
+                                                <path
+                                                  stroke-linecap="round"
+                                                  stroke-linejoin="round"
+                                                  d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                                                />
+                                              </svg>
+                                            </div>
+                                          </div></div
+                                      ></template>
+                                    </div>
+                                    <div>
+                                      <label class="text-xs"
+                                        >Add Answer Choice
+                                        <input
+                                          name="option"
+                                          type="text"
+                                          @keyup.enter="if ($el.value === '') { return }; question.cells[row_one_index - 1][column_one_index - 1].options.push({ name: $el.value, with_followup: false }); $el.value = ''"
+                                      /></label>
+                                    </div>
+                                  </div>
+                                </template>
                               </div>
                               <div
                                 @click="deleteCellField(question_index, row_one_index, column_one_index)"
@@ -433,37 +488,37 @@
                               <span
                                 @click="question.cells[row_one_index - 1][column_one_index - 1] = { id: 1, field_type: 'text', options: [], min: 0, max: 255 }"
                                 class="cursor-pointer hover:text-gray-500 overflow-ellipsis whitespace-nowrap"
-                                >Text</span
+                                >- Text</span
                               >
                               <span
                                 @click="question.cells[row_one_index - 1][column_one_index - 1] = { id: 1, field_type: 'numeric', options: [], min: 0, max: 255, allow_equality_signs: true }"
                                 class="cursor-pointer hover:text-gray-500 overflow-ellipsis whitespace-nowrap"
-                                >Numeric</span
+                                >- Numeric</span
                               >
                               <span
                                 @click="question.cells[row_one_index - 1][column_one_index - 1] = { id: 1, field_type: 'checkbox', options: [] }"
                                 class="cursor-pointer hover:text-gray-500 overflow-ellipsis whitespace-nowrap"
-                                >Checkbox (Multiple)</span
+                                >- Checkbox (Multiple)</span
                               >
                               <span
                                 @click="question.cells[row_one_index - 1][column_one_index - 1] = { id: 1, field_type: 'dropdown', options: [] }"
                                 class="cursor-pointer hover:text-gray-500 overflow-ellipsis whitespace-nowrap"
-                                >Dropdown</span
+                                >- Dropdown</span
                               >
                               <span
                                 @click="question.cells[row_one_index - 1][column_one_index - 1] = { id: 1, field_type: 'radio', options: [] }"
                                 class="cursor-pointer hover:text-gray-500 overflow-ellipsis whitespace-nowrap"
-                                >Radio</span
+                                >- Radio</span
                               >
                               <span
                                 @click="question.cells[row_one_index - 1][column_one_index - 1] = { id: 1, field_type: 'select-one', options: [] }"
                                 class="cursor-pointer hover:text-gray-500 overflow-ellipsis whitespace-nowrap"
-                                >Select One</span
+                                >- Select One</span
                               >
                               <span
                                 @click="question.cells[row_one_index - 1][column_one_index - 1] = { id: 1, field_type: 'select-multiple', options: [] }"
                                 class="cursor-pointer hover:text-gray-500 overflow-ellipsis whitespace-nowrap"
-                                >Select Multiple</span
+                                >- Select Multiple</span
                               >
                             </div>
                           </template>
