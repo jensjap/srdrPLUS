@@ -43,7 +43,10 @@
           @dragleave="if (dropping === question_index) dropping = null"
         ></div>
         <div class="flex">
-          <div class="cursor-move w-8 pt-4 border-r border-gray-300">
+          <div
+            class="cursor-move w-8 pt-4 border-r border-gray-300"
+            title="Drag here to rearrange order of questions"
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -72,6 +75,7 @@
                   class="text-lg cursor-pointer"
                   x-text="`${question_index + 1}. ${question.name}`"
                   @click="focusElement = `question_name:${question_index}`"
+                  title="Click here to edit question"
                 ></h2>
               </template>
               <template
@@ -80,6 +84,7 @@
                 <h2
                   class="text-lg cursor-pointer text-gray-400"
                   @click="focusElement = `question_name:${question_index}`"
+                  title="Click here to edit question"
                 >
                   click to add question
                 </h2>
@@ -104,6 +109,7 @@
                   class="m-0 cursor-pointer"
                   x-text="question.description"
                   @click="focusElement = `question_description:${question_index}`"
+                  title="Click here to edit description"
                 ></p>
               </template>
               <template
@@ -112,6 +118,7 @@
                 <p
                   class="m-0 cursor-pointer text-gray-400"
                   @click="focusElement = `question_description:${question_index}`"
+                  title="Click here to edit description"
                 >
                   click to add description
                 </p>
@@ -147,6 +154,7 @@
                               class="p-2 grow whitespace-nowrap cursor-pointer"
                               x-text="column.title"
                               @click="focusElement = `question:${question_index}:column:${column_index}`"
+                              title="Click here to edit column title"
                             ></div>
                           </template>
                           <template
@@ -155,6 +163,7 @@
                             <div
                               class="p-2 grow whitespace-nowrap cursor-pointer text-gray-400"
                               @click="focusElement = `question:${question_index}:column:${column_index}`"
+                              title="Click here to edit column title"
                             >
                               click to add column header
                             </div></template
@@ -214,6 +223,7 @@
                               class="p-2 grow whitespace-nowrap cursor-pointer"
                               x-text="question.rows[row_one_index - 1] !== undefined && question.rows[row_one_index - 1].title"
                               @click="focusElement = `question:${question_index}:row:${row_one_index - 1}`"
+                              title="Click here to edit row title"
                             ></div>
                           </template>
                           <template
@@ -222,6 +232,7 @@
                             <div
                               class="p-2 grow whitespace-nowrap cursor-pointer text-gray-400"
                               @click="focusElement = `question:${question_index}:row:${row_one_index - 1}`"
+                              title="Click here to edit row title"
                             >
                               click to add row header
                             </div></template
