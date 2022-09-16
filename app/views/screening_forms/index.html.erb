@@ -279,76 +279,130 @@
                             x-if="question.cells[row_one_index - 1] !== undefined &&  question.cells[row_one_index - 1][column_one_index - 1] !== undefined && question.cells[row_one_index - 1][column_one_index - 1] !== null"
                           >
                             <div
-                              class="flex justify-center items-center h-full"
+                              class="flex justify-center items-stretch h-full"
                             >
-                              <div class="h-full p-2 grow">
+                              <div class="p-2 grow">
                                 <template
                                   x-if="question.cells[row_one_index - 1][column_one_index - 1].field_type == 'text'"
                                 >
                                   <div>
-                                    <h3 class="text-lg mb-2">Text Field</h3>
-                                    <label for="text-min"
-                                      >Min character length</label
+                                    <div
+                                      class="whitespace-nowrap border-b-2 border-gray-300"
                                     >
-                                    <input
-                                      id="text-min"
-                                      name="min"
-                                      type="number"
-                                      value="1"
-                                    />
-                                    <label for="text-max"
-                                      >Max character length</label
-                                    >
-                                    <input
-                                      id="text-max"
-                                      name="max"
-                                      type="number"
-                                      value="255"
-                                    />
+                                      Text Field
+                                    </div>
+                                    <label class="whitespace-nowrap"
+                                      >Min character length
+                                      <input name="min" type="number" value="1"
+                                    /></label>
+                                    <label class="whitespace-nowrap"
+                                      >Max character length
+                                      <input
+                                        name="max"
+                                        type="number"
+                                        value="255"
+                                    /></label>
                                   </div>
                                 </template>
                                 <template
                                   x-if="question.cells[row_one_index - 1][column_one_index - 1].field_type == 'numeric'"
                                 >
                                   <div>
-                                    <h3 class="text-lg mb-2">Numeric Field</h3>
+                                    <div
+                                      class="whitespace-nowrap border-b-2 border-gray-300"
+                                    >
+                                      Numeric Field
+                                    </div>
                                     <div
                                       class="flex justify-between items-center"
                                     >
-                                      <label for="numeric-equality"
-                                        >Allow ~, <, >, ≤, ≥</label
-                                      >
-                                      <input
-                                        id="numeric-equality"
-                                        name="equality"
-                                        type="checkbox"
-                                        class="!m-0"
-                                      />
+                                      <label class="whitespace-nowrap"
+                                        >Allow ~, <, >, ≤, ≥
+                                        <input
+                                          name="equality"
+                                          type="checkbox"
+                                          class="!m-0 cursor-pointer"
+                                      /></label>
                                     </div>
-                                    <label for="numeric-min"
-                                      >Min value allowed</label
+                                    <label
+                                      >Min value allowed
+                                      <input name="min" type="number" value="1"
+                                    /></label>
+                                    <label
+                                      >Max value allowed
+                                      <input
+                                        name="max"
+                                        type="number"
+                                        value="255"
+                                    /></label>
+                                  </div>
+                                </template>
+                                <template
+                                  x-if="question.cells[row_one_index - 1][column_one_index - 1].field_type == 'checkbox'"
+                                >
+                                  <div
+                                    class="h-full flex flex-col justify-between"
+                                  >
+                                    <div
+                                      class="whitespace-nowrap border-b-2 border-gray-300"
                                     >
-                                    <input
-                                      id="numeric-min"
-                                      name="min"
-                                      type="number"
-                                      value="1"
-                                    />
-                                    <label for="numeric-max"
-                                      >Max value allowed</label
+                                      Checkbox (multi-choice)
+                                    </div>
+                                    <div
+                                      class="grow border-b-2 border-gray-300 whitespace-nowrap"
                                     >
-                                    <input
-                                      id="numeric-max"
-                                      name="max"
-                                      type="number"
-                                      value="255"
-                                    />
+                                      <template
+                                        x-for="option in question.cells[row_one_index - 1][column_one_index - 1].options"
+                                        ><div class="flex justify-between">
+                                          <div
+                                            class="mr-5"
+                                            x-text="option.name"
+                                          ></div>
+                                          <div class="flex">
+                                            <label
+                                              class="mr-1 text-xs cursor-pointer"
+                                              >with follow-up
+                                              <input
+                                                class="!m-0 cursor-pointer"
+                                                type="checkbox"
+                                            /></label>
+                                            <div
+                                              @click="deleteCellField(question_index, row_one_index, column_one_index)"
+                                              class="text-red-900 cursor-pointer ml-5"
+                                            >
+                                              <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                                stroke-width="1.5"
+                                                stroke="currentColor"
+                                                class="w-4 h-4"
+                                              >
+                                                <path
+                                                  stroke-linecap="round"
+                                                  stroke-linejoin="round"
+                                                  d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                                                />
+                                              </svg>
+                                            </div>
+                                          </div></div
+                                      ></template>
+                                    </div>
+                                    <div>
+                                      <label class="text-xs"
+                                        >Add Answer Choice
+                                        <input
+                                          name="option"
+                                          type="text"
+                                          @keyup.enter="question.cells[row_one_index - 1][column_one_index - 1].options.push({ name: $el.value, with_followup: false }); $el.value = ''"
+                                      /></label>
+                                    </div>
                                   </div>
                                 </template>
                               </div>
                               <div
                                 @click="deleteCellField(question_index, row_one_index, column_one_index)"
-                                class="h-full text-red-900 cursor-pointer p-2 border-l border-gray-300 hover:bg-red-100"
+                                class="text-red-900 cursor-pointer p-2 border-l border-gray-300 hover:bg-red-100"
                               >
                                 <svg
                                   xmlns="http://www.w3.org/2000/svg"
@@ -372,11 +426,9 @@
                           >
                             <div class="p-2 flex flex-col justify-center">
                               <div
-                                class="font-bold text-gray-700 flex justify-between items-center mb-2"
+                                class="whitespace-nowrap border-b-2 border-gray-300"
                               >
-                                <div class="whitespace-nowrap">
-                                  Click type below to add field
-                                </div>
+                                Click below to add field
                               </div>
                               <span
                                 @click="question.cells[row_one_index - 1][column_one_index - 1] = { id: 1, field_type: 'text', options: [], min: 0, max: 255 }"
