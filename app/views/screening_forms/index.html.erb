@@ -97,6 +97,7 @@
                   class="text-lg"
                   @blur="focusElement = null; questions[question_index].name = $el.value"
                   @keyup.enter="focusElement = null; questions[question_index].name = $el.value"
+                  @keyup.esc="focusElement = null;"
                   :value="question.name"
                   type="text"
                 />
@@ -118,9 +119,9 @@
                 <p
                   class="m-0 cursor-pointer text-gray-400"
                   @click="focusElement = `question_description:${question_index}`"
-                  title="Click here to edit description"
+                  title="Click here to edit instructions"
                 >
-                  click to add description
+                  click to add instructions
                 </p>
               </template>
               <template
@@ -130,6 +131,7 @@
                   x-trap="focusElement === `question_description:${question_index}`"
                   @blur="focusElement = null; questions[question_index].description = $el.value"
                   @keyup.enter="focusElement = null; questions[question_index].description = $el.value"
+                  @keyup.esc="focusElement = null;"
                   :value="question.description"
                   type="text"
                 />
@@ -178,6 +180,7 @@
                               onfocus="this.style.width = (this.value.length) + 'ch';"
                               @blur="focusElement = null; column.title = $el.value"
                               @keyup.enter="focusElement = null; column.title = $el.value"
+                              @keyup.esc="focusElement = null;"
                               :value="column.title"
                               type="text"
                           /></template>
@@ -246,6 +249,7 @@
                               onfocus="this.style.width = (this.value.length) + 'ch';"
                               @blur="focusElement = null; question.rows[row_one_index - 1].title = $el.value"
                               @keyup.enter="focusElement = null; question.rows[row_one_index - 1].title = $el.value"
+                              @keyup.esc="focusElement = null;"
                               :value="question.rows[row_one_index - 1].title"
                               type="text"
                           /></template>
