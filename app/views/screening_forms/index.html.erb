@@ -178,8 +178,8 @@
                               class="p-2 grow whitespace-nowrap text-center"
                               oninput="this.style.width = (this.value.length) + 'ch';"
                               onfocus="this.style.width = (this.value.length) + 'ch';"
-                              @blur="focusElement = null; column.title = $el.value"
-                              @keyup.enter="focusElement = null; column.title = $el.value"
+                              @blur="focusElement = null; updateColumn(column, { name: $el.value })"
+                              @keyup.enter="focusElement = null; updateColumn(column, { name: $el.value })"
                               @keyup.esc="focusElement = null;"
                               :value="column.title"
                               type="text"
@@ -247,8 +247,8 @@
                               class="p-2 grow whitespace-nowrap text-center"
                               oninput="this.style.width = (this.value.length) + 'ch';"
                               onfocus="this.style.width = (this.value.length) + 'ch';"
-                              @blur="focusElement = null; question.rows[row_index].title = $el.value"
-                              @keyup.enter="focusElement = null; question.rows[row_index].title = $el.value"
+                              @blur="focusElement = null; updateRow(row, { name: $el.value })"
+                              @keyup.enter="focusElement = null; updateRow(row, { name: $el.value })"
                               @keyup.esc="focusElement = null;"
                               :value="question.rows[row_index].title"
                               type="text"
@@ -969,6 +969,50 @@
         });
         if (response.status == 200) {
           toastr.success("Question updated succesfully!", null, {
+            timeOut: 1000,
+          });
+          this.getData();
+        } else {
+          toastr.error("We've encountered an error", null, { timeOut: 1000 });
+        }
+      },
+      async updateColumn(column, params) {
+        const response = await fetch(`/sf_columns/${column.id}`, {
+          method: "PATCH",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "X-Requested-With": "XMLHttpRequest",
+            "X-CSRF-Token": document.querySelector("[name='csrf-token']")
+              .content,
+          },
+          credentials: "same-origin",
+          body: JSON.stringify(params),
+        });
+        if (response.status == 200) {
+          toastr.success("Column updated succesfully!", null, {
+            timeOut: 1000,
+          });
+          this.getData();
+        } else {
+          toastr.error("We've encountered an error", null, { timeOut: 1000 });
+        }
+      },
+      async updateRow(row, params) {
+        const response = await fetch(`/sf_rows/${row.id}`, {
+          method: "PATCH",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "X-Requested-With": "XMLHttpRequest",
+            "X-CSRF-Token": document.querySelector("[name='csrf-token']")
+              .content,
+          },
+          credentials: "same-origin",
+          body: JSON.stringify(params),
+        });
+        if (response.status == 200) {
+          toastr.success("Row updated succesfully!", null, {
             timeOut: 1000,
           });
           this.getData();
