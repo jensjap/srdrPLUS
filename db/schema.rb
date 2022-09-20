@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_09_13_041924) do
+ActiveRecord::Schema[7.0].define(version: 2022_09_20_013301) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -1967,13 +1967,74 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_13_041924) do
     t.index ["name"], name: "index_sections_on_name", unique: true
   end
 
+  create_table "sf_abstract_records", charset: "utf8mb3", force: :cascade do |t|
+    t.bigint "sf_cell_id"
+    t.bigint "abstract_screening_result_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["abstract_screening_result_id"], name: "index_sf_abstract_records_on_abstract_screening_result_id"
+    t.index ["sf_cell_id"], name: "index_sf_abstract_records_on_sf_cell_id"
+  end
+
+  create_table "sf_cells", charset: "utf8mb3", force: :cascade do |t|
+    t.bigint "sf_row_id"
+    t.bigint "sf_column_id"
+    t.string "cell_type", null: false
+    t.integer "min", default: 0, null: false
+    t.integer "max", default: 255, null: false
+    t.boolean "with_equality", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["sf_column_id"], name: "index_sf_cells_on_sf_column_id"
+    t.index ["sf_row_id", "sf_column_id"], name: "index_sf_cells_on_sf_row_id_and_sf_column_id", unique: true
+    t.index ["sf_row_id"], name: "index_sf_cells_on_sf_row_id"
+  end
+
+  create_table "sf_columns", charset: "utf8mb3", force: :cascade do |t|
+    t.string "name"
+    t.bigint "sf_question_id"
+    t.integer "position"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["sf_question_id"], name: "index_sf_columns_on_sf_question_id"
+  end
+
+  create_table "sf_fulltext_records", charset: "utf8mb3", force: :cascade do |t|
+    t.bigint "sf_cell_id"
+    t.bigint "abstract_screening_result_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["abstract_screening_result_id"], name: "index_sf_fulltext_records_on_abstract_screening_result_id"
+    t.index ["sf_cell_id"], name: "index_sf_fulltext_records_on_sf_cell_id"
+  end
+
+  create_table "sf_options", charset: "utf8mb3", force: :cascade do |t|
+    t.bigint "sf_cell_id"
+    t.string "name", null: false
+    t.boolean "with_followup", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name", "sf_cell_id"], name: "index_sf_options_on_name_and_sf_cell_id", unique: true
+    t.index ["sf_cell_id"], name: "index_sf_options_on_sf_cell_id"
+  end
+
   create_table "sf_questions", charset: "utf8mb3", force: :cascade do |t|
     t.bigint "screening_form_id"
     t.string "name", null: false
     t.text "description"
+    t.integer "position"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["screening_form_id"], name: "index_sf_questions_on_screening_form_id"
+  end
+
+  create_table "sf_rows", charset: "utf8mb3", force: :cascade do |t|
+    t.string "name"
+    t.bigint "sf_question_id"
+    t.integer "position"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["sf_question_id"], name: "index_sf_rows_on_sf_question_id"
   end
 
   create_table "statuses", charset: "utf8mb3", force: :cascade do |t|

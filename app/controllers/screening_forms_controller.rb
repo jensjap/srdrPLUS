@@ -4,29 +4,18 @@ class ScreeningFormsController < ApplicationController
 
     respond_to do |format|
       format.json do
+        return render json: { errors: ['invalid form type'], status: 400 } unless %w[fulltext
+                                                                                     abstract].include?(params[:form_type])
+
         @screening_form = ScreeningForm.find_or_create_by(project: @project, form_type: params[:form_type])
-        render json: [
-          { id: 1,
-            name: 'Question 1',
-            description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Nostrum eius ipsa quod. Culpa accusamus, commodi vero voluptates velit quam sunt laboriosam impedit, nisi est temporibus in sint natus quae aperiam!',
-            rows: [{ id: 1, title: '1' }, { id: 2, title: '2' }, { id: 3, title: '3' }],
-            columns: [{ id: 1, title: 'A' }, { id: 2, title: 'B' }, { id: 3, title: 'C' }],
-            cells: [[nil,
-                     nil,
-                     nil],
-                    [nil,
-                     nil,
-                     nil],
-                    [nil,
-                     nil,
-                     nil]] },
-          { id: 2,
-            name: 'Question 2',
-            description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Nostrum eius ipsa quod. Culpa accusamus, commodi vero voluptates velit quam sunt laboriosam impedit, nisi est temporibus in sint natus quae aperiam!',
-            rows: [],
-            columns: [],
-            cells: [] }
-        ]
+        @screening_form = ScreeningForm.includes(
+          sf_questions: [
+            {
+              sf_rows: { sf_cells: %i[sf_options sf_abstract_records sf_fulltext_records] },
+              sf_columns: { sf_cells: %i[sf_options sf_abstract_records sf_fulltext_records] }
+            }
+          ]
+        ).where(id: @screening_form.id).first
       end
       format.html
     end

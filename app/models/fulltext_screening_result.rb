@@ -28,6 +28,8 @@ class FulltextScreeningResult < ApplicationRecord
 
   has_one :note, as: :notable
 
+  has_many :sf_fulltext_records, dependent: :destroy, inverse_of: :fulltext_screening_result
+
   def self.users_previous_fulltext_screening_result_id(fulltext_screening_result_id, fulltext_screenings_projects_users_role)
     where(fulltext_screenings_projects_users_role:)
       .where('updated_at < ?', find(fulltext_screening_result_id).updated_at)

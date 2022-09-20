@@ -287,7 +287,7 @@
                             >
                               <div class="p-2 grow">
                                 <template
-                                  x-if="question.cells[row_one_index - 1][column_one_index - 1].field_type == 'text'"
+                                  x-if="question.cells[row_one_index - 1][column_one_index - 1].cell_type == 'text'"
                                 >
                                   <div>
                                     <div
@@ -309,7 +309,7 @@
                                   </div>
                                 </template>
                                 <template
-                                  x-if="question.cells[row_one_index - 1][column_one_index - 1].field_type == 'numeric'"
+                                  x-if="question.cells[row_one_index - 1][column_one_index - 1].cell_type == 'numeric'"
                                 >
                                   <div>
                                     <div
@@ -342,7 +342,7 @@
                                   </div>
                                 </template>
                                 <template
-                                  x-if="question.cells[row_one_index - 1][column_one_index - 1].field_type == 'checkbox'"
+                                  x-if="question.cells[row_one_index - 1][column_one_index - 1].cell_type == 'checkbox'"
                                 >
                                   <div
                                     class="h-full flex flex-col justify-between"
@@ -404,7 +404,7 @@
                                   </div>
                                 </template>
                                 <template
-                                  x-if="question.cells[row_one_index - 1][column_one_index - 1].field_type == 'dropdown'"
+                                  x-if="question.cells[row_one_index - 1][column_one_index - 1].cell_type == 'dropdown'"
                                 >
                                   <div
                                     class="h-full flex flex-col justify-between"
@@ -459,7 +459,7 @@
                                   </div>
                                 </template>
                                 <template
-                                  x-if="question.cells[row_one_index - 1][column_one_index - 1].field_type == 'radio'"
+                                  x-if="question.cells[row_one_index - 1][column_one_index - 1].cell_type == 'radio'"
                                 >
                                   <div
                                     class="h-full flex flex-col justify-between"
@@ -521,7 +521,7 @@
                                   </div>
                                 </template>
                                 <template
-                                  x-if="question.cells[row_one_index - 1][column_one_index - 1].field_type == 'select-one'"
+                                  x-if="question.cells[row_one_index - 1][column_one_index - 1].cell_type == 'select-one'"
                                 >
                                   <div
                                     class="h-full flex flex-col justify-between"
@@ -576,7 +576,7 @@
                                   </div>
                                 </template>
                                 <template
-                                  x-if="question.cells[row_one_index - 1][column_one_index - 1].field_type == 'select-multiple'"
+                                  x-if="question.cells[row_one_index - 1][column_one_index - 1].cell_type == 'select-multiple'"
                                 >
                                   <div
                                     class="h-full flex flex-col justify-between"
@@ -662,37 +662,37 @@
                                 Click below to add field
                               </div>
                               <span
-                                @click="question.cells[row_one_index - 1][column_one_index - 1] = { id: 1, field_type: 'text', options: [], min: 0, max: 255 }"
+                                @click="question.cells[row_one_index - 1][column_one_index - 1] = { id: 1, cell_type: 'text', options: [], min: 0, max: 255 }"
                                 class="cursor-pointer hover:text-gray-500 overflow-ellipsis whitespace-nowrap"
                                 >- Text</span
                               >
                               <span
-                                @click="question.cells[row_one_index - 1][column_one_index - 1] = { id: 1, field_type: 'numeric', options: [], min: 0, max: 255, allow_equality_signs: true }"
+                                @click="question.cells[row_one_index - 1][column_one_index - 1] = { id: 1, cell_type: 'numeric', options: [], min: 0, max: 255, allow_equality_signs: true }"
                                 class="cursor-pointer hover:text-gray-500 overflow-ellipsis whitespace-nowrap"
                                 >- Numeric</span
                               >
                               <span
-                                @click="question.cells[row_one_index - 1][column_one_index - 1] = { id: 1, field_type: 'checkbox', options: [] }"
+                                @click="question.cells[row_one_index - 1][column_one_index - 1] = { id: 1, cell_type: 'checkbox', options: [] }"
                                 class="cursor-pointer hover:text-gray-500 overflow-ellipsis whitespace-nowrap"
                                 >- Checkbox (Multiple)</span
                               >
                               <span
-                                @click="question.cells[row_one_index - 1][column_one_index - 1] = { id: 1, field_type: 'dropdown', options: [] }"
+                                @click="question.cells[row_one_index - 1][column_one_index - 1] = { id: 1, cell_type: 'dropdown', options: [] }"
                                 class="cursor-pointer hover:text-gray-500 overflow-ellipsis whitespace-nowrap"
                                 >- Dropdown</span
                               >
                               <span
-                                @click="question.cells[row_one_index - 1][column_one_index - 1] = { id: 1, field_type: 'radio', options: [] }"
+                                @click="question.cells[row_one_index - 1][column_one_index - 1] = { id: 1, cell_type: 'radio', options: [] }"
                                 class="cursor-pointer hover:text-gray-500 overflow-ellipsis whitespace-nowrap"
                                 >- Radio</span
                               >
                               <span
-                                @click="question.cells[row_one_index - 1][column_one_index - 1] = { id: 1, field_type: 'select-one', options: [] }"
+                                @click="question.cells[row_one_index - 1][column_one_index - 1] = { id: 1, cell_type: 'select-one', options: [] }"
                                 class="cursor-pointer hover:text-gray-500 overflow-ellipsis whitespace-nowrap"
                                 >- Select One</span
                               >
                               <span
-                                @click="question.cells[row_one_index - 1][column_one_index - 1] = { id: 1, field_type: 'select-multiple', options: [] }"
+                                @click="question.cells[row_one_index - 1][column_one_index - 1] = { id: 1, cell_type: 'select-multiple', options: [] }"
                                 class="cursor-pointer hover:text-gray-500 overflow-ellipsis whitespace-nowrap"
                                 >- Select Multiple</span
                               >

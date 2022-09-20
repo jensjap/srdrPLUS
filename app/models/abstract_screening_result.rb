@@ -32,6 +32,8 @@ class AbstractScreeningResult < ApplicationRecord
 
   has_one :note, as: :notable
 
+  has_many :sf_abstract_records, dependent: :destroy, inverse_of: :abstract_screening_result
+
   def search_data
     {
       id:,
