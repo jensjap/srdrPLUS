@@ -276,18 +276,18 @@
                       </th>
 
                       <template
-                        x-for="column_one_index in question.columns.length"
+                        x-for="(column, column_index) in question.columns"
                       >
                         <td>
                           <template
-                            x-if="question.cells[row_index] !== undefined &&  question.cells[row_index][column_one_index - 1] !== undefined && question.cells[row_index][column_one_index - 1] !== null"
+                            x-if="question.cells[row_index] !== undefined &&  question.cells[row_index][column_index] !== undefined && question.cells[row_index][column_index] !== null"
                           >
                             <div
                               class="flex justify-center items-stretch h-full"
                             >
                               <div class="p-2 grow">
                                 <template
-                                  x-if="question.cells[row_index][column_one_index - 1].cell_type == 'text'"
+                                  x-if="question.cells[row_index][column_index].cell_type == 'text'"
                                 >
                                   <div>
                                     <div
@@ -309,7 +309,7 @@
                                   </div>
                                 </template>
                                 <template
-                                  x-if="question.cells[row_index][column_one_index - 1].cell_type == 'numeric'"
+                                  x-if="question.cells[row_index][column_index].cell_type == 'numeric'"
                                 >
                                   <div>
                                     <div
@@ -342,7 +342,7 @@
                                   </div>
                                 </template>
                                 <template
-                                  x-if="question.cells[row_index][column_one_index - 1].cell_type == 'checkbox'"
+                                  x-if="question.cells[row_index][column_index].cell_type == 'checkbox'"
                                 >
                                   <div
                                     class="h-full flex flex-col justify-between"
@@ -356,7 +356,7 @@
                                       class="grow border-b-2 border-gray-300 whitespace-nowrap min-h-[96px]"
                                     >
                                       <template
-                                        x-for="(option, option_index) in question.cells[row_index][column_one_index - 1].options"
+                                        x-for="(option, option_index) in question.cells[row_index][column_index].options"
                                         ><div class="flex justify-between">
                                           <div
                                             class="mr-5"
@@ -371,7 +371,7 @@
                                                 type="checkbox"
                                             /></label>
                                             <div
-                                              @click="if (confirm(`Are you sure you want to delete '${option.name}'`)) { question.cells[row_index][column_one_index - 1].options.splice(option_index, 1) }"
+                                              @click="if (confirm(`Are you sure you want to delete '${option.name}'`)) { question.cells[row_index][column_index].options.splice(option_index, 1) }"
                                               class="text-red-900 cursor-pointer ml-5"
                                             >
                                               <svg
@@ -398,13 +398,13 @@
                                         <input
                                           name="option"
                                           type="text"
-                                          @keyup.enter="if ($el.value === '') { return }; question.cells[row_index][column_one_index - 1].options.push({ name: $el.value, with_followup: false }); $el.value = ''"
+                                          @keyup.enter="if ($el.value === '') { return }; question.cells[row_index][column_index].options.push({ name: $el.value, with_followup: false }); $el.value = ''"
                                       /></label>
                                     </div>
                                   </div>
                                 </template>
                                 <template
-                                  x-if="question.cells[row_index][column_one_index - 1].cell_type == 'dropdown'"
+                                  x-if="question.cells[row_index][column_index].cell_type == 'dropdown'"
                                 >
                                   <div
                                     class="h-full flex flex-col justify-between"
@@ -418,7 +418,7 @@
                                       class="grow border-b-2 border-gray-300 whitespace-nowrap min-h-[96px]"
                                     >
                                       <template
-                                        x-for="(option, option_index) in question.cells[row_index][column_one_index - 1].options"
+                                        x-for="(option, option_index) in question.cells[row_index][column_index].options"
                                         ><div class="flex justify-between">
                                           <div
                                             class="mr-5"
@@ -426,7 +426,7 @@
                                           ></div>
                                           <div class="flex">
                                             <div
-                                              @click="if (confirm(`Are you sure you want to delete '${option.name}'`)) { question.cells[row_index][column_one_index - 1].options.splice(option_index, 1) }"
+                                              @click="if (confirm(`Are you sure you want to delete '${option.name}'`)) { question.cells[row_index][column_index].options.splice(option_index, 1) }"
                                               class="text-red-900 cursor-pointer ml-5"
                                             >
                                               <svg
@@ -453,13 +453,13 @@
                                         <input
                                           name="option"
                                           type="text"
-                                          @keyup.enter="if ($el.value === '') { return }; question.cells[row_index][column_one_index - 1].options.push({ name: $el.value, with_followup: false }); $el.value = ''"
+                                          @keyup.enter="if ($el.value === '') { return }; question.cells[row_index][column_index].options.push({ name: $el.value, with_followup: false }); $el.value = ''"
                                       /></label>
                                     </div>
                                   </div>
                                 </template>
                                 <template
-                                  x-if="question.cells[row_index][column_one_index - 1].cell_type == 'radio'"
+                                  x-if="question.cells[row_index][column_index].cell_type == 'radio'"
                                 >
                                   <div
                                     class="h-full flex flex-col justify-between"
@@ -473,7 +473,7 @@
                                       class="grow border-b-2 border-gray-300 whitespace-nowrap min-h-[96px]"
                                     >
                                       <template
-                                        x-for="(option, option_index) in question.cells[row_index][column_one_index - 1].options"
+                                        x-for="(option, option_index) in question.cells[row_index][column_index].options"
                                         ><div class="flex justify-between">
                                           <div
                                             class="mr-5"
@@ -488,7 +488,7 @@
                                                 type="checkbox"
                                             /></label>
                                             <div
-                                              @click="if (confirm(`Are you sure you want to delete '${option.name}'`)) { question.cells[row_index][column_one_index - 1].options.splice(option_index, 1) }"
+                                              @click="if (confirm(`Are you sure you want to delete '${option.name}'`)) { question.cells[row_index][column_index].options.splice(option_index, 1) }"
                                               class="text-red-900 cursor-pointer ml-5"
                                             >
                                               <svg
@@ -515,13 +515,13 @@
                                         <input
                                           name="option"
                                           type="text"
-                                          @keyup.enter="if ($el.value === '') { return }; question.cells[row_index][column_one_index - 1].options.push({ name: $el.value, with_followup: false }); $el.value = ''"
+                                          @keyup.enter="if ($el.value === '') { return }; question.cells[row_index][column_index].options.push({ name: $el.value, with_followup: false }); $el.value = ''"
                                       /></label>
                                     </div>
                                   </div>
                                 </template>
                                 <template
-                                  x-if="question.cells[row_index][column_one_index - 1].cell_type == 'select-one'"
+                                  x-if="question.cells[row_index][column_index].cell_type == 'select-one'"
                                 >
                                   <div
                                     class="h-full flex flex-col justify-between"
@@ -535,7 +535,7 @@
                                       class="grow border-b-2 border-gray-300 whitespace-nowrap min-h-[96px]"
                                     >
                                       <template
-                                        x-for="(option, option_index) in question.cells[row_index][column_one_index - 1].options"
+                                        x-for="(option, option_index) in question.cells[row_index][column_index].options"
                                         ><div class="flex justify-between">
                                           <div
                                             class="mr-5"
@@ -543,7 +543,7 @@
                                           ></div>
                                           <div class="flex">
                                             <div
-                                              @click="if (confirm(`Are you sure you want to delete '${option.name}'`)) { question.cells[row_index][column_one_index - 1].options.splice(option_index, 1) }"
+                                              @click="if (confirm(`Are you sure you want to delete '${option.name}'`)) { question.cells[row_index][column_index].options.splice(option_index, 1) }"
                                               class="text-red-900 cursor-pointer ml-5"
                                             >
                                               <svg
@@ -570,13 +570,13 @@
                                         <input
                                           name="option"
                                           type="text"
-                                          @keyup.enter="if ($el.value === '') { return }; question.cells[row_index][column_one_index - 1].options.push({ name: $el.value, with_followup: false }); $el.value = ''"
+                                          @keyup.enter="if ($el.value === '') { return }; question.cells[row_index][column_index].options.push({ name: $el.value, with_followup: false }); $el.value = ''"
                                       /></label>
                                     </div>
                                   </div>
                                 </template>
                                 <template
-                                  x-if="question.cells[row_index][column_one_index - 1].cell_type == 'select-multiple'"
+                                  x-if="question.cells[row_index][column_index].cell_type == 'select-multiple'"
                                 >
                                   <div
                                     class="h-full flex flex-col justify-between"
@@ -590,7 +590,7 @@
                                       class="grow border-b-2 border-gray-300 whitespace-nowrap min-h-[96px]"
                                     >
                                       <template
-                                        x-for="(option, option_index) in question.cells[row_index][column_one_index - 1].options"
+                                        x-for="(option, option_index) in question.cells[row_index][column_index].options"
                                         ><div class="flex justify-between">
                                           <div
                                             class="mr-5"
@@ -598,7 +598,7 @@
                                           ></div>
                                           <div class="flex">
                                             <div
-                                              @click="if (confirm(`Are you sure you want to delete '${option.name}'`)) { question.cells[row_index][column_one_index - 1].options.splice(option_index, 1) }"
+                                              @click="if (confirm(`Are you sure you want to delete '${option.name}'`)) { question.cells[row_index][column_index].options.splice(option_index, 1) }"
                                               class="text-red-900 cursor-pointer ml-5"
                                             >
                                               <svg
@@ -625,14 +625,14 @@
                                         <input
                                           name="option"
                                           type="text"
-                                          @keyup.enter="if ($el.value === '') { return }; question.cells[row_index][column_one_index - 1].options.push({ name: $el.value, with_followup: false }); $el.value = ''"
+                                          @keyup.enter="if ($el.value === '') { return }; question.cells[row_index][column_index].options.push({ name: $el.value, with_followup: false }); $el.value = ''"
                                       /></label>
                                     </div>
                                   </div>
                                 </template>
                               </div>
                               <div
-                                @click="deleteCellField(question_index, row_index, column_one_index)"
+                                @click="deleteCellField(question_index, row_index, column_index)"
                                 class="text-red-900 cursor-pointer p-2 border-l border-gray-300 hover:bg-red-100"
                               >
                                 <svg
@@ -653,7 +653,7 @@
                             </div>
                           </template>
                           <template
-                            x-if="question.cells[row_index] !== undefined && question.cells[row_index][column_one_index - 1] === null"
+                            x-if="question.cells[row_index] !== undefined && question.cells[row_index][column_index] === null"
                           >
                             <div class="p-2 flex flex-col justify-center">
                               <div
@@ -662,37 +662,37 @@
                                 Click below to add field
                               </div>
                               <span
-                                @click="question.cells[row_index][column_one_index - 1] = { id: 1, cell_type: 'text', options: [], min: 0, max: 255 }"
+                                @click="createCell(row, column, 'text')"
                                 class="cursor-pointer hover:text-gray-500 overflow-ellipsis whitespace-nowrap"
                                 >- Text</span
                               >
                               <span
-                                @click="question.cells[row_index][column_one_index - 1] = { id: 1, cell_type: 'numeric', options: [], min: 0, max: 255, allow_equality_signs: true }"
+                                @click="createCell(row, column, 'numeric')"
                                 class="cursor-pointer hover:text-gray-500 overflow-ellipsis whitespace-nowrap"
                                 >- Numeric</span
                               >
                               <span
-                                @click="question.cells[row_index][column_one_index - 1] = { id: 1, cell_type: 'checkbox', options: [] }"
+                                @click="createCell(row, column, 'checkbox')"
                                 class="cursor-pointer hover:text-gray-500 overflow-ellipsis whitespace-nowrap"
                                 >- Checkbox (Multiple)</span
                               >
                               <span
-                                @click="question.cells[row_index][column_one_index - 1] = { id: 1, cell_type: 'dropdown', options: [] }"
+                                @click="createCell(row, column, 'dropdown')"
                                 class="cursor-pointer hover:text-gray-500 overflow-ellipsis whitespace-nowrap"
                                 >- Dropdown</span
                               >
                               <span
-                                @click="question.cells[row_index][column_one_index - 1] = { id: 1, cell_type: 'radio', options: [] }"
+                                @click="createCell(row, column, 'radio')"
                                 class="cursor-pointer hover:text-gray-500 overflow-ellipsis whitespace-nowrap"
                                 >- Radio</span
                               >
                               <span
-                                @click="question.cells[row_index][column_one_index - 1] = { id: 1, cell_type: 'select-one', options: [] }"
+                                @click="createCell(row, column, 'select-one')"
                                 class="cursor-pointer hover:text-gray-500 overflow-ellipsis whitespace-nowrap"
                                 >- Select One</span
                               >
                               <span
-                                @click="question.cells[row_index][column_one_index - 1] = { id: 1, cell_type: 'select-multiple', options: [] }"
+                                @click="createCell(row, column, 'select-multiple')"
                                 class="cursor-pointer hover:text-gray-500 overflow-ellipsis whitespace-nowrap"
                                 >- Select Multiple</span
                               >
@@ -762,6 +762,7 @@
         const data = await response.json();
         this.questions = data.sf_questions;
         this.screening_form_id = data.screening_form_id;
+        console.log(this.questions);
       },
       async addQuestion() {
         const response = await fetch(
@@ -822,6 +823,32 @@
               .content,
           },
           credentials: "same-origin",
+        });
+        if (response.status == 200) {
+          toastr.success("Row added succesfully!", null, {
+            timeOut: 1000,
+          });
+          this.getData();
+        } else {
+          toastr.error("We've encountered an error", null, { timeOut: 1000 });
+        }
+      },
+      async createCell(row, column, cell_type) {
+        const response = await fetch(`/sf_cells`, {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "X-Requested-With": "XMLHttpRequest",
+            "X-CSRF-Token": document.querySelector("[name='csrf-token']")
+              .content,
+          },
+          credentials: "same-origin",
+          body: JSON.stringify({
+            sf_row_id: row.id,
+            sf_column_id: column.id,
+            cell_type,
+          }),
         });
         if (response.status == 200) {
           toastr.success("Row added succesfully!", null, {
@@ -946,11 +973,9 @@
         }
       },
 
-      deleteCellField(question_index, row_index, column_one_index) {
+      deleteCellField(question_index, row_index, column_index) {
         if (confirm(`Are you sure you want to delete this field?`)) {
-          this.questions[question_index].cells[row_index][
-            column_one_index - 1
-          ] = null;
+          this.questions[question_index].cells[row_index][column_index] = null;
           toastr.success("Removed successfully!");
         }
       },

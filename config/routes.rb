@@ -319,5 +319,10 @@ Rails.application.routes.draw do
     resources :sf_rows, shallow: true
     resources :sf_columns, shallow: true
   end
+  resources :sf_cells do
+    resources :sf_options, shallow: true
+    resources :sf_abstract_records, shallow: true
+    resources :sf_fulltext_records, shallow: true
+  end
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end
