@@ -1005,7 +1005,7 @@
             credentials: "same-origin",
           });
           if (response.status == 200) {
-            toastr.success("Column removed succesfully!", null, {
+            toastr.success("Row removed succesfully!", null, {
               timeOut: 1000,
             });
             this.getData();
@@ -1079,7 +1079,7 @@
           body: JSON.stringify(params),
         });
         if (response.status == 200) {
-          toastr.success("Column updated succesfully!", null, {
+          toastr.success("Option updated succesfully!", null, {
             timeOut: 1000,
           });
           this.getData();
@@ -1123,7 +1123,7 @@
           body: JSON.stringify(params),
         });
         if (response.status == 200) {
-          toastr.success("Column updated succesfully!", null, {
+          toastr.success("Field updated succesfully!", null, {
             timeOut: 1000,
           });
           this.getData();
