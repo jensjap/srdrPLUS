@@ -398,7 +398,7 @@
                                         <input
                                           name="option"
                                           type="text"
-                                          @keyup.enter="if ($el.value === '') { return }; question.cells[row_index][column_index].options.push({ name: $el.value, with_followup: false }); $el.value = ''"
+                                          @keyup.enter="if ($el.value === '') { return }; createOption(question.cells[row_index][column_index], $el.value); $el.value = ''"
                                       /></label>
                                     </div>
                                   </div>
@@ -449,11 +449,11 @@
                                     </div>
                                     <div>
                                       <label class="text-xs"
-                                        >Add Answer Choice
+                                        >Add answer choice option
                                         <input
                                           name="option"
                                           type="text"
-                                          @keyup.enter="if ($el.value === '') { return }; question.cells[row_index][column_index].options.push({ name: $el.value, with_followup: false }); $el.value = ''"
+                                          @keyup.enter="if ($el.value === '') { return }; createOption(question.cells[row_index][column_index], $el.value); $el.value = ''"
                                       /></label>
                                     </div>
                                   </div>
@@ -511,11 +511,11 @@
                                     </div>
                                     <div>
                                       <label class="text-xs"
-                                        >Add Answer Choice
+                                        >Add answer choice option
                                         <input
                                           name="option"
                                           type="text"
-                                          @keyup.enter="if ($el.value === '') { return }; question.cells[row_index][column_index].options.push({ name: $el.value, with_followup: false }); $el.value = ''"
+                                          @keyup.enter="if ($el.value === '') { return }; createOption(question.cells[row_index][column_index], $el.value); $el.value = ''"
                                       /></label>
                                     </div>
                                   </div>
@@ -566,11 +566,11 @@
                                     </div>
                                     <div>
                                       <label class="text-xs"
-                                        >Add Answer Choice
+                                        >Add answer choice option
                                         <input
                                           name="option"
                                           type="text"
-                                          @keyup.enter="if ($el.value === '') { return }; question.cells[row_index][column_index].options.push({ name: $el.value, with_followup: false }); $el.value = ''"
+                                          @keyup.enter="if ($el.value === '') { return }; createOption(question.cells[row_index][column_index], $el.value); $el.value = ''"
                                       /></label>
                                     </div>
                                   </div>
@@ -621,11 +621,11 @@
                                     </div>
                                     <div>
                                       <label class="text-xs"
-                                        >Add Answer Choice
+                                        >Add answer choice option
                                         <input
                                           name="option"
                                           type="text"
-                                          @keyup.enter="if ($el.value === '') { return }; question.cells[row_index][column_index].options.push({ name: $el.value, with_followup: false }); $el.value = ''"
+                                          @keyup.enter="if ($el.value === '') { return }; createOption(question.cells[row_index][column_index], $el.value); $el.value = ''"
                                       /></label>
                                     </div>
                                   </div>
@@ -848,6 +848,30 @@
             sf_row_id: row.id,
             sf_column_id: column.id,
             cell_type,
+          }),
+        });
+        if (response.status == 200) {
+          toastr.success("Row added succesfully!", null, {
+            timeOut: 1000,
+          });
+          this.getData();
+        } else {
+          toastr.error("We've encountered an error", null, { timeOut: 1000 });
+        }
+      },
+      async createOption(cell, value) {
+        const response = await fetch(`/sf_cells/${cell.id}/sf_options`, {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "X-Requested-With": "XMLHttpRequest",
+            "X-CSRF-Token": document.querySelector("[name='csrf-token']")
+              .content,
+          },
+          credentials: "same-origin",
+          body: JSON.stringify({
+            name: value,
           }),
         });
         if (response.status == 200) {
