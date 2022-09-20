@@ -371,7 +371,7 @@
                                                 type="checkbox"
                                             /></label>
                                             <div
-                                              @click="if (confirm(`Are you sure you want to delete '${option.name}'`)) { question.cells[row_index][column_index].options.splice(option_index, 1) }"
+                                              @click="deleteOption(option)"
                                               class="text-red-900 cursor-pointer ml-5"
                                             >
                                               <svg
@@ -426,7 +426,7 @@
                                           ></div>
                                           <div class="flex">
                                             <div
-                                              @click="if (confirm(`Are you sure you want to delete '${option.name}'`)) { question.cells[row_index][column_index].options.splice(option_index, 1) }"
+                                              @click="deleteOption(option)"
                                               class="text-red-900 cursor-pointer ml-5"
                                             >
                                               <svg
@@ -488,7 +488,7 @@
                                                 type="checkbox"
                                             /></label>
                                             <div
-                                              @click="if (confirm(`Are you sure you want to delete '${option.name}'`)) { question.cells[row_index][column_index].options.splice(option_index, 1) }"
+                                              @click="deleteOption(option)"
                                               class="text-red-900 cursor-pointer ml-5"
                                             >
                                               <svg
@@ -543,7 +543,7 @@
                                           ></div>
                                           <div class="flex">
                                             <div
-                                              @click="if (confirm(`Are you sure you want to delete '${option.name}'`)) { question.cells[row_index][column_index].options.splice(option_index, 1) }"
+                                              @click="deleteOption(option)"
                                               class="text-red-900 cursor-pointer ml-5"
                                             >
                                               <svg
@@ -598,7 +598,7 @@
                                           ></div>
                                           <div class="flex">
                                             <div
-                                              @click="if (confirm(`Are you sure you want to delete '${option.name}'`)) { question.cells[row_index][column_index].options.splice(option_index, 1) }"
+                                              @click="deleteOption(option)"
                                               class="text-red-900 cursor-pointer ml-5"
                                             >
                                               <svg
@@ -762,7 +762,6 @@
         const data = await response.json();
         this.questions = data.sf_questions;
         this.screening_form_id = data.screening_form_id;
-        console.log(this.questions);
       },
       async addQuestion() {
         const response = await fetch(
@@ -875,12 +874,15 @@
           }),
         });
         if (response.status == 200) {
-          toastr.success("Row added succesfully!", null, {
+          toastr.success("Option added succesfully!", null, {
             timeOut: 1000,
           });
           this.getData();
         } else {
-          toastr.error("We've encountered an error", null, { timeOut: 1000 });
+          const error = await response.text();
+          toastr.error(`We've encountered an error: ${error}`, null, {
+            timeOut: 1000,
+          });
         }
       },
       drop() {
@@ -1012,6 +1014,33 @@
           });
           if (response.status == 200) {
             toastr.success("Field removed successfully!", null, {
+              timeOut: 1000,
+            });
+            this.getData();
+          } else {
+            toastr.error("We've encountered an error", null, { timeOut: 1000 });
+          }
+        }
+      },
+      async deleteOption(option) {
+        if (
+          confirm(`Are you sure you want to delete option: "${option.name}"?`)
+        ) {
+          const response = await fetch(`/sf_options/${option.id}`, {
+            method: "DELETE",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+            headers: {
+              "X-Requested-With": "XMLHttpRequest",
+              "X-CSRF-Token": document.querySelector("[name='csrf-token']")
+                .content,
+            },
+            credentials: "same-origin",
+          });
+          if (response.status == 200) {
+            toastr.success("Option removed succesfully!", null, {
               timeOut: 1000,
             });
             this.getData();

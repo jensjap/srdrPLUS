@@ -3,8 +3,12 @@ class SfOptionsController < ApplicationController
     @sf_cell = SfCell.find(params[:sf_cell_id])
     respond_to do |format|
       format.json do
-        @sf_cell.sf_options.create(name: params[:name])
-        render json: @sf_cell
+        if SfOption.find_by(name: params[:name], sf_cell: @sf_cell).present?
+          render json: 'duplicate option', status: 400
+        else
+          @sf_cell.sf_options.create(name: params[:name])
+          render json: @sf_cell
+        end
       end
     end
   end

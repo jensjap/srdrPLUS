@@ -36,6 +36,7 @@ json.sf_questions @screening_form.sf_questions.order(:position) do |sf_question|
         json.max cell.max
         json.with_equality cell.with_equality
         json.options cell.sf_options do |sf_option|
+          json.id sf_option.id
           json.name sf_option.name
           json.with_followup sf_option.with_followup
         end
