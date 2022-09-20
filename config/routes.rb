@@ -314,5 +314,10 @@ Rails.application.routes.draw do
   resources :screening_forms, only: [] do
     resources :sf_questions, shallow: true
   end
+
+  resources :sf_questions, only: [] do
+    resources :sf_rows, shallow: true
+    resources :sf_columns, shallow: true
+  end
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end
