@@ -632,7 +632,7 @@
                                 </template>
                               </div>
                               <div
-                                @click="deleteCellField(question_index, row_index, column_index)"
+                                @click="deleteCellField(question.cells[row_index][column_index])"
                                 class="text-red-900 cursor-pointer p-2 border-l border-gray-300 hover:bg-red-100"
                               >
                                 <svg
@@ -973,10 +973,27 @@
         }
       },
 
-      deleteCellField(question_index, row_index, column_index) {
+      async deleteCellField(cell) {
         if (confirm(`Are you sure you want to delete this field?`)) {
-          this.questions[question_index].cells[row_index][column_index] = null;
-          toastr.success("Removed successfully!");
+          const response = await fetch(`/sf_cells/${cell.id}`, {
+            method: "DELETE",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              "X-Requested-With": "XMLHttpRequest",
+              "X-CSRF-Token": document.querySelector("[name='csrf-token']")
+                .content,
+            },
+            credentials: "same-origin",
+          });
+          if (response.status == 200) {
+            toastr.success("Field removed successfully!", null, {
+              timeOut: 1000,
+            });
+            this.getData();
+          } else {
+            toastr.error("We've encountered an error", null, { timeOut: 1000 });
+          }
         }
       },
       async updateQuestion(question, params) {
