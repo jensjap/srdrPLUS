@@ -1,4 +1,5 @@
-json.array!(@screening_form.sf_questions) do |sf_question|
+json.screening_form_id @screening_form.id
+json.sf_questions @screening_form.sf_questions do |sf_question|
   cell_hash = {}
   sf_question.sf_rows.each do |sf_row|
     sf_row.sf_cells.each do |sf_cell|

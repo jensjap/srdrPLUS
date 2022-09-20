@@ -2020,7 +2020,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_20_013301) do
 
   create_table "sf_questions", charset: "utf8mb3", force: :cascade do |t|
     t.bigint "screening_form_id"
-    t.string "name", null: false
+    t.string "name"
     t.text "description"
     t.integer "position"
     t.datetime "created_at", null: false

@@ -95,8 +95,8 @@
                 <input
                   x-trap="focusElement === `question_name:${question_index}`"
                   class="text-lg"
-                  @blur="focusElement = null; questions[question_index].name = $el.value"
-                  @keyup.enter="focusElement = null; questions[question_index].name = $el.value"
+                  @blur="focusElement = null; updateQuestion(question, { name: $el.value })"
+                  @keyup.enter="focusElement = null; updateQuestion(question, { name: $el.value })"
                   @keyup.esc="focusElement = null;"
                   :value="question.name"
                   type="text"
@@ -129,8 +129,8 @@
               >
                 <input
                   x-trap="focusElement === `question_description:${question_index}`"
-                  @blur="focusElement = null; questions[question_index].description = $el.value"
-                  @keyup.enter="focusElement = null; questions[question_index].description = $el.value"
+                  @blur="focusElement = null; updateQuestion(question, { description: $el.value })"
+                  @keyup.enter="focusElement = null; updateQuestion(question, { description: $el.value })"
                   @keyup.esc="focusElement = null;"
                   :value="question.description"
                   type="text"
@@ -716,7 +716,7 @@
           </div>
           <div
             class="w-8 px-2 pt-4 border-l border-gray-300 cursor-pointer text-red-900 p-2 hover:bg-red-100"
-            @click="deleteQuestion(question_index)"
+            @click="deleteQuestion(question)"
             draggable="true"
             @dragstart.prevent.stop
           >
@@ -748,7 +748,10 @@
       focusElement: null,
       dragging: null,
       dropping: null,
-      async init() {
+      init() {
+        this.getData();
+      },
+      async getData() {
         const response = await fetch(window.location.href, {
           method: "GET",
           headers: {
@@ -757,18 +760,32 @@
           },
         });
         const data = await response.json();
-        this.questions = data;
+        this.questions = data.sf_questions;
+        this.screening_form_id = data.screening_form_id;
       },
-      addQuestion() {
-        this.questions.push({
-          id: Math.random() * 10000,
-          name: "",
-          description: "",
-          rows: [],
-          columns: [],
-          cells: [],
-        });
-        toastr.success("Question added below succesfully!");
+      async addQuestion() {
+        const response = await fetch(
+          `/screening_forms/${this.screening_form_id}/sf_questions`,
+          {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              "X-Requested-With": "XMLHttpRequest",
+              "X-CSRF-Token": document.querySelector("[name='csrf-token']")
+                .content,
+            },
+            credentials: "same-origin",
+          }
+        );
+        if (response.status == 200) {
+          toastr.success("Question added below succesfully!", null, {
+            timeOut: 1000,
+          });
+          this.getData();
+        } else {
+          toastr.error("We've encountered an error", null, { timeOut: 1000 });
+        }
       },
       addColumn(question_index) {
         this.questions[question_index].columns.push({
@@ -816,14 +833,35 @@
       dragover(event) {
         event.dataTransfer.dropEffect = "move";
       },
-      deleteQuestion(question_index) {
+      async deleteQuestion(question) {
         if (
           confirm(
-            `Are you sure you want to delete question: "${this.questions[question_index].name}"`
+            `Are you sure you want to delete question: "${
+              question.name ? question.name : "unnamed"
+            }"`
           )
         ) {
-          this.questions.splice(question_index, 1);
-          toastr.success("Removed successfully!");
+          const response = await fetch(`/sf_questions/${question.id}`, {
+            method: "DELETE",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+            headers: {
+              "X-Requested-With": "XMLHttpRequest",
+              "X-CSRF-Token": document.querySelector("[name='csrf-token']")
+                .content,
+            },
+            credentials: "same-origin",
+          });
+          if (response.status == 200) {
+            toastr.success("Question removed succesfully!", null, {
+              timeOut: 1000,
+            });
+            this.getData();
+          } else {
+            toastr.error("We've encountered an error", null, { timeOut: 1000 });
+          }
         }
       },
       deleteColumn(question_index, column_index) {
@@ -849,6 +887,29 @@
             column_one_index - 1
           ] = null;
           toastr.success("Removed successfully!");
+        }
+      },
+      async updateQuestion(question, params) {
+        console.log(params);
+        const response = await fetch(`/sf_questions/${question.id}`, {
+          method: "PATCH",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "X-Requested-With": "XMLHttpRequest",
+            "X-CSRF-Token": document.querySelector("[name='csrf-token']")
+              .content,
+          },
+          credentials: "same-origin",
+          body: JSON.stringify(params),
+        });
+        if (response.status == 200) {
+          toastr.success("Question updated succesfully!", null, {
+            timeOut: 1000,
+          });
+          this.getData();
+        } else {
+          toastr.error("We've encountered an error", null, { timeOut: 1000 });
         }
       },
     }));
