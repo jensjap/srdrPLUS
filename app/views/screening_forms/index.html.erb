@@ -297,14 +297,19 @@
                                     </div>
                                     <label class="whitespace-nowrap"
                                       >Min character length
-                                      <input name="min" type="number" value="1"
+                                      <input
+                                        name="min"
+                                        type="number"
+                                        x-model="question.cells[row_index][column_index].min"
+                                        x-on:change.debounce.500ms="updateCell(question.cells[row_index][column_index], { min: $el.value })"
                                     /></label>
                                     <label class="whitespace-nowrap"
                                       >Max character length
                                       <input
                                         name="max"
                                         type="number"
-                                        value="255"
+                                        x-model="question.cells[row_index][column_index].max"
+                                        x-on:change.debounce.500ms="updateCell(question.cells[row_index][column_index], { max: $el.value })"
                                     /></label>
                                   </div>
                                 </template>
@@ -326,18 +331,25 @@
                                           name="equality"
                                           type="checkbox"
                                           class="!m-0 cursor-pointer"
+                                          x-model="question.cells[row_index][column_index].with_equality"
+                                          @click="updateCell(question.cells[row_index][column_index], { with_equality: $el.checked })"
                                       /></label>
                                     </div>
                                     <label
                                       >Min value allowed
-                                      <input name="min" type="number" value="1"
+                                      <input
+                                        name="min"
+                                        type="number"
+                                        x-model="question.cells[row_index][column_index].min"
+                                        x-on:change.debounce.500ms="updateCell(question.cells[row_index][column_index], { min: $el.value })"
                                     /></label>
                                     <label
                                       >Max value allowed
                                       <input
                                         name="max"
                                         type="number"
-                                        value="255"
+                                        x-model="question.cells[row_index][column_index].max"
+                                        x-on:change.debounce.500ms="updateCell(question.cells[row_index][column_index], { max: $el.value })"
                                     /></label>
                                   </div>
                                 </template>
@@ -369,6 +381,8 @@
                                               <input
                                                 class="!m-0 cursor-pointer"
                                                 type="checkbox"
+                                                x-model="option.with_followup"
+                                                x-on:change="updateOption(option, { with_followup: $el.checked })"
                                             /></label>
                                             <div
                                               @click="deleteOption(option)"
@@ -486,6 +500,8 @@
                                               <input
                                                 class="!m-0 cursor-pointer"
                                                 type="checkbox"
+                                                x-model="option.with_followup"
+                                                x-on:change="updateOption(option, { with_followup: $el.checked })"
                                             /></label>
                                             <div
                                               @click="deleteOption(option)"
@@ -1049,6 +1065,28 @@
           }
         }
       },
+      async updateOption(option, params) {
+        const response = await fetch(`/sf_options/${option.id}`, {
+          method: "PATCH",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "X-Requested-With": "XMLHttpRequest",
+            "X-CSRF-Token": document.querySelector("[name='csrf-token']")
+              .content,
+          },
+          credentials: "same-origin",
+          body: JSON.stringify(params),
+        });
+        if (response.status == 200) {
+          toastr.success("Column updated succesfully!", null, {
+            timeOut: 1000,
+          });
+          this.getData();
+        } else {
+          toastr.error("We've encountered an error", null, { timeOut: 1000 });
+        }
+      },
       async updateQuestion(question, params) {
         const response = await fetch(`/sf_questions/${question.id}`, {
           method: "PATCH",
@@ -1064,6 +1102,28 @@
         });
         if (response.status == 200) {
           toastr.success("Question updated succesfully!", null, {
+            timeOut: 1000,
+          });
+          this.getData();
+        } else {
+          toastr.error("We've encountered an error", null, { timeOut: 1000 });
+        }
+      },
+      async updateCell(cell, params) {
+        const response = await fetch(`/sf_cells/${cell.id}`, {
+          method: "PATCH",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "X-Requested-With": "XMLHttpRequest",
+            "X-CSRF-Token": document.querySelector("[name='csrf-token']")
+              .content,
+          },
+          credentials: "same-origin",
+          body: JSON.stringify(params),
+        });
+        if (response.status == 200) {
+          toastr.success("Column updated succesfully!", null, {
             timeOut: 1000,
           });
           this.getData();
