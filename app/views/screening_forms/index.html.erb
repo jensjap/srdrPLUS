@@ -6,7 +6,7 @@
   }
 </style>
 <div
-  x-data="screenStore"
+  x-data="screeningFormData"
   class="p-8"
   @drop.prevent="drop()"
   @dragover.prevent="dragover($event)"
@@ -762,7 +762,7 @@
 
 <script>
   document.addEventListener("alpine:init", () => {
-    Alpine.data("screenStore", () => ({
+    Alpine.data("screeningFormData", () => ({
       questions: [],
       focusElement: null,
       dragging: null,
