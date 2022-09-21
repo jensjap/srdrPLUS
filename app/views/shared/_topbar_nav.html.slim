@@ -123,7 +123,7 @@
           li
             a href="#{project_screening_forms_path(project, form_type: 'abstract')}" Abstract Form
           li
-            a href="#{project_screening_forms_path(project, form_type: 'full-text')}" Full-Text Form
+            a href="#{project_screening_forms_path(project, form_type: 'fulltext')}" Full-Text Form
       li.submenu style="#{'background: #78608b' if controller.class == ExtractionsController && controller.action_name == 'index'}"
         a class="border-y border-white" href="#{project_extractions_path(project)}" Extractions
       li.submenu

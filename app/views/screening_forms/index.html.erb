@@ -12,7 +12,10 @@
   @dragover.prevent="dragover($event)"
 >
   <div class="py-2 flex">
-    <h1 class="text-2xl">Abstract Screening Form</h1>
+    <h1
+      class="text-2xl"
+      x-text="`Screening Form (${screening_form.form_type})`"
+    ></h1>
     <button
       @click="addQuestion()"
       class="bg-srdrpurple text-white p-2 mx-4 cursor-pointer"
@@ -764,6 +767,7 @@
       focusElement: null,
       dragging: null,
       dropping: null,
+      screening_form: {},
       init() {
         this.getData();
       },
@@ -777,11 +781,11 @@
         });
         const data = await response.json();
         this.questions = data.sf_questions;
-        this.screening_form_id = data.screening_form_id;
+        this.screening_form = data.screening_form;
       },
       async addQuestion() {
         const response = await fetch(
-          `/screening_forms/${this.screening_form_id}/sf_questions`,
+          `/screening_forms/${this.screening_form.id}/sf_questions`,
           {
             method: "POST",
             headers: {
