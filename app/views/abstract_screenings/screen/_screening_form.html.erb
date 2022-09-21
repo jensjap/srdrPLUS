@@ -1,0 +1,251 @@
+<style>
+  table,
+  th,
+  td {
+    border: 1px solid rgb(237, 236, 236);
+    min-width: 128px;
+  }
+</style>
+<div x-data="screeningFormData" class="">
+  <div class="py-2 flex">
+    <h1
+      class="text-xl"
+      x-text="`Screening Form (${screening_form.form_type})`"
+    ></h1>
+  </div>
+  <div class="py-2">
+    <template
+      x-for="(question, question_index) in questions"
+      :key="question.id"
+    >
+      <div class="relative shadow-md rounded-md mb-8 border">
+        <div class="flex">
+          <div class="grow overflow-auto">
+            <div class="py-2 px-4">
+              <h2
+                class="text-lg cursor-pointer"
+                x-text="`${question_index + 1}. ${question.name}`"
+              ></h2>
+              <p class="m-0 cursor-pointer" x-text="question.description"></p>
+            </div>
+            <div class="py-2 px-4 overflow-auto block">
+              <table
+                class="h-0 w-0 table-auto border-separate border-spacing-1"
+              >
+                <thead>
+                  <tr>
+                    <td class="bg-white"></td>
+                    <template
+                      x-for="(column, column_index) in question.columns"
+                    >
+                      <th>
+                        <div class="flex justify-center items-center">
+                          <div
+                            class="p-2 grow whitespace-nowrap cursor-pointer"
+                            x-text="column.title"
+                          ></div>
+                        </div>
+                      </th>
+                    </template>
+                  </tr>
+                </thead>
+                <tbody>
+                  <template x-for="(row, row_index) in (question.rows)">
+                    <tr>
+                      <th>
+                        <div class="h-full flex justify-center items-start">
+                          <div
+                            class="p-2 grow whitespace-nowrap cursor-pointer"
+                            x-text="question.rows[row_index] !== undefined && question.rows[row_index].title"
+                          ></div>
+                        </div>
+                      </th>
+
+                      <template
+                        x-for="(column, column_index) in question.columns"
+                      >
+                        <td>
+                          <template
+                            x-if="question.cells[row_index] !== undefined &&  question.cells[row_index][column_index] !== undefined && question.cells[row_index][column_index] !== null"
+                          >
+                            <div
+                              class="flex justify-center items-stretch h-full"
+                            >
+                              <div class="p-2 grow">
+                                <template
+                                  x-if="question.cells[row_index][column_index].cell_type == 'text'"
+                                >
+                                  <div>
+                                    <label class="whitespace-nowrap">
+                                      <input
+                                        type="text"
+                                        x-on:change.debounce.500ms=""
+                                    /></label>
+                                  </div>
+                                </template>
+                                <template
+                                  x-if="question.cells[row_index][column_index].cell_type == 'numeric'"
+                                >
+                                  <div>
+                                    <label>
+                                      <input
+                                        type="number"
+                                        x-on:change.debounce.500ms=""
+                                    /></label>
+                                  </div>
+                                </template>
+                                <template
+                                  x-if="question.cells[row_index][column_index].cell_type == 'checkbox'"
+                                >
+                                  <div
+                                    class="h-full block whitespace-nowrap min-h-[96px]"
+                                  >
+                                    <template
+                                      x-for="(option, option_index) in question.cells[row_index][column_index].options"
+                                    >
+                                      <label
+                                        class="flex justify-between cursor-pointer"
+                                        :for="`optionId-${option.id}`"
+                                      >
+                                        <span x-text="option.name"></span>
+                                        <input
+                                          class="!m-0"
+                                          type="checkbox"
+                                          :id="`optionId-${option.id}`"
+                                          checked
+                                        />
+                                      </label>
+                                    </template>
+                                  </div>
+                                </template>
+                                <template
+                                  x-if="question.cells[row_index][column_index].cell_type == 'dropdown'"
+                                >
+                                  <div
+                                    class="h-full block whitespace-nowrap min-h-[96px]"
+                                  >
+                                    <select>
+                                      <option value="">
+                                        --Please choose an option--
+                                      </option>
+                                      <template
+                                        x-for="(option, option_index) in question.cells[row_index][column_index].options"
+                                      >
+                                        <option
+                                          :value="option.name"
+                                          x-text="option.name"
+                                        ></option>
+                                      </template>
+                                    </select>
+                                  </div>
+                                </template>
+                                <template
+                                  x-if="question.cells[row_index][column_index].cell_type == 'radio'"
+                                >
+                                  <div
+                                    class="h-full block whitespace-nowrap min-h-[96px]"
+                                  >
+                                    <template
+                                      x-for="(option, option_index) in question.cells[row_index][column_index].options"
+                                    >
+                                      <label
+                                        class="flex justify-between cursor-pointer"
+                                        :for="`optionId-${option.id}`"
+                                      >
+                                        <span x-text="option.name"></span>
+                                        <input
+                                          class="!m-0"
+                                          type="radio"
+                                          :id="`optionId-${option.id}`"
+                                          :value="option.name"
+                                          x-model="cellRecords"
+                                        />
+                                      </label>
+                                    </template>
+                                  </div>
+                                </template>
+                                <template
+                                  x-if="question.cells[row_index][column_index].cell_type == 'select-one'"
+                                  ><div
+                                    class="h-full block whitespace-nowrap min-h-[96px]"
+                                  >
+                                    <select>
+                                      <option value="">
+                                        --Please choose an option--
+                                      </option>
+                                      <template
+                                        x-for="(option, option_index) in question.cells[row_index][column_index].options"
+                                      >
+                                        <option
+                                          :value="option.name"
+                                          x-text="option.name"
+                                        ></option>
+                                      </template>
+                                    </select>
+                                  </div>
+                                </template>
+                                <template
+                                  x-if="question.cells[row_index][column_index].cell_type == 'select-multiple'"
+                                >
+                                  <div
+                                    class="h-full block whitespace-nowrap min-h-[96px]"
+                                  >
+                                    <select>
+                                      <option value="">
+                                        --Please choose an option--
+                                      </option>
+                                      <template
+                                        x-for="(option, option_index) in question.cells[row_index][column_index].options"
+                                      >
+                                        <option
+                                          :value="option.name"
+                                          x-text="option.name"
+                                        ></option>
+                                      </template>
+                                    </select>
+                                  </div>
+                                </template>
+                              </div>
+                            </div>
+                          </template>
+                        </td>
+                      </template>
+                    </tr>
+                  </template>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </template>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("alpine:init", () => {
+    Alpine.data("screeningFormData", () => ({
+      questions: [],
+      screening_form: {},
+      cellRecords: {},
+      init() {
+        this.getData();
+      },
+      async getData() {
+        const response = await fetch(
+          "http://localhost:3000/projects/866/screening_forms?form_type=abstract",
+          {
+            method: "GET",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        const data = await response.json();
+        this.questions = data.sf_questions;
+        this.screening_form = data.screening_form;
+      },
+    }));
+  });
+</script>
