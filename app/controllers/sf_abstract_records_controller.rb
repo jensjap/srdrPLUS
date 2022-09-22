@@ -25,11 +25,39 @@ class SfAbstractRecordsController < ApplicationController
       format.json do
         case @sf_cell.cell_type
         when 'text', 'numeric'
-          @sf_abstract_record = SfAbstractRecord.find_or_create_by(sf_cell: @sf_cell,
-                                                                   abstract_screening_result_id: params[:abstract_screening_result_id])
+          @sf_abstract_record = SfAbstractRecord.find_or_create_by(
+            sf_cell: @sf_cell,
+            abstract_screening_result_id: params[:abstract_screening_result_id]
+          )
           @sf_abstract_record.update(params.permit(:value, :equality))
-          render json: @sf_abstract_record
+        when 'checkbox'
+          @sf_abstract_record = SfAbstractRecord.find_or_create_by(
+            sf_cell: @sf_cell,
+            abstract_screening_result_id: params[:abstract_screening_result_id],
+            value: params[:value]
+          )
+          @sf_abstract_record.update(followup: params[:followup]) if params[:followup]
         end
+        render json: @sf_abstract_record
+      end
+    end
+  end
+
+  def destroy
+    @sf_cell = SfCell.find(params[:sf_cell_id])
+    @sf_abstract_record = SfAbstractRecord.find_by(
+      sf_cell: @sf_cell,
+      abstract_screening_result_id: params[:abstract_screening_result_id],
+      value: params[:value]
+    )
+
+    respond_to do |format|
+      format.json do
+        case @sf_cell.cell_type
+        when 'checkbox'
+          @sf_abstract_record.destroy
+        end
+        render json: @sf_abstract_record
       end
     end
   end

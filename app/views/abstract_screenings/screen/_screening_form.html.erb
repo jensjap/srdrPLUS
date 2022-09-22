@@ -84,7 +84,7 @@
                                         type="text"
                                         :minlength="question.cells[row_index][column_index].min"
                                         :maxlength="question.cells[row_index][column_index].max"
-                                        x-on:keyup.debounce.500ms="findOrCreateRecords(question.cells[row_index][column_index], { value: $el.value })"
+                                        x-on:keyup.debounce.500ms="createOrUpdateRecord(question.cells[row_index][column_index], { value: $el.value })"
                                       />
                                     </template>
                                     <template
@@ -97,7 +97,7 @@
                                           type="text"
                                           :minlength="question.cells[row_index][column_index].min"
                                           :maxlength="question.cells[row_index][column_index].max"
-                                          x-on:keyup.debounce.500ms="findOrCreateRecords(question.cells[row_index][column_index], { value: $el.value })"
+                                          x-on:keyup.debounce.500ms="createOrUpdateRecord(question.cells[row_index][column_index], { value: $el.value })"
                                           :value="sf_record.value"
                                         /> </template
                                     ></template>
@@ -125,8 +125,8 @@
                                           type="number"
                                           :min="question.cells[row_index][column_index].min"
                                           :max="question.cells[row_index][column_index].max"
-                                          x-on:change.debounce.500ms="findOrCreateRecords(question.cells[row_index][column_index], { value: $el.value })"
-                                          x-on:keyup.debounce.500ms="findOrCreateRecords(question.cells[row_index][column_index], { value: $el.value })"
+                                          x-on:change.debounce.500ms="createOrUpdateRecord(question.cells[row_index][column_index], { value: $el.value })"
+                                          x-on:keyup.debounce.500ms="createOrUpdateRecord(question.cells[row_index][column_index], { value: $el.value })"
                                         />
                                       </div>
                                     </template>
@@ -139,7 +139,7 @@
                                           <div class="w-16">
                                             <select
                                               x-model="sf_record.equality"
-                                              x-on:change="findOrCreateRecords(question.cells[row_index][column_index], { equality: $el.value })"
+                                              x-on:change="createOrUpdateRecord(question.cells[row_index][column_index], { equality: $el.value })"
                                             >
                                               <option value=""></option>
                                               <option value="~">~</option>
@@ -153,8 +153,8 @@
                                             type="number"
                                             :min="question.cells[row_index][column_index].min"
                                             :max="question.cells[row_index][column_index].max"
-                                            x-on:change.debounce.500ms="findOrCreateRecords(question.cells[row_index][column_index], { value: $el.value })"
-                                            x-on:keyup.debounce.500ms="findOrCreateRecords(question.cells[row_index][column_index], { value: $el.value })"
+                                            x-on:change.debounce.500ms="createOrUpdateRecord(question.cells[row_index][column_index], { value: $el.value })"
+                                            x-on:keyup.debounce.500ms="createOrUpdateRecord(question.cells[row_index][column_index], { value: $el.value })"
                                             :value="sf_record.value"
                                           /></div></template
                                     ></template>
@@ -173,13 +173,32 @@
                                         class="flex justify-between cursor-pointer"
                                         :for="`optionId-${option.id}`"
                                       >
-                                        <span x-text="option.name"></span>
-                                        <input
-                                          class="!m-0"
-                                          type="checkbox"
-                                          :id="`optionId-${option.id}`"
-                                          checked
-                                        />
+                                        <div
+                                          class="flex justify-center items-center mr-4"
+                                        >
+                                          <div
+                                            class="w-24"
+                                            x-text="option.name"
+                                          ></div>
+                                          <input
+                                            class="!m-0 cursor-pointer"
+                                            type="checkbox"
+                                            :checked="option.sf_abstract_record_id"
+                                            :id="`optionId-${option.id}`"
+                                            x-model="option.sf_abstract_record_id"
+                                            @click="if ($el.checked) { createOrUpdateRecord(question.cells[row_index][column_index], { value: option.name }) } else { deleteRecord(question.cells[row_index][column_index], { value: option.name }); option.followup = null }"
+                                          />
+                                        </div>
+                                        <template x-if="option.with_followup">
+                                          <input
+                                            class="!m-0 !w-24"
+                                            type="text"
+                                            :disabled="!option.sf_abstract_record_id"
+                                            :id="`optionId-followup-${option.id}`"
+                                            x-model="option.followup"
+                                            x-on:keyup.debounce.500ms="createOrUpdateRecord(question.cells[row_index][column_index], { value: option.name, followup: option.followup })"
+                                          />
+                                        </template>
                                       </label>
                                     </template>
                                   </div>
@@ -313,8 +332,9 @@
         const data = await response.json();
         this.questions = data.sf_questions;
         this.screening_form = data.screening_form;
+        console.log(data);
       },
-      async findOrCreateRecords(cell, params) {
+      async createOrUpdateRecord(cell, params) {
         const response = await fetch(
           `/sf_cells/${cell.id}/sf_abstract_records`,
           {
@@ -335,6 +355,31 @@
         );
         if (response.status != 200) {
           toastr.error("We've encountered an error", null, { timeOut: 1000 });
+        } else {
+          console.log("ok");
+        }
+      },
+      async deleteRecord(cell, params) {
+        const response = await fetch(`/sf_abstract_records/null`, {
+          method: "DELETE",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "X-Requested-With": "XMLHttpRequest",
+            "X-CSRF-Token": document.querySelector("[name='csrf-token']")
+              .content,
+          },
+          credentials: "same-origin",
+          body: JSON.stringify({
+            abstract_screening_result_id: this.abstract_screening_result_id,
+            sf_cell_id: cell.id,
+            ...params,
+          }),
+        });
+        if (response.status != 200) {
+          toastr.error("We've encountered an error", null, { timeOut: 1000 });
+        } else {
+          console.log("ok");
         }
       },
     }));

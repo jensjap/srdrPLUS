@@ -35,6 +35,11 @@ json.sf_questions @screening_form.sf_questions.order(:position) do |sf_question|
     json.array!(sf_question.sf_columns) do |sf_column|
       cell = cell_hash[sf_row.id] && cell_hash[sf_row.id][sf_column.id]
       if cell
+        sf_abstract_records_hash = {}
+        cell.sf_abstract_records.each do |sf_abstract_record|
+          sf_abstract_records_hash[sf_abstract_record.value] =
+            { sf_abstract_record_id: sf_abstract_record.id, followup: sf_abstract_record.followup }
+        end
         json.id cell.id
         json.sf_row_id cell.sf_row_id
         json.sf_column_id cell.sf_column_id
@@ -46,6 +51,8 @@ json.sf_questions @screening_form.sf_questions.order(:position) do |sf_question|
           json.id sf_option.id
           json.name sf_option.name
           json.with_followup sf_option.with_followup
+          json.sf_abstract_record_id sf_abstract_records_hash.dig(sf_option.name, :sf_abstract_record_id)
+          json.followup sf_abstract_records_hash.dig(sf_option.name, :followup)
         end
         json.sf_records sf_cells_hash[cell.id]
       else

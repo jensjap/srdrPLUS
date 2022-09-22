@@ -321,8 +321,8 @@ Rails.application.routes.draw do
   end
   resources :sf_cells do
     resources :sf_options, shallow: true
-    resources :sf_abstract_records, only: [:create]
-    resources :sf_fulltext_records, only: [:create]
+    resources :sf_abstract_records, only: %i[create destroy], shallow: true
+    resources :sf_fulltext_records, only: %i[create destroy], shallow: true
   end
 
   resources :abstract_screening_results, only: [] do
