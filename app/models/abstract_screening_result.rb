@@ -34,6 +34,8 @@ class AbstractScreeningResult < ApplicationRecord
 
   has_many :sf_abstract_records, dependent: :destroy, inverse_of: :abstract_screening_result
 
+  delegate :project, to: :citations_project
+
   def search_data
     {
       id:,
