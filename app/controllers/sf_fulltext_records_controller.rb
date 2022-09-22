@@ -1,0 +1,2 @@
+class SfFulltextRecordsController < ApplicationController
+end

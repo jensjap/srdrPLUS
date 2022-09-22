@@ -1,0 +1,2 @@
+module SfFulltextRecordsHelper
+end

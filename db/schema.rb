@@ -1968,6 +1968,9 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_20_013301) do
   end
 
   create_table "sf_abstract_records", charset: "utf8mb3", force: :cascade do |t|
+    t.string "value"
+    t.string "followup"
+    t.string "equality"
     t.bigint "sf_cell_id"
     t.bigint "abstract_screening_result_id"
     t.datetime "created_at", null: false
@@ -2000,6 +2003,9 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_20_013301) do
   end
 
   create_table "sf_fulltext_records", charset: "utf8mb3", force: :cascade do |t|
+    t.string "value"
+    t.string "followup"
+    t.string "equality"
     t.bigint "sf_cell_id"
     t.bigint "abstract_screening_result_id"
     t.datetime "created_at", null: false

@@ -321,8 +321,13 @@ Rails.application.routes.draw do
   end
   resources :sf_cells do
     resources :sf_options, shallow: true
-    resources :sf_abstract_records, shallow: true
-    resources :sf_fulltext_records, shallow: true
+    resources :sf_abstract_records, only: [:create]
+    resources :sf_fulltext_records, only: [:create]
+  end
+
+  resources :abstract_screening_results, only: [] do
+    resources :sf_abstract_records, only: [:index]
+    resources :sf_fulltext_records, only: [:index]
   end
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end
