@@ -209,16 +209,17 @@
                                   <div
                                     class="h-full block whitespace-nowrap min-h-[96px]"
                                   >
-                                    <select>
-                                      <option value="">
-                                        --Please choose an option--
-                                      </option>
+                                    <select
+                                      @change="createOrUpdateRecord(question.cells[row_index][column_index], { value: $el.value })"
+                                    >
+                                      <option value=""></option>
                                       <template
                                         x-for="(option, option_index) in question.cells[row_index][column_index].options"
                                       >
                                         <option
                                           :value="option.name"
                                           x-text="option.name"
+                                          :selected="option.sf_abstract_record_id"
                                         ></option>
                                       </template>
                                     </select>

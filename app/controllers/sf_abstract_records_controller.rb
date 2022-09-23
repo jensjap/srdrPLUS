@@ -24,7 +24,7 @@ class SfAbstractRecordsController < ApplicationController
     respond_to do |format|
       format.json do
         case @sf_cell.cell_type
-        when 'text', 'numeric'
+        when 'text', 'numeric', 'dropdown'
           @sf_abstract_record = SfAbstractRecord.find_or_create_by(
             sf_cell: @sf_cell,
             abstract_screening_result_id: params[:abstract_screening_result_id]
@@ -37,6 +37,9 @@ class SfAbstractRecordsController < ApplicationController
             value: params[:value]
           )
           @sf_abstract_record.update(followup: params[:followup]) if params[:followup]
+
+        else
+          return render json: 'duplicate option', status: 400
         end
         render json: @sf_abstract_record
       end
