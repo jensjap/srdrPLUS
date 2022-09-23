@@ -55,6 +55,7 @@ json.sf_questions @screening_form.sf_questions.order(:position) do |sf_question|
           json.followup sf_abstract_records_hash.dig(sf_option.name, :followup)
         end
         json.sf_records sf_cells_hash[cell.id]
+        json.radio_selected sf_cells_hash[cell.id][0].try(&:value) if cell.cell_type == 'radio'
       else
         json.nil!
       end

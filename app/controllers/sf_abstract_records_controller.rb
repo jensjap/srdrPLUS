@@ -37,7 +37,12 @@ class SfAbstractRecordsController < ApplicationController
             value: params[:value]
           )
           @sf_abstract_record.update(followup: params[:followup]) if params[:followup]
-
+        when 'radio'
+          @sf_abstract_record = SfAbstractRecord.find_or_create_by(
+            sf_cell: @sf_cell,
+            abstract_screening_result_id: params[:abstract_screening_result_id]
+          )
+          @sf_abstract_record.update(params.permit(:value, :followup))
         else
           return render json: 'duplicate option', status: 400
         end

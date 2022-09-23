@@ -177,7 +177,7 @@
                                           class="flex justify-center items-center mr-4"
                                         >
                                           <div
-                                            class="w-24"
+                                            class="min-w-[6rem]"
                                             x-text="option.name"
                                           ></div>
                                           <input
@@ -191,7 +191,7 @@
                                         </div>
                                         <template x-if="option.with_followup">
                                           <input
-                                            class="!m-0 !w-24"
+                                            class="!m-0 !min-w-[6rem]"
                                             type="text"
                                             :disabled="!option.sf_abstract_record_id"
                                             :id="`optionId-followup-${option.id}`"
@@ -235,19 +235,41 @@
                                       x-for="(option, option_index) in question.cells[row_index][column_index].options"
                                     >
                                       <label
-                                        class="flex justify-between cursor-pointer"
+                                        class="flex cursor-pointer"
                                         :for="`optionId-${option.id}`"
                                       >
-                                        <span x-text="option.name"></span>
-                                        <input
-                                          class="!m-0"
-                                          type="radio"
-                                          :id="`optionId-${option.id}`"
-                                          :value="option.name"
-                                          x-model="cellRecords"
-                                        />
+                                        <div class="flex items-center mr-4">
+                                          <div
+                                            class="min-w-[6rem]"
+                                            x-text="option.name"
+                                          ></div>
+                                          <input
+                                            class="!m-0 cursor-pointer"
+                                            type="radio"
+                                            :id="`optionId-${option.id}`"
+                                            :value="option.name"
+                                            x-model="question.cells[row_index][column_index].radio_selected"
+                                            @change="createOrUpdateRecord(question.cells[row_index][column_index], { value: option.name, followup: option.followup })"
+                                          />
+                                        </div>
+                                        <template x-if="option.with_followup">
+                                          <input
+                                            class="!m-0 !min-w-[6rem]"
+                                            type="text"
+                                            :disabled="question.cells[row_index][column_index].radio_selected != option.name"
+                                            :id="`optionId-followup-${option.id}`"
+                                            :value="if (question.cells[row_index][column_index].radio_selected == option.name) { return option.followup } else { return null }"
+                                            x-on:keyup.debounce.500ms="createOrUpdateRecord(question.cells[row_index][column_index], { value: option.name, followup: $el.value })"
+                                          />
+                                        </template>
                                       </label>
                                     </template>
+                                    <button
+                                      class="m-0 mt-2 p-1 bg-gray-800 text-white w-full"
+                                      @click="createOrUpdateRecord(question.cells[row_index][column_index], { value: '', followup: '' }); question.cells[row_index][column_index].radio_selected = ''"
+                                    >
+                                      Clear
+                                    </button>
                                   </div>
                                 </template>
                                 <template
