@@ -363,11 +363,9 @@
           placeholder: "Select...",
         });
         $(`#cellId-${cell.id}`).on("select2:select", function (e) {
-          console.log("create");
           that.createOrUpdateRecord(cell, { value: e.params.data.text });
         });
         $(`#cellId-${cell.id}`).on("select2:unselect", function (e) {
-          console.log("delete");
           that.deleteRecord(cell, { value: e.params.data.text });
         });
       },
@@ -386,7 +384,6 @@
         const data = await response.json();
         this.questions = data.sf_questions;
         this.screening_form = data.screening_form;
-        console.log(data);
       },
       async createOrUpdateRecord(cell, params) {
         const response = await fetch(
@@ -409,8 +406,6 @@
         );
         if (response.status != 200) {
           toastr.error("We've encountered an error", null, { timeOut: 1000 });
-        } else {
-          console.log("ok");
         }
       },
       async deleteRecord(cell, params) {
@@ -432,8 +427,6 @@
         });
         if (response.status != 200) {
           toastr.error("We've encountered an error", null, { timeOut: 1000 });
-        } else {
-          console.log("ok");
         }
       },
     }));
