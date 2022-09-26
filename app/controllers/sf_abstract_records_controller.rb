@@ -43,14 +43,20 @@ class SfAbstractRecordsController < ApplicationController
             abstract_screening_result_id: params[:abstract_screening_result_id]
           )
           @sf_abstract_record.update(params.permit(:value, :followup))
-        when 'select-one', 'select-multiple'
+        when 'select-one'
+          @sf_abstract_record = SfAbstractRecord.find_or_create_by(
+            sf_cell: @sf_cell,
+            abstract_screening_result_id: params[:abstract_screening_result_id]
+          )
+          @sf_abstract_record.update(params.permit(:value))
+        when 'select-multiple'
           @sf_abstract_record = SfAbstractRecord.find_or_create_by(
             sf_cell: @sf_cell,
             abstract_screening_result_id: params[:abstract_screening_result_id],
             value: params[:value]
           )
         else
-          return render json: 'duplicate option', status: 400
+          return render json: 'unrecognized cell_type', status: 400
         end
         render json: @sf_abstract_record
       end

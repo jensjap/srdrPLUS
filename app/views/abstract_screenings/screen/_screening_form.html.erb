@@ -363,9 +363,11 @@
           placeholder: "Select...",
         });
         $(`#cellId-${cell.id}`).on("select2:select", function (e) {
+          console.log("create");
           that.createOrUpdateRecord(cell, { value: e.params.data.text });
         });
         $(`#cellId-${cell.id}`).on("select2:unselect", function (e) {
+          console.log("delete");
           that.deleteRecord(cell, { value: e.params.data.text });
         });
       },
