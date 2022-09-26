@@ -24,10 +24,10 @@ class SfOptionsController < ApplicationController
   end
 
   def destroy
-    @sf_cell = SfOption.find(params[:id])
+    @sf_option = SfOption.find(params[:id])
     respond_to do |format|
       format.json do
-        @sf_cell.destroy
+        @sf_option.destroy
         render json: {}
       end
     end
