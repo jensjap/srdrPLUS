@@ -5,6 +5,14 @@
     border: 1px solid rgb(237, 236, 236);
     min-width: 128px;
   }
+  .select2-search__field {
+    width: 100% !important;
+  }
+  .select2-selection__rendered {
+    margin-left: 0 !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+  }
 </style>
 <div x-data="screeningFormData" class="">
   <div class="py-2">
@@ -277,15 +285,18 @@
                                   ><div
                                     class="h-full block whitespace-nowrap min-h-[96px]"
                                   >
-                                    <select>
-                                      <option value="">
-                                        --Please choose an option--
-                                      </option>
+                                    <select
+                                      style="width: 100%"
+                                      :id="`cellId-${question.cells[row_index][column_index].id}`"
+                                      x-effect="$nextTick(() => bootSelect2(question.cells[row_index][column_index], false, true))"
+                                    >
+                                      <option value=""></option>
                                       <template
                                         x-for="(option, option_index) in question.cells[row_index][column_index].options"
                                       >
                                         <option
                                           :value="option.name"
+                                          :selected="question.cells[row_index][column_index].sf_records.map(sf_record => String(sf_record.value)).includes(String(option.name))"
                                           x-text="option.name"
                                         ></option>
                                       </template>
@@ -298,15 +309,18 @@
                                   <div
                                     class="h-full block whitespace-nowrap min-h-[96px]"
                                   >
-                                    <select>
-                                      <option value="">
-                                        --Please choose an option--
-                                      </option>
+                                    <select
+                                      style="width: 100%"
+                                      :id="`cellId-${question.cells[row_index][column_index].id}`"
+                                      x-effect="$nextTick(() => bootSelect2(question.cells[row_index][column_index], true, true))"
+                                      multiple
+                                    >
                                       <template
                                         x-for="(option, option_index) in question.cells[row_index][column_index].options"
                                       >
                                         <option
                                           :value="option.name"
+                                          :selected="question.cells[row_index][column_index].sf_records.map(sf_record => String(sf_record.value)).includes(String(option.name))"
                                           x-text="option.name"
                                         ></option>
                                       </template>
@@ -335,12 +349,27 @@
     Alpine.data("screeningFormData", () => ({
       questions: [],
       screening_form: {},
-      cellRecords: {},
       init() {
         this.$watch("abstract_screening_result_id", (value) => {
           this.getData();
         });
       },
+      bootSelect2(cell, multiple, tags) {
+        const that = this;
+        $(`#cellId-${cell.id}`).select2({
+          multiple,
+          tags,
+          allowClear: true,
+          placeholder: "Select...",
+        });
+        $(`#cellId-${cell.id}`).on("select2:select", function (e) {
+          that.createOrUpdateRecord(cell, { value: e.params.data.text });
+        });
+        $(`#cellId-${cell.id}`).on("select2:unselect", function (e) {
+          that.deleteRecord(cell, { value: e.params.data.text });
+        });
+      },
+
       async getData() {
         const response = await fetch(
           `/abstract_screening_results/${this.abstract_screening_result_id}/sf_abstract_records`,

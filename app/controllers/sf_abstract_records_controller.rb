@@ -43,6 +43,12 @@ class SfAbstractRecordsController < ApplicationController
             abstract_screening_result_id: params[:abstract_screening_result_id]
           )
           @sf_abstract_record.update(params.permit(:value, :followup))
+        when 'select-one', 'select-multiple'
+          @sf_abstract_record = SfAbstractRecord.find_or_create_by(
+            sf_cell: @sf_cell,
+            abstract_screening_result_id: params[:abstract_screening_result_id],
+            value: params[:value]
+          )
         else
           return render json: 'duplicate option', status: 400
         end
@@ -62,7 +68,7 @@ class SfAbstractRecordsController < ApplicationController
     respond_to do |format|
       format.json do
         case @sf_cell.cell_type
-        when 'checkbox'
+        when 'checkbox', 'select-one', 'select-multiple'
           @sf_abstract_record.destroy
         end
         render json: @sf_abstract_record
