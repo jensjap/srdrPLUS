@@ -182,10 +182,10 @@
                                         :for="`optionId-${option.id}`"
                                       >
                                         <div
-                                          class="flex justify-center items-center mr-4"
+                                          class="flex justify-center items-center mr-4 grow"
                                         >
                                           <div
-                                            class="min-w-[6rem]"
+                                            class="min-w-[6rem] grow mr-2"
                                             x-text="option.name"
                                           ></div>
                                           <input
@@ -197,16 +197,18 @@
                                             @click="if ($el.checked) { createOrUpdateRecord(question.cells[row_index][column_index], { value: option.name }) } else { deleteRecord(question.cells[row_index][column_index], { value: option.name }); option.followup = null }"
                                           />
                                         </div>
-                                        <template x-if="option.with_followup">
-                                          <input
-                                            class="!m-0 !min-w-[6rem]"
-                                            type="text"
-                                            :disabled="!option.sf_abstract_record_id"
-                                            :id="`optionId-followup-${option.id}`"
-                                            x-model="option.followup"
-                                            x-on:keyup.debounce.500ms="createOrUpdateRecord(question.cells[row_index][column_index], { value: option.name, followup: option.followup })"
-                                          />
-                                        </template>
+                                        <div class="w-24">
+                                          <template x-if="option.with_followup">
+                                            <input
+                                              class="!m-0 !min-w-[6rem]"
+                                              type="text"
+                                              :disabled="!option.sf_abstract_record_id"
+                                              :id="`optionId-followup-${option.id}`"
+                                              x-model="option.followup"
+                                              x-on:keyup.debounce.500ms="createOrUpdateRecord(question.cells[row_index][column_index], { value: option.name, followup: option.followup })"
+                                            />
+                                          </template>
+                                        </div>
                                       </label>
                                     </template>
                                   </div>
@@ -246,9 +248,11 @@
                                         class="flex cursor-pointer"
                                         :for="`optionId-${option.id}`"
                                       >
-                                        <div class="flex items-center mr-4">
+                                        <div
+                                          class="flex justify-center items-center mr-4 grow"
+                                        >
                                           <div
-                                            class="min-w-[6rem]"
+                                            class="min-w-[6rem] grow mr-2"
                                             x-text="option.name"
                                           ></div>
                                           <input
@@ -260,16 +264,18 @@
                                             @change="createOrUpdateRecord(question.cells[row_index][column_index], { value: option.name, followup: option.followup })"
                                           />
                                         </div>
-                                        <template x-if="option.with_followup">
-                                          <input
-                                            class="!m-0 !min-w-[6rem]"
-                                            type="text"
-                                            :disabled="question.cells[row_index][column_index].radio_selected != option.name"
-                                            :id="`optionId-followup-${option.id}`"
-                                            :value="if (question.cells[row_index][column_index].radio_selected == option.name) { return option.followup } else { return null }"
-                                            x-on:keyup.debounce.500ms="createOrUpdateRecord(question.cells[row_index][column_index], { value: option.name, followup: $el.value })"
-                                          />
-                                        </template>
+                                        <div class="w-24">
+                                          <template x-if="option.with_followup">
+                                            <input
+                                              class="!m-0 !min-w-[6rem]"
+                                              type="text"
+                                              :disabled="question.cells[row_index][column_index].radio_selected != option.name"
+                                              :id="`optionId-followup-${option.id}`"
+                                              :value="if (question.cells[row_index][column_index].radio_selected == option.name) { return option.followup } else { return null }"
+                                              x-on:keyup.debounce.500ms="createOrUpdateRecord(question.cells[row_index][column_index], { value: option.name, followup: $el.value })"
+                                            />
+                                          </template>
+                                        </div>
                                       </label>
                                     </template>
                                     <button
