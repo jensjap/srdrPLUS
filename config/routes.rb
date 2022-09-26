@@ -325,6 +325,8 @@ Rails.application.routes.draw do
     resources :sf_fulltext_records, only: %i[create destroy], shallow: true
   end
 
+  get '/sf_options/:id/existing_data_check' => 'sf_options#existing_data_check'
+
   resources :abstract_screening_results, only: [] do
     resources :sf_abstract_records, only: [:index]
     resources :sf_fulltext_records, only: [:index]

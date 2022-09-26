@@ -1246,10 +1246,64 @@
           }
         }
       },
-      async deleteOption(option) {
+      async checkExistingData(option) {
+        const response = await fetch(
+          `/sf_options/${option.id}/existing_data_check`,
+          {
+            method: "GET",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              "X-Requested-With": "XMLHttpRequest",
+              "X-CSRF-Token": document.querySelector("[name='csrf-token']")
+                .content,
+            },
+            credentials: "same-origin",
+          }
+        );
+        if (response.status == 200) {
+          const data = await response.json();
+          if (data.has_records) {
+            alert("This option has existing answer submissions");
+            this.deleteExistingData(option);
+          }
+        } else {
+          toastr.error("We've encountered an error", null, { timeOut: 1000 });
+        }
+      },
+      async deleteExistingData(option) {
         if (
-          confirm(`Are you sure you want to delete option: "${option.name}"?`)
+          confirm(
+            `Do you want to delete any existing submissions with answer "${option.name}"?`
+          )
         ) {
+          const response = await fetch(
+            `/sf_options/${option.id}?deleteExistingAnswers=true}`,
+            {
+              method: "DELETE",
+              headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+                "X-Requested-With": "XMLHttpRequest",
+                "X-CSRF-Token": document.querySelector("[name='csrf-token']")
+                  .content,
+              },
+              credentials: "same-origin",
+            }
+          );
+          if (response.status == 200) {
+            toastr.success("Answer submissions removed successfully", null, {
+              timeOut: 1000,
+            });
+            this.getData();
+          } else {
+            toastr.error("We've encountered an error", null, { timeOut: 1000 });
+          }
+        }
+      },
+      async deleteOption(option) {
+        await this.checkExistingData(option);
+        if (confirm(`Do you want to delete "${option.name}" as an option?`)) {
           const response = await fetch(`/sf_options/${option.id}`, {
             method: "DELETE",
             headers: {
