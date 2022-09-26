@@ -402,6 +402,7 @@
                                                   stroke-width="1.5"
                                                   stroke="currentColor"
                                                   class="w-6 h-6"
+                                                  @click="moveOption(option, option_index - 1)"
                                                 >
                                                   <path
                                                     stroke-linecap="round"
@@ -418,6 +419,7 @@
                                                   stroke-width="1.5"
                                                   stroke="currentColor"
                                                   class="w-6 h-6"
+                                                  @click="moveOption(option, option_index + 1)"
                                                 >
                                                   <path
                                                     stroke-linecap="round"
@@ -497,6 +499,7 @@
                                                   stroke-width="1.5"
                                                   stroke="currentColor"
                                                   class="w-6 h-6"
+                                                  @click="moveOption(option, option_index - 1)"
                                                 >
                                                   <path
                                                     stroke-linecap="round"
@@ -513,6 +516,7 @@
                                                   stroke-width="1.5"
                                                   stroke="currentColor"
                                                   class="w-6 h-6"
+                                                  @click="moveOption(option, option_index + 1)"
                                                 >
                                                   <path
                                                     stroke-linecap="round"
@@ -601,6 +605,7 @@
                                                   stroke-width="1.5"
                                                   stroke="currentColor"
                                                   class="w-6 h-6"
+                                                  @click="moveOption(option, option_index - 1)"
                                                 >
                                                   <path
                                                     stroke-linecap="round"
@@ -617,6 +622,7 @@
                                                   stroke-width="1.5"
                                                   stroke="currentColor"
                                                   class="w-6 h-6"
+                                                  @click="moveOption(option, option_index + 1)"
                                                 >
                                                   <path
                                                     stroke-linecap="round"
@@ -696,6 +702,7 @@
                                                   stroke-width="1.5"
                                                   stroke="currentColor"
                                                   class="w-6 h-6"
+                                                  @click="moveOption(option, option_index - 1)"
                                                 >
                                                   <path
                                                     stroke-linecap="round"
@@ -712,6 +719,7 @@
                                                   stroke-width="1.5"
                                                   stroke="currentColor"
                                                   class="w-6 h-6"
+                                                  @click="moveOption(option, option_index + 1)"
                                                 >
                                                   <path
                                                     stroke-linecap="round"
@@ -791,6 +799,7 @@
                                                   stroke-width="1.5"
                                                   stroke="currentColor"
                                                   class="w-6 h-6"
+                                                  @click="moveOption(option, option_index - 1)"
                                                 >
                                                   <path
                                                     stroke-linecap="round"
@@ -807,6 +816,7 @@
                                                   stroke-width="1.5"
                                                   stroke="currentColor"
                                                   class="w-6 h-6"
+                                                  @click="moveOption(option, option_index + 1)"
                                                 >
                                                   <path
                                                     stroke-linecap="round"
@@ -1260,6 +1270,9 @@
             toastr.error("We've encountered an error", null, { timeOut: 1000 });
           }
         }
+      },
+      moveOption(option, new_index) {
+        this.updateOption(option, { new_index });
       },
       async updateOption(option, params) {
         const response = await fetch(`/sf_options/${option.id}`, {

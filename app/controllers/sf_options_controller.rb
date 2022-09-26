@@ -17,7 +17,16 @@ class SfOptionsController < ApplicationController
     @sf_option = SfOption.find(params[:id])
     respond_to do |format|
       format.json do
-        @sf_option.update(params.permit(:with_followup))
+        if (new_index = params[:new_index])
+          @sf_options = @sf_option.sf_cell.sf_options.order(:position).to_a
+          return render json: @sf_option if (new_index < 0 || new_index >= @sf_options.length)
+          @sf_options.insert(new_index, @sf_options.delete_at(@sf_options.index(@sf_option)))
+          @sf_options.each_with_index do |sf_option, index|
+            sf_option.update(position: index)
+          end
+        else
+          @sf_option.update(params.permit(:with_followup))
+        end
         render json: @sf_option
       end
     end
