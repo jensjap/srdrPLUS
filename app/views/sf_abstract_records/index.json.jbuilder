@@ -47,13 +47,19 @@ json.sf_questions @screening_form.sf_questions.order(:position) do |sf_question|
         json.min cell.min
         json.max cell.max
         json.with_equality cell.with_equality
-        json.options cell.sf_options do |sf_option|
-          json.id sf_option.id
-          json.name sf_option.name
-          json.with_followup sf_option.with_followup
-          json.sf_abstract_record_id sf_abstract_records_hash.dig(sf_option.name, :sf_abstract_record_id)
-          json.followup sf_abstract_records_hash.dig(sf_option.name, :followup)
+        options = cell.sf_options.map do |sf_option|
+          { id: sf_option.id,
+            name: sf_option.name,
+            with_followup: sf_option.with_followup,
+            sf_abstract_record_id: sf_abstract_records_hash.dig(sf_option.name, :sf_abstract_record_id),
+            followup: sf_abstract_records_hash.dig(sf_option.name, :followup) }
         end
+        sf_cells_hash[cell.id].each do |sf_abstract_record|
+          next if options.any? { |option| option[:name] == sf_abstract_record[:value] }
+
+          options << { id: sf_abstract_record[:id], name: sf_abstract_record[:value] }
+        end
+        json.options options
         json.sf_records sf_cells_hash[cell.id]
         json.radio_selected sf_cells_hash[cell.id][0].try(&:value) if cell.cell_type == 'radio'
       else
