@@ -3,7 +3,9 @@ class SfQuestionsController < ApplicationController
     @screening_form = ScreeningForm.find(params[:screening_form_id])
     respond_to do |format|
       format.json do
-        @screening_form.sf_questions.create!
+        sf_question = @screening_form.sf_questions.create!
+        sf_question.sf_rows.create!
+        sf_question.sf_columns.create!
         render json: {}
       end
     end
