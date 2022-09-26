@@ -55,7 +55,9 @@ json.sf_questions @screening_form.sf_questions.order(:position) do |sf_question|
             followup: sf_abstract_records_hash.dig(sf_option.name, :followup) }
         end
         sf_cells_hash[cell.id].each do |sf_abstract_record|
-          next if options.any? { |option| option[:name] == sf_abstract_record[:value] }
+          next if options.any? do |option|
+                    option[:name] == sf_abstract_record[:value]
+                  end || sf_abstract_record[:value].blank?
 
           options << { id: sf_abstract_record[:id], name: sf_abstract_record[:value] }
         end
