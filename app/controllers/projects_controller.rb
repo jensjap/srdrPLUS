@@ -426,6 +426,15 @@ class ProjectsController < ApplicationController
         by_name_description_and_query(@query).
         page(params[:page])
 
+      # Introduced projects_paginate_per value in user.profile
+      # We scope on that value if it exists, otherwise keep default
+      # paginate per set in model/project.rb
+      @projects = rescope(
+        @projects,
+        params[:page],
+        current_user.profile.projects_paginate_per
+      ) if current_user.profile.projects_paginate_per.present?
+
       @projects = @projects.order(updated_at: :desc) if params[:o].nil? || params[:o] == 'updated-at'
       @projects = @projects.order(created_at: :desc) if params[:o] == 'created-at'
 
@@ -478,6 +487,15 @@ class ProjectsController < ApplicationController
         includes(publishing: [{ user: :profile }, approval: [{ user: :profile }]]).
         by_name_description_and_query(@query).
         page(params[:page])
+
+      # Introduced projects_paginate_per value in user.profile
+      # We scope on that value if it exists, otherwise keep default
+      # paginate per set in model/project.rb
+      @projects = rescope(
+        @projects,
+        params[:page],
+        current_user.profile.projects_paginate_per
+      ) if current_user.profile.projects_paginate_per.present?
 
       @projects = @projects.order(updated_at: :desc) if params[:o].nil? || params[:o] == 'updated-at'
       @projects = @projects.order(created_at: :desc) if params[:o] == 'created-at'
@@ -565,5 +583,9 @@ class ProjectsController < ApplicationController
   def _check_valid_file_extension(file)
     extension = file.original_filename.match(/(\.[a-z]+$)/i)[0]
     return ['.xlsx'].include?(extension)
+  end
+
+  def rescope(projects, page, per)
+    return projects.except(:limit, :offset).page(page).per(per)
   end
 end
