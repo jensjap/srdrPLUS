@@ -15,6 +15,9 @@
 
           .top-bar-right
             ul.dropdown.menu.icons.icon-right data-dropdown-menu=""
+              li class="#{ 'border-b-2 border-b-white' if ["home"].include?controller.action_name }" = link_to root_path(no_redirect: true), title: "Home Page" do
+                i.fi-home.text-xl
+
               - if user_signed_in?
                 = render "shared/signed_in_links"
 
