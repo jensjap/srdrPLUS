@@ -1,3 +1,10 @@
+<style>
+  html,
+  body {
+    scroll-behavior: smooth;
+    scroll-padding-top: 72px;
+  }
+</style>
 <div
   class="flex overflow-visible"
   x-data="{
@@ -9,15 +16,15 @@
   }"
 >
   <div
-    class="grow-0 shrink-0 basis-52 py-3 hidden xl:block w-52 overflow-y-auto h-full top-16 bg-white z-0"
-    style="position: sticky"
+    class="grow-0 shrink-0 basis-52 py-3 hidden xl:block w-52 overflow-y-auto top-[68px] bg-white z-0"
+    style="position: sticky; height: calc(100vh - 68px)"
   >
     <div>
       <ul class="list-none m-0 px-2">
-        <li class="text-sm">
-          <b class="cursor-pointer" @click="projectSummary = !projectSummary"
-            >Project Summary Title and Description</b
-          >
+        <li class="text-sm my-2">
+          <b class="cursor-pointer" @click="projectSummary = !projectSummary">
+            Project Summary Title and Description
+          </b>
           <ul class="list-none m-0 px-2" x-show="projectSummary" x-collapse>
             <li class="text-sm"><a href="#title">Title</a></li>
             <li class="text-sm"><a href="#description">Description</a></li>
@@ -36,22 +43,22 @@
             </li>
           </ul>
         </li>
-        <li class="text-sm">
-          <b class="cursor-pointer" @click="keyQuestions = !keyQuestions"
-            >Key Questions</b
-          >
+        <li class="text-sm my-2">
+          <b class="cursor-pointer" @click="keyQuestions = !keyQuestions">
+            Key Questions
+          </b>
           <ul class="list-none m-0 px-2" x-show="keyQuestions" x-collapse>
             <!-- prettier-ignore -->
             <% @project.key_questions.each_with_index do |kq, idx| %>
             <li class="text-sm truncate">
-              <a href='#<%= "key-question-#{idx}" %>'
-                ><%= "#{idx + 1}. #{kq.name}" %></a
-              >
+              <a href='#<%= "key-question-#{idx}" %>'>
+                <%= "#{idx + 1}. #{kq.name}" %>
+              </a>
             </li>
             <% end %>
           </ul>
         </li>
-        <li class="text-sm">
+        <li class="text-sm my-2">
           <b class="cursor-pointer" @click="aef = !aef"
             >Associated Extraction Forms
           </b>
@@ -60,14 +67,14 @@
             <% @project.extraction_forms_projects.includes([:extraction_forms_project_type]).each do |extraction_form_project| %>
             <li class="text-sm">
               <a href='#<%= "aef-#{extraction_form_project.id}" %>'>
-                <%= extraction_form_project.extraction_forms_project_type.name
-                %>
+                <!-- prettier-ignore -->
+                <%= extraction_form_project.extraction_forms_project_type.name %>
               </a>
             </li>
             <% end %>
           </ul>
         </li>
-        <li class="text-sm">
+        <li class="text-sm my-2">
           <b class="cursor-pointer" @click="as = !as">Associated Studies</b>
           <ul class="list-none m-0 px-2" x-show="as" x-collapse>
             <!-- prettier-ignore -->
@@ -80,7 +87,7 @@
             <% end %>
           </ul>
         </li>
-        <li class="text-sm">
+        <li class="text-sm my-2">
           <b class="cursor-pointer" @click="downloadables = !downloadables"
             >Downloadable Data Content
           </b>
@@ -101,7 +108,7 @@
       <h1 class="text-3xl font-medium text-warm-gray-900">
         <%= empty_or_na(@project.name) %>
       </h1>
-      <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+      <div class="bg-white shadow sm:rounded-lg">
         <div class="px-4 py-5 sm:px-6 bg-purple-900">
           <h1 class="text-2xl leading-6 font-medium text-white">
             Project Summary Title and Description
@@ -197,7 +204,7 @@
           </dl>
         </div>
       </div>
-      <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+      <div class="bg-white shadow sm:rounded-lg">
         <div class="px-4 py-5 sm:px-6 bg-purple-900">
           <h1 class="text-2xl leading-6 font-medium text-white">
             Key Questions
@@ -219,7 +226,7 @@
         </div>
         <% end %>
       </div>
-      <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+      <div class="bg-white shadow sm:rounded-lg">
         <div class="px-4 py-5 sm:px-6 bg-purple-900">
           <h1 class="text-2xl leading-6 font-medium text-white">
             Associated Extraction Forms
@@ -247,7 +254,7 @@
           </dl>
         </div>
       </div>
-      <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+      <div class="bg-white shadow sm:rounded-lg">
         <div class="px-4 py-5 sm:px-6 bg-purple-900">
           <h1 class="text-2xl leading-6 font-medium text-white">
             Associated Studies (each link opens a new tab)
@@ -266,17 +273,17 @@
               <tbody>
                 <!-- prettier-ignore -->
                 <% @project.extractions.includes(citations_project: { citation: :journal }).each do |extraction| %>
-              <% citation = extraction.citation %>
+                <% citation = extraction.citation %>
                 <tr id='<%= "as-#{extraction.id}" %>'>
                   <!-- prettier-ignore -->
                   <td><%= link_to citation.name, "/public_data?id=#{extraction.id}&type=extraction", target: :_blank %>
-                </td>
+                  </td>
                   <!-- prettier-ignore -->
                   <td><%= citation.authors_citations.includes([:ordering, :author]).sort_by { |ac| [ac.ordering.position, ac.author.name] }.map(&:author).map(&:name).join('; ') %>
-                </td>
+                  </td>
                   <!-- prettier-ignore -->
                   <td><%= citation.try(:journal).try(:publication_date) %>
-                </td>
+                  </td>
                 </tr>
                 <% end %>
               </tbody>
@@ -284,7 +291,7 @@
           </dl>
         </div>
       </div>
-      <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+      <div class="bg-white shadow sm:rounded-lg">
         <div class="px-4 py-5 sm:px-6 bg-purple-900">
           <h1
             class="text-2xl leading-6 font-medium text-white"
@@ -295,7 +302,10 @@
         </div>
         <div class="border-t border-gray-200 px-4 py-5 sm:p-0">
           <dl class="sm:divide-y sm:divide-gray-200">
-            <div class="py-4 sm:py-5 sm:grid sm:grid-cols-1 sm:gap-4 sm:px-6">
+            <div
+              id="downloadable"
+              class="py-4 sm:py-5 sm:grid sm:grid-cols-1 sm:gap-4 sm:px-6"
+            >
               <dt class="text-sm font-medium text-gray-500">Files</dt>
               <dd class="mt-1 text-gray-900 sm:mt-0 sm:col-span-2">
                 <ul
@@ -316,15 +326,14 @@
                           fill-rule="evenodd"
                         />
                       </svg>
-                      <span id="downloadable" class="ml-2 flex-1 w-0 truncate"
+                      <span class="ml-2 flex-1 w-0 truncate"
                         >XLSX Project Data</span
                       >
                       <div class="ml-4 flex-shrink-0">
                         <!-- prettier-ignore -->
                         <% if current_user %>
-                        <!-- prettier-ignore -->
                         <%= link_to "Email Export", export_project_path(@project, export_type_name: '.xlsx legacy'), method: :post, class: "font-medium text-indigo-600 hover:text-indigo-500" %>
-                    <% else %>
+                        <% else %>
                         <form
                           method="POST"
                           action="/projects/#{@project.id}/export"
