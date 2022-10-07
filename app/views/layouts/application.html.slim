@@ -44,7 +44,7 @@ html class='no-js' lang='en'
     noscript
       iframe class="iframe" onload="resizeIframe(this)" src="https://www.googletagmanager.com/ns.html?id=GTM-KFBGXK" width="0" style="display:none;visibility:hidden">
 
-    iframe class="iframe" onload="resizeIframe(this)" src="/ahrq_header.html" text="AHRQ Header" title="AHRQ Header" width="100%" frameborder="0" scrolling="no" seemless
+    iframe class="iframe" onload="resizeIframe(this)" src="/ahrq_header.html" text="AHRQ Header" title="AHRQ Header" height="101px" width="100%" frameborder="0" scrolling="no" seemless
       p Browser does not support iframes. Please update your browser to for a better viewing experience.
 
     - if content_for?(:content)
@@ -69,7 +69,7 @@ html class='no-js' lang='en'
         .off-canvas-content data-off-canvas-content=''
           = render "shared/topbar_nav"
 
-          .content
+          div class="min-h-[10vh]"
             / .breadcrumbs = render_breadcrumbs tag: :li, separator: ''
             - if content_for(:project_title)
               div style='margin-left: 2rem;'
