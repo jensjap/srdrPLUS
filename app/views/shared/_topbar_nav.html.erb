@@ -1,0 +1,225 @@
+<style>
+  a:hover,
+  a:focus {
+    color: white;
+    text-decoration: initial;
+  }
+</style>
+
+<div class="z-10 !sticky top-0" x-data="{ mobile: false }">
+  <nav class="bg-srdr-primary">
+    <div class="mx-auto px-4 lg:px-8">
+      <div class="flex h-16 items-center justify-between">
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <!-- prettier-ignore -->
+            <%= image_tag('brand.png', alt: 'srdrPLUS - Home', class: 'block h-8 w-auto lg:hidden') %>
+            <%= image_tag('brand.png', alt: 'srdrPLUS - Home', class: 'hidden h-8 w-auto lg:block') %>
+          </div>
+          <div class="hidden lg:ml-6 lg:block">
+            <div class="flex space-x-4">
+              <!-- Current: "rounded-md bg-srdr-secondary px-3 py-2 text-sm font-medium text-white" -->
+              <a
+                href="#"
+                class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white"
+                >Home</a
+              >
+              <a
+                href="#"
+                class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white"
+                >Blog</a
+              >
+              <a
+                href="#"
+                class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white"
+                >Published Projects</a
+              >
+              <a
+                href="#"
+                class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white"
+                >Search</a
+              >
+              <a
+                href="#"
+                class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white"
+                >Help</a
+              >
+            </div>
+          </div>
+        </div>
+        <div class="hidden lg:ml-6 lg:block">
+          <div class="flex items-center">
+            <!-- Profile dropdown -->
+            <div class="relative ml-3">
+              <div>
+                <a
+                  href="#"
+                  class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white"
+                  >Account</a
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="-mr-2 flex lg:hidden">
+          <!-- Mobile menu button -->
+          <button
+            type="button"
+            class="inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-srdr-secondary hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
+            aria-controls="mobile-menu"
+            aria-expanded="false"
+            @click="mobile = !mobile"
+          >
+            <span class="sr-only">Open main menu</span>
+            <!--
+              Icon when menu is closed.
+
+              Heroicon name: outline/bars-3
+
+              Menu open: "hidden", Menu closed: "block"
+            -->
+            <svg
+              class="block h-6 w-6"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+              />
+            </svg>
+            <!--
+              Icon when menu is open.
+
+              Heroicon name: outline/x-mark
+
+              Menu open: "block", Menu closed: "hidden"
+            -->
+            <svg
+              class="hidden h-6 w-6"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile menu, show/hide based on menu state. -->
+    <div class="lg:hidden" id="mobile-menu" x-show="mobile">
+      <div class="space-y-1 px-2 pt-2 pb-3">
+        <!-- Current: "block rounded-md bg-srdr-secondary px-3 py-2 text-base font-medium text-white" -->
+        <a
+          href="#"
+          class="block rounded-md bg-srdr-secondary px-3 py-2 text-base font-medium text-white"
+          >Dashboard</a
+        >
+        <a
+          href="#"
+          class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white"
+          >Team</a
+        >
+        <a
+          href="#"
+          class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white"
+          >Projects</a
+        >
+        <a
+          href="#"
+          class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white"
+          >Calendar</a
+        >
+        <a
+          href="#"
+          class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white"
+          >Account</a
+        >
+      </div>
+    </div>
+
+    <div
+      class="bg-srdr-secondary mx-auto px-4 lg:px-8 text-white overflow-x-auto whitespace-nowrap"
+    >
+      <div class="flex h-8 items-center justify-between">
+        <div class="!sticky left-0">
+          Project ID#866: Non-Pharma Treatments for Pain in HIV Scoping Project
+        </div>
+      </div>
+      <div class="flex h-12 items-center justify-between">
+        <div class="flex items-center">
+          <!-- Current: "rounded-md bg-srdr-secondary px-3 py-2 text-sm font-medium text-white" -->
+          <a
+            href="#"
+            class="rounded-md bg-srdr-primary px-3 py-2 text-sm font-medium text-white"
+            >Project Info</a
+          >
+          <a
+            href="#"
+            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white"
+            >Key Questions</a
+          >
+          <a
+            href="#"
+            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white"
+            >Member(s) & Role(s)</a
+          >
+          <a
+            href="#"
+            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white"
+            >Extractions Form Builder</a
+          >
+          <a
+            href="#"
+            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white"
+            >Citation Pool</a
+          >
+          <a
+            href="#"
+            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white"
+            >Tasks</a
+          >
+          <a
+            href="#"
+            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white"
+            >Screen</a
+          >
+          <a
+            href="#"
+            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white"
+            >Extractions</a
+          >
+          <a
+            href="#"
+            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white"
+            >Export Data</a
+          >
+          <a
+            href="#"
+            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white"
+            >Comparison Tool</a
+          >
+          <a
+            href="#"
+            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white"
+            >Request Publication</a
+          >
+        </div>
+      </div>
+    </div>
+  </nav>
+</div>
