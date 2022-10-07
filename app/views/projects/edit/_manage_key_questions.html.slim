@@ -1,51 +1,52 @@
-- if @project.duplicate_key_question?
+div class="mx-auto p-4 lg:p-8"
+  - if @project.duplicate_key_question?
 
-  p#warning.callout.alert
-    ' Notice: Duplicate Key Question text detected. This is likely a mistake. Please correct below.
+    p#warning.callout.alert
+      ' Notice: Duplicate Key Question text detected. This is likely a mistake. Please correct below.
 
-.table-scroll
+  .table-scroll
 
-  table.hover
+    table.hover
 
-    thead
-      tr
-        th style="min-width: 0; width: 10px;"
-        th = t('key_question_text')
-        th = t('assigned')
-        th = t('date_created')
-        th = t('date_updated')
+      thead
+        tr
+          th style="min-width: 0; width: 10px;"
+          th = t('key_question_text')
+          th = t('assigned')
+          th = t('date_created')
+          th = t('date_updated')
 
-    //orderable-table class is used for drag and drop
-    tbody.orderable-list orderable-url="#{ update_positions_api_v1_orderings_url }"
-      - @project.key_questions_projects.each do |kqp|
-        tr.orderable-item [ position="#{ kqp.ordering.position }" ordering-id="#{ kqp.ordering.id }" ]
-          td.sort-handle style="min-width: 0; vertical-align: middle; width: 10px; cursor: pointer;"
-            i class="fa fa-arrows"
-          td = kqp.key_question.name
-          td
-            - if kqp.extraction_forms_projects_section.present?
-              i.fi-check style='color: green;'
-          td = kqp.created_at.in_time_zone(current_user.profile.time_zone).strftime('%b %-d, %Y - %l:%M %P')
-          td = kqp.updated_at.in_time_zone(current_user.profile.time_zone).strftime('%b %-d, %Y - %l:%M %P')
-          td = link_to edit_key_questions_project_path(kqp) do
-            i.fi-pencil>
-            = t('edit')
-          td = link_to kqp, method: :delete, data: { confirm: t('confirm') } do
-            i.fi-trash>
-            = t('remove')
+      //orderable-table class is used for drag and drop
+      tbody.orderable-list orderable-url="#{ update_positions_api_v1_orderings_url }"
+        - @project.key_questions_projects.each do |kqp|
+          tr.orderable-item [ position="#{ kqp.ordering.position }" ordering-id="#{ kqp.ordering.id }" ]
+            td.sort-handle style="min-width: 0; vertical-align: middle; width: 10px; cursor: pointer;"
+              i class="fa fa-arrows"
+            td = kqp.key_question.name
+            td
+              - if kqp.extraction_forms_projects_section.present?
+                i.fi-check style='color: green;'
+            td = kqp.created_at.in_time_zone(current_user.profile.time_zone).strftime('%b %-d, %Y - %l:%M %P')
+            td = kqp.updated_at.in_time_zone(current_user.profile.time_zone).strftime('%b %-d, %Y - %l:%M %P')
+            td = link_to edit_key_questions_project_path(kqp) do
+              i.fi-pencil>
+              = t('edit')
+            td = link_to kqp, method: :delete, data: { confirm: t('confirm') } do
+              i.fi-trash>
+              = t('remove')
 
-hr
+  hr
 
-h6 = t('create_key_question')
+  h6 = t('create_key_question')
 
-= simple_form_for(KeyQuestionsProject.new(project: @project), url: project_key_questions_projects_path(@project),
-                                                              html: { 'abide': '', 'live-validate': true },
-                                                              remote: false) do |f|
+  = simple_form_for(KeyQuestionsProject.new(project: @project), url: project_key_questions_projects_path(@project),
+                                                                html: { 'abide': '', 'live-validate': true },
+                                                                remote: false) do |f|
 
-  == render 'key_questions_projects/form', f: f
+    == render 'key_questions_projects/form', f: f
 
-- if @project.key_questions.present?
-  - efp = @project.extraction_forms_projects.first
-  = link_to 'Build Extraction Form', build_extraction_forms_project_path(efp.id, 'panel-tab': efp.default_section_id), class: 'button', style: 'float: right'
-- else
-  div.button style='float: right; opacity: 0.25;' onclick="alert('You must add at least one key question first.')" Build Extraction Form
+  - if @project.key_questions.present?
+    - efp = @project.extraction_forms_projects.first
+    = link_to 'Build Extraction Form', build_extraction_forms_project_path(efp.id, 'panel-tab': efp.default_section_id), class: 'button', style: 'float: right'
+  - else
+    div.button style='float: right; opacity: 0.25;' onclick="alert('You must add at least one key question first.')" Build Extraction Form

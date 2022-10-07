@@ -53,6 +53,7 @@ class TasksController < ApplicationController
 #  end
 
   def index
+    @nav_buttons.push('tasks')
     @tasks = Task.joins(:projects)
       .group('tasks.id')
       .where(:projects => { :id => @project.id }).all

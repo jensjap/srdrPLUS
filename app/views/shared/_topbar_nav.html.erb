@@ -6,7 +6,28 @@
   }
 </style>
 
-<div class="z-10 !sticky top-0" x-data="{ mobile: false }">
+<div
+  class="z-10 !sticky top-0"
+  x-data="{
+  mobile: false,
+  home: <%= @nav_buttons.include?('home') %>,
+  blog: <%= @nav_buttons.include?('blog') %>,
+  search: <%= @nav_buttons.include?('search') %>,
+  help: <%= @nav_buttons.include?('help') %>,
+  account: <%= @nav_buttons.include?('account') %>,
+  published_projects: <%= @nav_buttons.include?('published_projects') %>,
+  project_info: <%= @nav_buttons.include?('project_info') %>,
+  key_questions: <%= @nav_buttons.include?('key_questions') %>,
+  members_and_roles: <%= @nav_buttons.include?('members_and_roles') %>,
+  extractions_form_builder: <%= @nav_buttons.include?('extractions_form_builder') %>,
+  citation_pool: <%= @nav_buttons.include?('citation_pool') %>,
+  tasks: <%= @nav_buttons.include?('tasks') %>,
+  screen: <%= @nav_buttons.include?('screen') %>,
+  extractions: <%= @nav_buttons.include?('extractions') %>,
+  comparison_tool: <%= @nav_buttons.include?('comparison_tool') %>,
+  request_publication: <%= @nav_buttons.include?('request_publication') %>,
+}"
+>
   <nav class="bg-srdr-primary">
     <div class="mx-auto px-4 lg:px-8">
       <div class="flex h-16 items-center justify-between">
@@ -20,28 +41,33 @@
             <div class="flex space-x-4">
               <!-- Current: "rounded-md bg-srdr-secondary px-3 py-2 text-sm font-medium text-white" -->
               <a
-                href="#"
+                href="<%= root_path(no_redirect: true) %>"
                 class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white"
+                :class="home && 'bg-srdr-secondary !text-white'"
                 >Home</a
               >
               <a
-                href="#"
+                href="<%= blog_path %>"
                 class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white"
+                :class="blog && 'bg-srdr-secondary !text-white'"
                 >Blog</a
               >
               <a
-                href="#"
+                href="<%= published_projects_path %>"
                 class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white"
+                :class="published_projects && 'bg-srdr-secondary !text-white'"
                 >Published Projects</a
               >
               <a
-                href="#"
+                href="<%= searches_path %>"
                 class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white"
+                :class="search && 'bg-srdr-secondary !text-white'"
                 >Search</a
               >
               <a
-                href="#"
+                href="<%= help_path %>"
                 class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white"
+                :class="help && 'bg-srdr-secondary !text-white'"
                 >Help</a
               >
             </div>
@@ -55,6 +81,7 @@
                 <a
                   href="#"
                   class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white"
+                  :class="account && 'bg-srdr-secondary !text-white'"
                   >Account</a
                 >
               </div>
@@ -120,6 +147,7 @@
       </div>
     </div>
 
+    <% if params[:controller] != 'static_pages' %>
     <!-- Mobile menu, show/hide based on menu state. -->
     <div class="lg:hidden" id="mobile-menu" x-show="mobile">
       <div class="space-y-1 px-2 pt-2 pb-3">
@@ -164,62 +192,73 @@
         <div class="flex items-center">
           <!-- Current: "rounded-md bg-srdr-secondary px-3 py-2 text-sm font-medium text-white" -->
           <a
-            href="#"
-            class="rounded-md bg-srdr-primary px-3 py-2 text-sm font-medium text-white"
+            href="<%= edit_project_path(Project.first) %>?page=info"
+            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white"
+            :class="project_info && 'bg-srdr-primary !text-white'"
             >Project Info</a
           >
           <a
-            href="#"
-            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white"
+            href="<%= edit_project_path(Project.first) %>?page=key_questions"
+            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white"
+            :class="key_questions && 'bg-srdr-primary !text-white'"
             >Key Questions</a
           >
           <a
-            href="#"
-            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white"
+            href="<%= edit_project_path(Project.first) %>?page=members_and_roles"
+            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white"
+            :class="members_and_roles && 'bg-srdr-primary !text-white'"
             >Member(s) & Role(s)</a
           >
           <a
-            href="#"
-            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white"
+            href="<%= build_extraction_forms_project_path(Project.first.extraction_forms_projects.first, 'panel-tab': Project.first.extraction_forms_projects.first.default_section_id) %>"
+            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white"
+            :class="extractions_form_builder && 'bg-srdr-primary !text-white'"
             >Extractions Form Builder</a
           >
           <a
-            href="#"
-            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white"
+            href="<%= project_citations_path(Project.first) %>"
+            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white"
+            :class="citation_pool && 'bg-srdr-primary !text-white'"
             >Citation Pool</a
           >
           <a
-            href="#"
-            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white"
+            href="<%= project_tasks_path(Project.first) %>"
+            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white"
+            :class="tasks && 'bg-srdr-primary !text-white'"
             >Tasks</a
           >
           <a
-            href="#"
-            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white"
+            href="<%= next_assignment_project_path(Project.first) %>"
+            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white"
+            :class="screen && 'bg-srdr-primary !text-white'"
             >Screen</a
           >
           <a
-            href="#"
-            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white"
+            href="<%= project_extractions_path(Project.first) %>"
+            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white"
+            :class="extractions && 'bg-srdr-primary !text-white'"
             >Extractions</a
           >
           <a
             href="#"
-            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white"
+            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white"
             >Export Data</a
           >
           <a
             href="#"
-            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white"
+            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white"
+            :class="comparison_tool && 'bg-srdr-primary !text-white'"
             >Comparison Tool</a
           >
           <a
             href="#"
-            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white"
+            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white"
+            :class="request_publication && 'bg-srdr-primary !text-white'"
             >Request Publication</a
           >
         </div>
       </div>
     </div>
+    <% end %>
   </nav>
 </div>

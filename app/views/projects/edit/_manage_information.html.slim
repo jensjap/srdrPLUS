@@ -1,37 +1,38 @@
-/! Modal for project deletion.
-#modal-project-delete.reveal.large data-reveal=""
+div class="mx-auto p-4 lg:p-8"
+  /! Modal for project deletion.
+  #modal-project-delete.reveal.large data-reveal=""
 
-= simple_form_for(@project, html: { id: "project-id-#{@project.id}", data: { 'abide': '', 'live-validate': true } }) do |f|
-  = f.error_notification
+  = simple_form_for(@project, html: { id: "project-id-#{@project.id}", data: { 'abide': '', 'live-validate': true } }) do |f|
+    = f.error_notification
 
-  .alert.callout data-abide-error='' style='display: none;'
-    p
-      i.fi-alert>
-      ' Please correct the errors below.
+    .alert.callout data-abide-error='' style='display: none;'
+      p
+        i.fi-alert>
+        ' Please correct the errors below.
 
-  .form-inputs
-    = f.input :name, label: t('name'), required: true, hint: 'Name can\'t be blank'
-    = f.input :description, label: t('topic_description'), input_html: { rows: 8 }
-    = f.input :attribution, label: t('attribution'), input_html: { rows: 4 }
-    = f.input :authors_of_report, label: t('authors_of_report'), input_html: { rows: 4 }
-    - methodology_options = ["Systematic Review", "Technical Brief", "Rapid Review", "Evidence Map", ""]
-    - if not methodology_options.include? f.object.methodology_description then methodology_options << f.object.methodology_description
-    = f.input :methodology_description,
-      as: :select,
-      selected: f.object.methodology_description,
-      collection: methodology_options,
-      label: t('methodology_description'),
-      input_html: { id: "project_method_description_select2", rows: 4 }
-    = f.input :prospero, label: t('prospero_id')
-    = f.input :doi, label: t('doi')
-    = f.input :notes, label: t('notes'), input_html: { rows: 8 }
-    = f.input :funding_source, label: t('funding_source')
-    = f.association :mesh_descriptors,
-      label: "Mesh Terms",
-      input_html: { rows: 10 }
+    .form-inputs
+      = f.input :name, label: t('name'), required: true, hint: 'Name can\'t be blank'
+      = f.input :description, label: t('topic_description'), input_html: { rows: 8 }
+      = f.input :attribution, label: t('attribution'), input_html: { rows: 4 }
+      = f.input :authors_of_report, label: t('authors_of_report'), input_html: { rows: 4 }
+      - methodology_options = ["Systematic Review", "Technical Brief", "Rapid Review", "Evidence Map", ""]
+      - if not methodology_options.include? f.object.methodology_description then methodology_options << f.object.methodology_description
+      = f.input :methodology_description,
+        as: :select,
+        selected: f.object.methodology_description,
+        collection: methodology_options,
+        label: t('methodology_description'),
+        input_html: { id: "project_method_description_select2", rows: 4 }
+      = f.input :prospero, label: t('prospero_id')
+      = f.input :doi, label: t('doi')
+      = f.input :notes, label: t('notes'), input_html: { rows: 8 }
+      = f.input :funding_source, label: t('funding_source')
+      = f.association :mesh_descriptors,
+        label: "Mesh Terms",
+        input_html: { rows: 10 }
 
-  .row style="margin-top: 10px;"
-    .column.small-6
-      = f.button :submit, t('save_changes')
-    .column.small-6 style="text-align: right;"
-      = link_to "Delete Project", confirm_deletion_project_path(@project), method: :get, class: "alert button", remote: true
+    .row style="margin-top: 10px;"
+      .column.small-6
+        = f.button :submit, t('save_changes')
+      .column.small-6 style="text-align: right;"
+        = link_to "Delete Project", confirm_deletion_project_path(@project), method: :get, class: "alert button", remote: true
