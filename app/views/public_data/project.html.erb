@@ -1,0 +1,379 @@
+<style>
+  html,
+  body {
+    scroll-behavior: smooth;
+    scroll-padding-top: 72px;
+  }
+</style>
+<div
+  class="flex"
+  x-data="{
+    projectSummary: false,
+    keyQuestions: false,
+    aef: false,
+    as: false,
+    downloadables: false,
+  }"
+>
+  <div
+    class="grow-0 shrink-0 basis-52 py-3 hidden xl:block w-52 overflow-y-auto top-[68px] bg-white z-0"
+    style="position: sticky; height: calc(100vh - 68px)"
+  >
+    <div>
+      <ul class="list-none m-0 px-2">
+        <li class="text-sm my-2">
+          <b class="cursor-pointer" @click="projectSummary = !projectSummary">
+            Project Summary Title and Description
+          </b>
+          <ul class="list-none m-0 px-2" x-show="projectSummary" x-collapse>
+            <li class="text-sm"><a href="#title">Title</a></li>
+            <li class="text-sm"><a href="#description">Description</a></li>
+            <li class="text-sm"><a href="#attribution">Attribution</a></li>
+            <li class="text-sm">
+              <a href="#authors-of-report">Authors of Report</a>
+            </li>
+            <li class="text-sm">
+              <a href="#methodology-description">Methodology description</a>
+            </li>
+            <li class="text-sm"><a href="#prospero">PROSPERO</a></li>
+            <li class="text-sm"><a href="#doi">DOI</a></li>
+            <li class="text-sm"><a href="#notes">Notes</a></li>
+            <li class="text-sm">
+              <a href="#funding-source">Funding Source</a>
+            </li>
+          </ul>
+        </li>
+        <li class="text-sm my-2">
+          <b class="cursor-pointer" @click="keyQuestions = !keyQuestions">
+            Key Questions
+          </b>
+          <ul class="list-none m-0 px-2" x-show="keyQuestions" x-collapse>
+            <!-- prettier-ignore -->
+            <% @project.key_questions.each_with_index do |kq, idx| %>
+            <li class="text-sm truncate">
+              <a href='#<%= "key-question-#{idx}" %>'>
+                <%= "#{idx + 1}. #{kq.name}" %>
+              </a>
+            </li>
+            <% end %>
+          </ul>
+        </li>
+        <li class="text-sm my-2">
+          <b class="cursor-pointer" @click="aef = !aef"
+            >Associated Extraction Forms
+          </b>
+          <ul class="list-none m-0 px-2" x-show="aef" x-collapse>
+            <!-- prettier-ignore -->
+            <% @project.extraction_forms_projects.includes([:extraction_forms_project_type]).each do |extraction_form_project| %>
+            <li class="text-sm">
+              <a href='#<%= "aef-#{extraction_form_project.id}" %>'>
+                <!-- prettier-ignore -->
+                <%= extraction_form_project.extraction_forms_project_type.name %>
+              </a>
+            </li>
+            <% end %>
+          </ul>
+        </li>
+        <li class="text-sm my-2">
+          <b class="cursor-pointer" @click="as = !as">Associated Studies</b>
+          <ul class="list-none m-0 px-2" x-show="as" x-collapse>
+            <!-- prettier-ignore -->
+            <% @project.extractions.includes(citations_project: { citation: :journal }).each do |extraction| %>
+            <li class="text-sm truncate">
+              <a href='#<%= "as-#{extraction.id}" %>'
+                ><%= extraction.citation.name %></a
+              >
+            </li>
+            <% end %>
+          </ul>
+        </li>
+        <li class="text-sm my-2">
+          <b class="cursor-pointer" @click="downloadables = !downloadables"
+            >Downloadable Data Content
+          </b>
+          <ul class="list-none m-0 px-2" x-show="downloadables" x-collapse>
+            <li class="text-sm">
+              <a href="#downloadable">Downloadable File</a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div
+    class="w-auto mx-auto py-16 md:py-6 sm:px-6 lg:px-8 overflow-y-auto"
+    id="printableArea"
+  >
+    <div class="max-w-7xl mx-auto space-y-6">
+      <h1 class="text-3xl font-medium text-warm-gray-900">
+        <%= empty_or_na(@project.name) %>
+      </h1>
+      <div class="bg-white shadow sm:rounded-lg">
+        <div class="px-4 py-5 sm:px-6 bg-purple-900">
+          <h1 class="text-2xl leading-6 font-medium text-white">
+            Project Summary Title and Description
+          </h1>
+        </div>
+        <div class="border-t border-gray-200 px-4 py-5 sm:p-0">
+          <dl class="sm:divide-y sm:divide-gray-200">
+            <div
+              id="title"
+              class="py-4 sm:py-5 sm:grid sm:grid-cols-1 sm:gap-4 sm:px-6"
+            >
+              <dt class="text-sm font-medium text-gray-500">Title</dt>
+              <dd class="mt-1 text-gray-900 sm:mt-0 sm:col-span-2">
+                <%= empty_or_na(@project.name) %>
+              </dd>
+            </div>
+            <div
+              id="description"
+              class="py-4 sm:py-5 sm:grid sm:grid-cols-1 sm:gap-4 sm:px-6"
+            >
+              <dt class="text-sm font-medium text-gray-500">Description</dt>
+              <dd class="mt-1 text-gray-900 sm:mt-0 sm:col-span-2">
+                <%= empty_or_na(@project.description) %>
+              </dd>
+            </div>
+            <div
+              id="attribution"
+              class="py-4 sm:py-5 sm:grid sm:grid-cols-1 sm:gap-4 sm:px-6"
+            >
+              <dt class="text-sm font-medium text-gray-500">Attribution</dt>
+              <dd class="mt-1 text-gray-900 sm:mt-0 sm:col-span-2">
+                <%= empty_or_na(@project.attribution) %>
+              </dd>
+            </div>
+            <div
+              id="authors-of-report"
+              class="py-4 sm:py-5 sm:grid sm:grid-cols-1 sm:gap-4 sm:px-6"
+            >
+              <dt class="text-sm font-medium text-gray-500">
+                Authors of Report
+              </dt>
+              <dd class="mt-1 text-gray-900 sm:mt-0 sm:col-span-2">
+                <%= empty_or_na(@project.authors_of_report) %>
+              </dd>
+            </div>
+            <div
+              id="methodology-description"
+              class="py-4 sm:py-5 sm:grid sm:grid-cols-1 sm:gap-4 sm:px-6"
+            >
+              <dt class="text-sm font-medium text-gray-500">
+                Methodology description
+              </dt>
+              <dd class="mt-1 text-gray-900 sm:mt-0 sm:col-span-2">
+                <%= empty_or_na(@project.methodology_description) %>
+              </dd>
+            </div>
+            <div
+              id="prospero"
+              class="py-4 sm:py-5 sm:grid sm:grid-cols-1 sm:gap-4 sm:px-6"
+            >
+              <dt class="text-sm font-medium text-gray-500">PROSPERO</dt>
+              <dd class="mt-1 text-gray-900 sm:mt-0 sm:col-span-2">
+                <%= empty_or_na(@project.prospero) %>
+              </dd>
+            </div>
+            <div
+              id="doi"
+              class="py-4 sm:py-5 sm:grid sm:grid-cols-1 sm:gap-4 sm:px-6"
+            >
+              <dt class="text-sm font-medium text-gray-500">DOI</dt>
+              <dd class="mt-1 text-gray-900 sm:mt-0 sm:col-span-2">
+                <%= empty_or_na(@project.doi) %>
+              </dd>
+            </div>
+            <div
+              id="notes"
+              class="py-4 sm:py-5 sm:grid sm:grid-cols-1 sm:gap-4 sm:px-6"
+            >
+              <dt class="text-sm font-medium text-gray-500">Notes</dt>
+              <dd class="mt-1 text-gray-900 sm:mt-0 sm:col-span-2">
+                <%= empty_or_na(@project.notes) %>
+              </dd>
+            </div>
+            <div
+              id="funding-source"
+              class="py-4 sm:py-5 sm:grid sm:grid-cols-1 sm:gap-4 sm:px-6"
+            >
+              <dt class="text-sm font-medium text-gray-500">Funding Source</dt>
+              <dd class="mt-1 text-gray-900 sm:mt-0 sm:col-span-2">
+                <%= empty_or_na(@project.funding_source) %>
+              </dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+      <div class="bg-white shadow sm:rounded-lg">
+        <div class="px-4 py-5 sm:px-6 bg-purple-900">
+          <h1 class="text-2xl leading-6 font-medium text-white">
+            Key Questions
+          </h1>
+        </div>
+        <!-- prettier-ignore -->
+        <% @project.key_questions.each_with_index do |kq, idx| %>
+        <div
+          id='<%= "key-question-#{idx}" %>'
+          class="border-t border-gray-200 px-4 py-5 sm:p-0"
+        >
+          <dl class="sm:divide-y sm:divide-gray-200">
+            <div class="py-4 sm:py-5 sm:grid sm:grid-cols-1 sm:gap-4 sm:px-6">
+              <dd class="mt-1 text-gray-900 sm:mt-0 sm:col-span-2">
+                <%= "#{idx + 1}. #{kq.name}" %>
+              </dd>
+            </div>
+          </dl>
+        </div>
+        <% end %>
+      </div>
+      <div class="bg-white shadow sm:rounded-lg">
+        <div class="px-4 py-5 sm:px-6 bg-purple-900">
+          <h1 class="text-2xl leading-6 font-medium text-white">
+            Associated Extraction Forms
+          </h1>
+        </div>
+        <div class="border-t border-gray-200 px-4 py-5 sm:p-0">
+          <dl class="sm:divide-y sm:divide-gray-200">
+            <table class="table-auto">
+              <thead>
+                <tr>
+                  <th>Type</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- prettier-ignore -->
+                <% @project.extraction_forms_projects.includes([:extraction_forms_project_type]).each do |extraction_form_project| %>
+                <tr id='<%= "aef-#{extraction_form_project.id}" %>'>
+                  <!-- prettier-ignore -->
+                  <td><%= link_to extraction_form_project.extraction_forms_project_type.name, "/public_data?id=#{extraction_form_project.id}&type=extraction_form" %>
+                </td>
+                </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </dl>
+        </div>
+      </div>
+      <div class="bg-white shadow sm:rounded-lg">
+        <div class="px-4 py-5 sm:px-6 bg-purple-900">
+          <h1 class="text-2xl leading-6 font-medium text-white">
+            Associated Studies (each link opens a new tab)
+          </h1>
+        </div>
+        <div class="border-t border-gray-200 px-4 py-5 sm:p-0">
+          <dl class="sm:divide-y sm:divide-gray-200">
+            <table class="table-auto">
+              <thead>
+                <tr>
+                  <th>Title</th>
+                  <th>Authors</th>
+                  <th>Year</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- prettier-ignore -->
+                <% @project.extractions.includes(citations_project: { citation: :journal }).each do |extraction| %>
+                <% citation = extraction.citation %>
+                <tr id='<%= "as-#{extraction.id}" %>'>
+                  <!-- prettier-ignore -->
+                  <td><%= link_to citation.name, "/public_data?id=#{extraction.id}&type=extraction", target: :_blank %>
+                  </td>
+                  <!-- prettier-ignore -->
+                  <td><%= citation.authors_citations.includes([:ordering, :author]).sort_by { |ac| [ac.ordering.position, ac.author.name] }.map(&:author).map(&:name).join('; ') %>
+                  </td>
+                  <!-- prettier-ignore -->
+                  <td><%= citation.try(:journal).try(:publication_date) %>
+                  </td>
+                </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </dl>
+        </div>
+      </div>
+      <div class="bg-white shadow sm:rounded-lg">
+        <div class="px-4 py-5 sm:px-6 bg-purple-900">
+          <h1
+            class="text-2xl leading-6 font-medium text-white"
+            id="downloadable-data-section"
+          >
+            Downloadable Data Content
+          </h1>
+        </div>
+        <div class="border-t border-gray-200 px-4 py-5 sm:p-0">
+          <dl class="sm:divide-y sm:divide-gray-200">
+            <div
+              id="downloadable"
+              class="py-4 sm:py-5 sm:grid sm:grid-cols-1 sm:gap-4 sm:px-6"
+            >
+              <dt class="text-sm font-medium text-gray-500">Files</dt>
+              <dd class="mt-1 text-gray-900 sm:mt-0 sm:col-span-2">
+                <ul
+                  class="border border-gray-200 rounded-md divide-y divide-gray-200"
+                >
+                  <li class="pl-3 pr-4 py-3 flex items-center justify-between">
+                    <div class="w-0 flex-1 flex items-center">
+                      <svg
+                        class="flex-shrink-0 h-5 w-5 text-gray-400"
+                        aria-hidden="true"
+                        fill="currentColor"
+                        viewbox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          clip-rule="evenodd"
+                          d="M8 4a3 3 0 00-3 3v4a5 5 0 0010 0V7a1 1 0 112 0v4a7 7 0 11-14 0V7a5 5 0 0110 0v4a3 3 0 11-6 0V7a1 1 0 012 0v4a1 1 0 102 0V7a3 3 0 00-3-3z"
+                          fill-rule="evenodd"
+                        />
+                      </svg>
+                      <span class="ml-2 flex-1 w-0 truncate"
+                        >XLSX Project Data</span
+                      >
+                      <div class="ml-4 flex-shrink-0">
+                        <!-- prettier-ignore -->
+                        <% if current_user %>
+                        <%= link_to "Email Export", export_project_path(@project, export_type_name: '.xlsx legacy'), method: :post, class: "font-medium text-indigo-600 hover:text-indigo-500" %>
+                        <% else %>
+                        <form
+                          method="POST"
+                          action="/projects/#{@project.id}/export"
+                        >
+                          <input
+                            name="authenticity_token"
+                            type="hidden"
+                            value="#{form_authenticity_token}"
+                          />
+                          <input
+                            name="export_type_name"
+                            type="hidden"
+                            value=".xlsx legacy"
+                          />
+                          <input
+                            name="email"
+                            placeholder="your@email.com"
+                            class="border border-gray-200 rounded-md px-4 py-3 mx-4"
+                            pattern="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$"
+                            required="true"
+                          />
+                          <input
+                            type="submit"
+                            value="Email Export"
+                            class="button"
+                          />
+                        </form>
+                        <% end %>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+      <button class="button" onClick="printPrintableArea()">
+        <i class="fi-print"> Print Data</i>
+      </button>
+    </div>
+  </div>
+</div>
