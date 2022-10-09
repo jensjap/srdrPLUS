@@ -29,11 +29,13 @@
                 | Search
                 i.fi-magnifying-glass
 
-              li class="#{ 'border-b-2 border-b-white' if ["citing", "usage", "about", "contact"].include?controller.action_name }" aria-expanded="false"
-                = link_to('#') do
+              li class="#{ 'border-b-2 border-b-white' if ["help", "citing", "usage", "about", "contact"].include?controller.action_name }" aria-expanded="false"
+                = link_to("Help", help_path)
+
+                /= link_to('#') do
                   | Help
                   i class="fi-list"
-                ul.menu style='min-width: 450px'
+                /ul.menu style='min-width: 450px'
                   h6
                     b Tutorials - PDF Guides
                     li = link_to('User Guide', 'https://srdrplus.s3.amazonaws.com/SRDR%2B+User+Guide+-+10-13-21_Final.pdf', target: '_blank')
