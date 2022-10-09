@@ -15,6 +15,7 @@ html class='no-js' lang='en'
       gtag('config', 'GTM-KFBGXK');
 
     script src="https://kit.fontawesome.com/a55e144d79.js" crossorigin="anonymous"
+    script defer="true" src="https://unpkg.com/@alpinejs/collapse@3.x.x/dist/cdn.min.js"
     script defer="true" src="https://unpkg.com/alpinejs@3.10.2/dist/cdn.min.js"
 
     = stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload"
@@ -50,7 +51,7 @@ html class='no-js' lang='en'
       = yield(:content)
 
     - else
-      .off-canvas-wrapper
+      div
         - if (controller_name.eql?('projects') && not(action_name.eql?('index')) && not(action_name.eql?('new'))) \
             || controller_name.eql?('extractions') \
             || controller_name.eql?('extraction_forms_projects') \
@@ -76,6 +77,7 @@ html class='no-js' lang='en'
             = yield
             = render 'shared/scroll_top_wrapper'
 
+    = render 'layouts/srdr_plus_footer'
 
     iframe src="/ahrq_footer.html" text="AHRQ Footer" title="AHRQ Footer" height="570" width="100%" frameborder="0" scrolling="no" seemless
       p Browser does not support iframes. Please update your browser to for a better viewing experience.
