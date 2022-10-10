@@ -1,1 +1,1 @@
-li = link_to('My Projects', projects_path)
+li class="#{ 'border-b-2 border-b-white' unless [StaticPagesController, SearchesController, Users::RegistrationsController, ProfilesController].include?controller.class }" = link_to('My Projects', projects_path)

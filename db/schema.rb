@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_06_14_151542) do
+ActiveRecord::Schema[7.0].define(version: 2022_09_28_085850) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -62,7 +62,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_14_151542) do
     t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
   end
 
-  create_table "active_storage_variant_records", charset: "utf8mb3", force: :cascade do |t|
+  create_table "active_storage_variant_records", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.string "variation_digest", null: false
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
@@ -164,11 +164,12 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_14_151542) do
   end
 
   create_table "authors", id: :integer, charset: "utf8mb4", collation: "utf8mb4_bin", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
-    t.string "name", collation: "utf8_general_ci"
+    t.string "name", collation: "utf8mb3_general_ci"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.datetime "deleted_at", precision: nil
     t.index ["deleted_at"], name: "index_authors_on_deleted_at"
+    t.index ["name"], name: "index_authors_on_name"
   end
 
   create_table "authors_citations", charset: "utf8mb3", force: :cascade do |t|
@@ -188,12 +189,12 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_14_151542) do
 
   create_table "citations", id: :integer, charset: "utf8mb4", collation: "utf8mb4_bin", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "citation_type_id"
-    t.string "name", limit: 500, collation: "utf8_general_ci"
+    t.string "name", limit: 500, collation: "utf8mb3_general_ci"
     t.datetime "deleted_at", precision: nil
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.string "refman", collation: "utf8_general_ci"
-    t.string "pmid", collation: "utf8_general_ci"
+    t.string "refman", collation: "utf8mb3_general_ci"
+    t.string "pmid", collation: "utf8mb3_general_ci"
     t.binary "abstract"
     t.string "page_number_start"
     t.string "page_number_end"
@@ -203,6 +204,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_14_151542) do
     t.string "accession_number"
     t.index ["citation_type_id"], name: "index_citations_on_citation_type_id"
     t.index ["deleted_at"], name: "index_citations_on_deleted_at"
+    t.index ["name"], name: "index_citations_on_name"
     t.index ["pmid"], name: "index_citations_on_pmid"
   end
 
@@ -353,7 +355,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_14_151542) do
     t.datetime "updated_at", precision: nil, null: false
   end
 
-  create_table "data_audits", id: :integer, charset: "utf8mb3", force: :cascade do |t|
+  create_table "data_audits", id: :integer, charset: "utf8mb4", collation: "utf8mb4_bin", force: :cascade do |t|
     t.boolean "epc_source"
     t.string "epc_name"
     t.string "non_epc_name"
@@ -495,7 +497,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_14_151542) do
     t.index ["extraction_id"], name: "index_extraction_checksums_on_extraction_id"
   end
 
-  create_table "extraction_forms", id: :integer, charset: "utf8mb3", collation: "utf8_bin", force: :cascade do |t|
+  create_table "extraction_forms", id: :integer, charset: "utf8mb3", collation: "utf8mb3_bin", force: :cascade do |t|
     t.string "name"
     t.datetime "deleted_at", precision: nil
     t.datetime "created_at", precision: nil, null: false
@@ -801,10 +803,10 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_14_151542) do
     t.integer "citation_id"
     t.string "volume"
     t.string "issue"
-    t.string "name", limit: 1000, collation: "utf8_general_ci"
+    t.string "name", limit: 1000, collation: "utf8mb3_general_ci"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.string "publication_date", collation: "utf8_general_ci"
+    t.string "publication_date", collation: "utf8mb3_general_ci"
     t.index ["citation_id"], name: "index_journals_on_citation_id"
   end
 
@@ -815,7 +817,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_14_151542) do
   end
 
   create_table "key_questions", id: :integer, charset: "utf8mb4", collation: "utf8mb4_bin", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
-    t.text "name", collation: "utf8_bin"
+    t.text "name", collation: "utf8mb3_bin"
     t.datetime "deleted_at", precision: nil
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
@@ -1015,7 +1017,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_14_151542) do
   end
 
   create_table "organizations", id: :integer, charset: "utf8mb4", collation: "utf8mb4_bin", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
-    t.string "name", collation: "utf8_general_ci"
+    t.string "name", collation: "utf8mb3_general_ci"
     t.datetime "deleted_at", precision: nil
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
@@ -1072,6 +1074,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_14_151542) do
     t.datetime "deleted_at", precision: nil
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
+    t.integer "projects_paginate_per"
     t.index ["deleted_at"], name: "index_profiles_on_deleted_at"
     t.index ["organization_id"], name: "index_profiles_on_organization_id"
     t.index ["user_id"], name: "index_profiles_on_user_id", unique: true
@@ -1821,7 +1824,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_14_151542) do
   end
 
   create_table "terms", id: :integer, charset: "utf8mb4", collation: "utf8mb4_bin", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
-    t.string "name", collation: "utf8_general_ci"
+    t.string "name", collation: "utf8mb3_general_ci"
   end
 
   create_table "timepoint_names", id: :integer, charset: "utf8mb3", force: :cascade do |t|

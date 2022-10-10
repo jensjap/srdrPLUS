@@ -1,3 +1,5 @@
+- content_for :title, content="Published Projects"
+
 .grid-container.fluid
   .grid-x.align-center-middle.Recently-published
     .cell.medium-9
@@ -23,7 +25,7 @@
                   span.bold = project.name
                   .small
                     |
-                      #{ project.citations.count } Studies &bull; #{ project.key_questions.count } Key Questions &bull; #{ project.extractions.count } Extraction Forms
+                      #{ project.citations.count } Citations &bull; #{ project.key_questions.count } Key Questions &bull; #{ project.extractions.count } Extraction Forms
                   .small
                     = "Project created on #{ project.created_at.to_datetime.strftime("%B %d, %Y") } "
                     br

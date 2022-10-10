@@ -4,7 +4,7 @@ html class='no-js' lang='en'
     meta charset='utf-8'
     meta name='viewport' content='width=device-width, initial-scale=1.0'
 
-    title == content_for?(:title) ? yield(:title) : 'SRDR+'
+    title == content_for?(:title) ? yield(:title) + " | SRDR+" : 'SRDR+'
 
     / Google Tag Manager
     script[async src="https://www.googletagmanager.com/gtag/js?id=GTM-KFBGXK"]

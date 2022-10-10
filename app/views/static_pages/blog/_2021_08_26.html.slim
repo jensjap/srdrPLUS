@@ -1,0 +1,87 @@
+- content_for :title, content="SRDR+ as a Tool to Teach Evidence Synthesis Principles and Methods"
+
+div style="position: fixed; top: 600px; left: 20px; width: 260px;"
+  h2 Blog Posts:
+  br/
+  ul.vertical.menu
+    li.is-active
+      = link_to "SRDR+ as a Tool to Teach Evidence Synthesis Principles and Methods", blog_path(params: { date: '2021_08_26' })
+    li
+      = link_to "Enhancements to SRDR+, the Next-Level Replacement For SRDR",  blog_path(params: { date: '2021_04_14' })
+    li
+      = link_to "SRDR+ Presents New Importing Capability for FHIR-formatted Citation Files for Systematic Reviews",  blog_path(params: { date: '2021_03_05' })
+    li
+      = link_to "The newly updated Systematic Review Data Repository Plus (SRDR+)",  blog_path(params: { date: '2019_03_07' })
+
+.blog
+  .hero.enhancement
+    .grid-x.align-center.align-middle
+      .cell.medium-6.Hero-Message
+        h1.Enhancements-to-SRDR SRDR+ as a Tool to Teach Evidence Synthesis Principles and Methods
+        h2.subheader
+          = image_tag("testimonial-james-scott-parrott.png", size: "128x128", alt: 'Image of James Scott Parrott', class: "james_scott_parrott_photo_png")
+          span style="font-size: 0.7em; color: #fff;"  James Scott Parrott | August 26, 2021
+
+  .grid-container.blog
+    .grid-x.align-center.align-middle
+      .cell.medium-6
+        br
+        p When I first began teaching the principles and methods of evidence synthesis (i.e., how to conduct a systematic review) over a decade ago, I cast around to find an online platform learners could use to extract information from an article for their systematic review. At the time, I was not particularly mindful of the andragogical utility of any of the tools I considered. Rather, I was focused on finding something that
+        br
+        ol style="list-style: decimal; list-style-position: outside; margin-left: 60px; font-size: 21px; line-height: 26px;"
+          li Had a relational database structure
+          li Was customizable while still providing enough initial structure to support someone new to the process
+          li Was relatively inexpensive (free was ideal).
+        br
+        p While something like Microsoft Excel® (which the prior instructor had been using) fit the bill on the last count, it was annoyingly fussy to try to set up a sheet or sheets to account for the multiple-to-one structure required to capture the multiple measures per outcome, multiple outcomes per arm, multiple arms per study, and so on.
+        br
+        p That’s when a colleague asked if I had ever heard of the Agency for Healthcare Research and Quality (AHRQ)-funded Systematic Review Data Repository (SRDR). I tried it, loved it, and ultimately adopted it for my course. Since that time, I have had over fifty learners successfully carry out their systematic review projects using SRDR (and now, SRDR+).
+        br
+        p I have realized since that SRDR+ can be used as a scaffold to teach key concepts in evidence synthesis.
+        br
+        p Part of the challenge of authoring a systematic review and meta-analysis is that you need to have a clear sense of what you need before you need it. In other words, we canonically imagine that the steps of the evidence synthesis process flow from our PICO to extraction template construction, to data extraction, to data analyses, and finally to the conclusion (the story, if you will). In fact, the process is much less linear.
+        br
+        ul style="list-style: disc; list-style-position: outside; margin-left: 60px; font-size: 21px; line-height: 26px;"
+          li How and why we formulate a PICO (or other type of evidence synthesis question) depends on where we imagine our conclusion—or story—will “fit” within the larger context of what is known and what is done. So, it is our (at this point) vaguely imagined story that informs our PICO.
+          li When structuring the data extraction template, we must have a sense of what pieces of information we need to collect. Generally, learners are at a loss as to precisely what information their future story demands.
+          li At the data extraction stage, we need to have a clear sense of the best format for this information (i.e., Is free text fine or should the information be collected in a more structured or discrete format?).
+          li At the data analysis stage, the type of story we are aiming for influences our analytic methods (i.e., Is this a quantitative, qualitative, or mixed methods analysis? Do we anticipate effect modifiers? Might aspects of the <a href="https://pubmed.ncbi.nlm.nih.gov/29728327/">context of the intervention have an influence?</a>)
+        br
+        p In other words, the imagined contours of our final story influence every step of the process (see figure).
+        br
+        = image_tag("blog_august_2021_figure_1.png", alt: "Figure 1 - Systematic Workflow")
+        br
+        p So, how can using SRDR+ as a teaching tool help learners navigate these challenges?
+        br
+        p In a word: "<strong>scaffolding</strong>". Scaffolding is the educational strategy of breaking up the learning into discrete steps and, importantly, providing a tool or structure for each step.
+        br
+        p <a href="https://www.tandfonline.com/doi/full/10.3109/0142159X.2013.828153">Taylor and Hamdy</a> argue that scaffolding is “necessary because the sheer volume and complexity of knowledge to be acquired often leaves the learner standing on the threshold (in a state of liminality)”. In other words, learners new to the complex process of evidence synthesis may be bewildered by the challenge of determining where to start. A tool like SRDR+ provides a structure that can be leveraged to cut through some of this confusion (obviously, with direction).
+        br
+        p But how? I’ve found that the structure of the SRDR extraction template forces learners to approach articles in a new way—reading analytically.
+        br
+        p <strong>What types of information do I need?</strong> Many post-professional graduate learners seem to have only the vaguest notion of the structure of research articles. So, the idea of extracting particular types of information from an article is a bit mystifying. “Information” is just a big nebulous blob. Early in the course, when we begin talking about data extraction, the first step is to help learners understand the basic structure of research articles, and we’ve found that a helpful way to do that is to use the default tab structure of the SRDR+ extraction template as a framework. For learners who developed the bad habit of “reading research” by glancing at abstracts and (maybe) Discussion sections, learning how to analyze (and begin to evaluate) research articles by focusing systematically on study design, arms, arm details, sample characteristics, outcomes, and results (all tabs in SRDR+) is a new experience. <strong>The tabular structure of the SRDR data extraction forms help learners grasp the idea that research articles have a fairly standard structure.</strong> Rather than expect that learners know how to analyze an article, we demonstrate the act of analytically reading an article by walking through the tabs of the extraction template and identifying the corresponding section of an example article. This helps learners grasp the notion that there are standard types of information and that they appear in pretty much the same sections of most research articles.
+        br
+        p <strong>What questions should I be asking of the study?</strong> Even knowing that research articles have a reasonably standard structure and communicate common types of information does not mean that learners know which pieces of information they will need to be able to carry out their project. We typically run into two kinds of misunderstandings.
+        br
+        ul style="list-style: disc; list-style-position: outside; margin-left: 60px; font-size: 21px; line-height: 26px;"
+          li First, most learners initially think that they need to try to capture all the information authors report (e.g., extracting all arms even though some are of no interest for their project, or extracting all outcomes that authors report rather than only those needed to answer their PICO question). <strong>Demonstrating to learners how to set up the Suggested Arms and Suggested Outcomes in the template building process helps them to focus in on only those arms or outcomes that matter and ignore those that do not.</strong>
+          li Second, learners are generally insensitive to potentially crucial aspects of intervention delivery or exposure characteristics that may affect outcomes. For instance, how might the setting of the treatment delivery make a difference? Might the timing of the intervention make a difference? <strong>Helping learners ask (and extract) detailed information on the intervention or exposure in the Arms Details tab sensitizes them to the notion that not all intervention approaches are “created equal” and that these differences can have important implications for reported results.</strong>
+        br
+        p <strong>How should I capture information from the article?</strong> For most learners, the default approach to extracting information from articles is to capture information in free-text format. While this is unavoidable for some types of information, it will prove incredibly inefficient—even a hinderance—later in the process when the learner seeks to find patterns in the data (e.g., via subgroup analysis). <strong>We use the range of question structures available within SRDR+ to help learners think through possible classifications of different types of information.</strong> For instance, entering a free-text description of the treatment setting is likely to be much less useful analytically than creating a question (or series of questions) that capture different setting characteristics (e.g., clinic, hospital, community).
+        br
+        p None of these challenges will be unfamiliar to people who teach and train others in evidence synthesis methodology. Moreover, we have found that merely telling learners or trainees the best methodology is not nearly enough. Learners need to be shown how to avoid the typical pitfalls and provided resources that channel them away from bad habits, and SRDR+ is a highly effective tool for doing this.
+        br
+        p If you haven’t already done so, please give #{ link_to('SRDR+', 'https://srdrplus.ahrq.gov', target: '_blank') } a shot. If you have any questions, contact us on this blog, via email (#{ mail_to('srdr@ahrq.hhs.gov') }), or via our #{ link_to('Twitter page!', 'https://twitter.com/SRDRPlus', target: '_blank', data: { confirm: @exit_disclaimer }) }
+        br
+        p <u>Disclaimer</u>: The Systematic Review Data Repository Plus is funded by the Agency for Healthcare Research and Quality (AHRQ). Authors of this blog post are solely responsible for its content, which does not necessarily represent the views of AHRQ or the U.S. Department of Health and Human Services (DHHS). Readers should not interpret any statement in this blog post as an official position of AHRQ or of DHHS.
+        br
+        p.title
+        br
+        br
+          strong James Scott Parrott, PhD
+          .subheader style="margin: 0;" Professor
+          .subheader style="margin: 0;" Rutgers University School of Health Professionals
+          .subheader style="margin: 0;" USA
+
+        br
+        meta name="keywords" content="Evidence synthesis, Systematic reviews, Data extraction, Exporting data, SRDR+, SRDR+ extraction forms, Data field dependencies, Outcomes, Results, Data Comparison Tool"

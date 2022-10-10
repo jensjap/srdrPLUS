@@ -1,0 +1,8 @@
+<label>
+  <%= form_with model: current_user.profile, local: false do |form| %>
+    <%= form.label "Show", class: "float-left mr-2" %>
+    <%= form.select :projects_paginate_per, [8, 25, 50, 100, 1000], {}, { onchange: 'javascript: $( this ).trigger("submit.rails")', class: "float-left w-20 mr-2" } %>
+    <%= form.label "entries", class: "float-left" %>
+  <% end %>
+</label>
+<br>

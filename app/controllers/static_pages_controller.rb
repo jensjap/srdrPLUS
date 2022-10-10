@@ -50,6 +50,7 @@ class StaticPagesController < ApplicationController
 
   def blog
     @nav_buttons.push('blog')
+    @date = params[:date]
   end
 
   def published_projects

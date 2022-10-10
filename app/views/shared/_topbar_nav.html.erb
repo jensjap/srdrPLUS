@@ -12,6 +12,8 @@
   mobile: false,
   home: <%= @nav_buttons.include?('home') %>,
   blog: <%= @nav_buttons.include?('blog') %>,
+  contact: <%= @nav_buttons.include?('contact') %>,
+  about: <%= @nav_buttons.include?('about') %>,
   search: <%= @nav_buttons.include?('search') %>,
   help: <%= @nav_buttons.include?('help') %>,
   account: <%= @nav_buttons.include?('account') %>,
@@ -68,6 +70,18 @@
                 class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white"
                 :class="search && 'bg-srdr-secondary !text-white'"
                 >Search</a
+              >
+              <a
+                href="/contact"
+                class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white"
+                :class="contact && 'bg-srdr-secondary !text-white'"
+                >Contact</a
+              >
+              <a
+                href="/about"
+                class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white"
+                :class="about && 'bg-srdr-secondary !text-white'"
+                >About</a
               >
               <a
                 href="<%= help_path %>"
@@ -227,18 +241,6 @@
             class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white"
             :class="citation_pool && 'bg-srdr-primary !text-white'"
             >Citation Pool</a
-          >
-          <a
-            href="<%= project_tasks_path(project) %>"
-            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white"
-            :class="tasks && 'bg-srdr-primary !text-white'"
-            >Tasks</a
-          >
-          <a
-            href="<%= next_assignment_project_path(project) %>"
-            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white"
-            :class="screen && 'bg-srdr-primary !text-white'"
-            >Screen</a
           >
           <a
             href="<%= project_extractions_path(project) %>"
