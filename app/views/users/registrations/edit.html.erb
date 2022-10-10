@@ -1,0 +1,147 @@
+<% provide(:title, 'Account Settings') %>
+
+<div class="space-y-8 divide-y divide-gray-200 mx-2 lg:mx-8">
+  <div class="pt-8">
+    <div>
+      <h3 class="text-lg font-medium leading-6 text-gray-900">Profile</h3>
+      <p class="mt-1 text-sm text-gray-500">
+        <!-- prettier-ignore -->
+        <%= link_to 'Log Out', destroy_user_session_path, class:
+        'hover:text-srdr-primary', :method => :delete %> |
+        <%= link_to 'Edit Profile', edit_profile_path, class:
+        'hover:text-srdr-primary' %>
+      </p>
+    </div>
+    <div class="mt-6 grid grid-cols-1 gap-y-2 gap-x-4 sm:grid-cols-6">
+      <div class="sm:col-span-6">
+        <div class="block text-sm font-medium text-gray-700">Organization</div>
+        <div class="mt-1">
+          <!-- prettier-ignore -->
+          <%= @profile.organization.present? ? @profile.organization.name : '' %>
+        </div>
+      </div>
+
+      <div class="sm:col-span-6">
+        <div class="block text-sm font-medium text-gray-700">Username</div>
+        <div class="mt-1">
+          <!-- prettier-ignore -->
+          <%= @profile.username %>
+        </div>
+      </div>
+
+      <div class="sm:col-span-6">
+        <div class="block text-sm font-medium text-gray-700">Timezone</div>
+        <div class="mt-1">
+          <!-- prettier-ignore -->
+          <%= @profile.time_zone %>
+        </div>
+      </div>
+
+      <div class="sm:col-span-6">
+        <div class="block text-sm font-medium text-gray-700">First Name</div>
+        <div class="mt-1">
+          <!-- prettier-ignore -->
+          <%= @profile.first_name %>
+        </div>
+      </div>
+
+      <div class="sm:col-span-6">
+        <div class="block text-sm font-medium text-gray-700">Middle Name</div>
+        <div class="mt-1">
+          <!-- prettier-ignore -->
+          <%= @profile.middle_name %>
+        </div>
+      </div>
+
+      <div class="sm:col-span-6">
+        <div class="block text-sm font-medium text-gray-700">Last Name</div>
+        <div class="mt-1">
+          <!-- prettier-ignore -->
+          <%= @profile.last_name %>
+        </div>
+      </div>
+
+      <div class="sm:col-span-6">
+        <div class="block text-sm font-medium text-gray-700">Degrees</div>
+        <div class="mt-1">
+          <!-- prettier-ignore -->
+          <% @profile.degrees.map { |degree| degree.name }.each do |name| %>
+          <div><%= name %></div>
+          <% end %>
+        </div>
+      </div>
+
+      <div class="sm:col-span-6">
+        <div class="block text-sm font-medium text-gray-700">Mode</div>
+        <div class="mt-1">
+          <!-- prettier-ignore -->
+          <%= @profile.advanced_mode ? 'Advanced' : 'Basic' %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pt-8">
+    <div>
+      <h3 class="text-lg font-medium leading-6 text-gray-900">User Settings</h3>
+      <p class="mt-1 text-sm text-gray-500">
+        <!-- prettier-ignore -->
+        <%= link_to("Reset API Key", users_api_key_reset_path, class: 'text-red-700 hover:text-red-500', method: :post, data: { confirm: 'Warning: resetting this key will invalidate the old one.  Confirm?' }) %>
+      </p>
+    </div>
+    <div class="mt-6 grid grid-cols-1 gap-y-2 gap-x-4 sm:grid-cols-6">
+      <div class="sm:col-span-6">
+        <div class="block text-sm font-medium text-gray-700">
+          This is your API Key:
+        </div>
+        <div class="mt-1" x-data="{ hidden: true }">
+          <span
+            class="cursor-pointer"
+            @click="hidden = !hidden"
+            x-text="hidden ? '*********************************' : '<%= current_user.api_key %>'"
+          >
+          </span>
+        </div>
+      </div>
+
+      <div class="sm:col-span-6">
+        <!-- prettier-ignore -->
+        <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put, data: { 'abide': '' } }) do |f| %>
+        <%= f.error_notification %>
+        <div>
+          <!-- prettier-ignore -->
+          <%= f.input :email, required: true, autofocus: true %>
+          <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
+          <p>
+            Currently waiting confirmation for:
+            <!-- prettier-ignore -->
+            <%= resource.unconfirmed_email %>
+          </p>
+          <!-- prettier-ignore -->
+          <% end %>
+          <%= f.input :password, autocomplete: "off", hint: "leave it blank if you don't want to change it", required: false %>
+          <%= f.input :password_confirmation, required: false %>
+          <%= f.input :current_password, hint: "we need your current password to confirm your changes", required: true %>
+          <div class="my-2"><%= f.button :submit, "Update" %></div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pt-8">
+    <div>
+      <h3 class="text-lg font-medium leading-6 text-gray-900 underline">Delete Account</h3>
+    </div>
+
+      <div class="sm:col-span-6">
+        <div class="mt-1">
+          <div class="block text-xs text-red-700 font-bold">
+            Warning: Account Deletions are Irreversible
+          </div>
+          <!-- prettier-ignore -->
+          <%= button_to "Confirm Deletion", registration_path(resource_name), class: 'alert button', data: { confirm: 'I understand that any deleted data cannot be restored. Delete?' }, method: :delete %>        </div>
+      </div>
+    </div>
+  </div>
+</div>

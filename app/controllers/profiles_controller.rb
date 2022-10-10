@@ -1,14 +1,14 @@
 class ProfilesController < ApplicationController
-  before_action :set_profile, :skip_policy_scope, only: [:show, :edit, :update, :destroy]
+  before_action :set_profile, :skip_policy_scope, only: %i[show edit update destroy]
   before_action :call_authorize
 
   # GET /profile
   # GET /profile.json
-  def show
-  end
+  def show; end
 
   # GET /profile/edit
   def edit
+    @nav_buttons.push('account')
   end
 
   # PATCH/PUT /profile
@@ -16,8 +16,10 @@ class ProfilesController < ApplicationController
   def update
     respond_to do |format|
       if @profile.update(profile_params)
-        format.html { redirect_to @profile, notice: 'Profile was successfully updated.' }
-        format.json { render :show, status: :ok, location: @profile }
+        format.html do
+          redirect_to edit_user_registration_path(@profile.user), notice: 'Profile was successfully updated.'
+        end
+        format.json { render :show, status: :ok, location: edit_user_registration_path(@profile.user) }
       else
         format.html { render :edit }
         format.json { render json: @profile.errors, status: :unprocessable_entity }
@@ -39,11 +41,11 @@ class ProfilesController < ApplicationController
   # Never trust parameters from the scary internet, only allow the white list through.
   def profile_params
     params.require(:profile)
-      .permit(:username, :time_zone,
-              :first_name, :middle_name, :last_name,
-              :organization_id, :advanced_mode,
-              :abstrackr_setting_id,
-              :organization_id,
-              degree_ids: [])
+          .permit(:username, :time_zone,
+                  :first_name, :middle_name, :last_name,
+                  :organization_id, :advanced_mode,
+                  :abstrackr_setting_id,
+                  :organization_id,
+                  degree_ids: [])
   end
 end
