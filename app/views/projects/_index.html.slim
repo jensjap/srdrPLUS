@@ -4,15 +4,14 @@
   = render 'static_pages/maintenance_announcement'
 
 /! Row with content header and filter input field.
-.column.row
-  .title-heading
-    h2 My Projects
-    = link_to new_project_path, class: "button secondary create-button" do
-      i.fi-plus>
-      = t(".create")
+.column class="p-4 lg:p-8"
+  h2 class="text-xl font-bold" My Projects
+  = link_to new_project_path, class: "button secondary create-button" do
+    i.fi-plus>
+    = t(".create")
 
 /! Row for toggler => sort by updated at or created at.
-.row.project-controls
+.project-controls
   .column.medium-8
     = simple_form_for 'project', url: '/projects', method: :get do |f|
       = f.input :project_status, as: :hidden, input_html: { value: @project_status }
@@ -22,7 +21,7 @@
       = link_to 'Updated at', projects_path({ o: 'updated-at' }.merge(@params)), class: "button updated-at #{params[:o].nil? || params[:o] == 'updated-at' ? 'disabled' : ''}"
       = link_to 'Created at', projects_path({ o: 'created-at' }.merge(@params)), class: "button created-at #{params[:o] == 'created-at' ? 'disabled' : ''}"
 
-.column.row#project-list
+.column#project-list
   ul class="tabs" id="project-tabs"
     li class="tabs-title"
       = link_to 'All', projects_path(@params.merge(project_status: nil)), 'aria-selected': @project_status.blank? ? 'true' : ' false'
@@ -33,7 +32,7 @@
     li class="tabs-title"
       = link_to 'Published', projects_path(@params.merge(project_status: 'published')), 'aria-selected': @project_status == 'published' ? 'true' : 'false'
 
-.column.row
+.column
   div
     - if @project_status.blank?
       div.mb-12 = render "projects/index/project_list"

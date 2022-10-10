@@ -22,6 +22,7 @@ class ProjectsController < ApplicationController
   # GET /projects
   # GET /projects.json
   def index
+    @nav_buttons.push('my_projects')
     setup_instance_variables
   end
 

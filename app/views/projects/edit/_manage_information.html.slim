@@ -2,6 +2,8 @@ div class="mx-auto p-4 lg:p-8"
   /! Modal for project deletion.
   #modal-project-delete.reveal.large data-reveal=""
 
+  h1 class="text-xl font-bold" Project Info
+
   = simple_form_for(@project, html: { id: "project-id-#{@project.id}", data: { 'abide': '', 'live-validate': true } }) do |f|
     = f.error_notification
 

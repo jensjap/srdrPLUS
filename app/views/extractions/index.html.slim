@@ -3,80 +3,77 @@
 
 - provide(:title, 'List of Extractions')
 
-.column.row
+div class="p-4 lg:p-8"
   - efp = @project.extraction_forms_projects.first
-  - if @project.key_questions.present?
-    h2 = link_to 'go to extraction form builder ->', build_extraction_forms_project_path(efp, 'panel-tab': efp.default_section_id), { style: 'float: right; font-size: 0.4em;' }
-  - else
-    h2 = link_to 'go to extraction form builder ->', '#', style: 'float: right; font-size: 0.4em;', onClick: "alert('Please add at least one Key Question first')"
+  div class="flex justify-between"
+    h1 class="text-xl font-bold" Extractions
+    - if @project.key_questions.present?
+      div = link_to 'go to extraction form builder ->', build_extraction_forms_project_path(efp, 'panel-tab': efp.default_section_id)
+    - else
+      div = link_to 'go to extraction form builder ->', '#', style: 'float: right; font-size: 0.4em;', onClick: "alert('Please add at least one Key Question first')"
+  div style="margin-bottom: 10px;"
+    - if @project.key_questions.present?
+      = link_to new_project_extraction_path, class: 'button create-button create-extraction-button' do
+        i.fi-plus>
+        = t('.create')
+    - else
+      = link_to '#', class: 'button create-button create-extraction-button', onClick: "alert('Please add at least one Key Question first')" do
+        i.fi-plus>
+        = t('.create')
 
-.row
-  .column.medium-12
-    div style='display: flex; flex-direction: row;'
-      h4 Extractions
-    div style="margin-bottom: 10px;"
-      - if @project.key_questions.present?
-        = link_to new_project_extraction_path, class: 'button create-button create-extraction-button' do
-          i.fi-plus>
-          = t('.create')
-      - else
-        = link_to '#', class: 'button create-button create-extraction-button', onClick: "alert('Please add at least one Key Question first')" do
-          i.fi-plus>
-          = t('.create')
+  table.extractions-list
+    thead
+      tr
+        th data-sorting-col="0" width="50px"
+        th.table-sortable.sorting data-sorting-col="1" width="200px" First Author
+        th.table-sortable.sorting data-sorting-col="2" width="80px" Pub Year
+        th.table-sortable.sorting data-sorting-col="3" width="180px"
+          | Accession Number
+          span data-tooltip="" tabindex="1" title="e.g. Pubmed ID, Cochrane, MBASE, etc."
+            | &nbsp;
+            i class="fi-info"
+        th.table-sortable.sorting data-sorting-col="4" Title
+        th.table-sortable.sorting data-sorting-col="5" width="200px" Assigned User
+        th.table-sortable.sorting data-sorting-col="6" width="50px" Progress
+        th width="50px"
 
-    table.extractions-list
-      thead
+    tbody
+      - if @extractions.blank?
         tr
-          th data-sorting-col="0" width="50px"
-          th.table-sortable.sorting data-sorting-col="1" width="200px" First Author
-          th.table-sortable.sorting data-sorting-col="2" width="80px" Pub Year
-          th.table-sortable.sorting data-sorting-col="3" width="180px"
-            | Accession Number
-            span data-tooltip="" tabindex="1" title="e.g. Pubmed ID, Cochrane, MBASE, etc."
-              | &nbsp;
-              i class="fi-info"
-          th.table-sortable.sorting data-sorting-col="4" Title
-          th.table-sortable.sorting data-sorting-col="5" width="200px" Assigned User
-          th.table-sortable.sorting data-sorting-col="6" width="50px" Progress
-          th width="50px"
+          td No extractions found.
+          td
+          td
+          td
+          td
+          td
+          td
+          td
 
-      tbody
-        - if @extractions.blank?
+      - else
+        - @extractions.each do |extraction|
           tr
-            td No extractions found.
-            td
-            td
-            td
-            td
-            td
-            td
-            td
+            td data-sort="#{extraction.updated_at.to_i}" = link_to t('work'), work_extraction_path(extraction), style: 'font-weight:bold;'
+            td = extraction.first_author
+            td = extraction.year
+            td = extraction.pmid
+            td data-sort="#{extraction.name}"
+              div style="overflow: hidden; height: 18px;" = link_to extraction.name, citation_path(extraction.citation, project_id: @project.id)
+            - if @project.leaders.include? current_user
+              td
+                .projects-users-role dropdown-active='false'
+                  span.projects-users-role-label data-extraction-id="#{ extraction.id.to_s }"
+                    = extraction.pur_handle
+                  .projects-users-role-select.hide
+                    = form_with model: extraction, html: { remote: true } do |e_f|
+                      = e_f.select :projects_users_role_id, @projects_users_roles.map { |pur| [pur.handle, pur.id] }, input_html: { class: "index-extractions-select2" }, selected: extraction.projects_users_role.id
+            - else
+              td = extraction.pur_handle
 
-        - else
-          - @extractions.each do |extraction|
-            tr
-              td data-sort="#{extraction.updated_at.to_i}" = link_to t('work'), work_extraction_path(extraction), style: 'font-weight:bold;'
-              td = extraction.first_author
-              td = extraction.year
-              td = extraction.pmid
-              td data-sort="#{extraction.name}"
-                div style="overflow: hidden; height: 18px;" = link_to extraction.name, citation_path(extraction.citation, project_id: @project.id)
-              - if @project.leaders.include? current_user
-                td
-                  .projects-users-role dropdown-active='false'
-                    span.projects-users-role-label data-extraction-id="#{ extraction.id.to_s }"
-                      = extraction.pur_handle
-                    .projects-users-role-select.hide
-                      = form_with model: extraction, html: { remote: true } do |e_f|
-                        = e_f.select :projects_users_role_id, @projects_users_roles.map { |pur| [pur.handle, pur.id] }, input_html: { class: "index-extractions-select2" }, selected: extraction.projects_users_role.id
-              - else
-                td = extraction.pur_handle
+            td data-sort="#{ extraction.progress_meter_width }"
+              .success.progress data-allow-html="true" data-tooltip="" title="#{ extraction.tooltip_text }"
+                .progress-meter style="width: #{ extraction.progress_meter_width }%;"
 
-              td data-sort="#{ extraction.progress_meter_width }"
-                .success.progress data-allow-html="true" data-tooltip="" title="#{ extraction.tooltip_text }"
-                  .progress-meter style="width: #{ extraction.progress_meter_width }%;"
-
-              td = link_to t('destroy'), extraction, style: 'font-weight:bold;color:#cc4b37 !important;', data: { confirm: "Warning! You are about to delete extraction:\n\n#{extraction.first_author} - #{extraction.year} - #{extraction.pmid}\n#{extraction.name}\n\nThis action cannot be undone. Proceed anyway?" }, method: :delete
+            td = link_to t('destroy'), extraction, style: 'font-weight:bold;color:#cc4b37 !important;', data: { confirm: "Warning! You are about to delete extraction:\n\n#{extraction.first_author} - #{extraction.year} - #{extraction.pmid}\n#{extraction.name}\n\nThis action cannot be undone. Proceed anyway?" }, method: :delete
 .column.row
   - if @project.key_questions.present?
     = link_to new_project_extraction_path, class: 'button create-button create-extraction-button' do

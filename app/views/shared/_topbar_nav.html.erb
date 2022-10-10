@@ -11,6 +11,7 @@
   x-data="{
   mobile: false,
   home: <%= @nav_buttons.include?('home') %>,
+  my_projects: <%= @nav_buttons.include?('my_projects') %>,
   blog: <%= @nav_buttons.include?('blog') %>,
   contact: <%= @nav_buttons.include?('contact') %>,
   about: <%= @nav_buttons.include?('about') %>,
@@ -28,6 +29,8 @@
   extractions: <%= @nav_buttons.include?('extractions') %>,
   comparison_tool: <%= @nav_buttons.include?('comparison_tool') %>,
   request_publication: <%= @nav_buttons.include?('request_publication') %>,
+  signin: <%= @nav_buttons.include?('signin') %>,
+  signup: <%= @nav_buttons.include?('signup') %>,
 }"
 >
   <nav class="bg-srdr-primary">
@@ -53,6 +56,14 @@
                 :class="home && 'bg-srdr-secondary !text-white'"
                 >Home</a
               >
+              <% if current_user %>
+              <a
+                href="<%= projects_path %>"
+                class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white"
+                :class="my_projects && 'bg-srdr-secondary !text-white'"
+                >My Projects</a
+              >
+              <% end %>
               <a
                 href="<%= blog_path %>"
                 class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white"
@@ -93,18 +104,34 @@
           </div>
         </div>
         <div class="hidden lg:ml-6 lg:block">
-          <div class="flex items-center">
-            <!-- Profile dropdown -->
-            <div class="relative ml-3">
-              <div>
-                <a
-                  href="<%= edit_user_registration_path %>"
-                  class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white"
-                  :class="account && 'bg-srdr-secondary !text-white'"
-                  >Account</a
-                >
-              </div>
+          <div class="flex items-center space-x-4">
+            <% if current_user %>
+            <div>
+              <a
+                href="<%= edit_user_registration_path %>"
+                class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white"
+                :class="account && 'bg-srdr-secondary !text-white'"
+                >Account</a
+              >
             </div>
+            <% else %>
+            <div>
+              <a
+                href="<%= new_user_session_path %>"
+                class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white"
+                :class="signin && 'bg-srdr-secondary !text-white'"
+                >Login</a
+              >
+            </div>
+            <div>
+              <a
+                href="<%= new_user_registration_path %>"
+                class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white"
+                :class="signup && 'bg-srdr-secondary !text-white'"
+                >Register</a
+              >
+            </div>
+            <% end %>
           </div>
         </div>
         <div class="-mr-2 flex lg:hidden">
@@ -210,7 +237,7 @@
         </div>
       </div>
       <div class="flex h-12 items-center justify-between">
-        <div class="flex items-center">
+        <div class="flex items-center space-x-3">
           <!-- Current: "rounded-md bg-srdr-secondary px-3 py-2 text-sm font-medium text-white" -->
           <a
             href="<%= edit_project_path(project) %>?page=info"
