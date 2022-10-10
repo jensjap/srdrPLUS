@@ -74,7 +74,7 @@
           li
             a href="#{edit_project_path(project)}#panel-key-questions" Key Questions
           li
-            a href="#{edit_project_path(project)}#panel-projects-users" Member(s) & Role(s)
+            a href=edit_project_path(project, page: 'members_and_roles') Member(s) & Role(s)
       - if project.key_questions.present?
         - efp = project.extraction_forms_projects.first
         li.submenu style="#{'background: #78608b' if controller.class == ExtractionFormsProjectsController && controller.action_name == 'build'}"

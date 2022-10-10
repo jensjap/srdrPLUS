@@ -34,7 +34,7 @@ div style="padding: 0.4rem; font-weight: bold;"
       .cell.auto
         - pu_count = @projects_projects_user_counts[project.id]
         - pu_title = "Members (#{pu_count || 0})"
-        a = link_to pu_title, edit_project_path(project) + '#panel-projects-users', title: t('.members_and_roles'), style: "text-decoration:underline;"
+        a = link_to pu_title, edit_project_path(project, page: 'members_and_roles'), title: t('.members_and_roles'), style: "text-decoration:underline;"
 
       .cell.auto
         - kqp_count = @projects_key_questions_project_counts[project.id]
@@ -63,7 +63,7 @@ div style="padding: 0.4rem; font-weight: bold;"
         = render partial: 'shared/select_export_type', locals: { project: project }
       - if project.leaders.include?(current_user)
         .cell.medium-5
-            = link_to 'Edit Project Information', edit_project_path(project), title: 'Edit Project Information', style: "text-decoration:underline;"
+            = link_to 'Edit Project Information', edit_project_path(project, page: 'info'), title: 'Edit Project Information', style: "text-decoration:underline;"
         .cell.medium-5
           = link_to 'Edit Extraction Form', build_extraction_forms_project_path(project.extraction_forms_projects.first), title: 'Edit Extraction Form', style: "text-decoration:underline;"
       - else

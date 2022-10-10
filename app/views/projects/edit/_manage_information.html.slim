@@ -33,8 +33,8 @@ div class="mx-auto p-4 lg:p-8"
         label: "Mesh Terms",
         input_html: { rows: 10 }
 
-    .row style="margin-top: 10px;"
-      .column.small-6
+    div class="mt-4 flex justify-between"
+      div
         = f.button :submit, t('save_changes')
-      .column.small-6 style="text-align: right;"
+      div style="text-align: right;"
         = link_to "Delete Project", confirm_deletion_project_path(@project), method: :get, class: "alert button", remote: true

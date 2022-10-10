@@ -74,7 +74,7 @@ div class="p-4 lg:p-8"
                 .progress-meter style="width: #{ extraction.progress_meter_width }%;"
 
             td = link_to t('destroy'), extraction, style: 'font-weight:bold;color:#cc4b37 !important;', data: { confirm: "Warning! You are about to delete extraction:\n\n#{extraction.first_author} - #{extraction.year} - #{extraction.pmid}\n#{extraction.name}\n\nThis action cannot be undone. Proceed anyway?" }, method: :delete
-.column.row
+  div
   - if @project.key_questions.present?
     = link_to new_project_extraction_path, class: 'button create-button create-extraction-button' do
       i.fi-plus>
