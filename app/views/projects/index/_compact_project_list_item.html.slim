@@ -39,7 +39,7 @@ div style="padding: 0.4rem; font-weight: bold;"
       .cell.auto
         - kqp_count = @projects_key_questions_project_counts[project.id]
         - kqp_title = "Key Questions (#{kqp_count || 0})"
-        a = link_to kqp_title, edit_project_path(project) + '#panel-key-questions', title: t('.key_questions', style: "text-decoration:underline;"), style: "text-decoration:underline;"
+        a = link_to kqp_title, edit_project_path(project, page: 'key_questions'), title: t('.key_questions', style: "text-decoration:underline;"), style: "text-decoration:underline;"
 
       .cell.auto
         - cp_count = @projects_citations_project_counts[project.id]

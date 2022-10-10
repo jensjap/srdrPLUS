@@ -20,7 +20,7 @@ a.accordion-title href="#" style="padding: 0.5rem;"
         .cell.auto
           - kqp_count = @projects_key_questions_project_counts[project.id]
           - kqp_title = kqp_count == 1 ? "#{kqp_count} Key Question" : "#{kqp_count || 0} Key Questions"
-          h5 = link_to kqp_title, edit_project_path(project) + '#panel-key-questions', title: t('.key_questions')
+          h5 = link_to kqp_title, edit_project_path(project, page: 'key_questions'), title: t('.key_questions')
 
         .cell.auto
           - cp_count = @projects_citations_project_counts[project.id]
