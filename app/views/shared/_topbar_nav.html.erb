@@ -44,51 +44,51 @@
               <!-- Current: "rounded-md bg-srdr-secondary px-3 py-2 text-sm font-medium text-white" -->
               <a
                 href="<%= root_path(no_redirect: true) %>"
-                class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white"
+                class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white"
                 :class="home && 'bg-srdr-secondary !text-white underline'"
                 >Home</a
               >
               <% if current_user %>
               <a
                 href="<%= projects_path %>"
-                class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white"
+                class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white"
                 :class="my_projects && 'bg-srdr-secondary !text-white underline'"
                 >My Projects</a
               >
               <% end %>
               <a
                 href="<%= blog_path %>"
-                class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white"
+                class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white"
                 :class="blog && 'bg-srdr-secondary !text-white underline'"
                 >Blog</a
               >
               <a
                 href="<%= published_projects_path %>"
-                class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white"
+                class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white"
                 :class="published_projects && 'bg-srdr-secondary !text-white underline'"
                 >Published Projects</a
               >
               <a
                 href="<%= searches_path %>"
-                class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white"
+                class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white"
                 :class="search && 'bg-srdr-secondary !text-white underline'"
                 >Search</a
               >
               <a
                 href="/contact"
-                class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white"
+                class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white"
                 :class="contact && 'bg-srdr-secondary !text-white underline'"
                 >Contact</a
               >
               <a
                 href="/about"
-                class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white"
+                class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white"
                 :class="about && 'bg-srdr-secondary !text-white underline'"
                 >About</a
               >
               <a
                 href="<%= help_path %>"
-                class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white"
+                class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white"
                 :class="help && 'bg-srdr-secondary !text-white underline'"
                 >Help</a
               >
@@ -101,7 +101,7 @@
             <div>
               <a
                 href="<%= edit_user_registration_path %>"
-                class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white"
+                class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white"
                 :class="account && 'bg-srdr-secondary !text-white underline'"
                 >Account</a
               >
@@ -110,7 +110,7 @@
             <div>
               <a
                 href="<%= new_user_session_path %>"
-                class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white"
+                class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white"
                 :class="signin && 'bg-srdr-secondary !text-white underline'"
                 >Login</a
               >
@@ -118,7 +118,7 @@
             <div>
               <a
                 href="<%= new_user_registration_path %>"
-                class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white"
+                class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white"
                 :class="signup && 'bg-srdr-secondary !text-white underline'"
                 >Register</a
               >
@@ -130,7 +130,7 @@
           <!-- Mobile menu button -->
           <button
             type="button"
-            class="inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-srdr-secondary hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white cursor-pointer"
+            class="inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-srdr-secondary hover:text-white focus:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white cursor-pointer"
             aria-controls="mobile-menu"
             :aria-expanded="mobile"
             @click="mobile = !mobile"
@@ -196,22 +196,22 @@
         >
         <a
           href="#"
-          class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white"
+          class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white"
           >Team</a
         >
         <a
           href="#"
-          class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white"
+          class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white"
           >Projects</a
         >
         <a
           href="#"
-          class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white"
+          class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white"
           >Calendar</a
         >
         <a
           href="#"
-          class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white"
+          class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white"
           >Account</a
         >
       </div>
@@ -233,54 +233,54 @@
           <!-- Current: "rounded-md bg-srdr-secondary px-3 py-2 text-sm font-medium text-white" -->
           <a
             href="<%= edit_project_path(project) %>?page=info"
-            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white"
+            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
             :class="project_info && 'bg-srdr-primary !text-white'"
             >Project Info</a
           >
           <a
             href="<%= edit_project_path(project) %>?page=key_questions"
-            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white"
+            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
             :class="key_questions && 'bg-srdr-primary !text-white'"
             >Key Questions</a
           >
           <a
             href="<%= edit_project_path(project) %>?page=members_and_roles"
-            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white"
+            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
             :class="members_and_roles && 'bg-srdr-primary !text-white'"
             >Member(s) & Role(s)</a
           >
           <a
             href="<%= build_extraction_forms_project_path(project.extraction_forms_projects.first, 'panel-tab': project.extraction_forms_projects.first.default_section_id) %>"
-            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white"
+            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
             :class="extractions_form_builder && 'bg-srdr-primary !text-white'"
             >Extractions Form Builder</a
           >
           <a
             href="<%= project_citations_path(project) %>"
-            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white"
+            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
             :class="citation_pool && 'bg-srdr-primary !text-white'"
             >Citation Pool</a
           >
           <a
             href="<%= project_extractions_path(project) %>"
-            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white"
+            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
             :class="extractions && 'bg-srdr-primary !text-white'"
             >Extractions</a
           >
           <a
             href="#"
-            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white"
+            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
             >Export Data</a
           >
           <a
             href="#"
-            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white"
+            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
             :class="comparison_tool && 'bg-srdr-primary !text-white'"
             >Comparison Tool</a
           >
           <a
             href="#"
-            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white"
+            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
             :class="request_publication && 'bg-srdr-primary !text-white'"
             >Request Publication</a
           >
