@@ -6,7 +6,7 @@
   <p>This publication is under review.</p>
   <p>
     <!-- prettier-ignore -->
-    <%= link_to 'Cancel Publication Review', publishing_path(@project.publishing.publishable_id), class: 'text-red-500 hover:text-red-800', data: { confirm: "You are about to cancel the publication request for:\n\n#{@project.publishing.publishable.display}\n\nProceed?" }, method: :delete %>
+    <%= link_to 'Cancel Publication Request', publishing_path(@project.publishing.publishable_id), class: 'text-red-500 hover:text-red-800', data: { confirm: "You are about to cancel the publication request for:\n\n#{@project.publishing.publishable.display}\n\nProceed?" }, method: :delete %>
   </p>
   <% else %>
   <p>
