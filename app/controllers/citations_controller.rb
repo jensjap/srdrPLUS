@@ -77,7 +77,7 @@ class CitationsController < ApplicationController
   end
 
   def index
-    @nav_buttons.push('citation_pool')
+    @nav_buttons.push('citation_pool', 'my_projects')
     # @citations = Citation.joins(:projects)
     #  .group('citations.id')
     #  .where(:projects => { :id => @project.id }).all

@@ -16,7 +16,7 @@ class ExtractionsController < ApplicationController
   # GET /projects/1/extractions
   # GET /projects/1/extractions.json
   def index
-    @nav_buttons.push('extractions')
+    @nav_buttons.push('extractions', 'my_projects')
     @extractions = @project
                    .extractions
                    .unconsolidated
@@ -232,7 +232,7 @@ class ExtractionsController < ApplicationController
   # GET /projects/1/extractions/comparison_tool
   def comparison_tool
     authorize(@project, policy_class: ExtractionPolicy)
-    @nav_buttons.push('comparison_tool')
+    @nav_buttons.push('comparison_tool', 'my_projects')
 
     @citation_groups = @project.citation_groups
 

@@ -63,7 +63,7 @@ class ExtractionFormsProjectsController < ApplicationController
 
   # GET /extraction_forms_projects/1/build
   def build
-    @nav_buttons.push('extractions_form_builder')
+    @nav_buttons.push('extractions_form_builder', 'my_projects')
     if @extraction_forms_project.project.key_questions.blank?
       key_question = KeyQuestion.find_or_create_by(name: 'Default question')
       @extraction_forms_project.project.key_questions << key_question

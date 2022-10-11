@@ -2,7 +2,7 @@ class ImportsController < ApplicationController
   before_action :set_project, only: %i[index new]
 
   def index
-    @nav_buttons.push('import_tools')
+    @nav_buttons.push('import_tools', 'my_projects')
     @import = @projects_user.imports.build
     @imported_file = ImportedFile.new import: @import
   end
