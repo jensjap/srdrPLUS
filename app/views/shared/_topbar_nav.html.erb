@@ -20,6 +20,7 @@
   screen: <%= @nav_buttons.include?('screen') %>,
   extractions: <%= @nav_buttons.include?('extractions') %>,
   comparison_tool: <%= @nav_buttons.include?('comparison_tool') %>,
+  export_data: <%= @nav_buttons.include?('export_data') %>,
   import_tools: <%= @nav_buttons.include?('import_tools') %>,
   publication: <%= @nav_buttons.include?('publication') %>,
   signin: <%= @nav_buttons.include?('signin') %>,
@@ -146,6 +147,7 @@
             -->
             <svg
               class="block h-6 w-6"
+              :class="mobile ? 'hidden' : 'block'"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
@@ -167,7 +169,9 @@
               Menu open: "block", Menu closed: "hidden"
             -->
             <svg
-              class="hidden h-6 w-6"
+              class="h-6 w-6"
+              :class="mobile ? 'block' : 'hidden'"
+              x-cloak
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
@@ -191,29 +195,54 @@
       <div class="space-y-1 px-2 pt-2 pb-3">
         <!-- Current: "block rounded-md bg-srdr-secondary px-3 py-2 text-base font-medium text-white" -->
         <a
-          href="#"
-          class="block rounded-md bg-srdr-secondary px-3 py-2 text-base font-medium text-white"
-          >Dashboard</a
+          href="<%= root_path(no_redirect: true) %>"
+          class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white"
+          :class="home && 'bg-srdr-secondary text-white'"
+          >Home</a
+        >
+        <% if current_user %>
+        <a
+          href="<%= projects_path %>"
+          class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white"
+          :class="my_projects && 'bg-srdr-secondary text-white'"
+          >My Projects</a
+        >
+        <% end %>
+        <a
+          href="<%= blog_path %>"
+          class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white"
+          :class="blog && 'bg-srdr-secondary text-white'"
+          >Blog</a
         >
         <a
-          href="#"
+          href="<%= published_projects_path %>"
           class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white"
-          >Team</a
+          :class="published_projects && 'bg-srdr-secondary text-white'"
+          >Published Projects</a
         >
         <a
-          href="#"
+          href="/contact"
           class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white"
-          >Projects</a
+          :class="search && 'bg-srdr-secondary text-white'"
+          >Search</a
         >
         <a
-          href="#"
+          href="<%= searches_path %>"
           class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white"
-          >Calendar</a
+          :class="contact && 'bg-srdr-secondary text-white'"
+          >Contact</a
         >
         <a
-          href="#"
+          href="/about"
           class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white"
-          >Account</a
+          :class="about && 'bg-srdr-secondary text-white'"
+          >About</a
+        >
+        <a
+          href="<%= help_path %>"
+          class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white"
+          :class="help && 'bg-srdr-secondary text-white'"
+          >Help</a
         >
       </div>
     </div>
@@ -286,8 +315,9 @@
             >Extractions</a
           >
           <a
-            href="#"
+            href="<%= export_data_project_path(project) %>"
             class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
+            :class="export_data && 'bg-srdr-primary !text-white'"
             >Export Data</a
           >
           <a

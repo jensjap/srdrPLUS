@@ -2,7 +2,7 @@ class ProjectsController < ApplicationController
   skip_before_action :authenticate_user!, only: [:export]
 
   before_action :set_project, only: %i[
-    show edit update destroy export export_to_gdrive
+    export_data show edit update destroy export export_to_gdrive
     export_assignments_and_mappings import_assignments_and_mappings simple_import
     import_csv import_pubmed import_endnote import_ris next_assignment
     confirm_deletion dedupe_citations create_citation_screening_extraction_form
@@ -35,6 +35,11 @@ class ProjectsController < ApplicationController
   # GET /projects/1.json
   def show
     authorize(@project)
+  end
+
+  def export_data
+    authorize(@project)
+    @nav_buttons.push('export_data', 'my_projects')
   end
 
   # GET /projects/new
