@@ -27,7 +27,7 @@ module ProjectsHelper
       action_name.eql?('edit'))) ||
       (controller_name.eql?('extractions_extraction_forms_projects_sections_type1s') && action_name.eql?('edit')) ||
       (controller_name.eql?('extraction_forms_projects_sections') && action_name.eql?('preview')) ||
-      (controller_name.eql?('imports') && action_name.eql?('new')) ||
+      (controller_name.eql?('imports') && (action_name.eql?('new') || action_name.eql?('index'))) ||
       (controller.instance_of?(PublishingsController) && publishable_record.instance_of?(Project) && controller.action_name == 'new')
   end
 

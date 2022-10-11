@@ -20,6 +20,7 @@
   screen: <%= @nav_buttons.include?('screen') %>,
   extractions: <%= @nav_buttons.include?('extractions') %>,
   comparison_tool: <%= @nav_buttons.include?('comparison_tool') %>,
+  import_tools: <%= @nav_buttons.include?('import_tools') %>,
   request_publication: <%= @nav_buttons.include?('request_publication') %>,
   signin: <%= @nav_buttons.include?('signin') %>,
   signup: <%= @nav_buttons.include?('signup') %>,
@@ -277,6 +278,12 @@
             class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
             :class="comparison_tool && 'bg-srdr-primary !text-white'"
             >Comparison Tool</a
+          >
+          <a
+            href="<%= project_imports_path(project) %>"
+            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
+            :class="import_tools && 'bg-srdr-primary !text-white'"
+            >Import Tools</a
           >
           <a
             href="#"

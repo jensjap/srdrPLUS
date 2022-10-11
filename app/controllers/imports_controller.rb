@@ -1,7 +1,8 @@
 class ImportsController < ApplicationController
-  before_action :set_project, only: [:index, :new]
+  before_action :set_project, only: %i[index new]
 
   def index
+    @nav_buttons.push('import_tools')
     @import = @projects_user.imports.build
     @imported_file = ImportedFile.new import: @import
   end
@@ -13,13 +14,13 @@ class ImportsController < ApplicationController
 
   def create
     import_type_id = params['import_type_id'] || params['import']['import_type_id']
-    if import_type_id.eql?("3")
+    if import_type_id.eql?('3')
       imported_file = params['file']
       unless _check_valid_file_type(imported_file)
         @import = Struct.new(:errors).new(nil)
-        @import.errors = "Invalid file format"
+        @import.errors = 'Invalid file format'
         respond_to do |format|
-          format.json { render :json => @import.errors.to_json, status: :unprocessable_entity }
+          format.json { render json: @import.errors.to_json, status: :unprocessable_entity }
         end
         return
       end
@@ -30,12 +31,12 @@ class ImportsController < ApplicationController
     file_type_id = params['file_type_id'] || params['import']['file_type_id']
 
     import_hash = {
-      import_type_id: import_type_id,
-      projects_user_id: projects_user_id,
+      import_type_id:,
+      projects_user_id:,
       imported_files_attributes: [
         {
-          content: content,
-          file_type_id: file_type_id
+          content:,
+          file_type_id:
         }
       ]
     }
@@ -45,10 +46,10 @@ class ImportsController < ApplicationController
 
     respond_to do |format|
       if @import.save
-        format.json { render :json => @import, status: :ok }
+        format.json { render json: @import, status: :ok }
         format.html { redirect_to new_project_import_path(@import.projects_user.project), notice: t('success') }
       else
-        format.json { render :json => @import.errors, status: :unprocessable_entity }
+        format.json { render json: @import.errors, status: :unprocessable_entity }
         if projects_user_id.present?
           projects_user = ProjectsUser.find_by id: projects_user_id
           if projects_user.present?
@@ -64,13 +65,14 @@ class ImportsController < ApplicationController
   end
 
   private
-    def set_project
-      @project = Project.find params[:project_id]
-      @projects_user = ProjectsUser.find_by project: @project, user: current_user
-    end
+
+  def set_project
+    @project = Project.find params[:project_id]
+    @projects_user = ProjectsUser.find_by project: @project, user: current_user
+  end
 end
 
 def _check_valid_file_type(file)
   extension = file.original_filename.match(/(\.[a-z]+$)/i)[0]
-  return ['.ris', '.csv', '.txt', '.enw', '.json'].include?(extension)
+  ['.ris', '.csv', '.txt', '.enw', '.json'].include?(extension)
 end

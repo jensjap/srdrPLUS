@@ -1,5 +1,6 @@
-.grid-container.mx-8.mt-8
-  .grid-x
+div class="p-4 lg:p-8"
+  h1 class="text-xl font-bold" Import Tools
+  .grid-x class="mt-4"
     .cell.small-12
       h1.text-xl Step 1 - Export Assignments and Mappings Template
       = link_to 'Get Export', export_assignments_and_mappings_project_path(@project), class: 'button'
@@ -10,9 +11,7 @@
         = f.submit
 
   br/
-  br/
   hr
-  br/
   br/
 
   .grid-x
@@ -37,9 +36,7 @@
                     = f.button :submit, 'Upload file', class:"medium", id:"submit-all"
 
   br/
-  br/
   hr
-  br/
   br/
 
   .grid-x
@@ -48,9 +45,7 @@
       = link_to "Get Export", export_project_path(@project, export_type_name: '.xlsx legacy'), method: :post, class: "button"
 
   br/
-  br/
   hr
-  br/
   br/
 
   .grid-x
@@ -68,9 +63,3 @@
                   = i_f.input :content, as: :file, label: 'Project File', input_html: { id: 'import-project-file' }
                   .form-actions
                     = f.button :submit, 'Upload file', class:"medium"
-
-  .grid-x.mt-8
-    .cell.small-12
-      = link_to t('show'), @project
-      '  |
-      = link_to t('back'), projects_path
