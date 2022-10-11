@@ -29,7 +29,7 @@
             - if pr.publishable.class == SdMetaDatum
               = link_to 'View', sd_meta_datum_path(pr.publishable_id), class: 'btn-link'
             - elsif pr.publishable.class == Project
-              = link_to 'Project Info', edit_project_path(pr.publishable), class: 'btn-link'
+              = link_to 'Project Info', edit_project_path(pr.publishable, page: 'info'), class: 'btn-link'
               - if current_user.admin?
                 | &nbsp; | &nbsp;
                 = link_to 'Extr. Form', build_extraction_forms_project_path(pr.publishable.extraction_forms_projects.first), class: 'btn-link'

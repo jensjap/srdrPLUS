@@ -1,0 +1,132 @@
+<div class="p-4 lg:p-8">
+  <h1 class="text-xl font-bold">Publication</h1>
+  <% if @project.publishing.present? && @project.publishing.approval.present? %>
+  <p>This project has been published.</p>
+  <% elsif @project.publishing.present? %>
+  <p>This publication is under review.</p>
+  <p>
+    <!-- prettier-ignore -->
+    <%= link_to 'Cancel Publication Review', publishing_path(@project.publishing.publishable_id), class: 'text-red-500 hover:text-red-800', data: { confirm: "You are about to cancel the publication request for:\n\n#{@project.publishing.publishable.display}\n\nProceed?" }, method: :delete %>
+  </p>
+  <% else %>
+  <p>
+    This section allows you to finalize your project and make it available for
+    viewing to the SRDR user population.
+  </p>
+  <h2 class="text-base font-bold">
+    <u><%= @publishable_record.display %> </u>
+  </h2>
+  <h2 class="text-base font-bold">
+    Congratulations on completing your SRDR+ Project!
+  </h2>
+  <p>You are about to send a request to publish your project to SRDR+.</p>
+  <div>
+    <b>As a reminder, here are some guidelines to finishing your project:</b>
+  </div>
+  <ul>
+    <li>Project Name: Should reflect the tile of your systematic review.</li>
+    <li>
+      Topic Description: Can be adapted from the Abstract of your systematic
+      review
+    </li>
+    <li>Attribution: Please include your organization name</li>
+    <li>Authors of Report</li>
+    <li>
+      Methodology description: Can be adapted from the methods section of your
+      systematic review and should cover description of your search strategy,
+      screening methods, and data abstraction methods.
+    </li>
+    <li>PROSPERO Registration ID (if applicable)</li>
+    <li>Document Object ID (if applicable)</li>
+    <li>Funding Source</li>
+  </ul>
+  <div>
+    <b>Project Notes:</b>
+  </div>
+  <ul>
+    <li>If applicable, include the PubMed ID of your published report</li>
+    <li>
+      If applicable, include the web address of your report posted on the AHRQ
+      website.
+    </li>
+    <li>
+      Please Indicate whether data was entered into this project prospectively
+      (using SRDR's built-in data abstraction function and templates) or
+      retrospectively (importing/uploading of data from other software and file
+      format such as Excel or Word).
+    </li>
+    <li>
+      If you uploaded documents to your project using the Manage Reports tool,
+      please indicate in the Project Notes field, please list what data (e.g.
+      Adverse events, Outcome Results data, etc.) can be found in each document.
+    </li>
+  </ul>
+  <h2 class="text-base font-bold">SRDR Usage Agreement</h2>
+  <p>
+    Furthermore, according to the creative commons license, if you choose to
+    publish your project, you acknowledge that you are now contributing to the
+    publicly accessible SRDR+ published projects page.
+  </p>
+  <!-- prettier-ignore -->
+  <%= simple_form_for @publishing, url: "/publishings?id=#{@publishable_record.id}&type=#{@publishable_record.class}", :method => :post do |f| %>
+
+  <div class="input boolean required publishing_guidelines_agreement">
+    <input
+      value="0"
+      autocomplete="off"
+      type="hidden"
+      name="publishing[guidelines_agreement]"
+    /><label
+      class="boolean required checkbox"
+      for="publishing_guidelines_agreement"
+      ><input
+        style="margin: 0"
+        class="boolean required"
+        required="required"
+        aria-required="true"
+        type="checkbox"
+        value="1"
+        name="publishing[guidelines_agreement]"
+        id="publishing_guidelines_agreement"
+      /><abbr title="required">*</abbr> I verify that I have read and agree with
+      the above statement</label
+    >
+  </div>
+  <div class="input boolean required publishing_terms_agreement">
+    <input
+      value="0"
+      autocomplete="off"
+      type="hidden"
+      name="publishing[terms_agreement]"
+    /><label class="boolean required checkbox" for="publishing_terms_agreement"
+      ><input
+        style="margin: 0"
+        class="boolean required"
+        required="required"
+        aria-required="true"
+        type="checkbox"
+        value="1"
+        name="publishing[terms_agreement]"
+        id="publishing_terms_agreement"
+      /><abbr title="required">*</abbr> I understand that all contributions made
+      to SRDR are made freely available to the public in accordance to the
+      SRDR's
+      <a href="https://srdr.ahrq.gov/home/policies" target="_blank"
+        >Open Access Policy</a
+      >, under the terms of the Creative Commons license,
+      <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank">
+        Attribution-Share Alike 4.0 International (CC BY-SA 4.0)</a
+      ></label
+    >
+  </div>
+  <input
+    type="submit"
+    name="commit"
+    value="Request Publishing"
+    style="margin-top: 20px"
+    data-confirm="Are you sure? Once you publish your project to the system, this action cannot be undone."
+    data-disable-with="Create Publishing"
+    class="button"
+  />
+  <% end %> <% end %>
+</div>
