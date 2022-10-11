@@ -14,13 +14,13 @@ class ExtractionFormsProjectsController < ApplicationController
     respond_to do |format|
       if @extraction_forms_project.save
         format.html do
-          redirect_to edit_project_path(@project, anchor: 'panel-extraction-form'),
+          redirect_to edit_project_path(@project, page: 'info'),
                       notice: t('success')
         end
         format.json { render :show, status: :created, location: @project }
       else
         format.html do
-          redirect_to edit_project_path(@project, anchor: 'panel-extraction-form'),
+          redirect_to edit_project_path(@project, page: 'info'),
                       alert: t('blank')
         end
         format.json { render json: @project.errors, status: :unprocessable_entity }
@@ -54,7 +54,7 @@ class ExtractionFormsProjectsController < ApplicationController
     @extraction_forms_project.destroy
     respond_to do |format|
       format.html do
-        redirect_to edit_project_path(@project, anchor: 'panel-extraction-form'),
+        redirect_to edit_project_path(@project, page: 'info'),
                     notice: t('removed')
       end
       format.json { head :no_content }
@@ -74,9 +74,6 @@ class ExtractionFormsProjectsController < ApplicationController
     @extraction_forms_projects_sections = @extraction_forms_project
                                           .extraction_forms_projects_sections
                                           .includes(%i[ordering section])
-    add_breadcrumb 'my projects',  :projects_path
-    add_breadcrumb 'edit project', edit_project_path(@extraction_forms_project.project)
-    add_breadcrumb 'builder',      :build_extraction_forms_project_path
   end
 
   private

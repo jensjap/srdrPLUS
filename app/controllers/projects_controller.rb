@@ -1,6 +1,4 @@
 class ProjectsController < ApplicationController
-  add_breadcrumb 'my projects', :projects_path
-
   skip_before_action :authenticate_user!, only: [:export]
 
   before_action :set_project, only: %i[

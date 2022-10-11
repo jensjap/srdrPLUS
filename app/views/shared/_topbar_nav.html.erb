@@ -21,7 +21,7 @@
   extractions: <%= @nav_buttons.include?('extractions') %>,
   comparison_tool: <%= @nav_buttons.include?('comparison_tool') %>,
   import_tools: <%= @nav_buttons.include?('import_tools') %>,
-  request_publication: <%= @nav_buttons.include?('request_publication') %>,
+  publication: <%= @nav_buttons.include?('publication') %>,
   signin: <%= @nav_buttons.include?('signin') %>,
   signup: <%= @nav_buttons.include?('signup') %>,
 }"
@@ -226,7 +226,24 @@
     >
       <div class="flex h-8 items-center justify-between">
         <div class="absolute">
+          <!-- prettier-ignore -->
           <%= "Project ID##{project.id}: #{project.name}" %>
+          <% if project.publishing.present? && project.publishing.approval.present? %>
+          <span
+            class="ml-4 inline-flex items-center rounded bg-green-100 px-2 py-0.5 text-xs font-medium text-green-800"
+            >Published</span
+          >
+          <% elsif project.publishing.present? %>
+          <span
+            class="ml-4 inline-flex items-center rounded bg-yellow-100 px-2 py-0.5 text-xs font-medium text-yellow-800"
+            >Publication Requested</span
+          >
+          <% else %>
+          <span
+            class="ml-4 inline-flex items-center rounded bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-800"
+            >Unpublished</span
+          >
+          <% end %>
         </div>
       </div>
       <div class="flex h-12 items-center justify-between">
@@ -286,10 +303,10 @@
             >Import Tools</a
           >
           <a
-            href="#"
+            href="<%= new_publishing_path(type: Project.to_s, id: project.id) %>"
             class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
-            :class="request_publication && 'bg-srdr-primary !text-white'"
-            >Request Publication</a
+            :class="publication && 'bg-srdr-primary !text-white'"
+            >Publication</a
           >
         </div>
       </div>

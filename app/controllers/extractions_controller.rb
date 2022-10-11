@@ -1,6 +1,4 @@
 class ExtractionsController < ApplicationController
-  add_breadcrumb 'my projects', :projects_path
-
   include ExtractionsControllerHelpers
 
   before_action :set_project,
@@ -34,9 +32,6 @@ class ExtractionsController < ApplicationController
                               .where(projects_users: { project: @project })
       @projects_users_roles = @projects_users_roles.sort_by { |pur| pur.role_id }.uniq { |pur| pur.user }
     end
-
-    add_breadcrumb 'edit project', edit_project_path(@project)
-    add_breadcrumb 'extractions',  :project_extractions_path
   end
 
   # GET /extractions/1
@@ -57,9 +52,6 @@ class ExtractionsController < ApplicationController
     @existing_pmids = @project.extractions.map(&:citation).compact.map(&:pmid).join('//$$//')
 
     authorize(@extraction.project, policy_class: ExtractionPolicy)
-
-    add_breadcrumb 'extractions',    :project_extractions_path
-    add_breadcrumb 'new extraction', :new_project_extraction_path
   end
 
   # GET /extractions/1/edit
@@ -159,9 +151,6 @@ class ExtractionsController < ApplicationController
 
     respond_to do |format|
       format.html do
-        add_breadcrumb 'edit project', edit_project_path(@project)
-        add_breadcrumb 'extractions',  project_extractions_path(@project)
-        add_breadcrumb 'work',         :work_extraction_path
       end
 
       format.js do
@@ -233,12 +222,7 @@ class ExtractionsController < ApplicationController
   def comparison_tool
     authorize(@project, policy_class: ExtractionPolicy)
     @nav_buttons.push('comparison_tool', 'my_projects')
-
     @citation_groups = @project.citation_groups
-
-    add_breadcrumb 'edit project',    edit_project_path(@project)
-    add_breadcrumb 'extractions',     :project_extractions_path
-    add_breadcrumb 'comparison tool', :comparison_tool_project_extractions_path
   end
 
   # GET /projects/1/extractions/consolidate
@@ -266,11 +250,6 @@ class ExtractionsController < ApplicationController
       update_record_helper_dictionaries extraction
       update_eefps_by_extraction_and_efps_dict extraction
     end
-
-    add_breadcrumb 'edit project',    edit_project_path(@project)
-    add_breadcrumb 'extractions',     :project_extractions_path
-    add_breadcrumb 'comparison tool', :comparison_tool_project_extractions_path
-    add_breadcrumb 'consolidate',     :consolidate_project_extractions_path
   end
 
   # GET /projects/1/extractions/edit_type1_across_extractions
