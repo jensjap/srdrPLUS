@@ -232,6 +232,7 @@ class ExtractionsController < ApplicationController
   # GET /projects/1/extractions/comparison_tool
   def comparison_tool
     authorize(@project, policy_class: ExtractionPolicy)
+    @nav_buttons.push('comparison_tool')
 
     @citation_groups = @project.citation_groups
 
