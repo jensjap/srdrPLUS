@@ -67,6 +67,7 @@ class AbstractScreeningsController < ApplicationController
 
   def edit
     @abstract_screening = AbstractScreening.find(params[:id])
+    @project = @abstract_screening.project
     authorize(@abstract_screening.project, policy_class: AbstractScreeningPolicy)
   end
 

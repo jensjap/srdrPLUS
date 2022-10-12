@@ -308,10 +308,16 @@
             >Extractions Form Builder</a
           >
           <a
+            href="<%= project_extractions_path(project) %>"
+            class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
+            :class="extractions && 'bg-srdr-primary !text-white'"
+            >Extractions</a
+          >
+          <a
             href="<%= project_citations_path(project) %>"
             class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
             :class="citation_pool && 'bg-srdr-primary !text-white'"
-            >Citation Pool</a
+            >Citations</a
           >
           <a
             href="<%= project_citation_lifecycle_management_path(project) %>"
@@ -335,19 +341,13 @@
             href="<%= project_screening_forms_path(project, form_type: 'abstract') %>"
             class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
             :class="abstract_form && 'bg-srdr-primary !text-white'"
-            >Abstract Screening Form Builder</a
+            >A.S. Form Builder</a
           >
           <a
             href="<%= project_screening_forms_path(project, form_type: 'fulltext') %>"
             class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
             :class="fulltext_form && 'bg-srdr-primary !text-white'"
-            >Full-Text Screening Form Builder</a
-          >
-          <a
-            href="<%= project_extractions_path(project) %>"
-            class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
-            :class="extractions && 'bg-srdr-primary !text-white'"
-            >Extractions</a
+            >F.S. Form Builder</a
           >
           <a
             href="<%= export_data_project_path(project) %>"
