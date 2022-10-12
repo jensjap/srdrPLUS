@@ -1,154 +1,152 @@
-<div>
+<div class="p-4 lg:p-8">
   <%= render 'dashboard' %>
 
-  <div class="px-4 sm:px-6 lg:px-8 py-4">
-    <div class="sm:flex sm:items-center">
-      <div class="sm:flex-auto">
-        <h1 class="text-xl font-semibold text-gray-900">Abstract Screenings</h1>
-        <p class="mt-2 text-sm text-gray-700">
-          Setup an abstract screening process for your project members and pool
-          of citations
-        </p>
-      </div>
-      <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
-        <%= link_to('Create New Screening',
-        new_project_abstract_screening_path(@project), class: "inline-flex
-        items-center justify-center rounded-md border border-transparent
-        bg-srdrpurple px-4 py-2 text-sm font-medium text-white shadow-sm
-        hover:bg-srdrpurple-light focus:outline-none focus:ring-2
-        focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto hover:no-underline
-        hover:text-white") %>
-      </div>
+  <div class="sm:flex sm:items-center">
+    <div class="sm:flex-auto">
+      <h1 class="text-xl font-bold">Abstract Screenings</h1>
+      <p class="mt-2 text-sm text-gray-700">
+        Setup an abstract screening process for your project members and pool of
+        citations
+      </p>
     </div>
-    <div class="px-4 sm:px-6 lg:px-8">
-      <div class="mt-8 flex flex-col">
-        <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
-          <div class="inline-block min-w-full py-2 align-middle">
-            <div
-              class="overflow-hidden shadow-sm ring-1 ring-black ring-opacity-5"
-            >
-              <table class="w-full table-auto divide-y divide-gray-300">
-                <thead class="bg-gray-50">
-                  <tr>
-                    <th
-                      scope="col"
-                      class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6 lg:pl-8"
-                    >
-                      Type
-                    </th>
-                    <th
-                      scope="col"
-                      class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                    >
-                      Options
-                    </th>
-                    <th
-                      scope="col"
-                      class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                    >
-                      Participants
-                    </th>
-                    <th
-                      scope="col"
-                      class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                    >
-                      No. of Citations
-                    </th>
-                    <th
-                      scope="col"
-                      class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                    >
-                      No. of Labels
-                    </th>
-                    <th
-                      scope="col"
-                      class="w-1/5 px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                    >
-                      Predefined Reasons
-                    </th>
-                    <th
-                      scope="col"
-                      class="w-1/5 px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                    >
-                      Predefined Tags
-                    </th>
-                    <th
-                      scope="col"
-                      class="relative w-1/6 py-3.5 pl-3 pr-4 sm:pr-6 lg:pr-8"
-                    >
-                      <span class="sr-only">Actions</span>
-                    </th>
-                  </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-200 bg-white">
-                  <% if @abstract_screenings.empty? %>
-                  <tr>
-                    <td>No abstract screenings yet.</td>
-                  </tr>
-                  <% end %>
-                  <!-- prettier-ignore -->
-                  <% @abstract_screenings.each do |as| %>
-                  <tr>
-                    <td
-                      class="pl-4 pr-3 text-sm font-medium text-gray-500 sm:pl-6 lg:pl-8"
-                    >
-                      <%= as.abstract_screening_type %>
-                    </td>
-                    <td class="px-3 text-sm text-gray-500">
-                      <!-- prettier-ignore -->
-                      Tags required for: <%= as.tag_options.join(', ') %><br />
-                      Reasons required for: <%= as.reason_options.join(', ')
-                      %><br />
-                      Notes required for: <%= as.note_options.join(', ') %><br />
-                      Only predefined reasons: <%= as.only_predefined_reasons
-                      %><br />
-                      Only predefined tags: <%= as.only_predefined_tags %><br />
-                      Hide author: <%= as.hide_author %><br />
-                      Hide journal: <%= as.hide_journal %><br />
-                    </td>
-                    <td class="px-3 text-sm text-gray-500">
-                      <%= as.projects_users_roles.count %> member(s)
-                    </td>
-                    <td class="px-3 text-sm text-gray-500">
-                      <%= as.abstract_screening_type == 'perpetual' ? '∞' :
-                      as.citations_projects.count %>
-                    </td>
-                    <td class="px-3 text-sm text-gray-500">
-                      <%= as.abstract_screening_results.count %>
-                    </td>
-                    <td class="px-3 text-sm text-gray-500">
-                      <% as.reasons.map(&:name).each do |reason| %>
-                      <!-- prettier-ignore -->
-                      - <%= reason %><br />
-                      <% end %>
-                    </td>
-                    <td class="px-3 text-sm text-gray-500">
-                      <% as.tags.map(&:name).each do |tag| %>
-                      <!-- prettier-ignore -->
-                      - <%= tag %><br />
-                      <% end %>
-                    </td>
+    <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
+      <%= link_to('Create New Screening',
+      new_project_abstract_screening_path(@project), class: "inline-flex
+      items-center justify-center rounded-md border border-transparent
+      bg-srdrpurple px-4 py-2 text-sm font-medium text-white shadow-sm
+      hover:bg-srdrpurple-light focus:outline-none focus:ring-2
+      focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto hover:no-underline
+      hover:text-white") %>
+    </div>
+  </div>
+  <div class="px-4 sm:px-6 lg:px-8">
+    <div class="mt-8 flex flex-col">
+      <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
+        <div class="inline-block min-w-full py-2 align-middle">
+          <div
+            class="overflow-hidden shadow-sm ring-1 ring-black ring-opacity-5"
+          >
+            <table class="w-full table-auto divide-y divide-gray-300">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th
+                    scope="col"
+                    class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6 lg:pl-8"
+                  >
+                    Type
+                  </th>
+                  <th
+                    scope="col"
+                    class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                  >
+                    Options
+                  </th>
+                  <th
+                    scope="col"
+                    class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                  >
+                    Participants
+                  </th>
+                  <th
+                    scope="col"
+                    class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                  >
+                    No. of Citations
+                  </th>
+                  <th
+                    scope="col"
+                    class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                  >
+                    No. of Labels
+                  </th>
+                  <th
+                    scope="col"
+                    class="w-1/5 px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                  >
+                    Predefined Reasons
+                  </th>
+                  <th
+                    scope="col"
+                    class="w-1/5 px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                  >
+                    Predefined Tags
+                  </th>
+                  <th
+                    scope="col"
+                    class="relative w-1/6 py-3.5 pl-3 pr-4 sm:pr-6 lg:pr-8"
+                  >
+                    <span class="sr-only">Actions</span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-200 bg-white">
+                <% if @abstract_screenings.empty? %>
+                <tr>
+                  <td>No abstract screenings yet.</td>
+                </tr>
+                <% end %>
+                <!-- prettier-ignore -->
+                <% @abstract_screenings.each do |as| %>
+                <tr>
+                  <td
+                    class="pl-4 pr-3 text-sm font-medium text-gray-500 sm:pl-6 lg:pl-8"
+                  >
+                    <%= as.abstract_screening_type %>
+                  </td>
+                  <td class="px-3 text-sm text-gray-500">
+                    <!-- prettier-ignore -->
+                    Tags required for: <%= as.tag_options.join(', ') %><br />
+                    Reasons required for: <%= as.reason_options.join(', ') %><br />
+                    Notes required for: <%= as.note_options.join(', ') %><br />
+                    Only predefined reasons: <%= as.only_predefined_reasons
+                    %><br />
+                    Only predefined tags: <%= as.only_predefined_tags %><br />
+                    Hide author: <%= as.hide_author %><br />
+                    Hide journal: <%= as.hide_journal %><br />
+                  </td>
+                  <td class="px-3 text-sm text-gray-500">
+                    <%= as.projects_users_roles.count %> member(s)
+                  </td>
+                  <td class="px-3 text-sm text-gray-500">
+                    <%= as.abstract_screening_type == 'perpetual' ? '∞' :
+                    as.citations_projects.count %>
+                  </td>
+                  <td class="px-3 text-sm text-gray-500">
+                    <%= as.abstract_screening_results.count %>
+                  </td>
+                  <td class="px-3 text-sm text-gray-500">
+                    <% as.reasons.map(&:name).each do |reason| %>
+                    <!-- prettier-ignore -->
+                    - <%= reason %><br />
+                    <% end %>
+                  </td>
+                  <td class="px-3 text-sm text-gray-500">
+                    <% as.tags.map(&:name).each do |tag| %>
+                    <!-- prettier-ignore -->
+                    - <%= tag %><br />
+                    <% end %>
+                  </td>
 
-                    <td
-                      class="pl-3 pr-4 text-right text-sm font-medium sm:pr-6 lg:pr-8"
+                  <td
+                    class="pl-3 pr-4 text-right text-sm font-medium sm:pr-6 lg:pr-8"
+                  >
+                    <!-- prettier-ignore -->
+                    <% if as.finished? %>
+                    <button
+                      class="w-full inline-flex mb-2 cursor-not-allowed saturate-[0.25] items-center justify-center rounded-md border border-transparent bg-srdrpurple px-4 py-2 tex1-sm font-medium text-white shadow-sm hover:bg-srdrpurple-light focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 hover:no-underline hover:text-white"
                     >
-                      <!-- prettier-ignore -->
-                      <% if as.finished? %>
-                      <button
-                        class="w-full inline-flex mb-2 cursor-not-allowed saturate-[0.25] items-center justify-center rounded-md border border-transparent bg-srdrpurple px-4 py-2 tex1-sm font-medium text-white shadow-sm hover:bg-srdrpurple-light focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 hover:no-underline hover:text-white"
-                      >
-                        Nothing Left to Screen
-                      </button>
-                      <% else %> <%= link_to('Continue Screening',
-                      abstract_screening_screen_path(as), class: "w-full
-                      inline-flex items-center justify-center rounded-md border
-                      border-transparent bg-srdrpurple px-4 py-2 my-1
-                      text-center text-sm font-medium text-white shadow-sm
-                      hover:bg-srdrpurple-light focus:outline-none focus:ring-2
-                      focus:ring-indigo-500 focus:ring-offset-2
-                      hover:no-underline hover:text-white") %> <% end %>
-                      <!-- prettier-ignore -->
-                      <%= link_to('Show Results',
+                      Nothing Left to Screen
+                    </button>
+                    <% else %> <%= link_to('Continue Screening',
+                    abstract_screening_screen_path(as), class: "w-full
+                    inline-flex items-center justify-center rounded-md border
+                    border-transparent bg-srdrpurple px-4 py-2 my-1 text-center
+                    text-sm font-medium text-white shadow-sm
+                    hover:bg-srdrpurple-light focus:outline-none focus:ring-2
+                    focus:ring-indigo-500 focus:ring-offset-2 hover:no-underline
+                    hover:text-white") %> <% end %>
+                    <!-- prettier-ignore -->
+                    <%= link_to('Show Results',
                       abstract_screening_path(as), class: "w-full inline-flex
                       items-center justify-center rounded-md border
                       border-transparent bg-srdrpurple px-4 py-2 my-1
@@ -156,23 +154,22 @@
                       hover:bg-srdrpurple-light focus:outline-none focus:ring-2
                       focus:ring-indigo-500 focus:ring-offset-2
                       hover:no-underline hover:text-white") %>
-                      <!-- prettier-ignore -->
-                      <%= link_to('Edit', edit_abstract_screening_path(as),
+                    <!-- prettier-ignore -->
+                    <%= link_to('Edit', edit_abstract_screening_path(as),
                       class: "w-full inline-flex items-center justify-center
                       rounded-md border border-transparent bg-srdrpurple px-4
                       py-2 my-1 text-center text-sm font-medium text-white
                       shadow-sm hover:bg-srdrpurple-light focus:outline-none
                       focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2
                       hover:no-underline hover:text-white") %>
-                    </td>
-                  </tr>
-                  <% end %>
-                </tbody>
-              </table>
-            </div>
+                  </td>
+                </tr>
+                <% end %>
+              </tbody>
+            </table>
           </div>
-          <%= paginate(@abstract_screenings, theme: 'foundation') %>
         </div>
+        <%= paginate(@abstract_screenings, theme: 'foundation') %>
       </div>
     </div>
   </div>

@@ -7,15 +7,12 @@
 </style>
 <div
   x-data="screeningFormData"
-  class="p-8"
+  class="p-4 lg:p-8"
   @drop.prevent="drop()"
   @dragover.prevent="dragover($event)"
 >
-  <div class="py-2 flex">
-    <h1
-      class="text-2xl"
-      x-text="`Screening Form (${screening_form.form_type})`"
-    ></h1>
+  <div class="flex">
+    <h1 class="text-xl font-bold">Screening Form</h1>
     <button
       @click="addQuestion()"
       class="bg-srdrpurple text-white p-2 mx-4 cursor-pointer"
