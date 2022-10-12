@@ -13,7 +13,7 @@
   </div>
   <div class="flex flex-col w-full">
     <!-- prettier-ignore -->
-    <%= simple_form_for([@project, @abstract_screening]) do |f| %>
+    <%= simple_form_for([action_name == 'edit' ? nil : @project, @abstract_screening]) do |f| %>
     <div
       class="mt-8"
       x-data="{ pns: 'abstract_screening', cns: 'abstract_screening_type', customInput: false, open: false }"
