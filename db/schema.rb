@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_09_20_013301) do
+ActiveRecord::Schema[7.0].define(version: 2022_09_28_085850) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -175,7 +175,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_20_013301) do
     t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
   end
 
-  create_table "active_storage_variant_records", charset: "utf8mb3", force: :cascade do |t|
+  create_table "active_storage_variant_records", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.string "variation_digest", null: false
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
@@ -481,7 +481,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_20_013301) do
     t.datetime "updated_at", precision: nil, null: false
   end
 
-  create_table "data_audits", id: :integer, charset: "utf8mb3", force: :cascade do |t|
+  create_table "data_audits", id: :integer, charset: "utf8mb4", collation: "utf8mb4_bin", force: :cascade do |t|
     t.boolean "epc_source"
     t.string "epc_name"
     t.string "non_epc_name"
@@ -1303,6 +1303,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_20_013301) do
     t.datetime "deleted_at", precision: nil
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
+    t.integer "projects_paginate_per"
     t.index ["deleted_at"], name: "index_profiles_on_deleted_at"
     t.index ["organization_id"], name: "index_profiles_on_organization_id"
     t.index ["user_id"], name: "index_profiles_on_user_id", unique: true

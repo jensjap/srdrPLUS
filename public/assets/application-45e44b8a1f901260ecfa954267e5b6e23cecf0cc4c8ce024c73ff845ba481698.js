@@ -69414,6 +69414,16 @@ function __guardMethod__(obj, methodName, transform) {
   };
 
 }).call(this);
+document.addEventListener('alpine:init', () => {
+    Alpine.store('navigation', {
+        on: true,
+
+        toggle() {
+            this.on = !this.on
+        }
+    })
+})
+;
 (function() {
   var documentCode, get_result_value;
 

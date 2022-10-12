@@ -34,7 +34,8 @@ module SeedData
         { name: 'Distiller Section' },
         { name: 'Citation' },
         { name: 'Project' },
-        { name: 'Distiller' }
+        { name: 'Distiller' },
+        { name: 'Assignments and Mappings'}
       ])
 
       #FileType.
@@ -1221,6 +1222,10 @@ module SeedData
       # Seed Default Status.
       Status.find_or_create_by!(name: "Draft")
       Status.find_or_create_by!(name: "Completed")
+      # Seed CitationType.
+      ["Primary", "Secondary", "Abstrackr"].each do |type|
+        CitationType.find_or_create_by!(name: type)
+      end
 
     end
   end
@@ -1410,9 +1415,9 @@ module SeedDataExtended
         @project = Project.order(updated_at: :desc).first
         @project.key_questions << [@kq1, @kq2]
 
-        @primary        = CitationType.create!(name: 'Primary')
-        @secondary      = CitationType.create!(name: 'Secondary')
-        @abstrackr      = CitationType.create!(name: 'Abstrackr')
+        @primary        = CitationType.find_or_create_by!(name: 'Primary')
+        @secondary      = CitationType.find_or_create_by!(name: 'Secondary')
+        @abstrackr      = CitationType.find_or_create_by!(name: 'Abstrackr')
         @citation_types = [@primary, @secondary]
 
         # Citations, Journals, Authors and Keywords

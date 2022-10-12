@@ -185,4 +185,8 @@ class Citation < ApplicationRecord
   def reindex_abstract_screening_results
     abstract_screening_results.each(&:reindex)
   end
+
+  def author_list_for_citation_references_in_brackets
+    authors.map{ |a| "[#{ a.name }]" }.join('')
+  end
 end

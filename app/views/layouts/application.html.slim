@@ -4,7 +4,7 @@ html class='no-js' lang='en'
     meta charset='utf-8'
     meta name='viewport' content='width=device-width, initial-scale=1.0'
 
-    title == content_for?(:title) ? yield(:title) : 'SRDR+'
+    title == content_for?(:title) ? yield(:title) + " | SRDR+" : 'SRDR+'
 
     / Google Tag Manager
     script[async src="https://www.googletagmanager.com/gtag/js?id=GTM-KFBGXK"]
@@ -29,6 +29,7 @@ html class='no-js' lang='en'
     = javascript_include_tag 'https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js'
 
     = javascript_include_tag 'https://unpkg.com/@alpinejs/focus@3.10.3/dist/cdn.min.js', defer: true
+    = javascript_include_tag 'https://unpkg.com/@alpinejs/collapse@3.x.x/dist/cdn.min.js', defer: true
     = javascript_include_tag 'https://unpkg.com/alpinejs@3.10.3/dist/cdn.min.js', defer: true
 
     = csrf_meta_tag
@@ -52,7 +53,7 @@ html class='no-js' lang='en'
       = yield(:content)
 
     - else
-      .off-canvas-wrapper
+      div
         - if (controller_name.eql?('projects') && not(action_name.eql?('index')) && not(action_name.eql?('new'))) \
             || controller_name.eql?('extractions') \
             || controller_name.eql?('extraction_forms_projects') \
@@ -78,6 +79,7 @@ html class='no-js' lang='en'
             = yield
             = render 'shared/scroll_top_wrapper'
 
+    = render 'layouts/srdr_plus_footer'
 
     iframe src="/ahrq_footer.html" text="AHRQ Footer" title="AHRQ Footer" height="570" width="100%" frameborder="0" scrolling="no" seemless
       p Browser does not support iframes. Please update your browser to for a better viewing experience.

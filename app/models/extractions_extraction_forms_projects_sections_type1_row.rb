@@ -123,7 +123,11 @@ class ExtractionsExtractionFormsProjectsSectionsType1Row < ApplicationRecord
       extractions_extraction_forms_projects_sections_type1.reload
     end
 
-    if extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_sections_type1_rows.first.extractions_extraction_forms_projects_sections_type1_row_columns.count == 0
+    if extractions_extraction_forms_projects_sections_type1
+      .extractions_extraction_forms_projects_sections_type1_rows
+      .first
+      .extractions_extraction_forms_projects_sections_type1_row_columns
+      .count == 0
 
       # If this is the first/only row then we default to creating (arbitrarily) 1 column.
 

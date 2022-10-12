@@ -1,3 +1,5 @@
+- content_for :title, content="Search"
+
 - if params[:projects_search].present? || params[:citations_search].present?
   .max-w-6xl.mx-auto.px-4.sm:px-6.lg:px-8
     h1.text-3xl.my-4 Search Results
@@ -55,4 +57,3 @@
           = f.input :abstract, input_html: { value: params.dig(:citations_search, :abstract) }
 
           .my-4 = f.button :submit, 'Search'
-

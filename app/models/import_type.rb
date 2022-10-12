@@ -9,4 +9,10 @@
 #
 
 class ImportType < ApplicationRecord
+  DISTILLER_REFERENCES = 'Distiller References'.freeze
+  DISTILLER_SECTION    = 'Distiller Section'.freeze
+  CITATION             = 'Citation'.freeze
+  PROJECT              = 'Project'.freeze
+  DISTILLER            = 'Distiller'.freeze
+  ASSIGNMENTS_MAPPINGS = 'Assignments and Mappings'.freeze
 end

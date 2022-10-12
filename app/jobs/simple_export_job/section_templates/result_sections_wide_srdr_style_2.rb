@@ -39,33 +39,33 @@ module SimpleExportJob::SectionTemplates::ResultSectionsWideSrdrStyle2
     #   WAC and Net Differences only apply to Continuous.
     desc_cont_header = ws_descriptive_statistics_continuous_outcomes.add_row(
       @sheet_info.header_info +
-      ['Outcome', 'Outcome Description', 'Outcome Type', 'Population', 'Digest', 'Timepoint', 'Timepoint Unit'] +
-      @sheet_info.data_headers(1, 'Continuous', 'Arm')
+      ['Outcome', 'Outcome Description', 'Outcome Type', 'Population', 'Population Description', 'Digest', 'Timepoint', 'Timepoint Unit'] +
+      @sheet_info.data_headers(1, "Continuous", "Arm")
     )
     desc_cat_header = ws_descriptive_statistics_categorical_outcomes.add_row(
       @sheet_info.header_info +
-      ['Outcome', 'Outcome Description', 'Outcome Type', 'Population', 'Digest', 'Timepoint', 'Timepoint Unit'] +
-      @sheet_info.data_headers(1, 'Categorical', 'Arm')
+      ['Outcome', 'Outcome Description', 'Outcome Type', 'Population', 'Population Description', 'Digest', 'Timepoint', 'Timepoint Unit'] +
+      @sheet_info.data_headers(1, "Categorical", "Arm")
     )
     bac_cont_header = ws_bac_statistics_continuous_outcomes.add_row(
       @sheet_info.header_info +
-      ['Outcome', 'Outcome Description', 'Outcome Type', 'Population', 'Digest', 'Timepoint', 'Timepoint Unit'] +
-      @sheet_info.data_headers(2, 'Continuous', 'Comparison')
+      ['Outcome', 'Outcome Description', 'Outcome Type', 'Population', 'Population Description', 'Digest', 'Timepoint', 'Timepoint Unit'] +
+      @sheet_info.data_headers(2, "Continuous", "Comparison")
     )
     bac_cat_header = ws_bac_statistics_categorical_outcomes.add_row(
       @sheet_info.header_info +
-      ['Outcome', 'Outcome Description', 'Outcome Type', 'Population', 'Digest', 'Timepoint', 'Timepoint Unit'] +
-      @sheet_info.data_headers(2, 'Categorical', 'Comparison')
+      ['Outcome', 'Outcome Description', 'Outcome Type', 'Population', 'Population Description', 'Digest', 'Timepoint', 'Timepoint Unit'] +
+      @sheet_info.data_headers(2, "Categorical", "Comparison")
     )
     wac_header = ws_wac_statistics.add_row(
       @sheet_info.header_info +
-      ['Outcome', 'Outcome Description', 'Outcome Type', 'Population', 'Digest', 'WAC Comparator'] +
-      @sheet_info.data_headers(3, 'Continuous', 'Arm')
+      ['Outcome', 'Outcome Description', 'Outcome Type', 'Population', 'Population Description', 'Digest', 'WAC Comparator'] +
+      @sheet_info.data_headers(3, "Continuous", "Arm")
     )
     net_header = ws_net_statistics.add_row(
       @sheet_info.header_info +
-      ['Outcome', 'Outcome Description', 'Outcome Type', 'Population', 'Digest', 'WAC Comparator'] +
-      @sheet_info.data_headers(4, 'Continuous', 'Comparison')
+      ['Outcome', 'Outcome Description', 'Outcome Type', 'Population', 'Population Description', 'Digest', 'WAC Comparator'] +
+      @sheet_info.data_headers(4, "Continuous", "Comparison")
     )
 
     @sheet_info.extractions.each do |_e_key, extraction|
@@ -101,6 +101,7 @@ module SimpleExportJob::SectionTemplates::ResultSectionsWideSrdrStyle2
                 new_row << rssm[:outcome_description]
                 new_row << rssm[:outcome_type]
                 new_row << rssm[:population_name]
+                new_row << rssm[:population_description]
                 new_row << md5_digest(extraction, rssm)
                 new_row << rssm[:row_name]
                 new_row << rssm[:row_unit]
@@ -123,6 +124,7 @@ module SimpleExportJob::SectionTemplates::ResultSectionsWideSrdrStyle2
                 new_row << rssm[:outcome_description]
                 new_row << rssm[:outcome_type]
                 new_row << rssm[:population_name]
+                new_row << rssm[:population_description]
                 new_row << md5_digest(extraction, rssm)
                 new_row << rssm[:row_name]
                 new_row << rssm[:row_unit]
@@ -145,6 +147,7 @@ module SimpleExportJob::SectionTemplates::ResultSectionsWideSrdrStyle2
                 new_row << rssm[:outcome_description]
                 new_row << rssm[:outcome_type]
                 new_row << rssm[:population_name]
+                new_row << rssm[:population_description]
                 new_row << md5_digest(extraction, rssm)
                 new_row << rssm[:row_name]
 
@@ -162,6 +165,7 @@ module SimpleExportJob::SectionTemplates::ResultSectionsWideSrdrStyle2
                 new_row << rssm[:outcome_description]
                 new_row << rssm[:outcome_type]
                 new_row << rssm[:population_name]
+                new_row << rssm[:population_description]
                 new_row << md5_digest(extraction, rssm)
                 new_row << rssm[:row_name]
 
@@ -341,7 +345,8 @@ module SimpleExportJob::SectionTemplates::ResultSectionsWideSrdrStyle2
       + rssm[:outcome_name].to_s\
       + rssm[:outcome_description].to_s\
       + rssm[:outcome_type].to_s\
-      + rssm[:population_name].to_s
+      + rssm[:population_name].to_s\
+      + rssm[:population_description].to_s
 
     Digest::MD5.hexdigest(signature_string)
   end

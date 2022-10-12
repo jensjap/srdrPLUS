@@ -16,7 +16,7 @@
   td = f.text_field :epc_name
   td = f.text_field :non_epc_name
   td = project.key_questions.count
-  td = project.studies.count
+  td = project.citations.count
   td = project.extractions.reject { |extraction| extraction.consolidated }.count
   td = project.extractions.reject { |extraction| !extraction.consolidated }.count
   td = f.text_field :capture_method
