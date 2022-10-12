@@ -186,6 +186,7 @@ Rails.application.routes.draw do
     resources :sd_meta_data
     resources :teams, concerns: :invitable, only: %i[create update destroy]
     member do
+      get 'export_data'
       get 'confirm_deletion'
       get 'next_assignment'
       post 'import_csv'

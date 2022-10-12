@@ -1,5 +1,4 @@
 class FulltextScreeningsController < ApplicationController
-  add_breadcrumb 'my projects', :projects_path
   skip_before_action :verify_authenticity_token, only: %i[label rescreen]
 
   before_action :set_project, only: %i[index new create kpis]

@@ -1,5 +1,4 @@
 class AbstractScreeningsController < ApplicationController
-  add_breadcrumb 'my projects', :projects_path
   skip_before_action :verify_authenticity_token, only: %i[update_word_weight kpis label rescreen]
 
   before_action :set_project, only: %i[index new create citation_lifecycle_management kpis]

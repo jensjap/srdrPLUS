@@ -1,6 +1,4 @@
 class CitationsController < ApplicationController
-  add_breadcrumb 'my projects', :projects_path
-
   before_action :set_project, only: %i[index labeled unlabeled]
   before_action :set_citation, only: %i[show edit update destroy]
 
@@ -50,11 +48,6 @@ class CitationsController < ApplicationController
   def edit
     authorize_access
     @citation.build_journal unless @citation.journal.present?
-    if params[:project_id]
-      add_breadcrumb 'edit project', edit_project_path(params[:project_id])
-      add_breadcrumb 'citations', project_citations_path(params[:project_id])
-    end
-    add_breadcrumb 'citation'
   end
 
   def destroy
@@ -67,28 +60,14 @@ class CitationsController < ApplicationController
   end
 
   def show
-    if params[:project_id]
-      add_breadcrumb 'edit project', edit_project_path(params[:project_id])
-      add_breadcrumb 'extractions', project_extractions_path(params[:project_id])
-      add_breadcrumb 'citation', :citation_path
-    end
-
     render 'show'
   end
 
   def index
-    # @citations = Citation.joins(:projects)
-    #  .group('citations.id')
-    #  .where(:projects => { :id => @project.id }).all
-    # @labels = Label.where(:user_id => current_user.id).where(:citations_project_id => [@project.citations_projects]).all
+    @nav_buttons.push('citation_pool', 'my_projects')
     @citations = @project.citations.includes(authors_citations: %i[ordering author]).order(:id)
     @citations_projects_dict = @project.citations_projects.map { |cp| [cp.citation_id, cp] }.to_h
     @key_questions_projects_array_for_select = @project.key_questions_projects_array_for_select
-
-    # @project.teams.build
-
-    add_breadcrumb 'edit project', edit_project_path(@project)
-    add_breadcrumb 'citations',    :project_citations_path
   end
 
   def labeled

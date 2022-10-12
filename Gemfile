@@ -32,7 +32,6 @@ gem 'aws-sdk-s3', require: false # Access to AWS S3 Cloud Storage.
 gem 'bcrypt', '~> 3.1.7'
 gem 'bio' # bioruby for pubmed queries.
 gem 'bootsnap' # New for Rails 5.2.
-gem 'breadcrumbs_on_rails' # breadcrumbs.
 gem 'caxlsx' # Spreadsheet generation.
 gem 'caxlsx_rails' # Spreadsheet generation.
 gem 'cocoon'
@@ -72,7 +71,7 @@ gem 'redis'
 gem 'ref_parsers', '~> 0.2.0' # for parsing ris files.
 gem 'remotipart', github: 'mshibuya/remotipart'
 gem 'responders' # Help DRY up code.
-gem "roo", "~> 2.9.0"
+gem 'roo', '~> 2.9.0'
 gem 'rubyXL', '3.4.25' # Spreadsheet reading.
 gem 'sass-rails', '~> 5.0' # Use SCSS for stylesheets
 gem 'searchjoy'
