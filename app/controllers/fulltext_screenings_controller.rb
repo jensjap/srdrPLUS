@@ -38,6 +38,7 @@ class FulltextScreeningsController < ApplicationController
 
   def index
     authorize(@project, policy_class: FulltextScreeningPolicy)
+    @nav_buttons.push('fulltext_screening', 'my_projects')
     @fulltext_screenings =
       policy_scope(@project, policy_scope_class: FulltextScreeningPolicy::Scope)
       .order(id: :desc)

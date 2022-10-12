@@ -36,6 +36,7 @@ class AbstractScreeningsController < ApplicationController
 
   def citation_lifecycle_management
     authorize(@project, policy_class: AbstractScreeningPolicy)
+    @nav_buttons.push('lifecycle_management', 'my_projects')
     respond_to do |format|
       format.html
       format.json do
@@ -71,6 +72,7 @@ class AbstractScreeningsController < ApplicationController
 
   def index
     authorize(@project, policy_class: AbstractScreeningPolicy)
+    @nav_buttons.push('abstract_screening', 'my_projects')
     @abstract_screenings =
       policy_scope(@project, policy_scope_class: AbstractScreeningPolicy::Scope)
       .order(id: :desc)
