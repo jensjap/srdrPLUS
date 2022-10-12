@@ -18,7 +18,6 @@
 #  only_predefined_tags    :boolean          default(FALSE), not null
 #  hide_author             :boolean          default(FALSE), not null
 #  hide_journal            :boolean          default(FALSE), not null
-#  exclusive_participants  :boolean          default(FALSE), not null
 #  default                 :boolean          default(FALSE), not null
 #  created_at              :datetime         not null
 #  updated_at              :datetime         not null

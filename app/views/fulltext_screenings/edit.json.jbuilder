@@ -24,7 +24,6 @@ json.fulltext_screening do
   json.only_predefined_tags @fulltext_screening.only_predefined_tags
   json.hide_author @fulltext_screening.hide_author
   json.hide_journal @fulltext_screening.hide_journal
-  json.exclusive_participants @fulltext_screening.exclusive_participants
   json.projects_users_role_ids do
     json.selections @fulltext_screening.projects_users_roles.map { |pur| { key: pur.id, value: pur.handle } }
     json.options @fulltext_screening.project.projects_users_roles.map { |pur| { key: pur.id, value: pur.handle } }
