@@ -35,6 +35,7 @@ services:
       - esdata:/usr/share/elasticsearch/data
     environment:
       discovery.type: single-node
+      ELASTIC_PASSWORD: password
 
   sidekiq:
     build:
