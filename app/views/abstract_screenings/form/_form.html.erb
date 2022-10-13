@@ -41,7 +41,7 @@
 
     <div
       class="mt-8"
-      x-data="{ pns: 'abstract_screening', cns: 'projects_users_role_ids', customInput: false, open: false }"
+      x-data="{ pns: 'abstract_screening', cns: 'user_ids', customInput: false, open: false }"
     >
       <div>Participants</div>
       <%= render 'components/multi_select' %>
@@ -448,7 +448,7 @@
         only_predefined_tags: false,
         hide_author: false,
         hide_journal: false,
-        projects_users_role_ids: {
+        user_ids: {
           selections: [],
           options: [],
         },

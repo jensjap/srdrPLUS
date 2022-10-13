@@ -13,6 +13,8 @@ class AbstractScreeningsUser < ApplicationRecord
   has_many :tags, through: :abstract_screenings_tags_users
   has_many :abstract_screening_results, dependent: :destroy, inverse_of: :abstract_screenings_user
 
+  delegate :handle, to: :user
+
   def process_reasons(asr, predefined_reasons, custom_reasons)
     asr.reasons.destroy_all
     predefined_reasons.merge(custom_reasons).each do |reason, included|

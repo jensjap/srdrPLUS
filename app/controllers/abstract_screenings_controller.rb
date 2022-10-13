@@ -10,7 +10,6 @@ class AbstractScreeningsController < ApplicationController
     @abstract_screening =
       @project.abstract_screenings.new(abstract_screening_params)
     if @abstract_screening.save
-      @abstract_screening.add_citations_from_pool(params[:no_of_citations].to_i)
       flash[:notice] = 'Screening was successfully created'
       redirect_to project_abstract_screenings_path(@project)
     else
@@ -165,7 +164,6 @@ class AbstractScreeningsController < ApplicationController
     @project = @abstract_screening.project
     authorize(@abstract_screening.project, policy_class: AbstractScreeningPolicy)
     if @abstract_screening.update(abstract_screening_params)
-      @abstract_screening.add_citations_from_pool(params[:no_of_citations].to_i)
       flash[:notice] = 'Screening was successfully updated'
       redirect_to project_abstract_screenings_path(@project)
     else

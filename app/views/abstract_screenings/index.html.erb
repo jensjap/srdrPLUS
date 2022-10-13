@@ -49,12 +49,6 @@
                     scope="col"
                     class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                   >
-                    No. of Citations
-                  </th>
-                  <th
-                    scope="col"
-                    class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                  >
                     No. of Labels
                   </th>
                   <th
@@ -103,11 +97,7 @@
                     Hide journal: <%= as.hide_journal %><br />
                   </td>
                   <td class="px-3 text-sm text-gray-500">
-                    <%= as.projects_users_roles.count %> member(s)
-                  </td>
-                  <td class="px-3 text-sm text-gray-500">
-                    <%= as.abstract_screening_type == 'perpetual' ? '∞' :
-                    as.citations_projects.count %>
+                    <%= as.users.count %> member(s)
                   </td>
                   <td class="px-3 text-sm text-gray-500">
                     <%= as.abstract_screening_results.count %>
@@ -129,7 +119,7 @@
                     class="pl-3 pr-4 text-right text-sm font-medium sm:pr-6 lg:pr-8"
                   >
                     <!-- prettier-ignore -->
-                    <% if as.finished? %>
+                    <% if false %>
                     <button
                       class="w-full inline-flex mb-2 cursor-not-allowed saturate-[0.25] items-center justify-center rounded-md border border-transparent bg-srdrpurple px-4 py-2 tex1-sm font-medium text-white shadow-sm hover:bg-srdrpurple-light focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 hover:no-underline hover:text-white"
                     >

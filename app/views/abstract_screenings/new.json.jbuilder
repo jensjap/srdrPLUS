@@ -24,9 +24,9 @@ json.abstract_screening do
   json.only_predefined_tags @abstract_screening.only_predefined_tags
   json.hide_author @abstract_screening.hide_author
   json.hide_journal @abstract_screening.hide_journal
-  json.projects_users_role_ids do
-    json.selections @abstract_screening.projects_users_roles.map { |pur| { key: pur.id, value: pur.handle } }
-    json.options @abstract_screening.project.projects_users_roles.map { |pur| { key: pur.id, value: pur.handle } }
+  json.user_ids do
+    json.selections @abstract_screening.abstract_screenings_users.map { |asu| { key: asu.id, value: asu.handle } }
+    json.options @abstract_screening.project.users.map { |u| { key: u.id, value: u.handle } }
   end
   json.reason_ids do
     json.selections @abstract_screening.reasons.map { |reason| { key: reason.id, value: reason.name } }

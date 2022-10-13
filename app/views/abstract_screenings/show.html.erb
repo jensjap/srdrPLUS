@@ -1,7 +1,6 @@
-<div x-data="abstract_screening_results">
+<div class="px-4 sm:px-6 lg:px-8 py-4">
   <%= render 'dashboard' %>
-
-  <div class="px-4 sm:px-6 lg:px-8 py-4">
+  <div x-data="abstract_screening_results">
     <div class="sm:flex sm:items-center">
       <div class="sm:flex-auto">
         <h1 class="text-xl font-semibold text-gray-900">
@@ -13,7 +12,7 @@
       </div>
       <div class="mt-4 sm:mt-0 sm:ml-16 flex flex-col items-end">
         <!-- prettier-ignore -->
-        <% if @abstract_screening.finished? %>
+        <% if false %>
 
         <button
           class="mb-2 cursor-not-allowed saturate-[0.25] w-full inline-flex items-center justify-center rounded-md border border-transparent bg-srdrpurple px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-srdrpurple-light focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 hover:no-underline hover:text-white"
