@@ -34,7 +34,8 @@ module SeedData
         { name: 'Distiller Section' },
         { name: 'Citation' },
         { name: 'Project' },
-        { name: 'Distiller' }
+        { name: 'Distiller' },
+        { name: 'Assignments and Mappings'}
       ])
 
       #FileType.
@@ -1218,13 +1219,18 @@ module SeedData
       # Seed Extraction Forms.
       @ef1 = ExtractionForm.create(name: 'ef1')
 
+      # Seed CitationType.
+      ["Primary", "Secondary", "Abstrackr"].each do |type|
+        CitationType.find_or_create_by!(name: type)
+      end
+
     end
   end
 end
 
 # Sample Data.
 module SeedDataExtended
-  unless Rails.env.test?
+  unless Rails.env.production?
     def self.extended(object)
       project_titles = [
         ['Definition of Treatment-Resistant Depression in the Medicare Population', 'The purpose of this technology assessment is to review the current definitions of treatment-resistant depression (TRD), to assess how closely current TRD treatment studies fit the most common definition, and to suggest how to improove TRD treatment research.'],
@@ -1406,9 +1412,9 @@ module SeedDataExtended
         @project = Project.order(updated_at: :desc).first
         @project.key_questions << [@kq1, @kq2]
 
-        @primary        = CitationType.create!(name: 'Primary')
-        @secondary      = CitationType.create!(name: 'Secondary')
-        @abstrackr      = CitationType.create!(name: 'Abstrackr')
+        @primary        = CitationType.find_or_create_by!(name: 'Primary')
+        @secondary      = CitationType.find_or_create_by!(name: 'Secondary')
+        @abstrackr      = CitationType.find_or_create_by!(name: 'Abstrackr')
         @citation_types = [@primary, @secondary]
 
         # Citations, Journals, Authors and Keywords

@@ -1,4 +1,4 @@
-source "https://rubygems.org"
+source 'https://rubygems.org'
 
 git_source(:github) do |repo_name|
   repo_name = "#{repo_name}/#{repo_name}" unless repo_name.include?('/')
@@ -7,7 +7,6 @@ end
 
 group :development, :test do
   gem 'byebug'
-  gem 'dotenv-rails'
 end
 
 group :test do
@@ -18,7 +17,6 @@ end
 group :development do
   gem 'active_record_doctor'
   gem 'annotate'
-  gem 'awesome_print'
   gem 'bullet'
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
@@ -28,6 +26,7 @@ gem 'ahoy_matey'
 gem 'amoeba' # for things like cloning questions (extraction forms maybe?)
 gem 'apipie-rails' # Api documentation.
 gem 'autoprefixer-rails' # Use Zurb Foundation as Front-End Framework
+gem 'awesome_print'
 gem 'aws-sdk-s3', require: false # Access to AWS S3 Cloud Storage.
 gem 'bcrypt', '~> 3.1.7'
 gem 'bio' # bioruby for pubmed queries.
@@ -39,6 +38,7 @@ gem 'cocoon'
 gem 'coffee-rails', '~> 4.2' # Use CoffeeScript for .coffee assets and views
 gem 'country_select'
 gem 'devise'
+gem 'dotenv-rails'
 gem 'dropzonejs-rails' # Allows users to drop files to upload
 gem 'elasticsearch', '< 7.14'
 gem 'faker', github: 'stympy/faker'
@@ -71,11 +71,12 @@ gem 'redis'
 gem 'ref_parsers', '~> 0.2.0' # for parsing ris files.
 gem 'remotipart', github: 'mshibuya/remotipart'
 gem 'responders' # Help DRY up code.
-gem 'rubyXL', '~> 1.2.10' # Spreadsheet reading.
+gem "roo", "~> 2.9.0"
+gem 'rubyXL', '3.4.25' # Spreadsheet reading.
 gem 'sass-rails', '~> 5.0' # Use SCSS for stylesheets
 gem 'searchjoy'
 gem 'searchkick'
-gem "sentry-rails"
+gem 'sentry-rails'
 gem 'sentry-ruby' # full-stack error tracking system
 gem 'sentry-sidekiq' # full-stack error tracking system
 gem 'sidekiq' # Background jobs.

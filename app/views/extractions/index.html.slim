@@ -54,42 +54,29 @@
 
         - else
           - @extractions.each do |extraction|
-            - citation = extraction.citations_project.citation
-            - first_author = citation.authors_citations.sort_by { |ac| ac.ordering.position }&.first&.citation&.authors&.first&.name || ''
-            - pmid = citation.pmid.to_s
-            - year = citation.year
-            - name = citation.name.to_s.truncate(70)
-            - citation_handle = first_author + ', ' + year + ', ' + pmid + '<br />' + name
-            - eefps_count = extraction.extractions_extraction_forms_projects_sections.length
-            - progress_meter_width = (extraction.extractions_extraction_forms_projects_sections.inject(0) { |sum, eefps| sum + (eefps.status.name == 'Completed' ? 100.0 : 0) } / (eefps_count == 0 ? 1 : eefps_count)).round.to_s
-            - if extraction.extractions_extraction_forms_projects_sections.any? { |eefps| eefps.status.name != 'Completed' }
-              - tooltip_text = "<span style='font-weight: bold;'>Incomplete Sections:</span><br>" + (extraction.extractions_extraction_forms_projects_sections.map{ |eefps| eefps.status.name != 'Completed' ? eefps.section.name : "" } - [""]).join('<br>')
-            - else
-              - tooltip_text = "<span style='font-weight: bold;'>Complete!</span>"
             tr
               td data-sort="#{extraction.updated_at.to_i}" = link_to t('work'), work_extraction_path(extraction), style: 'font-weight:bold;'
-              td = first_author
-              td = year
-              td = pmid
-              td data-sort="#{name}"
-                div style="overflow: hidden; height: 18px;" = link_to name, citation_path(citation, project_id: @project.id)
+              td = extraction.first_author
+              td = extraction.year
+              td = extraction.pmid
+              td data-sort="#{extraction.name}"
+                div style="overflow: hidden; height: 18px;" = link_to extraction.name, citation_path(extraction.citation, project_id: @project.id)
               - if @project.leaders.include? current_user
                 td
                   .projects-users-role dropdown-active='false'
                     span.projects-users-role-label data-extraction-id="#{ extraction.id.to_s }"
-                      = extraction.projects_users_role.handle
+                      = extraction.pur_handle
                     .projects-users-role-select.hide
-                      = simple_form_for extraction, remote: true do |e_f|
-                        = e_f.association :projects_users_role, label: false, collection: @projects_users_roles, label_method: :handle, input_html: { class: "index-extractions-select2" }, selected: extraction.projects_users_role.id
+                      = form_with model: extraction, html: { remote: true } do |e_f|
+                        = e_f.select :projects_users_role_id, @projects_users_roles.map { |pur| [pur.handle, pur.id] }, input_html: { class: "index-extractions-select2" }, selected: extraction.projects_users_role.id
               - else
-                td = extraction.projects_users_role.handle
+                td = extraction.pur_handle
 
-              td data-sort="#{ progress_meter_width }"
-                .success.progress data-allow-html="true" data-tooltip="" title="#{ tooltip_text }"
-                  .progress-meter style="width: #{ progress_meter_width }%;"
-              /td = extraction.projects_users_role.role.name
-              /td = link_to t('edit'), edit_extraction_path(extraction)
-              td = link_to t('destroy'), extraction, style: 'font-weight:bold;color:#cc4b37 !important;', data: { confirm: "Warning! You are about to delete extraction:\n\n#{first_author} - #{year} - #{pmid}\n#{name}\n\nThis action cannot be undone. Proceed anyway?" }, method: :delete
+              td data-sort="#{ extraction.progress_meter_width }"
+                .success.progress data-allow-html="true" data-tooltip="" title="#{ extraction.tooltip_text }"
+                  .progress-meter style="width: #{ extraction.progress_meter_width }%;"
+
+              td = link_to t('destroy'), extraction, style: 'font-weight:bold;color:#cc4b37 !important;', data: { confirm: "Warning! You are about to delete extraction:\n\n#{extraction.first_author} - #{extraction.year} - #{extraction.pmid}\n#{extraction.name}\n\nThis action cannot be undone. Proceed anyway?" }, method: :delete
 .column.row
   - if @project.key_questions.present?
     = link_to new_project_extraction_path, class: 'button create-button create-extraction-button' do

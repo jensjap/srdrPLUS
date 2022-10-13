@@ -88,7 +88,7 @@ class Comparison < ApplicationRecord
       text += ' vs. '
     end
 
-    return text[0..-6]
+    return "[ID: #{self.id}] " + text[0..-6]
   end
 
   def tokenize

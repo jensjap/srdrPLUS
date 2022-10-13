@@ -4,16 +4,17 @@ class ProjectsController < ApplicationController
   skip_before_action :authenticate_user!, only: [:export]
 
   before_action :set_project, only: [
-                                :show, :edit, :update, :destroy, :export, :export_to_gdrive, :import_csv,
-                                :import_pubmed, :import_endnote, :import_ris, :next_assignment,
-                                :confirm_deletion, :dedupe_citations, :create_citation_screening_extraction_form, :create_full_text_screening_extraction_form,
-                              ]
+    :show, :edit, :update, :destroy, :export, :export_to_gdrive,
+    :export_assignments_and_mappings, :import_assignments_and_mappings, :simple_import,
+    :import_csv, :import_pubmed, :import_endnote, :import_ris, :next_assignment,
+    :confirm_deletion, :dedupe_citations, :create_citation_screening_extraction_form,
+    :create_full_text_screening_extraction_form]
 
-  before_action :skip_authorization, only: [:index, :edit, :show, :filter, :export, :export_to_gdrive, :new, :create]
+  before_action :skip_authorization, only: [
+    :index, :edit, :show, :filter, :export, :export_to_gdrive, :new, :create]
   before_action :skip_policy_scope, except: [
-                                      :index, :show, :edit, :update, :destroy, :filter, :export, :export_to_gdrive, :import_csv,
-                                      :import_pubmed, :import_endnote, :import_ris, :next_assignment,
-                                    ]
+    :index, :show, :edit, :update, :destroy, :filter, :export, :export_to_gdrive, :import_csv,
+    :import_pubmed, :import_endnote, :import_ris, :next_assignment]
 
   # GET /projects
   # GET /projects.json
@@ -133,7 +134,7 @@ class ProjectsController < ApplicationController
     authenticate_user! unless current_user || email = helpers.valid_email(params[:email])
 
     if @project.public? || authorize(@project)
-      SimpleExportJob.perform_later(current_user ? current_user.email : email, @project.id, export_type_name_params)
+      SimpleExportJob.set(wait: 1.minute).perform_later(current_user ? current_user.email : email, @project.id, export_type_name_params)
       ahoy.track 'Export', { project_id: @project.id, export_type_name_params: export_type_name_params }
       flash[:success] = "Export request submitted for project '#{@project.name}'. You will be notified by email of its completion."
     else
@@ -145,16 +146,128 @@ class ProjectsController < ApplicationController
 
   def export_to_gdrive
     authorize(@project)
-    GsheetsExportJob.perform_later(current_user.id, @project.id, gdrive_params)
+    GsheetsExportJob.set(wait: 1.minute).perform_later(current_user.id, @project.id, gdrive_params)
     flash[:success] = "Export request submitted for project '#{@project.name}'. You will be notified by email of its completion."
 
     redirect_to edit_project_path(@project)
   end
 
+  def export_assignments_and_mappings
+    authorize(@project)
+    assignment_list = ExportAssignmentsAndMappingsJob.perform_now(@project.id)
+    file_name = "Assignments and Mappings Template - Project ID #{ @project.id.to_s }.xlsx"
+    send_data(assignment_list.to_stream().read, filename: file_name)
+  end
+
+  def import_assignments_and_mappings
+    authorize(@project)
+    file = import_assignments_and_mappings_params[:imported_file][:content]
+    unless _check_valid_file_extension(file)
+      @import = Struct.new(:errors).new(nil)
+      @import.errors = "Invalid file format"
+      respond_to do |format|
+        format.json { render :json => @import.errors.to_json, status: :unprocessable_entity }
+      end
+      return
+    end
+
+    # Verify that we are importing Assignments and Mappings.
+    import_type_id = import_assignments_and_mappings_params[:import_type_id].to_i
+    unless import_type_id.eql?(ImportType.find_by(name: ImportType::ASSIGNMENTS_MAPPINGS).id)
+      @import = Struct.new(:errors).new(nil)
+      @import.errors = "Invalid Import Type -- you are not importing user Assignments and Mappings."
+      respond_to do |format|
+        format.json { render :json => @import.errors.to_json, status: :unprocessable_entity }
+      end
+      return
+    end
+
+    projects_user_id = import_assignments_and_mappings_params[:projects_user_id].to_i
+    file_type_id = import_assignments_and_mappings_params[:imported_file][:file_type_id].to_i
+
+    import_hash = {
+      import_type_id: import_type_id,
+      projects_user_id: projects_user_id,
+      imported_files_attributes: [
+        {
+          content: file,
+          file_type_id: file_type_id
+        }
+      ]
+    }
+
+    @import = Import.new(import_hash)
+    authorize(@import.project, policy_class: ImportPolicy)
+
+    respond_to do |format|
+      if @import.save
+        flash[:success] = "Import request of Assignments and Mappings submitted for project '#{ @project.name }'. You will be notified by email of its completion."
+        format.json { render :json => @import, status: :ok }
+        format.html { redirect_to project_imports_path(@project) }
+      else
+        flash[:error] = "Error encountered. Unable to process import request of Assignments and Mappings submitted for project '#{ @project.name }'."
+        format.json { render :json => @import.errors, status: :unprocessable_entity }
+        format.html { redirect_to project_imports_path(@project) }
+      end
+    end
+  end
+
+  def simple_import
+    authorize(@project)
+    file = import_assignments_and_mappings_params[:imported_file][:content]
+    unless _check_valid_file_extension(file)
+      @import = Struct.new(:errors).new(nil)
+      @import.errors = "Invalid file format"
+      respond_to do |format|
+        format.json { render :json => @import.errors.to_json, status: :unprocessable_entity }
+      end
+      return
+    end
+
+    import_type_id = import_assignments_and_mappings_params[:import_type_id].to_i
+    unless import_type_id.eql?(ImportType.find_by(name: ImportType::PROJECT).id)
+      @import = Struct.new(:errors).new(nil)
+      @import.errors = "Invalid Import Type -- you are not importing a project."
+      respond_to do |format|
+        format.json { render :json => @import.errors.to_json, status: :unprocessable_entity }
+      end
+      return
+    end
+
+    projects_user_id = import_assignments_and_mappings_params[:projects_user_id].to_i
+    file_type_id = import_assignments_and_mappings_params[:imported_file][:file_type_id].to_i
+
+    import_hash = {
+      import_type_id: import_type_id,
+      projects_user_id: projects_user_id,
+      imported_files_attributes: [
+        {
+          content: file,
+          file_type_id: file_type_id
+        }
+      ]
+    }
+
+    @import = Import.new(import_hash)
+    authorize(@import.project, policy_class: ImportPolicy)
+
+    respond_to do |format|
+      if @import.save
+        flash[:success] = "Import request of project '#{ @project.name }'. You will be notified by email of its completion."
+        format.json { render :json => @import, status: :ok }
+        format.html { redirect_to project_imports_path(@project) }
+      else
+        flash[:error] = "Error encountered. Unable to process import request of project '#{ @project.name }'."
+        format.json { render :json => @import.errors, status: :unprocessable_entity }
+        format.html { redirect_to project_imports_path(@project) }
+      end
+    end
+  end
+
   def import_ris
     authorize(@project)
     @project.citation_files.attach(citation_import_params[:citation_files])
-    RisImportJob.perform_later(current_user.id, @project.id, @project.citation_files.last.id)
+    RisImportJob.set(wait: 1.minute).perform_later(current_user.id, @project.id, @project.citation_files.last.id)
     flash[:success] = "Import request submitted for project '#{@project.name}'. You will be notified by email of its completion."
 
     redirect_to project_citations_path(@project)
@@ -163,7 +276,7 @@ class ProjectsController < ApplicationController
   def import_csv
     authorize(@project)
     @project.citation_files.attach(citation_import_params[:citation_files])
-    CsvImportJob.perform_later(current_user.id, @project.id, @project.citation_files.last.id)
+    CsvImportJob.set(wait: 1.minute).perform_later(current_user.id, @project.id, @project.citation_files.last.id)
     flash[:success] = "Import request submitted for project '#{@project.name}'. You will be notified by email of its completion."
 
     redirect_to project_citations_path(@project)
@@ -172,7 +285,7 @@ class ProjectsController < ApplicationController
   def import_pubmed
     authorize(@project)
     @project.citation_files.attach(citation_import_params[:citation_files])
-    PubmedImportJob.perform_later(current_user.id, @project.id, @project.citation_files.last.id)
+    PubmedImportJob.set(wait: 1.minute).perform_later(current_user.id, @project.id, @project.citation_files.last.id)
     flash[:success] = "Import request submitted for project '#{@project.name}'. You will be notified by email of its completion."
     #@project.import_citations_from_pubmed( citation_import_params[:citation_file] )
 
@@ -182,7 +295,7 @@ class ProjectsController < ApplicationController
   def import_endnote
     authorize(@project)
     @project.citation_files.attach(citation_import_params[:citation_files])
-    EnlImportJob.perform_later(current_user.id, @project.id, @project.citation_files.last.id)
+    EnlImportJob.set(wait: 1.minute).perform_later(current_user.id, @project.id, @project.citation_files.last.id)
     flash[:success] = "Import request submitted for project '#{@project.name}'. You will be notified by email of its completion."
 
     redirect_to project_citations_path(@project)
@@ -198,7 +311,7 @@ class ProjectsController < ApplicationController
 
   def dedupe_citations
     authorize(@project)
-    DedupeCitationsJob.perform_later(@project.id)
+    DedupeCitationsJob.set(wait: 1.minute).perform_later(@project.id)
     #@project.dedupe_citations
     flash[:success] = "Request to deduplicate citations has been received. Please come back later."
 
@@ -241,6 +354,10 @@ class ProjectsController < ApplicationController
     else
       params.require(:project).permit(*ProjectPolicy::FULL_PARAMS)
     end
+  end
+
+  def import_params
+    params.require(:import).permit(imported_files: [])
   end
 
   def gdrive_params
@@ -288,8 +405,12 @@ class ProjectsController < ApplicationController
     params.require(:export_type_name)
   end
 
+  def import_assignments_and_mappings_params
+    params.require(:import).permit(:projects_user_id, :import_type_id, imported_file: [:file_type_id, :content])
+  end
+
   # def import_project_from_distiller(project)
-  #   DistillerImportJob.perform_later(current_user.id, project.id)
+  #   DistillerImportJob.set(wait: 1.minute).perform_later(current_user.id, project.id)
   #   flash[:success] = "Import request submitted for project '#{ project.name }'. You will be notified by email of its completion."
   # end
 
@@ -301,10 +422,18 @@ class ProjectsController < ApplicationController
 
     if @project_status.blank?
       @projects = policy_scope(Project).
-        draft.
         includes(publishing: [{ user: :profile }, approval: [{ user: :profile }]]).
         by_name_description_and_query(@query).
         page(params[:page])
+
+      # Introduced projects_paginate_per value in user.profile
+      # We scope on that value if it exists, otherwise keep default
+      # paginate per set in model/project.rb
+      @projects = rescope(
+        @projects,
+        params[:page],
+        current_user.profile.projects_paginate_per
+      ) if current_user.profile.projects_paginate_per.present?
 
       @projects = @projects.order(updated_at: :desc) if params[:o].nil? || params[:o] == 'updated-at'
       @projects = @projects.order(created_at: :desc) if params[:o] == 'created-at'
@@ -351,6 +480,69 @@ class ProjectsController < ApplicationController
         to_h
 
       @projects_lead_or_with_key_questions.default = false
+
+    elsif @project_status == 'draft'
+      @projects = policy_scope(Project).
+        draft.
+        includes(publishing: [{ user: :profile }, approval: [{ user: :profile }]]).
+        by_name_description_and_query(@query).
+        page(params[:page])
+
+      # Introduced projects_paginate_per value in user.profile
+      # We scope on that value if it exists, otherwise keep default
+      # paginate per set in model/project.rb
+      @projects = rescope(
+        @projects,
+        params[:page],
+        current_user.profile.projects_paginate_per
+      ) if current_user.profile.projects_paginate_per.present?
+
+      @projects = @projects.order(updated_at: :desc) if params[:o].nil? || params[:o] == 'updated-at'
+      @projects = @projects.order(created_at: :desc) if params[:o] == 'created-at'
+
+      project_ids = @projects.pluck(:id)
+      @projects_key_questions_project_counts = KeyQuestionsProject.
+        where(project_id: project_ids).
+        group(:project_id).
+        count
+
+      @projects_citations_project_counts = CitationsProject.
+        where(project_id: project_ids).
+        group(:project_id).
+        count
+
+      @projects_projects_user_counts = ProjectsUser.
+        where(project_id: project_ids).
+        group(:project_id).
+        count
+
+      @projects_extraction_counts = Extraction.
+        where(project_id: project_ids).
+        group(:project_id).
+        count
+
+      @projects_extraction_forms_project_ids = ExtractionFormsProject.
+        where(project_id: project_ids).
+        group_by(&:project_id)
+
+      @sd_meta_data_counts = SdMetaDatum.
+        where(project_id: project_ids).
+        group_by(&:project_id).
+        count
+
+      @projects_lead_or_with_key_questions = ProjectsUsersRole.
+        where(projects_user: ProjectsUser.
+          where(
+            project_id: project_ids,
+            user_id: current_user
+          ),
+          role: Role.where(name: 'Leader')
+        ).includes(projects_user: { project: [ :key_questions_projects ] }).
+        map { |pur| [pur.project.id, pur.project.key_questions_projects.present?] }.
+        to_h
+
+      @projects_lead_or_with_key_questions.default = false
+
     elsif @project_status == 'pending'
       @unapproved_publishings = Publishing.
         includes([:publishable]).
@@ -361,6 +553,7 @@ class ProjectsController < ApplicationController
         page(params[:page])
       @unapproved_publishings = @unapproved_publishings.order(updated_at: :desc) if params[:o].nil? || params[:o] == 'updated-at'
       @unapproved_publishings = @unapproved_publishings.order(created_at: :desc) if params[:o] == 'created-at'
+
     elsif @project_status == 'published'
       @approved_publishings = Publishing.
         includes([:publishable]).
@@ -385,5 +578,14 @@ class ProjectsController < ApplicationController
     project_params[:projects_users_attributes] &&
       project_params[:projects_users_attributes].values.any? { |key| key[:role_ids] } &&
       project_params[:projects_users_attributes].values.map { |pua| pua[:role_ids] }.flatten.none? { |role_id| role_id == '1' }
+  end
+
+  def _check_valid_file_extension(file)
+    extension = file.original_filename.match(/(\.[a-z]+$)/i)[0]
+    return ['.xlsx'].include?(extension)
+  end
+
+  def rescope(projects, page, per)
+    return projects.except(:limit, :offset).page(page).per(per)
   end
 end

@@ -279,15 +279,15 @@ class Project < ApplicationRecord
 
     is_the_same_citation_added_to_the_database_multiple_times_and_referenced_multiple_times =
       citations
-        .select(:id)
+        .select(:pmid)
         .group(
           :citation_type_id,
           :name,
           :refman,
           :pmid,
-          :abstract
-        )
-        .having("count(*) > 1").length > 0
+          :abstract)
+        .having("count(*) > 1")
+        .length > 0
 
     return is_any_citation_added_to_project_multiple_times || is_the_same_citation_added_to_the_database_multiple_times_and_referenced_multiple_times
   end

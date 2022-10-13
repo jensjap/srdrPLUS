@@ -42,6 +42,7 @@ class StaticPagesController < ApplicationController
   end
 
   def blog
+    @date = params[:date]
   end
 
   def published_projects

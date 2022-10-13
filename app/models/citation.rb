@@ -159,4 +159,8 @@ class Citation < ApplicationRecord
       "<#{first_author}> <PMID: #{pmid}>" :
       "<#{first_author}> #{name}"
   end
+
+  def author_list_for_citation_references_in_brackets
+    authors.map{ |a| "[#{ a.name }]" }.join('')
+  end
 end

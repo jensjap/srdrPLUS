@@ -10,16 +10,23 @@ amazon_uploads:
   service: S3
   access_key_id: <%= Rails.application.credentials.dig(:amazon_temp, :access_key_id) %>
   secret_access_key: <%= Rails.application.credentials.dig(:amazon_temp, :secret_access_key) %>
-  region: "us-east-1"
-  bucket: "srdrplus-uploads"
+  region: us-east-1
+  bucket: srdrplus-uploads
   public: true
 
 amazon_temp:
   service: S3
-  access_key_id: <%= Rails.application.credentials.dig(:amazon_temp, :access_key_id) %>
-  secret_access_key: <%= Rails.application.credentials.dig(:amazon_temp, :secret_access_key) %>
-  region: "us-east-1"
-  bucket: "srdrplus-temp"
+  access_key_id: <%= Rails.application.credentials.dig(:amazon_temp_2, :access_key_id) %>
+  secret_access_key: <%= Rails.application.credentials.dig(:amazon_temp_2, :secret_access_key) %>
+  region: us-east-1
+  bucket: srdrplus-temp-2
+
+amazon_citation_import:
+  service: S3
+  access_key_id: <%= Rails.application.credentials.dig(:amazon_temp_2, :access_key_id) %>
+  secret_access_key: <%= Rails.application.credentials.dig(:amazon_temp_2, :secret_access_key) %>
+  region: us-east-1
+  bucket: srdrplus-citation-import-<%= Rails.env %>
 
 # Use rails credentials:edit to set the AWS secrets (as aws:access_key_id|secret_access_key)
 # amazon:

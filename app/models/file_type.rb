@@ -9,4 +9,11 @@
 #
 
 class FileType < ApplicationRecord
+  CSV       = '.csv'
+  RIS       = '.ris'
+  XLSX      = '.xlsx'
+  ENL       = '.enl'
+  PUBMED    = 'PubMed'
+  JSON      = '.json'
+  DISTILLER = 'Distiller Section'
 end

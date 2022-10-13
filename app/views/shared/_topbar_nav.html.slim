@@ -1,4 +1,4 @@
-#navigation
+#navigation x-data=""
   div data-sticky-container=""
     .title-bar data-hide-for="medium" data-responsive-toggle="responsive-menu"
       button.menu-icon data-toggle="responsive-menu" type="button" Menu
@@ -15,22 +15,27 @@
 
           .top-bar-right
             ul.dropdown.menu.icons.icon-right data-dropdown-menu=""
+              li class="#{ 'border-b-2 border-b-white' if ["home"].include?controller.action_name }" = link_to root_path(no_redirect: true), title: "Home Page" do
+                i.fi-home.text-xl
+
               - if user_signed_in?
                 = render "shared/signed_in_links"
 
-              li = link_to(t(".blog"), blog_path)
+              li class="#{ 'border-b-2 border-b-white' if ["blog"].include?controller.action_name }" = link_to(t(".blog"), blog_path)
 
-              li = link_to("Published Projects", published_projects_path)
+              li class="#{ 'border-b-2 border-b-white' if ["published_projects"].include?controller.action_name }" = link_to("Published Projects", published_projects_path)
 
-              li = link_to searches_path, title: "Search Published Projects" do
+              li class="#{ 'border-b-2 border-b-white' if [SearchesController].include?controller.class }" = link_to searches_path, title: "Search Published Projects" do
                 | Search
                 i.fi-magnifying-glass
 
-              li aria-expanded="false"
-                = link_to('#') do
+              li class="#{ 'border-b-2 border-b-white' if ["help", "citing", "usage", "about", "contact"].include?controller.action_name }" aria-expanded="false"
+                = link_to("Help", help_path)
+
+                /= link_to('#') do
                   | Help
                   i class="fi-list"
-                ul.menu style='min-width: 450px'
+                /ul.menu style='min-width: 450px'
                   h6
                     b Tutorials - PDF Guides
                     li = link_to('User Guide', 'https://srdrplus.s3.amazonaws.com/SRDR%2B+User+Guide+-+10-13-21_Final.pdf', target: '_blank')
@@ -58,7 +63,7 @@
                     li = link_to(t(".contact"), contact_path)
 
               - if user_signed_in?
-                li aria-expanded="false"
+                li class="#{ 'border-b-2 border-b-white' if [Users::RegistrationsController, ProfilesController].include?controller.class }" aria-expanded="false"
                   a href='#'
                     | Account
                     i.fi-torso style="padding-left: 5px"
@@ -70,8 +75,8 @@
                     li = link_to 'Logout', destroy_user_session_path, :method => :delete
 
               - else
-                li = link_to "Login", new_user_session_path
-                li = link_to new_user_registration_path do
+                li class="#{ 'border-b-2 border-b-white' if [Users::SessionsController].include?controller.class }" = link_to "Login", new_user_session_path
+                li class="#{ 'border-b-2 border-b-white' if [Users::RegistrationsController].include?controller.class }" = link_to new_user_registration_path do
                   strong id="signup-link-id" Sign Up
 - if (controller_name.eql?('projects') && not(action_name.eql?('index')) && not(action_name.eql?('new'))) \
     || controller_name.eql?('assignments') \
@@ -83,7 +88,7 @@
     || (controller_name.eql?('questions') && (action_name.eql?('dependencies') || action_name.eql?('edit'))) \
     || (controller_name.eql?('extractions_extraction_forms_projects_sections_type1s') && action_name.eql?('edit')) \
     || (controller_name.eql?('extraction_forms_projects_sections') && action_name.eql?('preview')) \
-    || (controller_name.eql?('imports') && action_name.eql?('new')) \
+    || (controller_name.eql?('imports') && (action_name.eql?('new') || action_name.eql?('index'))) \
     || (controller.class == PublishingsController && @publishable_record.class == Project && controller.action_name == 'new')
   - project = @project || @extraction.try(:project) || @extraction_forms_project.try(:project) || @question.try(:project) || @extraction_forms_projects_section.try(:project) || @publishable_record
   div style="margin-bottom: 10px;"
@@ -121,7 +126,7 @@
       li.submenu style="#{'background: #78608b' if controller.class == ExtractionsController && controller.action_name == 'index'}"
         a class="border-y border-white" href="#{project_extractions_path(project)}" Extractions
       li.submenu
-        a id='export-modal-button' data-open="export-modal-#{ project.id.to_s }" class="border-y border-white" = 'Export Data'
+        a id='export-modal-button' data-open="export-modal-#{ project.id.to_s }" class="border-y border-white" Export Data
         = render partial: 'shared/select_export_type', locals: { project: project }
       li.submenu style="#{'background: #78608b' if controller.class == ExtractionsController && controller.action_name == 'comparison_tool'}"
         a class="border-y border-white" href="#{comparison_tool_project_extractions_path(project)}" Comparison Tool
@@ -131,4 +136,11 @@
         li.submenu = link_to 'Cancel publication request', publishing_path(project.publishing.publishable_id), class: 'border-y border-white', data: { confirm: 'Are you sure?' }, method: :delete, title: 'Cancel publication request'
       - else
         li.submenu style="#{'background: #78608b' if controller.class == PublishingsController && controller.action_name == 'new'}"
-          = link_to "Request Publication", new_publishing_path(type: Project.to_s, id: project.id), title: "Request Publication", class: 'border-y border-white'
+          = link_to "Request Publication", new_publishing_path(type: Project.to_s, id: project.id), title: "Request Publication"
+      li.submenu style="#{'background: #78608b' if controller.class == ImportsController && controller.action_name == 'index'}"
+        = link_to '#' do
+          | Project Tools &nbsp;
+          i class="fi-list"
+        ul.menu
+          li
+            a href="#{ project_imports_path(project) }" Import Tools
