@@ -1,26 +1,17 @@
-# == Schema Information
-#
-# Table name: abstract_screenings_projects_users_roles
-#
-#  id                     :bigint           not null, primary key
-#  abstract_screening_id  :bigint           not null
-#  projects_users_role_id :bigint           not null
-#  created_at             :datetime         not null
-#  updated_at             :datetime         not null
-#
-class AbstractScreeningsProjectsUsersRole < ApplicationRecord
+class AbstractScreeningsUser < ApplicationRecord
   belongs_to :abstract_screening
-  belongs_to :projects_users_role
-  delegate :user, to: :projects_users_role
+  belongs_to :user
 
-  has_many :word_weights, dependent: :destroy, inverse_of: :abstract_screenings_projects_users_role
-  has_many :abstract_screenings_projects_users_role_tags, dependent: :destroy,
-                                                          inverse_of: :abstract_screenings_projects_users_role
-  has_many :abstract_screenings_projects_users_role_reasons, dependent: :destroy,
-                                                             inverse_of: :abstract_screenings_projects_users_role
-  has_many :reasons, through: :abstract_screenings_projects_users_role_reasons
-  has_many :tags, through: :abstract_screenings_projects_users_role_tags
-  has_many :abstract_screening_results, dependent: :destroy, inverse_of: :abstract_screenings_projects_users_role
+  has_many :word_weights, dependent: :destroy, inverse_of: :abstract_screenings_user
+  has_many :abstract_screenings_tags_users,
+           dependent: :destroy,
+           inverse_of: :abstract_screenings_user
+  has_many :abstract_screenings_reasons_users,
+           dependent: :destroy,
+           inverse_of: :abstract_screenings_user
+  has_many :reasons, through: :abstract_screenings_reasons_users
+  has_many :tags, through: :abstract_screenings_tags_users
+  has_many :abstract_screening_results, dependent: :destroy, inverse_of: :abstract_screenings_user
 
   def process_reasons(asr, predefined_reasons, custom_reasons)
     asr.reasons.destroy_all
@@ -60,7 +51,7 @@ class AbstractScreeningsProjectsUsersRole < ApplicationRecord
   # to start screening by default (see AbstractScreeningPolicy).
   # In case ASPUR does not exist we initialize it here.
   def self.find_aspur(user, abstract_screening)
-    #AbstractScreeningsProjectsUsersRole
+    # AbstractScreeningsProjectsUsersRole
     #  .joins(projects_users_role: { projects_user: :user })
     #  .where(abstract_screening:, projects_users_role: { projects_users: { user: } })
     #  .first
