@@ -163,6 +163,7 @@ Rails.application.routes.draw do
 
   get 'sd_key_questions/:id/fuzzy_match', to: 'sd_key_questions#fuzzy_match'
 
+  resources :abstract_screening_results, only: %i[show update]
   resources :data_audits, only: %i[index update]
   resources :projects, concerns: :paginatable, shallow: true do
     resources :abstract_screenings do

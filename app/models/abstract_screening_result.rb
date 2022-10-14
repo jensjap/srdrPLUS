@@ -1,8 +1,6 @@
 class AbstractScreeningResult < ApplicationRecord
   searchkick
 
-  after_commit :reindex_citations_project, :reindex
-
   belongs_to :abstract_screening
   belongs_to :citation
   belongs_to :user
@@ -11,12 +9,23 @@ class AbstractScreeningResult < ApplicationRecord
   has_many :reasons, through: :abstract_screening_results_reasons
   has_many :abstract_screening_results_tags
   has_many :tags, through: :abstract_screening_results_tags
-
-  has_one :note, as: :notable
-
   has_many :sf_abstract_records, dependent: :destroy, inverse_of: :abstract_screening_result
 
-  delegate :project, to: :citations_project
+  delegate :project, to: :abstract_screening
+  accepts_nested_attributes_for :abstract_screening_results_reasons, allow_destroy: true
+
+  def self.work
+    asr.update(
+      abstract_screening_results_reasons_attributes: [
+        reason_id: 1,
+        abstract_screening_result_id: 1
+      ]
+    )
+  end
+
+  def self.asr
+    AbstractScreeningResult.find_by(abstract_screening_id: 1, citation: Citation.last, user: User.first)
+  end
 
   def search_data
     {
@@ -30,7 +39,7 @@ class AbstractScreeningResult < ApplicationRecord
       label:,
       reasons: reasons.map(&:name).join(', '),
       tags: tags.map(&:name).join(', '),
-      note: note&.value || '',
+      notes:,
       updated_at:
     }
   end
@@ -202,9 +211,5 @@ class AbstractScreeningResult < ApplicationRecord
       abstract_screenings_citations_project:,
       abstract_screenings_projects_users_role:
     )
-  end
-
-  def reindex_citations_project
-    citations_project.reindex
   end
 end

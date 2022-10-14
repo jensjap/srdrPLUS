@@ -5,6 +5,7 @@ class CreateAbstractScreeningResults < ActiveRecord::Migration[7.0]
       t.references :user, index: { name: 'asr_on_u' }
       t.references :citation, index: { name: 'asr_on_c' }
       t.integer :label, limit: 1
+      t.text :notes
       t.timestamps
     end
   end

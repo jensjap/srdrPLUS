@@ -25,6 +25,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_28_085850) do
     t.bigint "user_id"
     t.bigint "citation_id"
     t.integer "label", limit: 1
+    t.text "notes"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["abstract_screening_id"], name: "index_abstract_screening_results_on_abstract_screening_id"
@@ -2280,12 +2281,14 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_28_085850) do
 
   create_table "word_weights", charset: "utf8mb3", force: :cascade do |t|
     t.bigint "user_id"
+    t.bigint "abstract_screening_id"
     t.integer "weight", limit: 1, null: false
     t.string "word", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["user_id", "word"], name: "u_w", unique: true
-    t.index ["user_id"], name: "asr_on_u"
+    t.index ["abstract_screening_id"], name: "ww_on_as"
+    t.index ["user_id", "abstract_screening_id", "word"], name: "u_as_w", unique: true
+    t.index ["user_id"], name: "ww_on_u"
   end
 
   add_foreign_key "abstrackr_settings", "profiles"
