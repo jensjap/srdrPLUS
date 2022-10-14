@@ -51,15 +51,15 @@ class ProjectsController < ApplicationController
     authorize(@project)
 
     case params[:page]
-    when 'info'
-      @nav_buttons.push('project_info', 'my_projects')
-      render 'projects/edit/_manage_information'
     when 'key_questions'
       @nav_buttons.push('key_questions', 'my_projects')
       render 'projects/edit/_manage_key_questions'
     when 'members_and_roles'
       @nav_buttons.push('members_and_roles', 'my_projects')
       render 'projects/edit/_manage_projects_users'
+    else
+      @nav_buttons.push('project_info', 'my_projects')
+      render 'projects/edit/_manage_information'
     end
   end
 
