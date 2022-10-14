@@ -255,6 +255,7 @@
         only_predefined_tags: null,
       },
       asr: {
+        id: null,
         label: null,
         predefined_reasons: {},
         predefined_tags: {},
@@ -299,15 +300,15 @@
 
       requireReasoning() {
         return (
-          (this.label == -1 &&
+          (this.asr.label == -1 &&
             (this.options.no_tag_required ||
               this.options.no_reason_required ||
               this.options.no_note_required)) ||
-          (this.label == 0 &&
+          (this.asr.label == 0 &&
             (this.options.maybe_tag_required ||
               this.options.maybe_reason_required ||
               this.options.maybe_note_required)) ||
-          (this.label == 1 &&
+          (this.asr.label == 1 &&
             (this.options.yes_tag_required ||
               this.options.yes_reason_required ||
               this.options.yes_note_required))
@@ -341,9 +342,9 @@
       },
 
       satisfiesReasoning() {
-        if (this.label == null) return false;
+        if (this.asr.label == null) return false;
         let satisfactory = true;
-        if (this.label == -1) {
+        if (this.asr.label == -1) {
           if (this.options.no_tag_required)
             satisfactory = this.hasSomeTag() && satisfactory;
           if (this.options.no_reason_required)
@@ -351,7 +352,7 @@
           if (this.options.no_note_required)
             satisfactory = this.hasSomeNote() && satisfactory;
         }
-        if (this.label == 0) {
+        if (this.asr.label == 0) {
           if (this.options.maybe_tag_required)
             satisfactory = this.hasSomeTag() && satisfactory;
           if (this.options.maybe_reason_required)
@@ -359,7 +360,7 @@
           if (this.options.maybe_note_required)
             satisfactory = this.hasSomeNote() && satisfactory;
         }
-        if (this.label == 1) {
+        if (this.asr.label == 1) {
           if (this.options.yes_tag_required)
             satisfactory = this.hasSomeTag() && satisfactory;
           if (this.options.yes_reason_required)
@@ -367,7 +368,6 @@
           if (this.options.yes_note_required)
             satisfactory = this.hasSomeNote() && satisfactory;
         }
-
         return satisfactory;
       },
 
@@ -403,8 +403,6 @@
 
       deleteCustomValue(type, key) {
         if (confirm(`Would you like to delete "${key}" as a custom choice?`)) {
-          console.log(type);
-          console.log(key);
           delete this.asr[type][key];
           this.updateAsr(false);
         }
@@ -643,8 +641,12 @@
         this.getAsr();
       },
 
-      async updateAsr() {
-        this.fetchAsr("PATCH");
+      async updateAsr(getNewAsrId) {
+        await this.fetchAsr("PATCH");
+        if (getNewAsrId) {
+          await this.getAsrId();
+          await this.getAsr();
+        }
       },
 
       async getAsr() {
@@ -654,7 +656,7 @@
       async fetchAsr(method) {
         if (false) {
           this.reasoningMenu = false;
-          this.showConfirmation(this.label);
+          this.showConfirmation(this.asr.label);
         }
         this.loading = true;
         const headers = {
@@ -681,7 +683,6 @@
 
         this.asr = data.asr;
         this.citation = data.citation;
-        console.log(this.asr);
 
         this.options = data.options;
         this.word_weights = data.word_weights;

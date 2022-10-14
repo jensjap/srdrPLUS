@@ -1,7 +1,8 @@
 class SfAbstractRecordsController < ApplicationController
   def index
     @abstract_screening_result = AbstractScreeningResult.find(params[:abstract_screening_result_id])
-    @screening_form = ScreeningForm.find_by(project: @abstract_screening_result.project, form_type: 'abstract')
+    @screening_form = ScreeningForm.find_or_create_by!(project: @abstract_screening_result.project,
+                                                       form_type: 'abstract')
 
     respond_to do |format|
       format.json do

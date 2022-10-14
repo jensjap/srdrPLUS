@@ -57,7 +57,7 @@
         </button>
 
         <div :class="desktop ? '' : 'fixed inset-5 mb-24 overflow-y-scroll'">
-          <template x-if="!desktop && asr.value == -1">
+          <template x-if="!desktop && asr.label == -1">
             <div class="mb-4">
               <h1 class="text-2xl flex items-center">
                 Mark Rejected
@@ -80,7 +80,7 @@
               </h1>
             </div>
           </template>
-          <template x-if="!desktop && asr.value == 0">
+          <template x-if="!desktop && asr.label == 0">
             <div class="mb-4">
               <h1 class="text-2xl flex items-center">
                 Mark Maybe
@@ -103,7 +103,7 @@
               </h1>
             </div>
           </template>
-          <template x-if="!desktop && asr.value == 1">
+          <template x-if="!desktop && asr.label == 1">
             <div class="mb-4">
               <h1 class="text-2xl flex items-center">
                 Mark Accepted
@@ -134,9 +134,9 @@
                 x-show="options.no_reason_required || options.yes_reason_required || options.maybe_reason_required"
               ><div>
                 <span>Required for labels:</span>
-                <span :class="(asr.value == -1 && !hasSomeReason()) ? 'text-red-600' : ''" x-show="options.no_reason_required">No</span>
-                <span :class="(asr.value == 0 && !hasSomeReason()) ? 'text-red-600' : ''" x-show="options.maybe_reason_required">Maybe</span>
-                <span :class="(asr.value == 1 && !hasSomeReason()) ? 'text-red-600' : ''" x-show="options.yes_reason_required">Yes</span>
+                <span :class="(asr.label == -1 && !hasSomeReason()) ? 'text-red-600' : ''" x-show="options.no_reason_required">No</span>
+                <span :class="(asr.label == 0 && !hasSomeReason()) ? 'text-red-600' : ''" x-show="options.maybe_reason_required">Maybe</span>
+                <span :class="(asr.label == 1 && !hasSomeReason()) ? 'text-red-600' : ''" x-show="options.yes_reason_required">Yes</span>
               </div>
             </h2>
             <hr class="m-0" />
@@ -216,9 +216,9 @@
                 x-show="options.no_tag_required || options.yes_tag_required || options.maybe_tag_required"
              ><div>
                 <span>Required for labels:</span>
-                <span :class="(asr.value == -1 && !hasSomeTag()) ? 'text-red-600' : ''" x-show="options.no_tag_required">No</span>
-                <span :class="(asr.value == 0 && !hasSomeTag()) ? 'text-red-600' : ''" x-show="options.maybe_tag_required">Maybe</span>
-                <span :class="(asr.value == 1 && !hasSomeTag()) ? 'text-red-600' : ''" x-show="options.yes_tag_required">Yes</span>
+                <span :class="(asr.label == -1 && !hasSomeTag()) ? 'text-red-600' : ''" x-show="options.no_tag_required">No</span>
+                <span :class="(asr.label == 0 && !hasSomeTag()) ? 'text-red-600' : ''" x-show="options.maybe_tag_required">Maybe</span>
+                <span :class="(asr.label == 1 && !hasSomeTag()) ? 'text-red-600' : ''" x-show="options.yes_tag_required">Yes</span>
               </div>
             </h2>
             <hr class="m-0" />
@@ -295,9 +295,9 @@
                 x-show="options.no_note_required || options.yes_note_required || options.maybe_note_required"
               ><div>
                 <span>Required for labels:</span>
-                <span :class="(asr.value == -1 && !hasSomeNote()) ? 'text-red-600' : ''" x-show="options.no_note_required">No</span>
-                <span :class="(asr.value == 0 && !hasSomeNote()) ? 'text-red-600' : ''" x-show="options.maybe_note_required">Maybe</span>
-                <span :class="(asr.value == 1 && !hasSomeNote()) ? 'text-red-600' : ''" x-show="options.yes_note_required">Yes</span>
+                <span :class="(asr.label == -1 && !hasSomeNote()) ? 'text-red-600' : ''" x-show="options.no_note_required">No</span>
+                <span :class="(asr.label == 0 && !hasSomeNote()) ? 'text-red-600' : ''" x-show="options.maybe_note_required">Maybe</span>
+                <span :class="(asr.label == 1 && !hasSomeNote()) ? 'text-red-600' : ''" x-show="options.yes_note_required">Yes</span>
               </div>
             </h2>
             <hr class="m-0" />
@@ -321,7 +321,7 @@
         </div>
         <div
           :class="desktop ? 'hidden' : 'fixed bottom-0 h-24 mb-5 mx-5 left-0 right-0 flex flex-col justify-center items-center content-center'"
-          x-show="asr.value !== null"
+          x-show="asr.label !== null"
         >
           <button
             type="button"
@@ -342,8 +342,8 @@
     <div class="grid grid-cols-3 h-full">
       <div
         class="cursor-pointer border-r-8 bg-red-500 flex justify-center items-center rounded-tl-2xl"
-        @click="asr.value = -1; if (satisfiesReasoning()) { updateAsr(true) } else { toastr.warning('This label requires additional information.  Please see \'Required for labels\'.', '', { timeOut: 2000 }) }"
-        :class="(asr.value == -1 || asr.value == null || desktop) ? '' : 'saturate-[0.1]'"
+        @click="asr.label = -1; if (satisfiesReasoning()) { updateAsr(true) } else { toastr.warning('This label requires additional information.  Please see \'Required for labels\'.', '', { timeOut: 2000 }) }"
+        :class="(asr.label == -1 || asr.label == null || desktop) ? '' : 'saturate-[0.1]'"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -361,8 +361,8 @@
       <div :class="desktop ? 'grid grid-rows-1' : 'grid grid-rows-2'">
         <div
           class="cursor-pointer bg-srdrpurple flex justify-center items-center"
-          @click="asr.value = 0; if (satisfiesReasoning()) { updateAsr(true) } else { toastr.warning('This label requires additional information.  Please see \'Required for labels\'.', '', { timeOut: 2000 }) }"
-          :class="(asr.value == 0 || asr.value == null || desktop)? '' : 'saturate-[0.1]'"
+          @click="asr.label = 0; if (satisfiesReasoning()) { updateAsr(true) } else { toastr.warning('This label requires additional information.  Please see \'Required for labels\'.', '', { timeOut: 2000 }) }"
+          :class="(asr.label == 0 || asr.label == null || desktop)? '' : 'saturate-[0.1]'"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -382,8 +382,8 @@
       </div>
       <div
         class="cursor-pointer border-l-8 bg-green-500 flex justify-center items-center rounded-tr-2xl"
-        @click="asr.value = 1; if (satisfiesReasoning()) { updateAsr(true) } else { toastr.warning('This label requires additional information.  Please see \'Required for labels\'.', '', { timeOut: 2000 }) }"
-        :class="(asr.value == 1 || asr.value == null || desktop)? '' : 'saturate-[0.1]'"
+        @click="asr.label = 1; if (satisfiesReasoning()) { updateAsr(true) } else { toastr.warning('This label requires additional information.  Please see \'Required for labels\'.', '', { timeOut: 2000 }) }"
+        :class="(asr.label == 1 || asr.label == null || desktop)? '' : 'saturate-[0.1]'"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"

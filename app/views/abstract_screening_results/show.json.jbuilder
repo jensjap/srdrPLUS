@@ -6,7 +6,7 @@ json.asr do
   json.predefined_tags @predefined_tags
   json.custom_reasons @custom_reasons
   json.custom_tags @custom_tags
-  json.notes @abstract_screening_result.notes
+  json.notes @abstract_screening_result.notes || ''
 end
 json.citation do
   json.citation_id @abstract_screening_result.citation.id
