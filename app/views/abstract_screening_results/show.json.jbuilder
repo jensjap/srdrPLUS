@@ -1,3 +1,4 @@
+json.word_weights WordWeight.word_weights_object(current_user, @abstract_screening)
 json.asr do
   json.id @abstract_screening_result.id
   json.label @abstract_screening_result.label
@@ -7,8 +8,6 @@ json.asr do
   json.custom_tags @custom_tags
   json.notes @abstract_screening_result.notes
 end
-json.word_weights WordWeight.word_weights_object(current_user, @abstract_screening)
-json.abstract_screening_result_id @abstract_screening_result.id
 json.citation do
   json.citation_id @abstract_screening_result.citation.id
   json.title @abstract_screening_result.citation.name

@@ -26,17 +26,17 @@ class AbstractScreeningResultsController < ApplicationController
     abstract_screening = @abstract_screening_result.abstract_screening
 
     other_asr_params['predefined_reasons'].merge(other_asr_params['custom_reasons']).each do |name, value|
-      reason = Reason.find_by(name:)
+      reason = Reason.find_or_create_by!(name:)
       unless abstract_screening.reasons.include?(reason)
         AbstractScreeningsReasonsUser
-          .find_or_create_by(
+          .find_or_create_by!(
             reason:, user: current_user,
             abstract_screening:
           )
       end
       if value
         AbstractScreeningResultsReason
-          .find_or_create_by(reason:, abstract_screening_result: @abstract_screening_result)
+          .find_or_create_by!(reason:, abstract_screening_result: @abstract_screening_result)
       else
         AbstractScreeningResultsReason
           .find_by(reason:, abstract_screening_result: @abstract_screening_result)&.destroy
@@ -52,17 +52,17 @@ class AbstractScreeningResultsController < ApplicationController
     end
 
     other_asr_params['predefined_tags'].merge(other_asr_params['custom_tags']).each do |name, value|
-      tag = Tag.find_by(name:)
+      tag = Tag.find_or_create_by!(name:)
       unless abstract_screening.tags.include?(tag)
         AbstractScreeningsTagsUser
-          .find_or_create_by(
+          .find_or_create_by!(
             tag:, user: current_user,
             abstract_screening:
           )
       end
       if value
         AbstractScreeningResultsTag
-          .find_or_create_by(tag:, abstract_screening_result: @abstract_screening_result)
+          .find_or_create_by!(tag:, abstract_screening_result: @abstract_screening_result)
       else
         AbstractScreeningResultsTag
           .find_by(tag:, abstract_screening_result: @abstract_screening_result)&.destroy
