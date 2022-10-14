@@ -2,7 +2,7 @@ class AbstractScreeningsController < ApplicationController
   skip_before_action :verify_authenticity_token, only: %i[update_word_weight kpis]
 
   before_action :set_project, only: %i[index new create citation_lifecycle_management kpis]
-  before_action :set_abstract_screening, only: %i[update_word_weight]
+  before_action :set_abstract_screening, only: %i[update_word_weight screen]
   after_action :verify_authorized
 
   def new
@@ -95,10 +95,21 @@ class AbstractScreeningsController < ApplicationController
               policy_class: AbstractScreeningPolicy)
     respond_to do |format|
       format.json do
+        citation = AbstractScreeningService
+                   .pick_next_citation(params[:abstract_screening_id],
+                                       current_user.id)
+        asr = AbstractScreeningResult.find_by(
+          abstract_screening: @abstract_screening,
+          user: current_user,
+          label: nil
+        ) ||
+              AbstractScreeningResult.find_or_create_by!(
+                abstract_screening: @abstract_screening,
+                user: current_user,
+                citation:
+              )
         render json: {
-          citation_id: AbstractScreeningService
-            .pick_next_citation(params[:abstract_screening_id],
-                                current_user.id).id
+          asr_id: asr.id
         }
       end
       format.html do

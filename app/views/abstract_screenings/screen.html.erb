@@ -278,7 +278,7 @@
       disable_textarea_keywords_and_phrases: false,
 
       init() {
-        this.getAsr(false);
+        this.getAsrId();
 
         const smallDevice = window.matchMedia("(min-width: 1024px)");
         smallDevice.addListener(handleDeviceChange);
@@ -626,7 +626,22 @@
         this.processWeights("abstract", "processedAbstract");
       },
 
-      async determineNextAsr() {},
+      async getAsrId() {
+        const response = await fetch(
+          "/abstract_screenings/<%= params[:abstract_screening_id] %>/screen",
+          {
+            method: "GET",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        const data = await response.json();
+
+        this.asr.id = data.asr_id;
+        this.getAsr();
+      },
 
       async updateAsr() {
         this.fetchAsr("PATCH");
@@ -658,7 +673,10 @@
             asr: this.asr,
           });
         }
-        const response = await fetch("/abstract_screening_results/1", headers);
+        const response = await fetch(
+          `/abstract_screening_results/${this.asr.id}`,
+          headers
+        );
         const data = await response.json();
 
         this.asr = data.asr;

@@ -1,5 +1,5 @@
 class AbstractScreeningService
-  def self.pick_next_citation(_as_id, _user_id)
-    Citation.first
+  def self.pick_next_citation(as_id, _user_id)
+    AbstractScreening.find(as_id).project.citations.sample
   end
 end
