@@ -1,8 +1,5 @@
 - provide(:title, t('.citations'))
 
-.grid-container
-  .grid-x
-    .cell
-      = render 'citations/index/tab_links'
-
-      = render 'citations/index/tab_content'
+div class="p-4 lg:p-8"
+  h1 class="text-xl font-bold" Citation Pool
+  = render 'projects/edit/manage_citations'

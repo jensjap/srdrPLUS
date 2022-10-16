@@ -248,7 +248,6 @@ document.addEventListener 'DOMContentLoaded', ->
         success:
           ( data ) ->
             parent.current_citation.label = { id: data.id, label_type_id: label_type_id, labels_reasons: data.labels_reasons }
-            #update_breadcrumb( current_citation )
             if $('#switch-button').val() == 'ON'
               get_history_page( obj, 0 )
             toastr.success 'Label is created successfully'
@@ -256,14 +255,10 @@ document.addEventListener 'DOMContentLoaded', ->
             get_c_p( obj )
             # if we are updating previous label increment index
             if obj.index > 0
-              #update_index( obj, obj.index - 1 )
               obj.index = obj.index - 1
-            # else add breadcrumb
             else if obj.citations.length > 0
               next_citation( obj )
-              add_breadcrumb( obj )
               obj.index = 0
-              #update_index( obj, 0 )
             update_info( obj )
             update_arrows( obj )
         error:
@@ -298,9 +293,7 @@ document.addEventListener 'DOMContentLoaded', ->
       # session state is stored in state_obj, and this object is passed in methods that modify the state
       state_obj = { projects_users_role_id: projects_users_role_id, citations: citations, history: history, index: 0, done: 'false', history_page: 0, options: options }
       next_citation( state_obj )
-      #add_breadcrumb( state_obj )
       state_obj.index = 0
-      #update_index( state_obj, 0 )
       update_info( state_obj )
       update_arrows( state_obj )
       $( '#switch-button' ).val('OFF')
@@ -326,14 +319,12 @@ document.addEventListener 'DOMContentLoaded', ->
       next_button.click ->
         if !next_button.hasClass( 'disabled' )
           state_obj.index = state_obj.index - 1
-          #update_index( state_obj, state_obj.index - 1 )
           update_arrows( state_obj )
           update_info( state_obj )
 
       previous_button.click ->
         if !previous_button.hasClass( 'disabled' )
           state_obj.index = state_obj.index + 1
-          #update_index( state_obj, state_obj.index + 1 )
           update_arrows( state_obj )
           update_info( state_obj )
 
@@ -512,43 +503,6 @@ document.addEventListener 'DOMContentLoaded', ->
         switch_to_list( obj, obj.history.slice( page_index * page_size, ( page_index + 1 ) * page_size ) )
         obj.history_page = page_index
 
-    ##### add_breadcrumb #####
-    add_breadcrumb = ( obj ) ->
-      next_index = obj.history.length
-      breadcrumb_id = 'breadcrumb_' + next_index
-      id = next_index
-      button = $( '<input/>' ).attr( { type: 'button', id: breadcrumb_id, class: 'button' } )
-      button.click ->
-        obj.index = obj.history.length - next_index
-        #update_index( obj, obj.history.length - next_index )
-        update_info( obj )
-        update_arrows( obj )
-
-      $( '#breadcrumb-group' ).append( button )
-      obj.history[ obj.index ].breadcrumb_id = breadcrumb_id
-      obj.history[ obj.index ].id = id
-      return
-
-    ##### update_breadcrumb #####
-    update_breadcrumb = ( citation ) ->
-      button = $( '#' + citation.breadcrumb_id )
-      label = citation.label.label_type_id
-      button.removeClass( 'success alert' )
-      if label == 1
-        button.addClass( 'success' )
-      else if label == 2
-        button.addClass( 'alert' )
-      return
-
-    ##### update_index #####
-    update_index = ( obj, new_index ) ->
-      old_breadcrumb_id = obj.history[ obj.index ].breadcrumb_id
-      obj.index = new_index
-      new_breadcrumb_id = obj.history[ new_index ].breadcrumb_id
-      $( '#' + old_breadcrumb_id ).removeClass( 'hollow' )
-      $( '#' + new_breadcrumb_id ).addClass( 'hollow' )
-      return
-
     ##### update_reasons #####
     update_reasons = () ->
       ## REASONS
@@ -630,7 +584,6 @@ document.addEventListener 'DOMContentLoaded', ->
 
         # set click behavior
         citation_element.click ->
-          #update_index( obj, $(this).attr('index') )
           obj.index = +$(this).attr('index')
           update_info( obj )
           update_arrows( obj )

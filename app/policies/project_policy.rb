@@ -19,7 +19,7 @@ class ProjectPolicy < ApplicationPolicy
         :name,
         :num_assigned,
         :task_type_id,
-        projects_users_role_ids: []
+        { projects_users_role_ids: [] }
       ]
     },
     {
@@ -37,20 +37,20 @@ class ProjectPolicy < ApplicationPolicy
         :page_number_start,
         :page_number_end,
         :_destroy,
-        authors_citations_attributes: [
+        { authors_citations_attributes: [
           { author_attributes: :name },
           { ordering_attributes: :position },
           :_destroy
         ],
-        author_ids: [],
-        keyword_ids: [],
-        journal_attributes: [
-          :id,
-          :name,
-          :volume,
-          :issue,
-          :publication_date
-        ]
+          author_ids: [],
+          keyword_ids: [],
+          journal_attributes: %i[
+            id
+            name
+            volume
+            issue
+            publication_date
+          ] }
       ]
     },
     {
@@ -59,17 +59,17 @@ class ProjectPolicy < ApplicationPolicy
         :_destroy,
         :citation_id,
         :project_id,
-        citation_attributes: [
-          :id,
-          :_destroy,
-          :name
-          ]
+        { citation_attributes: %i[
+          id
+          _destroy
+          name
+        ] }
       ]
     },
     {
-      key_questions_projects_attributes: [
-        :id,
-        :position
+      key_questions_projects_attributes: %i[
+        id
+        position
       ]
     },
     { key_questions_attributes: [:name] },
@@ -78,27 +78,27 @@ class ProjectPolicy < ApplicationPolicy
         :id,
         :_destroy,
         :user_id,
-        role_ids: [],
-        imports_attributes: [
-          :import_type_id, {
-            imported_files_attributes: [
-              :id,
-              :file_type_id,
-              :content,
-              section: [:name],
-              key_question: [:name]
-            ]
-          }
-        ]
+        { role_ids: [],
+          imports_attributes: [
+            :import_type_id, {
+              imported_files_attributes: [
+                :id,
+                :file_type_id,
+                :content,
+                { section: [:name],
+                  key_question: [:name] }
+              ]
+            }
+          ] }
       ]
     },
     {
-      screening_options_attributes: [
-        :id,
-        :_destroy,
-        :project_id,
-        :label_type_id,
-        :screening_option_type_id
+      screening_options_attributes: %i[
+        id
+        _destroy
+        project_id
+        label_type_id
+        screening_option_type_id
       ]
     }
   ]
@@ -106,6 +106,7 @@ class ProjectPolicy < ApplicationPolicy
   class Scope < ApplicationPolicy::Scope
     def resolve
       return scope.all if Rails.env.test?
+
       if user.admin?
         scope.all
       else
@@ -135,6 +136,10 @@ class ProjectPolicy < ApplicationPolicy
   end
 
   def export?
+    project_auditor? || @record.public?
+  end
+
+  def export_data?
     project_auditor? || @record.public?
   end
 
@@ -191,8 +196,9 @@ class ProjectPolicy < ApplicationPolicy
       FULL_PARAMS
     elsif project_contributor?
       [
-        { citations_projects_attributes: [:id, :citation_id] },
-        { citations_attributes: [:id, :name, :abstract, :accession_number, :pmid, :refman, :registry_number, :doi, :other, :citation_type_id, :page_number_start, :page_number_end, authors_citations_attributes: [{ author_attributes: :name }, { ordering_attributes: :position }], keyword_ids:[], journal_attributes: [ :id, :name, :volume, :issue, :publication_date]] }
+        { citations_projects_attributes: %i[id citation_id] },
+        { citations_attributes: [:id, :name, :abstract, :accession_number, :pmid, :refman, :registry_number, :doi,
+                                 :other, :citation_type_id, :page_number_start, :page_number_end, { authors_citations_attributes: [{ author_attributes: :name }, { ordering_attributes: :position }], keyword_ids: [], journal_attributes: %i[id name volume issue publication_date] }] }
       ]
     end
   end
