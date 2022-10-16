@@ -1,8 +1,0 @@
-h3 Your API Key
-div 
-  | This is your API Key: 
-  b #{current_user.api_key}
-h4 Usage
-div To use it, add a header 'api-key' to your requests.
-br
-div = link_to("Reset API Key", users_api_key_reset_path, method: :post, data: { confirm: 'Warning: resetting this key will invalidate the old one.  Confirm?' })
