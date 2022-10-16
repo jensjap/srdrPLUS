@@ -21,7 +21,7 @@
   h1.text-3xl.mt-6 Search Criteria
   ul#search-tabs.tabs data-deep-link='true' data-update-history='true' data-tabs=''
     li.tabs-title class=(params[:citations_search].nil? ? 'is-active' : '')
-      = link_to 'Projects', page: 'members_and_roles', title: 'Search for projects'
+      = link_to 'Projects', '#panel-projects-search', title: 'Search for projects'
 
     li.tabs-title class=(params[:citations_search].present? ? 'is-active' : '')
       = link_to 'Citations', '#panel-citations-search', title: 'Search for citations'
