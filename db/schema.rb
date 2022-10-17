@@ -56,6 +56,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_28_085850) do
   create_table "abstract_screenings", charset: "utf8mb3", force: :cascade do |t|
     t.bigint "project_id"
     t.string "abstract_screening_type", default: "single-perpetual", null: false
+    t.integer "no_of_citations", default: 0, null: false
+    t.boolean "exclusive_users", default: false, null: false
     t.boolean "yes_tag_required", default: false, null: false
     t.boolean "no_tag_required", default: false, null: false
     t.boolean "maybe_tag_required", default: false, null: false

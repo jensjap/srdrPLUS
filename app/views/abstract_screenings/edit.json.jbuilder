@@ -11,6 +11,8 @@ json.abstract_screening do
   json.all_tag @abstract_screening.yes_tag_required && @abstract_screening.no_tag_required && @abstract_screening.maybe_tag_required
   json.all_reason @abstract_screening.no_reason_required && @abstract_screening.maybe_reason_required
   json.all_note @abstract_screening.yes_note_required && @abstract_screening.no_note_required && @abstract_screening.maybe_note_required
+  json.no_of_citations @abstract_screening.no_of_citations
+  json.exclusive_users @abstract_screening.exclusive_users
   json.yes_tag @abstract_screening.yes_tag_required
   json.no_tag @abstract_screening.no_tag_required
   json.maybe_tag @abstract_screening.maybe_tag_required

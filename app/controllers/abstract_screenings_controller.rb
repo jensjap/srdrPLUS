@@ -164,6 +164,8 @@ class AbstractScreeningsController < ApplicationController
       :only_predefined_tags,
       :hide_author,
       :hide_journal,
+      :no_of_citations,
+      :exclusive_users,
       user_ids: [],
       reason_ids: [],
       tag_ids: []

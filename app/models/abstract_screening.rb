@@ -1,27 +1,3 @@
-# == Schema Information
-#
-# Table name: abstract_screenings
-#
-#  id                      :bigint           not null, primary key
-#  project_id              :bigint
-#  abstract_screening_type :string(255)      default("single-perpetual"), not null
-#  yes_tag_required        :boolean          default(FALSE), not null
-#  no_tag_required         :boolean          default(FALSE), not null
-#  maybe_tag_required      :boolean          default(FALSE), not null
-#  yes_reason_required     :boolean          default(FALSE), not null
-#  no_reason_required      :boolean          default(FALSE), not null
-#  maybe_reason_required   :boolean          default(FALSE), not null
-#  yes_note_required       :boolean          default(FALSE), not null
-#  no_note_required        :boolean          default(FALSE), not null
-#  maybe_note_required     :boolean          default(FALSE), not null
-#  only_predefined_reasons :boolean          default(FALSE), not null
-#  only_predefined_tags    :boolean          default(FALSE), not null
-#  hide_author             :boolean          default(FALSE), not null
-#  hide_journal            :boolean          default(FALSE), not null
-#  default                 :boolean          default(FALSE), not null
-#  created_at              :datetime         not null
-#  updated_at              :datetime         not null
-#
 class AbstractScreening < ApplicationRecord
   SINGLE_PERPETUAL = 'single-perpetual'.freeze
   DOUBLE_PERPETUAL = 'double-perpetual'.freeze

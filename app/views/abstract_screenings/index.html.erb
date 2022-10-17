@@ -49,23 +49,23 @@
                     scope="col"
                     class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                   >
-                    No. of Labels
+                    No. of citations per user
                   </th>
                   <th
                     scope="col"
-                    class="w-1/5 px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                   >
                     Predefined Reasons
                   </th>
                   <th
                     scope="col"
-                    class="w-1/5 px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                   >
                     Predefined Tags
                   </th>
                   <th
                     scope="col"
-                    class="relative w-1/6 py-3.5 pl-3 pr-4 sm:pr-6 lg:pr-8"
+                    class="relative py-3.5 pl-3 pr-4 sm:pr-6 lg:pr-8"
                   >
                     <span class="sr-only">Actions</span>
                   </th>
@@ -86,21 +86,33 @@
                     <%= as.abstract_screening_type %>
                   </td>
                   <td class="px-3 text-sm text-gray-500">
+                    <div class="grid grid-cols-4">
+                      <div class="col-span-3">Exclusive users:</div>
+                      <div><%= as.exclusive_users %></div>
+                      <div class="col-span-3">Only predefined reasons:</div>
+                      <div><%= as.only_predefined_reasons %></div>
+                      <div class="col-span-3">Only predefined tags:</div>
+                      <div><%= as.only_predefined_tags %></div>
+                      <div class="col-span-3">Hide author:</div>
+                      <div><%= as.hide_author %></div>
+                      <div class="col-span-3">Hide journal:</div>
+                      <div><%= as.hide_journal %></div>
+                      <div class="col-span-3">Tags required for:</div>
+                      <div><%= as.tag_options.join(', ') %></div>
+                      <div class="col-span-3">Reasons required for:</div>
+                      <div><%= as.reason_options.join(', ') %></div>
+                      <div class="col-span-3">Notes required for:</div>
+                      <div><%= as.note_options.join(', ') %></div>
+                    </div>
+                  </td>
+                  <td class="px-3 text-sm text-gray-500">
                     <!-- prettier-ignore -->
-                    Tags required for: <%= as.tag_options.join(', ') %><br />
-                    Reasons required for: <%= as.reason_options.join(', ') %><br />
-                    Notes required for: <%= as.note_options.join(', ') %><br />
-                    Only predefined reasons: <%= as.only_predefined_reasons
-                    %><br />
-                    Only predefined tags: <%= as.only_predefined_tags %><br />
-                    Hide author: <%= as.hide_author %><br />
-                    Hide journal: <%= as.hide_journal %><br />
+                    <% as.users.each do |user| %>
+                      <%= user.handle %><br />
+                    <% end %>
                   </td>
                   <td class="px-3 text-sm text-gray-500">
-                    <%= as.users.count %> member(s)
-                  </td>
-                  <td class="px-3 text-sm text-gray-500">
-                    <%= as.abstract_screening_results.count %>
+                    <%= as.no_of_citations %>
                   </td>
                   <td class="px-3 text-sm text-gray-500">
                     <% as.reasons.map(&:name).each do |reason| %>

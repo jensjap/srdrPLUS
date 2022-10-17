@@ -22,32 +22,51 @@
       <%= render 'components/single_select' %>
     </div>
     <template
-      x-if="abstract_screening.abstract_screening_type.selection.key == 'pilot'"
+      x-if="['pilot', 'n-size-single', 'n-size-double'].includes(abstract_screening.abstract_screening_type.selection.key)"
     >
       <div class="mb-4">
-        <label for="no_of_citations"
-          >Maximum number of citations (1..100,000) drawn from the citations
-          pool:</label
-        >
+        <label for="no_of_citations">Number of citations per user:</label>
         <input
           type="number"
           id="no_of_citations"
-          name="no_of_citations"
+          name="abstract_screening[no_of_citations]"
           min="1"
           max="100000"
+          :value="abstract_screening.no_of_citations"
         />
       </div>
     </template>
 
-    <div
-      class="mt-8"
-      x-data="{ pns: 'abstract_screening', cns: 'user_ids', customInput: false, open: false }"
-    >
-      <div>Participants</div>
-      <%= render 'components/multi_select' %>
+    <div class="mt-4">
+      <div
+        class="flex items-center justify-between cursor-pointer"
+        @click="abstract_screening.exclusive_users = !abstract_screening.exclusive_users"
+      >
+        <input
+          type="checkbox"
+          name="abstract_screening[exclusive_users]"
+          :value="abstract_screening.exclusive_users"
+          class="!my-auto !mr-2 text-purple-900 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        />
+        <span class="flex-grow flex flex-col">
+          <span class="text-sm font-medium text-gray-900">Exclusive Users</span>
+          <span class="text-sm text-gray-500" id="availability-description"
+            >Only these users may participate in this screening
+          </span>
+        </span>
+      </div>
     </div>
 
-    <div class="grid grid-rows lg:grid-cols-4 gap-8 gap-x-12 mt-8">
+    <template x-if="abstract_screening.exclusive_users">
+      <div
+        x-data="{ pns: 'abstract_screening', cns: 'user_ids', customInput: false, open: false }"
+      >
+        <div>Users</div>
+        <%= render 'components/multi_select' %>
+      </div>
+    </template>
+
+    <div class="grid grid-rows lg:grid-cols-4 gap-8 gap-x-12 mt-4">
       <div
         class="flex items-center justify-between cursor-pointer"
         @click="abstract_screening.all_tag = !abstract_screening.all_tag; abstract_screening.yes_tag = abstract_screening.all_tag; abstract_screening.no_tag = abstract_screening.all_tag; abstract_screening.maybe_tag = abstract_screening.all_tag"
@@ -151,29 +170,6 @@
           </span>
         </span>
       </div>
-      <div></div>
-      <!-- <div
-        class="flex items-center justify-between cursor-pointer"
-        @click="abstract_screening.yes_reason = !abstract_screening.yes_reason; abstract_screening.all_reason = (abstract_screening.yes_reason && abstract_screening.no_reason && abstract_screening.maybe_reason)"
-      >
-        <input
-          type="hidden"
-          value="false"
-          name="abstract_screening[yes_reason_required]"
-        />
-        <input
-          type="checkbox"
-          name="abstract_screening[yes_reason_required]"
-          :value="abstract_screening.yes_reason"
-          class="!my-auto !mr-2 text-purple-900 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-        />
-        <span class="flex-grow flex flex-col">
-          <span class="text-sm font-medium text-gray-900">Yes Labels</span>
-          <span class="text-sm text-gray-500" id="availability-description"
-            >Require Reasons</span
-          >
-        </span>
-      </div> -->
       <div
         class="flex items-center justify-between cursor-pointer"
         @click="abstract_screening.no_reason = !abstract_screening.no_reason; abstract_screening.all_reason = (abstract_screening.no_reason && abstract_screening.maybe_reason)"
@@ -435,6 +431,8 @@
         all_tag: false,
         all_reason: false,
         all_note: false,
+        no_of_citations: 0,
+        exclusive_users: false,
         yes_tag: false,
         no_tag: false,
         maybe_tag: false,
