@@ -1,7 +1,8 @@
 class AbstractScreeningService
   def self.get_asr(abstract_screening, user)
     abstract_screening.project.citations.sample
-    citation = abstract_screening.project.citations.sample
+    finished_citations_ids = abstract_screening.abstract_screening_results.where(user:).map(&:citation).flatten.map(&:id)
+    citation = abstract_screening.project.citations.where.not(id: finished_citations_ids).sample
     AbstractScreeningResult.find_by(
       abstract_screening:,
       user:,
