@@ -91,23 +91,11 @@ class AbstractScreeningsController < ApplicationController
   end
 
   def screen
-    authorize(AbstractScreening.find(params[:abstract_screening_id]),
+    authorize(as = AbstractScreening.find(params[:abstract_screening_id]),
               policy_class: AbstractScreeningPolicy)
     respond_to do |format|
       format.json do
-        citation = AbstractScreeningService
-                   .pick_next_citation(params[:abstract_screening_id],
-                                       current_user.id)
-        asr = AbstractScreeningResult.find_by(
-          abstract_screening: @abstract_screening,
-          user: current_user,
-          label: nil
-        ) ||
-              AbstractScreeningResult.find_or_create_by!(
-                abstract_screening: @abstract_screening,
-                user: current_user,
-                citation:
-              )
+        asr = AbstractScreeningService.get_asr(as, current_user)
         render json: {
           asr_id: asr.id
         }
