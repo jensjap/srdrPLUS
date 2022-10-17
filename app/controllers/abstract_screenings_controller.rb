@@ -122,6 +122,7 @@ class AbstractScreeningsController < ApplicationController
     @abstract_screening = AbstractScreening.find(params[:id])
     @project = @abstract_screening.project
     authorize(@abstract_screening.project, policy_class: AbstractScreeningPolicy)
+    @nav_buttons.push('abstract_screening', 'my_projects')
 
     respond_to do |format|
       format.html do
