@@ -13,4 +13,17 @@ class AbstractScreeningService
         citation:
       )
   end
+
+  def self.before_asr_id(abstract_screening, asr_id, user)
+    return nil if abstract_screening.nil? || asr_id.nil? || user.nil?
+
+    AbstractScreeningResult
+      .where(
+        abstract_screening:,
+        user:
+      )
+      .where(
+        'updated_at < ?', AbstractScreeningResult.find_by(id: asr_id).updated_at
+      ).order(:updated_at).last
+  end
 end

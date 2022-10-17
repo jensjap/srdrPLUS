@@ -63,7 +63,7 @@
       </svg>
     </button>
     <a
-      x-bind:href="`/abstract_screenings/${citation.abstract_screening_id}/rescreen`"
+      x-bind:href="`/abstract_screenings/<%= params[:abstract_screening_id] %>/screen?before_asr_id=${asr.id}`"
       class="cursor-pointer z-[5] absolute top-4 right-16 bg-gray-100 rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
     >
       <svg
@@ -628,7 +628,13 @@
 
       async getAsrId() {
         const response = await fetch(
-          "/abstract_screenings/<%= params[:abstract_screening_id] %>/screen",
+          <% if params[:asr_id] %>
+          `/abstract_screenings/<%= params[:abstract_screening_id] %>/screen?asr_id=<%= params[:asr_id] %>`,
+          <% elsif params[:before_asr_id] %>
+          `/abstract_screenings/<%= params[:abstract_screening_id] %>/screen?before_asr_id=<%= params[:before_asr_id] %>`,
+          <% else %>
+          `/abstract_screenings/<%= params[:abstract_screening_id] %>/screen`,
+          <% end %>
           {
             method: "GET",
             headers: {
