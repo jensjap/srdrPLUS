@@ -52,7 +52,11 @@
                 <input
                   placeholder=""
                   class="bg-transparent p-1 px-2 appearance-none outline-none h-full w-full text-gray-800"
-                  @keydown.enter.prevent="if (!$data[pns][cns].selections.some((s) => s.value == $el.value)) { $data[pns][cns].selections.push({ key: `_${$el.value}` , value: $el.value }) }; $el.value = ''"
+                  @keydown.enter.prevent="
+                  if (!$data[pns][cns].selections.some((s) => s.value == $el.value)) {
+                    $data[pns][cns].selections.push({ key: `_${$el.value}` , value: $el.value }); $data[pns][cns].options.push({ key: `_${$el.value}` , value: $el.value })
+                  };
+                  $el.value = ''"
                 />
               </div>
             </template>
