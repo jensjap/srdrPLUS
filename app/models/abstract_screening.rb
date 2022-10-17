@@ -25,10 +25,14 @@
 class AbstractScreening < ApplicationRecord
   SINGLE_PERPETUAL = 'single-perpetual'.freeze
   DOUBLE_PERPETUAL = 'double-perpetual'.freeze
+  N_SIZE_SINGLE = 'n-size-single'.freeze
+  N_SIZE_DOUBLE = 'n-size-double'.freeze
   PILOT = 'pilot'.freeze
   ABSTRACTSCREENINGTYPES = {
     SINGLE_PERPETUAL => 'Perpetual (Single)',
     DOUBLE_PERPETUAL => 'Perpetual (Double)',
+    N_SIZE_SINGLE => 'Fixed N Size (Single)',
+    N_SIZE_DOUBLE => 'Fixed N Size (Double)',
     PILOT => 'Pilot'
   }.freeze
 
@@ -84,17 +88,6 @@ class AbstractScreening < ApplicationRecord
       hash[tag.name] = false
       hash
     end
-  end
-
-  def add_citations_from_pool(no_of_citations)
-    return if no_of_citations.nil?
-
-    no_of_citations_to_add = no_of_citations - citations.count
-    return unless no_of_citations_to_add.positive?
-
-    cps = project.citations_projects.where(screening_status: CitationsProject::CITATION_POOL).limit(no_of_citations_to_add)
-    citations_projects << cps
-    cps.update_all(screening_status: CitationsProject::ABSTRACT_SCREENING_UNSCREENED)
   end
 
   def tag_options
