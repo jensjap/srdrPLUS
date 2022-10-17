@@ -412,6 +412,7 @@
         if (this.addReasonModal.on) {
           this.addReasonModal.on = false;
         } else {
+          console.log("hello");
           this.weighingScreen = false;
           this.reasoningMenu = false;
           this.word_weight_menu = false;
@@ -589,6 +590,7 @@
       },
 
       showConfirmation(label) {
+        this.closeAllModals();
         this.confirmationModalLabel = label;
         this.confirmationModalText = this.confirmationModalTexts[label];
         this.confirmationModal = true;
@@ -645,6 +647,7 @@
         await this.fetchAsr("PATCH");
         if (getNewAsrId) {
           await this.getAsrId();
+          this.showConfirmation(this.asr.label);
         }
       },
 
