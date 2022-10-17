@@ -279,7 +279,13 @@
       disable_textarea_keywords_and_phrases: false,
 
       init() {
-        this.getAsrId();
+        <% if params[:asr_id] %>
+          this.getAsrId(<%= params[:asr_id] %>);
+        <% elsif params[:before_asr_id] %>
+          this.getAsrId(null, <%= params[:before_asr_id] %>);
+        <% else %>
+          this.getAsrId();
+        <% end %>
 
         const smallDevice = window.matchMedia("(min-width: 1024px)");
         smallDevice.addListener(handleDeviceChange);
@@ -412,7 +418,6 @@
         if (this.addReasonModal.on) {
           this.addReasonModal.on = false;
         } else {
-          console.log("hello");
           this.weighingScreen = false;
           this.reasoningMenu = false;
           this.word_weight_menu = false;
@@ -626,15 +631,9 @@
         this.processWeights("abstract", "processedAbstract");
       },
 
-      async getAsrId() {
+      async getAsrId(asrId = '', beforeAsrId = '') {
         const response = await fetch(
-          <% if params[:asr_id] %>
-          `/abstract_screenings/<%= params[:abstract_screening_id] %>/screen?asr_id=<%= params[:asr_id] %>`,
-          <% elsif params[:before_asr_id] %>
-          `/abstract_screenings/<%= params[:abstract_screening_id] %>/screen?before_asr_id=<%= params[:before_asr_id] %>`,
-          <% else %>
-          `/abstract_screenings/<%= params[:abstract_screening_id] %>/screen`,
-          <% end %>
+          `/abstract_screenings/<%= params[:abstract_screening_id] %>/screen?asr_id=${asrId}&before_asr_id=${beforeAsrId}`,
           {
             method: "GET",
             headers: {
@@ -646,6 +645,10 @@
         const data = await response.json();
 
         this.asr.id = data.asr_id;
+        if (this.asr.id == null) {
+          window.location.href =
+            "/abstract_screenings/<%= params[:abstract_screening_id] %>?screening_finished=true";
+        }
         this.getAsr();
       },
 

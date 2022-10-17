@@ -3,6 +3,8 @@ class AbstractScreeningService
     abstract_screening.project.citations.sample
     finished_citations_ids = abstract_screening.abstract_screening_results.where(user:).map(&:citation).flatten.map(&:id)
     citation = abstract_screening.project.citations.where.not(id: finished_citations_ids).sample
+    return nil if citation.blank?
+
     AbstractScreeningResult.find_by(
       abstract_screening:,
       user:,
@@ -16,7 +18,7 @@ class AbstractScreeningService
   end
 
   def self.before_asr_id(abstract_screening, asr_id, user)
-    return nil if abstract_screening.nil? || asr_id.nil? || user.nil?
+    return nil if abstract_screening.blank? || asr_id.blank? || user.blank?
 
     AbstractScreeningResult
       .where(

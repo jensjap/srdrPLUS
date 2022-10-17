@@ -99,7 +99,7 @@ class AbstractScreeningsController < ApplicationController
           AbstractScreeningService.before_asr_id(as, params[:before_asr_id], current_user) ||
           AbstractScreeningResult.find_by(id: params[:asr_id]) ||
           AbstractScreeningService.get_asr(as, current_user)
-        render json: { asr_id: asr.id }
+        render json: { asr_id: asr&.id }
       end
       format.html do
         render layout: 'abstrackr'
@@ -115,7 +115,7 @@ class AbstractScreeningsController < ApplicationController
 
     respond_to do |format|
       format.html do
-        flash.now[:notice] = 'There are no citations left to screen' if params[:screeningFinished]
+        flash.now[:notice] = 'There are no citations left to screen' if params[:screening_finished]
       end
       format.json do
         @query = params[:query].present? ? params[:query] : '*'
