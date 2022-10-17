@@ -43,7 +43,7 @@
                     scope="col"
                     class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                   >
-                    Participants
+                    Participants (No. of Labels)
                   </th>
                   <th
                     scope="col"
@@ -108,7 +108,11 @@
                   <td class="px-3 text-sm text-gray-500">
                     <!-- prettier-ignore -->
                     <% as.users.each do |user| %>
-                      <%= user.handle %><br />
+                    <div>
+                      <%= user.handle %> (<%=
+                      as.abstract_screening_results.where(user:).where("label IS
+                      NOT NULL").count %>)
+                    </div>
                     <% end %>
                   </td>
                   <td class="px-3 text-sm text-gray-500">
