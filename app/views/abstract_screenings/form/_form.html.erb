@@ -43,6 +43,11 @@
         @click="abstract_screening.exclusive_users = !abstract_screening.exclusive_users"
       >
         <input
+          type="hidden"
+          value="false"
+          name="abstract_screening[exclusive_users]"
+        />
+        <input
           type="checkbox"
           name="abstract_screening[exclusive_users]"
           :value="abstract_screening.exclusive_users"

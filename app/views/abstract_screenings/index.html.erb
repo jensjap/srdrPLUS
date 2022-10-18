@@ -107,7 +107,8 @@
                   </td>
                   <td class="px-3 text-sm text-gray-500">
                     <!-- prettier-ignore -->
-                    <% users = as.users.to_a + as.abstract_screening_results.map(&:user) %>
+                    <% users = as.abstract_screening_results.map(&:user) %>
+                    <% users += as.users.to_a if as.exclusive_users %>
                     <% users.uniq.each do |user| %>
                     <!-- prettier-ignore -->
                     <div><%= user.handle %> (<%= AbstractScreeningResult.where(user:, abstract_screening: as).count %>)</div>
