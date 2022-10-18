@@ -11,6 +11,7 @@ class AbstractScreening < ApplicationRecord
     N_SIZE_DOUBLE => 'Fixed N Size (Double)',
     PILOT => 'Pilot'
   }.freeze
+  NON_PERPETUAL = [N_SIZE_SINGLE, N_SIZE_DOUBLE, PILOT]
 
   validates_presence_of :abstract_screening_type
 

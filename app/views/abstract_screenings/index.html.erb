@@ -43,13 +43,7 @@
                     scope="col"
                     class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                   >
-                    Participants (No. of Labels)
-                  </th>
-                  <th
-                    scope="col"
-                    class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                  >
-                    No. of citations per user
+                    Participant (No. of Labels)
                   </th>
                   <th
                     scope="col"
@@ -83,7 +77,13 @@
                   <td
                     class="pl-4 pr-3 text-sm font-medium text-gray-500 sm:pl-6 lg:pl-8"
                   >
+                    <!-- prettier-ignore -->
                     <%= as.abstract_screening_type %>
+                    <% if AbstractScreening::NON_PERPETUAL.include?(as.abstract_screening_type) %>
+                    <div>
+                      No. of citations per user: <%= as.no_of_citations %>
+                    </div>
+                    <% end %>
                   </td>
                   <td class="px-3 text-sm text-gray-500">
                     <div class="grid grid-cols-4">
@@ -107,16 +107,11 @@
                   </td>
                   <td class="px-3 text-sm text-gray-500">
                     <!-- prettier-ignore -->
-                    <% as.users.each do |user| %>
-                    <div>
-                      <%= user.handle %> (<%=
-                      as.abstract_screening_results.where(user:).where("label IS
-                      NOT NULL").count %>)
-                    </div>
+                    <% users = as.users.to_a + as.abstract_screening_results.map(&:user) %>
+                    <% users.uniq.each do |user| %>
+                    <!-- prettier-ignore -->
+                    <div><%= user.handle %> (<%= AbstractScreeningResult.where(user:, abstract_screening: as).count %>)</div>
                     <% end %>
-                  </td>
-                  <td class="px-3 text-sm text-gray-500">
-                    <%= as.no_of_citations %>
                   </td>
                   <td class="px-3 text-sm text-gray-500">
                     <% as.reasons.map(&:name).each do |reason| %>
