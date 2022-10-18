@@ -47,6 +47,7 @@ class Project < ApplicationRecord
   has_many :extractions, dependent: :destroy, inverse_of: :project
   has_many :teams, dependent: :destroy, inverse_of: :project
   has_many :abstract_screenings, dependent: :destroy, inverse_of: :project
+  has_many :abstract_screening_results, through: :abstract_screenings
   has_many :fulltext_screenings, dependent: :destroy, inverse_of: :project
   has_one :screening_form, dependent: :destroy, inverse_of: :project
 
