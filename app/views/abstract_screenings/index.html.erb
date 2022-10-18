@@ -24,7 +24,9 @@
           <div
             class="overflow-hidden shadow-sm ring-1 ring-black ring-opacity-5"
           >
-            <table class="w-full table-auto divide-y divide-gray-300">
+            <table
+              class="w-full table-auto divide-y divide-gray-300 overflow-x-auto whitespace-nowrap"
+            >
               <thead class="bg-gray-50">
                 <tr>
                   <th
@@ -127,9 +129,7 @@
                     <% end %>
                   </td>
 
-                  <td
-                    class="pl-3 pr-4 text-right text-sm font-medium sm:pr-6 lg:pr-8"
-                  >
+                  <td class="flex flex-col items-center">
                     <!-- prettier-ignore -->
                     <% if false %>
                     <button
@@ -138,8 +138,8 @@
                       Nothing Left to Screen
                     </button>
                     <% else %> <%= link_to('Continue Screening',
-                    abstract_screening_screen_path(as), class: "w-full
-                    inline-flex items-center justify-center rounded-md border
+                    abstract_screening_screen_path(as), class: "w-48 inline-flex
+                    items-center justify-center rounded-md border
                     border-transparent bg-srdrpurple px-4 py-2 my-1 text-center
                     text-sm font-medium text-white shadow-sm
                     hover:bg-srdrpurple-light focus:outline-none focus:ring-2
@@ -147,7 +147,7 @@
                     hover:text-white") %> <% end %>
                     <!-- prettier-ignore -->
                     <%= link_to('Show Results',
-                      abstract_screening_path(as), class: "w-full inline-flex
+                      abstract_screening_path(as), class: "w-48 inline-flex
                       items-center justify-center rounded-md border
                       border-transparent bg-srdrpurple px-4 py-2 my-1
                       text-center text-sm font-medium text-white shadow-sm
@@ -156,7 +156,7 @@
                       hover:no-underline hover:text-white") %>
                     <!-- prettier-ignore -->
                     <%= link_to('Edit', edit_abstract_screening_path(as),
-                      class: "w-full inline-flex items-center justify-center
+                      class: "w-48 inline-flex items-center justify-center
                       rounded-md border border-transparent bg-srdrpurple px-4
                       py-2 my-1 text-center text-sm font-medium text-white
                       shadow-sm hover:bg-srdrpurple-light focus:outline-none
