@@ -1,16 +1,16 @@
 json.results @es_hits do |es_hit|
-  json.citations_project_id  es_hit['citations_project_id']
-  json.citation_id           es_hit['citation_id']
-  json.accession_number_alts es_hit['accession_number_alts']
-  json.author_map_string     es_hit['author_map_string']
-  json.name                  es_hit['name']
-  json.year                  es_hit['year']
-  json.users                 es_hit['users']
-  json.labels                es_hit['labels']
-  json.reasons               es_hit['reasons']
-  json.tags                  es_hit['tags']
-  json.note                  es_hit['note']
-  json.screening_status      es_hit['screening_status']
+  json.citations_project_id   es_hit['citations_project_id']
+  json.citation_id            es_hit['citation_id']
+  json.accession_number_alts  es_hit['accession_number_alts']
+  json.author_map_string      es_hit['author_map_string']
+  json.name                   es_hit['name']
+  json.year                   es_hit['year']
+  json.users                  es_hit['users']
+  json.labels                 es_hit['labels']
+  json.reasons                es_hit['reasons']
+  json.tags                   es_hit['tags']
+  json.notes                  es_hit['notes']
+  json.screening_status       es_hit['screening_status']
 end
 json.pagination do
   json.prev_page    @page == 1 ? 1 : @page - 1

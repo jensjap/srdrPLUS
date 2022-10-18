@@ -22,6 +22,7 @@ class AbstractScreeningResult < ApplicationRecord
       name: citation.name,
       year: citation.year,
       user: user.handle,
+      user_id:,
       label:,
       reasons: reasons.map(&:name).join(', '),
       tags: tags.map(&:name).join(', '),

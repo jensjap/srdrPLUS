@@ -427,11 +427,11 @@
                   <th
                     scope="col"
                     class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                    @click="changeOrderBy('note')"
+                    @click="changeOrderBy('notes')"
                   >
                     <div class="flex justify-between">
-                      Note(s)<template
-                        x-if="pagination.sort == 'asc' && pagination.order_by == 'note'"
+                      Notes<template
+                        x-if="pagination.sort == 'asc' && pagination.order_by == 'notes'"
                       >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -449,7 +449,7 @@
                         </svg>
                       </template>
                       <template
-                        x-if="pagination.sort == 'desc' && pagination.order_by == 'note'"
+                        x-if="pagination.sort == 'desc' && pagination.order_by == 'notes'"
                       >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -521,13 +521,15 @@
                       ></td>
                       <td
                         class="whitespace-nowrap px-3 text-sm text-gray-500"
-                        x-text="result.note"
+                        x-text="result.notes"
                       ></td>
                       <td
                         class="relative whitespace-nowrap pl-3 pr-4 text-right text-sm font-medium sm:pr-6"
                       >
                         <a
                           :href="`/abstract_screenings/${result.abstract_screening_id}/screen?asr_id=${result.id}`"
+                          x-cloak
+                          x-show="result.user_id == <%= current_user.id %>"
                           class="hover:no-underline hover:text-white inline-flex items-center justify-center rounded-md border border-transparent bg-srdrpurple px-4 py-1 text-sm font-medium text-white shadow-sm hover:bg-srdrpurple-light focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto"
                           >Screen Again</a
                         >

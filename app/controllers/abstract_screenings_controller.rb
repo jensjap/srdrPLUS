@@ -97,8 +97,11 @@ class AbstractScreeningsController < ApplicationController
       format.json do
         asr =
           AbstractScreeningService.before_asr_id(as, params[:before_asr_id], current_user) ||
-          AbstractScreeningResult.find_by(id: params[:asr_id]) ||
-          AbstractScreeningService.get_asr(as, current_user)
+          AbstractScreeningResult.find_by(id: params[:asr_id])
+
+        return render json: { asr_id: nil } if asr && asr.user != current_user
+
+        asr ||= AbstractScreeningService.get_asr(as, current_user)
         render json: { asr_id: asr&.id }
       end
       format.html do
