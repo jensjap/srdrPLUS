@@ -130,10 +130,12 @@
                   </td>
 
                   <td class="flex flex-col items-center">
+                    <% if @project.leaders.include?(current_user) ||
+                    !as.exclusive_users || as.users.include?(current_user) %>
                     <!-- prettier-ignore -->
-                    <% if false %>
+                    <% unless AbstractScreeningService.get_asr(as, current_user) %>
                     <button
-                      class="w-full inline-flex mb-2 cursor-not-allowed saturate-[0.25] items-center justify-center rounded-md border border-transparent bg-srdrpurple px-4 py-2 tex1-sm font-medium text-white shadow-sm hover:bg-srdrpurple-light focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 hover:no-underline hover:text-white"
+                      class="w-48 inline-flex mb-2 cursor-not-allowed saturate-[0.25] items-center justify-center rounded-md border border-transparent bg-srdrpurple px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-srdrpurple-light focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 hover:no-underline hover:text-white"
                     >
                       Nothing Left to Screen
                     </button>
@@ -164,7 +166,7 @@
                       hover:no-underline hover:text-white") %>
                   </td>
                 </tr>
-                <% end %>
+                <% end %> <% end %>
               </tbody>
             </table>
           </div>

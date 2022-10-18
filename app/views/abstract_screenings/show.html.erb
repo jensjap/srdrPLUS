@@ -12,8 +12,7 @@
       </div>
       <div class="mt-4 sm:mt-0 sm:ml-16 flex flex-col items-end">
         <!-- prettier-ignore -->
-        <% if false %>
-
+        <% unless AbstractScreeningService.get_asr(@abstract_screening, current_user) %>
         <button
           class="mb-2 cursor-not-allowed saturate-[0.25] w-full inline-flex items-center justify-center rounded-md border border-transparent bg-srdrpurple px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-srdrpurple-light focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 hover:no-underline hover:text-white"
         >

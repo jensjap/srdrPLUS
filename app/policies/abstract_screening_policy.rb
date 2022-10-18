@@ -1,15 +1,7 @@
 class AbstractScreeningPolicy < ApplicationPolicy
   class Scope < ApplicationPolicy::Scope
     def resolve
-      if AbstractScreeningPolicy.new(user, scope).project_leader?
-        scope.abstract_screenings
-      else
-        scope
-          .abstract_screenings
-          .joins(abstract_screenings_projects_users_roles: { projects_users_role: { projects_user: :user } })
-          .where(abstract_screenings_projects_users_roles: { projects_users_roles: { projects_users: { user: } } })
-          .distinct
-      end
+      scope.abstract_screenings
     end
   end
 
@@ -54,10 +46,10 @@ class AbstractScreeningPolicy < ApplicationPolicy
   end
 
   def screen?
-    #user.allowed_to_screen_abstracts?(
+    # user.allowed_to_screen_abstracts?(
     #  abstract_screening_id: self.record.id,
     #  project_id: self.record.project_id
-    #)
+    # )
 
     # Always allow to screen as per request.
     true
