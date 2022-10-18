@@ -44,9 +44,11 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
   private
 
   def _parse_workbook(buffer)
+    puts "Parsing Workbook.."
     @wb = RubyXL::Parser.parse_buffer(buffer)
     @dict_errors[:parse_error_found] = false
   rescue RuntimeError => e
+    puts "  @dict_errors[:parse_error_found] = true"
     @dict_errors[:parse_error_found] = true
   end  # def _parse_workbook(buffer)
 
@@ -58,6 +60,7 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
   #
   # @wb_worksheets
   def _sort_out_worksheets
+    puts "Sorting out worksheets.."
     @dict_errors[:wb_errors]       = []
     @dict_errors[:wb_errors_found] = false
 
@@ -66,12 +69,15 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
     @wb.worksheets.each do |ws|
       case ws.sheet_name
       when /Assignments and Mappings/
+        puts "  Found Assignments and Mappings"
         @wb_worksheets[:aam] << ws
 
       when /Workbook Citation References/
+        puts "  Found Workbook Citation References"
         @wb_worksheets[:wcr] << ws
 
       else
+        puts "  Found Unknown Worksheet Names.."
         @wb_worksheets[:unknowns] << ws
 
       end # case ws.sheet_name
@@ -111,6 +117,7 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
 
   # Populate @wb_data under key :wcr.
   def _process_workbook_citation_references_section(ws)
+    puts "Processing Workbook Citation References worksheet"
     cnt_of_data_rows = _find_number_of_data_rows(ws.sheet_data.rows)
 
     header_row = ws.sheet_data.rows[0]
@@ -201,6 +208,7 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
   #   variable. Need to be careful about "Outcomes" as it has its own uniqe structure.
   #   All other sections only have Name and Descriptions as identifiers.
   def _process_assignments_and_mappings_section(ws)
+    puts "Processing Assignments and Mappings worksheet"
     cnt_of_data_rows = _find_number_of_data_rows(ws.sheet_data.rows, 1)
 
     header_row = ws.sheet_data.rows[0]
@@ -262,7 +270,7 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
         when /#{type1_section_name.singularize} Type/
           @dict_header_index_lookup["#{type1_section_name.singularize} Type"] = cell.column
         when re_match_targets
-          @dict_header_index_lookup["#{cell.value}"] = cell.column
+          @dict_header_index_lookup["#{ cell.value.strip }"] = cell.column
         end # case cell.value
       end # header_row.cells.each do |cell|
     end # @lsof_type1_section_names.each do |type1_section_name|
@@ -353,6 +361,7 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
   end # def _sort_row_data(user_email, user_id, wb_cit_ref_id, row)
 
   def _insert_wb_data_into_db
+    puts "Inserting data into db.."
     @wb_data[:aam].each do |user_email, dict_wb_citation_reference_ids|
       dict_wb_citation_reference_ids.each do |_wb_cit_ref_id, dict_type1_data|
         _process_assignments_and_mappings_extraction_data(user_email, dict_type1_data)
@@ -361,8 +370,14 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
   end # def _insert_wb_data_into_db
 
   def _process_assignments_and_mappings_extraction_data(user_email, data)
-    user     = User.find_by(email: user_email)
-    citation = Citation.find_by(id: @wb_data[:wcr][data[:wb_cit_ref_id]]["citation_id"])
+    user = User.find_by(email: user_email)
+
+    begin
+      citation = Citation.find_by(id: @wb_data[:wcr][data[:wb_cit_ref_id]]["citation_id"])
+    rescue => e
+      puts e
+      return
+    end
 
     extraction = _retrieve_extraction_record(user, citation)
     _toggle_true_all_kqs_for_extraction(extraction) if extraction.present?
