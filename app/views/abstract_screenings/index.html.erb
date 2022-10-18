@@ -157,6 +157,7 @@
                       focus:ring-indigo-500 focus:ring-offset-2
                       hover:no-underline hover:text-white") %>
                     <!-- prettier-ignore -->
+                    <% if @project.leaders.include?(current_user) %>
                     <%= link_to('Edit', edit_abstract_screening_path(as),
                       class: "w-48 inline-flex items-center justify-center
                       rounded-md border border-transparent bg-srdrpurple px-4
@@ -164,6 +165,7 @@
                       shadow-sm hover:bg-srdrpurple-light focus:outline-none
                       focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2
                       hover:no-underline hover:text-white") %>
+                    <% end %>
                   </td>
                 </tr>
                 <% end %> <% end %>
