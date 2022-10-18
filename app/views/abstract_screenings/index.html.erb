@@ -113,7 +113,7 @@
                     <% users += as.users.to_a if as.exclusive_users %>
                     <% users.uniq.each do |user| %>
                     <!-- prettier-ignore -->
-                    <div><%= user.handle %> (<%= AbstractScreeningResult.where(user:, abstract_screening: as).count %>)</div>
+                    <div><%= user.handle %> (<%= AbstractScreeningResult.where(user:, abstract_screening: as).where("label IS NOT NULL").count %>)</div>
                     <% end %>
                   </td>
                   <td class="px-3 text-sm text-gray-500">
