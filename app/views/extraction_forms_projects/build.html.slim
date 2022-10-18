@@ -1,15 +1,14 @@
 - provide(:title, t(".build_extraction_form"))
 
-.row
-  h2
-    |Extraction Form Builder
-    = link_to 'go to extractions ->', project_extractions_path(@extraction_forms_project.project), { style: 'float: right; font-size: 0.4em;' }
+div class="p-4 lg:p-8"
+  div class="flex justify-between"
+    div
+      h1 class="text-xl font-bold" Extractions Form Builder
+    div
+      = link_to 'go to extractions ->', project_extractions_path(@extraction_forms_project.project), { style: 'float: right;' }
 
   .column.medium-2
     == render 'extraction_forms_projects/build/tab_links'
 
   .column.medium-10
     == render 'extraction_forms_projects/build/tab_content'
-
-.column.row
-  = link_to t('back'), edit_project_path(@extraction_forms_project.project, anchor: 'panel-extraction-form')

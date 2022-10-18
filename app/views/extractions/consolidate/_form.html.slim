@@ -1,84 +1,82 @@
-- if @citation_groups[:consolidations].present?
-  .row
-    .column
-      table.hover#dttb-consolidations
-        thead
-          tr
-            th colspan=2 Consolidations
-
-          tr
-            th.citation-handle-header data-sort-mode="name" data-sort-direction="asc" Citation (Sorted by Title)
-            th Status
-
-        tbody
-          - @citation_groups[:consolidations].each do |citations_project_id, consolidation|
-            tr
-              - citations_project_info = @citation_groups[:citations_projects][consolidation.citations_project_id]
-              - citation_handle = citations_project_info[:citation_info] + '<br />' + citations_project_info[:citation_name_long].truncate(70)
-              td title=citations_project_info[:citation_name_long] = link_to citation_handle.html_safe, citation_path(citations_project_info[:citation_id])
-              td
-                - consolidation.status = Status.DRAFT if consolidation.status.blank?
-                = render 'shared/statusing_form', statusing: consolidation.statusing, status_name: consolidation.statusing.status.name
-
-hr
-br
-
-.row
-  .column
-    table.hover.comparisons-list
+div class="p-4 lg:p-8"
+  h1 class="text-xl font-bold" Comparison Tool
+  - if @citation_groups[:consolidations].present?
+    table.hover#dttb-consolidations
       thead
         tr
-          th colspan=4 Extractions
+          th colspan=2 Consolidations
 
         tr
           th.citation-handle-header data-sort-mode="name" data-sort-direction="asc" Citation (Sorted by Title)
-          th Number of Extractions
           th Status
-          th
 
       tbody
-        - @citation_groups[:citations_projects].each do |key, val|
-          - next if val[:extractions].length < 2
-          /- next if @citation_groups[:consolidations].has_key?(val[:citations_project_id]) && @citation_groups[:consolidations][val[:citations_project_id]].status.eql?(Status.COMPLETED)
-          - consolidation_complete = @citation_groups[:consolidations].has_key?(val[:citations_project_id]) && @citation_groups[:consolidations][val[:citations_project_id]].status.eql?(Status.COMPLETED)
-          - hide = consolidation_complete ? "hide" : ""
+        - @citation_groups[:consolidations].each do |citations_project_id, consolidation|
+          tr
+            - citations_project_info = @citation_groups[:citations_projects][consolidation.citations_project_id]
+            - citation_handle = citations_project_info[:citation_info] + '<br />' + citations_project_info[:citation_name_long].truncate(70)
+            td title=citations_project_info[:citation_name_long] = link_to citation_handle.html_safe, citation_path(citations_project_info[:citation_id])
+            td
+              - consolidation.status = Status.DRAFT if consolidation.status.blank?
+              = render 'shared/statusing_form', statusing: consolidation.statusing, status_name: consolidation.statusing.status.name
 
-          tr class="#{ hide }" data-statusable-id="#{ @citation_groups[:consolidations].fetch(key, nil).try(:id) }"
-            - citation_handle = val[:citation_info] + '<br />' + val[:citation_name_long].truncate(70)
-            td title=val[:citation_name_long] = link_to citation_handle.html_safe, citation_path(val[:citation_id])
-            td = val[:extractions].length.to_s
+    hr
+    br
 
-            - if val[:data_discrepancy]
+  table.hover.comparisons-list
+    thead
+      tr
+        th colspan=4 Extractions
 
-              - if val[:consolidated_status]
-                td
-                  i.fi-asterisk<> style="color: #006aaa"
-                  |Consolidation in Progress
-                td
-                  - if @project.members.include?(current_user)
-                    = link_to('Resume',
-                      consolidate_project_extractions_path(extraction_ids: val[:extractions].pluck(:id)),
-                      style: 'margin-bottom:0; color:#006aaa; font-weight:bold;')
+      tr
+        th.citation-handle-header data-sort-mode="name" data-sort-direction="asc" Citation (Sorted by Title)
+        th Number of Extractions
+        th Status
+        th
 
-              - else
-                td
-                  i.fi-alert> style="color: #c527c0;"
-                  | Differences Detected
-                td
-                  - if @project.members.include?(current_user)
-                    = link_to('Consolidate Extractions',
-                      consolidate_project_extractions_path(extraction_ids: val[:extractions].pluck(:id)),
-                      style: 'margin-bottom:0; color:#c527c0; font-weight:bold;')
+    tbody
+      - @citation_groups[:citations_projects].each do |key, val|
+        - next if val[:extractions].length < 2
+        /- next if @citation_groups[:consolidations].has_key?(val[:citations_project_id]) && @citation_groups[:consolidations][val[:citations_project_id]].status.eql?(Status.COMPLETED)
+        - consolidation_complete = @citation_groups[:consolidations].has_key?(val[:citations_project_id]) && @citation_groups[:consolidations][val[:citations_project_id]].status.eql?(Status.COMPLETED)
+        - hide = consolidation_complete ? "hide" : ""
+
+        tr class="#{ hide }" data-statusable-id="#{ @citation_groups[:consolidations].fetch(key, nil).try(:id) }"
+          - citation_handle = val[:citation_info] + '<br />' + val[:citation_name_long].truncate(70)
+          td title=val[:citation_name_long] = link_to citation_handle.html_safe, citation_path(val[:citation_id])
+          td = val[:extractions].length.to_s
+
+          - if val[:data_discrepancy]
+
+            - if val[:consolidated_status]
+              td
+                i.fi-asterisk<> style="color: #006aaa"
+                |Consolidation in Progress
+              td
+                - if @project.members.include?(current_user)
+                  = link_to('Resume',
+                    consolidate_project_extractions_path(extraction_ids: val[:extractions].pluck(:id)),
+                    style: 'margin-bottom:0; color:#006aaa; font-weight:bold;')
 
             - else
               td
-                i.fi-check> style="color: green;"
-                | No Differences Detected
+                i.fi-alert> style="color: #c527c0;"
+                | Differences Detected
               td
+                - if @project.members.include?(current_user)
+                  = link_to('Consolidate Extractions',
+                    consolidate_project_extractions_path(extraction_ids: val[:extractions].pluck(:id)),
+                    style: 'margin-bottom:0; color:#c527c0; font-weight:bold;')
 
-        - if @citation_groups[:citations_project_count] < 1
-          tr
-            td No comparisons found.
+          - else
             td
+              i.fi-check> style="color: green;"
+              | No Differences Detected
             td
-            td
+
+      - if @citation_groups[:citations_project_count] < 1
+        tr
+          td No comparisons found.
+          td
+          td
+          td

@@ -1,37 +1,36 @@
-.grid-x.align-center.align-middle
-  .cell.medium-5
-    h1 Request to publish
-    p This section allows you to finalize your project and make it available for viewing to the SRDR user population.
-    h5: u #{@publishable_record.display}
-.grid-x.align-center.align-middle style="padding-top: 10px;"
-  .cell.medium-5 style="border: 1px solid black; padding: 10px; border-radius: 5px;"
-    h5 Congratulations on completing your SRDR+ Project!
-    p You are about to send a request to publish your project to SRDR+.
-    div
-      b As a reminder, here are some guidelines to finishing your project:
-    ul
-      li Project Name: Should reflect the tile of your systematic review.
-      li Topic Description:  Can be adapted from the Abstract of your systematic review
-      li Attribution: Please include your organization name
-      li Authors of Report
-      li Methodology description: Can be adapted from the methods section of your systematic review and should cover description of your search strategy, screening methods, and data abstraction methods.
-      li PROSPERO Registration ID (if applicable)
-      li Document Object ID (if applicable)
-      li Funding Source
-    div
-      b Project Notes:
-    ul
-      li If applicable, include the PubMed ID of your published report
-      li If applicable, include the web address of your report posted on the AHRQ website.
-      li Please Indicate whether data was entered into this project prospectively (using SRDR's built-in data abstraction function and templates) or retrospectively (importing/uploading of data from other software and file format such as Excel or Word).
-      li If you uploaded documents to your project using the Manage Reports tool, please indicate in the Project Notes field, please list what data (e.g. Adverse events, Outcome Results data, etc.) can be found in each document.
-    h5 SRDR Usage Agreement
-    p Furthermore, according to the creative commons license, if you choose to publish your project, you acknowledge that you are now contributing to the publicly accessible SRDR+ published projects page.
-    = simple_form_for @publishing, url: "/publishings?id=#{@publishable_record.id}&type=#{@publishable_record.class}", :method => :post do |f|
-      = f.input :guidelines_agreement, as: :boolean, required: true, input_html: { style: "margin: 0;" }, label: 'I verify that I have read and agree with the above statement'
-      = f.input :terms_agreement, as: :boolean, required: true, input_html: { style: "margin: 0;" },
-        label: "I understand that all contributions made to SRDR are made freely available \
-        to the public in accordance to the SRDR's <a href='https://srdr.ahrq.gov/home/policies' \
-        target='_blank'>Open Access Policy</a>, under the terms of the Creative Commons license, \
-        <a href='https://creativecommons.org/licenses/by-sa/4.0/' target='_blank'> Attribution-Share Alike 4.0 International (CC BY-SA 4.0)</a>".html_safe
-      = f.button :submit, style: 'margin-top: 20px;', value: 'Request Publishing', data: { confirm: 'Are you sure? Once you publish your project to the system, this action cannot be undone.' }
+div class="p-4 lg:p-8"
+  h1 class="text-xl font-bold" Request to publish
+  p This section allows you to finalize your project and make it available for viewing to the SRDR user population.
+  h2 class="text-base font-bold"
+    u #{@publishable_record.display}
+
+  h2 class="text-base font-bold" Congratulations on completing your SRDR+ Project!
+  p You are about to send a request to publish your project to SRDR+.
+  div
+    b As a reminder, here are some guidelines to finishing your project:
+  ul
+    li Project Name: Should reflect the tile of your systematic review.
+    li Topic Description:  Can be adapted from the Abstract of your systematic review
+    li Attribution: Please include your organization name
+    li Authors of Report
+    li Methodology description: Can be adapted from the methods section of your systematic review and should cover description of your search strategy, screening methods, and data abstraction methods.
+    li PROSPERO Registration ID (if applicable)
+    li Document Object ID (if applicable)
+    li Funding Source
+  div
+    b Project Notes:
+  ul
+    li If applicable, include the PubMed ID of your published report
+    li If applicable, include the web address of your report posted on the AHRQ website.
+    li Please Indicate whether data was entered into this project prospectively (using SRDR's built-in data abstraction function and templates) or retrospectively (importing/uploading of data from other software and file format such as Excel or Word).
+    li If you uploaded documents to your project using the Manage Reports tool, please indicate in the Project Notes field, please list what data (e.g. Adverse events, Outcome Results data, etc.) can be found in each document.
+  h2 class="text-base font-bold" SRDR Usage Agreement
+  p Furthermore, according to the creative commons license, if you choose to publish your project, you acknowledge that you are now contributing to the publicly accessible SRDR+ published projects page.
+  = simple_form_for @publishing, url: "/publishings?id=#{@publishable_record.id}&type=#{@publishable_record.class}", :method => :post do |f|
+    = f.input :guidelines_agreement, as: :boolean, required: true, input_html: { style: "margin: 0;" }, label: 'I verify that I have read and agree with the above statement'
+    = f.input :terms_agreement, as: :boolean, required: true, input_html: { style: "margin: 0;" },
+      label: "I understand that all contributions made to SRDR are made freely available \
+      to the public in accordance to the SRDR's <a href='https://srdr.ahrq.gov/home/policies' \
+      target='_blank'>Open Access Policy</a>, under the terms of the Creative Commons license, \
+      <a href='https://creativecommons.org/licenses/by-sa/4.0/' target='_blank'> Attribution-Share Alike 4.0 International (CC BY-SA 4.0)</a>".html_safe
+    = f.button :submit, style: 'margin-top: 20px;', value: 'Request Publishing', data: { confirm: 'Are you sure? Once you publish your project to the system, this action cannot be undone.' }

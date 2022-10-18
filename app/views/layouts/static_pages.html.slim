@@ -3,6 +3,5 @@
   .content
     = content_for?(:static_pages_content) ? yield(:static_pages_content) : yield
     = render 'shared/scroll_top_wrapper'
-    = render 'shared/debug'
 
 = render template: 'layouts/application'

@@ -342,3 +342,15 @@ let documentCode = function() {
     autoResize(this)
   })
 }
+
+function resizeIframe(iframe) {
+  iframe.height = iframe.contentWindow.document.body.scrollHeight + "px";
+}
+
+addEventListener('resize', (event) => {
+  var iframes = document.getElementsByClassName('iframe');
+  for (var i = 0; i < iframes.length; ++i) {
+    var item = iframes[i];  
+    resizeIframe(item)
+  }
+});
