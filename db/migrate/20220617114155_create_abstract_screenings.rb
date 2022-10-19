@@ -18,7 +18,6 @@ class CreateAbstractScreenings < ActiveRecord::Migration[7.0]
       t.boolean :only_predefined_tags, null: false, default: false
       t.boolean :hide_author, null: false, default: false
       t.boolean :hide_journal, null: false, default: false
-      t.boolean :default, null: false, default: false
       t.timestamps
     end
   end
