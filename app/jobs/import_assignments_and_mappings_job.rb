@@ -68,11 +68,11 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
     #   their respective keys.
     @wb.worksheets.each do |ws|
       case ws.sheet_name
-      when /Assignments and Mappings/
+      when /Assignments? and Mappings?/i
         puts "  Found Assignments and Mappings"
         @wb_worksheets[:aam] << ws
 
-      when /Workbook Citation References/
+      when /Workbooks? Citations? References?/i
         puts "  Found Workbook Citation References"
         @wb_worksheets[:wcr] << ws
 
@@ -172,19 +172,30 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
   #   1. pmid
   #   2. citation_name
   #   3. #!!! TODO: search by authors and year combined.
+  #
+  # return [INTEGER]
   def _find_citation_id_in_db(pmid, citation_name, authors, year)
-    citation = Citation.find_by(pmid: pmid) if pmid.present?
-    return citation.id if citation
+    # PMID is a string. Do a little clean-up.
+    pmid = pmid.to_i.to_s
 
-    import_citations_from_pubmed_array(@project, [pmid]) if pmid.present?
-    citation = Citation.find_by(pmid:) if pmid.present?
-    return citation.id if citation
+    # If no sensible PMID is present we try to find by citation_name, authors and year.
+    if pmid.eql?("0")
+      citations = Citation.where(name: citation_name)
+      return citations.first.id if citations.present?
 
-    citation = Citation.find_by(name: citation_name) if citation_name.present?
-    return citation.id if citation
+      puts 'Creating citation from citation_name, authors, year'
+      citation = _create_citation_from_citation_name__authors__year(citation_name, authors, year)
+      return citation.id if citation
 
-    citation = _create_citation_from_citation_name__authors__year(citation_name, authors, year)
-    return citation.id if citation
+    # Try to find citation already in project.
+    elsif pmid.present?
+      citations = Citation.where(pmid:)
+      return citations.first.id if citations.present?
+
+      puts 'Creating citation from PMID'
+      import_citations_from_pubmed_array(@project, [pmid])
+      return citation = Citation.find_by(pmid:)
+    end
 
     puts "Unable to match Citation record to row: #{ [pmid, citation_name, authors, year] }"
     @dict_errors[:ws_errors] << "Unable to match Citation record to row: #{ [pmid, citation_name, authors, year] }"
@@ -262,13 +273,13 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
     @lsof_type1_section_names.each do |type1_section_name|
       header_row.cells.each do |cell|
         case cell.value
-        when /#{type1_section_name.singularize} Name/
+        when /#{type1_section_name.singularize} Name/i
           @dict_header_index_lookup["#{type1_section_name.singularize} Name"] = cell.column
-        when /#{type1_section_name.singularize} Description/
+        when /#{type1_section_name.singularize} Description/i
           @dict_header_index_lookup["#{type1_section_name.singularize} Description"] = cell.column
-        when /#{type1_section_name.singularize} Specific Measurement/
+        when /#{type1_section_name.singularize} Specific Measurement/i
           @dict_header_index_lookup["#{type1_section_name.singularize} Specific Measurement"] = cell.column
-        when /#{type1_section_name.singularize} Type/
+        when /#{type1_section_name.singularize} Type/i
           @dict_header_index_lookup["#{type1_section_name.singularize} Type"] = cell.column
         when re_match_targets
           @dict_header_index_lookup["#{ cell.value.strip }"] = cell.column
