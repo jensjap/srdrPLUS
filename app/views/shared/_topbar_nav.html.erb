@@ -331,24 +331,24 @@
             :class="abstract_screening && 'bg-srdr-primary !text-white'"
             >Abstract Screening</a
           >
-          <a
+          <!-- <a
             href="<%= project_fulltext_screenings_path(project) %>"
             class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
             :class="fulltext_screening && 'bg-srdr-primary !text-white'"
             >Full-Text Screening</a
-          >
+          > -->
           <a
             href="<%= project_screening_forms_path(project, form_type: 'abstract') %>"
             class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
             :class="abstract_form && 'bg-srdr-primary !text-white'"
             >A.S. Form Builder</a
           >
-          <a
+          <!-- <a
             href="<%= project_screening_forms_path(project, form_type: 'fulltext') %>"
             class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
             :class="fulltext_form && 'bg-srdr-primary !text-white'"
             >F.S. Form Builder</a
-          >
+          > -->
           <a
             href="<%= export_data_project_path(project) %>"
             class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
