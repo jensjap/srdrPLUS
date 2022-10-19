@@ -36,9 +36,9 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
 
     buffer = @imported_file.content.download
     _parse_workbook(buffer)
-    _sort_out_worksheets unless @dict_errors[:parse_error_found]
+    _sort_out_worksheets     unless @dict_errors[:parse_error_found]
     _process_worksheets_data unless @dict_errors[:wb_errors_found]
-    _insert_wb_data_into_db unless @dict_errors[:ws_errors_found]
+    _insert_wb_data_into_db  unless @dict_errors[:ws_errors_found]
   end  # def perform(*args)
 
   private
@@ -186,6 +186,7 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
     citation = _create_citation_from_citation_name__authors__year(citation_name, authors, year)
     return citation.id if citation
 
+    puts "Unable to match Citation record to row: #{ [pmid, citation_name, authors, year] }"
     @dict_errors[:ws_errors] << "Unable to match Citation record to row: #{ [pmid, citation_name, authors, year] }"
     @dict_errors[:ws_errors_found] = true
 
