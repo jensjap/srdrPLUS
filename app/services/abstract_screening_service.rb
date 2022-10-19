@@ -6,7 +6,9 @@ class AbstractScreeningService
     return nil if at_or_over_limit?(abstract_screening, user)
 
     case abstract_screening.abstract_screening_type
-    when AbstractScreening::SINGLE_PERPETUAL, AbstractScreening::N_SIZE_SINGLE, AbstractScreening::PILOT
+    when AbstractScreening::PILOT
+      check_by_pilot(abstract_screening, user)
+    when AbstractScreening::SINGLE_PERPETUAL, AbstractScreening::N_SIZE_SINGLE
       check_by_singles(abstract_screening, user)
     when AbstractScreening::DOUBLE_PERPETUAL, AbstractScreening::N_SIZE_DOUBLE
       check_by_doubles(abstract_screening, user)
@@ -19,6 +21,16 @@ class AbstractScreeningService
       user:,
       label: nil
     )
+  end
+
+  def self.check_by_pilot(abstract_screening, user)
+    user_screened_citation_ids = user_screened_citation_ids(abstract_screening, user)
+    project_citation_ids = abstract_screening.project.citations.map(&:id)
+    citation_id = project_citation_ids.sample
+
+    return nil unless citation_id
+
+    AbstractScreeningResult.find_or_create_by!(abstract_screening:, user:, citation_id:)
   end
 
   def self.check_by_doubles(abstract_screening, user)
@@ -53,6 +65,8 @@ class AbstractScreeningService
   end
 
   def self.at_or_over_limit?(abstract_screening, user)
+    return false unless AbstractScreening::NON_PERPETUAL.include?(abstract_screening.abstract_screening_type)
+
     abstract_screening
       .abstract_screening_results
       .where(user:)
