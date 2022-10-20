@@ -51,7 +51,11 @@ class AbstractScreeningService
     unscreened_citation_ids =
       other_users_screened_citation_ids(abstract_screening, user) - user_screened_citation_ids(abstract_screening, user)
     citation_id = unscreened_citation_ids.tally.select { |_, v| v == 1 }.keys.sample
-    get_next_singles_citation_id(abstract_screening, user) if citation_id.nil?
+    if citation_id.nil?
+      get_next_singles_citation_id(abstract_screening, user)
+    else
+      citation_id
+    end
   end
 
   def self.other_users_screened_citation_ids(abstract_screening, user)
