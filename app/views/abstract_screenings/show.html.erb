@@ -12,19 +12,21 @@
       </div>
       <div class="mt-4 sm:mt-0 sm:ml-16 flex flex-col items-end">
         <!-- prettier-ignore -->
-        <% unless AbstractScreeningService.get_asr(@abstract_screening, current_user) %>
-        <button
-          class="mb-2 cursor-not-allowed saturate-[0.25] w-full inline-flex items-center justify-center rounded-md border border-transparent bg-srdrpurple px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-srdrpurple-light focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 hover:no-underline hover:text-white"
-        >
-          Nothing Left to Screen
-        </button>
-        <% else %> <%= link_to('Continue Screening',
+        <% if AbstractScreeningService.find_citation_id(@abstract_screening, current_user) %>
+        <%= link_to('Continue Screening',
         abstract_screening_screen_path(@abstract_screening), class: "mb-2
         cursor-pointer inline-flex items-center justify-center rounded-md border
         border-transparent bg-srdrpurple px-4 py-2 text-sm font-medium
         text-white shadow-sm hover:bg-srdrpurple-light focus:outline-none
         focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 w-full
-        hover:no-underline hover:text-white") %> <% end %>
+        hover:no-underline hover:text-white") %>
+        <% else %>
+        <button
+          class="mb-2 cursor-not-allowed saturate-[0.25] w-full inline-flex items-center justify-center rounded-md border border-transparent bg-srdrpurple px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-srdrpurple-light focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 hover:no-underline hover:text-white"
+        >
+          Nothing Left to Screen
+        </button>
+        <% end %>
         <!-- prettier-ignore -->
         <%= link_to('Back to Abstract Screenings',
         project_abstract_screenings_path(@abstract_screening.project), class:

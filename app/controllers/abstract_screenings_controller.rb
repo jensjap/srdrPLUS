@@ -100,7 +100,7 @@ class AbstractScreeningsController < ApplicationController
 
         return render json: { asr_id: nil } if asr && asr.user != current_user
 
-        asr ||= AbstractScreeningService.get_asr(as, current_user)
+        asr ||= AbstractScreeningService.find_or_create_asr(as, current_user)
         render json: { asr_id: asr&.id }
       end
       format.html do

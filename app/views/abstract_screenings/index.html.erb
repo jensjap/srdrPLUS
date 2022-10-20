@@ -147,20 +147,21 @@
                     <% if @project.leaders.include?(current_user) ||
                     !as.exclusive_users || as.users.include?(current_user) %>
                     <!-- prettier-ignore -->
-                    <% unless AbstractScreeningService.get_asr(as, current_user) %>
-                    <button
-                      class="w-48 inline-flex mb-2 cursor-not-allowed saturate-[0.25] items-center justify-center rounded-md border border-transparent bg-srdrpurple px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-srdrpurple-light focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 hover:no-underline hover:text-white"
-                    >
-                      Nothing Left to Screen
-                    </button>
-                    <% else %> <%= link_to('Continue Screening',
+                    <% if AbstractScreeningService.find_citation_id(as, current_user) %>
+                    <%= link_to('Continue Screening',
                     abstract_screening_screen_path(as), class: "w-48 inline-flex
                     items-center justify-center rounded-md border
                     border-transparent bg-srdrpurple px-4 py-2 my-1 text-center
                     text-sm font-medium text-white shadow-sm
                     hover:bg-srdrpurple-light focus:outline-none focus:ring-2
                     focus:ring-indigo-500 focus:ring-offset-2 hover:no-underline
-                    hover:text-white") %> <% end %>
+                    hover:text-white") %>
+                    <% else %>
+                    <button
+                      class="w-48 inline-flex mb-2 cursor-not-allowed saturate-[0.25] items-center justify-center rounded-md border border-transparent bg-srdrpurple px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-srdrpurple-light focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 hover:no-underline hover:text-white"
+                    >
+                      Nothing Left to Screen</button
+                    ><% end %>
                     <!-- prettier-ignore -->
                     <%= link_to('Show Results',
                       abstract_screening_path(as), class: "w-48 inline-flex
