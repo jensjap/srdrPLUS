@@ -125,7 +125,7 @@ class AbstractScreeningsController < ApplicationController
         @sort = params[:sort].present? ? params[:sort] : nil
         @page = params[:page].present? ? params[:page].to_i : 1
         per_page = 15
-        order = @order_by.present? ? { @order_by => @sort } : { 'updated_at' => 'desc' }
+        order = @order_by.present? ? { @order_by => @sort } : { 'name' => 'desc' }
         @abstract_screening_results =
           AbstractScreeningResultSearchService.new(@abstract_screening, @query, @page,
                                                    per_page, order).elastic_search

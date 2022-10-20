@@ -37,9 +37,16 @@ class AbstractScreeningService
   end
 
   def self.get_next_pilot_citation_id(abstract_screening, user)
+    uniq_other_users_screened_citation_ids = other_users_screened_citation_ids(abstract_screening, user).uniq
     user_screened_citation_ids = user_screened_citation_ids(abstract_screening, user)
-    project_citation_ids = abstract_screening.project.citations.map(&:id)
-    project_citation_ids.sample
+    unscreened_citation_ids = uniq_other_users_screened_citation_ids - user_screened_citation_ids
+    citation_id = unscreened_citation_ids.sample
+
+    if citation_id.nil?
+      get_next_singles_citation_id(abstract_screening, user)
+    else
+      citation_id
+    end
   end
 
   def self.get_next_singles_citation_id(abstract_screening, _user)
